@@ -1,0 +1,17 @@
+networks:
+  api-network:
+    name: api-network
+    external: true
+    driver: bridge
+
+
+  mysql-network:
+    name: mysql-network
+    external: true
+    driver: bridge
+
+
+  dragonfly-network:
+    name: dragonfly-network
+    external: true
+    driver: bridge

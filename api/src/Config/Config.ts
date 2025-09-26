@@ -1,0 +1,66 @@
+import path from 'path'
+import dotenv from 'dotenv'
+
+dotenv.config({
+    path: [path.resolve(process.cwd(), '../.env'), path.resolve(process.cwd(), '.env')]
+})
+
+interface Config {
+    env: string
+
+    dragonfly: {
+        uri: string
+        password: string
+    }
+
+    gmail: {
+        user: string
+        pass: string
+    }
+
+    client: {
+        uri: string
+
+        createURL: (path: string) => string
+    }
+
+    port: number
+    uri: string
+    domain: string
+    allowedOrigins: string[]
+    sessionSecret: string
+    fileDestination: string
+
+    isEnvDevelopment: () => boolean
+}
+
+const config: Config = {
+    env: process.env.ENV ?? 'development',
+
+    dragonfly: {
+        uri: process.env.DRAGONFLY_URI ?? '',
+        password: process.env.DRAGONFLY_PASSWORD ?? ''
+    },
+
+    gmail: {
+        user: process.env.GMAIL_USER ?? '',
+        pass: process.env.GMAIL_PASS ?? ''
+    },
+
+    client: {
+        uri: process.env.CLIENT_URI ?? '',
+
+        createURL: (path: string) => `${config.client.uri}${path}`
+    },
+
+    port: Number(process.env.API_PORT ?? 9000),
+    uri: process.env.API_URI ?? `http://localhost:${Number(process.env.API_PORT ?? 9000)}`,
+    domain: process.env.API_DOMAIN ?? 'localhost',
+    allowedOrigins: (process.env.API_ALLOWED_ORIGINS ?? '').split(','),
+    sessionSecret: process.env.API_SESSION_SECRET ?? 'development',
+    fileDestination: process.env.API_FILE_DESTINATION ?? 'uploads/',
+
+    isEnvDevelopment: () => config.env === 'development'
+}
+
+export default config

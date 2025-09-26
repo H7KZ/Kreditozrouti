@@ -1,0 +1,21 @@
+meta {
+  name: Sign In
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:40080/auth/signin
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "enga03@vse.cz"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

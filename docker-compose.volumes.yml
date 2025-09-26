@@ -1,0 +1,9 @@
+volumes:
+  traefik-certificates-volume:
+    name: traefik-certificates-volume
+    external: true
+
+
+  mysql-data-volume:
+    name: mysql-data-volume
+    external: true
