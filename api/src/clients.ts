@@ -2,14 +2,13 @@ import path from 'path'
 import { PrismaClient } from '@prisma/client'
 import { google as Google } from 'googleapis'
 import { I18n } from 'i18n'
+import Redis from 'ioredis'
 import Nodemailer from 'nodemailer'
-import { createClient as DragonflyClient } from 'redis'
 import Config from '@/Config/Config'
 
 const mysql = new PrismaClient()
 
-const dragonfly = DragonflyClient({
-    url: Config.dragonfly.uri,
+const dragonfly = new Redis(Config.dragonfly.uri, {
     password: Config.dragonfly.password
 })
 

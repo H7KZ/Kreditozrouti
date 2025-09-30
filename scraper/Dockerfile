@@ -49,7 +49,7 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 # For the image, we create an empty directory.
 COPY --from=builder /usr/src/app/uploads ./uploads
 
-EXPOSE 40080
+EXPOSE 40478
 
 # The CMD must call 'node' directly, as distroless images do not have 'npm' or a shell.
-CMD ["dist/src/index.js"]
+CMD ["dist/scraper/src/index.js"]

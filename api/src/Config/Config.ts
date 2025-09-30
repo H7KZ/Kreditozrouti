@@ -1,9 +1,17 @@
 import path from 'path'
 import dotenv from 'dotenv'
 
-dotenv.config({
-    path: [path.resolve(process.cwd(), '../.env'), path.resolve(process.cwd(), '.env')]
-})
+try {
+    dotenv.config({
+        path: [
+            path.resolve(process.cwd(), '../../../.env'), // For dist folder
+            path.resolve(process.cwd(), '../.env'), // For monorepo root
+            path.resolve(process.cwd(), '.env') // For monorepo package
+        ]
+    })
+} catch {
+    console.warn('No .env file found')
+}
 
 interface Config {
     env: string
@@ -57,8 +65,8 @@ const config: Config = {
         createURL: (path: string) => `${config.client.uri}${path}`
     },
 
-    port: Number(process.env.API_PORT ?? 9000),
-    uri: process.env.API_URI ?? `http://localhost:${Number(process.env.API_PORT ?? 9000)}`,
+    port: Number(process.env.API_PORT ?? 40080),
+    uri: process.env.API_URI ?? `http://localhost:${Number(process.env.API_PORT ?? 40080)}`,
     domain: process.env.API_DOMAIN ?? 'localhost',
     allowedOrigins: (process.env.API_ALLOWED_ORIGINS ?? '').split(','),
     sessionSecret: process.env.API_SESSION_SECRET ?? 'development',

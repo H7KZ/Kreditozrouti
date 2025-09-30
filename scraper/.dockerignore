@@ -1,0 +1,12 @@
+node_modules
+
+.dockerignore
+.gitignore
+.prettierignore
+.prettierrc
+compose.yaml
+Dockerfile
+eslint.config.js
+
+package-lock.json
+pnpm-lock.yaml

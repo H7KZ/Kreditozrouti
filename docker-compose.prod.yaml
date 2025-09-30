@@ -32,19 +32,20 @@ services:
 
     labels:
       - traefik.enable=true
-      - traefik.http.routers.diar-4fis.rule=Host(`diar.4fis.cz`) && PathPrefix(`/api`)
-      - traefik.http.routers.diar-4fis.entrypoints=websecure
-      - traefik.http.routers.diar-4fis.tls=true
-      - traefik.http.routers.diar-4fis.tls.certresolver=letsencrypt
-      - traefik.http.services.diar-4fis.loadbalancer.server.port=40080
+      - traefik.http.routers.diar-4fis-api.rule=Host(`diar.4fis.cz`) && PathPrefix(`/api`)
+      - traefik.http.routers.diar-4fis-api.entrypoints=websecure
+      - traefik.http.routers.diar-4fis-api.tls=true
+      - traefik.http.routers.diar-4fis-api.tls.certresolver=letsencrypt
+      - traefik.http.services.diar-4fis-api.loadbalancer.server.port=40080
 
-      - traefik.http.routers.diar-4fis.middlewares=diar-4fis-stripprefix,diar-4fis-redirect-www
-      - traefik.http.middlewares.diar-4fis-stripprefix.stripprefix.prefixes=/api
-      - traefik.http.middlewares.diar-4fis-redirect-www.redirectregex.regex=^https://www\.(.*)
-      - traefik.http.middlewares.diar-4fis-redirect-www.redirectregex.replacement=https://$${1}
+      - traefik.http.routers.diar-4fis-api.middlewares=diar-4fis-api-stripprefix,diar-4fis-api-redirect-www
+      - traefik.http.middlewares.diar-4fis-api-stripprefix.stripprefix.prefixes=/api
+      - traefik.http.middlewares.diar-4fis-api-redirect-www.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares.diar-4fis-api-redirect-www.redirectregex.replacement=https://$${1}
 
     deploy:
-      mode: global
+      mode: replicated
+      replicas: 2
 
       restart_policy:
         condition: on-failure
@@ -71,7 +72,128 @@ services:
       resources:
         limits:
           cpus: 1
-          memory: 2048M
+          memory: 1024M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  scraper:
+    image: diar-4fis/scraper
+
+    build:
+      context: scraper
+      dockerfile: ./scraper/Dockerfile
+
+    depends_on:
+      - dragonfly
+
+    environment:
+      - ENV=production
+      - DRAGONFLY_URI=${DRAGONFLY_URI}
+      - DRAGONFLY_PASSWORD=${DRAGONFLY_PASSWORD}
+
+    networks:
+      - dragonfly-network
+
+    deploy:
+      mode: replicated
+      replicas: 3
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 1
+          memory: 1024M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  frontend:
+    image: diar-4fis/frontend
+
+    build:
+      context: frontend
+      dockerfile: ./frontend/Dockerfile
+
+    depends_on:
+      - api
+
+    environment:
+      - ENV=production
+
+    networks:
+      - frontend-network
+      - api-network
+
+    # ports:
+    #   - 45173:45173
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.diar-4fis-frontend.rule=Host(`diar.4fis.cz`)
+      - traefik.http.routers.diar-4fis-frontend.entrypoints=websecure
+      - traefik.http.routers.diar-4fis-frontend.tls=true
+      - traefik.http.routers.diar-4fis-frontend.tls.certresolver=letsencrypt
+      - traefik.http.services.diar-4fis-frontend.loadbalancer.server.port=45173
+
+      - traefik.http.routers.diar-4fis-frontend.middlewares=diar-4fis-frontend-stripprefix,diar-4fis-frontend-redirect-www
+      - traefik.http.middlewares.diar-4fis-frontend-stripprefix.stripprefix.prefixes=/api
+      - traefik.http.middlewares.diar-4fis-frontend-redirect-www.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares.diar-4fis-frontend-redirect-www.redirectregex.replacement=https://$${1}
+
+    deploy:
+      mode: replicated
+      replicas: 3
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 1
+          memory: 1024M
 
     restart: unless-stopped
 

@@ -1,0 +1,4 @@
+services:
+    scraper:
+        image: diar-4fis/scraper
+        build: .

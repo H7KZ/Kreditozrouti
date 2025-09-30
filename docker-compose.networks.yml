@@ -5,6 +5,12 @@ networks:
     driver: bridge
 
 
+  frontend-network:
+    name: frontend-network
+    external: true
+    driver: bridge
+
+
   mysql-network:
     name: mysql-network
     external: true

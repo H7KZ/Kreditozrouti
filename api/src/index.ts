@@ -16,7 +16,7 @@ async function start() {
         await mysql.$connect()
         console.log('Connected to MySQL successfully.')
 
-        await dragonfly.connect()
+        await dragonfly.ping()
         console.log('Connected to Dragonfly successfully.')
 
         const accessToken = await google.getAccessToken()
@@ -37,7 +37,7 @@ async function start() {
 
                 server.close(async () => {
                     await mysql.$disconnect()
-                    if (dragonfly.isOpen) await dragonfly.close()
+                    dragonfly.disconnect()
 
                     console.log('Server shut down gracefully')
 
@@ -52,7 +52,7 @@ async function start() {
         console.error('Failed to start the server:', error)
 
         await mysql.$disconnect()
-        if (dragonfly.isOpen) await dragonfly.close()
+        dragonfly.disconnect()
 
         process.exit(1)
     }
