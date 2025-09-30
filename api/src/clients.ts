@@ -1,6 +1,8 @@
 import path from 'path'
 import { PrismaClient } from '@prisma/client'
+import { google as Google } from 'googleapis'
 import { I18n } from 'i18n'
+import Nodemailer from 'nodemailer'
 import { createClient as DragonflyClient } from 'redis'
 import Config from '@/Config/Config'
 
@@ -18,4 +20,29 @@ const i18n = new I18n({
     objectNotation: true
 })
 
-export { mysql, dragonfly, i18n }
+const google = new Google.auth.OAuth2(Config.google.clientId, Config.google.clientSecret)
+google.setCredentials({ refresh_token: Config.google.refreshToken })
+
+class NodemailerClient {
+    public gmail!: Nodemailer.Transporter
+
+    build(accessToken: string) {
+        this.gmail = Nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                type: 'OAuth2',
+                user: Config.google.email,
+                clientId: Config.google.clientId,
+                clientSecret: Config.google.clientSecret,
+                refreshToken: Config.google.refreshToken,
+                accessToken
+            }
+        })
+
+        return this.gmail
+    }
+}
+
+const nodemailer = new NodemailerClient()
+
+export { mysql, dragonfly, i18n, google, nodemailer }

@@ -13,9 +13,11 @@ interface Config {
         password: string
     }
 
-    gmail: {
-        user: string
-        pass: string
+    google: {
+        email: string
+        clientId: string
+        clientSecret: string
+        refreshToken: string
     }
 
     client: {
@@ -42,9 +44,11 @@ const config: Config = {
         password: process.env.DRAGONFLY_PASSWORD ?? ''
     },
 
-    gmail: {
-        user: process.env.GMAIL_USER ?? '',
-        pass: process.env.GMAIL_PASS ?? ''
+    google: {
+        email: process.env.GOOGLE_EMAIL ?? '',
+        clientId: process.env.GOOGLE_CLIENT_ID ?? '',
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+        refreshToken: process.env.GOOGLE_REFRESH_TOKEN ?? ''
     },
 
     client: {

@@ -1,10 +1,21 @@
 import fs from 'fs'
 import path from 'path'
-import Config from '@/Config/Config'
+import Mail from 'nodemailer/lib/mailer'
+import SMTPTransport from 'nodemailer/lib/smtp-transport'
+import { nodemailer } from '@/clients'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@/Enums/ErrorEnum'
 import { Exception } from '@/Interfaces/ErrorInterface'
 
 export default class EmailService {
+    /**
+     * Reads an email template and replaces variables in the format {{variable}} with provided values
+     * Returns the final HTML string
+     *
+     * @param name Template name without .html extension
+     * @param variables Variables to replace in the template
+     * @returns The email template HTML with variables replaced
+     * @throws Exception if reading the template fails
+     */
     static async readTemplate(name: string, variables: Record<string, string>): Promise<string> {
         let template: string
 
@@ -21,10 +32,17 @@ export default class EmailService {
         return template
     }
 
-    static async sendEmail(data: { to: string; subject: string; html: string }): Promise<void> {
+    /**
+     * Sends an email using nodemailer
+     *
+     * @param data Mail options and SMTP transport options
+     * @throws Exception if sending the email fails
+     */
+    static async sendEmail(data: Mail.Options & Partial<SMTPTransport.Options>): Promise<void> {
         try {
-            // TODO implement Gmail SMTP
-        } catch {
+            await nodemailer.gmail.sendMail(data)
+        } catch (err) {
+            console.error('Failed to send email:', err)
             throw new Exception(500, ErrorTypeEnum.Unknown, ErrorCodeEnum.EmailNotSent, 'Failed to send email')
         }
     }

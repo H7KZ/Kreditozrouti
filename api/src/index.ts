@@ -1,6 +1,6 @@
 import { User as UserModel } from '@prisma/client'
 import app from '@/app'
-import { dragonfly, mysql } from '@/clients'
+import { dragonfly, google, mysql, nodemailer } from '@/clients'
 import Config from '@/Config/Config'
 
 declare global {
@@ -18,6 +18,15 @@ async function start() {
 
         await dragonfly.connect()
         console.log('Connected to Dragonfly successfully.')
+
+        const accessToken = await google.getAccessToken()
+        if (!accessToken?.token) throw new Error('Failed to obtain Google access token.')
+        console.log('Obtained Google access token successfully.')
+        google.setCredentials({ access_token: accessToken.token })
+
+        nodemailer.build(accessToken.token)
+        await nodemailer.gmail.verify()
+        console.log('Nodemailer is configured and ready to send emails.')
 
         const server = app.listen(Config.port, () => {
             console.log(`Environment: ${Config.env}`)
