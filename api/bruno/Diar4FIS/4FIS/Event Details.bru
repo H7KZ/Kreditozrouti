@@ -1,0 +1,24 @@
+meta {
+  name: Event Details
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://4fis.cz/nevzdelavaci-akce/:eventId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  eventId: 4fis-turnaj-ve-stolnim-fotbalku-vol-24
+}
+
+headers {
+  accept-language: cs-CZ,cs;q=0.9,en;q=0.8
+  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36
+}
+
+settings {
+  encodeUrl: true
+}

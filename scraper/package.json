@@ -16,14 +16,17 @@
     "dependencies": {
         "axios": "^1.12.2",
         "bullmq": "^5.59.0",
+        "cheerio": "^1.1.2",
         "connect-redis": "^9.0.0",
         "dotenv": "^17.2.2",
-        "ioredis": "^5.8.0"
+        "ioredis": "^5.8.0",
+        "turndown": "^7.2.1"
     },
     "devDependencies": {
         "@eslint/js": "^9.36.0",
         "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
         "@types/node": "^24.5.2",
+        "@types/turndown": "^5.0.5",
         "@typescript-eslint/parser": "^8.44.1",
         "eslint": "^9.36.0",
         "eslint-config-prettier": "^10.1.8",

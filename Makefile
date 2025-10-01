@@ -1,3 +1,9 @@
+.PHONY: dev api scraper frontend format lint build build-docker
+
+dev-docker:
+	docker compose -f docker-compose.dev.yaml down --remove-orphans && \
+	docker compose -f docker-compose.dev.yaml build --pull --no-cache && \
+	docker compose -f docker-compose.dev.yaml up -d
 
 dev:
 	docker compose -f docker-compose.dev.yaml down --remove-orphans && \
