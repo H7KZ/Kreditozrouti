@@ -20,6 +20,7 @@
         "connect-redis": "^9.0.0",
         "dotenv": "^17.2.2",
         "ioredis": "^5.8.0",
+        "moment": "^2.30.1",
         "turndown": "^7.2.1"
     },
     "devDependencies": {
