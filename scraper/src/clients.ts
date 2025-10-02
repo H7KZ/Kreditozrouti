@@ -1,5 +1,5 @@
+import Config from '$scraper/Config/Config'
 import Redis from 'ioredis'
-import Config from '@/Config/Config'
 
 const dragonfly = new Redis(Config.dragonfly.uri, {
     password: Config.dragonfly.password

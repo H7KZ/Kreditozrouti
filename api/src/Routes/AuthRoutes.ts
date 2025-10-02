@@ -1,8 +1,8 @@
+import SignInController from '$api/Controllers/Auth/SignInController'
+import SignOutController from '$api/Controllers/Auth/SignOutController'
+import AuthMiddleware from '$api/Middlewares/AuthMiddleware'
+import { ParserJSONMiddleware } from '$api/Middlewares/ParserMiddleware'
 import { Router } from 'express'
-import SignInController from '@/Controllers/Auth/SignInController'
-import SignOutController from '@/Controllers/Auth/SignOutController'
-import AuthMiddleware from '@/Middlewares/AuthMiddleware'
-import { ParserJSONMiddleware } from '@/Middlewares/ParserMiddleware'
 
 const AuthRoutes = Router()
 

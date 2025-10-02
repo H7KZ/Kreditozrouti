@@ -1,13 +1,25 @@
+import ScraperResponseJobInterface, { ScraperEventResponseJobInterface } from '$api/Interfaces/ScraperResponseJobInterface'
+import ScraperEventResponseJob from '$api/Jobs/ScraperEventResponseJob'
 import { Job } from 'bullmq'
-import ScraperResponseJobInterface from '@/Interfaces/ScraperResponseJobInterface'
 
 export default async function ScraperResponseJobHandler(job: Job<ScraperResponseJobInterface>): Promise<void> {
-    const jobType = job.data.type
+    const type = job.data.type
 
-    console.log(`New job of type ${jobType} with id ${job.id} added to the queue.`)
-    console.log(`Job data: ${JSON.stringify(job.data)}`)
+    console.log(`Job of type ${type} with id ${job.id} started.`)
 
-    // TODO: logic
+    switch (type) {
+        // case 'Events':
+        //     break
+        case 'Event':
+            await ScraperEventResponseJob(job as Job<ScraperEventResponseJobInterface>)
+            break
+        case 'EventRegister':
+            // await EventRegisterScraperController(job.data)
+            break
+        default:
+            console.warn(`Unknown job type: ${type}`)
+            break
+    }
 
-    return Promise.resolve()
+    console.log(`Job of type ${type} with id ${job.id} completed.`)
 }

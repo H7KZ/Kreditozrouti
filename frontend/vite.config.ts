@@ -13,6 +13,14 @@ export default ({ mode }: { mode: string }) => {
     return defineConfig({
         plugins: [react()],
 
+        resolve: {
+            alias: {
+                $frontend: path.resolve(__dirname, './src'),
+                $api: path.resolve(__dirname, '../api/src'),
+                $scraper: path.resolve(__dirname, '../scraper/src')
+            }
+        },
+
         server: {
             port: parseInt(process.env.VITE_CLIENT_PORT ?? '45173'),
 

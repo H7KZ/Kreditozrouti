@@ -1,4 +1,8 @@
 import path from 'path'
+import { dragonfly } from '$api/clients'
+import Config from '$api/Config/Config'
+import ErrorHandler from '$api/Middlewares/ErrorHandler'
+import AuthRoutes from '$api/Routes/AuthRoutes'
 import compression from 'compression'
 import { RedisStore as DragonflyStore } from 'connect-redis'
 import cors, { CorsOptions } from 'cors'
@@ -8,10 +12,6 @@ import helmet from 'helmet'
 import morgan from 'morgan'
 import passport from 'passport'
 import responseTime from 'response-time'
-import { dragonfly } from '@/clients'
-import Config from '@/Config/Config'
-import ErrorHandler from '@/Middlewares/ErrorHandler'
-import AuthRoutes from '@/Routes/AuthRoutes'
 
 const app = express()
 

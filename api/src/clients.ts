@@ -1,10 +1,10 @@
 import path from 'path'
-import { PrismaClient } from '@prisma/client'
+import Config from '$api/Config/Config'
+import { PrismaClient } from '$prisma/client'
 import { google as Google } from 'googleapis'
 import { I18n } from 'i18n'
 import Redis from 'ioredis'
 import Nodemailer from 'nodemailer'
-import Config from '@/Config/Config'
 
 const mysql = new PrismaClient()
 

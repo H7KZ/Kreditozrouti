@@ -1,8 +1,8 @@
-import { FISEventInterface } from '@api/Interfaces/FISEventInterface'
-import FISEventsInterface from '@api/Interfaces/FISEventsInterface'
+import { FISEventInterface } from '$api/Interfaces/FISEventInterface'
+import FISEventsInterface from '$api/Interfaces/FISEventsInterface'
+import MarkdownService from '$scraper/Services/MarkdownService'
 import * as cheerio from 'cheerio'
 import moment from 'moment'
-import MarkdownService from '@/Services/MarkdownService'
 
 export default class ExtractService {
     static extractAllArticlesWithParser(html: string): FISEventsInterface[] {
@@ -11,24 +11,29 @@ export default class ExtractService {
 
         const events: FISEventsInterface[] = []
 
-        articles.each((index, element) => {
-            const article = $(element)
+        articles.each((i, el) => {
+            const article = $(el)
 
             const link = article.find('a').attr('href') ?? null
 
-            const eventId = this.serializeValue(link ? (new URL(link).pathname.split('/').filter(Boolean).pop() ?? null) : null)
-            const postId = this.serializeValue(article.attr('id')?.replace('post-', '') ?? null)
+            const eventId = this.serializeValue(link ? (new URL(link).pathname.split('/').filter(Boolean).join('/') ?? null) : null)
 
-            if (eventId && postId) {
-                events.push({ eventId, postId })
+            if (eventId) {
+                events.push({ eventId })
             }
         })
 
         return events
     }
 
-    static extractEventDetailsWithParser(html: string): FISEventInterface {
+    static extractEventDetailsWithParser(html: string): FISEventInterface | null {
         const $ = cheerio.load(html)
+
+        const siteUrl = $('link[rel="canonical"]').attr('href')
+        if (!siteUrl) return null
+
+        const eventId = new URL(siteUrl).pathname.split('/').filter(Boolean).join('/') ?? null
+        if (!eventId) return null
 
         let author: string | null = null
         let categories: string[] | null = null
@@ -38,7 +43,16 @@ export default class ExtractService {
             const schemaScriptContent = $('script[type="application/ld+json"].yoast-schema-graph').html()
 
             if (schemaScriptContent) {
-                const schemaJson = JSON.parse(schemaScriptContent) as { '@graph': { '@type': string; author?: { name?: string }; articleSection?: string[]; inLanguage?: string }[] }
+                const schemaJson = JSON.parse(schemaScriptContent) as {
+                    '@graph': {
+                        '@type': string
+                        author?: {
+                            name?: string
+                        }
+                        articleSection?: string[]
+                        inLanguage?: string
+                    }[]
+                }
 
                 const articleSchema = schemaJson['@graph'].find(i => i['@type'] === 'Article')
 
@@ -54,18 +68,6 @@ export default class ExtractService {
             language = null
         }
 
-        const getDetailByLabel = (label: string): string | null => {
-            const element = $(`span:contains("${label}")`)
-            return element.next('span').text().trim() ?? null
-        }
-
-        const canonicalUrl = $('link[rel="canonical"]').attr('href')
-        let eventId = null
-        if (canonicalUrl) {
-            const pathParts = canonicalUrl.split('/').filter(part => part !== '')
-            eventId = pathParts[pathParts.length - 1] || null
-        }
-
         const title = $('article h1').text().trim() ?? null
         const imageSrc = $('section[class*="event-detail"] img').attr('src') ?? null
         const imageAlt = $('section[class*="event-detail"] img').attr('alt') ?? null
@@ -73,6 +75,11 @@ export default class ExtractService {
 
         const descriptionContainer = $('h2:contains("O akci")').next('div')
         const description = MarkdownService.formatCheerioElementToMarkdown(descriptionContainer)
+
+        const getDetailByLabel = (label: string): string | null => {
+            const element = $(`span:contains("${label}")`)
+            return element.next('span').text().trim() ?? null
+        }
 
         const place = getDetailByLabel('Místo události:')
         const registrationUrl = getDetailByLabel('Registrace:')

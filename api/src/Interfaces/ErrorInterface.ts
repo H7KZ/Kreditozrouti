@@ -1,5 +1,5 @@
+import { ErrorCodeEnum, ErrorTypeEnum } from '$api/Enums/ErrorEnum'
 import { $ZodIssue } from 'zod/v4/core'
-import { ErrorCodeEnum, ErrorTypeEnum } from '@/Enums/ErrorEnum'
 
 export interface APIError extends Error {
     status: number

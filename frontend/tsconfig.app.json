@@ -22,7 +22,13 @@
         "noUnusedParameters": true,
         "erasableSyntaxOnly": true,
         "noFallthroughCasesInSwitch": true,
-        "noUncheckedSideEffectImports": true
+        "noUncheckedSideEffectImports": true,
+
+        "paths": {
+            "$frontend/*": ["./src/*"],
+            "$api/*": ["../api/src/*"],
+            "$scraper/*": ["../scraper/src/*"]
+        }
     },
     "include": ["src"]
 }

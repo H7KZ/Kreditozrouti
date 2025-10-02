@@ -1,4 +1,4 @@
-import { dragonfly } from '@/clients'
+import { dragonfly } from '$scraper/clients'
 
 async function start() {
     try {

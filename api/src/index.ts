@@ -1,15 +1,8 @@
-import { User as UserModel } from '@prisma/client'
-import app from '@/app'
-import { dragonfly, google, mysql, nodemailer } from '@/clients'
-import Config from '@/Config/Config'
-
-declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace Express {
-        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-        interface User extends UserModel {}
-    }
-}
+import '$api/types'
+import app from '$api/app'
+import { scraper } from '$api/bullmq'
+import { dragonfly, google, mysql, nodemailer } from '$api/clients'
+import Config from '$api/Config/Config'
 
 async function start() {
     try {
@@ -27,6 +20,9 @@ async function start() {
         nodemailer.build(accessToken.token)
         await nodemailer.gmail.verify()
         console.log('Nodemailer is configured and ready to send emails.')
+
+        await scraper.schedulers()
+        console.log('BullMQ schedulers are set up successfully.')
 
         const server = app.listen(Config.port, () => {
             console.log(`Environment: ${Config.env}`)

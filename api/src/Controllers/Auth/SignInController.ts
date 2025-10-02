@@ -1,9 +1,9 @@
+import { i18n, mysql } from '$api/clients'
+import { ErrorCodeEnum, ErrorTypeEnum } from '$api/Enums/ErrorEnum'
+import { SuccessCodeEnum } from '$api/Enums/SuccessEnum'
+import { Exception } from '$api/Interfaces/ErrorInterface'
+import SignInValidation from '$api/Validations/SignInValidation'
 import { Request, Response } from 'express'
-import { i18n, mysql } from '@/clients'
-import { ErrorCodeEnum, ErrorTypeEnum } from '@/Enums/ErrorEnum'
-import { SuccessCodeEnum } from '@/Enums/SuccessEnum'
-import { Exception } from '@/Interfaces/ErrorInterface'
-import SignInValidation from '@/Validations/SignInValidation'
 
 export default async function SignInController(req: Request, res: Response) {
     const result = await SignInValidation.safeParseAsync(req.body)
@@ -33,9 +33,9 @@ export default async function SignInController(req: Request, res: Response) {
     // If the user does not exist create the user
 
     // After 100% sure that the user exists, send user an email with code and time expiration of 10 minutes
-    // You can send emails through the EmailService (imported from @/Services/EmailService)
+    // You can send emails through the EmailService (imported from $api/Services/EmailService)
     // The code should be random 8 digit alphanumeric string
-    // Save this code to cache (dragonfly - can be imported from @/clients) with expiration time of 10 minutes
+    // Save this code to cache (dragonfly - can be imported from $api/clients) with expiration time of 10 minutes
 
     // EmailService.readTemplate also takes variables as second argument which is an object with key value pairs
     // You can use this to replace variables in the email template

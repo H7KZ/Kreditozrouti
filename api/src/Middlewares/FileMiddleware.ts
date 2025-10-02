@@ -1,5 +1,5 @@
+import Config from '$api/Config/Config'
 import multer from 'multer'
-import Config from '@/Config/Config'
 
 const FileMiddleware = multer({
     dest: Config.fileDestination,

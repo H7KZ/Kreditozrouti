@@ -1,6 +1,6 @@
+import { ErrorCodeEnum, ErrorTypeEnum } from '$api/Enums/ErrorEnum'
+import { Exception } from '$api/Interfaces/ErrorInterface'
 import { NextFunction, Request, Response } from 'express'
-import { ErrorCodeEnum, ErrorTypeEnum } from '@/Enums/ErrorEnum'
-import { Exception } from '@/Interfaces/ErrorInterface'
 
 export default function AuthMiddleware(req: Request, res: Response, next: NextFunction) {
     if (req.isAuthenticated()) return next()
