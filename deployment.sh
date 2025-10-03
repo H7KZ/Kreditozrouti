@@ -167,6 +167,7 @@ echo
 docker compose \
     -p "$PROJECT_NAME" \
     -f "$APP_COMPOSE_FILE" \
+    -f "$TRAEFIK_NETWORKS_CONFIG_PATH" \
     -f "$NETWORKS_CONFIG_PATH" \
     -f "$VOLUMES_CONFIG_PATH" \
     up --remove-orphans --build -d
