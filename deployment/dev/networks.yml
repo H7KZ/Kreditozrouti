@@ -1,10 +1,4 @@
 networks:
-  traefik-network:
-    name: traefik-network
-    external: true
-    driver: bridge
-
-
   mysql-dev-network:
     name: mysql-dev-network
     external: true

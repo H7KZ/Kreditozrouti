@@ -28,45 +28,6 @@ echo
 echo "# Starting Deployment Process"
 echo
 
-echo "# Load Networks and Volumes"
-echo
-
-NETWORKS_CONFIG_PATH="./deployment/$ENVIRONMENT/networks.yml"
-VOLUMES_CONFIG_PATH="./deployment/$ENVIRONMENT/volumes.yml"
-
-if [ ! -f "$NETWORKS_CONFIG_PATH" ]; then echo "❌ Error: Network config '$NETWORKS_CONFIG_PATH' not found!"; exit 1; fi
-if [ ! -f "$VOLUMES_CONFIG_PATH" ]; then echo "❌ Error: Volume config '$VOLUMES_CONFIG_PATH' not found!"; exit 1; fi
-
-echo "- Parsing networks from '$NETWORKS_CONFIG_PATH'"
-
-NETWORKS=$(awk '/name:/ {print $2}' "$NETWORKS_CONFIG_PATH")
-
-for NETWORK in $NETWORKS; do
-    if ! docker network inspect "$NETWORK" &>/dev/null; then
-        echo "--> Creating network: $NETWORK"
-        docker network create "$NETWORK"
-    else
-        echo "--> Network already exists: $NETWORK"
-    fi
-done
-
-echo "- Parsing volumes from '$VOLUMES_CONFIG_PATH'"
-
-VOLUMES=$(awk '/name:/ {print $2}' "$VOLUMES_CONFIG_PATH")
-
-for VOLUME in $VOLUMES; do
-    if ! docker volume inspect "$VOLUME" &>/dev/null; then
-        echo "--> Creating volume: $VOLUME"
-        docker volume create "$VOLUME"
-    else
-        echo "--> Volume already exists: $VOLUME"
-    fi
-done
-
-echo
-echo "✅ Networks and volumes are set up!"
-echo
-
 echo "# Deploy Traefik (if not already running)"
 echo
 
@@ -129,7 +90,12 @@ else
     echo "Deploying '$GLOBAL_STACK_NAME' stack with Traefik..."
     echo
 
-    docker compose -p "$GLOBAL_STACK_NAME" -f "$TRAEFIK_COMPOSE_FILE" up -d
+    docker compose \
+        -p "$GLOBAL_STACK_NAME" \
+        -f "$TRAEFIK_COMPOSE_FILE" \
+        -f "$TRAEFIK_NETWORKS_CONFIG_PATH" \
+        -f "$TRAEFIK_VOLUMES_CONFIG_PATH" \
+        up -d
 
     if [ $? -eq 0 ]; then
         echo "✅ Global stack deployed successfully."
@@ -140,6 +106,45 @@ else
 fi
 
 echo
+echo "# Load Networks and Volumes"
+echo
+
+NETWORKS_CONFIG_PATH="./deployment/$ENVIRONMENT/networks.yml"
+VOLUMES_CONFIG_PATH="./deployment/$ENVIRONMENT/volumes.yml"
+
+if [ ! -f "$NETWORKS_CONFIG_PATH" ]; then echo "❌ Error: Network config '$NETWORKS_CONFIG_PATH' not found!"; exit 1; fi
+if [ ! -f "$VOLUMES_CONFIG_PATH" ]; then echo "❌ Error: Volume config '$VOLUMES_CONFIG_PATH' not found!"; exit 1; fi
+
+echo "- Parsing networks from '$NETWORKS_CONFIG_PATH'"
+
+NETWORKS=$(awk '/name:/ {print $2}' "$NETWORKS_CONFIG_PATH")
+
+for NETWORK in $NETWORKS; do
+    if ! docker network inspect "$NETWORK" &>/dev/null; then
+        echo "--> Creating network: $NETWORK"
+        docker network create "$NETWORK"
+    else
+        echo "--> Network already exists: $NETWORK"
+    fi
+done
+
+echo "- Parsing volumes from '$VOLUMES_CONFIG_PATH'"
+
+VOLUMES=$(awk '/name:/ {print $2}' "$VOLUMES_CONFIG_PATH")
+
+for VOLUME in $VOLUMES; do
+    if ! docker volume inspect "$VOLUME" &>/dev/null; then
+        echo "--> Creating volume: $VOLUME"
+        docker volume create "$VOLUME"
+    else
+        echo "--> Volume already exists: $VOLUME"
+    fi
+done
+
+echo
+echo "✅ Networks and volumes are set up!"
+echo
+
 echo "# Application Stack Deployment"
 echo
 
@@ -162,6 +167,8 @@ echo
 docker compose \
     -p "$PROJECT_NAME" \
     -f "$APP_COMPOSE_FILE" \
+    -f "$NETWORKS_CONFIG_PATH" \
+    -f "$VOLUMES_CONFIG_PATH" \
     up --remove-orphans --build -d
 
 if [ $? -eq 0 ]; then
