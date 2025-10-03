@@ -5,7 +5,7 @@ bruno
 .gitignore
 .prettierignore
 .prettierrc
-compose.yaml
+compose.yml
 Dockerfile
 eslint.config.js
 

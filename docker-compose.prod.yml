@@ -1,0 +1,297 @@
+services:
+  api:
+    image: diar-4fis/api
+
+    build:
+      context: api
+      dockerfile: ./api/Dockerfile
+
+    depends_on:
+      - mysql
+      - dragonfly
+
+    environment:
+      - ENV=production
+      - API_PORT=80
+      - API_DOMAIN=${DOMAIN}
+      - API_ALLOWED_ORIGINS=https://${DOMAIN}
+      - API_SESSION_SECRET=${API_SESSION_SECRET}
+      - API_FILE_DESTINATION=/usr/src/app/uploads
+      - MYSQL_URI=${MYSQL_URI}
+      - DRAGONFLY_URI=${DRAGONFLY_URI}
+      - DRAGONFLY_PASSWORD=${DRAGONFLY_PASSWORD}
+      - CLIENT_URI=https://${DOMAIN}
+
+    networks:
+      - traefik-network
+      - mysql-network
+      - dragonfly-network
+
+    # ports:
+    #   - 80:80
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers${PROJECT}-api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)
+      - traefik.http.routers${PROJECT}-api.entrypoints=websecure
+      - traefik.http.routers${PROJECT}-api.tls=true
+      - traefik.http.routers${PROJECT}-api.tls.certresolver=letsencrypt
+      - traefik.http.services${PROJECT}-api.loadbalancer.server.port=80
+
+      - traefik.http.routers${PROJECT}-api.middlewares=diar-4fis-api-stripprefix,diar-4fis-api-redirect-www
+      - traefik.http.middlewares${PROJECT}-api-stripprefix.stripprefix.prefixes=/api
+      - traefik.http.middlewares${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}
+
+    deploy:
+      mode: replicated
+      replicas: 2
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 1
+          memory: 1024M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  scraper:
+    image: diar-4fis/scraper
+
+    build:
+      context: scraper
+      dockerfile: ./scraper/Dockerfile
+
+    depends_on:
+      - dragonfly
+
+    environment:
+      - ENV=production
+      - DRAGONFLY_URI=${DRAGONFLY_URI}
+      - DRAGONFLY_PASSWORD=${DRAGONFLY_PASSWORD}
+
+    networks:
+      - dragonfly-network
+
+    deploy:
+      mode: replicated
+      replicas: 3
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 1
+          memory: 1024M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  frontend:
+    image: diar-4fis/frontend
+
+    build:
+      context: frontend
+      dockerfile: ./frontend/Dockerfile
+
+    depends_on:
+      - api
+
+    environment:
+      - ENV=production
+
+    networks:
+      - traefik-network
+
+    # ports:
+    #   - 80:80
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers${PROJECT}-frontend.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers${PROJECT}-frontend.entrypoints=websecure
+      - traefik.http.routers${PROJECT}-frontend.tls=true
+      - traefik.http.routers${PROJECT}-frontend.tls.certresolver=letsencrypt
+      - traefik.http.services${PROJECT}-frontend.loadbalancer.server.port=45173
+
+      - traefik.http.routers${PROJECT}-frontend.middlewares=diar-4fis-frontend-stripprefix,diar-4fis-frontend-redirect-www
+      - traefik.http.middlewares${PROJECT}-frontend-stripprefix.stripprefix.prefixes=/
+      - traefik.http.middlewares${PROJECT}-frontend-redirect-www.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares${PROJECT}-frontend-redirect-www.redirectregex.replacement=https://$${1}
+
+    deploy:
+      mode: replicated
+      replicas: 3
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 1
+          memory: 1024M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  mysql:
+    image: mysql
+
+    shm_size: 512mb
+
+    volumes:
+      - mysql-data-volume:/var/lib/mysql/data
+
+    environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+    networks:
+      - mysql-network
+
+    # ports:
+    #   - 3306:3306
+
+    deploy:
+      mode: global
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 1
+          memory: 2048M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
+
+    environment:
+      - requirepass=${DRAGONFLY_PASSWORD}
+
+    networks:
+      - dragonfly-network
+
+    # ports:
+    #   - 6379:6379
+
+    deploy:
+      mode: global
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 1
+          memory: 2048M
+
+    restart: unless-stopped

@@ -11,7 +11,7 @@ services:
       - dragonfly
 
     environment:
-      - ENV=production
+      - ENV=development
       - API_PORT=80
       - API_DOMAIN=${DOMAIN}
       - API_ALLOWED_ORIGINS=https://${DOMAIN}
@@ -24,8 +24,8 @@ services:
 
     networks:
       - traefik-network
-      - mysql-network
-      - dragonfly-network
+      - mysql-dev-network
+      - dragonfly-dev-network
 
     # ports:
     #   - 80:80
@@ -94,7 +94,7 @@ services:
       - DRAGONFLY_PASSWORD=${DRAGONFLY_PASSWORD}
 
     networks:
-      - dragonfly-network
+      - dragonfly-dev-network
 
     deploy:
       mode: replicated
@@ -142,7 +142,7 @@ services:
       - api
 
     environment:
-      - ENV=production
+      - ENV=development
 
     networks:
       - traefik-network
@@ -204,8 +204,7 @@ services:
     shm_size: 512mb
 
     volumes:
-      - mysql-data-volume:/var/lib/mysql/data
-      - ./scripts/pgsql_create_database.prod.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data-dev-volume:/var/lib/mysql/data
 
     environment:
       - MYSQL_USER=${MYSQL_USER}
@@ -260,7 +259,7 @@ services:
       - requirepass=${DRAGONFLY_PASSWORD}
 
     networks:
-      - dragonfly-network
+      - dragonfly-dev-network
 
     # ports:
     #   - 6379:6379

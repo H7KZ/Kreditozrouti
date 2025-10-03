@@ -1,14 +1,14 @@
 .PHONY: dev api scraper frontend format lint build build-docker
 
 dev-docker:
-	docker compose -f docker-compose.dev.yaml down --remove-orphans && \
-	docker compose -f docker-compose.dev.yaml build --pull --no-cache && \
-	docker compose -f docker-compose.dev.yaml up -d
+	docker compose -f deployment/local/docker-compose.yml down --remove-orphans && \
+	docker compose -f deployment/local/docker-compose.yml build --pull --no-cache && \
+	docker compose -f deployment/local/docker-compose.yml up -d
 
 dev:
-	docker compose -f docker-compose.dev.yaml down --remove-orphans && \
-	docker compose -f docker-compose.dev.yaml build --pull --no-cache && \
-	docker compose -f docker-compose.dev.yaml up -d && \
+	docker compose -f deployment/local/docker-compose.yml down --remove-orphans && \
+	docker compose -f deployment/local/docker-compose.yml build --pull --no-cache && \
+	docker compose -f deployment/local/docker-compose.yml up -d && \
 	pnpm -r install && \
 	pnpm -r --parallel run dev
 
@@ -37,4 +37,4 @@ build:
 	pnpm -r --parallel run build
 
 build-docker:
-	docker compose -f docker-compose.prod.yaml build --pull --no-cache
+	docker compose -f docker-compose.prod.yml build --pull --no-cache
