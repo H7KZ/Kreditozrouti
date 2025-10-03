@@ -1,9 +1,4 @@
 volumes:
-  traefik-certificates-dev-volume:
-    name: traefik-certificates-dev-volume
-    external: true
-
-
   mysql-data-dev-volume:
     name: mysql-data-dev-volume
     external: true

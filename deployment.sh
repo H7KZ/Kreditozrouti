@@ -25,10 +25,11 @@ echo "🌍 Environment:       $ENVIRONMENT"
 echo "================================================="
 echo
 
-echo "--- Starting Deployment Process ---"
+echo "# Starting Deployment Process"
 echo
 
-echo "--- 1. Load Networks and Volumes ---"
+echo "# Load Networks and Volumes"
+echo
 
 NETWORKS_CONFIG_PATH="./deployment/$ENVIRONMENT/networks.yml"
 VOLUMES_CONFIG_PATH="./deployment/$ENVIRONMENT/volumes.yml"
@@ -36,34 +37,62 @@ VOLUMES_CONFIG_PATH="./deployment/$ENVIRONMENT/volumes.yml"
 if [ ! -f "$NETWORKS_CONFIG_PATH" ]; then echo "❌ Error: Network config '$NETWORKS_CONFIG_PATH' not found!"; exit 1; fi
 if [ ! -f "$VOLUMES_CONFIG_PATH" ]; then echo "❌ Error: Volume config '$VOLUMES_CONFIG_PATH' not found!"; exit 1; fi
 
-echo "   - Parsing networks from '$NETWORKS_CONFIG_PATH'"
+echo "- Parsing networks from '$NETWORKS_CONFIG_PATH'"
 
-# Note: This awk command assumes a simple 'name: network-name' structure
 NETWORKS=$(awk '/name:/ {print $2}' "$NETWORKS_CONFIG_PATH")
+
 for NETWORK in $NETWORKS; do
     if ! docker network inspect "$NETWORK" &>/dev/null; then
-        echo "     - Creating network: $NETWORK"
+        echo "--> Creating network: $NETWORK"
         docker network create "$NETWORK"
     else
-        echo "     - Network already exists: $NETWORK"
+        echo "--> Network already exists: $NETWORK"
     fi
 done
 
-echo "   - Parsing volumes from '$VOLUMES_CONFIG_PATH'"
+echo "- Parsing volumes from '$VOLUMES_CONFIG_PATH'"
+
 VOLUMES=$(awk '/name:/ {print $2}' "$VOLUMES_CONFIG_PATH")
+
 for VOLUME in $VOLUMES; do
     if ! docker volume inspect "$VOLUME" &>/dev/null; then
-        echo "     - Creating volume: $VOLUME"
+        echo "--> Creating volume: $VOLUME"
         docker volume create "$VOLUME"
     else
-        echo "     - Volume already exists: $VOLUME"
+        echo "--> Volume already exists: $VOLUME"
     fi
 done
 
+echo
 echo "✅ Networks and volumes are set up!"
 echo
 
-echo "--- 2. Deploy Traefik ---"
+echo "# Deploy Traefik (if not already running)"
+echo
+
+TRAEFIK_NETWORKS_CONFIG_PATH="./deployment/traefik.networks.yml"
+
+if [ ! -f "$TRAEFIK_NETWORKS_CONFIG_PATH" ]; then echo "❌ Error: Traefik network config '$TRAEFIK_NETWORKS_CONFIG_PATH' not found!"; exit 1; fi
+
+echo "- Parsing networks from '$TRAEFIK_NETWORKS_CONFIG_PATH'"
+
+NETWORKS=$(awk '/name:/ {print $2}' "$TRAEFIK_NETWORKS_CONFIG_PATH")
+
+for NETWORK in $NETWORKS; do
+    if ! docker network inspect "$NETWORK" &>/dev/null; then
+        echo "--> Creating network: $NETWORK"
+        docker network create "$NETWORK"
+    else
+        echo "--> Network already exists: $NETWORK"
+    fi
+done
+
+echo
+echo "✅ Traefik networks are set up!"
+echo
+
+echo "# Checking for existing Traefik deployment..."
+echo
 
 # Check if a container with 'traefik' in its name is already running
 # We check this to avoid re-deploying the global stack unnecessarily (causing downtime)
@@ -72,11 +101,34 @@ if [ -n "$(docker ps -q --filter "name=traefik")" ]; then
 else
     echo "ℹ️ No running Traefik container detected. Setting up the '$GLOBAL_STACK_NAME' stack..."
 
+    TRAEFIK_VOLUMES_CONFIG_PATH="./deployment/traefik.volumes.yml"
+
+    if [ ! -f "$TRAEFIK_VOLUMES_CONFIG_PATH" ]; then echo "❌ Error: Traefik volume config '$TRAEFIK_VOLUMES_CONFIG_PATH' not found!"; exit 1; fi
+
+    echo "- Parsing volumes from '$TRAEFIK_VOLUMES_CONFIG_PATH'"
+
+    VOLUMES=$(awk '/name:/ {print $2}' "$TRAEFIK_VOLUMES_CONFIG_PATH")
+    
+    for VOLUME in $VOLUMES; do
+        if ! docker volume inspect "$VOLUME" &>/dev/null; then
+            echo "--> Creating volume: $VOLUME"
+            docker volume create "$VOLUME"
+        else
+            echo "--> Volume already exists: $VOLUME"
+        fi
+    done
+
+    echo
+    echo "✅ Traefik volumes are set up!"
+    echo
+
     TRAEFIK_COMPOSE_FILE="docker-compose.traefik.yml"
 
     if [ ! -f "$TRAEFIK_COMPOSE_FILE" ]; then echo "❌ Error: Traefik config '$TRAEFIK_COMPOSE_FILE' not found!"; exit 1; fi
     
-    echo "   - Deploying '$GLOBAL_STACK_NAME' stack with Traefik..."
+    echo "Deploying '$GLOBAL_STACK_NAME' stack with Traefik..."
+    echo
+
     docker compose -p "$GLOBAL_STACK_NAME" -f "$TRAEFIK_COMPOSE_FILE" up -d
 
     if [ $? -eq 0 ]; then
@@ -86,14 +138,15 @@ else
         exit 1
     fi
 fi
-echo
 
-echo "--- 3. Application Stack Deployment ---"
+echo
+echo "# Application Stack Deployment"
+echo
 
 # Construct the filename for the environment-specific compose file
 APP_COMPOSE_FILE="docker-compose.${ENVIRONMENT}.yml"
 
-echo "   - Looking for configuration file: '$APP_COMPOSE_FILE'"
+echo "- Looking for configuration file: '$APP_COMPOSE_FILE'"
 
 # Check for the application's docker-compose file
 if [ ! -f "$APP_COMPOSE_FILE" ]; then
@@ -101,7 +154,9 @@ if [ ! -f "$APP_COMPOSE_FILE" ]; then
     exit 1
 fi
 
-echo "   - Deploying '$PROJECT_NAME' stack..."
+echo
+echo "# Deploying '$PROJECT_NAME' stack..."
+echo
 
 # Execute the docker compose command for the application stack
 docker compose \
@@ -115,10 +170,12 @@ else
     echo "❌ Error: Docker Compose command failed for project '$PROJECT_NAME'. Please check the output above."
     exit 1
 fi
-echo
 
-echo "--- 4. Cleanup ---"
+echo
+echo "# Cleanup"
+echo
 echo "Clearing unused Docker resources (images, containers, etc.)..."
+echo
 
 docker system prune -af
 

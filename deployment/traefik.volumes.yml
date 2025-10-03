@@ -1,0 +1,4 @@
+volumes:
+  traefik-certificates-volume:
+    name: traefik-certificates-volume
+    external: true
