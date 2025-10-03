@@ -37,8 +37,7 @@ verify_code:
   stage: deploy
   image: ubuntu:latest
   before_script:
-    # Ensure build-essential is installed for 'make' and base64 is available
-    - apt-get update -y && apt-get install -y openssh-client git base64
+    - apt-get update -y && apt-get install -y openssh-client git
     - eval $(ssh-agent -s)
     # Decode the Base64 key and add it to the agent
     - echo "$SSH_PRIVATE_KEY" | base64 --decode | ssh-add -
