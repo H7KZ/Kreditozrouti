@@ -213,7 +213,7 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
 
     networks:
-      - mysql-network
+      - mysql-dev-network
 
     # ports:
     #   - 3306:3306
