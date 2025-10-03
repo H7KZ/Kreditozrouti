@@ -5,7 +5,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - traefik-certificates-volume:/certs
-      - ./configs/traefik.config.yml:/traefik.yml:ro
+      - ./deployment/traefik.config.yml:/traefik.yml:ro
 
     env_file:
       - path: .env
