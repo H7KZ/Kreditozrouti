@@ -1,12 +1,6 @@
 networks:
-  api-network:
-    name: api-network
-    external: true
-    driver: bridge
-
-
-  frontend-network:
-    name: frontend-network
+  traefik-network:
+    name: traefik-network
     external: true
     driver: bridge
 
