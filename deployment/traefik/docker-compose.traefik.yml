@@ -5,7 +5,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - traefik-certificates-volume:/certs
-      - ./deployment/traefik.config.yml:/traefik.yml:ro
+      - ./deployment/traefik/config.yml:/traefik.yml:ro
+      - ./deployment/traefik/credentials.txt:/credentials.txt:ro
 
     env_file:
       - path: .env
@@ -30,8 +31,8 @@ services:
       - traefik.http.middlewares.traefik-redirect.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.traefik-redirect.redirectregex.replacement=https://$${1}
 
-      - traefik.http.routers.mydashboard.middlewares=traefik-middleware
-      - traefik.http.middlewares.traefik-middleware.basicauth.users=${TRAEFIK_DASHBOARD_USER}:${TRAEFIK_DASHBOARD_PASSWORD}
+      - traefik.http.routers.mydashboard.middlewares=traefik-auth
+      - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt
 
     deploy:
       mode: global
@@ -64,7 +65,7 @@ services:
 
       resources:
         limits:
-          cpus: 1
-          memory: 2048M
+          cpus: 2
+          memory: 4096M
 
     restart: unless-stopped

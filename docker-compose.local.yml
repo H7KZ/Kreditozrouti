@@ -42,8 +42,8 @@ services:
 
       resources:
         limits:
-          cpus: 0.5
-          memory: 512M
+          cpus: 2
+          memory: 4096M
 
     restart: unless-stopped
 
@@ -87,7 +87,7 @@ services:
 
       resources:
         limits:
-          cpus: 0.5
-          memory: 512M
+          cpus: 1
+          memory: 2048M
 
     restart: unless-stopped

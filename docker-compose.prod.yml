@@ -154,8 +154,8 @@ services:
 
       resources:
         limits:
-          cpus: 1
-          memory: 1024M
+          cpus: 0.5
+          memory: 512M
 
     restart: unless-stopped
 
@@ -223,7 +223,7 @@ services:
       resources:
         limits:
           cpus: 1
-          memory: 1024M
+          memory: 512M
 
     restart: unless-stopped
 
@@ -324,7 +324,7 @@ services:
 
       resources:
         limits:
-          cpus: 1
-          memory: 2048M
+          cpus: 0.5
+          memory: 512M
 
     restart: unless-stopped
