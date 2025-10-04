@@ -5,12 +5,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - traefik-certificates-volume:/certs
-      - ./deployment/traefik/config.yml:/traefik.yml:ro
-      - ./deployment/traefik/credentials.txt:/credentials.txt:ro
-
-    env_file:
-      - path: .env
-        required: true
+      - ./traefik.yml:/traefik.yml:ro
+      - ./credentials.txt:/credentials.txt:ro
 
     networks:
       - traefik-network
@@ -27,11 +23,10 @@ services:
       - traefik.http.routers.traefik.tls.certresolver=letsencrypt
       - traefik.http.routers.traefik.service=api@internal
 
-      - traefik.http.routers.traefik.middlewares=traefik-redirect
+      - traefik.http.routers.traefik.middlewares=traefik-redirect,traefik-auth
+      
       - traefik.http.middlewares.traefik-redirect.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.traefik-redirect.redirectregex.replacement=https://$${1}
-
-      - traefik.http.routers.mydashboard.middlewares=traefik-auth
       - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt
 
     deploy:

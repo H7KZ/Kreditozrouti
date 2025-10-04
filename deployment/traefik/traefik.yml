@@ -32,11 +32,3 @@ certificatesResolvers:
       # caServer: https://acme-staging-v02.api.letsencrypt.org/directory # staging
       httpChallenge:
         entryPoint: web
-
-accesslog: true
-
-log:
-  level: INFO
-
-metrics:
-  prometheus: true
