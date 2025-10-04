@@ -93,7 +93,7 @@ services:
 
     build:
       context: api
-      dockerfile: ./api/Dockerfile.migrations
+      dockerfile: ./Dockerfile.migrations
 
     depends_on:
       - mysql
