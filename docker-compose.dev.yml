@@ -103,7 +103,7 @@ services:
       - MYSQL_URI=${MYSQL_URI}
     
     networks:
-      - mysql-network
+      - mysql-dev-network
 
   # ================================================================ #
   # SCRAPER SERVICE
