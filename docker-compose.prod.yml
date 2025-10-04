@@ -4,7 +4,7 @@ services:
 
     build:
       context: api
-      dockerfile: ./api/Dockerfile
+      dockerfile: ./Dockerfile
 
     depends_on:
       - mysql
@@ -83,7 +83,7 @@ services:
 
     build:
       context: scraper
-      dockerfile: ./scraper/Dockerfile
+      dockerfile: ./Dockerfile
 
     depends_on:
       - dragonfly
@@ -136,7 +136,7 @@ services:
 
     build:
       context: frontend
-      dockerfile: ./frontend/Dockerfile
+      dockerfile: ./Dockerfile
 
     depends_on:
       - api
