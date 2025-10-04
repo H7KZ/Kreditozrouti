@@ -1,6 +1,6 @@
-import { ErrorCodeEnum, ErrorTypeEnum } from '$api/Enums/ErrorEnum'
-import { SuccessCodeEnum } from '$api/Enums/SuccessEnum'
-import { Exception } from '$api/Interfaces/ErrorInterface'
+import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
+import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
+import { Exception } from '@api/Interfaces/ErrorInterface'
 import { Request, Response } from 'express'
 
 export default function SignOutController(req: Request, res: Response) {

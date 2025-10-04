@@ -26,8 +26,7 @@
 
         "paths": {
             "$frontend/*": ["./src/*"],
-            "$api/*": ["../api/src/*"],
-            "$scraper/*": ["../scraper/src/*"]
+            "@api/*": ["../api/src/*"]
         }
     },
     "include": ["src"]

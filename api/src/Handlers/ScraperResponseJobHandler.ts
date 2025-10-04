@@ -1,5 +1,5 @@
-import ScraperResponseJobInterface, { ScraperEventResponseJobInterface } from '$api/Interfaces/ScraperResponseJobInterface'
-import ScraperEventResponseJob from '$api/Jobs/ScraperEventResponseJob'
+import ScraperResponseJobInterface, { ScraperEventResponseJobInterface } from '@api/Interfaces/ScraperResponseJobInterface'
+import ScraperEventResponseJob from '@api/Jobs/ScraperEventResponseJob'
 import { Job } from 'bullmq'
 
 export default async function ScraperResponseJobHandler(job: Job<ScraperResponseJobInterface>): Promise<void> {

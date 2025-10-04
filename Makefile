@@ -11,12 +11,12 @@ local-packages:
 	pnpm -r prisma generate && \
 	pnpm -r --parallel run dev
 
-local: local-packages local-docker
-
 local-migrations:
 	cd api && \
 	dotenv -e ../.env -- pnpm prisma migrate dev && \
 	dotenv -e ../.env -- pnpm prisma db seed
+
+local: local-docker local-packages local-migrations
 
 api:
 	cd api && \
@@ -41,6 +41,12 @@ lint:
 
 build:
 	pnpm -r --parallel run build
+
+build-docker-images:
+	docker build -t diar-4fis-api -f ./api/Dockerfile . && \
+	docker build -t diar-4fis-api-migrations -f ./api/Dockerfile.migrations . && \
+	docker build -t diar-4fis-frontend -f ./frontend/Dockerfile . && \
+	docker build -t diar-4fis-scraper -f ./scraper/Dockerfile .
 
 preview:
 	pnpm -r --parallel run preview

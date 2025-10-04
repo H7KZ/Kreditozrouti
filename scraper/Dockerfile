@@ -1,27 +1,32 @@
 # Build Stage
 FROM node:24-alpine AS builder
 
-WORKDIR /usr/src/app
 
-ENV NODE_ENV=production
+WORKDIR /usr/src/scraper
 
-COPY package.json ./
-
+COPY ./scraper/package.json /usr/src/scraper/
 RUN npm install --include=dev
 
-COPY . .
+COPY ./scraper/ /usr/src/scraper/
+
+
+# "Workspaces" setup
+COPY ./api/src/ /usr/src/api/src/
+
 
 RUN npm run build
-
 RUN npm prune --omit=dev
 
 
+# --------------------------------------------------------------------
 # Production Stage
 FROM gcr.io/distroless/nodejs24-debian12
 
-WORKDIR /usr/src/app
 
-COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+WORKDIR /usr/src/scraper
+
+COPY --from=builder /usr/src/scraper/dist /usr/src/scraper/dist
+COPY --from=builder /usr/src/scraper/node_modules /usr/src/scraper/node_modules
+
 
 CMD ["dist/scraper/src/index.js"]

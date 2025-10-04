@@ -1,4 +1,4 @@
-import ScraperJobType from '$api/Types/ScraperJobType'
+import ScraperJobType from '@api/Types/ScraperJobType'
 
 interface ScraperRequestJobBase {
     type: ScraperJobType

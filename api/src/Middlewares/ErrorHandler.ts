@@ -1,5 +1,5 @@
-import { ErrorCodeEnum, ErrorTypeEnum } from '$api/Enums/ErrorEnum'
-import { Exception } from '$api/Interfaces/ErrorInterface'
+import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
+import { Exception } from '@api/Interfaces/ErrorInterface'
 import { NextFunction, Request, Response } from 'express'
 
 // NextFunction is required here - otherwise Express won't recognize this as an error handling middleware

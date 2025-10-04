@@ -1,6 +1,6 @@
-import { ScraperEventRequestJobInterface } from '$api/Interfaces/ScraperRequestJobInterface'
-import { scraper } from '$scraper/bullmq'
-import ExtractService from '$scraper/Services/ExtractService'
+import { ScraperEventRequestJobInterface } from '@api/Interfaces/ScraperRequestJobInterface'
+import { scraper } from '@scraper/bullmq'
+import ExtractService from '@scraper/Services/ExtractService'
 import Axios from 'axios'
 
 export default async function EventController(data: ScraperEventRequestJobInterface): Promise<void> {

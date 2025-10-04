@@ -1,6 +1,6 @@
-import { FISEventInterface } from '$api/Interfaces/FISEventInterface'
-import FISEventsInterface from '$api/Interfaces/FISEventsInterface'
-import MarkdownService from '$scraper/Services/MarkdownService'
+import FISEventInterface from '@api/Interfaces/FISEventInterface'
+import FISEventsInterface from '@api/Interfaces/FISEventsInterface'
+import MarkdownService from '@scraper/Services/MarkdownService'
 import * as cheerio from 'cheerio'
 import moment from 'moment'
 

@@ -1,5 +1,5 @@
-import { mysql } from '$api/clients'
-import { ScraperEventResponseJobInterface } from '$api/Interfaces/ScraperResponseJobInterface'
+import { mysql } from '@api/clients'
+import { ScraperEventResponseJobInterface } from '@api/Interfaces/ScraperResponseJobInterface'
 import { Job } from 'bullmq'
 
 export default async function ScraperEventResponseJob(job: Job<ScraperEventResponseJobInterface>): Promise<void> {
@@ -48,8 +48,8 @@ export default async function ScraperEventResponseJob(job: Job<ScraperEventRespo
                 categories: {
                     connectOrCreate: data.categories
                         ? data.categories.map(category => ({
-                              where: { name: category, id: undefined },
-                              create: { name: category }
+                              where: { id: category },
+                              create: { id: category }
                           }))
                         : []
                 }
@@ -81,8 +81,8 @@ export default async function ScraperEventResponseJob(job: Job<ScraperEventRespo
             categories: {
                 connectOrCreate: data.categories
                     ? data.categories.map(category => ({
-                          where: { name: category, id: undefined },
-                          create: { name: category }
+                          where: { id: category },
+                          create: { id: category }
                       }))
                     : []
             }

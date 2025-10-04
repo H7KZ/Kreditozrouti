@@ -1,5 +1,5 @@
-import { ErrorCodeEnum, ErrorTypeEnum } from '$api/Enums/ErrorEnum'
-import { Exception } from '$api/Interfaces/ErrorInterface'
+import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
+import { Exception } from '@api/Interfaces/ErrorInterface'
 import { NextFunction, Request, Response } from 'express'
 
 export default function AuthMiddleware(req: Request, res: Response, next: NextFunction) {

@@ -1,4 +1,4 @@
-export interface FISEventInterface {
+export default interface FISEventInterface {
     eventId: string | null
     title: string | null
     subtitle: string | null

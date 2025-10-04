@@ -1,8 +1,8 @@
-import { QueueEnum } from '$api/Enums/QueueEnum'
-import ScraperRequestJobInterface from '$api/Interfaces/ScraperRequestJobInterface'
-import ScraperResponseJobInterface from '$api/Interfaces/ScraperResponseJobInterface'
-import { dragonfly } from '$scraper/clients'
-import ScraperRequestJobHandler from '$scraper/Handlers/ScraperRequestJobHandler'
+import { QueueEnum } from '@api/Enums/QueueEnum'
+import ScraperRequestJobInterface from '@api/Interfaces/ScraperRequestJobInterface'
+import ScraperResponseJobInterface from '@api/Interfaces/ScraperResponseJobInterface'
+import { dragonfly } from '@scraper/clients'
+import ScraperRequestJobHandler from '@scraper/Handlers/ScraperRequestJobHandler'
 import { Queue, Worker } from 'bullmq'
 
 const scraper = {

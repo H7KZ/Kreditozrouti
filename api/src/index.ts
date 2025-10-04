@@ -1,8 +1,8 @@
-import '$api/types'
-import app from '$api/app'
-import { scraper } from '$api/bullmq'
-import { dragonfly, google, mysql, nodemailer } from '$api/clients'
-import Config from '$api/Config/Config'
+import '@api/types'
+import app from '@api/app'
+import { scraper } from '@api/bullmq'
+import { dragonfly, google, mysql, nodemailer } from '@api/clients'
+import Config from '@api/Config/Config'
 
 async function start() {
     try {

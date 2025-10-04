@@ -1,6 +1,6 @@
 import path from 'path'
+import Config from '@api/Config/Config'
 import { PrismaClient } from '@prisma/client'
-import Config from '$api/Config/Config'
 import { google as Google } from 'googleapis'
 import { I18n } from 'i18n'
 import Redis from 'ioredis'

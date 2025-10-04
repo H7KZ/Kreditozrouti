@@ -1,35 +1,38 @@
 # Build Stage
 FROM node:24-alpine AS builder
 
-WORKDIR /usr/src/app
 
-ENV NODE_ENV=production
+WORKDIR /usr/src/api
 
-COPY package.json ./
-
+COPY ./api/package.json /usr/src/api/
 RUN npm install --include=dev
 
-COPY . .
+COPY ./api/ /usr/src/api/
+
+
+# "Workspaces" setup
+# COPY ./scrapper/src/ /usr/src/scrapper/src/
+
 
 RUN npm run prisma:generate
-
 RUN npm run build
-
 RUN npm prune --omit=dev
 
-RUN mkdir -p ./uploads
+
+RUN mkdir -p /usr/src/uploads
 
 
+# --------------------------------------------------------------------
 # Production Stage
 FROM gcr.io/distroless/nodejs24-debian12
 
-WORKDIR /usr/src/app
 
-COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+WORKDIR /usr/src/api
 
-COPY --from=builder /usr/src/app/uploads ./uploads
+COPY --from=builder /usr/src/api/dist /usr/src/api/dist
+COPY --from=builder /usr/src/api/node_modules /usr/src/api/node_modules
+COPY --from=builder /usr/src/uploads /usr/src/uploads
 
 EXPOSE 80
-
 CMD ["dist/src/index.js"]
+# CMD ["dist/api/src/index.js"]

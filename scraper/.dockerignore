@@ -1,10 +1,23 @@
-node_modules
+.vscode
+
+/data/
+/deployment/
 
 .dockerignore
+.env*
 .gitignore
+.gitlab-ci.yml
+deployment.sh
+docker-compose*.yml
+Makefile
+README.md
+
+node_modules/
+dist/
+build/
+
 .prettierignore
 .prettierrc
-compose.yml
 Dockerfile
 eslint.config.js
 

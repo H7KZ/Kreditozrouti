@@ -1,10 +1,9 @@
 FROM node:24-alpine
 
-WORKDIR /usr/src/app
 
-ENV NODE_ENV=production
+WORKDIR /usr/src/api-migrations
 
-COPY package.json ./
+COPY ./api/package.json /usr/src/api-migrations/
 
 # Use Node to read versions from package.json and install *only* prisma packages
 # This avoids installing all other devDependencies like eslint, express, typescript, etc.
@@ -13,7 +12,7 @@ RUN npm install --no-package-lock --no-save \
     $(node -p "('@prisma/client@' + (require('./package.json').dependencies['@prisma/client'] || require('./package.json').devDependencies['@prisma/client']))") \
     $(node -p "('prisma@' + require('./package.json').devDependencies.prisma)")
 
-COPY prisma ./prisma/
-COPY prisma.config.ts ./prisma.config.ts
+COPY ./api/prisma /usr/src/api-migrations/prisma
+COPY ./api/prisma.config.ts /usr/src/api-migrations/prisma.config.ts
 
 CMD ["npx", "prisma", "migrate", "deploy"]

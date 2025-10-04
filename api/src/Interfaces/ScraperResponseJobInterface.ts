@@ -1,6 +1,6 @@
-import { FISEventInterface } from '$api/Interfaces/FISEventInterface'
-import FISEventsInterface from '$api/Interfaces/FISEventsInterface'
-import ScraperJobType from '$api/Types/ScraperJobType'
+import FISEventInterface from '@api/Interfaces/FISEventInterface'
+import FISEventsInterface from '@api/Interfaces/FISEventsInterface'
+import ScraperJobType from '@api/Types/ScraperJobType'
 
 interface ScraperResponseJobBase {
     type: ScraperJobType

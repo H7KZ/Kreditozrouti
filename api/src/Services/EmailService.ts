@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import { nodemailer } from '$api/clients'
-import { ErrorCodeEnum, ErrorTypeEnum } from '$api/Enums/ErrorEnum'
-import { Exception } from '$api/Interfaces/ErrorInterface'
+import { nodemailer } from '@api/clients'
+import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
+import { Exception } from '@api/Interfaces/ErrorInterface'
 import Mail from 'nodemailer/lib/mailer'
 import SMTPTransport from 'nodemailer/lib/smtp-transport'
 

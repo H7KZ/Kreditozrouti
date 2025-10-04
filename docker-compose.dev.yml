@@ -4,14 +4,14 @@ services:
   # API SERVICE
 
   api:
-    image: diar-4fis/api
+    image: diar-4fis-api
 
     build:
-      context: api
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: ./api/Dockerfile
 
     # volumes:
-    #   - api-uploads-dev-volume:/usr/src/app/uploads
+    #   - api-uploads-dev-volume:/usr/src/uploads
 
     depends_on:
       - mysql
@@ -24,7 +24,7 @@ services:
       - API_DOMAIN=${DOMAIN}
       - API_ALLOWED_ORIGINS=https://${DOMAIN}
       - API_SESSION_SECRET=${API_SESSION_SECRET}
-      - API_FILE_DESTINATION=/usr/src/app/uploads
+      - API_FILE_DESTINATION=/usr/src/uploads
       - MYSQL_URI=${MYSQL_URI}
       - DRAGONFLY_URI=${DRAGONFLY_URI}
       - DRAGONFLY_PASSWORD=${DRAGONFLY_PASSWORD}
@@ -89,11 +89,11 @@ services:
   # this service is ONLY for running migrations on the database within the API scope
 
   api-migrations:
-    image: diar-4fis/api-migrations
+    image: diar-4fis-api-migrations
 
     build:
-      context: api
-      dockerfile: ./Dockerfile.migrations
+      context: .
+      dockerfile: ./api/Dockerfile.migrations
 
     depends_on:
       - mysql
@@ -109,11 +109,11 @@ services:
   # SCRAPER SERVICE
 
   scraper:
-    image: diar-4fis/scraper
+    image: diar-4fis-scraper
 
     build:
-      context: scraper
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: ./scraper/Dockerfile
 
     depends_on:
       - dragonfly
@@ -163,11 +163,11 @@ services:
   # FRONTEND SERVICE
 
   frontend:
-    image: diar-4fis/frontend
+    image: diar-4fis-frontend
 
     build:
-      context: frontend
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: ./frontend/Dockerfile
 
     depends_on:
       - api

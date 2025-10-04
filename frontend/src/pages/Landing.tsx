@@ -1,7 +1,12 @@
+import type FISEventInterface from '@api/Interfaces/FISEventInterface'
 import React, { useState } from 'react'
 
 const Landing: React.FC = () => {
     const [email, setEmail] = useState('')
+
+    const events: FISEventInterface[] = []
+
+    if (events.length === 0) console.log('No events found')
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()

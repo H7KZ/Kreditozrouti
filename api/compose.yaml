@@ -1,4 +1,0 @@
-services:
-    api:
-        image: diar-4fis/api
-        build: .

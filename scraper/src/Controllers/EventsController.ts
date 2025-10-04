@@ -1,7 +1,7 @@
-import FISEventsInterface from '$api/Interfaces/FISEventsInterface'
-import { scraper } from '$scraper/bullmq'
-import FISEventsRequestInterface from '$scraper/Interfaces/FISEventsRequestInterface'
-import ExtractService from '$scraper/Services/ExtractService'
+import FISEventsInterface from '@api/Interfaces/FISEventsInterface'
+import { scraper } from '@scraper/bullmq'
+import FISEventsRequestInterface from '@scraper/Interfaces/FISEventsRequestInterface'
+import ExtractService from '@scraper/Services/ExtractService'
 import Axios from 'axios'
 
 export default async function EventsController(): Promise<void> {

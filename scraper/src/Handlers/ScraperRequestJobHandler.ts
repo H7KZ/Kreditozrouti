@@ -1,6 +1,6 @@
-import ScraperRequestJobInterface from '$api/Interfaces/ScraperRequestJobInterface'
-import EventController from '$scraper/Controllers/EventController'
-import EventsController from '$scraper/Controllers/EventsController'
+import ScraperRequestJobInterface from '@api/Interfaces/ScraperRequestJobInterface'
+import EventController from '@scraper/Controllers/EventController'
+import EventsController from '@scraper/Controllers/EventsController'
 import { Job } from 'bullmq'
 
 export default async function ScraperRequestJobHandler(job: Job<ScraperRequestJobInterface>): Promise<void> {
