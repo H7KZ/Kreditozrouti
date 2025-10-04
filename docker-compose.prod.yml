@@ -236,7 +236,7 @@ services:
     shm_size: 512mb
 
     volumes:
-      - mysql-data-volume:/var/lib/mysql/data
+      - mysql-data-volume:/var/lib/mysql
 
     environment:
       - MYSQL_USER=${MYSQL_USER}
