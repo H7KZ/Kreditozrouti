@@ -27,7 +27,7 @@ model Event {
 
 model EventsCategories {
     eventId    String   @db.VarChar(255)
-    categoryId Int
+    categoryId String   @db.VarChar(255)
     Event      Event    @relation(fields: [eventId], references: [id])
     Category   Category @relation(fields: [categoryId], references: [id])
 
@@ -36,8 +36,7 @@ model EventsCategories {
 }
 
 model Category {
-    id   Int    @id @default(autoincrement())
-    name String @db.VarChar(255)
+    id String @id @db.VarChar(255)
 
     events Event[] @relation("EventCategories")
 

@@ -1,4 +1,4 @@
-import { User as UserModel } from '$prisma/client'
+import { User as UserModel } from '@prisma/client'
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace

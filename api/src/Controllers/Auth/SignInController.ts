@@ -12,7 +12,7 @@ export default async function SignInController(req: Request, res: Response) {
         throw new Exception(401, ErrorTypeEnum.ZodValidation, ErrorCodeEnum.Validation, 'Invalid credentials', { zodIssues: result.error.issues })
     }
 
-    // Check if user has email ending with @vse.cz or @diar.4fis.cz
+    // Check if user has email ending with @vse.cz or @diar.4fis.cz or diar.4fis@gmail.com
     // If yes, then let him in otherwise return 401
     // If the user sign's in repeatedly also clear out the previous code from cache
 

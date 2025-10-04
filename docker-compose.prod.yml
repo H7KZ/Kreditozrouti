@@ -1,4 +1,8 @@
 services:
+
+  # ================================================================ #
+  # API SERVICE
+
   api:
     image: diar-4fis/api
 
@@ -6,8 +10,12 @@ services:
       context: api
       dockerfile: ./Dockerfile
 
+    # volumes:
+    #   - api-uploads-volume:/usr/src/app/uploads
+
     depends_on:
       - mysql
+      - api-migrations
       - dragonfly
 
     environment:
@@ -77,6 +85,28 @@ services:
     restart: unless-stopped
 
   # ================================================================ #
+  # MYSQL MIGRATIONS SERVICE
+  # this service is ONLY for running migrations on the database within the API scope
+
+  api-migrations:
+    image: diar-4fis/api-migrations
+
+    build:
+      context: api
+      dockerfile: ./api/Dockerfile.migrations
+
+    depends_on:
+      - mysql
+
+    environment:
+      - ENV=production
+      - MYSQL_URI=${MYSQL_URI}
+    
+    networks:
+      - mysql-network
+  
+  # ================================================================ #
+  # SCRAPER SERVICE
 
   scraper:
     image: diar-4fis/scraper
@@ -130,6 +160,7 @@ services:
     restart: unless-stopped
 
   # ================================================================ #
+  # FRONTEND SERVICE
 
   frontend:
     image: diar-4fis/frontend
@@ -197,6 +228,7 @@ services:
     restart: unless-stopped
 
   # ================================================================ #
+  # MYSQL DATABASE
 
   mysql:
     image: mysql
@@ -251,6 +283,7 @@ services:
     restart: unless-stopped
 
   # ================================================================ #
+  # DRAGONFLY CACHE
 
   dragonfly:
     image: docker.dragonflydb.io/dragonflydb/dragonfly

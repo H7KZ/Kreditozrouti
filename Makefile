@@ -1,16 +1,22 @@
-.PHONY: dev api scraper frontend format lint build build-docker
+.PHONY: local-docker local api scraper frontend format lint build build-docker
 
-dev-docker:
-	docker compose -f deployment/local/docker-compose.yml down --remove-orphans && \
-	docker compose -f deployment/local/docker-compose.yml build --pull --no-cache && \
-	docker compose -f deployment/local/docker-compose.yml up -d
+local-docker:
+	docker compose -f docker-compose.local.yml down --remove-orphans && \
+	docker compose -f docker-compose.local.yml build --pull --no-cache && \
+	docker compose -f docker-compose.local.yml up -d
 
-dev:
-	docker compose -f deployment/local/docker-compose.yml down --remove-orphans && \
-	docker compose -f deployment/local/docker-compose.yml build --pull --no-cache && \
-	docker compose -f deployment/local/docker-compose.yml up -d && \
-	pnpm -r install && \
+local-packages:
+	pnpm -r install --filter=!./scripts && \
+	pnpm install -g dotenv-cli && \
+	pnpm -r prisma generate && \
 	pnpm -r --parallel run dev
+
+local: local-packages local-docker
+
+local-migrations:
+	cd api && \
+	dotenv -e ../.env -- pnpm prisma migrate dev && \
+	dotenv -e ../.env -- pnpm prisma db seed
 
 api:
 	cd api && \
@@ -36,5 +42,5 @@ lint:
 build:
 	pnpm -r --parallel run build
 
-build-docker:
-	docker compose -f docker-compose.prod.yml build --pull --no-cache
+preview:
+	pnpm -r --parallel run preview
