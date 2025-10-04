@@ -40,7 +40,7 @@ export default class EmailService {
      */
     static async sendEmail(data: Mail.Options & Partial<SMTPTransport.Options>): Promise<void> {
         try {
-            await nodemailer.gmail.sendMail(data)
+            await nodemailer.sendMail(data)
         } catch (err) {
             console.error('Failed to send email:', err)
             throw new Exception(500, ErrorTypeEnum.Unknown, ErrorCodeEnum.EmailNotSent, 'Failed to send email')

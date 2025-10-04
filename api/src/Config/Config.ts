@@ -7,10 +7,8 @@ interface Config {
     }
 
     google: {
-        email: string
-        clientId: string
-        clientSecret: string
-        refreshToken: string
+        user: string
+        appPassword: string
     }
 
     client: {
@@ -38,10 +36,8 @@ const config: Config = {
     },
 
     google: {
-        email: process.env.GOOGLE_EMAIL ?? '',
-        clientId: process.env.GOOGLE_CLIENT_ID ?? '',
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
-        refreshToken: process.env.GOOGLE_REFRESH_TOKEN ?? ''
+        user: process.env.GOOGLE_USER ?? '',
+        appPassword: process.env.GOOGLE_APP_PASSWORD ?? ''
     },
 
     client: {

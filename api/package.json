@@ -22,7 +22,6 @@
         "dotenv": "^17.2.3",
         "express": "^5.1.0",
         "express-session": "^1.18.2",
-        "googleapis": "^160.0.0",
         "helmet": "^8.1.0",
         "i18n": "^0.15.2",
         "ioredis": "^5.8.0",

@@ -2,7 +2,7 @@ import '@api/types'
 import path from 'path'
 import app from '@api/app'
 import { scraper } from '@api/bullmq'
-import { dragonfly, google, mysql, nodemailer } from '@api/clients'
+import { dragonfly, mysql, nodemailer } from '@api/clients'
 import Config from '@api/Config/Config'
 import dotenv from 'dotenv'
 
@@ -26,13 +26,7 @@ async function start() {
         await dragonfly.ping()
         console.log('Connected to Dragonfly successfully.')
 
-        const accessToken = await google.getAccessToken()
-        if (!accessToken?.token) throw new Error('Failed to obtain Google access token.')
-        console.log('Obtained Google access token successfully.')
-        google.setCredentials({ access_token: accessToken.token })
-
-        nodemailer.build(accessToken.token)
-        await nodemailer.gmail.verify()
+        await nodemailer.verify()
         console.log('Nodemailer is configured and ready to send emails.')
 
         await scraper.schedulers()
