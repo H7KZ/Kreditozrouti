@@ -20,7 +20,7 @@ services:
 
     labels:
       - traefik.enable=true
-      - traefik.http.routers.traefik.rule=Host(`traefik.4fis.jankominek.com`)
+      - traefik.http.routers.traefik.rule=Host(`traefik-4fis.jankominek.com`)
       - traefik.http.routers.traefik.entrypoints=websecure
       - traefik.http.routers.traefik.tls=true
       - traefik.http.routers.traefik.tls.certresolver=letsencrypt

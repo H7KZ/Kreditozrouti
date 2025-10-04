@@ -179,14 +179,15 @@ else
     exit 1
 fi
 
-echo
-echo "# Cleanup"
-echo
-echo "Clearing unused Docker resources (images, containers, etc.)..."
-echo
+# echo
+# echo "# Cleanup"
+# echo
+# echo "Clearing unused Docker resources (images, containers, etc.)..."
+# echo
 
-docker system prune -af
+# docker system prune -af
 
-echo "✅ Cleanup complete."
+# echo "✅ Cleanup complete."
+
 echo
 echo "✨ Deployment Finished! ✨"

@@ -26,11 +26,11 @@ if (!CLIENT_ID) CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 if (!CLIENT_SECRET) CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
 if (!SCOPES) SCOPES = (process.env.GOOGLE_SCOPES || '').split(',')
 
-const Oauth2Client = new google.auth.OAuth2(
-    CLIENT_ID,
-    CLIENT_SECRET,
-    'http://localhost:48080'
-)
+const Oauth2Client = new google.auth.OAuth2({
+    client_id: CLIENT_ID || '',
+    client_secret: CLIENT_SECRET || '',
+    redirect_uris: ['http://localhost:48080']
+})
 
 const url = Oauth2Client.generateAuthUrl({
     access_type: 'offline',
@@ -51,7 +51,7 @@ http.createServer(function (req, res) {
             console.log(`
                 Access Token: ${Oauth2Client.credentials.access_token}
                 Refresh Token: ${Oauth2Client.credentials.refresh_token}
-                Expiry Date: ${new Date(Oauth2Client.credentials.expiry_date || 0).toISOString()}
+                ${JSON.stringify(Oauth2Client.credentials, null, 4)}
             `))
         .catch((err) => console.error('Error retrieving access token', err))
         .finally(() => process.exit(0))
