@@ -16,7 +16,7 @@ clear-redis:
 install:
 	pnpm -r install --filter=!./scripts/* && \
 	pnpm install -g dotenv-cli && \
-	pnpm -r prisma generate
+	pnpm -r prisma:generate
 
 dev:
 	pnpm -r --parallel run dev

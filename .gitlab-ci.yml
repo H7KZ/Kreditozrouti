@@ -21,8 +21,10 @@ verify_code:
   before_script:
     - apt-get update -y && apt-get install -y make
     - npm install -g pnpm
+    - export PNPM_HOME="/root/.local/share/pnpm"
+    - export PATH="$PNPM_HOME:$PATH"
   script:
-    - echo "Running lint and build checks..."
+    - echo "Running install, lint and build checks..."
     - make install
     - make lint
     - make build
