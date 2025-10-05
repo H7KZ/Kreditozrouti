@@ -21,9 +21,9 @@ verify_code:
   before_script:
     - apt-get update -y && apt-get install -y make
     - npm install -g pnpm
-    - pnpm install --frozen-lockfile
   script:
     - echo "Running lint and build checks..."
+    - make install
     - make lint
     - make build
     - echo "✅ Verification successful!"
