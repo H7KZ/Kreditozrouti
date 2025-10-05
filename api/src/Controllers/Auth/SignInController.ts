@@ -35,7 +35,7 @@ export default async function SignInController(req: Request, res: Response) {
     // After 100% sure that the user exists, send user an email with code and time expiration of 10 minutes
     // You can send emails through the EmailService (imported from @api/Services/EmailService)
     // The code should be random 8 digit alphanumeric string
-    // Save this code to cache (dragonfly - can be imported from @api/clients) with expiration time of 10 minutes
+    // Save this code to cache (redis - can be imported from @api/clients) with expiration time of 10 minutes
 
     // EmailService.readTemplate also takes variables as second argument which is an object with key value pairs
     // You can use this to replace variables in the email template

@@ -82,10 +82,10 @@ export default class ExtractService {
         }
 
         const place = getDetailByLabel('Místo události:')
-        const registrationUrl = getDetailByLabel('Registrace:')
+        const registrationFrom = getDetailByLabel('Registrace:')
         const datetime = getDetailByLabel('Datum a čas:')
 
-        const registrationFrom = $('a:contains("Registruj se zde")').attr('href') ?? null
+        const registrationUrl = $('a:contains("Registruj se zde")').attr('href') ?? null
 
         const substituteUrl = $('a:contains("Chci být náhradník")').attr('href') ?? null
 
@@ -141,7 +141,7 @@ export default class ExtractService {
             'DD.MM.YY',
             'DD.MM.Y',
             'DD.MM.'
-        ]).zone('Europe/Prague')
+        ]).utcOffset('Europe/Prague')
 
         const time = moment(
             text
@@ -164,9 +164,9 @@ export default class ExtractService {
                 .replace(/[,\s]+/, ' ')
                 .trim(),
             ['H:mm', 'HH:mm']
-        ).zone('Europe/Prague')
+        ).utcOffset('Europe/Prague')
 
-        const datetime = moment(`${date.format('YYYY-MM-DD')}T${time.format('HH:mm')}`).zone('Europe/Prague')
+        const datetime = moment(`${date.format('YYYY-MM-DD')}T${time.format('HH:mm')}`).utcOffset('Europe/Prague')
 
         return {
             datetime: datetime.isValid() ? datetime.toDate() : null,

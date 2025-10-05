@@ -2,7 +2,7 @@ import '@api/types'
 import path from 'path'
 import app from '@api/app'
 import { scraper } from '@api/bullmq'
-import { dragonfly, mysql, nodemailer } from '@api/clients'
+import { mysql, nodemailer, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import dotenv from 'dotenv'
 
@@ -23,14 +23,21 @@ async function start() {
         await mysql.$connect()
         console.log('Connected to MySQL successfully.')
 
-        await dragonfly.ping()
-        console.log('Connected to Dragonfly successfully.')
+        await redis.ping()
+        console.log('Connected to Redis successfully.')
 
-        await nodemailer.verify()
+        const mailVerified = await nodemailer.verify()
+        if (!mailVerified) throw new Error('Nodemailer verification failed')
         console.log('Nodemailer is configured and ready to send emails.')
+
+        await scraper.waitForQueues()
+        console.log('BullMQ queues and workers are ready.')
 
         await scraper.schedulers()
         console.log('BullMQ schedulers are set up successfully.')
+
+        await scraper.setConcurrency(8)
+        console.log('BullMQ global concurrency set to 8.')
 
         const server = app.listen(Config.port, () => {
             console.log(`Environment: ${Config.env}`)
@@ -41,7 +48,7 @@ async function start() {
 
                 server.close(async () => {
                     await mysql.$disconnect()
-                    dragonfly.disconnect()
+                    redis.disconnect()
 
                     console.log('Server shut down gracefully')
 
@@ -56,7 +63,7 @@ async function start() {
         console.error('Failed to start the server:', error)
 
         await mysql.$disconnect()
-        dragonfly.disconnect()
+        redis.disconnect()
 
         process.exit(1)
     }

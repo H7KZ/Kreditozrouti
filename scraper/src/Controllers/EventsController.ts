@@ -1,3 +1,4 @@
+import { JobEnum } from '@api/Enums/JobEnum'
 import FISEventsInterface from '@api/Interfaces/FISEventsInterface'
 import { scraper } from '@scraper/bullmq'
 import FISEventsRequestInterface from '@scraper/Interfaces/FISEventsRequestInterface'
@@ -27,7 +28,7 @@ export default async function EventsController(): Promise<void> {
         events.push(...newEvents)
     }
 
-    await scraper.queue.response.add('EventsResponseJob', { type: 'Events', events })
+    await scraper.queue.response.add(JobEnum.EVENTS_RESPONSE, { type: 'Events', events })
 
-    await Promise.all(events.map(ev => scraper.queue.request.add('EventRequestJob', { type: 'Event', eventId: ev.eventId })))
+    await Promise.all(events.map(ev => scraper.queue.request.add(JobEnum.EVENT_REQUEST, { type: 'Event', eventId: ev.eventId })))
 }

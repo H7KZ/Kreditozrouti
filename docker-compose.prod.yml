@@ -16,7 +16,7 @@ services:
     depends_on:
       - mysql
       - api-migrations
-      - dragonfly
+      - redis
 
     environment:
       - ENV=production
@@ -26,14 +26,14 @@ services:
       - API_SESSION_SECRET=${API_SESSION_SECRET}
       - API_FILE_DESTINATION=/usr/src/uploads
       - MYSQL_URI=${MYSQL_URI}
-      - DRAGONFLY_URI=${DRAGONFLY_URI}
-      - DRAGONFLY_PASSWORD=${DRAGONFLY_PASSWORD}
+      - REDIS_URI=${REDIS_URI}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
       - CLIENT_URI=https://${DOMAIN}
 
     networks:
       - traefik-network
       - mysql-network
-      - dragonfly-network
+      - redis-network
 
     # ports:
     #   - 80:80
@@ -116,15 +116,15 @@ services:
       dockerfile: ./scraper/Dockerfile
 
     depends_on:
-      - dragonfly
+      - redis
 
     environment:
       - ENV=production
-      - DRAGONFLY_URI=${DRAGONFLY_URI}
-      - DRAGONFLY_PASSWORD=${DRAGONFLY_PASSWORD}
+      - REDIS_URI=${REDIS_URI}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
 
     networks:
-      - dragonfly-network
+      - redis-network
 
     deploy:
       mode: replicated
@@ -231,9 +231,7 @@ services:
   # MYSQL DATABASE
 
   mysql:
-    image: mysql
-
-    shm_size: 512mb
+    image: mysql:9.4.0
 
     volumes:
       - mysql-data-volume:/var/lib/mysql
@@ -283,16 +281,19 @@ services:
     restart: unless-stopped
 
   # ================================================================ #
-  # DRAGONFLY CACHE
+  # REDIS CACHE
 
-  dragonfly:
-    image: docker.dragonflydb.io/dragonflydb/dragonfly
+  redis:
+    image: redis:8.2.2-alpine
 
-    environment:
-      - requirepass=${DRAGONFLY_PASSWORD}
+    command: [
+      "--save", "20", "1",
+      "--loglevel", "warning",
+      "--requirepass", "${REDIS_PASSWORD}"
+    ]
 
     networks:
-      - dragonfly-network
+      - redis-network
 
     # ports:
     #   - 6379:6379

@@ -1,13 +1,17 @@
-import { dragonfly } from '@scraper/clients'
+import { redis } from '@scraper/clients'
+import { scraper } from './bullmq'
 
 async function start() {
     try {
-        await dragonfly.ping()
-        console.log('Connected to Dragonfly successfully.')
+        await redis.ping()
+        console.log('Connected to Redis successfully.')
+
+        await scraper.waitForQueues()
+        console.log('Scraper service is up and running.')
     } catch (error) {
         console.error('Failed to start the server:', error)
 
-        dragonfly.disconnect()
+        redis.disconnect()
 
         process.exit(1)
     }

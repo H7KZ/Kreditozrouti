@@ -7,8 +7,8 @@ import Nodemailer from 'nodemailer'
 
 const mysql = new PrismaClient()
 
-const dragonfly = new Redis(Config.dragonfly.uri, {
-    password: Config.dragonfly.password,
+const redis = new Redis(Config.redis.uri, {
+    password: Config.redis.password,
     maxRetriesPerRequest: null,
     enableReadyCheck: false
 })
@@ -28,4 +28,4 @@ const nodemailer = Nodemailer.createTransport({
     }
 })
 
-export { mysql, dragonfly, i18n, nodemailer }
+export { mysql, redis, i18n, nodemailer }

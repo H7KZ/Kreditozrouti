@@ -1,3 +1,4 @@
+import { JobEnum } from '@api/Enums/JobEnum'
 import { ScraperEventRequestJobInterface } from '@api/Interfaces/ScraperRequestJobInterface'
 import { scraper } from '@scraper/bullmq'
 import ExtractService from '@scraper/Services/ExtractService'
@@ -13,5 +14,5 @@ export default async function EventController(data: ScraperEventRequestJobInterf
 
     const event = ExtractService.extractEventDetailsWithParser(request.data)
 
-    await scraper.queue.response.add('EventResponseJob', { type: 'Event', event })
+    await scraper.queue.response.add(JobEnum.EVENT_RESPONSE, { type: 'Event', event })
 }

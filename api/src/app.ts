@@ -1,10 +1,10 @@
 import path from 'path'
-import { dragonfly } from '@api/clients'
+import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Middlewares/ErrorHandler'
 import AuthRoutes from '@api/Routes/AuthRoutes'
 import compression from 'compression'
-import { RedisStore as DragonflyStore } from 'connect-redis'
+import { RedisStore } from 'connect-redis'
 import cors, { CorsOptions } from 'cors'
 import express from 'express'
 import session, { type SessionOptions } from 'express-session'
@@ -36,7 +36,7 @@ app.use(helmet())
 app.disable('x-powered-by')
 
 const sessionOptions: SessionOptions = {
-    store: new DragonflyStore({ client: dragonfly, prefix: 'session:' }),
+    store: new RedisStore({ client: redis, prefix: 'session:' }),
     secret: Config.sessionSecret,
     resave: true,
     saveUninitialized: true,

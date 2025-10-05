@@ -5,7 +5,7 @@ networks:
     driver: bridge
 
 
-  dragonfly-dev-network:
-    name: dragonfly-dev-network
+  redis-dev-network:
+    name: redis-dev-network
     external: true
     driver: bridge

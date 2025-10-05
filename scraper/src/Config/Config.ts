@@ -16,7 +16,7 @@ try {
 interface Config {
     env: string
 
-    dragonfly: {
+    redis: {
         uri: string
         password: string
     }
@@ -27,9 +27,9 @@ interface Config {
 const config: Config = {
     env: process.env.ENV ?? 'development',
 
-    dragonfly: {
-        uri: process.env.DRAGONFLY_URI ?? '',
-        password: process.env.DRAGONFLY_PASSWORD ?? ''
+    redis: {
+        uri: process.env.REDIS_URI ?? '',
+        password: process.env.REDIS_PASSWORD ?? ''
     },
 
     isEnvDevelopment: () => config.env === 'development'

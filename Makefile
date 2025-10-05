@@ -5,10 +5,12 @@ local-docker:
 	docker compose -f docker-compose.local.yml build --pull --no-cache && \
 	docker compose -f docker-compose.local.yml up -d
 
-local-packages:
-	pnpm -r install --filter=!./scripts && \
+local-install:
+	pnpm -r install --filter=!./scripts/* && \
 	pnpm install -g dotenv-cli && \
-	pnpm -r prisma generate && \
+	pnpm -r prisma generate
+
+local-run:
 	pnpm -r --parallel run dev
 
 local-migrations:
@@ -16,7 +18,10 @@ local-migrations:
 	dotenv -e ../.env -- pnpm prisma migrate dev && \
 	dotenv -e ../.env -- pnpm prisma db seed
 
-local: local-docker local-packages local-migrations
+local: local-docker local-install local-migrations local-run
+
+clear-redis:
+	docker exec diar-4fis-redis redis-cli FLUSHDB
 
 api:
 	cd api && \
