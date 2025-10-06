@@ -1,25 +1,21 @@
 enum ErrorTypeEnum {
-    Unknown = 'Unknown',
+    UNKNOWN = 'Unknown',
 
-    Validation = 'Validation',
-    ZodValidation = 'ZodValidation',
-    Authentication = 'Authentication'
+    VALIDATION = 'Validation',
+    ZOD_VALIDATION = 'ZodValidation',
+    AUTHENTICATION = 'Authentication'
 }
 
 enum ErrorCodeEnum {
-    Unknown = 0,
+    UNKNOWN = 0,
 
-    Unauthorized = 401_000,
-    IncorrectCredentials = 401_001,
-    DifferentOAuthProvider = 401_002,
-    InvalidEmail = 401_003,
-    InvalidOrExpiredCode = 401_004,
+    UNAUTHORIZED = 401_000,
+    INCORRECT_CREDENTIALS = 401_001,
 
-    Validation = 403_000,
+    VALIDATION = 403_000,
 
-    InternalServerError = 500_000,
-    CreateUserFailed = 500_001,
-    EmailNotSent = 500_002
+    INTERNAL_SERVER_ERROR = 500_000,
+    EMAIL_NOT_SENT = 500_001
 }
 
 export { ErrorTypeEnum, ErrorCodeEnum }

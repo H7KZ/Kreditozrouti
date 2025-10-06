@@ -5,7 +5,7 @@ export interface APIError extends Error {
     status: number
     code: ErrorCodeEnum
     type: ErrorTypeEnum
-    details?: APIErrorDetails
+    details: APIErrorDetails
 }
 
 interface APIErrorDetails {
@@ -14,11 +14,11 @@ interface APIErrorDetails {
     [key: string]: any
 }
 
-export class Exception extends Error implements APIError {
+export default class Exception extends Error implements APIError {
     constructor(
         public status = 500,
-        public type = ErrorTypeEnum.Unknown,
-        public code = ErrorCodeEnum.Unknown,
+        public type = ErrorTypeEnum.UNKNOWN,
+        public code = ErrorCodeEnum.UNKNOWN,
         message: string,
         public details: APIErrorDetails = {}
     ) {

@@ -1,5 +1,5 @@
 import { CalendarIcon } from 'lucide-react' // Using Lucide for the calendar icon
-import React, { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -9,9 +9,9 @@ import { Input } from '@/components/ui/input'
  */
 export default function SignInPage() {
     // State for the input field (optional but good practice)
-    const [username, setUsername] = React.useState('')
+    const [username, setUsername] = useState('')
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault()
         // Handle form submission logic here
         console.log('Submitting username:', username)

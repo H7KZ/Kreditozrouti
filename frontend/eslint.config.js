@@ -13,6 +13,9 @@ export default defineConfig([
         languageOptions: {
             ecmaVersion: 2020,
             globals: globals.browser
+        },
+        rules: {
+            'react-refresh/only-export-components': 'off'
         }
     }
 ])

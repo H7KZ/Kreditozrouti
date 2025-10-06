@@ -1,7 +1,9 @@
 import { i18n, mysql } from '@api/clients'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
-import { Exception } from '@api/Interfaces/ErrorInterface'
+import Exception from '@api/Error/Exception'
+import SignInRequest from '@api/Interfaces/Routes/SignInRequest'
+import SignInResponse from '@api/Interfaces/Routes/SignInResponse'
 import SignInValidation from '@api/Validations/SignInValidation'
 import { Request, Response } from 'express'
 
@@ -9,8 +11,10 @@ export default async function SignInController(req: Request, res: Response) {
     const result = await SignInValidation.safeParseAsync(req.body)
 
     if (!result.success) {
-        throw new Exception(401, ErrorTypeEnum.ZodValidation, ErrorCodeEnum.Validation, 'Invalid credentials', { zodIssues: result.error.issues })
+        throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid credentials', { zodIssues: result.error.issues })
     }
+
+    const data = result.data as SignInRequest
 
     // Check if user has email ending with @vse.cz or @diar.4fis.cz or diar.4fis@gmail.com
     // If yes, then let him in otherwise return 401
@@ -18,7 +22,7 @@ export default async function SignInController(req: Request, res: Response) {
 
     const user = await mysql.user.findUnique({
         where: {
-            email: result.data.email
+            email: data.email
         },
         select: {
             id: true,
@@ -27,7 +31,7 @@ export default async function SignInController(req: Request, res: Response) {
     })
 
     if (!user) {
-        throw new Exception(401, ErrorTypeEnum.Authentication, ErrorCodeEnum.IncorrectCredentials, 'Invalid credentials')
+        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
     // If the user does not exist create the user
@@ -61,5 +65,7 @@ export default async function SignInController(req: Request, res: Response) {
     // If everything is successful return 200 with user object (id and email only)
     // If there is any error throw an Exception with appropriate status code, type, code and message
 
-    return res.status(201).send({ code: SuccessCodeEnum.SignInCodeSent })
+    return res.status(201).send({
+        code: SuccessCodeEnum.SIGN_IN_CODE_SENT
+    } as SignInResponse)
 }

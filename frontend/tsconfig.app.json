@@ -25,8 +25,10 @@
         "noUncheckedSideEffectImports": true,
 
         "paths": {
+            "@/*": ["./src/*"],
             "$frontend/*": ["./src/*"],
-            "@api/*": ["../api/src/*"]
+            "$api/*": ["../api/src/*"],
+            "$scraper/*": ["../scraper/src/*"]
         }
     },
     "include": ["src"]

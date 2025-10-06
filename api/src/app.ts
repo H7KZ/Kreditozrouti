@@ -1,7 +1,7 @@
 import path from 'path'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
-import ErrorHandler from '@api/Middlewares/ErrorHandler'
+import ErrorHandler from '@api/Error/ErrorHandler'
 import AuthRoutes from '@api/Routes/AuthRoutes'
 import compression from 'compression'
 import { RedisStore } from 'connect-redis'

@@ -1,5 +1,6 @@
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
-import { Exception } from '@api/Interfaces/ErrorInterface'
+import Exception from '@api/Error/Exception'
+import ErrorResponse from '@api/Interfaces/Routes/ErrorResponse'
 import { NextFunction, Request, Response } from 'express'
 
 // NextFunction is required here - otherwise Express won't recognize this as an error handling middleware
@@ -14,24 +15,24 @@ export default function ErrorHandler(error: Exception | Error | unknown, req: Re
             code: error.code,
             message: error.message,
             details: error.details
-        })
+        } as ErrorResponse)
     }
 
     if (error instanceof Error) {
         return res.status(500).json({
-            type: ErrorTypeEnum.Unknown,
-            code: ErrorCodeEnum.Unknown,
+            type: ErrorTypeEnum.UNKNOWN,
+            code: ErrorCodeEnum.UNKNOWN,
             message: error.message ?? 'Internal Server Error',
             details: {
                 stack: error.stack
             }
-        })
+        } as ErrorResponse)
     }
 
     return res.status(500).json({
-        type: ErrorTypeEnum.Unknown,
-        code: ErrorCodeEnum.Unknown,
+        type: ErrorTypeEnum.UNKNOWN,
+        code: ErrorCodeEnum.UNKNOWN,
         message: 'Internal Server Error',
         details: {}
-    })
+    } as ErrorResponse)
 }
