@@ -1,4 +1,4 @@
-import { ColumnType, Generated } from 'kysely'
+import { ColumnType, Generated, Selectable } from 'kysely'
 
 export interface UserTable {
     id: Generated<number>
@@ -8,3 +8,5 @@ export interface UserTable {
 
     email: string
 }
+
+export type User = Selectable<UserTable>

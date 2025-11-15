@@ -119,7 +119,12 @@ async function createCategoryIfNotExists(categoryId: string): Promise<void> {
 }
 
 async function createEventCategoryRelation(eventId: string, categoryId: string): Promise<void> {
-    const relation = await mysql.selectFrom('events_categories').selectAll().where('event_id', '=', eventId).where('category_id', '=', categoryId).executeTakeFirst()
+    const relation = await mysql
+        .selectFrom('events_categories')
+        .selectAll()
+        .where('event_id', '=', eventId)
+        .where('category_id', '=', categoryId)
+        .executeTakeFirst()
 
     if (!relation) {
         await mysql

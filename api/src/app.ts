@@ -3,6 +3,8 @@ import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Error/ErrorHandler'
 import AuthRoutes from '@api/Routes/AuthRoutes'
+import EventRoutes from '@api/Routes/EventRoutes'
+import EventsRoutes from '@api/Routes/EventsRoutes'
 import compression from 'compression'
 import { RedisStore } from 'connect-redis'
 import cors, { CorsOptions } from 'cors'
@@ -65,6 +67,8 @@ app.use(morgan(Config.isEnvDevelopment() ? 'dev' : 'combined')) // Log different
 app.use(responseTime())
 
 app.use('/auth', AuthRoutes)
+app.use('/events', EventsRoutes)
+app.use('/event', EventRoutes)
 
 // Global error handler
 app.use(ErrorHandler)

@@ -1,4 +1,4 @@
-import { ColumnType } from 'kysely'
+import { ColumnType, Selectable } from 'kysely'
 
 export interface EventTable {
     id: string
@@ -20,11 +20,17 @@ export interface EventTable {
     substituteUrl: string | null
 }
 
+export type Event = Selectable<EventTable>
+
 export interface EventCategoryTable {
     event_id: string
     category_id: string
 }
 
+export type EventCategory = Selectable<EventCategoryTable>
+
 export interface CategoryTable {
     id: string
 }
+
+export type Category = Selectable<CategoryTable>

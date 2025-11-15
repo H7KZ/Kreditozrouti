@@ -1,10 +1,10 @@
 import { promises as fs } from 'fs'
 import * as path from 'path'
-import { Database } from '@api/Database/types'
-import { FileMigrationProvider, Kysely, Migrator } from 'kysely'
+import { mysql } from '@api/clients'
+import { FileMigrationProvider, Migrator } from 'kysely'
 
 export class MySQLService {
-    static async migrateToLatest(mysql: Kysely<Database>) {
+    static async migrateToLatest() {
         if (!mysql) {
             throw new Error('Database client is not initialized')
         }

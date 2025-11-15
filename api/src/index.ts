@@ -24,7 +24,7 @@ async function start() {
         await mysql.connection().execute(db => Promise.resolve(db))
         console.log('Connected to MySQL successfully.')
 
-        await MySQLService.migrateToLatest(mysql)
+        await MySQLService.migrateToLatest()
 
         await redis.ping()
         console.log('Connected to Redis successfully.')
