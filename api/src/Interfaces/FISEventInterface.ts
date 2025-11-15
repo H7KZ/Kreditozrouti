@@ -3,7 +3,7 @@ export default interface FISEventInterface {
     title: string | null
     subtitle: string | null
     categories: string[] | null
-    datetime: Date | null
+    datetime: string | null
     image: {
         src: string | null
         alt: string | null
@@ -12,7 +12,7 @@ export default interface FISEventInterface {
     place: string | null
     author: string | null
     language: string | null
-    registrationFrom: Date | null
+    registrationFrom: string | null
     registrationUrl: string | null
     substituteUrl: string | null
 }

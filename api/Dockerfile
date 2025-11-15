@@ -14,7 +14,6 @@ COPY ./api/ /usr/src/api/
 # COPY ./scrapper/src/ /usr/src/scrapper/src/
 
 
-RUN npm run prisma:generate
 RUN npm run build
 RUN npm prune --omit=dev
 

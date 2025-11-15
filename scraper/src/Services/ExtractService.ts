@@ -98,12 +98,12 @@ export default class ExtractService {
             title: this.serializeValue(title),
             subtitle: this.serializeValue(subtitle),
             categories: categories,
-            datetime: this.extractDateTimeFromString(this.serializeValue(datetime) ?? '').datetime,
+            datetime: this.extractDateTimeFromString(this.serializeValue(datetime) ?? '').datetime?.toISOString() ?? null,
             description: description ?? null,
             place: this.serializeValue(place),
             author: author,
             language: language,
-            registrationFrom: this.extractDateTimeFromString(this.serializeValue(registrationFrom) ?? '').date,
+            registrationFrom: this.extractDateTimeFromString(this.serializeValue(registrationFrom) ?? '').date?.toISOString() ?? null,
             registrationUrl: this.serializeValue(registrationUrl),
             substituteUrl: this.serializeValue(substituteUrl)
         }

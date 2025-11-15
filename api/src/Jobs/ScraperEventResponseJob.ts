@@ -19,75 +19,117 @@ export default async function ScraperEventResponseJob(job: Job<ScraperEventRespo
 
     console.log(`Processing event response for event ID: ${eventId}`)
 
-    const event = await mysql.event.findUnique({
-        where: {
-            id: eventId
-        },
-        include: {
-            categories: true
-        }
-    })
+    const event = await mysql.selectFrom('events').select('id').where('id', '=', eventId).executeTakeFirst()
 
     if (!event) {
-        await mysql.event.create({
-            data: {
+        console.log(
+            mysql
+                .insertInto('events')
+                .values({
+                    id: eventId,
+                    title: data.title,
+                    subtitle: data.subtitle,
+                    datetime: data.datetime ? new Date(data.datetime).toISOString().slice(0, 19).replace('T', ' ') : null,
+                    imageSrc: data.image.src,
+                    imageAlt: data.image.alt,
+                    description: data.description,
+                    place: data.place,
+                    author: data.author,
+                    language: data.language,
+                    registrationFrom: data.registrationFrom ? new Date(data.registrationFrom).toISOString().slice(0, 19).replace('T', ' ') : null,
+                    registrationUrl: data.registrationUrl,
+                    substituteUrl: data.substituteUrl
+                })
+                .compile()
+        )
+
+        await mysql
+            .insertInto('events')
+            .values({
                 id: eventId,
                 title: data.title,
                 subtitle: data.subtitle,
-                datetime: data.datetime,
+                datetime: data.datetime ? new Date(data.datetime).toISOString().slice(0, 19).replace('T', ' ') : null,
                 imageSrc: data.image.src,
                 imageAlt: data.image.alt,
                 description: data.description,
                 place: data.place,
                 author: data.author,
                 language: data.language,
-                registrationFrom: data.registrationFrom,
+                registrationFrom: data.registrationFrom ? new Date(data.registrationFrom).toISOString().slice(0, 19).replace('T', ' ') : null,
                 registrationUrl: data.registrationUrl,
-                substituteUrl: data.substituteUrl,
+                substituteUrl: data.substituteUrl
+            })
+            .execute()
 
-                categories: {
-                    connectOrCreate: data.categories
-                        ? data.categories.map(category => ({
-                              where: { id: category },
-                              create: { id: category }
-                          }))
-                        : []
-                }
+        if (data.categories && data.categories.length > 0) {
+            for (const categoryId of data.categories) {
+                await createCategoryIfNotExists(categoryId)
+                await createEventCategoryRelation(eventId, categoryId)
             }
-        })
+        }
 
         console.log(`Created new event with ID: ${eventId}`)
 
         return
     }
 
-    await mysql.event.update({
-        where: {
-            id: eventId
-        },
-        data: {
+    await mysql
+        .updateTable('events')
+        .set({
             title: data.title,
             subtitle: data.subtitle,
-            datetime: data.datetime,
+            datetime: data.datetime ? new Date(data.datetime).toISOString().slice(0, 19).replace('T', ' ') : null,
             imageSrc: data.image.src,
             imageAlt: data.image.alt,
             description: data.description,
             place: data.place,
             author: data.author,
             language: data.language,
-            registrationFrom: data.registrationFrom,
+            registrationFrom: data.registrationFrom ? new Date(data.registrationFrom).toISOString().slice(0, 19).replace('T', ' ') : null,
             registrationUrl: data.registrationUrl,
-            substituteUrl: data.substituteUrl,
-            categories: {
-                connectOrCreate: data.categories
-                    ? data.categories.map(category => ({
-                          where: { id: category },
-                          create: { id: category }
-                      }))
-                    : []
-            }
+            substituteUrl: data.substituteUrl
+        })
+        .where('id', '=', eventId)
+        .execute()
+
+    if (data.categories && data.categories.length > 0) {
+        for (const categoryId of data.categories) {
+            await createCategoryIfNotExists(categoryId)
+            await createEventCategoryRelation(eventId, categoryId)
         }
-    })
+    }
 
     console.log(`Updated existing event with ID: ${eventId}`)
+}
+
+async function createCategoryIfNotExists(categoryId: string): Promise<void> {
+    const category = await mysql.selectFrom('categories').selectAll().where('id', '=', categoryId).executeTakeFirst()
+
+    if (!category) {
+        await mysql
+            .insertInto('categories')
+            .values({
+                id: categoryId
+            })
+            .execute()
+
+        console.log(`Created new category with ID: ${categoryId}`)
+    }
+}
+
+async function createEventCategoryRelation(eventId: string, categoryId: string): Promise<void> {
+    const relation = await mysql.selectFrom('events_categories').selectAll().where('event_id', '=', eventId).where('category_id', '=', categoryId).executeTakeFirst()
+
+    if (!relation) {
+        await mysql
+            .insertInto('events_categories')
+            .values({
+                event_id: eventId,
+                category_id: categoryId
+            })
+            .execute()
+
+        console.log(`Created new event-category relation: Event ID ${eventId}, Category ID ${categoryId}`)
+    }
 }

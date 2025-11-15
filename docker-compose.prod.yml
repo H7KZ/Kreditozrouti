@@ -83,27 +83,6 @@ services:
           memory: 1024M
 
     restart: unless-stopped
-
-  # ================================================================ #
-  # MYSQL MIGRATIONS SERVICE
-  # this service is ONLY for running migrations on the database within the API scope
-
-  api-migrations:
-    image: diar-4fis-api-migrations
-
-    build:
-      context: .
-      dockerfile: ./api/Dockerfile.migrations
-
-    depends_on:
-      - mysql
-
-    environment:
-      - ENV=production
-      - MYSQL_URI=${MYSQL_URI}
-    
-    networks:
-      - mysql-network
   
   # ================================================================ #
   # SCRAPER SERVICE

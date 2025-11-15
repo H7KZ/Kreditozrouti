@@ -20,15 +20,7 @@ export default async function SignInController(req: Request, res: Response) {
     // If yes, then let him in otherwise return 401
     // If the user sign's in repeatedly also clear out the previous code from cache
 
-    const user = await mysql.user.findUnique({
-        where: {
-            email: data.email
-        },
-        select: {
-            id: true,
-            email: true
-        }
-    })
+    const user = await mysql.selectFrom('users').select(['id', 'email']).where('email', '=', data.email).executeTakeFirst()
 
     if (!user) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')

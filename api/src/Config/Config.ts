@@ -24,6 +24,10 @@ interface Config {
         password: string
     }
 
+    mysql: {
+        uri: string
+    }
+
     isEnvDevelopment: () => boolean
 }
 
@@ -51,6 +55,10 @@ const config: Config = {
     redis: {
         uri: process.env.REDIS_URI ?? '',
         password: process.env.REDIS_PASSWORD ?? ''
+    },
+
+    mysql: {
+        uri: process.env.MYSQL_URI ?? ''
     },
 
     isEnvDevelopment: () => config.env === 'development'

@@ -4,6 +4,7 @@ import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
 import Config from '@api/Config/Config'
+import { MySQLService } from '@api/Services/MySQLService'
 import dotenv from 'dotenv'
 
 try {
@@ -20,8 +21,10 @@ try {
 
 async function start() {
     try {
-        await mysql.$connect()
+        await mysql.connection().execute(db => Promise.resolve(db))
         console.log('Connected to MySQL successfully.')
+
+        await MySQLService.migrateToLatest(mysql)
 
         await redis.ping()
         console.log('Connected to Redis successfully.')
@@ -47,7 +50,7 @@ async function start() {
                 console.log('Shutting down server...')
 
                 server.close(async () => {
-                    await mysql.$disconnect()
+                    await mysql.destroy()
                     redis.disconnect()
 
                     console.log('Server shut down gracefully')
@@ -62,7 +65,7 @@ async function start() {
     } catch (error) {
         console.error('Failed to start the server:', error)
 
-        await mysql.$disconnect()
+        await mysql.destroy()
         redis.disconnect()
 
         process.exit(1)
