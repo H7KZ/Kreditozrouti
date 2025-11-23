@@ -1,18 +1,25 @@
 meta {
-  name: Sign In
+  name: All
   type: http
-  seq: 1
+  seq: 3
 }
 
-post {
-  url: http://localhost:40080/auth/signin
-  body: json
+get {
+  url: http://localhost:40080/events/all?title&date_from&date_to&categories
+  body: none
   auth: inherit
+}
+
+params:query {
+  title: 
+  date_from: 
+  date_to: 
+  categories: 
 }
 
 body:json {
   {
-    "email": "komj09@vse.cz"
+    "email": "enga03@vse.cz"
   }
   
 }

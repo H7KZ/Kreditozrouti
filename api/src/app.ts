@@ -1,7 +1,7 @@
-import path from 'path'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Error/ErrorHandler'
+import { Paths } from '@api/paths'
 import AuthRoutes from '@api/Routes/AuthRoutes'
 import EventRoutes from '@api/Routes/EventRoutes'
 import EventsRoutes from '@api/Routes/EventsRoutes'
@@ -22,7 +22,7 @@ const corsOptions: CorsOptions = {
     origin: Config.allowedOrigins
 }
 
-app.use('/assets', express.static(path.join(__dirname, '../assets')))
+app.use('/assets', express.static(Paths.assets))
 
 app.options('/{*any}', cors(corsOptions)) // include before other routes
 

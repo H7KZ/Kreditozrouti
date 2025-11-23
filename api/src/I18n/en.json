@@ -1,6 +1,6 @@
 {
     "emails": {
-        "code": {
+        "signIn": {
             "subject": "Your verification code",
             "body": "Your verification code is {{code}}. It will expire in {{expiration}} minutes."
         }

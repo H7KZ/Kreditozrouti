@@ -4,6 +4,6 @@ import { Router } from 'express'
 
 const EventRoutes = Router()
 
-EventRoutes.post('/:id', AuthMiddleware, EventController)
+EventRoutes.get('/:id', AuthMiddleware, EventController)
 
 export default EventRoutes

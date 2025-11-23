@@ -25,6 +25,10 @@ async function start() {
         console.log('Connected to MySQL successfully.')
 
         await MySQLService.migrateToLatest()
+        console.log('Migrating connection to MySQL successfully.')
+
+        await MySQLService.seedInitialData()
+        console.log('Seeding initial data to MySQL successfully.')
 
         await redis.ping()
         console.log('Connected to Redis successfully.')

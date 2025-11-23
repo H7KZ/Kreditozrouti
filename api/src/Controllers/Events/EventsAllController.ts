@@ -7,7 +7,7 @@ import EventsAllValidation from '@api/Validations/EventsAllValidation'
 import { Request, Response } from 'express'
 
 export default async function EventsAllController(req: Request, res: Response) {
-    const result = await EventsAllValidation.safeParseAsync(req.body)
+    const result = await EventsAllValidation.safeParseAsync(req.query)
 
     if (!result.success) {
         throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
