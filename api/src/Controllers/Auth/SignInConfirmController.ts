@@ -1,9 +1,9 @@
 import { mysql, redis } from '@api/clients'
+import SignInConfirmRequest from '@api/Controllers/Auth/types/SignInConfirmRequest'
+import SignInConfirmResponse from '@api/Controllers/Auth/types/SignInConfirmResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 import Exception from '@api/Error/Exception'
-import SignInConfirmRequest from '@api/Interfaces/Routes/SignInConfirmRequest'
-import SignInConfirmResponse from '@api/Interfaces/Routes/SignInConfirmResponse'
 import SignInConfirmValidation from '@api/Validations/SignInConfirmValidation'
 import { Request, Response } from 'express'
 

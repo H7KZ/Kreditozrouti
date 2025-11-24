@@ -1,15 +1,15 @@
-import FISEventInterface from '@api/Interfaces/FISEventInterface'
-import FISEventsInterface from '@api/Interfaces/FISEventsInterface'
+import FISEventInterface from '@scraper/Interfaces/4FIS/FISEventInterface'
+import FISEventsInterface from '@scraper/Interfaces/4FIS/FISEventsInterface'
 import MarkdownService from '@scraper/Services/MarkdownService'
 import * as cheerio from 'cheerio'
 import moment from 'moment'
 
 export default class ExtractService {
-    static extractAllArticlesWithParser(html: string): FISEventsInterface[] {
+    static extractAllEventArticlesWithParser(html: string): FISEventsInterface {
         const $ = cheerio.load(html)
         const articles = $('article')
 
-        const events: FISEventsInterface[] = []
+        const eventIds: string[] = []
 
         articles.each((i, el) => {
             const article = $(el)
@@ -19,11 +19,11 @@ export default class ExtractService {
             const eventId = this.serializeValue(link ? (new URL(link).pathname.split('/').filter(Boolean).join('/') ?? null) : null)
 
             if (eventId) {
-                events.push({ eventId })
+                eventIds.push(eventId)
             }
         })
 
-        return events
+        return { ids: eventIds }
     }
 
     static extractEventDetailsWithParser(html: string): FISEventInterface | null {
@@ -90,7 +90,7 @@ export default class ExtractService {
         const substituteUrl = $('a:contains("Chci být náhradník")').attr('href') ?? null
 
         return {
-            eventId: this.serializeValue(eventId),
+            id: this.serializeValue(eventId),
             image: {
                 src: this.serializeValue(imageSrc),
                 alt: this.serializeValue(imageAlt)
@@ -107,12 +107,6 @@ export default class ExtractService {
             registrationUrl: this.serializeValue(registrationUrl),
             substituteUrl: this.serializeValue(substituteUrl)
         }
-    }
-
-    static serializeValue(value: string | null): string | null {
-        if (!value) return null
-
-        return value.replaceAll('\n', ' ').replaceAll('\r', ' ').replaceAll('\t', ' ').replace(/\s+/g, ' ').trim()
     }
 
     static extractDateTimeFromString(text: string): { datetime: Date | null; date: Date | null; time: string | null } {
@@ -173,5 +167,11 @@ export default class ExtractService {
             date: date.isValid() ? date.toDate() : null,
             time: time.isValid() ? time.format('HH:mm') : null
         }
+    }
+
+    private static serializeValue(value: string | null): string | null {
+        if (!value) return null
+
+        return value.replaceAll('\n', ' ').replaceAll('\r', ' ').replaceAll('\t', ' ').replace(/\s+/g, ' ').trim()
     }
 }

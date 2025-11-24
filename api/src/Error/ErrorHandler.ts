@@ -1,6 +1,6 @@
+import ErrorResponse from '@api/Controllers/Event/types/ErrorResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
-import ErrorResponse from '@api/Interfaces/Routes/ErrorResponse'
 import { NextFunction, Request, Response } from 'express'
 
 // NextFunction is required here - otherwise Express won't recognize this as an error handling middleware

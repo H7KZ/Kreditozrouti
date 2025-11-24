@@ -1,5 +1,5 @@
 export default interface FISEventInterface {
-    eventId: string | null
+    id: string | null
     title: string | null
     subtitle: string | null
     categories: string[] | null

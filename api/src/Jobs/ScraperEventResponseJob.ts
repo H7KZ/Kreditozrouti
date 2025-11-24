@@ -1,8 +1,8 @@
 import { mysql } from '@api/clients'
-import { ScraperEventResponseJobInterface } from '@api/Interfaces/ScraperResponseJobInterface'
+import { ScraperFISEventResponseJobInterface } from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
 import { Job } from 'bullmq'
 
-export default async function ScraperEventResponseJob(job: Job<ScraperEventResponseJobInterface>): Promise<void> {
+export default async function ScraperEventResponseJob(job: Job<ScraperFISEventResponseJobInterface>): Promise<void> {
     const data = job.data.event
 
     if (!data) {
@@ -10,7 +10,7 @@ export default async function ScraperEventResponseJob(job: Job<ScraperEventRespo
         return
     }
 
-    const eventId = data.eventId
+    const eventId = data.id
 
     if (!eventId) {
         console.warn(`No event ID found in event data for job ID: ${job.id}`)

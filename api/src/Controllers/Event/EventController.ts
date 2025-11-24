@@ -1,7 +1,7 @@
 import { mysql } from '@api/clients'
+import EventResponse from '@api/Controllers/Event/types/EventResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
-import EventResponse from '@api/Interfaces/Routes/EventResponse'
 import { Request, Response } from 'express'
 
 export default async function EventController(req: Request, res: Response) {

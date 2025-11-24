@@ -1,3 +1,3 @@
 export default interface FISEventsInterface {
-    eventId: string
+    ids: string[]
 }

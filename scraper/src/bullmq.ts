@@ -1,8 +1,8 @@
 import { QueueEnum } from '@api/Enums/QueueEnum'
-import ScraperRequestJobInterface from '@api/Interfaces/ScraperRequestJobInterface'
-import ScraperResponseJobInterface from '@api/Interfaces/ScraperResponseJobInterface'
 import { redis } from '@scraper/clients'
 import ScraperRequestJobHandler from '@scraper/Handlers/ScraperRequestJobHandler'
+import ScraperRequestJobInterface from '@scraper/Interfaces/BullMQ/ScraperRequestJobInterface'
+import ScraperResponseJobInterface from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
 import { Queue, Worker } from 'bullmq'
 
 const scraper = {

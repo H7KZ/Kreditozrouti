@@ -59,9 +59,6 @@ importers:
             globals:
                 specifier: ^16.4.0
                 version: 16.4.0
-            nodemon:
-                specifier: ^3.1.10
-                version: 3.1.10
             prettier:
                 specifier: ^3.6.2
                 version: 3.6.2
@@ -1068,10 +1065,6 @@ packages:
         resolution: { integrity: sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg== }
         engines: { node: '>= 0.4' }
 
-    has-flag@3.0.0:
-        resolution: { integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw== }
-        engines: { node: '>=4' }
-
     has-flag@4.0.0:
         resolution: { integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ== }
         engines: { node: '>=8' }
@@ -1101,9 +1094,6 @@ packages:
     iconv-lite@0.6.3:
         resolution: { integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw== }
         engines: { node: '>=0.10.0' }
-
-    ignore-by-default@1.0.1:
-        resolution: { integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA== }
 
     ignore@5.3.2:
         resolution: { integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g== }
@@ -1356,11 +1346,6 @@ packages:
         resolution: { integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw== }
         hasBin: true
 
-    nodemon@3.1.10:
-        resolution: { integrity: sha512-WDjw3pJ0/0jMFmyNDp3gvY2YizjLmmOUQo6DEBY+JgdvW/yQ9mEeSw6H5ythl5Ny2ytb7f9C2nIbjSxMNzbJXw== }
-        engines: { node: '>=10' }
-        hasBin: true
-
     normalize-path@3.0.0:
         resolution: { integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA== }
         engines: { node: '>=0.10.0' }
@@ -1470,9 +1455,6 @@ packages:
 
     proxy-from-env@1.1.0:
         resolution: { integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg== }
-
-    pstree.remy@1.1.8:
-        resolution: { integrity: sha512-77DZwxQmxKnu3aR542U+X8FypNzbfJ+C5XQDk3uWjWxn6151aIMGthWYRXTqT1E5oJvg+ljaa2OJi+VfvCOQ8w== }
 
     punycode@2.3.1:
         resolution: { integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg== }
@@ -1595,10 +1577,6 @@ packages:
         resolution: { integrity: sha512-ZX99e6tRweoUXqR+VBrslhda51Nh5MTQwou5tnUDgbtyM0dBgmhEDtWGP/xbKn6hqfPRHujUNwz5fy/wbbhnpw== }
         engines: { node: '>= 0.4' }
 
-    simple-update-notifier@2.0.0:
-        resolution: { integrity: sha512-a2B9Y0KlNXl9u/vsW6sTIu9vGEpfKu2wRV6l1H3XEas/0gUIzGzBoP/IouTcUQbm9JWZLH3COxyn03TYlFax6w== }
-        engines: { node: '>=10' }
-
     slash@3.0.0:
         resolution: { integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q== }
         engines: { node: '>=8' }
@@ -1630,10 +1608,6 @@ packages:
         resolution: { integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig== }
         engines: { node: '>=8' }
 
-    supports-color@5.5.0:
-        resolution: { integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow== }
-        engines: { node: '>=4' }
-
     supports-color@7.2.0:
         resolution: { integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw== }
         engines: { node: '>=8' }
@@ -1645,10 +1619,6 @@ packages:
     to-regex-range@5.0.1:
         resolution: { integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ== }
         engines: { node: '>=8.0' }
-
-    touch@3.1.1:
-        resolution: { integrity: sha512-r0eojU4bI8MnHr8c5bNo7lJDdI2qXlWWJk6a9EAFG7vbhTjElYhBVS3/miuE0uOuoLdb8Mc/rVfsmm6eo5o9GA== }
-        hasBin: true
 
     ts-api-utils@2.1.0:
         resolution: { integrity: sha512-CUgTZL1irw8u29bzrOD/nH85jqyc74D6SshFgujOIA7osm2Rz7dYH77agkx7H4FBNxDq7Cjf+IjaX/8zwFW+ZQ== }
@@ -1732,9 +1702,6 @@ packages:
     unbox-primitive@1.1.0:
         resolution: { integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw== }
         engines: { node: '>= 0.4' }
-
-    undefsafe@2.0.5:
-        resolution: { integrity: sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA== }
 
     undici-types@7.13.0:
         resolution: { integrity: sha512-Ov2Rr9Sx+fRgagJ5AX0qvItZG/JKKoBRAVITs1zk7IqZGTJUwgUr7qoYBpWwakpWilTZFM98rG/AFRocu10iIQ== }
@@ -1833,7 +1800,7 @@ snapshots:
             '@babel/parser': 7.28.4
             '@babel/template': 7.27.2
             '@babel/types': 7.28.4
-            debug: 4.4.3(supports-color@5.5.0)
+            debug: 4.4.3
         transitivePeerDependencies:
             - supports-color
 
@@ -1934,7 +1901,7 @@ snapshots:
     '@eslint/config-array@0.21.0':
         dependencies:
             '@eslint/object-schema': 2.1.6
-            debug: 4.4.3(supports-color@5.5.0)
+            debug: 4.4.3
             minimatch: 3.1.2
         transitivePeerDependencies:
             - supports-color
@@ -1950,7 +1917,7 @@ snapshots:
     '@eslint/eslintrc@3.3.1':
         dependencies:
             ajv: 6.12.6
-            debug: 4.4.3(supports-color@5.5.0)
+            debug: 4.4.3
             espree: 10.4.0
             globals: 14.0.0
             ignore: 5.3.2
@@ -2110,7 +2077,7 @@ snapshots:
             '@typescript-eslint/types': 8.45.0
             '@typescript-eslint/typescript-estree': 8.45.0(typescript@5.9.3)
             '@typescript-eslint/visitor-keys': 8.45.0
-            debug: 4.4.3(supports-color@5.5.0)
+            debug: 4.4.3
             eslint: 9.37.0
             typescript: 5.9.3
         transitivePeerDependencies:
@@ -2120,7 +2087,7 @@ snapshots:
         dependencies:
             '@typescript-eslint/tsconfig-utils': 8.45.0(typescript@5.9.3)
             '@typescript-eslint/types': 8.45.0
-            debug: 4.4.3(supports-color@5.5.0)
+            debug: 4.4.3
             typescript: 5.9.3
         transitivePeerDependencies:
             - supports-color
@@ -2139,7 +2106,7 @@ snapshots:
             '@typescript-eslint/types': 8.45.0
             '@typescript-eslint/typescript-estree': 8.45.0(typescript@5.9.3)
             '@typescript-eslint/utils': 8.45.0(eslint@9.37.0)(typescript@5.9.3)
-            debug: 4.4.3(supports-color@5.5.0)
+            debug: 4.4.3
             eslint: 9.37.0
             ts-api-utils: 2.1.0(typescript@5.9.3)
             typescript: 5.9.3
@@ -2154,7 +2121,7 @@ snapshots:
             '@typescript-eslint/tsconfig-utils': 8.45.0(typescript@5.9.3)
             '@typescript-eslint/types': 8.45.0
             '@typescript-eslint/visitor-keys': 8.45.0
-            debug: 4.4.3(supports-color@5.5.0)
+            debug: 4.4.3
             fast-glob: 3.3.3
             is-glob: 4.0.3
             minimatch: 9.0.5
@@ -2441,11 +2408,9 @@ snapshots:
         dependencies:
             ms: 2.1.3
 
-    debug@4.4.3(supports-color@5.5.0):
+    debug@4.4.3:
         dependencies:
             ms: 2.1.3
-        optionalDependencies:
-            supports-color: 5.5.0
 
     deep-is@0.1.4: {}
 
@@ -2706,7 +2671,7 @@ snapshots:
             ajv: 6.12.6
             chalk: 4.1.2
             cross-spawn: 7.0.6
-            debug: 4.4.3(supports-color@5.5.0)
+            debug: 4.4.3
             escape-string-regexp: 4.0.0
             eslint-scope: 8.4.0
             eslint-visitor-keys: 4.2.1
@@ -2889,8 +2854,6 @@ snapshots:
 
     has-bigints@1.1.0: {}
 
-    has-flag@3.0.0: {}
-
     has-flag@4.0.0: {}
 
     has-property-descriptors@1.0.2:
@@ -2922,8 +2885,6 @@ snapshots:
         dependencies:
             safer-buffer: 2.1.2
 
-    ignore-by-default@1.0.1: {}
-
     ignore@5.3.2: {}
 
     ignore@7.0.5: {}
@@ -2945,7 +2906,7 @@ snapshots:
         dependencies:
             '@ioredis/commands': 1.4.0
             cluster-key-slot: 1.1.2
-            debug: 4.4.3(supports-color@5.5.0)
+            debug: 4.4.3
             denque: 2.1.0
             lodash.defaults: 4.2.0
             lodash.isarguments: 3.1.0
@@ -3172,19 +3133,6 @@ snapshots:
             detect-libc: 2.1.1
         optional: true
 
-    nodemon@3.1.10:
-        dependencies:
-            chokidar: 3.6.0
-            debug: 4.4.3(supports-color@5.5.0)
-            ignore-by-default: 1.0.1
-            minimatch: 3.1.2
-            pstree.remy: 1.1.8
-            semver: 7.7.2
-            simple-update-notifier: 2.0.0
-            supports-color: 5.5.0
-            touch: 3.1.1
-            undefsafe: 2.0.5
-
     normalize-path@3.0.0: {}
 
     nth-check@2.1.1:
@@ -3291,8 +3239,6 @@ snapshots:
     prettier@3.6.2: {}
 
     proxy-from-env@1.1.0: {}
-
-    pstree.remy@1.1.8: {}
 
     punycode@2.3.1: {}
 
@@ -3439,10 +3385,6 @@ snapshots:
             side-channel-map: 1.0.1
             side-channel-weakmap: 1.0.2
 
-    simple-update-notifier@2.0.0:
-        dependencies:
-            semver: 7.7.2
-
     slash@3.0.0: {}
 
     standard-as-callback@2.1.0: {}
@@ -3479,10 +3421,6 @@ snapshots:
 
     strip-json-comments@3.1.1: {}
 
-    supports-color@5.5.0:
-        dependencies:
-            has-flag: 3.0.0
-
     supports-color@7.2.0:
         dependencies:
             has-flag: 4.0.0
@@ -3492,8 +3430,6 @@ snapshots:
     to-regex-range@5.0.1:
         dependencies:
             is-number: 7.0.0
-
-    touch@3.1.1: {}
 
     ts-api-utils@2.1.0(typescript@5.9.3):
         dependencies:
@@ -3613,8 +3549,6 @@ snapshots:
             has-bigints: 1.1.0
             has-symbols: 1.1.0
             which-boxed-primitive: 1.1.1
-
-    undefsafe@2.0.5: {}
 
     undici-types@7.13.0: {}
 

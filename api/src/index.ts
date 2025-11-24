@@ -1,23 +1,9 @@
 import '@api/types'
-import path from 'path'
 import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import { MySQLService } from '@api/Services/MySQLService'
-import dotenv from 'dotenv'
-
-try {
-    dotenv.config({
-        path: [
-            path.resolve(process.cwd(), '../../../.env'), // For dist folder
-            path.resolve(process.cwd(), '../.env'), // For monorepo root
-            path.resolve(process.cwd(), '.env') // For monorepo package
-        ]
-    })
-} catch {
-    console.warn('No .env file found')
-}
 
 async function start() {
     try {

@@ -1,3 +1,18 @@
+import path from 'path'
+import dotenv from 'dotenv'
+
+try {
+    dotenv.config({
+        path: [
+            path.resolve(process.cwd(), '../../../../.env'), // For dist folder
+            path.resolve(process.cwd(), '../.env'), // For monorepo root
+            path.resolve(process.cwd(), '.env') // For monorepo package
+        ]
+    })
+} catch {
+    console.warn('No .env file found')
+}
+
 interface Config {
     env: string
 

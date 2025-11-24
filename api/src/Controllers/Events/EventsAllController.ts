@@ -1,8 +1,8 @@
 import { mysql } from '@api/clients'
+import EventsAllRequest from '@api/Controllers/Events/types/EventsAllRequest'
+import EventsAllResponse from '@api/Controllers/Events/types/EventsAllResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
-import EventsAllRequest from '@api/Interfaces/Routes/EventsAllRequest'
-import EventsAllResponse from '@api/Interfaces/Routes/EventsAllResponse'
 import EventsAllValidation from '@api/Validations/EventsAllValidation'
 import { Request, Response } from 'express'
 
