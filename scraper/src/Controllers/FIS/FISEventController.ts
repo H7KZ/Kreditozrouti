@@ -4,7 +4,7 @@ import { ScraperFISEventRequestJobInterface } from '@scraper/Interfaces/BullMQ/S
 import ExtractService from '@scraper/Services/ExtractService'
 import Axios from 'axios'
 
-export default async function EventController(data: ScraperFISEventRequestJobInterface): Promise<void> {
+export default async function FISEventController(data: ScraperFISEventRequestJobInterface): Promise<void> {
     const request = await Axios.get<string>(`https://4fis.cz/${data.eventId}`, {
         headers: {
             'Accept-Language': 'cs-CZ,cs;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -12,7 +12,7 @@ export default async function EventController(data: ScraperFISEventRequestJobInt
         }
     })
 
-    const event = ExtractService.extractEventDetailsWithParser(request.data)
+    const event = ExtractService.extractFISEventDetailsWithParser(request.data)
 
-    await scraper.queue.response.add(JobEnum.EVENT_RESPONSE, { type: '4FIS:Event', event })
+    await scraper.queue.response.add(JobEnum.FIS_EVENT_RESPONSE, { type: '4FIS:Event', event })
 }

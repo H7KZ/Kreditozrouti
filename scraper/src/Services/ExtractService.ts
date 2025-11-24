@@ -1,11 +1,12 @@
-import FISEventInterface from '@scraper/Interfaces/4FIS/FISEventInterface'
-import FISEventsInterface from '@scraper/Interfaces/4FIS/FISEventsInterface'
+import FISEventInterface from '@scraper/Interfaces/FIS/FISEventInterface'
+import FISEventsInterface from '@scraper/Interfaces/FIS/FISEventsInterface'
+import InSISCatalogInterface from '@scraper/Interfaces/InSIS/InSISCatalogInterface'
 import MarkdownService from '@scraper/Services/MarkdownService'
 import * as cheerio from 'cheerio'
 import moment from 'moment'
 
 export default class ExtractService {
-    static extractAllEventArticlesWithParser(html: string): FISEventsInterface {
+    static extractAllFISEventArticlesWithParser(html: string): FISEventsInterface {
         const $ = cheerio.load(html)
         const articles = $('article')
 
@@ -26,7 +27,7 @@ export default class ExtractService {
         return { ids: eventIds }
     }
 
-    static extractEventDetailsWithParser(html: string): FISEventInterface | null {
+    static extractFISEventDetailsWithParser(html: string): FISEventInterface | null {
         const $ = cheerio.load(html)
 
         const siteUrl = $('link[rel="canonical"]').attr('href')
@@ -107,6 +108,23 @@ export default class ExtractService {
             registrationUrl: this.serializeValue(registrationUrl),
             substituteUrl: this.serializeValue(substituteUrl)
         }
+    }
+
+    static extractInSISCatalogCoursesWithParser(html: string): InSISCatalogInterface {
+        const $ = cheerio.load(html)
+        const subjects: string[] = []
+        const baseUrl = 'https://insis.vse.cz/katalog/'
+
+        $('a[href*="syllabus.pl?predmet="]').each((i, el) => {
+            const href = $(el).attr('href')
+
+            if (href) {
+                const fullUrl = href.startsWith('http') ? href : baseUrl + href
+                subjects.push(fullUrl.trim())
+            }
+        })
+
+        return { urls: [...new Set(subjects)] }
     }
 
     static extractDateTimeFromString(text: string): { datetime: Date | null; date: Date | null; time: string | null } {

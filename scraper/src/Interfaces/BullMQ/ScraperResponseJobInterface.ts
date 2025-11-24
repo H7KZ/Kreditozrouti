@@ -1,5 +1,6 @@
-import FISEventInterface from '@scraper/Interfaces/4FIS/FISEventInterface'
-import FISEventsInterface from '@scraper/Interfaces/4FIS/FISEventsInterface'
+import FISEventInterface from '@scraper/Interfaces/FIS/FISEventInterface'
+import FISEventsInterface from '@scraper/Interfaces/FIS/FISEventsInterface'
+import InSISCatalogInterface from '@scraper/Interfaces/InSIS/InSISCatalogInterface'
 import InSISCourseInterface from '@scraper/Interfaces/InSIS/InSISCourseInterface'
 import ScraperJobType from '@scraper/Types/ScraperJobType'
 
@@ -23,6 +24,7 @@ export interface ScraperFISEventResponseJobInterface extends ScraperResponseJobB
 
 export interface ScraperInSISCatalogResponseJobInterface extends ScraperResponseJobBase {
     type: 'InSIS:Catalog'
+    catalog: InSISCatalogInterface
 }
 
 export interface ScraperInSISCourseResponseJobInterface extends ScraperResponseJobBase {

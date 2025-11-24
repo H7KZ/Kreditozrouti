@@ -1,5 +1,6 @@
-import EventController from '@scraper/Controllers/EventController'
-import EventsController from '@scraper/Controllers/EventsController'
+import FISEventController from '@scraper/Controllers/FIS/FISEventController'
+import FISEventsController from '@scraper/Controllers/FIS/FISEventsController'
+import InSISCatalogController from '@scraper/Controllers/InSIS/InSISCatalogController'
 import ScraperRequestJobInterface from '@scraper/Interfaces/BullMQ/ScraperRequestJobInterface'
 import { Job } from 'bullmq'
 
@@ -10,10 +11,13 @@ export default async function ScraperRequestJobHandler(job: Job<ScraperRequestJo
 
     switch (type) {
         case '4FIS:Events':
-            await EventsController()
+            await FISEventsController()
             break
         case '4FIS:Event':
-            await EventController(job.data)
+            await FISEventController(job.data)
+            break
+        case 'InSIS:Catalog':
+            await InSISCatalogController()
             break
         default:
             console.warn(`Unknown job type: ${type}`)

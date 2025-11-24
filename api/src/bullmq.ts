@@ -39,7 +39,7 @@ const scraper = {
             'EventsRequestJobScheduler',
             { pattern: '*/2 * * * *' }, // Every 2 minutes
             {
-                name: JobEnum.EVENTS_REQUEST,
+                name: JobEnum.FIS_EVENTS_REQUEST,
                 data: {
                     type: '4FIS:Events'
                 },

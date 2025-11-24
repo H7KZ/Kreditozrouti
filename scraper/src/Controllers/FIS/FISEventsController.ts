@@ -1,6 +1,6 @@
 import { JobEnum } from '@api/Enums/JobEnum'
 import { scraper } from '@scraper/bullmq'
-import FISEventsInterface from '@scraper/Interfaces/4FIS/FISEventsInterface'
+import FISEventsInterface from '@scraper/Interfaces/FIS/FISEventsInterface'
 import ExtractService from '@scraper/Services/ExtractService'
 import Axios from 'axios'
 
@@ -9,7 +9,7 @@ interface RequestEventsInterface {
     max_num_pages: number
 }
 
-export default async function EventsController(): Promise<void> {
+export default async function FISEventsController(): Promise<void> {
     const events: FISEventsInterface = { ids: [] }
 
     let max_num_pages = 1
@@ -30,12 +30,12 @@ export default async function EventsController(): Promise<void> {
 
         if (!request.data.data) continue
 
-        const newEvents = ExtractService.extractAllEventArticlesWithParser(request.data.data)
+        const newEvents = ExtractService.extractAllFISEventArticlesWithParser(request.data.data)
 
         events.ids.push(...newEvents.ids)
     }
 
-    await scraper.queue.response.add(JobEnum.EVENTS_RESPONSE, { type: '4FIS:Events', events })
+    await scraper.queue.response.add(JobEnum.FIS_EVENTS_RESPONSE, { type: '4FIS:Events', events })
 
-    events.ids.map(eventId => scraper.queue.request.add(JobEnum.EVENT_REQUEST, { type: '4FIS:Event', eventId }))
+    events.ids.map(eventId => scraper.queue.request.add(JobEnum.FIS_EVENT_REQUEST, { type: '4FIS:Event', eventId }))
 }
