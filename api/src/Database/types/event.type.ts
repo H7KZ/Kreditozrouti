@@ -9,15 +9,15 @@ export interface EventTable {
     title: string | null
     subtitle: string | null
     datetime: ColumnType<Date, string | null, string | null>
-    imageSrc: string | null
-    imageAlt: string | null
+    image_src: string | null
+    image_alt: string | null
     description: string | null
     place: string | null
     author: string | null
     language: string | null
-    registrationFrom: ColumnType<Date, string | null, string | null>
-    registrationUrl: string | null
-    substituteUrl: string | null
+    registration_from: ColumnType<Date, string | null, string | null>
+    registration_url: string | null
+    substitute_url: string | null
 }
 
 export type Event = Selectable<EventTable>

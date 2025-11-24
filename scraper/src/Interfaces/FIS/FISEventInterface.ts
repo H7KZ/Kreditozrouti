@@ -12,7 +12,7 @@ export default interface FISEventInterface {
     place: string | null
     author: string | null
     language: string | null
-    registrationFrom: string | null
-    registrationUrl: string | null
-    substituteUrl: string | null
+    registration_from: string | null
+    registration_url: string | null
+    substitute_url: string | null
 }

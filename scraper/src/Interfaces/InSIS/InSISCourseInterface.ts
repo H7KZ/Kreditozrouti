@@ -10,19 +10,41 @@ export default interface InSISCourseInterface {
     yearOfStudy: number
     semester: string
     lecturers: string[]
-    prerequisites: string[]
-    'co-requisites': string[]
-    recommendedProgrammes: string[]
+    prerequisites: string
+    'co-requisites': string
+    recommendedProgrammes: string
     requiredWorkExperience: string
 
     aimsOfTheCourse: string
     learningOutcomes: string
     courseContents: string
-    teachingMethods: void // TO DO type
-    assessmentMethods: void // TO DO type
+    assessmentMethods: AssessmentMethod[]
 
     specialRequirements: string
     literature: string
 
-    timetable: void // TO DO type
+    timetable: TimetableUnit[]
+}
+
+interface AssessmentMethod {
+    method: string
+    weight: number
+}
+
+interface TimetableUnit {
+    lecturer: string
+    capacity: number
+    note: string
+
+    slots: TimetableSlot[]
+}
+
+interface TimetableSlot {
+    type: string
+    frequency: 'weekly' | 'single'
+    date: string | null
+    day: string | null
+    timeFrom: string
+    timeTo: string
+    location: string
 }

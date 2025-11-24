@@ -70,8 +70,8 @@ export default class ExtractService {
         }
 
         const title = $('article h1').text().trim() ?? null
-        const imageSrc = $('section[class*="event-detail"] img').attr('src') ?? null
-        const imageAlt = $('section[class*="event-detail"] img').attr('alt') ?? null
+        const image_src = $('section[class*="event-detail"] img').attr('src') ?? null
+        const image_alt = $('section[class*="event-detail"] img').attr('alt') ?? null
         const subtitle = $('article h1 + span').text().trim() ?? null
 
         const descriptionContainer = $('h2:contains("O akci")').next('div')
@@ -83,18 +83,18 @@ export default class ExtractService {
         }
 
         const place = getDetailByLabel('Místo události:')
-        const registrationFrom = getDetailByLabel('Registrace:')
+        const registration_from = getDetailByLabel('Registrace:')
         const datetime = getDetailByLabel('Datum a čas:')
 
-        const registrationUrl = $('a:contains("Registruj se zde")').attr('href') ?? null
+        const registration_url = $('a:contains("Registruj se zde")').attr('href') ?? null
 
-        const substituteUrl = $('a:contains("Chci být náhradník")').attr('href') ?? null
+        const substitute_url = $('a:contains("Chci být náhradník")').attr('href') ?? null
 
         return {
             id: this.serializeValue(eventId),
             image: {
-                src: this.serializeValue(imageSrc),
-                alt: this.serializeValue(imageAlt)
+                src: this.serializeValue(image_src),
+                alt: this.serializeValue(image_alt)
             },
             title: this.serializeValue(title),
             subtitle: this.serializeValue(subtitle),
@@ -104,9 +104,9 @@ export default class ExtractService {
             place: this.serializeValue(place),
             author: author,
             language: language,
-            registrationFrom: this.extractDateTimeFromString(this.serializeValue(registrationFrom) ?? '').date?.toISOString() ?? null,
-            registrationUrl: this.serializeValue(registrationUrl),
-            substituteUrl: this.serializeValue(substituteUrl)
+            registration_from: this.extractDateTimeFromString(this.serializeValue(registration_from) ?? '').date?.toISOString() ?? null,
+            registration_url: this.serializeValue(registration_url),
+            substitute_url: this.serializeValue(substitute_url)
         }
     }
 

@@ -30,15 +30,15 @@ export default async function ScraperEventResponseJob(job: Job<ScraperFISEventRe
                     title: data.title,
                     subtitle: data.subtitle,
                     datetime: data.datetime ? new Date(data.datetime).toISOString().slice(0, 19).replace('T', ' ') : null,
-                    imageSrc: data.image.src,
-                    imageAlt: data.image.alt,
+                    image_src: data.image.src,
+                    image_alt: data.image.alt,
                     description: data.description,
                     place: data.place,
                     author: data.author,
                     language: data.language,
-                    registrationFrom: data.registrationFrom ? new Date(data.registrationFrom).toISOString().slice(0, 19).replace('T', ' ') : null,
-                    registrationUrl: data.registrationUrl,
-                    substituteUrl: data.substituteUrl
+                    registration_from: data.registration_from ? new Date(data.registration_from).toISOString().slice(0, 19).replace('T', ' ') : null,
+                    registration_url: data.registration_url,
+                    substitute_url: data.substitute_url
                 })
                 .compile()
         )
@@ -50,15 +50,15 @@ export default async function ScraperEventResponseJob(job: Job<ScraperFISEventRe
                 title: data.title,
                 subtitle: data.subtitle,
                 datetime: data.datetime ? new Date(data.datetime).toISOString().slice(0, 19).replace('T', ' ') : null,
-                imageSrc: data.image.src,
-                imageAlt: data.image.alt,
+                image_src: data.image.src,
+                image_alt: data.image.alt,
                 description: data.description,
                 place: data.place,
                 author: data.author,
                 language: data.language,
-                registrationFrom: data.registrationFrom ? new Date(data.registrationFrom).toISOString().slice(0, 19).replace('T', ' ') : null,
-                registrationUrl: data.registrationUrl,
-                substituteUrl: data.substituteUrl
+                registration_from: data.registration_from ? new Date(data.registration_from).toISOString().slice(0, 19).replace('T', ' ') : null,
+                registration_url: data.registration_url,
+                substitute_url: data.substitute_url
             })
             .execute()
 
@@ -80,15 +80,15 @@ export default async function ScraperEventResponseJob(job: Job<ScraperFISEventRe
             title: data.title,
             subtitle: data.subtitle,
             datetime: data.datetime ? new Date(data.datetime).toISOString().slice(0, 19).replace('T', ' ') : null,
-            imageSrc: data.image.src,
-            imageAlt: data.image.alt,
+            image_src: data.image.src,
+            image_alt: data.image.alt,
             description: data.description,
             place: data.place,
             author: data.author,
             language: data.language,
-            registrationFrom: data.registrationFrom ? new Date(data.registrationFrom).toISOString().slice(0, 19).replace('T', ' ') : null,
-            registrationUrl: data.registrationUrl,
-            substituteUrl: data.substituteUrl
+            registration_from: data.registration_from ? new Date(data.registration_from).toISOString().slice(0, 19).replace('T', ' ') : null,
+            registration_url: data.registration_url,
+            substitute_url: data.substitute_url
         })
         .where('id', '=', eventId)
         .execute()
