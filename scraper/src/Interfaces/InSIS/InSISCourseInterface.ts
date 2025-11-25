@@ -1,26 +1,26 @@
 export default interface InSISCourseInterface {
     ident: string
     title: string
-    czechTitle: string
+    czech_title: string
     ects: number
-    modeOfDelivery: string
-    modeOfCompletion: string
+    mode_of_delivery: string
+    mode_of_completion: string
     language: string
     level: string
-    yearOfStudy: number
+    year_of_study: number
     semester: string
     lecturers: string[]
     prerequisites: string
-    'co-requisites': string
-    recommendedProgrammes: string
-    requiredWorkExperience: string
+    co_requisites: string
+    recommended_programmes: string
+    required_work_experience: string
 
-    aimsOfTheCourse: string
-    learningOutcomes: string
-    courseContents: string
-    assessmentMethods: AssessmentMethod[]
+    aims_of_the_course: string
+    learning_outcomes: string
+    course_contents: string
+    assessment_methods: AssessmentMethod[]
 
-    specialRequirements: string
+    special_requirements: string
     literature: string
 
     timetable: TimetableUnit[]
@@ -44,7 +44,7 @@ interface TimetableSlot {
     frequency: 'weekly' | 'single'
     date: string | null
     day: string | null
-    timeFrom: string
-    timeTo: string
+    time_from: string
+    time_to: string
     location: string
 }

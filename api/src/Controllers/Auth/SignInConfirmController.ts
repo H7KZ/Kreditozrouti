@@ -7,7 +7,7 @@ import Exception from '@api/Error/Exception'
 import SignInConfirmValidation from '@api/Validations/SignInConfirmValidation'
 import { Request, Response } from 'express'
 
-export default async function SignInController(req: Request, res: Response) {
+export default async function SignInConfirmController(req: Request, res: Response) {
     const result = await SignInConfirmValidation.safeParseAsync(req.body)
 
     if (!result.success) {
