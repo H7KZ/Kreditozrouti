@@ -1,35 +1,55 @@
-import { dragonfly } from '$api/clients'
-import { QueueEnum } from '$api/Enums/QueueEnum'
-import ScraperResponseJobHandler from '$api/Handlers/ScraperResponseJobHandler'
-import ScraperRequestJobInterface from '$api/Interfaces/ScraperRequestJobInterface'
-import ScraperResponseJobDataInterface from '$api/Interfaces/ScraperResponseJobInterface'
+import { redis } from '@api/clients'
+import { QueueEnum } from '@api/Enums/QueueEnum'
+import ScraperResponseJobHandler from '@api/Handlers/ScraperResponseJobHandler'
+import ScraperRequestJobInterface from '@scraper/Interfaces/BullMQ/ScraperRequestJobInterface'
+import ScraperResponseJobDataInterface from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
 import { Queue, Worker } from 'bullmq'
+import { JobEnum } from './Enums/JobEnum'
 
 const scraper = {
     queue: {
-        request: new Queue<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, { connection: dragonfly })
-        // response: new Queue<ScraperResponseJobDataInterface>(QueueEnum.SCRAPER_RESPONSE, { connection: dragonfly })
+        request: new Queue<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, { connection: redis })
+        // response: new Queue<ScraperResponseJobDataInterface>(QueueEnum.SCRAPER_RESPONSE, { connection: redis })
     },
     worker: {
-        // request: new Worker<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, ScraperRequestJobHandler, { connection: dragonfly }),
-        response: new Worker<ScraperResponseJobDataInterface>(QueueEnum.SCRAPER_RESPONSE, ScraperResponseJobHandler, { connection: dragonfly })
+        // request: new Worker<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, ScraperRequestJobHandler, { connection: redis }),
+        response: new Worker<ScraperResponseJobDataInterface>(QueueEnum.SCRAPER_RESPONSE, ScraperResponseJobHandler, { connection: redis })
+    },
+
+    async setConcurrency(concurrency: number) {
+        await scraper.queue.request.setGlobalConcurrency(concurrency)
+    },
+
+    async waitForQueues() {
+        await scraper.queue.request.waitUntilReady()
+        console.log('Scraper request queue is ready and processing jobs.')
+
+        // await scraper.queue.response.waitUntilReady()
+        // console.log('Scraper response queue is ready and processing jobs.')
+
+        // await scraper.worker.request.waitUntilReady()
+        // console.log('Scraper request worker is ready and processing jobs.')
+
+        await scraper.worker.response.waitUntilReady()
+        console.log('Scraper response worker is ready and processing jobs.')
     },
 
     async schedulers() {
-        await scraper.queue.request.waitUntilReady()
-        console.log('Scraper request queue is ready and processing jobs.')
-        await scraper.worker.response.waitUntilReady()
-        console.log('Scraper response worker is ready and processing jobs.')
-
         await scraper.queue.request.upsertJobScheduler(
             'EventsRequestJobScheduler',
             { pattern: '*/2 * * * *' }, // Every 2 minutes
             {
-                name: 'EventsRequestJob',
+                name: JobEnum.FIS_EVENTS_REQUEST,
+                data: {
+                    type: '4FIS:Events'
+                },
                 opts: {
-                    backoff: {
-                        type: 'fixed',
-                        delay: 5 * 60 * 1000 // 5 minutes
+                    removeOnComplete: {
+                        age: 3600, // keep up to 1 hour
+                        count: 100 // keep up to 100 jobs
+                    },
+                    removeOnFail: {
+                        age: 24 * 3600 // keep up to 24 hours
                     }
                 }
             }

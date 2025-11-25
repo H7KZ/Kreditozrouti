@@ -1,4 +1,4 @@
-import Config from '$api/Config/Config'
+import Config from '@api/Config/Config'
 import multer from 'multer'
 
 const FileMiddleware = multer({

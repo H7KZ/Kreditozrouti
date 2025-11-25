@@ -25,6 +25,7 @@
         "noUncheckedSideEffectImports": true,
 
         "paths": {
+            "@/*": ["./src/*"],
             "$frontend/*": ["./src/*"],
             "$api/*": ["../api/src/*"],
             "$scraper/*": ["../scraper/src/*"]

@@ -1,0 +1,66 @@
+services:
+  traefik:
+    image: traefik:v3.5.3
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - traefik-certificates-volume:/certs
+      - ./traefik.yml:/traefik.yml:ro
+      - ./credentials.txt:/credentials.txt:ro
+
+    networks:
+      - traefik-network
+
+    ports:
+      - 80:80
+      - 443:443
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik.rule=Host(`traefik-4fis.jankominek.com`)
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.routers.traefik.tls=true
+      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
+      - traefik.http.routers.traefik.service=api@internal
+
+      - traefik.http.routers.traefik.middlewares=traefik-redirect,traefik-auth
+      
+      - traefik.http.middlewares.traefik-redirect.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares.traefik-redirect.redirectregex.replacement=https://$${1}
+      - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt
+
+    deploy:
+      mode: global
+
+      placement:
+        constraints:
+          - node.role == manager
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 2
+          memory: 4096M
+
+    restart: unless-stopped

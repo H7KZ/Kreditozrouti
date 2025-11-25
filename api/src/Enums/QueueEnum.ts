@@ -1,6 +1,6 @@
 enum QueueEnum {
-    SCRAPER_REQUEST = 'scraper:request',
-    SCRAPER_RESPONSE = 'scraper:response'
+    SCRAPER_REQUEST = 'ScraperRequestQueue',
+    SCRAPER_RESPONSE = 'ScraperResponseQueue'
 }
 
 export { QueueEnum }

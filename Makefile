@@ -1,15 +1,18 @@
-.PHONY: dev api scraper frontend format lint build build-docker
+.PHONY: docker migrations clear-redis install dev api scraper frontend format lint build build-docker-images preview
 
-dev-docker:
-	docker compose -f docker-compose.dev.yaml down --remove-orphans && \
-	docker compose -f docker-compose.dev.yaml build --pull --no-cache && \
-	docker compose -f docker-compose.dev.yaml up -d
+local-docker:
+	docker compose -f docker-compose.local.yml down --remove-orphans && \
+	docker compose -f docker-compose.local.yml build --pull --no-cache && \
+	docker compose -f docker-compose.local.yml up -d
+
+clear-redis:
+	docker exec diar-4fis-redis redis-cli FLUSHDB
+
+install:
+	pnpm -r install --filter=!./scripts/* && \
+	pnpm install -g dotenv-cli
 
 dev:
-	docker compose -f docker-compose.dev.yaml down --remove-orphans && \
-	docker compose -f docker-compose.dev.yaml build --pull --no-cache && \
-	docker compose -f docker-compose.dev.yaml up -d && \
-	pnpm -r install && \
 	pnpm -r --parallel run dev
 
 api:
@@ -36,5 +39,11 @@ lint:
 build:
 	pnpm -r --parallel run build
 
-build-docker:
-	docker compose -f docker-compose.prod.yaml build --pull --no-cache
+build-docker-images:
+	docker build -t diar-4fis-api -f ./api/Dockerfile . && \
+	docker build -t diar-4fis-api-migrations -f ./api/Dockerfile.migrations . && \
+	docker build -t diar-4fis-frontend -f ./frontend/Dockerfile . && \
+	docker build -t diar-4fis-scraper -f ./scraper/Dockerfile .
+
+preview:
+	pnpm -r --parallel run preview

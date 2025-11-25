@@ -1,0 +1,11 @@
+networks:
+  mysql-dev-network:
+    name: mysql-dev-network
+    external: true
+    driver: bridge
+
+
+  redis-dev-network:
+    name: redis-dev-network
+    external: true
+    driver: bridge

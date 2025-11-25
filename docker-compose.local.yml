@@ -1,0 +1,92 @@
+services:
+  mysql:
+    image: mysql:9.4.0
+    container_name: diar-4fis-mysql
+
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=diar-4fis
+
+    ports:
+      - 43306:3306
+
+    deploy:
+      mode: global
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 2
+          memory: 4096M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  redis:
+    image: redis:8.2.2-alpine
+    container_name: diar-4fis-redis
+
+    command: [
+      "--save", "20", "1",
+      "--loglevel", "warning"
+    ]
+
+    ports:
+      - 46379:6379
+
+    deploy:
+      mode: global
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 1
+          memory: 2048M
+
+    restart: unless-stopped

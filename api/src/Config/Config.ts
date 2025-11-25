@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 try {
     dotenv.config({
         path: [
-            path.resolve(process.cwd(), '../../../.env'), // For dist folder
+            path.resolve(process.cwd(), '../../../../.env'), // For dist folder
             path.resolve(process.cwd(), '../.env'), // For monorepo root
             path.resolve(process.cwd(), '.env') // For monorepo package
         ]
@@ -16,24 +16,6 @@ try {
 interface Config {
     env: string
 
-    dragonfly: {
-        uri: string
-        password: string
-    }
-
-    google: {
-        email: string
-        clientId: string
-        clientSecret: string
-        refreshToken: string
-    }
-
-    client: {
-        uri: string
-
-        createURL: (path: string) => string
-    }
-
     port: number
     uri: string
     domain: string
@@ -41,29 +23,31 @@ interface Config {
     sessionSecret: string
     fileDestination: string
 
+    google: {
+        user: string
+        appPassword: string
+    }
+
+    frontend: {
+        uri: string
+
+        createURL: (path: string) => string
+    }
+
+    redis: {
+        uri: string
+        password: string
+    }
+
+    mysql: {
+        uri: string
+    }
+
     isEnvDevelopment: () => boolean
 }
 
 const config: Config = {
     env: process.env.ENV ?? 'development',
-
-    dragonfly: {
-        uri: process.env.DRAGONFLY_URI ?? '',
-        password: process.env.DRAGONFLY_PASSWORD ?? ''
-    },
-
-    google: {
-        email: process.env.GOOGLE_EMAIL ?? '',
-        clientId: process.env.GOOGLE_CLIENT_ID ?? '',
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
-        refreshToken: process.env.GOOGLE_REFRESH_TOKEN ?? ''
-    },
-
-    client: {
-        uri: process.env.CLIENT_URI ?? '',
-
-        createURL: (path: string) => `${config.client.uri}${path}`
-    },
 
     port: Number(process.env.API_PORT ?? 40080),
     uri: process.env.API_URI ?? `http://localhost:${Number(process.env.API_PORT ?? 40080)}`,
@@ -71,6 +55,26 @@ const config: Config = {
     allowedOrigins: (process.env.API_ALLOWED_ORIGINS ?? '').split(','),
     sessionSecret: process.env.API_SESSION_SECRET ?? 'development',
     fileDestination: process.env.API_FILE_DESTINATION ?? 'uploads/',
+
+    google: {
+        user: process.env.GOOGLE_USER ?? '',
+        appPassword: process.env.GOOGLE_APP_PASSWORD ?? ''
+    },
+
+    frontend: {
+        uri: process.env.FRONTEND_URI ?? '',
+
+        createURL: (path: string) => `${config.frontend.uri}${path}`
+    },
+
+    redis: {
+        uri: process.env.REDIS_URI ?? '',
+        password: process.env.REDIS_PASSWORD ?? ''
+    },
+
+    mysql: {
+        uri: process.env.MYSQL_URI ?? ''
+    },
 
     isEnvDevelopment: () => config.env === 'development'
 }

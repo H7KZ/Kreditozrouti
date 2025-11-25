@@ -1,15 +1,16 @@
-import { FISEventInterface } from '$api/Interfaces/FISEventInterface'
-import FISEventsInterface from '$api/Interfaces/FISEventsInterface'
-import MarkdownService from '$scraper/Services/MarkdownService'
+import FISEventInterface from '@scraper/Interfaces/FIS/FISEventInterface'
+import FISEventsInterface from '@scraper/Interfaces/FIS/FISEventsInterface'
+import InSISCatalogInterface from '@scraper/Interfaces/InSIS/InSISCatalogInterface'
+import MarkdownService from '@scraper/Services/MarkdownService'
 import * as cheerio from 'cheerio'
 import moment from 'moment'
 
 export default class ExtractService {
-    static extractAllArticlesWithParser(html: string): FISEventsInterface[] {
+    static extractAllFISEventArticlesWithParser(html: string): FISEventsInterface {
         const $ = cheerio.load(html)
         const articles = $('article')
 
-        const events: FISEventsInterface[] = []
+        const eventIds: string[] = []
 
         articles.each((i, el) => {
             const article = $(el)
@@ -19,14 +20,14 @@ export default class ExtractService {
             const eventId = this.serializeValue(link ? (new URL(link).pathname.split('/').filter(Boolean).join('/') ?? null) : null)
 
             if (eventId) {
-                events.push({ eventId })
+                eventIds.push(eventId)
             }
         })
 
-        return events
+        return { ids: eventIds }
     }
 
-    static extractEventDetailsWithParser(html: string): FISEventInterface | null {
+    static extractFISEventDetailsWithParser(html: string): FISEventInterface | null {
         const $ = cheerio.load(html)
 
         const siteUrl = $('link[rel="canonical"]').attr('href')
@@ -69,8 +70,8 @@ export default class ExtractService {
         }
 
         const title = $('article h1').text().trim() ?? null
-        const imageSrc = $('section[class*="event-detail"] img').attr('src') ?? null
-        const imageAlt = $('section[class*="event-detail"] img').attr('alt') ?? null
+        const image_src = $('section[class*="event-detail"] img').attr('src') ?? null
+        const image_alt = $('section[class*="event-detail"] img').attr('alt') ?? null
         const subtitle = $('article h1 + span').text().trim() ?? null
 
         const descriptionContainer = $('h2:contains("O akci")').next('div')
@@ -82,37 +83,48 @@ export default class ExtractService {
         }
 
         const place = getDetailByLabel('Místo události:')
-        const registrationUrl = getDetailByLabel('Registrace:')
+        const registration_from = getDetailByLabel('Registrace:')
         const datetime = getDetailByLabel('Datum a čas:')
 
-        const registrationFrom = $('a:contains("Registruj se zde")').attr('href') ?? null
+        const registration_url = $('a:contains("Registruj se zde")').attr('href') ?? null
 
-        const substituteUrl = $('a:contains("Chci být náhradník")').attr('href') ?? null
+        const substitute_url = $('a:contains("Chci být náhradník")').attr('href') ?? null
 
         return {
-            eventId: this.serializeValue(eventId),
+            id: this.serializeValue(eventId),
             image: {
-                src: this.serializeValue(imageSrc),
-                alt: this.serializeValue(imageAlt)
+                src: this.serializeValue(image_src),
+                alt: this.serializeValue(image_alt)
             },
             title: this.serializeValue(title),
             subtitle: this.serializeValue(subtitle),
             categories: categories,
-            datetime: this.extractDateTimeFromString(this.serializeValue(datetime) ?? '').datetime,
+            datetime: this.extractDateTimeFromString(this.serializeValue(datetime) ?? '').datetime?.toISOString() ?? null,
             description: description ?? null,
             place: this.serializeValue(place),
             author: author,
             language: language,
-            registrationFrom: this.extractDateTimeFromString(this.serializeValue(registrationFrom) ?? '').date,
-            registrationUrl: this.serializeValue(registrationUrl),
-            substituteUrl: this.serializeValue(substituteUrl)
+            registration_from: this.extractDateTimeFromString(this.serializeValue(registration_from) ?? '').date?.toISOString() ?? null,
+            registration_url: this.serializeValue(registration_url),
+            substitute_url: this.serializeValue(substitute_url)
         }
     }
 
-    static serializeValue(value: string | null): string | null {
-        if (!value) return null
+    static extractInSISCatalogCoursesWithParser(html: string): InSISCatalogInterface {
+        const $ = cheerio.load(html)
+        const subjects: string[] = []
+        const baseUrl = 'https://insis.vse.cz/katalog/'
 
-        return value.replaceAll('\n', ' ').replaceAll('\r', ' ').replaceAll('\t', ' ').replace(/\s+/g, ' ').trim()
+        $('a[href*="syllabus.pl?predmet="]').each((i, el) => {
+            const href = $(el).attr('href')
+
+            if (href) {
+                const fullUrl = href.startsWith('http') ? href : baseUrl + href
+                subjects.push(fullUrl.trim())
+            }
+        })
+
+        return { urls: [...new Set(subjects)] }
     }
 
     static extractDateTimeFromString(text: string): { datetime: Date | null; date: Date | null; time: string | null } {
@@ -141,7 +153,7 @@ export default class ExtractService {
             'DD.MM.YY',
             'DD.MM.Y',
             'DD.MM.'
-        ]).zone('Europe/Prague')
+        ]).utcOffset('Europe/Prague')
 
         const time = moment(
             text
@@ -164,14 +176,20 @@ export default class ExtractService {
                 .replace(/[,\s]+/, ' ')
                 .trim(),
             ['H:mm', 'HH:mm']
-        ).zone('Europe/Prague')
+        ).utcOffset('Europe/Prague')
 
-        const datetime = moment(`${date.format('YYYY-MM-DD')}T${time.format('HH:mm')}`).zone('Europe/Prague')
+        const datetime = moment(`${date.format('YYYY-MM-DD')}T${time.format('HH:mm')}`).utcOffset('Europe/Prague')
 
         return {
             datetime: datetime.isValid() ? datetime.toDate() : null,
             date: date.isValid() ? date.toDate() : null,
             time: time.isValid() ? time.format('HH:mm') : null
         }
+    }
+
+    private static serializeValue(value: string | null): string | null {
+        if (!value) return null
+
+        return value.replaceAll('\n', ' ').replaceAll('\r', ' ').replaceAll('\t', ' ').replace(/\s+/g, ' ').trim()
     }
 }

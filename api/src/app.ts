@@ -1,10 +1,12 @@
-import path from 'path'
-import { dragonfly } from '$api/clients'
-import Config from '$api/Config/Config'
-import ErrorHandler from '$api/Middlewares/ErrorHandler'
-import AuthRoutes from '$api/Routes/AuthRoutes'
+import { redis } from '@api/clients'
+import Config from '@api/Config/Config'
+import ErrorHandler from '@api/Error/ErrorHandler'
+import { Paths } from '@api/paths'
+import AuthRoutes from '@api/Routes/AuthRoutes'
+import EventRoutes from '@api/Routes/EventRoutes'
+import EventsRoutes from '@api/Routes/EventsRoutes'
 import compression from 'compression'
-import { RedisStore as DragonflyStore } from 'connect-redis'
+import { RedisStore } from 'connect-redis'
 import cors, { CorsOptions } from 'cors'
 import express from 'express'
 import session, { type SessionOptions } from 'express-session'
@@ -20,7 +22,7 @@ const corsOptions: CorsOptions = {
     origin: Config.allowedOrigins
 }
 
-app.use('/assets', express.static(path.join(__dirname, '../assets')))
+app.use('/assets', express.static(Paths.assets))
 
 app.options('/{*any}', cors(corsOptions)) // include before other routes
 
@@ -36,7 +38,7 @@ app.use(helmet())
 app.disable('x-powered-by')
 
 const sessionOptions: SessionOptions = {
-    store: new DragonflyStore({ client: dragonfly, prefix: 'session:' }),
+    store: new RedisStore({ client: redis, prefix: 'session:' }),
     secret: Config.sessionSecret,
     resave: true,
     saveUninitialized: true,
@@ -65,6 +67,8 @@ app.use(morgan(Config.isEnvDevelopment() ? 'dev' : 'combined')) // Log different
 app.use(responseTime())
 
 app.use('/auth', AuthRoutes)
+app.use('/events', EventsRoutes)
+app.use('/event', EventRoutes)
 
 // Global error handler
 app.use(ErrorHandler)
