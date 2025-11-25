@@ -80,16 +80,6 @@ npm run preview         # Preview production build
 - **Data Loading**: Course data (`subjects.json`) is loaded at app startup and cached in memory.
 - **TypeScript Paths**: `@api/` and `@api/...` aliases for clean imports (configured in `tsconfig.json` and `tsconfig-paths`).
 
-### Environment Variables
-
-Set these in your `.env` or Railway dashboard:
-
-- `NODE_ENV`: `development` or `production`
-- `PORT`: Server port (default: 6767)
-- `PUBLIC_URL`: Public URL of the API (e.g., `https://kreditozrouti-production.up.railway.app`)
-- `SESSION_SECRET`: Secret key for session encryption
-- `RAILWAY_STATIC_URL`: Railway-provided domain for cookies
-
 ---
 
 ## Česky
@@ -167,16 +157,6 @@ npm run preview         # Náhled produkčního buildu
 - **Správa Relací**: Express-session se zabezpečenými volbami cookies pro produkci.
 - **Zavaděč Dat**: Data kurzů (`subjects.json`) se načítají při spuštění aplikace a ukládají do mezipaměti.
 - **TypeScript Cesty**: Aliasy `@api/` a `@api/...` pro čistý import (nakonfigurováno v `tsconfig.json` a `tsconfig-paths`).
-
-### Proměnné Prostředí
-
-Nastavte tyto v `.env` nebo na panelu Railway:
-
-- `NODE_ENV`: `development` nebo `production`
-- `PORT`: Port serveru (výchozí: 6767)
-- `PUBLIC_URL`: Veřejná URL API (např. `https://kreditozrouti-production.up.railway.app`)
-- `SESSION_SECRET`: Tajný klíč pro šifrování relací
-- `RAILWAY_STATIC_URL`: Doména poskytovaná Railway pro cookies
 
 ---
 
