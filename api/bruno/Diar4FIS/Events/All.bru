@@ -17,21 +17,13 @@ params:query {
   categories: 
 }
 
-body:json {
-  {
-    "email": "enga03@vse.cz"
-  }
-  
-}
-
 settings {
   encodeUrl: true
 }
 
 docs {
-  Success Response (201):
+  Success Response (200):
   {
-    code: SuccessCodeEnum.SignInCodeSent (api/src/Enums/SuccessEnum.ts)
+    events: Event[] (api/src/Database/types/event.type.ts)
   }
-  
 }
