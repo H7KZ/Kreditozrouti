@@ -4,7 +4,12 @@ import '$frontend/App.css'
 function App() {
     return (
         <>
-            <Landing />
+            <div className="fixed top-0 right-0 p-4 z-[9999]">
+                <LanguageSwitcher />
+            </div>
+            <main className="w-full min-h-screen grid place-items-center">
+                <Landing />
+            </main>
         </>
     )
 }
