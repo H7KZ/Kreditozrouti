@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 export default function LoginPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [xname, setXname] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     console.log('Submitting:', xname)
+    navigate({ to: '/calendar' })
   }
 
   return (
