@@ -2,6 +2,9 @@
 
 .env
 
+/.idea
+/.github
+
 **/node_modules
 **/dist
 **/build
