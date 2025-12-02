@@ -9,11 +9,6 @@ import {
 import { createEventsServicePlugin } from '@schedule-x/events-service'
 import '@schedule-x/theme-default/dist/index.css'
 
-// We assume the polyfill is already in main.tsx, but this safety check doesn't hurt
-if (!window.Temporal) {
-  import('temporal-polyfill/global')
-}
-
 function CalendarApp() {
   const eventsService = useState(() => createEventsServicePlugin())[0]
 
@@ -23,7 +18,6 @@ function CalendarApp() {
       {
         id: '1',
         title: 'Test Event',
-        // FIX: Passing the raw Temporal Object, NOT a string
         start: Temporal.Now.zonedDateTimeISO(),
         end: Temporal.Now.zonedDateTimeISO().add({ hours: 1 }),
       },

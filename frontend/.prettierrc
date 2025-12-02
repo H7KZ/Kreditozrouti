@@ -1,14 +1,15 @@
 {
-    "trailingComma": "none",
-    "printWidth": 240,
-    "tabWidth": 2,
-    "semi": false,
-    "singleQuote": true,
-    "quoteProps": "as-needed",
-    "jsxSingleQuote": true,
-    "bracketSpacing": true,
-    "bracketSameLine": true,
-    "arrowParens": "avoid",
-    "plugins": ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
-    "importOrder": ["<THIRD_PARTY_MODULES>", "^@/(.*)$", "^[./]"]
+  "trailingComma": "none",
+  "printWidth": 240,
+  "tabWidth": 2,
+  "semi": false,
+  "singleQuote": false,
+  "quoteProps": "as-needed",
+  "jsxSingleQuote": false,
+  "bracketSpacing": true,
+  "bracketSameLine": true,
+  "arrowParens": "avoid",
+  "plugins": ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
+  "importOrder": ["<THIRD_PARTY_MODULES>", "^@/(.*)$", "^[./]"],
+  "tailwindConfig": "./tailwind.config.js"
 }
