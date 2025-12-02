@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import 'temporal-polyfill/global'
 import '$frontend/index.css'
 import '$frontend/i18n/config'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
@@ -7,8 +8,9 @@ import { Route as RootRoute } from '@/routes/__root'
 import { Route as LoginRoute } from '@/routes/login'
 import { Route as LoginAliasRoute } from '@/routes/login.alias'
 import { Route as CalendarRoute } from '@/routes/calendar'
+import { Route as ThanksRoute } from '@/routes/thanks'
 
-const routeTree = RootRoute.addChildren([LoginRoute, LoginAliasRoute, CalendarRoute])
+const routeTree = RootRoute.addChildren([LoginRoute, LoginAliasRoute, CalendarRoute, ThanksRoute])
 
 const router = createRouter({ routeTree })
 

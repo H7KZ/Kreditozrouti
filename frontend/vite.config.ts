@@ -19,7 +19,8 @@ export default ({ mode }: { mode: string }) => {
                 $frontend: path.resolve(__dirname, './src'),
                 $api: path.resolve(__dirname, '../api/src'),
                 $scraper: path.resolve(__dirname, '../scraper/src')
-            }
+            },
+            dedupe: ['react', 'react-dom', '@schedule-x/react']
         },
 
         server: {
