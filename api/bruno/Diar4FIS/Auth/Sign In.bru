@@ -11,10 +11,10 @@ post {
 }
 
 body:json {
+  // api/src/Controllers/Auth/types/SignInRequest.ts
   {
     "email": "komj09@vse.cz"
   }
-  
 }
 
 settings {
@@ -23,8 +23,9 @@ settings {
 }
 
 docs {
+  // api/src/Controllers/Auth/types/SignInResponse.ts
   Success Response (201):
   {
-    code: SuccessCodeEnum.SignInCodeSent (api/src/Enums/SuccessEnum.ts)
+    code: SuccessCodeEnum.SIGN_IN_CODE_SENT
   }
 }
