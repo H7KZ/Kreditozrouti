@@ -6,6 +6,8 @@ import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 import Exception from '@api/Error/Exception'
 import SignInConfirmValidation from '@api/Validations/SignInConfirmValidation'
 import { Request, Response } from 'express'
+import passport from 'passport'
+import { User } from '@api/Database/types'
 
 export default async function SignInConfirmController(req: Request, res: Response) {
     const result = await SignInConfirmValidation.safeParseAsync(req.body)
@@ -32,11 +34,17 @@ export default async function SignInConfirmController(req: Request, res: Respons
 
     await redis.del(`auth:code:${data.email}`)
 
-    return res.status(201).send({
-        code: SuccessCodeEnum.SIGNED_IN,
-        user: {
-            id: user.id,
-            email: user.email
+    return req.login(user as User, error => {
+        if (error) {
+            throw new Exception(500, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.SIGN_IN_FAILED, 'Failed to sign in user')
         }
-    } as SignInConfirmResponse)
+
+        return res.status(201).send({
+            code: SuccessCodeEnum.SIGNED_IN,
+            user: {
+                id: user.id,
+                email: user.email
+            }
+        } as SignInConfirmResponse)
+    })
 }
