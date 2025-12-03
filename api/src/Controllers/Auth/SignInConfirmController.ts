@@ -6,7 +6,6 @@ import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 import Exception from '@api/Error/Exception'
 import SignInConfirmValidation from '@api/Validations/SignInConfirmValidation'
 import { Request, Response } from 'express'
-import passport from 'passport'
 import { User } from '@api/Database/types'
 
 export default async function SignInConfirmController(req: Request, res: Response) {
