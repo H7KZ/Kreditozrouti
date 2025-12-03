@@ -1,5 +1,5 @@
-import ErrorResponse from '@api/Controllers/Event/types/ErrorResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
+import ErrorResponse from '@api/Error/ErrorResponse'
 import Exception from '@api/Error/Exception'
 import { NextFunction, Request, Response } from 'express'
 
