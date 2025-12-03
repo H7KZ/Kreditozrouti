@@ -1,3 +1,4 @@
+import '@api/types'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Error/ErrorHandler'
@@ -12,7 +13,6 @@ import express from 'express'
 import session, { type SessionOptions } from 'express-session'
 import helmet from 'helmet'
 import morgan from 'morgan'
-import passport from 'passport'
 import responseTime from 'response-time'
 
 const app = express()
@@ -57,9 +57,6 @@ if (!Config.isEnvDevelopment()) {
 }
 
 app.use(session(sessionOptions))
-
-app.use(passport.initialize())
-app.use(passport.session())
 
 app.use(compression({}))
 
