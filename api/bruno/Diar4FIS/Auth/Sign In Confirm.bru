@@ -6,10 +6,25 @@ meta {
 
 post {
   url: http://localhost:40080/auth/signin/confirm
-  body: none
-  auth: inherit
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "komj09@vse.cz",
+    "code": "123456"
+  }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Success Response (201):
+  {
+    code: SuccessCodeEnum.SignedIn (api/src/Enums/SuccessEnum.ts)
+  }
 }
