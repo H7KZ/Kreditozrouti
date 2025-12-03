@@ -15,7 +15,6 @@ services:
 
     depends_on:
       - mysql
-      - api-migrations
       - redis
 
     environment:
