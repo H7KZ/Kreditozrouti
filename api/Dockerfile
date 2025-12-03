@@ -11,7 +11,7 @@ COPY ./api/ /usr/src/api/
 
 
 # "Workspaces" setup
-# COPY ./scrapper/src/ /usr/src/scrapper/src/
+COPY ./scraper/src/ /usr/src/scraper/src/
 
 
 RUN npm run build
