@@ -6,6 +6,8 @@ export interface EventTable {
     created_at: ColumnType<Date, string | undefined, never>
     updated_at: ColumnType<Date, string | undefined, string | undefined>
 
+    // categories: string[]
+
     title: string | null
     subtitle: string | null
     datetime: ColumnType<Date, string | null, string | null>
