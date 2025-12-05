@@ -25,11 +25,15 @@ export default async function SignInController(req: Request, res: Response) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
-    await redis.del(`auth:code:${data.email}`)
+    await redis.del(`auth:email:${data.code_challenge}`)
+    await redis.del(`auth:challenge:${data.code_challenge}`)
+    await redis.del(`auth:code:${data.code_challenge}`)
+
+    await redis.setex(`auth:email:${data.code_challenge}`, 600, data.email)
+    await redis.setex(`auth:challenge:${data.code_challenge}`, 600, data.code_challenge)
 
     const code = Math.floor(100000 + Math.random() * 900000) // Generate a random 6 digit code
-
-    await redis.setex(`auth:code:${data.email}`, 600, code.toString()) // Save code to redis with 10 minutes expiration
+    await redis.setex(`auth:code:${data.email}`, 600, code.toString())
 
     i18n.init(req, res)
 

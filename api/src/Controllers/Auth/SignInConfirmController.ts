@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import { mysql, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import SignInConfirmRequest from '@api/Controllers/Auth/types/SignInConfirmRequest'
@@ -19,21 +20,37 @@ export default async function SignInConfirmController(req: Request, res: Respons
 
     const data = result.data as SignInConfirmRequest
 
-    const cachedCode = await redis.get(`auth:code:${data.email}`)
+    const code_challenge = crypto.createHash('sha256').update(data.code_verifier).digest('hex')
 
-    if (cachedCode !== data.code.toString()) {
+    const storedCodeChallenge = await redis.get(`auth:challenge:${code_challenge}`)
+
+    if (storedCodeChallenge !== code_challenge) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
-    let user = await mysql.selectFrom('users').select(['id', 'email']).where('email', '=', data.email).executeTakeFirst()
+    const storedEmail = await redis.get(`auth:email:${code_challenge}`)
 
-    user ??= await mysql.insertInto('users').values({ email: data.email }).returning(['id', 'email']).executeTakeFirst()
+    if (!storedEmail) {
+        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
+    }
+
+    const storedCode = await redis.get(`auth:code:${storedEmail}`)
+
+    if (storedCode !== data.auth_code.toString()) {
+        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
+    }
+
+    let user = await mysql.selectFrom('users').select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
+
+    user ??= await mysql.insertInto('users').values({ email: storedEmail }).returning(['id', 'email']).executeTakeFirst()
 
     if (!user) {
         throw new Exception(500, ErrorTypeEnum.DATABASE, ErrorCodeEnum.INSERT_FAILED, 'Failed to create user')
     }
 
-    await redis.del(`auth:code:${data.email}`)
+    await redis.del(`auth:challenge:${code_challenge}`)
+    await redis.del(`auth:email:${code_challenge}`)
+    await redis.del(`auth:code:${user.email}`)
 
     const jwt = await JWTService.createJWTAuthTokenForUser(user as User)
 
