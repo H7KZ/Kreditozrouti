@@ -41,7 +41,7 @@ export async function up(mysql: Kysely<any>): Promise<void> {
     await mysql.schema
         .createTable('courses_timetable_units')
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
-        .addColumn('course_id', 'varchar(255)', col => col.notNull().references('courses.id').onDelete('cascade'))
+        .addColumn('course_id', 'integer', col => col.notNull().references('courses.id').onDelete('cascade'))
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
         .addColumn('lecturer', 'varchar(255)')
@@ -52,11 +52,11 @@ export async function up(mysql: Kysely<any>): Promise<void> {
     await mysql.schema
         .createTable('courses_timetable_slots')
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
-        .addColumn('timetable_unit_id', 'integer', col => col.notNull().references('course_timetable_units.id').onDelete('cascade'))
+        .addColumn('timetable_unit_id', 'integer', col => col.notNull().references('courses_timetable_units.id').onDelete('cascade'))
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
         .addColumn('type', 'varchar(255)')
-        .addColumn('frequency', 'varchar(32)') // 'weekly' | 'single'
+        .addColumn('frequency', 'varchar(32)')
         .addColumn('date', 'varchar(255)')
         .addColumn('day', 'varchar(255)')
         .addColumn('time_from', 'varchar(255)')
