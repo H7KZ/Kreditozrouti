@@ -1,6 +1,16 @@
 import moment from 'moment'
 
+/**
+ * Utility service providing static methods for parsing and sanitizing scraped text data.
+ */
 export default class ExtractService {
+    /**
+     * Parses a text string to extract date and time components.
+     * Supports various Czech date formats (e.g., 'D. M. YYYY') and normalizes to the 'Europe/Prague' timezone.
+     *
+     * @param text - The raw input string containing date and/or time information.
+     * @returns An object containing the combined datetime, standalone date, and time string.
+     */
     static extractDateTimeFromString(text: string): { datetime: Date | null; date: Date | null; time: string | null } {
         if (!text) {
             return {
@@ -61,6 +71,12 @@ export default class ExtractService {
         }
     }
 
+    /**
+     * Normalizes a string by removing newlines, tabs, and excessive whitespace.
+     *
+     * @param value - The raw string to serialize.
+     * @returns The cleaned and trimmed string, or null if the input is falsy.
+     */
     static serializeValue(value: string | null): string | null {
         if (!value) return null
 

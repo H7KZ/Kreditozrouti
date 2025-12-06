@@ -3,6 +3,13 @@ import { scraper } from '@scraper/bullmq'
 import ExtractInSISService from '@scraper/Services/ExtractInSISService'
 import Axios from 'axios'
 
+/**
+ * Initiates the scraping process for the InSIS course catalog.
+ * Performs a search request to retrieve the full list of courses, extracts their URLs,
+ * and queues individual scrape jobs for each discovered course.
+ *
+ * @returns A promise that resolves when all course scrape jobs have been queued.
+ */
 export default async function InSISCatalogController(): Promise<void> {
     const request = await Axios.post<string>(
         'https://insis.vse.cz/katalog/index.pl',

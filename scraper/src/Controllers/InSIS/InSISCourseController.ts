@@ -4,6 +4,13 @@ import { ScraperInSISCourseRequestJobInterface } from '@scraper/Interfaces/BullM
 import ExtractInSISService from '@scraper/Services/ExtractInSISService'
 import Axios from 'axios'
 
+/**
+ * Scrapes detailed information for a specific InSIS course.
+ * Fetches the course page HTML, extracts metadata, and queues the result for persistence.
+ *
+ * @param data - The job payload containing the target course URL.
+ * @returns A promise that resolves when the parsed course data is queued.
+ */
 export default async function InSISCourseController(data: ScraperInSISCourseRequestJobInterface): Promise<void> {
     const request = await Axios.get<string>(data.url, {
         headers: {

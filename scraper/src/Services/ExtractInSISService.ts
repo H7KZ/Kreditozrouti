@@ -4,7 +4,18 @@ import ExtractService from '@scraper/Services/ExtractService'
 import MarkdownService from '@scraper/Services/MarkdownService'
 import * as cheerio from 'cheerio'
 
+/**
+ * Service responsible for parsing HTML content from the InSIS university system.
+ * Extracts course catalog lists and detailed course syllabi/timetables.
+ */
 export default class ExtractInSISService {
+    /**
+     * Parses the course catalog HTML to extract a unique list of course syllabus URLs.
+     * Identifies links based on the specific `syllabus.pl?predmet=` pattern.
+     *
+     * @param html - The raw HTML content of the catalog page.
+     * @returns An object containing a deduplicated list of absolute course URLs.
+     */
     static extractInSISCatalogCoursesWithParser(html: string): InSISCatalogInterface {
         const $ = cheerio.load(html)
         const subjects: string[] = []
@@ -22,6 +33,16 @@ export default class ExtractInSISService {
         return { urls: [...new Set(subjects)] }
     }
 
+    /**
+     * Parses the detailed HTML page of a specific course.
+     * Extracts metadata (ECTS, language, level), syllabus sections (Markdown), assessment methods, and timetable slots.
+     * Handles text cleaning, entity decoding, and complex timetable row grouping.
+     *
+     * @param html - The raw HTML content of the course detail page.
+     * @param url - The source URL of the page (used as a fallback for ID extraction).
+     * @returns The structured course data object.
+     * @throws {Error} If the unique Course ID cannot be determined from the content or URL.
+     */
     static extractInSISCourseWithParser(html: string, url: string): InSISCourseInterface {
         const $ = cheerio.load(html)
 
@@ -113,6 +134,7 @@ export default class ExtractInSISService {
 
         const semester = getRowValue('Semestr:')
 
+        // Logic to extract academic level and year (e.g., "Bachelor", "Year 2")
         const levelYearRaw = getRowValue('Doporučený typ a ročník studia:')
         let level: string | null = null
         let year_of_study: number | null = null
@@ -135,6 +157,7 @@ export default class ExtractInSISService {
                 }
             }
         } else {
+            // Fallback: Attempt to infer level from the page header (e.g., MBA or specific courses).
             const headerText = $('#titulek h1').text() || ''
 
             const typeMatch = /-\s*(mba|kurzy|kurz)\s*\)/i.exec(headerText)

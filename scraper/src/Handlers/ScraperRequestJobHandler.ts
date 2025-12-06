@@ -5,6 +5,13 @@ import InSISCourseController from '@scraper/Controllers/InSIS/InSISCourseControl
 import ScraperRequestJobInterface from '@scraper/Interfaces/BullMQ/ScraperRequestJobInterface'
 import { Job } from 'bullmq'
 
+/**
+ * Entry point for processing scraper request jobs.
+ * Routes execution to specific controllers based on the job type definition.
+ *
+ * @param job - The BullMQ job object containing the scrape request configuration.
+ * @throws Re-throws exceptions to trigger BullMQ failure handling.
+ */
 export default async function ScraperRequestJobHandler(job: Job<ScraperRequestJobInterface>): Promise<void> {
     const type = job.data.type
 

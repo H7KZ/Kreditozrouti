@@ -4,7 +4,18 @@ import ExtractService from '@scraper/Services/ExtractService'
 import MarkdownService from '@scraper/Services/MarkdownService'
 import * as cheerio from 'cheerio'
 
+/**
+ * Service responsible for parsing HTML content from the FIS website.
+ * Extracts event lists and detailed event metadata using Cheerio.
+ */
 export default class ExtractFISService {
+    /**
+     * Parses the HTML of an events listing page to find event identifiers.
+     * Iterates through article elements to extract IDs from their permalinks.
+     *
+     * @param html - The raw HTML content of the events listing page.
+     * @returns An object containing the list of discovered event IDs.
+     */
     static extractAllFISEventArticlesWithParser(html: string): FISEventsInterface {
         const $ = cheerio.load(html)
         const articles = $('article')
@@ -26,6 +37,13 @@ export default class ExtractFISService {
         return { ids: eventIds }
     }
 
+    /**
+     * Parses the HTML of a specific event page to extract detailed metadata.
+     * Combines data from embedded JSON-LD schema and DOM elements (converted to Markdown).
+     *
+     * @param html - The raw HTML content of the event page.
+     * @returns The structured event data, or null if critical information (like the canonical URL) is missing.
+     */
     static extractFISEventDetailsWithParser(html: string): FISEventInterface | null {
         const $ = cheerio.load(html)
 

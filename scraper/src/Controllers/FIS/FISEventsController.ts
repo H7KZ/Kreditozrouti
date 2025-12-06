@@ -4,15 +4,27 @@ import FISEventsInterface from '@scraper/Interfaces/FIS/FISEventsInterface'
 import ExtractFISService from '@scraper/Services/ExtractFISService'
 import Axios from 'axios'
 
+/**
+ * Structure of the AJAX response from the 4fis.cz pagination endpoint.
+ */
 interface RequestEventsInterface {
+    /** HTML content containing event articles. */
     data: string
+    /** Total number of available pagination pages. */
     max_num_pages: number
 }
 
+/**
+ * Scrapes the complete list of FIS events by iterating through pagination.
+ * Queues individual scrape jobs for every event ID found.
+ *
+ * @returns A promise that resolves when all pages are processed and jobs are queued.
+ */
 export default async function FISEventsController(): Promise<void> {
     const events: FISEventsInterface = { ids: [] }
 
     let max_num_pages = 1
+
     for (let page = 1; page <= max_num_pages; page++) {
         const request = await Axios.get<RequestEventsInterface>(
             `https://4fis.cz/wp-admin/admin-ajax.php?action=example_ajax_request&paged=${page}&nonce=f6e3b07fed`,

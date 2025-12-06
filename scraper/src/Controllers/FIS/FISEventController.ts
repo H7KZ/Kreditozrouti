@@ -4,6 +4,13 @@ import { ScraperFISEventRequestJobInterface } from '@scraper/Interfaces/BullMQ/S
 import ExtractFISService from '@scraper/Services/ExtractFISService'
 import Axios from 'axios'
 
+/**
+ * Scrapes details for a specific FIS event.
+ * Fetches the HTML page, parses event data, and dispatches a response job.
+ *
+ * @param data - The job payload containing the Event ID to scrape.
+ * @returns A promise that resolves when the scrape response is queued.
+ */
 export default async function FISEventController(data: ScraperFISEventRequestJobInterface): Promise<void> {
     const request = await Axios.get<string>(`https://4fis.cz/${data.eventId}`, {
         headers: {
