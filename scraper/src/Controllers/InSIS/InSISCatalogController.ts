@@ -1,12 +1,12 @@
 import { JobEnum } from '@api/Enums/JobEnum'
 import { scraper } from '@scraper/bullmq'
-import ExtractService from '@scraper/Services/ExtractService'
+import ExtractInSISService from '@scraper/Services/ExtractInSISService'
 import Axios from 'axios'
 
 export default async function InSISCatalogController(): Promise<void> {
     const request = await Axios.post<string>(
         'https://insis.vse.cz/katalog/index.pl',
-        {},
+        'kredity_od=&kredity_do=&vyhledat_rozsirene=Vyhledat+p%C5%99edm%C4%9Bty&jak=rozsirene',
         {
             headers: {
                 Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -24,7 +24,7 @@ export default async function InSISCatalogController(): Promise<void> {
         }
     )
 
-    const catalog = ExtractService.extractInSISCatalogCoursesWithParser(request.data)
+    const catalog = ExtractInSISService.extractInSISCatalogCoursesWithParser(request.data)
 
     await scraper.queue.response.add(JobEnum.INSIS_CATALOG_RESPONSE, { type: 'InSIS:Catalog', catalog })
 

@@ -21,7 +21,7 @@ export default interface SignInConfirmResponse {
      */
     user: {
         /**
-         * The ID of the signed-in user
+         * The Id of the signed-in user
          *
          * @type {number}
          */

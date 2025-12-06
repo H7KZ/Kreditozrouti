@@ -1,5 +1,6 @@
 import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 
+export const CourseTableName = 'insis_courses'
 export interface CourseTable {
     id: number
 
@@ -9,13 +10,14 @@ export interface CourseTable {
     // assessment_methods: CourseAssessmentMethod[]
     // timetable: CourseTimetableUnit[]
 
+    url: string
     ident: string
     title: string | null
     czech_title: string | null
     ects: number | null
     mode_of_delivery: string | null
     mode_of_completion: string | null
-    language: string | null
+    languages: string | null
     level: string | null
     year_of_study: number | null
     semester: string | null
@@ -35,6 +37,7 @@ export interface CourseTable {
 export type Course = Selectable<CourseTable>
 export type NewCourse = Insertable<Omit<CourseTable, 'id' | 'created_at' | 'updated_at'>>
 
+export const CourseAssessmentMethodTableName = 'insis_courses_assessment_methods'
 export interface CourseAssessmentMethodTable {
     id: Generated<number>
     course_id: number
@@ -49,6 +52,7 @@ export interface CourseAssessmentMethodTable {
 export type CourseAssessmentMethod = Selectable<CourseAssessmentMethodTable>
 export type NewCourseAssessmentMethod = Insertable<Omit<CourseAssessmentMethodTable, 'id' | 'created_at' | 'updated_at'>>
 
+export const CourseTimetableUnitTableName = 'insis_courses_timetable_units'
 export interface CourseTimetableUnitTable {
     id: Generated<number>
     course_id: number
@@ -66,6 +70,7 @@ export interface CourseTimetableUnitTable {
 export type CourseTimetableUnit = Selectable<CourseTimetableUnitTable>
 export type NewCourseTimetableUnit = Insertable<Omit<CourseTimetableUnitTable, 'id' | 'created_at' | 'updated_at'>>
 
+export const CourseTimetableSlotTableName = 'insis_courses_timetable_slots'
 export interface CourseTimetableSlotTable {
     id: Generated<number>
     timetable_unit_id: number

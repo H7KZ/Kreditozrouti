@@ -1,5 +1,6 @@
 import { ColumnType, Generated, Selectable } from 'kysely'
 
+export const UserTableName = 'users'
 export interface UserTable {
     id: Generated<number>
 

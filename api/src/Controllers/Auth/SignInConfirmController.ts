@@ -1,7 +1,7 @@
 import { mysql, redis } from '@api/clients'
 import SignInConfirmRequest from '@api/Controllers/Auth/types/SignInConfirmRequest'
 import SignInConfirmResponse from '@api/Controllers/Auth/types/SignInConfirmResponse'
-import { User } from '@api/Database/types'
+import { User, UserTableName } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 import Exception from '@api/Error/Exception'
@@ -23,9 +23,9 @@ export default async function SignInConfirmController(req: Request, res: Respons
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
-    let user = await mysql.selectFrom('users').select(['id', 'email']).where('email', '=', data.email).executeTakeFirst()
+    let user = await mysql.selectFrom(UserTableName).select(['id', 'email']).where('email', '=', data.email).executeTakeFirst()
 
-    user ??= await mysql.insertInto('users').values({ email: data.email }).returning(['id', 'email']).executeTakeFirst()
+    user ??= await mysql.insertInto(UserTableName).values({ email: data.email }).returning(['id', 'email']).executeTakeFirst()
 
     if (!user) {
         throw new Exception(500, ErrorTypeEnum.DATABASE, ErrorCodeEnum.INSERT_FAILED, 'Failed to create user')

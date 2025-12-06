@@ -1,7 +1,7 @@
 import { JobEnum } from '@api/Enums/JobEnum'
 import { scraper } from '@scraper/bullmq'
 import { ScraperFISEventRequestJobInterface } from '@scraper/Interfaces/BullMQ/ScraperRequestJobInterface'
-import ExtractService from '@scraper/Services/ExtractService'
+import ExtractFISService from '@scraper/Services/ExtractFISService'
 import Axios from 'axios'
 
 export default async function FISEventController(data: ScraperFISEventRequestJobInterface): Promise<void> {
@@ -12,7 +12,7 @@ export default async function FISEventController(data: ScraperFISEventRequestJob
         }
     })
 
-    const event = ExtractService.extractFISEventDetailsWithParser(request.data)
+    const event = ExtractFISService.extractFISEventDetailsWithParser(request.data)
 
     await scraper.queue.response.add(JobEnum.FIS_EVENT_RESPONSE, { type: '4FIS:Event', event })
 }

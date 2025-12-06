@@ -29,9 +29,6 @@ async function start() {
         await scraper.schedulers()
         console.log('BullMQ schedulers are set up successfully.')
 
-        await scraper.setConcurrency(8)
-        console.log('BullMQ global concurrency set to 8.')
-
         const server = app.listen(Config.port, () => {
             console.log(`Environment: ${Config.env}`)
             console.log(`Server running on port ${Config.port}`)

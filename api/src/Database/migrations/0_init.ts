@@ -1,8 +1,9 @@
+import { CategoryTableName, EventCategoryTableName, EventTableName, UserTableName } from '@api/Database/types'
 import { Kysely, sql } from 'kysely'
 
 export async function up(mysql: Kysely<any>): Promise<void> {
     await mysql.schema
-        .createTable('users')
+        .createTable(UserTableName)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
@@ -10,7 +11,7 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .execute()
 
     await mysql.schema
-        .createTable('events')
+        .createTable(EventTableName)
         .addColumn('id', 'varchar(255)', col => col.primaryKey())
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
@@ -29,20 +30,20 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .execute()
 
     await mysql.schema
-        .createTable('categories')
+        .createTable(CategoryTableName)
         .addColumn('id', 'varchar(255)', col => col.primaryKey())
         .execute()
 
     await mysql.schema
-        .createTable('events_categories')
-        .addColumn('event_id', 'varchar(255)', col => col.notNull().references('events.id').onDelete('cascade'))
-        .addColumn('category_id', 'varchar(255)', col => col.notNull().references('categories.id').onDelete('cascade'))
+        .createTable(EventCategoryTableName)
+        .addColumn('event_id', 'varchar(255)', col => col.notNull().references(`${EventTableName}.id`).onDelete('cascade'))
+        .addColumn('category_id', 'varchar(255)', col => col.notNull().references(`${CategoryTableName}.id`).onDelete('cascade'))
         .execute()
 }
 
 export async function down(mysql: Kysely<any>): Promise<void> {
-    await mysql.schema.dropTable('users').execute()
-    await mysql.schema.dropTable('events_categories').execute()
-    await mysql.schema.dropTable('categories').execute()
-    await mysql.schema.dropTable('events').execute()
+    await mysql.schema.dropTable(UserTableName).execute()
+    await mysql.schema.dropTable(EventCategoryTableName).execute()
+    await mysql.schema.dropTable(CategoryTableName).execute()
+    await mysql.schema.dropTable(EventTableName).execute()
 }

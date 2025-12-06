@@ -1,17 +1,18 @@
 export default interface InSISCourseInterface {
+    id: number
+    url: string
     ident: string | null
     title: string | null
     czech_title: string | null
     ects: number | null
     mode_of_delivery: string | null
     mode_of_completion: string | null
-    language: string | null
+    languages: string[] | null
     level: string | null
     year_of_study: number | null
     semester: string | null
     lecturers: string[] | null
     prerequisites: string | null
-    co_requisites: string | null
     recommended_programmes: string | null
     required_work_experience: string | null
 
@@ -26,12 +27,12 @@ export default interface InSISCourseInterface {
     timetable: TimetableUnit[] | null
 }
 
-interface AssessmentMethod {
+export interface AssessmentMethod {
     method: string | null
     weight: number | null
 }
 
-interface TimetableUnit {
+export interface TimetableUnit {
     lecturer: string | null
     capacity: number | null
     note: string | null
@@ -39,7 +40,7 @@ interface TimetableUnit {
     slots: TimetableSlot[] | null
 }
 
-interface TimetableSlot {
+export interface TimetableSlot {
     type: string | null
     frequency: 'weekly' | 'single' | null
     date: string | null

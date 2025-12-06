@@ -1,7 +1,7 @@
 import { JobEnum } from '@api/Enums/JobEnum'
 import { scraper } from '@scraper/bullmq'
 import FISEventsInterface from '@scraper/Interfaces/FIS/FISEventsInterface'
-import ExtractService from '@scraper/Services/ExtractService'
+import ExtractFISService from '@scraper/Services/ExtractFISService'
 import Axios from 'axios'
 
 interface RequestEventsInterface {
@@ -30,7 +30,7 @@ export default async function FISEventsController(): Promise<void> {
 
         if (!request.data.data) continue
 
-        const newEvents = ExtractService.extractAllFISEventArticlesWithParser(request.data.data)
+        const newEvents = ExtractFISService.extractAllFISEventArticlesWithParser(request.data.data)
 
         events.ids.push(...newEvents.ids)
     }

@@ -11,12 +11,8 @@ const scraper = {
         response: new Queue<ScraperResponseJobInterface>(QueueEnum.SCRAPER_RESPONSE, { connection: redis })
     },
     worker: {
-        request: new Worker<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, ScraperRequestJobHandler, { connection: redis })
+        request: new Worker<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, ScraperRequestJobHandler, { connection: redis, concurrency: 1 })
         // response: new Worker<ScraperResponseJobInterface>(QueueEnum.SCRAPER_RESPONSE, ScraperResponseJobHandler, { connection: redis })
-    },
-
-    async setConcurrency(concurrency: number) {
-        await scraper.queue.request.setGlobalConcurrency(concurrency)
     },
 
     async waitForQueues() {

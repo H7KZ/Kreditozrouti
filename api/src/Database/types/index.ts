@@ -8,11 +8,11 @@ export * from './course.type'
 
 export interface Database {
     users: UserTable
-    events: EventTable
-    events_categories: EventCategoryTable
-    categories: CategoryTable
-    courses: CourseTable
-    courses_assessment_methods: CourseAssessmentMethodTable
-    courses_timetable_units: CourseTimetableUnitTable
-    courses_timetable_slots: CourseTimetableSlotTable
+    fis_events: EventTable
+    fis_events_categories: EventCategoryTable
+    fis_categories: CategoryTable
+    insis_courses: CourseTable
+    insis_courses_assessment_methods: CourseAssessmentMethodTable
+    insis_courses_timetable_units: CourseTimetableUnitTable
+    insis_courses_timetable_slots: CourseTimetableSlotTable
 }

@@ -13,11 +13,7 @@ const scraper = {
     },
     worker: {
         // request: new Worker<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, ScraperRequestJobHandler, { connection: redis }),
-        response: new Worker<ScraperResponseJobDataInterface>(QueueEnum.SCRAPER_RESPONSE, ScraperResponseJobHandler, { connection: redis })
-    },
-
-    async setConcurrency(concurrency: number) {
-        await scraper.queue.request.setGlobalConcurrency(concurrency)
+        response: new Worker<ScraperResponseJobDataInterface>(QueueEnum.SCRAPER_RESPONSE, ScraperResponseJobHandler, { connection: redis, concurrency: 4 })
     },
 
     async waitForQueues() {
@@ -36,7 +32,7 @@ const scraper = {
 
     async schedulers() {
         await scraper.queue.request.upsertJobScheduler(
-            'EventsRequestJobScheduler',
+            'FISEventsRequestJobScheduler',
             { pattern: '*/2 * * * *' }, // Every 2 minutes
             {
                 name: JobEnum.FIS_EVENTS_REQUEST,
@@ -44,17 +40,34 @@ const scraper = {
                     type: '4FIS:Events'
                 },
                 opts: {
-                    removeOnComplete: {
-                        age: 3600, // keep up to 1 hour
-                        count: 100 // keep up to 100 jobs
-                    },
+                    removeOnComplete: true,
                     removeOnFail: {
-                        age: 24 * 3600 // keep up to 24 hours
+                        age: 2 * 3600, // keep up to 2 hours
+                        count: 32 // keep up to 32 jobs
                     }
                 }
             }
         )
-        console.log('EventsRequestJobScheduler has been set to run every 2 minutes.')
+        console.log('FISEventsRequestJobScheduler has been set to run every 2 minutes.')
+
+        await scraper.queue.request.upsertJobScheduler(
+            'InSISRequestJobScheduler',
+            { pattern: '0 * * * *' }, // Every 1 hour
+            {
+                name: JobEnum.INSIS_CATALOG_REQUEST,
+                data: {
+                    type: 'InSIS:Catalog'
+                },
+                opts: {
+                    removeOnComplete: true,
+                    removeOnFail: {
+                        age: 2 * 3600 // keep up to 2 hours
+                    }
+                }
+            }
+        )
+        // await scraper.queue.request.add(JobEnum.INSIS_CATALOG_REQUEST, { type: 'InSIS:Catalog' })
+        console.log('InSISRequestJobScheduler has been set to run every 1 hour.')
     }
 }
 
