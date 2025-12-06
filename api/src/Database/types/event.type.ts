@@ -1,4 +1,4 @@
-import { ColumnType, Selectable } from 'kysely'
+import { ColumnType, Insertable, Selectable } from 'kysely'
 
 export interface EventTable {
     id: string
@@ -23,6 +23,7 @@ export interface EventTable {
 }
 
 export type Event = Selectable<EventTable>
+export type NewEvent = Insertable<Omit<EventTable, 'id' | 'created_at' | 'updated_at'>>
 
 export interface EventCategoryTable {
     event_id: string
@@ -30,9 +31,11 @@ export interface EventCategoryTable {
 }
 
 export type EventCategory = Selectable<EventCategoryTable>
+export type NewEventCategory = Insertable<EventCategoryTable>
 
 export interface CategoryTable {
     id: string
 }
 
 export type Category = Selectable<CategoryTable>
+export type NewCategory = Insertable<CategoryTable>

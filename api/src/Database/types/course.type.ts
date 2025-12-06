@@ -1,4 +1,4 @@
-import { ColumnType, Selectable } from 'kysely'
+import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 
 export interface CourseTable {
     id: number
@@ -21,7 +21,6 @@ export interface CourseTable {
     semester: string | null
     lecturers: string | null
     prerequisites: string | null
-    co_requisites: string | null
     recommended_programmes: string | null
     required_work_experience: string | null
 
@@ -34,10 +33,11 @@ export interface CourseTable {
 }
 
 export type Course = Selectable<CourseTable>
+export type NewCourse = Insertable<Omit<CourseTable, 'id' | 'created_at' | 'updated_at'>>
 
 export interface CourseAssessmentMethodTable {
-    id: number
-    course_id: string
+    id: Generated<number>
+    course_id: number
 
     created_at: ColumnType<Date, string | undefined, never>
     updated_at: ColumnType<Date, string | undefined, string | undefined>
@@ -47,10 +47,11 @@ export interface CourseAssessmentMethodTable {
 }
 
 export type CourseAssessmentMethod = Selectable<CourseAssessmentMethodTable>
+export type NewCourseAssessmentMethod = Insertable<Omit<CourseAssessmentMethodTable, 'id' | 'created_at' | 'updated_at'>>
 
 export interface CourseTimetableUnitTable {
-    id: number
-    course_id: string
+    id: Generated<number>
+    course_id: number
 
     created_at: ColumnType<Date, string | undefined, never>
     updated_at: ColumnType<Date, string | undefined, string | undefined>
@@ -63,9 +64,10 @@ export interface CourseTimetableUnitTable {
 }
 
 export type CourseTimetableUnit = Selectable<CourseTimetableUnitTable>
+export type NewCourseTimetableUnit = Insertable<Omit<CourseTimetableUnitTable, 'id' | 'created_at' | 'updated_at'>>
 
 export interface CourseTimetableSlotTable {
-    id: number
+    id: Generated<number>
     timetable_unit_id: number
 
     created_at: ColumnType<Date, string | undefined, never>
@@ -77,7 +79,10 @@ export interface CourseTimetableSlotTable {
     day: string | null
     time_from: string | null
     time_to: string | null
+    time_from_minutes: number | null
+    time_to_minutes: number | null
     location: string | null
 }
 
 export type CourseTimetableSlot = Selectable<CourseTimetableSlotTable>
+export type NewCourseTimetableSlot = Insertable<Omit<CourseTimetableSlotTable, 'id' | 'created_at' | 'updated_at'>>

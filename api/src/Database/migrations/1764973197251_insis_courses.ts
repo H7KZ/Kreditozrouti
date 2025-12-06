@@ -18,7 +18,6 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .addColumn('semester', 'varchar(255)')
         .addColumn('lecturers', 'text')
         .addColumn('prerequisites', 'text')
-        .addColumn('co_requisites', 'text')
         .addColumn('recommended_programmes', 'text')
         .addColumn('required_work_experience', 'text')
         .addColumn('aims_of_the_course', 'text')
@@ -61,6 +60,8 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .addColumn('day', 'varchar(255)')
         .addColumn('time_from', 'varchar(255)')
         .addColumn('time_to', 'varchar(255)')
+        .addColumn('time_from_minutes', 'smallint', col => col.unsigned())
+        .addColumn('time_to_minutes', 'smallint', col => col.unsigned())
         .addColumn('location', 'varchar(255)')
         .execute()
 }

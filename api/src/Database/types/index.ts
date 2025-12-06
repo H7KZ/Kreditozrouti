@@ -1,4 +1,4 @@
-import { CourseAssessmentMethodTable, CourseTable, CourseTimetableUnitTable } from './course.type'
+import { CourseAssessmentMethodTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from './course.type'
 import { CategoryTable, EventCategoryTable, EventTable } from './event.type'
 import { UserTable } from './user.type'
 
@@ -14,5 +14,5 @@ export interface Database {
     courses: CourseTable
     courses_assessment_methods: CourseAssessmentMethodTable
     courses_timetable_units: CourseTimetableUnitTable
-    courses_timetable_slots: CourseTimetableUnitTable
+    courses_timetable_slots: CourseTimetableSlotTable
 }
