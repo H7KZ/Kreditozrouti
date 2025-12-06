@@ -3,6 +3,12 @@ import { CategoryTableName, EventCategoryTableName, EventTableName, NewEventCate
 import { ScraperFISEventResponseJobInterface } from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
 import { Job } from 'bullmq'
 
+/**
+ * Processes the scraper response for a specific FIS event.
+ * Upserts the event details into the database and synchronizes associated category relationships.
+ *
+ * @param job - The BullMQ job containing the scraped event data.
+ */
 export default async function ScraperFISEventResponseJob(job: Job<ScraperFISEventResponseJobInterface>): Promise<void> {
     const data = job.data.event
 
@@ -57,8 +63,11 @@ export default async function ScraperFISEventResponseJob(job: Job<ScraperFISEven
 }
 
 /**
- * Syncs Event Categories.
- * Ensures categories exist, links new ones, and unlinks removed ones.
+ * Reconciles the Many-to-Many relationships between an event and its categories.
+ * Ensures referenced categories exist, removes stale associations, and creates new links.
+ *
+ * @param eventId - The unique identifier of the event.
+ * @param incomingCategoryIds - The list of category IDs returned by the scraper.
  */
 async function syncEventCategories(eventId: string, incomingCategoryIds: string[]): Promise<void> {
     if (incomingCategoryIds.length === 0) {

@@ -12,6 +12,12 @@ import { ScraperInSISCourseResponseJobInterface } from '@scraper/Interfaces/Bull
 import { AssessmentMethod, TimetableSlot, TimetableUnit } from '@scraper/Interfaces/InSIS/InSISCourseInterface'
 import { Job } from 'bullmq'
 
+/**
+ * Processes the scraper response for a specific InSIS course.
+ * Upserts course details into the database and triggers synchronization for assessment methods and timetables.
+ *
+ * @param job - The BullMQ job containing the scraped course data.
+ */
 export default async function ScraperInSISCourseResponseJob(job: Job<ScraperInSISCourseResponseJobInterface>): Promise<void> {
     const data = job.data.course
 
@@ -80,7 +86,11 @@ export default async function ScraperInSISCourseResponseJob(job: Job<ScraperInSI
 }
 
 /**
- * Syncs assessment methods (Insert New, Update Changed, Delete Missing).
+ * Reconciles assessment methods for a course.
+ * Performs differential updates (insert, update weight, delete) based on the method name.
+ *
+ * @param courseId - The ID of the course being updated.
+ * @param incomingMethods - The list of assessment methods returned by the scraper.
  */
 async function syncAssessmentMethods(courseId: number, incomingMethods: AssessmentMethod[]): Promise<void> {
     const existingMethods = await mysql.selectFrom(CourseAssessmentMethodTableName).selectAll().where('course_id', '=', courseId).execute()
@@ -119,7 +129,11 @@ async function syncAssessmentMethods(courseId: number, incomingMethods: Assessme
 }
 
 /**
- * Syncs Timetable Units and their slots.
+ * Synchronizes course timetable units.
+ * Identifies units via property hashing to determine insertion or deletion requirements.
+ *
+ * @param courseId - The ID of the course.
+ * @param incomingUnits - The list of timetable units returned by the scraper.
  */
 async function syncTimetable(courseId: number, incomingUnits: TimetableUnit[]): Promise<void> {
     const existingUnits = await mysql
@@ -163,6 +177,13 @@ async function syncTimetable(courseId: number, incomingUnits: TimetableUnit[]): 
     }
 }
 
+/**
+ * Replaces all scheduling slots for a specific timetable unit.
+ * Performs a full delete-insert strategy for associated slots.
+ *
+ * @param unitId - The ID of the parent timetable unit.
+ * @param incomingSlots - The list of time slots to insert.
+ */
 async function syncSlotsForUnit(unitId: number, incomingSlots: TimetableSlot[]): Promise<void> {
     await mysql.deleteFrom(CourseTimetableSlotTableName).where('timetable_unit_id', '=', unitId).execute()
 
@@ -187,6 +208,12 @@ async function syncSlotsForUnit(unitId: number, incomingSlots: TimetableSlot[]):
     }
 }
 
+/**
+ * Converts an "HH:MM" time string into total minutes from midnight.
+ *
+ * @param time - The time string to convert.
+ * @returns The total minutes or null if the format is invalid.
+ */
 function timeToMinutes(time: string | null): number | null {
     if (!time?.includes(':')) {
         return null

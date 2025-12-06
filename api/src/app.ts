@@ -15,17 +15,33 @@ import morgan from 'morgan'
 import passport from 'passport'
 import responseTime from 'response-time'
 
+/**
+ * Initializes the Express application instance.
+ */
 const app = express()
 
+/**
+ * Defines configuration settings for Cross-Origin Resource Sharing (CORS).
+ * Specifies allowed origins and success status codes for legacy browser compatibility.
+ */
 const corsOptions: CorsOptions = {
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
     origin: Config.allowedOrigins
 }
 
+/**
+ * Serves static assets from the configured directory under the `/assets` path.
+ */
 app.use('/assets', express.static(Paths.assets))
 
+/**
+ * Enables pre-flight `OPTIONS` requests for all routes using the defined CORS settings.
+ */
 app.options('/{*any}', cors(corsOptions)) // include before other routes
 
+/**
+ * Applies global CORS middleware with credential support enabled.
+ */
 app.use(
     cors({
         ...corsOptions,
@@ -33,10 +49,20 @@ app.use(
     })
 )
 
+/**
+ * Applies `helmet` middleware to set various HTTP security headers (e.g., DNS prefetch control, frameguard).
+ */
 app.use(helmet())
 
+/**
+ * Disables the `x-powered-by` header to obscure the underlying technology stack.
+ */
 app.disable('x-powered-by')
 
+/**
+ * Configures session management settings.
+ * Uses Redis as the persistent store for session data.
+ */
 const sessionOptions: SessionOptions = {
     store: new RedisStore({ client: redis, prefix: 'session:' }),
     secret: Config.sessionSecret,
@@ -48,6 +74,9 @@ const sessionOptions: SessionOptions = {
     }
 }
 
+/**
+ * Enforces secure cookie policies (Secure, HttpOnly, Domain, SameSite) in non-development environments.
+ */
 if (!Config.isEnvDevelopment()) {
     app.set('trust proxy', 1)
     sessionOptions.cookie!.secure = true
@@ -58,19 +87,34 @@ if (!Config.isEnvDevelopment()) {
 
 app.use(session(sessionOptions))
 
+/**
+ * Initializes Passport.js for authentication and enables persistent login sessions.
+ */
 app.use(passport.initialize())
 app.use(passport.session())
 
+/**
+ * Enables Gzip compression for HTTP responses.
+ */
 app.use(compression({}))
 
+/**
+ * Configures HTTP request logging (verbose in dev, standard Apache combined format in prod)
+ * and adds a `X-Response-Time` header to responses.
+ */
 app.use(morgan(Config.isEnvDevelopment() ? 'dev' : 'combined')) // Log different format on dev
 app.use(responseTime())
 
+/**
+ * Mounts the API route handlers.
+ */
 app.use('/auth', AuthRoutes)
 app.use('/events', EventsRoutes)
 app.use('/event', EventRoutes)
 
-// Global error handler
+/**
+ * Registers the global error handling middleware to capture and format exceptions.
+ */
 app.use(ErrorHandler)
 
 export default app

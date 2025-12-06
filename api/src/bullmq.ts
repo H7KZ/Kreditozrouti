@@ -6,16 +6,32 @@ import ScraperResponseJobDataInterface from '@scraper/Interfaces/BullMQ/ScraperR
 import { Queue, Worker } from 'bullmq'
 import { JobEnum } from './Enums/JobEnum'
 
+/**
+ * Manages the BullMQ infrastructure for the scraping service.
+ * Handles the initialization of request queues, response workers, and periodic job scheduling.
+ */
 const scraper = {
+    /**
+     * Collection of message queues for job dispatching.
+     */
     queue: {
+        /** Queue for sending scraping requests to the external scraper service. */
         request: new Queue<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, { connection: redis })
         // response: new Queue<ScraperResponseJobDataInterface>(QueueEnum.SCRAPER_RESPONSE, { connection: redis })
     },
+    /**
+     * Collection of workers for processing job execution results.
+     */
     worker: {
         // request: new Worker<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, ScraperRequestJobHandler, { connection: redis }),
+        /** Worker that processes responses from the scraper with a concurrency limit of 4. */
         response: new Worker<ScraperResponseJobDataInterface>(QueueEnum.SCRAPER_RESPONSE, ScraperResponseJobHandler, { connection: redis, concurrency: 4 })
     },
 
+    /**
+     * Awaits the readiness of all configured queues and workers.
+     * Ensures connection to Redis is established before processing begins.
+     */
     async waitForQueues() {
         await scraper.queue.request.waitUntilReady()
         console.log('Scraper request queue is ready and processing jobs.')
@@ -30,7 +46,15 @@ const scraper = {
         console.log('Scraper response worker is ready and processing jobs.')
     },
 
+    /**
+     * Registers recurring (Cron-based) job schedulers.
+     * Sets up periodic triggers for FIS Events and InSIS Catalog scraping.
+     */
     async schedulers() {
+        /**
+         * Schedules the FIS Events scraper to run every 2 minutes.
+         * Configures job retention policies (keep 32 jobs or up to 2 hours).
+         */
         await scraper.queue.request.upsertJobScheduler(
             'FISEventsRequestJobScheduler',
             { pattern: '*/2 * * * *' }, // Every 2 minutes
@@ -50,6 +74,9 @@ const scraper = {
         )
         console.log('FISEventsRequestJobScheduler has been set to run every 2 minutes.')
 
+        /**
+         * Schedules the InSIS Catalog scraper to run at the start of every hour.
+         */
         await scraper.queue.request.upsertJobScheduler(
             'InSISRequestJobScheduler',
             { pattern: '0 * * * *' }, // Every 1 hour

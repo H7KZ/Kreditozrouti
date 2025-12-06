@@ -7,6 +7,14 @@ import Exception from '@api/Error/Exception'
 import EventsAllValidation from '@api/Validations/EventsAllValidation'
 import { Request, Response } from 'express'
 
+/**
+ * Retrieves a list of events based on optional search and filter criteria.
+ * Supports filtering by title, date range, and category IDs.
+ *
+ * @param req - The Express request object containing query parameters.
+ * @param res - The Express response object.
+ * @throws {Exception} If the query parameters fail validation schema checks.
+ */
 export default async function EventsAllController(req: Request, res: Response) {
     const result = await EventsAllValidation.safeParseAsync(req.query)
 

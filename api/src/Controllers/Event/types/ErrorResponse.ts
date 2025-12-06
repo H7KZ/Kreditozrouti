@@ -2,68 +2,33 @@ import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import { $ZodIssue } from 'zod/v4/core'
 
 /**
- * Interface representing additional error details
+ * Defines optional metadata, debug information, and validation errors.
  */
 interface APIErrorDetails {
-    /**
-     * Array of Zod validation issues, if applicable
-     *
-     * @type {$ZodIssue[]}
-     * @optional
-     */
+    /** A collection of schema validation errors from Zod. */
     zodIssues?: $ZodIssue[]
 
-    /**
-     * Stack trace of the error, if available
-     *
-     * @type {string}
-     * @optional
-     */
+    /** The runtime stack trace for debugging purposes. */
     stack?: string
 
-    /**
-     * Additional arbitrary details
-     *
-     * @type {any}
-     * @optional
-     */
+    /** Allows for arbitrary custom properties to be attached to the error. */
     [key: string]: any
 }
 
 /**
- * Interface representing an error response
- *
+ * Defines the standardized payload structure for failed API requests.
  * @route 4XX - 5XX
  */
 export default interface ErrorResponse {
-    /**
-     * Error type
-     *
-     * @type {string}
-     * @enum {string} ErrorTypeEnum
-     */
+    /** The high-level categorization of the error. */
     type: ErrorTypeEnum
 
-    /**
-     * Error code
-     *
-     * @type {number}
-     * @enum {number} ErrorCodeEnum
-     */
+    /** The specific numeric identifier for the error condition. */
     code: ErrorCodeEnum
 
-    /**
-     * Error message in english
-     *
-     * @type {string}
-     */
+    /** A human-readable description of the error in English. */
     message: string
 
-    /**
-     * Additional error details
-     *
-     * @type {object}
-     * @interface APIErrorDetails
-     */
+    /** Extended context, validation issues, or stack traces. */
     details: APIErrorDetails
 }

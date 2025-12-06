@@ -5,34 +5,66 @@ import { mysql, nodemailer, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import { MySQLService } from '@api/Services/MySQLService'
 
+/**
+ * Application entry point.
+ * Initializes infrastructure connections, executes migrations, sets up background jobs, and starts the HTTP server.
+ */
 async function start() {
     try {
+        /**
+         * Verifies the connection to the MySQL database.
+         */
         await mysql.connection().execute(db => Promise.resolve(db))
         console.log('Connected to MySQL successfully.')
 
+        /**
+         * Executes pending schema migrations.
+         */
         await MySQLService.migrateToLatest()
         console.log('Migrating connection to MySQL successfully.')
 
+        /**
+         * Populates the database with initial seed data.
+         */
         await MySQLService.seedInitialData()
         console.log('Seeding initial data to MySQL successfully.')
 
+        /**
+         * Verifies the connection to the Redis cache instance.
+         */
         await redis.ping()
         console.log('Connected to Redis successfully.')
 
+        /**
+         * Verifies SMTP configuration for email delivery.
+         */
         const mailVerified = await nodemailer.verify()
         if (!mailVerified) throw new Error('Nodemailer verification failed')
         console.log('Nodemailer is configured and ready to send emails.')
 
+        /**
+         * Initializes job queues and waits for workers to be ready.
+         */
         await scraper.waitForQueues()
         console.log('BullMQ queues and workers are ready.')
 
+        /**
+         * Configures periodic job schedulers (Cron).
+         */
         await scraper.schedulers()
         console.log('BullMQ schedulers are set up successfully.')
 
+        /**
+         * Binds the Express application to the configured port.
+         */
         const server = app.listen(Config.port, () => {
             console.log(`Environment: ${Config.env}`)
             console.log(`Server running on port ${Config.port}`)
 
+            /**
+             * Handles graceful shutdown sequences on termination signals (SIGINT/SIGTERM).
+             * Stops the server and disconnects database clients before exiting.
+             */
             const shutdown = () => {
                 console.log('Shutting down server...')
 

@@ -5,7 +5,16 @@ import { mysql } from '@api/clients'
 import { Paths } from '@api/paths'
 import { FileMigrationProvider, Migrator } from 'kysely'
 
+/**
+ * Manages database schema migrations and initial data seeding.
+ */
 export class MySQLService {
+    /**
+     * Executes pending database migrations to bring the schema up to date.
+     * Logs execution results and terminates the process if a critical error occurs.
+     *
+     * @throws {Error} If the database client is not initialized.
+     */
     static async migrateToLatest() {
         if (!mysql) {
             throw new Error('Database client is not initialized')
@@ -37,6 +46,12 @@ export class MySQLService {
         }
     }
 
+    /**
+     * Dynamically imports and executes seed scripts from the configured directory.
+     * Scans for valid JS/TS files and invokes their exported `seed` function.
+     *
+     * @throws {Error} If the database client is not initialized.
+     */
     static async seedInitialData() {
         if (!mysql) {
             throw new Error('Database client is not initialized')
@@ -45,6 +60,7 @@ export class MySQLService {
         const seedFiles = await fs.readdir(Paths.Database.seeds)
 
         for (const file of seedFiles) {
+            // Filters for valid executable script files (.js, .ts, .mjs, .mts) excluding type definitions.
             if (
                 file.endsWith('.js') ||
                 (file.endsWith('.ts') && !file.endsWith('.d.ts')) ||

@@ -8,6 +8,14 @@ import EmailService from '@api/Services/EmailService'
 import SignInValidation from '@api/Validations/SignInValidation'
 import { Request, Response } from 'express'
 
+/**
+ * Initiates the sign-in process by generating and sending a verification code.
+ * Validates the email address, enforces domain restrictions, and handles code storage.
+ *
+ * @param req - The Express request object containing the login credentials.
+ * @param res - The Express response object.
+ * @throws {Exception} If validation fails or the email domain is unauthorized.
+ */
 export default async function SignInController(req: Request, res: Response) {
     const result = await SignInValidation.safeParseAsync(req.body)
 
@@ -27,9 +35,9 @@ export default async function SignInController(req: Request, res: Response) {
 
     await redis.del(`auth:code:${data.email}`)
 
-    const code = Math.floor(100000 + Math.random() * 900000) // Generate a random 6 digit code
+    const code = Math.floor(100000 + Math.random() * 900000)
 
-    await redis.setex(`auth:code:${data.email}`, 600, code.toString()) // Save code to redis with 10 minutes expiration
+    await redis.setex(`auth:code:${data.email}`, 600, code.toString())
 
     i18n.init(req, res)
 

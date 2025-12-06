@@ -1,14 +1,8 @@
 /**
- * Interface representing a sign-in request
- *
+ * Defines the request payload for initiating the sign-in process.
  * @route POST /auth/signin
  */
 export default interface SignInRequest {
-    /**
-     * The email of the user attempting to sign in
-     *
-     * @type {string}
-     * @required
-     */
+    /** The email address to receive the verification code. */
     email: string
 }

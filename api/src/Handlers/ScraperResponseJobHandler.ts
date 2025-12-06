@@ -6,6 +6,13 @@ import ScraperResponseJobInterface, {
 } from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
 import { Job } from 'bullmq'
 
+/**
+ * Entry point for processing scraper response jobs from the queue.
+ * Routes jobs to specific handlers based on the defined job type and tracks execution time.
+ *
+ * @param job - The BullMQ job object containing the scraper response data.
+ * @throws Re-throws exceptions to trigger BullMQ retry logic or failure states.
+ */
 export default async function ScraperResponseJobHandler(job: Job<ScraperResponseJobInterface>): Promise<void> {
     const type = job.data.type
 

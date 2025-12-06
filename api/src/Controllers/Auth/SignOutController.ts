@@ -4,6 +4,13 @@ import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 import Exception from '@api/Error/Exception'
 import { Request, Response } from 'express'
 
+/**
+ * Terminates the current user session and logs the user out.
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @throws {Exception} If the logout process encounters an internal error.
+ */
 export default function SignOutController(req: Request, res: Response) {
     return req.logout(error => {
         if (error) {

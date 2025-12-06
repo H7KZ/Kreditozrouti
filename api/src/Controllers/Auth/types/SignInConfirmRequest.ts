@@ -1,22 +1,11 @@
 /**
- * Interface representing a sign-in confirmation request
- *
+ * Defines the request payload for verifying a sign-in attempt.
  * @route POST /auth/signin/confirm
  */
 export default interface SignInConfirmRequest {
-    /**
-     * The email of the user attempting to sign in
-     *
-     * @type {string}
-     * @required
-     */
+    /** The user's email address. */
     email: string
 
-    /**
-     * The confirmation code sent to the user's email
-     *
-     * @type {string}
-     * @required
-     */
+    /** The verification code provided by the user. */
     code: string
 }

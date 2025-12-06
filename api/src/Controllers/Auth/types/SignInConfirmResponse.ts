@@ -1,37 +1,19 @@
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 
 /**
- * Interface representing a sign-in confirmation response
- *
+ * Defines the response structure returned upon successful authentication.
  * @route 201 /auth/signin
  */
 export default interface SignInConfirmResponse {
-    /**
-     * Code indicating that the user has successfully signed in
-     *
-     * @type {number}
-     * @enum {number} SuccessCodeEnum.SIGNED_IN
-     */
+    /** The success status code indicating the user is signed in. */
     code: SuccessCodeEnum.SIGNED_IN
 
-    /**
-     * The signed-in user's information
-     *
-     * @type {object}
-     */
+    /** The authenticated user's profile data. */
     user: {
-        /**
-         * The Id of the signed-in user
-         *
-         * @type {number}
-         */
+        /** The unique identifier of the user. */
         id: number
 
-        /**
-         * The email of the signed-in user
-         *
-         * @type {string}
-         */
+        /** The user's email address. */
         email: string
     }
 }

@@ -1,34 +1,17 @@
 /**
- * Events All Request Interface
- *
+ * Defines the query parameters for filtering and searching events.
  * @route 200 /events/all
  */
 export default interface EventsAllRequest {
-    /**
-     * Event Title
-     *
-     * @type {string | null}
-     */
+    /** An optional keyword to filter events by title. */
     title?: string | null
 
-    /**
-     * Date From
-     *
-     * @type {Date | null}
-     */
+    /** The start of the date range for filtering. */
     date_from?: Date | null
 
-    /**
-     * Date To
-     *
-     * @type {Date | null}
-     */
+    /** The end of the date range for filtering. */
     date_to?: Date | null
 
-    /**
-     * Categories (Array of Category IDs)
-     *
-     * @type {string[] | null}
-     */
+    /** A list of category IDs to filter events by association. */
     categories?: string[] | null
 }

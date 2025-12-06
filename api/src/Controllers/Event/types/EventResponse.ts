@@ -1,15 +1,10 @@
 import { Event } from '@api/Database/types'
 
 /**
- * Interface representing a response for fetching a specific event
- *
+ * Defines the response payload for a single event retrieval.
  * @route 200 /event/:id
  */
 export default interface EventResponse {
-    /**
-     * Event object
-     *
-     * @type {Event}
-     */
+    /** The detailed record of the requested event. */
     event: Event
 }

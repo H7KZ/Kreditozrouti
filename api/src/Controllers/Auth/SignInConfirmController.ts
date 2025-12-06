@@ -8,6 +8,14 @@ import Exception from '@api/Error/Exception'
 import SignInConfirmValidation from '@api/Validations/SignInConfirmValidation'
 import { Request, Response } from 'express'
 
+/**
+ * Handles the confirmation of a user sign-in attempt using a verification code.
+ * Verifies credentials, manages user creation, and establishes a session.
+ *
+ * @param req - The Express request object containing payload data.
+ * @param res - The Express response object.
+ * @throws {Exception} If validation fails, credentials are invalid, or system errors occur.
+ */
 export default async function SignInConfirmController(req: Request, res: Response) {
     const result = await SignInConfirmValidation.safeParseAsync(req.body)
 
