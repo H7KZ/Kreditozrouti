@@ -88,27 +88,6 @@ services:
     restart: unless-stopped
 
   # ================================================================ #
-  # MYSQL MIGRATIONS SERVICE
-  # this service is ONLY for running migrations on the database within the API scope
-
-  api-migrations:
-    image: diar-4fis-api-migrations
-
-    build:
-      context: .
-      dockerfile: ./api/Dockerfile.migrations
-
-    depends_on:
-      - mysql
-
-    environment:
-      - ENV=development
-      - MYSQL_URI=${MYSQL_URI}
-    
-    networks:
-      - mysql-dev-network
-
-  # ================================================================ #
   # SCRAPER SERVICE
 
   scraper:

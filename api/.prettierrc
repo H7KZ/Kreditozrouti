@@ -1,6 +1,6 @@
 {
     "trailingComma": "none",
-    "printWidth": 240,
+    "printWidth": 160,
     "tabWidth": 4,
     "semi": false,
     "singleQuote": true,
@@ -10,6 +10,6 @@
     "bracketSameLine": false,
     "jsxBracketSameLine": false,
     "arrowParens": "avoid",
-    "plugins": ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-prisma"],
+    "plugins": ["@ianvs/prettier-plugin-sort-imports"],
     "importOrder": ["<THIRD_PARTY_MODULES>", "^@/(.*)$", "^[./]"]
 }

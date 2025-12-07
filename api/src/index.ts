@@ -1,27 +1,20 @@
 import '@api/types'
-import path from 'path'
 import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
 import Config from '@api/Config/Config'
-import dotenv from 'dotenv'
-
-try {
-    dotenv.config({
-        path: [
-            path.resolve(process.cwd(), '../../../.env'), // For dist folder
-            path.resolve(process.cwd(), '../.env'), // For monorepo root
-            path.resolve(process.cwd(), '.env') // For monorepo package
-        ]
-    })
-} catch {
-    console.warn('No .env file found')
-}
+import { MySQLService } from '@api/Services/MySQLService'
 
 async function start() {
     try {
-        await mysql.$connect()
+        await mysql.connection().execute(db => Promise.resolve(db))
         console.log('Connected to MySQL successfully.')
+
+        await MySQLService.migrateToLatest()
+        console.log('Migrating connection to MySQL successfully.')
+
+        await MySQLService.seedInitialData()
+        console.log('Seeding initial data to MySQL successfully.')
 
         await redis.ping()
         console.log('Connected to Redis successfully.')
@@ -47,7 +40,7 @@ async function start() {
                 console.log('Shutting down server...')
 
                 server.close(async () => {
-                    await mysql.$disconnect()
+                    await mysql.destroy()
                     redis.disconnect()
 
                     console.log('Server shut down gracefully')
@@ -62,7 +55,7 @@ async function start() {
     } catch (error) {
         console.error('Failed to start the server:', error)
 
-        await mysql.$disconnect()
+        await mysql.destroy()
         redis.disconnect()
 
         process.exit(1)

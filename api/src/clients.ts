@@ -1,11 +1,23 @@
-import path from 'path'
 import Config from '@api/Config/Config'
-import { PrismaClient } from '@prisma/client'
+import { Database } from '@api/Database/types'
+import { Paths } from '@api/paths'
 import { I18n } from 'i18n'
 import Redis from 'ioredis'
+import { Kysely, MysqlDialect } from 'kysely'
+import { createPool } from 'mysql2'
 import Nodemailer from 'nodemailer'
 
-const mysql = new PrismaClient()
+const dialect = new MysqlDialect({
+    pool: createPool({
+        uri: Config.mysql.uri,
+
+        timezone: 'Z',
+        connectionLimit: 500,
+        connectTimeout: 60 // seconds
+    })
+})
+
+const mysql = new Kysely<Database>({ dialect })
 
 const redis = new Redis(Config.redis.uri, {
     password: Config.redis.password,
@@ -15,7 +27,7 @@ const redis = new Redis(Config.redis.uri, {
 
 const i18n = new I18n({
     locales: ['cs', 'en'],
-    directory: path.join(__dirname, '../locales'),
+    directory: Paths.I18n,
     defaultLocale: 'en',
     objectNotation: true
 })

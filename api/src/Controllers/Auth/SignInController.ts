@@ -1,9 +1,10 @@
-import { i18n, mysql } from '@api/clients'
+import { i18n, redis } from '@api/clients'
+import SignInRequest from '@api/Controllers/Auth/types/SignInRequest'
+import SignInResponse from '@api/Controllers/Auth/types/SignInResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 import Exception from '@api/Error/Exception'
-import SignInRequest from '@api/Interfaces/Routes/SignInRequest'
-import SignInResponse from '@api/Interfaces/Routes/SignInResponse'
+import EmailService from '@api/Services/EmailService'
 import SignInValidation from '@api/Validations/SignInValidation'
 import { Request, Response } from 'express'
 
@@ -16,54 +17,31 @@ export default async function SignInController(req: Request, res: Response) {
 
     const data = result.data as SignInRequest
 
-    // Check if user has email ending with @vse.cz or @diar.4fis.cz or diar.4fis@gmail.com
-    // If yes, then let him in otherwise return 401
-    // If the user sign's in repeatedly also clear out the previous code from cache
-
-    const user = await mysql.user.findUnique({
-        where: {
-            email: data.email
-        },
-        select: {
-            id: true,
-            email: true
-        }
-    })
-
-    if (!user) {
+    if (!data.email.endsWith('@vse.cz')) {
+        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
+    } else if (data.email.endsWith('@diar.4fis.cz')) {
+        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
+    } else if (data.email !== 'diar.4fis@gmail.com') {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
-    // If the user does not exist create the user
+    await redis.del(`auth:code:${data.email}`)
 
-    // After 100% sure that the user exists, send user an email with code and time expiration of 10 minutes
-    // You can send emails through the EmailService (imported from @api/Services/EmailService)
-    // The code should be random 8 digit alphanumeric string
-    // Save this code to cache (redis - can be imported from @api/clients) with expiration time of 10 minutes
+    const code = Math.floor(100000 + Math.random() * 900000) // Generate a random 6 digit code
 
-    // EmailService.readTemplate also takes variables as second argument which is an object with key value pairs
-    // You can use this to replace variables in the email template
-    // You will have to replace the "{{emailText}}" variable in the email template with the given i18n translation key
+    await redis.setex(`auth:code:${data.email}`, 600, code.toString()) // Save code to redis with 10 minutes expiration
 
     i18n.init(req, res)
 
-    // You can access the translation function through req.__(key)
-    // Keys are located in /locales/en.json and /locales/cs.json
+    const emailSignInTemplate = await EmailService.readTemplate('CodeEmail', {
+        emailText: req.__('emails.signIn.body', { code: code.toString(), expiration: '10' })
+    })
 
-    // Example usage:
-    // const translatedText = req.__('some.translation.key')
-    // Also you can pass variables to the translation function like this:
-    // const translatedText = req.__('some.translation.key', { variableName: 'value' })
-    // In the translation file you can use the variable like this: "This is a {{variableName}}"
-    // Fill out the code and expiration time in the translation
-    // And then pass the translated text to the email template
-
-    // Finally send the email to the user
-    // Subject can be found also in the translation files
-    // To send emails you can use the EmailService.sendEmail function
-
-    // If everything is successful return 200 with user object (id and email only)
-    // If there is any error throw an Exception with appropriate status code, type, code and message
+    await EmailService.sendEmail({
+        to: data.email,
+        subject: req.__('emails.signIn.subject'),
+        html: emailSignInTemplate
+    })
 
     return res.status(201).send({
         code: SuccessCodeEnum.SIGN_IN_CODE_SENT

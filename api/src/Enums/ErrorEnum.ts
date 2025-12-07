@@ -3,7 +3,10 @@ enum ErrorTypeEnum {
 
     VALIDATION = 'Validation',
     ZOD_VALIDATION = 'ZodValidation',
-    AUTHENTICATION = 'Authentication'
+    AUTHENTICATION = 'Authentication',
+    AUTHORIZATION = 'Authorization',
+    DATABASE = 'Database',
+    EXTERNAL_SERVICE = 'ExternalService'
 }
 
 enum ErrorCodeEnum {
@@ -14,8 +17,11 @@ enum ErrorCodeEnum {
 
     VALIDATION = 403_000,
 
+    RESOURCE_NOT_FOUND = 404_000,
+
     INTERNAL_SERVER_ERROR = 500_000,
-    EMAIL_NOT_SENT = 500_001
+    EMAIL_NOT_SENT = 500_001,
+    INSERT_FAILED = 500_003
 }
 
 export { ErrorTypeEnum, ErrorCodeEnum }
