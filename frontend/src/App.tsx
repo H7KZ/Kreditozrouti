@@ -1,4 +1,4 @@
-import Login from "$frontend/pages/Landing"
+import LoginPage from "$frontend/pages/LoginPage"
 import LanguageSwitcher from "./components/LanguageSwitcher"
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
         <LanguageSwitcher />
       </div>
       <main className="min-h-screen w-full bg-white px-6 pt-8">
-        <Login />
+        <LoginPage />
       </main>
     </div>
   )

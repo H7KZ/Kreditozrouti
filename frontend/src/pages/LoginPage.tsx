@@ -39,18 +39,18 @@ export default function LoginPage() {
         <div className="flex justify-center mb-4">
           <img
             src="/diar4fis.svg"
-            alt={t('app_logo_alt')}
+            alt={t('common.app_logo_alt')}
             className="h-56 md:h-64 select-none"
           />
         </div>
         <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
-          {showConfirmCode ? t('post_email_heading') : t('login_heading')}
+          {showConfirmCode ? t('sign_in_confirm.heading') : t('sign_in.heading')}
         </h1>
         {showConfirmCode && (
           <div className="flex justify-center mt-4">
             <img
               src="/mail.svg"
-              alt={t('mail_icon_alt')}
+              alt={t('sign_in_confirm.mail_icon_alt')}
               className="h-28 md:h-32 select-none"
             />
           </div>
@@ -61,7 +61,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="xname" className="text-base text-gray-900">
-              {t('xname_label')}
+              {t('sign_in.xname_label')}
             </Label>
             <div className="relative w-full">
               <Input
@@ -108,19 +108,19 @@ export default function LoginPage() {
                 />
               </svg>
             )}
-            {isLoading ? t('sending_button') : t('send_button')}
+            {isLoading ? t('common.sending_button') : t('sign_in.send_button')}
           </Button>
 
           <div className="text-left">
             <a href="#" className="text-gray-900 underline hover:text-gray-700 text-base">
-              {t('already_have_code')}
+              {t('sign_in.already_have_code')}
             </a>
           </div>
         </form>
       ) : (
         <form
           className="space-y-6"
-          noValidate // have to validate it myself
+          noValidate
           onSubmit={(e) => {
             e.preventDefault()
             const raw = confirmCode.replace(/\D/g, '')
@@ -137,7 +137,7 @@ export default function LoginPage() {
         >
           <div className="space-y-2">
             <Label htmlFor="confirmCode" className="text-base text-gray-900">
-              {t('confirm_code_label')}
+              {t('sign_in_confirm.confirm_code_label')}
             </Label>
             <Input
               id="confirmCode"
@@ -179,12 +179,12 @@ export default function LoginPage() {
                 />
               </svg>
             )}
-            {isVerifying ? t('sending_button') : t('verify_code_button')}
+            {isVerifying ? t('common.sending_button') : t('sign_in_confirm.verify_code_button')}
           </Button>
 
           <div className="text-left">
             <button type="button" className="text-gray-900 underline hover:text-gray-700 text-base">
-              {t('resend_code_link')}
+              {t('sign_in_confirm.resend_code_link')}
             </button>
           </div>
         </form>
