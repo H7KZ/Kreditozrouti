@@ -2,8 +2,14 @@
 
 .env
 
+/.idea
+/.github
+
 **/node_modules
 **/dist
 **/build
 
 /data
+
+.gitlab-ci-local
+
