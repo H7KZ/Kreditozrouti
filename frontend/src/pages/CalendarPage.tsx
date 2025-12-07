@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useCalendarApp, ScheduleXCalendar } from '@schedule-x/react'
 import {
   createViewDay,
