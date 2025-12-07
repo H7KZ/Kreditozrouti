@@ -1,7 +1,7 @@
+import SignOutResponse from '@api/Controllers/Auth/types/SignOutResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 import Exception from '@api/Error/Exception'
-import SignOutResponse from '@api/Interfaces/Routes/SignOutResponse'
 import { Request, Response } from 'express'
 
 export default function SignOutController(req: Request, res: Response) {

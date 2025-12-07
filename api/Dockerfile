@@ -11,10 +11,9 @@ COPY ./api/ /usr/src/api/
 
 
 # "Workspaces" setup
-# COPY ./scrapper/src/ /usr/src/scrapper/src/
+COPY ./scraper/src/ /usr/src/scraper/src/
 
 
-RUN npm run prisma:generate
 RUN npm run build
 RUN npm prune --omit=dev
 
@@ -34,5 +33,4 @@ COPY --from=builder /usr/src/api/node_modules /usr/src/api/node_modules
 COPY --from=builder /usr/src/uploads /usr/src/uploads
 
 EXPOSE 80
-CMD ["dist/src/index.js"]
-# CMD ["dist/api/src/index.js"]
+CMD ["dist/api/src/index.js"]

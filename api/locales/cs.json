@@ -1,8 +1,0 @@
-{
-    "emails": {
-        "code": {
-            "subject": "Tvůj ověřovací kód",
-            "body": "Tvůj ověřovací kód je {{code}}. Vyprší za {{expiration}} minut."
-        }
-    }
-}

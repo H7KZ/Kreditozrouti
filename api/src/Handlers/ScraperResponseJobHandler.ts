@@ -1,5 +1,5 @@
-import ScraperResponseJobInterface, { ScraperEventResponseJobInterface } from '@api/Interfaces/ScraperResponseJobInterface'
 import ScraperEventResponseJob from '@api/Jobs/ScraperEventResponseJob'
+import ScraperResponseJobInterface, { ScraperFISEventResponseJobInterface } from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
 import { Job } from 'bullmq'
 
 export default async function ScraperResponseJobHandler(job: Job<ScraperResponseJobInterface>): Promise<void> {
@@ -8,13 +8,10 @@ export default async function ScraperResponseJobHandler(job: Job<ScraperResponse
     console.log(`Job of type ${type} with id ${job.id} started.`)
 
     switch (type) {
-        // case 'Events':
+        // case '4FIS:Events':
         //     break
-        case 'Event':
-            await ScraperEventResponseJob(job as Job<ScraperEventResponseJobInterface>)
-            break
-        case 'EventRegister':
-            // await EventRegisterScraperController(job.data)
+        case '4FIS:Event':
+            await ScraperEventResponseJob(job as Job<ScraperFISEventResponseJobInterface>)
             break
         default:
             console.warn(`Unknown job type: ${type}`)

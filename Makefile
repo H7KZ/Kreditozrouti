@@ -1,22 +1,16 @@
 .PHONY: docker migrations clear-redis install dev api scraper frontend format lint build build-docker-images preview
 
-docker:
+local-docker:
 	docker compose -f docker-compose.local.yml down --remove-orphans && \
 	docker compose -f docker-compose.local.yml build --pull --no-cache && \
 	docker compose -f docker-compose.local.yml up -d
-
-migrations:
-	cd api && \
-	dotenv -e ../.env -- pnpm prisma migrate dev && \
-	dotenv -e ../.env -- pnpm prisma db seed
 
 clear-redis:
 	docker exec diar-4fis-redis redis-cli FLUSHDB
 
 install:
 	pnpm -r install --filter=!./scripts/* && \
-	pnpm install -g dotenv-cli && \
-	pnpm -r prisma:generate
+	pnpm install -g dotenv-cli
 
 dev:
 	pnpm -r --parallel run dev
@@ -47,7 +41,6 @@ build:
 
 build-docker-images:
 	docker build -t diar-4fis-api -f ./api/Dockerfile . && \
-	docker build -t diar-4fis-api-migrations -f ./api/Dockerfile.migrations . && \
 	docker build -t diar-4fis-frontend -f ./frontend/Dockerfile . && \
 	docker build -t diar-4fis-scraper -f ./scraper/Dockerfile .
 

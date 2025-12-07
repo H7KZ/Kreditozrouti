@@ -1,8 +1,8 @@
 import { redis } from '@api/clients'
 import { QueueEnum } from '@api/Enums/QueueEnum'
 import ScraperResponseJobHandler from '@api/Handlers/ScraperResponseJobHandler'
-import ScraperRequestJobInterface from '@api/Interfaces/ScraperRequestJobInterface'
-import ScraperResponseJobDataInterface from '@api/Interfaces/ScraperResponseJobInterface'
+import ScraperRequestJobInterface from '@scraper/Interfaces/BullMQ/ScraperRequestJobInterface'
+import ScraperResponseJobDataInterface from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
 import { Queue, Worker } from 'bullmq'
 import { JobEnum } from './Enums/JobEnum'
 
@@ -39,9 +39,9 @@ const scraper = {
             'EventsRequestJobScheduler',
             { pattern: '*/2 * * * *' }, // Every 2 minutes
             {
-                name: JobEnum.EVENTS_REQUEST,
+                name: JobEnum.FIS_EVENTS_REQUEST,
                 data: {
-                    type: 'Events'
+                    type: '4FIS:Events'
                 },
                 opts: {
                     removeOnComplete: {
