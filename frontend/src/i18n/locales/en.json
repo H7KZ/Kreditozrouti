@@ -17,12 +17,12 @@
     "verify_code_button": "Verify code",
     "resend_code_link": "Send the code email again"
   },
-  "userDropdown": {
+  "user_dropdown": {
     "profile": "Personal profile",
-    "myEvents": "My events",
+    "my_events": "My events",
     "leaderboard": "Leaderboard",
     "groups": "Groups",
-    "inviteFisaks": "Invite Fisáks",
+    "invite_fisaks": "Invite Fisáks",
     "support": "Support",
     "logout": "Logout"
   }

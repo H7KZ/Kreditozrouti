@@ -17,12 +17,12 @@
     "verify_code_button": "Ověřit kód",
     "resend_code_link": "Poslat e-mail s kódem znovu"
   },
-  "userDropdown": {
+  "user_dropdown": {
     "profile": "Osobní profil",
-    "myEvents": "Moje akce",
+    "my_events": "Moje akce",
     "leaderboard": "Leaderboard",
     "groups": "Skupiny",
-    "inviteFisaks": "Pozvat fisáky",
+    "invite_fisaks": "Pozvat fisáky",
     "support": "Podpora",
     "logout": "Odhlásit se"
   }
