@@ -1,0 +1,20 @@
+{
+  "common": {
+    "app_logo_alt": "Diář Fisáka",
+    "sending_button": "Odesílání..."
+  },
+  "sign_in": {
+    "heading": "Připoj se pomocí svého školního e-mailu",
+    "xname_label": "Tvůj školní xname (např. novj08)",
+    "send_button": "Poslat potvrzení",
+    "already_have_code": "Kód už jsem dostal"
+  },
+  "sign_in_confirm": {
+    "heading": "Přihlašovací kód odeslán do e-mailu",
+    "check_email_heading": "Zkontroluj svůj e-mail",
+    "mail_icon_alt": "E-mail ikona",
+    "confirm_code_label": "8 místný kód z e-mailu",
+    "verify_code_button": "Ověřit kód",
+    "resend_code_link": "Poslat e-mail s kódem znovu"
+  }
+}
