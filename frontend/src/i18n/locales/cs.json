@@ -16,5 +16,14 @@
     "confirm_code_label": "8 místný kód z e-mailu",
     "verify_code_button": "Ověřit kód",
     "resend_code_link": "Poslat e-mail s kódem znovu"
+  },
+  "userDropdown": {
+    "profile": "Osobní profil",
+    "myEvents": "Moje akce",
+    "leaderboard": "Leaderboard",
+    "groups": "Skupiny",
+    "inviteFisaks": "Pozvat fisáky",
+    "support": "Podpora",
+    "logout": "Odhlásit se"
   }
 }

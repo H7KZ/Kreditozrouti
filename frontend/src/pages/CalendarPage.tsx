@@ -8,6 +8,7 @@ import {
 } from '@schedule-x/calendar'
 import { createEventsServicePlugin } from '@schedule-x/events-service'
 import '@schedule-x/theme-default/dist/index.css'
+import Navbar from '../components/Navbar'
 
 function CalendarApp() {
   const eventsService = useState(() => createEventsServicePlugin())[0]
@@ -26,9 +27,12 @@ function CalendarApp() {
   })
 
   return (
-    <div className='w-full h-[800px]'>
-      <ScheduleXCalendar calendarApp={calendar} />
-    </div>
+    <>
+      <Navbar />
+      <div className='w-full h-[800px]'>
+        <ScheduleXCalendar calendarApp={calendar} />
+      </div>
+    </>
   )
 }
 

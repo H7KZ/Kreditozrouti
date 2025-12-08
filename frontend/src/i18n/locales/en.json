@@ -16,5 +16,14 @@
     "confirm_code_label": "8-digit code from email",
     "verify_code_button": "Verify code",
     "resend_code_link": "Send the code email again"
+  },
+  "userDropdown": {
+    "profile": "Personal profile",
+    "myEvents": "My events",
+    "leaderboard": "Leaderboard",
+    "groups": "Groups",
+    "inviteFisaks": "Invite Fisáks",
+    "support": "Support",
+    "logout": "Logout"
   }
 }
