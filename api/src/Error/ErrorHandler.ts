@@ -23,9 +23,7 @@ export default function ErrorHandler(error: Exception | Error | unknown, req: Re
             type: ErrorTypeEnum.UNKNOWN,
             code: ErrorCodeEnum.UNKNOWN,
             message: error.message ?? 'Internal Server Error',
-            details: {
-                stack: error.stack
-            }
+            details: {}
         } as ErrorResponse)
     }
 

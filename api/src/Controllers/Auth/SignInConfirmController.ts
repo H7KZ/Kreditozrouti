@@ -42,7 +42,10 @@ export default async function SignInConfirmController(req: Request, res: Respons
 
     let user = await mysql.selectFrom('users').select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
 
-    user ??= await mysql.insertInto('users').values({ email: storedEmail }).returning(['id', 'email']).executeTakeFirst()
+    if (!user) {
+        await mysql.insertInto('users').values({ email: storedEmail }).executeTakeFirst()
+        user = await mysql.selectFrom('users').select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
+    }
 
     if (!user) {
         throw new Exception(500, ErrorTypeEnum.DATABASE, ErrorCodeEnum.INSERT_FAILED, 'Failed to create user')

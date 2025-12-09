@@ -17,11 +17,9 @@ export default async function SignInController(req: Request, res: Response) {
 
     const data = result.data as SignInRequest
 
-    if (!data.email.endsWith('@vse.cz')) {
-        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
-    } else if (data.email.endsWith('@diar.4fis.cz')) {
-        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
-    } else if (data.email !== 'diar.4fis@gmail.com') {
+    const isAllowed = data.email.endsWith('@vse.cz') || data.email === 'diar.4fis@gmail.com' || data.email.endsWith('@diar.4fis.cz')
+
+    if (!isAllowed) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 

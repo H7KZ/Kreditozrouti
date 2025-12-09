@@ -8,7 +8,6 @@ interface ScraperResponseJobBase {
     type: ScraperJobType
     error?: {
         message: string
-        stack?: string
     }
 }
 
