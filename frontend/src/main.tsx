@@ -8,8 +8,9 @@ import { Route as RootRoute } from '@/routes/__root'
 import { Route as LoginRoute } from '@/routes/login'
 import { Route as LoginAliasRoute } from '@/routes/login.alias'
 import { Route as CalendarRoute } from '@/routes/calendar'
+import { Route as EventRoute } from '@/routes/event'
 
-const routeTree = RootRoute.addChildren([LoginRoute, LoginAliasRoute, CalendarRoute])
+const routeTree = RootRoute.addChildren([LoginRoute, LoginAliasRoute, CalendarRoute, EventRoute])
 
 const router = createRouter({ routeTree })
 

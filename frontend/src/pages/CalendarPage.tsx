@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 import { useCalendarApp, ScheduleXCalendar } from '@schedule-x/react'
 import {
   createViewDay,
@@ -9,7 +10,8 @@ import {
 import { createEventsServicePlugin } from '@schedule-x/events-service'
 import '@schedule-x/theme-default/dist/index.css'
 
-function CalendarApp() {
+export default function CalendarApp() {
+  const navigate = useNavigate()
   const eventsService = useState(() => createEventsServicePlugin())[0]
 
   const calendar = useCalendarApp({
@@ -22,7 +24,12 @@ function CalendarApp() {
         end: Temporal.Now.zonedDateTimeISO().add({ hours: 1 }),
       },
     ],
-    plugins: [eventsService]
+    plugins: [eventsService],
+    callbacks: {
+      onEventClick(calendarEvent) {
+        navigate({ to: `/event/${calendarEvent.id}` })
+      },
+    },
   })
 
   return (
@@ -31,5 +38,3 @@ function CalendarApp() {
     </div>
   )
 }
-
-export default CalendarApp
