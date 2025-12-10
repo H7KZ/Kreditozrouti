@@ -1,0 +1,139 @@
+###############################################################################
+# CORE CONFIGURATION
+###############################################################################
+
+# Set the default behavior, in case people don't have core.autocrlf set.
+# This ensures text files are normalized (stored as LF in the repo).
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.c     text
+*.cpp   text
+*.cs    text
+*.css   text
+*.h     text
+*.html  text
+*.java  text
+*.js    text
+*.json  text
+*.jsx   text
+*.md    text
+*.php   text
+*.pl    text
+*.py    text
+*.rb    text
+*.rs    text
+*.sh    text eol=lf
+*.ts    text
+*.tsx   text
+*.txt   text
+*.vue   text
+*.xml   text
+*.yaml  text
+*.yml   text
+
+###############################################################################
+# LINE ENDING OVERRIDES (SAFETY NET)
+###############################################################################
+
+# These files must ALWAYS use LF, even on Windows.
+# Why? Because Bash scripts will break on Windows (WSL/Cygwin) or in Docker 
+# containers if they use CRLF.
+*.bash      text eol=lf
+*.sh        text eol=lf
+*.zsh       text eol=lf
+Dockerfile  text eol=lf
+.dockerignore text eol=lf
+
+# Windows-specific files that require CRLF
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+*.ps1       text eol=crlf
+
+###############################################################################
+# BINARY FILES (PREVENT CORRUPTION)
+###############################################################################
+
+# Git should never try to modify line endings or diff these files as text.
+# If you don't set this, Git might corrupt an image thinking it's text.
+
+# Images
+*.bmp binary
+*.gif binary
+*.ico binary
+*.jpeg binary
+*.jpg binary
+*.png binary
+*.svg text
+*.tiff binary
+*.webp binary
+
+# Audio/Video
+*.mp3 binary
+*.mp4 binary
+*.mov binary
+*.wav binary
+*.webm binary
+
+# Archives / Compressed
+*.7z binary
+*.gz binary
+*.jar binary
+*.rar binary
+*.tar binary
+*.zip binary
+
+# Fonts
+*.otf binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
+
+# Executables / Libraries
+*.dll binary
+*.exe binary
+*.so binary
+*.pyc binary
+
+# Documents
+*.pdf binary
+*.doc binary
+*.docx binary
+*.ppt binary
+*.pptx binary
+*.xls binary
+*.xlsx binary
+
+###############################################################################
+# GIT AND GITHUB SPECIFIC
+###############################################################################
+
+# Mark lockfiles as binary for diffing purposes.
+# This prevents 5,000 line diffs when you update a dependency, 
+# but keeps them technically readable.
+package-lock.json binary
+yarn.lock binary
+pnpm-lock.yaml binary
+
+# LINGUIST OVERRIDES
+# Tell GitHub to ignore these files when calculating language statistics 
+# (e.g., "This project is 90% JavaScript").
+*.min.js linguist-generated
+*.min.css linguist-generated
+vendor/ linguist-generated
+dist/ linguist-generated
+docs/ linguist-documentation
+
+###############################################################################
+# EXPORT IGNORES
+###############################################################################
+
+# Ignore these files when running `git archive` (e.g., "Download ZIP" on GitHub).
+# This keeps the download clean for end-users.
+.gitattributes export-ignore
+.gitignore export-ignore
+.github export-ignore
+.vscode export-ignore
+.idea export-ignore
+.DS_Store export-ignore
