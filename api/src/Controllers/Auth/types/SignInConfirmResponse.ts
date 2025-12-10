@@ -3,7 +3,7 @@ import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 /**
  * Interface representing a sign-in confirmation response
  *
- * @route 201 /auth/signin
+ * @route 201 /auth/signin/confirm
  */
 export default interface SignInConfirmResponse {
     /**
@@ -15,23 +15,9 @@ export default interface SignInConfirmResponse {
     code: SuccessCodeEnum.SIGNED_IN
 
     /**
-     * The signed-in user's information
+     * JSON Web Token (JWT) for authenticated access
      *
-     * @type {object}
+     * @type {string}
      */
-    user: {
-        /**
-         * The ID of the signed-in user
-         *
-         * @type {number}
-         */
-        id: number
-
-        /**
-         * The email of the signed-in user
-         *
-         * @type {string}
-         */
-        email: string
-    }
+    jwt: string
 }
