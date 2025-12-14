@@ -22,8 +22,7 @@ export interface APIError extends Error {
 interface APIErrorDetails {
     /** Validation issues returned by Zod, if applicable. */
     zodIssues?: $ZodIssue[]
-    /** Stack trace string for debugging. */
-    stack?: string
+
     /** Arbitrary additional context. */
     [key: string]: any
 }
@@ -50,11 +49,6 @@ export default class Exception extends Error implements APIError {
         public details: APIErrorDetails = {}
     ) {
         super(message)
-
-        /**
-         * Captures the stack trace into the details object for downstream logging.
-         */
-        this.details.stack = this.stack
 
         /**
          * Restores the prototype chain to ensure `instanceof Exception` checks work correctly.

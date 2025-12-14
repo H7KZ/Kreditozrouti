@@ -19,11 +19,22 @@ params:query {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
 
 docs {
+  // api/src/Controllers/Events/types/EventsAllRequest.ts
+  Params Request:
+  {
+    title?: string | null
+    date_from?: Date | null
+    date_to?: Date | null
+    categories?: string[] | null
+  }
+  
+  // api/src/Controllers/Events/types/EventsAllResponse.ts
   Success Response (200):
   {
-    events: Event[] (api/src/Database/types/event.type.ts)
+    events: Event[]
   }
 }

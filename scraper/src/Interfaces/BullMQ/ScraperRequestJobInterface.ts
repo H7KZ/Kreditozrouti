@@ -9,7 +9,6 @@ interface ScraperRequestJobBase {
     /** Optional error details if the job failed during queuing. */
     error?: {
         message: string
-        stack?: string
     }
 }
 

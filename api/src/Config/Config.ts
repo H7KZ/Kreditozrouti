@@ -34,6 +34,18 @@ interface Config {
     allowedOrigins: string[]
     /** The secret key used to sign session IDs. */
     sessionSecret: string
+
+    /** The secret key used for signing JSON Web Tokens (JWT). */
+    jwtSecret: Uint8Array<ArrayBuffer>
+    /** JWT token configuration settings. */
+    jwtExpiration: string
+    /** JWT token expiration time in seconds. */
+    jwtExpirationSeconds: number
+    /** The issuer identifier for JWT tokens. */
+    jwtIssuer: string
+    /** The audience identifier for JWT tokens. */
+    jwtAudience: string
+
     /** The local directory path for storing uploaded files. */
     fileDestination: string
 
@@ -90,6 +102,13 @@ const config: Config = {
     domain: process.env.API_DOMAIN ?? 'localhost',
     allowedOrigins: (process.env.API_ALLOWED_ORIGINS ?? '').split(','),
     sessionSecret: process.env.API_SESSION_SECRET ?? 'development',
+
+    jwtSecret: new TextEncoder().encode(process.env.API_JWT_SECRET ?? 'development'),
+    jwtExpiration: process.env.API_JWT_EXPIRATION ?? '7d',
+    jwtExpirationSeconds: Number(process.env.API_JWT_EXPIRATION_SECONDS ?? 604800),
+    jwtIssuer: process.env.API_JWT_ISSUER ?? 'diar:4fis:local',
+    jwtAudience: process.env.API_JWT_AUDIENCE ?? 'diar:4fis:local:users',
+
     fileDestination: process.env.API_FILE_DESTINATION ?? 'uploads/',
 
     google: {

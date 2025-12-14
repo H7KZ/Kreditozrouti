@@ -1,3 +1,4 @@
+import '@api/types'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Error/ErrorHandler'
@@ -12,7 +13,6 @@ import express from 'express'
 import session, { type SessionOptions } from 'express-session'
 import helmet from 'helmet'
 import morgan from 'morgan'
-import passport from 'passport'
 import responseTime from 'response-time'
 
 /**
@@ -85,13 +85,10 @@ if (!Config.isEnvDevelopment()) {
     sessionOptions.cookie!.sameSite = 'none' // Required for cross-site cookies
 }
 
-app.use(session(sessionOptions))
-
 /**
- * Initializes Passport.js for authentication and enables persistent login sessions.
+ * Applies session management middleware to the application.
  */
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(session(sessionOptions))
 
 /**
  * Enables Gzip compression for HTTP responses.

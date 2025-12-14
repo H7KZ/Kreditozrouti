@@ -8,9 +8,6 @@ interface APIErrorDetails {
     /** A collection of schema validation errors from Zod. */
     zodIssues?: $ZodIssue[]
 
-    /** The runtime stack trace for debugging purposes. */
-    stack?: string
-
     /** Allows for arbitrary custom properties to be attached to the error. */
     [key: string]: any
 }

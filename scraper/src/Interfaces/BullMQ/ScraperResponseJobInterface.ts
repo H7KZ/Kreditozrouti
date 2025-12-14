@@ -13,7 +13,6 @@ interface ScraperResponseJobBase {
     /** Optional error details if the scraping process failed. */
     error?: {
         message: string
-        stack?: string
     }
 }
 

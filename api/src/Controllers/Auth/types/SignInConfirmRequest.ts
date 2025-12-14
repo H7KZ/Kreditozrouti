@@ -3,9 +3,19 @@
  * @route POST /auth/signin/confirm
  */
 export default interface SignInConfirmRequest {
-    /** The user's email address. */
-    email: string
+    /**
+     The confirmation code sent to the user's email
+     *
+     * @type {string}
+     * @required
+     */
+    auth_code: string
 
-    /** The verification code provided by the user. */
-    code: string
+    /**
+     * The code verifier used in the PKCE flow
+     *
+     * @type {string}
+     * @required
+     */
+    code_verifier: string
 }
