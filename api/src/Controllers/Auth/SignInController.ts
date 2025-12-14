@@ -7,7 +7,7 @@ import Exception from '@api/Error/Exception'
 import EmailService from '@api/Services/EmailService'
 import SignInValidation from '@api/Validations/SignInValidation'
 import { Request, Response } from 'express'
-import config from '@api/Config/Config'
+import Config from '@api/Config/Config'
 
 export default async function SignInController(req: Request, res: Response) {
     const result = await SignInValidation.safeParseAsync(req.body)
@@ -36,10 +36,10 @@ export default async function SignInController(req: Request, res: Response) {
 
     i18n.init(req, res)
 
-    const magicLink = config.frontend.createURL(`/auth/signin/confirm?code=${code}`)
+    const magicLink = Config.frontend.createURL(`/auth/signin/confirm?code=${code}`)
 
     const emailSignInTemplate = await EmailService.readTemplate('CodeEmail', {
-        emailText: req.__('emails.signIn.body', { code: code.toString(), expiration: '10' }),
+        emailText: req.__('emails.signIn.body', {expiration: '10' }),
         link: magicLink
     })
 
