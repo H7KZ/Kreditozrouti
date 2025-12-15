@@ -1,11 +1,11 @@
-import ScraperJobType from '@scraper/Types/ScraperJobType'
+import ScraperJob from '@scraper/Types/ScraperJob'
 
 /**
  * Base configuration shared by all scraper request jobs.
  */
 interface ScraperRequestJobBase {
     /** The specific type identifier for the scraping task. */
-    type: ScraperJobType
+    type: ScraperJob
     /** Optional error details if the job failed during queuing. */
     error?: {
         message: string
@@ -13,16 +13,17 @@ interface ScraperRequestJobBase {
 }
 
 /**
- * Payload for requesting a crawl of the main FIS events list.
+ * Payload for requesting a crawl of the main 4FIS events list.
  */
-export interface ScraperFISEventsRequestJobInterface extends ScraperRequestJobBase {
+export interface Scraper4FISEventsRequestJob extends ScraperRequestJobBase {
     type: '4FIS:Events'
+    auto_queue_events?: boolean
 }
 
 /**
  * Payload for requesting a crawl of a specific FIS event.
  */
-export interface ScraperFISEventRequestJobInterface extends ScraperRequestJobBase {
+export interface Scraper4FISEventRequestJob extends ScraperRequestJobBase {
     type: '4FIS:Event'
     /** The unique identifier of the target event. */
     eventId: string
@@ -31,14 +32,15 @@ export interface ScraperFISEventRequestJobInterface extends ScraperRequestJobBas
 /**
  * Payload for requesting a crawl of the InSIS course catalog.
  */
-export interface ScraperInSISCatalogRequestJobInterface extends ScraperRequestJobBase {
+export interface ScraperInSISCatalogRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:Catalog'
+    auto_queue_courses?: boolean
 }
 
 /**
  * Payload for requesting a crawl of a specific InSIS course.
  */
-export interface ScraperInSISCourseRequestJobInterface extends ScraperRequestJobBase {
+export interface ScraperInSISCourseRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:Course'
     /** The full URL of the course page to scrape. */
     url: string
@@ -47,10 +49,6 @@ export interface ScraperInSISCourseRequestJobInterface extends ScraperRequestJob
 /**
  * Union type representing any valid scraper request job payload.
  */
-type ScraperRequestJobInterface =
-    | ScraperFISEventsRequestJobInterface
-    | ScraperFISEventRequestJobInterface
-    | ScraperInSISCatalogRequestJobInterface
-    | ScraperInSISCourseRequestJobInterface
+type ScraperRequestJob = Scraper4FISEventsRequestJob | Scraper4FISEventRequestJob | ScraperInSISCatalogRequestJob | ScraperInSISCourseRequestJob
 
-export default ScraperRequestJobInterface
+export default ScraperRequestJob

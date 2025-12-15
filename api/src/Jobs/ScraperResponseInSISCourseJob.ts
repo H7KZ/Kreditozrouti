@@ -1,60 +1,50 @@
 import { mysql } from '@api/clients'
-import {
-    CourseAssessmentMethodTableName,
-    CourseTableName,
-    CourseTimetableSlotTableName,
-    CourseTimetableUnitTableName,
-    NewCourseAssessmentMethod,
-    NewCourseTimetableSlot,
-    NewCourseTimetableUnit
-} from '@api/Database/types'
-import { ScraperInSISCourseResponseJobInterface } from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
-import { AssessmentMethod, TimetableSlot, TimetableUnit } from '@scraper/Interfaces/InSIS/InSISCourseInterface'
-import { Job } from 'bullmq'
+import { CourseAssessmentMethodTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from '@api/Database/types'
+import { ScraperInSISCourseAssessmentMethod, ScraperInSISCourseTimetableSlot, ScraperInSISCourseTimetableUnit } from '@scraper/Interfaces/ScraperInSISCourse'
+import { ScraperInSISCourseResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
 
 /**
  * Processes the scraper response for a specific InSIS course.
  * Upserts course details into the database and triggers synchronization for assessment methods and timetables.
  *
- * @param job - The BullMQ job containing the scraped course data.
+ * @param data - The scraper response job data containing course information.
  */
-export default async function ScraperInSISCourseResponseJob(job: Job<ScraperInSISCourseResponseJobInterface>): Promise<void> {
-    const data = job.data.course
+export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCourseResponseJob): Promise<void> {
+    const course = data.course
 
-    if (!data?.id) {
-        console.warn(`No valid course data found for job Id: ${job.id}`)
+    if (!course?.id) {
         return
     }
 
-    const courseId = data.id
-    console.log(`Processing sync for course Id: ${courseId} (${data.ident})`)
+    const courseId = course.id
+    console.log(`Processing sync for course Id: ${courseId} (${course.ident})`)
 
     const coursePayload = {
         id: courseId,
-        url: data.url,
-        ident: data.ident ?? '',
-        title: data.title,
-        czech_title: data.czech_title,
-        ects: data.ects,
-        mode_of_delivery: data.mode_of_delivery,
-        mode_of_completion: data.mode_of_completion,
-        languages: data.languages ? data.languages.join('|') : null,
-        level: data.level,
-        year_of_study: data.year_of_study,
-        semester: data.semester,
-        lecturers: data.lecturers ? data.lecturers.join('|') : null,
-        prerequisites: data.prerequisites,
-        recommended_programmes: data.recommended_programmes,
-        required_work_experience: data.required_work_experience,
-        aims_of_the_course: data.aims_of_the_course,
-        learning_outcomes: data.learning_outcomes,
-        course_contents: data.course_contents,
-        special_requirements: data.special_requirements,
-        literature: data.literature
+        url: course.url,
+        ident: course.ident ?? '',
+        title: course.title,
+        czech_title: course.czech_title,
+        ects: course.ects,
+        mode_of_delivery: course.mode_of_delivery,
+        mode_of_completion: course.mode_of_completion,
+        languages: course.languages ? course.languages.join('|') : null,
+        level: course.level,
+        year_of_study: course.year_of_study,
+        semester: course.semester,
+        lecturers: course.lecturers ? course.lecturers.join('|') : null,
+        prerequisites: course.prerequisites,
+        recommended_programmes: course.recommended_programmes,
+        required_work_experience: course.required_work_experience,
+        aims_of_the_course: course.aims_of_the_course,
+        learning_outcomes: course.learning_outcomes,
+        course_contents: course.course_contents,
+        special_requirements: course.special_requirements,
+        literature: course.literature
     }
 
     await mysql
-        .insertInto(CourseTableName)
+        .insertInto(CourseTable._table)
         .values(coursePayload)
         .onDuplicateKeyUpdate({
             ident: coursePayload.ident,
@@ -79,8 +69,8 @@ export default async function ScraperInSISCourseResponseJob(job: Job<ScraperInSI
         })
         .execute()
 
-    await syncAssessmentMethods(courseId, data.assessment_methods ?? [])
-    await syncTimetable(courseId, data.timetable ?? [])
+    await syncAssessmentMethods(courseId, course.assessment_methods ?? [])
+    await syncTimetable(courseId, course.timetable ?? [])
 
     console.log(`Synced course Id: ${courseId}`)
 }
@@ -92,21 +82,21 @@ export default async function ScraperInSISCourseResponseJob(job: Job<ScraperInSI
  * @param courseId - The ID of the course being updated.
  * @param incomingMethods - The list of assessment methods returned by the scraper.
  */
-async function syncAssessmentMethods(courseId: number, incomingMethods: AssessmentMethod[]): Promise<void> {
-    const existingMethods = await mysql.selectFrom(CourseAssessmentMethodTableName).selectAll().where('course_id', '=', courseId).execute()
+async function syncAssessmentMethods(courseId: number, incomingMethods: ScraperInSISCourseAssessmentMethod[]): Promise<void> {
+    const existingMethods = await mysql.selectFrom(CourseAssessmentMethodTable._table).selectAll().where('course_id', '=', courseId).execute()
 
     const incomingMap = new Map(incomingMethods.map(m => [m.method, m]))
 
     const toDeleteIds = existingMethods.filter(em => em.method && !incomingMap.has(em.method)).map(em => em.id)
 
     if (toDeleteIds.length > 0) {
-        await mysql.deleteFrom(CourseAssessmentMethodTableName).where('id', 'in', toDeleteIds).execute()
+        await mysql.deleteFrom(CourseAssessmentMethodTable._table).where('id', 'in', toDeleteIds).execute()
     }
 
     for (const existing of existingMethods) {
         const incoming = existing.method ? incomingMap.get(existing.method) : null
         if (incoming && existing.weight !== incoming.weight) {
-            await mysql.updateTable(CourseAssessmentMethodTableName).set({ weight: incoming.weight }).where('id', '=', existing.id).execute()
+            await mysql.updateTable(CourseAssessmentMethodTable._table).set({ weight: incoming.weight }).where('id', '=', existing.id).execute()
         }
     }
 
@@ -114,17 +104,10 @@ async function syncAssessmentMethods(courseId: number, incomingMethods: Assessme
 
     const toInsert = incomingMethods
         .filter(im => im.method && !existingMethodNames.has(im.method))
-        .map(
-            im =>
-                ({
-                    course_id: courseId,
-                    method: im.method,
-                    weight: im.weight
-                }) as NewCourseAssessmentMethod
-        )
+        .map(im => ({ course_id: courseId, method: im.method, weight: im.weight }))
 
     if (toInsert.length > 0) {
-        await mysql.insertInto(CourseAssessmentMethodTableName).values(toInsert).execute()
+        await mysql.insertInto(CourseAssessmentMethodTable._table).values(toInsert).execute()
     }
 }
 
@@ -135,9 +118,9 @@ async function syncAssessmentMethods(courseId: number, incomingMethods: Assessme
  * @param courseId - The ID of the course.
  * @param incomingUnits - The list of timetable units returned by the scraper.
  */
-async function syncTimetable(courseId: number, incomingUnits: TimetableUnit[]): Promise<void> {
+async function syncTimetable(courseId: number, incomingUnits: ScraperInSISCourseTimetableUnit[]): Promise<void> {
     const existingUnits = await mysql
-        .selectFrom(CourseTimetableUnitTableName)
+        .selectFrom(CourseTimetableUnitTable._table)
         .select(['id', 'lecturer', 'capacity', 'note'])
         .where('course_id', '=', courseId)
         .execute()
@@ -157,13 +140,14 @@ async function syncTimetable(courseId: number, incomingUnits: TimetableUnit[]): 
             unitId = match.id
             processedIds.push(unitId)
         } else {
-            const newUnit: NewCourseTimetableUnit = {
+            const newUnit = {
                 course_id: courseId,
                 lecturer: incoming.lecturer,
                 capacity: incoming.capacity,
                 note: incoming.note
             }
-            const res = await mysql.insertInto(CourseTimetableUnitTableName).values(newUnit).executeTakeFirstOrThrow()
+
+            const res = await mysql.insertInto(CourseTimetableUnitTable._table).values(newUnit).executeTakeFirstOrThrow()
             unitId = Number(res.insertId)
         }
 
@@ -173,7 +157,7 @@ async function syncTimetable(courseId: number, incomingUnits: TimetableUnit[]): 
     const toDeleteIds = existingUnits.map(u => u.id).filter(id => !processedIds.includes(id))
 
     if (toDeleteIds.length > 0) {
-        await mysql.deleteFrom(CourseTimetableUnitTableName).where('id', 'in', toDeleteIds).execute()
+        await mysql.deleteFrom(CourseTimetableUnitTable._table).where('id', 'in', toDeleteIds).execute()
     }
 }
 
@@ -184,27 +168,24 @@ async function syncTimetable(courseId: number, incomingUnits: TimetableUnit[]): 
  * @param unitId - The ID of the parent timetable unit.
  * @param incomingSlots - The list of time slots to insert.
  */
-async function syncSlotsForUnit(unitId: number, incomingSlots: TimetableSlot[]): Promise<void> {
-    await mysql.deleteFrom(CourseTimetableSlotTableName).where('timetable_unit_id', '=', unitId).execute()
+async function syncSlotsForUnit(unitId: number, incomingSlots: ScraperInSISCourseTimetableSlot[]): Promise<void> {
+    await mysql.deleteFrom(CourseTimetableSlotTable._table).where('timetable_unit_id', '=', unitId).execute()
 
     if (incomingSlots.length > 0) {
-        const slotRows = incomingSlots.map(
-            slot =>
-                ({
-                    timetable_unit_id: unitId,
-                    type: slot.type,
-                    frequency: slot.frequency,
-                    date: slot.date,
-                    day: slot.day,
-                    time_from: slot.time_from,
-                    time_to: slot.time_to,
-                    time_from_minutes: timeToMinutes(slot.time_from),
-                    time_to_minutes: timeToMinutes(slot.time_to),
-                    location: slot.location
-                }) as NewCourseTimetableSlot
-        )
+        const slotRows = incomingSlots.map(slot => ({
+            timetable_unit_id: unitId,
+            type: slot.type,
+            frequency: slot.frequency,
+            date: slot.date,
+            day: slot.day,
+            time_from: slot.time_from,
+            time_to: slot.time_to,
+            time_from_minutes: timeToMinutes(slot.time_from),
+            time_to_minutes: timeToMinutes(slot.time_to),
+            location: slot.location
+        }))
 
-        await mysql.insertInto(CourseTimetableSlotTableName).values(slotRows).execute()
+        await mysql.insertInto(CourseTimetableSlotTable._table).values(slotRows).execute()
     }
 }
 

@@ -11,7 +11,7 @@ export default function Navbar() {
     <nav className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6">
       {/* Logo */}
       <div className="flex items-center">
-        <img src="/diar4fis.svg" alt="Diar4FIS" className="h-10 w-auto origin-left scale-150 transform" />
+        <img src="/diar_fisaka.svg" alt={t("common.app_logo_alt")} className="h-10 w-auto origin-left scale-150 transform" />
       </div>
 
       <div className="flex items-center gap-4">

@@ -6,13 +6,16 @@ export * from './user.type'
 export * from './event.type'
 export * from './course.type'
 
-export interface Database {
-    users: UserTable
-    fis_events: EventTable
-    fis_events_categories: EventCategoryTable
-    fis_categories: CategoryTable
-    insis_courses: CourseTable
-    insis_courses_assessment_methods: CourseAssessmentMethodTable
-    insis_courses_timetable_units: CourseTimetableUnitTable
-    insis_courses_timetable_slots: CourseTimetableSlotTable
+type AllTableClasses =
+    | typeof UserTable
+    | typeof EventTable
+    | typeof EventCategoryTable
+    | typeof CategoryTable
+    | typeof CourseTable
+    | typeof CourseAssessmentMethodTable
+    | typeof CourseTimetableUnitTable
+    | typeof CourseTimetableSlotTable
+
+export type Database = {
+    [T in AllTableClasses as T['_table']]: InstanceType<T>
 }

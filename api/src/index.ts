@@ -3,7 +3,7 @@ import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
 import Config from '@api/Config/Config'
-import { MySQLService } from '@api/Services/MySQLService'
+import { SQLService } from '@api/Services/SQLService'
 
 /**
  * Application entry point.
@@ -20,13 +20,13 @@ async function start() {
         /**
          * Executes pending schema migrations.
          */
-        await MySQLService.migrateToLatest()
+        await SQLService.migrateToLatest()
         console.log('Migrating connection to MySQL successfully.')
 
         /**
          * Populates the database with initial seed data.
          */
-        await MySQLService.seedInitialData()
+        await SQLService.seedInitialData()
         console.log('Seeding initial data to MySQL successfully.')
 
         /**

@@ -1,6 +1,6 @@
-import InSISCatalogInterface from '@scraper/Interfaces/InSIS/InSISCatalogInterface'
-import InSISCourseInterface, { AssessmentMethod, TimetableUnit } from '@scraper/Interfaces/InSIS/InSISCourseInterface'
-import ExtractService from '@scraper/Services/ExtractService'
+import ScraperInSISCatalog from '@scraper/Interfaces/ScraperInSISCatalog'
+import ScraperInSISCourse, { ScraperInSISCourseAssessmentMethod, ScraperInSISCourseTimetableUnit } from '@scraper/Interfaces/ScraperInSISCourse'
+import ExtractService from '@scraper/Services/Extractors/ExtractService'
 import MarkdownService from '@scraper/Services/MarkdownService'
 import * as cheerio from 'cheerio'
 
@@ -16,7 +16,7 @@ export default class ExtractInSISService {
      * @param html - The raw HTML content of the catalog page.
      * @returns An object containing a deduplicated list of absolute course URLs.
      */
-    static extractInSISCatalogCoursesWithParser(html: string): InSISCatalogInterface {
+    static extractCatalog(html: string): ScraperInSISCatalog {
         const $ = cheerio.load(html)
         const subjects: string[] = []
         const baseUrl = 'https://insis.vse.cz/katalog/'
@@ -43,7 +43,7 @@ export default class ExtractInSISService {
      * @returns The structured course data object.
      * @throws {Error} If the unique Course ID cannot be determined from the content or URL.
      */
-    static extractInSISCourseWithParser(html: string, url: string): InSISCourseInterface {
+    static extractCourse(html: string, url: string): ScraperInSISCourse {
         const $ = cheerio.load(html)
 
         const body = $('body')
@@ -207,7 +207,7 @@ export default class ExtractInSISService {
             literature = MarkdownService.formatCheerioElementToMarkdown(litContent)
         }
 
-        const assessment_methods: AssessmentMethod[] = []
+        const assessment_methods: ScraperInSISCourseAssessmentMethod[] = []
         const assessmentHeaderRow = $('td')
             .filter((_, el) => cleanText($(el).text()).includes('Způsoby a kritéria hodnocení'))
             .parent('tr')
@@ -231,7 +231,7 @@ export default class ExtractInSISService {
             })
         }
 
-        const timetableUnitsMap = new Map<string, TimetableUnit>()
+        const timetableUnitsMap = new Map<string, ScraperInSISCourseTimetableUnit>()
 
         const timetableHeader = $('td, b, strong')
             .filter((_, el) => cleanText($(el).text()).includes('Periodické rozvrhové akce'))

@@ -1,6 +1,6 @@
-import FISEventInterface from '@scraper/Interfaces/FIS/FISEventInterface'
-import FISEventsInterface from '@scraper/Interfaces/FIS/FISEventsInterface'
-import ExtractService from '@scraper/Services/ExtractService'
+import Scraper4FISEvent from '@scraper/Interfaces/Scraper4FISEvent'
+import Scraper4FISEvents from '@scraper/Interfaces/Scraper4FISEvents'
+import ExtractService from '@scraper/Services/Extractors/ExtractService'
 import MarkdownService from '@scraper/Services/MarkdownService'
 import * as cheerio from 'cheerio'
 
@@ -8,7 +8,7 @@ import * as cheerio from 'cheerio'
  * Service responsible for parsing HTML content from the FIS website.
  * Extracts event lists and detailed event metadata using Cheerio.
  */
-export default class ExtractFISService {
+export default class Extract4FISService {
     /**
      * Parses the HTML of an events listing page to find event identifiers.
      * Iterates through article elements to extract IDs from their permalinks.
@@ -16,7 +16,7 @@ export default class ExtractFISService {
      * @param html - The raw HTML content of the events listing page.
      * @returns An object containing the list of discovered event IDs.
      */
-    static extractAllFISEventArticlesWithParser(html: string): FISEventsInterface {
+    static extractEventArticles(html: string): Scraper4FISEvents {
         const $ = cheerio.load(html)
         const articles = $('article')
 
@@ -44,7 +44,7 @@ export default class ExtractFISService {
      * @param html - The raw HTML content of the event page.
      * @returns The structured event data, or null if critical information (like the canonical URL) is missing.
      */
-    static extractFISEventDetailsWithParser(html: string): FISEventInterface | null {
+    static extractEvent(html: string): Scraper4FISEvent | null {
         const $ = cheerio.load(html)
 
         const siteUrl = $('link[rel="canonical"]').attr('href')

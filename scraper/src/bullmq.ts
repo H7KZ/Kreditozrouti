@@ -1,9 +1,11 @@
-import { QueueEnum } from '@api/Enums/QueueEnum'
 import { redis } from '@scraper/clients'
-import ScraperRequestJobHandler from '@scraper/Handlers/ScraperRequestJobHandler'
-import ScraperRequestJobInterface from '@scraper/Interfaces/BullMQ/ScraperRequestJobInterface'
-import ScraperResponseJobInterface from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
+import ScraperRequestHandler from '@scraper/Handlers/ScraperRequestHandler'
+import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
+import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
 import { Queue, Worker } from 'bullmq'
+
+const ScraperRequestQueue = 'ScraperRequestQueue'
+const ScraperResponseQueue = 'ScraperResponseQueue'
 
 /**
  * Manages the BullMQ infrastructure specifically for the scraper service.
@@ -15,9 +17,9 @@ const scraper = {
      */
     queue: {
         /** Queue for receiving scraping tasks. */
-        request: new Queue<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, { connection: redis }),
+        request: new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis }),
         /** Queue for dispatching scrape results back to the API. */
-        response: new Queue<ScraperResponseJobInterface>(QueueEnum.SCRAPER_RESPONSE, { connection: redis })
+        response: new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis })
     },
     /**
      * Collection of workers for processing job execution.
@@ -27,8 +29,8 @@ const scraper = {
          * Worker that processes incoming scrape requests.
          * Configured with concurrency: 1 to process jobs serially.
          */
-        request: new Worker<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, ScraperRequestJobHandler, { connection: redis, concurrency: 1 })
-        // response: new Worker<ScraperResponseJobInterface>(QueueEnum.SCRAPER_RESPONSE, ScraperResponseJobHandler, { connection: redis })
+        request: new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestHandler, { connection: redis, concurrency: 1 })
+        // response: new Worker<ScraperResponseJobInterface>(ScraperResponseQueue, ScraperResponseJobHandler, { connection: redis })
     },
 
     /**
@@ -50,4 +52,4 @@ const scraper = {
     }
 }
 
-export { scraper }
+export { ScraperRequestQueue, ScraperResponseQueue, scraper }

@@ -1,7 +1,7 @@
 /**
- * Defines the data structure for a single scraped FIS event.
+ * Defines the data structure for a single scraped 4FIS event.
  */
-export default interface FISEventInterface {
+export default interface Scraper4FISEvent {
     /** Unique identifier derived from the event URL path. */
     id: string | null
     /** The main headline of the event. */

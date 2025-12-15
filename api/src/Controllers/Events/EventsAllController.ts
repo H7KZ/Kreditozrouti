@@ -1,7 +1,7 @@
 import { mysql } from '@api/clients'
 import EventsAllRequest from '@api/Controllers/Events/types/EventsAllRequest'
 import EventsAllResponse from '@api/Controllers/Events/types/EventsAllResponse'
-import { EventCategoryTableName, EventTableName } from '@api/Database/types'
+import { EventCategoryTable, EventTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
 import EventsAllValidation from '@api/Validations/EventsAllValidation'
@@ -24,27 +24,29 @@ export default async function EventsAllController(req: Request, res: Response) {
 
     const data = result.data as EventsAllRequest
 
-    const eventsQuery = mysql.selectFrom(EventTableName).selectAll()
+    const eventsQuery = mysql.selectFrom(EventTable._table).selectAll()
 
     if (data.title) {
-        eventsQuery.where(`${EventTableName}.title`, 'like', `%${data.title}%`)
+        eventsQuery.where(`${EventTable._table}.title`, 'like', `%${data.title}%`)
     }
 
     if (data.date_from) {
-        eventsQuery.where(`${EventTableName}.datetime`, '>=', data.date_from)
+        eventsQuery.where(`${EventTable._table}.datetime`, '>=', data.date_from)
     }
 
     if (data.date_to) {
-        eventsQuery.where(`${EventTableName}.datetime`, '<=', data.date_to)
+        eventsQuery.where(`${EventTable._table}.datetime`, '<=', data.date_to)
     }
 
     if (data.categories && data.categories.length > 0) {
-        eventsQuery.innerJoin(EventCategoryTableName, join =>
-            join.onRef(`${EventTableName}.id`, '=', `${EventCategoryTableName}.event_id`).on(`${EventCategoryTableName}.category_id`, 'in', data.categories!)
+        eventsQuery.innerJoin(EventCategoryTable._table, join =>
+            join
+                .onRef(`${EventTable._table}.id`, '=', `${EventCategoryTable._table}.event_id`)
+                .on(`${EventCategoryTable._table}.category_id`, 'in', data.categories!)
         )
     }
 
-    const events = await eventsQuery.orderBy(`${EventTableName}.datetime`, 'asc').execute()
+    const events = await eventsQuery.orderBy(`${EventTable._table}.datetime`, 'asc').execute()
 
     return res.status(200).send({
         events: events

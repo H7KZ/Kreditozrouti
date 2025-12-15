@@ -1,4 +1,4 @@
-import { CourseTableName } from '@api/Database/types'
+import { CourseTable } from '@api/Database/types'
 import { Kysely } from 'kysely'
 
 /**
@@ -8,7 +8,7 @@ import { Kysely } from 'kysely'
  * @param mysql - The Kysely database instance used to execute schema queries.
  */
 export async function up(mysql: Kysely<any>): Promise<void> {
-    await mysql.schema.alterTable(CourseTableName).dropColumn('language').addColumn('languages', 'varchar(1024)').execute()
+    await mysql.schema.alterTable(CourseTable._table).dropColumn('language').addColumn('languages', 'varchar(1024)').execute()
 }
 
 /**
@@ -18,5 +18,5 @@ export async function up(mysql: Kysely<any>): Promise<void> {
  * @param mysql - The Kysely database instance used to execute schema queries.
  */
 export async function down(mysql: Kysely<any>): Promise<void> {
-    await mysql.schema.alterTable(CourseTableName).dropColumn('languages').addColumn('language', 'varchar(255)').execute()
+    await mysql.schema.alterTable(CourseTable._table).dropColumn('languages').addColumn('language', 'varchar(255)').execute()
 }

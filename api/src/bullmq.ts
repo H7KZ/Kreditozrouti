@@ -1,10 +1,13 @@
 import { redis } from '@api/clients'
-import { QueueEnum } from '@api/Enums/QueueEnum'
-import ScraperResponseJobHandler from '@api/Handlers/ScraperResponseJobHandler'
-import ScraperRequestJobInterface from '@scraper/Interfaces/BullMQ/ScraperRequestJobInterface'
-import ScraperResponseJobDataInterface from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
+import Config from '@api/Config/Config'
+import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
+import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/bullmq'
+import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
+import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
 import { Queue, Worker } from 'bullmq'
-import { JobEnum } from './Enums/JobEnum'
+
+const Scraper4FISEventsRequestScheduler = 'Scraper4FISEventsRequestScheduler'
+const ScraperInSISCatalogRequestScheduler = 'ScraperInSISCatalogRequestScheduler'
 
 /**
  * Manages the BullMQ infrastructure for the scraping service.
@@ -16,16 +19,16 @@ const scraper = {
      */
     queue: {
         /** Queue for sending scraping requests to the external scraper service. */
-        request: new Queue<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, { connection: redis })
-        // response: new Queue<ScraperResponseJobDataInterface>(QueueEnum.SCRAPER_RESPONSE, { connection: redis })
+        request: new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis })
+        // response: new Queue<ScraperResponseJobData>(ScraperResponseQueue, { connection: redis })
     },
     /**
      * Collection of workers for processing job execution results.
      */
     worker: {
-        // request: new Worker<ScraperRequestJobInterface>(QueueEnum.SCRAPER_REQUEST, ScraperRequestJobHandler, { connection: redis }),
+        // request: new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestJobHandler, { connection: redis }),
         /** Worker that processes responses from the scraper with a concurrency limit of 4. */
-        response: new Worker<ScraperResponseJobDataInterface>(QueueEnum.SCRAPER_RESPONSE, ScraperResponseJobHandler, { connection: redis, concurrency: 4 })
+        response: new Worker<ScraperResponseJob>(ScraperResponseQueue, ScraperResponseHandler, { connection: redis, concurrency: 4 })
     },
 
     /**
@@ -53,37 +56,15 @@ const scraper = {
     async schedulers() {
         /**
          * Schedules the FIS Events scraper to run every 2 minutes.
-         * Configures job retention policies (keep 32 jobs or up to 2 hours).
          */
         await scraper.queue.request.upsertJobScheduler(
-            'FISEventsRequestJobScheduler',
+            Scraper4FISEventsRequestScheduler,
             { pattern: '*/2 * * * *' }, // Every 2 minutes
             {
-                name: JobEnum.FIS_EVENTS_REQUEST,
+                name: '4FIS Events Request (2 min)',
                 data: {
-                    type: '4FIS:Events'
-                },
-                opts: {
-                    removeOnComplete: true,
-                    removeOnFail: {
-                        age: 2 * 3600, // keep up to 2 hours
-                        count: 32 // keep up to 32 jobs
-                    }
-                }
-            }
-        )
-        console.log('FISEventsRequestJobScheduler has been set to run every 2 minutes.')
-
-        /**
-         * Schedules the InSIS Catalog scraper to run at the start of every hour.
-         */
-        await scraper.queue.request.upsertJobScheduler(
-            'InSISRequestJobScheduler',
-            { pattern: '0 * * * *' }, // Every 1 hour
-            {
-                name: JobEnum.INSIS_CATALOG_REQUEST,
-                data: {
-                    type: 'InSIS:Catalog'
+                    type: '4FIS:Events',
+                    auto_queue_events: true
                 },
                 opts: {
                     removeOnComplete: true,
@@ -93,9 +74,38 @@ const scraper = {
                 }
             }
         )
-        // await scraper.queue.request.add(JobEnum.INSIS_CATALOG_REQUEST, { type: 'InSIS:Catalog' })
-        console.log('InSISRequestJobScheduler has been set to run every 1 hour.')
+        console.log(`${Scraper4FISEventsRequestScheduler} has been set to run every 2 minutes.`)
+
+        if (!Config.isEnvDevelopment()) {
+            /**
+             * Schedules the InSIS Catalog scraper to run at the start of every hour.
+             */
+            await scraper.queue.request.upsertJobScheduler(
+                ScraperInSISCatalogRequestScheduler,
+                { pattern: '0 * * * *' }, // Every 1 hour
+                {
+                    name: 'InSIS Catalog Request (1 hour)',
+                    data: {
+                        type: 'InSIS:Catalog',
+                        auto_queue_courses: true
+                    },
+                    opts: {
+                        removeOnComplete: true,
+                        removeOnFail: {
+                            age: 2 * 3600 // keep up to 2 hours
+                        }
+                    }
+                }
+            )
+            console.log(`${ScraperInSISCatalogRequestScheduler} has been set to run every 1 hour.`)
+        }
+
+        /**
+         * For testing purposes, you can uncomment the following lines to enqueue immediate jobs:
+         */
+        // await scraper.queue.request.add('4FIS Events Request', { type: '4FIS:Events', auto_queue_events: true })
+        // await scraper.queue.request.add('InSIS Catalog Request', { type: 'InSIS:Catalog', auto_queue_courses: true })
     }
 }
 
-export { scraper }
+export { Scraper4FISEventsRequestScheduler, ScraperInSISCatalogRequestScheduler, scraper }

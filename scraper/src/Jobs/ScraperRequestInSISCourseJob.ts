@@ -1,7 +1,6 @@
-import { JobEnum } from '@api/Enums/JobEnum'
 import { scraper } from '@scraper/bullmq'
-import { ScraperInSISCourseRequestJobInterface } from '@scraper/Interfaces/BullMQ/ScraperRequestJobInterface'
-import ExtractInSISService from '@scraper/Services/ExtractInSISService'
+import { ScraperInSISCourseRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
+import ExtractInSISService from '@scraper/Services/Extractors/ExtractInSISService'
 import Axios from 'axios'
 
 /**
@@ -11,7 +10,7 @@ import Axios from 'axios'
  * @param data - The job payload containing the target course URL.
  * @returns A promise that resolves when the parsed course data is queued.
  */
-export default async function InSISCourseController(data: ScraperInSISCourseRequestJobInterface): Promise<void> {
+export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCourseRequestJob): Promise<void> {
     const request = await Axios.get<string>(data.url, {
         headers: {
             Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -27,7 +26,7 @@ export default async function InSISCourseController(data: ScraperInSISCourseRequ
         }
     })
 
-    const course = ExtractInSISService.extractInSISCourseWithParser(request.data, data.url)
+    const course = ExtractInSISService.extractCourse(request.data, data.url)
 
-    await scraper.queue.response.add(JobEnum.INSIS_COURSE_RESPONSE, { type: 'InSIS:Course', course })
+    await scraper.queue.response.add('InSIS Course Response', { type: 'InSIS:Course', course })
 }

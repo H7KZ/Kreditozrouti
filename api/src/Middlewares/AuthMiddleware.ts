@@ -1,5 +1,5 @@
 import { mysql, redis } from '@api/clients'
-import { User } from '@api/Database/types'
+import { User, UserTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
 import JWTService from '@api/Services/JWTService'
@@ -46,7 +46,7 @@ export default async function AuthMiddleware(req: Request, res: Response, next: 
         return next()
     }
 
-    user = await mysql.selectFrom('users').selectAll().where('id', '=', payload.userId).executeTakeFirst()
+    user = await mysql.selectFrom(UserTable._table).selectAll().where('id', '=', payload.userId).executeTakeFirst()
 
     if (!user) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.UNAUTHORIZED, 'User is not authenticated')

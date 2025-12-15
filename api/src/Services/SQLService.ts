@@ -8,7 +8,7 @@ import { FileMigrationProvider, Migrator } from 'kysely'
 /**
  * Manages database schema migrations and initial data seeding.
  */
-export class MySQLService {
+export class SQLService {
     /**
      * Executes pending database migrations to bring the schema up to date.
      * Logs execution results and terminates the process if a critical error occurs.
@@ -79,7 +79,7 @@ export class MySQLService {
                         console.log(`Seed "${file}" executed successfully`)
                     } catch (error) {
                         if (error instanceof Error) {
-                            console.error(`Failed to execute seed "${file}":`, error.message)
+                            console.error(`Failed to execute seed "${file}"`)
                         }
                     }
                 }

@@ -10,7 +10,7 @@ export class Paths {
 
     /** The absolute path to the source code directory. */
     static src = path.join(Paths.root, 'src')
-    /** The absolute path to the static assets directory. */
+    /** The absolute path to the static assets' directory. */
     static assets = path.join(Paths.root, 'assets')
 
     /** Database configuration paths. */

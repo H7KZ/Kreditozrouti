@@ -1,4 +1,4 @@
-import { CourseAssessmentMethodTableName, CourseTableName, CourseTimetableSlotTableName, CourseTimetableUnitTableName } from '@api/Database/types'
+import { CourseAssessmentMethodTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from '@api/Database/types'
 import { Kysely, sql } from 'kysely'
 
 /**
@@ -12,7 +12,7 @@ export async function up(mysql: Kysely<any>): Promise<void> {
      * Creates the central Course table storing academic details, metadata, and curriculum information.
      */
     await mysql.schema
-        .createTable(CourseTableName)
+        .createTable(CourseTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
@@ -42,9 +42,9 @@ export async function up(mysql: Kysely<any>): Promise<void> {
      * Links to the main Course table via Foreign Key.
      */
     await mysql.schema
-        .createTable(CourseAssessmentMethodTableName)
+        .createTable(CourseAssessmentMethodTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
-        .addColumn('course_id', 'integer', col => col.notNull().references(`${CourseTableName}.id`).onDelete('cascade'))
+        .addColumn('course_id', 'integer', col => col.notNull().references(`${CourseTable._table}.id`).onDelete('cascade'))
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
         .addColumn('method', 'varchar(255)')
@@ -56,9 +56,9 @@ export async function up(mysql: Kysely<any>): Promise<void> {
      * Links to the main Course table via Foreign Key.
      */
     await mysql.schema
-        .createTable(CourseTimetableUnitTableName)
+        .createTable(CourseTimetableUnitTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
-        .addColumn('course_id', 'integer', col => col.notNull().references(`${CourseTableName}.id`).onDelete('cascade'))
+        .addColumn('course_id', 'integer', col => col.notNull().references(`${CourseTable._table}.id`).onDelete('cascade'))
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
         .addColumn('lecturer', 'varchar(255)')
@@ -71,9 +71,9 @@ export async function up(mysql: Kysely<any>): Promise<void> {
      * Links to the Timetable Unit table via Foreign Key.
      */
     await mysql.schema
-        .createTable(CourseTimetableSlotTableName)
+        .createTable(CourseTimetableSlotTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
-        .addColumn('timetable_unit_id', 'integer', col => col.notNull().references(`${CourseTimetableUnitTableName}.id`).onDelete('cascade'))
+        .addColumn('timetable_unit_id', 'integer', col => col.notNull().references(`${CourseTimetableUnitTable._table}.id`).onDelete('cascade'))
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
         .addColumn('type', 'varchar(255)')
@@ -95,8 +95,8 @@ export async function up(mysql: Kysely<any>): Promise<void> {
  * @param mysql - The Kysely database instance used to execute schema queries.
  */
 export async function down(mysql: Kysely<any>): Promise<void> {
-    await mysql.schema.dropTable(CourseTimetableSlotTableName).execute()
-    await mysql.schema.dropTable(CourseTimetableUnitTableName).execute()
-    await mysql.schema.dropTable(CourseAssessmentMethodTableName).execute()
-    await mysql.schema.dropTable(CourseTableName).execute()
+    await mysql.schema.dropTable(CourseTimetableSlotTable._table).execute()
+    await mysql.schema.dropTable(CourseTimetableUnitTable._table).execute()
+    await mysql.schema.dropTable(CourseAssessmentMethodTable._table).execute()
+    await mysql.schema.dropTable(CourseTable._table).execute()
 }

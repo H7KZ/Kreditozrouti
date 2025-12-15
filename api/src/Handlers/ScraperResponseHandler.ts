@@ -1,9 +1,6 @@
-import ScraperFISEventResponseJob from '@api/Jobs/ScraperFISEventResponseJob'
-import ScraperInSISCourseResponseJob from '@api/Jobs/ScraperInSISCourseResponseJob'
-import ScraperResponseJobInterface, {
-    ScraperFISEventResponseJobInterface,
-    ScraperInSISCourseResponseJobInterface
-} from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
+import ScraperResponse4FISEventJob from '@api/Jobs/ScraperResponse4FISEventJob'
+import ScraperResponseInSISCourseJob from '@api/Jobs/ScraperResponseInSISCourseJob'
+import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
 import { Job } from 'bullmq'
 
 /**
@@ -13,7 +10,7 @@ import { Job } from 'bullmq'
  * @param job - The BullMQ job object containing the scraper response data.
  * @throws Re-throws exceptions to trigger BullMQ retry logic or failure states.
  */
-export default async function ScraperResponseJobHandler(job: Job<ScraperResponseJobInterface>): Promise<void> {
+export default async function ScraperResponseHandler(job: Job<ScraperResponseJob>): Promise<void> {
     const type = job.data.type
 
     console.log(`Job of type ${type} with id ${job.id} started.`)
@@ -25,12 +22,12 @@ export default async function ScraperResponseJobHandler(job: Job<ScraperResponse
             case '4FIS:Events':
                 break
             case '4FIS:Event':
-                await ScraperFISEventResponseJob(job as Job<ScraperFISEventResponseJobInterface>)
+                await ScraperResponse4FISEventJob(job.data)
                 break
             case 'InSIS:Catalog':
                 break
             case 'InSIS:Course':
-                await ScraperInSISCourseResponseJob(job as Job<ScraperInSISCourseResponseJobInterface>)
+                await ScraperResponseInSISCourseJob(job.data)
                 break
             default:
                 console.warn(`Unknown job type: ${type}`)

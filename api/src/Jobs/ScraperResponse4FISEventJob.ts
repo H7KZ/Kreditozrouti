@@ -1,45 +1,43 @@
 import { mysql } from '@api/clients'
-import { CategoryTableName, EventCategoryTableName, EventTableName, NewEventCategory } from '@api/Database/types'
-import { ScraperFISEventResponseJobInterface } from '@scraper/Interfaces/BullMQ/ScraperResponseJobInterface'
-import { Job } from 'bullmq'
+import { CategoryTable, EventCategoryTable, EventTable } from '@api/Database/types'
+import { Scraper4FISEventResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
 
 /**
  * Processes the scraper response for a specific FIS event.
  * Upserts the event details into the database and synchronizes associated category relationships.
  *
- * @param job - The BullMQ job containing the scraped event data.
+ * @param data - The scraper response job data containing event details.
  */
-export default async function ScraperFISEventResponseJob(job: Job<ScraperFISEventResponseJobInterface>): Promise<void> {
-    const data = job.data.event
+export default async function ScraperResponse4FISEventJob(data: Scraper4FISEventResponseJob): Promise<void> {
+    const event = data.event
 
-    if (!data?.id) {
-        console.warn(`No valid event data found for job Id: ${job.id}`)
+    if (!event?.id) {
         return
     }
 
-    const eventId = data.id
+    const eventId = event.id
     console.log(`Processing sync for event Id: ${eventId}`)
 
     const formatDate = (dateStr: string | null | undefined) => (dateStr ? new Date(dateStr).toISOString().slice(0, 19).replace('T', ' ') : null)
 
     const eventPayload = {
         id: eventId,
-        title: data.title,
-        subtitle: data.subtitle,
-        datetime: formatDate(data.datetime),
-        image_src: data.image.src,
-        image_alt: data.image.alt,
-        description: data.description,
-        place: data.place,
-        author: data.author,
-        language: data.language,
-        registration_from: formatDate(data.registration_from),
-        registration_url: data.registration_url,
-        substitute_url: data.substitute_url
+        title: event.title,
+        subtitle: event.subtitle,
+        datetime: formatDate(event.datetime),
+        image_src: event.image.src,
+        image_alt: event.image.alt,
+        description: event.description,
+        place: event.place,
+        author: event.author,
+        language: event.language,
+        registration_from: formatDate(event.registration_from),
+        registration_url: event.registration_url,
+        substitute_url: event.substitute_url
     }
 
     await mysql
-        .insertInto(EventTableName)
+        .insertInto(EventTable._table)
         .values(eventPayload)
         .onDuplicateKeyUpdate({
             title: eventPayload.title,
@@ -57,7 +55,7 @@ export default async function ScraperFISEventResponseJob(job: Job<ScraperFISEven
         })
         .execute()
 
-    await syncEventCategories(eventId, data.categories ?? [])
+    await syncEventCategories(eventId, event.categories ?? [])
 
     console.log(`Synced event Id: ${eventId}`)
 }
@@ -71,15 +69,15 @@ export default async function ScraperFISEventResponseJob(job: Job<ScraperFISEven
  */
 async function syncEventCategories(eventId: string, incomingCategoryIds: string[]): Promise<void> {
     if (incomingCategoryIds.length === 0) {
-        await mysql.deleteFrom(EventCategoryTableName).where('event_id', '=', eventId).execute()
+        await mysql.deleteFrom(EventCategoryTable._table).where('event_id', '=', eventId).execute()
         return
     }
 
     for (const categoryId of incomingCategoryIds) {
-        await mysql.insertInto(CategoryTableName).values({ id: categoryId }).onDuplicateKeyUpdate({ id: categoryId }).execute()
+        await mysql.insertInto(CategoryTable._table).values({ id: categoryId }).onDuplicateKeyUpdate({ id: categoryId }).execute()
     }
 
-    const existingRelations = await mysql.selectFrom(EventCategoryTableName).select('category_id').where('event_id', '=', eventId).execute()
+    const existingRelations = await mysql.selectFrom(EventCategoryTable._table).select('category_id').where('event_id', '=', eventId).execute()
 
     const existingIds = new Set(existingRelations.map(r => r.category_id))
     const incomingIds = new Set(incomingCategoryIds)
@@ -87,20 +85,12 @@ async function syncEventCategories(eventId: string, incomingCategoryIds: string[
     const toDeleteIds = [...existingIds].filter(id => !incomingIds.has(id))
 
     if (toDeleteIds.length > 0) {
-        await mysql.deleteFrom(EventCategoryTableName).where('event_id', '=', eventId).where('category_id', 'in', toDeleteIds).execute()
+        await mysql.deleteFrom(EventCategoryTable._table).where('event_id', '=', eventId).where('category_id', 'in', toDeleteIds).execute()
     }
 
-    const toInsert = [...incomingIds]
-        .filter(id => !existingIds.has(id))
-        .map(
-            categoryId =>
-                ({
-                    event_id: eventId,
-                    category_id: categoryId
-                }) as NewEventCategory
-        )
+    const toInsert = [...incomingIds].filter(id => !existingIds.has(id)).map(categoryId => ({ event_id: eventId, category_id: categoryId }))
 
     if (toInsert.length > 0) {
-        await mysql.insertInto(EventCategoryTableName).values(toInsert).execute()
+        await mysql.insertInto(EventCategoryTable._table).values(toInsert).execute()
     }
 }

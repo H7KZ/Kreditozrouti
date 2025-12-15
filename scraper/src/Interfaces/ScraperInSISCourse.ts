@@ -1,7 +1,7 @@
 /**
  * Defines the detailed data structure for a single scraped InSIS course.
  */
-export default interface InSISCourseInterface {
+export default interface ScraperInSISCourse {
     /** The unique numeric identifier of the course. */
     id: number
     /** The source URL from which the course data was scraped. */
@@ -42,7 +42,7 @@ export default interface InSISCourseInterface {
     /** Detailed syllabus and topic breakdown. */
     course_contents: string | null
     /** List of criteria used for grading. */
-    assessment_methods: AssessmentMethod[] | null
+    assessment_methods: ScraperInSISCourseAssessmentMethod[] | null
 
     /** Specific conditions or hardware/software requirements. */
     special_requirements: string | null
@@ -50,13 +50,13 @@ export default interface InSISCourseInterface {
     literature: string | null
 
     /** List of scheduled teaching units/groups. */
-    timetable: TimetableUnit[] | null
+    timetable: ScraperInSISCourseTimetableUnit[] | null
 }
 
 /**
  * Defines a specific criterion used to grade a course.
  */
-export interface AssessmentMethod {
+export interface ScraperInSISCourseAssessmentMethod {
     /** The name of the assessment method (e.g., 'Final Exam'). */
     method: string | null
     /** The weight or point value assigned to this method. */
@@ -66,7 +66,7 @@ export interface AssessmentMethod {
 /**
  * Represents a distinct teaching group or instance (e.g., a specific seminar group).
  */
-export interface TimetableUnit {
+export interface ScraperInSISCourseTimetableUnit {
     /** The name of the lecturer assigned to this group. */
     lecturer: string | null
     /** The maximum student capacity for this group. */
@@ -75,13 +75,13 @@ export interface TimetableUnit {
     note: string | null
 
     /** List of specific time blocks associated with this group. */
-    slots: TimetableSlot[] | null
+    slots: ScraperInSISCourseTimetableSlot[] | null
 }
 
 /**
  * Represents a specific scheduled time block (slot) within a timetable unit.
  */
-export interface TimetableSlot {
+export interface ScraperInSISCourseTimetableSlot {
     /** The type of activity (e.g., Lecture, Seminar). */
     type: string | null
     /** Indicates if the slot repeats weekly or occurs once. */

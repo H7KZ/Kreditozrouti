@@ -1,7 +1,7 @@
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 
 /**
- * Interface representing a sign-in confirmation response
+ *  representing a sign-in confirmation response
  *
  * @route 201 /auth/signin/confirm
  */

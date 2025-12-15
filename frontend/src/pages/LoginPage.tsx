@@ -41,7 +41,7 @@ export default function LoginPage() {
       </div>
       <div className="pb-8 pt-6 text-center">
         <div className="mb-4 flex justify-center">
-          <img src="/diar4fis.svg" alt={t("common.app_logo_alt")} className="h-56 select-none md:h-64" />
+          <img src="/diar_fisaka.svg" alt={t("common.app_logo_alt")} className="h-56 select-none md:h-64" />
         </div>
         <h1 className="text-xl font-semibold text-gray-900 md:text-2xl">{showConfirmCode ? t("sign_in_confirm.heading") : t("sign_in.heading")}</h1>
         {showConfirmCode && (

@@ -1,4 +1,4 @@
-import { CategoryTableName, EventCategoryTableName, EventTableName, UserTableName } from '@api/Database/types'
+import { CategoryTable, EventCategoryTable, EventTable, UserTable } from '@api/Database/types'
 import { Kysely, sql } from 'kysely'
 
 /**
@@ -12,7 +12,7 @@ export async function up(mysql: Kysely<any>): Promise<void> {
      * Creates the Users table with auto-incrementing ID and timestamp tracking.
      */
     await mysql.schema
-        .createTable(UserTableName)
+        .createTable(UserTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
@@ -23,7 +23,7 @@ export async function up(mysql: Kysely<any>): Promise<void> {
      * Creates the Events table for storing event metadata, descriptions, and media links.
      */
     await mysql.schema
-        .createTable(EventTableName)
+        .createTable(EventTable._table)
         .addColumn('id', 'varchar(255)', col => col.primaryKey())
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
@@ -45,7 +45,7 @@ export async function up(mysql: Kysely<any>): Promise<void> {
      * Creates the Categories table acting as a dictionary for event types.
      */
     await mysql.schema
-        .createTable(CategoryTableName)
+        .createTable(CategoryTable._table)
         .addColumn('id', 'varchar(255)', col => col.primaryKey())
         .execute()
 
@@ -54,9 +54,9 @@ export async function up(mysql: Kysely<any>): Promise<void> {
      * Includes cascading deletion constraints.
      */
     await mysql.schema
-        .createTable(EventCategoryTableName)
-        .addColumn('event_id', 'varchar(255)', col => col.notNull().references(`${EventTableName}.id`).onDelete('cascade'))
-        .addColumn('category_id', 'varchar(255)', col => col.notNull().references(`${CategoryTableName}.id`).onDelete('cascade'))
+        .createTable(EventCategoryTable._table)
+        .addColumn('event_id', 'varchar(255)', col => col.notNull().references(`${EventTable._table}.id`).onDelete('cascade'))
+        .addColumn('category_id', 'varchar(255)', col => col.notNull().references(`${CategoryTable._table}.id`).onDelete('cascade'))
         .execute()
 }
 
@@ -67,8 +67,8 @@ export async function up(mysql: Kysely<any>): Promise<void> {
  * @param mysql - The Kysely database instance used to execute schema queries.
  */
 export async function down(mysql: Kysely<any>): Promise<void> {
-    await mysql.schema.dropTable(UserTableName).execute()
-    await mysql.schema.dropTable(EventCategoryTableName).execute()
-    await mysql.schema.dropTable(CategoryTableName).execute()
-    await mysql.schema.dropTable(EventTableName).execute()
+    await mysql.schema.dropTable(UserTable._table).execute()
+    await mysql.schema.dropTable(EventCategoryTable._table).execute()
+    await mysql.schema.dropTable(CategoryTable._table).execute()
+    await mysql.schema.dropTable(EventTable._table).execute()
 }

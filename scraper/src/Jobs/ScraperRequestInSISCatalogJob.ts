@@ -1,6 +1,6 @@
-import { JobEnum } from '@api/Enums/JobEnum'
 import { scraper } from '@scraper/bullmq'
-import ExtractInSISService from '@scraper/Services/ExtractInSISService'
+import { ScraperInSISCatalogRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
+import ExtractInSISService from '@scraper/Services/Extractors/ExtractInSISService'
 import Axios from 'axios'
 
 /**
@@ -10,7 +10,7 @@ import Axios from 'axios'
  *
  * @returns A promise that resolves when all course scrape jobs have been queued.
  */
-export default async function InSISCatalogController(): Promise<void> {
+export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCatalogRequestJob): Promise<void> {
     const request = await Axios.post<string>(
         'https://insis.vse.cz/katalog/index.pl',
         'kredity_od=&kredity_do=&vyhledat_rozsirene=Vyhledat+p%C5%99edm%C4%9Bty&jak=rozsirene',
@@ -31,9 +31,13 @@ export default async function InSISCatalogController(): Promise<void> {
         }
     )
 
-    const catalog = ExtractInSISService.extractInSISCatalogCoursesWithParser(request.data)
+    const catalog = ExtractInSISService.extractCatalog(request.data)
 
-    await scraper.queue.response.add(JobEnum.INSIS_CATALOG_RESPONSE, { type: 'InSIS:Catalog', catalog })
+    await scraper.queue.response.add('InSIS Catalog Response', { type: 'InSIS:Catalog', catalog })
 
-    catalog.urls.map(courseUrl => scraper.queue.request.add(JobEnum.INSIS_COURSE_REQUEST, { type: 'InSIS:Course', url: courseUrl }))
+    if (!catalog.urls || catalog.urls.length === 0 || !data.auto_queue_courses) {
+        return
+    }
+
+    catalog.urls.map(courseUrl => scraper.queue.request.add('InSIS Course Request (Catalog)', { type: 'InSIS:Course', url: courseUrl }))
 }

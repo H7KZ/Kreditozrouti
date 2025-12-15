@@ -1,8 +1,8 @@
-import FISEventController from '@scraper/Controllers/FIS/FISEventController'
-import FISEventsController from '@scraper/Controllers/FIS/FISEventsController'
-import InSISCatalogController from '@scraper/Controllers/InSIS/InSISCatalogController'
-import InSISCourseController from '@scraper/Controllers/InSIS/InSISCourseController'
-import ScraperRequestJobInterface from '@scraper/Interfaces/BullMQ/ScraperRequestJobInterface'
+import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
+import ScraperRequest4FISEventJob from '@scraper/Jobs/ScraperRequest4FISEventJob'
+import ScraperRequest4FISEventsJob from '@scraper/Jobs/ScraperRequest4FISEventsJob'
+import ScraperRequestInSISCatalogJob from '@scraper/Jobs/ScraperRequestInSISCatalogJob'
+import ScraperRequestInSISCourseJob from '@scraper/Jobs/ScraperRequestInSISCourseJob'
 import { Job } from 'bullmq'
 
 /**
@@ -12,26 +12,26 @@ import { Job } from 'bullmq'
  * @param job - The BullMQ job object containing the scrape request configuration.
  * @throws Re-throws exceptions to trigger BullMQ failure handling.
  */
-export default async function ScraperRequestJobHandler(job: Job<ScraperRequestJobInterface>): Promise<void> {
+export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>): Promise<void> {
     const type = job.data.type
 
-    console.log(`Job of type ${type} with id ${job.id} started.`)
+    console.log(`Processing job of type ${type} with id ${job.id}...`)
 
     const benchmark = performance.now()
 
     try {
         switch (type) {
             case '4FIS:Events':
-                await FISEventsController()
+                await ScraperRequest4FISEventsJob(job.data)
                 break
             case '4FIS:Event':
-                await FISEventController(job.data)
+                await ScraperRequest4FISEventJob(job.data)
                 break
             case 'InSIS:Catalog':
-                await InSISCatalogController()
+                await ScraperRequestInSISCatalogJob(job.data)
                 break
             case 'InSIS:Course':
-                await InSISCourseController(job.data)
+                await ScraperRequestInSISCourseJob(job.data)
                 break
             default:
                 console.warn(`Unknown job type: ${type}`)

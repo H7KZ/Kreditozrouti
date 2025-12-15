@@ -1,6 +1,6 @@
 {
     "version": "1",
-    "name": "Diar4FIS",
+    "name": "Diář FISáka",
     "type": "collection",
     "ignore": ["node_modules", ".git"]
 }

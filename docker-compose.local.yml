@@ -11,7 +11,7 @@ services:
       - MYSQL_DATABASE=diar-4fis
 
     ports:
-      - 43306:3306
+      - "43306:3306"
 
     deploy:
       mode: global
@@ -57,7 +57,7 @@ services:
     ]
 
     ports:
-      - 46379:6379
+      - "46379:6379"
 
     deploy:
       mode: global
