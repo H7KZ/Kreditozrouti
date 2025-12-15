@@ -10,10 +10,10 @@ import { Request, Response } from 'express'
  * @param res - The Express response object.
  * @throws {Exception} If the logout process encounters an internal error.
  */
-export default async function SignOutController(req: Request, res: Response) {
+export default async function SignOutController(req: Request, res: Response<SignOutResponse>) {
     await redis.del(`auth:jwt:user:${res.locals.user.id}`)
 
     return res.status(201).send({
         code: SuccessCodeEnum.SIGNED_OUT
-    } as SignOutResponse)
+    })
 }

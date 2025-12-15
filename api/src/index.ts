@@ -5,6 +5,8 @@ import { mysql, nodemailer, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import { SQLService } from '@api/Services/SQLService'
 
+start()
+
 /**
  * Application entry point.
  * Initializes infrastructure connections, executes migrations, sets up background jobs, and starts the HTTP server.
@@ -90,5 +92,3 @@ async function start() {
         process.exit(1)
     }
 }
-
-start()

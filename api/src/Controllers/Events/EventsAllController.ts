@@ -1,5 +1,4 @@
 import { mysql } from '@api/clients'
-import EventsAllRequest from '@api/Controllers/Events/types/EventsAllRequest'
 import EventsAllResponse from '@api/Controllers/Events/types/EventsAllResponse'
 import { EventCategoryTable, EventTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
@@ -15,14 +14,14 @@ import { Request, Response } from 'express'
  * @param res - The Express response object.
  * @throws {Exception} If the query parameters fail validation schema checks.
  */
-export default async function EventsAllController(req: Request, res: Response) {
+export default async function EventsAllController(req: Request, res: Response<EventsAllResponse>) {
     const result = await EventsAllValidation.safeParseAsync(req.query)
 
     if (!result.success) {
         throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
     }
 
-    const data = result.data as EventsAllRequest
+    const data = result.data
 
     const eventsQuery = mysql.selectFrom(EventTable._table).selectAll()
 
@@ -50,5 +49,5 @@ export default async function EventsAllController(req: Request, res: Response) {
 
     return res.status(200).send({
         events: events
-    } as EventsAllResponse)
+    })
 }

@@ -16,8 +16,8 @@ import { NextFunction, Request, Response } from 'express'
 // NextFunction is required here - otherwise Express won't recognize this as an error handling middleware
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ErrorHandler(error: Exception | Error | unknown, req: Request, res: Response, next: NextFunction) {
-    console.log(error)
-    console.log(req)
+    // console.log(error)
+    // console.log(req)
 
     if (error instanceof Exception) {
         return res.status(error.status).json({

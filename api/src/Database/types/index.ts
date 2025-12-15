@@ -1,10 +1,10 @@
-import { CourseAssessmentMethodTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from './course.type'
-import { CategoryTable, EventCategoryTable, EventTable } from './event.type'
+import { CategoryTable, EventCategoryTable, EventTable } from './4fis_event.type'
+import { CourseAssessmentMethodTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from './insis_course.type'
 import { UserTable } from './user.type'
 
 export * from './user.type'
-export * from './event.type'
-export * from './course.type'
+export * from './4fis_event.type'
+export * from './insis_course.type'
 
 type AllTableClasses =
     | typeof UserTable

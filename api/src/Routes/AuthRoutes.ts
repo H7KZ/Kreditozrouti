@@ -5,10 +5,6 @@ import AuthMiddleware from '@api/Middlewares/AuthMiddleware'
 import { ParserJSONMiddleware } from '@api/Middlewares/ParserMiddleware'
 import { Router } from 'express'
 
-/**
- * Defines the router for authentication endpoints.
- * Handles user sign-in initialization, verification, and session termination.
- */
 const AuthRoutes = Router()
 
 AuthRoutes.post('/signin', ParserJSONMiddleware, SignInController)

@@ -1,11 +1,11 @@
 import '@api/types'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
-import ErrorHandler from '@api/Error/ErrorHandler'
+import ErrorHandler from '@api/Handlers/ErrorHandler'
 import { Paths } from '@api/paths'
 import AuthRoutes from '@api/Routes/AuthRoutes'
-import EventRoutes from '@api/Routes/EventRoutes'
 import EventsRoutes from '@api/Routes/EventsRoutes'
+import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
 import compression from 'compression'
 import { RedisStore } from 'connect-redis'
 import cors, { CorsOptions } from 'cors'
@@ -66,8 +66,8 @@ app.disable('x-powered-by')
 const sessionOptions: SessionOptions = {
     store: new RedisStore({ client: redis, prefix: 'session:' }),
     secret: Config.sessionSecret,
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     rolling: true,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 // 1 day
@@ -103,11 +103,16 @@ app.use(morgan(Config.isEnvDevelopment() ? 'dev' : 'combined')) // Log different
 app.use(responseTime())
 
 /**
+ * Health check endpoint to verify that the server is operational.
+ */
+app.use('/health', (req, res) => res.status(200).send('OK'))
+
+/**
  * Mounts the API route handlers.
  */
+app.use('/kreditozrouti', KreditozroutiRoutes)
 app.use('/auth', AuthRoutes)
 app.use('/events', EventsRoutes)
-app.use('/event', EventRoutes)
 
 /**
  * Registers the global error handling middleware to capture and format exceptions.

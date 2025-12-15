@@ -11,7 +11,6 @@ post {
 }
 
 body:json {
-  // api/src/Controllers/Auth/types/SignInConfirmRequest.ts
   {
     "auth_code": "123456",
     "code_verifier": "development"
@@ -24,10 +23,25 @@ settings {
 }
 
 docs {
-  // api/src/Controllers/Auth/types/SignInConfirmResponse.ts
-  Success Response (201):
+  ## Body Request:
+  
+  `api/src/Controllers/Auth/types/SignInConfirmRequest.ts`
+  
+  ```json
+  {
+    "auth_code": string,
+    "code_verifier": string
+  }
+  ```
+  
+  ## Success Response (201):
+  
+  `api/src/Controllers/Auth/types/SignInConfirmResponse.ts`
+  
+  ```json
   {
     code: SuccessCodeEnum.SIGNED_IN,
     jwt: string 
   }
+  ```
 }

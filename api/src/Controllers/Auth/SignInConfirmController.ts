@@ -19,7 +19,7 @@ import { Request, Response } from 'express'
  * @param res - The Express response object.
  * @throws {Exception} If validation fails, credentials are invalid, or system errors occur.
  */
-export default async function SignInConfirmController(req: Request, res: Response) {
+export default async function SignInConfirmController(req: Request, res: Response<SignInConfirmResponse>) {
     const result = await SignInConfirmValidation.safeParseAsync(req.body)
 
     if (!result.success) {
@@ -70,5 +70,5 @@ export default async function SignInConfirmController(req: Request, res: Respons
     return res.status(201).send({
         code: SuccessCodeEnum.SIGNED_IN,
         jwt: jwt
-    } as SignInConfirmResponse)
+    })
 }

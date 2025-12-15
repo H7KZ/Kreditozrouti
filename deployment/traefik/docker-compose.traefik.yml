@@ -24,7 +24,7 @@ services:
       - traefik.http.routers.traefik.service=api@internal
 
       - traefik.http.routers.traefik.middlewares=traefik-redirect,traefik-auth
-      
+
       - traefik.http.middlewares.traefik-redirect.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.traefik-redirect.redirectregex.replacement=https://$${1}
       - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt

@@ -17,7 +17,7 @@ import { Request, Response } from 'express'
  * @param res - The Express response object.
  * @throws {Exception} If validation fails or the email domain is unauthorized.
  */
-export default async function SignInController(req: Request, res: Response) {
+export default async function SignInController(req: Request, res: Response<SignInResponse>) {
     const result = await SignInValidation.safeParseAsync(req.body)
 
     if (!result.success) {
@@ -59,5 +59,5 @@ export default async function SignInController(req: Request, res: Response) {
 
     return res.status(201).send({
         code: SuccessCodeEnum.SIGN_IN_CODE_SENT
-    } as SignInResponse)
+    })
 }

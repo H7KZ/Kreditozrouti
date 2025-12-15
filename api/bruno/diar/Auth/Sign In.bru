@@ -11,7 +11,6 @@ post {
 }
 
 body:json {
-  // api/src/Controllers/Auth/types/SignInRequest.ts
   {
     "email": "komj09@vse.cz",
     "code_challenge": "875b9380866e9d56e7110b0ee310962c16d9d4ae103f829d62bdffd2cbe7c61d"
@@ -24,9 +23,24 @@ settings {
 }
 
 docs {
-  // api/src/Controllers/Auth/types/SignInResponse.ts
-  Success Response (201):
+  ## Body Request:
+  
+  `api/src/Controllers/Auth/types/SignInRequest.ts`
+  
+  ```json
+  {
+    "email": string,
+    "code_challenge": string
+  }
+  ```
+  
+  ## Success Response (201):
+  
+  `api/src/Controllers/Auth/types/SignInResponse.ts`
+  
+  ```json
   {
     code: SuccessCodeEnum.SIGN_IN_CODE_SENT
   }
+  ```
 }

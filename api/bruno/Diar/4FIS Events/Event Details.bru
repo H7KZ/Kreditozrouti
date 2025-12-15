@@ -1,7 +1,7 @@
 meta {
-  name: By Id
+  name: Event Details
   type: http
-  seq: 2
+  seq: 1
 }
 
 get {
@@ -20,9 +20,13 @@ settings {
 }
 
 docs {
-  // api/src/Controllers/Event/types/EventResponse.ts
-  Success Response (200):
+  ## Success Response (200):
+  
+  `api/src/Controllers/Event/types/EventResponse.ts`
+  
+  ```json
   {
     events: Event
   }
+  ```
 }

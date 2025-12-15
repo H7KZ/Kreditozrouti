@@ -1,5 +1,5 @@
 import { mysql } from '@api/clients'
-import EventResponse from '@api/Controllers/Event/types/EventResponse'
+import EventResponse from '@api/Controllers/Events/types/EventResponse'
 import { EventTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
@@ -12,7 +12,7 @@ import { Request, Response } from 'express'
  * @param res - The Express response object.
  * @throws {Exception} If the event with the specified ID is not found.
  */
-export default async function EventController(req: Request, res: Response) {
+export default async function EventController(req: Request, res: Response<EventResponse>) {
     const event_id = req.params.id
 
     const event = await mysql.selectFrom(EventTable._table).selectAll().where('id', '=', event_id).executeTakeFirst()
@@ -23,5 +23,5 @@ export default async function EventController(req: Request, res: Response) {
 
     return res.status(200).send({
         event: event
-    } as EventResponse)
+    })
 }
