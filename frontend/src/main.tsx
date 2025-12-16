@@ -8,6 +8,7 @@ import { Route as RootRoute } from '@/routes/__root'
 import { Route as LoginRoute } from '@/routes/login'
 import { Route as LoginAliasRoute } from '@/routes/login.alias'
 import { Route as CalendarRoute } from '@/routes/calendar'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const routeTree = RootRoute.addChildren([LoginRoute, LoginAliasRoute, CalendarRoute])
 
@@ -21,6 +22,8 @@ declare module '@tanstack/react-router' {
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <RouterProvider router={router} />
+        <AuthProvider>
+            <RouterProvider router={router} />
+        </AuthProvider>
     </StrictMode>
 )

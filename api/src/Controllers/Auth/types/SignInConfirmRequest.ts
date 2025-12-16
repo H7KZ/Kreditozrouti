@@ -19,4 +19,12 @@ export default interface SignInConfirmRequest {
      * @required
      */
     code: string
+
+    /**
+     * The PKCE code verifier (original random string)
+     *
+     * @type {string}
+     * @required
+     */
+    code_verifier: string
 }
