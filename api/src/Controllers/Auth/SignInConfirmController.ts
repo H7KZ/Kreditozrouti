@@ -3,7 +3,7 @@ import { mysql, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import SignInConfirmRequest from '@api/Controllers/Auth/types/SignInConfirmRequest'
 import SignInConfirmResponse from '@api/Controllers/Auth/types/SignInConfirmResponse'
-import { User } from '@api/Database/types'
+import { User, UserTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 import Exception from '@api/Error/Exception'
@@ -11,7 +11,15 @@ import JWTService from '@api/Services/JWTService'
 import SignInConfirmValidation from '@api/Validations/SignInConfirmValidation'
 import { Request, Response } from 'express'
 
-export default async function SignInConfirmController(req: Request, res: Response) {
+/**
+ * Handles the confirmation of a user sign-in attempt using a verification code.
+ * Verifies credentials, manages user creation, and establishes a session.
+ *
+ * @param req - The Express request object containing payload data.
+ * @param res - The Express response object.
+ * @throws {Exception} If validation fails, credentials are invalid, or system errors occur.
+ */
+export default async function SignInConfirmController(req: Request, res: Response<SignInConfirmResponse>) {
     const result = await SignInConfirmValidation.safeParseAsync(req.body)
 
     if (!result.success) {
@@ -40,11 +48,11 @@ export default async function SignInConfirmController(req: Request, res: Respons
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
-    let user = await mysql.selectFrom('users').select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
+    let user = await mysql.selectFrom(UserTable._table).select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
 
     if (!user) {
-        await mysql.insertInto('users').values({ email: storedEmail }).executeTakeFirst()
-        user = await mysql.selectFrom('users').select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
+        await mysql.insertInto(UserTable._table).values({ email: storedEmail }).executeTakeFirst()
+        user = await mysql.selectFrom(UserTable._table).select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
     }
 
     if (!user) {
@@ -62,5 +70,5 @@ export default async function SignInConfirmController(req: Request, res: Respons
     return res.status(201).send({
         code: SuccessCodeEnum.SIGNED_IN,
         jwt: jwt
-    } as SignInConfirmResponse)
+    })
 }

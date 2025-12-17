@@ -1,6 +1,5 @@
 /**
- * Interface representing a sign-in confirmation request
- *
+ * Defines the request payload for verifying a sign-in attempt.
  * @route POST /auth/signin/confirm
  */
 export default interface SignInConfirmRequest {

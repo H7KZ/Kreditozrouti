@@ -10,9 +10,7 @@
         "rows": [
             {
                 "id": "u_row_1",
-                "cells": [
-                    1
-                ],
+                "cells": [1],
                 "columns": [
                     {
                         "id": "u_column_1",

@@ -1,4 +1,5 @@
 import { i18n, redis } from '@api/clients'
+import Config from '@api/Config/Config'
 import SignInRequest from '@api/Controllers/Auth/types/SignInRequest'
 import SignInResponse from '@api/Controllers/Auth/types/SignInResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
@@ -7,9 +8,16 @@ import Exception from '@api/Error/Exception'
 import EmailService from '@api/Services/EmailService'
 import SignInValidation from '@api/Validations/SignInValidation'
 import { Request, Response } from 'express'
-import Config from '@api/Config/Config'
 
-export default async function SignInController(req: Request, res: Response) {
+/**
+ * Initiates the sign-in process by generating and sending a verification code.
+ * Validates the email address, enforces domain restrictions, and handles code storage.
+ *
+ * @param req - The Express request object containing the login credentials.
+ * @param res - The Express response object.
+ * @throws {Exception} If validation fails or the email domain is unauthorized.
+ */
+export default async function SignInController(req: Request, res: Response<SignInResponse>) {
     const result = await SignInValidation.safeParseAsync(req.body)
 
     if (!result.success) {
@@ -39,7 +47,7 @@ export default async function SignInController(req: Request, res: Response) {
     const magicLink = Config.frontend.createURL(`/auth/signin/confirm?code=${code}`)
 
     const emailSignInTemplate = await EmailService.readTemplate('CodeEmail', {
-        emailText: req.__('emails.signIn.body', {expiration: '10' }),
+        emailText: req.__('emails.signIn.body', { expiration: '10' }),
         link: magicLink
     })
 
@@ -51,5 +59,5 @@ export default async function SignInController(req: Request, res: Response) {
 
     return res.status(201).send({
         code: SuccessCodeEnum.SIGN_IN_CODE_SENT
-    } as SignInResponse)
+    })
 }

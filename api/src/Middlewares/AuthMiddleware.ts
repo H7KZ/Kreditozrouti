@@ -1,10 +1,19 @@
 import { mysql, redis } from '@api/clients'
-import { User } from '@api/Database/types'
+import { User, UserTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
 import JWTService from '@api/Services/JWTService'
 import { NextFunction, Request, Response } from 'express'
 
+/**
+ * Express middleware to enforce user authentication on protected routes.
+ * Checks if a user session exists; proceeds if authenticated, otherwise throws an error.
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @param next - The Express next function to pass control to the next handler.
+ * @throws {Exception} 401 Unauthorized if the user is not authenticated.
+ */
 export default async function AuthMiddleware(req: Request, res: Response, next: NextFunction) {
     const jwt = req.headers.authorization?.split(' ')[1]
 
@@ -37,7 +46,7 @@ export default async function AuthMiddleware(req: Request, res: Response, next: 
         return next()
     }
 
-    user = await mysql.selectFrom('users').selectAll().where('id', '=', payload.userId).executeTakeFirst()
+    user = await mysql.selectFrom(UserTable._table).selectAll().where('id', '=', payload.userId).executeTakeFirst()
 
     if (!user) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.UNAUTHORIZED, 'User is not authenticated')
