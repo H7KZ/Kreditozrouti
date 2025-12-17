@@ -13,8 +13,13 @@ import responseTime from 'response-time'
 
 const app = express()
 
+// Allowed development ports (for localhost development only)
+const ALLOWED_DEV_PORTS = [45173] // Vite dev server default
+
 const corsOptions: CorsOptions = {
     optionsSuccessStatus: 200,
+    // Cache preflight requests for 24 hours to reduce latency
+    maxAge: 86400,
     origin: (origin, callback) => {
         // Log for debugging
         if (Config.isEnvDevelopment()) {
@@ -26,8 +31,18 @@ const corsOptions: CorsOptions = {
         if (!origin || Config.allowedOrigins.includes(origin)) {
             callback(null, true)
         } else if (Config.isEnvDevelopment() && origin?.startsWith('http://localhost:')) {
-            // In development, allow any localhost origin for convenience
-            callback(null, true)
+            // In development, allow specific localhost ports only
+            try {
+                const url = new URL(origin)
+                const port = parseInt(url.port)
+                if (ALLOWED_DEV_PORTS.includes(port)) {
+                    callback(null, true)
+                } else {
+                    callback(new Error('Not allowed by CORS'))
+                }
+            } catch {
+                callback(new Error('Not allowed by CORS'))
+            }
         } else {
             callback(new Error('Not allowed by CORS'))
         }

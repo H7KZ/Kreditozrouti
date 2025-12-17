@@ -1,6 +1,22 @@
 import { generateCodeChallenge, generateCodeVerifier } from '@/utils/pkce'
 
-const API_BASE = 'http://localhost:40080'
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:40080'
+
+// PKCE spec: 43-128 chars, unreserved chars only
+function isValidCodeVerifier(verifier: string): boolean {
+    return /^[A-Za-z0-9\-._~]{43,128}$/.test(verifier)
+}
+
+// Check if token is expired
+function isTokenExpired(token: string | null): boolean {
+    if (!token) return true
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]))
+        return payload.exp * 1000 < Date.now()
+    } catch {
+        return true
+    }
+}
 
 interface SignInResponse {
     code: string
@@ -21,6 +37,10 @@ class AuthService {
      * Step 1: Request sign-in (generates PKCE challenge, sends email with 6-digit code)
      */
     async signIn(email: string): Promise<SignInResponse> {
+        // Clear any previous attempt
+        sessionStorage.removeItem('code_verifier')
+        sessionStorage.removeItem('signin_email')
+
         // Generate PKCE challenge
         const codeVerifier = generateCodeVerifier()
         const codeChallenge = generateCodeChallenge(codeVerifier)
@@ -29,19 +49,34 @@ class AuthService {
         sessionStorage.setItem('code_verifier', codeVerifier)
         sessionStorage.setItem('signin_email', email)
 
-        const response = await fetch(`${API_BASE}/auth/signin`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ email, code_challenge: codeChallenge })
-        })
+        try {
+            const response = await fetch(`${API_BASE}/auth/signin`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ email, code_challenge: codeChallenge })
+            })
 
-        if (!response.ok) {
-            const error = await response.json()
-            throw new Error(error.message || 'Sign-in failed')
+            if (!response.ok) {
+                let errorMessage = 'Sign-in failed'
+                try {
+                    const error = await response.json()
+                    errorMessage = error.message || errorMessage
+                } catch {
+                    errorMessage = `HTTP ${response.status}: ${response.statusText}`
+                }
+                sessionStorage.removeItem('code_verifier')
+                sessionStorage.removeItem('signin_email')
+                throw new Error(errorMessage)
+            }
+
+            return response.json()
+        } catch (err) {
+            // Clear storage on error
+            sessionStorage.removeItem('code_verifier')
+            sessionStorage.removeItem('signin_email')
+            throw err
         }
-
-        return response.json()
     }
 
     /**
@@ -54,6 +89,13 @@ class AuthService {
             throw new Error('No code verifier found. Please request a new sign-in code.')
         }
 
+        // Validate code verifier format
+        if (!isValidCodeVerifier(codeVerifier)) {
+            sessionStorage.removeItem('code_verifier')
+            sessionStorage.removeItem('signin_email')
+            throw new Error('Invalid code verifier. Please request a new sign-in code.')
+        }
+
         const response = await fetch(`${API_BASE}/auth/signin/confirm`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -62,8 +104,14 @@ class AuthService {
         })
 
         if (!response.ok) {
-            const error = await response.json()
-            throw new Error(error.message || 'Verification failed')
+            let errorMessage = 'Verification failed'
+            try {
+                const error = await response.json()
+                errorMessage = error.message || errorMessage
+            } catch {
+                errorMessage = `HTTP ${response.status}: ${response.statusText}`
+            }
+            throw new Error(errorMessage)
         }
 
         const data: SignInConfirmResponse = await response.json()
@@ -93,8 +141,8 @@ class AuthService {
                     headers: { Authorization: `Bearer ${token}` },
                     credentials: 'include'
                 })
-            } catch (error) {
-                console.error('Sign-out request failed:', error)
+            } catch {
+                console.error('Sign-out request failed')
             }
         }
 
@@ -123,7 +171,21 @@ class AuthService {
      * Get access token for API requests
      */
     getAccessToken(): string | null {
-        return localStorage.getItem('access_token')
+        const token = localStorage.getItem('access_token')
+        // Check if token is expired
+        if (token && isTokenExpired(token)) {
+            this.signOut()
+            return null
+        }
+        return token
+    }
+
+    /**
+     * Check if token is expired without clearing it
+     */
+    isTokenExpired(token: string | null = null): boolean {
+        const accessToken = token || localStorage.getItem('access_token')
+        return isTokenExpired(accessToken)
     }
 }
 

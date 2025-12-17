@@ -3,10 +3,13 @@ import { Route as RootRoute } from './__root'
 import CalendarPage from '@/pages/CalendarPage'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
+import { useState } from 'react'
 
 function CalendarRouteComponent() {
   const { isAuthenticated, user, signOut } = useAuth()
   const navigate = useNavigate()
+  const [isSigningOut, setIsSigningOut] = useState(false)
+  const [signOutError, setSignOutError] = useState<string | null>(null)
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
@@ -14,8 +17,16 @@ function CalendarRouteComponent() {
   }
 
   const handleSignOut = async () => {
-    await signOut()
-    navigate({ to: '/' })
+    setIsSigningOut(true)
+    setSignOutError(null)
+    try {
+      await signOut()
+      navigate({ to: '/' })
+    } catch {
+      console.error('Sign out failed')
+      setSignOutError('Failed to sign out. Please try again.')
+      setIsSigningOut(false)
+    }
   }
 
   return (
@@ -26,12 +37,18 @@ function CalendarRouteComponent() {
           <h1 className="text-2xl font-bold text-gray-900">Diář Fisáka</h1>
           <p className="text-sm text-gray-600">{user?.email}</p>
         </div>
-        <Button
-          onClick={handleSignOut}
-          className="bg-red-600 hover:bg-red-700 text-white"
-        >
-          Sign Out
-        </Button>
+        <div className="flex items-center gap-3">
+          {signOutError && (
+            <p className="text-sm text-red-600">{signOutError}</p>
+          )}
+          <Button
+            onClick={handleSignOut}
+            disabled={isSigningOut}
+            className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSigningOut ? 'Signing out...' : 'Sign Out'}
+          </Button>
+        </div>
       </div>
 
       {/* Calendar */}

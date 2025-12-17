@@ -1,8 +1,22 @@
 import AuthService from '@/services/AuthService'
 
-const API_BASE = 'http://localhost:40080'
+function getApiBase(): string {
+    const url = import.meta.env.VITE_API_URL
+    if (!url) return 'http://localhost:40080'
 
-export async function apiRequest<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    // Validate it's a valid URL
+    try {
+        new URL(url)
+        return url
+    } catch {
+        console.error('Invalid VITE_API_URL:', url)
+        return 'http://localhost:40080'
+    }
+}
+
+const API_BASE = getApiBase()
+
+export async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const token = AuthService.getAccessToken()
 
     const headers = {
@@ -25,8 +39,14 @@ export async function apiRequest<T = any>(endpoint: string, options: RequestInit
     }
 
     if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'Request failed' }))
-        throw new Error(error.message || 'Request failed')
+        let errorMessage = 'Request failed'
+        try {
+            const error = await response.json()
+            errorMessage = error.message || errorMessage
+        } catch {
+            errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        }
+        throw new Error(errorMessage)
     }
 
     return response.json()

@@ -1,5 +1,5 @@
 import AuthService from '@/services/AuthService'
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 
 interface User {
     id: number
@@ -24,7 +24,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         // Check if user is already authenticated on mount
         const currentUser = AuthService.getCurrentUser()
-        setUser(currentUser)
+
+        // Check if token is expired and clear if necessary
+        if (currentUser && AuthService.isTokenExpired()) {
+            AuthService.signOut()
+            setUser(null)
+        } else {
+            setUser(currentUser)
+        }
         setIsLoading(false)
     }, [])
 
@@ -33,6 +40,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const signInConfirm = async (email: string, code: string) => {
+        // Prevent double authentication
+        if (user) {
+            throw new Error('Already authenticated. Please sign out first.')
+        }
         const response = await AuthService.signInConfirm(email, code)
         setUser(response.user)
     }
