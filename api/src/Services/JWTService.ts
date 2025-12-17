@@ -1,5 +1,5 @@
 import Config from '@api/Config/Config'
-import jwt from 'jsonwebtoken'
+import jwt, { SignOptions } from 'jsonwebtoken'
 
 export interface JWTPayload {
     userId: number
@@ -17,34 +17,42 @@ export class JWTService {
      * Create an access token for a user
      */
     static createAccessToken(userId: number, email: string): string {
-        const payload = {
+        const payload: JWTPayload = {
             userId,
             email,
-            type: 'access' as const
+            type: 'access'
         }
 
-        return jwt.sign(payload, Config.jwt.secret, {
-            expiresIn: Config.jwt.accessTokenExpiration,
-            issuer: Config.jwt.issuer,
-            audience: Config.jwt.audience
-        })
+        return jwt.sign(
+            payload,
+            Config.jwt.secret,
+            {
+                expiresIn: Config.jwt.accessTokenExpiration,
+                issuer: Config.jwt.issuer,
+                audience: Config.jwt.audience
+            } as SignOptions
+        )
     }
 
     /**
      * Create a refresh token for a user
      */
     static createRefreshToken(userId: number, email: string): string {
-        const payload = {
+        const payload: JWTPayload = {
             userId,
             email,
-            type: 'refresh' as const
+            type: 'refresh'
         }
 
-        return jwt.sign(payload, Config.jwt.secret, {
-            expiresIn: Config.jwt.refreshTokenExpiration,
-            issuer: Config.jwt.issuer,
-            audience: Config.jwt.audience
-        })
+        return jwt.sign(
+            payload,
+            Config.jwt.secret,
+            {
+                expiresIn: Config.jwt.refreshTokenExpiration,
+                issuer: Config.jwt.issuer,
+                audience: Config.jwt.audience
+            } as SignOptions
+        )
     }
 
     /**
