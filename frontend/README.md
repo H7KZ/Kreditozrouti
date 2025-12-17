@@ -4,12 +4,15 @@ This template provides a minimal setup to get React working in Vite with HMR and
 
 Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react)
+  uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc)
+  uses [SWC](https://swc.rs/) for Fast Refresh
 
 ## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it,
+see [this documentation](https://react.dev/learn/react-compiler/installation).
 
 ## Expanding the ESLint configuration
 
@@ -17,58 +20,61 @@ If you are developing a production application, we recommend updating the config
 
 ```js
 export default defineConfig([
-    globalIgnores(['dist']),
-    {
-        files: ['**/*.{ts,tsx}'],
-        extends: [
-            // Other configs...
+  globalIgnores(["dist"]),
+  {
+    files: ["**/*.{ts,tsx}"],
+    extends: [
+      // Other configs...
 
-            // Remove tseslint.configs.recommended and replace with this
-            tseslint.configs.recommendedTypeChecked,
-            // Alternatively, use this for stricter rules
-            tseslint.configs.strictTypeChecked,
-            // Optionally, add this for stylistic rules
-            tseslint.configs.stylisticTypeChecked
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked
 
-            // Other configs...
-        ],
-        languageOptions: {
-            parserOptions: {
-                project: ['./tsconfig.node.json', './tsconfig.app.json'],
-                tsconfigRootDir: import.meta.dirname
-            }
-            // other options...
-        }
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
+        tsconfigRootDir: import.meta.dirname
+      }
+      // other options...
     }
+  }
 ])
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+You can also
+install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x)
+and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom)
+for React-specific lint rules:
 
 ```js
 // eslint.config.js
-import reactDom from 'eslint-plugin-react-dom'
-import reactX from 'eslint-plugin-react-x'
+import reactDom from "eslint-plugin-react-dom"
+import reactX from "eslint-plugin-react-x"
 
 export default defineConfig([
-    globalIgnores(['dist']),
-    {
-        files: ['**/*.{ts,tsx}'],
-        extends: [
-            // Other configs...
-            // Enable lint rules for React
-            reactX.configs['recommended-typescript'],
-            // Enable lint rules for React DOM
-            reactDom.configs.recommended
-        ],
-        languageOptions: {
-            parserOptions: {
-                project: ['./tsconfig.node.json', './tsconfig.app.json'],
-                tsconfigRootDir: import.meta.dirname
-            }
-            // other options...
-        }
+  globalIgnores(["dist"]),
+  {
+    files: ["**/*.{ts,tsx}"],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs["recommended-typescript"],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
+        tsconfigRootDir: import.meta.dirname
+      }
+      // other options...
     }
+  }
 ])
 ```
 
@@ -127,6 +133,7 @@ function LoginPage() {
 ```
 
 **Benefits:**
+
 - ✅ Easy to test hooks in isolation
 - ✅ Components are easier to read (just UI)
 - ✅ Reusable logic across components
@@ -137,6 +144,7 @@ function LoginPage() {
 ### Overview
 
 TanStack Router provides type-safe routing with:
+
 - **File-based routing** - Routes defined by file structure
 - **Loaders** - Fetch data before rendering
 - **Actions** - Handle form submissions
@@ -158,12 +166,12 @@ pnpm dev  # Start dev server
 
 ```typescript
 // src/lib/api.ts
-import axios from 'axios'
+import axios from "axios"
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:40080',
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:40080",
   withCredentials: true, // 🔥 Sends session cookies
-  headers: { 'Content-Type': 'application/json' }
+  headers: { "Content-Type": "application/json" }
 })
 ```
 
@@ -171,26 +179,26 @@ export const api = axios.create({
 
 ```typescript
 // src/lib/auth.ts
-import { api } from './api'
+import { api } from "./api"
 
 export const authService = {
   async getUser() {
-    const { data } = await api.get('/auth/me')
+    const { data } = await api.get("/auth/me")
     return data
   },
-  
+
   async signIn(email: string) {
-    const { data } = await api.post('/auth/signin', { email })
+    const { data } = await api.post("/auth/signin", { email })
     return data
   },
-  
+
   async signInConfirm(email: string, code: string) {
-    const { data } = await api.post('/auth/signin/confirm', { email, code })
+    const { data } = await api.post("/auth/signin/confirm", { email, code })
     return data
   },
-  
+
   async signOut() {
-    await api.post('/auth/signout')
+    await api.post("/auth/signout")
   }
 }
 ```
@@ -199,8 +207,8 @@ export const authService = {
 
 ```typescript
 // src/routes/__root.tsx
-import { createRootRouteWithContext } from '@tanstack/react-router'
-import { authService } from '@/lib/auth'
+import { createRootRouteWithContext } from "@tanstack/react-router"
+import { authService } from "@/lib/auth"
 
 interface RouterContext {
   auth: typeof authService
@@ -280,30 +288,33 @@ src/routes/
 ### Loaders vs Custom Hooks
 
 **When to use Loaders:**
+
 - ✅ Fetching data from API before render
 - ✅ Auth checks / redirects
 - ✅ Data needed by multiple child routes
 
 **When to use Custom Hooks:**
+
 - ✅ Component-specific UI state
 - ✅ Form handling logic
 - ✅ Derived calculations
 - ✅ Event handlers
 
 **Example:**
+
 ```typescript
 // Route loader for data fetching
-export const Route = createFileRoute('/events')({
+export const Route = createFileRoute("/events")({
   loader: async ({ context }) => {
-    const events = await context.api.get('/events')
+    const events = await context.api.get("/events")
     return { events }
   }
 })
 
 // Custom hook for UI logic
 function useEventFilters() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [category, setCategory] = useState('all')
+  const [searchQuery, setSearchQuery] = useState("")
+  const [category, setCategory] = useState("all")
   // ... filter logic
   return { filters, setters }
 }
@@ -314,6 +325,7 @@ function useEventFilters() {
 ### Session-Based Auth (Passport.js + Redis)
 
 The backend uses **session cookies** (not JWT):
+
 - Login: `POST /auth/signin` → email sent with 6-digit code
 - Verify: `POST /auth/signin/confirm` → creates session, returns user
 - Session stored in Redis, cookie sent automatically by browser
@@ -342,17 +354,20 @@ The backend uses **session cookies** (not JWT):
 ## Development
 
 ### Run Dev Server
+
 ```bash
 cd frontend
 pnpm dev
 ```
 
 ### Build for Production
+
 ```bash
 pnpm run build
 ```
 
 ### Lint & Format
+
 ```bash
 pnpm run lint
 pnpm run format
@@ -367,6 +382,7 @@ VITE_API_URL=http://localhost:40080
 ```
 
 For production:
+
 ```bash
 VITE_API_URL=https://api.diar4fis.cz
 ```
@@ -374,16 +390,19 @@ VITE_API_URL=https://api.diar4fis.cz
 ## Common Tasks
 
 ### Add New Protected Route
+
 1. Create file: `src/routes/_authenticated/my-page.tsx`
 2. Define route with `createFileRoute`
 3. Access user via `Route.useRouteContext()`
 
 ### Add New API Endpoint
+
 1. Add method to `src/lib/auth.ts` or create new service
 2. Use in loader or custom hook
 3. Handle errors with try/catch
 
 ### Add Translation
+
 1. Add key to `src/i18n/cs.json` and `en.json`
 2. Use in component: `const { t } = useTranslation()`
 3. Access: `t('my.translation.key')`

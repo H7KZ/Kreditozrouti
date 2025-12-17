@@ -1,5 +1,9 @@
 import * as z from 'zod'
 
+/**
+ * Validation schema for event search query parameters.
+ * Handles optional filtering by title, categories, and date ranges with automatic string-to-date coercion.
+ */
 const EventsAllValidation = z.object({
     title: z.string().nullable().optional(),
 

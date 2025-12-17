@@ -1,16 +1,10 @@
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 
 /**
- * Interface representing a sign-in response
- *
- * @route 201 /auth/signin
+ * Defines the response structure indicating a verification code was sent.
+ * @route POST /auth/signin
  */
 export default interface SignInResponse {
-    /**
-     * Code indicating that the sign-in code has been sent
-     *
-     * @type {number}
-     * @enum {number} SuccessCodeEnum.SIGN_IN_CODE_SENT
-     */
+    /** The success status code indicating the code dispatch. */
     code: SuccessCodeEnum.SIGN_IN_CODE_SENT
 }

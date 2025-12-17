@@ -1,34 +1,12 @@
+import EventsAllValidation from '@api/Validations/EventsAllValidation'
+import { z } from 'zod'
+
 /**
- * Events All Request Interface
+ * Defines the query parameters for searching events.
+ * Handles optional filtering by title, date ranges, and categories.
  *
- * @route 200 /events/all
+ * @route GET /events/all
  */
-export default interface EventsAllRequest {
-    /**
-     * Event Title
-     *
-     * @type {string | null}
-     */
-    title?: string | null
+type EventsAllRequest = z.infer<typeof EventsAllValidation>
 
-    /**
-     * Date From
-     *
-     * @type {Date | null}
-     */
-    date_from?: Date | null
-
-    /**
-     * Date To
-     *
-     * @type {Date | null}
-     */
-    date_to?: Date | null
-
-    /**
-     * Categories (Array of Category IDs)
-     *
-     * @type {string[] | null}
-     */
-    categories?: string[] | null
-}
+export default EventsAllRequest

@@ -1,8 +1,18 @@
+import { CourseAssessmentMethodTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from '@api/Database/types'
 import { Kysely, sql } from 'kysely'
 
+/**
+ * Applies the database schema migration.
+ * Creates tables for Courses, Assessment Methods, Timetable Units, and Timetable Slots with established foreign key relationships.
+ *
+ * @param mysql - The Kysely database instance used to execute schema queries.
+ */
 export async function up(mysql: Kysely<any>): Promise<void> {
+    /**
+     * Creates the central Course table storing academic details, metadata, and curriculum information.
+     */
     await mysql.schema
-        .createTable('courses')
+        .createTable(CourseTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
@@ -27,20 +37,28 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .addColumn('literature', 'text')
         .execute()
 
+    /**
+     * Creates a table for course assessment criteria (methods and weights).
+     * Links to the main Course table via Foreign Key.
+     */
     await mysql.schema
-        .createTable('courses_assessment_methods')
+        .createTable(CourseAssessmentMethodTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
-        .addColumn('course_id', 'integer', col => col.notNull().references('courses.id').onDelete('cascade'))
+        .addColumn('course_id', 'integer', col => col.notNull().references(`${CourseTable._table}.id`).onDelete('cascade'))
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
         .addColumn('method', 'varchar(255)')
         .addColumn('weight', 'smallint', col => col.unsigned())
         .execute()
 
+    /**
+     * Creates a table for timetable units representing specific course instances or teaching groups.
+     * Links to the main Course table via Foreign Key.
+     */
     await mysql.schema
-        .createTable('courses_timetable_units')
+        .createTable(CourseTimetableUnitTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
-        .addColumn('course_id', 'integer', col => col.notNull().references('courses.id').onDelete('cascade'))
+        .addColumn('course_id', 'integer', col => col.notNull().references(`${CourseTable._table}.id`).onDelete('cascade'))
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
         .addColumn('lecturer', 'varchar(255)')
@@ -48,10 +66,14 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .addColumn('note', 'text')
         .execute()
 
+    /**
+     * Creates a table for specific scheduling slots (time, location, frequency) associated with a timetable unit.
+     * Links to the Timetable Unit table via Foreign Key.
+     */
     await mysql.schema
-        .createTable('courses_timetable_slots')
+        .createTable(CourseTimetableSlotTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
-        .addColumn('timetable_unit_id', 'integer', col => col.notNull().references('courses_timetable_units.id').onDelete('cascade'))
+        .addColumn('timetable_unit_id', 'integer', col => col.notNull().references(`${CourseTimetableUnitTable._table}.id`).onDelete('cascade'))
         .addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
         .addColumn('type', 'varchar(255)')
@@ -66,9 +88,15 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .execute()
 }
 
+/**
+ * Reverts the database schema migration.
+ * Drops course-related tables in reverse dependency order to satisfy foreign key constraints.
+ *
+ * @param mysql - The Kysely database instance used to execute schema queries.
+ */
 export async function down(mysql: Kysely<any>): Promise<void> {
-    await mysql.schema.dropTable('courses_timetable_slots').execute()
-    await mysql.schema.dropTable('courses_timetable_units').execute()
-    await mysql.schema.dropTable('courses_assessment_methods').execute()
-    await mysql.schema.dropTable('courses').execute()
+    await mysql.schema.dropTable(CourseTimetableSlotTable._table).execute()
+    await mysql.schema.dropTable(CourseTimetableUnitTable._table).execute()
+    await mysql.schema.dropTable(CourseAssessmentMethodTable._table).execute()
+    await mysql.schema.dropTable(CourseTable._table).execute()
 }

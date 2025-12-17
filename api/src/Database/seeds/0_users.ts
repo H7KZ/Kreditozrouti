@@ -1,17 +1,20 @@
-import { Database } from '@api/Database/types'
+import { Database, UserTable } from '@api/Database/types'
 import { Kysely } from 'kysely'
 
+/**
+ * Populates the database with initial seed data.
+ * Inserts a default user record for development or testing purposes.
+ *
+ * @param mysql - The Kysely database instance used to execute the insertion query.
+ */
 export async function seed(mysql: Kysely<Database>) {
-    // Use insertInto with onDuplicateKeyUpdate to make seeding idempotent
     await mysql
-        .insertInto('users')
+        .insertInto(UserTable._table)
         .values([
             {
                 email: 'diar.4fis@gmail.com'
             }
         ])
-        .onDuplicateKeyUpdate({
-            email: (eb) => eb.ref('email') // Keep existing email if duplicate
-        })
+        .onDuplicateKeyUpdate({ email: eb => eb.ref('email') })
         .execute()
 }

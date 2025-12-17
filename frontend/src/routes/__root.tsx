@@ -1,5 +1,5 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router'
-import NotFoundPage from '@/pages/NotFoundPage'
+import { createRootRoute, Outlet } from "@tanstack/react-router"
+import NotFoundPage from "@/pages/NotFoundPage"
 
 function RootLayout() {
   return <Outlet />

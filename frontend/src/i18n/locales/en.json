@@ -1,6 +1,6 @@
 {
   "common": {
-    "app_logo_alt": "Diář Fisáka",
+    "app_logo_alt": "Diář FISáka",
     "sending_button": "Sending..."
   },
   "sign_in": {
@@ -16,5 +16,14 @@
     "confirm_code_label": "8-digit code from email",
     "verify_code_button": "Verify code",
     "resend_code_link": "Send the code email again"
+  },
+  "user_dropdown": {
+    "profile": "Personal profile",
+    "my_events": "My events",
+    "leaderboard": "Leaderboard",
+    "groups": "Groups",
+    "invite_fisaks": "Invite Fisáks",
+    "support": "Support",
+    "logout": "Logout"
   }
 }

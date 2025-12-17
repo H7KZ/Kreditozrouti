@@ -57,12 +57,12 @@ deploy_to_production:
     - ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST "rm -rf /$SSH_USERNAME/diar-4fis"
     - scp -r -P $SSH_PORT ./* $SSH_USERNAME@$SSH_HOST:/$SSH_USERNAME/diar-4fis/
     - |
-        ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
-        set -e
-        cd ~/diar-4fis
-        cp ~/.env.prod ./.env
-        bash ./deployment.sh diar-4fis prod
-        EOF
+      ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
+      set -e
+      cd ~/diar-4fis
+      cp ~/.env.prod ./.env
+      bash ./deployment.sh diar-4fis prod
+      EOF
   rules:
     # This job runs ONLY for version tags (e.g., v1.2.3).
     - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
@@ -77,12 +77,12 @@ deploy_to_development:
     - ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST "rm -rf ~/diar-4fis-dev"
     - scp -r -P $SSH_PORT ./* $SSH_USERNAME@$SSH_HOST:~/diar-4fis-dev/
     - |
-        ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
-        set -e
-        cd ~/diar-4fis-dev
-        cp ~/.env.dev ./.env
-        bash ./deployment.sh diar-4fis-dev dev
-        EOF
+      ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
+      set -e
+      cd ~/diar-4fis-dev
+      cp ~/.env.dev ./.env
+      bash ./deployment.sh diar-4fis-dev dev
+      EOF
   rules:
     # This job runs ONLY on pushes to the 'develop' branch.
     - if: '$CI_COMMIT_BRANCH == "develop"'

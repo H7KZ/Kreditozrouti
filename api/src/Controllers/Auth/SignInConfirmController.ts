@@ -1,71 +1,73 @@
+import crypto from 'crypto'
 import { mysql, redis } from '@api/clients'
 import Config from '@api/Config/Config'
-import SignInConfirmRequest from '@api/Controllers/Auth/types/SignInConfirmRequest'
 import SignInConfirmResponse from '@api/Controllers/Auth/types/SignInConfirmResponse'
+import { User, UserTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 import Exception from '@api/Error/Exception'
 import JWTService from '@api/Services/JWTService'
 import SignInConfirmValidation from '@api/Validations/SignInConfirmValidation'
-import crypto from 'crypto'
 import { Request, Response } from 'express'
 
-export default async function SignInConfirmController(req: Request, res: Response) {
+/**
+ * Handles the confirmation of a user sign-in attempt using a verification code.
+ * Verifies credentials, manages user creation, and establishes a session.
+ *
+ * @param req - The Express request object containing payload data.
+ * @param res - The Express response object.
+ * @throws {Exception} If validation fails, credentials are invalid, or system errors occur.
+ */
+export default async function SignInConfirmController(req: Request, res: Response<SignInConfirmResponse>) {
     const result = await SignInConfirmValidation.safeParseAsync(req.body)
 
     if (!result.success) {
         throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid credentials', { zodIssues: result.error.issues })
     }
 
-    const data = result.data as SignInConfirmRequest
+    const data = result.data
 
-    // Step 1: Verify the 6-digit code
-    const cachedCode = await redis.get(`auth:code:${data.email}`)
+    const code_challenge = crypto.createHash('sha256').update(data.code_verifier).digest('hex')
 
-    if (cachedCode !== data.code.toString()) {
-        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid verification code')
+    const storedCodeChallenge = await redis.get(`auth:challenge:${code_challenge}`)
+
+    if (storedCodeChallenge !== code_challenge) {
+        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
-    // Step 2: Verify PKCE challenge
-    // Hash the provided code_verifier and compare with stored challenge
-    const computedChallenge = crypto.createHash('sha256').update(data.code_verifier).digest('base64url')
+    const storedEmail = await redis.get(`auth:email:${code_challenge}`)
 
-    const storedChallenge = await redis.get(`auth:challenge:${computedChallenge}`)
-    const storedEmail = await redis.get(`auth:email:${computedChallenge}`)
-
-    if (!storedChallenge || storedEmail !== data.email) {
-        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid PKCE verification')
+    if (!storedEmail) {
+        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
-    // Step 3: Get or create user
-    let user = await mysql.selectFrom('users').select(['id', 'email']).where('email', '=', data.email).executeTakeFirst()
+    const storedCode = await redis.get(`auth:code:${storedEmail}`)
 
-    user ??= await mysql.insertInto('users').values({ email: data.email }).returning(['id', 'email']).executeTakeFirst()
+    if (storedCode !== data.auth_code.toString()) {
+        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
+    }
+
+    let user = await mysql.selectFrom(UserTable._table).select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
+
+    if (!user) {
+        await mysql.insertInto(UserTable._table).values({ email: storedEmail }).executeTakeFirst()
+        user = await mysql.selectFrom(UserTable._table).select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
+    }
 
     if (!user) {
         throw new Exception(500, ErrorTypeEnum.DATABASE, ErrorCodeEnum.INSERT_FAILED, 'Failed to create user')
     }
 
-    // Step 4: Generate JWT tokens
-    const tokens = JWTService.createTokenPair(user.id, user.email)
+    await redis.del(`auth:challenge:${code_challenge}`)
+    await redis.del(`auth:email:${code_challenge}`)
+    await redis.del(`auth:code:${user.email}`)
 
-    // Step 5: Store tokens in Redis with TTL
-    await redis.setex(`auth:jwt:access:user:${user.id}`, Config.jwt.accessTokenExpirationSeconds, tokens.accessToken)
-    await redis.setex(`auth:jwt:refresh:user:${user.id}`, Config.jwt.refreshTokenExpirationSeconds, tokens.refreshToken)
+    const jwt = await JWTService.createJWTAuthTokenForUser(user as User)
 
-    // Step 6: Clean up Redis keys (code, challenge, email mapping)
-    await redis.del(`auth:code:${data.email}`)
-    await redis.del(`auth:challenge:${computedChallenge}`)
-    await redis.del(`auth:email:${computedChallenge}`)
+    await redis.setex(`auth:jwt:user:${user.id}`, Config.jwt.expirationSeconds, jwt)
 
-    // Step 7: Return tokens to client
     return res.status(201).send({
         code: SuccessCodeEnum.SIGNED_IN,
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-        user: {
-            id: user.id,
-            email: user.email
-        }
-    } as SignInConfirmResponse)
+        jwt: jwt
+    })
 }

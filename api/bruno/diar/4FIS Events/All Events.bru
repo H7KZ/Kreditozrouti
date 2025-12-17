@@ -1,0 +1,48 @@
+meta {
+  name: All Events
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:40080/events/all?title&date_from&date_to&categories
+  body: none
+  auth: inherit
+}
+
+params:query {
+  title: 
+  date_from: 
+  date_to: 
+  categories: 
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  ## Params Request:
+  
+  `api/src/Controllers/Events/types/EventsAllRequest.ts`
+  
+  ```json
+  {
+    title?: string | null
+    date_from?: Date | null
+    date_to?: Date | null
+    categories?: string[] | null
+  }
+  ```
+  
+  ## Success Response (200):
+  
+  `api/src/Controllers/Events/types/EventsAllResponse.ts`
+  
+  ```json
+  {
+    events: Event[]
+  }
+  ```
+}

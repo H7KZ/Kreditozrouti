@@ -1,9 +1,9 @@
-import { createRoute, Navigate, useNavigate } from '@tanstack/react-router'
-import { Route as RootRoute } from './__root'
-import CalendarPage from '@/pages/CalendarPage'
-import { useAuth } from '@/contexts/AuthContext'
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+import { createRoute, Navigate, useNavigate } from "@tanstack/react-router"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { useAuth } from "@/contexts/AuthContext"
+import CalendarPage from "@/pages/CalendarPage"
+import { Route as RootRoute } from "./__root"
 
 function CalendarRouteComponent() {
   const { isAuthenticated, user, signOut } = useAuth()
@@ -21,32 +21,26 @@ function CalendarRouteComponent() {
     setSignOutError(null)
     try {
       await signOut()
-      navigate({ to: '/' })
+      navigate({ to: "/" })
     } catch {
-      console.error('Sign out failed')
-      setSignOutError('Failed to sign out. Please try again.')
+      console.error("Sign out failed")
+      setSignOutError("Failed to sign out. Please try again.")
       setIsSigningOut(false)
     }
   }
 
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="flex h-screen w-full flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+      <div className="flex items-center justify-between border-b border-gray-200 bg-white p-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Diář Fisáka</h1>
           <p className="text-sm text-gray-600">{user?.email}</p>
         </div>
         <div className="flex items-center gap-3">
-          {signOutError && (
-            <p className="text-sm text-red-600">{signOutError}</p>
-          )}
-          <Button
-            onClick={handleSignOut}
-            disabled={isSigningOut}
-            className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSigningOut ? 'Signing out...' : 'Sign Out'}
+          {signOutError && <p className="text-sm text-red-600">{signOutError}</p>}
+          <Button onClick={handleSignOut} disabled={isSigningOut} className="bg-red-600 text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50">
+            {isSigningOut ? "Signing out..." : "Sign Out"}
           </Button>
         </div>
       </div>
@@ -61,6 +55,6 @@ function CalendarRouteComponent() {
 
 export const Route = createRoute({
   getParentRoute: () => RootRoute,
-  path: '/calendar',
+  path: "/calendar",
   component: CalendarRouteComponent
 })

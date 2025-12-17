@@ -1,27 +1,18 @@
 /**
- * Interface representing a sign-in confirmation request
- *
+ * Defines the request payload for verifying a sign-in attempt.
  * @route POST /auth/signin/confirm
  */
 export default interface SignInConfirmRequest {
     /**
-     * The email of the user attempting to sign in
+     The confirmation code sent to the user's email
      *
      * @type {string}
      * @required
      */
-    email: string
+    auth_code: string
 
     /**
-     * The confirmation code sent to the user's email
-     *
-     * @type {string}
-     * @required
-     */
-    code: string
-
-    /**
-     * The PKCE code verifier (original random string)
+     * The code verifier used in the PKCE flow
      *
      * @type {string}
      * @required

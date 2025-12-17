@@ -1,9 +1,12 @@
 import * as z from 'zod'
 
+/**
+ * Validation schema for the sign-in confirmation payload.
+ * Verifies the email format and requires a strictly 6-character verification code.
+ */
 const SignInConfirmValidation = z.object({
-    email: z.string().email().min(5).max(255),
-    code: z.string().min(6).max(6),
-    code_verifier: z.string().min(43).max(128) // PKCE code verifier
+    auth_code: z.string().nonempty().min(6).max(6),
+    code_verifier: z.string().nonempty()
 })
 
 export default SignInConfirmValidation

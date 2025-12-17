@@ -1,16 +1,10 @@
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 
 /**
- * Interface representing a sign-out response
- *
- * @route 201 /auth/signout
+ * Defines the response structure for a successful logout event.
+ * @route POST /auth/signout
  */
 export default interface SignOutResponse {
-    /**
-     * Code indicating successful sign-out
-     *
-     * @type {number}
-     * @enum {number} SuccessCodeEnum.SIGNED_OUT
-     */
+    /** The success status code indicating session termination. */
     code: SuccessCodeEnum.SIGNED_OUT
 }

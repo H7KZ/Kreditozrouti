@@ -9,7 +9,7 @@ clear-redis:
 	docker exec diar-4fis-redis redis-cli FLUSHDB
 
 install:
-	pnpm -r install --filter=!./scripts/* && \
+	pnpm -r install && \
 	pnpm install -g dotenv-cli
 
 dev:

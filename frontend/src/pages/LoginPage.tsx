@@ -1,17 +1,17 @@
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
-import { useAuth } from '@/contexts/AuthContext'
+import { useNavigate } from "@tanstack/react-router"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
+import LanguageSwitcher from "@/components/LanguageSwitcher"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useAuth } from "@/contexts/AuthContext"
 
 // ============================================================================
 // Helpers (outside component to avoid recreation on every render)
 // ============================================================================
 
-type Step = 'LOGIN' | 'VERIFY'
+type Step = "LOGIN" | "VERIFY"
 
 const XNAME_REGEX = /^[a-zA-Z0-9]{6}$/
 const XNAME_MAX_LENGTH = 6
@@ -21,7 +21,7 @@ const CODE_LENGTH = 6
  * Normalizes xname input to alphanumeric characters only, max 6 chars
  */
 function normalizeXname(input: string): string {
-  return input.replace(/[^a-zA-Z0-9]/g, '').slice(0, XNAME_MAX_LENGTH)
+  return input.replace(/[^a-zA-Z0-9]/g, "").slice(0, XNAME_MAX_LENGTH)
 }
 
 /**
@@ -35,15 +35,15 @@ function isValidXname(xname: string): boolean {
  * Formats verification code as XX-XX-XX-XX
  */
 function formatCode(code: string): string {
-  const digitsOnly = code.replace(/\D/g, '').slice(0, CODE_LENGTH)
-  return digitsOnly.replace(/(\d{2})(?=\d)/g, '$1-')
+  const digitsOnly = code.replace(/\D/g, "").slice(0, CODE_LENGTH)
+  return digitsOnly.replace(/(\d{2})(?=\d)/g, "$1-")
 }
 
 /**
  * Strips formatting from code to get raw digits
  */
 function getRawCode(formattedCode: string): string {
-  return formattedCode.replace(/\D/g, '')
+  return formattedCode.replace(/\D/g, "")
 }
 
 // ============================================================================
@@ -81,12 +81,12 @@ function useLoginFlow(): UseLoginFlowReturn {
   const { signIn, signInConfirm } = useAuth()
 
   // State
-  const [step, setStep] = useState<Step>('LOGIN')
-  const [xname, setXname] = useState('')
-  const [confirmCode, setConfirmCode] = useState('')
+  const [step, setStep] = useState<Step>("LOGIN")
+  const [xname, setXname] = useState("")
+  const [confirmCode, setConfirmCode] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isVerifying, setIsVerifying] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
 
   // Derived state
   const normalizedXname = normalizeXname(xname)
@@ -101,15 +101,15 @@ function useLoginFlow(): UseLoginFlowReturn {
     if (!isXnameValid) return
 
     setIsLoading(true)
-    setError('')
+    setError("")
 
     try {
       await signIn(`${normalizedXname}@vse.cz`)
-      setStep('VERIFY')
+      setStep("VERIFY")
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send verification code'
+      const errorMessage = err instanceof Error ? err.message : "Failed to send verification code"
       setError(errorMessage)
-      console.error('Sign-in error:', err)
+      console.error("Sign-in error:", err)
     } finally {
       setIsLoading(false)
     }
@@ -120,15 +120,15 @@ function useLoginFlow(): UseLoginFlowReturn {
     if (!isCodeValid) return
 
     setIsVerifying(true)
-    setError('')
+    setError("")
 
     try {
       await signInConfirm(`${normalizedXname}@vse.cz`, rawCode)
-      navigate({ to: '/calendar' })
+      navigate({ to: "/calendar" })
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Invalid verification code'
+      const errorMessage = err instanceof Error ? err.message : "Invalid verification code"
       setError(errorMessage)
-      console.error('Verification error:', err)
+      console.error("Verification error:", err)
     } finally {
       setIsVerifying(false)
     }
@@ -136,13 +136,13 @@ function useLoginFlow(): UseLoginFlowReturn {
 
   const handleResendCode = async () => {
     setIsLoading(true)
-    setError('')
+    setError("")
 
     try {
       await signIn(`${normalizedXname}@vse.cz`)
-      setConfirmCode('')
+      setConfirmCode("")
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to resend code'
+      const errorMessage = err instanceof Error ? err.message : "Failed to resend code"
       setError(errorMessage)
     } finally {
       setIsLoading(false)
@@ -180,33 +180,23 @@ export default function LoginPage() {
   const { t } = useTranslation()
   const { state, actions } = useLoginFlow()
 
-  const isVerifyStep = state.step === 'VERIFY'
+  const isVerifyStep = state.step === "VERIFY"
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-6">
-      <div className="absolute top-6 right-6">
+    <div className="mx-auto w-full max-w-2xl px-6">
+      <div className="absolute right-6 top-6">
         <LanguageSwitcher />
       </div>
 
       {/* Header */}
-      <div className="text-center pb-8 pt-6">
-        <div className="flex justify-center mb-4">
-          <img
-            src="/diar4fis.svg"
-            alt={t('common.app_logo_alt')}
-            className="h-56 md:h-64 select-none"
-          />
+      <div className="pb-8 pt-6 text-center">
+        <div className="mb-4 flex justify-center">
+          <img src="/diar4fis.svg" alt={t("common.app_logo_alt")} className="h-56 select-none md:h-64" />
         </div>
-        <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
-          {isVerifyStep ? t('sign_in_confirm.heading') : t('sign_in.heading')}
-        </h1>
+        <h1 className="text-xl font-semibold text-gray-900 md:text-2xl">{isVerifyStep ? t("sign_in_confirm.heading") : t("sign_in.heading")}</h1>
         {isVerifyStep && (
-          <div className="flex justify-center mt-4">
-            <img
-              src="/mail.svg"
-              alt={t('sign_in_confirm.mail_icon_alt')}
-              className="h-28 md:h-32 select-none"
-            />
+          <div className="mt-4 flex justify-center">
+            <img src="/mail.svg" alt={t("sign_in_confirm.mail_icon_alt")} className="h-28 select-none md:h-32" />
           </div>
         )}
       </div>
@@ -216,7 +206,7 @@ export default function LoginPage() {
         <form onSubmit={actions.handleLoginSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="xname" className="text-base text-gray-900">
-              {t('sign_in.xname_label')}
+              {t("sign_in.xname_label")}
             </Label>
             <div className="relative w-full">
               <Input
@@ -224,30 +214,24 @@ export default function LoginPage() {
                 type="text"
                 placeholder="xname"
                 value={state.normalizedXname}
-                onChange={(e) => actions.setXname(e.target.value)}
+                onChange={e => actions.setXname(e.target.value)}
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                className="bg-white pr-24 h-[40px] text-base placeholder:text-base"
+                className="h-[40px] bg-white pr-24 text-base placeholder:text-base"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-base pointer-events-none">
-                @vse.cz
-              </span>
+              <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-base text-gray-400">@vse.cz</span>
             </div>
           </div>
 
-          <Button
-            type="submit"
-            disabled={state.isLoading || !state.isXnameValid}
-            className="w-full h-14 text-lg font-medium bg-brand hover:bg-brand-hover text-gray-900 disabled:opacity-70 disabled:cursor-not-allowed"
-          >
+          <Button type="submit" disabled={state.isLoading || !state.isXnameValid} className="h-14 w-full bg-brand text-lg font-medium text-gray-900 hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-70">
             {state.isLoading && <LoadingSpinner />}
-            {state.isLoading ? t('common.sending_button') : t('sign_in.send_button')}
+            {state.isLoading ? t("common.sending_button") : t("sign_in.send_button")}
           </Button>
 
           <div className="text-left">
-            <a href="#" className="text-gray-900 underline hover:text-gray-700 text-base">
-              {t('sign_in.already_have_code')}
+            <a href="#" className="text-base text-gray-900 underline hover:text-gray-700">
+              {t("sign_in.already_have_code")}
             </a>
           </div>
         </form>
@@ -258,7 +242,7 @@ export default function LoginPage() {
         <form onSubmit={actions.handleVerifySubmit} className="space-y-6" noValidate>
           <div className="space-y-2">
             <Label htmlFor="confirmCode" className="text-base text-gray-900">
-              {t('sign_in_confirm.confirm_code_label')}
+              {t("sign_in_confirm.confirm_code_label")}
             </Label>
             <Input
               id="confirmCode"
@@ -268,41 +252,28 @@ export default function LoginPage() {
               maxLength={7}
               placeholder="000-000"
               value={state.formattedConfirmCode}
-              onChange={(e) => actions.setConfirmCode(e.target.value)}
-              className="bg-white h-[40px] text-base placeholder:text-base tracking-widest font-mono"
+              onChange={e => actions.setConfirmCode(e.target.value)}
+              className="h-[40px] bg-white font-mono text-base tracking-widest placeholder:text-base"
             />
           </div>
 
-          {state.error && (
-            <div className="text-red-600 text-sm">
-              {state.error}
-            </div>
-          )}
+          {state.error && <div className="text-sm text-red-600">{state.error}</div>}
 
-          <Button
-            type="submit"
-            disabled={state.isVerifying || !state.isCodeValid}
-            className="w-full h-14 text-lg font-medium bg-brand hover:bg-brand-hover text-gray-900 disabled:opacity-70 disabled:cursor-not-allowed"
-          >
+          <Button type="submit" disabled={state.isVerifying || !state.isCodeValid} className="h-14 w-full bg-brand text-lg font-medium text-gray-900 hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-70">
             {state.isVerifying && <LoadingSpinner />}
-            {state.isVerifying ? t('common.sending_button') : t('sign_in_confirm.verify_code_button')}
+            {state.isVerifying ? t("common.sending_button") : t("sign_in_confirm.verify_code_button")}
           </Button>
 
           <div className="text-left">
-            <button
-              type="button"
-              onClick={actions.handleResendCode}
-              disabled={state.isLoading}
-              className="text-gray-900 underline hover:text-gray-700 text-base disabled:opacity-50"
-            >
-              {t('sign_in_confirm.resend_code_link')}
+            <button type="button" onClick={actions.handleResendCode} disabled={state.isLoading} className="text-base text-gray-900 underline hover:text-gray-700 disabled:opacity-50">
+              {t("sign_in_confirm.resend_code_link")}
             </button>
           </div>
         </form>
       )}
 
       {/* Bottom Bar */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-1/3 h-1 bg-black rounded-full" />
+      <div className="absolute bottom-4 left-1/2 h-1 w-1/3 -translate-x-1/2 rounded-full bg-black" />
     </div>
   )
 }
@@ -313,25 +284,9 @@ export default function LoginPage() {
 
 function LoadingSpinner() {
   return (
-    <svg
-      className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-900"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      />
+    <svg className="-ml-1 mr-3 h-5 w-5 animate-spin text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
     </svg>
   )
 }

@@ -1,0 +1,76 @@
+meta {
+  name: Courses
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:40080/kreditozrouti/courses?semester&ident&lecturer&day&time_from&time_to&language&level&faculty
+  body: none
+  auth: inherit
+}
+
+params:query {
+  semester: 
+  ident: 
+  lecturer: 
+  day: 
+  time_from: 
+  time_to: 
+  language: 
+  level: 
+  faculty: 
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  ## Params Request:
+  
+  `api/src/Controllers/Kreditozrouti/types/CoursesRequest.ts`
+  
+  ```json
+  {
+    semester?: string | string[]
+    ident?: string | string[]
+    lecturer?: string | string[]
+    day?: string | string[]
+    time_from?: number
+    time_to?: number
+    language?: string | string[]
+    level?: string | string[]
+    faculty?: string | string[]
+  }
+  ```
+  
+  ## Success Response (200):
+  
+  `api/src/Controllers/Kreditozrouti/types/CoursesResponse.ts`
+  
+  ```json
+  {
+    data: Course[]
+    facets: {
+      faculties: FacetItem[]
+      departments: FacetItem[]
+      days: FacetItem[]
+      lecturers: FacetItem[]
+      languages: FacetItem[]
+      levels: FacetItem[]
+      semesters: FacetItem[]
+      time_range: {
+        min_time: number
+        max_time: number
+      }
+    }
+    meta: {
+      limit: number
+      offset: number
+      count: number
+    }
+  }
+  ```
+}

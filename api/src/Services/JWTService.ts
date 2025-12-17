@@ -1,95 +1,59 @@
 import Config from '@api/Config/Config'
-import jwt, { SignOptions } from 'jsonwebtoken'
+import { User } from '@api/Database/types'
+import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
+import Exception from '@api/Error/Exception'
+import * as jose from 'jose'
 
-export interface JWTPayload {
-    userId: number
-    email: string
-    type: 'access' | 'refresh'
-}
-
-export interface JWTTokenPair {
-    accessToken: string
-    refreshToken: string
-}
-
-export class JWTService {
+/**
+ * Service responsible for managing JSON Web Token (JWT) lifecycles.
+ * Handles the creation (signing) of tokens for authenticated users and
+ * the cryptographic verification of incoming tokens.
+ */
+export default class JWTService {
     /**
-     * Create an access token for a user
+     * Generates a signed JWT for an authenticated user.
+     * @remarks
+     * The token is signed using the HS256 algorithm.
+     * It embeds the `userId` as a custom claim and sets standard claims
+     * (issuer, audience, expiration) defined in the application configuration.
+     *
+     * @param user - The user entity for whom the token is being generated.
+     * @returns A Promise resolving to the signed JWT string.
+     * @throws {Exception} If the signing process encounters an error (Internal Server Error).
      */
-    static createAccessToken(userId: number, email: string): string {
-        const payload: JWTPayload = {
-            userId,
-            email,
-            type: 'access'
-        }
-
-        return jwt.sign(
-            payload,
-            Config.jwt.secret,
-            {
-                expiresIn: Config.jwt.accessTokenExpiration,
-                issuer: Config.jwt.issuer,
-                audience: Config.jwt.audience
-            } as SignOptions
-        )
-    }
-
-    /**
-     * Create a refresh token for a user
-     */
-    static createRefreshToken(userId: number, email: string): string {
-        const payload: JWTPayload = {
-            userId,
-            email,
-            type: 'refresh'
-        }
-
-        return jwt.sign(
-            payload,
-            Config.jwt.secret,
-            {
-                expiresIn: Config.jwt.refreshTokenExpiration,
-                issuer: Config.jwt.issuer,
-                audience: Config.jwt.audience
-            } as SignOptions
-        )
-    }
-
-    /**
-     * Create both access and refresh tokens for a user
-     */
-    static createTokenPair(userId: number, email: string): JWTTokenPair {
-        return {
-            accessToken: this.createAccessToken(userId, email),
-            refreshToken: this.createRefreshToken(userId, email)
-        }
-    }
-
-    /**
-     * Verify a JWT token and return the decoded payload
-     */
-    static verifyToken(token: string): JWTPayload {
+    static async createJWTAuthTokenForUser(user: User): Promise<string> {
         try {
-            return jwt.verify(token, Config.jwt.secret, {
-                issuer: Config.jwt.issuer,
-                audience: Config.jwt.audience
-            }) as JWTPayload
+            return await new jose.SignJWT({ userId: user.id })
+                .setProtectedHeader({ alg: 'HS256' })
+                .setIssuedAt()
+                .setIssuer(Config.jwt.issuer)
+                .setAudience(Config.jwt.audience)
+                .setExpirationTime(Config.jwt.expiration)
+                .sign(Config.jwt.secret)
         } catch {
-            throw new Error('Invalid or expired token')
+            throw new Exception(500, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.SIGN_IN_FAILED, 'Failed to sign JWT')
         }
     }
 
     /**
-     * Decode a JWT token without verifying (useful for debugging)
+     * Validates the integrity and claims of a provided JWT.
+     * @remarks
+     * This method verifies the signature using the server's secret and ensures
+     * the token matches the expected issuer, audience, and algorithm (HS256).
+     *
+     * @param token - The raw JWT string to verify.
+     * @returns A Promise resolving to the verification result containing the payload and header.
+     * @throws {Exception} If the token is invalid, expired, or malformed (Unauthorized).
      */
-    static decodeToken(token: string): JWTPayload | null {
+    static async verifyJWTAuthToken(token: string): Promise<jose.JWTVerifyResult> {
         try {
-            return jwt.decode(token) as JWTPayload
+            return await jose.jwtVerify(token, Config.jwt.secret, {
+                issuer: Config.jwt.issuer,
+                audience: Config.jwt.audience,
+                algorithms: ['HS256']
+            })
         } catch {
-            return null
+            throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.UNAUTHORIZED, 'Invalid JWT token')
         }
     }
 }
-
-export default JWTService
-
