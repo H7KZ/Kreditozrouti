@@ -106,8 +106,9 @@ function useLoginFlow(): UseLoginFlowReturn {
     try {
       await signIn(`${normalizedXname}@vse.cz`)
       setStep('VERIFY')
-    } catch (err: any) {
-      setError(err.message || 'Failed to send verification code')
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to send verification code'
+      setError(errorMessage)
       console.error('Sign-in error:', err)
     } finally {
       setIsLoading(false)
@@ -124,8 +125,9 @@ function useLoginFlow(): UseLoginFlowReturn {
     try {
       await signInConfirm(`${normalizedXname}@vse.cz`, rawCode)
       navigate({ to: '/calendar' })
-    } catch (err: any) {
-      setError(err.message || 'Invalid verification code')
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Invalid verification code'
+      setError(errorMessage)
       console.error('Verification error:', err)
     } finally {
       setIsVerifying(false)
@@ -139,8 +141,9 @@ function useLoginFlow(): UseLoginFlowReturn {
     try {
       await signIn(`${normalizedXname}@vse.cz`)
       setConfirmCode('')
-    } catch (err: any) {
-      setError(err.message || 'Failed to resend code')
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to resend code'
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }

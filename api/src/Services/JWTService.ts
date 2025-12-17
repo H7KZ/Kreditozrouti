@@ -23,7 +23,7 @@ export class JWTService {
             type: 'access' as const
         }
 
-        return jwt.sign(payload, Config.jwt.secret as string, {
+        return jwt.sign(payload, Config.jwt.secret, {
             expiresIn: Config.jwt.accessTokenExpiration,
             issuer: Config.jwt.issuer,
             audience: Config.jwt.audience
@@ -40,7 +40,7 @@ export class JWTService {
             type: 'refresh' as const
         }
 
-        return jwt.sign(payload, Config.jwt.secret as string, {
+        return jwt.sign(payload, Config.jwt.secret, {
             expiresIn: Config.jwt.refreshTokenExpiration,
             issuer: Config.jwt.issuer,
             audience: Config.jwt.audience
@@ -62,7 +62,7 @@ export class JWTService {
      */
     static verifyToken(token: string): JWTPayload {
         try {
-            return jwt.verify(token, Config.jwt.secret as string, {
+            return jwt.verify(token, Config.jwt.secret, {
                 issuer: Config.jwt.issuer,
                 audience: Config.jwt.audience
             }) as JWTPayload

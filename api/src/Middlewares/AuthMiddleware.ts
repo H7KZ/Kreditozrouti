@@ -8,7 +8,7 @@ export default async function AuthMiddleware(req: Request, res: Response, next: 
     // Extract JWT token from Authorization header
     const authHeader = req.headers.authorization
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader?.startsWith('Bearer ')) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.UNAUTHORIZED, 'User is not authenticated')
     }
 
