@@ -41,7 +41,6 @@
         "@types/express": "^5.0.6",
         "@types/express-session": "^1.18.2",
         "@types/i18n": "^0.13.12",
-        "@types/jsonwebtoken": "^9.0.10",
         "@types/morgan": "^1.9.10",
         "@types/multer": "^2.0.0",
         "@types/node": "^24.10.4",
