@@ -45,6 +45,7 @@
         "vite": "^7.1.9"
     },
     "dependencies": {
+        "@radix-ui/react-dropdown-menu": "^2.1.16",
         "@schedule-x/calendar": "^3.5.0",
         "@schedule-x/events-service": "^3.5.0",
         "@schedule-x/react": "^3.4.0",

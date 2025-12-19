@@ -14,14 +14,6 @@ interface APIErrorDetails {
     zodIssues?: $ZodIssue[]
 
     /**
-     * Stack trace of the error, if available
-     *
-     * @type {string}
-     * @optional
-     */
-    stack?: string
-
-    /**
      * Additional arbitrary details
      *
      * @type {any}

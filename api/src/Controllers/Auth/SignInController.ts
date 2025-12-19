@@ -7,6 +7,7 @@ import Exception from '@api/Error/Exception'
 import EmailService from '@api/Services/EmailService'
 import SignInValidation from '@api/Validations/SignInValidation'
 import { Request, Response } from 'express'
+import Config from '@api/Config/Config'
 
 export default async function SignInController(req: Request, res: Response) {
     const result = await SignInValidation.safeParseAsync(req.body)
@@ -17,24 +18,29 @@ export default async function SignInController(req: Request, res: Response) {
 
     const data = result.data as SignInRequest
 
-    if (!data.email.endsWith('@vse.cz')) {
-        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
-    } else if (data.email.endsWith('@diar.4fis.cz')) {
-        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
-    } else if (data.email !== 'diar.4fis@gmail.com') {
+    const isAllowed = data.email.endsWith('@vse.cz') || data.email === 'diar.4fis@gmail.com' || data.email.endsWith('@diar.4fis.cz')
+
+    if (!isAllowed) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
-    await redis.del(`auth:code:${data.email}`)
+    await redis.del(`auth:email:${data.code_challenge}`)
+    await redis.del(`auth:challenge:${data.code_challenge}`)
+    await redis.del(`auth:code:${data.code_challenge}`)
+
+    await redis.setex(`auth:email:${data.code_challenge}`, 600, data.email)
+    await redis.setex(`auth:challenge:${data.code_challenge}`, 600, data.code_challenge)
 
     const code = Math.floor(100000 + Math.random() * 900000) // Generate a random 6 digit code
-
-    await redis.setex(`auth:code:${data.email}`, 600, code.toString()) // Save code to redis with 10 minutes expiration
+    await redis.setex(`auth:code:${data.email}`, 600, code.toString())
 
     i18n.init(req, res)
 
+    const magicLink = Config.frontend.createURL(`/auth/signin/confirm?code=${code}`)
+
     const emailSignInTemplate = await EmailService.readTemplate('CodeEmail', {
-        emailText: req.__('emails.signIn.body', { code: code.toString(), expiration: '10' })
+        emailText: req.__('emails.signIn.body', {expiration: '10' }),
+        link: magicLink
     })
 
     await EmailService.sendEmail({

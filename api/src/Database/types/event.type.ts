@@ -1,10 +1,12 @@
-import { ColumnType, Selectable } from 'kysely'
+import { ColumnType, Insertable, Selectable } from 'kysely'
 
 export interface EventTable {
     id: string
 
     created_at: ColumnType<Date, string | undefined, never>
     updated_at: ColumnType<Date, string | undefined, string | undefined>
+
+    // categories: string[]
 
     title: string | null
     subtitle: string | null
@@ -21,6 +23,7 @@ export interface EventTable {
 }
 
 export type Event = Selectable<EventTable>
+export type NewEvent = Insertable<Omit<EventTable, 'id' | 'created_at' | 'updated_at'>>
 
 export interface EventCategoryTable {
     event_id: string
@@ -28,9 +31,11 @@ export interface EventCategoryTable {
 }
 
 export type EventCategory = Selectable<EventCategoryTable>
+export type NewEventCategory = Insertable<EventCategoryTable>
 
 export interface CategoryTable {
     id: string
 }
 
 export type Category = Selectable<CategoryTable>
+export type NewCategory = Insertable<CategoryTable>

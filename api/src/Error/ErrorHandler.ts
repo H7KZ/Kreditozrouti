@@ -1,5 +1,5 @@
-import ErrorResponse from '@api/Controllers/Event/types/ErrorResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
+import ErrorResponse from '@api/Error/ErrorResponse'
 import Exception from '@api/Error/Exception'
 import { NextFunction, Request, Response } from 'express'
 
@@ -23,9 +23,7 @@ export default function ErrorHandler(error: Exception | Error | unknown, req: Re
             type: ErrorTypeEnum.UNKNOWN,
             code: ErrorCodeEnum.UNKNOWN,
             message: error.message ?? 'Internal Server Error',
-            details: {
-                stack: error.stack
-            }
+            details: {}
         } as ErrorResponse)
     }
 

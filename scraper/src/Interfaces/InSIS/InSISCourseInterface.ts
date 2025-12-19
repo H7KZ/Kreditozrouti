@@ -1,50 +1,50 @@
 export default interface InSISCourseInterface {
-    ident: string
-    title: string
-    czechTitle: string
-    ects: number
-    modeOfDelivery: string
-    modeOfCompletion: string
-    language: string
-    level: string
-    yearOfStudy: number
-    semester: string
-    lecturers: string[]
-    prerequisites: string
-    'co-requisites': string
-    recommendedProgrammes: string
-    requiredWorkExperience: string
+    ident: string | null
+    title: string | null
+    czech_title: string | null
+    ects: number | null
+    mode_of_delivery: string | null
+    mode_of_completion: string | null
+    language: string | null
+    level: string | null
+    year_of_study: number | null
+    semester: string | null
+    lecturers: string[] | null
+    prerequisites: string | null
+    co_requisites: string | null
+    recommended_programmes: string | null
+    required_work_experience: string | null
 
-    aimsOfTheCourse: string
-    learningOutcomes: string
-    courseContents: string
-    assessmentMethods: AssessmentMethod[]
+    aims_of_the_course: string | null
+    learning_outcomes: string | null
+    course_contents: string | null
+    assessment_methods: AssessmentMethod[] | null
 
-    specialRequirements: string
-    literature: string
+    special_requirements: string | null
+    literature: string | null
 
-    timetable: TimetableUnit[]
+    timetable: TimetableUnit[] | null
 }
 
 interface AssessmentMethod {
-    method: string
-    weight: number
+    method: string | null
+    weight: number | null
 }
 
 interface TimetableUnit {
-    lecturer: string
-    capacity: number
-    note: string
+    lecturer: string | null
+    capacity: number | null
+    note: string | null
 
-    slots: TimetableSlot[]
+    slots: TimetableSlot[] | null
 }
 
 interface TimetableSlot {
-    type: string
-    frequency: 'weekly' | 'single'
+    type: string | null
+    frequency: 'weekly' | 'single' | null
     date: string | null
     day: string | null
-    timeFrom: string
-    timeTo: string
-    location: string
+    time_from: string | null
+    time_to: string | null
+    location: string | null
 }

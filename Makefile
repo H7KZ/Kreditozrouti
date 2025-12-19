@@ -41,7 +41,6 @@ build:
 
 build-docker-images:
 	docker build -t diar-4fis-api -f ./api/Dockerfile . && \
-	docker build -t diar-4fis-api-migrations -f ./api/Dockerfile.migrations . && \
 	docker build -t diar-4fis-frontend -f ./frontend/Dockerfile . && \
 	docker build -t diar-4fis-scraper -f ./scraper/Dockerfile .
 

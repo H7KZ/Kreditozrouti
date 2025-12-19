@@ -4,7 +4,6 @@ interface ScraperRequestJobBase {
     type: ScraperJobType
     error?: {
         message: string
-        stack?: string
     }
 }
 

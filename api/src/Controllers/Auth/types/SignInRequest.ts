@@ -11,4 +11,13 @@ export default interface SignInRequest {
      * @required
      */
     email: string
+
+    /**
+     * The code challenge string for PKCE authentication
+     * Hashed using SHA-256 digested to HEX
+     *
+     * @type {string}
+     * @required
+     */
+    code_challenge: string
 }

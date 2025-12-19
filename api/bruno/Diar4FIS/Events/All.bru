@@ -17,21 +17,24 @@ params:query {
   categories: 
 }
 
-body:json {
-  {
-    "email": "enga03@vse.cz"
-  }
-  
-}
-
 settings {
   encodeUrl: true
+  timeout: 0
 }
 
 docs {
-  Success Response (201):
+  // api/src/Controllers/Events/types/EventsAllRequest.ts
+  Params Request:
   {
-    code: SuccessCodeEnum.SignInCodeSent (api/src/Enums/SuccessEnum.ts)
+    title?: string | null
+    date_from?: Date | null
+    date_to?: Date | null
+    categories?: string[] | null
   }
   
+  // api/src/Controllers/Events/types/EventsAllResponse.ts
+  Success Response (200):
+  {
+    events: Event[]
+  }
 }

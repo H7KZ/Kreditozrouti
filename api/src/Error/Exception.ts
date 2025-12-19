@@ -10,7 +10,6 @@ export interface APIError extends Error {
 
 interface APIErrorDetails {
     zodIssues?: $ZodIssue[]
-    stack?: string
     [key: string]: any
 }
 
@@ -23,8 +22,6 @@ export default class Exception extends Error implements APIError {
         public details: APIErrorDetails = {}
     ) {
         super(message)
-
-        this.details.stack = this.stack
 
         Object.setPrototypeOf(this, Exception.prototype)
     }
