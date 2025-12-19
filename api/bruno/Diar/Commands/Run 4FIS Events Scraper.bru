@@ -1,0 +1,16 @@
+meta {
+  name: Run 4FIS Events Scraper
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:40080/commands/insis/catalog
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

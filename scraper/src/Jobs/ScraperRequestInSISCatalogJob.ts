@@ -28,6 +28,7 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
 
     formData += 'vyhledat_rozsirene=Vyhledat+p%C5%99edm%C4%9Bty&'
     formData += 'jak=rozsirene'
+    formData += ';lang=cz'
 
     const request = await Axios.post<string>('https://insis.vse.cz/katalog/index.pl', formData, {
         headers: {
@@ -45,7 +46,9 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
         }
     })
 
-    const catalog = ExtractInSISService.extractCatalog(request.data)
+    const coursesUrls = ExtractInSISService.extractCatalog(request.data)
+
+    const catalog = { urls: coursesUrls }
 
     await scraper.queue.response.add('InSIS Catalog Response', { type: 'InSIS:Catalog', catalog })
 
@@ -53,5 +56,18 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
         return
     }
 
-    catalog.urls.map(courseUrl => scraper.queue.request.add('InSIS Course Request (Catalog)', { type: 'InSIS:Course', url: courseUrl }))
+    catalog.urls.map(courseUrl =>
+        scraper.queue.request.add(
+            'InSIS Course Request (Catalog)',
+            {
+                type: 'InSIS:Course',
+                url: courseUrl
+            },
+            {
+                deduplication: {
+                    id: `InSIS:Course:${ExtractInSISService.extractCourseIdFromURL(courseUrl)}`
+                }
+            }
+        )
+    )
 }

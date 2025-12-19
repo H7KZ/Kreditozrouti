@@ -2,6 +2,8 @@ import Scraper4FISEvent from '@scraper/Interfaces/Scraper4FISEvent'
 import Scraper4FISEvents from '@scraper/Interfaces/Scraper4FISEvents'
 import ScraperInSISCatalog from '@scraper/Interfaces/ScraperInSISCatalog'
 import ScraperInSISCourse from '@scraper/Interfaces/ScraperInSISCourse'
+import ScraperInSISStudyPlan from '@scraper/Interfaces/ScraperInSISStudyPlan'
+import ScraperInSISStudyPlans from '@scraper/Interfaces/ScraperInSISStudyPlans'
 import ScraperJob from '@scraper/Types/ScraperJob'
 
 /**
@@ -53,8 +55,32 @@ export interface ScraperInSISCourseResponseJob extends ScraperResponseJobBase {
 }
 
 /**
+ * Payload containing the results of a study plans crawl.
+ */
+export interface ScraperInSISStudyPlansResponseJob extends ScraperResponseJobBase {
+    type: 'InSIS:StudyPlans'
+    /** The collection of discovered study plans URLs. */
+    plans: ScraperInSISStudyPlans
+}
+
+/**
+ * Payload containing the results of a specific study plan crawl.
+ */
+export interface ScraperInSISStudyPlanResponseJob extends ScraperResponseJobBase {
+    type: 'InSIS:StudyPlan'
+    /** The extracted study plan details, or null if parsing failed. */
+    plan: ScraperInSISStudyPlan | null
+}
+
+/**
  * Union type representing any valid scraper response job payload.
  */
-type ScraperResponseJob = Scraper4FISEventsResponseJob | Scraper4FISEventResponseJob | ScraperInSISCatalogResponseJob | ScraperInSISCourseResponseJob
+type ScraperResponseJob =
+    | Scraper4FISEventsResponseJob
+    | Scraper4FISEventResponseJob
+    | ScraperInSISCatalogResponseJob
+    | ScraperInSISCourseResponseJob
+    | ScraperInSISStudyPlansResponseJob
+    | ScraperInSISStudyPlanResponseJob
 
 export default ScraperResponseJob

@@ -11,7 +11,7 @@ import Axios from 'axios'
  * @returns A promise that resolves when the parsed course data is queued.
  */
 export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCourseRequestJob): Promise<void> {
-    const request = await Axios.get<string>(data.url, {
+    const request = await Axios.get<string>(`${data.url};lang=cz`, {
         headers: {
             Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             'Accept-Language': 'cs-CZ,cs;q=0.9,en;q=0.8',

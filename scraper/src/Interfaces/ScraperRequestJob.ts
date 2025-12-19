@@ -6,6 +6,7 @@ import ScraperJob from '@scraper/Types/ScraperJob'
 interface ScraperRequestJobBase {
     /** The specific type identifier for the scraping task. */
     type: ScraperJob
+
     /** Optional error details if the job failed during queuing. */
     error?: {
         message: string
@@ -25,6 +26,7 @@ export interface Scraper4FISEventsRequestJob extends ScraperRequestJobBase {
  */
 export interface Scraper4FISEventRequestJob extends ScraperRequestJobBase {
     type: '4FIS:Event'
+
     /** The unique identifier of the target event. */
     eventId: string
 }
@@ -42,13 +44,39 @@ export interface ScraperInSISCatalogRequestJob extends ScraperRequestJobBase {
  */
 export interface ScraperInSISCourseRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:Course'
+
     /** The full URL of the course page to scrape. */
+    url: string
+}
+
+/**
+ * Payload for requesting a crawl of the InSIS study plans list.
+ */
+export interface ScraperInSISStudyPlansRequestJob extends ScraperRequestJobBase {
+    type: 'InSIS:StudyPlans'
+    auto_queue_study_plans?: boolean
+}
+
+/**
+ * Payload for requesting a crawl of a specific InSIS study plan.
+ */
+export interface ScraperInSISStudyPlanRequestJob extends ScraperRequestJobBase {
+    type: 'InSIS:StudyPlan'
+    auto_queue_courses?: boolean
+
+    /** The full URL of the study plan page to scrape. */
     url: string
 }
 
 /**
  * Union type representing any valid scraper request job payload.
  */
-type ScraperRequestJob = Scraper4FISEventsRequestJob | Scraper4FISEventRequestJob | ScraperInSISCatalogRequestJob | ScraperInSISCourseRequestJob
+type ScraperRequestJob =
+    | Scraper4FISEventsRequestJob
+    | Scraper4FISEventRequestJob
+    | ScraperInSISCatalogRequestJob
+    | ScraperInSISCourseRequestJob
+    | ScraperInSISStudyPlansRequestJob
+    | ScraperInSISStudyPlanRequestJob
 
 export default ScraperRequestJob

@@ -8,6 +8,7 @@ import { Queue, Worker } from 'bullmq'
 
 const Scraper4FISEventsRequestScheduler = 'Scraper4FISEventsRequestScheduler'
 const ScraperInSISCatalogRequestScheduler = 'ScraperInSISCatalogRequestScheduler'
+const ScraperInSISStudyPlansRequestScheduler = 'ScraperInSISStudyPlansRequestScheduler'
 
 /**
  * Manages the BullMQ infrastructure for the scraping service.
@@ -54,40 +55,18 @@ const scraper = {
      * Sets up periodic triggers for FIS Events and InSIS Catalog scraping.
      */
     async schedulers() {
-        /**
-         * Schedules the FIS Events scraper to run every 2 minutes.
-         */
-        await scraper.queue.request.upsertJobScheduler(
-            Scraper4FISEventsRequestScheduler,
-            { pattern: '*/2 * * * *' }, // Every 2 minutes
-            {
-                name: '4FIS Events Request (2 min)',
-                data: {
-                    type: '4FIS:Events',
-                    auto_queue_events: true
-                },
-                opts: {
-                    removeOnComplete: true,
-                    removeOnFail: {
-                        age: 2 * 3600 // keep up to 2 hours
-                    }
-                }
-            }
-        )
-        console.log(`${Scraper4FISEventsRequestScheduler} has been set to run every 2 minutes.`)
-
         if (!Config.isEnvDevelopment()) {
             /**
-             * Schedules the InSIS Catalog scraper to run at the start of every hour.
+             * Schedules the FIS Events scraper to run every 2 minutes.
              */
             await scraper.queue.request.upsertJobScheduler(
-                ScraperInSISCatalogRequestScheduler,
-                { pattern: '0 * * * *' }, // Every 1 hour
+                Scraper4FISEventsRequestScheduler,
+                { pattern: '*/2 * * * *' }, // Every 2 minutes
                 {
-                    name: 'InSIS Catalog Request (1 hour)',
+                    name: '4FIS Events Request (2 min)',
                     data: {
-                        type: 'InSIS:Catalog',
-                        auto_queue_courses: true
+                        type: '4FIS:Events',
+                        auto_queue_events: true
                     },
                     opts: {
                         removeOnComplete: true,
@@ -97,14 +76,48 @@ const scraper = {
                     }
                 }
             )
-            console.log(`${ScraperInSISCatalogRequestScheduler} has been set to run every 1 hour.`)
-        }
+            console.log(`${Scraper4FISEventsRequestScheduler} has been set to run every 2 minutes.`)
 
-        /**
-         * For testing purposes, you can uncomment the following lines to enqueue immediate jobs:
-         */
-        // await scraper.queue.request.add('4FIS Events Request', { type: '4FIS:Events', auto_queue_events: true })
-        // await scraper.queue.request.add('InSIS Catalog Request', { type: 'InSIS:Catalog', auto_queue_courses: true })
+            /**
+             * Schedules the InSIS Catalog scraper to run daily at 1:00 am.
+             */
+            await scraper.queue.request.upsertJobScheduler(
+                ScraperInSISCatalogRequestScheduler,
+                { pattern: '0 1 * * *' }, // At 1:00 am every day
+                {
+                    name: 'InSIS Catalog Request (at 1 am)',
+                    data: {
+                        type: 'InSIS:Catalog',
+                        auto_queue_courses: true
+                    },
+                    opts: {
+                        removeOnComplete: true,
+                        removeOnFail: true
+                    }
+                }
+            )
+            console.log(`${ScraperInSISCatalogRequestScheduler} has been set to run at 1:00 am daily.`)
+
+            /**
+             * Schedules the InSIS Study Plan scraper to run daily at 2:00 am.
+             */
+            await scraper.queue.request.upsertJobScheduler(
+                ScraperInSISStudyPlansRequestScheduler,
+                { pattern: '0 2 * * *' }, // At 2:00 am every day
+                {
+                    name: 'InSIS Study Plans Request (at 2 am)',
+                    data: {
+                        type: 'InSIS:StudyPlans',
+                        auto_queue_study_plans: true
+                    },
+                    opts: {
+                        removeOnComplete: true,
+                        removeOnFail: true
+                    }
+                }
+            )
+            console.log(`${ScraperInSISStudyPlansRequestScheduler} has been set to run at 2:00 am daily.`)
+        }
     }
 }
 
