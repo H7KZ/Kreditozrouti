@@ -1,6 +1,7 @@
 import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import Snowfall from "react-snowfall"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -36,6 +37,7 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-6 pt-16">
+      <Snowfall color="82C3D9" />
       <div className="absolute right-6 top-6">
         <LanguageSwitcher />
       </div>

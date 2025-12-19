@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router"
 import { Calendar, HelpCircle, LogOut, Medal, User, UserPlus, Users } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import LanguageSwitcher from "./LanguageSwitcher"
@@ -6,11 +7,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 
 export default function Navbar() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6">
-      {/* Logo */}
-      <div className="flex items-center">
+      {/* Logo - navigace na kalendář */}
+      <div className="flex cursor-pointer items-center" onClick={() => navigate({ to: "/calendar" })}>
         <img src="/diar4fis.svg" alt="Diar4FIS" className="h-10 w-auto origin-left scale-150 transform" />
       </div>
 
@@ -26,14 +28,18 @@ export default function Navbar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             {/* Group 1 */}
-            <DropdownMenuItem>
+
+            {/* ZMĚNA: Navigace na profil */}
+            <DropdownMenuItem onClick={() => navigate({ to: "/profile" })}>
               <User className="h-4 w-4" />
               <span>{t("user_dropdown.profile")}</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => navigate({ to: "/calendar" })}>
               <Calendar className="h-4 w-4" />
               <span>{t("user_dropdown.my_events")}</span>
             </DropdownMenuItem>
+
             <DropdownMenuItem>
               <Medal className="h-4 w-4" />
               <span>{t("user_dropdown.leaderboard")}</span>
