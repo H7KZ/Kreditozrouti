@@ -72,6 +72,18 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
     }
 
     await runWithConcurrency(plans.urls, 20, planUrl =>
-        scraper.queue.request.add('InSIS Study Plan Request (Study Plans)', { type: 'InSIS:StudyPlan', url: planUrl, auto_queue_courses: true })
+        scraper.queue.request.add(
+            'InSIS Study Plan Request (Study Plans)',
+            {
+                type: 'InSIS:StudyPlan',
+                url: planUrl,
+                auto_queue_courses: true
+            },
+            {
+                deduplication: {
+                    id: `InSIS:StudyPlan:${ExtractInSISService.extractStudyPlanIdFromURL(planUrl)}`
+                }
+            }
+        )
     )
 }

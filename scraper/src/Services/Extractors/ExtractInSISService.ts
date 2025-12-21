@@ -1,5 +1,5 @@
 import ScraperInSISCourse, { ScraperInSISCourseAssessmentMethod, ScraperInSISCourseTimetableUnit } from '@scraper/Interfaces/ScraperInSISCourse'
-import ScraperInSISStudyPlan from '@scraper/Interfaces/ScraperInSISStudyPlan'
+import ScraperInSISStudyPlan, { ScraperInSISStudyPlanCourseCategory } from '@scraper/Interfaces/ScraperInSISStudyPlan'
 import ExtractService from '@scraper/Services/Extractors/ExtractService'
 import MarkdownService from '@scraper/Services/MarkdownService'
 import * as cheerio from 'cheerio'
@@ -9,6 +9,8 @@ import * as cheerio from 'cheerio'
  * Extracts course catalog lists and detailed course syllabi/timetables.
  */
 export default class ExtractInSISService {
+    static baseCatalogUrl = 'https://insis.vse.cz/katalog/'
+
     /**
      * Parses the course catalog HTML to extract a unique list of course syllabus URLs.
      * Identifies links based on the specific `syllabus.pl?predmet=` pattern.
@@ -19,13 +21,12 @@ export default class ExtractInSISService {
     static extractCatalog(html: string): string[] {
         const $ = cheerio.load(html)
         const subjects: string[] = []
-        const baseUrl = 'https://insis.vse.cz/katalog/'
 
         $('a[href*="syllabus.pl?predmet="]').each((i, el) => {
             const href = $(el).attr('href')
 
             if (href) {
-                const fullUrl = href.startsWith('http') ? href : baseUrl + href
+                const fullUrl = href.startsWith('http') ? href : this.baseCatalogUrl + href
                 subjects.push(fullUrl.trim().split(';')[0])
             }
         })
@@ -522,13 +523,50 @@ export default class ExtractInSISService {
     }
 
     /**
+     * Extracts the unique Study Plan ID from the given URL.
+     *
+     * @param url - The URL containing the `stud_plan` query parameter.
+     * @returns The extracted Study Plan ID as a number, or null if not found.
+     */
+    static extractStudyPlanIdFromURL(url: string): number | null {
+        let id: number | null = null
+
+        const idRaw = /stud_plan=(\d+)/.exec(url)?.[1] ?? null
+        if (idRaw) id = parseInt(idRaw, 10)
+
+        return id
+    }
+
+    /**
+     * Parses the study plan page to extract all course syllabus URLs listed within that plan.
+     *
+     * @param html - The raw HTML content of the study plan page.
+     * @returns An array of absolute URLs leading to each course syllabus in the plan.
+     */
+    static extractStudyPlanCourses(html: string): string[] {
+        const $ = cheerio.load(html)
+        const subjects: string[] = []
+
+        $('a[href*="../katalog/syllabus.pl?predmet="]').each((i, el) => {
+            const href = $(el).attr('href')
+
+            if (href) {
+                const fullUrl = this.baseCatalogUrl + href.replace('../katalog/', '')
+
+                subjects.push(fullUrl.trim().split(';')[0])
+            }
+        })
+
+        return [...new Set(subjects)]
+    }
+
+    /**
      * Extracts details from the study plan.
      * Automatically detects groups of subjects according to InSIS codes (e.g., oP, hP, cTVS)
      * and sorts them into semantic categories. At the same time, it collects the URLs of all subjects found.
      */
     static extractStudyPlan(html: string, url: string): ScraperInSISStudyPlan {
         const $ = cheerio.load(html)
-        const baseUrl = 'https://insis.vse.cz/katalog/'
 
         const cleanText = (text: string | null): string => {
             if (!text) return ''
@@ -555,12 +593,9 @@ export default class ExtractInSISService {
             return ExtractService.serializeValue(foundValue)
         }
 
-        let id: number | null = null
-        const idRaw = /stud_plan=(\d+)/.exec(url)?.[1] ?? null
-        if (idRaw) id = parseInt(idRaw, 10)
-
+        const id = this.extractStudyPlanIdFromURL(url)
         if (id === null) {
-            throw new Error('Study plan ID not found in the URL.')
+            throw new Error('Study Plan ID not found in the URL.')
         }
 
         const faculty = getRowValue('Fakulta:')?.trim().toLowerCase() ?? null
@@ -584,16 +619,13 @@ export default class ExtractInSISService {
         }
 
         // Initialize lists
-        const compulsory: string[] = []
-        const elective: string[] = []
-        const physical_education: string[] = []
-        const general_elective: string[] = []
-        const state_exams: string[] = []
-        const languages: string[] = []
-        const optional: string[] = []
-
-        // Set to store unique course URLs found in the plan
-        const foundCourseUrls = new Set<string>()
+        const compulsory: ScraperInSISStudyPlanCourseCategory[] = []
+        const elective: ScraperInSISStudyPlanCourseCategory[] = []
+        const physical_education: ScraperInSISStudyPlanCourseCategory[] = []
+        const general_elective: ScraperInSISStudyPlanCourseCategory[] = []
+        const state_exams: ScraperInSISStudyPlanCourseCategory[] = []
+        const languages: ScraperInSISStudyPlanCourseCategory[] = []
+        const optional: ScraperInSISStudyPlanCourseCategory[] = []
 
         let currentGroupCode: string | null = null
 
@@ -611,44 +643,34 @@ export default class ExtractInSISService {
             if (rowEl.hasClass('uis-hl-table')) {
                 const identCell = rowEl.find('td').first()
                 const courseIdent = cleanText(identCell.text())
-
-                // A. Extract URL if present
-                const anchor = identCell.find('a')
-                const href = anchor.attr('href')
-
-                if (href) {
-                    // Normalize URL
-                    const fullUrl = href.startsWith('http') ? href : baseUrl + href.replace(/^\//, '')
-                    // Only collect Syllabus URLs
-                    if (fullUrl.includes('syllabus.pl')) {
-                        foundCourseUrls.add(fullUrl.split(';')[0]) // Strip session IDs or extra params if needed
-                    }
-                }
+                const courseId = this.extractCourseIdFromURL(identCell.find('a').attr('href') || '')
 
                 // B. Categorize Course
                 if (courseIdent && courseIdent.length >= 3 && currentGroupCode) {
                     if (currentGroupCode.startsWith('cTVS')) {
-                        physical_education.push(courseIdent)
+                        physical_education.push({ id: courseId, ident: courseIdent })
                     } else if (currentGroupCode.startsWith('oJ') || currentGroupCode.startsWith('fJ') || currentGroupCode === 'sK') {
-                        languages.push(courseIdent)
+                        languages.push({ id: courseId, ident: courseIdent })
                     } else if (currentGroupCode.includes('SZ')) {
-                        state_exams.push(courseIdent)
+                        state_exams.push({ id: courseId, ident: courseIdent })
                     } else if (['cVM', 'cVD', 'cVP', 'cVV'].includes(currentGroupCode)) {
-                        general_elective.push(courseIdent)
+                        general_elective.push({ id: courseId, ident: courseIdent })
                     } else if (
                         currentGroupCode.endsWith('P') ||
                         currentGroupCode === 'oBP' ||
                         ['oP', 'hP', 'sP', 'fP', 'eP'].some(p => currentGroupCode?.startsWith(p))
                     ) {
-                        compulsory.push(courseIdent)
+                        compulsory.push({ id: courseId, ident: courseIdent })
                     } else if (currentGroupCode.includes('V') || ['oV', 'hV', 'sV', 'fV', 'eV'].some(p => currentGroupCode?.startsWith(p))) {
-                        elective.push(courseIdent)
+                        elective.push({ id: courseId, ident: courseIdent })
                     } else {
-                        optional.push(courseIdent)
+                        optional.push({ id: courseId, ident: courseIdent })
                     }
                 }
             }
         })
+
+        const courseUrls = this.extractStudyPlanCourses(html)
 
         return {
             id,
@@ -667,7 +689,7 @@ export default class ExtractInSISService {
             state_exam_courses_idents: state_exams.length > 0 ? state_exams : null,
             language_courses_idents: languages.length > 0 ? languages : null,
             optional_courses_idents: optional.length > 0 ? optional : null,
-            course_urls: foundCourseUrls.size > 0 ? Array.from(foundCourseUrls) : null
+            course_urls: courseUrls.length > 0 ? courseUrls : null
         }
     }
 }

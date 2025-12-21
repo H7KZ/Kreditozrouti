@@ -11,25 +11,30 @@ export default interface ScraperInSISStudyPlan {
 
     // Rozšířené kategorie kurzů
     // Zahrnuje: oP, hP, sP, fP, eP (Povinné oborové, hlavní, vedlejší, fakultní, specializační)
-    compulsory_courses_idents: string[] | null
+    compulsory_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
 
     // Zahrnuje: oV, hV, sV, fV, eV (Volitelné v rámci specializace/oboru)
-    elective_courses_idents: string[] | null
+    elective_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
 
     // Zahrnuje: cTVS1, cTVS2 (Tělesná výchova)
-    physical_education_courses_idents: string[] | null
+    physical_education_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
 
     // Zahrnuje: cVM, cVD, cVP (Celoškolsky volně volitelné - "free credits")
-    general_elective_courses_idents: string[] | null
+    general_elective_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
 
     // Zahrnuje: oSZ, hSZ, sSZ, fSZ (Státní zkoušky a obhajoby)
-    state_exam_courses_idents: string[] | null
+    state_exam_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
 
     // Zahrnuje: oJ, fJ, sK (Jazykové moduly)
-    language_courses_idents: string[] | null
+    language_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
 
     // Fallback pro nezařazené
-    optional_courses_idents: string[] | null
+    optional_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
 
     course_urls: string[] | null
+}
+
+export interface ScraperInSISStudyPlanCourseCategory {
+    id: number | null
+    ident: string
 }
