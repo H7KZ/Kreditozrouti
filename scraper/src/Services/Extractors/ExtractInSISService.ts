@@ -430,7 +430,7 @@ export default class ExtractInSISService {
             // We specifically look for 'typ_studia=' to distinguish level links
             // from general semester or faculty links.
             if (href?.includes('typ_studia=')) {
-                let fullUrl = href
+                let fullUrl: string | undefined
 
                 if (href.startsWith('http')) {
                     fullUrl = href
@@ -643,7 +643,7 @@ export default class ExtractInSISService {
             if (rowEl.hasClass('uis-hl-table')) {
                 const identCell = rowEl.find('td').first()
                 const courseIdent = cleanText(identCell.text())
-                const courseId = this.extractCourseIdFromURL(identCell.find('a').attr('href') || '')
+                const courseId = this.extractCourseIdFromURL(identCell.find('a').attr('href') ?? '')
 
                 // B. Categorize Course
                 if (courseIdent && courseIdent.length >= 3 && currentGroupCode) {

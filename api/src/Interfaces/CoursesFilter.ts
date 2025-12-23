@@ -8,4 +8,6 @@ export default interface CoursesFilter {
     language?: string | string[] // e.g., "EN", "CZ"
     level?: string | string[] // e.g., "Bachelor", "Master"
     faculty?: string | string[] // Derived first digit of ident (e.g., "4")
+
+    study_plan_id?: number // Filter courses by specific Study Plan ID
 }

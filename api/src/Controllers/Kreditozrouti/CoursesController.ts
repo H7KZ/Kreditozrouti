@@ -22,11 +22,22 @@ export default async function CoursesController(req: Request, res: Response<Cour
         return res.status(200).send(JSON.parse(cachedData))
     }
 
-    const [courses, facets] = await Promise.all([InSISService.getCourses(data, data.limit, data.offset), InSISService.getFacets(data)])
+    const [courses, courseFacets, plans, planFacets] = await Promise.all([
+        InSISService.getCourses(data, data.limit, data.offset),
+        InSISService.getFacets(data),
+        InSISService.getStudyPlans(data, data.limit, data.offset),
+        InSISService.getStudyPlanFacets(data)
+    ])
 
     const response = {
-        data: courses,
-        facets: facets,
+        data: {
+            courses: courses,
+            study_plans: plans
+        },
+        facets: {
+            courses: courseFacets,
+            study_plans: planFacets
+        },
         meta: {
             limit: data.limit || 20,
             offset: data.offset || 0,

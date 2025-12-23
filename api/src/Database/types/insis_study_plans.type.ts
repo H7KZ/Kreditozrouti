@@ -55,7 +55,8 @@ export class StudyPlanCourseTable {
     /** Foreign key referencing the Study Plan table. */
     study_plan_id!: number
 
-    /** * Foreign key referencing the Course table.
+    /**
+     * Foreign key referencing the Course table.
      * This connects the plan directly to the existing scraped course data.
      * Note: This might be nullable if the course hasn't been scraped yet but exists in the plan.
      */
@@ -69,11 +70,15 @@ export class StudyPlanCourseTable {
     /** The course identifier string (e.g., "4IT101"). Useful for lookups if course_id is null. */
     course_ident!: string
 
-    /** * The category of the course within this specific plan.
+    /**
+     * The category of the course within this specific plan.
      * Maps to the specific arrays from the scraper.
      */
     category!: 'compulsory' | 'elective' | 'physical_education' | 'general_elective' | 'state_exam' | 'language' | 'optional'
 }
+
+/** Type representing the category of a study plan course. */
+export type StudyPlanCourseCategory = StudyPlanCourseTable['category']
 
 /** Type representing a selected study plan course entry. */
 export type StudyPlanCourse = Selectable<StudyPlanCourseTable>

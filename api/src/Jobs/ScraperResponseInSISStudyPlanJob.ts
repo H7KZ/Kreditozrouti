@@ -1,5 +1,5 @@
 import { mysql } from '@api/clients'
-import { CourseTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import { CourseTable, NewStudyPlanCourse, StudyPlanCourseCategory, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import { ScraperInSISStudyPlanResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
 import { sql } from 'kysely'
 
@@ -48,7 +48,6 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
         .execute()
 
     // Prepare Course List
-
     const coursesToSync: { id: number | null; ident: string; category: string }[] = []
 
     const categories = [
@@ -76,7 +75,6 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
     }
 
     // Resolve Course IDs (Find IDs for idents)
-
     const foundCoursesIds = new Set<number>()
 
     if (allIdents.size > 0) {
@@ -87,7 +85,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
         }
     }
 
-    // 1. cleanup - delete courses that are in the DB but NO LONGER in the plan
+    // 1. Cleanup - delete courses that are in the DB but NO LONGER in the plan
     let deleteQuery = mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', planId)
 
     if (allIdents.size > 0) {
@@ -96,7 +94,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 
     await deleteQuery.execute()
 
-    // 2. insert new courses OR update existing ones (fixing course_id if it's found now)
+    // 2. Insert new courses OR update existing ones (fixing course_id if it's found now)
     if (coursesToSync.length > 0) {
         const rowsToInsert = coursesToSync.map(item => ({
             study_plan_id: planId,
@@ -109,10 +107,8 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
             .insertInto(StudyPlanCourseTable._table)
             .values(rowsToInsert as unknown as NewStudyPlanCourse)
             .onDuplicateKeyUpdate({
-                // We use SQL<> to forcibly cast the types to match the Table Definition
                 course_id: sql<number | null>`VALUES(course_id)`,
-                // We cast category to "any" or the specific union string to satisfy the strict union type
-                category: sql<any>`VALUES(category)`
+                category: sql<StudyPlanCourseCategory>`VALUES(category)`
             })
             .execute()
     }
