@@ -6,6 +6,8 @@ export default interface ScraperInSISCourse {
     id: number
     /** The source URL from which the course data was scraped. */
     url: string
+    /** The numeric ID extracted from the course URL. */
+    url_id: number | null
     /** The official course code (e.g., '4FIS101'). */
     ident: string | null
     /** The primary title of the course (usually in the language of instruction). */
@@ -14,6 +16,8 @@ export default interface ScraperInSISCourse {
     czech_title: string | null
     /** The number of ECTS credits awarded for completion. */
     ects: number | null
+    /** Faculty name. */
+    faculty: string | null
     /** The format of instruction (e.g., Lecture, Seminar). */
     mode_of_delivery: string | null
     /** The requirements for course completion (e.g., Exam, Credit). */

@@ -11,6 +11,8 @@ const CoursesFilterValidation = z.object({
     level: stringOrArray,
     faculty: stringOrArray,
 
+    study_plan_id: z.coerce.number().optional(),
+
     // Time filters (in minutes from midnight)
     time_from: z.coerce.number().optional(),
     time_to: z.coerce.number().optional(),

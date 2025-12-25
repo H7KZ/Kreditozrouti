@@ -1,83 +1,90 @@
 import { scraper } from '@scraper/bullmq'
+import ScraperInSISStudyPlans from '@scraper/Interfaces/ScraperInSISStudyPlans'
 import { ScraperInSISStudyPlansRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISService from '@scraper/Services/Extractors/ExtractInSISService'
+import UtilService from '@scraper/Services/UtilService'
 import Axios from 'axios'
 
 /**
- * A native helper to process an array of items with limited concurrency.
- * It creates a shared iterator and spawns 'concurrency' number of workers to consume it.
- */
-async function runWithConcurrency<T, R>(items: T[], concurrency: number, task: (item: T) => Promise<R>): Promise<R[]> {
-    const results: R[] = new Array(items.length) as R[]
-    const iterator = items.entries()
-
-    const workers = Array(Math.min(items.length, concurrency))
-        .fill(null)
-        .map(async () => {
-            for (const [index, item] of iterator) {
-                try {
-                    results[index] = await task(item)
-                } catch (error) {
-                    console.error(`Error processing item ${index}:`, error)
-                    throw error
-                }
-            }
-        })
-
-    await Promise.all(workers)
-    return results
-}
-
-/**
  * Initiates the scraping process for the InSIS study plans.
- * Uses a native worker pool to limit concurrent requests to 5.
+ * Uses a dynamic "drill-down" approach to handle variable depths of study plan hierarchies
+ * (e.g., Faculty -> Semester -> Level -> Program -> [Obor?] -> [Spec?] -> Plan).
  */
-export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSISStudyPlansRequestJob): Promise<void> {
+export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSISStudyPlansRequestJob): Promise<ScraperInSISStudyPlans> {
     const CONCURRENCY_LIMIT = 10
+    const MAX_DRILL_DEPTH = 8
 
     const baseHeaders = {
-        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
         'Accept-Language': 'cs-CZ,cs;q=0.9,en;q=0.8',
         'Cache-Control': 'no-cache',
         'Content-Type': 'application/x-www-form-urlencoded',
         Origin: 'https://insis.vse.cz',
         Referer: 'https://insis.vse.cz/katalog/index.pl?jak=rozsirene',
         'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36',
-        'sec-ch-ua': '"Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36'
     }
 
+    console.log('Starting InSIS Study Plans Scrape...')
+
+    // 1. Get Faculties
     const request = await Axios.get<string>('https://insis.vse.cz/katalog/plany.pl?lang=cz', { headers: baseHeaders })
-    const studyPlansFacultyURLs = ExtractInSISService.extractStudyPlansFacultyURLs(request.data)
+    let currentLevelURLs = ExtractInSISService.extractStudyPlansFacultyURLs(request.data)
+    console.log(`Found ${currentLevelURLs.length} Faculties.`)
 
-    const semesterResponses = await runWithConcurrency(studyPlansFacultyURLs, CONCURRENCY_LIMIT, url => Axios.get<string>(url, { headers: baseHeaders }))
-    const studyPlansSemesterURLs = semesterResponses.flatMap(res => ExtractInSISService.extractStudyPlansSemesterURLs(res.data))
+    // 2. Dynamic Drill-Down Loop
+    // Get Semesters-> Levels -> Programs -> [Obors?] -> [Specs?] -> Plans
+    // This loop handles the variable depth. Some faculties go Program -> Plan.
+    // Others (OZS, CESP) go Program -> Obor -> Plan, or even deeper.
 
-    const levelResponses = await runWithConcurrency(studyPlansSemesterURLs, CONCURRENCY_LIMIT, url => Axios.get<string>(url, { headers: baseHeaders }))
-    const studyPlansURLs = levelResponses.flatMap(res => ExtractInSISService.extractStudyPlansLevelURLs(res.data))
+    const allFinalPlanUrls = new Set<string>()
+    let depth = 0
 
-    const programmeResponses = await runWithConcurrency(studyPlansURLs, CONCURRENCY_LIMIT, url => Axios.get<string>(url, { headers: baseHeaders }))
-    const studyPlansProgrammeURLs = programmeResponses.flatMap(res => ExtractInSISService.extractStudyPlansProgrammeURLs(res.data))
+    while (currentLevelURLs.length > 0 && depth < MAX_DRILL_DEPTH) {
+        console.log(`[Depth ${depth}] Processing ${currentLevelURLs.length} navigation nodes...`)
 
-    const finalPlanResponses = await runWithConcurrency(studyPlansProgrammeURLs, CONCURRENCY_LIMIT, url => Axios.get<string>(url, { headers: baseHeaders }))
-    const studyPlansUrls = finalPlanResponses.flatMap(res => ExtractInSISService.extractStudyPlanURLs(res.data))
+        const responses = await UtilService.runWithConcurrency(currentLevelURLs, CONCURRENCY_LIMIT, url => Axios.get<string>(url, { headers: baseHeaders }))
 
-    const plans = { urls: studyPlansUrls }
+        const nextLevelURLs: string[] = []
+
+        for (const res of responses) {
+            if (!res?.data) continue
+
+            // A. Extract Leaf Nodes (Actual Study Plans)
+            const plans = ExtractInSISService.extractStudyPlanURLs(res.data)
+            plans.forEach(url => allFinalPlanUrls.add(url))
+
+            // B. Extract Branch Nodes (Drill-down links: Programs, Obors, Specs)
+            // Note: extractNavigationURLs excludes any link that is already a 'stud_plan'
+            const navigations = ExtractInSISService.extractNavigationURLs(res.data)
+            navigations.forEach(url => nextLevelURLs.push(url))
+        }
+
+        currentLevelURLs = [...new Set(nextLevelURLs)]
+        depth++
+
+        console.log(`[Depth ${depth - 1}] Found ${currentLevelURLs.length} new sub-navigation links. Total Plans so far: ${allFinalPlanUrls.size}`)
+    }
+
+    const finalPlanList = Array.from(allFinalPlanUrls)
+    console.log(`Total Study Plans Found: ${finalPlanList.length}`)
+
+    // 3. Report and Queue
+    const plans = { urls: finalPlanList }
     await scraper.queue.response.add('InSIS Study Plans Response', { type: 'InSIS:StudyPlans', plans })
 
-    if (!plans.urls || plans.urls.length === 0 || !data.auto_queue_study_plans) {
-        return
+    if (!finalPlanList || finalPlanList.length === 0 || !data.auto_queue_study_plans) {
+        return plans
     }
 
-    await runWithConcurrency(plans.urls, 20, planUrl =>
+    // Queue individually with deduplication
+    await UtilService.runWithConcurrency(finalPlanList, 20, planUrl =>
         scraper.queue.request.add(
             'InSIS Study Plan Request (Study Plans)',
             {
                 type: 'InSIS:StudyPlan',
                 url: planUrl,
-                auto_queue_courses: true
+                auto_queue_courses: data.auto_queue_courses
             },
             {
                 deduplication: {
@@ -86,4 +93,6 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
             }
         )
     )
+
+    return plans
 }

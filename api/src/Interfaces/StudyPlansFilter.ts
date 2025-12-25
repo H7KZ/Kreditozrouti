@@ -1,8 +1,8 @@
 export default interface StudyPlansFilter {
-    ident?: string | string[]
-    faculty?: string | string[]
     semester?: string | string[]
+    ident?: string | string[]
     level?: string | string[]
+    faculty?: string | string[]
     mode_of_study?: string | string[]
     study_length?: string | string[]
 }

@@ -32,6 +32,7 @@ export interface Scraper4FISEventsResponseJob extends ScraperResponseJobBase {
  */
 export interface Scraper4FISEventResponseJob extends ScraperResponseJobBase {
     type: '4FIS:Event'
+
     /** The extracted event details, or null if parsing failed. */
     event: Scraper4FISEvent | null
 }
@@ -41,8 +42,24 @@ export interface Scraper4FISEventResponseJob extends ScraperResponseJobBase {
  */
 export interface ScraperInSISCatalogResponseJob extends ScraperResponseJobBase {
     type: 'InSIS:Catalog'
+
     /** The collection of discovered course URLs. */
     catalog: ScraperInSISCatalog
+
+    /** Metadata about the catalog crawl context. */
+    meta: {
+        /** The faculty associated with the catalog crawl. */
+        faculty: {
+            id: number | null
+            name: string | null
+        }
+
+        /** The academic period associated with the catalog crawl. */
+        period: {
+            id: number | null
+            name: string | null
+        }
+    }
 }
 
 /**
@@ -50,6 +67,7 @@ export interface ScraperInSISCatalogResponseJob extends ScraperResponseJobBase {
  */
 export interface ScraperInSISCourseResponseJob extends ScraperResponseJobBase {
     type: 'InSIS:Course'
+
     /** The extracted course details, or null if parsing failed. */
     course: ScraperInSISCourse | null
 }
@@ -59,6 +77,7 @@ export interface ScraperInSISCourseResponseJob extends ScraperResponseJobBase {
  */
 export interface ScraperInSISStudyPlansResponseJob extends ScraperResponseJobBase {
     type: 'InSIS:StudyPlans'
+
     /** The collection of discovered study plans URLs. */
     plans: ScraperInSISStudyPlans
 }
@@ -68,6 +87,7 @@ export interface ScraperInSISStudyPlansResponseJob extends ScraperResponseJobBas
  */
 export interface ScraperInSISStudyPlanResponseJob extends ScraperResponseJobBase {
     type: 'InSIS:StudyPlan'
+
     /** The extracted study plan details, or null if parsing failed. */
     plan: ScraperInSISStudyPlan | null
 }

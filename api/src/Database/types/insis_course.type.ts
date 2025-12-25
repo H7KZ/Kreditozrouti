@@ -28,6 +28,8 @@ export class CourseTable {
     czech_title!: string | null
     /** ECTS credit value. */
     ects!: number | null
+    /** Faculty name. */
+    faculty!: string | null
     /** Format of course delivery (e.g., in-person, remote). */
     mode_of_delivery!: string | null
     /** Requirements for completion. */
@@ -66,6 +68,27 @@ export class CourseTable {
 export type Course = Selectable<CourseTable>
 /** Type representing data required to insert a new course. */
 export type NewCourse = Insertable<Omit<CourseTable, 'id' | 'created_at' | 'updated_at'>>
+
+// -------------------------------------------------------------------------
+
+/**
+ * Defines the schema structure for the Course ID Redirect table.
+ */
+export class CourseIdRedirectTable {
+    /** Database table name for course ID redirects. */
+    static readonly _table = 'insis_courses_id_redirects' as const
+
+    /** Foreign key referencing the Course table. */
+    course_id!: number
+
+    /** Old or alternative course identifier. */
+    old_id!: number
+}
+
+/** Type representing a selected course ID redirect record. */
+export type CourseIdRedirect = Selectable<CourseIdRedirectTable>
+/** Type representing data required to insert a new course ID redirect. */
+export type NewCourseIdRedirect = Insertable<Omit<CourseIdRedirectTable, 'id'>>
 
 // -------------------------------------------------------------------------
 

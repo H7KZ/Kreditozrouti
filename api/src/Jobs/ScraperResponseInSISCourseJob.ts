@@ -1,5 +1,5 @@
 import { mysql } from '@api/clients'
-import { CourseAssessmentMethodTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from '@api/Database/types'
+import { CourseAssessmentMethodTable, CourseIdRedirectTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from '@api/Database/types'
 import { ScraperInSISCourseAssessmentMethod, ScraperInSISCourseTimetableSlot, ScraperInSISCourseTimetableUnit } from '@scraper/Interfaces/ScraperInSISCourse'
 import { ScraperInSISCourseResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
 
@@ -26,6 +26,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
         title: course.title,
         czech_title: course.czech_title,
         ects: course.ects,
+        faculty: course.faculty,
         mode_of_delivery: course.mode_of_delivery,
         mode_of_completion: course.mode_of_completion,
         languages: course.languages ? course.languages.join('|') : null,
@@ -43,6 +44,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
         literature: course.literature
     }
 
+    // 1. Upsert the Main Course Record
     await mysql
         .insertInto(CourseTable._table)
         .values(coursePayload)
@@ -51,6 +53,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
             title: coursePayload.title,
             czech_title: coursePayload.czech_title,
             ects: coursePayload.ects,
+            faculty: coursePayload.faculty,
             mode_of_delivery: coursePayload.mode_of_delivery,
             mode_of_completion: coursePayload.mode_of_completion,
             languages: coursePayload.languages,
@@ -69,6 +72,22 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
         })
         .execute()
 
+    // 2. Handle ID Redirects
+    // If the ID in the URL is valid, different from the canonical ID, and we are sure it's not a parser error
+    if (course.url_id && course.url_id !== courseId) {
+        console.log(`Detected redirect: URL ID ${course.url_id} -> Course ID ${courseId}`)
+        await mysql
+            .insertInto(CourseIdRedirectTable._table)
+            .values({
+                course_id: courseId,
+                old_id: course.url_id
+            })
+            // Use ignore to skip if this specific pair already exists (avoid duplicate key errors)
+            .ignore()
+            .execute()
+    }
+
+    // 3. Sync Child Tables
     await syncAssessmentMethods(courseId, course.assessment_methods ?? [])
     await syncTimetable(courseId, course.timetable ?? [])
 
@@ -78,9 +97,6 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 /**
  * Reconciles assessment methods for a course.
  * Performs differential updates (insert, update weight, delete) based on the method name.
- *
- * @param courseId - The ID of the course being updated.
- * @param incomingMethods - The list of assessment methods returned by the scraper.
  */
 async function syncAssessmentMethods(courseId: number, incomingMethods: ScraperInSISCourseAssessmentMethod[]): Promise<void> {
     const existingMethods = await mysql.selectFrom(CourseAssessmentMethodTable._table).selectAll().where('course_id', '=', courseId).execute()
@@ -114,9 +130,6 @@ async function syncAssessmentMethods(courseId: number, incomingMethods: ScraperI
 /**
  * Synchronizes course timetable units.
  * Identifies units via property hashing to determine insertion or deletion requirements.
- *
- * @param courseId - The ID of the course.
- * @param incomingUnits - The list of timetable units returned by the scraper.
  */
 async function syncTimetable(courseId: number, incomingUnits: ScraperInSISCourseTimetableUnit[]): Promise<void> {
     const existingUnits = await mysql
@@ -163,10 +176,6 @@ async function syncTimetable(courseId: number, incomingUnits: ScraperInSISCourse
 
 /**
  * Replaces all scheduling slots for a specific timetable unit.
- * Performs a full delete-insert strategy for associated slots.
- *
- * @param unitId - The ID of the parent timetable unit.
- * @param incomingSlots - The list of time slots to insert.
  */
 async function syncSlotsForUnit(unitId: number, incomingSlots: ScraperInSISCourseTimetableSlot[]): Promise<void> {
     await mysql.deleteFrom(CourseTimetableSlotTable._table).where('timetable_unit_id', '=', unitId).execute()
@@ -189,12 +198,6 @@ async function syncSlotsForUnit(unitId: number, incomingSlots: ScraperInSISCours
     }
 }
 
-/**
- * Converts an "HH:MM" time string into total minutes from midnight.
- *
- * @param time - The time string to convert.
- * @returns The total minutes or null if the format is invalid.
- */
 function timeToMinutes(time: string | null): number | null {
     if (!time?.includes(':')) {
         return null

@@ -77,7 +77,7 @@ interface Config {
         /** The connection URI for the Redis instance. */
         uri: string
         /** The password for Redis authentication. */
-        password: string
+        password: string | undefined
     }
 
     /** MySQL database connection settings. */
@@ -127,7 +127,7 @@ const config: Config = {
 
     redis: {
         uri: process.env.REDIS_URI ?? '',
-        password: process.env.REDIS_PASSWORD ?? ''
+        password: process.env.REDIS_PASSWORD
     },
 
     mysql: {

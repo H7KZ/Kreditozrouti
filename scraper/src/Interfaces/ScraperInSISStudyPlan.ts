@@ -9,32 +9,33 @@ export default interface ScraperInSISStudyPlan {
     mode_of_study: string | null
     study_length: string | null
 
-    // Rozšířené kategorie kurzů
-    // Zahrnuje: oP, hP, sP, fP, eP (Povinné oborové, hlavní, vedlejší, fakultní, specializační)
-    compulsory_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
-
-    // Zahrnuje: oV, hV, sV, fV, eV (Volitelné v rámci specializace/oboru)
-    elective_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
-
-    // Zahrnuje: cTVS1, cTVS2 (Tělesná výchova)
-    physical_education_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
-
-    // Zahrnuje: cVM, cVD, cVP (Celoškolsky volně volitelné - "free credits")
-    general_elective_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
-
-    // Zahrnuje: oSZ, hSZ, sSZ, fSZ (Státní zkoušky a obhajoby)
-    state_exam_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
-
-    // Zahrnuje: oJ, fJ, sK (Jazykové moduly)
-    language_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
-
-    // Fallback pro nezařazené
-    optional_courses_idents: ScraperInSISStudyPlanCourseCategory[] | null
-
-    course_urls: string[] | null
+    courses: ScraperInSISStudyPlanCourseCategory[] | null
 }
 
 export interface ScraperInSISStudyPlanCourseCategory {
     id: number | null
+    url: string | null
     ident: string
+
+    // compulsory
+    // Zahrnuje: oP, hP, sP, fP, eP (Povinné oborové, hlavní, vedlejší, fakultní, specializační)
+
+    // elective
+    // Zahrnuje: oV, hV, sV, fV, eV (Volitelné v rámci specializace/oboru)
+
+    // physical_education
+    // Zahrnuje: cTVS1, cTVS2 (Tělesná výchova)
+
+    // general_elective
+    // Zahrnuje: cVM, cVD, cVP (Celoškolsky volně volitelné - "free credits")
+
+    // state_exam
+    // Zahrnuje: oSZ, hSZ, sSZ, fSZ (Státní zkoušky a obhajoby)
+
+    // language
+    // Zahrnuje: oJ, fJ, sK (Jazykové moduly)
+
+    // optional
+    // Fallback pro nezařazené
+    category: 'compulsory' | 'elective' | 'physical_education' | 'general_elective' | 'state_exam' | 'language' | 'optional'
 }

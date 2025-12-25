@@ -20,7 +20,7 @@ interface RequestEvents {
  *
  * @returns A promise that resolves when all pages are processed and jobs are queued.
  */
-export default async function ScraperRequest4FISEventsJob(data: Scraper4FISEventsRequestJob): Promise<void> {
+export default async function ScraperRequest4FISEventsJob(data: Scraper4FISEventsRequestJob): Promise<Scraper4FISEvents> {
     const events: Scraper4FISEvents = { ids: [] }
 
     let max_num_pages = 1
@@ -47,8 +47,10 @@ export default async function ScraperRequest4FISEventsJob(data: Scraper4FISEvent
     await scraper.queue.response.add('4FIS Events Response', { type: '4FIS:Events', events })
 
     if (!events.ids || events.ids.length === 0 || !data.auto_queue_events) {
-        return
+        return events
     }
 
     events.ids.map(eventId => scraper.queue.request.add('4FIS Event Request (Events)', { type: '4FIS:Event', eventId }))
+
+    return events
 }

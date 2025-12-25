@@ -7,7 +7,7 @@ import CoursesFilterValidation from '@api/Validations/CoursesFilterValidation'
 import { Request, Response } from 'express'
 
 export default async function CoursesController(req: Request, res: Response<CoursesResponse>) {
-    const result = await CoursesFilterValidation.safeParseAsync(req.query)
+    const result = await CoursesFilterValidation.safeParseAsync(req.body)
 
     if (!result.success) {
         throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
@@ -22,22 +22,11 @@ export default async function CoursesController(req: Request, res: Response<Cour
         return res.status(200).send(JSON.parse(cachedData))
     }
 
-    const [courses, courseFacets, plans, planFacets] = await Promise.all([
-        InSISService.getCourses(data, data.limit, data.offset),
-        InSISService.getFacets(data),
-        InSISService.getStudyPlans(data, data.limit, data.offset),
-        InSISService.getStudyPlanFacets(data)
-    ])
+    const [courses, facets] = await Promise.all([InSISService.getCourses(data, data.limit, data.offset), InSISService.getFacets(data)])
 
     const response = {
-        data: {
-            courses: courses,
-            study_plans: plans
-        },
-        facets: {
-            courses: courseFacets,
-            study_plans: planFacets
-        },
+        data: courses,
+        facets: facets,
         meta: {
             limit: data.limit || 20,
             offset: data.offset || 0,

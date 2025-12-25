@@ -1,7 +1,6 @@
 import { mysql } from '@api/clients'
-import { CourseTable, NewStudyPlanCourse, StudyPlanCourseCategory, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import { CourseIdRedirectTable, CourseTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import { ScraperInSISStudyPlanResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
-import { sql } from 'kysely'
 
 /**
  * Processes the scraper response for a specific InSIS Study Plan.
@@ -31,7 +30,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
         study_length: plan.study_length
     }
 
-    // Upsert the Study Plan details
+    // 1. Upsert the Study Plan details
     await mysql
         .insertInto(StudyPlanTable._table)
         .values(planPayload)
@@ -47,71 +46,74 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
         })
         .execute()
 
-    // Prepare Course List
-    const coursesToSync: { id: number | null; ident: string; category: string }[] = []
+    // 2. Clear ALL existing courses for this plan
+    // We wipe the slate clean to avoid duplicates since there is no unique constraint on the link table
+    await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', planId).execute()
 
-    const categories = [
-        { list: plan.compulsory_courses_idents, name: 'compulsory' },
-        { list: plan.elective_courses_idents, name: 'elective' },
-        { list: plan.physical_education_courses_idents, name: 'physical_education' },
-        { list: plan.general_elective_courses_idents, name: 'general_elective' },
-        { list: plan.state_exam_courses_idents, name: 'state_exam' },
-        { list: plan.language_courses_idents, name: 'language' },
-        { list: plan.optional_courses_idents, name: 'optional' }
-    ]
+    if (!plan.courses || plan.courses.length === 0) {
+        console.log(`Synced study plan Id: ${planId} (No courses found)`)
+        return
+    }
 
-    const allIdents = new Set<string>()
-    const allIds = new Set<number>()
+    // 3. Prepare Data for Lookup
+    const incomingCourseIds = new Set<number>()
 
-    for (const cat of categories) {
-        if (!cat.list || cat.list.length === 0) continue
-
-        for (const list of cat.list) {
-            coursesToSync.push({ id: list.id, ident: list.ident, category: cat.name })
-            allIdents.add(list.ident)
-
-            if (list.id) allIds.add(list.id)
+    for (const course of plan.courses) {
+        if (course.id != null) {
+            incomingCourseIds.add(course.id)
         }
     }
 
-    // Resolve Course IDs (Find IDs for idents)
-    const foundCoursesIds = new Set<number>()
+    // 4. Resolve Course IDs
+    // We need to map: Scraped ID -> Real DB ID (Direct or Redirect)
+    const validIdMap = new Map<number, number>() // Maps Scraped ID -> Real DB ID
 
-    if (allIdents.size > 0) {
-        const foundCourses = await mysql.selectFrom(CourseTable._table).select(['id', 'ident']).where('id', 'in', Array.from(allIds)).execute()
+    if (incomingCourseIds.size > 0) {
+        // A. Direct Match Query
+        const directMatches = await mysql.selectFrom(CourseTable._table).select('id').where('id', 'in', Array.from(incomingCourseIds)).execute()
 
-        for (const c of foundCourses) {
-            foundCoursesIds.add(c.id)
+        // Process Direct Matches
+        for (const c of directMatches) {
+            validIdMap.set(Number(c.id), Number(c.id))
+        }
+
+        // B. Redirect Match Query (old_id -> course_id)
+        const redirectMatches = await mysql
+            .selectFrom(CourseIdRedirectTable._table)
+            .select(['course_id', 'old_id'])
+            .where('old_id', 'in', Array.from(incomingCourseIds))
+            .execute()
+
+        for (const r of redirectMatches) {
+            validIdMap.set(Number(r.old_id), Number(r.course_id))
         }
     }
 
-    // 1. Cleanup - delete courses that are in the DB but NO LONGER in the plan
-    let deleteQuery = mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', planId)
-
-    if (allIdents.size > 0) {
-        deleteQuery = deleteQuery.where('course_ident', 'not in', Array.from(allIdents))
+    // 5. Insert New Courses
+    const uniqueCourses = new Map<string, (typeof plan.courses)[0]>()
+    for (const c of plan.courses) {
+        uniqueCourses.set(c.ident, c)
     }
 
-    await deleteQuery.execute()
+    const rowsToInsert: NewStudyPlanCourse[] = Array.from(uniqueCourses.values()).map(item => {
+        let verifiedId: number | null = null
 
-    // 2. Insert new courses OR update existing ones (fixing course_id if it's found now)
-    if (coursesToSync.length > 0) {
-        const rowsToInsert = coursesToSync.map(item => ({
+        // Priority 1: Check ID Map (Handles Direct Match AND Redirects)
+        if (item.id != null && validIdMap.has(Number(item.id))) {
+            verifiedId = validIdMap.get(Number(item.id))!
+        }
+
+        return {
             study_plan_id: planId,
             course_ident: item.ident,
-            course_id: foundCoursesIds.has(item.id!) ? item.id : null,
+            course_id: verifiedId,
             category: item.category
-        }))
+        }
+    })
 
-        await mysql
-            .insertInto(StudyPlanCourseTable._table)
-            .values(rowsToInsert as unknown as NewStudyPlanCourse)
-            .onDuplicateKeyUpdate({
-                course_id: sql<number | null>`VALUES(course_id)`,
-                category: sql<StudyPlanCourseCategory>`VALUES(category)`
-            })
-            .execute()
+    if (rowsToInsert.length > 0) {
+        await mysql.insertInto(StudyPlanCourseTable._table).values(rowsToInsert).execute()
     }
 
-    console.log(`Synced study plan Id: ${planId}`)
+    console.log(`Synced study plan Id: ${planId} with ${rowsToInsert.length} courses`)
 }

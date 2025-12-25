@@ -6,7 +6,8 @@ export default async function RunInSISStudyPlansScraperController(req: Request, 
         'InSIS Study Plans Request (Manual)',
         {
             type: 'InSIS:StudyPlans',
-            auto_queue_study_plans: true
+            auto_queue_study_plans: true,
+            auto_queue_courses: true
         },
         {
             deduplication: {

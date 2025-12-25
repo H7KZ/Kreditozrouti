@@ -108,7 +108,8 @@ const scraper = {
                     name: 'InSIS Study Plans Request (at 2 am)',
                     data: {
                         type: 'InSIS:StudyPlans',
-                        auto_queue_study_plans: true
+                        auto_queue_study_plans: true,
+                        auto_queue_courses: true
                     },
                     opts: {
                         removeOnComplete: true,
@@ -117,6 +118,27 @@ const scraper = {
                 }
             )
             console.log(`${ScraperInSISStudyPlansRequestScheduler} has been set to run at 2:00 am daily.`)
+
+            /**
+             * Schedules the InSIS Study Plan scraper to run daily at 2:45 am.
+             */
+            await scraper.queue.request.upsertJobScheduler(
+                ScraperInSISStudyPlansRequestScheduler,
+                { pattern: '45 2 * * *' }, // At 2:45 am every day
+                {
+                    name: 'InSIS Study Plans Request (at 2:45 am)',
+                    data: {
+                        type: 'InSIS:StudyPlans',
+                        auto_queue_study_plans: true,
+                        auto_queue_courses: false
+                    },
+                    opts: {
+                        removeOnComplete: true,
+                        removeOnFail: true
+                    }
+                }
+            )
+            console.log(`${ScraperInSISStudyPlansRequestScheduler} has been set to run at 2:45 am daily.`)
         }
     }
 }

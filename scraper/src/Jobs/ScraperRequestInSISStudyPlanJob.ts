@@ -1,6 +1,7 @@
 import { scraper } from '@scraper/bullmq'
 import { ScraperInSISStudyPlanRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISService from '@scraper/Services/Extractors/ExtractInSISService'
+import UtilService from '@scraper/Services/UtilService'
 import Axios from 'axios'
 
 /**
@@ -28,21 +29,35 @@ export default async function ScraperRequestInSISStudyPlanJob(data: ScraperInSIS
 
     const plan = ExtractInSISService.extractStudyPlan(request.data, data.url)
 
-    if (plan.course_urls && plan.course_urls.length > 0 && data.auto_queue_courses) {
-        plan.course_urls.map(courseUrl =>
-            scraper.queue.request.add(
+    if (plan.courses && plan.courses.length > 0 && data.auto_queue_courses) {
+        await UtilService.runWithConcurrency(plan.courses, 20, async course => {
+            if (!course.url) {
+                return
+            }
+
+            await scraper.queue.request.add(
                 'InSIS Course Request (Study Plan)',
                 {
                     type: 'InSIS:Course',
-                    url: courseUrl
+                    url: course.url,
+                    meta: {
+                        faculty: {
+                            id: null,
+                            name: plan.faculty ? plan.faculty.toLowerCase() : null
+                        },
+                        period: {
+                            id: null,
+                            name: plan.semester ? plan.semester.toUpperCase() : null
+                        }
+                    }
                 },
                 {
                     deduplication: {
-                        id: `InSIS:Course:${ExtractInSISService.extractCourseIdFromURL(courseUrl)}`
+                        id: `InSIS:Course:${ExtractInSISService.extractCourseIdFromURL(course.url)}`
                     }
                 }
             )
-        )
+        })
     }
 
     await scraper.queue.response.add('InSIS Study Plan Response', { type: 'InSIS:StudyPlan', plan })

@@ -49,7 +49,7 @@ export default class InSISService {
      * Retrieves available facets for Study Plans (Faculty, Level, Mode, etc.)
      */
     static async getStudyPlanFacets(filters: StudyPlansFilter) {
-        const [faculties, levels, modes, semesters, lengths] = await Promise.all([
+        const [faculties, levels, modes_of_studies, semesters, study_lengths] = await Promise.all([
             this.getPlanFacet(filters, 'faculty'),
             this.getPlanFacet(filters, 'level'),
             this.getPlanFacet(filters, 'mode_of_study'),
@@ -60,9 +60,9 @@ export default class InSISService {
         return {
             faculties,
             levels,
-            modes,
+            modes_of_studies,
             semesters,
-            lengths
+            study_lengths
         }
     }
 
