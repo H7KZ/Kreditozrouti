@@ -1,6 +1,6 @@
 {
   "common": {
-    "app_logo_alt": "Diář Fisáka",
+    "app_logo_alt": "Diář FISáka",
     "sending_button": "Sending..."
   },
   "sign_in": {
@@ -32,6 +32,14 @@
     "location": "Room 123",
     "author": "John Novak",
     "description": "This is a detailed description of the event. Here you can see all the information about the event."
+  },
+  "user_dropdown": {
+    "profile": "Personal profile",
+    "my_events": "My events",
+    "leaderboard": "Leaderboard",
+    "groups": "Groups",
+    "invite_fisaks": "Invite Fisáks",
+    "support": "Support",
+    "logout": "Logout"
   }
-
 }

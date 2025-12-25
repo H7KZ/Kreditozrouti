@@ -1,18 +1,21 @@
-import { CourseAssessmentMethodTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from './course.type'
-import { CategoryTable, EventCategoryTable, EventTable } from './event.type'
+import { CategoryTable, EventCategoryTable, EventTable } from './4fis_event.type'
+import { CourseAssessmentMethodTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from './insis_course.type'
 import { UserTable } from './user.type'
 
 export * from './user.type'
-export * from './event.type'
-export * from './course.type'
+export * from './4fis_event.type'
+export * from './insis_course.type'
 
-export interface Database {
-    users: UserTable
-    events: EventTable
-    events_categories: EventCategoryTable
-    categories: CategoryTable
-    courses: CourseTable
-    courses_assessment_methods: CourseAssessmentMethodTable
-    courses_timetable_units: CourseTimetableUnitTable
-    courses_timetable_slots: CourseTimetableSlotTable
+type AllTableClasses =
+    | typeof UserTable
+    | typeof EventTable
+    | typeof EventCategoryTable
+    | typeof CategoryTable
+    | typeof CourseTable
+    | typeof CourseAssessmentMethodTable
+    | typeof CourseTimetableUnitTable
+    | typeof CourseTimetableSlotTable
+
+export type Database = {
+    [T in AllTableClasses as T['_table']]: InstanceType<T>
 }

@@ -1,6 +1,10 @@
 import path from 'path'
 import dotenv from 'dotenv'
 
+/**
+ * Attempts to load environment variables from resolved paths.
+ * Checks distribution, root, and package-level locations.
+ */
 try {
     dotenv.config({
         path: [
@@ -13,39 +17,83 @@ try {
     console.warn('No .env file found')
 }
 
+/**
+ * Defines the structure for the application configuration.
+ */
 interface Config {
+    /** The current runtime environment (e.g., 'development', 'production'). */
     env: string
 
+    /** The port number the API server listens on. */
     port: number
+    /** The full public URI of the API. */
     uri: string
+    /** The top-level domain for cookie and session scoping. */
     domain: string
+    /** A list of origins permitted for Cross-Origin Resource Sharing (CORS). */
     allowedOrigins: string[]
+    /** The secret key used to sign session IDs. */
     sessionSecret: string
+
+    /** The secret key used for signing JSON Web Tokens (JWT). */
+    jwtSecret: Uint8Array<ArrayBuffer>
+    /** JWT token configuration settings. */
+    jwtExpiration: string
+    /** JWT token expiration time in seconds. */
+    jwtExpirationSeconds: number
+    /** The issuer identifier for JWT tokens. */
+    jwtIssuer: string
+    /** The audience identifier for JWT tokens. */
+    jwtAudience: string
+
+    /** The local directory path for storing uploaded files. */
     fileDestination: string
 
+    /** Google service credentials. */
     google: {
+        /** The Google account username or email. */
         user: string
+        /** The Google application-specific password. */
         appPassword: string
     }
 
+    /** Frontend application settings. */
     frontend: {
+        /** The base URI of the frontend application. */
         uri: string
 
+        /**
+         * Constructs a full URL for a given frontend path.
+         * @param path - The relative path to append to the frontend URI.
+         * @returns The absolute URL string.
+         */
         createURL: (path: string) => string
     }
 
+    /** Redis database connection settings. */
     redis: {
+        /** The connection URI for the Redis instance. */
         uri: string
+        /** The password for Redis authentication. */
         password: string
     }
 
+    /** MySQL database connection settings. */
     mysql: {
+        /** The connection URI for the MySQL database. */
         uri: string
     }
 
+    /**
+     * Determines if the current environment is set to development.
+     * @returns True if env is 'development', otherwise false.
+     */
     isEnvDevelopment: () => boolean
 }
 
+/**
+ * The singleton configuration object initialized with environment variables or default fallbacks.
+ */
 const config: Config = {
     env: process.env.ENV ?? 'development',
 
@@ -54,6 +102,13 @@ const config: Config = {
     domain: process.env.API_DOMAIN ?? 'localhost',
     allowedOrigins: (process.env.API_ALLOWED_ORIGINS ?? '').split(','),
     sessionSecret: process.env.API_SESSION_SECRET ?? 'development',
+
+    jwtSecret: new TextEncoder().encode(process.env.API_JWT_SECRET ?? 'development'),
+    jwtExpiration: process.env.API_JWT_EXPIRATION ?? '7d',
+    jwtExpirationSeconds: Number(process.env.API_JWT_EXPIRATION_SECONDS ?? 604800),
+    jwtIssuer: process.env.API_JWT_ISSUER ?? 'diar:4fis:local',
+    jwtAudience: process.env.API_JWT_AUDIENCE ?? 'diar:4fis:local:users',
+
     fileDestination: process.env.API_FILE_DESTINATION ?? 'uploads/',
 
     google: {

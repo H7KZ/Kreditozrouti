@@ -1,6 +1,6 @@
 {
   "common": {
-    "app_logo_alt": "Diář Fisáka",
+    "app_logo_alt": "Diář FISáka",
     "sending_button": "Odesílání..."
   },
   "sign_in": {
@@ -32,5 +32,14 @@
     "location": "Místnost 123",
     "author": "Jan Novák",
     "description": "Toto je detailní popis události. Zde můžeš vidět všechny informace o akci."
+  },
+  "user_dropdown": {
+    "profile": "Osobní profil",
+    "my_events": "Moje akce",
+    "leaderboard": "Leaderboard",
+    "groups": "Skupiny",
+    "invite_fisaks": "Pozvat fisáky",
+    "support": "Podpora",
+    "logout": "Odhlásit se"
   }
 }
