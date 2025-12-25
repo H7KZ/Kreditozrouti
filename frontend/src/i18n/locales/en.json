@@ -17,6 +17,22 @@
     "verify_code_button": "Verify code",
     "resend_code_link": "Send the code email again"
   },
+  "event_detail": {
+    "start_time": "Start time",
+    "end_time": "End time",
+    "location": "Location",
+    "author": "Author",
+    "description": "Description",
+    "back_to_calendar": "Back to calendar",
+    "register_button": "Register",
+    "participants_button": "Participants"
+  },
+  "event_detail_text": {
+    "heading": "Test Event",
+    "location": "Room 123",
+    "author": "John Novak",
+    "description": "This is a detailed description of the event. Here you can see all the information about the event."
+  },
   "user_dropdown": {
     "profile": "Personal profile",
     "my_events": "My events",
