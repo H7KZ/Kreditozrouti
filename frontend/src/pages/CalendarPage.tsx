@@ -3,11 +3,14 @@
 import { createViewDay, createViewMonthGrid, createViewWeek } from "@schedule-x/calendar"
 import { createEventsServicePlugin } from "@schedule-x/events-service"
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react"
+import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
+import "@schedule-x/theme-default/dist/index.css"
 import "@schedule-x/theme-default/dist/index.css"
 import Navbar from "../components/Navbar"
 
-function CalendarApp() {
+export default function CalendarPage() {
+  const navigate = useNavigate()
   const eventsService = useState(() => createEventsServicePlugin())[0]
 
   const calendar = useCalendarApp({
@@ -20,7 +23,12 @@ function CalendarApp() {
         end: Temporal.Now.zonedDateTimeISO().add({ hours: 1 })
       }
     ],
-    plugins: [eventsService]
+    plugins: [eventsService],
+    callbacks: {
+      onEventClick(calendarEvent) {
+        navigate({ to: `/event/${calendarEvent.id}` })
+      }
+    }
   })
 
   return (
@@ -32,5 +40,3 @@ function CalendarApp() {
     </div>
   )
 }
-
-export default CalendarApp
