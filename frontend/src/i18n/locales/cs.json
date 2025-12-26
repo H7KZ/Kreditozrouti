@@ -17,6 +17,22 @@
     "verify_code_button": "Ověřit kód",
     "resend_code_link": "Poslat e-mail s kódem znovu"
   },
+  "event_detail": {
+    "start_time": "Začátek",
+    "end_time": "Konec",
+    "location": "Lokace",
+    "author": "Autor",
+    "description": "Popis",
+    "back_to_calendar": "Zpět na kalendář",
+    "register_button": "Registrovat",
+    "participants_button": "Účastníci"
+  },
+  "event_detail_text": {
+    "heading": "Testovací událost",
+    "location": "Místnost 123",
+    "author": "Jan Novák",
+    "description": "Toto je detailní popis události. Zde můžeš vidět všechny informace o akci."
+  },
   "user_dropdown": {
     "profile": "Osobní profil",
     "my_events": "Moje akce",
