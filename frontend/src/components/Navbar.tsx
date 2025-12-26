@@ -18,7 +18,7 @@ export default function Navbar() {
       <div className="flex items-center gap-4">
         <LanguageSwitcher />
 
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="flex h-10 w-10 items-center justify-center p-0 text-gray-600 hover:text-gray-900">
               <User className="h-8 w-8 scale-150 transform" />
