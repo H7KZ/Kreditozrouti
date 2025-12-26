@@ -12,18 +12,14 @@ const PersonalProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* --- HLAVIČKA --- */}
       <div className="sticky top-0 z-10 border-b border-gray-100 bg-white px-4 py-4">
         <div className="relative flex items-center justify-between">
-          {/* Tlačítko Zpět */}
           <button onClick={() => navigate({ to: "/calendar" })} className="rounded-full p-2 transition-colors hover:bg-gray-100">
             <ArrowLeft className="h-6 w-6 text-gray-700" />
           </button>
 
-          {/* Nadpis - absolutně vycentrovaný */}
           <h1 className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold text-gray-900">{t("profile.title")}</h1>
 
-          {/* Přepínač jazyků */}
           <div className="z-20 flex items-center">
             <LanguageSwitcher />
           </div>
@@ -31,7 +27,6 @@ const PersonalProfilePage: React.FC = () => {
       </div>
 
       <div className="mx-auto max-w-md px-6 py-8">
-        {/* --- PŘEPÍNAČ ZÁLOŽEK --- */}
         <div className="mb-8 flex rounded-xl bg-gray-100 p-1">
           <button
             onClick={() => setActiveTab("personal")}
@@ -45,7 +40,6 @@ const PersonalProfilePage: React.FC = () => {
           </button>
         </div>
 
-        {/* --- OSOBNÍ ÚDAJE --- */}
         {activeTab === "personal" && (
           <div className="rounded-2xl border border-gray-100 p-6 shadow-sm">
             <div className="mb-6 flex items-center gap-3">
@@ -72,7 +66,6 @@ const PersonalProfilePage: React.FC = () => {
           </div>
         )}
 
-        {/* --- REGISTRAČNÍ ÚDAJE --- */}
         {activeTab === "registration" && (
           <div className="rounded-2xl border border-gray-100 p-6 shadow-sm">
             <div className="mb-6 flex items-center gap-3">
@@ -81,25 +74,21 @@ const PersonalProfilePage: React.FC = () => {
             </div>
 
             <div className="space-y-5">
-              {/* Email - ReadOnly */}
               <div className="space-y-1.5">
                 <label className="block text-sm text-gray-600">{t("profile.fields.email")}</label>
                 <input type="email" placeholder="SleeplsOptional@vse.cz" className="w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-500 outline-none" />
               </div>
 
-              {/* Název týmu */}
               <div className="space-y-1.5">
                 <label className="block text-sm text-gray-600">{t("profile.fields.team_name")}</label>
                 <input type="text" placeholder={t("profile.placeholders.team_name")} className="w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none transition-all focus:ring-2 focus:ring-blue-100" />
               </div>
 
-              {/* Počet členů */}
               <div className="space-y-1.5">
                 <label className="block text-sm text-gray-600">{t("profile.fields.member_count")}</label>
                 <input type="number" defaultValue="8" className="w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none transition-all focus:ring-2 focus:ring-blue-100" />
               </div>
 
-              {/* Souhlas - ReadOnly */}
               <div className="space-y-1.5">
                 <label className="block text-sm text-gray-600">{t("profile.fields.data_consent")}</label>
                 <div className="relative">
