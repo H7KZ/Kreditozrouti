@@ -6,7 +6,6 @@ import "$frontend/i18n/config"
 import { createRouter, RouterProvider } from "@tanstack/react-router"
 import { Route as RootRoute } from "@/routes/__root"
 import { Route as CalendarRoute } from "@/routes/calendar"
-//conflict fix attempt
 import { Route as LoginRoute } from "@/routes/login"
 import { Route as LoginAliasRoute } from "@/routes/login.alias"
 import { Route as ProfileRoute } from "@/routes/profile"
