@@ -25,5 +25,30 @@
     "invite_fisaks": "Invite Fisáks",
     "support": "Support",
     "logout": "Logout"
+  },
+  "profile": {
+    "title": "Personal Profile",
+    "tabs": {
+      "personal_info": "Personal Info",
+      "event_registration": "Event Registration"
+    },
+    "personal_section": {
+      "title": "Personal Info"
+    },
+    "registration_section": {
+      "title": "Registration Info"
+    },
+    "fields": {
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "birth_date": "Date of Birth",
+      "email": "Email",
+      "team_name": "Team Name",
+      "member_count": "Member Count",
+      "data_consent": "Data Processing Consent"
+    },
+    "placeholders": {
+      "team_name": "Team Name"
+    }
   }
 }

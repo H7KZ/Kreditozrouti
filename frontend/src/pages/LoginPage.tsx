@@ -139,7 +139,7 @@ export default function LoginPage() {
 
           <div className="text-left">
             <button type="button" className="text-base text-gray-900 underline hover:text-gray-700">
-              {t("sign_in_confirm.resend_code_link")}
+              {t("  _confirm.resend_code_link")}
             </button>
           </div>
         </form>
