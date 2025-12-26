@@ -1,13 +1,11 @@
-'use client'
-import { useState } from 'react'
-import { useCalendarApp, ScheduleXCalendar } from '@schedule-x/react'
-import {
-  createViewDay,
-  createViewMonthGrid,
-  createViewWeek,
-} from '@schedule-x/calendar'
-import { createEventsServicePlugin } from '@schedule-x/events-service'
-import '@schedule-x/theme-default/dist/index.css'
+"use client"
+
+import { createViewDay, createViewMonthGrid, createViewWeek } from "@schedule-x/calendar"
+import { createEventsServicePlugin } from "@schedule-x/events-service"
+import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react"
+import { useState } from "react"
+import "@schedule-x/theme-default/dist/index.css"
+import Navbar from "../components/Navbar"
 
 function CalendarApp() {
   const eventsService = useState(() => createEventsServicePlugin())[0]
@@ -16,18 +14,21 @@ function CalendarApp() {
     views: [createViewDay(), createViewWeek(), createViewMonthGrid()],
     events: [
       {
-        id: '1',
-        title: 'Test Event',
+        id: "1",
+        title: "Test Event",
         start: Temporal.Now.zonedDateTimeISO(),
-        end: Temporal.Now.zonedDateTimeISO().add({ hours: 1 }),
-      },
+        end: Temporal.Now.zonedDateTimeISO().add({ hours: 1 })
+      }
     ],
     plugins: [eventsService]
   })
 
   return (
-    <div className='w-full h-[800px]'>
-      <ScheduleXCalendar calendarApp={calendar} />
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <div className="h-[800px] w-full flex-1 pt-16">
+        <ScheduleXCalendar calendarApp={calendar} />
+      </div>
     </div>
   )
 }

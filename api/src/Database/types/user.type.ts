@@ -1,12 +1,21 @@
 import { ColumnType, Generated, Selectable } from 'kysely'
 
-export interface UserTable {
-    id: Generated<number>
+export class UserTable {
+    /** Database table name for users. */
+    static readonly _table = 'users' as const
 
-    created_at: ColumnType<Date, string | undefined, never>
-    updated_at: ColumnType<Date, string | undefined, string | undefined>
+    /** Auto-generated primary key identifier. */
+    id!: Generated<number>
 
-    email: string
+    /** Timestamp of record creation. */
+    created_at!: ColumnType<Date, string | undefined, never>
+
+    /** Timestamp of the last record update. */
+    updated_at!: ColumnType<Date, string | undefined, string | undefined>
+
+    /** Unique email address of the user. */
+    email!: string
 }
 
+/** Type representing a selected user record. */
 export type User = Selectable<UserTable>

@@ -1,6 +1,6 @@
 {
   "common": {
-    "app_logo_alt": "Diář Fisáka",
+    "app_logo_alt": "Diář FISáka",
     "sending_button": "Odesílání..."
   },
   "sign_in": {
@@ -16,5 +16,39 @@
     "confirm_code_label": "8 místný kód z e-mailu",
     "verify_code_button": "Ověřit kód",
     "resend_code_link": "Poslat e-mail s kódem znovu"
+  },
+  "user_dropdown": {
+    "profile": "Osobní profil",
+    "my_events": "Moje akce",
+    "leaderboard": "Leaderboard",
+    "groups": "Skupiny",
+    "invite_fisaks": "Pozvat fisáky",
+    "support": "Podpora",
+    "logout": "Odhlásit se"
+  },
+  "profile": {
+    "title": "Osobní profil",
+    "tabs": {
+      "personal_info": "Osobní údaje",
+      "event_registration": "Registrace akcí"
+    },
+    "personal_section": {
+      "title": "Osobní údaje"
+    },
+    "registration_section": {
+      "title": "Registrační údaje"
+    },
+    "fields": {
+      "first_name": "Křestní jméno",
+      "last_name": "Příjmení",
+      "birth_date": "Datum narození",
+      "email": "Email",
+      "team_name": "Název týmu",
+      "member_count": "Počet členů",
+      "data_consent": "Souhlas se zpracováním údajů"
+    },
+    "placeholders": {
+      "team_name": "Název týmu"
+    }
   }
 }

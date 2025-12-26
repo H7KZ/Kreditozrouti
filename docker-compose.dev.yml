@@ -15,7 +15,6 @@ services:
 
     depends_on:
       - mysql
-      - api-migrations
       - redis
 
     environment:
@@ -259,6 +258,67 @@ services:
         limits:
           cpus: 1
           memory: 2048M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+  # PHPMYADMIN INTERFACE
+
+  phpmyadmin:
+    image: phpmyadmin
+
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+      - PMA_USER=${MYSQL_USER}
+      - PMA_PASSWORD=${MYSQL_PASSWORD}
+
+    # ports:
+    #   - 80:80
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-phpmyadmin.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)
+      - traefik.http.routers.${PROJECT}-phpmyadmin.entrypoints=websecure
+      - traefik.http.routers.${PROJECT}-phpmyadmin.tls=true
+      - traefik.http.routers.${PROJECT}-phpmyadmin.tls.certresolver=letsencrypt
+      - traefik.http.services.${PROJECT}-phpmyadmin.loadbalancer.server.port=80
+
+      - traefik.http.routers.${PROJECT}-phpmyadmin.middlewares=${PROJECT}-phpmyadmin-stripprefix,${PROJECT}-phpmyadmin-redirect-www
+      - traefik.http.middlewares.${PROJECT}-phpmyadmin-stripprefix.stripprefix.prefixes=/
+      - traefik.http.middlewares.${PROJECT}-phpmyadmin-redirect-www.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares.${PROJECT}-phpmyadmin-redirect-www.redirectregex.replacement=https://$${1}
+
+    deploy:
+      mode: global
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
 
     restart: unless-stopped
 

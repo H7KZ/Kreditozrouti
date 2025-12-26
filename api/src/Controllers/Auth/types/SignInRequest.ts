@@ -1,14 +1,17 @@
 /**
- * Interface representing a sign-in request
- *
+ * Defines the request payload for initiating the sign-in process.
  * @route POST /auth/signin
  */
 export default interface SignInRequest {
+    /** The email address to receive the verification code. */
+    email: string
+
     /**
-     * The email of the user attempting to sign in
+     * The code challenge string for PKCE authentication
+     * Hashed using SHA-256 digested to HEX
      *
      * @type {string}
      * @required
      */
-    email: string
+    code_challenge: string
 }

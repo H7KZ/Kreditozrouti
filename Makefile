@@ -9,7 +9,7 @@ clear-redis:
 	docker exec diar-4fis-redis redis-cli FLUSHDB
 
 install:
-	pnpm -r install --filter=!./scripts/* && \
+	pnpm -r install && \
 	pnpm install -g dotenv-cli
 
 dev:
@@ -41,7 +41,6 @@ build:
 
 build-docker-images:
 	docker build -t diar-4fis-api -f ./api/Dockerfile . && \
-	docker build -t diar-4fis-api-migrations -f ./api/Dockerfile.migrations . && \
 	docker build -t diar-4fis-frontend -f ./frontend/Dockerfile . && \
 	docker build -t diar-4fis-scraper -f ./scraper/Dockerfile .
 
