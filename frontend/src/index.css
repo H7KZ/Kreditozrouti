@@ -8,4 +8,16 @@
     --brand: 158 100% 50%;
     --brand-hover: 158 100% 40%;
   }
+
+  body {
+    @apply bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
 }

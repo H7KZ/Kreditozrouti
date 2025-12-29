@@ -39,6 +39,8 @@
     "leaderboard": "Leaderboard",
     "groups": "Groups",
     "invite_fisaks": "Invite Fisáks",
+    "dark_mode": "Dark mode",
+    "light_mode": "Light mode",
     "support": "Support",
     "logout": "Logout"
   }

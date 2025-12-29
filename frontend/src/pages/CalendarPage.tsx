@@ -8,6 +8,7 @@ import { useState } from "react"
 import "@schedule-x/theme-default/dist/index.css"
 import "@schedule-x/theme-default/dist/index.css"
 import Navbar from "../components/Navbar"
+import { DarkModeProvider } from "../components/DarkModeSwitcher"
 
 export default function CalendarPage() {
   const navigate = useNavigate()
@@ -32,11 +33,13 @@ export default function CalendarPage() {
   })
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar />
-      <div className="h-[800px] w-full flex-1 pt-16">
-        <ScheduleXCalendar calendarApp={calendar} />
+    <DarkModeProvider>
+      <div className="flex min-h-screen flex-col dark:bg-gray-950">
+        <Navbar />
+        <div className="h-[800px] w-full flex-1 pt-16">
+          <ScheduleXCalendar calendarApp={calendar} />
+        </div>
       </div>
-    </div>
+    </DarkModeProvider>
   )
 }
