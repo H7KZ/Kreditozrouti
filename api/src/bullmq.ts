@@ -7,6 +7,7 @@ import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
 import { Queue, Worker } from 'bullmq'
 
 const Scraper4FISEventsRequestScheduler = 'Scraper4FISEventsRequestScheduler'
+const Scraper4FISFlickrEventsRequestScheduler = 'Scraper4FISFlickrEventsRequestScheduler'
 const ScraperInSISCatalogRequestScheduler = 'ScraperInSISCatalogRequestScheduler'
 const ScraperInSISStudyPlansRequestScheduler = 'ScraperInSISStudyPlansRequestScheduler'
 
@@ -70,13 +71,31 @@ const scraper = {
                     },
                     opts: {
                         removeOnComplete: true,
-                        removeOnFail: {
-                            age: 2 * 3600 // keep up to 2 hours
-                        }
+                        removeOnFail: true
                     }
                 }
             )
             console.log(`${Scraper4FISEventsRequestScheduler} has been set to run every 2 minutes.`)
+
+            /**
+             * Schedules the FIS Events scraper to run daily at 4:00 am.
+             */
+            await scraper.queue.request.upsertJobScheduler(
+                Scraper4FISFlickrEventsRequestScheduler,
+                { pattern: '0 4 * * *' }, // At 4:00 am every day
+                {
+                    name: '4FIS Flickr Events Request (4 am)',
+                    data: {
+                        type: '4FIS:Flickr:Events',
+                        auto_queue_events: true
+                    },
+                    opts: {
+                        removeOnComplete: true,
+                        removeOnFail: true
+                    }
+                }
+            )
+            console.log(`${Scraper4FISFlickrEventsRequestScheduler} has been set to run at 4:00 am daily.`)
 
             /**
              * Schedules the InSIS Catalog scraper to run daily at 1:00 am.

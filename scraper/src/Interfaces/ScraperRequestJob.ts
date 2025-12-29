@@ -34,6 +34,26 @@ export interface Scraper4FISEventRequestJob extends ScraperRequestJobBase {
 }
 
 /**
+ * Payload for requesting a crawl of the main 4FIS Flickr events list.
+ */
+export interface Scraper4FISFlickrEventsRequestJob extends ScraperRequestJobBase {
+    type: '4FIS:Flickr:Events'
+
+    /** Whether to automatically queue individual event requests after fetching the events list. */
+    auto_queue_events?: boolean
+}
+
+/**
+ * Payload for requesting a crawl of a specific 4FIS Flickr event.
+ */
+export interface Scraper4FISFlickrEventRequestJob extends ScraperRequestJobBase {
+    type: '4FIS:Flickr:Event'
+
+    /** The unique identifier of the target event. */
+    eventId: string
+}
+
+/**
  * Payload for requesting a crawl of the InSIS course catalog.
  */
 export interface ScraperInSISCatalogRequestJob extends ScraperRequestJobBase {
@@ -100,6 +120,8 @@ export interface ScraperInSISStudyPlanRequestJob extends ScraperRequestJobBase {
 type ScraperRequestJob =
     | Scraper4FISEventsRequestJob
     | Scraper4FISEventRequestJob
+    | Scraper4FISFlickrEventsRequestJob
+    | Scraper4FISFlickrEventRequestJob
     | ScraperInSISCatalogRequestJob
     | ScraperInSISCourseRequestJob
     | ScraperInSISStudyPlansRequestJob
