@@ -7,8 +7,8 @@ import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import "@schedule-x/theme-default/dist/index.css"
 import "@schedule-x/theme-default/dist/index.css"
-import Navbar from "../components/Navbar"
 import { DarkModeProvider } from "../components/DarkModeSwitcher"
+import Navbar from "../components/Navbar"
 
 export default function CalendarPage() {
   const navigate = useNavigate()

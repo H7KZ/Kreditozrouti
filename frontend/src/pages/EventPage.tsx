@@ -2,8 +2,8 @@
 
 import { useNavigate } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
-import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { DarkModeProvider } from "@/components/DarkModeSwitcher"
+import LanguageSwitcher from "@/components/LanguageSwitcher"
 
 export default function EventDetailPage() {
   const navigate = useNavigate()
@@ -61,7 +61,9 @@ export default function EventDetailPage() {
           </button>
 
           <button className="flex-1 rounded-lg bg-green-600 px-6 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800">{t("event_detail.register_button")}</button>
-          <button className="flex-1 rounded-lg bg-green-600 px-6 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800">{t("event_detail.participants_button")}</button>
+          <button className="flex-1 rounded-lg bg-green-600 px-6 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800">
+            {t("event_detail.participants_button")}
+          </button>
         </div>
       </div>
     </DarkModeProvider>

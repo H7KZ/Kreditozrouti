@@ -1,9 +1,9 @@
 import { Calendar, HelpCircle, LogOut, Medal, Moon, Sun, User, UserPlus, Users } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { useDarkMode } from "./DarkModeSwitcher"
 import LanguageSwitcher from "./LanguageSwitcher"
 import { Button } from "./ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu"
-import { useDarkMode } from "./DarkModeSwitcher"
 
 export default function Navbar() {
   const { t } = useTranslation()
