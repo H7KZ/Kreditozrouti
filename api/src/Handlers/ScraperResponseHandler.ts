@@ -1,5 +1,6 @@
 import ScraperResponse4FISEventJob from '@api/Jobs/ScraperResponse4FISEventJob'
 import ScraperResponseInSISCourseJob from '@api/Jobs/ScraperResponseInSISCourseJob'
+import ScraperResponseInSISStudyPlanJob from '@api/Jobs/ScraperResponseInSISStudyPlanJob'
 import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
 import { Job } from 'bullmq'
 
@@ -28,6 +29,11 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
                 break
             case 'InSIS:Course':
                 await ScraperResponseInSISCourseJob(job.data)
+                break
+            case 'InSIS:StudyPlans':
+                break
+            case 'InSIS:StudyPlan':
+                await ScraperResponseInSISStudyPlanJob(job.data)
                 break
             default:
                 console.warn(`Unknown job type: ${type}`)

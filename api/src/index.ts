@@ -1,11 +1,32 @@
 import '@api/types'
+import cluster from 'cluster'
 import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import { SQLService } from '@api/Services/SQLService'
 
-start()
+const args = process.argv.slice(2)
+const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
+const numWorkers = specifiedInstances ? parseInt(specifiedInstances) : 1
+
+if (cluster.isPrimary && numWorkers > 1) {
+    console.log(`🚀  [API] Master process ${process.pid} is running`)
+    console.log(`⚙️  [API] Forking ${numWorkers} workers...`)
+
+    for (let i = 0; i < numWorkers; i++) {
+        cluster.fork()
+    }
+
+    cluster.on('exit', worker => {
+        console.log(`❌  [API] Worker ${worker.process.pid} died. Restarting...`)
+        cluster.fork()
+    })
+} else {
+    start().then(() => {
+        console.log(`🚀  [API] Worker process ${process.pid} started`)
+    })
+}
 
 /**
  * Application entry point.

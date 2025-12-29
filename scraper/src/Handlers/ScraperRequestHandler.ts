@@ -3,6 +3,8 @@ import ScraperRequest4FISEventJob from '@scraper/Jobs/ScraperRequest4FISEventJob
 import ScraperRequest4FISEventsJob from '@scraper/Jobs/ScraperRequest4FISEventsJob'
 import ScraperRequestInSISCatalogJob from '@scraper/Jobs/ScraperRequestInSISCatalogJob'
 import ScraperRequestInSISCourseJob from '@scraper/Jobs/ScraperRequestInSISCourseJob'
+import ScraperRequestInSISStudyPlanJob from '@scraper/Jobs/ScraperRequestInSISStudyPlanJob'
+import ScraperRequestInSISStudyPlansJob from '@scraper/Jobs/ScraperRequestInSISStudyPlansJob'
 import { Job } from 'bullmq'
 
 /**
@@ -32,6 +34,12 @@ export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>)
                 break
             case 'InSIS:Course':
                 await ScraperRequestInSISCourseJob(job.data)
+                break
+            case 'InSIS:StudyPlans':
+                await ScraperRequestInSISStudyPlansJob(job.data)
+                break
+            case 'InSIS:StudyPlan':
+                await ScraperRequestInSISStudyPlanJob(job.data)
                 break
             default:
                 console.warn(`Unknown job type: ${type}`)

@@ -1,4 +1,5 @@
 import { scraper } from '@scraper/bullmq'
+import Scraper4FISEvent from '@scraper/Interfaces/Scraper4FISEvent'
 import { Scraper4FISEventRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import Extract4FISService from '@scraper/Services/Extractors/Extract4FISService'
 import Axios from 'axios'
@@ -10,7 +11,7 @@ import Axios from 'axios'
  * @param data - The job payload containing the Event ID to scrape.
  * @returns A promise that resolves when the scrape response is queued.
  */
-export default async function ScraperRequest4FISEventJob(data: Scraper4FISEventRequestJob): Promise<void> {
+export default async function ScraperRequest4FISEventJob(data: Scraper4FISEventRequestJob): Promise<Scraper4FISEvent | null> {
     const request = await Axios.get<string>(`https://4fis.cz/${data.eventId}`, {
         headers: {
             'Accept-Language': 'cs-CZ,cs;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -21,4 +22,6 @@ export default async function ScraperRequest4FISEventJob(data: Scraper4FISEventR
     const event = Extract4FISService.extractEvent(request.data)
 
     await scraper.queue.response.add('4FIS Event Response', { type: '4FIS:Event', event })
+
+    return event
 }

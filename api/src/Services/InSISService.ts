@@ -1,41 +1,14 @@
 import { mysql } from '@api/clients'
 import CoursesFilter from '@api/Interfaces/CoursesFilter'
+import StudyPlansFilter from '@api/Interfaces/StudyPlansFilter'
 import { sql } from 'kysely'
 
-/**
- * Service responsible for retrieving Course data from the InSIS database.
- * This service implements a "Faceted Search" architecture. It provides methods
- * to fetch the actual data (`getCourses`) as well as the available filter options
- * (`getFacets`) based on the current search context.
- */
 export default class InSISService {
-    /**
-     * Retrieves a paginated list of courses that match the provided filters.
-     * @remarks
-     * Results are cached in Redis to improve performance.
-     * Because the courses are joined with timetable slots (1:N relationship),
-     * this method uses `groupBy('c.id')` to ensure that a unique list of courses
-     * is returned, rather than duplicate rows for every scheduled slot.
-     * @param filters - The criteria to filter courses by (semester, day, lecturer, etc.).
-     * @param limit - The maximum number of results to return (default: 20).
-     * @param offset - The number of results to skip for pagination (default: 0).
-     * @returns A Promise resolving to an array of course records.
-     */
     static async getCourses(filters: CoursesFilter, limit = 20, offset = 0) {
         const query = this.getBaseQuery(filters).selectAll('c').groupBy('c.id').limit(limit).offset(offset)
         return await query.execute()
     }
 
-    /**
-     * Retrieves the available options (facets) for all filter categories based on the current selection.
-     * @remarks
-     * Results are cached in Redis to improve performance.
-     * This method executes multiple aggregation queries in parallel using `Promise.all`.
-     * Each facet query calculates counts for its specific category while adhering to
-     * all *other* active filters.
-     * @param filters - The currently active filters.
-     * @returns An object containing arrays of available options for every filter type and the min/max time range.
-     */
     static async getFacets(filters: CoursesFilter) {
         const [faculties, departments, days, lecturersRaw, languagesRaw, levels, semesters, time_range] = await Promise.all([
             this.getFacultyFacet(filters),
@@ -60,6 +33,36 @@ export default class InSISService {
             levels,
             semesters,
             time_range
+        }
+    }
+
+    /**
+     * Retrieves a paginated list of Study Plans matching the filters.
+     */
+    static async getStudyPlans(filters: StudyPlansFilter, limit = 20, offset = 0) {
+        const query = this.getStudyPlanBaseQuery(filters).selectAll('sp').limit(limit).offset(offset).orderBy('sp.ident', 'asc') // Default sort by code
+
+        return await query.execute()
+    }
+
+    /**
+     * Retrieves available facets for Study Plans (Faculty, Level, Mode, etc.)
+     */
+    static async getStudyPlanFacets(filters: StudyPlansFilter) {
+        const [faculties, levels, modes_of_studies, semesters, study_lengths] = await Promise.all([
+            this.getPlanFacet(filters, 'faculty'),
+            this.getPlanFacet(filters, 'level'),
+            this.getPlanFacet(filters, 'mode_of_study'),
+            this.getPlanFacet(filters, 'semester'),
+            this.getPlanFacet(filters, 'study_length')
+        ])
+
+        return {
+            faculties,
+            levels,
+            modes_of_studies,
+            semesters,
+            study_lengths
         }
     }
 
@@ -167,22 +170,39 @@ export default class InSISService {
         }
     }
 
+    /**
+     * Generic helper to fetch counts for columns in the Study Plan table
+     */
+    private static async getPlanFacet(filters: StudyPlansFilter, column: keyof StudyPlansFilter & string) {
+        return await this.getStudyPlanBaseQuery(filters, column)
+            .select(`sp.${column} as value`)
+            .select(eb => eb.fn.count<number>('sp.id').as('count'))
+            .where(`sp.${column}`, 'is not', null)
+            .groupBy(`sp.${column}`)
+            .orderBy('count', 'desc')
+            .execute()
+    }
+
     private static getBaseQuery(filters: CoursesFilter, ignore?: keyof CoursesFilter) {
         let query = mysql
             .selectFrom('insis_courses as c')
             .leftJoin('insis_courses_timetable_units as u', 'c.id', 'u.course_id')
             .leftJoin('insis_courses_timetable_slots as s', 'u.id', 's.timetable_unit_id')
 
-        // Helper to normalize strings or arrays into a single array
         const toArray = (val: string | string[]) => (Array.isArray(val) ? val : [val])
 
-        // 1. Semester (Exact Match / IN)
+        // 1. Study Plan ID
+        if (filters.study_plan_id && ignore !== 'study_plan_id') {
+            query = query.innerJoin('insis_study_plans_courses as spc', 'c.id', 'spc.course_id').where('spc.study_plan_id', '=', filters.study_plan_id)
+        }
+
+        // 2. Semester
         if (filters.semester && ignore !== 'semester') {
             const vals = toArray(filters.semester)
             if (vals.length) query = query.where('c.semester', 'in', vals)
         }
 
-        // 2. Ident/Course Code (Partial Match / LIKE OR)
+        // 3. Ident
         if (filters.ident && ignore !== 'ident') {
             const vals = toArray(filters.ident)
             if (vals.length) {
@@ -190,8 +210,7 @@ export default class InSISService {
             }
         }
 
-        // 3. Faculty (Prefix Match / LIKE OR)
-        // Faculty is derived from the first digit of the ident, so we match the prefix.
+        // 4. Faculty
         if (filters.faculty && ignore !== 'faculty') {
             const vals = toArray(filters.faculty)
             if (vals.length) {
@@ -199,8 +218,7 @@ export default class InSISService {
             }
         }
 
-        // 4. Lecturer (Partial Match on Course OR Unit / LIKE OR)
-        // Matches if ANY of the search terms appear in EITHER c.lecturers OR u.lecturer
+        // 5. Lecturer
         if (filters.lecturer && ignore !== 'lecturer') {
             const vals = toArray(filters.lecturer)
             if (vals.length) {
@@ -208,13 +226,13 @@ export default class InSISService {
             }
         }
 
-        // 5. Day (Exact Match / IN)
+        // 6. Day of Week
         if (filters.day && ignore !== 'day') {
             const vals = toArray(filters.day)
             if (vals.length) query = query.where('s.day', 'in', vals)
         }
 
-        // 6. Time Range (Numeric Range)
+        // 7. Time Range
         const ignoreTime = ignore === 'time_from' || ignore === 'time_to'
         if (filters.time_from && !ignoreTime) {
             query = query.where('s.time_from_minutes', '>=', filters.time_from)
@@ -223,7 +241,7 @@ export default class InSISService {
             query = query.where('s.time_to_minutes', '<=', filters.time_to)
         }
 
-        // 7. Language (Partial Match / LIKE OR)
+        // 8. Language
         if (filters.language && ignore !== 'language') {
             const vals = toArray(filters.language)
             if (vals.length) {
@@ -231,10 +249,58 @@ export default class InSISService {
             }
         }
 
-        // 8. Level (Exact Match / IN)
+        // 9. Level
         if (filters.level && ignore !== 'level') {
             const vals = toArray(filters.level)
             if (vals.length) query = query.where('c.level', 'in', vals)
+        }
+
+        return query
+    }
+
+    private static getStudyPlanBaseQuery(filters: StudyPlansFilter, ignore?: keyof StudyPlansFilter) {
+        let query = mysql.selectFrom('insis_study_plans as sp')
+
+        const toArray = (val: string | string[]) => (Array.isArray(val) ? val : [val])
+
+        // 1. Ident
+        if (filters.ident && ignore !== 'ident') {
+            const vals = toArray(filters.ident)
+            if (vals.length) {
+                query = query.where(eb => eb.or(vals.map(v => eb('sp.ident', 'like', `%${v}%`))))
+            }
+        }
+
+        // 2. Faculty
+        if (filters.faculty && ignore !== 'faculty') {
+            const vals = toArray(filters.faculty)
+            if (vals.length) {
+                query = query.where(eb => eb.or(vals.map(v => eb('sp.ident', 'like', `${v}%`))))
+            }
+        }
+
+        // 3. Semester
+        if (filters.semester && ignore !== 'semester') {
+            const vals = toArray(filters.semester)
+            if (vals.length) query = query.where('sp.semester', 'in', vals)
+        }
+
+        // 4. Level
+        if (filters.level && ignore !== 'level') {
+            const vals = toArray(filters.level)
+            if (vals.length) query = query.where('sp.level', 'in', vals)
+        }
+
+        // 5. Mode of Study
+        if (filters.mode_of_study && ignore !== 'mode_of_study') {
+            const vals = toArray(filters.mode_of_study)
+            if (vals.length) query = query.where('sp.mode_of_study', 'in', vals)
+        }
+
+        // 6. Study Length
+        if (filters.study_length && ignore !== 'study_length') {
+            const vals = toArray(filters.study_length)
+            if (vals.length) query = query.where('sp.study_length', 'in', vals)
         }
 
         return query
