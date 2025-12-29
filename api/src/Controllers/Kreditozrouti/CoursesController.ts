@@ -7,7 +7,7 @@ import CoursesFilterValidation from '@api/Validations/CoursesFilterValidation'
 import { Request, Response } from 'express'
 
 export default async function CoursesController(req: Request, res: Response<CoursesResponse>) {
-    const result = await CoursesFilterValidation.safeParseAsync(req.query)
+    const result = await CoursesFilterValidation.safeParseAsync(req.body)
 
     if (!result.success) {
         throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })

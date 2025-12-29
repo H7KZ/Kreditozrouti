@@ -34,6 +34,8 @@ interface Config {
     allowedOrigins: string[]
     /** The secret key used to sign session IDs. */
     sessionSecret: string
+    /** The token used for command authentication. */
+    commandToken: string | undefined
 
     /** The secret key used for signing JSON Web Tokens (JWT). */
     jwtSecret: Uint8Array<ArrayBuffer>
@@ -75,7 +77,7 @@ interface Config {
         /** The connection URI for the Redis instance. */
         uri: string
         /** The password for Redis authentication. */
-        password: string
+        password: string | undefined
     }
 
     /** MySQL database connection settings. */
@@ -102,6 +104,7 @@ const config: Config = {
     domain: process.env.API_DOMAIN ?? 'localhost',
     allowedOrigins: (process.env.API_ALLOWED_ORIGINS ?? '').split(','),
     sessionSecret: process.env.API_SESSION_SECRET ?? 'development',
+    commandToken: process.env.API_COMMAND_TOKEN,
 
     jwtSecret: new TextEncoder().encode(process.env.API_JWT_SECRET ?? 'development'),
     jwtExpiration: process.env.API_JWT_EXPIRATION ?? '7d',
@@ -124,7 +127,7 @@ const config: Config = {
 
     redis: {
         uri: process.env.REDIS_URI ?? '',
-        password: process.env.REDIS_PASSWORD ?? ''
+        password: process.env.REDIS_PASSWORD
     },
 
     mysql: {
