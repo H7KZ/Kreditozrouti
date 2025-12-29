@@ -7,32 +7,35 @@ services:
     image: diar-4fis-api
 
     build:
-      context: .
-      dockerfile: ./api/Dockerfile
+      context: ../..
+      dockerfile: ../../api/Dockerfile
 
     # volumes:
-    #   - api-uploads-volume:/usr/src/uploads
+    #   - api-uploads-dev-volume:/usr/src/uploads
 
     depends_on:
       - mysql
       - redis
 
     environment:
-      - ENV=production
+      - ENV=development
       - API_PORT=80
+      - API_URI=https://${DOMAIN}/api
       - API_DOMAIN=${DOMAIN}
       - API_ALLOWED_ORIGINS=https://${DOMAIN}
       - API_SESSION_SECRET=${API_SESSION_SECRET}
       - API_FILE_DESTINATION=/usr/src/uploads
+      - GOOGLE_USER=${GOOGLE_USER}
+      - GOOGLE_APP_PASSWORD=${GOOGLE_APP_PASSWORD}
+      - FRONTEND_URI=https://${DOMAIN}
       - MYSQL_URI=${MYSQL_URI}
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - CLIENT_URI=https://${DOMAIN}
 
     networks:
       - traefik-network
-      - mysql-network
-      - redis-network
+      - mysql-dev-network
+      - redis-dev-network
 
     # ports:
     #   - 80:80
@@ -45,7 +48,7 @@ services:
       - traefik.http.routers.${PROJECT}-api.tls.certresolver=letsencrypt
       - traefik.http.services.${PROJECT}-api.loadbalancer.server.port=80
 
-      - traefik.http.routers.${PROJECT}-api.middlewares=diar-4fis-api-stripprefix,diar-4fis-api-redirect-www
+      - traefik.http.routers.${PROJECT}-api.middlewares=${PROJECT}-api-stripprefix,${PROJECT}-api-redirect-www
       - traefik.http.middlewares.${PROJECT}-api-stripprefix.stripprefix.prefixes=/api
       - traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}
@@ -82,7 +85,7 @@ services:
           memory: 1024M
 
     restart: unless-stopped
-  
+
   # ================================================================ #
   # SCRAPER SERVICE
 
@@ -90,8 +93,8 @@ services:
     image: diar-4fis-scraper
 
     build:
-      context: .
-      dockerfile: ./scraper/Dockerfile
+      context: ../..
+      dockerfile: ../../scraper/Dockerfile
 
     depends_on:
       - redis
@@ -102,11 +105,11 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
 
     networks:
-      - redis-network
+      - redis-dev-network
 
     deploy:
       mode: replicated
-      replicas: 5
+      replicas: 3
 
       restart_policy:
         condition: on-failure
@@ -144,14 +147,14 @@ services:
     image: diar-4fis-frontend
 
     build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
+      context: ../..
+      dockerfile: ../../frontend/Dockerfile
 
     depends_on:
       - api
 
     environment:
-      - ENV=production
+      - ENV=development
 
     networks:
       - traefik-network
@@ -165,9 +168,9 @@ services:
       - traefik.http.routers.${PROJECT}-frontend.entrypoints=websecure
       - traefik.http.routers.${PROJECT}-frontend.tls=true
       - traefik.http.routers.${PROJECT}-frontend.tls.certresolver=letsencrypt
-      - traefik.http.services.${PROJECT}-frontend.loadbalancer.server.port=45173
+      - traefik.http.services.${PROJECT}-frontend.loadbalancer.server.port=80
 
-      - traefik.http.routers.${PROJECT}-frontend.middlewares=diar-4fis-frontend-stripprefix,diar-4fis-frontend-redirect-www
+      - traefik.http.routers.${PROJECT}-frontend.middlewares=${PROJECT}-frontend-stripprefix,${PROJECT}-frontend-redirect-www
       - traefik.http.middlewares.${PROJECT}-frontend-stripprefix.stripprefix.prefixes=/
       - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.replacement=https://$${1}
@@ -212,7 +215,7 @@ services:
     image: mysql:9.4.0
 
     volumes:
-      - mysql-data-volume:/var/lib/mysql
+      - mysql-data-dev-volume:/var/lib/mysql
 
     environment:
       - MYSQL_USER=${MYSQL_USER}
@@ -221,7 +224,7 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
 
     networks:
-      - mysql-network
+      - mysql-dev-network
 
     # ports:
     #   - 3306:3306
@@ -332,7 +335,7 @@ services:
     ]
 
     networks:
-      - redis-network
+      - redis-dev-network
 
     # ports:
     #   - 6379:6379
@@ -365,6 +368,6 @@ services:
       resources:
         limits:
           cpus: 0.5
-          memory: 512M
+          memory: 1024M
 
     restart: unless-stopped
