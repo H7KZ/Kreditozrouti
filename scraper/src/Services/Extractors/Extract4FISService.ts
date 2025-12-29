@@ -1,5 +1,6 @@
 import Scraper4FISEvent from '@scraper/Interfaces/Scraper4FISEvent'
 import Scraper4FISEvents from '@scraper/Interfaces/Scraper4FISEvents'
+import DateService from '@scraper/Services/DateService'
 import ExtractService from '@scraper/Services/Extractors/ExtractService'
 import MarkdownService from '@scraper/Services/MarkdownService'
 import * as cheerio from 'cheerio'
@@ -9,6 +10,16 @@ import * as cheerio from 'cheerio'
  * Extracts event lists and detailed event metadata using Cheerio.
  */
 export default class Extract4FISService {
+    /**
+     * Generates base HTTP headers for requests to the FIS website.
+     */
+    static baseRequestHeaders() {
+        return {
+            'Accept-Language': 'cs-CZ,cs;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'
+        }
+    }
+
     /**
      * Parses the HTML of an events listing page to find event identifiers.
      * Iterates through article elements to extract IDs from their permalinks.
@@ -22,7 +33,7 @@ export default class Extract4FISService {
 
         const eventIds: string[] = []
 
-        articles.each((i, el) => {
+        articles.each((_, el) => {
             const article = $(el)
 
             const link = article.find('a').attr('href') ?? null
@@ -116,12 +127,12 @@ export default class Extract4FISService {
             title: ExtractService.serializeValue(title),
             subtitle: ExtractService.serializeValue(subtitle),
             categories: categories,
-            datetime: ExtractService.extractDateTimeFromString(ExtractService.serializeValue(datetime) ?? '').datetime?.toISOString() ?? null,
+            datetime: DateService.extractDateTimeFromString(ExtractService.serializeValue(datetime) ?? '').datetime?.toISOString() ?? null,
             description: description ?? null,
             place: ExtractService.serializeValue(place),
             author: author,
             language: language,
-            registration_from: ExtractService.extractDateTimeFromString(ExtractService.serializeValue(registration_from) ?? '').date?.toISOString() ?? null,
+            registration_from: DateService.extractDateTimeFromString(ExtractService.serializeValue(registration_from) ?? '').date?.toISOString() ?? null,
             registration_url: ExtractService.serializeValue(registration_url),
             substitute_url: ExtractService.serializeValue(substitute_url)
         }

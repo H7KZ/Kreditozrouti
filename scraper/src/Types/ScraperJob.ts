@@ -9,6 +9,12 @@ type ScraperJob =
     | '4FIS:Events'
     | '4FIS:Event'
 
+    // 4FIS Flickr Events (in order of scraping)
+    // '4FIS:Flickr:Events' -> '4FIS:Flickr:Event'
+    // --------------------------------
+    | '4FIS:Flickr:Events'
+    | '4FIS:Flickr:Event'
+
     // InSIS Courses (in order of scraping)
     // 'InSIS:Catalog' -> 'InSIS:Courses'
     // --------------------------------

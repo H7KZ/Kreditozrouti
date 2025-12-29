@@ -9,8 +9,28 @@ import * as cheerio from 'cheerio'
  * Extracts course catalog lists and detailed course syllabi/timetables.
  */
 export default class ExtractInSISService {
-    static baseDomain = 'https://insis.vse.cz'
-    static baseCatalogUrl = 'https://insis.vse.cz/katalog/'
+    private static baseDomain = 'https://insis.vse.cz'
+    private static baseCatalogUrl = 'https://insis.vse.cz/katalog/'
+
+    /**
+     * Generates base HTTP headers for requests to InSIS.
+     *
+     * @param referer - The Referer header value to use. Defaults to the main InSIS page.
+     */
+    static baseRequestHeaders(referer = 'https://insis.vse.cz') {
+        return {
+            Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Accept-Language': 'cs-CZ,cs;q=0.9,en;q=0.8',
+            'Cache-Control': 'no-cache',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Referer: referer,
+            'Upgrade-Insecure-Requests': '1',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36',
+            'sec-ch-ua': '"Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"'
+        }
+    }
 
     private static normalizeUrl(href: string): string {
         if (href.startsWith('http')) {

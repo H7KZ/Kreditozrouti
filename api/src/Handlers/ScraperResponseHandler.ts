@@ -1,4 +1,5 @@
 import ScraperResponse4FISEventJob from '@api/Jobs/ScraperResponse4FISEventJob'
+import ScraperResponse4FISFlickrEventJob from '@api/Jobs/ScraperResponse4FISFlickrEventJob'
 import ScraperResponseInSISCourseJob from '@api/Jobs/ScraperResponseInSISCourseJob'
 import ScraperResponseInSISStudyPlanJob from '@api/Jobs/ScraperResponseInSISStudyPlanJob'
 import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
@@ -21,9 +22,13 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
     try {
         switch (type) {
             case '4FIS:Events':
+            case '4FIS:Flickr:Events':
                 break
             case '4FIS:Event':
                 await ScraperResponse4FISEventJob(job.data)
+                break
+            case '4FIS:Flickr:Event':
+                await ScraperResponse4FISFlickrEventJob(job.data)
                 break
             case 'InSIS:Catalog':
                 break

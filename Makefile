@@ -10,6 +10,7 @@ clear-redis:
 
 install:
 	pnpm -r install && \
+	pnpm -r postinstall && \
 	pnpm install -g dotenv-cli
 
 dev:
