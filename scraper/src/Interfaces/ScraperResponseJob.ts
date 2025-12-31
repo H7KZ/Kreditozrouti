@@ -12,6 +12,7 @@ import ScraperJob from '@scraper/Types/ScraperJob'
 interface ScraperResponseJobBase {
     /** The specific type identifier for the completed task. */
     type: ScraperJob
+
     /** Optional error details if the scraping process failed. */
     error?: {
         message: string
@@ -23,6 +24,7 @@ interface ScraperResponseJobBase {
  */
 export interface Scraper4FISEventsResponseJob extends ScraperResponseJobBase {
     type: '4FIS:Events'
+
     /** The collection of discovered event IDs. */
     events: Scraper4FISEvents
 }
@@ -32,6 +34,26 @@ export interface Scraper4FISEventsResponseJob extends ScraperResponseJobBase {
  */
 export interface Scraper4FISEventResponseJob extends ScraperResponseJobBase {
     type: '4FIS:Event'
+
+    /** The extracted event details, or null if parsing failed. */
+    event: Scraper4FISEvent | null
+}
+
+/**
+ * Payload containing the results of a Flickr events list crawl.
+ */
+export interface Scraper4FISFlickrEventsResponseJob extends ScraperResponseJobBase {
+    type: '4FIS:Flickr:Events'
+
+    /** The collection of discovered event IDs. */
+    events: Scraper4FISEvents
+}
+
+/**
+ * Payload containing the results of a specific Flickr event crawl.
+ */
+export interface Scraper4FISFlickrEventResponseJob extends ScraperResponseJobBase {
+    type: '4FIS:Flickr:Event'
 
     /** The extracted event details, or null if parsing failed. */
     event: Scraper4FISEvent | null
@@ -98,6 +120,8 @@ export interface ScraperInSISStudyPlanResponseJob extends ScraperResponseJobBase
 type ScraperResponseJob =
     | Scraper4FISEventsResponseJob
     | Scraper4FISEventResponseJob
+    | Scraper4FISFlickrEventsResponseJob
+    | Scraper4FISFlickrEventResponseJob
     | ScraperInSISCatalogResponseJob
     | ScraperInSISCourseResponseJob
     | ScraperInSISStudyPlansResponseJob
