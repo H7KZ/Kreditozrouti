@@ -1,7 +1,7 @@
 /**
- * Defines the structure for the scraped course catalog data.
+ * Represents the raw output of a study plans list scrape.
  */
 export default interface ScraperInSISStudyPlans {
-    /** A list of absolute URLs pointing to individual course syllabus pages. */
+    /** A list of absolute URLs pointing to individual study plan pages. */
     urls: string[]
 }

@@ -14,57 +14,67 @@ interface ScraperRequestJobBase {
 }
 
 /**
- * Payload for requesting a crawl of the main 4FIS events list.
+ * Request to crawl the main 4FIS events list.
  */
 export interface Scraper4FISEventsRequestJob extends ScraperRequestJobBase {
     type: '4FIS:Events'
 
-    /** Whether to automatically queue individual event requests after fetching the events list. */
+    /** Automatically queue individual event requests for every event found in the list. */
     auto_queue_events?: boolean
 }
 
 /**
- * Payload for requesting a crawl of a specific FIS event.
+ * Request to scrape a specific 4FIS event.
  */
 export interface Scraper4FISEventRequestJob extends ScraperRequestJobBase {
     type: '4FIS:Event'
 
-    /** The unique identifier of the target event. */
+    /** The unique identifier of the target event to scrape. */
     eventId: string
 }
 
 /**
- * Payload for requesting a crawl of the main 4FIS Flickr events list.
+ * Request to crawl the 4FIS Archive.org events list.
  */
-export interface Scraper4FISFlickrEventsRequestJob extends ScraperRequestJobBase {
-    type: '4FIS:Flickr:Events'
+export interface Scraper4FISArchiveEventsRequestJob extends ScraperRequestJobBase {
+    type: '4FIS:Archive:Events'
 
-    /** Whether to automatically queue individual event requests after fetching the events list. */
+    /** Automatically queue individual event requests for every archived event found. */
     auto_queue_events?: boolean
 }
 
 /**
- * Payload for requesting a crawl of a specific 4FIS Flickr event.
+ * Request to crawl the main 4FIS Flickr photostream for events.
+ */
+export interface Scraper4FISFlickrEventsRequestJob extends ScraperRequestJobBase {
+    type: '4FIS:Flickr:Events'
+
+    /** Automatically queue individual event requests for every album found. */
+    auto_queue_events?: boolean
+}
+
+/**
+ * Request to scrape a specific 4FIS Flickr event album.
  */
 export interface Scraper4FISFlickrEventRequestJob extends ScraperRequestJobBase {
     type: '4FIS:Flickr:Event'
 
-    /** The unique identifier of the target event. */
+    /** The unique identifier of the target Flickr event. */
     eventId: string
 }
 
 /**
- * Payload for requesting a crawl of the InSIS course catalog.
+ * Request to crawl the InSIS course catalog.
  */
 export interface ScraperInSISCatalogRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:Catalog'
 
-    /** Whether to automatically queue individual course requests after fetching the catalog. */
+    /** Automatically queue individual course requests for every course found in the catalog. */
     auto_queue_courses?: boolean
 }
 
 /**
- * Payload for requesting a crawl of a specific InSIS course.
+ * Request to scrape a specific InSIS course.
  */
 export interface ScraperInSISCourseRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:Course'
@@ -72,15 +82,12 @@ export interface ScraperInSISCourseRequestJob extends ScraperRequestJobBase {
     /** The full URL of the course page to scrape. */
     url: string
 
-    /** Metadata about the catalog crawl context. */
+    /** Contextual metadata about the course (faculty, period) to aid parsing. */
     meta: {
-        /** The faculty associated with the catalog crawl. */
         faculty: {
             id: number | null
             name: string | null
         }
-
-        /** The academic period associated with the catalog crawl. */
         period: {
             id: number | null
             name: string | null
@@ -89,25 +96,25 @@ export interface ScraperInSISCourseRequestJob extends ScraperRequestJobBase {
 }
 
 /**
- * Payload for requesting a crawl of the InSIS study plans list.
+ * Request to crawl the InSIS study plans list.
  */
 export interface ScraperInSISStudyPlansRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:StudyPlans'
 
-    /** Whether to automatically queue individual study plan requests after fetching the list. */
+    /** Automatically queue individual study plan requests after fetching the list. */
     auto_queue_study_plans?: boolean
 
-    /** Whether to automatically queue individual course requests found within the study plans. */
+    /** Automatically queue individual course requests found within the discovered study plans. */
     auto_queue_courses?: boolean
 }
 
 /**
- * Payload for requesting a crawl of a specific InSIS study plan.
+ * Request to scrape a specific InSIS study plan.
  */
 export interface ScraperInSISStudyPlanRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:StudyPlan'
 
-    /** Whether to automatically queue individual course requests found within the study plan. */
+    /** Automatically queue individual course requests found within this study plan. */
     auto_queue_courses?: boolean
 
     /** The full URL of the study plan page to scrape. */
@@ -120,6 +127,7 @@ export interface ScraperInSISStudyPlanRequestJob extends ScraperRequestJobBase {
 type ScraperRequestJob =
     | Scraper4FISEventsRequestJob
     | Scraper4FISEventRequestJob
+    | Scraper4FISArchiveEventsRequestJob
     | Scraper4FISFlickrEventsRequestJob
     | Scraper4FISFlickrEventRequestJob
     | ScraperInSISCatalogRequestJob

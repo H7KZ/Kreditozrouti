@@ -3,23 +3,24 @@ import { CourseIdRedirectTable, CourseTable, NewStudyPlanCourse, StudyPlanCourse
 import { ScraperInSISStudyPlanResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
 
 /**
- * Processes the scraper response for a specific InSIS Study Plan.
- * Upserts study plan details into the database and synchronizes the associated course lists.
+ * Syncs a scraped InSIS Study Plan into the database.
  *
- * @param data - The scraper response job data containing study plan information.
+ * This job performs the following operations:
+ * 1. Upserts the study plan details.
+ * 2. Wipes existing course associations for the plan.
+ * 3. Resolves course IDs (handling redirects) and re-inserts course associations.
  */
 export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSISStudyPlanResponseJob): Promise<void> {
-    const plan = data.plan
+    const { plan } = data
 
     if (!plan?.id) {
         return
     }
 
-    const planId = plan.id
-    console.log(`Processing sync for study plan Id: ${planId} (${plan.ident})`)
+    console.log(`Processing sync for study plan Id: ${plan.id} (${plan.ident})`)
 
     const planPayload = {
-        id: planId,
+        id: plan.id,
         url: plan.url,
         ident: plan.ident,
         title: plan.title,
@@ -30,81 +31,51 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
         study_length: plan.study_length
     }
 
-    // 1. Upsert the Study Plan details
-    await mysql
-        .insertInto(StudyPlanTable._table)
-        .values(planPayload)
-        .onDuplicateKeyUpdate({
-            url: planPayload.url,
-            ident: planPayload.ident,
-            title: planPayload.title,
-            faculty: planPayload.faculty,
-            semester: planPayload.semester,
-            level: planPayload.level,
-            mode_of_study: planPayload.mode_of_study,
-            study_length: planPayload.study_length
-        })
-        .execute()
+    await mysql.insertInto(StudyPlanTable._table).values(planPayload).onDuplicateKeyUpdate(planPayload).execute()
 
-    // 2. Clear ALL existing courses for this plan
-    // We wipe the slate clean to avoid duplicates since there is no unique constraint on the link table
-    await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', planId).execute()
+    // Wipe existing courses to ensure a clean sync (no unique constraint on link table)
+    await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', plan.id).execute()
 
     if (!plan.courses || plan.courses.length === 0) {
-        console.log(`Synced study plan Id: ${planId} (No courses found)`)
+        console.log(`Synced study plan Id: ${plan.id} (No courses found)`)
         return
     }
 
-    // 3. Prepare Data for Lookup
-    const incomingCourseIds = new Set<number>()
+    // Resolve Real Course IDs (Map Scraped ID -> Real DB ID)
+    // This handles cases where the scraped course ID might be an old ID pointing to a redirect.
+    const incomingCourseIds = plan.courses.map(c => c.id).filter((id): id is number => id != null)
 
-    for (const course of plan.courses) {
-        if (course.id != null) {
-            incomingCourseIds.add(course.id)
-        }
-    }
+    const validIdMap = new Map<number, number>()
 
-    // 4. Resolve Course IDs
-    // We need to map: Scraped ID -> Real DB ID (Direct or Redirect)
-    const validIdMap = new Map<number, number>() // Maps Scraped ID -> Real DB ID
+    if (incomingCourseIds.length > 0) {
+        // 1. Direct Matches
+        const directMatches = await mysql.selectFrom(CourseTable._table).select('id').where('id', 'in', incomingCourseIds).execute()
 
-    if (incomingCourseIds.size > 0) {
-        // A. Direct Match Query
-        const directMatches = await mysql.selectFrom(CourseTable._table).select('id').where('id', 'in', Array.from(incomingCourseIds)).execute()
+        directMatches.forEach(c => validIdMap.set(c.id, c.id))
 
-        // Process Direct Matches
-        for (const c of directMatches) {
-            validIdMap.set(Number(c.id), Number(c.id))
-        }
-
-        // B. Redirect Match Query (old_id -> course_id)
+        // 2. Redirect Matches (Old ID -> New Course ID)
         const redirectMatches = await mysql
             .selectFrom(CourseIdRedirectTable._table)
             .select(['course_id', 'old_id'])
-            .where('old_id', 'in', Array.from(incomingCourseIds))
+            .where('old_id', 'in', incomingCourseIds)
             .execute()
 
-        for (const r of redirectMatches) {
-            validIdMap.set(Number(r.old_id), Number(r.course_id))
-        }
+        redirectMatches.forEach(r => validIdMap.set(r.old_id, r.course_id))
     }
 
-    // 5. Insert New Courses
+    // Deduplicate courses by ident to avoid insertion errors
     const uniqueCourses = new Map<string, (typeof plan.courses)[0]>()
-    for (const c of plan.courses) {
-        uniqueCourses.set(c.ident, c)
-    }
+    plan.courses.forEach(c => uniqueCourses.set(c.ident, c))
 
     const rowsToInsert: NewStudyPlanCourse[] = Array.from(uniqueCourses.values()).map(item => {
         let verifiedId: number | null = null
 
-        // Priority 1: Check ID Map (Handles Direct Match AND Redirects)
-        if (item.id != null && validIdMap.has(Number(item.id))) {
-            verifiedId = validIdMap.get(Number(item.id))!
+        if (item.id != null && validIdMap.has(item.id)) {
+            verifiedId = validIdMap.get(item.id)!
         }
 
         return {
-            study_plan_id: planId,
+            study_plan_id: plan.id,
             course_ident: item.ident,
             course_id: verifiedId,
             category: item.category
@@ -115,5 +86,5 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
         await mysql.insertInto(StudyPlanCourseTable._table).values(rowsToInsert).execute()
     }
 
-    console.log(`Synced study plan Id: ${planId} with ${rowsToInsert.length} courses`)
+    console.log(`Synced study plan Id: ${plan.id} with ${rowsToInsert.length} courses`)
 }

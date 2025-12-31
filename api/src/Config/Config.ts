@@ -1,101 +1,61 @@
 import path from 'path'
 import dotenv from 'dotenv'
 
-/**
- * Attempts to load environment variables from resolved paths.
- * Checks distribution, root, and package-level locations.
- */
+// Attempt to load .env files from distribution, root, or package levels
 try {
     dotenv.config({
-        path: [
-            path.resolve(process.cwd(), '../../../../.env'), // For dist folder
-            path.resolve(process.cwd(), '../.env'), // For monorepo root
-            path.resolve(process.cwd(), '.env') // For monorepo package
-        ]
+        path: [path.resolve(process.cwd(), '../../../../.env'), path.resolve(process.cwd(), '../.env'), path.resolve(process.cwd(), '.env')]
     })
 } catch {
     console.warn('No .env file found')
 }
 
 /**
- * Defines the structure for the application configuration.
+ * Application configuration interface.
  */
 interface Config {
-    /** The current runtime environment (e.g., 'development', 'production'). */
+    /** Current runtime environment (e.g., 'development', 'production'). */
     env: string
-
-    /** The port number the API server listens on. */
     port: number
-    /** The full public URI of the API. */
+    /** Full public URI of the API. */
     uri: string
-    /** The top-level domain for cookie and session scoping. */
+    /** Top-level domain for cookie and session scoping. */
     domain: string
-    /** A list of origins permitted for Cross-Origin Resource Sharing (CORS). */
     allowedOrigins: string[]
-    /** The secret key used to sign session IDs. */
     sessionSecret: string
-    /** The token used for command authentication. */
     commandToken: string | undefined
 
-    /** The secret key used for signing JSON Web Tokens (JWT). */
+    /** JWT signing key. */
     jwtSecret: Uint8Array<ArrayBuffer>
-    /** JWT token configuration settings. */
     jwtExpiration: string
-    /** JWT token expiration time in seconds. */
     jwtExpirationSeconds: number
-    /** The issuer identifier for JWT tokens. */
     jwtIssuer: string
-    /** The audience identifier for JWT tokens. */
     jwtAudience: string
 
-    /** The local directory path for storing uploaded files. */
     fileDestination: string
 
-    /** Google service credentials. */
     google: {
-        /** The Google account username or email. */
         user: string
-        /** The Google application-specific password. */
         appPassword: string
     }
 
-    /** Frontend application settings. */
     frontend: {
-        /** The base URI of the frontend application. */
         uri: string
-
-        /**
-         * Constructs a full URL for a given frontend path.
-         * @param path - The relative path to append to the frontend URI.
-         * @returns The absolute URL string.
-         */
         createURL: (path: string) => string
     }
 
-    /** Redis database connection settings. */
     redis: {
-        /** The connection URI for the Redis instance. */
         uri: string
-        /** The password for Redis authentication. */
         password: string | undefined
     }
 
-    /** MySQL database connection settings. */
     mysql: {
-        /** The connection URI for the MySQL database. */
         uri: string
     }
 
-    /**
-     * Determines if the current environment is set to development.
-     * @returns True if env is 'development', otherwise false.
-     */
     isEnvDevelopment: () => boolean
 }
 
-/**
- * The singleton configuration object initialized with environment variables or default fallbacks.
- */
 const config: Config = {
     env: process.env.ENV ?? 'development',
 
@@ -121,7 +81,6 @@ const config: Config = {
 
     frontend: {
         uri: process.env.FRONTEND_URI ?? '',
-
         createURL: (path: string) => `${config.frontend.uri}${path}`
     },
 

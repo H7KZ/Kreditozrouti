@@ -2,6 +2,9 @@ import * as z from 'zod'
 
 const stringOrArray = z.union([z.string(), z.array(z.string())]).optional()
 
+/**
+ * Zod validation schema for the Study Plans Search API.
+ */
 const StudyPlansFilterValidation = z.object({
     ident: stringOrArray,
     faculty: stringOrArray,
@@ -10,7 +13,6 @@ const StudyPlansFilterValidation = z.object({
     mode_of_study: stringOrArray,
     study_length: stringOrArray,
 
-    // Pagination
     limit: z.coerce.number().min(1).max(100).optional().default(20),
     offset: z.coerce.number().min(0).optional().default(0)
 })

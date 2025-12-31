@@ -1,90 +1,61 @@
 /**
- * Service for calculating string similarities and distances.
- * Useful for fuzzy matching titles, names, or identifying duplicate content.
+ * Service for calculating string similarities and fuzzy matching.
+ * Used to identify duplicate events or merge content from different sources.
  */
 export default class SimilarityService {
     /**
-     * Calculates the similarity between two strings using the Levenshtein distance.
-     * Returns a normalized value between 0 (completely different) and 1 (identical).
+     * Determines if two titles represent the same entity using token intersection.
+     * Uses Jaccard-style overlap to handle reordered words and noise.
      *
-     * @param s1 - First string
-     * @param s2 - Second string
-     * @param normalize - Whether to remove accents and lowercase strings before comparing (default: true)
+     * Logic:
+     * 1. Normalizes strings (lowercase, remove noise/prefixes).
+     * 2. Splits into tokens (keeps numbers to distinguish "vol. 1" from "vol. 2").
+     * 3. Calculates the overlap ratio relative to the shorter string.
+     *
+     * @param s1 - First title string.
+     * @param s2 - Second title string.
+     * @returns True if overlap is >= 60%.
      */
-    static calculateLevenshteinSimilarity(s1: string, s2: string, normalize = true): number {
-        const a = normalize ? this.normalizeString(s1) : s1
-        const b = normalize ? this.normalizeString(s2) : s2
-
-        const longer = a.length > b.length ? a : b
-        const shorter = a.length > b.length ? b : a
-        const longerLength = longer.length
-
-        if (longerLength === 0) {
-            return 1.0
+    static areTitlesSimilar(s1: string, s2: string): boolean {
+        const getTokens = (text: string) => {
+            return new Set(
+                SimilarityService.normalizeString(text)
+                    .split(/\s+/)
+                    // Keep words longer than 2 chars OR any numbers (e.g., "16")
+                    .filter(w => w.length > 2 || /\d+/.test(w))
+            )
         }
 
-        const distance = this.levenshteinDistance(longer, shorter)
-        return (longerLength - distance) / parseFloat(longerLength.toString())
+        const tokensA = getTokens(s1)
+        const tokensB = getTokens(s2)
+
+        if (tokensA.size === 0 || tokensB.size === 0) return false
+
+        let matches = 0
+        tokensA.forEach(token => {
+            if (tokensB.has(token)) matches++
+        })
+
+        // We use minSize to calculate "overlap relative to the shorter title"
+        // This helps match "Event Name" with "4FIS: Event Name (Extra Info)"
+        const minSize = Math.min(tokensA.size, tokensB.size)
+        const ratio = matches / minSize
+
+        return ratio >= 0.6
     }
 
     /**
-     * Calculates the raw Levenshtein distance (number of edits required).
-     */
-    static levenshteinDistance(s1: string, s2: string): number {
-        const costs = []
-
-        for (let i = 0; i <= s1.length; i++) {
-            let lastValue = i
-            for (let j = 0; j <= s2.length; j++) {
-                if (i == 0) {
-                    costs[j] = j
-                } else {
-                    if (j > 0) {
-                        let newValue = costs[j - 1]
-                        if (s1.charAt(i - 1) != s2.charAt(j - 1)) {
-                            newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1
-                        }
-                        costs[j - 1] = lastValue
-                        lastValue = newValue
-                    }
-                }
-            }
-            if (i > 0) {
-                costs[s2.length] = lastValue
-            }
-        }
-        return costs[s2.length]
-    }
-
-    /**
-     * Calculates Jaccard Similarity (Token based).
-     * Better for strings where word order doesn't matter (e.g. "2025 Event" vs "Event 2025").
-     * Returns 0 to 1.
-     */
-    static calculateJaccardSimilarity(s1: string, s2: string, normalize = true): number {
-        const a = normalize ? this.normalizeString(s1) : s1
-        const b = normalize ? this.normalizeString(s2) : s2
-
-        const setA = new Set(a.split(/\s+/))
-        const setB = new Set(b.split(/\s+/))
-
-        const intersection = new Set([...setA].filter(x => setB.has(x)))
-        const union = new Set([...setA, ...setB])
-
-        if (union.size === 0) return 1.0
-
-        return intersection.size / union.size
-    }
-
-    /**
-     * Helper to remove accents (diacritics), trim, and lowercase a string.
-     * Essential for Czech fuzzy matching (e.g. "Kruhové" -> "kruhove").
+     * Normalizes a string by removing diacritics, trimming, lowercasing,
+     * and removing known noise (dates, prefixes).
      */
     static normalizeString(str: string): string {
         return str
             .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-            .trim()
+            .replace(/[\u0300-\u036f]/g, '') // Remove accents
             .toLowerCase()
+            .replace(/4fis[:\s]*/g, '') // Remove 4FIS prefix
+            .replace(/\d{4}[/-]\d{2}[/-]\d{2}/g, '') // Remove dates like 2022-01-01
+            .replace(/[^\w\s]/g, ' ') // Remove special chars
+            .trim()
     }
 }

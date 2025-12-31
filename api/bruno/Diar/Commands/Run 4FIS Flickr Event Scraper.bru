@@ -1,0 +1,22 @@
+meta {
+  name: Run 4FIS Flickr Event Scraper
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:40080/commands/4fis/flickr/event
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "eventId": "72157720148739303"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

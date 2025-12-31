@@ -1,5 +1,5 @@
 /**
- * Defines the structure for a collection of event identifiers found during a crawl.
+ * Represents the raw output of an event list scrape.
  */
 export default interface Scraper4FISEvents {
     /** An array of unique event IDs extracted from an events listing page. */

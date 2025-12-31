@@ -20,63 +20,56 @@ interface ScraperResponseJobBase {
 }
 
 /**
- * Payload containing the results of an events list crawl.
+ * Response payload containing the results of an events list crawl.
  */
 export interface Scraper4FISEventsResponseJob extends ScraperResponseJobBase {
     type: '4FIS:Events'
-
-    /** The collection of discovered event IDs. */
     events: Scraper4FISEvents
 }
 
 /**
- * Payload containing the results of a specific event crawl.
+ * Response payload containing the results of a specific event crawl.
  */
 export interface Scraper4FISEventResponseJob extends ScraperResponseJobBase {
     type: '4FIS:Event'
-
-    /** The extracted event details, or null if parsing failed. */
     event: Scraper4FISEvent | null
 }
 
 /**
- * Payload containing the results of a Flickr events list crawl.
+ * Response payload containing the results of an archived events list crawl.
  */
-export interface Scraper4FISFlickrEventsResponseJob extends ScraperResponseJobBase {
-    type: '4FIS:Flickr:Events'
-
-    /** The collection of discovered event IDs. */
+export interface Scraper4FISArchiveEventsResponseJob extends ScraperResponseJobBase {
+    type: '4FIS:Archive:Events'
     events: Scraper4FISEvents
 }
 
 /**
- * Payload containing the results of a specific Flickr event crawl.
+ * Response payload containing the results of a Flickr events list crawl.
+ */
+export interface Scraper4FISFlickrEventsResponseJob extends ScraperResponseJobBase {
+    type: '4FIS:Flickr:Events'
+    events: Scraper4FISEvents
+}
+
+/**
+ * Response payload containing the results of a specific Flickr event crawl.
  */
 export interface Scraper4FISFlickrEventResponseJob extends ScraperResponseJobBase {
     type: '4FIS:Flickr:Event'
-
-    /** The extracted event details, or null if parsing failed. */
     event: Scraper4FISEvent | null
 }
 
 /**
- * Payload containing the results of a course catalog crawl.
+ * Response payload containing the results of a course catalog crawl.
  */
 export interface ScraperInSISCatalogResponseJob extends ScraperResponseJobBase {
     type: 'InSIS:Catalog'
-
-    /** The collection of discovered course URLs. */
     catalog: ScraperInSISCatalog
-
-    /** Metadata about the catalog crawl context. */
     meta: {
-        /** The faculty associated with the catalog crawl. */
         faculty: {
             id: number | null
             name: string | null
         }
-
-        /** The academic period associated with the catalog crawl. */
         period: {
             id: number | null
             name: string | null
@@ -85,32 +78,26 @@ export interface ScraperInSISCatalogResponseJob extends ScraperResponseJobBase {
 }
 
 /**
- * Payload containing the results of a specific course crawl.
+ * Response payload containing the results of a specific course crawl.
  */
 export interface ScraperInSISCourseResponseJob extends ScraperResponseJobBase {
     type: 'InSIS:Course'
-
-    /** The extracted course details, or null if parsing failed. */
     course: ScraperInSISCourse | null
 }
 
 /**
- * Payload containing the results of a study plans crawl.
+ * Response payload containing the results of a study plans list crawl.
  */
 export interface ScraperInSISStudyPlansResponseJob extends ScraperResponseJobBase {
     type: 'InSIS:StudyPlans'
-
-    /** The collection of discovered study plans URLs. */
     plans: ScraperInSISStudyPlans
 }
 
 /**
- * Payload containing the results of a specific study plan crawl.
+ * Response payload containing the results of a specific study plan crawl.
  */
 export interface ScraperInSISStudyPlanResponseJob extends ScraperResponseJobBase {
     type: 'InSIS:StudyPlan'
-
-    /** The extracted study plan details, or null if parsing failed. */
     plan: ScraperInSISStudyPlan | null
 }
 
@@ -120,6 +107,7 @@ export interface ScraperInSISStudyPlanResponseJob extends ScraperResponseJobBase
 type ScraperResponseJob =
     | Scraper4FISEventsResponseJob
     | Scraper4FISEventResponseJob
+    | Scraper4FISArchiveEventsResponseJob
     | Scraper4FISFlickrEventsResponseJob
     | Scraper4FISFlickrEventResponseJob
     | ScraperInSISCatalogResponseJob

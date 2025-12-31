@@ -6,16 +6,15 @@ import * as cheerio from 'cheerio'
 
 /**
  * Service responsible for parsing HTML content from the InSIS university system.
- * Extracts course catalog lists and detailed course syllabi/timetables.
+ * Extracts course catalog lists, detailed course syllabi, and study plans.
  */
 export default class ExtractInSISService {
-    private static baseDomain = 'https://insis.vse.cz'
-    private static baseCatalogUrl = 'https://insis.vse.cz/katalog/'
+    private static readonly BASE_DOMAIN = 'https://insis.vse.cz'
+    private static readonly BASE_CATALOG_URL = 'https://insis.vse.cz/katalog/'
 
     /**
      * Generates base HTTP headers for requests to InSIS.
-     *
-     * @param referer - The Referer header value to use. Defaults to the main InSIS page.
+     * @param referer - The Referer header value. Defaults to the main InSIS page.
      */
     static baseRequestHeaders(referer = 'https://insis.vse.cz') {
         return {
@@ -33,76 +32,50 @@ export default class ExtractInSISService {
     }
 
     private static normalizeUrl(href: string): string {
-        if (href.startsWith('http')) {
-            return href
-        }
-        if (href.startsWith('/')) {
-            return this.baseDomain + href
-        }
-        // Handle path-relative (rare in these specific pages, but safe)
-        return this.baseCatalogUrl + href
+        if (href.startsWith('http')) return href
+        if (href.startsWith('/')) return this.BASE_DOMAIN + href
+        return this.BASE_CATALOG_URL + href
     }
 
     /**
      * Parses the "Extended Search" form to extract available Faculties and Academic Periods.
-     * Used to dynamically build search queries.
-     *
-     * @param html - The raw HTML of the /katalog/index.pl?jak=rozsirene page.
      */
     static extractCatalogSearchOptions(html: string) {
         const $ = cheerio.load(html)
-
-        const cleanText = (text: string | null): string => {
-            if (!text) return ''
-            return text
-                .replace(/\u00A0/g, ' ')
-                .replace(/&nbsp;/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim()
-        }
-
         const faculties: { id: number; name: string }[] = []
         const periods: { id: number; name: string }[] = []
 
+        const cleanText = (text: string | null): string => {
+            return text
+                ? text
+                      .replace(/\u00A0|&nbsp;/g, ' ')
+                      .replace(/\s+/g, ' ')
+                      .trim()
+                : ''
+        }
+
         $('td#fakulty input[name="fakulta"]').each((_, el) => {
             const id = $(el).val() as string
-
-            // Get the text node immediately following the input element
             const nextNode = el.nextSibling
-            let name = ''
 
-            if (nextNode?.type === 'text') {
-                name = cleanText(nextNode.data)
-            } else {
-                // Fallback if structure varies slightly
-                name = cleanText($(el).parent().text())
-            }
+            // Try getting text from next sibling, fallback to parent text
+            const rawName = nextNode?.type === 'text' ? nextNode.data : $(el).parent().text()
+            const name = cleanText(rawName)
 
             if (id && name) {
-                faculties.push({
-                    id: Number(id.trim()),
-                    name: name.trim().toLowerCase()
-                })
+                faculties.push({ id: Number(id.trim()), name: name.toLowerCase() })
             }
         })
 
         $('input[name="obdobi"]').each((_, el) => {
             const id = $(el).val() as string
-
             const nextNode = el.nextSibling
-            let name = ''
 
-            if (nextNode?.type === 'text') {
-                name = cleanText(nextNode.data)
-            } else {
-                name = cleanText($(el).parent().text())
-            }
+            const rawName = nextNode?.type === 'text' ? nextNode.data : $(el).parent().text()
+            const name = cleanText(rawName)
 
             if (id && name) {
-                periods.push({
-                    id: Number(id.trim()),
-                    name: name.trim().toUpperCase()
-                })
+                periods.push({ id: Number(id.trim()), name: name.toUpperCase() })
             }
         })
 
@@ -110,21 +83,16 @@ export default class ExtractInSISService {
     }
 
     /**
-     * Parses the course catalog HTML to extract a unique list of course syllabus URLs.
-     * Identifies links based on the specific `syllabus.pl?predmet=` pattern.
-     *
-     * @param html - The raw HTML content of the catalog page.
-     * @returns An object containing a deduplicated list of absolute course URLs.
+     * Extracts a unique list of course syllabus URLs from the catalog page.
      */
     static extractCatalog(html: string): string[] {
         const $ = cheerio.load(html)
         const subjects: string[] = []
 
-        $('a[href*="syllabus.pl?predmet="]').each((i, el) => {
+        $('a[href*="syllabus.pl?predmet="]').each((_, el) => {
             const href = $(el).attr('href')
-
             if (href) {
-                const fullUrl = href.startsWith('http') ? href : this.baseCatalogUrl + href
+                const fullUrl = href.startsWith('http') ? href : this.BASE_CATALOG_URL + href
                 subjects.push(fullUrl.trim().split(';')[0])
             }
         })
@@ -134,105 +102,84 @@ export default class ExtractInSISService {
 
     static extractCourseIdFromURL(url: string): number | null {
         const idMatch = /[?&]predmet=(\d+)/.exec(url)
-        if (idMatch) {
-            return parseInt(idMatch[1], 10)
-        }
-        return null
+        return idMatch ? parseInt(idMatch[1], 10) : null
     }
 
     static extractCourseIdFromHTML(html: string): number | null {
         const $ = cheerio.load(html)
         const idInput = $('input[name="predmet"]').attr('value')
-
-        if (idInput) {
-            return parseInt(idInput, 10)
-        }
-        return null
+        return idInput ? parseInt(idInput, 10) : null
     }
 
     /**
-     * Parses the detailed HTML page of a specific course.
-     * Extracts metadata (ECTS, language, level), syllabus sections (Markdown), assessment methods, and timetable slots.
-     * Handles text cleaning, entity decoding, and complex timetable row grouping.
-     *
-     * @param html - The raw HTML content of the course detail page.
-     * @param url - The source URL of the page (used as a fallback for ID extraction).
-     * @param faculty - The faculty/department code associated with the course.
-     * @returns The structured course data object.
-     * @throws {Error} If the unique Course ID cannot be determined from the content or URL.
+     * Parses the detailed course page to extract metadata, syllabus, assessments, and timetable.
+     * @param html - Raw HTML content.
+     * @param url - Source URL (fallback for ID extraction).
+     * @param faculty - Faculty code associated with the course.
      */
     static extractCourse(html: string, url: string, faculty: string | null): ScraperInSISCourse {
         const $ = cheerio.load(html)
-
         const body = $('body')
+
+        // Pre-process HTML entities
         if (body.length) {
             body.html(body.html()?.replace(/&nbsp;/g, ' ') ?? '')
         }
 
         const cleanText = (text: string | null): string => {
-            if (!text) return ''
             return text
-                .replace(/\u00A0/g, ' ')
-                .replace(/&nbsp;/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim()
+                ? text
+                      .replace(/\u00A0|&nbsp;/g, ' ')
+                      .replace(/\s+/g, ' ')
+                      .trim()
+                : ''
         }
 
         const getRowValue = (targetLabel: string): string | null => {
             const cleanTarget = cleanText(targetLabel)
-
             const labelCell = $('td')
-                .filter((_, el) => {
-                    const cellText = cleanText($(el).text())
-                    return cellText.includes(cleanTarget)
-                })
+                .filter((_, el) => cleanText($(el).text()).includes(cleanTarget))
                 .first()
 
             if (labelCell.length && labelCell.next('td').length) {
                 return ExtractService.serializeValue(cleanText(labelCell.next('td').text()))
             }
-
             return null
         }
 
         const getSectionContent = (headerText: string): string | null => {
             const cleanHeader = cleanText(headerText)
-
             const headerRow = $('td')
                 .filter((_, el) => cleanText($(el).text()).includes(cleanHeader))
                 .parent('tr')
 
             if (headerRow.length && headerRow.next('tr').length) {
-                const contentCell = headerRow.next('tr').find('td')
-                return MarkdownService.formatCheerioElementToMarkdown(contentCell)
+                return MarkdownService.formatCheerioElementToMarkdown(headerRow.next('tr').find('td'))
             }
-
             return null
         }
 
         const parseMultiLineCell = (element: any): string[] => {
             const htmlContent = $(element).html()
             if (!htmlContent) return []
-
             return htmlContent
                 .split(/<br\s*\/?>/i)
                 .map(part => cleanText(cheerio.load(part).text()))
                 .filter(part => part.length > 0)
         }
 
+        // ID Extraction
         let id: number | null = null
         const idInput = $('input[name="predmet"]').attr('value')
-
         if (idInput) {
             id = parseInt(idInput, 10)
         } else if (url) {
             id = this.extractCourseIdFromURL(url)
         }
 
-        if (id === null) {
-            throw new Error('Course ID not found in the HTML content or URL.')
-        }
+        if (id === null) throw new Error('Course ID not found in the HTML content or URL.')
 
+        // Basic Metadata
         const ident = getRowValue('Kód předmětu:')
         const title = getRowValue('Název v jazyce výuky:') ?? getRowValue('Název česky:')
         const czech_title = getRowValue('Název česky:')
@@ -247,50 +194,40 @@ export default class ExtractInSISService {
         const languages = languagesRaw
             ? languagesRaw
                   .split(', ')
-                  .map(lang => ExtractService.serializeValue(lang.trim()))
-                  .filter(lang => lang !== null)
+                  .map(l => ExtractService.serializeValue(l.trim()))
+                  .filter(l => l !== null)
             : null
 
         const semester = getRowValue('Semestr:')?.trim().toUpperCase() ?? null
 
-        // Logic to extract academic level and year (e.g., "Bachelor", "Year 2")
+        // Level & Year Extraction
         const levelYearRaw = getRowValue('Doporučený typ a ročník studia:')?.trim().toLowerCase() ?? null
         let level: string | null = null
         let year_of_study: number | null = null
-
         const isUndefined = !levelYearRaw || levelYearRaw.includes('obsah této položky nebyl definován')
 
         if (!isUndefined && levelYearRaw) {
             const firstPart = levelYearRaw.split(';')[0].trim()
             const parts = firstPart.split(':')
-
             if (parts.length > 0) {
-                const cleanLevel = parts[0].replace(/\(.*?\)/g, '').trim()
-                level = ExtractService.serializeValue(cleanLevel)
+                level = ExtractService.serializeValue(parts[0].replace(/\(.*?\)/g, '').trim())
             }
-
             if (parts.length > 1) {
                 const yearMatch = /\d+/.exec(parts[1])
-                if (yearMatch) {
-                    year_of_study = parseInt(yearMatch[0], 10)
-                }
+                if (yearMatch) year_of_study = parseInt(yearMatch[0], 10)
             }
         } else {
-            // Fallback: Attempt to infer level from the page header (e.g., MBA or specific courses).
+            // Fallback inference from header
             const headerText = $('#titulek h1').text() || ''
-
             const typeMatch = /-\s*(mba|kurzy|kurz)\s*\)/i.exec(headerText)
-
             if (typeMatch) {
                 const typeRaw = typeMatch[1].toLowerCase()
-                if (typeRaw === 'mba') {
-                    level = 'MBA'
-                } else if (typeRaw.includes('kurz')) {
-                    level = 'kurz'
-                }
+                if (typeRaw === 'mba') level = 'MBA'
+                else if (typeRaw.includes('kurz')) level = 'kurz'
             }
         }
 
+        // Lecturers
         const lecturers: string[] = []
         const lecturersCell = $('td')
             .filter((_, el) => cleanText($(el).text()).includes('Vyučující:'))
@@ -302,30 +239,29 @@ export default class ExtractInSISService {
                 if (name) lecturers.push(name)
             })
             if (lecturers.length === 0) {
-                const names = parseMultiLineCell(lecturersCell)
-                lecturers.push(...names)
+                lecturers.push(...parseMultiLineCell(lecturersCell))
             }
         }
 
+        // Course Details
         const prerequisites = getRowValue('Omezení pro zápis:')
         const recommended_programmes = getRowValue('Doporučené doplňky kurzu:')
         const required_work_experience = getRowValue('Vyžadovaná praxe:')
-
         const aims_of_the_course = getSectionContent('Zaměření předmětu:')
         const learning_outcomes = getSectionContent('Výsledky učení:')
         const course_contents = getSectionContent('Obsah předmětu:')
         const special_requirements = getSectionContent('Zvláštní podmínky a podrobnosti:') ?? getRowValue('Zvláštní podmínky a podrobnosti:')
 
+        // Literature
         let literature: string | null = null
         const literatureHeaderRow = $('td')
             .filter((_, el) => cleanText($(el).text()).includes('Literatura:'))
             .parent('tr')
-
         if (literatureHeaderRow.length && literatureHeaderRow.next('tr').length) {
-            const litContent = literatureHeaderRow.next('tr').find('td')
-            literature = MarkdownService.formatCheerioElementToMarkdown(litContent)
+            literature = MarkdownService.formatCheerioElementToMarkdown(literatureHeaderRow.next('tr').find('td'))
         }
 
+        // Assessment Methods
         const assessment_methods: ScraperInSISCourseAssessmentMethod[] = []
         const assessmentHeaderRow = $('td')
             .filter((_, el) => cleanText($(el).text()).includes('Způsoby a kritéria hodnocení'))
@@ -350,8 +286,8 @@ export default class ExtractInSISService {
             })
         }
 
+        // Timetable Parsing
         const timetableUnitsMap = new Map<string, ScraperInSISCourseTimetableUnit>()
-
         const timetableHeader = $('td, b, strong')
             .filter((_, el) => cleanText($(el).text()).includes('Periodické rozvrhové akce'))
             .last()
@@ -361,7 +297,6 @@ export default class ExtractInSISService {
 
             table.find('tbody tr').each((_, row) => {
                 const cols = $(row).find('td')
-
                 if (cols.length >= 7) {
                     const dayOrDates = parseMultiLineCell(cols[0])
                     const times = parseMultiLineCell(cols[1])
@@ -384,7 +319,6 @@ export default class ExtractInSISService {
                         const currentFreq = frequencies[k] || frequencies[0] || ''
                         const currentLecturer = lecturersList[k] || lecturersList[0] || ''
                         const currentCapacity = capacities[k] || capacities[0] || '0'
-
                         const capacityInt = parseInt(currentCapacity, 10) || 0
 
                         const key = `${currentLecturer}|${capacityInt}|${noteText}`
@@ -399,23 +333,18 @@ export default class ExtractInSISService {
                         }
 
                         const unit = timetableUnitsMap.get(key)
-
                         const [time_from, time_to] = currentTime.includes('-') ? currentTime.split('-').map(t => t.trim()) : ['', '']
-
                         const isDate = /^\d{1,2}\.\d{1,2}\.\d{4}$/.test(currentDayOrDate)
 
                         let frequency: 'weekly' | 'single' | null = null
                         if (currentFreq.toLowerCase().includes('každý')) frequency = 'weekly'
                         else if (currentFreq.toLowerCase().includes('jednoráz') || isDate) frequency = 'single'
 
-                        const dateVal = isDate ? ExtractService.serializeValue(currentDayOrDate) : null
-                        const dayVal = !isDate ? ExtractService.serializeValue(currentDayOrDate) : null
-
                         unit?.slots?.push({
                             type: ExtractService.serializeValue(currentType),
                             frequency,
-                            date: dateVal,
-                            day: dayVal,
+                            date: isDate ? ExtractService.serializeValue(currentDayOrDate) : null,
+                            day: !isDate ? ExtractService.serializeValue(currentDayOrDate) : null,
                             time_from: ExtractService.serializeValue(time_from),
                             time_to: ExtractService.serializeValue(time_to),
                             location: ExtractService.serializeValue(currentLocation)
@@ -455,123 +384,69 @@ export default class ExtractInSISService {
     }
 
     /**
-     * Parses the "Prohlídka studijních programů" (Study Plans Overview) page.
-     * Extracts the URLs for specific faculties/departments.
+     * Extracts Faculty URLs from the Study Plans Overview page.
      */
     static extractStudyPlansFacultyURLs(html: string): string[] {
         const $ = cheerio.load(html)
         const urls: string[] = []
-
         $('.vyber-fakult a.fakulta').each((_, el) => {
             const href = $(el).attr('href')
             if (href) urls.push(this.normalizeUrl(href))
         })
-
         return [...new Set(urls)]
     }
 
     /**
-     * GENERIC NAVIGATION EXTRACTOR
      * Extracts URLs that drill down deeper into the hierarchy (Programs, Obors, Specializations),
-     * BUT excludes final Study Plan links.
-     * * Handles variable depth found in OZS, CESP, etc.
+     * excluding final Study Plan links.
      */
     static extractNavigationURLs(html: string): string[] {
         const $ = cheerio.load(html)
         const urls: string[] = []
 
-        // Target the "Prohlížet" (Browse) icon
         $('span[data-sysid="prohlizeni-info"]').each((_, el) => {
-            const anchor = $(el).closest('a')
-            const href = anchor.attr('href')
-
-            if (href) {
-                // If it contains 'stud_plan=', it is a LEAF (Plan), not a NODE (Navigation).
-                // We skip leaves here.
-                if (!href.includes('stud_plan=')) {
-                    urls.push(this.normalizeUrl(href))
-                }
+            const href = $(el).closest('a').attr('href')
+            if (href && !href.includes('stud_plan=')) {
+                urls.push(this.normalizeUrl(href))
             }
         })
-
         return [...new Set(urls)]
     }
 
     /**
-     * Parses the page (at any depth) to find final Study Plan URLs.
-     * Identified by the presence of the `stud_plan=` query parameter.
+     * Parses the page to find final Study Plan URLs.
      */
     static extractStudyPlanURLs(html: string): string[] {
         const $ = cheerio.load(html)
         const urls: string[] = []
 
-        // We look for the "Prohlížet" (Browse) icon
         $('span[data-sysid="prohlizeni-info"]').each((_, el) => {
-            const anchor = $(el).closest('a')
-            const href = anchor.attr('href')
-
-            // The presence of 'stud_plan=' confirms this is the final link
+            const href = $(el).closest('a').attr('href')
             if (href?.includes('stud_plan=')) {
                 urls.push(this.normalizeUrl(href))
             }
         })
-
         return [...new Set(urls)]
     }
 
-    /**
-     * Extracts the unique Study Plan ID from the given URL.
-     *
-     * @param url - The URL containing the `stud_plan` query parameter.
-     * @returns The extracted Study Plan ID as a number, or null if not found.
-     */
     static extractStudyPlanIdFromURL(url: string): number | null {
-        let id: number | null = null
-
-        const idRaw = /stud_plan=(\d+)/.exec(url)?.[1] ?? null
-        if (idRaw) id = parseInt(idRaw, 10)
-
-        return id
+        const idRaw = /stud_plan=(\d+)/.exec(url)?.[1]
+        return idRaw ? parseInt(idRaw, 10) : null
     }
 
-    // /**
-    //  * Parses the study plan page to extract all course syllabus URLs listed within that plan.
-    //  *
-    //  * @param html - The raw HTML content of the study plan page.
-    //  * @returns An array of absolute URLs leading to each course syllabus in the plan.
-    //  */
-    // static extractStudyPlanCourses(html: string): string[] {
-    //     const $ = cheerio.load(html)
-    //     const subjects: string[] = []
-    //
-    //     $('a[href*="../katalog/syllabus.pl?predmet="]').each((i, el) => {
-    //         const href = $(el).attr('href')
-    //
-    //         if (href) {
-    //             const fullUrl = this.baseCatalogUrl + href.replace('../katalog/', '')
-    //
-    //             subjects.push(fullUrl.trim().split(';')[0])
-    //         }
-    //     })
-    //
-    //     return [...new Set(subjects)]
-    // }
-
     /**
-     * Extracts details from the study plan.
-     * Automatically detects groups of subjects according to InSIS codes (e.g., oP, hP, cTVS)
-     * and assigns them a specific category within a single courses array.
+     * Extracts details from the study plan, categorizing subjects based on InSIS codes.
      */
     static extractStudyPlan(html: string, url: string): ScraperInSISStudyPlan {
         const $ = cheerio.load(html)
 
         const cleanText = (text: string | null): string => {
-            if (!text) return ''
             return text
-                .replace(/\u00A0/g, ' ')
-                .replace(/&nbsp;/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim()
+                ? text
+                      .replace(/\u00A0|&nbsp;/g, ' ')
+                      .replace(/\s+/g, ' ')
+                      .trim()
+                : ''
         }
 
         const getRowValue = (targetLabel: string): string | null => {
@@ -582,18 +457,14 @@ export default class ExtractInSISService {
                 const cellText = cleanText($(el).text()).toLowerCase()
                 if (cellText.includes(cleanTarget) && !foundValue) {
                     const nextCell = $(el).next('td')
-                    if (nextCell.length) {
-                        foundValue = cleanText(nextCell.text())
-                    }
+                    if (nextCell.length) foundValue = cleanText(nextCell.text())
                 }
             })
             return ExtractService.serializeValue(foundValue)
         }
 
         const id = this.extractStudyPlanIdFromURL(url)
-        if (id === null) {
-            throw new Error('Study Plan ID not found in the URL.')
-        }
+        if (id === null) throw new Error('Study Plan ID not found in the URL.')
 
         const faculty = getRowValue('Fakulta:')?.trim().toLowerCase().split(' (')[0] ?? null
         const semester = getRowValue('Počáteční období:')?.trim().split(' - ')[0].toUpperCase() ?? null
@@ -601,9 +472,7 @@ export default class ExtractInSISService {
         const mode_of_study = getRowValue('Forma:')?.trim().toLowerCase() ?? null
         const study_length = getRowValue('Délka studia:')?.trim().toLowerCase() ?? null
 
-        let rawTitle = getRowValue('Program:')?.trim() ?? null
-        rawTitle ??= getRowValue('Specializace:')?.trim() ?? null
-        rawTitle ??= cleanText($('h2').first().text())
+        const rawTitle = getRowValue('Program:')?.trim() ?? getRowValue('Specializace:')?.trim() ?? cleanText($('h2').first().text())
 
         let ident: string | null = null
         const title: string | null = ExtractService.serializeValue(rawTitle)
@@ -622,47 +491,36 @@ export default class ExtractInSISService {
             const rowEl = $(row)
             const text = cleanText(rowEl.text())
 
-            // 1. Detect Group Header (e.g., "oP - Povinné předměty")
+            // Detect Group Header
             const groupMatch = /^([a-zA-Z0-9]+)\s+-\s+/.exec(text)
             if (groupMatch) {
                 currentGroupCode = groupMatch[1]
             }
 
-            // 2. Detect Course Row
+            // Detect Course Row
             if (rowEl.hasClass('uis-hl-table')) {
                 const identCell = rowEl.find('td').first()
                 const courseIdent = cleanText(identCell.text())
-                const courseId = this.extractCourseIdFromURL(identCell.find('a').attr('href') ?? '')
-                const courseUrl = this.normalizeUrl(identCell.find('a').attr('href') ?? '')
+                const anchor = identCell.find('a')
+                const courseId = this.extractCourseIdFromURL(anchor.attr('href') ?? '')
+                const courseUrl = this.normalizeUrl(anchor.attr('href') ?? '')
 
                 if (courseIdent && courseIdent.length >= 3 && currentGroupCode) {
                     let category: ScraperInSISStudyPlanCourseCategory['category'] = 'optional'
 
-                    // Logic to determine category based on Group Code
-                    if (currentGroupCode.startsWith('cTVS')) {
-                        category = 'physical_education'
-                    } else if (currentGroupCode.startsWith('oJ') || currentGroupCode.startsWith('fJ') || currentGroupCode === 'sK') {
-                        category = 'language'
-                    } else if (currentGroupCode.includes('SZ')) {
-                        category = 'state_exam'
-                    } else if (['cVM', 'cVD', 'cVP', 'cVV'].includes(currentGroupCode)) {
-                        category = 'general_elective'
-                    } else if (
+                    if (currentGroupCode.startsWith('cTVS')) category = 'physical_education'
+                    else if (/^[of]J|^sK/.test(currentGroupCode)) category = 'language'
+                    else if (currentGroupCode.includes('SZ')) category = 'state_exam'
+                    else if (['cVM', 'cVD', 'cVP', 'cVV'].includes(currentGroupCode)) category = 'general_elective'
+                    else if (
                         currentGroupCode.endsWith('P') ||
                         currentGroupCode === 'oBP' ||
                         ['oP', 'hP', 'sP', 'fP', 'eP'].some(p => currentGroupCode?.startsWith(p))
-                    ) {
+                    )
                         category = 'compulsory'
-                    } else if (currentGroupCode.includes('V') || ['oV', 'hV', 'sV', 'fV', 'eV'].some(p => currentGroupCode?.startsWith(p))) {
-                        category = 'elective'
-                    }
+                    else if (currentGroupCode.includes('V') || ['oV', 'hV', 'sV', 'fV', 'eV'].some(p => currentGroupCode?.startsWith(p))) category = 'elective'
 
-                    courses.push({
-                        id: courseId,
-                        url: courseUrl,
-                        ident: courseIdent,
-                        category: category
-                    })
+                    courses.push({ id: courseId, url: courseUrl, ident: courseIdent, category })
                 }
             }
         })

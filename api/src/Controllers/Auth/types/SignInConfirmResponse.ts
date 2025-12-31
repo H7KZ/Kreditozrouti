@@ -1,18 +1,13 @@
 import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 
 /**
- *  representing a sign-in confirmation response
+ * Response structure containing the authenticated session data.
  *
  * @route 201 /auth/signin/confirm
  */
 export default interface SignInConfirmResponse {
-    /** The success status code indicating the user is signed in. */
     code: SuccessCodeEnum.SIGNED_IN
 
-    /**
-     * JSON Web Token (JWT) for authenticated access
-     *
-     * @type {string}
-     */
+    /** JSON Web Token (JWT) for authenticated access. */
     jwt: string
 }

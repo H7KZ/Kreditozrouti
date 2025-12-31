@@ -1,12 +1,6 @@
 import { CourseTable } from '@api/Database/types'
 import { Kysely } from 'kysely'
 
-/**
- * Applies the migration by updating column data types to `text`.
- * Replaces `mode_of_delivery` and `mode_of_completion` to allow unrestricted string length.
- *
- * @param mysql - The Kysely database instance used to execute schema queries.
- */
 export async function up(mysql: Kysely<any>): Promise<void> {
     await mysql.schema
         .alterTable(CourseTable._table)
@@ -17,12 +11,6 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .execute()
 }
 
-/**
- * Reverts the migration by restoring column data types to `varchar(255)`.
- * Restores `mode_of_delivery` and `mode_of_completion` to their original schema definitions.
- *
- * @param mysql - The Kysely database instance used to execute schema queries.
- */
 export async function down(mysql: Kysely<any>): Promise<void> {
     await mysql.schema
         .alterTable(CourseTable._table)

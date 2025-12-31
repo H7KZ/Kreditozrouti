@@ -1,5 +1,6 @@
 /**
- * Defines the request payload for initiating the sign-in process.
+ * Payload for initiating the sign-in process.
+ *
  * @route POST /auth/signin
  */
 export default interface SignInRequest {
@@ -7,11 +8,8 @@ export default interface SignInRequest {
     email: string
 
     /**
-     * The code challenge string for PKCE authentication
-     * Hashed using SHA-256 digested to HEX
-     *
-     * @type {string}
-     * @required
+     * The code challenge string for PKCE authentication.
+     * Must be a SHA-256 hash digested to HEX.
      */
     code_challenge: string
 }

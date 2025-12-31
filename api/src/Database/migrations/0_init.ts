@@ -1,16 +1,7 @@
 import { CategoryTable, EventCategoryTable, EventTable, UserTable } from '@api/Database/types'
 import { Kysely, sql } from 'kysely'
 
-/**
- * Applies the database schema migration.
- * Creates the User, Event, Category, and EventCategory tables with defined columns and constraints.
- *
- * @param mysql - The Kysely database instance used to execute schema queries.
- */
 export async function up(mysql: Kysely<any>): Promise<void> {
-    /**
-     * Creates the Users table with auto-incrementing ID and timestamp tracking.
-     */
     await mysql.schema
         .createTable(UserTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
@@ -19,9 +10,6 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .addColumn('email', 'varchar(255)', col => col.notNull().unique())
         .execute()
 
-    /**
-     * Creates the Events table for storing event metadata, descriptions, and media links.
-     */
     await mysql.schema
         .createTable(EventTable._table)
         .addColumn('id', 'varchar(255)', col => col.primaryKey())
@@ -41,18 +29,11 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .addColumn('substitute_url', 'varchar(1024)')
         .execute()
 
-    /**
-     * Creates the Categories table acting as a dictionary for event types.
-     */
     await mysql.schema
         .createTable(CategoryTable._table)
         .addColumn('id', 'varchar(255)', col => col.primaryKey())
         .execute()
 
-    /**
-     * Creates the junction table for the Many-to-Many relationship between Events and Categories.
-     * Includes cascading deletion constraints.
-     */
     await mysql.schema
         .createTable(EventCategoryTable._table)
         .addColumn('event_id', 'varchar(255)', col => col.notNull().references(`${EventTable._table}.id`).onDelete('cascade'))
@@ -60,12 +41,6 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .execute()
 }
 
-/**
- * Reverts the database schema migration.
- * Drops the User, Event, Category, and EventCategory tables.
- *
- * @param mysql - The Kysely database instance used to execute schema queries.
- */
 export async function down(mysql: Kysely<any>): Promise<void> {
     await mysql.schema.dropTable(UserTable._table).execute()
     await mysql.schema.dropTable(EventCategoryTable._table).execute()

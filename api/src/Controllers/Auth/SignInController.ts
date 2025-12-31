@@ -10,12 +10,12 @@ import SignInValidation from '@api/Validations/SignInValidation'
 import { Request, Response } from 'express'
 
 /**
- * Initiates the sign-in process by generating and sending a verification code.
- * Validates the email address, enforces domain restrictions, and handles code storage.
+ * Initiates the sign-in process.
  *
- * @param req - The Express request object containing the login credentials.
- * @param res - The Express response object.
- * @throws {Exception} If validation fails or the email domain is unauthorized.
+ * Validates the email, enforces domain allowlists, caches the PKCE challenge,
+ * and sends a 6-digit verification code to the user via email.
+ *
+ * @throws {Exception} 401 - If validation fails or the email domain is not authorized.
  */
 export default async function SignInController(req: Request, res: Response<SignInResponse>) {
     const result = await SignInValidation.safeParseAsync(req.body)
@@ -25,34 +25,35 @@ export default async function SignInController(req: Request, res: Response<SignI
     }
 
     const data = result.data as SignInRequest
+    const { email, code_challenge } = data
 
-    const isAllowed = data.email.endsWith('@vse.cz') || data.email === 'diar.4fis@gmail.com' || data.email.endsWith('@diar.4fis.cz')
+    // Domain authorization check
+    const isAllowed = email.endsWith('@vse.cz') || email === 'diar.4fis@gmail.com' || email.endsWith('@diar.4fis.cz')
 
     if (!isAllowed) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
-    await redis.del(`auth:email:${data.code_challenge}`)
-    await redis.del(`auth:challenge:${data.code_challenge}`)
-    await redis.del(`auth:code:${data.code_challenge}`)
+    // Clean up previous attempts for this challenge
+    await Promise.all([redis.del(`auth:email:${code_challenge}`), redis.del(`auth:challenge:${code_challenge}`), redis.del(`auth:code:${code_challenge}`)])
 
-    await redis.setex(`auth:email:${data.code_challenge}`, 600, data.email)
-    await redis.setex(`auth:challenge:${data.code_challenge}`, 600, data.code_challenge)
+    // Cache challenge context (TTL: 10 mins)
+    await redis.setex(`auth:email:${code_challenge}`, 600, email)
+    await redis.setex(`auth:challenge:${code_challenge}`, 600, code_challenge)
 
-    const code = Math.floor(100000 + Math.random() * 900000) // Generate a random 6 digit code
-    await redis.setex(`auth:code:${data.email}`, 600, code.toString())
+    const code = Math.floor(100000 + Math.random() * 900000)
+    await redis.setex(`auth:code:${email}`, 600, code.toString())
 
     i18n.init(req, res)
 
     const magicLink = Config.frontend.createURL(`/auth/signin/confirm?code=${code}`)
-
     const emailSignInTemplate = await EmailService.readTemplate('CodeEmail', {
         emailText: req.__('emails.signIn.body', { expiration: '10' }),
         link: magicLink
     })
 
     await EmailService.sendEmail({
-        to: data.email,
+        to: email,
         subject: req.__('emails.signIn.subject'),
         html: emailSignInTemplate
     })

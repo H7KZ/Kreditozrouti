@@ -3,12 +3,24 @@ import CoursesFilter from '@api/Interfaces/CoursesFilter'
 import StudyPlansFilter from '@api/Interfaces/StudyPlansFilter'
 import { sql } from 'kysely'
 
+/**
+ * Service for retrieving and filtering InSIS data (Courses, Study Plans)
+ * and generating associated facets for frontend search interfaces.
+ */
 export default class InSISService {
+    /**
+     * Retrieves a paginated list of Courses matching the provided filters.
+     */
     static async getCourses(filters: CoursesFilter, limit = 20, offset = 0) {
         const query = this.getBaseQuery(filters).selectAll('c').groupBy('c.id').limit(limit).offset(offset)
+
         return await query.execute()
     }
 
+    /**
+     * Aggregates all available facets for the Course catalog based on current filters.
+     * Executes multiple aggregation queries in parallel.
+     */
     static async getFacets(filters: CoursesFilter) {
         const [faculties, departments, days, lecturersRaw, languagesRaw, levels, semesters, time_range] = await Promise.all([
             this.getFacultyFacet(filters),
@@ -37,16 +49,16 @@ export default class InSISService {
     }
 
     /**
-     * Retrieves a paginated list of Study Plans matching the filters.
+     * Retrieves a paginated list of Study Plans matching the provided filters.
      */
     static async getStudyPlans(filters: StudyPlansFilter, limit = 20, offset = 0) {
-        const query = this.getStudyPlanBaseQuery(filters).selectAll('sp').limit(limit).offset(offset).orderBy('sp.ident', 'asc') // Default sort by code
+        const query = this.getStudyPlanBaseQuery(filters).selectAll('sp').limit(limit).offset(offset).orderBy('sp.ident', 'asc')
 
         return await query.execute()
     }
 
     /**
-     * Retrieves available facets for Study Plans (Faculty, Level, Mode, etc.)
+     * Aggregates all available facets for Study Plans.
      */
     static async getStudyPlanFacets(filters: StudyPlansFilter) {
         const [faculties, levels, modes_of_studies, semesters, study_lengths] = await Promise.all([
@@ -66,13 +78,17 @@ export default class InSISService {
         }
     }
 
+    /**
+     * Helper to process pipe-delimited facet values (e.g., "Lecturer A | Lecturer B").
+     * Splits values, counts occurrences, and optionally limits the results.
+     */
     private static processPipeFacet(data: { value: string | null; count: number }[], limit?: number) {
         const map = new Map<string, number>()
 
         for (const row of data) {
             if (!row.value) continue
-            const parts = row.value.split('|').filter(s => s.trim().length > 0)
 
+            const parts = row.value.split('|').filter(s => s.trim().length > 0)
             for (const part of parts) {
                 const trimmed = part.trim()
                 const currentCount = map.get(trimmed) ?? 0
@@ -171,7 +187,7 @@ export default class InSISService {
     }
 
     /**
-     * Generic helper to fetch counts for columns in the Study Plan table
+     * Generic helper to fetch counts for Study Plan columns.
      */
     private static async getPlanFacet(filters: StudyPlansFilter, column: keyof StudyPlansFilter & string) {
         return await this.getStudyPlanBaseQuery(filters, column)
@@ -183,6 +199,13 @@ export default class InSISService {
             .execute()
     }
 
+    /**
+     * Constructs the base Kysely query for Courses with all active filters applied.
+     * @param filters - The search criteria.
+     *
+     * @param filters - The search criteria.
+     * @param ignore - Optional filter key to exclude (used for facet calculations).
+     */
     private static getBaseQuery(filters: CoursesFilter, ignore?: keyof CoursesFilter) {
         let query = mysql
             .selectFrom('insis_courses as c')
@@ -191,18 +214,15 @@ export default class InSISService {
 
         const toArray = (val: string | string[]) => (Array.isArray(val) ? val : [val])
 
-        // 1. Study Plan ID
         if (filters.study_plan_id && ignore !== 'study_plan_id') {
             query = query.innerJoin('insis_study_plans_courses as spc', 'c.id', 'spc.course_id').where('spc.study_plan_id', '=', filters.study_plan_id)
         }
 
-        // 2. Semester
         if (filters.semester && ignore !== 'semester') {
             const vals = toArray(filters.semester)
             if (vals.length) query = query.where('c.semester', 'in', vals)
         }
 
-        // 3. Ident
         if (filters.ident && ignore !== 'ident') {
             const vals = toArray(filters.ident)
             if (vals.length) {
@@ -210,7 +230,6 @@ export default class InSISService {
             }
         }
 
-        // 4. Faculty
         if (filters.faculty && ignore !== 'faculty') {
             const vals = toArray(filters.faculty)
             if (vals.length) {
@@ -218,7 +237,6 @@ export default class InSISService {
             }
         }
 
-        // 5. Lecturer
         if (filters.lecturer && ignore !== 'lecturer') {
             const vals = toArray(filters.lecturer)
             if (vals.length) {
@@ -226,13 +244,11 @@ export default class InSISService {
             }
         }
 
-        // 6. Day of Week
         if (filters.day && ignore !== 'day') {
             const vals = toArray(filters.day)
             if (vals.length) query = query.where('s.day', 'in', vals)
         }
 
-        // 7. Time Range
         const ignoreTime = ignore === 'time_from' || ignore === 'time_to'
         if (filters.time_from && !ignoreTime) {
             query = query.where('s.time_from_minutes', '>=', filters.time_from)
@@ -241,7 +257,6 @@ export default class InSISService {
             query = query.where('s.time_to_minutes', '<=', filters.time_to)
         }
 
-        // 8. Language
         if (filters.language && ignore !== 'language') {
             const vals = toArray(filters.language)
             if (vals.length) {
@@ -249,7 +264,6 @@ export default class InSISService {
             }
         }
 
-        // 9. Level
         if (filters.level && ignore !== 'level') {
             const vals = toArray(filters.level)
             if (vals.length) query = query.where('c.level', 'in', vals)
@@ -258,12 +272,14 @@ export default class InSISService {
         return query
     }
 
+    /**
+     * Constructs the base Kysely query for Study Plans with all active filters applied.
+     */
     private static getStudyPlanBaseQuery(filters: StudyPlansFilter, ignore?: keyof StudyPlansFilter) {
         let query = mysql.selectFrom('insis_study_plans as sp')
 
         const toArray = (val: string | string[]) => (Array.isArray(val) ? val : [val])
 
-        // 1. Ident
         if (filters.ident && ignore !== 'ident') {
             const vals = toArray(filters.ident)
             if (vals.length) {
@@ -271,7 +287,6 @@ export default class InSISService {
             }
         }
 
-        // 2. Faculty
         if (filters.faculty && ignore !== 'faculty') {
             const vals = toArray(filters.faculty)
             if (vals.length) {
@@ -279,25 +294,21 @@ export default class InSISService {
             }
         }
 
-        // 3. Semester
         if (filters.semester && ignore !== 'semester') {
             const vals = toArray(filters.semester)
             if (vals.length) query = query.where('sp.semester', 'in', vals)
         }
 
-        // 4. Level
         if (filters.level && ignore !== 'level') {
             const vals = toArray(filters.level)
             if (vals.length) query = query.where('sp.level', 'in', vals)
         }
 
-        // 5. Mode of Study
         if (filters.mode_of_study && ignore !== 'mode_of_study') {
             const vals = toArray(filters.mode_of_study)
             if (vals.length) query = query.where('sp.mode_of_study', 'in', vals)
         }
 
-        // 6. Study Length
         if (filters.study_length && ignore !== 'study_length') {
             const vals = toArray(filters.study_length)
             if (vals.length) query = query.where('sp.study_length', 'in', vals)

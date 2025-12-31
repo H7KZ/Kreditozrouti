@@ -21,6 +21,9 @@ type AllTableClasses =
     | typeof StudyPlanTable
     | typeof StudyPlanCourseTable
 
+/**
+ * Master mapping of table names to Kysely table interfaces.
+ */
 export type Database = {
     [T in AllTableClasses as T['_table']]: InstanceType<T>
 }

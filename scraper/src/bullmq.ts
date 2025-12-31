@@ -12,23 +12,12 @@ const ScraperResponseQueue = 'ScraperResponseQueue'
  * Handles queue initialization and the worker responsible for executing scrape requests.
  */
 const scraper = {
-    /**
-     * Collection of message queues for job dispatching.
-     */
     queue: {
-        /** Queue for receiving scraping tasks. */
         request: new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis }),
-        /** Queue for dispatching scrape results back to the API. */
         response: new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis })
     },
-    /**
-     * Collection of workers for processing job execution.
-     */
+
     worker: {
-        /**
-         * Worker that processes incoming scrape requests.
-         * Configured with concurrency: 1 to process jobs serially.
-         */
         request: new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestHandler, { connection: redis, concurrency: 1 })
         // response: new Worker<ScraperResponseJobInterface>(ScraperResponseQueue, ScraperResponseJobHandler, { connection: redis })
     },

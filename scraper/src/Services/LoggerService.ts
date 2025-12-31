@@ -1,3 +1,6 @@
+/**
+ * Simple logger wrapper to prefix messages with context.
+ */
 export default class LoggerService {
     private readonly prefix: string
 
@@ -15,7 +18,6 @@ export default class LoggerService {
 
     error(message: string, error?: Error | unknown) {
         console.error(`${this.prefix} ${message}`)
-
         if (error) console.error(error)
     }
 }
