@@ -49,6 +49,7 @@
     "@schedule-x/calendar": "^3.5.0",
     "@schedule-x/events-service": "^3.5.0",
     "@schedule-x/react": "^3.4.0",
+    "react-snowfall": "^2.4.0",
     "@schedule-x/theme-default": "^3.5.0",
     "@tanstack/react-router": "^1.139.12",
     "i18next": "^25.6.3",

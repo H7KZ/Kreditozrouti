@@ -3,7 +3,7 @@ import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 /**
  * Response structure containing the authenticated session data.
  *
- * @route 201 /auth/signin/confirm
+ * @route POST /auth/signin/confirm
  */
 export default interface SignInConfirmResponse {
     code: SuccessCodeEnum.SIGNED_IN

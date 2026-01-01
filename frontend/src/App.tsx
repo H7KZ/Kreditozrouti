@@ -1,4 +1,4 @@
-import LoginPage from "$frontend/pages/LoginPage"
+import LoginPage from "@frontend/pages/LoginPage"
 import LanguageSwitcher from "./components/LanguageSwitcher"
 
 function App() {

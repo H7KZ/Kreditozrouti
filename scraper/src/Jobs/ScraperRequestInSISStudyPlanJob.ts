@@ -1,4 +1,4 @@
-import { scraper } from '@scraper/bullmq'
+import scraper from '@scraper/bullmq'
 import { ScraperInSISStudyPlanRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISService from '@scraper/Services/Extractors/ExtractInSISService'
 import LoggerService from '@scraper/Services/LoggerService'
