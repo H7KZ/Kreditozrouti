@@ -1,11 +1,9 @@
 import { redis } from '@scraper/clients'
 import ScraperRequestHandler from '@scraper/Handlers/ScraperRequestHandler'
+import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/Interfaces/ScraperQueue'
 import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
 import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
 import { Queue, Worker } from 'bullmq'
-
-const ScraperRequestQueue = 'ScraperRequestQueue'
-const ScraperResponseQueue = 'ScraperResponseQueue'
 
 /**
  * Manages the BullMQ infrastructure specifically for the scraper service.
@@ -41,4 +39,4 @@ const scraper = {
     }
 }
 
-export { ScraperRequestQueue, ScraperResponseQueue, scraper }
+export default scraper

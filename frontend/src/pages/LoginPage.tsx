@@ -2,11 +2,11 @@ import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import Snowfall from "react-snowfall"
-import LanguageSwitcher from "@/components/LanguageSwitcher"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useAuth } from "@/contexts/AuthContext"
+import LanguageSwitcher from "@frontend/components/LanguageSwitcher"
+import { Button } from "@frontend/components/ui/button"
+import { Input } from "@frontend/components/ui/input"
+import { Label } from "@frontend/components/ui/label"
+import { useAuth } from "@frontend/contexts/AuthContext"
 
 // ============================================================================
 // Helpers (outside component to avoid recreation on every render)
@@ -124,8 +124,8 @@ function useLoginFlow(): UseLoginFlowReturn {
     setError("")
 
     try {
-      await signInConfirm(`${normalizedXname}@vse.cz`, rawCode)
-      navigate({ to: "/calendar" })
+      await signInConfirm(rawCode)
+      await navigate({ to: "/calendar" })
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Invalid verification code"
       setError(errorMessage)

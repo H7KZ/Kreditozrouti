@@ -2,7 +2,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { ArrowLeft, Mail, User } from "lucide-react"
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
-import LanguageSwitcher from "@/components/LanguageSwitcher"
+import LanguageSwitcher from "@frontend/components/LanguageSwitcher"
 
 const PersonalProfilePage: React.FC = () => {
   const navigate = useNavigate()

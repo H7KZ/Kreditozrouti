@@ -1,27 +1,24 @@
-import { sha256 } from "js-sha256"
-
 /**
- * Generate a random code verifier (43-128 characters, base64url)
+ * Generates a high-entropy cryptographic random string (Code Verifier).
+ * Compliant with PKCE standard (128 chars).
  */
 export function generateCodeVerifier(): string {
-  const array = new Uint8Array(32)
-  crypto.getRandomValues(array)
-  return base64UrlEncode(array)
+  const length = 64 // 64 bytes * 2 (hex) = 128 chars
+  const array = new Uint8Array(length)
+
+  window.crypto.getRandomValues(array)
+  return Array.from(array, byte => byte.toString(16).padStart(2, "0")).join("")
 }
 
 /**
- * Generate code challenge from verifier (SHA256 hash, base64url)
+ * Generates the Code Challenge from the Verifier.
  */
-export function generateCodeChallenge(verifier: string): string {
-  const hashed = sha256(verifier)
-  const bytes = new Uint8Array(hashed.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)))
-  return base64UrlEncode(bytes)
-}
+export async function generateCodeChallenge(verifier: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(verifier)
+  const hashBuffer = await window.crypto.subtle.digest("SHA-256", data)
 
-/**
- * Base64 URL encode (RFC 4648 §5)
- */
-function base64UrlEncode(buffer: Uint8Array): string {
-  const base64 = btoa(String.fromCharCode(...buffer))
-  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
+  // Convert buffer to Hex string
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("")
 }

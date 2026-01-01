@@ -1,9 +1,9 @@
 import { createRoute, Navigate } from "@tanstack/react-router"
 import { useAuth } from "@frontend/contexts/AuthContext"
-import LoginPage from "@frontend/pages/LoginPage"
+import SignInConfirmPage from "@frontend/pages/SignInConfirmPage.tsx"
 import { Route as RootRoute } from "./__root"
 
-function LoginRouteComponent() {
+function SignInConfirmRouteComponent() {
   const { isAuthenticated } = useAuth()
 
   // Redirect to calendar if already logged in
@@ -11,11 +11,11 @@ function LoginRouteComponent() {
     return <Navigate to="/calendar" replace />
   }
 
-  return <LoginPage />
+  return <SignInConfirmPage />
 }
 
 export const Route = createRoute({
   getParentRoute: () => RootRoute,
-  path: "/",
-  component: LoginRouteComponent
+  path: "/auth/signin/confirm",
+  component: SignInConfirmRouteComponent
 })

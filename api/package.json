@@ -8,14 +8,14 @@
         "build": "tsc && tsc-alias",
         "lint": "eslint ./src --ext .ts,.js",
         "format": "prettier --write .",
-        "preview": "node dist/src/index.js",
-        "prisma:studio": "prisma studio --url mysql://root:root@127.0.0.1:43306/diar-4fis"
+        "preview": "node dist/src/index.js"
     },
     "dependencies": {
         "axios": "^1.13.2",
         "body-parser": "^2.2.1",
         "bullmq": "^5.66.0",
         "compression": "^1.8.1",
+        "connect-redis": "^9.0.0",
         "cors": "^2.8.5",
         "dotenv": "^17.2.3",
         "express": "^5.2.1",

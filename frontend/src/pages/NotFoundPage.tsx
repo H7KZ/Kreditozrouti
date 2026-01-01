@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
-import { Button } from "@/components/ui/button"
+import { Button } from "@frontend/components/ui/button"
 
 export default function NotFoundPage() {
   const navigate = useNavigate()

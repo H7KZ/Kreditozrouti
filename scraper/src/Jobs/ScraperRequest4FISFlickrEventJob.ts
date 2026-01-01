@@ -1,4 +1,4 @@
-import { scraper } from '@scraper/bullmq'
+import scraper from '@scraper/bullmq'
 import Scraper4FISEvent from '@scraper/Interfaces/Scraper4FISEvent'
 import { Scraper4FISFlickrEventRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import Extract4FISFlickrService from '@scraper/Services/Extractors/Extract4FISFlickrService'

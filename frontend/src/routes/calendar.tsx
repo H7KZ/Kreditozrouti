@@ -1,8 +1,8 @@
 import { createRoute, Navigate, useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { useAuth } from "@/contexts/AuthContext"
-import CalendarPage from "@/pages/CalendarPage"
+import { Button } from "@frontend/components/ui/button"
+import { useAuth } from "@frontend/contexts/AuthContext"
+import CalendarPage from "@frontend/pages/CalendarPage"
 import { Route as RootRoute } from "./__root"
 
 function CalendarRouteComponent() {
@@ -35,7 +35,7 @@ function CalendarRouteComponent() {
       <div className="flex items-center justify-between border-b border-gray-200 bg-white p-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Diář Fisáka</h1>
-          <p className="text-sm text-gray-600">{user?.email}</p>
+          <p className="text-sm text-gray-600">user #{user?.userId}</p>
         </div>
         <div className="flex items-center gap-3">
           {signOutError && <p className="text-sm text-red-600">{signOutError}</p>}

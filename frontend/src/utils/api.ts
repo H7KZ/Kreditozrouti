@@ -1,4 +1,4 @@
-import AuthService from "@/services/AuthService"
+import AuthService from "@frontend/services/AuthService"
 
 function getApiBase(): string {
   const url = import.meta.env.VITE_API_URL
@@ -17,7 +17,7 @@ function getApiBase(): string {
 const API_BASE = getApiBase()
 
 export async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const token = AuthService.getAccessToken()
+  const token = AuthService.getToken()
 
   const headers = {
     "Content-Type": "application/json",

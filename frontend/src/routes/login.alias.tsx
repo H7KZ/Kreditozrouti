@@ -1,6 +1,6 @@
 import { createRoute, Navigate } from "@tanstack/react-router"
-import { useAuth } from "@/contexts/AuthContext"
-import LoginPage from "@/pages/LoginPage"
+import { useAuth } from "@frontend/contexts/AuthContext"
+import LoginPage from "@frontend/pages/LoginPage"
 import { Route as RootRoute } from "./__root"
 
 function LoginAliasRouteComponent() {

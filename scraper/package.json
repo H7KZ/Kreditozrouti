@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "main": "index.js",
     "scripts": {
-        "postinstall": "pnpx puppeteer browsers install chrome",
+        "postinstall": "npx puppeteer browsers install chrome",
         "dev": "dotenv -e ../.env -- tsx --watch src --exec ts-node -r tsconfig-paths/register src/index.ts --",
         "build": "tsc && tsc-alias",
         "lint": "eslint ./src --ext .ts,.js",

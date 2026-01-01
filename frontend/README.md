@@ -208,7 +208,7 @@ export const authService = {
 ```typescript
 // src/routes/__root.tsx
 import { createRootRouteWithContext } from "@tanstack/react-router"
-import { authService } from "@/lib/auth"
+import { authService } from "@frontend/lib/auth"
 
 interface RouterContext {
   auth: typeof authService
@@ -261,7 +261,7 @@ export const Route = createFileRoute('/_authenticated')({
 ```typescript
 // src/routes/_authenticated/calendar.tsx
 import { createFileRoute } from '@tanstack/react-router'
-import CalendarPage from '@/pages/CalendarPage'
+import CalendarPage from '@frontend/pages/CalendarPage'
 
 export const Route = createFileRoute('/_authenticated/calendar')({
   component: CalendarPage

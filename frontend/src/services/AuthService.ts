@@ -1,191 +1,165 @@
-import { generateCodeChallenge, generateCodeVerifier } from "@/utils/pkce"
+import type SignInConfirmRequest from "@api/Controllers/Auth/types/SignInConfirmRequest.ts"
+import type SignInConfirmResponse from "@api/Controllers/Auth/types/SignInConfirmResponse.ts"
+import type SignInRequest from "@api/Controllers/Auth/types/SignInRequest.ts"
+import { generateCodeChallenge, generateCodeVerifier } from "@frontend/utils/pkce"
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:40080"
 
-// PKCE spec: 43-128 chars, unreserved chars only
-function isValidCodeVerifier(verifier: string): boolean {
-  return /^[A-Za-z0-9\-._~]{43,128}$/.test(verifier)
-}
-
-// Check if token is expired
-function isTokenExpired(token: string | null): boolean {
-  if (!token) return true
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]))
-    return payload.exp * 1000 < Date.now()
-  } catch {
-    return true
-  }
-}
-
-interface SignInResponse {
-  code: string
-}
-
-interface SignInConfirmResponse {
-  code: string
-  accessToken: string
-  refreshToken: string
-  user: {
-    id: number
-    email: string
-  }
+export interface User {
+  userId: number
+  iat: number
+  iss: string
+  aud: string
+  exp: number
 }
 
 class AuthService {
+  private static STORAGE_KEYS = {
+    ACCESS_TOKEN: "auth_jwt",
+    CODE_VERIFIER: "auth_code_verifier",
+    SIGNIN_EMAIL: "auth_signin_email"
+  }
+
   /**
-   * Step 1: Request sign-in (generates PKCE challenge, sends email with 6-digit code)
+   * Step 1: Request Login
+   * Generates PKCE challenge and requests the verification code.
    */
-  async signIn(email: string): Promise<SignInResponse> {
-    // Clear any previous attempt
-    sessionStorage.removeItem("code_verifier")
-    sessionStorage.removeItem("signin_email")
+  async signIn(email: string): Promise<void> {
+    this.clearSessionData()
 
-    // Generate PKCE challenge
-    const codeVerifier = generateCodeVerifier()
-    const codeChallenge = generateCodeChallenge(codeVerifier)
+    const verifier = generateCodeVerifier()
+    const challenge = await generateCodeChallenge(verifier)
 
-    // Store verifier in sessionStorage (needed for step 2)
-    sessionStorage.setItem("code_verifier", codeVerifier)
-    sessionStorage.setItem("signin_email", email)
+    localStorage.setItem(AuthService.STORAGE_KEYS.CODE_VERIFIER, verifier)
+    localStorage.setItem(AuthService.STORAGE_KEYS.SIGNIN_EMAIL, email)
 
-    try {
-      const response = await fetch(`${API_BASE}/auth/signin`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, code_challenge: codeChallenge })
-      })
+    const response = await fetch(`${API_BASE}/auth/signin`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        code_challenge: challenge
+      } as SignInRequest)
+    })
 
-      if (!response.ok) {
-        let errorMessage = "Sign-in failed"
-        try {
-          const error = await response.json()
-          errorMessage = error.message || errorMessage
-        } catch {
-          errorMessage = `HTTP ${response.status}: ${response.statusText}`
-        }
-        sessionStorage.removeItem("code_verifier")
-        sessionStorage.removeItem("signin_email")
-        throw new Error(errorMessage)
-      }
-
-      return response.json()
-    } catch (err) {
-      // Clear storage on error
-      sessionStorage.removeItem("code_verifier")
-      sessionStorage.removeItem("signin_email")
-      throw err
+    if (!response.ok) {
+      this.clearSessionData()
+      throw await this.handleError(response)
     }
   }
 
   /**
-   * Step 2: Confirm sign-in with 6-digit code (verifies PKCE, returns JWT tokens)
+   * Step 2: Confirm Login
+   * Exchanges the code and verifier for a JWT.
    */
-  async signInConfirm(email: string, code: string): Promise<SignInConfirmResponse> {
-    const codeVerifier = sessionStorage.getItem("code_verifier")
+  async signInConfirm(code: string): Promise<User> {
+    const verifier = localStorage.getItem(AuthService.STORAGE_KEYS.CODE_VERIFIER)
 
-    if (!codeVerifier) {
-      throw new Error("No code verifier found. Please request a new sign-in code.")
-    }
-
-    // Validate code verifier format
-    if (!isValidCodeVerifier(codeVerifier)) {
-      sessionStorage.removeItem("code_verifier")
-      sessionStorage.removeItem("signin_email")
-      throw new Error("Invalid code verifier. Please request a new sign-in code.")
+    if (!verifier) {
+      throw new Error("Missing request context. Please try logging in again.")
     }
 
     const response = await fetch(`${API_BASE}/auth/signin/confirm`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ email, code, code_verifier: codeVerifier })
+      body: JSON.stringify({
+        auth_code: code,
+        code_verifier: verifier
+      } as SignInConfirmRequest)
     })
 
     if (!response.ok) {
-      let errorMessage = "Verification failed"
-      try {
-        const error = await response.json()
-        errorMessage = error.message || errorMessage
-      } catch {
-        errorMessage = `HTTP ${response.status}: ${response.statusText}`
-      }
-      throw new Error(errorMessage)
+      throw await this.handleError(response)
     }
 
     const data: SignInConfirmResponse = await response.json()
 
-    // Store tokens securely
-    localStorage.setItem("access_token", data.accessToken)
-    localStorage.setItem("refresh_token", data.refreshToken)
-    localStorage.setItem("user", JSON.stringify(data.user))
+    localStorage.setItem(AuthService.STORAGE_KEYS.ACCESS_TOKEN, data.jwt)
+    this.clearSessionData()
 
-    // Clean up session storage
-    sessionStorage.removeItem("code_verifier")
-    sessionStorage.removeItem("signin_email")
-
-    return data
+    return this.getUserFromToken(data.jwt)!
   }
 
   /**
-   * Sign out (invalidate tokens on server, clear local storage)
+   * Sign Out
    */
   async signOut(): Promise<void> {
-    const token = localStorage.getItem("access_token")
+    const token = this.getToken()
 
     if (token) {
       try {
         await fetch(`${API_BASE}/auth/signout`, {
           method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          credentials: "include"
+          headers: { Authorization: `Bearer ${token}` }
         })
-      } catch {
-        console.error("Sign-out request failed")
+      } catch (e) {
+        console.warn("Server-side logout failed", e)
       }
     }
 
-    // Clear local storage
-    localStorage.removeItem("access_token")
-    localStorage.removeItem("refresh_token")
-    localStorage.removeItem("user")
+    localStorage.removeItem(AuthService.STORAGE_KEYS.ACCESS_TOKEN)
+    window.location.href = "/login"
   }
 
   /**
-   * Get current user from localStorage
+   * Utility: Get Token
    */
-  getCurrentUser() {
-    const user = localStorage.getItem("user")
-    return user ? JSON.parse(user) : null
+  getToken(): string | null {
+    return localStorage.getItem(AuthService.STORAGE_KEYS.ACCESS_TOKEN)
   }
 
   /**
-   * Check if user is authenticated
+   * Utility: Check if authenticated
    */
   isAuthenticated(): boolean {
-    return !!localStorage.getItem("access_token")
+    const token = this.getToken()
+    if (!token) return false
+
+    const user = this.getUserFromToken(token)
+    if (!user || (user.exp && user.exp * 1000 < Date.now())) {
+      this.signOut() // Auto cleanup
+      return false
+    }
+    return true
   }
 
   /**
-   * Get access token for API requests
+   * Utility: Decode JWT payload
    */
-  getAccessToken(): string | null {
-    const token = localStorage.getItem("access_token")
-    // Check if token is expired
-    if (token && isTokenExpired(token)) {
-      this.signOut()
+  getUser(): User | null {
+    const token = this.getToken()
+    return token ? this.getUserFromToken(token) : null
+  }
+
+  private getUserFromToken(token: string): User | null {
+    try {
+      const base64Url = token.split(".")[1]
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/")
+      const jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split("")
+          .map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      )
+      return JSON.parse(jsonPayload)
+    } catch {
       return null
     }
-    return token
   }
 
-  /**
-   * Check if token is expired without clearing it
-   */
-  isTokenExpired(token: string | null = null): boolean {
-    const accessToken = token || localStorage.getItem("access_token")
-    return isTokenExpired(accessToken)
+  private async handleError(response: Response): Promise<Error> {
+    try {
+      const errorData = await response.json()
+      return new Error(errorData.message || `Error ${response.status}`)
+    } catch {
+      return new Error(`HTTP Error ${response.status}`)
+    }
+  }
+
+  private clearSessionData() {
+    localStorage.removeItem(AuthService.STORAGE_KEYS.CODE_VERIFIER)
+    localStorage.removeItem(AuthService.STORAGE_KEYS.SIGNIN_EMAIL)
   }
 }
 

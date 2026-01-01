@@ -1,6 +1,6 @@
 import cluster from 'cluster'
+import scraper from '@scraper/bullmq'
 import { redis } from '@scraper/clients'
-import { scraper } from './bullmq'
 
 const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
