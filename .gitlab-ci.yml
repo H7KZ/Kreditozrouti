@@ -46,15 +46,12 @@ verify_code:
   stage: deploy
   image: ubuntu:latest
   before_script:
-    - apt-get update -y && apt-get install -y openssh-client git dos2unix
+    - apt-get update -y && apt-get install -y openssh-client git
     - eval $(ssh-agent -s)
+    # Decode the Base64 key and add it to the agent
+    - echo "$SSH_PRIVATE_KEY" | base64 -d | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | base64 -d | tr -d '\r' > /tmp/ssh_key
-    - chmod 600 /tmp/ssh_key
-    - dos2unix /tmp/ssh_key
-    - ssh-add /tmp/ssh_key
-    - rm /tmp/ssh_key
     - echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
 
