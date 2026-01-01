@@ -1,6 +1,5 @@
 # .gitlab-ci.yml
 
-
 stages:
   - verify
   - deploy
@@ -30,7 +29,13 @@ verify_code:
     - make build
     - echo "✅ Verification successful!"
   rules:
+    # 1. RUN on Merge Requests
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    # 2. DO NOT RUN on standard branch pushes (main/develop)
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      when: never
 
 
 
