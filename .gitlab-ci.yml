@@ -44,30 +44,13 @@ verify_code:
   stage: deploy
   image: ubuntu:latest
   before_script:
-    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client wget gnupg -y )'
-    - wget -qO- https://get.docker.com/gpg | apt-key add -
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - touch ~/.ssh/config
-    - touch ~/.ssh/known_hosts
-    - chmod -R 400 ~/.ssh
-    - ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts
-    - '[[ -f /.dockerinit ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
-#    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client git -y )'
-#    - eval $(ssh-agent -s)
-#    - mkdir -p ~/.ssh
-#    - chmod 700 ~/.ssh
-#    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | base64 -d > ~/.ssh/id_rsa
-#    - chmod 600 ~/.ssh/id_rsa
-#    # Append a newline to the file.
-#    # OpenSSH often fails with "libcrypto" or "invalid format" if this is missing.
-#    - echo "" >> ~/.ssh/id_rsa
-#    - ssh-add ~/.ssh/id_rsa
-#    - ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts
-#    - chmod 644 ~/.ssh/known_hosts
-#    -
+    - apt-get -yq update
+    - apt-get -yqq install ssh
+    - install -m 600 -D /dev/null ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+    - ssh-keyscan -p $SSH_PORT $SSH_HOST > ~/.ssh/known_hosts
+  after_script:
+    - rm -rf ~/.ssh
 
 
 
