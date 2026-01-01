@@ -7,7 +7,7 @@
 **/.env*
 **/.gitignore
 **/.gitlab-ci.yml
-**/deployment.sh
+**/environment.sh
 **/compose.yml
 **/docker-compose*.yml
 **/Makefile

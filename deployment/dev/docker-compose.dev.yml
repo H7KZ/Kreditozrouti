@@ -1,0 +1,391 @@
+services:
+
+  # ================================================================ #
+  # API SERVICE
+
+  api:
+    image: diar-4fis-api
+
+    env_file:
+      - ../../.env
+
+    build:
+      context: ../..
+      dockerfile: ../../api/Dockerfile
+
+    # volumes:
+    #   - api-uploads-dev-volume:/usr/src/uploads
+
+    depends_on:
+      - mysql
+      - redis
+
+    environment:
+      - ENV=development
+      - API_PORT=80
+      - API_URI=https://${DOMAIN}/api
+      - API_DOMAIN=${DOMAIN}
+      - API_ALLOWED_ORIGINS=https://${DOMAIN}
+      - API_SESSION_SECRET=${API_SESSION_SECRET}
+      - API_FILE_DESTINATION=/usr/src/uploads
+      - GOOGLE_USER=${GOOGLE_USER}
+      - GOOGLE_APP_PASSWORD=${GOOGLE_APP_PASSWORD}
+      - FRONTEND_URI=https://${DOMAIN}
+      - MYSQL_URI=${MYSQL_URI}
+      - REDIS_URI=${REDIS_URI}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+    networks:
+      - traefik-network
+      - mysql-dev-network
+      - redis-dev-network
+
+    # ports:
+    #   - 80:80
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)
+      - traefik.http.routers.${PROJECT}-api.entrypoints=websecure
+      - traefik.http.routers.${PROJECT}-api.tls=true
+      - traefik.http.routers.${PROJECT}-api.tls.certresolver=letsencrypt
+      - traefik.http.services.${PROJECT}-api.loadbalancer.server.port=80
+
+      - traefik.http.routers.${PROJECT}-api.middlewares=${PROJECT}-api-stripprefix,${PROJECT}-api-redirect-www
+      - traefik.http.middlewares.${PROJECT}-api-stripprefix.stripprefix.prefixes=/api
+      - traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}
+
+    deploy:
+      mode: replicated
+      replicas: 2
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 1
+          memory: 1024M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+  # SCRAPER SERVICE
+
+  scraper:
+    image: diar-4fis-scraper
+
+    env_file:
+      - ../../.env
+
+    build:
+      context: ../..
+      dockerfile: ../../scraper/Dockerfile
+
+    depends_on:
+      - redis
+
+    environment:
+      - ENV=production
+      - REDIS_URI=${REDIS_URI}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+    networks:
+      - redis-dev-network
+
+    deploy:
+      mode: replicated
+      replicas: 3
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+  # FRONTEND SERVICE
+
+  frontend:
+    image: diar-4fis-frontend
+
+    env_file:
+      - ../../.env
+
+    build:
+      context: ../..
+      dockerfile: ../../frontend/Dockerfile
+
+    depends_on:
+      - api
+
+    environment:
+      - ENV=development
+
+    networks:
+      - traefik-network
+
+    # ports:
+    #   - 80:80
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-frontend.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.${PROJECT}-frontend.entrypoints=websecure
+      - traefik.http.routers.${PROJECT}-frontend.tls=true
+      - traefik.http.routers.${PROJECT}-frontend.tls.certresolver=letsencrypt
+      - traefik.http.services.${PROJECT}-frontend.loadbalancer.server.port=80
+
+      - traefik.http.routers.${PROJECT}-frontend.middlewares=${PROJECT}-frontend-stripprefix,${PROJECT}-frontend-redirect-www
+      - traefik.http.middlewares.${PROJECT}-frontend-stripprefix.stripprefix.prefixes=/
+      - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.replacement=https://$${1}
+
+    deploy:
+      mode: replicated
+      replicas: 3
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 1
+          memory: 512M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+  # MYSQL DATABASE
+
+  mysql:
+    image: mysql:9.5.0
+
+    env_file:
+      - ../../.env
+
+    volumes:
+      - mysql-data-dev-volume:/var/lib/mysql
+
+    environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+    networks:
+      - mysql-dev-network
+
+    # ports:
+    #   - 3306:3306
+
+    deploy:
+      mode: global
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 1
+          memory: 2048M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+  # PHPMYADMIN INTERFACE
+
+  phpmyadmin:
+    image: phpmyadmin
+
+    env_file:
+      - ../../.env
+
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+      - PMA_USER=${MYSQL_USER}
+      - PMA_PASSWORD=${MYSQL_PASSWORD}
+
+    # ports:
+    #   - 80:80
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-phpmyadmin.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)
+      - traefik.http.routers.${PROJECT}-phpmyadmin.entrypoints=websecure
+      - traefik.http.routers.${PROJECT}-phpmyadmin.tls=true
+      - traefik.http.routers.${PROJECT}-phpmyadmin.tls.certresolver=letsencrypt
+      - traefik.http.services.${PROJECT}-phpmyadmin.loadbalancer.server.port=80
+
+      - traefik.http.routers.${PROJECT}-phpmyadmin.middlewares=${PROJECT}-phpmyadmin-stripprefix,${PROJECT}-phpmyadmin-redirect-www
+      - traefik.http.middlewares.${PROJECT}-phpmyadmin-stripprefix.stripprefix.prefixes=/
+      - traefik.http.middlewares.${PROJECT}-phpmyadmin-redirect-www.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares.${PROJECT}-phpmyadmin-redirect-www.redirectregex.replacement=https://$${1}
+
+    deploy:
+      mode: global
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+  # REDIS CACHE
+
+  redis:
+    image: redis:8.4.0-alpine
+
+    env_file:
+      - ../../.env
+
+    command: [
+      "--save", "20", "1",
+      "--loglevel", "warning",
+      "--requirepass", "${REDIS_PASSWORD}"
+    ]
+
+    networks:
+      - redis-dev-network
+
+    # ports:
+    #   - 6379:6379
+
+    deploy:
+      mode: global
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 1024M
+
+    restart: unless-stopped

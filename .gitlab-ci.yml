@@ -1,6 +1,5 @@
 # .gitlab-ci.yml
 
-
 stages:
   - verify
   - deploy
@@ -30,7 +29,13 @@ verify_code:
     - make build
     - echo "✅ Verification successful!"
   rules:
+    # 1. RUN on Merge Requests
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    # 2. DO NOT RUN on standard branch pushes (main/develop)
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      when: never
 
 
 
@@ -41,10 +46,11 @@ verify_code:
   before_script:
     - apt-get update -y && apt-get install -y openssh-client git
     - eval $(ssh-agent -s)
-    # Decode the Base64 key and add it to the agent
-    - echo "$SSH_PRIVATE_KEY" | base64 -d | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | base64 -d > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-add ~/.ssh/id_rsa
     - echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
 
@@ -57,12 +63,12 @@ deploy_to_production:
     - ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST "rm -rf /$SSH_USERNAME/diar-4fis"
     - scp -r -P $SSH_PORT ./* $SSH_USERNAME@$SSH_HOST:/$SSH_USERNAME/diar-4fis/
     - |
-        ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
-        set -e
-        cd ~/diar-4fis
-        cp ~/.env.prod ./.env
-        bash ./deployment.sh diar-4fis prod
-        EOF
+      ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
+      set -e
+      cd ~/diar-4fis
+      cp ~/.env.prod ./.env
+      bash ./deployment/environment.sh diar-4fis prod
+      EOF
   rules:
     # This job runs ONLY for version tags (e.g., v1.2.3).
     - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
@@ -77,12 +83,12 @@ deploy_to_development:
     - ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST "rm -rf ~/diar-4fis-dev"
     - scp -r -P $SSH_PORT ./* $SSH_USERNAME@$SSH_HOST:~/diar-4fis-dev/
     - |
-        ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
-        set -e
-        cd ~/diar-4fis-dev
-        cp ~/.env.dev ./.env
-        bash ./deployment.sh diar-4fis-dev dev
-        EOF
+      ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
+      set -e
+      cd ~/diar-4fis-dev
+      cp ~/.env.dev ./.env
+      bash ./deployment/environment.sh diar-4fis-dev dev
+      EOF
   rules:
-    # This job runs ONLY on pushes to the 'develop' branch.
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    # This job runs ONLY for development tags (e.g., dev-1.2.3).
+    - if: '$CI_COMMIT_TAG =~ /^dev-[0-9]+\.[0-9]+\.[0-9]+$/'

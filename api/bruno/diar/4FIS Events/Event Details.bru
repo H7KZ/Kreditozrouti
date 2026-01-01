@@ -1,0 +1,32 @@
+meta {
+  name: Event Details
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:40080/events/:eventId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  eventId: 
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  ## Success Response (200):
+  
+  `api/src/Controllers/Event/types/EventResponse.ts`
+  
+  ```json
+  {
+    events: Event
+  }
+  ```
+}

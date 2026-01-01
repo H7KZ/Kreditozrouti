@@ -1,0 +1,28 @@
+meta {
+  name: Sign Out
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:40080/auth/signout
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  ## Success Response (201):
+  
+  `api/src/Controllers/Auth/types/SignOutResponse.ts`
+  
+  ```´json
+  {
+    code: SuccessCodeEnum.SIGNED_OUT
+  }
+  ```
+}

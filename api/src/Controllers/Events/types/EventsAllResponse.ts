@@ -1,15 +1,11 @@
 import { Event } from '@api/Database/types'
 
 /**
- * Interface representing a response for fetching all events
+ * Response payload containing a list of events.
  *
- * @route 200 /events/all
+ * @route GET /events/all
  */
 export default interface EventsAllResponse {
-    /**
-     * Array of event objects
-     *
-     * @type {Event[]}
-     */
+    /** List of events matching the search criteria. */
     events: Event[]
 }

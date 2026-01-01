@@ -1,10 +1,12 @@
+import '@api/types'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
-import ErrorHandler from '@api/Error/ErrorHandler'
+import ErrorHandler from '@api/Handlers/ErrorHandler'
 import { Paths } from '@api/paths'
 import AuthRoutes from '@api/Routes/AuthRoutes'
-import EventRoutes from '@api/Routes/EventRoutes'
+import CommandsRoutes from '@api/Routes/CommandsRoutes'
 import EventsRoutes from '@api/Routes/EventsRoutes'
+import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
 import compression from 'compression'
 import { RedisStore } from 'connect-redis'
 import cors, { CorsOptions } from 'cors'
@@ -12,36 +14,34 @@ import express from 'express'
 import session, { type SessionOptions } from 'express-session'
 import helmet from 'helmet'
 import morgan from 'morgan'
-import passport from 'passport'
 import responseTime from 'response-time'
 
 const app = express()
 
+/**
+ * CORS Configuration.
+ */
 const corsOptions: CorsOptions = {
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-    origin: Config.allowedOrigins
+    optionsSuccessStatus: 200, // Support legacy browsers/devices
+    origin: Config.allowedOrigins,
+    credentials: true
 }
 
 app.use('/assets', express.static(Paths.assets))
-
-app.options('/{*any}', cors(corsOptions)) // include before other routes
-
-app.use(
-    cors({
-        ...corsOptions,
-        credentials: true
-    })
-)
+app.options('/{*any}', cors(corsOptions))
+app.use(cors(corsOptions))
 
 app.use(helmet())
-
 app.disable('x-powered-by')
 
+/**
+ * Session Configuration.
+ */
 const sessionOptions: SessionOptions = {
     store: new RedisStore({ client: redis, prefix: 'session:' }),
     secret: Config.sessionSecret,
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     rolling: true,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 // 1 day
@@ -53,24 +53,25 @@ if (!Config.isEnvDevelopment()) {
     sessionOptions.cookie!.secure = true
     sessionOptions.cookie!.httpOnly = true
     sessionOptions.cookie!.domain = Config.domain
-    sessionOptions.cookie!.sameSite = 'none' // Required for cross-site cookies
+    sessionOptions.cookie!.sameSite = 'none'
 }
 
 app.use(session(sessionOptions))
-
-app.use(passport.initialize())
-app.use(passport.session())
-
 app.use(compression({}))
 
-app.use(morgan(Config.isEnvDevelopment() ? 'dev' : 'combined')) // Log different format on dev
+// Logging and Metrics
+app.use(morgan(Config.isEnvDevelopment() ? 'dev' : 'combined'))
 app.use(responseTime())
 
+app.use('/health', (req, res) => res.status(200).send('OK'))
+
+// Routes
+app.use('/kreditozrouti', KreditozroutiRoutes)
 app.use('/auth', AuthRoutes)
 app.use('/events', EventsRoutes)
-app.use('/event', EventRoutes)
+app.use('/commands', CommandsRoutes)
 
-// Global error handler
+// Error Handling
 app.use(ErrorHandler)
 
 export default app

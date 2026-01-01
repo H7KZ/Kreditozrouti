@@ -1,0 +1,16 @@
+meta {
+  name: Run 4FIS Flickr Events Scraper
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:40080/commands/4fis/flickr/events
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

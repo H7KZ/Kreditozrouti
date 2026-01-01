@@ -6,15 +6,17 @@ import { Paths } from '@api/paths'
 import Mail from 'nodemailer/lib/mailer'
 import SMTPTransport from 'nodemailer/lib/smtp-transport'
 
+/**
+ * Service for managing email template rendering and SMTP transmission.
+ */
 export default class EmailService {
     /**
-     * Reads an email template and replaces variables in the format {{variable}} with provided values
-     * Returns the final HTML string
+     * Reads an HTML template and interpolates variables.
+     * Replaces `{{key}}` placeholders with values from the variables object.
      *
-     * @param name Template name without .html extension
-     * @param variables Variables to replace in the template
-     * @returns The email template HTML with variables replaced
-     * @throws Exception if reading the template fails
+     * @param name - The name of the template file (without extension).
+     * @param variables - Key-value pairs to inject into the template.
+     * @throws {Exception} 500 - If the template file cannot be read.
      */
     static async readTemplate(name: string, variables: Record<string, string>): Promise<string> {
         let template: string
@@ -33,10 +35,10 @@ export default class EmailService {
     }
 
     /**
-     * Sends an email using nodemailer
+     * Sends an email using the configured NodeMailer transport.
      *
-     * @param data Mail options and SMTP transport options
-     * @throws Exception if sending the email fails
+     * @param data - Mail options (to, subject, html/text body).
+     * @throws {Exception} 500 - If the email fails to send.
      */
     static async sendEmail(data: Mail.Options & Partial<SMTPTransport.Options>): Promise<void> {
         try {
