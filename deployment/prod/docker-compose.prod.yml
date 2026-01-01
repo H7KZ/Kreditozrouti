@@ -7,7 +7,10 @@ services:
     image: diar-4fis-api
 
     env_file:
-      - ../../.env
+      - ../../../../.env.prod
+      - ../../../.env.prod
+      - ../../.env.prod
+      - ../.env.prod
 
     build:
       context: ../..
@@ -93,7 +96,10 @@ services:
     image: diar-4fis-scraper
 
     env_file:
-      - ../../.env
+      - ../../../../.env.prod
+      - ../../../.env.prod
+      - ../../.env.prod
+      - ../.env.prod
 
     build:
       context: ../..
@@ -150,7 +156,10 @@ services:
     image: diar-4fis-frontend
 
     env_file:
-      - ../../.env
+      - ../../../../.env.prod
+      - ../../../.env.prod
+      - ../../.env.prod
+      - ../.env.prod
 
     build:
       context: ../..
@@ -221,7 +230,10 @@ services:
     image: mysql:9.5.0
 
     env_file:
-      - ../../.env
+      - ../../../../.env.prod
+      - ../../../.env.prod
+      - ../../.env.prod
+      - ../.env.prod
 
     volumes:
       - mysql-data-volume:/var/lib/mysql
@@ -277,7 +289,10 @@ services:
     image: phpmyadmin
 
     env_file:
-      - ../../.env
+      - ../../../../.env.prod
+      - ../../../.env.prod
+      - ../../.env.prod
+      - ../.env.prod
 
     environment:
       - PMA_ARBITRARY=1
@@ -341,7 +356,10 @@ services:
     image: redis:8.4.0-alpine
 
     env_file:
-      - ../../.env
+      - ../../../../.env.prod
+      - ../../../.env.prod
+      - ../../.env.prod
+      - ../.env.prod
 
     command: [
       "--save", "20", "1",

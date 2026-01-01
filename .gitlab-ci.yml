@@ -61,14 +61,13 @@ deploy_to_production:
   extends: .deploy_template
   script:
     - echo "🚀 Deploying to production server..."
-    - ssh $SSH_USER@$SSH_HOST "rm -rf /$SSH_USER/diar-4fis"
-    - scp -r ./* $SSH_USER@$SSH_HOST:/$SSH_USER/diar-4fis/
+    - ssh $SSH_USER@$SSH_HOST "rm -rf /$SSH_USER/production"
+    - scp -r ./* $SSH_USER@$SSH_HOST:/$SSH_USER/production/
     - |
       ssh $SSH_USER@$SSH_HOST << EOF
       set -e
-      cd ~/diar-4fis
-      cp ~/.env.prod ./.env
-      bash ./deployment/environment.sh diar-4fis prod
+      cd ~/production
+      bash ./deployment/environment.sh prod prod
       EOF
   rules:
     # This job runs ONLY for version tags (e.g., v1.2.3).
@@ -81,14 +80,13 @@ deploy_to_development:
   extends: .deploy_template
   script:
     - echo "🚀 Deploying to development server..."
-    - ssh $SSH_USER@$SSH_HOST "rm -rf ~/diar-4fis-dev"
-    - scp -r ./* $SSH_USER@$SSH_HOST:~/diar-4fis-dev/
+    - ssh $SSH_USER@$SSH_HOST "rm -rf ~/development"
+    - scp -r ./* $SSH_USER@$SSH_HOST:~/development/
     - |
       ssh $SSH_USER@$SSH_HOST << EOF
       set -e
-      cd ~/diar-4fis-dev
-      cp ~/.env.dev ./.env
-      bash ./deployment/environment.sh diar-4fis-dev dev
+      cd ~/development
+      bash ./deployment/environment.sh dev dev
       EOF
   rules:
     # This job runs ONLY for development tags (e.g., dev-1.2.3).

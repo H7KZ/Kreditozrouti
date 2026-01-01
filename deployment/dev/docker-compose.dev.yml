@@ -7,11 +7,14 @@ services:
     image: diar-4fis-api
 
     env_file:
-      - ../../.env
+      - ../../../../.env.dev
+      - ../../../.env.dev
+      - ../../.env.dev
+      - ../.env.dev
 
     build:
       context: ../..
-      dockerfile: ../../api/Dockerfile
+      dockerfile: api/Dockerfile
 
     # volumes:
     #   - api-uploads-dev-volume:/usr/src/uploads
@@ -96,11 +99,14 @@ services:
     image: diar-4fis-scraper
 
     env_file:
-      - ../../.env
+      - ../../../../.env.dev
+      - ../../../.env.dev
+      - ../../.env.dev
+      - ../.env.dev
 
     build:
       context: ../..
-      dockerfile: ../../scraper/Dockerfile
+      dockerfile: scraper/Dockerfile
 
     depends_on:
       - redis
@@ -153,11 +159,14 @@ services:
     image: diar-4fis-frontend
 
     env_file:
-      - ../../.env
+      - ../../../../.env.dev
+      - ../../../.env.dev
+      - ../../.env.dev
+      - ../.env.dev
 
     build:
       context: ../..
-      dockerfile: ../../frontend/Dockerfile
+      dockerfile: frontend/Dockerfile
 
     depends_on:
       - api
@@ -224,7 +233,10 @@ services:
     image: mysql:9.5.0
 
     env_file:
-      - ../../.env
+      - ../../../../.env.dev
+      - ../../../.env.dev
+      - ../../.env.dev
+      - ../.env.dev
 
     volumes:
       - mysql-data-dev-volume:/var/lib/mysql
@@ -280,7 +292,10 @@ services:
     image: phpmyadmin
 
     env_file:
-      - ../../.env
+      - ../../../../.env.dev
+      - ../../../.env.dev
+      - ../../.env.dev
+      - ../.env.dev
 
     environment:
       - PMA_ARBITRARY=1
@@ -344,7 +359,10 @@ services:
     image: redis:8.4.0-alpine
 
     env_file:
-      - ../../.env
+      - ../../../../.env.dev
+      - ../../../.env.dev
+      - ../../.env.dev
+      - ../.env.dev
 
     command: [
       "--save", "20", "1",
