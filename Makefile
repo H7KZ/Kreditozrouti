@@ -1,6 +1,6 @@
-.PHONY: docker migrations clear-redis install dev api scraper frontend format lint build build-docker-images preview
+.PHONY: install dev dev-api dev-frontend dev-scraper format lint build preview build-docker-images run-local-docker clear-redis
 
-local-docker:
+run-local-docker:
 	docker compose -f docker-compose.local.yml down --remove-orphans && \
 	docker compose -f docker-compose.local.yml build --pull --no-cache && \
 	docker compose -f docker-compose.local.yml up -d
@@ -15,17 +15,17 @@ install:
 dev:
 	pnpm -r --parallel run dev
 
-api:
+dev-api:
 	cd api && \
 	pnpm install && \
 	pnpm run dev
 
-scraper:
+dev-scraper:
 	cd scraper && \
 	pnpm install && \
 	pnpm run dev
 
-frontend:
+dev-frontend:
 	cd frontend && \
 	pnpm install && \
 	pnpm run dev
@@ -39,10 +39,10 @@ lint:
 build:
 	pnpm -r --parallel run build
 
+preview:
+	pnpm -r --parallel run preview
+
 build-docker-images:
 	docker build -t diar-4fis-api -f ./api/Dockerfile . && \
 	docker build -t diar-4fis-frontend -f ./frontend/Dockerfile . && \
 	docker build -t diar-4fis-scraper -f ./scraper/Dockerfile .
-
-preview:
-	pnpm -r --parallel run preview

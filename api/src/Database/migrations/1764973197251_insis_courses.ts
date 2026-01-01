@@ -1,16 +1,7 @@
 import { CourseAssessmentMethodTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from '@api/Database/types'
 import { Kysely, sql } from 'kysely'
 
-/**
- * Applies the database schema migration.
- * Creates tables for Courses, Assessment Methods, Timetable Units, and Timetable Slots with established foreign key relationships.
- *
- * @param mysql - The Kysely database instance used to execute schema queries.
- */
 export async function up(mysql: Kysely<any>): Promise<void> {
-    /**
-     * Creates the central Course table storing academic details, metadata, and curriculum information.
-     */
     await mysql.schema
         .createTable(CourseTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
@@ -37,10 +28,6 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .addColumn('literature', 'text')
         .execute()
 
-    /**
-     * Creates a table for course assessment criteria (methods and weights).
-     * Links to the main Course table via Foreign Key.
-     */
     await mysql.schema
         .createTable(CourseAssessmentMethodTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
@@ -51,10 +38,6 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .addColumn('weight', 'smallint', col => col.unsigned())
         .execute()
 
-    /**
-     * Creates a table for timetable units representing specific course instances or teaching groups.
-     * Links to the main Course table via Foreign Key.
-     */
     await mysql.schema
         .createTable(CourseTimetableUnitTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
@@ -66,10 +49,6 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .addColumn('note', 'text')
         .execute()
 
-    /**
-     * Creates a table for specific scheduling slots (time, location, frequency) associated with a timetable unit.
-     * Links to the Timetable Unit table via Foreign Key.
-     */
     await mysql.schema
         .createTable(CourseTimetableSlotTable._table)
         .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
@@ -88,12 +67,6 @@ export async function up(mysql: Kysely<any>): Promise<void> {
         .execute()
 }
 
-/**
- * Reverts the database schema migration.
- * Drops course-related tables in reverse dependency order to satisfy foreign key constraints.
- *
- * @param mysql - The Kysely database instance used to execute schema queries.
- */
 export async function down(mysql: Kysely<any>): Promise<void> {
     await mysql.schema.dropTable(CourseTimetableSlotTable._table).execute()
     await mysql.schema.dropTable(CourseTimetableUnitTable._table).execute()

@@ -7,24 +7,17 @@ import CoursesFilterValidation from '@api/Validations/CoursesFilterValidation'
 import { Request, Response } from 'express'
 
 /**
- * HTTP Controller for searching and filtering courses.
- * @remarks
- * This controller implements a "Faceted Search" pattern. It retrieves both the
- * course records matching the criteria and the available filter options (facets)
- * for the current search context.
+ * Retrieves a paginated list of courses based on complex filtering criteria.
  *
- * Performance optimizations:
- * - Input validation using Zod.
- * - **Response Caching**: Successful responses are cached in Redis for 5 minutes (300s)
- * to reduce load on the InSIS database for repeated queries.
- * - **Parallel Execution**: Fetches course data and facets concurrently.
+ * This controller caches results in Redis for 5 minutes to optimize repeated queries.
+ * It returns both the course data and aggregated facets for frontend filtering.
  *
- * @param req - Express Request object containing query parameters.
- * @param res - Express Response object typed with `CoursesResponse`.
- * @throws {Exception} 401 - If the query parameters fail Zod validation.
+ * @param req - Express request object containing the filter payload.
+ * @param res - Express response object.
+ * @throws {Exception} 401 - If the validation of the search request fails.
  */
 export default async function CoursesController(req: Request, res: Response<CoursesResponse>) {
-    const result = await CoursesFilterValidation.safeParseAsync(req.query)
+    const result = await CoursesFilterValidation.safeParseAsync(req.body)
 
     if (!result.success) {
         throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
@@ -32,16 +25,18 @@ export default async function CoursesController(req: Request, res: Response<Cour
 
     const data = result.data
 
-    const cacheKey = `courses:${JSON.stringify(data)}`
-    const cachedData = await redis.get(`insis:courses:${cacheKey}`)
+    // Check Cache
+    const cacheKey = `insis:courses:${JSON.stringify(data)}`
+    const cachedData = await redis.get(cacheKey)
 
     if (cachedData) {
         return res.status(200).send(JSON.parse(cachedData))
     }
 
+    // Fetch Data
     const [courses, facets] = await Promise.all([InSISService.getCourses(data, data.limit, data.offset), InSISService.getFacets(data)])
 
-    const response = {
+    const response: CoursesResponse = {
         data: courses,
         facets: facets,
         meta: {
@@ -51,7 +46,7 @@ export default async function CoursesController(req: Request, res: Response<Cour
         }
     }
 
-    await redis.setex(`insis:courses:${cacheKey}`, 300, JSON.stringify(response)) // Cache for 5 minutes
+    await redis.setex(cacheKey, 300, JSON.stringify(response))
 
     return res.status(200).send(response)
 }

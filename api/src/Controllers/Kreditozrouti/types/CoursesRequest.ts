@@ -2,10 +2,8 @@ import CoursesFilterValidation from '@api/Validations/CoursesFilterValidation'
 import { z } from 'zod'
 
 /**
- * Defines the query parameters for searching and filtering courses.
- * Inferred from the Zod validation schema.
- *
- * @route GET /kreditozrouti/courses
+ * Validated query parameters for the course catalog search.
+ * Derived from the Zod validation schema.
  */
 type CoursesRequest = z.infer<typeof CoursesFilterValidation>
 

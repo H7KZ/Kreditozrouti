@@ -1,6 +1,7 @@
 import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import Snowfall from "react-snowfall"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -179,11 +180,13 @@ function useLoginFlow(): UseLoginFlowReturn {
 export default function LoginPage() {
   const { t } = useTranslation()
   const { state, actions } = useLoginFlow()
+  const [isSnowing, setIsSnowing] = useState(false)
 
   const isVerifyStep = state.step === "VERIFY"
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-6">
+    <div className="mx-auto w-full max-w-2xl px-6 pt-16">
+      {isSnowing && <Snowfall color="82C3D9" />}
       <div className="absolute right-6 top-6">
         <LanguageSwitcher />
       </div>
@@ -191,7 +194,7 @@ export default function LoginPage() {
       {/* Header */}
       <div className="pb-8 pt-6 text-center">
         <div className="mb-4 flex justify-center">
-          <img src="/diar4fis.svg" alt={t("common.app_logo_alt")} className="h-56 select-none md:h-64" />
+          <img src="/diar_fisaka.svg" alt={t("common.app_logo_alt")} onClick={() => setIsSnowing(true)} className="h-56 cursor-pointer select-none md:h-64" />
         </div>
         <h1 className="text-xl font-semibold text-gray-900 md:text-2xl">{isVerifyStep ? t("sign_in_confirm.heading") : t("sign_in.heading")}</h1>
         {isVerifyStep && (
@@ -211,6 +214,7 @@ export default function LoginPage() {
             <div className="relative w-full">
               <Input
                 id="xname"
+                autoFocus
                 type="text"
                 placeholder="xname"
                 value={state.normalizedXname}

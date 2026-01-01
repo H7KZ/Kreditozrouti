@@ -1,19 +1,19 @@
 import parser from 'body-parser'
 
 /**
- * Middleware that parses incoming request bodies into a Buffer.
- * Useful for handling binary data streams.
+ * Parses incoming request bodies into a Buffer.
+ * Used for handling binary data streams.
  */
 export const ParserRawMiddleware = parser.raw({})
 
 /**
- * Middleware that parses incoming request bodies with JSON payloads.
- * Populates `req.body` with the parsed JSON object.
+ * Parses incoming request bodies as JSON.
+ * Populates `req.body` with the parsed object.
  */
 export const ParserJSONMiddleware = parser.json({})
 
 /**
- * Middleware that parses incoming request bodies with URL-encoded payloads.
- * Populates `req.body` with key-value pairs from form submissions.
+ * Parses incoming request bodies with URL-encoded payloads.
+ * Populates `req.body` with form data.
  */
-export const ParserURLEncodedMiddleware = parser.urlencoded({})
+export const ParserURLEncodedMiddleware = parser.urlencoded({ extended: true })

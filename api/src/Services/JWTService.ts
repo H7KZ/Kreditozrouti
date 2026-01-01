@@ -5,51 +5,43 @@ import Exception from '@api/Error/Exception'
 import * as jose from 'jose'
 
 /**
- * Service responsible for managing JSON Web Token (JWT) lifecycles.
- * Handles the creation (signing) of tokens for authenticated users and
- * the cryptographic verification of incoming tokens.
+ * Service for handling JSON Web Token (JWT) generation and verification.
  */
 export default class JWTService {
     /**
-     * Generates a signed JWT for an authenticated user.
-     * @remarks
-     * The token is signed using the HS256 algorithm.
-     * It embeds the `userId` as a custom claim and sets standard claims
-     * (issuer, audience, expiration) defined in the application configuration.
+     * Generates a signed HS256 JWT for the provided user.
      *
-     * @param user - The user entity for whom the token is being generated.
-     * @returns A Promise resolving to the signed JWT string.
-     * @throws {Exception} If the signing process encounters an error (Internal Server Error).
+     * @param user - The user entity for whom the token is being created.
+     * @returns A promise resolving to the signed JWT string.
+     * @throws {Exception} 500 - If signing fails.
      */
     static async createJWTAuthTokenForUser(user: User): Promise<string> {
         try {
             return await new jose.SignJWT({ userId: user.id })
                 .setProtectedHeader({ alg: 'HS256' })
                 .setIssuedAt()
-                .setIssuer(Config.jwt.issuer)
-                .setAudience(Config.jwt.audience)
-                .setExpirationTime(Config.jwt.expiration)
-                .sign(Config.jwt.secret)
+                .setIssuer(Config.jwtIssuer)
+                .setAudience(Config.jwtAudience)
+                .setExpirationTime(Config.jwtExpiration)
+                .sign(Config.jwtSecret)
         } catch {
             throw new Exception(500, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.SIGN_IN_FAILED, 'Failed to sign JWT')
         }
     }
 
     /**
-     * Validates the integrity and claims of a provided JWT.
-     * @remarks
-     * This method verifies the signature using the server's secret and ensures
-     * the token matches the expected issuer, audience, and algorithm (HS256).
+     * Verifies the validity of a JWT string.
+     * Checks the signature, issuer, audience, and expiration.
      *
-     * @param token - The raw JWT string to verify.
-     * @returns A Promise resolving to the verification result containing the payload and header.
-     * @throws {Exception} If the token is invalid, expired, or malformed (Unauthorized).
+     * @param token - The JWT string to verify.
+     * @returns The decoded payload and header if valid.
+     * @throws {Exception} 401 - If the token is invalid or expired.
      */
     static async verifyJWTAuthToken(token: string): Promise<jose.JWTVerifyResult> {
         try {
-            return await jose.jwtVerify(token, Config.jwt.secret, {
-                issuer: Config.jwt.issuer,
-                audience: Config.jwt.audience,
+            return await jose.jwtVerify(token, Config.jwtSecret, {
+                issuer: Config.jwtIssuer,
+                audience: Config.jwtAudience,
                 algorithms: ['HS256']
             })
         } catch {

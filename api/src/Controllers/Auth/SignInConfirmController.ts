@@ -11,12 +11,13 @@ import SignInConfirmValidation from '@api/Validations/SignInConfirmValidation'
 import { Request, Response } from 'express'
 
 /**
- * Handles the confirmation of a user sign-in attempt using a verification code.
- * Verifies credentials, manages user creation, and establishes a session.
+ * Finalizes the sign-in process.
  *
- * @param req - The Express request object containing payload data.
- * @param res - The Express response object.
- * @throws {Exception} If validation fails, credentials are invalid, or system errors occur.
+ * Verifies the PKCE challenge and the emailed auth code. If valid, it retrieves or creates
+ * the user ("Find or Create") and issues a JWT session.
+ *
+ * @throws {Exception} 401 - If credentials/codes are invalid.
+ * @throws {Exception} 500 - If user creation fails.
  */
 export default async function SignInConfirmController(req: Request, res: Response<SignInConfirmResponse>) {
     const result = await SignInConfirmValidation.safeParseAsync(req.body)
@@ -27,30 +28,30 @@ export default async function SignInConfirmController(req: Request, res: Respons
 
     const data = result.data
 
+    // Reconstruct the challenge from the verifier
     const code_challenge = crypto.createHash('sha256').update(data.code_verifier).digest('hex')
 
     const storedCodeChallenge = await redis.get(`auth:challenge:${code_challenge}`)
-
     if (storedCodeChallenge !== code_challenge) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
     const storedEmail = await redis.get(`auth:email:${code_challenge}`)
-
     if (!storedEmail) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
     const storedCode = await redis.get(`auth:code:${storedEmail}`)
-
     if (storedCode !== data.auth_code.toString()) {
         throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.INCORRECT_CREDENTIALS, 'Invalid credentials')
     }
 
+    // Find or Create User
     let user = await mysql.selectFrom(UserTable._table).select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
 
     if (!user) {
         await mysql.insertInto(UserTable._table).values({ email: storedEmail }).executeTakeFirst()
+
         user = await mysql.selectFrom(UserTable._table).select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
     }
 
@@ -58,13 +59,12 @@ export default async function SignInConfirmController(req: Request, res: Respons
         throw new Exception(500, ErrorTypeEnum.DATABASE, ErrorCodeEnum.INSERT_FAILED, 'Failed to create user')
     }
 
-    await redis.del(`auth:challenge:${code_challenge}`)
-    await redis.del(`auth:email:${code_challenge}`)
-    await redis.del(`auth:code:${user.email}`)
+    // Clean up Auth keys
+    await Promise.all([redis.del(`auth:challenge:${code_challenge}`), redis.del(`auth:email:${code_challenge}`), redis.del(`auth:code:${user.email}`)])
 
     const jwt = await JWTService.createJWTAuthTokenForUser(user as User)
 
-    await redis.setex(`auth:jwt:user:${user.id}`, Config.jwt.expirationSeconds, jwt)
+    await redis.setex(`auth:jwt:user:${user.id}`, Config.jwtExpirationSeconds, jwt)
 
     return res.status(201).send({
         code: SuccessCodeEnum.SIGNED_IN,

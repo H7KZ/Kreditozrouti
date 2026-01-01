@@ -25,7 +25,7 @@ echo "# Starting Application Deployment Process"
 echo
 
 
-APP_COMPOSE_FILE="docker-compose.${ENVIRONMENT}.yml"
+APP_COMPOSE_FILE="./deployment/$ENVIRONMENT/docker-compose.${ENVIRONMENT}.yml"
 NETWORKS_CONFIG_PATH="./deployment/$ENVIRONMENT/networks.yml"
 VOLUMES_CONFIG_PATH="./deployment/$ENVIRONMENT/volumes.yml"
 TRAEFIK_NETWORKS_CONFIG_PATH="./deployment/traefik/networks.yml" # Needed to connect the app to Traefik

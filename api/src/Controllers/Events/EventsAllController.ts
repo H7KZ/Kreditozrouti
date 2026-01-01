@@ -7,12 +7,14 @@ import EventsAllValidation from '@api/Validations/EventsAllValidation'
 import { Request, Response } from 'express'
 
 /**
- * Retrieves a list of events based on optional search and filter criteria.
- * Supports filtering by title, date range, and category IDs.
+ * Retrieves a list of events based on optional search criteria.
  *
- * @param req - The Express request object containing query parameters.
- * @param res - The Express response object.
- * @throws {Exception} If the query parameters fail validation schema checks.
+ * Supports filtering by title, date range, and category IDs.
+ * Returns all events ordered by date if no filters are applied.
+ *
+ * @param req - Express request object containing query parameters.
+ * @param res - Express response object.
+ * @throws {Exception} 401 - If validation of search parameters fails.
  */
 export default async function EventsAllController(req: Request, res: Response<EventsAllResponse>) {
     const result = await EventsAllValidation.safeParseAsync(req.query)
@@ -22,23 +24,22 @@ export default async function EventsAllController(req: Request, res: Response<Ev
     }
 
     const data = result.data
-
-    const eventsQuery = mysql.selectFrom(EventTable._table).selectAll()
+    let eventsQuery = mysql.selectFrom(EventTable._table).selectAll()
 
     if (data.title) {
-        eventsQuery.where(`${EventTable._table}.title`, 'like', `%${data.title}%`)
+        eventsQuery = eventsQuery.where(`${EventTable._table}.title`, 'like', `%${data.title}%`)
     }
 
     if (data.date_from) {
-        eventsQuery.where(`${EventTable._table}.datetime`, '>=', data.date_from)
+        eventsQuery = eventsQuery.where(`${EventTable._table}.datetime`, '>=', data.date_from)
     }
 
     if (data.date_to) {
-        eventsQuery.where(`${EventTable._table}.datetime`, '<=', data.date_to)
+        eventsQuery = eventsQuery.where(`${EventTable._table}.datetime`, '<=', data.date_to)
     }
 
     if (data.categories && data.categories.length > 0) {
-        eventsQuery.innerJoin(EventCategoryTable._table, join =>
+        eventsQuery = eventsQuery.innerJoin(EventCategoryTable._table, join =>
             join
                 .onRef(`${EventTable._table}.id`, '=', `${EventCategoryTable._table}.event_id`)
                 .on(`${EventCategoryTable._table}.category_id`, 'in', data.categories!)

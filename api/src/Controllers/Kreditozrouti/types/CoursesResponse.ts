@@ -1,8 +1,7 @@
 import { Course } from '@api/Database/types'
 
 /**
- * Represents a single category option in the faceted search results.
- * Used to display filter counts (e.g., "Faculty of Informatics (42)").
+ * Represents a single facet category value and its occurrence count.
  */
 interface FacetItem {
     /**
@@ -21,23 +20,15 @@ interface FacetItem {
 }
 
 /**
- * Response payload for the course search endpoint.
- * Includes the matching courses, faceted search data, and pagination metadata.
+ * Response payload containing course search results, facets, and pagination metadata.
  *
- * @route GET /kreditozrouti/courses
+ * @route POST /kreditozrouti/courses
  */
 export default interface CoursesResponse {
-    /**
-     * The array of courses matching the search criteria
-     *
-     * @type {Course[]}
-     */
+    /** Array of course records matching the filter criteria. */
     data: Course[]
 
-    /**
-     * Statistical data for various filter categories.
-     * Provides available options and counts based on the current search context.
-     */
+    /** Aggregated facet counts for filtering. */
     facets: {
         faculties: FacetItem[]
         departments: FacetItem[]
@@ -54,9 +45,7 @@ export default interface CoursesResponse {
         }
     }
 
-    /**
-     * Pagination metadata for the current result set
-     */
+    /** Pagination metadata. */
     meta: {
         /** The maximum number of results returned */
         limit: number

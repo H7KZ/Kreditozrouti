@@ -1,59 +1,77 @@
 import '@api/types'
+import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Handlers/ErrorHandler'
 import { Paths } from '@api/paths'
 import AuthRoutes from '@api/Routes/AuthRoutes'
+import CommandsRoutes from '@api/Routes/CommandsRoutes'
 import EventsRoutes from '@api/Routes/EventsRoutes'
 import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
 import compression from 'compression'
-import cors from 'cors'
+import { RedisStore } from 'connect-redis'
+import cors, { CorsOptions } from 'cors'
 import express from 'express'
+import session, { type SessionOptions } from 'express-session'
 import helmet from 'helmet'
 import morgan from 'morgan'
 import responseTime from 'response-time'
 
-// Initializes the Express application instance.
 const app = express()
 
-// Serves static assets from the configured directory under the `/assets` path.
+/**
+ * CORS Configuration.
+ */
+const corsOptions: CorsOptions = {
+    optionsSuccessStatus: 200, // Support legacy browsers/devices
+    origin: Config.allowedOrigins,
+    credentials: true
+}
+
 app.use('/assets', express.static(Paths.assets))
+app.options('/{*any}', cors(corsOptions))
+app.use(cors(corsOptions))
 
-// Defines configuration settings for Cross-Origin Resource Sharing (CORS).
-// Specifies allowed origins and success status codes for legacy browser compatibility.
-app.use(
-    cors({
-        optionsSuccessStatus: 200,
-        maxAge: 86400, // Cache preflight requests for 24 hours to reduce latency
-        origin: Config.allowedOrigins,
-        credentials: true,
-        allowedHeaders: ['Content-Type', 'Authorization'],
-        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS']
-    })
-)
-
-// Applies `helmet` middleware to set various HTTP security headers (e.g., DNS prefetch control, frameguard).
 app.use(helmet())
-
-// Disables the `x-powered-by` header to obscure the underlying technology stack.
 app.disable('x-powered-by')
 
-// Enables Gzip compression for HTTP responses.
+/**
+ * Session Configuration.
+ */
+const sessionOptions: SessionOptions = {
+    store: new RedisStore({ client: redis, prefix: 'session:' }),
+    secret: Config.sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 // 1 day
+    }
+}
+
+if (!Config.isEnvDevelopment()) {
+    app.set('trust proxy', 1)
+    sessionOptions.cookie!.secure = true
+    sessionOptions.cookie!.httpOnly = true
+    sessionOptions.cookie!.domain = Config.domain
+    sessionOptions.cookie!.sameSite = 'none'
+}
+
+app.use(session(sessionOptions))
 app.use(compression({}))
 
-// Configures HTTP request logging (verbose in dev, standard Apache combined format in prod)
-// and adds a `X-Response-Time` header to responses.
-app.use(morgan(Config.isEnvDevelopment() ? 'dev' : 'combined')) // Log different format on dev
+// Logging and Metrics
+app.use(morgan(Config.isEnvDevelopment() ? 'dev' : 'combined'))
 app.use(responseTime())
 
-// Health check endpoint to verify that the server is operational.
 app.use('/health', (req, res) => res.status(200).send('OK'))
 
-// Mounts the API route handlers.
+// Routes
 app.use('/kreditozrouti', KreditozroutiRoutes)
 app.use('/auth', AuthRoutes)
 app.use('/events', EventsRoutes)
+app.use('/commands', CommandsRoutes)
 
-// Registers the global error handling middleware to capture and format exceptions.
+// Error Handling
 app.use(ErrorHandler)
 
 export default app

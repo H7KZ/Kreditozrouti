@@ -7,12 +7,11 @@ import { NextFunction, Request, Response } from 'express'
 
 /**
  * Express middleware to enforce user authentication on protected routes.
- * Checks if a user session exists; proceeds if authenticated, otherwise throws an error.
  *
- * @param req - The Express request object.
- * @param res - The Express response object.
- * @param next - The Express next function to pass control to the next handler.
- * @throws {Exception} 401 Unauthorized if the user is not authenticated.
+ * Validates the JWT, ensures the session is active in Redis, and attaches
+ * the User object to `res.locals.user`.
+ *
+ * @throws {Exception} 401 - If the token is missing, invalid, expired, or the session has been revoked.
  */
 export default async function AuthMiddleware(req: Request, res: Response, next: NextFunction) {
     const jwt = req.headers.authorization?.split(' ')[1]
@@ -29,16 +28,14 @@ export default async function AuthMiddleware(req: Request, res: Response, next: 
 
     const payload = jwtVerify.payload as { userId: number }
 
-    const cachedJWT: string | null = await redis.get(`auth:jwt:user:${payload.userId}`)
+    // Validate Session against Redis (Single Sign-On / Logout enforcement)
+    const cachedJWT = await redis.get(`auth:jwt:user:${payload.userId}`)
 
-    if (!cachedJWT) {
-        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.UNAUTHORIZED, 'User is not authenticated')
+    if (!cachedJWT || cachedJWT !== jwt) {
+        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.UNAUTHORIZED, 'Session expired or invalid')
     }
 
-    if (cachedJWT !== jwt) {
-        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.UNAUTHORIZED, 'User is not authenticated')
-    }
-
+    // Retrieve User Profile
     let user: User | string | null | undefined = await redis.get(`user:${payload.userId}`)
 
     if (user) {
@@ -49,13 +46,13 @@ export default async function AuthMiddleware(req: Request, res: Response, next: 
     user = await mysql.selectFrom(UserTable._table).selectAll().where('id', '=', payload.userId).executeTakeFirst()
 
     if (!user) {
-        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.UNAUTHORIZED, 'User is not authenticated')
+        throw new Exception(401, ErrorTypeEnum.AUTHENTICATION, ErrorCodeEnum.UNAUTHORIZED, 'User not found')
     }
 
+    // Cache user profile for 60 seconds
     await redis.setex(`user:${user.id}`, 60, JSON.stringify(user))
 
     // Attach user to response locals for downstream access
     res.locals.user = user
-
     return next()
 }
