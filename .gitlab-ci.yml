@@ -40,8 +40,6 @@ verify_code:
 
 
 # --- DEPLOYMENT TEMPLATE ---
-# cat ssh_key | base64 | tr -d \\n | xclip -selection clipboard
-# cat ssh_key | base64 -w0 | xclip -selection clipboard
 .deploy_template:
   stage: deploy
   image: ubuntu:latest
@@ -67,6 +65,7 @@ deploy_to_production:
       ssh $SSH_USER@$SSH_HOST << EOF
       set -e
       cd ~/production
+      cp ~/.env.prod ./.env
       bash ./deployment/environment.sh prod prod
       EOF
   rules:
@@ -86,6 +85,7 @@ deploy_to_development:
       ssh $SSH_USER@$SSH_HOST << EOF
       set -e
       cd ~/development
+      cp ~/.env.dev ./.env
       bash ./deployment/environment.sh dev dev
       EOF
   rules:

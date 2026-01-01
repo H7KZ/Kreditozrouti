@@ -9,13 +9,13 @@ echo "🌍 Deploying Global Services (Traefik)"
 echo "================================================="
 echo
 
-CURRENT_DIR=$(pwd)
-echo "🔍 Current Directory: $CURRENT_DIR"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "🔍 Current Directory: $SCRIPT_DIR"
 echo
 
-TRAEFIK_COMPOSE_FILE="$CURRENT_DIR/traefik/docker-compose.traefik.yml"
-TRAEFIK_NETWORKS_CONFIG_PATH="$CURRENT_DIR/traefik/networks.yml"
-TRAEFIK_VOLUMES_CONFIG_PATH="$CURRENT_DIR/traefik/volumes.yml"
+TRAEFIK_COMPOSE_FILE="$SCRIPT_DIR/traefik/docker-compose.traefik.yml"
+TRAEFIK_NETWORKS_CONFIG_PATH="$SCRIPT_DIR/traefik/networks.yml"
+TRAEFIK_VOLUMES_CONFIG_PATH="$SCRIPT_DIR/traefik/volumes.yml"
 
 if [ ! -f "$TRAEFIK_COMPOSE_FILE" ]; then echo "❌ Error: Traefik config '$TRAEFIK_COMPOSE_FILE' not found!"; exit 1; fi
 if [ ! -f "$TRAEFIK_NETWORKS_CONFIG_PATH" ]; then echo "❌ Error: Traefik network config '$TRAEFIK_NETWORKS_CONFIG_PATH' not found!"; exit 1; fi

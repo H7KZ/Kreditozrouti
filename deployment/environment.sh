@@ -24,14 +24,14 @@ echo
 echo "# Starting Application Deployment Process"
 echo
 
-CURRENT_DIR=$(pwd)
-echo "🔍 Current Directory: $CURRENT_DIR"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "🔍 Current Directory: $SCRIPT_DIR"
 echo
 
-APP_COMPOSE_FILE="$CURRENT_DIR/$ENVIRONMENT/docker-compose.${ENVIRONMENT}.yml"
-NETWORKS_CONFIG_PATH="$CURRENT_DIR/$ENVIRONMENT/networks.yml"
-VOLUMES_CONFIG_PATH="$CURRENT_DIR/$ENVIRONMENT/volumes.yml"
-TRAEFIK_NETWORKS_CONFIG_PATH="$CURRENT_DIR/traefik/networks.yml" # Needed to connect the app to Traefik
+APP_COMPOSE_FILE="$SCRIPT_DIR/$ENVIRONMENT/docker-compose.${ENVIRONMENT}.yml"
+NETWORKS_CONFIG_PATH="$SCRIPT_DIR/$ENVIRONMENT/networks.yml"
+VOLUMES_CONFIG_PATH="$SCRIPT_DIR/$ENVIRONMENT/volumes.yml"
+TRAEFIK_NETWORKS_CONFIG_PATH="$SCRIPT_DIR/traefik/networks.yml" # Needed to connect the app to Traefik
 
 if [ ! -f "$APP_COMPOSE_FILE" ]; then echo "❌ Error: Main deployment file '$APP_COMPOSE_FILE' not found!"; exit 1; fi
 if [ ! -f "$NETWORKS_CONFIG_PATH" ]; then echo "❌ Error: Network config '$NETWORKS_CONFIG_PATH' not found!"; exit 1; fi
