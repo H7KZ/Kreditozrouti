@@ -6,11 +6,11 @@ import "$frontend/i18n/config"
 import { createRouter, RouterProvider } from "@tanstack/react-router"
 import { Route as RootRoute } from "@/routes/__root"
 import { Route as CalendarRoute } from "@/routes/calendar"
-import { Route as EventRoute } from "@/routes/event"
 import { Route as LoginRoute } from "@/routes/login"
 import { Route as LoginAliasRoute } from "@/routes/login.alias"
+import { Route as ProfileRoute } from "@/routes/profile"
 
-const routeTree = RootRoute.addChildren([LoginRoute, LoginAliasRoute, CalendarRoute, EventRoute])
+const routeTree = RootRoute.addChildren([LoginRoute, LoginAliasRoute, CalendarRoute, ProfileRoute])
 
 const router = createRouter({ routeTree })
 
