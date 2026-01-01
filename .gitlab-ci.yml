@@ -40,17 +40,22 @@ verify_code:
 
 
 # --- DEPLOYMENT TEMPLATE ---
+# cat ssh_key | base64 | tr -d \\n | xclip -selection clipboard
+# cat ssh_key | base64 -w0 | xclip -selection clipboard
 .deploy_template:
   stage: deploy
   image: ubuntu:latest
   before_script:
-    - apt-get -yq update
-    - apt-get -yqq install ssh
-    - install -m 600 -D /dev/null ~/.ssh/id_rsa
-    - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
-    - ssh-keyscan -p $SSH_PORT $SSH_HOST > ~/.ssh/known_hosts
-  after_script:
-    - rm -rf ~/.ssh
+    - apt-get update -y && apt-get install -y openssh-client git dos2unix
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | base64 -d | tr -d '\r' > /tmp/ssh_key
+    - chmod 600 /tmp/ssh_key
+    - dos2unix /tmp/ssh_key
+    - ssh-add /tmp/ssh_key
+    - rm /tmp/ssh_key
+    - echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
 
 
@@ -59,10 +64,10 @@ deploy_to_production:
   extends: .deploy_template
   script:
     - echo "🚀 Deploying to production server..."
-    - ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST "rm -rf /$SSH_USERNAME/diar-4fis"
-    - scp -r -P $SSH_PORT ./* $SSH_USERNAME@$SSH_HOST:/$SSH_USERNAME/diar-4fis/
+    - ssh $SSH_USER@$SSH_HOST "rm -rf /$SSH_USER/diar-4fis"
+    - scp -r ./* $SSH_USER@$SSH_HOST:/$SSH_USER/diar-4fis/
     - |
-      ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
+      ssh $SSH_USER@$SSH_HOST << EOF
       set -e
       cd ~/diar-4fis
       cp ~/.env.prod ./.env
@@ -79,10 +84,10 @@ deploy_to_development:
   extends: .deploy_template
   script:
     - echo "🚀 Deploying to development server..."
-    - ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST "rm -rf ~/diar-4fis-dev"
-    - scp -r -P $SSH_PORT ./* $SSH_USERNAME@$SSH_HOST:~/diar-4fis-dev/
+    - ssh $SSH_USER@$SSH_HOST "rm -rf ~/diar-4fis-dev"
+    - scp -r ./* $SSH_USER@$SSH_HOST:~/diar-4fis-dev/
     - |
-      ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
+      ssh $SSH_USER@$SSH_HOST << EOF
       set -e
       cd ~/diar-4fis-dev
       cp ~/.env.dev ./.env
