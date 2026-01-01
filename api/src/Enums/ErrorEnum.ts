@@ -1,50 +1,37 @@
 /**
- * Categorizes the origin or nature of an application error.
+ * Categories for the origin or nature of an application error.
  */
 enum ErrorTypeEnum {
-    /** Default category for unclassified or unexpected errors. */
     UNKNOWN = 'Unknown',
-
-    /** General logical validation failures. */
     VALIDATION = 'Validation',
-    /** Errors originating from Zod schema validation failures. */
     ZOD_VALIDATION = 'ZodValidation',
-    /** Errors related to identity verification and login. */
     AUTHENTICATION = 'Authentication',
-    /** Errors related to permission access control. */
     AUTHORIZATION = 'Authorization',
-    /** Errors originating from database operations. */
     DATABASE = 'Database',
-    /** Errors resulting from interactions with third-party APIs or services. */
     EXTERNAL_SERVICE = 'ExternalService'
 }
 
 /**
- * Defines specific numeric identifiers for error conditions.
- * Codes typically map to HTTP status groups (e.g., 401xxx, 500xxx).
+ * Numeric identifiers for specific error conditions.
+ * Mapped broadly to HTTP status groups (e.g., 401xxx, 500xxx).
  */
 enum ErrorCodeEnum {
-    /** Default zero-value code. */
     UNKNOWN = 0,
 
-    /** General unauthorized access error. */
+    // Authentication (401)
     UNAUTHORIZED = 401_000,
-    /** Error indicating invalid login credentials were provided. */
     INCORRECT_CREDENTIALS = 401_001,
-    /** Error indicating a technical failure during the sign-in process. */
     SIGN_IN_FAILED = 401_002,
 
-    /** General validation failure error code. */
+    // Authorization/Validation (403/400)
     VALIDATION = 403_000,
 
-    /** Error indicating a requested resource does not exist. */
+    // Resources (404)
     RESOURCE_NOT_FOUND = 404_000,
 
-    /** General internal server error. */
+    // Server/Internal (500)
     INTERNAL_SERVER_ERROR = 500_000,
-    /** Error indicating failure to dispatch an email. */
     EMAIL_NOT_SENT = 500_001,
-    /** Error indicating a failed database insertion operation. */
     INSERT_FAILED = 500_003
 }
 

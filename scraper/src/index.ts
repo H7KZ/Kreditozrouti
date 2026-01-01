@@ -6,6 +6,7 @@ const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
 const numWorkers = specifiedInstances ? parseInt(specifiedInstances) : 1
 
+// Cluster Management
 if (cluster.isPrimary && numWorkers > 1) {
     console.log(`🚀  [Scraper] Master process ${process.pid} is running`)
     console.log(`⚙️  [Scraper] Forking ${numWorkers} workers...`)
@@ -30,22 +31,14 @@ if (cluster.isPrimary && numWorkers > 1) {
  */
 async function start() {
     try {
-        /**
-         * Checks the connection to the Redis instance.
-         */
         await redis.ping()
         console.log('Connected to Redis successfully.')
 
-        /**
-         * Initializes the scraper queues and waits for workers to be ready.
-         */
         await scraper.waitForQueues()
         console.log('Scraper service is up and running.')
     } catch (error) {
         console.error('Failed to start the server:', error)
-
         redis.disconnect()
-
         process.exit(1)
     }
 }

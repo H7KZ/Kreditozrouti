@@ -1,57 +1,88 @@
 import { scraper } from '@scraper/bullmq'
 import { ScraperInSISCatalogRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISService from '@scraper/Services/Extractors/ExtractInSISService'
+import LoggerService from '@scraper/Services/LoggerService'
 import Axios from 'axios'
 
-/**
- * Initiates the scraping process for the InSIS course catalog.
- * Performs a search request to retrieve the full list of courses, extracts their URLs,
- * and queues individual scrape jobs for each discovered course.
- *
- * @returns A promise that resolves when all course scrape jobs have been queued.
- */
-export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCatalogRequestJob): Promise<void> {
-    let formData = ''
-    formData += 'kredity_od=&'
-    formData += 'kredity_do=&'
+export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCatalogRequestJob): Promise<void | null> {
+    const logger = new LoggerService(`[InSIS:Catalog]`)
+    const baseUrl = 'https://insis.vse.cz/katalog/index.pl'
 
-    const semester2025_2026Id = 381
-    const currentYear = new Date().getFullYear()
+    logger.log('Started - Fetching discovery options...')
 
-    for (let year = 2025; year <= currentYear + 2; year++) {
-        const nextIds = [semester2025_2026Id + 20 * (year - 2025), semester2025_2026Id + 20 * (year - 2025) + 1]
+    try {
+        // Phase 1: Discovery
+        const discoveryResponse = await Axios.get(`${baseUrl}?jak=rozsirene`, {
+            headers: ExtractInSISService.baseRequestHeaders()
+        })
+        const options = ExtractInSISService.extractCatalogSearchOptions(discoveryResponse.data)
 
-        for (const id of nextIds) {
-            formData += `obdobi=${id}&`
+        if (!options.faculties.length || !options.periods.length) {
+            throw new Error('Discovery failed: No faculties or periods found.')
         }
-    }
 
-    formData += 'vyhledat_rozsirene=Vyhledat+p%C5%99edm%C4%9Bty&'
-    formData += 'jak=rozsirene'
+        logger.log(`Options Found - Faculties: ${options.faculties.length}, Periods: ${options.periods.length}. Starting iterations...`)
 
-    const request = await Axios.post<string>('https://insis.vse.cz/katalog/index.pl', formData, {
-        headers: {
-            Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-            'Accept-Language': 'cs-CZ,cs;q=0.9,en;q=0.8',
-            'Cache-Control': 'no-cache',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Origin: 'https://insis.vse.cz',
-            Referer: 'https://insis.vse.cz/katalog/index.pl?jak=rozsirene',
-            'Upgrade-Insecure-Requests': '1',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36',
-            'sec-ch-ua': '"Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"'
+        // Phase 2: Iteration
+        for (const faculty of options.faculties) {
+            for (const period of options.periods) {
+                logger.log(`Processing: [Faculty: ${faculty.name}] [Period: ${period.name}]`)
+
+                const params = new URLSearchParams({
+                    kredity_od: '',
+                    kredity_do: '',
+                    fakulta: faculty.id.toString(),
+                    obdobi: period.id.toString(),
+                    vyhledat_rozsirene: 'Vyhledat předměty',
+                    jak: 'rozsirene',
+                    lang: 'cz'
+                })
+
+                try {
+                    const searchResponse = await Axios.post<string>(baseUrl, params.toString(), {
+                        headers: ExtractInSISService.baseRequestHeaders()
+                    })
+                    const coursesUrls = ExtractInSISService.extractCatalog(searchResponse.data)
+
+                    logger.log(`Found ${coursesUrls.length} courses. Queuing catalog response...`)
+                    await scraper.queue.response.add(`InSIS Catalog Response ${faculty.name} ${period.name}`, {
+                        type: 'InSIS:Catalog',
+                        catalog: { urls: coursesUrls },
+                        meta: { faculty, period }
+                    })
+
+                    if (coursesUrls.length && data.auto_queue_courses) {
+                        logger.log(`Auto-Queuing ${coursesUrls.length} course jobs...`)
+                        await scraper.queue.request.addBulk(
+                            coursesUrls.map(courseUrl => ({
+                                name: 'InSIS Course Request (Catalog)',
+                                data: {
+                                    type: 'InSIS:Course',
+                                    url: courseUrl,
+                                    meta: { faculty, period }
+                                },
+                                opts: {
+                                    deduplication: {
+                                        id: `InSIS:Course:${ExtractInSISService.extractCourseIdFromURL(courseUrl)}`
+                                    }
+                                }
+                            }))
+                        )
+                    }
+                } catch (innerError) {
+                    logger.error(`Failed iteration for ${faculty.name}/${period.name}`, innerError)
+                    // Continue to next period
+                }
+            }
         }
-    })
+        logger.log('Finished successfully.')
+    } catch (error) {
+        if (Axios.isAxiosError(error)) {
+            logger.error(`Network Error: ${error.message}`)
+        } else {
+            logger.error(`Critical Error: ${(error as Error).message}`)
+        }
 
-    const catalog = ExtractInSISService.extractCatalog(request.data)
-
-    await scraper.queue.response.add('InSIS Catalog Response', { type: 'InSIS:Catalog', catalog })
-
-    if (!catalog.urls || catalog.urls.length === 0 || !data.auto_queue_courses) {
-        return
+        return null
     }
-
-    catalog.urls.map(courseUrl => scraper.queue.request.add('InSIS Course Request (Catalog)', { type: 'InSIS:Course', url: courseUrl }))
 }

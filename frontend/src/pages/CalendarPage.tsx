@@ -7,6 +7,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import "@schedule-x/theme-default/dist/index.css"
 import "@schedule-x/theme-default/dist/index.css"
+import { DarkModeProvider } from "../components/DarkModeSwitcher"
 import Navbar from "../components/Navbar"
 
 export default function CalendarPage() {
@@ -32,11 +33,13 @@ export default function CalendarPage() {
   })
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar />
-      <div className="h-[800px] w-full flex-1 pt-16">
-        <ScheduleXCalendar calendarApp={calendar} />
+    <DarkModeProvider>
+      <div className="flex min-h-screen flex-col dark:bg-gray-950">
+        <Navbar />
+        <div className="h-[800px] w-full flex-1 pt-16">
+          <ScheduleXCalendar calendarApp={calendar} />
+        </div>
       </div>
-    </div>
+    </DarkModeProvider>
   )
 }

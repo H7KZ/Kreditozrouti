@@ -1,178 +1,166 @@
 import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 
 /**
- * Defines the schema structure for the Course table.
+ * Database schema for InSIS Courses.
  */
 export class CourseTable {
-    /** Database table name for courses. */
     static readonly _table = 'insis_courses' as const
 
-    /** Primary key. */
     id!: number
 
-    /** Record creation timestamp. */
     created_at!: ColumnType<Date, string | undefined, never>
-    /** Record last update timestamp. */
     updated_at!: ColumnType<Date, string | undefined, string | undefined>
 
-    // assessment_methods!: CourseAssessmentMethod[]
-    // timetable!: CourseTimetableUnit[]
-
-    /** External URL for the course details. */
+    /** External source URL. */
     url!: string
-    /** Unique course identifier code. */
+
+    /** Unique course code (e.g., 4IT101). */
     ident!: string
-    /** Official course title. */
+
     title!: string | null
-    /** Localized Czech title. */
     czech_title!: string | null
-    /** ECTS credit value. */
     ects!: number | null
-    /** Format of course delivery (e.g., in-person, remote). */
+    faculty!: string | null
+
+    /** Delivery format (e.g., in-person, remote). */
     mode_of_delivery!: string | null
-    /** Requirements for completion. */
+
+    /** Completion requirements (e.g., credit, exam). */
     mode_of_completion!: string | null
-    /** Languages of instruction (comma-separated if multiple). */
+
+    /** Comma-separated list of instruction languages. */
     languages!: string | null
+
     /** Academic level (e.g., Bachelor, Master). */
     level!: string | null
-    /** Recommended year of study. */
+
+    /** Recommended year of study in the curriculum. */
     year_of_study!: number | null
-    /** Semester (e.g., Winter, Summer). */
+
+    /** Teaching semester (Winter/Summer). */
     semester!: string | null
-    /** Names of lecturers associated with the course. */
+
     lecturers!: string | null
-    /** Prerequisite courses or knowledge. */
     prerequisites!: string | null
-    /** Recommended study programmes. */
     recommended_programmes!: string | null
-    /** Required professional experience. */
     required_work_experience!: string | null
 
-    /** Educational goals of the course. */
+    /** Educational goals. */
     aims_of_the_course!: string | null
-    /** Knowledge acquired upon completion. */
+
+    /** Acquired knowledge and skills. */
     learning_outcomes!: string | null
-    /** Detailed syllabus or content breakdown. */
+
+    /** Detailed syllabus. */
     course_contents!: string | null
 
-    /** Special requirements for enrollment or completion. */
     special_requirements!: string | null
-    /** Recommended reading and literature. */
     literature!: string | null
 }
 
-/** Type representing a selected course record. */
 export type Course = Selectable<CourseTable>
-/** Type representing data required to insert a new course. */
 export type NewCourse = Insertable<Omit<CourseTable, 'id' | 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
 
 /**
- * Defines the schema structure for the Assessment Method table.
+ * Handles course ID changes or merges to ensure link continuity.
  */
-export class CourseAssessmentMethodTable {
-    /** Database table name for course assessment methods. */
-    static readonly _table = 'insis_courses_assessment_methods' as const
+export class CourseIdRedirectTable {
+    static readonly _table = 'insis_courses_id_redirects' as const
 
-    /** Auto-generated primary key. */
-    id!: Generated<number>
-    /** Foreign key referencing the Course table. */
+    /** Reference to the current valid course ID. */
     course_id!: number
 
-    /** Record creation timestamp. */
+    /** The legacy or alternative ID being redirected. */
+    old_id!: number
+}
+
+export type CourseIdRedirect = Selectable<CourseIdRedirectTable>
+export type NewCourseIdRedirect = Insertable<Omit<CourseIdRedirectTable, 'id'>>
+
+// -------------------------------------------------------------------------
+
+/**
+ * Assessment methods required to complete a course.
+ */
+export class CourseAssessmentMethodTable {
+    static readonly _table = 'insis_courses_assessment_methods' as const
+
+    id!: Generated<number>
+    course_id!: number
+
     created_at!: ColumnType<Date, string | undefined, never>
-    /** Record last update timestamp. */
     updated_at!: ColumnType<Date, string | undefined, string | undefined>
 
-    /** Description of the assessment method (e.g., Exam, Homework). */
+    /** Description of the method (e.g., "Final Exam"). */
     method!: string | null
-    /** Weight of the assessment in the final grade. */
+
+    /** Percentage weight in the final grade. */
     weight!: number | null
 }
 
-/** Type representing a selected assessment method record. */
 export type CourseAssessmentMethod = Selectable<CourseAssessmentMethodTable>
-/** Type representing data required to insert a new assessment method. */
 export type NewCourseAssessmentMethod = Insertable<Omit<CourseAssessmentMethodTable, 'id' | 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
 
 /**
- * Defines the schema structure for the Timetable Unit table.
- * Represents a teaching group or specific instance of a course.
+ * Represents a specific teaching group or instance of a course.
  */
 export class CourseTimetableUnitTable {
-    /** Database table name for course timetable units. */
     static readonly _table = 'insis_courses_timetable_units' as const
 
-    /** Auto-generated primary key. */
     id!: Generated<number>
-    /** Foreign key referencing the Course table. */
     course_id!: number
 
-    /** Record creation timestamp. */
     created_at!: ColumnType<Date, string | undefined, never>
-    /** Record last update timestamp. */
     updated_at!: ColumnType<Date, string | undefined, string | undefined>
 
-    // slots!: CourseTimetableSlot[]
-
-    /** Name of the lecturer for this unit. */
     lecturer!: string | null
-    /** Maximum student capacity. */
     capacity!: number | null
-    /** Additional notes regarding the unit. */
     note!: string | null
 }
 
-/** Type representing a selected timetable unit record. */
 export type CourseTimetableUnit = Selectable<CourseTimetableUnitTable>
-/** Type representing data required to insert a new timetable unit. */
 export type NewCourseTimetableUnit = Insertable<Omit<CourseTimetableUnitTable, 'id' | 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
 
 /**
- * Defines the schema structure for the Timetable Slot table.
- * Represents specific scheduled times and locations for a unit.
+ * Specific scheduled time and location for a timetable unit.
  */
 export class CourseTimetableSlotTable {
-    /** Database table name for course timetable slots. */
     static readonly _table = 'insis_courses_timetable_slots' as const
 
-    /** Auto-generated primary key. */
     id!: Generated<number>
-    /** Foreign key referencing the Timetable Unit table. */
     timetable_unit_id!: number
 
-    /** Record creation timestamp. */
     created_at!: ColumnType<Date, string | undefined, never>
-    /** Record last update timestamp. */
     updated_at!: ColumnType<Date, string | undefined, string | undefined>
 
-    /** Type of action (e.g., Lecture, Seminar). */
+    /** Action type (e.g., Lecture, Seminar). */
     type!: string | null
-    /** Recurrence frequency. */
+
     frequency!: 'weekly' | 'single' | null
-    /** Specific date (if single occurrence). */
+
+    /** Date string for single-occurrence slots. */
     date!: string | null
-    /** Day of the week (if weekly). */
+
+    /** Day of the week for recurring slots. */
     day!: string | null
-    /** Start time string. */
+
     time_from!: string | null
-    /** End time string. */
     time_to!: string | null
-    /** Start time in minutes from midnight. */
+
+    /** Start time in minutes from midnight for easier calculation. */
     time_from_minutes!: number | null
+
     /** End time in minutes from midnight. */
     time_to_minutes!: number | null
-    /** Physical room or location. */
+
     location!: string | null
 }
 
-/** Type representing a selected timetable slot record. */
 export type CourseTimetableSlot = Selectable<CourseTimetableSlotTable>
-/** Type representing data required to insert a new timetable slot. */
 export type NewCourseTimetableSlot = Insertable<Omit<CourseTimetableSlotTable, 'id' | 'created_at' | 'updated_at'>>

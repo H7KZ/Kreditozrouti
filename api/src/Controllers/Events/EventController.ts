@@ -6,16 +6,16 @@ import Exception from '@api/Error/Exception'
 import { Request, Response } from 'express'
 
 /**
- * Retrieves the details of a specific event based on the provided ID.
+ * Retrieves the details of a specific event by ID.
  *
- * @param req - The Express request object containing the route parameters.
- * @param res - The Express response object.
- * @throws {Exception} If the event with the specified ID is not found.
+ * @param req - Express request object containing the event ID in params.
+ * @param res - Express response object.
+ * @throws {Exception} 404 - If the event is not found.
  */
 export default async function EventController(req: Request, res: Response<EventResponse>) {
-    const event_id = req.params.id
+    const { id } = req.params
 
-    const event = await mysql.selectFrom(EventTable._table).selectAll().where('id', '=', event_id).executeTakeFirst()
+    const event = await mysql.selectFrom(EventTable._table).selectAll().where('id', '=', id).executeTakeFirst()
 
     if (!event) {
         throw new Exception(404, ErrorTypeEnum.VALIDATION, ErrorCodeEnum.RESOURCE_NOT_FOUND, 'Event not found')

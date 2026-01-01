@@ -16,6 +16,7 @@ COPY ./api/src/ /usr/src/api/src/
 
 RUN npm run build
 RUN npm prune --omit=dev
+RUN npx puppeteer browsers install chrome
 
 
 # --------------------------------------------------------------------

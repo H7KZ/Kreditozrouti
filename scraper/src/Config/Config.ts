@@ -1,53 +1,37 @@
 import path from 'path'
 import dotenv from 'dotenv'
 
-/**
- * Attempts to load environment variables from multiple potential locations.
- * Checks distribution, monorepo root, and package-level paths.
- */
+// Attempt to load .env files from distribution, root, or package levels
 try {
     dotenv.config({
-        path: [
-            path.resolve(process.cwd(), '../../../../.env'), // For dist folder
-            path.resolve(process.cwd(), '../.env'), // For monorepo root
-            path.resolve(process.cwd(), '.env') // For monorepo package
-        ]
+        path: [path.resolve(process.cwd(), '../../../../.env'), path.resolve(process.cwd(), '../.env'), path.resolve(process.cwd(), '.env')]
     })
 } catch {
-    console.warn('No .env file found')
+    console.warn('No .env file found, relying on environment variables.')
 }
 
 /**
- * Defines the structure for the application configuration.
+ * Application configuration interface.
  */
 interface Config {
-    /** The current runtime environment (e.g., 'development', 'production'). */
+    /** Current runtime environment (e.g., 'development', 'production'). */
     env: string
 
     /** Redis connection settings. */
     redis: {
-        /** The connection URI for the Redis instance. */
         uri: string
-        /** The password for Redis authentication. */
-        password: string
+        password: string | undefined
     }
 
-    /**
-     * Determines if the current environment is set to development.
-     * @returns True if env is 'development', otherwise false.
-     */
     isEnvDevelopment: () => boolean
 }
 
-/**
- * The singleton configuration object initialized with environment variables or default fallbacks.
- */
 const config: Config = {
     env: process.env.ENV ?? 'development',
 
     redis: {
         uri: process.env.REDIS_URI ?? '',
-        password: process.env.REDIS_PASSWORD ?? ''
+        password: process.env.REDIS_PASSWORD
     },
 
     isEnvDevelopment: () => config.env === 'development'

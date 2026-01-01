@@ -2,8 +2,10 @@ import Config from '@api/Config/Config'
 import multer from 'multer'
 
 /**
- * Middleware configured for handling `multipart/form-data` file uploads.
- * Sets the local storage destination and enforces a maximum file size limit of 100 MB.
+ * Multer middleware configuration for handling `multipart/form-data`.
+ *
+ * - Destination: Configured via environment settings.
+ * - Limits: Maximum file size of 100 MB.
  */
 const FileMiddleware = multer({
     dest: Config.fileDestination,

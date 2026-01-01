@@ -6,12 +6,12 @@ import { Paths } from '@api/paths'
 import { FileMigrationProvider, Migrator } from 'kysely'
 
 /**
- * Manages database schema migrations and initial data seeding.
+ * Service responsible for database schema management and initial data seeding.
  */
 export class SQLService {
     /**
-     * Executes pending database migrations to bring the schema up to date.
-     * Logs execution results and terminates the process if a critical error occurs.
+     * Executes pending migrations to bring the database schema up to date.
+     * Terminating the process with exit code 1 if a critical error occurs.
      *
      * @throws {Error} If the database client is not initialized.
      */
@@ -47,8 +47,8 @@ export class SQLService {
     }
 
     /**
-     * Dynamically imports and executes seed scripts from the configured directory.
-     * Scans for valid JS/TS files and invokes their exported `seed` function.
+     * Dynamically imports and executes seed scripts from the seeds directory.
+     * Supports .js, .ts, .mjs, and .mts files.
      *
      * @throws {Error} If the database client is not initialized.
      */
@@ -60,28 +60,27 @@ export class SQLService {
         const seedFiles = await fs.readdir(Paths.Database.seeds)
 
         for (const file of seedFiles) {
-            // Filters for valid executable script files (.js, .ts, .mjs, .mts) excluding type definitions.
-            if (
+            const isScript =
                 file.endsWith('.js') ||
                 (file.endsWith('.ts') && !file.endsWith('.d.ts')) ||
                 file.endsWith('.mjs') ||
                 (file.endsWith('.mts') && !file.endsWith('.d.mts'))
-            ) {
-                const filePath = path.join(Paths.Database.seeds, file)
 
-                const fileURL = pathToFileURL(filePath).href
+            if (!isScript) continue
 
-                const seedModule = (await import(fileURL)) as { seed: (db: typeof mysql) => Promise<void> }
+            const filePath = path.join(Paths.Database.seeds, file)
+            const fileURL = pathToFileURL(filePath).href
 
-                if (typeof seedModule.seed === 'function') {
-                    try {
-                        await seedModule.seed(mysql)
-                        console.log(`Seed "${file}" executed successfully`)
-                    } catch (error) {
-                        if (error instanceof Error) {
-                            console.error(`Failed to execute seed "${file}"`)
-                        }
-                    }
+            const seedModule = (await import(fileURL)) as { seed: (db: typeof mysql) => Promise<void> }
+
+            if (typeof seedModule.seed !== 'function') continue
+
+            try {
+                await seedModule.seed(mysql)
+                console.log(`Seed "${file}" executed successfully`)
+            } catch (error) {
+                if (error instanceof Error) {
+                    console.error(`Failed to execute seed "${file}"`)
                 }
             }
         }

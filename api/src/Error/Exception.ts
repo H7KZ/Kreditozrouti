@@ -2,45 +2,28 @@ import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import { $ZodIssue } from 'zod/v4/core'
 
 /**
- * Defines the structure of a standardized API error.
- * Extends the native JavaScript Error interface with HTTP and internal status codes.
+ * Standardized API error structure.
  */
 export interface APIError extends Error {
-    /** HTTP status code (e.g., 400, 404, 500). */
+    /** HTTP status code. */
     status: number
-    /** Internal application-specific error code. */
+    /** Application-specific error code. */
     code: ErrorCodeEnum
-    /** Categorization of the error type. */
+    /** High-level error category. */
     type: ErrorTypeEnum
-    /** Extended error context and payload. */
+    /** Additional context and validation details. */
     details: APIErrorDetails
 }
 
-/**
- * Container for additional error context, debugging information, and validation issues.
- */
 interface APIErrorDetails {
-    /** Validation issues returned by Zod, if applicable. */
     zodIssues?: $ZodIssue[]
-
-    /** Arbitrary additional context. */
     [key: string]: any
 }
 
 /**
- * Custom error class used to throw standardized exceptions.
- * Ensures consistent error response structure across the application.
+ * Custom exception class for throwing standardized API errors.
  */
 export default class Exception extends Error implements APIError {
-    /**
-     * Initializes a new Exception instance.
-     *
-     * @param status - HTTP status code (default: 500).
-     * @param type - High-level error category (default: UNKNOWN).
-     * @param code - Specific numeric error identifier (default: UNKNOWN).
-     * @param message - Human-readable error description.
-     * @param details - Additional context or validation data (default: {}).
-     */
     constructor(
         public status = 500,
         public type = ErrorTypeEnum.UNKNOWN,
@@ -49,10 +32,6 @@ export default class Exception extends Error implements APIError {
         public details: APIErrorDetails = {}
     ) {
         super(message)
-
-        /**
-         * Restores the prototype chain to ensure `instanceof Exception` checks work correctly.
-         */
         Object.setPrototypeOf(this, Exception.prototype)
     }
 }

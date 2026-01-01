@@ -7,105 +7,133 @@ import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
 import { Queue, Worker } from 'bullmq'
 
 const Scraper4FISEventsRequestScheduler = 'Scraper4FISEventsRequestScheduler'
+const Scraper4FISArchiveEventsRequestScheduler = 'Scraper4FISArchiveEventsRequestScheduler'
+const Scraper4FISFlickrEventsRequestScheduler = 'Scraper4FISFlickrEventsRequestScheduler'
 const ScraperInSISCatalogRequestScheduler = 'ScraperInSISCatalogRequestScheduler'
+const ScraperInSISStudyPlansRequestScheduler = 'ScraperInSISStudyPlansRequestScheduler'
 
 /**
  * Manages the BullMQ infrastructure for the scraping service.
- * Handles the initialization of request queues, response workers, and periodic job scheduling.
+ * Handles request queues, response workers, and periodic job scheduling.
  */
 const scraper = {
-    /**
-     * Collection of message queues for job dispatching.
-     */
     queue: {
-        /** Queue for sending scraping requests to the external scraper service. */
         request: new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis })
-        // response: new Queue<ScraperResponseJobData>(ScraperResponseQueue, { connection: redis })
     },
-    /**
-     * Collection of workers for processing job execution results.
-     */
+
     worker: {
-        // request: new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestJobHandler, { connection: redis }),
-        /** Worker that processes responses from the scraper with a concurrency limit of 4. */
-        response: new Worker<ScraperResponseJob>(ScraperResponseQueue, ScraperResponseHandler, { connection: redis, concurrency: 4 })
+        response: new Worker<ScraperResponseJob>(ScraperResponseQueue, ScraperResponseHandler, {
+            connection: redis,
+            concurrency: 4
+        })
     },
 
     /**
-     * Awaits the readiness of all configured queues and workers.
-     * Ensures connection to Redis is established before processing begins.
+     * Waits for all queues and workers to be ready before processing.
      */
     async waitForQueues() {
         await scraper.queue.request.waitUntilReady()
-        console.log('Scraper request queue is ready and processing jobs.')
-
-        // await scraper.queue.response.waitUntilReady()
-        // console.log('Scraper response queue is ready and processing jobs.')
-
-        // await scraper.worker.request.waitUntilReady()
-        // console.log('Scraper request worker is ready and processing jobs.')
+        console.log('Scraper request queue is ready.')
 
         await scraper.worker.response.waitUntilReady()
-        console.log('Scraper response worker is ready and processing jobs.')
+        console.log('Scraper response worker is ready.')
     },
 
     /**
-     * Registers recurring (Cron-based) job schedulers.
-     * Sets up periodic triggers for FIS Events and InSIS Catalog scraping.
+     * Configures Cron-based job schedulers.
      */
     async schedulers() {
-        /**
-         * Schedules the FIS Events scraper to run every 2 minutes.
-         */
-        await scraper.queue.request.upsertJobScheduler(
-            Scraper4FISEventsRequestScheduler,
-            { pattern: '*/2 * * * *' }, // Every 2 minutes
-            {
-                name: '4FIS Events Request (2 min)',
-                data: {
-                    type: '4FIS:Events',
-                    auto_queue_events: true
-                },
-                opts: {
-                    removeOnComplete: true,
-                    removeOnFail: {
-                        age: 2 * 3600 // keep up to 2 hours
-                    }
-                }
-            }
-        )
-        console.log(`${Scraper4FISEventsRequestScheduler} has been set to run every 2 minutes.`)
-
         if (!Config.isEnvDevelopment()) {
-            /**
-             * Schedules the InSIS Catalog scraper to run at the start of every hour.
-             */
+            // 4FIS Events (Every 2 minutes)
+            await scraper.queue.request.upsertJobScheduler(
+                Scraper4FISEventsRequestScheduler,
+                { pattern: '*/2 * * * *' },
+                {
+                    name: '4FIS Events Request (*/2 min)',
+                    data: {
+                        type: '4FIS:Events',
+                        auto_queue_events: true
+                    },
+                    opts: { removeOnComplete: true, removeOnFail: true }
+                }
+            )
+
+            // 4FIS Archive Events (Daily at 3:00 AM)
+            await scraper.queue.request.upsertJobScheduler(
+                Scraper4FISArchiveEventsRequestScheduler,
+                { pattern: '0 3 * * *' },
+                {
+                    name: '4FIS Archive Events Request (3 AM)',
+                    data: {
+                        type: '4FIS:Archive:Events',
+                        auto_queue_events: true
+                    },
+                    opts: { removeOnComplete: true, removeOnFail: true }
+                }
+            )
+
+            // 4FIS Flickr Events (Daily at 4:00 AM)
+            await scraper.queue.request.upsertJobScheduler(
+                Scraper4FISFlickrEventsRequestScheduler,
+                { pattern: '0 4 * * *' },
+                {
+                    name: '4FIS Flickr Events Request (4 AM)',
+                    data: {
+                        type: '4FIS:Flickr:Events',
+                        auto_queue_events: true
+                    },
+                    opts: { removeOnComplete: true, removeOnFail: true }
+                }
+            )
+
+            // InSIS Catalog (Daily at 1:00 AM)
             await scraper.queue.request.upsertJobScheduler(
                 ScraperInSISCatalogRequestScheduler,
-                { pattern: '0 * * * *' }, // Every 1 hour
+                { pattern: '0 1 * * *' },
                 {
-                    name: 'InSIS Catalog Request (1 hour)',
+                    name: 'InSIS Catalog Request (at 1 AM)',
                     data: {
                         type: 'InSIS:Catalog',
                         auto_queue_courses: true
                     },
-                    opts: {
-                        removeOnComplete: true,
-                        removeOnFail: {
-                            age: 2 * 3600 // keep up to 2 hours
-                        }
-                    }
+                    opts: { removeOnComplete: true, removeOnFail: true }
                 }
             )
-            console.log(`${ScraperInSISCatalogRequestScheduler} has been set to run every 1 hour.`)
-        }
 
-        /**
-         * For testing purposes, you can uncomment the following lines to enqueue immediate jobs:
-         */
-        // await scraper.queue.request.add('4FIS Events Request', { type: '4FIS:Events', auto_queue_events: true })
-        // await scraper.queue.request.add('InSIS Catalog Request', { type: 'InSIS:Catalog', auto_queue_courses: true })
+            // InSIS Study Plans (Daily at 2:00 AM)
+            await scraper.queue.request.upsertJobScheduler(
+                ScraperInSISStudyPlansRequestScheduler,
+                { pattern: '0 2 * * *' },
+                {
+                    name: 'InSIS Study Plans Request (at 2 AM)',
+                    data: {
+                        type: 'InSIS:StudyPlans',
+                        auto_queue_study_plans: true,
+                        auto_queue_courses: true
+                    },
+                    opts: { removeOnComplete: true, removeOnFail: true }
+                }
+            )
+
+            // InSIS Study Plans Secondary Run (Daily at 2:45 AM)
+            // Note: Using a suffix to avoid overwriting the 2:00 AM scheduler
+            await scraper.queue.request.upsertJobScheduler(
+                `${ScraperInSISStudyPlansRequestScheduler}:Secondary`,
+                { pattern: '45 2 * * *' },
+                {
+                    name: 'InSIS Study Plans Request (at 2:45 AM)',
+                    data: {
+                        type: 'InSIS:StudyPlans',
+                        auto_queue_study_plans: true,
+                        auto_queue_courses: false
+                    },
+                    opts: { removeOnComplete: true, removeOnFail: true }
+                }
+            )
+
+            console.log('BullMQ schedulers have been configured.')
+        }
     }
 }
 
-export { Scraper4FISEventsRequestScheduler, ScraperInSISCatalogRequestScheduler, scraper }
+export { scraper }
