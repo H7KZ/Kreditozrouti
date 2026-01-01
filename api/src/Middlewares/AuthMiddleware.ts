@@ -52,6 +52,7 @@ export default async function AuthMiddleware(req: Request, res: Response, next: 
     // Cache user profile for 60 seconds
     await redis.setex(`user:${user.id}`, 60, JSON.stringify(user))
 
+    // Attach user to response locals for downstream access
     res.locals.user = user
     return next()
 }

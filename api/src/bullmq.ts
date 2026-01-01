@@ -1,16 +1,17 @@
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
-import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/bullmq'
+import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/Interfaces/ScraperQueue'
 import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
 import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
+import {
+    Scraper4FISArchiveEventsRequestScheduler,
+    Scraper4FISEventsRequestScheduler,
+    Scraper4FISFlickrEventsRequestScheduler,
+    ScraperInSISCatalogRequestScheduler,
+    ScraperInSISStudyPlansRequestScheduler
+} from '@scraper/Interfaces/ScraperSchedulers'
 import { Queue, Worker } from 'bullmq'
-
-const Scraper4FISEventsRequestScheduler = 'Scraper4FISEventsRequestScheduler'
-const Scraper4FISArchiveEventsRequestScheduler = 'Scraper4FISArchiveEventsRequestScheduler'
-const Scraper4FISFlickrEventsRequestScheduler = 'Scraper4FISFlickrEventsRequestScheduler'
-const ScraperInSISCatalogRequestScheduler = 'ScraperInSISCatalogRequestScheduler'
-const ScraperInSISStudyPlansRequestScheduler = 'ScraperInSISStudyPlansRequestScheduler'
 
 /**
  * Manages the BullMQ infrastructure for the scraping service.

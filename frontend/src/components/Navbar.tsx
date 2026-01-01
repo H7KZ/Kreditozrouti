@@ -1,6 +1,7 @@
 import { useNavigate } from "@tanstack/react-router"
 import { Calendar, HelpCircle, LogOut, Medal, Moon, Sun, User, UserPlus, Users } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import AuthService from "@frontend/services/AuthService.ts"
 import { useDarkMode } from "./DarkModeSwitcher"
 import LanguageSwitcher from "./LanguageSwitcher"
 import { Button } from "./ui/button"
@@ -11,6 +12,8 @@ export default function Navbar() {
   const navigate = useNavigate()
 
   const { isDark, toggleDarkMode } = useDarkMode()
+
+  const signOut = async () => AuthService.signOut()
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6 dark:border-gray-700 dark:bg-gray-950">
@@ -65,7 +68,7 @@ export default function Navbar() {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={signOut}>
               <LogOut className="h-4 w-4" />
               <span>{t("user_dropdown.logout")}</span>
             </DropdownMenuItem>

@@ -2,8 +2,8 @@
 
 import { useNavigate } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
-import { DarkModeProvider } from "@/components/DarkModeSwitcher"
-import LanguageSwitcher from "@/components/LanguageSwitcher"
+import { DarkModeProvider } from "@frontend/components/DarkModeSwitcher"
+import LanguageSwitcher from "@frontend/components/LanguageSwitcher"
 
 export default function EventDetailPage() {
   const navigate = useNavigate()

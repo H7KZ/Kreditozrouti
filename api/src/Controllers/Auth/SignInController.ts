@@ -44,8 +44,13 @@ export default async function SignInController(req: Request, res: Response<SignI
     const code = Math.floor(100000 + Math.random() * 900000)
     await redis.setex(`auth:code:${email}`, 600, code.toString())
 
+    // Store the verification code (10 minutes TTL)
+    await redis.setex(`auth:code:${data.email}`, 600, code.toString())
+
+    // Initialize i18n for email templates
     i18n.init(req, res)
 
+    // Send verification code via email
     const magicLink = Config.frontend.createURL(`/auth/signin/confirm?code=${code}`)
     const emailSignInTemplate = await EmailService.readTemplate('CodeEmail', {
         emailText: req.__('emails.signIn.body', { expiration: '10' }),

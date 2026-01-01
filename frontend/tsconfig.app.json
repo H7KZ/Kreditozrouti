@@ -20,16 +20,15 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
+    "erasableSyntaxOnly": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "$frontend/*": ["./src/*"],
-      "$api/*": ["../api/src/*"],
-      "$scraper/*": ["../scraper/src/*"]
+      "@frontend/*": ["./src/*"],
+      "@api/*": ["../api/src/*"],
+      "@scraper/*": ["../scraper/src/*"]
     }
   },
   "include": ["src"]

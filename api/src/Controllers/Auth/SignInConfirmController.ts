@@ -1,7 +1,6 @@
 import crypto from 'crypto'
 import { mysql, redis } from '@api/clients'
 import Config from '@api/Config/Config'
-import SignInConfirmRequest from '@api/Controllers/Auth/types/SignInConfirmRequest'
 import SignInConfirmResponse from '@api/Controllers/Auth/types/SignInConfirmResponse'
 import { User, UserTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
@@ -27,7 +26,7 @@ export default async function SignInConfirmController(req: Request, res: Respons
         throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid credentials', { zodIssues: result.error.issues })
     }
 
-    const data = result.data as SignInConfirmRequest
+    const data = result.data
 
     // Reconstruct the challenge from the verifier
     const code_challenge = crypto.createHash('sha256').update(data.code_verifier).digest('hex')
@@ -64,6 +63,7 @@ export default async function SignInConfirmController(req: Request, res: Respons
     await Promise.all([redis.del(`auth:challenge:${code_challenge}`), redis.del(`auth:email:${code_challenge}`), redis.del(`auth:code:${user.email}`)])
 
     const jwt = await JWTService.createJWTAuthTokenForUser(user as User)
+
     await redis.setex(`auth:jwt:user:${user.id}`, Config.jwtExpirationSeconds, jwt)
 
     return res.status(201).send({

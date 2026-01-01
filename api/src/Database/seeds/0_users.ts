@@ -9,5 +9,6 @@ export async function seed(mysql: Kysely<Database>) {
                 email: 'diar.4fis@gmail.com'
             }
         ])
+        .onDuplicateKeyUpdate({ email: eb => eb.ref('email') })
         .execute()
 }

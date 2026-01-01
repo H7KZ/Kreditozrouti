@@ -32,6 +32,7 @@ export default class Exception extends Error implements APIError {
         public details: APIErrorDetails = {}
     ) {
         super(message)
+
         Object.setPrototypeOf(this, Exception.prototype)
     }
 }

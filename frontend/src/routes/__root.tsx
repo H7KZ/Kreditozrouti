@@ -1,5 +1,11 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router"
+import NotFoundPage from "@frontend/pages/NotFoundPage"
+
+function RootLayout() {
+  return <Outlet />
+}
 
 export const Route = createRootRoute({
-  component: () => <Outlet />
+  component: RootLayout,
+  notFoundComponent: NotFoundPage
 })
