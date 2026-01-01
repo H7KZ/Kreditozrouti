@@ -41,10 +41,11 @@ verify_code:
   before_script:
     - apt-get update -y && apt-get install -y openssh-client git
     - eval $(ssh-agent -s)
-    # Decode the Base64 key and add it to the agent
-    - echo "$SSH_PRIVATE_KEY" | base64 -d | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | base64 -d > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-add ~/.ssh/id_rsa
     - echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
 
@@ -61,7 +62,7 @@ deploy_to_production:
       set -e
       cd ~/diar-4fis
       cp ~/.env.prod ./.env
-      bash ./deployment.sh diar-4fis prod
+      bash ./deployment/environment.sh diar-4fis prod
       EOF
   rules:
     # This job runs ONLY for version tags (e.g., v1.2.3).
@@ -81,7 +82,7 @@ deploy_to_development:
       set -e
       cd ~/diar-4fis-dev
       cp ~/.env.dev ./.env
-      bash ./deployment.sh diar-4fis-dev dev
+      bash ./deployment/environment.sh diar-4fis-dev dev
       EOF
   rules:
     # This job runs ONLY for development tags (e.g., dev-1.2.3).

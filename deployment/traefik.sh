@@ -10,9 +10,9 @@ echo "================================================="
 echo
 
 
-TRAEFIK_COMPOSE_FILE="./docker-compose.traefik.yml"
-TRAEFIK_NETWORKS_CONFIG_PATH="./networks.yml"
-TRAEFIK_VOLUMES_CONFIG_PATH="./volumes.yml"
+TRAEFIK_COMPOSE_FILE="./traefik/docker-compose.traefik.yml"
+TRAEFIK_NETWORKS_CONFIG_PATH="./traefik/networks.yml"
+TRAEFIK_VOLUMES_CONFIG_PATH="./traefik/volumes.yml"
 
 if [ ! -f "$TRAEFIK_COMPOSE_FILE" ]; then echo "❌ Error: Traefik config '$TRAEFIK_COMPOSE_FILE' not found!"; exit 1; fi
 if [ ! -f "$TRAEFIK_NETWORKS_CONFIG_PATH" ]; then echo "❌ Error: Traefik network config '$TRAEFIK_NETWORKS_CONFIG_PATH' not found!"; exit 1; fi

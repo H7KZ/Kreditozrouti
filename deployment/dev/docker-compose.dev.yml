@@ -6,6 +6,9 @@ services:
   api:
     image: diar-4fis-api
 
+    env_file:
+      - ../../.env
+
     build:
       context: ../..
       dockerfile: ../../api/Dockerfile
@@ -92,6 +95,9 @@ services:
   scraper:
     image: diar-4fis-scraper
 
+    env_file:
+      - ../../.env
+
     build:
       context: ../..
       dockerfile: ../../scraper/Dockerfile
@@ -145,6 +151,9 @@ services:
 
   frontend:
     image: diar-4fis-frontend
+
+    env_file:
+      - ../../.env
 
     build:
       context: ../..
@@ -212,7 +221,10 @@ services:
   # MYSQL DATABASE
 
   mysql:
-    image: mysql:9.4.0
+    image: mysql:9.5.0
+
+    env_file:
+      - ../../.env
 
     volumes:
       - mysql-data-dev-volume:/var/lib/mysql
@@ -266,6 +278,9 @@ services:
 
   phpmyadmin:
     image: phpmyadmin
+
+    env_file:
+      - ../../.env
 
     environment:
       - PMA_ARBITRARY=1
@@ -326,7 +341,10 @@ services:
   # REDIS CACHE
 
   redis:
-    image: redis:8.2.2-alpine
+    image: redis:8.4.0-alpine
+
+    env_file:
+      - ../../.env
 
     command: [
       "--save", "20", "1",
