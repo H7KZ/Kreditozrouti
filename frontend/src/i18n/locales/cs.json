@@ -43,5 +43,30 @@
     "light_mode": "Světlý režim",
     "support": "Podpora",
     "logout": "Odhlásit se"
+  },
+  "profile": {
+    "title": "Osobní profil",
+    "tabs": {
+      "personal_info": "Osobní údaje",
+      "event_registration": "Registrace akcí"
+    },
+    "personal_section": {
+      "title": "Osobní údaje"
+    },
+    "registration_section": {
+      "title": "Registrační údaje"
+    },
+    "fields": {
+      "first_name": "Křestní jméno",
+      "last_name": "Příjmení",
+      "birth_date": "Datum narození",
+      "email": "Email",
+      "team_name": "Název týmu",
+      "member_count": "Počet členů",
+      "data_consent": "Souhlas se zpracováním údajů"
+    },
+    "placeholders": {
+      "team_name": "Název týmu"
+    }
   }
 }

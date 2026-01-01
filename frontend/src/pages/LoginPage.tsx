@@ -1,6 +1,7 @@
 import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import Snowfall from "react-snowfall"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,6 +15,8 @@ export default function LoginPage() {
   const [showConfirmCode, setShowConfirmCode] = useState(false)
   const [confirmCode, setConfirmCode] = useState("")
   const [isVerifying, setIsVerifying] = useState(false)
+  const [isSnowing, setIsSnowing] = useState(false)
+
   const normalizedXname = xname.replace(/[^a-zA-Z0-9]/g, "").slice(0, 6)
   const isValidXname = /^[a-zA-Z0-9]{6}$/.test(normalizedXname)
   const formatCode = (code: string) =>
@@ -36,12 +39,14 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-6 pt-16">
+      {isSnowing && <Snowfall color="82C3D9" />}
+
       <div className="absolute right-6 top-6">
         <LanguageSwitcher />
       </div>
       <div className="pb-8 pt-6 text-center">
         <div className="mb-4 flex justify-center">
-          <img src="/diar_fisaka.svg" alt={t("common.app_logo_alt")} className="h-56 select-none md:h-64" />
+          <img src="/diar_fisaka.svg" alt={t("common.app_logo_alt")} onClick={() => setIsSnowing(true)} className="h-56 cursor-pointer select-none md:h-64" />
         </div>
         <h1 className="text-xl font-semibold text-gray-900 md:text-2xl">{showConfirmCode ? t("sign_in_confirm.heading") : t("sign_in.heading")}</h1>
         {showConfirmCode && (
@@ -60,6 +65,7 @@ export default function LoginPage() {
             <div className="relative w-full">
               <Input
                 id="xname"
+                autoFocus
                 type="text"
                 placeholder="xname"
                 value={normalizedXname}

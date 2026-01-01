@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router"
 import { Calendar, HelpCircle, LogOut, Medal, Moon, Sun, User, UserPlus, Users } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useDarkMode } from "./DarkModeSwitcher"
@@ -7,6 +8,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 
 export default function Navbar() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+
   const { isDark, toggleDarkMode } = useDarkMode()
 
   return (
@@ -19,23 +22,23 @@ export default function Navbar() {
       <div className="flex items-center gap-4">
         <LanguageSwitcher />
 
-        {/* User Dropdown */}
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="flex h-10 w-10 items-center justify-center p-0 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
               <User className="h-8 w-8 scale-150 transform" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            {/* Group 1 */}
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate({ to: "/profile" })}>
               <User className="h-4 w-4" />
               <span>{t("user_dropdown.profile")}</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => navigate({ to: "/calendar" })}>
               <Calendar className="h-4 w-4" />
               <span>{t("user_dropdown.my_events")}</span>
             </DropdownMenuItem>
+
             <DropdownMenuItem>
               <Medal className="h-4 w-4" />
               <span>{t("user_dropdown.leaderboard")}</span>
@@ -43,7 +46,6 @@ export default function Navbar() {
 
             <DropdownMenuSeparator />
 
-            {/* Group 2 */}
             <DropdownMenuItem>
               <Users className="h-4 w-4" />
               <span>{t("user_dropdown.groups")}</span>
@@ -63,7 +65,6 @@ export default function Navbar() {
 
             <DropdownMenuSeparator />
 
-            {/* Group 3 */}
             <DropdownMenuItem>
               <LogOut className="h-4 w-4" />
               <span>{t("user_dropdown.logout")}</span>
