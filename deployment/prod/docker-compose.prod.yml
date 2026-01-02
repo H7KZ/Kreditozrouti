@@ -169,7 +169,7 @@ services:
       - traefik.http.routers.${PROJECT}-frontend.entrypoints=websecure
       - traefik.http.routers.${PROJECT}-frontend.tls=true
       - traefik.http.routers.${PROJECT}-frontend.tls.certresolver=letsencrypt
-      - traefik.http.services.${PROJECT}-frontend.loadbalancer.server.port=45173
+      - traefik.http.services.${PROJECT}-frontend.loadbalancer.server.port=80
 
       - traefik.http.routers.${PROJECT}-frontend.middlewares=${PROJECT}-frontend-stripprefix,${PROJECT}-frontend-redirect-www
 
