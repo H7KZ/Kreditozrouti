@@ -14,8 +14,10 @@ services:
     #   - api-uploads-volume:/usr/src/uploads
 
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
     environment:
       - ENV=production
@@ -95,7 +97,8 @@ services:
       dockerfile: scraper/Dockerfile
 
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
 
     environment:
       - ENV=production
@@ -228,6 +231,13 @@ services:
     # ports:
     #   - 3306:3306
 
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
     deploy:
       mode: global
 
@@ -266,6 +276,10 @@ services:
   phpmyadmin:
     image: phpmyadmin
 
+    depends_on:
+      mysql:
+        condition: service_healthy
+
     environment:
       - PMA_ARBITRARY=1
       - PMA_HOST=mysql
@@ -277,7 +291,7 @@ services:
 
     networks:
       - traefik-network
-      - mysql-dev-network
+      - mysql-network
 
     # ports:
     #   - 80:80
@@ -345,6 +359,13 @@ services:
 
     # ports:
     #   - 6379:6379
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping", "-a", "${REDIS_PASSWORD}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
     deploy:
       mode: global
