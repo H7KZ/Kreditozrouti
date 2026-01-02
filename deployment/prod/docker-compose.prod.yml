@@ -8,7 +8,7 @@ services:
 
     build:
       context: ../..
-      dockerfile: ../../api/Dockerfile
+      dockerfile: api/Dockerfile
 
     # volumes:
     #   - api-uploads-volume:/usr/src/uploads
@@ -92,7 +92,7 @@ services:
 
     build:
       context: ../..
-      dockerfile: ../../scraper/Dockerfile
+      dockerfile: scraper/Dockerfile
 
     depends_on:
       - redis
@@ -146,7 +146,7 @@ services:
 
     build:
       context: ../..
-      dockerfile: ../../frontend/Dockerfile
+      dockerfile: frontend/Dockerfile
 
     depends_on:
       - api
