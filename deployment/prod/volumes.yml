@@ -3,6 +3,7 @@ volumes:
     name: mysql-data-volume
     external: true
 
+
   uptime-kuma-volume:
     name: uptime-kuma-volume
     external: true

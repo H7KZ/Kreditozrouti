@@ -230,7 +230,7 @@ services:
     image: louislam/uptime-kuma:1
 
     volumes:
-      - uptime-kuma-dev-data:/app/data
+      - uptime-kuma-dev-volume:/app/data
 
     networks:
       - traefik-network
