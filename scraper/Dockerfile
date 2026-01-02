@@ -11,7 +11,7 @@ COPY ./scraper/ /usr/src/scraper/
 
 
 # "Workspaces" setup
-COPY ./api/src/ /usr/src/api/src/
+# COPY ./api/src/ /usr/src/api/src/
 
 
 RUN npm run build
@@ -21,7 +21,7 @@ RUN npx puppeteer browsers install chrome
 
 # --------------------------------------------------------------------
 # Production Stage
-FROM gcr.io/distroless/nodejs24-debian12
+FROM node:24-alpine
 
 
 WORKDIR /usr/src/scraper
@@ -29,5 +29,7 @@ WORKDIR /usr/src/scraper
 COPY --from=builder /usr/src/scraper/dist /usr/src/scraper/dist
 COPY --from=builder /usr/src/scraper/node_modules /usr/src/scraper/node_modules
 
+CMD ["node", "dist/index.js"]
 
-CMD ["dist/scraper/src/index.js"]
+# "Workspaces" setup
+# CMD ["node", "dist/scraper/src/index.js"]

@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql:9.4.0
+    image: mysql
     container_name: diar-4fis-mysql
 
     volumes:
@@ -96,7 +96,7 @@ services:
   # ================================================================ #
 
   redis:
-    image: redis:8.2.2-alpine
+    image: redis:alpine
     container_name: diar-4fis-redis
 
     command: [
