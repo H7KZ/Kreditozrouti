@@ -7,7 +7,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@frontend/*": ["./src/*"],
+      "@api/*": ["../api/src/*"],
+      "@scraper/*": ["../scraper/src/*"]
     }
   }
 }

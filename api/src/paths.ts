@@ -1,8 +1,11 @@
 import path from 'path'
 
+/**
+ * Static utility for resolving absolute file paths.
+ * Centralizes directory structure logic.
+ */
 export class Paths {
     static root = path.resolve(__dirname, '../')
-
     static src = path.join(Paths.root, 'src')
     static assets = path.join(Paths.root, 'assets')
 
