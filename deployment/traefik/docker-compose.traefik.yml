@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: traefik:v3.5.3
+    image: traefik:v3.6.6
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -17,7 +17,7 @@ services:
 
     labels:
       - traefik.enable=true
-      - traefik.http.routers.traefik.rule=Host(`diar.4fis.cz`) && PathPrefix(`/traefik`)
+      - traefik.http.routers.traefik.rule=Host(`traefik-diar-4fis.jankominek.com`)
       - traefik.http.routers.traefik.entrypoints=websecure
       - traefik.http.routers.traefik.tls=true
       - traefik.http.routers.traefik.tls.certresolver=letsencrypt

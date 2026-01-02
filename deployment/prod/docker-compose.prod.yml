@@ -4,7 +4,7 @@ services:
   # API SERVICE
 
   api:
-    image: diar-4fis-api
+    image: api
 
     build:
       context: ../..
@@ -45,7 +45,8 @@ services:
       - traefik.http.routers.${PROJECT}-api.tls.certresolver=letsencrypt
       - traefik.http.services.${PROJECT}-api.loadbalancer.server.port=80
 
-      - traefik.http.routers.${PROJECT}-api.middlewares=diar-4fis-api-stripprefix,diar-4fis-api-redirect-www
+      - traefik.http.routers.${PROJECT}-api.middlewares=${PROJECT}-api-stripprefix,${PROJECT}-api-redirect-www
+
       - traefik.http.middlewares.${PROJECT}-api-stripprefix.stripprefix.prefixes=/api
       - traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}
@@ -87,7 +88,7 @@ services:
   # SCRAPER SERVICE
 
   scraper:
-    image: diar-4fis-scraper
+    image: scraper
 
     build:
       context: ../..
@@ -141,7 +142,7 @@ services:
   # FRONTEND SERVICE
 
   frontend:
-    image: diar-4fis-frontend
+    image: frontend
 
     build:
       context: ../..
@@ -167,7 +168,8 @@ services:
       - traefik.http.routers.${PROJECT}-frontend.tls.certresolver=letsencrypt
       - traefik.http.services.${PROJECT}-frontend.loadbalancer.server.port=45173
 
-      - traefik.http.routers.${PROJECT}-frontend.middlewares=diar-4fis-frontend-stripprefix,diar-4fis-frontend-redirect-www
+      - traefik.http.routers.${PROJECT}-frontend.middlewares=${PROJECT}-frontend-stripprefix,${PROJECT}-frontend-redirect-www
+
       - traefik.http.middlewares.${PROJECT}-frontend-stripprefix.stripprefix.prefixes=/
       - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.replacement=https://$${1}
@@ -270,6 +272,7 @@ services:
       - PMA_PORT=3306
       - PMA_USER=${MYSQL_USER}
       - PMA_PASSWORD=${MYSQL_PASSWORD}
+      - PMA_ABSOLUTE_URI=https://${DOMAIN}/phpmyadmin/
 
     # ports:
     #   - 80:80
@@ -283,7 +286,8 @@ services:
       - traefik.http.services.${PROJECT}-phpmyadmin.loadbalancer.server.port=80
 
       - traefik.http.routers.${PROJECT}-phpmyadmin.middlewares=${PROJECT}-phpmyadmin-stripprefix,${PROJECT}-phpmyadmin-redirect-www
-      - traefik.http.middlewares.${PROJECT}-phpmyadmin-stripprefix.stripprefix.prefixes=/
+
+      - traefik.http.middlewares.${PROJECT}-phpmyadmin-stripprefix.stripprefix.prefixes=/phpmyadmin
       - traefik.http.middlewares.${PROJECT}-phpmyadmin-redirect-www.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.${PROJECT}-phpmyadmin-redirect-www.redirectregex.replacement=https://$${1}
 
