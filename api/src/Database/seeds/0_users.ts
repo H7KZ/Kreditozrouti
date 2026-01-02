@@ -1,13 +1,14 @@
-import { Database } from '@api/Database/types'
+import { Database, UserTable } from '@api/Database/types'
 import { Kysely } from 'kysely'
 
 export async function seed(mysql: Kysely<Database>) {
     await mysql
-        .insertInto('users')
+        .insertInto(UserTable._table)
         .values([
             {
                 email: 'diar.4fis@gmail.com'
             }
         ])
+        .onDuplicateKeyUpdate({ email: eb => eb.ref('email') })
         .execute()
 }

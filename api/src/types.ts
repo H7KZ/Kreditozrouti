@@ -1,9 +1,16 @@
-import { User as UserModel } from '@api/Database/types'
+import { User } from '@api/Database/types'
 
+/**
+ * Global type definitions and augmentations.
+ */
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Express {
-        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-        interface User extends UserModel {}
+        /**
+         * Extends the standard Express User interface to match the application's database model.
+         */
+        interface Locals {
+            user: User
+        }
     }
 }

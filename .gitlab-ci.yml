@@ -1,6 +1,5 @@
 # .gitlab-ci.yml
 
-
 stages:
   - verify
   - deploy
@@ -30,7 +29,13 @@ verify_code:
     - make build
     - echo "✅ Verification successful!"
   rules:
+    # 1. RUN on Merge Requests
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    # 2. DO NOT RUN on standard branch pushes (main/develop)
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      when: never
 
 
 
@@ -54,15 +59,15 @@ deploy_to_production:
   extends: .deploy_template
   script:
     - echo "🚀 Deploying to production server..."
-    - ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST "rm -rf /$SSH_USERNAME/diar-4fis"
-    - scp -r -P $SSH_PORT ./* $SSH_USERNAME@$SSH_HOST:/$SSH_USERNAME/diar-4fis/
+    - ssh $SSH_USER@$SSH_HOST "rm -rf /$SSH_USER/production"
+    - scp -r ./* $SSH_USER@$SSH_HOST:/$SSH_USER/production/
     - |
-        ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
-        set -e
-        cd ~/diar-4fis
-        cp ~/.env.prod ./.env
-        bash ./deployment.sh diar-4fis prod
-        EOF
+      ssh $SSH_USER@$SSH_HOST << EOF
+      set -e
+      cd ~/production
+      cp ~/.env.prod ./deployment/prod/.env
+      bash ./deployment/environment.sh prod prod
+      EOF
   rules:
     # This job runs ONLY for version tags (e.g., v1.2.3).
     - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
@@ -74,15 +79,15 @@ deploy_to_development:
   extends: .deploy_template
   script:
     - echo "🚀 Deploying to development server..."
-    - ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST "rm -rf ~/diar-4fis-dev"
-    - scp -r -P $SSH_PORT ./* $SSH_USERNAME@$SSH_HOST:~/diar-4fis-dev/
+    - ssh $SSH_USER@$SSH_HOST "rm -rf ~/development"
+    - scp -r ./* $SSH_USER@$SSH_HOST:~/development/
     - |
-        ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
-        set -e
-        cd ~/diar-4fis-dev
-        cp ~/.env.dev ./.env
-        bash ./deployment.sh diar-4fis-dev dev
-        EOF
+      ssh $SSH_USER@$SSH_HOST << EOF
+      set -e
+      cd ~/development
+      cp ~/.env.dev ./deployment/dev/.env
+      bash ./deployment/environment.sh dev dev
+      EOF
   rules:
-    # This job runs ONLY on pushes to the 'develop' branch.
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    # This job runs ONLY for development tags (e.g., dev-1.2.3).
+    - if: '$CI_COMMIT_TAG =~ /^dev-[0-9]+\.[0-9]+\.[0-9]+$/'

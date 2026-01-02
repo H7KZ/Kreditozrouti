@@ -1,34 +1,10 @@
+import EventsAllValidation from '@api/Validations/EventsAllValidation'
+import { z } from 'zod'
+
 /**
- * Events All Request Interface
- *
- * @route 200 /events/all
+ * Validated query parameters for retrieving all events.
+ * Derived from the Zod validation schema.
  */
-export default interface EventsAllRequest {
-    /**
-     * Event Title
-     *
-     * @type {string | null}
-     */
-    title?: string | null
+type EventsAllRequest = z.infer<typeof EventsAllValidation>
 
-    /**
-     * Date From
-     *
-     * @type {Date | null}
-     */
-    date_from?: Date | null
-
-    /**
-     * Date To
-     *
-     * @type {Date | null}
-     */
-    date_to?: Date | null
-
-    /**
-     * Categories (Array of Category IDs)
-     *
-     * @type {string[] | null}
-     */
-    categories?: string[] | null
-}
+export default EventsAllRequest
