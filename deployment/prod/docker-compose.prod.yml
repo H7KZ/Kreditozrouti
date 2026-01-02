@@ -270,9 +270,14 @@ services:
       - PMA_ARBITRARY=1
       - PMA_HOST=mysql
       - PMA_PORT=3306
-      - PMA_USER=${MYSQL_USER}
-      - PMA_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - PMA_ABSOLUTE_URI=https://${DOMAIN}/phpmyadmin/
+
+    networks:
+      - traefik-network
+      - mysql-dev-network
 
     # ports:
     #   - 80:80
