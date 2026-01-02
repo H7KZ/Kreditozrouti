@@ -56,6 +56,13 @@ services:
       - traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}
 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
     deploy:
       mode: replicated
       replicas: 2
@@ -66,20 +73,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
@@ -121,20 +127,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
@@ -180,6 +185,12 @@ services:
       - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.replacement=https://$${1}
 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
     deploy:
       mode: replicated
       replicas: 3
@@ -190,20 +201,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
@@ -249,20 +259,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
@@ -309,20 +318,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
@@ -381,20 +389,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
@@ -438,20 +445,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
