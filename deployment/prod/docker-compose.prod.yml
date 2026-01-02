@@ -210,6 +210,66 @@ services:
 
     restart: unless-stopped
 
+
+  # ================================================================ #
+  # UPTIME KUMA SERVICE
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+
+    volumes:
+      - uptime-kuma-data:/app/data
+
+    networks:
+      - traefik-network
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-uptime.rule=Host(`${DOMAIN}`) && PathPrefix(`/status`)
+      - traefik.http.routers.${PROJECT}-uptime.entrypoints=websecure
+      - traefik.http.routers.${PROJECT}-uptime.tls=true
+      - traefik.http.routers.${PROJECT}-uptime.tls.certresolver=letsencrypt
+      - traefik.http.services.${PROJECT}-uptime.loadbalancer.server.port=3001
+
+      - traefik.http.routers.${PROJECT}-uptime.middlewares=${PROJECT}-uptime-stripprefix,${PROJECT}-uptime-redirect-www
+
+      - traefik.http.middlewares.${PROJECT}-uptime-stripprefix.stripprefix.prefixes=/status
+      - traefik.http.middlewares.${PROJECT}-uptime-redirect-www.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares.${PROJECT}-uptime-redirect-www.redirectregex.replacement=https://$${1}
+
+    deploy:
+      mode: replicated
+      replicas: 1
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first
+
+      resources:
+        limits:
+          cpus: 0.25
+          memory: 256M
+
+    restart: unless-stopped
+
   # ================================================================ #
   # MYSQL DATABASE
 
