@@ -44,6 +44,8 @@ services:
 
     labels:
       - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-api.priority=100
+
       - traefik.http.routers.${PROJECT}-api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)
       - traefik.http.routers.${PROJECT}-api.entrypoints=websecure
       - traefik.http.routers.${PROJECT}-api.tls=true
@@ -173,6 +175,8 @@ services:
 
     labels:
       - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-frontend.priority=10
+
       - traefik.http.routers.${PROJECT}-frontend.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.${PROJECT}-frontend.entrypoints=websecure
       - traefik.http.routers.${PROJECT}-frontend.tls=true
@@ -237,6 +241,8 @@ services:
 
     labels:
       - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-uptime.priority=90
+
       - traefik.http.routers.${PROJECT}-uptime.rule=Host(`${DOMAIN}`) && PathPrefix(`/status`)
       - traefik.http.routers.${PROJECT}-uptime.entrypoints=websecure
       - traefik.http.routers.${PROJECT}-uptime.tls=true
@@ -368,6 +374,8 @@ services:
 
     labels:
       - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-phpmyadmin.priority=80
+
       - traefik.http.routers.${PROJECT}-phpmyadmin.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)
       - traefik.http.routers.${PROJECT}-phpmyadmin.entrypoints=websecure
       - traefik.http.routers.${PROJECT}-phpmyadmin.tls=true

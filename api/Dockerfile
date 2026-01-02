@@ -23,8 +23,10 @@ RUN mkdir -p /usr/src/uploads
 
 # --------------------------------------------------------------------
 # Production Stage
-FROM gcr.io/distroless/nodejs24-debian12
+FROM node:24-alpine
 
+
+RUN apk add --no-cache curl
 
 WORKDIR /usr/src/api
 
@@ -33,4 +35,4 @@ COPY --from=builder /usr/src/api/node_modules /usr/src/api/node_modules
 COPY --from=builder /usr/src/uploads /usr/src/uploads
 
 EXPOSE 80
-CMD ["dist/api/src/index.js"]
+CMD ["node", "dist/api/src/index.js"]
