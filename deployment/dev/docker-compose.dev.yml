@@ -14,8 +14,10 @@ services:
     #   - api-uploads-dev-volume:/usr/src/uploads
 
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
     environment:
       - ENV=development
@@ -42,6 +44,8 @@ services:
 
     labels:
       - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-api.priority=100
+
       - traefik.http.routers.${PROJECT}-api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)
       - traefik.http.routers.${PROJECT}-api.entrypoints=websecure
       - traefik.http.routers.${PROJECT}-api.tls=true
@@ -54,6 +58,13 @@ services:
       - traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}
 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
     deploy:
       mode: replicated
       replicas: 2
@@ -64,20 +75,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
@@ -98,7 +108,8 @@ services:
       dockerfile: scraper/Dockerfile
 
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
 
     environment:
       - ENV=production
@@ -118,20 +129,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
@@ -165,6 +175,8 @@ services:
 
     labels:
       - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-frontend.priority=10
+
       - traefik.http.routers.${PROJECT}-frontend.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.${PROJECT}-frontend.entrypoints=websecure
       - traefik.http.routers.${PROJECT}-frontend.tls=true
@@ -177,6 +189,12 @@ services:
       - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.replacement=https://$${1}
 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
     deploy:
       mode: replicated
       replicas: 3
@@ -187,20 +205,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
@@ -231,6 +248,13 @@ services:
     # ports:
     #   - 3306:3306
 
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
     deploy:
       mode: global
 
@@ -240,20 +264,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
@@ -268,6 +291,10 @@ services:
 
   phpmyadmin:
     image: phpmyadmin
+
+    depends_on:
+      mysql:
+        condition: service_healthy
 
     environment:
       - PMA_ARBITRARY=1
@@ -287,6 +314,8 @@ services:
 
     labels:
       - traefik.enable=true
+      - traefik.http.routers.${PROJECT}-phpmyadmin.priority=80
+
       - traefik.http.routers.${PROJECT}-phpmyadmin.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)
       - traefik.http.routers.${PROJECT}-phpmyadmin.entrypoints=websecure
       - traefik.http.routers.${PROJECT}-phpmyadmin.tls=true
@@ -308,20 +337,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
@@ -349,6 +377,13 @@ services:
     # ports:
     #   - 6379:6379
 
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping", "-a", "${REDIS_PASSWORD}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
     deploy:
       mode: global
 
@@ -358,20 +393,19 @@ services:
         max_attempts: 3
         window: 120s
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
-        monitor: 60s
+        monitor: 30s
         max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
         order: stop-first
 
       resources:
