@@ -44,7 +44,7 @@ const scraper = {
      * Configures Cron-based job schedulers.
      */
     async schedulers() {
-        if (!Config.isEnvDevelopment()) {
+        if (!Config.isEnvLocal()) {
             // 4FIS Events (Every 2 minutes)
             await scraper.queue.request.upsertJobScheduler(
                 Scraper4FISEventsRequestScheduler,
@@ -116,13 +116,13 @@ const scraper = {
                 }
             )
 
-            // InSIS Study Plans Secondary Run (Daily at 2:45 AM)
+            // InSIS Study Plans Secondary Run (Daily at 3:15 AM)
             // Note: Using a suffix to avoid overwriting the 2:00 AM scheduler
             await scraper.queue.request.upsertJobScheduler(
                 `${ScraperInSISStudyPlansRequestScheduler}:Secondary`,
-                { pattern: '45 2 * * *' },
+                { pattern: '15 3 * * *' },
                 {
-                    name: 'InSIS Study Plans Request (at 2:45 AM)',
+                    name: 'InSIS Study Plans Request (at 3:45 AM)',
                     data: {
                         type: 'InSIS:StudyPlans',
                         auto_queue_study_plans: true,

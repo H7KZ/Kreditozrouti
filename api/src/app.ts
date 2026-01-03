@@ -48,7 +48,7 @@ const sessionOptions: SessionOptions = {
     }
 }
 
-if (!Config.isEnvDevelopment()) {
+if (!Config.isEnvLocal()) {
     app.set('trust proxy', 1)
     sessionOptions.cookie!.secure = true
     sessionOptions.cookie!.httpOnly = true
@@ -60,7 +60,7 @@ app.use(session(sessionOptions))
 app.use(compression({}))
 
 // Logging and Metrics
-app.use(morgan(Config.isEnvDevelopment() ? 'dev' : 'combined'))
+app.use(morgan(Config.isEnvLocal() ? 'dev' : 'combined'))
 app.use(responseTime())
 
 app.use('/health', (req, res) => res.status(200).send('OK'))
