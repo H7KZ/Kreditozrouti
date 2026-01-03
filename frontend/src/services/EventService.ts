@@ -70,7 +70,8 @@ class EventService {
             throw new Error(`Failed to fetch event: ${response.statusText}`)
         }
 
-        return response.json()
+        const data = await response.json()
+        return (data as { event?: Event }).event ?? (data as Event)
     }
 
     /**
@@ -124,4 +125,3 @@ class EventService {
 
 // Export a singleton instance
 export const eventService = new EventService()
-
