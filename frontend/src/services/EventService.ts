@@ -37,10 +37,10 @@ class EventService {
         const queryParams = new URLSearchParams()
 
         if (params?.startDate) {
-            queryParams.append("startDate", params.startDate)
+            queryParams.append("date_from", params.startDate)
         }
         if (params?.endDate) {
-            queryParams.append("endDate", params.endDate)
+            queryParams.append("date_to", params.endDate)
         }
 
         const url = `${API_BASE}/events${queryParams.toString() ? `?${queryParams.toString()}` : ""}`
@@ -54,7 +54,8 @@ class EventService {
             throw new Error(`Failed to fetch events: ${response.statusText}`)
         }
 
-        return response.json()
+        const data = await response.json()
+        return (data as { events?: Event[] }).events ?? (data as Event[])
     }
 
     /**
