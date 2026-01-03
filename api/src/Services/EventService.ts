@@ -1,6 +1,5 @@
 import { mysql } from '@api/clients'
 import { Event, EventTable, NewEvent } from '@api/Database/types'
-import { sql } from 'kysely'
 
 /**
  * Service class for Event database operations.
@@ -85,4 +84,3 @@ export class EventService {
             .execute()
     }
 }
-

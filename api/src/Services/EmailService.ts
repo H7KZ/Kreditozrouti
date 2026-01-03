@@ -41,10 +41,27 @@ export default class EmailService {
      * @throws {Exception} 500 - If the email fails to send.
      */
     static async sendEmail(data: Mail.Options & Partial<SMTPTransport.Options>): Promise<void> {
+        const formatAddress = (val: Mail.Options['to']): string => {
+            if (!val) return ''
+            const items = Array.isArray(val) ? val : [val]
+            return items
+                .map(item => {
+                    if (typeof item === 'string') return item
+                    const anyItem = item as { address?: string; name?: string; toString?: () => string }
+                    const addr = anyItem.address ?? anyItem.toString?.() ?? ''
+                    return anyItem.name ? `${anyItem.name} <${addr}>` : addr
+                })
+                .filter(Boolean)
+                .join(', ')
+        }
+
         try {
-            console.log(`[EmailService] Sending email to: ${String(data.to)}`)
+            const toStr = formatAddress(data.to)
+            const fromStr = formatAddress(data.from as Mail.Options['to'])
+
+            console.log(`[EmailService] Sending email to: ${toStr}`)
             console.log(`[EmailService] Subject: ${data.subject}`)
-            console.log(`[EmailService] From: ${data.from}`)
+            console.log(`[EmailService] From: ${fromStr}`)
 
             const result = await nodemailer.sendMail(data)
 

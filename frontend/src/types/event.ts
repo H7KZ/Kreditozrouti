@@ -34,10 +34,9 @@ export interface CreateEventDto {
     substitute_url?: string | null
 }
 
-export interface UpdateEventDto extends Partial<CreateEventDto> {}
+export type UpdateEventDto = Partial<CreateEventDto>
 
 export interface GetEventsParams {
     startDate?: string
     endDate?: string
 }
-

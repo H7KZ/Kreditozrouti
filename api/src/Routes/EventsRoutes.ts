@@ -74,7 +74,7 @@ EventsRoutes.post('/', AuthMiddleware, async (req: Request, res: Response) => {
         id: uuidv4(),
         ...result.data,
         datetime: result.data.datetime,
-        registration_from: result.data.registration_from || null
+        registration_from: result.data.registration_from ?? null
     }
 
     const event = await EventService.createEvent(eventData)
