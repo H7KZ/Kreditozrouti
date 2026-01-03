@@ -3,8 +3,10 @@ import cluster from 'cluster'
 import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
-import Config from '@api/Config/Config'
+import Config, { CheckRequiredEnvironmentVariables, LoadConfig } from '@api/Config/Config'
 import { SQLService } from '@api/Services/SQLService'
+
+LoadConfig()
 
 const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
@@ -35,8 +37,7 @@ if (cluster.isPrimary && numWorkers > 1) {
  */
 async function start() {
     try {
-        console.log('MYSQL_URI:', process.env.MYSQL_URI);
-        console.log('REDIS_URI:', process.env.REDIS_URI);
+        CheckRequiredEnvironmentVariables(Config)
 
         await mysql.connection().execute(db => Promise.resolve(db))
         console.log('Connected to MySQL successfully.')
@@ -50,13 +51,10 @@ async function start() {
         await redis.ping()
         console.log('Connected to Redis successfully.')
 
-        // Verify nodemailer only if real SMTP is configured
-        if (Config.google.user && Config.google.appPassword) {
+        if (Config.isEmailEnabled()) {
             const mailVerified = await nodemailer.verify()
             if (!mailVerified) throw new Error('Nodemailer verification failed')
-            console.log('Nodemailer configured and verified.')
-        } else {
-            console.log('Nodemailer configured (test mode - emails will not be sent).')
+            console.log('Nodemailer configured.')
         }
 
         await scraper.waitForQueues()

@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { nodemailer } from '@api/clients'
+import Config from '@api/Config/Config'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
 import { Paths } from '@api/paths'
@@ -41,44 +42,39 @@ export default class EmailService {
      * @throws {Exception} 500 - If the email fails to send.
      */
     static async sendEmail(data: Mail.Options & Partial<SMTPTransport.Options>): Promise<void> {
-        const formatAddress = (val: Mail.Options['to']): string => {
-            if (!val) return ''
-            const items = Array.isArray(val) ? val : [val]
-            return items
-                .map(item => {
-                    if (typeof item === 'string') return item
-                    const anyItem = item as { address?: string; name?: string; toString?: () => string }
-                    const addr = anyItem.address ?? anyItem.toString?.() ?? ''
-                    return anyItem.name ? `${anyItem.name} <${addr}>` : addr
-                })
-                .filter(Boolean)
-                .join(', ')
+        const to = this.formatAddress(data.to)
+
+        if (!Config.isEmailEnabled()) {
+            console.warn('Email sending is disabled in the configuration.')
+            console.warn(`Skipping email to: ${to}`)
+            return
         }
+
+        console.log(`Sending email to: ${to}`)
 
         try {
-            const toStr = formatAddress(data.to)
-            const fromStr = formatAddress(data.from as Mail.Options['to'])
+            await nodemailer.sendMail(data)
 
-            console.log(`[EmailService] Sending email to: ${toStr}`)
-            console.log(`[EmailService] Subject: ${data.subject}`)
-            console.log(`[EmailService] From: ${fromStr}`)
-
-            const result = await nodemailer.sendMail(data)
-
-            console.log(`[EmailService] ✅ Email sent successfully`)
-            console.log(`[EmailService] ==================== FULL SMTP RESPONSE ====================`)
-            console.log(JSON.stringify(result, null, 2))
-            console.log(`[EmailService] ============================================================`)
-            console.log(`[EmailService] Message ID: ${result.messageId}`)
-            console.log(`[EmailService] Response: ${result.response}`)
-            console.log(`[EmailService] Accepted: ${JSON.stringify(result.accepted)}`)
-            console.log(`[EmailService] Rejected: ${JSON.stringify(result.rejected)}`)
-            console.log(`[EmailService] Pending: ${JSON.stringify(result.pending)}`)
-            console.log(`[EmailService] Envelope: ${JSON.stringify(result.envelope)}`)
+            console.log(`Email sent`)
         } catch (err) {
-            console.error('[EmailService] ❌ Failed to send email:', err)
-            console.error('[EmailService] Full error details:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2))
+            console.error('Failed to send email:', err)
             throw new Exception(500, ErrorTypeEnum.UNKNOWN, ErrorCodeEnum.EMAIL_NOT_SENT, 'Failed to send email')
         }
+    }
+
+    private static formatAddress(val: Mail.Options['to']): string {
+        if (!val) return ''
+
+        const items = Array.isArray(val) ? val : [val]
+
+        return items
+            .map(item => {
+                if (typeof item === 'string') return item
+                const anyItem = item as { address?: string; name?: string; toString?: () => string }
+                const addr = anyItem.address ?? anyItem.toString?.() ?? ''
+                return anyItem.name ? `${anyItem.name} <${addr}>` : addr
+            })
+            .filter(Boolean)
+            .join(', ')
     }
 }

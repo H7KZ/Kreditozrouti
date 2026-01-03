@@ -1,40 +1,23 @@
 import path from 'path'
 import dotenv from 'dotenv'
-import fs from 'fs'
 
 // Attempt to load .env files from distribution, root, or package levels
-// Priority: .env first, then .env.mock as fallback
-const envPaths = [
-    // First try .env (real config)
-    path.resolve(process.cwd(), '../../../../.env'),
-    path.resolve(process.cwd(), '../../../.env'),
-    path.resolve(process.cwd(), '../.env'),
-    path.resolve(process.cwd(), '.env'),
-    // Then try .env.mock (template/fallback)
-    path.resolve(process.cwd(), '../../../../.env.mock'),
-    path.resolve(process.cwd(), '../../../.env.mock'),
-    path.resolve(process.cwd(), '../.env.mock'),
-    path.resolve(process.cwd(), '.env.mock')
-]
-
-let envLoaded = false
-for (const envPath of envPaths) {
-    if (fs.existsSync(envPath)) {
-        const result = dotenv.config({ path: envPath })
-        if (result.parsed) {
-            console.log(`[dotenv] ✅ Loaded environment from: ${envPath}`)
-            console.log(`[dotenv] Loaded ${Object.keys(result.parsed).length} variables`)
-            console.log(`[dotenv] GOOGLE_USER from file: ${result.parsed.GOOGLE_USER || 'NOT SET'}`)
-            console.log(`[dotenv] GOOGLE_APP_PASSWORD from file: ${result.parsed.GOOGLE_APP_PASSWORD ? 'SET (hidden)' : 'NOT SET'}`)
-            envLoaded = true
-            break
-        }
+export function LoadConfig() {
+    try {
+        dotenv.config({
+            path: [path.resolve(process.cwd(), '../../../../.env'), path.resolve(process.cwd(), '../.env'), path.resolve(process.cwd(), '.env')]
+        })
+    } catch {
+        console.warn('No .env file found')
     }
 }
 
-if (!envLoaded) {
-    console.warn('[dotenv] ⚠️ No .env or .env.mock file found in expected locations')
-    console.warn('[dotenv] Searched paths:', envPaths)
+export function CheckRequiredEnvironmentVariables(config: Config) {
+    const required = [config.redis.uri, config.mysql.uri]
+
+    if (required.some(variable => !variable || variable.length === 0)) {
+        throw new Error('One or more required environment variables are missing or empty.')
+    }
 }
 
 /**
@@ -80,21 +63,22 @@ interface Config {
         uri: string
     }
 
+    isEmailEnabled: () => boolean
     isEnvDevelopment: () => boolean
     isEnvLocal: () => boolean
 }
 
 const config: Config = {
-    env: process.env.ENV ?? 'development',
+    env: process.env.ENV ?? 'local',
 
     port: Number(process.env.API_PORT ?? 40080),
     uri: process.env.API_URI ?? `http://localhost:${Number(process.env.API_PORT ?? 40080)}`,
     domain: process.env.API_DOMAIN ?? 'localhost',
     allowedOrigins: (process.env.API_ALLOWED_ORIGINS ?? '').split(','),
-    sessionSecret: process.env.API_SESSION_SECRET ?? 'development',
+    sessionSecret: process.env.API_SESSION_SECRET ?? 'local',
     commandToken: process.env.API_COMMAND_TOKEN,
 
-    jwtSecret: new TextEncoder().encode(process.env.API_JWT_SECRET ?? 'development'),
+    jwtSecret: new TextEncoder().encode(process.env.API_JWT_SECRET ?? 'local'),
     jwtExpiration: process.env.API_JWT_EXPIRATION ?? '7d',
     jwtExpirationSeconds: Number(process.env.API_JWT_EXPIRATION_SECONDS ?? 604800),
     jwtIssuer: process.env.API_JWT_ISSUER ?? 'diar:4fis:local',
@@ -108,7 +92,7 @@ const config: Config = {
     },
 
     frontend: {
-        uri: process.env.FRONTEND_URI ?? '',
+        uri: process.env.FRONTEND_URI ?? 'http://localhost:45173',
         createURL: (path: string) => `${config.frontend.uri}${path}`
     },
 
@@ -121,21 +105,9 @@ const config: Config = {
         uri: process.env.MYSQL_URI ?? ''
     },
 
+    isEmailEnabled: () => config.google.user.length > 0 && config.google.appPassword.length > 0,
     isEnvDevelopment: () => config.env === 'development' || config.env === 'dev',
     isEnvLocal: () => config.env === 'local'
-}
-
-// Validate critical configuration
-if (!config.mysql.uri) {
-    console.warn('[Config] WARNING: MYSQL_URI is not set! Database connections will fail.')
-}
-if (!config.redis.uri) {
-    console.warn('[Config] WARNING: REDIS_URI is not set! Redis connections will fail.')
-}
-if (!config.google.user || !config.google.appPassword) {
-    console.warn('[Config] WARNING: Google credentials not set! Emails will use test transport.')
-    console.warn('[Config] GOOGLE_USER:', config.google.user || 'NOT SET')
-    console.warn('[Config] GOOGLE_APP_PASSWORD:', config.google.appPassword ? 'SET' : 'NOT SET')
 }
 
 export default config
