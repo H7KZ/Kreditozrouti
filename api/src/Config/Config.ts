@@ -81,6 +81,7 @@ interface Config {
     }
 
     isEnvDevelopment: () => boolean
+    isEnvLocal: () => boolean
 }
 
 const config: Config = {
@@ -120,7 +121,8 @@ const config: Config = {
         uri: process.env.MYSQL_URI ?? ''
     },
 
-    isEnvDevelopment: () => config.env === 'development'
+    isEnvDevelopment: () => config.env === 'development' || config.env === 'dev',
+    isEnvLocal: () => config.env === 'local'
 }
 
 // Validate critical configuration
