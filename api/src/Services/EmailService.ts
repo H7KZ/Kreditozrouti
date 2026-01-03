@@ -42,9 +42,25 @@ export default class EmailService {
      */
     static async sendEmail(data: Mail.Options & Partial<SMTPTransport.Options>): Promise<void> {
         try {
-            await nodemailer.sendMail(data)
+            console.log(`[EmailService] Sending email to: ${String(data.to)}`)
+            console.log(`[EmailService] Subject: ${data.subject}`)
+            console.log(`[EmailService] From: ${data.from}`)
+
+            const result = await nodemailer.sendMail(data)
+
+            console.log(`[EmailService] ✅ Email sent successfully`)
+            console.log(`[EmailService] ==================== FULL SMTP RESPONSE ====================`)
+            console.log(JSON.stringify(result, null, 2))
+            console.log(`[EmailService] ============================================================`)
+            console.log(`[EmailService] Message ID: ${result.messageId}`)
+            console.log(`[EmailService] Response: ${result.response}`)
+            console.log(`[EmailService] Accepted: ${JSON.stringify(result.accepted)}`)
+            console.log(`[EmailService] Rejected: ${JSON.stringify(result.rejected)}`)
+            console.log(`[EmailService] Pending: ${JSON.stringify(result.pending)}`)
+            console.log(`[EmailService] Envelope: ${JSON.stringify(result.envelope)}`)
         } catch (err) {
-            console.error('Failed to send email:', err)
+            console.error('[EmailService] ❌ Failed to send email:', err)
+            console.error('[EmailService] Full error details:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2))
             throw new Exception(500, ErrorTypeEnum.UNKNOWN, ErrorCodeEnum.EMAIL_NOT_SENT, 'Failed to send email')
         }
     }

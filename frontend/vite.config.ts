@@ -6,8 +6,8 @@ import { defineConfig, loadEnv } from "vite"
 export default ({ mode }: { mode: string }) => {
   process.env = {
     ...process.env,
-    ...loadEnv(mode, path.resolve(process.cwd(), ".env")), // For monorepo package
-    ...loadEnv(mode, path.resolve(process.cwd(), "../.env")) // For monorepo root
+    ...loadEnv(mode, path.resolve(process.cwd(), ".env.mock")), // For monorepo package
+    ...loadEnv(mode, path.resolve(process.cwd(), "../.env.mock")) // For monorepo root
   }
 
   return defineConfig({

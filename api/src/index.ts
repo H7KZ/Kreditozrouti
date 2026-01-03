@@ -35,6 +35,9 @@ if (cluster.isPrimary && numWorkers > 1) {
  */
 async function start() {
     try {
+        console.log('MYSQL_URI:', process.env.MYSQL_URI);
+        console.log('REDIS_URI:', process.env.REDIS_URI);
+
         await mysql.connection().execute(db => Promise.resolve(db))
         console.log('Connected to MySQL successfully.')
 
@@ -47,9 +50,14 @@ async function start() {
         await redis.ping()
         console.log('Connected to Redis successfully.')
 
-        const mailVerified = await nodemailer.verify()
-        if (!mailVerified) throw new Error('Nodemailer verification failed')
-        console.log('Nodemailer configured.')
+        // Verify nodemailer only if real SMTP is configured
+        if (Config.google.user && Config.google.appPassword) {
+            const mailVerified = await nodemailer.verify()
+            if (!mailVerified) throw new Error('Nodemailer verification failed')
+            console.log('Nodemailer configured and verified.')
+        } else {
+            console.log('Nodemailer configured (test mode - emails will not be sent).')
+        }
 
         await scraper.waitForQueues()
         console.log('BullMQ queues and workers are ready.')
