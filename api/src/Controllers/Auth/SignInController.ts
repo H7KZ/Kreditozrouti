@@ -44,7 +44,7 @@ export default async function SignInController(req: Request, res: Response<SignI
     const code = Math.floor(100000 + Math.random() * 900000)
     await redis.setex(`auth:code:${email}`, 600, code.toString())
 
-    console.log(`[Auth] Generated verification code for ${email}: ${code}`)
+    console.log(`Generated verification code for ${email}: ${code}`)
 
     // Store the verification code (10 minutes TTL)
     await redis.setex(`auth:code:${data.email}`, 600, code.toString())
@@ -54,13 +54,12 @@ export default async function SignInController(req: Request, res: Response<SignI
 
     // Send verification code via email
     const magicLink = Config.frontend.createURL(`/auth/signin/confirm?code=${code}`)
-    console.log(`[Auth] Magic link created: ${magicLink}`)
+    console.log(`Magic link created: ${magicLink}`)
 
     const emailSignInTemplate = await EmailService.readTemplate('CodeEmail', {
         emailText: req.__('emails.signIn.body', { expiration: '10' }),
         link: magicLink
     })
-    console.log(`[Auth] Email template rendered successfully`)
 
     await EmailService.sendEmail({
         from: Config.google.user,
@@ -68,8 +67,6 @@ export default async function SignInController(req: Request, res: Response<SignI
         subject: req.__('emails.signIn.subject'),
         html: emailSignInTemplate
     })
-
-    console.log(`[Auth] ✅ Verification email sent successfully to ${email}`)
 
     return res.status(201).send({
         code: SuccessCodeEnum.SIGN_IN_CODE_SENT
