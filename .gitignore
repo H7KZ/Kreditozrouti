@@ -10,6 +10,7 @@
 **/build
 
 /data
+/di-fis-ka.wiki
 
 .gitlab-ci-local
 

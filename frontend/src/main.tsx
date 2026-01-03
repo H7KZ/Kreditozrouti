@@ -11,8 +11,9 @@ import { Route as LoginRoute } from "@frontend/routes/login"
 import { Route as LoginAliasRoute } from "@frontend/routes/login.alias"
 import { Route as ProfileRoute } from "@frontend/routes/profile"
 import { Route as SignInConfirmPage } from "@frontend/routes/signin-confirm"
+import { Route as EventRoute } from "@frontend/routes/event"
 
-const routeTree = RootRoute.addChildren([LoginRoute, SignInConfirmPage, LoginAliasRoute, CalendarRoute, ProfileRoute])
+const routeTree = RootRoute.addChildren([LoginRoute, SignInConfirmPage, LoginAliasRoute, CalendarRoute, ProfileRoute, EventRoute])
 
 const router = createRouter({ routeTree })
 
