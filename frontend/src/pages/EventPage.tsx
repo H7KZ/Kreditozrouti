@@ -9,6 +9,13 @@ import { eventService } from "@frontend/services/EventService"
 import type { Event } from "@frontend/types/event"
 import { Route as EventRoute } from "@frontend/routes/event"
 
+const formatDateTime = (value?: string | Date | null): string => {
+  if (!value) return ""
+  const date = value instanceof Date ? value : new Date(value)
+  if (Number.isNaN(date.getTime())) return ""
+  return date.toLocaleString("cs-CZ")
+}
+
 export default function EventDetailPage() {
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -82,13 +89,13 @@ export default function EventDetailPage() {
           <div>
             <p className="text-sm text-gray-600 dark:text-gray-400">{t("event_detail.start_time")}</p>
             <p className="text-lg dark:text-gray-100">
-              {parsedDatetime?.start ? parsedDatetime.start.toLocaleString("cs-CZ") : event.datetime || t("common.unknown")}
+              {parsedDatetime?.start ? formatDateTime(parsedDatetime.start) : formatDateTime(event.datetime) || (t("common.unknown") as string)}
             </p>
           </div>
           <div>
             <p className="text-sm text-gray-600 dark:text-gray-400">{t("event_detail.end_time")}</p>
             <p className="text-lg dark:text-gray-100">
-              {parsedDatetime?.end ? parsedDatetime.end.toLocaleString("cs-CZ") : t("common.unknown")}
+              {parsedDatetime?.end ? formatDateTime(parsedDatetime.end) : (t("common.unknown") as string)}
             </p>
           </div>
           <div>

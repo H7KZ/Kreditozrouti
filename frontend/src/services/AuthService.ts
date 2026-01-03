@@ -77,7 +77,8 @@ class AuthService {
     localStorage.setItem(AuthService.STORAGE_KEYS.ACCESS_TOKEN, data.jwt)
     this.clearSessionData()
 
-    return this.getUserFromToken(data.jwt)!
+    const decoded = this.getUserFromToken(data.jwt)
+    return decoded!
   }
 
   /**
@@ -142,8 +143,10 @@ class AuthService {
           .map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
           .join("")
       )
-      return JSON.parse(jsonPayload)
-    } catch {
+      const parsed = JSON.parse(jsonPayload)
+      return parsed
+    } catch (err) {
+      console.warn("[Auth] Failed to decode JWT", err)
       return null
     }
   }
