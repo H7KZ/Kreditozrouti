@@ -68,5 +68,10 @@
     "placeholders": {
       "team_name": "Team Name"
     }
+  },
+  "auth": {
+    "failed": "Sign-in failed",
+    "error_invalid_code": "Invalid verification code",
+    "back_to_login": "Back to login"
   }
 }

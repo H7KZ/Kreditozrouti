@@ -3,8 +3,10 @@ import cluster from 'cluster'
 import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
-import Config from '@api/Config/Config'
+import Config, { CheckRequiredEnvironmentVariables, LoadConfig } from '@api/Config/Config'
 import { SQLService } from '@api/Services/SQLService'
+
+LoadConfig()
 
 const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
@@ -35,6 +37,8 @@ if (cluster.isPrimary && numWorkers > 1) {
  */
 async function start() {
     try {
+        CheckRequiredEnvironmentVariables(Config)
+
         await mysql.connection().execute(db => Promise.resolve(db))
         console.log('Connected to MySQL successfully.')
 
@@ -47,9 +51,11 @@ async function start() {
         await redis.ping()
         console.log('Connected to Redis successfully.')
 
-        const mailVerified = await nodemailer.verify()
-        if (!mailVerified) throw new Error('Nodemailer verification failed')
-        console.log('Nodemailer configured.')
+        if (Config.isEmailEnabled()) {
+            const mailVerified = await nodemailer.verify()
+            if (!mailVerified) throw new Error('Nodemailer verification failed')
+            console.log('Nodemailer configured.')
+        }
 
         await scraper.waitForQueues()
         console.log('BullMQ queues and workers are ready.')

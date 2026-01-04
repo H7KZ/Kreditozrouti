@@ -11,7 +11,10 @@ import { Router } from 'express'
  */
 const EventsRoutes = Router()
 
+// GET / - Get all events (root handler for compatibility with frontend)
+EventsRoutes.get('/', AuthMiddleware, EventsAllController)
 EventsRoutes.get('/all', AuthMiddleware, EventsAllController)
+// GET /:id - Get a specific event by ID
 EventsRoutes.get('/:id', AuthMiddleware, EventController)
 
 export default EventsRoutes

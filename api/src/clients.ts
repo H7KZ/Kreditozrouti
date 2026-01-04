@@ -43,15 +43,37 @@ export const i18n = new I18n({
 })
 
 /**
- * Nodemailer transporter for email delivery via Gmail.
+ * Nodemailer transporter for email delivery.
+ * Uses Gmail SMTP if credentials are provided, otherwise creates a test transporter for development.
  */
-export const nodemailer = Nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    requireTLS: true,
-    auth: {
-        user: Config.google.user,
-        pass: Config.google.appPassword
-    }
-})
+
+// Debug logging for Google credentials
+console.log('[Email] Config.google.user:', Config.google.user)
+console.log('[Email] Config.google.appPassword:', Config.google.appPassword ? `${Config.google.appPassword.substring(0, 4)}...` : 'EMPTY')
+console.log('[Email] Both credentials present:', !!(Config.google.user && Config.google.appPassword))
+
+export const nodemailer =
+    Config.google.user && Config.google.appPassword
+        ? Nodemailer.createTransport({
+              host: 'smtp.gmail.com',
+              port: 587,
+              secure: false,
+              requireTLS: true,
+              auth: {
+                  user: Config.google.user,
+                  pass: Config.google.appPassword
+              }
+          })
+        : Nodemailer.createTransport({
+              streamTransport: true,
+              newline: 'unix',
+              buffer: true
+          })
+
+// Log which email mode is active
+if (Config.google.user && Config.google.appPassword) {
+    console.log('[Email] ✅ Using Gmail SMTP transport')
+} else {
+    console.log('[Email] ⚠️ Using test transport (emails will not be sent)')
+    console.log('[Email] Reason: Missing credentials')
+}
