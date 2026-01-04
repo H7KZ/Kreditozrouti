@@ -26,8 +26,10 @@ enum ErrorCodeEnum {
     // Authorization/Validation (403/400)
     VALIDATION = 403_000,
 
+
     // Resources (404)
     RESOURCE_NOT_FOUND = 404_000,
+    RESOURCE_EXISTS = 404_001,
 
     // Server/Internal (500)
     INTERNAL_SERVER_ERROR = 500_000,

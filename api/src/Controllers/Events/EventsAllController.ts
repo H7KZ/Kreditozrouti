@@ -1,21 +1,12 @@
 import { mysql } from '@api/clients'
 import EventsAllResponse from '@api/Controllers/Events/types/EventsAllResponse'
-import { EventCategoryTable, EventTable } from '@api/Database/types'
+import { EventCategoryTable, EventTable, UsersEvents } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
 import EventsAllValidation from '@api/Validations/EventsAllValidation'
 import { Request, Response } from 'express'
+import { sql } from 'kysely'
 
-/**
- * Retrieves a list of events based on optional search criteria.
- *
- * Supports filtering by title, date range, and category IDs.
- * Returns all events ordered by date if no filters are applied.
- *
- * @param req - Express request object containing query parameters.
- * @param res - Express response object.
- * @throws {Exception} 401 - If validation of search parameters fails.
- */
 export default async function EventsAllController(req: Request, res: Response<EventsAllResponse>) {
     const result = await EventsAllValidation.safeParseAsync(req.query)
 
@@ -23,8 +14,11 @@ export default async function EventsAllController(req: Request, res: Response<Ev
         throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
     }
 
+    const userId = (req as { user?: { id: string } }).user?.id
+
     const data = result.data
     let eventsQuery = mysql.selectFrom(EventTable._table).selectAll()
+
 
     if (data.title) {
         eventsQuery = eventsQuery.where(`${EventTable._table}.title`, 'like', `%${data.title}%`)
@@ -46,7 +40,40 @@ export default async function EventsAllController(req: Request, res: Response<Ev
         )
     }
 
-    const events = await eventsQuery.orderBy(`${EventTable._table}.datetime`, 'asc').execute()
+
+    eventsQuery = eventsQuery.select((eb) => [
+        // Počet přihlášených uživatelů
+        eb.selectFrom(UsersEvents._table)
+            .whereRef(`${UsersEvents._table}.event_id`, '=', `${EventTable._table}.id`)
+            .select(eb.fn.countAll().as('count'))
+            .as('signup_count'),
+
+        // Je přihlášen aktuální uživatel?
+        userId
+            ? eb.selectFrom(UsersEvents._table)
+                .where('user_id', '=', userId)
+                .whereRef('event_id', '=', `${EventTable._table}.id`)
+                .select(sql<number>`1`.as('exists'))
+                .as('is_signed_up')
+            : sql<number>`0`.as('is_signed_up')
+    ])
+
+    const eventsRaw = await eventsQuery.orderBy(`${EventTable._table}.datetime`, 'asc').execute()
+
+    type DatabaseResult = typeof eventsRaw[0] & {
+        signup_count: number | string | bigint
+        is_signed_up: number
+    }
+
+    const events = eventsRaw.map(event => {
+        const typedEvent = event as unknown as DatabaseResult
+        const { signup_count, is_signed_up, ...rest } = typedEvent
+        return {
+            ...rest,
+            signup_count: Number(signup_count),
+            is_signed_up: Boolean(is_signed_up)
+        }
+    })
 
     return res.status(200).send({
         events: events
