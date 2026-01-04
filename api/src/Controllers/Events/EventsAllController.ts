@@ -7,6 +7,17 @@ import EventsAllValidation from '@api/Validations/EventsAllValidation'
 import { Request, Response } from 'express'
 import { sql } from 'kysely'
 
+/**
+ * Retrieves a list of events based on optional search criteria.
+ *
+ * Supports filtering by title, date range, and category IDs.
+ * Returns all events ordered by date if no filters are applied.
+ *
+ * @param req - Express request object containing query parameters.
+ * @param res - Express response object.
+ * @throws {Exception} 401 - If validation of search parameters fails.
+ */
+
 export default async function EventsAllController(req: Request, res: Response<EventsAllResponse>) {
     const result = await EventsAllValidation.safeParseAsync(req.query)
 

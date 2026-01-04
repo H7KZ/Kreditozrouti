@@ -6,6 +6,14 @@ import Exception from '@api/Error/Exception'
 import { Request, Response } from 'express'
 import { sql } from 'kysely'
 
+/**
+ * Retrieves the details of a specific event by ID.
+ *
+ * @param req - Express request object containing the event ID in params.
+ * @param res - Express response object.
+ * @throws {Exception} 404 - If the event is not found.
+ */
+
 export default async function EventController(req: Request, res: Response<EventResponse>) {
     const { id } = req.params
 
