@@ -14,7 +14,7 @@ import { DatabaseError} from '@api/Database/types/DatabaseError'
  * @throws {Exception} 409 - User already registered.
  */
 
-export default async function EventSignupController(req: Request, res: Response) {
+export default async function EventUnregisterController(req: Request, res: Response) {
     const { id } = req.params
 
     const userId = (req as { user?: { id: string } }).user?.id

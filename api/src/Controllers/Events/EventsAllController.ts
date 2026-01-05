@@ -57,7 +57,7 @@ export default async function EventsAllController(req: Request, res: Response<Ev
         eb.selectFrom(UsersEvents._table)
             .whereRef(`${UsersEvents._table}.event_id`, '=', `${EventTable._table}.id`)
             .select(eb.fn.countAll().as('count'))
-            .as('signup_count'),
+            .as('registered_count'),
 
         // Je přihlášen aktuální uživatel?
         userId
@@ -65,24 +65,24 @@ export default async function EventsAllController(req: Request, res: Response<Ev
                 .where('user_id', '=', userId)
                 .whereRef('event_id', '=', `${EventTable._table}.id`)
                 .select(sql<number>`1`.as('exists'))
-                .as('is_signed_up')
-            : sql<number>`0`.as('is_signed_up')
+                .as('is_registered')
+            : sql<number>`0`.as('is_registered')
     ])
 
     const eventsRaw = await eventsQuery.orderBy(`${EventTable._table}.datetime`, 'asc').execute()
 
     type DatabaseResult = typeof eventsRaw[0] & {
-        signup_count: number | string | bigint
-        is_signed_up: number
+        registered_count: number | string | bigint
+        is_registered: number
     }
 
     const events = eventsRaw.map(event => {
         const typedEvent = event as unknown as DatabaseResult
-        const { signup_count, is_signed_up, ...rest } = typedEvent
+        const { registered_count, is_registered, ...rest } = typedEvent
         return {
             ...rest,
-            signup_count: Number(signup_count),
-            is_signed_up: Boolean(is_signed_up)
+            registered_count: Number(registered_count),
+            is_registered: Boolean(is_registered)
         }
     })
 

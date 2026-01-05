@@ -8,7 +8,7 @@ import { Request, Response } from 'express'
  * Removes the current user from the event participants list.
  */
 
-export default async function EventSignoutController(req: Request, res: Response) {
+export default async function EventRegisterController(req: Request, res: Response) {
     const { id } = req.params
 
     // 1. Získání ID uživatele (s ESLint fixem)

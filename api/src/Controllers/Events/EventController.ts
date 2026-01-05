@@ -29,7 +29,7 @@ export default async function EventController(req: Request, res: Response<EventR
             eb.selectFrom(UsersEvents._table)
                 .whereRef(`${UsersEvents._table}.event_id`, '=', `${EventTable._table}.id`)
                 .select(eb.fn.countAll().as('count'))
-                .as('signup_count'),
+                .as('registered_count'),
 
             // Je přihlášen aktuální uživatel?
             userId
@@ -37,8 +37,8 @@ export default async function EventController(req: Request, res: Response<EventR
                     .where('user_id', '=', userId)
                     .whereRef('event_id', '=', `${EventTable._table}.id`)
                     .select(sql<number>`1`.as('exists'))
-                    .as('is_signed_up')
-                : sql<number>`0`.as('is_signed_up')
+                    .as('is_registered')
+                : sql<number>`0`.as('is_registered')
         ])
         .executeTakeFirst()
 
@@ -46,13 +46,13 @@ export default async function EventController(req: Request, res: Response<EventR
         throw new Exception(404, ErrorTypeEnum.VALIDATION, ErrorCodeEnum.RESOURCE_NOT_FOUND, 'Event not found')
     }
 
-    const { signup_count, is_signed_up, ...rest } = eventData
+    const { registered_count, is_registered, ...rest } = eventData
 
     return res.status(200).send({
         event: {
             ...rest,
-            signup_count: Number(signup_count),
-            is_signed_up: Boolean(is_signed_up)
+            registered_count: Number(registered_count),
+            is_registered: Boolean(is_registered)
         }
     })
 }
