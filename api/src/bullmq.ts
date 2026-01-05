@@ -44,7 +44,7 @@ const scraper = {
      * Configures Cron-based job schedulers.
      */
     async schedulers() {
-        if (!Config.isEnvLocal()) {
+        if (Config.isEnvProduction()) {
             // 4FIS Events (Every 2 minutes)
             await scraper.queue.request.upsertJobScheduler(
                 Scraper4FISEventsRequestScheduler,

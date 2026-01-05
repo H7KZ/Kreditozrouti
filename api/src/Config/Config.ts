@@ -64,6 +64,7 @@ interface Config {
     }
 
     isEmailEnabled: () => boolean
+    isEnvProduction: () => boolean
     isEnvDevelopment: () => boolean
     isEnvLocal: () => boolean
 }
@@ -106,6 +107,7 @@ const config: Config = {
     },
 
     isEmailEnabled: () => config.google.user.length > 0 && config.google.appPassword.length > 0,
+    isEnvProduction: () => config.env === 'production' || config.env === 'prod',
     isEnvDevelopment: () => config.env === 'development' || config.env === 'dev',
     isEnvLocal: () => config.env === 'local'
 }
