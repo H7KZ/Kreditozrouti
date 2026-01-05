@@ -12,9 +12,9 @@ import { Router } from 'express'
  */
 const EventsRoutes = Router()
 
-EventsRoutes.get('/', AuthMiddleware, LoggerMiddleware, EventsAllController)
-EventsRoutes.get('/all', AuthMiddleware, LoggerMiddleware, EventsAllController)
+EventsRoutes.get('/', LoggerMiddleware, AuthMiddleware, EventsAllController)
+EventsRoutes.get('/all', LoggerMiddleware, AuthMiddleware, EventsAllController)
 
-EventsRoutes.get('/:id', AuthMiddleware, LoggerMiddleware, EventController)
+EventsRoutes.get('/:id', LoggerMiddleware, AuthMiddleware, EventController)
 
 export default EventsRoutes

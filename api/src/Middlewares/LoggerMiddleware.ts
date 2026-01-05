@@ -1,15 +1,5 @@
 import LoggerAPIContext, { LoggerWideEvent } from '@api/Context/LoggerAPIContext'
 import { NextFunction, Request, Response } from 'express'
-import { pino } from 'pino'
-
-export const logger = pino({
-    formatters: {
-        level: label => {
-            return { level: label.toUpperCase() }
-        }
-    },
-    timestamp: pino.stdTimeFunctions.isoTime
-})
 
 export default function LoggerMiddleware(req: Request, res: Response, next: NextFunction) {
     const startTime = process.hrtime()
@@ -32,11 +22,11 @@ export default function LoggerMiddleware(req: Request, res: Response, next: Next
 
         if (LoggerAPIContext.shouldLog(res)) {
             if (res.statusCode >= 500) {
-                logger.error(wideEvent)
+                LoggerAPIContext.log.error(wideEvent)
             } else if (res.statusCode >= 400) {
-                logger.warn(wideEvent)
+                LoggerAPIContext.log.warn(wideEvent)
             } else {
-                logger.info(wideEvent)
+                LoggerAPIContext.log.info(wideEvent)
             }
         }
     })

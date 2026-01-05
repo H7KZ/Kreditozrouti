@@ -46,7 +46,7 @@ export default class ExtractInSISService {
         const faculties: { id: number; name: string }[] = []
         const periods: { id: number; name: string }[] = []
 
-        const MINIMUM_ACADEMIC_YEAR_START = new Date().getFullYear() - 1 // e.g., is 2026 now, include from 2025
+        const minYear = new Date().getFullYear() - 1
 
         const cleanText = (text: string | null): string => {
             return text
@@ -69,19 +69,20 @@ export default class ExtractInSISService {
             }
         })
 
-        $('input[name="obdobi"]').each((_, el) => {
+        $('input[name="obdobi_fak"]').each((_, el) => {
             const id = $(el).val() as string
             const nextNode = el.nextSibling
 
-            const rawName = nextNode?.type === 'text' ? nextNode.data : $(el).parent().text()
-            const name = cleanText(rawName) // Expected format: "2025/2026"
+            const rowText = cleanText(nextNode?.type === 'text' ? nextNode.data : $(el).parent().text())
+            const name = cleanText(rowText)
 
-            if (id && name) {
-                // Extract the start year (e.g., "2025" from "2025/2026")
-                const [startYear] = name.split('/').map(val => parseInt(val, 10))
+            // Extract the first 4-digit year found in the row
+            const yearMatch = /(\d{4})/.exec(rowText)
 
-                // Only include if the academic year starts in 2025 or later
-                if (!isNaN(startYear) && startYear >= MINIMUM_ACADEMIC_YEAR_START) {
+            if (yearMatch && id && name) {
+                const startYear = parseInt(yearMatch[1], 10)
+
+                if (startYear >= minYear) {
                     periods.push({ id: Number(id.trim()), name: name.toUpperCase() })
                 }
             }
@@ -129,7 +130,6 @@ export default class ExtractInSISService {
         const $ = cheerio.load(html)
         const body = $('body')
 
-        // Pre-process HTML entities
         if (body.length) {
             body.html(body.html()?.replace(/&nbsp;/g, ' ') ?? '')
         }
@@ -176,7 +176,6 @@ export default class ExtractInSISService {
                 .filter(part => part.length > 0)
         }
 
-        // ID Extraction
         let id: number | null = null
         const idInput = $('input[name="predmet"]').attr('value')
         if (idInput) {
@@ -187,7 +186,6 @@ export default class ExtractInSISService {
 
         if (id === null) throw new Error('Course ID not found in the HTML content or URL.')
 
-        // Basic Metadata
         const ident = getRowValue('Kód předmětu:')
         const title = getRowValue('Název v jazyce výuky:') ?? getRowValue('Název česky:')
         const czech_title = getRowValue('Název česky:')
@@ -414,15 +412,12 @@ export default class ExtractInSISService {
         const $ = cheerio.load(html)
         const urls: string[] = []
 
-        // Define the cutoff year (Current Year - 1)
-        // Example: If today is 2026, minYear is 2025.
         const minYear = new Date().getFullYear() - 1
 
         $('span[data-sysid="prohlizeni-info"]').each((_, el) => {
             const anchor = $(el).closest('a')
             const href = anchor.attr('href')
 
-            // Ensure it exists and is NOT a final study plan link (it is a navigation folder)
             if (href && !href.includes('stud_plan=')) {
                 let isValid = true
 
@@ -437,7 +432,6 @@ export default class ExtractInSISService {
                     if (yearMatch) {
                         const startYear = parseInt(yearMatch[1], 10)
 
-                        // If the year found is older than allowed, exclude this navigation link
                         if (startYear < minYear) {
                             isValid = false
                         }

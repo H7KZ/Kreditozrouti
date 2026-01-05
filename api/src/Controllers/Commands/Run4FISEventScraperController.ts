@@ -21,7 +21,8 @@ export default async function Run4FISEventScraperController(req: Request, res: R
         },
         {
             deduplication: {
-                id: '4FIS:Event:ManualRun'
+                id: '4FIS:Event:ManualRun',
+                ttl: 30 * 1000 // 30 seconds
             }
         }
     )

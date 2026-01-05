@@ -1,4 +1,5 @@
 import { Response } from 'express'
+import pino from 'pino'
 
 export interface LoggerWideEvent {
     method: string
@@ -34,7 +35,16 @@ const LoggerAPIContext = {
         if ((event.duration_ms ?? 0) > 1000) return true
 
         return Math.random() < 0.1
-    }
+    },
+
+    log: pino({
+        formatters: {
+            level: label => {
+                return { level: label.toUpperCase() }
+            }
+        },
+        timestamp: pino.stdTimeFunctions.isoTime
+    })
 }
 
 export default LoggerAPIContext

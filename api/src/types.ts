@@ -1,5 +1,5 @@
+import { LoggerWideEvent } from '@api/Context/LoggerAPIContext'
 import { User } from '@api/Database/types'
-import { LoggerWideEvent } from '@api/Middlewares/LoggerMiddleware'
 
 /**
  * Global type definitions and augmentations.

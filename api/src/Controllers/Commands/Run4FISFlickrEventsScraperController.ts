@@ -18,7 +18,8 @@ export default async function Run4FISFlickrEventsScraperController(req: Request,
         },
         {
             deduplication: {
-                id: '4FIS:Flickr:Events:ManualRun'
+                id: '4FIS:Flickr:Events:ManualRun',
+                ttl: 30 * 1000 // 30 seconds
             }
         }
     )

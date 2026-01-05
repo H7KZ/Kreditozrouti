@@ -9,7 +9,6 @@ import ScraperRequestInSISCatalogJob from '@scraper/Jobs/ScraperRequestInSISCata
 import ScraperRequestInSISCourseJob from '@scraper/Jobs/ScraperRequestInSISCourseJob'
 import ScraperRequestInSISStudyPlanJob from '@scraper/Jobs/ScraperRequestInSISStudyPlanJob'
 import ScraperRequestInSISStudyPlansJob from '@scraper/Jobs/ScraperRequestInSISStudyPlansJob'
-import LoggerService from '@scraper/Services/LoggerService'
 import { Job } from 'bullmq'
 
 /**
@@ -76,9 +75,7 @@ export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>)
                 duration_ms: durationMs
             })
 
-            const logger = new LoggerService()
-
-            logger.info(LoggerJobContext.get())
+            LoggerJobContext.log.info(LoggerJobContext.get())
         } catch (error) {
             const diff = process.hrtime(start)
             const durationMs = (diff[0] * 1e9 + diff[1]) / 1e6
@@ -95,9 +92,7 @@ export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>)
                 })
             }
 
-            const logger = new LoggerService()
-
-            logger.error(LoggerJobContext.get())
+            LoggerJobContext.log.error(LoggerJobContext.get())
 
             throw error
         }

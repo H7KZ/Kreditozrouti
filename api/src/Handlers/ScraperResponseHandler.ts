@@ -2,7 +2,6 @@ import LoggerJobContext from '@api/Context/LoggerJobContext'
 import ScraperResponse4FISEventJob from '@api/Jobs/ScraperResponse4FISEventJob'
 import ScraperResponseInSISCourseJob from '@api/Jobs/ScraperResponseInSISCourseJob'
 import ScraperResponseInSISStudyPlanJob from '@api/Jobs/ScraperResponseInSISStudyPlanJob'
-import { logger } from '@api/Middlewares/LoggerMiddleware'
 import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
 import { Job } from 'bullmq'
 
@@ -61,7 +60,7 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
                 duration_ms: durationMs
             })
 
-            logger.info(LoggerJobContext.get())
+            LoggerJobContext.log.info(LoggerJobContext.get())
         } catch (error) {
             const diff = process.hrtime(start)
             const durationMs = (diff[0] * 1e9 + diff[1]) / 1e6
@@ -78,7 +77,7 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
                 })
             }
 
-            logger.error(LoggerJobContext.get())
+            LoggerJobContext.log.error(LoggerJobContext.get())
 
             throw error
         }
