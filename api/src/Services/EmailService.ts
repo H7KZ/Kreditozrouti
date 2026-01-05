@@ -41,23 +41,16 @@ export default class EmailService {
      * @param data - Mail options (to, subject, html/text body).
      * @throws {Exception} 500 - If the email fails to send.
      */
-    static async sendEmail(data: Mail.Options & Partial<SMTPTransport.Options>): Promise<void> {
-        const to = this.formatAddress(data.to)
-
+    static async sendEmail(data: Mail.Options & Partial<SMTPTransport.Options>): Promise<boolean> {
         if (!Config.isEmailEnabled()) {
-            console.warn('Email sending is disabled in the configuration.')
-            console.warn(`Skipping email to: ${to}`)
-            return
+            return false
         }
-
-        console.log(`Sending email to: ${to}`)
 
         try {
             await nodemailer.sendMail(data)
 
-            console.log(`Email sent`)
-        } catch (err) {
-            console.error('Failed to send email:', err)
+            return true
+        } catch {
             throw new Exception(500, ErrorTypeEnum.UNKNOWN, ErrorCodeEnum.EMAIL_NOT_SENT, 'Failed to send email')
         }
     }

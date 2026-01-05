@@ -14,9 +14,7 @@ function CalendarRouteComponent() {
   return (
     <div className="flex h-screen w-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-200 bg-white p-4 
-        dark:border-gray-700 dark:bg-gray-950">
-      </div>
+      <div className="flex items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-950"></div>
 
       {/* Calendar */}
       <div className="flex-1 overflow-auto">

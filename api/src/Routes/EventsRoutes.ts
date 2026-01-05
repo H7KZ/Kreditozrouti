@@ -1,6 +1,7 @@
 import EventController from '@api/Controllers/Events/EventController'
 import EventsAllController from '@api/Controllers/Events/EventsAllController'
 import AuthMiddleware from '@api/Middlewares/AuthMiddleware'
+import LoggerMiddleware from '@api/Middlewares/LoggerMiddleware'
 import { Router } from 'express'
 
 /**
@@ -11,10 +12,9 @@ import { Router } from 'express'
  */
 const EventsRoutes = Router()
 
-// GET / - Get all events (root handler for compatibility with frontend)
-EventsRoutes.get('/', AuthMiddleware, EventsAllController)
-EventsRoutes.get('/all', AuthMiddleware, EventsAllController)
-// GET /:id - Get a specific event by ID
-EventsRoutes.get('/:id', AuthMiddleware, EventController)
+EventsRoutes.get('/', AuthMiddleware, LoggerMiddleware, EventsAllController)
+EventsRoutes.get('/all', AuthMiddleware, LoggerMiddleware, EventsAllController)
+
+EventsRoutes.get('/:id', AuthMiddleware, LoggerMiddleware, EventController)
 
 export default EventsRoutes

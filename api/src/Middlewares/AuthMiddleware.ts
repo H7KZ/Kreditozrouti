@@ -1,4 +1,5 @@
 import { mysql, redis } from '@api/clients'
+import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import { User, UserTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
@@ -39,6 +40,8 @@ export default async function AuthMiddleware(req: Request, res: Response, next: 
     let user: User | string | null | undefined = await redis.get(`user:${payload.userId}`)
 
     if (user) {
+        LoggerAPIContext.add(res, { user_id: payload.userId })
+
         res.locals.user = JSON.parse(user) as User
         return next()
     }
@@ -51,6 +54,8 @@ export default async function AuthMiddleware(req: Request, res: Response, next: 
 
     // Cache user profile for 60 seconds
     await redis.setex(`user:${user.id}`, 60, JSON.stringify(user))
+
+    LoggerAPIContext.add(res, { user_id: user.id })
 
     // Attach user to response locals for downstream access
     res.locals.user = user

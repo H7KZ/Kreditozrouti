@@ -1,4 +1,5 @@
 import { redis } from '@api/clients'
+import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
@@ -17,6 +18,8 @@ import { Request, Response } from 'express'
  * @throws {Exception} 401 - If the validation of the search request fails.
  */
 export default async function CoursesController(req: Request, res: Response<CoursesResponse>) {
+    LoggerAPIContext.add(res, { body: req.body })
+
     const result = await CoursesFilterValidation.safeParseAsync(req.body)
 
     if (!result.success) {
@@ -30,11 +33,15 @@ export default async function CoursesController(req: Request, res: Response<Cour
     const cachedData = await redis.get(cacheKey)
 
     if (cachedData) {
+        LoggerAPIContext.add(res, { cache: true })
+
         return res.status(200).send(JSON.parse(cachedData))
     }
 
     // Fetch Data
     const [courses, facets] = await Promise.all([InSISService.getCourses(data, data.limit, data.offset), InSISService.getFacets(data)])
+
+    LoggerAPIContext.add(res, { cache: false, courses_count: courses.length, facets_count: Object.keys(facets).length })
 
     const response: CoursesResponse = {
         data: courses,

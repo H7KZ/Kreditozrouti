@@ -1,16 +1,13 @@
 import scraper from '@scraper/bullmq'
+import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import ScraperInSISStudyPlans from '@scraper/Interfaces/ScraperInSISStudyPlans'
 import { ScraperInSISStudyPlansRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISService from '@scraper/Services/Extractors/ExtractInSISService'
-import LoggerService from '@scraper/Services/LoggerService'
 import UtilService from '@scraper/Services/UtilService'
 import Axios from 'axios'
 
 export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSISStudyPlansRequestJob): Promise<ScraperInSISStudyPlans | null> {
-    const logger = new LoggerService(`[InSIS:StudyPlansList]`)
     const plans: ScraperInSISStudyPlans = { urls: [] }
-
-    logger.log('Started - Fetching base faculties...')
 
     try {
         // Initial Fetch
@@ -24,17 +21,19 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
         const MAX_DRILL_DEPTH = 8
         const CONCURRENCY_LIMIT = 10
 
-        logger.log(`Found ${currentLevelURLs.length} roots. Starting BFS drill-down (Max Depth: ${MAX_DRILL_DEPTH})...`)
+        LoggerJobContext.add({
+            current_level_urls_count: currentLevelURLs.length,
+            max_drill_depth: MAX_DRILL_DEPTH,
+            concurrency_limit: CONCURRENCY_LIMIT
+        })
 
         while (currentLevelURLs.length > 0 && depth < MAX_DRILL_DEPTH) {
-            logger.log(`Depth ${depth}: Processing ${currentLevelURLs.length} nodes...`)
-
             // Fetch level with concurrency
             const responses = await UtilService.runWithConcurrency(currentLevelURLs, CONCURRENCY_LIMIT, async url => {
                 try {
                     return await Axios.get<string>(url, { headers: ExtractInSISService.baseRequestHeaders() })
                 } catch {
-                    logger.warn(`Failed to fetch node: ${url}`)
+                    // Log and skip failed requests
                 }
             })
 
@@ -47,8 +46,10 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
                 const foundPlans = ExtractInSISService.extractStudyPlanURLs(res.data)
                 foundPlans.forEach(url => allFinalPlanUrls.add(url))
 
+                const includesSemesterAlready = res.config.url?.includes('poc_obdobi=') ?? true
+
                 // Capture Branches (Navigation)
-                const navigations = ExtractInSISService.extractNavigationURLs(res.data)
+                const navigations = ExtractInSISService.extractNavigationURLs(res.data, !includesSemesterAlready)
                 navigations.forEach(url => nextLevelURLs.push(url))
             }
 
@@ -57,12 +58,20 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
         }
 
         plans.urls = Array.from(allFinalPlanUrls)
-        logger.log(`Drill-Down Complete - Found ${plans.urls.length} study plans. Queuing response...`)
+
+        LoggerJobContext.add({
+            total_plans_found: plans.urls.length,
+            drill_depth_reached: depth
+        })
 
         await scraper.queue.response.add('InSIS Study Plans Response', { type: 'InSIS:StudyPlans', plans })
 
         if (plans.urls.length && data.auto_queue_study_plans) {
-            logger.log(`Auto-Queueing ${plans.urls.length} individual plan jobs...`)
+            LoggerJobContext.add({
+                auto_queue_study_plans: data.auto_queue_study_plans,
+                total_plans_to_queue: plans.urls.length
+            })
+
             await UtilService.runWithConcurrency(plans.urls, 20, planUrl =>
                 scraper.queue.request.add(
                     'InSIS Study Plan Request (Study Plans)',
@@ -76,13 +85,19 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
             )
         }
 
-        logger.log('Finished successfully.')
         return plans
     } catch (error) {
         if (Axios.isAxiosError(error)) {
-            logger.error(`Network Error: ${error.message}`)
+            LoggerJobContext.add({
+                error_message: error.message,
+                error_code: error.code,
+                error_status: error.response?.status,
+                error_status_text: error.response?.statusText
+            })
         } else {
-            logger.error(`Processing Error: ${(error as Error).message}`)
+            LoggerJobContext.add({
+                error_message: (error as Error).message
+            })
         }
 
         return null

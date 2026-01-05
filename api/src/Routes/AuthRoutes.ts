@@ -2,6 +2,7 @@ import SignInConfirmController from '@api/Controllers/Auth/SignInConfirmControll
 import SignInController from '@api/Controllers/Auth/SignInController'
 import SignOutController from '@api/Controllers/Auth/SignOutController'
 import AuthMiddleware from '@api/Middlewares/AuthMiddleware'
+import LoggerMiddleware from '@api/Middlewares/LoggerMiddleware'
 import { ParserJSONMiddleware } from '@api/Middlewares/ParserMiddleware'
 import { Router } from 'express'
 
@@ -13,8 +14,10 @@ import { Router } from 'express'
  */
 const AuthRoutes = Router()
 
-AuthRoutes.post('/signin', ParserJSONMiddleware, SignInController)
-AuthRoutes.post('/signin/confirm', ParserJSONMiddleware, SignInConfirmController)
-AuthRoutes.post('/signout', ParserJSONMiddleware, AuthMiddleware, SignOutController)
+AuthRoutes.post('/signin', ParserJSONMiddleware, LoggerMiddleware, SignInController)
+
+AuthRoutes.post('/signin/confirm', ParserJSONMiddleware, LoggerMiddleware, SignInConfirmController)
+
+AuthRoutes.post('/signout', ParserJSONMiddleware, LoggerMiddleware, AuthMiddleware, SignOutController)
 
 export default AuthRoutes

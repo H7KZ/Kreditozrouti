@@ -1,14 +1,11 @@
 import scraper from '@scraper/bullmq'
+import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { ScraperInSISCatalogRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISService from '@scraper/Services/Extractors/ExtractInSISService'
-import LoggerService from '@scraper/Services/LoggerService'
 import Axios from 'axios'
 
 export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCatalogRequestJob): Promise<void | null> {
-    const logger = new LoggerService(`[InSIS:Catalog]`)
     const baseUrl = 'https://insis.vse.cz/katalog/index.pl'
-
-    logger.log('Started - Fetching discovery options...')
 
     try {
         // Phase 1: Discovery
@@ -21,13 +18,14 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
             throw new Error('Discovery failed: No faculties or periods found.')
         }
 
-        logger.log(`Options Found - Faculties: ${options.faculties.length}, Periods: ${options.periods.length}. Starting iterations...`)
+        LoggerJobContext.add({
+            faculties_count: options.faculties.length,
+            periods_count: options.periods.length
+        })
 
         // Phase 2: Iteration
         for (const faculty of options.faculties) {
             for (const period of options.periods) {
-                logger.log(`Processing: [Faculty: ${faculty.name}] [Period: ${period.name}]`)
-
                 const params = new URLSearchParams({
                     kredity_od: '',
                     kredity_do: '',
@@ -44,7 +42,6 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
                     })
                     const coursesUrls = ExtractInSISService.extractCatalog(searchResponse.data)
 
-                    logger.log(`Found ${coursesUrls.length} courses. Queuing catalog response...`)
                     await scraper.queue.response.add(`InSIS Catalog Response ${faculty.name} ${period.name}`, {
                         type: 'InSIS:Catalog',
                         catalog: { urls: coursesUrls },
@@ -52,7 +49,6 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
                     })
 
                     if (coursesUrls.length && data.auto_queue_courses) {
-                        logger.log(`Auto-Queuing ${coursesUrls.length} course jobs...`)
                         await scraper.queue.request.addBulk(
                             coursesUrls.map(courseUrl => ({
                                 name: 'InSIS Course Request (Catalog)',
@@ -70,17 +66,27 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
                         )
                     }
                 } catch (innerError) {
-                    logger.error(`Failed iteration for ${faculty.name}/${period.name}`, innerError)
+                    LoggerJobContext.add({
+                        error: (innerError as Error).message,
+                        faculty: faculty.name,
+                        period: period.name
+                    })
+
                     // Continue to next period
                 }
             }
         }
-        logger.log('Finished successfully.')
     } catch (error) {
         if (Axios.isAxiosError(error)) {
-            logger.error(`Network Error: ${error.message}`)
+            LoggerJobContext.add({
+                error: error.message,
+                catalog_status: error.response?.status,
+                data: error.response?.data
+            })
         } else {
-            logger.error(`Critical Error: ${(error as Error).message}`)
+            LoggerJobContext.add({
+                error: (error as Error).message
+            })
         }
 
         return null

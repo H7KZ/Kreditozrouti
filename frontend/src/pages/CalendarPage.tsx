@@ -4,7 +4,7 @@ import { createViewDay, createViewMonthGrid, createViewWeek } from "@schedule-x/
 import { createEventsServicePlugin } from "@schedule-x/events-service"
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react"
 import { useNavigate } from "@tanstack/react-router"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import "@schedule-x/theme-default/dist/index.css"
 import "@schedule-x/theme-default/dist/index.css"
 import { DarkModeProvider } from "../components/DarkModeSwitcher"
@@ -48,7 +48,7 @@ export default function CalendarPage() {
 
         // Transform backend events to calendar format
         const calendarEvents = backendEvents
-          .filter((event) => event.datetime) // Filter out events without datetime
+          .filter(event => event.datetime) // Filter out events without datetime
           .map((event: Event) => {
             const eventDate = Temporal.Instant.from(new Date(event.datetime!).toISOString())
             const zonedDateTime = eventDate.toZonedDateTimeISO(Temporal.Now.timeZoneId())
@@ -91,10 +91,7 @@ export default function CalendarPage() {
               <div className="rounded-lg bg-red-100 p-4 text-red-700 dark:bg-red-900 dark:text-red-200">
                 <p className="font-semibold">Error loading events</p>
                 <p>{error}</p>
-                <button
-                  onClick={() => window.location.reload()}
-                  className="mt-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-                >
+                <button onClick={() => window.location.reload()} className="mt-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">
                   Retry
                 </button>
               </div>

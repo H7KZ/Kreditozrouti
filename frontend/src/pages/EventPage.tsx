@@ -1,13 +1,13 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
 import { useNavigate, useParams } from "@tanstack/react-router"
+import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { DarkModeProvider } from "@frontend/components/DarkModeSwitcher"
 import LanguageSwitcher from "@frontend/components/LanguageSwitcher"
+import { Route as EventRoute } from "@frontend/routes/event"
 import { eventService } from "@frontend/services/EventService"
 import type { Event } from "@frontend/types/event"
-import { Route as EventRoute } from "@frontend/routes/event"
 
 const formatDateTime = (value?: string | Date | null): string => {
   if (!value) return ""
@@ -51,11 +51,7 @@ export default function EventDetailPage() {
 
   const renderBody = () => {
     if (loading) {
-      return (
-        <div className="flex h-96 items-center justify-center text-lg text-gray-600 dark:text-gray-300">
-          {t("common.loading") || "Načítání..."}
-        </div>
-      )
+      return <div className="flex h-96 items-center justify-center text-lg text-gray-600 dark:text-gray-300">{t("common.loading") || "Načítání..."}</div>
     }
 
     if (error) {
@@ -63,10 +59,7 @@ export default function EventDetailPage() {
         <div className="rounded-lg bg-red-100 p-4 text-red-700 dark:bg-red-900 dark:text-red-200">
           <p className="font-semibold">{t("common.error") || "Chyba"}</p>
           <p>{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-3 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-          >
+          <button onClick={() => window.location.reload()} className="mt-3 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">
             {t("common.retry") || "Zkusit znovu"}
           </button>
         </div>
@@ -74,11 +67,7 @@ export default function EventDetailPage() {
     }
 
     if (!event) {
-      return (
-        <div className="rounded-lg bg-yellow-100 p-4 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-          {t("event_detail.not_found") || "Událost nenalezena."}
-        </div>
-      )
+      return <div className="rounded-lg bg-yellow-100 p-4 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">{t("event_detail.not_found") || "Událost nenalezena."}</div>
     }
 
     return (
@@ -88,15 +77,11 @@ export default function EventDetailPage() {
         <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <p className="text-sm text-gray-600 dark:text-gray-400">{t("event_detail.start_time")}</p>
-            <p className="text-lg dark:text-gray-100">
-              {parsedDatetime?.start ? formatDateTime(parsedDatetime.start) : formatDateTime(event.datetime) || (t("common.unknown") as string)}
-            </p>
+            <p className="text-lg dark:text-gray-100">{parsedDatetime?.start ? formatDateTime(parsedDatetime.start) : formatDateTime(event.datetime) || (t("common.unknown") as string)}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600 dark:text-gray-400">{t("event_detail.end_time")}</p>
-            <p className="text-lg dark:text-gray-100">
-              {parsedDatetime?.end ? formatDateTime(parsedDatetime.end) : (t("common.unknown") as string)}
-            </p>
+            <p className="text-lg dark:text-gray-100">{parsedDatetime?.end ? formatDateTime(parsedDatetime.end) : (t("common.unknown") as string)}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600 dark:text-gray-400">{t("event_detail.location")}</p>
@@ -126,16 +111,11 @@ export default function EventDetailPage() {
         {renderBody()}
 
         <div className="mt-4 flex gap-4">
-          <button
-            onClick={() => navigate({ to: "/calendar" })}
-            className="flex-1 rounded-lg bg-green-600 px-6 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
-          >
+          <button onClick={() => navigate({ to: "/calendar" })} className="flex-1 rounded-lg bg-green-600 px-6 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800">
             ← {t("event_detail.back_to_calendar")}
           </button>
 
-          <button className="flex-1 rounded-lg bg-green-600 px-6 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800">
-            {t("event_detail.register_button")}
-          </button>
+          <button className="flex-1 rounded-lg bg-green-600 px-6 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800">{t("event_detail.register_button")}</button>
           <button className="flex-1 rounded-lg bg-green-600 px-6 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800">
             {t("event_detail.participants_button")}
           </button>

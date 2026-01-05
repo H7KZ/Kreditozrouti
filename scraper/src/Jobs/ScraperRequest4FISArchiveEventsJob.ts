@@ -1,14 +1,11 @@
 import scraper from '@scraper/bullmq'
+import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import Scraper4FISEvents from '@scraper/Interfaces/Scraper4FISEvents'
 import { Scraper4FISArchiveEventsRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
-import LoggerService from '@scraper/Services/LoggerService'
 import Axios from 'axios'
 
 export default async function ScraperRequest4FISArchiveEventsJob(data: Scraper4FISArchiveEventsRequestJob): Promise<Scraper4FISEvents | null> {
-    const logger = new LoggerService(`[4FIS:Archive:Discovery]`)
     const events: Scraper4FISEvents = { ids: [] }
-
-    logger.log('Started - Initializing Archive.org CDX query...')
 
     const cdxUrl = 'http://web.archive.org/cdx/search/cdx'
     const params = new URLSearchParams()
@@ -20,16 +17,24 @@ export default async function ScraperRequest4FISArchiveEventsJob(data: Scraper4F
     params.append('fl', 'original')
 
     try {
-        logger.log(`Fetching CDX data from: ${cdxUrl}`)
+        LoggerJobContext.add({
+            cdx_url: cdxUrl
+        })
+
         const response = await Axios.get<string[][]>(cdxUrl, { params })
         const rows = response.data
 
         if (!rows || rows.length <= 1) {
-            logger.log('Finished - No historical data found.')
+            LoggerJobContext.add({
+                found_urls: 0
+            })
+
             return events
         }
 
-        logger.log(`Fetched ${rows.length - 1} records. Analyzing URL structures...`)
+        LoggerJobContext.add({
+            found_urls: rows.length - 1
+        })
 
         // 1. Discovery Pass
         const foundCategories = new Set<string>()
@@ -48,12 +53,18 @@ export default async function ScraperRequest4FISArchiveEventsJob(data: Scraper4F
         }
 
         if (foundCategories.size === 0) {
-            logger.warn('No categories found. Cannot perform safe extraction.')
+            LoggerJobContext.add({
+                found_categories: 0
+            })
             return events
         }
 
         const categoryList = Array.from(foundCategories)
-        logger.log(`Identified ${categoryList.length} categories. extracting event IDs...`)
+
+        LoggerJobContext.add({
+            found_categories: categoryList.length,
+            categories: categoryList
+        })
 
         // 2. Extraction Pass
         const uniqueIds = new Set<string>()
@@ -77,15 +88,24 @@ export default async function ScraperRequest4FISArchiveEventsJob(data: Scraper4F
 
         events.ids = Array.from(uniqueIds)
 
-        logger.log(`Extraction Complete - Found ${events.ids.length} unique events. Queuing response...`)
+        LoggerJobContext.add({
+            found_event_ids: events.ids.length
+        })
+
         await scraper.queue.response.add('4FIS Archive Events Response', { type: '4FIS:Events', events })
 
         if (!events.ids.length || !data.auto_queue_events) {
-            logger.log('Finished (No individual jobs queued).')
+            LoggerJobContext.add({
+                auto_queued_events: 0
+            })
+
             return events
         }
 
-        logger.log(`Auto-Queueing ${events.ids.length} event jobs...`)
+        LoggerJobContext.add({
+            auto_queued_events: events.ids.length
+        })
+
         await scraper.queue.request.addBulk(
             events.ids.map(eventId => ({
                 name: '4FIS Event Request (Archive)',
@@ -101,13 +121,24 @@ export default async function ScraperRequest4FISArchiveEventsJob(data: Scraper4F
             }))
         )
 
-        logger.log('Finished successfully.')
+        LoggerJobContext.add({
+            auto_queue_complete: true
+        })
+
         return events
     } catch (error) {
         if (Axios.isAxiosError(error)) {
-            logger.error(`Network Error querying Archive: ${error.message} (Status: ${error.response?.status})`)
+            LoggerJobContext.add({
+                axios_error: true,
+                axios_status: error.response?.status ?? null,
+                axios_status_text: error.response?.statusText ?? null,
+                axios_url: error.config?.url ?? null
+            })
         } else {
-            logger.error(`Processing Error: ${(error as Error).message}`)
+            LoggerJobContext.add({
+                axios_error: false,
+                error_message: (error as Error).message
+            })
         }
 
         return null

@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import { mysql, redis } from '@api/clients'
 import Config from '@api/Config/Config'
+import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import SignInConfirmResponse from '@api/Controllers/Auth/types/SignInConfirmResponse'
 import { User, UserTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
@@ -20,6 +21,8 @@ import { Request, Response } from 'express'
  * @throws {Exception} 500 - If user creation fails.
  */
 export default async function SignInConfirmController(req: Request, res: Response<SignInConfirmResponse>) {
+    LoggerAPIContext.add(res, { body: req.body })
+
     const result = await SignInConfirmValidation.safeParseAsync(req.body)
 
     if (!result.success) {
@@ -30,6 +33,8 @@ export default async function SignInConfirmController(req: Request, res: Respons
 
     // Reconstruct the challenge from the verifier
     const code_challenge = crypto.createHash('sha256').update(data.code_verifier).digest('hex')
+
+    LoggerAPIContext.add(res, { code_challenge: code_challenge })
 
     const storedCodeChallenge = await redis.get(`auth:challenge:${code_challenge}`)
     if (storedCodeChallenge !== code_challenge) {
@@ -53,11 +58,15 @@ export default async function SignInConfirmController(req: Request, res: Respons
         await mysql.insertInto(UserTable._table).values({ email: storedEmail }).executeTakeFirst()
 
         user = await mysql.selectFrom(UserTable._table).select(['id', 'email']).where('email', '=', storedEmail).executeTakeFirst()
+
+        LoggerAPIContext.add(res, { new_user: user })
     }
 
     if (!user) {
         throw new Exception(500, ErrorTypeEnum.DATABASE, ErrorCodeEnum.INSERT_FAILED, 'Failed to create user')
     }
+
+    LoggerAPIContext.add(res, { user_id: user.id })
 
     // Clean up Auth keys
     await Promise.all([redis.del(`auth:challenge:${code_challenge}`), redis.del(`auth:email:${code_challenge}`), redis.del(`auth:code:${user.email}`)])

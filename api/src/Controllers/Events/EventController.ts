@@ -1,4 +1,5 @@
 import { mysql } from '@api/clients'
+import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import EventResponse from '@api/Controllers/Events/types/EventResponse'
 import { EventTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
@@ -14,6 +15,8 @@ import { Request, Response } from 'express'
  */
 export default async function EventController(req: Request, res: Response<EventResponse>) {
     const { id } = req.params
+
+    LoggerAPIContext.add(res, { eventId: id })
 
     const event = await mysql.selectFrom(EventTable._table).selectAll().where('id', '=', id).executeTakeFirst()
 

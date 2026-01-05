@@ -1,4 +1,5 @@
 import { User } from '@api/Database/types'
+import { LoggerWideEvent } from '@api/Middlewares/LoggerMiddleware'
 
 /**
  * Global type definitions and augmentations.
@@ -11,6 +12,7 @@ declare global {
          */
         interface Locals {
             user: User
+            wideEvent: LoggerWideEvent
         }
     }
 }

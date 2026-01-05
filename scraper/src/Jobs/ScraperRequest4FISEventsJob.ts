@@ -1,8 +1,8 @@
 import scraper from '@scraper/bullmq'
+import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import Scraper4FISEvents from '@scraper/Interfaces/Scraper4FISEvents'
 import { Scraper4FISEventsRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import Extract4FISService from '@scraper/Services/Extractors/Extract4FISService'
-import LoggerService from '@scraper/Services/LoggerService'
 import Axios from 'axios'
 
 interface RequestEvents {
@@ -11,16 +11,11 @@ interface RequestEvents {
 }
 
 export default async function ScraperRequest4FISEventsJob(data: Scraper4FISEventsRequestJob): Promise<Scraper4FISEvents | null> {
-    const logger = new LoggerService(`[4FIS:EventsList]`)
     const events: Scraper4FISEvents = { ids: [] }
     let max_num_pages = 1
 
-    logger.log('Started - Initializing pagination...')
-
     try {
         for (let page = 1; page <= max_num_pages; page++) {
-            logger.log(`Processing Page ${page}/${max_num_pages}...`)
-
             try {
                 const response = await Axios.get<RequestEvents>(
                     `https://4fis.cz/wp-admin/admin-ajax.php?action=example_ajax_request&paged=${page}&nonce=f6e3b07fed`,
@@ -34,7 +29,6 @@ export default async function ScraperRequest4FISEventsJob(data: Scraper4FISEvent
                 }
 
                 if (!response.data.data) {
-                    logger.warn(`Page ${page} returned no data payload.`)
                     continue
                 }
 
@@ -42,20 +36,35 @@ export default async function ScraperRequest4FISEventsJob(data: Scraper4FISEvent
                 events.ids.push(...newEvents.ids)
             } catch (error) {
                 // If a single page fails, we log and try to continue, unless it's the first page
-                logger.error(`Failed to fetch/parse Page ${page}`, error)
-                if (page === 1) throw error
+                if (page === 1) {
+                    LoggerJobContext.add({
+                        message: `Failed to fetch first page of events: ${(error as Error).message}`
+                    })
+
+                    throw error
+                }
             }
         }
 
-        logger.log(`Pagination Complete - Found ${events.ids.length} total events. Queuing response...`)
+        LoggerJobContext.add({
+            events_found: events.ids.length
+        })
+
         await scraper.queue.response.add('4FIS Events Response', { type: '4FIS:Events', events })
 
         if (!events.ids.length || !data.auto_queue_events) {
-            logger.log('Finished (No individual jobs queued).')
+            LoggerJobContext.add({
+                auto_queue_events: false
+            })
+
             return events
         }
 
-        logger.log(`Auto-Queueing ${events.ids.length} event jobs...`)
+        LoggerJobContext.add({
+            auto_queue_events: true,
+            events_queued: events.ids.length
+        })
+
         await scraper.queue.request.addBulk(
             events.ids.map(eventId => ({
                 name: '4FIS Event Request (Events)',
@@ -71,10 +80,12 @@ export default async function ScraperRequest4FISEventsJob(data: Scraper4FISEvent
             }))
         )
 
-        logger.log('Finished successfully.')
         return events
     } catch (error) {
-        logger.error(`Critical Failure: ${(error as Error).message}`)
+        LoggerJobContext.add({
+            message: `Failed to scrape 4FIS events: ${(error as Error).message}`
+        })
+
         return null
     }
 }
