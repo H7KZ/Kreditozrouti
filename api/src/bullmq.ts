@@ -19,12 +19,12 @@ import { Queue, Worker } from 'bullmq'
  */
 const scraper = {
     queue: {
-        request: new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis })
+        request: new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis.options })
     },
 
     worker: {
         response: new Worker<ScraperResponseJob>(ScraperResponseQueue, ScraperResponseHandler, {
-            connection: redis,
+            connection: redis.options,
             concurrency: 4
         })
     },
@@ -44,7 +44,7 @@ const scraper = {
      * Configures Cron-based job schedulers.
      */
     async schedulers() {
-        if (!Config.isEnvLocal()) {
+        if (Config.isEnvProduction()) {
             // 4FIS Events (Every 2 minutes)
             await scraper.queue.request.upsertJobScheduler(
                 Scraper4FISEventsRequestScheduler,

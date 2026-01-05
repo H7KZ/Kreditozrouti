@@ -39,11 +39,14 @@ export default class ExtractInSISService {
 
     /**
      * Parses the "Extended Search" form to extract available Faculties and Academic Periods.
+     * Filters for Academic Years starting from 2025 (covering ZS/LS 2025/2026) and future years.
      */
     static extractCatalogSearchOptions(html: string) {
         const $ = cheerio.load(html)
         const faculties: { id: number; name: string }[] = []
         const periods: { id: number; name: string }[] = []
+
+        const minYear = new Date().getFullYear() - 1
 
         const cleanText = (text: string | null): string => {
             return text
@@ -58,7 +61,6 @@ export default class ExtractInSISService {
             const id = $(el).val() as string
             const nextNode = el.nextSibling
 
-            // Try getting text from next sibling, fallback to parent text
             const rawName = nextNode?.type === 'text' ? nextNode.data : $(el).parent().text()
             const name = cleanText(rawName)
 
@@ -67,15 +69,22 @@ export default class ExtractInSISService {
             }
         })
 
-        $('input[name="obdobi"]').each((_, el) => {
+        $('input[name="obdobi_fak"]').each((_, el) => {
             const id = $(el).val() as string
             const nextNode = el.nextSibling
 
-            const rawName = nextNode?.type === 'text' ? nextNode.data : $(el).parent().text()
-            const name = cleanText(rawName)
+            const rowText = cleanText(nextNode?.type === 'text' ? nextNode.data : $(el).parent().text())
+            const name = cleanText(rowText)
 
-            if (id && name) {
-                periods.push({ id: Number(id.trim()), name: name.toUpperCase() })
+            // Extract the first 4-digit year found in the row
+            const yearMatch = /(\d{4})/.exec(rowText)
+
+            if (yearMatch && id && name) {
+                const startYear = parseInt(yearMatch[1], 10)
+
+                if (startYear >= minYear) {
+                    periods.push({ id: Number(id.trim()), name: name.toUpperCase() })
+                }
             }
         })
 
@@ -121,7 +130,6 @@ export default class ExtractInSISService {
         const $ = cheerio.load(html)
         const body = $('body')
 
-        // Pre-process HTML entities
         if (body.length) {
             body.html(body.html()?.replace(/&nbsp;/g, ' ') ?? '')
         }
@@ -168,7 +176,6 @@ export default class ExtractInSISService {
                 .filter(part => part.length > 0)
         }
 
-        // ID Extraction
         let id: number | null = null
         const idInput = $('input[name="predmet"]').attr('value')
         if (idInput) {
@@ -179,7 +186,6 @@ export default class ExtractInSISService {
 
         if (id === null) throw new Error('Course ID not found in the HTML content or URL.')
 
-        // Basic Metadata
         const ident = getRowValue('Kód předmětu:')
         const title = getRowValue('Název v jazyce výuky:') ?? getRowValue('Název česky:')
         const czech_title = getRowValue('Název česky:')
@@ -399,17 +405,45 @@ export default class ExtractInSISService {
     /**
      * Extracts URLs that drill down deeper into the hierarchy (Programs, Obors, Specializations),
      * excluding final Study Plan links.
+     * @param html - The HTML content to parse.
+     * @param checkForSemesters - If true, filters out semesters older than (Current Year - 1).
      */
-    static extractNavigationURLs(html: string): string[] {
+    static extractNavigationURLs(html: string, checkForSemesters = false): string[] {
         const $ = cheerio.load(html)
         const urls: string[] = []
 
+        const minYear = new Date().getFullYear() - 1
+
         $('span[data-sysid="prohlizeni-info"]').each((_, el) => {
-            const href = $(el).closest('a').attr('href')
+            const anchor = $(el).closest('a')
+            const href = anchor.attr('href')
+
             if (href && !href.includes('stud_plan=')) {
-                urls.push(this.normalizeUrl(href))
+                let isValid = true
+
+                if (checkForSemesters) {
+                    // Traverse up to the row to find the text (e.g., "ZS 2025/2026")
+                    const row = anchor.closest('tr')
+                    const rowText = row.text()
+
+                    // Extract the first 4-digit year found in the row
+                    const yearMatch = /(\d{4})/.exec(rowText)
+
+                    if (yearMatch) {
+                        const startYear = parseInt(yearMatch[1], 10)
+
+                        if (startYear < minYear) {
+                            isValid = false
+                        }
+                    }
+                }
+
+                if (isValid) {
+                    urls.push(this.normalizeUrl(href))
+                }
             }
         })
+
         return [...new Set(urls)]
     }
 
@@ -418,14 +452,17 @@ export default class ExtractInSISService {
      */
     static extractStudyPlanURLs(html: string): string[] {
         const $ = cheerio.load(html)
+
         const urls: string[] = []
 
         $('span[data-sysid="prohlizeni-info"]').each((_, el) => {
             const href = $(el).closest('a').attr('href')
+
             if (href?.includes('stud_plan=')) {
                 urls.push(this.normalizeUrl(href))
             }
         })
+
         return [...new Set(urls)]
     }
 

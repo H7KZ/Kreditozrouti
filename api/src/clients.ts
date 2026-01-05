@@ -43,7 +43,8 @@ export const i18n = new I18n({
 })
 
 /**
- * Nodemailer transporter for email delivery via Gmail.
+ * Nodemailer transporter for email delivery.
+ * Uses Gmail SMTP if credentials are provided, otherwise creates a test transporter for development.
  */
 export const nodemailer = Nodemailer.createTransport({
     host: 'smtp.gmail.com',

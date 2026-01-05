@@ -11,12 +11,12 @@ import { Queue, Worker } from 'bullmq'
  */
 const scraper = {
     queue: {
-        request: new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis }),
-        response: new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis })
+        request: new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis.options }),
+        response: new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis.options })
     },
 
     worker: {
-        request: new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestHandler, { connection: redis, concurrency: 1 })
+        request: new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestHandler, { connection: redis.options, concurrency: 1 })
         // response: new Worker<ScraperResponseJobInterface>(ScraperResponseQueue, ScraperResponseJobHandler, { connection: redis })
     },
 

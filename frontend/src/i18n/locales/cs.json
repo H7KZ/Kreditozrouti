@@ -68,5 +68,10 @@
     "placeholders": {
       "team_name": "Název týmu"
     }
+  },
+  "auth": {
+    "failed": "Přihlášení se nezdařilo",
+    "error_invalid_code": "Neplatný ověřovací kód",
+    "back_to_login": "Zpět na přihlášení"
   }
 }

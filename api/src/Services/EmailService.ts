@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { nodemailer } from '@api/clients'
+import Config from '@api/Config/Config'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
 import { Paths } from '@api/paths'
@@ -40,12 +41,33 @@ export default class EmailService {
      * @param data - Mail options (to, subject, html/text body).
      * @throws {Exception} 500 - If the email fails to send.
      */
-    static async sendEmail(data: Mail.Options & Partial<SMTPTransport.Options>): Promise<void> {
+    static async sendEmail(data: Mail.Options & Partial<SMTPTransport.Options>): Promise<boolean> {
+        if (!Config.isEmailEnabled()) {
+            return false
+        }
+
         try {
             await nodemailer.sendMail(data)
-        } catch (err) {
-            console.error('Failed to send email:', err)
+
+            return true
+        } catch {
             throw new Exception(500, ErrorTypeEnum.UNKNOWN, ErrorCodeEnum.EMAIL_NOT_SENT, 'Failed to send email')
         }
+    }
+
+    private static formatAddress(val: Mail.Options['to']): string {
+        if (!val) return ''
+
+        const items = Array.isArray(val) ? val : [val]
+
+        return items
+            .map(item => {
+                if (typeof item === 'string') return item
+                const anyItem = item as { address?: string; name?: string; toString?: () => string }
+                const addr = anyItem.address ?? anyItem.toString?.() ?? ''
+                return anyItem.name ? `${anyItem.name} <${addr}>` : addr
+            })
+            .filter(Boolean)
+            .join(', ')
     }
 }

@@ -18,7 +18,8 @@ export default async function RunInSISCatalogScraperController(req: Request, res
         },
         {
             deduplication: {
-                id: 'InSIS:Catalog:ManualRun'
+                id: 'InSIS:Catalog:ManualRun',
+                ttl: 30 * 1000 // 30 seconds
             }
         }
     )

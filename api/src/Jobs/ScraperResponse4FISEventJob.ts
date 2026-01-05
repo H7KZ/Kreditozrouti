@@ -1,8 +1,8 @@
 import { mysql } from '@api/clients'
+import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { CategoryTable, EventCategoryTable, EventTable } from '@api/Database/types'
 import SimilarityService from '@api/Services/SimilarityService'
 import { Scraper4FISEventResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
-import LoggerService from '@scraper/Services/LoggerService'
 
 /**
  * Syncs a scraped FIS event into the database.
@@ -13,7 +13,12 @@ import LoggerService from '@scraper/Services/LoggerService'
  */
 export default async function ScraperResponse4FISEventJob(data: Scraper4FISEventResponseJob): Promise<void> {
     const { event } = data
-    const logger = new LoggerService('[4FIS:Response:Event]')
+
+    LoggerJobContext.add({
+        event_id: event?.id,
+        event_title: event?.title,
+        event_date: event?.datetime
+    })
 
     if (!event?.id) return
 
@@ -21,14 +26,17 @@ export default async function ScraperResponse4FISEventJob(data: Scraper4FISEvent
     const incomingDate = event.datetime ? new Date(event.datetime) : null
     const incomingTitle = event.title ?? ''
 
-    logger.log(`Processing sync for event Id: ${incomingId} - ${incomingTitle}`)
-
     let targetEventId: string | null = null
 
     // 1. Check for Exact ID Match
     const existingById = await mysql.selectFrom(EventTable._table).select('id').where('id', '=', incomingId).executeTakeFirst()
 
     if (existingById) {
+        LoggerJobContext.add({
+            resolution_method: 'exact_id_match',
+            resolved_event_id: existingById.id
+        })
+
         targetEventId = existingById.id
     } else if (incomingDate && incomingTitle) {
         // 2. Fuzzy Match
@@ -50,11 +58,15 @@ export default async function ScraperResponse4FISEventJob(data: Scraper4FISEvent
         for (const candidate of candidates) {
             if (!candidate.title) continue
 
-            if (SimilarityService.areTitlesSimilar(incomingTitle, candidate.title)) {
-                logger.log(`Smart match found! Merging incoming '${incomingTitle}' with existing '${candidate.title}'`)
-                targetEventId = candidate.id
-                break
-            }
+            if (!SimilarityService.areTitlesSimilar(incomingTitle, candidate.title)) continue
+
+            LoggerJobContext.add({
+                resolution_method: 'fuzzy_match',
+                resolved_event_id: candidate.id,
+                resolved_event_title: candidate.title
+            })
+
+            targetEventId = candidate.id
         }
     }
 
@@ -80,7 +92,10 @@ export default async function ScraperResponse4FISEventJob(data: Scraper4FISEvent
         await mysql.updateTable(EventTable._table).set(eventPayload).where('id', '=', targetEventId).execute()
 
         await syncEventCategories(targetEventId, event.categories ?? [])
-        logger.log(`Updated existing event Id: ${targetEventId}`)
+
+        LoggerJobContext.add({
+            action: 'update'
+        })
     } else {
         await mysql
             .insertInto(EventTable._table)
@@ -91,7 +106,10 @@ export default async function ScraperResponse4FISEventJob(data: Scraper4FISEvent
             .execute()
 
         await syncEventCategories(incomingId, event.categories ?? [])
-        logger.log(`Inserted new event Id: ${incomingId}`)
+
+        LoggerJobContext.add({
+            action: 'insert'
+        })
     }
 }
 
@@ -104,6 +122,11 @@ export default async function ScraperResponse4FISEventJob(data: Scraper4FISEvent
 async function syncEventCategories(eventId: string, incomingCategoryIds: string[]): Promise<void> {
     if (incomingCategoryIds.length === 0) {
         await mysql.deleteFrom(EventCategoryTable._table).where('event_id', '=', eventId).execute()
+
+        LoggerJobContext.add({
+            event_categories_cleared: true
+        })
+
         return
     }
 
@@ -128,4 +151,10 @@ async function syncEventCategories(eventId: string, incomingCategoryIds: string[
     if (toInsert.length > 0) {
         await mysql.insertInto(EventCategoryTable._table).values(toInsert).execute()
     }
+
+    LoggerJobContext.add({
+        event_categories_updated: true,
+        categories_added: toInsert.length,
+        categories_removed: toDeleteIds.length
+    })
 }

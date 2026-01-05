@@ -1,3 +1,4 @@
+import { LoggerWideEvent } from '@api/Context/LoggerAPIContext'
 import { User } from '@api/Database/types'
 
 /**
@@ -11,6 +12,7 @@ declare global {
          */
         interface Locals {
             user: User
+            wideEvent: LoggerWideEvent
         }
     }
 }

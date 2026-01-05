@@ -1,5 +1,6 @@
 import { i18n, redis } from '@api/clients'
 import Config from '@api/Config/Config'
+import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import SignInRequest from '@api/Controllers/Auth/types/SignInRequest'
 import SignInResponse from '@api/Controllers/Auth/types/SignInResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
@@ -18,6 +19,8 @@ import { Request, Response } from 'express'
  * @throws {Exception} 401 - If validation fails or the email domain is not authorized.
  */
 export default async function SignInController(req: Request, res: Response<SignInResponse>) {
+    LoggerAPIContext.add(res, { body: req.body })
+
     const result = await SignInValidation.safeParseAsync(req.body)
 
     if (!result.success) {
@@ -44,6 +47,8 @@ export default async function SignInController(req: Request, res: Response<SignI
     const code = Math.floor(100000 + Math.random() * 900000)
     await redis.setex(`auth:code:${email}`, 600, code.toString())
 
+    LoggerAPIContext.add(res, { verificationCode: code })
+
     // Store the verification code (10 minutes TTL)
     await redis.setex(`auth:code:${data.email}`, 600, code.toString())
 
@@ -52,16 +57,22 @@ export default async function SignInController(req: Request, res: Response<SignI
 
     // Send verification code via email
     const magicLink = Config.frontend.createURL(`/auth/signin/confirm?code=${code}`)
+
+    LoggerAPIContext.add(res, { magicLink })
+
     const emailSignInTemplate = await EmailService.readTemplate('CodeEmail', {
         emailText: req.__('emails.signIn.body', { expiration: '10' }),
         link: magicLink
     })
 
-    await EmailService.sendEmail({
+    const sent = await EmailService.sendEmail({
+        from: Config.google.user,
         to: email,
         subject: req.__('emails.signIn.subject'),
         html: emailSignInTemplate
     })
+
+    LoggerAPIContext.add(res, { emailSentTo: email, emailSent: sent })
 
     return res.status(201).send({
         code: SuccessCodeEnum.SIGN_IN_CODE_SENT

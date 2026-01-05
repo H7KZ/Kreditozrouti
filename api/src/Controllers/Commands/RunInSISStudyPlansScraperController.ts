@@ -19,7 +19,8 @@ export default async function RunInSISStudyPlansScraperController(req: Request, 
         },
         {
             deduplication: {
-                id: 'InSIS:StudyPlans:ManualRun'
+                id: 'InSIS:StudyPlans:ManualRun',
+                ttl: 30 * 1000 // 30 seconds
             }
         }
     )

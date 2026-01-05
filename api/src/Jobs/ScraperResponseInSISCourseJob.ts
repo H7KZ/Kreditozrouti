@@ -1,4 +1,5 @@
 import { mysql } from '@api/clients'
+import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { CourseAssessmentMethodTable, CourseIdRedirectTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from '@api/Database/types'
 import { ScraperInSISCourseAssessmentMethod, ScraperInSISCourseTimetableSlot, ScraperInSISCourseTimetableUnit } from '@scraper/Interfaces/ScraperInSISCourse'
 import { ScraperInSISCourseResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
@@ -14,11 +15,14 @@ import { ScraperInSISCourseResponseJob } from '@scraper/Interfaces/ScraperRespon
 export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCourseResponseJob): Promise<void> {
     const { course } = data
 
+    LoggerJobContext.add({
+        course_id: course?.id,
+        course_ident: course?.ident
+    })
+
     if (!course?.id) {
         return
     }
-
-    console.log(`Processing sync for course Id: ${course.id} (${course.ident})`)
 
     const coursePayload = {
         id: course.id,
@@ -49,7 +53,10 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
     // Handle ID Redirects (when URL ID != Canonical ID)
     if (course.url_id && course.url_id !== course.id) {
-        console.log(`Detected redirect: URL ID ${course.url_id} -> Course ID ${course.id}`)
+        LoggerJobContext.add({
+            course_url_id: course.url_id
+        })
+
         await mysql
             .insertInto(CourseIdRedirectTable._table)
             .values({
@@ -63,7 +70,10 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
     await syncAssessmentMethods(course.id, course.assessment_methods ?? [])
     await syncTimetable(course.id, course.timetable ?? [])
 
-    console.log(`Synced course Id: ${course.id}`)
+    LoggerJobContext.add({
+        assessment_method_count: course.assessment_methods?.length ?? 0,
+        timetable_unit_count: course.timetable?.length ?? 0
+    })
 }
 
 /**

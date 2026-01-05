@@ -1,4 +1,5 @@
 import { mysql } from '@api/clients'
+import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { CourseIdRedirectTable, CourseTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import { ScraperInSISStudyPlanResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
 
@@ -13,11 +14,14 @@ import { ScraperInSISStudyPlanResponseJob } from '@scraper/Interfaces/ScraperRes
 export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSISStudyPlanResponseJob): Promise<void> {
     const { plan } = data
 
+    LoggerJobContext.add({
+        study_plan_id: plan?.id,
+        study_plan_ident: plan?.ident
+    })
+
     if (!plan?.id) {
         return
     }
-
-    console.log(`Processing sync for study plan Id: ${plan.id} (${plan.ident})`)
 
     const planPayload = {
         id: plan.id,
@@ -37,7 +41,10 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
     await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', plan.id).execute()
 
     if (!plan.courses || plan.courses.length === 0) {
-        console.log(`Synced study plan Id: ${plan.id} (No courses found)`)
+        LoggerJobContext.add({
+            course_count: 0
+        })
+
         return
     }
 
@@ -86,5 +93,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
         await mysql.insertInto(StudyPlanCourseTable._table).values(rowsToInsert).execute()
     }
 
-    console.log(`Synced study plan Id: ${plan.id} with ${rowsToInsert.length} courses`)
+    LoggerJobContext.add({
+        course_count: rowsToInsert.length
+    })
 }

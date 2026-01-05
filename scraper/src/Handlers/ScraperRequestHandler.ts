@@ -1,3 +1,4 @@
+import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
 import ScraperRequest4FISArchiveEventsJob from '@scraper/Jobs/ScraperRequest4FISArchiveEventsJob'
 import ScraperRequest4FISEventJob from '@scraper/Jobs/ScraperRequest4FISEventJob'
@@ -20,49 +21,80 @@ import { Job } from 'bullmq'
  */
 export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>): Promise<void> {
     const { type } = job.data
+    const start = process.hrtime()
 
-    console.log(`Processing job of type ${type} with id ${job.id}...`)
-    const benchmark = performance.now()
-
-    try {
-        switch (type) {
-            case '4FIS:Events':
-                await ScraperRequest4FISEventsJob(job.data)
-                break
-            case '4FIS:Event':
-                await ScraperRequest4FISEventJob(job.data)
-                break
-            case '4FIS:Archive:Events':
-                await ScraperRequest4FISArchiveEventsJob(job.data)
-                break
-            case '4FIS:Flickr:Events':
-                await ScraperRequest4FISFlickrEventsJob(job.data)
-                break
-            case '4FIS:Flickr:Event':
-                await ScraperRequest4FISFlickrEventJob(job.data)
-                break
-            case 'InSIS:Catalog':
-                await ScraperRequestInSISCatalogJob(job.data)
-                break
-            case 'InSIS:Course':
-                await ScraperRequestInSISCourseJob(job.data)
-                break
-            case 'InSIS:StudyPlans':
-                await ScraperRequestInSISStudyPlansJob(job.data)
-                break
-            case 'InSIS:StudyPlan':
-                await ScraperRequestInSISStudyPlanJob(job.data)
-                break
-            default:
-                console.warn(`Unknown job type received: ${type}`)
-                break
-        }
-
-        const duration = (performance.now() - benchmark).toFixed(4)
-        console.log(`Job Id ${job.id} (${type}) completed in ${duration} ms.`)
-    } catch (error) {
-        const duration = (performance.now() - benchmark).toFixed(4)
-        console.error(`Job Id ${job.id} (${type}) failed after ${duration} ms.`, error)
-        throw error
+    const log = {
+        job_id: job.id,
+        job_name: job.name,
+        job_type: type,
+        queue_name: job.queueName,
+        attempt: job.attemptsMade + 1,
+        timestamp: new Date().toISOString()
     }
+
+    await LoggerJobContext.run(async () => {
+        try {
+            switch (type) {
+                case '4FIS:Events':
+                    await ScraperRequest4FISEventsJob(job.data)
+                    break
+                case '4FIS:Event':
+                    await ScraperRequest4FISEventJob(job.data)
+                    break
+                case '4FIS:Archive:Events':
+                    await ScraperRequest4FISArchiveEventsJob(job.data)
+                    break
+                case '4FIS:Flickr:Events':
+                    await ScraperRequest4FISFlickrEventsJob(job.data)
+                    break
+                case '4FIS:Flickr:Event':
+                    await ScraperRequest4FISFlickrEventJob(job.data)
+                    break
+                case 'InSIS:Catalog':
+                    await ScraperRequestInSISCatalogJob(job.data)
+                    break
+                case 'InSIS:Course':
+                    await ScraperRequestInSISCourseJob(job.data)
+                    break
+                case 'InSIS:StudyPlans':
+                    await ScraperRequestInSISStudyPlansJob(job.data)
+                    break
+                case 'InSIS:StudyPlan':
+                    await ScraperRequestInSISStudyPlanJob(job.data)
+                    break
+                default:
+                    LoggerJobContext.add({ status: 'skipped', reason: 'unknown_type' })
+                    break
+            }
+
+            const diff = process.hrtime(start)
+            const durationMs = (diff[0] * 1e9 + diff[1]) / 1e6
+
+            LoggerJobContext.add({
+                status: 'success',
+                duration_ms: durationMs
+            })
+
+            LoggerJobContext.log.info(LoggerJobContext.get())
+        } catch (error) {
+            const diff = process.hrtime(start)
+            const durationMs = (diff[0] * 1e9 + diff[1]) / 1e6
+
+            LoggerJobContext.add({
+                status: 'failed',
+                duration_ms: durationMs
+            })
+
+            if (error instanceof Error) {
+                LoggerJobContext.add({
+                    error_message: error.message,
+                    error_type: error.name
+                })
+            }
+
+            LoggerJobContext.log.error(LoggerJobContext.get())
+
+            throw error
+        }
+    }, log)
 }

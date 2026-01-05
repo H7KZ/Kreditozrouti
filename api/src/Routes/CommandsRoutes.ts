@@ -17,14 +17,14 @@ import { Router } from 'express'
  */
 const CommandsRoutes = Router()
 
-// 4FIS Scrapers
 CommandsRoutes.post('/4fis/events', CommandMiddleware, Run4FISEventsScraperController)
 CommandsRoutes.post('/4fis/event', ParserJSONMiddleware, CommandMiddleware, Run4FISEventScraperController)
+
 CommandsRoutes.post('/4fis/archive/events', CommandMiddleware, Run4FISArchiveEventsScraperController)
+
 CommandsRoutes.post('/4fis/flickr/events', CommandMiddleware, Run4FISFlickrEventsScraperController)
 CommandsRoutes.post('/4fis/flickr/event', ParserJSONMiddleware, CommandMiddleware, Run4FISFlickrEventScraperController)
 
-// InSIS Scrapers
 CommandsRoutes.post('/insis/catalog', CommandMiddleware, RunInSISCatalogScraperController)
 CommandsRoutes.post('/insis/studyplans', CommandMiddleware, RunInSISStudyPlansScraperController)
 

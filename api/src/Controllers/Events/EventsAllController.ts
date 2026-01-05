@@ -1,4 +1,5 @@
 import { mysql } from '@api/clients'
+import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import EventsAllResponse from '@api/Controllers/Events/types/EventsAllResponse'
 import { EventCategoryTable, EventTable, UsersEvents } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
@@ -19,6 +20,8 @@ import { sql } from 'kysely'
  */
 
 export default async function EventsAllController(req: Request, res: Response<EventsAllResponse>) {
+    LoggerAPIContext.add(res, { body: req.body })
+
     const result = await EventsAllValidation.safeParseAsync(req.query)
 
     if (!result.success) {
@@ -85,6 +88,8 @@ export default async function EventsAllController(req: Request, res: Response<Ev
             is_registered: Boolean(is_registered)
         }
     })
+
+    LoggerAPIContext.add(res, { events_ids: events.map(event => event.id), events_count: events.length })
 
     return res.status(200).send({
         events: events
