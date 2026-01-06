@@ -1,5 +1,5 @@
 import { StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types/insis_study_plans.type'
-import { CategoryTable, EventCategoryTable, EventTable } from './4fis_event.type'
+import { CategoryTable, EventCategoryTable, EventTable, UsersEvents } from './4fis_event.type'
 import { CourseAssessmentMethodTable, CourseIdRedirectTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from './insis_course.type'
 import { UserTable } from './user.type'
 
@@ -20,6 +20,7 @@ type AllTableClasses =
     | typeof CourseTimetableSlotTable
     | typeof StudyPlanTable
     | typeof StudyPlanCourseTable
+    | typeof UsersEvents
 
 /**
  * Master mapping of table names to Kysely table interfaces.

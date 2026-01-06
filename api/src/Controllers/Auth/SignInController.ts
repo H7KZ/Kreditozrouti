@@ -2,9 +2,7 @@ import { i18n, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import SignInRequest from '@api/Controllers/Auth/types/SignInRequest'
-import SignInResponse from '@api/Controllers/Auth/types/SignInResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
-import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 import Exception from '@api/Error/Exception'
 import EmailService from '@api/Services/EmailService'
 import SignInValidation from '@api/Validations/SignInValidation'
@@ -18,7 +16,7 @@ import { Request, Response } from 'express'
  *
  * @throws {Exception} 401 - If validation fails or the email domain is not authorized.
  */
-export default async function SignInController(req: Request, res: Response<SignInResponse>) {
+export default async function SignInController(req: Request, res: Response) {
     LoggerAPIContext.add(res, { body: req.body })
 
     const result = await SignInValidation.safeParseAsync(req.body)
@@ -74,7 +72,5 @@ export default async function SignInController(req: Request, res: Response<SignI
 
     LoggerAPIContext.add(res, { emailSentTo: email, emailSent: sent })
 
-    return res.status(201).send({
-        code: SuccessCodeEnum.SIGN_IN_CODE_SENT
-    })
+    return res.sendStatus(201)
 }

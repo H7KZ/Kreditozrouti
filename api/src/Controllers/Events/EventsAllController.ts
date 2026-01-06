@@ -1,11 +1,13 @@
 import { mysql } from '@api/clients'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
+import { EventWithRegistration } from '@api/Controllers/Events/types/EventResponse'
 import EventsAllResponse from '@api/Controllers/Events/types/EventsAllResponse'
-import { EventCategoryTable, EventTable } from '@api/Database/types'
+import { EventCategoryTable, EventTable, UsersEvents } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
 import EventsAllValidation from '@api/Validations/EventsAllValidation'
 import { Request, Response } from 'express'
+import { sql } from 'kysely'
 
 /**
  * Retrieves a list of events based on optional search criteria.
@@ -25,6 +27,8 @@ export default async function EventsAllController(req: Request, res: Response<Ev
     if (!result.success) {
         throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
     }
+
+    const userId = (req as { user?: { id: string } }).user?.id
 
     const data = result.data
     let eventsQuery = mysql.selectFrom(EventTable._table).selectAll()
@@ -49,11 +53,35 @@ export default async function EventsAllController(req: Request, res: Response<Ev
         )
     }
 
-    const events = await eventsQuery.orderBy(`${EventTable._table}.datetime`, 'asc').execute()
+    eventsQuery = eventsQuery.select(eb => [
+        // Count registered users for each event
+        eb
+            .selectFrom(UsersEvents._table)
+            .whereRef(`${UsersEvents._table}.event_id`, '=', `${EventTable._table}.id`)
+            .select(eb.fn.countAll().as('count'))
+            .as('registered_users_count'),
 
-    LoggerAPIContext.add(res, { events_ids: events.map(event => event.id), events_count: events.length })
+        // Check if the current user is registered for each event
+        userId
+            ? eb
+                  .selectFrom(UsersEvents._table)
+                  .where('user_id', '=', res.locals.user.id)
+                  .whereRef('event_id', '=', `${EventTable._table}.id`)
+                  .select(sql<number>`1`.as('exists'))
+                  .as('user_registered')
+            : sql<number>`0`.as('user_registered')
+    ])
+
+    const eventsWithRegistration = await eventsQuery.orderBy(`${EventTable._table}.datetime`, 'asc').execute()
+
+    LoggerAPIContext.add(res, {
+        events_ids: eventsWithRegistration.map(event => event.id),
+        events_count: eventsWithRegistration.length
+    })
 
     return res.status(200).send({
-        events: events
+        // We know that eventsWithRegistration is in the correct format
+        // No need to transform it further
+        events: eventsWithRegistration as unknown as EventWithRegistration[]
     })
 }

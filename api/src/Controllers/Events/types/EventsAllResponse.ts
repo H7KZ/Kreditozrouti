@@ -1,4 +1,4 @@
-import { Event } from '@api/Database/types'
+import { EventWithRegistration } from './EventResponse'
 
 /**
  * Response payload containing a list of events.
@@ -7,5 +7,5 @@ import { Event } from '@api/Database/types'
  */
 export default interface EventsAllResponse {
     /** List of events matching the search criteria. */
-    events: Event[]
+    events: EventWithRegistration[]
 }
