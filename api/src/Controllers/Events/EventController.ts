@@ -1,6 +1,6 @@
 import { mysql } from '@api/clients'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
-import EventResponse from '@api/Controllers/Events/types/EventResponse'
+import EventResponse, { EventWithRegistration } from '@api/Controllers/Events/types/EventResponse'
 import { EventTable, UsersEvents } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
@@ -14,49 +14,44 @@ import { sql } from 'kysely'
  * @param res - Express response object.
  * @throws {Exception} 404 - If the event is not found.
  */
-
 export default async function EventController(req: Request, res: Response<EventResponse>) {
-    const { id } = req.params
+    const { id: eventId } = req.params
 
-    LoggerAPIContext.add(res, { eventId: id })
+    LoggerAPIContext.add(res, { eventId })
 
     const userId = (req as { user?: { id: string } }).user?.id
 
-    const eventData = await mysql
+    const eventWithRegistration = await mysql
         .selectFrom(EventTable._table)
         .selectAll()
-        .where('id', '=', id)
-        .select((eb) => [
-
-
-            // Počet přihlášených uživatelů
-            eb.selectFrom(UsersEvents._table)
+        .where('id', '=', eventId)
+        .select(eb => [
+            // Count registered users
+            eb
+                .selectFrom(UsersEvents._table)
                 .whereRef(`${UsersEvents._table}.event_id`, '=', `${EventTable._table}.id`)
                 .select(eb.fn.countAll().as('count'))
-                .as('registered_count'),
+                .as('registered_users_count'),
 
-            // Je přihlášen aktuální uživatel?
+            // Is current user registered
             userId
-                ? eb.selectFrom(UsersEvents._table)
-                    .where('user_id', '=', userId)
-                    .whereRef('event_id', '=', `${EventTable._table}.id`)
-                    .select(sql<number>`1`.as('exists'))
-                    .as('is_registered')
-                : sql<number>`0`.as('is_registered')
+                ? eb
+                      .selectFrom(UsersEvents._table)
+                      .where('user_id', '=', res.locals.user.id)
+                      .whereRef('event_id', '=', `${EventTable._table}.id`)
+                      .select(sql<number>`1`.as('exists'))
+                      .as('user_registered')
+                : sql<number>`0`.as('user_registered')
         ])
         .executeTakeFirst()
 
-    if (!eventData) {
+    if (!eventWithRegistration) {
         throw new Exception(404, ErrorTypeEnum.VALIDATION, ErrorCodeEnum.RESOURCE_NOT_FOUND, 'Event not found')
     }
 
-    const { registered_count, is_registered, ...rest } = eventData
-
     return res.status(200).send({
-        event: {
-            ...rest,
-            registered_count: Number(registered_count),
-            is_registered: Boolean(is_registered)
-        }
+        // We know that eventWithRegistration is in the correct format
+        // No need to transform it further
+        event: eventWithRegistration as unknown as EventWithRegistration
     })
 }

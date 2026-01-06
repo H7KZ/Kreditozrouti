@@ -67,11 +67,10 @@ export type NewCategory = Insertable<CategoryTable>
 /**
  * Junction table for User-Event registrations.
  */
-
 export class UsersEvents {
     static readonly _table = '4fis_users_events' as const
 
-    user_id!: string
+    user_id!: number
     event_id!: string
     created_at!: ColumnType<Date, string | undefined, never>
 }

@@ -1,4 +1,4 @@
-import { EventWithRegistrationInfo } from './EventResponse'
+import { EventWithRegistration } from './EventResponse'
 
 /**
  * Response payload containing a list of events.
@@ -7,5 +7,5 @@ import { EventWithRegistrationInfo } from './EventResponse'
  */
 export default interface EventsAllResponse {
     /** List of events matching the search criteria. */
-    events: EventWithRegistrationInfo[]
+    events: EventWithRegistration[]
 }

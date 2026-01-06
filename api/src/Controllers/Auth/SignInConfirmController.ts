@@ -5,7 +5,6 @@ import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import SignInConfirmResponse from '@api/Controllers/Auth/types/SignInConfirmResponse'
 import { User, UserTable } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
-import { SuccessCodeEnum } from '@api/Enums/SuccessEnum'
 import Exception from '@api/Error/Exception'
 import JWTService from '@api/Services/JWTService'
 import SignInConfirmValidation from '@api/Validations/SignInConfirmValidation'
@@ -76,7 +75,6 @@ export default async function SignInConfirmController(req: Request, res: Respons
     await redis.setex(`auth:jwt:user:${user.id}`, Config.jwtExpirationSeconds, jwt)
 
     return res.status(201).send({
-        code: SuccessCodeEnum.SIGNED_IN,
         jwt: jwt
     })
 }

@@ -1,8 +1,7 @@
 import { StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types/insis_study_plans.type'
-import { CategoryTable, EventCategoryTable, EventTable } from './4fis_event.type'
+import { CategoryTable, EventCategoryTable, EventTable, UsersEvents } from './4fis_event.type'
 import { CourseAssessmentMethodTable, CourseIdRedirectTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from './insis_course.type'
 import { UserTable } from './user.type'
-import { UsersEvents} from './4fis_event.type'
 
 export * from './user.type'
 export * from './4fis_event.type'

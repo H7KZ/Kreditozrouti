@@ -4,9 +4,9 @@ import { Event } from '@api/Database/types'
  * Extended Event type including computed fields for signups.
  * This combines the DB schema with dynamic runtime data.
  */
-export interface EventWithRegistrationInfo extends Event {
-    registered_count: number
-    is_registered: boolean
+export interface EventWithRegistration extends Event {
+    registered_users_count: number | null
+    user_registered: boolean
 }
 
 /**
@@ -16,5 +16,5 @@ export interface EventWithRegistrationInfo extends Event {
  */
 export default interface EventResponse {
     /** The detailed record of the requested event with signup info. */
-    event: EventWithRegistrationInfo
+    event: EventWithRegistration
 }

@@ -1,5 +1,6 @@
 import { mysql } from '@api/clients'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
+import { EventWithRegistration } from '@api/Controllers/Events/types/EventResponse'
 import EventsAllResponse from '@api/Controllers/Events/types/EventsAllResponse'
 import { EventCategoryTable, EventTable, UsersEvents } from '@api/Database/types'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
@@ -18,7 +19,6 @@ import { sql } from 'kysely'
  * @param res - Express response object.
  * @throws {Exception} 401 - If validation of search parameters fails.
  */
-
 export default async function EventsAllController(req: Request, res: Response<EventsAllResponse>) {
     LoggerAPIContext.add(res, { body: req.body })
 
@@ -32,7 +32,6 @@ export default async function EventsAllController(req: Request, res: Response<Ev
 
     const data = result.data
     let eventsQuery = mysql.selectFrom(EventTable._table).selectAll()
-
 
     if (data.title) {
         eventsQuery = eventsQuery.where(`${EventTable._table}.title`, 'like', `%${data.title}%`)
@@ -54,44 +53,35 @@ export default async function EventsAllController(req: Request, res: Response<Ev
         )
     }
 
-
-    eventsQuery = eventsQuery.select((eb) => [
-        // Počet přihlášených uživatelů
-        eb.selectFrom(UsersEvents._table)
+    eventsQuery = eventsQuery.select(eb => [
+        // Count registered users for each event
+        eb
+            .selectFrom(UsersEvents._table)
             .whereRef(`${UsersEvents._table}.event_id`, '=', `${EventTable._table}.id`)
             .select(eb.fn.countAll().as('count'))
-            .as('registered_count'),
+            .as('registered_users_count'),
 
-        // Je přihlášen aktuální uživatel?
+        // Check if the current user is registered for each event
         userId
-            ? eb.selectFrom(UsersEvents._table)
-                .where('user_id', '=', userId)
-                .whereRef('event_id', '=', `${EventTable._table}.id`)
-                .select(sql<number>`1`.as('exists'))
-                .as('is_registered')
-            : sql<number>`0`.as('is_registered')
+            ? eb
+                  .selectFrom(UsersEvents._table)
+                  .where('user_id', '=', res.locals.user.id)
+                  .whereRef('event_id', '=', `${EventTable._table}.id`)
+                  .select(sql<number>`1`.as('exists'))
+                  .as('user_registered')
+            : sql<number>`0`.as('user_registered')
     ])
 
-    const eventsRaw = await eventsQuery.orderBy(`${EventTable._table}.datetime`, 'asc').execute()
+    const eventsWithRegistration = await eventsQuery.orderBy(`${EventTable._table}.datetime`, 'asc').execute()
 
-    type DatabaseResult = typeof eventsRaw[0] & {
-        registered_count: number | string | bigint
-        is_registered: number
-    }
-
-    const events = eventsRaw.map(event => {
-        const typedEvent = event as unknown as DatabaseResult
-        const { registered_count, is_registered, ...rest } = typedEvent
-        return {
-            ...rest,
-            registered_count: Number(registered_count),
-            is_registered: Boolean(is_registered)
-        }
+    LoggerAPIContext.add(res, {
+        events_ids: eventsWithRegistration.map(event => event.id),
+        events_count: eventsWithRegistration.length
     })
 
-    LoggerAPIContext.add(res, { events_ids: events.map(event => event.id), events_count: events.length })
-
     return res.status(200).send({
-        events: events
+        // We know that eventsWithRegistration is in the correct format
+        // No need to transform it further
+        events: eventsWithRegistration as unknown as EventWithRegistration[]
     })
 }

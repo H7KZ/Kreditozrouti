@@ -1,7 +1,7 @@
-import EventController from '@api/Controllers/Events/EventController';
+import EventController from '@api/Controllers/Events/EventController'
+import EventRegisterUserController from '@api/Controllers/Events/EventRegisterUserController'
 import EventsAllController from '@api/Controllers/Events/EventsAllController'
-import EventRegisterController from '@api/Controllers/Events/EventRegisterController'
-import EventUnregisterController from '@api/Controllers/Events/EventUnregisterController';
+import EventUnregisterUserController from '@api/Controllers/Events/EventUnregisterUserController'
 import AuthMiddleware from '@api/Middlewares/AuthMiddleware'
 import LoggerMiddleware from '@api/Middlewares/LoggerMiddleware'
 import { Router } from 'express'
@@ -19,7 +19,7 @@ EventsRoutes.get('/all', LoggerMiddleware, AuthMiddleware, EventsAllController)
 
 EventsRoutes.get('/:id', LoggerMiddleware, AuthMiddleware, EventController)
 
-EventsRoutes.post('/:id/register', LoggerMiddleware, AuthMiddleware, EventRegisterController)
-EventsRoutes.delete('/:id/unregister', LoggerMiddleware, AuthMiddleware, EventUnregisterController)
+EventsRoutes.post('/:id/register', LoggerMiddleware, AuthMiddleware, EventRegisterUserController)
+EventsRoutes.delete('/:id/register', LoggerMiddleware, AuthMiddleware, EventUnregisterUserController)
 
 export default EventsRoutes
