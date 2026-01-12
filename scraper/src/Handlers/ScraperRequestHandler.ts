@@ -1,10 +1,5 @@
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
-import ScraperRequest4FISArchiveEventsJob from '@scraper/Jobs/ScraperRequest4FISArchiveEventsJob'
-import ScraperRequest4FISEventJob from '@scraper/Jobs/ScraperRequest4FISEventJob'
-import ScraperRequest4FISEventsJob from '@scraper/Jobs/ScraperRequest4FISEventsJob'
-import ScraperRequest4FISFlickrEventJob from '@scraper/Jobs/ScraperRequest4FISFlickrEventJob'
-import ScraperRequest4FISFlickrEventsJob from '@scraper/Jobs/ScraperRequest4FISFlickrEventsJob'
 import ScraperRequestInSISCatalogJob from '@scraper/Jobs/ScraperRequestInSISCatalogJob'
 import ScraperRequestInSISCourseJob from '@scraper/Jobs/ScraperRequestInSISCourseJob'
 import ScraperRequestInSISStudyPlanJob from '@scraper/Jobs/ScraperRequestInSISStudyPlanJob'
@@ -35,21 +30,6 @@ export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>)
     await LoggerJobContext.run(async () => {
         try {
             switch (type) {
-                case '4FIS:Events':
-                    await ScraperRequest4FISEventsJob(job.data)
-                    break
-                case '4FIS:Event':
-                    await ScraperRequest4FISEventJob(job.data)
-                    break
-                case '4FIS:Archive:Events':
-                    await ScraperRequest4FISArchiveEventsJob(job.data)
-                    break
-                case '4FIS:Flickr:Events':
-                    await ScraperRequest4FISFlickrEventsJob(job.data)
-                    break
-                case '4FIS:Flickr:Event':
-                    await ScraperRequest4FISFlickrEventJob(job.data)
-                    break
                 case 'InSIS:Catalog':
                     await ScraperRequestInSISCatalogJob(job.data)
                     break

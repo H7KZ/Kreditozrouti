@@ -9,7 +9,7 @@ export default function LoggerMiddleware(req: Request, res: Response, next: Next
         path: req.path,
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV ?? 'local',
-        service: 'diar-4fis-api'
+        service: 'kreditozrouti-api'
     }
 
     res.locals.wideEvent = wideEvent

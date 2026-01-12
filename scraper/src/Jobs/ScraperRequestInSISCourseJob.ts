@@ -1,53 +1,47 @@
-import scraper from '@scraper/bullmq'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import ScraperInSISCourse from '@scraper/Interfaces/ScraperInSISCourse'
 import { ScraperInSISCourseRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
-import ExtractInSISService from '@scraper/Services/Extractors/ExtractInSISService'
-import Axios from 'axios'
+import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
+import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
+import { InSISQueueService } from '@scraper/Services/InSISQueueService'
+import { withCzechLang } from '@scraper/Utils/HTTPUtils'
 
+/**
+ * Scrapes a single InSIS course syllabus page.
+ * Extracts course metadata, syllabus content, assessments, timetable,
+ * and associated study plan references found on the page.
+ */
 export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCourseRequestJob): Promise<ScraperInSISCourse | null> {
-    const courseId = ExtractInSISService.extractCourseIdFromURL(data.url)
+    const courseId = ExtractInSISCourseService.extractIdFromUrl(data.url)
+    const client = createInSISClient('course')
 
     LoggerJobContext.add({
         course_id: courseId,
-        faculty: data.meta.faculty.name,
         url: data.url
     })
 
-    try {
-        const response = await Axios.get<string>(`${data.url};lang=cz`, {
-            headers: ExtractInSISService.baseRequestHeaders()
-        })
+    const result = await client.get<string>(withCzechLang(data.url))
 
-        const course = ExtractInSISService.extractCourse(response.data, data.url, data.meta.faculty.name)
+    if (!result.success) {
+        return null
+    }
+
+    try {
+        const course = ExtractInSISCourseService.extract(result.data, data.url)
 
         if (!course) {
-            LoggerJobContext.add({
-                error: 'Course extraction returned null'
-            })
-
+            LoggerJobContext.add({ error: 'Course extraction returned null' })
             return null
         }
 
-        await scraper.queue.response.add('InSIS Course Response', { type: 'InSIS:Course', course })
+        await InSISQueueService.addCourseResponse(course)
 
         return course
     } catch (error) {
-        if (Axios.isAxiosError(error)) {
-            LoggerJobContext.add({
-                error: 'Axios Error',
-                course_status: error.response?.status,
-                statusText: error.response?.statusText,
-                url: data.url
-            })
-        } else {
-            LoggerJobContext.add({
-                error: 'Unknown Error',
-                message: (error as Error).message,
-                url: data.url
-            })
-        }
-
+        LoggerJobContext.add({
+            error: 'Extraction error',
+            message: (error as Error).message
+        })
         return null
     }
 }

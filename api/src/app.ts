@@ -3,9 +3,7 @@ import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Handlers/ErrorHandler'
 import { Paths } from '@api/paths'
-import AuthRoutes from '@api/Routes/AuthRoutes'
 import CommandsRoutes from '@api/Routes/CommandsRoutes'
-import EventsRoutes from '@api/Routes/EventsRoutes'
 import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
 import compression from 'compression'
 import { RedisStore } from 'connect-redis'
@@ -66,9 +64,7 @@ app.use(responseTime())
 app.use('/health', (req, res) => res.status(200).send('OK'))
 
 // Routes
-app.use('/kreditozrouti', KreditozroutiRoutes)
-app.use('/auth', AuthRoutes)
-app.use('/events', EventsRoutes)
+app.use('/', KreditozroutiRoutes)
 app.use('/commands', CommandsRoutes)
 
 // Error Handling

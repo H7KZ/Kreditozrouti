@@ -78,34 +78,4 @@ export default class DateService {
             time: time.isValid() ? time.format('HH:mm') : null
         }
     }
-
-    /**
-     * Parses Flickr specific date strings into a Date object.
-     * Handles ranges (e.g., "2024/06/21-24") and partial dates.
-     */
-    static extractDateFromFlickrString(text: string): Date | null {
-        try {
-            if (!text) return null
-            let cleanText = text.trim()
-
-            // Handle date ranges
-            if (cleanText.includes('-') && cleanText.length > 10) {
-                const parts = cleanText.split('-')
-                if (parts[0].length >= 8) cleanText = parts[0]
-            }
-
-            cleanText = cleanText.replace(/[./]/g, '-')
-
-            if (/^\d{4}$/.test(cleanText)) {
-                return moment(`${cleanText}-01-01`).utcOffset('Europe/Prague').toDate()
-            }
-            if (/^\d{4}-\d{2}$/.test(cleanText)) {
-                return moment(`${cleanText}-01`).utcOffset('Europe/Prague').toDate()
-            }
-
-            return this.extractDateTimeFromString(cleanText).date
-        } catch {
-            return null
-        }
-    }
 }

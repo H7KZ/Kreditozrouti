@@ -1,4 +1,5 @@
-import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
+import { ColumnType, Generated, Insertable, Selectable } from 'kysely';
+
 
 /**
  * Database schema for InSIS Courses.
@@ -7,6 +8,8 @@ export class CourseTable {
     static readonly _table = 'insis_courses' as const
 
     id!: number
+
+    faculty_id!: string | null
 
     created_at!: ColumnType<Date, string | undefined, never>
     updated_at!: ColumnType<Date, string | undefined, string | undefined>
@@ -20,7 +23,6 @@ export class CourseTable {
     title!: string | null
     czech_title!: string | null
     ects!: number | null
-    faculty!: string | null
 
     /** Delivery format (e.g., in-person, remote). */
     mode_of_delivery!: string | null
@@ -60,24 +62,6 @@ export class CourseTable {
 
 export type Course = Selectable<CourseTable>
 export type NewCourse = Insertable<Omit<CourseTable, 'id' | 'created_at' | 'updated_at'>>
-
-// -------------------------------------------------------------------------
-
-/**
- * Handles course ID changes or merges to ensure link continuity.
- */
-export class CourseIdRedirectTable {
-    static readonly _table = 'insis_courses_id_redirects' as const
-
-    /** Reference to the current valid course ID. */
-    course_id!: number
-
-    /** The legacy or alternative ID being redirected. */
-    old_id!: number
-}
-
-export type CourseIdRedirect = Selectable<CourseIdRedirectTable>
-export type NewCourseIdRedirect = Insertable<Omit<CourseIdRedirectTable, 'id'>>
 
 // -------------------------------------------------------------------------
 

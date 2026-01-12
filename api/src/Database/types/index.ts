@@ -1,26 +1,18 @@
-import { StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types/insis_study_plans.type'
-import { CategoryTable, EventCategoryTable, EventTable, UsersEvents } from './4fis_event.type'
-import { CourseAssessmentMethodTable, CourseIdRedirectTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from './insis_course.type'
-import { UserTable } from './user.type'
+import { StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types/insis_study_plan.type';
+import { CourseAssessmentMethodTable, CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable } from './insis_course.type'
+import { FacultyTable } from '@api/Database/types/insis_faculty.type'
 
-export * from './user.type'
-export * from './4fis_event.type'
 export * from './insis_course.type'
-export * from './insis_study_plans.type'
+export * from './insis_study_plan.type'
 
 type AllTableClasses =
-    | typeof UserTable
-    | typeof EventTable
-    | typeof EventCategoryTable
-    | typeof CategoryTable
     | typeof CourseTable
-    | typeof CourseIdRedirectTable
     | typeof CourseAssessmentMethodTable
     | typeof CourseTimetableUnitTable
     | typeof CourseTimetableSlotTable
     | typeof StudyPlanTable
     | typeof StudyPlanCourseTable
-    | typeof UsersEvents
+    | typeof FacultyTable
 
 /**
  * Master mapping of table names to Kysely table interfaces.

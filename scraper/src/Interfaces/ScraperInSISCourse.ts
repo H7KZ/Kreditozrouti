@@ -1,3 +1,8 @@
+import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
+import InSISSemester from '@scraper/Types/InSISSemester'
+import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
+import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
+
 /**
  * Detailed data structure representing a single scraped InSIS course.
  * Maps closely to the syllabus page structure in the university system.
@@ -24,8 +29,8 @@ export default interface ScraperInSISCourse {
     /** The number of ECTS credits awarded for completion. */
     ects: number | null
 
-    /** The name of the faculty offering the course. */
-    faculty: string | null
+    /** The faculty offering the course. */
+    faculty: ScraperInSISFaculty | null
 
     /** The format of instruction (e.g., 'Lecture', 'Seminar', 'Combined'). */
     mode_of_delivery: string | null
@@ -77,6 +82,9 @@ export default interface ScraperInSISCourse {
 
     /** List of scheduled teaching units/groups. */
     timetable: ScraperInSISCourseTimetableUnit[] | null
+
+    /** List of study plans that include this course. */
+    study_plans: ScraperInSISCourseStudyPlan[] | null
 }
 
 /**
@@ -131,4 +139,30 @@ export interface ScraperInSISCourseTimetableSlot {
 
     /** The physical room or location code. */
     location: string | null
+}
+
+/**
+ * Represents the structure of a single scraped InSIS Study Plan.
+ */
+export interface ScraperInSISCourseStudyPlan {
+    /** Plan code (e.g., "P-AIN"). */
+    ident: string | null
+
+    /** Faculty ident associated with this study plan. */
+    facultyIdent: string | null
+
+    /** The semester this plan applies to. */
+    semester: InSISSemester | null
+
+    /** Academic year (e.g., "2023/2024"). */
+    year: string | null
+
+    /** Mode of study (e.g., Full-time, Combined). */
+    mode_of_study: string | null
+
+    /** Group type of the course in the study plan. */
+    group: InSISStudyPlanCourseGroup
+
+    /** Category of the course in the study plan. */
+    category: InSISStudyPlanCourseCategory
 }

@@ -6,7 +6,7 @@ run-local-docker:
 	docker compose -f docker-compose.local.yml up -d
 
 clear-redis:
-	docker exec diar-4fis-redis redis-cli FLUSHDB
+	docker exec kreditozrouti-redis redis-cli FLUSHDB
 
 install:
 	pnpm -r install && \
@@ -43,6 +43,6 @@ preview:
 	pnpm -r --parallel run preview
 
 build-docker-images:
-	docker build -t diar-4fis-api -f ./api/Dockerfile . && \
-	docker build -t diar-4fis-frontend -f ./frontend/Dockerfile . && \
-	docker build -t diar-4fis-scraper -f ./scraper/Dockerfile .
+	docker build -t kreditozrouti-api -f ./api/Dockerfile . && \
+	docker build -t kreditozrouti-frontend -f ./frontend/Dockerfile . && \
+	docker build -t kreditozrouti-scraper -f ./scraper/Dockerfile .

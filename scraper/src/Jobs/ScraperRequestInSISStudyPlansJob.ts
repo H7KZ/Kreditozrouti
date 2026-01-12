@@ -1,105 +1,98 @@
-import scraper from '@scraper/bullmq'
+import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import ScraperInSISStudyPlans from '@scraper/Interfaces/ScraperInSISStudyPlans'
 import { ScraperInSISStudyPlansRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
-import ExtractInSISService from '@scraper/Services/Extractors/ExtractInSISService'
-import UtilService from '@scraper/Services/UtilService'
-import Axios from 'axios'
+import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
+import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
+import { InSISQueueService } from '@scraper/Services/InSISQueueService'
+import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 
+const MaxDrillDepth = 8
+const ConcurrencyLimit = 10
+
+/**
+ * Scrapes the InSIS study plans hierarchy.
+ *
+ * Performs breadth-first traversal of the faculty → program → specialization hierarchy,
+ * collecting all study plan URLs. Optionally queues individual plan requests.
+ */
 export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSISStudyPlansRequestJob): Promise<ScraperInSISStudyPlans | null> {
-    const plans: ScraperInSISStudyPlans = { urls: [] }
+    const client = createInSISClient('study_plans')
 
-    try {
-        // Initial Fetch
-        const response = await Axios.get<string>('https://insis.vse.cz/katalog/plany.pl?lang=cz', {
-            headers: ExtractInSISService.baseRequestHeaders()
-        })
-        let currentLevelURLs = ExtractInSISService.extractStudyPlansFacultyURLs(response.data)
+    // Fetch initial faculty list
+    const initialResult = await client.get<string>(Config.insis.studyPlansUrl)
 
-        const allFinalPlanUrls = new Set<string>()
-        let depth = 0
-        const MAX_DRILL_DEPTH = 8
-        const CONCURRENCY_LIMIT = 10
-
-        LoggerJobContext.add({
-            current_level_urls_count: currentLevelURLs.length,
-            max_drill_depth: MAX_DRILL_DEPTH,
-            concurrency_limit: CONCURRENCY_LIMIT
-        })
-
-        while (currentLevelURLs.length > 0 && depth < MAX_DRILL_DEPTH) {
-            // Fetch level with concurrency
-            const responses = await UtilService.runWithConcurrency(currentLevelURLs, CONCURRENCY_LIMIT, async url => {
-                try {
-                    return await Axios.get<string>(url, { headers: ExtractInSISService.baseRequestHeaders() })
-                } catch {
-                    // Log and skip failed requests
-                }
-            })
-
-            const nextLevelURLs: string[] = []
-
-            for (const res of responses) {
-                if (!res?.data) continue
-
-                // Capture Leaves (Plans)
-                const foundPlans = ExtractInSISService.extractStudyPlanURLs(res.data)
-                foundPlans.forEach(url => allFinalPlanUrls.add(url))
-
-                const includesSemesterAlready = res.config.url?.includes('poc_obdobi=') ?? true
-
-                // Capture Branches (Navigation)
-                const navigations = ExtractInSISService.extractNavigationURLs(res.data, !includesSemesterAlready)
-                navigations.forEach(url => nextLevelURLs.push(url))
-            }
-
-            currentLevelURLs = [...new Set(nextLevelURLs)]
-            depth++
-        }
-
-        plans.urls = Array.from(allFinalPlanUrls)
-
-        LoggerJobContext.add({
-            total_plans_found: plans.urls.length,
-            drill_depth_reached: depth
-        })
-
-        await scraper.queue.response.add('InSIS Study Plans Response', { type: 'InSIS:StudyPlans', plans })
-
-        if (plans.urls.length && data.auto_queue_study_plans) {
-            LoggerJobContext.add({
-                auto_queue_study_plans: data.auto_queue_study_plans,
-                total_plans_to_queue: plans.urls.length
-            })
-
-            await UtilService.runWithConcurrency(plans.urls, 20, planUrl =>
-                scraper.queue.request.add(
-                    'InSIS Study Plan Request (Study Plans)',
-                    {
-                        type: 'InSIS:StudyPlan',
-                        url: planUrl,
-                        auto_queue_courses: data.auto_queue_courses
-                    },
-                    { deduplication: { id: `InSIS:StudyPlan:${ExtractInSISService.extractStudyPlanIdFromURL(planUrl)}` } }
-                )
-            )
-        }
-
-        return plans
-    } catch (error) {
-        if (Axios.isAxiosError(error)) {
-            LoggerJobContext.add({
-                error_message: error.message,
-                error_code: error.code,
-                error_status: error.response?.status,
-                error_status_text: error.response?.statusText
-            })
-        } else {
-            LoggerJobContext.add({
-                error_message: (error as Error).message
-            })
-        }
-
+    if (!initialResult.success) {
         return null
     }
+
+    const facultyUrls = ExtractInSISStudyPlanService.extractFacultyUrls(initialResult.data)
+
+    LoggerJobContext.add({
+        faculty_urls_count: facultyUrls.length,
+        max_drill_depth: MaxDrillDepth,
+        concurrency_limit: ConcurrencyLimit
+    })
+
+    // Traverse hierarchy to collect all plan URLs
+    const planUrls = await traverseHierarchy(client, facultyUrls)
+
+    const plans: ScraperInSISStudyPlans = { urls: planUrls }
+
+    LoggerJobContext.add({
+        total_plans_found: plans.urls.length
+    })
+
+    await InSISQueueService.addStudyPlansResponse(plans)
+
+    // Queue individual plan requests if enabled
+    if (plans.urls.length && data.auto_queue_study_plans) {
+        LoggerJobContext.add({
+            auto_queue_study_plans: true,
+            total_plans_to_queue: plans.urls.length
+        })
+
+        await InSISQueueService.queueStudyPlanRequests(plans.urls, url => ExtractInSISStudyPlanService.extractIdFromUrl(url))
+    }
+
+    return plans
+}
+
+/**
+ * Breadth-first traversal of the study plan hierarchy.
+ * Returns all discovered final plan URLs.
+ */
+async function traverseHierarchy(client: ReturnType<typeof createInSISClient>, initialUrls: string[]): Promise<string[]> {
+    const allPlanUrls = new Set<string>()
+    let currentLevelUrls = initialUrls
+    let depth = 0
+
+    while (currentLevelUrls.length > 0 && depth < MaxDrillDepth) {
+        const responses = await runWithConcurrency(currentLevelUrls, ConcurrencyLimit, url => client.getSilent<string>(url))
+
+        const nextLevelUrls = new Set<string>()
+
+        for (const response of responses) {
+            if (!response?.data) continue
+
+            // Collect final plan URLs (leaves)
+            const planUrls = ExtractInSISStudyPlanService.extractPlanUrls(response.data)
+            planUrls.forEach(url => allPlanUrls.add(url))
+
+            // Collect navigation URLs (branches)
+            const hasSemesterParam = response.config.url?.includes('poc_obdobi=') ?? true
+            const navUrls = ExtractInSISStudyPlanService.extractNavigationUrls(response.data, !hasSemesterParam)
+            navUrls.forEach(url => nextLevelUrls.add(url))
+        }
+
+        currentLevelUrls = [...nextLevelUrls]
+        depth++
+
+        LoggerJobContext.add({
+            [`depth_${depth}_urls`]: currentLevelUrls.length,
+            [`depth_${depth}_plans`]: allPlanUrls.size
+        })
+    }
+
+    return [...allPlanUrls]
 }
