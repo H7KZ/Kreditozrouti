@@ -213,7 +213,7 @@ export default class InSISService {
 			.leftJoin('insis_courses_timetable_units as u', 'c.id', 'u.course_id')
 			.leftJoin('insis_courses_timetable_slots as s', 'u.id', 's.timetable_unit_id')
 
-		const toArray = (val: string | string[]) => (Array.isArray(val) ? val : [val])
+		const toArray = <T>(val: T | T[]) => (Array.isArray(val) ? val : [val])
 
 		if (filters.study_plan_id && ignore !== 'study_plan_id') {
 			query = query.innerJoin('insis_study_plans_courses as spc', 'c.id', 'spc.course_id').where('spc.study_plan_id', '=', filters.study_plan_id)
@@ -221,7 +221,12 @@ export default class InSISService {
 
 		if (filters.semester && ignore !== 'semester') {
 			const vals = toArray(filters.semester)
-			if (vals.length) query = query.where('c.semester', 'in', vals)
+			if (vals.length) query = query.where('c.semester', 'in', vals as InSISSemester[])
+		}
+
+		if (filters.year && ignore !== 'year') {
+			const vals = toArray(filters.year)
+			if (vals.length) query = query.where('c.year', 'in', vals)
 		}
 
 		if (filters.ident && ignore !== 'ident') {
@@ -279,7 +284,7 @@ export default class InSISService {
 	private static getStudyPlanBaseQuery(filters: StudyPlansFilter, ignore?: keyof StudyPlansFilter) {
 		let query = mysql.selectFrom('insis_study_plans as sp')
 
-		const toArray = (val: string | string[]) => (Array.isArray(val) ? val : [val])
+		const toArray = <T>(val: T | T[]) => (Array.isArray(val) ? val : [val])
 
 		if (filters.ident && ignore !== 'ident') {
 			const vals = toArray(filters.ident)
@@ -298,6 +303,11 @@ export default class InSISService {
 		if (filters.semester && ignore !== 'semester') {
 			const vals = toArray(filters.semester)
 			if (vals.length) query = query.where('sp.semester', 'in', vals as InSISSemester[])
+		}
+
+		if (filters.year && ignore !== 'year') {
+			const vals = toArray(filters.year)
+			if (vals.length) query = query.where('sp.year', 'in', vals)
 		}
 
 		if (filters.level && ignore !== 'level') {

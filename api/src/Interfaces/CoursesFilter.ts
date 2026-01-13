@@ -2,8 +2,11 @@
  * Filter criteria for querying Courses.
  */
 export default interface CoursesFilter {
-	/** Semester string (e.g., "ZS 2025/2026"). */
+	/** Semester string (e.g., "ZS"). */
 	semester?: string | string[]
+
+	/** Academic year (e.g., 2025). */
+	year?: number | number[]
 
 	/** Course identifier code (e.g., "4IT"). */
 	ident?: string | string[]

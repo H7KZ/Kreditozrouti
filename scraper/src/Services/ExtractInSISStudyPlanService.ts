@@ -221,7 +221,7 @@ export default class ExtractInSISStudyPlanService {
     /**
      * Extracts Semester (ZS/LS) and Year (e.g., 2023/2024).
      */
-    private static extractSemesterAndYear($: CheerioAPI): { semester: InSISSemester | null; year: string | null } {
+    private static extractSemesterAndYear($: CheerioAPI): { semester: InSISSemester | null; year: number | null } {
         const periodValue = getRowValueCaseInsensitive($, 'Počáteční období:')
         if (!periodValue) return { semester: null, year: null }
 
@@ -285,16 +285,38 @@ export default class ExtractInSISStudyPlanService {
 
     private static extractIdentAndTitle($: CheerioAPI): { ident: string | null; title: string | null } {
         const rawTitle =
-            getRowValueCaseInsensitive($, 'Program:')?.trim() ?? getRowValueCaseInsensitive($, 'Specializace:')?.trim() ?? cleanText($('h2').first().text())
+            getRowValueCaseInsensitive($, 'Program:')?.trim() ??
+            getRowValueCaseInsensitive($, 'Specializace:')?.trim() ??
+            cleanText($('ol.breadcrumb').first().text())
 
+        if (!rawTitle) return { ident: null, title: null }
+
+        // Split by any whitespace to handle tabs or non-breaking spaces
+        const parts = rawTitle.split(/\s+/)
         let ident: string | null = null
-        const title: string | null = serializeValue(rawTitle)
 
-        if (rawTitle) {
-            const parts = rawTitle.split(' ')
+        // Validates the ident format:
+        // ^[A-Z0-9]        -> Must start with an uppercase letter or number (no hyphens at start)
+        // [A-Z0-9-]{0,19}  -> Followed by up to 19 alphanumerics or hyphens
+        // $                -> End of string
+        // Matches: B-AIN1, B-IMES, ED, EO, N-EO1, DAB, 4DS, D-EOVE
+        // Max length: 20 chars
+        const identRegex = /^[A-Z0-9][A-Z0-9-]{0,19}$/
+        const candidates = parts.filter(part => identRegex.test(part))
 
-            if (parts.length > 0 && /^[A-Z0-9-]+$/.test(parts[0])) ident = parts[0]
+        if (candidates.length > 0) {
+            // Sort candidates: Most dashes first.
+            // If tied, reverse sort preserves original order (last appearing in string wins).
+            candidates.reverse().sort((a, b) => {
+                const countA = (a.match(/-/g) ?? []).length
+                const countB = (b.match(/-/g) ?? []).length
+                return countB - countA
+            })
+
+            ident = candidates[0]
         }
+
+        const title: string | null = ident ? serializeValue(rawTitle.split(ident)[1]) : serializeValue(rawTitle)
 
         return { ident, title }
     }

@@ -48,6 +48,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		level: course.level,
 		year_of_study: course.year_of_study,
 		semester: course.semester,
+		year: course.year,
 		lecturers: course.lecturers?.join('|') ?? null,
 		prerequisites: course.prerequisites,
 		recommended_programmes: course.recommended_programmes,
@@ -74,15 +75,6 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		timetable_unit_count: course.timetable?.length ?? 0,
 		study_plan_link_count: course.study_plans?.length ?? 0
 	})
-}
-
-/**
- * Upsert Faculty helper.
- */
-async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | null> {
-	if (!faculty.ident) return null
-	await mysql.insertInto(FacultyTable._table).values({ id: faculty.ident, title: faculty.title }).onDuplicateKeyUpdate({ title: faculty.title }).execute()
-	return faculty.ident
 }
 
 /**
@@ -244,6 +236,25 @@ async function syncStudyPlansFromCourse(courseId: number, courseIdent: string, p
 				.execute()
 		}
 	}
+}
+
+/**
+ * Helper to Upsert Faculty and return its ID.
+ */
+async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | null> {
+	if (!faculty.ident) return null
+
+	let query = mysql.insertInto(FacultyTable._table).values({
+		id: faculty.ident,
+		title: faculty.title
+	})
+
+	if (faculty.title) query = query.onDuplicateKeyUpdate({ title: faculty.title })
+	else query = query.onDuplicateKeyUpdate({ id: faculty.ident })
+
+	await query.execute()
+
+	return faculty.ident
 }
 
 function timeToMinutes(time: string | null): number | null {

@@ -26,7 +26,7 @@ providers:
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: diar.4fis@gmail.com
+      email: kreditozrouti@gmail.com
       storage: /certs/acme.json
       caServer: https://acme-v02.api.letsencrypt.org/directory # production
       # caServer: https://acme-staging-v02.api.letsencrypt.org/directory # staging

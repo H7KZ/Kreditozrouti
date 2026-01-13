@@ -4,7 +4,7 @@ import { StudyPlan } from '@api/Database/types'
  * Represents a single facet category value and its occurrence count.
  */
 interface FacetItem {
-	value: string | null
+	value: string | number | null
 	count: number
 }
 

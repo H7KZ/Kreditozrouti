@@ -8,11 +8,10 @@ import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
  * Provides type-safe wrappers around BullMQ operations.
  */
 export class InSISQueueService {
-    static async addCatalogResponse(faculty: { id: number; name: string }, period: { id: number; name: string }, urls: string[]): Promise<void> {
-        await scraper.queue.response.add(`InSIS Catalog Response ${faculty.name} ${period.name}`, {
+    static async addCatalogResponse(urls: string[]): Promise<void> {
+        await scraper.queue.response.add(`InSIS Catalog Response`, {
             type: 'InSIS:Catalog',
-            catalog: { urls },
-            meta: { faculty, period }
+            catalog: { urls }
         })
     }
 
@@ -37,20 +36,13 @@ export class InSISQueueService {
         })
     }
 
-    static async queueCourseRequests(
-        courses: { url: string; courseId: number | null }[],
-        meta: {
-            faculty: { id: number | null; name: string | null }
-            period: { id: number | null; name: string | null }
-        }
-    ): Promise<void> {
+    static async queueCourseRequests(courses: { url: string; courseId: number | null }[]): Promise<void> {
         await scraper.queue.request.addBulk(
             courses.map(({ url, courseId }) => ({
                 name: 'InSIS Course Request (Catalog)',
                 data: {
                     type: 'InSIS:Course',
-                    url,
-                    meta
+                    url
                 },
                 opts: {
                     deduplication: { id: `InSIS:Course:${courseId}` }

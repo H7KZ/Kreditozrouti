@@ -3,6 +3,7 @@ import RunInSISCourseScraperController from '@api/Controllers/Commands/RunInSISC
 import RunInSISStudyPlanScraperController from '@api/Controllers/Commands/RunInSISStudyPlanScraperController'
 import RunInSISStudyPlansScraperController from '@api/Controllers/Commands/RunInSISStudyPlansScraperController'
 import CommandMiddleware from '@api/Middlewares/CommandMiddleware'
+import { ParserJSONMiddleware } from '@api/Middlewares/ParserMiddleware'
 import { Router } from 'express'
 
 /**
@@ -14,9 +15,9 @@ import { Router } from 'express'
 const CommandsRoutes = Router()
 
 CommandsRoutes.post('/insis/catalog', CommandMiddleware, RunInSISCatalogScraperController)
-CommandsRoutes.post('/insis/course', CommandMiddleware, RunInSISCourseScraperController)
+CommandsRoutes.post('/insis/course', ParserJSONMiddleware, CommandMiddleware, RunInSISCourseScraperController)
 
 CommandsRoutes.post('/insis/studyplans', CommandMiddleware, RunInSISStudyPlansScraperController)
-CommandsRoutes.post('/insis/studyplan', CommandMiddleware, RunInSISStudyPlanScraperController)
+CommandsRoutes.post('/insis/studyplan', ParserJSONMiddleware, CommandMiddleware, RunInSISStudyPlanScraperController)
 
 export default CommandsRoutes

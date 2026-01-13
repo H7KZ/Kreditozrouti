@@ -7,7 +7,8 @@ import ScraperInSISCourse, {
 import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import MarkdownService from '@scraper/Services/MarkdownService'
-import { cleanText, getRowValue, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
+import InSISSemester from '@scraper/Types/InSISSemester'
+import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
 import * as cheerio from 'cheerio'
 import type { CheerioAPI } from 'cheerio'
@@ -21,7 +22,7 @@ export default class ExtractInSISCourseService {
      * Extracts course ID from a syllabus URL.
      */
     static extractIdFromUrl(url: string): number | null {
-        const match = /[?&]predmet=(\d+)/.exec(url)
+        const match = /[?&;]predmet=(\d+)/.exec(url)
         return match ? parseInt(match[1], 10) : null
     }
 
@@ -43,6 +44,7 @@ export default class ExtractInSISCourseService {
 
         const id = this.resolveId($, url)
         const basicInfo = this.extractBasicInfo($)
+        const semesterInfo = this.extractSemesterAndYear($)
         const faculty = this.extractFaculty($)
         const levelInfo = this.extractLevelAndYear($)
         const lecturers = this.extractLecturers($)
@@ -56,6 +58,7 @@ export default class ExtractInSISCourseService {
             url,
             url_id: this.extractIdFromUrl(url),
             ...basicInfo,
+            ...semesterInfo,
             faculty,
             ...levelInfo,
             lecturers: lecturers.length > 0 ? lecturers : null,
@@ -77,17 +80,17 @@ export default class ExtractInSISCourseService {
     }
 
     private static extractBasicInfo($: CheerioAPI) {
-        const ident = getRowValue($, 'Kód předmětu:')
-        const title = getRowValue($, 'Název v jazyce výuky:') ?? getRowValue($, 'Název česky:')
-        const czech_title = getRowValue($, 'Název česky:')
+        const ident = getRowValueCaseInsensitive($, 'Kód předmětu:')
+        const title = getRowValueCaseInsensitive($, 'Název v jazyce výuky:') ?? getRowValueCaseInsensitive($, 'Název česky:')
+        const czech_title = getRowValueCaseInsensitive($, 'Název česky:')
 
-        const ectsRaw = getRowValue($, 'Počet přidělených ECTS kreditů:')
+        const ectsRaw = getRowValueCaseInsensitive($, 'Počet přidělených ECTS kreditů:')
         const ects = ectsRaw ? parseInt(ectsRaw.split(' ')[0], 10) : null
 
-        const mode_of_delivery = getRowValue($, 'Forma výuky kurzu:')?.trim().toLowerCase() ?? null
-        const mode_of_completion = getRowValue($, 'Forma ukončení kurzu:')?.trim().toLowerCase() ?? null
+        const mode_of_delivery = getRowValueCaseInsensitive($, 'Forma výuky kurzu:')?.trim().toLowerCase() ?? null
+        const mode_of_completion = getRowValueCaseInsensitive($, 'Forma ukončení kurzu:')?.trim().toLowerCase() ?? null
 
-        const languagesRaw = getRowValue($, 'Jazyk výuky:')?.trim().toLowerCase() ?? null
+        const languagesRaw = getRowValueCaseInsensitive($, 'Jazyk výuky:')?.trim().toLowerCase() ?? null
         const languages = languagesRaw
             ? languagesRaw
                   .split(', ')
@@ -95,9 +98,17 @@ export default class ExtractInSISCourseService {
                   .filter((l): l is string => l !== null)
             : null
 
-        const semester = getRowValue($, 'Semestr:')?.trim().toUpperCase() ?? null
+        return { ident, title, czech_title, ects, mode_of_delivery, mode_of_completion, languages }
+    }
 
-        return { ident, title, czech_title, ects, mode_of_delivery, mode_of_completion, languages, semester }
+    private static extractSemesterAndYear($: CheerioAPI): { semester: InSISSemester | null; year: number | null } {
+        const periodValue = getRowValueCaseInsensitive($, 'Semestr:')
+        if (!periodValue) return { semester: null, year: null }
+
+        return {
+            semester: extractSemester(periodValue),
+            year: extractYear(periodValue)
+        }
     }
 
     private static extractFaculty($: CheerioAPI): ScraperInSISFaculty {
@@ -114,7 +125,7 @@ export default class ExtractInSISCourseService {
     }
 
     private static extractLevelAndYear($: CheerioAPI) {
-        const levelYearRaw = getRowValue($, 'Doporučený typ a ročník studia:')?.trim().toLowerCase() ?? null
+        const levelYearRaw = getRowValueCaseInsensitive($, 'Doporučený typ a ročník studia:')?.trim().toLowerCase() ?? null
         let level: string | null = null
         let year_of_study: number | null = null
 
@@ -169,13 +180,14 @@ export default class ExtractInSISCourseService {
     }
 
     private static extractSyllabusContent($: CheerioAPI) {
-        const prerequisites = getRowValue($, 'Omezení pro zápis:')
-        const recommended_programmes = getRowValue($, 'Doporučené doplňky kurzu:')
-        const required_work_experience = getRowValue($, 'Vyžadovaná praxe:')
+        const prerequisites = getRowValueCaseInsensitive($, 'Omezení pro zápis:')
+        const recommended_programmes = getRowValueCaseInsensitive($, 'Doporučené doplňky kurzu:')
+        const required_work_experience = getRowValueCaseInsensitive($, 'Vyžadovaná praxe:')
         const aims_of_the_course = getSectionContent($, 'Zaměření předmětu:')
         const learning_outcomes = getSectionContent($, 'Výsledky učení:')
         const course_contents = getSectionContent($, 'Obsah předmětu:')
-        const special_requirements = getSectionContent($, 'Zvláštní podmínky a podrobnosti:') ?? getRowValue($, 'Zvláštní podmínky a podrobnosti:')
+        const special_requirements =
+            getSectionContent($, 'Zvláštní podmínky a podrobnosti:') ?? getRowValueCaseInsensitive($, 'Zvláštní podmínky a podrobnosti:')
 
         // Literature extraction
         let literature: string | null = null

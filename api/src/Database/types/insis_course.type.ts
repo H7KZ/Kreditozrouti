@@ -1,3 +1,4 @@
+import InSISSemester from '@scraper/Types/InSISSemester'
 import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 
 /**
@@ -39,7 +40,9 @@ export class CourseTable {
 	year_of_study!: number | null
 
 	/** Teaching semester (Winter/Summer). */
-	semester!: string | null
+	semester!: InSISSemester | null
+
+	year!: number | null
 
 	lecturers!: string | null
 	prerequisites!: string | null

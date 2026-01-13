@@ -38,20 +38,6 @@ export function normalizeUrl(href: string): string {
 }
 
 /**
- * Extracts the text value from a table row where the first cell contains the label.
- */
-export function getRowValue($: CheerioAPI, targetLabel: string): string | null {
-    const cleanTarget = cleanText(targetLabel)
-    const labelCell = $('td')
-        .filter((_, el) => cleanText($(el).text()).includes(cleanTarget))
-        .first()
-
-    if (labelCell.length && labelCell.next('td').length) return serializeValue(cleanText(labelCell.next('td').text()))
-
-    return null
-}
-
-/**
  * Extracts the text value using case-insensitive matching.
  * Useful for study plan parsing where label casing varies.
  */

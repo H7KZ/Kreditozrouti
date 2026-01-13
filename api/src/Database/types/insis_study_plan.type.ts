@@ -25,8 +25,8 @@ export class StudyPlanTable {
 	/** Associated semester for the study plan. */
 	semester!: InSISSemester | null
 
-	/** Semester validity (e.g., "2025/2026"). */
-	year!: string | null
+	/** Semester validity (e.g., "2025"). */
+	year!: number | null
 
 	level!: string | null
 	mode_of_study!: string | null
@@ -35,7 +35,6 @@ export class StudyPlanTable {
 
 export type StudyPlan = Selectable<StudyPlanTable>
 export type NewStudyPlan = Insertable<Omit<StudyPlanTable, 'id' | 'created_at' | 'updated_at'>>
-export type NewExplicitStudyPlan = Insertable<Omit<StudyPlanTable, 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
 

@@ -1,10 +1,19 @@
 import Config from '@scraper/Config/Config'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
+import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
 import * as cheerio from 'cheerio'
 
 export interface CatalogSearchOptions {
-    faculties: { id: number; name: string }[]
-    periods: { id: number; name: string }[]
+    faculties: {
+        id: number
+        name: string
+    }[]
+
+    periods: {
+        id: number
+        semester: string | null
+        year: number | null
+    }[]
 }
 
 /**
@@ -20,38 +29,35 @@ export default class ExtractInSISCatalogService {
         const $ = cheerio.load(html)
         const faculties: CatalogSearchOptions['faculties'] = []
         const periods: CatalogSearchOptions['periods'] = []
-        const minYear = new Date().getFullYear() - 1
 
         // Extract faculties
         $('td#fakulty input[name="fakulta"]').each((_, el) => {
             const id = $(el).val() as string
             const nextNode = el.nextSibling
-            const rawName = nextNode?.type === 'text' ? nextNode.data : $(el).parent().text()
-            const name = cleanText(rawName)
+            const rawFaculty = nextNode?.type === 'text' ? nextNode.data : $(el).parent().text()
+            const faculty = cleanText(rawFaculty)
 
-            if (id && name) {
+            if (id && faculty) {
                 faculties.push({
                     id: Number(id.trim()),
-                    name: name.toLowerCase()
+                    name: faculty.toLowerCase()
                 })
             }
         })
 
-        // Extract academic periods with year filtering
+        // Extract academic periods
         $('input[name="obdobi_fak"]').each((_, el) => {
             const id = $(el).val() as string
             const nextNode = el.nextSibling
-            const rowText = cleanText(nextNode?.type === 'text' ? nextNode.data : $(el).parent().text())
-            const yearMatch = /(\d{4})/.exec(rowText)
+            const rawPeriod = cleanText(nextNode?.type === 'text' ? nextNode.data : $(el).parent().text())
+            const period = cleanText(rawPeriod)
 
-            if (yearMatch && id && rowText) {
-                const startYear = parseInt(yearMatch[1], 10)
-                if (startYear >= minYear) {
-                    periods.push({
-                        id: Number(id.trim()),
-                        name: rowText.toUpperCase()
-                    })
-                }
+            if (id && period) {
+                periods.push({
+                    id: Number(id.trim()),
+                    semester: extractSemester(period),
+                    year: extractYear(period)
+                })
             }
         })
 

@@ -3,8 +3,11 @@
  * Used for database queries and API request validation.
  */
 export default interface StudyPlansFilter {
-	/** Semester string (e.g., "ZS 2025/2026"). */
+	/** Semester string (e.g., "ZS"). */
 	semester?: string | string[]
+
+	/** Academic year (e.g., 2025). */
+	year?: number | number[]
 
 	/** Program identifier (e.g., "P-AIN"). */
 	ident?: string | string[]

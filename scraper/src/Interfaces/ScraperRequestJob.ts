@@ -1,3 +1,4 @@
+import InSISSemester from '@scraper/Types/InSISSemester'
 import ScraperJob from '@scraper/Types/ScraperJob'
 
 /**
@@ -18,6 +19,15 @@ interface ScraperRequestJobBase {
  */
 export interface ScraperInSISCatalogRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:Catalog'
+
+    /** Optional list of faculty titles to limit the scraping to specific faculties. */
+    faculties?: string[]
+
+    /** Optional list of academic periods (semester and year) to limit the scraping to specific periods. */
+    periods?: {
+        semester: InSISSemester | null
+        year: number
+    }[]
 
     /** Automatically queue individual course requests for every course found in the catalog. */
     auto_queue_courses?: boolean

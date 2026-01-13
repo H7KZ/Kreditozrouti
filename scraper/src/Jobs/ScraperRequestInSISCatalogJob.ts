@@ -6,16 +6,6 @@ import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseServi
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { InSISQueueService } from '@scraper/Services/InSISQueueService'
 
-interface Faculty {
-    id: number
-    name: string
-}
-
-interface Period {
-    id: number
-    name: string
-}
-
 /**
  * Scrapes the InSIS course catalog.
  *
@@ -29,15 +19,27 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
     const options = await discoverSearchOptions(client)
     if (!options) return null
 
+    let faculties = options.faculties
+    if (data.faculties && data.faculties.length > 0) {
+        faculties = faculties.filter(faculty => data.faculties!.map(f => f.toLowerCase()).includes(faculty.name.toLowerCase()))
+    }
+
+    let periods = options.periods
+    if (data.periods && data.periods.length > 0) {
+        periods = periods.filter(op => {
+            return data.periods!.some(dp => dp.semester === op.semester && dp.year === op.year)
+        })
+    }
+
     LoggerJobContext.add({
-        faculties_count: options.faculties.length,
-        periods_count: options.periods.length
+        faculties_count: faculties.length,
+        periods_count: periods.length
     })
 
     // Phase 2: Scrape each faculty/period combination
-    for (const faculty of options.faculties) {
-        for (const period of options.periods) {
-            await scrapeCatalogPage(client, faculty, period, data.auto_queue_courses ?? false)
+    for (const faculty of faculties) {
+        for (const period of periods) {
+            await scrapeCatalogPage(client, faculty.id, period.id, data.auto_queue_courses ?? false)
         }
     }
 }
@@ -57,12 +59,12 @@ async function discoverSearchOptions(client: ReturnType<typeof createInSISClient
     return options
 }
 
-async function scrapeCatalogPage(client: ReturnType<typeof createInSISClient>, faculty: Faculty, period: Period, autoQueueCourses: boolean): Promise<void> {
+async function scrapeCatalogPage(client: ReturnType<typeof createInSISClient>, facultyId: number, periodId: number, autoQueueCourses: boolean): Promise<void> {
     const params = new URLSearchParams({
         kredity_od: '',
         kredity_do: '',
-        fakulta: faculty.id.toString(),
-        obdobi: period.id.toString(),
+        fakulta: facultyId.toString(),
+        obdobi: periodId.toString(),
         vyhledat_rozsirene: 'Vyhledat předměty',
         jak: 'rozsirene',
         lang: 'cz'
@@ -72,16 +74,14 @@ async function scrapeCatalogPage(client: ReturnType<typeof createInSISClient>, f
 
     if (!result.success) {
         LoggerJobContext.add({
-            error: 'Catalog page fetch failed',
-            faculty: faculty.name,
-            period: period.name
+            error: 'Catalog page fetch failed'
         })
         return
     }
 
     const courseUrls = ExtractInSISCatalogService.extractCourseUrls(result.data)
 
-    await InSISQueueService.addCatalogResponse(faculty, period, courseUrls)
+    await InSISQueueService.addCatalogResponse(courseUrls)
 
     if (courseUrls.length && autoQueueCourses) {
         const coursesWithIds = courseUrls.map(url => ({
@@ -89,6 +89,6 @@ async function scrapeCatalogPage(client: ReturnType<typeof createInSISClient>, f
             courseId: ExtractInSISCourseService.extractIdFromUrl(url)
         }))
 
-        await InSISQueueService.queueCourseRequests(coursesWithIds, { faculty, period })
+        await InSISQueueService.queueCourseRequests(coursesWithIds)
     }
 }

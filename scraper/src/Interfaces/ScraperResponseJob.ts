@@ -23,16 +23,6 @@ interface ScraperResponseJobBase {
 export interface ScraperInSISCatalogResponseJob extends ScraperResponseJobBase {
     type: 'InSIS:Catalog'
     catalog: ScraperInSISCatalog
-    meta: {
-        faculty: {
-            id: number | null
-            name: string | null
-        }
-        period: {
-            id: number | null
-            name: string | null
-        }
-    }
 }
 
 /**

@@ -48,7 +48,10 @@ export default interface ScraperInSISCourse {
     year_of_study: number | null
 
     /** The recommended semester (e.g., 'Winter', 'Summer'). */
-    semester: string | null
+    semester: InSISSemester | null
+
+    /** The academic year when the course is offered (e.g., "2023"). */
+    year: number | null
 
     /** List of names of lecturers teaching the course. */
     lecturers: string[] | null
@@ -154,8 +157,8 @@ export interface ScraperInSISCourseStudyPlan {
     /** The semester this plan applies to. */
     semester: InSISSemester | null
 
-    /** Academic year (e.g., "2023/2024"). */
-    year: string | null
+    /** Academic year (e.g., "2023"). */
+    year: number | null
 
     /** Mode of study (e.g., Full-time, Combined). */
     mode_of_study: string | null

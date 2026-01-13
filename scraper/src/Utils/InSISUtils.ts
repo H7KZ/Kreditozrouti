@@ -12,10 +12,10 @@ export function extractSemester(value: string | null): InSISSemester | null {
     return null
 }
 
-export function extractYear(value: string | null): string | null {
+export function extractYear(value: string | null): number | null {
     if (!value) return null
 
     const yearMatch = /(\d{4}\/\d{4})/.exec(value)
 
-    return yearMatch ? yearMatch[1] : null
+    return yearMatch ? yearMatch[1].split('/').map(y => parseInt(y, 10))[0] : null
 }

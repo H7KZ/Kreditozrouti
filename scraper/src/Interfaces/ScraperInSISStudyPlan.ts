@@ -25,8 +25,8 @@ export default interface ScraperInSISStudyPlan {
     /** The semester this plan applies to. */
     semester: InSISSemester | null
 
-    /** Academic year (e.g., "2023/2024"). */
-    year: string | null
+    /** Academic year (e.g., "2023"). */
+    year: number | null
 
     /** Academic level (e.g., Bachelor). */
     level: string | null

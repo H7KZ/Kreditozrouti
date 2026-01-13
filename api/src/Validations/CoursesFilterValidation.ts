@@ -1,6 +1,7 @@
 import * as z from 'zod'
 
 const stringOrArray = z.union([z.string(), z.array(z.string())]).optional()
+const numberOrArray = z.union([z.coerce.number(), z.array(z.coerce.number())]).optional()
 
 /**
  * Zod validation schema for the Course Search API.
@@ -8,7 +9,7 @@ const stringOrArray = z.union([z.string(), z.array(z.string())]).optional()
  */
 const CoursesFilterValidation = z.object({
 	semester: stringOrArray,
-	year: stringOrArray,
+	year: numberOrArray,
 	ident: stringOrArray,
 	lecturer: stringOrArray,
 	day: stringOrArray,
