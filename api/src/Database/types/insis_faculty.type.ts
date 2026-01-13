@@ -4,14 +4,14 @@ import { ColumnType, Insertable, Selectable } from 'kysely'
  * Database schema for Faculties.
  */
 export class FacultyTable {
-    static readonly _table = 'insis_faculties' as const
+	static readonly _table = 'insis_faculties' as const
 
-    id!: string
+	id!: string
 
-    created_at!: ColumnType<Date, string | undefined, never>
-    updated_at!: ColumnType<Date, string | undefined, string | undefined>
+	created_at!: ColumnType<Date, string | undefined, never>
+	updated_at!: ColumnType<Date, string | undefined, string | undefined>
 
-    title!: string | null
+	title!: string | null
 }
 
 export type FacultyPlan = Selectable<FacultyTable>

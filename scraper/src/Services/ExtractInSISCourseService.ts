@@ -104,26 +104,13 @@ export default class ExtractInSISCourseService {
         const headerText = $('#titulek h1').text() || ''
         const bracketMatch = /\(([^)]+)\)/.exec(headerText)
 
-        if (!bracketMatch) {
-            return {
-                ident: null,
-                title: null
-            }
-        }
+        if (!bracketMatch) return { ident: null, title: null }
 
         const facultyIdent = bracketMatch[1].trim().split(' - ')[0]
 
-        if (!facultyIdent) {
-            return {
-                ident: null,
-                title: null
-            }
-        }
+        if (!facultyIdent) return { ident: null, title: null }
 
-        return {
-            ident: facultyIdent,
-            title: null
-        }
+        return { ident: facultyIdent, title: null }
     }
 
     private static extractLevelAndYear($: CheerioAPI) {
@@ -137,9 +124,8 @@ export default class ExtractInSISCourseService {
             const firstPart = levelYearRaw.split(';')[0].trim()
             const parts = firstPart.split(':')
 
-            if (parts.length > 0) {
-                level = serializeValue(parts[0].replace(/\(.*?\)/g, '').trim())
-            }
+            if (parts.length > 0) level = serializeValue(parts[0].replace(/\(.*?\)/g, '').trim())
+
             if (parts.length > 1) {
                 const yearMatch = /\d+/.exec(parts[1])
                 if (yearMatch) year_of_study = parseInt(yearMatch[0], 10)
@@ -148,6 +134,7 @@ export default class ExtractInSISCourseService {
             // Fallback: infer from page header
             const headerText = $('#titulek h1').text() || ''
             const typeMatch = /-\s*(mba|kurzy|kurz)\s*\)/i.exec(headerText)
+
             if (typeMatch) {
                 const typeRaw = typeMatch[1].toLowerCase()
                 if (typeRaw === 'mba') level = 'MBA'

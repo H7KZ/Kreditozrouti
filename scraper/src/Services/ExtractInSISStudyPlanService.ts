@@ -146,9 +146,8 @@ export default class ExtractInSISStudyPlanService {
 
         $('span[data-sysid="prohlizeni-info"]').each((_, el) => {
             const href = $(el).closest('a').attr('href')
-            if (href?.includes('stud_plan=')) {
-                urls.add(normalizeUrl(href))
-            }
+
+            if (href?.includes('stud_plan=')) urls.add(normalizeUrl(href))
         })
 
         return [...urls]
@@ -176,7 +175,7 @@ export default class ExtractInSISStudyPlanService {
         const courses = this.extractCourses($)
 
         return {
-            id,
+            id: id ?? -1,
             url,
             ident,
             title,
@@ -203,11 +202,11 @@ export default class ExtractInSISStudyPlanService {
 
         if (periodValue) {
             const parts = periodValue.split('-').map(p => p.trim())
+
             if (parts.length >= 2) {
                 const lastPart = parts[parts.length - 1]
-                if (/^[A-Z0-9]+$/.test(lastPart)) {
-                    facultyIdent = lastPart
-                }
+
+                if (/^[A-Z0-9]+$/.test(lastPart)) facultyIdent = lastPart
             }
         }
 
@@ -261,9 +260,7 @@ export default class ExtractInSISStudyPlanService {
      * Determines the group scope from the first character of the group code.
      */
     static determineGroup(groupCode: string): InSISStudyPlanCourseGroup {
-        if (!groupCode || groupCode.length === 0) {
-            return 'university_wide' // Default fallback
-        }
+        if (!groupCode || groupCode.length === 0) return 'university_wide' // Default fallback
 
         const firstChar = groupCode[0].toLowerCase()
         return GroupPrefixes[firstChar] ?? 'university_wide'
@@ -273,17 +270,13 @@ export default class ExtractInSISStudyPlanService {
      * Determines the category from the suffix of the group code.
      */
     static determineCategory(groupCode: string): InSISStudyPlanCourseCategory {
-        if (!groupCode || groupCode.length < 2) {
-            return 'elective' // Default fallback
-        }
+        if (!groupCode || groupCode.length < 2) return 'elective' // Default fallback
 
         // Extract suffix (everything after the first lowercase letter)
         const suffix = groupCode.slice(1).toUpperCase()
 
         for (const rule of CategoryRules) {
-            if (rule.test(suffix)) {
-                return rule.category
-            }
+            if (rule.test(suffix)) return rule.category
         }
 
         // Default to elective if no match
@@ -299,9 +292,8 @@ export default class ExtractInSISStudyPlanService {
 
         if (rawTitle) {
             const parts = rawTitle.split(' ')
-            if (parts.length > 0 && /^[A-Z0-9-]+$/.test(parts[0])) {
-                ident = parts[0]
-            }
+
+            if (parts.length > 0 && /^[A-Z0-9-]+$/.test(parts[0])) ident = parts[0]
         }
 
         return { ident, title }
@@ -317,9 +309,7 @@ export default class ExtractInSISStudyPlanService {
 
             // Detect group header (e.g., "oP - Povinné předměty")
             const groupMatch = /^([a-zA-Z][a-zA-Z0-9]*)\s+-\s+/.exec(text)
-            if (groupMatch) {
-                currentGroupCode = groupMatch[1]
-            }
+            if (groupMatch) currentGroupCode = groupMatch[1]
 
             // Detect course row
             if (rowEl.hasClass('uis-hl-table') && currentGroupCode) {

@@ -22,9 +22,7 @@ export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCou
 
     const result = await client.get<string>(withCzechLang(data.url))
 
-    if (!result.success) {
-        return null
-    }
+    if (!result.success) return null
 
     try {
         const course = ExtractInSISCourseService.extract(result.data, data.url)

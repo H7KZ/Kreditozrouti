@@ -22,9 +22,7 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
     // Fetch initial faculty list
     const initialResult = await client.get<string>(Config.insis.studyPlansUrl)
 
-    if (!initialResult.success) {
-        return null
-    }
+    if (!initialResult.success) return null
 
     const facultyUrls = ExtractInSISStudyPlanService.extractFacultyUrls(initialResult.data)
 

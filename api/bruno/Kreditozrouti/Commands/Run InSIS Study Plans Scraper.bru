@@ -1,0 +1,16 @@
+meta {
+  name: Run InSIS Study Plans Scraper
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:40080/commands/insis/studyplans
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

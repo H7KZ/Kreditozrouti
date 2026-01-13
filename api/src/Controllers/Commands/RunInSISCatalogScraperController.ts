@@ -10,19 +10,19 @@ import { Request, Response } from 'express'
  * @route POST /commands/insis/catalog
  */
 export default async function RunInSISCatalogScraperController(req: Request, res: Response) {
-    await scraper.queue.request.add(
-        'InSIS Catalog Request (Manual)',
-        {
-            type: 'InSIS:Catalog',
-            auto_queue_courses: true
-        },
-        {
-            deduplication: {
-                id: 'InSIS:Catalog:ManualRun',
-                ttl: 30 * 1000 // 30 seconds
-            }
-        }
-    )
+	await scraper.queue.request.add(
+		'InSIS Catalog Request (Manual)',
+		{
+			type: 'InSIS:Catalog',
+			auto_queue_courses: true
+		},
+		{
+			deduplication: {
+				id: 'InSIS:Catalog:ManualRun',
+				ttl: 30 * 1000 // 30 seconds
+			}
+		}
+	)
 
-    return res.sendStatus(200)
+	return res.sendStatus(200)
 }

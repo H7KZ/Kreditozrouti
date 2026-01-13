@@ -4,19 +4,19 @@ import { Course } from '@api/Database/types'
  * Represents a single facet category value and its occurrence count.
  */
 interface FacetItem {
-    /**
-     * The unique identifier or label for this facet option
-     *
-     * @type {string | null}
-     */
-    value: string | null
+	/**
+	 * The unique identifier or label for this facet option
+	 *
+	 * @type {string | null}
+	 */
+	value: string | null
 
-    /**
-     * The number of records matching this specific option
-     *
-     * @type {number}
-     */
-    count: number
+	/**
+	 * The number of records matching this specific option
+	 *
+	 * @type {number}
+	 */
+	count: number
 }
 
 /**
@@ -25,33 +25,33 @@ interface FacetItem {
  * @route POST /kreditozrouti/courses
  */
 export default interface CoursesResponse {
-    /** Array of course records matching the filter criteria. */
-    data: Course[]
+	/** Array of course records matching the filter criteria. */
+	data: Course[]
 
-    /** Aggregated facet counts for filtering. */
-    facets: {
-        faculties: FacetItem[]
-        departments: FacetItem[]
-        days: FacetItem[]
-        lecturers: FacetItem[]
-        languages: FacetItem[]
-        levels: FacetItem[]
-        semesters: FacetItem[]
-        time_range: {
-            /** Start time in minutes from midnight */
-            min_time: number
-            /** End time in minutes from midnight */
-            max_time: number
-        }
-    }
+	/** Aggregated facet counts for filtering. */
+	facets: {
+		faculties: FacetItem[]
+		departments: FacetItem[]
+		days: FacetItem[]
+		lecturers: FacetItem[]
+		languages: FacetItem[]
+		levels: FacetItem[]
+		semesters: FacetItem[]
+		time_range: {
+			/** Start time in minutes from midnight */
+			min_time: number
+			/** End time in minutes from midnight */
+			max_time: number
+		}
+	}
 
-    /** Pagination metadata. */
-    meta: {
-        /** The maximum number of results returned */
-        limit: number
-        /** The number of results skipped */
-        offset: number
-        /** The total number of records returned in this page */
-        count: number
-    }
+	/** Pagination metadata. */
+	meta: {
+		/** The maximum number of results returned */
+		limit: number
+		/** The number of results skipped */
+		offset: number
+		/** The total number of records returned in this page */
+		count: number
+	}
 }

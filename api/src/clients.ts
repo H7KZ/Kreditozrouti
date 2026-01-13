@@ -12,12 +12,12 @@ import Nodemailer from 'nodemailer'
  * Configured with a connection pool (500 connections, UTC timezone).
  */
 const dialect = new MysqlDialect({
-    pool: createPool({
-        uri: Config.mysql.uri,
-        timezone: 'Z',
-        connectionLimit: 500,
-        connectTimeout: 60
-    })
+	pool: createPool({
+		uri: Config.mysql.uri,
+		timezone: 'Z',
+		connectionLimit: 500,
+		connectTimeout: 60
+	})
 })
 
 export const mysql = new Kysely<Database>({ dialect })
@@ -27,8 +27,8 @@ export const mysql = new Kysely<Database>({ dialect })
  * Configured with `maxRetriesPerRequest: null` to adhere to BullMQ requirements.
  */
 export const redis = new Redis(Config.redis.uri, {
-    password: Config.redis.password,
-    maxRetriesPerRequest: null
+	password: Config.redis.password,
+	maxRetriesPerRequest: null
 })
 
 /**
@@ -36,10 +36,10 @@ export const redis = new Redis(Config.redis.uri, {
  * Supports 'cs' and 'en' locales.
  */
 export const i18n = new I18n({
-    locales: ['cs', 'en'],
-    directory: Paths.I18n,
-    defaultLocale: 'en',
-    objectNotation: true
+	locales: ['cs', 'en'],
+	directory: Paths.I18n,
+	defaultLocale: 'en',
+	objectNotation: true
 })
 
 /**
@@ -47,12 +47,12 @@ export const i18n = new I18n({
  * Uses Gmail SMTP if credentials are provided, otherwise creates a test transporter for development.
  */
 export const nodemailer = Nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    requireTLS: true,
-    auth: {
-        user: Config.google.user,
-        pass: Config.google.appPassword
-    }
+	host: 'smtp.gmail.com',
+	port: 587,
+	secure: false,
+	requireTLS: true,
+	auth: {
+		user: Config.google.user,
+		pass: Config.google.appPassword
+	}
 })

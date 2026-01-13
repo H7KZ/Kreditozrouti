@@ -14,21 +14,21 @@ const numWorkers = specifiedInstances ? parseInt(specifiedInstances) : 1
 
 // Cluster Management
 if (cluster.isPrimary && numWorkers > 1) {
-    console.log(`🚀  [API] Master process ${process.pid} is running`)
-    console.log(`⚙️  [API] Forking ${numWorkers} workers...`)
+	console.log(`🚀  [API] Master process ${process.pid} is running`)
+	console.log(`⚙️  [API] Forking ${numWorkers} workers...`)
 
-    for (let i = 0; i < numWorkers; i++) {
-        cluster.fork()
-    }
+	for (let i = 0; i < numWorkers; i++) {
+		cluster.fork()
+	}
 
-    cluster.on('exit', worker => {
-        console.log(`❌  [API] Worker ${worker.process.pid} died. Restarting...`)
-        cluster.fork()
-    })
+	cluster.on('exit', worker => {
+		console.log(`❌  [API] Worker ${worker.process.pid} died. Restarting...`)
+		cluster.fork()
+	})
 } else {
-    start().then(() => {
-        console.log(`🚀  [API] Worker process ${process.pid} started`)
-    })
+	start().then(() => {
+		console.log(`🚀  [API] Worker process ${process.pid} started`)
+	})
 }
 
 /**
@@ -36,54 +36,54 @@ if (cluster.isPrimary && numWorkers > 1) {
  * Initializes infrastructure, executes migrations, sets up jobs, and starts the HTTP server.
  */
 async function start() {
-    try {
-        CheckRequiredEnvironmentVariables(Config)
+	try {
+		CheckRequiredEnvironmentVariables(Config)
 
-        await mysql.connection().execute(db => Promise.resolve(db))
-        console.log('Connected to MySQL successfully.')
+		await mysql.connection().execute(db => Promise.resolve(db))
+		console.log('Connected to MySQL successfully.')
 
-        await SQLService.migrateToLatest()
-        console.log('Database migrations executed.')
+		await SQLService.migrateToLatest()
+		console.log('Database migrations executed.')
 
-        await SQLService.seedInitialData()
-        console.log('Initial data seeding completed.')
+		await SQLService.seedInitialData()
+		console.log('Initial data seeding completed.')
 
-        await redis.ping()
-        console.log('Connected to Redis successfully.')
+		await redis.ping()
+		console.log('Connected to Redis successfully.')
 
-        if (Config.isEmailEnabled()) {
-            const mailVerified = await nodemailer.verify()
-            if (!mailVerified) throw new Error('Nodemailer verification failed')
-            console.log('Nodemailer configured.')
-        }
+		if (Config.isEmailEnabled()) {
+			const mailVerified = await nodemailer.verify()
+			if (!mailVerified) throw new Error('Nodemailer verification failed')
+			console.log('Nodemailer configured.')
+		}
 
-        await scraper.waitForQueues()
-        console.log('BullMQ queues and workers are ready.')
+		await scraper.waitForQueues()
+		console.log('BullMQ queues and workers are ready.')
 
-        await scraper.schedulers()
-        console.log('BullMQ schedulers configured.')
+		await scraper.schedulers()
+		console.log('BullMQ schedulers configured.')
 
-        const server = app.listen(Config.port, () => {
-            console.log(`Environment: ${Config.env}`)
-            console.log(`Server running on port ${Config.port}`)
+		const server = app.listen(Config.port, () => {
+			console.log(`Environment: ${Config.env}`)
+			console.log(`Server running on port ${Config.port}`)
 
-            const shutdown = () => {
-                console.log('Shutting down server...')
-                server.close(async () => {
-                    await mysql.destroy()
-                    redis.disconnect()
-                    console.log('Server shut down gracefully')
-                    process.exit(0)
-                })
-            }
+			const shutdown = () => {
+				console.log('Shutting down server...')
+				server.close(async () => {
+					await mysql.destroy()
+					redis.disconnect()
+					console.log('Server shut down gracefully')
+					process.exit(0)
+				})
+			}
 
-            process.on('SIGTERM', shutdown)
-            process.on('SIGINT', shutdown)
-        })
-    } catch (error) {
-        console.error('Failed to start the server:', error)
-        await mysql.destroy()
-        redis.disconnect()
-        process.exit(1)
-    }
+			process.on('SIGTERM', shutdown)
+			process.on('SIGINT', shutdown)
+		})
+	} catch (error) {
+		console.error('Failed to start the server:', error)
+		await mysql.destroy()
+		redis.disconnect()
+		process.exit(1)
+	}
 }

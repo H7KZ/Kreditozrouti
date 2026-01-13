@@ -8,6 +8,7 @@ import type { CheerioAPI } from 'cheerio'
  */
 export function cleanText(text: string | null | undefined): string {
     if (!text) return ''
+
     return text
         .replace(/\u00A0|&nbsp;/g, ' ')
         .replace(/\s+/g, ' ')
@@ -32,6 +33,7 @@ export function serializeValue(value: string | null): string | null {
 export function normalizeUrl(href: string): string {
     if (href.startsWith('http')) return href
     if (href.startsWith('/')) return Config.insis.baseDomain + href
+
     return Config.insis.catalogUrl + href
 }
 
@@ -44,9 +46,8 @@ export function getRowValue($: CheerioAPI, targetLabel: string): string | null {
         .filter((_, el) => cleanText($(el).text()).includes(cleanTarget))
         .first()
 
-    if (labelCell.length && labelCell.next('td').length) {
-        return serializeValue(cleanText(labelCell.next('td').text()))
-    }
+    if (labelCell.length && labelCell.next('td').length) return serializeValue(cleanText(labelCell.next('td').text()))
+
     return null
 }
 
@@ -60,8 +61,10 @@ export function getRowValueCaseInsensitive($: CheerioAPI, targetLabel: string): 
 
     $('td').each((_, el) => {
         const cellText = cleanText($(el).text()).toLowerCase()
+
         if (cellText.includes(cleanTarget) && !foundValue) {
             const nextCell = $(el).next('td')
+
             if (nextCell.length) foundValue = cleanText(nextCell.text())
         }
     })
@@ -80,6 +83,7 @@ export function getSectionContent($: CheerioAPI, headerText: string): string | n
     if (headerRow.length && headerRow.next('tr').length) {
         return MarkdownService.formatCheerioElementToMarkdown(headerRow.next('tr').find('td'))
     }
+
     return null
 }
 
@@ -101,7 +105,6 @@ export function parseMultiLineCell($: CheerioAPI, element: any): string[] {
  */
 export function sanitizeBodyHtml($: CheerioAPI): void {
     const body = $('body')
-    if (body.length) {
-        body.html(body.html()?.replace(/&nbsp;/g, ' ') ?? '')
-    }
+
+    if (body.length) body.html(body.html()?.replace(/&nbsp;/g, ' ') ?? '')
 }

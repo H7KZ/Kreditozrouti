@@ -1,0 +1,24 @@
+{
+	"errors": {
+		"types": {
+			"Unknown": "Unknown error",
+			"Validation": "Validation error",
+			"ZodValidation": "Validation error",
+			"Authentication": "Authentication error",
+			"Authorization": "Authorization error",
+			"Database": "Database error",
+			"ExternalService": "External service error"
+		},
+
+		"codes": {
+			"0": "An unknown error has occurred.",
+			"401_000": "Unauthenticated: Please log in to continue.",
+			"403_000": "Validation failed: The provided data is invalid.",
+			"404_000": "Resource not found: The requested item does not exist.",
+			"500_000": "Internal server error: Please try again later.",
+			"500_001": "Email service is currently unavailable. Please try again later."
+		},
+
+		"unexpected": "An unexpected error occurred."
+	}
+}

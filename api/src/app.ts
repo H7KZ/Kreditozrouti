@@ -20,9 +20,9 @@ const app = express()
  * CORS Configuration.
  */
 const corsOptions: CorsOptions = {
-    optionsSuccessStatus: 200, // Support legacy browsers/devices
-    origin: Config.allowedOrigins,
-    credentials: true
+	optionsSuccessStatus: 200, // Support legacy browsers/devices
+	origin: Config.allowedOrigins,
+	credentials: true
 }
 
 app.use('/assets', express.static(Paths.assets))
@@ -36,22 +36,22 @@ app.disable('x-powered-by')
  * Session Configuration.
  */
 const sessionOptions: SessionOptions = {
-    store: new RedisStore({ client: redis, prefix: 'session:' }),
-    secret: Config.sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    rolling: true,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24 // 1 day
-    }
+	store: new RedisStore({ client: redis, prefix: 'session:' }),
+	secret: Config.sessionSecret,
+	resave: false,
+	saveUninitialized: false,
+	rolling: true,
+	cookie: {
+		maxAge: 1000 * 60 * 60 * 24 // 1 day
+	}
 }
 
 if (!Config.isEnvLocal()) {
-    app.set('trust proxy', 1)
-    sessionOptions.cookie!.secure = true
-    sessionOptions.cookie!.httpOnly = true
-    sessionOptions.cookie!.domain = Config.domain
-    sessionOptions.cookie!.sameSite = 'none'
+	app.set('trust proxy', 1)
+	sessionOptions.cookie!.secure = true
+	sessionOptions.cookie!.httpOnly = true
+	sessionOptions.cookie!.domain = Config.domain
+	sessionOptions.cookie!.sameSite = 'none'
 }
 
 app.use(session(sessionOptions))

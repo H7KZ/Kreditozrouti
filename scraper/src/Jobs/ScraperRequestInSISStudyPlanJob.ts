@@ -20,9 +20,7 @@ export default async function ScraperRequestInSISStudyPlanJob(data: ScraperInSIS
 
     const result = await client.get<string>(data.url)
 
-    if (!result.success) {
-        return null
-    }
+    if (!result.success) return null
 
     try {
         const plan = ExtractInSISStudyPlanService.extract(result.data, data.url)

@@ -10,20 +10,19 @@ import { Request, Response } from 'express'
  * @route POST /commands/insis/studyplans
  */
 export default async function RunInSISStudyPlansScraperController(req: Request, res: Response) {
-    await scraper.queue.request.add(
-        'InSIS Study Plans Request (Manual)',
-        {
-            type: 'InSIS:StudyPlans',
-            auto_queue_study_plans: true,
-            auto_queue_courses: true
-        },
-        {
-            deduplication: {
-                id: 'InSIS:StudyPlans:ManualRun',
-                ttl: 30 * 1000 // 30 seconds
-            }
-        }
-    )
+	await scraper.queue.request.add(
+		'InSIS Study Plans Request (Manual)',
+		{
+			type: 'InSIS:StudyPlans',
+			auto_queue_study_plans: true
+		},
+		{
+			deduplication: {
+				id: 'InSIS:StudyPlans:ManualRun',
+				ttl: 30 * 1000 // 30 seconds
+			}
+		}
+	)
 
-    return res.sendStatus(200)
+	return res.sendStatus(200)
 }

@@ -10,28 +10,28 @@ import { NextFunction, Request, Response } from 'express'
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ErrorHandler(error: Exception | Error | unknown, req: Request, res: Response, next: NextFunction) {
-    if (error instanceof Exception) {
-        return res.status(error.status).json({
-            type: error.type,
-            code: error.code,
-            message: error.message,
-            details: error.details
-        } as ErrorResponse)
-    }
+	if (error instanceof Exception) {
+		return res.status(error.status).json({
+			type: error.type,
+			code: error.code,
+			message: error.message,
+			details: error.details
+		} as ErrorResponse)
+	}
 
-    if (error instanceof Error) {
-        return res.status(500).json({
-            type: ErrorTypeEnum.UNKNOWN,
-            code: ErrorCodeEnum.UNKNOWN,
-            message: error.message ?? 'Internal Server Error',
-            details: {}
-        } as ErrorResponse)
-    }
+	if (error instanceof Error) {
+		return res.status(500).json({
+			type: ErrorTypeEnum.UNKNOWN,
+			code: ErrorCodeEnum.UNKNOWN,
+			message: error.message ?? 'Internal Server Error',
+			details: {}
+		} as ErrorResponse)
+	}
 
-    return res.status(500).json({
-        type: ErrorTypeEnum.UNKNOWN,
-        code: ErrorCodeEnum.UNKNOWN,
-        message: 'Internal Server Error',
-        details: {}
-    } as ErrorResponse)
+	return res.status(500).json({
+		type: ErrorTypeEnum.UNKNOWN,
+		code: ErrorCodeEnum.UNKNOWN,
+		message: 'Internal Server Error',
+		details: {}
+	} as ErrorResponse)
 }

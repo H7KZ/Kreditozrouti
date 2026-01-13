@@ -1,4 +1,4 @@
-.PHONY: install dev dev-api dev-frontend dev-scraper format lint build preview build-docker-images run-local-docker clear-redis
+.PHONY: install dev dev-api dev-client dev-scraper format lint build preview build-docker-images run-local-docker clear-redis
 
 run-local-docker:
 	docker compose -f docker-compose.local.yml down --remove-orphans && \
@@ -25,8 +25,8 @@ dev-scraper:
 	pnpm install && \
 	pnpm run dev
 
-dev-frontend:
-	cd frontend && \
+dev-client:
+	cd client && \
 	pnpm install && \
 	pnpm run dev
 
@@ -44,5 +44,5 @@ preview:
 
 build-docker-images:
 	docker build -t kreditozrouti-api -f ./api/Dockerfile . && \
-	docker build -t kreditozrouti-frontend -f ./frontend/Dockerfile . && \
+	docker build -t kreditozrouti-client -f ./client/Dockerfile . && \
 	docker build -t kreditozrouti-scraper -f ./scraper/Dockerfile .

@@ -45,9 +45,7 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
 async function discoverSearchOptions(client: ReturnType<typeof createInSISClient>) {
     const result = await client.get(Config.insis.catalogExtendedSearchUrl)
 
-    if (!result.success) {
-        return null
-    }
+    if (!result.success) return null
 
     const options = ExtractInSISCatalogService.extractSearchOptions(result.data)
 

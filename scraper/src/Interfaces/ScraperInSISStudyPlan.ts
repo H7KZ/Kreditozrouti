@@ -8,7 +8,7 @@ import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
  */
 export default interface ScraperInSISStudyPlan {
     /** Unique numeric identifier for the study plan. */
-    id: number | null
+    id: number
 
     /** Full URL source of the study plan. */
     url: string

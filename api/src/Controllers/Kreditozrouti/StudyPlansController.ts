@@ -18,42 +18,42 @@ import { Request, Response } from 'express'
  * @throws {Exception} 401 - If the validation of the search request fails.
  */
 export default async function StudyPlansController(req: Request, res: Response<StudyPlansResponse>) {
-    LoggerAPIContext.add(res, { body: req.body })
+	LoggerAPIContext.add(res, { body: req.body })
 
-    const result = await StudyPlansFilterValidation.safeParseAsync(req.body)
+	const result = await StudyPlansFilterValidation.safeParseAsync(req.body)
 
-    if (!result.success) {
-        throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
-    }
+	if (!result.success) {
+		throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
+	}
 
-    const data = result.data
+	const data = result.data
 
-    // Check Cache
-    const cacheKey = `insis:study_plans:${JSON.stringify(data)}`
-    const cachedData = await redis.get(cacheKey)
+	// Check Cache
+	const cacheKey = `insis:study_plans:${JSON.stringify(data)}`
+	const cachedData = await redis.get(cacheKey)
 
-    if (cachedData) {
-        LoggerAPIContext.add(res, { cache: true })
+	if (cachedData) {
+		LoggerAPIContext.add(res, { cache: true })
 
-        return res.status(200).send(JSON.parse(cachedData))
-    }
+		return res.status(200).send(JSON.parse(cachedData))
+	}
 
-    // Fetch Data
-    const [plans, facets] = await Promise.all([InSISService.getStudyPlans(data, data.limit, data.offset), InSISService.getStudyPlanFacets(data)])
+	// Fetch Data
+	const [plans, facets] = await Promise.all([InSISService.getStudyPlans(data, data.limit, data.offset), InSISService.getStudyPlanFacets(data)])
 
-    LoggerAPIContext.add(res, { cache: false, plans_count: plans.length, facets_count: Object.keys(facets).length })
+	LoggerAPIContext.add(res, { cache: false, plans_count: plans.length, facets_count: Object.keys(facets).length })
 
-    const response: StudyPlansResponse = {
-        data: plans,
-        facets: facets,
-        meta: {
-            limit: data.limit || 20,
-            offset: data.offset || 0,
-            count: plans.length
-        }
-    }
+	const response: StudyPlansResponse = {
+		data: plans,
+		facets: facets,
+		meta: {
+			limit: data.limit || 20,
+			offset: data.offset || 0,
+			count: plans.length
+		}
+	}
 
-    await redis.setex(cacheKey, 300, JSON.stringify(response))
+	await redis.setex(cacheKey, 300, JSON.stringify(response))
 
-    return res.status(200).send(response)
+	return res.status(200).send(response)
 }
