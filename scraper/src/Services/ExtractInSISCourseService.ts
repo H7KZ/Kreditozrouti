@@ -113,7 +113,8 @@ export default class ExtractInSISCourseService {
 
     private static extractFaculty($: CheerioAPI): ScraperInSISFaculty {
         const headerText = $('#titulek h1').text() || ''
-        const bracketMatch = /\(([^)]+)\)/.exec(headerText)
+        // Match last parentheses content
+        const bracketMatch = /\(([^)]+)\)\s*$/.exec(headerText)
 
         if (!bracketMatch) return { ident: null, title: null }
 

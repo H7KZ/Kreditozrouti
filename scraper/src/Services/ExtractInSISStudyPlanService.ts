@@ -91,16 +91,22 @@ export default class ExtractInSISStudyPlanService {
     /**
      * Extracts Faculty URLs from the Study Plans Overview page.
      */
-    static extractFacultyUrls(html: string): string[] {
+    static extractFaculties(html: string): { title: string; url: string }[] {
         const $ = cheerio.load(html)
-        const urls = new Set<string>()
+        const faculties: { title: string; url: string }[] = []
 
         $('.vyber-fakult a.fakulta').each((_, el) => {
-            const href = $(el).attr('href')
-            if (href) urls.add(normalizeUrl(href))
+            const url = $(el).attr('href')
+            const title = $(el).text().trim()
+
+            if (url)
+                faculties.push({
+                    title: cleanText(title),
+                    url: normalizeUrl(url)
+                })
         })
 
-        return [...urls]
+        return faculties
     }
 
     /**
@@ -108,33 +114,30 @@ export default class ExtractInSISStudyPlanService {
      * Excludes final study plan links.
      *
      * @param html - HTML content to parse
-     * @param checkForSemesters - If true, filters out semesters older than (current year - 1)
      */
-    static extractNavigationUrls(html: string, checkForSemesters = false): string[] {
+    static extractNavigationUrls(html: string): { texts: string[]; url: string }[] {
         const $ = cheerio.load(html)
-        const urls = new Set<string>()
-        const minYear = new Date().getFullYear() - 1
+        const navigations: { texts: string[]; url: string }[] = []
 
         $('span[data-sysid="prohlizeni-info"]').each((_, el) => {
             const anchor = $(el).closest('a')
-            const href = anchor.attr('href')
+            const url = anchor.attr('href')
 
-            if (!href || href.includes('stud_plan=')) return
+            if (!url || url.includes('stud_plan=')) return
 
-            if (checkForSemesters) {
-                const rowText = anchor.closest('tr').text()
-                const yearMatch = /(\d{4})/.exec(rowText)
+            const texts = anchor
+                .closest('tr')
+                .find('td')
+                .map((_, td) => cleanText($(td).text()))
+                .get()
 
-                if (yearMatch) {
-                    const startYear = parseInt(yearMatch[1], 10)
-                    if (startYear < minYear) return
-                }
-            }
-
-            urls.add(normalizeUrl(href))
+            navigations.push({
+                texts: texts,
+                url: normalizeUrl(url)
+            })
         })
 
-        return [...urls]
+        return navigations
     }
 
     /**

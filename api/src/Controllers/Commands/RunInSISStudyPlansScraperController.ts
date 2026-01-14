@@ -1,4 +1,5 @@
 import { scraper } from '@api/bullmq'
+import InSISSemester from '@scraper/Types/InSISSemester'
 import { Request, Response } from 'express'
 
 /**
@@ -10,10 +11,23 @@ import { Request, Response } from 'express'
  * @route POST /commands/insis/studyplans
  */
 export default async function RunInSISStudyPlansScraperController(req: Request, res: Response) {
+	interface Body {
+		faculties?: string[]
+
+		periods?: {
+			semester: InSISSemester | null
+			year: number
+		}[]
+	}
+
+	const body: Body = req.body as Body
+
 	await scraper.queue.request.add(
 		'InSIS Study Plans Request (Manual)',
 		{
 			type: 'InSIS:StudyPlans',
+			faculties: body.faculties,
+			periods: body.periods,
 			auto_queue_study_plans: true
 		},
 		{

@@ -26,9 +26,9 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
 
     let periods = options.periods
     if (data.periods && data.periods.length > 0) {
-        periods = periods.filter(op => {
-            return data.periods!.some(dp => dp.semester === op.semester && dp.year === op.year)
-        })
+        periods = periods.filter(op =>
+            data.periods!.some(dp => dp.semester === op.semester && dp.year === op.year && faculties.some(f => f.identifier === op.identifier?.split('_')[0]))
+        )
     }
 
     LoggerJobContext.add({

@@ -9,7 +9,7 @@ interface FacetItem {
 	 *
 	 * @type {string | null}
 	 */
-	value: string | null
+	value: string | number | null
 
 	/**
 	 * The number of records matching this specific option
@@ -31,12 +31,12 @@ export default interface CoursesResponse {
 	/** Aggregated facet counts for filtering. */
 	facets: {
 		faculties: FacetItem[]
-		departments: FacetItem[]
 		days: FacetItem[]
 		lecturers: FacetItem[]
 		languages: FacetItem[]
 		levels: FacetItem[]
 		semesters: FacetItem[]
+		years: FacetItem[]
 		time_range: {
 			/** Start time in minutes from midnight */
 			min_time: number

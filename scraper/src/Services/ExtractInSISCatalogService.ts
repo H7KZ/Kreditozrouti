@@ -6,11 +6,13 @@ import * as cheerio from 'cheerio'
 export interface CatalogSearchOptions {
     faculties: {
         id: number
+        identifier: string | undefined
         name: string
     }[]
 
     periods: {
         id: number
+        identifier: string | undefined
         semester: string | null
         year: number | null
     }[]
@@ -33,6 +35,7 @@ export default class ExtractInSISCatalogService {
         // Extract faculties
         $('td#fakulty input[name="fakulta"]').each((_, el) => {
             const id = $(el).val() as string
+            const identifier = $(el).attr('id')
             const nextNode = el.nextSibling
             const rawFaculty = nextNode?.type === 'text' ? nextNode.data : $(el).parent().text()
             const faculty = cleanText(rawFaculty)
@@ -40,6 +43,7 @@ export default class ExtractInSISCatalogService {
             if (id && faculty) {
                 faculties.push({
                     id: Number(id.trim()),
+                    identifier: identifier,
                     name: faculty.toLowerCase()
                 })
             }
@@ -48,6 +52,7 @@ export default class ExtractInSISCatalogService {
         // Extract academic periods
         $('input[name="obdobi_fak"]').each((_, el) => {
             const id = $(el).val() as string
+            const identifier = $(el).closest('div').attr('id')
             const nextNode = el.nextSibling
             const rawPeriod = cleanText(nextNode?.type === 'text' ? nextNode.data : $(el).parent().text())
             const period = cleanText(rawPeriod)
@@ -55,6 +60,7 @@ export default class ExtractInSISCatalogService {
             if (id && period) {
                 periods.push({
                     id: Number(id.trim()),
+                    identifier: identifier,
                     semester: extractSemester(period),
                     year: extractYear(period)
                 })

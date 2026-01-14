@@ -14,10 +14,10 @@ import { Router } from 'express'
  */
 const CommandsRoutes = Router()
 
-CommandsRoutes.post('/insis/catalog', CommandMiddleware, RunInSISCatalogScraperController)
+CommandsRoutes.post('/insis/catalog', ParserJSONMiddleware, CommandMiddleware, RunInSISCatalogScraperController)
 CommandsRoutes.post('/insis/course', ParserJSONMiddleware, CommandMiddleware, RunInSISCourseScraperController)
 
-CommandsRoutes.post('/insis/studyplans', CommandMiddleware, RunInSISStudyPlansScraperController)
+CommandsRoutes.post('/insis/studyplans', ParserJSONMiddleware, CommandMiddleware, RunInSISStudyPlansScraperController)
 CommandsRoutes.post('/insis/studyplan', ParserJSONMiddleware, CommandMiddleware, RunInSISStudyPlanScraperController)
 
 export default CommandsRoutes

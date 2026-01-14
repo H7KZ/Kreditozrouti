@@ -1,4 +1,5 @@
 import { mysql } from '@api/clients'
+import { CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import CoursesFilter from '@api/Interfaces/CoursesFilter'
 import StudyPlansFilter from '@api/Interfaces/StudyPlansFilter'
 import InSISSemester from '@scraper/Types/InSISSemester'
@@ -23,14 +24,14 @@ export default class InSISService {
 	 * Executes multiple aggregation queries in parallel.
 	 */
 	static async getFacets(filters: CoursesFilter) {
-		const [faculties, departments, days, lecturersRaw, languagesRaw, levels, semesters, time_range] = await Promise.all([
+		const [faculties, days, lecturersRaw, languagesRaw, levels, semesters, years, time_range] = await Promise.all([
 			this.getFacultyFacet(filters),
-			this.getDepartmentFacet(filters),
 			this.getDayFacet(filters),
 			this.getLecturerFacet(filters),
 			this.getLanguageFacet(filters),
 			this.getLevelFacet(filters),
 			this.getSemesterFacet(filters),
+			this.getYearFacet(filters),
 			this.getTimeRangeFacet(filters)
 		])
 
@@ -39,12 +40,12 @@ export default class InSISService {
 
 		return {
 			faculties,
-			departments,
 			days,
 			lecturers,
 			languages,
 			levels,
 			semesters,
+			years,
 			time_range
 		}
 	}
@@ -62,11 +63,12 @@ export default class InSISService {
 	 * Aggregates all available facets for Study Plans.
 	 */
 	static async getStudyPlanFacets(filters: StudyPlansFilter) {
-		const [faculties, levels, modes_of_studies, semesters, study_lengths] = await Promise.all([
+		const [faculties, levels, modes_of_studies, semesters, years, study_lengths] = await Promise.all([
 			this.getPlanFacet(filters, 'faculty_id'),
 			this.getPlanFacet(filters, 'level'),
 			this.getPlanFacet(filters, 'mode_of_study'),
 			this.getPlanFacet(filters, 'semester'),
+			this.getPlanFacet(filters, 'year'),
 			this.getPlanFacet(filters, 'study_length')
 		])
 
@@ -75,6 +77,7 @@ export default class InSISService {
 			levels,
 			modes_of_studies,
 			semesters,
+			years,
 			study_lengths
 		}
 	}
@@ -106,22 +109,11 @@ export default class InSISService {
 
 	private static async getFacultyFacet(filters: CoursesFilter) {
 		return await this.getBaseQuery(filters, 'faculty')
-			.select(sql<string>`SUBSTRING(c.ident, 1, 1)`.as('value'))
+			.select('c.faculty_id as value')
 			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where('c.ident', 'is not', null)
-			.groupBy(sql`SUBSTRING(c.ident, 1, 1)`)
+			.where('c.faculty_id', 'is not', null)
+			.groupBy('c.faculty_id')
 			.orderBy('value')
-			.execute()
-	}
-
-	private static async getDepartmentFacet(filters: CoursesFilter) {
-		return await this.getBaseQuery(filters, 'ident')
-			.select(sql<string>`SUBSTRING(c.ident, 1, 3)`.as('value'))
-			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where('c.ident', 'is not', null)
-			.groupBy(sql`SUBSTRING(c.ident, 1, 3)`)
-			.orderBy('count', 'desc')
-			.limit(20)
 			.execute()
 	}
 
@@ -176,6 +168,16 @@ export default class InSISService {
 			.execute()
 	}
 
+	private static async getYearFacet(filters: CoursesFilter) {
+		return await this.getBaseQuery(filters, 'year')
+			.select('c.year as value')
+			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
+			.where('c.year', 'is not', null)
+			.groupBy('c.year')
+			.orderBy('value', 'desc')
+			.execute()
+	}
+
 	private static async getTimeRangeFacet(filters: CoursesFilter) {
 		const result = await this.getBaseQuery(filters, 'time_from')
 			.select(eb => [eb.fn.min<number>('s.time_from_minutes').as('min_time'), eb.fn.max<number>('s.time_to_minutes').as('max_time')])
@@ -202,21 +204,18 @@ export default class InSISService {
 
 	/**
 	 * Constructs the base Kysely query for Courses with all active filters applied.
-	 * @param filters - The search criteria.
-	 *
-	 * @param filters - The search criteria.
-	 * @param ignore - Optional filter key to exclude (used for facet calculations).
 	 */
 	private static getBaseQuery(filters: CoursesFilter, ignore?: keyof CoursesFilter) {
+		// Refactored to use static table names from Schema classes
 		let query = mysql
-			.selectFrom('insis_courses as c')
-			.leftJoin('insis_courses_timetable_units as u', 'c.id', 'u.course_id')
-			.leftJoin('insis_courses_timetable_slots as s', 'u.id', 's.timetable_unit_id')
+			.selectFrom(`${CourseTable._table} as c`)
+			.leftJoin(`${CourseTimetableUnitTable._table} as u`, 'c.id', 'u.course_id')
+			.leftJoin(`${CourseTimetableSlotTable._table} as s`, 'u.id', 's.timetable_unit_id')
 
 		const toArray = <T>(val: T | T[]) => (Array.isArray(val) ? val : [val])
 
 		if (filters.study_plan_id && ignore !== 'study_plan_id') {
-			query = query.innerJoin('insis_study_plans_courses as spc', 'c.id', 'spc.course_id').where('spc.study_plan_id', '=', filters.study_plan_id)
+			query = query.innerJoin(`${StudyPlanCourseTable._table} as spc`, 'c.id', 'spc.course_id').where('spc.study_plan_id', '=', filters.study_plan_id)
 		}
 
 		if (filters.semester && ignore !== 'semester') {
@@ -239,7 +238,7 @@ export default class InSISService {
 		if (filters.faculty && ignore !== 'faculty') {
 			const vals = toArray(filters.faculty)
 			if (vals.length) {
-				query = query.where(eb => eb.or(vals.map(v => eb('c.ident', 'like', `${v}%`))))
+				query = query.where('c.faculty_id', 'in', vals)
 			}
 		}
 
@@ -282,7 +281,8 @@ export default class InSISService {
 	 * Constructs the base Kysely query for Study Plans with all active filters applied.
 	 */
 	private static getStudyPlanBaseQuery(filters: StudyPlansFilter, ignore?: keyof StudyPlansFilter) {
-		let query = mysql.selectFrom('insis_study_plans as sp')
+		// Refactored to use static table names from Schema classes
+		let query = mysql.selectFrom(`${StudyPlanTable._table} as sp`)
 
 		const toArray = <T>(val: T | T[]) => (Array.isArray(val) ? val : [val])
 
@@ -296,7 +296,7 @@ export default class InSISService {
 		if (filters.faculty_id && ignore !== 'faculty_id') {
 			const vals = toArray(filters.faculty_id)
 			if (vals.length) {
-				query = query.where(eb => eb.or(vals.map(v => eb('sp.ident', 'like', `${v}%`))))
+				query = query.where('sp.faculty_id', 'in', vals)
 			}
 		}
 

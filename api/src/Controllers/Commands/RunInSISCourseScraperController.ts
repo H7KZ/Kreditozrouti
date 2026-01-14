@@ -8,15 +8,19 @@ import { Request, Response } from 'express'
  * @route POST /commands/insis/course
  */
 export default async function RunInSISCourseScraperController(req: Request, res: Response) {
-	const url: string = (req.body as { url?: string }).url ?? ''
+	interface Body {
+		url?: string
+	}
 
-	if (!url) throw new Exception(400)
+	const body: Body = req.body as Body
+
+	if (!body.url) throw new Exception(400)
 
 	await scraper.queue.request.add(
 		'InSIS Course Request (Manual)',
 		{
 			type: 'InSIS:Course',
-			url: url
+			url: body.url
 		},
 		{
 			deduplication: {

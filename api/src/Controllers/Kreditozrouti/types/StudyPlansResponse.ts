@@ -22,6 +22,7 @@ export default interface StudyPlansResponse {
 		faculties: FacetItem[]
 		levels: FacetItem[]
 		semesters: FacetItem[]
+		years: FacetItem[]
 		modes_of_studies: FacetItem[]
 		study_lengths: FacetItem[]
 	}

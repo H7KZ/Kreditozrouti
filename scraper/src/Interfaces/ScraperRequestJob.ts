@@ -49,6 +49,15 @@ export interface ScraperInSISCourseRequestJob extends ScraperRequestJobBase {
 export interface ScraperInSISStudyPlansRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:StudyPlans'
 
+    /** Optional list of faculty titles to limit the scraping to specific faculties. */
+    faculties?: string[]
+
+    /** Optional list of academic periods (semester and year) to limit the scraping to specific periods. */
+    periods?: {
+        semester: InSISSemester | null
+        year: number
+    }[]
+
     /** Automatically queue individual study plan requests after fetching the list. */
     auto_queue_study_plans?: boolean
 }

@@ -6,8 +6,21 @@ meta {
 
 post {
   url: http://localhost:40080/commands/insis/studyplans
-  body: none
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "faculties": ["Fakulta informatiky a statistiky"],
+  
+    "periods": [
+      {
+        "semester": "LS",
+        "year": 2025
+      }
+    ]
+  }
 }
 
 settings {

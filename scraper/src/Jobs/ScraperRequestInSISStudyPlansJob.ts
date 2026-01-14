@@ -6,6 +6,7 @@ import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPla
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { InSISQueueService } from '@scraper/Services/InSISQueueService'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
+import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
 
 const MaxDrillDepth = 8
 const ConcurrencyLimit = 10
@@ -24,16 +25,24 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
 
     if (!initialResult.success) return null
 
-    const facultyUrls = ExtractInSISStudyPlanService.extractFacultyUrls(initialResult.data)
+    let faculties = ExtractInSISStudyPlanService.extractFaculties(initialResult.data)
 
     LoggerJobContext.add({
-        faculty_urls_count: facultyUrls.length,
+        faculty_urls_count: faculties.length,
         max_drill_depth: MaxDrillDepth,
         concurrency_limit: ConcurrencyLimit
     })
 
+    if (data.faculties && data.faculties.length > 0) {
+        faculties = faculties.filter(f => data.faculties!.map(df => df.toLowerCase()).includes(f.title.toLowerCase()))
+    }
+
     // Traverse hierarchy to collect all plan URLs
-    const planUrls = await traverseHierarchy(client, facultyUrls)
+    const planUrls = await traverseHierarchy(
+        client,
+        faculties.map(f => f.url),
+        data.periods
+    )
 
     const plans: ScraperInSISStudyPlans = { urls: planUrls }
 
@@ -60,7 +69,11 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
  * Breadth-first traversal of the study plan hierarchy.
  * Returns all discovered final plan URLs.
  */
-async function traverseHierarchy(client: ReturnType<typeof createInSISClient>, initialUrls: string[]): Promise<string[]> {
+async function traverseHierarchy(
+    client: ReturnType<typeof createInSISClient>,
+    initialUrls: string[],
+    periods: ScraperInSISStudyPlansRequestJob['periods']
+): Promise<string[]> {
     const allPlanUrls = new Set<string>()
     let currentLevelUrls = initialUrls
     let depth = 0
@@ -78,9 +91,26 @@ async function traverseHierarchy(client: ReturnType<typeof createInSISClient>, i
             planUrls.forEach(url => allPlanUrls.add(url))
 
             // Collect navigation URLs (branches)
-            const hasSemesterParam = response.config.url?.includes('poc_obdobi=') ?? true
-            const navUrls = ExtractInSISStudyPlanService.extractNavigationUrls(response.data, !hasSemesterParam)
-            navUrls.forEach(url => nextLevelUrls.add(url))
+            const hasPeriod = response.config.url?.includes('poc_obdobi=') ?? true
+            const navigations = ExtractInSISStudyPlanService.extractNavigationUrls(response.data)
+
+            if (periods && periods.length > 0 && !hasPeriod) {
+                // Filter navigation URLs by specified periods
+                for (const nav of navigations) {
+                    for (const period of periods) {
+                        const semester = nav.texts.map(t => extractSemester(t)).find(s => s !== null)
+                        const year = nav.texts.map(t => extractYear(t)).find(s => s !== null)
+
+                        if (semester === period.semester && year === period.year) {
+                            nextLevelUrls.add(nav.url)
+                            break
+                        }
+                    }
+                }
+            } else {
+                // No period filtering needed, add all navigation URLs
+                navigations.forEach(nav => nextLevelUrls.add(nav.url))
+            }
         }
 
         currentLevelUrls = [...nextLevelUrls]
