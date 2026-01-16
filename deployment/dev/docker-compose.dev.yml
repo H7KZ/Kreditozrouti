@@ -4,11 +4,7 @@ services:
   # API SERVICE
 
   api:
-    image: api
-
-    build:
-      context: ../..
-      dockerfile: api/Dockerfile
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/api:${IMAGE_TAG:-dev-latest}
 
     # volumes:
     #   - api-uploads-dev-volume:/usr/src/uploads
@@ -26,10 +22,16 @@ services:
       - API_DOMAIN=${DOMAIN}
       - API_ALLOWED_ORIGINS=https://${DOMAIN}
       - API_SESSION_SECRET=${API_SESSION_SECRET}
+      - API_COMMAND_TOKEN=${API_COMMAND_TOKEN}
+      - API_JWT_SECRET=${API_JWT_SECRET}
+      - API_JWT_EXPIRATION=${API_JWT_EXPIRATION}
+      - API_JWT_EXPIRATION_SECONDS=${API_JWT_EXPIRATION_SECONDS}
+      - API_JWT_ISSUER=${API_JWT_ISSUER}
+      - API_JWT_AUDIENCE=${API_JWT_AUDIENCE}
       - API_FILE_DESTINATION=/usr/src/uploads
       - GOOGLE_USER=${GOOGLE_USER}
       - GOOGLE_APP_PASSWORD=${GOOGLE_APP_PASSWORD}
-      - FRONTEND_URI=https://${DOMAIN}
+      - CLIENT_URI=https://${DOMAIN}
       - MYSQL_URI=${MYSQL_URI}
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
@@ -38,9 +40,6 @@ services:
       - traefik-network
       - mysql-dev-network
       - redis-dev-network
-
-    # ports:
-    #   - 80:80
 
     labels:
       - traefik.enable=true
@@ -92,7 +91,7 @@ services:
 
       resources:
         limits:
-          cpus: 1
+          cpus: '1'
           memory: 1024M
 
     restart: unless-stopped
@@ -101,11 +100,7 @@ services:
   # SCRAPER SERVICE
 
   scraper:
-    image: scraper
-
-    build:
-      context: ../..
-      dockerfile: scraper/Dockerfile
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/scraper:${IMAGE_TAG:-dev-latest}
 
     depends_on:
       redis:
@@ -146,20 +141,16 @@ services:
 
       resources:
         limits:
-          cpus: 0.5
+          cpus: '0.5'
           memory: 512M
 
     restart: unless-stopped
 
   # ================================================================ #
-  # FRONTEND SERVICE
+  # CLIENT SERVICE
 
-  frontend:
-    image: frontend
-
-    build:
-      context: ../..
-      dockerfile: frontend/Dockerfile
+  client:
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/client:${IMAGE_TAG:-dev-latest}
 
     depends_on:
       - api
@@ -170,24 +161,21 @@ services:
     networks:
       - traefik-network
 
-    # ports:
-    #   - 80:80
-
     labels:
       - traefik.enable=true
-      - traefik.http.routers.${PROJECT}-frontend.priority=10
+      - traefik.http.routers.${PROJECT}-client.priority=10
 
-      - traefik.http.routers.${PROJECT}-frontend.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.${PROJECT}-frontend.entrypoints=websecure
-      - traefik.http.routers.${PROJECT}-frontend.tls=true
-      - traefik.http.routers.${PROJECT}-frontend.tls.certresolver=letsencrypt
-      - traefik.http.services.${PROJECT}-frontend.loadbalancer.server.port=80
+      - traefik.http.routers.${PROJECT}-client.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.${PROJECT}-client.entrypoints=websecure
+      - traefik.http.routers.${PROJECT}-client.tls=true
+      - traefik.http.routers.${PROJECT}-client.tls.certresolver=letsencrypt
+      - traefik.http.services.${PROJECT}-client.loadbalancer.server.port=80
 
-      - traefik.http.routers.${PROJECT}-frontend.middlewares=${PROJECT}-frontend-stripprefix,${PROJECT}-frontend-redirect-www
+      - traefik.http.routers.${PROJECT}-client.middlewares=${PROJECT}-client-stripprefix,${PROJECT}-client-redirect-www
 
-      - traefik.http.middlewares.${PROJECT}-frontend-stripprefix.stripprefix.prefixes=/
-      - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.regex=^https://www\.(.*)
-      - traefik.http.middlewares.${PROJECT}-frontend-redirect-www.redirectregex.replacement=https://$${1}
+      - traefik.http.middlewares.${PROJECT}-client-stripprefix.stripprefix.prefixes=/
+      - traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.replacement=https://$${1}
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80"]
@@ -222,7 +210,7 @@ services:
 
       resources:
         limits:
-          cpus: 1
+          cpus: '1'
           memory: 512M
 
     restart: unless-stopped
@@ -244,9 +232,6 @@ services:
 
     networks:
       - mysql-dev-network
-
-    # ports:
-    #   - 3306:3306
 
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
@@ -281,7 +266,7 @@ services:
 
       resources:
         limits:
-          cpus: 1
+          cpus: '1'
           memory: 2048M
 
     restart: unless-stopped
@@ -308,9 +293,6 @@ services:
     networks:
       - traefik-network
       - mysql-dev-network
-
-    # ports:
-    #   - 80:80
 
     labels:
       - traefik.enable=true
@@ -354,7 +336,7 @@ services:
 
       resources:
         limits:
-          cpus: 0.5
+          cpus: '0.5'
           memory: 512M
 
     restart: unless-stopped
@@ -373,9 +355,6 @@ services:
 
     networks:
       - redis-dev-network
-
-    # ports:
-    #   - 6379:6379
 
     healthcheck:
       test: ["CMD", "redis-cli", "ping", "-a", "${REDIS_PASSWORD}"]
@@ -410,7 +389,7 @@ services:
 
       resources:
         limits:
-          cpus: 0.5
+          cpus: '0.5'
           memory: 1024M
 
     restart: unless-stopped

@@ -1,3 +1,8 @@
+import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
+import InSISSemester from '@scraper/Types/InSISSemester'
+import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
+import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
+
 /**
  * Represents the structure of a single scraped InSIS Study Plan.
  */
@@ -14,11 +19,14 @@ export default interface ScraperInSISStudyPlan {
     /** Title of the plan or specialization. */
     title: string | null
 
-    /** Faculty name. */
-    faculty: string | null
+    /** Faculty associated with this study plan. */
+    faculty: ScraperInSISFaculty | null
 
     /** The semester this plan applies to. */
-    semester: string | null
+    semester: InSISSemester | null
+
+    /** Academic year (e.g., "2023"). */
+    year: number | null
 
     /** Academic level (e.g., Bachelor). */
     level: string | null
@@ -48,15 +56,9 @@ export interface ScraperInSISStudyPlanCourseCategory {
     /** The course code (e.g., "4IT101"). */
     ident: string
 
-    /**
-     * The classification of the course within this specific study plan.
-     * - `compulsory`: Povinné oborové, hlavní, vedlejší, fakultní, specializační (oP, hP, sP, fP, eP).
-     * - `elective`: Volitelné v rámci specializace/oboru (oV, hV, sV, fV, eV).
-     * - `physical_education`: Tělesná výchova (cTVS1, cTVS2).
-     * - `general_elective`: Celoškolsky volně volitelné / Free credits (cVM, cVD, cVP).
-     * - `state_exam`: Státní zkoušky a obhajoby (oSZ, hSZ, sSZ, fSZ).
-     * - `language`: Jazykové moduly (oJ, fJ, sK).
-     * - `optional`: Fallback for unclassified courses.
-     */
-    category: 'compulsory' | 'elective' | 'physical_education' | 'general_elective' | 'state_exam' | 'language' | 'optional'
+    /** Group information for the course. */
+    group: InSISStudyPlanCourseGroup
+
+    /** Category information for the course. */
+    category: InSISStudyPlanCourseCategory
 }

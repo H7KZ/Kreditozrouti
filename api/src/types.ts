@@ -1,16 +1,13 @@
-import { User } from '@api/Database/types'
+import { LoggerWideEvent } from '@api/Context/LoggerAPIContext'
 
 /**
  * Global type definitions and augmentations.
  */
 declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace Express {
-        /**
-         * Extends the standard Express User interface to match the application's database model.
-         */
-        interface Locals {
-            user: User
-        }
-    }
+	// eslint-disable-next-line @typescript-eslint/no-namespace
+	namespace Express {
+		interface Locals {
+			wideEvent: LoggerWideEvent
+		}
+	}
 }

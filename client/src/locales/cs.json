@@ -1,0 +1,24 @@
+{
+	"errors": {
+		"types": {
+			"Unknown": "Neznámá chyba",
+			"Validation": "Chyba ověření",
+			"ZodValidation": "Chyba ověření",
+			"Authentication": "Chyba autentizace",
+			"Authorization": "Chyba autorizace",
+			"Database": "Chyba databáze",
+			"ExternalService": "Chyba externí služby"
+		},
+
+		"codes": {
+			"0": "Došlo k neznámé chybě.",
+			"401_000": "Neautentizováno: Prosím, přihlaste se pro pokračování.",
+			"403_000": "Ověření selhalo: Poskytnutá data jsou neplatná.",
+			"404_000": "Zdroj nenalezen: Požadovaná položka neexistuje.",
+			"500_000": "Interní chyba serveru: Zkuste to prosím později.",
+			"500_001": "Služba e-mailů je momentálně nedostupná. Zkuste to prosím později."
+		},
+
+		"unexpected": "Došlo k neočekávané chybě."
+	}
+}

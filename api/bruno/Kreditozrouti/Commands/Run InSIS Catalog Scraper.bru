@@ -1,0 +1,29 @@
+meta {
+  name: Run InSIS Catalog Scraper
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:40080/commands/insis/catalog
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "faculties": ["Fakulta informatiky a statistiky"],
+  
+    "periods": [
+      {
+        "semester": "LS",
+        "year": 2025
+      }
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

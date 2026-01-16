@@ -8,10 +8,10 @@ import multer from 'multer'
  * - Limits: Maximum file size of 100 MB.
  */
 const FileMiddleware = multer({
-    dest: Config.fileDestination,
-    limits: {
-        fileSize: 100 * 1024 * 1024 // 100 MB
-    }
+	dest: Config.fileDestination,
+	limits: {
+		fileSize: 100 * 1024 * 1024 // 100 MB
+	}
 })
 
 export default FileMiddleware

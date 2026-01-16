@@ -1,4 +1,5 @@
 import { redis } from '@api/clients'
+import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
@@ -17,36 +18,42 @@ import { Request, Response } from 'express'
  * @throws {Exception} 401 - If the validation of the search request fails.
  */
 export default async function StudyPlansController(req: Request, res: Response<StudyPlansResponse>) {
-    const result = await StudyPlansFilterValidation.safeParseAsync(req.body)
+	LoggerAPIContext.add(res, { body: req.body })
 
-    if (!result.success) {
-        throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
-    }
+	const result = await StudyPlansFilterValidation.safeParseAsync(req.body)
 
-    const data = result.data
+	if (!result.success) {
+		throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
+	}
 
-    // Check Cache
-    const cacheKey = `insis:study_plans:${JSON.stringify(data)}`
-    const cachedData = await redis.get(cacheKey)
+	const data = result.data
 
-    if (cachedData) {
-        return res.status(200).send(JSON.parse(cachedData))
-    }
+	// Check Cache
+	const cacheKey = `insis:study_plans:${JSON.stringify(data)}`
+	const cachedData = await redis.get(cacheKey)
 
-    // Fetch Data
-    const [plans, facets] = await Promise.all([InSISService.getStudyPlans(data, data.limit, data.offset), InSISService.getStudyPlanFacets(data)])
+	if (cachedData) {
+		LoggerAPIContext.add(res, { cache: true })
 
-    const response: StudyPlansResponse = {
-        data: plans,
-        facets: facets,
-        meta: {
-            limit: data.limit || 20,
-            offset: data.offset || 0,
-            count: plans.length
-        }
-    }
+		return res.status(200).send(JSON.parse(cachedData))
+	}
 
-    await redis.setex(cacheKey, 300, JSON.stringify(response))
+	// Fetch Data
+	const [plans, facets] = await Promise.all([InSISService.getStudyPlans(data, data.limit, data.offset), InSISService.getStudyPlanFacets(data)])
 
-    return res.status(200).send(response)
+	LoggerAPIContext.add(res, { cache: false, plans_count: plans.length, facets_count: Object.keys(facets).length })
+
+	const response: StudyPlansResponse = {
+		data: plans,
+		facets: facets,
+		meta: {
+			limit: data.limit || 20,
+			offset: data.offset || 0,
+			count: plans.length
+		}
+	}
+
+	await redis.setex(cacheKey, 300, JSON.stringify(response))
+
+	return res.status(200).send(response)
 }

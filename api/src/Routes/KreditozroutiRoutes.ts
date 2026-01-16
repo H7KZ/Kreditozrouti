@@ -1,5 +1,6 @@
 import CoursesController from '@api/Controllers/Kreditozrouti/CoursesController'
 import StudyPlansController from '@api/Controllers/Kreditozrouti/StudyPlansController'
+import LoggerMiddleware from '@api/Middlewares/LoggerMiddleware'
 import { ParserJSONMiddleware } from '@api/Middlewares/ParserMiddleware'
 import { Router } from 'express'
 
@@ -11,7 +12,8 @@ import { Router } from 'express'
  */
 const KreditozroutiRoutes = Router()
 
-KreditozroutiRoutes.post('/courses', ParserJSONMiddleware, CoursesController)
-KreditozroutiRoutes.post('/study_plans', ParserJSONMiddleware, StudyPlansController)
+KreditozroutiRoutes.post('/courses', ParserJSONMiddleware, LoggerMiddleware, CoursesController)
+
+KreditozroutiRoutes.post('/study_plans', ParserJSONMiddleware, LoggerMiddleware, StudyPlansController)
 
 export default KreditozroutiRoutes

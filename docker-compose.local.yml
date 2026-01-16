@@ -1,14 +1,14 @@
 services:
   mysql:
     image: mysql
-    container_name: diar-4fis-mysql
+    container_name: kreditozrouti-mysql
 
     volumes:
       - ./data/mysql:/var/lib/mysql
 
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=diar-4fis
+      - MYSQL_DATABASE=kreditozrouti
 
     ports:
       - "43306:3306"
@@ -49,11 +49,11 @@ services:
 
   phpmyadmin:
     image: phpmyadmin
-    container_name: diar-4fis-phpmyadmin
+    container_name: kreditozrouti-phpmyadmin
 
     environment:
       - PMA_ARBITRARY=1
-      - PMA_HOST=diar-4fis-mysql
+      - PMA_HOST=kreditozrouti-mysql
       - PMA_PORT=3306
       - PMA_USER=root
       - PMA_PASSWORD=root
@@ -97,7 +97,7 @@ services:
 
   redis:
     image: redis:alpine
-    container_name: diar-4fis-redis
+    container_name: kreditozrouti-redis
 
     command: [
       "--save", "20", "1",

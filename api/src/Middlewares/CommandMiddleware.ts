@@ -11,15 +11,15 @@ import { NextFunction, Request, Response } from 'express'
  * @throws {Exception} 401 - If the provided token is invalid.
  */
 export default function CommandMiddleware(req: Request, res: Response, next: NextFunction) {
-    if (!Config.commandToken) {
-        throw new Exception(500, ErrorTypeEnum.UNKNOWN, ErrorCodeEnum.INTERNAL_SERVER_ERROR, 'Command token not configured')
-    }
+	if (!Config.commandToken) {
+		throw new Exception(500, ErrorTypeEnum.UNKNOWN, ErrorCodeEnum.INTERNAL_SERVER_ERROR, 'Command token not configured')
+	}
 
-    const token = req.headers.authorization?.split(' ')[1]
+	const token = req.headers.authorization?.split(' ')[1]
 
-    if (token !== Config.commandToken) {
-        throw new Exception(401, ErrorTypeEnum.AUTHORIZATION, ErrorCodeEnum.UNAUTHORIZED, 'Unauthorized command access')
-    }
+	if (token !== Config.commandToken) {
+		throw new Exception(401, ErrorTypeEnum.AUTHORIZATION, ErrorCodeEnum.UNAUTHORIZED, 'Unauthorized command access')
+	}
 
-    return next()
+	return next()
 }

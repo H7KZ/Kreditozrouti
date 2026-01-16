@@ -1,8 +1,3 @@
 {
-    "emails": {
-        "signIn": {
-            "subject": "Ověření přihlášení",
-            "body": "Pro ověření klikněte na tlačítko níže. Odkaz je platný {{expiration}} minut."
-        }
-    }
+	"emails": {}
 }

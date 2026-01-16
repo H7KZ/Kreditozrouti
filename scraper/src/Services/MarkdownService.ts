@@ -15,15 +15,11 @@ export default class MarkdownService {
      * @returns The generated Markdown string, or an empty string if the element is empty.
      */
     static formatCheerioElementToMarkdown(element: Cheerio<any>): string {
-        if (!element || element.length === 0) {
-            return ''
-        }
+        if (!element || element.length === 0) return ''
 
         const html = element.html()
 
-        if (!html) {
-            return ''
-        }
+        if (!html) return ''
 
         return this.turndown.turndown(html)
     }

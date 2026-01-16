@@ -23,6 +23,15 @@ interface Config {
         password: string | undefined
     }
 
+    /** InSIS system URLs and settings. */
+    insis: {
+        baseDomain: string
+        catalogUrl: string
+        catalogExtendedSearchUrl: string
+        studyPlansUrl: string
+        defaultReferrer: string
+    }
+
     isEnvDevelopment: () => boolean
 }
 
@@ -32,6 +41,14 @@ const config: Config = {
     redis: {
         uri: process.env.REDIS_URI ?? '',
         password: process.env.REDIS_PASSWORD
+    },
+
+    insis: {
+        baseDomain: 'https://insis.vse.cz',
+        catalogUrl: 'https://insis.vse.cz/katalog/',
+        catalogExtendedSearchUrl: 'https://insis.vse.cz/katalog/index.pl?jak=rozsirene',
+        studyPlansUrl: 'https://insis.vse.cz/katalog/plany.pl?lang=cz',
+        defaultReferrer: 'https://insis.vse.cz'
     },
 
     isEnvDevelopment: () => config.env === 'development'

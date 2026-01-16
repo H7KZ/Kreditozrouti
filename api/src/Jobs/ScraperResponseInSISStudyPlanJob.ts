@@ -1,90 +1,129 @@
 import { mysql } from '@api/clients'
-import { CourseIdRedirectTable, CourseTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import LoggerJobContext from '@api/Context/LoggerJobContext'
+import { CourseTable, FacultyTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
 import { ScraperInSISStudyPlanResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
 
 /**
  * Syncs a scraped InSIS Study Plan into the database.
- *
- * This job performs the following operations:
- * 1. Upserts the study plan details.
- * 2. Wipes existing course associations for the plan.
- * 3. Resolves course IDs (handling redirects) and re-inserts course associations.
  */
 export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSISStudyPlanResponseJob): Promise<void> {
-    const { plan } = data
+	const { plan } = data
 
-    if (!plan?.id) {
-        return
-    }
+	if (!plan) return
 
-    console.log(`Processing sync for study plan Id: ${plan.id} (${plan.ident})`)
+	let facultyId: string | null = null
+	if (plan.faculty) {
+		facultyId = await upsertFaculty(plan.faculty)
+	}
 
-    const planPayload = {
-        id: plan.id,
-        url: plan.url,
-        ident: plan.ident,
-        title: plan.title,
-        faculty: plan.faculty,
-        semester: plan.semester,
-        level: plan.level,
-        mode_of_study: plan.mode_of_study,
-        study_length: plan.study_length
-    }
+	let studyPlanId: number | null = null
 
-    await mysql.insertInto(StudyPlanTable._table).values(planPayload).onDuplicateKeyUpdate(planPayload).execute()
+	// We need these 4 fields to uniquely identify a plan
+	if (!plan.ident || !facultyId || !plan.semester || !plan.year) {
+		LoggerJobContext.add({
+			error: 'Missing required metadata (ident, faculty, semester, or year) for study plan resolution',
+			plan_ident: plan.ident
+		})
+		return
+	}
 
-    // Wipe existing courses to ensure a clean sync (no unique constraint on link table)
-    await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', plan.id).execute()
+	const existingPlan = await mysql
+		.selectFrom(StudyPlanTable._table)
+		.select('id')
+		.where(eb => eb.and([eb('ident', '=', plan.ident), eb('faculty_id', '=', facultyId), eb('semester', '=', plan.semester), eb('year', '=', plan.year)]))
+		.executeTakeFirst()
 
-    if (!plan.courses || plan.courses.length === 0) {
-        console.log(`Synced study plan Id: ${plan.id} (No courses found)`)
-        return
-    }
+	const planMetadata = {
+		url: plan.url,
+		title: plan.title,
+		level: plan.level,
+		mode_of_study: plan.mode_of_study,
+		study_length: plan.study_length
+	}
 
-    // Resolve Real Course IDs (Map Scraped ID -> Real DB ID)
-    // This handles cases where the scraped course ID might be an old ID pointing to a redirect.
-    const incomingCourseIds = plan.courses.map(c => c.id).filter((id): id is number => id != null)
+	if (existingPlan) {
+		studyPlanId = existingPlan.id
 
-    const validIdMap = new Map<number, number>()
+		await mysql.updateTable(StudyPlanTable._table).set(planMetadata).where('id', '=', studyPlanId).execute()
+	} else {
+		const result = await mysql
+			.insertInto(StudyPlanTable._table)
+			.values({
+				ident: plan.ident,
+				faculty_id: facultyId,
+				semester: plan.semester,
+				year: plan.year,
+				...planMetadata
+			})
+			.executeTakeFirst()
 
-    if (incomingCourseIds.length > 0) {
-        // 1. Direct Matches
-        const directMatches = await mysql.selectFrom(CourseTable._table).select('id').where('id', 'in', incomingCourseIds).execute()
+		studyPlanId = Number(result.insertId)
+	}
 
-        directMatches.forEach(c => validIdMap.set(c.id, c.id))
+	LoggerJobContext.add({
+		study_plan_id: studyPlanId,
+		study_plan_ident: plan.ident
+	})
 
-        // 2. Redirect Matches (Old ID -> New Course ID)
-        const redirectMatches = await mysql
-            .selectFrom(CourseIdRedirectTable._table)
-            .select(['course_id', 'old_id'])
-            .where('old_id', 'in', incomingCourseIds)
-            .execute()
+	// 3. Sync Courses (Always overwrite for a full plan scrape)
+	// Wipe existing courses for this plan to ensure deleted courses are removed
+	await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', studyPlanId).execute()
 
-        redirectMatches.forEach(r => validIdMap.set(r.old_id, r.course_id))
-    }
+	if (!plan.courses || plan.courses.length === 0) return
 
-    // Deduplicate courses by ident to avoid insertion errors
-    const uniqueCourses = new Map<string, (typeof plan.courses)[0]>()
-    plan.courses.forEach(c => uniqueCourses.set(c.ident, c))
+	// Resolve Real Course IDs
+	const incomingCourseIds = plan.courses.map(c => c.id).filter((id): id is number => id != null)
+	const validIdMap = new Map<number, number>()
 
-    const rowsToInsert: NewStudyPlanCourse[] = Array.from(uniqueCourses.values()).map(item => {
-        let verifiedId: number | null = null
+	if (incomingCourseIds.length > 0) {
+		const directMatches = await mysql.selectFrom(CourseTable._table).select('id').where('id', 'in', incomingCourseIds).execute()
+		directMatches.forEach(c => validIdMap.set(c.id, c.id))
+	}
 
-        if (item.id != null && validIdMap.has(item.id)) {
-            verifiedId = validIdMap.get(item.id)!
-        }
+	// Deduplicate courses
+	const uniqueCourses = new Map<string, (typeof plan.courses)[0]>()
+	plan.courses.forEach(c => uniqueCourses.set(c.ident, c))
 
-        return {
-            study_plan_id: plan.id,
-            course_ident: item.ident,
-            course_id: verifiedId,
-            category: item.category
-        }
-    })
+	const rowsToInsert: NewStudyPlanCourse[] = Array.from(uniqueCourses.values()).map(item => {
+		let verifiedId: number | null = null
+		if (item.id != null && validIdMap.has(item.id)) {
+			verifiedId = validIdMap.get(item.id)!
+		}
 
-    if (rowsToInsert.length > 0) {
-        await mysql.insertInto(StudyPlanCourseTable._table).values(rowsToInsert).execute()
-    }
+		return {
+			study_plan_id: studyPlanId,
+			course_ident: item.ident,
+			course_id: verifiedId,
+			group: item.group,
+			category: item.category
+		}
+	})
 
-    console.log(`Synced study plan Id: ${plan.id} with ${rowsToInsert.length} courses`)
+	if (rowsToInsert.length > 0) {
+		await mysql.insertInto(StudyPlanCourseTable._table).values(rowsToInsert).execute()
+	}
+
+	LoggerJobContext.add({
+		course_count: rowsToInsert.length
+	})
+}
+
+/**
+ * Helper to Upsert Faculty and return its ID.
+ */
+async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | null> {
+	if (!faculty.ident) return null
+
+	let query = mysql.insertInto(FacultyTable._table).values({
+		id: faculty.ident,
+		title: faculty.title
+	})
+
+	if (faculty.title) query = query.onDuplicateKeyUpdate({ title: faculty.title })
+	else query = query.onDuplicateKeyUpdate({ id: faculty.ident })
+
+	await query.execute()
+
+	return faculty.ident
 }

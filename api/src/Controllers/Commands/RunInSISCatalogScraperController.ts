@@ -1,4 +1,5 @@
 import { scraper } from '@api/bullmq'
+import InSISSemester from '@scraper/Types/InSISSemester'
 import { Request, Response } from 'express'
 
 /**
@@ -10,18 +11,32 @@ import { Request, Response } from 'express'
  * @route POST /commands/insis/catalog
  */
 export default async function RunInSISCatalogScraperController(req: Request, res: Response) {
-    await scraper.queue.request.add(
-        'InSIS Catalog Request (Manual)',
-        {
-            type: 'InSIS:Catalog',
-            auto_queue_courses: true
-        },
-        {
-            deduplication: {
-                id: 'InSIS:Catalog:ManualRun'
-            }
-        }
-    )
+	interface Body {
+		faculties?: string[]
 
-    return res.sendStatus(200)
+		periods?: {
+			semester: InSISSemester | null
+			year: number
+		}[]
+	}
+
+	const body: Body = req.body as Body
+
+	await scraper.queue.request.add(
+		'InSIS Catalog Request (Manual)',
+		{
+			type: 'InSIS:Catalog',
+			faculties: body.faculties,
+			periods: body.periods,
+			auto_queue_courses: true
+		},
+		{
+			deduplication: {
+				id: 'InSIS:Catalog:ManualRun',
+				ttl: 30 * 1000 // 30 seconds
+			}
+		}
+	)
+
+	return res.sendStatus(200)
 }

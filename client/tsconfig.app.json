@@ -1,0 +1,16 @@
+{
+	"extends": "@vue/tsconfig/tsconfig.dom.json",
+	"include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+	"exclude": ["src/**/__tests__/*"],
+	"compilerOptions": {
+		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+		"verbatimModuleSyntax": false,
+
+		"baseUrl": ".",
+		"paths": {
+			"@client/*": ["./src/*"],
+			"@api/*": ["../api/src/*"],
+			"@scraper/*": ["../scraper/src/*"]
+		}
+	}
+}

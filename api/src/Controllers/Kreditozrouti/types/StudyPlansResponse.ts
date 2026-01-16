@@ -4,8 +4,8 @@ import { StudyPlan } from '@api/Database/types'
  * Represents a single facet category value and its occurrence count.
  */
 interface FacetItem {
-    value: string | null
-    count: number
+	value: string | number | null
+	count: number
 }
 
 /**
@@ -14,22 +14,23 @@ interface FacetItem {
  * @route POST /kreditozrouti/study-plans
  */
 export default interface StudyPlansResponse {
-    /** Array of study plans matching the filter criteria. */
-    data: StudyPlan[]
+	/** Array of study plans matching the filter criteria. */
+	data: StudyPlan[]
 
-    /** Aggregated facet counts for filtering. */
-    facets: {
-        faculties: FacetItem[]
-        levels: FacetItem[]
-        semesters: FacetItem[]
-        modes_of_studies: FacetItem[]
-        study_lengths: FacetItem[]
-    }
+	/** Aggregated facet counts for filtering. */
+	facets: {
+		faculties: FacetItem[]
+		levels: FacetItem[]
+		semesters: FacetItem[]
+		years: FacetItem[]
+		modes_of_studies: FacetItem[]
+		study_lengths: FacetItem[]
+	}
 
-    /** Pagination metadata. */
-    meta: {
-        limit: number
-        offset: number
-        count: number
-    }
+	/** Pagination metadata. */
+	meta: {
+		limit: number
+		offset: number
+		count: number
+	}
 }
