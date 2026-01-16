@@ -8,7 +8,14 @@ COPY ./client/package.json ./
 RUN npm install
 
 COPY ./client/ ./
+
+# "Workspaces" setup
 COPY ./api/src/ /usr/src/api/src/
+
+# Create a symlink so files in /usr/src/api can find modules in /usr/src/client/node_modules
+RUN mkdir -p /usr/src/api/node_modules
+RUN ln -s /usr/src/client/node_modules/* /usr/src/api/node_modules/ || true
+
 
 RUN npm run build
 
