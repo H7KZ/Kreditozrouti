@@ -1,0 +1,152 @@
+name: Production Deployment
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'      # Matches v1.0.0
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository }}
+
+jobs:
+  # ================================================================ #
+  # BUILD AND PUSH IMAGES
+  # ================================================================ #
+  build:
+    name: Build and Push Images
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image_tag: ${{ steps.version.outputs.tag }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Extract Version Tag
+        id: version
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build API
+      - name: Build and Push API Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./api/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/api:${{ steps.version.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/api:latest
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,mode=max,scope=api
+          platforms: linux/amd64
+
+      # Build Client
+      - name: Build and Push Client Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./client/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/client:${{ steps.version.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/client:latest
+          cache-from: type=gha,scope=client
+          cache-to: type=gha,mode=max,scope=client
+          platforms: linux/amd64
+
+      # Build Scraper
+      - name: Build and Push Scraper Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./scraper/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/scraper:${{ steps.version.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/scraper:latest
+          cache-from: type=gha,scope=scraper
+          cache-to: type=gha,mode=max,scope=scraper
+          platforms: linux/amd64
+
+      - name: Output Image Tags
+        run: |
+          echo "✅ Images pushed:"
+          echo "  - ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/api:${{ steps.version.outputs.tag }}"
+          echo "  - ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/client:${{ steps.version.outputs.tag }}"
+          echo "  - ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/scraper:${{ steps.version.outputs.tag }}"
+
+  # ================================================================ #
+  # DEPLOY TO PRODUCTION SERVER
+  # ================================================================ #
+  deploy:
+    name: Deploy to Production
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 1. Copy Deployment Files
+      - name: Copy deployment files to Production
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "deployment/*"
+          target: "/${{ secrets.SSH_USER }}/production"
+          rm: true
+          strip_components: 0
+
+      # 2. Run Remote Deployment
+      - name: Execute Remote Deployment
+        uses: appleboy/ssh-action@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
+          IMG_REGISTRY: ${{ env.REGISTRY }}
+          IMG_PREFIX: ${{ env.IMAGE_PREFIX }}
+          IMG_TAG: ${{ needs.build.outputs.image_tag }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG
+          script: |
+            set -e
+            cd ~/${{ secrets.SSH_USER }}/production/deployment
+            
+            # Copy environment file
+            cp ~/.env.prod ./prod/.env
+            
+            # Login to GitHub Container Registry
+            echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
+            
+            # Export image variables for docker-compose
+            export IMAGE_REGISTRY="$IMG_REGISTRY"
+            export IMAGE_PREFIX="$IMG_PREFIX"
+            export IMAGE_TAG="$IMG_TAG"
+            
+            # Run deployment script
+            bash ./environment.sh prod prod
+            
+            echo "✅ Production deployment complete!"
