@@ -1,5 +1,8 @@
+# ==============================================================================
+# Networks Configuration: Traefik
+# Description: Global network definitions for Traefik reverse proxy.
+# ==============================================================================
+
 networks:
   traefik-network:
     name: traefik-network
-    external: true
-    driver: bridge

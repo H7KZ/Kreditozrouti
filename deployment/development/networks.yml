@@ -1,8 +1,15 @@
+# ==============================================================================
+# Networks Configuration: Development
+# Description: External network definitions for development environment.
+# ==============================================================================
+
 networks:
+  traefik-network:
+    name: traefik-network
+    external: true
+
   mysql-dev-network:
     name: mysql-dev-network
-    external: false
 
   redis-dev-network:
     name: redis-dev-network
-    external: false

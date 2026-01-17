@@ -1,3 +1,23 @@
+# ==============================================================================
+# Docker Compose: GitHub Actions Runner
+# Description: Self-hosted GitHub Actions runners for CI/CD pipelines.
+#
+# Features:
+#   - Auto-registration with GitHub repository
+#   - Docker-in-Docker support for container builds
+#   - Configurable replica count and labels
+#   - Automatic restart and failure recovery
+#
+# Required Environment Variables:
+#   - GITHUB_REPO_URL: Full URL to the GitHub repository
+#   - GITHUB_ACCESS_TOKEN: Personal Access Token with repo scope
+#   - PROJECT: Project name prefix for runner naming
+#   - RUNNER_LABELS: Comma-separated list of runner labels
+#   - RUNNER_REPLICAS: Number of runner instances (default: 2)
+#
+# Usage: docker compose -f docker-compose.github-runner.yml up -d
+# ==============================================================================
+
 services:
   runner:
     image: myoung34/github-runner:latest
@@ -7,11 +27,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
     environment:
-      # Required for registration
+      # Registration
       - REPO_URL=${GITHUB_REPO_URL}
       - ACCESS_TOKEN=${GITHUB_ACCESS_TOKEN}
 
-      # Naming and Scope
+      # Naming and Labels
       - RUNNER_NAME_PREFIX=${PROJECT:-github}-runner
       - RUNNER_SCOPE=repo
       - LABELS=${RUNNER_LABELS:-docker,self-hosted}
@@ -24,14 +44,23 @@ services:
     networks:
       - traefik-network
 
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
     deploy:
       mode: replicated
       replicas: ${RUNNER_REPLICAS:-2}
 
       resources:
         limits:
-          cpus: '2'
+          cpus: "2"
           memory: 2048M
+        reservations:
+          cpus: "0.5"
+          memory: 512M
 
       restart_policy:
         condition: on-failure

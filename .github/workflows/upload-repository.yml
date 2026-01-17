@@ -1,0 +1,104 @@
+# ==============================================================================
+# Workflow: Upload Repository to VPS
+# Description: Manually uploads repository contents to the VPS.
+#              Useful for initial setup or full repository syncs.
+# Trigger: Manual dispatch only (workflow_dispatch)
+#
+# Inputs:
+#   - branch: Branch to upload (default: main)
+#   - target_folder: Destination folder on VPS (default: repository)
+#   - clean_target: Remove existing files before upload (default: true)
+#
+# Required Secrets:
+#   - SSH_HOST: VPS hostname or IP
+#   - SSH_USER: SSH username
+#   - SSH_PORT: SSH port
+#   - SSH_PRIVATE_KEY: SSH private key for authentication
+# ==============================================================================
+
+name: Upload Repository
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to upload"
+        required: true
+        default: "main"
+        type: string
+      target_folder:
+        description: "Target folder on VPS (relative to home)"
+        required: true
+        default: "repository"
+        type: string
+      clean_target:
+        description: "Remove existing files before upload"
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  upload:
+    name: Upload to VPS
+    runs-on: self-hosted
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Display Configuration
+        run: |
+          echo "=========================================="
+          echo "Upload Configuration"
+          echo "=========================================="
+          echo "Branch: ${{ inputs.branch }}"
+          echo "Target: ~/${{ inputs.target_folder }}"
+          echo "Clean:  ${{ inputs.clean_target }}"
+          echo "=========================================="
+
+      - name: Prepare Target Directory
+        if: ${{ inputs.clean_target }}
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -euo pipefail
+            TARGET_DIR="$HOME/${{ inputs.target_folder }}"
+            if [[ -d "$TARGET_DIR" ]]; then
+                echo "Cleaning target directory: $TARGET_DIR"
+                rm -rf "$TARGET_DIR"
+            fi
+            mkdir -p "$TARGET_DIR"
+
+      - name: Upload Repository
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "."
+          target: "~/${{ inputs.target_folder }}"
+          rm: false
+
+      - name: Verify Upload
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -euo pipefail
+            echo "=========================================="
+            echo "Upload Verification"
+            echo "=========================================="
+            echo "Size: $(du -sh ~/${{ inputs.target_folder }} | cut -f1)"
+            echo "Files: $(find ~/${{ inputs.target_folder }} -type f | wc -l)"
+            echo "=========================================="

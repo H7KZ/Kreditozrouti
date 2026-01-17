@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 # ==============================================================================
@@ -10,107 +10,229 @@ set -euo pipefail
 # Example:     ./deploy.sh prod production
 #              ./deploy.sh dev development
 #
-# Required Env Vars:
-#   - IMAGE_REGISTRY (e.g., ghcr.io)
-#   - IMAGE_PREFIX   (e.g., owner/repo)
-#   - IMAGE_TAG      (e.g., v1.0.0)
+# Arguments:
+#   project_name    Docker Compose project name (e.g., prod, dev)
+#   environment     Environment name matching directory (production, development)
+#
+# Required Environment Variables:
+#   IMAGE_REGISTRY  Container registry (e.g., ghcr.io)
+#   IMAGE_PREFIX    Image name prefix (e.g., owner/repo)
+#   IMAGE_TAG       Image tag (e.g., v1.0.0, dev-1.0.0)
+#
+# Directory Structure:
+#   ./
+#   ├── <environment>/
+#   │   ├── docker-compose.<environment>.yml
+#   │   ├── networks.yml
+#   │   ├── volumes.yml
+#   │   └── .env
+#   └── traefik/
+#       └── networks.yml
 # ==============================================================================
 
+# ------------------------------------------------------------------------------
+# Configuration
+# ------------------------------------------------------------------------------
+
+readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Colors for output
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly BLUE='\033[0;34m'
+readonly NC='\033[0m' # No Color
+
+# ------------------------------------------------------------------------------
+# Functions
+# ------------------------------------------------------------------------------
+
 log() {
-    echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')] $1"
+    echo -e "${BLUE}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1" >&2
 }
 
 usage() {
-    echo "Usage: $0 <project_name> <environment>"
-    echo "Example: $0 prod production"
+    cat << EOF
+Usage: $SCRIPT_NAME <project_name> <environment>
+
+Arguments:
+    project_name    Docker Compose project name (e.g., prod, dev)
+    environment     Environment name (production, development)
+
+Examples:
+    $SCRIPT_NAME prod production
+    $SCRIPT_NAME dev development
+
+Required Environment Variables:
+    IMAGE_REGISTRY  Container registry (e.g., ghcr.io)
+    IMAGE_PREFIX    Image name prefix (e.g., owner/repo)
+    IMAGE_TAG       Image tag (e.g., v1.0.0)
+EOF
     exit 1
 }
 
-if [ -z "${1:-}" ]; then
-    echo "Error: No project name specified."
-    usage
-fi
+validate_environment_vars() {
+    local missing=()
 
-PROJECT_NAME="$1"
-ENVIRONMENT="${2:-production}"
+    [[ -z "${IMAGE_REGISTRY:-}" ]] && missing+=("IMAGE_REGISTRY")
+    [[ -z "${IMAGE_PREFIX:-}" ]] && missing+=("IMAGE_PREFIX")
+    [[ -z "${IMAGE_TAG:-}" ]] && missing+=("IMAGE_TAG")
 
-# Validate Environment Variables
-if [ -z "${IMAGE_REGISTRY:-}" ] || [ -z "${IMAGE_PREFIX:-}" ] || [ -z "${IMAGE_TAG:-}" ]; then
-    echo "Error: Required environment variables are missing."
-    echo "Please export: IMAGE_REGISTRY, IMAGE_PREFIX, IMAGE_TAG"
-    exit 1
-fi
-
-log "Starting Deployment"
-log "Project: $PROJECT_NAME"
-log "Environment: $ENVIRONMENT"
-log "Image: $IMAGE_REGISTRY/$IMAGE_PREFIX:$IMAGE_TAG"
-
-# Path Configuration
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APP_COMPOSE_FILE="$SCRIPT_DIR/$ENVIRONMENT/docker-compose.$ENVIRONMENT.yml"
-NETWORKS_CONFIG="$SCRIPT_DIR/$ENVIRONMENT/networks.yml"
-VOLUMES_CONFIG="$SCRIPT_DIR/$ENVIRONMENT/volumes.yml"
-TRAEFIK_NETWORKS="$SCRIPT_DIR/traefik/networks.yml"
-ENV_FILE="$SCRIPT_DIR/$ENVIRONMENT/.env"
-
-# File Validation
-REQUIRED_FILES=("$APP_COMPOSE_FILE" "$NETWORKS_CONFIG" "$VOLUMES_CONFIG" "$TRAEFIK_NETWORKS" "$ENV_FILE")
-for FILE in "${REQUIRED_FILES[@]}"; do
-    if [ ! -f "$FILE" ]; then
-        echo "Error: Configuration file not found: $FILE"
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        log_error "Missing required environment variables: ${missing[*]}"
         exit 1
     fi
-done
+}
 
-log "Configuration files validated."
+validate_files() {
+    local files=("$@")
+    local missing=()
 
-# Network Setup
-log "Configuring Docker networks..."
-# Create project specific networks
-awk '/name:/ {print $2}' "$NETWORKS_CONFIG" | while read -r NETWORK; do
-    if ! docker network inspect "$NETWORK" &>/dev/null; then
-        log "Creating network: $NETWORK"
-        docker network create "$NETWORK"
+    for file in "${files[@]}"; do
+        [[ ! -f "$file" ]] && missing+=("$file")
+    done
+
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        log_error "Missing configuration files:"
+        for file in "${missing[@]}"; do
+            log_error "  - $file"
+        done
+        exit 1
     fi
-done
+}
 
-# Ensure traefik network exists
-if ! docker network inspect "traefik-network" &>/dev/null; then
-    log "Creating network: traefik-network"
-    docker network create "traefik-network"
-fi
+create_networks() {
+    local config_file="$1"
 
-# Volume Setup
-log "Configuring Docker volumes..."
-awk '/name:/ {print $2}' "$VOLUMES_CONFIG" | while read -r VOLUME; do
-    if ! docker volume inspect "$VOLUME" &>/dev/null; then
-        log "Creating volume: $VOLUME"
-        docker volume create "$VOLUME"
+    log "Configuring Docker networks..."
+
+    # Extract network names and create if not exists
+    grep -E '^\s+name:\s+' "$config_file" | awk '{print $2}' | while read -r network; do
+        if ! docker network inspect "$network" &>/dev/null; then
+            log "Creating network: $network"
+            docker network create "$network"
+        else
+            log "Network exists: $network"
+        fi
+    done
+}
+
+create_volumes() {
+    local config_file="$1"
+
+    log "Configuring Docker volumes..."
+
+    # Extract volume names and create if not exists
+    grep -E '^\s+name:\s+' "$config_file" | awk '{print $2}' | while read -r volume; do
+        if ! docker volume inspect "$volume" &>/dev/null; then
+            log "Creating volume: $volume"
+            docker volume create "$volume"
+        else
+            log "Volume exists: $volume"
+        fi
+    done
+}
+
+cleanup_on_error() {
+    log_error "Deployment failed. Rolling back..."
+    # Add rollback logic here if needed
+    exit 1
+}
+
+# ------------------------------------------------------------------------------
+# Main
+# ------------------------------------------------------------------------------
+
+main() {
+    # Parse arguments
+    if [[ $# -lt 1 ]]; then
+        log_error "No project name specified."
+        usage
     fi
-done
 
-# Pull Images
-log "Pulling images..."
-docker compose \
-    -p "$PROJECT_NAME" \
-    --env-file "$ENV_FILE" \
-    -f "$APP_COMPOSE_FILE" \
-    -f "$TRAEFIK_NETWORKS" \
-    -f "$NETWORKS_CONFIG" \
-    -f "$VOLUMES_CONFIG" \
-    pull
+    local project_name="$1"
+    local environment="${2:-production}"
 
-# Deploy
-log "Deploying stack..."
-docker compose \
-    -p "$PROJECT_NAME" \
-    --env-file "$ENV_FILE" \
-    -f "$APP_COMPOSE_FILE" \
-    -f "$TRAEFIK_NETWORKS" \
-    -f "$NETWORKS_CONFIG" \
-    -f "$VOLUMES_CONFIG" \
-    up --remove-orphans -d
+    # Set up error handling
+    trap cleanup_on_error ERR
 
-log "Deployment Complete."
-log "View logs with: docker compose -p $PROJECT_NAME logs -f"
+    # Validate environment variables
+    validate_environment_vars
+
+    # Define paths
+    local app_compose_file="$SCRIPT_DIR/$environment/docker-compose.$environment.yml"
+    local networks_config="$SCRIPT_DIR/$environment/networks.yml"
+    local volumes_config="$SCRIPT_DIR/$environment/volumes.yml"
+    local traefik_networks="$SCRIPT_DIR/traefik/networks.yml"
+    local env_file="$SCRIPT_DIR/$environment/.env"
+
+    # Validate required files
+    validate_files "$app_compose_file" "$networks_config" "$volumes_config" "$traefik_networks" "$env_file"
+
+    # Display deployment info
+    log "=========================================="
+    log "Starting Deployment"
+    log "=========================================="
+    log "Project:     $project_name"
+    log "Environment: $environment"
+    log "Image:       $IMAGE_REGISTRY/$IMAGE_PREFIX:$IMAGE_TAG"
+    log "=========================================="
+
+    # Create networks
+    create_networks "$networks_config"
+
+    # Ensure traefik network exists (external dependency)
+    if ! docker network inspect "traefik-network" &>/dev/null; then
+        log "Creating network: traefik-network"
+        docker network create "traefik-network"
+    fi
+
+    # Create volumes
+    create_volumes "$volumes_config"
+
+    # Pull images
+    log "Pulling images..."
+    docker compose \
+        -p "$project_name" \
+        --env-file "$env_file" \
+        -f "$app_compose_file" \
+        -f "$traefik_networks" \
+        -f "$networks_config" \
+        -f "$volumes_config" \
+        pull
+
+    # Deploy stack
+    log "Deploying stack..."
+    docker compose \
+        -p "$project_name" \
+        --env-file "$env_file" \
+        -f "$app_compose_file" \
+        -f "$traefik_networks" \
+        -f "$networks_config" \
+        -f "$volumes_config" \
+        up --remove-orphans -d
+
+    # Remove error trap on success
+    trap - ERR
+
+    log_success "=========================================="
+    log_success "Deployment Complete"
+    log_success "=========================================="
+    log "View logs: docker compose -p $project_name logs -f"
+    log "Status:    docker compose -p $project_name ps"
+}
+
+main "$@"

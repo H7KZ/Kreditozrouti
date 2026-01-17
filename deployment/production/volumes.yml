@@ -1,4 +1,8 @@
+# ==============================================================================
+# Volumes Configuration: Production
+# Description: Persistent volume definitions for production environment.
+# ==============================================================================
+
 volumes:
   mysql-data-volume:
     name: mysql-data-volume
-    external: false

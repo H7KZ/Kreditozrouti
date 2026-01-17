@@ -1,4 +1,11 @@
+# ==============================================================================
+# Volumes Configuration: Traefik
+# Description: Persistent volume definitions for Traefik reverse proxy.
+# ==============================================================================
+
 volumes:
   traefik-certificates-volume:
     name: traefik-certificates-volume
-    external: true
+
+  traefik-logs-volume:
+    name: traefik-logs-volume
