@@ -6,8 +6,8 @@
 networks:
   mysql-network:
     name: mysql-network
-    external: false
+    external: true
 
   redis-network:
     name: redis-network
-    external: false
+    external: true

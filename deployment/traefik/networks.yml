@@ -6,5 +6,5 @@
 networks:
   traefik-network:
     name: traefik-network
-    external: false
+    external: true
     driver: bridge
