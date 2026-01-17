@@ -208,10 +208,10 @@ main() {
     docker compose \
         -p "$project_name" \
         --env-file "$env_file" \
-        -f "$app_compose_file" \
         -f "$traefik_networks" \
         -f "$networks_config" \
         -f "$volumes_config" \
+        -f "$app_compose_file" \
         pull
 
     # Deploy stack
@@ -219,10 +219,10 @@ main() {
     docker compose \
         -p "$project_name" \
         --env-file "$env_file" \
-        -f "$app_compose_file" \
         -f "$traefik_networks" \
         -f "$networks_config" \
         -f "$volumes_config" \
+        -f "$app_compose_file" \
         up --remove-orphans -d
 
     # Remove error trap on success
