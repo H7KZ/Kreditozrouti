@@ -1,0 +1,217 @@
+# ==============================================================================
+# Workflow: Production Deployment
+# Description: Builds, pushes, and deploys images to production environment.
+# Trigger: Push tags matching 'v*.*.*' (e.g., v1.0.0, v2.1.3)
+#
+# Required Secrets:
+#   - SSH_HOST: VPS hostname or IP
+#   - SSH_USER: SSH username
+#   - SSH_PORT: SSH port
+#   - SSH_PRIVATE_KEY: SSH private key for authentication
+#   - GITHUB_TOKEN: Auto-provided for GHCR authentication
+#
+# Directory Structure on VPS:
+#   ~/versions/production/<tag>/     - Version-specific deployment files
+#   ~/versions/production/current    - Symlink to active version
+#   ~/variables/.env.prod            - Environment variables file
+# ==============================================================================
+
+name: Production Deployment
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  ENVIRONMENT: production
+  PROJECT_NAME: prod
+
+jobs:
+  # ============================================================================
+  # Build Job: Build and Push Docker Images
+  # ============================================================================
+  build:
+    name: Build and Push Images
+    runs-on: self-hosted
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tag }}
+      image_prefix: ${{ steps.meta.outputs.prefix }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Extract Metadata
+        id: meta
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          PREFIX=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
+          echo "::notice::Building images with tag: ${TAG}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push API
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./api/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.prefix }}/api:${{ steps.meta.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.prefix }}/api:latest
+          cache-from: type=gha,scope=api-prod
+          cache-to: type=gha,mode=max,scope=api-prod
+          platforms: linux/amd64
+
+      - name: Build and Push Client
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./client/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.prefix }}/client:${{ steps.meta.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.prefix }}/client:latest
+          cache-from: type=gha,scope=client-prod
+          cache-to: type=gha,mode=max,scope=client-prod
+          platforms: linux/amd64
+
+      - name: Build and Push Scraper
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./scraper/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.prefix }}/scraper:${{ steps.meta.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.prefix }}/scraper:latest
+          cache-from: type=gha,scope=scraper-prod
+          cache-to: type=gha,mode=max,scope=scraper-prod
+          platforms: linux/amd64
+
+  # ============================================================================
+  # Deploy Job: Deploy to Production Server
+  # ============================================================================
+  deploy:
+    name: Deploy to Production
+    needs: build
+    runs-on: self-hosted
+    timeout-minutes: 15
+
+    environment:
+      name: production
+      url: https://${{ vars.DOMAIN || 'example.com' }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Create Version Directory
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -euo pipefail
+            mkdir -p "$HOME/versions/production/${{ needs.build.outputs.image_tag }}"
+
+      - name: Upload Deployment Files
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "deployment/*"
+          target: "~/versions/production/${{ needs.build.outputs.image_tag }}"
+          strip_components: 1
+
+      - name: Execute Deployment
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
+          IMG_REGISTRY: ${{ env.REGISTRY }}
+          IMG_PREFIX: ${{ needs.build.outputs.image_prefix }}
+          IMG_TAG: ${{ needs.build.outputs.image_tag }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG
+          script: |
+            set -euo pipefail
+
+            # Configuration
+            VERSION_DIR="$HOME/versions/production/$IMG_TAG"
+            CURRENT_LINK="$HOME/versions/production/current"
+            VARIABLES_DIR="$HOME/variables"
+            ENVIRONMENT="production"
+            PROJECT_NAME="prod"
+
+            echo "=========================================="
+            echo "Deployment: $IMG_TAG"
+            echo "Environment: $ENVIRONMENT"
+            echo "=========================================="
+
+            # Copy environment file
+            if [[ -f "$VARIABLES_DIR/.env.prod" ]]; then
+                cp "$VARIABLES_DIR/.env.prod" "$VERSION_DIR/$ENVIRONMENT/.env"
+            else
+                echo "Error: .env.prod not found in $VARIABLES_DIR"
+                exit 1
+            fi
+
+            # Save registry credentials for rollback
+            cat > "$VERSION_DIR/.registry" << EOF
+            IMAGE_REGISTRY=$IMG_REGISTRY
+            IMAGE_PREFIX=$IMG_PREFIX
+            IMAGE_TAG=$IMG_TAG
+            GHCR_USER=$GH_ACTOR
+            GITHUB_TOKEN=$GH_TOKEN
+            EOF
+            chmod 600 "$VERSION_DIR/.registry"
+
+            # Authenticate with registry
+            echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
+
+            # Export image variables
+            export IMAGE_REGISTRY="$IMG_REGISTRY"
+            export IMAGE_PREFIX="$IMG_PREFIX"
+            export IMAGE_TAG="$IMG_TAG"
+
+            # Execute deployment
+            cd "$VERSION_DIR"
+            bash ./deploy.sh "$PROJECT_NAME" "$ENVIRONMENT"
+
+            # Update current symlink
+            ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
+
+            echo "=========================================="
+            echo "Deployment completed successfully"
+            echo "=========================================="

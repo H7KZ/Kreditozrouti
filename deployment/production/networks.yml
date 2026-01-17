@@ -1,8 +1,15 @@
+# ==============================================================================
+# Networks Configuration: Production
+# Description: External network definitions for production environment.
+# ==============================================================================
+
 networks:
+  traefik-network:
+    name: traefik-network
+    external: true
+
   mysql-network:
     name: mysql-network
-    external: false
 
   redis-network:
     name: redis-network
-    external: false

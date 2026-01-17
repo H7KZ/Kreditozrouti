@@ -1,12 +1,52 @@
+# ==============================================================================
+# Docker Compose: Traefik Reverse Proxy
+# Description: Global Traefik reverse proxy with automatic TLS via Let's Encrypt.
+#
+# Features:
+#   - Automatic HTTPS with Let's Encrypt
+#   - HTTP to HTTPS redirect
+#   - Dashboard with basic auth protection
+#   - Docker provider for automatic service discovery
+#
+# Required Environment Variables:
+#   - TRAEFIK_DOMAIN: Domain for the Traefik dashboard
+#   - TRAEFIK_CREDENTIALS_PATH: Path to htpasswd file for basic auth
+#
+# Usage: docker compose -f docker-compose.traefik.yml up -d
+# ==============================================================================
+
 services:
   traefik:
-    image: traefik:v3.6.7
+    image: traefik:v3.3
     restart: unless-stopped
 
+    command:
+      # API and Dashboard
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+      # Providers
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=traefik-network"
+      # Entrypoints
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      # TLS / Let's Encrypt
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL:-admin@example.com}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/certs/acme.json"
+      # Logging
+      - "--log.level=WARN"
+      - "--accesslog=true"
+      - "--accesslog.filepath=/var/log/traefik/access.log"
+      - "--accesslog.bufferingsize=100"
+
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-certificates-volume:/certs
-      - ./traefik.yml:/traefik.yml:ro
+      - traefik-logs-volume:/var/log/traefik
       - ${TRAEFIK_CREDENTIALS_PATH}:/credentials.txt:ro
 
     networks:
@@ -17,54 +57,60 @@ services:
       - "443:443"
 
     labels:
+      # Enable Traefik for this container
       - "traefik.enable=true"
-      # Global HTTP Configuration
-      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN}`)"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.tls=true"
-      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.traefik.service=api@internal"
 
-      # Middleware
-      - "traefik.http.routers.traefik.middlewares=traefik-redirect,traefik-auth"
+      # Dashboard Router
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_DOMAIN}`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.tls=true"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
 
-      # Redirect www to non-www
-      - "traefik.http.middlewares.traefik-redirect.redirectregex.regex=^https://www\\.(.*)"
-      - "traefik.http.middlewares.traefik-redirect.redirectregex.replacement=https://$${1}"
+      # Middlewares
+      - "traefik.http.routers.traefik-dashboard.middlewares=traefik-auth,traefik-redirect-www"
 
-      # Basic Auth
+      # Basic Auth Middleware
       - "traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt"
+
+      # WWW Redirect Middleware
+      - "traefik.http.middlewares.traefik-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+      - "traefik.http.middlewares.traefik-redirect-www.redirectregex.replacement=https://$${1}"
+      - "traefik.http.middlewares.traefik-redirect-www.redirectregex.permanent=true"
+
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
 
     deploy:
       mode: global
-
       placement:
         constraints:
           - node.role == manager
-
       resources:
         limits:
-          cpus: '2'
-          memory: 4096M
-
+          cpus: "2"
+          memory: 2048M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
       restart_policy:
         condition: on-failure
         delay: 5s
         max_attempts: 3
         window: 120s
-
       update_config:
         parallelism: 1
         delay: 10s
         failure_action: rollback
         monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
-
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
         order: stop-first

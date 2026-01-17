@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 # ==============================================================================
@@ -6,179 +6,351 @@ set -euo pipefail
 # Description: Switches the current deployment to a previously saved version.
 #              Loads registry credentials automatically if available.
 #
-# Usage:       ./rollback.sh <environment> <version> [options]
+# Usage:       ./rollback.sh <environment> [version] [options]
+#
 # Arguments:
-#   environment    production|development
-#   version        Tag to rollback to (e.g., v1.0.0)
+#   environment    Environment name (production, development)
+#   version        Tag to rollback to (e.g., v1.0.0, dev-1.0.0)
 #
 # Options:
-#   -l, --list     List available versions
-#   -c, --current  Show current version
-#   -h, --help     Show help
+#   -l, --list     List available versions for the environment
+#   -c, --current  Show current active version
+#   -f, --force    Skip confirmation prompt
+#   -h, --help     Show help message
+#
+# Directory Structure:
+#   ~/versions/<environment>/
+#   ├── <version>/          # Version-specific deployment files
+#   │   ├── deploy.sh
+#   │   ├── .registry       # Saved registry credentials
+#   │   └── <environment>/
+#   │       └── .env
+#   └── current             # Symlink to active version
 # ==============================================================================
 
+# ------------------------------------------------------------------------------
+# Configuration
+# ------------------------------------------------------------------------------
+
+readonly SCRIPT_NAME="$(basename "$0")"
+readonly VERSIONS_BASE_DIR="$HOME/versions"
+readonly VARIABLES_DIR="$HOME/variables"
+
+# Colors for output
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly BLUE='\033[0;34m'
+readonly CYAN='\033[0;36m'
+readonly NC='\033[0m' # No Color
+
+# ------------------------------------------------------------------------------
+# Functions
+# ------------------------------------------------------------------------------
+
 log() {
-    echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')] $1"
+    echo -e "${BLUE}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1" >&2
 }
 
 usage() {
-    echo "Usage: $0 <environment> <version> [options]"
-    echo ""
-    echo "Options:"
-    echo "  -l, --list     List available versions"
-    echo "  -c, --current  Show current deployed version"
-    echo "  -h, --help     Show this help message"
+    cat << EOF
+Usage: $SCRIPT_NAME <environment> [version] [options]
+
+Arguments:
+    environment    Environment name (production, development)
+    version        Tag to rollback to (e.g., v1.0.0, dev-1.0.0)
+
+Options:
+    -l, --list     List available versions
+    -c, --current  Show current version
+    -f, --force    Skip confirmation prompt
+    -h, --help     Show this help message
+
+Examples:
+    $SCRIPT_NAME production v1.2.3
+    $SCRIPT_NAME development dev-1.0.0
+    $SCRIPT_NAME production --list
+    $SCRIPT_NAME development --current
+EOF
     exit 1
 }
 
-list_versions() {
-    local env=$1
-    local versions_dir="$HOME/versions/$env"
+validate_environment() {
+    local env="$1"
 
-    if [ ! -d "$versions_dir" ]; then
-        echo "Error: No versions found for environment: $env"
+    if [[ "$env" != "production" && "$env" != "development" ]]; then
+        log_error "Invalid environment: $env"
+        log_error "Must be 'production' or 'development'"
+        exit 1
+    fi
+}
+
+get_project_name() {
+    local env="$1"
+
+    case "$env" in
+        production)  echo "prod" ;;
+        development) echo "dev" ;;
+        *)           echo "$env" ;;
+    esac
+}
+
+list_versions() {
+    local env="$1"
+    local versions_dir="$VERSIONS_BASE_DIR/$env"
+
+    if [[ ! -d "$versions_dir" ]]; then
+        log_error "No versions found for environment: $env"
         exit 1
     fi
 
-    echo "Available versions for $env:"
-    local current
-    current=$(readlink -f "$HOME/versions/$env/current" 2>/dev/null || echo "none")
+    local current_path
+    current_path=$(readlink -f "$versions_dir/current" 2>/dev/null || echo "")
+
+    echo ""
+    echo -e "${CYAN}Available versions for $env:${NC}"
+    echo ""
 
     find "$versions_dir" -maxdepth 1 -mindepth 1 -type d | sort -V | while read -r dir; do
         local version
         version=$(basename "$dir")
-        if [ "$version" != "current" ]; then
-            local status=" "
-            local registry_info=""
 
-            if [ "$dir" = "$current" ]; then
-                status="*"
-            fi
+        # Skip the current symlink
+        [[ "$version" == "current" ]] && continue
 
-            if [ -f "$dir/.registry" ]; then
-                registry_info="(saved credentials)"
-            fi
+        local marker=" "
+        local info=""
 
-            echo "  $status $version $registry_info"
-        fi
+        # Mark current version
+        [[ "$dir" == "$current_path" ]] && marker="*"
+
+        # Check for saved credentials
+        [[ -f "$dir/.registry" ]] && info="${GREEN}[credentials saved]${NC}"
+
+        # Check for deploy script
+        [[ ! -f "$dir/deploy.sh" ]] && info="${YELLOW}[missing deploy.sh]${NC}"
+
+        echo -e "  $marker $version $info"
     done
+
+    echo ""
     echo "  (* = current version)"
+    echo ""
 }
 
 show_current() {
-    local env=$1
-    local current_link="$HOME/versions/$env/current"
+    local env="$1"
+    local current_link="$VERSIONS_BASE_DIR/$env/current"
 
-    if [ -L "$current_link" ]; then
+    if [[ -L "$current_link" ]]; then
         local current_version
         current_version=$(basename "$(readlink -f "$current_link")")
-        echo "Current $env version: $current_version"
+        log_success "Current $env version: $current_version"
     else
-        echo "No current version set for $env"
+        log_warning "No current version set for $env"
     fi
 }
 
-# Argument Parsing
-if [ -z "${1:-}" ]; then
-    usage
-fi
+confirm_rollback() {
+    local env="$1"
+    local version="$2"
 
-ENVIRONMENT="$1"
-shift
+    echo ""
+    log_warning "You are about to rollback $env to version: $version"
+    echo ""
+    read -rp "Continue? [y/N] " response
 
-if [[ "$ENVIRONMENT" != "production" && "$ENVIRONMENT" != "development" ]]; then
-    echo "Error: Invalid environment '$ENVIRONMENT'. Must be 'production' or 'development'."
-    exit 1
-fi
+    case "$response" in
+        [yY][eE][sS]|[yY])
+            return 0
+            ;;
+        *)
+            log "Rollback cancelled."
+            exit 0
+            ;;
+    esac
+}
 
-case "${1:-}" in
-    -l|--list)
-        list_versions "$ENVIRONMENT"
-        exit 0
-        ;;
-    -c|--current)
-        show_current "$ENVIRONMENT"
-        exit 0
-        ;;
-    -h|--help)
+# ------------------------------------------------------------------------------
+# Main
+# ------------------------------------------------------------------------------
+
+main() {
+    local environment=""
+    local version=""
+    local force=false
+    local action=""
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -l|--list)
+                action="list"
+                shift
+                ;;
+            -c|--current)
+                action="current"
+                shift
+                ;;
+            -f|--force)
+                force=true
+                shift
+                ;;
+            -h|--help)
+                usage
+                ;;
+            -*)
+                log_error "Unknown option: $1"
+                usage
+                ;;
+            *)
+                if [[ -z "$environment" ]]; then
+                    environment="$1"
+                elif [[ -z "$version" ]]; then
+                    version="$1"
+                else
+                    log_error "Unexpected argument: $1"
+                    usage
+                fi
+                shift
+                ;;
+        esac
+    done
+
+    # Validate environment is provided
+    if [[ -z "$environment" ]]; then
+        log_error "Environment not specified."
         usage
-        ;;
-esac
-
-VERSION="${1:-}"
-
-if [ -z "$VERSION" ]; then
-    echo "Error: Version not specified."
-    usage
-fi
-
-# Rollback Execution
-VERSION_DIR="$HOME/versions/$ENVIRONMENT/$VERSION"
-CURRENT_LINK="$HOME/versions/$ENVIRONMENT/current"
-REGISTRY_FILE="$VERSION_DIR/.registry"
-
-# Set Project Names
-if [ "$ENVIRONMENT" = "production" ]; then
-    PROJECT_NAME="prod"
-    ENV_NAME="prod"
-else
-    PROJECT_NAME="dev"
-    ENV_NAME="dev"
-fi
-
-log "Initiating Rollback"
-log "Target: $ENVIRONMENT / $VERSION"
-
-if [ ! -d "$VERSION_DIR" ]; then
-    echo "Error: Version directory not found: $VERSION_DIR"
-    list_versions "$ENVIRONMENT"
-    exit 1
-fi
-
-if [ ! -f "$VERSION_DIR/deploy.sh" ]; then
-    echo "Error: deploy.sh not found in version directory."
-    exit 1
-fi
-
-# Ensure .env exists
-if [ ! -f "$VERSION_DIR/$ENV_NAME/.env" ]; then
-    log "Warning: .env file not found, attempting to copy from home..."
-    cp "$HOME/.env.$ENV_NAME" "$VERSION_DIR/$ENV_NAME/.env" || {
-        echo "Error: Could not find .env file source."
-        exit 1
-    }
-fi
-
-# Load Registry Credentials
-if [ -f "$REGISTRY_FILE" ]; then
-    log "Loading registry credentials from backup..."
-    source "$REGISTRY_FILE"
-    export IMAGE_REGISTRY
-    export IMAGE_PREFIX
-    export IMAGE_TAG
-
-    if [ -n "${GHCR_TOKEN:-}" ] && [ -n "${GHCR_USER:-}" ]; then
-        log "Logging into container registry..."
-        echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
     fi
-else
-    log "Warning: No registry credential file found."
-    log "Attempting to use manual environment variables..."
 
-    export IMAGE_TAG="$VERSION"
+    validate_environment "$environment"
 
-    if [ -z "${IMAGE_REGISTRY:-}" ] || [ -z "${IMAGE_PREFIX:-}" ]; then
-        echo "Error: IMAGE_REGISTRY and IMAGE_PREFIX must be manually set."
+    # Handle list/current actions
+    case "$action" in
+        list)
+            list_versions "$environment"
+            exit 0
+            ;;
+        current)
+            show_current "$environment"
+            exit 0
+            ;;
+    esac
+
+    # For rollback, version is required
+    if [[ -z "$version" ]]; then
+        log_error "Version not specified."
+        usage
+    fi
+
+    # Configuration
+    local version_dir="$VERSIONS_BASE_DIR/$environment/$version"
+    local current_link="$VERSIONS_BASE_DIR/$environment/current"
+    local registry_file="$version_dir/.registry"
+    local project_name
+    project_name=$(get_project_name "$environment")
+
+    log "=========================================="
+    log "Rollback Initiated"
+    log "=========================================="
+    log "Environment: $environment"
+    log "Version:     $version"
+    log "Project:     $project_name"
+    log "=========================================="
+
+    # Validate version directory exists
+    if [[ ! -d "$version_dir" ]]; then
+        log_error "Version directory not found: $version_dir"
+        list_versions "$environment"
         exit 1
     fi
-fi
 
-log "Executing deployment script..."
-cd "$VERSION_DIR"
-bash ./deploy.sh "$PROJECT_NAME" "$ENV_NAME"
+    # Validate deploy script exists
+    if [[ ! -f "$version_dir/deploy.sh" ]]; then
+        log_error "deploy.sh not found in version directory"
+        exit 1
+    fi
 
-log "Updating symlinks..."
-ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
+    # Confirm rollback (unless forced)
+    if [[ "$force" != true ]]; then
+        confirm_rollback "$environment" "$version"
+    fi
 
-log "Rollback Complete."
-log "Current version is now: $(readlink -f "$CURRENT_LINK")"
+    # Ensure .env file exists
+    local env_file="$version_dir/$environment/.env"
+    if [[ ! -f "$env_file" ]]; then
+        log_warning ".env file not found, attempting to copy from variables directory..."
+
+        local source_env=""
+        case "$environment" in
+            production)  source_env="$VARIABLES_DIR/.env.prod" ;;
+            development) source_env="$VARIABLES_DIR/.env.dev" ;;
+        esac
+
+        if [[ -f "$source_env" ]]; then
+            mkdir -p "$version_dir/$environment"
+            cp "$source_env" "$env_file"
+            log_success "Copied environment file from $source_env"
+        else
+            log_error "Could not find environment file source: $source_env"
+            exit 1
+        fi
+    fi
+
+    # Load registry credentials
+    if [[ -f "$registry_file" ]]; then
+        log "Loading saved registry credentials..."
+        # shellcheck source=/dev/null
+        source "$registry_file"
+
+        export IMAGE_REGISTRY
+        export IMAGE_PREFIX
+        export IMAGE_TAG
+
+        # Login to registry if credentials available
+        if [[ -n "${GITHUB_TOKEN:-}" && -n "${GHCR_USER:-}" ]]; then
+            log "Authenticating with container registry..."
+            echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+        fi
+    else
+        log_warning "No saved registry credentials found."
+        log "Using manual environment variables..."
+
+        # Default IMAGE_TAG to version if not set
+        export IMAGE_TAG="${IMAGE_TAG:-$version}"
+
+        if [[ -z "${IMAGE_REGISTRY:-}" || -z "${IMAGE_PREFIX:-}" ]]; then
+            log_error "IMAGE_REGISTRY and IMAGE_PREFIX must be set manually."
+            log_error "Export these variables or ensure .registry file exists."
+            exit 1
+        fi
+    fi
+
+    # Execute deployment
+    log "Executing deployment script..."
+    cd "$version_dir"
+    bash ./deploy.sh "$project_name" "$environment"
+
+    # Update current symlink
+    log "Updating current symlink..."
+    ln -sfn "$version_dir" "$current_link"
+
+    log_success "=========================================="
+    log_success "Rollback Complete"
+    log_success "=========================================="
+    log "Active version: $(basename "$(readlink -f "$current_link")")"
+}
+
+main "$@"

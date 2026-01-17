@@ -1,29 +1,45 @@
-name: CI/CD Pipeline
+# ==============================================================================
+# Workflow: CI Pipeline
+# Description: Runs code verification on pull requests.
+#              Includes dependency installation, linting, and build checks.
+# Trigger: Pull request events (opened, synchronize, reopened)
+#
+# Prerequisites:
+#   - pnpm package manager
+#   - Node.js 20
+#   - Makefile with install, lint, and build targets
+# ==============================================================================
+
+name: CI Pipeline
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: ci-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  verify_code:
-    if: github.event_name == 'pull_request'
+  verify:
     name: Verify Code
     runs-on: self-hosted
+    timeout-minutes: 15
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install Dependencies
         run: make install
@@ -34,5 +50,5 @@ jobs:
       - name: Build
         run: make build
 
-      - name: Success Message
-        run: echo "Verification successful!"
+      - name: Verification Complete
+        run: echo "::notice::All checks passed successfully"

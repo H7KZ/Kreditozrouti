@@ -1,4 +1,8 @@
+# ==============================================================================
+# Volumes Configuration: Development
+# Description: Persistent volume definitions for development environment.
+# ==============================================================================
+
 volumes:
   mysql-data-dev-volume:
     name: mysql-data-dev-volume
-    external: false

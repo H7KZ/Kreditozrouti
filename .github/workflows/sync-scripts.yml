@@ -1,0 +1,57 @@
+# ==============================================================================
+# Workflow: Sync Admin Scripts
+# Description: Automatically syncs admin scripts to VPS when changes are pushed.
+#              Can also be triggered manually.
+# Trigger: Push to scripts/** or manual dispatch
+#
+# Required Secrets:
+#   - SSH_HOST: VPS hostname or IP
+#   - SSH_USER: SSH username
+#   - SSH_PORT: SSH port
+#   - SSH_PRIVATE_KEY: SSH private key for authentication
+# ==============================================================================
+
+name: Sync Scripts
+
+on:
+  push:
+    paths:
+      - "scripts/**"
+  workflow_dispatch:
+
+concurrency:
+  group: sync-scripts
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Sync Scripts to VPS
+    runs-on: self-hosted
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Upload Scripts
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "scripts/*"
+          target: "~/scripts"
+          strip_components: 1
+
+      - name: Set Permissions
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -euo pipefail
+            chmod +x ~/scripts/*.sh 2>/dev/null || true
+            echo "Scripts synced: $(ls -1 ~/scripts/*.sh 2>/dev/null | wc -l) files"
