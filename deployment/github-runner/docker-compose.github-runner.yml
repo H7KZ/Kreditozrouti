@@ -19,7 +19,6 @@ services:
       # Configuration
       - RUNNER_WORKDIR=/tmp/runner-work
       - DISABLE_AUTO_UPDATE=true
-      - EPHEMERAL=false
 
     networks:
       - traefik-network
