@@ -83,31 +83,22 @@ log "Config: Repo=$GITHUB_REPO_URL, Replicas=$RUNNER_REPLICAS, Labels=$COMBINED_
 # Paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RUNNER_COMPOSE_FILE="$SCRIPT_DIR/github-runner/docker-compose.github-runner.yml"
-RUNNER_NETWORKS_CONFIG="$SCRIPT_DIR/github-runner/networks.yml"
+TRAEFIK_NETWORKS_CONFIG="$SCRIPT_DIR/traefik/networks.yml"
 
-if [ ! -f "$RUNNER_COMPOSE_FILE" ]; then
-    echo "Error: Compose file not found: $RUNNER_COMPOSE_FILE"
-    exit 1
-fi
+# File Checks
+for FILE in "$RUNNER_COMPOSE_FILE" "$TRAEFIK_NETWORKS_CONFIG"; do
+    if [ ! -f "$FILE" ]; then
+        echo "Error: Config file not found: $FILE"
+        exit 1
+    fi
+done
 
-# Network check
-if [ ! -f "$RUNNER_NETWORKS_CONFIG" ]; then
-    log "Warning: Network config not found. Relying on 'traefik-network'."
-    RUNNER_NETWORKS_CONFIG=""
-fi
-
-if ! docker network inspect "traefik-network" &>/dev/null; then
-    log "Creating required network: traefik-network"
-    docker network create "traefik-network"
-fi
-
-# Deploy
-COMPOSE_CMD="docker compose -p $RUNNER_STACK_NAME -f $RUNNER_COMPOSE_FILE"
-if [ -n "$RUNNER_NETWORKS_CONFIG" ]; then
-    COMPOSE_CMD="$COMPOSE_CMD -f $RUNNER_NETWORKS_CONFIG"
-fi
-
-log "Starting deployment..."
-$COMPOSE_CMD up -d --scale runner="$RUNNER_REPLICAS"
+# Deployment
+log "Deploying GitHub Runners..."
+docker compose \
+    -p "$RUNNER_STACK_NAME" \
+    -f "$RUNNER_COMPOSE_FILE" \
+    -f "$TRAEFIK_NETWORKS_CONFIG" \
+    up -d --scale runner="$RUNNER_REPLICAS"
 
 log "Runner deployment finished."

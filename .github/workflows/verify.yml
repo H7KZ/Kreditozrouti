@@ -8,7 +8,7 @@ jobs:
   verify_code:
     if: github.event_name == 'pull_request'
     name: Verify Code
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout Code
