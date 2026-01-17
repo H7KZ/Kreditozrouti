@@ -1,4 +1,4 @@
 volumes:
   mysql-data-dev-volume:
     name: mysql-data-dev-volume
-    external: true
+    external: false

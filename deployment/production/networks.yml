@@ -1,11 +1,8 @@
 networks:
   mysql-network:
     name: mysql-network
-    external: true
-    driver: bridge
-
+    external: false
 
   redis-network:
     name: redis-network
-    external: true
-    driver: bridge
+    external: false
