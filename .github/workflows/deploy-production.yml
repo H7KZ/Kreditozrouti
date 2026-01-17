@@ -1,7 +1,9 @@
 # ==============================================================================
 # Workflow: Production Deployment
 # Description: Builds, pushes, and deploys images to production environment.
-# Trigger: Push tags matching 'v*.*.*' (e.g., v1.0.0, v2.1.3)
+# Trigger:
+#   - Push tags matching 'v*.*.*' (e.g., v1.0.0, v2.1.3)
+#   - Manual dispatch with optional skip-build flag
 #
 # Required Secrets:
 #   - SSH_HOST: VPS hostname or IP
@@ -23,6 +25,18 @@ on:
     tags:
       - "v*.*.*"
 
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag to deploy (e.g., v1.0.0)"
+        required: true
+        type: string
+      skip_build:
+        description: "Skip build and only deploy (image must exist in registry)"
+        required: false
+        default: false
+        type: boolean
+
 concurrency:
   group: deploy-production
   cancel-in-progress: false
@@ -40,6 +54,7 @@ jobs:
     name: Build and Push Images
     runs-on: self-hosted
     timeout-minutes: 30
+    if: ${{ !inputs.skip_build }}
 
     permissions:
       contents: read
@@ -51,19 +66,23 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Extract Metadata
         id: meta
         run: |
-          TAG="${GITHUB_REF#refs/tags/}"
+          if [[ -n "${{ inputs.image_tag }}" ]]; then
+            TAG="${{ inputs.image_tag }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+          fi
           PREFIX=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
           echo "::notice::Building images with tag: ${TAG}"
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v3.12.0
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -73,7 +92,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push API
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v6.18.0
         with:
           context: .
           file: ./api/Dockerfile
@@ -86,7 +105,7 @@ jobs:
           platforms: linux/amd64
 
       - name: Build and Push Client
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v6.18.0
         with:
           context: .
           file: ./client/Dockerfile
@@ -99,7 +118,7 @@ jobs:
           platforms: linux/amd64
 
       - name: Build and Push Scraper
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v6.18.0
         with:
           context: .
           file: ./scraper/Dockerfile
@@ -112,11 +131,34 @@ jobs:
           platforms: linux/amd64
 
   # ============================================================================
+  # Prepare Job: Set deployment variables (for skip_build scenario)
+  # ============================================================================
+  prepare:
+    name: Prepare Deployment
+    runs-on: self-hosted
+    if: ${{ inputs.skip_build }}
+
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tag }}
+      image_prefix: ${{ steps.meta.outputs.prefix }}
+
+    steps:
+      - name: Set Metadata
+        id: meta
+        run: |
+          TAG="${{ inputs.image_tag }}"
+          PREFIX=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
+          echo "::notice::Deploying existing image with tag: ${TAG}"
+
+  # ============================================================================
   # Deploy Job: Deploy to Production Server
   # ============================================================================
   deploy:
     name: Deploy to Production
-    needs: build
+    needs: [build, prepare]
+    if: ${{ always() && (needs.build.result == 'success' || needs.prepare.result == 'success') }}
     runs-on: self-hosted
     timeout-minutes: 15
 
@@ -126,10 +168,21 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Set Deploy Variables
+        id: vars
+        run: |
+          if [[ -n "${{ needs.build.outputs.image_tag }}" ]]; then
+            echo "image_tag=${{ needs.build.outputs.image_tag }}" >> "$GITHUB_OUTPUT"
+            echo "image_prefix=${{ needs.build.outputs.image_prefix }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "image_tag=${{ needs.prepare.outputs.image_tag }}" >> "$GITHUB_OUTPUT"
+            echo "image_prefix=${{ needs.prepare.outputs.image_prefix }}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Create Version Directory
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.2.4
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -137,27 +190,28 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             set -euo pipefail
-            mkdir -p "$HOME/versions/production/${{ needs.build.outputs.image_tag }}"
+            mkdir -p "$HOME/versions/production/${{ steps.vars.outputs.image_tag }}"
 
       - name: Upload Deployment Files
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "deployment/*"
-          target: "~/versions/production/${{ needs.build.outputs.image_tag }}"
+          source: "deployment/"
+          target: "~/versions/production/${{ steps.vars.outputs.image_tag }}"
           strip_components: 1
+          overwrite: true
 
       - name: Execute Deployment
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.2.4
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_ACTOR: ${{ github.actor }}
           IMG_REGISTRY: ${{ env.REGISTRY }}
-          IMG_PREFIX: ${{ needs.build.outputs.image_prefix }}
-          IMG_TAG: ${{ needs.build.outputs.image_tag }}
+          IMG_PREFIX: ${{ steps.vars.outputs.image_prefix }}
+          IMG_TAG: ${{ steps.vars.outputs.image_tag }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
