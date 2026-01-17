@@ -1,28 +1,24 @@
 name: CI/CD Pipeline
 
 on:
-  # RUN on Pull Requests
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  # --- VERIFICATION JOB ---
   verify_code:
-    # Run only on Pull Requests (Verification)
     if: github.event_name == 'pull_request'
     name: Verify Code
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Install PNPM
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      # Setup Node 20 and handle Caching automatically
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:

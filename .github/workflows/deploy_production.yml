@@ -3,26 +3,21 @@ name: Production Deployment
 on:
   push:
     tags:
-      - 'v*.*.*' # Matches v1.0.0
+      - 'v*.*.*'
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_PREFIX: ${{ github.repository }}
 
 jobs:
-  # ================================================================ #
-  # BUILD AND PUSH IMAGES
-  # ================================================================ #
   build:
     name: Build and Push Images
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       packages: write
-
     outputs:
       image_tag: ${{ steps.version.outputs.tag }}
+      image_prefix: ${{ steps.version.outputs.image_prefix }}
 
     steps:
       - name: Checkout Code
@@ -44,8 +39,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Build API
-      - name: Build and Push API Image
+      - name: Build and Push API
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -58,8 +52,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=api
           platforms: linux/amd64
 
-      # Build Client
-      - name: Build and Push Client Image
+      - name: Build and Push Client
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -72,8 +65,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=client
           platforms: linux/amd64
 
-      # Build Scraper
-      - name: Build and Push Scraper Image
+      - name: Build and Push Scraper
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -86,16 +78,6 @@ jobs:
           cache-to: type=gha,mode=max,scope=scraper
           platforms: linux/amd64
 
-      - name: Output Image Tags
-        run: |
-          echo "✅ Images pushed:"
-          echo "  - ${{ env.REGISTRY }}/${{ steps.version.outputs.image_prefix }}/api:${{ steps.version.outputs.tag }}"
-          echo "  - ${{ env.REGISTRY }}/${{ steps.version.outputs.image_prefix }}/client:${{ steps.version.outputs.tag }}"
-          echo "  - ${{ env.REGISTRY }}/${{ steps.version.outputs.image_prefix }}/scraper:${{ steps.version.outputs.tag }}"
-
-  # ================================================================ #
-  # DEPLOY TO PRODUCTION SERVER
-  # ================================================================ #
   deploy:
     name: Deploy to Production
     needs: build
@@ -105,12 +87,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set lowercase image prefix
-        id: repo
-        run: echo "image_prefix=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+      - name: Create Version Directory
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            mkdir -p ~/versions/production/${{ needs.build.outputs.image_tag }}
 
-      # 1. Copy Deployment Files
-      - name: Copy deployment files to Production
+      - name: Upload Deployment Files
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -118,18 +105,16 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: "deployment/*"
-          target: "/${{ secrets.SSH_USER }}/production"
-          rm: true
-          strip_components: 0
+          target: "~/versions/production/${{ needs.build.outputs.image_tag }}"
+          strip_components: 1
 
-      # 2. Run Remote Deployment
-      - name: Execute Remote Deployment
+      - name: Execute Deployment
         uses: appleboy/ssh-action@v1
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GHCR_TOKEN }}
           GH_ACTOR: ${{ github.actor }}
           IMG_REGISTRY: ${{ env.REGISTRY }}
-          IMG_PREFIX: ${{ steps.repo.outputs.image_prefix }}
+          IMG_PREFIX: ${{ needs.build.outputs.image_prefix }}
           IMG_TAG: ${{ needs.build.outputs.image_tag }}
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -138,21 +123,45 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG
           script: |
-            set -e
-            cd ~/${{ secrets.SSH_USER }}/production/deployment
+            set -euo pipefail
             
-            # Copy environment file
-            cp ~/.env.prod ./prod/.env
+            VERSION_DIR="$HOME/versions/production/$IMG_TAG"
+            CURRENT_LINK="$HOME/versions/production/current"
+            VARIABLES_DIR="$HOME/variables"
+            ENV_NAME="production"
+            PROJECT_NAME="prod"
             
-            # Login to GitHub Container Registry
+            echo "Starting Deployment: $IMG_TAG"
+            
+            if [ -f "$VARIABLES_DIR/.env.prod" ]; then
+                cp "$VARIABLES_DIR/.env.prod" "$VERSION_DIR/$ENV_NAME/.env"
+            else
+                echo "Error: .env.prod not found in variables directory."
+                exit 1
+            fi
+            
+            # Save registry credentials
+            cat > "$VERSION_DIR/.registry" << EOF
+            IMAGE_REGISTRY=$IMG_REGISTRY
+            IMAGE_PREFIX=$IMG_PREFIX
+            IMAGE_TAG=$IMG_TAG
+            GHCR_USER=$GH_ACTOR
+            GHCR_TOKEN=$GH_TOKEN
+            EOF
+            chmod 600 "$VERSION_DIR/.registry"
+            
+            # Login and Export
             echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
             
-            # Export image variables for docker-compose
             export IMAGE_REGISTRY="$IMG_REGISTRY"
             export IMAGE_PREFIX="$IMG_PREFIX"
             export IMAGE_TAG="$IMG_TAG"
             
-            # Run deployment script
-            bash ./environment.sh prod prod
+            # Run Deployment
+            cd "$VERSION_DIR"
+            bash ./deploy.sh "$PROJECT_NAME" "$ENV_NAME"
             
-            echo "✅ Production deployment complete!"
+            # Update Link
+            ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
+            
+            echo "Deployment to Production completed successfully."

@@ -1,12 +1,13 @@
 services:
   traefik:
     image: traefik:v3.6.6
+    restart: unless-stopped
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - traefik-certificates-volume:/certs
       - ./traefik.yml:/traefik.yml:ro
-      - ./credentials.txt:/credentials.txt:ro
+      - ${TRAEFIK_CREDENTIALS_PATH}:/credentials.txt:ro
 
     networks:
       - traefik-network
@@ -16,18 +17,23 @@ services:
       - "443:443"
 
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.traefik.rule=Host(`traefik-kreditozrouti.jankominek.com`)
-      - traefik.http.routers.traefik.entrypoints=websecure
-      - traefik.http.routers.traefik.tls=true
-      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
-      - traefik.http.routers.traefik.service=api@internal
+      - "traefik.enable=true"
+      # Global HTTP Configuration
+      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN}`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik.service=api@internal"
 
-      - traefik.http.routers.traefik.middlewares=traefik-redirect,traefik-auth
+      # Middleware
+      - "traefik.http.routers.traefik.middlewares=traefik-redirect,traefik-auth"
 
-      - traefik.http.middlewares.traefik-redirect.redirectregex.regex=^https://www\.(.*)
-      - traefik.http.middlewares.traefik-redirect.redirectregex.replacement=https://$${1}
-      - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt
+      # Redirect www to non-www
+      - "traefik.http.middlewares.traefik-redirect.redirectregex.regex=^https://www\\.(.*)"
+      - "traefik.http.middlewares.traefik-redirect.redirectregex.replacement=https://$${1}"
+
+      # Basic Auth
+      - "traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt"
 
     deploy:
       mode: global
@@ -36,19 +42,16 @@ services:
         constraints:
           - node.role == manager
 
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4096M
+
       restart_policy:
         condition: on-failure
         delay: 5s
         max_attempts: 3
         window: 120s
-
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 60s
-        max_failure_ratio: 0.3
-        order: stop-first
 
       update_config:
         parallelism: 1
@@ -58,9 +61,10 @@ services:
         max_failure_ratio: 0.3
         order: stop-first
 
-      resources:
-        limits:
-          cpus: 2
-          memory: 4096M
-
-    restart: unless-stopped
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: stop-first

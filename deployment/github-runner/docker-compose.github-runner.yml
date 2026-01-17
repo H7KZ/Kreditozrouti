@@ -1,0 +1,55 @@
+services:
+  runner:
+    image: myoung34/github-runner:latest
+    restart: unless-stopped
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    environment:
+      # Required for registration
+      - REPO_URL=${GITHUB_REPO_URL}
+      - ACCESS_TOKEN=${GITHUB_ACCESS_TOKEN}
+
+      # Naming and Scope
+      - RUNNER_NAME_PREFIX=${PROJECT:-github}-runner
+      - RUNNER_SCOPE=repo
+      - LABELS=${RUNNER_LABELS:-docker,self-hosted}
+
+      # Configuration
+      - RUNNER_WORKDIR=/tmp/runner-work
+      - DISABLE_AUTO_UPDATE=true
+      - EPHEMERAL=false
+
+    networks:
+      - traefik-network
+
+    deploy:
+      mode: replicated
+      replicas: ${RUNNER_REPLICAS:-2}
+
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2048M
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 30s
+        max_failure_ratio: 0.3
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 30s
+        order: stop-first
