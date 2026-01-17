@@ -2,7 +2,7 @@
 # Workflow: Sync Admin Scripts
 # Description: Automatically syncs admin scripts to VPS when changes are pushed.
 #              Can also be triggered manually.
-# Trigger: Push to scripts/** or manual dispatch
+# Trigger: Push to scripts/** on 'main' & 'develop' branches or manual dispatch
 #
 # Required Secrets:
 #   - SSH_HOST: VPS hostname or IP
@@ -15,6 +15,9 @@ name: Sync Scripts
 
 on:
   push:
+    branches:
+      - main
+      - develop
     paths:
       - "scripts/**"
   workflow_dispatch:
