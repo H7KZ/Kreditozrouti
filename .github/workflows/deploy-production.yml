@@ -164,7 +164,6 @@ jobs:
 
     environment:
       name: production
-      url: https://${{ vars.DOMAIN || 'example.com' }}
 
     steps:
       - name: Checkout Code
@@ -240,16 +239,6 @@ jobs:
                 echo "Error: .env.prod not found in $VARIABLES_DIR"
                 exit 1
             fi
-
-            # Save registry credentials for rollback
-            cat > "$VERSION_DIR/.registry" << EOF
-            IMAGE_REGISTRY=$IMG_REGISTRY
-            IMAGE_PREFIX=$IMG_PREFIX
-            IMAGE_TAG=$IMG_TAG
-            GHCR_USER=$GH_ACTOR
-            GITHUB_TOKEN=$GH_TOKEN
-            EOF
-            chmod 600 "$VERSION_DIR/.registry"
 
             # Authenticate with registry
             echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
