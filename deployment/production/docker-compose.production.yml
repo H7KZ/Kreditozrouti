@@ -66,10 +66,10 @@ services:
       - "traefik.http.routers.${PROJECT}-api.tls.certresolver=letsencrypt"
       - "traefik.http.services.${PROJECT}-api.loadbalancer.server.port=80"
       # Middlewares
-      - "traefik.http.routers.${PROJECT}-api.middlewares=${PROJECT}-api-stripprefix,${PROJECT}-redirect-www"
+      - "traefik.http.routers.${PROJECT}-api.middlewares=${PROJECT}-api-stripprefix,${PROJECT}-api-redirect-www"
       - "traefik.http.middlewares.${PROJECT}-api-stripprefix.stripprefix.prefixes=/api"
-      - "traefik.http.middlewares.${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
-      - "traefik.http.middlewares.${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}"
+      - "traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+      - "traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}"
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/health"]
@@ -170,7 +170,9 @@ services:
       - "traefik.http.routers.${PROJECT}-client.tls.certresolver=letsencrypt"
       - "traefik.http.services.${PROJECT}-client.loadbalancer.server.port=80"
       # Middlewares
-      - "traefik.http.routers.${PROJECT}-client.middlewares=${PROJECT}-redirect-www"
+      - "traefik.http.routers.${PROJECT}-client.middlewares=${PROJECT}-client-redirect-www"
+      - "traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+      - "traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.replacement=https://$${1}"
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80"]

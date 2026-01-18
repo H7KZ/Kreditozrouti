@@ -17,15 +17,17 @@
 
 services:
   traefik:
-    image: traefik:v3.3
+    image: traefik:v3.6.7
     restart: unless-stopped
 
     command:
       # API and Dashboard
       - "--api.dashboard=true"
       - "--api.insecure=false"
+      - "--api.debug=false"
       # Providers
       - "--providers.docker=true"
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=traefik-network"
       # Entrypoints
@@ -33,10 +35,14 @@ services:
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
+      # Servers Transport
+      - "--serverstransport.insecureskipverify=true"
       # TLS / Let's Encrypt
-      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL:-admin@example.com}"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL:-kreditozrouti@gmail.com}"
       - "--certificatesresolvers.letsencrypt.acme.storage=/certs/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
       # Logging
       - "--log.level=WARN"
       - "--accesslog=true"
