@@ -1,9 +1,10 @@
-import { mysql } from '@api/clients'
-import { CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
-import CoursesFilter from '@api/Interfaces/CoursesFilter'
-import StudyPlansFilter from '@api/Interfaces/StudyPlansFilter'
-import InSISSemester from '@scraper/Types/InSISSemester'
-import { sql } from 'kysely'
+import { mysql } from '@api/clients';
+import { CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types';
+import CoursesFilter from '@api/Interfaces/CoursesFilter';
+import StudyPlansFilter from '@api/Interfaces/StudyPlansFilter';
+import InSISSemester from '@scraper/Types/InSISSemester';
+import { sql } from 'kysely';
+
 
 /**
  * Service for retrieving and filtering InSIS data (Courses, Study Plans)
@@ -326,5 +327,66 @@ export default class InSISService {
 		}
 
 		return query
+	}
+
+	/**
+	 * Determines the upcoming semester period(s) to scrape based on current date.
+	 * Only returns periods during the 1-2 month window before semester start.
+	 *
+	 * Schedule:
+	 * - Jan/Feb: Scan for LS (Summer) of current academic year (year = previous calendar year)
+	 * - Aug/Sep: Scan for ZS (Winter) of upcoming academic year (year = current calendar year)
+	 */
+	static getUpcomingPeriod(date: Date = new Date()): { semester: InSISSemester; year: number } | null {
+		const month = date.getMonth() + 1 // 1-12
+		const year = date.getFullYear()
+
+		// Jan-Feb: Scan for upcoming Summer semester
+		// LS 2024/2025 -> year is 2024 (the starting year of the academic year)
+		if (month >= 1 && month <= 2) {
+			return { semester: 'LS', year: year - 1 }
+		}
+
+		// Aug-Sep: Scan for upcoming Winter semester
+		// ZS 2025/2026 -> year is 2025
+		if (month >= 8 && month <= 9) {
+			return { semester: 'ZS', year }
+		}
+
+		// Outside scanning windows - no scraping needed
+		return null
+	}
+
+	/**
+	 * Returns periods for the last N academic years, counting backwards from the upcoming period.
+	 * Each academic year has ZS and LS semesters.
+	 */
+	static getPeriodsForLastYears(yearsBack = 4, date: Date = new Date()): { semester: InSISSemester; year: number }[] {
+		const upcomingPeriod = this.getUpcomingPeriod(date)
+
+		if (!upcomingPeriod) {
+			return []
+		}
+
+		const periods: { semester: InSISSemester; year: number }[] = []
+		let currentYear = upcomingPeriod.year
+		let currentSemester = upcomingPeriod.semester
+
+		// Generate 2 periods per year (ZS + LS) going backwards
+		const totalPeriods = yearsBack * 2
+
+		for (let i = 0; i < totalPeriods; i++) {
+			periods.push({ semester: currentSemester, year: currentYear })
+
+			// Move backwards: ZS -> LS (same year), LS -> ZS (previous year)
+			if (currentSemester === 'ZS') {
+				currentSemester = 'LS'
+			} else {
+				currentSemester = 'ZS'
+				currentYear--
+			}
+		}
+
+		return periods
 	}
 }

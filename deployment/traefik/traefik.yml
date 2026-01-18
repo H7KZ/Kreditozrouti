@@ -1,0 +1,67 @@
+# ==============================================================================
+# Traefik Static Configuration
+# Description: Global Traefik reverse proxy configuration with automatic TLS.
+#
+# Mount: ./traefik.yml:/traefik.yml:ro
+# Start: traefik --configFile=/traefik.yml
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# API and Dashboard
+# ------------------------------------------------------------------------------
+api:
+  dashboard: true
+  insecure: false
+  debug: false
+
+# ------------------------------------------------------------------------------
+# Entrypoints
+# ------------------------------------------------------------------------------
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+  websecure:
+    address: ":443"
+
+# ------------------------------------------------------------------------------
+# Providers
+# ------------------------------------------------------------------------------
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: traefik-network
+
+# ------------------------------------------------------------------------------
+# Servers Transport
+# ------------------------------------------------------------------------------
+serversTransport:
+  insecureSkipVerify: true
+
+# ------------------------------------------------------------------------------
+# Certificate Resolvers (Let's Encrypt)
+# ------------------------------------------------------------------------------
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: kreditozrouti@gmail.com
+      storage: /certs/acme.json
+      caServer: https://acme-v02.api.letsencrypt.org/directory
+      httpChallenge:
+        entryPoint: web
+
+# ------------------------------------------------------------------------------
+# Logging
+# ------------------------------------------------------------------------------
+log:
+  level: WARN
+
+accessLog:
+  filePath: /var/log/traefik/access.log
+  bufferingSize: 100

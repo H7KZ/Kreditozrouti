@@ -1,11 +1,13 @@
-import { redis } from '@api/clients'
-import Config from '@api/Config/Config'
-import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
-import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/Interfaces/ScraperQueue'
-import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
-import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
-import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler } from '@scraper/Interfaces/ScraperSchedulers'
-import { Queue, Worker } from 'bullmq'
+import { redis } from '@api/clients';
+import Config from '@api/Config/Config';
+import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler';
+import InSISService from '@api/Services/InSISService';
+import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/Interfaces/ScraperQueue';
+import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob';
+import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob';
+import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler } from '@scraper/Interfaces/ScraperSchedulers';
+import { Queue, Worker } from 'bullmq';
+
 
 /**
  * Manages the BullMQ infrastructure for the scraping service.
@@ -42,6 +44,15 @@ const scraper = {
 			await scraper.queue.request.removeJobScheduler(ScraperInSISCatalogRequestScheduler)
 			await scraper.queue.request.removeJobScheduler(ScraperInSISStudyPlansRequestScheduler)
 
+			const upcomingPeriod = InSISService.getUpcomingPeriod()
+			const periodsForLastFourYears = InSISService.getPeriodsForLastYears(4)
+
+			// Only schedule if we're in a scanning window
+			if (!upcomingPeriod) {
+				console.log('Outside scanning window - no schedulers configured.')
+				return
+			}
+
 			// InSIS Catalog (Daily at 1 AM in Jan,Feb,Aug,Sep)
 			await scraper.queue.request.upsertJobScheduler(
 				ScraperInSISCatalogRequestScheduler,
@@ -50,7 +61,10 @@ const scraper = {
 					name: 'InSIS Catalog Request (at 1 AM in Jan, Feb, Aug, Sep)',
 					data: {
 						type: 'InSIS:Catalog',
-						auto_queue_courses: true
+						auto_queue_courses: true,
+
+						faculties: undefined,
+						periods: [upcomingPeriod]
 					},
 					opts: { removeOnComplete: true, removeOnFail: true }
 				}
@@ -64,7 +78,10 @@ const scraper = {
 					name: 'InSIS Study Plans Request (at 2 AM in Jan, Feb, Aug, Sep)',
 					data: {
 						type: 'InSIS:StudyPlans',
-						auto_queue_study_plans: true
+						auto_queue_study_plans: true,
+
+						faculties: undefined,
+						periods: periodsForLastFourYears
 					},
 					opts: { removeOnComplete: true, removeOnFail: true }
 				}

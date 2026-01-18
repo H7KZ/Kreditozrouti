@@ -21,38 +21,13 @@ services:
     restart: unless-stopped
 
     command:
-      # API and Dashboard
-      - "--api.dashboard=true"
-      - "--api.insecure=false"
-      - "--api.debug=false"
-      # Providers
-      - "--providers.docker=true"
-      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
-      - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=traefik-network"
-      # Entrypoints
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-      - "--entrypoints.websecure.address=:443"
-      # Servers Transport
-      - "--serverstransport.insecureskipverify=true"
-      # TLS / Let's Encrypt
-      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL:-kreditozrouti@gmail.com}"
-      - "--certificatesresolvers.letsencrypt.acme.storage=/certs/acme.json"
-      - "--certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
-      # Logging
-      - "--log.level=WARN"
-      - "--accesslog=true"
-      - "--accesslog.filepath=/var/log/traefik/access.log"
-      - "--accesslog.bufferingsize=100"
+      - "--configFile=/traefik.yml"
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-certificates-volume:/certs
       - traefik-logs-volume:/var/log/traefik
+      - ./traefik.yml:/traefik.yml:ro
       - ${TRAEFIK_CREDENTIALS_PATH}:/credentials.txt:ro
 
     networks:

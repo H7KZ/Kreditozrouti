@@ -252,9 +252,9 @@ main() {
     log "Deploying Traefik stack..."
     docker compose \
         -p "$STACK_NAME" \
-        -f "$compose_file" \
         -f "$networks_config" \
         -f "$volumes_config" \
+        -f "$compose_file" \
         up -d
 
     log_success "=========================================="
