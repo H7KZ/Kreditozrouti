@@ -1,4 +1,4 @@
-import type { Alert } from '@client/lib/types'
+import type { Alert } from '@client/types'
 import { defineStore } from 'pinia'
 
 export const useAlertsStore = defineStore('alerts', {

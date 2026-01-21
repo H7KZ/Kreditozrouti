@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Alert, AlertDescription, AlertTitle } from '@client/components/ui/alert'
 import { Button } from '@client/components/ui/button'
-import type { Alert as AlertProps } from '@client/lib/types'
 import { useAlertsStore } from '@client/stores/alerts'
+import type { Alert as AlertProps } from '@client/types'
 import AlertTriangle from '~icons/kz-icons/alert-triangle'
 import CircleCheck from '~icons/kz-icons/circle-check'
 import Cross from '~icons/kz-icons/cross'

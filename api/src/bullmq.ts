@@ -1,13 +1,12 @@
-import { redis } from '@api/clients';
-import Config from '@api/Config/Config';
-import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler';
-import InSISService from '@api/Services/InSISService';
-import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/Interfaces/ScraperQueue';
-import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob';
-import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob';
-import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler } from '@scraper/Interfaces/ScraperSchedulers';
-import { Queue, Worker } from 'bullmq';
-
+import { redis } from '@api/clients'
+import Config from '@api/Config/Config'
+import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
+import InSISService from '@api/Services/InSISService'
+import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/Interfaces/ScraperQueue'
+import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
+import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
+import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler } from '@scraper/Interfaces/ScraperSchedulers'
+import { Queue, Worker } from 'bullmq'
 
 /**
  * Manages the BullMQ infrastructure for the scraping service.

@@ -1,10 +1,9 @@
-import { mysql } from '@api/clients';
-import { CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types';
-import CoursesFilter from '@api/Interfaces/CoursesFilter';
-import StudyPlansFilter from '@api/Interfaces/StudyPlansFilter';
-import InSISSemester from '@scraper/Types/InSISSemester';
-import { sql } from 'kysely';
-
+import { mysql } from '@api/clients'
+import { CourseTable, CourseTimetableSlotTable, CourseTimetableUnitTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import CoursesFilter from '@api/Interfaces/CoursesFilter'
+import StudyPlansFilter from '@api/Interfaces/StudyPlansFilter'
+import InSISSemester from '@scraper/Types/InSISSemester'
+import { sql } from 'kysely'
 
 /**
  * Service for retrieving and filtering InSIS data (Courses, Study Plans)

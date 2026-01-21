@@ -39,6 +39,7 @@ docs {
     ident?: string | string[]
     faculty?: string | string[]
     semester?: string | string[]
+    year?: number | number[]
     level?: string | string[]
     mode_of_study?: string | string[]
     study_length?: string | string[]
@@ -53,11 +54,12 @@ docs {
   {
     data: StudyPlan[]
     facets: {
-        faculties: FacetItem[]
-        levels: FacetItem[]
-        semesters: FacetItem[]
-        modes_of_studies: FacetItem[]
-        study_lengths: FacetItem[]
+		faculties: FacetItem[]
+		levels: FacetItem[]
+		semesters: FacetItem[]
+		years: FacetItem[]
+		modes_of_studies: FacetItem[]
+		study_lengths: FacetItem[]
     }
     meta: {
         limit: number

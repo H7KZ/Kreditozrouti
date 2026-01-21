@@ -14,13 +14,9 @@
 	},
 	"devDependencies": {
 		"@intlify/unplugin-vue-i18n": "^6.0.8",
-		"@pdf-lib/fontkit": "^1.1.1",
 		"@tailwindcss/vite": "^4.1.16",
 		"@tsconfig/node22": "^22.0.2",
-		"@types/d3": "^7.4.3",
-		"@types/d3-flextree": "^2.1.4",
 		"@types/node": "^24.10.0",
-		"@types/svg2png": "^4.1.5",
 		"@vitejs/plugin-vue": "^6.0.1",
 		"@vue/eslint-config-prettier": "^10.2.0",
 		"@vue/eslint-config-typescript": "^14.6.0",
@@ -29,15 +25,11 @@
 		"axios": "^1.13.2",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
-		"d3": "^7.9.0",
-		"d3-flextree": "^2.1.2",
 		"eslint": "^9.39.1",
 		"eslint-plugin-vue": "~10.4.0",
-		"html-to-image": "^1.11.13",
 		"jiti": "^2.6.1",
 		"lucide-vue-next": "^0.540.0",
 		"npm-run-all2": "^8.0.4",
-		"pdf-lib": "^1.17.1",
 		"pinia": "^3.0.4",
 		"prettier": "3.6.2",
 		"prettier-plugin-organize-imports": "^4.3.0",
@@ -57,8 +49,5 @@
 		"vue-tsc": "^3.1.3",
 		"zod": "^4.3.5"
 	},
-	"packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd",
-	"dependencies": {
-		"@daypilot/daypilot-lite-vue": "^5.3.0"
-	}
+	"packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd"
 }
