@@ -4,7 +4,7 @@ import FacetItem from '@api/Interfaces/FacetItem'
 /**
  * Response payload containing study plan search results, facets, and pagination metadata.
  *
- * @route POST /kreditozrouti/study-plans
+ * @route POST /study_plans
  */
 export default interface StudyPlansResponse {
 	/** Array of study plans matching the filter criteria. */

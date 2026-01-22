@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(pnpm run lint)",
+      "Bash(pnpm exec vue-tsc:*)"
     ]
   }
 }

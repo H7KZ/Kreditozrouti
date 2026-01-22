@@ -4,7 +4,7 @@ import FacetItem from '@api/Interfaces/FacetItem'
 /**
  * Response payload containing course search results, facets, and pagination metadata.
  *
- * @route POST /kreditozrouti/courses
+ * @route POST /courses
  */
 export default interface CoursesResponse {
 	/** Array of course records matching the filter criteria. */

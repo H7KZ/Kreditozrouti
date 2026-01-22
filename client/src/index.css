@@ -52,64 +52,116 @@
 	--card-foreground: #1f2937;
 	--popover: #ffffff;
 	--popover-foreground: #1f2937;
-	--primary: #0077b6;
+	--primary: #0066b3;
 	--primary-foreground: #ffffff;
 	--secondary: #f3f4f6;
 	--secondary-foreground: #1f2937;
 	--muted: #f3f4f6;
 	--muted-foreground: #6b7280;
-	--accent: #e0f2fe;
-	--accent-foreground: #0077b6;
-	--destructive: #dc2626;
+	--accent: #dbe3e9;
+	--accent-foreground: #0066b3;
+	--destructive: #c40f16;
 	--destructive-foreground: #ffffff;
-	--border: #e5e7eb;
-	--input: #e5e7eb;
-	--ring: #0077b6;
+	--border: #ccc;
+	--input: #ccc;
+	--ring: #0066b3;
 	--radius: 0.25rem;
-	--chart-1: #0077b6;
-	--chart-2: #16a34a;
-	--chart-3: #ca8a04;
-	--chart-4: #7c3aed;
-	--chart-5: #dc2626;
+	--chart-1: #0066b3;
+	--chart-2: #008000;
+	--chart-3: #ffd700;
+	--chart-4: #8b008b;
+	--chart-5: #c40f16;
 	--sidebar: #f9fafb;
 	--sidebar-foreground: #1f2937;
-	--sidebar-primary: #0077b6;
+	--sidebar-primary: #0066b3;
 	--sidebar-primary-foreground: #ffffff;
-	--sidebar-accent: #e0f2fe;
-	--sidebar-accent-foreground: #0077b6;
-	--sidebar-border: #e5e7eb;
-	--sidebar-ring: #0077b6;
+	--sidebar-accent: #dbe3e9;
+	--sidebar-accent-foreground: #0066b3;
+	--sidebar-border: #ccc;
+	--sidebar-ring: #0066b3;
 
-	/* INSIS DESIGN SYSTEM VARIABLES */
-	/* Specific palette to match the legacy university system */
+	/* =========================================================================
+	   INSIS DESIGN SYSTEM VARIABLES
+	   Extracted from original InSIS CSS for pixel-perfect matching
+	   ========================================================================= */
 
-	--insis-primary: #0077b6;
-	--insis-primary-dark: #005f8a;
-	--insis-primary-light: #e0f2fe;
+	/* Primary Blues - The main InSIS brand color */
+	--insis-blue: #0066b3;
+	--insis-blue-dark: #005a9e;
+	--insis-blue-light: #daf1ff;
+	--insis-blue-hover: #004d87;
 
-	--insis-success: #16a34a;
-	--insis-success-light: #dcfce7;
+	/* Link Colors */
+	--insis-link: #0066b3;
+	--insis-link-hover: #004d87;
+	--insis-link-visited: #551a8b;
 
-	--insis-warning: #ca8a04;
-	--insis-warning-light: #fef9c3;
+	/* Status Colors - Matching InSIS icons and alerts */
+	--insis-success: #008000;
+	--insis-success-light: #cefad0;
+	--insis-success-border: #7bf180;
 
-	--insis-danger: #dc2626;
-	--insis-danger-light: #fee2e2;
+	--insis-warning: #ffd700;
+	--insis-warning-light: #ffe88a;
+	--insis-warning-bg: #ffc;
 
-	/* Timetable Block Colors */
-	--insis-block-lecture: #90ee90; /* Green */
-	--insis-block-seminar: #87ceeb; /* Blue */
-	--insis-block-exam: #ffb7b2;    /* Red/Pink */
+	--insis-danger: #c40f16;
+	--insis-danger-light: #faa5a5;
+	--insis-danger-bg: #fff1dd;
 
-	/* Legacy Grays */
+	--insis-info: #006cd6;
+	--insis-info-light: #82caff;
+	--insis-info-bg: #daf1ff;
+
+	/* Table Header & Row Colors */
+	--insis-header-bg: #e8e8e8;
+	--insis-header-border: #888;
+	--insis-row-hover: #dbe3e9;
+	--insis-row-alt: #f7f7f7;
+	--insis-row-highlight: #ffe88a;
+	--insis-row-error: #faa5a5;
+
+	/* Border Colors */
+	--insis-border: #ccc;
+	--insis-border-dark: #aaa;
+	--insis-border-light: #e0e0e0;
+
+	/* Timetable Block Colors - From actual InSIS timetable */
+	--insis-block-lecture: #90ee90;
+	--insis-block-seminar: #cefad0;
+	--insis-block-exercise: #87ceeb;
+	--insis-block-exam: #ffb7b2;
+	--insis-block-selected: #b3d9ff;
+	--insis-block-conflict: #faa5a5;
+
+	/* Course Type Colors - Matching InSIS icons */
+	--insis-course-compulsory: #191970;
+	--insis-course-elective: #ffd700;
+	--insis-course-optional: #008000;
+	--insis-course-normal: #8b008b;
+	--insis-course-consultation: #ffa500;
+
+	/* Gray Scale - InSIS specific */
 	--insis-gray-50: #f9fafb;
-	--insis-gray-100: #f3f4f6;
-	--insis-gray-200: #e5e7eb;
-	--insis-gray-300: #d1d5db;
-	--insis-gray-400: #9ca3af;
-	--insis-gray-600: #4b5563;
-	--insis-gray-700: #374151;
-	--insis-gray-800: #1f2937;
+	--insis-gray-100: #f7f7f7;
+	--insis-gray-200: #f0f0f0;
+	--insis-gray-300: #e0e0e0;
+	--insis-gray-400: #cfcfcf;
+	--insis-gray-500: #ababab;
+	--insis-gray-600: #888;
+	--insis-gray-700: #656565;
+	--insis-gray-800: #555;
+	--insis-gray-900: #333;
+
+	/* Panel/Card Colors */
+	--insis-panel-bg: #f9fafb;
+	--insis-panel-border: #ababab;
+
+	/* Font Sizes - InSIS uses compact typography */
+	--insis-font-xs: 0.7rem;
+	--insis-font-sm: 0.8rem;
+	--insis-font-base: 0.875rem;
+	--insis-font-lg: 1rem;
 }
 
 @layer base {
@@ -119,7 +171,525 @@
 
 	body {
 		@apply bg-background text-foreground;
-		/* Force standard system font for InSIS look */
+		/* InSIS uses system fonts for maximum compatibility */
 		font-family: Arial, Helvetica, sans-serif;
+		font-size: var(--insis-font-sm);
+		line-height: 1.4;
+	}
+
+	a {
+		color: var(--insis-link);
+		text-decoration: none;
+	}
+
+	a:hover {
+		text-decoration: underline;
+		color: var(--insis-link-hover);
+	}
+}
+
+/* =========================================================================
+   INSIS COMPONENT CLASSES
+   Semantic classes that replicate InSIS UI patterns
+   ========================================================================= */
+
+@layer components {
+	/* ----- BUTTONS ----- */
+	.insis-input,
+	.insis-select {
+		@apply w-full px-2 py-1.5 text-sm;
+		font-family: Arial, Helvetica, sans-serif;
+		border: 1px solid var(--insis-border);
+		border-radius: 0;
+		background-color: white;
+		color: var(--insis-gray-900);
+		transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	}
+
+	.insis-input:focus,
+	.insis-select:focus {
+		outline: none;
+		border-color: var(--insis-blue);
+		box-shadow: 0 0 0 1px var(--insis-blue);
+	}
+
+	.insis-input:disabled,
+	.insis-select:disabled {
+		@apply cursor-not-allowed bg-gray-100;
+	}
+
+	.insis-input::placeholder {
+		color: var(--insis-gray-500);
+	}
+
+	.insis-select {
+		@apply cursor-pointer appearance-none pr-8;
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+		background-position: right 0.5rem center;
+		background-repeat: no-repeat;
+		background-size: 1.25em 1.25em;
+	}
+
+	.insis-checkbox {
+		@apply h-4 w-4 cursor-pointer;
+		accent-color: var(--insis-blue);
+	}
+
+	.insis-label {
+		@apply mb-1 block text-sm font-normal;
+		color: var(--insis-gray-800);
+	}
+
+	/* ----- INPUTS ----- */
+	.insis-input,
+	.insis-select {
+		@apply w-full px-2 py-1.5 text-sm;
+		font-family: Arial, Helvetica, sans-serif;
+		border: 1px solid var(--insis-border);
+		border-radius: 0;
+		background-color: white;
+		color: var(--insis-gray-900);
+		transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	}
+
+	.insis-input:focus,
+	.insis-select:focus {
+		outline: none;
+		border-color: var(--insis-blue);
+		box-shadow: 0 0 0 1px var(--insis-blue);
+	}
+
+	.insis-input:disabled,
+	.insis-select:disabled {
+		@apply cursor-not-allowed bg-gray-100;
+	}
+
+	.insis-input::placeholder {
+		color: var(--insis-gray-500);
+	}
+
+	.insis-select {
+		@apply cursor-pointer appearance-none pr-8;
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+		background-position: right 0.5rem center;
+		background-repeat: no-repeat;
+		background-size: 1.25em 1.25em;
+	}
+
+	.insis-checkbox {
+		@apply h-4 w-4 cursor-pointer;
+		accent-color: var(--insis-blue);
+	}
+
+	.insis-label {
+		@apply mb-1 block text-sm font-normal;
+		color: var(--insis-gray-800);
+	}
+
+	/* ----- TABLES ----- */
+	.insis-table {
+		@apply w-full border-collapse text-sm;
+		font-family: Arial, Helvetica, sans-serif;
+	}
+
+	.insis-table th {
+		@apply px-2 py-1.5 text-left font-normal;
+		background-color: var(--insis-header-bg);
+		border: 1px solid var(--insis-border);
+		border-bottom-color: var(--insis-header-border);
+		color: var(--insis-gray-900);
+		white-space: nowrap;
+	}
+
+	.insis-table th.sortable {
+		@apply cursor-pointer select-none;
+	}
+
+	.insis-table th.sortable:hover {
+		background-color: #e0e0e0;
+	}
+
+	.insis-table td {
+		@apply px-2 py-1.5;
+		border: 1px solid var(--insis-border);
+		vertical-align: middle;
+	}
+
+	.insis-table tbody tr:hover {
+		background-color: var(--insis-row-hover);
+	}
+
+	.insis-table tbody tr:nth-child(even) {
+		background-color: var(--insis-row-alt);
+	}
+
+	.insis-table tbody tr:nth-child(even):hover {
+		background-color: var(--insis-row-hover);
+	}
+
+	.insis-table tbody tr.highlight {
+		background-color: var(--insis-row-highlight);
+	}
+
+	.insis-table tbody tr.error {
+		background-color: var(--insis-row-error);
+	}
+
+	.insis-table .cell-center {
+		@apply text-center;
+	}
+
+	.insis-table .cell-right {
+		@apply text-right;
+	}
+
+	.insis-table .cell-nowrap {
+		@apply whitespace-nowrap;
+	}
+
+	/* Dense table variant for maximum data density */
+	.insis-table-dense th,
+	.insis-table-dense td {
+		@apply px-1.5 py-1;
+		font-size: var(--insis-font-xs);
+	}
+
+	/* ----- PANELS ----- */
+	.insis-panel,
+	.insis-panel-info,
+	.insis-panel-warning,
+	.insis-panel-danger,
+	.insis-panel-success {
+		@apply mb-4 p-4;
+		background-color: var(--insis-panel-bg);
+		border: 1px solid var(--insis-panel-border);
+		border-left-width: 4px;
+		border-radius: 3px;
+	}
+
+	.insis-panel-info {
+		border-left-color: var(--insis-info);
+		background-color: var(--insis-info-bg);
+	}
+
+	.insis-panel-warning {
+		border-left-color: var(--insis-warning);
+		background-color: var(--insis-warning-bg);
+	}
+
+	.insis-panel-danger {
+		border-left-color: var(--insis-danger);
+		background-color: var(--insis-danger-light);
+	}
+
+	.insis-panel-success {
+		border-left-color: var(--insis-success);
+		background-color: var(--insis-success-light);
+	}
+
+	/* Search/Filter Panel */
+	.insis-search-panel {
+		@apply p-3;
+		background-color: white;
+		border: 1px solid var(--insis-border);
+	}
+
+	.insis-search-panel .field-group {
+		@apply mb-3;
+	}
+
+	.insis-search-panel .field-group:last-child {
+		@apply mb-0;
+	}
+
+	/* ----- TIMETABLE GRID ----- */
+	.insis-timetable {
+		@apply w-full border-collapse;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: var(--insis-font-xs);
+	}
+
+	.insis-timetable th,
+	.insis-timetable td {
+		border: 1px solid var(--insis-border);
+		padding: 2px 4px;
+		vertical-align: top;
+		min-width: 80px;
+	}
+
+	.insis-timetable th {
+		background-color: var(--insis-header-bg);
+		font-weight: normal;
+		text-align: center;
+	}
+
+	.insis-timetable .day-header {
+		@apply font-bold;
+		width: 40px;
+		min-width: 40px;
+	}
+
+	.insis-timetable .time-slot {
+		height: 50px;
+		position: relative;
+		cursor: pointer;
+	}
+
+	.insis-timetable .time-slot:hover {
+		background-color: var(--insis-row-hover);
+	}
+
+	.insis-timetable .time-slot.selected {
+		background-color: var(--insis-block-selected);
+	}
+
+	.insis-timetable .time-slot.selecting {
+		background-color: rgba(179, 217, 255, 0.5);
+	}
+
+	/* Course blocks in timetable */
+	.insis-course-block {
+		@apply absolute inset-0.5 overflow-hidden p-1 text-xs;
+		border-radius: 2px;
+		line-height: 1.2;
+	}
+
+	.insis-course-block.lecture {
+		background-color: var(--insis-block-lecture);
+		border: 1px solid #6cb66c;
+	}
+
+	.insis-course-block.seminar {
+		background-color: var(--insis-block-seminar);
+		border: 1px solid #7bf180;
+	}
+
+	.insis-course-block.exercise {
+		background-color: var(--insis-block-exercise);
+		border: 1px solid #5bb8d9;
+	}
+
+	.insis-course-block-title {
+		@apply truncate font-bold;
+	}
+
+	.insis-course-block-info {
+		@apply truncate text-xs;
+		color: var(--insis-gray-700);
+	}
+
+	/* ----- STATUS BADGES ----- */
+	.insis-badge {
+		@apply inline-flex items-center rounded px-1.5 py-0.5 text-xs;
+		font-weight: normal;
+	}
+
+	.insis-badge-compulsory {
+		background-color: var(--insis-course-compulsory);
+		color: white;
+	}
+
+	.insis-badge-elective {
+		background-color: var(--insis-course-elective);
+		color: var(--insis-gray-900);
+	}
+
+	.insis-badge-optional {
+		background-color: var(--insis-course-optional);
+		color: white;
+	}
+
+	.insis-badge-success {
+		background-color: var(--insis-success);
+		color: white;
+	}
+
+	.insis-badge-warning {
+		background-color: var(--insis-warning);
+		color: var(--insis-gray-900);
+	}
+
+	.insis-badge-danger {
+		background-color: var(--insis-danger);
+		color: white;
+	}
+
+	.insis-badge-info {
+		background-color: var(--insis-info);
+		color: white;
+	}
+
+	/* ----- TABS ----- */
+	.insis-tabs {
+		@apply flex border-b;
+		border-color: var(--insis-border);
+	}
+
+	.insis-tab {
+		@apply -mb-px cursor-pointer px-4 py-2 text-sm;
+		border: 1px solid transparent;
+		border-bottom: none;
+		background-color: var(--insis-gray-100);
+		color: var(--insis-gray-700);
+		transition: all 0.15s ease-in-out;
+	}
+
+	.insis-tab:hover {
+		background-color: var(--insis-gray-200);
+	}
+
+	.insis-tab.active {
+		background-color: white;
+		border-color: var(--insis-border);
+		color: var(--insis-gray-900);
+		font-weight: 500;
+	}
+
+	.insis-tab-content {
+		@apply p-4;
+		border: 1px solid var(--insis-border);
+		border-top: none;
+	}
+
+	/* ----- WIZARD STEPS ----- */
+	.insis-wizard {
+		@apply mb-6 flex items-center;
+	}
+
+	.insis-wizard-step {
+		@apply flex items-center;
+	}
+
+	.insis-wizard-step-number {
+		@apply flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold;
+		background-color: var(--insis-gray-300);
+		color: var(--insis-gray-700);
+	}
+
+	.insis-wizard-step.active .insis-wizard-step-number {
+		background-color: var(--insis-blue);
+		color: white;
+	}
+
+	.insis-wizard-step.completed .insis-wizard-step-number {
+		background-color: var(--insis-success);
+		color: white;
+	}
+
+	.insis-wizard-step-label {
+		@apply ml-2 text-sm;
+		color: var(--insis-gray-600);
+	}
+
+	.insis-wizard-step.active .insis-wizard-step-label {
+		color: var(--insis-gray-900);
+		font-weight: 500;
+	}
+
+	.insis-wizard-connector {
+		@apply mx-2 h-0.5 w-12;
+		background-color: var(--insis-gray-300);
+	}
+
+	.insis-wizard-step.completed + .insis-wizard-connector {
+		background-color: var(--insis-success);
+	}
+
+	/* ----- LOADING STATES ----- */
+	.insis-loading {
+		@apply flex items-center justify-center p-8;
+	}
+
+	.insis-spinner {
+		@apply h-6 w-6 animate-spin rounded-full border-2;
+		border-color: var(--insis-gray-300);
+		border-top-color: var(--insis-blue);
+	}
+
+	/* ----- POPOVER (InSIS style) ----- */
+	.insis-popover {
+		@apply p-3;
+		background-color: white;
+		border: 1px solid var(--insis-border);
+		border-radius: 3px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	}
+
+	.insis-popover-title {
+		@apply mb-2 pb-2 text-sm font-bold;
+		border-bottom: 1px solid var(--insis-border);
+	}
+
+	/* ----- DAY TOGGLE BUTTONS ----- */
+	.insis-day-toggle {
+		@apply inline-flex h-8 w-8 cursor-pointer items-center justify-center text-xs;
+		background-color: var(--insis-gray-200);
+		border: 1px solid var(--insis-border);
+		color: var(--insis-gray-700);
+		transition: all 0.15s ease-in-out;
+	}
+
+	.insis-day-toggle:hover {
+		background-color: var(--insis-gray-300);
+	}
+
+	.insis-day-toggle.active {
+		background-color: var(--insis-blue);
+		border-color: var(--insis-blue-dark);
+		color: white;
+	}
+
+	.insis-day-toggle:first-child {
+		border-radius: 3px 0 0 3px;
+	}
+
+	.insis-day-toggle:last-child {
+		border-radius: 0 3px 3px 0;
+	}
+
+	.insis-day-toggle:not(:last-child) {
+		border-right: none;
+	}
+
+	/* ----- BREADCRUMBS ----- */
+	.insis-breadcrumbs {
+		@apply mb-4 flex items-center text-sm;
+	}
+
+	.insis-breadcrumbs a {
+		color: var(--insis-link);
+	}
+
+	.insis-breadcrumbs .separator {
+		@apply mx-2;
+		color: var(--insis-gray-500);
+	}
+
+	.insis-breadcrumbs .current {
+		color: var(--insis-gray-700);
+	}
+
+	/* ----- LEGEND ----- */
+	.insis-legend {
+		@apply text-sm;
+	}
+
+	.insis-legend-title {
+		@apply cursor-pointer text-blue-600;
+		color: var(--insis-link);
+	}
+
+	.insis-legend-content {
+		@apply mt-2 flex flex-wrap gap-4;
+	}
+
+	.insis-legend-item {
+		@apply flex items-center gap-1.5;
+	}
+
+	/* ----- COURSE IDENT CODE ----- */
+	.insis-course-code {
+		@apply font-mono text-sm;
+		color: var(--insis-gray-700);
 	}
 }
