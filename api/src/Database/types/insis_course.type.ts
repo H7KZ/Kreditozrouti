@@ -1,11 +1,10 @@
-import { mysql } from '@api/clients';
-import { ExcludeMethods } from "@api/Database/types/index";
-import { Faculty, FacultyTable } from '@api/Database/types/insis_faculty.type';
-import { StudyPlanCourse, StudyPlanCourseTable } from '@api/Database/types/insis_study_plan.type';
-import InSISDay from '@scraper/Types/InSISDay';
-import InSISSemester from '@scraper/Types/InSISSemester';
-import { ColumnType, Insertable, Selectable } from 'kysely';
-
+import { mysql } from '@api/clients'
+import { ExcludeMethods } from '@api/Database/types/index'
+import { Faculty, FacultyTable } from '@api/Database/types/insis_faculty.type'
+import { StudyPlanCourse, StudyPlanCourseTable } from '@api/Database/types/insis_study_plan.type'
+import InSISDay from '@scraper/Types/InSISDay'
+import InSISSemester from '@scraper/Types/InSISSemester'
+import { ColumnType, Insertable, Selectable } from 'kysely'
 
 /**
  * Database schema for InSIS Courses.

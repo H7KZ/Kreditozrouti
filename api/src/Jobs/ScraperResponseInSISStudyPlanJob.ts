@@ -55,7 +55,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 				semester: plan.semester,
 				year: plan.year,
 				...planMetadata
-			})
+			} as never)
 			.executeTakeFirst()
 
 		studyPlanId = Number(result.insertId)
@@ -101,7 +101,10 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 	})
 
 	if (rowsToInsert.length > 0) {
-		await mysql.insertInto(StudyPlanCourseTable._table).values(rowsToInsert).execute()
+		await mysql
+			.insertInto(StudyPlanCourseTable._table)
+			.values(rowsToInsert as never)
+			.execute()
 	}
 
 	LoggerJobContext.add({
@@ -118,7 +121,7 @@ async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | nul
 	let query = mysql.insertInto(FacultyTable._table).values({
 		id: faculty.ident,
 		title: faculty.title
-	})
+	} as never)
 
 	if (faculty.title) query = query.onDuplicateKeyUpdate({ title: faculty.title })
 	else query = query.onDuplicateKeyUpdate({ id: faculty.ident })

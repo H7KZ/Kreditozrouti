@@ -1,8 +1,8 @@
 import { mysql } from '@api/clients'
+import { ExcludeMethods } from '@api/Database/types/index'
 import { Course, CourseTable } from '@api/Database/types/insis_course.type'
 import { StudyPlan, StudyPlanTable } from '@api/Database/types/insis_study_plan.type'
 import { ColumnType, Insertable, Selectable } from 'kysely'
-import { ExcludeMethods } from '@api/Database/types/index'
 
 /**
  * Database schema for Faculties.

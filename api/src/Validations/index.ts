@@ -1,7 +1,6 @@
-import { InSISDayValues } from '@scraper/Types/InSISDay';
-import { InSISSemesterValues } from '@scraper/Types/InSISSemester';
-import * as z from 'zod';
-
+import { InSISDayValues } from '@scraper/Types/InSISDay'
+import { InSISSemesterValues } from '@scraper/Types/InSISSemester'
+import * as z from 'zod'
 
 export const createUnion = <T extends z.ZodTypeAny>(schema: T) => z.union([schema, z.array(schema)]).optional()
 

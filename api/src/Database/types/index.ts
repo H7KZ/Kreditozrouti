@@ -1,7 +1,6 @@
-import { FacultyTable } from '@api/Database/types/insis_faculty.type';
-import { StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types/insis_study_plan.type';
-import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable } from './insis_course.type';
-
+import { FacultyTable } from '@api/Database/types/insis_faculty.type'
+import { StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types/insis_study_plan.type'
+import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable } from './insis_course.type'
 
 export * from './insis_course.type'
 export * from './insis_study_plan.type'

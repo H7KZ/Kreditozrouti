@@ -1,5 +1,5 @@
-import { mysql } from '@api/clients';
-import LoggerJobContext from '@api/Context/LoggerJobContext';
+import { mysql } from '@api/clients'
+import LoggerJobContext from '@api/Context/LoggerJobContext'
 import {
 	CourseAssessmentTable,
 	CourseTable,
@@ -18,9 +18,8 @@ import {
 	ScraperInSISCourseTimetableSlot,
 	ScraperInSISCourseTimetableUnit
 } from '@scraper/Interfaces/ScraperInSISCourse'
-import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty';
-import { ScraperInSISCourseResponseJob } from '@scraper/Interfaces/ScraperResponseJob';
-
+import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
+import { ScraperInSISCourseResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
 
 /**
  * Syncs a scraped InSIS course into the database.
@@ -113,7 +112,10 @@ async function syncAssessmentMethods(courseId: number, incomingMethods: ScraperI
 		.map(im => ({ course_id: courseId, method: im.method, weight: im.weight }))
 
 	if (toInsert.length > 0) {
-		await mysql.insertInto(CourseAssessmentTable._table).values(toInsert as never).execute()
+		await mysql
+			.insertInto(CourseAssessmentTable._table)
+			.values(toInsert as never)
+			.execute()
 	}
 }
 

@@ -1,6 +1,5 @@
-import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, FacultyTable } from '@api/Database/types';
-import { Kysely, sql } from 'kysely';
-
+import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, FacultyTable } from '@api/Database/types'
+import { Kysely, sql } from 'kysely'
 
 export async function up(mysql: Kysely<any>): Promise<void> {
 	// 1. Main Course Table

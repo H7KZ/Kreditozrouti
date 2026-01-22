@@ -1,11 +1,11 @@
 import { mysql } from '@api/clients'
+import { ExcludeMethods } from '@api/Database/types/index'
 import { CourseTable } from '@api/Database/types/insis_course.type'
 import { Faculty, FacultyTable } from '@api/Database/types/insis_faculty.type'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
 import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
 import { ColumnType, Insertable, Selectable } from 'kysely'
-import { ExcludeMethods } from '@api/Database/types/index'
 
 /**
  * Database schema for Study Plans (Curriculums).
