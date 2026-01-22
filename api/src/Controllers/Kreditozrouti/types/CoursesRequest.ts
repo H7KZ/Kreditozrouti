@@ -2,9 +2,7 @@ import CoursesFilterValidation from '@api/Validations/CoursesFilterValidation'
 import { z } from 'zod'
 
 /**
- * Validated query parameters for the course catalog search.
- * Derived from the Zod validation schema.
+ * Documented inside `api/src/Validations/Validations/CoursesFilterValidation.ts`
  */
 type CoursesRequest = z.infer<typeof CoursesFilterValidation>
-
 export default CoursesRequest

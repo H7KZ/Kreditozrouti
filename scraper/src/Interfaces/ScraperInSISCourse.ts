@@ -1,4 +1,5 @@
 import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
+import InSISDay from '@scraper/Types/InSISDay'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
 import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
@@ -132,7 +133,7 @@ export interface ScraperInSISCourseTimetableSlot {
     date: string | null
 
     /** The day of the week (used if frequency is 'weekly'). */
-    day: string | null
+    day: InSISDay | null
 
     /** The start time of the slot (HH:MM). */
     time_from: string | null

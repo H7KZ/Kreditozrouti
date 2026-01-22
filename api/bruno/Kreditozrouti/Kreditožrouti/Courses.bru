@@ -12,22 +12,32 @@ post {
 
 body:json {
   {
-    "semester": [],
+    "id": [],
     "ident": [],
-    "lecturer": [],
-    "day": [],
-    "language": [],
-    "level": [],
+    "title": "",
+    "semester": [],
+    "year": [],
     "faculty": [],
-    "group": [],
-    "category": [],
-    
+    "level": [],
+    "language": [],
+    "day": [],
     "time_from": 0,
     "time_to": 1440,
+    "lecturer": [],
+    "study_plan_id": [],
+    "group": [],
+    "category": [],
+    "ects": [],
+    "mode_of_completion": [],
+    "mode_of_delivery": [],
     
-    "study_plan_id": 0,
+    "has_capacity": true,
+    "exclude_slot_ids": [],
+    "exclude_times": [],
     
-    "limit": 1,
+    "sort_by": "ident",
+    "sort_dir": "asc",
+    "limit": 10,
     "offset": 0
   }
 }
@@ -42,56 +52,8 @@ docs {
   
   `api/src/Controllers/Kreditozrouti/types/CoursesRequest.ts`
   
-  ```json
-  {
-    semester?: string | string[]
-    year?: number | number[]
-    ident?: string | string[]
-    lecturer?: string | string[]
-    day?: string | string[]
-    language?: string | string[]
-    level?: string | string[]
-    faculty?: string | string[]
-    group?: string | string[]
-    category?: string | string[]
-
-    study_plan_id?: number
-
-    time_from?: number
-    time_to?: number
-
-    limit?: 20,
-    offset?: 0
-  }
-  ```
-  
   ## Success Response (200):
   
   `api/src/Controllers/Kreditozrouti/types/CoursesResponse.ts`
   
-  ```json
-  {
-    data: Course[]
-    facets: {
-		faculties: FacetItem[]
-		days: FacetItem[]
-		lecturers: FacetItem[]
-		languages: FacetItem[]
-		levels: FacetItem[]
-		semesters: FacetItem[]
-		years: FacetItem[]
-		groups: FacetItem[]
-		categories: FacetItem[]
-        time_range: {
-            min_time: number
-            max_time: number
-        }
-    }
-    meta: {
-        limit: number
-        offset: number
-        count: number
-    }
-  }
-  ```
 }

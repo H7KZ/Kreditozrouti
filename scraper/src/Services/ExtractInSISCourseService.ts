@@ -7,6 +7,7 @@ import ScraperInSISCourse, {
 import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import MarkdownService from '@scraper/Services/MarkdownService'
+import InSISDay from '@scraper/Types/InSISDay'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
@@ -316,7 +317,7 @@ export default class ExtractInSISCourseService {
             type: serializeValue(type),
             frequency: freq,
             date: isDate ? serializeValue(dayOrDate) : null,
-            day: !isDate ? serializeValue(dayOrDate) : null,
+            day: !isDate ? (serializeValue(dayOrDate) as InSISDay) : null,
             time_from: serializeValue(time_from),
             time_to: serializeValue(time_to),
             location: serializeValue(location)

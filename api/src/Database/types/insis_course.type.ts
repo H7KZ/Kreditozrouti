@@ -1,3 +1,5 @@
+import { Faculty } from '@api/Database/types/insis_faculty.type'
+import InSISDay from '@scraper/Types/InSISDay'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 
@@ -65,6 +67,12 @@ export class CourseTable {
 export type Course = Selectable<CourseTable>
 export type NewCourse = Insertable<Omit<CourseTable, 'id' | 'created_at' | 'updated_at'>>
 
+export interface CourseWithRelations extends Course {
+	faculty: Partial<Faculty> | null
+	assessment_methods: Partial<CourseAssessmentMethod>[]
+	timetable_units: Partial<CourseTimetableUnitWithSlots>[]
+}
+
 // -------------------------------------------------------------------------
 
 /**
@@ -111,6 +119,10 @@ export class CourseTimetableUnitTable {
 export type CourseTimetableUnit = Selectable<CourseTimetableUnitTable>
 export type NewCourseTimetableUnit = Insertable<Omit<CourseTimetableUnitTable, 'id' | 'created_at' | 'updated_at'>>
 
+export interface CourseTimetableUnitWithSlots extends CourseTimetableUnit {
+	slots: Partial<CourseTimetableSlot>[]
+}
+
 // -------------------------------------------------------------------------
 
 /**
@@ -134,7 +146,7 @@ export class CourseTimetableSlotTable {
 	date!: string | null
 
 	/** Day of the week for recurring slots. */
-	day!: string | null
+	day!: InSISDay | null
 
 	time_from!: string | null
 	time_to!: string | null

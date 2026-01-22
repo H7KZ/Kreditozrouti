@@ -1,12 +1,5 @@
-import { StudyPlan } from '@api/Database/types'
-
-/**
- * Represents a single facet category value and its occurrence count.
- */
-interface FacetItem {
-	value: string | number | null
-	count: number
-}
+import { StudyPlanWithRelations } from '@api/Database/types'
+import FacetItem from '@api/Interfaces/FacetItem'
 
 /**
  * Response payload containing study plan search results, facets, and pagination metadata.
@@ -15,7 +8,7 @@ interface FacetItem {
  */
 export default interface StudyPlansResponse {
 	/** Array of study plans matching the filter criteria. */
-	data: StudyPlan[]
+	data: StudyPlanWithRelations[]
 
 	/** Aggregated facet counts for filtering. */
 	facets: {
@@ -29,8 +22,13 @@ export default interface StudyPlansResponse {
 
 	/** Pagination metadata. */
 	meta: {
+		/** The maximum number of results returned */
 		limit: number
+		/** The number of results skipped */
 		offset: number
+		/** The total number of records returned in this page */
 		count: number
+		/** The total number of records matching the filter criteria */
+		total: number
 	}
 }

@@ -3,19 +3,24 @@ import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
-import InSISService from '@api/Services/InSISService'
+import CourseService from '@api/Services/CourseService'
 import CoursesFilterValidation from '@api/Validations/CoursesFilterValidation'
 import { Request, Response } from 'express'
 
 /**
- * Retrieves a paginated list of courses based on complex filtering criteria.
+ * Retrieves a paginated list of courses with full relations based on complex filtering criteria.
  *
- * This controller caches results in Redis for 5 minutes to optimize repeated queries.
- * It returns both the course data and aggregated facets for client filtering.
+ * Returns courses with:
+ * - Faculty information
+ * - Timetable units and slots
+ * - Assessment methods
+ * - Study plan associations (when filtering by study_plan_id)
+ *
+ * Results are cached in Redis for 5 minutes.
  *
  * @param req - Express request object containing the filter payload.
  * @param res - Express response object.
- * @throws {Exception} 401 - If the validation of the search request fails.
+ * @throws {Exception} 400 - If the validation of the search request fails.
  */
 export default async function CoursesController(req: Request, res: Response<CoursesResponse>) {
 	LoggerAPIContext.add(res, { body: req.body })
@@ -23,36 +28,45 @@ export default async function CoursesController(req: Request, res: Response<Cour
 	const result = await CoursesFilterValidation.safeParseAsync(req.body)
 
 	if (!result.success) {
-		throw new Exception(401, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
+		throw new Exception(400, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
 	}
 
-	const data = result.data
+	const filter = result.data
 
-	// Check Cache
-	const cacheKey = `insis:courses:${JSON.stringify(data)}`
+	// Build cache key from filter
+	const cacheKey = `insis:courses:v2:${JSON.stringify(filter)}`
 	const cachedData = await redis.get(cacheKey)
 
 	if (cachedData) {
 		LoggerAPIContext.add(res, { cache: true })
-
 		return res.status(200).send(JSON.parse(cachedData))
 	}
 
-	// Fetch Data
-	const [courses, facets] = await Promise.all([InSISService.getCourses(data, data.limit, data.offset), InSISService.getFacets(data)])
+	// Fetch data with relations
+	const [{ courses, total }, facets] = await Promise.all([
+		CourseService.getCoursesWithRelations(filter, filter.limit, filter.offset),
+		CourseService.getCourseFacets(filter)
+	])
 
-	LoggerAPIContext.add(res, { cache: false, courses_count: courses.length, facets_count: Object.keys(facets).length })
+	LoggerAPIContext.add(res, {
+		cache: false,
+		courses_count: courses.length,
+		total_count: total,
+		facets_count: Object.keys(facets).length
+	})
 
 	const response: CoursesResponse = {
 		data: courses,
-		facets: facets,
+		facets,
 		meta: {
-			limit: data.limit || 20,
-			offset: data.offset || 0,
-			count: courses.length
+			limit: filter.limit ?? 20,
+			offset: filter.offset ?? 0,
+			count: courses.length,
+			total
 		}
 	}
 
+	// Cache for 5 minutes
 	await redis.setex(cacheKey, 300, JSON.stringify(response))
 
 	return res.status(200).send(response)

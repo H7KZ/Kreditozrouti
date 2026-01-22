@@ -1,23 +1,5 @@
-import { Course } from '@api/Database/types'
-
-/**
- * Represents a single facet category value and its occurrence count.
- */
-interface FacetItem {
-	/**
-	 * The unique identifier or label for this facet option
-	 *
-	 * @type {string | null}
-	 */
-	value: string | number | null
-
-	/**
-	 * The number of records matching this specific option
-	 *
-	 * @type {number}
-	 */
-	count: number
-}
+import { CourseWithRelations } from '@api/Database/types'
+import FacetItem from '@api/Interfaces/FacetItem'
 
 /**
  * Response payload containing course search results, facets, and pagination metadata.
@@ -26,7 +8,7 @@ interface FacetItem {
  */
 export default interface CoursesResponse {
 	/** Array of course records matching the filter criteria. */
-	data: Course[]
+	data: CourseWithRelations[]
 
 	/** Aggregated facet counts for filtering. */
 	facets: {
@@ -37,12 +19,11 @@ export default interface CoursesResponse {
 		levels: FacetItem[]
 		semesters: FacetItem[]
 		years: FacetItem[]
-		time_range: {
-			/** Start time in minutes from midnight */
-			min_time: number
-			/** End time in minutes from midnight */
-			max_time: number
-		}
+		groups: FacetItem[] // Only when study_plan_id filter applied
+		categories: FacetItem[] // Only when study_plan_id filter applied
+		ects: FacetItem[]
+		modes_of_completion: FacetItem[]
+		time_range: { min_time: number; max_time: number }
 	}
 
 	/** Pagination metadata. */
@@ -53,5 +34,7 @@ export default interface CoursesResponse {
 		offset: number
 		/** The total number of records returned in this page */
 		count: number
+		/** The total number of records matching the filter criteria */
+		total: number
 	}
 }

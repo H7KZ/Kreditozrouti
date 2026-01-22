@@ -1,0 +1,43 @@
+meta {
+  name: Timetable Analyze
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:40080/timetable/analyze
+  body: json
+  auth: inherit
+}
+
+body:json {
+  [
+    {
+      "course_id": 0,
+      "course_ident": "",
+      "unit_id": 0,
+      "slot_id": 0,
+      "day": "",
+      "time_from": 540,
+      "time_to": 940,
+      "location": "",
+      "lecturer": ""
+    }
+  ]
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  ## Body Request:
+  
+  `api/src/Controllers/Kreditozrouti/types/TimetableGenerateRequest.ts`
+  
+  ## Success Response (200):
+  
+  `api/src/Controllers/Kreditozrouti/types/TimetableGenerateResponse.ts`
+  
+}

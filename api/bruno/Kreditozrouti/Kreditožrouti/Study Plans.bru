@@ -12,14 +12,22 @@ post {
 
 body:json {
   {
-    "semester": [],
+    "id": [],
     "ident": [],
+    "title": "",
+    "semester": [],
+    "year": [],
+    "faculty_id": [],
     "level": [],
-    "faculty": [],
     "mode_of_study": [],
     "study_length": [],
     
-    "limit": 1,
+    "has_course_id": [],
+    "has_course_ident": [],
+    
+    "sort_by": "ident",
+    "sort_dir": "asc",
+    "limit": 10,
     "offset": 0
   }
 }
@@ -32,40 +40,10 @@ settings {
 docs {
   ## Body Request:
   
-  `api/src/Controllers/Kreditozrouti/types/StudyPlansFilter.ts`
-  
-  ```json
-  {
-    ident?: string | string[]
-    faculty?: string | string[]
-    semester?: string | string[]
-    year?: number | number[]
-    level?: string | string[]
-    mode_of_study?: string | string[]
-    study_length?: string | string[]
-  }
-  ```
+  `api/src/Controllers/Kreditozrouti/types/StudyPlansRequest.ts`
   
   ## Success Response (200):
   
   `api/src/Controllers/Kreditozrouti/types/StudyPlansResponse.ts`
   
-  ```json
-  {
-    data: StudyPlan[]
-    facets: {
-		faculties: FacetItem[]
-		levels: FacetItem[]
-		semesters: FacetItem[]
-		years: FacetItem[]
-		modes_of_studies: FacetItem[]
-		study_lengths: FacetItem[]
-    }
-    meta: {
-        limit: number
-        offset: number
-        count: number
-    }
-  }
-  ```
 }

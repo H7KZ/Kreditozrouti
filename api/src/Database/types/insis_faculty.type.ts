@@ -14,5 +14,5 @@ export class FacultyTable {
 	title!: string | null
 }
 
-export type FacultyPlan = Selectable<FacultyTable>
-export type NewFacultyPlan = Insertable<Omit<FacultyTable, 'id' | 'created_at' | 'updated_at'>>
+export type Faculty = Selectable<FacultyTable>
+export type NewFaculty = Insertable<Omit<FacultyTable, 'id' | 'created_at' | 'updated_at'>>

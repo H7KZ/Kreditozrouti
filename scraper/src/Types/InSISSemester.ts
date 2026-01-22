@@ -1,6 +1,7 @@
+export const InSISSemesterValues = ['LS', 'ZS'] as const
+
 /**
  * InSISSemester represents the semester codes used in the InSIS system.
  */
-export type InSISSemester = 'LS' | 'ZS'
-
+type InSISSemester = (typeof InSISSemesterValues)[number]
 export default InSISSemester

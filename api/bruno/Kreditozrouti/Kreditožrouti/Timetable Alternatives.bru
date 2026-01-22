@@ -1,0 +1,35 @@
+meta {
+  name: Timetable Alternatives
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:40080/timetable/alternatives
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "course_id": 0,
+    "current_slots": [],
+    "limit": 10
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  ## Body Request:
+  
+  `api/src/Controllers/Kreditozrouti/types/TimetableAlternativesRequest.ts`
+  
+  ## Success Response (200):
+  
+  `api/src/Controllers/Kreditozrouti/types/TimetableAlternativesResponse.ts`
+  
+}

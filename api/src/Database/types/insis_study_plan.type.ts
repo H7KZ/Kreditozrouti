@@ -1,3 +1,4 @@
+import { Faculty } from '@api/Database/types/insis_faculty.type'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
 import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
@@ -35,6 +36,11 @@ export class StudyPlanTable {
 
 export type StudyPlan = Selectable<StudyPlanTable>
 export type NewStudyPlan = Insertable<Omit<StudyPlanTable, 'id' | 'created_at' | 'updated_at'>>
+
+export interface StudyPlanWithRelations extends StudyPlan {
+	faculty: Partial<Faculty> | null
+	courses: Partial<StudyPlanCourse>[]
+}
 
 // -------------------------------------------------------------------------
 
