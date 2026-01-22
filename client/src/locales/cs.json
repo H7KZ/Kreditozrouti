@@ -1,24 +1,148 @@
 {
+	"app": {
+		"title": "Kreditožrouti",
+		"subtitle": "Inteligentní vyhledávání předmětů pro studenty VŠE",
+		"switchLanguage": "Přepnout jazyk"
+	},
+	"nav": {
+		"home": "Domů",
+		"courses": "Předměty",
+		"timetable": "Rozvrh"
+	},
+	"common": {
+		"loading": "Načítání...",
+		"error": "Chyba",
+		"close": "Zavřít",
+		"change": "Změnit",
+		"remove": "Odebrat",
+		"save": "Uložit",
+		"cancel": "Zrušit",
+		"prev": "Předchozí",
+		"next": "Další",
+		"search": "Hledat",
+		"clear": "Vymazat",
+		"more": "dalších"
+	},
+	"semester": {
+		"winter": "Zimní semestr",
+		"summer": "Letní semestr"
+	},
+	"home": {
+		"title": "Kreditožrouti",
+		"subtitle": "Najděte si ty správné předměty a sestavte si ideální rozvrh. Vyhledávejte podle času, fakulty, vyučujících a dalších kritérií.",
+		"features": {
+			"title": "Co vám Kreditožrouti nabízí?",
+			"search": {
+				"title": "Pokročilé vyhledávání",
+				"description": "Filtrujte předměty podle fakulty, dnů, časů, vyučujících a mnoha dalších kritérií."
+			},
+			"timetable": {
+				"title": "Interaktivní rozvrh",
+				"description": "Označte časy, kdy nechcete mít výuku, a my vám najdeme předměty, které se vám hodí."
+			},
+			"plan": {
+				"title": "Studijní plán",
+				"description": "Vyberte si svůj studijní plán a uvidíte, které předměty máte povinné a volitelné."
+			}
+		}
+	},
+	"wizard": {
+		"title": "Výběr studia",
+		"steps": {
+			"faculty": "Fakulta",
+			"period": "Období",
+			"studyPlan": "Studijní plán"
+		},
+		"faculty": {
+			"title": "Vyberte fakultu",
+			"description": "Zvolte fakultu, na které studujete nebo chcete hledat předměty."
+		},
+		"period": {
+			"title": "Vyberte akademické období",
+			"year": "Akademický rok",
+			"semester": "Semestr"
+		},
+		"studyPlan": {
+			"title": "Vyberte studijní plán",
+			"search": "Hledat studijní plán...",
+			"noResults": "Žádné studijní plány neodpovídají vašemu hledání.",
+			"noPlans": "Pro vybrané období nejsou k dispozici žádné studijní plány."
+		},
+		"complete": {
+			"title": "Shrnutí výběru",
+			"change": "Změnit výběr",
+			"continue": "Pokračovat na předměty"
+		}
+	},
+	"filters": {
+		"title": "Filtr předmětů",
+		"days": "Dny",
+		"timeRange": "Čas výuky",
+		"campus": "Kampus",
+		"faculties": "Fakulty",
+		"category": "Kategorie",
+		"group": "Skupina",
+		"ects": "Kredity",
+		"clear": "Zrušit filtry"
+	},
+	"timetable": {
+		"title": "Rozvrh",
+		"day": "Den",
+		"dragHint": "Táhněte myší pro výběr časového rozsahu",
+		"selectionPrompt": "Co chcete s vybraným časem udělat?",
+		"filterByTime": "Zobrazit předměty v tomto čase",
+		"excludeTime": "Vyloučit tento čas",
+		"excludedTimes": "Vyloučené časy",
+		"clearExclusions": "Zrušit vyloučení",
+		"possibleCourses": "Možné předměty",
+		"matchingCourses": "Nalezené předměty",
+		"noCoursesInTime": "V tomto čase nejsou k dispozici žádné předměty.",
+		"andMoreCourses": "a dalších {count}...",
+		"totalMatching": "Celkem {count} předmětů"
+	},
+	"courses": {
+		"title": "Předměty",
+		"noResults": "Žádné předměty neodpovídají vašim filtrům.",
+		"columns": {
+			"status": "",
+			"ident": "Kód",
+			"title": "Název",
+			"faculty": "Fak.",
+			"category": "Kategorie",
+			"ects": "Kr.",
+			"language": "Jaz.",
+			"schedule": "Rozvrh"
+		},
+		"status": {
+			"available": "Volná kapacita"
+		},
+		"pagination": {
+			"showing": "Zobrazeno {from}–{to} z {total}"
+		},
+		"detail": {
+			"selectCourse": "Vyberte předmět pro zobrazení detailů",
+			"faculty": "Fakulta",
+			"ects": "Kredity",
+			"credits": "kreditů",
+			"semester": "Semestr",
+			"language": "Jazyk",
+			"category": "Kategorie",
+			"group": "Skupina",
+			"completion": "Zakončení",
+			"annotation": "Anotace",
+			"schedule": "Rozvrh",
+			"time": "Čas",
+			"room": "Místnost",
+			"lecturer": "Vyučující",
+			"capacity": "Kapacita",
+			"viewInInsis": "Zobrazit v InSIS",
+			"addToTimetable": "Přidat do rozvrhu"
+		}
+	},
 	"errors": {
-		"types": {
-			"Unknown": "Neznámá chyba",
-			"Validation": "Chyba ověření",
-			"ZodValidation": "Chyba ověření",
-			"Authentication": "Chyba autentizace",
-			"Authorization": "Chyba autorizace",
-			"Database": "Chyba databáze",
-			"ExternalService": "Chyba externí služby"
-		},
-
-		"codes": {
-			"0": "Došlo k neznámé chybě.",
-			"401_000": "Neautentizováno: Prosím, přihlaste se pro pokračování.",
-			"403_000": "Ověření selhalo: Poskytnutá data jsou neplatná.",
-			"404_000": "Zdroj nenalezen: Požadovaná položka neexistuje.",
-			"500_000": "Interní chyba serveru: Zkuste to prosím později.",
-			"500_001": "Služba e-mailů je momentálně nedostupná. Zkuste to prosím později."
-		},
-
-		"unexpected": "Došlo k neočekávané chybě."
+		"network": "Chyba sítě. Zkontrolujte připojení k internetu.",
+		"server": "Chyba serveru. Zkuste to prosím později.",
+		"notFound": "Požadovaný zdroj nebyl nalezen.",
+		"unknown": "Nastala neočekávaná chyba."
 	}
 }

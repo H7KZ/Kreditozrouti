@@ -1,172 +1,122 @@
 <script setup lang="ts">
-import { useCoursesSearch, useScheduleBuilder } from '@client/composables/useSchedule.ts'
-import { useAlertsStore } from '@client/stores/alerts'
-import type { Course } from '@client/types'
-import { onMounted, ref } from 'vue'
+import SelectionWizard from '@client/components/wizard/SelectionWizard.vue'
+import { useI18n } from 'vue-i18n'
 
-import CourseFilterSidebar from '@client/components/schedule/CourseFilterSidebar.vue'
-import CourseList from '@client/components/schedule/CourseList.vue'
-import ScheduleSummary from '@client/components/schedule/ScheduleSummary.vue'
-import TimetableGrid from '@client/components/schedule/TimetableGrid.vue'
-
-// Composables
-const { courses, facets, loading, filters, totalCount, hasMore, fetchCourses, loadMore, resetFilters } = useCoursesSearch()
-
-const { scheduledCourses, scheduledCourseIds, totalCredits, totalHours, addToSchedule, removeFromSchedule, clearSchedule } = useScheduleBuilder()
-
-const alerts = useAlertsStore()
-
-// Local state
-const highlightedCourse = ref<Course | null>(null)
-const activeView = ref<'timetable' | 'list'>('timetable')
-
-// Handlers
-async function handleSearch() {
-	await fetchCourses(20, 0)
-}
-
-function handleReset() {
-	resetFilters()
-	courses.value = []
-}
-
-function handleAddToSchedule(course: Course, timeSlotIndex: number) {
-	try {
-		addToSchedule(course, timeSlotIndex)
-		alerts.addAlert({
-			type: 'success',
-			title: 'Přidáno do rozvrhu',
-			description: `${course.ident} - ${course.title}`,
-			timeout: 3000,
-		})
-	} catch (err) {
-		alerts.addAlert({
-			type: 'error',
-			title: 'Nelze přidat',
-			description: err instanceof Error ? err.message : 'Neznámá chyba',
-			timeout: 5000,
-		})
-	}
-}
-
-function handleRemoveCourse(courseId: number, timeSlotIndex: number) {
-	removeFromSchedule(courseId, timeSlotIndex)
-}
-
-function handleClearSchedule() {
-	if (confirm('Opravdu chcete vymazat celý rozvrh?')) {
-		clearSchedule()
-	}
-}
-
-function handleExportSchedule() {
-	alerts.addAlert({
-		type: 'info',
-		title: 'Export',
-		description: 'Export rozvrhu bude brzy k dispozici.',
-		timeout: 3000,
-	})
-}
-
-// Initial load
-onMounted(() => {
-	fetchCourses(20, 0)
-})
+const { t } = useI18n()
 </script>
 
-<route lang="json">
-{
-	"name": "app/schedule"
-}
-</route>
-
 <template>
-	<div class="min-h-screen flex flex-col" style="background: var(--insis-gray-100)">
-		<!-- Header -->
-		<header class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-40">
-			<div class="flex items-center gap-4">
-				<!-- Logo placeholder -->
-				<div class="w-12 h-12 rounded flex items-center justify-center text-white text-sm font-bold" style="background: var(--insis-primary)">VŠE</div>
-				<div class="border-l border-gray-300 pl-4">
-					<h1 class="text-xl font-semibold m-0" style="color: var(--insis-primary)">Tvorba rozvrhu</h1>
-					<p class="text-sm text-gray-500 m-0">Kreditožrouti - LS 2025/2026</p>
+	<div class="home-page">
+		<div class="hero-section">
+			<h1 class="hero-title">{{ t('home.title') }}</h1>
+			<p class="hero-subtitle">{{ t('home.subtitle') }}</p>
+		</div>
+
+		<SelectionWizard />
+
+		<div class="features-section">
+			<h2>{{ t('home.features.title') }}</h2>
+			<div class="features-grid">
+				<div class="feature-card">
+					<div class="feature-icon">🔍</div>
+					<h3>{{ t('home.features.search.title') }}</h3>
+					<p>{{ t('home.features.search.description') }}</p>
 				</div>
-			</div>
-
-			<!-- View toggle -->
-			<div class="flex bg-gray-100 rounded-sm p-0.5">
-				<button
-					@click="activeView = 'timetable'"
-					:class="[
-						'px-4 py-1.5 text-sm font-medium rounded-sm transition-colors',
-						activeView === 'timetable' ? 'bg-white shadow-sm' : 'text-gray-600 hover:text-gray-800',
-					]"
-					:style="activeView === 'timetable' ? { color: 'var(--insis-primary)' } : {}"
-				>
-					Rozvrh
-				</button>
-				<button
-					@click="activeView = 'list'"
-					:class="[
-						'px-4 py-1.5 text-sm font-medium rounded-sm transition-colors',
-						activeView === 'list' ? 'bg-white shadow-sm' : 'text-gray-600 hover:text-gray-800',
-					]"
-					:style="activeView === 'list' ? { color: 'var(--insis-primary)' } : {}"
-				>
-					Seznam
-				</button>
-			</div>
-		</header>
-
-		<!-- Main content -->
-		<div class="flex-1 flex gap-4 p-4 max-w-[1920px] mx-auto w-full">
-			<!-- Left sidebar - Filters -->
-			<CourseFilterSidebar v-model:filters="filters" :facets="facets" :loading="loading" @search="handleSearch" @reset="handleReset" />
-
-			<!-- Center - Main content -->
-			<main class="flex-1 min-w-0 space-y-4">
-				<!-- Timetable view -->
-				<template v-if="activeView === 'timetable'">
-					<TimetableGrid :scheduled-courses="scheduledCourses" :highlighted-course="highlightedCourse" @remove-course="handleRemoveCourse" />
-
-					<CourseList
-						:courses="courses"
-						:loading="loading"
-						:has-more="hasMore"
-						:total-count="totalCount"
-						:scheduled-course-ids="scheduledCourseIds"
-						@load-more="loadMore"
-						@add-to-schedule="handleAddToSchedule"
-						@highlight-course="(c) => (highlightedCourse = c)"
-					/>
-				</template>
-
-				<!-- List view -->
-				<template v-else>
-					<CourseList
-						:courses="courses"
-						:loading="loading"
-						:has-more="hasMore"
-						:total-count="totalCount"
-						:scheduled-course-ids="scheduledCourseIds"
-						@load-more="loadMore"
-						@add-to-schedule="handleAddToSchedule"
-						@highlight-course="(c) => (highlightedCourse = c)"
-					/>
-				</template>
-			</main>
-
-			<!-- Right sidebar - Schedule summary -->
-			<div class="w-72 flex-shrink-0">
-				<ScheduleSummary
-					:scheduled-courses="scheduledCourses"
-					:total-credits="totalCredits"
-					:total-hours="totalHours"
-					@remove-course="handleRemoveCourse"
-					@clear-schedule="handleClearSchedule"
-					@export-schedule="handleExportSchedule"
-				/>
+				<div class="feature-card">
+					<div class="feature-icon">📅</div>
+					<h3>{{ t('home.features.timetable.title') }}</h3>
+					<p>{{ t('home.features.timetable.description') }}</p>
+				</div>
+				<div class="feature-card">
+					<div class="feature-icon">📊</div>
+					<h3>{{ t('home.features.plan.title') }}</h3>
+					<p>{{ t('home.features.plan.description') }}</p>
+				</div>
 			</div>
 		</div>
 	</div>
 </template>
+
+<style scoped>
+.home-page {
+	padding-bottom: 40px;
+}
+
+.hero-section {
+	text-align: center;
+	padding: 40px 20px;
+	background: linear-gradient(135deg, var(--color-insis-table-header) 0%, white 100%);
+	border-bottom: 1px solid #ddd;
+	margin: -16px -16px 0;
+}
+
+.hero-title {
+	font-family: Georgia, serif;
+	font-size: 32px;
+	color: var(--color-insis-primary-dark);
+	margin: 0 0 12px;
+}
+
+.hero-subtitle {
+	font-size: 16px;
+	color: #555;
+	margin: 0;
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.features-section {
+	margin-top: 48px;
+	padding: 0 16px;
+}
+
+.features-section h2 {
+	text-align: center;
+	font-family: Georgia, serif;
+	font-size: 22px;
+	color: var(--color-insis-primary);
+	margin: 0 0 24px;
+}
+
+.features-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 20px;
+	max-width: 900px;
+	margin: 0 auto;
+}
+
+.feature-card {
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 24px;
+	text-align: center;
+	transition:
+		transform 0.2s,
+		box-shadow 0.2s;
+}
+
+.feature-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.feature-icon {
+	font-size: 36px;
+	margin-bottom: 12px;
+}
+
+.feature-card h3 {
+	font-size: 16px;
+	color: #333;
+	margin: 0 0 8px;
+}
+
+.feature-card p {
+	font-size: 13px;
+	color: #666;
+	margin: 0;
+	line-height: 1.5;
+}
+</style>

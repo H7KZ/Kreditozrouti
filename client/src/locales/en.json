@@ -1,24 +1,148 @@
 {
+	"app": {
+		"title": "Kreditožrouti",
+		"subtitle": "Smart course search for VŠE students",
+		"switchLanguage": "Switch language"
+	},
+	"nav": {
+		"home": "Home",
+		"courses": "Courses",
+		"timetable": "Timetable"
+	},
+	"common": {
+		"loading": "Loading...",
+		"error": "Error",
+		"close": "Close",
+		"change": "Change",
+		"remove": "Remove",
+		"save": "Save",
+		"cancel": "Cancel",
+		"prev": "Previous",
+		"next": "Next",
+		"search": "Search",
+		"clear": "Clear",
+		"more": "more"
+	},
+	"semester": {
+		"winter": "Winter semester",
+		"summer": "Summer semester"
+	},
+	"home": {
+		"title": "Kreditožrouti",
+		"subtitle": "Find the right courses and build your ideal schedule. Search by time, faculty, lecturers, and more.",
+		"features": {
+			"title": "What does Kreditožrouti offer?",
+			"search": {
+				"title": "Advanced Search",
+				"description": "Filter courses by faculty, days, times, lecturers, and many other criteria."
+			},
+			"timetable": {
+				"title": "Interactive Timetable",
+				"description": "Mark times when you don't want classes, and we'll find courses that fit your schedule."
+			},
+			"plan": {
+				"title": "Study Plan",
+				"description": "Select your study plan to see which courses are required and elective."
+			}
+		}
+	},
+	"wizard": {
+		"title": "Study Selection",
+		"steps": {
+			"faculty": "Faculty",
+			"period": "Period",
+			"studyPlan": "Study Plan"
+		},
+		"faculty": {
+			"title": "Select Faculty",
+			"description": "Choose the faculty where you study or want to search for courses."
+		},
+		"period": {
+			"title": "Select Academic Period",
+			"year": "Academic Year",
+			"semester": "Semester"
+		},
+		"studyPlan": {
+			"title": "Select Study Plan",
+			"search": "Search study plans...",
+			"noResults": "No study plans match your search.",
+			"noPlans": "No study plans available for the selected period."
+		},
+		"complete": {
+			"title": "Selection Summary",
+			"change": "Change Selection",
+			"continue": "Continue to Courses"
+		}
+	},
+	"filters": {
+		"title": "Course Filter",
+		"days": "Days",
+		"timeRange": "Class Time",
+		"campus": "Campus",
+		"faculties": "Faculties",
+		"category": "Category",
+		"group": "Group",
+		"ects": "Credits",
+		"clear": "Clear Filters"
+	},
+	"timetable": {
+		"title": "Timetable",
+		"day": "Day",
+		"dragHint": "Drag to select a time range",
+		"selectionPrompt": "What would you like to do with the selected time?",
+		"filterByTime": "Show courses at this time",
+		"excludeTime": "Exclude this time",
+		"excludedTimes": "Excluded Times",
+		"clearExclusions": "Clear Exclusions",
+		"possibleCourses": "Possible courses",
+		"matchingCourses": "Matching courses",
+		"noCoursesInTime": "No courses available at this time.",
+		"andMoreCourses": "and {count} more...",
+		"totalMatching": "Total {count} courses"
+	},
+	"courses": {
+		"title": "Courses",
+		"noResults": "No courses match your filters.",
+		"columns": {
+			"status": "",
+			"ident": "Code",
+			"title": "Title",
+			"faculty": "Fac.",
+			"category": "Category",
+			"ects": "Cr.",
+			"language": "Lang.",
+			"schedule": "Schedule"
+		},
+		"status": {
+			"available": "Available capacity"
+		},
+		"pagination": {
+			"showing": "Showing {from}–{to} of {total}"
+		},
+		"detail": {
+			"selectCourse": "Select a course to view details",
+			"faculty": "Faculty",
+			"ects": "Credits",
+			"credits": "credits",
+			"semester": "Semester",
+			"language": "Language",
+			"category": "Category",
+			"group": "Group",
+			"completion": "Completion",
+			"annotation": "Annotation",
+			"schedule": "Schedule",
+			"time": "Time",
+			"room": "Room",
+			"lecturer": "Lecturer",
+			"capacity": "Capacity",
+			"viewInInsis": "View in InSIS",
+			"addToTimetable": "Add to Timetable"
+		}
+	},
 	"errors": {
-		"types": {
-			"Unknown": "Unknown error",
-			"Validation": "Validation error",
-			"ZodValidation": "Validation error",
-			"Authentication": "Authentication error",
-			"Authorization": "Authorization error",
-			"Database": "Database error",
-			"ExternalService": "External service error"
-		},
-
-		"codes": {
-			"0": "An unknown error has occurred.",
-			"401_000": "Unauthenticated: Please log in to continue.",
-			"403_000": "Validation failed: The provided data is invalid.",
-			"404_000": "Resource not found: The requested item does not exist.",
-			"500_000": "Internal server error: Please try again later.",
-			"500_001": "Email service is currently unavailable. Please try again later."
-		},
-
-		"unexpected": "An unexpected error occurred."
+		"network": "Network error. Check your internet connection.",
+		"server": "Server error. Please try again later.",
+		"notFound": "The requested resource was not found.",
+		"unknown": "An unexpected error occurred."
 	}
 }
