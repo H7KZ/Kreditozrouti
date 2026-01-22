@@ -38,12 +38,57 @@ settings {
 }
 
 docs {
-  ## Body Request:
+  # Search Study Plans
+  Retrieves a paginated list of study plans with full relations.
   
-  `api/src/Controllers/Kreditozrouti/types/StudyPlansRequest.ts`
+  This endpoint returns study plans populated with faculty information and course associations (ident, groups, categories).
   
-  ## Success Response (200):
+  ### Request Body (JSON)
+  The request payload is validated against a Zod schema. Most fields accept a single value or an array of values.
   
-  `api/src/Controllers/Kreditozrouti/types/StudyPlansResponse.ts`
+  | Field | Type | Description |
+  | :--- | :--- | :--- |
+  | **Identity** | | |
+  | `id` | `number \| number[]` | Internal database IDs of the study plans. |
+  | `ident` | `string \| string[]` | Study plan code. |
+  | `title` | `string` | Partial text search on the plan title. |
+  | **Academic Period** | | |
+  | `semester` | `string \| string[]` | Enum: `WS` (Winter), `SS` (Summer). |
+  | `year` | `number \| number[]` | Academic year of the plan. |
+  | **Organizational** | | |
+  | `faculty_id` | `string \| string[]` | Faculty codes (e.g., "F4"). |
+  | `level` | `string \| string[]` | Degree level. |
+  | `mode_of_study` | `string \| string[]` | e.g., "Full-time". |
+  | `study_length` | `string \| string[]` | e.g., "2", "3". |
+  | **Course Context** | | |
+  | `has_course_id` | `number \| number[]` | Returns plans that contain the specific course ID. |
+  | `has_course_ident` | `string \| string[]` | Returns plans that contain the specific course Ident. |
+  | **Pagination & Sort** | | |
+  | `sort_by` | `enum` | Options: `ident`, `title`, `faculty_id`, `year`, `semester`, `level`. Default: `ident`. |
+  | `sort_dir` | `enum` | Options: `asc`, `desc`. Default: `asc`. |
+  | `limit` | `number` | Max results (1-100). Default: `20`. |
+  | `offset` | `number` | Results to skip. Default: `0`. |
   
+  ### Response (JSON)
+  Returns a payload containing the data (plans), facets (aggregations), and pagination metadata.
+  
+  ```json
+  {
+    "data": [ ... ], // Array of StudyPlan objects
+    "facets": {
+      "faculties": [],
+      "levels": [],
+      "semesters": [],
+      "years": [],
+      "modes_of_studies": [],
+      "study_lengths": []
+    },
+    "meta": {
+      "limit": 20,
+      "offset": 0,
+      "count": 20,
+      "total": 5
+    }
+  }
+  ```
 }

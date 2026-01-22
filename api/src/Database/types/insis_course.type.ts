@@ -1,7 +1,11 @@
-import { Faculty } from '@api/Database/types/insis_faculty.type'
-import InSISDay from '@scraper/Types/InSISDay'
-import InSISSemester from '@scraper/Types/InSISSemester'
-import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
+import { mysql } from '@api/clients';
+import { ExcludeMethods } from "@api/Database/types/index";
+import { Faculty, FacultyTable } from '@api/Database/types/insis_faculty.type';
+import { StudyPlanCourse, StudyPlanCourseTable } from '@api/Database/types/insis_study_plan.type';
+import InSISDay from '@scraper/Types/InSISDay';
+import InSISSemester from '@scraper/Types/InSISSemester';
+import { ColumnType, Insertable, Selectable } from 'kysely';
+
 
 /**
  * Database schema for InSIS Courses.
@@ -62,26 +66,48 @@ export class CourseTable {
 
 	special_requirements!: string | null
 	literature!: string | null
+
+	async getFaculty(): Promise<Faculty | null> {
+		if (!this.faculty_id) return null
+
+		const query = mysql.selectFrom(FacultyTable._table).selectAll().where('id', '=', this.faculty_id).limit(1)
+		const faculty = await query.executeTakeFirst()
+		return faculty ?? null
+	}
+
+	async getUnits(): Promise<CourseUnit[]> {
+		const query = mysql.selectFrom(CourseUnitTable._table).selectAll().where('course_id', '=', this.id)
+		return await query.execute()
+	}
+
+	async getAssessments(): Promise<CourseAssessment[]> {
+		const query = mysql.selectFrom(CourseAssessmentTable._table).selectAll().where('course_id', '=', this.id)
+		return await query.execute()
+	}
+
+	async getStudyPlans(): Promise<StudyPlanCourse[]> {
+		const query = mysql.selectFrom(StudyPlanCourseTable._table).selectAll().where('course_id', '=', this.id)
+		return await query.execute()
+	}
 }
 
-export type Course = Selectable<CourseTable>
-export type NewCourse = Insertable<Omit<CourseTable, 'id' | 'created_at' | 'updated_at'>>
-
-export interface CourseWithRelations extends Course {
-	faculty: Partial<Faculty> | null
-	assessment_methods: Partial<CourseAssessmentMethod>[]
-	timetable_units: Partial<CourseTimetableUnitWithSlots>[]
-}
+export type Course<F = void, U = void, A = void, SP = void> = Selectable<CourseTable> &
+	(F extends void ? unknown : { faculty: Partial<F> | null }) &
+	(U extends void ? unknown : { units: Partial<U>[] }) &
+	(A extends void ? unknown : { assessments: Partial<A>[] }) &
+	(SP extends void ? unknown : { study_plans: Partial<SP>[] })
+export type NewCourse = Insertable<Omit<ExcludeMethods<CourseTable>, 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
 
 /**
  * Assessment methods required to complete a course.
  */
-export class CourseAssessmentMethodTable {
-	static readonly _table = 'insis_courses_assessment_methods' as const
+export class CourseAssessmentTable {
+	static readonly _table = 'insis_courses_assessments' as const
 
-	id!: Generated<number>
+	id!: number // Generated<number>
+
 	course_id!: number
 
 	created_at!: ColumnType<Date, string | undefined, never>
@@ -92,20 +118,27 @@ export class CourseAssessmentMethodTable {
 
 	/** Percentage weight in the final grade. */
 	weight!: number | null
+
+	async getCourse(): Promise<Course | null> {
+		const query = mysql.selectFrom(CourseTable._table).selectAll().where('id', '=', this.course_id).limit(1)
+		const course = await query.executeTakeFirst()
+		return course ?? null
+	}
 }
 
-export type CourseAssessmentMethod = Selectable<CourseAssessmentMethodTable>
-export type NewCourseAssessmentMethod = Insertable<Omit<CourseAssessmentMethodTable, 'id' | 'created_at' | 'updated_at'>>
+export type CourseAssessment<C = void> = Selectable<CourseAssessmentTable> & (C extends void ? unknown : { course: Partial<C> | null })
+export type NewCourseAssessment = Insertable<Omit<ExcludeMethods<CourseAssessmentTable>, 'id' | 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
 
 /**
  * Represents a specific teaching group or instance of a course.
  */
-export class CourseTimetableUnitTable {
-	static readonly _table = 'insis_courses_timetable_units' as const
+export class CourseUnitTable {
+	static readonly _table = 'insis_courses_units' as const
 
-	id!: Generated<number>
+	id!: number // Generated<number>
+
 	course_id!: number
 
 	created_at!: ColumnType<Date, string | undefined, never>
@@ -114,25 +147,35 @@ export class CourseTimetableUnitTable {
 	lecturer!: string | null
 	capacity!: number | null
 	note!: string | null
+
+	async getCourse(): Promise<Course | null> {
+		const query = mysql.selectFrom(CourseTable._table).selectAll().where('id', '=', this.course_id).limit(1)
+		const course = await query.executeTakeFirst()
+		return course ?? null
+	}
+
+	async getSlots(): Promise<CourseUnitSlot[]> {
+		const query = mysql.selectFrom(CourseUnitSlotTable._table).selectAll().where('unit_id', '=', this.id)
+		return await query.execute()
+	}
 }
 
-export type CourseTimetableUnit = Selectable<CourseTimetableUnitTable>
-export type NewCourseTimetableUnit = Insertable<Omit<CourseTimetableUnitTable, 'id' | 'created_at' | 'updated_at'>>
-
-export interface CourseTimetableUnitWithSlots extends CourseTimetableUnit {
-	slots: Partial<CourseTimetableSlot>[]
-}
+export type CourseUnit<C = void, S = void> = Selectable<CourseUnitTable> &
+	(C extends void ? unknown : { course: Partial<C> | null }) &
+	(S extends void ? unknown : { slots: Partial<S>[] })
+export type NewCourseUnit = Insertable<Omit<ExcludeMethods<CourseUnitTable>, 'id' | 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
 
 /**
  * Specific scheduled time and location for a timetable unit.
  */
-export class CourseTimetableSlotTable {
-	static readonly _table = 'insis_courses_timetable_slots' as const
+export class CourseUnitSlotTable {
+	static readonly _table = 'insis_courses_units_slots' as const
 
-	id!: Generated<number>
-	timetable_unit_id!: number
+	id!: number // Generated<number>
+
+	unit_id!: number
 
 	created_at!: ColumnType<Date, string | undefined, never>
 	updated_at!: ColumnType<Date, string | undefined, string | undefined>
@@ -148,17 +191,19 @@ export class CourseTimetableSlotTable {
 	/** Day of the week for recurring slots. */
 	day!: InSISDay | null
 
-	time_from!: string | null
-	time_to!: string | null
-
 	/** Start time in minutes from midnight for easier calculation. */
-	time_from_minutes!: number | null
-
+	time_from!: number | null
 	/** End time in minutes from midnight. */
-	time_to_minutes!: number | null
+	time_to!: number | null
 
 	location!: string | null
+
+	async getUnit(): Promise<CourseUnit | null> {
+		const query = mysql.selectFrom(CourseUnitTable._table).selectAll().where('id', '=', this.unit_id).limit(1)
+		const unit = await query.executeTakeFirst()
+		return unit ?? null
+	}
 }
 
-export type CourseTimetableSlot = Selectable<CourseTimetableSlotTable>
-export type NewCourseTimetableSlot = Insertable<Omit<CourseTimetableSlotTable, 'id' | 'created_at' | 'updated_at'>>
+export type CourseUnitSlot<U = void> = Selectable<CourseUnitSlotTable> & (U extends void ? unknown : { unit: Partial<U> | null })
+export type NewCourseUnitSlot = Insertable<Omit<ExcludeMethods<CourseUnitSlotTable>, 'id' | 'created_at' | 'updated_at'>>

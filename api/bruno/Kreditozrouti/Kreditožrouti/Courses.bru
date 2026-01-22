@@ -48,12 +48,76 @@ settings {
 }
 
 docs {
-  ## Body Request:
+  # Search Courses
+  Retrieves a paginated list of courses with full relations based on complex filtering criteria.
   
-  `api/src/Controllers/Kreditozrouti/types/CoursesRequest.ts`
+  The response includes faculty information, timetable units, assessment methods, and study plan associations (if filtered by `study_plan_id`).
   
-  ## Success Response (200):
+  ### Request Body (JSON)
+  The request payload is validated against a strict Zod schema. Most fields accept a single value or an array of values.
   
-  `api/src/Controllers/Kreditozrouti/types/CoursesResponse.ts`
+  | Field | Type | Description |
+  | :--- | :--- | :--- |
+  | **Identity** | | |
+  | `id` | `number \| number[]` | Internal database IDs of the courses. |
+  | `ident` | `string \| string[]` | Course Ident codes (e.g., "4IT444"). |
+  | `title` | `string` | Partial text search on the course title. |
+  | **Academic Period** | | |
+  | `semester` | `string \| string[]` | Enum: `WS` (Winter), `SS` (Summer). |
+  | `year` | `number \| number[]` | Academic year (e.g., `2023`). |
+  | **Organizational** | | |
+  | `faculty_id` | `string \| string[]` | Faculty codes (e.g., "F4"). |
+  | `level` | `string \| string[]` | Degree level (e.g., "Bachelor", "Master"). |
+  | `language` | `string \| string[]` | Language of instruction. |
+  | **Schedule** | | |
+  | `day` | `string \| string[]` | Enum: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`, `Sun`. |
+  | `time_from` | `number` | Start time in minutes from midnight. |
+  | `time_to` | `number` | End time in minutes from midnight. |
+  | **Study Plan Context** | | |
+  | `study_plan_id` | `number \| number[]` | ID of the study plan to filter by. |
+  | `group` | `string \| string[]` | Study plan group (Requires `study_plan_id`). |
+  | `category` | `string \| string[]` | Study plan category (Requires `study_plan_id`). |
+  | **Course Props** | | |
+  | `ects` | `number \| number[]` | ECTS credit value. |
+  | `mode_of_completion`| `string \| string[]` | e.g., "Exam", "Credit". |
+  | `mode_of_delivery` | `string \| string[]` | e.g., "In-person", "Distance". |
+  | `lecturer` | `string \| string[]` | Name of the lecturer. |
+  | **Availability** | | |
+  | `has_capacity` | `boolean` | If `true`, only returns courses with open spots. |
+  | `exclude_slot_ids` | `number[]` | List of specific timetable slot IDs to ignore. |
+  | `exclude_times` | `Object[]` | Array of `{ day, time_from, time_to }` to block out specific times. |
+  | **Pagination & Sort** | | |
+  | `sort_by` | `enum` | Options: `ident`, `title`, `ects`, `faculty`, `year`, `semester`. Default: `ident`. |
+  | `sort_dir` | `enum` | Options: `asc`, `desc`. Default: `asc`. |
+  | `limit` | `number` | Max results (1-100). Default: `20`. |
+  | `offset` | `number` | Results to skip. Default: `0`. |
   
+  ### Response (JSON)
+  Returns a payload containing the data, facets (aggregations), and pagination metadata.
+  
+  ```json
+  {
+    "data": [ ... ], // Array of Course objects
+    "facets": {
+      "faculties": [],
+      "days": [],
+      "lecturers": [],
+      "languages": [],
+      "levels": [],
+      "semesters": [],
+      "years": [],
+      "groups": [],
+      "categories": [],
+      "ects": [],
+      "modes_of_completion": [],
+      "time_range": { "min_time": 440, "max_time": 1200 }
+    },
+    "meta": {
+      "limit": 20,
+      "offset": 0,
+      "count": 20,
+      "total": 150
+    }
+  }
+  ```
 }

@@ -1,4 +1,8 @@
+import { mysql } from '@api/clients'
+import { Course, CourseTable } from '@api/Database/types/insis_course.type'
+import { StudyPlan, StudyPlanTable } from '@api/Database/types/insis_study_plan.type'
 import { ColumnType, Insertable, Selectable } from 'kysely'
+import { ExcludeMethods } from '@api/Database/types/index'
 
 /**
  * Database schema for Faculties.
@@ -12,7 +16,19 @@ export class FacultyTable {
 	updated_at!: ColumnType<Date, string | undefined, string | undefined>
 
 	title!: string | null
+
+	async getCourses(): Promise<Course[]> {
+		const query = mysql.selectFrom(CourseTable._table).selectAll().where('faculty_id', '=', this.id)
+		return await query.execute()
+	}
+
+	async getStudyPlans(): Promise<StudyPlan[]> {
+		const query = mysql.selectFrom(StudyPlanTable._table).selectAll().where('faculty_id', '=', this.id)
+		return await query.execute()
+	}
 }
 
-export type Faculty = Selectable<FacultyTable>
-export type NewFaculty = Insertable<Omit<FacultyTable, 'id' | 'created_at' | 'updated_at'>>
+export type Faculty<C = void, SP = void> = Selectable<FacultyTable> &
+	(C extends void ? unknown : { courses: Partial<C>[] }) &
+	(SP extends void ? unknown : { study_plans: Partial<SP>[] })
+export type NewFaculty = Insertable<Omit<ExcludeMethods<FacultyTable>, 'id' | 'created_at' | 'updated_at'>>

@@ -1,13 +1,16 @@
 import { mysql } from '@api/clients'
 import {
-	CourseAssessmentMethodTable,
+	Course,
+	CourseAssessment,
+	CourseAssessmentTable,
 	CourseTable,
-	CourseTimetableSlotTable,
-	CourseTimetableUnitTable,
-	CourseTimetableUnitWithSlots,
-	CourseWithRelations,
+	CourseUnit,
+	CourseUnitSlot,
+	CourseUnitSlotTable,
+	CourseUnitTable,
 	Faculty,
 	FacultyTable,
+	StudyPlanCourse,
 	StudyPlanCourseTable
 } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem'
@@ -15,23 +18,19 @@ import { CoursesFilter } from '@api/Validations/CoursesFilterValidation'
 import { sql } from 'kysely'
 
 /**
+ * LTS: The detailed course type includes Faculty, deeply nested Units+Slots, Assessments, and associated Study Plans.
+ */
+export type CourseDetailed = Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>
+
+/**
  * Service handling all Course-related database operations.
- * Responsible for fetching course details, joining related entities (timetable, faculty),
- * and calculating aggregated facets for search filters.
  */
 export default class CourseService {
 	/**
 	 * Retrieves a paginated list of courses with deep relations.
-	 *
-	 * Implementation:
-	 * 1. Counts total records matching filters.
-	 * 2. Fetches paginated IDs.
-	 * 3. Fetches full course records for those IDs.
-	 * 4. Parallely fetches related data (timetable, assessments, faculty) to avoid N+1 queries.
-	 * 5. Maps relations back to the course objects in memory.
 	 */
-	static async getCoursesWithRelations(filters: Partial<CoursesFilter>, limit = 20, offset = 0): Promise<{ courses: CourseWithRelations[]; total: number }> {
-		// Get total count first
+	static async getCoursesWithRelations(filters: Partial<CoursesFilter>, limit = 20, offset = 0): Promise<{ courses: CourseDetailed[]; total: number }> {
+		// 1. Get total count
 		const countQuery = this.buildCourseQuery(filters)
 			.select(eb => eb.fn.countAll<number>().as('total'))
 			.groupBy('c.id')
@@ -43,7 +42,7 @@ export default class CourseService {
 
 		const total = countResult?.total ?? 0
 
-		// Get paginated course IDs
+		// 2. Get paginated course IDs
 		const courseIdsQuery = this.buildCourseQuery(filters)
 			.select('c.id')
 			.groupBy('c.id')
@@ -58,7 +57,7 @@ export default class CourseService {
 			return { courses: [], total }
 		}
 
-		// Fetch full course data
+		// 3. Fetch full course data
 		const courses = await mysql
 			.selectFrom(`${CourseTable._table} as c`)
 			.selectAll('c')
@@ -66,7 +65,7 @@ export default class CourseService {
 			.orderBy(this.getSortColumn(filters.sort_by) as any, filters.sort_dir ?? 'asc')
 			.execute()
 
-		// Fetch related data in parallel
+		// 4. Fetch related data in parallel
 		const [faculties, timetableUnits, timetableSlots, assessmentMethods, studyPlanInfo] = await Promise.all([
 			this.getFacultiesForCourses(courseIds),
 			this.getTimetableUnitsForCourses(courseIds),
@@ -75,27 +74,31 @@ export default class CourseService {
 			filters.study_plan_id ? this.getStudyPlanInfoForCourses(courseIds, filters.study_plan_id) : Promise.resolve([])
 		])
 
-		// Build faculty map
-		const facultyMap = new Map<string, Partial<Faculty>>()
+		// 5. In-Memory Mapping
+
+		// Faculty Map
+		const facultyMap = new Map<string, Faculty>()
 		for (const f of faculties) {
-			facultyMap.set(f.id, { id: f.id, title: f.title })
+			facultyMap.set(f.id, f)
 		}
 
-		// Build timetable units map with slots
-		const unitsMap = new Map<number, CourseTimetableUnitWithSlots[]>()
+		// Timetable Units Map (with injected Slots)
+		const unitsMap = new Map<number, CourseUnit<void, CourseUnitSlot>[]>()
 		for (const unit of timetableUnits) {
 			if (!unitsMap.has(unit.course_id)) {
 				unitsMap.set(unit.course_id, [])
 			}
-			const unitWithSlots: CourseTimetableUnitWithSlots = {
+
+			// We explicitly construct the object to match CourseUnit<void, CourseUnitSlot>
+			const unitWithSlots: CourseUnit<void, CourseUnitSlot> = {
 				...unit,
-				slots: timetableSlots.filter(s => s.timetable_unit_id === unit.id)
+				slots: timetableSlots.filter(s => s.unit_id === unit.id)
 			}
 			unitsMap.get(unit.course_id)!.push(unitWithSlots)
 		}
 
-		// Build assessment methods map
-		const assessmentMap = new Map<number, typeof assessmentMethods>()
+		// Assessment Map
+		const assessmentMap = new Map<number, CourseAssessment[]>()
 		for (const am of assessmentMethods) {
 			if (!assessmentMap.has(am.course_id)) {
 				assessmentMap.set(am.course_id, [])
@@ -103,26 +106,25 @@ export default class CourseService {
 			assessmentMap.get(am.course_id)!.push(am)
 		}
 
-		// Build study plan info map
-		const studyPlanMap = new Map<number, typeof studyPlanInfo>()
+		// Study Plan Map
+		const studyPlanMap = new Map<number, StudyPlanCourse[]>()
 		for (const sp of studyPlanInfo) {
-			if (!studyPlanMap.has(sp.course_id!)) {
-				studyPlanMap.set(sp.course_id!, [])
+			// Safety check: sp.course_id should exist based on query, but type says nullable
+			if (sp.course_id) {
+				if (!studyPlanMap.has(sp.course_id)) {
+					studyPlanMap.set(sp.course_id, [])
+				}
+				studyPlanMap.get(sp.course_id)!.push(sp)
 			}
-			studyPlanMap.get(sp.course_id!)!.push(sp)
 		}
 
-		// Assemble final response
-		const coursesWithRelations: CourseWithRelations[] = courses.map(course => ({
+		// 6. Assembly
+		const coursesWithRelations: CourseDetailed[] = courses.map(course => ({
 			...course,
 			faculty: course.faculty_id ? (facultyMap.get(course.faculty_id) ?? null) : null,
-			timetable_units: unitsMap.get(course.id) ?? [],
-			assessment_methods: assessmentMap.get(course.id) ?? [],
-			study_plan_info: studyPlanMap.get(course.id)?.map(sp => ({
-				study_plan_id: sp.study_plan_id,
-				group: sp.group,
-				category: sp.category
-			}))
+			units: unitsMap.get(course.id) ?? [],
+			assessments: assessmentMap.get(course.id) ?? [],
+			study_plans: studyPlanMap.get(course.id) ?? []
 		}))
 
 		return { courses: coursesWithRelations, total }
@@ -130,7 +132,6 @@ export default class CourseService {
 
 	/**
 	 * Aggregates all search facets (filters) for the course catalog in parallel.
-	 * Returns counts for faculties, days, lecturers, etc.
 	 */
 	static async getCourseFacets(filters: CoursesFilter) {
 		const [faculties, days, lecturersRaw, languagesRaw, levels, semesters, years, groups, categories, ects, modesOfCompletion, timeRange] =
@@ -282,8 +283,9 @@ export default class CourseService {
 	}
 
 	private static async getTimeRangeFacet(filters: CoursesFilter) {
+		// Update: Using 'time_from' instead of 'time_from_minutes' based on new schema
 		const result = await this.buildCourseQuery(filters, 'time_from')
-			.select(eb => [eb.fn.min<number>('s.time_from_minutes').as('min_time'), eb.fn.max<number>('s.time_to_minutes').as('max_time')])
+			.select(eb => [eb.fn.min<number>('s.time_from').as('min_time'), eb.fn.max<number>('s.time_to').as('max_time')])
 			.executeTakeFirst()
 
 		return {
@@ -294,18 +296,14 @@ export default class CourseService {
 
 	/**
 	 * Constructs the central Kysely query builder for filtering courses.
-	 * Joins timetable units, slots, and study plan courses as needed.
-	 *
-	 * @param filters - The set of filters to apply.
-	 * @param ignoreFacet - Prevents a specific filter field from filtering itself (used for facet counts).
 	 */
 	private static buildCourseQuery(filters: Partial<CoursesFilter>, ignoreFacet?: keyof CoursesFilter) {
 		const toArray = <T>(val: T | T[] | undefined): T[] => (val === undefined ? [] : Array.isArray(val) ? val : [val])
 
 		let query = mysql
 			.selectFrom(`${CourseTable._table} as c`)
-			.leftJoin(`${CourseTimetableUnitTable._table} as u`, 'c.id', 'u.course_id')
-			.leftJoin(`${CourseTimetableSlotTable._table} as s`, 'u.id', 's.timetable_unit_id')
+			.leftJoin(`${CourseUnitTable._table} as u`, 'c.id', 'u.course_id')
+			.leftJoin(`${CourseUnitSlotTable._table} as s`, 'u.id', 's.unit_id')
 			.leftJoin(`${StudyPlanCourseTable._table} as spc`, 'c.id', 'spc.course_id')
 
 		// Identity filters
@@ -360,12 +358,13 @@ export default class CourseService {
 			if (days.length) query = query.where('s.day', 'in', days)
 		}
 
+		// Update: Using 'time_from'/'time_to'
 		if (filters.time_from !== undefined && ignoreFacet !== 'time_from') {
-			query = query.where('s.time_from_minutes', '>=', filters.time_from)
+			query = query.where('s.time_from', '>=', filters.time_from)
 		}
 
 		if (filters.time_to !== undefined && ignoreFacet !== 'time_to') {
-			query = query.where('s.time_to_minutes', '<=', filters.time_to)
+			query = query.where('s.time_to', '<=', filters.time_to)
 		}
 
 		// Personnel filters
@@ -414,10 +413,11 @@ export default class CourseService {
 		}
 
 		if (filters.exclude_times?.length) {
+			// Update: Using 'time_from'/'time_to'
 			query = query.where(eb =>
 				eb.and(
 					filters.exclude_times!.map(exc =>
-						eb.or([eb('s.day', '!=', exc.day), eb('s.time_to_minutes', '<=', exc.time_from), eb('s.time_from_minutes', '>=', exc.time_to)])
+						eb.or([eb('s.day', '!=', exc.day), eb('s.time_to', '<=', exc.time_from), eb('s.time_from', '>=', exc.time_to)])
 					)
 				)
 			)
@@ -439,20 +439,20 @@ export default class CourseService {
 	}
 
 	private static async getTimetableUnitsForCourses(courseIds: number[]) {
-		return mysql.selectFrom(`${CourseTimetableUnitTable._table} as u`).selectAll('u').where('u.course_id', 'in', courseIds).execute()
+		return mysql.selectFrom(`${CourseUnitTable._table} as u`).selectAll('u').where('u.course_id', 'in', courseIds).execute()
 	}
 
 	private static async getTimetableSlotsForCourses(courseIds: number[]) {
 		return mysql
-			.selectFrom(`${CourseTimetableSlotTable._table} as s`)
-			.innerJoin(`${CourseTimetableUnitTable._table} as u`, 's.timetable_unit_id', 'u.id')
+			.selectFrom(`${CourseUnitSlotTable._table} as s`)
+			.innerJoin(`${CourseUnitTable._table} as u`, 's.unit_id', 'u.id')
 			.selectAll('s')
 			.where('u.course_id', 'in', courseIds)
 			.execute()
 	}
 
 	private static async getAssessmentMethodsForCourses(courseIds: number[]) {
-		return mysql.selectFrom(`${CourseAssessmentMethodTable._table} as am`).selectAll('am').where('am.course_id', 'in', courseIds).execute()
+		return mysql.selectFrom(`${CourseAssessmentTable._table} as am`).selectAll('am').where('am.course_id', 'in', courseIds).execute()
 	}
 
 	private static async getStudyPlanInfoForCourses(courseIds: number[], studyPlanIds: number | number[]) {

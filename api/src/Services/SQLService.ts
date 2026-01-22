@@ -22,6 +22,7 @@ export class SQLService {
 
 		const migrator = new Migrator({
 			db: mysql,
+			allowUnorderedMigrations: false,
 			provider: new FileMigrationProvider({
 				fs,
 				path,

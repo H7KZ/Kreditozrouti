@@ -1,8 +1,11 @@
-import { Faculty } from '@api/Database/types/insis_faculty.type'
+import { mysql } from '@api/clients'
+import { CourseTable } from '@api/Database/types/insis_course.type'
+import { Faculty, FacultyTable } from '@api/Database/types/insis_faculty.type'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
 import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
-import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
+import { ColumnType, Insertable, Selectable } from 'kysely'
+import { ExcludeMethods } from '@api/Database/types/index'
 
 /**
  * Database schema for Study Plans (Curriculums).
@@ -10,7 +13,7 @@ import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 export class StudyPlanTable {
 	static readonly _table = 'insis_study_plans' as const
 
-	id!: Generated<number>
+	id!: number // Generated<number>
 
 	faculty_id!: string | null
 
@@ -32,15 +35,23 @@ export class StudyPlanTable {
 	level!: string | null
 	mode_of_study!: string | null
 	study_length!: string | null
+
+	async getFaculty(): Promise<Faculty | undefined> {
+		if (!this.faculty_id) return undefined
+		const query = mysql.selectFrom(FacultyTable._table).selectAll().where('id', '=', this.faculty_id)
+		return await query.executeTakeFirst()
+	}
+
+	async getCourses(): Promise<StudyPlanCourse[]> {
+		const query = mysql.selectFrom(StudyPlanCourseTable._table).selectAll().where('study_plan_id', '=', this.id)
+		return await query.execute()
+	}
 }
 
-export type StudyPlan = Selectable<StudyPlanTable>
-export type NewStudyPlan = Insertable<Omit<StudyPlanTable, 'id' | 'created_at' | 'updated_at'>>
-
-export interface StudyPlanWithRelations extends StudyPlan {
-	faculty: Partial<Faculty> | null
-	courses: Partial<StudyPlanCourse>[]
-}
+export type StudyPlan<F = void, C = void> = Selectable<StudyPlanTable> &
+	(F extends void ? unknown : { faculty: Partial<F> | null }) &
+	(C extends void ? unknown : { courses: Partial<C>[] })
+export type NewStudyPlan = Insertable<Omit<ExcludeMethods<StudyPlanTable>, 'id' | 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
 
@@ -51,7 +62,8 @@ export interface StudyPlanWithRelations extends StudyPlan {
 export class StudyPlanCourseTable {
 	static readonly _table = 'insis_study_plans_courses' as const
 
-	id!: Generated<number>
+	id!: number // Generated<number>
+
 	study_plan_id!: number
 	course_id!: number | null
 
@@ -63,7 +75,23 @@ export class StudyPlanCourseTable {
 
 	group!: InSISStudyPlanCourseGroup
 	category!: InSISStudyPlanCourseCategory
+
+	async getStudyPlan(): Promise<StudyPlan | null> {
+		const query = mysql.selectFrom(StudyPlanTable._table).selectAll().where('id', '=', this.study_plan_id).limit(1)
+		const studyPlan = await query.executeTakeFirst()
+		return studyPlan ?? null
+	}
+
+	async getCourse(): Promise<Selectable<CourseTable> | null> {
+		if (!this.course_id) return null
+
+		const query = mysql.selectFrom(CourseTable._table).selectAll().where('id', '=', this.course_id).limit(1)
+		const course = await query.executeTakeFirst()
+		return course ?? null
+	}
 }
 
-export type StudyPlanCourse = Selectable<StudyPlanCourseTable>
-export type NewStudyPlanCourse = Insertable<Omit<StudyPlanCourseTable, 'id' | 'created_at' | 'updated_at'>>
+export type StudyPlanCourse<SP = void, C = void> = Selectable<StudyPlanCourseTable> &
+	(SP extends void ? unknown : { study_plan: Partial<SP> | null }) &
+	(C extends void ? unknown : { course: Partial<C> | null })
+export type NewStudyPlanCourse = Insertable<Omit<ExcludeMethods<StudyPlanCourseTable>, 'id' | 'created_at' | 'updated_at'>>

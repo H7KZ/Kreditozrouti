@@ -6,8 +6,8 @@ import * as z from 'zod'
  */
 export interface TimetableTimeConflict {
 	day: string
-	time_from: number
-	time_to: number
+	time_from?: number | null
+	time_to?: number | null
 	course_id: number
 	course_ident: string
 	slot_id: number

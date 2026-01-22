@@ -13,7 +13,6 @@ import { Request, Response } from 'express'
  * Returns study plans with:
  * - Faculty information
  * - Course associations (IDs, idents, groups, categories)
- * - Statistics (total courses, compulsory vs elective)
  *
  * Results are cached in Redis for 5 minutes.
  *
@@ -24,16 +23,19 @@ import { Request, Response } from 'express'
 export default async function StudyPlansController(req: Request, res: Response<StudyPlansResponse>) {
 	LoggerAPIContext.add(res, { body: req.body })
 
+	// 1. Validation
 	const result = await StudyPlansFilterValidation.safeParseAsync(req.body)
 
 	if (!result.success) {
-		throw new Exception(400, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
+		throw new Exception(400, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', {
+			zodIssues: result.error.issues
+		})
 	}
 
 	const filter = result.data
 
-	// Build cache key from filter
-	const cacheKey = `insis:study_plans:v2:${JSON.stringify(filter)}`
+	// 2. Cache Check
+	const cacheKey = `insis:study_plans:${JSON.stringify(filter)}`
 	const cachedData = await redis.get(cacheKey)
 
 	if (cachedData) {
@@ -41,7 +43,7 @@ export default async function StudyPlansController(req: Request, res: Response<S
 		return res.status(200).send(JSON.parse(cachedData))
 	}
 
-	// Fetch data with relations
+	// 3. Service Call (Parallel Execution)
 	const [{ plans, total }, facets] = await Promise.all([
 		StudyPlanService.getStudyPlansWithRelations(filter, filter.limit, filter.offset),
 		StudyPlanService.getStudyPlanFacets(filter)
@@ -54,6 +56,7 @@ export default async function StudyPlansController(req: Request, res: Response<S
 		facets_count: Object.keys(facets).length
 	})
 
+	// 4. Response Assembly
 	const response: StudyPlansResponse = {
 		data: plans,
 		facets,
@@ -65,7 +68,7 @@ export default async function StudyPlansController(req: Request, res: Response<S
 		}
 	}
 
-	// Cache for 5 minutes
+	// 5. Cache Set (TTL: 5 minutes)
 	await redis.setex(cacheKey, 300, JSON.stringify(response))
 
 	return res.status(200).send(response)

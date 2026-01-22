@@ -25,16 +25,19 @@ import { Request, Response } from 'express'
 export default async function CoursesController(req: Request, res: Response<CoursesResponse>) {
 	LoggerAPIContext.add(res, { body: req.body })
 
+	// 1. Validation
 	const result = await CoursesFilterValidation.safeParseAsync(req.body)
 
 	if (!result.success) {
-		throw new Exception(400, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', { zodIssues: result.error.issues })
+		throw new Exception(400, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', {
+			zodIssues: result.error.issues
+		})
 	}
 
 	const filter = result.data
 
-	// Build cache key from filter
-	const cacheKey = `insis:courses:v2:${JSON.stringify(filter)}`
+	// 2. Cache Check
+	const cacheKey = `insis:courses:${JSON.stringify(filter)}`
 	const cachedData = await redis.get(cacheKey)
 
 	if (cachedData) {
@@ -42,7 +45,7 @@ export default async function CoursesController(req: Request, res: Response<Cour
 		return res.status(200).send(JSON.parse(cachedData))
 	}
 
-	// Fetch data with relations
+	// 3. Service Call (Parallel Execution)
 	const [{ courses, total }, facets] = await Promise.all([
 		CourseService.getCoursesWithRelations(filter, filter.limit, filter.offset),
 		CourseService.getCourseFacets(filter)
@@ -55,6 +58,8 @@ export default async function CoursesController(req: Request, res: Response<Cour
 		facets_count: Object.keys(facets).length
 	})
 
+	// 4. Response Assembly
+	// LTS Note: The type 'CoursesResponse' is now strictly enforced against the data returned by the service.
 	const response: CoursesResponse = {
 		data: courses,
 		facets,
@@ -66,7 +71,7 @@ export default async function CoursesController(req: Request, res: Response<Cour
 		}
 	}
 
-	// Cache for 5 minutes
+	// 5. Cache Set (TTL: 5 minutes)
 	await redis.setex(cacheKey, 300, JSON.stringify(response))
 
 	return res.status(200).send(response)
