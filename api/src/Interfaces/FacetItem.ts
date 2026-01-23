@@ -7,7 +7,7 @@ export default interface FacetItem {
 	 *
 	 * @type {string | null}
 	 */
-	value: string | number | null
+	value: string | number | Date | null
 
 	/**
 	 * The number of records matching this specific option

@@ -8,19 +8,16 @@ import {
 	CourseUnitSlot,
 	CourseUnitSlotTable,
 	CourseUnitTable,
+	ExcludeMethods,
 	Faculty,
 	FacultyTable,
 	StudyPlanCourse,
 	StudyPlanCourseTable
 } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem'
+import { toArray } from '@api/Services/Utils'
 import { CoursesFilter } from '@api/Validations/CoursesFilterValidation'
 import { sql } from 'kysely'
-
-/**
- * LTS: The detailed course type includes Faculty, deeply nested Units+Slots, Assessments, and associated Study Plans.
- */
-export type CourseDetailed = Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>
 
 /**
  * Service handling all Course-related database operations.
@@ -29,10 +26,14 @@ export default class CourseService {
 	/**
 	 * Retrieves a paginated list of courses with deep relations.
 	 */
-	static async getCoursesWithRelations(filters: Partial<CoursesFilter>, limit = 20, offset = 0): Promise<{ courses: CourseDetailed[]; total: number }> {
+	static async getCoursesWithRelations(
+		filters: Partial<CoursesFilter>,
+		limit = 20,
+		offset = 0
+	): Promise<{ courses: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>[]; total: number }> {
 		// 1. Get total count
 		const countQuery = this.buildCourseQuery(filters)
-			.select(eb => eb.fn.countAll<number>().as('total'))
+			.select(eb => eb.fn.count<number>('c.id').distinct().as('total'))
 			.groupBy('c.id')
 
 		const countResult = await mysql
@@ -66,12 +67,12 @@ export default class CourseService {
 			.execute()
 
 		// 4. Fetch related data in parallel
-		const [faculties, timetableUnits, timetableSlots, assessmentMethods, studyPlanInfo] = await Promise.all([
+		const [faculties, units, slots, assessments, studyPlans] = await Promise.all([
 			this.getFacultiesForCourses(courseIds),
-			this.getTimetableUnitsForCourses(courseIds),
-			this.getTimetableSlotsForCourses(courseIds),
-			this.getAssessmentMethodsForCourses(courseIds),
-			filters.study_plan_id ? this.getStudyPlanInfoForCourses(courseIds, filters.study_plan_id) : Promise.resolve([])
+			this.getCoursesUnits(courseIds),
+			this.getCoursesUnitsSlots(courseIds),
+			this.getCoursesAssessments(courseIds),
+			filters.study_plan_id ? this.getCoursesStudyPlans(courseIds, filters.study_plan_id) : Promise.resolve([])
 		])
 
 		// 5. In-Memory Mapping
@@ -84,7 +85,7 @@ export default class CourseService {
 
 		// Timetable Units Map (with injected Slots)
 		const unitsMap = new Map<number, CourseUnit<void, CourseUnitSlot>[]>()
-		for (const unit of timetableUnits) {
+		for (const unit of units) {
 			if (!unitsMap.has(unit.course_id)) {
 				unitsMap.set(unit.course_id, [])
 			}
@@ -92,14 +93,14 @@ export default class CourseService {
 			// We explicitly construct the object to match CourseUnit<void, CourseUnitSlot>
 			const unitWithSlots: CourseUnit<void, CourseUnitSlot> = {
 				...unit,
-				slots: timetableSlots.filter(s => s.unit_id === unit.id)
+				slots: slots.filter(s => s.unit_id === unit.id)
 			}
 			unitsMap.get(unit.course_id)!.push(unitWithSlots)
 		}
 
 		// Assessment Map
 		const assessmentMap = new Map<number, CourseAssessment[]>()
-		for (const am of assessmentMethods) {
+		for (const am of assessments) {
 			if (!assessmentMap.has(am.course_id)) {
 				assessmentMap.set(am.course_id, [])
 			}
@@ -108,7 +109,7 @@ export default class CourseService {
 
 		// Study Plan Map
 		const studyPlanMap = new Map<number, StudyPlanCourse[]>()
-		for (const sp of studyPlanInfo) {
+		for (const sp of studyPlans) {
 			// Safety check: sp.course_id should exist based on query, but type says nullable
 			if (sp.course_id) {
 				if (!studyPlanMap.has(sp.course_id)) {
@@ -119,7 +120,7 @@ export default class CourseService {
 		}
 
 		// 6. Assembly
-		const coursesWithRelations: CourseDetailed[] = courses.map(course => ({
+		const coursesWithRelations: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>[] = courses.map(course => ({
 			...course,
 			faculty: course.faculty_id ? (facultyMap.get(course.faculty_id) ?? null) : null,
 			units: unitsMap.get(course.id) ?? [],
@@ -136,17 +137,17 @@ export default class CourseService {
 	static async getCourseFacets(filters: CoursesFilter) {
 		const [faculties, days, lecturersRaw, languagesRaw, levels, semesters, years, groups, categories, ects, modesOfCompletion, timeRange] =
 			await Promise.all([
-				this.getFacultyFacet(filters),
+				this.getFacet(filters, 'faculty_id'),
 				this.getDayFacet(filters),
 				this.getLecturerFacet(filters),
 				this.getLanguageFacet(filters),
 				this.getLevelFacet(filters),
-				this.getSemesterFacet(filters),
-				this.getYearFacet(filters),
+				this.getFacet(filters, 'semester'),
+				this.getFacet(filters, 'year'),
 				this.getGroupFacet(filters),
 				this.getCategoryFacet(filters),
-				this.getEctsFacet(filters),
-				this.getModeOfCompletionFacet(filters),
+				this.getFacet(filters, 'ects'),
+				this.getFacet(filters, 'mode_of_completion'),
 				this.getTimeRangeFacet(filters)
 			])
 
@@ -169,18 +170,21 @@ export default class CourseService {
 		}
 	}
 
-	private static async getFacultyFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		return this.buildCourseQuery(filters, 'faculty_id')
-			.select('c.faculty_id as value')
+	/**
+	 * Generic facet builder to reduce code duplication (DRY Principle).
+	 */
+	private static async getFacet(filters: CoursesFilter, column: keyof ExcludeMethods<Course>): Promise<FacetItem[]> {
+		return this.buildCourseQuery(filters, column)
+			.select(`c.${column} as value`)
 			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where('c.faculty_id', 'is not', null)
-			.groupBy('c.faculty_id')
-			.orderBy('value')
+			.where(`c.${column}`, 'is not', null)
+			.groupBy(`c.${column}`)
+			.orderBy('count', 'desc')
 			.execute()
 	}
 
 	private static async getDayFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		return this.buildCourseQuery(filters, 'day')
+		return this.buildCourseQuery(filters, 'include_times')
 			.select('s.day as value')
 			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
 			.where('s.day', 'is not', null)
@@ -220,26 +224,6 @@ export default class CourseService {
 			.execute()
 	}
 
-	private static async getSemesterFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		return this.buildCourseQuery(filters, 'semester')
-			.select('c.semester as value')
-			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where('c.semester', 'is not', null)
-			.groupBy('c.semester')
-			.orderBy('value', 'desc')
-			.execute()
-	}
-
-	private static async getYearFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		return this.buildCourseQuery(filters, 'year')
-			.select('c.year as value')
-			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where('c.year', 'is not', null)
-			.groupBy('c.year')
-			.orderBy('value', 'desc')
-			.execute()
-	}
-
 	private static async getGroupFacet(filters: CoursesFilter): Promise<FacetItem[]> {
 		if (!filters.study_plan_id) return []
 		return this.buildCourseQuery(filters, 'group')
@@ -262,33 +246,18 @@ export default class CourseService {
 			.execute()
 	}
 
-	private static async getEctsFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		return this.buildCourseQuery(filters, 'ects')
-			.select('c.ects as value')
-			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where('c.ects', 'is not', null)
-			.groupBy('c.ects')
-			.orderBy('value')
-			.execute()
-	}
-
-	private static async getModeOfCompletionFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		return this.buildCourseQuery(filters, 'mode_of_completion')
-			.select('c.mode_of_completion as value')
-			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where('c.mode_of_completion', 'is not', null)
-			.groupBy('c.mode_of_completion')
-			.orderBy('count', 'desc')
-			.execute()
-	}
-
 	private static async getTimeRangeFacet(filters: CoursesFilter) {
-		// Update: Using 'time_from' instead of 'time_from_minutes' based on new schema
-		const result = await this.buildCourseQuery(filters, 'time_from')
-			.select(eb => [eb.fn.min<number>('s.time_from').as('min_time'), eb.fn.max<number>('s.time_to').as('max_time')])
+		const result = await this.buildCourseQuery(filters, 'include_times')
+			.select(eb => [
+				// Use min/max on the slot times
+				eb.fn.min<number>('s.time_from').as('min_time'),
+				eb.fn.max<number>('s.time_to').as('max_time')
+			])
+			.where('s.time_from', 'is not', null)
 			.executeTakeFirst()
 
 		return {
+			// Default to 0-1440 (00:00 - 24:00) if no slots are found
 			min_time: result?.min_time ?? 0,
 			max_time: result?.max_time ?? 1440
 		}
@@ -297,9 +266,10 @@ export default class CourseService {
 	/**
 	 * Constructs the central Kysely query builder for filtering courses.
 	 */
-	private static buildCourseQuery(filters: Partial<CoursesFilter>, ignoreFacet?: keyof CoursesFilter) {
-		const toArray = <T>(val: T | T[] | undefined): T[] => (val === undefined ? [] : Array.isArray(val) ? val : [val])
-
+	private static buildCourseQuery(
+		filters: Partial<CoursesFilter>,
+		ignoreFacet?: keyof ExcludeMethods<Course> | keyof Omit<CoursesFilter, 'sort_by' | 'sort_dir' | 'limit' | 'offset'>
+	) {
 		let query = mysql
 			.selectFrom(`${CourseTable._table} as c`)
 			.leftJoin(`${CourseUnitTable._table} as u`, 'c.id', 'u.course_id')
@@ -352,19 +322,33 @@ export default class CourseService {
 			}
 		}
 
-		// Schedule filters
-		if (filters.day && ignoreFacet !== 'day') {
-			const days = toArray(filters.day)
-			if (days.length) query = query.where('s.day', 'in', days)
+		// Time filters
+		if (filters.include_times?.length && ignoreFacet !== 'include_times') {
+			query = query.where(eb =>
+				eb.or(
+					filters.include_times!.map(exc =>
+						eb.and([
+							eb('s.day', '=', exc.day), // Exact day match
+							eb('s.time_from', '>=', exc.time_from), // Slot starts at or after the filter start time
+							eb('s.time_to', '<=', exc.time_to) // Slot ends at or before the filter end time
+						])
+					)
+				)
+			)
 		}
 
-		// Update: Using 'time_from'/'time_to'
-		if (filters.time_from !== undefined && ignoreFacet !== 'time_from') {
-			query = query.where('s.time_from', '>=', filters.time_from)
-		}
-
-		if (filters.time_to !== undefined && ignoreFacet !== 'time_to') {
-			query = query.where('s.time_to', '<=', filters.time_to)
+		if (filters.exclude_times?.length && ignoreFacet !== 'exclude_times') {
+			query = query.where(eb =>
+				eb.and(
+					filters.exclude_times!.map(exc =>
+						eb.or([
+							eb('s.day', '!=', exc.day), // Different day
+							eb('s.time_to', '<=', exc.time_from), // Slot ends before the filter start time
+							eb('s.time_from', '>=', exc.time_to) // Slot starts after the filter end time
+						])
+					)
+				)
+			)
 		}
 
 		// Personnel filters
@@ -408,19 +392,8 @@ export default class CourseService {
 		}
 
 		// Conflict exclusion
-		if (filters.exclude_slot_ids?.length) {
+		if (filters.exclude_slot_ids?.length && ignoreFacet !== 'exclude_slot_ids') {
 			query = query.where('s.id', 'not in', filters.exclude_slot_ids)
-		}
-
-		if (filters.exclude_times?.length) {
-			// Update: Using 'time_from'/'time_to'
-			query = query.where(eb =>
-				eb.and(
-					filters.exclude_times!.map(exc =>
-						eb.or([eb('s.day', '!=', exc.day), eb('s.time_to', '<=', exc.time_from), eb('s.time_from', '>=', exc.time_to)])
-					)
-				)
-			)
 		}
 
 		return query
@@ -438,11 +411,11 @@ export default class CourseService {
 			.execute()
 	}
 
-	private static async getTimetableUnitsForCourses(courseIds: number[]) {
+	private static async getCoursesUnits(courseIds: number[]) {
 		return mysql.selectFrom(`${CourseUnitTable._table} as u`).selectAll('u').where('u.course_id', 'in', courseIds).execute()
 	}
 
-	private static async getTimetableSlotsForCourses(courseIds: number[]) {
+	private static async getCoursesUnitsSlots(courseIds: number[]) {
 		return mysql
 			.selectFrom(`${CourseUnitSlotTable._table} as s`)
 			.innerJoin(`${CourseUnitTable._table} as u`, 's.unit_id', 'u.id')
@@ -451,11 +424,11 @@ export default class CourseService {
 			.execute()
 	}
 
-	private static async getAssessmentMethodsForCourses(courseIds: number[]) {
+	private static async getCoursesAssessments(courseIds: number[]) {
 		return mysql.selectFrom(`${CourseAssessmentTable._table} as am`).selectAll('am').where('am.course_id', 'in', courseIds).execute()
 	}
 
-	private static async getStudyPlanInfoForCourses(courseIds: number[], studyPlanIds: number | number[]) {
+	private static async getCoursesStudyPlans(courseIds: number[], studyPlanIds: number | number[]) {
 		const planIds = Array.isArray(studyPlanIds) ? studyPlanIds : [studyPlanIds]
 		return mysql
 			.selectFrom(`${StudyPlanCourseTable._table} as spc`)

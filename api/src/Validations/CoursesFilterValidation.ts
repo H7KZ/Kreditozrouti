@@ -18,10 +18,9 @@ const CoursesFilterValidation = z.object({
 	level: StringOrArray,
 	language: StringOrArray,
 
-	// Schedule Filters
-	day: createUnion(DaySchema),
-	time_from: z.coerce.number().optional(),
-	time_to: z.coerce.number().optional(),
+	// Time Filters
+	include_times: z.array(TimeSelectionSchema).optional(),
+	exclude_times: z.array(TimeSelectionSchema).optional(),
 
 	// Personnel Filters
 	lecturer: StringOrArray,
@@ -39,7 +38,6 @@ const CoursesFilterValidation = z.object({
 	// Availability Filters
 	has_capacity: z.coerce.boolean().optional(),
 	exclude_slot_ids: z.array(z.coerce.number()).optional(),
-	exclude_times: z.array(TimeSelectionSchema).optional(),
 
 	// Sorting
 	sort_by: z.enum(['ident', 'title', 'ects', 'faculty', 'year', 'semester']).optional().default('ident'),

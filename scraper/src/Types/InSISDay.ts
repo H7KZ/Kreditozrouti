@@ -1,4 +1,4 @@
-export const InSISDayValues = ['Po', 'Út', 'St', 'Čt', 'Pá'] as const
+export const InSISDayValues = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek'] as const
 
 /**
  * InSIS day representation.

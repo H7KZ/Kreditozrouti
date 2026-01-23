@@ -1,9 +1,8 @@
 import { mysql } from '@api/clients'
-import { Faculty, FacultyTable, StudyPlan, StudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import { ExcludeMethods, Faculty, FacultyTable, StudyPlan, StudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem'
+import { toArray } from '@api/Services/Utils'
 import { StudyPlansFilter } from '@api/Validations/StudyPlansFilterValidation'
-
-type StudyPlansFilterKeys = keyof Omit<StudyPlansFilter, 'has_course_id' | 'has_course_ident' | 'sort_by' | 'sort_dir' | 'limit' | 'offset'>
 
 export default class StudyPlanService {
 	/**
@@ -16,7 +15,7 @@ export default class StudyPlanService {
 	): Promise<{ plans: StudyPlan<Faculty, StudyPlanCourse>[]; total: number }> {
 		// 1. Get total count
 		const countResult = await this.buildStudyPlanQuery(filters)
-			.select(eb => eb.fn.countAll<number>().as('total'))
+			.select(eb => eb.fn.count<number>('sp.id').distinct().as('total'))
 			.executeTakeFirst()
 
 		const total = countResult?.total ?? 0
@@ -24,6 +23,7 @@ export default class StudyPlanService {
 		// 2. Get paginated plans
 		const plans = await this.buildStudyPlanQuery(filters)
 			.selectAll('sp')
+			.groupBy('sp.id')
 			.orderBy(this.getStudyPlanSortColumn(filters.sort_by) as any, filters.sort_dir ?? 'asc')
 			.limit(limit)
 			.offset(offset)
@@ -33,11 +33,11 @@ export default class StudyPlanService {
 			return { plans: [], total }
 		}
 
-		const planIds = plans.map(p => p.id)
+		const planIds = new Set(plans.map(p => p.id))
 
 		// 3. Parallel fetch of related data
 		// Optimized to fetch only what is needed for the result set
-		const [faculties, planCourses] = await Promise.all([this.getFacultiesForPlans(plans), this.getCoursesForPlans(planIds)])
+		const [faculties, planCourses] = await Promise.all([this.getFacultiesForPlans(plans), this.getCoursesForPlans([...planIds])])
 
 		// 4. In-Memory Mapping
 		const facultyMap = new Map<string, Faculty>()
@@ -47,9 +47,8 @@ export default class StudyPlanService {
 
 		const coursesMap = new Map<number, StudyPlanCourse[]>()
 		for (const pc of planCourses) {
-			if (!coursesMap.has(pc.study_plan_id)) {
-				coursesMap.set(pc.study_plan_id, [])
-			}
+			if (!coursesMap.has(pc.study_plan_id)) coursesMap.set(pc.study_plan_id, [])
+
 			coursesMap.get(pc.study_plan_id)!.push(pc)
 		}
 
@@ -60,7 +59,6 @@ export default class StudyPlanService {
 
 			return {
 				...plan,
-				// Partial<Faculty> is satisfied by the full Faculty object
 				faculty: plan.faculty_id ? (facultyMap.get(plan.faculty_id) ?? null) : null,
 				courses: courses
 			}
@@ -95,19 +93,20 @@ export default class StudyPlanService {
 	/**
 	 * Generic facet builder to reduce code duplication (DRY Principle).
 	 */
-	private static async getFacet(filters: StudyPlansFilter, column: StudyPlansFilterKeys): Promise<FacetItem[]> {
+	private static async getFacet(filters: StudyPlansFilter, column: keyof ExcludeMethods<StudyPlan>): Promise<FacetItem[]> {
 		return this.buildStudyPlanQuery(filters, column)
 			.select(`sp.${column} as value`)
-			.select(eb => eb.fn.count<number>('sp.id').as('count'))
+			.select(eb => eb.fn.count<number>('sp.id').distinct().as('count'))
 			.where(`sp.${column}`, 'is not', null)
 			.groupBy(`sp.${column}`)
 			.orderBy('count', 'desc')
 			.execute()
 	}
 
-	private static buildStudyPlanQuery(filters: Partial<StudyPlansFilter>, ignoreFacet?: keyof StudyPlansFilter) {
-		const toArray = <T>(val: T | T[] | undefined): T[] => (val === undefined ? [] : Array.isArray(val) ? val : [val])
-
+	private static buildStudyPlanQuery(
+		filters: Partial<StudyPlansFilter>,
+		ignoreFacet?: keyof ExcludeMethods<StudyPlan> | keyof Omit<StudyPlansFilter, 'sort_by' | 'sort_dir' | 'limit' | 'offset'>
+	) {
 		let query = mysql.selectFrom(`${StudyPlanTable._table} as sp`).leftJoin(`${StudyPlanCourseTable._table} as spc`, 'sp.id', 'spc.study_plan_id')
 
 		// Identity filters
@@ -158,7 +157,7 @@ export default class StudyPlanService {
 			if (lengths.length) query = query.where('sp.study_length', 'in', lengths)
 		}
 
-		// Course Relational Filters
+		// Course-related filters
 		if (filters.has_course_id && ignoreFacet !== 'has_course_id') {
 			const courseIds = toArray(filters.has_course_id)
 			if (courseIds.length) query = query.where('spc.course_id', 'in', courseIds)

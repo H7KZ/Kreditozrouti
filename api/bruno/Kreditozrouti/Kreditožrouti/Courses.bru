@@ -20,9 +20,20 @@ body:json {
     "faculty": [],
     "level": [],
     "language": [],
-    "day": [],
-    "time_from": 0,
-    "time_to": 1440,
+    "include_times": [
+      {
+        "day": "Pondělí",
+        "time_from": 555,
+        "time_to": 645
+      }
+    ],
+    "exclude_times": [
+      {
+        "day": "Pondělí",
+        "time_from": 650,
+        "time_to": 1440
+      }
+    ],
     "lecturer": [],
     "study_plan_id": [],
     "group": [],
@@ -33,7 +44,6 @@ body:json {
     
     "has_capacity": true,
     "exclude_slot_ids": [],
-    "exclude_times": [],
     
     "sort_by": "ident",
     "sort_dir": "asc",
@@ -70,9 +80,11 @@ docs {
   | `level` | `string \| string[]` | Degree level (e.g., "Bachelor", "Master"). |
   | `language` | `string \| string[]` | Language of instruction. |
   | **Schedule** | | |
-  | `day` | `string \| string[]` | Enum: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`, `Sun`. |
-  | `time_from` | `number` | Start time in minutes from midnight. |
-  | `time_to` | `number` | End time in minutes from midnight. |
+  | // `day` | `string \| string[]` | Enum: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`, `Sun`. |
+  | // `time_from` | `number` | Start time in minutes from midnight. |
+  | // `time_to` | `number` | End time in minutes from midnight. |
+  | `include_times` | `Object[]` | Array of `{ day, time_from, time_to }` to filter specific times. |
+  | `exclude_times` | `Object[]` | Array of `{ day, time_from, time_to }` to block out specific times. |
   | **Study Plan Context** | | |
   | `study_plan_id` | `number \| number[]` | ID of the study plan to filter by. |
   | `group` | `string \| string[]` | Study plan group (Requires `study_plan_id`). |
@@ -85,7 +97,6 @@ docs {
   | **Availability** | | |
   | `has_capacity` | `boolean` | If `true`, only returns courses with open spots. |
   | `exclude_slot_ids` | `number[]` | List of specific timetable slot IDs to ignore. |
-  | `exclude_times` | `Object[]` | Array of `{ day, time_from, time_to }` to block out specific times. |
   | **Pagination & Sort** | | |
   | `sort_by` | `enum` | Options: `ident`, `title`, `ects`, `faculty`, `year`, `semester`. Default: `ident`. |
   | `sort_dir` | `enum` | Options: `asc`, `desc`. Default: `asc`. |
