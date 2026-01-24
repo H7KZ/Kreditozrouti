@@ -17,7 +17,8 @@
 		"paths": {
 			"@client/*": ["./src/*"],
 			"@api/*": ["../api/src/*"],
-			"@scraper/*": ["../scraper/src/*"]
+			"@scraper/*": ["../scraper/src/*"],
+			"@shared/*": ["../shared/*"]
 		}
 	}
 }

@@ -20,6 +20,7 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/courses': RouteRecordInfo<'/courses', '/courses', Record<never, never>, Record<never, never>>,
+    '/timetable': RouteRecordInfo<'/timetable', '/timetable', Record<never, never>, Record<never, never>>,
   }
 
   /**
@@ -39,6 +40,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/courses.vue': {
       routes: '/courses'
+      views: never
+    }
+    'src/pages/timetable.vue': {
+      routes: '/timetable'
       views: never
     }
   }

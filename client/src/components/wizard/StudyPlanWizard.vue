@@ -1,9 +1,18 @@
 <script setup lang="ts">
+import { StudyPlan } from '@api/Database/types'
+import FacetItem from '@api/Interfaces/FacetItem.ts'
+import FacultyCard from '@client/components/wizard/FacultyCard.vue'
+import LevelFilter from '@client/components/wizard/LevelFilter.vue'
+import SemesterToggle from '@client/components/wizard/SemesterToggle.vue'
+import StudyPlanTable from '@client/components/wizard/StudyPlanTable.vue'
+import YearCard from '@client/components/wizard/YearCard.vue'
+import { useFacultyName } from '@client/composables/useFacultyName.ts'
 import { useStudentContext, type WizardStep } from '@client/stores/studentContext'
-import type { FacetItem } from '@client/types/courses'
-import type { StudyPlan } from '@client/types/studyPlans'
 import { storeToRefs } from 'pinia'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const studentContext = useStudentContext()
 const { currentStep, isLoading, error, selectedFacultyId, selectedYear, selectedStudyPlan, availableFaculties, availableYears, studyPlans, isWizardComplete } =
@@ -11,22 +20,42 @@ const { currentStep, isLoading, error, selectedFacultyId, selectedYear, selected
 
 const emit = defineEmits<{
 	complete: [studyPlan: StudyPlan]
+	skip: []
 }>()
+
+// Study plan filters
+const studyPlanSearch = ref('')
+const studyPlanLevelFilter = ref<'all' | 'bachelor' | 'master' | 'doctoral'>('all')
+
+// Semester selection
+const selectedSemester = ref<'ZS' | 'LS'>('ZS')
 
 onMounted(() => {
 	studentContext.initialize()
 })
 
+// Calculate current academic year
+const currentAcademicYear = computed(() => {
+	const now = new Date()
+	const currentYear = now.getFullYear()
+	const currentMonth = now.getMonth() + 1 // JavaScript months are 0-indexed
+
+	// Academic year starts in September (month 9)
+	// If we're in Jan-Aug, the academic year started last year
+	// If we're in Sep-Dec, the academic year started this year
+	return currentMonth >= 9 ? currentYear : currentYear - 1
+})
+
 // Wizard step definitions
-const steps: { id: WizardStep; label: string }[] = [
-	{ id: 'faculty', label: 'Fakulta' },
-	{ id: 'year', label: 'Rok' },
-	{ id: 'studyPlan', label: 'Studijní plán' },
-]
+const steps = computed<{ id: WizardStep; label: string }[]>(() => [
+	{ id: 'faculty', label: t('wizard.steps.faculty') },
+	{ id: 'year', label: t('wizard.steps.year') },
+	{ id: 'studyPlan', label: t('wizard.steps.studyPlan') },
+])
 
 const currentStepIndex = computed(() => {
-	if (currentStep.value === 'complete') return steps.length
-	return steps.findIndex((s) => s.id === currentStep.value)
+	if (currentStep.value === 'complete') return steps.value.length
+	return steps.value.findIndex((s) => s.id === currentStep.value)
 })
 
 function getStepStatus(stepIndex: number): 'completed' | 'active' | 'pending' {
@@ -39,8 +68,10 @@ function handleFacultySelect(faculty: FacetItem) {
 	studentContext.selectFaculty(faculty.value as string)
 }
 
-function handleYearSelect(year: FacetItem) {
-	studentContext.selectYear(year.value as number)
+function handleYearSelect(year: number) {
+	// Auto-select winter semester (ZS) when year is chosen
+	selectedSemester.value = 'ZS'
+	studentContext.selectYear(year)
 }
 
 function handleStudyPlanSelect(plan: StudyPlan) {
@@ -50,11 +81,69 @@ function handleStudyPlanSelect(plan: StudyPlan) {
 
 function goBack(step: WizardStep) {
 	studentContext.goToStep(step)
+	// Reset filters when going back
+	if (step === 'year') {
+		studyPlanSearch.value = ''
+		studyPlanLevelFilter.value = 'all'
+	}
+	if (step === 'faculty') {
+		selectedSemester.value = 'ZS'
+	}
 }
+
+function handleSkip() {
+	studentContext.skipWizard()
+	emit('skip')
+}
+
+// Get localized faculty name
+function getLocalizedFacultyName(facultyId: string): string {
+	return useFacultyName().getFacultyName(facultyId)
+}
+
+// Filtered study plans
+const filteredStudyPlans = computed(() => {
+	let filtered = studyPlans.value
+
+	// Text search
+	if (studyPlanSearch.value.trim()) {
+		const searchLower = studyPlanSearch.value.toLowerCase()
+		filtered = filtered.filter((plan) => plan.title!.toLowerCase().includes(searchLower) || plan.ident!.toLowerCase().includes(searchLower))
+	}
+
+	// Level filter
+	if (studyPlanLevelFilter.value !== 'all') {
+		filtered = filtered.filter((plan) => {
+			if (!plan.level) return false
+			const planLevel = plan.level.toLowerCase()
+
+			if (studyPlanLevelFilter.value === 'bachelor') {
+				return planLevel.includes('bakalář') || planLevel.includes('bachelor') || planLevel.includes('bc')
+			}
+			if (studyPlanLevelFilter.value === 'master') {
+				return planLevel.includes('magistr') || planLevel.includes('master') || planLevel.includes('mgr')
+			}
+			if (studyPlanLevelFilter.value === 'doctoral') {
+				return planLevel.includes('doktor') || planLevel.includes('doctoral') || planLevel.includes('ph.d')
+			}
+			return true
+		})
+	}
+
+	return filtered
+})
 </script>
 
 <template>
 	<div class="insis-panel">
+		<!-- Header with Skip Option -->
+		<div class="flex items-center justify-between mb-4 pb-3 border-b border-[var(--insis-border)]">
+			<h2 class="text-lg font-bold text-[var(--insis-gray-900)]">{{ t('wizard.title') }}</h2>
+			<button class="text-sm text-[var(--insis-link)] hover:underline cursor-pointer" @click="handleSkip">
+				{{ t('wizard.skip') }}
+			</button>
+		</div>
+
 		<!-- Wizard Steps Header -->
 		<div class="insis-wizard">
 			<template v-for="(step, index) in steps" :key="step.id">
@@ -78,99 +167,114 @@ function goBack(step: WizardStep) {
 		<!-- Error Message -->
 		<div v-if="error" class="insis-panel-danger mb-4">
 			{{ error }}
-			<button class="insis-btn insis-btn-sm ml-2" @click="studentContext.initialize()">Zkusit znovu</button>
+			<button class="insis-btn insis-btn-sm ml-2 cursor-pointer" @click="studentContext.initialize()">{{ t('errors.tryAgain') }}</button>
 		</div>
 
 		<!-- Loading State -->
 		<div v-if="isLoading" class="insis-loading">
 			<div class="insis-spinner"></div>
-			<span class="ml-2">Načítání...</span>
+			<span class="ml-2">{{ t('common.loading') }}</span>
 		</div>
 
 		<!-- Step 1: Faculty Selection -->
 		<div v-else-if="currentStep === 'faculty'">
-			<h3 class="insis-panel-title">Vyberte fakultu</h3>
-			<p class="text-sm text-[var(--insis-gray-600)] mb-4">Zvolte fakultu, jejíž předměty chcete procházet.</p>
+			<h3 class="insis-panel-title">{{ t('wizard.faculty.title') }}</h3>
+			<p class="text-sm text-[var(--insis-gray-600)] mb-4">{{ t('wizard.faculty.description') }}</p>
 
-			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-				<button
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+				<FacultyCard
 					v-for="faculty in availableFaculties"
 					:key="String(faculty.value)"
-					class="insis-btn text-left justify-start"
-					:class="{ 'insis-btn-primary': selectedFacultyId === faculty.value }"
-					@click="handleFacultySelect(faculty)"
-				>
-					<span class="font-bold mr-2">{{ faculty.value }}</span>
-					<span class="text-xs text-[var(--insis-gray-500)]">({{ faculty.count }})</span>
-				</button>
+					:faculty="faculty"
+					:selected="selectedFacultyId === faculty.value"
+					@select="handleFacultySelect"
+				/>
 			</div>
 		</div>
 
 		<!-- Step 2: Year Selection -->
 		<div v-else-if="currentStep === 'year'">
 			<div class="flex items-center gap-2 mb-4">
-				<button class="insis-btn insis-btn-sm" @click="goBack('faculty')">← Zpět</button>
-				<h3 class="insis-panel-title mb-0">Vyberte akademický rok</h3>
+				<button class="insis-btn insis-btn-sm cursor-pointer" @click="goBack('faculty')">{{ t('wizard.year.back') }}</button>
+				<h3 class="insis-panel-title mb-0">{{ t('wizard.year.title') }}</h3>
 			</div>
 			<p class="text-sm text-[var(--insis-gray-600)] mb-4">
-				Fakulta: <strong>{{ selectedFacultyId }}</strong>
+				{{ t('wizard.year.description', { faculty: getLocalizedFacultyName(String(selectedFacultyId)) }) }}
 			</p>
 
-			<div class="flex flex-wrap gap-2">
-				<button
+			<!-- Year Grid -->
+			<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
+				<YearCard
 					v-for="year in availableYears"
 					:key="String(year.value)"
-					class="insis-btn"
-					:class="{ 'insis-btn-primary': selectedYear === year.value }"
-					@click="handleYearSelect(year)"
-				>
-					{{ year.value }}/{{ Number(year.value) + 1 }}
-					<span class="text-xs ml-1">({{ year.count }})</span>
-				</button>
+					:year="Number(year.value)"
+					:count="year.count"
+					:selected="selectedYear === year.value"
+					:is-current="Number(year.value) === currentAcademicYear"
+					@select="handleYearSelect"
+				/>
+			</div>
+
+			<!-- Semester Toggle -->
+			<div v-if="selectedYear" class="mb-6">
+				<SemesterToggle v-model="selectedSemester" />
+			</div>
+
+			<!-- Selection Summary -->
+			<div v-if="selectedYear" class="bg-[#f0f7ff] border border-[#4a7eb8] rounded-lg p-4">
+				<div class="text-sm text-[#1e4a7a]">
+					<span class="font-medium">{{ t('wizard.year.selected') }}:</span>
+					{{ selectedYear }}/{{ Number(selectedYear) + 1 }}
+					·
+					{{ selectedSemester === 'ZS' ? t('wizard.year.winter') : t('wizard.year.summer') }}
+				</div>
 			</div>
 		</div>
 
 		<!-- Step 3: Study Plan Selection -->
 		<div v-else-if="currentStep === 'studyPlan'">
 			<div class="flex items-center gap-2 mb-4">
-				<button class="insis-btn insis-btn-sm" @click="goBack('year')">← Zpět</button>
-				<h3 class="insis-panel-title mb-0">Vyberte studijní plán</h3>
+				<button class="insis-btn insis-btn-sm cursor-pointer" @click="goBack('year')">{{ t('wizard.studyPlan.back') }}</button>
+				<h3 class="insis-panel-title mb-0">{{ t('wizard.studyPlan.title') }}</h3>
 			</div>
 			<p class="text-sm text-[var(--insis-gray-600)] mb-4">
-				Fakulta: <strong>{{ selectedFacultyId }}</strong> | Rok: <strong>{{ selectedYear }}/{{ Number(selectedYear) + 1 }}</strong>
+				{{
+					t('wizard.studyPlan.description', {
+						faculty: getLocalizedFacultyName(String(selectedFacultyId)),
+						year: selectedYear,
+						nextYear: Number(selectedYear) + 1,
+					})
+				}}
 			</p>
 
-			<div v-if="studyPlans.length === 0" class="text-sm text-[var(--insis-gray-600)]">Žádné studijní plány nebyly nalezeny pro vybrané parametry.</div>
+			<!-- Search and Filters -->
+			<div class="mb-6 space-y-4 bg-white p-4 rounded-lg border border-[var(--insis-border)]">
+				<div>
+					<label class="block text-sm font-medium text-[#374151] mb-2">{{ t('wizard.studyPlan.search') }}</label>
+					<div class="relative">
+						<input v-model="studyPlanSearch" type="text" class="insis-input w-full pl-10" :placeholder="t('wizard.studyPlan.searchPlaceholder')" />
+						<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9ca3af]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+						</svg>
+					</div>
+				</div>
 
-			<table v-else class="insis-table">
-				<thead>
-					<tr>
-						<th>Kód</th>
-						<th>Název</th>
-						<th>Úroveň</th>
-						<th>Forma</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="plan in studyPlans" :key="plan.id">
-						<td class="insis-course-code">{{ plan.ident }}</td>
-						<td>{{ plan.title }}</td>
-						<td class="cell-center">{{ plan.level }}</td>
-						<td class="cell-center">{{ plan.mode_of_study }}</td>
-						<td class="cell-center">
-							<button class="insis-btn insis-btn-sm insis-btn-primary" @click="handleStudyPlanSelect(plan)">Vybrat</button>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+				<LevelFilter v-model="studyPlanLevelFilter" />
+
+				<div class="text-sm text-[#6b7280]">
+					{{ t('wizard.studyPlan.resultsCount', { count: filteredStudyPlans.length, total: studyPlans.length }) }}
+				</div>
+			</div>
+
+			<!-- Study Plan Table -->
+			<StudyPlanTable :plans="filteredStudyPlans" :loading="isLoading" :selected-id="selectedStudyPlan?.id" @select="handleStudyPlanSelect" />
 		</div>
 
 		<!-- Complete State -->
 		<div v-else-if="isWizardComplete && selectedStudyPlan">
 			<div class="flex items-center justify-between mb-4">
-				<h3 class="insis-panel-title mb-0">Vybraný studijní plán</h3>
-				<button class="insis-btn insis-btn-sm" @click="studentContext.reset()">Změnit</button>
+				<h3 class="insis-panel-title mb-0">{{ t('wizard.complete.title') }}</h3>
+				<button class="insis-btn insis-btn-sm cursor-pointer" @click="studentContext.reset()">{{ t('wizard.complete.change') }}</button>
 			</div>
 
 			<div class="insis-panel-success">
@@ -178,7 +282,7 @@ function goBack(step: WizardStep) {
 				<div class="text-sm">
 					<span class="insis-course-code">{{ selectedStudyPlan.ident }}</span>
 					·
-					{{ selectedStudyPlan.faculty_id }}
+					{{ getLocalizedFacultyName(selectedStudyPlan.faculty_id ?? '') }}
 					·
 					{{ selectedYear }}/{{ Number(selectedYear) + 1 }}
 				</div>

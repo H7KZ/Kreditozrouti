@@ -3,7 +3,12 @@
     "allow": [
       "Bash(xargs:*)",
       "Bash(pnpm run lint)",
-      "Bash(pnpm exec vue-tsc:*)"
+      "Bash(pnpm exec vue-tsc:*)",
+      "Bash(test:*)",
+      "Bash(grep:*)",
+      "Bash(npm run lint)",
+      "Bash(npx vue-tsc --noEmit)",
+      "Bash(npm run build:*)"
     ]
   }
 }

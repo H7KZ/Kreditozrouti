@@ -1,1 +1,43 @@
-{}
+{
+	"faculties": {
+		"FFU": "Faculty of Finance and Accounting",
+		"FMV": "Faculty of International Relations",
+		"FPH": "Faculty of Business Administration",
+		"FIS": "Faculty of Informatics and Statistics",
+		"NF": "Faculty of Economics",
+		"FMJH": "Faculty of Management",
+		"OZS": "International Office (PZAH REK)",
+		"IFTG": "French-Czech Institute of Management (PZAH REK)",
+		"CESP": "Central and East European Studies Program (PZAH REK)",
+		"IOM": "Institute of Property Appraisal (PSTR REK)",
+		"U3V": "University of the Third Age",
+		"U3V-JH": "University of the Third Age - Jindřichův Hradec (PSTR REK)",
+		"CTVS": "Centre for Physical Education and Sport"
+	},
+	"days": {
+		"Pondělí": "Monday",
+		"Úterý": "Tuesday",
+		"Středa": "Wednesday",
+		"Čtvrtek": "Thursday",
+		"Pátek": "Friday",
+		"Sobota": "Saturday",
+		"Neděle": "Sunday"
+	},
+	"courseGroups": {
+		"faculty_specific": "Faculty-specific groups",
+		"university_wide": "University-wide groups",
+		"field_specific_bachelor": "Field-specific groups (bachelor's programs)",
+		"field_specific_master": "Field-specific groups (master's programs)",
+		"minor_specialization": "Minor specialization groups"
+	},
+	"courseCategories": {
+		"compulsory": "Compulsory courses",
+		"elective": "Elective courses",
+		"language": "Language courses (compulsory electives)",
+		"state_exam": "State exams",
+		"prohibited": "Prohibited course",
+		"beyond_scope": "Courses beyond the scope of the study plan",
+		"exchange_program": "Courses for exchange programs",
+		"physical_education": "Physical education and sports"
+	}
+}

@@ -194,6 +194,61 @@
    ========================================================================= */
 
 @layer components {
+	/* InSIS-style interactive element base classes */
+
+	/* All clickable elements */
+	.clickable {
+		@apply cursor-pointer select-none;
+	}
+
+	/* InSIS Button Styles */
+	.insis-btn {
+		@apply cursor-pointer px-3 py-1.5 text-sm font-medium;
+		@apply rounded-sm border border-[#7b9ebd];
+		@apply bg-gradient-to-b from-[#f7f9fb] to-[#dce7f1];
+		@apply hover:from-[#e8f0f7] hover:to-[#c9d9e8];
+		@apply active:from-[#c9d9e8] active:to-[#b5c9dc];
+		@apply focus:ring-2 focus:ring-[#7b9ebd] focus:ring-offset-1 focus:outline-none;
+		@apply disabled:cursor-not-allowed disabled:opacity-50;
+		@apply transition-all duration-150;
+	}
+
+	.insis-btn-primary {
+		@apply insis-btn;
+		@apply bg-gradient-to-b from-[#4a7eb8] to-[#2c5a8c];
+		@apply border-[#1e4a7a] text-white;
+		@apply hover:from-[#5a8ec8] hover:to-[#3c6a9c];
+	}
+
+	.insis-btn-text {
+		@apply cursor-pointer text-[#1e4a7a] hover:text-[#0d3a6a] hover:underline;
+		@apply focus:ring-1 focus:ring-[#7b9ebd] focus:outline-none;
+	}
+
+	/* Table row hover for clickable rows */
+	.insis-table-row-clickable {
+		@apply cursor-pointer transition-colors hover:bg-[#f0f5fa];
+	}
+
+	/* Input focus states */
+	.insis-input {
+		@apply cursor-text px-2 py-1 text-sm;
+		@apply rounded-sm border border-[#a0b0c0];
+		@apply focus:border-[#4a7eb8] focus:ring-1 focus:ring-[#4a7eb8] focus:outline-none;
+	}
+
+	/* Select/Dropdown */
+	.insis-select {
+		@apply cursor-pointer px-2 py-1 text-sm;
+		@apply rounded-sm border border-[#a0b0c0] bg-white;
+		@apply focus:border-[#4a7eb8] focus:outline-none;
+	}
+
+	/* Checkbox/Radio clickable area */
+	.insis-checkbox-label {
+		@apply flex cursor-pointer items-center gap-2 hover:text-[#1e4a7a];
+	}
+
 	/* ----- BUTTONS ----- */
 	.insis-input,
 	.insis-select {
@@ -203,7 +258,9 @@
 		border-radius: 0;
 		background-color: white;
 		color: var(--insis-gray-900);
-		transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+		transition:
+			border-color 0.15s ease-in-out,
+			box-shadow 0.15s ease-in-out;
 	}
 
 	.insis-input:focus,
@@ -249,7 +306,9 @@
 		border-radius: 0;
 		background-color: white;
 		color: var(--insis-gray-900);
-		transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+		transition:
+			border-color 0.15s ease-in-out,
+			box-shadow 0.15s ease-in-out;
 	}
 
 	.insis-input:focus,

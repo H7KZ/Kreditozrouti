@@ -1,6 +1,7 @@
+import StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse.ts'
+import { StudyPlan } from '@api/Database/types'
+import FacetItem from '@api/Interfaces/FacetItem.ts'
 import api from '@client/api'
-import type { FacetItem } from '@client/types/courses'
-import type { StudyPlan, StudyPlansFacets, StudyPlansResponse } from '@client/types/studyPlans'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
@@ -19,7 +20,7 @@ export const useStudentContext = defineStore('studentContext', () => {
 	const selectedStudyPlan = ref<StudyPlan | null>(null)
 
 	// ---- Facets for selection ----
-	const facets = ref<StudyPlansFacets | null>(null)
+	const facets = ref<StudyPlansResponse['facets'] | null>(null)
 	const studyPlans = ref<StudyPlan[]>([])
 
 	// ---- Computed ----
@@ -166,6 +167,17 @@ export const useStudentContext = defineStore('studentContext', () => {
 	}
 
 	/**
+	 * Skip the wizard and go directly to search without selecting a study plan
+	 */
+	function skipWizard(): void {
+		currentStep.value = 'complete'
+		selectedFacultyId.value = null
+		selectedYear.value = null
+		selectedStudyPlanId.value = null
+		selectedStudyPlan.value = null
+	}
+
+	/**
 	 * Initialize the store - call on app mount
 	 */
 	async function initialize(): Promise<void> {
@@ -200,6 +212,7 @@ export const useStudentContext = defineStore('studentContext', () => {
 		selectStudyPlan,
 		goToStep,
 		reset,
+		skipWizard,
 		initialize,
 	}
 })

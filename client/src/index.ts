@@ -19,8 +19,13 @@ const router = createRouter({
 	},
 })
 
+// Load saved locale preference from localStorage
+const savedLocale = localStorage.getItem('locale')
+const defaultLocale = savedLocale && ['cs', 'en'].includes(savedLocale) ? savedLocale : 'cs'
+
 const i18n = createI18n({
-	locale: 'en',
+	locale: defaultLocale,
+	fallbackLocale: 'en',
 	messages,
 	globalInjection: true,
 	legacy: false,

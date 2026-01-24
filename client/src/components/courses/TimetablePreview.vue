@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import type { Course, InSISDay } from '@client/types/courses'
-import { WEEKDAYS } from '@client/types/courses'
+import { Course, CourseUnit, CourseUnitSlot } from '@api/Database/types'
+import InSISDay from '@scraper/Types/InSISDay.ts'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const i18n = useI18n()
+const { tm } = i18n
 
 const props = defineProps<{
-	courses: Course[]
+	courses: Course<void, CourseUnit<void, CourseUnitSlot>>[]
 }>()
+
+const WeekDays = Object.keys(tm('days')).slice(0, 5) as InSISDay[]
 
 // Standard InSIS time slots
 const TIME_SLOTS = [
@@ -30,13 +36,13 @@ interface TimetableSlot {
 // Build timetable data structure
 const timetableData = computed(() => {
 	const data: Record<InSISDay, Record<number, TimetableSlot[]>> = {
-		Po: {},
-		Út: {},
-		St: {},
-		Čt: {},
-		Pá: {},
-		So: {},
-		Ne: {},
+		Pondělí: {},
+		Úterý: {},
+		Středa: {},
+		Čtvrtek: {},
+		Pátek: {},
+		Sobota: {},
+		Neděle: {},
 	}
 
 	for (const course of props.courses) {
@@ -49,7 +55,7 @@ const timetableData = computed(() => {
 				if (!slot.day || slot.time_from === null || slot.time_to === null) continue
 
 				const day = slot.day as InSISDay
-				if (!WEEKDAYS.includes(day)) continue
+				if (!WeekDays.includes(day)) continue
 
 				// Find which time slot this falls into
 				const timeSlotIndex = TIME_SLOTS.findIndex((ts) => slot.time_from! >= ts.start && slot.time_from! < ts.end)
@@ -114,8 +120,8 @@ function getSlots(day: InSISDay, slotIndex: number): TimetableSlot[] {
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="day in WEEKDAYS" :key="day">
-						<th class="day-header">{{ day }}</th>
+					<tr v-for="day in WeekDays" :key="day">
+						<th class="day-header">{{ $t(`days.${day}`) }}</th>
 						<td v-for="(slot, index) in TIME_SLOTS" :key="slot.start" class="time-slot p-0">
 							<div
 								v-for="item in getSlots(day, index)"

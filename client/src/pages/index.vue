@@ -1,95 +1,119 @@
 <script setup lang="ts">
+import AppLogo from '@client/components/AppLogo.vue'
+import LanguageSwitcher from '@client/components/LanguageSwitcher.vue'
+import StepIndicator from '@client/components/wizard/StepIndicator.vue'
+import { useStudentContext } from '@client/stores/studentContext'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const { t } = useI18n()
+const studentContext = useStudentContext()
 
-function goToCourses() {
+// Define wizard steps
+const wizardSteps = computed(() => [
+	{ key: 'faculty', label: t('wizard.steps.faculty') },
+	{ key: 'year', label: t('wizard.steps.year') },
+	{ key: 'studyPlan', label: t('wizard.steps.studyPlan') },
+])
+
+// Navigation handlers
+const startWizard = () => {
+	// Initialize context and navigate to courses (wizard is embedded there)
+	studentContext.reset()
+	router.push('/courses')
+}
+
+const skipToSearch = () => {
+	// Skip wizard and go directly to courses
+	studentContext.skipWizard()
 	router.push('/courses')
 }
 </script>
 
 <template>
-	<div class="landing-page">
+	<div class="min-h-screen bg-[#f5f7fa] flex flex-col">
 		<!-- Header -->
-		<header class="border-b border-[var(--insis-border)] bg-white">
-			<div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-				<div class="flex items-center gap-3">
-					<div class="text-xl font-bold text-[var(--insis-blue)]">Kreditožrouti</div>
-					<span class="text-xs text-[var(--insis-gray-500)]">Neoficiální vyhledávač předmětů VŠE</span>
-				</div>
-				<nav class="flex gap-4">
-					<a href="/courses" class="text-sm hover:underline">Vyhledávání</a>
-				</nav>
+		<header class="bg-white border-b border-[#d1d5db] px-6 py-4">
+			<div class="max-w-4xl mx-auto flex items-center justify-between">
+				<AppLogo size="md" variant="full" />
+
+				<!-- Language switcher -->
+				<LanguageSwitcher />
 			</div>
 		</header>
 
-		<!-- Hero Section -->
-		<section class="bg-[var(--insis-gray-100)] border-b border-[var(--insis-border)]">
-			<div class="max-w-6xl mx-auto px-4 py-12">
-				<h1 class="text-3xl font-bold text-[var(--insis-gray-900)] mb-4">Vyhledávejte předměty chytřeji</h1>
-				<p class="text-lg text-[var(--insis-gray-600)] mb-6 max-w-2xl">
-					Kreditožrouti je neoficiální nástroj pro studenty VŠE, který umožňuje pokročilé vyhledávání předmětů podle rozvrhu, fakulty, kreditů a
-					dalších kritérií.
+		<!-- Main Content -->
+		<main class="flex-1 flex items-center justify-center p-6">
+			<div class="max-w-2xl w-full">
+				<!-- Hero Card -->
+				<div class="bg-white rounded-lg shadow-sm border border-[#d1d5db] overflow-hidden">
+					<!-- Card Header with gradient -->
+					<div class="bg-gradient-to-r from-[#4a7eb8] to-[#2c5a8c] px-8 py-6 text-white">
+						<h1 class="text-2xl font-semibold mb-2">
+							{{ t('wizard.title') }}
+						</h1>
+						<p class="text-white/90">
+							{{ t('wizard.subtitle') }}
+						</p>
+					</div>
+
+					<!-- Card Body -->
+					<div class="p-8">
+						<!-- Step Preview -->
+						<div class="mb-8">
+							<StepIndicator :current-step="-1" :total-steps="3" :steps="wizardSteps" />
+						</div>
+
+						<!-- Benefits/Features List -->
+						<div class="mb-8 space-y-3">
+							<div class="flex items-start gap-3">
+								<svg class="w-5 h-5 text-[#4a7eb8] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+								</svg>
+								<span class="text-[#374151]">{{ t('landing.features.studyPlan.description') }}</span>
+							</div>
+							<div class="flex items-start gap-3">
+								<svg class="w-5 h-5 text-[#4a7eb8] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+								</svg>
+								<span class="text-[#374151]">{{ t('landing.features.timetable.description') }}</span>
+							</div>
+							<div class="flex items-start gap-3">
+								<svg class="w-5 h-5 text-[#4a7eb8] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+								</svg>
+								<span class="text-[#374151]">{{ t('landing.features.realtime.description') }}</span>
+							</div>
+						</div>
+
+						<!-- Primary Action -->
+						<button class="insis-btn insis-btn-primary w-full py-3 text-base font-medium cursor-pointer" @click="startWizard">
+							{{ t('wizard.next') }} →
+						</button>
+					</div>
+
+					<!-- Card Footer - Skip Option -->
+					<div class="border-t border-[#e5e7eb] bg-[#f9fafb] px-8 py-4">
+						<div class="flex items-center justify-between">
+							<div>
+								<p class="text-sm text-[#6b7280]">
+									{{ t('wizard.skipDescription') }}
+								</p>
+							</div>
+							<button class="insis-btn-text text-sm cursor-pointer" @click="skipToSearch">
+								{{ t('wizard.skip') }}
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Additional info -->
+				<p class="mt-6 text-center text-xs text-[#9ca3af]">
+					{{ t('app.tagline') }}
 				</p>
-				<button class="insis-btn insis-btn-primary insis-btn-lg" @click="goToCourses">Začít vyhledávat →</button>
 			</div>
-		</section>
-
-		<!-- Features -->
-		<section class="max-w-6xl mx-auto px-4 py-12">
-			<h2 class="text-xl font-bold text-[var(--insis-gray-900)] mb-6">Co umí Kreditožrouti?</h2>
-
-			<div class="grid md:grid-cols-3 gap-6">
-				<div class="insis-panel">
-					<h3 class="insis-panel-title">Vyhledávání podle rozvrhu</h3>
-					<p class="text-sm text-[var(--insis-gray-600)]">
-						Vyberte si časové okno, kdy máte volno, a najděte předměty, které se vám hodí do rozvrhu. Stačí táhnout myší přes tabulku rozvrhu.
-					</p>
-				</div>
-
-				<div class="insis-panel">
-					<h3 class="insis-panel-title">Filtrování podle studijního plánu</h3>
-					<p class="text-sm text-[var(--insis-gray-600)]">
-						Vyberte svůj studijní plán a uvidíte, které předměty jsou povinné, povinně volitelné nebo volitelné právě pro vás.
-					</p>
-				</div>
-
-				<div class="insis-panel">
-					<h3 class="insis-panel-title">Přehled v reálném čase</h3>
-					<p class="text-sm text-[var(--insis-gray-600)]">
-						Data jsou pravidelně aktualizována z InSIS, takže máte vždy aktuální informace o předmětech, rozvrzích a kapacitách.
-					</p>
-				</div>
-			</div>
-		</section>
-
-		<!-- CTA -->
-		<section class="bg-[var(--insis-blue-light)] border-y border-[var(--insis-border)]">
-			<div class="max-w-6xl mx-auto px-4 py-8 text-center">
-				<h2 class="text-xl font-bold text-[var(--insis-gray-900)] mb-4">Připraveni najít ideální předměty?</h2>
-				<button class="insis-btn insis-btn-primary" @click="goToCourses">Spustit vyhledávání</button>
-			</div>
-		</section>
-
-		<!-- Footer -->
-		<footer class="max-w-6xl mx-auto px-4 py-6 text-center">
-			<p class="text-xs text-[var(--insis-gray-500)]">
-				Kreditožrouti je neoficiální studentský projekt. Není součástí VŠE ani InSIS.
-				<br />
-				Data jsou získávána z veřejně dostupných zdrojů.
-			</p>
-		</footer>
+		</main>
 	</div>
 </template>
-
-<style scoped>
-.landing-page {
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-}
-
-section:last-of-type {
-	flex-grow: 1;
-}
-</style>

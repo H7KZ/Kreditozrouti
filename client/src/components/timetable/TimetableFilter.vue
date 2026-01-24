@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { minutesToTime } from '@client/lib/utils.ts'
 import { useCourseSearch } from '@client/stores/courseSearch'
-import { type InSISDay, minutesToTime, WEEKDAYS } from '@client/types/courses'
+import InSISDay from '@scraper/Types/InSISDay.ts'
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 
@@ -82,10 +83,10 @@ function isInSelection(day: InSISDay, time: number): boolean {
 // Check if a cell matches the current filter
 function matchesFilter(day: InSISDay, time: number): boolean {
 	const f = filter.value
-	const dayMatches = f.day ? (Array.isArray(f.day) ? f.day.includes(day) : f.day === day) : true
-	const timeMatches = f.time_from !== undefined && f.time_to !== undefined ? time >= f.time_from && time < f.time_to : true
 
-	return dayMatches && timeMatches && (f.day !== undefined || f.time_from !== undefined)
+	if (!f.include_times) return false
+
+	return f.include_times.some((t) => t.day === day && time >= t.time_from && time < t.time_to)
 }
 
 // Mouse handlers
@@ -172,7 +173,7 @@ const selectionLabel = computed(() => {
 	<div class="timetable-filter-wrapper">
 		<div class="flex items-center justify-between mb-2">
 			<span class="insis-label">Filtr podle rozvrhu</span>
-			<button v-if="filter.day || filter.time_from !== undefined" class="insis-btn insis-btn-sm" @click="clearTimeFilter">Zrušit časový filtr</button>
+			<button v-if="filter.include_times" class="insis-btn insis-btn-sm cursor-pointer" @click="clearTimeFilter">Zrušit časový filtr</button>
 		</div>
 
 		<p class="text-xs text-[var(--insis-gray-600)] mb-2">Táhněte myší pro výběr časového rozmezí, ve kterém hledáte předměty.</p>
@@ -188,7 +189,7 @@ const selectionLabel = computed(() => {
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="day in WEEKDAYS" :key="day">
+					<tr v-for="day in Object.keys($tm('days')) as InSISDay[]" :key="day">
 						<th class="day-header">{{ day }}</th>
 						<td
 							v-for="(time, index) in timeSlots"
@@ -207,7 +208,7 @@ const selectionLabel = computed(() => {
 						>
 							<!-- Show time label for first slot of each hour -->
 							<span
-								v-if="index === 0 || (timeSlots[index - 1] !== undefined && Math.floor(timeSlots[index - 1] / 60) !== Math.floor(time / 60))"
+								v-if="index === 0 || (timeSlots[index - 1] !== undefined && Math.floor(timeSlots[index - 1]! / 60) !== Math.floor(time / 60))"
 								class="slot-time-label"
 							>
 								{{ minutesToTime(time) }}
@@ -234,8 +235,8 @@ const selectionLabel = computed(() => {
 					<strong>{{ selectionLabel }}</strong>
 				</p>
 				<div class="flex gap-2">
-					<button class="insis-btn insis-btn-primary insis-btn-sm" @click="applyFilter">Filtrovat</button>
-					<button class="insis-btn insis-btn-sm" @click="clearSelection">Zrušit</button>
+					<button class="insis-btn insis-btn-primary insis-btn-sm cursor-pointer" @click="applyFilter">Filtrovat</button>
+					<button class="insis-btn insis-btn-sm cursor-pointer" @click="clearSelection">Zrušit</button>
 				</div>
 			</div>
 		</Teleport>

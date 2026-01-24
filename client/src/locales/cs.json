@@ -1,1 +1,43 @@
-{}
+{
+	"faculties": {
+		"FFU": "Fakulta financí a účetnictví",
+		"FMV": "Fakulta mezinárodních vztahů",
+		"FPH": "Fakulta podnikohospodářská",
+		"FIS": "Fakulta informatiky a statistiky",
+		"NF": "Národohospodářská fakulta",
+		"FMJH": "Fakulta managementu",
+		"OZS": "Oddělení zahraničních styků (PZAH REK)",
+		"IFTG": "Francouzsko-český institut řízení (PZAH REK)",
+		"CESP": "Program studií střední a východní Evropy (PZAH REK)",
+		"IOM": "Institut oceňování majetku (PSTR REK)",
+		"U3V": "Univerzita třetího věku",
+		"U3V-JH": "Univerzita třetího věku - Jindřichův Hradec (PSTR REK)",
+		"CTVS": "Centrum tělesné výchovy a sportu"
+	},
+	"days": {
+		"Pondělí": "Pondělí",
+		"Úterý": "Úterý",
+		"Středa": "Středa",
+		"Čtvrtek": "Čtvrtek",
+		"Pátek": "Pátek",
+		"Sobota": "Sobota",
+		"Neděle": "Neděle"
+	},
+	"courseGroups": {
+		"faculty_specific": "Fakultně specifické skupiny",
+		"university_wide": "Celoškolně používané skupiny",
+		"field_specific_bachelor": "Oborově specifické skupiny (bakalářské programy)",
+		"field_specific_master": "Oborově specifické skupiny (magisterské programy)",
+		"minor_specialization": "Skupiny vedlejších specializací"
+	},
+	"courseCategories": {
+		"compulsory": "Povinné předměty",
+		"elective": "Volitelné předměty",
+		"language": "Jazykově (povinně volitelné) předměty",
+		"state_exam": "Státní zkoušky",
+		"prohibited": "Zakázaný předmět",
+		"beyond_scope": "Předměty nad rámec studijního plánu",
+		"exchange_program": "Předměty pro výměnné programy",
+		"physical_education": "Tělesná výchova a sport"
+	}
+}

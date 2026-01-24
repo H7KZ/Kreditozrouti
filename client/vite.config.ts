@@ -35,6 +35,7 @@ export default ({ mode }: { mode: string }) => {
 				'@client': fileURLToPath(new URL('./src', import.meta.url)),
 				'@api': fileURLToPath(new URL('../api/src', import.meta.url)),
 				'@scraper': fileURLToPath(new URL('../scraper/src', import.meta.url)),
+				'@shared': fileURLToPath(new URL('../shared', import.meta.url)),
 			},
 		},
 	})
