@@ -10,7 +10,7 @@ const CoursesFilterValidation = z.object({
 	title: z.string().optional(),
 
 	// Academic Period Filters
-	semesters: z.array(SemesterSchema),
+	semesters: z.array(SemesterSchema).optional(),
 	years: z.array(z.coerce.number()).optional(),
 
 	// Organizational Filters
@@ -27,8 +27,8 @@ const CoursesFilterValidation = z.object({
 
 	// Study Plan Filters
 	study_plan_ids: z.array(z.coerce.number()).optional(),
-	groups: z.array(z.enum(InSISStudyPlanCourseGroupValues)),
-	categories: z.array(z.enum(InSISStudyPlanCourseCategoryValues)),
+	groups: z.array(z.enum(InSISStudyPlanCourseGroupValues)).optional(),
+	categories: z.array(z.enum(InSISStudyPlanCourseCategoryValues)).optional(),
 
 	// Course Properties Filters
 	ects: z.array(z.coerce.number()).optional(),
@@ -36,7 +36,6 @@ const CoursesFilterValidation = z.object({
 	mode_of_deliveries: z.array(z.string()).optional(),
 
 	// Availability Filters
-	has_capacity: z.coerce.boolean().optional(),
 	exclude_slot_ids: z.array(z.coerce.number()).optional(),
 
 	// Sorting

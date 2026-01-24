@@ -1,119 +1,85 @@
 <script setup lang="ts">
-import AppLogo from '@client/components/AppLogo.vue'
-import LanguageSwitcher from '@client/components/LanguageSwitcher.vue'
-import StepIndicator from '@client/components/wizard/StepIndicator.vue'
-import { useStudentContext } from '@client/stores/studentContext'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+/**
+ * Landing Page - Study Plan Wizard
+ * First page users see, guides them through selecting their study plan.
+ */
+import { onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
+import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
+import { useWizardStore } from '@client/stores'
+
 const router = useRouter()
-const { t } = useI18n()
-const studentContext = useStudentContext()
+const wizardStore = useWizardStore()
 
-// Define wizard steps
-const wizardSteps = computed(() => [
-	{ key: 'faculty', label: t('wizard.steps.faculty') },
-	{ key: 'year', label: t('wizard.steps.year') },
-	{ key: 'studyPlan', label: t('wizard.steps.studyPlan') },
-])
+// If wizard is already completed, redirect to courses page
+watch(
+	() => wizardStore.completed,
+	(completed) => {
+		if (completed) {
+			router.push('/courses')
+		}
+	},
+	{ immediate: true },
+)
 
-// Navigation handlers
-const startWizard = () => {
-	// Initialize context and navigate to courses (wizard is embedded there)
-	studentContext.reset()
-	router.push('/courses')
-}
-
-const skipToSearch = () => {
-	// Skip wizard and go directly to courses
-	studentContext.skipWizard()
-	router.push('/courses')
-}
+onMounted(() => {
+	// Load initial facets if not already loaded
+	if (wizardStore.facultyFacets.length === 0) {
+		wizardStore.loadInitialFacets()
+	}
+})
 </script>
 
 <template>
-	<div class="min-h-screen bg-[#f5f7fa] flex flex-col">
+	<div class="min-h-screen bg-[var(--insis-bg)]">
 		<!-- Header -->
-		<header class="bg-white border-b border-[#d1d5db] px-6 py-4">
-			<div class="max-w-4xl mx-auto flex items-center justify-between">
-				<AppLogo size="md" variant="full" />
-
-				<!-- Language switcher -->
-				<LanguageSwitcher />
+		<header class="border-b border-[var(--insis-border)] bg-white px-4 py-3">
+			<div class="mx-auto max-w-4xl">
+				<div class="flex items-center gap-3">
+					<!-- Logo placeholder -->
+					<div class="flex h-10 w-10 items-center justify-center rounded bg-[var(--insis-blue)] text-white">
+						<span class="text-lg font-bold">K</span>
+					</div>
+					<div>
+						<h1 class="text-lg font-semibold text-[var(--insis-blue)]">Kreditožrouti</h1>
+						<p class="text-xs text-[var(--insis-gray-500)]">Vyhledávač předmětů VŠE</p>
+					</div>
+				</div>
 			</div>
 		</header>
 
 		<!-- Main Content -->
-		<main class="flex-1 flex items-center justify-center p-6">
-			<div class="max-w-2xl w-full">
-				<!-- Hero Card -->
-				<div class="bg-white rounded-lg shadow-sm border border-[#d1d5db] overflow-hidden">
-					<!-- Card Header with gradient -->
-					<div class="bg-gradient-to-r from-[#4a7eb8] to-[#2c5a8c] px-8 py-6 text-white">
-						<h1 class="text-2xl font-semibold mb-2">
-							{{ t('wizard.title') }}
-						</h1>
-						<p class="text-white/90">
-							{{ t('wizard.subtitle') }}
-						</p>
-					</div>
-
-					<!-- Card Body -->
-					<div class="p-8">
-						<!-- Step Preview -->
-						<div class="mb-8">
-							<StepIndicator :current-step="-1" :total-steps="3" :steps="wizardSteps" />
-						</div>
-
-						<!-- Benefits/Features List -->
-						<div class="mb-8 space-y-3">
-							<div class="flex items-start gap-3">
-								<svg class="w-5 h-5 text-[#4a7eb8] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-								</svg>
-								<span class="text-[#374151]">{{ t('landing.features.studyPlan.description') }}</span>
-							</div>
-							<div class="flex items-start gap-3">
-								<svg class="w-5 h-5 text-[#4a7eb8] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-								</svg>
-								<span class="text-[#374151]">{{ t('landing.features.timetable.description') }}</span>
-							</div>
-							<div class="flex items-start gap-3">
-								<svg class="w-5 h-5 text-[#4a7eb8] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-								</svg>
-								<span class="text-[#374151]">{{ t('landing.features.realtime.description') }}</span>
-							</div>
-						</div>
-
-						<!-- Primary Action -->
-						<button class="insis-btn insis-btn-primary w-full py-3 text-base font-medium cursor-pointer" @click="startWizard">
-							{{ t('wizard.next') }} →
-						</button>
-					</div>
-
-					<!-- Card Footer - Skip Option -->
-					<div class="border-t border-[#e5e7eb] bg-[#f9fafb] px-8 py-4">
-						<div class="flex items-center justify-between">
-							<div>
-								<p class="text-sm text-[#6b7280]">
-									{{ t('wizard.skipDescription') }}
-								</p>
-							</div>
-							<button class="insis-btn-text text-sm cursor-pointer" @click="skipToSearch">
-								{{ t('wizard.skip') }}
-							</button>
-						</div>
-					</div>
-				</div>
-
-				<!-- Additional info -->
-				<p class="mt-6 text-center text-xs text-[#9ca3af]">
-					{{ t('app.tagline') }}
+		<main class="mx-auto max-w-4xl px-4 py-8">
+			<!-- Introduction -->
+			<div class="mb-8 text-center">
+				<h2 class="mb-2 text-2xl font-semibold text-[var(--insis-text)]">Vítejte v Kreditožroutech</h2>
+				<p class="text-[var(--insis-gray-600)]">
+					Pro začátek vyberte svůj studijní plán. Podle něj vám zobrazíme relevantní předměty a jejich rozvrhové akce.
 				</p>
 			</div>
+
+			<!-- Wizard Component -->
+			<StudyPlanWizard />
+
+			<!-- Info box -->
+			<div class="mt-8 rounded border border-[var(--insis-border)] bg-white p-4">
+				<h3 class="mb-2 text-sm font-medium text-[var(--insis-text)]">📌 Jak to funguje?</h3>
+				<ul class="space-y-1 text-sm text-[var(--insis-gray-600)]">
+					<li><strong>1.</strong> Vyberte svou fakultu</li>
+					<li><strong>2.</strong> Zvolte rok nástupu ke studiu</li>
+					<li><strong>3.</strong> Vyberte svůj studijní plán</li>
+					<li><strong>4.</strong> Procházejte předměty a sestavte si rozvrh</li>
+				</ul>
+			</div>
 		</main>
+
+		<!-- Footer -->
+		<footer class="border-t border-[var(--insis-border)] bg-white px-4 py-4 text-center text-sm text-[var(--insis-gray-500)]">
+			<p>
+				Kreditožrouti · Data z
+				<a href="https://insis.vse.cz" target="_blank" class="text-[var(--insis-blue)] hover:underline"> InSIS VŠE </a>
+			</p>
+		</footer>
 	</div>
 </template>

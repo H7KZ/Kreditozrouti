@@ -16,3 +16,5 @@ export const TimeSelectionSchema = z
 		message: 'time_from must be less than time_to',
 		path: ['time_from', 'time_to']
 	})
+
+export type TimeSelection = z.infer<typeof TimeSelectionSchema>

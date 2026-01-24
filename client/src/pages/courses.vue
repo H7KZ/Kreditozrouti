@@ -1,211 +1,333 @@
 <script setup lang="ts">
-import { Course, StudyPlan } from '@api/Database/types'
+/**
+ * Courses Page
+ * Main course browser with filters, list view, and timetable view.
+ */
+import { computed, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
+
 import CourseTable from '@client/components/courses/CourseTable.vue'
-import FilterPanel from '@client/components/courses/FilterPanel.vue'
-import TimetablePreview from '@client/components/courses/TimetablePreview.vue'
-import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
-import { useCourseFilters } from '@client/stores/courseFilters'
-import { useCourseSearch } from '@client/stores/courseSearch'
-import { useStudentContext } from '@client/stores/studentContext'
-import { storeToRefs } from 'pinia'
-import { onMounted, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
+import FilterPanel from '@client/components/filters/FilterPanel.vue'
+import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
+import { useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 
-const { t } = useI18n()
+const router = useRouter()
+const coursesStore = useCoursesStore()
+const timetableStore = useTimetableStore()
+const uiStore = useUIStore()
+const wizardStore = useWizardStore()
 
-const courseSearch = useCourseSearch()
-const courseFilters = useCourseFilters()
-const studentContext = useStudentContext()
-
-const { courses, isLoading, error, meta, currentPage, totalPages, totalResults, facets } = storeToRefs(courseSearch)
-const { isWizardComplete, selectedStudyPlan } = storeToRefs(studentContext)
-
-// View state
-const activeTab = ref<'list' | 'timetable'>('list')
-const selectedCourse = ref<Course | null>(null)
-
-// Auto-search when study plan is selected
-watch(isWizardComplete, (complete) => {
-	if (complete) {
-		courseSearch.search()
-	}
-})
-
-// Auto-search when filters change
+// Redirect to wizard if not completed
 watch(
-	() => courseFilters.apiFilter,
-	() => {
-		if (isWizardComplete.value) {
-			courseSearch.search()
+	() => wizardStore.completed,
+	(completed) => {
+		if (!completed) {
+			router.push('/')
 		}
 	},
-	{ deep: true },
+	{ immediate: true },
 )
 
-onMounted(() => {
-	// If already has a study plan selected, search immediately
-	if (isWizardComplete.value) {
-		courseSearch.search()
+// Initialize courses from wizard selection
+onMounted(async () => {
+	if (wizardStore.completed && wizardStore.studyPlanId) {
+		coursesStore.initializeFromWizard()
+		await coursesStore.fetchCourses()
 	}
 })
 
-function handleWizardComplete(studyPlan: StudyPlan) {
-	console.log('Study plan selected:', studyPlan)
-	courseSearch.search()
+/** Selected study plan display */
+const studyPlanInfo = computed(() => ({
+	title: wizardStore.studyPlanTitle || 'Studijní plán',
+	ident: wizardStore.studyPlanIdent || '',
+}))
+
+const coursesInfo = computed(() => ({
+	years: coursesStore.filters.years,
+	semester: coursesStore.filters.semesters?.length === 1 ? (coursesStore.filters.semesters[0] === 'ZS' ? 'Zimní semestr' : 'Letní semestr') : 'Celý rok',
+}))
+
+/** Selected courses count */
+const selectedCoursesCount = computed(() => timetableStore.selectedCourseIds.length)
+
+/** Whether there are time conflicts */
+const hasConflicts = computed(() => timetableStore.hasConflicts)
+
+/** Reset wizard and go back */
+function handleResetWizard() {
+	wizardStore.reset()
+	router.push('/')
 }
 
-function handleCourseSelect(course: Course) {
-	selectedCourse.value = course
-	// Could open a detail modal here
-}
-
-function handlePageChange(page: number) {
-	courseSearch.goToPage(page)
-	courseSearch.search()
+/** Clear all selected courses */
+function handleClearTimetable() {
+	if (confirm('Opravdu chcete odebrat všechny předměty z rozvrhu?')) {
+		timetableStore.clearAll()
+	}
 }
 </script>
 
 <template>
-	<div class="course-browser">
+	<div v-if="wizardStore.completed" class="flex min-h-screen flex-col bg-[var(--insis-bg)]">
 		<!-- Header -->
-		<div class="mb-4">
-			<h1 class="text-xl font-bold text-[var(--insis-gray-900)]">{{ t('search.title') }}</h1>
-			<div class="insis-breadcrumbs">
-				<a href="/">{{ t('search.breadcrumbs.home') }}</a>
-				<span class="separator">»</span>
-				<span class="current">{{ t('search.breadcrumbs.search') }}</span>
+		<header class="sticky top-0 z-40 border-b border-[var(--insis-border)] bg-white px-4 py-2">
+			<div class="flex items-center justify-between">
+				<!-- Left: Logo and study plan info -->
+				<div class="flex items-center gap-4">
+					<router-link to="/" class="flex items-center gap-2">
+						<div class="flex h-8 w-8 items-center justify-center rounded bg-[var(--insis-blue)] text-white">
+							<span class="text-sm font-bold">K</span>
+						</div>
+						<span class="font-semibold text-[var(--insis-blue)]"> Kreditožrouti </span>
+					</router-link>
+
+					<div class="hidden border-l border-[var(--insis-border)] pl-4 sm:block">
+						<p class="text-sm font-medium text-[var(--insis-text)]">
+							{{ studyPlanInfo.title }}
+						</p>
+						<p class="text-xs text-[var(--insis-gray-500)]">
+							{{ studyPlanInfo.ident }} · {{ coursesInfo.years?.join(' - ') ?? '-' }} · {{ coursesInfo.semester }}
+						</p>
+					</div>
+				</div>
+
+				<!-- Right: Actions and timetable summary -->
+				<div class="flex items-center gap-4">
+					<!-- Selected courses badge -->
+					<div v-if="selectedCoursesCount > 0" class="hidden items-center gap-2 sm:flex">
+						<span class="insis-badge insis-badge-success"> {{ selectedCoursesCount }} předmětů v rozvrhu </span>
+						<button
+							type="button"
+							class="text-xs cursor-pointer text-[var(--insis-gray-500)] hover:text-[var(--insis-danger)]"
+							title="Vymazat rozvrh"
+							@click="handleClearTimetable"
+						>
+							✕
+						</button>
+					</div>
+
+					<!-- Conflict warning -->
+					<span v-if="hasConflicts" class="insis-badge insis-badge-danger" title="Máte kolize v rozvrhu"> ⚠️ Kolize </span>
+
+					<!-- Change study plan -->
+					<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="handleResetWizard">Změnit plán</button>
+
+					<!-- Mobile menu toggle -->
+					<button type="button" class="insis-btn insis-btn-secondary p-2 sm:hidden" @click="uiStore.toggleMobileFilter">
+						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+							/>
+						</svg>
+					</button>
+				</div>
 			</div>
-		</div>
+		</header>
 
-		<!-- No Study Plan Notice (shown when user skipped wizard) -->
-		<div v-if="isWizardComplete && !selectedStudyPlan" class="bg-[#fef3c7] border border-[#f59e0b] text-[#92400e] px-4 py-3 rounded mb-4">
-			<div class="flex items-center gap-2">
-				<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-				</svg>
-				<span class="text-sm flex-1">
-					{{ t('courses.noStudyPlanNotice') }}
-				</span>
-				<a href="/" class="text-sm font-medium hover:underline cursor-pointer"> {{ t('wizard.select') }} → </a>
-			</div>
-		</div>
+		<!-- Main Content -->
+		<div class="flex flex-1 overflow-hidden">
+			<!-- Sidebar / Filter Panel -->
+			<aside
+				class="filter-sidebar w-72 shrink-0 overflow-y-auto border-r border-[var(--insis-border)] bg-white"
+				:class="{
+					'hidden lg:block': !uiStore.mobileFilterOpen,
+					'fixed inset-0 z-50 w-full sm:w-80 lg:relative lg:w-72': uiStore.mobileFilterOpen,
+				}"
+			>
+				<!-- Mobile filter header -->
+				<div v-if="uiStore.mobileFilterOpen" class="flex items-center justify-between border-b border-[var(--insis-border)] p-3 lg:hidden">
+					<span class="font-medium">Filtry</span>
+					<button type="button" class="text-[var(--insis-gray-500)] hover:text-[var(--insis-text)]" @click="uiStore.closeMobileFilter">✕</button>
+				</div>
 
-		<!-- Study Plan Wizard -->
-		<StudyPlanWizard @complete="handleWizardComplete" />
+				<FilterPanel />
+			</aside>
 
-		<!-- Main Content (only shown when wizard is complete or user wants to search without plan) -->
-		<div v-if="isWizardComplete" class="course-browser-content mt-6">
-			<div class="flex flex-col lg:flex-row gap-0 h-[calc(100vh-200px)]">
-				<!-- Filter Sidebar -->
-				<FilterPanel :facets="facets ?? undefined" :loading="isLoading" />
+			<!-- Mobile filter backdrop -->
+			<div v-if="uiStore.mobileFilterOpen" class="fixed inset-0 z-40 bg-black/50 lg:hidden" @click="uiStore.closeMobileFilter" />
 
-				<!-- Main Results Area -->
-				<div class="flex-1 min-w-0 p-6 overflow-auto">
-					<!-- Results Header -->
-					<div class="flex items-center justify-between mb-4">
-						<div class="text-sm text-[var(--insis-gray-600)]">
-							<template v-if="meta">
-								{{ t('search.resultsCount', { count: totalResults }) }}
-								<span v-if="selectedStudyPlan">
-									{{ t('search.inStudyPlan', { plan: selectedStudyPlan.title }) }}
+			<!-- Content Area -->
+			<main class="flex flex-1 flex-col overflow-hidden">
+				<!-- View Tabs -->
+				<div class="border-b border-[var(--insis-border)] bg-white px-4">
+					<nav class="insis-tabs">
+						<button type="button" class="insis-tab" :class="{ 'insis-tab-active': uiStore.viewMode === 'list' }" @click="uiStore.switchToListView">
+							<svg class="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+							</svg>
+							Seznam předmětů
+							<span v-if="coursesStore.pagination.total" class="ml-1.5 text-xs text-[var(--insis-gray-500)]">
+								({{ coursesStore.pagination.total }})
+							</span>
+						</button>
+						<button
+							type="button"
+							class="insis-tab"
+							:class="{ 'insis-tab-active': uiStore.viewMode === 'timetable' }"
+							@click="uiStore.switchToTimetableView"
+						>
+							<svg class="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+								/>
+							</svg>
+							Můj rozvrh
+							<span v-if="selectedCoursesCount > 0" class="ml-1.5 text-xs text-[var(--insis-gray-500)]"> ({{ selectedCoursesCount }}) </span>
+						</button>
+					</nav>
+				</div>
+
+				<!-- Content based on view mode -->
+				<div class="flex-1 overflow-auto p-4">
+					<!-- Loading state -->
+					<div v-if="coursesStore.loading" class="flex items-center justify-center py-12">
+						<div class="text-center">
+							<div class="insis-spinner mx-auto mb-3" />
+							<p class="text-sm text-[var(--insis-gray-500)]">Načítám předměty...</p>
+						</div>
+					</div>
+
+					<!-- Error state -->
+					<div v-else-if="coursesStore.error" class="rounded border border-[var(--insis-danger)] bg-red-50 p-4 text-sm text-[var(--insis-danger)]">
+						<p class="font-medium">Chyba při načítání</p>
+						<p>{{ coursesStore.error }}</p>
+						<button type="button" class="mt-2 text-[var(--insis-blue)] hover:underline" @click="coursesStore.fetchCourses">Zkusit znovu</button>
+					</div>
+
+					<!-- Course List View -->
+					<template v-else-if="uiStore.viewMode === 'list'">
+						<!-- Empty state -->
+						<div v-if="coursesStore.courses.length === 0" class="py-12 text-center">
+							<p class="text-[var(--insis-gray-500)]">Nebyly nalezeny žádné předměty odpovídající filtrům.</p>
+							<button
+								v-if="coursesStore.hasActiveFilters"
+								type="button"
+								class="mt-2 text-sm text-[var(--insis-blue)] hover:underline"
+								@click="coursesStore.resetFilters"
+							>
+								Zrušit filtry
+							</button>
+						</div>
+
+						<!-- Course table -->
+						<CourseTable v-else />
+
+						<!-- Pagination -->
+						<div
+							v-if="coursesStore.pagination.total > coursesStore.pagination.limit"
+							class="mt-4 flex items-center justify-between border-t border-[var(--insis-border)] pt-4"
+						>
+							<p class="text-sm text-[var(--insis-gray-500)]">
+								Zobrazeno {{ coursesStore.pagination.offset + 1 }} -
+								{{ Math.min(coursesStore.pagination.offset + coursesStore.pagination.count, coursesStore.pagination.total) }}
+								z {{ coursesStore.pagination.total }} předmětů
+							</p>
+							<div class="flex items-center gap-2">
+								<button
+									type="button"
+									class="insis-btn insis-btn-secondary text-sm"
+									:disabled="!coursesStore.hasPrevPage"
+									@click="coursesStore.prevPage"
+								>
+									← Předchozí
+								</button>
+								<span class="text-sm text-[var(--insis-gray-500)]">
+									Stránka {{ coursesStore.currentPage }} z {{ coursesStore.totalPages }}
 								</span>
-							</template>
+								<button
+									type="button"
+									class="insis-btn insis-btn-secondary text-sm"
+									:disabled="!coursesStore.hasNextPage"
+									@click="coursesStore.nextPage"
+								>
+									Další →
+								</button>
+							</div>
+						</div>
+					</template>
+
+					<!-- Timetable View -->
+					<template v-else-if="uiStore.viewMode === 'timetable'">
+						<!-- Empty timetable -->
+						<div v-if="selectedCoursesCount === 0" class="py-12 text-center">
+							<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--insis-gray-100)]">
+								<svg class="h-8 w-8 text-[var(--insis-gray-400)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+									/>
+								</svg>
+							</div>
+							<p class="mb-2 font-medium text-[var(--insis-text)]">Váš rozvrh je prázdný</p>
+							<p class="mb-4 text-sm text-[var(--insis-gray-500)]">
+								Přidejte předměty ze seznamu nebo táhněte přes prázdné sloty pro vyhledání předmětů v daném čase.
+							</p>
+							<button type="button" class="insis-btn insis-btn-primary" @click="uiStore.switchToListView">Procházet předměty</button>
 						</div>
 
-						<!-- View Tabs -->
-						<div class="insis-tabs border-b-0">
-							<button class="insis-tab cursor-pointer" :class="{ active: activeTab === 'list' }" @click="activeTab = 'list'">
-								{{ t('search.tabs.list') }}
+						<!-- Timetable grid -->
+						<TimetableGrid v-else />
+
+						<!-- Timetable legend -->
+						<div class="mt-4 border-t border-[var(--insis-border)] pt-4">
+							<button
+								type="button"
+								class="flex items-center gap-2 text-sm text-[var(--insis-gray-500)] hover:text-[var(--insis-text)]"
+								@click="uiStore.toggleLegend"
+							>
+								<span>{{ uiStore.showLegend ? '▼' : '▶' }}</span>
+								Legenda
 							</button>
-							<button class="insis-tab cursor-pointer" :class="{ active: activeTab === 'timetable' }" @click="activeTab = 'timetable'">
-								{{ t('search.tabs.timetable') }}
-							</button>
-						</div>
-					</div>
-
-					<!-- Error State -->
-					<div v-if="error" class="insis-panel-danger mb-4">
-						{{ error }}
-						<button class="insis-btn insis-btn-sm ml-2 cursor-pointer" @click="courseSearch.search()">{{ t('errors.tryAgain') }}</button>
-					</div>
-
-					<!-- Tab Content -->
-					<div class="insis-tab-content">
-						<!-- List View -->
-						<div v-if="activeTab === 'list'">
-							<CourseTable :courses="courses" :loading="isLoading" @select="handleCourseSelect" />
-
-							<!-- Pagination -->
-							<div v-if="totalPages > 1" class="flex items-center justify-between mt-4 pt-4 border-t border-[var(--insis-border)]">
-								<div class="text-sm text-[var(--insis-gray-600)]">
-									{{ t('search.pagination.page', { current: currentPage, total: totalPages }) }}
+							<div v-if="uiStore.showLegend" class="mt-2 flex flex-wrap gap-4 text-xs">
+								<div class="flex items-center gap-1.5">
+									<span class="h-3 w-3 rounded bg-[var(--insis-block-lecture)]" />
+									<span>Přednáška</span>
 								</div>
-								<div class="flex gap-1">
-									<button
-										class="insis-btn insis-btn-sm cursor-pointer"
-										:disabled="currentPage <= 1"
-										@click="handlePageChange(currentPage - 1)"
-									>
-										{{ t('search.pagination.previous') }}
-									</button>
-									<button
-										v-for="page in Math.min(5, totalPages)"
-										:key="page"
-										class="insis-btn insis-btn-sm cursor-pointer"
-										:class="{ 'insis-btn-primary': page === currentPage }"
-										@click="handlePageChange(page)"
-									>
-										{{ page }}
-									</button>
-									<template v-if="totalPages > 5">
-										<span class="px-2">...</span>
-										<button
-											class="insis-btn insis-btn-sm cursor-pointer"
-											:class="{ 'insis-btn-primary': totalPages === currentPage }"
-											@click="handlePageChange(totalPages)"
-										>
-											{{ totalPages }}
-										</button>
-									</template>
-									<button
-										class="insis-btn insis-btn-sm cursor-pointer"
-										:disabled="currentPage >= totalPages"
-										@click="handlePageChange(currentPage + 1)"
-									>
-										{{ t('search.pagination.next') }}
-									</button>
+								<div class="flex items-center gap-1.5">
+									<span class="h-3 w-3 rounded bg-[var(--insis-block-exercise)]" />
+									<span>Cvičení</span>
+								</div>
+								<div class="flex items-center gap-1.5">
+									<span class="h-3 w-3 rounded bg-[var(--insis-block-seminar)]" />
+									<span>Seminář</span>
+								</div>
+								<div class="flex items-center gap-1.5">
+									<span class="h-3 w-3 rounded ring-2 ring-[var(--insis-danger)]" />
+									<span>Kolize</span>
 								</div>
 							</div>
 						</div>
-
-						<!-- Timetable View -->
-						<div v-else-if="activeTab === 'timetable'">
-							<TimetablePreview :courses="courses" />
-						</div>
-					</div>
+					</template>
 				</div>
-			</div>
-		</div>
-
-		<!-- Quick Search (when wizard not complete) -->
-		<div v-else class="mt-6">
-			<div class="insis-panel-info">
-				<p class="text-sm">
-					{{ t('search.noContext') }}
-					<button class="text-[var(--insis-link)] underline cursor-pointer hover:no-underline" @click="studentContext.skipWizard()">
-						{{ t('wizard.skip') }}
-					</button>
-					{{ t('wizard.skipWithoutPlan') }}.
-				</p>
-			</div>
+			</main>
 		</div>
 	</div>
 </template>
 
 <style scoped>
-.course-browser {
-	max-width: 1400px;
-	margin: 0 auto;
-	padding: 1rem;
+.filter-sidebar {
+	scrollbar-width: thin;
+	scrollbar-color: var(--insis-gray-300) transparent;
+}
+
+.filter-sidebar::-webkit-scrollbar {
+	width: 6px;
+}
+
+.filter-sidebar::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.filter-sidebar::-webkit-scrollbar-thumb {
+	background-color: var(--insis-gray-300);
+	border-radius: 3px;
 }
 </style>

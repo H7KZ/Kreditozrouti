@@ -1,313 +1,253 @@
 <script setup lang="ts">
-import { Course, CourseUnit, CourseUnitSlot } from '@api/Database/types'
-import { minutesToTime } from '@client/lib/utils.ts'
-import { useCourseFilters } from '@client/stores/courseFilters'
-import { useTimetableStore } from '@client/stores/timetable'
-import InSISDay from '@scraper/Types/InSISDay.ts'
+/**
+ * TimetableGrid
+ * Weekly timetable grid displaying selected courses.
+ * Supports drag-to-filter interaction.
+ */
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+// import { useRouter } from 'vue-router'
 
-interface Props {
-	mode?: 'view' | 'filter' // 'view' shows added courses, 'filter' allows drag selection
-	startHour?: number
-	endHour?: number
-}
+import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
+import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
+import { useTimeUtils } from '@client/composables'
+import { TIME_CONFIG, useCoursesStore, useTimetableStore, useUIStore, WEEKDAYS } from '@client/stores'
+import { SelectedCourseUnit } from '@client/types'
+import InSISDay from '@scraper/Types/InSISDay.ts'
 
-const props = withDefaults(defineProps<Props>(), {
-	mode: 'view',
-	startHour: 7,
-	endHour: 20,
-})
+// const router = useRouter()
+const timetableStore = useTimetableStore()
+const coursesStore = useCoursesStore()
+const uiStore = useUIStore()
+const { minutesToTime, calculateTimePosition, calculateTimeDuration } = useTimeUtils()
 
-interface SlotWithCourse extends CourseUnitSlot {
-	course: Course
-	unit: CourseUnit
-}
-
-const emit = defineEmits<{
-	slotClick: [slot: SlotWithCourse, event: MouseEvent]
-	filterApply: [data: { day: InSISDay; from: number; to: number }]
-}>()
-
-const { t, tm, locale } = useI18n()
-const timetable = useTimetableStore()
-const filters = useCourseFilters()
-
-// Days of the week
-const days = tm('days')
-
-// Generate time slots (15 min intervals for precise drag selection)
+// Time slots for the grid header
 const timeSlots = computed(() => {
-	const slots: number[] = []
-	const startMinutes = props.startHour === 7 ? 30 : 0 // Start at 7:30 for InSIS
-	for (let hour = props.startHour; hour <= props.endHour; hour++) {
-		const startMin = hour === props.startHour ? startMinutes : 0
-		const endMin = hour === props.endHour ? 0 : 45
-		for (let min = startMin; min <= endMin; min += 15) {
-			slots.push(hour * 60 + min)
-		}
+	const slots: Array<{ minutes: number; label: string }> = []
+	let time = TIME_CONFIG.START
+
+	// Generate time slots every hour for the header
+	while (time < TIME_CONFIG.END) {
+		slots.push({
+			minutes: time,
+			label: minutesToTime(time),
+		})
+		time += 60 // Every hour
 	}
+
 	return slots
 })
 
-// Calculate grid dimensions
-const SLOT_HEIGHT = 12 // pixels per 15 min slot
-const DAY_WIDTH = 140 // pixels per day column
+// Grid cell height in pixels (per hour)
+const CELL_HEIGHT = 60
 
-// Drag selection state
-const isDragging = ref(false)
-const dragStart = ref<{ day: InSISDay; time: number } | null>(null)
-const dragEnd = ref<{ day: InSISDay; time: number } | null>(null)
-
-// Selection range
-const selectionRange = computed(() => {
-	if (!dragStart.value || !dragEnd.value) return null
-	if (dragStart.value.day !== dragEnd.value.day) return null
-
-	const minTime = Math.min(dragStart.value.time, dragEnd.value.time)
-	const maxTime = Math.max(dragStart.value.time, dragEnd.value.time) + 15
-
-	return {
-		day: dragStart.value.day,
-		timeFrom: minTime,
-		timeTo: maxTime,
-	}
+// Total grid height
+const gridHeight = computed(() => {
+	const hours = (TIME_CONFIG.END - TIME_CONFIG.START) / 60
+	return hours * CELL_HEIGHT
 })
 
-// Check if cell is in drag selection
-function isInDragSelection(day: InSISDay, time: number): boolean {
-	if (!selectionRange.value) return false
-	return selectionRange.value.day === day && time >= selectionRange.value.timeFrom && time < selectionRange.value.timeTo
+// Get units for a specific day
+function getUnitsForDay(day: InSISDay): SelectedCourseUnit[] {
+	return timetableStore.unitsByDay.get(day) || []
 }
 
-// Calculate slot position and size
-function getSlotStyle(slot: SlotWithCourse) {
-	const dayIndex = Object.keys(days).indexOf(slot.day || 'Po')
-	if (dayIndex === -1) return { display: 'none' }
-
-	const startMinutes = props.startHour === 7 ? 30 : 0
-	const gridStartTime = props.startHour * 60 + startMinutes
-
-	const top = ((slot.time_from! - gridStartTime) / 15) * SLOT_HEIGHT
-	const height = ((slot.time_to! - slot.time_from!) / 15) * SLOT_HEIGHT
-	const left = dayIndex * DAY_WIDTH + 1
+// Calculate position and size for a course block
+function getBlockStyle(unit: SelectedCourseUnit) {
+	const top = calculateTimePosition(unit.timeFrom, TIME_CONFIG.START, TIME_CONFIG.END)
+	const height = calculateTimeDuration(unit.timeFrom, unit.timeTo, TIME_CONFIG.START, TIME_CONFIG.END)
 
 	return {
-		position: 'absolute' as const,
-		top: `${top}px`,
-		height: `${height}px`,
-		left: `${left}px`,
-		width: `${DAY_WIDTH - 2}px`,
-		zIndex: 10,
+		top: `${top}%`,
+		height: `${height}%`,
 	}
 }
 
-// Get color for slot based on course
-function getSlotColor(slot: SlotWithCourse): string {
-	const colors = [
-		'bg-blue-100 border-l-blue-400 text-blue-900',
-		'bg-green-100 border-l-green-400 text-green-900',
-		'bg-purple-100 border-l-purple-400 text-purple-900',
-		'bg-amber-100 border-l-amber-400 text-amber-900',
-		'bg-rose-100 border-l-rose-400 text-rose-900',
-		'bg-cyan-100 border-l-cyan-400 text-cyan-900',
-		'bg-indigo-100 border-l-indigo-400 text-indigo-900',
-	]
-
-	return colors[slot.course.id % colors.length] || 'bg-gray-100 border-l-gray-400 text-gray-900'
+// Check if a unit has a conflict
+function hasConflict(unit: SelectedCourseUnit): boolean {
+	return timetableStore.conflicts.some(([a, b]) => a.slotId === unit.slotId || b.slotId === unit.slotId)
 }
 
-// Get course name
-function getCourseName(course: Course): string {
-	if (locale.value === 'cs' && course.czech_title) return course.czech_title
-	return course.title || course.ident
+// Drag handling
+const gridRef = ref<HTMLElement | null>(null)
+const isDragging = ref(false)
+
+function getTimeFromY(y: number, element: HTMLElement): number {
+	const rect = element.getBoundingClientRect()
+	const relativeY = y - rect.top
+	const percentage = relativeY / rect.height
+	const totalMinutes = TIME_CONFIG.END - TIME_CONFIG.START
+	const minutes = TIME_CONFIG.START + percentage * totalMinutes
+
+	// Snap to 15-minute intervals
+	return Math.round(minutes / 15) * 15
 }
 
-// Mouse handlers for drag selection
-function handleMouseDown(day: InSISDay, time: number, event: MouseEvent) {
-	if (props.mode !== 'filter') return
-	event.preventDefault()
+function handleMouseDown(event: MouseEvent, day: InSISDay) {
+	if (!gridRef.value) return
 
+	const dayColumn = (event.target as HTMLElement).closest('.day-column') as HTMLElement
+	if (!dayColumn) return
+
+	const time = getTimeFromY(event.clientY, dayColumn)
+	timetableStore.startDrag(day, time)
 	isDragging.value = true
-	dragStart.value = { day, time }
-	dragEnd.value = { day, time }
+
+	event.preventDefault()
 }
 
-function handleMouseMove(day: InSISDay, time: number) {
-	if (!isDragging.value || !dragStart.value) return
-	// Only allow single-day selection
-	if (day !== dragStart.value.day) return
+function handleMouseMove(event: MouseEvent) {
+	if (!isDragging.value || !gridRef.value) return
 
-	dragEnd.value = { day, time }
+	const dayColumn = document.elementFromPoint(event.clientX, event.clientY)?.closest('.day-column') as HTMLElement
+	if (!dayColumn) return
+
+	const day = dayColumn.dataset.day as InSISDay
+	const time = getTimeFromY(event.clientY, dayColumn)
+	timetableStore.updateDrag(day, time)
 }
 
-function handleMouseUp() {
-	if (!isDragging.value || !selectionRange.value) {
-		isDragging.value = false
-		dragStart.value = null
-		dragEnd.value = null
-		return
-	}
+function handleMouseUp(event: MouseEvent) {
+	if (!isDragging.value) return
 
-	// Apply filter
-	filters.setTimeFilter(selectionRange.value.timeFrom, selectionRange.value.timeTo, selectionRange.value.day)
-
-	emit('filterApply', {
-		day: selectionRange.value.day,
-		from: selectionRange.value.timeFrom,
-		to: selectionRange.value.timeTo,
-	})
-
-	// Reset drag state
 	isDragging.value = false
-	dragStart.value = null
-	dragEnd.value = null
+	timetableStore.endDrag(event.clientX, event.clientY)
 }
 
-// Handle slot click
-function handleSlotClick(slot: SlotWithCourse, event: MouseEvent) {
-	if (props.mode === 'view') {
-		emit('slotClick', slot, event)
+// Handle drag filter action
+async function handleDragFilter() {
+	const selection = timetableStore.getDragSelectionValues()
+	if (!selection) return
+
+	// Apply the time filter
+	coursesStore.setTimeFilterFromDrag(selection.day, selection.timeFrom, selection.timeTo)
+
+	// Switch to list view
+	uiStore.switchToListView()
+
+	// Fetch courses
+	await coursesStore.fetchCourses()
+
+	// Close popover
+	timetableStore.cancelDrag()
+}
+
+// Handle drag cancel
+function handleDragCancel() {
+	timetableStore.cancelDrag()
+}
+
+// Check if a time slot is in the drag selection
+// function isInDragSelection(day: InSISDay, time: number): boolean {
+// 	return timetableStore.isInDragSelection(day, time)
+// }
+
+// Get drag selection style for a day column
+function getDragSelectionStyle(day: InSISDay) {
+	const selection = timetableStore.normalizedDragSelection
+	if (!selection || selection.day !== day || !timetableStore.dragSelection.active) {
+		return null
+	}
+
+	const top = calculateTimePosition(selection.timeFrom, TIME_CONFIG.START, TIME_CONFIG.END)
+	const height = calculateTimeDuration(selection.timeFrom, selection.timeTo, TIME_CONFIG.START, TIME_CONFIG.END)
+
+	return {
+		top: `${top}%`,
+		height: `${height}%`,
 	}
 }
 
-// Global mouse up handler
-function handleGlobalMouseUp() {
-	if (isDragging.value) {
-		handleMouseUp()
-	}
-}
-
+// Global mouse event listeners
 onMounted(() => {
-	window.addEventListener('mouseup', handleGlobalMouseUp)
+	document.addEventListener('mousemove', handleMouseMove)
+	document.addEventListener('mouseup', handleMouseUp)
 })
 
 onUnmounted(() => {
-	window.removeEventListener('mouseup', handleGlobalMouseUp)
-})
-
-// Grid container height
-const gridHeight = computed(() => {
-	return timeSlots.value.length * SLOT_HEIGHT
+	document.removeEventListener('mousemove', handleMouseMove)
+	document.removeEventListener('mouseup', handleMouseUp)
 })
 </script>
 
 <template>
-	<div class="timetable-grid">
-		<!-- Header hint for filter mode -->
-		<div v-if="mode === 'filter'" class="mb-3 p-2 bg-[#f0f7ff] rounded border border-[#4a7eb8]/20 text-sm text-[#1e4a7a]">
-			<div class="flex items-center gap-2">
-				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-				</svg>
-				{{ t('timetable.dragHint') }}
-			</div>
-		</div>
+	<div ref="gridRef" class="relative overflow-x-auto">
+		<table class="insis-timetable">
+			<!-- Header with time slots -->
+			<thead>
+				<tr>
+					<th class="day-header">Den</th>
+					<th v-for="slot in timeSlots" :key="slot.minutes" class="text-center">
+						{{ slot.label }}
+					</th>
+				</tr>
+			</thead>
 
-		<!-- Grid container -->
-		<div class="relative border border-[#d1d5db] rounded-lg overflow-hidden bg-white">
-			<!-- Day headers -->
-			<div class="flex border-b border-[#d1d5db] bg-[#e8eef5]">
-				<div class="w-16 flex-shrink-0 p-2 text-xs font-semibold text-[#6b7280] border-r border-[#d1d5db]">
-					<!-- Time column header -->
-				</div>
-				<div
-					v-for="day in days"
-					:key="day"
-					class="flex-1 p-2 text-center text-sm font-semibold text-[#374151] border-r border-[#d1d5db] last:border-r-0"
-					:style="{ minWidth: `${DAY_WIDTH}px` }"
-				>
-					{{ t(`timetable.days.${day}`) }}
-				</div>
-			</div>
+			<!-- Body with days and time slots -->
+			<tbody>
+				<tr v-for="day in WEEKDAYS" :key="day">
+					<!-- Day label -->
+					<td class="day-header font-medium">
+						{{ day.substring(0, 2) }}
+					</td>
 
-			<!-- Time grid -->
-			<div class="flex">
-				<!-- Time labels -->
-				<div class="w-16 flex-shrink-0 border-r border-[#d1d5db]">
-					<div
-						v-for="time in timeSlots"
-						:key="time"
-						class="text-xs text-right text-[#6b7280] border-b border-[#f3f4f6] flex items-start justify-end pt-1 pr-2"
-						:style="{ height: `${SLOT_HEIGHT}px` }"
+					<!-- Time grid cell spanning all columns -->
+					<td
+						:colspan="timeSlots.length"
+						class="day-column relative p-0"
+						:style="{ height: `${gridHeight}px` }"
+						:data-day="day"
+						@mousedown="handleMouseDown($event, day)"
 					>
-						<span v-if="time % 60 === 0">{{ minutesToTime(time) }}</span>
-					</div>
-				</div>
-
-				<!-- Day columns with cells -->
-				<div class="flex-1 relative" :style="{ minWidth: `${DAY_WIDTH * days.length}px`, height: `${gridHeight}px` }">
-					<!-- Background grid -->
-					<div class="absolute inset-0 flex">
-						<div v-for="day in days" :key="day" class="border-r border-[#f3f4f6] last:border-r-0" :style="{ width: `${DAY_WIDTH}px` }">
+						<!-- Background grid lines (every hour) -->
+						<div class="pointer-events-none absolute inset-0">
 							<div
-								v-for="time in timeSlots"
-								:key="time"
-								class="border-b border-[#f3f4f6] transition-colors"
-								:class="{
-									'cursor-crosshair hover:bg-[#f0f7ff]': mode === 'filter',
-									'bg-[#4a7eb8] bg-opacity-20': isInDragSelection(day, time),
+								v-for="slot in timeSlots"
+								:key="slot.minutes"
+								class="absolute top-0 h-full border-l border-[var(--insis-border-light)]"
+								:style="{
+									left: `${calculateTimePosition(slot.minutes, TIME_CONFIG.START, TIME_CONFIG.END)}%`,
 								}"
-								:style="{ height: `${SLOT_HEIGHT}px` }"
-								@mousedown="handleMouseDown(day, time, $event)"
-								@mousemove="handleMouseMove(day, time)"
 							/>
 						</div>
-					</div>
 
-					<!-- Slots overlay (view mode) -->
-					<div v-if="mode === 'view'" class="absolute inset-0">
+						<!-- Drag selection overlay -->
 						<div
-							v-for="slot in timetable.allSlots"
-							:key="`${slot.unit?.id}-${slot.id}`"
-							:style="getSlotStyle(slot as SlotWithCourse)"
-							class="rounded border-l-4 p-1.5 overflow-hidden cursor-pointer transition-shadow hover:shadow-md"
-							:class="getSlotColor(slot as SlotWithCourse)"
-							@click="handleSlotClick(slot as SlotWithCourse, $event)"
-						>
-							<div class="text-xs font-semibold truncate">
-								{{ slot.course?.ident }}
-							</div>
-							<div class="text-xs truncate opacity-75">
-								{{ getCourseName(slot.course!) }}
-							</div>
-							<div class="text-xs truncate opacity-60">{{ minutesToTime(slot.time_from!) }}-{{ minutesToTime(slot.time_to!) }}</div>
-							<div v-if="slot.location" class="text-xs truncate opacity-60">
-								{{ slot.location }}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+							v-if="getDragSelectionStyle(day)"
+							class="pointer-events-none absolute left-0 right-0 bg-[var(--insis-block-selected)] opacity-50"
+							:style="getDragSelectionStyle(day)"
+						/>
 
-		<!-- Stats (view mode) -->
-		<div v-if="mode === 'view' && !timetable.isEmpty" class="mt-4 flex items-center justify-between text-sm text-[#6b7280]">
-			<div>
-				{{ timetable.allEntries.length }}
-				{{ timetable.allEntries.length === 1 ? t('courses.unitSingular') : t('courses.unitPlural') }}
-				{{ t('timetable.inTimetable') }}
-			</div>
-			<div class="font-medium">{{ t('timetable.totalCredits') }}: {{ timetable.totalCredits }} {{ t('courseTable.columns.credits').toLowerCase() }}</div>
-		</div>
+						<!-- Course blocks -->
+						<TimetableCourseBlock
+							v-for="unit in getUnitsForDay(day)"
+							:key="unit.slotId"
+							:unit="unit"
+							:style="getBlockStyle(unit)"
+							:has-conflict="hasConflict(unit)"
+							@remove="timetableStore.removeUnit(unit.slotId)"
+						/>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 
-		<!-- Empty state (view mode) -->
-		<div v-if="mode === 'view' && timetable.isEmpty" class="mt-8 text-center py-8 text-[#6b7280]">
-			<svg class="w-16 h-16 mx-auto mb-4 text-[#d1d5db]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="1.5"
-					d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-				/>
-			</svg>
-			<p class="text-lg font-medium mb-2">{{ t('timetable.empty') }}</p>
-		</div>
+		<!-- Drag-to-filter popover -->
+		<TimetableDragPopover
+			v-if="timetableStore.showDragPopover"
+			:position="timetableStore.dragPopoverPosition"
+			:selection="timetableStore.normalizedDragSelection"
+			@filter="handleDragFilter"
+			@cancel="handleDragCancel"
+		/>
 	</div>
 </template>
 
 <style scoped>
-.timetable-grid {
-	user-select: none;
+.day-column {
+	cursor: crosshair;
+}
+
+.day-column:hover {
+	background-color: var(--insis-gray-50);
 }
 </style>

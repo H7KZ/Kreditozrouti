@@ -3,8 +3,6 @@ import Alerts from '@client/components/alert/Alerts.vue'
 </script>
 
 <template>
-	<main>
-		<RouterView />
-		<Alerts />
-	</main>
+	<RouterView />
+	<Alerts />
 </template>

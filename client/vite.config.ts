@@ -2,7 +2,6 @@ import vueI18n from '@intlify/unplugin-vue-i18n/vite'
 import vueTailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
-import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import vueIcons from 'unplugin-icons/vite'
 import vueRouter from 'unplugin-vue-router/vite'
 import { defineConfig, loadEnv } from 'vite'
@@ -25,9 +24,7 @@ export default ({ mode }: { mode: string }) => {
 				include: [fileURLToPath(new URL('./src/locales/**', import.meta.url))],
 			}),
 			vueIcons({
-				customCollections: {
-					'kz-icons': FileSystemIconLoader('./src/assets/icons'),
-				},
+				autoInstall: true,
 			}),
 		],
 		resolve: {

@@ -8,7 +8,7 @@ const StudyPlansFilterValidation = z.object({
 	title: z.string().optional(),
 
 	// Academic Period Filters
-	semesters: z.array(SemesterSchema),
+	semesters: z.array(SemesterSchema).optional(),
 	years: z.array(z.coerce.number()).optional(),
 
 	// Organizational Filters
