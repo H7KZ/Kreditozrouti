@@ -12,18 +12,18 @@ post {
 
 body:json {
   {
-    "id": [],
-    "ident": [],
+    "ids": [],
+    "idents": [],
     "title": "",
-    "semester": [],
-    "year": [],
-    "faculty_id": [],
-    "level": [],
-    "mode_of_study": [],
-    "study_length": [],
+    "semesters": [],
+    "years": [],
+    "faculty_ids": [],
+    "levels": [],
+    "mode_of_studies": [],
+    "study_lengths": [],
     
-    "has_course_id": [],
-    "has_course_ident": [],
+    "has_course_ids": [],
+    "has_course_idents": [],
     
     "sort_by": "ident",
     "sort_dir": "asc",
@@ -49,20 +49,20 @@ docs {
   | Field | Type | Description |
   | :--- | :--- | :--- |
   | **Identity** | | |
-  | `id` | `number \| number[]` | Internal database IDs of the study plans. |
-  | `ident` | `string \| string[]` | Study plan code. |
+  | `id` | `number[]` | Internal database IDs of the study plans. |
+  | `ident` | `string[]` | Study plan code. |
   | `title` | `string` | Partial text search on the plan title. |
   | **Academic Period** | | |
-  | `semester` | `string \| string[]` | Enum: `WS` (Winter), `SS` (Summer). |
-  | `year` | `number \| number[]` | Academic year of the plan. |
+  | `semester` | `string[]` | Enum: `WS` (Winter), `SS` (Summer). |
+  | `year` | `number[]` | Academic year of the plan. |
   | **Organizational** | | |
-  | `faculty_id` | `string \| string[]` | Faculty codes (e.g., "F4"). |
-  | `level` | `string \| string[]` | Degree level. |
-  | `mode_of_study` | `string \| string[]` | e.g., "Full-time". |
-  | `study_length` | `string \| string[]` | e.g., "2", "3". |
+  | `faculty_id` | `string[]` | Faculty codes (e.g., "F4"). |
+  | `level` | `string[]` | Degree level. |
+  | `mode_of_study` | `string[]` | e.g., "Full-time". |
+  | `study_length` | `string[]` | e.g., "2 roky", "3 roky". |
   | **Course Context** | | |
-  | `has_course_id` | `number \| number[]` | Returns plans that contain the specific course ID. |
-  | `has_course_ident` | `string \| string[]` | Returns plans that contain the specific course Ident. |
+  | `has_course_id` | `number[]` | Returns plans that contain the specific course ID. |
+  | `has_course_ident` | `string[]` | Returns plans that contain the specific course Ident. |
   | **Pagination & Sort** | | |
   | `sort_by` | `enum` | Options: `ident`, `title`, `faculty_id`, `year`, `semester`, `level`. Default: `ident`. |
   | `sort_dir` | `enum` | Options: `asc`, `desc`. Default: `asc`. |

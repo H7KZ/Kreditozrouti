@@ -1,39 +1,39 @@
-import { createUnion, DaySchema, NumberOrArray, SemesterSchema, StringOrArray, TimeSelectionSchema } from '@api/Validations/index'
+import { SemesterSchema, TimeSelectionSchema } from '@api/Validations/index'
 import { InSISStudyPlanCourseCategoryValues } from '@scraper/Types/InSISStudyPlanCourseCategory'
 import { InSISStudyPlanCourseGroupValues } from '@scraper/Types/InSISStudyPlanCourseGroup'
 import * as z from 'zod'
 
 const CoursesFilterValidation = z.object({
 	// Identity Filters
-	id: NumberOrArray,
-	ident: StringOrArray,
+	ids: z.array(z.coerce.number()).optional(),
+	idents: z.array(z.string()).optional(),
 	title: z.string().optional(),
 
 	// Academic Period Filters
-	semester: createUnion(SemesterSchema),
-	year: NumberOrArray,
+	semesters: z.array(SemesterSchema),
+	years: z.array(z.coerce.number()).optional(),
 
 	// Organizational Filters
-	faculty_id: StringOrArray,
-	level: StringOrArray,
-	language: StringOrArray,
+	faculty_ids: z.array(z.string()).optional(),
+	levels: z.array(z.string()).optional(),
+	languages: z.array(z.string()).optional(),
 
 	// Time Filters
 	include_times: z.array(TimeSelectionSchema).optional(),
 	exclude_times: z.array(TimeSelectionSchema).optional(),
 
 	// Personnel Filters
-	lecturer: StringOrArray,
+	lecturers: z.array(z.string()).optional(),
 
 	// Study Plan Filters
-	study_plan_id: NumberOrArray,
-	group: createUnion(z.enum(InSISStudyPlanCourseGroupValues)),
-	category: createUnion(z.enum(InSISStudyPlanCourseCategoryValues)),
+	study_plan_ids: z.array(z.coerce.number()).optional(),
+	groups: z.array(z.enum(InSISStudyPlanCourseGroupValues)),
+	categories: z.array(z.enum(InSISStudyPlanCourseCategoryValues)),
 
 	// Course Properties Filters
-	ects: NumberOrArray,
-	mode_of_completion: StringOrArray,
-	mode_of_delivery: StringOrArray,
+	ects: z.array(z.coerce.number()).optional(),
+	mode_of_completions: z.array(z.string()).optional(),
+	mode_of_deliveries: z.array(z.string()).optional(),
 
 	// Availability Filters
 	has_capacity: z.coerce.boolean().optional(),

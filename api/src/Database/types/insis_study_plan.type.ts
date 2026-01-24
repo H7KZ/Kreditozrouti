@@ -49,8 +49,8 @@ export class StudyPlanTable {
 }
 
 export type StudyPlan<F = void, C = void> = Selectable<StudyPlanTable> &
-	(F extends void ? unknown : { faculty: Partial<F> | null }) &
-	(C extends void ? unknown : { courses: Partial<C>[] })
+	(F extends void ? unknown : { faculty: F | null }) &
+	(C extends void ? unknown : { courses: C[] })
 export type NewStudyPlan = Insertable<Omit<ExcludeMethods<StudyPlanTable>, 'id' | 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
@@ -92,6 +92,6 @@ export class StudyPlanCourseTable {
 }
 
 export type StudyPlanCourse<SP = void, C = void> = Selectable<StudyPlanCourseTable> &
-	(SP extends void ? unknown : { study_plan: Partial<SP> | null }) &
-	(C extends void ? unknown : { course: Partial<C> | null })
+	(SP extends void ? unknown : { study_plan: SP | null }) &
+	(C extends void ? unknown : { course: C | null })
 export type NewStudyPlanCourse = Insertable<Omit<ExcludeMethods<StudyPlanCourseTable>, 'id' | 'created_at' | 'updated_at'>>

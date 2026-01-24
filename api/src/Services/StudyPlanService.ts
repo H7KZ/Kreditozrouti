@@ -1,7 +1,6 @@
 import { mysql } from '@api/clients'
 import { ExcludeMethods, Faculty, FacultyTable, StudyPlan, StudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem'
-import { toArray } from '@api/Services/Utils'
 import { StudyPlansFilter } from '@api/Validations/StudyPlansFilterValidation'
 
 export default class StudyPlanService {
@@ -110,16 +109,12 @@ export default class StudyPlanService {
 		let query = mysql.selectFrom(`${StudyPlanTable._table} as sp`).leftJoin(`${StudyPlanCourseTable._table} as spc`, 'sp.id', 'spc.study_plan_id')
 
 		// Identity filters
-		if (filters.id && ignoreFacet !== 'id') {
-			const ids = toArray(filters.id)
-			if (ids.length) query = query.where('sp.id', 'in', ids)
+		if (filters.ids?.length && ignoreFacet !== 'ids') {
+			query = query.where('sp.id', 'in', filters.ids)
 		}
 
-		if (filters.ident && ignoreFacet !== 'ident') {
-			const idents = toArray(filters.ident)
-			if (idents.length) {
-				query = query.where(eb => eb.or(idents.map(v => eb('sp.ident', 'like', `%${v}%`))))
-			}
+		if (filters.idents?.length && ignoreFacet !== 'idents') {
+			query = query.where(eb => eb.or(filters.idents!.map(v => eb('sp.ident', 'like', `%${v}%`))))
 		}
 
 		if (filters.title && ignoreFacet !== 'title') {
@@ -127,45 +122,37 @@ export default class StudyPlanService {
 		}
 
 		// Faculty & Period
-		if (filters.faculty_id && ignoreFacet !== 'faculty_id') {
-			const faculties = toArray(filters.faculty_id)
-			if (faculties.length) query = query.where('sp.faculty_id', 'in', faculties)
+		if (filters.faculty_ids?.length && ignoreFacet !== 'faculty_ids') {
+			query = query.where('sp.faculty_id', 'in', filters.faculty_ids)
 		}
 
-		if (filters.year && ignoreFacet !== 'year') {
-			const years = toArray(filters.year)
-			if (years.length) query = query.where('sp.year', 'in', years)
+		if (filters.years?.length && ignoreFacet !== 'years') {
+			query = query.where('sp.year', 'in', filters.years)
 		}
 
-		if (filters.semester && ignoreFacet !== 'semester') {
-			const semesters = toArray(filters.semester)
-			if (semesters.length) query = query.where('sp.semester', 'in', semesters)
+		if (filters.semesters?.length && ignoreFacet !== 'semesters') {
+			query = query.where('sp.semester', 'in', filters.semesters)
 		}
 
-		if (filters.level && ignoreFacet !== 'level') {
-			const levels = toArray(filters.level)
-			if (levels.length) query = query.where('sp.level', 'in', levels)
+		if (filters.levels?.length && ignoreFacet !== 'levels') {
+			query = query.where('sp.level', 'in', filters.levels)
 		}
 
-		if (filters.mode_of_study && ignoreFacet !== 'mode_of_study') {
-			const modes = toArray(filters.mode_of_study)
-			if (modes.length) query = query.where('sp.mode_of_study', 'in', modes)
+		if (filters.mode_of_studies?.length && ignoreFacet !== 'mode_of_studies') {
+			query = query.where('sp.mode_of_study', 'in', filters.mode_of_studies)
 		}
 
-		if (filters.study_length && ignoreFacet !== 'study_length') {
-			const lengths = toArray(filters.study_length)
-			if (lengths.length) query = query.where('sp.study_length', 'in', lengths)
+		if (filters.study_lengths?.length && ignoreFacet !== 'study_lengths') {
+			query = query.where('sp.study_length', 'in', filters.study_lengths)
 		}
 
 		// Course-related filters
-		if (filters.has_course_id && ignoreFacet !== 'has_course_id') {
-			const courseIds = toArray(filters.has_course_id)
-			if (courseIds.length) query = query.where('spc.course_id', 'in', courseIds)
+		if (filters.has_course_ids?.length && ignoreFacet !== 'has_course_ids') {
+			query = query.where('spc.course_id', 'in', filters.has_course_ids)
 		}
 
-		if (filters.has_course_ident && ignoreFacet !== 'has_course_ident') {
-			const courseIdents = toArray(filters.has_course_ident)
-			if (courseIdents.length) query = query.where('spc.course_ident', 'in', courseIdents)
+		if (filters.has_course_idents?.length && ignoreFacet !== 'has_course_idents') {
+			query = query.where('spc.course_ident', 'in', filters.has_course_idents)
 		}
 
 		return query

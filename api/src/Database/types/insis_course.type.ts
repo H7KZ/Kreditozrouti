@@ -91,10 +91,10 @@ export class CourseTable {
 }
 
 export type Course<F = void, U = void, A = void, SP = void> = Selectable<CourseTable> &
-	(F extends void ? unknown : { faculty: Partial<F> | null }) &
-	(U extends void ? unknown : { units: Partial<U>[] }) &
-	(A extends void ? unknown : { assessments: Partial<A>[] }) &
-	(SP extends void ? unknown : { study_plans: Partial<SP>[] })
+	(F extends void ? unknown : { faculty: F | null }) &
+	(U extends void ? unknown : { units: U[] }) &
+	(A extends void ? unknown : { assessments: A[] }) &
+	(SP extends void ? unknown : { study_plans: SP[] })
 export type NewCourse = Insertable<Omit<ExcludeMethods<CourseTable>, 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
@@ -125,7 +125,7 @@ export class CourseAssessmentTable {
 	}
 }
 
-export type CourseAssessment<C = void> = Selectable<CourseAssessmentTable> & (C extends void ? unknown : { course: Partial<C> | null })
+export type CourseAssessment<C = void> = Selectable<CourseAssessmentTable> & (C extends void ? unknown : { course: C | null })
 export type NewCourseAssessment = Insertable<Omit<ExcludeMethods<CourseAssessmentTable>, 'id' | 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
@@ -160,8 +160,8 @@ export class CourseUnitTable {
 }
 
 export type CourseUnit<C = void, S = void> = Selectable<CourseUnitTable> &
-	(C extends void ? unknown : { course: Partial<C> | null }) &
-	(S extends void ? unknown : { slots: Partial<S>[] })
+	(C extends void ? unknown : { course: C | null }) &
+	(S extends void ? unknown : { slots: S[] })
 export type NewCourseUnit = Insertable<Omit<ExcludeMethods<CourseUnitTable>, 'id' | 'created_at' | 'updated_at'>>
 
 // -------------------------------------------------------------------------
@@ -197,6 +197,17 @@ export class CourseUnitSlotTable {
 
 	location!: string | null
 
+	async getCourse(): Promise<Course | null> {
+		const query = mysql
+			.selectFrom(CourseTable._table)
+			.innerJoin(CourseUnitTable._table, `${CourseUnitTable._table}.course_id`, `${CourseTable._table}.id`)
+			.selectAll()
+			.where(`${CourseUnitTable._table}.id`, '=', this.unit_id)
+			.limit(1)
+		const course = await query.executeTakeFirst()
+		return course ?? null
+	}
+
 	async getUnit(): Promise<CourseUnit | null> {
 		const query = mysql.selectFrom(CourseUnitTable._table).selectAll().where('id', '=', this.unit_id).limit(1)
 		const unit = await query.executeTakeFirst()
@@ -204,5 +215,7 @@ export class CourseUnitSlotTable {
 	}
 }
 
-export type CourseUnitSlot<U = void> = Selectable<CourseUnitSlotTable> & (U extends void ? unknown : { unit: Partial<U> | null })
+export type CourseUnitSlot<C = void, U = void> = Selectable<CourseUnitSlotTable> &
+	(C extends void ? unknown : { course: C | null }) &
+	(U extends void ? unknown : { unit: U | null })
 export type NewCourseUnitSlot = Insertable<Omit<ExcludeMethods<CourseUnitSlotTable>, 'id' | 'created_at' | 'updated_at'>>

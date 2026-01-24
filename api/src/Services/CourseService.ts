@@ -15,7 +15,6 @@ import {
 	StudyPlanCourseTable
 } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem'
-import { toArray } from '@api/Services/Utils'
 import { CoursesFilter } from '@api/Validations/CoursesFilterValidation'
 import { sql } from 'kysely'
 
@@ -72,7 +71,7 @@ export default class CourseService {
 			this.getCoursesUnits(courseIds),
 			this.getCoursesUnitsSlots(courseIds),
 			this.getCoursesAssessments(courseIds),
-			filters.study_plan_id ? this.getCoursesStudyPlans(courseIds, filters.study_plan_id) : Promise.resolve([])
+			filters.study_plan_ids ? this.getCoursesStudyPlans(courseIds, filters.study_plan_ids) : Promise.resolve([])
 		])
 
 		// 5. In-Memory Mapping
@@ -194,7 +193,7 @@ export default class CourseService {
 	}
 
 	private static async getLecturerFacet(filters: CoursesFilter) {
-		return this.buildCourseQuery(filters, 'lecturer')
+		return this.buildCourseQuery(filters, 'lecturers')
 			.select(sql<string>`COALESCE(u.lecturer, c.lecturers)`.as('value'))
 			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
 			.where(sql`COALESCE(u.lecturer, c.lecturers)`, 'is not', null)
@@ -205,7 +204,7 @@ export default class CourseService {
 	}
 
 	private static async getLanguageFacet(filters: CoursesFilter) {
-		return this.buildCourseQuery(filters, 'language')
+		return this.buildCourseQuery(filters, 'languages')
 			.select('c.languages as value')
 			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
 			.where('c.languages', 'is not', null)
@@ -225,8 +224,8 @@ export default class CourseService {
 	}
 
 	private static async getGroupFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		if (!filters.study_plan_id) return []
-		return this.buildCourseQuery(filters, 'group')
+		if (!filters.study_plan_ids) return []
+		return this.buildCourseQuery(filters, 'groups')
 			.select('spc.group as value')
 			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
 			.where('spc.group', 'is not', null)
@@ -236,8 +235,8 @@ export default class CourseService {
 	}
 
 	private static async getCategoryFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		if (!filters.study_plan_id) return []
-		return this.buildCourseQuery(filters, 'category')
+		if (!filters.study_plan_ids) return []
+		return this.buildCourseQuery(filters, 'categories')
 			.select('spc.category as value')
 			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
 			.where('spc.category', 'is not', null)
@@ -277,16 +276,12 @@ export default class CourseService {
 			.leftJoin(`${StudyPlanCourseTable._table} as spc`, 'c.id', 'spc.course_id')
 
 		// Identity filters
-		if (filters.id && ignoreFacet !== 'id') {
-			const ids = toArray(filters.id)
-			if (ids.length) query = query.where('c.id', 'in', ids)
+		if (filters.ids?.length && ignoreFacet !== 'ids') {
+			query = query.where('c.id', 'in', filters.ids)
 		}
 
-		if (filters.ident && ignoreFacet !== 'ident') {
-			const idents = toArray(filters.ident)
-			if (idents.length) {
-				query = query.where(eb => eb.or(idents.map(v => eb('c.ident', 'like', `%${v}%`))))
-			}
+		if (filters.idents?.length && ignoreFacet !== 'idents') {
+			query = query.where(eb => eb.or(filters.idents!.map(v => eb('c.ident', 'like', `%${v}%`))))
 		}
 
 		if (filters.title && ignoreFacet !== 'title') {
@@ -294,32 +289,25 @@ export default class CourseService {
 		}
 
 		// Academic period filters
-		if (filters.semester && ignoreFacet !== 'semester') {
-			const semesters = toArray(filters.semester)
-			if (semesters.length) query = query.where('c.semester', 'in', semesters)
+		if (filters.semesters?.length && ignoreFacet !== 'semesters') {
+			query = query.where('c.semester', 'in', filters.semesters)
 		}
 
-		if (filters.year && ignoreFacet !== 'year') {
-			const years = toArray(filters.year)
-			if (years.length) query = query.where('c.year', 'in', years)
+		if (filters.years?.length && ignoreFacet !== 'years') {
+			query = query.where('c.year', 'in', filters.years)
 		}
 
 		// Organizational filters
-		if (filters.faculty_id && ignoreFacet !== 'faculty_id') {
-			const faculties = toArray(filters.faculty_id)
-			if (faculties.length) query = query.where('c.faculty_id', 'in', faculties)
+		if (filters.faculty_ids?.length && ignoreFacet !== 'faculty_ids') {
+			query = query.where('c.faculty_id', 'in', filters.faculty_ids)
 		}
 
-		if (filters.level && ignoreFacet !== 'level') {
-			const levels = toArray(filters.level)
-			if (levels.length) query = query.where('c.level', 'in', levels)
+		if (filters.levels?.length && ignoreFacet !== 'levels') {
+			query = query.where('c.level', 'in', filters.levels)
 		}
 
-		if (filters.language && ignoreFacet !== 'language') {
-			const languages = toArray(filters.language)
-			if (languages.length) {
-				query = query.where(eb => eb.or(languages.map(v => eb('c.languages', 'like', `%${v}%`))))
-			}
+		if (filters.languages?.length && ignoreFacet !== 'languages') {
+			query = query.where(eb => eb.or(filters.languages!.map(v => eb('c.languages', 'like', `%${v}%`))))
 		}
 
 		// Time filters
@@ -352,43 +340,41 @@ export default class CourseService {
 		}
 
 		// Personnel filters
-		if (filters.lecturer && ignoreFacet !== 'lecturer') {
-			const lecturers = toArray(filters.lecturer)
-			if (lecturers.length) {
-				query = query.where(eb => eb.or(lecturers.flatMap(v => [eb('c.lecturers', 'like', `%${v}%`), eb('u.lecturer', 'like', `%${v}%`)])))
-			}
+		if (filters.lecturers?.length && ignoreFacet !== 'lecturers') {
+			query = query.where(eb =>
+				eb.or(
+					filters.lecturers!.flatMap(v => [
+						eb('c.lecturers', 'like', `%${v}%`), // Course-level lecturers
+						eb('u.lecturer', 'like', `%${v}%`) // Unit-level lecturers
+					])
+				)
+			)
 		}
 
 		// Study plan filters
-		if (filters.study_plan_id && ignoreFacet !== 'study_plan_id') {
-			const planIds = toArray(filters.study_plan_id)
-			if (planIds.length) query = query.where('spc.study_plan_id', 'in', planIds)
+		if (filters.study_plan_ids?.length && ignoreFacet !== 'study_plan_ids') {
+			query = query.where('spc.study_plan_id', 'in', filters.study_plan_ids)
 		}
 
-		if (filters.group && ignoreFacet !== 'group') {
-			const groups = toArray(filters.group)
-			if (groups.length) query = query.where('spc.group', 'in', groups)
+		if (filters.groups?.length && ignoreFacet !== 'groups') {
+			query = query.where('spc.group', 'in', filters.groups)
 		}
 
-		if (filters.category && ignoreFacet !== 'category') {
-			const categories = toArray(filters.category)
-			if (categories.length) query = query.where('spc.category', 'in', categories)
+		if (filters.categories?.length && ignoreFacet !== 'categories') {
+			query = query.where('spc.category', 'in', filters.categories)
 		}
 
 		// Course properties filters
-		if (filters.ects && ignoreFacet !== 'ects') {
-			const ects = toArray(filters.ects)
-			if (ects.length) query = query.where('c.ects', 'in', ects)
+		if (filters.ects?.length && ignoreFacet !== 'ects') {
+			query = query.where('c.ects', 'in', filters.ects)
 		}
 
-		if (filters.mode_of_completion && ignoreFacet !== 'mode_of_completion') {
-			const modes = toArray(filters.mode_of_completion)
-			if (modes.length) query = query.where('c.mode_of_completion', 'in', modes)
+		if (filters.mode_of_completions?.length && ignoreFacet !== 'mode_of_completions') {
+			query = query.where('c.mode_of_completion', 'in', filters.mode_of_completions)
 		}
 
-		if (filters.mode_of_delivery && ignoreFacet !== 'mode_of_delivery') {
-			const modes = toArray(filters.mode_of_delivery)
-			if (modes.length) query = query.where('c.mode_of_delivery', 'in', modes)
+		if (filters.mode_of_deliveries?.length && ignoreFacet !== 'mode_of_delivery') {
+			query = query.where('c.mode_of_delivery', 'in', filters.mode_of_deliveries)
 		}
 
 		// Conflict exclusion

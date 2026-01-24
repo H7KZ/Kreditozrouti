@@ -29,6 +29,6 @@ export class FacultyTable {
 }
 
 export type Faculty<C = void, SP = void> = Selectable<FacultyTable> &
-	(C extends void ? unknown : { courses: Partial<C>[] }) &
-	(SP extends void ? unknown : { study_plans: Partial<SP>[] })
+	(C extends void ? unknown : { courses: C[] }) &
+	(SP extends void ? unknown : { study_plans: SP[] })
 export type NewFaculty = Insertable<Omit<ExcludeMethods<FacultyTable>, 'id' | 'created_at' | 'updated_at'>>

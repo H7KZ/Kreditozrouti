@@ -40,10 +40,10 @@ export default async function CoursesController(req: Request, res: Response<Cour
 	const cacheKey = `insis:courses:${JSON.stringify(filter)}`
 	const cachedData = await redis.get(cacheKey)
 
-	// if (cachedData) {
-	// 	LoggerAPIContext.add(res, { cache: true })
-	// 	return res.status(200).send(JSON.parse(cachedData))
-	// }
+	if (cachedData) {
+		LoggerAPIContext.add(res, { cache: true })
+		return res.status(200).send(JSON.parse(cachedData))
+	}
 
 	// 3. Service Call (Parallel Execution)
 	const [{ courses, total }, facets] = await Promise.all([

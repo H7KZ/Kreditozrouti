@@ -1,4 +1,4 @@
-import { Course, Faculty, StudyPlan } from '@api/Database/types'
+import { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem'
 
 /**
@@ -8,7 +8,7 @@ import FacetItem from '@api/Interfaces/FacetItem'
  */
 export default interface StudyPlansResponse {
 	/** Array of study plans matching the filter criteria. */
-	data: StudyPlan<Faculty, Course>[]
+	data: StudyPlan<Faculty, StudyPlanCourse>[]
 
 	/** Aggregated facet counts for filtering. */
 	facets: {

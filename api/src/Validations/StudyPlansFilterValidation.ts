@@ -1,25 +1,25 @@
-import { createUnion, NumberOrArray, SemesterSchema, StringOrArray } from '@api/Validations/index'
+import { SemesterSchema } from '@api/Validations/index'
 import * as z from 'zod'
 
 const StudyPlansFilterValidation = z.object({
 	// Identity Filters
-	id: NumberOrArray,
-	ident: StringOrArray,
+	ids: z.array(z.coerce.number()).optional(),
+	idents: z.array(z.string()).optional(),
 	title: z.string().optional(),
 
 	// Academic Period Filters
-	semester: createUnion(SemesterSchema),
-	year: NumberOrArray,
+	semesters: z.array(SemesterSchema),
+	years: z.array(z.coerce.number()).optional(),
 
 	// Organizational Filters
-	faculty_id: StringOrArray,
-	level: StringOrArray,
-	mode_of_study: StringOrArray,
-	study_length: StringOrArray,
+	faculty_ids: z.array(z.string()).optional(),
+	levels: z.array(z.string()).optional(),
+	mode_of_studies: z.array(z.string()).optional(),
+	study_lengths: z.array(z.string()).optional(),
 
 	// Course Filters (filter plans by courses they contain)
-	has_course_id: NumberOrArray,
-	has_course_ident: StringOrArray,
+	has_course_ids: z.array(z.coerce.number()).optional(),
+	has_course_idents: z.array(z.string()).optional(),
 
 	// Sorting
 	sort_by: z.enum(['ident', 'title', 'faculty_id', 'year', 'semester', 'level']).optional().default('ident'),
