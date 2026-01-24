@@ -1,7 +1,4 @@
-import { mysql } from '@api/clients'
 import { ExcludeMethods } from '@api/Database/types/index'
-import { Faculty, FacultyTable } from '@api/Database/types/insis_faculty.type'
-import { StudyPlanCourse, StudyPlanCourseTable } from '@api/Database/types/insis_study_plan.type'
 import InSISDay from '@scraper/Types/InSISDay'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import { ColumnType, Insertable, Selectable } from 'kysely'
@@ -65,29 +62,6 @@ export class CourseTable {
 
 	special_requirements!: string | null
 	literature!: string | null
-
-	async getFaculty(): Promise<Faculty | null> {
-		if (!this.faculty_id) return null
-
-		const query = mysql.selectFrom(FacultyTable._table).selectAll().where('id', '=', this.faculty_id).limit(1)
-		const faculty = await query.executeTakeFirst()
-		return faculty ?? null
-	}
-
-	async getUnits(): Promise<CourseUnit[]> {
-		const query = mysql.selectFrom(CourseUnitTable._table).selectAll().where('course_id', '=', this.id)
-		return await query.execute()
-	}
-
-	async getAssessments(): Promise<CourseAssessment[]> {
-		const query = mysql.selectFrom(CourseAssessmentTable._table).selectAll().where('course_id', '=', this.id)
-		return await query.execute()
-	}
-
-	async getStudyPlans(): Promise<StudyPlanCourse[]> {
-		const query = mysql.selectFrom(StudyPlanCourseTable._table).selectAll().where('course_id', '=', this.id)
-		return await query.execute()
-	}
 }
 
 export type Course<F = void, U = void, A = void, SP = void> = Selectable<CourseTable> &
@@ -117,12 +91,6 @@ export class CourseAssessmentTable {
 
 	/** Percentage weight in the final grade. */
 	weight!: number | null
-
-	async getCourse(): Promise<Course | null> {
-		const query = mysql.selectFrom(CourseTable._table).selectAll().where('id', '=', this.course_id).limit(1)
-		const course = await query.executeTakeFirst()
-		return course ?? null
-	}
 }
 
 export type CourseAssessment<C = void> = Selectable<CourseAssessmentTable> & (C extends void ? unknown : { course: C | null })
@@ -146,17 +114,6 @@ export class CourseUnitTable {
 	lecturer!: string | null
 	capacity!: number | null
 	note!: string | null
-
-	async getCourse(): Promise<Course | null> {
-		const query = mysql.selectFrom(CourseTable._table).selectAll().where('id', '=', this.course_id).limit(1)
-		const course = await query.executeTakeFirst()
-		return course ?? null
-	}
-
-	async getSlots(): Promise<CourseUnitSlot[]> {
-		const query = mysql.selectFrom(CourseUnitSlotTable._table).selectAll().where('unit_id', '=', this.id)
-		return await query.execute()
-	}
 }
 
 export type CourseUnit<C = void, S = void> = Selectable<CourseUnitTable> &
@@ -196,23 +153,6 @@ export class CourseUnitSlotTable {
 	time_to!: number | null
 
 	location!: string | null
-
-	async getCourse(): Promise<Course | null> {
-		const query = mysql
-			.selectFrom(CourseTable._table)
-			.innerJoin(CourseUnitTable._table, `${CourseUnitTable._table}.course_id`, `${CourseTable._table}.id`)
-			.selectAll()
-			.where(`${CourseUnitTable._table}.id`, '=', this.unit_id)
-			.limit(1)
-		const course = await query.executeTakeFirst()
-		return course ?? null
-	}
-
-	async getUnit(): Promise<CourseUnit | null> {
-		const query = mysql.selectFrom(CourseUnitTable._table).selectAll().where('id', '=', this.unit_id).limit(1)
-		const unit = await query.executeTakeFirst()
-		return unit ?? null
-	}
 }
 
 export type CourseUnitSlot<C = void, U = void> = Selectable<CourseUnitSlotTable> &

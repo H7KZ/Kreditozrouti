@@ -11,10 +11,15 @@ COPY ./client/ ./
 
 # "Workspaces" setup
 COPY ./api/src/ /usr/src/api/src/
+COPY ./scraper/src/ /usr/src/scraper/src/
 
 # Create a symlink so files in /usr/src/api can find modules in /usr/src/client/node_modules
 RUN mkdir -p /usr/src/api/node_modules
 RUN ln -s /usr/src/client/node_modules/* /usr/src/api/node_modules/ || true
+
+# Create a symlink so files in /usr/src/scraper can find modules in /usr/src/client/node_modules
+RUN mkdir -p /usr/src/scraper/node_modules
+RUN ln -s /usr/src/client/node_modules/* /usr/src/scraper/node_modules/ || true
 
 
 RUN npm run build

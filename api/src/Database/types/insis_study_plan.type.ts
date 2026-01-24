@@ -1,7 +1,4 @@
-import { mysql } from '@api/clients'
 import { ExcludeMethods } from '@api/Database/types/index'
-import { CourseTable } from '@api/Database/types/insis_course.type'
-import { Faculty, FacultyTable } from '@api/Database/types/insis_faculty.type'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
 import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
@@ -35,17 +32,6 @@ export class StudyPlanTable {
 	level!: string | null
 	mode_of_study!: string | null
 	study_length!: string | null
-
-	async getFaculty(): Promise<Faculty | undefined> {
-		if (!this.faculty_id) return undefined
-		const query = mysql.selectFrom(FacultyTable._table).selectAll().where('id', '=', this.faculty_id)
-		return await query.executeTakeFirst()
-	}
-
-	async getCourses(): Promise<StudyPlanCourse[]> {
-		const query = mysql.selectFrom(StudyPlanCourseTable._table).selectAll().where('study_plan_id', '=', this.id)
-		return await query.execute()
-	}
 }
 
 export type StudyPlan<F = void, C = void> = Selectable<StudyPlanTable> &
@@ -75,20 +61,6 @@ export class StudyPlanCourseTable {
 
 	group!: InSISStudyPlanCourseGroup
 	category!: InSISStudyPlanCourseCategory
-
-	async getStudyPlan(): Promise<StudyPlan | null> {
-		const query = mysql.selectFrom(StudyPlanTable._table).selectAll().where('id', '=', this.study_plan_id).limit(1)
-		const studyPlan = await query.executeTakeFirst()
-		return studyPlan ?? null
-	}
-
-	async getCourse(): Promise<Selectable<CourseTable> | null> {
-		if (!this.course_id) return null
-
-		const query = mysql.selectFrom(CourseTable._table).selectAll().where('id', '=', this.course_id).limit(1)
-		const course = await query.executeTakeFirst()
-		return course ?? null
-	}
 }
 
 export type StudyPlanCourse<SP = void, C = void> = Selectable<StudyPlanCourseTable> &

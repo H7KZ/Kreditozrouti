@@ -29,6 +29,7 @@
 		"eslint": "^9.39.1",
 		"eslint-plugin-vue": "~10.4.0",
 		"jiti": "^2.6.1",
+		"kysely": "^0.28.10",
 		"lucide-vue-next": "^0.540.0",
 		"npm-run-all2": "^8.0.4",
 		"pinia": "^3.0.4",

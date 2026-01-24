@@ -11,5 +11,5 @@ export interface Alert {
 		action: () => void
 	}>
 	timeout?: number
-	_timeout?: NodeJS.Timeout | number | null
+	_timeout?: ReturnType<typeof setTimeout> | number | null
 }
