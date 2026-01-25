@@ -1,4 +1,29 @@
 {
+	"errors": {
+		"types": {
+			"Unknown": "Unknown error",
+			"Validation": "Validation error",
+			"ZodValidation": "Validation error",
+			"Authentication": "Authentication error",
+			"Authorization": "Authorization error",
+			"Database": "Database error",
+			"ExternalService": "External service error"
+		},
+		"codes": {
+			"0": "Unknown error",
+
+			"401_000": "Invalid login credentials",
+
+			"403_000": "You do not have permission to access this resource",
+
+			"404_000": "The requested resource was not found",
+
+			"429_000": "Too many requests. Please try again later.",
+
+			"500_000": "Internal server error",
+			"500_001": "Email service is unavailable"
+		}
+	},
 	"faculties": {
 		"FFU": "Faculty of Finance and Accounting",
 		"FMV": "Faculty of International Relations",

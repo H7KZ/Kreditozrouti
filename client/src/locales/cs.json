@@ -1,4 +1,29 @@
 {
+	"errors": {
+		"types": {
+			"Unknown": "Neznámá chyba",
+			"Validation": "Chyba ověření",
+			"ZodValidation": "Chyba ověření",
+			"Authentication": "Chyba ověření",
+			"Authorizatio": "Chyba autorizace",
+			"Database": "Chyba databáze",
+			"ExternalServic": "Chyba externí služby"
+		},
+		"codes": {
+			"0": "Neznámá chyba",
+
+			"401_000": "Neplatné přihlašovací údaje",
+
+			"403_000": "K přístupu k tomuto zdroji nemáte oprávnění",
+
+			"404_000": "Požadovaný zdroj nebyl nalezen",
+
+			"429_000": "Příliš mnoho požadavků. Zkuste to prosím znovu později.",
+
+			"500_000": "Došlo k interní chybě serveru",
+			"500_001": "Emailová služba je nedostupná"
+		}
+	},
 	"faculties": {
 		"FFU": "Fakulta financí a účetnictví",
 		"FMV": "Fakulta mezinárodních vztahů",

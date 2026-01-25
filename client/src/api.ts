@@ -1,10 +1,10 @@
 import type ErrorResponse from '@api/Error/ErrorResponse.ts'
 import { i18n } from '@client/index.ts'
 import { useAlertsStore } from '@client/stores/alerts.ts'
-import axios, { type AxiosInstance } from 'axios'
+import axios, { AxiosError, type AxiosInstance } from 'axios'
 
 const api: AxiosInstance = axios.create({
-	baseURL: import.meta.env.VITE_API_URL,
+	baseURL: import.meta.env.VITE_API_URL ?? '/api',
 	headers: {
 		'Content-Type': 'application/json',
 		Accept: 'application/json',
@@ -14,34 +14,24 @@ const api: AxiosInstance = axios.create({
 
 api.interceptors.response.use(
 	(response) => response,
-	(error: unknown) => {
+	(error: Error | AxiosError<ErrorResponse>): Promise<Error | ErrorResponse> => {
 		const alerts = useAlertsStore()
 		const t = (key: string) => i18n.global.t(key)
 
-		const title = t('errors.failed')
-		let description = t('errors.unexpected')
+		let title = t('errors.failed')
+		let description
 
 		// Handle Axios Errors (Network, 4xx, 5xx)
 		if (axios.isAxiosError(error)) {
 			const status = error.response?.status
-			const data = error.response?.data as ErrorResponse | undefined
+			const data = error.response?.data
 
-			if (status === 401) {
-				alerts.addAlert({
-					type: 'error',
-					title: t('errors.auth.unauthorized'),
-					description: t('errors.auth.pleaseSignIn'),
-					timeout: 20000,
-				})
-
-				return Promise.reject(error)
-			}
-
-			if (data?.message) description = data.message || description
+			title = `${status}. ${t(`errors.types.${data?.type ?? 'Unknown'}`)}`
+			description = t(`errors.types.${data?.code ?? '0'}`)
 		}
 
 		// Handle Generic JS Errors
-		else if (error instanceof Error) {
+		else {
 			description = error.message
 		}
 
@@ -52,6 +42,10 @@ api.interceptors.response.use(
 			description,
 			timeout: 20000,
 		})
+
+		if (axios.isAxiosError(error)) {
+			return Promise.reject(error.response?.data ?? error)
+		}
 
 		return Promise.reject(error)
 	},
