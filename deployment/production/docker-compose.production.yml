@@ -156,6 +156,7 @@ services:
 
     environment:
       - ENV=production
+      - VITE_API_URL=https://${DOMAIN}/api
 
     networks:
       - traefik-network

@@ -234,7 +234,7 @@ jobs:
 
             # Copy environment file
             if [[ -f "$VARIABLES_DIR/.env.dev" ]]; then
-                cp "$VARIABLES_DIR/.env.dev" "$VERSION_DIR/$ENVIRONMENT/.env"
+                cp "$VARIABLES_DIR/.env.dev" "$VERSION_DIR/.env"
             else
                 echo "Error: .env.dev not found in $VARIABLES_DIR"
                 exit 1
@@ -244,9 +244,11 @@ jobs:
             echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
 
             # Export image variables
-            export IMAGE_REGISTRY="$IMG_REGISTRY"
-            export IMAGE_PREFIX="$IMG_PREFIX"
-            export IMAGE_TAG="$IMG_TAG"
+            cat <<EOF > "$VERSION_DIR/.images"
+            IMAGE_REGISTRY="$IMG_REGISTRY"
+            IMAGE_PREFIX="$IMG_PREFIX"
+            IMAGE_TAG="$IMG_TAG"
+            EOF
 
             # Execute deployment
             cd "$VERSION_DIR"

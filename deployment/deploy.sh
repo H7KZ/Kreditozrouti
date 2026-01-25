@@ -169,15 +169,26 @@ main() {
     # Set up error handling
     trap cleanup_on_error ERR
 
-    # Validate environment variables
-    validate_environment_vars
-
     # Define paths
+    local images_config="$SCRIPT_DIR/.images"
     local app_compose_file="$SCRIPT_DIR/$environment/docker-compose.$environment.yml"
     local networks_config="$SCRIPT_DIR/$environment/networks.yml"
     local volumes_config="$SCRIPT_DIR/$environment/volumes.yml"
     local traefik_networks="$SCRIPT_DIR/traefik/networks.yml"
-    local env_file="$SCRIPT_DIR/$environment/.env"
+    local env_file="$SCRIPT_DIR/.env"
+
+    # Load persisted image configuration if available
+    if [[ -f "$images_config" ]]; then
+        log "Loading image configuration from $images_config..."
+        # Source the file and automatically export variables for Docker Compose
+        set -a
+        # shellcheck source=/dev/null
+        source "$images_config"
+        set +a
+    fi
+
+    # Validate environment variables
+    validate_environment_vars
 
     # Validate required files
     validate_files "$app_compose_file" "$networks_config" "$volumes_config" "$traefik_networks" "$env_file"
