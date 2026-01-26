@@ -4,6 +4,7 @@
  * Step 2: Academic year selection
  */
 import FacetItem from '@api/Interfaces/FacetItem.ts'
+import InSISService from '@api/Services/InSISService.ts'
 import { computed } from 'vue'
 import IconArrowLeft from '~icons/lucide/arrow-left'
 
@@ -21,7 +22,14 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 const sortedYears = computed(() => {
-	return props.years.slice().sort((a, b) => Number(b.value) - Number(a.value))
+	return props.years
+		.filter((year) =>
+			InSISService.getPeriodsForLastYears()
+				.map((p) => p.year)
+				.includes(Number(year.value)),
+		)
+		.slice()
+		.sort((a, b) => Number(b.value) - Number(a.value))
 })
 
 function formatAcademicYear(year: number): string {

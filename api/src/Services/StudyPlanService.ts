@@ -2,6 +2,7 @@ import { mysql } from '@api/clients'
 import { ExcludeMethods, Faculty, FacultyTable, StudyPlan, StudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem'
 import { StudyPlansFilter } from '@api/Validations/StudyPlansFilterValidation'
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/mysql'
 
 export default class StudyPlanService {
 	/**
@@ -19,51 +20,61 @@ export default class StudyPlanService {
 
 		const total = countResult?.total ?? 0
 
-		// 2. Get paginated plans
-		const plans = await this.buildStudyPlanQuery(filters)
-			.selectAll('sp')
+		if (total === 0) {
+			return { plans: [], total: 0 }
+		}
+
+		// 2. Pagination Subquery
+		// We fetch IDs first to avoid joining heavy JSON data on rows that will be discarded
+		const planIdsQuery = this.buildStudyPlanQuery(filters)
+			.select('sp.id')
 			.groupBy('sp.id')
 			.orderBy(this.getStudyPlanSortColumn(filters.sort_by) as any, filters.sort_dir ?? 'asc')
 			.limit(limit)
 			.offset(offset)
+
+		// 3. Main Query with JSON Aggregation
+		const plans = await mysql
+			.selectFrom(planIdsQuery.as('ids'))
+			.innerJoin(`${StudyPlanTable._table} as sp`, 'sp.id', 'ids.id')
+			.selectAll('sp')
+			.select(eb => [
+				// Relation 1: Faculty (1:1)
+				jsonObjectFrom(
+					eb
+						.selectFrom(`${FacultyTable._table} as f`)
+						.select(['f.id', 'f.title', 'f.created_at', 'f.updated_at'])
+						.whereRef('f.id', '=', 'sp.faculty_id')
+				).as('faculty'),
+
+				// Relation 2: Study Plan Courses (1:N)
+				jsonArrayFrom(
+					eb
+						.selectFrom(`${StudyPlanCourseTable._table} as spc`)
+						.select([
+							'spc.id',
+							'spc.study_plan_id',
+							'spc.course_id',
+							'spc.course_ident',
+							'spc.group',
+							'spc.category',
+							'spc.created_at',
+							'spc.updated_at'
+						])
+						.whereRef('spc.study_plan_id', '=', 'sp.id')
+				).as('courses')
+			])
+			.orderBy(this.getStudyPlanSortColumn(filters.sort_by) as any, filters.sort_dir ?? 'asc')
 			.execute()
 
-		if (plans.length === 0) {
-			return { plans: [], total }
-		}
+		// 4. Post-processing
+		const parsedPlans = plans.map(plan => ({
+			...plan,
+			courses: plan.courses ?? []
+		}))
 
-		const planIds = new Set(plans.map(p => p.id))
-
-		// 3. Parallel fetch of related data
-		// Optimized to fetch only what is needed for the result set
-		const [faculties, planCourses] = await Promise.all([this.getFacultiesForPlans(plans), this.getCoursesForPlans([...planIds])])
-
-		// 4. In-Memory Mapping
-		const facultyMap = new Map<string, Faculty>()
-		for (const f of faculties) {
-			facultyMap.set(f.id, f)
-		}
-
-		const coursesMap = new Map<number, StudyPlanCourse[]>()
-		for (const pc of planCourses) {
-			if (!coursesMap.has(pc.study_plan_id)) coursesMap.set(pc.study_plan_id, [])
-
-			coursesMap.get(pc.study_plan_id)!.push(pc)
-		}
-
-		// 5. Assembly
-		// We strictly type the return to match StudyPlan<Faculty, StudyPlanCourse>
-		const plansWithRelations: StudyPlan<Faculty, StudyPlanCourse>[] = plans.map(plan => {
-			const courses = coursesMap.get(plan.id) ?? []
-
-			return {
-				...plan,
-				faculty: plan.faculty_id ? (facultyMap.get(plan.faculty_id) ?? null) : null,
-				courses: courses
-			}
-		})
-
-		return { plans: plansWithRelations, total }
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		return { plans: parsedPlans as any, total }
 	}
 
 	/**

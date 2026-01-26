@@ -3,7 +3,7 @@ import { Database } from '@api/Database/types'
 import { Paths } from '@api/paths'
 import { I18n } from 'i18n'
 import Redis from 'ioredis'
-import { Kysely, MysqlDialect } from 'kysely'
+import { Kysely, MysqlDialect, ParseJSONResultsPlugin } from 'kysely'
 import { createPool } from 'mysql2'
 import Nodemailer from 'nodemailer'
 
@@ -20,7 +20,10 @@ const dialect = new MysqlDialect({
 	})
 })
 
-export const mysql = new Kysely<Database>({ dialect })
+export const mysql = new Kysely<Database>({
+	dialect,
+	plugins: [new ParseJSONResultsPlugin()]
+})
 
 /**
  * Redis client instance.

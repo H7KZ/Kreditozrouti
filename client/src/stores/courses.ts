@@ -54,7 +54,7 @@ function createDefaultFilters(): CoursesFilter {
 		exclude_slot_ids: [],
 		sort_by: 'ident',
 		sort_dir: 'asc',
-		limit: 20,
+		limit: 50,
 		offset: 0,
 	}
 }
@@ -95,7 +95,7 @@ export const useCoursesStore = defineStore('courses', () => {
 
 	/** Pagination metadata */
 	const pagination = ref<PaginationMeta>({
-		limit: 20,
+		limit: 50,
 		offset: 0,
 		count: 0,
 		total: 0,
@@ -413,12 +413,13 @@ export const useCoursesStore = defineStore('courses', () => {
 		if (wizardStore.studyPlanId) {
 			defaults.study_plan_ids = [wizardStore.studyPlanId]
 		}
-		if (wizardStore.year) {
-			defaults.years = [wizardStore.year]
-		}
-		if (wizardStore.semester) {
-			defaults.semesters = [wizardStore.semester]
-		}
+
+		// Set year and semester based on current date
+		const upcomingPeriod = InSISService.getUpcomingPeriod(new Date())
+
+		if (!upcomingPeriod) return
+		defaults.years = [upcomingPeriod.year]
+		defaults.semesters = [upcomingPeriod.semester]
 
 		filters.value = defaults
 	}

@@ -41,7 +41,7 @@ const unitsByType = computed(() => {
 		}
 	}
 
-	return map
+	return new Map([...map.entries()].sort().reverse())
 })
 
 // Get currently selected units for this course

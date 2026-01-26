@@ -73,18 +73,6 @@ export const useUIStore = defineStore('ui', () => {
 		setViewMode(viewMode.value === 'list' ? 'timetable' : 'list')
 	}
 
-	/** Toggle sidebar collapsed state */
-	function toggleSidebar() {
-		sidebarCollapsed.value = !sidebarCollapsed.value
-		persist()
-	}
-
-	/** Set sidebar collapsed state */
-	function setSidebarCollapsed(collapsed: boolean) {
-		sidebarCollapsed.value = collapsed
-		persist()
-	}
-
 	/** Toggle legend visibility */
 	function toggleLegend() {
 		showLegend.value = !showLegend.value
@@ -175,8 +163,6 @@ export const useUIStore = defineStore('ui', () => {
 		switchToListView,
 		switchToTimetableView,
 		toggleViewMode,
-		toggleSidebar,
-		setSidebarCollapsed,
 		toggleLegend,
 		setShowLegend,
 		setGlobalLoading,

@@ -147,9 +147,9 @@ export const useTimetableStore = defineStore('timetable', () => {
 	function getSlotType(slot: CourseUnitSlot): CourseUnitType {
 		const slotType = slot.type?.toLowerCase() || ''
 
-		const hasLecture = slotType.includes('Přednáška') || slotType.includes('Lecture')
-		const hasExercise = slotType.includes('Cvičení') || slotType.includes('Exercise')
-		const hasSeminar = slotType.includes('Seminář') || slotType.includes('Seminar')
+		const hasLecture = slotType.includes('přednáška') || slotType.includes('lecture')
+		const hasExercise = slotType.includes('cvičení') || slotType.includes('exercise')
+		const hasSeminar = slotType.includes('seminář') || slotType.includes('seminar')
 
 		if (hasLecture && hasExercise) return 'combined'
 		if (hasLecture) return 'lecture'

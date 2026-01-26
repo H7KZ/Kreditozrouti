@@ -6,7 +6,7 @@ const alertsStore = useAlertsStore()
 </script>
 
 <template>
-	<div class="fixed right-0 bottom-0 z-50 flex w-full max-w-sm flex-col gap-4 p-4">
+	<div v-if="alertsStore.alerts.length > 0" class="fixed right-0 bottom-0 z-50 flex w-full max-w-sm flex-col gap-4 p-4">
 		<Alert
 			v-for="(alert, i) in alertsStore.alerts"
 			:key="`alert-${i}`"

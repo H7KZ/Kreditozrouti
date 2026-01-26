@@ -65,6 +65,11 @@ function handleClearTimetable() {
 		timetableStore.clearAll()
 	}
 }
+
+async function fetchNextCoursesPage(page: () => void) {
+	page()
+	await coursesStore.fetchCourses()
+}
 </script>
 
 <template>
@@ -74,9 +79,9 @@ function handleClearTimetable() {
 			<div class="flex items-center justify-between">
 				<!-- Left: Logo and study plan info -->
 				<div class="flex items-center gap-4">
-					<router-link to="/" class="flex items-center gap-2">
-						<div class="flex h-8 w-8 items-center justify-center rounded bg-[var(--insis-blue)] text-white">
-							<span class="text-sm font-bold">K</span>
+					<router-link to="/" class="flex items-center gap-3">
+						<div class="h-9 w-9 flex items-center justify-center">
+							<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="pb-0.5" />
 						</div>
 						<span class="font-semibold text-[var(--insis-blue)]"> Kreditožrouti </span>
 					</router-link>
@@ -113,7 +118,7 @@ function handleClearTimetable() {
 					<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="handleResetWizard">Změnit plán</button>
 
 					<!-- Mobile menu toggle -->
-					<button type="button" class="insis-btn insis-btn-secondary p-2 sm:hidden" @click="uiStore.toggleMobileFilter">
+					<button type="button" class="insis-btn insis-btn-secondary p-2 lg:hidden" @click="uiStore.toggleMobileFilter">
 						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								stroke-linecap="round"
@@ -154,7 +159,12 @@ function handleClearTimetable() {
 				<!-- View Tabs -->
 				<div class="border-b border-[var(--insis-border)] bg-white px-4">
 					<nav class="insis-tabs">
-						<button type="button" class="insis-tab" :class="{ 'insis-tab-active': uiStore.viewMode === 'list' }" @click="uiStore.switchToListView">
+						<button
+							type="button"
+							class="insis-tab flex items-center"
+							:class="{ 'insis-tab-active': uiStore.viewMode === 'list' }"
+							@click="uiStore.switchToListView"
+						>
 							<svg class="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
 							</svg>
@@ -165,7 +175,7 @@ function handleClearTimetable() {
 						</button>
 						<button
 							type="button"
-							class="insis-tab"
+							class="insis-tab flex items-center"
 							:class="{ 'insis-tab-active': uiStore.viewMode === 'timetable' }"
 							@click="uiStore.switchToTimetableView"
 						>
@@ -233,7 +243,7 @@ function handleClearTimetable() {
 									type="button"
 									class="insis-btn insis-btn-secondary text-sm"
 									:disabled="!coursesStore.hasPrevPage"
-									@click="coursesStore.prevPage"
+									@click="() => fetchNextCoursesPage(coursesStore.prevPage)"
 								>
 									← Předchozí
 								</button>
@@ -244,7 +254,7 @@ function handleClearTimetable() {
 									type="button"
 									class="insis-btn insis-btn-secondary text-sm"
 									:disabled="!coursesStore.hasNextPage"
-									@click="coursesStore.nextPage"
+									@click="() => fetchNextCoursesPage(coursesStore.nextPage)"
 								>
 									Další →
 								</button>

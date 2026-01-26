@@ -98,7 +98,6 @@ function handleClearAllTimeFilers() {
 <template>
 	<div>
 		<div class="mb-2 flex items-center justify-between">
-			<label class="insis-label mb-0">Časové omezení</label>
 			<button
 				v-if="activeTimeFilters.length > 0"
 				type="button"
@@ -123,7 +122,7 @@ function handleClearAllTimeFilers() {
 					{{ filter.type === 'include' ? '✓' : '✗' }}
 					{{ formatTimeSelection(filter) }}
 				</span>
-				<button type="button" class="ml-2 hover:text-[var(--insis-danger)]" @click="handleRemoveTimeFilter(filter.type, filter.index)">
+				<button type="button" class="ml-2 cursor-pointer hover:text-[var(--insis-danger)]" @click="handleRemoveTimeFilter(filter.type, filter.index)">
 					<IconX class="h-3 w-3" />
 				</button>
 			</div>

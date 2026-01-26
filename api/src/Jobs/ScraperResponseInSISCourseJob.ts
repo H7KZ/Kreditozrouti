@@ -191,11 +191,7 @@ async function syncStudyPlansFromCourse(courseId: number, courseIdent: string, p
 	for (const plan of plans) {
 		// 1. Ensure Faculty exists
 		if (plan.facultyIdent) {
-			await mysql
-				.insertInto(FacultyTable._table)
-				.values({ id: plan.facultyIdent, title: null } as never)
-				.onDuplicateKeyUpdate({ id: plan.facultyIdent })
-				.execute()
+			await mysql.insertInto(FacultyTable._table).values({ id: plan.facultyIdent, title: null }).onDuplicateKeyUpdate({ id: plan.facultyIdent }).execute()
 		}
 
 		// 2. Find or Create Study Plan (Partial)

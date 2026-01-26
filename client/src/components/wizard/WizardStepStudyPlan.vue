@@ -1,28 +1,23 @@
 <script setup lang="ts">
 /**
  * WizardStepStudyPlan
- * Step 3: Study plan selection with local filtering
+ * Step 3: Study plan selection - click to select and proceed (like faculty step)
  */
-import { computed, ref } from 'vue'
-
 import { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem.ts'
-import IconArrowLeft from '~icons/lucide/arrow-left'
-import IconCheck from '~icons/lucide/check'
-import IconSearch from '~icons/lucide/search'
+import { ref } from 'vue'
 
 type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
 
 interface Props {
 	studyPlans: StudyPlanWithRelations[]
 	levelFacets: FacetItem[]
-	selectedPlanId: number | null
 	levelFilter: string[]
 	titleSearch: string
 }
 
 interface Emits {
-	(e: 'select', id: number, ident: string | null, title: string | null): void
+	(e: 'select', id: number, ident: string, title: string): void
 	(e: 'setLevelFilter', levels: string[]): void
 	(e: 'setTitleSearch', search: string): void
 	(e: 'back'): void
@@ -41,7 +36,7 @@ const levelLabels: Record<string, string> = {
 	bakalářský: 'Bakalářský',
 	'celoživotní vzdělávání': 'Celoživotní vzdělávání',
 	'zahraniční studenti': 'Zahraniční studenti',
-	'celoživotní vzdělávání phd': 'Celoživotní vzdělávání PhD',
+	magisterský: 'Magisterský',
 }
 
 function getLevelLabel(level: string): string {
@@ -59,44 +54,50 @@ function toggleLevelFilter(level: string) {
 	emit('setLevelFilter', newLevels)
 }
 
-function handleSelect(plan: StudyPlanWithRelations) {
-	emit('select', plan.id, plan.ident, plan.title)
+/** Click on a study plan - select AND proceed immediately */
+function handleSelectAndProceed(plan: StudyPlanWithRelations) {
+	emit('select', plan.id, plan.ident || '', plan.title || '')
+	// Immediately complete the wizard
+	emit('complete')
 }
 
 function handleBack() {
 	emit('back')
 }
-
-function handleComplete() {
-	emit('complete')
-}
-
-const isCompleteDisabled = computed(() => !props.selectedPlanId)
 </script>
 
 <template>
 	<div>
 		<div class="mb-4 flex items-center gap-4">
 			<button type="button" class="insis-btn-text flex items-center gap-1" @click="handleBack">
-				<IconArrowLeft class="h-4 w-4" />
+				<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+				</svg>
 				Zpět
 			</button>
 			<h2 class="text-lg font-medium text-[var(--insis-gray-900)]">Vyberte studijní plán</h2>
 		</div>
 
-		<p class="mb-4 text-sm text-[var(--insis-gray-600)]">Zvolte svůj studijní plán (obor). Můžete filtrovat podle stupně studia nebo vyhledávat v názvu.</p>
+		<p class="mb-4 text-sm text-[var(--insis-gray-600)]">Zvolte svůj studijní plán (obor). Kliknutím na plán přejdete rovnou na prohlížení předmětů.</p>
 
 		<!-- Filters -->
 		<div class="mb-6 flex flex-wrap gap-4">
 			<!-- Title Search -->
-			<div class="flex-1">
+			<div class="flex-1 min-w-[200px]">
 				<label class="insis-label" for="title-search">Vyhledat</label>
 				<div class="relative">
-					<IconSearch class="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
+					<svg
+						class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+					</svg>
 					<input
 						id="title-search"
 						type="text"
-						class="insis-input pl-8"
+						class="insis-input pl-9"
 						placeholder="Název nebo kód oboru..."
 						:value="localTitleSearch"
 						@input="handleTitleSearchInput"
@@ -107,7 +108,7 @@ const isCompleteDisabled = computed(() => !props.selectedPlanId)
 			<!-- Level Filter -->
 			<div v-if="levelFacets.length > 0">
 				<label class="insis-label">Stupeň studia</label>
-				<div class="flex gap-2">
+				<div class="flex flex-wrap gap-2">
 					<button
 						v-for="level in levelFacets"
 						:key="`level-${level.value}`"
@@ -130,57 +131,54 @@ const isCompleteDisabled = computed(() => !props.selectedPlanId)
 		<!-- Results count -->
 		<p class="mb-4 text-sm text-[var(--insis-gray-600)]">Nalezeno {{ studyPlans.length }} studijních plánů</p>
 
-		<!-- Study Plans List -->
+		<!-- Study Plans Grid (like faculty cards) -->
 		<div v-if="studyPlans.length === 0" class="insis-panel insis-panel-info">
 			<p>Žádné studijní plány neodpovídají filtru.</p>
 		</div>
 
-		<div v-else class="max-h-[400px] space-y-2 overflow-y-auto">
+		<div v-else class="grid gap-3 sm:grid-cols-2 max-h-[450px] overflow-y-auto pr-1">
 			<button
 				v-for="plan in studyPlans"
 				:key="plan.id"
 				type="button"
-				:class="[
-					'w-full rounded border p-3 text-left transition-all cursor-pointer',
-					selectedPlanId === plan.id
-						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)]'
-						: 'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue-dark)] hover:bg-[var(--insis-gray-50)]',
-				]"
-				@click="handleSelect(plan)"
+				class="rounded border border-[var(--insis-border)] bg-white p-4 text-left transition-all hover:border-[var(--insis-blue)] hover:bg-[var(--insis-gray-50)] cursor-pointer"
+				@click="handleSelectAndProceed(plan)"
 			>
-				<div class="flex items-start justify-between gap-4">
+				<div class="flex items-start justify-between gap-2">
 					<div class="min-w-0 flex-1">
-						<div class="flex items-center gap-2">
-							<span class="insis-course-code">{{ plan.ident }}</span>
+						<div class="flex items-center gap-2 flex-wrap">
+							<span class="insis-course-code text-sm">{{ plan.ident }}</span>
 							<span
 								v-if="plan.level"
-								:class="['insis-badge', plan.level.toLowerCase().includes('bakalář') ? 'insis-badge-info' : 'insis-badge-success']"
+								:class="['insis-badge text-xs', plan.level.toLowerCase().includes('bakalář') ? 'insis-badge-info' : 'insis-badge-success']"
 							>
 								{{ getLevelLabel(plan.level) }}
 							</span>
 						</div>
-						<div class="mt-1 truncate font-medium text-[var(--insis-gray-900)]">
+						<div class="mt-1.5 font-medium text-[var(--insis-gray-900)] line-clamp-2">
 							{{ plan.title }}
 						</div>
 						<div class="mt-1 text-sm text-[var(--insis-gray-500)]">
 							<span v-if="plan.faculty">{{ plan.faculty.title }}</span>
-							<span v-if="plan.mode_of_study" class="ml-2"> • {{ plan.mode_of_study }} </span>
+							<span v-if="plan.mode_of_study" class="ml-1.5">• {{ plan.mode_of_study }}</span>
 						</div>
 					</div>
-					<div
-						v-if="selectedPlanId === plan.id"
-						class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--insis-success)] text-white"
-					>
-						<IconCheck class="h-4 w-4" />
-					</div>
+					<!-- Arrow icon -->
+					<svg class="h-5 w-5 shrink-0 text-[var(--insis-gray-400)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+					</svg>
 				</div>
 			</button>
 		</div>
 
-		<!-- Actions -->
-		<div class="mt-6 flex justify-end gap-3 border-t border-[var(--insis-border)] pt-4">
-			<button type="button" class="insis-btn" @click="handleBack">Zpět</button>
-			<button type="button" class="insis-btn-primary" :disabled="isCompleteDisabled" @click="handleComplete">Pokračovat na předměty</button>
+		<!-- Back button only (no Continue button needed) -->
+		<div class="mt-6 flex border-t border-[var(--insis-border)] pt-4">
+			<button type="button" class="insis-btn" @click="handleBack">
+				<svg class="mr-1.5 h-4 w-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+				</svg>
+				Zpět na výběr roku
+			</button>
 		</div>
 	</div>
 </template>

@@ -12,16 +12,16 @@
 		"codes": {
 			"0": "Unknown error",
 
-			"401_000": "Invalid login credentials",
+			"401000": "Invalid login credentials",
 
-			"403_000": "You do not have permission to access this resource",
+			"403000": "You do not have permission to access this resource",
 
-			"404_000": "The requested resource was not found",
+			"404000": "The requested resource was not found",
 
-			"429_000": "Too many requests. Please try again later.",
+			"429000": "Too many requests. Please try again later.",
 
-			"500_000": "Internal server error",
-			"500_001": "Email service is unavailable"
+			"500000": "Internal server error",
+			"500001": "Email service is unavailable"
 		}
 	},
 	"faculties": {

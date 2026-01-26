@@ -17,6 +17,7 @@ import {
 import FacetItem from '@api/Interfaces/FacetItem'
 import { CoursesFilter } from '@api/Validations/CoursesFilterValidation'
 import { sql } from 'kysely'
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/mysql'
 
 /**
  * Service handling all Course-related database operations.
@@ -30,7 +31,7 @@ export default class CourseService {
 		limit = 20,
 		offset = 0
 	): Promise<{ courses: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>[]; total: number }> {
-		// 1. Get total count
+		// 1. Get total count (Keep as separate query for performance)
 		const countQuery = this.buildCourseQuery(filters)
 			.select(eb => eb.fn.count<number>('c.id').distinct().as('total'))
 			.groupBy('c.id')
@@ -42,7 +43,12 @@ export default class CourseService {
 
 		const total = countResult?.total ?? 0
 
-		// 2. Get paginated course IDs
+		if (total === 0) {
+			return { courses: [], total: 0 }
+		}
+
+		// 2. Optimized Single Query for Data
+		// We first select the IDs in a subquery to handle pagination correctly independent of the heavy JSON joins.
 		const courseIdsQuery = this.buildCourseQuery(filters)
 			.select('c.id')
 			.groupBy('c.id')
@@ -50,84 +56,87 @@ export default class CourseService {
 			.limit(limit)
 			.offset(offset)
 
-		const courseIdRows = await courseIdsQuery.execute()
-		const courseIds = courseIdRows.map(r => r.id)
-
-		if (courseIds.length === 0) {
-			return { courses: [], total }
-		}
-
-		// 3. Fetch full course data
 		const courses = await mysql
-			.selectFrom(`${CourseTable._table} as c`)
+			.selectFrom(courseIdsQuery.as('ids')) // Use the subquery
+			.innerJoin(`${CourseTable._table} as c`, 'c.id', 'ids.id')
 			.selectAll('c')
-			.where('c.id', 'in', courseIds)
+			.select(eb => [
+				// Relation 1: Faculty (1:1)
+				jsonObjectFrom(
+					eb
+						.selectFrom(`${FacultyTable._table} as f`)
+						.select(['f.id', 'f.title', 'f.created_at', 'f.updated_at'])
+						.whereRef('f.id', '=', 'c.faculty_id')
+				).as('faculty'),
+
+				// Relation 2: Units (1:N) with Nested Slots (1:N)
+				jsonArrayFrom(
+					eb
+						.selectFrom(`${CourseUnitTable._table} as u`)
+						.select(['u.id', 'u.course_id', 'u.lecturer', 'u.capacity', 'u.note', 'u.created_at', 'u.updated_at'])
+						.whereRef('u.course_id', '=', 'c.id')
+						.select(subEb => [
+							jsonArrayFrom(
+								subEb
+									.selectFrom(`${CourseUnitSlotTable._table} as s`)
+									.select([
+										's.id',
+										's.unit_id',
+										's.type',
+										's.frequency',
+										's.date',
+										's.day',
+										's.time_from',
+										's.time_to',
+										's.location',
+										's.created_at',
+										's.updated_at'
+									])
+									.whereRef('s.unit_id', '=', 'u.id')
+							).as('slots')
+						])
+				).as('units'),
+
+				// Relation 3: Assessments (1:N)
+				jsonArrayFrom(
+					eb
+						.selectFrom(`${CourseAssessmentTable._table} as ca`)
+						.select(['ca.id', 'ca.course_id', 'ca.method', 'ca.weight', 'ca.created_at', 'ca.updated_at'])
+						.whereRef('ca.course_id', '=', 'c.id')
+				).as('assessments'),
+
+				// Relation 4: Study Plans (M:N) - Conditional Logic
+				filters.study_plan_ids
+					? jsonArrayFrom(
+							eb
+								.selectFrom(`${StudyPlanCourseTable._table} as spc`)
+								.select([
+									'spc.id',
+									'spc.study_plan_id',
+									'spc.course_id',
+									'spc.course_ident',
+									'spc.group',
+									'spc.category',
+									'spc.created_at',
+									'spc.updated_at'
+								])
+								.whereRef('spc.course_id', '=', 'c.id')
+								.where('spc.study_plan_id', 'in', Array.isArray(filters.study_plan_ids) ? filters.study_plan_ids : [filters.study_plan_ids])
+						).as('study_plans')
+					: eb.val(null).as('study_plans')
+			])
 			.orderBy(this.getSortColumn(filters.sort_by) as any, filters.sort_dir ?? 'asc')
 			.execute()
 
-		// 4. Fetch related data in parallel
-		const [faculties, units, slots, assessments, studyPlans] = await Promise.all([
-			this.getFacultiesForCourses(courseIds),
-			this.getCoursesUnits(courseIds),
-			this.getCoursesUnitsSlots(courseIds),
-			this.getCoursesAssessments(courseIds),
-			filters.study_plan_ids ? this.getCoursesStudyPlans(courseIds, filters.study_plan_ids) : Promise.resolve([])
-		])
-
-		// 5. In-Memory Mapping
-
-		// Faculty Map
-		const facultyMap = new Map<string, Faculty>()
-		for (const f of faculties) {
-			facultyMap.set(f.id, f)
-		}
-
-		// Timetable Units Map (with injected Slots)
-		const unitsMap = new Map<number, CourseUnit<void, CourseUnitSlot>[]>()
-		for (const unit of units) {
-			if (!unitsMap.has(unit.course_id)) {
-				unitsMap.set(unit.course_id, [])
-			}
-
-			// We explicitly construct the object to match CourseUnit<void, CourseUnitSlot>
-			const unitWithSlots: CourseUnit<void, CourseUnitSlot> = {
-				...unit,
-				slots: slots.filter(s => s.unit_id === unit.id)
-			}
-			unitsMap.get(unit.course_id)!.push(unitWithSlots)
-		}
-
-		// Assessment Map
-		const assessmentMap = new Map<number, CourseAssessment[]>()
-		for (const am of assessments) {
-			if (!assessmentMap.has(am.course_id)) {
-				assessmentMap.set(am.course_id, [])
-			}
-			assessmentMap.get(am.course_id)!.push(am)
-		}
-
-		// Study Plan Map
-		const studyPlanMap = new Map<number, StudyPlanCourse[]>()
-		for (const sp of studyPlans) {
-			// Safety check: sp.course_id should exist based on query, but type says nullable
-			if (sp.course_id) {
-				if (!studyPlanMap.has(sp.course_id)) {
-					studyPlanMap.set(sp.course_id, [])
-				}
-				studyPlanMap.get(sp.course_id)!.push(sp)
-			}
-		}
-
-		// 6. Assembly
-		const coursesWithRelations: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>[] = courses.map(course => ({
+		const parsedCourses = courses.map(course => ({
 			...course,
-			faculty: course.faculty_id ? (facultyMap.get(course.faculty_id) ?? null) : null,
-			units: unitsMap.get(course.id) ?? [],
-			assessments: assessmentMap.get(course.id) ?? [],
-			study_plans: studyPlanMap.get(course.id) ?? []
+			units: course.units ?? [],
+			assessments: course.assessments ?? [],
+			study_plans: course.study_plans ?? []
 		}))
 
-		return { courses: coursesWithRelations, total }
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		return { courses: parsedCourses as any, total }
 	}
 
 	/**
@@ -267,7 +276,7 @@ export default class CourseService {
 	 */
 	private static buildCourseQuery(
 		filters: Partial<CoursesFilter>,
-		ignoreFacet?: keyof ExcludeMethods<Course> | keyof Omit<CoursesFilter, 'sort_by' | 'sort_dir' | 'limit' | 'offset'>
+		ignore?: keyof ExcludeMethods<Course> | keyof Omit<CoursesFilter, 'sort_by' | 'sort_dir' | 'limit' | 'offset'>
 	) {
 		let query = mysql
 			.selectFrom(`${CourseTable._table} as c`)
@@ -276,42 +285,42 @@ export default class CourseService {
 			.leftJoin(`${StudyPlanCourseTable._table} as spc`, 'c.id', 'spc.course_id')
 
 		// Identity filters
-		if (filters.ids?.length && ignoreFacet !== 'ids') {
+		if (filters.ids?.length && !['id', 'ids'].includes(ignore!)) {
 			query = query.where('c.id', 'in', filters.ids)
 		}
 
-		if (filters.idents?.length && ignoreFacet !== 'idents') {
+		if (filters.idents?.length && !['ident', 'idents'].includes(ignore!)) {
 			query = query.where(eb => eb.or(filters.idents!.map(v => eb('c.ident', 'like', `%${v}%`))))
 		}
 
-		if (filters.title && ignoreFacet !== 'title') {
+		if (filters.title && !['title'].includes(ignore!)) {
 			query = query.where(eb => eb.or([eb('c.title', 'like', `%${filters.title}%`), eb('c.czech_title', 'like', `%${filters.title}%`)]))
 		}
 
 		// Academic period filters
-		if (filters.semesters?.length && ignoreFacet !== 'semesters') {
+		if (filters.semesters?.length && !['semester', 'semesters'].includes(ignore!)) {
 			query = query.where('c.semester', 'in', filters.semesters)
 		}
 
-		if (filters.years?.length && ignoreFacet !== 'years') {
+		if (filters.years?.length && !['year', 'years'].includes(ignore!)) {
 			query = query.where('c.year', 'in', filters.years)
 		}
 
 		// Organizational filters
-		if (filters.faculty_ids?.length && ignoreFacet !== 'faculty_ids') {
+		if (filters.faculty_ids?.length && !['faculty_id', 'faculty_ids'].includes(ignore!)) {
 			query = query.where('c.faculty_id', 'in', filters.faculty_ids)
 		}
 
-		if (filters.levels?.length && ignoreFacet !== 'levels') {
+		if (filters.levels?.length && !['level', 'levels'].includes(ignore!)) {
 			query = query.where('c.level', 'in', filters.levels)
 		}
 
-		if (filters.languages?.length && ignoreFacet !== 'languages') {
+		if (filters.languages?.length && !['language', 'languages'].includes(ignore!)) {
 			query = query.where(eb => eb.or(filters.languages!.map(v => eb('c.languages', 'like', `%${v}%`))))
 		}
 
 		// Time filters
-		if (filters.include_times?.length && ignoreFacet !== 'include_times') {
+		if (filters.include_times?.length && !['include_times'].includes(ignore!)) {
 			query = query.where(eb =>
 				eb.or(
 					filters.include_times!.map(exc =>
@@ -325,7 +334,7 @@ export default class CourseService {
 			)
 		}
 
-		if (filters.exclude_times?.length && ignoreFacet !== 'exclude_times') {
+		if (filters.exclude_times?.length && !['exclude_times'].includes(ignore!)) {
 			query = query.where(eb =>
 				eb.and(
 					filters.exclude_times!.map(exc =>
@@ -340,7 +349,7 @@ export default class CourseService {
 		}
 
 		// Personnel filters
-		if (filters.lecturers?.length && ignoreFacet !== 'lecturers') {
+		if (filters.lecturers?.length && !['lecturers'].includes(ignore!)) {
 			query = query.where(eb =>
 				eb.or(
 					filters.lecturers!.flatMap(v => [
@@ -352,76 +361,37 @@ export default class CourseService {
 		}
 
 		// Study plan filters
-		if (filters.study_plan_ids?.length && ignoreFacet !== 'study_plan_ids') {
+		if (filters.study_plan_ids?.length && !['study_plan_id', 'study_plan_ids'].includes(ignore!)) {
 			query = query.where('spc.study_plan_id', 'in', filters.study_plan_ids)
 		}
 
-		if (filters.groups?.length && ignoreFacet !== 'groups') {
+		if (filters.groups?.length && !['groups'].includes(ignore!)) {
 			query = query.where('spc.group', 'in', filters.groups)
 		}
 
-		if (filters.categories?.length && ignoreFacet !== 'categories') {
+		if (filters.categories?.length && !['categories'].includes(ignore!)) {
 			query = query.where('spc.category', 'in', filters.categories)
 		}
 
 		// Course properties filters
-		if (filters.ects?.length && ignoreFacet !== 'ects') {
+		if (filters.ects?.length && !['ects'].includes(ignore!)) {
 			query = query.where('c.ects', 'in', filters.ects)
 		}
 
-		if (filters.mode_of_completions?.length && ignoreFacet !== 'mode_of_completions') {
+		if (filters.mode_of_completions?.length && !['mode_of_completion', 'mode_of_completions'].includes(ignore!)) {
 			query = query.where('c.mode_of_completion', 'in', filters.mode_of_completions)
 		}
 
-		if (filters.mode_of_deliveries?.length && ignoreFacet !== 'mode_of_delivery') {
+		if (filters.mode_of_deliveries?.length && !['mode_of_delivery', 'mode_of_deliveries'].includes(ignore!)) {
 			query = query.where('c.mode_of_delivery', 'in', filters.mode_of_deliveries)
 		}
 
 		// Conflict exclusion
-		if (filters.exclude_slot_ids?.length && ignoreFacet !== 'exclude_slot_ids') {
+		if (filters.exclude_slot_ids?.length && !['exclude_slot_ids'].includes(ignore!)) {
 			query = query.where('s.id', 'not in', filters.exclude_slot_ids)
 		}
 
 		return query
-	}
-
-	private static async getFacultiesForCourses(courseIds: number[]) {
-		return mysql
-			.selectFrom(`${FacultyTable._table} as f`)
-			.selectAll('f')
-			.where(
-				'f.id',
-				'in',
-				mysql.selectFrom(`${CourseTable._table} as c`).select('c.faculty_id').where('c.id', 'in', courseIds).where('c.faculty_id', 'is not', null)
-			)
-			.execute()
-	}
-
-	private static async getCoursesUnits(courseIds: number[]) {
-		return mysql.selectFrom(`${CourseUnitTable._table} as u`).selectAll('u').where('u.course_id', 'in', courseIds).execute()
-	}
-
-	private static async getCoursesUnitsSlots(courseIds: number[]) {
-		return mysql
-			.selectFrom(`${CourseUnitSlotTable._table} as s`)
-			.innerJoin(`${CourseUnitTable._table} as u`, 's.unit_id', 'u.id')
-			.selectAll('s')
-			.where('u.course_id', 'in', courseIds)
-			.execute()
-	}
-
-	private static async getCoursesAssessments(courseIds: number[]) {
-		return mysql.selectFrom(`${CourseAssessmentTable._table} as am`).selectAll('am').where('am.course_id', 'in', courseIds).execute()
-	}
-
-	private static async getCoursesStudyPlans(courseIds: number[], studyPlanIds: number | number[]) {
-		const planIds = Array.isArray(studyPlanIds) ? studyPlanIds : [studyPlanIds]
-		return mysql
-			.selectFrom(`${StudyPlanCourseTable._table} as spc`)
-			.selectAll('spc')
-			.where('spc.course_id', 'in', courseIds)
-			.where('spc.study_plan_id', 'in', planIds)
-			.execute()
 	}
 
 	private static processPipeFacet(data: { value: string | null; count: number }[], limit?: number): FacetItem[] {
