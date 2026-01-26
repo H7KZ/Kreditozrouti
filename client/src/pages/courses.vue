@@ -1,16 +1,18 @@
 <script setup lang="ts">
-/**
- * Courses Page
- * Main course browser with filters, list view, and timetable view.
- */
 import { computed, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-
 import CourseTable from '@client/components/courses/CourseTable.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 import { useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 
+/*
+ * Courses Page
+ * Main course browser with filters, list view, and timetable view.
+ */
+
+const { t } = useI18n({ useScope: 'global' })
 const router = useRouter()
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
@@ -38,13 +40,18 @@ onMounted(async () => {
 
 /** Selected study plan display */
 const studyPlanInfo = computed(() => ({
-	title: wizardStore.studyPlanTitle || 'Studijní plán',
+	title: wizardStore.studyPlanTitle || t('pages.courses.studyPlanFallback'),
 	ident: wizardStore.studyPlanIdent || '',
 }))
 
 const coursesInfo = computed(() => ({
 	years: coursesStore.filters.years,
-	semester: coursesStore.filters.semesters?.length === 1 ? (coursesStore.filters.semesters[0] === 'ZS' ? 'Zimní semestr' : 'Letní semestr') : 'Celý rok',
+	semester:
+		coursesStore.filters.semesters?.length === 1
+			? coursesStore.filters.semesters[0] === 'ZS'
+				? t('semesters.ZS')
+				: t('semesters.LS')
+			: t('semesters.full_year'),
 }))
 
 /** Selected courses count */
@@ -61,7 +68,7 @@ function handleResetWizard() {
 
 /** Clear all selected courses */
 function handleClearTimetable() {
-	if (confirm('Opravdu chcete odebrat všechny předměty z rozvrhu?')) {
+	if (confirm(t('pages.courses.clearTimetableConfirm'))) {
 		timetableStore.clearAll()
 	}
 }
@@ -83,7 +90,7 @@ async function fetchNextCoursesPage(page: () => void) {
 						<div class="h-9 w-9 flex items-center justify-center">
 							<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="pb-0.5" />
 						</div>
-						<span class="font-semibold text-[var(--insis-blue)]"> Kreditožrouti </span>
+						<span class="font-semibold text-[var(--insis-blue)]"> {{ $t('pages.index.title') }} </span>
 					</router-link>
 
 					<div class="hidden border-l border-[var(--insis-border)] pl-4 sm:block">
@@ -100,11 +107,11 @@ async function fetchNextCoursesPage(page: () => void) {
 				<div class="flex items-center gap-4">
 					<!-- Selected courses badge -->
 					<div v-if="selectedCoursesCount > 0" class="hidden items-center gap-2 sm:flex">
-						<span class="insis-badge insis-badge-success"> {{ selectedCoursesCount }} předmětů v rozvrhu </span>
+						<span class="insis-badge insis-badge-success"> {{ $t('pages.courses.coursesInTimetable', { count: selectedCoursesCount }) }} </span>
 						<button
 							type="button"
 							class="text-xs cursor-pointer text-[var(--insis-gray-500)] hover:text-[var(--insis-danger)]"
-							title="Vymazat rozvrh"
+							:title="$t('pages.courses.clearTimetable')"
 							@click="handleClearTimetable"
 						>
 							✕
@@ -112,10 +119,12 @@ async function fetchNextCoursesPage(page: () => void) {
 					</div>
 
 					<!-- Conflict warning -->
-					<span v-if="hasConflicts" class="insis-badge insis-badge-danger" title="Máte kolize v rozvrhu"> ⚠️ Kolize </span>
+					<span v-if="hasConflicts" class="insis-badge insis-badge-danger" :title="$t('pages.courses.conflictTitle')">
+						⚠️ {{ $t('pages.courses.conflict') }}
+					</span>
 
 					<!-- Change study plan -->
-					<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="handleResetWizard">Změnit plán</button>
+					<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="handleResetWizard">{{ $t('pages.courses.changePlan') }}</button>
 
 					<!-- Mobile menu toggle -->
 					<button type="button" class="insis-btn insis-btn-secondary p-2 lg:hidden" @click="uiStore.toggleMobileFilter">
@@ -144,7 +153,7 @@ async function fetchNextCoursesPage(page: () => void) {
 			>
 				<!-- Mobile filter header -->
 				<div v-if="uiStore.mobileFilterOpen" class="flex items-center justify-between border-b border-[var(--insis-border)] p-3 lg:hidden">
-					<span class="font-medium">Filtry</span>
+					<span class="font-medium">{{ $t('common.filters') }}</span>
 					<button type="button" class="text-[var(--insis-gray-500)] hover:text-[var(--insis-text)]" @click="uiStore.closeMobileFilter">✕</button>
 				</div>
 
@@ -168,7 +177,7 @@ async function fetchNextCoursesPage(page: () => void) {
 							<svg class="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
 							</svg>
-							Seznam předmětů
+							{{ $t('pages.courses.courseList') }}
 							<span v-if="coursesStore.pagination.total" class="ml-1.5 text-xs text-[var(--insis-gray-500)]">
 								({{ coursesStore.pagination.total }})
 							</span>
@@ -187,7 +196,7 @@ async function fetchNextCoursesPage(page: () => void) {
 									d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 								/>
 							</svg>
-							Můj rozvrh
+							{{ $t('pages.courses.myTimetable') }}
 							<span v-if="selectedCoursesCount > 0" class="ml-1.5 text-xs text-[var(--insis-gray-500)]"> ({{ selectedCoursesCount }}) </span>
 						</button>
 					</nav>
@@ -199,29 +208,31 @@ async function fetchNextCoursesPage(page: () => void) {
 					<div v-if="coursesStore.loading" class="flex items-center justify-center py-12">
 						<div class="text-center">
 							<div class="insis-spinner mx-auto mb-3" />
-							<p class="text-sm text-[var(--insis-gray-500)]">Načítám předměty...</p>
+							<p class="text-sm text-[var(--insis-gray-500)]">{{ $t('pages.courses.loadingCourses') }}</p>
 						</div>
 					</div>
 
 					<!-- Error state -->
 					<div v-else-if="coursesStore.error" class="rounded border border-[var(--insis-danger)] bg-red-50 p-4 text-sm text-[var(--insis-danger)]">
-						<p class="font-medium">Chyba při načítání</p>
+						<p class="font-medium">{{ $t('pages.courses.loadingError') }}</p>
 						<p>{{ coursesStore.error }}</p>
-						<button type="button" class="mt-2 text-[var(--insis-blue)] hover:underline" @click="coursesStore.fetchCourses">Zkusit znovu</button>
+						<button type="button" class="mt-2 text-[var(--insis-blue)] hover:underline" @click="coursesStore.fetchCourses">
+							{{ $t('common.tryAgain') }}
+						</button>
 					</div>
 
 					<!-- Course List View -->
 					<template v-else-if="uiStore.viewMode === 'list'">
 						<!-- Empty state -->
 						<div v-if="coursesStore.courses.length === 0" class="py-12 text-center">
-							<p class="text-[var(--insis-gray-500)]">Nebyly nalezeny žádné předměty odpovídající filtrům.</p>
+							<p class="text-[var(--insis-gray-500)]">{{ $t('pages.courses.noCoursesFound') }}</p>
 							<button
 								v-if="coursesStore.hasActiveFilters"
 								type="button"
 								class="mt-2 text-sm text-[var(--insis-blue)] hover:underline"
 								@click="coursesStore.resetFilters"
 							>
-								Zrušit filtry
+								{{ $t('pages.courses.clearFilters') }}
 							</button>
 						</div>
 
@@ -234,9 +245,13 @@ async function fetchNextCoursesPage(page: () => void) {
 							class="mt-4 flex items-center justify-between border-t border-[var(--insis-border)] pt-4"
 						>
 							<p class="text-sm text-[var(--insis-gray-500)]">
-								Zobrazeno {{ coursesStore.pagination.offset + 1 }} -
-								{{ Math.min(coursesStore.pagination.offset + coursesStore.pagination.count, coursesStore.pagination.total) }}
-								z {{ coursesStore.pagination.total }} předmětů
+								{{
+									$t('pages.courses.showingResults', {
+										from: coursesStore.pagination.offset + 1,
+										to: Math.min(coursesStore.pagination.offset + coursesStore.pagination.count, coursesStore.pagination.total),
+										total: coursesStore.pagination.total,
+									})
+								}}
 							</p>
 							<div class="flex items-center gap-2">
 								<button
@@ -245,10 +260,10 @@ async function fetchNextCoursesPage(page: () => void) {
 									:disabled="!coursesStore.hasPrevPage"
 									@click="() => fetchNextCoursesPage(coursesStore.prevPage)"
 								>
-									← Předchozí
+									← {{ $t('common.previous') }}
 								</button>
 								<span class="text-sm text-[var(--insis-gray-500)]">
-									Stránka {{ coursesStore.currentPage }} z {{ coursesStore.totalPages }}
+									{{ $t('pages.courses.pageInfo', { current: coursesStore.currentPage, total: coursesStore.totalPages }) }}
 								</span>
 								<button
 									type="button"
@@ -256,7 +271,7 @@ async function fetchNextCoursesPage(page: () => void) {
 									:disabled="!coursesStore.hasNextPage"
 									@click="() => fetchNextCoursesPage(coursesStore.nextPage)"
 								>
-									Další →
+									{{ $t('common.next') }} →
 								</button>
 							</div>
 						</div>
@@ -276,11 +291,13 @@ async function fetchNextCoursesPage(page: () => void) {
 									/>
 								</svg>
 							</div>
-							<p class="mb-2 font-medium text-[var(--insis-text)]">Váš rozvrh je prázdný</p>
+							<p class="mb-2 font-medium text-[var(--insis-text)]">{{ $t('pages.courses.emptyTimetable.title') }}</p>
 							<p class="mb-4 text-sm text-[var(--insis-gray-500)]">
-								Přidejte předměty ze seznamu nebo táhněte přes prázdné sloty pro vyhledání předmětů v daném čase.
+								{{ $t('pages.courses.emptyTimetable.description') }}
 							</p>
-							<button type="button" class="insis-btn insis-btn-primary" @click="uiStore.switchToListView">Procházet předměty</button>
+							<button type="button" class="insis-btn insis-btn-primary" @click="uiStore.switchToListView">
+								{{ $t('pages.courses.emptyTimetable.browseCourses') }}
+							</button>
 						</div>
 
 						<!-- Timetable grid -->
@@ -294,24 +311,24 @@ async function fetchNextCoursesPage(page: () => void) {
 								@click="uiStore.toggleLegend"
 							>
 								<span>{{ uiStore.showLegend ? '▼' : '▶' }}</span>
-								Legenda
+								{{ $t('common.legend') }}
 							</button>
 							<div v-if="uiStore.showLegend" class="mt-2 flex flex-wrap gap-4 text-xs">
 								<div class="flex items-center gap-1.5">
 									<span class="h-3 w-3 rounded bg-[var(--insis-block-lecture)]" />
-									<span>Přednáška</span>
+									<span>{{ $t('unitTypes.lecture') }}</span>
 								</div>
 								<div class="flex items-center gap-1.5">
 									<span class="h-3 w-3 rounded bg-[var(--insis-block-exercise)]" />
-									<span>Cvičení</span>
+									<span>{{ $t('unitTypes.exercise') }}</span>
 								</div>
 								<div class="flex items-center gap-1.5">
 									<span class="h-3 w-3 rounded bg-[var(--insis-block-seminar)]" />
-									<span>Seminář</span>
+									<span>{{ $t('unitTypes.seminar') }}</span>
 								</div>
 								<div class="flex items-center gap-1.5">
 									<span class="h-3 w-3 rounded ring-2 ring-[var(--insis-danger)]" />
-									<span>Kolize</span>
+									<span>{{ $t('pages.courses.conflict') }}</span>
 								</div>
 							</div>
 						</div>

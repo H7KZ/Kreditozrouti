@@ -1,9 +1,14 @@
 <script setup lang="ts">
-/**
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import IconCheck from '~icons/lucide/check'
+
+/*
  * WizardSteps
  * Visual progress indicator for the wizard.
  */
-import IconCheck from '~icons/lucide/check'
+
+const { t } = useI18n({ useScope: 'global' })
 
 interface Props {
 	currentStep: number
@@ -19,11 +24,11 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-const steps = [
-	{ number: 1, label: 'Fakulta' },
-	{ number: 2, label: 'Rok nástupu' },
-	{ number: 3, label: 'Studijní plán' },
-]
+const steps = computed(() => [
+	{ number: 1, label: t('components.wizard.WizardSteps.faculty') },
+	{ number: 2, label: t('components.wizard.WizardSteps.enrollmentYear') },
+	{ number: 3, label: t('components.wizard.WizardSteps.studyPlan') },
+])
 
 function isStepComplete(stepNumber: number): boolean {
 	switch (stepNumber) {

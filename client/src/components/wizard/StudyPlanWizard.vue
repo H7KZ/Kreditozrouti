@@ -1,17 +1,17 @@
 <script setup lang="ts">
-/**
- * StudyPlanWizard
- * Main wizard component for guiding users through study plan selection.
- * Steps: 1. Faculty → 2. Year → 3. Study Plan
- */
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-
 import WizardStepFaculty from '@client/components/wizard/WizardStepFaculty.vue'
 import WizardStepStudyPlan from '@client/components/wizard/WizardStepStudyPlan.vue'
 import WizardStepYear from '@client/components/wizard/WizardStepYear.vue'
 import WizardSteps from '@client/components/wizard/WizardSteps.vue'
 import { useWizardStore } from '@client/stores'
+
+/*
+ * StudyPlanWizard
+ * Main wizard component for guiding users through study plan selection.
+ * Steps: 1. Faculty → 2. Year → 3. Study Plan
+ */
 
 const router = useRouter()
 const wizardStore = useWizardStore()
@@ -38,8 +38,8 @@ function handleReset() {
 	<div class="mx-auto max-w-4xl p-6">
 		<!-- Header -->
 		<div class="mb-8 text-center">
-			<h1 class="mb-2 text-2xl font-bold text-[var(--insis-gray-900)]">Vítejte v Kreditožroutech</h1>
-			<p class="text-[var(--insis-gray-600)]">Vyberte svůj studijní plán pro zobrazení dostupných předmětů</p>
+			<h1 class="mb-2 text-2xl font-bold text-[var(--insis-gray-900)]">{{ $t('components.wizard.StudyPlanWizard.title') }}</h1>
+			<p class="text-[var(--insis-gray-600)]">{{ $t('components.wizard.StudyPlanWizard.description') }}</p>
 		</div>
 
 		<!-- Progress Steps -->
@@ -100,12 +100,12 @@ function handleReset() {
 		<div v-if="wizardStore.selectionSummary" class="mt-6 border-t border-[var(--insis-border)] pt-4">
 			<div class="flex items-center justify-between">
 				<div>
-					<span class="text-sm text-[var(--insis-gray-600)]"> Aktuální výběr: </span>
+					<span class="text-sm text-[var(--insis-gray-600)]"> {{ $t('components.wizard.StudyPlanWizard.currentSelection') }} </span>
 					<span class="ml-2 text-sm font-medium">
 						{{ wizardStore.selectionSummary }}
 					</span>
 				</div>
-				<button type="button" class="insis-btn-text text-sm" @click="handleReset">Začít znovu</button>
+				<button type="button" class="insis-btn-text text-sm" @click="handleReset">{{ $t('components.wizard.StudyPlanWizard.startOver') }}</button>
 			</div>
 		</div>
 	</div>

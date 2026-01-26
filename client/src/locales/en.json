@@ -11,15 +11,10 @@
 		},
 		"codes": {
 			"0": "Unknown error",
-
 			"401000": "Invalid login credentials",
-
 			"403000": "You do not have permission to access this resource",
-
 			"404000": "The requested resource was not found",
-
 			"429000": "Too many requests. Please try again later.",
-
 			"500000": "Internal server error",
 			"500001": "Email service is unavailable"
 		}
@@ -48,6 +43,15 @@
 		"Sobota": "Saturday",
 		"Neděle": "Sunday"
 	},
+	"daysShort": {
+		"Pondělí": "Mo",
+		"Úterý": "Tu",
+		"Středa": "We",
+		"Čtvrtek": "Th",
+		"Pátek": "Fr",
+		"Sobota": "Sa",
+		"Neděle": "Su"
+	},
 	"courseGroups": {
 		"faculty_specific": "Faculty-specific groups",
 		"university_wide": "University-wide groups",
@@ -64,5 +68,216 @@
 		"beyond_scope": "Courses beyond the scope of the study plan",
 		"exchange_program": "Courses for exchange programs",
 		"physical_education": "Physical education and sports"
+	},
+	"unitTypes": {
+		"lecture": "Lecture",
+		"exercise": "Exercise",
+		"seminar": "Seminar",
+		"combined": "Lecture + Exercise"
+	},
+	"unitTypesShort": {
+		"lecture": "L",
+		"exercise": "Ex",
+		"seminar": "S",
+		"combined": "L+Ex"
+	},
+	"unitTypesAccusative": {
+		"lecture": "lecture",
+		"exercise": "exercise",
+		"seminar": "seminar",
+		"combined": "lecture/exercise"
+	},
+	"studyLevels": {
+		"magisterský navazující": "Follow-up Master's",
+		"doktorský": "Doctoral",
+		"bakalářský": "Bachelor's",
+		"celoživotní vzdělávání": "Lifelong Learning",
+		"zahraniční studenti": "International Students",
+		"magisterský": "Master's"
+	},
+	"semesters": {
+		"ZS": "Winter semester",
+		"LS": "Summer semester",
+		"full_year": "Full year"
+	},
+	"time": {
+		"minutes": "min",
+		"hours": "h",
+		"hoursMinutes": "{hours}h {minutes}min"
+	},
+	"common": {
+		"back": "Back",
+		"cancel": "Cancel",
+		"add": "Add",
+		"change": "Change",
+		"remove": "Remove",
+		"search": "Search",
+		"reset": "Reset",
+		"tryAgain": "Try again",
+		"loading": "Loading...",
+		"filters": "Filters",
+		"legend": "Legend",
+		"day": "Day",
+		"time": "Time",
+		"duration": "Duration",
+		"from": "From",
+		"to": "To",
+		"plans": "plans",
+		"seats": "seats",
+		"previous": "Previous",
+		"next": "Next",
+		"clearAll": "Clear all",
+		"showMore": "Show {count} more",
+		"showLess": "Show less",
+		"noResults": "No results",
+		"noOptions": "No options",
+		"tip": "Tip"
+	},
+	"pages": {
+		"index": {
+			"title": "Kreditožrouti",
+			"subtitle": "VŠE Course Finder",
+			"welcome": "Welcome to Kreditožrouti",
+			"description": "Start by selecting your study plan. We will show you relevant courses and their schedule slots based on your selection.",
+			"howItWorks": "📌 How does it work?",
+			"step1": "Select your faculty",
+			"step2": "Choose your enrollment year",
+			"step3": "Select your study plan",
+			"step4": "Browse courses and build your schedule",
+			"footer": "Kreditožrouti · Data from",
+			"insisLink": "InSIS VŠE"
+		},
+		"courses": {
+			"studyPlanFallback": "Study Plan",
+			"coursesInTimetable": "{count} courses in timetable",
+			"clearTimetable": "Clear timetable",
+			"clearTimetableConfirm": "Are you sure you want to remove all courses from the timetable?",
+			"conflict": "Conflict",
+			"conflictTitle": "You have conflicts in your timetable",
+			"changePlan": "Change plan",
+			"courseList": "Course List",
+			"myTimetable": "My Timetable",
+			"loadingCourses": "Loading courses...",
+			"loadingError": "Loading error",
+			"noCoursesFound": "No courses found matching the filters.",
+			"clearFilters": "Clear filters",
+			"showingResults": "Showing {from} - {to} of {total} courses",
+			"pageInfo": "Page {current} of {total}",
+			"emptyTimetable": {
+				"title": "Your timetable is empty",
+				"description": "Add courses from the list or drag across empty slots to search for courses at that time.",
+				"browseCourses": "Browse courses"
+			}
+		}
+	},
+	"components": {
+		"wizard": {
+			"StudyPlanWizard": {
+				"title": "Welcome to Kreditožrouti",
+				"description": "Select your study plan to view available courses",
+				"currentSelection": "Current selection:",
+				"startOver": "Start over"
+			},
+			"WizardSteps": {
+				"faculty": "Faculty",
+				"enrollmentYear": "Enrollment Year",
+				"studyPlan": "Study Plan"
+			},
+			"WizardStepFaculty": {
+				"title": "Select Faculty",
+				"description": "Choose the faculty where you study or want to study.",
+				"loading": "Loading faculties..."
+			},
+			"WizardStepYear": {
+				"title": "Select Enrollment Year",
+				"description": "Choose the academic year when you started studying. The winter semester will be automatically selected.",
+				"loading": "Loading years...",
+				"tip": "If you don't know which year to select, check your e-index in InSIS or look at the academic year of your first enrolled semester."
+			},
+			"WizardStepStudyPlan": {
+				"title": "Select Study Plan",
+				"description": "Choose your study plan (field of study). Clicking on a plan will take you directly to browsing courses.",
+				"searchLabel": "Search",
+				"searchPlaceholder": "Name or field code...",
+				"levelLabel": "Study Level",
+				"resultsCount": "Found {count} study plans",
+				"noResults": "No study plans match the filter.",
+				"backToYear": "Back to year selection"
+			}
+		},
+		"courses": {
+			"CourseTable": {
+				"columns": {
+					"code": "Code",
+					"title": "Title",
+					"faculty": "Faculty",
+					"ects": "ECTS",
+					"completion": "Completion",
+					"schedule": "Schedule"
+				},
+				"noResults": "No courses match the filter",
+				"inTimetable": "In timetable"
+			},
+			"CourseRowExpanded": {
+				"faculty": "Faculty",
+				"ectsCredits": "ECTS credits",
+				"completion": "Completion",
+				"language": "Language",
+				"category": "Category",
+				"assessments": "Assessments",
+				"unitSelection": "Schedule Unit Selection",
+				"complete": "Complete",
+				"removeAll": "Remove all",
+				"selected": "Selected",
+				"selectOne": "select one of",
+				"selectAction": "select action",
+				"noUnitsAvailable": "No schedule units are available for this course."
+			}
+		},
+		"filters": {
+			"FilterPanel": {
+				"faculties": "Faculties",
+				"studyLevel": "Study Level",
+				"language": "Language of Instruction",
+				"courseGroups": "Course Groups",
+				"category": "Category",
+				"ectsCredits": "ECTS Credits",
+				"completionMode": "Completion Mode",
+				"lecturers": "Lecturers",
+				"timeRestriction": "Time Restriction"
+			},
+			"FilterCheckboxGroup": {
+				"searchPlaceholder": "Search..."
+			},
+			"FilterTimeRange": {
+				"addTimeFilter": "Add time filter",
+				"dayLabel": "Day",
+				"availableRange": "Available range: {from} - {to}"
+			}
+		},
+		"timetable": {
+			"TimetableGrid": {
+				"dayHeader": "Day",
+				"filterApplied": "Filter applied",
+				"filterDescription": "Showing courses at {from}-{to} ({day})"
+			},
+			"TimetableCourseBlock": {
+				"removeFromTimetable": "Remove from timetable"
+			},
+			"TimetableDragPopover": {
+				"title": "Search Courses",
+				"description": "Shows courses that have a schedule slot in this time period.",
+				"searchCourses": "Search courses"
+			}
+		}
+	},
+	"stores": {
+		"timetable": {
+			"errors": {
+				"slotAlreadySelected": "This slot is already selected",
+				"unitTypeAlreadySelected": "You already have a {unitType} selected for this course",
+				"timeConflict": "Time conflict with course {courseIdent}"
+			}
+		}
 	}
 }

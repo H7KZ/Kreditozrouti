@@ -1,12 +1,17 @@
 <script setup lang="ts">
-/**
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useTimeUtils } from '@client/composables'
+import InSISDay from '@scraper/Types/InSISDay.ts'
+
+/*
  * TimetableDragPopover
  * Popover displayed after drag selection on timetable.
  * Allows user to filter courses for the selected time slot.
  */
-import { useTimeUtils } from '@client/composables'
-import InSISDay from '@scraper/Types/InSISDay.ts'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+
+const { t, te } = useI18n({ useScope: 'global' })
+const { minutesToTime } = useTimeUtils()
 
 interface Position {
 	x: number
@@ -32,11 +37,14 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-const { minutesToTime } = useTimeUtils()
 const popoverRef = ref<HTMLElement | null>(null)
 
-/** Day label in Czech */
-const dayLabel = computed(() => props.selection?.day ?? '')
+/** Day label translated */
+const dayLabel = computed(() => {
+	if (!props.selection?.day) return ''
+	const key = `days.${props.selection.day}`
+	return te(key) ? t(key) : props.selection.day
+})
 
 /** Formatted time range */
 const timeRange = computed(() => {
@@ -54,9 +62,9 @@ const duration = computed(() => {
 const durationFormatted = computed(() => {
 	const hours = Math.floor(duration.value / 60)
 	const minutes = duration.value % 60
-	if (hours === 0) return `${minutes} min`
-	if (minutes === 0) return `${hours} hod`
-	return `${hours} hod ${minutes} min`
+	if (hours === 0) return `${minutes} ${t('time.minutes')}`
+	if (minutes === 0) return `${hours} ${t('time.hours')}`
+	return t('time.hoursMinutes', { hours, minutes })
 })
 
 /** Calculate popover position with viewport bounds checking */
@@ -115,7 +123,7 @@ onUnmounted(() => {
 	<div ref="popoverRef" class="popover fixed z-50 w-[280px] rounded border border-[var(--insis-border)] bg-white shadow-lg" :style="popoverStyle">
 		<!-- Header -->
 		<div class="border-b border-[var(--insis-border)] bg-[var(--insis-header-bg)] px-3 py-2">
-			<h3 class="text-sm font-medium text-[var(--insis-text)]">Vyhledat předměty</h3>
+			<h3 class="text-sm font-medium text-[var(--insis-text)]">{{ $t('components.timetable.TimetableDragPopover.title') }}</h3>
 		</div>
 
 		<!-- Content -->
@@ -123,30 +131,30 @@ onUnmounted(() => {
 			<!-- Selected time info -->
 			<div class="mb-3 space-y-1 text-sm">
 				<div class="flex items-center justify-between">
-					<span class="text-[var(--insis-gray-500)]">Den:</span>
+					<span class="text-[var(--insis-gray-500)]">{{ $t('common.day') }}:</span>
 					<span class="font-medium text-[var(--insis-text)]">{{ dayLabel }}</span>
 				</div>
 				<div class="flex items-center justify-between">
-					<span class="text-[var(--insis-gray-500)]">Čas:</span>
+					<span class="text-[var(--insis-gray-500)]">{{ $t('common.time') }}:</span>
 					<span class="font-medium text-[var(--insis-text)]">{{ timeRange }}</span>
 				</div>
 				<div class="flex items-center justify-between">
-					<span class="text-[var(--insis-gray-500)]">Trvání:</span>
+					<span class="text-[var(--insis-gray-500)]">{{ $t('common.duration') }}:</span>
 					<span class="text-[var(--insis-gray-600)]">{{ durationFormatted }}</span>
 				</div>
 			</div>
 
 			<!-- Description -->
-			<p class="mb-3 text-xs text-[var(--insis-gray-500)]">Zobrazí předměty, které mají rozvrhovou akci v tomto časovém úseku.</p>
+			<p class="mb-3 text-xs text-[var(--insis-gray-500)]">{{ $t('components.timetable.TimetableDragPopover.description') }}</p>
 
 			<!-- Actions -->
 			<div class="flex items-center justify-end gap-2">
-				<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="emit('cancel')">Zrušit</button>
+				<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="emit('cancel')">{{ $t('common.cancel') }}</button>
 				<button type="button" class="insis-btn insis-btn-primary text-sm flex items-center" @click="emit('filter')">
 					<svg class="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
 					</svg>
-					Hledat předměty
+					{{ $t('components.timetable.TimetableDragPopover.searchCourses') }}
 				</button>
 			</div>
 		</div>

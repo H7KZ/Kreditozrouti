@@ -67,10 +67,6 @@ function createDefaultFilters(): CoursesFilter {
 export const useCoursesStore = defineStore('courses', () => {
 	const wizardStore = useWizardStore()
 
-	// =========================================================================
-	// STATE
-	// =========================================================================
-
 	/** Current filter state */
 	const filters = ref<CoursesFilter>(createDefaultFilters())
 
@@ -110,10 +106,6 @@ export const useCoursesStore = defineStore('courses', () => {
 	/** Expanded row IDs (for course detail view) */
 	const expandedCourseIds = ref<Set<number>>(new Set())
 
-	// =========================================================================
-	// COMPUTED
-	// =========================================================================
-
 	/** Total pages available */
 	const totalPages = computed(() => Math.ceil(pagination.value.total / pagination.value.limit))
 
@@ -148,10 +140,6 @@ export const useCoursesStore = defineStore('courses', () => {
 
 	/** Whether any filters are active */
 	const hasActiveFilters = computed(() => activeFilterCount.value > 0)
-
-	// =========================================================================
-	// ACTIONS
-	// =========================================================================
 
 	/** Initialize filters from wizard selection */
 	function initializeFromWizard() {
@@ -209,10 +197,6 @@ export const useCoursesStore = defineStore('courses', () => {
 			loading.value = false
 		}
 	}
-
-	// -------------------------------------------------------------------------
-	// FILTER SETTERS
-	// -------------------------------------------------------------------------
 
 	/** Set text search filter */
 	function setTitleSearch(title: string) {
@@ -329,10 +313,6 @@ export const useCoursesStore = defineStore('courses', () => {
 		filters.value.exclude_slot_ids = slotIds
 	}
 
-	// -------------------------------------------------------------------------
-	// SORTING
-	// -------------------------------------------------------------------------
-
 	/** Set sort field */
 	function setSortBy(sortBy: CourseSortBy) {
 		filters.value.sort_by = sortBy
@@ -347,10 +327,6 @@ export const useCoursesStore = defineStore('courses', () => {
 	function toggleSortDir() {
 		filters.value.sort_dir = filters.value.sort_dir === 'asc' ? 'desc' : 'asc'
 	}
-
-	// -------------------------------------------------------------------------
-	// PAGINATION
-	// -------------------------------------------------------------------------
 
 	/** Go to specific page (1-indexed) */
 	function goToPage(page: number) {
@@ -378,10 +354,6 @@ export const useCoursesStore = defineStore('courses', () => {
 		filters.value.offset = 0
 	}
 
-	// -------------------------------------------------------------------------
-	// ROW EXPANSION
-	// -------------------------------------------------------------------------
-
 	/** Toggle row expansion for a course */
 	function toggleCourseExpansion(courseId: number) {
 		if (expandedCourseIds.value.has(courseId)) {
@@ -400,10 +372,6 @@ export const useCoursesStore = defineStore('courses', () => {
 	function collapseAllCourses() {
 		expandedCourseIds.value.clear()
 	}
-
-	// -------------------------------------------------------------------------
-	// RESET
-	// -------------------------------------------------------------------------
 
 	/** Reset all filters to defaults (keeps wizard-derived filters) */
 	function resetFilters() {
@@ -430,17 +398,6 @@ export const useCoursesStore = defineStore('courses', () => {
 		courses.value = []
 		expandedCourseIds.value.clear()
 	}
-
-	// =========================================================================
-	// WATCHERS
-	// =========================================================================
-
-	// Auto-fetch when filters change (debounced in component)
-	// Note: Components should call fetchCourses() explicitly after filter changes
-
-	// =========================================================================
-	// RETURN
-	// =========================================================================
 
 	return {
 		// State

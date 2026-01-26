@@ -1,20 +1,21 @@
 <script setup lang="ts">
-/**
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import IconFilter from '~icons/lucide/filter'
+import IconRotateCcw from '~icons/lucide/rotate-ccw'
+import IconX from '~icons/lucide/x'
+import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
+import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
+import { useCoursesStore, useUIStore } from '@client/stores'
+
+/*
  * FilterPanel
  * Left sidebar panel containing all course filters.
  * Dynamically renders filters based on available facets from the API.
  * Each filter section is collapsible.
  */
-import { computed, ref } from 'vue'
 
-import IconFilter from '~icons/lucide/filter'
-import IconRotateCcw from '~icons/lucide/rotate-ccw'
-import IconX from '~icons/lucide/x'
-
-import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
-import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
-import { useCoursesStore, useUIStore } from '@client/stores'
-
+const { t } = useI18n({ useScope: 'global' })
 const coursesStore = useCoursesStore()
 const uiStore = useUIStore()
 
@@ -25,7 +26,7 @@ const timeFilterCollapsed = ref(false)
 const facetConfig = computed(() => [
 	{
 		key: 'faculties',
-		label: 'Fakulty',
+		label: t('components.filters.FilterPanel.faculties'),
 		facets: coursesStore.facets.faculties,
 		selected: coursesStore.filters.faculty_ids,
 		setter: coursesStore.setFacultyIds,
@@ -33,7 +34,7 @@ const facetConfig = computed(() => [
 	},
 	{
 		key: 'levels',
-		label: 'Stupeň studia',
+		label: t('components.filters.FilterPanel.studyLevel'),
 		facets: coursesStore.facets.levels,
 		selected: coursesStore.filters.levels,
 		setter: coursesStore.setLevels,
@@ -41,7 +42,7 @@ const facetConfig = computed(() => [
 	},
 	{
 		key: 'languages',
-		label: 'Jazyk výuky',
+		label: t('components.filters.FilterPanel.language'),
 		facets: coursesStore.facets.languages,
 		selected: coursesStore.filters.languages,
 		setter: coursesStore.setLanguages,
@@ -49,7 +50,7 @@ const facetConfig = computed(() => [
 	},
 	{
 		key: 'groups',
-		label: 'Skupiny předmětů',
+		label: t('components.filters.FilterPanel.courseGroups'),
 		facets: coursesStore.facets.groups,
 		selected: coursesStore.filters.groups,
 		setter: coursesStore.setGroups,
@@ -59,7 +60,7 @@ const facetConfig = computed(() => [
 	},
 	{
 		key: 'categories',
-		label: 'Kategorie',
+		label: t('components.filters.FilterPanel.category'),
 		facets: coursesStore.facets.categories,
 		selected: coursesStore.filters.categories,
 		setter: coursesStore.setCategories,
@@ -69,7 +70,7 @@ const facetConfig = computed(() => [
 	},
 	{
 		key: 'ects',
-		label: 'ECTS kredity',
+		label: t('components.filters.FilterPanel.ectsCredits'),
 		facets: coursesStore.facets.ects,
 		selected: coursesStore.filters.ects?.map(String),
 		setter: (values: string[]) => coursesStore.setEcts(values.map(Number)),
@@ -77,7 +78,7 @@ const facetConfig = computed(() => [
 	},
 	{
 		key: 'modes_of_completion',
-		label: 'Způsob ukončení',
+		label: t('components.filters.FilterPanel.completionMode'),
 		facets: coursesStore.facets.modes_of_completion,
 		selected: coursesStore.filters.mode_of_completions,
 		setter: coursesStore.setModesOfCompletion,
@@ -85,7 +86,7 @@ const facetConfig = computed(() => [
 	},
 	{
 		key: 'lecturers',
-		label: 'Vyučující',
+		label: t('components.filters.FilterPanel.lecturers'),
 		facets: coursesStore.facets.lecturers,
 		selected: coursesStore.filters.lecturers,
 		setter: coursesStore.setLecturers,
@@ -133,7 +134,7 @@ function toggleTimeFilter() {
 		<div class="flex items-center justify-between border-b border-[var(--insis-border)] p-3 lg:hidden">
 			<div class="flex items-center gap-2 font-medium">
 				<IconFilter class="h-4 w-4" />
-				Filtry
+				{{ $t('common.filters') }}
 			</div>
 			<button type="button" class="insis-btn-text" @click="handleCloseMobileFilter">
 				<IconX class="h-5 w-5" />
@@ -144,14 +145,14 @@ function toggleTimeFilter() {
 		<div class="mb-4 flex items-center justify-between">
 			<div v-if="!uiStore.mobileFilterOpen" class="flex items-center gap-2 text-sm font-medium text-[var(--insis-gray-900)]">
 				<IconFilter class="h-4 w-4" />
-				Filtry
+				{{ $t('common.filters') }}
 				<span v-if="coursesStore.activeFilterCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-xs text-white">
 					{{ coursesStore.activeFilterCount }}
 				</span>
 			</div>
 			<button v-if="coursesStore.hasActiveFilters" type="button" class="insis-btn-text flex items-center gap-1 text-xs" @click="handleResetFilters">
 				<IconRotateCcw class="h-3 w-3" />
-				Reset
+				{{ $t('common.reset') }}
 			</button>
 		</div>
 
@@ -159,7 +160,7 @@ function toggleTimeFilter() {
 		<div class="filter-group">
 			<button type="button" class="flex w-full items-center justify-between py-1 text-left" @click="toggleTimeFilter">
 				<span class="insis-label mb-0 flex items-center gap-1.5">
-					Časové omezení
+					{{ $t('components.filters.FilterPanel.timeRestriction') }}
 					<span v-if="activeTimeFilterCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-[10px] text-white">
 						{{ activeTimeFilterCount }}
 					</span>

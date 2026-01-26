@@ -1,11 +1,15 @@
 <script setup lang="ts">
-/**
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
+import FacetItem from '@api/Interfaces/FacetItem.ts'
+
+/*
  * WizardStepStudyPlan
  * Step 3: Study plan selection - click to select and proceed (like faculty step)
  */
-import { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
-import FacetItem from '@api/Interfaces/FacetItem.ts'
-import { ref } from 'vue'
+
+const { t, te } = useI18n({ useScope: 'global' })
 
 type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
 
@@ -29,18 +33,9 @@ const emit = defineEmits<Emits>()
 
 const localTitleSearch = ref(props.titleSearch)
 
-// Level labels
-const levelLabels: Record<string, string> = {
-	'magisterský navazující': 'Magisterský navazující',
-	doktorský: 'Doktorský',
-	bakalářský: 'Bakalářský',
-	'celoživotní vzdělávání': 'Celoživotní vzdělávání',
-	'zahraniční studenti': 'Zahraniční studenti',
-	magisterský: 'Magisterský',
-}
-
 function getLevelLabel(level: string): string {
-	return levelLabels[level.toLowerCase()] || level
+	const key = `studyLevels.${level.toLowerCase()}`
+	return te(key) ? t(key) : level
 }
 
 function handleTitleSearchInput(event: Event) {
@@ -73,18 +68,18 @@ function handleBack() {
 				<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 				</svg>
-				Zpět
+				{{ $t('common.back') }}
 			</button>
-			<h2 class="text-lg font-medium text-[var(--insis-gray-900)]">Vyberte studijní plán</h2>
+			<h2 class="text-lg font-medium text-[var(--insis-gray-900)]">{{ $t('components.wizard.WizardStepStudyPlan.title') }}</h2>
 		</div>
 
-		<p class="mb-4 text-sm text-[var(--insis-gray-600)]">Zvolte svůj studijní plán (obor). Kliknutím na plán přejdete rovnou na prohlížení předmětů.</p>
+		<p class="mb-4 text-sm text-[var(--insis-gray-600)]">{{ $t('components.wizard.WizardStepStudyPlan.description') }}</p>
 
 		<!-- Filters -->
 		<div class="mb-6 flex flex-wrap gap-4">
 			<!-- Title Search -->
 			<div class="flex-1 min-w-[200px]">
-				<label class="insis-label" for="title-search">Vyhledat</label>
+				<label class="insis-label" for="title-search">{{ $t('components.wizard.WizardStepStudyPlan.searchLabel') }}</label>
 				<div class="relative">
 					<svg
 						class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]"
@@ -98,7 +93,7 @@ function handleBack() {
 						id="title-search"
 						type="text"
 						class="insis-input pl-9"
-						placeholder="Název nebo kód oboru..."
+						:placeholder="$t('components.wizard.WizardStepStudyPlan.searchPlaceholder')"
 						:value="localTitleSearch"
 						@input="handleTitleSearchInput"
 					/>
@@ -107,7 +102,7 @@ function handleBack() {
 
 			<!-- Level Filter -->
 			<div v-if="levelFacets.length > 0">
-				<label class="insis-label">Stupeň studia</label>
+				<label class="insis-label">{{ $t('components.wizard.WizardStepStudyPlan.levelLabel') }}</label>
 				<div class="flex flex-wrap gap-2">
 					<button
 						v-for="level in levelFacets"
@@ -129,11 +124,11 @@ function handleBack() {
 		</div>
 
 		<!-- Results count -->
-		<p class="mb-4 text-sm text-[var(--insis-gray-600)]">Nalezeno {{ studyPlans.length }} studijních plánů</p>
+		<p class="mb-4 text-sm text-[var(--insis-gray-600)]">{{ $t('components.wizard.WizardStepStudyPlan.resultsCount', { count: studyPlans.length }) }}</p>
 
 		<!-- Study Plans Grid (like faculty cards) -->
 		<div v-if="studyPlans.length === 0" class="insis-panel insis-panel-info">
-			<p>Žádné studijní plány neodpovídají filtru.</p>
+			<p>{{ $t('components.wizard.WizardStepStudyPlan.noResults') }}</p>
 		</div>
 
 		<div v-else class="grid gap-3 sm:grid-cols-2 max-h-[450px] overflow-y-auto pr-1">
@@ -177,7 +172,7 @@ function handleBack() {
 				<svg class="mr-1.5 h-4 w-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 				</svg>
-				Zpět na výběr roku
+				{{ $t('components.wizard.WizardStepStudyPlan.backToYear') }}
 			</button>
 		</div>
 	</div>

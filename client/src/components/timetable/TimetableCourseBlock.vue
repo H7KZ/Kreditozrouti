@@ -1,12 +1,17 @@
 <script setup lang="ts">
-/**
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useTimeUtils } from '@client/composables'
+import { CourseUnitType, SelectedCourseUnit } from '@client/types'
+
+/*
  * TimetableCourseBlock
  * Renders a single course block on the timetable grid.
  * Color-coded by unit type, shows course info and remove action.
  */
-import { useTimeUtils } from '@client/composables'
-import { CourseUnitType, SelectedCourseUnit } from '@client/types'
-import { computed } from 'vue'
+
+const { t, te } = useI18n({ useScope: 'global' })
+const { minutesToTime } = useTimeUtils()
 
 interface Props {
 	unit: SelectedCourseUnit
@@ -19,8 +24,6 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
-
-const { minutesToTime } = useTimeUtils()
 
 /** Background color based on unit type */
 const blockColorClass = computed(() => {
@@ -36,18 +39,10 @@ const blockColorClass = computed(() => {
 /** Formatted time range */
 const timeRange = computed(() => `${minutesToTime(props.unit.timeFrom)}-${minutesToTime(props.unit.timeTo)}`)
 
-/** Short day label (first 2 characters) */
-// const dayLabel = computed(() => props.unit.day.substring(0, 2))
-
-/** Unit type label in Czech */
+/** Unit type label */
 const typeLabel = computed(() => {
-	const labels: Record<CourseUnitType, string> = {
-		lecture: 'Př',
-		exercise: 'Cv',
-		seminar: 'Se',
-		combined: 'Př+Cv',
-	}
-	return labels[props.unit.unitType] || 'Př'
+	const key = `unitTypesShort.${props.unit.unitType}`
+	return te(key) ? t(key) : props.unit.unitType
 })
 
 function handleRemove(event: MouseEvent) {
@@ -91,7 +86,7 @@ function handleRemove(event: MouseEvent) {
 			<button
 				type="button"
 				class="remove-btn absolute right-0.5 top-0.5 hidden h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger)] text-white hover:bg-[var(--insis-danger-dark)]"
-				title="Odebrat z rozvrhu"
+				:title="$t('components.timetable.TimetableCourseBlock.removeFromTimetable')"
 				@click="handleRemove"
 			>
 				<svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

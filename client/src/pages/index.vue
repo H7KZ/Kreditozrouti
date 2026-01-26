@@ -1,13 +1,13 @@
 <script setup lang="ts">
-/**
+import { onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
+import { useWizardStore } from '@client/stores'
+
+/*
  * Landing Page - Study Plan Wizard
  * First page users see, guides them through selecting their study plan.
  */
-import { onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
-
-import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
-import { useWizardStore } from '@client/stores'
 
 const router = useRouter()
 const wizardStore = useWizardStore()
@@ -42,8 +42,8 @@ onMounted(() => {
 						<span class="text-lg font-bold">K</span>
 					</div>
 					<div>
-						<h1 class="text-lg font-semibold text-[var(--insis-blue)]">Kreditožrouti</h1>
-						<p class="text-xs text-[var(--insis-gray-500)]">Vyhledávač předmětů VŠE</p>
+						<h1 class="text-lg font-semibold text-[var(--insis-blue)]">{{ $t('pages.index.title') }}</h1>
+						<p class="text-xs text-[var(--insis-gray-500)]">{{ $t('pages.index.subtitle') }}</p>
 					</div>
 				</div>
 			</div>
@@ -53,9 +53,9 @@ onMounted(() => {
 		<main class="mx-auto max-w-4xl px-4 py-8">
 			<!-- Introduction -->
 			<div class="mb-8 text-center">
-				<h2 class="mb-2 text-2xl font-semibold text-[var(--insis-text)]">Vítejte v Kreditožroutech</h2>
+				<h2 class="mb-2 text-2xl font-semibold text-[var(--insis-text)]">{{ $t('pages.index.welcome') }}</h2>
 				<p class="text-[var(--insis-gray-600)]">
-					Pro začátek vyberte svůj studijní plán. Podle něj vám zobrazíme relevantní předměty a jejich rozvrhové akce.
+					{{ $t('pages.index.description') }}
 				</p>
 			</div>
 
@@ -64,12 +64,12 @@ onMounted(() => {
 
 			<!-- Info box -->
 			<div class="mt-8 rounded border border-[var(--insis-border)] bg-white p-4">
-				<h3 class="mb-2 text-sm font-medium text-[var(--insis-text)]">📌 Jak to funguje?</h3>
+				<h3 class="mb-2 text-sm font-medium text-[var(--insis-text)]">{{ $t('pages.index.howItWorks') }}</h3>
 				<ul class="space-y-1 text-sm text-[var(--insis-gray-600)]">
-					<li><strong>1.</strong> Vyberte svou fakultu</li>
-					<li><strong>2.</strong> Zvolte rok nástupu ke studiu</li>
-					<li><strong>3.</strong> Vyberte svůj studijní plán</li>
-					<li><strong>4.</strong> Procházejte předměty a sestavte si rozvrh</li>
+					<li><strong>1.</strong> {{ $t('pages.index.step1') }}</li>
+					<li><strong>2.</strong> {{ $t('pages.index.step2') }}</li>
+					<li><strong>3.</strong> {{ $t('pages.index.step3') }}</li>
+					<li><strong>4.</strong> {{ $t('pages.index.step4') }}</li>
 				</ul>
 			</div>
 		</main>
@@ -77,8 +77,8 @@ onMounted(() => {
 		<!-- Footer -->
 		<footer class="border-t border-[var(--insis-border)] bg-white px-4 py-4 text-center text-sm text-[var(--insis-gray-500)]">
 			<p>
-				Kreditožrouti · Data z
-				<a href="https://insis.vse.cz" target="_blank" class="text-[var(--insis-blue)] hover:underline"> InSIS VŠE </a>
+				{{ $t('pages.index.footer') }}
+				<a href="https://insis.vse.cz" target="_blank" class="text-[var(--insis-blue)] hover:underline"> {{ $t('pages.index.insisLink') }} </a>
 			</p>
 		</footer>
 	</div>

@@ -1,20 +1,24 @@
 <script setup lang="ts">
-/**
- * CourseRowExpanded
- * Expanded view for a course row showing full details and unit selection.
- * Handles the complex logic of selecting lectures, exercises, etc.
- */
 import { computed } from 'vue'
-
+import { useI18n } from 'vue-i18n'
 import IconCheck from '~icons/lucide/check'
 import IconMinus from '~icons/lucide/minus'
 import IconPlus from '~icons/lucide/plus'
 import IconTrash from '~icons/lucide/trash-2'
-
 import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
 import { useTimeUtils } from '@client/composables'
 import { useTimetableStore } from '@client/stores'
 import { CourseUnitType } from '@client/types'
+
+/*
+ * CourseRowExpanded
+ * Expanded view for a course row showing full details and unit selection.
+ * Handles the complex logic of selecting lectures, exercises, etc.
+ */
+
+const { t, te } = useI18n({ useScope: 'global' })
+const timetableStore = useTimetableStore()
+const { formatTimeRange, DAYS_SHORT } = useTimeUtils()
 
 type CourseWithRelations = Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>
 
@@ -23,9 +27,6 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
-const timetableStore = useTimetableStore()
-const { formatTimeRange, DAYS_SHORT } = useTimeUtils()
 
 // Group units by type
 const unitsByType = computed(() => {
@@ -74,26 +75,22 @@ const isSelectionComplete = computed(() => {
 	return true
 })
 
-// Get type label in Czech
+// Get type label
 function getTypeLabel(type: CourseUnitType): string {
-	const labels: Record<CourseUnitType, string> = {
-		lecture: 'Přednáška',
-		exercise: 'Cvičení',
-		seminar: 'Seminář',
-		combined: 'Přednáška + Cvičení',
-	}
-	return labels[type]
+	const key = `unitTypes.${type}`
+	return te(key) ? t(key) : type
 }
 
 // Get short type label
 function getShortTypeLabel(type: CourseUnitType): string {
-	const labels: Record<CourseUnitType, string> = {
-		lecture: 'P',
-		exercise: 'Cv',
-		seminar: 'S',
-		combined: 'P+Cv',
-	}
-	return labels[type]
+	const key = `unitTypesShort.${type}`
+	return te(key) ? t(key) : type
+}
+
+// Get category label
+function getCategoryLabel(category: string): string {
+	const key = `courseCategories.${category}`
+	return te(key) ? t(key) : category
 }
 
 // Check if a specific slot is selected
@@ -150,20 +147,20 @@ function formatSlotInfo(slot: CourseUnitSlot): string {
 				<h3 class="mb-3 font-medium text-[var(--insis-gray-900)]">{{ course.ident }} - {{ course.title }}</h3>
 
 				<dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-					<dt class="text-[var(--insis-gray-500)]">Fakulta</dt>
+					<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.faculty') }}</dt>
 					<dd>{{ course.faculty?.title || course.faculty_id }}</dd>
 
-					<dt class="text-[var(--insis-gray-500)]">ECTS kredity</dt>
+					<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.ectsCredits') }}</dt>
 					<dd class="font-medium">{{ course.ects ?? '-' }}</dd>
 
-					<dt class="text-[var(--insis-gray-500)]">Ukončení</dt>
+					<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.completion') }}</dt>
 					<dd>{{ course.mode_of_completion || '-' }}</dd>
 
-					<dt class="text-[var(--insis-gray-500)]">Jazyk</dt>
+					<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.language') }}</dt>
 					<dd>{{ course.languages?.split('|').join(', ') || '-' }}</dd>
 
 					<template v-if="course.study_plans?.length">
-						<dt class="text-[var(--insis-gray-500)]">Kategorie</dt>
+						<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.category') }}</dt>
 						<dd>
 							<span
 								v-for="spc in course.study_plans"
@@ -174,7 +171,7 @@ function formatSlotInfo(slot: CourseUnitSlot): string {
 									'insis-badge-elective': spc.category === 'elective',
 								}"
 							>
-								{{ spc.category }}
+								{{ getCategoryLabel(spc.category || '') }}
 							</span>
 						</dd>
 					</template>
@@ -182,7 +179,7 @@ function formatSlotInfo(slot: CourseUnitSlot): string {
 
 				<!-- Assessments -->
 				<div v-if="course.assessments?.length" class="mt-4">
-					<h4 class="mb-2 text-sm font-medium text-[var(--insis-gray-700)]">Hodnocení</h4>
+					<h4 class="mb-2 text-sm font-medium text-[var(--insis-gray-700)]">{{ $t('components.courses.CourseRowExpanded.assessments') }}</h4>
 					<ul class="space-y-1 text-sm">
 						<li v-for="assessment in course.assessments" :key="assessment.id">{{ assessment.method }}: {{ assessment.weight }}%</li>
 					</ul>
@@ -192,11 +189,11 @@ function formatSlotInfo(slot: CourseUnitSlot): string {
 			<!-- Unit Selection -->
 			<div>
 				<div class="mb-3 flex items-center justify-between">
-					<h4 class="font-medium text-[var(--insis-gray-900)]">Výběr rozvrhových akcí</h4>
+					<h4 class="font-medium text-[var(--insis-gray-900)]">{{ $t('components.courses.CourseRowExpanded.unitSelection') }}</h4>
 					<div class="flex items-center gap-2">
 						<span v-if="isSelectionComplete" class="insis-badge insis-badge-success">
 							<IconCheck class="mr-1 inline h-3 w-3" />
-							Kompletní
+							{{ $t('components.courses.CourseRowExpanded.complete') }}
 						</span>
 						<button
 							v-if="selectedUnits.length > 0"
@@ -205,7 +202,7 @@ function formatSlotInfo(slot: CourseUnitSlot): string {
 							@click="handleRemoveCourse"
 						>
 							<IconTrash class="mr-1 inline h-3 w-3" />
-							Odebrat vše
+							{{ $t('components.courses.CourseRowExpanded.removeAll') }}
 						</button>
 					</div>
 				</div>
@@ -217,9 +214,16 @@ function formatSlotInfo(slot: CourseUnitSlot): string {
 							<span class="text-sm font-medium text-[var(--insis-gray-700)]">
 								{{ getTypeLabel(type) }}
 							</span>
-							<span v-if="selectedUnitTypes.has(type)" class="insis-badge insis-badge-success"> Vybráno </span>
+							<span v-if="selectedUnitTypes.has(type)" class="insis-badge insis-badge-success">
+								{{ $t('components.courses.CourseRowExpanded.selected') }}
+							</span>
 							<span v-else class="text-xs text-[var(--insis-gray-500)]">
-								(vyberte {{ units.length === 1 ? 'akci' : 'jednu z' }} {{ units.length }})
+								({{
+									units.length === 1
+										? $t('components.courses.CourseRowExpanded.selectAction')
+										: $t('components.courses.CourseRowExpanded.selectOne')
+								}}
+								{{ units.length }})
 							</span>
 						</div>
 
@@ -265,7 +269,7 @@ function formatSlotInfo(slot: CourseUnitSlot): string {
 												unit.capacity && unit.capacity > 0 ? 'text-[var(--insis-success)]' : 'text-[var(--insis-danger)]',
 											]"
 										>
-											{{ unit.capacity }} míst
+											{{ unit.capacity }} {{ $t('common.seats') }}
 										</span>
 									</div>
 
@@ -284,7 +288,7 @@ function formatSlotInfo(slot: CourseUnitSlot): string {
 												@click.stop="handleAddUnit(unit, slot)"
 											>
 												<IconPlus class="mr-1 h-3 w-3" />
-												Přidat
+												{{ $t('common.add') }}
 											</button>
 											<button
 												v-else
@@ -292,7 +296,7 @@ function formatSlotInfo(slot: CourseUnitSlot): string {
 												class="insis-btn px-2 py-1 text-xs"
 												@click.stop="handleChangeUnit(unit, slot, getSelectedSlotForType(type)!)"
 											>
-												Změnit
+												{{ $t('common.change') }}
 											</button>
 										</template>
 									</div>
@@ -304,7 +308,7 @@ function formatSlotInfo(slot: CourseUnitSlot): string {
 
 				<!-- No units available -->
 				<div v-if="!course.units?.length" class="insis-panel insis-panel-warning">
-					<p class="text-sm">Pro tento předmět nejsou k dispozici rozvrhové akce.</p>
+					<p class="text-sm">{{ $t('components.courses.CourseRowExpanded.noUnitsAvailable') }}</p>
 				</div>
 			</div>
 		</div>

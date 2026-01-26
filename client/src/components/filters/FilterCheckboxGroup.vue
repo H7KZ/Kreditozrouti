@@ -1,11 +1,12 @@
 <script setup lang="ts">
-/**
+import { computed, ref } from 'vue'
+import FacetItem from '@api/Interfaces/FacetItem.ts'
+
+/*
  * FilterCheckboxGroup
  * Reusable checkbox group for facet filtering.
  * Supports collapsible header, collapsible list and optional search.
  */
-import FacetItem from '@api/Interfaces/FacetItem.ts'
-import { computed, ref } from 'vue'
 
 interface Props {
 	label: string
@@ -115,13 +116,18 @@ function getDisplayLabel(facet: FacetItem): string {
 				>
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
 				</svg>
-				<input v-model="searchQuery" type="text" class="insis-input py-1 pl-7 text-xs" placeholder="Hledat..." />
+				<input
+					v-model="searchQuery"
+					type="text"
+					class="insis-input py-1 pl-7 text-xs"
+					:placeholder="$t('components.filters.FilterCheckboxGroup.searchPlaceholder')"
+				/>
 			</div>
 
 			<!-- Empty state -->
 			<div v-if="filteredFacets.length === 0" class="text-sm text-[var(--insis-gray-500)]">
-				<span v-if="searchQuery">Žádné výsledky</span>
-				<span v-else>Žádné možnosti</span>
+				<span v-if="searchQuery">{{ $t('common.noResults') }}</span>
+				<span v-else>{{ $t('common.noOptions') }}</span>
 			</div>
 
 			<!-- Checkbox list -->
@@ -140,7 +146,7 @@ function getDisplayLabel(facet: FacetItem): string {
 				<svg class="h-3 w-3 transition-transform" :class="{ 'rotate-180': listExpanded }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 				</svg>
-				{{ listExpanded ? 'Zobrazit méně' : `Zobrazit dalších ${hiddenCount}` }}
+				{{ listExpanded ? $t('common.showLess') : $t('common.showMore', { count: hiddenCount }) }}
 			</button>
 		</div>
 	</div>

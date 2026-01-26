@@ -1,13 +1,11 @@
-/**
- * Timetable Store
- * Manages selected course units and the timetable grid.
- * Handles course unit selection constraints and drag-to-filter functionality.
- */
 import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
+import { i18n } from '@client/index.ts'
 import { CourseUnitType, DragSelection, SelectedCourseUnit } from '@client/types'
 import InSISDay from '@scraper/Types/InSISDay.ts'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+
+const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
 
 const STORAGE_KEY = 'kreditozrouti:timetable'
 
@@ -30,11 +28,12 @@ interface PersistedTimetableState {
 	selectedUnits: SelectedCourseUnit[]
 }
 
+/**
+ * Timetable Store
+ * Manages selected course units and the timetable grid.
+ * Handles course unit selection constraints and drag-to-filter functionality.
+ */
 export const useTimetableStore = defineStore('timetable', () => {
-	// =========================================================================
-	// STATE
-	// =========================================================================
-
 	/** Selected course units */
 	const selectedUnits = ref<SelectedCourseUnit[]>([])
 
@@ -52,10 +51,6 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 	/** Position of the drag popover */
 	const dragPopoverPosition = ref({ x: 0, y: 0 })
-
-	// =========================================================================
-	// COMPUTED
-	// =========================================================================
 
 	/** All selected course IDs */
 	const selectedCourseIds = computed(() => [...new Set(selectedUnits.value.map((u) => u.courseId))])
@@ -136,10 +131,6 @@ export const useTimetableStore = defineStore('timetable', () => {
 		}
 	})
 
-	// =========================================================================
-	// ACTIONS
-	// =========================================================================
-
 	/**
 	 * Determine the unit type from a course unit slot
 	 * Note: The type field is on the slot, not the unit
@@ -170,20 +161,20 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 		// Check if this exact slot is already selected
 		if (selectedUnits.value.some((u) => u.slotId === slot.id)) {
-			return 'Tento slot je již vybrán'
+			return t('stores.timetable.errors.slotAlreadySelected')
 		}
 
 		// Check if a unit of the same type is already selected for this course
 		const existingOfType = courseUnits.find((u) => u.unitType === slotType)
 		if (existingOfType) {
-			return `Pro tento předmět již máte vybranou ${getUnitTypeLabel(slotType)}`
+			return t('stores.timetable.errors.unitTypeAlreadySelected', { unitType: getUnitTypeLabel(slotType) })
 		}
 
 		// Check for time conflicts
 		for (const existing of selectedUnits.value) {
 			if (existing.day === slot.day) {
 				if (slot.time_from! < existing.timeTo && existing.timeFrom < slot.time_to!) {
-					return `Časový konflikt s předmětem ${existing.courseIdent}`
+					return t('stores.timetable.errors.timeConflict', { courseIdent: existing.courseIdent })
 				}
 			}
 		}
@@ -287,10 +278,6 @@ export const useTimetableStore = defineStore('timetable', () => {
 		return selectedUnits.value.some((u) => u.courseId === courseId && u.unitType === unitType)
 	}
 
-	// -------------------------------------------------------------------------
-	// DRAG SELECTION
-	// -------------------------------------------------------------------------
-
 	/**
 	 * Start drag selection
 	 */
@@ -366,24 +353,11 @@ export const useTimetableStore = defineStore('timetable', () => {
 		return day === ds.day && time >= ds.timeFrom && time < ds.timeTo
 	}
 
-	// -------------------------------------------------------------------------
-	// UTILITIES
-	// -------------------------------------------------------------------------
-
 	/**
-	 * Get human-readable label for unit type
+	 * Get human-readable label for unit type (accusative form for error messages)
 	 */
 	function getUnitTypeLabel(type: CourseUnitType): string {
-		switch (type) {
-			case 'lecture':
-				return 'přednášku'
-			case 'exercise':
-				return 'cvičení'
-			case 'seminar':
-				return 'seminář'
-			case 'combined':
-				return 'přednášku/cvičení'
-		}
+		return t(`unitTypesAccusative.${type}`)
 	}
 
 	/**
@@ -409,10 +383,6 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 		return slots
 	}
-
-	// -------------------------------------------------------------------------
-	// PERSISTENCE
-	// -------------------------------------------------------------------------
 
 	function persist() {
 		const state: PersistedTimetableState = {
@@ -444,10 +414,6 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 	// Hydrate on store creation
 	hydrate()
-
-	// =========================================================================
-	// RETURN
-	// =========================================================================
 
 	return {
 		// State

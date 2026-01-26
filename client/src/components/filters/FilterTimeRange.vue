@@ -1,18 +1,17 @@
 <script setup lang="ts">
-/**
- * FilterTimeRange
- * Custom filter for selecting days and time ranges.
- * This is different from the generic facet filters.
- */
 import { computed, ref } from 'vue'
-
 import IconPlus from '~icons/lucide/plus'
 import IconX from '~icons/lucide/x'
-
 import { TimeSelection } from '@api/Validations'
 import { DAYS_ORDER, DAYS_SHORT, useTimeUtils } from '@client/composables'
 import { useCoursesStore } from '@client/stores'
 import InSISDay from '@scraper/Types/InSISDay.ts'
+
+/*
+ * FilterTimeRange
+ * Custom filter for selecting days and time ranges.
+ * This is different from the generic facet filters.
+ */
 
 const coursesStore = useCoursesStore()
 const { minutesToTime, timeToMinutes, formatTimeSelection } = useTimeUtils()
@@ -104,7 +103,7 @@ function handleClearAllTimeFilers() {
 				class="text-xs text-[var(--insis-link)] hover:underline"
 				@click="handleClearAllTimeFilers"
 			>
-				Vymazat vše
+				{{ $t('common.clearAll') }}
 			</button>
 		</div>
 
@@ -131,14 +130,14 @@ function handleClearAllTimeFilers() {
 		<!-- Add filter button -->
 		<button v-if="!showAddForm" type="button" class="insis-btn-text flex items-center gap-1 text-xs" @click="showAddForm = true">
 			<IconPlus class="h-3 w-3" />
-			Přidat časový filtr
+			{{ $t('components.filters.FilterTimeRange.addTimeFilter') }}
 		</button>
 
 		<!-- Add filter form -->
 		<div v-else class="rounded border border-[var(--insis-border)] bg-white p-3">
 			<!-- Day selection -->
 			<div class="mb-3">
-				<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> Den </label>
+				<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> {{ $t('components.filters.FilterTimeRange.dayLabel') }} </label>
 				<div class="flex">
 					<button
 						v-for="day in DAYS_ORDER.slice(0, 5)"
@@ -155,7 +154,7 @@ function handleClearAllTimeFilers() {
 			<!-- Time range -->
 			<div class="mb-3 grid grid-cols-2 gap-2">
 				<div>
-					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> Od </label>
+					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> {{ $t('common.from') }} </label>
 					<select v-model="timeFrom" class="insis-select">
 						<option v-for="opt in timeOptions" :key="opt.value" :value="opt.value">
 							{{ opt.label }}
@@ -163,7 +162,7 @@ function handleClearAllTimeFilers() {
 					</select>
 				</div>
 				<div>
-					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> Do </label>
+					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> {{ $t('common.to') }} </label>
 					<select v-model="timeTo" class="insis-select">
 						<option v-for="opt in timeOptions" :key="opt.value" :value="opt.value">
 							{{ opt.label }}
@@ -174,17 +173,22 @@ function handleClearAllTimeFilers() {
 
 			<!-- Actions -->
 			<div class="flex gap-2">
-				<button type="button" class="insis-btn flex-1" @click="showAddForm = false">Zrušit</button>
+				<button type="button" class="insis-btn flex-1" @click="showAddForm = false">{{ $t('common.cancel') }}</button>
 				<button type="button" class="insis-btn-primary flex-1" :disabled="!selectedDay" @click="handleAddTimeFilter">
 					<IconPlus class="mr-1 inline h-3 w-3" />
-					Přidat
+					{{ $t('common.add') }}
 				</button>
 			</div>
 		</div>
 
 		<!-- Time range slider hint -->
 		<p class="mt-2 text-xs text-[var(--insis-gray-500)]">
-			Dostupný rozsah: {{ minutesToTime(coursesStore.facets.time_range.min_time) }} - {{ minutesToTime(coursesStore.facets.time_range.max_time) }}
+			{{
+				$t('components.filters.FilterTimeRange.availableRange', {
+					from: minutesToTime(coursesStore.facets.time_range.min_time),
+					to: minutesToTime(coursesStore.facets.time_range.max_time),
+				})
+			}}
 		</p>
 	</div>
 </template>

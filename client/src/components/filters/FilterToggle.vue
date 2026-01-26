@@ -1,8 +1,9 @@
 <script setup lang="ts">
-/**
+/*
  * FilterToggle
  * Simple toggle/checkbox for boolean filters.
  */
+
 interface Props {
 	label: string
 	checked: boolean

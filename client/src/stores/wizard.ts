@@ -26,10 +26,6 @@ interface PersistedWizardState {
  * 1. Select Faculty → 2. Select Year (auto-selects Winter Semester) → 3. Select Study Plan
  */
 export const useWizardStore = defineStore('wizard', () => {
-	// =========================================================================
-	// STATE
-	// =========================================================================
-
 	/** Current wizard step (1-3) */
 	const currentStep = ref(1)
 
@@ -67,10 +63,6 @@ export const useWizardStore = defineStore('wizard', () => {
 	// Loading states
 	const loading = ref(false)
 	const error = ref<string | null>(null)
-
-	// =========================================================================
-	// COMPUTED
-	// =========================================================================
 
 	/** Whether step 1 is complete */
 	const step1Complete = computed(() => facultyId.value !== null)
@@ -123,10 +115,6 @@ export const useWizardStore = defineStore('wizard', () => {
 		}
 		return parts.join(' → ')
 	})
-
-	// =========================================================================
-	// ACTIONS
-	// =========================================================================
 
 	/** Load initial facet data for step 1 */
 	async function loadInitialFacets() {
@@ -301,10 +289,6 @@ export const useWizardStore = defineStore('wizard', () => {
 		titleSearch.value = search
 	}
 
-	// =========================================================================
-	// PERSISTENCE
-	// =========================================================================
-
 	function persist() {
 		const state: PersistedWizardState = {
 			facultyId: facultyId.value,
@@ -353,10 +337,6 @@ export const useWizardStore = defineStore('wizard', () => {
 
 	// Hydrate on store creation
 	hydrate()
-
-	// =========================================================================
-	// RETURN
-	// =========================================================================
 
 	return {
 		// State

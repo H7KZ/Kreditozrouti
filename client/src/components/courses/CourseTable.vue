@@ -1,31 +1,34 @@
 <script setup lang="ts">
-/**
- * CourseTable
- * InSIS-styled table for displaying courses with expandable rows.
- */
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconChevronUp from '~icons/lucide/chevron-up'
-
 import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import { CourseSortBy } from '@client/types'
 
-type CourseWithRelations = Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>
+/*
+ * CourseTable
+ * InSIS-styled table for displaying courses with expandable rows.
+ */
 
+const { t } = useI18n({ useScope: 'global' })
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
 
+type CourseWithRelations = Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>
+
 // Column definitions for sorting
-const columns = [
-	{ key: 'ident', label: 'Kód', sortable: true },
-	{ key: 'title', label: 'Název', sortable: true },
-	{ key: 'faculty', label: 'Fakulta', sortable: true },
-	{ key: 'ects', label: 'ECTS', sortable: true },
-	{ key: 'completion', label: 'Ukončení', sortable: false },
-	{ key: 'schedule', label: 'Rozvrh', sortable: false },
+const columns = computed(() => [
+	{ key: 'ident', label: t('components.courses.CourseTable.columns.code'), sortable: true },
+	{ key: 'title', label: t('components.courses.CourseTable.columns.title'), sortable: true },
+	{ key: 'faculty', label: t('components.courses.CourseTable.columns.faculty'), sortable: true },
+	{ key: 'ects', label: t('components.courses.CourseTable.columns.ects'), sortable: true },
+	{ key: 'completion', label: t('components.courses.CourseTable.columns.completion'), sortable: false },
+	{ key: 'schedule', label: t('components.courses.CourseTable.columns.schedule'), sortable: false },
 	{ key: 'actions', label: '', sortable: false },
-]
+])
 
 function handleSort(key: CourseSortBy) {
 	if (key === coursesStore.filters.sort_by) {
@@ -110,7 +113,7 @@ function getCompletionLabel(course: CourseWithRelations): string {
 									<div class="insis-spinner" />
 								</div>
 							</template>
-							<template v-else> Žádné předměty neodpovídají filtru </template>
+							<template v-else> {{ $t('components.courses.CourseTable.noResults') }} </template>
 						</td>
 					</tr>
 				</template>
@@ -139,7 +142,9 @@ function getCompletionLabel(course: CourseWithRelations): string {
 									<span :title="String(course.title)" class="truncate">
 										{{ course.title }}
 									</span>
-									<span v-if="hasSelectedUnits(course.id)" class="insis-badge insis-badge-success"> V rozvrhu </span>
+									<span v-if="hasSelectedUnits(course.id)" class="insis-badge insis-badge-success">
+										{{ $t('components.courses.CourseTable.inTimetable') }}
+									</span>
 								</div>
 							</td>
 

@@ -1,14 +1,6 @@
 <script setup lang="ts">
-/**
- * TimetableGrid
- * Weekly timetable grid displaying selected courses.
- * Supports drag-to-filter interaction.
- *
- * Layout: X-axis = time, Y-axis = days
- * Course blocks span horizontally based on their time range
- */
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-
+import { useI18n } from 'vue-i18n'
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
 import { useTimeUtils } from '@client/composables'
@@ -16,6 +8,16 @@ import { TIME_CONFIG, useAlertsStore, useCoursesStore, useTimetableStore, useUIS
 import { SelectedCourseUnit } from '@client/types'
 import InSISDay from '@scraper/Types/InSISDay.ts'
 
+/*
+ * TimetableGrid
+ * Weekly timetable grid displaying selected courses.
+ * Supports drag-to-filter interaction.
+ *
+ * Layout: X-axis = time, Y-axis = days
+ * Course blocks span horizontally based on their time range
+ */
+
+const { t, te } = useI18n({ useScope: 'global' })
 const timetableStore = useTimetableStore()
 const coursesStore = useCoursesStore()
 const uiStore = useUIStore()
@@ -62,6 +64,18 @@ function getBlockStyle(unit: SelectedCourseUnit) {
 // Check if a unit has a conflict
 function hasConflict(unit: SelectedCourseUnit): boolean {
 	return timetableStore.conflicts.some(([a, b]) => a.slotId === unit.slotId || b.slotId === unit.slotId)
+}
+
+// Get translated day name
+function getDayLabel(day: InSISDay): string {
+	const key = `days.${day}`
+	return te(key) ? t(key) : day
+}
+
+// Get short day label (first 2 chars of translated name)
+function getShortDayLabel(day: InSISDay): string {
+	const key = `daysShort.${day}`
+	return te(key) ? t(key) : day.substring(0, 2)
 }
 
 // Drag handling
@@ -138,8 +152,12 @@ function handleCourseBlockClick(unit: SelectedCourseUnit) {
 	// Show info alert
 	alertsStore.addAlert({
 		type: 'info',
-		title: 'Filtr aplikován',
-		description: `Zobrazuji předměty v čase ${minutesToTime(unit.timeFrom)}-${minutesToTime(unit.timeTo)} (${unit.day})`,
+		title: t('components.timetable.TimetableGrid.filterApplied'),
+		description: t('components.timetable.TimetableGrid.filterDescription', {
+			from: minutesToTime(unit.timeFrom),
+			to: minutesToTime(unit.timeTo),
+			day: getDayLabel(unit.day),
+		}),
 		timeout: 5000,
 	})
 }
@@ -201,7 +219,7 @@ onUnmounted(() => {
 			<!-- Header with time slots -->
 			<thead>
 				<tr>
-					<th class="day-header sticky left-0 z-10 bg-[var(--insis-header-bg)]">Den</th>
+					<th class="day-header sticky left-0 z-10 bg-[var(--insis-header-bg)]">{{ $t('components.timetable.TimetableGrid.dayHeader') }}</th>
 					<th v-for="slot in timeSlots" :key="slot.minutes" class="text-center whitespace-nowrap px-2" :style="{ minWidth: '80px' }">
 						{{ slot.label }}
 					</th>
@@ -213,7 +231,7 @@ onUnmounted(() => {
 				<tr v-for="day in WEEKDAYS" :key="day" class="day-row-container">
 					<!-- Day label -->
 					<td class="day-header font-medium sticky left-0 z-10 bg-white border-r border-[var(--insis-border)]">
-						{{ day.substring(0, 2) }}
+						{{ getShortDayLabel(day) }}
 					</td>
 
 					<!-- Time grid cell spanning all columns -->

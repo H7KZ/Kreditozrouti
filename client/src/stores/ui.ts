@@ -16,10 +16,6 @@ interface PersistedUIState {
  * Manages global UI state: view mode, sidebar, loading, etc.
  */
 export const useUIStore = defineStore('ui', () => {
-	// =========================================================================
-	// STATE
-	// =========================================================================
-
 	/** Current view mode: course list or timetable */
 	const viewMode = ref<ViewMode>('list')
 
@@ -38,19 +34,11 @@ export const useUIStore = defineStore('ui', () => {
 	/** Filter panel mobile open state */
 	const mobileFilterOpen = ref(false)
 
-	// =========================================================================
-	// COMPUTED
-	// =========================================================================
-
 	/** Whether we're in list view */
 	const isListView = computed(() => viewMode.value === 'list')
 
 	/** Whether we're in timetable view */
 	const isTimetableView = computed(() => viewMode.value === 'timetable')
-
-	// =========================================================================
-	// ACTIONS
-	// =========================================================================
 
 	/** Set view mode */
 	function setViewMode(mode: ViewMode) {
@@ -110,10 +98,6 @@ export const useUIStore = defineStore('ui', () => {
 		mobileFilterOpen.value = false
 	}
 
-	// =========================================================================
-	// PERSISTENCE
-	// =========================================================================
-
 	function persist() {
 		const state: PersistedUIState = {
 			viewMode: viewMode.value,
@@ -140,10 +124,6 @@ export const useUIStore = defineStore('ui', () => {
 
 	// Hydrate on store creation
 	hydrate()
-
-	// =========================================================================
-	// RETURN
-	// =========================================================================
 
 	return {
 		// State
