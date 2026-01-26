@@ -17,6 +17,7 @@
 #   - MYSQL_*: Database credentials
 #   - REDIS_*: Cache credentials
 #   - API_*: API configuration
+#   - SENTRY_*_DSN: GlitchTip DSN for each service (optional)
 #
 # Usage: docker compose -f docker-compose.production.yml up -d
 # ==============================================================================
@@ -50,6 +51,9 @@ services:
       - MYSQL_URI=${MYSQL_URI}
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      # GlitchTip/Sentry Configuration
+      - SENTRY_DSN=${SENTRY_API_DSN:-}
+      - SENTRY_RELEASE=${IMAGE_TAG:-latest}
 
     networks:
       - traefik-network
@@ -119,6 +123,9 @@ services:
       - ENV=production
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      # GlitchTip/Sentry Configuration
+      - SENTRY_DSN=${SENTRY_SCRAPER_DSN:-}
+      - SENTRY_RELEASE=${IMAGE_TAG:-latest}
 
     networks:
       - redis-network
@@ -157,6 +164,9 @@ services:
     environment:
       - ENV=production
       - VITE_API_URL=https://${DOMAIN}/api
+      # GlitchTip/Sentry Configuration (build-time variables for Vite)
+      - VITE_SENTRY_DSN=${SENTRY_CLIENT_DSN:-}
+      - VITE_SENTRY_RELEASE=${IMAGE_TAG:-latest}
 
     networks:
       - traefik-network

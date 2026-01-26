@@ -1,2 +1,2 @@
 onlyBuiltDependencies:
-  - msgpackr-extract
+    - msgpackr-extract

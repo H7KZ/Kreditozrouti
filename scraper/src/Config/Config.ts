@@ -17,6 +17,12 @@ interface Config {
     /** Current runtime environment (e.g., 'development', 'production'). */
     env: string
 
+    /** Sentry error tracking settings. */
+    sentry: {
+        dsn: string
+        release: string
+    }
+
     /** Redis connection settings. */
     redis: {
         uri: string
@@ -32,11 +38,18 @@ interface Config {
         defaultReferrer: string
     }
 
+    isEnvLocal: () => boolean
     isEnvDevelopment: () => boolean
+    isEnvProduction: () => boolean
 }
 
 const config: Config = {
     env: process.env.ENV ?? 'development',
+
+    sentry: {
+        dsn: process.env.SENTRY_DSN ?? '',
+        release: process.env.SENTRY_RELEASE ?? ''
+    },
 
     redis: {
         uri: process.env.REDIS_URI ?? '',
@@ -51,7 +64,9 @@ const config: Config = {
         defaultReferrer: 'https://insis.vse.cz'
     },
 
-    isEnvDevelopment: () => config.env === 'development'
+    isEnvLocal: () => config.env === 'localhost' || config.env === 'local',
+    isEnvDevelopment: () => config.env === 'dev' || config.env === 'development',
+    isEnvProduction: () => config.env === 'production' || config.env === 'prod'
 }
 
 export default config

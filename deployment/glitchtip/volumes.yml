@@ -1,0 +1,11 @@
+# ==============================================================================
+# Volumes Configuration: GlitchTip
+# Description: Defines persistent storage volumes for GlitchTip services.
+# ==============================================================================
+
+volumes:
+  glitchtip-postgres-volume:
+    name: glitchtip-postgres-volume
+
+  glitchtip-valkey-volume:
+    name: glitchtip-valkey-volume

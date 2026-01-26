@@ -12,6 +12,7 @@
         "preview": "node dist/index.js"
     },
     "dependencies": {
+        "@sentry/node": "^10.36.0",
         "axios": "^1.13.3",
         "bullmq": "^5.67.1",
         "cheerio": "^1.2.0",

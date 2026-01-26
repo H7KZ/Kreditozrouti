@@ -3,6 +3,7 @@ import ScraperRequestHandler from '@scraper/Handlers/ScraperRequestHandler'
 import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/Interfaces/ScraperQueue'
 import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
 import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
+import { withSentryJobHandler } from '@scraper/sentry'
 import { Queue, Worker } from 'bullmq'
 
 /**
@@ -16,7 +17,10 @@ const scraper = {
     },
 
     worker: {
-        request: new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestHandler, { connection: redis.options, concurrency: 1 })
+        request: new Worker<ScraperRequestJob>(ScraperRequestQueue, withSentryJobHandler(ScraperRequestQueue, ScraperRequestHandler), {
+            connection: redis.options,
+            concurrency: 1
+        })
         // response: new Worker<ScraperResponseJobInterface>(ScraperResponseQueue, ScraperResponseJobHandler, { connection: redis })
     },
 

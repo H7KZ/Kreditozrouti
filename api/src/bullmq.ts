@@ -1,6 +1,7 @@
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
+import { withSentryJobHandler } from '@api/sentry'
 import InSISService from '@api/Services/InSISService'
 import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/Interfaces/ScraperQueue'
 import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
@@ -18,7 +19,7 @@ const scraper = {
 	},
 
 	worker: {
-		response: new Worker<ScraperResponseJob>(ScraperResponseQueue, ScraperResponseHandler, {
+		response: new Worker<ScraperResponseJob>(ScraperResponseQueue, withSentryJobHandler(ScraperResponseQueue, ScraperResponseHandler), {
 			connection: redis.options,
 			concurrency: 4
 		})
