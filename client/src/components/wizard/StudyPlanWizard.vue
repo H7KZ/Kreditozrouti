@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import WizardStepFaculty from '@client/components/wizard/WizardStepFaculty.vue'
 import WizardStepStudyPlan from '@client/components/wizard/WizardStepStudyPlan.vue'
 import WizardStepYear from '@client/components/wizard/WizardStepYear.vue'
 import WizardSteps from '@client/components/wizard/WizardSteps.vue'
 import { useWizardStore } from '@client/stores'
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 /*
  * StudyPlanWizard

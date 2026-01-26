@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import FacetItem from '@api/Interfaces/FacetItem.ts'
 import InSISService from '@api/Services/InSISService.ts'
+import { computed } from 'vue'
 import IconArrowLeft from '~icons/lucide/arrow-left'
 
 /*

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import FacetItem from '@api/Interfaces/FacetItem.ts'
+import { useI18n } from 'vue-i18n'
 
 /*
  * WizardStepFaculty

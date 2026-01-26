@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useTimeUtils } from '@client/composables'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 /*
  * TimetableCourseBlock

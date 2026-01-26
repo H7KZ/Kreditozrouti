@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import IconChevronDown from '~icons/lucide/chevron-down'
-import IconChevronUp from '~icons/lucide/chevron-up'
 import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import { CourseSortBy } from '@client/types'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import IconChevronDown from '~icons/lucide/chevron-down'
+import IconChevronUp from '~icons/lucide/chevron-up'
 
 /*
  * CourseTable

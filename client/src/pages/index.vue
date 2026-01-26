@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
 import { useWizardStore } from '@client/stores'
+import { onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 /*
  * Landing Page - Study Plan Wizard
@@ -35,16 +36,21 @@ onMounted(() => {
 	<div class="min-h-screen bg-[var(--insis-bg)]">
 		<!-- Header -->
 		<header class="border-b border-[var(--insis-border)] bg-white px-4 py-3">
-			<div class="mx-auto max-w-4xl">
-				<div class="flex items-center gap-3">
+			<div class="mx-auto flex max-w-4xl items-center justify-between">
+				<div class="flex items-center gap-4">
 					<!-- Logo placeholder -->
-					<div class="flex h-10 w-10 items-center justify-center rounded bg-[var(--insis-blue)] text-white">
-						<span class="text-lg font-bold">K</span>
+					<div class="h-12 w-12 flex items-center justify-center">
+						<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="pb-0.5" />
 					</div>
 					<div>
 						<h1 class="text-lg font-semibold text-[var(--insis-blue)]">{{ $t('pages.index.title') }}</h1>
 						<p class="text-xs text-[var(--insis-gray-500)]">{{ $t('pages.index.subtitle') }}</p>
 					</div>
+				</div>
+
+				<div>
+					<!-- I18n Switcher -->
+					<LanguageSwitcher />
 				</div>
 			</div>
 		</header>

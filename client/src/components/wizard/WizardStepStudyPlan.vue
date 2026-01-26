@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem.ts'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 /*
  * WizardStepStudyPlan
@@ -163,16 +163,6 @@ function handleBack() {
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 					</svg>
 				</div>
-			</button>
-		</div>
-
-		<!-- Back button only (no Continue button needed) -->
-		<div class="mt-6 flex border-t border-[var(--insis-border)] pt-4">
-			<button type="button" class="insis-btn" @click="handleBack">
-				<svg class="mr-1.5 h-4 w-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-				</svg>
-				{{ $t('components.wizard.WizardStepStudyPlan.backToYear') }}
 			</button>
 		</div>
 	</div>

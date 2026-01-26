@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
+import { useTimeUtils } from '@client/composables'
+import { useTimetableStore } from '@client/stores'
+import { CourseUnitType } from '@client/types'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconCheck from '~icons/lucide/check'
 import IconMinus from '~icons/lucide/minus'
 import IconPlus from '~icons/lucide/plus'
 import IconTrash from '~icons/lucide/trash-2'
-import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
-import { useTimeUtils } from '@client/composables'
-import { useTimetableStore } from '@client/stores'
-import { CourseUnitType } from '@client/types'
 
 /*
  * CourseRowExpanded

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import CourseTable from '@client/components/courses/CourseTable.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 import { useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import { computed, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 /*
  * Courses Page
@@ -123,20 +124,27 @@ async function fetchNextCoursesPage(page: () => void) {
 						⚠️ {{ $t('pages.courses.conflict') }}
 					</span>
 
-					<!-- Change study plan -->
-					<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="handleResetWizard">{{ $t('pages.courses.changePlan') }}</button>
+					<div class="flex items-center gap-4">
+						<!-- Change study plan -->
+						<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="handleResetWizard">
+							{{ $t('pages.courses.changePlan') }}
+						</button>
 
-					<!-- Mobile menu toggle -->
-					<button type="button" class="insis-btn insis-btn-secondary p-2 lg:hidden" @click="uiStore.toggleMobileFilter">
-						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-							/>
-						</svg>
-					</button>
+						<!-- I18n Switcher -->
+						<LanguageSwitcher />
+
+						<!-- Mobile menu toggle -->
+						<button type="button" class="insis-btn insis-btn-secondary p-2 lg:hidden" @click="uiStore.toggleMobileFilter">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+								/>
+							</svg>
+						</button>
+					</div>
 				</div>
 			</div>
 		</header>
@@ -164,9 +172,9 @@ async function fetchNextCoursesPage(page: () => void) {
 			<div v-if="uiStore.mobileFilterOpen" class="fixed inset-0 z-40 bg-black/50 lg:hidden" @click="uiStore.closeMobileFilter" />
 
 			<!-- Content Area -->
-			<main class="flex flex-1 flex-col overflow-hidden">
+			<main class="flex flex-1 flex-col overflow-hidden mt-3">
 				<!-- View Tabs -->
-				<div class="border-b border-[var(--insis-border)] bg-white px-4">
+				<div class="bg-white px-4">
 					<nav class="insis-tabs">
 						<button
 							type="button"

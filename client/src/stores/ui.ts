@@ -1,154 +1,115 @@
+import type { PersistedUIState, UIState, ViewMode } from '@client/types'
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
-
-import type { ViewMode } from '@client/types'
 
 const STORAGE_KEY = 'kreditozrouti:ui'
-
-interface PersistedUIState {
-	viewMode: ViewMode
-	sidebarCollapsed: boolean
-	showLegend: boolean
-}
 
 /**
  * UI Store
  * Manages global UI state: view mode, sidebar, loading, etc.
  */
-export const useUIStore = defineStore('ui', () => {
-	/** Current view mode: course list or timetable */
-	const viewMode = ref<ViewMode>('list')
+export const useUIStore = defineStore('ui', {
+	state: (): UIState => ({
+		viewMode: 'list',
+		sidebarCollapsed: false,
+		showLegend: false,
+		globalLoading: false,
+		mobileMenuOpen: false,
+		mobileFilterOpen: false,
+	}),
 
-	/** Whether the filter sidebar is collapsed */
-	const sidebarCollapsed = ref(false)
+	getters: {
+		/** Whether we're in list view */
+		isListView(): boolean {
+			return this.viewMode === 'list'
+		},
 
-	/** Whether the legend is shown */
-	const showLegend = ref(false)
+		/** Whether we're in timetable view */
+		isTimetableView(): boolean {
+			return this.viewMode === 'timetable'
+		},
+	},
 
-	/** Global loading state */
-	const globalLoading = ref(false)
+	actions: {
+		/** Set view mode */
+		setViewMode(mode: ViewMode) {
+			this.viewMode = mode
+			this.persist()
+		},
 
-	/** Mobile menu open state */
-	const mobileMenuOpen = ref(false)
+		/** Switch to list view */
+		switchToListView() {
+			this.setViewMode('list')
+		},
 
-	/** Filter panel mobile open state */
-	const mobileFilterOpen = ref(false)
+		/** Switch to timetable view */
+		switchToTimetableView() {
+			this.setViewMode('timetable')
+		},
 
-	/** Whether we're in list view */
-	const isListView = computed(() => viewMode.value === 'list')
+		/** Toggle view mode */
+		toggleViewMode() {
+			this.setViewMode(this.viewMode === 'list' ? 'timetable' : 'list')
+		},
 
-	/** Whether we're in timetable view */
-	const isTimetableView = computed(() => viewMode.value === 'timetable')
+		/** Toggle legend visibility */
+		toggleLegend() {
+			this.showLegend = !this.showLegend
+			this.persist()
+		},
 
-	/** Set view mode */
-	function setViewMode(mode: ViewMode) {
-		viewMode.value = mode
-		persist()
-	}
+		/** Set legend visibility */
+		setShowLegend(show: boolean) {
+			this.showLegend = show
+			this.persist()
+		},
 
-	/** Switch to list view */
-	function switchToListView() {
-		setViewMode('list')
-	}
+		/** Set global loading state */
+		setGlobalLoading(loading: boolean) {
+			this.globalLoading = loading
+		},
 
-	/** Switch to timetable view */
-	function switchToTimetableView() {
-		setViewMode('timetable')
-	}
+		/** Toggle mobile menu */
+		toggleMobileMenu() {
+			this.mobileMenuOpen = !this.mobileMenuOpen
+		},
 
-	/** Toggle view mode */
-	function toggleViewMode() {
-		setViewMode(viewMode.value === 'list' ? 'timetable' : 'list')
-	}
+		/** Close mobile menu */
+		closeMobileMenu() {
+			this.mobileMenuOpen = false
+		},
 
-	/** Toggle legend visibility */
-	function toggleLegend() {
-		showLegend.value = !showLegend.value
-		persist()
-	}
+		/** Toggle mobile filter panel */
+		toggleMobileFilter() {
+			this.mobileFilterOpen = !this.mobileFilterOpen
+		},
 
-	/** Set legend visibility */
-	function setShowLegend(show: boolean) {
-		showLegend.value = show
-		persist()
-	}
+		/** Close mobile filter panel */
+		closeMobileFilter() {
+			this.mobileFilterOpen = false
+		},
 
-	/** Set global loading state */
-	function setGlobalLoading(loading: boolean) {
-		globalLoading.value = loading
-	}
+		persist() {
+			const state: PersistedUIState = {
+				viewMode: this.viewMode,
+				sidebarCollapsed: this.sidebarCollapsed,
+				showLegend: this.showLegend,
+			}
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+		},
+	},
 
-	/** Toggle mobile menu */
-	function toggleMobileMenu() {
-		mobileMenuOpen.value = !mobileMenuOpen.value
-	}
-
-	/** Close mobile menu */
-	function closeMobileMenu() {
-		mobileMenuOpen.value = false
-	}
-
-	/** Toggle mobile filter panel */
-	function toggleMobileFilter() {
-		mobileFilterOpen.value = !mobileFilterOpen.value
-	}
-
-	/** Close mobile filter panel */
-	function closeMobileFilter() {
-		mobileFilterOpen.value = false
-	}
-
-	function persist() {
-		const state: PersistedUIState = {
-			viewMode: viewMode.value,
-			sidebarCollapsed: sidebarCollapsed.value,
-			showLegend: showLegend.value,
-		}
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-	}
-
-	function hydrate() {
+	hydrate(storeState) {
 		const stored = localStorage.getItem(STORAGE_KEY)
 		if (!stored) return
 
 		try {
 			const state: PersistedUIState = JSON.parse(stored)
-			viewMode.value = state.viewMode || 'list'
-			sidebarCollapsed.value = state.sidebarCollapsed || false
-			showLegend.value = state.showLegend || false
+			storeState.viewMode = state.viewMode || 'list'
+			storeState.sidebarCollapsed = state.sidebarCollapsed || false
+			storeState.showLegend = state.showLegend || false
 		} catch (e) {
 			console.error('UI: Failed to hydrate from localStorage', e)
 			localStorage.removeItem(STORAGE_KEY)
 		}
-	}
-
-	// Hydrate on store creation
-	hydrate()
-
-	return {
-		// State
-		viewMode,
-		sidebarCollapsed,
-		showLegend,
-		globalLoading,
-		mobileMenuOpen,
-		mobileFilterOpen,
-
-		// Computed
-		isListView,
-		isTimetableView,
-
-		// Actions
-		setViewMode,
-		switchToListView,
-		switchToTimetableView,
-		toggleViewMode,
-		toggleLegend,
-		setShowLegend,
-		setGlobalLoading,
-		toggleMobileMenu,
-		closeMobileMenu,
-		toggleMobileFilter,
-		closeMobileFilter,
-	}
+	},
 })

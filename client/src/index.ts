@@ -1,6 +1,6 @@
 import App from '@client/App.vue'
 import '@client/index.css'
-import { useAlertsStore } from '@client/stores/alerts'
+import { useAlertsStore, useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 import * as Sentry from '@sentry/vue'
 import { createPinia } from 'pinia'
@@ -61,6 +61,10 @@ app.use(i18n)
 app.use(pinia)
 
 useAlertsStore()
+useCoursesStore()
+useTimetableStore().hydrate()
+useUIStore()
+useWizardStore().hydrate()
 
 app.mount('#app')
 

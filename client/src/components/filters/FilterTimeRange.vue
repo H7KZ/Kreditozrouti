@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import IconPlus from '~icons/lucide/plus'
-import IconX from '~icons/lucide/x'
 import { TimeSelection } from '@api/Validations'
 import { DAYS_ORDER, DAYS_SHORT, useTimeUtils } from '@client/composables'
 import { useCoursesStore } from '@client/stores'
 import InSISDay from '@scraper/Types/InSISDay.ts'
+import { computed, ref } from 'vue'
+import IconPlus from '~icons/lucide/plus'
+import IconX from '~icons/lucide/x'
 
 /*
  * FilterTimeRange

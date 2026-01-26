@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
 import { useTimeUtils } from '@client/composables'
-import { TIME_CONFIG, useAlertsStore, useCoursesStore, useTimetableStore, useUIStore, WEEKDAYS } from '@client/stores'
+import { TIME_CONFIG, WEEKDAYS } from '@client/constants/timetable.ts'
+import { useAlertsStore, useCoursesStore, useTimetableStore, useUIStore } from '@client/stores'
 import { SelectedCourseUnit } from '@client/types'
 import InSISDay from '@scraper/Types/InSISDay.ts'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 /*
  * TimetableGrid

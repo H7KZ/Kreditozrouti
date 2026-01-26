@@ -421,12 +421,12 @@
 	}
 
 	.insis-tab {
-		@apply -mb-px cursor-pointer px-4 py-2 text-sm;
-		border: 1px solid transparent;
-		border-bottom: none;
+		@apply -mb-px cursor-pointer border-b px-4 py-2 text-sm;
+		/*border: 1px solid transparent;*/
+		border-color: var(--insis-border);
+		/*border-bottom: none;*/
 		background-color: var(--insis-gray-100);
 		color: var(--insis-gray-700);
-		transition: all 0.15s ease-in-out;
 	}
 
 	.insis-tab:hover {
@@ -436,6 +436,7 @@
 	.insis-tab.active,
 	.insis-tab-active {
 		background-color: white;
+		border: 1px solid;
 		border-color: var(--insis-border);
 		color: var(--insis-gray-900);
 		font-weight: 500;

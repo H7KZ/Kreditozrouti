@@ -27,3 +27,14 @@ export interface DragSelection {
 	endDay: InSISDay | null
 	endTime: number | null
 }
+
+export interface PersistedTimetableState {
+	selectedUnits: SelectedCourseUnit[]
+}
+
+export interface TimetableState {
+	selectedUnits: SelectedCourseUnit[]
+	dragSelection: DragSelection
+	showDragPopover: boolean
+	dragPopoverPosition: { x: number; y: number }
+}

@@ -1,6 +1,6 @@
 import type ErrorResponse from '@api/Error/ErrorResponse.ts'
 import { i18n } from '@client/index.ts'
-import { useAlertsStore } from '@client/stores/alerts.ts'
+import { useAlertsStore } from '@client/stores'
 import axios, { AxiosError, type AxiosInstance } from 'axios'
 
 const api: AxiosInstance = axios.create({
@@ -27,7 +27,7 @@ api.interceptors.response.use(
 			const data = error.response?.data
 
 			title = `${status}. ${t(`errors.types.${data?.type ?? 'Unknown'}`)}`
-			description = t(`errors.types.${data?.code ?? '0'}`)
+			description = t(`errors.codes.${data?.code ?? '0'}`)
 		}
 
 		// Handle Generic JS Errors

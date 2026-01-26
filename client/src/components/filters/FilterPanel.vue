@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
+import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
+import { useCoursesStore, useUIStore } from '@client/stores'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconFilter from '~icons/lucide/filter'
 import IconRotateCcw from '~icons/lucide/rotate-ccw'
 import IconX from '~icons/lucide/x'
-import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
-import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
-import { useCoursesStore, useUIStore } from '@client/stores'
 
 /*
  * FilterPanel
@@ -192,9 +192,6 @@ function toggleTimeFilter() {
 			/>
 		</div>
 	</aside>
-
-	<!-- Mobile overlay backdrop -->
-	<div v-if="uiStore.mobileFilterOpen" class="fixed inset-0 z-30 bg-black/50 lg:hidden" @click="handleCloseMobileFilter" />
 </template>
 
 <style scoped>
