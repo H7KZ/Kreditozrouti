@@ -44,7 +44,7 @@ function setLocale(newLocale: string) {
 				v-for="l in availableLocales"
 				:key="l"
 				type="button"
-				class="block w-full px-4 py-2 text-left text-sm hover:bg-[var(--insis-row-hover)]"
+				class="block cursor-pointer w-full px-4 py-2 text-left text-sm hover:bg-[var(--insis-row-hover)]"
 				:class="[locale === l ? 'font-medium text-[var(--insis-blue)] bg-[var(--insis-bg)]' : 'text-[var(--insis-gray-700)]']"
 				@click="setLocale(l)"
 			>

@@ -4,7 +4,7 @@ import CourseTable from '@client/components/courses/CourseTable.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 import { useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
-import { computed, onMounted, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
@@ -39,6 +39,9 @@ onMounted(async () => {
 	}
 })
 
+const disableEmptyTimetable = ref(false)
+const showEmptyTimetable = computed(() => uiStore.viewMode === 'timetable' && timetableStore.selectedCourseIds.length === 0 && !disableEmptyTimetable.value)
+
 /** Selected study plan display */
 const studyPlanInfo = computed(() => ({
 	title: wizardStore.studyPlanTitle || t('pages.courses.studyPlanFallback'),
@@ -63,15 +66,15 @@ const hasConflicts = computed(() => timetableStore.hasConflicts)
 
 /** Reset wizard and go back */
 function handleResetWizard() {
+	if (!confirm(t('pages.courses.changePlanConfirm'))) return
 	wizardStore.reset()
 	router.push('/')
 }
 
 /** Clear all selected courses */
 function handleClearTimetable() {
-	if (confirm(t('pages.courses.clearTimetableConfirm'))) {
-		timetableStore.clearAll()
-	}
+	if (!confirm(t('pages.courses.clearTimetableConfirm'))) return
+	timetableStore.clearAll()
 }
 
 async function fetchNextCoursesPage(page: () => void) {
@@ -287,35 +290,40 @@ async function fetchNextCoursesPage(page: () => void) {
 
 					<!-- Timetable View -->
 					<template v-else-if="uiStore.viewMode === 'timetable'">
-						<!-- Empty timetable -->
-						<div v-if="selectedCoursesCount === 0" class="py-12 text-center">
-							<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--insis-gray-100)]">
-								<svg class="h-8 w-8 text-[var(--insis-gray-400)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-									/>
-								</svg>
-							</div>
-							<p class="mb-2 font-medium text-[var(--insis-text)]">{{ $t('pages.courses.emptyTimetable.title') }}</p>
-							<p class="mb-4 text-sm text-[var(--insis-gray-500)]">
-								{{ $t('pages.courses.emptyTimetable.description') }}
-							</p>
-							<button type="button" class="insis-btn insis-btn-primary" @click="uiStore.switchToListView">
-								{{ $t('pages.courses.emptyTimetable.browseCourses') }}
-							</button>
-						</div>
-
 						<!-- Timetable grid -->
-						<TimetableGrid v-else />
+						<TimetableGrid>
+							<!-- Empty timetable -->
+							<div v-if="showEmptyTimetable" class="absolute top-0 left-0 w-full h-full py-12 text-center bg-white/70">
+								<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--insis-gray-200)]">
+									<svg class="h-8 w-8 text-[var(--insis-gray-500)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+										/>
+									</svg>
+								</div>
+								<p class="mb-2 font-medium text-[var(--insis-text)]">{{ $t('pages.courses.emptyTimetable.title') }}</p>
+								<p class="mb-4 text-sm text-[var(--insis-gray-600)]">
+									{{ $t('pages.courses.emptyTimetable.description') }}
+								</p>
+								<div class="flex flex-col gap-4 items-center">
+									<button type="button" class="insis-btn insis-btn-primary" @click="uiStore.switchToListView">
+										{{ $t('pages.courses.emptyTimetable.browseCourses') }}
+									</button>
+									<button type="button" class="insis-btn insis-btn-secondary" @click="() => (disableEmptyTimetable = true)">
+										{{ $t('pages.courses.emptyTimetable.orDragTimetable') }}
+									</button>
+								</div>
+							</div>
+						</TimetableGrid>
 
 						<!-- Timetable legend -->
 						<div class="mt-4 border-t border-[var(--insis-border)] pt-4">
 							<button
 								type="button"
-								class="flex items-center gap-2 text-sm text-[var(--insis-gray-500)] hover:text-[var(--insis-text)]"
+								class="flex cursor-pointer items-center gap-2 text-sm text-[var(--insis-gray-500)] hover:text-[var(--insis-text)]"
 								@click="uiStore.toggleLegend"
 							>
 								<span>{{ uiStore.showLegend ? '▼' : '▶' }}</span>

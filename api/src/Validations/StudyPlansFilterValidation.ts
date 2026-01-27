@@ -26,7 +26,7 @@ const StudyPlansFilterValidation = z.object({
 	sort_dir: z.enum(['asc', 'desc']).optional().default('asc'),
 
 	// Pagination
-	limit: z.coerce.number().min(1).max(100).optional().default(20),
+	limit: z.coerce.number().min(0).max(100).optional().default(20),
 	offset: z.coerce.number().min(0).optional().default(0)
 })
 

@@ -125,7 +125,6 @@ export const useTimetableStore = defineStore('timetable', {
 			const hasExercise = slotType.includes('cvičení') || slotType.includes('exercise')
 			const hasSeminar = slotType.includes('seminář') || slotType.includes('seminar')
 
-			if (hasLecture && hasExercise) return 'combined'
 			if (hasLecture) return 'lecture'
 			if (hasExercise) return 'exercise'
 			if (hasSeminar) return 'seminar'

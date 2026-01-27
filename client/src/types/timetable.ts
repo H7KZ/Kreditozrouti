@@ -1,7 +1,7 @@
 import InSISDay from '@scraper/Types/InSISDay.ts'
 
 /** Course unit types for timetable display */
-export type CourseUnitType = 'lecture' | 'exercise' | 'seminar' | 'combined'
+export type CourseUnitType = 'lecture' | 'exercise' | 'seminar'
 
 /** Selected course unit for timetable */
 export interface SelectedCourseUnit {

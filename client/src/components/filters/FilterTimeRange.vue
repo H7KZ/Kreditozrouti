@@ -3,7 +3,7 @@ import { TimeSelection } from '@api/Validations'
 import { DAYS_ORDER, DAYS_SHORT, useTimeUtils } from '@client/composables'
 import { useCoursesStore } from '@client/stores'
 import InSISDay from '@scraper/Types/InSISDay.ts'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import IconPlus from '~icons/lucide/plus'
 import IconX from '~icons/lucide/x'
 
@@ -22,10 +22,32 @@ const timeFrom = ref('09:15')
 const timeTo = ref('14:15')
 const showAddForm = ref(false)
 
-// Time options for select inputs (7:30 to 20:00 in 15-min increments)
+// Ensure timeFrom is always less than timeTo
+watch(timeFrom, (newFrom) => {
+	const fromMins = timeToMinutes(newFrom)
+	const toMins = timeToMinutes(timeTo.value)
+	if (fromMins >= toMins) {
+		// Set to time to 1 hour after from time, capped at 19:30
+		const newToMins = Math.min(fromMins + 60, 19 * 60 + 30)
+		timeTo.value = minutesToTime(newToMins)
+	}
+})
+
+// Ensure timeTo is always greater than timeFrom
+watch(timeTo, (newTo) => {
+	const toMins = timeToMinutes(newTo)
+	const fromMins = timeToMinutes(timeFrom.value)
+	if (toMins <= fromMins) {
+		// Set from time to 1 hour before to time, floored at 7:30
+		const newFromMins = Math.max(toMins - 60, 7 * 60 + 30)
+		timeFrom.value = minutesToTime(newFromMins)
+	}
+})
+
+// Time options for select inputs (7:30 to 19:30 in 15-min increments)
 const timeOptions = computed(() => {
 	const options: { value: string; label: string }[] = []
-	for (let mins = 7 * 60 + 30; mins <= 20 * 60; mins += 15) {
+	for (let mins = 7 * 60 + 30; mins <= 19 * 60 + 30; mins += 15) {
 		const time = minutesToTime(mins)
 		options.push({ value: time, label: time })
 	}

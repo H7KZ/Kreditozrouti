@@ -220,7 +220,7 @@ onUnmounted(() => {
 			<!-- Header with time slots -->
 			<thead>
 				<tr>
-					<th class="day-header sticky left-0 z-10 bg-[var(--insis-header-bg)]">{{ $t('components.timetable.TimetableGrid.dayHeader') }}</th>
+					<th class="day-header bg-[var(--insis-header-bg)]">{{ $t('components.timetable.TimetableGrid.dayHeader') }}</th>
 					<th v-for="slot in timeSlots" :key="slot.minutes" class="text-center whitespace-nowrap px-2" :style="{ minWidth: '80px' }">
 						{{ slot.label }}
 					</th>
@@ -231,7 +231,7 @@ onUnmounted(() => {
 			<tbody>
 				<tr v-for="day in WEEKDAYS" :key="day" class="day-row-container">
 					<!-- Day label -->
-					<td class="day-header font-medium sticky left-0 z-10 bg-white border-r border-[var(--insis-border)]">
+					<td class="day-header font-medium bg-white border-r border-[var(--insis-border)]">
 						{{ getShortDayLabel(day) }}
 					</td>
 
@@ -248,9 +248,10 @@ onUnmounted(() => {
 							<div
 								v-for="(slot, idx) in timeSlots"
 								:key="slot.minutes"
-								class="h-full border-l border-[var(--insis-border-light)]"
-								:class="{ 'border-l-0': idx === 0 }"
-								:style="{ width: `${100 / (timeSlots.length - 1)}%` }"
+								class="h-full w-full border-r border-[var(--insis-border-light)]"
+								:class="{
+									'border-r-0': idx === timeSlots.length - 1,
+								}"
 							/>
 						</div>
 
@@ -284,6 +285,8 @@ onUnmounted(() => {
 			@filter="handleDragFilter"
 			@cancel="handleDragCancel"
 		/>
+
+		<slot />
 	</div>
 </template>
 

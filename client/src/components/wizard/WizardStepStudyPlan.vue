@@ -32,6 +32,7 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 const localTitleSearch = ref(props.titleSearch)
+const localTitleTimeout = ref<number | null>(null)
 
 function getLevelLabel(level: string): string {
 	const key = `studyLevels.${level.toLowerCase()}`
@@ -41,7 +42,14 @@ function getLevelLabel(level: string): string {
 function handleTitleSearchInput(event: Event) {
 	const value = (event.target as HTMLInputElement).value
 	localTitleSearch.value = value
-	emit('setTitleSearch', value)
+
+	if (localTitleTimeout.value) {
+		clearTimeout(localTitleTimeout.value)
+	}
+
+	localTitleTimeout.value = window.setTimeout(() => {
+		emit('setTitleSearch', value)
+	}, 750)
 }
 
 function toggleLevelFilter(level: string) {

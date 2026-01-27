@@ -96,20 +96,17 @@
 	"unitTypes": {
 		"lecture": "Přednáška",
 		"exercise": "Cvičení",
-		"seminar": "Seminář",
-		"combined": "Přednáška + Cvičení"
+		"seminar": "Seminář"
 	},
 	"unitTypesShort": {
 		"lecture": "Př",
 		"exercise": "Cv",
-		"seminar": "Se",
-		"combined": "Př+Cv"
+		"seminar": "Se"
 	},
 	"unitTypesAccusative": {
 		"lecture": "přednášku",
 		"exercise": "cvičení",
-		"seminar": "seminář",
-		"combined": "přednášku/cvičení"
+		"seminar": "seminář"
 	},
 	"studyLevels": {
 		"magisterský navazující": "Magisterský navazující",
@@ -179,6 +176,7 @@
 			"conflict": "Kolize",
 			"conflictTitle": "Máte kolize v rozvrhu",
 			"changePlan": "Změnit plán",
+			"changePlanConfirm": "Opravdu chcete změnit studijní plán? Váš aktuální rozvrh bude vymazán.",
 			"courseList": "Seznam předmětů",
 			"myTimetable": "Můj rozvrh",
 			"loadingCourses": "Načítám předměty...",
@@ -190,7 +188,8 @@
 			"emptyTimetable": {
 				"title": "Váš rozvrh je prázdný",
 				"description": "Přidejte předměty ze seznamu nebo táhněte přes prázdné sloty pro vyhledání předmětů v daném čase.",
-				"browseCourses": "Procházet předměty"
+				"browseCourses": "Procházet předměty",
+				"orDragTimetable": "Nebo táhnout přes rozvrhové sloty"
 			}
 		}
 	},
@@ -260,6 +259,8 @@
 		},
 		"filters": {
 			"FilterPanel": {
+				"searchLabel": "Hledat",
+				"searchPlaceholder": "Hledat předměty pomocí názvu...",
 				"faculties": "Fakulty",
 				"studyLevel": "Stupeň studia",
 				"language": "Jazyk výuky",

@@ -32,7 +32,8 @@ export function useTimeUtils() {
 	 */
 	function timeToMinutes(time: string): number {
 		const [hours, mins] = time.split(':').map(Number)
-		if (!hours || !mins) return 0
+		if (hours === undefined || mins === undefined) return 0
+		if (isNaN(hours) || isNaN(mins)) return 0
 		if (hours < 0 || hours > 23 || mins < 0 || mins > 59) return 0
 		return hours * 60 + mins
 	}

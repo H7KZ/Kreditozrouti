@@ -31,7 +31,6 @@ const blockColorClass = computed(() => {
 		lecture: 'bg-[var(--insis-block-lecture)]',
 		exercise: 'bg-[var(--insis-block-exercise)]',
 		seminar: 'bg-[var(--insis-block-seminar)]',
-		combined: 'bg-[var(--insis-block-combined,#c8e6c9)]',
 	}
 	return typeColors[props.unit.unitType] || 'bg-[var(--insis-block-lecture)]'
 })

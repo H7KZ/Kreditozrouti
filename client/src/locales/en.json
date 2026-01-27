@@ -96,20 +96,17 @@
 	"unitTypes": {
 		"lecture": "Lecture",
 		"exercise": "Exercise",
-		"seminar": "Seminar",
-		"combined": "Lecture + Exercise"
+		"seminar": "Seminar"
 	},
 	"unitTypesShort": {
 		"lecture": "L",
 		"exercise": "Ex",
-		"seminar": "S",
-		"combined": "L+Ex"
+		"seminar": "S"
 	},
 	"unitTypesAccusative": {
 		"lecture": "lecture",
 		"exercise": "exercise",
-		"seminar": "seminar",
-		"combined": "lecture/exercise"
+		"seminar": "seminar"
 	},
 	"studyLevels": {
 		"magisterský navazující": "Follow-up Master's",
@@ -179,6 +176,7 @@
 			"conflict": "Conflict",
 			"conflictTitle": "You have conflicts in your timetable",
 			"changePlan": "Change plan",
+			"changePlanConfirm": "Changing the study plan will clear your current timetable. Do you want to proceed?",
 			"courseList": "Course List",
 			"myTimetable": "My Timetable",
 			"loadingCourses": "Loading courses...",
@@ -190,7 +188,8 @@
 			"emptyTimetable": {
 				"title": "Your timetable is empty",
 				"description": "Add courses from the list or drag across empty slots to search for courses at that time.",
-				"browseCourses": "Browse courses"
+				"browseCourses": "Browse courses",
+				"orDragTimetable": "or drag across the timetable"
 			}
 		}
 	},
@@ -260,6 +259,8 @@
 		},
 		"filters": {
 			"FilterPanel": {
+				"searchLabel": "Search",
+				"searchPlaceholder": "Search courses by name...",
 				"faculties": "Faculties",
 				"studyLevel": "Study Level",
 				"language": "Language of Instruction",

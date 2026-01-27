@@ -142,7 +142,7 @@ export const useWizardStore = defineStore('wizard', {
 			try {
 				const response = await api.post<StudyPlansResponse>('/study_plans', {
 					semesters: ['ZS'],
-					limit: 1,
+					limit: 0,
 					offset: 0,
 				} satisfies Partial<StudyPlansFilter>)
 
@@ -167,7 +167,7 @@ export const useWizardStore = defineStore('wizard', {
 				const response = await api.post<StudyPlansResponse>('/study_plans', {
 					faculty_ids: [this.facultyId],
 					semesters: ['ZS'],
-					limit: 1,
+					limit: 0,
 					offset: 0,
 				} satisfies Partial<StudyPlansFilter>)
 

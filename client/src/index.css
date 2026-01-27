@@ -125,12 +125,12 @@
 	--insis-border-light: #e0e0e0;
 
 	/* Timetable Block Colors - From actual InSIS timetable */
-	--insis-block-lecture: #90ee90;
-	--insis-block-seminar: #cefad0;
-	--insis-block-exercise: #87ceeb;
-	--insis-block-exam: #ffb7b2;
-	--insis-block-selected: #b3d9ff;
-	--insis-block-conflict: #faa5a5;
+	--insis-block-lecture: #a1eda1;
+	--insis-block-seminar: #ecf191;
+	--insis-block-exercise: #a1dbf5;
+	--insis-block-exam: #e89aed;
+	--insis-block-selected: #6eb8ed;
+	--insis-block-conflict: #df9292;
 
 	/* Course Type Colors - Matching InSIS icons */
 	--insis-course-compulsory: #191970;

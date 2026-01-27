@@ -22,6 +22,9 @@ const uiStore = useUIStore()
 // Track collapsed state for time filter separately
 const timeFilterCollapsed = ref(false)
 
+const localTitleSearch = ref(coursesStore.filters.title ?? '')
+const localTitleTimeout = ref<number | null>(null)
+
 // Facet configuration for dynamic rendering
 const facetConfig = computed(() => [
 	{
@@ -112,6 +115,21 @@ function handleFilterChange(setter: (values: any[]) => void, values: string[]) {
 	coursesStore.fetchCourses()
 }
 
+function handleTitleSearchInput(event: Event) {
+	const target = event.target as HTMLInputElement
+	const value = target.value
+	localTitleSearch.value = value
+
+	if (localTitleTimeout.value) {
+		clearTimeout(localTitleTimeout.value)
+	}
+
+	localTitleTimeout.value = window.setTimeout(() => {
+		coursesStore.setTitleSearch(value)
+		coursesStore.fetchCourses()
+	}, 750)
+}
+
 function handleResetFilters() {
 	coursesStore.resetFilters()
 	coursesStore.fetchCourses()
@@ -159,6 +177,31 @@ function toggleTimeFilter() {
 				<IconRotateCcw class="h-3 w-3" />
 				{{ $t('common.reset') }}
 			</button>
+		</div>
+
+		<div class="filter-group">
+			<!-- Title Search -->
+			<div class="flex-1 w-full py-1">
+				<label class="insis-label" for="title-search">{{ $t('components.filters.FilterPanel.searchLabel') }}</label>
+				<div class="relative">
+					<svg
+						class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+					</svg>
+					<input
+						id="title-search"
+						type="text"
+						class="insis-input pl-9"
+						:placeholder="$t('components.filters.FilterPanel.searchPlaceholder')"
+						:value="localTitleSearch"
+						@input="handleTitleSearchInput"
+					/>
+				</div>
+			</div>
 		</div>
 
 		<!-- Time Range Filter (collapsible) -->

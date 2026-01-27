@@ -33,7 +33,7 @@ export default interface ScraperInSISCourse {
     /** The faculty offering the course. */
     faculty: ScraperInSISFaculty | null
 
-    /** The format of instruction (e.g., 'Lecture', 'Seminar', 'Combined'). */
+    /** The format of instruction (e.g., 'Lecture', 'Seminar'). */
     mode_of_delivery: string | null
 
     /** The requirements for course completion (e.g., 'Exam', 'Credit'). */
