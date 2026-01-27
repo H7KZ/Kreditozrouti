@@ -247,11 +247,11 @@ services:
       mode: global
       resources:
         limits:
-          cpus: "1"
-          memory: 2048M
+          cpus: "1.5"
+          memory: 3072M
         reservations:
-          cpus: "0.25"
-          memory: 256M
+          cpus: "0.5"
+          memory: 768M
 
   # ============================================================================
   # Database Interface (phpMyAdmin)

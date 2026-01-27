@@ -106,7 +106,7 @@ export default class CourseService {
 				).as('assessments'),
 
 				// Relation 4: Study Plans (M:N) - Conditional Logic
-				filters.study_plan_ids
+				filters.study_plan_ids?.length
 					? jsonArrayFrom(
 							eb
 								.selectFrom(`${StudyPlanCourseTable._table} as spc`)
@@ -121,7 +121,7 @@ export default class CourseService {
 									'spc.updated_at'
 								])
 								.whereRef('spc.course_id', '=', 'c.id')
-								.where('spc.study_plan_id', 'in', Array.isArray(filters.study_plan_ids) ? filters.study_plan_ids : [filters.study_plan_ids])
+								.where('spc.study_plan_id', 'in', filters.study_plan_ids)
 						).as('study_plans')
 					: eb.val(null).as('study_plans')
 			])

@@ -3,6 +3,7 @@ import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse'
 import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
 import Exception from '@api/Error/Exception'
+import InSISService from '@api/Services/InSISService'
 import StudyPlanService from '@api/Services/StudyPlanService'
 import StudyPlansFilterValidation from '@api/Validations/StudyPlansFilterValidation'
 import { Request, Response } from 'express'
@@ -33,6 +34,8 @@ export default async function StudyPlansController(req: Request, res: Response<S
 	}
 
 	const filter = result.data
+
+	filter.years ??= InSISService.getPeriodsForLastYears(4, new Date()).map(p => p.year)
 
 	// 2. Cache Check
 	const cacheKey = `insis:study_plans:${JSON.stringify(filter)}`

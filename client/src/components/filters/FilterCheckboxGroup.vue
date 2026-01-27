@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import FacetItem from '@api/Interfaces/FacetItem.ts'
 import { computed, ref } from 'vue'
+import { LocaleMessages } from 'vue-i18n'
 
 /*
  * FilterCheckboxGroup
@@ -11,6 +12,7 @@ import { computed, ref } from 'vue'
 interface Props {
 	label: string
 	facets: FacetItem[]
+	translations?: Record<string, LocaleMessages<{ static: string }>>
 	selected: string[]
 	searchable?: boolean
 	maxVisible?: number
@@ -79,7 +81,7 @@ function toggleListExpanded() {
 }
 
 function getDisplayLabel(facet: FacetItem): string {
-	return String(facet.value)
+	return props.translations && props.translations[String(facet.value)] ? props.translations[String(facet.value)]!.body!.static : String(facet.value)
 }
 </script>
 

@@ -52,6 +52,13 @@
 		"Sobota": "So",
 		"Neděle": "Ne"
 	},
+	"courseLevels": {
+		"bakalářský": "Bakalářský",
+		"doktorský": "Doktorský",
+		"kurz": "Kurz",
+		"magisterský navazující": "Magisterský navazující",
+		"MBA": "MBA"
+	},
 	"courseGroups": {
 		"faculty_specific": "Fakultně specifické skupiny",
 		"university_wide": "Celoškolně používané skupiny",
@@ -68,6 +75,23 @@
 		"beyond_scope": "Předměty nad rámec studijního plánu",
 		"exchange_program": "Předměty pro výměnné programy",
 		"physical_education": "Tělesná výchova a sport"
+	},
+	"courseModesOfCompletion": {
+		"zkouška": "Zkouška",
+		"zápočet": "Zápočet",
+		"obhajoba": "Obhajoba"
+	},
+	"courseLanguages": {
+		"čeština": "Čeština",
+		"angličtina": "Angličtina",
+		"němčina": "Němčina",
+		"španělština": "Španělština",
+		"francouzština": "Francouzština",
+		"ruština": "Ruština",
+		"italština": "Italština",
+		"čínština": "Čínština",
+		"švédština": "Švédština",
+		"portugalština": "Portugalština"
 	},
 	"unitTypes": {
 		"lecture": "Přednáška",

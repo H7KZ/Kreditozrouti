@@ -52,6 +52,13 @@
 		"Sobota": "Sa",
 		"Neděle": "Su"
 	},
+	"courseLevels": {
+		"bakalářský": "Bachelor's",
+		"doktorský": "Doctoral",
+		"kurz": "Course",
+		"magisterský navazující": "Follow-up Master's",
+		"MBA": "MBA"
+	},
 	"courseGroups": {
 		"faculty_specific": "Faculty-specific groups",
 		"university_wide": "University-wide groups",
@@ -68,6 +75,23 @@
 		"beyond_scope": "Courses beyond the scope of the study plan",
 		"exchange_program": "Courses for exchange programs",
 		"physical_education": "Physical education and sports"
+	},
+	"courseModesOfCompletion": {
+		"zkouška": "Exam",
+		"zápočet": "Credit",
+		"obhajoba": "Defense"
+	},
+	"courseLanguages": {
+		"čeština": "Czech",
+		"angličtina": "English",
+		"němčina": "German",
+		"španělština": "Spanish",
+		"francouzština": "French",
+		"ruština": "Russian",
+		"italština": "Italian",
+		"čínština": "Chinese",
+		"švédština": "Swedish",
+		"portugalština": "Portuguese"
 	},
 	"unitTypes": {
 		"lecture": "Lecture",
