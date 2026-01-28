@@ -96,7 +96,8 @@
 	"unitTypes": {
 		"lecture": "Přednáška",
 		"exercise": "Cvičení",
-		"seminar": "Seminář"
+		"seminar": "Seminář",
+		"dateOnly": "Bloková akce"
 	},
 	"unitTypesShort": {
 		"lecture": "Př",
@@ -129,15 +130,20 @@
 	"common": {
 		"back": "Zpět",
 		"cancel": "Zrušit",
+		"close": "Zavřít",
 		"add": "Přidat",
 		"change": "Změnit",
 		"remove": "Odebrat",
 		"search": "Vyhledat",
 		"reset": "Reset",
+		"retry": "Zkusit znovu",
 		"tryAgain": "Zkusit znovu",
+		"lecturer": "Vyučující",
+		"openInInsis": "Otevřít v InSIS",
 		"loading": "Načítání...",
 		"filters": "Filtry",
 		"legend": "Legenda",
+		"location": "Místnost",
 		"day": "Den",
 		"time": "Čas",
 		"duration": "Trvání",
@@ -293,6 +299,16 @@
 				"title": "Vyhledat předměty",
 				"description": "Zobrazí předměty, které mají rozvrhovou akci v tomto časovém úseku.",
 				"searchCourses": "Hledat předměty"
+			},
+			"TimetableCourseModal": {
+				"courseNotFound": "Předmět nenalezen",
+				"loadError": "Nepodařilo se načíst detaily předmětu",
+				"courseInfo": "Informace o předmětu",
+				"selectedSlot": "Vybraný slot",
+				"removeFromTimetable": "Odebrat z rozvrhu",
+				"searchInTimeslot": "Hledat v tomto čase",
+				"filterApplied": "Časový filtr aplikován",
+				"filterDescription": "Zobrazuji předměty dostupné v {day} od {from} do {to}"
 			}
 		}
 	},

@@ -3,6 +3,7 @@ import { useTimeUtils } from '@client/composables'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import IconX from '~icons/lucide/x'
 
 /*
  * TimetableCourseBlock
@@ -27,6 +28,10 @@ const emit = defineEmits<Emits>()
 
 /** Background color based on unit type */
 const blockColorClass = computed(() => {
+	if (props.unit.date) {
+		return 'bg-[var(--insis-block-date-only)]'
+	}
+
 	const typeColors: Record<CourseUnitType, string> = {
 		lecture: 'bg-[var(--insis-block-lecture)]',
 		exercise: 'bg-[var(--insis-block-exercise)]',
@@ -76,21 +81,19 @@ function handleRemove(event: MouseEvent) {
 				<span class="text-[var(--insis-gray-500)]">
 					{{ timeRange }}
 				</span>
-				<span v-if="unit.room" class="truncate text-[var(--insis-gray-500)]">
-					{{ unit.room }}
+				<span v-if="unit.location" class="truncate text-[var(--insis-gray-500)]">
+					{{ unit.location }}
 				</span>
 			</div>
 
 			<!-- Remove button (shown on hover) -->
 			<button
 				type="button"
-				class="remove-btn absolute right-0.5 top-0.5 hidden h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger)] text-white hover:bg-[var(--insis-danger-dark)]"
+				class="remove-btn cursor-pointer absolute right-0.5 top-0.5 hidden h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger-light)] text-white hover:bg-[var(--insis-danger)]"
 				:title="$t('components.timetable.TimetableCourseBlock.removeFromTimetable')"
 				@click="handleRemove"
 			>
-				<svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-				</svg>
+				<IconX class="h-3 w-3" />
 			</button>
 		</div>
 	</div>

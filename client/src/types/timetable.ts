@@ -15,7 +15,7 @@ export interface SelectedCourseUnit {
 	date?: string // DD.MM.YYYY
 	timeFrom: number // Minutes from midnight
 	timeTo: number // Minutes from midnight
-	room?: string
+	location?: string
 	lecturer?: string
 	ects?: number
 }

@@ -94,7 +94,6 @@ export const useTimetableStore = defineStore('timetable', {
 					const bEnd = b.timeTo
 
 					if (aStart < bEnd && bStart < aEnd) {
-						console.log('Checking conflict between', a, b)
 						conflictPairs.push([a, b])
 					}
 				}
@@ -154,17 +153,17 @@ export const useTimetableStore = defineStore('timetable', {
 				return t('stores.timetable.errors.slotAlreadySelected')
 			}
 
-			for (const existing of this.selectedUnits) {
-				if (existing.day === slot.day && !slot.date) {
-					if (slot.time_from! < existing.timeTo && existing.timeFrom < slot.time_to!) {
-						return t('stores.timetable.errors.timeConflict', { courseIdent: existing.courseIdent })
-					}
-				} else if (slot.date && existing.day === slot.day) {
-					if (slot.time_from! < existing.timeTo && existing.timeFrom < slot.time_to! && slot.date === existing.date) {
-						return t('stores.timetable.errors.timeConflict', { courseIdent: existing.courseIdent })
-					}
-				}
-			}
+			// for (const existing of this.selectedUnits) {
+			// 	if (existing.day === slot.day && !slot.date) {
+			// 		if (slot.time_from! < existing.timeTo && existing.timeFrom < slot.time_to!) {
+			// 			return t('stores.timetable.errors.timeConflict', { courseIdent: existing.courseIdent })
+			// 		}
+			// 	} else if (slot.date && existing.day === slot.day) {
+			// 		if (slot.time_from! < existing.timeTo && existing.timeFrom < slot.time_to! && slot.date === existing.date) {
+			// 			return t('stores.timetable.errors.timeConflict', { courseIdent: existing.courseIdent })
+			// 		}
+			// 	}
+			// }
 
 			return null
 		},
@@ -179,7 +178,7 @@ export const useTimetableStore = defineStore('timetable', {
 		): boolean {
 			const error = this.canAddUnit(course, unit, slot)
 			if (error) {
-				console.warn('Cannot add unit:', error)
+				// TODO: Show error to user
 				return false
 			}
 
@@ -194,7 +193,7 @@ export const useTimetableStore = defineStore('timetable', {
 				date: slot.date ?? undefined,
 				timeFrom: slot.time_from!,
 				timeTo: slot.time_to!,
-				room: slot.location ?? undefined,
+				location: slot.location ?? undefined,
 				lecturer: unit.lecturer ?? undefined,
 				ects: course.ects ?? undefined,
 			}
@@ -207,12 +206,9 @@ export const useTimetableStore = defineStore('timetable', {
 		/**
 		 * Remove a course unit from the timetable
 		 */
-		removeUnit(slotId: number) {
-			const index = this.selectedUnits.findIndex((u) => u.slotId === slotId)
-			if (index !== -1) {
-				this.selectedUnits.splice(index, 1)
-				this.persist()
-			}
+		removeUnit(unitId: number) {
+			this.selectedUnits = this.selectedUnits.filter((u) => u.unitId !== unitId)
+			this.persist()
 		},
 
 		/**
@@ -244,7 +240,9 @@ export const useTimetableStore = defineStore('timetable', {
 				if (oldUnit) {
 					this.selectedUnits.splice(oldIndex, 0, oldUnit)
 				}
-				console.warn('Cannot change unit:', error)
+
+				// TODO: Show error to user
+
 				return false
 			}
 

@@ -96,7 +96,8 @@
 	"unitTypes": {
 		"lecture": "Lecture",
 		"exercise": "Exercise",
-		"seminar": "Seminar"
+		"seminar": "Seminar",
+		"dateOnly": "Block course"
 	},
 	"unitTypesShort": {
 		"lecture": "L",
@@ -129,14 +130,19 @@
 	"common": {
 		"back": "Back",
 		"cancel": "Cancel",
+		"close": "Close",
 		"add": "Add",
 		"change": "Change",
 		"remove": "Remove",
 		"search": "Search",
 		"reset": "Reset",
+		"retry": "Retry",
+		"lecturer": "Lecturer",
+		"openInInsis": "Open in InSIS",
 		"tryAgain": "Try again",
 		"loading": "Loading...",
 		"filters": "Filters",
+		"location": "Location",
 		"legend": "Legend",
 		"day": "Day",
 		"time": "Time",
@@ -293,6 +299,16 @@
 				"title": "Search Courses",
 				"description": "Shows courses that have a schedule slot in this time period.",
 				"searchCourses": "Search courses"
+			},
+			"TimetableCourseModal": {
+				"courseNotFound": "Course not found",
+				"loadError": "Failed to load course details",
+				"courseInfo": "Course Information",
+				"selectedSlot": "Selected Slot",
+				"removeFromTimetable": "Remove from timetable",
+				"searchInTimeslot": "Search in this timeslot",
+				"filterApplied": "Time filter applied",
+				"filterDescription": "Showing courses available on {day} from {from} to {to}"
 			}
 		}
 	},

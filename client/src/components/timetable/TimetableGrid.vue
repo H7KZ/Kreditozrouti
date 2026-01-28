@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
+import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
 import { useTimeUtils } from '@client/composables'
 import { TIME_CONFIG, WEEKDAYS } from '@client/constants/timetable.ts'
-import { useAlertsStore, useCoursesStore, useTimetableStore, useUIStore } from '@client/stores'
+import { useCoursesStore, useTimetableStore, useUIStore } from '@client/stores'
 import { SelectedCourseUnit } from '@client/types'
 import InSISDay from '@scraper/Types/InSISDay.ts'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
@@ -22,8 +23,7 @@ const { t, te } = useI18n({ useScope: 'global' })
 const timetableStore = useTimetableStore()
 const coursesStore = useCoursesStore()
 const uiStore = useUIStore()
-const alertsStore = useAlertsStore()
-const { minutesToTime, getDayFromDate, calculateTimePosition, calculateTimeDuration } = useTimeUtils()
+const { minutesToTime, calculateTimePosition, calculateTimeDuration } = useTimeUtils()
 
 // Time slots for the grid header (every hour)
 const timeSlots = computed(() => {
@@ -43,34 +43,83 @@ const timeSlots = computed(() => {
 
 // Row height in pixels
 const ROW_HEIGHT = 60
+const BLOCK_PADDING = 2 // Padding from row edges in pixels
 
 // Get units for a specific day
 function getUnitsForDay(day: InSISDay): SelectedCourseUnit[] {
 	return timetableStore.unitsByDay.get(day) || []
 }
 
+/**
+ * Find overlapping groups of units within a day.
+ * Returns a Map where each unit's slotId maps to its position info:
+ * { index: position in overlap group, total: total overlapping blocks }
+ */
+function getOverlapInfo(day: InSISDay): Map<number, { index: number; total: number }> {
+	const units = getUnitsForDay(day)
+	const overlapMap = new Map<number, { index: number; total: number }>()
+
+	if (units.length === 0) return overlapMap
+
+	// Sort units by start time, then by end time
+	const sortedUnits = [...units].sort((a, b) => {
+		if (a.timeFrom !== b.timeFrom) return a.timeFrom - b.timeFrom
+		return a.timeTo - b.timeTo
+	})
+
+	// Find all units that overlap with each unit
+	for (const unit of sortedUnits) {
+		const overlapping = sortedUnits.filter((other) => other.timeFrom < unit.timeTo && unit.timeFrom < other.timeTo)
+
+		// Sort overlapping group consistently to assign stable indices
+		overlapping.sort((a, b) => {
+			if (a.timeFrom !== b.timeFrom) return a.timeFrom - b.timeFrom
+			if (a.timeTo !== b.timeTo) return a.timeTo - b.timeTo
+			return a.slotId - b.slotId
+		})
+
+		const index = overlapping.findIndex((u) => u.slotId === unit.slotId)
+		overlapMap.set(unit.slotId, { index, total: overlapping.length })
+	}
+
+	return overlapMap
+}
+
+// Cache overlap info per day to avoid recalculating for each block
+const overlapCache = computed(() => {
+	const cache = new Map<InSISDay, Map<number, { index: number; total: number }>>()
+	for (const day of WEEKDAYS) {
+		cache.set(day, getOverlapInfo(day))
+	}
+	return cache
+})
+
 // Calculate horizontal position and width for a course block (X-axis = time)
-function getBlockStyle(unit: SelectedCourseUnit) {
+// Now also handles vertical stacking for overlapping blocks
+function getBlockStyle(unit: SelectedCourseUnit, day: InSISDay) {
 	const left = calculateTimePosition(unit.timeFrom, TIME_CONFIG.START, TIME_CONFIG.END)
 	const width = calculateTimeDuration(unit.timeFrom, unit.timeTo, TIME_CONFIG.START, TIME_CONFIG.END)
+
+	// Get overlap info for this unit
+	const dayOverlaps = overlapCache.value.get(day)
+	const overlapInfo = dayOverlaps?.get(unit.slotId) ?? { index: 0, total: 1 }
+
+	// Calculate vertical position within the row
+	const availableHeight = ROW_HEIGHT - BLOCK_PADDING * 2
+	const blockHeight = availableHeight / overlapInfo.total
+	const topOffset = BLOCK_PADDING + overlapInfo.index * blockHeight
 
 	return {
 		left: `${left}%`,
 		width: `${width}%`,
-		top: '2px',
-		bottom: '2px',
+		top: `${topOffset}px`,
+		height: `${blockHeight}px`,
 	}
 }
 
 // Check if a unit has a conflict
 function hasConflict(unit: SelectedCourseUnit): boolean {
 	return timetableStore.conflicts.some(([a, b]) => a.slotId === unit.slotId || b.slotId === unit.slotId)
-}
-
-// Get translated day name
-function getDayLabel(day: InSISDay): string {
-	const key = `days.${day}`
-	return te(key) ? t(key) : day
 }
 
 // Get short day label (first 2 chars of translated name)
@@ -83,6 +132,10 @@ function getShortDayLabel(day: InSISDay): string {
 const gridRef = ref<HTMLElement | null>(null)
 const isDragging = ref(false)
 const dragStartX = ref(0)
+
+// Course modal state
+const showCourseModal = ref(false)
+const selectedModalUnit = ref<SelectedCourseUnit | null>(null)
 
 function getTimeFromX(x: number, element: HTMLElement): number {
 	const rect = element.getBoundingClientRect()
@@ -139,33 +192,16 @@ function handleMouseUp(event: MouseEvent) {
 	timetableStore.endDrag(event.clientX, event.clientY)
 }
 
-// Handle clicking on a course block to filter by its time
+// Handle clicking on a course block to open the course modal
 function handleCourseBlockClick(unit: SelectedCourseUnit) {
-	let day = unit.day
-	if (unit.date) day ??= getDayFromDate(unit.date)
+	selectedModalUnit.value = unit
+	showCourseModal.value = true
+}
 
-	if (!day) return
-
-	// Apply the time filter for this course's time slot
-	coursesStore.setTimeFilterFromDrag(day, unit.timeFrom, unit.timeTo)
-
-	// Switch to list view
-	uiStore.switchToListView()
-
-	// Fetch courses
-	coursesStore.fetchCourses()
-
-	// Show info alert
-	alertsStore.addAlert({
-		type: 'info',
-		title: t('components.timetable.TimetableGrid.filterApplied'),
-		description: t('components.timetable.TimetableGrid.filterDescription', {
-			from: minutesToTime(unit.timeFrom),
-			to: minutesToTime(unit.timeTo),
-			day: getDayLabel(day),
-		}),
-		timeout: 5000,
-	})
+// Handle closing the course modal
+function handleCloseModal() {
+	showCourseModal.value = false
+	selectedModalUnit.value = null
 }
 
 // Handle drag filter action
@@ -272,10 +308,10 @@ onUnmounted(() => {
 							v-for="unit in getUnitsForDay(day)"
 							:key="unit.slotId"
 							:unit="unit"
-							:style="getBlockStyle(unit)"
+							:style="getBlockStyle(unit, day)"
 							:has-conflict="hasConflict(unit)"
 							@click="handleCourseBlockClick(unit)"
-							@remove="timetableStore.removeUnit(unit.slotId)"
+							@remove="timetableStore.removeUnit(unit.unitId)"
 						/>
 					</td>
 				</tr>
@@ -290,6 +326,9 @@ onUnmounted(() => {
 			@filter="handleDragFilter"
 			@cancel="handleDragCancel"
 		/>
+
+		<!-- Course details modal -->
+		<TimetableCourseModal v-if="showCourseModal && selectedModalUnit" :unit="selectedModalUnit" @close="handleCloseModal" />
 
 		<slot />
 	</div>

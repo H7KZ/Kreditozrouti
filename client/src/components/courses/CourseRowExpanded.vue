@@ -7,9 +7,9 @@ import InSISDay from '@scraper/Types/InSISDay.ts'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconCheck from '~icons/lucide/check'
+import IconExternalLink from '~icons/lucide/external-link'
 import IconMinus from '~icons/lucide/minus'
 import IconPlus from '~icons/lucide/plus'
-import Search from '~icons/lucide/search'
 import IconTrash from '~icons/lucide/trash-2'
 
 /*
@@ -160,34 +160,28 @@ function handleAddUnit(unit: CourseUnit<void, CourseUnitSlot>) {
 	// If we are adding a unit that contains "Lecture", and we already have a "Lecture" selected,
 	// we need to remove the old one first.
 	const typesInUnit = getUnitTypes(unit)
-	const slotsToRemove: number[] = []
+	const unitsToRemove: number[] = []
 
 	// Find existing selected units that clash with the new unit's types
 	for (const type of typesInUnit) {
 		const existing = selectedUnitsStore.value.find((u) => u.unitType === type)
 		if (existing) {
-			slotsToRemove.push(existing.slotId)
+			unitsToRemove.push(existing.unitId)
 		}
 	}
 
-	// Remove old slots
-	slotsToRemove.forEach((id) => timetableStore.removeUnit(id))
-
-	// Add new slots
-	const addedSlots: number[] = []
+	// Remove conflicting units
+	unitsToRemove.forEach((id) => timetableStore.removeUnit(id))
 
 	for (const slot of unit.slots) {
 		const success = timetableStore.addUnit(props.course, unit, slot)
-		if (success) {
-			addedSlots.push(slot.id)
-		} else {
-			// Rollback if one slot fails (e.g. time conflict with another course)
-			addedSlots.forEach((id) => timetableStore.removeUnit(id))
-			// Ideally restore the old ones here, but for now we just warn.
-			// In a real app, we'd do a dry-run check first.
-			console.warn('Failed to add unit slot:', slot.id)
-			break
-		}
+
+		if (success) continue
+
+		// Rollback if one slot fails (e.g. time conflict with another course)
+		timetableStore.removeUnit(slot.unit_id)
+
+		// TODO: Show user feedback about failure
 	}
 }
 
@@ -195,7 +189,7 @@ function handleAddUnit(unit: CourseUnit<void, CourseUnitSlot>) {
 function handleRemoveUnit(unit: CourseUnit<void, CourseUnitSlot>) {
 	if (!unit.slots) return
 	for (const slot of unit.slots) {
-		timetableStore.removeUnit(slot.id)
+		timetableStore.removeUnit(slot.unit_id)
 	}
 }
 
@@ -211,10 +205,17 @@ function handleRemoveCourse() {
 			<!-- Course Info -->
 			<div>
 				<h3 class="mb-3 font-medium text-[var(--insis-gray-900)] flex items-center gap-1.5">
-					<a :href="course.url" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center hover:text-[var(--insis-blue)]">
-						<Search class="inline h-3 w-3" />
-					</a>
 					{{ course.ident }} - {{ course.title }}
+					<a
+						v-if="course.url"
+						:href="course.url"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="text-[var(--insis-blue)] hover:text-[var(--insis-blue-dark)]"
+						:title="$t('common.openInInsis')"
+					>
+						<IconExternalLink class="h-3 w-3" />
+					</a>
 				</h3>
 
 				<dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">

@@ -343,6 +343,10 @@ async function fetchNextCoursesPage(page: () => void) {
 									<span>{{ $t('unitTypes.seminar') }}</span>
 								</div>
 								<div class="flex items-center gap-1.5">
+									<span class="h-3 w-3 rounded bg-[var(--insis-block-date-only)]" />
+									<span>{{ $t('unitTypes.dateOnly') }}</span>
+								</div>
+								<div class="flex items-center gap-1.5">
 									<span class="h-3 w-3 rounded ring-2 ring-[var(--insis-danger)]" />
 									<span>{{ $t('pages.courses.conflict') }}</span>
 								</div>
