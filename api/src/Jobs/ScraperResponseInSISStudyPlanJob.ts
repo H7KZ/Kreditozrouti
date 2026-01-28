@@ -72,13 +72,24 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 
 	if (!plan.courses || plan.courses.length === 0) return
 
-	// Resolve Real Course IDs
-	const incomingCourseIds = plan.courses.map(c => c.id).filter((id): id is number => id != null)
-	const validIdMap = new Map<number, number>()
+	const incomingCourseIdents = plan.courses.map(c => c.ident)
 
-	if (incomingCourseIds.length > 0) {
-		const directMatches = await mysql.selectFrom(CourseTable._table).select('id').where('id', 'in', incomingCourseIds).execute()
-		directMatches.forEach(c => validIdMap.set(c.id, c.id))
+	// Map from ident -> verified DB ID (for ident+semester+year matches)
+	const identToIdMap = new Map<string, number>()
+
+	// Check by ident + semester + year
+	if (incomingCourseIdents.length > 0 && plan.semester && plan.year) {
+		const identMatches = await mysql
+			.selectFrom(CourseTable._table)
+			.select(['id', 'ident'])
+			.where('ident', 'in', incomingCourseIdents)
+			.where('semester', '=', plan.semester)
+			.where('year', '=', plan.year)
+			.execute()
+
+		identMatches.forEach(c => {
+			if (c.ident) identToIdMap.set(c.ident, c.id)
+		})
 	}
 
 	// Deduplicate courses
@@ -87,8 +98,9 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 
 	const rowsToInsert: NewStudyPlanCourse[] = Array.from(uniqueCourses.values()).map(item => {
 		let verifiedId: number | null = null
-		if (item.id != null && validIdMap.has(item.id)) {
-			verifiedId = validIdMap.get(item.id)!
+
+		if (identToIdMap.has(item.ident)) {
+			verifiedId = identToIdMap.get(item.ident)!
 		}
 
 		return {
