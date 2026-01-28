@@ -16,7 +16,7 @@ import IconX from '~icons/lucide/x'
  * Each filter section is collapsible.
  */
 
-const { t, tm } = useI18n({ useScope: 'global' })
+const { t } = useI18n({ useScope: 'global' })
 const coursesStore = useCoursesStore()
 const uiStore = useUIStore()
 
@@ -40,7 +40,7 @@ const facetConfig = computed(() => [
 		key: 'levels',
 		label: t('components.filters.FilterPanel.studyLevel'),
 		facets: coursesStore.facets.levels,
-		translations: tm('courseLevels'),
+		translations: 'courseLevels',
 		selected: coursesStore.filters.levels,
 		setter: coursesStore.setLevels,
 		defaultCollapsed: false,
@@ -49,7 +49,7 @@ const facetConfig = computed(() => [
 		key: 'languages',
 		label: t('components.filters.FilterPanel.language'),
 		facets: coursesStore.facets.languages,
-		translations: tm('courseLanguages'),
+		translations: 'courseLanguages',
 		selected: coursesStore.filters.languages,
 		setter: coursesStore.setLanguages,
 		defaultCollapsed: true, // Collapsed by default
@@ -58,7 +58,7 @@ const facetConfig = computed(() => [
 		key: 'groups',
 		label: t('components.filters.FilterPanel.courseGroups'),
 		facets: coursesStore.facets.groups,
-		translations: tm('courseGroups'),
+		translations: 'courseGroups',
 		selected: coursesStore.filters.groups,
 		setter: coursesStore.setGroups,
 		// Only show when filtering by study plan
@@ -69,7 +69,7 @@ const facetConfig = computed(() => [
 		key: 'categories',
 		label: t('components.filters.FilterPanel.category'),
 		facets: coursesStore.facets.categories,
-		translations: tm('courseCategories'),
+		translations: 'courseCategories',
 		selected: coursesStore.filters.categories,
 		setter: coursesStore.setCategories,
 		// Only show when filtering by study plan
@@ -88,7 +88,7 @@ const facetConfig = computed(() => [
 		key: 'modes_of_completion',
 		label: t('components.filters.FilterPanel.completionMode'),
 		facets: coursesStore.facets.modes_of_completion,
-		translations: tm('courseModesOfCompletion'),
+		translations: 'courseModesOfCompletion',
 		selected: coursesStore.filters.mode_of_completions,
 		setter: coursesStore.setModesOfCompletion,
 		defaultCollapsed: true, // Collapsed by default

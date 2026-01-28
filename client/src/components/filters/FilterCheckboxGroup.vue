@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FacetItem from '@api/Interfaces/FacetItem.ts'
 import { computed, ref } from 'vue'
-import { LocaleMessages } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 
 /*
  * FilterCheckboxGroup
@@ -9,10 +9,12 @@ import { LocaleMessages } from 'vue-i18n'
  * Supports collapsible header, collapsible list and optional search.
  */
 
+const { t } = useI18n({ useScope: 'global' })
+
 interface Props {
 	label: string
 	facets: FacetItem[]
-	translations?: Record<string, LocaleMessages<{ static: string }>>
+	translations?: string
 	selected: string[]
 	searchable?: boolean
 	maxVisible?: number
@@ -81,7 +83,8 @@ function toggleListExpanded() {
 }
 
 function getDisplayLabel(facet: FacetItem): string {
-	return props.translations && props.translations[String(facet.value)] ? props.translations[String(facet.value)]!.body!.static : String(facet.value)
+	const value = String(facet.value)
+	return props.translations ? t(`${props.translations}.${value}`) : value
 }
 </script>
 
