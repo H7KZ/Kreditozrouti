@@ -25,7 +25,7 @@ const emit = defineEmits<Emits>()
 const sortedYears = computed(() => {
 	return props.years
 		.filter((year) =>
-			InSISService.getPeriodsForLastYears()
+			InSISService.getPeriodsForLastYears(4)
 				.map((p) => p.year)
 				.includes(Number(year.value)),
 		)

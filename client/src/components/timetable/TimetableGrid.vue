@@ -23,7 +23,7 @@ const timetableStore = useTimetableStore()
 const coursesStore = useCoursesStore()
 const uiStore = useUIStore()
 const alertsStore = useAlertsStore()
-const { minutesToTime, calculateTimePosition, calculateTimeDuration } = useTimeUtils()
+const { minutesToTime, getDayFromDate, calculateTimePosition, calculateTimeDuration } = useTimeUtils()
 
 // Time slots for the grid header (every hour)
 const timeSlots = computed(() => {
@@ -141,8 +141,13 @@ function handleMouseUp(event: MouseEvent) {
 
 // Handle clicking on a course block to filter by its time
 function handleCourseBlockClick(unit: SelectedCourseUnit) {
+	let day = unit.day
+	if (unit.date) day ??= getDayFromDate(unit.date)
+
+	if (!day) return
+
 	// Apply the time filter for this course's time slot
-	coursesStore.setTimeFilterFromDrag(unit.day, unit.timeFrom, unit.timeTo)
+	coursesStore.setTimeFilterFromDrag(day, unit.timeFrom, unit.timeTo)
 
 	// Switch to list view
 	uiStore.switchToListView()
@@ -157,7 +162,7 @@ function handleCourseBlockClick(unit: SelectedCourseUnit) {
 		description: t('components.timetable.TimetableGrid.filterDescription', {
 			from: minutesToTime(unit.timeFrom),
 			to: minutesToTime(unit.timeTo),
-			day: getDayLabel(unit.day),
+			day: getDayLabel(day),
 		}),
 		timeout: 5000,
 	})

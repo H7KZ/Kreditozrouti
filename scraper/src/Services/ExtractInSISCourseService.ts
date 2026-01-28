@@ -243,7 +243,7 @@ export default class ExtractInSISCourseService {
     }
 
     private static extractTimetable($: CheerioAPI): ScraperInSISCourseTimetableUnit[] {
-        const unitsMap = new Map<string, ScraperInSISCourseTimetableUnit>()
+        const units = new Set<ScraperInSISCourseTimetableUnit>()
 
         const header = $('td, b, strong')
             .filter((_, el) => cleanText($(el).text()).includes('Periodické rozvrhové akce'))
@@ -257,13 +257,15 @@ export default class ExtractInSISCourseService {
             const cols = $(row).find('td')
             if (cols.length < 7) return
 
-            this.processTimetableRow($, cols as any, unitsMap)
+            const unit = this.processTimetableRow($, cols as any)
+
+            if (unit) units.add(unit)
         })
 
-        return Array.from(unitsMap.values())
+        return Array.from(units)
     }
 
-    private static processTimetableRow($: CheerioAPI, cols: cheerio.Cheerio<Element>, unitsMap: Map<string, ScraperInSISCourseTimetableUnit>): void {
+    private static processTimetableRow($: CheerioAPI, cols: cheerio.Cheerio<Element>): ScraperInSISCourseTimetableUnit | null {
         const colElements = cols.toArray()
 
         const dayOrDates = parseMultiLineCell($, colElements[0])
@@ -275,30 +277,28 @@ export default class ExtractInSISCourseService {
         const capacityInt = parseInt(cleanText($(colElements[6] as any).text()), 10) || 0
         const noteText = colElements.length > 8 ? cleanText($(colElements[8] as any).text()) : ''
 
-        if (dayOrDates.length === 0) return
-
-        const key = types.join('|') + locations.join('|') + `${lecturer}|${capacityInt}|${noteText}`
-
-        if (!unitsMap.has(key)) {
-            unitsMap.set(key, {
-                lecturer: serializeValue(lecturer),
-                capacity: capacityInt,
-                note: serializeValue(noteText === '-' ? null : noteText),
-                slots: []
-            })
-        }
+        if (dayOrDates.length === 0) return null
 
         const maxRows = Math.max(dayOrDates.length, times.length, locations.length)
 
+        const slots = new Set<ScraperInSISCourseTimetableSlot>()
+
         for (let i = 0; i < maxRows; i++) {
-            const currentDayOrDate = dayOrDates[i] || dayOrDates[0] || ''
-            const currentTime = times[i] || times[0] || ''
-            const currentLocation = locations[i] || locations[0] || ''
-            const currentType = types[i] || types[0] || ''
-            const currentFreq = frequencies[i] || frequencies[0] || ''
+            const currentDayOrDate = dayOrDates[i] ?? dayOrDates[0] ?? ''
+            const currentTime = times[i] ?? times[0] ?? ''
+            const currentLocation = locations[i] ?? locations[0] ?? ''
+            const currentType = types[i] ?? types[0] ?? ''
+            const currentFreq = frequencies[i] ?? frequencies[0] ?? ''
 
             const slot = this.createTimetableSlot(currentDayOrDate, currentTime, currentLocation, currentType, currentFreq)
-            unitsMap.get(key)?.slots?.push(slot)
+            slots.add(slot)
+        }
+
+        return {
+            lecturer: serializeValue(lecturer),
+            capacity: capacityInt,
+            note: serializeValue(noteText === '-' ? null : noteText),
+            slots: Array.from(slots)
         }
     }
 

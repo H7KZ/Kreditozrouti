@@ -1,17 +1,11 @@
 import { TimeSelection } from '@api/Validations'
+import { ALL_DAYS } from '@client/constants/timetable.ts'
+import { i18n } from '@client/index.ts'
 import InSISDay from '@scraper/Types/InSISDay.ts'
 
-export const DAYS_ORDER: InSISDay[] = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle']
+const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
 
-export const DAYS_SHORT: Record<InSISDay, string> = {
-	Pondělí: 'Po',
-	Úterý: 'Út',
-	Středa: 'St',
-	Čtvrtek: 'Čt',
-	Pátek: 'Pá',
-	Sobota: 'So',
-	Neděle: 'Ne',
-}
+export const DAYS_ORDER: InSISDay[] = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle']
 
 /**
  * Time Utilities Composable
@@ -39,6 +33,14 @@ export function useTimeUtils() {
 	}
 
 	/**
+	 * Get InSIS day from date string (DD.MM.YYYY)
+	 */
+	function getDayFromDate(dateStr: string): InSISDay | undefined {
+		const date = new Date(dateStr.split('.').reverse().join('-')) // Convert DD.MM.YYYY to YYYY-MM-DD
+		return ALL_DAYS[date.getDay()] // 0 (Sun) to 6 (Sat)
+	}
+
+	/**
 	 * Format a time range
 	 */
 	function formatTimeRange(from: number | null, to: number | null): string {
@@ -50,12 +52,12 @@ export function useTimeUtils() {
 	 * Format a TimeSelection for display
 	 */
 	function formatTimeSelection(selection: TimeSelection): string {
-		const dayShort = DAYS_SHORT[selection.day]
+		const dayShort = t(`daysShort.${selection.day}`)
 		return `${dayShort} ${formatTimeRange(selection.time_from, selection.time_to)}`
 	}
 
 	/**
-	 * Get day index (0-6, Monday = 0)
+	 * Get day index (0-6, Pondělí = 0)
 	 */
 	function getDayIndex(day: InSISDay): number {
 		return DAYS_ORDER.indexOf(day)
@@ -136,6 +138,7 @@ export function useTimeUtils() {
 	return {
 		minutesToTime,
 		timeToMinutes,
+		getDayFromDate,
 		formatTimeRange,
 		formatTimeSelection,
 		getDayIndex,
@@ -148,6 +151,5 @@ export function useTimeUtils() {
 		formatSemester,
 		formatSemesterWithYear,
 		DAYS_ORDER,
-		DAYS_SHORT,
 	}
 }

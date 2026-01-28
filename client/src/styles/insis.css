@@ -389,6 +389,11 @@
 		color: var(--insis-gray-900);
 	}
 
+	.insis-badge-other {
+		background-color: var(--insis-course-other);
+		color: var(--insis-gray-900);
+	}
+
 	.insis-badge-optional {
 		background-color: var(--insis-course-optional);
 		color: white;

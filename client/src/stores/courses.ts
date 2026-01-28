@@ -128,9 +128,8 @@ export const useCoursesStore = defineStore('courses', {
 				this.filters.study_plan_ids = [wizardStore.studyPlanId]
 			}
 
-			const upcomingPeriod = InSISService.getUpcomingPeriod(new Date())
+			const upcomingPeriod = InSISService.getUpcomingPeriod()
 
-			if (!upcomingPeriod) return
 			this.filters.years = [upcomingPeriod.year]
 			this.filters.semesters = [upcomingPeriod.semester]
 		},
@@ -359,9 +358,8 @@ export const useCoursesStore = defineStore('courses', {
 				defaults.study_plan_ids = [wizardStore.studyPlanId]
 			}
 
-			const upcomingPeriod = InSISService.getUpcomingPeriod(new Date())
+			const upcomingPeriod = InSISService.getUpcomingPeriod()
 
-			if (!upcomingPeriod) return
 			defaults.years = [upcomingPeriod.year]
 			defaults.semesters = [upcomingPeriod.semester]
 

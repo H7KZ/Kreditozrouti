@@ -1,6 +1,7 @@
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { CourseTable, FacultyTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import InSISService from '@api/Services/InSISService'
 import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
 import { ScraperInSISStudyPlanResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
 
@@ -79,12 +80,14 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 
 	// Check by ident + semester + year
 	if (incomingCourseIdents.length > 0 && plan.semester && plan.year) {
+		const upcomingPeriod = InSISService.getUpcomingPeriod()
+
 		const identMatches = await mysql
 			.selectFrom(CourseTable._table)
 			.select(['id', 'ident'])
 			.where('ident', 'in', incomingCourseIdents)
-			.where('semester', '=', plan.semester)
-			.where('year', '=', plan.year)
+			.where('semester', '=', upcomingPeriod.semester)
+			.where('year', '=', upcomingPeriod.year)
 			.execute()
 
 		identMatches.forEach(c => {

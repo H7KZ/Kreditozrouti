@@ -13,19 +13,26 @@ export default class InSISService {
 	 * - Aug/Sep: Upcoming is Winter Semester (ZS) of current year.
 	 * - Other months return null (undefined period logic).
 	 */
-	static getUpcomingPeriod(date: Date = new Date()): { semester: InSISSemester; year: number } | null {
+	static getUpcomingPeriod(date: Date = new Date()): { semester: InSISSemester; year: number } {
 		const month = date.getMonth() + 1
 		const year = date.getFullYear()
 
-		if (month >= 1 && month <= 2) {
-			return { semester: 'LS', year: year - 1 }
-		}
+		const winterSemester = [6, 7, 8, 9, 10, 11] // 6=June to 11=November
+		const summerSemester = [/*12,*/ 1, 2, 3, 4, 5] // 12=December to 5=May
 
-		if (month >= 8 && month <= 9) {
+		if (winterSemester.includes(month)) {
 			return { semester: 'ZS', year }
 		}
 
-		return null
+		if (month === 12) {
+			return { semester: 'LS', year }
+		}
+
+		if (summerSemester.includes(month)) {
+			return { semester: 'LS', year: year - 1 }
+		}
+
+		return { semester: 'ZS', year }
 	}
 
 	/**

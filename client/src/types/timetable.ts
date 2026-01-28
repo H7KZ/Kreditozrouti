@@ -11,7 +11,8 @@ export interface SelectedCourseUnit {
 	unitId: number
 	unitType: CourseUnitType
 	slotId: number
-	day: InSISDay
+	day?: InSISDay
+	date?: string // DD.MM.YYYY
 	timeFrom: number // Minutes from midnight
 	timeTo: number // Minutes from midnight
 	room?: string

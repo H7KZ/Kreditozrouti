@@ -11,7 +11,7 @@ import { Expression, Kysely, sql } from 'kysely'
 
 async function createIndexSafe(db: Kysely<any>, indexName: string, tableName: string, columns: string[] | Expression<any>) {
 	try {
-		let query = db.schema.createIndex(indexName).unique().on(tableName)
+		let query = db.schema.createIndex(indexName).on(tableName)
 
 		// If 'columns' is an array of strings, use standard .columns()
 		// If it's a raw SQL expression (for TEXT columns), use .expression()

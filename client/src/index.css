@@ -135,6 +135,7 @@
 	/* Course Type Colors - Matching InSIS icons */
 	--insis-course-compulsory: #191970;
 	--insis-course-elective: #ffd700;
+	--insis-course-other: #b7e1cf;
 	--insis-course-optional: #008000;
 	--insis-course-normal: #8b008b;
 	--insis-course-consultation: #ffa500;

@@ -35,7 +35,7 @@ export default async function StudyPlansController(req: Request, res: Response<S
 
 	const filter = result.data
 
-	filter.years ??= InSISService.getPeriodsForLastYears(4, new Date()).map(p => p.year)
+	filter.years ??= InSISService.getPeriodsForLastYears(4).map(p => p.year)
 
 	// 2. Cache Check
 	const cacheKey = `insis:study_plans:${JSON.stringify(filter)}`

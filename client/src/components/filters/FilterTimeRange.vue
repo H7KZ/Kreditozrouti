@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { TimeSelection } from '@api/Validations'
-import { DAYS_ORDER, DAYS_SHORT, useTimeUtils } from '@client/composables'
+import { DAYS_ORDER, useTimeUtils } from '@client/composables'
 import { useCoursesStore } from '@client/stores'
 import InSISDay from '@scraper/Types/InSISDay.ts'
 import { computed, ref, watch } from 'vue'
@@ -168,7 +168,7 @@ function handleClearAllTimeFilers() {
 						:class="['insis-day-toggle', selectedDay === day && 'active']"
 						@click="toggleDay(day)"
 					>
-						{{ DAYS_SHORT[day] }}
+						{{ $t(`daysShort.${day}`) }}
 					</button>
 				</div>
 			</div>

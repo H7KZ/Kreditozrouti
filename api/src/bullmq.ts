@@ -47,12 +47,6 @@ const scraper = {
 			const upcomingPeriod = InSISService.getUpcomingPeriod()
 			const periodsForLastFourYears = InSISService.getPeriodsForLastYears(4)
 
-			// Only schedule if we're in a scanning window
-			if (!upcomingPeriod) {
-				console.log('Outside scanning window - no schedulers configured.')
-				return
-			}
-
 			// InSIS Catalog (Daily at 1 AM in Jan,Feb,Aug,Sep)
 			await scraper.queue.request.upsertJobScheduler(
 				ScraperInSISCatalogRequestScheduler,

@@ -58,7 +58,14 @@ export const useTimetableStore = defineStore('timetable', {
 				map.set(day, [])
 			}
 			for (const unit of this.selectedUnits) {
-				map.get(unit.day)?.push(unit)
+				if (unit.date) {
+					const slotDate = new Date(unit.date.split('.').reverse().join('-')) // Convert DD.MM.YYYY to YYYY-MM-DD
+					const dateDay = ALL_DAYS[slotDate.getDay()] // 0 (Sun) to 6 (Sat)
+					if (!dateDay) continue
+					map.get(dateDay)?.push(unit)
+				} else if (unit.day) {
+					map.get(unit.day)?.push(unit)
+				}
 			}
 			return map
 		},
@@ -79,6 +86,7 @@ export const useTimetableStore = defineStore('timetable', {
 
 					if (!a || !b) continue
 					if (a.day !== b.day) continue
+					if (a.date && b.date && a.date !== b.date) continue
 
 					const aStart = a.timeFrom
 					const aEnd = a.timeTo
@@ -86,6 +94,7 @@ export const useTimetableStore = defineStore('timetable', {
 					const bEnd = b.timeTo
 
 					if (aStart < bEnd && bStart < aEnd) {
+						console.log('Checking conflict between', a, b)
 						conflictPairs.push([a, b])
 					}
 				}
@@ -141,21 +150,17 @@ export const useTimetableStore = defineStore('timetable', {
 			unit: CourseUnit<void, CourseUnitSlot>,
 			slot: CourseUnitSlot,
 		): string | null {
-			const slotType = this.getSlotType(slot)
-			const courseUnits = this.unitsByCourse.get(course.id) || []
-
 			if (this.selectedUnits.some((u) => u.slotId === slot.id)) {
 				return t('stores.timetable.errors.slotAlreadySelected')
 			}
 
-			const existingOfType = courseUnits.find((u) => u.unitType === slotType)
-			if (existingOfType) {
-				return t('stores.timetable.errors.unitTypeAlreadySelected', { unitType: this.getUnitTypeLabel(slotType) })
-			}
-
 			for (const existing of this.selectedUnits) {
-				if (existing.day === slot.day) {
+				if (existing.day === slot.day && !slot.date) {
 					if (slot.time_from! < existing.timeTo && existing.timeFrom < slot.time_to!) {
+						return t('stores.timetable.errors.timeConflict', { courseIdent: existing.courseIdent })
+					}
+				} else if (slot.date && existing.day === slot.day) {
+					if (slot.time_from! < existing.timeTo && existing.timeFrom < slot.time_to! && slot.date === existing.date) {
 						return t('stores.timetable.errors.timeConflict', { courseIdent: existing.courseIdent })
 					}
 				}
@@ -185,7 +190,8 @@ export const useTimetableStore = defineStore('timetable', {
 				unitId: unit.id,
 				unitType: this.getSlotType(slot),
 				slotId: slot.id,
-				day: slot.day as InSISDay,
+				day: slot.day ?? undefined,
+				date: slot.date ?? undefined,
 				timeFrom: slot.time_from!,
 				timeTo: slot.time_to!,
 				room: slot.location ?? undefined,
