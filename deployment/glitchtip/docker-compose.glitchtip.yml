@@ -37,7 +37,7 @@ services:
 
     environment:
       - DATABASE_URL=postgres://glitchtip:${POSTGRES_PASSWORD}@postgres:5432/glitchtip
-      - VALKEY_URL=redis://valkey:6379/0
+      - REDIS_URL=redis://valkey:6379/0
       - SECRET_KEY=${SECRET_KEY}
       - GLITCHTIP_DOMAIN=https://${GLITCHTIP_DOMAIN}
       - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-noreply@${GLITCHTIP_DOMAIN}}
@@ -46,6 +46,7 @@ services:
       - ENABLE_ORGANIZATION_CREATION=${ENABLE_ORGANIZATION_CREATION:-False}
       - GLITCHTIP_MAX_EVENT_LIFE_DAYS=${GLITCHTIP_MAX_EVENT_LIFE_DAYS:-90}
       - CELERY_WORKER_CONCURRENCY=2
+      - PORT=8080
 
     networks:
       - traefik-network
@@ -58,14 +59,11 @@ services:
       - "traefik.http.routers.glitchtip-web.entrypoints=websecure"
       - "traefik.http.routers.glitchtip-web.tls=true"
       - "traefik.http.routers.glitchtip-web.tls.certresolver=letsencrypt"
-      - "traefik.http.services.glitchtip-web.loadbalancer.server.port=8000"
-      # Middlewares
-      - "traefik.http.routers.glitchtip-web.middlewares=glitchtip-redirect-www"
-      - "traefik.http.middlewares.glitchtip-redirect-www.redirectregex.regex=^https://www\\.(.*)"
-      - "traefik.http.middlewares.glitchtip-redirect-www.redirectregex.replacement=https://$${1}"
+      # FIXED: GlitchTip listens on port 8080, not 8000
+      - "traefik.http.services.glitchtip-web.loadbalancer.server.port=8080"
 
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8000/health/"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/health/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -106,7 +104,7 @@ services:
 
     environment:
       - DATABASE_URL=postgres://glitchtip:${POSTGRES_PASSWORD}@postgres:5432/glitchtip
-      - VALKEY_URL=redis://valkey:6379/0
+      - REDIS_URL=redis://valkey:6379/0
       - SECRET_KEY=${SECRET_KEY}
       - GLITCHTIP_DOMAIN=https://${GLITCHTIP_DOMAIN}
       - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-noreply@${GLITCHTIP_DOMAIN}}
@@ -150,7 +148,7 @@ services:
 
     environment:
       - DATABASE_URL=postgres://glitchtip:${POSTGRES_PASSWORD}@postgres:5432/glitchtip
-      - VALKEY_URL=redis://valkey:6379/0
+      - REDIS_URL=redis://valkey:6379/0
       - SECRET_KEY=${SECRET_KEY}
 
     networks:

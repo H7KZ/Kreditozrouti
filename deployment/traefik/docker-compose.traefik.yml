@@ -1,9 +1,10 @@
 # ==============================================================================
 # Docker Compose: Traefik Reverse Proxy
 # Description: Global Traefik reverse proxy with automatic TLS via Let's Encrypt.
+#              Uses Cloudflare DNS-01 challenge (works with CF proxy enabled).
 #
 # Features:
-#   - Automatic HTTPS with Let's Encrypt
+#   - Automatic HTTPS with Let's Encrypt (DNS-01 via Cloudflare)
 #   - HTTP to HTTPS redirect
 #   - Dashboard with basic auth protection
 #   - Docker provider for automatic service discovery
@@ -11,6 +12,8 @@
 # Required Environment Variables:
 #   - TRAEFIK_DOMAIN: Domain for the Traefik dashboard
 #   - TRAEFIK_CREDENTIALS_PATH: Path to htpasswd file for basic auth
+#   - CF_API_EMAIL: Cloudflare account email
+#   - CF_DNS_API_TOKEN: Cloudflare API token with Zone:DNS:Edit permissions
 #
 # Usage: docker compose -f docker-compose.traefik.yml up -d
 # ==============================================================================
@@ -22,6 +25,11 @@ services:
 
     command:
       - "--configFile=/traefik.yml"
+
+    # Cloudflare DNS Challenge credentials
+    environment:
+      - CF_API_EMAIL=${CF_API_EMAIL}
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -49,21 +57,17 @@ services:
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
 
       # Middlewares
-      - "traefik.http.routers.traefik-dashboard.middlewares=traefik-redirect-www,traefik-auth"
+      - "traefik.http.routers.traefik-dashboard.middlewares=traefik-auth"
 
       # Basic Auth Middleware
       - "traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt"
 
-      # WWW Redirect Middleware
-      - "traefik.http.middlewares.traefik-redirect-www.redirectregex.regex=^https://www\\.(.*)"
-      - "traefik.http.middlewares.traefik-redirect-www.redirectregex.replacement=https://$${1}"
-
     healthcheck:
-      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/ping"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 15s
 
     logging:
       driver: "json-file"

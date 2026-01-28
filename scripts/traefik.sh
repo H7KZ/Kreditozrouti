@@ -4,7 +4,7 @@ set -euo pipefail
 # ==============================================================================
 # Script Name: traefik.sh
 # Description: Deploys the global Traefik reverse proxy stack.
-#              Sets up required networks and volumes.
+#              Sets up required networks, volumes, and Cloudflare DNS challenge.
 #
 # Usage:       ./traefik.sh --path <deployment_path> [OPTIONS]
 #
@@ -12,6 +12,8 @@ set -euo pipefail
 #   -p, --path <path>           Path to deployment directory (required)
 #   -d, --domain <domain>       Traefik dashboard domain (required)
 #   -c, --credentials <path>    Path to htpasswd credentials file (required)
+#   --cf-email <email>          Cloudflare account email (required)
+#   --cf-token <token>          Cloudflare API token (required)
 #   -e, --email <email>         ACME/Let's Encrypt email (optional)
 #   -h, --help                  Show help message
 #
@@ -19,10 +21,13 @@ set -euo pipefail
 #   DEPLOYMENT_PATH             Path to deployment directory
 #   TRAEFIK_DOMAIN              Dashboard domain
 #   TRAEFIK_CREDENTIALS_PATH    Path to credentials file
+#   CF_API_EMAIL                Cloudflare account email
+#   CF_DNS_API_TOKEN            Cloudflare API token
 #   ACME_EMAIL                  Let's Encrypt email
 #
 # Example:
-#   ./traefik.sh -p ~/deployment -d traefik.example.com -c ~/.htpasswd
+#   ./traefik.sh -p ~/deployment -d traefik.example.com -c ~/.htpasswd \
+#                --cf-email user@example.com --cf-token abc123
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
@@ -67,6 +72,8 @@ Required:
     -p, --path <path>           Path to deployment directory
     -d, --domain <domain>       Traefik dashboard domain
     -c, --credentials <path>    Path to htpasswd credentials file
+    --cf-email <email>          Cloudflare account email
+    --cf-token <token>          Cloudflare API token (Zone:DNS:Edit)
 
 Optional:
     -e, --email <email>         Let's Encrypt notification email
@@ -76,21 +83,30 @@ Environment Variables:
     DEPLOYMENT_PATH             Path to deployment directory
     TRAEFIK_DOMAIN              Dashboard domain
     TRAEFIK_CREDENTIALS_PATH    Path to credentials file
+    CF_API_EMAIL                Cloudflare account email
+    CF_DNS_API_TOKEN            Cloudflare API token
     ACME_EMAIL                  Let's Encrypt email
 
 Examples:
-    $SCRIPT_NAME -p ~/deployment -d traefik.example.com -c ~/.htpasswd
-    $SCRIPT_NAME --path /opt/app/deployment --domain traefik.example.com --credentials /etc/traefik/.htpasswd
+    $SCRIPT_NAME -p ~/deployment -d traefik.example.com -c ~/.htpasswd \\
+                 --cf-email user@example.com --cf-token abc123
 
 Expected directory structure:
     <deployment_path>/
     └── traefik/
         ├── docker-compose.traefik.yml
+        ├── traefik.yml
         ├── networks.yml
         └── volumes.yml
 
 Generate htpasswd file:
     htpasswd -c ~/.htpasswd admin
+
+Create Cloudflare API Token:
+    1. Go to https://dash.cloudflare.com/profile/api-tokens
+    2. Create Token → Use template "Edit zone DNS"
+    3. Permissions: Zone → DNS → Edit
+    4. Zone Resources: Include your domain(s)
 EOF
     exit 1
 }
@@ -151,6 +167,8 @@ main() {
     local deployment_path="${DEPLOYMENT_PATH:-}"
     local domain="${TRAEFIK_DOMAIN:-}"
     local credentials="${TRAEFIK_CREDENTIALS_PATH:-}"
+    local cf_email="${CF_API_EMAIL:-}"
+    local cf_token="${CF_DNS_API_TOKEN:-}"
     local email="${ACME_EMAIL:-}"
 
     # Parse arguments
@@ -168,6 +186,14 @@ main() {
                 credentials="$2"
                 shift 2
                 ;;
+            --cf-email)
+                cf_email="$2"
+                shift 2
+                ;;
+            --cf-token)
+                cf_token="$2"
+                shift 2
+                ;;
             -e|--email)
                 email="$2"
                 shift 2
@@ -183,7 +209,7 @@ main() {
     done
 
     log "=========================================="
-    log "Traefik Deployment"
+    log "Traefik Deployment (Cloudflare DNS-01)"
     log "=========================================="
 
     # Validate required parameters
@@ -202,6 +228,18 @@ main() {
     if [[ -z "$credentials" ]]; then
         log_error "TRAEFIK_CREDENTIALS_PATH is not set."
         log_error "Use --credentials flag or set TRAEFIK_CREDENTIALS_PATH environment variable."
+        exit 1
+    fi
+
+    if [[ -z "$cf_email" ]]; then
+        log_error "CF_API_EMAIL is not set."
+        log_error "Use --cf-email flag or set CF_API_EMAIL environment variable."
+        exit 1
+    fi
+
+    if [[ -z "$cf_token" ]]; then
+        log_error "CF_DNS_API_TOKEN is not set."
+        log_error "Use --cf-token flag or set CF_DNS_API_TOKEN environment variable."
         exit 1
     fi
 
@@ -227,11 +265,15 @@ main() {
     # Export environment variables
     export TRAEFIK_DOMAIN="$domain"
     export TRAEFIK_CREDENTIALS_PATH="$credentials"
-    export ACME_EMAIL="${email:-admin@$domain}"
+    export CF_API_EMAIL="$cf_email"
+    export CF_DNS_API_TOKEN="$cf_token"
+    export ACME_EMAIL="${email:-$cf_email}"
 
     log "Path:        $deployment_path"
     log "Domain:      $TRAEFIK_DOMAIN"
     log "Credentials: $TRAEFIK_CREDENTIALS_PATH"
+    log "CF Email:    $CF_API_EMAIL"
+    log "CF Token:    ${CF_DNS_API_TOKEN:0:8}..."
     log "ACME Email:  $ACME_EMAIL"
     log "=========================================="
 
@@ -262,6 +304,9 @@ main() {
     log_success "=========================================="
     log "Dashboard: https://$TRAEFIK_DOMAIN"
     log "Logs:      docker compose -p $STACK_NAME logs -f"
+    log ""
+    log "Certificate issuance may take 1-2 minutes."
+    log "Monitor with: docker compose -p $STACK_NAME logs -f traefik 2>&1 | grep -i acme"
 }
 
 main "$@"

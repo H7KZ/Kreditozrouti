@@ -5,8 +5,9 @@
 
 networks:
   traefik-network:
+    name: traefik-network
     external: true
 
   glitchtip-internal:
     name: glitchtip-internal
-    driver: bridge
+    external: true

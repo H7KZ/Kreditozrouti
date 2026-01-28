@@ -6,6 +6,8 @@
 volumes:
   glitchtip-postgres-volume:
     name: glitchtip-postgres-volume
+    external: true
 
   glitchtip-valkey-volume:
     name: glitchtip-valkey-volume
+    external: true
