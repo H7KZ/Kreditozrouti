@@ -82,8 +82,9 @@ export default class ExtractInSISCourseService {
 
     private static extractBasicInfo($: CheerioAPI) {
         const ident = getRowValueCaseInsensitive($, 'Kód předmětu:')
-        const title = getRowValueCaseInsensitive($, 'Název v jazyce výuky:') ?? getRowValueCaseInsensitive($, 'Název česky:')
-        const czech_title = getRowValueCaseInsensitive($, 'Název česky:')
+        const title_cs = getRowValueCaseInsensitive($, 'Název česky:')
+        const title_en = getRowValueCaseInsensitive($, 'Název anglicky:')
+        const title = getRowValueCaseInsensitive($, 'Název v jazyce výuky:')
 
         const ectsRaw = getRowValueCaseInsensitive($, 'Počet přidělených ECTS kreditů:')
         const ects = ectsRaw ? parseInt(ectsRaw.split(' ')[0], 10) : null
@@ -99,7 +100,7 @@ export default class ExtractInSISCourseService {
                   .filter((l): l is string => l !== null)
             : null
 
-        return { ident, title, czech_title, ects, mode_of_delivery, mode_of_completion, languages }
+        return { ident, title, title_cs, title_en, ects, mode_of_delivery, mode_of_completion, languages }
     }
 
     private static extractSemesterAndYear($: CheerioAPI): { semester: InSISSemester | null; year: number | null } {

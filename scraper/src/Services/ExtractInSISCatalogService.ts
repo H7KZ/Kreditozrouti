@@ -13,6 +13,7 @@ export interface CatalogSearchOptions {
     periods: {
         id: number
         identifier: string | undefined
+        yearId: number
         semester: string | null
         year: number | null
     }[]
@@ -53,6 +54,7 @@ export default class ExtractInSISCatalogService {
         $('input[name="obdobi_fak"]').each((_, el) => {
             const id = $(el).val() as string
             const identifier = $(el).closest('div').attr('id')
+            const yearId = $(el).parent().siblings().closest('input[name="obdobi"]').val() as string
             const nextNode = el.nextSibling
             const rawPeriod = cleanText(nextNode?.type === 'text' ? nextNode.data : $(el).parent().text())
             const period = cleanText(rawPeriod)
@@ -61,6 +63,7 @@ export default class ExtractInSISCatalogService {
                 periods.push({
                     id: Number(id.trim()),
                     identifier: identifier,
+                    yearId: Number(yearId.trim()),
                     semester: extractSemester(period),
                     year: extractYear(period)
                 })

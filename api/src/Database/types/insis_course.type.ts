@@ -23,7 +23,8 @@ export class CourseTable {
 	ident!: string
 
 	title!: string | null
-	czech_title!: string | null
+	title_cs!: string | null
+	title_en!: string | null
 	ects!: number | null
 
 	/** Delivery format (e.g., in-person, remote). */

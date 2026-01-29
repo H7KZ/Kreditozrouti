@@ -42,6 +42,7 @@ function createDefaultFilters(): CoursesFilter {
  * Courses Store
  * Manages course search, filtering, and pagination.
  * Syncs with the timetable store for selected courses.
+ * Supports multiple study plan IDs for filtering.
  */
 export const useCoursesStore = defineStore('courses', {
 	state: (): CoursesState => ({
@@ -120,11 +121,15 @@ export const useCoursesStore = defineStore('courses', {
 	},
 
 	actions: {
-		/** Initialize filters from wizard selection */
+		/** Initialize filters from wizard selection (supports multiple study plans) */
 		initializeFromWizard() {
 			const wizardStore = useWizardStore()
 
-			if (wizardStore.studyPlanId) {
+			// Use multiple study plan IDs from wizard
+			if (wizardStore.studyPlanIds.length > 0) {
+				this.filters.study_plan_ids = [...wizardStore.studyPlanIds]
+			} else if (wizardStore.studyPlanId) {
+				// Fallback to single ID for backward compatibility
 				this.filters.study_plan_ids = [wizardStore.studyPlanId]
 			}
 
@@ -354,7 +359,10 @@ export const useCoursesStore = defineStore('courses', {
 			const wizardStore = useWizardStore()
 			const defaults = createDefaultFilters()
 
-			if (wizardStore.studyPlanId) {
+			// Use multiple study plan IDs from wizard
+			if (wizardStore.studyPlanIds.length > 0) {
+				defaults.study_plan_ids = [...wizardStore.studyPlanIds]
+			} else if (wizardStore.studyPlanId) {
 				defaults.study_plan_ids = [wizardStore.studyPlanId]
 			}
 

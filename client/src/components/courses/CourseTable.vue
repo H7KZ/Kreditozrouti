@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
+import { DAYS_ORDER, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import { CourseSortBy } from '@client/types'
+import InSISDay from '@scraper/Types/InSISDay.ts'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconChevronDown from '~icons/lucide/chevron-down'
@@ -13,9 +15,10 @@ import IconChevronUp from '~icons/lucide/chevron-up'
  * InSIS-styled table for displaying courses with expandable rows.
  */
 
-const { t } = useI18n({ useScope: 'global' })
+const { t, te } = useI18n({ useScope: 'global' })
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
+const { getDayFromDate } = useTimeUtils()
 
 type CourseWithRelations = Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>
 
@@ -52,29 +55,65 @@ function hasSelectedUnits(courseId: number): boolean {
 	return timetableStore.hasCourseSelected(courseId)
 }
 
-// Get schedule summary for a course
+function hasMissingUnitTypes(courseId: number): boolean {
+	return timetableStore.courseHasMissingUnitTypes(courseId)
+}
+
+/**
+ * Get day index for sorting (Monday = 0, Sunday = 6)
+ */
+function getDayIndex(day: InSISDay): number {
+	const index = DAYS_ORDER.indexOf(day)
+	return index === -1 ? 999 : index
+}
+
+/**
+ * Get schedule summary for a course
+ * Shows days sorted by week order (Mon-Sun)
+ * For block courses (date-only), also show their days
+ */
 function getScheduleSummary(course: CourseWithRelations): string {
 	if (!course.units || course.units.length === 0) return '-'
 
-	const daysSet = new Set<string>()
+	const daysSet = new Set<InSISDay>()
+
 	for (const unit of course.units) {
 		if (unit.slots) {
 			for (const slot of unit.slots) {
+				// For recurring slots with day
 				if (slot.day) {
-					// Short day name
-					const dayShort = slot.day.substring(0, 2)
-					daysSet.add(dayShort)
+					daysSet.add(slot.day)
+				}
+				// For block/single-occurrence slots with date, extract the day
+				else if (slot.date) {
+					const dateDay = getDayFromDate(slot.date)
+					if (dateDay) {
+						daysSet.add(dateDay)
+					}
 				}
 			}
 		}
 	}
 
-	return daysSet.size > 0 ? [...daysSet].join(', ') : '-'
+	if (daysSet.size === 0) return '-'
+
+	// Sort days by week order and get short names
+	const sortedDays = Array.from(daysSet)
+		.sort((a, b) => getDayIndex(a) - getDayIndex(b))
+		.map((day) => t(`daysShort.${day}`))
+
+	return sortedDays.join(', ')
 }
 
 // Get mode of completion display
-function getCompletionLabel(course: CourseWithRelations): string {
-	return course.mode_of_completion || '-'
+function getCompletionLabel(value: string): string {
+	const key = `courseModesOfCompletion.${value}`
+	return te(key) ? t(key) : value
+}
+
+function getFacultyName(value: string): string {
+	const key = `faculties.${value}`
+	return te(key) ? t(key) : value
 }
 </script>
 
@@ -145,12 +184,15 @@ function getCompletionLabel(course: CourseWithRelations): string {
 									<span v-if="hasSelectedUnits(course.id)" class="insis-badge insis-badge-success">
 										{{ $t('components.courses.CourseTable.inTimetable') }}
 									</span>
+									<span v-if="hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-warning">
+										{{ $t('components.courses.CourseTable.missingUnitTypes') }}
+									</span>
 								</div>
 							</td>
 
 							<!-- Faculty -->
 							<td class="text-sm text-[var(--insis-gray-600)]">
-								{{ course.faculty?.title || course.faculty_id || '-' }}
+								{{ course.faculty_id ? getFacultyName(course.faculty_id) : '-' }}
 							</td>
 
 							<!-- ECTS -->
@@ -160,7 +202,7 @@ function getCompletionLabel(course: CourseWithRelations): string {
 
 							<!-- Completion -->
 							<td class="text-sm">
-								{{ getCompletionLabel(course) }}
+								{{ course.mode_of_completion ? getCompletionLabel(course.mode_of_completion) : '-' }}
 							</td>
 
 							<!-- Schedule Summary -->

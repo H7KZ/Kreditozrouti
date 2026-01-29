@@ -177,6 +177,7 @@
 		"courses": {
 			"studyPlanFallback": "Study Plan",
 			"coursesInTimetable": "{count} courses in timetable",
+			"searchingForCourses": "Searching for courses in {semester} {year}",
 			"clearTimetable": "Clear timetable",
 			"clearTimetableConfirm": "Are you sure you want to remove all courses from the timetable?",
 			"conflict": "Conflict",
@@ -225,13 +226,19 @@
 			},
 			"WizardStepStudyPlan": {
 				"title": "Select Study Plan",
-				"description": "Choose your study plan (field of study). Clicking on a plan will take you directly to browsing courses.",
+				"description": "Choose your study plan (field of study). You can select multiple plans if you have a specialization.",
 				"searchLabel": "Search",
 				"searchPlaceholder": "Name or field code...",
 				"levelLabel": "Study Level",
 				"resultsCount": "Found {count} study plans",
 				"noResults": "No study plans match the filter.",
-				"backToYear": "Back to year selection"
+				"backToYear": "Back to year selection",
+				"specializationInfoTitle": "Do you have a specialization?",
+				"specializationInfoDescription": "If your study program includes a specialization (e.g., minor), select both your base study plan AND your specialization. Click on plans to toggle selection.",
+				"selectedCount": "{count} selected",
+				"selected": "Selected",
+				"proceed": "Continue with selection",
+				"doubleClickTip": "Tip: Double-click a plan to select it and proceed immediately."
 			}
 		},
 		"courses": {
@@ -245,7 +252,8 @@
 					"schedule": "Schedule"
 				},
 				"noResults": "No courses match the filter",
-				"inTimetable": "In timetable"
+				"inTimetable": "In timetable",
+				"missingUnitTypes": "Missing unit types"
 			},
 			"CourseRowExpanded": {
 				"faculty": "Faculty",
@@ -260,13 +268,15 @@
 				"selected": "Selected",
 				"selectOne": "select one of",
 				"selectAction": "select action",
-				"noUnitsAvailable": "No schedule units are available for this course."
+				"noUnitsAvailable": "No schedule units are available for this course.",
+				"incompleteSelectionTitle": "Incomplete course selection",
+				"incompleteSelectionDescription": "To enroll in this course, you must also select: {types}. Please select all required unit types."
 			}
 		},
 		"filters": {
 			"FilterPanel": {
 				"searchLabel": "Search",
-				"searchPlaceholder": "Search courses by name...",
+				"searchPlaceholder": "Search by name or ident...",
 				"faculties": "Faculties",
 				"studyLevel": "Study Level",
 				"language": "Language of Instruction",

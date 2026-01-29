@@ -25,7 +25,10 @@ export default interface ScraperInSISCourse {
     title: string | null
 
     /** The localized Czech title of the course, if available. */
-    czech_title: string | null
+    title_cs: string | null
+
+    /** The localized English title of the course, if available. */
+    title_en: string | null
 
     /** The number of ECTS credits awarded for completion. */
     ects: number | null

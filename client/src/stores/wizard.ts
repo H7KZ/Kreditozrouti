@@ -11,13 +11,25 @@ const STORAGE_KEY = 'kreditozrouti:wizard'
 
 type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
 
+/** Represents a selected study plan with its metadata */
+interface SelectedStudyPlan {
+	id: number
+	ident: string | null
+	title: string | null
+}
+
 interface PersistedWizardState {
 	facultyId: string | null
 	year: number | null
 	semester: InSISSemester
+	/** @deprecated Use selectedStudyPlans instead */
 	studyPlanId: number | null
+	/** @deprecated Use selectedStudyPlans instead */
 	studyPlanIdent: string | null
+	/** @deprecated Use selectedStudyPlans instead */
 	studyPlanTitle: string | null
+	/** Multiple selected study plans */
+	selectedStudyPlans: SelectedStudyPlan[]
 	completed: boolean
 }
 
@@ -26,9 +38,8 @@ interface WizardState {
 	facultyId: string | null
 	year: number | null
 	semester: InSISSemester
-	studyPlanId: number | null
-	studyPlanIdent: string | null
-	studyPlanTitle: string | null
+	/** Multiple selected study plans */
+	selectedStudyPlans: SelectedStudyPlan[]
 	completed: boolean
 	facultyFacets: FacetItem[]
 	yearFacets: FacetItem[]
@@ -43,9 +54,10 @@ interface WizardState {
 /**
  * Wizard Store
  * Manages the study plan selection wizard state with localStorage persistence.
+ * Supports selecting multiple study plans (e.g., base plan + specialization).
  *
  * Flow:
- * 1. Select Faculty → 2. Select Year (auto-selects Winter Semester) → 3. Select Study Plan
+ * 1. Select Faculty → 2. Select Year (auto-selects Winter Semester) → 3. Select Study Plans (multi-select)
  */
 export const useWizardStore = defineStore('wizard', {
 	state: (): WizardState => ({
@@ -53,9 +65,7 @@ export const useWizardStore = defineStore('wizard', {
 		facultyId: null,
 		year: null,
 		semester: 'ZS',
-		studyPlanId: null,
-		studyPlanIdent: null,
-		studyPlanTitle: null,
+		selectedStudyPlans: [],
 		completed: false,
 		facultyFacets: [],
 		yearFacets: [],
@@ -78,9 +88,9 @@ export const useWizardStore = defineStore('wizard', {
 			return this.year !== null
 		},
 
-		/** Whether step 3 is complete */
+		/** Whether step 3 is complete (at least one study plan selected) */
 		step3Complete(): boolean {
-			return this.studyPlanId !== null
+			return this.selectedStudyPlans.length > 0
 		},
 
 		/** Whether user can proceed to step 2 */
@@ -126,10 +136,40 @@ export const useWizardStore = defineStore('wizard', {
 			if (this.year) {
 				parts.push(`${this.year}/${this.year + 1}`)
 			}
-			if (this.studyPlanTitle) {
-				parts.push(this.studyPlanTitle)
+			if (this.selectedStudyPlans.length > 0) {
+				const planTitles = this.selectedStudyPlans.map((p) => p.title || p.ident || `ID: ${p.id}`).join(', ')
+				parts.push(planTitles)
 			}
 			return parts.join(' → ')
+		},
+
+		/** All selected study plan IDs */
+		studyPlanIds(): number[] {
+			return this.selectedStudyPlans.map((p) => p.id)
+		},
+
+		/** First selected study plan ID (for backward compatibility) */
+		studyPlanId(): number | null {
+			return this.selectedStudyPlans[0]?.id ?? null
+		},
+
+		/** First selected study plan ident (for backward compatibility) */
+		studyPlanIdents(): string[] | null {
+			if (this.selectedStudyPlans.length === 0) return null
+
+			return this.selectedStudyPlans.map((p) => p.ident || String(p.id))
+		},
+
+		/** First selected study plan title (for backward compatibility) */
+		studyPlanTitles(): string[] | null {
+			if (this.selectedStudyPlans.length === 0) return null
+
+			return this.selectedStudyPlans.map((p) => p.title || p.ident || String(p.id))
+		},
+
+		/** Check if a specific study plan is selected */
+		isStudyPlanSelected(): (id: number) => boolean {
+			return (id: number) => this.selectedStudyPlans.some((p) => p.id === id)
 		},
 	},
 
@@ -211,9 +251,7 @@ export const useWizardStore = defineStore('wizard', {
 			this.facultyId = id
 			// Reset downstream selections
 			this.year = null
-			this.studyPlanId = null
-			this.studyPlanIdent = null
-			this.studyPlanTitle = null
+			this.selectedStudyPlans = []
 			this.studyPlans = []
 
 			// Load year facets for this faculty
@@ -229,9 +267,7 @@ export const useWizardStore = defineStore('wizard', {
 			this.year = selectedYear
 			this.semester = 'ZS' // Auto-select Winter Semester (ZS = Zimní semestr)
 			// Reset study plan selection
-			this.studyPlanId = null
-			this.studyPlanIdent = null
-			this.studyPlanTitle = null
+			this.selectedStudyPlans = []
 
 			// Load study plans
 			this.loadStudyPlans()
@@ -241,11 +277,30 @@ export const useWizardStore = defineStore('wizard', {
 			this.persist()
 		},
 
-		/** Select a study plan */
+		/** Toggle selection of a study plan (for multi-select) */
+		toggleStudyPlan(id: number, ident: string | null, title: string | null) {
+			const existingIndex = this.selectedStudyPlans.findIndex((p) => p.id === id)
+
+			if (existingIndex !== -1) {
+				// Remove if already selected
+				this.selectedStudyPlans.splice(existingIndex, 1)
+			} else {
+				// Add to selection
+				this.selectedStudyPlans.push({ id, ident, title })
+			}
+
+			this.persist()
+		},
+
+		/** Select a single study plan (replaces current selection) */
 		selectStudyPlan(id: number, ident: string | null, title: string | null) {
-			this.studyPlanId = id
-			this.studyPlanIdent = ident
-			this.studyPlanTitle = title
+			this.selectedStudyPlans = [{ id, ident, title }]
+			this.persist()
+		},
+
+		/** Clear all selected study plans */
+		clearStudyPlanSelection() {
+			this.selectedStudyPlans = []
 			this.persist()
 		},
 
@@ -258,14 +313,10 @@ export const useWizardStore = defineStore('wizard', {
 			// Clear downstream selections when going back
 			if (step < 2) {
 				this.year = null
-				this.studyPlanId = null
-				this.studyPlanIdent = null
-				this.studyPlanTitle = null
+				this.selectedStudyPlans = []
 			}
 			if (step < 3) {
-				this.studyPlanId = null
-				this.studyPlanIdent = null
-				this.studyPlanTitle = null
+				this.selectedStudyPlans = []
 			}
 			this.persist()
 		},
@@ -285,9 +336,7 @@ export const useWizardStore = defineStore('wizard', {
 			this.facultyId = null
 			this.year = null
 			this.semester = 'ZS'
-			this.studyPlanId = null
-			this.studyPlanIdent = null
-			this.studyPlanTitle = null
+			this.selectedStudyPlans = []
 			this.completed = false
 			this.studyPlans = []
 			this.levelFilter = []
@@ -312,9 +361,11 @@ export const useWizardStore = defineStore('wizard', {
 				facultyId: this.facultyId,
 				year: this.year,
 				semester: this.semester,
-				studyPlanId: this.studyPlanId,
-				studyPlanIdent: this.studyPlanIdent,
-				studyPlanTitle: this.studyPlanTitle,
+				// Keep legacy fields for backward compatibility
+				studyPlanId: this.selectedStudyPlans[0]?.id ?? null,
+				studyPlanIdent: this.selectedStudyPlans[0]?.ident ?? null,
+				studyPlanTitle: this.selectedStudyPlans[0]?.title ?? null,
+				selectedStudyPlans: this.selectedStudyPlans,
 				completed: this.completed,
 			}
 			localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
@@ -330,13 +381,27 @@ export const useWizardStore = defineStore('wizard', {
 				this.facultyId = state.facultyId
 				this.year = state.year
 				this.semester = state.semester || 'ZS'
-				this.studyPlanId = state.studyPlanId
-				this.studyPlanIdent = state.studyPlanIdent
-				this.studyPlanTitle = state.studyPlanTitle
+
+				// Handle multi-select or migrate from legacy single-select
+				if (state.selectedStudyPlans && state.selectedStudyPlans.length > 0) {
+					this.selectedStudyPlans = state.selectedStudyPlans
+				} else if (state.studyPlanId) {
+					// Migrate from legacy single-select
+					this.selectedStudyPlans = [
+						{
+							id: state.studyPlanId,
+							ident: state.studyPlanIdent,
+							title: state.studyPlanTitle,
+						},
+					]
+				} else {
+					this.selectedStudyPlans = []
+				}
+
 				this.completed = state.completed
 
 				// Determine current step based on completed data
-				if (state.studyPlanId) {
+				if (this.selectedStudyPlans.length > 0) {
 					this.currentStep = 3
 				} else if (state.year) {
 					this.currentStep = 3

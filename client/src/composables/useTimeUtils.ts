@@ -5,6 +5,7 @@ import InSISDay from '@scraper/Types/InSISDay.ts'
 
 const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
 
+/** Days in week order (Monday = 0, Sunday = 6) */
 export const DAYS_ORDER: InSISDay[] = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle']
 
 /**

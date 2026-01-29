@@ -451,7 +451,7 @@ onUnmounted(() => {
 
 							<!-- Unit type groups -->
 							<div class="space-y-4 h-full">
-								<div class="h-full" v-for="[key, group] in unitsByGroup" :key="key">
+								<div v-for="[key, group] in unitsByGroup" :key="key">
 									<div class="mb-2 flex items-center gap-2">
 										<span class="text-sm font-medium text-[var(--insis-gray-700)]">
 											{{ getGroupLabel(group.types) }}
@@ -470,7 +470,7 @@ onUnmounted(() => {
 									</div>
 
 									<!-- Units in group -->
-									<div class="h-full space-y-2 overflow-y-auto">
+									<div class="space-y-2 overflow-y-auto">
 										<div
 											v-for="courseUnit in group.units"
 											:key="courseUnit.id"

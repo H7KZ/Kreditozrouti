@@ -4,13 +4,14 @@ import WizardStepStudyPlan from '@client/components/wizard/WizardStepStudyPlan.v
 import WizardStepYear from '@client/components/wizard/WizardStepYear.vue'
 import WizardSteps from '@client/components/wizard/WizardSteps.vue'
 import { useWizardStore } from '@client/stores'
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 /*
  * StudyPlanWizard
  * Main wizard component for guiding users through study plan selection.
- * Steps: 1. Faculty → 2. Year → 3. Study Plan
+ * Supports selecting multiple study plans (base plan + specializations).
+ * Steps: 1. Faculty → 2. Year → 3. Study Plans (multi-select)
  */
 
 const router = useRouter()
@@ -23,6 +24,9 @@ onMounted(async () => {
 	}
 })
 
+/** Selected plans for the WizardStepStudyPlan component */
+const selectedPlans = computed(() => wizardStore.selectedStudyPlans)
+
 function handleComplete() {
 	if (wizardStore.completeWizard()) {
 		router.push('/courses')
@@ -31,6 +35,16 @@ function handleComplete() {
 
 function handleReset() {
 	wizardStore.reset()
+}
+
+/** Handle toggling a study plan selection */
+function handleToggleStudyPlan(id: number, ident: string, title: string) {
+	wizardStore.toggleStudyPlan(id, ident, title)
+}
+
+/** Handle selecting a single study plan (for quick proceed) */
+function handleSelectStudyPlan(id: number, ident: string, title: string) {
+	wizardStore.selectStudyPlan(id, ident, title)
 }
 </script>
 
@@ -80,15 +94,16 @@ function handleReset() {
 				@back="wizardStore.goToStep(1)"
 			/>
 
-			<!-- Step 3: Study Plan Selection -->
+			<!-- Step 3: Study Plan Selection (Multi-select) -->
 			<WizardStepStudyPlan
 				v-else-if="wizardStore.currentStep === 3"
 				:study-plans="wizardStore.filteredStudyPlans"
 				:level-facets="wizardStore.levelFacets"
-				:selected-plan-id="wizardStore.studyPlanId"
+				:selected-plans="selectedPlans"
 				:level-filter="wizardStore.levelFilter"
 				:title-search="wizardStore.titleSearch"
-				@select="(id, ident, title) => wizardStore.selectStudyPlan(id, ident, title)"
+				@toggle="handleToggleStudyPlan"
+				@select="handleSelectStudyPlan"
 				@set-level-filter="wizardStore.setLevelFilter"
 				@set-title-search="wizardStore.setTitleSearch"
 				@back="wizardStore.goToStep(2)"

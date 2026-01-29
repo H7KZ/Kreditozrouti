@@ -1,6 +1,7 @@
 import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
 import { ALL_DAYS, TIME_CONFIG } from '@client/constants/timetable.ts'
 import { i18n } from '@client/index.ts'
+import { useCoursesStore } from '@client/stores/courses.ts'
 import { CourseUnitType, PersistedTimetableState, SelectedCourseUnit, TimetableState } from '@client/types'
 import InSISDay from '@scraper/Types/InSISDay.ts'
 import { defineStore } from 'pinia'
@@ -185,7 +186,7 @@ export const useTimetableStore = defineStore('timetable', {
 			const selectedUnit: SelectedCourseUnit = {
 				courseId: course.id,
 				courseIdent: course.ident,
-				courseTitle: course.title ?? course.czech_title ?? '',
+				courseTitle: course.title ?? course.title_en ?? course.title_cs ?? '',
 				unitId: unit.id,
 				unitType: this.getSlotType(slot),
 				slotId: slot.id,
@@ -268,6 +269,35 @@ export const useTimetableStore = defineStore('timetable', {
 		 */
 		hasUnitTypeSelected(courseId: number, unitType: CourseUnitType): boolean {
 			return this.selectedUnits.some((u) => u.courseId === courseId && u.unitType === unitType)
+		},
+
+		courseHasMissingUnitTypes(courseId: number): boolean {
+			const selectedUnitTypes = new Set<CourseUnitType>()
+			const selectedUnits = this.getUnitsForCourse(courseId)
+			const allUnits = useCoursesStore().courses.find((c) => c.id === courseId)?.units || []
+
+			for (const unit of selectedUnits) {
+				selectedUnitTypes.add(unit.unitType)
+			}
+
+			const missing: CourseUnitType[] = []
+			for (const type of this.requiredUnitTypes(allUnits)) {
+				if (!selectedUnitTypes.has(type)) {
+					missing.push(type)
+				}
+			}
+
+			return missing.length > 0 && missing.length < this.requiredUnitTypes(allUnits).size
+		},
+
+		requiredUnitTypes(units: CourseUnit<void, CourseUnitSlot>[]): Set<CourseUnitType> {
+			const types = new Set<CourseUnitType>()
+			for (const unit of units || []) {
+				for (const slot of unit.slots || []) {
+					types.add(this.getSlotType(slot))
+				}
+			}
+			return types
 		},
 
 		/**

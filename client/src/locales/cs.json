@@ -177,6 +177,7 @@
 		"courses": {
 			"studyPlanFallback": "Studijní plán",
 			"coursesInTimetable": "{count} předmětů v rozvrhu",
+			"searchingForCourses": "Hledání předmětů pro {semester} {year}",
 			"clearTimetable": "Vymazat rozvrh",
 			"clearTimetableConfirm": "Opravdu chcete odebrat všechny předměty z rozvrhu?",
 			"conflict": "Kolize",
@@ -225,13 +226,19 @@
 			},
 			"WizardStepStudyPlan": {
 				"title": "Vyberte studijní plán",
-				"description": "Zvolte svůj studijní plán (obor). Kliknutím na plán přejdete rovnou na prohlížení předmětů.",
-				"searchLabel": "Vyhledat",
-				"searchPlaceholder": "Název nebo kód oboru...",
-				"levelLabel": "Stupeň studia",
+				"description": "Vyberte si studijní plán (obor studia). Pokud máte specializaci, můžete vybrat více plánů.",
+				"searchLabel": "Hledat",
+				"searchPlaceholder": "Jméno nebo kód oboru...",
+				"levelLabel": "Úroveň studia",
 				"resultsCount": "Nalezeno {count} studijních plánů",
-				"noResults": "Žádné studijní plány neodpovídají filtru.",
-				"backToYear": "Zpět na výběr roku"
+				"noResults": "Žádný studijní plán neodpovídá filtru.",
+				"backToYear": "Zpět k výběru roku",
+				"specializationInfoTitle": "Máte specializaci?",
+				"specializationInfoDescription": "Pokud váš studijní program zahrnuje specializaci (např. vedlejší obor), vyberte jak základní studijní plán, tak specializaci. Kliknutím na plány přepínáte výběr.",
+				"selectedCount": "{count} vybráno",
+				"selected": "Vybráno",
+				"proceed": "Pokračovat ve výběru",
+				"doubleClickTip": "Tip: Poklepejte na plán, abyste jej vybrali a mohli okamžitě pokračovat."
 			}
 		},
 		"courses": {
@@ -245,28 +252,31 @@
 					"schedule": "Rozvrh"
 				},
 				"noResults": "Žádné předměty neodpovídají filtru",
-				"inTimetable": "V rozvrhu"
+				"inTimetable": "V rozvrhu",
+				"missingUnitTypes": "Chybějící typy jednotek"
 			},
 			"CourseRowExpanded": {
 				"faculty": "Fakulta",
 				"ectsCredits": "ECTS kredity",
-				"completion": "Ukončení",
+				"completion": "Dokončení",
 				"language": "Jazyk",
 				"category": "Kategorie",
 				"assessments": "Hodnocení",
-				"unitSelection": "Výběr rozvrhových akcí",
-				"complete": "Kompletní",
+				"unitSelection": "Výběr jednotek rozvrhu",
+				"complete": "Dokončit",
 				"removeAll": "Odebrat vše",
-				"selected": "Vybráno",
-				"selectOne": "vyberte jednu z",
-				"selectAction": "vyberte akci",
-				"noUnitsAvailable": "Pro tento předmět nejsou k dispozici rozvrhové akce."
+				"selected": "Vybrané",
+				"selectOne": "vybrat jednu z",
+				"selectAction": "vybrat akci",
+				"noUnitsAvailable": "Pro tento kurz nejsou k dispozici žádné jednotky rozvrhu.",
+				"incompleteSelectionTitle": "Neúplný výběr kurzu",
+				"incompleteSelectionDescription": "Chcete-li se zapsat do tohoto kurzu, musíte také vybrat: {types}. Vyberte všechny požadované typy jednotek."
 			}
 		},
 		"filters": {
 			"FilterPanel": {
 				"searchLabel": "Hledat",
-				"searchPlaceholder": "Hledat předměty pomocí názvu...",
+				"searchPlaceholder": "Hledat pomocí názvu nebo kódu...",
 				"faculties": "Fakulty",
 				"studyLevel": "Stupeň studia",
 				"language": "Jazyk výuky",

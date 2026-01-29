@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
-import { useTimeUtils } from '@client/composables'
-import { useTimetableStore } from '@client/stores'
+import { DAYS_ORDER, useTimeUtils } from '@client/composables'
+import { useCoursesStore, useTimetableStore } from '@client/stores'
 import { CourseUnitType } from '@client/types'
 import InSISDay from '@scraper/Types/InSISDay.ts'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconCheck from '~icons/lucide/check'
 import IconExternalLink from '~icons/lucide/external-link'
 import IconMinus from '~icons/lucide/minus'
@@ -18,8 +19,9 @@ import IconTrash from '~icons/lucide/trash-2'
  * Handles grouping slots by unit and selecting entire units.
  */
 
-const { t, te } = useI18n({ useScope: 'global' })
+const { t, te, locale } = useI18n({ useScope: 'global' })
 const timetableStore = useTimetableStore()
+const coursesStore = useCoursesStore()
 const { formatTimeRange, getDayFromDate } = useTimeUtils()
 
 type CourseWithRelations = Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>
@@ -29,6 +31,73 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+/**
+ * Helper: Get day index for sorting (Monday = 0, Sunday = 6)
+ */
+function getDayIndex(day: InSISDay | null | undefined): number {
+	if (!day) return 999 // Put items without day at the end
+	const index = DAYS_ORDER.indexOf(day)
+	return index === -1 ? 999 : index
+}
+
+function sortUnits(units: CourseUnit<void, CourseUnitSlot>[]): CourseUnit<void, CourseUnitSlot>[] {
+	return [...units].sort((a, b) => {
+		const firstSlotA = sortSlots(a.slots || [])[0]
+		const firstSlotB = sortSlots(b.slots || [])[0]
+
+		if (!firstSlotA && !firstSlotB) return 0
+		if (!firstSlotA) return 1
+		if (!firstSlotB) return -1
+
+		const dayA = firstSlotA.day ?? (firstSlotA.date ? getDayFromDate(firstSlotA.date) : null)
+		const dayB = firstSlotB.day ?? (firstSlotB.date ? getDayFromDate(firstSlotB.date) : null)
+
+		const dayIndexA = getDayIndex(dayA)
+		const dayIndexB = getDayIndex(dayB)
+
+		if (dayIndexA !== dayIndexB) {
+			return dayIndexA - dayIndexB
+		}
+
+		const timeA = firstSlotA.time_from ?? 0
+		const timeB = firstSlotB.time_from ?? 0
+		return timeA - timeB
+	})
+}
+
+/**
+ * Helper: Sort slots by day and time
+ */
+function sortSlots(slots: CourseUnitSlot[]): CourseUnitSlot[] {
+	return [...slots].sort((a, b) => {
+		// First, determine the day for each slot
+		const dayA = a.day ?? (a.date ? getDayFromDate(a.date) : null)
+		const dayB = b.day ?? (b.date ? getDayFromDate(b.date) : null)
+
+		// Compare days
+		const dayIndexA = getDayIndex(dayA)
+		const dayIndexB = getDayIndex(dayB)
+
+		if (dayIndexA !== dayIndexB) {
+			return dayIndexA - dayIndexB
+		}
+
+		// If same day, sort by date (for block courses)
+		if (a.date && b.date) {
+			const dateA = new Date(a.date.split('.').reverse().join('-'))
+			const dateB = new Date(b.date.split('.').reverse().join('-'))
+			if (dateA.getTime() !== dateB.getTime()) {
+				return dateA.getTime() - dateB.getTime()
+			}
+		}
+
+		// If same day/date, sort by time
+		const timeA = a.time_from ?? 0
+		const timeB = b.time_from ?? 0
+		return timeA - timeB
+	})
+}
 
 /**
  * Helper: Get unique sorted types present in a unit's slots
@@ -95,6 +164,69 @@ const isSelectionComplete = computed(() => {
 	return true
 })
 
+// Check if course has some units selected but not all required types
+const hasIncompleteSelection = computed(() => {
+	if (selectedUnitsStore.value.length === 0) return false
+	return !isSelectionComplete.value
+})
+
+// Get missing unit types for display
+const missingUnitTypes = computed(() => {
+	const missing: CourseUnitType[] = []
+	for (const type of requiredUnitTypes.value) {
+		if (!selectedUnitTypes.value.has(type)) {
+			missing.push(type)
+		}
+	}
+	return missing
+})
+
+// Check if there's an active time filter
+const hasActiveTimeFilter = computed(() => {
+	return (coursesStore.filters.include_times?.length ?? 0) > 0
+})
+
+// Get active time filters for highlighting
+const activeTimeFilters = computed(() => {
+	return coursesStore.filters.include_times || []
+})
+
+function unitMatchesTimeFilter(unit: CourseUnit<void, CourseUnitSlot>): boolean {
+	if (!hasActiveTimeFilter.value) return false
+
+	for (const slot of unit.slots || []) {
+		if (slotMatchesTimeFilter(slot)) {
+			return true
+		}
+	}
+
+	return false
+}
+
+/**
+ * Check if a slot matches any of the active time filters
+ */
+function slotMatchesTimeFilter(slot: CourseUnitSlot): boolean {
+	if (!hasActiveTimeFilter.value) return false
+
+	const slotDay = slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
+	const slotFrom = slot.time_from
+	const slotTo = slot.time_to
+
+	if (!slotDay || slotFrom === null || slotTo === null) return false
+
+	return activeTimeFilters.value.some((filter) => {
+		// Check if day matches
+		if (filter.day !== slotDay) return false
+
+		// Check if time ranges overlap
+		const filterFrom = filter.time_from ?? 0
+		const filterTo = filter.time_to ?? 1440
+
+		return slotFrom < filterTo && filterFrom < slotTo
+	})
+}
+
 // Check if a specific unit is fully selected (all its slots are in store)
 function isUnitSelected(unitId: number): boolean {
 	// We check if we have any slots for this unit selected.
@@ -106,6 +238,22 @@ function isUnitSelected(unitId: number): boolean {
 // Check if a specific group of types is fully satisfied
 function isGroupSatisfied(types: CourseUnitType[]): boolean {
 	return types.every((t) => selectedUnitTypes.value.has(t))
+}
+
+// Get mode of completion display
+function getCompletionLabel(value: string): string {
+	const key = `courseModesOfCompletion.${value}`
+	return te(key) ? t(key) : value
+}
+
+function getFacultyName(value: string): string {
+	const key = `faculties.${value}`
+	return te(key) ? t(key) : value
+}
+
+function getLanugageName(value: string): string {
+	const key = `courseLanguages.${value}`
+	return te(key) ? t(key) : value
 }
 
 // Generate a label for a group of types (e.g. "Lecture & Exercise")
@@ -125,20 +273,39 @@ function getCategoryLabel(category: string): string {
 	return te(key) ? t(key) : category
 }
 
+// Get category label
+function getCourseTitle(course: CourseWithRelations): string {
+	switch (locale.value) {
+		case 'cs':
+			return course.title_cs ?? course.title ?? ''
+		case 'en':
+			return course.title_en ?? course.title ?? ''
+		default:
+			return course.title ?? ''
+	}
+}
+
 // Get slot display info
 function formatSlotInfo(slot: CourseUnitSlot): string {
 	let info = ''
 
-	const day: InSISDay | '-' | null | undefined = slot.day
-	if (day) info += t(`daysShort.${day}`)
+	// For recurring slots with day
+	const day: InSISDay | null | undefined = slot.day
+	if (day) {
+		info += t(`daysShort.${day}`)
+	}
 
+	// For block/single-occurrence slots with date
 	if (slot.date) {
 		const slotDate = new Date(slot.date.split('.').reverse().join('-')) // Convert DD.MM.YYYY to YYYY-MM-DD
 		const dateDay = getDayFromDate(slot.date)
 		const date = slotDate.toLocaleDateString()
 
-		info += ' '
-		info += t(`daysShort.${dateDay}`)
+		// Add day short name if we don't have recurring day
+		if (!day && dateDay) {
+			info += t(`daysShort.${dateDay}`)
+		}
+
 		info += ` ${date}`
 	}
 
@@ -147,10 +314,6 @@ function formatSlotInfo(slot: CourseUnitSlot): string {
 
 	return info.trim()
 }
-
-/**
- * Actions
- */
 
 // Add all slots from a unit
 function handleAddUnit(unit: CourseUnit<void, CourseUnitSlot>) {
@@ -205,7 +368,7 @@ function handleRemoveCourse() {
 			<!-- Course Info -->
 			<div>
 				<h3 class="mb-3 font-medium text-[var(--insis-gray-900)] flex items-center gap-1.5">
-					{{ course.ident }} - {{ course.title }}
+					{{ course.ident }} - {{ getCourseTitle(course) }}
 					<a
 						v-if="course.url"
 						:href="course.url"
@@ -220,16 +383,23 @@ function handleRemoveCourse() {
 
 				<dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
 					<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.faculty') }}</dt>
-					<dd>{{ course.faculty?.title || course.faculty_id }}</dd>
+					<dd>{{ course.faculty_id ? getFacultyName(course.faculty_id) : '-' }}</dd>
 
 					<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.ectsCredits') }}</dt>
 					<dd class="font-medium">{{ course.ects ?? '-' }}</dd>
 
 					<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.completion') }}</dt>
-					<dd>{{ course.mode_of_completion || '-' }}</dd>
+					<dd>{{ course.mode_of_completion ? getCompletionLabel(course.mode_of_completion) : '-' }}</dd>
 
 					<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.language') }}</dt>
-					<dd>{{ course.languages?.split('|').join(', ') || '-' }}</dd>
+					<dd>
+						{{
+							course.languages
+								?.split('|')
+								.map((lang) => getLanugageName(lang))
+								.join(', ') || '-'
+						}}
+					</dd>
 
 					<template v-if="course.study_plans?.length">
 						<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.category') }}</dt>
@@ -282,6 +452,26 @@ function handleRemoveCourse() {
 					</div>
 				</div>
 
+				<!-- Incomplete selection warning -->
+				<div
+					v-if="hasIncompleteSelection"
+					class="mb-4 flex items-start gap-2 rounded border border-[var(--insis-warning)] bg-[var(--insis-warning-light)] p-3 text-sm"
+				>
+					<IconAlertTriangle class="h-4 w-4 shrink-0 text-[var(--insis-warning-dark)] mt-0.5" />
+					<div>
+						<p class="font-medium text-[var(--insis-warning-dark)]">
+							{{ $t('components.courses.CourseRowExpanded.incompleteSelectionTitle') }}
+						</p>
+						<p class="text-[var(--insis-gray-700)]">
+							{{
+								$t('components.courses.CourseRowExpanded.incompleteSelectionDescription', {
+									types: missingUnitTypes.map((type) => (te(`unitTypes.${type}`) ? t(`unitTypes.${type}`) : type)).join(', '),
+								})
+							}}
+						</p>
+					</div>
+				</div>
+
 				<!-- Unit type groups -->
 				<div class="space-y-5">
 					<div v-for="[key, group] in unitsByGroup" :key="key">
@@ -305,20 +495,29 @@ function handleRemoveCourse() {
 						<!-- Units in group -->
 						<div class="space-y-2">
 							<div
-								v-for="unit in group.units"
+								v-for="unit in sortUnits(group.units)"
 								:key="unit.id"
-								:class="[
-									'rounded border text-sm transition-colors',
-									isUnitSelected(unit.id)
-										? 'border-[var(--insis-success)] bg-[var(--insis-success-light)]'
-										: 'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)]',
-								]"
+								class="rounded border text-sm transition-colors"
+								:class="{
+									'border-[var(--insis-success)] bg-[var(--insis-success-light)]': isUnitSelected(unit.id),
+									'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)]':
+										!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit),
+									'bg-[var(--insis-blue-light)] ring-1 ring-[var(--insis-blue)]': !isUnitSelected(unit.id) && unitMatchesTimeFilter(unit),
+								}"
 							>
 								<div class="flex items-center justify-between p-2">
 									<div class="flex flex-col gap-1 w-full">
-										<div v-for="slot in unit.slots" :key="slot.id" class="flex items-center gap-3">
+										<div v-for="slot in sortSlots(unit.slots)" :key="slot.id" class="flex items-center gap-3 rounded px-1 -mx-1">
 											<span
 												class="w-8 shrink-0 rounded bg-[var(--insis-gray-200)] px-1 py-0.5 text-center text-xs text-[var(--insis-gray-700)]"
+												:class="{
+													'bg-[var(--insis-block-exercise)]!':
+														slotMatchesTimeFilter(slot) && timetableStore.getSlotType(slot) === 'exercise',
+													'bg-[var(--insis-block-lecture)]!':
+														slotMatchesTimeFilter(slot) && timetableStore.getSlotType(slot) === 'lecture',
+													'bg-[var(--insis-block-seminar)]!':
+														slotMatchesTimeFilter(slot) && timetableStore.getSlotType(slot) === 'seminar',
+												}"
 											>
 												{{ getShortTypeLabel(timetableStore.getSlotType(slot)) }}
 											</span>

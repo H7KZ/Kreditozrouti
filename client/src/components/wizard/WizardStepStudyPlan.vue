@@ -1,27 +1,43 @@
 <script setup lang="ts">
 import { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem.ts'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import IconCheck from '~icons/lucide/check'
+import IconChevronLeft from '~icons/lucide/chevron-left'
+import IconInfo from '~icons/lucide/info'
 import Search from '~icons/lucide/search'
+import IconX from '~icons/lucide/x'
 
 /*
  * WizardStepStudyPlan
- * Step 3: Study plan selection - click to select and proceed (like faculty step)
+ * Step 3: Study plan selection - supports multi-select for base plan + specializations
  */
 
 const { t, te } = useI18n({ useScope: 'global' })
 
 type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
 
+/** Represents a selected study plan */
+interface SelectedStudyPlan {
+	id: number
+	ident: string | null
+	title: string | null
+}
+
 interface Props {
 	studyPlans: StudyPlanWithRelations[]
 	levelFacets: FacetItem[]
 	levelFilter: string[]
 	titleSearch: string
+	/** Array of selected study plans */
+	selectedPlans?: SelectedStudyPlan[]
 }
 
 interface Emits {
+	/** Toggle selection of a study plan */
+	(e: 'toggle', id: number, ident: string, title: string): void
+	/** Select single study plan (for quick selection) */
 	(e: 'select', id: number, ident: string, title: string): void
 	(e: 'setLevelFilter', levels: string[]): void
 	(e: 'setTitleSearch', search: string): void
@@ -29,11 +45,27 @@ interface Emits {
 	(e: 'complete'): void
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+	selectedPlans: () => [],
+})
 const emit = defineEmits<Emits>()
 
 const localTitleSearch = ref(props.titleSearch)
 const localTitleTimeout = ref<number | null>(null)
+
+/** Whether to show the specialization info banner */
+const showSpecializationInfo = ref(true)
+
+/** Check if a study plan is selected */
+function isSelected(planId: number): boolean {
+	return props.selectedPlans.some((p) => p.id === planId)
+}
+
+/** Number of selected plans */
+const selectedCount = computed(() => props.selectedPlans.length)
+
+/** Whether user can proceed (at least one plan selected) */
+const canProceed = computed(() => selectedCount.value > 0)
 
 function getLevelLabel(level: string): string {
 	const key = `studyLevels.${level.toLowerCase()}`
@@ -58,15 +90,24 @@ function toggleLevelFilter(level: string) {
 	emit('setLevelFilter', newLevels)
 }
 
-/** Click on a study plan - select AND proceed immediately */
-function handleSelectAndProceed(plan: StudyPlanWithRelations) {
-	emit('select', plan.id, plan.ident || '', plan.title || '')
-	// Immediately complete the wizard
-	emit('complete')
+/** Toggle selection of a study plan */
+function handleTogglePlan(plan: StudyPlanWithRelations) {
+	emit('toggle', plan.id, plan.ident || '', plan.title || '')
+}
+
+/** Proceed with current selection */
+function handleProceed() {
+	if (canProceed.value) {
+		emit('complete')
+	}
 }
 
 function handleBack() {
 	emit('back')
+}
+
+function dismissSpecializationInfo() {
+	showSpecializationInfo.value = false
 }
 </script>
 
@@ -74,15 +115,29 @@ function handleBack() {
 	<div>
 		<div class="mb-4 flex items-center gap-4">
 			<button type="button" class="insis-btn-text flex items-center gap-1" @click="handleBack">
-				<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-				</svg>
+				<IconChevronLeft class="h-4 w-4" />
 				{{ $t('common.back') }}
 			</button>
 			<h2 class="text-lg font-medium text-[var(--insis-gray-900)]">{{ $t('components.wizard.WizardStepStudyPlan.title') }}</h2>
 		</div>
 
 		<p class="mb-4 text-sm text-[var(--insis-gray-600)]">{{ $t('components.wizard.WizardStepStudyPlan.description') }}</p>
+
+		<!-- Specialization Info Banner -->
+		<div v-if="showSpecializationInfo" class="mb-4 flex items-start gap-3 rounded border border-[var(--insis-blue)] bg-[var(--insis-blue-light)] p-3">
+			<IconInfo class="h-5 w-5 shrink-0 text-[var(--insis-blue)] mt-0.5" />
+			<div class="flex-1">
+				<p class="text-sm font-medium text-[var(--insis-blue-dark)]">
+					{{ $t('components.wizard.WizardStepStudyPlan.specializationInfoTitle') }}
+				</p>
+				<p class="text-sm text-[var(--insis-gray-700)]">
+					{{ $t('components.wizard.WizardStepStudyPlan.specializationInfoDescription') }}
+				</p>
+			</div>
+			<button type="button" class="shrink-0 text-[var(--insis-gray-500)] hover:text-[var(--insis-gray-700)]" @click="dismissSpecializationInfo">
+				<IconX class="h-4 w-4" />
+			</button>
+		</div>
 
 		<!-- Filters -->
 		<div class="mb-6 flex flex-wrap gap-4">
@@ -125,21 +180,43 @@ function handleBack() {
 			</div>
 		</div>
 
-		<!-- Results count -->
-		<p class="mb-4 text-sm text-[var(--insis-gray-600)]">{{ $t('components.wizard.WizardStepStudyPlan.resultsCount', { count: studyPlans.length }) }}</p>
+		<!-- Results count and selection info -->
+		<div class="mb-4 flex items-center justify-between">
+			<p class="text-sm text-[var(--insis-gray-600)]">
+				{{ $t('components.wizard.WizardStepStudyPlan.resultsCount', { count: studyPlans.length }) }}
+			</p>
+			<div class="flex items-center gap-3">
+				<span
+					class="text-sm font-medium"
+					:class="{
+						'text-[var(--insis-blue)]': selectedCount > 0,
+						'text-[var(--insis-gray-500)]': selectedCount === 0,
+					}"
+				>
+					{{ $t('components.wizard.WizardStepStudyPlan.selectedCount', { count: selectedCount }) }}
+				</span>
+				<button type="button" class="insis-btn insis-btn-primary text-sm" :disabled="!canProceed" @click="handleProceed">
+					{{ $t('components.wizard.WizardStepStudyPlan.proceed') }}
+				</button>
+			</div>
+		</div>
 
-		<!-- Study Plans Grid (like faculty cards) -->
+		<!-- Study Plans Grid -->
 		<div v-if="studyPlans.length === 0" class="insis-panel insis-panel-info">
 			<p>{{ $t('components.wizard.WizardStepStudyPlan.noResults') }}</p>
 		</div>
 
-		<div v-else class="grid gap-3 sm:grid-cols-2 max-h-[450px] overflow-y-auto pr-1">
-			<button
+		<div v-else class="grid gap-3 sm:grid-cols-2 max-h-[450px] overflow-y-auto p-1">
+			<div
 				v-for="plan in studyPlans"
 				:key="plan.id"
-				type="button"
-				class="rounded border border-[var(--insis-border)] bg-white p-4 text-left transition-all hover:border-[var(--insis-blue)] hover:bg-[var(--insis-gray-50)] cursor-pointer"
-				@click="handleSelectAndProceed(plan)"
+				:class="[
+					'rounded border p-4 transition-all cursor-pointer',
+					isSelected(plan.id)
+						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] ring-2 ring-[var(--insis-blue)]'
+						: 'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)] hover:bg-[var(--insis-gray-50)]',
+				]"
+				@click="handleTogglePlan(plan)"
 			>
 				<div class="flex items-start justify-between gap-2">
 					<div class="min-w-0 flex-1">
@@ -151,6 +228,10 @@ function handleBack() {
 							>
 								{{ getLevelLabel(plan.level) }}
 							</span>
+							<span v-if="isSelected(plan.id)" class="insis-badge insis-badge-primary text-xs flex items-center gap-1">
+								<IconCheck class="h-3 w-3" />
+								{{ $t('components.wizard.WizardStepStudyPlan.selected') }}
+							</span>
 						</div>
 						<div class="mt-1.5 font-medium text-[var(--insis-gray-900)] line-clamp-2">
 							{{ plan.title }}
@@ -160,12 +241,25 @@ function handleBack() {
 							<span v-if="plan.mode_of_study" class="ml-1.5">• {{ plan.mode_of_study }}</span>
 						</div>
 					</div>
-					<!-- Arrow icon -->
-					<svg class="h-5 w-5 shrink-0 text-[var(--insis-gray-400)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-					</svg>
+
+					<!-- Selection indicator / Quick proceed -->
+					<div class="shrink-0 flex flex-col items-end gap-2">
+						<div
+							:class="[
+								'h-5 w-5 rounded border-2 flex items-center justify-center transition-colors',
+								isSelected(plan.id) ? 'border-[var(--insis-blue)] bg-[var(--insis-blue)] text-white' : 'border-[var(--insis-gray-300)]',
+							]"
+						>
+							<IconCheck v-if="isSelected(plan.id)" class="h-3 w-3" />
+						</div>
+					</div>
 				</div>
-			</button>
+			</div>
 		</div>
+
+		<!-- Tip about double-click -->
+		<p class="mt-4 text-xs text-[var(--insis-gray-500)] italic">
+			{{ $t('components.wizard.WizardStepStudyPlan.doubleClickTip') }}
+		</p>
 	</div>
 </template>

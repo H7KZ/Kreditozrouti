@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n'
  * FilterCheckboxGroup
  * Reusable checkbox group for facet filtering.
  * Supports collapsible header, collapsible list and optional search.
+ * Selected items are shown at the top, including items that may not be in current facets.
  */
 
 const { t } = useI18n({ useScope: 'global' })
@@ -40,25 +41,79 @@ const isCollapsed = ref(props.defaultCollapsed)
 const listExpanded = ref(false)
 const searchQuery = ref('')
 
+/**
+ * Compute combined facets:
+ * 1. Selected items that are NOT in current facets (shown with count 0)
+ * 2. Regular facets from the API
+ * Selected items are shown at the top.
+ */
+const combinedFacets = computed(() => {
+	// Get all facet values from the API response
+	const facetValues = new Set(props.facets.map((f) => String(f.value)))
+
+	// Find selected items that are not in current facets
+	const missingSelectedFacets: FacetItem[] = props.selected
+		.filter((selectedValue) => !facetValues.has(selectedValue))
+		.map((value) => ({
+			value,
+			count: 0, // Show 0 count for items not in current facets
+		}))
+
+	// Combine: missing selected items + existing facets
+	return [...missingSelectedFacets, ...props.facets]
+})
+
+/**
+ * Sort facets: selected items first, then by count descending
+ */
+const sortedFacets = computed(() => {
+	return [...combinedFacets.value].sort((a, b) => {
+		const aSelected = props.selected.includes(String(a.value))
+		const bSelected = props.selected.includes(String(b.value))
+
+		// Selected items come first
+		if (aSelected && !bSelected) return -1
+		if (!aSelected && bSelected) return 1
+
+		// Among selected items, maintain order
+		if (aSelected && bSelected) {
+			return props.selected.indexOf(String(a.value)) - props.selected.indexOf(String(b.value))
+		}
+
+		// Among non-selected, sort by count descending
+		return (b.count ?? 0) - (a.count ?? 0)
+	})
+})
+
 // Filter facets by search query
 const filteredFacets = computed(() => {
-	if (!searchQuery.value.trim()) return props.facets
+	if (!searchQuery.value.trim()) return sortedFacets.value
 
 	const query = searchQuery.value.toLowerCase()
-	return props.facets.filter((f) => String(f.value).toLowerCase().includes(query) || (f.value && String(f.value).toLowerCase().includes(query)))
+	return sortedFacets.value.filter((f) => {
+		const valueStr = String(f.value).toLowerCase()
+		const displayLabel = getDisplayLabel(f).toLowerCase()
+		return valueStr.includes(query) || displayLabel.includes(query)
+	})
 })
 
 // Show limited items unless expanded
 const visibleFacets = computed(() => {
 	if (listExpanded.value) return filteredFacets.value
-	return filteredFacets.value.slice(0, props.maxVisible)
+
+	// Always show all selected items + up to maxVisible non-selected
+	const selected = filteredFacets.value.filter((f) => props.selected.includes(String(f.value)))
+	const nonSelected = filteredFacets.value.filter((f) => !props.selected.includes(String(f.value)))
+
+	const remainingSlots = Math.max(0, props.maxVisible - selected.length)
+	return [...selected, ...nonSelected.slice(0, remainingSlots)]
 })
 
 // Show "show more" button if there are hidden items
-const hasMore = computed(() => !listExpanded.value && filteredFacets.value.length > props.maxVisible)
+const hasMore = computed(() => !listExpanded.value && filteredFacets.value.length > visibleFacets.value.length)
 
 // Count of hidden items
-const hiddenCount = computed(() => filteredFacets.value.length - props.maxVisible)
+const hiddenCount = computed(() => filteredFacets.value.length - visibleFacets.value.length)
 
 // Count of selected items in this group
 const selectedCount = computed(() => props.selected.length)
@@ -137,12 +192,18 @@ function getDisplayLabel(facet: FacetItem): string {
 
 			<!-- Checkbox list -->
 			<div v-else class="space-y-1">
-				<label v-for="facet in visibleFacets" :key="String(facet.value)" class="insis-checkbox-label">
+				<label
+					v-for="facet in visibleFacets"
+					:key="String(facet.value)"
+					:class="['insis-checkbox-label', isSelected(facet.value) ? 'bg-[var(--insis-blue-light)] rounded px-1 -mx-1' : '']"
+				>
 					<input type="checkbox" class="insis-checkbox" :checked="isSelected(facet.value)" @change="handleChange(facet.value)" />
 					<span class="flex-1 truncate text-sm">
 						{{ getDisplayLabel(facet) }}
 					</span>
-					<span class="text-xs text-[var(--insis-gray-500)]"> ({{ facet.count }}) </span>
+					<span :class="['text-xs', facet.count === 0 ? 'text-[var(--insis-gray-400)] italic' : 'text-[var(--insis-gray-500)]']">
+						({{ facet.count }})
+					</span>
 				</label>
 			</div>
 

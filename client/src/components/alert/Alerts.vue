@@ -3,6 +3,10 @@ import Alert from '@client/components/alert/Alert.vue'
 import { useAlertsStore } from '@client/stores'
 
 const alertsStore = useAlertsStore()
+
+function handleClose(index: number) {
+	alertsStore.removeAlert(index)
+}
 </script>
 
 <template>
@@ -16,6 +20,7 @@ const alertsStore = useAlertsStore()
 			:buttons="alert.buttons"
 			:timeout="alert.timeout"
 			:index="i"
+			@close="handleClose"
 		/>
 	</div>
 </template>

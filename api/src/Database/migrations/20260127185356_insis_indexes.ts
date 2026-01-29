@@ -39,6 +39,7 @@ async function dropIndex(db: Kysely<any>, idx: string, table: string) {
 
 export async function up(db: Kysely<any>): Promise<void> {
 	// Courses
+	await createIndexSafe(db, 'idx_courses_ident', CourseTable._table, ['ident'])
 	await createIndexSafe(db, 'idx_courses_faculty_semester_year', CourseTable._table, ['faculty_id', 'semester', 'year'])
 	await createIndexSafe(db, 'idx_courses_faculty', CourseTable._table, ['faculty_id'])
 	await createIndexSafe(db, 'idx_courses_semester_year', CourseTable._table, ['semester', 'year'])
@@ -46,9 +47,9 @@ export async function up(db: Kysely<any>): Promise<void> {
 	await createIndexSafe(db, 'idx_courses_year', CourseTable._table, ['year'])
 	await createIndexSafe(db, 'idx_courses_level', CourseTable._table, ['level'])
 	await createIndexSafe(db, 'idx_courses_ects', CourseTable._table, ['ects'])
-	await createIndexSafe(db, 'idx_courses_ident', CourseTable._table, ['ident'])
 	await createIndexSafe(db, 'idx_courses_mode_completion', CourseTable._table, sql`mode_of_completion(50)`)
-	await createIndexSafe(db, 'idx_courses_czech_title', CourseTable._table, sql`czech_title(100)`)
+	await createIndexSafe(db, 'idx_courses_title_cs', CourseTable._table, sql`title_cs(100)`)
+	await createIndexSafe(db, 'idx_courses_title_en', CourseTable._table, sql`title_en(100)`)
 
 	// Course Units
 	await createIndexSafe(db, 'idx_units_course_lecturer', CourseUnitTable._table, sql`course_id, lecturer(100)`)
@@ -85,6 +86,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
 export async function down(db: Kysely<any>): Promise<void> {
 	// Courses
+	await dropIndex(db, 'idx_courses_ident', CourseTable._table)
 	await dropIndex(db, 'idx_courses_faculty_semester_year', CourseTable._table)
 	await dropIndex(db, 'idx_courses_faculty', CourseTable._table)
 	await dropIndex(db, 'idx_courses_semester_year', CourseTable._table)
@@ -93,8 +95,8 @@ export async function down(db: Kysely<any>): Promise<void> {
 	await dropIndex(db, 'idx_courses_level', CourseTable._table)
 	await dropIndex(db, 'idx_courses_ects', CourseTable._table)
 	await dropIndex(db, 'idx_courses_mode_completion', CourseTable._table)
-	await dropIndex(db, 'idx_courses_czech_title', CourseTable._table)
-	await dropIndex(db, 'idx_courses_ident', CourseTable._table)
+	await dropIndex(db, 'idx_courses_title_cs', CourseTable._table)
+	await dropIndex(db, 'idx_courses_title_en', CourseTable._table)
 
 	// Units
 	await dropIndex(db, 'idx_units_course_lecturer', CourseUnitTable._table)

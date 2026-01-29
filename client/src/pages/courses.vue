@@ -44,8 +44,8 @@ const showEmptyTimetable = computed(() => uiStore.viewMode === 'timetable' && ti
 
 /** Selected study plan display */
 const studyPlanInfo = computed(() => ({
-	title: wizardStore.studyPlanTitle || t('pages.courses.studyPlanFallback'),
-	ident: wizardStore.studyPlanIdent || '',
+	titles: wizardStore.studyPlanTitles || [],
+	idents: wizardStore.studyPlanIdents || [],
 }))
 
 const coursesInfo = computed(() => ({
@@ -99,10 +99,10 @@ async function fetchNextCoursesPage(page: () => void) {
 
 					<div class="hidden border-l border-[var(--insis-border)] pl-4 sm:block">
 						<p class="text-sm font-medium text-[var(--insis-text)]">
-							{{ studyPlanInfo.title }}
+							{{ studyPlanInfo.titles.length > 0 ? studyPlanInfo.titles.join(' / ') : $t('pages.courses.studyPlanFallback') }}
 						</p>
 						<p class="text-xs text-[var(--insis-gray-500)]">
-							{{ studyPlanInfo.ident }} · {{ coursesInfo.years?.join(' - ') ?? '-' }} · {{ coursesInfo.semester }}
+							{{ $t('pages.courses.searchingForCourses', { semester: coursesInfo.semester, year: coursesInfo.years?.join('/') }) }}
 						</p>
 					</div>
 				</div>

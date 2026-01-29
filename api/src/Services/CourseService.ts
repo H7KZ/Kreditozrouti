@@ -299,7 +299,14 @@ export default class CourseService {
 		}
 
 		if (filters.title) {
-			query = query.where(eb => eb.or([eb('c.title', 'like', `%${filters.title}%`), eb('c.czech_title', 'like', `%${filters.title}%`)]))
+			query = query.where(eb =>
+				eb.or([
+					eb('c.title', 'like', `%${filters.title}%`),
+					eb('c.title_cs', 'like', `%${filters.title}%`),
+					eb('c.title_en', 'like', `%${filters.title}%`),
+					eb('c.ident', 'like', `%${filters.title}%`)
+				])
+			)
 		}
 
 		// Academic period filters
@@ -477,7 +484,14 @@ export default class CourseService {
 					q.where(eb => eb.or(filters.idents!.map((v: string) => eb('c.ident', 'like', `%${v}%`))))
 				)
 				.$if(!!filters.title, q =>
-					q.where(eb => eb.or([eb('c.title', 'like', `%${filters.title}%`), eb('c.czech_title', 'like', `%${filters.title}%`)]))
+					q.where(eb =>
+						eb.or([
+							eb('c.title', 'like', `%${filters.title}%`),
+							eb('c.title_cs', 'like', `%${filters.title}%`),
+							eb('c.title_en', 'like', `%${filters.title}%`),
+							eb('c.ident', 'like', `%${filters.title}%`)
+						])
+					)
 				)
 				.$if(!!filters.faculty_ids?.length && column !== 'faculty_id', q => q.where('c.faculty_id', 'in', filters.faculty_ids!))
 				.$if(!!filters.semesters?.length && column !== 'semester', q => q.where('c.semester', 'in', filters.semesters!))
@@ -712,7 +726,7 @@ export default class CourseService {
 	private static getSortColumn(sortBy?: string): string {
 		const sortMap: Record<string, string> = {
 			ident: 'c.ident',
-			title: 'c.czech_title',
+			title: 'c.title',
 			ects: 'c.ects',
 			faculty: 'c.faculty_id',
 			year: 'c.year',
