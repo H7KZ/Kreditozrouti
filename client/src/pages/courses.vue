@@ -1,16 +1,28 @@
 <script setup lang="ts">
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
+import CourseStatusSummary from '@client/components/courses/CourseStatusSummary.vue'
 import CourseTable from '@client/components/courses/CourseTable.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
+import { useCourseLabels } from '@client/composables'
+import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import { useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import IconCalendar from '~icons/lucide/calendar'
+import IconCalendarMinus2 from '~icons/lucide/calendar-minus-2'
+import IconFunnel from '~icons/lucide/funnel'
+import IconTable from '~icons/lucide/table'
 
-/*
+/**
  * Courses Page
+ *
  * Main course browser with filters, list view, and timetable view.
+ * Features:
+ * - Course status summary above tabs showing selected/conflict/incomplete counts
+ * - Clickable status badges to filter course list
+ * - Refactored filter panel with checkbox-style status filters
  */
 
 const { t } = useI18n({ useScope: 'global' })
@@ -19,6 +31,9 @@ const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
 const uiStore = useUIStore()
 const wizardStore = useWizardStore()
+
+// Composables
+const { getSemesterLabel } = useCourseLabels()
 
 // Redirect to wizard if not completed
 watch(
@@ -39,6 +54,11 @@ onMounted(async () => {
 	}
 })
 
+// Clean up shared filter state on unmount
+onUnmounted(() => {
+	resetCourseStatusFilter()
+})
+
 const disableEmptyTimetable = ref(false)
 const showEmptyTimetable = computed(() => uiStore.viewMode === 'timetable' && timetableStore.selectedCourseIds.length === 0 && !disableEmptyTimetable.value)
 
@@ -48,21 +68,14 @@ const studyPlanInfo = computed(() => ({
 	idents: wizardStore.studyPlanIdents || [],
 }))
 
+/** Course search info using composable for semester label */
 const coursesInfo = computed(() => ({
 	years: coursesStore.filters.years,
-	semester:
-		coursesStore.filters.semesters?.length === 1
-			? coursesStore.filters.semesters[0] === 'ZS'
-				? t('semesters.ZS')
-				: t('semesters.LS')
-			: t('semesters.full_year'),
+	semester: coursesStore.filters.semesters?.map((s) => getSemesterLabel(s)).join(', '),
 }))
 
 /** Selected courses count */
 const selectedCoursesCount = computed(() => timetableStore.selectedCourseIds.length)
-
-/** Whether there are time conflicts */
-const hasConflicts = computed(() => timetableStore.hasConflicts)
 
 /** Reset wizard and go back */
 function handleResetWizard() {
@@ -94,7 +107,9 @@ async function fetchNextCoursesPage(page: () => void) {
 						<div class="h-9 w-9 flex items-center justify-center">
 							<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="pb-0.5" />
 						</div>
-						<span class="font-semibold text-[var(--insis-blue)]"> {{ $t('pages.index.title') }} </span>
+						<span class="font-semibold text-[var(--insis-blue)]">
+							{{ $t('pages.index.title') }}
+						</span>
 					</router-link>
 
 					<div class="hidden border-l border-[var(--insis-border)] pl-4 sm:block">
@@ -107,47 +122,25 @@ async function fetchNextCoursesPage(page: () => void) {
 					</div>
 				</div>
 
-				<!-- Right: Actions and timetable summary -->
+				<!-- Right: Actions -->
 				<div class="flex items-center gap-4">
-					<!-- Selected courses badge -->
-					<div v-if="selectedCoursesCount > 0" class="hidden items-center gap-2 sm:flex">
-						<span class="insis-badge insis-badge-success"> {{ $t('pages.courses.coursesInTimetable', { count: selectedCoursesCount }) }} </span>
-						<button
-							type="button"
-							class="text-xs cursor-pointer text-[var(--insis-gray-500)] hover:text-[var(--insis-danger)]"
-							:title="$t('pages.courses.clearTimetable')"
-							@click="handleClearTimetable"
-						>
-							✕
-						</button>
-					</div>
+					<!-- Clear timetable -->
+					<button v-if="selectedCoursesCount > 0" type="button" class="insis-btn insis-btn-secondary text-sm" @click="handleClearTimetable">
+						{{ $t('pages.courses.clearTimetable') }}
+					</button>
 
-					<!-- Conflict warning -->
-					<span v-if="hasConflicts" class="insis-badge insis-badge-danger" :title="$t('pages.courses.conflictTitle')">
-						⚠️ {{ $t('pages.courses.conflict') }}
-					</span>
+					<!-- Change study plan -->
+					<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="handleResetWizard">
+						{{ $t('pages.courses.changePlan') }}
+					</button>
 
-					<div class="flex items-center gap-4">
-						<!-- Change study plan -->
-						<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="handleResetWizard">
-							{{ $t('pages.courses.changePlan') }}
-						</button>
+					<!-- I18n Switcher -->
+					<LanguageSwitcher />
 
-						<!-- I18n Switcher -->
-						<LanguageSwitcher />
-
-						<!-- Mobile menu toggle -->
-						<button type="button" class="insis-btn insis-btn-secondary p-2 lg:hidden" @click="uiStore.toggleMobileFilter">
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-								/>
-							</svg>
-						</button>
-					</div>
+					<!-- Mobile menu toggle -->
+					<button type="button" class="insis-btn insis-btn-secondary p-2 lg:hidden" @click="uiStore.toggleMobileFilter">
+						<IconFunnel class="h-5 w-5" />
+					</button>
 				</div>
 			</div>
 		</header>
@@ -176,8 +169,13 @@ async function fetchNextCoursesPage(page: () => void) {
 
 			<!-- Content Area -->
 			<main class="flex flex-1 flex-col overflow-hidden mt-3">
+				<!-- Course Status Summary (above tabs) -->
+				<div class="bg-white px-4 mb-2">
+					<CourseStatusSummary />
+				</div>
+
 				<!-- View Tabs -->
-				<div class="bg-white px-4">
+				<div class="bg-white px-4 flex flex-col gap-2">
 					<nav class="insis-tabs">
 						<button
 							type="button"
@@ -185,9 +183,7 @@ async function fetchNextCoursesPage(page: () => void) {
 							:class="{ 'insis-tab-active': uiStore.viewMode === 'list' }"
 							@click="uiStore.switchToListView"
 						>
-							<svg class="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-							</svg>
+							<IconTable class="mr-1.5 h-4 w-4" />
 							{{ $t('pages.courses.courseList') }}
 							<span v-if="coursesStore.pagination.total" class="ml-1.5 text-xs text-[var(--insis-gray-500)]">
 								({{ coursesStore.pagination.total }})
@@ -199,14 +195,7 @@ async function fetchNextCoursesPage(page: () => void) {
 							:class="{ 'insis-tab-active': uiStore.viewMode === 'timetable' }"
 							@click="uiStore.switchToTimetableView"
 						>
-							<svg class="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-								/>
-							</svg>
+							<IconCalendar class="mr-1.5 h-4 w-4" />
 							{{ $t('pages.courses.myTimetable') }}
 							<span v-if="selectedCoursesCount > 0" class="ml-1.5 text-xs text-[var(--insis-gray-500)]"> ({{ selectedCoursesCount }}) </span>
 						</button>
@@ -295,16 +284,11 @@ async function fetchNextCoursesPage(page: () => void) {
 							<!-- Empty timetable -->
 							<div v-if="showEmptyTimetable" class="absolute top-0 left-0 w-full h-full py-12 text-center bg-white/70">
 								<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--insis-gray-200)]">
-									<svg class="h-8 w-8 text-[var(--insis-gray-500)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-										/>
-									</svg>
+									<IconCalendarMinus2 class="h-8 w-8 text-[var(--insis-gray-500)]" />
 								</div>
-								<p class="mb-2 font-medium text-[var(--insis-text)]">{{ $t('pages.courses.emptyTimetable.title') }}</p>
+								<p class="mb-2 font-medium text-[var(--insis-text)]">
+									{{ $t('pages.courses.emptyTimetable.title') }}
+								</p>
 								<p class="mb-4 text-sm text-[var(--insis-gray-600)]">
 									{{ $t('pages.courses.emptyTimetable.description') }}
 								</p>

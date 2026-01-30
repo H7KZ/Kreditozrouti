@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
-import FacetItem from '@api/Interfaces/FacetItem.ts'
+import type { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
+import type FacetItem from '@api/Interfaces/FacetItem'
+import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import IconCheck from '~icons/lucide/check'
 import IconChevronLeft from '~icons/lucide/chevron-left'
 import IconInfo from '~icons/lucide/info'
@@ -12,9 +12,11 @@ import IconX from '~icons/lucide/x'
 /*
  * WizardStepStudyPlan
  * Step 3: Study plan selection - supports multi-select for base plan + specializations
+ * Refactored to use composables for labels and debounced search.
  */
 
-const { t, te } = useI18n({ useScope: 'global' })
+// Composables
+const { getLevelLabel } = useCourseLabels()
 
 type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
 
@@ -51,7 +53,11 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>()
 
 const localTitleSearch = ref(props.titleSearch)
-const localTitleTimeout = ref<number | null>(null)
+
+// Debounced search using composable
+const debouncedSetTitleSearch = useDebouncedFn((value: string) => {
+	emit('setTitleSearch', value)
+}, 750)
 
 /** Whether to show the specialization info banner */
 const showSpecializationInfo = ref(true)
@@ -67,22 +73,10 @@ const selectedCount = computed(() => props.selectedPlans.length)
 /** Whether user can proceed (at least one plan selected) */
 const canProceed = computed(() => selectedCount.value > 0)
 
-function getLevelLabel(level: string): string {
-	const key = `studyLevels.${level.toLowerCase()}`
-	return te(key) ? t(key) : level
-}
-
 function handleTitleSearchInput(event: Event) {
 	const value = (event.target as HTMLInputElement).value
 	localTitleSearch.value = value
-
-	if (localTitleTimeout.value) {
-		clearTimeout(localTitleTimeout.value)
-	}
-
-	localTitleTimeout.value = window.setTimeout(() => {
-		emit('setTitleSearch', value)
-	}, 750)
+	debouncedSetTitleSearch(value)
 }
 
 function toggleLevelFilter(level: string) {

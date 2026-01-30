@@ -2,130 +2,153 @@
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
-import { useTimeUtils } from '@client/composables'
-import { TIME_CONFIG, WEEKDAYS } from '@client/constants/timetable.ts'
+import { useCourseLabels, useTimetableGrid } from '@client/composables'
+import { WEEKDAYS } from '@client/constants/timetable'
 import { useCoursesStore, useTimetableStore, useUIStore } from '@client/stores'
-import { SelectedCourseUnit } from '@client/types'
-import InSISDay from '@scraper/Types/InSISDay.ts'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import type { SelectedCourseUnit } from '@client/types'
+import type InSISDay from '@scraper/Types/InSISDay'
+import { computed, onMounted, onUnmounted, ref, toRef } from 'vue'
 
 /*
  * TimetableGrid
  * Weekly timetable grid displaying selected courses.
  * Supports drag-to-filter interaction.
- *
- * Layout: X-axis = time, Y-axis = days
- * Course blocks span horizontally based on their time range
+ * Merges one-time (date-only) blocks on the same day of week.
+ * Refactored to use composables for grid calculations.
  */
 
-const { t, te } = useI18n({ useScope: 'global' })
 const timetableStore = useTimetableStore()
 const coursesStore = useCoursesStore()
 const uiStore = useUIStore()
-const { minutesToTime, calculateTimePosition, calculateTimeDuration } = useTimeUtils()
 
-// Time slots for the grid header (every hour)
-const timeSlots = computed(() => {
-	const slots: Array<{ minutes: number; label: string }> = []
-	let time = TIME_CONFIG.START
+// Composables
+const { getShortDayLabel } = useCourseLabels()
+const { timeSlots, rowHeight, getBlockStyle, getTimeFromX, getDragSelectionStyle } = useTimetableGrid(
+	toRef(() => mergedUnitsByDay.value),
+	{
+		rowHeight: 60,
+		blockPadding: 2,
+	},
+)
 
-	while (time <= TIME_CONFIG.END) {
-		slots.push({
-			minutes: time,
-			label: minutesToTime(time),
-		})
-		time += 60 // Every hour
-	}
-
-	return slots
-})
-
-// Row height in pixels
-const ROW_HEIGHT = 60
-const BLOCK_PADDING = 2 // Padding from row edges in pixels
-
-// Get units for a specific day
-function getUnitsForDay(day: InSISDay): SelectedCourseUnit[] {
-	return timetableStore.unitsByDay.get(day) || []
+/**
+ * Represents a merged block containing multiple one-time slots
+ */
+interface MergedUnit extends SelectedCourseUnit {
+	isMerged: boolean
+	mergedCount: number
+	mergedSlotIds: number[]
+	dateRange: string
+	originalUnits: SelectedCourseUnit[]
 }
 
 /**
- * Find overlapping groups of units within a day.
- * Returns a Map where each unit's slotId maps to its position info:
- * { index: position in overlap group, total: total overlapping blocks }
+ * Merge one-time blocks that fall on the same day of the week,
+ * have the same course, same time, and same unit type.
  */
-function getOverlapInfo(day: InSISDay): Map<number, { index: number; total: number }> {
-	const units = getUnitsForDay(day)
-	const overlapMap = new Map<number, { index: number; total: number }>()
+const mergedUnitsByDay = computed(() => {
+	const result = new Map<InSISDay, (SelectedCourseUnit | MergedUnit)[]>()
 
-	if (units.length === 0) return overlapMap
-
-	// Sort units by start time, then by end time
-	const sortedUnits = [...units].sort((a, b) => {
-		if (a.timeFrom !== b.timeFrom) return a.timeFrom - b.timeFrom
-		return a.timeTo - b.timeTo
-	})
-
-	// Find all units that overlap with each unit
-	for (const unit of sortedUnits) {
-		const overlapping = sortedUnits.filter((other) => other.timeFrom < unit.timeTo && unit.timeFrom < other.timeTo)
-
-		// Sort overlapping group consistently to assign stable indices
-		overlapping.sort((a, b) => {
-			if (a.timeFrom !== b.timeFrom) return a.timeFrom - b.timeFrom
-			if (a.timeTo !== b.timeTo) return a.timeTo - b.timeTo
-			return a.slotId - b.slotId
-		})
-
-		const index = overlapping.findIndex((u) => u.slotId === unit.slotId)
-		overlapMap.set(unit.slotId, { index, total: overlapping.length })
-	}
-
-	return overlapMap
-}
-
-// Cache overlap info per day to avoid recalculating for each block
-const overlapCache = computed(() => {
-	const cache = new Map<InSISDay, Map<number, { index: number; total: number }>>()
 	for (const day of WEEKDAYS) {
-		cache.set(day, getOverlapInfo(day))
+		result.set(day, [])
 	}
-	return cache
+
+	// Get original units by day
+	const originalByDay = timetableStore.unitsByDay
+
+	for (const day of WEEKDAYS) {
+		const dayUnits = originalByDay.get(day) || []
+		const processedSlotIds = new Set<number>()
+		const mergedUnits: (SelectedCourseUnit | MergedUnit)[] = []
+
+		for (const unit of dayUnits) {
+			// Skip if already processed
+			if (processedSlotIds.has(unit.slotId)) continue
+
+			// If this is a weekly recurring slot (no date), add as-is
+			if (!unit.date) {
+				mergedUnits.push(unit)
+				processedSlotIds.add(unit.slotId)
+				continue
+			}
+
+			// This is a one-time (date-only) slot - find others to merge with
+			const mergeCandidates = dayUnits.filter(
+				(other) =>
+					!processedSlotIds.has(other.slotId) &&
+					other.date && // Must also be one-time
+					other.courseId === unit.courseId &&
+					other.unitType === unit.unitType &&
+					other.timeFrom === unit.timeFrom &&
+					other.timeTo === unit.timeTo,
+			)
+
+			if (mergeCandidates.length <= 1) {
+				// No other candidates, add as-is
+				mergedUnits.push(unit)
+				processedSlotIds.add(unit.slotId)
+				continue
+			}
+
+			// Merge the candidates
+			const dates = mergeCandidates
+				.map((u) => u.date!)
+				.sort((a, b) => {
+					// Sort dates (DD.MM.YYYY format)
+					const [dA, mA, yA] = a.split('.').map(Number)
+					const [dB, mB, yB] = b.split('.').map(Number)
+					if (yA !== yB) return yA! - yB!
+					if (mA !== mB) return mA! - mB!
+					return dA! - dB!
+				})
+
+			// Create date range string
+			const dateRange = dates.length > 2 ? `${dates[0]} - ${dates[dates.length - 1]}` : dates.join(', ')
+
+			const mergedUnit: MergedUnit = {
+				...unit,
+				isMerged: true,
+				mergedCount: mergeCandidates.length,
+				mergedSlotIds: mergeCandidates.map((u) => u.slotId),
+				dateRange,
+				originalUnits: mergeCandidates,
+			}
+
+			mergedUnits.push(mergedUnit)
+
+			// Mark all merged slots as processed
+			for (const candidate of mergeCandidates) {
+				processedSlotIds.add(candidate.slotId)
+			}
+		}
+
+		result.set(day, mergedUnits)
+	}
+
+	return result
 })
 
-// Calculate horizontal position and width for a course block (X-axis = time)
-// Now also handles vertical stacking for overlapping blocks
-function getBlockStyle(unit: SelectedCourseUnit, day: InSISDay) {
-	const left = calculateTimePosition(unit.timeFrom, TIME_CONFIG.START, TIME_CONFIG.END)
-	const width = calculateTimeDuration(unit.timeFrom, unit.timeTo, TIME_CONFIG.START, TIME_CONFIG.END)
+/**
+ * Get units for a specific day (with merging applied)
+ */
+function getMergedUnitsForDay(day: InSISDay): (SelectedCourseUnit | MergedUnit)[] {
+	return mergedUnitsByDay.value.get(day) || []
+}
 
-	// Get overlap info for this unit
-	const dayOverlaps = overlapCache.value.get(day)
-	const overlapInfo = dayOverlaps?.get(unit.slotId) ?? { index: 0, total: 1 }
-
-	// Calculate vertical position within the row
-	const availableHeight = ROW_HEIGHT - BLOCK_PADDING * 2
-	const blockHeight = availableHeight / overlapInfo.total
-	const topOffset = BLOCK_PADDING + overlapInfo.index * blockHeight
-
-	return {
-		left: `${left}%`,
-		width: `${width}%`,
-		top: `${topOffset}px`,
-		height: `${blockHeight}px`,
-	}
+/**
+ * Check if a unit is merged
+ */
+function isMergedUnit(unit: SelectedCourseUnit | MergedUnit): unit is MergedUnit {
+	return 'isMerged' in unit && unit.isMerged
 }
 
 // Check if a unit has a conflict
-function hasConflict(unit: SelectedCourseUnit): boolean {
+function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
+	if (isMergedUnit(unit)) {
+		// Check if any of the merged slots have conflicts
+		return unit.mergedSlotIds.some((slotId) => timetableStore.conflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
+	}
 	return timetableStore.conflicts.some(([a, b]) => a.slotId === unit.slotId || b.slotId === unit.slotId)
-}
-
-// Get short day label (first 2 chars of translated name)
-function getShortDayLabel(day: InSISDay): string {
-	const key = `daysShort.${day}`
-	return te(key) ? t(key) : day.substring(0, 2)
 }
 
 // Drag handling
@@ -136,17 +159,6 @@ const dragStartX = ref(0)
 // Course modal state
 const showCourseModal = ref(false)
 const selectedModalUnit = ref<SelectedCourseUnit | null>(null)
-
-function getTimeFromX(x: number, element: HTMLElement): number {
-	const rect = element.getBoundingClientRect()
-	const relativeX = x - rect.left
-	const percentage = relativeX / rect.width
-	const totalMinutes = TIME_CONFIG.END - TIME_CONFIG.START
-	const minutes = TIME_CONFIG.START + percentage * totalMinutes
-
-	// Snap to 15-minute intervals
-	return Math.max(TIME_CONFIG.START, Math.min(TIME_CONFIG.END, Math.round(minutes / 15) * 15))
-}
 
 function handleMouseDown(event: MouseEvent, day: InSISDay) {
 	if (!gridRef.value) return
@@ -193,8 +205,13 @@ function handleMouseUp(event: MouseEvent) {
 }
 
 // Handle clicking on a course block to open the course modal
-function handleCourseBlockClick(unit: SelectedCourseUnit) {
-	selectedModalUnit.value = unit
+function handleCourseBlockClick(unit: SelectedCourseUnit | MergedUnit) {
+	// If merged, use the first original unit for the modal
+	if (isMergedUnit(unit)) {
+		selectedModalUnit.value = unit.originalUnits[0] || unit
+	} else {
+		selectedModalUnit.value = unit
+	}
 	showCourseModal.value = true
 }
 
@@ -202,6 +219,18 @@ function handleCourseBlockClick(unit: SelectedCourseUnit) {
 function handleCloseModal() {
 	showCourseModal.value = false
 	selectedModalUnit.value = null
+}
+
+// Handle removing a unit (or all merged units)
+function handleRemoveUnit(unit: SelectedCourseUnit | MergedUnit) {
+	if (isMergedUnit(unit)) {
+		// Remove all merged units
+		for (const original of unit.originalUnits) {
+			timetableStore.removeUnit(original.unitId)
+		}
+	} else {
+		timetableStore.removeUnit(unit.unitId)
+	}
 }
 
 // Handle drag filter action
@@ -227,20 +256,9 @@ function handleDragCancel() {
 	timetableStore.cancelDrag()
 }
 
-// Get drag selection style for a day row (horizontal selection)
-function getDragSelectionStyle(day: InSISDay) {
-	const selection = timetableStore.normalizedDragSelection
-	if (!selection || selection.day !== day || !timetableStore.dragSelection.active) {
-		return null
-	}
-
-	const left = calculateTimePosition(selection.timeFrom, TIME_CONFIG.START, TIME_CONFIG.END)
-	const width = calculateTimeDuration(selection.timeFrom, selection.timeTo, TIME_CONFIG.START, TIME_CONFIG.END)
-
-	return {
-		left: `${left}%`,
-		width: `${width}%`,
-	}
+// Computed drag selection style wrapper
+function getDragSelectionStyleForDay(day: InSISDay) {
+	return getDragSelectionStyle(day, timetableStore.normalizedDragSelection, timetableStore.dragSelection.active)
 }
 
 // Global mouse event listeners
@@ -280,7 +298,7 @@ onUnmounted(() => {
 					<td
 						:colspan="timeSlots.length"
 						class="day-row relative p-0"
-						:style="{ height: `${ROW_HEIGHT}px` }"
+						:style="{ height: `${rowHeight}px` }"
 						:data-day="day"
 						@mousedown="handleMouseDown($event, day)"
 					>
@@ -298,20 +316,23 @@ onUnmounted(() => {
 
 						<!-- Drag selection overlay (horizontal) -->
 						<div
-							v-if="getDragSelectionStyle(day)"
+							v-if="getDragSelectionStyleForDay(day)"
 							class="pointer-events-none absolute top-0 bottom-0 bg-[var(--insis-block-selected)] opacity-50"
-							:style="getDragSelectionStyle(day)"
+							:style="getDragSelectionStyleForDay(day)!"
 						/>
 
-						<!-- Course blocks (positioned horizontally) -->
+						<!-- Course blocks (positioned horizontally) - using merged units -->
 						<TimetableCourseBlock
-							v-for="unit in getUnitsForDay(day)"
-							:key="unit.slotId"
+							v-for="unit in getMergedUnitsForDay(day)"
+							:key="isMergedUnit(unit) ? `merged-${unit.slotId}` : unit.slotId"
 							:unit="unit"
 							:style="getBlockStyle(unit, day)"
 							:has-conflict="hasConflict(unit)"
+							:is-merged="isMergedUnit(unit)"
+							:merged-count="isMergedUnit(unit) ? unit.mergedCount : undefined"
+							:date-range="isMergedUnit(unit) ? unit.dateRange : undefined"
 							@click="handleCourseBlockClick(unit)"
-							@remove="timetableStore.removeUnit(unit.unitId)"
+							@remove="handleRemoveUnit(unit)"
 						/>
 					</td>
 				</tr>

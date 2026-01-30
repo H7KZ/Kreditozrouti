@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import FacetItem from '@api/Interfaces/FacetItem.ts'
-import { useI18n } from 'vue-i18n'
+import type FacetItem from '@api/Interfaces/FacetItem'
+import { useCourseLabels } from '@client/composables'
 
 /*
  * WizardStepFaculty
  * Step 1: Faculty selection
+ * Refactored to use composables for labels.
  */
 
-const { t, te } = useI18n({ useScope: 'global' })
+// Composables
+const { getFacultyLabel } = useCourseLabels()
 
 interface Props {
 	faculties: FacetItem[]
@@ -20,11 +22,6 @@ interface Emits {
 
 defineProps<Props>()
 const emit = defineEmits<Emits>()
-
-function getFacultyName(value: string): string {
-	const key = `faculties.${value}`
-	return te(key) ? t(key) : value
-}
 
 function handleSelect(facultyId: string) {
 	emit('select', facultyId)
@@ -60,7 +57,7 @@ function handleSelect(facultyId: string) {
 							{{ faculty.value }}
 						</div>
 						<div class="mt-1 text-sm text-[var(--insis-gray-600)]">
-							{{ getFacultyName(faculty.value as string) }}
+							{{ getFacultyLabel(faculty.value as string) }}
 						</div>
 					</div>
 					<div class="text-sm text-[var(--insis-gray-500)]">{{ faculty.count }} {{ $t('common.plans') }}</div>

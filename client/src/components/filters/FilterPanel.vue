@@ -1,30 +1,44 @@
 <script setup lang="ts">
+import CourseStatusFilter from '@client/components/filters/CourseStatusFilter.vue'
 import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
 import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
-import { useCoursesStore, useUIStore } from '@client/stores'
+import { useDebouncedFn } from '@client/composables'
+import { useCoursesStore, useTimetableStore, useUIStore } from '@client/stores'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import IconChevronDown from '~icons/lucide/chevron-down'
 import IconFilter from '~icons/lucide/filter'
 import IconRotateCcw from '~icons/lucide/rotate-ccw'
 import Search from '~icons/lucide/search'
 import IconX from '~icons/lucide/x'
 
-/*
+/**
  * FilterPanel
+ *
  * Left sidebar panel containing all course filters.
  * Dynamically renders filters based on available facets from the API.
  * Each filter section is collapsible.
+ *
+ * Now includes CourseStatusFilter for filtering by timetable status
+ * (selected, conflicts, incomplete) with checkbox-style UI matching
+ * other filter groups.
  */
 
 const { t } = useI18n({ useScope: 'global' })
 const coursesStore = useCoursesStore()
+const timetableStore = useTimetableStore()
 const uiStore = useUIStore()
 
 // Track collapsed state for time filter separately
 const timeFilterCollapsed = ref(false)
 
 const localTitleSearch = ref(coursesStore.filters.title ?? '')
-const localTitleTimeout = ref<number | null>(null)
+
+// Debounced search using composable
+const debouncedFetchCourses = useDebouncedFn(() => {
+	coursesStore.setTitleSearch(localTitleSearch.value)
+	coursesStore.fetchCourses()
+}, 750)
 
 // Facet configuration for dynamic rendering
 const facetConfig = computed(() => [
@@ -52,7 +66,7 @@ const facetConfig = computed(() => [
 		translations: 'courseLanguages',
 		selected: coursesStore.filters.languages,
 		setter: coursesStore.setLanguages,
-		defaultCollapsed: true, // Collapsed by default
+		defaultCollapsed: true,
 	},
 	{
 		key: 'groups',
@@ -61,7 +75,6 @@ const facetConfig = computed(() => [
 		translations: 'courseGroups',
 		selected: coursesStore.filters.groups,
 		setter: coursesStore.setGroups,
-		// Only show when filtering by study plan
 		visible: coursesStore.filters.study_plan_ids && coursesStore.filters.study_plan_ids.length > 0,
 		defaultCollapsed: false,
 	},
@@ -72,7 +85,6 @@ const facetConfig = computed(() => [
 		translations: 'courseCategories',
 		selected: coursesStore.filters.categories,
 		setter: coursesStore.setCategories,
-		// Only show when filtering by study plan
 		visible: coursesStore.filters.study_plan_ids && coursesStore.filters.study_plan_ids.length > 0,
 		defaultCollapsed: false,
 	},
@@ -82,7 +94,7 @@ const facetConfig = computed(() => [
 		facets: coursesStore.facets.ects,
 		selected: coursesStore.filters.ects?.map(String),
 		setter: (values: string[]) => coursesStore.setEcts(values.map(Number)),
-		defaultCollapsed: true, // Collapsed by default
+		defaultCollapsed: true,
 	},
 	{
 		key: 'modes_of_completion',
@@ -91,7 +103,7 @@ const facetConfig = computed(() => [
 		translations: 'courseModesOfCompletion',
 		selected: coursesStore.filters.mode_of_completions,
 		setter: coursesStore.setModesOfCompletion,
-		defaultCollapsed: true, // Collapsed by default
+		defaultCollapsed: true,
 	},
 	{
 		key: 'lecturers',
@@ -100,7 +112,7 @@ const facetConfig = computed(() => [
 		selected: coursesStore.filters.lecturers,
 		setter: coursesStore.setLecturers,
 		searchable: true,
-		defaultCollapsed: true, // Collapsed by default (usually large list)
+		defaultCollapsed: true,
 	},
 ])
 
@@ -110,7 +122,10 @@ const visibleFacets = computed(() => facetConfig.value.filter((f) => f.facets.le
 // Count active time filters
 const activeTimeFilterCount = computed(() => (coursesStore.filters.include_times?.length || 0) + (coursesStore.filters.exclude_times?.length || 0))
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
+// Check if there are any selected courses to show the status filter
+const hasSelectedCourses = computed(() => timetableStore.selectedCourseIds.length > 0)
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 function handleFilterChange(setter: (values: any[]) => void, values: string[]) {
 	setter(values)
 	coursesStore.fetchCourses()
@@ -118,21 +133,13 @@ function handleFilterChange(setter: (values: any[]) => void, values: string[]) {
 
 function handleTitleSearchInput(event: Event) {
 	const target = event.target as HTMLInputElement
-	const value = target.value
-	localTitleSearch.value = value
-
-	if (localTitleTimeout.value) {
-		clearTimeout(localTitleTimeout.value)
-	}
-
-	localTitleTimeout.value = window.setTimeout(() => {
-		coursesStore.setTitleSearch(value)
-		coursesStore.fetchCourses()
-	}, 750)
+	localTitleSearch.value = target.value
+	debouncedFetchCourses()
 }
 
 function handleResetFilters() {
 	coursesStore.resetFilters()
+	localTitleSearch.value = ''
 	coursesStore.fetchCourses()
 }
 
@@ -149,7 +156,6 @@ function toggleTimeFilter() {
 	<aside
 		:class="[
 			'insis-search-panel h-full overflow-y-auto',
-			// Mobile: slide-in overlay
 			'fixed inset-y-0 left-0 z-30 width-fit transition-transform lg:relative lg:translate-x-0',
 			uiStore.mobileFilterOpen ? 'translate-x-0 w-full' : '-translate-x-full',
 		]"
@@ -180,10 +186,15 @@ function toggleTimeFilter() {
 			</button>
 		</div>
 
+		<!-- Course Status Filter (replaces FilterQuickTags) -->
+		<CourseStatusFilter v-if="hasSelectedCourses" />
+
 		<div class="filter-group">
 			<!-- Title Search -->
 			<div class="flex-1 w-full py-1">
-				<label class="insis-label" for="title-search">{{ $t('components.filters.FilterPanel.searchLabel') }}</label>
+				<label class="insis-label" for="title-search">
+					{{ $t('components.filters.FilterPanel.searchLabel') }}
+				</label>
 				<div class="relative">
 					<Search class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
 					<input
@@ -200,22 +211,14 @@ function toggleTimeFilter() {
 
 		<!-- Time Range Filter (collapsible) -->
 		<div class="filter-group">
-			<button type="button" class="flex w-full items-center justify-between py-1 text-left" @click="toggleTimeFilter">
+			<button type="button" class="flex cursor-pointer w-full items-center justify-between py-1 text-left" @click="toggleTimeFilter">
 				<span class="insis-label mb-0 flex items-center gap-1.5">
 					{{ $t('components.filters.FilterPanel.timeRestriction') }}
 					<span v-if="activeTimeFilterCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-[10px] text-white">
 						{{ activeTimeFilterCount }}
 					</span>
 				</span>
-				<svg
-					class="h-4 w-4 text-[var(--insis-gray-500)] transition-transform"
-					:class="{ 'rotate-180': !timeFilterCollapsed }"
-					fill="none"
-					stroke="currentColor"
-					viewBox="0 0 24 24"
-				>
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-				</svg>
+				<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !timeFilterCollapsed }]" />
 			</button>
 			<div v-show="!timeFilterCollapsed" class="mt-2">
 				<FilterTimeRange />

@@ -1,11 +1,12 @@
+import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import type { PersistedUIState, UIState, ViewMode } from '@client/types'
+import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
 import { defineStore } from 'pinia'
-
-const STORAGE_KEY = 'kreditozrouti:ui'
 
 /**
  * UI Store
  * Manages global UI state: view mode, sidebar, loading, etc.
+ * Refactored to use shared localStorage utility.
  */
 export const useUIStore = defineStore('ui', {
 	state: (): UIState => ({
@@ -88,28 +89,29 @@ export const useUIStore = defineStore('ui', {
 			this.mobileFilterOpen = false
 		},
 
+		/** Persist state to localStorage using shared utility */
 		persist() {
 			const state: PersistedUIState = {
 				viewMode: this.viewMode,
 				sidebarCollapsed: this.sidebarCollapsed,
 				showLegend: this.showLegend,
 			}
-			localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+			saveToStorage(STORAGE_KEYS.UI, state)
 		},
-	},
 
-	hydrate(storeState) {
-		const stored = localStorage.getItem(STORAGE_KEY)
-		if (!stored) return
+		/** Hydrate state from localStorage using shared utility */
+		hydrate() {
+			const state = loadFromStorage<PersistedUIState>(STORAGE_KEYS.UI)
+			if (!state) return
 
-		try {
-			const state: PersistedUIState = JSON.parse(stored)
-			storeState.viewMode = state.viewMode || 'list'
-			storeState.sidebarCollapsed = state.sidebarCollapsed || false
-			storeState.showLegend = state.showLegend || false
-		} catch (e) {
-			console.error('UI: Failed to hydrate from localStorage', e)
-			localStorage.removeItem(STORAGE_KEY)
-		}
+			this.viewMode = state.viewMode || 'list'
+			this.sidebarCollapsed = state.sidebarCollapsed || false
+			this.showLegend = state.showLegend || false
+		},
+
+		/** Clear persisted state */
+		clearPersisted() {
+			removeFromStorage(STORAGE_KEYS.UI)
+		},
 	},
 })

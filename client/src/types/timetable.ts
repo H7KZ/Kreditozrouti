@@ -1,24 +1,5 @@
+import { SelectedCourseUnit } from '@client/types/course.ts'
 import InSISDay from '@scraper/Types/InSISDay.ts'
-
-/** Course unit types for timetable display */
-export type CourseUnitType = 'lecture' | 'exercise' | 'seminar'
-
-/** Selected course unit for timetable */
-export interface SelectedCourseUnit {
-	courseId: number
-	courseIdent: string
-	courseTitle: string
-	unitId: number
-	unitType: CourseUnitType
-	slotId: number
-	day?: InSISDay
-	date?: string // DD.MM.YYYY
-	timeFrom: number // Minutes from midnight
-	timeTo: number // Minutes from midnight
-	location?: string
-	lecturer?: string
-	ects?: number
-}
 
 /** Drag selection state for timetable */
 export interface DragSelection {

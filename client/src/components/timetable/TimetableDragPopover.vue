@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { useTimeUtils } from '@client/composables'
-import InSISDay from '@scraper/Types/InSISDay.ts'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useClickOutside, useCourseLabels, usePopover, useTimeUtils } from '@client/composables'
+import type InSISDay from '@scraper/Types/InSISDay'
+import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
+import IconSearch from '~icons/lucide/search'
 
 /*
  * TimetableDragPopover
  * Popover displayed after drag selection on timetable.
  * Allows user to filter courses for the selected time slot.
+ * Refactored to use composables for positioning, click outside, and time formatting.
  */
 
-const { t, te } = useI18n({ useScope: 'global' })
+const { t } = useI18n({ useScope: 'global' })
+
+// Composables
+const { getDayLabel } = useCourseLabels()
 const { minutesToTime } = useTimeUtils()
 
 interface Position {
@@ -39,11 +44,24 @@ const emit = defineEmits<Emits>()
 
 const popoverRef = ref<HTMLElement | null>(null)
 
+// Use click outside composable
+useClickOutside(popoverRef, {
+	onClickOutside: () => emit('cancel'),
+	onEscape: () => emit('cancel'),
+	delay: 0,
+})
+
+// Use popover positioning composable
+const { popoverStyle } = usePopover(toRef(props, 'position'), {
+	width: 280,
+	height: 140,
+	margin: 16,
+})
+
 /** Day label translated */
 const dayLabel = computed(() => {
 	if (!props.selection?.day) return ''
-	const key = `days.${props.selection.day}`
-	return te(key) ? t(key) : props.selection.day
+	return getDayLabel(props.selection.day)
 })
 
 /** Formatted time range */
@@ -65,57 +83,6 @@ const durationFormatted = computed(() => {
 	if (hours === 0) return `${minutes} ${t('time.minutes')}`
 	if (minutes === 0) return `${hours} ${t('time.hours')}`
 	return t('time.hoursMinutes', { hours, minutes })
-})
-
-/** Calculate popover position with viewport bounds checking */
-const popoverStyle = computed(() => {
-	const POPOVER_WIDTH = 280
-	const POPOVER_HEIGHT = 140
-	const MARGIN = 16
-
-	let x = props.position.x
-	let y = props.position.y
-
-	// Adjust X if overflowing right
-	if (x + POPOVER_WIDTH + MARGIN > window.innerWidth) {
-		x = window.innerWidth - POPOVER_WIDTH - MARGIN
-	}
-
-	// Adjust Y if overflowing bottom
-	if (y + POPOVER_HEIGHT + MARGIN > window.innerHeight) {
-		y = y - POPOVER_HEIGHT - 10
-	}
-
-	return {
-		left: `${Math.max(MARGIN, x)}px`,
-		top: `${Math.max(MARGIN, y)}px`,
-	}
-})
-
-/** Handle click outside to cancel */
-function handleClickOutside(event: MouseEvent) {
-	if (popoverRef.value && !popoverRef.value.contains(event.target as Node)) {
-		emit('cancel')
-	}
-}
-
-/** Handle escape key to cancel */
-function handleKeyDown(event: KeyboardEvent) {
-	if (event.key === 'Escape') {
-		emit('cancel')
-	}
-}
-
-onMounted(() => {
-	setTimeout(() => {
-		document.addEventListener('click', handleClickOutside)
-		document.addEventListener('keydown', handleKeyDown)
-	}, 0)
-})
-
-onUnmounted(() => {
-	document.removeEventListener('click', handleClickOutside)
-	document.removeEventListener('keydown', handleKeyDown)
 })
 </script>
 
@@ -151,9 +118,7 @@ onUnmounted(() => {
 			<div class="flex items-center justify-end gap-2">
 				<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="emit('cancel')">{{ $t('common.cancel') }}</button>
 				<button type="button" class="insis-btn insis-btn-primary text-sm flex items-center" @click="emit('filter')">
-					<svg class="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-					</svg>
+					<IconSearch class="mr-1.5 h-4 w-4" />
 					{{ $t('components.timetable.TimetableDragPopover.searchCourses') }}
 				</button>
 			</div>

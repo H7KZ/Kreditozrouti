@@ -50,7 +50,8 @@
 		"Čtvrtek": "Čt",
 		"Pátek": "Pá",
 		"Sobota": "So",
-		"Neděle": "Ne"
+		"Neděle": "Ne",
+		"-": "-"
 	},
 	"courseLevels": {
 		"bakalářský": "Bakalářský",
@@ -134,6 +135,7 @@
 		"add": "Přidat",
 		"change": "Změnit",
 		"remove": "Odebrat",
+		"clearFilter": "Zrušit filtr",
 		"search": "Vyhledat",
 		"reset": "Reset",
 		"retry": "Zkusit znovu",
@@ -176,7 +178,7 @@
 		},
 		"courses": {
 			"studyPlanFallback": "Studijní plán",
-			"coursesInTimetable": "{count} předmětů v rozvrhu",
+			"coursesInTimetable": "{count} předmět v rozvrhu | {count} předměty v rozvrhu | {count} předmětů v rozvrhu",
 			"searchingForCourses": "Hledání předmětů pro {semester} {year}",
 			"clearTimetable": "Vymazat rozvrh",
 			"clearTimetableConfirm": "Opravdu chcete odebrat všechny předměty z rozvrhu?",
@@ -190,7 +192,7 @@
 			"loadingError": "Chyba při načítání",
 			"noCoursesFound": "Nebyly nalezeny žádné předměty odpovídající filtrům.",
 			"clearFilters": "Zrušit filtry",
-			"showingResults": "Zobrazeno {from} - {to} z {total} předmětů",
+			"showingResults": "Zobrazeno {from} – {to} z {total} předmětů",
 			"pageInfo": "Stránka {current} z {total}",
 			"emptyTimetable": {
 				"title": "Váš rozvrh je prázdný",
@@ -230,12 +232,12 @@
 				"searchLabel": "Hledat",
 				"searchPlaceholder": "Jméno nebo kód oboru...",
 				"levelLabel": "Úroveň studia",
-				"resultsCount": "Nalezeno {count} studijních plánů",
+				"resultsCount": "Nalezen {count} studijní plán | Nalezeny {count} studijní plány | Nalezeno {count} studijních plánů",
 				"noResults": "Žádný studijní plán neodpovídá filtru.",
 				"backToYear": "Zpět k výběru roku",
 				"specializationInfoTitle": "Máte specializaci?",
 				"specializationInfoDescription": "Pokud váš studijní program zahrnuje specializaci (např. vedlejší obor), vyberte jak základní studijní plán, tak specializaci. Kliknutím na plány přepínáte výběr.",
-				"selectedCount": "{count} vybráno",
+				"selectedCount": "{count} vybrán | {count} vybrány | {count} vybráno",
 				"selected": "Vybráno",
 				"proceed": "Pokračovat ve výběru",
 				"doubleClickTip": "Tip: Poklepejte na plán, abyste jej vybrali a mohli okamžitě pokračovat."
@@ -253,7 +255,7 @@
 				},
 				"noResults": "Žádné předměty neodpovídají filtru",
 				"inTimetable": "V rozvrhu",
-				"missingUnitTypes": "Chybějící typy jednotek"
+				"missingUnitTypes": "Nekompletní"
 			},
 			"CourseRowExpanded": {
 				"faculty": "Fakulta",
@@ -271,6 +273,15 @@
 				"noUnitsAvailable": "Pro tento kurz nejsou k dispozici žádné jednotky rozvrhu.",
 				"incompleteSelectionTitle": "Neúplný výběr kurzu",
 				"incompleteSelectionDescription": "Chcete-li se zapsat do tohoto kurzu, musíte také vybrat: {types}. Vyberte všechny požadované typy jednotek."
+			},
+			"CourseStatusSummary": {
+				"selectedCourses": "{count} předmět | {count} předměty | {count} předmětů",
+				"conflicts": "{count} kolize | {count} kolize | {count} kolizí",
+				"incomplete": "{count} nekompletní | {count} nekompletní | {count} nekompletních",
+				"selectedTooltip": "Klikněte pro zobrazení pouze vybraných předmětů",
+				"conflictTooltip": "Klikněte pro zobrazení předmětů s časovými kolizemi",
+				"incompleteTooltip": "Klikněte pro zobrazení předmětů s chybějícími typy výuky",
+				"allComplete": "Všechny jednotky vybrány, bez kolizí!"
 			}
 		},
 		"filters": {
@@ -293,17 +304,31 @@
 			"FilterTimeRange": {
 				"addTimeFilter": "Přidat časový filtr",
 				"dayLabel": "Den",
-				"availableRange": "Dostupný rozsah: {from} - {to}"
+				"availableRange": "Dostupný rozsah: {from} – {to}"
+			},
+			"CourseStatusFilter": {
+				"title": "Moje předměty",
+				"allSelected": "Všechny vybrané",
+				"withConflicts": "S kolizemi",
+				"incomplete": "Nekompletní",
+				"conflictingCourses": "Předměty v kolizi",
+				"incompleteCourses": "Nekompletní předměty",
+				"conflictsWith": "Koliduje s: {courses}",
+				"missingTypes": "Chybí: {types}",
+				"missingLabel": "Chybí",
+				"helpText": "Klikněte pro filtrování. Vyberte více možností pro kombinovaný filtr."
 			}
 		},
 		"timetable": {
 			"TimetableGrid": {
 				"dayHeader": "Den",
 				"filterApplied": "Filtr aplikován",
-				"filterDescription": "Zobrazuji předměty v čase {from}-{to} ({day})"
+				"filterDescription": "Zobrazuji předměty v čase {from}–{to} ({day})"
 			},
 			"TimetableCourseBlock": {
-				"removeFromTimetable": "Odebrat z rozvrhu"
+				"removeFromTimetable": "Odebrat z rozvrhu",
+				"missingTypesWarning": "Chybějící {types}. Klikněte pro přidání.",
+				"mergedSlots": "{count} sloučený časový slot | {count} sloučené časové sloty | {count} sloučených časových slotů"
 			},
 			"TimetableDragPopover": {
 				"title": "Vyhledat předměty",

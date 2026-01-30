@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import FacetItem from '@api/Interfaces/FacetItem.ts'
-import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import type FacetItem from '@api/Interfaces/FacetItem'
+import { useCourseLabels, useFacetFiltering } from '@client/composables'
+import { computed, ref, toRef } from 'vue'
+import IconChevronDown from '~icons/lucide/chevron-down'
+import IconSearch from '~icons/lucide/search'
 
 /*
  * FilterCheckboxGroup
  * Reusable checkbox group for facet filtering.
  * Supports collapsible header, collapsible list and optional search.
  * Selected items are shown at the top, including items that may not be in current facets.
+ * Refactored to use composables for filtering logic and label translation.
  */
 
-const { t } = useI18n({ useScope: 'global' })
+// Composables
+const { getLabel } = useCourseLabels()
 
 interface Props {
 	label: string
@@ -34,98 +38,38 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>()
 
+// Use facet filtering composable
+const { searchQuery, listExpanded, filterBySearch, getVisibleFacets, hasMoreItems, getHiddenCount, toggleListExpanded, isSelected, toggleSelection } =
+	useFacetFiltering(toRef(props, 'facets'), toRef(props, 'selected'), {
+		maxVisible: props.maxVisible,
+	})
+
 /** Whether the entire filter group is collapsed */
 const isCollapsed = ref(props.defaultCollapsed)
 
-/** Whether the list is expanded to show all items */
-const listExpanded = ref(false)
-const searchQuery = ref('')
+/** Get display label for a facet using translations or raw value */
+function getDisplayLabel(facet: FacetItem): string {
+	const value = String(facet.value)
+	return props.translations ? getLabel(props.translations, value) : value
+}
 
-/**
- * Compute combined facets:
- * 1. Selected items that are NOT in current facets (shown with count 0)
- * 2. Regular facets from the API
- * Selected items are shown at the top.
- */
-const combinedFacets = computed(() => {
-	// Get all facet values from the API response
-	const facetValues = new Set(props.facets.map((f) => String(f.value)))
+// Filter facets by search query (uses getDisplayLabel for matching)
+const filteredFacets = filterBySearch(getDisplayLabel)
 
-	// Find selected items that are not in current facets
-	const missingSelectedFacets: FacetItem[] = props.selected
-		.filter((selectedValue) => !facetValues.has(selectedValue))
-		.map((value) => ({
-			value,
-			count: 0, // Show 0 count for items not in current facets
-		}))
+// Visible facets with pagination
+const visibleFacets = getVisibleFacets(filteredFacets)
 
-	// Combine: missing selected items + existing facets
-	return [...missingSelectedFacets, ...props.facets]
-})
-
-/**
- * Sort facets: selected items first, then by count descending
- */
-const sortedFacets = computed(() => {
-	return [...combinedFacets.value].sort((a, b) => {
-		const aSelected = props.selected.includes(String(a.value))
-		const bSelected = props.selected.includes(String(b.value))
-
-		// Selected items come first
-		if (aSelected && !bSelected) return -1
-		if (!aSelected && bSelected) return 1
-
-		// Among selected items, maintain order
-		if (aSelected && bSelected) {
-			return props.selected.indexOf(String(a.value)) - props.selected.indexOf(String(b.value))
-		}
-
-		// Among non-selected, sort by count descending
-		return (b.count ?? 0) - (a.count ?? 0)
-	})
-})
-
-// Filter facets by search query
-const filteredFacets = computed(() => {
-	if (!searchQuery.value.trim()) return sortedFacets.value
-
-	const query = searchQuery.value.toLowerCase()
-	return sortedFacets.value.filter((f) => {
-		const valueStr = String(f.value).toLowerCase()
-		const displayLabel = getDisplayLabel(f).toLowerCase()
-		return valueStr.includes(query) || displayLabel.includes(query)
-	})
-})
-
-// Show limited items unless expanded
-const visibleFacets = computed(() => {
-	if (listExpanded.value) return filteredFacets.value
-
-	// Always show all selected items + up to maxVisible non-selected
-	const selected = filteredFacets.value.filter((f) => props.selected.includes(String(f.value)))
-	const nonSelected = filteredFacets.value.filter((f) => !props.selected.includes(String(f.value)))
-
-	const remainingSlots = Math.max(0, props.maxVisible - selected.length)
-	return [...selected, ...nonSelected.slice(0, remainingSlots)]
-})
-
-// Show "show more" button if there are hidden items
-const hasMore = computed(() => !listExpanded.value && filteredFacets.value.length > visibleFacets.value.length)
+// Has more items to show
+const hasMore = hasMoreItems(filteredFacets, visibleFacets)
 
 // Count of hidden items
-const hiddenCount = computed(() => filteredFacets.value.length - visibleFacets.value.length)
+const hiddenCount = getHiddenCount(filteredFacets, visibleFacets)
 
 // Count of selected items in this group
 const selectedCount = computed(() => props.selected.length)
 
-function isSelected(value: unknown): boolean {
-	return props.selected.includes(String(value))
-}
-
 function handleChange(value: unknown) {
-	const strValue = String(value)
-	const newSelected = isSelected(value) ? props.selected.filter((v) => v !== strValue) : [...props.selected, strValue]
-
+	const newSelected = toggleSelection(value)
 	emit('update:selected', newSelected)
 }
 
@@ -133,14 +77,11 @@ function toggleCollapsed() {
 	isCollapsed.value = !isCollapsed.value
 }
 
-function toggleListExpanded() {
-	listExpanded.value = !listExpanded.value
+function clearFilter() {
+	emit('update:selected', [])
 }
 
-function getDisplayLabel(facet: FacetItem): string {
-	const value = String(facet.value)
-	return props.translations ? t(`${props.translations}.${value}`) : value
-}
+const isFiltering = computed(() => props.selected.length > 0)
 </script>
 
 <template>
@@ -153,29 +94,18 @@ function getDisplayLabel(facet: FacetItem): string {
 					{{ selectedCount }}
 				</span>
 			</span>
-			<svg
-				class="h-4 w-4 text-[var(--insis-gray-500)] transition-transform"
-				:class="{ 'rotate-180': !isCollapsed }"
-				fill="none"
-				stroke="currentColor"
-				viewBox="0 0 24 24"
-			>
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-			</svg>
+			<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !isCollapsed }]" />
 		</button>
 
 		<!-- Collapsible content -->
-		<div v-show="!isCollapsed" class="mt-2">
+		<div v-show="!isCollapsed" class="mt-2 space-y-3">
+			<button v-if="isFiltering" type="button" class="text-xs cursor-pointer text-[var(--insis-blue)] hover:underline" @click="clearFilter">
+				{{ $t('common.clearFilter') }}
+			</button>
+
 			<!-- Search input (if searchable) -->
 			<div v-if="searchable" class="relative mb-2">
-				<svg
-					class="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[var(--insis-gray-500)]"
-					fill="none"
-					stroke="currentColor"
-					viewBox="0 0 24 24"
-				>
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-				</svg>
+				<IconSearch class="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[var(--insis-gray-500)]" />
 				<input
 					v-model="searchQuery"
 					type="text"
@@ -209,9 +139,7 @@ function getDisplayLabel(facet: FacetItem): string {
 
 			<!-- Show more button -->
 			<button v-if="hasMore" type="button" class="insis-btn-text mt-2 flex items-center gap-1 text-xs" @click="toggleListExpanded">
-				<svg class="h-3 w-3 transition-transform" :class="{ 'rotate-180': listExpanded }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-				</svg>
+				<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': listExpanded }]" />
 				{{ listExpanded ? $t('common.showLess') : $t('common.showMore', { count: hiddenCount }) }}
 			</button>
 		</div>

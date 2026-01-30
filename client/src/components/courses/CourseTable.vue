@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
+import { CourseWithRelations } from '@api/Database/types'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
-import { DAYS_ORDER, useTimeUtils } from '@client/composables'
+import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
-import { CourseSortBy } from '@client/types'
-import InSISDay from '@scraper/Types/InSISDay.ts'
+import type { CourseSortBy } from '@client/types'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconChevronDown from '~icons/lucide/chevron-down'
@@ -13,14 +12,16 @@ import IconChevronUp from '~icons/lucide/chevron-up'
 /*
  * CourseTable
  * InSIS-styled table for displaying courses with expandable rows.
+ * Refactored to use composables for labels and schedule summary.
  */
 
-const { t, te } = useI18n({ useScope: 'global' })
+const { t } = useI18n({ useScope: 'global' })
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
-const { getDayFromDate } = useTimeUtils()
 
-type CourseWithRelations = Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>
+// Composables
+const { getCompletionLabel, getFacultyLabel } = useCourseLabels()
+const { getScheduleSummary } = useScheduleSummary()
 
 // Column definitions for sorting
 const columns = computed(() => [
@@ -59,61 +60,9 @@ function hasMissingUnitTypes(courseId: number): boolean {
 	return timetableStore.courseHasMissingUnitTypes(courseId)
 }
 
-/**
- * Get day index for sorting (Monday = 0, Sunday = 6)
- */
-function getDayIndex(day: InSISDay): number {
-	const index = DAYS_ORDER.indexOf(day)
-	return index === -1 ? 999 : index
-}
-
-/**
- * Get schedule summary for a course
- * Shows days sorted by week order (Mon-Sun)
- * For block courses (date-only), also show their days
- */
-function getScheduleSummary(course: CourseWithRelations): string {
-	if (!course.units || course.units.length === 0) return '-'
-
-	const daysSet = new Set<InSISDay>()
-
-	for (const unit of course.units) {
-		if (unit.slots) {
-			for (const slot of unit.slots) {
-				// For recurring slots with day
-				if (slot.day) {
-					daysSet.add(slot.day)
-				}
-				// For block/single-occurrence slots with date, extract the day
-				else if (slot.date) {
-					const dateDay = getDayFromDate(slot.date)
-					if (dateDay) {
-						daysSet.add(dateDay)
-					}
-				}
-			}
-		}
-	}
-
-	if (daysSet.size === 0) return '-'
-
-	// Sort days by week order and get short names
-	const sortedDays = Array.from(daysSet)
-		.sort((a, b) => getDayIndex(a) - getDayIndex(b))
-		.map((day) => t(`daysShort.${day}`))
-
-	return sortedDays.join(', ')
-}
-
-// Get mode of completion display
-function getCompletionLabel(value: string): string {
-	const key = `courseModesOfCompletion.${value}`
-	return te(key) ? t(key) : value
-}
-
-function getFacultyName(value: string): string {
-	const key = `faculties.${value}`
-	return te(key) ? t(key) : value
+// Schedule summary using composable
+function getCourseScheduleSummary(course: CourseWithRelations): string {
+	return getScheduleSummary(course.units)
 }
 </script>
 
@@ -192,7 +141,7 @@ function getFacultyName(value: string): string {
 
 							<!-- Faculty -->
 							<td class="text-sm text-[var(--insis-gray-600)]">
-								{{ course.faculty_id ? getFacultyName(course.faculty_id) : '-' }}
+								{{ course.faculty_id ? getFacultyLabel(course.faculty_id) : '-' }}
 							</td>
 
 							<!-- ECTS -->
@@ -207,7 +156,7 @@ function getFacultyName(value: string): string {
 
 							<!-- Schedule Summary -->
 							<td class="text-sm text-[var(--insis-gray-600)]">
-								{{ getScheduleSummary(course) }}
+								{{ getCourseScheduleSummary(course) }}
 							</td>
 
 							<!-- Expand indicator -->

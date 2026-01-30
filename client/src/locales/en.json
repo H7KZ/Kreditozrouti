@@ -44,13 +44,14 @@
 		"Neděle": "Sunday"
 	},
 	"daysShort": {
-		"Pondělí": "Mo",
-		"Úterý": "Tu",
-		"Středa": "We",
-		"Čtvrtek": "Th",
-		"Pátek": "Fr",
-		"Sobota": "Sa",
-		"Neděle": "Su"
+		"Pondělí": "Mon",
+		"Úterý": "Tue",
+		"Středa": "Wed",
+		"Čtvrtek": "Thu",
+		"Pátek": "Fri",
+		"Sobota": "Sat",
+		"Neděle": "Sun",
+		"-": "-"
 	},
 	"courseLevels": {
 		"bakalářský": "Bachelor's",
@@ -100,9 +101,9 @@
 		"dateOnly": "Block course"
 	},
 	"unitTypesShort": {
-		"lecture": "L",
+		"lecture": "Lec",
 		"exercise": "Ex",
-		"seminar": "S"
+		"seminar": "Sem"
 	},
 	"unitTypesAccusative": {
 		"lecture": "lecture",
@@ -134,6 +135,7 @@
 		"add": "Add",
 		"change": "Change",
 		"remove": "Remove",
+		"clearFilter": "Clear filter",
 		"search": "Search",
 		"reset": "Reset",
 		"retry": "Retry",
@@ -176,7 +178,7 @@
 		},
 		"courses": {
 			"studyPlanFallback": "Study Plan",
-			"coursesInTimetable": "{count} courses in timetable",
+			"coursesInTimetable": "{count} course in timetable | {count} courses in timetable",
 			"searchingForCourses": "Searching for courses in {semester} {year}",
 			"clearTimetable": "Clear timetable",
 			"clearTimetableConfirm": "Are you sure you want to remove all courses from the timetable?",
@@ -190,7 +192,7 @@
 			"loadingError": "Loading error",
 			"noCoursesFound": "No courses found matching the filters.",
 			"clearFilters": "Clear filters",
-			"showingResults": "Showing {from} - {to} of {total} courses",
+			"showingResults": "Showing {from}–{to} of {total} courses",
 			"pageInfo": "Page {current} of {total}",
 			"emptyTimetable": {
 				"title": "Your timetable is empty",
@@ -230,7 +232,7 @@
 				"searchLabel": "Search",
 				"searchPlaceholder": "Name or field code...",
 				"levelLabel": "Study Level",
-				"resultsCount": "Found {count} study plans",
+				"resultsCount": "Found {count} study plan | Found {count} study plans",
 				"noResults": "No study plans match the filter.",
 				"backToYear": "Back to year selection",
 				"specializationInfoTitle": "Do you have a specialization?",
@@ -253,7 +255,7 @@
 				},
 				"noResults": "No courses match the filter",
 				"inTimetable": "In timetable",
-				"missingUnitTypes": "Missing unit types"
+				"missingUnitTypes": "Incomplete"
 			},
 			"CourseRowExpanded": {
 				"faculty": "Faculty",
@@ -271,12 +273,21 @@
 				"noUnitsAvailable": "No schedule units are available for this course.",
 				"incompleteSelectionTitle": "Incomplete course selection",
 				"incompleteSelectionDescription": "To enroll in this course, you must also select: {types}. Please select all required unit types."
+			},
+			"CourseStatusSummary": {
+				"selectedCourses": "{count} course | {count} courses",
+				"conflicts": "{count} conflict | {count} conflicts",
+				"incomplete": "{count} incomplete",
+				"selectedTooltip": "Click to show only selected courses",
+				"conflictTooltip": "Click to show courses with time conflicts",
+				"incompleteTooltip": "Click to show courses with missing unit types",
+				"allComplete": "All course units selected, no conflicts!"
 			}
 		},
 		"filters": {
 			"FilterPanel": {
 				"searchLabel": "Search",
-				"searchPlaceholder": "Search by name or ident...",
+				"searchPlaceholder": "Search by name or code...",
 				"faculties": "Faculties",
 				"studyLevel": "Study Level",
 				"language": "Language of Instruction",
@@ -293,17 +304,31 @@
 			"FilterTimeRange": {
 				"addTimeFilter": "Add time filter",
 				"dayLabel": "Day",
-				"availableRange": "Available range: {from} - {to}"
+				"availableRange": "Available range: {from}–{to}"
+			},
+			"CourseStatusFilter": {
+				"title": "My Courses",
+				"allSelected": "All Selected",
+				"withConflicts": "With Conflicts",
+				"incomplete": "Incomplete",
+				"conflictingCourses": "Conflicting Courses",
+				"incompleteCourses": "Incomplete Courses",
+				"conflictsWith": "Conflicts with: {courses}",
+				"missingTypes": "Missing: {types}",
+				"missingLabel": "Missing",
+				"helpText": "Click to filter. Select multiple options to combine filters."
 			}
 		},
 		"timetable": {
 			"TimetableGrid": {
 				"dayHeader": "Day",
 				"filterApplied": "Filter applied",
-				"filterDescription": "Showing courses at {from}-{to} ({day})"
+				"filterDescription": "Showing courses at {from}–{to} ({day})"
 			},
 			"TimetableCourseBlock": {
-				"removeFromTimetable": "Remove from timetable"
+				"removeFromTimetable": "Remove from timetable",
+				"missingTypesWarning": "Missing {types}. Click to add them.",
+				"mergedSlots": "{count} time slot merged | {count} time slots merged"
 			},
 			"TimetableDragPopover": {
 				"title": "Search Courses",

@@ -1,4 +1,4 @@
-import { ExcludeMethods } from '@api/Database/types/index'
+import { ExcludeMethods, Faculty, StudyPlanCourse } from '@api/Database/types/index'
 import InSISDay from '@scraper/Types/InSISDay'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import { ColumnType, Insertable, Selectable } from 'kysely'
@@ -71,6 +71,8 @@ export type Course<F = void, U = void, A = void, SP = void> = Selectable<CourseT
 	(A extends void ? unknown : { assessments: A[] }) &
 	(SP extends void ? unknown : { study_plans: SP[] })
 export type NewCourse = Insertable<Omit<ExcludeMethods<CourseTable>, 'created_at' | 'updated_at'>>
+
+export type CourseWithRelations = Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>
 
 // -------------------------------------------------------------------------
 

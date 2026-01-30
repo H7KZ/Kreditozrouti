@@ -1,6 +1,7 @@
 import App from '@client/App.vue'
 import '@client/index.css'
 import { useAlertsStore, useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import { czechPluralRule, datetimeFormats, numberFormats } from '@client/utils/pluralization.ts'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 import * as Sentry from '@sentry/vue'
 import { createPinia } from 'pinia'
@@ -31,6 +32,14 @@ const i18n = createI18n({
 	globalInjection: true,
 	legacy: false,
 	allowComposition: true,
+	// Czech pluralization rules
+	pluralRules: {
+		cs: czechPluralRule,
+	},
+	// Datetime formatting
+	datetimeFormats,
+	// Number formatting
+	numberFormats,
 })
 
 const pinia = createPinia()

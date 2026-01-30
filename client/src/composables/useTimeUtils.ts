@@ -1,156 +1,194 @@
-import { TimeSelection } from '@api/Validations'
-import { ALL_DAYS } from '@client/constants/timetable.ts'
+import type { TimeSelection } from '@api/Validations'
+import { TIME_CONFIG } from '@client/constants/timetable.ts'
 import { i18n } from '@client/index.ts'
-import InSISDay from '@scraper/Types/InSISDay.ts'
-
-const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
-
-/** Days in week order (Monday = 0, Sunday = 6) */
-export const DAYS_ORDER: InSISDay[] = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle']
 
 /**
- * Time Utilities Composable
- * Provides helper functions for working with InSIS time formats.
+ * Time utilities composable.
+ *
+ * @example
+ * ```ts
+ * const { formatTimeRange, minutesToTime, timeToMinutes } = useTimeUtils()
+ *
+ * const time = minutesToTime(540) // "09:00"
+ * const minutes = timeToMinutes("09:00") // 540
+ * const range = formatTimeRange(540, 630) // "09:00 - 10:30"
+ * ```
  */
 export function useTimeUtils() {
+	const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
+
 	/**
-	 * Convert minutes from midnight to HH:MM format
+	 * Convert minutes from midnight to HH:MM format.
+	 *
+	 * @param minutes - Minutes from midnight (0-1440)
+	 * @returns Time string in HH:MM format
 	 */
-	function minutesToTime(minutes: number): string {
+	function minutesToTime(minutes: number | null | undefined): string {
+		if (minutes == null) return '--:--'
+
 		const hours = Math.floor(minutes / 60)
 		const mins = minutes % 60
 		return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
 	}
 
 	/**
-	 * Convert HH:MM string to minutes from midnight
+	 * Convert HH:MM format to minutes from midnight.
+	 *
+	 * @param time - Time string in HH:MM format
+	 * @returns Minutes from midnight
 	 */
 	function timeToMinutes(time: string): number {
 		const [hours, mins] = time.split(':').map(Number)
-		if (hours === undefined || mins === undefined) return 0
-		if (isNaN(hours) || isNaN(mins)) return 0
-		if (hours < 0 || hours > 23 || mins < 0 || mins > 59) return 0
-		return hours * 60 + mins
+		return (hours ?? 0) * 60 + (mins ?? 0)
 	}
 
 	/**
-	 * Get InSIS day from date string (DD.MM.YYYY)
+	 * Utility: Format time from minutes to HH:MM
 	 */
-	function getDayFromDate(dateStr: string): InSISDay | undefined {
-		const date = new Date(dateStr.split('.').reverse().join('-')) // Convert DD.MM.YYYY to YYYY-MM-DD
-		return ALL_DAYS[date.getDay()] // 0 (Sun) to 6 (Sat)
+	function formatTime(minutes: number): string {
+		const hours = Math.floor(minutes / 60)
+		const mins = minutes % 60
+		return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
 	}
 
 	/**
-	 * Format a time range
+	 * Format a time range for display.
+	 *
+	 * @param from - Start time in minutes
+	 * @param to - End time in minutes
+	 * @returns Formatted time range string
 	 */
-	function formatTimeRange(from: number | null, to: number | null): string {
-		if (from === null || to === null) return '-'
+	function formatTimeRange(from: number | null | undefined, to: number | null | undefined): string {
 		return `${minutesToTime(from)} - ${minutesToTime(to)}`
 	}
 
 	/**
-	 * Format a TimeSelection for display
+	 * Format a time selection (day + time range) for display.
+	 *
+	 * @param selection - Time selection object
+	 * @returns Formatted string like "Po 09:00 - 10:30"
 	 */
 	function formatTimeSelection(selection: TimeSelection): string {
-		const dayShort = t(`daysShort.${selection.day}`)
-		return `${dayShort} ${formatTimeRange(selection.time_from, selection.time_to)}`
+		const dayKey = `daysShort.${selection.day}`
+		const dayLabel = t(dayKey)
+		return `${dayLabel} ${formatTimeRange(selection.time_from, selection.time_to)}`
 	}
 
 	/**
-	 * Get day index (0-6, Pondělí = 0)
+	 * Calculate the horizontal position (left %) for a time on the grid.
+	 *
+	 * @param time - Time in minutes from midnight
+	 * @param start - Grid start time in minutes (default: TIME_CONFIG.START)
+	 * @param end - Grid end time in minutes (default: TIME_CONFIG.END)
+	 * @returns Percentage position (0-100)
 	 */
-	function getDayIndex(day: InSISDay): number {
-		return DAYS_ORDER.indexOf(day)
+	function calculateTimePosition(time: number, start = TIME_CONFIG.START, end = TIME_CONFIG.END): number {
+		const totalDuration = end - start
+		const position = ((time - start) / totalDuration) * 100
+		return Math.max(0, Math.min(100, position))
 	}
 
 	/**
-	 * Sort days in week order
+	 * Calculate the width (%) for a time duration on the grid.
+	 *
+	 * @param from - Start time in minutes
+	 * @param to - End time in minutes
+	 * @param start - Grid start time in minutes (default: TIME_CONFIG.START)
+	 * @param end - Grid end time in minutes (default: TIME_CONFIG.END)
+	 * @returns Width as percentage (0-100)
 	 */
-	function sortDays(days: InSISDay[]): InSISDay[] {
-		return [...days].sort((a, b) => getDayIndex(a) - getDayIndex(b))
+	function calculateTimeDuration(from: number, to: number, start = TIME_CONFIG.START, end = TIME_CONFIG.END): number {
+		const totalDuration = end - start
+		const duration = ((to - from) / totalDuration) * 100
+		return Math.max(0, Math.min(100, duration))
 	}
 
 	/**
-	 * Check if two time ranges overlap
+	 * Generate time slot options for select inputs.
+	 *
+	 * @param interval - Interval between options in minutes (default: 15)
+	 * @param start - Start time in minutes (default: TIME_CONFIG.START)
+	 * @param end - End time in minutes (default: TIME_CONFIG.END)
+	 * @returns Array of time options
 	 */
-	function doTimesOverlap(a: { from: number; to: number }, b: { from: number; to: number }): boolean {
-		return a.from < b.to && b.from < a.to
+	function generateTimeOptions(interval = 15, start = TIME_CONFIG.START, end = TIME_CONFIG.END): Array<{ value: string; label: string }> {
+		const options: Array<{ value: string; label: string }> = []
+
+		for (let mins = start; mins <= end; mins += interval) {
+			const time = minutesToTime(mins)
+			options.push({ value: time, label: time })
+		}
+
+		return options
 	}
 
 	/**
-	 * Generate time slot labels for a grid (e.g., 7:30, 8:15, 9:00, ...)
+	 * Generate time slots for the timetable grid header.
+	 *
+	 * @param interval - Interval between slots in minutes (default: 60 for hourly)
+	 * @returns Array of time slot objects
 	 */
-	function generateTimeLabels(start: number, end: number, slotDuration: number, breakDuration: number): Array<{ minutes: number; label: string }> {
-		const labels: Array<{ minutes: number; label: string }> = []
-		let time = start
+	function generateTimeSlots(interval = 60): Array<{ minutes: number; label: string }> {
+		const slots: Array<{ minutes: number; label: string }> = []
+		let time = TIME_CONFIG.START
 
-		while (time < end) {
-			labels.push({
+		while (time <= TIME_CONFIG.END) {
+			slots.push({
 				minutes: time,
 				label: minutesToTime(time),
 			})
-			time += slotDuration + breakDuration
+			time += interval
 		}
 
-		return labels
+		return slots
 	}
 
 	/**
-	 * Calculate the height/position percentage for a time block in a grid
+	 * Snap a time to the nearest interval.
+	 *
+	 * @param time - Time in minutes
+	 * @param interval - Snap interval in minutes (default: 15)
+	 * @returns Snapped time in minutes
 	 */
-	function calculateTimePosition(time: number, gridStart: number, gridEnd: number): number {
-		const totalMinutes = gridEnd - gridStart
-		const offset = time - gridStart
-		return (offset / totalMinutes) * 100
+	function snapToInterval(time: number, interval = 15): number {
+		return Math.round(time / interval) * interval
 	}
 
 	/**
-	 * Calculate the height percentage for a time duration in a grid
+	 * Clamp a time to the valid range.
+	 *
+	 * @param time - Time in minutes
+	 * @returns Clamped time within TIME_CONFIG bounds
 	 */
-	function calculateTimeDuration(from: number, to: number, gridStart: number, gridEnd: number): number {
-		const totalMinutes = gridEnd - gridStart
-		const duration = to - from
-		return (duration / totalMinutes) * 100
+	function clampTime(time: number): number {
+		return Math.max(TIME_CONFIG.START, Math.min(TIME_CONFIG.END, time))
 	}
 
 	/**
-	 * Parse academic year string (e.g., "2024" -> "2024/2025")
+	 * Check if two time ranges overlap.
+	 *
+	 * @param aFrom - First range start
+	 * @param aTo - First range end
+	 * @param bFrom - Second range start
+	 * @param bTo - Second range end
+	 * @returns True if ranges overlap
 	 */
-	function formatAcademicYear(year: number): string {
-		return `${year}/${year + 1}`
-	}
-
-	/**
-	 * Parse semester code to human-readable text
-	 * ZS = Zimní semestr (Winter), LS = Letní semestr (Summer)
-	 */
-	function formatSemester(semester: 'ZS' | 'LS'): string {
-		return semester === 'ZS' ? 'Zimní semestr' : 'Letní semestr'
-	}
-
-	/**
-	 * Format semester with year (e.g., "ZS 2024/2025")
-	 */
-	function formatSemesterWithYear(semester: 'ZS' | 'LS', year: number): string {
-		return `${semester} ${formatAcademicYear(year)}`
+	function timeRangesOverlap(aFrom: number, aTo: number, bFrom: number, bTo: number): boolean {
+		return aFrom < bTo && bFrom < aTo
 	}
 
 	return {
 		minutesToTime,
 		timeToMinutes,
-		getDayFromDate,
+		formatTime,
 		formatTimeRange,
 		formatTimeSelection,
-		getDayIndex,
-		sortDays,
-		doTimesOverlap,
-		generateTimeLabels,
 		calculateTimePosition,
 		calculateTimeDuration,
-		formatAcademicYear,
-		formatSemester,
-		formatSemesterWithYear,
-		DAYS_ORDER,
+		generateTimeOptions,
+		generateTimeSlots,
+		snapToInterval,
+		clampTime,
+		timeRangesOverlap,
 	}
 }

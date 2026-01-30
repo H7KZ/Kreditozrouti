@@ -1,13 +1,12 @@
-import { defineStore } from 'pinia'
-
-import StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse.ts'
-import { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
-import FacetItem from '@api/Interfaces/FacetItem.ts'
-import { StudyPlansFilter } from '@api/Validations/StudyPlansFilterValidation.ts'
+import type StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse'
+import type { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
+import type FacetItem from '@api/Interfaces/FacetItem'
+import type { StudyPlansFilter } from '@api/Validations/StudyPlansFilterValidation'
 import api from '@client/api'
-import InSISSemester from '@scraper/Types/InSISSemester.ts'
-
-const STORAGE_KEY = 'kreditozrouti:wizard'
+import { STORAGE_KEYS } from '@client/constants/storage.ts'
+import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
+import type InSISSemester from '@scraper/Types/InSISSemester'
+import { defineStore } from 'pinia'
 
 type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
 
@@ -55,6 +54,7 @@ interface WizardState {
  * Wizard Store
  * Manages the study plan selection wizard state with localStorage persistence.
  * Supports selecting multiple study plans (e.g., base plan + specialization).
+ * Refactored to use shared localStorage utility.
  *
  * Flow:
  * 1. Select Faculty → 2. Select Year (auto-selects Winter Semester) → 3. Select Study Plans (multi-select)
@@ -153,17 +153,15 @@ export const useWizardStore = defineStore('wizard', {
 			return this.selectedStudyPlans[0]?.id ?? null
 		},
 
-		/** First selected study plan ident (for backward compatibility) */
+		/** All selected study plan idents */
 		studyPlanIdents(): string[] | null {
 			if (this.selectedStudyPlans.length === 0) return null
-
 			return this.selectedStudyPlans.map((p) => p.ident || String(p.id))
 		},
 
-		/** First selected study plan title (for backward compatibility) */
+		/** All selected study plan titles */
 		studyPlanTitles(): string[] | null {
 			if (this.selectedStudyPlans.length === 0) return null
-
 			return this.selectedStudyPlans.map((p) => p.title || p.ident || String(p.id))
 		},
 
@@ -342,8 +340,8 @@ export const useWizardStore = defineStore('wizard', {
 			this.levelFilter = []
 			this.titleSearch = ''
 
-			// Clear localStorage
-			localStorage.removeItem(STORAGE_KEY)
+			// Clear localStorage using shared utility
+			removeFromStorage(STORAGE_KEYS.WIZARD)
 		},
 
 		/** Set local level filter for step 3 */
@@ -356,6 +354,7 @@ export const useWizardStore = defineStore('wizard', {
 			this.titleSearch = search
 		},
 
+		/** Persist state to localStorage using shared utility */
 		persist() {
 			const state: PersistedWizardState = {
 				facultyId: this.facultyId,
@@ -368,53 +367,47 @@ export const useWizardStore = defineStore('wizard', {
 				selectedStudyPlans: this.selectedStudyPlans,
 				completed: this.completed,
 			}
-			localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+			saveToStorage(STORAGE_KEYS.WIZARD, state)
 		},
 
+		/** Hydrate state from localStorage using shared utility */
 		hydrate() {
-			const stored = localStorage.getItem(STORAGE_KEY)
-			if (!stored) return
+			const state = loadFromStorage<PersistedWizardState>(STORAGE_KEYS.WIZARD)
+			if (!state) return
 
-			try {
-				const state: PersistedWizardState = JSON.parse(stored)
+			this.facultyId = state.facultyId
+			this.year = state.year
+			this.semester = state.semester || 'ZS'
 
-				this.facultyId = state.facultyId
-				this.year = state.year
-				this.semester = state.semester || 'ZS'
+			// Handle multi-select or migrate from legacy single-select
+			if (state.selectedStudyPlans && state.selectedStudyPlans.length > 0) {
+				this.selectedStudyPlans = state.selectedStudyPlans
+			} else if (state.studyPlanId) {
+				// Migrate from legacy single-select
+				this.selectedStudyPlans = [
+					{
+						id: state.studyPlanId,
+						ident: state.studyPlanIdent,
+						title: state.studyPlanTitle,
+					},
+				]
+			} else {
+				this.selectedStudyPlans = []
+			}
 
-				// Handle multi-select or migrate from legacy single-select
-				if (state.selectedStudyPlans && state.selectedStudyPlans.length > 0) {
-					this.selectedStudyPlans = state.selectedStudyPlans
-				} else if (state.studyPlanId) {
-					// Migrate from legacy single-select
-					this.selectedStudyPlans = [
-						{
-							id: state.studyPlanId,
-							ident: state.studyPlanIdent,
-							title: state.studyPlanTitle,
-						},
-					]
-				} else {
-					this.selectedStudyPlans = []
-				}
+			this.completed = state.completed
 
-				this.completed = state.completed
-
-				// Determine current step based on completed data
-				if (this.selectedStudyPlans.length > 0) {
-					this.currentStep = 3
-				} else if (state.year) {
-					this.currentStep = 3
-					// Load study plans for this selection
-					this.loadStudyPlans()
-				} else if (state.facultyId) {
-					this.currentStep = 2
-					// Load year facets
-					this.loadYearFacets()
-				}
-			} catch (e) {
-				console.error('Wizard: Failed to hydrate from localStorage', e)
-				localStorage.removeItem(STORAGE_KEY)
+			// Determine current step based on completed data
+			if (this.selectedStudyPlans.length > 0) {
+				this.currentStep = 3
+			} else if (state.year) {
+				this.currentStep = 3
+				// Load study plans for this selection
+				this.loadStudyPlans()
+			} else if (state.facultyId) {
+				this.currentStep = 2
+				// Load year facets
+				this.loadYearFacets()
 			}
 		},
 	},

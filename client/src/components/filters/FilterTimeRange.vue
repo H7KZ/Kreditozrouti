@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { TimeSelection } from '@api/Validations'
-import { DAYS_ORDER, useTimeUtils } from '@client/composables'
+import type { TimeSelection } from '@api/Validations'
+import { useTimeUtils } from '@client/composables'
+import { WEEKDAYS } from '@client/constants/timetable'
 import { useCoursesStore } from '@client/stores'
-import InSISDay from '@scraper/Types/InSISDay.ts'
+import type InSISDay from '@scraper/Types/InSISDay'
 import { computed, ref, watch } from 'vue'
 import IconPlus from '~icons/lucide/plus'
 import IconX from '~icons/lucide/x'
@@ -11,10 +12,13 @@ import IconX from '~icons/lucide/x'
  * FilterTimeRange
  * Custom filter for selecting days and time ranges.
  * This is different from the generic facet filters.
+ * Refactored to use composables for time utilities and formatting.
  */
 
 const coursesStore = useCoursesStore()
-const { minutesToTime, timeToMinutes, formatTimeSelection } = useTimeUtils()
+
+// Composables
+const { minutesToTime, timeToMinutes, formatTimeSelection, generateTimeOptions } = useTimeUtils()
 
 // Local state for adding new time filter
 const selectedDay = ref<InSISDay | ''>('')
@@ -44,15 +48,8 @@ watch(timeTo, (newTo) => {
 	}
 })
 
-// Time options for select inputs (7:30 to 19:30 in 15-min increments)
-const timeOptions = computed(() => {
-	const options: { value: string; label: string }[] = []
-	for (let mins = 7 * 60 + 30; mins <= 19 * 60 + 30; mins += 15) {
-		const time = minutesToTime(mins)
-		options.push({ value: time, label: time })
-	}
-	return options
-})
+// Time options using composable (interval, start, end)
+const timeOptions = computed(() => generateTimeOptions(15, 7 * 60 + 30, 19 * 60 + 30))
 
 // Active time filters (combined include + exclude)
 const activeTimeFilters = computed(() => {
@@ -114,6 +111,11 @@ function handleClearAllTimeFilers() {
 	coursesStore.clearExcludeTimes()
 	coursesStore.fetchCourses()
 }
+
+// Format filter for display using composable
+function formatFilter(filter: { day: InSISDay; time_from: number; time_to: number }): string {
+	return formatTimeSelection(filter)
+}
 </script>
 
 <template>
@@ -122,10 +124,10 @@ function handleClearAllTimeFilers() {
 			<button
 				v-if="activeTimeFilters.length > 0"
 				type="button"
-				class="text-xs text-[var(--insis-link)] hover:underline"
+				class="text-xs cursor-pointer text-[var(--insis-link)] hover:underline"
 				@click="handleClearAllTimeFilers"
 			>
-				{{ $t('common.clearAll') }}
+				{{ $t('common.clearFilter') }}
 			</button>
 		</div>
 
@@ -141,7 +143,7 @@ function handleClearAllTimeFilers() {
 			>
 				<span>
 					{{ filter.type === 'include' ? '✓' : '✗' }}
-					{{ formatTimeSelection(filter) }}
+					{{ formatFilter(filter) }}
 				</span>
 				<button type="button" class="ml-2 cursor-pointer hover:text-[var(--insis-danger)]" @click="handleRemoveTimeFilter(filter.type, filter.index)">
 					<IconX class="h-3 w-3" />
@@ -162,7 +164,7 @@ function handleClearAllTimeFilers() {
 				<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> {{ $t('components.filters.FilterTimeRange.dayLabel') }} </label>
 				<div class="flex">
 					<button
-						v-for="day in DAYS_ORDER.slice(0, 5)"
+						v-for="day in WEEKDAYS"
 						:key="day"
 						type="button"
 						:class="['insis-day-toggle', selectedDay === day && 'active']"
