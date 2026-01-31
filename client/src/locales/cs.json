@@ -355,5 +355,29 @@
 				"timeConflict": "Časový konflikt s předmětem {courseIdent}"
 			}
 		}
+	},
+	"footer": {
+		"about": {
+			"title": "O projektu Kreditožrouti",
+			"description": "Nástroj pro plánování rozvrhu, který měl být InSIS — dává studentům VŠE okamžitý, filtrovatelný přístup ke každému předmětu, rozvrhovému slotu a studijnímu plánu v jednom moderním rozhraní.",
+			"university": "Vysoká škola ekonomická v Praze"
+		},
+		"links": {
+			"title": "Odkazy",
+			"compliance": "Compliance a ochrana soukromí",
+			"github": "GitHub repozitář",
+			"insis": "Oficiální InSIS"
+		},
+		"contact": {
+			"title": "Kontakt a podpora",
+			"description": "Máte otázky, našli jste chybu nebo chcete poskytnout zpětnou vazbu?"
+		},
+		"bottom": {
+			"copyright": "© {year} Kreditožrouti. Všechna práva vyhrazena.",
+			"license": "Tento projekt není oficiálně spojen s VŠE.",
+			"version": "Verze {version}",
+			"beta": "Beta verze",
+			"disclaimer": "Data jsou stažena z InSISu a nemusí být 100% přesná."
+		}
 	}
 }

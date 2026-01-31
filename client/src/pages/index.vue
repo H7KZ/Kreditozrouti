@@ -79,13 +79,5 @@ onMounted(() => {
 				</ul>
 			</div>
 		</main>
-
-		<!-- Footer -->
-		<footer class="border-t border-[var(--insis-border)] bg-white px-4 py-4 text-center text-sm text-[var(--insis-gray-500)]">
-			<p>
-				{{ $t('pages.index.footer') }}
-				<a href="https://insis.vse.cz" target="_blank" class="text-[var(--insis-blue)] hover:underline"> {{ $t('pages.index.insisLink') }} </a>
-			</p>
-		</footer>
 	</div>
 </template>

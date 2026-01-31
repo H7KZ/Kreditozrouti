@@ -1,7 +1,7 @@
 {
 	"name": "kreditozrouti-api",
 	"private": true,
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"main": "index.js",
 	"scripts": {
 		"dev": "dotenv -e ../.env -- tsx --watch src --exec ts-node -r tsconfig-paths/register src/index.ts",

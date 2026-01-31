@@ -15,6 +15,9 @@ export default ({ mode }: { mode: string }) => {
 		server: {
 			port: parseInt(process.env.VITE_CLIENT_PORT ?? '45173'),
 		},
+		define: {
+			APP_VERSION: JSON.stringify(process.env.npm_package_version),
+		},
 		plugins: [
 			vueRouter(), // vueRouter must be before vue !!!
 			vue(),

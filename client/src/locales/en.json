@@ -355,5 +355,29 @@
 				"timeConflict": "Time conflict with course {courseIdent}"
 			}
 		}
+	},
+	"footer": {
+		"about": {
+			"title": "About Kreditožrouti",
+			"description": "The course scheduling tool that InSIS should have been — giving VŠE students instant, filterable access to every course, timetable slot, and study plan in one modern interface.",
+			"university": "Prague University of Economics and Business"
+		},
+		"links": {
+			"title": "Links",
+			"compliance": "Compliance & Privacy Policy",
+			"github": "GitHub Repository",
+			"insis": "InSIS Official"
+		},
+		"contact": {
+			"title": "Contact & Support",
+			"description": "Have questions, found a bug, or want to provide feedback?"
+		},
+		"bottom": {
+			"copyright": "© {year} Kreditožrouti. All rights reserved.",
+			"license": "This project is not officially affiliated with VŠE.",
+			"version": "Version {version}",
+			"beta": "Beta Release",
+			"disclaimer": "Data is scraped from InSIS and may not be 100% accurate."
+		}
 	}
 }
