@@ -9,12 +9,12 @@ import {
 	FacultyTable,
 	NewCourse,
 	NewCourseUnitSlot,
-	StudyPlanCourseTable,
-	StudyPlanTable
+	// StudyPlanCourseTable,
+	// StudyPlanTable
 } from '@api/Database/types'
 import {
 	ScraperInSISCourseAssessmentMethod,
-	ScraperInSISCourseStudyPlan,
+	// ScraperInSISCourseStudyPlan,
 	ScraperInSISCourseTimetableSlot,
 	ScraperInSISCourseTimetableUnit
 } from '@scraper/Interfaces/ScraperInSISCourse'
@@ -78,9 +78,9 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		await syncAssessmentMethods(trx, course.id, course.assessment_methods ?? [])
 		await syncTimetable(trx, course.id, course.timetable ?? [])
 
-		if (course.study_plans && course.study_plans.length > 0) {
-			await syncStudyPlansFromCourse(trx, course.id, course.ident ?? '', course.study_plans)
-		}
+		// if (course.study_plans && course.study_plans.length > 0) {
+		// 	await syncStudyPlansFromCourse(trx, course.id, course.ident ?? '', course.study_plans)
+		// }
 	})
 
 	LoggerJobContext.add({
@@ -194,80 +194,80 @@ async function syncSlotsForUnit(trx: Transaction<Database>, unitId: number, inco
 /**
  * Links this course to Study Plans found on the course page.
  */
-async function syncStudyPlansFromCourse(
-	trx: Transaction<Database>,
-	courseId: number,
-	courseIdent: string,
-	plans: ScraperInSISCourseStudyPlan[]
-): Promise<void> {
-	for (const plan of plans) {
-		// 1. Ensure Faculty exists
-		if (plan.facultyIdent) {
-			await trx.insertInto(FacultyTable._table).values({ id: plan.facultyIdent, title: null }).onDuplicateKeyUpdate({ id: plan.facultyIdent }).execute()
-		}
-
-		// 2. Find or Create Study Plan (Partial)
-		let studyPlanId: number | null = null
-
-		const existingPlan = await trx
-			.selectFrom(StudyPlanTable._table)
-			.select('id')
-			.where(eb =>
-				eb.and([
-					eb('ident', '=', plan.ident),
-					plan.facultyIdent ? eb('faculty_id', '=', plan.facultyIdent) : eb.val(true),
-					eb('semester', '=', plan.semester),
-					eb('year', '=', plan.year)
-				])
-			)
-			.executeTakeFirst()
-
-		if (existingPlan) {
-			studyPlanId = existingPlan.id!
-		} else {
-			// Create partial plan
-			const res = await trx
-				.insertInto(StudyPlanTable._table)
-				.values({
-					url: '',
-					ident: plan.ident,
-					faculty_id: plan.facultyIdent,
-					semester: plan.semester,
-					year: plan.year,
-					mode_of_study: plan.mode_of_study
-				} as never)
-				.executeTakeFirst()
-
-			if (res.insertId) studyPlanId = Number(res.insertId)
-		}
-
-		if (!studyPlanId) continue
-
-		// 3. Link Course to Plan
-		const linkedCourseStudyPlans = await trx
-			.selectFrom(StudyPlanCourseTable._table)
-			.selectAll()
-			.where('study_plan_id', '=', studyPlanId)
-			.where('course_id', '=', courseId)
-			.where('course_ident', '=', courseIdent)
-			.where('group', '=', plan.group)
-			.where('category', '=', plan.category)
-			.execute()
-
-		if (linkedCourseStudyPlans.length > 0) continue
-
-		await trx
-			.insertInto(StudyPlanCourseTable._table)
-			.values({
-				study_plan_id: studyPlanId,
-				course_id: courseId,
-				course_ident: courseIdent,
-				group: plan.group,
-				category: plan.category
-			} as never)
-			.execute()
-	}
-}
+// async function syncStudyPlansFromCourse(
+// 	trx: Transaction<Database>,
+// 	courseId: number,
+// 	courseIdent: string,
+// 	plans: ScraperInSISCourseStudyPlan[]
+// ): Promise<void> {
+// 	for (const plan of plans) {
+// 		// 1. Ensure Faculty exists
+// 		if (plan.facultyIdent) {
+// 			await trx.insertInto(FacultyTable._table).values({ id: plan.facultyIdent, title: null }).onDuplicateKeyUpdate({ id: plan.facultyIdent }).execute()
+// 		}
+//
+// 		// 2. Find or Create Study Plan (Partial)
+// 		let studyPlanId: number | null = null
+//
+// 		const existingPlan = await trx
+// 			.selectFrom(StudyPlanTable._table)
+// 			.select('id')
+// 			.where(eb =>
+// 				eb.and([
+// 					eb('ident', '=', plan.ident),
+// 					plan.facultyIdent ? eb('faculty_id', '=', plan.facultyIdent) : eb.val(true),
+// 					eb('semester', '=', plan.semester),
+// 					eb('year', '=', plan.year)
+// 				])
+// 			)
+// 			.executeTakeFirst()
+//
+// 		if (existingPlan) {
+// 			studyPlanId = existingPlan.id!
+// 		} else {
+// 			// Create partial plan
+// 			const res = await trx
+// 				.insertInto(StudyPlanTable._table)
+// 				.values({
+// 					url: '',
+// 					ident: plan.ident,
+// 					faculty_id: plan.facultyIdent,
+// 					semester: plan.semester,
+// 					year: plan.year,
+// 					mode_of_study: plan.mode_of_study
+// 				} as never)
+// 				.executeTakeFirst()
+//
+// 			if (res.insertId) studyPlanId = Number(res.insertId)
+// 		}
+//
+// 		if (!studyPlanId) continue
+//
+// 		// 3. Link Course to Plan
+// 		const linkedCourseStudyPlans = await trx
+// 			.selectFrom(StudyPlanCourseTable._table)
+// 			.selectAll()
+// 			.where('study_plan_id', '=', studyPlanId)
+// 			.where('course_id', '=', courseId)
+// 			.where('course_ident', '=', courseIdent)
+// 			.where('group', '=', plan.group)
+// 			.where('category', '=', plan.category)
+// 			.execute()
+//
+// 		if (linkedCourseStudyPlans.length > 0) continue
+//
+// 		await trx
+// 			.insertInto(StudyPlanCourseTable._table)
+// 			.values({
+// 				study_plan_id: studyPlanId,
+// 				course_id: courseId,
+// 				course_ident: courseIdent,
+// 				group: plan.group,
+// 				category: plan.category
+// 			} as never)
+// 			.execute()
+// 	}
+// }
 
 /**
  * Helper to Upsert Faculty and return its ID.
