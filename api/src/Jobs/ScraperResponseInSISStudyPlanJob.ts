@@ -95,11 +95,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		})
 	}
 
-	// Deduplicate courses
-	const uniqueCourses = new Map<string, (typeof plan.courses)[0]>()
-	plan.courses.forEach(c => uniqueCourses.set(c.ident, c))
-
-	const rowsToInsert: NewStudyPlanCourse[] = Array.from(uniqueCourses.values()).map(item => {
+	const rowsToInsert: NewStudyPlanCourse[] = plan.courses.map(item => {
 		let verifiedId: number | null = null
 
 		if (identToIdMap.has(item.ident)) {
