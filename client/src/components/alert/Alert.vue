@@ -7,7 +7,7 @@ import IconInfo from '~icons/lucide/info'
 import IconX from '~icons/lucide/x'
 import IconXCircle from '~icons/lucide/x-circle'
 
-export interface AlertProps {
+interface Props {
 	customId?: string
 	type?: 'info' | 'success' | 'warning' | 'error'
 	title?: string
@@ -16,21 +16,18 @@ export interface AlertProps {
 	timeout?: number
 	index: number
 }
+const props = withDefaults(defineProps<AlertProps>(), {
+	type: 'info',
+})
 
 interface Emits {
 	(e: 'close', index: number): void
 }
-
-const props = withDefaults(defineProps<AlertProps>(), {
-	type: 'info',
-})
 const emit = defineEmits<Emits>()
 
-const timeoutRef = ref<ReturnType<typeof setTimeout> | null>(null)
-
-// Auto-dismiss after timeout
 onMounted(() => {
 	if (props.timeout && props.timeout > 0) {
+		// Schedule auto-dismiss after specified timeout
 		timeoutRef.value = setTimeout(() => {
 			emit('close', props.index)
 		}, props.timeout)
@@ -43,6 +40,8 @@ onUnmounted(() => {
 	}
 })
 
+const timeoutRef = ref<ReturnType<typeof setTimeout> | null>(null)
+
 function handleClose() {
 	emit('close', props.index)
 }
@@ -52,7 +51,6 @@ function handleButtonClick(button: AlertButton) {
 	emit('close', props.index)
 }
 
-// Alert type styling
 const alertStyles = {
 	info: {
 		panel: 'insis-panel-info',
@@ -77,12 +75,14 @@ const alertStyles = {
 }
 
 const style = alertStyles[props.type]
+
+export type AlertProps = Props
 </script>
 
 <template>
 	<div :class="['insis-alert', style.panel]" role="alert">
 		<div class="flex gap-3">
-			<!-- Icon -->
+			<!-- Icon section: Displays appropriate icon based on alert type -->
 			<div :class="['shrink-0 text-lg', style.icon]">
 				<IconInfo v-if="type === 'info'" class="h-5 w-5" />
 				<IconCheckCircle v-else-if="type === 'success'" class="h-5 w-5" />
@@ -90,16 +90,18 @@ const style = alertStyles[props.type]
 				<IconXCircle v-else-if="type === 'error'" class="h-5 w-5" />
 			</div>
 
-			<!-- Content -->
+			<!-- Content section: Title, description, and action buttons -->
 			<div class="flex-1 min-w-0">
+				<!-- Alert title with type-specific styling -->
 				<p v-if="title" :class="['font-medium text-sm', style.title]">
 					{{ title }}
 				</p>
+				<!-- Alert description with secondary text styling -->
 				<p v-if="description" class="mt-1 text-sm text-[var(--insis-gray-700)]">
 					{{ description }}
 				</p>
 
-				<!-- Buttons -->
+				<!-- Action buttons: Rendered dynamically with variant-based styling -->
 				<div v-if="buttons && buttons.length > 0" class="mt-3 flex flex-wrap gap-2">
 					<button
 						v-for="(button, idx) in buttons"
@@ -130,7 +132,7 @@ const style = alertStyles[props.type]
 .insis-alert {
 	@apply rounded p-3;
 	border: 1px solid var(--insis-panel-border);
-	border-left-width: 4px;
+	border-left-width: 4px; /* Thicker left border for visual emphasis */
 	background-color: white;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }

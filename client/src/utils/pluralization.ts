@@ -7,10 +7,9 @@
  *
  * @param choice - The count/number to determine plural form
  * @param choicesLength - Number of available plural forms in the message
- * @param orgRule - Original/default pluralization rule (fallback)
  * @returns Index of the plural form to use
  */
-export function czechPluralRule(choice: number, choicesLength: number, orgRule?: (choice: number, choicesLength: number) => number): number {
+export function czechPluralRule(choice: number, choicesLength: number): number {
 	// Handle zero and negative numbers
 	if (choice === 0) {
 		return choicesLength === 3 ? 2 : 0

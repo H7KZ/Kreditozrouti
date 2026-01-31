@@ -10,6 +10,7 @@ function handleClose(index: number) {
 </script>
 
 <template>
+	<!-- Alert container - only rendered when there are active alerts to display -->
 	<div v-if="alertsStore.alerts.length > 0" class="fixed right-0 bottom-0 z-50 flex w-full max-w-sm flex-col gap-4 p-4">
 		<Alert
 			v-for="(alert, i) in alertsStore.alerts"

@@ -99,6 +99,8 @@ export class CourseAssessmentTable {
 export type CourseAssessment<C = void> = Selectable<CourseAssessmentTable> & (C extends void ? unknown : { course: C | null })
 export type NewCourseAssessment = Insertable<Omit<ExcludeMethods<CourseAssessmentTable>, 'id' | 'created_at' | 'updated_at'>>
 
+export type CourseAssessmentWithRelations = CourseAssessment<Course>
+
 // -------------------------------------------------------------------------
 
 /**
@@ -123,6 +125,8 @@ export type CourseUnit<C = void, S = void> = Selectable<CourseUnitTable> &
 	(C extends void ? unknown : { course: C | null }) &
 	(S extends void ? unknown : { slots: S[] })
 export type NewCourseUnit = Insertable<Omit<ExcludeMethods<CourseUnitTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type CourseUnitWithRelations = CourseUnit<Course, CourseUnitSlot<CourseUnit<void, void>>>
 
 // -------------------------------------------------------------------------
 
@@ -162,3 +166,5 @@ export type CourseUnitSlot<C = void, U = void> = Selectable<CourseUnitSlotTable>
 	(C extends void ? unknown : { course: C | null }) &
 	(U extends void ? unknown : { unit: U | null })
 export type NewCourseUnitSlot = Insertable<Omit<ExcludeMethods<CourseUnitSlotTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type CourseUnitSlotWithRelations = CourseUnitSlot<Course, CourseUnit<void, CourseUnitSlot<void>>>

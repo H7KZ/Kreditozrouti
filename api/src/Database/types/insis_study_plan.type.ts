@@ -1,4 +1,4 @@
-import { ExcludeMethods } from '@api/Database/types/index'
+import { ExcludeMethods, Faculty } from '@api/Database/types/index'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
 import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
@@ -39,6 +39,8 @@ export type StudyPlan<F = void, C = void> = Selectable<StudyPlanTable> &
 	(C extends void ? unknown : { courses: C[] })
 export type NewStudyPlan = Insertable<Omit<ExcludeMethods<StudyPlanTable>, 'id' | 'created_at' | 'updated_at'>>
 
+export type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
+
 // -------------------------------------------------------------------------
 
 /**
@@ -67,3 +69,5 @@ export type StudyPlanCourse<SP = void, C = void> = Selectable<StudyPlanCourseTab
 	(SP extends void ? unknown : { study_plan: SP | null }) &
 	(C extends void ? unknown : { course: C | null })
 export type NewStudyPlanCourse = Insertable<Omit<ExcludeMethods<StudyPlanCourseTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type StudyPlanCourseWithRelations = StudyPlanCourse<StudyPlanTable, null>

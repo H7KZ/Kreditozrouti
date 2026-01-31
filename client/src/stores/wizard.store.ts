@@ -1,54 +1,11 @@
 import type StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse'
-import type { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
-import type FacetItem from '@api/Interfaces/FacetItem'
+import { StudyPlanWithRelations } from '@api/Database/types'
 import type { StudyPlansFilter } from '@api/Validations/StudyPlansFilterValidation'
 import api from '@client/api'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
+import { PersistedWizardState, WizardState } from '@client/types'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
-import type InSISSemester from '@scraper/Types/InSISSemester'
 import { defineStore } from 'pinia'
-
-type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
-
-/** Represents a selected study plan with its metadata */
-interface SelectedStudyPlan {
-	id: number
-	ident: string | null
-	title: string | null
-}
-
-interface PersistedWizardState {
-	facultyId: string | null
-	year: number | null
-	semester: InSISSemester
-	/** @deprecated Use selectedStudyPlans instead */
-	studyPlanId: number | null
-	/** @deprecated Use selectedStudyPlans instead */
-	studyPlanIdent: string | null
-	/** @deprecated Use selectedStudyPlans instead */
-	studyPlanTitle: string | null
-	/** Multiple selected study plans */
-	selectedStudyPlans: SelectedStudyPlan[]
-	completed: boolean
-}
-
-interface WizardState {
-	currentStep: number
-	facultyId: string | null
-	year: number | null
-	semester: InSISSemester
-	/** Multiple selected study plans */
-	selectedStudyPlans: SelectedStudyPlan[]
-	completed: boolean
-	facultyFacets: FacetItem[]
-	yearFacets: FacetItem[]
-	levelFacets: FacetItem[]
-	studyPlans: StudyPlanWithRelations[]
-	levelFilter: string[]
-	titleSearch: string
-	loading: boolean
-	error: string | null
-}
 
 /**
  * Wizard Store
