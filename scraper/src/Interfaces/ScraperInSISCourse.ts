@@ -1,4 +1,5 @@
 import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
+import InSISDay from '@scraper/Types/InSISDay'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
 import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
@@ -24,7 +25,10 @@ export default interface ScraperInSISCourse {
     title: string | null
 
     /** The localized Czech title of the course, if available. */
-    czech_title: string | null
+    title_cs: string | null
+
+    /** The localized English title of the course, if available. */
+    title_en: string | null
 
     /** The number of ECTS credits awarded for completion. */
     ects: number | null
@@ -32,7 +36,7 @@ export default interface ScraperInSISCourse {
     /** The faculty offering the course. */
     faculty: ScraperInSISFaculty | null
 
-    /** The format of instruction (e.g., 'Lecture', 'Seminar', 'Combined'). */
+    /** The format of instruction (e.g., 'Lecture', 'Seminar'). */
     mode_of_delivery: string | null
 
     /** The requirements for course completion (e.g., 'Exam', 'Credit'). */
@@ -132,7 +136,7 @@ export interface ScraperInSISCourseTimetableSlot {
     date: string | null
 
     /** The day of the week (used if frequency is 'weekly'). */
-    day: string | null
+    day: InSISDay | null
 
     /** The start time of the slot (HH:MM). */
     time_from: string | null

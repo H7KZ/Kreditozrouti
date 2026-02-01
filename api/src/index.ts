@@ -4,6 +4,7 @@ import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
 import Config, { CheckRequiredEnvironmentVariables, LoadConfig } from '@api/Config/Config'
+import sentry from '@api/sentry'
 import { SQLService } from '@api/Services/SQLService'
 
 LoadConfig()
@@ -38,6 +39,10 @@ if (cluster.isPrimary && numWorkers > 1) {
 async function start() {
 	try {
 		CheckRequiredEnvironmentVariables(Config)
+
+		if (sentry.isEnabled()) {
+			console.log('Sentry is enabled.')
+		}
 
 		await mysql.connection().execute(db => Promise.resolve(db))
 		console.log('Connected to MySQL successfully.')
@@ -82,6 +87,13 @@ async function start() {
 		})
 	} catch (error) {
 		console.error('Failed to start the server:', error)
+
+		// Report startup errors to Sentry
+		if (sentry.isEnabled()) {
+			sentry.captureException(error)
+			await sentry.flush(2000)
+		}
+
 		await mysql.destroy()
 		redis.disconnect()
 		process.exit(1)

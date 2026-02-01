@@ -7,11 +7,13 @@ import { FileMigrationProvider, Migrator } from 'kysely'
 
 /**
  * Service responsible for database schema management and initial data seeding.
+ * Wraps Kysely's Migrator and handles custom seed script execution.
  */
 export class SQLService {
 	/**
 	 * Executes pending migrations to bring the database schema up to date.
 	 * Terminating the process with exit code 1 if a critical error occurs.
+	 * Uses file system provider to load migrations from the configured folder.
 	 *
 	 * @throws {Error} If the database client is not initialized.
 	 */
@@ -20,6 +22,7 @@ export class SQLService {
 
 		const migrator = new Migrator({
 			db: mysql,
+			allowUnorderedMigrations: false,
 			provider: new FileMigrationProvider({
 				fs,
 				path,
@@ -47,6 +50,7 @@ export class SQLService {
 	/**
 	 * Dynamically imports and executes seed scripts from the seeds directory.
 	 * Supports .js, .ts, .mjs, and .mts files.
+	 * Expects seed modules to export a `seed` function accepting the db instance.
 	 *
 	 * @throws {Error} If the database client is not initialized.
 	 */

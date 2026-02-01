@@ -1,6 +1,7 @@
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { CourseTable, FacultyTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import InSISService from '@api/Services/InSISService'
 import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
 import { ScraperInSISStudyPlanResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
 
@@ -55,7 +56,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 				semester: plan.semester,
 				year: plan.year,
 				...planMetadata
-			})
+			} as never)
 			.executeTakeFirst()
 
 		studyPlanId = Number(result.insertId)
@@ -72,23 +73,33 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 
 	if (!plan.courses || plan.courses.length === 0) return
 
-	// Resolve Real Course IDs
-	const incomingCourseIds = plan.courses.map(c => c.id).filter((id): id is number => id != null)
-	const validIdMap = new Map<number, number>()
+	const incomingCourseIdents = plan.courses.map(c => c.ident)
 
-	if (incomingCourseIds.length > 0) {
-		const directMatches = await mysql.selectFrom(CourseTable._table).select('id').where('id', 'in', incomingCourseIds).execute()
-		directMatches.forEach(c => validIdMap.set(c.id, c.id))
+	// Map from ident -> verified DB ID (for ident+semester+year matches)
+	const identToIdMap = new Map<string, number>()
+
+	// Check by ident + semester + year
+	if (incomingCourseIdents.length > 0 && plan.semester && plan.year) {
+		const upcomingPeriod = InSISService.getUpcomingPeriod()
+
+		const identMatches = await mysql
+			.selectFrom(CourseTable._table)
+			.select(['id', 'ident'])
+			.where('ident', 'in', incomingCourseIdents)
+			.where('semester', '=', upcomingPeriod.semester)
+			.where('year', '=', upcomingPeriod.year)
+			.execute()
+
+		identMatches.forEach(c => {
+			if (c.ident) identToIdMap.set(c.ident, c.id)
+		})
 	}
 
-	// Deduplicate courses
-	const uniqueCourses = new Map<string, (typeof plan.courses)[0]>()
-	plan.courses.forEach(c => uniqueCourses.set(c.ident, c))
-
-	const rowsToInsert: NewStudyPlanCourse[] = Array.from(uniqueCourses.values()).map(item => {
+	const rowsToInsert: NewStudyPlanCourse[] = plan.courses.map(item => {
 		let verifiedId: number | null = null
-		if (item.id != null && validIdMap.has(item.id)) {
-			verifiedId = validIdMap.get(item.id)!
+
+		if (identToIdMap.has(item.ident)) {
+			verifiedId = identToIdMap.get(item.ident)!
 		}
 
 		return {
@@ -101,7 +112,10 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 	})
 
 	if (rowsToInsert.length > 0) {
-		await mysql.insertInto(StudyPlanCourseTable._table).values(rowsToInsert).execute()
+		await mysql
+			.insertInto(StudyPlanCourseTable._table)
+			.values(rowsToInsert as never)
+			.execute()
 	}
 
 	LoggerJobContext.add({
@@ -118,7 +132,7 @@ async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | nul
 	let query = mysql.insertInto(FacultyTable._table).values({
 		id: faculty.ident,
 		title: faculty.title
-	})
+	} as never)
 
 	if (faculty.title) query = query.onDuplicateKeyUpdate({ title: faculty.title })
 	else query = query.onDuplicateKeyUpdate({ id: faculty.ident })

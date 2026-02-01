@@ -7,6 +7,7 @@ import ScraperInSISCourse, {
 import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import MarkdownService from '@scraper/Services/MarkdownService'
+import InSISDay from '@scraper/Types/InSISDay'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
@@ -81,8 +82,9 @@ export default class ExtractInSISCourseService {
 
     private static extractBasicInfo($: CheerioAPI) {
         const ident = getRowValueCaseInsensitive($, 'Kód předmětu:')
-        const title = getRowValueCaseInsensitive($, 'Název v jazyce výuky:') ?? getRowValueCaseInsensitive($, 'Název česky:')
-        const czech_title = getRowValueCaseInsensitive($, 'Název česky:')
+        const title_cs = getRowValueCaseInsensitive($, 'Název česky:')
+        const title_en = getRowValueCaseInsensitive($, 'Název anglicky:')
+        const title = getRowValueCaseInsensitive($, 'Název v jazyce výuky:')
 
         const ectsRaw = getRowValueCaseInsensitive($, 'Počet přidělených ECTS kreditů:')
         const ects = ectsRaw ? parseInt(ectsRaw.split(' ')[0], 10) : null
@@ -98,7 +100,7 @@ export default class ExtractInSISCourseService {
                   .filter((l): l is string => l !== null)
             : null
 
-        return { ident, title, czech_title, ects, mode_of_delivery, mode_of_completion, languages }
+        return { ident, title, title_cs, title_en, ects, mode_of_delivery, mode_of_completion, languages }
     }
 
     private static extractSemesterAndYear($: CheerioAPI): { semester: InSISSemester | null; year: number | null } {
@@ -242,7 +244,7 @@ export default class ExtractInSISCourseService {
     }
 
     private static extractTimetable($: CheerioAPI): ScraperInSISCourseTimetableUnit[] {
-        const unitsMap = new Map<string, ScraperInSISCourseTimetableUnit>()
+        const units = new Set<ScraperInSISCourseTimetableUnit>()
 
         const header = $('td, b, strong')
             .filter((_, el) => cleanText($(el).text()).includes('Periodické rozvrhové akce'))
@@ -256,13 +258,15 @@ export default class ExtractInSISCourseService {
             const cols = $(row).find('td')
             if (cols.length < 7) return
 
-            this.processTimetableRow($, cols as any, unitsMap)
+            const unit = this.processTimetableRow($, cols as any)
+
+            if (unit) units.add(unit)
         })
 
-        return Array.from(unitsMap.values())
+        return Array.from(units)
     }
 
-    private static processTimetableRow($: CheerioAPI, cols: cheerio.Cheerio<Element>, unitsMap: Map<string, ScraperInSISCourseTimetableUnit>): void {
+    private static processTimetableRow($: CheerioAPI, cols: cheerio.Cheerio<Element>): ScraperInSISCourseTimetableUnit | null {
         const colElements = cols.toArray()
 
         const dayOrDates = parseMultiLineCell($, colElements[0])
@@ -270,37 +274,32 @@ export default class ExtractInSISCourseService {
         const locations = parseMultiLineCell($, colElements[2])
         const types = parseMultiLineCell($, colElements[3])
         const frequencies = parseMultiLineCell($, colElements[4])
-        const lecturersList = parseMultiLineCell($, colElements[5])
-        const capacities = parseMultiLineCell($, colElements[6])
+        const lecturer = cleanText($(colElements[5] as any).text())
+        const capacityInt = parseInt(cleanText($(colElements[6] as any).text()), 10) || 0
         const noteText = colElements.length > 8 ? cleanText($(colElements[8] as any).text()) : ''
 
-        if (dayOrDates.length === 0) return
+        if (dayOrDates.length === 0) return null
 
         const maxRows = Math.max(dayOrDates.length, times.length, locations.length)
 
+        const slots = new Set<ScraperInSISCourseTimetableSlot>()
+
         for (let i = 0; i < maxRows; i++) {
-            const currentDayOrDate = dayOrDates[i] || dayOrDates[0] || ''
-            const currentTime = times[i] || times[0] || ''
-            const currentLocation = locations[i] || locations[0] || ''
-            const currentType = types[i] || types[0] || ''
-            const currentFreq = frequencies[i] || frequencies[0] || ''
-            const currentLecturer = lecturersList[i] || lecturersList[0] || ''
-            const currentCapacity = capacities[i] || capacities[0] || '0'
-            const capacityInt = parseInt(currentCapacity, 10) || 0
-
-            const key = `${currentLecturer}|${capacityInt}|${noteText}`
-
-            if (!unitsMap.has(key)) {
-                unitsMap.set(key, {
-                    lecturer: serializeValue(currentLecturer),
-                    capacity: capacityInt,
-                    note: serializeValue(noteText === '-' ? null : noteText),
-                    slots: []
-                })
-            }
+            const currentDayOrDate = dayOrDates[i] ?? dayOrDates[0] ?? ''
+            const currentTime = times[i] ?? times[0] ?? ''
+            const currentLocation = locations[i] ?? locations[0] ?? ''
+            const currentType = types[i] ?? types[0] ?? ''
+            const currentFreq = frequencies[i] ?? frequencies[0] ?? ''
 
             const slot = this.createTimetableSlot(currentDayOrDate, currentTime, currentLocation, currentType, currentFreq)
-            unitsMap.get(key)?.slots?.push(slot)
+            slots.add(slot)
+        }
+
+        return {
+            lecturer: serializeValue(lecturer),
+            capacity: capacityInt,
+            note: serializeValue(noteText === '-' ? null : noteText),
+            slots: Array.from(slots)
         }
     }
 
@@ -314,9 +313,9 @@ export default class ExtractInSISCourseService {
 
         return {
             type: serializeValue(type),
-            frequency: freq,
+            frequency: isDate ? 'single' : freq,
             date: isDate ? serializeValue(dayOrDate) : null,
-            day: !isDate ? serializeValue(dayOrDate) : null,
+            day: !isDate ? (serializeValue(dayOrDate) as InSISDay) : null,
             time_from: serializeValue(time_from),
             time_to: serializeValue(time_to),
             location: serializeValue(location)
@@ -328,7 +327,7 @@ export default class ExtractInSISCourseService {
      * Parses the "Fakulta | Kód programu | Forma | Skupina | Období" tables.
      */
     private static extractStudyPlans($: CheerioAPI): ScraperInSISCourseStudyPlan[] {
-        const plans: ScraperInSISCourseStudyPlan[] = []
+        const plans: Set<ScraperInSISCourseStudyPlan> = new Set<ScraperInSISCourseStudyPlan>()
 
         const tables = $('table.detailni_ramecek').filter((_, el) => {
             const text = $(el).find('th').text()
@@ -389,11 +388,11 @@ export default class ExtractInSISCourseService {
                             category: category
                         }
 
-                        plans.push(plan)
+                        plans.add(plan)
                     })
                 })
         })
 
-        return plans
+        return Array.from(plans)
     }
 }

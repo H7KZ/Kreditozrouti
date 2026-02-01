@@ -9,10 +9,11 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport'
 
 /**
  * Service for managing email template rendering and SMTP transmission.
+ * Abstraction layer over NodeMailer.
  */
 export default class EmailService {
 	/**
-	 * Reads an HTML template and interpolates variables.
+	 * Reads an HTML template from disk and interpolates variables.
 	 * Replaces `{{key}}` placeholders with values from the variables object.
 	 *
 	 * @param name - The name of the template file (without extension).
@@ -36,9 +37,10 @@ export default class EmailService {
 	}
 
 	/**
-	 * Sends an email using the configured NodeMailer transport.
+	 * Sends an email using the globally configured NodeMailer transport.
 	 *
 	 * @param data - Mail options (to, subject, html/text body).
+	 * @returns boolean - True if sent, false if email is disabled in config.
 	 * @throws {Exception} 500 - If the email fails to send.
 	 */
 	static async sendEmail(data: Mail.Options & Partial<SMTPTransport.Options>): Promise<boolean> {
@@ -53,6 +55,10 @@ export default class EmailService {
 		}
 	}
 
+	/**
+	 * Helper to format email address strings (supports string, array, or object formats).
+	 * Used primarily for logging or debugging address lists.
+	 */
 	private static formatAddress(val: Mail.Options['to']): string {
 		if (!val) return ''
 

@@ -5,6 +5,7 @@ import ErrorHandler from '@api/Handlers/ErrorHandler'
 import { Paths } from '@api/paths'
 import CommandsRoutes from '@api/Routes/CommandsRoutes'
 import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
+import sentry from '@api/sentry'
 import compression from 'compression'
 import { RedisStore } from 'connect-redis'
 import cors, { CorsOptions } from 'cors'
@@ -16,9 +17,7 @@ import responseTime from 'response-time'
 
 const app = express()
 
-/**
- * CORS Configuration.
- */
+// CORS Configuration
 const corsOptions: CorsOptions = {
 	optionsSuccessStatus: 200, // Support legacy browsers/devices
 	origin: Config.allowedOrigins,
@@ -66,6 +65,9 @@ app.use('/health', (req, res) => res.status(200).send('OK'))
 // Routes
 app.use('/', KreditozroutiRoutes)
 app.use('/commands', CommandsRoutes)
+
+// Sentry Error Logging
+if (sentry.isEnabled()) sentry.setupExpressErrorHandler(app)
 
 // Error Handling
 app.use(ErrorHandler)

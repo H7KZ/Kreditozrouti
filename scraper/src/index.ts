@@ -1,6 +1,7 @@
 import cluster from 'cluster'
 import scraper from '@scraper/bullmq'
 import { redis } from '@scraper/clients'
+import sentry from '@scraper/sentry'
 
 const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
@@ -38,6 +39,13 @@ async function start() {
         console.log('Scraper service is up and running.')
     } catch (error) {
         console.error('Failed to start the server:', error)
+
+        // Report startup errors to Sentry
+        if (sentry.isEnabled()) {
+            sentry.captureException(error)
+            await sentry.flush(2000)
+        }
+
         redis.disconnect()
         process.exit(1)
     }

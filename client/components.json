@@ -11,10 +11,12 @@
 	},
 	"aliases": {
 		"components": "@client/components",
-		"composables": "@client/composables",
-		"utils": "@client/lib/utils",
 		"ui": "@client/components/ui",
-		"lib": "@client/lib"
+		"composables": "@client/composables",
+		"constants": "@client/constants",
+		"stores": "@client/stores",
+		"utils": "@client/utils/tailwind",
+		"types": "@client/types"
 	},
 	"iconLibrary": "lucide"
 }

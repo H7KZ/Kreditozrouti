@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from '@client/lib/utils'
+import { cn } from '@client/utils/tailwind'
 import { Primitive, type PrimitiveProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { type ButtonVariants, buttonVariants } from '.'

@@ -39,7 +39,7 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
     // Phase 2: Scrape each faculty/period combination
     for (const faculty of faculties) {
         for (const period of periods) {
-            await scrapeCatalogPage(client, faculty.id, period.id, data.auto_queue_courses ?? false)
+            await scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false)
         }
     }
 }
@@ -59,12 +59,19 @@ async function discoverSearchOptions(client: ReturnType<typeof createInSISClient
     return options
 }
 
-async function scrapeCatalogPage(client: ReturnType<typeof createInSISClient>, facultyId: number, periodId: number, autoQueueCourses: boolean): Promise<void> {
+async function scrapeCatalogPage(
+    client: ReturnType<typeof createInSISClient>,
+    facultyId: number,
+    periodId: number,
+    facultyPeriodId: number,
+    autoQueueCourses: boolean
+): Promise<void> {
     const params = new URLSearchParams({
         kredity_od: '',
         kredity_do: '',
         fakulta: facultyId.toString(),
         obdobi: periodId.toString(),
+        obdobi_fak: facultyPeriodId.toString(),
         vyhledat_rozsirene: 'Vyhledat předměty',
         jak: 'rozsirene',
         lang: 'cz'

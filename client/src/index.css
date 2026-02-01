@@ -1,8 +1,9 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import './styles/insis.css';
 
 @theme {
-	/*  */
+	/* Custom theme extensions can go here */
 }
 
 @theme inline {
@@ -45,39 +46,123 @@
 }
 
 :root {
-	--background: #000000;
-	--foreground: oklch(0.985 0 0);
-	--card: oklch(0.145 0 0);
-	--card-foreground: oklch(0.985 0 0);
-	--popover: oklch(0.145 0 0);
-	--popover-foreground: oklch(0.985 0 0);
-	--primary: #ffffff;
-	--primary-foreground: oklch(0.205 0 0);
-	--secondary: oklch(0.269 0 0);
-	--secondary-foreground: oklch(0.985 0 0);
-	--muted: oklch(0.269 0 0);
-	--muted-foreground: oklch(0.708 0 0);
-	--accent: oklch(0.269 0 0);
-	--accent-foreground: oklch(0.985 0 0);
-	--destructive: oklch(0.396 0.141 25.723);
-	--destructive-foreground: oklch(0.637 0.237 25.331);
-	--border: oklch(0.269 0 0);
-	--input: oklch(0.269 0 0);
-	--ring: oklch(0.439 0 0);
-	--radius: 0.5rem;
-	--chart-1: oklch(0.488 0.243 264.376);
-	--chart-2: oklch(0.696 0.17 162.48);
-	--chart-3: oklch(0.769 0.188 70.08);
-	--chart-4: oklch(0.627 0.265 303.9);
-	--chart-5: oklch(0.645 0.246 16.439);
-	--sidebar: oklch(0.205 0 0);
-	--sidebar-foreground: oklch(0.985 0 0);
-	--sidebar-primary: oklch(0.488 0.243 264.376);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-	--sidebar-accent: oklch(0.269 0 0);
-	--sidebar-accent-foreground: oklch(0.985 0 0);
-	--sidebar-border: oklch(0.269 0 0);
-	--sidebar-ring: oklch(0.439 0 0);
+	/* Base Shadcn Colors */
+	--background: #ffffff;
+	--foreground: #1f2937;
+	--card: #ffffff;
+	--card-foreground: #1f2937;
+	--popover: #ffffff;
+	--popover-foreground: #1f2937;
+	--primary: #0066b3;
+	--primary-foreground: #ffffff;
+	--secondary: #f3f4f6;
+	--secondary-foreground: #1f2937;
+	--muted: #f3f4f6;
+	--muted-foreground: #6b7280;
+	--accent: #dbe3e9;
+	--accent-foreground: #0066b3;
+	--destructive: #c40f16;
+	--destructive-foreground: #ffffff;
+	--border: #ccc;
+	--input: #ccc;
+	--ring: #0066b3;
+	--radius: 0.25rem;
+	--chart-1: #0066b3;
+	--chart-2: #008000;
+	--chart-3: #ffd700;
+	--chart-4: #8b008b;
+	--chart-5: #c40f16;
+	--sidebar: #f9fafb;
+	--sidebar-foreground: #1f2937;
+	--sidebar-primary: #0066b3;
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #dbe3e9;
+	--sidebar-accent-foreground: #0066b3;
+	--sidebar-border: #ccc;
+	--sidebar-ring: #0066b3;
+
+	/* InSIS Design System Variables */
+
+	/* Primary Blues - The main InSIS brand color */
+	--insis-blue: #0066b3;
+	--insis-blue-dark: #005a9e;
+	--insis-blue-lighter: #80c1ff;
+	--insis-blue-light: #daf1ff;
+	--insis-blue-hover: #004d87;
+
+	/* Link Colors */
+	--insis-link: #0066b3;
+	--insis-link-hover: #004d87;
+	--insis-link-visited: #551a8b;
+
+	/* Status Colors - Matching InSIS icons and alerts */
+	--insis-success: #008000;
+	--insis-success-light: #cefad0;
+	--insis-success-border: #7bf180;
+
+	--insis-warning: #ffd700;
+	--insis-warning-light: #ffe88a;
+	--insis-warning-bg: #ffc;
+
+	--insis-danger: #c40f16;
+	--insis-danger-light: #faa5a5;
+	--insis-danger-bg: #fff1dd;
+
+	--insis-info: #006cd6;
+	--insis-info-light: #82caff;
+	--insis-info-bg: #daf1ff;
+
+	/* Table Header & Row Colors */
+	--insis-header-bg: #e8e8e8;
+	--insis-header-border: #888;
+	--insis-row-hover: #dbe3e9;
+	--insis-row-alt: #f7f7f7;
+	--insis-row-highlight: #ffe88a;
+	--insis-row-error: #faa5a5;
+
+	/* Border Colors */
+	--insis-border: #ccc;
+	--insis-border-dark: #aaa;
+	--insis-border-light: #e0e0e0;
+
+	/* Timetable Block Colors - From actual InSIS timetable */
+	--insis-block-lecture: #a1eda1;
+	--insis-block-seminar: #ecf191;
+	--insis-block-exercise: #a1dbf5;
+	--insis-block-date-only: #e6daca;
+	--insis-block-exam: #e89aed;
+	--insis-block-selected: #6eb8ed;
+	--insis-block-conflict: #df9292;
+
+	/* Course Type Colors - Matching InSIS icons */
+	--insis-course-compulsory: #191970;
+	--insis-course-elective: #ffd700;
+	--insis-course-other: #b7e1cf;
+	--insis-course-optional: #008000;
+	--insis-course-normal: #8b008b;
+	--insis-course-consultation: #ffa500;
+
+	/* Gray Scale - InSIS specific */
+	--insis-gray-50: #f9fafb;
+	--insis-gray-100: #f7f7f7;
+	--insis-gray-200: #f0f0f0;
+	--insis-gray-300: #e0e0e0;
+	--insis-gray-400: #cfcfcf;
+	--insis-gray-500: #ababab;
+	--insis-gray-600: #888;
+	--insis-gray-700: #656565;
+	--insis-gray-800: #555;
+	--insis-gray-900: #333;
+
+	/* Panel/Card Colors */
+	--insis-panel-bg: #f9fafb;
+	--insis-panel-border: #ababab;
+
+	/* Font Sizes - InSIS uses compact typography */
+	--insis-font-xs: 0.7rem;
+	--insis-font-sm: 0.8rem;
+	--insis-font-base: 0.875rem;
+	--insis-font-lg: 1rem;
 }
 
 @layer base {
@@ -87,5 +172,19 @@
 
 	body {
 		@apply bg-background text-foreground;
+		/* InSIS uses system fonts for maximum compatibility */
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: var(--insis-font-sm);
+		line-height: 1.4;
+	}
+
+	a {
+		color: var(--insis-link);
+		text-decoration: none;
+	}
+
+	a:hover {
+		text-decoration: underline;
+		color: var(--insis-link-hover);
 	}
 }

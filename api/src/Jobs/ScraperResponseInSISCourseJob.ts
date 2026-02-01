@@ -1,11 +1,14 @@
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import {
-	CourseAssessmentMethodTable,
+	CourseAssessmentTable,
 	CourseTable,
-	CourseTimetableSlotTable,
-	CourseTimetableUnitTable,
+	CourseUnitSlotTable,
+	CourseUnitTable,
+	Database,
 	FacultyTable,
+	NewCourse,
+	NewCourseUnitSlot,
 	StudyPlanCourseTable,
 	StudyPlanTable
 } from '@api/Database/types'
@@ -17,6 +20,7 @@ import {
 } from '@scraper/Interfaces/ScraperInSISCourse'
 import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
 import { ScraperInSISCourseResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
+import { Transaction } from 'kysely'
 
 /**
  * Syncs a scraped InSIS course into the database.
@@ -31,44 +35,53 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	if (!course?.id) return
 
-	let facultyId: string | null = null
-	if (course.faculty) facultyId = await upsertFaculty(course.faculty)
+	await mysql.transaction().execute(async trx => {
+		let facultyId: string | null = null
+		if (course.faculty) facultyId = await upsertFaculty(trx, course.faculty)
 
-	const coursePayload = {
-		id: course.id,
-		url: course.url,
-		ident: course.ident ?? '',
-		title: course.title,
-		czech_title: course.czech_title,
-		ects: course.ects,
-		faculty_id: facultyId,
-		mode_of_delivery: course.mode_of_delivery,
-		mode_of_completion: course.mode_of_completion,
-		languages: course.languages?.join('|') ?? null,
-		level: course.level,
-		year_of_study: course.year_of_study,
-		semester: course.semester,
-		year: course.year,
-		lecturers: course.lecturers?.join('|') ?? null,
-		prerequisites: course.prerequisites,
-		recommended_programmes: course.recommended_programmes,
-		required_work_experience: course.required_work_experience,
-		aims_of_the_course: course.aims_of_the_course,
-		learning_outcomes: course.learning_outcomes,
-		course_contents: course.course_contents,
-		special_requirements: course.special_requirements,
-		literature: course.literature
-	}
+		const coursePayload: NewCourse = {
+			id: course.id,
+			url: course.url,
+			ident: course.ident ?? '',
+			title: course.title,
+			title_cs: course.title_cs,
+			title_en: course.title_en,
+			ects: course.ects,
+			faculty_id: facultyId,
+			mode_of_delivery: course.mode_of_delivery,
+			mode_of_completion: course.mode_of_completion,
+			languages: course.languages?.join('|') ?? null,
+			level: course.level,
+			year_of_study: course.year_of_study,
+			semester: course.semester,
+			year: course.year,
+			lecturers: course.lecturers?.join('|') ?? null,
+			prerequisites: course.prerequisites,
+			recommended_programmes: course.recommended_programmes,
+			required_work_experience: course.required_work_experience,
+			aims_of_the_course: course.aims_of_the_course,
+			learning_outcomes: course.learning_outcomes,
+			course_contents: course.course_contents,
+			special_requirements: course.special_requirements,
+			literature: course.literature
+		}
 
-	await mysql.insertInto(CourseTable._table).values(coursePayload).onDuplicateKeyUpdate(coursePayload).execute()
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { id, ...updatePayload } = coursePayload
 
-	await syncAssessmentMethods(course.id, course.assessment_methods ?? [])
-	await syncTimetable(course.id, course.timetable ?? [])
+		await trx
+			.insertInto(CourseTable._table)
+			.values(coursePayload as never)
+			.onDuplicateKeyUpdate(updatePayload)
+			.execute()
 
-	// Sync Study Plans derived from the course page
-	if (course.study_plans && course.study_plans.length > 0) {
-		await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.study_plans)
-	}
+		await syncAssessmentMethods(trx, course.id, course.assessment_methods ?? [])
+		await syncTimetable(trx, course.id, course.timetable ?? [])
+
+		if (course.study_plans && course.study_plans.length > 0) {
+			await syncStudyPlansFromCourse(trx, course.id, course.ident ?? '', course.study_plans)
+		}
+	})
 
 	LoggerJobContext.add({
 		assessment_method_count: course.assessment_methods?.length ?? 0,
@@ -80,113 +93,121 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 /**
  * Reconciles assessment methods.
  */
-async function syncAssessmentMethods(courseId: number, incomingMethods: ScraperInSISCourseAssessmentMethod[]): Promise<void> {
-	const existingMethods = await mysql.selectFrom(CourseAssessmentMethodTable._table).selectAll().where('course_id', '=', courseId).execute()
+async function syncAssessmentMethods(trx: Transaction<Database>, courseId: number, incomingMethods: ScraperInSISCourseAssessmentMethod[]): Promise<void> {
+	const existingMethods = await trx.selectFrom(CourseAssessmentTable._table).selectAll().where('course_id', '=', courseId).execute()
+
+	// 1. Deduplicate incoming methods using a Map
 	const incomingMap = new Map(incomingMethods.map(m => [m.method, m]))
 	const existingMap = new Map(existingMethods.map(m => [m.method, m]))
 
 	// Delete removed
+	// (Iterate existing methods; if not found in incoming unique map, delete it)
 	const toDeleteIds = existingMethods.filter(em => em.method && !incomingMap.has(em.method)).map(em => em.id)
 	if (toDeleteIds.length > 0) {
-		await mysql.deleteFrom(CourseAssessmentMethodTable._table).where('id', 'in', toDeleteIds).execute()
+		await trx.deleteFrom(CourseAssessmentTable._table).where('id', 'in', toDeleteIds).execute()
 	}
 
 	// Update weights
 	for (const existing of existingMethods) {
 		const incoming = existing.method ? incomingMap.get(existing.method) : null
 		if (incoming && existing.weight !== incoming.weight) {
-			await mysql.updateTable(CourseAssessmentMethodTable._table).set({ weight: incoming.weight }).where('id', '=', existing.id).execute()
+			await trx.updateTable(CourseAssessmentTable._table).set({ weight: incoming.weight }).where('id', '=', existing.id).execute()
 		}
 	}
 
 	// Insert new
-	const toInsert = incomingMethods
+	const toInsert = Array.from(incomingMap.values())
 		.filter(im => im.method && !existingMap.has(im.method))
-		.map(im => ({ course_id: courseId, method: im.method, weight: im.weight }))
+		.map(im => ({
+			course_id: courseId,
+			method: im.method,
+			weight: im.weight
+		}))
 
 	if (toInsert.length > 0) {
-		await mysql.insertInto(CourseAssessmentMethodTable._table).values(toInsert).execute()
+		await trx
+			.insertInto(CourseAssessmentTable._table)
+			.values(toInsert as never)
+			.execute()
 	}
 }
 
 /**
  * Reconciles timetable units.
  */
-async function syncTimetable(courseId: number, incomingUnits: ScraperInSISCourseTimetableUnit[]): Promise<void> {
-	const existingUnits = await mysql
-		.selectFrom(CourseTimetableUnitTable._table)
-		.select(['id', 'lecturer', 'capacity', 'note'])
-		.where('course_id', '=', courseId)
-		.execute()
+async function syncTimetable(trx: Transaction<Database>, courseId: number, incomingUnits: ScraperInSISCourseTimetableUnit[]): Promise<void> {
+	// 1. Fetch existing unit IDs for this course
+	const existingUnits = await trx.selectFrom(CourseUnitTable._table).select('id').where('course_id', '=', courseId).execute()
 
-	const getUnitHash = (u: { lecturer: string | null; capacity: number | null; note: string | null }) =>
-		`${u.lecturer ?? ''}|${u.capacity ?? 0}|${u.note ?? ''}`
+	const existingIds = existingUnits.map(u => u.id)
 
-	const existingMap = new Map(existingUnits.map(u => [getUnitHash(u), u]))
-	const processedIds: number[] = []
+	// 2. Cleanup: Delete existing slots and units
+	// We must delete slots first to respect Foreign Key constraints (unless ON DELETE CASCADE is set in DB)
+	if (existingIds.length > 0) {
+		await trx.deleteFrom(CourseUnitSlotTable._table).where('unit_id', 'in', existingIds).execute()
 
-	for (const incoming of incomingUnits) {
-		const hash = getUnitHash(incoming)
-		let unitId: number
-
-		if (existingMap.has(hash)) {
-			const match = existingMap.get(hash)!
-			unitId = match.id
-			processedIds.push(unitId)
-		} else {
-			const res = await mysql
-				.insertInto(CourseTimetableUnitTable._table)
-				.values({
-					course_id: courseId,
-					lecturer: incoming.lecturer,
-					capacity: incoming.capacity,
-					note: incoming.note
-				})
-				.executeTakeFirstOrThrow()
-			unitId = Number(res.insertId)
-		}
-		await syncSlotsForUnit(unitId, incoming.slots ?? [])
+		await trx.deleteFrom(CourseUnitTable._table).where('id', 'in', existingIds).execute()
 	}
 
-	const toDeleteIds = existingUnits.map(u => u.id).filter(id => !processedIds.includes(id))
-	if (toDeleteIds.length > 0) {
-		await mysql.deleteFrom(CourseTimetableUnitTable._table).where('id', 'in', toDeleteIds).execute()
+	// 3. Recreate: Insert new units and their slots
+	for (const incoming of incomingUnits) {
+		const res = await trx
+			.insertInto(CourseUnitTable._table)
+			.values({
+				course_id: courseId,
+				lecturer: incoming.lecturer,
+				capacity: incoming.capacity,
+				note: incoming.note
+			} as never)
+			.executeTakeFirstOrThrow()
+
+		const newUnitId = Number(res.insertId)
+
+		// Insert slots for the new unit
+		// We can reuse syncSlotsForUnit, or inline the insert if we want to save the "delete" query inside it
+		await syncSlotsForUnit(trx, newUnitId, incoming.slots ?? [])
 	}
 }
 
-async function syncSlotsForUnit(unitId: number, incomingSlots: ScraperInSISCourseTimetableSlot[]): Promise<void> {
-	await mysql.deleteFrom(CourseTimetableSlotTable._table).where('timetable_unit_id', '=', unitId).execute()
+async function syncSlotsForUnit(trx: Transaction<Database>, unitId: number, incomingSlots: ScraperInSISCourseTimetableSlot[]): Promise<void> {
+	// We already deleted existing slots in the parent function
+
 	if (incomingSlots.length > 0) {
-		const slotRows = incomingSlots.map(slot => ({
-			timetable_unit_id: unitId,
+		const slotRows: NewCourseUnitSlot[] = incomingSlots.map(slot => ({
+			unit_id: unitId,
 			type: slot.type,
 			frequency: slot.frequency,
 			date: slot.date,
 			day: slot.day,
-			time_from: slot.time_from,
-			time_to: slot.time_to,
-			time_from_minutes: timeToMinutes(slot.time_from),
-			time_to_minutes: timeToMinutes(slot.time_to),
+			time_from: timeToMinutes(slot.time_from),
+			time_to: timeToMinutes(slot.time_to),
 			location: slot.location
 		}))
-		await mysql.insertInto(CourseTimetableSlotTable._table).values(slotRows).execute()
+
+		await trx
+			.insertInto(CourseUnitSlotTable._table)
+			.values(slotRows as never)
+			.execute()
 	}
 }
 
 /**
  * Links this course to Study Plans found on the course page.
  */
-async function syncStudyPlansFromCourse(courseId: number, courseIdent: string, plans: ScraperInSISCourseStudyPlan[]): Promise<void> {
+async function syncStudyPlansFromCourse(
+	trx: Transaction<Database>,
+	courseId: number,
+	courseIdent: string,
+	plans: ScraperInSISCourseStudyPlan[]
+): Promise<void> {
 	for (const plan of plans) {
 		// 1. Ensure Faculty exists
 		if (plan.facultyIdent) {
-			await mysql.insertInto(FacultyTable._table).values({ id: plan.facultyIdent, title: null }).onDuplicateKeyUpdate({ id: plan.facultyIdent }).execute()
+			await trx.insertInto(FacultyTable._table).values({ id: plan.facultyIdent, title: null }).onDuplicateKeyUpdate({ id: plan.facultyIdent }).execute()
 		}
 
-		// 2. Find or Create Study Plan (Partial)
-		let studyPlanId: number | null = null
-
-		const existingPlan = await mysql
+		// 2. Find Study Plan
+		const studyPlan = await trx
 			.selectFrom(StudyPlanTable._table)
 			.select('id')
 			.where(eb =>
@@ -199,55 +220,30 @@ async function syncStudyPlansFromCourse(courseId: number, courseIdent: string, p
 			)
 			.executeTakeFirst()
 
-		if (existingPlan) {
-			studyPlanId = existingPlan.id
-		} else {
-			// Create partial plan
-			const res = await mysql
-				.insertInto(StudyPlanTable._table)
-				.values({
-					url: '',
-					ident: plan.ident,
-					faculty_id: plan.facultyIdent,
-					semester: plan.semester,
-					year: plan.year,
-					mode_of_study: plan.mode_of_study
-				})
-				.executeTakeFirst()
-
-			if (res.insertId) studyPlanId = Number(res.insertId)
-		}
+		if (!studyPlan) continue
 
 		// 3. Link Course to Plan
-		if (studyPlanId) {
-			await mysql
-				.insertInto(StudyPlanCourseTable._table)
-				.values({
-					study_plan_id: studyPlanId,
-					course_id: courseId,
-					course_ident: courseIdent,
-					group: plan.group,
-					category: plan.category
-				})
-				.onDuplicateKeyUpdate({
-					group: plan.group,
-					category: plan.category
-				})
-				.execute()
-		}
+		await trx
+			.updateTable(StudyPlanCourseTable._table)
+			.set({ course_id: courseId })
+			.where('study_plan_id', '=', studyPlan.id)
+			.where('course_ident', '=', courseIdent)
+			.where('group', '=', plan.group)
+			.where('category', '=', plan.category)
+			.execute()
 	}
 }
 
 /**
  * Helper to Upsert Faculty and return its ID.
  */
-async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | null> {
+async function upsertFaculty(trx: Transaction<Database>, faculty: ScraperInSISFaculty): Promise<string | null> {
 	if (!faculty.ident) return null
 
-	let query = mysql.insertInto(FacultyTable._table).values({
+	let query = trx.insertInto(FacultyTable._table).values({
 		id: faculty.ident,
 		title: faculty.title
-	})
+	} as never)
 
 	if (faculty.title) query = query.onDuplicateKeyUpdate({ title: faculty.title })
 	else query = query.onDuplicateKeyUpdate({ id: faculty.ident })

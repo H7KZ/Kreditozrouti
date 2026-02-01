@@ -1,0 +1,239 @@
+# ==============================================================================
+# Docker Compose: GlitchTip Error Tracking
+# Description: Self-hosted error tracking and performance monitoring.
+#
+# Services:
+#   - web: GlitchTip web interface and API
+#   - worker: Background job processor (Celery)
+#   - migrate: Database migration runner (one-shot)
+#   - postgres: PostgreSQL database
+#   - valkey: Redis-compatible cache and message broker
+#
+# Required Environment Variables:
+#   - GLITCHTIP_DOMAIN: Domain for GlitchTip (e.g., glitchtip.example.com)
+#   - SECRET_KEY: Random secret key for Django
+#   - POSTGRES_PASSWORD: PostgreSQL password
+#   - DEFAULT_FROM_EMAIL: Email sender address
+#   - EMAIL_URL: SMTP connection string (optional, can use consolemail://)
+#
+# Usage: docker compose -f docker-compose.glitchtip.yml up -d
+# ==============================================================================
+
+services:
+  # ============================================================================
+  # GlitchTip Web Service
+  # ============================================================================
+  web:
+    image: glitchtip/glitchtip:latest
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+    environment:
+      - DATABASE_URL=postgres://glitchtip:${POSTGRES_PASSWORD}@postgres:5432/glitchtip
+      - REDIS_URL=redis://valkey:6379/0
+      - SECRET_KEY=${SECRET_KEY}
+      - GLITCHTIP_DOMAIN=https://${GLITCHTIP_DOMAIN}
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-noreply@${GLITCHTIP_DOMAIN}}
+      - EMAIL_URL=${EMAIL_URL:-consolemail://}
+      - ENABLE_USER_REGISTRATION=${ENABLE_USER_REGISTRATION:-True}
+      - ENABLE_ORGANIZATION_CREATION=${ENABLE_ORGANIZATION_CREATION:-False}
+      - GLITCHTIP_MAX_EVENT_LIFE_DAYS=${GLITCHTIP_MAX_EVENT_LIFE_DAYS:-90}
+      - CELERY_WORKER_CONCURRENCY=2
+      - PORT=8080
+
+    networks:
+      - traefik-network
+      - glitchtip-internal
+
+    labels:
+      # Traefik Configuration
+      - "traefik.enable=true"
+      - "traefik.http.routers.glitchtip-web.rule=Host(`${GLITCHTIP_DOMAIN}`)"
+      - "traefik.http.routers.glitchtip-web.entrypoints=websecure"
+      - "traefik.http.routers.glitchtip-web.tls=true"
+      - "traefik.http.routers.glitchtip-web.tls.certresolver=letsencrypt"
+      # FIXED: GlitchTip listens on port 8080, not 8000
+      - "traefik.http.services.glitchtip-web.loadbalancer.server.port=8080"
+
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  # ============================================================================
+  # GlitchTip Worker Service (Celery)
+  # ============================================================================
+  worker:
+    image: glitchtip/glitchtip:latest
+    restart: unless-stopped
+    command: ./bin/run-celery-with-beat.sh
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+    environment:
+      - DATABASE_URL=postgres://glitchtip:${POSTGRES_PASSWORD}@postgres:5432/glitchtip
+      - REDIS_URL=redis://valkey:6379/0
+      - SECRET_KEY=${SECRET_KEY}
+      - GLITCHTIP_DOMAIN=https://${GLITCHTIP_DOMAIN}
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-noreply@${GLITCHTIP_DOMAIN}}
+      - EMAIL_URL=${EMAIL_URL:-consolemail://}
+      - GLITCHTIP_MAX_EVENT_LIFE_DAYS=${GLITCHTIP_MAX_EVENT_LIFE_DAYS:-90}
+      - CELERY_WORKER_CONCURRENCY=2
+
+    networks:
+      - glitchtip-internal
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.1"
+          memory: 128M
+
+  # ============================================================================
+  # Database Migration Runner (One-shot)
+  # ============================================================================
+  migrate:
+    image: glitchtip/glitchtip:latest
+    restart: "no"
+    command: ./bin/run-migrate.sh
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+
+    environment:
+      - DATABASE_URL=postgres://glitchtip:${POSTGRES_PASSWORD}@postgres:5432/glitchtip
+      - REDIS_URL=redis://valkey:6379/0
+      - SECRET_KEY=${SECRET_KEY}
+
+    networks:
+      - glitchtip-internal
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+  # ============================================================================
+  # PostgreSQL Database
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+
+    volumes:
+      - glitchtip-postgres-volume:/var/lib/postgresql/data
+
+    environment:
+      - POSTGRES_USER=glitchtip
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=glitchtip
+
+    networks:
+      - glitchtip-internal
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U glitchtip -d glitchtip"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  # ============================================================================
+  # Valkey (Redis-compatible) Cache & Broker
+  # ============================================================================
+  valkey:
+    image: valkey/valkey:8-alpine
+    restart: unless-stopped
+    command: valkey-server --save 60 1 --loglevel warning --maxmemory 128mb --maxmemory-policy allkeys-lru
+
+    volumes:
+      - glitchtip-valkey-volume:/data
+
+    networks:
+      - glitchtip-internal
+
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+        reservations:
+          cpus: "0.05"
+          memory: 64M

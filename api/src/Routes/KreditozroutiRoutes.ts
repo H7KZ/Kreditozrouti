@@ -6,9 +6,9 @@ import { Router } from 'express'
 
 /**
  * Router definition for Kreditožrouti (InSIS data) endpoints.
- * Provides public access to course catalogs and study plans.
+ * Provides public access to course catalogs, study plans, and timetable tools.
  *
- * @route /kreditozrouti
+ * @route /
  */
 const KreditozroutiRoutes = Router()
 

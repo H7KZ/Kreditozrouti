@@ -1,8 +1,35 @@
+# ==============================================================================
+# Traefik Static Configuration
+# Description: Global Traefik reverse proxy configuration with automatic TLS.
+#              Uses Cloudflare DNS-01 challenge for Let's Encrypt certificates.
+#
+# Mount: ./traefik.yml:/traefik.yml:ro
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Global Configuration
+# ------------------------------------------------------------------------------
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+# ------------------------------------------------------------------------------
+# API and Dashboard
+# ------------------------------------------------------------------------------
 api:
   dashboard: true
   insecure: false
   debug: false
 
+# ------------------------------------------------------------------------------
+# Ping (Health Check Endpoint)
+# ------------------------------------------------------------------------------
+ping:
+  entryPoint: traefik
+
+# ------------------------------------------------------------------------------
+# Entrypoints
+# ------------------------------------------------------------------------------
 entryPoints:
   web:
     address: ":80"
@@ -11,24 +38,63 @@ entryPoints:
         entryPoint:
           to: websecure
           scheme: https
+          permanent: true
+
   websecure:
     address: ":443"
+    http:
+      tls:
+        certResolver: letsencrypt
 
-serversTransport:
-  insecureSkipVerify: true
+  # Internal entrypoint for healthchecks
+  traefik:
+    address: ":8080"
 
+# ------------------------------------------------------------------------------
+# Providers
+# ------------------------------------------------------------------------------
 providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false
     network: traefik-network
+    watch: true
 
+# ------------------------------------------------------------------------------
+# Servers Transport
+# ------------------------------------------------------------------------------
+serversTransport:
+  insecureSkipVerify: true
+
+# ------------------------------------------------------------------------------
+# Certificate Resolvers (Let's Encrypt with Cloudflare DNS Challenge)
+# ------------------------------------------------------------------------------
 certificatesResolvers:
   letsencrypt:
     acme:
       email: kreditozrouti@gmail.com
       storage: /certs/acme.json
-      caServer: https://acme-v02.api.letsencrypt.org/directory # production
-      # caServer: https://acme-staging-v02.api.letsencrypt.org/directory # staging
-      httpChallenge:
-        entryPoint: web
+      caServer: https://acme-v02.api.letsencrypt.org/directory
+      # DNS-01 Challenge via Cloudflare
+      # Works perfectly with Cloudflare proxy enabled (orange cloud)
+      dnsChallenge:
+        provider: cloudflare
+        # Wait for DNS propagation before verification
+        delayBeforeCheck: 15
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+
+# ------------------------------------------------------------------------------
+# Logging
+# ------------------------------------------------------------------------------
+log:
+  level: INFO
+  format: common
+
+accessLog:
+  filePath: /var/log/traefik/access.log
+  bufferingSize: 100
+  filters:
+    statusCodes:
+      - "400-599"

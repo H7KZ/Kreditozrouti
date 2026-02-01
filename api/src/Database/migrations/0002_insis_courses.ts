@@ -1,0 +1,81 @@
+import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, FacultyTable } from '@api/Database/types'
+import { Kysely, sql } from 'kysely'
+
+export async function up(mysql: Kysely<any>): Promise<void> {
+	// 1. Main Course Table
+	await mysql.schema
+		.createTable(CourseTable._table)
+		.addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
+		.addColumn('faculty_id', 'varchar(32)', col => col.references(`${FacultyTable._table}.id`).onDelete('set null'))
+		.addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
+		.addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
+		.addColumn('url', 'varchar(255)', col => col.notNull())
+		.addColumn('ident', 'varchar(32)', col => col.notNull())
+		.addColumn('title', 'varchar(1024)')
+		.addColumn('title_cs', 'varchar(1024)')
+		.addColumn('title_en', 'varchar(1024)')
+		.addColumn('ects', 'smallint', col => col.unsigned())
+		.addColumn('mode_of_delivery', 'text')
+		.addColumn('mode_of_completion', 'text')
+		.addColumn('languages', 'text')
+		.addColumn('level', 'varchar(255)')
+		.addColumn('year_of_study', 'integer')
+		.addColumn('semester', 'varchar(8)')
+		.addColumn('year', 'smallint', col => col.unsigned())
+		.addColumn('lecturers', 'text')
+		.addColumn('prerequisites', 'text')
+		.addColumn('recommended_programmes', 'text')
+		.addColumn('required_work_experience', 'text')
+		.addColumn('aims_of_the_course', 'text')
+		.addColumn('learning_outcomes', 'text')
+		.addColumn('course_contents', 'text')
+		.addColumn('special_requirements', 'text')
+		.addColumn('literature', 'text')
+		.execute()
+
+	// 2. Assessment Methods
+	await mysql.schema
+		.createTable(CourseAssessmentTable._table)
+		.addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
+		.addColumn('course_id', 'integer', col => col.notNull().references(`${CourseTable._table}.id`).onDelete('cascade'))
+		.addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
+		.addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
+		.addColumn('method', 'text') // Updated to text
+		.addColumn('weight', 'smallint', col => col.unsigned())
+		.execute()
+
+	// 3. Timetable Units (Groups)
+	await mysql.schema
+		.createTable(CourseUnitTable._table)
+		.addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
+		.addColumn('course_id', 'integer', col => col.notNull().references(`${CourseTable._table}.id`).onDelete('cascade'))
+		.addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
+		.addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
+		.addColumn('lecturer', 'varchar(255)')
+		.addColumn('capacity', 'smallint', col => col.unsigned())
+		.addColumn('note', 'text')
+		.execute()
+
+	// 4. Timetable Slots (Events)
+	await mysql.schema
+		.createTable(CourseUnitSlotTable._table)
+		.addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
+		.addColumn('timetable_unit_id', 'integer', col => col.notNull().references(`${CourseUnitTable._table}.id`).onDelete('cascade'))
+		.addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
+		.addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
+		.addColumn('type', 'varchar(255)')
+		.addColumn('frequency', 'varchar(32)')
+		.addColumn('date', 'varchar(255)')
+		.addColumn('day', 'varchar(255)')
+		.addColumn('time_from', 'smallint', col => col.unsigned())
+		.addColumn('time_to', 'smallint', col => col.unsigned())
+		.addColumn('location', 'varchar(255)')
+		.execute()
+}
+
+export async function down(mysql: Kysely<any>): Promise<void> {
+	await mysql.schema.dropTable(CourseUnitSlotTable._table).execute()
+	await mysql.schema.dropTable(CourseUnitTable._table).execute()
+	await mysql.schema.dropTable(CourseAssessmentTable._table).execute()
+	await mysql.schema.dropTable(CourseTable._table).execute()
+}

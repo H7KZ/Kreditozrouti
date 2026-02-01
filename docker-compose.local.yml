@@ -13,6 +13,14 @@ services:
     ports:
       - "43306:3306"
 
+    command:
+      - --sort_buffer_size=256M
+      - --read_buffer_size=128M
+      - --read_rnd_buffer_size=128M
+      - --join_buffer_size=128M
+      - --max_sort_length=8192
+      - --innodb_sort_buffer_size=64M
+
     deploy:
       mode: global
 
@@ -88,8 +96,8 @@ services:
 
       resources:
         limits:
-          cpus: 2
-          memory: 4096M
+          cpus: 1
+          memory: 2048M
 
     restart: unless-stopped
 

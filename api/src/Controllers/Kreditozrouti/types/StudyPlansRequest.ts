@@ -2,9 +2,7 @@ import StudyPlansFilterValidation from '@api/Validations/StudyPlansFilterValidat
 import { z } from 'zod'
 
 /**
- * Validated query parameters for the study plans search.
- * Derived from the Zod validation schema.
+ * Documented inside `api/src/Validations/Validations/StudyPlansFilterValidation.ts`
  */
 type StudyPlansRequest = z.infer<typeof StudyPlansFilterValidation>
-
 export default StudyPlansRequest

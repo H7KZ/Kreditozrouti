@@ -1,0 +1,13 @@
+# ==============================================================================
+# Networks Configuration: GlitchTip
+# Description: Network definitions for GlitchTip error tracking services.
+# ==============================================================================
+
+networks:
+  traefik-network:
+    name: traefik-network
+    external: true
+
+  glitchtip-internal:
+    name: glitchtip-internal
+    external: true

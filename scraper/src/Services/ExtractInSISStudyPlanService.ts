@@ -1,5 +1,5 @@
 import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
-import ScraperInSISStudyPlan, { ScraperInSISStudyPlanCourseCategory } from '@scraper/Interfaces/ScraperInSISStudyPlan'
+import ScraperInSISStudyPlan, { ScraperInSISStudyPlanCourse } from '@scraper/Interfaces/ScraperInSISStudyPlan'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
@@ -324,8 +324,8 @@ export default class ExtractInSISStudyPlanService {
         return { ident, title }
     }
 
-    private static extractCourses($: CheerioAPI): ScraperInSISStudyPlanCourseCategory[] {
-        const courses: ScraperInSISStudyPlanCourseCategory[] = []
+    private static extractCourses($: CheerioAPI): ScraperInSISStudyPlanCourse[] {
+        const courses: ScraperInSISStudyPlanCourse[] = []
         let currentGroupCode: string | null = null
 
         $('tr').each((_, row) => {

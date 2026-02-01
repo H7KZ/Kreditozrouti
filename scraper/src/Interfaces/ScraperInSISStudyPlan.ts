@@ -38,13 +38,13 @@ export default interface ScraperInSISStudyPlan {
     study_length: string | null
 
     /** List of courses associated with this study plan, categorized by type. */
-    courses: ScraperInSISStudyPlanCourseCategory[] | null
+    courses: ScraperInSISStudyPlanCourse[] | null
 }
 
 /**
  * Represents a course entry within a study plan, including its categorization.
  */
-export interface ScraperInSISStudyPlanCourseCategory {
+export interface ScraperInSISStudyPlanCourse {
     /** The ID of the course.
      * Note: May be null if the course exists in the plan text but is not a clickable link in InSIS.
      */

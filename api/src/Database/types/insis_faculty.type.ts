@@ -1,3 +1,4 @@
+import { Course, ExcludeMethods, StudyPlan } from '@api/Database/types/index'
 import { ColumnType, Insertable, Selectable } from 'kysely'
 
 /**
@@ -14,5 +15,9 @@ export class FacultyTable {
 	title!: string | null
 }
 
-export type FacultyPlan = Selectable<FacultyTable>
-export type NewFacultyPlan = Insertable<Omit<FacultyTable, 'id' | 'created_at' | 'updated_at'>>
+export type Faculty<C = void, SP = void> = Selectable<FacultyTable> &
+	(C extends void ? unknown : { courses: C[] }) &
+	(SP extends void ? unknown : { study_plans: SP[] })
+export type NewFaculty = Insertable<Omit<ExcludeMethods<FacultyTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type FacultyWithRelations = Faculty<Course, StudyPlan>

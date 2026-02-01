@@ -17,6 +17,7 @@
 #   - MYSQL_*: Database credentials
 #   - REDIS_*: Cache credentials
 #   - API_*: API configuration
+#   - SENTRY_*_DSN: GlitchTip DSN for each service (optional)
 #
 # Usage: docker compose -f docker-compose.development.yml up -d
 # ==============================================================================
@@ -50,6 +51,9 @@ services:
       - MYSQL_URI=${MYSQL_URI}
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      # GlitchTip/Sentry Configuration
+      - SENTRY_DSN=${SENTRY_API_DSN:-}
+      - SENTRY_RELEASE=${IMAGE_TAG:-dev-latest}
 
     networks:
       - traefik-network
@@ -66,10 +70,10 @@ services:
       - "traefik.http.routers.${PROJECT}-api.tls.certresolver=letsencrypt"
       - "traefik.http.services.${PROJECT}-api.loadbalancer.server.port=80"
       # Middlewares
-      - "traefik.http.routers.${PROJECT}-api.middlewares=${PROJECT}-api-stripprefix,${PROJECT}-redirect-www"
+      - "traefik.http.routers.${PROJECT}-api.middlewares=${PROJECT}-api-stripprefix,${PROJECT}-api-redirect-www"
       - "traefik.http.middlewares.${PROJECT}-api-stripprefix.stripprefix.prefixes=/api"
-      - "traefik.http.middlewares.${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
-      - "traefik.http.middlewares.${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}"
+      - "traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+      - "traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}"
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/health"]
@@ -115,6 +119,9 @@ services:
       - ENV=development
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      # GlitchTip/Sentry Configuration
+      - SENTRY_DSN=${SENTRY_SCRAPER_DSN:-}
+      - SENTRY_RELEASE=${IMAGE_TAG:-dev-latest}
 
     networks:
       - redis-dev-network
@@ -148,6 +155,10 @@ services:
 
     environment:
       - ENV=development
+      - VITE_API_URL=https://${DOMAIN}/api
+      # GlitchTip/Sentry Configuration (build-time variables for Vite)
+      - VITE_SENTRY_DSN=${SENTRY_CLIENT_DSN:-}
+      - VITE_SENTRY_RELEASE=${IMAGE_TAG:-dev-latest}
 
     networks:
       - traefik-network
@@ -162,7 +173,9 @@ services:
       - "traefik.http.routers.${PROJECT}-client.tls.certresolver=letsencrypt"
       - "traefik.http.services.${PROJECT}-client.loadbalancer.server.port=80"
       # Middlewares
-      - "traefik.http.routers.${PROJECT}-client.middlewares=${PROJECT}-redirect-www"
+      - "traefik.http.routers.${PROJECT}-client.middlewares=${PROJECT}-client-redirect-www"
+      - "traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+      - "traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.replacement=https://$${1}"
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80"]
@@ -204,6 +217,16 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
 
+    command:
+      - --sort_buffer_size=128M
+      - --read_buffer_size=64M
+      - --read_rnd_buffer_size=64M
+      - --join_buffer_size=64M
+      - --max_sort_length=8192
+      - --innodb_sort_buffer_size=64M
+      - --tmp_table_size=128M
+      - --max_heap_table_size=128M
+
     networks:
       - mysql-dev-network
 
@@ -224,11 +247,11 @@ services:
       mode: global
       resources:
         limits:
-          cpus: "1"
-          memory: 2048M
+          cpus: "1.5"
+          memory: 3072M
         reservations:
-          cpus: "0.25"
-          memory: 256M
+          cpus: "0.5"
+          memory: 768M
 
   # ============================================================================
   # Database Interface (phpMyAdmin)

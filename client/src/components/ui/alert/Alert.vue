@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from '@client/lib/utils'
+import { cn } from '@client/utils/tailwind'
 import type { HTMLAttributes } from 'vue'
 import { type AlertVariants, alertVariants } from '.'
 

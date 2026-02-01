@@ -1,7 +1,8 @@
+import { ExcludeMethods, Faculty } from '@api/Database/types/index'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
 import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
-import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
+import { ColumnType, Insertable, Selectable } from 'kysely'
 
 /**
  * Database schema for Study Plans (Curriculums).
@@ -9,7 +10,7 @@ import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 export class StudyPlanTable {
 	static readonly _table = 'insis_study_plans' as const
 
-	id!: Generated<number>
+	id!: number // Generated<number>
 
 	faculty_id!: string | null
 
@@ -33,8 +34,12 @@ export class StudyPlanTable {
 	study_length!: string | null
 }
 
-export type StudyPlan = Selectable<StudyPlanTable>
-export type NewStudyPlan = Insertable<Omit<StudyPlanTable, 'id' | 'created_at' | 'updated_at'>>
+export type StudyPlan<F = void, C = void> = Selectable<StudyPlanTable> &
+	(F extends void ? unknown : { faculty: F | null }) &
+	(C extends void ? unknown : { courses: C[] })
+export type NewStudyPlan = Insertable<Omit<ExcludeMethods<StudyPlanTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
 
 // -------------------------------------------------------------------------
 
@@ -45,7 +50,8 @@ export type NewStudyPlan = Insertable<Omit<StudyPlanTable, 'id' | 'created_at' |
 export class StudyPlanCourseTable {
 	static readonly _table = 'insis_study_plans_courses' as const
 
-	id!: Generated<number>
+	id!: number // Generated<number>
+
 	study_plan_id!: number
 	course_id!: number | null
 
@@ -59,5 +65,9 @@ export class StudyPlanCourseTable {
 	category!: InSISStudyPlanCourseCategory
 }
 
-export type StudyPlanCourse = Selectable<StudyPlanCourseTable>
-export type NewStudyPlanCourse = Insertable<Omit<StudyPlanCourseTable, 'id' | 'created_at' | 'updated_at'>>
+export type StudyPlanCourse<SP = void, C = void> = Selectable<StudyPlanCourseTable> &
+	(SP extends void ? unknown : { study_plan: SP | null }) &
+	(C extends void ? unknown : { course: C | null })
+export type NewStudyPlanCourse = Insertable<Omit<ExcludeMethods<StudyPlanCourseTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type StudyPlanCourseWithRelations = StudyPlanCourse<StudyPlanTable, null>

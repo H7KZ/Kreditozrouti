@@ -6,6 +6,8 @@
 volumes:
   traefik-certificates-volume:
     name: traefik-certificates-volume
+    external: true
 
   traefik-logs-volume:
     name: traefik-logs-volume
+    external: true

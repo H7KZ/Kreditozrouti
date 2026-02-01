@@ -4,21 +4,380 @@
 			"Unknown": "Neznámá chyba",
 			"Validation": "Chyba ověření",
 			"ZodValidation": "Chyba ověření",
-			"Authentication": "Chyba autentizace",
+			"Authentication": "Chyba ověření",
 			"Authorization": "Chyba autorizace",
 			"Database": "Chyba databáze",
 			"ExternalService": "Chyba externí služby"
 		},
-
 		"codes": {
-			"0": "Došlo k neznámé chybě.",
-			"401_000": "Neautentizováno: Prosím, přihlaste se pro pokračování.",
-			"403_000": "Ověření selhalo: Poskytnutá data jsou neplatná.",
-			"404_000": "Zdroj nenalezen: Požadovaná položka neexistuje.",
-			"500_000": "Interní chyba serveru: Zkuste to prosím později.",
-			"500_001": "Služba e-mailů je momentálně nedostupná. Zkuste to prosím později."
+			"0": "Neznámá chyba",
+			"401000": "Neplatné přihlašovací údaje",
+			"403000": "K přístupu k tomuto zdroji nemáte oprávnění",
+			"404000": "Požadovaný zdroj nebyl nalezen",
+			"429000": "Příliš mnoho požadavků. Zkuste to prosím znovu později.",
+			"500000": "Došlo k interní chybě serveru",
+			"500001": "Emailová služba je nedostupná"
+		}
+	},
+	"faculties": {
+		"FFU": "Fakulta financí a účetnictví",
+		"FMV": "Fakulta mezinárodních vztahů",
+		"FPH": "Fakulta podnikohospodářská",
+		"FIS": "Fakulta informatiky a statistiky",
+		"NF": "Národohospodářská fakulta",
+		"FMJH": "Fakulta managementu",
+		"OZS": "Oddělení zahraničních styků (PZAH REK)",
+		"IFTG": "Francouzsko-český institut řízení (PZAH REK)",
+		"CESP": "Program studií střední a východní Evropy (PZAH REK)",
+		"IOM": "Institut oceňování majetku (PSTR REK)",
+		"U3V": "Univerzita třetího věku",
+		"U3V-JH": "Univerzita třetího věku - Jindřichův Hradec (PSTR REK)",
+		"CTVS": "Centrum tělesné výchovy a sportu"
+	},
+	"days": {
+		"Pondělí": "Pondělí",
+		"Úterý": "Úterý",
+		"Středa": "Středa",
+		"Čtvrtek": "Čtvrtek",
+		"Pátek": "Pátek",
+		"Sobota": "Sobota",
+		"Neděle": "Neděle"
+	},
+	"daysShort": {
+		"Pondělí": "Po",
+		"Úterý": "Út",
+		"Středa": "St",
+		"Čtvrtek": "Čt",
+		"Pátek": "Pá",
+		"Sobota": "So",
+		"Neděle": "Ne",
+		"-": "-"
+	},
+	"courseLevels": {
+		"bakalářský": "Bakalářský",
+		"doktorský": "Doktorský",
+		"kurz": "Kurz",
+		"magisterský navazující": "Magisterský navazující",
+		"MBA": "MBA"
+	},
+	"courseGroups": {
+		"faculty_specific": "Fakultně specifické skupiny",
+		"university_wide": "Celoškolně používané skupiny",
+		"field_specific_bachelor": "Oborově specifické skupiny (bakalářské programy)",
+		"field_specific_master": "Oborově specifické skupiny (magisterské programy)",
+		"minor_specialization": "Skupiny vedlejších specializací"
+	},
+	"courseCategories": {
+		"compulsory": "Povinné předměty",
+		"elective": "Volitelné předměty",
+		"language": "Jazykově (povinně volitelné) předměty",
+		"state_exam": "Státní zkoušky",
+		"prohibited": "Zakázaný předmět",
+		"beyond_scope": "Předměty nad rámec studijního plánu",
+		"exchange_program": "Předměty pro výměnné programy",
+		"physical_education": "Tělesná výchova a sport"
+	},
+	"courseModesOfCompletion": {
+		"zkouška": "Zkouška",
+		"zápočet": "Zápočet",
+		"obhajoba": "Obhajoba"
+	},
+	"courseLanguages": {
+		"čeština": "Čeština",
+		"angličtina": "Angličtina",
+		"němčina": "Němčina",
+		"španělština": "Španělština",
+		"francouzština": "Francouzština",
+		"ruština": "Ruština",
+		"italština": "Italština",
+		"čínština": "Čínština",
+		"švédština": "Švédština",
+		"portugalština": "Portugalština"
+	},
+	"unitTypes": {
+		"lecture": "Přednáška",
+		"exercise": "Cvičení",
+		"seminar": "Seminář",
+		"dateOnly": "Bloková akce"
+	},
+	"unitTypesShort": {
+		"lecture": "Př",
+		"exercise": "Cv",
+		"seminar": "Se"
+	},
+	"unitTypesAccusative": {
+		"lecture": "přednášku",
+		"exercise": "cvičení",
+		"seminar": "seminář"
+	},
+	"studyLevels": {
+		"magisterský navazující": "Magisterský navazující",
+		"doktorský": "Doktorský",
+		"bakalářský": "Bakalářský",
+		"celoživotní vzdělávání": "Celoživotní vzdělávání",
+		"zahraniční studenti": "Zahraniční studenti",
+		"magisterský": "Magisterský"
+	},
+	"semesters": {
+		"ZS": "Zimní semestr",
+		"LS": "Letní semestr",
+		"full_year": "Celý rok"
+	},
+	"time": {
+		"minutes": "min",
+		"hours": "hod",
+		"hoursMinutes": "{hours} hod {minutes} min"
+	},
+	"common": {
+		"back": "Zpět",
+		"cancel": "Zrušit",
+		"close": "Zavřít",
+		"add": "Přidat",
+		"change": "Změnit",
+		"remove": "Odebrat",
+		"clearFilter": "Zrušit filtr",
+		"search": "Vyhledat",
+		"reset": "Reset",
+		"retry": "Zkusit znovu",
+		"tryAgain": "Zkusit znovu",
+		"lecturer": "Vyučující",
+		"openInInsis": "Otevřít v InSIS",
+		"loading": "Načítání...",
+		"filters": "Filtry",
+		"legend": "Legenda",
+		"location": "Místnost",
+		"day": "Den",
+		"time": "Čas",
+		"duration": "Trvání",
+		"from": "Od",
+		"to": "Do",
+		"plans": "plánů",
+		"seats": "míst",
+		"previous": "Předchozí",
+		"next": "Další",
+		"clearAll": "Vymazat vše",
+		"showMore": "Zobrazit dalších {count}",
+		"showLess": "Zobrazit méně",
+		"noResults": "Žádné výsledky",
+		"noOptions": "Žádné možnosti",
+		"tip": "Tip"
+	},
+	"pages": {
+		"index": {
+			"title": "Kreditožrouti",
+			"subtitle": "Vyhledávač předmětů VŠE",
+			"welcome": "Vítejte v Kreditožroutech",
+			"description": "Pro začátek vyberte svůj studijní plán. Podle něj vám zobrazíme relevantní předměty a jejich rozvrhové akce.",
+			"howItWorks": "📌 Jak to funguje?",
+			"step1": "Vyberte svou fakultu",
+			"step2": "Zvolte rok nástupu ke studiu",
+			"step3": "Vyberte svůj studijní plán",
+			"step4": "Procházejte předměty a sestavte si rozvrh",
+			"footer": "Kreditožrouti · Data z",
+			"insisLink": "InSIS VŠE"
 		},
-
-		"unexpected": "Došlo k neočekávané chybě."
+		"courses": {
+			"studyPlanFallback": "Studijní plán",
+			"coursesInTimetable": "{count} předmět v rozvrhu | {count} předměty v rozvrhu | {count} předmětů v rozvrhu",
+			"searchingForCourses": "Hledání předmětů pro {semester} {year}",
+			"clearTimetable": "Vymazat rozvrh",
+			"clearTimetableConfirm": "Opravdu chcete odebrat všechny předměty z rozvrhu?",
+			"conflict": "Kolize",
+			"conflictTitle": "Máte kolize v rozvrhu",
+			"changePlan": "Změnit plán",
+			"changePlanConfirm": "Opravdu chcete změnit studijní plán? Váš aktuální rozvrh bude vymazán.",
+			"courseList": "Seznam předmětů",
+			"myTimetable": "Můj rozvrh",
+			"loadingCourses": "Načítám předměty...",
+			"loadingError": "Chyba při načítání",
+			"noCoursesFound": "Nebyly nalezeny žádné předměty odpovídající filtrům.",
+			"clearFilters": "Zrušit filtry",
+			"showingResults": "Zobrazeno {from} – {to} z {total} předmětů",
+			"pageInfo": "Stránka {current} z {total}",
+			"emptyTimetable": {
+				"title": "Váš rozvrh je prázdný",
+				"description": "Přidejte předměty ze seznamu nebo táhněte přes prázdné sloty pro vyhledání předmětů v daném čase.",
+				"browseCourses": "Procházet předměty",
+				"orDragTimetable": "Nebo táhnout přes rozvrhové sloty"
+			}
+		}
+	},
+	"components": {
+		"wizard": {
+			"StudyPlanWizard": {
+				"title": "Vítejte v Kreditožroutech",
+				"description": "Vyberte svůj studijní plán pro zobrazení dostupných předmětů",
+				"currentSelection": "Aktuální výběr:",
+				"startOver": "Začít znovu"
+			},
+			"WizardSteps": {
+				"faculty": "Fakulta",
+				"enrollmentYear": "Rok nástupu",
+				"studyPlan": "Studijní plán"
+			},
+			"WizardStepFaculty": {
+				"title": "Vyberte fakultu",
+				"description": "Zvolte fakultu, na které studujete nebo chcete studovat.",
+				"loading": "Načítám fakulty..."
+			},
+			"WizardStepYear": {
+				"title": "Vyberte rok nástupu",
+				"description": "Zvolte akademický rok, ve kterém jste začali studovat. Automaticky bude vybrán zimní semestr.",
+				"loading": "Načítám roky...",
+				"tip": "Pokud nevíte, který rok vybrat, zkontrolujte svůj e-index v InSISu nebo se podívejte na akademický rok vašeho prvního zapsaného semestru."
+			},
+			"WizardStepStudyPlan": {
+				"title": "Vyberte studijní plán",
+				"description": "Vyberte si studijní plán (obor studia). Pokud máte specializaci, můžete vybrat více plánů.",
+				"searchLabel": "Hledat",
+				"searchPlaceholder": "Jméno nebo kód oboru...",
+				"levelLabel": "Úroveň studia",
+				"resultsCount": "Nalezen {count} studijní plán | Nalezeny {count} studijní plány | Nalezeno {count} studijních plánů",
+				"noResults": "Žádný studijní plán neodpovídá filtru.",
+				"backToYear": "Zpět k výběru roku",
+				"specializationInfoTitle": "Máte specializaci?",
+				"specializationInfoDescription": "Pokud váš studijní program zahrnuje specializaci (např. vedlejší obor), vyberte jak základní studijní plán, tak specializaci. Kliknutím na plány přepínáte výběr.",
+				"selectedCount": "{count} vybrán | {count} vybrány | {count} vybráno",
+				"selected": "Vybráno",
+				"proceed": "Pokračovat ve výběru",
+				"doubleClickTip": "Tip: Poklepejte na plán, abyste jej vybrali a mohli okamžitě pokračovat."
+			}
+		},
+		"courses": {
+			"CourseTable": {
+				"columns": {
+					"code": "Kód",
+					"title": "Název",
+					"faculty": "Fakulta",
+					"ects": "ECTS",
+					"completion": "Ukončení",
+					"schedule": "Rozvrh"
+				},
+				"noResults": "Žádné předměty neodpovídají filtru",
+				"inTimetable": "V rozvrhu",
+				"missingUnitTypes": "Nekompletní"
+			},
+			"CourseRowExpanded": {
+				"faculty": "Fakulta",
+				"ectsCredits": "ECTS kredity",
+				"completion": "Dokončení",
+				"language": "Jazyk",
+				"category": "Kategorie",
+				"assessments": "Hodnocení",
+				"unitSelection": "Výběr jednotek rozvrhu",
+				"complete": "Dokončit",
+				"removeAll": "Odebrat vše",
+				"selected": "Vybrané",
+				"selectOne": "vybrat jednu z",
+				"selectAction": "vybrat akci",
+				"noUnitsAvailable": "Pro tento kurz nejsou k dispozici žádné jednotky rozvrhu.",
+				"incompleteSelectionTitle": "Neúplný výběr kurzu",
+				"incompleteSelectionDescription": "Chcete-li se zapsat do tohoto kurzu, musíte také vybrat: {types}. Vyberte všechny požadované typy jednotek."
+			},
+			"CourseStatusSummary": {
+				"selectedCourses": "{count} předmět | {count} předměty | {count} předmětů",
+				"conflicts": "{count} kolize | {count} kolize | {count} kolizí",
+				"incomplete": "{count} nekompletní | {count} nekompletní | {count} nekompletních",
+				"selectedTooltip": "Klikněte pro zobrazení pouze vybraných předmětů",
+				"conflictTooltip": "Klikněte pro zobrazení předmětů s časovými kolizemi",
+				"incompleteTooltip": "Klikněte pro zobrazení předmětů s chybějícími typy výuky",
+				"allComplete": "Všechny jednotky vybrány, bez kolizí!"
+			}
+		},
+		"filters": {
+			"FilterPanel": {
+				"searchLabel": "Hledat",
+				"searchPlaceholder": "Hledat pomocí názvu nebo kódu...",
+				"faculties": "Fakulty",
+				"studyLevel": "Stupeň studia",
+				"language": "Jazyk výuky",
+				"courseGroups": "Skupiny předmětů",
+				"category": "Kategorie",
+				"ectsCredits": "ECTS kredity",
+				"completionMode": "Způsob ukončení",
+				"lecturers": "Vyučující",
+				"timeRestriction": "Časové omezení"
+			},
+			"FilterCheckboxGroup": {
+				"searchPlaceholder": "Hledat..."
+			},
+			"FilterTimeRange": {
+				"addTimeFilter": "Přidat časový filtr",
+				"dayLabel": "Den",
+				"availableRange": "Dostupný rozsah: {from} – {to}"
+			},
+			"CourseStatusFilter": {
+				"title": "Moje předměty",
+				"allSelected": "Všechny vybrané",
+				"withConflicts": "S kolizemi",
+				"incomplete": "Nekompletní",
+				"conflictingCourses": "Předměty v kolizi",
+				"incompleteCourses": "Nekompletní předměty",
+				"conflictsWith": "Koliduje s: {courses}",
+				"missingTypes": "Chybí: {types}",
+				"missingLabel": "Chybí",
+				"helpText": "Klikněte pro filtrování. Vyberte více možností pro kombinovaný filtr."
+			}
+		},
+		"timetable": {
+			"TimetableGrid": {
+				"dayHeader": "Den",
+				"filterApplied": "Filtr aplikován",
+				"filterDescription": "Zobrazuji předměty v čase {from}–{to} ({day})"
+			},
+			"TimetableCourseBlock": {
+				"removeFromTimetable": "Odebrat z rozvrhu",
+				"missingTypesWarning": "Chybějící {types}. Klikněte pro přidání.",
+				"mergedSlots": "{count} sloučený časový slot | {count} sloučené časové sloty | {count} sloučených časových slotů"
+			},
+			"TimetableDragPopover": {
+				"title": "Vyhledat předměty",
+				"description": "Zobrazí předměty, které mají rozvrhovou akci v tomto časovém úseku.",
+				"searchCourses": "Hledat předměty"
+			},
+			"TimetableCourseModal": {
+				"courseNotFound": "Předmět nenalezen",
+				"loadError": "Nepodařilo se načíst detaily předmětu",
+				"courseInfo": "Informace o předmětu",
+				"selectedSlot": "Vybraný slot",
+				"removeFromTimetable": "Odebrat z rozvrhu",
+				"searchInTimeslot": "Hledat v tomto čase",
+				"filterApplied": "Časový filtr aplikován",
+				"filterDescription": "Zobrazuji předměty dostupné v {day} od {from} do {to}"
+			}
+		}
+	},
+	"stores": {
+		"timetable": {
+			"errors": {
+				"slotAlreadySelected": "Tento slot je již vybrán",
+				"unitTypeAlreadySelected": "Pro tento předmět již máte vybranou {unitType}",
+				"timeConflict": "Časový konflikt s předmětem {courseIdent}"
+			}
+		}
+	},
+	"footer": {
+		"about": {
+			"title": "O projektu Kreditožrouti",
+			"description": "Nástroj pro plánování rozvrhu, který měl být InSIS — dává studentům VŠE okamžitý, filtrovatelný přístup ke každému předmětu, rozvrhovému slotu a studijnímu plánu v jednom moderním rozhraní.",
+			"university": "Vysoká škola ekonomická v Praze"
+		},
+		"links": {
+			"title": "Odkazy",
+			"compliance": "Compliance a ochrana soukromí",
+			"github": "GitHub repozitář",
+			"insis": "Oficiální InSIS"
+		},
+		"contact": {
+			"title": "Kontakt a podpora",
+			"description": "Máte otázky, našli jste chybu nebo chcete poskytnout zpětnou vazbu?"
+		},
+		"bottom": {
+			"copyright": "© {year} Kreditožrouti. Všechna práva vyhrazena.",
+			"license": "Tento projekt není oficiálně spojen s VŠE.",
+			"version": "Verze {version}",
+			"beta": "Beta verze",
+			"disclaimer": "Data jsou stažena z InSISu a nemusí být 100% přesná."
+		}
 	}
 }

@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import Alert from '@client/components/alert/Alert.vue'
-import { useAlertsStore } from '@client/stores/alerts'
+import { useAlertsStore } from '@client/stores'
 
 const alertsStore = useAlertsStore()
+
+function handleClose(index: number) {
+	alertsStore.removeAlert(index)
+}
 </script>
 
 <template>
-	<div class="fixed right-0 bottom-0 z-50 flex w-full max-w-sm flex-col gap-4 p-4">
+	<!-- Alert container - only rendered when there are active alerts to display -->
+	<div v-if="alertsStore.alerts.length > 0" class="fixed right-0 bottom-0 z-50 flex w-full max-w-sm flex-col gap-4 p-4">
 		<Alert
 			v-for="(alert, i) in alertsStore.alerts"
 			:key="`alert-${i}`"
@@ -16,6 +21,7 @@ const alertsStore = useAlertsStore()
 			:buttons="alert.buttons"
 			:timeout="alert.timeout"
 			:index="i"
+			@close="handleClose"
 		/>
 	</div>
 </template>

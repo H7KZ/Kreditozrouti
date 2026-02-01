@@ -4,12 +4,10 @@
 # ==============================================================================
 
 networks:
-  traefik-network:
-    name: traefik-network
-    external: true
-
   mysql-network:
     name: mysql-network
+    external: true
 
   redis-network:
     name: redis-network
+    external: true

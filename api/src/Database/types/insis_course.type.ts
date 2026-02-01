@@ -1,5 +1,7 @@
+import { ExcludeMethods, Faculty, StudyPlanCourse } from '@api/Database/types/index'
+import InSISDay from '@scraper/Types/InSISDay'
 import InSISSemester from '@scraper/Types/InSISSemester'
-import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
+import { ColumnType, Insertable, Selectable } from 'kysely'
 
 /**
  * Database schema for InSIS Courses.
@@ -21,7 +23,8 @@ export class CourseTable {
 	ident!: string
 
 	title!: string | null
-	czech_title!: string | null
+	title_cs!: string | null
+	title_en!: string | null
 	ects!: number | null
 
 	/** Delivery format (e.g., in-person, remote). */
@@ -62,18 +65,25 @@ export class CourseTable {
 	literature!: string | null
 }
 
-export type Course = Selectable<CourseTable>
-export type NewCourse = Insertable<Omit<CourseTable, 'id' | 'created_at' | 'updated_at'>>
+export type Course<F = void, U = void, A = void, SP = void> = Selectable<CourseTable> &
+	(F extends void ? unknown : { faculty: F | null }) &
+	(U extends void ? unknown : { units: U[] }) &
+	(A extends void ? unknown : { assessments: A[] }) &
+	(SP extends void ? unknown : { study_plans: SP[] })
+export type NewCourse = Insertable<Omit<ExcludeMethods<CourseTable>, 'created_at' | 'updated_at'>>
+
+export type CourseWithRelations = Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>
 
 // -------------------------------------------------------------------------
 
 /**
  * Assessment methods required to complete a course.
  */
-export class CourseAssessmentMethodTable {
-	static readonly _table = 'insis_courses_assessment_methods' as const
+export class CourseAssessmentTable {
+	static readonly _table = 'insis_courses_assessments' as const
 
-	id!: Generated<number>
+	id!: number // Generated<number>
+
 	course_id!: number
 
 	created_at!: ColumnType<Date, string | undefined, never>
@@ -86,18 +96,21 @@ export class CourseAssessmentMethodTable {
 	weight!: number | null
 }
 
-export type CourseAssessmentMethod = Selectable<CourseAssessmentMethodTable>
-export type NewCourseAssessmentMethod = Insertable<Omit<CourseAssessmentMethodTable, 'id' | 'created_at' | 'updated_at'>>
+export type CourseAssessment<C = void> = Selectable<CourseAssessmentTable> & (C extends void ? unknown : { course: C | null })
+export type NewCourseAssessment = Insertable<Omit<ExcludeMethods<CourseAssessmentTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type CourseAssessmentWithRelations = CourseAssessment<Course>
 
 // -------------------------------------------------------------------------
 
 /**
  * Represents a specific teaching group or instance of a course.
  */
-export class CourseTimetableUnitTable {
-	static readonly _table = 'insis_courses_timetable_units' as const
+export class CourseUnitTable {
+	static readonly _table = 'insis_courses_units' as const
 
-	id!: Generated<number>
+	id!: number // Generated<number>
+
 	course_id!: number
 
 	created_at!: ColumnType<Date, string | undefined, never>
@@ -108,19 +121,24 @@ export class CourseTimetableUnitTable {
 	note!: string | null
 }
 
-export type CourseTimetableUnit = Selectable<CourseTimetableUnitTable>
-export type NewCourseTimetableUnit = Insertable<Omit<CourseTimetableUnitTable, 'id' | 'created_at' | 'updated_at'>>
+export type CourseUnit<C = void, S = void> = Selectable<CourseUnitTable> &
+	(C extends void ? unknown : { course: C | null }) &
+	(S extends void ? unknown : { slots: S[] })
+export type NewCourseUnit = Insertable<Omit<ExcludeMethods<CourseUnitTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type CourseUnitWithRelations = CourseUnit<Course, CourseUnitSlot<CourseUnit<void, void>>>
 
 // -------------------------------------------------------------------------
 
 /**
  * Specific scheduled time and location for a timetable unit.
  */
-export class CourseTimetableSlotTable {
-	static readonly _table = 'insis_courses_timetable_slots' as const
+export class CourseUnitSlotTable {
+	static readonly _table = 'insis_courses_units_slots' as const
 
-	id!: Generated<number>
-	timetable_unit_id!: number
+	id!: number // Generated<number>
+
+	unit_id!: number
 
 	created_at!: ColumnType<Date, string | undefined, never>
 	updated_at!: ColumnType<Date, string | undefined, string | undefined>
@@ -134,19 +152,19 @@ export class CourseTimetableSlotTable {
 	date!: string | null
 
 	/** Day of the week for recurring slots. */
-	day!: string | null
-
-	time_from!: string | null
-	time_to!: string | null
+	day!: InSISDay | null
 
 	/** Start time in minutes from midnight for easier calculation. */
-	time_from_minutes!: number | null
-
+	time_from!: number | null
 	/** End time in minutes from midnight. */
-	time_to_minutes!: number | null
+	time_to!: number | null
 
 	location!: string | null
 }
 
-export type CourseTimetableSlot = Selectable<CourseTimetableSlotTable>
-export type NewCourseTimetableSlot = Insertable<Omit<CourseTimetableSlotTable, 'id' | 'created_at' | 'updated_at'>>
+export type CourseUnitSlot<C = void, U = void> = Selectable<CourseUnitSlotTable> &
+	(C extends void ? unknown : { course: C | null }) &
+	(U extends void ? unknown : { unit: U | null })
+export type NewCourseUnitSlot = Insertable<Omit<ExcludeMethods<CourseUnitSlotTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type CourseUnitSlotWithRelations = CourseUnitSlot<Course, CourseUnit<void, CourseUnitSlot<void>>>
