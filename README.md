@@ -491,8 +491,7 @@ This project is provided for educational and personal use. For legal and complia
 
 - 🐛 **Bug Reports:** [GitHub Issues](https://github.com/H7KZ/Kreditozrouti/issues)
 - 💡 **Feature Requests:** [GitHub Issues](https://github.com/H7KZ/Kreditozrouti/issues)
-- 📧 **Email:** support@kreditozrouti.vse.cz
-- 💬 **Discussions:** [GitHub Discussions](https://github.com/H7KZ/Kreditozrouti/discussions)
+- 📧 **Email:** support@kreditozrouti.cz
 
 ### Links
 
@@ -524,12 +523,11 @@ If you find this project useful, please consider giving it a star! ⭐
 - [x] Advanced filtering
 - [x] Timetable view with conflict detection
 - [x] Multi-language support (Czech/English)
-- [x] Mobile responsiveness
+- [ ] Mobile responsiveness
 - [ ] User accounts and saved schedules
 - [ ] Course reviews and ratings
 - [ ] Exam schedule integration
 - [ ] Push notifications for course changes
-- [ ] Mobile app (React Native)
 - [ ] API public access with rate limiting
 
 ---
