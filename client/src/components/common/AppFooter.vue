@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import IconGithub from '~icons/lucide/github'
-import IconFileText from '~icons/lucide/file-text'
-import IconMail from '~icons/lucide/mail'
-import IconFingerPrintPattern from '~icons/lucide/fingerprint-pattern'
 import IconExternalLink from '~icons/lucide/external-link'
+import IconFileText from '~icons/lucide/file-text'
+import IconFingerPrintPattern from '~icons/lucide/fingerprint-pattern'
+import IconGithub from '~icons/lucide/github'
+import IconMail from '~icons/lucide/mail'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 

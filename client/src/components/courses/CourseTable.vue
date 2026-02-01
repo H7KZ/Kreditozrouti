@@ -20,7 +20,7 @@ const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
 
 // Composables
-const { getCompletionLabel, getFacultyLabel } = useCourseLabels()
+const { getCompletionLabel, getFacultyLabel, getCourseTitle } = useCourseLabels()
 const { getScheduleSummary } = useScheduleSummary()
 
 // Column definitions for sorting
@@ -127,8 +127,8 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 							<!-- Title -->
 							<td>
 								<div class="flex items-center gap-2">
-									<span :title="String(course.title)" class="truncate">
-										{{ course.title }}
+									<span :title="getCourseTitle(course)" class="truncate">
+										{{ getCourseTitle(course) }}
 									</span>
 									<span v-if="hasSelectedUnits(course.id)" class="insis-badge insis-badge-success">
 										{{ $t('components.courses.CourseTable.inTimetable') }}

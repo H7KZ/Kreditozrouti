@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTimeUtils } from '@client/composables'
+import { useCourseLabels, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { computed } from 'vue'
@@ -16,6 +16,7 @@ import IconX from '~icons/lucide/x'
 
 const { t, te } = useI18n({ useScope: 'global' })
 const { minutesToTime } = useTimeUtils()
+const { getUnitCourseTitle } = useCourseLabels()
 const timetableStore = useTimetableStore()
 const coursesStore = useCoursesStore()
 
@@ -170,7 +171,7 @@ function handleRemove(event: MouseEvent) {
 
 			<!-- Course title (truncated) -->
 			<div class="mt-0.5 flex-1 truncate text-[10px] text-[var(--insis-gray-600)]">
-				{{ unit.courseTitle }}
+				{{ getUnitCourseTitle(unit) }}
 			</div>
 
 			<!-- Time and room / date range for merged -->

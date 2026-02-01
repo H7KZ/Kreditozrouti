@@ -1,6 +1,6 @@
 import type { CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
 import { i18n } from '@client/index.ts'
-import { CourseUnitType } from '@client/types'
+import { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import type InSISDay from '@scraper/Types/InSISDay'
 
 /**
@@ -35,6 +35,9 @@ export function useCourseLabels() {
 		return te(key) ? t(key) : value
 	}
 
+	/**
+	 * Get semester label.
+	 */
 	function getSemesterLabel(value: string): string {
 		return getLabel('semesters', value)
 	}
@@ -162,6 +165,23 @@ export function useCourseLabels() {
 	}
 
 	/**
+	 * Get localized course unit title based on current locale.
+	 *
+	 * @param unit - Course unit object
+	 * @returns Title in current locale with fallbacks
+	 */
+	function getUnitCourseTitle(unit: SelectedCourseUnit): string {
+		switch (locale.value) {
+			case 'cs':
+				return unit.courseTitleCs ?? unit.courseTitle ?? ''
+			case 'en':
+				return unit.courseTitleEn ?? unit.courseTitle ?? ''
+			default:
+				return unit.courseTitle
+		}
+	}
+
+	/**
 	 * Get slot type from a course unit slot.
 	 * Determines if the slot is a lecture, exercise, or seminar
 	 * based on the slot's type field.
@@ -221,6 +241,7 @@ export function useCourseLabels() {
 		getLevelLabel,
 		getCourseLevelLabel,
 		getCourseTitle,
+		getUnitCourseTitle,
 
 		// Unit types
 		getUnitTypeLabel,

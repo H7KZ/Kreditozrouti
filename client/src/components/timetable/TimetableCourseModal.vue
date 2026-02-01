@@ -58,8 +58,17 @@ const course = ref<CourseWithRelations | null>(null)
 // ============================================================================
 
 // Shared course labels (same as CourseRowExpanded!)
-const { getCompletionLabel, getCategoryLabel, getUnitTypesGroupLabel, getShortUnitTypeLabel, getSlotType, getDayLabel, getCategoryBadgeClass } =
-	useCourseLabels()
+const {
+	getCompletionLabel,
+	getCategoryLabel,
+	getUnitTypesGroupLabel,
+	getShortUnitTypeLabel,
+	getSlotType,
+	getDayLabel,
+	getCategoryBadgeClass,
+	getCourseTitle,
+	getUnitCourseTitle,
+} = useCourseLabels()
 
 // Shared unit selection logic (same as CourseRowExpanded!)
 const { unitsByGroup, isSelectionComplete, isUnitSelected, isGroupSatisfied, handleAddUnit, handleRemoveUnit, handleRemoveCourse } = useCourseUnitSelection({
@@ -177,7 +186,7 @@ onUnmounted(() => {
 				<div class="flex items-center justify-between border-b border-[var(--insis-border)] bg-[var(--insis-header-bg)] px-4 py-3">
 					<div class="flex items-center gap-2">
 						<span class="insis-course-code font-medium">{{ unit.courseIdent }}</span>
-						<span class="text-[var(--insis-gray-600)]">{{ unit.courseTitle }}</span>
+						<span class="text-[var(--insis-gray-600)]">{{ getUnitCourseTitle(unit) }}</span>
 					</div>
 					<button type="button" class="insis-btn-text" @click="handleClose">
 						<IconX class="h-5 w-5" />
@@ -202,7 +211,7 @@ onUnmounted(() => {
 						<!-- Course Info (uses same label helpers as CourseRowExpanded!) -->
 						<div>
 							<h3 class="mb-3 flex items-center gap-1.5 font-medium text-[var(--insis-gray-900)]">
-								{{ course.ident }} - {{ course.title }}
+								{{ course.ident }} - {{ getCourseTitle(course) }}
 								<a
 									v-if="course.url"
 									:href="course.url"

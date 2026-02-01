@@ -31,6 +31,8 @@ export interface SelectedCourseUnit {
 	courseId: number
 	courseIdent: string
 	courseTitle: string
+	courseTitleCs: string
+	courseTitleEn: string
 	unitId: number
 	unitType: CourseUnitType
 	slotId: number
@@ -64,6 +66,8 @@ export interface CourseStatus {
 	id: number
 	ident: string
 	title: string
+	titleCs: string
+	titleEn: string
 	status: 'selected' | 'conflict' | 'incomplete'
 	conflictsWith: string[]
 	missingTypes: CourseUnitType[]
