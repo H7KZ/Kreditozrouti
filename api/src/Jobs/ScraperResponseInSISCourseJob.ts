@@ -240,15 +240,13 @@ async function syncStudyPlansFromCourse(
 async function upsertFaculty(trx: Transaction<Database>, faculty: ScraperInSISFaculty): Promise<string | null> {
 	if (!faculty.ident) return null
 
-	let query = trx.insertInto(FacultyTable._table).values({
-		id: faculty.ident,
-		title: faculty.title
-	} as never)
-
-	if (faculty.title) query = query.onDuplicateKeyUpdate({ title: faculty.title })
-	else query = query.onDuplicateKeyUpdate({ id: faculty.ident })
-
-	await query.execute()
+	await trx.insertInto(FacultyTable._table)
+		.values({
+			id: faculty.ident,
+			title: faculty.title
+		} as never)
+		.onDuplicateKeyUpdate({ title: faculty.title })
+		.execute()
 
 	return faculty.ident
 }
