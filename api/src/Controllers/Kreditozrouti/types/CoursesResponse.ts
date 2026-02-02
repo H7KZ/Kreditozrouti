@@ -1,4 +1,4 @@
-import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
+import { CourseWithRelations } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem'
 
 /**
@@ -8,7 +8,7 @@ import FacetItem from '@api/Interfaces/FacetItem'
  */
 export default interface CoursesResponse {
 	/** Array of course records matching the filter criteria. */
-	data: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>[]
+	data: CourseWithRelations[]
 
 	/** Aggregated facet counts for filtering. */
 	facets: {

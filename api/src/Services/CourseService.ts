@@ -2,18 +2,14 @@ import { mysql, redis } from '@api/clients'
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse'
 import {
 	Course,
-	CourseAssessment,
 	CourseAssessmentTable,
 	CourseTable,
-	CourseUnit,
-	CourseUnitSlot,
 	CourseUnitSlotTable,
 	CourseUnitTable,
+	CourseWithRelations,
 	Database,
 	ExcludeMethods,
-	Faculty,
 	FacultyTable,
-	StudyPlanCourse,
 	StudyPlanCourseTable
 } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem'
@@ -66,11 +62,7 @@ export default class CourseService {
 	 * )
 	 * ```
 	 */
-	static async getCoursesWithRelations(
-		filters: Partial<CoursesFilter>,
-		limit = 20,
-		offset = 0
-	): Promise<{ courses: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>[]; total: number }> {
+	static async getCoursesWithRelations(filters: Partial<CoursesFilter>, limit = 20, offset = 0): Promise<{ courses: CourseWithRelations[]; total: number }> {
 		if (limit <= 0) return { courses: [], total: 0 }
 
 		// 1. Count total matching courses
@@ -106,6 +98,29 @@ export default class CourseService {
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		return { courses: enrichedCourses as any, total }
+	}
+
+	/**
+	 * Retrieves courses associated with a specific study plan.
+	 *
+	 * @param studyPlanIds[] - ID of the study plan
+	 * @returns Array of courses linked to the study plan
+	 */
+	static async getCoursesByStudyPlan(studyPlanIds: number[]): Promise<Course[]> {
+		return mysql
+			.selectFrom(`${CourseTable._table} as c`)
+			.innerJoin(`${StudyPlanCourseTable._table} as spc`, 'c.id', 'spc.course_id')
+			.selectAll('c')
+			.where('spc.study_plan_id', 'in', studyPlanIds)
+			.where('c.id', '=', eb =>
+				eb
+					.selectFrom(`${CourseTable._table} as c2`)
+					.innerJoin(`${StudyPlanCourseTable._table} as spc2`, 'c2.id', 'spc2.course_id')
+					.select(eb2 => eb2.fn.min('c2.id').as('id'))
+					.where('spc2.study_plan_id', 'in', studyPlanIds)
+					.whereRef('c2.ident', '=', 'c.ident')
+			)
+			.execute()
 	}
 
 	/**
@@ -255,11 +270,7 @@ export default class CourseService {
 
 	/** Determines if slots join is needed (for time-based filters). */
 	private static needsSlotsJoin(filters: Partial<CoursesFilter>, ignore?: string): boolean {
-		return (
-			(!!filters.include_times?.length && ignore !== 'include_times') ||
-			(!!filters.exclude_times?.length && ignore !== 'exclude_times') ||
-			(!!filters.exclude_slot_ids?.length && ignore !== 'exclude_slot_ids')
-		)
+		return (!!filters.include_times?.length && ignore !== 'include_times') || (!!filters.exclude_times?.length && ignore !== 'exclude_times')
 	}
 
 	/** Determines if study plan join is needed (for plan/group/category filters). */
@@ -385,9 +396,44 @@ export default class CourseService {
 			query = query.where('c.mode_of_delivery', 'in', filters.mode_of_deliveries)
 		}
 
-		// Conflict exclusion
+		// Availability filters
+		if (filters.completed_course_idents?.length && !['completed_course_idents'].includes(ignore!)) {
+			query = query.where('c.ident', 'not in', filters.completed_course_idents)
+		}
+
+		// Conflict exclusion: exclude courses where ALL units have at least one conflicting slot
 		if (filters.exclude_slot_ids?.length && !['exclude_slot_ids'].includes(ignore!)) {
-			query = query.where('s.id', 'not in', filters.exclude_slot_ids)
+			query = query.where(eb =>
+				eb.or([
+					// Courses with no units are still viable (catalog-only entries)
+					eb.not(
+						eb.exists(
+							eb
+								.selectFrom(`${CourseUnitTable._table} as _eu`)
+								.select(sql`1`.as('_'))
+								.whereRef('_eu.course_id', '=', 'c.id')
+						)
+					),
+					// At least one unit has NO excluded slots → course is attendable
+					eb.exists(
+						eb
+							.selectFrom(`${CourseUnitTable._table} as _eu`)
+							.select(sql`1`.as('_'))
+							.whereRef('_eu.course_id', '=', 'c.id')
+							.where(eb2 =>
+								eb2.not(
+									eb2.exists(
+										eb2
+											.selectFrom(`${CourseUnitSlotTable._table} as _es`)
+											.select(sql`1`.as('_'))
+											.whereRef('_es.unit_id', '=', '_eu.id')
+											.where('_es.id', 'in', filters.exclude_slot_ids!)
+									)
+								)
+							)
+					)
+				])
+			)
 		}
 
 		return query
@@ -655,6 +701,7 @@ export default class CourseService {
 			exclude_times: filters.exclude_times
 				? filters.exclude_times.map(t => ({ day: t.day, time_from: t.time_from, time_to: t.time_to })).sort((a, b) => this.sortTimeSelection(a, b))
 				: undefined,
+			completed_course_idents: filters.completed_course_idents?.sort(),
 			exclude_slot_ids: filters.exclude_slot_ids?.sort()
 		}
 

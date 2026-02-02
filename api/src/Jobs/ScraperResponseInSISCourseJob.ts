@@ -240,7 +240,8 @@ async function syncStudyPlansFromCourse(
 async function upsertFaculty(trx: Transaction<Database>, faculty: ScraperInSISFaculty): Promise<string | null> {
 	if (!faculty.ident) return null
 
-	await trx.insertInto(FacultyTable._table)
+	await trx
+		.insertInto(FacultyTable._table)
 		.values({
 			id: faculty.ident,
 			title: faculty.title
