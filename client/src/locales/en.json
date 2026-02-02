@@ -172,6 +172,7 @@
 			"step1": "Select your faculty",
 			"step2": "Choose your enrollment year",
 			"step3": "Select your study plan",
+			"step3b": "Mark courses you've already completed (optional)",
 			"step4": "Browse courses and build your schedule",
 			"footer": "Kreditožrouti · Data from",
 			"insisLink": "InSIS VŠE"
@@ -194,6 +195,7 @@
 			"clearFilters": "Clear filters",
 			"showingResults": "Showing {from}–{to} of {total} courses",
 			"pageInfo": "Page {current} of {total}",
+			"completedCoursesHidden": "{count} completed course (hidden) | {count} completed courses (hidden)",
 			"emptyTimetable": {
 				"title": "Your timetable is empty",
 				"description": "Add courses from the list or drag across empty slots to search for courses at that time.",
@@ -213,7 +215,8 @@
 			"WizardSteps": {
 				"faculty": "Faculty",
 				"enrollmentYear": "Enrollment Year",
-				"studyPlan": "Study Plan"
+				"studyPlan": "Study Plan",
+				"completedCourses": "Completed"
 			},
 			"WizardStepFaculty": {
 				"title": "Select Faculty",
@@ -241,6 +244,18 @@
 				"selected": "Selected",
 				"proceed": "Continue with selection",
 				"doubleClickTip": "Tip: Double-click a plan to select it and proceed immediately."
+			},
+			"WizardStepCompletedCourses": {
+				"title": "Mark Completed Courses",
+				"description": "Select courses you have already completed. These will be hidden from the course list so you can focus on what's left.",
+				"infoText": "This step is optional. You can also mark courses as completed later from the course detail view. Only courses from your study plan are shown here — for other courses, use the course list.",
+				"searchPlaceholder": "Search by name or code...",
+				"noCoursesFound": "No courses match the filter.",
+				"marked": "marked",
+				"selectedCount": "{count} courses marked as completed",
+				"completedCount": "{count} completed",
+				"skip": "Skip",
+				"proceed": "Continue"
 			}
 		},
 		"courses": {
@@ -255,7 +270,8 @@
 				},
 				"noResults": "No courses match the filter",
 				"inTimetable": "In timetable",
-				"missingUnitTypes": "Incomplete"
+				"missingUnitTypes": "Incomplete",
+				"completed": "Done"
 			},
 			"CourseRowExpanded": {
 				"faculty": "Faculty",
@@ -272,7 +288,13 @@
 				"selectAction": "select action",
 				"noUnitsAvailable": "No schedule units are available for this course.",
 				"incompleteSelectionTitle": "Incomplete course selection",
-				"incompleteSelectionDescription": "To enroll in this course, you must also select: {types}. Please select all required unit types."
+				"incompleteSelectionDescription": "To enroll in this course, you must also select: {types}. Please select all required unit types.",
+				"markAsCompleted": "Mark as completed",
+				"markedCompleted": "Marked as completed",
+				"conflictsWithCourses": "Conflicts with: {courses}",
+				"slotsWithConflicts": "{count} unit has time conflicts with your timetable | {count} units have time conflicts with your timetable",
+				"hideConflicting": "Hide conflicting",
+				"hiddenConflicts": "{count} hidden"
 			},
 			"CourseStatusSummary": {
 				"selectedCourses": "{count} course | {count} courses",
@@ -296,7 +318,14 @@
 				"ectsCredits": "ECTS Credits",
 				"completionMode": "Completion Mode",
 				"lecturers": "Lecturers",
-				"timeRestriction": "Time Restriction"
+				"timeRestriction": "Time Restriction",
+				"completedCourses": "Completed Courses",
+				"showCompletedCourses": "Show completed courses",
+				"completedCoursesCount": "{count} hidden",
+				"timetableConflicts": "Timetable Conflicts",
+				"timetableSlotsCount": "{count} slots selected",
+				"hideConflictingCourses": "Hide courses that conflict with my timetable",
+				"hideConflictingCoursesHelp": "Hides courses where all available units overlap with your selected timetable slots. Courses with at least one non-conflicting option are kept."
 			},
 			"FilterCheckboxGroup": {
 				"searchPlaceholder": "Search..."
@@ -359,7 +388,7 @@
 	"footer": {
 		"about": {
 			"title": "About Kreditožrouti",
-			"description": "The course scheduling tool that InSIS should have been — giving VŠE students instant, filterable access to every course, timetable slot, and study plan in one modern interface.",
+			"description": "The course scheduling tool that InSIS should have been – giving VŠE students instant, filterable access to every course, timetable slot, and study plan in one modern interface.",
 			"university": "Prague University of Economics and Business"
 		},
 		"links": {

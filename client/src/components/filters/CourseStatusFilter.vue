@@ -20,7 +20,7 @@ import IconChevronDown from '~icons/lucide/chevron-down'
  * - Show conflicting courses together when filtering
  */
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { getUnitTypeLabel } = useCourseLabels()
 
 const {

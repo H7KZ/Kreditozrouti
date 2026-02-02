@@ -1,10 +1,11 @@
-import type { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
+import type { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
+import type { TimeSelection } from '@api/Validations'
 import { useCourseLabels } from '@client/composables'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { ALL_DAYS } from '@client/constants/timetable'
 import { i18n } from '@client/index'
 import { useCoursesStore } from '@client/stores'
-import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCourseUnit, TimetableState } from '@client/types'
+import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCourseUnit, SlotConflictInfo, TimetableState } from '@client/types'
 import { getDayFromDate } from '@client/utils/day'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
 import type InSISDay from '@scraper/Types/InSISDay'
@@ -17,12 +18,15 @@ const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, 
  *
  * Manages selected course units and the timetable grid.
  * Handles course unit selection constraints and drag-to-filter functionality.
+ * Now includes helpers for detecting potential slot conflicts before adding.
  *
  * Refactored with:
  * - Cleaner course status computation
  * - Extracted helper functions for readability
  * - Improved conflict detection
  * - Better separation of concerns
+ * - Slot conflict prediction for expanded course view
+ * - selectedTimesForExclusion getter for exclude_times filter
  */
 export const useTimetableStore = defineStore('timetable', {
 	state: (): TimetableState => ({
@@ -93,6 +97,69 @@ export const useTimetableStore = defineStore('timetable', {
 			}
 
 			return total
+		},
+
+		/**
+		 * Convert selected timetable units to TimeSelection format for the exclude_times filter.
+		 *
+		 * Handles both day-based (weekly recurring) and date-based (single occurrence) slots:
+		 * - Units with `day` → TimeSelection with `day` (matches weekly course slots)
+		 * - Units with `date` → TimeSelection with `date` (matches single-occurrence course slots)
+		 *   PLUS an additional entry with the computed `day` from the date
+		 *   (so weekly course slots on that weekday are also caught)
+		 *
+		 * Deduplicates day-based entries to avoid redundant API/SQL conditions.
+		 */
+		selectedTimesForExclusion(): TimeSelection[] {
+			const entries: TimeSelection[] = []
+			// Track day+time combos we've already emitted to avoid duplication
+			const seenDayTimes = new Set<string>()
+
+			for (const u of this.selectedUnits) {
+				if (u.timeFrom == null || u.timeTo == null) continue
+
+				if (u.day) {
+					// Weekly slot → day-based entry
+					const key = `d:${u.day}:${u.timeFrom}:${u.timeTo}`
+					if (!seenDayTimes.has(key)) {
+						seenDayTimes.add(key)
+						entries.push({
+							slot_id: u.slotId,
+							day: u.day,
+							time_from: u.timeFrom,
+							time_to: u.timeTo,
+						} as TimeSelection)
+					}
+				}
+
+				if (u.date) {
+					// Single-occurrence slot → date-based entry
+					entries.push({
+						slot_id: u.slotId,
+						date: new Date(u.date),
+						time_from: u.timeFrom,
+						time_to: u.timeTo,
+					} as TimeSelection)
+
+					// Also emit a day-based entry so weekly course slots
+					// on that same weekday are caught too
+					const dayFromDate = getDayFromDate(u.date)
+					if (dayFromDate) {
+						const key = `d:${dayFromDate}:${u.timeFrom}:${u.timeTo}`
+						if (!seenDayTimes.has(key)) {
+							seenDayTimes.add(key)
+							entries.push({
+								slot_id: u.slotId,
+								day: dayFromDate,
+								time_from: u.timeFrom,
+								time_to: u.timeTo,
+							} as TimeSelection)
+						}
+					}
+				}
+			}
+
+			return entries
 		},
 
 		/**
@@ -232,11 +299,76 @@ export const useTimetableStore = defineStore('timetable', {
 		},
 
 		/**
+		 * Check if a course unit slot would conflict with any currently selected units.
+		 * Returns the list of conflicting selected units, or empty array if no conflict.
+		 * Used by CourseRowExpanded to show collision warnings.
+		 *
+		 * IMPORTANT: Skips the slot itself if it's already selected (no self-conflict).
+		 */
+		getSlotConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
+			if (!slot.time_from || !slot.time_to) return []
+
+			const slotDay = slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
+			if (!slotDay) return []
+
+			const conflicts: SelectedCourseUnit[] = []
+
+			for (const unit of this.selectedUnits) {
+				// Skip self-check: don't report a slot as conflicting with itself
+				if (unit.slotId === slot.id) continue
+
+				const unitDay = unit.day ?? (unit.date ? getDayFromDate(unit.date) : null)
+				if (!unitDay || unitDay !== slotDay) continue
+
+				// If both have specific dates, they must match
+				if (slot.date && unit.date && slot.date !== unit.date) continue
+
+				// Check time overlap
+				if (slot.time_from! < unit.timeTo && unit.timeFrom < slot.time_to!) {
+					conflicts.push(unit)
+				}
+			}
+
+			return conflicts
+		},
+
+		/**
+		 * Check if any slot in a unit would conflict with selected units.
+		 * Returns conflict info for each conflicting slot.
+		 */
+		getUnitConflicts(unit: CourseUnit<void, CourseUnitSlot>): SlotConflictInfo[] {
+			const conflicts: SlotConflictInfo[] = []
+
+			for (const slot of unit.slots || []) {
+				const slotConflicts = this.getSlotConflicts(slot)
+				if (slotConflicts.length > 0) {
+					conflicts.push({
+						slotId: slot.id,
+						conflictingUnits: slotConflicts,
+					})
+				}
+			}
+
+			return conflicts
+		},
+
+		/**
+		 * Check if a unit has any slot conflicts.
+		 * Quick boolean check for filtering.
+		 */
+		unitHasConflicts(unit: CourseUnit<void, CourseUnitSlot>): boolean {
+			for (const slot of unit.slots || []) {
+				if (this.getSlotConflicts(slot).length > 0) return true
+			}
+			return false
+		},
+
+		/**
 		 * Internal helper: Check if a course selection is complete
 		 */
 		checkCourseCompleteness(
 			selectedUnits: SelectedCourseUnit[],
-			fullCourse: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse> | undefined,
+			fullCourse: CourseWithRelations | undefined,
 			getSlotType: (slot: CourseUnitSlot) => CourseUnitType,
 		): { isIncomplete: boolean; missingTypes: CourseUnitType[] } {
 			if (!fullCourse) {
@@ -271,11 +403,7 @@ export const useTimetableStore = defineStore('timetable', {
 		/**
 		 * Check if a unit can be added (validation)
 		 */
-		canAddUnit(
-			course: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>,
-			unit: CourseUnit<void, CourseUnitSlot>,
-			slot: CourseUnitSlot,
-		): string | null {
+		canAddUnit(course: CourseWithRelations, unit: CourseUnit<void, CourseUnitSlot>, slot: CourseUnitSlot): string | null {
 			if (this.selectedUnits.some((u) => u.slotId === slot.id)) {
 				return t('stores.timetable.errors.slotAlreadySelected')
 			}
@@ -285,11 +413,7 @@ export const useTimetableStore = defineStore('timetable', {
 		/**
 		 * Add a course unit to the timetable
 		 */
-		addUnit(
-			course: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>,
-			unit: CourseUnit<void, CourseUnitSlot>,
-			slot: CourseUnitSlot,
-		): boolean {
+		addUnit(course: CourseWithRelations, unit: CourseUnit<void, CourseUnitSlot>, slot: CourseUnitSlot): boolean {
 			const { getSlotType } = useCourseLabels()
 
 			const error = this.canAddUnit(course, unit, slot)
@@ -315,6 +439,10 @@ export const useTimetableStore = defineStore('timetable', {
 
 			this.selectedUnits.push(selectedUnit)
 			this.persist()
+
+			// Sync exclude_times if the courses store has the toggle on
+			this.syncCoursesStoreExclusion()
+
 			return true
 		},
 
@@ -324,6 +452,7 @@ export const useTimetableStore = defineStore('timetable', {
 		removeUnit(unitId: number) {
 			this.selectedUnits = this.selectedUnits.filter((u) => u.unitId !== unitId)
 			this.persist()
+			this.syncCoursesStoreExclusion()
 		},
 
 		/**
@@ -332,17 +461,13 @@ export const useTimetableStore = defineStore('timetable', {
 		removeCourse(courseId: number) {
 			this.selectedUnits = this.selectedUnits.filter((u) => u.courseId !== courseId)
 			this.persist()
+			this.syncCoursesStoreExclusion()
 		},
 
 		/**
 		 * Change a unit (atomic remove old + add new)
 		 */
-		changeUnit(
-			course: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>,
-			oldSlotId: number,
-			newUnit: CourseUnit<void, CourseUnitSlot>,
-			newSlot: CourseUnitSlot,
-		): boolean {
+		changeUnit(course: CourseWithRelations, oldSlotId: number, newUnit: CourseUnit<void, CourseUnitSlot>, newSlot: CourseUnitSlot): boolean {
 			const oldIndex = this.selectedUnits.findIndex((u) => u.slotId === oldSlotId)
 			const oldUnit = oldIndex !== -1 ? this.selectedUnits[oldIndex] : null
 
@@ -362,6 +487,17 @@ export const useTimetableStore = defineStore('timetable', {
 			}
 
 			return this.addUnit(course, newUnit, newSlot)
+		},
+
+		/**
+		 * Notify the courses store to re-sync timetable exclusion times
+		 * when the timetable changes and the toggle is active.
+		 */
+		syncCoursesStoreExclusion() {
+			const coursesStore = useCoursesStore()
+			if (coursesStore.hideConflictingCourses) {
+				coursesStore.syncTimetableExcludeTimes()
+			}
 		},
 
 		/**

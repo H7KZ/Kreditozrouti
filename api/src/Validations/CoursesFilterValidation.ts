@@ -37,7 +37,6 @@ const CoursesFilterValidation = z.object({
 
 	// Availability Filters
 	completed_course_idents: z.array(z.coerce.string()).optional(),
-	exclude_slot_ids: z.array(z.coerce.number()).optional(),
 
 	// Sorting
 	sort_by: z.enum(['ident', 'title', 'ects', 'faculty', 'year', 'semester']).optional().default('ident'),

@@ -6,7 +6,7 @@ import IconFingerPrintPattern from '~icons/lucide/fingerprint-pattern'
 import IconGithub from '~icons/lucide/github'
 import IconMail from '~icons/lucide/mail'
 
-const { t, locale } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n()
 
 const currentYear = new Date().getFullYear()
 const appVersion = APP_VERSION

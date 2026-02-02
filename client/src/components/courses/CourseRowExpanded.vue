@@ -5,17 +5,26 @@
  * Expanded view for a course row showing full details and unit selection.
  * Handles grouping slots by unit and selecting entire units.
  *
- * REFACTORED: Uses shared composables instead of inline logic.
+ * UPDATED:
+ * - Slot collision warnings: shows which selected courses conflict with each slot
+ * - Hide conflicting units toggle: filter out units that conflict with timetable
+ * - Mark as completed: button to mark a course as already done
+ * - Uses shared composables instead of inline logic.
  */
 
-import { CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
+import { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useSlotSorting, useTimeFilterMatching } from '@client/composables'
-import { toRef } from 'vue'
+import { useCoursesStore, useTimetableStore, useWizardStore } from '@client/stores'
+import type { CourseUnitWithSlots, SelectedCourseUnit } from '@client/types'
+import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconCheck from '~icons/lucide/check'
+import IconCircleCheck from '~icons/lucide/circle-check'
 import IconExternalLink from '~icons/lucide/external-link'
+import IconEyeOff from '~icons/lucide/eye-off'
 import IconMinus from '~icons/lucide/minus'
+import IconOctagonAlert from '~icons/lucide/octagon-alert'
 import IconPlus from '~icons/lucide/plus'
 import IconTrash from '~icons/lucide/trash-2'
 
@@ -30,6 +39,14 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+// ============================================================================
+// Stores
+// ============================================================================
+
+const timetableStore = useTimetableStore()
+const coursesStore = useCoursesStore()
+const wizardStore = useWizardStore()
 
 // ============================================================================
 // Composables
@@ -72,6 +89,89 @@ const { formatSlotInfo, formatCapacity, getCapacityClass } = useSlotFormatting()
 const { slotMatchesTimeFilter, unitMatchesTimeFilter } = useTimeFilterMatching()
 
 // ============================================================================
+// Conflict Filtering State
+// ============================================================================
+
+/** Whether to hide units with conflicting slots */
+const hideConflictingUnits = ref(false)
+
+/** Whether this course is marked as completed */
+const isMarkedCompleted = computed(() => wizardStore.isCourseCompleted(props.course.ident))
+
+// ============================================================================
+// Conflict Detection
+// ============================================================================
+
+/**
+ * Get conflict info for a specific slot.
+ * Returns conflicting selected units or empty array.
+ */
+function getSlotConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
+	return timetableStore.getSlotConflicts(slot)
+}
+
+/**
+ * Check if a unit has any conflicting slots.
+ */
+function unitHasConflicts(unit: CourseUnit<void, CourseUnitSlot>): boolean {
+	return timetableStore.unitHasConflicts(unit)
+}
+
+/**
+ * Count of units hidden by conflict filter in a group.
+ */
+function hiddenConflictCount(units: CourseUnitWithSlots[]): number {
+	if (!hideConflictingUnits.value) return 0
+	return units.filter((u) => unitHasConflicts(u)).length
+}
+
+/**
+ * Filter units: optionally remove conflicting ones.
+ */
+function getVisibleUnits(units: CourseUnitWithSlots[]): CourseUnitWithSlots[] {
+	if (!hideConflictingUnits.value) return units
+	return units.filter((u) => !unitHasConflicts(u) || isUnitSelected(u.id))
+}
+
+/**
+ * Whether any unit in the course has conflicts (to show the toggle).
+ */
+const hasAnyConflicts = computed(() => {
+	for (const [, group] of unitsByGroup.value) {
+		for (const unit of group.units) {
+			if (unitHasConflicts(unit)) return true
+		}
+	}
+	return false
+})
+
+/**
+ * Total conflicting units count.
+ */
+const conflictingUnitCount = computed(() => {
+	let count = 0
+	for (const [, group] of unitsByGroup.value) {
+		for (const unit of group.units) {
+			if (unitHasConflicts(unit)) count++
+		}
+	}
+	return count
+})
+
+/**
+ * Format conflict description for a slot tooltip.
+ */
+function formatSlotConflictTooltip(slot: CourseUnitSlot): string {
+	const conflicts = getSlotConflicts(slot)
+	if (conflicts.length === 0) return ''
+
+	const courseIdents = [...new Set(conflicts.map((c) => c.courseIdent))]
+	return t('components.courses.CourseRowExpanded.conflictsWithCourses', {
+		courses: courseIdents.join(', '),
+	})
+}
+
+// ============================================================================
 // Computed Helpers
 // ============================================================================
 
@@ -100,6 +200,22 @@ function getSlotHighlightClass(slot: CourseUnitSlot): string {
 		seminar: 'bg-[var(--insis-block-seminar)]!',
 	}
 	return classes[type] ?? ''
+}
+
+/**
+ * Get conflict indicator class for a slot row.
+ */
+function getSlotConflictClass(slot: CourseUnitSlot): string {
+	const conflicts = getSlotConflicts(slot)
+	if (conflicts.length === 0) return ''
+	return 'bg-red-50'
+}
+
+/**
+ * Toggle completed course marking.
+ */
+function handleToggleCompleted() {
+	coursesStore.toggleCompletedCourse(props.course.ident)
 }
 </script>
 
@@ -166,6 +282,27 @@ function getSlotHighlightClass(slot: CourseUnitSlot): string {
 						<li v-for="assessment in course.assessments" :key="assessment.id">{{ assessment.method }}: {{ assessment.weight }}%</li>
 					</ul>
 				</div>
+
+				<!-- Mark as completed button -->
+				<div class="mt-4 border-t border-[var(--insis-border-light)] pt-3">
+					<button
+						type="button"
+						:class="[
+							'flex items-center gap-2 rounded border px-3 py-2 text-sm transition-colors cursor-pointer',
+							isMarkedCompleted
+								? 'border-[var(--insis-success)] bg-green-50 text-[var(--insis-success)]'
+								: 'border-[var(--insis-border)] bg-white text-[var(--insis-gray-600)] hover:border-[var(--insis-success)] hover:bg-green-50',
+						]"
+						@click="handleToggleCompleted"
+					>
+						<IconCircleCheck :class="['h-4 w-4', isMarkedCompleted ? 'text-[var(--insis-success)]' : 'text-[var(--insis-gray-400)]']" />
+						{{
+							isMarkedCompleted
+								? $t('components.courses.CourseRowExpanded.markedCompleted')
+								: $t('components.courses.CourseRowExpanded.markAsCompleted')
+						}}
+					</button>
+				</div>
 			</div>
 
 			<!-- Unit Selection -->
@@ -189,6 +326,21 @@ function getSlotHighlightClass(slot: CourseUnitSlot): string {
 							{{ $t('components.courses.CourseRowExpanded.removeAll') }}
 						</button>
 					</div>
+				</div>
+
+				<!-- Conflict filter toggle -->
+				<div v-if="hasAnyConflicts" class="mb-3 flex items-center justify-between rounded border border-amber-200 bg-amber-50 px-3 py-2">
+					<div class="flex items-center gap-2 text-sm text-amber-700">
+						<IconOctagonAlert class="h-4 w-4 shrink-0" />
+						<span>
+							{{ $t('components.courses.CourseRowExpanded.slotsWithConflicts', { count: conflictingUnitCount }) }}
+						</span>
+					</div>
+					<label class="flex items-center gap-1.5 cursor-pointer text-xs text-amber-700 hover:text-amber-900">
+						<input v-model="hideConflictingUnits" type="checkbox" class="insis-checkbox" />
+						<IconEyeOff class="h-3 w-3" />
+						{{ $t('components.courses.CourseRowExpanded.hideConflicting') }}
+					</label>
 				</div>
 
 				<!-- Incomplete selection warning -->
@@ -229,24 +381,35 @@ function getSlotHighlightClass(slot: CourseUnitSlot): string {
 								}}
 								{{ group.units.length }})
 							</span>
+							<!-- Hidden by conflict count -->
+							<span v-if="hiddenConflictCount(group.units) > 0" class="text-xs text-amber-600">
+								({{ $t('components.courses.CourseRowExpanded.hiddenConflicts', { count: hiddenConflictCount(group.units) }) }})
+							</span>
 						</div>
 
 						<!-- Units in group -->
 						<div class="space-y-2">
 							<div
-								v-for="unit in sortUnits(group.units)"
+								v-for="unit in sortUnits(getVisibleUnits(group.units))"
 								:key="unit.id"
 								class="rounded border text-sm transition-colors"
 								:class="{
 									'border-[var(--insis-success)] bg-[var(--insis-success-light)]': isUnitSelected(unit.id),
+									'border-red-300 bg-red-50': !isUnitSelected(unit.id) && unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
 									'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)]':
-										!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit),
-									'bg-[var(--insis-blue-light)] ring-1 ring-[var(--insis-blue)]': !isUnitSelected(unit.id) && unitMatchesTimeFilter(unit),
+										!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit) && !unitHasConflicts(unit),
+									'bg-[var(--insis-blue-light)] ring-1 ring-[var(--insis-blue)]':
+										!isUnitSelected(unit.id) && unitMatchesTimeFilter(unit) && !unitHasConflicts(unit),
 								}"
 							>
 								<div class="flex items-center justify-between p-2">
 									<div class="flex w-full flex-col gap-1">
-										<div v-for="slot in sortSlots(unit.slots)" :key="slot.id" class="-mx-1 flex items-center gap-3 rounded px-1">
+										<div
+											v-for="slot in sortSlots(unit.slots)"
+											:key="slot.id"
+											:class="['-mx-1 flex items-center gap-3 rounded px-1', getSlotConflictClass(slot)]"
+											:title="formatSlotConflictTooltip(slot)"
+										>
 											<span
 												class="w-8 shrink-0 rounded bg-[var(--insis-gray-200)] px-1 py-0.5 text-center text-xs text-[var(--insis-gray-700)]"
 												:class="getSlotHighlightClass(slot)"
@@ -264,6 +427,18 @@ function getSlotHighlightClass(slot: CourseUnitSlot): string {
 
 											<span class="hidden truncate text-xs text-[var(--insis-gray-500)] sm:block">
 												{{ unit.lecturer }}
+											</span>
+
+											<!-- Slot conflict indicator -->
+											<span
+												v-if="getSlotConflicts(slot).length > 0"
+												class="ml-auto shrink-0 flex items-center gap-1 text-xs text-red-600"
+												:title="formatSlotConflictTooltip(slot)"
+											>
+												<IconOctagonAlert class="h-3 w-3" />
+												<span class="hidden sm:inline">
+													{{ [...new Set(getSlotConflicts(slot).map((c) => c.courseIdent))].join(', ') }}
+												</span>
 											</span>
 										</div>
 

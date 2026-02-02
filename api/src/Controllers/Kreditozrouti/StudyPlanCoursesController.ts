@@ -17,10 +17,10 @@ import { Request, Response } from 'express'
  * @throws {Exception} 400 - If the validation of the search request fails.
  */
 export default async function StudyPlanCoursesController(req: Request, res: Response<StudyPlanCoursesResponse>) {
-	LoggerAPIContext.add(res, { params: req.params })
+	LoggerAPIContext.add(res, { body: req.body })
 
 	// 1. Validation
-	const result = await StudyPlanCoursesFilterValidation.safeParseAsync(req.params.study_plan_id)
+	const result = await StudyPlanCoursesFilterValidation.safeParseAsync(req.body)
 
 	if (!result.success) {
 		throw new Exception(400, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', {

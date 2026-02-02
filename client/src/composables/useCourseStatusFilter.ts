@@ -38,7 +38,7 @@ export interface StatusFilterOption {
  * ```
  */
 export function useCourseStatusFilter() {
-	const { t } = useI18n({ useScope: 'global' })
+	const { t } = useI18n()
 	const timetableStore = useTimetableStore()
 	const coursesStore = useCoursesStore()
 

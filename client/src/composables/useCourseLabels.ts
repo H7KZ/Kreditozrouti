@@ -1,4 +1,4 @@
-import type { CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
+import type { Course, CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
 import { i18n } from '@client/index.ts'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import type InSISDay from '@scraper/Types/InSISDay'
@@ -153,7 +153,7 @@ export function useCourseLabels() {
 	 * @param course - Course object
 	 * @returns Title in current locale with fallbacks
 	 */
-	function getCourseTitle(course: CourseWithRelations): string {
+	function getCourseTitle(course: CourseWithRelations | Course): string {
 		switch (locale.value) {
 			case 'cs':
 				return course.title_cs ?? course.title ?? ''

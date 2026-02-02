@@ -512,9 +512,6 @@ interface CoursesFilter {
   mode_of_completions?: string[]
   mode_of_deliveries?: string[]
 
-  // Availability
-  exclude_slot_ids?: number[]
-
   // Pagination & sorting
   limit?: number
   offset?: number

@@ -29,8 +29,6 @@ body:json {
     "ects": [],
     "mode_of_completions": [],
     "mode_of_deliveries": [],
-  
-    "exclude_slot_ids": [],
     
     "sort_by": "ident",
     "sort_dir": "asc",
@@ -82,7 +80,6 @@ docs {
   | `mode_of_delivery` | `string[]` | e.g., "In-person", "Distance". |
   | `lecturer` | `string[]` | Name of the lecturer. |
   | **Availability** | | |
-  | `exclude_slot_ids` | `number[]` | List of specific timetable slot IDs to ignore. |
   | **Pagination & Sort** | | |
   | `sort_by` | `enum` | Options: `ident`, `title`, `ects`, `faculty`, `year`, `semester`. Default: `ident`. |
   | `sort_dir` | `enum` | Options: `asc`, `desc`. Default: `asc`. |

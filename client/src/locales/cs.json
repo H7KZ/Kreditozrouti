@@ -172,6 +172,7 @@
 			"step1": "Vyberte svou fakultu",
 			"step2": "Zvolte rok nástupu ke studiu",
 			"step3": "Vyberte svůj studijní plán",
+			"step3b": "Označte kurzy, které jste již absolvovali (volitelné)",
 			"step4": "Procházejte předměty a sestavte si rozvrh",
 			"footer": "Kreditožrouti · Data z",
 			"insisLink": "InSIS VŠE"
@@ -194,6 +195,7 @@
 			"clearFilters": "Zrušit filtry",
 			"showingResults": "Zobrazeno {from} – {to} z {total} předmětů",
 			"pageInfo": "Stránka {current} z {total}",
+			"completedCoursesHidden": "{count} dokončených kurzů (skryto) | {count} dokončený kurz (skrytý) | {count} dokončené kurzy (skryty)",
 			"emptyTimetable": {
 				"title": "Váš rozvrh je prázdný",
 				"description": "Přidejte předměty ze seznamu nebo táhněte přes prázdné sloty pro vyhledání předmětů v daném čase.",
@@ -213,7 +215,8 @@
 			"WizardSteps": {
 				"faculty": "Fakulta",
 				"enrollmentYear": "Rok nástupu",
-				"studyPlan": "Studijní plán"
+				"studyPlan": "Studijní plán",
+				"completedCourses": "Dokončené předměty"
 			},
 			"WizardStepFaculty": {
 				"title": "Vyberte fakultu",
@@ -241,6 +244,18 @@
 				"selected": "Vybráno",
 				"proceed": "Pokračovat ve výběru",
 				"doubleClickTip": "Tip: Poklepejte na plán, abyste jej vybrali a mohli okamžitě pokračovat."
+			},
+			"WizardStepCompletedCourses": {
+				"title": "Označit dokončené kurzy",
+				"description": "Vyberte kurzy, které jste již dokončili. Tyto kurzy budou skryty ze seznamu kurzů, abyste se mohli soustředit na ty, které vám zbývají.",
+				"infoText": "Tento krok je volitelný. Kurzy můžete označit jako dokončené také později v podrobném zobrazení kurzu. Zde se zobrazují pouze kurzy z vašeho studijního plánu – pro ostatní kurzy použijte seznam kurzů.",
+				"searchPlaceholder": "Hledat podle názvu nebo kódu...",
+				"noCoursesFound": "Žádné kurzy neodpovídají filtru.",
+				"marked": "označeno",
+				"selectedCount": "{count} kurzů označeno jako dokončené | {count} kurz označen jako dokončený | {count} kurzy označeny jako dokončené",
+				"completedCount": "{count} dokončeno | {count} dokončen | {count} dokončeno",
+				"skip": "Přeskočit",
+				"proceed": "Pokračovat"
 			}
 		},
 		"courses": {
@@ -255,7 +270,8 @@
 				},
 				"noResults": "Žádné předměty neodpovídají filtru",
 				"inTimetable": "V rozvrhu",
-				"missingUnitTypes": "Nekompletní"
+				"missingUnitTypes": "Nekompletní",
+				"completed": "Dokončeno"
 			},
 			"CourseRowExpanded": {
 				"faculty": "Fakulta",
@@ -272,7 +288,13 @@
 				"selectAction": "vybrat akci",
 				"noUnitsAvailable": "Pro tento kurz nejsou k dispozici žádné jednotky rozvrhu.",
 				"incompleteSelectionTitle": "Neúplný výběr kurzu",
-				"incompleteSelectionDescription": "Chcete-li se zapsat do tohoto kurzu, musíte také vybrat: {types}. Vyberte všechny požadované typy jednotek."
+				"incompleteSelectionDescription": "Chcete-li se zapsat do tohoto kurzu, musíte také vybrat: {types}. Vyberte všechny požadované typy jednotek.",
+				"markAsCompleted": "Označit jako dokončené",
+				"markedCompleted": "Označeno jako dokončené",
+				"conflictsWithCourses": "Konflikt s: {courses}",
+				"slotsWithConflicts": "{count} jednotek má časový konflikt s vaším rozvrhem | {count} jednotka má časový konflikt s vaším rozvrhem | {count} jednoteky mají časové konflikty s vaším rozvrhem",
+				"hideConflicting": "Skrýt konflikty",
+				"hiddenConflicts": "{count} skrytých konfliktů | {count} skrytý konflikt | {count} skryté konflikty"
 			},
 			"CourseStatusSummary": {
 				"selectedCourses": "{count} předmět | {count} předměty | {count} předmětů",
@@ -296,7 +318,14 @@
 				"ectsCredits": "ECTS kredity",
 				"completionMode": "Způsob ukončení",
 				"lecturers": "Vyučující",
-				"timeRestriction": "Časové omezení"
+				"timeRestriction": "Časové omezení",
+				"completedCourses": "Dokončené kurzy",
+				"showCompletedCourses": "Zobrazit dokončené kurzy",
+				"completedCoursesCount": "{count} skrytých | {count} skrytý | {count} skryté",
+				"timetableConflicts": "Konflikty rozvrhu",
+				"timetableSlotsCount": "{count} vybraných časových slotů | {count} vybraný časový slot | {count} vybrané časové sloty",
+				"hideConflictingCourses": "Skrýt kurzy, které jsou v rozporu s mým rozvrhem",
+				"hideConflictingCoursesHelp": "Skrývá kurzy, u nichž se všechny dostupné jednotky překrývají s vámi vybranými časovými sloty v rozvrhu. Kurzy s alespoň jednou nekonfliktní možností jsou zachovány."
 			},
 			"FilterCheckboxGroup": {
 				"searchPlaceholder": "Hledat..."

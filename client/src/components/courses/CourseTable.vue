@@ -15,7 +15,7 @@ import IconChevronUp from '~icons/lucide/chevron-up'
  * Refactored to use composables for labels and schedule summary.
  */
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
 

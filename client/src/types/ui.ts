@@ -1,4 +1,4 @@
-import { ViewMode } from '@client/types/view.ts'
+import { ViewMode } from '@client/types'
 
 export interface PersistedUIState {
 	viewMode: ViewMode

@@ -25,7 +25,7 @@ import IconTable from '~icons/lucide/table'
  * - Refactored filter panel with checkbox-style status filters
  */
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const router = useRouter()
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
@@ -81,6 +81,7 @@ const selectedCoursesCount = computed(() => timetableStore.selectedCourseIds.len
 function handleResetWizard() {
 	if (!confirm(t('pages.courses.changePlanConfirm'))) return
 	wizardStore.reset()
+	timetableStore.clearAll()
 	router.push('/')
 }
 

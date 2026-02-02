@@ -3,7 +3,7 @@ import InSISService from '@api/Services/InSISService.ts'
 import { TimeSelection } from '@api/Validations'
 import { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
 import api from '@client/api'
-import { useWizardStore } from '@client/stores'
+import { useTimetableStore, useWizardStore } from '@client/stores'
 import { CourseSortBy, CoursesState, SortDirection } from '@client/types'
 import InSISDay from '@scraper/Types/InSISDay.ts'
 import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory.ts'
@@ -30,7 +30,7 @@ function createDefaultFilters(): CoursesFilter {
 		ects: [],
 		mode_of_completions: [],
 		mode_of_deliveries: [],
-		exclude_slot_ids: [],
+		completed_course_idents: [],
 		sort_by: 'ident',
 		sort_dir: 'asc',
 		limit: 50,
@@ -43,6 +43,13 @@ function createDefaultFilters(): CoursesFilter {
  * Manages course search, filtering, and pagination.
  * Syncs with the timetable store for selected courses.
  * Supports multiple study plan IDs for filtering.
+ * Supports completed course ident exclusion.
+ * Supports timetable-based collision exclusion via exclude_times.
+ *
+ * The `exclude_times` filter combines two sources:
+ * 1. Manual exclusions from FilterTimeRange (stored in `filters.exclude_times`)
+ * 2. Auto-generated exclusions from timetable (stored in `timetableExcludeTimes`)
+ * These are merged at API call time so they don't interfere with each other.
  */
 export const useCoursesStore = defineStore('courses', {
 	state: (): CoursesState => ({
@@ -71,6 +78,8 @@ export const useCoursesStore = defineStore('courses', {
 		loading: false,
 		error: null,
 		expandedCourseIds: new Set(),
+		hideConflictingCourses: false,
+		timetableExcludeTimes: [],
 	}),
 
 	getters: {
@@ -110,6 +119,7 @@ export const useCoursesStore = defineStore('courses', {
 			if (f.mode_of_completions?.length) count++
 			if (f.include_times?.length) count++
 			if (f.exclude_times?.length) count++
+			if (this.hideConflictingCourses) count++
 
 			return count
 		},
@@ -118,10 +128,20 @@ export const useCoursesStore = defineStore('courses', {
 		hasActiveFilters(): boolean {
 			return this.activeFilterCount > 0
 		},
+
+		/**
+		 * Merged exclude_times: manual exclusions + timetable-derived exclusions.
+		 * Used when building the API payload.
+		 */
+		mergedExcludeTimes(): TimeSelection[] {
+			const manual = this.filters.exclude_times || []
+			const timetable = this.hideConflictingCourses ? this.timetableExcludeTimes : []
+			return [...manual, ...timetable]
+		},
 	},
 
 	actions: {
-		/** Initialize filters from wizard selection (supports multiple study plans) */
+		/** Initialize filters from wizard selection (supports multiple study plans + completed courses) */
 		initializeFromWizard() {
 			const wizardStore = useWizardStore()
 
@@ -131,6 +151,11 @@ export const useCoursesStore = defineStore('courses', {
 			} else if (wizardStore.studyPlanId) {
 				// Fallback to single ID for backward compatibility
 				this.filters.study_plan_ids = [wizardStore.studyPlanId]
+			}
+
+			// Apply completed course idents from wizard
+			if (wizardStore.completedCourseIdents.length > 0) {
+				this.filters.completed_course_idents = [...wizardStore.completedCourseIdents]
 			}
 
 			const upcomingPeriod = InSISService.getUpcomingPeriod()
@@ -145,6 +170,9 @@ export const useCoursesStore = defineStore('courses', {
 			this.error = null
 
 			try {
+				// Merge manual + timetable exclude_times for the API call
+				const effectiveExcludeTimes = this.mergedExcludeTimes
+
 				const payload: Partial<CoursesFilter> = {
 					...this.filters,
 					ids: this.filters.ids?.length ? this.filters.ids : undefined,
@@ -156,7 +184,8 @@ export const useCoursesStore = defineStore('courses', {
 					levels: this.filters.levels?.length ? this.filters.levels : undefined,
 					languages: this.filters.languages?.length ? this.filters.languages : undefined,
 					include_times: this.filters.include_times?.length ? this.filters.include_times : undefined,
-					exclude_times: this.filters.exclude_times?.length ? this.filters.exclude_times : undefined,
+					// Use the merged exclude_times (manual + timetable)
+					exclude_times: effectiveExcludeTimes.length ? effectiveExcludeTimes : undefined,
 					lecturers: this.filters.lecturers?.length ? this.filters.lecturers : undefined,
 					study_plan_ids: this.filters.study_plan_ids?.length ? this.filters.study_plan_ids : undefined,
 					groups: this.filters.groups?.length ? this.filters.groups : undefined,
@@ -164,7 +193,7 @@ export const useCoursesStore = defineStore('courses', {
 					ects: this.filters.ects?.length ? this.filters.ects : undefined,
 					mode_of_completions: this.filters.mode_of_completions?.length ? this.filters.mode_of_completions : undefined,
 					mode_of_deliveries: this.filters.mode_of_deliveries?.length ? this.filters.mode_of_deliveries : undefined,
-					exclude_slot_ids: this.filters.exclude_slot_ids?.length ? this.filters.exclude_slot_ids : undefined,
+					completed_course_idents: this.filters.completed_course_idents?.length ? this.filters.completed_course_idents : undefined,
 				}
 
 				const response = await api.post<CoursesResponse>('/courses', payload)
@@ -178,6 +207,52 @@ export const useCoursesStore = defineStore('courses', {
 			} finally {
 				this.loading = false
 			}
+		},
+
+		/**
+		 * Toggle hiding courses that conflict with the timetable.
+		 * When enabled, computes exclude_times from timetable selected units
+		 * and merges them into the API call.
+		 */
+		toggleHideConflictingCourses() {
+			this.hideConflictingCourses = !this.hideConflictingCourses
+
+			if (this.hideConflictingCourses) {
+				this.syncTimetableExcludeTimes()
+			} else {
+				this.timetableExcludeTimes = []
+			}
+
+			this.filters.offset = 0
+			this.fetchCourses()
+		},
+
+		/**
+		 * Sync timetable-derived exclude_times from the timetable store.
+		 * Called when timetable changes while the toggle is active,
+		 * or when the toggle is first enabled.
+		 * Does NOT auto-fetch — caller is responsible for fetching if needed.
+		 */
+		syncTimetableExcludeTimes() {
+			const timetableStore = useTimetableStore()
+			this.timetableExcludeTimes = [...timetableStore.selectedTimesForExclusion]
+		},
+
+		/**
+		 * Toggle a course as completed/not completed.
+		 * Updates both the local filter and the wizard store's persisted state.
+		 */
+		toggleCompletedCourse(courseIdent: string) {
+			const wizardStore = useWizardStore()
+			wizardStore.toggleCompletedCourse(courseIdent)
+
+			// Sync with filters
+			this.filters.completed_course_idents = [...wizardStore.completedCourseIdents]
+		},
+
+		/** Check if a course is marked as completed */
+		isCourseCompleted(courseIdent: string): boolean {
+			return this.filters.completed_course_idents?.includes(courseIdent) ?? false
 		},
 
 		/** Set text search filter */
@@ -289,11 +364,6 @@ export const useCoursesStore = defineStore('courses', {
 			this.filters.offset = 0
 		},
 
-		/** Set excluded slot IDs (courses already in timetable) */
-		setExcludeSlotIds(slotIds: number[]) {
-			this.filters.exclude_slot_ids = slotIds
-		},
-
 		/** Set sort field */
 		setSortBy(sortBy: CourseSortBy) {
 			this.filters.sort_by = sortBy
@@ -366,12 +436,21 @@ export const useCoursesStore = defineStore('courses', {
 				defaults.study_plan_ids = [wizardStore.studyPlanId]
 			}
 
+			// Preserve completed course idents
+			if (wizardStore.completedCourseIdents.length > 0) {
+				defaults.completed_course_idents = [...wizardStore.completedCourseIdents]
+			}
+
 			const upcomingPeriod = InSISService.getUpcomingPeriod()
 
 			defaults.years = [upcomingPeriod.year]
 			defaults.semesters = [upcomingPeriod.semester]
 
 			this.filters = defaults
+
+			// Also reset the timetable collision toggle
+			this.hideConflictingCourses = false
+			this.timetableExcludeTimes = []
 		},
 
 		/** Reset everything including wizard filters */
@@ -379,6 +458,8 @@ export const useCoursesStore = defineStore('courses', {
 			this.filters = createDefaultFilters()
 			this.courses = []
 			this.expandedCourseIds.clear()
+			this.hideConflictingCourses = false
+			this.timetableExcludeTimes = []
 		},
 	},
 })

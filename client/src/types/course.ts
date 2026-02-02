@@ -1,17 +1,20 @@
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse.ts'
-import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
+import { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
+import { TimeSelection } from '@api/Validations'
 import { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
-import { PaginationMeta } from '@client/types/api.ts'
+import { PaginationMeta } from '@client/types'
 import type InSISDay from '@scraper/Types/InSISDay'
 
 export interface CoursesState {
 	filters: CoursesFilter
-	courses: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>[]
+	courses: CourseWithRelations[]
 	facets: CoursesResponse['facets']
 	pagination: PaginationMeta
 	loading: boolean
 	error: string | null
 	expandedCourseIds: Set<number>
+	hideConflictingCourses: boolean
+	timetableExcludeTimes: TimeSelection[]
 }
 
 /**
@@ -84,4 +87,12 @@ export type CourseStatusType = 'selected' | 'conflict' | 'incomplete'
 export interface CourseStatusFilterState {
 	selectedStatuses: CourseStatusType[]
 	selectedCourseIdents: string[]
+}
+
+/**
+ * Conflict info for a specific slot in the expanded course view.
+ */
+export interface SlotConflictInfo {
+	slotId: number
+	conflictingUnits: SelectedCourseUnit[]
 }

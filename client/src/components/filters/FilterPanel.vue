@@ -3,10 +3,12 @@ import CourseStatusFilter from '@client/components/filters/CourseStatusFilter.vu
 import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
 import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
 import { useDebouncedFn } from '@client/composables'
-import { useCoursesStore, useTimetableStore, useUIStore } from '@client/stores'
+import { useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import IconCalendarX from '~icons/lucide/calendar-x'
 import IconChevronDown from '~icons/lucide/chevron-down'
+import IconCircleCheck from '~icons/lucide/circle-check'
 import IconFilter from '~icons/lucide/filter'
 import IconRotateCcw from '~icons/lucide/rotate-ccw'
 import Search from '~icons/lucide/search'
@@ -19,14 +21,16 @@ import IconX from '~icons/lucide/x'
  * Dynamically renders filters based on available facets from the API.
  * Each filter section is collapsible.
  *
- * Now includes CourseStatusFilter for filtering by timetable status
- * (selected, conflicts, incomplete) with checkbox-style UI matching
- * other filter groups.
+ * Now includes:
+ * - CourseStatusFilter for filtering by timetable status
+ * - Completed courses toggle to show/hide already-completed courses
+ * - Timetable collision exclusion toggle to hide courses that conflict with selected timetable
  */
 
 const { t } = useI18n({ useScope: 'global' })
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
+const wizardStore = useWizardStore()
 const uiStore = useUIStore()
 
 // Track collapsed state for time filter separately
@@ -125,6 +129,35 @@ const activeTimeFilterCount = computed(() => (coursesStore.filters.include_times
 // Check if there are any selected courses to show the status filter
 const hasSelectedCourses = computed(() => timetableStore.selectedCourseIds.length > 0)
 
+// Completed courses info
+const completedCourseCount = computed(() => wizardStore.completedCourseIdents.length)
+const hasCompletedCourses = computed(() => completedCourseCount.value > 0)
+
+/**
+ * Whether completed courses are currently being filtered out.
+ * True when completed_course_idents filter is active (courses are hidden).
+ */
+const isHidingCompletedCourses = computed(() => (coursesStore.filters.completed_course_idents?.length ?? 0) > 0)
+
+/**
+ * Toggle showing/hiding completed courses.
+ * When toggled on: sets completed_course_idents from wizard.
+ * When toggled off: clears the filter to show all courses.
+ */
+function toggleShowCompletedCourses() {
+	if (isHidingCompletedCourses.value) {
+		// Show completed courses (clear filter)
+		coursesStore.filters.completed_course_idents = []
+	} else {
+		// Hide completed courses (apply filter)
+		coursesStore.filters.completed_course_idents = [...wizardStore.completedCourseIdents]
+	}
+	coursesStore.fetchCourses()
+}
+
+// Timetable collision info
+const timetableSlotCount = computed(() => timetableStore.selectedUnits.length)
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function handleFilterChange(setter: (values: any[]) => void, values: string[]) {
 	setter(values)
@@ -184,6 +217,48 @@ function toggleTimeFilter() {
 				<IconRotateCcw class="h-3 w-3" />
 				{{ $t('common.reset') }}
 			</button>
+		</div>
+
+		<!-- Completed Courses Toggle -->
+		<div v-if="hasCompletedCourses" class="filter-group">
+			<div class="flex items-center justify-between">
+				<span class="insis-label mb-0 flex items-center gap-1.5">
+					<IconCircleCheck class="h-4 w-4 text-[var(--insis-success)]" />
+					{{ $t('components.filters.FilterPanel.completedCourses') }}
+				</span>
+				<span class="text-xs text-[var(--insis-gray-500)]">
+					{{ $t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount }) }}
+				</span>
+			</div>
+			<label class="mt-2 flex items-center gap-2 cursor-pointer text-sm text-[var(--insis-gray-600)]">
+				<input type="checkbox" class="insis-checkbox" :checked="!isHidingCompletedCourses" @change="toggleShowCompletedCourses" />
+				{{ $t('components.filters.FilterPanel.showCompletedCourses') }}
+			</label>
+		</div>
+
+		<!-- Timetable Collision Exclusion Toggle -->
+		<div v-if="hasSelectedCourses" class="filter-group">
+			<div class="flex items-center justify-between">
+				<span class="insis-label mb-0 flex items-center gap-1.5">
+					<IconCalendarX class="h-4 w-4 text-red-500" />
+					{{ $t('components.filters.FilterPanel.timetableConflicts') }}
+				</span>
+				<span class="text-xs text-[var(--insis-gray-500)]">
+					{{ $t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount }) }}
+				</span>
+			</div>
+			<label class="mt-2 flex items-center gap-2 cursor-pointer text-sm text-[var(--insis-gray-600)]">
+				<input
+					type="checkbox"
+					class="insis-checkbox"
+					:checked="coursesStore.hideConflictingCourses"
+					@change="coursesStore.toggleHideConflictingCourses()"
+				/>
+				{{ $t('components.filters.FilterPanel.hideConflictingCourses') }}
+			</label>
+			<p v-if="coursesStore.hideConflictingCourses" class="mt-1 text-[10px] text-[var(--insis-gray-500)]">
+				{{ $t('components.filters.FilterPanel.hideConflictingCoursesHelp') }}
+			</p>
 		</div>
 
 		<!-- Course Status Filter (replaces FilterQuickTags) -->

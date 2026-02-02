@@ -75,6 +75,7 @@ onMounted(() => {
 					<li><strong>1.</strong> {{ $t('pages.index.step1') }}</li>
 					<li><strong>2.</strong> {{ $t('pages.index.step2') }}</li>
 					<li><strong>3.</strong> {{ $t('pages.index.step3') }}</li>
+					<li><strong>3b.</strong> {{ $t('pages.index.step3b') }}</li>
 					<li><strong>4.</strong> {{ $t('pages.index.step4') }}</li>
 				</ul>
 			</div>

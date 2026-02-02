@@ -25,7 +25,7 @@ import IconSearch from '~icons/lucide/search'
 import IconTrash from '~icons/lucide/trash-2'
 import IconX from '~icons/lucide/x'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const coursesStore = useCoursesStore()
 const uiStore = useUIStore()
 

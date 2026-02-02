@@ -14,7 +14,7 @@ import IconX from '~icons/lucide/x'
  * Shows warning icon when the course has missing unit types.
  */
 
-const { t, te } = useI18n({ useScope: 'global' })
+const { t, te } = useI18n()
 const { minutesToTime } = useTimeUtils()
 const { getUnitCourseTitle } = useCourseLabels()
 const timetableStore = useTimetableStore()

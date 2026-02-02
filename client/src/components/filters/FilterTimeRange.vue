@@ -113,7 +113,7 @@ function handleClearAllTimeFilers() {
 }
 
 // Format filter for display using composable
-function formatFilter(filter: { day: InSISDay; time_from: number; time_to: number }): string {
+function formatFilter(filter: TimeSelection): string {
 	return formatTimeSelection(filter)
 }
 </script>

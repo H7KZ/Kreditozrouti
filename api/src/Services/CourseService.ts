@@ -13,10 +13,11 @@ import {
 	StudyPlanCourseTable
 } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem'
+import DateService from '@api/Services/DateService'
 import { TimeSelection } from '@api/Validations'
 import { CoursesFilter } from '@api/Validations/CoursesFilterValidation'
 import { InSISDayValues } from '@scraper/Types/InSISDay'
-import { Nullable, SelectQueryBuilder, sql } from 'kysely'
+import { ExpressionBuilder, Nullable, SelectQueryBuilder, sql } from 'kysely'
 import { jsonArrayFrom } from 'kysely/helpers/mysql'
 
 /** Cache TTL for facet queries (5 minutes) - facets change infrequently */
@@ -24,8 +25,8 @@ const FACET_CACHE_TTL = 300
 const FACET_CACHE_PREFIX = 'course:facets:'
 
 type QueryBuilder = SelectQueryBuilder<
-	Database & { c: CourseTable } & { u: Nullable<CourseUnitTable> } & { s: Nullable<CourseUnitSlotTable> } & { spc: Nullable<StudyPlanCourseTable> },
-	'c' | 'u' | 's' | 'spc',
+	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> },
+	'c1' | 'cu1' | 'cus1' | 'spc1',
 	object
 >
 
@@ -108,17 +109,17 @@ export default class CourseService {
 	 */
 	static async getCoursesByStudyPlan(studyPlanIds: number[]): Promise<Course[]> {
 		return mysql
-			.selectFrom(`${CourseTable._table} as c`)
-			.innerJoin(`${StudyPlanCourseTable._table} as spc`, 'c.id', 'spc.course_id')
-			.selectAll('c')
-			.where('spc.study_plan_id', 'in', studyPlanIds)
-			.where('c.id', '=', eb =>
+			.selectFrom(`${CourseTable._table} as c1`)
+			.innerJoin(`${StudyPlanCourseTable._table} as spc1`, 'c1.id', 'spc1.course_id')
+			.selectAll('c1')
+			.where('spc1.study_plan_id', 'in', studyPlanIds)
+			.where('c1.id', '=', eb =>
 				eb
 					.selectFrom(`${CourseTable._table} as c2`)
 					.innerJoin(`${StudyPlanCourseTable._table} as spc2`, 'c2.id', 'spc2.course_id')
 					.select(eb2 => eb2.fn.min('c2.id').as('id'))
 					.where('spc2.study_plan_id', 'in', studyPlanIds)
-					.whereRef('c2.ident', '=', 'c.ident')
+					.whereRef('c2.ident', '=', 'c1.ident')
 			)
 			.execute()
 	}
@@ -128,7 +129,7 @@ export default class CourseService {
 	 * Uses COUNT(DISTINCT) to handle potential duplicates from joins.
 	 */
 	private static async getFilteredCourseCount(filters: Partial<CoursesFilter>): Promise<number> {
-		const query = this.buildFilterQuery(filters).select(eb => eb.fn.count<number>('c.id').distinct().as('total'))
+		const query = this.buildFilterQuery(filters).select(eb => eb.fn.count<number>('c1.id').distinct().as('total'))
 
 		const result = await query.executeTakeFirst()
 		return result?.total ?? 0
@@ -140,9 +141,9 @@ export default class CourseService {
 	 */
 	private static async getPaginatedCourseIds(filters: Partial<CoursesFilter>, limit: number, offset: number): Promise<number[]> {
 		const results = await this.buildFilterQuery(filters)
-			.select('c.id')
-			.groupBy('c.id')
-			.orderBy(this.getSortColumn(filters.sort_by) as any, filters.sort_dir ?? 'asc')
+			.select('c1.id')
+			.groupBy('c1.id')
+			.orderBy(this.getSortColumn(filters.sort_by, 'c1') as any, filters.sort_dir ?? 'asc')
 			.limit(limit)
 			.offset(offset)
 			.execute()
@@ -156,10 +157,10 @@ export default class CourseService {
 	 */
 	private static async getCoursesByIds(ids: number[]) {
 		return mysql
-			.selectFrom(`${CourseTable._table} as c`)
-			.selectAll('c')
-			.where('c.id', 'in', ids)
-			.orderBy(sql`FIELD(c.id, ${sql.join(ids)})`)
+			.selectFrom(`${CourseTable._table} as c1`)
+			.selectAll('c1')
+			.where('c1.id', 'in', ids)
+			.orderBy(sql`FIELD(c1.id, ${sql.join(ids)})`)
 			.execute()
 	}
 
@@ -169,12 +170,12 @@ export default class CourseService {
 	 */
 	private static async getFacultiesByIds(courseIds: number[]) {
 		return mysql
-			.selectFrom(`${FacultyTable._table} as f`)
-			.selectAll('f')
+			.selectFrom(`${FacultyTable._table} as f1`)
+			.selectAll('f1')
 			.where(
-				'f.id',
+				'f1.id',
 				'in',
-				mysql.selectFrom(`${CourseTable._table} as c`).select('c.faculty_id').where('c.id', 'in', courseIds).where('c.faculty_id', 'is not', null)
+				mysql.selectFrom(`${CourseTable._table} as c1`).select('c1.faculty_id').where('c1.id', 'in', courseIds).where('c1.faculty_id', 'is not', null)
 			)
 			.execute()
 	}
@@ -185,29 +186,29 @@ export default class CourseService {
 	 */
 	private static async getUnitsWithSlotsByIds(courseIds: number[]) {
 		const units = await mysql
-			.selectFrom(`${CourseUnitTable._table} as cu`)
-			.selectAll('cu')
+			.selectFrom(`${CourseUnitTable._table} as cu1`)
+			.selectAll('cu1')
 			.select(eb => [
 				jsonArrayFrom(
 					eb
-						.selectFrom(`${CourseUnitSlotTable._table} as s`)
+						.selectFrom(`${CourseUnitSlotTable._table} as cus1`)
 						.select([
-							's.id',
-							's.unit_id',
-							's.created_at',
-							's.updated_at',
-							's.type',
-							's.frequency',
-							's.date',
-							's.day',
-							's.time_from',
-							's.time_to',
-							's.location'
+							'cus1.id',
+							'cus1.unit_id',
+							'cus1.created_at',
+							'cus1.updated_at',
+							'cus1.type',
+							'cus1.frequency',
+							'cus1.date',
+							'cus1.day',
+							'cus1.time_from',
+							'cus1.time_to',
+							'cus1.location'
 						])
-						.whereRef('s.unit_id', '=', 'cu.id')
+						.whereRef('cus1.unit_id', '=', 'cu1.id')
 				).as('slots')
 			])
-			.where('cu.course_id', 'in', courseIds)
+			.where('cu1.course_id', 'in', courseIds)
 			.execute()
 
 		return units.map(u => ({
@@ -218,7 +219,7 @@ export default class CourseService {
 
 	/** Fetches all assessments for the given course IDs. */
 	private static async getAssessmentsByIds(courseIds: number[]) {
-		return mysql.selectFrom(`${CourseAssessmentTable._table} as ca`).selectAll('ca').where('ca.course_id', 'in', courseIds).execute()
+		return mysql.selectFrom(`${CourseAssessmentTable._table} as ca1`).selectAll('ca1').where('ca1.course_id', 'in', courseIds).execute()
 	}
 
 	/**
@@ -227,10 +228,10 @@ export default class CourseService {
 	 */
 	private static async getStudyPlanCoursesByIds(courseIds: number[], studyPlanIds: number[]) {
 		return mysql
-			.selectFrom(`${StudyPlanCourseTable._table} as spc`)
-			.selectAll('spc')
-			.where('spc.course_id', 'in', courseIds)
-			.where('spc.study_plan_id', 'in', studyPlanIds)
+			.selectFrom(`${StudyPlanCourseTable._table} as spc1`)
+			.selectAll('spc1')
+			.where('spc1.course_id', 'in', courseIds)
+			.where('spc1.study_plan_id', 'in', studyPlanIds)
 			.execute()
 	}
 
@@ -240,24 +241,30 @@ export default class CourseService {
 	 *
 	 * @param filters - Filter criteria
 	 * @param ignore - Filter key to exclude (used for facet computation to avoid self-filtering)
+	 * @param forceJoin - Force specific joins regardless of filters
+	 * @returns Kysely query builder with applied joins and filters
 	 */
-	private static buildFilterQuery(filters: Partial<CoursesFilter>, ignore?: string) {
-		const needsUnitsJoin = this.needsUnitsJoin(filters, ignore)
-		const needsSlotsJoin = this.needsSlotsJoin(filters, ignore)
-		const needsStudyPlanJoin = this.needsStudyPlanJoin(filters, ignore)
+	private static buildFilterQuery(
+		filters: Partial<CoursesFilter>,
+		ignore?: string,
+		forceJoin: { units?: boolean; slots?: boolean; studyPlan?: boolean } = {}
+	): QueryBuilder {
+		const needsUnitsJoin = this.needsUnitsJoin(filters, ignore) || forceJoin.units
+		const needsSlotsJoin = this.needsSlotsJoin(filters, ignore) || forceJoin.slots
+		const needsStudyPlanJoin = this.needsStudyPlanJoin(filters, ignore) || forceJoin.studyPlan
 
-		let query: QueryBuilder = mysql.selectFrom(`${CourseTable._table} as c`) as QueryBuilder
+		let query: QueryBuilder = mysql.selectFrom(`${CourseTable._table} as c1`) as QueryBuilder
 
 		if (needsUnitsJoin || needsSlotsJoin) {
-			query = query.leftJoin(`${CourseUnitTable._table} as u`, 'c.id', 'u.course_id')
+			query = query.leftJoin(`${CourseUnitTable._table} as cu1`, 'c1.id', 'cu1.course_id')
 		}
 
 		if (needsSlotsJoin) {
-			query = query.leftJoin(`${CourseUnitSlotTable._table} as s`, 'u.id', 's.unit_id')
+			query = query.leftJoin(`${CourseUnitSlotTable._table} as cus1`, 'cu1.id', 'cus1.unit_id')
 		}
 
 		if (needsStudyPlanJoin) {
-			query = query.leftJoin(`${StudyPlanCourseTable._table} as spc`, 'c.id', 'spc.course_id')
+			query = query.leftJoin(`${StudyPlanCourseTable._table} as spc1`, 'c1.id', 'spc1.course_id')
 		}
 
 		return this.applyFilters(query, filters, ignore)
@@ -293,7 +300,6 @@ export default class CourseService {
 	 * - Personnel: lecturers
 	 * - Study plan: study_plan_ids, groups, categories
 	 * - Course properties: ects, mode_of_completion, mode_of_delivery
-	 * - Conflict: exclude_slot_ids
 	 *
 	 * @param query - Kysely query builder
 	 * @param filters - Filter criteria
@@ -302,138 +308,119 @@ export default class CourseService {
 	private static applyFilters(query: QueryBuilder, filters: Partial<CoursesFilter>, ignore?: string) {
 		// Identity filters
 		if (filters.ids?.length && !['id', 'ids'].includes(ignore!)) {
-			query = query.where('c.id', 'in', filters.ids)
+			query = query.where('c1.id', 'in', filters.ids)
 		}
 
 		if (filters.idents?.length && !['ident', 'idents'].includes(ignore!)) {
-			query = query.where(eb => eb.or(filters.idents!.map((v: string) => eb('c.ident', 'like', `%${v}%`))))
+			query = query.where(eb => eb.or(filters.idents!.map((v: string) => eb('c1.ident', 'like', `%${v}%`))))
 		}
 
 		if (filters.title) {
 			query = query.where(eb =>
 				eb.or([
-					eb('c.title', 'like', `%${filters.title}%`),
-					eb('c.title_cs', 'like', `%${filters.title}%`),
-					eb('c.title_en', 'like', `%${filters.title}%`),
-					eb('c.ident', 'like', `%${filters.title}%`)
+					eb('c1.title', 'like', `%${filters.title}%`),
+					eb('c1.title_cs', 'like', `%${filters.title}%`),
+					eb('c1.title_en', 'like', `%${filters.title}%`),
+					eb('c1.ident', 'like', `%${filters.title}%`)
 				])
 			)
 		}
 
 		// Academic period filters
 		if (filters.semesters?.length && !['semester', 'semesters'].includes(ignore!)) {
-			query = query.where('c.semester', 'in', filters.semesters)
+			query = query.where('c1.semester', 'in', filters.semesters)
 		}
 
 		if (filters.years?.length && !['year', 'years'].includes(ignore!)) {
-			query = query.where('c.year', 'in', filters.years)
+			query = query.where('c1.year', 'in', filters.years)
 		}
 
 		// Organizational filters
 		if (filters.faculty_ids?.length && !['faculty_id', 'faculty_ids'].includes(ignore!)) {
-			query = query.where('c.faculty_id', 'in', filters.faculty_ids)
+			query = query.where('c1.faculty_id', 'in', filters.faculty_ids)
 		}
 
 		if (filters.levels?.length && !['level', 'levels'].includes(ignore!)) {
-			query = query.where('c.level', 'in', filters.levels)
+			query = query.where('c1.level', 'in', filters.levels)
 		}
 
 		if (filters.languages?.length && !['language', 'languages'].includes(ignore!)) {
-			query = query.where(eb => eb.or(filters.languages!.map((v: string) => eb('c.languages', 'like', `%${v}%`))))
+			query = query.where(eb => eb.or(filters.languages!.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
 		}
 
 		// Time filters (only if slots join exists)
 		if (filters.include_times?.length && !['include_times'].includes(ignore!)) {
 			query = query.where(eb =>
 				eb.or(
-					filters.include_times!.map(exc =>
-						eb.and([eb('s.day', '=', exc.day), eb('s.time_from', '>=', exc.time_from), eb('s.time_to', '<=', exc.time_to)])
-					)
+					filters
+						.include_times!.filter(t => t.day !== undefined)
+						.map(exc => eb.and([eb('cus1.day', '=', exc.day!), eb('cus1.time_from', '>=', exc.time_from), eb('cus1.time_to', '<=', exc.time_to)]))
 				)
 			)
 		}
 
 		if (filters.exclude_times?.length && !['exclude_times'].includes(ignore!)) {
-			query = query.where(eb =>
-				eb.and(
-					filters.exclude_times!.map(exc =>
-						eb.or([eb('s.day', '!=', exc.day), eb('s.time_to', '<=', exc.time_from), eb('s.time_from', '>=', exc.time_to)])
+			query = query.where(eb => {
+				return eb.or([
+					// Case 1: The course has NO units (Catalog-only entry) - keep these
+					eb.not(eb.exists(eb.selectFrom(`${CourseUnitTable._table} as cu2`).select('cu2.id').whereRef('cu2.course_id', '=', 'c1.id'))),
+					// Case 2: The course has at least one unit with at least one NON-conflicting slot
+					// Key fix: INNER JOIN ensures the slot actually exists (not vacuous truth)
+					// Then we check that the slot does NOT match ANY of the conflict conditions
+					eb.exists(
+						eb
+							.selectFrom(`${CourseUnitTable._table} as cu3`)
+							.innerJoin(`${CourseUnitSlotTable._table} as cus3`, 'cu3.id', 'cus3.unit_id')
+							.select('cus3.id')
+							.whereRef('cu3.course_id', '=', 'c1.id')
+							.where(ebSlot => {
+								// Build all conflict conditions for all exclusions
+								const allConflictConditions = filters.exclude_times!.flatMap(exc => this.buildSlotConflictCondition(ebSlot, exc, 'cus3'))
+								// This slot is "safe" if NONE of the conflict conditions match
+								// i.e., NOT (condition1 OR condition2 OR ...)
+								return allConflictConditions.length > 0 ? ebSlot.not(ebSlot.or(allConflictConditions)) : ebSlot.val(true) // No exclusions = all slots are safe
+							})
 					)
-				)
-			)
+				])
+			})
 		}
 
 		// Personnel filters
 		if (filters.lecturers?.length && !['lecturers'].includes(ignore!)) {
 			query = query.where(eb =>
-				eb.or(filters.lecturers!.flatMap((v: string) => [eb('c.lecturers', 'like', `%${v}%`), eb('u.lecturer', 'like', `%${v}%`)]))
+				eb.or(filters.lecturers!.flatMap((v: string) => [eb('c1.lecturers', 'like', `%${v}%`), eb('cu1.lecturer', 'like', `%${v}%`)]))
 			)
 		}
 
 		// Study plan filters
 		if (filters.study_plan_ids?.length && !['study_plan_id', 'study_plan_ids'].includes(ignore!)) {
-			query = query.where('spc.study_plan_id', 'in', filters.study_plan_ids)
+			query = query.where('spc1.study_plan_id', 'in', filters.study_plan_ids)
 		}
 
 		if (filters.groups?.length && !['groups'].includes(ignore!)) {
-			query = query.where('spc.group', 'in', filters.groups)
+			query = query.where('spc1.group', 'in', filters.groups)
 		}
 
 		if (filters.categories?.length && !['categories'].includes(ignore!)) {
-			query = query.where('spc.category', 'in', filters.categories)
+			query = query.where('spc1.category', 'in', filters.categories)
 		}
 
 		// Course properties filters
 		if (filters.ects?.length && !['ects'].includes(ignore!)) {
-			query = query.where('c.ects', 'in', filters.ects)
+			query = query.where('c1.ects', 'in', filters.ects)
 		}
 
 		if (filters.mode_of_completions?.length && !['mode_of_completion', 'mode_of_completions'].includes(ignore!)) {
-			query = query.where('c.mode_of_completion', 'in', filters.mode_of_completions)
+			query = query.where('c1.mode_of_completion', 'in', filters.mode_of_completions)
 		}
 
 		if (filters.mode_of_deliveries?.length && !['mode_of_delivery', 'mode_of_deliveries'].includes(ignore!)) {
-			query = query.where('c.mode_of_delivery', 'in', filters.mode_of_deliveries)
+			query = query.where('c1.mode_of_delivery', 'in', filters.mode_of_deliveries)
 		}
 
 		// Availability filters
 		if (filters.completed_course_idents?.length && !['completed_course_idents'].includes(ignore!)) {
-			query = query.where('c.ident', 'not in', filters.completed_course_idents)
-		}
-
-		// Conflict exclusion: exclude courses where ALL units have at least one conflicting slot
-		if (filters.exclude_slot_ids?.length && !['exclude_slot_ids'].includes(ignore!)) {
-			query = query.where(eb =>
-				eb.or([
-					// Courses with no units are still viable (catalog-only entries)
-					eb.not(
-						eb.exists(
-							eb
-								.selectFrom(`${CourseUnitTable._table} as _eu`)
-								.select(sql`1`.as('_'))
-								.whereRef('_eu.course_id', '=', 'c.id')
-						)
-					),
-					// At least one unit has NO excluded slots → course is attendable
-					eb.exists(
-						eb
-							.selectFrom(`${CourseUnitTable._table} as _eu`)
-							.select(sql`1`.as('_'))
-							.whereRef('_eu.course_id', '=', 'c.id')
-							.where(eb2 =>
-								eb2.not(
-									eb2.exists(
-										eb2
-											.selectFrom(`${CourseUnitSlotTable._table} as _es`)
-											.select(sql`1`.as('_'))
-											.whereRef('_es.unit_id', '=', '_eu.id')
-											.where('_es.id', 'in', filters.exclude_slot_ids!)
-									)
-								)
-							)
-					)
-				])
-			)
+			query = query.where('c1.ident', 'not in', filters.completed_course_idents)
 		}
 
 		return query
@@ -521,51 +508,113 @@ export default class CourseService {
 			// FAST PATH: Direct query on courses table only
 			// Apply all filters EXCEPT the one we're computing (cross-filtering)
 			return mysql
-				.selectFrom(`${CourseTable._table} as c`)
-				.select(`c.${column} as value`)
-				.select(eb => eb.fn.count<number>('c.id').as('count'))
-				.where(`c.${column}`, 'is not', null)
-				.$if(!!filters.ids?.length && column !== 'id', q => q.where('c.id', 'in', filters.ids!))
+				.selectFrom(`${CourseTable._table} as c1`)
+				.select(`c1.${column} as value`)
+				.select(eb => eb.fn.count<number>('c1.id').as('count'))
+				.where(`c1.${column}`, 'is not', null)
+				.$if(!!filters.ids?.length && column !== 'id', q => q.where('c1.id', 'in', filters.ids!))
 				.$if(!!filters.idents?.length && column !== 'ident', q =>
-					q.where(eb => eb.or(filters.idents!.map((v: string) => eb('c.ident', 'like', `%${v}%`))))
+					q.where(eb => eb.or(filters.idents!.map((v: string) => eb('c1.ident', 'like', `%${v}%`))))
 				)
 				.$if(!!filters.title, q =>
 					q.where(eb =>
 						eb.or([
-							eb('c.title', 'like', `%${filters.title}%`),
-							eb('c.title_cs', 'like', `%${filters.title}%`),
-							eb('c.title_en', 'like', `%${filters.title}%`),
-							eb('c.ident', 'like', `%${filters.title}%`)
+							eb('c1.title', 'like', `%${filters.title}%`),
+							eb('c1.title_cs', 'like', `%${filters.title}%`),
+							eb('c1.title_en', 'like', `%${filters.title}%`),
+							eb('c1.ident', 'like', `%${filters.title}%`)
 						])
 					)
 				)
-				.$if(!!filters.faculty_ids?.length && column !== 'faculty_id', q => q.where('c.faculty_id', 'in', filters.faculty_ids!))
-				.$if(!!filters.semesters?.length && column !== 'semester', q => q.where('c.semester', 'in', filters.semesters!))
-				.$if(!!filters.years?.length && column !== 'year', q => q.where('c.year', 'in', filters.years!))
-				.$if(!!filters.levels?.length && column !== 'level', q => q.where('c.level', 'in', filters.levels!))
-				.$if(!!filters.ects?.length && column !== 'ects', q => q.where('c.ects', 'in', filters.ects!))
+				.$if(!!filters.faculty_ids?.length && column !== 'faculty_id', q => q.where('c1.faculty_id', 'in', filters.faculty_ids!))
+				.$if(!!filters.semesters?.length && column !== 'semester', q => q.where('c1.semester', 'in', filters.semesters!))
+				.$if(!!filters.years?.length && column !== 'year', q => q.where('c1.year', 'in', filters.years!))
+				.$if(!!filters.levels?.length && column !== 'level', q => q.where('c1.level', 'in', filters.levels!))
+				.$if(!!filters.ects?.length && column !== 'ects', q => q.where('c1.ects', 'in', filters.ects!))
 				.$if(!!filters.mode_of_completions?.length && column !== 'mode_of_completion', q =>
-					q.where('c.mode_of_completion', 'in', filters.mode_of_completions!)
+					q.where('c1.mode_of_completion', 'in', filters.mode_of_completions!)
 				)
 				.$if(!!filters.mode_of_deliveries?.length && column !== 'mode_of_delivery', q =>
-					q.where('c.mode_of_delivery', 'in', filters.mode_of_deliveries!)
+					q.where('c1.mode_of_delivery', 'in', filters.mode_of_deliveries!)
 				)
 				.$if(!!filters.languages?.length && column !== 'languages', q =>
-					q.where(eb => eb.or(filters.languages!.map((v: string) => eb('c.languages', 'like', `%${v}%`))))
+					q.where(eb => eb.or(filters.languages!.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
 				)
-				.groupBy(`c.${column}`)
+				.groupBy(`c1.${column}`)
 				.orderBy('count', 'desc')
 				.execute()
 		}
 
 		// SLOW PATH: Need full filter query (already handles ignore correctly via buildFilterQuery)
 		return this.buildFilterQuery(filters, column as string)
-			.select(`c.${column} as value`)
-			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where(`c.${column}`, 'is not', null)
-			.groupBy(`c.${column}`)
+			.select(`c1.${column} as value`)
+			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
+			.where(`c1.${column}`, 'is not', null)
+			.groupBy(`c1.${column}`)
 			.orderBy('count', 'desc')
 			.execute()
+	}
+
+	/**
+	 * Helper to build conflict conditions using Kysely ExpressionBuilder.
+	 * Generates expressions for day/time or date/time overlaps.
+	 *
+	 * A slot "conflicts" with an exclusion if:
+	 * - Same day AND times overlap (for day-based exclusions)
+	 * - Same date AND times overlap (for date-based exclusions)
+	 * - Day matches date's weekday AND times overlap (for date-based exclusions, catches weekly slots)
+	 *
+	 * If slot_id is provided, that specific slot is EXCLUDED from being considered a conflict
+	 * (because it's the slot the user already selected for that course).
+	 */
+	private static buildSlotConflictCondition(eb: ExpressionBuilder<any, any>, exc: TimeSelection, slotAlias: string) {
+		const conditions = []
+
+		if (exc.day) {
+			// Day-based exclusion: matches slots on the same weekday with overlapping time
+			const dayConditions = [
+				eb(`${slotAlias}.day`, '=', exc.day),
+				eb(`${slotAlias}.time_from`, '<', exc.time_to),
+				eb(`${slotAlias}.time_to`, '>', exc.time_from)
+			]
+			// If slot_id provided, exclude that specific slot from conflict detection
+			if (exc.slot_id) {
+				dayConditions.push(eb(`${slotAlias}.id`, '!=', exc.slot_id))
+			}
+			conditions.push(eb.and(dayConditions))
+		}
+
+		if (exc.date) {
+			const dateStr = exc.date instanceof Date ? exc.date.toISOString().split('T')[0] : String(exc.date)
+
+			// Date-based exclusion: matches slots on the exact same date with overlapping time
+			const dateConditions = [
+				eb(`${slotAlias}.date`, '=', dateStr),
+				eb(`${slotAlias}.time_from`, '<', exc.time_to),
+				eb(`${slotAlias}.time_to`, '>', exc.time_from)
+			]
+			if (exc.slot_id) {
+				dateConditions.push(eb(`${slotAlias}.id`, '!=', exc.slot_id))
+			}
+			conditions.push(eb.and(dateConditions))
+
+			// Also check day-based slots that fall on the same weekday
+			// (e.g., if exclusion is for 2025-03-17 which is Monday, also catch weekly Monday slots)
+			const dateDay = DateService.getDayFromDate(exc.date)
+			if (dateDay) {
+				const dateDayConditions = [
+					eb(`${slotAlias}.day`, '=', dateDay),
+					eb(`${slotAlias}.time_from`, '<', exc.time_to),
+					eb(`${slotAlias}.time_to`, '>', exc.time_from)
+				]
+				if (exc.slot_id) {
+					dateDayConditions.push(eb(`${slotAlias}.id`, '!=', exc.slot_id))
+				}
+				conditions.push(eb.and(dateDayConditions))
+			}
+		}
+
+		return conditions
 	}
 
 	/** Checks if any filters require joins (units, slots, or study plans). */
@@ -576,8 +625,7 @@ export default class CourseService {
 			filters.lecturers?.length ??
 			filters.study_plan_ids?.length ??
 			filters.groups?.length ??
-			filters.categories?.length ??
-			filters.exclude_slot_ids?.length
+			filters.categories?.length
 		)
 	}
 
@@ -586,13 +634,11 @@ export default class CourseService {
 	 * Always requires slots join.
 	 */
 	private static async getDayFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		return this.buildFilterQuery(filters, 'include_times')
-			.leftJoin(`${CourseUnitTable._table} as cu`, 'c.id', 'cu.course_id')
-			.leftJoin(`${CourseUnitSlotTable._table} as s`, 'cu.id', 's.unit_id')
-			.select('s.day as value')
-			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where('s.day', 'is not', null)
-			.groupBy('s.day')
+		return this.buildFilterQuery(filters, 'include_times', { slots: true })
+			.select('cus1.day as value')
+			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
+			.where('cus1.day', 'is not', null)
+			.groupBy('cus1.day')
 			.orderBy('value')
 			.execute()
 	}
@@ -602,12 +648,11 @@ export default class CourseService {
 	 * Uses COALESCE to prefer unit-level lecturer when available.
 	 */
 	private static async getLecturerFacet(filters: CoursesFilter) {
-		return this.buildFilterQuery(filters, 'lecturers')
-			.leftJoin(`${CourseUnitTable._table} as cu`, 'c.id', 'cu.course_id')
-			.select(sql<string>`COALESCE(cu.lecturer, c.lecturers)`.as('value'))
-			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where(sql`COALESCE(cu.lecturer, c.lecturers)`, 'is not', null)
-			.groupBy(sql`COALESCE(cu.lecturer, c.lecturers)`)
+		return this.buildFilterQuery(filters, 'lecturers', { units: true })
+			.select(sql<string>`COALESCE(cu1.lecturer, c1.lecturers)`.as('value'))
+			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
+			.where(sql`COALESCE(cu1.lecturer, c1.lecturers)`, 'is not', null)
+			.groupBy(sql`COALESCE(cu1.lecturer, c1.lecturers)`)
 			.orderBy('count', 'desc')
 			.limit(50)
 			.execute()
@@ -616,10 +661,10 @@ export default class CourseService {
 	/** Computes language facet (pipe-delimited values handled in post-processing). */
 	private static async getLanguageFacet(filters: CoursesFilter) {
 		return this.buildFilterQuery(filters, 'languages')
-			.select('c.languages as value')
-			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where('c.languages', 'is not', null)
-			.groupBy('c.languages')
+			.select('c1.languages as value')
+			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
+			.where('c1.languages', 'is not', null)
+			.groupBy('c1.languages')
 			.orderBy('count', 'desc')
 			.execute()
 	}
@@ -630,11 +675,11 @@ export default class CourseService {
 	 */
 	private static async getGroupFacet(filters: CoursesFilter): Promise<FacetItem[]> {
 		if (!filters.study_plan_ids) return []
-		return this.buildFilterQuery(filters, 'groups')
-			.select('spc.group as value')
-			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where('spc.group', 'is not', null)
-			.groupBy('spc.group')
+		return this.buildFilterQuery(filters, 'groups', { studyPlan: true })
+			.select('spc1.group as value')
+			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
+			.where('spc1.group', 'is not', null)
+			.groupBy('spc1.group')
 			.orderBy('value')
 			.execute()
 	}
@@ -645,11 +690,11 @@ export default class CourseService {
 	 */
 	private static async getCategoryFacet(filters: CoursesFilter): Promise<FacetItem[]> {
 		if (!filters.study_plan_ids) return []
-		return this.buildFilterQuery(filters, 'categories')
-			.select('spc.category as value')
-			.select(eb => eb.fn.count<number>('c.id').distinct().as('count'))
-			.where('spc.category', 'is not', null)
-			.groupBy('spc.category')
+		return this.buildFilterQuery(filters, 'categories', { studyPlan: true })
+			.select('spc1.category as value')
+			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
+			.where('spc1.category', 'is not', null)
+			.groupBy('spc1.category')
 			.orderBy('value')
 			.execute()
 	}
@@ -661,11 +706,9 @@ export default class CourseService {
 	 * @returns Object with min_time and max_time in minutes from midnight
 	 */
 	private static async getTimeRangeFacet(filters: CoursesFilter) {
-		const result = await this.buildFilterQuery(filters, 'include_times')
-			.leftJoin(`${CourseUnitTable._table} as cu`, 'c.id', 'cu.course_id')
-			.leftJoin(`${CourseUnitSlotTable._table} as s`, 'cu.id', 's.unit_id')
-			.select(eb => [eb.fn.min<number>('s.time_from').as('min_time'), eb.fn.max<number>('s.time_to').as('max_time')])
-			.where('s.time_from', 'is not', null)
+		const result = await this.buildFilterQuery(filters, 'include_times', { slots: true })
+			.select(eb => [eb.fn.min<number>('cus1.time_from').as('min_time'), eb.fn.max<number>('cus1.time_to').as('max_time')])
+			.where('cus1.time_from', 'is not', null)
 			.executeTakeFirst()
 
 		return {
@@ -701,8 +744,7 @@ export default class CourseService {
 			exclude_times: filters.exclude_times
 				? filters.exclude_times.map(t => ({ day: t.day, time_from: t.time_from, time_to: t.time_to })).sort((a, b) => this.sortTimeSelection(a, b))
 				: undefined,
-			completed_course_idents: filters.completed_course_idents?.sort(),
-			exclude_slot_ids: filters.exclude_slot_ids?.sort()
+			completed_course_idents: filters.completed_course_idents?.sort()
 		}
 
 		const hash = Buffer.from(JSON.stringify(relevantFilters)).toString('base64')
@@ -725,21 +767,6 @@ export default class CourseService {
 			// Silently fail cache write
 		}
 	}
-
-	// /**
-	//  * Invalidates all cached facet data.
-	//  * Call this after course data changes (create/update/delete).
-	//  */
-	// static async invalidateFacetCache(): Promise<void> {
-	// 	try {
-	// 		const keys = await redis.keys(`${FACET_CACHE_PREFIX}*`)
-	// 		if (keys.length > 0) {
-	// 			await redis.del(...keys)
-	// 		}
-	// 	} catch {
-	// 		// Silently fail
-	// 	}
-	// }
 
 	/**
 	 * Processes pipe-delimited facet values (e.g., "EN|CS" → separate entries).
@@ -770,24 +797,31 @@ export default class CourseService {
 	}
 
 	/** Maps sort_by parameter to actual database column. */
-	private static getSortColumn(sortBy?: string): string {
+	private static getSortColumn(sortBy?: string, slotAlias = 'c1'): string {
 		const sortMap: Record<string, string> = {
-			ident: 'c.ident',
-			title: 'c.title',
-			ects: 'c.ects',
-			faculty: 'c.faculty_id',
-			year: 'c.year',
-			semester: 'c.semester'
+			ident: `${slotAlias}.ident`,
+			title: `${slotAlias}.title`,
+			ects: `${slotAlias}.ects`,
+			faculty: `${slotAlias}.faculty_id`,
+			year: `${slotAlias}.year`,
+			semester: `${slotAlias}.semester`
 		}
 		return sortMap[sortBy ?? 'ident'] ?? 'c.ident'
 	}
 
 	/** Sorts time selection objects by day, then start time, then end time. */
 	private static sortTimeSelection(a: TimeSelection, b: TimeSelection): number {
-		const aDay = InSISDayValues.indexOf(a.day)
-		const bDay = InSISDayValues.indexOf(b.day)
+		const aDay = a.day ?? DateService.getDayFromDate(a.date!)
+		const bDay = b.day ?? DateService.getDayFromDate(b.date!)
 
-		if (aDay !== bDay) return aDay - bDay
+		if (!aDay && !bDay) return 0
+		if (!aDay) return -1
+		if (!bDay) return 1
+
+		const aDayIndex = InSISDayValues.indexOf(aDay)
+		const bDayIndex = InSISDayValues.indexOf(bDay)
+
+		if (aDayIndex !== bDayIndex) return aDayIndex - bDayIndex
 		if (a.time_from !== b.time_from) return a.time_from - b.time_from
 		return a.time_to - b.time_to
 	}
