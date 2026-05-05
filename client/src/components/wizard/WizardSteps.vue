@@ -95,21 +95,3 @@ function handleStepClick(stepNumber: number) {
 		</template>
 	</div>
 </template>
-
-<style scoped>
-.insis-wizard-step.clickable {
-	cursor: pointer;
-}
-
-.insis-wizard-step.clickable:hover .insis-wizard-step-number {
-	transform: scale(1.05);
-}
-
-.insis-wizard-step-number {
-	transition: transform 0.15s ease-in-out;
-}
-
-.insis-wizard-connector.completed {
-	background-color: var(--insis-success);
-}
-</style>

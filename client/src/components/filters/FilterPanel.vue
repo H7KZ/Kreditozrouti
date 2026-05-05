@@ -220,7 +220,7 @@ function toggleTimeFilter() {
 		</div>
 
 		<!-- Completed Courses Toggle -->
-		<div v-if="hasCompletedCourses" class="filter-group">
+		<div v-if="hasCompletedCourses" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
 			<div class="flex items-center justify-between">
 				<span class="insis-label mb-0 flex items-center gap-1.5">
 					<IconCircleCheck class="h-4 w-4 text-[var(--insis-success)]" />
@@ -237,10 +237,10 @@ function toggleTimeFilter() {
 		</div>
 
 		<!-- Timetable Collision Exclusion Toggle -->
-		<div v-if="hasSelectedCourses" class="filter-group">
+		<div v-if="hasSelectedCourses" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
 			<div class="flex items-center justify-between">
 				<span class="insis-label mb-0 flex items-center gap-1.5">
-					<IconCalendarX class="h-4 w-4 text-red-500" />
+					<IconCalendarX class="h-4 w-4 text-[var(--insis-danger)]" />
 					{{ $t('components.filters.FilterPanel.timetableConflicts') }}
 				</span>
 				<span class="text-xs text-[var(--insis-gray-500)]">
@@ -264,7 +264,7 @@ function toggleTimeFilter() {
 		<!-- Course Status Filter (replaces FilterQuickTags) -->
 		<CourseStatusFilter v-if="hasSelectedCourses" />
 
-		<div class="filter-group">
+		<div class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
 			<!-- Title Search -->
 			<div class="flex-1 w-full py-1">
 				<label class="insis-label" for="title-search">
@@ -285,7 +285,7 @@ function toggleTimeFilter() {
 		</div>
 
 		<!-- Time Range Filter (collapsible) -->
-		<div class="filter-group">
+		<div class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
 			<button type="button" class="flex cursor-pointer w-full items-center justify-between py-1 text-left" @click="toggleTimeFilter">
 				<span class="insis-label mb-0 flex items-center gap-1.5">
 					{{ $t('components.filters.FilterPanel.timeRestriction') }}
@@ -301,7 +301,7 @@ function toggleTimeFilter() {
 		</div>
 
 		<!-- Dynamic Facet Filters -->
-		<div v-for="facet in visibleFacets" :key="facet.key" class="filter-group">
+		<div v-for="facet in visibleFacets" :key="facet.key" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
 			<FilterCheckboxGroup
 				:label="facet.label"
 				:facets="facet.facets"
@@ -315,15 +315,3 @@ function toggleTimeFilter() {
 	</aside>
 </template>
 
-<style scoped>
-.filter-group {
-	border-bottom: 1px solid var(--insis-border-light);
-	padding-bottom: 0.75rem;
-	margin-bottom: 0.75rem;
-}
-
-.filter-group:last-of-type {
-	border-bottom: none;
-	margin-bottom: 0;
-}
-</style>

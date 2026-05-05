@@ -106,7 +106,7 @@ function toggleCollapsed() {
 </script>
 
 <template>
-	<div v-if="hasCourses" class="filter-group">
+	<div v-if="hasCourses" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
 		<!-- Collapsible header -->
 		<button type="button" class="flex w-full cursor-pointer items-center justify-between py-1 text-left" @click="toggleCollapsed">
 			<span class="insis-label mb-0 flex items-center gap-1.5">
@@ -217,16 +217,3 @@ function toggleCollapsed() {
 		</div>
 	</div>
 </template>
-
-<style scoped>
-.filter-group {
-	border-bottom: 1px solid var(--insis-border-light);
-	padding-bottom: 0.75rem;
-	margin-bottom: 0.75rem;
-}
-
-.filter-group:last-of-type {
-	border-bottom: none;
-	margin-bottom: 0;
-}
-</style>

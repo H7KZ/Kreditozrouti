@@ -2,460 +2,339 @@
 @reference 'tw-animate-css';
 
 /* =========================================================================
-   INSIS COMPONENT CLASSES
-   Semantic classes that replicate InSIS UI patterns
+   KREDITOŽROUTI DESIGN SYSTEM
+   Component classes expressed via Tailwind @apply utilities.
+   Raw CSS is kept only where @apply is not feasible:
+     - font-family (not configured in Tailwind)
+     - complex multi-property transition values
+     - color-mix() function calls
+     - SVG background-image data URIs
+     - accent-color (not a standard Tailwind utility)
+     - @keyframes / animation declarations
    ========================================================================= */
 
 @layer components {
-	/* InSIS-style interactive element base classes */
-
-	/* All clickable elements */
-	.clickable {
-		@apply cursor-pointer select-none;
-	}
-
-	/* InSIS Button Styles */
+	/* ── BUTTONS ── */
 	.insis-btn,
 	.insis-btn-primary,
 	.insis-btn-secondary,
 	.insis-btn-danger {
-		@apply cursor-pointer px-3 py-1.5 text-sm font-medium;
-		@apply rounded-sm border;
-		@apply focus:ring-2 focus:ring-[#7b9ebd] focus:ring-offset-1 focus:outline-none;
-		@apply disabled:cursor-not-allowed disabled:opacity-50;
-		@apply transition-all duration-150;
+		@apply inline-flex items-center gap-[5px] py-[5px] px-3 text-[12.5px] font-medium rounded-[3px] border border-solid cursor-pointer whitespace-nowrap leading-[1.4] no-underline;
+		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		transition: background 0.12s, border-color 0.12s, color 0.12s;
 	}
 
-	/* Default Button Styles (The "standard" look) */
-	.insis-btn {
-		@apply border-[#7b9ebd];
-		@apply bg-gradient-to-b from-[#f7f9fb] to-[#dce7f1];
-		@apply hover:from-[#e8f0f7] hover:to-[#c9d9e8];
-		@apply active:from-[#c9d9e8] active:to-[#b5c9dc];
+	.insis-btn:focus-visible,
+	.insis-btn-primary:focus-visible,
+	.insis-btn-secondary:focus-visible,
+	.insis-btn-danger:focus-visible {
+		@apply outline outline-2 outline-[var(--insis-blue)] outline-offset-[1px];
 	}
 
-	/* Primary Button Overrides */
-	.insis-btn-primary {
-		@apply bg-gradient-to-b from-[#4a7eb8] to-[#2c5a8c];
-		@apply border-[#1e4a7a] text-white;
-		@apply hover:from-[#5a8ec8] hover:to-[#3c6a9c];
+	.insis-btn:disabled,
+	.insis-btn-primary:disabled,
+	.insis-btn-secondary:disabled,
+	.insis-btn-danger:disabled {
+		@apply opacity-[0.45] cursor-not-allowed;
 	}
 
-	/* Secondary Button Overrides */
+	/* Default / Secondary button */
+	.insis-btn,
 	.insis-btn-secondary {
-		@apply bg-gradient-to-b from-[#f7f9fb] to-[#e8eef4];
-		@apply border-[#a0b0c0] text-[var(--insis-gray-800)];
-		@apply hover:from-[#eef3f7] hover:to-[#dbe4ec];
+		@apply bg-[var(--insis-surface)] border-[var(--insis-border-mid)] text-[var(--insis-text-2)];
+	}
+	.insis-btn:hover:not(:disabled),
+	.insis-btn-secondary:hover:not(:disabled) {
+		@apply bg-[var(--insis-surface-2)] border-[var(--insis-gray-500)] text-[var(--insis-text)];
 	}
 
-	/* Danger Button Overrides */
+	/* Primary button */
+	.insis-btn-primary {
+		@apply bg-[var(--insis-blue)] border-[var(--insis-blue-dark)] text-white;
+	}
+	.insis-btn-primary:hover:not(:disabled) {
+		@apply bg-[var(--insis-blue-dark)];
+	}
+
+	/* Danger button */
 	.insis-btn-danger {
-		@apply bg-gradient-to-b from-[#e85555] to-[#c40f16];
-		@apply border-[#a00a10] text-white;
-		@apply hover:from-[#f06565] hover:to-[#d41f26];
+		@apply bg-[var(--insis-surface)] border-[var(--insis-danger-border)] text-[var(--insis-danger)];
+	}
+	.insis-btn-danger:hover:not(:disabled) {
+		@apply bg-[var(--insis-danger-light)];
 	}
 
-	/* Text Button (Remains separate as it's structurally different) */
+	/* Text / ghost button */
 	.insis-btn-text {
-		@apply cursor-pointer text-[#1e4a7a] hover:text-[#0d3a6a] hover:underline;
-		@apply focus:ring-1 focus:ring-[#7b9ebd] focus:outline-none;
+		@apply inline-flex items-center gap-1 text-xs text-[var(--insis-blue)] bg-transparent border-0 cursor-pointer p-0 no-underline;
+		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+	}
+	.insis-btn-text:hover {
+		@apply underline;
 	}
 
-	/* Table row hover for clickable rows */
-	.insis-table-row-clickable {
-		@apply cursor-pointer transition-colors hover:bg-[#f0f5fa];
-	}
-
-	/* Input focus states */
-	.insis-input {
-		@apply cursor-text px-2 py-1 text-sm;
-		@apply rounded-sm border border-[#a0b0c0];
-		@apply focus:border-[#4a7eb8] focus:ring-1 focus:ring-[#4a7eb8] focus:outline-none;
-	}
-
-	/* Select/Dropdown */
+	/* ── INPUTS ── */
+	.insis-input,
 	.insis-select {
-		@apply cursor-pointer px-2 py-1 text-sm;
-		@apply rounded-sm border border-[#a0b0c0] bg-white;
-		@apply focus:border-[#4a7eb8] focus:outline-none;
+		@apply w-full py-[5px] px-2 text-[12.5px] bg-[var(--insis-surface-2)] border border-solid border-[var(--insis-border)] rounded-[3px] text-[var(--insis-text)];
+		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		transition: border-color 0.15s, box-shadow 0.15s;
 	}
 
-	/* Checkbox/Radio clickable area */
+	.insis-input:focus,
+	.insis-select:focus {
+		@apply outline-none border-[var(--insis-blue)];
+		box-shadow: 0 0 0 2px color-mix(in srgb, var(--insis-blue) 20%, transparent);
+	}
+
+	.insis-input:disabled,
+	.insis-select:disabled {
+		@apply cursor-not-allowed bg-[var(--insis-gray-200)];
+	}
+
+	.insis-input::placeholder {
+		@apply text-[var(--insis-text-3)];
+	}
+
+	.insis-select {
+		@apply cursor-pointer appearance-none pr-8;
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+		background-position: right 0.5rem center;
+		background-repeat: no-repeat;
+		background-size: 1.25em 1.25em;
+	}
+
+	.insis-checkbox {
+		@apply h-[13px] w-[13px] cursor-pointer shrink-0;
+		accent-color: var(--insis-blue);
+	}
+
+	.insis-label {
+		@apply block mb-1 text-[12.5px] font-medium text-[var(--insis-text)];
+	}
+
 	.insis-checkbox-label {
-		@apply flex cursor-pointer items-center gap-2 hover:text-[#1e4a7a];
+		@apply flex items-center gap-[7px] py-[3px] px-1 rounded-[3px] cursor-pointer text-[12.5px] text-[var(--insis-text)];
+		transition: background 0.1s;
+	}
+	.insis-checkbox-label:hover {
+		@apply bg-[var(--insis-surface-2)];
+	}
+	.insis-checkbox-label.active {
+		@apply bg-[var(--insis-blue-subtle)];
 	}
 
-	/* ----- BUTTONS ----- */
-	.insis-input,
-	.insis-select {
-		@apply w-full px-2 py-1.5 text-sm;
-		font-family: Arial, Helvetica, sans-serif;
-		border: 1px solid var(--insis-border);
-		border-radius: 0;
-		background-color: white;
-		color: var(--insis-gray-900);
-		transition:
-			border-color 0.15s ease-in-out,
-			box-shadow 0.15s ease-in-out;
-	}
-
-	.insis-input:focus,
-	.insis-select:focus {
-		outline: none;
-		border-color: var(--insis-blue);
-		box-shadow: 0 0 0 1px var(--insis-blue);
-	}
-
-	.insis-input:disabled,
-	.insis-select:disabled {
-		@apply cursor-not-allowed bg-gray-100;
-	}
-
-	.insis-input::placeholder {
-		color: var(--insis-gray-500);
-	}
-
-	.insis-select {
-		@apply cursor-pointer appearance-none pr-8;
-		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-		background-position: right 0.5rem center;
-		background-repeat: no-repeat;
-		background-size: 1.25em 1.25em;
-	}
-
-	.insis-checkbox {
-		@apply h-4 w-4 cursor-pointer;
-		accent-color: var(--insis-blue);
-	}
-
-	.insis-label {
-		@apply mb-1 block text-sm font-normal;
-		color: var(--insis-gray-800);
-	}
-
-	/* ----- INPUTS ----- */
-	.insis-input,
-	.insis-select {
-		@apply w-full px-2 py-1.5 text-sm;
-		font-family: Arial, Helvetica, sans-serif;
-		border: 1px solid var(--insis-border);
-		border-radius: 0;
-		background-color: white;
-		color: var(--insis-gray-900);
-		transition:
-			border-color 0.15s ease-in-out,
-			box-shadow 0.15s ease-in-out;
-	}
-
-	.insis-input:focus,
-	.insis-select:focus {
-		outline: none;
-		border-color: var(--insis-blue);
-		box-shadow: 0 0 0 1px var(--insis-blue);
-	}
-
-	.insis-input:disabled,
-	.insis-select:disabled {
-		@apply cursor-not-allowed bg-gray-100;
-	}
-
-	.insis-input::placeholder {
-		color: var(--insis-gray-500);
-	}
-
-	.insis-select {
-		@apply cursor-pointer appearance-none pr-8;
-		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-		background-position: right 0.5rem center;
-		background-repeat: no-repeat;
-		background-size: 1.25em 1.25em;
-	}
-
-	.insis-checkbox {
-		@apply h-4 w-4 cursor-pointer;
-		accent-color: var(--insis-blue);
-	}
-
-	.insis-label {
-		@apply mb-1 block text-sm font-normal;
-		color: var(--insis-gray-800);
-	}
-
-	/* ----- TABLES ----- */
+	/* ── TABLE ── */
 	.insis-table {
-		@apply w-full border-collapse text-sm;
-		font-family: Arial, Helvetica, sans-serif;
+		@apply w-full border-collapse text-[12.5px];
 	}
 
 	.insis-table th {
-		@apply px-2 py-1.5 text-left font-normal;
-		background-color: var(--insis-header-bg);
-		border: 1px solid var(--insis-border);
-		border-bottom-color: var(--insis-header-border);
-		color: var(--insis-gray-900);
-		white-space: nowrap;
+		@apply py-[6px] px-[10px] text-left font-medium bg-[var(--insis-surface-2)] border border-[var(--insis-border)] text-xs text-[var(--insis-text-2)] whitespace-nowrap sticky top-0 z-[2];
 	}
 
 	.insis-table th.sortable {
 		@apply cursor-pointer select-none;
 	}
-
 	.insis-table th.sortable:hover {
-		background-color: #e0e0e0;
+		@apply bg-[var(--insis-bg)];
 	}
 
 	.insis-table td {
-		@apply px-2 py-1.5;
-		border: 1px solid var(--insis-border);
-		vertical-align: middle;
+		@apply py-[6px] px-[10px] border border-[var(--insis-border)] align-middle;
 	}
 
-	.insis-table tbody tr:hover {
-		background-color: var(--insis-row-hover);
+	.insis-table-row-clickable {
+		@apply cursor-pointer;
+		transition: background 0.1s;
+	}
+	.insis-table-row-clickable:hover td {
+		@apply bg-[var(--insis-surface-2)];
+	}
+	.insis-table-row-clickable.row-expanded td {
+		@apply bg-[var(--insis-blue-subtle)];
+	}
+	.insis-table-row-clickable.row-in-timetable td {
+		@apply bg-[var(--insis-success-light)];
 	}
 
-	.insis-table tbody tr:nth-child(even) {
-		background-color: var(--insis-row-alt);
-	}
-
-	.insis-table tbody tr:nth-child(even):hover {
-		background-color: var(--insis-row-hover);
-	}
-
-	.insis-table tbody tr.highlight {
-		background-color: var(--insis-row-highlight);
-	}
-
-	.insis-table tbody tr.error {
-		background-color: var(--insis-row-error);
-	}
-
-	.insis-table .cell-center {
-		@apply text-center;
-	}
-
-	.insis-table .cell-right {
-		@apply text-right;
-	}
-
-	.insis-table .cell-nowrap {
-		@apply whitespace-nowrap;
-	}
-
-	/* Dense table variant for maximum data density */
 	.insis-table-dense th,
 	.insis-table-dense td {
-		@apply px-1.5 py-1;
+		@apply py-1 px-2;
 		font-size: var(--insis-font-xs);
 	}
 
-	/* ----- PANELS ----- */
+	/* ── TABS ── */
+	.insis-tabs {
+		@apply flex gap-[2px] border-b border-[var(--insis-border)];
+	}
+
+	.insis-tab {
+		@apply py-[6px] px-[14px] text-[13px] font-normal rounded-t-[3px] border border-solid border-transparent border-b-0 bg-transparent text-[var(--insis-text-3)] cursor-pointer flex items-center gap-[5px];
+		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		transition: color 0.12s, background 0.12s;
+	}
+	.insis-tab:hover {
+		@apply text-[var(--insis-text-2)] bg-[var(--insis-surface-2)];
+	}
+	.insis-tab-active,
+	.insis-tab.active {
+		@apply bg-[var(--insis-surface)] text-[var(--insis-text)] border-[var(--insis-border)] font-medium -mb-px z-[1] shadow-[var(--insis-shadow-sm)];
+		border-bottom-color: var(--insis-surface);
+	}
+
+	/* ── BADGES ── */
+	.insis-badge {
+		@apply inline-flex items-center gap-[3px] py-px px-[6px] rounded-[10px] text-[11px] font-medium whitespace-nowrap;
+	}
+
+	.insis-badge-success,
+	.insis-badge-green {
+		@apply bg-[var(--insis-success-light)] text-[var(--insis-success)];
+	}
+	.insis-badge-warning,
+	.insis-badge-amber {
+		@apply bg-[var(--insis-warning-light)] text-[var(--insis-warning)];
+	}
+	.insis-badge-danger,
+	.insis-badge-red {
+		@apply bg-[var(--insis-danger-light)] text-[var(--insis-danger)];
+	}
+	.insis-badge-info,
+	.insis-badge-blue {
+		@apply bg-[var(--insis-blue-light)] text-[var(--insis-blue)];
+	}
+	.insis-badge-gray {
+		@apply bg-[var(--insis-surface-2)] text-[var(--insis-text-3)] border border-[var(--insis-border)];
+	}
+	.insis-badge-compulsory {
+		@apply bg-[var(--insis-course-compulsory)] text-white;
+	}
+	.insis-badge-elective {
+		@apply bg-[var(--insis-course-elective)] text-[var(--insis-gray-900)];
+	}
+	.insis-badge-other {
+		@apply bg-[var(--insis-course-other)] text-[var(--insis-gray-900)];
+	}
+	.insis-badge-optional {
+		@apply bg-[var(--insis-course-optional)] text-white;
+	}
+
+	/* ── STATUS CHIPS ── */
+	.status-chip {
+		@apply inline-flex items-center gap-1 py-[3px] px-[9px] rounded-xl border border-solid text-[11.5px] cursor-pointer font-medium bg-transparent;
+		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		transition: all 0.15s;
+	}
+	.chip-green {
+		@apply bg-[var(--insis-success-light)] border-[var(--insis-success-border)] text-[var(--insis-success)];
+	}
+	.chip-red {
+		@apply bg-[var(--insis-danger-light)] border-[var(--insis-danger-border)] text-[var(--insis-danger)];
+	}
+	.chip-amber {
+		@apply bg-[var(--insis-warning-light)] border-[var(--insis-warning-border)] text-[var(--insis-warning)];
+	}
+	.chip-blue {
+		@apply bg-[var(--insis-blue-subtle)] text-[var(--insis-blue)];
+		border-color: color-mix(in srgb, var(--insis-blue) 30%, transparent);
+	}
+	.chip-active {
+		box-shadow: 0 0 0 2px var(--insis-blue);
+	}
+	.chip-dot {
+		@apply w-[6px] h-[6px] rounded-full bg-current shrink-0;
+	}
+
+	/* ── PANELS / NOTES ── */
 	.insis-panel,
 	.insis-panel-info,
 	.insis-panel-warning,
 	.insis-panel-danger,
 	.insis-panel-success {
-		@apply mb-4 p-4;
-		background-color: var(--insis-panel-bg);
-		border: 1px solid var(--insis-panel-border);
-		border-left-width: 4px;
-		border-radius: 3px;
+		@apply flex items-start gap-2 py-2 px-3 rounded-[5px] border border-solid text-xs mb-3;
 	}
 
+	.insis-panel {
+		@apply bg-[var(--insis-panel-bg)] border-[var(--insis-panel-border)] text-[var(--insis-text-2)];
+	}
 	.insis-panel-info {
-		border-left-color: var(--insis-info);
-		background-color: var(--insis-info-bg);
+		@apply bg-[var(--insis-info-bg)] text-[var(--insis-text-2)];
+		border-color: color-mix(in srgb, var(--insis-blue) 25%, transparent);
 	}
-
 	.insis-panel-warning {
-		border-left-color: var(--insis-warning);
-		background-color: var(--insis-warning-bg);
+		@apply bg-[var(--insis-warning-light)] border-[var(--insis-warning-border)] text-[var(--insis-warning)];
 	}
-
 	.insis-panel-danger {
-		border-left-color: var(--insis-danger);
-		background-color: var(--insis-danger-light);
+		@apply bg-[var(--insis-danger-light)] border-[var(--insis-danger-border)] text-[var(--insis-danger)];
 	}
-
 	.insis-panel-success {
-		border-left-color: var(--insis-success);
-		background-color: var(--insis-success-light);
+		@apply bg-[var(--insis-success-light)] border-[var(--insis-success-border)] text-[var(--insis-success)];
 	}
 
-	/* Search/Filter Panel */
-	.insis-search-panel {
-		@apply p-3;
-		background-color: white;
-		border: 1px solid var(--insis-border);
-	}
-
-	.insis-search-panel .field-group {
-		@apply mb-3;
-	}
-
-	.insis-search-panel .field-group:last-child {
-		@apply mb-0;
-	}
-
-	/* ----- TIMETABLE GRID ----- */
+	/* ── TIMETABLE ── */
 	.insis-timetable {
-		@apply w-full border-collapse;
-		font-family: Arial, Helvetica, sans-serif;
-		font-size: var(--insis-font-xs);
-	}
-
-	.insis-timetable th,
-	.insis-timetable td {
-		border: 1px solid var(--insis-border);
-		padding: 2px 4px;
-		vertical-align: top;
-		min-width: 80px;
+		@apply w-full border-collapse text-[11.5px] min-w-[700px];
 	}
 
 	.insis-timetable th {
-		background-color: var(--insis-header-bg);
-		font-weight: normal;
-		text-align: center;
+		@apply py-1 px-[6px] text-center bg-[var(--insis-surface-2)] border border-[var(--insis-border)] font-normal text-[11px] text-[var(--insis-text-2)] whitespace-nowrap min-w-[70px];
+	}
+
+	.insis-timetable td {
+		@apply border border-[var(--insis-border)] p-0 align-top;
 	}
 
 	.insis-timetable .day-header {
-		@apply font-bold;
-		width: 40px;
-		min-width: 40px;
+		@apply font-semibold text-[11.5px] text-[var(--insis-text)] bg-[var(--insis-surface-2)] w-9 min-w-9 text-center p-1;
 	}
 
 	.insis-timetable .time-slot {
-		height: 50px;
-		position: relative;
-		cursor: pointer;
+		@apply h-16 relative cursor-crosshair;
 	}
 
 	.insis-timetable .time-slot:hover {
-		background-color: var(--insis-row-hover);
+		@apply bg-[var(--insis-surface-2)];
 	}
 
 	.insis-timetable .time-slot.selected {
-		background-color: var(--insis-block-selected);
+		background: color-mix(in srgb, var(--insis-blue) 15%, transparent);
 	}
 
 	.insis-timetable .time-slot.selecting {
-		background-color: rgba(179, 217, 255, 0.5);
+		background: color-mix(in srgb, var(--insis-blue) 10%, transparent);
 	}
 
-	/* Course blocks in timetable */
 	.insis-course-block {
-		@apply absolute inset-0.5 overflow-hidden p-1 text-xs;
-		border-radius: 2px;
-		line-height: 1.2;
+		@apply absolute top-0.5 bottom-0.5 rounded-[3px] py-[3px] px-[5px] overflow-hidden text-[10.5px] leading-[1.3] cursor-pointer border border-solid border-black/[0.12];
+		transition: box-shadow 0.12s;
 	}
-
+	.insis-course-block:hover {
+		@apply shadow-[var(--insis-shadow)] z-10;
+	}
+	.insis-course-block.conflict {
+		@apply outline outline-2 outline-[var(--insis-danger)];
+	}
 	.insis-course-block.lecture {
-		background-color: var(--insis-block-lecture);
-		border: 1px solid #6cb66c;
+		@apply bg-[var(--insis-block-lecture)];
 	}
-
 	.insis-course-block.seminar {
-		background-color: var(--insis-block-seminar);
-		border: 1px solid #7bf180;
+		@apply bg-[var(--insis-block-seminar)];
 	}
-
 	.insis-course-block.exercise {
-		background-color: var(--insis-block-exercise);
-		border: 1px solid #5bb8d9;
+		@apply bg-[var(--insis-block-exercise)];
 	}
 
 	.insis-course-block-title {
-		@apply truncate font-bold;
+		@apply font-semibold block;
 	}
-
 	.insis-course-block-info {
-		@apply truncate text-xs;
-		color: var(--insis-gray-700);
+		@apply block opacity-75 text-[10px] overflow-hidden text-ellipsis whitespace-nowrap;
 	}
 
-	/* ----- STATUS BADGES ----- */
-	.insis-badge {
-		@apply inline-flex items-center rounded px-1.5 py-0.5 text-xs;
-		font-weight: normal;
-	}
-
-	.insis-badge-compulsory {
-		background-color: var(--insis-course-compulsory);
-		color: white;
-	}
-
-	.insis-badge-elective {
-		background-color: var(--insis-course-elective);
-		color: var(--insis-gray-900);
-	}
-
-	.insis-badge-other {
-		background-color: var(--insis-course-other);
-		color: var(--insis-gray-900);
-	}
-
-	.insis-badge-optional {
-		background-color: var(--insis-course-optional);
-		color: white;
-	}
-
-	.insis-badge-success {
-		background-color: var(--insis-success);
-		color: white;
-	}
-
-	.insis-badge-warning {
-		background-color: var(--insis-warning);
-		color: var(--insis-gray-900);
-	}
-
-	.insis-badge-danger {
-		background-color: var(--insis-danger);
-		color: white;
-	}
-
-	.insis-badge-info {
-		background-color: var(--insis-info);
-		color: white;
-	}
-
-	/* ----- TABS ----- */
-	.insis-tabs {
-		@apply flex border-b;
-		border-color: var(--insis-border);
-	}
-
-	.insis-tab {
-		@apply -mb-px cursor-pointer border-b px-4 py-2 text-sm;
-		/*border: 1px solid transparent;*/
-		border-color: var(--insis-border);
-		/*border-bottom: none;*/
-		background-color: var(--insis-gray-100);
-		color: var(--insis-gray-700);
-	}
-
-	.insis-tab:hover {
-		background-color: var(--insis-gray-200);
-	}
-
-	.insis-tab.active,
-	.insis-tab-active {
-		background-color: white;
-		border: 1px solid;
-		border-color: var(--insis-border);
-		color: var(--insis-gray-900);
-		font-weight: 500;
-	}
-
-	.insis-tab-content {
-		@apply p-4;
-		border: 1px solid var(--insis-border);
-		border-top: none;
-	}
-
-	/* ----- WIZARD STEPS ----- */
+	/* ── WIZARD ── */
 	.insis-wizard {
-		@apply mb-6 flex items-center;
+		@apply flex items-center justify-center mb-8 gap-0;
 	}
 
 	.insis-wizard-step {
@@ -463,135 +342,196 @@
 	}
 
 	.insis-wizard-step-number {
-		@apply flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold;
-		background-color: var(--insis-gray-300);
-		color: var(--insis-gray-700);
+		@apply w-8 h-8 rounded-full border-2 border-solid border-[var(--insis-border)] flex items-center justify-center text-[13px] font-semibold text-[var(--insis-text-3)] bg-[var(--insis-surface-2)] shrink-0;
+		transition: transform 0.15s ease-in-out;
 	}
 
 	.insis-wizard-step.active .insis-wizard-step-number {
-		background-color: var(--insis-blue);
-		color: white;
+		@apply border-[var(--insis-blue)] bg-[var(--insis-blue)] text-white;
 	}
 
 	.insis-wizard-step.completed .insis-wizard-step-number {
-		background-color: var(--insis-success);
-		color: white;
+		@apply border-[var(--insis-success)] bg-[var(--insis-success)] text-white;
 	}
 
 	.insis-wizard-step-label {
-		@apply ml-2 text-sm;
-		color: var(--insis-gray-600);
+		@apply text-xs text-[var(--insis-text-3)] ml-2 whitespace-nowrap;
 	}
 
 	.insis-wizard-step.active .insis-wizard-step-label {
-		color: var(--insis-gray-900);
-		font-weight: 500;
+		@apply text-[var(--insis-text)] font-medium;
 	}
 
 	.insis-wizard-connector {
-		@apply mx-2 h-0.5 w-12;
-		background-color: var(--insis-gray-300);
+		@apply w-12 h-0.5 bg-[var(--insis-border)] mx-1 shrink-0;
 	}
 
-	.insis-wizard-step.completed + .insis-wizard-connector {
-		background-color: var(--insis-success);
+	.insis-wizard-connector.completed,
+	.insis-wizard-connector.done {
+		@apply bg-[var(--insis-success)];
 	}
 
-	/* ----- LOADING STATES ----- */
+	.insis-wizard-step.clickable {
+		@apply cursor-pointer;
+	}
+	.insis-wizard-step.clickable:hover .insis-wizard-step-number {
+		@apply scale-105;
+	}
+
+	/* ── LOADING ── */
 	.insis-loading {
 		@apply flex items-center justify-center p-8;
 	}
 
 	.insis-spinner {
-		@apply h-6 w-6 animate-spin rounded-full border-2;
-		border-color: var(--insis-gray-300);
-		border-top-color: var(--insis-blue);
+		@apply w-[22px] h-[22px] rounded-full border-[2.5px] border-solid border-[var(--insis-border)] border-t-[var(--insis-blue)];
+		animation: spin 0.7s linear infinite;
 	}
 
-	/* ----- POPOVER (InSIS style) ----- */
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	/* ── DAY TOGGLE BUTTONS ── */
+	.insis-day-toggle {
+		@apply py-[3px] px-[7px] text-[11.5px] rounded-[3px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface)] cursor-pointer text-[var(--insis-text-2)];
+		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		transition: all 0.12s;
+	}
+	.insis-day-toggle:hover {
+		@apply border-[var(--insis-blue)] text-[var(--insis-blue)];
+	}
+	.insis-day-toggle.active {
+		@apply bg-[var(--insis-blue)] border-[var(--insis-blue-dark)] text-white;
+	}
+
+	/* ── POPOVER ── */
 	.insis-popover {
-		@apply p-3;
-		background-color: white;
-		border: 1px solid var(--insis-border);
-		border-radius: 3px;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+		@apply absolute z-50 bg-[var(--insis-surface)] border border-solid border-[var(--insis-border)] rounded-[5px] py-[10px] px-3 shadow-[var(--insis-shadow)] text-[12.5px] min-w-[180px];
 	}
 
 	.insis-popover-title {
-		@apply mb-2 pb-2 text-sm font-bold;
-		border-bottom: 1px solid var(--insis-border);
+		@apply mb-2 pb-2 text-[13px] font-semibold border-b border-[var(--insis-border)];
 	}
 
-	/* ----- DAY TOGGLE BUTTONS ----- */
-	.insis-day-toggle {
-		@apply inline-flex h-8 w-8 cursor-pointer items-center justify-center text-xs;
-		background-color: var(--insis-gray-200);
-		border: 1px solid var(--insis-border);
-		color: var(--insis-gray-700);
-		transition: all 0.15s ease-in-out;
+	/* ── SEARCH PANEL (sidebar wrapper) ── */
+	.insis-search-panel {
+		@apply p-3 bg-[var(--insis-surface)] h-full overflow-y-auto;
 	}
 
-	.insis-day-toggle:hover {
-		background-color: var(--insis-gray-300);
-	}
-
-	.insis-day-toggle.active {
-		background-color: var(--insis-blue);
-		border-color: var(--insis-blue-dark);
-		color: white;
-	}
-
-	.insis-day-toggle:first-child {
-		border-radius: 3px 0 0 3px;
-	}
-
-	.insis-day-toggle:last-child {
-		border-radius: 0 3px 3px 0;
-	}
-
-	.insis-day-toggle:not(:last-child) {
-		border-right: none;
-	}
-
-	/* ----- BREADCRUMBS ----- */
-	.insis-breadcrumbs {
-		@apply mb-4 flex items-center text-sm;
-	}
-
-	.insis-breadcrumbs a {
-		color: var(--insis-link);
-	}
-
-	.insis-breadcrumbs .separator {
-		@apply mx-2;
-		color: var(--insis-gray-500);
-	}
-
-	.insis-breadcrumbs .current {
-		color: var(--insis-gray-700);
-	}
-
-	/* ----- LEGEND ----- */
+	/* ── LEGEND ── */
 	.insis-legend {
-		@apply text-sm;
+		@apply text-[11.5px];
 	}
-
 	.insis-legend-title {
-		@apply cursor-pointer text-blue-600;
-		color: var(--insis-link);
+		@apply cursor-pointer text-[var(--insis-link)];
 	}
-
 	.insis-legend-content {
-		@apply mt-2 flex flex-wrap gap-4;
+		@apply mt-2 flex flex-wrap gap-[10px];
 	}
-
 	.insis-legend-item {
-		@apply flex items-center gap-1.5;
+		@apply flex items-center gap-[5px] text-[var(--insis-text-2)];
 	}
 
-	/* ----- COURSE IDENT CODE ----- */
+	/* ── BREADCRUMBS ── */
+	.insis-breadcrumbs {
+		@apply flex items-center text-sm mb-4;
+	}
+	.insis-breadcrumbs a {
+		@apply text-[var(--insis-link)];
+	}
+	.insis-breadcrumbs .separator {
+		@apply mx-2 text-[var(--insis-gray-500)];
+	}
+	.insis-breadcrumbs .current {
+		@apply text-[var(--insis-gray-700)];
+	}
+
+	/* ── COURSE CODE ── */
 	.insis-course-code {
-		@apply font-mono text-sm;
-		color: var(--insis-gray-700);
+		@apply font-mono text-xs text-[var(--insis-text-2)] whitespace-nowrap;
+	}
+
+	/* ── UNIT CARD (expanded row) ── */
+	.unit-card {
+		@apply border border-solid border-[var(--insis-border)] rounded-[5px] bg-[var(--insis-surface)] mb-[6px] overflow-hidden;
+		transition: border-color 0.15s, box-shadow 0.15s;
+	}
+	.unit-card:hover {
+		@apply border-[var(--insis-blue)] shadow-[var(--insis-shadow-sm)];
+	}
+	.unit-card.selected {
+		@apply border-[var(--insis-success)] bg-[var(--insis-success-light)];
+	}
+	.unit-card.time-match {
+		@apply border-[var(--insis-blue)] bg-[var(--insis-blue-subtle)];
+	}
+	.unit-card.conflict {
+		@apply border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)];
+	}
+
+	/* ── EXPANDED ROW CONTENT ── */
+	.expanded-content {
+		@apply p-4 bg-[var(--insis-surface-2)] border-t-2 border-t-[var(--insis-blue-light)];
+	}
+
+	/* ── FILTER SECTION (sidebar) ── */
+	.filter-section {
+		@apply border-b border-solid border-[var(--insis-border-light)] py-2;
+	}
+	.filter-section:last-child {
+		@apply border-b-0;
+	}
+
+	.filter-toggle {
+		@apply w-full flex items-center justify-between py-1 px-0.5 bg-transparent border-0 cursor-pointer text-[12.5px] font-medium text-[var(--insis-text)] rounded-[3px];
+		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+	}
+	.filter-toggle:hover {
+		@apply bg-[var(--insis-surface-2)];
+	}
+
+	.filter-badge {
+		@apply bg-[var(--insis-blue)] text-white text-[10px] py-px px-[5px] rounded-[10px] font-medium min-w-[18px] text-center inline-block;
+	}
+
+	/* ── SIDEBAR HEADER ── */
+	.sidebar-hd {
+		@apply py-[10px] px-3 pb-2 text-[11px] font-semibold tracking-[0.06em] uppercase text-[var(--insis-text-3)] border-b border-[var(--insis-border)] flex items-center justify-between shrink-0;
+	}
+
+	/* ── MODAL ── */
+	.insis-modal-backdrop {
+		@apply fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-6;
+	}
+
+	.insis-modal {
+		@apply bg-[var(--insis-surface)] rounded-lg w-full max-w-[660px] max-h-[85vh] flex flex-col shadow-[var(--insis-shadow-lg)];
+		animation: modal-in 0.18s ease-out;
+	}
+
+	@keyframes modal-in {
+		from {
+			opacity: 0;
+			transform: scale(0.97) translateY(-8px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	.insis-modal-header {
+		@apply py-[14px] px-4 border-b border-[var(--insis-border)] flex items-center justify-between bg-[var(--insis-surface-2)] rounded-t-lg shrink-0;
+	}
+
+	.insis-modal-body {
+		@apply p-4 overflow-y-auto flex-1;
+	}
+
+	.insis-modal-footer {
+		@apply py-[10px] px-4 border-t border-[var(--insis-border)] bg-[var(--insis-surface-2)] rounded-b-lg flex items-center justify-between shrink-0;
 	}
 }

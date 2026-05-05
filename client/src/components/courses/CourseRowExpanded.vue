@@ -208,7 +208,7 @@ function getSlotHighlightClass(slot: CourseUnitSlot): string {
 function getSlotConflictClass(slot: CourseUnitSlot): string {
 	const conflicts = getSlotConflicts(slot)
 	if (conflicts.length === 0) return ''
-	return 'bg-red-50'
+	return 'bg-[var(--insis-danger-light)]'
 }
 
 /**
@@ -220,7 +220,7 @@ function handleToggleCompleted() {
 </script>
 
 <template>
-	<div class="p-4">
+	<div class="p-4 bg-[var(--insis-surface-2)]">
 		<div class="grid gap-6 lg:grid-cols-2">
 			<!-- Course Info -->
 			<div>
@@ -329,14 +329,14 @@ function handleToggleCompleted() {
 				</div>
 
 				<!-- Conflict filter toggle -->
-				<div v-if="hasAnyConflicts" class="mb-3 flex items-center justify-between rounded border border-amber-200 bg-amber-50 px-3 py-2">
-					<div class="flex items-center gap-2 text-sm text-amber-700">
+				<div v-if="hasAnyConflicts" class="mb-3 flex items-center justify-between rounded border border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)] px-3 py-2">
+					<div class="flex items-center gap-2 text-sm text-[var(--insis-warning)]">
 						<IconOctagonAlert class="h-4 w-4 shrink-0" />
 						<span>
 							{{ $t('components.courses.CourseRowExpanded.slotsWithConflicts', { count: conflictingUnitCount }) }}
 						</span>
 					</div>
-					<label class="flex items-center gap-1.5 cursor-pointer text-xs text-amber-700 hover:text-amber-900">
+					<label class="flex items-center gap-1.5 cursor-pointer text-xs text-[var(--insis-warning)] hover:text-[var(--insis-warning-dark)]">
 						<input v-model="hideConflictingUnits" type="checkbox" class="insis-checkbox" />
 						<IconEyeOff class="h-3 w-3" />
 						{{ $t('components.courses.CourseRowExpanded.hideConflicting') }}
@@ -382,7 +382,7 @@ function handleToggleCompleted() {
 								{{ group.units.length }})
 							</span>
 							<!-- Hidden by conflict count -->
-							<span v-if="hiddenConflictCount(group.units) > 0" class="text-xs text-amber-600">
+							<span v-if="hiddenConflictCount(group.units) > 0" class="text-xs text-[var(--insis-warning)]">
 								({{ $t('components.courses.CourseRowExpanded.hiddenConflicts', { count: hiddenConflictCount(group.units) }) }})
 							</span>
 						</div>
@@ -395,7 +395,7 @@ function handleToggleCompleted() {
 								class="rounded border text-sm transition-colors"
 								:class="{
 									'border-[var(--insis-success)] bg-[var(--insis-success-light)]': isUnitSelected(unit.id),
-									'border-red-300 bg-red-50': !isUnitSelected(unit.id) && unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
+									'border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)]': !isUnitSelected(unit.id) && unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
 									'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)]':
 										!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit) && !unitHasConflicts(unit),
 									'bg-[var(--insis-blue-light)] ring-1 ring-[var(--insis-blue)]':
@@ -432,7 +432,7 @@ function handleToggleCompleted() {
 											<!-- Slot conflict indicator -->
 											<span
 												v-if="getSlotConflicts(slot).length > 0"
-												class="ml-auto shrink-0 flex items-center gap-1 text-xs text-red-600"
+												class="ml-auto shrink-0 flex items-center gap-1 text-xs text-[var(--insis-danger)]"
 												:title="formatSlotConflictTooltip(slot)"
 											>
 												<IconOctagonAlert class="h-3 w-3" />

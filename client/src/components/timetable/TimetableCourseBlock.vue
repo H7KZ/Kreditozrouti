@@ -129,7 +129,7 @@ function handleRemove(event: MouseEvent) {
 
 <template>
 	<div
-		class="timetable-block absolute left-0 right-0 overflow-hidden border border-[var(--insis-border)] text-xs"
+		class="timetable-block group cursor-pointer min-h-6 transition-shadow hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] hover:z-10 absolute left-0 right-0 overflow-hidden border border-[var(--insis-border)] text-xs"
 		:class="[
 			blockColorClass,
 			{
@@ -190,7 +190,7 @@ function handleRemove(event: MouseEvent) {
 			<!-- Remove button (shown on hover) -->
 			<button
 				type="button"
-				class="remove-btn cursor-pointer absolute right-0.5 top-0.5 hidden h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger-light)] text-white hover:bg-[var(--insis-danger)]"
+				class="cursor-pointer absolute right-0.5 top-0.5 hidden group-hover:flex h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger-light)] text-white hover:bg-[var(--insis-danger)]"
 				:title="$t('components.timetable.TimetableCourseBlock.removeFromTimetable')"
 				@click="handleRemove"
 			>
@@ -201,21 +201,6 @@ function handleRemove(event: MouseEvent) {
 </template>
 
 <style scoped>
-.timetable-block {
-	cursor: pointer;
-	min-height: 24px;
-	transition: box-shadow 0.15s ease;
-}
-
-.timetable-block:hover {
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-	z-index: 10;
-}
-
-.timetable-block:hover .remove-btn {
-	display: flex;
-}
-
 .warning-indicator {
 	animation: pulse-warning 2s infinite;
 }

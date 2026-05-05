@@ -279,7 +279,7 @@ onUnmounted(() => {
 			<!-- Header with time slots -->
 			<thead>
 				<tr>
-					<th class="day-header bg-[var(--insis-header-bg)]">{{ $t('components.timetable.TimetableGrid.dayHeader') }}</th>
+					<th class="w-[50px] min-w-[50px] bg-[var(--insis-header-bg)]">{{ $t('components.timetable.TimetableGrid.dayHeader') }}</th>
 					<th v-for="slot in timeSlots" :key="slot.minutes" class="text-center whitespace-nowrap px-2" :style="{ minWidth: '80px' }">
 						{{ slot.label }}
 					</th>
@@ -290,14 +290,14 @@ onUnmounted(() => {
 			<tbody>
 				<tr v-for="day in WEEKDAYS" :key="day" class="day-row-container">
 					<!-- Day label -->
-					<td class="day-header font-medium bg-white border-r border-[var(--insis-border)]">
+					<td class="w-[50px] min-w-[50px] font-medium bg-white border-r border-[var(--insis-border)]">
 						{{ getShortDayLabel(day) }}
 					</td>
 
 					<!-- Time grid cell spanning all columns -->
 					<td
 						:colspan="timeSlots.length"
-						class="day-row relative p-0"
+						class="day-row cursor-crosshair hover:bg-[var(--insis-gray-50)] relative p-0"
 						:style="{ height: `${rowHeight}px` }"
 						:data-day="day"
 						@mousedown="handleMouseDown($event, day)"
@@ -355,17 +355,3 @@ onUnmounted(() => {
 	</div>
 </template>
 
-<style scoped>
-.day-row {
-	cursor: crosshair;
-}
-
-.day-row:hover {
-	background-color: var(--insis-gray-50);
-}
-
-.day-header {
-	width: 50px;
-	min-width: 50px;
-}
-</style>
