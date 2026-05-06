@@ -2,12 +2,14 @@
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
-import { useCourseLabels, useTimetableGrid } from '@client/composables'
+import { useCourseLabels, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
 import { WEEKDAYS } from '@client/constants/timetable'
-import { useCoursesStore, useDragStore, useTimetableStore, useUIStore } from '@client/stores'
+import { useDragStore, useTimetableStore } from '@client/stores'
 import type { SelectedCourseUnit } from '@client/types'
+import type { MergedUnit } from '@client/composables'
+import { isMergedUnit } from '@client/composables'
 import type InSISDay from '@scraper/Types/InSISDay'
-import { computed, onMounted, onUnmounted, ref, toRef } from 'vue'
+import { ref, toRef } from 'vue'
 
 /*
  * TimetableGrid
@@ -19,11 +21,13 @@ import { computed, onMounted, onUnmounted, ref, toRef } from 'vue'
 
 const timetableStore = useTimetableStore()
 const dragStore = useDragStore()
-const coursesStore = useCoursesStore()
-const uiStore = useUIStore()
 
 // Composables
 const { getShortDayLabel } = useCourseLabels()
+
+// Slot merging composable
+const { mergedUnitsByDay } = useSlotMerging(toRef(() => timetableStore.unitsByDay))
+
 const { timeSlots, rowHeight, getBlockStyle, getTimeFromX, getDragSelectionStyle } = useTimetableGrid(
 	toRef(() => mergedUnitsByDay.value),
 	{
@@ -32,115 +36,16 @@ const { timeSlots, rowHeight, getBlockStyle, getTimeFromX, getDragSelectionStyle
 	},
 )
 
-/**
- * Represents a merged block containing multiple one-time slots
- */
-interface MergedUnit extends SelectedCourseUnit {
-	isMerged: boolean
-	mergedCount: number
-	mergedSlotIds: number[]
-	dateRange: string
-	originalUnits: SelectedCourseUnit[]
-}
+// Drag handling
+const gridRef = ref<HTMLElement | null>(null)
 
-/**
- * Merge one-time blocks that fall on the same day of the week,
- * have the same course, same time, and same unit type.
- */
-const mergedUnitsByDay = computed(() => {
-	const result = new Map<InSISDay, (SelectedCourseUnit | MergedUnit)[]>()
-
-	for (const day of WEEKDAYS) {
-		result.set(day, [])
-	}
-
-	// Get original units by day
-	const originalByDay = timetableStore.unitsByDay
-
-	for (const day of WEEKDAYS) {
-		const dayUnits = originalByDay.get(day) || []
-		const processedSlotIds = new Set<number>()
-		const mergedUnits: (SelectedCourseUnit | MergedUnit)[] = []
-
-		for (const unit of dayUnits) {
-			// Skip if already processed
-			if (processedSlotIds.has(unit.slotId)) continue
-
-			// If this is a weekly recurring slot (no date), add as-is
-			if (!unit.date) {
-				mergedUnits.push(unit)
-				processedSlotIds.add(unit.slotId)
-				continue
-			}
-
-			// This is a one-time (date-only) slot - find others to merge with
-			const mergeCandidates = dayUnits.filter(
-				(other) =>
-					!processedSlotIds.has(other.slotId) &&
-					other.date && // Must also be one-time
-					other.courseId === unit.courseId &&
-					other.unitType === unit.unitType &&
-					other.timeFrom === unit.timeFrom &&
-					other.timeTo === unit.timeTo,
-			)
-
-			if (mergeCandidates.length <= 1) {
-				// No other candidates, add as-is
-				mergedUnits.push(unit)
-				processedSlotIds.add(unit.slotId)
-				continue
-			}
-
-			// Merge the candidates
-			const dates = mergeCandidates
-				.map((u) => u.date!)
-				.sort((a, b) => {
-					// Sort dates (DD.MM.YYYY format)
-					const [dA, mA, yA] = a.split('.').map(Number)
-					const [dB, mB, yB] = b.split('.').map(Number)
-					if (yA !== yB) return yA! - yB!
-					if (mA !== mB) return mA! - mB!
-					return dA! - dB!
-				})
-
-			// Create date range string
-			const dateRange = dates.length > 2 ? `${dates[0]} - ${dates[dates.length - 1]}` : dates.join(', ')
-
-			const mergedUnit: MergedUnit = {
-				...unit,
-				isMerged: true,
-				mergedCount: mergeCandidates.length,
-				mergedSlotIds: mergeCandidates.map((u) => u.slotId),
-				dateRange,
-				originalUnits: mergeCandidates,
-			}
-
-			mergedUnits.push(mergedUnit)
-
-			// Mark all merged slots as processed
-			for (const candidate of mergeCandidates) {
-				processedSlotIds.add(candidate.slotId)
-			}
-		}
-
-		result.set(day, mergedUnits)
-	}
-
-	return result
-})
+const { handleMouseDown, handleDragFilter, handleDragCancel } = useTimetableDrag(gridRef, getTimeFromX)
 
 /**
  * Get units for a specific day (with merging applied)
  */
 function getMergedUnitsForDay(day: InSISDay): (SelectedCourseUnit | MergedUnit)[] {
 	return mergedUnitsByDay.value.get(day) || []
-}
-
-/**
- * Check if a unit is merged
- */
-function isMergedUnit(unit: SelectedCourseUnit | MergedUnit): unit is MergedUnit {
-	return 'isMerged' in unit && unit.isMerged
 }
 
 // Check if a unit has a conflict
@@ -152,58 +57,9 @@ function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 	return timetableStore.conflicts.some(([a, b]) => a.slotId === unit.slotId || b.slotId === unit.slotId)
 }
 
-// Drag handling
-const gridRef = ref<HTMLElement | null>(null)
-const isDragging = ref(false)
-const dragStartX = ref(0)
-
 // Course modal state
 const showCourseModal = ref(false)
 const selectedModalUnit = ref<SelectedCourseUnit | null>(null)
-
-function handleMouseDown(event: MouseEvent, day: InSISDay) {
-	if (!gridRef.value) return
-
-	// Don't start drag if clicking on a course block
-	const target = event.target as HTMLElement
-	if (target.closest('.timetable-block')) return
-
-	const dayRow = (event.target as HTMLElement).closest('.day-row') as HTMLElement
-	if (!dayRow) return
-
-	const time = getTimeFromX(event.clientX, dayRow)
-	dragStore.startDrag(day, time)
-	isDragging.value = true
-	dragStartX.value = event.clientX
-
-	event.preventDefault()
-}
-
-function handleMouseMove(event: MouseEvent) {
-	if (!isDragging.value || !gridRef.value) return
-
-	const dayRow = document.elementFromPoint(event.clientX, event.clientY)?.closest('.day-row') as HTMLElement
-	if (!dayRow) return
-
-	const day = dayRow.dataset.day as InSISDay
-	const time = getTimeFromX(event.clientX, dayRow)
-	dragStore.updateDrag(day, time)
-}
-
-function handleMouseUp(event: MouseEvent) {
-	if (!isDragging.value) return
-
-	isDragging.value = false
-
-	// Check if it was a click (minimal movement) - require at least 20px drag
-	const dragDistance = Math.abs(event.clientX - dragStartX.value)
-	if (dragDistance < 20) {
-		dragStore.cancelDrag()
-		return
-	}
-
-	dragStore.endDrag(event.clientX, event.clientY)
-}
 
 // Handle clicking on a course block to open the course modal
 function handleCourseBlockClick(unit: SelectedCourseUnit | MergedUnit) {
@@ -234,37 +90,10 @@ function handleRemoveUnit(unit: SelectedCourseUnit | MergedUnit) {
 	}
 }
 
-// Handle drag filter action
-async function handleDragFilter() {
-	const selection = dragStore.normalizedDragSelection
-	if (!selection) return
-
-	coursesStore.setTimeFilterFromDrag(selection.day, selection.timeFrom, selection.timeTo)
-	uiStore.switchToListView()
-	await coursesStore.fetchCourses()
-	dragStore.cancelDrag()
-}
-
-// Handle drag cancel
-function handleDragCancel() {
-	dragStore.cancelDrag()
-}
-
 // Computed drag selection style wrapper
 function getDragSelectionStyleForDay(day: InSISDay) {
 	return getDragSelectionStyle(day, dragStore.normalizedDragSelection, dragStore.dragSelection.active)
 }
-
-// Global mouse event listeners
-onMounted(() => {
-	document.addEventListener('mousemove', handleMouseMove)
-	document.addEventListener('mouseup', handleMouseUp)
-})
-
-onUnmounted(() => {
-	document.removeEventListener('mousemove', handleMouseMove)
-	document.removeEventListener('mouseup', handleMouseUp)
-})
 </script>
 
 <template>
@@ -309,11 +138,12 @@ onUnmounted(() => {
 						</div>
 
 						<!-- Drag selection overlay (horizontal) -->
-						<div
-							v-if="getDragSelectionStyleForDay(day)"
-							class="pointer-events-none absolute top-0 bottom-0 bg-[var(--insis-block-selected)] opacity-50"
-							:style="getDragSelectionStyleForDay(day)!"
-						/>
+						<template v-if="getDragSelectionStyleForDay(day) as Record<string, string> | null">
+							<div
+								class="pointer-events-none absolute top-0 bottom-0 bg-[var(--insis-block-selected)] opacity-50"
+								:style="getDragSelectionStyleForDay(day)!"
+							/>
+						</template>
 
 						<!-- Course blocks (positioned horizontally) - using merged units -->
 						<TimetableCourseBlock
