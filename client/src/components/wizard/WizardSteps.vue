@@ -6,6 +6,7 @@ import IconCheck from '~icons/lucide/check'
 /*
  * WizardSteps
  * Visual progress indicator for the wizard.
+ * Now supports 4 steps: Faculty → Year → Study Plan → Completed Courses
  */
 
 const { t } = useI18n({ useScope: 'global' })
@@ -15,6 +16,7 @@ interface Props {
 	step1Complete: boolean
 	step2Complete: boolean
 	step3Complete: boolean
+	step4Complete: boolean
 }
 
 interface Emits {
@@ -28,6 +30,7 @@ const steps = computed(() => [
 	{ number: 1, label: t('components.wizard.WizardSteps.faculty') },
 	{ number: 2, label: t('components.wizard.WizardSteps.enrollmentYear') },
 	{ number: 3, label: t('components.wizard.WizardSteps.studyPlan') },
+	{ number: 4, label: t('components.wizard.WizardSteps.completedCourses') },
 ])
 
 function isStepComplete(stepNumber: number): boolean {
@@ -38,6 +41,8 @@ function isStepComplete(stepNumber: number): boolean {
 			return props.step2Complete
 		case 3:
 			return props.step3Complete
+		case 4:
+			return props.step4Complete
 		default:
 			return false
 	}
@@ -48,6 +53,7 @@ function isStepClickable(stepNumber: number): boolean {
 	if (stepNumber < props.currentStep) return true
 	if (stepNumber === 2 && props.step1Complete) return true
 	if (stepNumber === 3 && props.step2Complete) return true
+	if (stepNumber === 4 && props.step3Complete) return true
 	return false
 }
 
@@ -89,21 +95,3 @@ function handleStepClick(stepNumber: number) {
 		</template>
 	</div>
 </template>
-
-<style scoped>
-.insis-wizard-step.clickable {
-	cursor: pointer;
-}
-
-.insis-wizard-step.clickable:hover .insis-wizard-step-number {
-	transform: scale(1.05);
-}
-
-.insis-wizard-step-number {
-	transition: transform 0.15s ease-in-out;
-}
-
-.insis-wizard-connector.completed {
-	background-color: var(--insis-success);
-}
-</style>

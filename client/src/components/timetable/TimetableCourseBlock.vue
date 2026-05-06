@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useTimeUtils } from '@client/composables'
+import type { CourseWithRelations } from '@api/Database/types'
+import { useCourseLabels, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { computed } from 'vue'
@@ -14,14 +15,17 @@ import IconX from '~icons/lucide/x'
  * Shows warning icon when the course has missing unit types.
  */
 
-const { t, te } = useI18n({ useScope: 'global' })
+const { t, te } = useI18n()
 const { minutesToTime } = useTimeUtils()
+const { getUnitCourseTitle } = useCourseLabels()
 const timetableStore = useTimetableStore()
 const coursesStore = useCoursesStore()
 
 interface Props {
 	unit: SelectedCourseUnit
 	hasConflict?: boolean
+	/** Whether this block has a campus travel-time conflict (softer warning, orange) */
+	hasCampusConflict?: boolean
 	/** Whether this block represents merged one-time slots */
 	isMerged?: boolean
 	/** Count of merged slots (for display) */
@@ -53,7 +57,7 @@ const courseStatus = computed(() => {
 	if (courseUnits.length === 0) return { needsAction: false, missingTypes: [] }
 
 	// Find the full course from the courses store
-	const fullCourse = coursesStore.courses.find((c) => c.id === props.unit.courseId)
+	const fullCourse = coursesStore.courses.find((c: CourseWithRelations) => c.id === props.unit.courseId)
 	if (!fullCourse) return { needsAction: false, missingTypes: [] }
 
 	// Get all available unit types for this course
@@ -128,11 +132,12 @@ function handleRemove(event: MouseEvent) {
 
 <template>
 	<div
-		class="timetable-block absolute left-0 right-0 overflow-hidden border border-[var(--insis-border)] text-xs"
+		class="timetable-block group cursor-pointer min-h-6 transition-shadow hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] hover:z-10 absolute left-0 right-0 overflow-hidden border border-[var(--insis-border)] text-xs"
 		:class="[
 			blockColorClass,
 			{
 				'ring-2 ring-[var(--insis-danger)]': hasConflict,
+				'ring-2 ring-[var(--insis-warning)]': hasCampusConflict && !hasConflict,
 				'merged-block': isMerged,
 			},
 		]"
@@ -170,7 +175,7 @@ function handleRemove(event: MouseEvent) {
 
 			<!-- Course title (truncated) -->
 			<div class="mt-0.5 flex-1 truncate text-[10px] text-[var(--insis-gray-600)]">
-				{{ unit.courseTitle }}
+				{{ getUnitCourseTitle(unit) }}
 			</div>
 
 			<!-- Time and room / date range for merged -->
@@ -189,7 +194,7 @@ function handleRemove(event: MouseEvent) {
 			<!-- Remove button (shown on hover) -->
 			<button
 				type="button"
-				class="remove-btn cursor-pointer absolute right-0.5 top-0.5 hidden h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger-light)] text-white hover:bg-[var(--insis-danger)]"
+				class="cursor-pointer absolute right-0.5 top-0.5 hidden group-hover:flex h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger-light)] text-[var(--insis-danger)] hover:bg-[var(--insis-danger)] hover:text-white transition-colors duration-75"
 				:title="$t('components.timetable.TimetableCourseBlock.removeFromTimetable')"
 				@click="handleRemove"
 			>
@@ -200,21 +205,6 @@ function handleRemove(event: MouseEvent) {
 </template>
 
 <style scoped>
-.timetable-block {
-	cursor: pointer;
-	min-height: 24px;
-	transition: box-shadow 0.15s ease;
-}
-
-.timetable-block:hover {
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-	z-index: 10;
-}
-
-.timetable-block:hover .remove-btn {
-	display: flex;
-}
-
 .warning-indicator {
 	animation: pulse-warning 2s infinite;
 }

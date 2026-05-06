@@ -12,7 +12,7 @@ import IconSearch from '~icons/lucide/search'
  * Refactored to use composables for positioning, click outside, and time formatting.
  */
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 // Composables
 const { getDayLabel } = useCourseLabels()

@@ -1,4 +1,5 @@
 import type { CourseUnit, CourseUnitSlot } from '@api/Database/types'
+import { useTimeUtils } from '@client/composables/useTimeUtils'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 import { i18n } from '@client/index.ts'
 import { getDayFromDate, getDayIndex } from '@client/utils/day.ts'
@@ -16,6 +17,7 @@ import type InSISDay from '@scraper/Types/InSISDay'
  */
 export function useScheduleSummary() {
 	const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
+	const { minutesToTime } = useTimeUtils()
 
 	/**
 	 * Get unique days from an array of course units.
@@ -113,13 +115,7 @@ export function useScheduleSummary() {
 
 		if (minTime === Infinity || maxTime === -Infinity) return '-'
 
-		const formatTime = (minutes: number) => {
-			const hours = Math.floor(minutes / 60)
-			const mins = minutes % 60
-			return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
-		}
-
-		return `${formatTime(minTime)} - ${formatTime(maxTime)}`
+		return `${minutesToTime(minTime)} - ${minutesToTime(maxTime)}`
 	}
 
 	/**
@@ -128,7 +124,7 @@ export function useScheduleSummary() {
 	function hasBlockSlots(units: CourseUnit<void, CourseUnitSlot>[] | undefined): boolean {
 		if (!units) return false
 
-		return units.some((unit) => unit.slots?.some((slot) => slot.date && !slot.day))
+		return units.some((unit) => unit.slots?.some((slot: CourseUnitSlot) => slot.date && !slot.day))
 	}
 
 	/**
@@ -137,7 +133,7 @@ export function useScheduleSummary() {
 	function hasRecurringSlots(units: CourseUnit<void, CourseUnitSlot>[] | undefined): boolean {
 		if (!units) return false
 
-		return units.some((unit) => unit.slots?.some((slot) => slot.day))
+		return units.some((unit) => unit.slots?.some((slot: CourseUnitSlot) => slot.day))
 	}
 
 	return {

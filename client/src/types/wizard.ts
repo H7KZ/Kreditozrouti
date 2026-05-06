@@ -1,4 +1,4 @@
-import { StudyPlanWithRelations } from '@api/Database/types'
+import { Course, StudyPlanWithRelations } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem.ts'
 import InSISSemester from '@scraper/Types/InSISSemester.ts'
 
@@ -13,14 +13,13 @@ export interface PersistedWizardState {
 	facultyId: string | null
 	year: number | null
 	semester: InSISSemester
-	/** @deprecated Use selectedStudyPlans instead */
 	studyPlanId: number | null
-	/** @deprecated Use selectedStudyPlans instead */
 	studyPlanIdent: string | null
-	/** @deprecated Use selectedStudyPlans instead */
 	studyPlanTitle: string | null
 	/** Multiple selected study plans */
 	selectedStudyPlans: SelectedStudyPlan[]
+	/** IDs of courses the student has already completed */
+	completedCourseIdents: string[]
 	completed: boolean
 }
 
@@ -31,6 +30,8 @@ export interface WizardState {
 	semester: InSISSemester
 	/** Multiple selected study plans */
 	selectedStudyPlans: SelectedStudyPlan[]
+	/** IDs of courses the student has already completed */
+	completedCourseIdents: string[]
 	completed: boolean
 	facultyFacets: FacetItem[]
 	yearFacets: FacetItem[]
@@ -40,4 +41,11 @@ export interface WizardState {
 	titleSearch: string
 	loading: boolean
 	error: string | null
+	/** Courses available in selected study plans (for step 4) */
+	studyPlanCourses: Course[]
+	studyPlanCoursesLoading: boolean
+	/** Search filter for completed courses step */
+	completedCoursesSearch: string
+	/** Category filter for completed courses step */
+	completedCoursesCategoryFilter: string[]
 }

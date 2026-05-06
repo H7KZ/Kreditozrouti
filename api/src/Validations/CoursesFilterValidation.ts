@@ -36,14 +36,14 @@ const CoursesFilterValidation = z.object({
 	mode_of_deliveries: z.array(z.string()).optional(),
 
 	// Availability Filters
-	exclude_slot_ids: z.array(z.coerce.number()).optional(),
+	completed_course_idents: z.array(z.coerce.string()).optional(),
 
 	// Sorting
 	sort_by: z.enum(['ident', 'title', 'ects', 'faculty', 'year', 'semester']).optional().default('ident'),
 	sort_dir: z.enum(['asc', 'desc']).optional().default('asc'),
 
 	// Pagination
-	limit: z.coerce.number().min(0).max(100).optional().default(20),
+	limit: z.coerce.number().min(0).max(500).optional().default(20),
 	offset: z.coerce.number().min(0).optional().default(0)
 })
 

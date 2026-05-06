@@ -384,7 +384,7 @@ Returns paginated courses with all relations loaded.
 **Returns:**
 ```typescript
 {
-  data: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>[],
+  data: CourseWithRelations[],
   count: number,
   total: number
 }
@@ -1163,9 +1163,6 @@ Must be set for API to start:
   ects: z.array(z.coerce.number()).optional(),
   mode_of_completions: z.array(z.string()).optional(),
   mode_of_deliveries: z.array(z.string()).optional(),
-
-  // Availability
-  exclude_slot_ids: z.array(z.coerce.number()).optional(),
 
   // Pagination & sorting
   limit: z.coerce.number().min(0).max(100).default(20),

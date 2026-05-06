@@ -1,0 +1,47 @@
+meta {
+  name: Study Plan Courses
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:40080/study_plans/courses
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "study_plan_ids": []
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # Search Study Plan Courses
+  Retrieves a paginated list of courses associated with study plans, supporting extensive filtering options.
+
+  ### Request Body (JSON)
+  The request payload is validated against a strict Zod schema. Most fields accept a single value or an array of values.
+  
+  | Field | Type | Description |
+  | :--- | :--- | :--- |
+  | `study_plan_ids` | `number[]` | ID of the study plan to filter by. |
+  
+  ### Response (JSON)
+  Returns a payload containing the data, facets (aggregations), and pagination metadata.
+  
+  ```json
+  {
+    "data": [ ... ], // Array of Course objects
+    "meta": {
+      "count": 150,
+      "total": 150
+    }
+  }
+  ```
+}

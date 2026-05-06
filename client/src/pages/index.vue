@@ -1,19 +1,14 @@
 <script setup lang="ts">
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
-import { useWizardStore } from '@client/stores'
+import { useWizardDataStore, useWizardStore } from '@client/stores'
 import { onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-/*
- * Landing Page - Study Plan Wizard
- * First page users see, guides them through selecting their study plan.
- */
-
 const router = useRouter()
 const wizardStore = useWizardStore()
+const wizardDataStore = useWizardDataStore()
 
-// If wizard is already completed, redirect to courses page
 watch(
 	() => wizardStore.completed,
 	(completed) => {
@@ -25,58 +20,56 @@ watch(
 )
 
 onMounted(() => {
-	// Load initial facets if not already loaded
-	if (wizardStore.facultyFacets.length === 0) {
-		wizardStore.loadInitialFacets()
+	if (wizardDataStore.facultyFacets.length === 0) {
+		wizardDataStore.loadInitialFacets()
 	}
 })
 </script>
 
 <template>
-	<div class="min-h-screen bg-[var(--insis-bg)]">
+	<div class="min-h-screen bg-[var(--insis-bg)] flex flex-col">
 		<!-- Header -->
-		<header class="border-b border-[var(--insis-border)] bg-white px-4 py-3">
-			<div class="mx-auto flex max-w-4xl items-center justify-between">
-				<div class="flex items-center gap-4">
-					<!-- Logo placeholder -->
-					<div class="h-12 w-12 flex items-center justify-center">
-						<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="pb-0.5" />
-					</div>
-					<div>
-						<h1 class="text-lg font-semibold text-[var(--insis-blue)]">{{ $t('pages.index.title') }}</h1>
-						<p class="text-xs text-[var(--insis-gray-500)]">{{ $t('pages.index.subtitle') }}</p>
-					</div>
-				</div>
-
+		<header
+			class="bg-[var(--insis-surface)] border-b border-[var(--insis-border)] py-3 px-6 flex items-center justify-between shadow-[var(--insis-shadow-sm)] shrink-0"
+		>
+			<div class="flex items-center gap-3">
+				<!-- Logo mark -->
+				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-8 w-8 object-contain flex items-center justify-center shrink-0" />
 				<div>
-					<!-- I18n Switcher -->
-					<LanguageSwitcher />
+					<div class="text-[15px] font-semibold text-[var(--insis-blue)]">{{ $t('pages.index.title') }}</div>
+					<div class="text-[11px] text-[var(--insis-text-3)]">{{ $t('pages.index.subtitle') }}</div>
 				</div>
+			</div>
+			<div class="flex items-center gap-3">
+				<LanguageSwitcher />
 			</div>
 		</header>
 
 		<!-- Main Content -->
-		<main class="mx-auto max-w-4xl px-4 py-8">
-			<!-- Introduction -->
-			<div class="mb-8 text-center">
-				<h2 class="mb-2 text-2xl font-semibold text-[var(--insis-text)]">{{ $t('pages.index.welcome') }}</h2>
-				<p class="text-[var(--insis-gray-600)]">
-					{{ $t('pages.index.description') }}
-				</p>
-			</div>
+		<main
+			class="flex-1 overflow-y-auto flex items-start justify-center py-10 px-6 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-thumb]:rounded-[3px]"
+		>
+			<div class="bg-[var(--insis-surface)] border border-[var(--insis-border)] rounded-lg p-8 max-w-[800px] w-full shadow-[var(--insis-shadow)]">
+				<!-- Title -->
+				<div class="mb-6 text-center">
+					<h2 class="text-[17px] font-semibold text-[var(--insis-text)] mb-1">{{ $t('pages.index.welcome') }}</h2>
+					<p class="text-sm text-[var(--insis-text-3)]">{{ $t('pages.index.description') }}</p>
+				</div>
 
-			<!-- Wizard Component -->
-			<StudyPlanWizard />
+				<!-- Wizard Component -->
+				<StudyPlanWizard />
 
-			<!-- Info box -->
-			<div class="mt-8 rounded border border-[var(--insis-border)] bg-white p-4">
-				<h3 class="mb-2 text-sm font-medium text-[var(--insis-text)]">{{ $t('pages.index.howItWorks') }}</h3>
-				<ul class="space-y-1 text-sm text-[var(--insis-gray-600)]">
-					<li><strong>1.</strong> {{ $t('pages.index.step1') }}</li>
-					<li><strong>2.</strong> {{ $t('pages.index.step2') }}</li>
-					<li><strong>3.</strong> {{ $t('pages.index.step3') }}</li>
-					<li><strong>4.</strong> {{ $t('pages.index.step4') }}</li>
-				</ul>
+				<!-- How it works -->
+				<div class="mt-6 rounded border border-[var(--insis-border)] bg-[var(--insis-surface-2)] p-4">
+					<h3 class="mb-2 text-[12.5px] font-semibold text-[var(--insis-text)]">{{ $t('pages.index.howItWorks') }}</h3>
+					<ul class="space-y-1 text-[12px] text-[var(--insis-text-2)]">
+						<li><strong>1.</strong> {{ $t('pages.index.step1') }}</li>
+						<li><strong>2.</strong> {{ $t('pages.index.step2') }}</li>
+						<li><strong>3.</strong> {{ $t('pages.index.step3') }}</li>
+						<li><strong>3b.</strong> {{ $t('pages.index.step3b') }}</li>
+						<li><strong>4.</strong> {{ $t('pages.index.step4') }}</li>
+					</ul>
+				</div>
 			</div>
 		</main>
 	</div>

@@ -1,17 +1,20 @@
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse.ts'
-import { Course, CourseAssessment, CourseUnit, CourseUnitSlot, Faculty, StudyPlanCourse } from '@api/Database/types'
+import { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
+import { TimeSelection } from '@api/Validations'
 import { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
-import { PaginationMeta } from '@client/types/api.ts'
+import { PaginationMeta } from '@client/types'
 import type InSISDay from '@scraper/Types/InSISDay'
 
 export interface CoursesState {
 	filters: CoursesFilter
-	courses: Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>[]
+	courses: CourseWithRelations[]
 	facets: CoursesResponse['facets']
 	pagination: PaginationMeta
 	loading: boolean
 	error: string | null
 	expandedCourseIds: Set<number>
+	hideConflictingCourses: boolean
+	timetableExcludeTimes: TimeSelection[]
 }
 
 /**
@@ -31,6 +34,8 @@ export interface SelectedCourseUnit {
 	courseId: number
 	courseIdent: string
 	courseTitle: string
+	courseTitleCs: string
+	courseTitleEn: string
 	unitId: number
 	unitType: CourseUnitType
 	slotId: number
@@ -41,6 +46,11 @@ export interface SelectedCourseUnit {
 	location?: string
 	lecturer?: string
 	ects?: number
+	/**
+	 * All unit types available for this course at add-time.
+	 * Snapshotted so timetable store doesn't need to look up the full course.
+	 */
+	snapshotAvailableTypes?: CourseUnitType[]
 }
 
 /**
@@ -64,15 +74,18 @@ export interface CourseStatus {
 	id: number
 	ident: string
 	title: string
-	status: 'selected' | 'conflict' | 'incomplete'
+	titleCs: string
+	titleEn: string
+	status: 'selected' | 'conflict' | 'campus-conflict' | 'incomplete'
 	conflictsWith: string[]
+	campusConflictsWith: string[]
 	missingTypes: CourseUnitType[]
 }
 
 /**
  * Course status type for filtering
  */
-export type CourseStatusType = 'selected' | 'conflict' | 'incomplete'
+export type CourseStatusType = 'selected' | 'conflict' | 'campus-conflict' | 'incomplete'
 
 /**
  * Filter state for course status filtering
@@ -80,4 +93,19 @@ export type CourseStatusType = 'selected' | 'conflict' | 'incomplete'
 export interface CourseStatusFilterState {
 	selectedStatuses: CourseStatusType[]
 	selectedCourseIdents: string[]
+}
+
+/**
+ * Conflict type: hard time overlap vs campus travel-time conflict.
+ */
+export type ConflictType = 'hard' | 'campus'
+
+/**
+ * Conflict info for a specific slot in the expanded course view.
+ */
+export interface SlotConflictInfo {
+	slotId: number
+	conflictingUnits: SelectedCourseUnit[]
+	/** Type of conflict — hard overlap or campus travel-time warning */
+	conflictType?: ConflictType
 }

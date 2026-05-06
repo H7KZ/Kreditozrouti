@@ -1,4 +1,4 @@
-import { SelectedCourseUnit } from '@client/types/course.ts'
+import { SelectedCourseUnit } from '@client/types'
 import InSISDay from '@scraper/Types/InSISDay.ts'
 
 /** Drag selection state for timetable */

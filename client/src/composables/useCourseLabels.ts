@@ -1,6 +1,7 @@
-import type { CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
+import type { Course, CourseWithRelations } from '@api/Database/types'
 import { i18n } from '@client/index.ts'
-import { CourseUnitType } from '@client/types'
+import { CourseUnitType, SelectedCourseUnit } from '@client/types'
+import { getCategoryBadgeClass, getSlotType, getUnitTypeColorClass } from '@client/utils/course'
 import type InSISDay from '@scraper/Types/InSISDay'
 
 /**
@@ -35,6 +36,9 @@ export function useCourseLabels() {
 		return te(key) ? t(key) : value
 	}
 
+	/**
+	 * Get semester label.
+	 */
 	function getSemesterLabel(value: string): string {
 		return getLabel('semesters', value)
 	}
@@ -150,7 +154,7 @@ export function useCourseLabels() {
 	 * @param course - Course object
 	 * @returns Title in current locale with fallbacks
 	 */
-	function getCourseTitle(course: CourseWithRelations): string {
+	function getCourseTitle(course: CourseWithRelations | Course): string {
 		switch (locale.value) {
 			case 'cs':
 				return course.title_cs ?? course.title ?? ''
@@ -162,47 +166,19 @@ export function useCourseLabels() {
 	}
 
 	/**
-	 * Get slot type from a course unit slot.
-	 * Determines if the slot is a lecture, exercise, or seminar
-	 * based on the slot's type field.
+	 * Get localized course unit title based on current locale.
+	 *
+	 * @param unit - Course unit object
+	 * @returns Title in current locale with fallbacks
 	 */
-	function getSlotType(slot: CourseUnitSlot): CourseUnitType {
-		const slotType = slot.type?.toLowerCase() || ''
-
-		const hasLecture = slotType.includes('přednáška') || slotType.includes('lecture')
-		const hasExercise = slotType.includes('cvičení') || slotType.includes('exercise')
-		const hasSeminar = slotType.includes('seminář') || slotType.includes('seminar')
-
-		if (hasLecture) return 'lecture'
-		if (hasExercise) return 'exercise'
-		if (hasSeminar) return 'seminar'
-
-		return 'lecture' // Default to lecture
-	}
-
-	/**
-	 * Get color class for a unit type.
-	 */
-	function getUnitTypeColorClass(type: CourseUnitType): string {
-		const colors: Record<CourseUnitType, string> = {
-			lecture: 'bg-[var(--insis-block-lecture)]',
-			exercise: 'bg-[var(--insis-block-exercise)]',
-			seminar: 'bg-[var(--insis-block-seminar)]',
-		}
-		return colors[type] || colors.lecture
-	}
-
-	/**
-	 * Get badge class for a course category.
-	 */
-	function getCategoryBadgeClass(category: string): string {
-		switch (category) {
-			case 'compulsory':
-				return 'insis-badge-compulsory'
-			case 'elective':
-				return 'insis-badge-elective'
+	function getUnitCourseTitle(unit: SelectedCourseUnit): string {
+		switch (locale.value) {
+			case 'cs':
+				return unit.courseTitleCs ?? unit.courseTitle ?? ''
+			case 'en':
+				return unit.courseTitleEn ?? unit.courseTitle ?? ''
 			default:
-				return 'insis-badge-other'
+				return unit.courseTitle
 		}
 	}
 
@@ -221,6 +197,7 @@ export function useCourseLabels() {
 		getLevelLabel,
 		getCourseLevelLabel,
 		getCourseTitle,
+		getUnitCourseTitle,
 
 		// Unit types
 		getUnitTypeLabel,

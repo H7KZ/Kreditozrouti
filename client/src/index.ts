@@ -72,7 +72,7 @@ app.use(pinia)
 useAlertsStore()
 useCoursesStore()
 useTimetableStore().hydrate()
-useUIStore()
+useUIStore().hydrate()
 useWizardStore().hydrate()
 
 app.mount('#app')

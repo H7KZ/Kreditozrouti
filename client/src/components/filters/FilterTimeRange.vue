@@ -2,7 +2,7 @@
 import type { TimeSelection } from '@api/Validations'
 import { useTimeUtils } from '@client/composables'
 import { WEEKDAYS } from '@client/constants/timetable'
-import { useCoursesStore } from '@client/stores'
+import { useCoursesStore, useFiltersStore } from '@client/stores'
 import type InSISDay from '@scraper/Types/InSISDay'
 import { computed, ref, watch } from 'vue'
 import IconPlus from '~icons/lucide/plus'
@@ -16,6 +16,7 @@ import IconX from '~icons/lucide/x'
  */
 
 const coursesStore = useCoursesStore()
+const filtersStore = useFiltersStore()
 
 // Composables
 const { minutesToTime, timeToMinutes, formatTimeSelection, generateTimeOptions } = useTimeUtils()
@@ -54,13 +55,13 @@ const timeOptions = computed(() => generateTimeOptions(15, 7 * 60 + 30, 19 * 60 
 // Active time filters (combined include + exclude)
 const activeTimeFilters = computed(() => {
 	const include =
-		coursesStore.filters.include_times?.map((t, i) => ({
+		filtersStore.filters.include_times?.map((t, i) => ({
 			...t,
 			type: 'include' as const,
 			index: i,
 		})) ?? []
 	const exclude =
-		coursesStore.filters.exclude_times?.map((t, i) => ({
+		filtersStore.filters.exclude_times?.map((t, i) => ({
 			...t,
 			type: 'exclude' as const,
 			index: i,
@@ -89,7 +90,7 @@ function handleAddTimeFilter() {
 		time_to: toMins,
 	}
 
-	coursesStore.addIncludeTime(selection)
+	filtersStore.addIncludeTime(selection)
 	coursesStore.fetchCourses()
 
 	// Reset form
@@ -99,21 +100,21 @@ function handleAddTimeFilter() {
 
 function handleRemoveTimeFilter(type: 'include' | 'exclude', index: number) {
 	if (type === 'include') {
-		coursesStore.removeIncludeTime(index)
+		filtersStore.removeIncludeTime(index)
 	} else {
-		coursesStore.removeExcludeTime(index)
+		filtersStore.removeExcludeTime(index)
 	}
 	coursesStore.fetchCourses()
 }
 
 function handleClearAllTimeFilers() {
-	coursesStore.clearIncludeTimes()
-	coursesStore.clearExcludeTimes()
+	filtersStore.clearIncludeTimes()
+	filtersStore.clearExcludeTimes()
 	coursesStore.fetchCourses()
 }
 
 // Format filter for display using composable
-function formatFilter(filter: { day: InSISDay; time_from: number; time_to: number }): string {
+function formatFilter(filter: TimeSelection): string {
 	return formatTimeSelection(filter)
 }
 </script>

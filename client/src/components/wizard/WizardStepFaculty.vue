@@ -44,10 +44,10 @@ function handleSelect(facultyId: string) {
 				:key="`faculty-${faculty.value}`"
 				type="button"
 				:class="[
-					'rounded border p-4 text-left transition-all cursor-pointer',
+					'rounded border p-4 text-left transition-all duration-150 cursor-pointer active:scale-[0.99]',
 					selectedFaculty === faculty.value
-						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)]'
-						: 'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue-dark)] hover:bg-[var(--insis-gray-50)]',
+						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] shadow-[var(--insis-shadow-sm)]'
+						: 'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue-dark)] hover:bg-[var(--insis-gray-50)] hover:shadow-[var(--insis-shadow-sm)]',
 				]"
 				@click="handleSelect(faculty.value as string)"
 			>

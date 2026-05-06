@@ -1,9 +1,9 @@
 import type { CourseUnitSlot } from '@api/Database/types'
 import type { TimeSelection } from '@api/Validations'
 import { useTimeUtils } from '@client/composables'
-import { useCoursesStore } from '@client/stores'
+import { useFiltersStore } from '@client/stores'
 import { CourseUnitWithSlots } from '@client/types'
-import { getDayFromDate } from '@client/utils/day.ts'
+import { getSlotDay } from '@client/utils/day.ts'
 import { computed } from 'vue'
 
 /**
@@ -18,43 +18,36 @@ import { computed } from 'vue'
  * ```
  */
 export function useTimeFilterMatching() {
-	const coursesStore = useCoursesStore()
+	const filtersStore = useFiltersStore()
 	const { timeRangesOverlap } = useTimeUtils()
 
 	/**
 	 * Check if there are any active time filters.
 	 */
 	const hasActiveTimeFilter = computed((): boolean => {
-		return (coursesStore.filters.include_times?.length ?? 0) > 0
+		return (filtersStore.filters.include_times?.length ?? 0) > 0
 	})
 
 	/**
 	 * Get active time inclusion filters.
 	 */
 	const activeTimeFilters = computed((): TimeSelection[] => {
-		return coursesStore.filters.include_times ?? []
+		return filtersStore.filters.include_times ?? []
 	})
 
 	/**
 	 * Get active time exclusion filters.
 	 */
 	const activeExcludeFilters = computed((): TimeSelection[] => {
-		return coursesStore.filters.exclude_times ?? []
+		return filtersStore.filters.exclude_times ?? []
 	})
 
 	/**
 	 * Total count of active time filters (include + exclude).
 	 */
 	const activeTimeFilterCount = computed((): number => {
-		return (coursesStore.filters.include_times?.length ?? 0) + (coursesStore.filters.exclude_times?.length ?? 0)
+		return (filtersStore.filters.include_times?.length ?? 0) + (filtersStore.filters.exclude_times?.length ?? 0)
 	})
-
-	/**
-	 * Get the effective day for a slot.
-	 */
-	function getSlotDay(slot: CourseUnitSlot) {
-		return slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
-	}
 
 	/**
 	 * Check if a slot matches any of the active time inclusion filters.
@@ -142,7 +135,7 @@ export function useTimeFilterMatching() {
 		const slots = unit.slots ?? []
 		if (slots.length === 0) return false
 
-		return slots.every((slot) => slotMatchesTimeFilter(slot))
+		return slots.every((slot: CourseUnitSlot) => slotMatchesTimeFilter(slot))
 	}
 
 	/**
@@ -154,7 +147,7 @@ export function useTimeFilterMatching() {
 	function countMatchingSlots(unit: CourseUnitWithSlots): number {
 		if (!hasActiveTimeFilter.value) return 0
 
-		return (unit.slots ?? []).filter((slot) => slotMatchesTimeFilter(slot)).length
+		return (unit.slots ?? []).filter((slot: CourseUnitSlot) => slotMatchesTimeFilter(slot)).length
 	}
 
 	/**

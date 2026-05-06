@@ -46,95 +46,130 @@
 }
 
 :root {
-	/* Base Shadcn Colors */
-	--background: #ffffff;
-	--foreground: #1f2937;
+	/* Shadcn base tokens (updated to new palette) */
+	--background: #f4f5f7;
+	--foreground: #1a1f2e;
 	--card: #ffffff;
-	--card-foreground: #1f2937;
+	--card-foreground: #1a1f2e;
 	--popover: #ffffff;
-	--popover-foreground: #1f2937;
+	--popover-foreground: #1a1f2e;
 	--primary: #0066b3;
 	--primary-foreground: #ffffff;
-	--secondary: #f3f4f6;
-	--secondary-foreground: #1f2937;
-	--muted: #f3f4f6;
-	--muted-foreground: #6b7280;
-	--accent: #dbe3e9;
+	--secondary: #f9fafb;
+	--secondary-foreground: #1a1f2e;
+	--muted: #f4f5f7;
+	--muted-foreground: #8b95a1;
+	--accent: #f0f7ff;
 	--accent-foreground: #0066b3;
 	--destructive: #c40f16;
 	--destructive-foreground: #ffffff;
-	--border: #ccc;
-	--input: #ccc;
+	--border: #dde1e7;
+	--input: #dde1e7;
 	--ring: #0066b3;
-	--radius: 0.25rem;
+	--radius: 0.1875rem;
 	--chart-1: #0066b3;
 	--chart-2: #008000;
-	--chart-3: #ffd700;
+	--chart-3: #b45309;
 	--chart-4: #8b008b;
 	--chart-5: #c40f16;
-	--sidebar: #f9fafb;
-	--sidebar-foreground: #1f2937;
+	--sidebar: #ffffff;
+	--sidebar-foreground: #1a1f2e;
 	--sidebar-primary: #0066b3;
 	--sidebar-primary-foreground: #ffffff;
-	--sidebar-accent: #dbe3e9;
+	--sidebar-accent: #f0f7ff;
 	--sidebar-accent-foreground: #0066b3;
-	--sidebar-border: #ccc;
+	--sidebar-border: #dde1e7;
 	--sidebar-ring: #0066b3;
 
-	/* InSIS Design System Variables */
+	/* ── DESIGN SYSTEM TOKENS ── */
 
-	/* Primary Blues - The main InSIS brand color */
+	/* Brand Blues */
 	--insis-blue: #0066b3;
-	--insis-blue-dark: #005a9e;
+	--insis-blue-dark: #005296;
+	--insis-blue-hover: #004a87;
 	--insis-blue-lighter: #80c1ff;
-	--insis-blue-light: #daf1ff;
-	--insis-blue-hover: #004d87;
+	--insis-blue-light: #daeeff;
+	--insis-blue-subtle: #f0f7ff;
 
-	/* Link Colors */
+	/* Backgrounds */
+	--insis-bg: #f4f5f7;
+	--insis-surface: #ffffff;
+	--insis-surface-2: #f9fafb;
+
+	/* Borders */
+	--insis-border: #dde1e7;
+	--insis-border-mid: #c5cad4;
+	--insis-border-light: #e8ecf0;
+	--insis-border-dark: #c5cad4;
+
+	/* Text */
+	--insis-text: #1a1f2e;
+	--insis-text-2: #4b5563;
+	--insis-text-3: #8b95a1;
+	--insis-text-inv: #ffffff;
+
+	/* Links */
 	--insis-link: #0066b3;
-	--insis-link-hover: #004d87;
+	--insis-link-hover: #005296;
 	--insis-link-visited: #551a8b;
 
-	/* Status Colors - Matching InSIS icons and alerts */
+	/* Success / Green */
 	--insis-success: #008000;
-	--insis-success-light: #cefad0;
-	--insis-success-border: #7bf180;
+	--insis-success-light: #e6f4e6;
+	--insis-success-border: #7ecf7e;
 
-	--insis-warning: #ffd700;
-	--insis-warning-light: #ffe88a;
-	--insis-warning-bg: #ffc;
+	/* Warning / Amber */
+	--insis-warning: #b45309;
+	--insis-warning-light: #fef3cd;
+	--insis-warning-bg: #fef3cd;
+	--insis-warning-dark: #92400e;
+	--insis-warning-border: #f6c343;
 
+	/* Danger / Red */
 	--insis-danger: #c40f16;
-	--insis-danger-light: #faa5a5;
-	--insis-danger-bg: #fff1dd;
+	--insis-danger-light: #fee2e2;
+	--insis-danger-bg: #fee2e2;
+	--insis-danger-border: #fca5a5;
 
-	--insis-info: #006cd6;
-	--insis-info-light: #82caff;
-	--insis-info-bg: #daf1ff;
+	/* Info */
+	--insis-info: #0066b3;
+	--insis-info-light: #daeeff;
+	--insis-info-bg: #f0f7ff;
 
-	/* Table Header & Row Colors */
-	--insis-header-bg: #e8e8e8;
-	--insis-header-border: #888;
-	--insis-row-hover: #dbe3e9;
-	--insis-row-alt: #f7f7f7;
-	--insis-row-highlight: #ffe88a;
-	--insis-row-error: #faa5a5;
+	/* Gray Scale */
+	--insis-gray-50: #f9fafb;
+	--insis-gray-100: #f4f5f7;
+	--insis-gray-200: #e8ecf0;
+	--insis-gray-300: #dde1e7;
+	--insis-gray-400: #c5cad4;
+	--insis-gray-500: #8b95a1;
+	--insis-gray-600: #4b5563;
+	--insis-gray-700: #374151;
+	--insis-gray-800: #1f2937;
+	--insis-gray-900: #1a1f2e;
 
-	/* Border Colors */
-	--insis-border: #ccc;
-	--insis-border-dark: #aaa;
-	--insis-border-light: #e0e0e0;
+	/* Table */
+	--insis-header-bg: #f9fafb;
+	--insis-header-border: #dde1e7;
+	--insis-row-hover: #f9fafb;
+	--insis-row-alt: transparent;
+	--insis-row-highlight: #fef3cd;
+	--insis-row-error: #fee2e2;
 
-	/* Timetable Block Colors - From actual InSIS timetable */
+	/* Panel */
+	--insis-panel-bg: #f9fafb;
+	--insis-panel-border: #dde1e7;
+
+	/* Timetable Block Colors */
 	--insis-block-lecture: #a1eda1;
 	--insis-block-seminar: #ecf191;
 	--insis-block-exercise: #a1dbf5;
 	--insis-block-date-only: #e6daca;
 	--insis-block-exam: #e89aed;
-	--insis-block-selected: #6eb8ed;
+	--insis-block-selected: #a1eda1;
 	--insis-block-conflict: #df9292;
 
-	/* Course Type Colors - Matching InSIS icons */
+	/* Course Type Colors */
 	--insis-course-compulsory: #191970;
 	--insis-course-elective: #ffd700;
 	--insis-course-other: #b7e1cf;
@@ -142,40 +177,52 @@
 	--insis-course-normal: #8b008b;
 	--insis-course-consultation: #ffa500;
 
-	/* Gray Scale - InSIS specific */
-	--insis-gray-50: #f9fafb;
-	--insis-gray-100: #f7f7f7;
-	--insis-gray-200: #f0f0f0;
-	--insis-gray-300: #e0e0e0;
-	--insis-gray-400: #cfcfcf;
-	--insis-gray-500: #ababab;
-	--insis-gray-600: #888;
-	--insis-gray-700: #656565;
-	--insis-gray-800: #555;
-	--insis-gray-900: #333;
+	/* Shadows */
+	--insis-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.05);
+	--insis-shadow: 0 2px 8px rgba(0, 0, 0, 0.09), 0 1px 3px rgba(0, 0, 0, 0.06);
+	--insis-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12), 0 3px 8px rgba(0, 0, 0, 0.07);
 
-	/* Panel/Card Colors */
-	--insis-panel-bg: #f9fafb;
-	--insis-panel-border: #ababab;
-
-	/* Font Sizes - InSIS uses compact typography */
-	--insis-font-xs: 0.7rem;
-	--insis-font-sm: 0.8rem;
-	--insis-font-base: 0.875rem;
+	/* Font Sizes */
+	--insis-font-xs: 0.6875rem;
+	--insis-font-sm: 0.75rem;
+	--insis-font-base: 0.84375rem;
 	--insis-font-lg: 1rem;
 }
 
 @layer base {
-	* {
-		@apply border-border outline-ring/50 font-normal;
+	*,
+	*::before,
+	*::after {
+		@apply border-border outline-ring/50;
+	}
+
+	html,
+	body {
+		height: 100%;
 	}
 
 	body {
-		@apply bg-background text-foreground;
-		/* InSIS uses system fonts for maximum compatibility */
-		font-family: Arial, Helvetica, sans-serif;
-		font-size: var(--insis-font-sm);
-		line-height: 1.4;
+		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		font-size: 13.5px;
+		line-height: 1.5;
+		color: var(--insis-text);
+		background: var(--insis-bg);
+		-webkit-font-smoothing: antialiased;
+	}
+
+	::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	::-webkit-scrollbar-thumb {
+		background: var(--insis-border-mid);
+		border-radius: 3px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: var(--insis-gray-500);
 	}
 
 	a {

@@ -10,7 +10,8 @@
 		"paths": {
 			"@client/*": ["./src/*"],
 			"@api/*": ["../api/src/*"],
-			"@scraper/*": ["../scraper/src/*"]
+			"@scraper/*": ["../scraper/src/*"],
+			"kysely": ["./node_modules/kysely"]
 		}
 	}
 }

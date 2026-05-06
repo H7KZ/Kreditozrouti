@@ -8,6 +8,7 @@ import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconBookOpen from '~icons/lucide/book-open'
 import IconCalendarX from '~icons/lucide/calendar-x'
 import IconChevronDown from '~icons/lucide/chevron-down'
+import IconMapPin from '~icons/lucide/map-pin'
 
 /**
  * CourseStatusFilter
@@ -20,7 +21,7 @@ import IconChevronDown from '~icons/lucide/chevron-down'
  * - Show conflicting courses together when filtering
  */
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { getUnitTypeLabel } = useCourseLabels()
 
 const {
@@ -54,6 +55,8 @@ function getStatusIcon(status: CourseStatusType) {
 	switch (status) {
 		case 'conflict':
 			return IconCalendarX
+		case 'campus-conflict':
+			return IconMapPin
 		case 'incomplete':
 			return IconAlertTriangle
 		default:
@@ -66,6 +69,8 @@ function getStatusColorClass(status: CourseStatusType): string {
 	switch (status) {
 		case 'conflict':
 			return 'text-red-600'
+		case 'campus-conflict':
+			return 'text-orange-500'
 		case 'incomplete':
 			return 'text-amber-600'
 		default:
@@ -78,6 +83,8 @@ function getSelectedBgClass(status: CourseStatusType): string {
 	switch (status) {
 		case 'conflict':
 			return 'bg-red-50'
+		case 'campus-conflict':
+			return 'bg-orange-50'
 		case 'incomplete':
 			return 'bg-amber-50'
 		default:
@@ -92,12 +99,19 @@ function getCourseTooltip(course: CourseStatus): string {
 			courses: course.conflictsWith.join(', '),
 		})
 	}
+	if (course.status === 'campus-conflict') {
+		return t('components.filters.CourseStatusFilter.campusConflictsWith', {
+			courses: course.campusConflictsWith.join(', '),
+		})
+	}
 	if (course.status === 'incomplete') {
 		const types = course.missingTypes.map(getUnitTypeLabel).join(', ')
 		return t('components.filters.CourseStatusFilter.missingTypes', { types })
 	}
 	return ''
 }
+
+const showCampusConflictDetails = ref(false)
 
 /** Toggle collapsed state */
 function toggleCollapsed() {
@@ -106,7 +120,7 @@ function toggleCollapsed() {
 </script>
 
 <template>
-	<div v-if="hasCourses" class="filter-group">
+	<div v-if="hasCourses" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
 		<!-- Collapsible header -->
 		<button type="button" class="flex w-full cursor-pointer items-center justify-between py-1 text-left" @click="toggleCollapsed">
 			<span class="insis-label mb-0 flex items-center gap-1.5">
@@ -177,6 +191,36 @@ function toggleCollapsed() {
 				</div>
 			</div>
 
+			<!-- Campus conflict courses details -->
+			<div v-if="statusCounts['campus-conflict'] > 0" class="border-t border-[var(--insis-border-light)] pt-2">
+				<button
+					type="button"
+					class="flex cursor-pointer w-full items-center gap-1 text-xs text-[var(--insis-gray-600)] hover:text-[var(--insis-text)]"
+					@click="showCampusConflictDetails = !showCampusConflictDetails"
+				>
+					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showCampusConflictDetails }]" />
+					<IconMapPin class="h-3 w-3 text-orange-500" />
+					<span>{{ $t('components.filters.CourseStatusFilter.campusConflictingCourses') }}</span>
+					<span class="text-[var(--insis-gray-400)]">({{ statusCounts['campus-conflict'] }})</span>
+				</button>
+
+				<div v-if="showCampusConflictDetails" class="mt-2 space-y-1 pl-4">
+					<label
+						v-for="course in courseOptions.campusConflicts"
+						:key="course.id"
+						:class="[
+							'insis-checkbox-label cursor-pointer rounded px-1 -mx-1 transition-colors',
+							isCourseSelected(course.ident) ? 'bg-orange-50' : '',
+						]"
+						:title="getCourseTooltip(course)"
+					>
+						<input type="checkbox" class="insis-checkbox" :checked="isCourseSelected(course.ident)" @change="toggleCourseFilter(course.ident)" />
+						<span class="flex-1 truncate text-sm">{{ course.ident }}</span>
+						<span class="text-xs text-orange-500"> ↔ {{ course.campusConflictsWith.join(', ') }} </span>
+					</label>
+				</div>
+			</div>
+
 			<!-- Incomplete courses details -->
 			<div v-if="statusCounts.incomplete > 0" class="border-t border-[var(--insis-border-light)] pt-2">
 				<button
@@ -217,16 +261,3 @@ function toggleCollapsed() {
 		</div>
 	</div>
 </template>
-
-<style scoped>
-.filter-group {
-	border-bottom: 1px solid var(--insis-border-light);
-	padding-bottom: 0.75rem;
-	margin-bottom: 0.75rem;
-}
-
-.filter-group:last-of-type {
-	border-bottom: none;
-	margin-bottom: 0;
-}
-</style>

@@ -1,38 +1,35 @@
 import type { Alert } from '@client/types'
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-export const useAlertsStore = defineStore('alerts', {
-	state: () => ({
-		alerts: [] as Array<Alert>,
-	}),
+export const useAlertsStore = defineStore('alerts', () => {
+	const alerts = ref<Alert[]>([])
 
-	actions: {
-		addAlert(alert: Alert) {
-			if (alert.timeout) {
-				alert._timeout = setTimeout(() => {
-					this.removeAlert(this.alerts.indexOf(alert))
-				}, alert.timeout)
-			}
+	function addAlert(alert: Alert) {
+		if (alert.timeout) {
+			alert._timeout = setTimeout(() => {
+				removeAlert(alerts.value.indexOf(alert))
+			}, alert.timeout)
+		}
+		alerts.value.push(alert)
+	}
 
-			this.alerts.push(alert)
-		},
+	function removeAlert(index: number) {
+		if (index > -1) alerts.value.splice(index, 1)
+	}
 
-		removeAlert(index: number) {
-			if (index > -1) this.alerts.splice(index, 1)
-		},
+	function removeLatestAlert() {
+		if (alerts.value.length > 0) alerts.value.pop()
+	}
 
-		removeLatestAlert() {
-			if (this.alerts.length > 0) this.alerts.pop()
-		},
+	function removeAlertById(customId: string) {
+		const index = alerts.value.findIndex((a) => a.customId === customId)
+		if (index > -1) {
+			const a = alerts.value[index]
+			if (a?._timeout) clearTimeout(a._timeout as ReturnType<typeof setTimeout>)
+			removeAlert(index)
+		}
+	}
 
-		removeAlertById(customId: string) {
-			const index = this.alerts.findIndex((alert) => alert.customId === customId)
-			if (index > -1) {
-				if (this.alerts[index]?._timeout) {
-					clearTimeout(this.alerts[index]._timeout)
-				}
-				this.removeAlert(index)
-			}
-		},
-	},
+	return { alerts, addAlert, removeAlert, removeLatestAlert, removeAlertById }
 })

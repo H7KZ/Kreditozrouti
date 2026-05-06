@@ -12,7 +12,7 @@
 import { CourseWithRelations } from '@api/Database/types'
 import api from '@client/api.ts'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useTimeUtils } from '@client/composables'
-import { useCoursesStore, useUIStore } from '@client/stores'
+import { useCoursesStore, useFiltersStore, useUIStore } from '@client/stores'
 import { SelectedCourseUnit } from '@client/types'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -25,8 +25,9 @@ import IconSearch from '~icons/lucide/search'
 import IconTrash from '~icons/lucide/trash-2'
 import IconX from '~icons/lucide/x'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const coursesStore = useCoursesStore()
+const filtersStore = useFiltersStore()
 const uiStore = useUIStore()
 
 // ============================================================================
@@ -58,8 +59,17 @@ const course = ref<CourseWithRelations | null>(null)
 // ============================================================================
 
 // Shared course labels (same as CourseRowExpanded!)
-const { getCompletionLabel, getCategoryLabel, getUnitTypesGroupLabel, getShortUnitTypeLabel, getSlotType, getDayLabel, getCategoryBadgeClass } =
-	useCourseLabels()
+const {
+	getCompletionLabel,
+	getCategoryLabel,
+	getUnitTypesGroupLabel,
+	getShortUnitTypeLabel,
+	getSlotType,
+	getDayLabel,
+	getCategoryBadgeClass,
+	getCourseTitle,
+	getUnitCourseTitle,
+} = useCourseLabels()
 
 // Shared unit selection logic (same as CourseRowExpanded!)
 const { unitsByGroup, isSelectionComplete, isUnitSelected, isGroupSatisfied, handleAddUnit, handleRemoveUnit, handleRemoveCourse } = useCourseUnitSelection({
@@ -123,7 +133,8 @@ watch(() => props.unit.courseId, fetchCourse, { immediate: true })
 
 function handleSearchInTimeslot() {
 	// Apply time filter for this slot
-	coursesStore.setTimeFilterFromDrag(props.unit.day ?? 'Pondělí', props.unit.timeFrom, props.unit.timeTo)
+	filtersStore.filters.include_times = [{ day: props.unit.day ?? 'Pondělí', time_from: props.unit.timeFrom, time_to: props.unit.timeTo }]
+	filtersStore.filters.offset = 0
 
 	// Switch to list view
 	uiStore.switchToListView()
@@ -177,7 +188,7 @@ onUnmounted(() => {
 				<div class="flex items-center justify-between border-b border-[var(--insis-border)] bg-[var(--insis-header-bg)] px-4 py-3">
 					<div class="flex items-center gap-2">
 						<span class="insis-course-code font-medium">{{ unit.courseIdent }}</span>
-						<span class="text-[var(--insis-gray-600)]">{{ unit.courseTitle }}</span>
+						<span class="text-[var(--insis-gray-600)]">{{ getUnitCourseTitle(unit) }}</span>
 					</div>
 					<button type="button" class="insis-btn-text" @click="handleClose">
 						<IconX class="h-5 w-5" />
@@ -202,7 +213,7 @@ onUnmounted(() => {
 						<!-- Course Info (uses same label helpers as CourseRowExpanded!) -->
 						<div>
 							<h3 class="mb-3 flex items-center gap-1.5 font-medium text-[var(--insis-gray-900)]">
-								{{ course.ident }} - {{ course.title }}
+								{{ course.ident }} - {{ getCourseTitle(course) }}
 								<a
 									v-if="course.url"
 									:href="course.url"
