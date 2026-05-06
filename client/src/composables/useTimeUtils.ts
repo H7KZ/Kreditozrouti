@@ -43,13 +43,9 @@ export function useTimeUtils() {
 	}
 
 	/**
-	 * Utility: Format time from minutes to HH:MM
+	 * Utility: Format time from minutes to HH:MM (alias for minutesToTime).
 	 */
-	function formatTime(minutes: number): string {
-		const hours = Math.floor(minutes / 60)
-		const mins = minutes % 60
-		return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
-	}
+	const formatTime = minutesToTime
 
 	/**
 	 * Format a time range for display.
