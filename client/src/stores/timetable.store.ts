@@ -8,7 +8,7 @@ import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCou
 import { getSlotType } from '@client/utils/course'
 import { getDayFromDate } from '@client/utils/day'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
-import { checkCourseCompleteness, unitsConflict } from '@client/utils/timetable'
+import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from '@client/utils/timetable'
 import type InSISDay from '@scraper/Types/InSISDay'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -109,11 +109,38 @@ export const useTimetableStore = defineStore('timetable', () => {
 		return pairs
 	})
 
+	/** Campus travel-time conflict pairs (no hard overlap, but too close across campuses). */
+	const campusConflicts = computed<Array<[SelectedCourseUnit, SelectedCourseUnit]>>(() => {
+		const pairs: Array<[SelectedCourseUnit, SelectedCourseUnit]> = []
+		for (let i = 0; i < selectedUnits.value.length; i++) {
+			for (let j = i + 1; j < selectedUnits.value.length; j++) {
+				const a = selectedUnits.value[i]
+				const b = selectedUnits.value[j]
+				if (!a || !b) continue
+				if (unitsCampusConflict(a, b)) pairs.push([a, b])
+			}
+		}
+		return pairs
+	})
+
 	const hasConflicts = computed(() => conflicts.value.length > 0)
+
+	const hasCampusConflicts = computed(() => campusConflicts.value.length > 0)
 
 	const coursesWithConflicts = computed(() => {
 		const map = new Map<number, Set<string>>()
 		for (const [a, b] of conflicts.value) {
+			if (!map.has(a.courseId)) map.set(a.courseId, new Set())
+			map.get(a.courseId)!.add(b.courseIdent)
+			if (!map.has(b.courseId)) map.set(b.courseId, new Set())
+			map.get(b.courseId)!.add(a.courseIdent)
+		}
+		return map
+	})
+
+	const coursesWithCampusConflicts = computed(() => {
+		const map = new Map<number, Set<string>>()
+		for (const [a, b] of campusConflicts.value) {
 			if (!map.has(a.courseId)) map.set(a.courseId, new Set())
 			map.get(a.courseId)!.add(b.courseIdent)
 			if (!map.has(b.courseId)) map.set(b.courseId, new Set())
@@ -131,11 +158,15 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 			const firstUnit = units[0]!
 			const conflictsWith = coursesWithConflicts.value.get(courseId)
+			const campusConflictsWith = coursesWithCampusConflicts.value.get(courseId)
 			const hasConflict = !!conflictsWith?.size
+			const hasCampusConflict = !!campusConflictsWith?.size
 
 			// Use snapshotted available types — no need to look up full course
 			const { isIncomplete, missingTypes } = checkCourseCompleteness(units, getSlotType)
-			const status = hasConflict ? 'conflict' : isIncomplete ? 'incomplete' : 'selected'
+
+			// Priority: hard conflict > campus-conflict > incomplete > selected
+			const status = hasConflict ? 'conflict' : hasCampusConflict ? 'campus-conflict' : isIncomplete ? 'incomplete' : 'selected'
 
 			statuses.set(courseId, {
 				id: courseId,
@@ -145,6 +176,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 				titleEn: firstUnit.courseTitleEn,
 				status,
 				conflictsWith: conflictsWith ? [...conflictsWith] : [],
+				campusConflictsWith: campusConflictsWith ? [...campusConflictsWith] : [],
 				missingTypes,
 			})
 		}
@@ -176,17 +208,58 @@ export const useTimetableStore = defineStore('timetable', () => {
 		})
 	}
 
+	function getSlotCampusConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
+		if (!slot.time_from || !slot.time_to) return []
+		const slotDay = slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
+		if (!slotDay) return []
+
+		// Build a pseudo-SelectedCourseUnit for the slot so we can use unitsCampusConflict
+		const slotAsUnit: SelectedCourseUnit = {
+			courseId: -1,
+			courseIdent: '',
+			courseTitle: '',
+			courseTitleCs: '',
+			courseTitleEn: '',
+			unitId: -1,
+			unitType: 'lecture',
+			slotId: slot.id,
+			day: slot.day ?? undefined,
+			date: slot.date ?? undefined,
+			timeFrom: slot.time_from!,
+			timeTo: slot.time_to!,
+			location: slot.location ?? undefined,
+		}
+
+		return selectedUnits.value.filter((unit) => {
+			if (unit.slotId === slot.id) return false
+			return unitsCampusConflict(slotAsUnit, unit)
+		})
+	}
+
 	function getUnitConflicts(unit: CourseUnit<void, CourseUnitSlot>): SlotConflictInfo[] {
 		const result: SlotConflictInfo[] = []
 		for (const slot of unit.slots ?? []) {
 			const slotConflicts = getSlotConflicts(slot as CourseUnitSlot)
-			if (slotConflicts.length > 0) result.push({ slotId: (slot as CourseUnitSlot).id, conflictingUnits: slotConflicts })
+			if (slotConflicts.length > 0) result.push({ slotId: (slot as CourseUnitSlot).id, conflictingUnits: slotConflicts, conflictType: 'hard' })
+		}
+		return result
+	}
+
+	function getUnitCampusConflicts(unit: CourseUnit<void, CourseUnitSlot>): SlotConflictInfo[] {
+		const result: SlotConflictInfo[] = []
+		for (const slot of unit.slots ?? []) {
+			const slotConflicts = getSlotCampusConflicts(slot as CourseUnitSlot)
+			if (slotConflicts.length > 0) result.push({ slotId: (slot as CourseUnitSlot).id, conflictingUnits: slotConflicts, conflictType: 'campus' })
 		}
 		return result
 	}
 
 	function unitHasConflicts(unit: CourseUnit<void, CourseUnitSlot>): boolean {
 		return (unit.slots ?? []).some((slot: CourseUnitSlot) => getSlotConflicts(slot).length > 0)
+	}
+
+	function unitHasCampusConflicts(unit: CourseUnit<void, CourseUnitSlot>): boolean {
+		return (unit.slots ?? []).some((slot: CourseUnitSlot) => getSlotCampusConflicts(slot).length > 0)
 	}
 
 	function canAddUnit(course: CourseWithRelations, _unit: CourseUnit<void, CourseUnitSlot>, slot: CourseUnitSlot): string | null {
@@ -318,15 +391,22 @@ export const useTimetableStore = defineStore('timetable', () => {
 		totalEcts,
 		selectedTimesForExclusion,
 		conflicts,
+		campusConflicts,
 		hasConflicts,
+		hasCampusConflicts,
 		coursesWithConflicts,
+		coursesWithCampusConflicts,
 		courseStatuses,
 		coursesWithIssuesCount,
 		// Pure helpers exported for use outside the store
 		unitsConflict,
+		unitsCampusConflict,
 		getSlotConflicts,
+		getSlotCampusConflicts,
 		getUnitConflicts,
+		getUnitCampusConflicts,
 		unitHasConflicts,
+		unitHasCampusConflicts,
 		canAddUnit,
 		addUnit,
 		removeUnit,

@@ -59,6 +59,7 @@ export function useCourseStatusFilter() {
 		const counts = {
 			selected: 0,
 			conflict: 0,
+			'campus-conflict': 0,
 			incomplete: 0,
 		}
 
@@ -75,9 +76,14 @@ export function useCourseStatusFilter() {
 	const totalSelectedCount = computed(() => timetableStore.selectedCourseIds.length)
 
 	/**
-	 * Courses that have conflicts
+	 * Courses that have hard time conflicts
 	 */
 	const coursesWithConflicts = computed<CourseStatus[]>(() => allCourseStatuses.value.filter((s) => s.status === 'conflict'))
+
+	/**
+	 * Courses that have campus travel-time conflicts (softer, no hard overlap)
+	 */
+	const coursesWithCampusConflicts = computed<CourseStatus[]>(() => allCourseStatuses.value.filter((s) => s.status === 'campus-conflict'))
 
 	/**
 	 * Courses that have incomplete selections
@@ -103,6 +109,13 @@ export function useCourseStatusFilter() {
 			colorClass: 'text-red-600 bg-red-100',
 		},
 		{
+			value: 'campus-conflict',
+			label: t('components.filters.CourseStatusFilter.withCampusConflicts'),
+			count: statusCounts.value['campus-conflict'],
+			icon: 'conflict',
+			colorClass: 'text-amber-600 bg-amber-100',
+		},
+		{
 			value: 'incomplete',
 			label: t('components.filters.CourseStatusFilter.incomplete'),
 			count: statusCounts.value.incomplete,
@@ -121,12 +134,17 @@ export function useCourseStatusFilter() {
 			groupLabel: t('components.filters.CourseStatusFilter.conflictingCourses'),
 		}))
 
+		const campusConflicts = coursesWithCampusConflicts.value.map((c) => ({
+			...c,
+			groupLabel: t('components.filters.CourseStatusFilter.campusConflictingCourses'),
+		}))
+
 		const incomplete = coursesWithIncomplete.value.map((c) => ({
 			...c,
 			groupLabel: t('components.filters.CourseStatusFilter.incompleteCourses'),
 		}))
 
-		return { conflicts, incomplete }
+		return { conflicts, campusConflicts, incomplete }
 	})
 
 	/**
@@ -169,6 +187,13 @@ export function useCourseStatusFilter() {
 						idents.add(conflictIdent)
 					}
 				}
+			} else if (status === 'campus-conflict') {
+				for (const courseStatus of coursesWithCampusConflicts.value) {
+					idents.add(courseStatus.ident)
+					for (const conflictIdent of courseStatus.campusConflictsWith) {
+						idents.add(conflictIdent)
+					}
+				}
 			} else if (status === 'incomplete') {
 				for (const courseStatus of coursesWithIncomplete.value) {
 					idents.add(courseStatus.ident)
@@ -184,6 +209,11 @@ export function useCourseStatusFilter() {
 			const courseStatus = allCourseStatuses.value.find((c) => c.ident === ident)
 			if (courseStatus?.status === 'conflict') {
 				for (const conflictIdent of courseStatus.conflictsWith) {
+					idents.add(conflictIdent)
+				}
+			}
+			if (courseStatus?.status === 'campus-conflict') {
+				for (const conflictIdent of courseStatus.campusConflictsWith) {
 					idents.add(conflictIdent)
 				}
 			}
@@ -298,6 +328,7 @@ export function useCourseStatusFilter() {
 		statusCounts,
 		totalSelectedCount,
 		coursesWithConflicts,
+		coursesWithCampusConflicts,
 		coursesWithIncomplete,
 		filterOptions,
 		courseOptions,
