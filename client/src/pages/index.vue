@@ -34,9 +34,7 @@ onMounted(() => {
 		>
 			<div class="flex items-center gap-3">
 				<!-- Logo mark -->
-				<div class="w-[30px] h-[30px] bg-[var(--insis-blue)] rounded-[5px] flex items-center justify-center shrink-0">
-					<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-4 w-4 object-contain brightness-0 invert" />
-				</div>
+				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-8 w-8 object-contain flex items-center justify-center shrink-0" />
 				<div>
 					<div class="text-[15px] font-semibold text-[var(--insis-blue)]">{{ $t('pages.index.title') }}</div>
 					<div class="text-[11px] text-[var(--insis-text-3)]">{{ $t('pages.index.subtitle') }}</div>

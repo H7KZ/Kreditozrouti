@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
+import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 import CourseStatusFilter from '@client/components/filters/CourseStatusFilter.vue'
 import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
 import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
-import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 import { useDebouncedFn } from '@client/composables'
-import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
-import { useCompletedCoursesStore, useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import { useCompletedCoursesStore, useCoursesStore, useFiltersStore, useTimetableStore, useUIStore } from '@client/stores'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconCalendarX from '~icons/lucide/calendar-x'
@@ -32,7 +32,6 @@ const { t } = useI18n({ useScope: 'global' })
 const coursesStore = useCoursesStore()
 const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
-const wizardStore = useWizardStore()
 const completedCoursesStore = useCompletedCoursesStore()
 const uiStore = useUIStore()
 
@@ -179,7 +178,6 @@ function handleResetFilters() {
 function handleCloseMobileFilter() {
 	uiStore.closeMobileFilter()
 }
-
 </script>
 
 <template>
@@ -283,7 +281,11 @@ function handleCloseMobileFilter() {
 
 		<!-- Time Range Filter (collapsible) -->
 		<div class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
-			<CollapsibleSection :title="$t('components.filters.FilterPanel.timeRestriction')" :badge="activeTimeFilterCount > 0 ? activeTimeFilterCount : undefined" :default-open="true">
+			<CollapsibleSection
+				:title="$t('components.filters.FilterPanel.timeRestriction')"
+				:badge="activeTimeFilterCount > 0 ? activeTimeFilterCount : undefined"
+				:default-open="true"
+			>
 				<FilterTimeRange />
 			</CollapsibleSection>
 		</div>

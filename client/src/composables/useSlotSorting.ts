@@ -1,7 +1,7 @@
 import type { CourseUnitSlot } from '@api/Database/types'
 import { CourseUnitWithSlots } from '@client/types'
-import { compareDateStrings, getDayIndex, getSlotDay } from '@client/utils/day.ts'
 import { getSlotType } from '@client/utils/course'
+import { compareDateStrings, getDayIndex, getSlotDay } from '@client/utils/day.ts'
 import InSISDay from '@scraper/Types/InSISDay.ts'
 
 /**

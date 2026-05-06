@@ -5,7 +5,6 @@ import { fetchCourses as fetchCoursesFromService } from '@client/services/course
 import { useFiltersStore } from '@client/stores/filters.store'
 import { useTimetableStore } from '@client/stores/timetable.store'
 import { useWizardStore } from '@client/stores/wizard.store'
-import type { CourseSortBy, SortDirection } from '@client/types'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

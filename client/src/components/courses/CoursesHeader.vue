@@ -50,10 +50,10 @@ function handleClearTimetable() {
 		<div class="flex items-center gap-3 min-w-0">
 			<router-link
 				to="/"
-				class="w-[30px] h-[30px] bg-[var(--insis-blue)] rounded-[5px] flex items-center justify-center shrink-0 no-underline hover:bg-[var(--insis-blue-dark)] transition-colors duration-100"
+				class="h-8 w-8 flex items-center justify-center shrink-0"
 				:title="$t('pages.courses.changePlan')"
 			>
-				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-4 w-4 object-contain brightness-0 invert" />
+				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-8 w-8 object-contain flex items-center justify-center shrink-0" />
 			</router-link>
 			<span class="text-[15px] font-semibold text-[var(--insis-blue)] hidden sm:block">{{ $t('pages.index.title') }}</span>
 
