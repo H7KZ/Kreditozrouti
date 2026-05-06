@@ -46,6 +46,11 @@ export interface SelectedCourseUnit {
 	location?: string
 	lecturer?: string
 	ects?: number
+	/**
+	 * All unit types available for this course at add-time.
+	 * Snapshotted so timetable store doesn't need to look up the full course.
+	 */
+	snapshotAvailableTypes?: CourseUnitType[]
 }
 
 /**
