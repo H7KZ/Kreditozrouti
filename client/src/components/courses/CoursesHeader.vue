@@ -73,12 +73,12 @@ function handleClearTimetable() {
 
 		<!-- Right: actions -->
 		<div class="flex items-center gap-2">
-			<button v-if="selectedCoursesCount > 0" type="button" class="insis-btn insis-btn-secondary" @click="handleClearTimetable">
+			<button v-if="selectedCoursesCount > 0" type="button" class="insis-btn insis-btn-secondary hover:bg-red-500 hover:text-white hover:border-red-500" @click="handleClearTimetable">
 				<IconTrash class="h-3 w-3" />
 				<span class="hidden sm:inline">{{ $t('pages.courses.clearTimetable') }}</span>
 			</button>
 
-			<button type="button" class="insis-btn insis-btn-secondary" @click="handleResetWizard">
+			<button type="button" class="insis-btn insis-btn-secondary hover:bg-red-500 hover:text-white hover:border-red-500" @click="handleResetWizard">
 				<span>{{ $t('pages.courses.changePlan') }}</span>
 			</button>
 
