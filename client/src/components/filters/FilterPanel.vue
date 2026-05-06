@@ -2,12 +2,12 @@
 import CourseStatusFilter from '@client/components/filters/CourseStatusFilter.vue'
 import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
 import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
+import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 import { useDebouncedFn } from '@client/composables'
-import { useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconCalendarX from '~icons/lucide/calendar-x'
-import IconChevronDown from '~icons/lucide/chevron-down'
 import IconCircleCheck from '~icons/lucide/circle-check'
 import IconFilter from '~icons/lucide/filter'
 import IconRotateCcw from '~icons/lucide/rotate-ccw'
@@ -29,18 +29,16 @@ import IconX from '~icons/lucide/x'
 
 const { t } = useI18n({ useScope: 'global' })
 const coursesStore = useCoursesStore()
+const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
 const wizardStore = useWizardStore()
 const uiStore = useUIStore()
 
-// Track collapsed state for time filter separately
-const timeFilterCollapsed = ref(false)
-
-const localTitleSearch = ref(coursesStore.filters.title ?? '')
+const localTitleSearch = ref(filtersStore.filters.title ?? '')
 
 // Debounced search using composable
 const debouncedFetchCourses = useDebouncedFn(() => {
-	coursesStore.setTitleSearch(localTitleSearch.value)
+	filtersStore.setFilter('title', localTitleSearch.value)
 	coursesStore.fetchCourses()
 }, 750)
 
@@ -50,8 +48,8 @@ const facetConfig = computed(() => [
 		key: 'faculties',
 		label: t('components.filters.FilterPanel.faculties'),
 		facets: coursesStore.facets.faculties,
-		selected: coursesStore.filters.faculty_ids,
-		setter: coursesStore.setFacultyIds,
+		selected: filtersStore.filters.faculty_ids,
+		setter: (ids: string[]) => filtersStore.setFilter('faculty_ids', ids),
 		defaultCollapsed: false,
 	},
 	{
@@ -59,8 +57,8 @@ const facetConfig = computed(() => [
 		label: t('components.filters.FilterPanel.studyLevel'),
 		facets: coursesStore.facets.levels,
 		translations: 'courseLevels',
-		selected: coursesStore.filters.levels,
-		setter: coursesStore.setLevels,
+		selected: filtersStore.filters.levels,
+		setter: (levels: string[]) => filtersStore.setFilter('levels', levels),
 		defaultCollapsed: false,
 	},
 	{
@@ -68,8 +66,8 @@ const facetConfig = computed(() => [
 		label: t('components.filters.FilterPanel.language'),
 		facets: coursesStore.facets.languages,
 		translations: 'courseLanguages',
-		selected: coursesStore.filters.languages,
-		setter: coursesStore.setLanguages,
+		selected: filtersStore.filters.languages,
+		setter: (languages: string[]) => filtersStore.setFilter('languages', languages),
 		defaultCollapsed: true,
 	},
 	{
@@ -77,9 +75,9 @@ const facetConfig = computed(() => [
 		label: t('components.filters.FilterPanel.courseGroups'),
 		facets: coursesStore.facets.groups,
 		translations: 'courseGroups',
-		selected: coursesStore.filters.groups,
-		setter: coursesStore.setGroups,
-		visible: coursesStore.filters.study_plan_ids && coursesStore.filters.study_plan_ids.length > 0,
+		selected: filtersStore.filters.groups,
+		setter: (groups: string[]) => filtersStore.setFilter('groups', groups),
+		visible: filtersStore.filters.study_plan_ids && filtersStore.filters.study_plan_ids.length > 0,
 		defaultCollapsed: false,
 	},
 	{
@@ -87,17 +85,17 @@ const facetConfig = computed(() => [
 		label: t('components.filters.FilterPanel.category'),
 		facets: coursesStore.facets.categories,
 		translations: 'courseCategories',
-		selected: coursesStore.filters.categories,
-		setter: coursesStore.setCategories,
-		visible: coursesStore.filters.study_plan_ids && coursesStore.filters.study_plan_ids.length > 0,
+		selected: filtersStore.filters.categories,
+		setter: (categories: string[]) => filtersStore.setFilter('categories', categories),
+		visible: filtersStore.filters.study_plan_ids && filtersStore.filters.study_plan_ids.length > 0,
 		defaultCollapsed: false,
 	},
 	{
 		key: 'ects',
 		label: t('components.filters.FilterPanel.ectsCredits'),
 		facets: coursesStore.facets.ects,
-		selected: coursesStore.filters.ects?.map(String),
-		setter: (values: string[]) => coursesStore.setEcts(values.map(Number)),
+		selected: filtersStore.filters.ects?.map(String),
+		setter: (values: string[]) => filtersStore.setFilter('ects', values.map(Number)),
 		defaultCollapsed: true,
 	},
 	{
@@ -105,16 +103,16 @@ const facetConfig = computed(() => [
 		label: t('components.filters.FilterPanel.completionMode'),
 		facets: coursesStore.facets.modes_of_completion,
 		translations: 'courseModesOfCompletion',
-		selected: coursesStore.filters.mode_of_completions,
-		setter: coursesStore.setModesOfCompletion,
+		selected: filtersStore.filters.mode_of_completions,
+		setter: (modes: string[]) => filtersStore.setFilter('mode_of_completions', modes),
 		defaultCollapsed: true,
 	},
 	{
 		key: 'lecturers',
 		label: t('components.filters.FilterPanel.lecturers'),
 		facets: coursesStore.facets.lecturers,
-		selected: coursesStore.filters.lecturers,
-		setter: coursesStore.setLecturers,
+		selected: filtersStore.filters.lecturers,
+		setter: (lecturers: string[]) => filtersStore.setFilter('lecturers', lecturers),
 		searchable: true,
 		defaultCollapsed: true,
 	},
@@ -124,7 +122,7 @@ const facetConfig = computed(() => [
 const visibleFacets = computed(() => facetConfig.value.filter((f) => f.facets.length > 0 && (f.visible === undefined || f.visible)))
 
 // Count active time filters
-const activeTimeFilterCount = computed(() => (coursesStore.filters.include_times?.length || 0) + (coursesStore.filters.exclude_times?.length || 0))
+const activeTimeFilterCount = computed(() => (filtersStore.filters.include_times?.length || 0) + (filtersStore.filters.exclude_times?.length || 0))
 
 // Check if there are any selected courses to show the status filter
 const hasSelectedCourses = computed(() => timetableStore.selectedCourseIds.length > 0)
@@ -137,7 +135,7 @@ const hasCompletedCourses = computed(() => completedCourseCount.value > 0)
  * Whether completed courses are currently being filtered out.
  * True when completed_course_idents filter is active (courses are hidden).
  */
-const isHidingCompletedCourses = computed(() => (coursesStore.filters.completed_course_idents?.length ?? 0) > 0)
+const isHidingCompletedCourses = computed(() => (filtersStore.filters.completed_course_idents?.length ?? 0) > 0)
 
 /**
  * Toggle showing/hiding completed courses.
@@ -147,10 +145,10 @@ const isHidingCompletedCourses = computed(() => (coursesStore.filters.completed_
 function toggleShowCompletedCourses() {
 	if (isHidingCompletedCourses.value) {
 		// Show completed courses (clear filter)
-		coursesStore.filters.completed_course_idents = []
+		filtersStore.filters.completed_course_idents = []
 	} else {
 		// Hide completed courses (apply filter)
-		coursesStore.filters.completed_course_idents = [...wizardStore.completedCourseIdents]
+		filtersStore.filters.completed_course_idents = [...wizardStore.completedCourseIdents]
 	}
 	coursesStore.fetchCourses()
 }
@@ -180,9 +178,6 @@ function handleCloseMobileFilter() {
 	uiStore.closeMobileFilter()
 }
 
-function toggleTimeFilter() {
-	timeFilterCollapsed.value = !timeFilterCollapsed.value
-}
 </script>
 
 <template>
@@ -209,11 +204,11 @@ function toggleTimeFilter() {
 			<div v-if="!uiStore.mobileFilterOpen" class="flex items-center gap-2 text-sm font-medium text-[var(--insis-gray-900)]">
 				<IconFilter class="h-4 w-4" />
 				{{ $t('common.filters') }}
-				<span v-if="coursesStore.activeFilterCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-xs text-white">
-					{{ coursesStore.activeFilterCount }}
+				<span v-if="filtersStore.activeFilterCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-xs text-white">
+					{{ filtersStore.activeFilterCount }}
 				</span>
 			</div>
-			<button v-if="coursesStore.hasActiveFilters" type="button" class="insis-btn-text flex items-center gap-1 text-xs" @click="handleResetFilters">
+			<button v-if="filtersStore.hasActiveFilters" type="button" class="insis-btn-text flex items-center gap-1 text-xs" @click="handleResetFilters">
 				<IconRotateCcw class="h-3 w-3" />
 				{{ $t('common.reset') }}
 			</button>
@@ -251,12 +246,12 @@ function toggleTimeFilter() {
 				<input
 					type="checkbox"
 					class="insis-checkbox"
-					:checked="coursesStore.hideConflictingCourses"
+					:checked="filtersStore.hideConflictingCourses"
 					@change="coursesStore.toggleHideConflictingCourses()"
 				/>
 				{{ $t('components.filters.FilterPanel.hideConflictingCourses') }}
 			</label>
-			<p v-if="coursesStore.hideConflictingCourses" class="mt-1 text-[10px] text-[var(--insis-gray-500)]">
+			<p v-if="filtersStore.hideConflictingCourses" class="mt-1 text-[10px] text-[var(--insis-gray-500)]">
 				{{ $t('components.filters.FilterPanel.hideConflictingCoursesHelp') }}
 			</p>
 		</div>
@@ -286,22 +281,9 @@ function toggleTimeFilter() {
 
 		<!-- Time Range Filter (collapsible) -->
 		<div class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
-			<button
-				type="button"
-				class="flex cursor-pointer w-full items-center justify-between py-1 px-1 -mx-1 rounded-[3px] text-left hover:bg-[var(--insis-surface-2)] transition-colors duration-100"
-				@click="toggleTimeFilter"
-			>
-				<span class="insis-label mb-0 flex items-center gap-1.5">
-					{{ $t('components.filters.FilterPanel.timeRestriction') }}
-					<span v-if="activeTimeFilterCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-[10px] text-white">
-						{{ activeTimeFilterCount }}
-					</span>
-				</span>
-				<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !timeFilterCollapsed }]" />
-			</button>
-			<div v-show="!timeFilterCollapsed" class="mt-2">
+			<CollapsibleSection :title="$t('components.filters.FilterPanel.timeRestriction')" :badge="activeTimeFilterCount > 0 ? activeTimeFilterCount : undefined" :default-open="true">
 				<FilterTimeRange />
-			</div>
+			</CollapsibleSection>
 		</div>
 
 		<!-- Dynamic Facet Filters -->
