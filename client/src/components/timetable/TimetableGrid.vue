@@ -47,13 +47,20 @@ function getMergedUnitsForDay(day: InSISDay): (SelectedCourseUnit | MergedUnit)[
 	return mergedUnitsByDay.value.get(day) || []
 }
 
-// Check if a unit has a conflict
+// Check if a unit has a hard time conflict
 function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 	if (isMergedUnit(unit)) {
-		// Check if any of the merged slots have conflicts
 		return unit.mergedSlotIds.some((slotId) => timetableStore.conflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
 	}
 	return timetableStore.conflicts.some(([a, b]) => a.slotId === unit.slotId || b.slotId === unit.slotId)
+}
+
+// Check if a unit has a campus travel-time conflict (softer, orange)
+function hasCampusConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
+	if (isMergedUnit(unit)) {
+		return unit.mergedSlotIds.some((slotId) => timetableStore.campusConflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
+	}
+	return timetableStore.campusConflicts.some(([a, b]) => a.slotId === unit.slotId || b.slotId === unit.slotId)
 }
 
 // Course modal state
@@ -151,6 +158,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 							:unit="unit"
 							:style="getBlockStyle(unit, day)"
 							:has-conflict="hasConflict(unit)"
+							:has-campus-conflict="hasCampusConflict(unit)"
 							:is-merged="isMergedUnit(unit)"
 							:merged-count="isMergedUnit(unit) ? unit.mergedCount : undefined"
 							:date-range="isMergedUnit(unit) ? unit.dateRange : undefined"

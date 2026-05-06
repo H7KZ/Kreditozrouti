@@ -24,6 +24,8 @@ const coursesStore = useCoursesStore()
 interface Props {
 	unit: SelectedCourseUnit
 	hasConflict?: boolean
+	/** Whether this block has a campus travel-time conflict (softer warning, orange) */
+	hasCampusConflict?: boolean
 	/** Whether this block represents merged one-time slots */
 	isMerged?: boolean
 	/** Count of merged slots (for display) */
@@ -135,6 +137,7 @@ function handleRemove(event: MouseEvent) {
 			blockColorClass,
 			{
 				'ring-2 ring-[var(--insis-danger)]': hasConflict,
+				'ring-2 ring-[var(--insis-warning)]': hasCampusConflict && !hasConflict,
 				'merged-block': isMerged,
 			},
 		]"

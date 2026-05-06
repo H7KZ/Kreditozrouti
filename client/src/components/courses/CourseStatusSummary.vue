@@ -7,6 +7,7 @@ import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconBookOpen from '~icons/lucide/book-open'
 import IconCalendarX from '~icons/lucide/calendar-x'
 import IconCheck from '~icons/lucide/check'
+import IconMapPin from '~icons/lucide/map-pin'
 
 /**
  * CourseStatusSummary
@@ -25,10 +26,12 @@ const timetableStore = useTimetableStore()
 const { statusCounts, totalSelectedCount, toggleStatusFilter, isStatusSelected, clearFilters, isFiltering } = useSharedCourseStatusFilter()
 
 /** Whether all selections are complete (no conflicts or incomplete) */
-const isAllComplete = computed(() => totalSelectedCount.value > 0 && statusCounts.value.conflict === 0 && statusCounts.value.incomplete === 0)
+const isAllComplete = computed(
+	() => totalSelectedCount.value > 0 && statusCounts.value.conflict === 0 && statusCounts.value['campus-conflict'] === 0 && statusCounts.value.incomplete === 0,
+)
 
 /** Whether there are issues to address */
-const hasIssues = computed(() => statusCounts.value.conflict > 0 || statusCounts.value.incomplete > 0)
+const hasIssues = computed(() => statusCounts.value.conflict > 0 || statusCounts.value['campus-conflict'] > 0 || statusCounts.value.incomplete > 0)
 
 /** Total ECTS of selected courses */
 const totalEcts = computed(() => {
@@ -104,6 +107,26 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 				<IconCalendarX class="h-3.5 w-3.5" />
 				<span>
 					{{ $t('components.courses.CourseStatusSummary.conflicts', { count: statusCounts.conflict }) }}
+				</span>
+			</button>
+
+			<!-- Campus conflict warning badge (orange) -->
+			<button
+				v-if="statusCounts['campus-conflict'] > 0"
+				type="button"
+				:class="[
+					'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-solid text-xs font-medium cursor-pointer focus:outline-none active:scale-[0.98] transition-all duration-150',
+					getBadgeClasses(
+						'campus-conflict',
+						'bg-orange-50 text-orange-600 border-orange-200 hover:brightness-95',
+					),
+				]"
+				:title="$t('components.courses.CourseStatusSummary.campusConflictTooltip')"
+				@click="handleBadgeClick('campus-conflict')"
+			>
+				<IconMapPin class="h-3.5 w-3.5" />
+				<span>
+					{{ $t('components.courses.CourseStatusSummary.campusConflicts', { count: statusCounts['campus-conflict'] }) }}
 				</span>
 			</button>
 

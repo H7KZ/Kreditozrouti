@@ -48,8 +48,16 @@ function getSlotConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
 	return timetableStore.getSlotConflicts(slot)
 }
 
+function getSlotCampusConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
+	return timetableStore.getSlotCampusConflicts(slot)
+}
+
 function unitHasConflicts(unit: CourseUnit<void, CourseUnitSlot>): boolean {
 	return timetableStore.unitHasConflicts(unit)
+}
+
+function unitHasCampusConflictsOnly(unit: CourseUnit<void, CourseUnitSlot>): boolean {
+	return !timetableStore.unitHasConflicts(unit) && timetableStore.unitHasCampusConflicts(unit)
 }
 
 function hiddenConflictCount(units: CourseUnitWithSlots[]): number {
@@ -83,9 +91,23 @@ const conflictingUnitCount = computed(() => {
 
 function formatSlotConflictTooltip(slot: CourseUnitSlot): string {
 	const conflicts = getSlotConflicts(slot)
-	if (conflicts.length === 0) return ''
-	const courseIdents = [...new Set(conflicts.map((c) => c.courseIdent))]
-	return t('components.courses.CourseRowExpanded.conflictsWithCourses', { courses: courseIdents.join(', ') })
+	if (conflicts.length > 0) {
+		const courseIdents = [...new Set(conflicts.map((c) => c.courseIdent))]
+		return t('components.courses.CourseRowExpanded.conflictsWithCourses', { courses: courseIdents.join(', ') })
+	}
+	const campusConflicts = getSlotCampusConflicts(slot)
+	if (campusConflicts.length > 0) {
+		const courseIdents = [...new Set(campusConflicts.map((c) => c.courseIdent))]
+		return t('components.filters.CampusConflict.campusConflictTooltip') + ' (' + courseIdents.join(', ') + ')'
+	}
+	return ''
+}
+
+function getSlotCampusConflictTooltip(slot: CourseUnitSlot): string {
+	const campusConflicts = getSlotCampusConflicts(slot)
+	if (campusConflicts.length === 0) return ''
+	const courseIdents = [...new Set(campusConflicts.map((c) => c.courseIdent))]
+	return t('components.filters.CampusConflict.campusConflictTooltip') + ' (' + courseIdents.join(', ') + ')'
 }
 
 function getMissingTypesLabel(): string {
@@ -109,7 +131,9 @@ function getSlotHighlightClass(slot: CourseUnitSlot): string {
 }
 
 function getSlotConflictClass(slot: CourseUnitSlot): string {
-	return getSlotConflicts(slot).length > 0 ? 'bg-[var(--insis-danger-light)]' : ''
+	if (getSlotConflicts(slot).length > 0) return 'bg-[var(--insis-danger-light)]'
+	if (getSlotCampusConflicts(slot).length > 0) return 'bg-[var(--insis-warning-light)]'
+	return ''
 }
 </script>
 
@@ -199,8 +223,10 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 							'border-[var(--insis-success)] bg-[var(--insis-success-light)]': isUnitSelected(unit.id),
 							'border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)]':
 								!isUnitSelected(unit.id) && unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
+							'border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)]':
+								!isUnitSelected(unit.id) && unitHasCampusConflictsOnly(unit) && !unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
 							'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)]':
-								!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit) && !unitHasConflicts(unit),
+								!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit) && !unitHasConflicts(unit) && !unitHasCampusConflictsOnly(unit),
 							'bg-[var(--insis-blue-light)] ring-1 ring-[var(--insis-blue)]':
 								!isUnitSelected(unit.id) && unitMatchesTimeFilter(unit) && !unitHasConflicts(unit),
 						}"
@@ -229,6 +255,14 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 									>
 										<IconOctagonAlert class="h-3 w-3" />
 										<span class="hidden sm:inline">{{ [...new Set(getSlotConflicts(slot).map((c) => c.courseIdent))].join(', ') }}</span>
+									</span>
+									<span
+										v-else-if="getSlotCampusConflicts(slot).length > 0"
+										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-[var(--insis-warning)]"
+										:title="getSlotCampusConflictTooltip(slot)"
+									>
+										<IconAlertTriangle class="h-3 w-3" />
+										<span class="hidden sm:inline">{{ [...new Set(getSlotCampusConflicts(slot).map((c) => c.courseIdent))].join(', ') }}</span>
 									</span>
 								</div>
 
