@@ -272,6 +272,7 @@
 				"inTimetable": "In timetable",
 				"missingUnitTypes": "Incomplete",
 				"conflictTag": "Conflict",
+				"campusConflictTag": "Campus conflict",
 				"completed": "Done"
 			},
 			"CourseRowExpanded": {
@@ -300,9 +301,11 @@
 			"CourseStatusSummary": {
 				"selectedCourses": "{count} course | {count} courses",
 				"conflicts": "{count} conflict | {count} conflicts",
+				"campusConflicts": "{count} campus conflict | {count} campus conflicts",
 				"incomplete": "{count} incomplete",
 				"selectedTooltip": "Click to show only selected courses",
 				"conflictTooltip": "Click to show courses with time conflicts",
+				"campusConflictTooltip": "Click to show courses with campus travel-time conflicts",
 				"incompleteTooltip": "Click to show courses with missing unit types",
 				"allComplete": "All course units selected, no conflicts!"
 			}
@@ -340,13 +343,25 @@
 				"title": "My Courses",
 				"allSelected": "All Selected",
 				"withConflicts": "With Conflicts",
+				"withCampusConflicts": "Campus Conflicts",
 				"incomplete": "Incomplete",
 				"conflictingCourses": "Conflicting Courses",
+				"campusConflictingCourses": "Campus Conflict Courses",
 				"incompleteCourses": "Incomplete Courses",
 				"conflictsWith": "Conflicts with: {courses}",
+				"campusConflictsWith": "Campus conflict with: {courses}",
 				"missingTypes": "Missing: {types}",
 				"missingLabel": "Missing",
 				"helpText": "Click to filter. Select multiple options to combine filters."
+			},
+			"CampusConflict": {
+				"campusConflict": "Campus conflict",
+				"campusConflictTooltip": "Not enough travel time between Jižní Město and Žižkov campuses (need 40+ min)",
+				"campusConflictTag": "Campus conflict",
+				"campusNames": {
+					"jizni-mesto": "Jižní Město",
+					"zizkov": "Žižkov"
+				}
 			}
 		},
 		"timetable": {

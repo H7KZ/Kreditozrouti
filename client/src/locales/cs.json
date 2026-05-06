@@ -272,6 +272,7 @@
 				"inTimetable": "V rozvrhu",
 				"missingUnitTypes": "Nekompletní",
 				"conflictTag": "Kolize",
+				"campusConflictTag": "Kampusová kolize",
 				"completed": "Dokončeno"
 			},
 			"CourseRowExpanded": {
@@ -300,9 +301,11 @@
 			"CourseStatusSummary": {
 				"selectedCourses": "{count} předmět | {count} předměty | {count} předmětů",
 				"conflicts": "{count} kolize | {count} kolize | {count} kolizí",
+				"campusConflicts": "{count} kampusová kolize | {count} kampusové kolize | {count} kampusových kolizí",
 				"incomplete": "{count} nekompletní | {count} nekompletní | {count} nekompletních",
 				"selectedTooltip": "Klikněte pro zobrazení pouze vybraných předmětů",
 				"conflictTooltip": "Klikněte pro zobrazení předmětů s časovými kolizemi",
+				"campusConflictTooltip": "Klikněte pro zobrazení předmětů s kampusovými kolizemi",
 				"incompleteTooltip": "Klikněte pro zobrazení předmětů s chybějícími typy výuky",
 				"allComplete": "Všechny jednotky vybrány, bez kolizí!"
 			}
@@ -340,13 +343,25 @@
 				"title": "Moje předměty",
 				"allSelected": "Všechny vybrané",
 				"withConflicts": "S kolizemi",
+				"withCampusConflicts": "Kampusové kolize",
 				"incomplete": "Nekompletní",
 				"conflictingCourses": "Předměty v kolizi",
+				"campusConflictingCourses": "Předměty s kampusovou kolizí",
 				"incompleteCourses": "Nekompletní předměty",
 				"conflictsWith": "Koliduje s: {courses}",
+				"campusConflictsWith": "Kampusová kolize s: {courses}",
 				"missingTypes": "Chybí: {types}",
 				"missingLabel": "Chybí",
 				"helpText": "Klikněte pro filtrování. Vyberte více možností pro kombinovaný filtr."
+			},
+			"CampusConflict": {
+				"campusConflict": "Kampusová kolize",
+				"campusConflictTooltip": "Nedostatek času na cestu mezi kampusy Jižní Město a Žižkov (potřeba 40+ min)",
+				"campusConflictTag": "Kampusová kolize",
+				"campusNames": {
+					"jizni-mesto": "Jižní Město",
+					"zizkov": "Žižkov"
+				}
 			}
 		},
 		"timetable": {
