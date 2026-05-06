@@ -1,29 +1,22 @@
 <script setup lang="ts">
-import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
+import CoursesHeader from '@client/components/courses/CoursesHeader.vue'
 import CourseStatusSummary from '@client/components/courses/CourseStatusSummary.vue'
 import CourseTable from '@client/components/courses/CourseTable.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
-import { useCourseLabels } from '@client/composables'
 import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import { useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import IconCalendar from '~icons/lucide/calendar'
 import IconCalendarMinus2 from '~icons/lucide/calendar-minus-2'
-import IconFunnel from '~icons/lucide/funnel'
 import IconTable from '~icons/lucide/table'
-import IconTrash from '~icons/lucide/trash-2'
 
-const { t } = useI18n()
 const router = useRouter()
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
 const uiStore = useUIStore()
 const wizardStore = useWizardStore()
-
-const { getSemesterLabel } = useCourseLabels()
 
 watch(
 	() => wizardStore.completed,
@@ -49,29 +42,7 @@ onUnmounted(() => {
 const disableEmptyTimetable = ref(false)
 const showEmptyTimetable = computed(() => uiStore.viewMode === 'timetable' && timetableStore.selectedCourseIds.length === 0 && !disableEmptyTimetable.value)
 
-const studyPlanInfo = computed(() => ({
-	titles: wizardStore.studyPlanTitles || [],
-	idents: wizardStore.studyPlanIdents || [],
-}))
-
-const coursesInfo = computed(() => ({
-	years: coursesStore.filters.years,
-	semester: coursesStore.filters.semesters?.map((s) => getSemesterLabel(s)).join(', '),
-}))
-
 const selectedCoursesCount = computed(() => timetableStore.selectedCourseIds.length)
-
-function handleResetWizard() {
-	if (!confirm(t('pages.courses.changePlanConfirm'))) return
-	wizardStore.reset()
-	timetableStore.clearAll()
-	router.push('/')
-}
-
-function handleClearTimetable() {
-	if (!confirm(t('pages.courses.clearTimetableConfirm'))) return
-	timetableStore.clearAll()
-}
 
 async function fetchNextCoursesPage(page: () => void) {
 	page()
@@ -82,54 +53,7 @@ async function fetchNextCoursesPage(page: () => void) {
 <template>
 	<div v-if="wizardStore.completed" class="flex flex-col h-screen overflow-hidden">
 		<!-- ── Header ── -->
-		<header
-			class="h-[52px] bg-[var(--insis-surface)] border-b border-[var(--insis-border)] flex items-center px-4 gap-3 shrink-0 z-30 shadow-[var(--insis-shadow-sm)]"
-		>
-			<!-- Left: logo + plan info -->
-			<div class="flex items-center gap-3 min-w-0">
-				<router-link
-					to="/"
-					class="w-[30px] h-[30px] bg-[var(--insis-blue)] rounded-[5px] flex items-center justify-center shrink-0 no-underline hover:bg-[var(--insis-blue-dark)] transition-colors duration-100"
-					:title="$t('pages.courses.changePlan')"
-				>
-					<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-4 w-4 object-contain brightness-0 invert" />
-				</router-link>
-				<span class="text-[15px] font-semibold text-[var(--insis-blue)] hidden sm:block">{{ $t('pages.index.title') }}</span>
-
-				<div class="w-px h-6 bg-[var(--insis-border)] shrink-0 hidden sm:block" />
-
-				<div class="hidden md:flex flex-col min-w-0">
-					<div class="text-[13px] font-medium text-[var(--insis-text)] truncate max-w-[400px]">
-						{{ studyPlanInfo.titles.length > 0 ? studyPlanInfo.titles.join(' / ') : $t('pages.courses.studyPlanFallback') }}
-					</div>
-					<div class="text-[11px] text-[var(--insis-text-3)]">
-						{{ $t('pages.courses.searchingForCourses', { semester: coursesInfo.semester, year: coursesInfo.years?.join('/') }) }}
-					</div>
-				</div>
-			</div>
-
-			<div class="flex-1" />
-
-			<!-- Right: actions -->
-			<div class="flex items-center gap-2">
-				<button v-if="selectedCoursesCount > 0" type="button" class="insis-btn insis-btn-secondary" @click="handleClearTimetable">
-					<IconTrash class="h-3 w-3" />
-					<span class="hidden sm:inline">{{ $t('pages.courses.clearTimetable') }}</span>
-				</button>
-
-				<button type="button" class="insis-btn insis-btn-secondary" @click="handleResetWizard">
-					<span>{{ $t('pages.courses.changePlan') }}</span>
-				</button>
-
-				<div class="w-px h-6 bg-[var(--insis-border)] shrink-0" />
-				<LanguageSwitcher />
-
-				<!-- Mobile filter toggle -->
-				<button type="button" class="insis-btn insis-btn-secondary lg:hidden" style="padding: 5px" @click="uiStore.toggleMobileFilter">
-					<IconFunnel class="h-4 w-4" />
-				</button>
-			</div>
-		</header>
+		<CoursesHeader />
 
 		<!-- ── Body ── -->
 		<div class="flex flex-1 overflow-hidden">
@@ -141,12 +65,6 @@ async function fetchNextCoursesPage(page: () => void) {
 					'fixed inset-0 z-50 flex w-full sm:w-80': uiStore.mobileFilterOpen,
 				}"
 			>
-				<!-- Mobile filter header -->
-				<div v-if="uiStore.mobileFilterOpen" class="flex items-center justify-between border-b border-[var(--insis-border)] p-3 lg:hidden">
-					<span class="text-[12.5px] font-semibold text-[var(--insis-text)]">{{ $t('common.filters') }}</span>
-					<button type="button" class="insis-btn-text" @click="uiStore.closeMobileFilter">✕</button>
-				</div>
-
 				<FilterPanel />
 			</aside>
 
