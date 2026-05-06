@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n'
 import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconCheck from '~icons/lucide/check'
 import IconEyeOff from '~icons/lucide/eye-off'
+import IconMapPin from '~icons/lucide/map-pin'
 import IconMinus from '~icons/lucide/minus'
 import IconOctagonAlert from '~icons/lucide/octagon-alert'
 import IconPlus from '~icons/lucide/plus'
@@ -77,6 +78,13 @@ const hasAnyConflicts = computed(() => {
 		}
 	}
 	return false
+})
+
+const hasCampusConflictForCourse = computed(() => timetableStore.courseStatuses.get(props.course.id)?.status === 'campus-conflict')
+
+const campusConflictingCourses = computed(() => {
+	const entry = timetableStore.courseStatuses.get(props.course.id)
+	return entry?.campusConflictsWith ?? []
 })
 
 const conflictingUnitCount = computed(() => {
@@ -188,6 +196,22 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 				</p>
 				<p class="text-[var(--insis-gray-700)]">
 					{{ $t('components.courses.CourseRowExpanded.incompleteSelectionDescription', { types: getMissingTypesLabel() }) }}
+				</p>
+			</div>
+		</div>
+
+		<!-- Campus conflict warning -->
+		<div
+			v-if="hasCampusConflictForCourse"
+			class="mb-4 flex items-start gap-2 rounded border border-[var(--insis-warning)] bg-[var(--insis-warning-light)] p-3 text-sm"
+		>
+			<IconMapPin class="mt-0.5 h-4 w-4 shrink-0 text-[var(--insis-warning-dark)]" />
+			<div>
+				<p class="font-medium text-[var(--insis-warning-dark)]">
+					{{ $t('components.courses.CourseRowExpanded.campusConflictTitle') }}
+				</p>
+				<p class="text-[var(--insis-gray-700)]">
+					{{ $t('components.courses.CourseRowExpanded.campusConflictDescription', { courses: campusConflictingCourses.join(', ') }) }}
 				</p>
 			</div>
 		</div>

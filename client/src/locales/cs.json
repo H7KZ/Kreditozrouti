@@ -291,6 +291,8 @@
 				"noUnitsAvailable": "Pro tento kurz nejsou k dispozici žádné jednotky rozvrhu.",
 				"incompleteSelectionTitle": "Neúplný výběr kurzu",
 				"incompleteSelectionDescription": "Chcete-li se zapsat do tohoto kurzu, musíte také vybrat: {types}. Vyberte všechny požadované typy jednotek.",
+				"campusConflictTitle": "Kolize přesunu mezi kampusy",
+				"campusConflictDescription": "Tento kurz je na jiném kampusu. Mezi ním a kurzem: {courses} nemusí být dostatek času na přesun. Mezi výukou na kampusech Jižní Město a Žižkov ponechte alespoň 40 minut.",
 				"markAsCompleted": "Označit jako dokončené",
 				"markedCompleted": "Označeno jako dokončené",
 				"conflictsWithCourses": "Konflikt s: {courses}",
