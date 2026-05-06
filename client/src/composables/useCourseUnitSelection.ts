@@ -1,7 +1,7 @@
 import { CourseWithRelations } from '@api/Database/types'
-import { useCourseLabels } from '@client/composables'
 import { useTimetableStore } from '@client/stores'
 import { CourseUnitType, CourseUnitWithSlots, SelectedCourseUnit, UnitGroup, UnitGroupMap } from '@client/types'
+import { getSlotType } from '@client/utils/course'
 import type { Ref } from 'vue'
 import { computed } from 'vue'
 
@@ -33,7 +33,6 @@ export interface UseCourseUnitSelectionOptions {
  */
 export function useCourseUnitSelection(options: UseCourseUnitSelectionOptions) {
 	const timetableStore = useTimetableStore()
-	const { getSlotType } = useCourseLabels()
 
 	// Normalize course access (handle both Ref and direct value)
 	const getCourse = (): CourseWithRelations | null => {

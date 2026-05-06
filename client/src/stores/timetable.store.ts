@@ -1,14 +1,14 @@
 import type { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
 import type { TimeSelection } from '@api/Validations'
-import { useCourseLabels } from '@client/composables'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { ALL_DAYS } from '@client/constants/timetable'
 import { i18n } from '@client/index'
-import { useCoursesStore } from '@client/stores/courses.store'
 import { useFiltersStore } from '@client/stores/filters.store'
 import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCourseUnit, SlotConflictInfo } from '@client/types'
 import { getDayFromDate } from '@client/utils/day'
+import { getSlotType } from '@client/utils/course'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
+import { checkCourseCompleteness, unitsConflict } from '@client/utils/timetable'
 import type InSISDay from '@scraper/Types/InSISDay'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -20,6 +20,9 @@ const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, 
  *
  * Manages selected course units, conflict detection, and persistence.
  * Drag selection state lives in drag.store.ts.
+ *
+ * No longer imports useCoursesStore — completeness data is snapshotted
+ * into SelectedCourseUnit.snapshotAvailableTypes at add-time.
  */
 export const useTimetableStore = defineStore('timetable', () => {
 	const selectedUnits = ref<SelectedCourseUnit[]>([])
@@ -121,19 +124,17 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 	const courseStatuses = computed<Map<number, CourseStatus>>(() => {
 		const statuses = new Map<number, CourseStatus>()
-		const { getSlotType } = useCourseLabels()
-		const coursesStore = useCoursesStore()
 
 		for (const courseId of selectedCourseIds.value) {
 			const units = unitsByCourse.value.get(courseId) ?? []
 			if (units.length === 0) continue
 
 			const firstUnit = units[0]!
-			const fullCourse = coursesStore.courses.find((c: CourseWithRelations) => c.id === courseId)
 			const conflictsWith = coursesWithConflicts.value.get(courseId)
 			const hasConflict = !!conflictsWith?.size
 
-			const { isIncomplete, missingTypes } = checkCourseCompleteness(units, fullCourse, getSlotType)
+			// Use snapshotted available types — no need to look up full course
+			const { isIncomplete, missingTypes } = checkCourseCompleteness(units, getSlotType)
 			const status = hasConflict ? 'conflict' : isIncomplete ? 'incomplete' : 'selected'
 
 			statuses.set(courseId, {
@@ -158,37 +159,6 @@ export const useTimetableStore = defineStore('timetable', () => {
 		}
 		return count
 	})
-
-	// ── Helpers ──────────────────────────────────────────────────────────
-
-	function unitsConflict(a: SelectedCourseUnit, b: SelectedCourseUnit): boolean {
-		const aDay = a.day ?? (a.date ? getDayFromDate(a.date) : null)
-		const bDay = b.day ?? (b.date ? getDayFromDate(b.date) : null)
-		if (!aDay || !bDay || aDay !== bDay) return false
-		if (a.date && b.date && a.date !== b.date) return false
-		return a.timeFrom < b.timeTo && b.timeFrom < a.timeTo
-	}
-
-	function checkCourseCompleteness(
-		units: SelectedCourseUnit[],
-		fullCourse: CourseWithRelations | undefined,
-		getSlotType: (slot: CourseUnitSlot) => CourseUnitType,
-	): { isIncomplete: boolean; missingTypes: CourseUnitType[] } {
-		if (!fullCourse) return { isIncomplete: false, missingTypes: [] }
-
-		const availableTypes = new Set<CourseUnitType>()
-		for (const unit of fullCourse.units ?? []) {
-			for (const slot of unit.slots ?? []) availableTypes.add(getSlotType(slot))
-		}
-
-		const selectedTypes = new Set(units.map((u) => u.unitType))
-		const missingTypes: CourseUnitType[] = []
-		for (const type of availableTypes) {
-			if (!selectedTypes.has(type)) missingTypes.push(type)
-		}
-
-		return { isIncomplete: missingTypes.length > 0 && selectedTypes.size > 0, missingTypes }
-	}
 
 	// ── Actions ──────────────────────────────────────────────────────────
 
@@ -227,8 +197,17 @@ export const useTimetableStore = defineStore('timetable', () => {
 	}
 
 	function addUnit(course: CourseWithRelations, unit: CourseUnit<void, CourseUnitSlot>, slot: CourseUnitSlot): boolean {
-		const { getSlotType } = useCourseLabels()
 		if (canAddUnit(course, unit, slot)) return false
+
+		// Snapshot available unit types from the full course so we never need
+		// to call useCoursesStore() in a computed.
+		const snapshotAvailableTypes: CourseUnitType[] = []
+		for (const u of course.units ?? []) {
+			for (const s of u.slots ?? []) {
+				const type = getSlotType(s as CourseUnitSlot)
+				if (!snapshotAvailableTypes.includes(type)) snapshotAvailableTypes.push(type)
+			}
+		}
 
 		selectedUnits.value.push({
 			courseId: course.id,
@@ -246,6 +225,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 			location: slot.location ?? undefined,
 			lecturer: unit.lecturer ?? undefined,
 			ects: course.ects ?? undefined,
+			snapshotAvailableTypes,
 		})
 
 		persist()
@@ -308,7 +288,6 @@ export const useTimetableStore = defineStore('timetable', () => {
 	}
 
 	function requiredUnitTypes(units: CourseUnit<void, CourseUnitSlot>[]): Set<CourseUnitType> {
-		const { getSlotType } = useCourseLabels()
 		const types = new Set<CourseUnitType>()
 		for (const unit of units ?? []) {
 			for (const slot of unit.slots ?? []) types.add(getSlotType(slot))
@@ -343,6 +322,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		coursesWithConflicts,
 		courseStatuses,
 		coursesWithIssuesCount,
+		// Pure helpers exported for use outside the store
 		unitsConflict,
 		getSlotConflicts,
 		getUnitConflicts,
