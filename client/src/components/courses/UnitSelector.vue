@@ -262,7 +262,9 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 										:title="getSlotCampusConflictTooltip(slot)"
 									>
 										<IconAlertTriangle class="h-3 w-3" />
-										<span class="hidden sm:inline">{{ [...new Set(getSlotCampusConflicts(slot).map((c) => c.courseIdent))].join(', ') }}</span>
+										<span class="hidden sm:inline">{{
+											[...new Set(getSlotCampusConflicts(slot).map((c) => c.courseIdent))].join(', ')
+										}}</span>
 									</span>
 								</div>
 

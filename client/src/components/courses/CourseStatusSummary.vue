@@ -27,7 +27,8 @@ const { statusCounts, totalSelectedCount, toggleStatusFilter, isStatusSelected, 
 
 /** Whether all selections are complete (no conflicts or incomplete) */
 const isAllComplete = computed(
-	() => totalSelectedCount.value > 0 && statusCounts.value.conflict === 0 && statusCounts.value['campus-conflict'] === 0 && statusCounts.value.incomplete === 0,
+	() =>
+		totalSelectedCount.value > 0 && statusCounts.value.conflict === 0 && statusCounts.value['campus-conflict'] === 0 && statusCounts.value.incomplete === 0,
 )
 
 /** Whether there are issues to address */
@@ -116,10 +117,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 				type="button"
 				:class="[
 					'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-solid text-xs font-medium cursor-pointer focus:outline-none active:scale-[0.98] transition-all duration-150',
-					getBadgeClasses(
-						'campus-conflict',
-						'bg-orange-50 text-orange-600 border-orange-200 hover:brightness-95',
-					),
+					getBadgeClasses('campus-conflict', 'bg-orange-50 text-orange-600 border-orange-200 hover:brightness-95'),
 				]"
 				:title="$t('components.courses.CourseStatusSummary.campusConflictTooltip')"
 				@click="handleBadgeClick('campus-conflict')"

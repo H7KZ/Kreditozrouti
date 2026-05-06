@@ -46,7 +46,9 @@ onMounted(() => {
 		</header>
 
 		<!-- Main Content -->
-		<main class="flex-1 overflow-y-auto flex items-start justify-center py-10 px-6 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-thumb]:rounded-[3px]">
+		<main
+			class="flex-1 overflow-y-auto flex items-start justify-center py-10 px-6 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-thumb]:rounded-[3px]"
+		>
 			<div class="bg-[var(--insis-surface)] border border-[var(--insis-border)] rounded-lg p-8 max-w-[800px] w-full shadow-[var(--insis-shadow)]">
 				<!-- Title -->
 				<div class="mb-6 text-center">

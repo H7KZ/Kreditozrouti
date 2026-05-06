@@ -208,7 +208,10 @@ function toggleCollapsed() {
 					<label
 						v-for="course in courseOptions.campusConflicts"
 						:key="course.id"
-						:class="['insis-checkbox-label cursor-pointer rounded px-1 -mx-1 transition-colors', isCourseSelected(course.ident) ? 'bg-orange-50' : '']"
+						:class="[
+							'insis-checkbox-label cursor-pointer rounded px-1 -mx-1 transition-colors',
+							isCourseSelected(course.ident) ? 'bg-orange-50' : '',
+						]"
 						:title="getCourseTooltip(course)"
 					>
 						<input type="checkbox" class="insis-checkbox" :checked="isCourseSelected(course.ident)" @change="toggleCourseFilter(course.ident)" />

@@ -48,11 +48,7 @@ function handleClearTimetable() {
 	>
 		<!-- Left: logo + plan info -->
 		<div class="flex items-center gap-3 min-w-0">
-			<router-link
-				to="/"
-				class="h-8 w-8 flex items-center justify-center shrink-0"
-				:title="$t('pages.courses.changePlan')"
-			>
+			<router-link to="/" class="h-8 w-8 flex items-center justify-center shrink-0" :title="$t('pages.courses.changePlan')">
 				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-8 w-8 object-contain flex items-center justify-center shrink-0" />
 			</router-link>
 			<span class="text-[15px] font-semibold text-[var(--insis-blue)] hidden sm:block">{{ $t('pages.index.title') }}</span>
@@ -73,7 +69,12 @@ function handleClearTimetable() {
 
 		<!-- Right: actions -->
 		<div class="flex items-center gap-2">
-			<button v-if="selectedCoursesCount > 0" type="button" class="insis-btn insis-btn-secondary hover:bg-red-500 hover:text-white hover:border-red-500" @click="handleClearTimetable">
+			<button
+				v-if="selectedCoursesCount > 0"
+				type="button"
+				class="insis-btn insis-btn-secondary hover:bg-red-500 hover:text-white hover:border-red-500"
+				@click="handleClearTimetable"
+			>
 				<IconTrash class="h-3 w-3" />
 				<span class="hidden sm:inline">{{ $t('pages.courses.clearTimetable') }}</span>
 			</button>

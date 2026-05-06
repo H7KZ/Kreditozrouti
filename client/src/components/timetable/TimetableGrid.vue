@@ -108,7 +108,9 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 			<!-- Header with time slots -->
 			<thead>
 				<tr>
-					<th class="w-[50px] min-w-[50px] bg-[var(--insis-header-bg)] text-center align-middle">{{ $t('components.timetable.TimetableGrid.dayHeader') }}</th>
+					<th class="w-[50px] min-w-[50px] bg-[var(--insis-header-bg)] text-center align-middle">
+						{{ $t('components.timetable.TimetableGrid.dayHeader') }}
+					</th>
 					<th v-for="slot in timeSlots" :key="slot.minutes" class="text-center align-middle whitespace-nowrap px-2" :style="{ minWidth: '80px' }">
 						{{ slot.label }}
 					</th>
