@@ -13,3 +13,5 @@
 
 .gitlab-ci-local
 
+.claude/**/worktrees
+
