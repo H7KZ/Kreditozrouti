@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Course } from '@api/Database/types'
-import { useCourseLabels } from '@client/composables'
+import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import { computed, ref } from 'vue'
 import IconCheck from '~icons/lucide/check'
 import IconChevronDown from '~icons/lucide/chevron-down'
@@ -45,6 +45,12 @@ const emit = defineEmits<Emits>()
 
 /** Which category sections are collapsed */
 const collapsedCategories = ref<Set<string>>(new Set())
+
+const localSearch = ref(props.searchQuery)
+
+const debouncedSetSearch = useDebouncedFn((value: string) => {
+	emit('setSearch', value)
+}, 750)
 
 /** Whether a course is marked as completed */
 function isCompleted(courseIdent: string): boolean {
@@ -96,7 +102,9 @@ const sortedEntries = computed(() => {
 })
 
 function handleSearchInput(event: Event) {
-	emit('setSearch', (event.target as HTMLInputElement).value)
+	const value = (event.target as HTMLInputElement).value
+	localSearch.value = value
+	debouncedSetSearch(value)
 }
 </script>
 
@@ -127,7 +135,7 @@ function handleSearchInput(event: Event) {
 					type="text"
 					class="insis-input pl-9"
 					:placeholder="$t('components.wizard.WizardStepCompletedCourses.searchPlaceholder')"
-					:value="searchQuery"
+					:value="localSearch"
 					@input="handleSearchInput"
 				/>
 			</div>
