@@ -190,7 +190,7 @@ function handleRemove(event: MouseEvent) {
 			<!-- Remove button (shown on hover) -->
 			<button
 				type="button"
-				class="cursor-pointer absolute right-0.5 top-0.5 hidden group-hover:flex h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger-light)] text-white hover:bg-[var(--insis-danger)]"
+				class="cursor-pointer absolute right-0.5 top-0.5 hidden group-hover:flex h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger-light)] text-[var(--insis-danger)] hover:bg-[var(--insis-danger)] hover:text-white transition-colors duration-75"
 				:title="$t('components.timetable.TimetableCourseBlock.removeFromTimetable')"
 				@click="handleRemove"
 			>

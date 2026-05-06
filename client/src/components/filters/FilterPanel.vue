@@ -286,7 +286,7 @@ function toggleTimeFilter() {
 
 		<!-- Time Range Filter (collapsible) -->
 		<div class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
-			<button type="button" class="flex cursor-pointer w-full items-center justify-between py-1 text-left" @click="toggleTimeFilter">
+			<button type="button" class="flex cursor-pointer w-full items-center justify-between py-1 px-1 -mx-1 rounded-[3px] text-left hover:bg-[var(--insis-surface-2)] transition-colors duration-100" @click="toggleTimeFilter">
 				<span class="insis-label mb-0 flex items-center gap-1.5">
 					{{ $t('components.filters.FilterPanel.timeRestriction') }}
 					<span v-if="activeTimeFilterCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-[10px] text-white">

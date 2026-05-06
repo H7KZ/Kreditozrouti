@@ -63,7 +63,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 			<button
 				type="button"
 				:class="[
-					'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-solid text-xs font-medium cursor-pointer focus:outline-none active:scale-[0.98]',
+					'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-solid text-xs font-medium cursor-pointer focus:outline-none active:scale-[0.98] transition-all duration-150',
 					getBadgeClasses(
 						'selected',
 						isAllComplete
@@ -91,7 +91,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 			<button
 				v-if="statusCounts.conflict > 0"
 				type="button"
-				:class="['inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-solid text-xs font-medium cursor-pointer focus:outline-none active:scale-[0.98]', getBadgeClasses('conflict', 'bg-[var(--insis-danger-light)] text-[var(--insis-danger)] border-[var(--insis-danger-border)] hover:brightness-95')]"
+				:class="['inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-solid text-xs font-medium cursor-pointer focus:outline-none active:scale-[0.98] transition-all duration-150', getBadgeClasses('conflict', 'bg-[var(--insis-danger-light)] text-[var(--insis-danger)] border-[var(--insis-danger-border)] hover:brightness-95')]"
 				:title="$t('components.courses.CourseStatusSummary.conflictTooltip')"
 				@click="handleBadgeClick('conflict')"
 			>
@@ -105,7 +105,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 			<button
 				v-if="statusCounts.incomplete > 0"
 				type="button"
-				:class="['inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-solid text-xs font-medium cursor-pointer focus:outline-none active:scale-[0.98]', getBadgeClasses('incomplete', 'bg-[var(--insis-warning-light)] text-[var(--insis-warning)] border-[var(--insis-warning-border)] hover:brightness-95')]"
+				:class="['inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-solid text-xs font-medium cursor-pointer focus:outline-none active:scale-[0.98] transition-all duration-150', getBadgeClasses('incomplete', 'bg-[var(--insis-warning-light)] text-[var(--insis-warning)] border-[var(--insis-warning-border)] hover:brightness-95')]"
 				:title="$t('components.courses.CourseStatusSummary.incompleteTooltip')"
 				@click="handleBadgeClick('incomplete')"
 			>

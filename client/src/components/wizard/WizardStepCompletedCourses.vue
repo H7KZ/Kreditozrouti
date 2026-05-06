@@ -139,10 +139,10 @@ function handleSearchInput(event: Event) {
 					:key="category"
 					type="button"
 					:class="[
-						'rounded-full border px-3 py-1 text-xs transition-colors cursor-pointer',
+						'rounded-full border px-3 py-1 text-xs transition-all duration-150 cursor-pointer active:scale-[0.97]',
 						isCategoryFilterActive(category)
 							? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] text-[var(--insis-blue)]'
-							: 'border-[var(--insis-border)] bg-white text-[var(--insis-gray-600)] hover:border-[var(--insis-blue)]',
+							: 'border-[var(--insis-border)] bg-white text-[var(--insis-gray-600)] hover:border-[var(--insis-blue)] hover:bg-[var(--insis-blue-subtle)]',
 					]"
 					@click="toggleCategoryFilter(category)"
 				>
@@ -187,7 +187,7 @@ function handleSearchInput(event: Event) {
 						:key="course.id"
 						:class="[
 							'flex cursor-pointer items-center gap-3 border-b border-[var(--insis-border-light)] px-3 py-2 last:border-b-0 transition-colors',
-							isCompleted(course.ident) ? 'bg-green-50' : 'hover:bg-[var(--insis-gray-50)]',
+							isCompleted(course.ident) ? 'bg-[var(--insis-success-light)]' : 'hover:bg-[var(--insis-gray-50)]',
 						]"
 					>
 						<input type="checkbox" class="sr-only" :checked="isCompleted(course.ident)" @change="emit('toggle', course.ident)" />

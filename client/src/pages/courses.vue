@@ -87,7 +87,7 @@ async function fetchNextCoursesPage(page: () => void) {
 		<header class="h-[52px] bg-[var(--insis-surface)] border-b border-[var(--insis-border)] flex items-center px-4 gap-3 shrink-0 z-30 shadow-[var(--insis-shadow-sm)]">
 			<!-- Left: logo + plan info -->
 			<div class="flex items-center gap-3 min-w-0">
-				<router-link to="/" class="w-[30px] h-[30px] bg-[var(--insis-blue)] rounded-[5px] flex items-center justify-center shrink-0 no-underline" :title="$t('pages.courses.changePlan')">
+				<router-link to="/" class="w-[30px] h-[30px] bg-[var(--insis-blue)] rounded-[5px] flex items-center justify-center shrink-0 no-underline hover:bg-[var(--insis-blue-dark)] transition-colors duration-100" :title="$t('pages.courses.changePlan')">
 					<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-4 w-4 object-contain brightness-0 invert" />
 				</router-link>
 				<span class="text-[15px] font-semibold text-[var(--insis-blue)] hidden sm:block">{{ $t('pages.index.title') }}</span>

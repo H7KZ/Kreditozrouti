@@ -290,8 +290,8 @@ function handleToggleCompleted() {
 						:class="[
 							'flex items-center gap-2 rounded border px-3 py-2 text-sm transition-colors cursor-pointer',
 							isMarkedCompleted
-								? 'border-[var(--insis-success)] bg-green-50 text-[var(--insis-success)]'
-								: 'border-[var(--insis-border)] bg-white text-[var(--insis-gray-600)] hover:border-[var(--insis-success)] hover:bg-green-50',
+								? 'border-[var(--insis-success)] bg-[var(--insis-success-light)] text-[var(--insis-success)]'
+								: 'border-[var(--insis-border)] bg-white text-[var(--insis-gray-600)] hover:border-[var(--insis-success)] hover:bg-[var(--insis-success-light)]',
 						]"
 						@click="handleToggleCompleted"
 					>
@@ -457,7 +457,7 @@ function handleToggleCompleted() {
 										<template v-if="isUnitSelected(unit.id)">
 											<button
 												type="button"
-												class="insis-btn bg-white px-3 py-1.5 text-xs hover:border-[var(--insis-danger)] hover:bg-red-50 hover:text-[var(--insis-danger)]"
+												class="insis-btn bg-white px-3 py-1.5 text-xs hover:border-[var(--insis-danger)] hover:bg-[var(--insis-danger-light)] hover:text-[var(--insis-danger)]"
 												:title="$t('common.remove')"
 												@click.stop="handleRemoveUnit(unit)"
 											>

@@ -205,10 +205,10 @@ function dismissSpecializationInfo() {
 				v-for="plan in studyPlans"
 				:key="plan.id"
 				:class="[
-					'rounded border p-4 transition-all cursor-pointer',
+					'rounded border p-4 transition-all duration-150 cursor-pointer active:scale-[0.99]',
 					isSelected(plan.id)
-						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] ring-2 ring-[var(--insis-blue)]'
-						: 'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)] hover:bg-[var(--insis-gray-50)]',
+						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] ring-2 ring-[var(--insis-blue)] shadow-[var(--insis-shadow-sm)]'
+						: 'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)] hover:bg-[var(--insis-gray-50)] hover:shadow-[var(--insis-shadow-sm)]',
 				]"
 				@click="handleTogglePlan(plan)"
 			>
