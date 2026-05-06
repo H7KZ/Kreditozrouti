@@ -1,4 +1,4 @@
-import { useCoursesStore, useTimetableStore } from '@client/stores'
+import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import type { CourseStatus, CourseStatusFilterState, CourseStatusType } from '@client/types'
 import { computed, ref, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -41,6 +41,7 @@ export function useCourseStatusFilter() {
 	const { t } = useI18n()
 	const timetableStore = useTimetableStore()
 	const coursesStore = useCoursesStore()
+	const filtersStore = useFiltersStore()
 
 	// Filter state
 	const selectedStatuses: Ref<CourseStatusType[]> = ref([])
@@ -247,11 +248,11 @@ export function useCourseStatusFilter() {
 	 */
 	function applyFilters() {
 		if (filteredCourseIdents.value.length > 0) {
-			coursesStore.filters.idents = filteredCourseIdents.value
+			filtersStore.filters.idents = filteredCourseIdents.value
 		} else {
-			coursesStore.filters.idents = []
+			filtersStore.filters.idents = []
 		}
-		coursesStore.filters.offset = 0
+		filtersStore.filters.offset = 0
 		coursesStore.fetchCourses()
 	}
 

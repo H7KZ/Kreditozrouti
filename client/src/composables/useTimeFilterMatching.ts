@@ -1,7 +1,7 @@
 import type { CourseUnitSlot } from '@api/Database/types'
 import type { TimeSelection } from '@api/Validations'
 import { useTimeUtils } from '@client/composables'
-import { useCoursesStore } from '@client/stores'
+import { useFiltersStore } from '@client/stores'
 import { CourseUnitWithSlots } from '@client/types'
 import { getSlotDay } from '@client/utils/day.ts'
 import { computed } from 'vue'
@@ -18,35 +18,35 @@ import { computed } from 'vue'
  * ```
  */
 export function useTimeFilterMatching() {
-	const coursesStore = useCoursesStore()
+	const filtersStore = useFiltersStore()
 	const { timeRangesOverlap } = useTimeUtils()
 
 	/**
 	 * Check if there are any active time filters.
 	 */
 	const hasActiveTimeFilter = computed((): boolean => {
-		return (coursesStore.filters.include_times?.length ?? 0) > 0
+		return (filtersStore.filters.include_times?.length ?? 0) > 0
 	})
 
 	/**
 	 * Get active time inclusion filters.
 	 */
 	const activeTimeFilters = computed((): TimeSelection[] => {
-		return coursesStore.filters.include_times ?? []
+		return filtersStore.filters.include_times ?? []
 	})
 
 	/**
 	 * Get active time exclusion filters.
 	 */
 	const activeExcludeFilters = computed((): TimeSelection[] => {
-		return coursesStore.filters.exclude_times ?? []
+		return filtersStore.filters.exclude_times ?? []
 	})
 
 	/**
 	 * Total count of active time filters (include + exclude).
 	 */
 	const activeTimeFilterCount = computed((): number => {
-		return (coursesStore.filters.include_times?.length ?? 0) + (coursesStore.filters.exclude_times?.length ?? 0)
+		return (filtersStore.filters.include_times?.length ?? 0) + (filtersStore.filters.exclude_times?.length ?? 0)
 	})
 
 	/**

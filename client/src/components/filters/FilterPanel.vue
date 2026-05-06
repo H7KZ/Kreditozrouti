@@ -4,6 +4,7 @@ import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.
 import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 import { useDebouncedFn } from '@client/composables'
+import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -76,7 +77,7 @@ const facetConfig = computed(() => [
 		facets: coursesStore.facets.groups,
 		translations: 'courseGroups',
 		selected: filtersStore.filters.groups,
-		setter: (groups: string[]) => filtersStore.setFilter('groups', groups),
+		setter: (groups: string[]) => filtersStore.setFilter('groups', groups as CoursesFilter['groups']),
 		visible: filtersStore.filters.study_plan_ids && filtersStore.filters.study_plan_ids.length > 0,
 		defaultCollapsed: false,
 	},
@@ -86,7 +87,7 @@ const facetConfig = computed(() => [
 		facets: coursesStore.facets.categories,
 		translations: 'courseCategories',
 		selected: filtersStore.filters.categories,
-		setter: (categories: string[]) => filtersStore.setFilter('categories', categories),
+		setter: (categories: string[]) => filtersStore.setFilter('categories', categories as CoursesFilter['categories']),
 		visible: filtersStore.filters.study_plan_ids && filtersStore.filters.study_plan_ids.length > 0,
 		defaultCollapsed: false,
 	},

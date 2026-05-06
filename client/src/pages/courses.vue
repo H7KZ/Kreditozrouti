@@ -5,7 +5,7 @@ import CourseTable from '@client/components/courses/CourseTable.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
-import { useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import IconCalendar from '~icons/lucide/calendar'
@@ -14,6 +14,7 @@ import IconTable from '~icons/lucide/table'
 
 const router = useRouter()
 const coursesStore = useCoursesStore()
+const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
 const uiStore = useUIStore()
 const wizardStore = useWizardStore()
@@ -132,7 +133,7 @@ async function fetchNextCoursesPage(page: () => void) {
 						<!-- Empty state -->
 						<div v-if="coursesStore.courses.length === 0" class="py-12 text-center">
 							<p class="text-[var(--insis-text-3)]">{{ $t('pages.courses.noCoursesFound') }}</p>
-							<button v-if="coursesStore.hasActiveFilters" type="button" class="mt-2 insis-btn-text text-sm" @click="coursesStore.resetFilters">
+							<button v-if="filtersStore.hasActiveFilters" type="button" class="mt-2 insis-btn-text text-sm" @click="coursesStore.resetFilters">
 								{{ $t('pages.courses.clearFilters') }}
 							</button>
 						</div>

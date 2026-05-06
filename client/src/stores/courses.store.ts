@@ -1,13 +1,11 @@
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse.ts'
 import type { CourseWithRelations } from '@api/Database/types'
-import type { TimeSelection } from '@api/Validations'
 import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
 import { fetchCourses as fetchCoursesFromService } from '@client/services/courseService'
 import { useFiltersStore } from '@client/stores/filters.store'
 import { useTimetableStore } from '@client/stores/timetable.store'
 import { useWizardStore } from '@client/stores/wizard.store'
 import type { CourseSortBy, SortDirection } from '@client/types'
-import type InSISDay from '@scraper/Types/InSISDay'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
@@ -38,12 +36,6 @@ export const useCoursesStore = defineStore('courses', () => {
 	const loading = ref(false)
 	const error = ref<string | null>(null)
 	const expandedCourseIds = ref<Set<number>>(new Set())
-
-	// Proxy filter state so components can still use coursesStore.filters.xxx
-	const filters = computed(() => useFiltersStore().filters)
-	const hideConflictingCourses = computed(() => useFiltersStore().hideConflictingCourses)
-	const hasActiveFilters = computed(() => useFiltersStore().hasActiveFilters)
-	const activeFilterCount = computed(() => useFiltersStore().activeFilterCount)
 
 	const totalPages = computed(() => Math.ceil(pagination.value.total / pagination.value.limit))
 	const currentPage = computed(() => Math.floor(pagination.value.offset / pagination.value.limit) + 1)
@@ -111,76 +103,6 @@ export const useCoursesStore = defineStore('courses', () => {
 		return filtersStore.filters.completed_course_idents?.includes(courseIdent) ?? false
 	}
 
-	// ── Proxy setters so existing components don't need to import filtersStore ──
-
-	function setTitleSearch(title: string) {
-		const filtersStore = useFiltersStore()
-		filtersStore.setFilter('title', title)
-	}
-
-	function setFacultyIds(ids: string[]) {
-		useFiltersStore().setFilter('faculty_ids', ids)
-	}
-	function setLevels(levels: string[]) {
-		useFiltersStore().setFilter('levels', levels)
-	}
-	function setLanguages(languages: string[]) {
-		useFiltersStore().setFilter('languages', languages)
-	}
-	function setLecturers(lecturers: string[]) {
-		useFiltersStore().setFilter('lecturers', lecturers)
-	}
-	function setGroups(groups: CoursesFilter['groups']) {
-		useFiltersStore().setFilter('groups', groups)
-	}
-	function setCategories(categories: CoursesFilter['categories']) {
-		useFiltersStore().setFilter('categories', categories)
-	}
-	function setEcts(ects: number[]) {
-		useFiltersStore().setFilter('ects', ects)
-	}
-	function setModesOfCompletion(modes: string[]) {
-		useFiltersStore().setFilter('mode_of_completions', modes)
-	}
-	function addIncludeTime(ts: TimeSelection) {
-		useFiltersStore().addIncludeTime(ts)
-	}
-	function removeIncludeTime(i: number) {
-		useFiltersStore().removeIncludeTime(i)
-	}
-	function clearIncludeTimes() {
-		useFiltersStore().clearIncludeTimes()
-	}
-	function addExcludeTime(ts: TimeSelection) {
-		useFiltersStore().addExcludeTime(ts)
-	}
-	function removeExcludeTime(i: number) {
-		useFiltersStore().removeExcludeTime(i)
-	}
-	function clearExcludeTimes() {
-		useFiltersStore().clearExcludeTimes()
-	}
-	function setTimeFilterFromDrag(day: InSISDay, timeFrom: number, timeTo: number) {
-		const filtersStore = useFiltersStore()
-		filtersStore.filters.include_times = [{ day, time_from: timeFrom, time_to: timeTo }]
-		filtersStore.filters.offset = 0
-	}
-
-	function setSortBy(sortBy: CourseSortBy) {
-		const filtersStore = useFiltersStore()
-		filtersStore.filters.sort_by = sortBy
-	}
-
-	function setSortDir(direction: SortDirection) {
-		const filtersStore = useFiltersStore()
-		filtersStore.filters.sort_dir = direction
-	}
-
-	function toggleSortDir() {
-		const filtersStore = useFiltersStore()
-		filtersStore.filters.sort_dir = filtersStore.filters.sort_dir === 'asc' ? 'desc' : 'asc'
-	}
-
 	function goToPage(page: number) {
 		const filtersStore = useFiltersStore()
 		if (page < 1 || page > totalPages.value) return
@@ -245,11 +167,6 @@ export const useCoursesStore = defineStore('courses', () => {
 		loading,
 		error,
 		expandedCourseIds,
-		// Filter proxies — delegates to filtersStore
-		filters,
-		hideConflictingCourses,
-		hasActiveFilters,
-		activeFilterCount,
 		// Pagination
 		totalPages,
 		currentPage,
@@ -260,26 +177,6 @@ export const useCoursesStore = defineStore('courses', () => {
 		initializeFromWizard,
 		toggleCompletedCourse,
 		isCourseCompleted,
-		// Filter proxies
-		setTitleSearch,
-		setFacultyIds,
-		setLevels,
-		setLanguages,
-		setLecturers,
-		setGroups,
-		setCategories,
-		setEcts,
-		setModesOfCompletion,
-		addIncludeTime,
-		removeIncludeTime,
-		clearIncludeTimes,
-		addExcludeTime,
-		removeExcludeTime,
-		clearExcludeTimes,
-		setTimeFilterFromDrag,
-		setSortBy,
-		setSortDir,
-		toggleSortDir,
 		goToPage,
 		nextPage,
 		prevPage,

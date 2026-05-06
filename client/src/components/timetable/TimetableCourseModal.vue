@@ -12,7 +12,7 @@
 import { CourseWithRelations } from '@api/Database/types'
 import api from '@client/api.ts'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useTimeUtils } from '@client/composables'
-import { useCoursesStore, useUIStore } from '@client/stores'
+import { useCoursesStore, useFiltersStore, useUIStore } from '@client/stores'
 import { SelectedCourseUnit } from '@client/types'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -27,6 +27,7 @@ import IconX from '~icons/lucide/x'
 
 const { t } = useI18n()
 const coursesStore = useCoursesStore()
+const filtersStore = useFiltersStore()
 const uiStore = useUIStore()
 
 // ============================================================================
@@ -132,7 +133,8 @@ watch(() => props.unit.courseId, fetchCourse, { immediate: true })
 
 function handleSearchInTimeslot() {
 	// Apply time filter for this slot
-	coursesStore.setTimeFilterFromDrag(props.unit.day ?? 'Pondělí', props.unit.timeFrom, props.unit.timeTo)
+	filtersStore.filters.include_times = [{ day: props.unit.day ?? 'Pondělí', time_from: props.unit.timeFrom, time_to: props.unit.timeTo }]
+	filtersStore.filters.offset = 0
 
 	// Switch to list view
 	uiStore.switchToListView()

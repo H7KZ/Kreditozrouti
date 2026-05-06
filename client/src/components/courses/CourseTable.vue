@@ -2,7 +2,7 @@
 import { CourseWithRelations } from '@api/Database/types'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
-import { useCoursesStore, useTimetableStore } from '@client/stores'
+import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import type { CourseSortBy } from '@client/types'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -11,6 +11,7 @@ import IconChevronUp from '~icons/lucide/chevron-up'
 
 const { t } = useI18n()
 const coursesStore = useCoursesStore()
+const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
 
 const { getCompletionLabel, getFacultyLabel, getCourseTitle } = useCourseLabels()
@@ -27,11 +28,11 @@ const columns = computed(() => [
 ])
 
 function handleSort(key: CourseSortBy) {
-	if (key === coursesStore.filters.sort_by) {
-		coursesStore.toggleSortDir()
+	if (key === filtersStore.filters.sort_by) {
+		filtersStore.filters.sort_dir = filtersStore.filters.sort_dir === 'asc' ? 'desc' : 'asc'
 	} else {
-		coursesStore.setSortBy(key)
-		coursesStore.setSortDir('asc')
+		filtersStore.filters.sort_by = key
+		filtersStore.filters.sort_dir = 'asc'
 	}
 	coursesStore.fetchCourses()
 }
@@ -75,8 +76,8 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 					>
 						<div class="flex items-center gap-1">
 							{{ col.label }}
-							<template v-if="col.sortable && coursesStore.filters.sort_by === col.key">
-								<IconChevronUp v-if="coursesStore.filters.sort_dir === 'asc'" class="h-3 w-3" />
+							<template v-if="col.sortable && filtersStore.filters.sort_by === col.key">
+								<IconChevronUp v-if="filtersStore.filters.sort_dir === 'asc'" class="h-3 w-3" />
 								<IconChevronDown v-else class="h-3 w-3" />
 							</template>
 							<span v-else-if="col.sortable" class="opacity-30 text-[10px]">↕</span>
