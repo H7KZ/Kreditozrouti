@@ -102,11 +102,7 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 					<template v-for="course in coursesStore.courses" :key="course.id">
 						<!-- Main Row -->
 						<tr
-							:class="[
-								'insis-table-row-clickable',
-								isExpanded(course.id) && 'row-expanded',
-								hasSelectedUnits(course.id) && 'row-in-timetable',
-							]"
+							:class="['insis-table-row-clickable', isExpanded(course.id) && 'row-expanded', hasSelectedUnits(course.id) && 'row-in-timetable']"
 							@click="handleRowClick(course.id)"
 						>
 							<!-- Ident -->
@@ -118,7 +114,10 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 							<td>
 								<div class="flex items-center gap-2 min-w-0">
 									<span :title="getCourseTitle(course)" class="truncate">{{ getCourseTitle(course) }}</span>
-									<span v-if="hasSelectedUnits(course.id) && !hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-success flex-shrink-0">
+									<span
+										v-if="hasSelectedUnits(course.id) && !hasMissingUnitTypes(course.id)"
+										class="insis-badge insis-badge-success flex-shrink-0"
+									>
 										{{ $t('components.courses.CourseTable.inTimetable') }}
 									</span>
 									<span v-if="hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-amber flex-shrink-0">
@@ -146,7 +145,10 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 							<!-- Expand chevron -->
 							<td class="text-center">
 								<IconChevronDown
-									:class="['inline h-3.5 w-3.5 text-[var(--insis-text-3)] transition-transform duration-200', isExpanded(course.id) && 'rotate-180']"
+									:class="[
+										'inline h-3.5 w-3.5 text-[var(--insis-text-3)] transition-transform duration-200',
+										isExpanded(course.id) && 'rotate-180',
+									]"
 								/>
 							</td>
 						</tr>

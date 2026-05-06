@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { onClickOutside } from '@vueuse/core'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onClickOutside } from '@vueuse/core'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconGlobe from '~icons/lucide/globe'
 

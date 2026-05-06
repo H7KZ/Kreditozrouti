@@ -47,9 +47,7 @@ onUnmounted(() => {
 })
 
 const disableEmptyTimetable = ref(false)
-const showEmptyTimetable = computed(
-	() => uiStore.viewMode === 'timetable' && timetableStore.selectedCourseIds.length === 0 && !disableEmptyTimetable.value,
-)
+const showEmptyTimetable = computed(() => uiStore.viewMode === 'timetable' && timetableStore.selectedCourseIds.length === 0 && !disableEmptyTimetable.value)
 
 const studyPlanInfo = computed(() => ({
 	titles: wizardStore.studyPlanTitles || [],
@@ -84,10 +82,16 @@ async function fetchNextCoursesPage(page: () => void) {
 <template>
 	<div v-if="wizardStore.completed" class="flex flex-col h-screen overflow-hidden">
 		<!-- ── Header ── -->
-		<header class="h-[52px] bg-[var(--insis-surface)] border-b border-[var(--insis-border)] flex items-center px-4 gap-3 shrink-0 z-30 shadow-[var(--insis-shadow-sm)]">
+		<header
+			class="h-[52px] bg-[var(--insis-surface)] border-b border-[var(--insis-border)] flex items-center px-4 gap-3 shrink-0 z-30 shadow-[var(--insis-shadow-sm)]"
+		>
 			<!-- Left: logo + plan info -->
 			<div class="flex items-center gap-3 min-w-0">
-				<router-link to="/" class="w-[30px] h-[30px] bg-[var(--insis-blue)] rounded-[5px] flex items-center justify-center shrink-0 no-underline hover:bg-[var(--insis-blue-dark)] transition-colors duration-100" :title="$t('pages.courses.changePlan')">
+				<router-link
+					to="/"
+					class="w-[30px] h-[30px] bg-[var(--insis-blue)] rounded-[5px] flex items-center justify-center shrink-0 no-underline hover:bg-[var(--insis-blue-dark)] transition-colors duration-100"
+					:title="$t('pages.courses.changePlan')"
+				>
 					<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-4 w-4 object-contain brightness-0 invert" />
 				</router-link>
 				<span class="text-[15px] font-semibold text-[var(--insis-blue)] hidden sm:block">{{ $t('pages.index.title') }}</span>
@@ -152,7 +156,10 @@ async function fetchNextCoursesPage(page: () => void) {
 			<!-- ── Main Content ── -->
 			<div class="flex-1 flex flex-col overflow-hidden">
 				<!-- Status bar (only when courses selected) -->
-				<div v-if="selectedCoursesCount > 0" class="flex items-center gap-2 px-4 py-1.5 bg-[var(--insis-surface)] border-b border-[var(--insis-border)] shrink-0">
+				<div
+					v-if="selectedCoursesCount > 0"
+					class="flex items-center gap-2 px-4 py-1.5 bg-[var(--insis-surface)] border-b border-[var(--insis-border)] shrink-0"
+				>
 					<CourseStatusSummary />
 					<div class="flex-1" />
 				</div>
@@ -181,7 +188,9 @@ async function fetchNextCoursesPage(page: () => void) {
 				</div>
 
 				<!-- Content -->
-				<div class="flex-1 overflow-y-auto p-4 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-thumb]:rounded-[3px]">
+				<div
+					class="flex-1 overflow-y-auto p-4 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-thumb]:rounded-[3px]"
+				>
 					<!-- Loading -->
 					<div v-if="coursesStore.loading" class="flex items-center justify-center py-12">
 						<div class="text-center">
@@ -227,13 +236,23 @@ async function fetchNextCoursesPage(page: () => void) {
 								}}
 							</p>
 							<div class="flex items-center gap-2">
-								<button type="button" class="insis-btn insis-btn-secondary" :disabled="!coursesStore.hasPrevPage" @click="fetchNextCoursesPage(coursesStore.prevPage)">
+								<button
+									type="button"
+									class="insis-btn insis-btn-secondary"
+									:disabled="!coursesStore.hasPrevPage"
+									@click="fetchNextCoursesPage(coursesStore.prevPage)"
+								>
 									← {{ $t('common.previous') }}
 								</button>
 								<span class="text-[12px] text-[var(--insis-text-2)]">
 									{{ $t('pages.courses.pageInfo', { current: coursesStore.currentPage, total: coursesStore.totalPages }) }}
 								</span>
-								<button type="button" class="insis-btn insis-btn-secondary" :disabled="!coursesStore.hasNextPage" @click="fetchNextCoursesPage(coursesStore.nextPage)">
+								<button
+									type="button"
+									class="insis-btn insis-btn-secondary"
+									:disabled="!coursesStore.hasNextPage"
+									@click="fetchNextCoursesPage(coursesStore.nextPage)"
+								>
 									{{ $t('common.next') }} →
 								</button>
 							</div>
@@ -304,4 +323,3 @@ async function fetchNextCoursesPage(page: () => void) {
 		</div>
 	</div>
 </template>
-

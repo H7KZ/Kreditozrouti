@@ -128,7 +128,7 @@ export function useScheduleSummary() {
 	function hasBlockSlots(units: CourseUnit<void, CourseUnitSlot>[] | undefined): boolean {
 		if (!units) return false
 
-		return units.some((unit) => unit.slots?.some((slot) => slot.date && !slot.day))
+		return units.some((unit) => unit.slots?.some((slot: CourseUnitSlot) => slot.date && !slot.day))
 	}
 
 	/**
@@ -137,7 +137,7 @@ export function useScheduleSummary() {
 	function hasRecurringSlots(units: CourseUnit<void, CourseUnitSlot>[] | undefined): boolean {
 		if (!units) return false
 
-		return units.some((unit) => unit.slots?.some((slot) => slot.day))
+		return units.some((unit) => unit.slots?.some((slot: CourseUnitSlot) => slot.day))
 	}
 
 	return {

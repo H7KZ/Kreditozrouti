@@ -4,628 +4,362 @@ import { useCourseLabels } from '@client/composables'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { ALL_DAYS } from '@client/constants/timetable'
 import { i18n } from '@client/index'
-import { useCoursesStore } from '@client/stores'
-import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCourseUnit, SlotConflictInfo, TimetableState } from '@client/types'
+import { useCoursesStore } from '@client/stores/courses.store'
+import { useFiltersStore } from '@client/stores/filters.store'
+import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCourseUnit, SlotConflictInfo } from '@client/types'
 import { getDayFromDate } from '@client/utils/day'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
 import type InSISDay from '@scraper/Types/InSISDay'
 import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
 const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
 
 /**
  * Timetable Store
  *
- * Manages selected course units and the timetable grid.
- * Handles course unit selection constraints and drag-to-filter functionality.
- * Now includes helpers for detecting potential slot conflicts before adding.
- *
- * Refactored with:
- * - Cleaner course status computation
- * - Extracted helper functions for readability
- * - Improved conflict detection
- * - Better separation of concerns
- * - Slot conflict prediction for expanded course view
- * - selectedTimesForExclusion getter for exclude_times filter
+ * Manages selected course units, conflict detection, and persistence.
+ * Drag selection state lives in drag.store.ts.
  */
-export const useTimetableStore = defineStore('timetable', {
-	state: (): TimetableState => ({
-		selectedUnits: [],
-		dragSelection: {
-			active: false,
-			startDay: null,
-			startTime: null,
-			endDay: null,
-			endTime: null,
-		},
-		showDragPopover: false,
-		dragPopoverPosition: { x: 0, y: 0 },
-	}),
+export const useTimetableStore = defineStore('timetable', () => {
+	const selectedUnits = ref<SelectedCourseUnit[]>([])
 
-	getters: {
-		/** All selected course IDs (unique) */
-		selectedCourseIds(): number[] {
-			return [...new Set(this.selectedUnits.map((u) => u.courseId))]
-		},
+	// ── Computed ──────────────────────────────────────────────────────────
 
-		/** All selected slot IDs */
-		selectedSlotIds(): number[] {
-			return this.selectedUnits.map((u) => u.slotId)
-		},
+	const selectedCourseIds = computed(() => [...new Set(selectedUnits.value.map((u) => u.courseId))])
 
-		/** Group selected units by course ID */
-		unitsByCourse(): Map<number, SelectedCourseUnit[]> {
-			const map = new Map<number, SelectedCourseUnit[]>()
-			for (const unit of this.selectedUnits) {
-				const existing = map.get(unit.courseId) || []
-				existing.push(unit)
-				map.set(unit.courseId, existing)
+	const selectedSlotIds = computed(() => selectedUnits.value.map((u) => u.slotId))
+
+	const unitsByCourse = computed(() => {
+		const map = new Map<number, SelectedCourseUnit[]>()
+		for (const unit of selectedUnits.value) {
+			const existing = map.get(unit.courseId) ?? []
+			existing.push(unit)
+			map.set(unit.courseId, existing)
+		}
+		return map
+	})
+
+	const unitsByDay = computed(() => {
+		const map = new Map<InSISDay, SelectedCourseUnit[]>()
+		for (const day of ALL_DAYS) map.set(day, [])
+		for (const unit of selectedUnits.value) {
+			const day = unit.date ? getDayFromDate(unit.date) : unit.day
+			if (day) map.get(day)?.push(unit)
+		}
+		return map
+	})
+
+	const totalEcts = computed(() => {
+		const seen = new Set<number>()
+		let total = 0
+		for (const unit of selectedUnits.value) {
+			if (!seen.has(unit.courseId) && unit.ects) {
+				total += unit.ects
+				seen.add(unit.courseId)
 			}
-			return map
-		},
+		}
+		return total
+	})
 
-		/** Group selected units by day for timetable rendering */
-		unitsByDay(): Map<InSISDay, SelectedCourseUnit[]> {
-			const map = new Map<InSISDay, SelectedCourseUnit[]>()
+	const selectedTimesForExclusion = computed<TimeSelection[]>(() => {
+		const entries: TimeSelection[] = []
+		const seenDayTimes = new Set<string>()
 
-			// Initialize all days
-			for (const day of ALL_DAYS) {
-				map.set(day, [])
-			}
+		for (const u of selectedUnits.value) {
+			if (u.timeFrom == null || u.timeTo == null) continue
 
-			// Group units by day
-			for (const unit of this.selectedUnits) {
-				const day = unit.date ? getDayFromDate(unit.date) : unit.day
-				if (day) {
-					map.get(day)?.push(unit)
+			if (u.day) {
+				const key = `d:${u.day}:${u.timeFrom}:${u.timeTo}`
+				if (!seenDayTimes.has(key)) {
+					seenDayTimes.add(key)
+					entries.push({ slot_id: u.slotId, day: u.day, time_from: u.timeFrom, time_to: u.timeTo } as TimeSelection)
 				}
 			}
 
-			return map
-		},
-
-		/** Total ECTS of selected courses (unique courses only) */
-		totalEcts(): number {
-			const seen = new Set<number>()
-			let total = 0
-
-			for (const unit of this.selectedUnits) {
-				if (!seen.has(unit.courseId) && unit.ects) {
-					total += unit.ects
-					seen.add(unit.courseId)
-				}
-			}
-
-			return total
-		},
-
-		/**
-		 * Convert selected timetable units to TimeSelection format for the exclude_times filter.
-		 *
-		 * Handles both day-based (weekly recurring) and date-based (single occurrence) slots:
-		 * - Units with `day` → TimeSelection with `day` (matches weekly course slots)
-		 * - Units with `date` → TimeSelection with `date` (matches single-occurrence course slots)
-		 *   PLUS an additional entry with the computed `day` from the date
-		 *   (so weekly course slots on that weekday are also caught)
-		 *
-		 * Deduplicates day-based entries to avoid redundant API/SQL conditions.
-		 */
-		selectedTimesForExclusion(): TimeSelection[] {
-			const entries: TimeSelection[] = []
-			// Track day+time combos we've already emitted to avoid duplication
-			const seenDayTimes = new Set<string>()
-
-			for (const u of this.selectedUnits) {
-				if (u.timeFrom == null || u.timeTo == null) continue
-
-				if (u.day) {
-					// Weekly slot → day-based entry
-					const key = `d:${u.day}:${u.timeFrom}:${u.timeTo}`
+			if (u.date) {
+				entries.push({ slot_id: u.slotId, date: new Date(u.date), time_from: u.timeFrom, time_to: u.timeTo } as TimeSelection)
+				const dayFromDate = getDayFromDate(u.date)
+				if (dayFromDate) {
+					const key = `d:${dayFromDate}:${u.timeFrom}:${u.timeTo}`
 					if (!seenDayTimes.has(key)) {
 						seenDayTimes.add(key)
-						entries.push({
-							slot_id: u.slotId,
-							day: u.day,
-							time_from: u.timeFrom,
-							time_to: u.timeTo,
-						} as TimeSelection)
-					}
-				}
-
-				if (u.date) {
-					// Single-occurrence slot → date-based entry
-					entries.push({
-						slot_id: u.slotId,
-						date: new Date(u.date),
-						time_from: u.timeFrom,
-						time_to: u.timeTo,
-					} as TimeSelection)
-
-					// Also emit a day-based entry so weekly course slots
-					// on that same weekday are caught too
-					const dayFromDate = getDayFromDate(u.date)
-					if (dayFromDate) {
-						const key = `d:${dayFromDate}:${u.timeFrom}:${u.timeTo}`
-						if (!seenDayTimes.has(key)) {
-							seenDayTimes.add(key)
-							entries.push({
-								slot_id: u.slotId,
-								day: dayFromDate,
-								time_from: u.timeFrom,
-								time_to: u.timeTo,
-							} as TimeSelection)
-						}
+						entries.push({ slot_id: u.slotId, day: dayFromDate, time_from: u.timeFrom, time_to: u.timeTo } as TimeSelection)
 					}
 				}
 			}
+		}
 
-			return entries
-		},
+		return entries
+	})
 
-		/**
-		 * Detect time conflicts between selected units.
-		 * Returns pairs of conflicting units.
-		 */
-		conflicts(): Array<[SelectedCourseUnit, SelectedCourseUnit]> {
-			const conflictPairs: Array<[SelectedCourseUnit, SelectedCourseUnit]> = []
-			const { unitsConflict } = useTimetableStore()
-
-			for (let i = 0; i < this.selectedUnits.length; i++) {
-				for (let j = i + 1; j < this.selectedUnits.length; j++) {
-					const a = this.selectedUnits[i]
-					const b = this.selectedUnits[j]
-
-					if (!a || !b) continue
-					if (unitsConflict(a, b)) {
-						conflictPairs.push([a, b])
-					}
-				}
+	const conflicts = computed<Array<[SelectedCourseUnit, SelectedCourseUnit]>>(() => {
+		const pairs: Array<[SelectedCourseUnit, SelectedCourseUnit]> = []
+		for (let i = 0; i < selectedUnits.value.length; i++) {
+			for (let j = i + 1; j < selectedUnits.value.length; j++) {
+				const a = selectedUnits.value[i]
+				const b = selectedUnits.value[j]
+				if (!a || !b) continue
+				if (unitsConflict(a, b)) pairs.push([a, b])
 			}
+		}
+		return pairs
+	})
 
-			return conflictPairs
-		},
+	const hasConflicts = computed(() => conflicts.value.length > 0)
 
-		/** Whether there are any time conflicts */
-		hasConflicts(): boolean {
-			return this.conflicts.length > 0
-		},
+	const coursesWithConflicts = computed(() => {
+		const map = new Map<number, Set<string>>()
+		for (const [a, b] of conflicts.value) {
+			if (!map.has(a.courseId)) map.set(a.courseId, new Set())
+			map.get(a.courseId)!.add(b.courseIdent)
+			if (!map.has(b.courseId)) map.set(b.courseId, new Set())
+			map.get(b.courseId)!.add(a.courseIdent)
+		}
+		return map
+	})
 
-		/**
-		 * Map of courseId to the course idents it conflicts with.
-		 * Used for displaying conflict information.
-		 */
-		coursesWithConflicts(): Map<number, Set<string>> {
-			const conflictMap = new Map<number, Set<string>>()
+	const courseStatuses = computed<Map<number, CourseStatus>>(() => {
+		const statuses = new Map<number, CourseStatus>()
+		const { getSlotType } = useCourseLabels()
+		const coursesStore = useCoursesStore()
 
-			for (const [a, b] of this.conflicts) {
-				// Add bidirectional conflict entries
-				if (!conflictMap.has(a.courseId)) {
-					conflictMap.set(a.courseId, new Set())
-				}
-				conflictMap.get(a.courseId)!.add(b.courseIdent)
+		for (const courseId of selectedCourseIds.value) {
+			const units = unitsByCourse.value.get(courseId) ?? []
+			if (units.length === 0) continue
 
-				if (!conflictMap.has(b.courseId)) {
-					conflictMap.set(b.courseId, new Set())
-				}
-				conflictMap.get(b.courseId)!.add(a.courseIdent)
-			}
+			const firstUnit = units[0]!
+			const fullCourse = coursesStore.courses.find((c: CourseWithRelations) => c.id === courseId)
+			const conflictsWith = coursesWithConflicts.value.get(courseId)
+			const hasConflict = !!conflictsWith?.size
 
-			return conflictMap
-		},
+			const { isIncomplete, missingTypes } = checkCourseCompleteness(units, fullCourse, getSlotType)
+			const status = hasConflict ? 'conflict' : isIncomplete ? 'incomplete' : 'selected'
 
-		/**
-		 * Comprehensive status for all selected courses.
-		 * Computes conflict and incomplete states for UI display.
-		 */
-		courseStatuses(): Map<number, CourseStatus> {
-			const statuses = new Map<number, CourseStatus>()
-			const { checkCourseCompleteness } = useTimetableStore()
-			const coursesStore = useCoursesStore()
-			const { getSlotType } = useCourseLabels()
+			statuses.set(courseId, {
+				id: courseId,
+				ident: firstUnit.courseIdent,
+				title: firstUnit.courseTitle,
+				titleCs: firstUnit.courseTitleCs,
+				titleEn: firstUnit.courseTitleEn,
+				status,
+				conflictsWith: conflictsWith ? [...conflictsWith] : [],
+				missingTypes,
+			})
+		}
 
-			for (const courseId of this.selectedCourseIds) {
-				const units = this.unitsByCourse.get(courseId) || []
-				if (units.length === 0) continue
+		return statuses
+	})
 
-				const firstUnit = units[0]!
-				const fullCourse = coursesStore.courses.find((c) => c.id === courseId)
+	const coursesWithIssuesCount = computed(() => {
+		let count = 0
+		for (const s of courseStatuses.value.values()) {
+			if (s.status !== 'selected') count++
+		}
+		return count
+	})
 
-				// Check for conflicts
-				const conflictsWith = this.coursesWithConflicts.get(courseId)
-				const hasConflict = conflictsWith !== undefined && conflictsWith.size > 0
+	// ── Helpers ──────────────────────────────────────────────────────────
 
-				// Check for incomplete selection
-				const { isIncomplete, missingTypes } = checkCourseCompleteness(units, fullCourse, getSlotType)
+	function unitsConflict(a: SelectedCourseUnit, b: SelectedCourseUnit): boolean {
+		const aDay = a.day ?? (a.date ? getDayFromDate(a.date) : null)
+		const bDay = b.day ?? (b.date ? getDayFromDate(b.date) : null)
+		if (!aDay || !bDay || aDay !== bDay) return false
+		if (a.date && b.date && a.date !== b.date) return false
+		return a.timeFrom < b.timeTo && b.timeFrom < a.timeTo
+	}
 
-				// Determine status (conflict takes priority)
-				const status = hasConflict ? 'conflict' : isIncomplete ? 'incomplete' : 'selected'
+	function checkCourseCompleteness(
+		units: SelectedCourseUnit[],
+		fullCourse: CourseWithRelations | undefined,
+		getSlotType: (slot: CourseUnitSlot) => CourseUnitType,
+	): { isIncomplete: boolean; missingTypes: CourseUnitType[] } {
+		if (!fullCourse) return { isIncomplete: false, missingTypes: [] }
 
-				statuses.set(courseId, {
-					id: courseId,
-					ident: firstUnit.courseIdent,
-					title: firstUnit.courseTitle,
-					titleCs: firstUnit.courseTitleCs,
-					titleEn: firstUnit.courseTitleEn,
-					status,
-					conflictsWith: conflictsWith ? [...conflictsWith] : [],
-					missingTypes,
-				})
-			}
+		const availableTypes = new Set<CourseUnitType>()
+		for (const unit of fullCourse.units ?? []) {
+			for (const slot of unit.slots ?? []) availableTypes.add(getSlotType(slot))
+		}
 
-			return statuses
-		},
+		const selectedTypes = new Set(units.map((u) => u.unitType))
+		const missingTypes: CourseUnitType[] = []
+		for (const type of availableTypes) {
+			if (!selectedTypes.has(type)) missingTypes.push(type)
+		}
 
-		/** Count of courses with issues (conflicts or incomplete) */
-		coursesWithIssuesCount(): number {
-			let count = 0
-			for (const status of this.courseStatuses.values()) {
-				if (status.status !== 'selected') {
-					count++
-				}
-			}
-			return count
-		},
+		return { isIncomplete: missingTypes.length > 0 && selectedTypes.size > 0, missingTypes }
+	}
 
-		/** Normalized drag selection (ensures start < end for time) */
-		normalizedDragSelection(): { day: InSISDay; timeFrom: number; timeTo: number } | null {
-			const ds = this.dragSelection
-			if (!ds.startDay || !ds.startTime || !ds.endTime) return null
+	// ── Actions ──────────────────────────────────────────────────────────
 
-			return {
-				day: ds.startDay,
-				timeFrom: Math.min(ds.startTime, ds.endTime),
-				timeTo: Math.max(ds.startTime, ds.endTime),
-			}
-		},
-	},
+	function getSlotConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
+		if (!slot.time_from || !slot.time_to) return []
+		const slotDay = slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
+		if (!slotDay) return []
 
-	actions: {
-		/**
-		 * Internal helper: Check if two units have a time conflict
-		 */
-		unitsConflict(a: SelectedCourseUnit, b: SelectedCourseUnit): boolean {
-			// Get day for each unit
-			const aDay = a.day ?? (a.date ? getDayFromDate(a.date) : null)
-			const bDay = b.day ?? (b.date ? getDayFromDate(b.date) : null)
+		return selectedUnits.value.filter((unit) => {
+			if (unit.slotId === slot.id) return false
+			const unitDay = unit.day ?? (unit.date ? getDayFromDate(unit.date) : null)
+			if (!unitDay || unitDay !== slotDay) return false
+			if (slot.date && unit.date && slot.date !== unit.date) return false
+			return slot.time_from! < unit.timeTo && unit.timeFrom < slot.time_to!
+		})
+	}
 
-			// Must be on the same day
-			if (!aDay || !bDay || aDay !== bDay) return false
+	function getUnitConflicts(unit: CourseUnit<void, CourseUnitSlot>): SlotConflictInfo[] {
+		const result: SlotConflictInfo[] = []
+		for (const slot of unit.slots ?? []) {
+			const slotConflicts = getSlotConflicts(slot as CourseUnitSlot)
+			if (slotConflicts.length > 0) result.push({ slotId: (slot as CourseUnitSlot).id, conflictingUnits: slotConflicts })
+		}
+		return result
+	}
 
-			// If both have specific dates, they must match
-			if (a.date && b.date && a.date !== b.date) return false
+	function unitHasConflicts(unit: CourseUnit<void, CourseUnitSlot>): boolean {
+		return (unit.slots ?? []).some((slot: CourseUnitSlot) => getSlotConflicts(slot).length > 0)
+	}
 
-			// Check time overlap
-			return a.timeFrom < b.timeTo && b.timeFrom < a.timeTo
-		},
+	function canAddUnit(course: CourseWithRelations, _unit: CourseUnit<void, CourseUnitSlot>, slot: CourseUnitSlot): string | null {
+		if (selectedUnits.value.some((u) => u.slotId === slot.id)) {
+			return t('stores.timetable.errors.slotAlreadySelected')
+		}
+		return null
+	}
 
-		/**
-		 * Check if a course unit slot would conflict with any currently selected units.
-		 * Returns the list of conflicting selected units, or empty array if no conflict.
-		 * Used by CourseRowExpanded to show collision warnings.
-		 *
-		 * IMPORTANT: Skips the slot itself if it's already selected (no self-conflict).
-		 */
-		getSlotConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
-			if (!slot.time_from || !slot.time_to) return []
+	function addUnit(course: CourseWithRelations, unit: CourseUnit<void, CourseUnitSlot>, slot: CourseUnitSlot): boolean {
+		const { getSlotType } = useCourseLabels()
+		if (canAddUnit(course, unit, slot)) return false
 
-			const slotDay = slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
-			if (!slotDay) return []
+		selectedUnits.value.push({
+			courseId: course.id,
+			courseIdent: course.ident,
+			courseTitle: course.title ?? course.title_en ?? course.title_cs ?? '',
+			courseTitleCs: course.title_cs ?? course.title ?? '',
+			courseTitleEn: course.title_en ?? course.title ?? '',
+			unitId: unit.id,
+			unitType: getSlotType(slot),
+			slotId: slot.id,
+			day: slot.day ?? undefined,
+			date: slot.date ?? undefined,
+			timeFrom: slot.time_from!,
+			timeTo: slot.time_to!,
+			location: slot.location ?? undefined,
+			lecturer: unit.lecturer ?? undefined,
+			ects: course.ects ?? undefined,
+		})
 
-			const conflicts: SelectedCourseUnit[] = []
+		persist()
+		syncCoursesStoreExclusion()
+		return true
+	}
 
-			for (const unit of this.selectedUnits) {
-				// Skip self-check: don't report a slot as conflicting with itself
-				if (unit.slotId === slot.id) continue
+	function removeUnit(unitId: number) {
+		selectedUnits.value = selectedUnits.value.filter((u) => u.unitId !== unitId)
+		persist()
+		syncCoursesStoreExclusion()
+	}
 
-				const unitDay = unit.day ?? (unit.date ? getDayFromDate(unit.date) : null)
-				if (!unitDay || unitDay !== slotDay) continue
+	function removeCourse(courseId: number) {
+		selectedUnits.value = selectedUnits.value.filter((u) => u.courseId !== courseId)
+		persist()
+		syncCoursesStoreExclusion()
+	}
 
-				// If both have specific dates, they must match
-				if (slot.date && unit.date && slot.date !== unit.date) continue
+	function changeUnit(course: CourseWithRelations, oldSlotId: number, newUnit: CourseUnit<void, CourseUnitSlot>, newSlot: CourseUnitSlot): boolean {
+		const oldIndex = selectedUnits.value.findIndex((u) => u.slotId === oldSlotId)
+		const oldUnit = oldIndex !== -1 ? selectedUnits.value[oldIndex] : null
 
-				// Check time overlap
-				if (slot.time_from! < unit.timeTo && unit.timeFrom < slot.time_to!) {
-					conflicts.push(unit)
-				}
-			}
+		if (oldUnit) selectedUnits.value.splice(oldIndex, 1)
 
-			return conflicts
-		},
-
-		/**
-		 * Check if any slot in a unit would conflict with selected units.
-		 * Returns conflict info for each conflicting slot.
-		 */
-		getUnitConflicts(unit: CourseUnit<void, CourseUnitSlot>): SlotConflictInfo[] {
-			const conflicts: SlotConflictInfo[] = []
-
-			for (const slot of unit.slots || []) {
-				const slotConflicts = this.getSlotConflicts(slot)
-				if (slotConflicts.length > 0) {
-					conflicts.push({
-						slotId: slot.id,
-						conflictingUnits: slotConflicts,
-					})
-				}
-			}
-
-			return conflicts
-		},
-
-		/**
-		 * Check if a unit has any slot conflicts.
-		 * Quick boolean check for filtering.
-		 */
-		unitHasConflicts(unit: CourseUnit<void, CourseUnitSlot>): boolean {
-			for (const slot of unit.slots || []) {
-				if (this.getSlotConflicts(slot).length > 0) return true
-			}
+		const error = canAddUnit(course, newUnit, newSlot)
+		if (error) {
+			if (oldUnit) selectedUnits.value.splice(oldIndex, 0, oldUnit)
 			return false
-		},
+		}
 
-		/**
-		 * Internal helper: Check if a course selection is complete
-		 */
-		checkCourseCompleteness(
-			selectedUnits: SelectedCourseUnit[],
-			fullCourse: CourseWithRelations | undefined,
-			getSlotType: (slot: CourseUnitSlot) => CourseUnitType,
-		): { isIncomplete: boolean; missingTypes: CourseUnitType[] } {
-			if (!fullCourse) {
-				return { isIncomplete: false, missingTypes: [] }
-			}
+		return addUnit(course, newUnit, newSlot)
+	}
 
-			// Get all available unit types from the course
-			const availableTypes = new Set<CourseUnitType>()
-			for (const unit of fullCourse.units || []) {
-				for (const slot of unit.slots || []) {
-					availableTypes.add(getSlotType(slot))
-				}
-			}
+	function syncCoursesStoreExclusion() {
+		const filtersStore = useFiltersStore()
+		if (filtersStore.hideConflictingCourses) {
+			filtersStore.syncTimetableExcludeTimes(selectedTimesForExclusion.value)
+		}
+	}
 
-			// Get selected unit types
-			const selectedTypes = new Set(selectedUnits.map((u) => u.unitType))
+	function getUnitsForCourse(courseId: number): SelectedCourseUnit[] {
+		return unitsByCourse.value.get(courseId) ?? []
+	}
 
-			// Find missing types
-			const missingTypes: CourseUnitType[] = []
-			for (const type of availableTypes) {
-				if (!selectedTypes.has(type)) {
-					missingTypes.push(type)
-				}
-			}
+	function hasCourseSelected(courseId: number): boolean {
+		return selectedUnits.value.some((u) => u.courseId === courseId)
+	}
 
-			// Incomplete if we have some types selected but not all
-			const isIncomplete = missingTypes.length > 0 && selectedTypes.size > 0
+	function hasUnitTypeSelected(courseId: number, unitType: CourseUnitType): boolean {
+		return selectedUnits.value.some((u) => u.courseId === courseId && u.unitType === unitType)
+	}
 
-			return { isIncomplete, missingTypes }
-		},
+	function courseHasMissingUnitTypes(courseId: number): boolean {
+		return courseStatuses.value.get(courseId)?.status === 'incomplete'
+	}
 
-		/**
-		 * Check if a unit can be added (validation)
-		 */
-		canAddUnit(course: CourseWithRelations, unit: CourseUnit<void, CourseUnitSlot>, slot: CourseUnitSlot): string | null {
-			if (this.selectedUnits.some((u) => u.slotId === slot.id)) {
-				return t('stores.timetable.errors.slotAlreadySelected')
-			}
-			return null
-		},
+	function getCourseStatus(courseId: number): CourseStatus | undefined {
+		return courseStatuses.value.get(courseId)
+	}
 
-		/**
-		 * Add a course unit to the timetable
-		 */
-		addUnit(course: CourseWithRelations, unit: CourseUnit<void, CourseUnitSlot>, slot: CourseUnitSlot): boolean {
-			const { getSlotType } = useCourseLabels()
+	function requiredUnitTypes(units: CourseUnit<void, CourseUnitSlot>[]): Set<CourseUnitType> {
+		const { getSlotType } = useCourseLabels()
+		const types = new Set<CourseUnitType>()
+		for (const unit of units ?? []) {
+			for (const slot of unit.slots ?? []) types.add(getSlotType(slot))
+		}
+		return types
+	}
 
-			const error = this.canAddUnit(course, unit, slot)
-			if (error) return false
+	function persist() {
+		saveToStorage<PersistedTimetableState>(STORAGE_KEYS.TIMETABLE, { selectedUnits: selectedUnits.value })
+	}
 
-			const selectedUnit: SelectedCourseUnit = {
-				courseId: course.id,
-				courseIdent: course.ident,
-				courseTitle: course.title ?? course.title_en ?? course.title_cs ?? '',
-				courseTitleCs: course.title_cs ?? course.title ?? '',
-				courseTitleEn: course.title_en ?? course.title ?? '',
-				unitId: unit.id,
-				unitType: getSlotType(slot),
-				slotId: slot.id,
-				day: slot.day ?? undefined,
-				date: slot.date ?? undefined,
-				timeFrom: slot.time_from!,
-				timeTo: slot.time_to!,
-				location: slot.location ?? undefined,
-				lecturer: unit.lecturer ?? undefined,
-				ects: course.ects ?? undefined,
-			}
+	function hydrate() {
+		const state = loadFromStorage<PersistedTimetableState>(STORAGE_KEYS.TIMETABLE)
+		if (state?.selectedUnits) selectedUnits.value = state.selectedUnits
+	}
 
-			this.selectedUnits.push(selectedUnit)
-			this.persist()
+	function clearAll() {
+		selectedUnits.value = []
+		removeFromStorage(STORAGE_KEYS.TIMETABLE)
+	}
 
-			// Sync exclude_times if the courses store has the toggle on
-			this.syncCoursesStoreExclusion()
-
-			return true
-		},
-
-		/**
-		 * Remove a course unit by unit ID
-		 */
-		removeUnit(unitId: number) {
-			this.selectedUnits = this.selectedUnits.filter((u) => u.unitId !== unitId)
-			this.persist()
-			this.syncCoursesStoreExclusion()
-		},
-
-		/**
-		 * Remove all units for a course
-		 */
-		removeCourse(courseId: number) {
-			this.selectedUnits = this.selectedUnits.filter((u) => u.courseId !== courseId)
-			this.persist()
-			this.syncCoursesStoreExclusion()
-		},
-
-		/**
-		 * Change a unit (atomic remove old + add new)
-		 */
-		changeUnit(course: CourseWithRelations, oldSlotId: number, newUnit: CourseUnit<void, CourseUnitSlot>, newSlot: CourseUnitSlot): boolean {
-			const oldIndex = this.selectedUnits.findIndex((u) => u.slotId === oldSlotId)
-			const oldUnit = oldIndex !== -1 ? this.selectedUnits[oldIndex] : null
-
-			// Remove old unit temporarily
-			if (oldUnit) {
-				this.selectedUnits.splice(oldIndex, 1)
-			}
-
-			// Validate new unit
-			const error = this.canAddUnit(course, newUnit, newSlot)
-			if (error) {
-				// Restore old unit on failure
-				if (oldUnit) {
-					this.selectedUnits.splice(oldIndex, 0, oldUnit)
-				}
-				return false
-			}
-
-			return this.addUnit(course, newUnit, newSlot)
-		},
-
-		/**
-		 * Notify the courses store to re-sync timetable exclusion times
-		 * when the timetable changes and the toggle is active.
-		 */
-		syncCoursesStoreExclusion() {
-			const coursesStore = useCoursesStore()
-			if (coursesStore.hideConflictingCourses) {
-				coursesStore.syncTimetableExcludeTimes()
-			}
-		},
-
-		/**
-		 * Get units for a specific course
-		 */
-		getUnitsForCourse(courseId: number): SelectedCourseUnit[] {
-			return this.unitsByCourse.get(courseId) || []
-		},
-
-		/**
-		 * Check if a course has any selected units
-		 */
-		hasCourseSelected(courseId: number): boolean {
-			return this.selectedUnits.some((u) => u.courseId === courseId)
-		},
-
-		/**
-		 * Check if a specific unit type is selected for a course
-		 */
-		hasUnitTypeSelected(courseId: number, unitType: CourseUnitType): boolean {
-			return this.selectedUnits.some((u) => u.courseId === courseId && u.unitType === unitType)
-		},
-
-		/**
-		 * Check if course has missing unit types (partial selection)
-		 */
-		courseHasMissingUnitTypes(courseId: number): boolean {
-			const status = this.courseStatuses.get(courseId)
-			return status?.status === 'incomplete'
-		},
-
-		/**
-		 * Get the status of a specific course
-		 */
-		getCourseStatus(courseId: number): CourseStatus | undefined {
-			return this.courseStatuses.get(courseId)
-		},
-
-		/**
-		 * Get required unit types for a course's units
-		 */
-		requiredUnitTypes(units: CourseUnit<void, CourseUnitSlot>[]): Set<CourseUnitType> {
-			const { getSlotType } = useCourseLabels()
-			const types = new Set<CourseUnitType>()
-
-			for (const unit of units || []) {
-				for (const slot of unit.slots || []) {
-					types.add(getSlotType(slot))
-				}
-			}
-
-			return types
-		},
-
-		// ========================================
-		// Drag Selection Actions
-		// ========================================
-
-		startDrag(day: InSISDay, time: number) {
-			this.dragSelection = {
-				active: true,
-				startDay: day,
-				startTime: time,
-				endDay: day,
-				endTime: time,
-			}
-			this.showDragPopover = false
-		},
-
-		updateDrag(day: InSISDay, time: number) {
-			if (!this.dragSelection.active) return
-			this.dragSelection.endDay = this.dragSelection.startDay
-			this.dragSelection.endTime = time
-		},
-
-		endDrag(mouseX: number, mouseY: number) {
-			if (!this.dragSelection.active) return
-
-			this.dragSelection.active = false
-
-			if (this.normalizedDragSelection) {
-				this.dragPopoverPosition = { x: mouseX, y: mouseY }
-				this.showDragPopover = true
-			}
-		},
-
-		cancelDrag() {
-			this.dragSelection = {
-				active: false,
-				startDay: null,
-				startTime: null,
-				endDay: null,
-				endTime: null,
-			}
-			this.showDragPopover = false
-		},
-
-		getDragSelectionValues(): { day: InSISDay; timeFrom: number; timeTo: number } | null {
-			return this.normalizedDragSelection
-		},
-
-		isInDragSelection(day: InSISDay, time: number): boolean {
-			const ds = this.normalizedDragSelection
-			if (!ds || !this.dragSelection.active) return false
-			return day === ds.day && time >= ds.timeFrom && time < ds.timeTo
-		},
-
-		// ========================================
-		// Persistence Actions
-		// ========================================
-
-		persist() {
-			const state: PersistedTimetableState = {
-				selectedUnits: this.selectedUnits,
-			}
-			saveToStorage(STORAGE_KEYS.TIMETABLE, state)
-		},
-
-		hydrate() {
-			const state = loadFromStorage<PersistedTimetableState>(STORAGE_KEYS.TIMETABLE)
-			if (state?.selectedUnits) {
-				this.selectedUnits = state.selectedUnits
-			}
-		},
-
-		clearAll() {
-			this.selectedUnits = []
-			removeFromStorage(STORAGE_KEYS.TIMETABLE)
-		},
-	},
+	return {
+		selectedUnits,
+		selectedCourseIds,
+		selectedSlotIds,
+		unitsByCourse,
+		unitsByDay,
+		totalEcts,
+		selectedTimesForExclusion,
+		conflicts,
+		hasConflicts,
+		coursesWithConflicts,
+		courseStatuses,
+		coursesWithIssuesCount,
+		unitsConflict,
+		getSlotConflicts,
+		getUnitConflicts,
+		unitHasConflicts,
+		canAddUnit,
+		addUnit,
+		removeUnit,
+		removeCourse,
+		changeUnit,
+		getUnitsForCourse,
+		hasCourseSelected,
+		hasUnitTypeSelected,
+		courseHasMissingUnitTypes,
+		getCourseStatus,
+		requiredUnitTypes,
+		persist,
+		hydrate,
+		clearAll,
+	}
 })

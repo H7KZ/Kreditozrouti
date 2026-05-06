@@ -1,0 +1,280 @@
+<script setup lang="ts">
+import { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
+import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useSlotSorting, useTimeFilterMatching } from '@client/composables'
+import { useTimetableStore } from '@client/stores'
+import type { CourseUnitWithSlots, SelectedCourseUnit } from '@client/types'
+import { computed, ref, toRef } from 'vue'
+import { useI18n } from 'vue-i18n'
+import IconAlertTriangle from '~icons/lucide/alert-triangle'
+import IconCheck from '~icons/lucide/check'
+import IconEyeOff from '~icons/lucide/eye-off'
+import IconMinus from '~icons/lucide/minus'
+import IconOctagonAlert from '~icons/lucide/octagon-alert'
+import IconPlus from '~icons/lucide/plus'
+import IconTrash from '~icons/lucide/trash-2'
+
+const { t, te } = useI18n({ useScope: 'global' })
+
+interface Props {
+	course: CourseWithRelations
+}
+
+const props = defineProps<Props>()
+
+const timetableStore = useTimetableStore()
+
+const { getUnitTypesGroupLabel, getShortUnitTypeLabel, getSlotType } = useCourseLabels()
+
+const {
+	unitsByGroup,
+	selectedUnits: selectedUnitsStore,
+	isSelectionComplete,
+	hasIncompleteSelection,
+	missingUnitTypes,
+	isUnitSelected,
+	isGroupSatisfied,
+	handleAddUnit,
+	handleRemoveUnit,
+	handleRemoveCourse,
+} = useCourseUnitSelection({ course: toRef(props, 'course') })
+
+const { sortSlots, sortUnits } = useSlotSorting()
+const { formatSlotInfo, formatCapacity, getCapacityClass } = useSlotFormatting()
+const { slotMatchesTimeFilter, unitMatchesTimeFilter } = useTimeFilterMatching()
+
+const hideConflictingUnits = ref(false)
+
+function getSlotConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
+	return timetableStore.getSlotConflicts(slot)
+}
+
+function unitHasConflicts(unit: CourseUnit<void, CourseUnitSlot>): boolean {
+	return timetableStore.unitHasConflicts(unit)
+}
+
+function hiddenConflictCount(units: CourseUnitWithSlots[]): number {
+	if (!hideConflictingUnits.value) return 0
+	return units.filter((u) => unitHasConflicts(u)).length
+}
+
+function getVisibleUnits(units: CourseUnitWithSlots[]): CourseUnitWithSlots[] {
+	if (!hideConflictingUnits.value) return units
+	return units.filter((u) => !unitHasConflicts(u) || isUnitSelected(u.id))
+}
+
+const hasAnyConflicts = computed(() => {
+	for (const [, group] of unitsByGroup.value) {
+		for (const unit of group.units) {
+			if (unitHasConflicts(unit)) return true
+		}
+	}
+	return false
+})
+
+const conflictingUnitCount = computed(() => {
+	let count = 0
+	for (const [, group] of unitsByGroup.value) {
+		for (const unit of group.units) {
+			if (unitHasConflicts(unit)) count++
+		}
+	}
+	return count
+})
+
+function formatSlotConflictTooltip(slot: CourseUnitSlot): string {
+	const conflicts = getSlotConflicts(slot)
+	if (conflicts.length === 0) return ''
+	const courseIdents = [...new Set(conflicts.map((c) => c.courseIdent))]
+	return t('components.courses.CourseRowExpanded.conflictsWithCourses', { courses: courseIdents.join(', ') })
+}
+
+function getMissingTypesLabel(): string {
+	return missingUnitTypes.value
+		.map((type) => {
+			const key = `unitTypes.${type}`
+			return te(key) ? t(key) : type
+		})
+		.join(', ')
+}
+
+function getSlotHighlightClass(slot: CourseUnitSlot): string {
+	if (!slotMatchesTimeFilter(slot)) return ''
+	const type = getSlotType(slot)
+	const classes: Record<string, string> = {
+		lecture: 'bg-[var(--insis-block-lecture)]!',
+		exercise: 'bg-[var(--insis-block-exercise)]!',
+		seminar: 'bg-[var(--insis-block-seminar)]!',
+	}
+	return classes[type] ?? ''
+}
+
+function getSlotConflictClass(slot: CourseUnitSlot): string {
+	return getSlotConflicts(slot).length > 0 ? 'bg-[var(--insis-danger-light)]' : ''
+}
+</script>
+
+<template>
+	<div>
+		<div class="mb-3 flex items-center justify-between">
+			<h4 class="font-medium text-[var(--insis-gray-900)]">
+				{{ $t('components.courses.CourseRowExpanded.unitSelection') }}
+			</h4>
+			<div class="flex items-center gap-2">
+				<span v-if="isSelectionComplete" class="insis-badge insis-badge-success">
+					<IconCheck class="mr-1 inline h-3 w-3" />
+					{{ $t('components.courses.CourseRowExpanded.complete') }}
+				</span>
+				<button
+					v-if="selectedUnitsStore.length > 0"
+					type="button"
+					class="insis-btn-text text-xs text-[var(--insis-danger)]"
+					@click="handleRemoveCourse"
+				>
+					<IconTrash class="mr-1 inline h-3 w-3" />
+					{{ $t('components.courses.CourseRowExpanded.removeAll') }}
+				</button>
+			</div>
+		</div>
+
+		<!-- Conflict filter toggle -->
+		<div
+			v-if="hasAnyConflicts"
+			class="mb-3 flex items-center justify-between rounded border border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)] px-3 py-2"
+		>
+			<div class="flex items-center gap-2 text-sm text-[var(--insis-warning)]">
+				<IconOctagonAlert class="h-4 w-4 shrink-0" />
+				<span>{{ $t('components.courses.CourseRowExpanded.slotsWithConflicts', { count: conflictingUnitCount }) }}</span>
+			</div>
+			<label class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--insis-warning)] hover:text-[var(--insis-warning-dark)]">
+				<input v-model="hideConflictingUnits" type="checkbox" class="insis-checkbox" />
+				<IconEyeOff class="h-3 w-3" />
+				{{ $t('components.courses.CourseRowExpanded.hideConflicting') }}
+			</label>
+		</div>
+
+		<!-- Incomplete selection warning -->
+		<div
+			v-if="hasIncompleteSelection"
+			class="mb-4 flex items-start gap-2 rounded border border-[var(--insis-warning)] bg-[var(--insis-warning-light)] p-3 text-sm"
+		>
+			<IconAlertTriangle class="mt-0.5 h-4 w-4 shrink-0 text-[var(--insis-warning-dark)]" />
+			<div>
+				<p class="font-medium text-[var(--insis-warning-dark)]">
+					{{ $t('components.courses.CourseRowExpanded.incompleteSelectionTitle') }}
+				</p>
+				<p class="text-[var(--insis-gray-700)]">
+					{{ $t('components.courses.CourseRowExpanded.incompleteSelectionDescription', { types: getMissingTypesLabel() }) }}
+				</p>
+			</div>
+		</div>
+
+		<!-- Unit type groups -->
+		<div class="space-y-5">
+			<div v-for="[key, group] in unitsByGroup" :key="key">
+				<div class="mb-2 flex items-center gap-2">
+					<span class="text-sm font-medium text-[var(--insis-gray-700)]">{{ getUnitTypesGroupLabel(group.types) }}</span>
+					<span v-if="isGroupSatisfied(group.types)" class="insis-badge insis-badge-success">
+						{{ $t('components.courses.CourseRowExpanded.selected') }}
+					</span>
+					<span v-else class="text-xs text-[var(--insis-gray-500)]">
+						({{
+							group.units.length === 1
+								? $t('components.courses.CourseRowExpanded.selectAction')
+								: $t('components.courses.CourseRowExpanded.selectOne')
+						}}
+						{{ group.units.length }})
+					</span>
+					<span v-if="hiddenConflictCount(group.units) > 0" class="text-xs text-[var(--insis-warning)]">
+						({{ $t('components.courses.CourseRowExpanded.hiddenConflicts', { count: hiddenConflictCount(group.units) }) }})
+					</span>
+				</div>
+
+				<!-- Units -->
+				<div class="space-y-2">
+					<div
+						v-for="unit in sortUnits(getVisibleUnits(group.units))"
+						:key="unit.id"
+						class="rounded border text-sm transition-colors"
+						:class="{
+							'border-[var(--insis-success)] bg-[var(--insis-success-light)]': isUnitSelected(unit.id),
+							'border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)]':
+								!isUnitSelected(unit.id) && unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
+							'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)]':
+								!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit) && !unitHasConflicts(unit),
+							'bg-[var(--insis-blue-light)] ring-1 ring-[var(--insis-blue)]':
+								!isUnitSelected(unit.id) && unitMatchesTimeFilter(unit) && !unitHasConflicts(unit),
+						}"
+					>
+						<div class="flex items-center justify-between p-2">
+							<div class="flex w-full flex-col gap-1">
+								<div
+									v-for="slot in sortSlots(unit.slots)"
+									:key="slot.id"
+									:class="['-mx-1 flex items-center gap-3 rounded px-1', getSlotConflictClass(slot)]"
+									:title="formatSlotConflictTooltip(slot)"
+								>
+									<span
+										class="w-8 shrink-0 rounded bg-[var(--insis-gray-200)] px-1 py-0.5 text-center text-xs text-[var(--insis-gray-700)]"
+										:class="getSlotHighlightClass(slot)"
+									>
+										{{ getShortUnitTypeLabel(getSlotType(slot)) }}
+									</span>
+									<span class="shrink-0 whitespace-nowrap font-medium">{{ formatSlotInfo(slot) }}</span>
+									<span class="shrink-0 truncate text-[var(--insis-gray-600)]" :title="slot.location || ''">{{ slot.location || '-' }}</span>
+									<span class="hidden truncate text-xs text-[var(--insis-gray-500)] sm:block">{{ unit.lecturer }}</span>
+									<span
+										v-if="getSlotConflicts(slot).length > 0"
+										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-[var(--insis-danger)]"
+										:title="formatSlotConflictTooltip(slot)"
+									>
+										<IconOctagonAlert class="h-3 w-3" />
+										<span class="hidden sm:inline">{{ [...new Set(getSlotConflicts(slot).map((c) => c.courseIdent))].join(', ') }}</span>
+									</span>
+								</div>
+
+								<div class="mt-1 flex items-center gap-2 pl-[44px]">
+									<span v-if="unit.capacity !== undefined" :class="['text-xs', getCapacityClass(unit.capacity)]">{{
+										formatCapacity(unit.capacity)
+									}}</span>
+									<span v-if="unit.note" class="text-xs italic text-[var(--insis-gray-400)]">{{ unit.note }}</span>
+								</div>
+							</div>
+
+							<!-- Add/Remove Button -->
+							<div class="ml-4 shrink-0">
+								<template v-if="isUnitSelected(unit.id)">
+									<button
+										type="button"
+										class="insis-btn bg-white px-3 py-1.5 text-xs hover:border-[var(--insis-danger)] hover:bg-[var(--insis-danger-light)] hover:text-[var(--insis-danger)]"
+										:title="$t('common.remove')"
+										@click.stop="handleRemoveUnit(unit)"
+									>
+										<IconMinus class="h-4 w-4" />
+									</button>
+								</template>
+								<template v-else>
+									<button
+										type="button"
+										class="flex items-center gap-1 px-3 py-1.5 text-xs"
+										:class="{
+											'insis-btn-primary': !isGroupSatisfied(group.types),
+											'insis-btn-secondary opacity-90': isGroupSatisfied(group.types),
+										}"
+										@click.stop="handleAddUnit(unit)"
+									>
+										<IconPlus v-if="!isGroupSatisfied(group.types)" class="h-3 w-3" />
+										{{ isGroupSatisfied(group.types) ? $t('common.change') : $t('common.add') }}
+									</button>
+								</template>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div v-if="!course.units?.length" class="insis-panel insis-panel-warning mt-4">
+			<p class="text-sm">{{ $t('components.courses.CourseRowExpanded.noUnitsAvailable') }}</p>
+		</div>
+	</div>
+</template>

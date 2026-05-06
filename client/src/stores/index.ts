@@ -1,5 +1,7 @@
 export * from './alerts.store.ts'
 export * from './courses.store.ts'
+export * from './drag.store.ts'
+export * from './filters.store.ts'
 export * from './timetable.store.ts'
 export * from './ui.store.ts'
 export * from './wizard.store.ts'

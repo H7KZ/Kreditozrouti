@@ -142,7 +142,7 @@ export function useTimeFilterMatching() {
 		const slots = unit.slots ?? []
 		if (slots.length === 0) return false
 
-		return slots.every((slot) => slotMatchesTimeFilter(slot))
+		return slots.every((slot: CourseUnitSlot) => slotMatchesTimeFilter(slot))
 	}
 
 	/**
@@ -154,7 +154,7 @@ export function useTimeFilterMatching() {
 	function countMatchingSlots(unit: CourseUnitWithSlots): number {
 		if (!hasActiveTimeFilter.value) return 0
 
-		return (unit.slots ?? []).filter((slot) => slotMatchesTimeFilter(slot)).length
+		return (unit.slots ?? []).filter((slot: CourseUnitSlot) => slotMatchesTimeFilter(slot)).length
 	}
 
 	/**

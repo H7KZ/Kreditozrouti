@@ -19,38 +19,41 @@
 	.insis-btn-primary,
 	.insis-btn-secondary,
 	.insis-btn-danger {
-		@apply inline-flex items-center gap-[5px] py-[5px] px-3 text-[12.5px] font-medium rounded-[3px] border border-solid cursor-pointer whitespace-nowrap leading-[1.4] no-underline;
+		@apply inline-flex cursor-pointer items-center gap-[5px] rounded-[3px] border border-solid px-3 py-[5px] text-[12.5px] leading-[1.4] font-medium whitespace-nowrap no-underline;
 		font-family: 'Outfit', Arial, Helvetica, sans-serif;
-		transition: background 0.12s, border-color 0.12s, color 0.12s;
+		transition:
+			background 0.12s,
+			border-color 0.12s,
+			color 0.12s;
 	}
 
 	.insis-btn:focus-visible,
 	.insis-btn-primary:focus-visible,
 	.insis-btn-secondary:focus-visible,
 	.insis-btn-danger:focus-visible {
-		@apply outline outline-2 outline-[var(--insis-blue)] outline-offset-[1px];
+		@apply outline outline-2 outline-offset-[1px] outline-[var(--insis-blue)];
 	}
 
 	.insis-btn:disabled,
 	.insis-btn-primary:disabled,
 	.insis-btn-secondary:disabled,
 	.insis-btn-danger:disabled {
-		@apply opacity-[0.45] cursor-not-allowed;
+		@apply cursor-not-allowed opacity-[0.45];
 	}
 
 	/* Default / Secondary button */
 	.insis-btn,
 	.insis-btn-secondary {
-		@apply bg-[var(--insis-surface)] border-[var(--insis-border-mid)] text-[var(--insis-text-2)];
+		@apply border-[var(--insis-border-mid)] bg-[var(--insis-surface)] text-[var(--insis-text-2)];
 	}
 	.insis-btn:hover:not(:disabled),
 	.insis-btn-secondary:hover:not(:disabled) {
-		@apply bg-[var(--insis-surface-2)] border-[var(--insis-gray-500)] text-[var(--insis-text)];
+		@apply border-[var(--insis-gray-500)] bg-[var(--insis-surface-2)] text-[var(--insis-text)];
 	}
 
 	/* Primary button */
 	.insis-btn-primary {
-		@apply bg-[var(--insis-blue)] border-[var(--insis-blue-dark)] text-white;
+		@apply border-[var(--insis-blue-dark)] bg-[var(--insis-blue)] text-white;
 	}
 	.insis-btn-primary:hover:not(:disabled) {
 		@apply bg-[var(--insis-blue-dark)];
@@ -58,7 +61,7 @@
 
 	/* Danger button */
 	.insis-btn-danger {
-		@apply bg-[var(--insis-surface)] border-[var(--insis-danger-border)] text-[var(--insis-danger)];
+		@apply border-[var(--insis-danger-border)] bg-[var(--insis-surface)] text-[var(--insis-danger)];
 	}
 	.insis-btn-danger:hover:not(:disabled) {
 		@apply bg-[var(--insis-danger-light)];
@@ -66,7 +69,7 @@
 
 	/* Text / ghost button */
 	.insis-btn-text {
-		@apply inline-flex items-center gap-1 text-xs text-[var(--insis-blue)] bg-transparent border-0 cursor-pointer p-0 no-underline;
+		@apply inline-flex cursor-pointer items-center gap-1 border-0 bg-transparent p-0 text-xs text-[var(--insis-blue)] no-underline;
 		font-family: 'Outfit', Arial, Helvetica, sans-serif;
 	}
 	.insis-btn-text:hover {
@@ -76,14 +79,16 @@
 	/* ── INPUTS ── */
 	.insis-input,
 	.insis-select {
-		@apply w-full py-[5px] px-2 text-[12.5px] bg-[var(--insis-surface-2)] border border-solid border-[var(--insis-border)] rounded-[3px] text-[var(--insis-text)];
+		@apply w-full rounded-[3px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface-2)] px-2 py-[5px] text-[12.5px] text-[var(--insis-text)];
 		font-family: 'Outfit', Arial, Helvetica, sans-serif;
-		transition: border-color 0.15s, box-shadow 0.15s;
+		transition:
+			border-color 0.15s,
+			box-shadow 0.15s;
 	}
 
 	.insis-input:focus,
 	.insis-select:focus {
-		@apply outline-none border-[var(--insis-blue)];
+		@apply border-[var(--insis-blue)] outline-none;
 		box-shadow: 0 0 0 2px color-mix(in srgb, var(--insis-blue) 20%, transparent);
 	}
 
@@ -105,16 +110,16 @@
 	}
 
 	.insis-checkbox {
-		@apply h-[13px] w-[13px] cursor-pointer shrink-0;
+		@apply h-[13px] w-[13px] shrink-0 cursor-pointer;
 		accent-color: var(--insis-blue);
 	}
 
 	.insis-label {
-		@apply block mb-1 text-[12.5px] font-medium text-[var(--insis-text)];
+		@apply mb-1 block text-[12.5px] font-medium text-[var(--insis-text)];
 	}
 
 	.insis-checkbox-label {
-		@apply flex items-center gap-[7px] py-[3px] px-1 rounded-[3px] cursor-pointer text-[12.5px] text-[var(--insis-text)];
+		@apply flex cursor-pointer items-center gap-[7px] rounded-[3px] px-1 py-[3px] text-[12.5px] text-[var(--insis-text)];
 		transition: background 0.1s;
 	}
 	.insis-checkbox-label:hover {
@@ -130,7 +135,7 @@
 	}
 
 	.insis-table th {
-		@apply py-[6px] px-[10px] text-left font-medium bg-[var(--insis-surface-2)] border border-[var(--insis-border)] text-xs text-[var(--insis-text-2)] whitespace-nowrap sticky top-0 z-[2];
+		@apply sticky top-0 z-[2] border border-[var(--insis-border)] bg-[var(--insis-surface-2)] px-[10px] py-[6px] text-left text-xs font-medium whitespace-nowrap text-[var(--insis-text-2)];
 	}
 
 	.insis-table th.sortable {
@@ -141,7 +146,7 @@
 	}
 
 	.insis-table td {
-		@apply py-[6px] px-[10px] border border-[var(--insis-border)] align-middle;
+		@apply border border-[var(--insis-border)] px-[10px] py-[6px] align-middle;
 	}
 
 	.insis-table-row-clickable {
@@ -160,7 +165,7 @@
 
 	.insis-table-dense th,
 	.insis-table-dense td {
-		@apply py-1 px-2;
+		@apply px-2 py-1;
 		font-size: var(--insis-font-xs);
 	}
 
@@ -170,22 +175,24 @@
 	}
 
 	.insis-tab {
-		@apply py-[6px] px-[14px] text-[13px] font-normal rounded-t-[3px] border border-solid border-transparent border-b-0 bg-transparent text-[var(--insis-text-3)] cursor-pointer flex items-center gap-[5px];
+		@apply flex cursor-pointer items-center gap-[5px] rounded-t-[3px] border border-b-0 border-solid border-transparent bg-transparent px-[14px] py-[6px] text-[13px] font-normal text-[var(--insis-text-3)];
 		font-family: 'Outfit', Arial, Helvetica, sans-serif;
-		transition: color 0.12s, background 0.12s;
+		transition:
+			color 0.12s,
+			background 0.12s;
 	}
 	.insis-tab:hover {
-		@apply text-[var(--insis-text-2)] bg-[var(--insis-surface-2)];
+		@apply bg-[var(--insis-surface-2)] text-[var(--insis-text-2)];
 	}
 	.insis-tab-active,
 	.insis-tab.active {
-		@apply bg-[var(--insis-surface)] text-[var(--insis-text)] border-[var(--insis-border)] font-medium -mb-px z-[1] shadow-[var(--insis-shadow-sm)];
+		@apply z-[1] -mb-px border-[var(--insis-border)] bg-[var(--insis-surface)] font-medium text-[var(--insis-text)] shadow-[var(--insis-shadow-sm)];
 		border-bottom-color: var(--insis-surface);
 	}
 
 	/* ── BADGES ── */
 	.insis-badge {
-		@apply inline-flex items-center gap-[3px] py-px px-[6px] rounded-[10px] text-[11px] font-medium whitespace-nowrap;
+		@apply inline-flex items-center gap-[3px] rounded-[10px] px-[6px] py-px text-[11px] font-medium whitespace-nowrap;
 	}
 
 	.insis-badge-success,
@@ -205,7 +212,7 @@
 		@apply bg-[var(--insis-blue-light)] text-[var(--insis-blue)];
 	}
 	.insis-badge-gray {
-		@apply bg-[var(--insis-surface-2)] text-[var(--insis-text-3)] border border-[var(--insis-border)];
+		@apply border border-[var(--insis-border)] bg-[var(--insis-surface-2)] text-[var(--insis-text-3)];
 	}
 	.insis-badge-compulsory {
 		@apply bg-[var(--insis-course-compulsory)] text-white;
@@ -222,18 +229,18 @@
 
 	/* ── STATUS CHIPS ── */
 	.status-chip {
-		@apply inline-flex items-center gap-1 py-[3px] px-[9px] rounded-xl border border-solid text-[11.5px] cursor-pointer font-medium bg-transparent;
+		@apply inline-flex cursor-pointer items-center gap-1 rounded-xl border border-solid bg-transparent px-[9px] py-[3px] text-[11.5px] font-medium;
 		font-family: 'Outfit', Arial, Helvetica, sans-serif;
 		transition: all 0.15s;
 	}
 	.chip-green {
-		@apply bg-[var(--insis-success-light)] border-[var(--insis-success-border)] text-[var(--insis-success)];
+		@apply border-[var(--insis-success-border)] bg-[var(--insis-success-light)] text-[var(--insis-success)];
 	}
 	.chip-red {
-		@apply bg-[var(--insis-danger-light)] border-[var(--insis-danger-border)] text-[var(--insis-danger)];
+		@apply border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)] text-[var(--insis-danger)];
 	}
 	.chip-amber {
-		@apply bg-[var(--insis-warning-light)] border-[var(--insis-warning-border)] text-[var(--insis-warning)];
+		@apply border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)] text-[var(--insis-warning)];
 	}
 	.chip-blue {
 		@apply bg-[var(--insis-blue-subtle)] text-[var(--insis-blue)];
@@ -243,7 +250,7 @@
 		box-shadow: 0 0 0 2px var(--insis-blue);
 	}
 	.chip-dot {
-		@apply w-[6px] h-[6px] rounded-full bg-current shrink-0;
+		@apply h-[6px] w-[6px] shrink-0 rounded-full bg-current;
 	}
 
 	/* ── PANELS / NOTES ── */
@@ -252,33 +259,33 @@
 	.insis-panel-warning,
 	.insis-panel-danger,
 	.insis-panel-success {
-		@apply flex items-start gap-2 py-2 px-3 rounded-[5px] border border-solid text-xs mb-3;
+		@apply mb-3 flex items-start gap-2 rounded-[5px] border border-solid px-3 py-2 text-xs;
 	}
 
 	.insis-panel {
-		@apply bg-[var(--insis-panel-bg)] border-[var(--insis-panel-border)] text-[var(--insis-text-2)];
+		@apply border-[var(--insis-panel-border)] bg-[var(--insis-panel-bg)] text-[var(--insis-text-2)];
 	}
 	.insis-panel-info {
 		@apply bg-[var(--insis-info-bg)] text-[var(--insis-text-2)];
 		border-color: color-mix(in srgb, var(--insis-blue) 25%, transparent);
 	}
 	.insis-panel-warning {
-		@apply bg-[var(--insis-warning-light)] border-[var(--insis-warning-border)] text-[var(--insis-warning)];
+		@apply border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)] text-[var(--insis-warning)];
 	}
 	.insis-panel-danger {
-		@apply bg-[var(--insis-danger-light)] border-[var(--insis-danger-border)] text-[var(--insis-danger)];
+		@apply border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)] text-[var(--insis-danger)];
 	}
 	.insis-panel-success {
-		@apply bg-[var(--insis-success-light)] border-[var(--insis-success-border)] text-[var(--insis-success)];
+		@apply border-[var(--insis-success-border)] bg-[var(--insis-success-light)] text-[var(--insis-success)];
 	}
 
 	/* ── TIMETABLE ── */
 	.insis-timetable {
-		@apply w-full border-collapse text-[11.5px] min-w-[700px];
+		@apply w-full min-w-[700px] border-collapse text-[11.5px];
 	}
 
 	.insis-timetable th {
-		@apply py-1 px-[6px] text-center bg-[var(--insis-surface-2)] border border-[var(--insis-border)] font-normal text-[11px] text-[var(--insis-text-2)] whitespace-nowrap min-w-[70px];
+		@apply min-w-[70px] border border-[var(--insis-border)] bg-[var(--insis-surface-2)] px-[6px] py-1 text-center text-[11px] font-normal whitespace-nowrap text-[var(--insis-text-2)];
 	}
 
 	.insis-timetable td {
@@ -286,11 +293,11 @@
 	}
 
 	.insis-timetable .day-header {
-		@apply font-semibold text-[11.5px] text-[var(--insis-text)] bg-[var(--insis-surface-2)] w-9 min-w-9 text-center p-1;
+		@apply w-9 min-w-9 bg-[var(--insis-surface-2)] p-1 text-center text-[11.5px] font-semibold text-[var(--insis-text)];
 	}
 
 	.insis-timetable .time-slot {
-		@apply h-16 relative cursor-crosshair;
+		@apply relative h-16 cursor-crosshair;
 	}
 
 	.insis-timetable .time-slot:hover {
@@ -306,11 +313,11 @@
 	}
 
 	.insis-course-block {
-		@apply absolute top-0.5 bottom-0.5 rounded-[3px] py-[3px] px-[5px] overflow-hidden text-[10.5px] leading-[1.3] cursor-pointer border border-solid border-black/[0.12];
+		@apply absolute top-0.5 bottom-0.5 cursor-pointer overflow-hidden rounded-[3px] border border-solid border-black/[0.12] px-[5px] py-[3px] text-[10.5px] leading-[1.3];
 		transition: box-shadow 0.12s;
 	}
 	.insis-course-block:hover {
-		@apply shadow-[var(--insis-shadow)] z-10;
+		@apply z-10 shadow-[var(--insis-shadow)];
 	}
 	.insis-course-block.conflict {
 		@apply outline outline-2 outline-[var(--insis-danger)];
@@ -326,15 +333,15 @@
 	}
 
 	.insis-course-block-title {
-		@apply font-semibold block;
+		@apply block font-semibold;
 	}
 	.insis-course-block-info {
-		@apply block opacity-75 text-[10px] overflow-hidden text-ellipsis whitespace-nowrap;
+		@apply block overflow-hidden text-[10px] text-ellipsis whitespace-nowrap opacity-75;
 	}
 
 	/* ── WIZARD ── */
 	.insis-wizard {
-		@apply flex items-center justify-center mb-8 gap-0;
+		@apply mb-8 flex items-center justify-center gap-0;
 	}
 
 	.insis-wizard-step {
@@ -342,7 +349,7 @@
 	}
 
 	.insis-wizard-step-number {
-		@apply w-8 h-8 rounded-full border-2 border-solid border-[var(--insis-border)] flex items-center justify-center text-[13px] font-semibold text-[var(--insis-text-3)] bg-[var(--insis-surface-2)] shrink-0;
+		@apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-solid border-[var(--insis-border)] bg-[var(--insis-surface-2)] text-[13px] font-semibold text-[var(--insis-text-3)];
 		transition: transform 0.15s ease-in-out;
 	}
 
@@ -355,15 +362,15 @@
 	}
 
 	.insis-wizard-step-label {
-		@apply text-xs text-[var(--insis-text-3)] ml-2 whitespace-nowrap;
+		@apply ml-2 text-xs whitespace-nowrap text-[var(--insis-text-3)];
 	}
 
 	.insis-wizard-step.active .insis-wizard-step-label {
-		@apply text-[var(--insis-text)] font-medium;
+		@apply font-medium text-[var(--insis-text)];
 	}
 
 	.insis-wizard-connector {
-		@apply w-12 h-0.5 bg-[var(--insis-border)] mx-1 shrink-0;
+		@apply mx-1 h-0.5 w-12 shrink-0 bg-[var(--insis-border)];
 	}
 
 	.insis-wizard-connector.completed,
@@ -384,7 +391,7 @@
 	}
 
 	.insis-spinner {
-		@apply w-[22px] h-[22px] rounded-full border-[2.5px] border-solid border-[var(--insis-border)] border-t-[var(--insis-blue)];
+		@apply h-[22px] w-[22px] rounded-full border-[2.5px] border-solid border-[var(--insis-border)] border-t-[var(--insis-blue)];
 		animation: spin 0.7s linear infinite;
 	}
 
@@ -396,7 +403,7 @@
 
 	/* ── DAY TOGGLE BUTTONS ── */
 	.insis-day-toggle {
-		@apply py-[3px] px-[7px] text-[11.5px] rounded-[3px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface)] cursor-pointer text-[var(--insis-text-2)];
+		@apply cursor-pointer rounded-[3px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface)] px-[7px] py-[3px] text-[11.5px] text-[var(--insis-text-2)];
 		font-family: 'Outfit', Arial, Helvetica, sans-serif;
 		transition: all 0.12s;
 	}
@@ -404,21 +411,21 @@
 		@apply border-[var(--insis-blue)] text-[var(--insis-blue)];
 	}
 	.insis-day-toggle.active {
-		@apply bg-[var(--insis-blue)] border-[var(--insis-blue-dark)] text-white;
+		@apply border-[var(--insis-blue-dark)] bg-[var(--insis-blue)] text-white;
 	}
 
 	/* ── POPOVER ── */
 	.insis-popover {
-		@apply absolute z-50 bg-[var(--insis-surface)] border border-solid border-[var(--insis-border)] rounded-[5px] py-[10px] px-3 shadow-[var(--insis-shadow)] text-[12.5px] min-w-[180px];
+		@apply absolute z-50 min-w-[180px] rounded-[5px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface)] px-3 py-[10px] text-[12.5px] shadow-[var(--insis-shadow)];
 	}
 
 	.insis-popover-title {
-		@apply mb-2 pb-2 text-[13px] font-semibold border-b border-[var(--insis-border)];
+		@apply mb-2 border-b border-[var(--insis-border)] pb-2 text-[13px] font-semibold;
 	}
 
 	/* ── SEARCH PANEL (sidebar wrapper) ── */
 	.insis-search-panel {
-		@apply p-3 bg-[var(--insis-surface)] h-full overflow-y-auto;
+		@apply h-full overflow-y-auto bg-[var(--insis-surface)] p-3;
 	}
 
 	/* ── LEGEND ── */
@@ -437,7 +444,7 @@
 
 	/* ── BREADCRUMBS ── */
 	.insis-breadcrumbs {
-		@apply flex items-center text-sm mb-4;
+		@apply mb-4 flex items-center text-sm;
 	}
 	.insis-breadcrumbs a {
 		@apply text-[var(--insis-link)];
@@ -451,13 +458,15 @@
 
 	/* ── COURSE CODE ── */
 	.insis-course-code {
-		@apply font-mono text-xs text-[var(--insis-text-2)] whitespace-nowrap;
+		@apply font-mono text-xs whitespace-nowrap text-[var(--insis-text-2)];
 	}
 
 	/* ── UNIT CARD (expanded row) ── */
 	.unit-card {
-		@apply border border-solid border-[var(--insis-border)] rounded-[5px] bg-[var(--insis-surface)] mb-[6px] overflow-hidden;
-		transition: border-color 0.15s, box-shadow 0.15s;
+		@apply mb-[6px] overflow-hidden rounded-[5px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface)];
+		transition:
+			border-color 0.15s,
+			box-shadow 0.15s;
 	}
 	.unit-card:hover {
 		@apply border-[var(--insis-blue)] shadow-[var(--insis-shadow-sm)];
@@ -474,7 +483,7 @@
 
 	/* ── EXPANDED ROW CONTENT ── */
 	.expanded-content {
-		@apply p-4 bg-[var(--insis-surface-2)] border-t-2 border-t-[var(--insis-blue-light)];
+		@apply border-t-2 border-t-[var(--insis-blue-light)] bg-[var(--insis-surface-2)] p-4;
 	}
 
 	/* ── FILTER SECTION (sidebar) ── */
@@ -486,7 +495,7 @@
 	}
 
 	.filter-toggle {
-		@apply w-full flex items-center justify-between py-1 px-0.5 bg-transparent border-0 cursor-pointer text-[12.5px] font-medium text-[var(--insis-text)] rounded-[3px];
+		@apply flex w-full cursor-pointer items-center justify-between rounded-[3px] border-0 bg-transparent px-0.5 py-1 text-[12.5px] font-medium text-[var(--insis-text)];
 		font-family: 'Outfit', Arial, Helvetica, sans-serif;
 	}
 	.filter-toggle:hover {
@@ -494,21 +503,21 @@
 	}
 
 	.filter-badge {
-		@apply bg-[var(--insis-blue)] text-white text-[10px] py-px px-[5px] rounded-[10px] font-medium min-w-[18px] text-center inline-block;
+		@apply inline-block min-w-[18px] rounded-[10px] bg-[var(--insis-blue)] px-[5px] py-px text-center text-[10px] font-medium text-white;
 	}
 
 	/* ── SIDEBAR HEADER ── */
 	.sidebar-hd {
-		@apply py-[10px] px-3 pb-2 text-[11px] font-semibold tracking-[0.06em] uppercase text-[var(--insis-text-3)] border-b border-[var(--insis-border)] flex items-center justify-between shrink-0;
+		@apply flex shrink-0 items-center justify-between border-b border-[var(--insis-border)] px-3 py-[10px] pb-2 text-[11px] font-semibold tracking-[0.06em] text-[var(--insis-text-3)] uppercase;
 	}
 
 	/* ── MODAL ── */
 	.insis-modal-backdrop {
-		@apply fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-6;
+		@apply fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-6;
 	}
 
 	.insis-modal {
-		@apply bg-[var(--insis-surface)] rounded-lg w-full max-w-[660px] max-h-[85vh] flex flex-col shadow-[var(--insis-shadow-lg)];
+		@apply flex max-h-[85vh] w-full max-w-[660px] flex-col rounded-lg bg-[var(--insis-surface)] shadow-[var(--insis-shadow-lg)];
 		animation: modal-in 0.18s ease-out;
 	}
 
@@ -524,14 +533,14 @@
 	}
 
 	.insis-modal-header {
-		@apply py-[14px] px-4 border-b border-[var(--insis-border)] flex items-center justify-between bg-[var(--insis-surface-2)] rounded-t-lg shrink-0;
+		@apply flex shrink-0 items-center justify-between rounded-t-lg border-b border-[var(--insis-border)] bg-[var(--insis-surface-2)] px-4 py-[14px];
 	}
 
 	.insis-modal-body {
-		@apply p-4 overflow-y-auto flex-1;
+		@apply flex-1 overflow-y-auto p-4;
 	}
 
 	.insis-modal-footer {
-		@apply py-[10px] px-4 border-t border-[var(--insis-border)] bg-[var(--insis-surface-2)] rounded-b-lg flex items-center justify-between shrink-0;
+		@apply flex shrink-0 items-center justify-between rounded-b-lg border-t border-[var(--insis-border)] bg-[var(--insis-surface-2)] px-4 py-[10px];
 	}
 }

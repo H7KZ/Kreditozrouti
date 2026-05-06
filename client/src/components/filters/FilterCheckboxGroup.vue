@@ -87,7 +87,11 @@ const isFiltering = computed(() => props.selected.length > 0)
 <template>
 	<div class="border-b border-[var(--insis-border-light)] pb-3 last:border-b-0">
 		<!-- Collapsible header -->
-		<button type="button" class="flex cursor-pointer w-full items-center justify-between py-1 px-1 -mx-1 rounded-[3px] text-left hover:bg-[var(--insis-surface-2)] transition-colors duration-100" @click="toggleCollapsed">
+		<button
+			type="button"
+			class="flex cursor-pointer w-full items-center justify-between py-1 px-1 -mx-1 rounded-[3px] text-left hover:bg-[var(--insis-surface-2)] transition-colors duration-100"
+			@click="toggleCollapsed"
+		>
 			<span class="insis-label mb-0 flex items-center gap-1.5">
 				{{ label }}
 				<span v-if="selectedCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-[10px] text-white">
@@ -122,11 +126,7 @@ const isFiltering = computed(() => props.selected.length > 0)
 
 			<!-- Checkbox list -->
 			<div v-else class="space-y-1">
-				<label
-					v-for="facet in visibleFacets"
-					:key="String(facet.value)"
-					:class="['insis-checkbox-label', isSelected(facet.value) ? 'active' : '']"
-				>
+				<label v-for="facet in visibleFacets" :key="String(facet.value)" :class="['insis-checkbox-label', isSelected(facet.value) ? 'active' : '']">
 					<input type="checkbox" class="insis-checkbox" :checked="isSelected(facet.value)" @change="handleChange(facet.value)" />
 					<span class="flex-1 truncate text-sm">
 						{{ getDisplayLabel(facet) }}

@@ -1,597 +1,494 @@
-import type StudyPlanCoursesResponse from '@api/Controllers/Kreditozrouti/types/StudyPlanCoursesResponse'
-import type StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse'
 import type { Course, StudyPlanWithRelations } from '@api/Database/types'
-import type { StudyPlanCoursesFilter } from '@api/Validations/StudyPlanCoursesFilterValidation'
-import type { StudyPlansFilter } from '@api/Validations/StudyPlansFilterValidation'
-import api from '@client/api'
+import type FacetItem from '@api/Interfaces/FacetItem'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
-import { PersistedWizardState, WizardState } from '@client/types'
+import { fetchStudyPlanCourses, fetchStudyPlans } from '@client/services/studyPlanService'
+import type { PersistedWizardState, SelectedStudyPlan } from '@client/types'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
+import type InSISSemester from '@scraper/Types/InSISSemester'
 import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
 /**
  * Wizard Store
- * Manages the study plan selection wizard state with localStorage persistence.
- * Supports selecting multiple study plans (e.g., base plan + specialization).
- * Now includes Step 4: selecting already-completed courses.
  *
- * Uses the dedicated POST /study_plans/courses endpoint for step 4,
- * and cross-references with study plan data from step 3 for category grouping.
- *
- * Flow:
- * 1. Select Faculty → 2. Select Year → 3. Select Study Plans → 4. Mark Completed Courses
+ * Manages the study plan selection wizard.
+ * Flow: Faculty → Year → Study Plans → Mark Completed Courses
+ * Persists selection to localStorage.
  */
-export const useWizardStore = defineStore('wizard', {
-	state: (): WizardState => ({
-		currentStep: 1,
-		facultyId: null,
-		year: null,
-		semester: 'ZS',
-		selectedStudyPlans: [],
-		completedCourseIdents: [],
-		completed: false,
-		facultyFacets: [],
-		yearFacets: [],
-		levelFacets: [],
-		studyPlans: [],
-		levelFilter: [],
-		titleSearch: '',
-		loading: false,
-		error: null,
-		studyPlanCourses: [],
-		studyPlanCoursesLoading: false,
-		completedCoursesSearch: '',
-		completedCoursesCategoryFilter: [],
-	}),
+export const useWizardStore = defineStore('wizard', () => {
+	// ── State ──────────────────────────────────────────────────────────
 
-	getters: {
-		/** Whether step 1 is complete */
-		step1Complete(): boolean {
-			return this.facultyId !== null
-		},
+	const currentStep = ref(1)
+	const facultyId = ref<string | null>(null)
+	const year = ref<number | null>(null)
+	const semester = ref<InSISSemester>('ZS')
+	const selectedStudyPlans = ref<SelectedStudyPlan[]>([])
+	const completedCourseIdents = ref<string[]>([])
+	const completed = ref(false)
 
-		/** Whether step 2 is complete */
-		step2Complete(): boolean {
-			return this.year !== null
-		},
+	const facultyFacets = ref<FacetItem[]>([])
+	const yearFacets = ref<FacetItem[]>([])
+	const levelFacets = ref<FacetItem[]>([])
+	const studyPlans = ref<StudyPlanWithRelations[]>([])
+	const studyPlanCourses = ref<Course[]>([])
 
-		/** Whether step 3 is complete (at least one study plan selected) */
-		step3Complete(): boolean {
-			return this.selectedStudyPlans.length > 0
-		},
+	const levelFilter = ref<string[]>([])
+	const titleSearch = ref('')
+	const completedCoursesSearch = ref('')
+	const completedCoursesCategoryFilter = ref<string[]>([])
 
-		/** Whether step 4 is complete (always true — marking completed courses is optional) */
-		step4Complete(): boolean {
-			return this.step3Complete
-		},
+	const loading = ref(false)
+	const studyPlanCoursesLoading = ref(false)
+	const error = ref<string | null>(null)
 
-		/** Whether user can proceed to step 2 */
-		canProceedToStep2(): boolean {
-			return this.step1Complete
-		},
+	// ── Derived IDs ────────────────────────────────────────────────────
 
-		/** Whether user can proceed to step 3 */
-		canProceedToStep3(): boolean {
-			return this.step1Complete && this.step2Complete
-		},
+	const studyPlanIds = computed(() => selectedStudyPlans.value.map((p) => p.id))
+	const studyPlanId = computed(() => selectedStudyPlans.value[0]?.id ?? null)
+	const studyPlanIdents = computed(() => (selectedStudyPlans.value.length === 0 ? null : selectedStudyPlans.value.map((p) => p.ident || String(p.id))))
+	const studyPlanTitles = computed(() =>
+		selectedStudyPlans.value.length === 0 ? null : selectedStudyPlans.value.map((p) => p.title || p.ident || String(p.id)),
+	)
 
-		/** Whether user can proceed to step 4 */
-		canProceedToStep4(): boolean {
-			return this.step1Complete && this.step2Complete && this.step3Complete
-		},
+	// ── Step completion ────────────────────────────────────────────────
 
-		/** Whether wizard can be completed */
-		canComplete(): boolean {
-			return this.step1Complete && this.step2Complete && this.step3Complete
-		},
+	const step1Complete = computed(() => facultyId.value !== null)
+	const step2Complete = computed(() => year.value !== null)
+	const step3Complete = computed(() => selectedStudyPlans.value.length > 0)
+	const step4Complete = computed(() => step3Complete.value)
+	const canProceedToStep2 = computed(() => step1Complete.value)
+	const canProceedToStep3 = computed(() => step1Complete.value && step2Complete.value)
+	const canProceedToStep4 = computed(() => step1Complete.value && step2Complete.value && step3Complete.value)
+	const canComplete = computed(() => step1Complete.value && step2Complete.value && step3Complete.value)
 
-		/** Filtered study plans based on local filters */
-		filteredStudyPlans(): StudyPlanWithRelations[] {
-			let plans = this.studyPlans
+	// ── Filtered lists ─────────────────────────────────────────────────
 
-			// Filter by level
-			if (this.levelFilter.length > 0) {
-				plans = plans.filter((p) => p.level && this.levelFilter.includes(p.level))
+	const filteredStudyPlans = computed(() => {
+		let plans = studyPlans.value
+		if (levelFilter.value.length > 0) {
+			plans = plans.filter((p: StudyPlanWithRelations) => p.level && levelFilter.value.includes(p.level))
+		}
+		if (titleSearch.value.trim()) {
+			const search = titleSearch.value.toLowerCase().trim()
+			plans = plans.filter((p: StudyPlanWithRelations) => p.title?.toLowerCase().includes(search) || p.ident?.toLowerCase().includes(search))
+		}
+		return plans
+	})
+
+	const courseIdentToCategories = computed(() => {
+		const map = new Map<string, Set<string>>()
+		const selectedIds = new Set(studyPlanIds.value)
+
+		for (const plan of studyPlans.value) {
+			if (!selectedIds.has(plan.id)) continue
+			for (const spc of plan.courses ?? []) {
+				if (!map.has(spc.course_ident)) map.set(spc.course_ident, new Set())
+				map.get(spc.course_ident)!.add(spc.category)
 			}
+		}
 
-			// Filter by title search
-			if (this.titleSearch.trim()) {
-				const search = this.titleSearch.toLowerCase().trim()
-				plans = plans.filter((p) => p.title?.toLowerCase().includes(search) || p.ident?.toLowerCase().includes(search))
-			}
+		return map
+	})
 
-			return plans
-		},
+	const filteredStudyPlanCourses = computed(() => {
+		let courses = studyPlanCourses.value
+		const identMap = courseIdentToCategories.value
 
-		/**
-		 * Build a mapping of course ident → set of categories
-		 * by cross-referencing with the study plan data loaded in step 3.
-		 *
-		 * StudyPlanWithRelations includes `.courses` (StudyPlanCourse[])
-		 * which carries `course_ident` and `category`.
-		 */
-		courseIdentToCategories(): Map<string, Set<string>> {
-			const map = new Map<string, Set<string>>()
-
-			// Only look at the selected study plans
-			const selectedIds = new Set(this.selectedStudyPlans.map((p) => p.id))
-
-			for (const plan of this.studyPlans) {
-				if (!selectedIds.has(plan.id)) continue
-
-				for (const spc of plan.courses || []) {
-					if (!map.has(spc.course_ident)) {
-						map.set(spc.course_ident, new Set())
-					}
-					map.get(spc.course_ident)!.add(spc.category)
-				}
-			}
-
-			return map
-		},
-
-		/** Study plan courses filtered by search and category for step 4 */
-		filteredStudyPlanCourses(): Course[] {
-			let courses = this.studyPlanCourses
-
-			// Filter by category (using cross-reference from study plan data)
-			if (this.completedCoursesCategoryFilter.length > 0) {
-				const identMap = this.courseIdentToCategories
-				courses = courses.filter((c) => {
-					const categories = identMap.get(c.ident)
-					if (!categories) return false
-					return this.completedCoursesCategoryFilter.some((cat) => categories.has(cat))
-				})
-			}
-
-			// Filter by search
-			if (this.completedCoursesSearch.trim()) {
-				const search = this.completedCoursesSearch.toLowerCase().trim()
-				courses = courses.filter(
-					(c) =>
-						c.ident?.toLowerCase().includes(search) ||
-						c.title?.toLowerCase().includes(search) ||
-						c.title_cs?.toLowerCase().includes(search) ||
-						c.title_en?.toLowerCase().includes(search),
-				)
-			}
-
-			return courses
-		},
-
-		/** Study plan courses grouped by category for step 4 display */
-		studyPlanCoursesByCategory(): Map<string, Course[]> {
-			const map = new Map<string, Course[]>()
-			const identMap = this.courseIdentToCategories
-
-			for (const course of this.filteredStudyPlanCourses) {
-				const categories = identMap.get(course.ident)
-
-				if (!categories || categories.size === 0) {
-					// Course not found in study plan mapping — put under uncategorized
-					if (!map.has('uncategorized')) {
-						map.set('uncategorized', [])
-					}
-					map.get('uncategorized')!.push(course)
-					continue
-				}
-
-				for (const category of categories) {
-					if (!map.has(category)) {
-						map.set(category, [])
-					}
-					map.get(category)!.push(course)
-				}
-			}
-
-			return map
-		},
-
-		/** Available category facets derived from the study plan → course ident cross-reference */
-		availableCourseCategories(): string[] {
-			const categories = new Set<string>()
-			for (const cats of this.courseIdentToCategories.values()) {
-				for (const cat of cats) {
-					categories.add(cat)
-				}
-			}
-			// Sort by priority: compulsory first, then elective, etc.
-			const priority = ['compulsory', 'elective', 'language', 'state_exam', 'physical_education', 'beyond_scope']
-			return [...categories].sort((a, b) => {
-				const ai = priority.indexOf(a)
-				const bi = priority.indexOf(b)
-				return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+		if (completedCoursesCategoryFilter.value.length > 0) {
+			courses = courses.filter((c: Course) => {
+				const cats = identMap.get(c.ident)
+				return cats && completedCoursesCategoryFilter.value.some((cat) => cats.has(cat))
 			})
-		},
+		}
 
-		/** Number of completed courses */
-		completedCourseCount(): number {
-			return this.completedCourseIdents.length
-		},
+		if (completedCoursesSearch.value.trim()) {
+			const search = completedCoursesSearch.value.toLowerCase().trim()
+			courses = courses.filter(
+				(c: Course) =>
+					c.ident?.toLowerCase().includes(search) ||
+					c.title?.toLowerCase().includes(search) ||
+					c.title_cs?.toLowerCase().includes(search) ||
+					c.title_en?.toLowerCase().includes(search),
+			)
+		}
 
-		/** Check if a course is marked as completed */
-		isCourseCompleted(): (courseIdent: string) => boolean {
-			return (courseIdent: string) => this.completedCourseIdents.includes(courseIdent)
-		},
+		return courses
+	})
 
-		/** Human-readable summary of current selection */
-		selectionSummary(): string {
-			const parts: string[] = []
-			if (this.facultyId) {
-				const faculty = this.facultyFacets.find((f) => f.value === this.facultyId)
-				parts.push((faculty?.value || this.facultyId) as string)
-			}
-			if (this.year) {
-				parts.push(`${this.year}/${this.year + 1}`)
-			}
-			if (this.selectedStudyPlans.length > 0) {
-				const planTitles = this.selectedStudyPlans.map((p) => p.title || p.ident || `ID: ${p.id}`).join(', ')
-				parts.push(planTitles)
-			}
-			return parts.join(' → ')
-		},
+	const studyPlanCoursesByCategory = computed(() => {
+		const map = new Map<string, Course[]>()
+		const identMap = courseIdentToCategories.value
 
-		/** All selected study plan IDs */
-		studyPlanIds(): number[] {
-			return this.selectedStudyPlans.map((p) => p.id)
-		},
+		for (const course of filteredStudyPlanCourses.value) {
+			const categories = identMap.get(course.ident)
 
-		/** First selected study plan ID (for backward compatibility) */
-		studyPlanId(): number | null {
-			return this.selectedStudyPlans[0]?.id ?? null
-		},
-
-		/** All selected study plan idents */
-		studyPlanIdents(): string[] | null {
-			if (this.selectedStudyPlans.length === 0) return null
-			return this.selectedStudyPlans.map((p) => p.ident || String(p.id))
-		},
-
-		/** All selected study plan titles */
-		studyPlanTitles(): string[] | null {
-			if (this.selectedStudyPlans.length === 0) return null
-			return this.selectedStudyPlans.map((p) => p.title || p.ident || String(p.id))
-		},
-
-		/** Check if a specific study plan is selected */
-		isStudyPlanSelected(): (id: number) => boolean {
-			return (id: number) => this.selectedStudyPlans.some((p) => p.id === id)
-		},
-	},
-
-	actions: {
-		/** Load initial facet data for step 1 */
-		async loadInitialFacets() {
-			this.loading = true
-			this.error = null
-
-			try {
-				const response = await api.post<StudyPlansResponse>('/study_plans', {
-					semesters: ['ZS'],
-					limit: 0,
-					offset: 0,
-				} satisfies Partial<StudyPlansFilter>)
-
-				this.facultyFacets = response.data.facets.faculties
-				this.yearFacets = response.data.facets.years
-			} catch (e) {
-				this.error = 'Failed to load faculties'
-				console.error('Wizard: Failed to load initial facets', e)
-			} finally {
-				this.loading = false
-			}
-		},
-
-		/** Load year facets for selected faculty */
-		async loadYearFacets() {
-			if (!this.facultyId) return
-
-			this.loading = true
-			this.error = null
-
-			try {
-				const response = await api.post<StudyPlansResponse>('/study_plans', {
-					faculty_ids: [this.facultyId],
-					semesters: ['ZS'],
-					limit: 0,
-					offset: 0,
-				} satisfies Partial<StudyPlansFilter>)
-
-				this.yearFacets = response.data.facets.years
-			} catch (e) {
-				this.error = 'Failed to load years'
-				console.error('Wizard: Failed to load year facets', e)
-			} finally {
-				this.loading = false
-			}
-		},
-
-		/** Load study plans for step 3 */
-		async loadStudyPlans() {
-			if (!this.facultyId || !this.year) return
-
-			this.loading = true
-			this.error = null
-
-			try {
-				const response = await api.post<StudyPlansResponse>('/study_plans', {
-					faculty_ids: [this.facultyId],
-					years: [this.year],
-					semesters: [this.semester],
-					limit: 100,
-					offset: 0,
-				} satisfies Partial<StudyPlansFilter>)
-
-				this.studyPlans = response.data.data
-				this.levelFacets = response.data.facets.levels
-			} catch (e) {
-				this.error = 'Failed to load study plans'
-				console.error('Wizard: Failed to load study plans', e)
-			} finally {
-				this.loading = false
-			}
-		},
-
-		/**
-		 * Load courses for selected study plans (for step 4).
-		 * Uses the dedicated POST /study_plans/courses endpoint.
-		 * Category grouping is derived client-side by cross-referencing
-		 * with the StudyPlanCourse pivot data from step 3.
-		 */
-		async loadStudyPlanCourses() {
-			if (this.selectedStudyPlans.length === 0) return
-
-			this.studyPlanCoursesLoading = true
-			this.error = null
-
-			try {
-				const response = await api.post<StudyPlanCoursesResponse>('/study_plans/courses', {
-					study_plan_ids: this.studyPlanIds,
-				} satisfies StudyPlanCoursesFilter)
-
-				this.studyPlanCourses = response.data.data
-			} catch (e) {
-				this.error = 'Failed to load courses for study plans'
-				console.error('Wizard: Failed to load study plan courses', e)
-			} finally {
-				this.studyPlanCoursesLoading = false
-			}
-		},
-
-		/** Select a faculty and proceed to step 2 */
-		selectFaculty(id: string) {
-			this.facultyId = id
-			// Reset downstream selections
-			this.year = null
-			this.selectedStudyPlans = []
-			this.completedCourseIdents = []
-			this.studyPlans = []
-			this.studyPlanCourses = []
-
-			// Load year facets for this faculty
-			this.loadYearFacets()
-
-			// Move to step 2
-			this.currentStep = 2
-			this.persist()
-		},
-
-		/** Select a year and proceed to step 3 */
-		selectYear(selectedYear: number) {
-			this.year = selectedYear
-			this.semester = 'ZS'
-			// Reset downstream
-			this.selectedStudyPlans = []
-			this.completedCourseIdents = []
-			this.studyPlanCourses = []
-
-			// Load study plans
-			this.loadStudyPlans()
-
-			// Move to step 3
-			this.currentStep = 3
-			this.persist()
-		},
-
-		/** Toggle selection of a study plan (for multi-select) */
-		toggleStudyPlan(id: number, ident: string | null, title: string | null) {
-			const existingIndex = this.selectedStudyPlans.findIndex((p) => p.id === id)
-
-			if (existingIndex !== -1) {
-				this.selectedStudyPlans.splice(existingIndex, 1)
-			} else {
-				this.selectedStudyPlans.push({ id, ident, title })
+			if (!categories || categories.size === 0) {
+				if (!map.has('uncategorized')) map.set('uncategorized', [])
+				map.get('uncategorized')!.push(course)
+				continue
 			}
 
-			// Reset completed courses when study plans change
-			this.completedCourseIdents = []
-			this.studyPlanCourses = []
-
-			this.persist()
-		},
-
-		/** Select a single study plan (replaces current selection) */
-		selectStudyPlan(id: number, ident: string | null, title: string | null) {
-			this.selectedStudyPlans = [{ id, ident, title }]
-			this.completedCourseIdents = []
-			this.studyPlanCourses = []
-			this.persist()
-		},
-
-		/** Clear all selected study plans */
-		clearStudyPlanSelection() {
-			this.selectedStudyPlans = []
-			this.completedCourseIdents = []
-			this.studyPlanCourses = []
-			this.persist()
-		},
-
-		/** Proceed from step 3 to step 4 */
-		proceedToCompletedCourses() {
-			if (!this.canProceedToStep4) return
-
-			this.currentStep = 4
-			// Load courses for the selected study plans if not already loaded
-			if (this.studyPlanCourses.length === 0) {
-				this.loadStudyPlanCourses()
+			for (const category of categories) {
+				if (!map.has(category)) map.set(category, [])
+				map.get(category)!.push(course)
 			}
-			this.persist()
-		},
+		}
 
-		/** Toggle a course as completed/not completed */
-		toggleCompletedCourse(courseIdent: string) {
-			const index = this.completedCourseIdents.indexOf(courseIdent)
-			if (index !== -1) {
-				this.completedCourseIdents.splice(index, 1)
-			} else {
-				this.completedCourseIdents.push(courseIdent)
-			}
-			this.persist()
-		},
+		return map
+	})
 
-		/** Mark a course as completed */
-		markCourseCompleted(courseIdent: string) {
-			if (!this.completedCourseIdents.includes(courseIdent)) {
-				this.completedCourseIdents.push(courseIdent)
-				this.persist()
-			}
-		},
+	const availableCourseCategories = computed(() => {
+		const categories = new Set<string>()
+		for (const cats of courseIdentToCategories.value.values()) {
+			for (const cat of cats) categories.add(cat)
+		}
+		const priority = ['compulsory', 'elective', 'language', 'state_exam', 'physical_education', 'beyond_scope']
+		return [...categories].sort((a, b) => {
+			const ai = priority.indexOf(a)
+			const bi = priority.indexOf(b)
+			return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+		})
+	})
 
-		/** Unmark a course as completed */
-		unmarkCourseCompleted(courseIdent: string) {
-			const index = this.completedCourseIdents.indexOf(courseIdent)
-			if (index !== -1) {
-				this.completedCourseIdents.splice(index, 1)
-				this.persist()
-			}
-		},
+	const completedCourseCount = computed(() => completedCourseIdents.value.length)
 
-		/** Set category filter for completed courses step */
-		setCompletedCoursesCategoryFilter(categories: string[]) {
-			this.completedCoursesCategoryFilter = categories
-		},
+	const isStudyPlanSelected = computed(() => (id: number) => selectedStudyPlans.value.some((p) => p.id === id))
 
-		/** Set search filter for completed courses step */
-		setCompletedCoursesSearch(search: string) {
-			this.completedCoursesSearch = search
-		},
+	const isCourseCompleted = computed(() => (courseIdent: string) => completedCourseIdents.value.includes(courseIdent))
 
-		/** Go back to a specific step */
-		goToStep(step: number) {
-			if (step < 1 || step > 4) return
+	const selectionSummary = computed(() => {
+		const parts: string[] = []
+		if (facultyId.value) {
+			const faculty = facultyFacets.value.find((f) => f.value === facultyId.value)
+			parts.push((faculty?.value || facultyId.value) as string)
+		}
+		if (year.value) parts.push(`${year.value}/${year.value + 1}`)
+		if (selectedStudyPlans.value.length > 0) {
+			parts.push(selectedStudyPlans.value.map((p) => p.title || p.ident || `ID: ${p.id}`).join(', '))
+		}
+		return parts.join(' → ')
+	})
 
-			this.currentStep = step
+	// ── API calls ──────────────────────────────────────────────────────
 
-			// Clear downstream selections when going back
-			if (step < 2) {
-				this.year = null
-				this.selectedStudyPlans = []
-				this.completedCourseIdents = []
-				this.studyPlanCourses = []
-			}
-			if (step < 3) {
-				this.selectedStudyPlans = []
-				this.completedCourseIdents = []
-				this.studyPlanCourses = []
-			}
-			this.persist()
-		},
+	async function loadInitialFacets() {
+		loading.value = true
+		error.value = null
+		try {
+			const data = await fetchStudyPlans({ semesters: ['ZS'], limit: 0, offset: 0 })
+			facultyFacets.value = data.facets.faculties
+			yearFacets.value = data.facets.years
+		} catch (e) {
+			error.value = 'Failed to load faculties'
+			console.error('Wizard: Failed to load initial facets', e)
+		} finally {
+			loading.value = false
+		}
+	}
 
-		/** Complete the wizard */
-		completeWizard(): boolean {
-			if (!this.canComplete) return false
+	async function loadYearFacets() {
+		if (!facultyId.value) return
+		loading.value = true
+		error.value = null
+		try {
+			const data = await fetchStudyPlans({ faculty_ids: [facultyId.value], semesters: ['ZS'], limit: 0, offset: 0 })
+			yearFacets.value = data.facets.years
+		} catch (e) {
+			error.value = 'Failed to load years'
+			console.error('Wizard: Failed to load year facets', e)
+		} finally {
+			loading.value = false
+		}
+	}
 
-			this.completed = true
-			this.persist()
-			return true
-		},
+	async function loadStudyPlans() {
+		if (!facultyId.value || !year.value) return
+		loading.value = true
+		error.value = null
+		try {
+			const data = await fetchStudyPlans({
+				faculty_ids: [facultyId.value],
+				years: [year.value],
+				semesters: [semester.value],
+				limit: 100,
+				offset: 0,
+			})
+			studyPlans.value = data.data
+			levelFacets.value = data.facets.levels
+		} catch (e) {
+			error.value = 'Failed to load study plans'
+			console.error('Wizard: Failed to load study plans', e)
+		} finally {
+			loading.value = false
+		}
+	}
 
-		/** Reset the wizard to initial state */
-		reset() {
-			this.currentStep = 1
-			this.facultyId = null
-			this.year = null
-			this.semester = 'ZS'
-			this.selectedStudyPlans = []
-			this.completedCourseIdents = []
-			this.completed = false
-			this.studyPlans = []
-			this.studyPlanCourses = []
-			this.levelFilter = []
-			this.titleSearch = ''
-			this.completedCoursesSearch = ''
-			this.completedCoursesCategoryFilter = []
+	async function loadStudyPlanCourses() {
+		if (selectedStudyPlans.value.length === 0) return
+		studyPlanCoursesLoading.value = true
+		error.value = null
+		try {
+			const data = await fetchStudyPlanCourses({ study_plan_ids: studyPlanIds.value })
+			studyPlanCourses.value = data.data
+		} catch (e) {
+			error.value = 'Failed to load courses for study plans'
+			console.error('Wizard: Failed to load study plan courses', e)
+		} finally {
+			studyPlanCoursesLoading.value = false
+		}
+	}
 
-			removeFromStorage(STORAGE_KEYS.WIZARD)
-		},
+	// ── Actions ────────────────────────────────────────────────────────
 
-		/** Set local level filter for step 3 */
-		setLevelFilter(levels: string[]) {
-			this.levelFilter = levels
-		},
+	function selectFaculty(id: string) {
+		facultyId.value = id
+		year.value = null
+		selectedStudyPlans.value = []
+		completedCourseIdents.value = []
+		studyPlans.value = []
+		studyPlanCourses.value = []
+		loadYearFacets()
+		currentStep.value = 2
+		persist()
+	}
 
-		/** Set local title search for step 3 */
-		setTitleSearch(search: string) {
-			this.titleSearch = search
-		},
+	function selectYear(selectedYear: number) {
+		year.value = selectedYear
+		semester.value = 'ZS'
+		selectedStudyPlans.value = []
+		completedCourseIdents.value = []
+		studyPlanCourses.value = []
+		loadStudyPlans()
+		currentStep.value = 3
+		persist()
+	}
 
-		/** Persist state to localStorage using shared utility */
-		persist() {
-			const state: PersistedWizardState = {
-				facultyId: this.facultyId,
-				year: this.year,
-				semester: this.semester,
-				studyPlanId: this.selectedStudyPlans[0]?.id ?? null,
-				studyPlanIdent: this.selectedStudyPlans[0]?.ident ?? null,
-				studyPlanTitle: this.selectedStudyPlans[0]?.title ?? null,
-				selectedStudyPlans: this.selectedStudyPlans,
-				completedCourseIdents: this.completedCourseIdents,
-				completed: this.completed,
-			}
-			saveToStorage(STORAGE_KEYS.WIZARD, state)
-		},
+	function toggleStudyPlan(id: number, ident: string | null, title: string | null) {
+		const idx = selectedStudyPlans.value.findIndex((p) => p.id === id)
+		if (idx !== -1) {
+			selectedStudyPlans.value.splice(idx, 1)
+		} else {
+			selectedStudyPlans.value.push({ id, ident, title })
+		}
+		completedCourseIdents.value = []
+		studyPlanCourses.value = []
+		persist()
+	}
 
-		/** Hydrate state from localStorage using shared utility */
-		hydrate() {
-			const state = loadFromStorage<PersistedWizardState>(STORAGE_KEYS.WIZARD)
-			if (!state) return
+	function selectStudyPlan(id: number, ident: string | null, title: string | null) {
+		selectedStudyPlans.value = [{ id, ident, title }]
+		completedCourseIdents.value = []
+		studyPlanCourses.value = []
+		persist()
+	}
 
-			this.facultyId = state.facultyId
-			this.year = state.year
-			this.semester = state.semester || 'ZS'
+	function clearStudyPlanSelection() {
+		selectedStudyPlans.value = []
+		completedCourseIdents.value = []
+		studyPlanCourses.value = []
+		persist()
+	}
 
-			// Handle multi-select or migrate from legacy single-select
-			if (state.selectedStudyPlans && state.selectedStudyPlans.length > 0) {
-				this.selectedStudyPlans = state.selectedStudyPlans
-			} else if (state.studyPlanId) {
-				this.selectedStudyPlans = [
-					{
-						id: state.studyPlanId,
-						ident: state.studyPlanIdent,
-						title: state.studyPlanTitle,
-					},
-				]
-			} else {
-				this.selectedStudyPlans = []
-			}
+	function proceedToCompletedCourses() {
+		if (!canProceedToStep4.value) return
+		currentStep.value = 4
+		if (studyPlanCourses.value.length === 0) loadStudyPlanCourses()
+		persist()
+	}
 
-			// Hydrate completed courses
-			this.completedCourseIdents = state.completedCourseIdents || []
+	function toggleCompletedCourse(courseIdent: string) {
+		const idx = completedCourseIdents.value.indexOf(courseIdent)
+		if (idx !== -1) {
+			completedCourseIdents.value.splice(idx, 1)
+		} else {
+			completedCourseIdents.value.push(courseIdent)
+		}
+		persist()
+	}
 
-			this.completed = state.completed
+	function markCourseCompleted(courseIdent: string) {
+		if (!completedCourseIdents.value.includes(courseIdent)) {
+			completedCourseIdents.value.push(courseIdent)
+			persist()
+		}
+	}
 
-			// Determine current step based on completed data
-			if (this.completed) {
-				this.currentStep = 4
-			} else if (this.selectedStudyPlans.length > 0) {
-				this.currentStep = 3
-			} else if (state.year) {
-				this.currentStep = 3
-				this.loadStudyPlans()
-			} else if (state.facultyId) {
-				this.currentStep = 2
-				this.loadYearFacets()
-			}
-		},
-	},
+	function unmarkCourseCompleted(courseIdent: string) {
+		const idx = completedCourseIdents.value.indexOf(courseIdent)
+		if (idx !== -1) {
+			completedCourseIdents.value.splice(idx, 1)
+			persist()
+		}
+	}
+
+	function setCompletedCoursesCategoryFilter(categories: string[]) {
+		completedCoursesCategoryFilter.value = categories
+	}
+
+	function setCompletedCoursesSearch(search: string) {
+		completedCoursesSearch.value = search
+	}
+
+	function setLevelFilter(levels: string[]) {
+		levelFilter.value = levels
+	}
+
+	function setTitleSearch(search: string) {
+		titleSearch.value = search
+	}
+
+	function goToStep(step: number) {
+		if (step < 1 || step > 4) return
+		currentStep.value = step
+		if (step < 2) {
+			year.value = null
+			selectedStudyPlans.value = []
+			completedCourseIdents.value = []
+			studyPlanCourses.value = []
+		}
+		if (step < 3) {
+			selectedStudyPlans.value = []
+			completedCourseIdents.value = []
+			studyPlanCourses.value = []
+		}
+		persist()
+	}
+
+	function completeWizard(): boolean {
+		if (!canComplete.value) return false
+		completed.value = true
+		persist()
+		return true
+	}
+
+	function reset() {
+		currentStep.value = 1
+		facultyId.value = null
+		year.value = null
+		semester.value = 'ZS'
+		selectedStudyPlans.value = []
+		completedCourseIdents.value = []
+		completed.value = false
+		studyPlans.value = []
+		studyPlanCourses.value = []
+		levelFilter.value = []
+		titleSearch.value = ''
+		completedCoursesSearch.value = ''
+		completedCoursesCategoryFilter.value = []
+		removeFromStorage(STORAGE_KEYS.WIZARD)
+	}
+
+	function persist() {
+		saveToStorage<PersistedWizardState>(STORAGE_KEYS.WIZARD, {
+			facultyId: facultyId.value,
+			year: year.value,
+			semester: semester.value,
+			studyPlanId: selectedStudyPlans.value[0]?.id ?? null,
+			studyPlanIdent: selectedStudyPlans.value[0]?.ident ?? null,
+			studyPlanTitle: selectedStudyPlans.value[0]?.title ?? null,
+			selectedStudyPlans: selectedStudyPlans.value,
+			completedCourseIdents: completedCourseIdents.value,
+			completed: completed.value,
+		})
+	}
+
+	function hydrate() {
+		const state = loadFromStorage<PersistedWizardState>(STORAGE_KEYS.WIZARD)
+		if (!state) return
+
+		facultyId.value = state.facultyId
+		year.value = state.year
+		semester.value = state.semester || 'ZS'
+
+		if (state.selectedStudyPlans?.length > 0) {
+			selectedStudyPlans.value = state.selectedStudyPlans
+		} else if (state.studyPlanId) {
+			selectedStudyPlans.value = [{ id: state.studyPlanId, ident: state.studyPlanIdent, title: state.studyPlanTitle }]
+		} else {
+			selectedStudyPlans.value = []
+		}
+
+		completedCourseIdents.value = state.completedCourseIdents || []
+		completed.value = state.completed
+
+		if (state.completed) {
+			currentStep.value = 4
+		} else if (selectedStudyPlans.value.length > 0) {
+			currentStep.value = 3
+		} else if (state.year) {
+			currentStep.value = 3
+			loadStudyPlans()
+		} else if (state.facultyId) {
+			currentStep.value = 2
+			loadYearFacets()
+		}
+	}
+
+	return {
+		// State
+		currentStep,
+		facultyId,
+		year,
+		semester,
+		selectedStudyPlans,
+		completedCourseIdents,
+		completed,
+		facultyFacets,
+		yearFacets,
+		levelFacets,
+		studyPlans,
+		studyPlanCourses,
+		levelFilter,
+		titleSearch,
+		completedCoursesSearch,
+		completedCoursesCategoryFilter,
+		loading,
+		studyPlanCoursesLoading,
+		error,
+		// Computed
+		studyPlanIds,
+		studyPlanId,
+		studyPlanIdents,
+		studyPlanTitles,
+		step1Complete,
+		step2Complete,
+		step3Complete,
+		step4Complete,
+		canProceedToStep2,
+		canProceedToStep3,
+		canProceedToStep4,
+		canComplete,
+		filteredStudyPlans,
+		courseIdentToCategories,
+		filteredStudyPlanCourses,
+		studyPlanCoursesByCategory,
+		availableCourseCategories,
+		completedCourseCount,
+		isStudyPlanSelected,
+		isCourseCompleted,
+		selectionSummary,
+		// Actions
+		loadInitialFacets,
+		loadYearFacets,
+		loadStudyPlans,
+		loadStudyPlanCourses,
+		selectFaculty,
+		selectYear,
+		toggleStudyPlan,
+		selectStudyPlan,
+		clearStudyPlanSelection,
+		proceedToCompletedCourses,
+		toggleCompletedCourse,
+		markCourseCompleted,
+		unmarkCourseCompleted,
+		setCompletedCoursesCategoryFilter,
+		setCompletedCoursesSearch,
+		setLevelFilter,
+		setTitleSearch,
+		goToStep,
+		completeWizard,
+		reset,
+		persist,
+		hydrate,
+	}
 })

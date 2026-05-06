@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { CourseWithRelations } from '@api/Database/types'
 import { useCourseLabels, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
@@ -54,7 +55,7 @@ const courseStatus = computed(() => {
 	if (courseUnits.length === 0) return { needsAction: false, missingTypes: [] }
 
 	// Find the full course from the courses store
-	const fullCourse = coursesStore.courses.find((c) => c.id === props.unit.courseId)
+	const fullCourse = coursesStore.courses.find((c: CourseWithRelations) => c.id === props.unit.courseId)
 	if (!fullCourse) return { needsAction: false, missingTypes: [] }
 
 	// Get all available unit types for this course

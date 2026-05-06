@@ -28,7 +28,9 @@ onMounted(() => {
 <template>
 	<div class="min-h-screen bg-[var(--insis-bg)] flex flex-col">
 		<!-- Header -->
-		<header class="bg-[var(--insis-surface)] border-b border-[var(--insis-border)] py-3 px-6 flex items-center justify-between shadow-[var(--insis-shadow-sm)] shrink-0">
+		<header
+			class="bg-[var(--insis-surface)] border-b border-[var(--insis-border)] py-3 px-6 flex items-center justify-between shadow-[var(--insis-shadow-sm)] shrink-0"
+		>
 			<div class="flex items-center gap-3">
 				<!-- Logo mark -->
 				<div class="w-[30px] h-[30px] bg-[var(--insis-blue)] rounded-[5px] flex items-center justify-center shrink-0">
@@ -71,4 +73,3 @@ onMounted(() => {
 		</main>
 	</div>
 </template>
-

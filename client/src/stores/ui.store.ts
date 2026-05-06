@@ -1,117 +1,101 @@
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
-import type { PersistedUIState, UIState, ViewMode } from '@client/types'
+import type { PersistedUIState, ViewMode } from '@client/types'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
 import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
-/**
- * UI Store
- * Manages global UI state: view mode, sidebar, loading, etc.
- * Refactored to use shared localStorage utility.
- */
-export const useUIStore = defineStore('ui', {
-	state: (): UIState => ({
-		viewMode: 'list',
-		sidebarCollapsed: false,
-		showLegend: false,
-		globalLoading: false,
-		mobileMenuOpen: false,
-		mobileFilterOpen: false,
-	}),
+export const useUIStore = defineStore('ui', () => {
+	const viewMode = ref<ViewMode>('list')
+	const sidebarCollapsed = ref(false)
+	const showLegend = ref(false)
+	const globalLoading = ref(false)
+	const mobileMenuOpen = ref(false)
+	const mobileFilterOpen = ref(false)
 
-	getters: {
-		/** Whether we're in list view */
-		isListView(): boolean {
-			return this.viewMode === 'list'
-		},
+	const isListView = computed(() => viewMode.value === 'list')
+	const isTimetableView = computed(() => viewMode.value === 'timetable')
 
-		/** Whether we're in timetable view */
-		isTimetableView(): boolean {
-			return this.viewMode === 'timetable'
-		},
-	},
+	function persist() {
+		saveToStorage<PersistedUIState>(STORAGE_KEYS.UI, {
+			viewMode: viewMode.value,
+			sidebarCollapsed: sidebarCollapsed.value,
+			showLegend: showLegend.value,
+		})
+	}
 
-	actions: {
-		/** Set view mode */
-		setViewMode(mode: ViewMode) {
-			this.viewMode = mode
-			this.persist()
-		},
+	function hydrate() {
+		const state = loadFromStorage<PersistedUIState>(STORAGE_KEYS.UI)
+		if (!state) return
+		viewMode.value = state.viewMode || 'list'
+		sidebarCollapsed.value = state.sidebarCollapsed || false
+		showLegend.value = state.showLegend || false
+	}
 
-		/** Switch to list view */
-		switchToListView() {
-			this.setViewMode('list')
-		},
+	function clearPersisted() {
+		removeFromStorage(STORAGE_KEYS.UI)
+	}
 
-		/** Switch to timetable view */
-		switchToTimetableView() {
-			this.setViewMode('timetable')
-		},
+	function setViewMode(mode: ViewMode) {
+		viewMode.value = mode
+		persist()
+	}
 
-		/** Toggle view mode */
-		toggleViewMode() {
-			this.setViewMode(this.viewMode === 'list' ? 'timetable' : 'list')
-		},
+	function toggleViewMode() {
+		setViewMode(viewMode.value === 'list' ? 'timetable' : 'list')
+	}
 
-		/** Toggle legend visibility */
-		toggleLegend() {
-			this.showLegend = !this.showLegend
-			this.persist()
-		},
+	function toggleLegend() {
+		showLegend.value = !showLegend.value
+		persist()
+	}
 
-		/** Set legend visibility */
-		setShowLegend(show: boolean) {
-			this.showLegend = show
-			this.persist()
-		},
+	function setShowLegend(show: boolean) {
+		showLegend.value = show
+		persist()
+	}
 
-		/** Set global loading state */
-		setGlobalLoading(loading: boolean) {
-			this.globalLoading = loading
-		},
+	function setGlobalLoading(loading: boolean) {
+		globalLoading.value = loading
+	}
 
-		/** Toggle mobile menu */
-		toggleMobileMenu() {
-			this.mobileMenuOpen = !this.mobileMenuOpen
-		},
+	function toggleMobileMenu() {
+		mobileMenuOpen.value = !mobileMenuOpen.value
+	}
 
-		/** Close mobile menu */
-		closeMobileMenu() {
-			this.mobileMenuOpen = false
-		},
+	function closeMobileMenu() {
+		mobileMenuOpen.value = false
+	}
 
-		/** Toggle mobile filter panel */
-		toggleMobileFilter() {
-			this.mobileFilterOpen = !this.mobileFilterOpen
-		},
+	function toggleMobileFilter() {
+		mobileFilterOpen.value = !mobileFilterOpen.value
+	}
 
-		/** Close mobile filter panel */
-		closeMobileFilter() {
-			this.mobileFilterOpen = false
-		},
+	function closeMobileFilter() {
+		mobileFilterOpen.value = false
+	}
 
-		/** Persist state to localStorage using shared utility */
-		persist() {
-			const state: PersistedUIState = {
-				viewMode: this.viewMode,
-				sidebarCollapsed: this.sidebarCollapsed,
-				showLegend: this.showLegend,
-			}
-			saveToStorage(STORAGE_KEYS.UI, state)
-		},
-
-		/** Hydrate state from localStorage using shared utility */
-		hydrate() {
-			const state = loadFromStorage<PersistedUIState>(STORAGE_KEYS.UI)
-			if (!state) return
-
-			this.viewMode = state.viewMode || 'list'
-			this.sidebarCollapsed = state.sidebarCollapsed || false
-			this.showLegend = state.showLegend || false
-		},
-
-		/** Clear persisted state */
-		clearPersisted() {
-			removeFromStorage(STORAGE_KEYS.UI)
-		},
-	},
+	return {
+		viewMode,
+		sidebarCollapsed,
+		showLegend,
+		globalLoading,
+		mobileMenuOpen,
+		mobileFilterOpen,
+		isListView,
+		isTimetableView,
+		persist,
+		hydrate,
+		clearPersisted,
+		setViewMode,
+		switchToListView: () => setViewMode('list'),
+		switchToTimetableView: () => setViewMode('timetable'),
+		toggleViewMode,
+		toggleLegend,
+		setShowLegend,
+		setGlobalLoading,
+		toggleMobileMenu,
+		closeMobileMenu,
+		toggleMobileFilter,
+		closeMobileFilter,
+	}
 })

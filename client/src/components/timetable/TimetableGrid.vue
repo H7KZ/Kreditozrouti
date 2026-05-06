@@ -4,7 +4,7 @@ import TimetableCourseModal from '@client/components/timetable/TimetableCourseMo
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
 import { useCourseLabels, useTimetableGrid } from '@client/composables'
 import { WEEKDAYS } from '@client/constants/timetable'
-import { useCoursesStore, useTimetableStore, useUIStore } from '@client/stores'
+import { useCoursesStore, useDragStore, useTimetableStore, useUIStore } from '@client/stores'
 import type { SelectedCourseUnit } from '@client/types'
 import type InSISDay from '@scraper/Types/InSISDay'
 import { computed, onMounted, onUnmounted, ref, toRef } from 'vue'
@@ -18,6 +18,7 @@ import { computed, onMounted, onUnmounted, ref, toRef } from 'vue'
  */
 
 const timetableStore = useTimetableStore()
+const dragStore = useDragStore()
 const coursesStore = useCoursesStore()
 const uiStore = useUIStore()
 
@@ -171,7 +172,7 @@ function handleMouseDown(event: MouseEvent, day: InSISDay) {
 	if (!dayRow) return
 
 	const time = getTimeFromX(event.clientX, dayRow)
-	timetableStore.startDrag(day, time)
+	dragStore.startDrag(day, time)
 	isDragging.value = true
 	dragStartX.value = event.clientX
 
@@ -186,7 +187,7 @@ function handleMouseMove(event: MouseEvent) {
 
 	const day = dayRow.dataset.day as InSISDay
 	const time = getTimeFromX(event.clientX, dayRow)
-	timetableStore.updateDrag(day, time)
+	dragStore.updateDrag(day, time)
 }
 
 function handleMouseUp(event: MouseEvent) {
@@ -197,11 +198,11 @@ function handleMouseUp(event: MouseEvent) {
 	// Check if it was a click (minimal movement) - require at least 20px drag
 	const dragDistance = Math.abs(event.clientX - dragStartX.value)
 	if (dragDistance < 20) {
-		timetableStore.cancelDrag()
+		dragStore.cancelDrag()
 		return
 	}
 
-	timetableStore.endDrag(event.clientX, event.clientY)
+	dragStore.endDrag(event.clientX, event.clientY)
 }
 
 // Handle clicking on a course block to open the course modal
@@ -235,30 +236,23 @@ function handleRemoveUnit(unit: SelectedCourseUnit | MergedUnit) {
 
 // Handle drag filter action
 async function handleDragFilter() {
-	const selection = timetableStore.getDragSelectionValues()
+	const selection = dragStore.normalizedDragSelection
 	if (!selection) return
 
-	// Apply the time filter
 	coursesStore.setTimeFilterFromDrag(selection.day, selection.timeFrom, selection.timeTo)
-
-	// Switch to list view
 	uiStore.switchToListView()
-
-	// Fetch courses
 	await coursesStore.fetchCourses()
-
-	// Close popover
-	timetableStore.cancelDrag()
+	dragStore.cancelDrag()
 }
 
 // Handle drag cancel
 function handleDragCancel() {
-	timetableStore.cancelDrag()
+	dragStore.cancelDrag()
 }
 
 // Computed drag selection style wrapper
 function getDragSelectionStyleForDay(day: InSISDay) {
-	return getDragSelectionStyle(day, timetableStore.normalizedDragSelection, timetableStore.dragSelection.active)
+	return getDragSelectionStyle(day, dragStore.normalizedDragSelection, dragStore.dragSelection.active)
 }
 
 // Global mouse event listeners
@@ -341,9 +335,9 @@ onUnmounted(() => {
 
 		<!-- Drag-to-filter popover -->
 		<TimetableDragPopover
-			v-if="timetableStore.showDragPopover"
-			:position="timetableStore.dragPopoverPosition"
-			:selection="timetableStore.normalizedDragSelection"
+			v-if="dragStore.showDragPopover"
+			:position="dragStore.dragPopoverPosition"
+			:selection="dragStore.normalizedDragSelection"
 			@filter="handleDragFilter"
 			@cancel="handleDragCancel"
 		/>
@@ -354,4 +348,3 @@ onUnmounted(() => {
 		<slot />
 	</div>
 </template>
-
