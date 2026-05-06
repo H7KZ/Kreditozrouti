@@ -4,7 +4,7 @@ import WizardStepFaculty from '@client/components/wizard/WizardStepFaculty.vue'
 import WizardStepStudyPlan from '@client/components/wizard/WizardStepStudyPlan.vue'
 import WizardStepYear from '@client/components/wizard/WizardStepYear.vue'
 import WizardSteps from '@client/components/wizard/WizardSteps.vue'
-import { useWizardStore } from '@client/stores'
+import { useCompletedCoursesStore, useWizardDataStore, useWizardStore } from '@client/stores'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -17,11 +17,13 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const wizardStore = useWizardStore()
+const wizardDataStore = useWizardDataStore()
+const completedCoursesStore = useCompletedCoursesStore()
 
 // Load initial facet data
 onMounted(async () => {
-	if (wizardStore.facultyFacets.length === 0) {
-		await wizardStore.loadInitialFacets()
+	if (wizardDataStore.facultyFacets.length === 0) {
+		await wizardDataStore.loadInitialFacets()
 	}
 })
 
@@ -80,12 +82,12 @@ function handleSelectStudyPlan(id: number, ident: string, title: string) {
 		/>
 
 		<!-- Error State -->
-		<div v-if="wizardStore.error" class="insis-panel insis-panel-danger mb-6">
-			<p>{{ wizardStore.error }}</p>
+		<div v-if="wizardDataStore.error" class="insis-panel insis-panel-danger mb-6">
+			<p>{{ wizardDataStore.error }}</p>
 		</div>
 
 		<!-- Loading State -->
-		<div v-if="wizardStore.loading" class="insis-loading">
+		<div v-if="wizardDataStore.loading" class="insis-loading">
 			<div class="insis-spinner" />
 		</div>
 
@@ -94,7 +96,7 @@ function handleSelectStudyPlan(id: number, ident: string, title: string) {
 			<!-- Step 1: Faculty Selection -->
 			<WizardStepFaculty
 				v-if="wizardStore.currentStep === 1"
-				:faculties="wizardStore.facultyFacets"
+				:faculties="wizardDataStore.facultyFacets"
 				:selected-faculty="wizardStore.facultyId"
 				@select="wizardStore.selectFaculty"
 			/>
@@ -102,7 +104,7 @@ function handleSelectStudyPlan(id: number, ident: string, title: string) {
 			<!-- Step 2: Year Selection -->
 			<WizardStepYear
 				v-else-if="wizardStore.currentStep === 2"
-				:years="wizardStore.yearFacets"
+				:years="wizardDataStore.yearFacets"
 				:selected-year="wizardStore.year"
 				@select="wizardStore.selectYear"
 				@back="wizardStore.goToStep(1)"
@@ -111,15 +113,15 @@ function handleSelectStudyPlan(id: number, ident: string, title: string) {
 			<!-- Step 3: Study Plan Selection (Multi-select) -->
 			<WizardStepStudyPlan
 				v-else-if="wizardStore.currentStep === 3"
-				:study-plans="wizardStore.filteredStudyPlans"
-				:level-facets="wizardStore.levelFacets"
+				:study-plans="completedCoursesStore.filteredStudyPlans"
+				:level-facets="wizardDataStore.levelFacets"
 				:selected-plans="selectedPlans"
-				:level-filter="wizardStore.levelFilter"
-				:title-search="wizardStore.titleSearch"
+				:level-filter="completedCoursesStore.levelFilter"
+				:title-search="completedCoursesStore.titleSearch"
 				@toggle="handleToggleStudyPlan"
 				@select="handleSelectStudyPlan"
-				@set-level-filter="wizardStore.setLevelFilter"
-				@set-title-search="wizardStore.setTitleSearch"
+				@set-level-filter="completedCoursesStore.setLevelFilter"
+				@set-title-search="completedCoursesStore.setTitleSearch"
 				@back="wizardStore.goToStep(2)"
 				@complete="handleProceedToStep4"
 			/>
@@ -127,16 +129,16 @@ function handleSelectStudyPlan(id: number, ident: string, title: string) {
 			<!-- Step 4: Completed Courses -->
 			<WizardStepCompletedCourses
 				v-else-if="wizardStore.currentStep === 4"
-				:courses-by-category="wizardStore.studyPlanCoursesByCategory"
-				:available-categories="wizardStore.availableCourseCategories"
-				:completed-course-idents="wizardStore.completedCourseIdents"
-				:category-filter="wizardStore.completedCoursesCategoryFilter"
-				:search-query="wizardStore.completedCoursesSearch"
-				:loading="wizardStore.studyPlanCoursesLoading"
-				:total-course-count="wizardStore.studyPlanCourses.length"
-				@toggle="wizardStore.toggleCompletedCourse"
-				@set-category-filter="wizardStore.setCompletedCoursesCategoryFilter"
-				@set-search="wizardStore.setCompletedCoursesSearch"
+				:courses-by-category="completedCoursesStore.studyPlanCoursesByCategory"
+				:available-categories="completedCoursesStore.availableCourseCategories"
+				:completed-course-idents="completedCoursesStore.completedCourseIdents"
+				:category-filter="completedCoursesStore.completedCoursesCategoryFilter"
+				:search-query="completedCoursesStore.completedCoursesSearch"
+				:loading="wizardDataStore.studyPlanCoursesLoading"
+				:total-course-count="wizardDataStore.studyPlanCourses.length"
+				@toggle="completedCoursesStore.toggleCompletedCourse"
+				@set-category-filter="completedCoursesStore.setCompletedCoursesCategoryFilter"
+				@set-search="completedCoursesStore.setCompletedCoursesSearch"
 				@back="wizardStore.goToStep(3)"
 				@complete="handleComplete"
 				@skip="handleSkipCompletedCourses"
@@ -151,8 +153,8 @@ function handleSelectStudyPlan(id: number, ident: string, title: string) {
 					<span class="ml-2 text-sm font-medium">
 						{{ wizardStore.selectionSummary }}
 					</span>
-					<span v-if="wizardStore.completedCourseCount > 0" class="ml-2 text-xs text-[var(--insis-gray-500)]">
-						({{ $t('components.wizard.WizardStepCompletedCourses.completedCount', { count: wizardStore.completedCourseCount }) }})
+					<span v-if="completedCoursesStore.completedCourseCount > 0" class="ml-2 text-xs text-[var(--insis-gray-500)]">
+						({{ $t('components.wizard.WizardStepCompletedCourses.completedCount', { count: completedCoursesStore.completedCourseCount }) }})
 					</span>
 				</div>
 				<button type="button" class="insis-btn-text text-sm" @click="handleReset">{{ $t('components.wizard.StudyPlanWizard.startOver') }}</button>

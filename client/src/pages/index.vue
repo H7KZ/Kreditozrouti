@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
-import { useWizardStore } from '@client/stores'
+import { useWizardDataStore, useWizardStore } from '@client/stores'
 import { onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const wizardStore = useWizardStore()
+const wizardDataStore = useWizardDataStore()
 
 watch(
 	() => wizardStore.completed,
@@ -19,8 +20,8 @@ watch(
 )
 
 onMounted(() => {
-	if (wizardStore.facultyFacets.length === 0) {
-		wizardStore.loadInitialFacets()
+	if (wizardDataStore.facultyFacets.length === 0) {
+		wizardDataStore.loadInitialFacets()
 	}
 })
 </script>

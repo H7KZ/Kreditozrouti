@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { CourseWithRelations } from '@api/Database/types'
 import { useCourseLabels } from '@client/composables'
-import { useCoursesStore, useWizardStore } from '@client/stores'
+import { useCompletedCoursesStore, useCoursesStore } from '@client/stores'
 import { computed } from 'vue'
 import IconCircleCheck from '~icons/lucide/circle-check'
 import IconExternalLink from '~icons/lucide/external-link'
@@ -13,11 +13,11 @@ interface Props {
 const props = defineProps<Props>()
 
 const coursesStore = useCoursesStore()
-const wizardStore = useWizardStore()
+const completedCoursesStore = useCompletedCoursesStore()
 
 const { getCompletionLabel, getFacultyLabel, getLanguagesLabel, getCategoryLabel, getCourseTitle, getCategoryBadgeClass } = useCourseLabels()
 
-const isMarkedCompleted = computed(() => wizardStore.isCourseCompleted(props.course.ident))
+const isMarkedCompleted = computed(() => completedCoursesStore.isCourseCompleted(props.course.ident))
 
 function handleToggleCompleted() {
 	coursesStore.toggleCompletedCourse(props.course.ident)

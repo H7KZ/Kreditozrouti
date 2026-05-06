@@ -5,7 +5,7 @@ import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 import { useDebouncedFn } from '@client/composables'
 import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
-import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import { useCompletedCoursesStore, useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconCalendarX from '~icons/lucide/calendar-x'
@@ -33,6 +33,7 @@ const coursesStore = useCoursesStore()
 const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
 const wizardStore = useWizardStore()
+const completedCoursesStore = useCompletedCoursesStore()
 const uiStore = useUIStore()
 
 const localTitleSearch = ref(filtersStore.filters.title ?? '')
@@ -129,7 +130,7 @@ const activeTimeFilterCount = computed(() => (filtersStore.filters.include_times
 const hasSelectedCourses = computed(() => timetableStore.selectedCourseIds.length > 0)
 
 // Completed courses info
-const completedCourseCount = computed(() => wizardStore.completedCourseIdents.length)
+const completedCourseCount = computed(() => completedCoursesStore.completedCourseIdents.length)
 const hasCompletedCourses = computed(() => completedCourseCount.value > 0)
 
 /**
@@ -149,7 +150,7 @@ function toggleShowCompletedCourses() {
 		filtersStore.filters.completed_course_idents = []
 	} else {
 		// Hide completed courses (apply filter)
-		filtersStore.filters.completed_course_idents = [...wizardStore.completedCourseIdents]
+		filtersStore.filters.completed_course_idents = [...completedCoursesStore.completedCourseIdents]
 	}
 	coursesStore.fetchCourses()
 }

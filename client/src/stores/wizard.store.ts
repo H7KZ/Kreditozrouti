@@ -1,7 +1,6 @@
-import type { Course, StudyPlanWithRelations } from '@api/Database/types'
-import type FacetItem from '@api/Interfaces/FacetItem'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
-import { fetchStudyPlanCourses, fetchStudyPlans } from '@client/services/studyPlanService'
+import { useCompletedCoursesStore } from '@client/stores/completed-courses.store'
+import { useWizardDataStore } from '@client/stores/wizard-data.store'
 import type { PersistedWizardState, SelectedStudyPlan } from '@client/types'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
 import type InSISSemester from '@scraper/Types/InSISSemester'
@@ -11,9 +10,12 @@ import { computed, ref } from 'vue'
 /**
  * Wizard Store
  *
- * Manages the study plan selection wizard.
- * Flow: Faculty → Year → Study Plans → Mark Completed Courses
- * Persists selection to localStorage.
+ * Manages wizard navigation and user study-plan selections.
+ * Responsibilities: currentStep, facultyId, year, semester, selectedStudyPlans,
+ * completed, step completion computeds, navigation actions, persist/hydrate.
+ *
+ * Remote data → useWizardDataStore
+ * Completed courses → useCompletedCoursesStore
  */
 export const useWizardStore = defineStore('wizard', () => {
 	// ── State ──────────────────────────────────────────────────────────
@@ -23,23 +25,7 @@ export const useWizardStore = defineStore('wizard', () => {
 	const year = ref<number | null>(null)
 	const semester = ref<InSISSemester>('ZS')
 	const selectedStudyPlans = ref<SelectedStudyPlan[]>([])
-	const completedCourseIdents = ref<string[]>([])
 	const completed = ref(false)
-
-	const facultyFacets = ref<FacetItem[]>([])
-	const yearFacets = ref<FacetItem[]>([])
-	const levelFacets = ref<FacetItem[]>([])
-	const studyPlans = ref<StudyPlanWithRelations[]>([])
-	const studyPlanCourses = ref<Course[]>([])
-
-	const levelFilter = ref<string[]>([])
-	const titleSearch = ref('')
-	const completedCoursesSearch = ref('')
-	const completedCoursesCategoryFilter = ref<string[]>([])
-
-	const loading = ref(false)
-	const studyPlanCoursesLoading = ref(false)
-	const error = ref<string | null>(null)
 
 	// ── Derived IDs ────────────────────────────────────────────────────
 
@@ -61,105 +47,21 @@ export const useWizardStore = defineStore('wizard', () => {
 	const canProceedToStep4 = computed(() => step1Complete.value && step2Complete.value && step3Complete.value)
 	const canComplete = computed(() => step1Complete.value && step2Complete.value && step3Complete.value)
 
-	// ── Filtered lists ─────────────────────────────────────────────────
+	// ── Forwarded completedCourseIdents (for backward compat) ─────────
 
-	const filteredStudyPlans = computed(() => {
-		let plans = studyPlans.value
-		if (levelFilter.value.length > 0) {
-			plans = plans.filter((p: StudyPlanWithRelations) => p.level && levelFilter.value.includes(p.level))
-		}
-		if (titleSearch.value.trim()) {
-			const search = titleSearch.value.toLowerCase().trim()
-			plans = plans.filter((p: StudyPlanWithRelations) => p.title?.toLowerCase().includes(search) || p.ident?.toLowerCase().includes(search))
-		}
-		return plans
-	})
+	/**
+	 * @deprecated Prefer useCompletedCoursesStore().completedCourseIdents directly.
+	 * Kept for callers (courses.store.ts) that read this during initializeFromWizard.
+	 */
+	const completedCourseIdents = computed(() => useCompletedCoursesStore().completedCourseIdents)
 
-	const courseIdentToCategories = computed(() => {
-		const map = new Map<string, Set<string>>()
-		const selectedIds = new Set(studyPlanIds.value)
-
-		for (const plan of studyPlans.value) {
-			if (!selectedIds.has(plan.id)) continue
-			for (const spc of plan.courses ?? []) {
-				if (!map.has(spc.course_ident)) map.set(spc.course_ident, new Set())
-				map.get(spc.course_ident)!.add(spc.category)
-			}
-		}
-
-		return map
-	})
-
-	const filteredStudyPlanCourses = computed(() => {
-		let courses = studyPlanCourses.value
-		const identMap = courseIdentToCategories.value
-
-		if (completedCoursesCategoryFilter.value.length > 0) {
-			courses = courses.filter((c: Course) => {
-				const cats = identMap.get(c.ident)
-				return cats && completedCoursesCategoryFilter.value.some((cat) => cats.has(cat))
-			})
-		}
-
-		if (completedCoursesSearch.value.trim()) {
-			const search = completedCoursesSearch.value.toLowerCase().trim()
-			courses = courses.filter(
-				(c: Course) =>
-					c.ident?.toLowerCase().includes(search) ||
-					c.title?.toLowerCase().includes(search) ||
-					c.title_cs?.toLowerCase().includes(search) ||
-					c.title_en?.toLowerCase().includes(search),
-			)
-		}
-
-		return courses
-	})
-
-	const studyPlanCoursesByCategory = computed(() => {
-		const map = new Map<string, Course[]>()
-		const identMap = courseIdentToCategories.value
-
-		for (const course of filteredStudyPlanCourses.value) {
-			const categories = identMap.get(course.ident)
-
-			if (!categories || categories.size === 0) {
-				if (!map.has('uncategorized')) map.set('uncategorized', [])
-				map.get('uncategorized')!.push(course)
-				continue
-			}
-
-			for (const category of categories) {
-				if (!map.has(category)) map.set(category, [])
-				map.get(category)!.push(course)
-			}
-		}
-
-		return map
-	})
-
-	const availableCourseCategories = computed(() => {
-		const categories = new Set<string>()
-		for (const cats of courseIdentToCategories.value.values()) {
-			for (const cat of cats) categories.add(cat)
-		}
-		const priority = ['compulsory', 'elective', 'language', 'state_exam', 'physical_education', 'beyond_scope']
-		return [...categories].sort((a, b) => {
-			const ai = priority.indexOf(a)
-			const bi = priority.indexOf(b)
-			return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
-		})
-	})
-
-	const completedCourseCount = computed(() => completedCourseIdents.value.length)
-
-	const isStudyPlanSelected = computed(() => (id: number) => selectedStudyPlans.value.some((p) => p.id === id))
-
-	const isCourseCompleted = computed(() => (courseIdent: string) => completedCourseIdents.value.includes(courseIdent))
+	// ── selectionSummary ───────────────────────────────────────────────
 
 	const selectionSummary = computed(() => {
+		const wizardDataStore = useWizardDataStore()
 		const parts: string[] = []
 		if (facultyId.value) {
-			const faculty = facultyFacets.value.find((f) => f.value === facultyId.value)
+			const faculty = wizardDataStore.facultyFacets.find((f) => f.value === facultyId.value)
 			parts.push((faculty?.value || facultyId.value) as string)
 		}
 		if (year.value) parts.push(`${year.value}/${year.value + 1}`)
@@ -169,187 +71,97 @@ export const useWizardStore = defineStore('wizard', () => {
 		return parts.join(' → ')
 	})
 
-	// ── API calls ──────────────────────────────────────────────────────
-
-	async function loadInitialFacets() {
-		loading.value = true
-		error.value = null
-		try {
-			const data = await fetchStudyPlans({ semesters: ['ZS'], limit: 0, offset: 0 })
-			facultyFacets.value = data.facets.faculties
-			yearFacets.value = data.facets.years
-		} catch (e) {
-			error.value = 'Failed to load faculties'
-			console.error('Wizard: Failed to load initial facets', e)
-		} finally {
-			loading.value = false
-		}
-	}
-
-	async function loadYearFacets() {
-		if (!facultyId.value) return
-		loading.value = true
-		error.value = null
-		try {
-			const data = await fetchStudyPlans({ faculty_ids: [facultyId.value], semesters: ['ZS'], limit: 0, offset: 0 })
-			yearFacets.value = data.facets.years
-		} catch (e) {
-			error.value = 'Failed to load years'
-			console.error('Wizard: Failed to load year facets', e)
-		} finally {
-			loading.value = false
-		}
-	}
-
-	async function loadStudyPlans() {
-		if (!facultyId.value || !year.value) return
-		loading.value = true
-		error.value = null
-		try {
-			const data = await fetchStudyPlans({
-				faculty_ids: [facultyId.value],
-				years: [year.value],
-				semesters: [semester.value],
-				limit: 100,
-				offset: 0,
-			})
-			studyPlans.value = data.data
-			levelFacets.value = data.facets.levels
-		} catch (e) {
-			error.value = 'Failed to load study plans'
-			console.error('Wizard: Failed to load study plans', e)
-		} finally {
-			loading.value = false
-		}
-	}
-
-	async function loadStudyPlanCourses() {
-		if (selectedStudyPlans.value.length === 0) return
-		studyPlanCoursesLoading.value = true
-		error.value = null
-		try {
-			const data = await fetchStudyPlanCourses({ study_plan_ids: studyPlanIds.value })
-			studyPlanCourses.value = data.data
-		} catch (e) {
-			error.value = 'Failed to load courses for study plans'
-			console.error('Wizard: Failed to load study plan courses', e)
-		} finally {
-			studyPlanCoursesLoading.value = false
-		}
-	}
-
 	// ── Actions ────────────────────────────────────────────────────────
 
 	function selectFaculty(id: string) {
+		const completedCoursesStore = useCompletedCoursesStore()
+		const wizardDataStore = useWizardDataStore()
 		facultyId.value = id
 		year.value = null
 		selectedStudyPlans.value = []
-		completedCourseIdents.value = []
-		studyPlans.value = []
-		studyPlanCourses.value = []
-		loadYearFacets()
+		completedCoursesStore.clearCompletedCourses()
+		wizardDataStore.resetData()
+		wizardDataStore.loadYearFacets()
 		currentStep.value = 2
 		persist()
 	}
 
 	function selectYear(selectedYear: number) {
+		const completedCoursesStore = useCompletedCoursesStore()
+		const wizardDataStore = useWizardDataStore()
 		year.value = selectedYear
 		semester.value = 'ZS'
 		selectedStudyPlans.value = []
-		completedCourseIdents.value = []
-		studyPlanCourses.value = []
-		loadStudyPlans()
+		completedCoursesStore.clearCompletedCourses()
+		wizardDataStore.studyPlanCourses.splice(0)
+		wizardDataStore.loadStudyPlans()
 		currentStep.value = 3
 		persist()
 	}
 
 	function toggleStudyPlan(id: number, ident: string | null, title: string | null) {
+		const completedCoursesStore = useCompletedCoursesStore()
+		const wizardDataStore = useWizardDataStore()
 		const idx = selectedStudyPlans.value.findIndex((p) => p.id === id)
 		if (idx !== -1) {
 			selectedStudyPlans.value.splice(idx, 1)
 		} else {
 			selectedStudyPlans.value.push({ id, ident, title })
 		}
-		completedCourseIdents.value = []
-		studyPlanCourses.value = []
+		completedCoursesStore.clearCompletedCourses()
+		wizardDataStore.studyPlanCourses.splice(0)
 		persist()
 	}
 
 	function selectStudyPlan(id: number, ident: string | null, title: string | null) {
+		const completedCoursesStore = useCompletedCoursesStore()
+		const wizardDataStore = useWizardDataStore()
 		selectedStudyPlans.value = [{ id, ident, title }]
-		completedCourseIdents.value = []
-		studyPlanCourses.value = []
+		completedCoursesStore.clearCompletedCourses()
+		wizardDataStore.studyPlanCourses.splice(0)
 		persist()
 	}
 
 	function clearStudyPlanSelection() {
+		const completedCoursesStore = useCompletedCoursesStore()
+		const wizardDataStore = useWizardDataStore()
 		selectedStudyPlans.value = []
-		completedCourseIdents.value = []
-		studyPlanCourses.value = []
+		completedCoursesStore.clearCompletedCourses()
+		wizardDataStore.studyPlanCourses.splice(0)
 		persist()
 	}
 
 	function proceedToCompletedCourses() {
 		if (!canProceedToStep4.value) return
 		currentStep.value = 4
-		if (studyPlanCourses.value.length === 0) loadStudyPlanCourses()
+		const wizardDataStore = useWizardDataStore()
+		if (wizardDataStore.studyPlanCourses.length === 0) wizardDataStore.loadStudyPlanCourses()
 		persist()
 	}
 
+	/**
+	 * @deprecated Prefer useCompletedCoursesStore().toggleCompletedCourse directly.
+	 * Kept for backward compat with courses.store.ts toggleCompletedCourse.
+	 */
 	function toggleCompletedCourse(courseIdent: string) {
-		const idx = completedCourseIdents.value.indexOf(courseIdent)
-		if (idx !== -1) {
-			completedCourseIdents.value.splice(idx, 1)
-		} else {
-			completedCourseIdents.value.push(courseIdent)
-		}
-		persist()
-	}
-
-	function markCourseCompleted(courseIdent: string) {
-		if (!completedCourseIdents.value.includes(courseIdent)) {
-			completedCourseIdents.value.push(courseIdent)
-			persist()
-		}
-	}
-
-	function unmarkCourseCompleted(courseIdent: string) {
-		const idx = completedCourseIdents.value.indexOf(courseIdent)
-		if (idx !== -1) {
-			completedCourseIdents.value.splice(idx, 1)
-			persist()
-		}
-	}
-
-	function setCompletedCoursesCategoryFilter(categories: string[]) {
-		completedCoursesCategoryFilter.value = categories
-	}
-
-	function setCompletedCoursesSearch(search: string) {
-		completedCoursesSearch.value = search
-	}
-
-	function setLevelFilter(levels: string[]) {
-		levelFilter.value = levels
-	}
-
-	function setTitleSearch(search: string) {
-		titleSearch.value = search
+		useCompletedCoursesStore().toggleCompletedCourse(courseIdent)
 	}
 
 	function goToStep(step: number) {
+		const completedCoursesStore = useCompletedCoursesStore()
+		const wizardDataStore = useWizardDataStore()
 		if (step < 1 || step > 4) return
 		currentStep.value = step
 		if (step < 2) {
 			year.value = null
 			selectedStudyPlans.value = []
-			completedCourseIdents.value = []
-			studyPlanCourses.value = []
+			completedCoursesStore.clearCompletedCourses()
+			wizardDataStore.resetData()
 		}
 		if (step < 3) {
 			selectedStudyPlans.value = []
-			completedCourseIdents.value = []
-			studyPlanCourses.value = []
+			completedCoursesStore.clearCompletedCourses()
+			wizardDataStore.studyPlanCourses.splice(0)
 		}
 		persist()
 	}
@@ -362,23 +174,22 @@ export const useWizardStore = defineStore('wizard', () => {
 	}
 
 	function reset() {
+		const completedCoursesStore = useCompletedCoursesStore()
+		const wizardDataStore = useWizardDataStore()
 		currentStep.value = 1
 		facultyId.value = null
 		year.value = null
 		semester.value = 'ZS'
 		selectedStudyPlans.value = []
-		completedCourseIdents.value = []
 		completed.value = false
-		studyPlans.value = []
-		studyPlanCourses.value = []
-		levelFilter.value = []
-		titleSearch.value = ''
-		completedCoursesSearch.value = ''
-		completedCoursesCategoryFilter.value = []
+		completedCoursesStore.clearCompletedCourses()
+		completedCoursesStore.resetUIFilters()
+		wizardDataStore.resetData()
 		removeFromStorage(STORAGE_KEYS.WIZARD)
 	}
 
 	function persist() {
+		const completedCoursesStore = useCompletedCoursesStore()
 		saveToStorage<PersistedWizardState>(STORAGE_KEYS.WIZARD, {
 			facultyId: facultyId.value,
 			year: year.value,
@@ -387,7 +198,7 @@ export const useWizardStore = defineStore('wizard', () => {
 			studyPlanIdent: selectedStudyPlans.value[0]?.ident ?? null,
 			studyPlanTitle: selectedStudyPlans.value[0]?.title ?? null,
 			selectedStudyPlans: selectedStudyPlans.value,
-			completedCourseIdents: completedCourseIdents.value,
+			completedCourseIdents: completedCoursesStore.completedCourseIdents,
 			completed: completed.value,
 		})
 	}
@@ -408,19 +219,21 @@ export const useWizardStore = defineStore('wizard', () => {
 			selectedStudyPlans.value = []
 		}
 
-		completedCourseIdents.value = state.completedCourseIdents || []
+		// Hydrate completed courses into their dedicated store
+		useCompletedCoursesStore().hydrate(state.completedCourseIdents || [])
 		completed.value = state.completed
 
+		const wizardDataStore = useWizardDataStore()
 		if (state.completed) {
 			currentStep.value = 4
 		} else if (selectedStudyPlans.value.length > 0) {
 			currentStep.value = 3
 		} else if (state.year) {
 			currentStep.value = 3
-			loadStudyPlans()
+			wizardDataStore.loadStudyPlans()
 		} else if (state.facultyId) {
 			currentStep.value = 2
-			loadYearFacets()
+			wizardDataStore.loadYearFacets()
 		}
 	}
 
@@ -431,25 +244,14 @@ export const useWizardStore = defineStore('wizard', () => {
 		year,
 		semester,
 		selectedStudyPlans,
-		completedCourseIdents,
 		completed,
-		facultyFacets,
-		yearFacets,
-		levelFacets,
-		studyPlans,
-		studyPlanCourses,
-		levelFilter,
-		titleSearch,
-		completedCoursesSearch,
-		completedCoursesCategoryFilter,
-		loading,
-		studyPlanCoursesLoading,
-		error,
 		// Computed
 		studyPlanIds,
 		studyPlanId,
 		studyPlanIdents,
 		studyPlanTitles,
+		/** @deprecated Use useCompletedCoursesStore().completedCourseIdents */
+		completedCourseIdents,
 		step1Complete,
 		step2Complete,
 		step3Complete,
@@ -458,33 +260,16 @@ export const useWizardStore = defineStore('wizard', () => {
 		canProceedToStep3,
 		canProceedToStep4,
 		canComplete,
-		filteredStudyPlans,
-		courseIdentToCategories,
-		filteredStudyPlanCourses,
-		studyPlanCoursesByCategory,
-		availableCourseCategories,
-		completedCourseCount,
-		isStudyPlanSelected,
-		isCourseCompleted,
 		selectionSummary,
 		// Actions
-		loadInitialFacets,
-		loadYearFacets,
-		loadStudyPlans,
-		loadStudyPlanCourses,
 		selectFaculty,
 		selectYear,
 		toggleStudyPlan,
 		selectStudyPlan,
 		clearStudyPlanSelection,
 		proceedToCompletedCourses,
+		/** @deprecated Use useCompletedCoursesStore().toggleCompletedCourse */
 		toggleCompletedCourse,
-		markCourseCompleted,
-		unmarkCourseCompleted,
-		setCompletedCoursesCategoryFilter,
-		setCompletedCoursesSearch,
-		setLevelFilter,
-		setTitleSearch,
 		goToStep,
 		completeWizard,
 		reset,
