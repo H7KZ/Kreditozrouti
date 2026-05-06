@@ -1,5 +1,16 @@
+import type { CourseUnitSlot } from '@api/Database/types'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 import type InSISDay from '@scraper/Types/InSISDay'
+
+/**
+ * Get the effective day for a slot (from day field or extracted from date).
+ *
+ * @param slot - Course unit slot
+ * @returns The day of the week or null if unavailable
+ */
+export function getSlotDay(slot: CourseUnitSlot): InSISDay | null {
+	return slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
+}
 
 /**
  * Get the sort index for a day (Monday = 0, Sunday = 6).

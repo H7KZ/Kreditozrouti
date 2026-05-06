@@ -3,7 +3,7 @@ import type { TimeSelection } from '@api/Validations'
 import { useTimeUtils } from '@client/composables'
 import { useCoursesStore } from '@client/stores'
 import { CourseUnitWithSlots } from '@client/types'
-import { getDayFromDate } from '@client/utils/day.ts'
+import { getSlotDay } from '@client/utils/day.ts'
 import { computed } from 'vue'
 
 /**
@@ -48,13 +48,6 @@ export function useTimeFilterMatching() {
 	const activeTimeFilterCount = computed((): number => {
 		return (coursesStore.filters.include_times?.length ?? 0) + (coursesStore.filters.exclude_times?.length ?? 0)
 	})
-
-	/**
-	 * Get the effective day for a slot.
-	 */
-	function getSlotDay(slot: CourseUnitSlot) {
-		return slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
-	}
 
 	/**
 	 * Check if a slot matches any of the active time inclusion filters.

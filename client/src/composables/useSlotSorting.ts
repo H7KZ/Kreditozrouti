@@ -1,7 +1,7 @@
 import type { CourseUnitSlot } from '@api/Database/types'
 import { useCourseLabels } from '@client/composables'
 import { CourseUnitWithSlots } from '@client/types'
-import { compareDateStrings, getDayFromDate, getDayIndex } from '@client/utils/day.ts'
+import { compareDateStrings, getDayIndex, getSlotDay } from '@client/utils/day.ts'
 import InSISDay from '@scraper/Types/InSISDay.ts'
 
 /**
@@ -17,13 +17,6 @@ import InSISDay from '@scraper/Types/InSISDay.ts'
  */
 export function useSlotSorting() {
 	const { getSlotType } = useCourseLabels()
-
-	/**
-	 * Get the effective day for a slot (from day field or extracted from date).
-	 */
-	function getSlotDay(slot: CourseUnitSlot) {
-		return slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
-	}
 
 	/**
 	 * Sort slots by day, then by date (for block courses), then by time.
