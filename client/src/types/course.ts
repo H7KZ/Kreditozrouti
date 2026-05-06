@@ -76,15 +76,16 @@ export interface CourseStatus {
 	title: string
 	titleCs: string
 	titleEn: string
-	status: 'selected' | 'conflict' | 'incomplete'
+	status: 'selected' | 'conflict' | 'campus-conflict' | 'incomplete'
 	conflictsWith: string[]
+	campusConflictsWith: string[]
 	missingTypes: CourseUnitType[]
 }
 
 /**
  * Course status type for filtering
  */
-export type CourseStatusType = 'selected' | 'conflict' | 'incomplete'
+export type CourseStatusType = 'selected' | 'conflict' | 'campus-conflict' | 'incomplete'
 
 /**
  * Filter state for course status filtering
@@ -95,9 +96,16 @@ export interface CourseStatusFilterState {
 }
 
 /**
+ * Conflict type: hard time overlap vs campus travel-time conflict.
+ */
+export type ConflictType = 'hard' | 'campus'
+
+/**
  * Conflict info for a specific slot in the expanded course view.
  */
 export interface SlotConflictInfo {
 	slotId: number
 	conflictingUnits: SelectedCourseUnit[]
+	/** Type of conflict — hard overlap or campus travel-time warning */
+	conflictType?: ConflictType
 }
