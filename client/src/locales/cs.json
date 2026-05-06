@@ -271,6 +271,7 @@
 				"noResults": "Žádné předměty neodpovídají filtru",
 				"inTimetable": "V rozvrhu",
 				"missingUnitTypes": "Nekompletní",
+				"conflictTag": "Kolize",
 				"completed": "Dokončeno"
 			},
 			"CourseRowExpanded": {

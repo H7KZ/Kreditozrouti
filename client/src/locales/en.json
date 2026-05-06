@@ -271,6 +271,7 @@
 				"noResults": "No courses match the filter",
 				"inTimetable": "In timetable",
 				"missingUnitTypes": "Incomplete",
+				"conflictTag": "Conflict",
 				"completed": "Done"
 			},
 			"CourseRowExpanded": {

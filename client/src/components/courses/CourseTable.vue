@@ -53,6 +53,10 @@ function hasMissingUnitTypes(courseId: number): boolean {
 	return timetableStore.courseHasMissingUnitTypes(courseId)
 }
 
+function hasCourseConflict(courseId: number): boolean {
+	return timetableStore.courseStatuses.get(courseId)?.status === 'conflict'
+}
+
 function getCourseScheduleSummary(course: CourseWithRelations): string {
 	return getScheduleSummary(course.units)
 }
@@ -123,6 +127,9 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 									</span>
 									<span v-if="hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-amber flex-shrink-0">
 										{{ $t('components.courses.CourseTable.missingUnitTypes') }}
+									</span>
+									<span v-if="hasCourseConflict(course.id)" class="insis-badge insis-badge-danger flex-shrink-0">
+										{{ $t('components.courses.CourseTable.conflictTag') }}
 									</span>
 								</div>
 							</td>
