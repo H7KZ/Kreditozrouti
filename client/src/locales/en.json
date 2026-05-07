@@ -169,7 +169,8 @@
 		"dismissAlert": "Dismiss notification",
 		"loadingCourses": "Loading courses",
 		"removeTimeFilter": "Remove time filter",
-		"closeCourseModal": "Close course details"
+		"closeCourseModal": "Close course details",
+		"switchLanguage": "Switch language"
 	},
 	"pages": {
 		"index": {
@@ -282,7 +283,9 @@
 				"missingUnitTypes": "Incomplete",
 				"conflictTag": "Conflict",
 				"campusConflictTag": "Campus conflict",
-				"completed": "Done"
+				"completed": "Done",
+				"sortLabel": "Sort by {column}",
+				"rowLabel": "Course {code}: {title}. Click to view details."
 			},
 			"CourseRowExpanded": {
 				"faculty": "Faculty",
@@ -337,6 +340,7 @@
 				"completedCourses": "Completed Courses",
 				"showCompletedCourses": "Show completed courses",
 				"completedCoursesCount": "{count} hidden",
+				"activeFilterCount": "{count} active filter | {count} active filters",
 				"timetableConflicts": "Timetable Conflicts",
 				"timetableSlotsCount": "{count} slots selected",
 				"hideConflictingCourses": "Hide courses that conflict with my timetable",
@@ -384,7 +388,8 @@
 			"TimetableCourseBlock": {
 				"removeFromTimetable": "Remove from timetable",
 				"missingTypesWarning": "Missing {types}. Click to add them.",
-				"mergedSlots": "{count} time slot merged | {count} time slots merged"
+				"mergedSlots": "{count} time slot merged | {count} time slots merged",
+				"courseBlockLabel": "{code}, {type}, {time}. Click to view details."
 			},
 			"TimetableDragPopover": {
 				"title": "Search Courses",

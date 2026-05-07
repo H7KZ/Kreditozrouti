@@ -169,7 +169,8 @@
 		"dismissAlert": "Zavřít oznámení",
 		"loadingCourses": "Načítání předmětů",
 		"removeTimeFilter": "Odebrat časový filtr",
-		"closeCourseModal": "Zavřít detail předmětu"
+		"closeCourseModal": "Zavřít detail předmětu",
+		"switchLanguage": "Změnit jazyk"
 	},
 	"pages": {
 		"index": {
@@ -282,7 +283,9 @@
 				"missingUnitTypes": "Nekompletní",
 				"conflictTag": "Kolize",
 				"campusConflictTag": "Kampusová kolize",
-				"completed": "Dokončeno"
+				"completed": "Dokončeno",
+				"sortLabel": "Seřadit podle {column}",
+				"rowLabel": "Předmět {code}: {title}. Klikněte pro zobrazení detailů."
 			},
 			"CourseRowExpanded": {
 				"faculty": "Fakulta",
@@ -337,6 +340,7 @@
 				"completedCourses": "Dokončené kurzy",
 				"showCompletedCourses": "Zobrazit dokončené kurzy",
 				"completedCoursesCount": "{count} skrytých | {count} skrytý | {count} skryté",
+				"activeFilterCount": "{count} aktivní filtr | {count} aktivní filtry | {count} aktivních filtrů",
 				"timetableConflicts": "Konflikty rozvrhu",
 				"timetableSlotsCount": "{count} vybraných časových slotů | {count} vybraný časový slot | {count} vybrané časové sloty",
 				"hideConflictingCourses": "Skrýt kurzy, které jsou v rozporu s mým rozvrhem",
@@ -384,7 +388,8 @@
 			"TimetableCourseBlock": {
 				"removeFromTimetable": "Odebrat z rozvrhu",
 				"missingTypesWarning": "Chybějící {types}. Klikněte pro přidání.",
-				"mergedSlots": "{count} sloučený časový slot | {count} sloučené časové sloty | {count} sloučených časových slotů"
+				"mergedSlots": "{count} sloučený časový slot | {count} sloučené časové sloty | {count} sloučených časových slotů",
+				"courseBlockLabel": "{code}, {type}, {time}. Klikněte pro zobrazení detailů."
 			},
 			"TimetableDragPopover": {
 				"title": "Vyhledat předměty",
