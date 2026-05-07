@@ -160,7 +160,16 @@
 		"showLess": "Show less",
 		"noResults": "No results",
 		"noOptions": "No options",
-		"tip": "Tip"
+		"tip": "Tip",
+		"skipToContent": "Skip to main content",
+		"closeFilters": "Close filters",
+		"openFilters": "Open filters",
+		"previousPage": "Previous page",
+		"nextPage": "Next page",
+		"dismissAlert": "Dismiss notification",
+		"loadingCourses": "Loading courses",
+		"removeTimeFilter": "Remove time filter",
+		"closeCourseModal": "Close course details"
 	},
 	"pages": {
 		"index": {

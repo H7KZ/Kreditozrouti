@@ -191,11 +191,11 @@ function handleCloseMobileFilter() {
 		<!-- Mobile header -->
 		<div class="flex items-center justify-between border-b border-[var(--insis-border)] p-3 lg:hidden">
 			<div class="flex items-center gap-2 font-medium">
-				<IconFilter class="h-4 w-4" />
+				<IconFilter class="h-4 w-4" aria-hidden="true" />
 				{{ $t('common.filters') }}
 			</div>
-			<button type="button" class="insis-btn-text" @click="handleCloseMobileFilter">
-				<IconX class="h-5 w-5" />
+			<button type="button" class="insis-btn-text" :aria-label="$t('common.closeFilters')" @click="handleCloseMobileFilter">
+				<IconX class="h-5 w-5" aria-hidden="true" />
 			</button>
 		</div>
 

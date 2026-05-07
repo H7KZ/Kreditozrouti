@@ -24,6 +24,7 @@ function toggle() {
 	<button
 		type="button"
 		class="flex cursor-pointer w-full items-center justify-between py-1 px-1 -mx-1 rounded-[3px] text-left hover:bg-[var(--insis-surface-2)] transition-colors duration-100"
+		:aria-expanded="isOpen"
 		@click="toggle"
 	>
 		<span class="insis-label mb-0 flex items-center gap-1.5">
@@ -32,7 +33,7 @@ function toggle() {
 				{{ badge }}
 			</span>
 		</span>
-		<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': isOpen }]" />
+		<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': isOpen }]" aria-hidden="true" />
 	</button>
 	<div v-show="isOpen" class="mt-2">
 		<slot />

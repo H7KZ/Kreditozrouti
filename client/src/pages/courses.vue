@@ -108,12 +108,14 @@ async function fetchNextCoursesPage(page: () => void) {
 
 				<!-- Content -->
 				<div
+					id="main-content"
 					class="flex-1 overflow-y-auto p-4 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-thumb]:rounded-[3px]"
+					:aria-busy="coursesStore.loading"
 				>
 					<!-- Loading -->
 					<div v-if="coursesStore.loading" class="flex items-center justify-center py-12">
-						<div class="text-center">
-							<div class="insis-spinner mx-auto mb-3" />
+						<div class="text-center" role="status" :aria-label="$t('common.loadingCourses')">
+							<div class="insis-spinner mx-auto mb-3" aria-hidden="true" />
 							<p class="text-[12px] text-[var(--insis-text-3)]">{{ $t('pages.courses.loadingCourses') }}</p>
 						</div>
 					</div>
@@ -159,17 +161,19 @@ async function fetchNextCoursesPage(page: () => void) {
 									type="button"
 									class="insis-btn insis-btn-secondary"
 									:disabled="!coursesStore.hasPrevPage"
+									:aria-label="$t('common.previousPage')"
 									@click="fetchNextCoursesPage(coursesStore.prevPage)"
 								>
 									← {{ $t('common.previous') }}
 								</button>
-								<span class="text-[12px] text-[var(--insis-text-2)]">
+								<span class="text-[12px] text-[var(--insis-text-2)]" aria-live="polite">
 									{{ $t('pages.courses.pageInfo', { current: coursesStore.currentPage, total: coursesStore.totalPages }) }}
 								</span>
 								<button
 									type="button"
 									class="insis-btn insis-btn-secondary"
 									:disabled="!coursesStore.hasNextPage"
+									:aria-label="$t('common.nextPage')"
 									@click="fetchNextCoursesPage(coursesStore.nextPage)"
 								>
 									{{ $t('common.next') }} →

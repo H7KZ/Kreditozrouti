@@ -73,10 +73,11 @@ function handleClearTimetable() {
 				v-if="selectedCoursesCount > 0"
 				type="button"
 				class="insis-btn insis-btn-secondary hover:bg-red-500 hover:text-white hover:border-red-500"
+				:aria-label="$t('pages.courses.clearTimetable')"
 				@click="handleClearTimetable"
 			>
-				<IconTrash class="h-3 w-3" />
-				<span class="hidden sm:inline">{{ $t('pages.courses.clearTimetable') }}</span>
+				<IconTrash class="h-3 w-3" aria-hidden="true" />
+				<span class="hidden sm:inline" aria-hidden="true">{{ $t('pages.courses.clearTimetable') }}</span>
 			</button>
 
 			<button type="button" class="insis-btn insis-btn-secondary hover:bg-red-500 hover:text-white hover:border-red-500" @click="handleResetWizard">
@@ -87,8 +88,14 @@ function handleClearTimetable() {
 			<LanguageSwitcher />
 
 			<!-- Mobile filter toggle -->
-			<button type="button" class="insis-btn insis-btn-secondary lg:hidden" style="padding: 5px" @click="uiStore.toggleMobileFilter">
-				<IconFunnel class="h-4 w-4" />
+			<button
+				type="button"
+				class="insis-btn insis-btn-secondary lg:hidden"
+				style="padding: 5px"
+				:aria-label="$t('common.openFilters')"
+				@click="uiStore.toggleMobileFilter"
+			>
+				<IconFunnel class="h-4 w-4" aria-hidden="true" />
 			</button>
 		</div>
 	</header>

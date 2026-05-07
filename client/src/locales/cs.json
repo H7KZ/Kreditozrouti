@@ -160,7 +160,16 @@
 		"showLess": "Zobrazit méně",
 		"noResults": "Žádné výsledky",
 		"noOptions": "Žádné možnosti",
-		"tip": "Tip"
+		"tip": "Tip",
+		"skipToContent": "Přeskočit na hlavní obsah",
+		"closeFilters": "Zavřít filtry",
+		"openFilters": "Otevřít filtry",
+		"previousPage": "Předchozí stránka",
+		"nextPage": "Další stránka",
+		"dismissAlert": "Zavřít oznámení",
+		"loadingCourses": "Načítání předmětů",
+		"removeTimeFilter": "Odebrat časový filtr",
+		"closeCourseModal": "Zavřít detail předmětu"
 	},
 	"pages": {
 		"index": {

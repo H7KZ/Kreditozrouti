@@ -146,8 +146,13 @@ function formatFilter(filter: TimeSelection): string {
 					{{ filter.type === 'include' ? '✓' : '✗' }}
 					{{ formatFilter(filter) }}
 				</span>
-				<button type="button" class="ml-2 cursor-pointer hover:text-[var(--insis-danger)]" @click="handleRemoveTimeFilter(filter.type, filter.index)">
-					<IconX class="h-3 w-3" />
+				<button
+					type="button"
+					class="ml-2 cursor-pointer hover:text-[var(--insis-danger)]"
+					:aria-label="$t('common.removeTimeFilter')"
+					@click="handleRemoveTimeFilter(filter.type, filter.index)"
+				>
+					<IconX class="h-3 w-3" aria-hidden="true" />
 				</button>
 			</div>
 		</div>
