@@ -39,10 +39,13 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>()
 
 // Use facet filtering composable
-const { searchQuery, listExpanded, filterBySearch, getVisibleFacets, getHiddenCount, toggleListExpanded, isSelected, toggleSelection } =
-	useFacetFiltering(toRef(props, 'facets'), toRef(props, 'selected'), {
+const { searchQuery, listExpanded, filterBySearch, getVisibleFacets, getHiddenCount, toggleListExpanded, isSelected, toggleSelection } = useFacetFiltering(
+	toRef(props, 'facets'),
+	toRef(props, 'selected'),
+	{
 		maxVisible: props.maxVisible,
-	})
+	},
+)
 
 /** Whether the entire filter group is collapsed */
 const isCollapsed = ref(props.defaultCollapsed)

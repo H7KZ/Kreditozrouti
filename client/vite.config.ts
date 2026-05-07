@@ -1,12 +1,10 @@
 import vueI18n from '@intlify/unplugin-vue-i18n/vite'
 import vueTailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
-import path from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 import vueIcons from 'unplugin-icons/vite'
 import vueRouter from 'unplugin-vue-router/vite'
 import { defineConfig, loadEnv } from 'vite'
-import prerender from 'vite-plugin-prerender'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config
@@ -30,12 +28,6 @@ export default ({ mode }: { mode: string }) => {
 			}),
 			vueIcons({
 				autoInstall: true,
-			}),
-			prerender({
-				// Required - The path to the vite-outputted static site to prerender.
-				staticDir: path.join(__dirname, 'dist'),
-				// Required - Routes to render.
-				routes: ['/', '/courses'],
 			}),
 		],
 		resolve: {
