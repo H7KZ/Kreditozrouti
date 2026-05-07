@@ -122,14 +122,26 @@ function toggleCollapsed() {
 <template>
 	<div v-if="hasCourses" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
 		<!-- Collapsible header -->
-		<button type="button" class="flex w-full cursor-pointer items-center justify-between py-1 text-left" @click="toggleCollapsed">
+		<button
+			type="button"
+			class="flex w-full cursor-pointer items-center justify-between py-1 text-left"
+			:aria-expanded="!isCollapsed"
+			@click="toggleCollapsed"
+		>
 			<span class="insis-label mb-0 flex items-center gap-1.5">
 				{{ $t('components.filters.CourseStatusFilter.title') }}
-				<span v-if="activeFilterCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-[10px] text-white">
+				<span
+					v-if="activeFilterCount > 0"
+					class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-[10px] text-white"
+					:aria-label="$t('components.filters.FilterPanel.activeFilterCount', { count: activeFilterCount })"
+				>
 					{{ activeFilterCount }}
 				</span>
 			</span>
-			<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !isCollapsed }]" />
+			<IconChevronDown
+				:class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !isCollapsed }]"
+				aria-hidden="true"
+			/>
 		</button>
 
 		<!-- Collapsible content -->
@@ -154,11 +166,15 @@ function toggleCollapsed() {
 						class="insis-checkbox"
 						:checked="isStatusSelected(option.value)"
 						:disabled="option.count === 0"
+						:aria-label="option.label"
 						@change="toggleStatusFilter(option.value)"
 					/>
-					<component :is="getStatusIcon(option.value)" :class="['h-4 w-4 shrink-0', getStatusColorClass(option.value)]" />
+					<component :is="getStatusIcon(option.value)" :class="['h-4 w-4 shrink-0', getStatusColorClass(option.value)]" aria-hidden="true" />
 					<span class="flex-1 text-sm">{{ option.label }}</span>
-					<span :class="['text-xs', option.count === 0 ? 'text-[var(--insis-gray-400)] italic' : 'text-[var(--insis-gray-500)]']">
+					<span
+						:class="['text-xs', option.count === 0 ? 'text-[var(--insis-gray-400)] italic' : 'text-[var(--insis-gray-500)]']"
+						aria-hidden="true"
+					>
 						({{ option.count }})
 					</span>
 				</label>
@@ -169,12 +185,13 @@ function toggleCollapsed() {
 				<button
 					type="button"
 					class="flex cursor-pointer w-full items-center gap-1 text-xs text-[var(--insis-gray-600)] hover:text-[var(--insis-text)]"
+					:aria-expanded="showConflictDetails"
 					@click="showConflictDetails = !showConflictDetails"
 				>
-					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showConflictDetails }]" />
-					<IconCalendarX class="h-3 w-3 text-red-500" />
+					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showConflictDetails }]" aria-hidden="true" />
+					<IconCalendarX class="h-3 w-3 text-red-500" aria-hidden="true" />
 					<span>{{ $t('components.filters.CourseStatusFilter.conflictingCourses') }}</span>
-					<span class="text-[var(--insis-gray-400)]">({{ statusCounts.conflict }})</span>
+					<span class="text-[var(--insis-gray-400)]" aria-hidden="true">({{ statusCounts.conflict }})</span>
 				</button>
 
 				<div v-if="showConflictDetails" class="mt-2 space-y-1 pl-4">
@@ -184,9 +201,15 @@ function toggleCollapsed() {
 						:class="['insis-checkbox-label cursor-pointer rounded px-1 -mx-1 transition-colors', isCourseSelected(course.ident) ? 'bg-red-50' : '']"
 						:title="getCourseTooltip(course)"
 					>
-						<input type="checkbox" class="insis-checkbox" :checked="isCourseSelected(course.ident)" @change="toggleCourseFilter(course.ident)" />
+						<input
+							type="checkbox"
+							class="insis-checkbox"
+							:checked="isCourseSelected(course.ident)"
+							:aria-label="course.ident"
+							@change="toggleCourseFilter(course.ident)"
+						/>
 						<span class="flex-1 truncate text-sm">{{ course.ident }}</span>
-						<span class="text-xs text-red-500"> ↔ {{ course.conflictsWith.join(', ') }} </span>
+						<span class="text-xs text-red-500" aria-hidden="true"> ↔ {{ course.conflictsWith.join(', ') }} </span>
 					</label>
 				</div>
 			</div>
@@ -196,12 +219,13 @@ function toggleCollapsed() {
 				<button
 					type="button"
 					class="flex cursor-pointer w-full items-center gap-1 text-xs text-[var(--insis-gray-600)] hover:text-[var(--insis-text)]"
+					:aria-expanded="showCampusConflictDetails"
 					@click="showCampusConflictDetails = !showCampusConflictDetails"
 				>
-					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showCampusConflictDetails }]" />
-					<IconMapPin class="h-3 w-3 text-orange-500" />
+					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showCampusConflictDetails }]" aria-hidden="true" />
+					<IconMapPin class="h-3 w-3 text-orange-500" aria-hidden="true" />
 					<span>{{ $t('components.filters.CourseStatusFilter.campusConflictingCourses') }}</span>
-					<span class="text-[var(--insis-gray-400)]">({{ statusCounts['campus-conflict'] }})</span>
+					<span class="text-[var(--insis-gray-400)]" aria-hidden="true">({{ statusCounts['campus-conflict'] }})</span>
 				</button>
 
 				<div v-if="showCampusConflictDetails" class="mt-2 space-y-1 pl-4">
@@ -214,9 +238,15 @@ function toggleCollapsed() {
 						]"
 						:title="getCourseTooltip(course)"
 					>
-						<input type="checkbox" class="insis-checkbox" :checked="isCourseSelected(course.ident)" @change="toggleCourseFilter(course.ident)" />
+						<input
+							type="checkbox"
+							class="insis-checkbox"
+							:checked="isCourseSelected(course.ident)"
+							:aria-label="course.ident"
+							@change="toggleCourseFilter(course.ident)"
+						/>
 						<span class="flex-1 truncate text-sm">{{ course.ident }}</span>
-						<span class="text-xs text-orange-500"> ↔ {{ course.campusConflictsWith.join(', ') }} </span>
+						<span class="text-xs text-orange-500" aria-hidden="true"> ↔ {{ course.campusConflictsWith.join(', ') }} </span>
 					</label>
 				</div>
 			</div>
@@ -226,12 +256,13 @@ function toggleCollapsed() {
 				<button
 					type="button"
 					class="flex w-full cursor-pointer items-center gap-1 text-xs text-[var(--insis-gray-600)] hover:text-[var(--insis-text)]"
+					:aria-expanded="showIncompleteDetails"
 					@click="showIncompleteDetails = !showIncompleteDetails"
 				>
-					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showIncompleteDetails }]" />
-					<IconAlertTriangle class="h-3 w-3 text-amber-500" />
+					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showIncompleteDetails }]" aria-hidden="true" />
+					<IconAlertTriangle class="h-3 w-3 text-amber-500" aria-hidden="true" />
 					<span>{{ $t('components.filters.CourseStatusFilter.incompleteCourses') }}</span>
-					<span class="text-[var(--insis-gray-400)]">({{ statusCounts.incomplete }})</span>
+					<span class="text-[var(--insis-gray-400)]" aria-hidden="true">({{ statusCounts.incomplete }})</span>
 				</button>
 
 				<div v-if="showIncompleteDetails" class="mt-2 space-y-1 pl-4">
@@ -244,9 +275,15 @@ function toggleCollapsed() {
 						]"
 						:title="getCourseTooltip(course)"
 					>
-						<input type="checkbox" class="insis-checkbox" :checked="isCourseSelected(course.ident)" @change="toggleCourseFilter(course.ident)" />
+						<input
+							type="checkbox"
+							class="insis-checkbox"
+							:checked="isCourseSelected(course.ident)"
+							:aria-label="course.ident"
+							@change="toggleCourseFilter(course.ident)"
+						/>
 						<span class="flex-1 truncate text-sm">{{ course.ident }}</span>
-						<span class="text-xs text-amber-600">
+						<span class="text-xs text-amber-600" aria-hidden="true">
 							{{ $t('components.filters.CourseStatusFilter.missingLabel') }}:
 							{{ course.missingTypes.map(getUnitTypeLabel).join(', ') }}
 						</span>

@@ -202,14 +202,24 @@ function handleCloseMobileFilter() {
 		<!-- Header with reset button -->
 		<div class="mb-4 flex items-center justify-between">
 			<div v-if="!uiStore.mobileFilterOpen" class="flex items-center gap-2 text-sm font-medium text-[var(--insis-gray-900)]">
-				<IconFilter class="h-4 w-4" />
+				<IconFilter class="h-4 w-4" aria-hidden="true" />
 				{{ $t('common.filters') }}
-				<span v-if="filtersStore.activeFilterCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-xs text-white">
+				<span
+					v-if="filtersStore.activeFilterCount > 0"
+					class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-xs text-white"
+					:aria-label="$t('components.filters.FilterPanel.activeFilterCount', { count: filtersStore.activeFilterCount })"
+				>
 					{{ filtersStore.activeFilterCount }}
 				</span>
 			</div>
-			<button v-if="filtersStore.hasActiveFilters" type="button" class="insis-btn-text flex items-center gap-1 text-xs" @click="handleResetFilters">
-				<IconRotateCcw class="h-3 w-3" />
+			<button
+				v-if="filtersStore.hasActiveFilters"
+				type="button"
+				class="insis-btn-text flex items-center gap-1 text-xs"
+				:aria-label="$t('common.reset')"
+				@click="handleResetFilters"
+			>
+				<IconRotateCcw class="h-3 w-3" aria-hidden="true" />
 				{{ $t('common.reset') }}
 			</button>
 		</div>
@@ -218,15 +228,21 @@ function handleCloseMobileFilter() {
 		<div v-if="hasCompletedCourses" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
 			<div class="flex items-center justify-between">
 				<span class="insis-label mb-0 flex items-center gap-1.5">
-					<IconCircleCheck class="h-4 w-4 text-[var(--insis-success)]" />
+					<IconCircleCheck class="h-4 w-4 text-[var(--insis-success)]" aria-hidden="true" />
 					{{ $t('components.filters.FilterPanel.completedCourses') }}
 				</span>
-				<span class="text-xs text-[var(--insis-gray-500)]">
+				<span class="text-xs text-[var(--insis-gray-500)]" :aria-label="$t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount })">
 					{{ $t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount }) }}
 				</span>
 			</div>
 			<label class="mt-2 flex items-center gap-2 cursor-pointer text-sm text-[var(--insis-gray-600)]">
-				<input type="checkbox" class="insis-checkbox" :checked="!isHidingCompletedCourses" @change="toggleShowCompletedCourses" />
+				<input
+					type="checkbox"
+					class="insis-checkbox"
+					:checked="!isHidingCompletedCourses"
+					:aria-label="$t('components.filters.FilterPanel.showCompletedCourses')"
+					@change="toggleShowCompletedCourses"
+				/>
 				{{ $t('components.filters.FilterPanel.showCompletedCourses') }}
 			</label>
 		</div>
@@ -235,10 +251,10 @@ function handleCloseMobileFilter() {
 		<div v-if="hasSelectedCourses" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
 			<div class="flex items-center justify-between">
 				<span class="insis-label mb-0 flex items-center gap-1.5">
-					<IconCalendarX class="h-4 w-4 text-[var(--insis-danger)]" />
+					<IconCalendarX class="h-4 w-4 text-[var(--insis-danger)]" aria-hidden="true" />
 					{{ $t('components.filters.FilterPanel.timetableConflicts') }}
 				</span>
-				<span class="text-xs text-[var(--insis-gray-500)]">
+				<span class="text-xs text-[var(--insis-gray-500)]" :aria-label="$t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount })">
 					{{ $t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount }) }}
 				</span>
 			</div>
@@ -247,6 +263,7 @@ function handleCloseMobileFilter() {
 					type="checkbox"
 					class="insis-checkbox"
 					:checked="filtersStore.hideConflictingCourses"
+					:aria-label="$t('components.filters.FilterPanel.hideConflictingCourses')"
 					@change="coursesStore.toggleHideConflictingCourses()"
 				/>
 				{{ $t('components.filters.FilterPanel.hideConflictingCourses') }}
@@ -266,13 +283,14 @@ function handleCloseMobileFilter() {
 					{{ $t('components.filters.FilterPanel.searchLabel') }}
 				</label>
 				<div class="relative">
-					<Search class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
+					<Search class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" aria-hidden="true" />
 					<input
 						id="title-search"
 						type="text"
 						class="insis-input pl-9"
 						:placeholder="$t('components.filters.FilterPanel.searchPlaceholder')"
 						:value="localTitleSearch"
+						:aria-label="$t('components.filters.FilterPanel.searchLabel')"
 						@input="handleTitleSearchInput"
 					/>
 				</div>

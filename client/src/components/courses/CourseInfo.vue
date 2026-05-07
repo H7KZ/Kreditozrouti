@@ -34,9 +34,10 @@ function handleToggleCompleted() {
 				target="_blank"
 				rel="noopener noreferrer"
 				class="text-[var(--insis-blue)] hover:text-[var(--insis-blue-dark)]"
+				:aria-label="$t('common.openInInsis')"
 				:title="$t('common.openInInsis')"
 			>
-				<IconExternalLink class="h-3 w-3" />
+				<IconExternalLink class="h-3 w-3" aria-hidden="true" />
 			</a>
 		</h3>
 
@@ -83,9 +84,10 @@ function handleToggleCompleted() {
 						? 'border-[var(--insis-success)] bg-[var(--insis-success-light)] text-[var(--insis-success)]'
 						: 'border-[var(--insis-border)] bg-white text-[var(--insis-gray-600)] hover:border-[var(--insis-success)] hover:bg-[var(--insis-success-light)]',
 				]"
+				:aria-label="isMarkedCompleted ? $t('components.courses.CourseRowExpanded.markedCompleted') : $t('components.courses.CourseRowExpanded.markAsCompleted')"
 				@click="handleToggleCompleted"
 			>
-				<IconCircleCheck :class="['h-4 w-4', isMarkedCompleted ? 'text-[var(--insis-success)]' : 'text-[var(--insis-gray-400)]']" />
+				<IconCircleCheck :class="['h-4 w-4', isMarkedCompleted ? 'text-[var(--insis-success)]' : 'text-[var(--insis-gray-400)]']" aria-hidden="true" />
 				{{
 					isMarkedCompleted ? $t('components.courses.CourseRowExpanded.markedCompleted') : $t('components.courses.CourseRowExpanded.markAsCompleted')
 				}}

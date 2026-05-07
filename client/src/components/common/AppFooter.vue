@@ -48,7 +48,7 @@ const getComplianceLink = () => {
 								rel="noopener noreferrer"
 								class="flex items-center text-left gap-2 text-insis-gray-700 transition-colors hover:text-insis-blue"
 							>
-								<IconFileText class="h-4 w-4 shrink-0" />
+								<IconFileText class="h-4 w-4 shrink-0" aria-hidden="true" />
 								{{ t('footer.links.compliance') }}
 							</a>
 						</li>
@@ -59,9 +59,9 @@ const getComplianceLink = () => {
 								rel="noopener noreferrer"
 								class="flex items-center text-left gap-2 text-insis-gray-700 transition-colors hover:text-insis-blue"
 							>
-								<IconGithub class="h-4 w-4 shrink-0" />
+								<IconGithub class="h-4 w-4 shrink-0" aria-hidden="true" />
 								{{ t('footer.links.github') }}
-								<IconExternalLink class="h-3 w-3" />
+								<IconExternalLink class="h-3 w-3" aria-hidden="true" />
 							</a>
 						</li>
 						<li>
@@ -71,9 +71,9 @@ const getComplianceLink = () => {
 								rel="noopener noreferrer"
 								class="flex items-center text-left gap-2 text-insis-gray-700 transition-colors hover:text-insis-blue"
 							>
-								<IconFingerPrintPattern class="h-4 w-4 shrink-0" />
+								<IconFingerPrintPattern class="h-4 w-4 shrink-0" aria-hidden="true" />
 								{{ t('footer.links.insis') }}
-								<IconExternalLink class="h-3 w-3 shrink-0" />
+								<IconExternalLink class="h-3 w-3 shrink-0" aria-hidden="true" />
 							</a>
 						</li>
 					</ul>
@@ -88,10 +88,10 @@ const getComplianceLink = () => {
 						{{ t('footer.contact.description') }}
 					</p>
 					<a
-						href="mailto:support@kreditozrouti.vse.cz"
+						href="mailto:support@kreditozrouti.cz"
 						class="flex items-center text-left gap-2 text-sm text-insis-gray-700 transition-colors hover:text-insis-blue"
 					>
-						<IconMail class="h-4 w-4 shrink-0" />
+						<IconMail class="h-4 w-4 shrink-0" aria-hidden="true" />
 						support@kreditozrouti.cz
 					</a>
 				</div>

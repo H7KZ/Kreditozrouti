@@ -167,13 +167,17 @@ function formatFilter(filter: TimeSelection): string {
 		<div v-else class="rounded border border-[var(--insis-border)] bg-white p-3">
 			<!-- Day selection -->
 			<div class="mb-3">
-				<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> {{ $t('components.filters.FilterTimeRange.dayLabel') }} </label>
-				<div class="flex">
+				<label class="mb-1 block text-xs text-[var(--insis-gray-600)]" id="day-selection-label">
+					{{ $t('components.filters.FilterTimeRange.dayLabel') }}
+				</label>
+				<div class="flex" role="group" aria-labelledby="day-selection-label">
 					<button
 						v-for="day in WEEKDAYS"
 						:key="day"
 						type="button"
 						:class="['insis-day-toggle', selectedDay === day && 'active']"
+						:aria-pressed="selectedDay === day"
+						:aria-label="$t(`days.${day}`)"
 						@click="toggleDay(day)"
 					>
 						{{ $t(`daysShort.${day}`) }}
@@ -184,16 +188,16 @@ function formatFilter(filter: TimeSelection): string {
 			<!-- Time range -->
 			<div class="mb-3 grid grid-cols-2 gap-2">
 				<div>
-					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> {{ $t('common.from') }} </label>
-					<select v-model="timeFrom" class="insis-select">
+					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]" for="time-from"> {{ $t('common.from') }} </label>
+					<select id="time-from" v-model="timeFrom" class="insis-select" :aria-label="$t('common.from')">
 						<option v-for="opt in timeOptions" :key="opt.value" :value="opt.value">
 							{{ opt.label }}
 						</option>
 					</select>
 				</div>
 				<div>
-					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> {{ $t('common.to') }} </label>
-					<select v-model="timeTo" class="insis-select">
+					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]" for="time-to"> {{ $t('common.to') }} </label>
+					<select id="time-to" v-model="timeTo" class="insis-select" :aria-label="$t('common.to')">
 						<option v-for="opt in timeOptions" :key="opt.value" :value="opt.value">
 							{{ opt.label }}
 						</option>
@@ -205,7 +209,7 @@ function formatFilter(filter: TimeSelection): string {
 			<div class="flex gap-2">
 				<button type="button" class="insis-btn flex-1" @click="showAddForm = false">{{ $t('common.cancel') }}</button>
 				<button type="button" class="insis-btn-primary flex-1" :disabled="!selectedDay" @click="handleAddTimeFilter">
-					<IconPlus class="mr-1 inline h-3 w-3" />
+					<IconPlus class="mr-1 inline h-3 w-3" aria-hidden="true" />
 					{{ $t('common.add') }}
 				</button>
 			</div>

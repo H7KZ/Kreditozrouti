@@ -38,12 +38,13 @@ function toggle() {
 					: 'bg-transparent border-transparent text-[var(--insis-text-2)] hover:bg-[var(--insis-surface-2)] hover:border-[var(--insis-border)] hover:text-[var(--insis-text)]',
 			]"
 			:aria-expanded="isOpen"
+			:aria-label="$t('common.switchLanguage')"
 			aria-haspopup="listbox"
 			@click="toggle"
 		>
-			<IconGlobe class="h-3.5 w-3.5 shrink-0" />
+			<IconGlobe class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
 			<span>{{ (locale as string).toUpperCase() }}</span>
-			<IconChevronDown :class="['h-3 w-3 transition-transform duration-150 shrink-0', isOpen && 'rotate-180']" />
+			<IconChevronDown :class="['h-3 w-3 transition-transform duration-150 shrink-0', isOpen && 'rotate-180']" aria-hidden="true" />
 		</button>
 
 		<!-- Dropdown panel -->

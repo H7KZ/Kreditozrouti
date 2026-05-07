@@ -89,16 +89,24 @@ const isFiltering = computed(() => props.selected.length > 0)
 		<!-- Collapsible header -->
 		<button
 			type="button"
-			class="flex cursor-pointer w-full items-center justify-between py-1 px-1 -mx-1 rounded-[3px] text-left hover:bg-[var(--insis-surface-2)] transition-colors duration-100"
+			class="flex cursor-pointer w-full items-center justify-between py-1 px-1 -mx-1 rounded-[3px] text-left hover:bg-[var(--insis-surface-2)] transition-colors duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)] focus-visible:outline-offset-1"
+			:aria-expanded="!isCollapsed"
 			@click="toggleCollapsed"
 		>
 			<span class="insis-label mb-0 flex items-center gap-1.5">
 				{{ label }}
-				<span v-if="selectedCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-[10px] text-white">
+				<span
+					v-if="selectedCount > 0"
+					class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-[10px] text-white"
+					:aria-label="$t('components.filters.FilterPanel.activeFilterCount', { count: selectedCount })"
+				>
 					{{ selectedCount }}
 				</span>
 			</span>
-			<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !isCollapsed }]" />
+			<IconChevronDown
+				:class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !isCollapsed }]"
+				aria-hidden="true"
+			/>
 		</button>
 
 		<!-- Collapsible content -->
@@ -109,12 +117,16 @@ const isFiltering = computed(() => props.selected.length > 0)
 
 			<!-- Search input (if searchable) -->
 			<div v-if="searchable" class="relative mb-2">
-				<IconSearch class="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[var(--insis-gray-500)]" />
+				<IconSearch
+					class="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[var(--insis-gray-500)]"
+					aria-hidden="true"
+				/>
 				<input
 					v-model="searchQuery"
 					type="text"
 					class="insis-input py-1 pl-7 text-xs"
 					:placeholder="$t('components.filters.FilterCheckboxGroup.searchPlaceholder')"
+					:aria-label="$t('components.filters.FilterCheckboxGroup.searchPlaceholder')"
 				/>
 			</div>
 
@@ -127,19 +139,33 @@ const isFiltering = computed(() => props.selected.length > 0)
 			<!-- Checkbox list -->
 			<div v-else class="space-y-1">
 				<label v-for="facet in visibleFacets" :key="String(facet.value)" :class="['insis-checkbox-label', isSelected(facet.value) ? 'active' : '']">
-					<input type="checkbox" class="insis-checkbox" :checked="isSelected(facet.value)" @change="handleChange(facet.value)" />
+					<input
+						type="checkbox"
+						class="insis-checkbox"
+						:checked="isSelected(facet.value)"
+						:aria-label="getDisplayLabel(facet)"
+						@change="handleChange(facet.value)"
+					/>
 					<span class="flex-1 truncate text-sm">
 						{{ getDisplayLabel(facet) }}
 					</span>
-					<span :class="['text-xs', facet.count === 0 ? 'text-[var(--insis-gray-400)] italic' : 'text-[var(--insis-gray-500)]']">
+					<span
+						:class="['text-xs', facet.count === 0 ? 'text-[var(--insis-gray-400)] italic' : 'text-[var(--insis-gray-500)]']"
+						aria-hidden="true"
+					>
 						({{ facet.count }})
 					</span>
 				</label>
 			</div>
 
 			<!-- Show more button -->
-			<button v-if="hasMore" type="button" class="insis-btn-text mt-2 flex items-center gap-1 text-xs" @click="toggleListExpanded">
-				<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': listExpanded }]" />
+			<button
+				type="button"
+				class="insis-btn-text mt-2 flex items-center gap-1 text-xs"
+				:aria-expanded="listExpanded"
+				@click="toggleListExpanded"
+			>
+				<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': listExpanded }]" aria-hidden="true" />
 				{{ listExpanded ? $t('common.showLess') : $t('common.showMore', { count: hiddenCount }) }}
 			</button>
 		</div>

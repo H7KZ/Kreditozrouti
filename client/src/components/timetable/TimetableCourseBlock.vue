@@ -132,7 +132,7 @@ function handleRemove(event: MouseEvent) {
 
 <template>
 	<div
-		class="timetable-block group cursor-pointer min-h-6 transition-shadow hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] hover:z-10 absolute left-0 right-0 overflow-hidden border border-[var(--insis-border)] text-xs"
+		class="timetable-block group cursor-pointer min-h-6 transition-shadow hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] hover:z-10 absolute left-0 right-0 overflow-hidden border border-[var(--insis-border)] text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)] focus-visible:outline-offset-1"
 		:class="[
 			blockColorClass,
 			{
@@ -141,6 +141,11 @@ function handleRemove(event: MouseEvent) {
 				'merged-block': isMerged,
 			},
 		]"
+		role="button"
+		:tabindex="0"
+		:aria-label="$t('components.timetable.TimetableCourseBlock.courseBlockLabel', { code: unit.courseIdent, type: typeLabel, time: timeRange })"
+		@keydown.enter="$emit('click')"
+		@keydown.space.prevent="$emit('click')"
 	>
 		<div class="flex h-full flex-col p-1">
 			<!-- Course ident, type badge, and warning icon -->
@@ -151,6 +156,7 @@ function handleRemove(event: MouseEvent) {
 						v-if="courseStatus.needsAction"
 						class="warning-indicator shrink-0 flex items-center justify-center rounded-full text-[var(--insis-danger)]"
 						:title="warningTooltip"
+						aria-hidden="true"
 					>
 						<IconAlertTriangle class="h-3 w-3" />
 					</span>
@@ -191,14 +197,14 @@ function handleRemove(event: MouseEvent) {
 				</span>
 			</div>
 
-			<!-- Remove button (shown on hover) -->
+			<!-- Remove button (shown on hover/focus) -->
 			<button
 				type="button"
-				class="cursor-pointer absolute right-0.5 top-0.5 hidden group-hover:flex h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger-light)] text-[var(--insis-danger)] hover:bg-[var(--insis-danger)] hover:text-white transition-colors duration-75"
-				:title="$t('components.timetable.TimetableCourseBlock.removeFromTimetable')"
+				class="cursor-pointer absolute right-0.5 top-0.5 flex opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger-light)] text-[var(--insis-danger)] hover:bg-[var(--insis-danger)] hover:text-white transition-all duration-75 focus:opacity-100 focus:outline-none focus:ring-1 focus:ring-[var(--insis-danger)]"
+				:aria-label="$t('components.timetable.TimetableCourseBlock.removeFromTimetable')"
 				@click="handleRemove"
 			>
-				<IconX class="h-3 w-3" />
+				<IconX class="h-3 w-3" aria-hidden="true" />
 			</button>
 		</div>
 	</div>

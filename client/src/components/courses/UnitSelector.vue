@@ -160,9 +160,10 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 					v-if="selectedUnitsStore.length > 0"
 					type="button"
 					class="insis-btn-text text-xs text-[var(--insis-danger)]"
+					:aria-label="$t('components.courses.CourseRowExpanded.removeAll')"
 					@click="handleRemoveCourse"
 				>
-					<IconTrash class="mr-1 inline h-3 w-3" />
+					<IconTrash class="mr-1 inline h-3 w-3" aria-hidden="true" />
 					{{ $t('components.courses.CourseRowExpanded.removeAll') }}
 				</button>
 			</div>
@@ -174,12 +175,12 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 			class="mb-3 flex items-center justify-between rounded border border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)] px-3 py-2"
 		>
 			<div class="flex items-center gap-2 text-sm text-[var(--insis-warning)]">
-				<IconOctagonAlert class="h-4 w-4 shrink-0" />
+				<IconOctagonAlert class="h-4 w-4 shrink-0" aria-hidden="true" />
 				<span>{{ $t('components.courses.CourseRowExpanded.slotsWithConflicts', { count: conflictingUnitCount }) }}</span>
 			</div>
 			<label class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--insis-warning)] hover:text-[var(--insis-warning-dark)]">
-				<input v-model="hideConflictingUnits" type="checkbox" class="insis-checkbox" />
-				<IconEyeOff class="h-3 w-3" />
+				<input v-model="hideConflictingUnits" type="checkbox" class="insis-checkbox" :aria-label="$t('components.courses.CourseRowExpanded.hideConflicting')" />
+				<IconEyeOff class="h-3 w-3" aria-hidden="true" />
 				{{ $t('components.courses.CourseRowExpanded.hideConflicting') }}
 			</label>
 		</div>
@@ -189,7 +190,7 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 			v-if="hasIncompleteSelection"
 			class="mb-4 flex items-start gap-2 rounded border border-[var(--insis-warning)] bg-[var(--insis-warning-light)] p-3 text-sm"
 		>
-			<IconAlertTriangle class="mt-0.5 h-4 w-4 shrink-0 text-[var(--insis-warning-dark)]" />
+			<IconAlertTriangle class="mt-0.5 h-4 w-4 shrink-0 text-[var(--insis-warning-dark)]" aria-hidden="true" />
 			<div>
 				<p class="font-medium text-[var(--insis-warning-dark)]">
 					{{ $t('components.courses.CourseRowExpanded.incompleteSelectionTitle') }}
@@ -205,7 +206,7 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 			v-if="hasCampusConflictForCourse"
 			class="mb-4 flex items-start gap-2 rounded border border-[var(--insis-warning)] bg-[var(--insis-warning-light)] p-3 text-sm"
 		>
-			<IconMapPin class="mt-0.5 h-4 w-4 shrink-0 text-[var(--insis-warning-dark)]" />
+			<IconMapPin class="mt-0.5 h-4 w-4 shrink-0 text-[var(--insis-warning-dark)]" aria-hidden="true" />
 			<div>
 				<p class="font-medium text-[var(--insis-warning-dark)]">
 					{{ $t('components.courses.CourseRowExpanded.campusConflictTitle') }}
@@ -277,7 +278,7 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-[var(--insis-danger)]"
 										:title="formatSlotConflictTooltip(slot)"
 									>
-										<IconOctagonAlert class="h-3 w-3" />
+										<IconOctagonAlert class="h-3 w-3" aria-hidden="true" />
 										<span class="hidden sm:inline">{{ [...new Set(getSlotConflicts(slot).map((c) => c.courseIdent))].join(', ') }}</span>
 									</span>
 									<span
@@ -285,7 +286,7 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-[var(--insis-warning)]"
 										:title="getSlotCampusConflictTooltip(slot)"
 									>
-										<IconAlertTriangle class="h-3 w-3" />
+										<IconAlertTriangle class="h-3 w-3" aria-hidden="true" />
 										<span class="hidden sm:inline">{{
 											[...new Set(getSlotCampusConflicts(slot).map((c) => c.courseIdent))].join(', ')
 										}}</span>
@@ -306,10 +307,10 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 									<button
 										type="button"
 										class="insis-btn bg-white px-3 py-1.5 text-xs hover:border-[var(--insis-danger)] hover:bg-[var(--insis-danger-light)] hover:text-[var(--insis-danger)]"
-										:title="$t('common.remove')"
+										:aria-label="$t('common.remove')"
 										@click.stop="handleRemoveUnit(unit)"
 									>
-										<IconMinus class="h-4 w-4" />
+										<IconMinus class="h-4 w-4" aria-hidden="true" />
 									</button>
 								</template>
 								<template v-else>
@@ -320,9 +321,10 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 											'insis-btn-primary': !isGroupSatisfied(group.types),
 											'insis-btn-secondary opacity-90': isGroupSatisfied(group.types),
 										}"
+										:aria-label="isGroupSatisfied(group.types) ? $t('common.change') : $t('common.add')"
 										@click.stop="handleAddUnit(unit)"
 									>
-										<IconPlus v-if="!isGroupSatisfied(group.types)" class="h-3 w-3" />
+										<IconPlus v-if="!isGroupSatisfied(group.types)" class="h-3 w-3" aria-hidden="true" />
 										{{ isGroupSatisfied(group.types) ? $t('common.change') : $t('common.add') }}
 									</button>
 								</template>

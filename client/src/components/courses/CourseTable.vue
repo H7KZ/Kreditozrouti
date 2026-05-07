@@ -75,20 +75,32 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 						v-for="col in columns"
 						:key="col.key"
 						:class="[
-							col.sortable && 'sortable',
+							col.sortable && 'sortable focus-visible:bg-[var(--insis-surface-2)] focus-visible:outline-none',
 							col.key === 'ident' && 'w-24',
 							col.key === 'ects' && 'w-16 text-center',
 							col.key === 'actions' && 'w-10',
 						]"
+						:role="col.sortable ? 'button' : undefined"
+						:tabindex="col.sortable ? 0 : undefined"
+						:aria-label="col.sortable ? $t('components.courses.CourseTable.sortLabel', { column: col.label }) : undefined"
+						:aria-sort="
+							col.sortable && filtersStore.filters.sort_by === col.key
+								? filtersStore.filters.sort_dir === 'asc'
+									? 'ascending'
+									: 'descending'
+								: undefined
+						"
 						@click="col.sortable && handleSort(col.key as CourseSortBy)"
+						@keydown.enter="col.sortable && handleSort(col.key as CourseSortBy)"
+						@keydown.space.prevent="col.sortable && handleSort(col.key as CourseSortBy)"
 					>
 						<div class="flex items-center gap-1">
 							{{ col.label }}
 							<template v-if="col.sortable && filtersStore.filters.sort_by === col.key">
-								<IconChevronUp v-if="filtersStore.filters.sort_dir === 'asc'" class="h-3 w-3" />
-								<IconChevronDown v-else class="h-3 w-3" />
+								<IconChevronUp v-if="filtersStore.filters.sort_dir === 'asc'" class="h-3 w-3" aria-hidden="true" />
+								<IconChevronDown v-else class="h-3 w-3" aria-hidden="true" />
 							</template>
-							<span v-else-if="col.sortable" class="opacity-30 text-[10px]">↕</span>
+							<span v-else-if="col.sortable" class="opacity-30 text-[10px]" aria-hidden="true">↕</span>
 						</div>
 					</th>
 				</tr>
@@ -99,7 +111,7 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 						<td :colspan="columns.length" class="py-8 text-center text-[var(--insis-text-3)]">
 							<template v-if="coursesStore.loading">
 								<div class="insis-loading">
-									<div class="insis-spinner" />
+									<div class="insis-spinner" aria-hidden="true" />
 								</div>
 							</template>
 							<template v-else>{{ $t('components.courses.CourseTable.noResults') }}</template>
@@ -111,8 +123,18 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 					<template v-for="course in coursesStore.courses" :key="course.id">
 						<!-- Main Row -->
 						<tr
-							:class="['insis-table-row-clickable', isExpanded(course.id) && 'row-expanded', hasSelectedUnits(course.id) && 'row-in-timetable']"
+							:class="[
+								'insis-table-row-clickable focus-within:bg-[var(--insis-surface-2)] focus-within:outline-none',
+								isExpanded(course.id) && 'row-expanded',
+								hasSelectedUnits(course.id) && 'row-in-timetable',
+							]"
+							role="button"
+							:tabindex="0"
+							:aria-expanded="isExpanded(course.id)"
+							:aria-label="$t('components.courses.CourseTable.rowLabel', { code: course.ident, title: getCourseTitle(course) })"
 							@click="handleRowClick(course.id)"
+							@keydown.enter="handleRowClick(course.id)"
+							@keydown.space.prevent="handleRowClick(course.id)"
 						>
 							<!-- Ident -->
 							<td>
