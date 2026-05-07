@@ -4,6 +4,7 @@ import { useAlertsStore, useCoursesStore, useTimetableStore, useUIStore, useWiza
 import { czechPluralRule, datetimeFormats, numberFormats } from '@client/utils/pluralization.ts'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 import * as Sentry from '@sentry/vue'
+import { createHead } from '@unhead/vue'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import { createI18n } from 'vue-i18n'
@@ -11,6 +12,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
 
 const app = createApp(App)
+const head = createHead()
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -68,6 +70,7 @@ if (import.meta.env.VITE_SENTRY_DSN) {
 app.use(router)
 app.use(i18n)
 app.use(pinia)
+app.use(head)
 
 useAlertsStore()
 useCoursesStore()

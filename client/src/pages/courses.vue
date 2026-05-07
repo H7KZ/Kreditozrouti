@@ -6,18 +6,29 @@ import FilterPanel from '@client/components/filters/FilterPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import { useHead } from '@unhead/vue'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import IconCalendar from '~icons/lucide/calendar'
 import IconCalendarMinus2 from '~icons/lucide/calendar-minus-2'
 import IconTable from '~icons/lucide/table'
 
+const { t } = useI18n()
 const router = useRouter()
 const coursesStore = useCoursesStore()
 const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
 const uiStore = useUIStore()
 const wizardStore = useWizardStore()
+
+useHead({
+	title: computed(() => {
+		const base = t('pages.courses.myTimetable')
+		const period = wizardStore.year && wizardStore.semester ? ` | ${wizardStore.year} ${t(`semesters.${wizardStore.semester}`)}` : ''
+		return `${base}${period} – Kreditožrouti`
+	}),
+})
 
 watch(
 	() => wizardStore.completed,

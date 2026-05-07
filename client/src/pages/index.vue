@@ -2,12 +2,25 @@
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
 import { useWizardDataStore, useWizardStore } from '@client/stores'
+import { useHead } from '@unhead/vue'
 import { onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
+const { t } = useI18n()
 const router = useRouter()
 const wizardStore = useWizardStore()
 const wizardDataStore = useWizardDataStore()
+
+useHead({
+	title: t('pages.index.title') + ' – ' + t('pages.index.subtitle'),
+	meta: [
+		{
+			name: 'description',
+			content: t('pages.index.description'),
+		},
+	],
+})
 
 watch(
 	() => wizardStore.completed,
