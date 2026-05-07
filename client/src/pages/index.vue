@@ -2,7 +2,7 @@
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
 import { useWizardDataStore, useWizardStore } from '@client/stores'
-import { useHead } from '@unhead/vue'
+import { useSeoMeta } from '@unhead/vue'
 import { onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -12,14 +12,11 @@ const router = useRouter()
 const wizardStore = useWizardStore()
 const wizardDataStore = useWizardDataStore()
 
-useHead({
-	title: t('pages.index.title') + ' – ' + t('pages.index.subtitle'),
-	meta: [
-		{
-			name: 'description',
-			content: t('pages.index.description'),
-		},
-	],
+useSeoMeta({
+	title: () => `${t('pages.index.title')} – ${t('pages.index.subtitle')}`,
+	description: () => t('pages.index.description'),
+	ogTitle: () => `${t('pages.index.title')} – ${t('pages.index.subtitle')}`,
+	ogDescription: () => t('pages.index.description'),
 })
 
 watch(

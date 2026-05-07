@@ -6,7 +6,7 @@ import FilterPanel from '@client/components/filters/FilterPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
-import { useHead } from '@unhead/vue'
+import { useSeoMeta } from '@unhead/vue'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -22,12 +22,17 @@ const timetableStore = useTimetableStore()
 const uiStore = useUIStore()
 const wizardStore = useWizardStore()
 
-useHead({
-	title: computed(() => {
+useSeoMeta({
+	title: () => {
 		const base = t('pages.courses.myTimetable')
 		const period = wizardStore.year && wizardStore.semester ? ` | ${wizardStore.year} ${t(`semesters.${wizardStore.semester}`)}` : ''
 		return `${base}${period} – Kreditožrouti`
-	}),
+	},
+	ogTitle: () => {
+		const base = t('pages.courses.myTimetable')
+		const period = wizardStore.year && wizardStore.semester ? ` | ${wizardStore.year} ${t(`semesters.${wizardStore.semester}`)}` : ''
+		return `${base}${period} – Kreditožrouti`
+	},
 })
 
 watch(
