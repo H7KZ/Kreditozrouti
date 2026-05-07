@@ -2,11 +2,13 @@ import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesRespons
 import type { CourseWithRelations } from '@api/Database/types'
 import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
 import { fetchCourses as fetchCoursesFromService } from '@client/services/courseService'
+import { useAnnouncerStore } from '@client/stores/announcer.store'
 import { useFiltersStore } from '@client/stores/filters.store'
 import { useTimetableStore } from '@client/stores/timetable.store'
 import { useWizardStore } from '@client/stores/wizard.store'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 /**
  * Courses Store
@@ -16,6 +18,8 @@ import { computed, ref } from 'vue'
  * The two sources of exclude_times (manual + timetable) are merged by filtersStore.
  */
 export const useCoursesStore = defineStore('courses', () => {
+	const { t } = useI18n()
+	const announcer = useAnnouncerStore()
 	const courses = ref<CourseWithRelations[]>([])
 	const facets = ref<CoursesResponse['facets']>({
 		faculties: [],
@@ -76,9 +80,17 @@ export const useCoursesStore = defineStore('courses', () => {
 			courses.value = data.data
 			facets.value = data.facets
 			pagination.value = data.meta
+
+			// Announce result count to screen readers
+			if (data.meta.total === 0) {
+				announcer.announce(t('common.announcements.noCoursesFound'))
+			} else {
+				announcer.announce(t('common.announcements.coursesFound', { count: data.meta.total }))
+			}
 		} catch (e) {
 			error.value = 'Failed to load courses'
 			console.error('Courses: Failed to fetch', e)
+			announcer.announce(t('common.announcements.loadingError'), 'assertive')
 		} finally {
 			loading.value = false
 		}

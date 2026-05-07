@@ -3,6 +3,7 @@ import type { TimeSelection } from '@api/Validations'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { ALL_DAYS } from '@client/constants/timetable'
 import { i18n } from '@client/index'
+import { useAnnouncerStore } from '@client/stores/announcer.store'
 import { useFiltersStore } from '@client/stores/filters.store'
 import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCourseUnit, SlotConflictInfo } from '@client/types'
 import { getSlotType } from '@client/utils/course'
@@ -25,6 +26,7 @@ const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, 
  * into SelectedCourseUnit.snapshotAvailableTypes at add-time.
  */
 export const useTimetableStore = defineStore('timetable', () => {
+	const announcer = useAnnouncerStore()
 	const selectedUnits = ref<SelectedCourseUnit[]>([])
 
 	// ── Computed ──────────────────────────────────────────────────────────
@@ -301,18 +303,29 @@ export const useTimetableStore = defineStore('timetable', () => {
 			snapshotAvailableTypes,
 		})
 
+		announcer.announce(t('common.announcements.courseAdded', { code: course.ident }))
 		persist()
 		syncCoursesStoreExclusion()
 		return true
 	}
 
 	function removeUnit(unitId: number) {
+		const unit = selectedUnits.value.find((u) => u.unitId === unitId)
+		if (unit) {
+			announcer.announce(t('common.announcements.courseRemoved', { code: unit.courseIdent }))
+		}
+
 		selectedUnits.value = selectedUnits.value.filter((u) => u.unitId !== unitId)
 		persist()
 		syncCoursesStoreExclusion()
 	}
 
 	function removeCourse(courseId: number) {
+		const units = selectedUnits.value.filter((u) => u.courseId === courseId)
+		if (units.length > 0) {
+			announcer.announce(t('common.announcements.courseRemoved', { code: units[0]?.courseIdent }))
+		}
+
 		selectedUnits.value = selectedUnits.value.filter((u) => u.courseId !== courseId)
 		persist()
 		syncCoursesStoreExclusion()

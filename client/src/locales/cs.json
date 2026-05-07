@@ -170,7 +170,14 @@
 		"loadingCourses": "Načítání předmětů",
 		"removeTimeFilter": "Odebrat časový filtr",
 		"closeCourseModal": "Zavřít detail předmětu",
-		"switchLanguage": "Změnit jazyk"
+		"switchLanguage": "Změnit jazyk",
+		"announcements": {
+			"coursesFound": "Nalezen {count} kurz | Nalezeny {count} kurzy | Nalezeno {count} kurzů",
+			"noCoursesFound": "Nebyly nalezeny žádné kurzy",
+			"loadingError": "Chyba při načítání kurzů",
+			"courseAdded": "{code} přidán do rozvrhu",
+			"courseRemoved": "{code} odebrán z rozvrhu"
+		}
 	},
 	"pages": {
 		"index": {

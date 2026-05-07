@@ -170,7 +170,14 @@
 		"loadingCourses": "Loading courses",
 		"removeTimeFilter": "Remove time filter",
 		"closeCourseModal": "Close course details",
-		"switchLanguage": "Switch language"
+		"switchLanguage": "Switch language",
+		"announcements": {
+			"coursesFound": "Found {count} course | Found {count} courses",
+			"noCoursesFound": "No courses found",
+			"loadingError": "Error loading courses",
+			"courseAdded": "{code} added to timetable",
+			"courseRemoved": "{code} removed from timetable"
+		}
 	},
 	"pages": {
 		"index": {
