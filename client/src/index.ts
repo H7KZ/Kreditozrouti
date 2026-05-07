@@ -4,7 +4,7 @@ import { useAlertsStore, useCoursesStore, useTimetableStore, useUIStore, useWiza
 import { czechPluralRule, datetimeFormats, numberFormats } from '@client/utils/pluralization.ts'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 import * as Sentry from '@sentry/vue'
-import { createHead } from '@unhead/vue'
+import { createHead } from '@unhead/vue/client'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import { createI18n } from 'vue-i18n'

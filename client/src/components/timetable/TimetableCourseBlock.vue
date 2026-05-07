@@ -36,6 +36,7 @@ interface Props {
 
 interface Emits {
 	(e: 'remove'): void
+	(e: 'click'): void
 }
 
 const props = defineProps<Props>()
@@ -128,6 +129,10 @@ function handleRemove(event: MouseEvent) {
 	event.stopPropagation()
 	emit('remove')
 }
+
+function handleClick() {
+	emit('click')
+}
 </script>
 
 <template>
@@ -144,8 +149,9 @@ function handleRemove(event: MouseEvent) {
 		role="button"
 		:tabindex="0"
 		:aria-label="$t('components.timetable.TimetableCourseBlock.courseBlockLabel', { code: unit.courseIdent, type: typeLabel, time: timeRange })"
-		@keydown.enter="$emit('click')"
-		@keydown.space.prevent="$emit('click')"
+		@click="handleClick"
+		@keydown.enter="handleClick"
+		@keydown.space.prevent="handleClick"
 	>
 		<div class="flex h-full flex-col p-1">
 			<!-- Course ident, type badge, and warning icon -->

@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>()
 
 // Use facet filtering composable
-const { searchQuery, listExpanded, filterBySearch, getVisibleFacets, hasMoreItems, getHiddenCount, toggleListExpanded, isSelected, toggleSelection } =
+const { searchQuery, listExpanded, filterBySearch, getVisibleFacets, getHiddenCount, toggleListExpanded, isSelected, toggleSelection } =
 	useFacetFiltering(toRef(props, 'facets'), toRef(props, 'selected'), {
 		maxVisible: props.maxVisible,
 	})
@@ -58,9 +58,6 @@ const filteredFacets = filterBySearch(getDisplayLabel)
 
 // Visible facets with pagination
 const visibleFacets = getVisibleFacets(filteredFacets)
-
-// Has more items to show
-const hasMore = hasMoreItems(filteredFacets, visibleFacets)
 
 // Count of hidden items
 const hiddenCount = getHiddenCount(filteredFacets, visibleFacets)
