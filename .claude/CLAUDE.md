@@ -1386,12 +1386,12 @@ VITE_DEBUG=true pnpm run dev
 
 | Document | Purpose |
 |----------|---------|
-| [README.md](README.md) | Project overview, quick start, contributing |
-| [docs/API.md](docs/API.md) | API architecture, endpoints, services, BullMQ jobs |
-| [docs/CLIENT.md](docs/CLIENT.md) | Client architecture, components, stores, composables |
-| [docs/SCRAPER.md](docs/SCRAPER.md) | Scraper implementation, jobs, InSIS interaction |
-| [docs/SCRIPTS.md](docs/SCRIPTS.md) | Utility scripts and automation tools |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Production deployment guide and configuration |
+| [README.md](../README.md) | Project overview, quick start, contributing |
+| [docs/API.md](../docs/API.md) | API architecture, endpoints, services, BullMQ jobs |
+| [docs/CLIENT.md](../docs/CLIENT.md) | Client architecture, components, stores, composables |
+| [docs/SCRAPER.md](../docs/SCRAPER.md) | Scraper implementation, jobs, InSIS interaction |
+| [docs/SCRIPTS.md](../docs/SCRIPTS.md) | Utility scripts and automation tools |
+| [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md) | Production deployment guide and configuration |
 
 ### Quick Reference
 
@@ -1537,7 +1537,7 @@ In development, trigger manually via `/commands/*` endpoints.
 
 ### Contributing
 
-See [README.md](README.md#-contributing) for full contributing guide.
+See [README.md](../README.md#-contributing) for full contributing guide.
 
 **Quick tips:**
 - Follow existing patterns

@@ -202,7 +202,7 @@ Comprehensive documentation is available in the [`docs/`](docs/) directory:
 | [**SCRAPER.md**](docs/SCRAPER.md) | Scraper implementation, jobs, and InSIS interaction |
 | [**SCRIPTS.md**](docs/SCRIPTS.md) | Utility scripts and automation tools |
 | [**DEPLOYMENT.md**](docs/DEPLOYMENT.md) | Production deployment guide and configuration |
-| [**CLAUDE.md**](CLAUDE.md) | Project overview and development commands |
+| [**CLAUDE.md**](.claude/CLAUDE.md) | Project overview and development commands |
 
 ### Quick Links
 
