@@ -138,10 +138,7 @@ function toggleCollapsed() {
 					{{ activeFilterCount }}
 				</span>
 			</span>
-			<IconChevronDown
-				:class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !isCollapsed }]"
-				aria-hidden="true"
-			/>
+			<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !isCollapsed }]" aria-hidden="true" />
 		</button>
 
 		<!-- Collapsible content -->
@@ -171,10 +168,7 @@ function toggleCollapsed() {
 					/>
 					<component :is="getStatusIcon(option.value)" :class="['h-4 w-4 shrink-0', getStatusColorClass(option.value)]" aria-hidden="true" />
 					<span class="flex-1 text-sm">{{ option.label }}</span>
-					<span
-						:class="['text-xs', option.count === 0 ? 'text-[var(--insis-gray-400)] italic' : 'text-[var(--insis-gray-500)]']"
-						aria-hidden="true"
-					>
+					<span :class="['text-xs', option.count === 0 ? 'text-[var(--insis-gray-400)] italic' : 'text-[var(--insis-gray-500)]']" aria-hidden="true">
 						({{ option.count }})
 					</span>
 				</label>

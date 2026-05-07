@@ -179,7 +179,12 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 				<span>{{ $t('components.courses.CourseRowExpanded.slotsWithConflicts', { count: conflictingUnitCount }) }}</span>
 			</div>
 			<label class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--insis-warning)] hover:text-[var(--insis-warning-dark)]">
-				<input v-model="hideConflictingUnits" type="checkbox" class="insis-checkbox" :aria-label="$t('components.courses.CourseRowExpanded.hideConflicting')" />
+				<input
+					v-model="hideConflictingUnits"
+					type="checkbox"
+					class="insis-checkbox"
+					:aria-label="$t('components.courses.CourseRowExpanded.hideConflicting')"
+				/>
 				<IconEyeOff class="h-3 w-3" aria-hidden="true" />
 				{{ $t('components.courses.CourseRowExpanded.hideConflicting') }}
 			</label>

@@ -112,16 +112,16 @@ The `wizardDataStore` is NOT hydrated — it holds API responses only and refetc
 
 **Key methods:**
 
-| Method | Effect |
-|--------|--------|
-| `selectFaculty(id)` | Sets facultyId, clears downstream state, triggers `wizardDataStore.loadYearFacets()`, advances to step 2 |
-| `selectYear(year)` | Sets year, triggers `wizardDataStore.loadStudyPlans()`, advances to step 3 |
-| `toggleStudyPlan(id, ident, title)` | Adds/removes from `selectedStudyPlans` |
-| `proceedToCompletedCourses()` | Advances to step 4, triggers `wizardDataStore.loadStudyPlanCourses()` if needed |
-| `completeWizard()` | Sets `completed = true`, persists |
-| `goToStep(n)` | Navigates to step 1-4, clears downstream state if going back |
-| `reset()` | Full reset, removes localStorage key |
-| `hydrate()` | Loads from localStorage, restores `completed-courses.store`, conditionally triggers data loads |
+| Method                              | Effect                                                                                                   |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `selectFaculty(id)`                 | Sets facultyId, clears downstream state, triggers `wizardDataStore.loadYearFacets()`, advances to step 2 |
+| `selectYear(year)`                  | Sets year, triggers `wizardDataStore.loadStudyPlans()`, advances to step 3                               |
+| `toggleStudyPlan(id, ident, title)` | Adds/removes from `selectedStudyPlans`                                                                   |
+| `proceedToCompletedCourses()`       | Advances to step 4, triggers `wizardDataStore.loadStudyPlanCourses()` if needed                          |
+| `completeWizard()`                  | Sets `completed = true`, persists                                                                        |
+| `goToStep(n)`                       | Navigates to step 1-4, clears downstream state if going back                                             |
+| `reset()`                           | Full reset, removes localStorage key                                                                     |
+| `hydrate()`                         | Loads from localStorage, restores `completed-courses.store`, conditionally triggers data loads           |
 
 **Key computed:** `studyPlanIds` (number[]), `studyPlanIdents`, `step1Complete`–`step4Complete`, `canProceedToStep2`–`canComplete`, `selectionSummary`
 
@@ -139,13 +139,13 @@ The `wizardDataStore` is NOT hydrated — it holds API responses only and refetc
 
 **Key methods:**
 
-| Method | Reads from | Fetches |
-|--------|-----------|---------|
-| `loadInitialFacets()` | — | `POST /study_plans` (semesters: ZS, limit: 0) → facultyFacets, yearFacets |
-| `loadYearFacets()` | `wizardStore.facultyId` | `POST /study_plans` filtered by faculty → yearFacets |
-| `loadStudyPlans()` | `wizardStore.{facultyId, year, semester}` | `POST /study_plans` → studyPlans, levelFacets |
-| `loadStudyPlanCourses()` | `wizardStore.studyPlanIds` | `POST /study_plans/courses` → studyPlanCourses |
-| `resetData()` | — | Clears studyPlans, studyPlanCourses |
+| Method                   | Reads from                                | Fetches                                                                   |
+| ------------------------ | ----------------------------------------- | ------------------------------------------------------------------------- |
+| `loadInitialFacets()`    | —                                         | `POST /study_plans` (semesters: ZS, limit: 0) → facultyFacets, yearFacets |
+| `loadYearFacets()`       | `wizardStore.facultyId`                   | `POST /study_plans` filtered by faculty → yearFacets                      |
+| `loadStudyPlans()`       | `wizardStore.{facultyId, year, semester}` | `POST /study_plans` → studyPlans, levelFacets                             |
+| `loadStudyPlanCourses()` | `wizardStore.studyPlanIds`                | `POST /study_plans/courses` → studyPlanCourses                            |
+| `resetData()`            | —                                         | Clears studyPlans, studyPlanCourses                                       |
 
 **Consumers:** `completed-courses.store` (reads studyPlans, studyPlanCourses), wizard step components
 
@@ -161,16 +161,16 @@ The `wizardDataStore` is NOT hydrated — it holds API responses only and refetc
 
 **Key methods:**
 
-| Method | Notes |
-|--------|-------|
-| `toggleCompletedCourse(ident)` | Adds/removes from `completedCourseIdents`, persists |
-| `markCourseCompleted(ident)` / `unmarkCourseCompleted(ident)` | Non-toggle variants |
-| `setCompletedCoursesCategoryFilter(cats)` | UI filter for wizard step 4 display |
-| `setLevelFilter(levels)` / `setTitleSearch(s)` | Wizard step 3 plan picker filters |
-| `clearCompletedCourses()` | Resets idents (called when faculty/year/plan changes) |
-| `resetUIFilters()` | Clears search/category filters only |
-| `hydrate(idents)` | Called from `wizard.store.hydrate()` |
-| `persist()` | Saves `completedCourseIdents` to localStorage |
+| Method                                                        | Notes                                                 |
+| ------------------------------------------------------------- | ----------------------------------------------------- |
+| `toggleCompletedCourse(ident)`                                | Adds/removes from `completedCourseIdents`, persists   |
+| `markCourseCompleted(ident)` / `unmarkCourseCompleted(ident)` | Non-toggle variants                                   |
+| `setCompletedCoursesCategoryFilter(cats)`                     | UI filter for wizard step 4 display                   |
+| `setLevelFilter(levels)` / `setTitleSearch(s)`                | Wizard step 3 plan picker filters                     |
+| `clearCompletedCourses()`                                     | Resets idents (called when faculty/year/plan changes) |
+| `resetUIFilters()`                                            | Clears search/category filters only                   |
+| `hydrate(idents)`                                             | Called from `wizard.store.hydrate()`                  |
+| `persist()`                                                   | Saves `completedCourseIdents` to localStorage         |
 
 **Key computed:** `filteredStudyPlanCourses` (search + category filtered), `studyPlanCoursesByCategory` (Map), `availableCourseCategories` (priority-sorted), `isCourseCompleted(ident)` (getter), `courseIdentToCategories` (Map<ident, Set<category>>)
 
@@ -186,14 +186,14 @@ The `wizardDataStore` is NOT hydrated — it holds API responses only and refetc
 
 **Key methods:**
 
-| Method | Notes |
-|--------|-------|
-| `fetchCourses()` | Reads `filtersStore.filters` + `filtersStore.mergedExcludeTimes`, calls `POST /courses`, updates courses/facets/pagination |
-| `initializeFromWizard()` | Calls `filtersStore.initializeFromWizard(studyPlanIds, completedIdents)` — sets semester/year/study_plan_ids/completed_course_idents |
-| `toggleHideConflictingCourses()` | Calls `filtersStore.toggleHideConflicting(timetableStore.selectedTimesForExclusion)`, then fetchCourses |
-| `resetFilters()` | Delegates to `filtersStore.resetFilters(studyPlanIds, completedIdents)` |
-| `toggleCourseExpansion(id)` / `isCourseExpanded(id)` | Local UI toggle for course row expansion |
-| `goToPage(n)` / `nextPage()` / `prevPage()` / `setPageSize(n)` | Mutate `filtersStore.filters.offset`/`limit` |
+| Method                                                         | Notes                                                                                                                                |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `fetchCourses()`                                               | Reads `filtersStore.filters` + `filtersStore.mergedExcludeTimes`, calls `POST /courses`, updates courses/facets/pagination           |
+| `initializeFromWizard()`                                       | Calls `filtersStore.initializeFromWizard(studyPlanIds, completedIdents)` — sets semester/year/study_plan_ids/completed_course_idents |
+| `toggleHideConflictingCourses()`                               | Calls `filtersStore.toggleHideConflicting(timetableStore.selectedTimesForExclusion)`, then fetchCourses                              |
+| `resetFilters()`                                               | Delegates to `filtersStore.resetFilters(studyPlanIds, completedIdents)`                                                              |
+| `toggleCourseExpansion(id)` / `isCourseExpanded(id)`           | Local UI toggle for course row expansion                                                                                             |
+| `goToPage(n)` / `nextPage()` / `prevPage()` / `setPageSize(n)` | Mutate `filtersStore.filters.offset`/`limit`                                                                                         |
 
 **Consumers:** `FilterPanel.vue`, `CourseTable.vue`, `CourseStatusFilter.vue`, `courses.vue`
 
@@ -206,6 +206,7 @@ The `wizardDataStore` is NOT hydrated — it holds API responses only and refetc
 **Does NOT own:** Course results, facets, pagination — those are in `courses.store`.
 
 **Key state shape** (CoursesFilter):
+
 ```typescript
 {
   ids, idents, title, semesters, years, faculty_ids, levels, languages,
@@ -218,16 +219,16 @@ The `wizardDataStore` is NOT hydrated — it holds API responses only and refetc
 
 **Key methods:**
 
-| Method | Notes |
-|--------|-------|
-| `setFilter(key, value)` | Sets any filter field, resets offset to 0 |
-| `addIncludeTime(ts)` / `removeIncludeTime(i)` / `clearIncludeTimes()` | Manages `include_times` array |
-| `addExcludeTime(ts)` / `removeExcludeTime(i)` / `clearExcludeTimes()` | Manages manual `exclude_times` array |
-| `initializeFromWizard(planIds, completedIdents)` | Sets study_plan_ids, completed_course_idents, year/semester from `InSISService.getUpcomingPeriod()` |
-| `syncTimetableExcludeTimes(times)` | Called by `timetable.store` after unit add/remove when hideConflicting is on |
-| `toggleHideConflicting(timetableTimes)` | Flips `hideConflictingCourses`, updates `timetableExcludeTimes` |
-| `resetFilters(planIds, completedIdents)` | Resets to defaults, re-applies wizard context |
-| `resetAll()` | Full reset including wizard context |
+| Method                                                                | Notes                                                                                               |
+| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `setFilter(key, value)`                                               | Sets any filter field, resets offset to 0                                                           |
+| `addIncludeTime(ts)` / `removeIncludeTime(i)` / `clearIncludeTimes()` | Manages `include_times` array                                                                       |
+| `addExcludeTime(ts)` / `removeExcludeTime(i)` / `clearExcludeTimes()` | Manages manual `exclude_times` array                                                                |
+| `initializeFromWizard(planIds, completedIdents)`                      | Sets study_plan_ids, completed_course_idents, year/semester from `InSISService.getUpcomingPeriod()` |
+| `syncTimetableExcludeTimes(times)`                                    | Called by `timetable.store` after unit add/remove when hideConflicting is on                        |
+| `toggleHideConflicting(timetableTimes)`                               | Flips `hideConflictingCourses`, updates `timetableExcludeTimes`                                     |
+| `resetFilters(planIds, completedIdents)`                              | Resets to defaults, re-applies wizard context                                                       |
+| `resetAll()`                                                          | Full reset including wizard context                                                                 |
 
 **Key computed:** `mergedExcludeTimes` (manual + timetable), `activeFilterCount`, `hasActiveFilters`
 
@@ -245,36 +246,36 @@ The `wizardDataStore` is NOT hydrated — it holds API responses only and refetc
 
 **Key computed:**
 
-| Computed | Returns |
-|----------|---------|
-| `selectedCourseIds` | unique courseId numbers |
-| `unitsByCourse` | Map<courseId, SelectedCourseUnit[]> |
-| `unitsByDay` | Map<InSISDay, SelectedCourseUnit[]> |
-| `totalEcts` | sum of ECTS (one per unique courseId) |
-| `selectedTimesForExclusion` | TimeSelection[] for hide-conflicting feature |
-| `conflicts` | Array<[SelectedCourseUnit, SelectedCourseUnit]> — hard overlaps |
-| `campusConflicts` | Array<[SelectedCourseUnit, SelectedCourseUnit]> — campus travel conflicts |
-| `coursesWithConflicts` | Map<courseId, Set<ident>> |
-| `coursesWithCampusConflicts` | Map<courseId, Set<ident>> |
-| `courseStatuses` | **Map<courseId, CourseStatus>** — the primary status map consumed by all UI |
-| `coursesWithIssuesCount` | count of courses where status !== 'selected' |
+| Computed                     | Returns                                                                     |
+| ---------------------------- | --------------------------------------------------------------------------- |
+| `selectedCourseIds`          | unique courseId numbers                                                     |
+| `unitsByCourse`              | Map<courseId, SelectedCourseUnit[]>                                         |
+| `unitsByDay`                 | Map<InSISDay, SelectedCourseUnit[]>                                         |
+| `totalEcts`                  | sum of ECTS (one per unique courseId)                                       |
+| `selectedTimesForExclusion`  | TimeSelection[] for hide-conflicting feature                                |
+| `conflicts`                  | Array<[SelectedCourseUnit, SelectedCourseUnit]> — hard overlaps             |
+| `campusConflicts`            | Array<[SelectedCourseUnit, SelectedCourseUnit]> — campus travel conflicts   |
+| `coursesWithConflicts`       | Map<courseId, Set<ident>>                                                   |
+| `coursesWithCampusConflicts` | Map<courseId, Set<ident>>                                                   |
+| `courseStatuses`             | **Map<courseId, CourseStatus>** — the primary status map consumed by all UI |
+| `coursesWithIssuesCount`     | count of courses where status !== 'selected'                                |
 
 **Status precedence (in `courseStatuses`):** `'conflict'` > `'campus-conflict'` > `'incomplete'` > `'selected'`
 
 **Key methods:**
 
-| Method | Notes |
-|--------|-------|
-| `addUnit(course, unit, slot)` | Snapshots `snapshotAvailableTypes` from course.units, pushes to selectedUnits, persists, syncs exclusion |
-| `removeUnit(unitId)` | Removes by unitId, persists, syncs exclusion |
-| `removeCourse(courseId)` | Removes all units for course, persists, syncs exclusion |
-| `changeUnit(course, oldSlotId, newUnit, newSlot)` | Atomic swap: removes old, adds new |
-| `getSlotConflicts(slot)` | Returns selected units that hard-conflict with slot |
-| `getSlotCampusConflicts(slot)` | Returns selected units that campus-conflict with slot |
-| `getUnitConflicts(unit)` / `getUnitCampusConflicts(unit)` | Returns SlotConflictInfo[] for all slots in a unit |
-| `hasCourseSelected(courseId)` | Boolean check |
-| `getCourseStatus(courseId)` | Returns CourseStatus or undefined |
-| `hydrate()` / `persist()` / `clearAll()` | localStorage lifecycle |
+| Method                                                    | Notes                                                                                                    |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `addUnit(course, unit, slot)`                             | Snapshots `snapshotAvailableTypes` from course.units, pushes to selectedUnits, persists, syncs exclusion |
+| `removeUnit(unitId)`                                      | Removes by unitId, persists, syncs exclusion                                                             |
+| `removeCourse(courseId)`                                  | Removes all units for course, persists, syncs exclusion                                                  |
+| `changeUnit(course, oldSlotId, newUnit, newSlot)`         | Atomic swap: removes old, adds new                                                                       |
+| `getSlotConflicts(slot)`                                  | Returns selected units that hard-conflict with slot                                                      |
+| `getSlotCampusConflicts(slot)`                            | Returns selected units that campus-conflict with slot                                                    |
+| `getUnitConflicts(unit)` / `getUnitCampusConflicts(unit)` | Returns SlotConflictInfo[] for all slots in a unit                                                       |
+| `hasCourseSelected(courseId)`                             | Boolean check                                                                                            |
+| `getCourseStatus(courseId)`                               | Returns CourseStatus or undefined                                                                        |
+| `hydrate()` / `persist()` / `clearAll()`                  | localStorage lifecycle                                                                                   |
 
 **Critical pattern:** `addUnit()` snapshots `snapshotAvailableTypes` from the full course so `checkCourseCompleteness()` in the `courseStatuses` computed does not need to call `useCoursesStore()`.
 
@@ -324,26 +325,26 @@ All composables exported from `src/composables/index.ts`.
 
 ### Pure data transforms (no store access, no DOM)
 
-| Composable | Description | Key exports |
-|-----------|-------------|-------------|
-| `useSlotMerging(unitsByDay)` | Merges recurring one-time slots (same day-of-week, course, time, type) into `MergedUnit` blocks | `mergedUnitsByDay` (computed Map) |
-| `useTimeUtils()` | Time math | `minutesToTime`, `timeToMinutes`, `formatTime`, `formatTimeRange`, `formatTimeSelection`, `calculateTimePosition`, `calculateTimeDuration`, `generateTimeOptions`, `generateTimeSlots`, `snapToInterval`, `clampTime`, `timeRangesOverlap` |
-| `useSlotSorting()` | Sort strategies | `sortSlots`, `sortUnits`, `sortUnitsByType`, `getUniqueDays`, `getSlotDay` |
-| `useDebounce(initialValue, opts)` | Debounced ref pair | `value`, `debouncedValue`, `cancel`, `flush` |
-| `useDebouncedFn(fn, delay)` | Debounced callback | Function with `.cancel` |
-| `usePopover(position, opts)` | Viewport-safe popover positioning | `popoverStyle` (computed), `calculatePosition`, `wouldOverflow` |
-| `useClickOutside(ref, opts)` | Click-outside + Escape handlers via `onMounted`/`onUnmounted` | `handleClickOutside`, `handleKeyDown` |
+| Composable                        | Description                                                                                     | Key exports                                                                                                                                                                                                                                |
+| --------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `useSlotMerging(unitsByDay)`      | Merges recurring one-time slots (same day-of-week, course, time, type) into `MergedUnit` blocks | `mergedUnitsByDay` (computed Map)                                                                                                                                                                                                          |
+| `useTimeUtils()`                  | Time math                                                                                       | `minutesToTime`, `timeToMinutes`, `formatTime`, `formatTimeRange`, `formatTimeSelection`, `calculateTimePosition`, `calculateTimeDuration`, `generateTimeOptions`, `generateTimeSlots`, `snapToInterval`, `clampTime`, `timeRangesOverlap` |
+| `useSlotSorting()`                | Sort strategies                                                                                 | `sortSlots`, `sortUnits`, `sortUnitsByType`, `getUniqueDays`, `getSlotDay`                                                                                                                                                                 |
+| `useDebounce(initialValue, opts)` | Debounced ref pair                                                                              | `value`, `debouncedValue`, `cancel`, `flush`                                                                                                                                                                                               |
+| `useDebouncedFn(fn, delay)`       | Debounced callback                                                                              | Function with `.cancel`                                                                                                                                                                                                                    |
+| `usePopover(position, opts)`      | Viewport-safe popover positioning                                                               | `popoverStyle` (computed), `calculatePosition`, `wouldOverflow`                                                                                                                                                                            |
+| `useClickOutside(ref, opts)`      | Click-outside + Escape handlers via `onMounted`/`onUnmounted`                                   | `handleClickOutside`, `handleKeyDown`                                                                                                                                                                                                      |
 
 ### Store-reading composables
 
-| Composable | Stores used | Description |
-|-----------|-------------|-------------|
-| `useTimetableGrid(unitsByDay, opts)` | `useTimeUtils` | Pixel geometry: `timeSlots` header, `getBlockStyle(unit, day)` → CSS left/width/top/height, `getOverlapInfo(day)`, `overlapCache`, `getTimeFromX`, `getDragSelectionStyle` |
-| `useCourseUnitSelection({course})` | `useTimetableStore` | Groups units by type composition (`unitsByGroup`), manages add/remove/swap logic. `handleAddUnit` removes existing units of same type before adding (swap). `missingUnitTypes`, `isSelectionComplete`, `hasIncompleteSelection` |
-| `useTimeFilterMatching()` | `useFiltersStore` | `slotMatchesTimeFilter(slot)`, `slotMatchesExcludeFilter(slot)`, `unitMatchesTimeFilter(unit)`, `unitFullyMatchesTimeFilter(unit)`, `getSlotHighlightClass(slot, type)` |
-| `useScheduleSummary()` | none (uses i18n + day utils) | `getScheduleSummary(units)` → "Po, St", `getScheduleSummaryFull`, `getTimeRangeSummary`, `hasBlockSlots`, `hasRecurringSlots` |
-| `useSlotFormatting()` | none (uses `useTimeUtils`, `useCourseLabels`) | `formatSlotInfo(slot)`, `formatSlotDay`, `formatSlotTime`, `formatSlotLocation`, `formatSlotDate`, `formatCapacity`, `getCapacityClass`, `isBlockSlot`, `isRecurringSlot`, `formatSlotsSummary` |
-| `useFacetFiltering(facets, selected, opts)` | none (pure) | Re-injects selected items with `count: 0` when they drop from API response. `combinedFacets`, `sortedFacets`, `filterBySearch`, `getVisibleFacets`, `toggleListExpanded`, `toggleSelection` |
+| Composable                                  | Stores used                                   | Description                                                                                                                                                                                                                     |
+| ------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useTimetableGrid(unitsByDay, opts)`        | `useTimeUtils`                                | Pixel geometry: `timeSlots` header, `getBlockStyle(unit, day)` → CSS left/width/top/height, `getOverlapInfo(day)`, `overlapCache`, `getTimeFromX`, `getDragSelectionStyle`                                                      |
+| `useCourseUnitSelection({course})`          | `useTimetableStore`                           | Groups units by type composition (`unitsByGroup`), manages add/remove/swap logic. `handleAddUnit` removes existing units of same type before adding (swap). `missingUnitTypes`, `isSelectionComplete`, `hasIncompleteSelection` |
+| `useTimeFilterMatching()`                   | `useFiltersStore`                             | `slotMatchesTimeFilter(slot)`, `slotMatchesExcludeFilter(slot)`, `unitMatchesTimeFilter(unit)`, `unitFullyMatchesTimeFilter(unit)`, `getSlotHighlightClass(slot, type)`                                                         |
+| `useScheduleSummary()`                      | none (uses i18n + day utils)                  | `getScheduleSummary(units)` → "Po, St", `getScheduleSummaryFull`, `getTimeRangeSummary`, `hasBlockSlots`, `hasRecurringSlots`                                                                                                   |
+| `useSlotFormatting()`                       | none (uses `useTimeUtils`, `useCourseLabels`) | `formatSlotInfo(slot)`, `formatSlotDay`, `formatSlotTime`, `formatSlotLocation`, `formatSlotDate`, `formatCapacity`, `getCapacityClass`, `isBlockSlot`, `isRecurringSlot`, `formatSlotsSummary`                                 |
+| `useFacetFiltering(facets, selected, opts)` | none (pure)                                   | Re-injects selected items with `count: 0` when they drop from API response. `combinedFacets`, `sortedFacets`, `filterBySearch`, `getVisibleFacets`, `toggleListExpanded`, `toggleSelection`                                     |
 
 ### Special composables
 
@@ -458,20 +459,33 @@ All types exported from `src/types/index.ts`.
 type CourseUnitType = 'lecture' | 'exercise' | 'seminar'
 
 interface SelectedCourseUnit {
-  courseId: number; courseIdent: string
-  courseTitle: string; courseTitleCs: string; courseTitleEn: string
-  unitId: number; unitType: CourseUnitType; slotId: number
-  day?: InSISDay; date?: string   // one of day or date is set (not both for recurring)
-  timeFrom: number; timeTo: number  // minutes from midnight
-  location?: string; lecturer?: string; ects?: number
-  snapshotAvailableTypes?: CourseUnitType[]  // all types the course had at add-time
+  courseId: number
+  courseIdent: string
+  courseTitle: string
+  courseTitleCs: string
+  courseTitleEn: string
+  unitId: number
+  unitType: CourseUnitType
+  slotId: number
+  day?: InSISDay
+  date?: string // one of day or date is set (not both for recurring)
+  timeFrom: number
+  timeTo: number // minutes from midnight
+  location?: string
+  lecturer?: string
+  ects?: number
+  snapshotAvailableTypes?: CourseUnitType[] // all types the course had at add-time
 }
 
 interface CourseStatus {
-  id: number; ident: string; title: string; titleCs: string; titleEn: string
+  id: number
+  ident: string
+  title: string
+  titleCs: string
+  titleEn: string
   status: 'selected' | 'conflict' | 'campus-conflict' | 'incomplete'
-  conflictsWith: string[]        // course idents
-  campusConflictsWith: string[]  // course idents
+  conflictsWith: string[] // course idents
+  campusConflictsWith: string[] // course idents
   missingTypes: CourseUnitType[]
 }
 
@@ -491,10 +505,19 @@ type ConflictType = 'hard' | 'campus'
 ### `types/wizard.ts`
 
 ```typescript
-interface SelectedStudyPlan { id: number; ident: string | null; title: string | null }
+interface SelectedStudyPlan {
+  id: number
+  ident: string | null
+  title: string | null
+}
 
 interface PersistedWizardState {
-  facultyId, year, semester, studyPlanId, studyPlanIdent, studyPlanTitle,
+  facultyId
+  year
+  semester
+  studyPlanId
+  studyPlanIdent
+  studyPlanTitle
   selectedStudyPlans: SelectedStudyPlan[]
   completedCourseIdents: string[]
   completed: boolean
@@ -505,16 +528,25 @@ interface PersistedWizardState {
 
 ```typescript
 interface DragSelection {
-  active: boolean; startDay: InSISDay | null; startTime: number | null
-  endDay: InSISDay | null; endTime: number | null
+  active: boolean
+  startDay: InSISDay | null
+  startTime: number | null
+  endDay: InSISDay | null
+  endTime: number | null
 }
-interface PersistedTimetableState { selectedUnits: SelectedCourseUnit[] }
+interface PersistedTimetableState {
+  selectedUnits: SelectedCourseUnit[]
+}
 ```
 
 ### `types/ui.ts`
 
 ```typescript
-interface PersistedUIState { viewMode: ViewMode; sidebarCollapsed: boolean; showLegend: boolean }
+interface PersistedUIState {
+  viewMode: ViewMode
+  sidebarCollapsed: boolean
+  showLegend: boolean
+}
 ```
 
 ### `types/view.ts`
@@ -526,7 +558,12 @@ type ViewMode = 'list' | 'timetable'
 ### `types/api.ts`
 
 ```typescript
-interface PaginationMeta { limit: number; offset: number; count: number; total: number }
+interface PaginationMeta {
+  limit: number
+  offset: number
+  count: number
+  total: number
+}
 type SortDirection = 'asc' | 'desc'
 type CourseSortBy = CoursesFilter['sort_by']
 type StudyPlanSortBy = StudyPlansFilter['sort_by']
@@ -536,9 +573,13 @@ type StudyPlanSortBy = StudyPlansFilter['sort_by']
 
 ```typescript
 interface Alert {
-  customId?: string; type: 'info' | 'success' | 'warning' | 'error'
-  title?: string; description?: string; buttons?: AlertButton[]
-  timeout?: number; _timeout?: ReturnType<typeof setTimeout> | number | null
+  customId?: string
+  type: 'info' | 'success' | 'warning' | 'error'
+  title?: string
+  description?: string
+  buttons?: AlertButton[]
+  timeout?: number
+  _timeout?: ReturnType<typeof setTimeout> | number | null
 }
 ```
 
@@ -573,6 +614,7 @@ If either unit's location resolves to `'unknown'`, no campus conflict is detecte
 ### Status Precedence
 
 In `timetable.store.courseStatuses` computed:
+
 ```
 hard overlap → 'conflict'    (red)
 campus conflict → 'campus-conflict'  (orange/amber)
@@ -584,12 +626,12 @@ A course gets the highest-severity status among its units.
 
 ### Visual Treatment
 
-| Status | Color | Used in |
-|--------|-------|---------|
-| `conflict` | Red ring, red badge | `TimetableCourseBlock.vue`, `UnitSelector.vue`, `CourseTable.vue` |
-| `campus-conflict` | Orange/amber ring, orange badge | Same components |
-| `incomplete` | Amber/yellow | Same components |
-| `selected` | Blue | Same components |
+| Status            | Color                           | Used in                                                           |
+| ----------------- | ------------------------------- | ----------------------------------------------------------------- |
+| `conflict`        | Red ring, red badge             | `TimetableCourseBlock.vue`, `UnitSelector.vue`, `CourseTable.vue` |
+| `campus-conflict` | Orange/amber ring, orange badge | Same components                                                   |
+| `incomplete`      | Amber/yellow                    | Same components                                                   |
+| `selected`        | Blue                            | Same components                                                   |
 
 ### Affected Files
 
@@ -617,12 +659,12 @@ components.courses.CourseRowExpanded.campusConflict*  — alert text in UnitSele
 
 Defined in `client/tsconfig.json` `compilerOptions.paths` and resolved by Vite:
 
-| Alias | Resolves to | Notes |
-|-------|------------|-------|
-| `@client/*` | `./src/*` | Client source root |
-| `@api/*` | `../api/src/*` | Import API types only (no runtime) |
+| Alias        | Resolves to        | Notes                                       |
+| ------------ | ------------------ | ------------------------------------------- |
+| `@client/*`  | `./src/*`          | Client source root                          |
+| `@api/*`     | `../api/src/*`     | Import API types only (no runtime)          |
 | `@scraper/*` | `../scraper/src/*` | Import scraper types only (e.g. `InSISDay`) |
-| `@shared/*` | `../shared/*` | Shared utilities (if present) |
+| `@shared/*`  | `../shared/*`      | Shared utilities (if present)               |
 
 **Rule:** Client may import types from `@api` and `@scraper` but must NOT import their runtime code (no circular deps, no bundling server code).
 
@@ -659,11 +701,15 @@ Defined in `client/tsconfig.json` `compilerOptions.paths` and resolved by Vite:
    - Add `conflictsWith` field to `CourseStatus` interface if needed
 4. **Extend `courseStatuses` precedence** in timetable.store:
    ```typescript
-   const status = hasHardConflict ? 'conflict'
-     : hasNewConflict ? 'new-conflict'
-     : hasCampusConflict ? 'campus-conflict'
-     : isIncomplete ? 'incomplete'
-     : 'selected'
+   const status = hasHardConflict
+     ? 'conflict'
+     : hasNewConflict
+       ? 'new-conflict'
+       : hasCampusConflict
+         ? 'campus-conflict'
+         : isIncomplete
+           ? 'incomplete'
+           : 'selected'
    ```
 5. **Add getter methods** on store (parallel to `getSlotCampusConflicts`, `unitHasCampusConflicts`)
 6. **Add visual treatment** in `TimetableCourseBlock.vue`, `UnitSelector.vue`, `CourseTable.vue`
@@ -706,7 +752,9 @@ function persist() {
 }
 function hydrate() {
   const state = loadFromStorage<PersistedState>(STORAGE_KEYS.KEY)
-  if (state) { field1.value = state.field1 }
+  if (state) {
+    field1.value = state.field1
+  }
 }
 
 // In index.ts bootstrap:
@@ -730,6 +778,7 @@ Only `timetableStore`, `uiStore`, and `wizardStore` are hydrated at bootstrap. `
 ### Time Storage Format
 
 All times stored as **minutes from midnight** (integers 0–1440):
+
 - `7:30` = 450, `9:00` = 540, `10:30` = 630, `20:00` = 1200
 - Timetable grid: `TIME_CONFIG.START = 450` (7:30), `TIME_CONFIG.END = 1200` (20:00)
 - Conversions: `minutesToTime(n)` → `"HH:MM"`, `timeToMinutes("HH:MM")` → `n`
@@ -737,9 +786,9 @@ All times stored as **minutes from midnight** (integers 0–1440):
 ### LocalStorage Keys
 
 ```typescript
-STORAGE_KEYS.TIMETABLE = 'kreditozrouti:timetable'  // { selectedUnits }
-STORAGE_KEYS.WIZARD    = 'kreditozrouti:wizard'      // { facultyId, year, ..., completedCourseIdents }
-STORAGE_KEYS.UI        = 'kreditozrouti:ui'          // { viewMode, sidebarCollapsed, showLegend }
+STORAGE_KEYS.TIMETABLE = 'kreditozrouti:timetable' // { selectedUnits }
+STORAGE_KEYS.WIZARD = 'kreditozrouti:wizard' // { facultyId, year, ..., completedCourseIdents }
+STORAGE_KEYS.UI = 'kreditozrouti:ui' // { viewMode, sidebarCollapsed, showLegend }
 ```
 
 `locale` is stored at plain key `'locale'` (not in STORAGE_KEYS), read directly in `index.ts`.
@@ -752,21 +801,21 @@ STORAGE_KEYS.UI        = 'kreditozrouti:ui'          // { viewMode, sidebarColla
 
 ### Constants
 
-| Constant | File | Value |
-|----------|------|-------|
-| `DEBOUNCE_TIMING.SEARCH` | `constants/debounce.ts` | 750ms |
-| `DEBOUNCE_TIMING.API` | `constants/debounce.ts` | 300ms |
-| `PAGINATION_DEFAULTS.PAGE_SIZE` | `constants/pagination.ts` | 50 |
-| `TIME_CONFIG.START` | `constants/timetable.ts` | 450 (7:30) |
-| `TIME_CONFIG.END` | `constants/timetable.ts` | 1200 (20:00) |
-| `TIME_CONFIG.SLOT_DURATION` | `constants/timetable.ts` | 45 min |
-| `GRID_ROW_HEIGHT` | `constants/timetable.ts` | 60px |
-| `DRAG_THRESHOLD` | `constants/timetable.ts` | 20px |
-| `TIME_SNAP_INTERVAL` | `constants/timetable.ts` | 15 min |
-| `CAMPUS_TRAVEL_MINUTES` | `utils/timetable.ts` | 40 min |
-| `WEEKDAYS` | `constants/timetable.ts` | Mon–Fri InSISDay[] |
-| `ALL_DAYS` | `constants/timetable.ts` | Mon–Sun InSISDay[] |
+| Constant                        | File                      | Value              |
+| ------------------------------- | ------------------------- | ------------------ |
+| `DEBOUNCE_TIMING.SEARCH`        | `constants/debounce.ts`   | 750ms              |
+| `DEBOUNCE_TIMING.API`           | `constants/debounce.ts`   | 300ms              |
+| `PAGINATION_DEFAULTS.PAGE_SIZE` | `constants/pagination.ts` | 50                 |
+| `TIME_CONFIG.START`             | `constants/timetable.ts`  | 450 (7:30)         |
+| `TIME_CONFIG.END`               | `constants/timetable.ts`  | 1200 (20:00)       |
+| `TIME_CONFIG.SLOT_DURATION`     | `constants/timetable.ts`  | 45 min             |
+| `GRID_ROW_HEIGHT`               | `constants/timetable.ts`  | 60px               |
+| `DRAG_THRESHOLD`                | `constants/timetable.ts`  | 20px               |
+| `TIME_SNAP_INTERVAL`            | `constants/timetable.ts`  | 15 min             |
+| `CAMPUS_TRAVEL_MINUTES`         | `utils/timetable.ts`      | 40 min             |
+| `WEEKDAYS`                      | `constants/timetable.ts`  | Mon–Fri InSISDay[] |
+| `ALL_DAYS`                      | `constants/timetable.ts`  | Mon–Sun InSISDay[] |
 
 ---
 
-*Last updated: 2026-05-07*
+_Last updated: 2026-05-07_

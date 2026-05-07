@@ -103,10 +103,7 @@ const isFiltering = computed(() => props.selected.length > 0)
 					{{ selectedCount }}
 				</span>
 			</span>
-			<IconChevronDown
-				:class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !isCollapsed }]"
-				aria-hidden="true"
-			/>
+			<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !isCollapsed }]" aria-hidden="true" />
 		</button>
 
 		<!-- Collapsible content -->
@@ -117,10 +114,7 @@ const isFiltering = computed(() => props.selected.length > 0)
 
 			<!-- Search input (if searchable) -->
 			<div v-if="searchable" class="relative mb-2">
-				<IconSearch
-					class="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[var(--insis-gray-500)]"
-					aria-hidden="true"
-				/>
+				<IconSearch class="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[var(--insis-gray-500)]" aria-hidden="true" />
 				<input
 					v-model="searchQuery"
 					type="text"
@@ -149,22 +143,14 @@ const isFiltering = computed(() => props.selected.length > 0)
 					<span class="flex-1 truncate text-sm">
 						{{ getDisplayLabel(facet) }}
 					</span>
-					<span
-						:class="['text-xs', facet.count === 0 ? 'text-[var(--insis-gray-400)] italic' : 'text-[var(--insis-gray-500)]']"
-						aria-hidden="true"
-					>
+					<span :class="['text-xs', facet.count === 0 ? 'text-[var(--insis-gray-400)] italic' : 'text-[var(--insis-gray-500)]']" aria-hidden="true">
 						({{ facet.count }})
 					</span>
 				</label>
 			</div>
 
 			<!-- Show more button -->
-			<button
-				type="button"
-				class="insis-btn-text mt-2 flex items-center gap-1 text-xs"
-				:aria-expanded="listExpanded"
-				@click="toggleListExpanded"
-			>
+			<button type="button" class="insis-btn-text mt-2 flex items-center gap-1 text-xs" :aria-expanded="listExpanded" @click="toggleListExpanded">
 				<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': listExpanded }]" aria-hidden="true" />
 				{{ listExpanded ? $t('common.showLess') : $t('common.showMore', { count: hiddenCount }) }}
 			</button>

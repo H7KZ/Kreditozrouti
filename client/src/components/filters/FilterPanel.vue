@@ -231,7 +231,10 @@ function handleCloseMobileFilter() {
 					<IconCircleCheck class="h-4 w-4 text-[var(--insis-success)]" aria-hidden="true" />
 					{{ $t('components.filters.FilterPanel.completedCourses') }}
 				</span>
-				<span class="text-xs text-[var(--insis-gray-500)]" :aria-label="$t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount })">
+				<span
+					class="text-xs text-[var(--insis-gray-500)]"
+					:aria-label="$t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount })"
+				>
 					{{ $t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount }) }}
 				</span>
 			</div>
@@ -254,7 +257,10 @@ function handleCloseMobileFilter() {
 					<IconCalendarX class="h-4 w-4 text-[var(--insis-danger)]" aria-hidden="true" />
 					{{ $t('components.filters.FilterPanel.timetableConflicts') }}
 				</span>
-				<span class="text-xs text-[var(--insis-gray-500)]" :aria-label="$t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount })">
+				<span
+					class="text-xs text-[var(--insis-gray-500)]"
+					:aria-label="$t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount })"
+				>
 					{{ $t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount }) }}
 				</span>
 			</div>

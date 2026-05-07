@@ -84,7 +84,9 @@ function handleToggleCompleted() {
 						? 'border-[var(--insis-success)] bg-[var(--insis-success-light)] text-[var(--insis-success)]'
 						: 'border-[var(--insis-border)] bg-white text-[var(--insis-gray-600)] hover:border-[var(--insis-success)] hover:bg-[var(--insis-success-light)]',
 				]"
-				:aria-label="isMarkedCompleted ? $t('components.courses.CourseRowExpanded.markedCompleted') : $t('components.courses.CourseRowExpanded.markAsCompleted')"
+				:aria-label="
+					isMarkedCompleted ? $t('components.courses.CourseRowExpanded.markedCompleted') : $t('components.courses.CourseRowExpanded.markAsCompleted')
+				"
 				@click="handleToggleCompleted"
 			>
 				<IconCircleCheck :class="['h-4 w-4', isMarkedCompleted ? 'text-[var(--insis-success)]' : 'text-[var(--insis-gray-400)]']" aria-hidden="true" />
