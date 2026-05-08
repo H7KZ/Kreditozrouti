@@ -47,10 +47,13 @@ const sessionOptions: SessionOptions = {
 
 if (!Config.isEnvLocal()) {
 	app.set('trust proxy', 1)
-	sessionOptions.cookie!.secure = true
-	sessionOptions.cookie!.httpOnly = true
-	sessionOptions.cookie!.domain = Config.domain
-	sessionOptions.cookie!.sameSite = 'none'
+
+	const cookies: session.CookieOptions = sessionOptions.cookie! as session.CookieOptions
+
+	cookies.secure = true
+	cookies.httpOnly = true
+	cookies.domain = Config.domain
+	cookies.sameSite = 'none'
 }
 
 app.use(session(sessionOptions))
