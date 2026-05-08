@@ -1,6 +1,7 @@
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse.ts'
 import type { CourseWithRelations } from '@api/Database/types'
 import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
+import { i18n } from '@client/i18n'
 import { fetchCourses as fetchCoursesFromService } from '@client/services/courseService'
 import { useAnnouncerStore } from '@client/stores/announcer.store'
 import { useFiltersStore } from '@client/stores/filters.store'
@@ -8,7 +9,6 @@ import { useTimetableStore } from '@client/stores/timetable.store'
 import { useWizardStore } from '@client/stores/wizard.store'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 /**
  * Courses Store
@@ -18,7 +18,7 @@ import { useI18n } from 'vue-i18n'
  * The two sources of exclude_times (manual + timetable) are merged by filtersStore.
  */
 export const useCoursesStore = defineStore('courses', () => {
-	const { t } = useI18n()
+	const { t } = i18n.global
 	const announcer = useAnnouncerStore()
 	const courses = ref<CourseWithRelations[]>([])
 	const facets = ref<CoursesResponse['facets']>({

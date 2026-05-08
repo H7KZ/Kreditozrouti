@@ -1,13 +1,11 @@
 import App from '@client/App.vue'
 import '@client/index.css'
+import { i18n } from '@client/i18n'
 import { useAlertsStore, useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
-import { czechPluralRule, datetimeFormats, numberFormats } from '@client/utils/pluralization.ts'
-import messages from '@intlify/unplugin-vue-i18n/messages'
 import * as Sentry from '@sentry/vue'
 import { createHead } from '@unhead/vue/client'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-import { createI18n } from 'vue-i18n'
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
 
@@ -21,27 +19,6 @@ const router = createRouter({
 		// resets scroll position to top on route change
 		return { top: 0, left: 0 }
 	},
-})
-
-// Load saved locale preference from localStorage
-const savedLocale = localStorage.getItem('locale')
-const defaultLocale = savedLocale && ['cs', 'en'].includes(savedLocale) ? savedLocale : 'cs'
-
-const i18n = createI18n({
-	locale: defaultLocale,
-	fallbackLocale: 'en',
-	messages,
-	globalInjection: true,
-	legacy: false,
-	allowComposition: true,
-	// Czech pluralization rules
-	pluralRules: {
-		cs: czechPluralRule,
-	},
-	// Datetime formatting
-	datetimeFormats,
-	// Number formatting
-	numberFormats,
 })
 
 const pinia = createPinia()
