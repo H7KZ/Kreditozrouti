@@ -13,7 +13,6 @@ const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
 const numWorkers = specifiedInstances ? parseInt(specifiedInstances) : 1
 
-// Cluster Management
 if (cluster.isPrimary && numWorkers > 1) {
 	console.log(`🚀  [API] Master process ${process.pid} is running`)
 	console.log(`⚙️  [API] Forking ${numWorkers} workers...`)
@@ -27,16 +26,10 @@ if (cluster.isPrimary && numWorkers > 1) {
 		cluster.fork()
 	})
 } else {
-	start().then(() => {
-		console.log(`🚀  [API] Worker process ${process.pid} started`)
-	})
+	startWorker()
 }
 
-/**
- * Application entry point.
- * Initializes infrastructure, executes migrations, sets up jobs, and starts the HTTP server.
- */
-async function start() {
+async function startWorker(): Promise<void> {
 	try {
 		CheckRequiredEnvironmentVariables(Config)
 
@@ -71,24 +64,25 @@ async function start() {
 		const server = app.listen(Config.port, () => {
 			console.log(`Environment: ${Config.env}`)
 			console.log(`Server running on port ${Config.port}`)
-
-			const shutdown = () => {
-				console.log('Shutting down server...')
-				server.close(async () => {
-					await mysql.destroy()
-					redis.disconnect()
-					console.log('Server shut down gracefully')
-					process.exit(0)
-				})
-			}
-
-			process.on('SIGTERM', shutdown)
-			process.on('SIGINT', shutdown)
 		})
+
+		const shutdown = () => {
+			console.log('Shutting down server...')
+			server.close(async () => {
+				await mysql.destroy()
+				redis.disconnect()
+				console.log('Server shut down gracefully')
+				process.exit(0)
+			})
+		}
+
+		process.on('SIGTERM', shutdown)
+		process.on('SIGINT', shutdown)
+
+		console.log(`🚀  [API] Worker process ${process.pid} started`)
 	} catch (error) {
 		console.error('Failed to start the server:', error)
 
-		// Report startup errors to Sentry
 		if (sentry.isEnabled()) {
 			sentry.captureException(error)
 			await sentry.flush(2000)

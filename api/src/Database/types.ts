@@ -1,7 +1,40 @@
-import { ExcludeMethods, Faculty, StudyPlanCourse } from '@api/Database/types/index'
 import InSISDay from '@scraper/Types/InSISDay'
 import InSISSemester from '@scraper/Types/InSISSemester'
+import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
+import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
 import { ColumnType, Insertable, Selectable } from 'kysely'
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+export type ExcludeMethods<T> = { [K in keyof T as T[K] extends Function ? never : K]: T[K] }
+
+// ---------------------------------------------------------------------------
+// Faculty
+// ---------------------------------------------------------------------------
+
+/**
+ * Database schema for Faculties.
+ */
+export class FacultyTable {
+	static readonly _table = 'insis_faculties' as const
+
+	id!: string
+
+	created_at!: ColumnType<Date, string | undefined, never>
+	updated_at!: ColumnType<Date, string | undefined, string | undefined>
+
+	title!: string | null
+}
+
+export type Faculty<C = void, SP = void> = Selectable<FacultyTable> &
+	(C extends void ? unknown : { courses: C[] }) &
+	(SP extends void ? unknown : { study_plans: SP[] })
+export type NewFaculty = Insertable<Omit<ExcludeMethods<FacultyTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type FacultyWithRelations = Faculty<Course, StudyPlan>
+
+// ---------------------------------------------------------------------------
+// Course
+// ---------------------------------------------------------------------------
 
 /**
  * Database schema for InSIS Courses.
@@ -74,7 +107,9 @@ export type NewCourse = Insertable<Omit<ExcludeMethods<CourseTable>, 'created_at
 
 export type CourseWithRelations = Course<Faculty, CourseUnit<void, CourseUnitSlot>, CourseAssessment, StudyPlanCourse>
 
-// -------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// CourseAssessment
+// ---------------------------------------------------------------------------
 
 /**
  * Assessment methods required to complete a course.
@@ -101,7 +136,9 @@ export type NewCourseAssessment = Insertable<Omit<ExcludeMethods<CourseAssessmen
 
 export type CourseAssessmentWithRelations = CourseAssessment<Course>
 
-// -------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// CourseUnit
+// ---------------------------------------------------------------------------
 
 /**
  * Represents a specific teaching group or instance of a course.
@@ -128,7 +165,9 @@ export type NewCourseUnit = Insertable<Omit<ExcludeMethods<CourseUnitTable>, 'id
 
 export type CourseUnitWithRelations = CourseUnit<Course, CourseUnitSlot<CourseUnit<void, void>>>
 
-// -------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// CourseUnitSlot
+// ---------------------------------------------------------------------------
 
 /**
  * Specific scheduled time and location for a timetable unit.
@@ -168,3 +207,97 @@ export type CourseUnitSlot<C = void, U = void> = Selectable<CourseUnitSlotTable>
 export type NewCourseUnitSlot = Insertable<Omit<ExcludeMethods<CourseUnitSlotTable>, 'id' | 'created_at' | 'updated_at'>>
 
 export type CourseUnitSlotWithRelations = CourseUnitSlot<Course, CourseUnit<void, CourseUnitSlot<void>>>
+
+// ---------------------------------------------------------------------------
+// StudyPlan
+// ---------------------------------------------------------------------------
+
+/**
+ * Database schema for Study Plans (Curriculums).
+ */
+export class StudyPlanTable {
+	static readonly _table = 'insis_study_plans' as const
+
+	id!: number // Generated<number>
+
+	faculty_id!: string | null
+
+	created_at!: ColumnType<Date, string | undefined, never>
+	updated_at!: ColumnType<Date, string | undefined, string | undefined>
+
+	url!: string
+
+	/** Plan identifier (e.g., "P-AIN"). */
+	ident!: string | null
+	title!: string | null
+
+	/** Associated semester for the study plan. */
+	semester!: InSISSemester | null
+
+	/** Semester validity (e.g., "2025"). */
+	year!: number | null
+
+	level!: string | null
+	mode_of_study!: string | null
+	study_length!: string | null
+}
+
+export type StudyPlan<F = void, C = void> = Selectable<StudyPlanTable> &
+	(F extends void ? unknown : { faculty: F | null }) &
+	(C extends void ? unknown : { courses: C[] })
+export type NewStudyPlan = Insertable<Omit<ExcludeMethods<StudyPlanTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
+
+// ---------------------------------------------------------------------------
+// StudyPlanCourse
+// ---------------------------------------------------------------------------
+
+/**
+ * Association between Study Plans and Courses.
+ * Defines the role of a course within a specific plan (e.g., compulsory, elective).
+ */
+export class StudyPlanCourseTable {
+	static readonly _table = 'insis_study_plans_courses' as const
+
+	id!: number // Generated<number>
+
+	study_plan_id!: number
+	course_id!: number | null
+
+	/** Cached course identifier (e.g., "4IT101") for lookups when course_id is null. */
+	course_ident!: string
+
+	created_at!: ColumnType<Date, string | undefined, never>
+	updated_at!: ColumnType<Date, string | undefined, string | undefined>
+
+	group!: InSISStudyPlanCourseGroup
+	category!: InSISStudyPlanCourseCategory
+}
+
+export type StudyPlanCourse<SP = void, C = void> = Selectable<StudyPlanCourseTable> &
+	(SP extends void ? unknown : { study_plan: SP | null }) &
+	(C extends void ? unknown : { course: C | null })
+export type NewStudyPlanCourse = Insertable<Omit<ExcludeMethods<StudyPlanCourseTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export type StudyPlanCourseWithRelations = StudyPlanCourse<StudyPlanTable, null>
+
+// ---------------------------------------------------------------------------
+// Database mapping
+// ---------------------------------------------------------------------------
+
+type AllTableClasses =
+	| typeof CourseTable
+	| typeof CourseAssessmentTable
+	| typeof CourseUnitTable
+	| typeof CourseUnitSlotTable
+	| typeof StudyPlanTable
+	| typeof StudyPlanCourseTable
+	| typeof FacultyTable
+
+/**
+ * Master mapping of table names to Kysely table interfaces.
+ */
+export type Database = {
+	[T in AllTableClasses as T['_table']]: InstanceType<T>
+}

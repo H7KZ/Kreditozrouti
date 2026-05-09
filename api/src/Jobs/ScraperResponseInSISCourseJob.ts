@@ -1,4 +1,4 @@
-import { mysql } from '@api/clients'
+import { mysql, redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import {
 	CourseAssessmentTable,
@@ -69,11 +69,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { id, ...updatePayload } = coursePayload
 
-		await trx
-			.insertInto(CourseTable._table)
-			.values(coursePayload as never)
-			.onDuplicateKeyUpdate(updatePayload)
-			.execute()
+		await trx.insertInto(CourseTable._table).values(coursePayload).onDuplicateKeyUpdate(updatePayload).execute()
 
 		await syncAssessmentMethods(trx, course.id, course.assessment_methods ?? [])
 		await syncTimetable(trx, course.id, course.timetable ?? [])
@@ -82,6 +78,15 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			await syncStudyPlansFromCourse(trx, course.id, course.ident ?? '', course.study_plans)
 		}
 	})
+
+	await redis.publish(
+		`course:updated:${course.id}`,
+		JSON.stringify({
+			status: 'done',
+			courseId: course.id,
+			updatedAt: new Date().toISOString()
+		})
+	)
 
 	LoggerJobContext.add({
 		assessment_method_count: course.assessment_methods?.length ?? 0,
@@ -158,7 +163,7 @@ async function syncTimetable(trx: Transaction<Database>, courseId: number, incom
 				lecturer: incoming.lecturer,
 				capacity: incoming.capacity,
 				note: incoming.note
-			} as never)
+			})
 			.executeTakeFirstOrThrow()
 
 		const newUnitId = Number(res.insertId)
@@ -245,7 +250,7 @@ async function upsertFaculty(trx: Transaction<Database>, faculty: ScraperInSISFa
 		.values({
 			id: faculty.ident,
 			title: faculty.title
-		} as never)
+		})
 		.onDuplicateKeyUpdate({ title: faculty.title })
 		.execute()
 

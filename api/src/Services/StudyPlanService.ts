@@ -1,13 +1,17 @@
 import { mysql, redis } from '@api/clients'
+import { StudyPlansFilter } from '@api/Controllers/Kreditozrouti/StudyPlansController'
 import StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse'
 import { Database, ExcludeMethods, Faculty, FacultyTable, StudyPlan, StudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import FacetItem from '@api/Interfaces/FacetItem'
-import { StudyPlansFilter } from '@api/Validations/StudyPlansFilterValidation'
 import { Nullable, SelectQueryBuilder, sql } from 'kysely'
+
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 /** Cache TTL for facet queries (5 minutes) */
 const FACET_CACHE_TTL = 300
 const FACET_CACHE_PREFIX = 'studyplan:facets:'
+
+// ─── Internal Types ───────────────────────────────────────────────────────────
 
 type QueryBuilder = SelectQueryBuilder<Database & { sp: StudyPlanTable } & { spc: Nullable<StudyPlanCourseTable> }, 'sp' | 'spc', object>
 
@@ -21,6 +25,8 @@ type QueryBuilder = SelectQueryBuilder<Database & { sp: StudyPlanTable } & { spc
  * 4. Merge in-memory
  */
 export default class StudyPlanService {
+	// ─── Public API ───────────────────────────────────────────────────────────────
+
 	/**
 	 * Retrieves paginated study plans with full relational data (faculty, courses).
 	 *
@@ -70,9 +76,29 @@ export default class StudyPlanService {
 			courses: coursesMap.get(plan.id) ?? []
 		}))
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		return { plans: enrichedPlans as any, total }
+		return { plans: enrichedPlans, total }
 	}
+
+	/**
+	 * Retrieves facet counts for filtering UI (dropdowns, checkboxes).
+	 * Results are cached in Redis to reduce DB load.
+	 *
+	 * @param filters - Current filter state (affects available facet values)
+	 * @returns Object containing count arrays for each facetable field
+	 */
+	static async getStudyPlanFacets(filters: StudyPlansFilter) {
+		const cacheKey = this.buildFacetCacheKey(filters)
+
+		const cached = await this.readFacetsFromCache(cacheKey)
+		if (cached) return cached
+
+		const facets = await this.computeAllFacetsInParallel(filters)
+		await this.writeFacetsToCache(cacheKey, facets)
+
+		return facets
+	}
+
+	// ─── Querying ─────────────────────────────────────────────────────────────────
 
 	/**
 	 * Counts study plans matching the given filters.
@@ -135,6 +161,8 @@ export default class StudyPlanService {
 		return mysql.selectFrom(`${StudyPlanCourseTable._table} as spc`).selectAll('spc').where('spc.study_plan_id', 'in', planIds).execute()
 	}
 
+	// ─── Filtering ────────────────────────────────────────────────────────────────
+
 	/**
 	 * Builds the base filter query with conditional joins.
 	 *
@@ -150,7 +178,7 @@ export default class StudyPlanService {
 			query = query.leftJoin(`${StudyPlanCourseTable._table} as spc`, 'sp.id', 'spc.study_plan_id')
 		}
 
-		return this.applyFilters(query as any, filters, ignoreFacet)
+		return this.applyFilters(query, filters, ignoreFacet)
 	}
 
 	/** Determines if the courses join is required based on active filters. */
@@ -216,27 +244,10 @@ export default class StudyPlanService {
 		return query
 	}
 
-	/**
-	 * Retrieves facet counts for filtering UI (dropdowns, checkboxes).
-	 * Results are cached in Redis to reduce DB load.
-	 *
-	 * @param filters - Current filter state (affects available facet values)
-	 * @returns Object containing count arrays for each facetable field
-	 */
-	static async getStudyPlanFacets(filters: StudyPlansFilter) {
-		const cacheKey = this.getFacetCacheKey(filters)
-
-		const cached = await this.getCachedFacets(cacheKey)
-		if (cached) return cached
-
-		const facets = await this.computeFacets(filters)
-		await this.cacheFacets(cacheKey, facets)
-
-		return facets
-	}
+	// ─── Facets ───────────────────────────────────────────────────────────────────
 
 	/** Computes all facets in parallel for maximum efficiency. */
-	private static async computeFacets(filters: StudyPlansFilter) {
+	private static async computeAllFacetsInParallel(filters: StudyPlansFilter) {
 		const [faculties, levels, modesOfStudies, semesters, years, studyLengths] = await Promise.all([
 			this.getSimpleFacet(filters, 'faculty_id'),
 			this.getSimpleFacet(filters, 'level'),
@@ -305,11 +316,13 @@ export default class StudyPlanService {
 			.execute()
 	}
 
+	// ─── Cache ────────────────────────────────────────────────────────────────────
+
 	/**
 	 * Generates a deterministic cache key from relevant filter values.
 	 * Only includes filters that affect facet counts.
 	 */
-	private static getFacetCacheKey(filters: StudyPlansFilter): string {
+	private static buildFacetCacheKey(filters: StudyPlansFilter): string {
 		const relevantFilters = {
 			faculty_ids: filters.faculty_ids?.sort(),
 			semesters: filters.semesters?.sort(),
@@ -325,7 +338,7 @@ export default class StudyPlanService {
 		return `${FACET_CACHE_PREFIX}${hash}`
 	}
 
-	private static async getCachedFacets(key: string): Promise<StudyPlansResponse['facets'] | null> {
+	private static async readFacetsFromCache(key: string): Promise<StudyPlansResponse['facets'] | null> {
 		try {
 			const cached = await redis.get(key)
 			return cached ? (JSON.parse(cached) as StudyPlansResponse['facets']) : null
@@ -334,28 +347,15 @@ export default class StudyPlanService {
 		}
 	}
 
-	private static async cacheFacets(key: string, facets: any): Promise<void> {
+	private static async writeFacetsToCache(key: string, facets: any): Promise<void> {
 		try {
 			await redis.setex(key, FACET_CACHE_TTL, JSON.stringify(facets))
 		} catch {
-			// Silently fail
+			// Silently fail — cache is best-effort
 		}
 	}
 
-	// /**
-	//  * Invalidates all cached facet data.
-	//  * Call this after study plan data changes (create/update/delete).
-	//  */
-	// static async invalidateFacetCache(): Promise<void> {
-	// 	try {
-	// 		const keys = await redis.keys(`${FACET_CACHE_PREFIX}*`)
-	// 		if (keys.length > 0) {
-	// 			await redis.del(...keys)
-	// 		}
-	// 	} catch {
-	// 		// Silently fail
-	// 	}
-	// }
+	// ─── Utilities ────────────────────────────────────────────────────────────────
 
 	/** Maps sort_by parameter to actual database column. */
 	private static getStudyPlanSortColumn(sortBy?: string): string {

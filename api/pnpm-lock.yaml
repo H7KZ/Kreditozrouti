@@ -62,14 +62,17 @@ importers:
                 specifier: ^3.22.3
                 version: 3.22.3(@types/node@25.6.2)
             nodemailer:
-                specifier: ^7.0.13
-                version: 7.0.13
+                specifier: ^8.0.7
+                version: 8.0.7
             pino:
                 specifier: ^10.3.1
                 version: 10.3.1
             pino-http:
                 specifier: ^11.0.0
                 version: 11.0.0
+            rate-limiter-flexible:
+                specifier: ^5.0.5
+                version: 5.0.5
             response-time:
                 specifier: ^2.3.4
                 version: 2.3.4
@@ -1924,8 +1927,8 @@ packages:
         resolution: { integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw== }
         hasBin: true
 
-    nodemailer@7.0.13:
-        resolution: { integrity: sha512-PNDFSJdP+KFgdsG3ZzMXCgquO7I6McjY2vlqILjtJd0hy8wEvtugS9xKRF2NWlPNGxvLCXlTNIae4serI7dinw== }
+    nodemailer@8.0.7:
+        resolution: { integrity: sha512-pkjE4mkBzQjdJT4/UmlKl3pX0rC9fZmjh7c6C9o7lv66Ac6w9WCnzPzhbPNxwZAzlF4mdq4CSWB5+FbK6FWCow== }
         engines: { node: '>=6.0.0' }
 
     normalize-path@3.0.0:
@@ -2130,6 +2133,9 @@ packages:
         resolution: { integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg== }
         engines: { node: '>= 0.6' }
 
+    rate-limiter-flexible@5.0.5:
+        resolution: { integrity: sha512-+/dSQfo+3FYwYygUs/V2BBdwGa9nFtakDwKt4l0bnvNB53TNT++QSFewwHX9qXrZJuMe9j+TUaU21lm5ARgqdQ== }
+
     raw-body@3.0.2:
         resolution: { integrity: sha512-K5zQjDllxWkf7Z5xJdV0/B0WTNqx6vxG70zJE4N0kBs4LovmEYWJzQGxC9bS9RAKu3bgM40lrd5zoLJ12MQ5BA== }
         engines: { node: '>= 0.10' }
@@ -2231,6 +2237,11 @@ packages:
 
     semver@7.7.4:
         resolution: { integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA== }
+        engines: { node: '>=10' }
+        hasBin: true
+
+    semver@7.8.0:
+        resolution: { integrity: sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA== }
         engines: { node: '>=10' }
         hasBin: true
 
@@ -2721,7 +2732,7 @@ snapshots:
             '@babel/traverse': 7.29.0
             '@babel/types': 7.29.0
             prettier: 3.8.3
-            semver: 7.7.4
+            semver: 7.8.0
         transitivePeerDependencies:
             - supports-color
 
@@ -3284,7 +3295,7 @@ snapshots:
             '@typescript-eslint/visitor-keys': 8.59.2
             debug: 4.4.3
             minimatch: 10.2.5
-            semver: 7.7.4
+            semver: 7.8.0
             tinyglobby: 0.2.16
             ts-api-utils: 2.5.0(typescript@5.9.3)
             typescript: 5.9.3
@@ -4491,7 +4502,7 @@ snapshots:
             detect-libc: 2.1.2
         optional: true
 
-    nodemailer@7.0.13: {}
+    nodemailer@8.0.7: {}
 
     normalize-path@3.0.0: {}
 
@@ -4682,6 +4693,8 @@ snapshots:
 
     range-parser@1.2.1: {}
 
+    rate-limiter-flexible@5.0.5: {}
+
     raw-body@3.0.2:
         dependencies:
             bytes: 3.1.2
@@ -4808,6 +4821,8 @@ snapshots:
     semver@6.3.1: {}
 
     semver@7.7.4: {}
+
+    semver@7.8.0: {}
 
     send@1.2.1:
         dependencies:

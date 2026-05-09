@@ -1,6 +1,19 @@
-import { scraper } from '@api/bullmq'
+import ScraperService from '@api/Services/ScraperService'
 import InSISSemester from '@scraper/Types/InSISSemester'
 import { Request, Response } from 'express'
+import * as z from 'zod'
+
+const BodySchema = z.object({
+	faculties: z.array(z.string()).optional(),
+	periods: z
+		.array(
+			z.object({
+				semester: z.enum(['ZS', 'LS'] as [InSISSemester, ...InSISSemester[]]).nullable(),
+				year: z.coerce.number()
+			})
+		)
+		.optional()
+})
 
 /**
  * Manually triggers the scraper for InSIS Study Plans.
@@ -11,32 +24,10 @@ import { Request, Response } from 'express'
  * @route POST /commands/insis/studyplans
  */
 export default async function RunInSISStudyPlansScraperController(req: Request, res: Response) {
-	interface Body {
-		faculties?: string[]
+	const result = BodySchema.safeParse(req.body)
+	const body = result.success ? result.data : {}
 
-		periods?: {
-			semester: InSISSemester | null
-			year: number
-		}[]
-	}
+	await ScraperService.enqueueStudyPlansScrape(body)
 
-	const body: Body = req.body as Body
-
-	await scraper.queue.request.add(
-		'InSIS Study Plans Request (Manual)',
-		{
-			type: 'InSIS:StudyPlans',
-			faculties: body.faculties,
-			periods: body.periods,
-			auto_queue_study_plans: true
-		},
-		{
-			deduplication: {
-				id: 'InSIS:StudyPlans:ManualRun',
-				ttl: 30 * 1000 // 30 seconds
-			}
-		}
-	)
-
-	return res.sendStatus(200)
+	return res.sendStatus(202)
 }

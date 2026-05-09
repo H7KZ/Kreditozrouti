@@ -1,11 +1,58 @@
-import { redis } from '@api/clients'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse'
-import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
-import Exception from '@api/Error/Exception'
+import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
-import CoursesFilterValidation from '@api/Validations/CoursesFilterValidation'
+import { SemesterSchema, TimeSelectionSchema } from '@api/Validations/index'
+import { InSISStudyPlanCourseCategoryValues } from '@scraper/Types/InSISStudyPlanCourseCategory'
+import { InSISStudyPlanCourseGroupValues } from '@scraper/Types/InSISStudyPlanCourseGroup'
 import { Request, Response } from 'express'
+import * as z from 'zod'
+
+const CoursesFilterSchema = z.object({
+	// Identity Filters
+	ids: z.array(z.coerce.number()).optional(),
+	idents: z.array(z.string()).optional(),
+	title: z.string().optional(),
+
+	// Academic Period Filters
+	semesters: z.array(SemesterSchema).optional(),
+	years: z.array(z.coerce.number()).optional(),
+
+	// Organizational Filters
+	faculty_ids: z.array(z.string()).optional(),
+	levels: z.array(z.string()).optional(),
+	languages: z.array(z.string()).optional(),
+
+	// Time Filters
+	include_times: z.array(TimeSelectionSchema).optional(),
+	exclude_times: z.array(TimeSelectionSchema).optional(),
+
+	// Personnel Filters
+	lecturers: z.array(z.string()).optional(),
+
+	// Study Plan Filters
+	study_plan_ids: z.array(z.coerce.number()).optional(),
+	groups: z.array(z.enum(InSISStudyPlanCourseGroupValues)).optional(),
+	categories: z.array(z.enum(InSISStudyPlanCourseCategoryValues)).optional(),
+
+	// Course Properties Filters
+	ects: z.array(z.coerce.number()).optional(),
+	mode_of_completions: z.array(z.string()).optional(),
+	mode_of_deliveries: z.array(z.string()).optional(),
+
+	// Availability Filters
+	completed_course_idents: z.array(z.coerce.string()).optional(),
+
+	// Sorting
+	sort_by: z.enum(['ident', 'title', 'ects', 'faculty', 'year', 'semester']).optional().default('ident'),
+	sort_dir: z.enum(['asc', 'desc']).optional().default('asc'),
+
+	// Pagination
+	limit: z.coerce.number().min(0).max(500).optional().default(20),
+	offset: z.coerce.number().min(0).optional().default(0)
+})
+
+export type CoursesFilter = z.infer<typeof CoursesFilterSchema>
 
 /**
  * Retrieves a paginated list of courses with full relations based on complex filtering criteria.
@@ -16,50 +63,33 @@ import { Request, Response } from 'express'
  * - Assessment methods
  * - Study plan associations (when filtering by study_plan_id)
  *
- * Results are cached in Redis for 5 minutes.
- *
  * @param req - Express request object containing the filter payload.
  * @param res - Express response object.
- * @throws {Exception} 400 - If the validation of the search request fails.
+ * @throws {ApiError} 403 - If the validation of the search request fails.
  */
 export default async function CoursesController(req: Request, res: Response<CoursesResponse>) {
 	LoggerAPIContext.add(res, { body: req.body })
 
 	// 1. Validation
-	const result = await CoursesFilterValidation.safeParseAsync(req.body)
+	const result = await CoursesFilterSchema.safeParseAsync(req.body)
 
-	if (!result.success) {
-		throw new Exception(400, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', {
-			zodIssues: result.error.issues
-		})
-	}
+	if (!result.success) throw Errors.validation(result.error.issues)
 
 	const filter = result.data
 
-	// 2. Cache Check
-	const cacheKey = `insis:courses:${JSON.stringify(filter)}`
-	const cachedData = await redis.get(cacheKey)
-
-	if (cachedData) {
-		LoggerAPIContext.add(res, { cache: true })
-		return res.status(200).send(JSON.parse(cachedData))
-	}
-
-	// 3. Service Call (Parallel Execution)
+	// 2. Service Call (Parallel Execution)
 	const [{ courses, total }, facets] = await Promise.all([
 		CourseService.getCoursesWithRelations(filter, filter.limit, filter.offset),
 		CourseService.getCourseFacets(filter)
 	])
 
 	LoggerAPIContext.add(res, {
-		cache: false,
 		courses_count: courses.length,
 		total_count: total,
 		facets_count: Object.keys(facets).length
 	})
 
-	// 4. Response Assembly
-	// LTS Note: The type 'CoursesResponse' is now strictly enforced against the data returned by the service.
+	// 3. Response Assembly
 	const response: CoursesResponse = {
 		data: courses,
 		facets,
@@ -70,9 +100,6 @@ export default async function CoursesController(req: Request, res: Response<Cour
 			total
 		}
 	}
-
-	// 5. Cache Set (TTL: 5 minutes)
-	await redis.setex(cacheKey, 300, JSON.stringify(response))
 
 	return res.status(200).send(response)
 }

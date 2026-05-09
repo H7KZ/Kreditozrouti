@@ -1,6 +1,6 @@
 import App from '@client/App.vue'
-import '@client/index.css'
 import { i18n } from '@client/i18n'
+import '@client/index.css'
 import { useAlertsStore, useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import * as Sentry from '@sentry/vue'
 import { createHead } from '@unhead/vue/client'

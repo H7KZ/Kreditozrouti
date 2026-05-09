@@ -56,7 +56,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 				semester: plan.semester,
 				year: plan.year,
 				...planMetadata
-			} as never)
+			})
 			.executeTakeFirst()
 
 		studyPlanId = Number(result.insertId)
@@ -134,7 +134,7 @@ async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | nul
 		.values({
 			id: faculty.ident,
 			title: faculty.title
-		} as never)
+		})
 		.onDuplicateKeyUpdate({ title: faculty.title })
 		.execute()
 

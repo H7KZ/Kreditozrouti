@@ -5,6 +5,7 @@ import ErrorHandler from '@api/Handlers/ErrorHandler'
 import { Paths } from '@api/paths'
 import CommandsRoutes from '@api/Routes/CommandsRoutes'
 import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
+import { ScraperPublicRoutes } from '@api/Routes/ScraperPublicRoutes'
 import sentry from '@api/sentry'
 import compression from 'compression'
 import { RedisStore } from 'connect-redis'
@@ -67,6 +68,7 @@ app.use('/health', (req, res) => res.status(200).send('OK'))
 
 // Routes
 app.use('/', KreditozroutiRoutes)
+app.use('/', ScraperPublicRoutes)
 app.use('/commands', CommandsRoutes)
 
 // Sentry Error Logging

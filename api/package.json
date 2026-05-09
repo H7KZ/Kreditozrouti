@@ -29,9 +29,10 @@
 		"morgan": "^1.10.1",
 		"multer": "^2.1.1",
 		"mysql2": "^3.22.3",
-		"nodemailer": "^7.0.13",
+		"nodemailer": "^8.0.7",
 		"pino": "^10.3.1",
 		"pino-http": "^11.0.0",
+		"rate-limiter-flexible": "^5.0.5",
 		"response-time": "^2.3.4",
 		"zod": "^4.4.3"
 	},

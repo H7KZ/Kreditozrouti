@@ -1,6 +1,11 @@
-import { scraper } from '@api/bullmq'
-import Exception from '@api/Error/Exception'
+import { Errors } from '@api/Errors'
+import ScraperService from '@api/Services/ScraperService'
 import { Request, Response } from 'express'
+import * as z from 'zod'
+
+const BodySchema = z.object({
+	url: z.string()
+})
 
 /**
  * Manually triggers the scraper for a specific InSIS Course.
@@ -8,27 +13,11 @@ import { Request, Response } from 'express'
  * @route POST /commands/insis/course
  */
 export default async function RunInSISCourseScraperController(req: Request, res: Response) {
-	interface Body {
-		url?: string
-	}
+	const result = BodySchema.safeParse(req.body)
 
-	const body: Body = req.body as Body
+	if (!result.success) throw Errors.validation(result.error.issues)
 
-	if (!body.url) throw new Exception(400)
+	await ScraperService.enqueueCourseScrape(result.data.url)
 
-	await scraper.queue.request.add(
-		'InSIS Course Request (Manual)',
-		{
-			type: 'InSIS:Course',
-			url: body.url
-		},
-		{
-			deduplication: {
-				id: 'InSIS:Course:ManualRun',
-				ttl: 1000 // 1 second
-			}
-		}
-	)
-
-	return res.sendStatus(200)
+	return res.sendStatus(202)
 }
