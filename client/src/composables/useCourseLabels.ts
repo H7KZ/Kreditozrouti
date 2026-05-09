@@ -1,8 +1,8 @@
-import type { Course, CourseWithRelations } from '@api/Database/types'
+﻿import type { Course, CourseWithRelations } from '@api/Database/types'
 import { i18n } from '@client/index.ts'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { getCategoryBadgeClass, getSlotType, getUnitTypeColorClass } from '@client/utils/course'
-import type InSISDay from '@scraper/Types/InSISDay'
+import type InSISDay from '@scraper/types/insis'
 
 /**
  * Course labels composable.

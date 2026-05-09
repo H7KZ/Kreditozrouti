@@ -1,5 +1,5 @@
-import { useCoursesStore, useDragStore, useFiltersStore, useUIStore } from '@client/stores'
-import type InSISDay from '@scraper/Types/InSISDay'
+﻿import { useCoursesStore, useDragStore, useFiltersStore, useUIStore } from '@client/stores'
+import type InSISDay from '@scraper/types/insis'
 import { onMounted, onUnmounted, ref, type Ref } from 'vue'
 
 /**

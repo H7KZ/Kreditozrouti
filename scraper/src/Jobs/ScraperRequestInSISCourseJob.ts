@@ -1,9 +1,9 @@
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import ScraperInSISCourse from '@scraper/Interfaces/ScraperInSISCourse'
-import { ScraperInSISCourseRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
-import { InSISQueueService } from '@scraper/Services/InSISQueueService'
+import { QueueService } from '@scraper/Services/QueueService'
+import type { ScraperInSISCourse } from '@scraper/types/insis'
+import type { ScraperInSISCourseRequestJob } from '@scraper/types/jobs'
 import { withCzechLang } from '@scraper/Utils/HTTPUtils'
 
 /**
@@ -32,7 +32,7 @@ export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCou
             return null
         }
 
-        await InSISQueueService.addCourseResponse(course)
+        await QueueService.addCourseResponse(course)
 
         return course
     } catch (error) {

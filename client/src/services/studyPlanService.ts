@@ -1,7 +1,7 @@
 import type StudyPlanCoursesResponse from '@api/Controllers/Kreditozrouti/types/StudyPlanCoursesResponse'
 import type StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse'
-import type { StudyPlanCoursesFilter } from '@api/Validations/StudyPlanCoursesFilterValidation'
-import type { StudyPlansFilter } from '@api/Validations/StudyPlansFilterValidation'
+import type { StudyPlanCoursesFilter } from '@api/Controllers/Kreditozrouti/StudyPlanCoursesController'
+import type { StudyPlansFilter } from '@api/Controllers/Kreditozrouti/StudyPlansController'
 import api from '@client/api'
 
 export async function fetchStudyPlans(filters: Partial<StudyPlansFilter>): Promise<StudyPlansResponse> {

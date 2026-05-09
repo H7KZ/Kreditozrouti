@@ -1,5 +1,5 @@
-import type { DragSelection } from '@client/types'
-import type InSISDay from '@scraper/Types/InSISDay'
+﻿import type { DragSelection } from '@client/types'
+import type InSISDay from '@scraper/types/insis'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

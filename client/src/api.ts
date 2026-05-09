@@ -1,5 +1,10 @@
-import type ErrorResponse from '@api/Error/ErrorResponse.ts'
 import { i18n } from '@client/index.ts'
+
+interface ErrorResponse {
+	type?: string
+	code?: string
+	message?: string
+}
 import { useAlertsStore } from '@client/stores'
 import axios, { AxiosError, type AxiosInstance } from 'axios'
 

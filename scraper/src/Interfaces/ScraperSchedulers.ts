@@ -1,4 +1,0 @@
-const ScraperInSISCatalogRequestScheduler = 'ScraperInSISCatalogRequestScheduler'
-const ScraperInSISStudyPlansRequestScheduler = 'ScraperInSISStudyPlansRequestScheduler'
-
-export { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler }

@@ -7,7 +7,8 @@ const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
 const numWorkers = specifiedInstances ? parseInt(specifiedInstances) : 1
 
-// Cluster Management
+// ─── Cluster management ───────────────────────────────────────────────────────
+
 if (cluster.isPrimary && numWorkers > 1) {
     console.log(`🚀  [Scraper] Master process ${process.pid} is running`)
     console.log(`⚙️  [Scraper] Forking ${numWorkers} workers...`)
@@ -21,16 +22,14 @@ if (cluster.isPrimary && numWorkers > 1) {
         cluster.fork()
     })
 } else {
-    start().then(() => {
+    startWorker().then(() => {
         console.log(`🚀  [Scraper] Worker process ${process.pid} started`)
     })
 }
 
-/**
- * Scraper service entry point.
- * Verifies Redis connectivity and initializes BullMQ job queues and workers.
- */
-async function start() {
+// ─── Worker startup ───────────────────────────────────────────────────────────
+
+async function startWorker(): Promise<void> {
     try {
         await redis.ping()
         console.log('Connected to Redis successfully.')
@@ -40,7 +39,6 @@ async function start() {
     } catch (error) {
         console.error('Failed to start the server:', error)
 
-        // Report startup errors to Sentry
         if (sentry.isEnabled()) {
             sentry.captureException(error)
             await sentry.flush(2000)

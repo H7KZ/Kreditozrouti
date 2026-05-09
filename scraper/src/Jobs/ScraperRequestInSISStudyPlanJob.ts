@@ -1,8 +1,8 @@
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import { ScraperInSISStudyPlanRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
-import { InSISQueueService } from '@scraper/Services/InSISQueueService'
+import { QueueService } from '@scraper/Services/QueueService'
+import type { ScraperInSISStudyPlanRequestJob } from '@scraper/types/jobs'
 
 /**
  * Scrapes a single InSIS study plan page.
@@ -25,7 +25,7 @@ export default async function ScraperRequestInSISStudyPlanJob(data: ScraperInSIS
     try {
         const plan = ExtractInSISStudyPlanService.extract(result.data, data.url)
 
-        await InSISQueueService.addStudyPlanResponse(plan)
+        await QueueService.addStudyPlanResponse(plan)
     } catch (error) {
         LoggerJobContext.add({
             error: 'Extraction error',

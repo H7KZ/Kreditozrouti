@@ -1,10 +1,10 @@
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import { ScraperInSISCatalogRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISCatalogService from '@scraper/Services/ExtractInSISCatalogService'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
-import { InSISQueueService } from '@scraper/Services/InSISQueueService'
+import { QueueService } from '@scraper/Services/QueueService'
+import type { ScraperInSISCatalogRequestJob } from '@scraper/types/jobs'
 
 /**
  * Scrapes the InSIS course catalog.
@@ -88,7 +88,7 @@ async function scrapeCatalogPage(
 
     const courseUrls = ExtractInSISCatalogService.extractCourseUrls(result.data)
 
-    await InSISQueueService.addCatalogResponse(courseUrls)
+    await QueueService.addCatalogResponse(courseUrls)
 
     if (courseUrls.length && autoQueueCourses) {
         const coursesWithIds = courseUrls.map(url => ({
@@ -96,6 +96,6 @@ async function scrapeCatalogPage(
             courseId: ExtractInSISCourseService.extractIdFromUrl(url)
         }))
 
-        await InSISQueueService.queueCourseRequests(coursesWithIds)
+        await QueueService.queueCourseRequests(coursesWithIds)
     }
 }

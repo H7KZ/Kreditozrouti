@@ -8,18 +8,19 @@ import {
 	Database,
 	FacultyTable,
 	NewCourse,
+	NewCourseUnit,
 	NewCourseUnitSlot,
 	StudyPlanCourseTable,
 	StudyPlanTable
 } from '@api/Database/types'
-import {
+import type {
 	ScraperInSISCourseAssessmentMethod,
 	ScraperInSISCourseStudyPlan,
 	ScraperInSISCourseTimetableSlot,
-	ScraperInSISCourseTimetableUnit
-} from '@scraper/Interfaces/ScraperInSISCourse'
-import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
-import { ScraperInSISCourseResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
+	ScraperInSISCourseTimetableUnit,
+	ScraperInSISFaculty
+} from '@scraper/types/insis'
+import type { ScraperInSISCourseResponseJob } from '@scraper/types/jobs'
 import { Transaction } from 'kysely'
 
 /**
@@ -130,10 +131,7 @@ async function syncAssessmentMethods(trx: Transaction<Database>, courseId: numbe
 		}))
 
 	if (toInsert.length > 0) {
-		await trx
-			.insertInto(CourseAssessmentTable._table)
-			.values(toInsert as never)
-			.execute()
+		await trx.insertInto(CourseAssessmentTable._table).values(toInsert).execute()
 	}
 }
 
@@ -156,15 +154,13 @@ async function syncTimetable(trx: Transaction<Database>, courseId: number, incom
 
 	// 3. Recreate: Insert new units and their slots
 	for (const incoming of incomingUnits) {
-		const res = await trx
-			.insertInto(CourseUnitTable._table)
-			.values({
-				course_id: courseId,
-				lecturer: incoming.lecturer,
-				capacity: incoming.capacity,
-				note: incoming.note
-			})
-			.executeTakeFirstOrThrow()
+		const unitValues: NewCourseUnit = {
+			course_id: courseId,
+			lecturer: incoming.lecturer,
+			capacity: incoming.capacity,
+			note: incoming.note
+		}
+		const res = await trx.insertInto(CourseUnitTable._table).values(unitValues).executeTakeFirstOrThrow()
 
 		const newUnitId = Number(res.insertId)
 
@@ -189,10 +185,7 @@ async function syncSlotsForUnit(trx: Transaction<Database>, unitId: number, inco
 			location: slot.location
 		}))
 
-		await trx
-			.insertInto(CourseUnitSlotTable._table)
-			.values(slotRows as never)
-			.execute()
+		await trx.insertInto(CourseUnitSlotTable._table).values(slotRows).execute()
 	}
 }
 

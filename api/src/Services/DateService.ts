@@ -1,4 +1,5 @@
-import InSISDay, { InSISDayValues } from '@scraper/Types/InSISDay'
+import type InSISDay from '@scraper/types/insis'
+import { InSISDayValues } from '@scraper/types/insis'
 
 class DateService {
 	/**

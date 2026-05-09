@@ -1,5 +1,5 @@
-import { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
-import { StudyPlansFilter } from '@api/Validations/StudyPlansFilterValidation.ts'
+import type { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import type { StudyPlansFilter } from '@api/Controllers/Kreditozrouti/StudyPlansController'
 
 /** Pagination metadata (matches API response meta) */
 export interface PaginationMeta {

@@ -1,34 +1,35 @@
 import { redis } from '@scraper/clients'
 import ScraperRequestHandler from '@scraper/Handlers/ScraperRequestHandler'
-import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/Interfaces/ScraperQueue'
-import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
-import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
 import { withSentryJobHandler } from '@scraper/sentry'
+import type { ScraperRequestJob, ScraperResponseJob } from '@scraper/types/jobs'
+import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/types/queue'
 import { Queue, Worker } from 'bullmq'
 
-/**
- * Manages the BullMQ infrastructure specifically for the scraper service.
- * Handles queue initialization and the worker responsible for executing scrape requests.
- */
+// ─── Queues ──────────────────────────────────────────────────────────────────
+
+const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis.options })
+const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis.options })
+
+// ─── Workers ─────────────────────────────────────────────────────────────────
+
+const requestWorker = new Worker<ScraperRequestJob>(ScraperRequestQueue, withSentryJobHandler(ScraperRequestQueue, ScraperRequestHandler), {
+    connection: redis.options,
+    concurrency: 1
+})
+
+// ─── Scraper object ───────────────────────────────────────────────────────────
+
 const scraper = {
     queue: {
-        request: new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis.options }),
-        response: new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis.options })
+        request: requestQueue,
+        response: responseQueue
     },
 
     worker: {
-        request: new Worker<ScraperRequestJob>(ScraperRequestQueue, withSentryJobHandler(ScraperRequestQueue, ScraperRequestHandler), {
-            connection: redis.options,
-            concurrency: 1
-        })
-        // response: new Worker<ScraperResponseJobInterface>(ScraperResponseQueue, ScraperResponseJobHandler, { connection: redis })
+        request: requestWorker
     },
 
-    /**
-     * Awaits the readiness of all configured queues and workers.
-     * Ensures Redis connections are established before processing begins.
-     */
-    async waitForQueues() {
+    async waitForQueues(): Promise<void> {
         await scraper.queue.request.waitUntilReady()
         console.log('Scraper request queue is ready and processing jobs.')
 
@@ -37,9 +38,6 @@ const scraper = {
 
         await scraper.worker.request.waitUntilReady()
         console.log('Scraper request worker is ready and processing jobs.')
-
-        // await scraper.worker.response.waitUntilReady()
-        // console.log('Scraper response worker is ready and processing jobs.')
     }
 }
 

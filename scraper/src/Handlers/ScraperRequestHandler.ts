@@ -1,9 +1,9 @@
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
 import ScraperRequestInSISCatalogJob from '@scraper/Jobs/ScraperRequestInSISCatalogJob'
 import ScraperRequestInSISCourseJob from '@scraper/Jobs/ScraperRequestInSISCourseJob'
 import ScraperRequestInSISStudyPlanJob from '@scraper/Jobs/ScraperRequestInSISStudyPlanJob'
 import ScraperRequestInSISStudyPlansJob from '@scraper/Jobs/ScraperRequestInSISStudyPlansJob'
+import type { ScraperRequestJob } from '@scraper/types/jobs'
 import { Job } from 'bullmq'
 
 /**
@@ -27,25 +27,23 @@ export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>)
         timestamp: new Date().toISOString()
     }
 
+    const handlers = new Map<string, (job: Job<ScraperRequestJob>) => Promise<unknown>>([
+        ['InSIS:Catalog', job => ScraperRequestInSISCatalogJob(job.data as Parameters<typeof ScraperRequestInSISCatalogJob>[0])],
+        ['InSIS:Course', job => ScraperRequestInSISCourseJob(job.data as Parameters<typeof ScraperRequestInSISCourseJob>[0])],
+        ['InSIS:StudyPlans', job => ScraperRequestInSISStudyPlansJob(job.data as Parameters<typeof ScraperRequestInSISStudyPlansJob>[0])],
+        ['InSIS:StudyPlan', job => ScraperRequestInSISStudyPlanJob(job.data as Parameters<typeof ScraperRequestInSISStudyPlanJob>[0])]
+    ])
+
     await LoggerJobContext.run(async () => {
         try {
-            switch (type) {
-                case 'InSIS:Catalog':
-                    await ScraperRequestInSISCatalogJob(job.data)
-                    break
-                case 'InSIS:Course':
-                    await ScraperRequestInSISCourseJob(job.data)
-                    break
-                case 'InSIS:StudyPlans':
-                    await ScraperRequestInSISStudyPlansJob(job.data)
-                    break
-                case 'InSIS:StudyPlan':
-                    await ScraperRequestInSISStudyPlanJob(job.data)
-                    break
-                default:
-                    LoggerJobContext.add({ status: 'skipped', reason: 'unknown_type' })
-                    break
+            const handler = handlers.get(type)
+
+            if (!handler) {
+                LoggerJobContext.add({ status: 'skipped', reason: 'unknown_type' })
+                return
             }
+
+            await handler(job)
 
             const diff = process.hrtime(start)
             const durationMs = (diff[0] * 1e9 + diff[1]) / 1e6

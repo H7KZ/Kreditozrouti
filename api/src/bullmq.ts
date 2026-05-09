@@ -1,33 +1,64 @@
+// ─── Imports ─────────────────────────────────────────────────────────────────
+
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
 import { withSentryJobHandler } from '@api/sentry'
 import InSISService from '@api/Services/InSISService'
-import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/Interfaces/ScraperQueue'
-import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
-import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
-import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler } from '@scraper/Interfaces/ScraperSchedulers'
+import type { ScraperRequestJob, ScraperResponseJob } from '@scraper/types/jobs'
+import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@scraper/types/queue'
 import { Queue, Worker } from 'bullmq'
 
-/**
- * Manages the BullMQ infrastructure for the scraping service.
- * Handles request queues, response workers, and periodic job scheduling.
- */
+// ─── Queue & Worker Setup ─────────────────────────────────────────────────────
+
+const scraperRequestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
+	connection: redis.options
+})
+
+const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, withSentryJobHandler(ScraperResponseQueue, ScraperResponseHandler), {
+	connection: redis.options,
+	concurrency: 4
+})
+
+// ─── Scheduler Job Data ───────────────────────────────────────────────────────
+
+function buildCatalogSchedulerJob(upcomingPeriod: ReturnType<typeof InSISService.getUpcomingPeriod>) {
+	return {
+		name: 'InSIS Catalog Request (at 1 AM in Jan, Feb, Aug, Sep)',
+		data: {
+			type: 'InSIS:Catalog' as const,
+			auto_queue_courses: true,
+			faculties: undefined,
+			periods: [upcomingPeriod]
+		},
+		opts: { removeOnComplete: true, removeOnFail: true }
+	}
+}
+
+function buildStudyPlansSchedulerJob(periodsForLastFourYears: ReturnType<typeof InSISService.getPeriodsForLastYears>) {
+	return {
+		name: 'InSIS Study Plans Request (at 2 AM in Jan, Feb, Aug, Sep)',
+		data: {
+			type: 'InSIS:StudyPlans' as const,
+			auto_queue_study_plans: true,
+			faculties: undefined,
+			periods: periodsForLastFourYears
+		},
+		opts: { removeOnComplete: true, removeOnFail: true }
+	}
+}
+
+// ─── Exported BullMQ Object ───────────────────────────────────────────────────
+
 const scraper = {
 	queue: {
-		request: new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis.options })
+		request: scraperRequestQueue
 	},
 
 	worker: {
-		response: new Worker<ScraperResponseJob>(ScraperResponseQueue, withSentryJobHandler(ScraperResponseQueue, ScraperResponseHandler), {
-			connection: redis.options,
-			concurrency: 4
-		})
+		response: scraperResponseWorker
 	},
 
-	/**
-	 * Waits for all queues and workers to be ready before processing.
-	 */
 	async waitForQueues() {
 		await scraper.queue.request.waitUntilReady()
 		console.log('Scraper request queue is ready.')
@@ -36,53 +67,30 @@ const scraper = {
 		console.log('Scraper response worker is ready.')
 	},
 
-	/**
-	 * Configures Cron-based job schedulers.
-	 */
 	async schedulers() {
-		if (Config.isEnvProduction()) {
-			await scraper.queue.request.removeJobScheduler(ScraperInSISCatalogRequestScheduler)
-			await scraper.queue.request.removeJobScheduler(ScraperInSISStudyPlansRequestScheduler)
+		if (!Config.isEnvProduction()) return
 
-			const upcomingPeriod = InSISService.getUpcomingPeriod()
-			const periodsForLastFourYears = InSISService.getPeriodsForLastYears(4)
+		await scraper.queue.request.removeJobScheduler(ScraperInSISCatalogRequestScheduler)
+		await scraper.queue.request.removeJobScheduler(ScraperInSISStudyPlansRequestScheduler)
 
-			// InSIS Catalog (Daily at 1 AM in Jan,Feb,Aug,Sep)
-			await scraper.queue.request.upsertJobScheduler(
-				ScraperInSISCatalogRequestScheduler,
-				{ pattern: '0 1 * 1-2,8-9 *' },
-				{
-					name: 'InSIS Catalog Request (at 1 AM in Jan, Feb, Aug, Sep)',
-					data: {
-						type: 'InSIS:Catalog',
-						auto_queue_courses: true,
+		const upcomingPeriod = InSISService.getUpcomingPeriod()
+		const periodsForLastFourYears = InSISService.getPeriodsForLastYears(4)
 
-						faculties: undefined,
-						periods: [upcomingPeriod]
-					},
-					opts: { removeOnComplete: true, removeOnFail: true }
-				}
-			)
+		// Daily at 1 AM in Jan, Feb, Aug, Sep
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISCatalogRequestScheduler,
+			{ pattern: '0 1 * 1-2,8-9 *' },
+			buildCatalogSchedulerJob(upcomingPeriod)
+		)
 
-			// InSIS Study Plans (Daily at 2 AM in Jan,Feb,Aug,Sep)
-			await scraper.queue.request.upsertJobScheduler(
-				ScraperInSISStudyPlansRequestScheduler,
-				{ pattern: '0 2 * 1-2,8-9 *' },
-				{
-					name: 'InSIS Study Plans Request (at 2 AM in Jan, Feb, Aug, Sep)',
-					data: {
-						type: 'InSIS:StudyPlans',
-						auto_queue_study_plans: true,
+		// Daily at 2 AM in Jan, Feb, Aug, Sep
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISStudyPlansRequestScheduler,
+			{ pattern: '0 2 * 1-2,8-9 *' },
+			buildStudyPlansSchedulerJob(periodsForLastFourYears)
+		)
 
-						faculties: undefined,
-						periods: periodsForLastFourYears
-					},
-					opts: { removeOnComplete: true, removeOnFail: true }
-				}
-			)
-
-			console.log('BullMQ schedulers have been configured.')
-		}
+		console.log('BullMQ schedulers have been configured.')
 	}
 }
 

@@ -1,6 +1,6 @@
-import { WEEKDAYS } from '@client/constants/timetable'
+﻿import { WEEKDAYS } from '@client/constants/timetable'
 import type { SelectedCourseUnit } from '@client/types'
-import type InSISDay from '@scraper/Types/InSISDay'
+import type InSISDay from '@scraper/types/insis'
 import { computed, type Ref } from 'vue'
 
 /**

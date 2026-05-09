@@ -1,6 +1,6 @@
-import type { CourseUnitSlot } from '@api/Database/types'
+﻿import type { CourseUnitSlot } from '@api/Database/types'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
-import type InSISDay from '@scraper/Types/InSISDay'
+import type InSISDay from '@scraper/types/insis'
 
 /**
  * Get the effective day for a slot (from day field or extracted from date).

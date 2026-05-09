@@ -1,7 +1,7 @@
 import { scraper } from '@api/bullmq'
 import { mysql } from '@api/clients'
 import { Errors } from '@api/Errors'
-import InSISSemester from '@scraper/Types/InSISSemester'
+import type { InSISSemester } from '@scraper/types/insis'
 
 interface Period {
 	semester: InSISSemester | null

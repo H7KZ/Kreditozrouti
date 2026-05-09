@@ -1,13 +1,12 @@
 import scraper from '@scraper/bullmq'
-import ScraperInSISCourse from '@scraper/Interfaces/ScraperInSISCourse'
-import ScraperInSISStudyPlan from '@scraper/Interfaces/ScraperInSISStudyPlan'
+import type { ScraperInSISCourse, ScraperInSISStudyPlan } from '@scraper/types/insis'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 
 /**
  * Centralized queue operations for InSIS scraper jobs.
  * Provides type-safe wrappers around BullMQ operations.
  */
-export class InSISQueueService {
+export class QueueService {
     static async addCatalogResponse(urls: string[]): Promise<void> {
         await scraper.queue.response.add(`InSIS Catalog Response`, {
             type: 'InSIS:Catalog',

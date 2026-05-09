@@ -1,4 +1,4 @@
-import InSISSemester from '@scraper/Types/InSISSemester'
+import type { InSISSemester } from '@scraper/types/insis'
 
 /**
  * Utility service for calculating academic periods based on dates.

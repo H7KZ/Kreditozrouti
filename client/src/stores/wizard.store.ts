@@ -1,9 +1,9 @@
-import { STORAGE_KEYS } from '@client/constants/storage.ts'
+﻿import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { useCompletedCoursesStore } from '@client/stores/completed-courses.store'
 import { useWizardDataStore } from '@client/stores/wizard-data.store'
 import type { PersistedWizardState, SelectedStudyPlan } from '@client/types'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
-import type InSISSemester from '@scraper/Types/InSISSemester'
+import type { InSISSemester } from '@scraper/types/insis'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

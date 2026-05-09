@@ -1,5 +1,5 @@
 import type CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse'
-import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation'
+import type { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import api from '@client/api'
 
 export async function fetchCourses(filters: Partial<CoursesFilter>): Promise<CoursesResponse> {

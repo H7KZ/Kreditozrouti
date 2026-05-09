@@ -1,9 +1,9 @@
-import type { CourseUnit, CourseUnitSlot } from '@api/Database/types'
+﻿import type { CourseUnit, CourseUnitSlot } from '@api/Database/types'
 import { useTimeUtils } from '@client/composables/useTimeUtils'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 import { i18n } from '@client/index.ts'
 import { getDayFromDate, getDayIndex } from '@client/utils/day.ts'
-import type InSISDay from '@scraper/Types/InSISDay'
+import type InSISDay from '@scraper/types/insis'
 
 /**
  * Schedule summary composable.

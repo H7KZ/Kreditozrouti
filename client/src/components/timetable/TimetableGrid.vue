@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
@@ -7,7 +7,7 @@ import { isMergedUnit, useCourseLabels, useSlotMerging, useTimetableDrag, useTim
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useDragStore, useTimetableStore } from '@client/stores'
 import type { SelectedCourseUnit } from '@client/types'
-import type InSISDay from '@scraper/Types/InSISDay'
+import type InSISDay from '@scraper/types/insis'
 import { ref, toRef } from 'vue'
 
 /*

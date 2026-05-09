@@ -1,14 +1,85 @@
-import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
-import InSISDay from '@scraper/Types/InSISDay'
-import InSISSemester from '@scraper/Types/InSISSemester'
-import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
-import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
+// ---------------------------------------------------------------------------
+// Primitive types (formerly in Types/)
+// ---------------------------------------------------------------------------
+
+export const InSISDayValues = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle'] as const
+
+/**
+ * InSIS day representation.
+ */
+type InSISDay = (typeof InSISDayValues)[number]
+export default InSISDay
+
+export const InSISSemesterValues = ['LS', 'ZS'] as const
+
+/**
+ * InSISSemester represents the semester codes used in the InSIS system.
+ */
+export type InSISSemester = (typeof InSISSemesterValues)[number]
+
+export const InSISStudyPlanCourseCategoryValues = [
+    'compulsory',
+    'elective',
+    'language',
+    'state_exam',
+    'prohibited',
+    'beyond_scope',
+    'exchange_program',
+    'physical_education'
+] as const
+
+/**
+ * Represents the possible categories for courses within a study plan.
+ */
+export type InSISStudyPlanCourseCategory = (typeof InSISStudyPlanCourseCategoryValues)[number]
+
+export const InSISStudyPlanCourseGroupValues = [
+    'faculty_specific',
+    'university_wide',
+    'field_specific_bachelor',
+    'field_specific_master',
+    'minor_specialization'
+] as const
+
+/**
+ * Represents the possible groups for courses within a study plan.
+ */
+export type InSISStudyPlanCourseGroup = (typeof InSISStudyPlanCourseGroupValues)[number]
+
+/**
+ * Defines the unique identifiers for the various scraping tasks supported by the system.
+ * Distinguishes between list retrieval and detail scraping for different data sources.
+ */
+export type ScraperJob = 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan'
+
+// ---------------------------------------------------------------------------
+// Domain interfaces (formerly in Interfaces/)
+// ---------------------------------------------------------------------------
+
+/**
+ * Interface representing a faculty in the InSIS system.
+ */
+export interface ScraperInSISFaculty {
+    /** Faculty ident ("FIS"). */
+    ident: string | null
+
+    /** Faculty name. */
+    title: string | null
+}
+
+/**
+ * Represents the raw output of a course catalog scrape.
+ */
+export interface ScraperInSISCatalog {
+    /** A list of absolute URLs pointing to individual course syllabus pages found in the catalog. */
+    urls: string[]
+}
 
 /**
  * Detailed data structure representing a single scraped InSIS course.
  * Maps closely to the syllabus page structure in the university system.
  */
-export default interface ScraperInSISCourse {
+export interface ScraperInSISCourse {
     /** The unique numeric identifier of the course. */
     id: number
 
@@ -149,7 +220,7 @@ export interface ScraperInSISCourseTimetableSlot {
 }
 
 /**
- * Represents the structure of a single scraped InSIS Study Plan.
+ * Represents the structure of a single scraped InSIS Study Plan (as embedded in a course).
  */
 export interface ScraperInSISCourseStudyPlan {
     /** Plan code (e.g., "P-AIN"). */
@@ -172,4 +243,72 @@ export interface ScraperInSISCourseStudyPlan {
 
     /** Category of the course in the study plan. */
     category: InSISStudyPlanCourseCategory
+}
+
+/**
+ * Represents the structure of a single scraped InSIS Study Plan.
+ */
+export interface ScraperInSISStudyPlan {
+    /** Unique numeric identifier for the study plan. */
+    id: number
+
+    /** Full URL source of the study plan. */
+    url: string
+
+    /** Plan code (e.g., "P-AIN"). */
+    ident: string | null
+
+    /** Title of the plan or specialization. */
+    title: string | null
+
+    /** Faculty associated with this study plan. */
+    faculty: ScraperInSISFaculty | null
+
+    /** The semester this plan applies to. */
+    semester: InSISSemester | null
+
+    /** Academic year (e.g., "2023"). */
+    year: number | null
+
+    /** Academic level (e.g., Bachelor). */
+    level: string | null
+
+    /** Mode of study (e.g., Full-time, Combined). */
+    mode_of_study: string | null
+
+    /** Standard length of study in years or semesters. */
+    study_length: string | null
+
+    /** List of courses associated with this study plan, categorized by type. */
+    courses: ScraperInSISStudyPlanCourse[] | null
+}
+
+/**
+ * Represents a course entry within a study plan, including its categorization.
+ */
+export interface ScraperInSISStudyPlanCourse {
+    /** The ID of the course.
+     * Note: May be null if the course exists in the plan text but is not a clickable link in InSIS.
+     */
+    id: number | null
+
+    /** URL to the course detail page. */
+    url: string | null
+
+    /** The course code (e.g., "4IT101"). */
+    ident: string
+
+    /** Group information for the course. */
+    group: InSISStudyPlanCourseGroup
+
+    /** Category information for the course. */
+    category: InSISStudyPlanCourseCategory
+}
+
+/**
+ * Represents the raw output of a study plans list scrape.
+ */
+export interface ScraperInSISStudyPlans {
+    /** A list of absolute URLs pointing to individual study plan pages. */
+    urls: string[]
 }

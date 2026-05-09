@@ -1,6 +1,6 @@
 import InSISService from '@api/Services/InSISService.ts'
 import type { TimeSelection } from '@api/Validations'
-import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
+import type { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

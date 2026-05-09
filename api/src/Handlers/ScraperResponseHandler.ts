@@ -1,7 +1,7 @@
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import ScraperResponseInSISCourseJob from '@api/Jobs/ScraperResponseInSISCourseJob'
 import ScraperResponseInSISStudyPlanJob from '@api/Jobs/ScraperResponseInSISStudyPlanJob'
-import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
+import type { ScraperResponseJob } from '@scraper/types/jobs'
 import { Job } from 'bullmq'
 
 /**

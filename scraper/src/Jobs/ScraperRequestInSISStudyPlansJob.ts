@@ -1,10 +1,10 @@
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import ScraperInSISStudyPlans from '@scraper/Interfaces/ScraperInSISStudyPlans'
-import { ScraperInSISStudyPlansRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
-import { InSISQueueService } from '@scraper/Services/InSISQueueService'
+import { QueueService } from '@scraper/Services/QueueService'
+import type { ScraperInSISStudyPlans } from '@scraper/types/insis'
+import type { ScraperInSISStudyPlansRequestJob } from '@scraper/types/jobs'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
 
@@ -50,7 +50,7 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
         total_plans_found: plans.urls.length
     })
 
-    await InSISQueueService.addStudyPlansResponse(plans)
+    await QueueService.addStudyPlansResponse(plans)
 
     // Queue individual plan requests if enabled
     if (plans.urls.length && data.auto_queue_study_plans) {
@@ -59,7 +59,7 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
             total_plans_to_queue: plans.urls.length
         })
 
-        await InSISQueueService.queueStudyPlanRequests(plans.urls, url => ExtractInSISStudyPlanService.extractIdFromUrl(url))
+        await QueueService.queueStudyPlanRequests(plans.urls, url => ExtractInSISStudyPlanService.extractIdFromUrl(url))
     }
 
     return plans

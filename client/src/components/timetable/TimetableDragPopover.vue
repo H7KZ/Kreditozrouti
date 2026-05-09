@@ -1,6 +1,6 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { useClickOutside, useCourseLabels, usePopover, useTimeUtils } from '@client/composables'
-import type InSISDay from '@scraper/Types/InSISDay'
+import type InSISDay from '@scraper/types/insis'
 import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconSearch from '~icons/lucide/search'

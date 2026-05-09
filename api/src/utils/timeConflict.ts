@@ -1,6 +1,6 @@
 import DateService from '@api/Services/DateService'
 import { TimeSelection } from '@api/Validations'
-import { InSISDayValues } from '@scraper/Types/InSISDay'
+import { InSISDayValues } from '@scraper/types/insis'
 import { ExpressionBuilder } from 'kysely'
 
 /**

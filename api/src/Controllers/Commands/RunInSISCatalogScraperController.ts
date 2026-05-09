@@ -1,5 +1,5 @@
 import ScraperService from '@api/Services/ScraperService'
-import InSISSemester from '@scraper/Types/InSISSemester'
+import type { InSISSemester } from '@scraper/types/insis'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 

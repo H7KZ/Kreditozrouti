@@ -1,16 +1,16 @@
-import ScraperInSISCourse, {
+import MarkdownService from '@scraper/Services/MarkdownService'
+import type {
+    InSISSemester,
+    ScraperInSISCourse,
     ScraperInSISCourseAssessmentMethod,
     ScraperInSISCourseStudyPlan,
     ScraperInSISCourseTimetableSlot,
-    ScraperInSISCourseTimetableUnit
-} from '@scraper/Interfaces/ScraperInSISCourse'
-import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
-import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
-import MarkdownService from '@scraper/Services/MarkdownService'
-import InSISDay from '@scraper/Types/InSISDay'
-import InSISSemester from '@scraper/Types/InSISSemester'
+    ScraperInSISCourseTimetableUnit,
+    ScraperInSISFaculty
+} from '@scraper/types/insis'
+import type InSISDay from '@scraper/types/insis'
 import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
-import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
+import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 import * as cheerio from 'cheerio'
 import type { CheerioAPI } from 'cheerio'
 
@@ -19,6 +19,8 @@ import type { CheerioAPI } from 'cheerio'
  * Handles metadata, syllabus content, assessments, and timetable parsing.
  */
 export default class ExtractInSISCourseService {
+    // ─── Public API ──────────────────────────────────────────────────────────────
+
     /**
      * Extracts course ID from a syllabus URL.
      */
@@ -70,6 +72,12 @@ export default class ExtractInSISCourseService {
         }
     }
 
+    // ─── Identity ────────────────────────────────────────────────────────────────
+
+    /**
+     * Resolves course ID from HTML form input first, then falls back to URL.
+     * Throws if neither source yields an ID.
+     */
     private static resolveId($: CheerioAPI, url: string): number {
         const idInput = $('input[name="predmet"]').attr('value')
         if (idInput) return parseInt(idInput, 10)
@@ -79,6 +87,8 @@ export default class ExtractInSISCourseService {
 
         throw new Error('Course ID not found in the HTML content or URL.')
     }
+
+    // ─── Basic Info ──────────────────────────────────────────────────────────────
 
     private static extractBasicInfo($: CheerioAPI) {
         const ident = getRowValueCaseInsensitive($, 'Kód předmětu:')
@@ -182,6 +192,8 @@ export default class ExtractInSISCourseService {
         return lecturers
     }
 
+    // ─── Syllabus Content ────────────────────────────────────────────────────────
+
     private static extractSyllabusContent($: CheerioAPI) {
         const prerequisites = getRowValueCaseInsensitive($, 'Omezení pro zápis:')
         const recommended_programmes = getRowValueCaseInsensitive($, 'Doporučené doplňky kurzu:')
@@ -214,6 +226,8 @@ export default class ExtractInSISCourseService {
         }
     }
 
+    // ─── Assessment Methods ───────────────────────────────────────────────────────
+
     private static extractAssessmentMethods($: CheerioAPI): ScraperInSISCourseAssessmentMethod[] {
         const methods: ScraperInSISCourseAssessmentMethod[] = []
 
@@ -242,6 +256,8 @@ export default class ExtractInSISCourseService {
 
         return methods
     }
+
+    // ─── Timetable ───────────────────────────────────────────────────────────────
 
     private static extractTimetable($: CheerioAPI): ScraperInSISCourseTimetableUnit[] {
         const units = new Set<ScraperInSISCourseTimetableUnit>()
@@ -322,6 +338,8 @@ export default class ExtractInSISCourseService {
         }
     }
 
+    // ─── Study Plans ─────────────────────────────────────────────────────────────
+
     /**
      * Extracts study plan references from the course detail tables.
      * Parses the "Fakulta | Kód programu | Forma | Skupina | Období" tables.
@@ -359,15 +377,13 @@ export default class ExtractInSISCourseService {
                     }
 
                     const planIdent = cleanText($(cells[codeIndex]).text())
-                    const modeOfStudy = cleanText($(cells[formIndex]).text()) // e.g. "prezenční"
-                    const groupCode = cleanText($(cells[groupIndex]).text()) // e.g. "cVM", "hP"
-                    const periodRaw = $(cells[periodIndex]).html() // Contains <br>
+                    const modeOfStudy = cleanText($(cells[formIndex]).text())
+                    const groupCode = cleanText($(cells[groupIndex]).text())
+                    const periodRaw = $(cells[periodIndex]).html()
 
                     if (!planIdent || !periodRaw) return
 
-                    // Parse group code into Study Plan Category and Group
-                    // Use the logic from ExtractInSISStudyPlanService
-                    const { group, category } = ExtractInSISStudyPlanService.parseGroupCode(groupCode)
+                    const { group, category } = parseGroupCode(groupCode)
 
                     // Split periods by <br> to create distinct plan entries per semester
                     const periods = periodRaw
@@ -395,4 +411,7 @@ export default class ExtractInSISCourseService {
 
         return Array.from(plans)
     }
+
+    // ─── Utilities ───────────────────────────────────────────────────────────────
+    // (No private utility helpers beyond those inlined above)
 }

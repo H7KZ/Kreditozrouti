@@ -1,8 +1,6 @@
-import InSISDay from '@scraper/Types/InSISDay'
-import InSISSemester from '@scraper/Types/InSISSemester'
-import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
-import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
-import { ColumnType, Insertable, Selectable } from 'kysely'
+import type InSISDay from '@scraper/types/insis'
+import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@scraper/types/insis'
+import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export type ExcludeMethods<T> = { [K in keyof T as T[K] extends Function ? never : K]: T[K] }
@@ -117,7 +115,7 @@ export type CourseWithRelations = Course<Faculty, CourseUnit<void, CourseUnitSlo
 export class CourseAssessmentTable {
 	static readonly _table = 'insis_courses_assessments' as const
 
-	id!: number // Generated<number>
+	id!: Generated<number>
 
 	course_id!: number
 
@@ -146,7 +144,7 @@ export type CourseAssessmentWithRelations = CourseAssessment<Course>
 export class CourseUnitTable {
 	static readonly _table = 'insis_courses_units' as const
 
-	id!: number // Generated<number>
+	id!: Generated<number>
 
 	course_id!: number
 
@@ -175,7 +173,7 @@ export type CourseUnitWithRelations = CourseUnit<Course, CourseUnitSlot<CourseUn
 export class CourseUnitSlotTable {
 	static readonly _table = 'insis_courses_units_slots' as const
 
-	id!: number // Generated<number>
+	id!: Generated<number>
 
 	unit_id!: number
 
@@ -218,7 +216,7 @@ export type CourseUnitSlotWithRelations = CourseUnitSlot<Course, CourseUnit<void
 export class StudyPlanTable {
 	static readonly _table = 'insis_study_plans' as const
 
-	id!: number // Generated<number>
+	id!: Generated<number>
 
 	faculty_id!: string | null
 
@@ -260,7 +258,7 @@ export type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
 export class StudyPlanCourseTable {
 	static readonly _table = 'insis_study_plans_courses' as const
 
-	id!: number // Generated<number>
+	id!: Generated<number>
 
 	study_plan_id!: number
 	course_id!: number | null

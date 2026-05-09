@@ -1,9 +1,9 @@
-import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse.ts'
+﻿import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse.ts'
 import { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
 import { TimeSelection } from '@api/Validations'
-import { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
+import type { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import { PaginationMeta } from '@client/types'
-import type InSISDay from '@scraper/Types/InSISDay'
+import type InSISDay from '@scraper/types/insis'
 
 export interface CoursesState {
 	filters: CoursesFilter

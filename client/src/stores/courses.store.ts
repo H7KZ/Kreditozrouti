@@ -1,6 +1,6 @@
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse.ts'
 import type { CourseWithRelations } from '@api/Database/types'
-import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
+import type { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import { i18n } from '@client/i18n'
 import { fetchCourses as fetchCoursesFromService } from '@client/services/courseService'
 import { useAnnouncerStore } from '@client/stores/announcer.store'
