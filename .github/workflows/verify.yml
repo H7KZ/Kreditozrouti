@@ -6,7 +6,7 @@
 #
 # Prerequisites:
 #   - pnpm package manager
-#   - Node.js 20
+#   - Node.js 24
 #   - Makefile with install, lint, and build targets
 # ==============================================================================
 
@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4.2.0

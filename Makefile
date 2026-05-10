@@ -1,9 +1,11 @@
-.PHONY: install dev dev-api dev-client dev-scraper format lint build preview build-docker-images run-local-docker clear-redis
+.PHONY: install dev dev-api dev-client dev-scraper format lint build preview \
+        build-docker-images run-local-docker stop-local-docker clear-redis
 
 run-local-docker:
-	docker compose -f docker-compose.local.yml down --remove-orphans && \
-	docker compose -f docker-compose.local.yml build --pull --no-cache && \
 	docker compose -f docker-compose.local.yml up -d
+
+stop-local-docker:
+	docker compose -f docker-compose.local.yml down --remove-orphans
 
 clear-redis:
 	docker exec kreditozrouti-redis redis-cli FLUSHDB
@@ -43,6 +45,6 @@ preview:
 	pnpm -r --parallel run preview
 
 build-docker-images:
-	docker build -t kreditozrouti-api -f ./api/Dockerfile . && \
-	docker build -t kreditozrouti-client -f ./client/Dockerfile . && \
-	docker build -t kreditozrouti-scraper -f ./scraper/Dockerfile .
+	docker buildx build -t kreditozrouti-api -f ./api/Dockerfile . && \
+	docker buildx build -t kreditozrouti-client -f ./client/Dockerfile . && \
+	docker buildx build -t kreditozrouti-scraper -f ./scraper/Dockerfile .
