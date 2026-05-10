@@ -1,9 +1,8 @@
-﻿import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse.ts'
-import { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
-import { TimeSelection } from '@api/Validations'
-import type { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
-import { PaginationMeta } from '@client/types'
-import type InSISDay from '@scraper/types/insis'
+import type { CoursesResponse, CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/contracts'
+import type { CoursesFilter } from '@shared/http/courses'
+import type { PaginationMeta } from '@shared/http/pagination'
+import type { TimeSelection } from '@shared/domain/time'
+import type { InSISDay } from '@shared/domain/insis'
 
 export interface CoursesState {
 	filters: CoursesFilter
@@ -17,19 +16,10 @@ export interface CoursesState {
 	timetableExcludeTimes: TimeSelection[]
 }
 
-/**
- * Course unit with slots loaded.
- */
 export type CourseUnitWithSlots = CourseUnit<void, CourseUnitSlot>
 
-/**
- * Unit types supported by the timetable.
- */
 export type CourseUnitType = 'lecture' | 'exercise' | 'seminar'
 
-/**
- * A selected course unit in the timetable.
- */
 export interface SelectedCourseUnit {
 	courseId: number
 	courseIdent: string
@@ -46,30 +36,16 @@ export interface SelectedCourseUnit {
 	location?: string
 	lecturer?: string
 	ects?: number
-	/**
-	 * All unit types available for this course at add-time.
-	 * Snapshotted so timetable store doesn't need to look up the full course.
-	 */
 	snapshotAvailableTypes?: CourseUnitType[]
 }
 
-/**
- * Group of units organized by their type composition.
- * Key is the types joined by '|' (e.g., "lecture|exercise")
- */
 export interface UnitGroup {
 	types: CourseUnitType[]
 	units: CourseUnitWithSlots[]
 }
 
-/**
- * Map of unit groups keyed by type composition string.
- */
 export type UnitGroupMap = Map<string, UnitGroup>
 
-/**
- * Course status information for UI indicators
- */
 export interface CourseStatus {
 	id: number
 	ident: string
@@ -82,30 +58,17 @@ export interface CourseStatus {
 	missingTypes: CourseUnitType[]
 }
 
-/**
- * Course status type for filtering
- */
 export type CourseStatusType = 'selected' | 'conflict' | 'campus-conflict' | 'incomplete'
 
-/**
- * Filter state for course status filtering
- */
 export interface CourseStatusFilterState {
 	selectedStatuses: CourseStatusType[]
 	selectedCourseIdents: string[]
 }
 
-/**
- * Conflict type: hard time overlap vs campus travel-time conflict.
- */
 export type ConflictType = 'hard' | 'campus'
 
-/**
- * Conflict info for a specific slot in the expanded course view.
- */
 export interface SlotConflictInfo {
 	slotId: number
 	conflictingUnits: SelectedCourseUnit[]
-	/** Type of conflict — hard overlap or campus travel-time warning */
 	conflictType?: ConflictType
 }

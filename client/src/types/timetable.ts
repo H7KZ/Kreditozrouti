@@ -1,5 +1,5 @@
 ﻿import { SelectedCourseUnit } from '@client/types'
-import type InSISDay from '@scraper/types/insis'
+import type { InSISDay } from '@shared/domain/insis'
 
 /** Drag selection state for timetable */
 export interface DragSelection {

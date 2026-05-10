@@ -2,7 +2,7 @@
 import { CourseUnitWithSlots } from '@client/types'
 import { getSlotType } from '@client/utils/course'
 import { compareDateStrings, getDayIndex, getSlotDay } from '@client/utils/day.ts'
-import type InSISDay from '@scraper/types/insis'
+import type { InSISDay } from '@shared/domain/insis'
 
 /**
  * Slot sorting composable.

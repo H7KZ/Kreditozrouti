@@ -1,6 +1,5 @@
-import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse.ts'
-import type { CourseWithRelations } from '@api/Database/types'
-import type { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import type { CoursesResponse, CourseWithRelations } from '@api/contracts'
+import type { CoursesFilter } from '@shared/http/courses'
 import { i18n } from '@client/i18n'
 import { fetchCourses as fetchCoursesFromService } from '@client/services/courseService'
 import { useAnnouncerStore } from '@client/stores/announcer.store'

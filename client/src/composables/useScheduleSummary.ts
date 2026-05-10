@@ -3,7 +3,7 @@ import { useTimeUtils } from '@client/composables/useTimeUtils'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 import { i18n } from '@client/index.ts'
 import { getDayFromDate, getDayIndex } from '@client/utils/day.ts'
-import type InSISDay from '@scraper/types/insis'
+import type { InSISDay } from '@shared/domain/insis'
 
 /**
  * Schedule summary composable.

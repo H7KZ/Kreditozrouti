@@ -1,9 +1,9 @@
 ﻿<script setup lang="ts">
-import type { TimeSelection } from '@api/Validations'
+import type { TimeSelection } from '@shared/domain/time'
 import { useTimeUtils } from '@client/composables'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useCoursesStore, useFiltersStore } from '@client/stores'
-import type InSISDay from '@scraper/types/insis'
+import type { InSISDay } from '@shared/domain/insis'
 import { computed, ref, watch } from 'vue'
 import IconPlus from '~icons/lucide/plus'
 import IconX from '~icons/lucide/x'

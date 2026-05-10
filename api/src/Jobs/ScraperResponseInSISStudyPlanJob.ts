@@ -2,8 +2,8 @@ import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { CourseTable, FacultyTable, NewStudyPlan, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import InSISService from '@api/Services/InSISService'
-import type { ScraperInSISFaculty } from '@scraper/types/insis'
-import type { ScraperInSISStudyPlanResponseJob } from '@scraper/types/jobs'
+import type { ScraperInSISFaculty } from '@shared/queue/insis'
+import type { ScraperInSISStudyPlanResponseJob } from '@shared/queue/jobs'
 
 /**
  * Syncs a scraped InSIS Study Plan into the database.

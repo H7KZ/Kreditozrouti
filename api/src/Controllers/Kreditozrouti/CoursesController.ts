@@ -3,7 +3,8 @@ import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesRespons
 import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
 import { SemesterSchema, TimeSelectionSchema } from '@api/Validations/index'
-import { InSISStudyPlanCourseCategoryValues, InSISStudyPlanCourseGroupValues } from '@scraper/types/insis'
+import type { CoursesFilter } from '@shared/http/courses'
+import { InSISStudyPlanCourseCategoryValues, InSISStudyPlanCourseGroupValues } from '@shared/domain/insis'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 
@@ -49,9 +50,9 @@ const CoursesFilterSchema = z.object({
 	// Pagination
 	limit: z.coerce.number().min(0).max(500).optional().default(20),
 	offset: z.coerce.number().min(0).optional().default(0)
-})
+}) satisfies z.ZodType<CoursesFilter>
 
-export type CoursesFilter = z.infer<typeof CoursesFilterSchema>
+export type { CoursesFilter } from '@shared/http/courses'
 
 /**
  * Retrieves a paginated list of courses with full relations based on complex filtering criteria.

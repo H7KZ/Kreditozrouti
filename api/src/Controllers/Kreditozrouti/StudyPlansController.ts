@@ -4,6 +4,7 @@ import { Errors } from '@api/Errors'
 import InSISService from '@api/Services/InSISService'
 import StudyPlanService from '@api/Services/StudyPlanService'
 import { SemesterSchema } from '@api/Validations/index'
+import type { StudyPlansFilter } from '@shared/http/study-plans'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 
@@ -34,9 +35,9 @@ const StudyPlansFilterSchema = z.object({
 	// Pagination
 	limit: z.coerce.number().min(0).max(100).optional().default(20),
 	offset: z.coerce.number().min(0).optional().default(0)
-})
+}) satisfies z.ZodType<StudyPlansFilter>
 
-export type StudyPlansFilter = z.infer<typeof StudyPlansFilterSchema>
+export type { StudyPlansFilter } from '@shared/http/study-plans'
 
 /**
  * Retrieves a paginated list of study plans with full relations based on filtering criteria.

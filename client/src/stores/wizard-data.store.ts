@@ -1,5 +1,5 @@
-import type { Course, StudyPlanWithRelations } from '@api/Database/types'
-import type FacetItem from '@api/Interfaces/FacetItem'
+import type { Course, StudyPlanWithRelations } from '@api/contracts'
+import type { FacetItem } from '@shared/http/facets'
 import { fetchStudyPlanCourses, fetchStudyPlans } from '@client/services/studyPlanService'
 import { useWizardStore } from '@client/stores/wizard.store'
 import { defineStore } from 'pinia'

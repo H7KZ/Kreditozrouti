@@ -1,5 +1,5 @@
-﻿import type InSISDay from '@scraper/types/insis'
-import { InSISDayValues } from '@scraper/types/insis'
+﻿import { InSISDayValues } from '@shared/domain/insis'
+import type { InSISDay } from '@shared/domain/insis'
 
 /**
  * Weekdays for the timetable grid (Monday to Friday).

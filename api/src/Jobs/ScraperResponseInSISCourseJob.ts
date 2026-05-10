@@ -19,8 +19,9 @@ import type {
 	ScraperInSISCourseTimetableSlot,
 	ScraperInSISCourseTimetableUnit,
 	ScraperInSISFaculty
-} from '@scraper/types/insis'
-import type { ScraperInSISCourseResponseJob } from '@scraper/types/jobs'
+} from '@shared/queue/insis'
+import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
+import { timeToMinutes } from '@shared/domain/time'
 import { Transaction } from 'kysely'
 
 /**
@@ -248,10 +249,4 @@ async function upsertFaculty(trx: Transaction<Database>, faculty: ScraperInSISFa
 		.execute()
 
 	return faculty.ident
-}
-
-function timeToMinutes(time: string | null): number | null {
-	if (!time?.includes(':')) return null
-	const [hours, minutes] = time.split(':').map(Number)
-	return hours * 60 + minutes
 }

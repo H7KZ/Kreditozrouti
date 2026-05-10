@@ -5,8 +5,8 @@ import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
 import { withSentryJobHandler } from '@api/sentry'
 import InSISService from '@api/Services/InSISService'
-import type { ScraperRequestJob, ScraperResponseJob } from '@scraper/types/jobs'
-import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@scraper/types/queue'
+import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
+import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names'
 import { Queue, Worker } from 'bullmq'
 
 // ─── Queue & Worker Setup ─────────────────────────────────────────────────────

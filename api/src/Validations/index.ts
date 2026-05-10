@@ -1,4 +1,4 @@
-import { InSISDayValues, InSISSemesterValues } from '@scraper/types/insis'
+import { InSISDayValues, InSISSemesterValues } from '@shared/domain/insis'
 import * as z from 'zod'
 
 export const SemesterSchema = z.enum(InSISSemesterValues)

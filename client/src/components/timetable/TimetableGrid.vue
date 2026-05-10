@@ -7,7 +7,7 @@ import { isMergedUnit, useCourseLabels, useSlotMerging, useTimetableDrag, useTim
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useDragStore, useTimetableStore } from '@client/stores'
 import type { SelectedCourseUnit } from '@client/types'
-import type InSISDay from '@scraper/types/insis'
+import type { InSISDay } from '@shared/domain/insis'
 import { ref, toRef } from 'vue'
 
 /*

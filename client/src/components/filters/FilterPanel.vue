@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import type { CoursesFilter } from '@shared/http/courses'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 import CourseStatusFilter from '@client/components/filters/CourseStatusFilter.vue'
 import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'

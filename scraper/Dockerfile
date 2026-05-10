@@ -10,6 +10,9 @@ RUN pnpm install --frozen-lockfile
 
 COPY ./scraper/ ./
 
+# Workspaces: make shared source visible for cross-package type imports
+COPY ./shared/ /usr/src/shared/
+
 RUN pnpm run build && pnpm prune --prod
 
 # --------------------------------------------------------------------

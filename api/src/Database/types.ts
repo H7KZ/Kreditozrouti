@@ -1,5 +1,4 @@
-import type InSISDay from '@scraper/types/insis'
-import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@scraper/types/insis'
+import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@shared/domain/insis'
 import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type

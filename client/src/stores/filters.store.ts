@@ -1,6 +1,6 @@
 import InSISService from '@api/Services/InSISService.ts'
-import type { TimeSelection } from '@api/Validations'
-import type { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import type { TimeSelection } from '@shared/domain/time'
+import type { CoursesFilter } from '@shared/http/courses'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

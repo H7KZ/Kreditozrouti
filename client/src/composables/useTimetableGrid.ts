@@ -1,7 +1,7 @@
 ﻿import { useTimeUtils } from '@client/composables'
 import { TIME_CONFIG, WEEKDAYS } from '@client/constants/timetable.ts'
 import type { SelectedCourseUnit } from '@client/types'
-import type InSISDay from '@scraper/types/insis'
+import type { InSISDay } from '@shared/domain/insis'
 import { computed, type ComputedRef, type Ref } from 'vue'
 
 export interface OverlapInfo {

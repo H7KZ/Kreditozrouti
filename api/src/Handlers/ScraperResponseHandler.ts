@@ -1,7 +1,7 @@
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import ScraperResponseInSISCourseJob from '@api/Jobs/ScraperResponseInSISCourseJob'
 import ScraperResponseInSISStudyPlanJob from '@api/Jobs/ScraperResponseInSISStudyPlanJob'
-import type { ScraperResponseJob } from '@scraper/types/jobs'
+import type { ScraperResponseJob } from '@shared/queue/jobs'
 import { Job } from 'bullmq'
 
 /**

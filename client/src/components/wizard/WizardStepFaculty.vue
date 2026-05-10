@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type FacetItem from '@api/Interfaces/FacetItem'
+import type { FacetItem } from '@shared/http/facets'
 import { useCourseLabels } from '@client/composables'
 
 /*

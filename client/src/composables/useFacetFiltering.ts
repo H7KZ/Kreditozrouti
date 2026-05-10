@@ -1,4 +1,4 @@
-import type FacetItem from '@api/Interfaces/FacetItem'
+import type { FacetItem } from '@shared/http/facets'
 import { computed, ref, type Ref } from 'vue'
 
 export interface UseFacetFilteringOptions {

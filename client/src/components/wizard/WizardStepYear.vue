@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FacetItem from '@api/Interfaces/FacetItem.ts'
+import type { FacetItem } from '@shared/http/facets'
 import InSISService from '@api/Services/InSISService.ts'
 import { computed } from 'vue'
 import IconArrowLeft from '~icons/lucide/arrow-left'

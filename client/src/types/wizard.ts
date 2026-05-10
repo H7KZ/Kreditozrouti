@@ -1,6 +1,6 @@
-﻿import { Course, StudyPlanWithRelations } from '@api/Database/types'
-import FacetItem from '@api/Interfaces/FacetItem.ts'
-import type { InSISSemester } from '@scraper/types/insis'
+﻿import type { Course, StudyPlanWithRelations } from '@api/contracts'
+import type { FacetItem } from '@shared/http/facets'
+import type { InSISSemester } from '@shared/domain/insis'
 
 /** Represents a selected study plan with its metadata */
 export interface SelectedStudyPlan {

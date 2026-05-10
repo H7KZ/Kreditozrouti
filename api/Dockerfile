@@ -10,8 +10,9 @@ RUN pnpm install --frozen-lockfile
 
 COPY ./api/ ./
 
-# Workspaces: make scraper source visible for cross-package type imports
+# Workspaces: make scraper and shared source visible for cross-package type imports
 COPY ./scraper/src/ /usr/src/scraper/src/
+COPY ./shared/ /usr/src/shared/
 RUN mkdir -p /usr/src/scraper/node_modules && \
     ln -s /usr/src/api/node_modules/* /usr/src/scraper/node_modules/ || true
 
