@@ -329,6 +329,23 @@
 				"campusConflictTooltip": "Click to show courses with campus travel-time conflicts",
 				"incompleteTooltip": "Click to show courses with missing unit types",
 				"allComplete": "All course units selected, no conflicts!"
+			},
+			"CourseRefreshButton": {
+				"tooltip": "Refresh course data from InSIS",
+				"tooltipWithTime": "Refresh course data from InSIS (last updated at {time})",
+				"confirm": "Refresh?",
+				"confirmAction": "Confirm refresh",
+				"cancelAction": "Cancel",
+				"streaming": "Fetching from InSIS...",
+				"done": "Updated!",
+				"error": "Refresh failed",
+				"retryAction": "Dismiss",
+				"rateLimited": "Try again in {countdown}",
+				"countdownMinutes": "{minutes}m {seconds}s",
+				"countdownSeconds": "{seconds}s",
+				"unknownError": "An unknown error occurred",
+				"timeoutError": "Timed out — InSIS may be slow, try again later.",
+				"connectionError": "Connection lost"
 			}
 		},
 		"filters": {

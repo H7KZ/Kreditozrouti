@@ -329,6 +329,23 @@
 				"campusConflictTooltip": "Klikněte pro zobrazení předmětů s kampusovými kolizemi",
 				"incompleteTooltip": "Klikněte pro zobrazení předmětů s chybějícími typy výuky",
 				"allComplete": "Všechny jednotky vybrány, bez kolizí!"
+			},
+			"CourseRefreshButton": {
+				"tooltip": "Aktualizovat data předmětu z InSIS",
+				"tooltipWithTime": "Aktualizovat data předmětu z InSIS (naposledy aktualizováno v {time})",
+				"confirm": "Aktualizovat?",
+				"confirmAction": "Potvrdit aktualizaci",
+				"cancelAction": "Zrušit",
+				"streaming": "Načítám z InSIS...",
+				"done": "Aktualizováno!",
+				"error": "Aktualizace selhala",
+				"retryAction": "Zavřít",
+				"rateLimited": "Zkuste za {countdown}",
+				"countdownMinutes": "{minutes}m {seconds}s",
+				"countdownSeconds": "{seconds}s",
+				"unknownError": "Nastala neznámá chyba",
+				"timeoutError": "Vypršel časový limit — InSIS může být pomalý, zkuste znovu.",
+				"connectionError": "Ztraceno připojení"
 			}
 		},
 		"filters": {

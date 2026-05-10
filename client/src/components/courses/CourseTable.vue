@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CourseWithRelations } from '@api/contracts'
+import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
@@ -124,7 +125,7 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 						<!-- Main Row -->
 						<tr
 							:class="[
-								'insis-table-row-clickable focus-within:bg-[var(--insis-surface-2)] focus-within:outline-none',
+								'group/row insis-table-row-clickable focus-within:bg-[var(--insis-surface-2)] focus-within:outline-none',
 								isExpanded(course.id) && 'row-expanded',
 								hasSelectedUnits(course.id) && 'row-in-timetable',
 							]"
@@ -179,14 +180,18 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 							<!-- Schedule -->
 							<td class="text-[11.5px] text-[var(--insis-text-3)]">{{ getCourseScheduleSummary(course) }}</td>
 
-							<!-- Expand chevron -->
-							<td class="text-center">
-								<IconChevronDown
-									:class="[
-										'inline h-3.5 w-3.5 text-[var(--insis-text-3)] transition-transform duration-200',
-										isExpanded(course.id) && 'rotate-180',
-									]"
-								/>
+							<!-- Actions: refresh + expand chevron -->
+							<td class="text-right">
+								<div class="flex items-center justify-end gap-1">
+									<CourseRefreshButton :course-id="course.id" />
+									<IconChevronDown
+										:class="[
+											'inline h-3.5 w-3.5 flex-shrink-0 text-[var(--insis-text-3)] transition-transform duration-200',
+											isExpanded(course.id) && 'rotate-180',
+										]"
+										aria-hidden="true"
+									/>
+								</div>
 							</td>
 						</tr>
 
