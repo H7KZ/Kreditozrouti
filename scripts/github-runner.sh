@@ -33,34 +33,14 @@ set -euo pipefail
 # ------------------------------------------------------------------------------
 
 readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly STACK_NAME="github-runner"
 
-# Colors for output
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[1;33m'
-readonly BLUE='\033[0;34m'
-readonly NC='\033[0m' # No Color
+source "$SCRIPT_DIR/lib.sh"
 
 # ------------------------------------------------------------------------------
 # Functions
 # ------------------------------------------------------------------------------
-
-log() {
-    echo -e "${BLUE}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_success() {
-    echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1" >&2
-}
 
 usage() {
     cat << EOF
@@ -120,23 +100,6 @@ validate_number() {
 
     if [[ "$value" -lt 1 ]]; then
         log_error "$name must be at least 1: $value"
-        exit 1
-    fi
-}
-
-validate_files() {
-    local files=("$@")
-    local missing=()
-
-    for file in "${files[@]}"; do
-        [[ ! -f "$file" ]] && missing+=("$file")
-    done
-
-    if [[ ${#missing[@]} -gt 0 ]]; then
-        log_error "Missing configuration files:"
-        for file in "${missing[@]}"; do
-            log_error "  - $file"
-        done
         exit 1
     fi
 }

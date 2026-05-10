@@ -35,34 +35,14 @@ set -euo pipefail
 # ------------------------------------------------------------------------------
 
 readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly STACK_NAME="global"
 
-# Colors for output
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[1;33m'
-readonly BLUE='\033[0;34m'
-readonly NC='\033[0m' # No Color
+source "$SCRIPT_DIR/lib.sh"
 
 # ------------------------------------------------------------------------------
 # Functions
 # ------------------------------------------------------------------------------
-
-log() {
-    echo -e "${BLUE}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_success() {
-    echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1" >&2
-}
 
 usage() {
     cat << EOF
@@ -109,53 +89,6 @@ Create Cloudflare API Token:
     4. Zone Resources: Include your domain(s)
 EOF
     exit 1
-}
-
-validate_files() {
-    local files=("$@")
-    local missing=()
-
-    for file in "${files[@]}"; do
-        [[ ! -f "$file" ]] && missing+=("$file")
-    done
-
-    if [[ ${#missing[@]} -gt 0 ]]; then
-        log_error "Missing configuration files:"
-        for file in "${missing[@]}"; do
-            log_error "  - $file"
-        done
-        exit 1
-    fi
-}
-
-create_networks() {
-    local config_file="$1"
-
-    log "Setting up Docker networks..."
-
-    grep -E '^\s+name:\s+' "$config_file" | awk '{print $2}' | while read -r network; do
-        if ! docker network inspect "$network" &>/dev/null; then
-            log "Creating network: $network"
-            docker network create "$network"
-        else
-            log "Network exists: $network"
-        fi
-    done
-}
-
-create_volumes() {
-    local config_file="$1"
-
-    log "Setting up Docker volumes..."
-
-    grep -E '^\s+name:\s+' "$config_file" | awk '{print $2}' | while read -r volume; do
-        if ! docker volume inspect "$volume" &>/dev/null; then
-            log "Creating volume: $volume"
-            docker volume create "$volume"
-        else
-            log "Volume exists: $volume"
-        fi
-    done
 }
 
 # ------------------------------------------------------------------------------

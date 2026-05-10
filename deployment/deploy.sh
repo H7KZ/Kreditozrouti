@@ -37,32 +37,11 @@ set -euo pipefail
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Colors for output
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[1;33m'
-readonly BLUE='\033[0;34m'
-readonly NC='\033[0m' # No Color
+source "$SCRIPT_DIR/../scripts/lib.sh"
 
 # ------------------------------------------------------------------------------
 # Functions
 # ------------------------------------------------------------------------------
-
-log() {
-    echo -e "${BLUE}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_success() {
-    echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1" >&2
-}
 
 usage() {
     cat << EOF
@@ -97,58 +76,8 @@ validate_environment_vars() {
     fi
 }
 
-validate_files() {
-    local files=("$@")
-    local missing=()
-
-    for file in "${files[@]}"; do
-        [[ ! -f "$file" ]] && missing+=("$file")
-    done
-
-    if [[ ${#missing[@]} -gt 0 ]]; then
-        log_error "Missing configuration files:"
-        for file in "${missing[@]}"; do
-            log_error "  - $file"
-        done
-        exit 1
-    fi
-}
-
-create_networks() {
-    local config_file="$1"
-
-    log "Configuring Docker networks..."
-
-    # Extract network names and create if not exists
-    grep -E '^\s+name:\s+' "$config_file" | awk '{print $2}' | while read -r network; do
-        if ! docker network inspect "$network" &>/dev/null; then
-            log "Creating network: $network"
-            docker network create "$network"
-        else
-            log "Network exists: $network"
-        fi
-    done
-}
-
-create_volumes() {
-    local config_file="$1"
-
-    log "Configuring Docker volumes..."
-
-    # Extract volume names and create if not exists
-    grep -E '^\s+name:\s+' "$config_file" | awk '{print $2}' | while read -r volume; do
-        if ! docker volume inspect "$volume" &>/dev/null; then
-            log "Creating volume: $volume"
-            docker volume create "$volume"
-        else
-            log "Volume exists: $volume"
-        fi
-    done
-}
-
 cleanup_on_error() {
     log_error "Deployment failed. Rolling back..."
-    # Add rollback logic here if needed
     exit 1
 }
 
@@ -180,7 +109,6 @@ main() {
     # Load persisted image configuration if available
     if [[ -f "$images_config" ]]; then
         log "Loading image configuration from $images_config..."
-        # Source the file and automatically export variables for Docker Compose
         set -a
         # shellcheck source=/dev/null
         source "$images_config"

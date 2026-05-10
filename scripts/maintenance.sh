@@ -12,7 +12,7 @@ set -euo pipefail
 #   -r, --auto-reboot       Automatically reboot if required
 #   -s, --skip-security     Skip security audit (Lynis)
 #   -d, --docker-cleanup    Also clean up Docker resources
-#   -q, --quiet             Minimal output
+#   -q, --quiet             Minimal output (errors still shown)
 #   -h, --help              Show help message
 #
 # Requirements:
@@ -27,6 +27,7 @@ set -euo pipefail
 # ------------------------------------------------------------------------------
 
 readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly LOG_FILE="/var/log/system-maintenance.log"
 readonly JOURNAL_RETENTION="7d"
 
@@ -36,44 +37,11 @@ SKIP_SECURITY=false
 DOCKER_CLEANUP=false
 QUIET=false
 
-# Colors for output
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[1;33m'
-readonly BLUE='\033[0;34m'
-readonly NC='\033[0m' # No Color
+source "$SCRIPT_DIR/lib.sh"
 
 # ------------------------------------------------------------------------------
 # Functions
 # ------------------------------------------------------------------------------
-
-log() {
-    local msg="[$(date +'%Y-%m-%dT%H:%M:%S%z')] $1"
-    echo -e "${BLUE}${msg}${NC}" | tee -a "$LOG_FILE"
-}
-
-log_success() {
-    local msg="[$(date +'%Y-%m-%dT%H:%M:%S%z')] $1"
-    echo -e "${GREEN}${msg}${NC}" | tee -a "$LOG_FILE"
-}
-
-log_warning() {
-    local msg="[$(date +'%Y-%m-%dT%H:%M:%S%z')] $1"
-    echo -e "${YELLOW}${msg}${NC}" | tee -a "$LOG_FILE"
-}
-
-log_error() {
-    local msg="[$(date +'%Y-%m-%dT%H:%M:%S%z')] $1"
-    echo -e "${RED}${msg}${NC}" | tee -a "$LOG_FILE" >&2
-}
-
-log_quiet() {
-    local msg="[$(date +'%Y-%m-%dT%H:%M:%S%z')] $1"
-    echo "$msg" >> "$LOG_FILE"
-    if [[ "$QUIET" != true ]]; then
-        echo -e "${BLUE}${msg}${NC}"
-    fi
-}
 
 usage() {
     cat << EOF
@@ -83,7 +51,7 @@ Options:
     -r, --auto-reboot       Automatically reboot if required
     -s, --skip-security     Skip security audit (Lynis)
     -d, --docker-cleanup    Also clean up Docker resources
-    -q, --quiet             Minimal output
+    -q, --quiet             Minimal output (errors still shown)
     -h, --help              Show this help message
 
 Examples:
@@ -146,19 +114,10 @@ cleanup_docker() {
 
     log "Cleaning Docker resources..."
 
-    # Remove stopped containers
     docker container prune -f || true
-
-    # Remove unused images
     docker image prune -af || true
-
-    # Remove unused volumes
     docker volume prune -f || true
-
-    # Remove unused networks
     docker network prune -f || true
-
-    # Remove build cache
     docker builder prune -af || true
 
     log "Docker disk usage:"

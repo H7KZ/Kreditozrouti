@@ -16,6 +16,7 @@ set -euo pipefail
 #   -e, --email <url>           EMAIL_URL for SMTP (optional)
 #   --from-email <email>        DEFAULT_FROM_EMAIL (optional)
 #   --max-event-days <days>     Max event retention days (default: 90)
+#   --disable-registration      Disable new user self-registration
 #   -h, --help                  Show help message
 #
 # Environment Variables (alternative to flags):
@@ -26,6 +27,7 @@ set -euo pipefail
 #   EMAIL_URL                   SMTP connection string
 #   DEFAULT_FROM_EMAIL          Sender email address
 #   GLITCHTIP_MAX_EVENT_LIFE_DAYS  Event retention (days)
+#   ENABLE_USER_REGISTRATION    Set to False to disable registration
 #
 # Example:
 #   ./glitchtip.sh -p ~/deployment -d glitchtip.example.com -s "random-secret" --postgres-password "dbpass"
@@ -36,34 +38,14 @@ set -euo pipefail
 # ------------------------------------------------------------------------------
 
 readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly STACK_NAME="glitchtip"
 
-# Colors for output
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[1;33m'
-readonly BLUE='\033[0;34m'
-readonly NC='\033[0m' # No Color
+source "$SCRIPT_DIR/lib.sh"
 
 # ------------------------------------------------------------------------------
 # Functions
 # ------------------------------------------------------------------------------
-
-log() {
-    echo -e "${BLUE}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_success() {
-    echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1" >&2
-}
 
 usage() {
     cat << EOF
@@ -79,7 +61,7 @@ Optional:
     -e, --email <url>           EMAIL_URL for SMTP (default: consolemail://)
     --from-email <email>        DEFAULT_FROM_EMAIL sender address
     --max-event-days <days>     Max event retention in days (default: 90)
-    --enable-registration       Enable user self-registration (default: True)
+    --disable-registration      Disable new user self-registration (default: enabled)
     -h, --help                  Show this help message
 
 Environment Variables:
@@ -90,14 +72,14 @@ Environment Variables:
     EMAIL_URL                   SMTP connection string
     DEFAULT_FROM_EMAIL          Sender email address
     GLITCHTIP_MAX_EVENT_LIFE_DAYS  Event retention (days)
-    ENABLE_USER_REGISTRATION    Enable self-registration
+    ENABLE_USER_REGISTRATION    Set to False to disable self-registration
 
 Examples:
     $SCRIPT_NAME -p ~/deployment -d glitchtip.example.com -s "\$(openssl rand -hex 32)" --postgres-password "securepass"
 
-    # With email configuration
+    # With email and registration disabled
     $SCRIPT_NAME -p ~/deployment -d glitchtip.example.com -s "secret" --postgres-password "dbpass" \\
-        -e "smtp://user:pass@smtp.example.com:587" --from-email "errors@example.com"
+        -e "smtp://user:pass@smtp.example.com:587" --from-email "errors@example.com" --disable-registration
 
 Generate a secret key:
     openssl rand -hex 32
@@ -105,56 +87,11 @@ Generate a secret key:
 Expected directory structure:
     <deployment_path>/
     └── glitchtip/
-        └── docker-compose.glitchtip.yml
+        ├── docker-compose.glitchtip.yml
+        ├── networks.yml
+        └── volumes.yml
 EOF
     exit 1
-}
-
-validate_files() {
-    local files=("$@")
-    local missing=()
-
-    for file in "${files[@]}"; do
-        [[ ! -f "$file" ]] && missing+=("$file")
-    done
-
-    if [[ ${#missing[@]} -gt 0 ]]; then
-        log_error "Missing configuration files:"
-        for file in "${missing[@]}"; do
-            log_error "  - $file"
-        done
-        exit 1
-    fi
-}
-
-create_networks() {
-    local config_file="$1"
-
-    log "Setting up Docker networks..."
-
-    grep -E '^\s+name:\s+' "$config_file" | awk '{print $2}' | while read -r network; do
-        if ! docker network inspect "$network" &>/dev/null; then
-            log "Creating network: $network"
-            docker network create "$network"
-        else
-            log "Network exists: $network"
-        fi
-    done
-}
-
-create_volumes() {
-    local config_file="$1"
-
-    log "Setting up Docker volumes..."
-
-    grep -E '^\s+name:\s+' "$config_file" | awk '{print $2}' | while read -r volume; do
-        if ! docker volume inspect "$volume" &>/dev/null; then
-            log "Creating volume: $volume"
-            docker volume create "$volume"
-        else
-            log "Volume exists: $volume"
-        fi
-    done
 }
 
 # ------------------------------------------------------------------------------
@@ -203,8 +140,8 @@ main() {
                 max_event_days="$2"
                 shift 2
                 ;;
-            --enable-registration)
-                enable_registration="True"
+            --disable-registration)
+                enable_registration="False"
                 shift
                 ;;
             -h|--help)
@@ -304,6 +241,9 @@ main() {
     log ""
     log "GlitchTip URL: https://$GLITCHTIP_DOMAIN"
     log "Logs:          docker compose -p $STACK_NAME logs -f"
+    log ""
+    log "Create superuser:"
+    log "  docker compose -p $STACK_NAME exec web python manage.py createsuperuser"
 }
 
 main "$@"
