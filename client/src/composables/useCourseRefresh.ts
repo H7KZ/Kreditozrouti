@@ -96,6 +96,7 @@ export function useCourseRefresh(courseId: number) {
 		try {
 			await triggerCourseScrape(courseId)
 			saveTriggeredAt()
+			rateLimitedUntil.value = new Date(Date.now() + RATE_LIMIT_MS)
 			state.value = 'streaming'
 			openSSE()
 		} catch (err) {
@@ -133,7 +134,8 @@ export function useCourseRefresh(courseId: number) {
 			}
 
 			doneTimer = setTimeout(() => {
-				state.value = 'idle'
+				state.value = 'rate_limited'
+				startCountdown()
 			}, 3000)
 		})
 
