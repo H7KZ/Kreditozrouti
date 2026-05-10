@@ -150,7 +150,7 @@ export const useCoursesStore = defineStore('courses', () => {
 	}
 
 	function updateCourse(updated: CourseWithRelations) {
-		const idx = courses.value.findIndex(c => c.id === updated.id)
+		const idx = courses.value.findIndex((c) => c.id === updated.id)
 		if (idx !== -1) {
 			courses.value[idx] = updated
 		}

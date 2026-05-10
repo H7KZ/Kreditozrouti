@@ -1,6 +1,6 @@
 export * from './useClickOutside'
-export * from './useCourseRefresh'
 export * from './useCourseLabels'
+export * from './useCourseRefresh'
 export * from './useCourseStatusFilter'
 export * from './useCourseUnitSelection'
 export * from './useDebounce'
