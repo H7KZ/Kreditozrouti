@@ -422,6 +422,15 @@
 				"unitTypeAlreadySelected": "You already have a {unitType} selected for this course",
 				"timeConflict": "Time conflict with course {courseIdent}"
 			}
+		},
+		"wizardData": {
+			"errors": {
+				"loadFaculties": "Failed to load faculties",
+				"loadYears": "Failed to load years",
+				"loadStudyPlans": "Failed to load study plans",
+				"loadStudyPlanCourses": "Failed to load courses for study plans",
+				"loadCourses": "Failed to load courses"
+			}
 		}
 	},
 	"footer": {

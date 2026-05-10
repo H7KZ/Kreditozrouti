@@ -87,7 +87,7 @@ export const useCoursesStore = defineStore('courses', () => {
 				announcer.announce(t('common.announcements.coursesFound', { count: data.meta.total }))
 			}
 		} catch (e) {
-			error.value = 'Failed to load courses'
+			error.value = t('stores.wizardData.errors.loadCourses')
 			console.error('Courses: Failed to fetch', e)
 			announcer.announce(t('common.announcements.loadingError'), 'assertive')
 		} finally {

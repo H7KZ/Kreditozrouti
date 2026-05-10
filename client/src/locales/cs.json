@@ -422,6 +422,15 @@
 				"unitTypeAlreadySelected": "Pro tento předmět již máte vybranou {unitType}",
 				"timeConflict": "Časový konflikt s předmětem {courseIdent}"
 			}
+		},
+		"wizardData": {
+			"errors": {
+				"loadFaculties": "Nepodařilo se načíst fakulty",
+				"loadYears": "Nepodařilo se načíst roky",
+				"loadStudyPlans": "Nepodařilo se načíst studijní plány",
+				"loadStudyPlanCourses": "Nepodařilo se načíst předměty pro studijní plány",
+				"loadCourses": "Nepodařilo se načíst předměty"
+			}
 		}
 	},
 	"footer": {
