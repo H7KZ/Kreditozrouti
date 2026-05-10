@@ -126,8 +126,9 @@ export function useCourseRefresh(courseId: number) {
 			// the entire list, disrupting pagination, row expansion, and status badges.
 			try {
 				const result = await fetchCourses({ ids: [courseId], limit: 1 })
-				if (result.data.length > 0) {
-					coursesStore.updateCourse(result.data[0])
+				const [updated] = result.data
+				if (updated) {
+					coursesStore.updateCourse(updated)
 				}
 			} catch {
 				// Silently ignore — the stale data will refresh on the next normal fetch
