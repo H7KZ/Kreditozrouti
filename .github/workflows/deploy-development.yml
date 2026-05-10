@@ -29,6 +29,10 @@ on:
         default: false
         type: boolean
 
+permissions:
+  contents: read
+  packages: write
+
 concurrency:
   group: deploy-development
   cancel-in-progress: false
