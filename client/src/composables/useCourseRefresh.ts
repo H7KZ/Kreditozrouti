@@ -1,4 +1,4 @@
-import { RateLimitedError, triggerCourseScrape } from '@client/services'
+import { RateLimitedError, fetchCourses, triggerCourseScrape } from '@client/services'
 import { useCoursesStore } from '@client/stores'
 import { onUnmounted, readonly, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -116,11 +116,22 @@ export function useCourseRefresh(courseId: number) {
 		const apiBase = (import.meta.env.VITE_API_URL as string | undefined) ?? '/api'
 		eventSource = new EventSource(`${apiBase}/courses/${courseId}/scrape/status`)
 
-		eventSource.addEventListener('complete', () => {
+		eventSource.addEventListener('complete', async () => {
 			closeSSE()
 			state.value = 'done'
 			lastRefreshedAt.value = new Date()
-			coursesStore.fetchCourses()
+
+			// Patch only the affected course in place — a full fetchCourses() would replace
+			// the entire list, disrupting pagination, row expansion, and status badges.
+			try {
+				const result = await fetchCourses({ ids: [courseId], limit: 1 })
+				if (result.data.length > 0) {
+					coursesStore.updateCourse(result.data[0])
+				}
+			} catch {
+				// Silently ignore — the stale data will refresh on the next normal fetch
+			}
+
 			doneTimer = setTimeout(() => {
 				state.value = 'idle'
 			}, 3000)

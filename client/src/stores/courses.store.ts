@@ -149,6 +149,13 @@ export const useCoursesStore = defineStore('courses', () => {
 		expandedCourseIds.value.clear()
 	}
 
+	function updateCourse(updated: CourseWithRelations) {
+		const idx = courses.value.findIndex(c => c.id === updated.id)
+		if (idx !== -1) {
+			courses.value[idx] = updated
+		}
+	}
+
 	function resetFilters() {
 		const wizardStore = useWizardStore()
 		const filtersStore = useFiltersStore()
@@ -194,6 +201,7 @@ export const useCoursesStore = defineStore('courses', () => {
 		toggleCourseExpansion,
 		isCourseExpanded,
 		collapseAllCourses,
+		updateCourse,
 		resetFilters,
 		resetAll,
 		toggleHideConflictingCourses,
