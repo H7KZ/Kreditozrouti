@@ -1,4 +1,5 @@
 export * from './useClickOutside'
+export * from './useCourseRefresh'
 export * from './useCourseLabels'
 export * from './useCourseStatusFilter'
 export * from './useCourseUnitSelection'
