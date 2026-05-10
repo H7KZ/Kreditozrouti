@@ -1,26 +1,30 @@
 .vscode
+.idea
+.claude
+.gemini
+.github
 
 /data/
 /deployment/
 
-.dockerignore
-.env*
-.gitignore
-.gitlab-ci.yml
-environment.sh
-docker-compose*.yml
-Makefile
-README.md
 
-node_modules/
-dist/
-build/
-bruno/
+**/.dockerignore
+**/.env*
+**/.gitignore
+**/.gitlab-ci.yml
+**/environment.sh
+**/compose.yml
+**/docker-compose*.yml
+**/Makefile
+**/README.md
 
-.prettierignore
-.prettierrc
-Dockerfile
-eslint.config.js
+**/node_modules/
+**/dist/
+**/build/
 
-package-lock.json
-pnpm-lock.yaml
+**/.prettierignore
+**/.prettierrc
+**/Dockerfile
+**/eslint.config.js
+
+**/package-lock.json

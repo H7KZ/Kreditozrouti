@@ -1,12 +1,12 @@
 import { i18n } from '@client/index.ts'
+import { useAlertsStore } from '@client/stores'
+import axios, { AxiosError, type AxiosInstance } from 'axios'
 
 interface ErrorResponse {
 	type?: string
 	code?: string
 	message?: string
 }
-import { useAlertsStore } from '@client/stores'
-import axios, { AxiosError, type AxiosInstance } from 'axios'
 
 const api: AxiosInstance = axios.create({
 	baseURL: import.meta.env.VITE_API_URL ?? '/api',

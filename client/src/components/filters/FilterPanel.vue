@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { CoursesFilter } from '@shared/http/courses'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 import CourseStatusFilter from '@client/components/filters/CourseStatusFilter.vue'
 import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
 import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
 import { useDebouncedFn } from '@client/composables'
 import { useCompletedCoursesStore, useCoursesStore, useFiltersStore, useTimetableStore, useUIStore } from '@client/stores'
+import type { CoursesFilter } from '@shared/http/courses'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconCalendarX from '~icons/lucide/calendar-x'

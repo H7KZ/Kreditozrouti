@@ -13,6 +13,7 @@ import {
 	StudyPlanCourseTable,
 	StudyPlanTable
 } from '@api/Database/types'
+import { timeToMinutes } from '@shared/domain/time'
 import type {
 	ScraperInSISCourseAssessmentMethod,
 	ScraperInSISCourseStudyPlan,
@@ -21,7 +22,6 @@ import type {
 	ScraperInSISFaculty
 } from '@shared/queue/insis'
 import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
-import { timeToMinutes } from '@shared/domain/time'
 import { Transaction } from 'kysely'
 
 /**

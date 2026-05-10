@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { FacetItem } from '@shared/http/facets'
 import { useCourseLabels } from '@client/composables'
+import type { FacetItem } from '@shared/http/facets'
 
 /*
  * WizardStepFaculty

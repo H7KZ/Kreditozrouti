@@ -1,9 +1,9 @@
 import type { CourseUnitSlot } from '@api/Database/types'
-import type { TimeSelection } from '@shared/domain/time'
 import { useTimeUtils } from '@client/composables'
 import { useFiltersStore } from '@client/stores'
 import { CourseUnitWithSlots } from '@client/types'
 import { getSlotDay } from '@client/utils/day.ts'
+import type { TimeSelection } from '@shared/domain/time'
 import { computed } from 'vue'
 
 /**

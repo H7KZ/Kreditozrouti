@@ -1,6 +1,6 @@
 ﻿import type { Course, StudyPlanWithRelations } from '@api/contracts'
-import type { FacetItem } from '@shared/http/facets'
 import type { InSISSemester } from '@shared/domain/insis'
+import type { FacetItem } from '@shared/http/facets'
 
 /** Represents a selected study plan with its metadata */
 export interface SelectedStudyPlan {

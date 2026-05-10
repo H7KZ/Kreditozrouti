@@ -1,9 +1,9 @@
 import type { CourseUnitSlot } from '@api/contracts'
-import { getDayFromDate, compareDateStrings, parseDateString } from '@shared/domain/day'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
+import { compareDateStrings, getDayFromDate, parseDateString } from '@shared/domain/day'
 import type { InSISDay } from '@shared/domain/insis'
 
-export { getDayFromDate, parseDateString, compareDateStrings }
+export { compareDateStrings, getDayFromDate, parseDateString }
 
 export function getSlotDay(slot: CourseUnitSlot): InSISDay | null {
 	return slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)

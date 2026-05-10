@@ -6,7 +6,7 @@ RUN corepack enable && corepack prepare pnpm@10 --activate
 WORKDIR /usr/src/api
 
 COPY ./api/package.json ./api/pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --shamefully-hoist
 
 COPY ./api/ ./
 

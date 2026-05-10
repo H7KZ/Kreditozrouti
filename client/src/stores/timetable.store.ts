@@ -1,5 +1,4 @@
 ﻿import type { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/contracts'
-import type { TimeSelection } from '@shared/domain/time'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { ALL_DAYS } from '@client/constants/timetable'
 import { i18n } from '@client/index'
@@ -11,6 +10,7 @@ import { getDayFromDate } from '@client/utils/day'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
 import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from '@client/utils/timetable'
 import type { InSISDay } from '@shared/domain/insis'
+import type { TimeSelection } from '@shared/domain/time'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

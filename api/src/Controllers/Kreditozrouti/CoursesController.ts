@@ -3,8 +3,8 @@ import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesRespons
 import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
 import { SemesterSchema, TimeSelectionSchema } from '@api/Validations/index'
-import type { CoursesFilter } from '@shared/http/courses'
 import { InSISStudyPlanCourseCategoryValues, InSISStudyPlanCourseGroupValues } from '@shared/domain/insis'
+import type { CoursesFilter } from '@shared/http/courses'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 

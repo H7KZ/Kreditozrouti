@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
-import type { FacetItem } from '@shared/http/facets'
 import { useCourseLabels, useDebouncedFn } from '@client/composables'
+import type { FacetItem } from '@shared/http/facets'
 import { computed, ref } from 'vue'
 import IconCheck from '~icons/lucide/check'
 import IconChevronLeft from '~icons/lucide/chevron-left'

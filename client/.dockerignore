@@ -1,4 +1,9 @@
 .vscode
+.idea
+.claude
+.gemini
+.github
+
 /data/
 /deployment/
 
@@ -23,4 +28,3 @@
 **/eslint.config.js
 
 **/package-lock.json
-**/pnpm-lock.yaml

@@ -6,7 +6,7 @@ RUN corepack enable && corepack prepare pnpm@10 --activate
 WORKDIR /usr/src/scraper
 
 COPY ./scraper/package.json ./scraper/pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --shamefully-hoist
 
 COPY ./scraper/ ./
 
