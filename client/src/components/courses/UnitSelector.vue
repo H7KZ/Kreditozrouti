@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
+import type { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/contracts'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useSlotSorting, useTimeFilterMatching } from '@client/composables'
 import { useTimetableStore } from '@client/stores'
 import type { CourseUnitWithSlots, SelectedCourseUnit } from '@client/types'

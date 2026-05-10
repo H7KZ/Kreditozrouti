@@ -1,4 +1,4 @@
-import type { CourseUnitSlot } from '@api/Database/types'
+import type { CourseUnitSlot } from '@api/contracts'
 import { useTimeUtils } from '@client/composables'
 import { useFiltersStore } from '@client/stores'
 import { CourseUnitWithSlots } from '@client/types'

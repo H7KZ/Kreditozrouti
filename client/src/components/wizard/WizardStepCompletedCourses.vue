@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Course } from '@api/Database/types'
+import type { Course } from '@api/contracts'
 import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import { computed, ref } from 'vue'
 import IconCheck from '~icons/lucide/check'

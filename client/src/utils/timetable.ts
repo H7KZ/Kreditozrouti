@@ -1,4 +1,4 @@
-import type { CourseUnitSlot } from '@api/Database/types'
+import type { CourseUnitSlot } from '@api/contracts'
 import type { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { getDayFromDate } from '@client/utils/day'
 

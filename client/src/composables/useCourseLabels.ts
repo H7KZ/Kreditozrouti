@@ -1,4 +1,4 @@
-﻿import type { Course, CourseWithRelations } from '@api/Database/types'
+﻿import type { Course, CourseWithRelations } from '@api/contracts'
 import { i18n } from '@client/index.ts'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { getCategoryBadgeClass, getSlotType, getUnitTypeColorClass } from '@client/utils/course'

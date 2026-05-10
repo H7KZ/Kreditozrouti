@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
+import type { StudyPlanWithRelations } from '@api/contracts'
 import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import type { FacetItem } from '@shared/http/facets'
 import { computed, ref } from 'vue'
@@ -17,8 +17,6 @@ import IconX from '~icons/lucide/x'
 
 // Composables
 const { getLevelLabel } = useCourseLabels()
-
-type StudyPlanWithRelations = StudyPlan<Faculty, StudyPlanCourse>
 
 /** Represents a selected study plan */
 interface SelectedStudyPlan {

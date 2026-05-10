@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CourseWithRelations } from '@api/Database/types'
+import type { CourseWithRelations } from '@api/contracts'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'

@@ -1,4 +1,4 @@
-import { CourseWithRelations } from '@api/Database/types'
+import type { CourseWithRelations } from '@api/contracts'
 import { useTimetableStore } from '@client/stores'
 import { CourseUnitType, CourseUnitWithSlots, SelectedCourseUnit, UnitGroup, UnitGroupMap } from '@client/types'
 import { getSlotType } from '@client/utils/course'

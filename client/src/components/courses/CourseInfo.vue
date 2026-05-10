@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CourseWithRelations } from '@api/Database/types'
+import type { CourseWithRelations } from '@api/contracts'
 import { useCourseLabels } from '@client/composables'
 import { useCompletedCoursesStore, useCoursesStore } from '@client/stores'
 import { computed } from 'vue'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CourseWithRelations } from '@api/Database/types'
+import type { CourseWithRelations } from '@api/contracts'
 import { useCourseLabels, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'

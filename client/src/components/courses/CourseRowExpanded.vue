@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CourseWithRelations } from '@api/Database/types'
+import type { CourseWithRelations } from '@api/contracts'
 import CourseInfo from '@client/components/courses/CourseInfo.vue'
 import UnitSelector from '@client/components/courses/UnitSelector.vue'
 

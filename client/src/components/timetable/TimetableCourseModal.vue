@@ -9,7 +9,7 @@
  * shares the same logic as CourseRowExpanded through composables.
  */
 
-import { CourseWithRelations } from '@api/Database/types'
+import type { CourseWithRelations } from '@api/contracts'
 import api from '@client/api.ts'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useUIStore } from '@client/stores'
