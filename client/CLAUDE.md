@@ -659,12 +659,12 @@ components.courses.CourseRowExpanded.campusConflict*  — alert text in UnitSele
 
 Defined in `client/tsconfig.json` `compilerOptions.paths` and resolved by Vite:
 
-| Alias        | Resolves to        | Notes                                                    |
-| ------------ | ------------------ | -------------------------------------------------------- |
-| `@client/*`  | `./src/*`          | Client source root                                       |
-| `@api/*`     | `../api/src/*`     | Import API types only (no runtime)                       |
-| `@scraper/*` | `../scraper/src/*` | Import scraper types only (e.g. `InSISDay`)              |
-| `@shared/*`  | `../shared/*`      | Cross-package pure utilities (no server/client deps)     |
+| Alias        | Resolves to        | Notes                                                |
+| ------------ | ------------------ | ---------------------------------------------------- |
+| `@client/*`  | `./src/*`          | Client source root                                   |
+| `@api/*`     | `../api/src/*`     | Import API types only (no runtime)                   |
+| `@scraper/*` | `../scraper/src/*` | Import scraper types only (e.g. `InSISDay`)          |
+| `@shared/*`  | `../shared/*`      | Cross-package pure utilities (no server/client deps) |
 
 **Rule:** Client may import types from `@api` and `@scraper` but must NOT import their runtime code (no circular deps, no bundling server code).
 
@@ -673,17 +673,16 @@ Defined in `client/tsconfig.json` `compilerOptions.paths` and resolved by Vite:
 **API types** — always import from `@api/contracts`, not `@api/Database/types`:
 
 ```typescript
-import type { CourseWithRelations, CourseUnit, CourseUnitSlot, Faculty,
-              StudyPlan, StudyPlanCourse, Course, StudyPlanWithRelations } from '@api/contracts'
+import type { CourseWithRelations, CourseUnit, CourseUnitSlot, Faculty, StudyPlan, StudyPlanCourse, Course, StudyPlanWithRelations } from '@api/contracts'
 ```
 
 **Shared domain** — pure functions with no server/client dependencies:
 
 ```typescript
 import { getUpcomingPeriod, getPeriodsForLastYears } from '@shared/domain/period'
-import type { InSISDay, InSISSemester }              from '@shared/domain/insis'
-import type { FacetItem }                            from '@shared/http/facets'
-import type { CoursesFilter }                        from '@shared/http/courses'
+import type { InSISDay, InSISSemester } from '@shared/domain/insis'
+import type { FacetItem } from '@shared/http/facets'
+import type { CoursesFilter } from '@shared/http/courses'
 ```
 
 `@shared/domain/period` contains academic-period math: `getUpcomingPeriod(date?)` → `{ semester, year }` and `getPeriodsForLastYears(yearsBack?, date?)` → array of periods. Used by `filters.store.ts` and `WizardStepYear.vue`.

@@ -287,12 +287,12 @@ import type { StudyPlansFilter } from '@api/Controllers/Kreditozrouti/StudyPlans
 
 **Deduplication windows** (prevent duplicate jobs during high-frequency triggers):
 
-| Job type | Dedup TTL |
-| -------- | --------- |
-| Catalog scrape | 30 seconds |
-| Study plans catalog | 30 seconds |
-| Single course scrape | 1 second |
-| Single study plan scrape | 1 second |
+| Job type                 | Dedup TTL  |
+| ------------------------ | ---------- |
+| Catalog scrape           | 30 seconds |
+| Study plans catalog      | 30 seconds |
+| Single course scrape     | 1 second   |
+| Single study plan scrape | 1 second   |
 
 **Retry policy:** Failed jobs are not retried automatically — errors are logged and the job completes. Re-triggering is done via scheduled runs or manual command endpoints.
 
@@ -309,9 +309,9 @@ In development: trigger via `POST /commands/insis/*` with Bearer token.
 
 Defined in `api/tsconfig.json` and resolved by `tsc-alias` at build time:
 
-| Alias | Resolves to | Notes |
-| ----- | ----------- | ----- |
-| `@api/*` | `./src/*` | API source root |
+| Alias       | Resolves to   | Notes                                                           |
+| ----------- | ------------- | --------------------------------------------------------------- |
+| `@api/*`    | `./src/*`     | API source root                                                 |
 | `@shared/*` | `../shared/*` | Cross-package pure utilities (no runtime deps on api or client) |
 
 **`api/src/contracts/index.ts`** — stable barrel that re-exports all types the client consumes. Client imports should use `@api/contracts`, not `@api/Database/types` directly.
@@ -363,9 +363,9 @@ Middleware applied in this order per request:
 3. **ParserMiddleware** — body-parser (JSON, raw, urlencoded)
 4. **LoggerMiddleware** — wide-event Pino logging (10% sampling in production)
 5. **Session** — Redis-backed express-session
-6. *(Route-specific)* **CacheMiddleware** — Redis response cache for data-read routes
-7. *(Route-specific)* **RateLimitMiddleware** — per-IP/per-resource limits for scraper routes
-8. *(Route-specific)* **CommandMiddleware** — Bearer token auth for `/commands`
+6. _(Route-specific)_ **CacheMiddleware** — Redis response cache for data-read routes
+7. _(Route-specific)_ **RateLimitMiddleware** — per-IP/per-resource limits for scraper routes
+8. _(Route-specific)_ **CommandMiddleware** — Bearer token auth for `/commands`
 9. **Route handlers**
 10. **ErrorHandler** — global Express error handler (`ApiError` → structured JSON response)
 

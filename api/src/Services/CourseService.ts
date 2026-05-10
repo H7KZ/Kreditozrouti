@@ -13,8 +13,8 @@ import {
 	FacultyTable,
 	StudyPlanCourseTable
 } from '@api/Database/types'
-import type { FacetItem } from '@shared/http/facets'
 import { buildSlotConflictConditions, compareTimeSelections } from '@api/utils/timeConflict'
+import type { FacetItem } from '@shared/http/facets'
 import { Nullable, SelectQueryBuilder, sql } from 'kysely'
 import { jsonArrayFrom } from 'kysely/helpers/mysql'
 
