@@ -1,5 +1,5 @@
-import { CourseWithRelations } from '@api/Database/types'
-import FacetItem from '@api/Interfaces/FacetItem'
+import type { CourseWithRelations } from '@api/Database/types'
+import type { FacetItem } from '@shared/http/facets'
 
 /**
  * Response payload containing course search results, facets, and pagination metadata.

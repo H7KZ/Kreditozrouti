@@ -1,5 +1,5 @@
-import { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
-import FacetItem from '@api/Interfaces/FacetItem'
+import type { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
+import type { FacetItem } from '@shared/http/facets'
 
 /**
  * Response payload containing study plan search results, facets, and pagination metadata.

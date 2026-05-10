@@ -2,7 +2,7 @@ import { mysql, redis } from '@api/clients'
 import { StudyPlansFilter } from '@api/Controllers/Kreditozrouti/StudyPlansController'
 import StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse'
 import { Database, ExcludeMethods, Faculty, FacultyTable, StudyPlan, StudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
-import FacetItem from '@api/Interfaces/FacetItem'
+import type { FacetItem } from '@shared/http/facets'
 import { Nullable, SelectQueryBuilder, sql } from 'kysely'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
