@@ -28,7 +28,7 @@ export function useCourseRefresh(courseId: number) {
 
 	function loadStoredState(): void {
 		try {
-			const raw = localStorage.getItem(storageKey())
+			const raw = sessionStorage.getItem(storageKey())
 			if (!raw) return
 			const { triggeredAt } = JSON.parse(raw) as { triggeredAt: number }
 			const until = triggeredAt + RATE_LIMIT_MS
@@ -37,7 +37,7 @@ export function useCourseRefresh(courseId: number) {
 				state.value = 'rate_limited'
 				startCountdown()
 			} else {
-				localStorage.removeItem(storageKey())
+				sessionStorage.removeItem(storageKey())
 			}
 		} catch {
 			// ignore corrupt storage entries
@@ -45,7 +45,7 @@ export function useCourseRefresh(courseId: number) {
 	}
 
 	function saveTriggeredAt(): void {
-		localStorage.setItem(storageKey(), JSON.stringify({ triggeredAt: Date.now() }))
+		sessionStorage.setItem(storageKey(), JSON.stringify({ triggeredAt: Date.now() }))
 	}
 
 	function updateCountdown(): void {
@@ -73,7 +73,7 @@ export function useCourseRefresh(courseId: number) {
 				rateLimitedUntil.value = null
 				state.value = 'idle'
 				rateLimitCountdown.value = ''
-				localStorage.removeItem(storageKey())
+				sessionStorage.removeItem(storageKey())
 			} else {
 				updateCountdown()
 			}
