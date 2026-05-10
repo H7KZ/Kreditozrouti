@@ -1,7 +1,6 @@
-﻿import { SelectedCourseUnit } from '@client/types'
+import type { SelectedCourseUnit } from '@client/types'
 import type { InSISDay } from '@shared/domain/insis'
 
-/** Drag selection state for timetable */
 export interface DragSelection {
 	active: boolean
 	startDay: InSISDay | null
@@ -12,11 +11,4 @@ export interface DragSelection {
 
 export interface PersistedTimetableState {
 	selectedUnits: SelectedCourseUnit[]
-}
-
-export interface TimetableState {
-	selectedUnits: SelectedCourseUnit[]
-	dragSelection: DragSelection
-	showDragPopover: boolean
-	dragPopoverPosition: { x: number; y: number }
 }

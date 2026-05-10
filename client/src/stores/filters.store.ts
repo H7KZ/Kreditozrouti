@@ -1,4 +1,4 @@
-import InSISService from '@api/Services/InSISService.ts'
+import { getUpcomingPeriod } from '@shared/domain/period'
 import type { TimeSelection } from '@shared/domain/time'
 import type { CoursesFilter } from '@shared/http/courses'
 import { defineStore } from 'pinia'
@@ -106,7 +106,7 @@ export const useFiltersStore = defineStore('filters', () => {
 		if (completedIdents.length > 0) {
 			filters.value.completed_course_idents = [...completedIdents]
 		}
-		const period = InSISService.getUpcomingPeriod()
+		const period = getUpcomingPeriod()
 		filters.value.years = [period.year]
 		filters.value.semesters = [period.semester]
 	}
@@ -123,7 +123,7 @@ export const useFiltersStore = defineStore('filters', () => {
 
 	function resetFilters(studyPlanIds: number[], completedIdents: string[]) {
 		filters.value = createDefaultFilters()
-		const period = InSISService.getUpcomingPeriod()
+		const period = getUpcomingPeriod()
 		filters.value.years = [period.year]
 		filters.value.semesters = [period.semester]
 		if (studyPlanIds.length > 0) filters.value.study_plan_ids = [...studyPlanIds]

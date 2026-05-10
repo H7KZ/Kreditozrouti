@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InSISService from '@api/Services/InSISService.ts'
+import { getPeriodsForLastYears } from '@shared/domain/period'
 import type { FacetItem } from '@shared/http/facets'
 import { computed } from 'vue'
 import IconArrowLeft from '~icons/lucide/arrow-left'
@@ -25,7 +25,7 @@ const emit = defineEmits<Emits>()
 const sortedYears = computed(() => {
 	return props.years
 		.filter((year) =>
-			InSISService.getPeriodsForLastYears(4)
+			getPeriodsForLastYears(4)
 				.map((p) => p.year)
 				.includes(Number(year.value)),
 		)
