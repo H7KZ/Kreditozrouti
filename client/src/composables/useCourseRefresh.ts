@@ -3,7 +3,7 @@ import { useCoursesStore } from '@client/stores'
 import { onUnmounted, readonly, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-type RefreshState = 'idle' | 'confirming' | 'triggering' | 'streaming' | 'done' | 'error' | 'rate_limited'
+type RefreshState = 'idle' | 'triggering' | 'streaming' | 'done' | 'error' | 'rate_limited'
 
 const RATE_LIMIT_MS = 10 * 60 * 1000
 const STORAGE_PREFIX = 'kreditozrouti:scrape:'
@@ -80,20 +80,15 @@ export function useCourseRefresh(courseId: number) {
 		}, 1000)
 	}
 
-	function confirm(): void {
-		if (state.value !== 'idle') return
-		state.value = 'confirming'
-	}
-
-	function cancel(): void {
-		if (state.value === 'confirming' || state.value === 'error') {
+	function dismiss(): void {
+		if (state.value === 'error') {
 			state.value = 'idle'
 			errorMessage.value = null
 		}
 	}
 
 	async function trigger(): Promise<void> {
-		if (state.value !== 'confirming') return
+		if (state.value !== 'idle') return
 
 		state.value = 'triggering'
 		errorMessage.value = null
@@ -173,8 +168,7 @@ export function useCourseRefresh(courseId: number) {
 		rateLimitedUntil: readonly(rateLimitedUntil),
 		rateLimitCountdown: readonly(rateLimitCountdown),
 		lastRefreshedAt: readonly(lastRefreshedAt),
-		confirm,
-		cancel,
+		dismiss,
 		trigger,
 	}
 }

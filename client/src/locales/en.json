@@ -331,6 +331,7 @@
 				"allComplete": "All course units selected, no conflicts!"
 			},
 			"CourseRefreshButton": {
+				"confirmMessage": "Re-fetch this course from InSIS?\n\nThis will update timetable slots, lecturers, and all course details. You can do this once every 10 minutes per course.",
 				"tooltip": "Refresh course data from InSIS",
 				"tooltipWithTime": "Refresh course data from InSIS (last updated at {time})",
 				"confirm": "Refresh?",

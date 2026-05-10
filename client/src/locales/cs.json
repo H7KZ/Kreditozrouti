@@ -331,6 +331,7 @@
 				"allComplete": "Všechny jednotky vybrány, bez kolizí!"
 			},
 			"CourseRefreshButton": {
+				"confirmMessage": "Znovu načíst tento předmět z InSIS?\n\nAktualizují se rozvrh, vyučující a veškeré informace o předmětu. Toto lze provést jednou za 10 minut pro každý předmět.",
 				"tooltip": "Aktualizovat data předmětu z InSIS",
 				"tooltipWithTime": "Aktualizovat data předmětu z InSIS (naposledy aktualizováno v {time})",
 				"confirm": "Aktualizovat?",

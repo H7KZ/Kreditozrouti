@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import { useCourseRefresh } from '@client/composables'
+import { useI18n } from 'vue-i18n'
 import IconAlertCircle from '~icons/lucide/alert-circle'
 import IconCheck from '~icons/lucide/check'
 import IconLoader from '~icons/lucide/loader'
 import IconRefreshCw from '~icons/lucide/refresh-cw'
-import IconX from '~icons/lucide/x'
-import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{ courseId: number }>()
 
 const { t } = useI18n()
-const { state, errorMessage, rateLimitCountdown, lastRefreshedAt, confirm, cancel, trigger } = useCourseRefresh(props.courseId)
+const { state, errorMessage, rateLimitCountdown, lastRefreshedAt, dismiss, trigger } = useCourseRefresh(props.courseId)
+
+function onRefreshClick() {
+	if (!window.confirm(t('components.courses.CourseRefreshButton.confirmMessage'))) return
+	trigger()
+}
 </script>
 
 <template>
@@ -18,35 +22,9 @@ const { state, errorMessage, rateLimitCountdown, lastRefreshedAt, confirm, cance
 		Stop click AND keyboard events from bubbling to the parent <tr role="button">,
 		which would otherwise toggle row expansion on every interaction here.
 	-->
-	<div
-		class="flex items-center justify-end gap-0.5"
-		@click.stop
-		@keydown.enter.stop
-		@keydown.space.stop
-	>
-		<!-- Confirming: inline "Refresh? ✓ ✗" -->
-		<template v-if="state === 'confirming'">
-			<span class="mr-0.5 whitespace-nowrap text-[11px] text-[var(--insis-text-2)]">
-				{{ t('components.courses.CourseRefreshButton.confirm') }}
-			</span>
-			<button
-				class="rounded p-0.5 text-green-600 transition-colors hover:bg-green-50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-green-500"
-				:aria-label="t('components.courses.CourseRefreshButton.confirmAction')"
-				@click="trigger"
-			>
-				<IconCheck class="h-3.5 w-3.5" aria-hidden="true" />
-			</button>
-			<button
-				class="rounded p-0.5 text-[var(--insis-text-3)] transition-colors hover:bg-[var(--insis-surface-2)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--insis-border)]"
-				:aria-label="t('components.courses.CourseRefreshButton.cancelAction')"
-				@click="cancel"
-			>
-				<IconX class="h-3.5 w-3.5" aria-hidden="true" />
-			</button>
-		</template>
-
+	<div class="flex items-center justify-end gap-0.5" @click.stop @keydown.enter.stop @keydown.space.stop>
 		<!-- Triggering / Streaming: spinner -->
-		<template v-else-if="state === 'triggering' || state === 'streaming'">
+		<template v-if="state === 'triggering' || state === 'streaming'">
 			<div
 				class="flex items-center gap-1 text-[11px] text-[var(--insis-text-3)]"
 				role="status"
@@ -58,11 +36,7 @@ const { state, errorMessage, rateLimitCountdown, lastRefreshedAt, confirm, cance
 
 		<!-- Done: green check, auto-reverts after 3 s -->
 		<template v-else-if="state === 'done'">
-			<div
-				class="flex items-center gap-0.5 text-[11px] text-green-600"
-				role="status"
-				:aria-label="t('components.courses.CourseRefreshButton.done')"
-			>
+			<div class="flex items-center gap-0.5 text-[11px] text-green-600" role="status" :aria-label="t('components.courses.CourseRefreshButton.done')">
 				<IconCheck class="h-3.5 w-3.5" aria-hidden="true" />
 			</div>
 		</template>
@@ -70,10 +44,10 @@ const { state, errorMessage, rateLimitCountdown, lastRefreshedAt, confirm, cance
 		<!-- Error: red icon, click to dismiss -->
 		<template v-else-if="state === 'error'">
 			<button
-				class="rounded p-0.5 text-red-500 transition-colors hover:bg-red-50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
+				class="cursor-pointer rounded p-0.5 text-red-500 transition-colors hover:bg-red-50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
 				:title="errorMessage ?? t('components.courses.CourseRefreshButton.error')"
 				:aria-label="t('components.courses.CourseRefreshButton.retryAction')"
-				@click="cancel"
+				@click="dismiss"
 			>
 				<IconAlertCircle class="h-3.5 w-3.5" aria-hidden="true" />
 			</button>
@@ -92,10 +66,10 @@ const { state, errorMessage, rateLimitCountdown, lastRefreshedAt, confirm, cance
 			</button>
 		</template>
 
-		<!-- Idle: subtle refresh icon -->
+		<!-- Idle: subtle refresh icon, confirm via browser dialog before triggering -->
 		<template v-else>
 			<button
-				class="rounded p-0.5 text-[var(--insis-text-3)] opacity-0 transition-all group-hover/row:opacity-100 hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text-1)] focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--insis-border)]"
+				class="cursor-pointer rounded p-0.5 text-[var(--insis-text-3)] opacity-0 transition-all group-hover/row:opacity-100 hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text-1)] focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--insis-border)]"
 				:title="
 					lastRefreshedAt
 						? t('components.courses.CourseRefreshButton.tooltipWithTime', {
@@ -104,7 +78,7 @@ const { state, errorMessage, rateLimitCountdown, lastRefreshedAt, confirm, cance
 						: t('components.courses.CourseRefreshButton.tooltip')
 				"
 				:aria-label="t('components.courses.CourseRefreshButton.tooltip')"
-				@click="confirm"
+				@click="onRefreshClick"
 			>
 				<IconRefreshCw class="h-3.5 w-3.5" aria-hidden="true" />
 			</button>
