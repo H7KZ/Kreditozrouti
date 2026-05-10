@@ -90,6 +90,8 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		})
 	)
 
+	await flushResponseCaches()
+
 	LoggerJobContext.add({
 		assessment_method_count: course.assessment_methods?.length ?? 0,
 		timetable_unit_count: course.timetable?.length ?? 0,
@@ -230,6 +232,23 @@ async function syncStudyPlansFromCourse(
 			.where('group', '=', plan.group)
 			.where('category', '=', plan.category)
 			.execute()
+	}
+}
+
+/**
+ * Scans and deletes all response-cache and facet-cache keys so the next
+ * request fetches fresh data from the DB after a course is updated.
+ */
+async function flushResponseCaches(): Promise<void> {
+	for (const pattern of ['cache:*', 'course:facets:*']) {
+		let cursor = '0'
+		do {
+			const [nextCursor, keys] = await redis.scan(cursor, 'MATCH', pattern, 'COUNT', 100)
+			cursor = nextCursor
+			if (keys.length > 0) {
+				await redis.del(...keys)
+			}
+		} while (cursor !== '0')
 	}
 }
 
