@@ -76,7 +76,7 @@ Kreditožrouti provides:
 │  Port 45173               Port 40080          (Background)  │
 │  ┌─────────────┐         ┌─────────────┐     ┌───────────┐  │
 │  │ Vue Router  │  HTTP   │ Controllers │     │ Puppeteer │  │
-│  │ Pinia       │ ──────► │ Services    │ ◄───│ Cheerio   │  │
+│  │ Pinia       │─────► │ Services    │ ◄───│ Cheerio   │  │
 │  │ Tailwind    │         │ Kysely QB   │     │ BullMQ    │  │
 │  └─────────────┘         └─────────────┘     └───────────┘  │
 │                                │   ▲              │         │

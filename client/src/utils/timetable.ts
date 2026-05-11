@@ -2,7 +2,7 @@ import type { CourseUnitSlot } from '@api/contracts'
 import type { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { getDayFromDate } from '@client/utils/day'
 
-// ── Campus detection ───────────────────────────────────────────────────────
+// Campus detection
 
 const JM_PREFIXES = ['JM']
 const ZIZKOV_PREFIXES = ['RB', 'NB', 'IB', 'SB']

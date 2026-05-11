@@ -27,7 +27,7 @@ export const useWizardDataStore = defineStore('wizardData', () => {
 	const error = ref<string | null>(null)
 	const { t } = i18n.global
 
-	// ── API calls ──────────────────────────────────────────────────────────
+	// API calls
 
 	async function loadInitialFacets() {
 		loading.value = true

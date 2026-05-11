@@ -11,7 +11,7 @@ import type { CheerioAPI } from 'cheerio'
  * and study plan extraction from course pages.
  */
 export default class ExtractInSISStudyPlanService {
-    // ─── Public API ──────────────────────────────────────────────────────────────
+    // Public API
 
     /**
      * Extracts study plan ID from URL.
@@ -98,7 +98,7 @@ export default class ExtractInSISStudyPlanService {
         const id = this.extractIdFromUrl(url)
         if (id === null) console.warn('Study Plan ID not found in the URL:', url)
 
-        // ─── Extraction ──────────────────────────────────────────────────────────
+        // Extraction
         const { ident, title } = this.extractIdentAndTitle($)
         const faculty = this.extractFaculty($)
         const { semester, year } = this.extractSemesterAndYear($)
@@ -123,7 +123,7 @@ export default class ExtractInSISStudyPlanService {
         }
     }
 
-    // ─── Extraction ──────────────────────────────────────────────────────────────
+    // Extraction
 
     /**
      * Extracts Faculty object (title and ident).

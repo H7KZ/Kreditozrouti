@@ -19,7 +19,7 @@ import type { CheerioAPI } from 'cheerio'
  * Handles metadata, syllabus content, assessments, and timetable parsing.
  */
 export default class ExtractInSISCourseService {
-    // ─── Public API ──────────────────────────────────────────────────────────────
+    // Public API
 
     /**
      * Extracts course ID from a syllabus URL.
@@ -72,7 +72,7 @@ export default class ExtractInSISCourseService {
         }
     }
 
-    // ─── Identity ────────────────────────────────────────────────────────────────
+    // Identity
 
     /**
      * Resolves course ID from HTML form input first, then falls back to URL.
@@ -88,7 +88,7 @@ export default class ExtractInSISCourseService {
         throw new Error('Course ID not found in the HTML content or URL.')
     }
 
-    // ─── Basic Info ──────────────────────────────────────────────────────────────
+    // Basic Info
 
     private static extractBasicInfo($: CheerioAPI) {
         const ident = getRowValueCaseInsensitive($, 'Kód předmětu:')
@@ -192,7 +192,7 @@ export default class ExtractInSISCourseService {
         return lecturers
     }
 
-    // ─── Syllabus Content ────────────────────────────────────────────────────────
+    // Syllabus Content
 
     private static extractSyllabusContent($: CheerioAPI) {
         const prerequisites = getRowValueCaseInsensitive($, 'Omezení pro zápis:')
@@ -226,7 +226,7 @@ export default class ExtractInSISCourseService {
         }
     }
 
-    // ─── Assessment Methods ───────────────────────────────────────────────────────
+    // Assessment Methods
 
     private static extractAssessmentMethods($: CheerioAPI): ScraperInSISCourseAssessmentMethod[] {
         const methods: ScraperInSISCourseAssessmentMethod[] = []
@@ -257,7 +257,7 @@ export default class ExtractInSISCourseService {
         return methods
     }
 
-    // ─── Timetable ───────────────────────────────────────────────────────────────
+    // Timetable
 
     private static extractTimetable($: CheerioAPI): ScraperInSISCourseTimetableUnit[] {
         const units = new Set<ScraperInSISCourseTimetableUnit>()
@@ -338,7 +338,7 @@ export default class ExtractInSISCourseService {
         }
     }
 
-    // ─── Study Plans ─────────────────────────────────────────────────────────────
+    // Study Plans
 
     /**
      * Extracts study plan references from the course detail tables.
@@ -412,6 +412,6 @@ export default class ExtractInSISCourseService {
         return Array.from(plans)
     }
 
-    // ─── Utilities ───────────────────────────────────────────────────────────────
+    // Utilities
     // (No private utility helpers beyond those inlined above)
 }

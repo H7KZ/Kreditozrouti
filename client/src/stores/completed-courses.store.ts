@@ -20,7 +20,7 @@ interface PersistedCompletedCoursesState {
  * completedCourseIdents is persisted to localStorage alongside the wizard state.
  */
 export const useCompletedCoursesStore = defineStore('completedCourses', () => {
-	// ── State ──────────────────────────────────────────────────────────
+	// State
 
 	const completedCourseIdents = ref<string[]>([])
 	const completedCoursesSearch = ref('')
@@ -28,7 +28,7 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 	const levelFilter = ref<string[]>([])
 	const titleSearch = ref('')
 
-	// ── Derived from data stores ───────────────────────────────────────
+	// Derived from data stores
 
 	/**
 	 * Filtered study plans list (study plan picker UI, step 3).
@@ -141,7 +141,7 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 
 	const isCourseCompleted = computed(() => (courseIdent: string) => completedCourseIdents.value.includes(courseIdent))
 
-	// ── Actions ────────────────────────────────────────────────────────
+	// Actions
 
 	function toggleCompletedCourse(courseIdent: string) {
 		const idx = completedCourseIdents.value.indexOf(courseIdent)

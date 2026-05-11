@@ -70,10 +70,10 @@ async function fetchNextCoursesPage(page: () => void) {
 
 <template>
 	<div v-if="wizardStore.completed" class="flex flex-col h-screen overflow-hidden">
-		<!-- ── Header ── -->
+		<!-- Header -->
 		<CoursesHeader />
 
-		<!-- ── Body ── -->
+		<!-- Body -->
 		<div class="flex flex-1 overflow-hidden">
 			<!-- Sidebar / Filter Panel -->
 			<aside
@@ -89,7 +89,7 @@ async function fetchNextCoursesPage(page: () => void) {
 			<!-- Mobile filter backdrop -->
 			<div v-if="uiStore.mobileFilterOpen" class="fixed inset-0 z-40 bg-black/50 lg:hidden" @click="uiStore.closeMobileFilter" />
 
-			<!-- ── Main Content ── -->
+			<!-- Main Content -->
 			<div class="flex-1 flex flex-col overflow-hidden">
 				<!-- Status bar (only when courses selected) -->
 				<div

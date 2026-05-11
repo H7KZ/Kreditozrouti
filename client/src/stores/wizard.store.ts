@@ -18,7 +18,7 @@ import { computed, ref } from 'vue'
  * Completed courses → useCompletedCoursesStore
  */
 export const useWizardStore = defineStore('wizard', () => {
-	// ── State ──────────────────────────────────────────────────────────
+	// State
 
 	const currentStep = ref(1)
 	const facultyId = ref<string | null>(null)
@@ -27,7 +27,7 @@ export const useWizardStore = defineStore('wizard', () => {
 	const selectedStudyPlans = ref<SelectedStudyPlan[]>([])
 	const completed = ref(false)
 
-	// ── Derived IDs ────────────────────────────────────────────────────
+	// Derived IDs
 
 	const studyPlanIds = computed(() => selectedStudyPlans.value.map((p) => p.id))
 	const studyPlanId = computed(() => selectedStudyPlans.value[0]?.id ?? null)
@@ -36,7 +36,7 @@ export const useWizardStore = defineStore('wizard', () => {
 		selectedStudyPlans.value.length === 0 ? null : selectedStudyPlans.value.map((p) => p.title || p.ident || String(p.id)),
 	)
 
-	// ── Step completion ────────────────────────────────────────────────
+	// Step completion
 
 	const step1Complete = computed(() => facultyId.value !== null)
 	const step2Complete = computed(() => year.value !== null)
@@ -47,7 +47,7 @@ export const useWizardStore = defineStore('wizard', () => {
 	const canProceedToStep4 = computed(() => step1Complete.value && step2Complete.value && step3Complete.value)
 	const canComplete = computed(() => step1Complete.value && step2Complete.value && step3Complete.value)
 
-	// ── Forwarded completedCourseIdents (for backward compat) ─────────
+	// Forwarded completedCourseIdents (for backward compat)
 
 	/**
 	 * @deprecated Prefer useCompletedCoursesStore().completedCourseIdents directly.
@@ -55,7 +55,7 @@ export const useWizardStore = defineStore('wizard', () => {
 	 */
 	const completedCourseIdents = computed(() => useCompletedCoursesStore().completedCourseIdents)
 
-	// ── selectionSummary ───────────────────────────────────────────────
+	// selectionSummary
 
 	const selectionSummary = computed(() => {
 		const wizardDataStore = useWizardDataStore()
@@ -71,7 +71,7 @@ export const useWizardStore = defineStore('wizard', () => {
 		return parts.join(' → ')
 	})
 
-	// ── Actions ────────────────────────────────────────────────────────
+	// Actions
 
 	function selectFaculty(id: string) {
 		const completedCoursesStore = useCompletedCoursesStore()

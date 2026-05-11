@@ -8,6 +8,8 @@
 **/dist
 **/build
 
+/docs/superpowers
+
 /data
 /di-fis-ka.wiki
 

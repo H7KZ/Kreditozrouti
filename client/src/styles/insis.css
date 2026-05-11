@@ -14,7 +14,7 @@
    ========================================================================= */
 
 @layer components {
-	/* ── BUTTONS ── */
+	/* BUTTONS */
 	.insis-btn,
 	.insis-btn-primary,
 	.insis-btn-secondary,
@@ -76,7 +76,7 @@
 		@apply underline;
 	}
 
-	/* ── INPUTS ── */
+	/* INPUTS */
 	.insis-input,
 	.insis-select {
 		@apply w-full rounded-[3px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface-2)] px-2 py-[5px] text-[12.5px] text-[var(--insis-text)];
@@ -129,7 +129,7 @@
 		@apply bg-[var(--insis-blue-subtle)];
 	}
 
-	/* ── TABLE ── */
+	/* TABLE */
 	.insis-table {
 		@apply w-full border-collapse text-[12.5px];
 	}
@@ -169,7 +169,7 @@
 		font-size: var(--insis-font-xs);
 	}
 
-	/* ── TABS ── */
+	/* TABS */
 	.insis-tabs {
 		@apply flex gap-[2px] border-b border-[var(--insis-border)];
 	}
@@ -190,7 +190,7 @@
 		border-bottom-color: var(--insis-surface);
 	}
 
-	/* ── BADGES ── */
+	/* BADGES */
 	.insis-badge {
 		@apply inline-flex items-center gap-[3px] rounded-[10px] px-[6px] py-px text-[11px] font-medium whitespace-nowrap;
 	}
@@ -227,7 +227,7 @@
 		@apply bg-[var(--insis-course-optional)] text-white;
 	}
 
-	/* ── STATUS CHIPS ── */
+	/* STATUS CHIPS */
 	.status-chip {
 		@apply inline-flex cursor-pointer items-center gap-1 rounded-xl border border-solid bg-transparent px-[9px] py-[3px] text-[11.5px] font-medium;
 		font-family: 'Outfit', Arial, Helvetica, sans-serif;
@@ -253,7 +253,7 @@
 		@apply h-[6px] w-[6px] shrink-0 rounded-full bg-current;
 	}
 
-	/* ── PANELS / NOTES ── */
+	/* PANELS / NOTES */
 	.insis-panel,
 	.insis-panel-info,
 	.insis-panel-warning,
@@ -279,7 +279,7 @@
 		@apply border-[var(--insis-success-border)] bg-[var(--insis-success-light)] text-[var(--insis-success)];
 	}
 
-	/* ── TIMETABLE ── */
+	/* TIMETABLE */
 	.insis-timetable {
 		@apply w-full min-w-[700px] border-collapse text-[11.5px];
 	}
@@ -339,7 +339,7 @@
 		@apply block overflow-hidden text-[10px] text-ellipsis whitespace-nowrap opacity-75;
 	}
 
-	/* ── WIZARD ── */
+	/* WIZARD */
 	.insis-wizard {
 		@apply mb-8 flex items-center justify-center gap-0;
 	}
@@ -385,7 +385,7 @@
 		@apply scale-105;
 	}
 
-	/* ── LOADING ── */
+	/* LOADING */
 	.insis-loading {
 		@apply flex items-center justify-center p-8;
 	}
@@ -401,7 +401,7 @@
 		}
 	}
 
-	/* ── DAY TOGGLE BUTTONS ── */
+	/* DAY TOGGLE BUTTONS */
 	.insis-day-toggle {
 		@apply cursor-pointer rounded-[3px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface)] px-[7px] py-[3px] text-[11.5px] text-[var(--insis-text-2)];
 		font-family: 'Outfit', Arial, Helvetica, sans-serif;
@@ -414,7 +414,7 @@
 		@apply border-[var(--insis-blue-dark)] bg-[var(--insis-blue)] text-white;
 	}
 
-	/* ── POPOVER ── */
+	/* POPOVER */
 	.insis-popover {
 		@apply absolute z-50 min-w-[180px] rounded-[5px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface)] px-3 py-[10px] text-[12.5px] shadow-[var(--insis-shadow)];
 	}
@@ -423,12 +423,12 @@
 		@apply mb-2 border-b border-[var(--insis-border)] pb-2 text-[13px] font-semibold;
 	}
 
-	/* ── SEARCH PANEL (sidebar wrapper) ── */
+	/* SEARCH PANEL (sidebar wrapper) */
 	.insis-search-panel {
 		@apply h-full overflow-y-auto bg-[var(--insis-surface)] p-3;
 	}
 
-	/* ── LEGEND ── */
+	/* LEGEND */
 	.insis-legend {
 		@apply text-[11.5px];
 	}
@@ -442,7 +442,7 @@
 		@apply flex items-center gap-[5px] text-[var(--insis-text-2)];
 	}
 
-	/* ── BREADCRUMBS ── */
+	/* BREADCRUMBS */
 	.insis-breadcrumbs {
 		@apply mb-4 flex items-center text-sm;
 	}
@@ -456,12 +456,12 @@
 		@apply text-[var(--insis-gray-700)];
 	}
 
-	/* ── COURSE CODE ── */
+	/* COURSE CODE */
 	.insis-course-code {
 		@apply font-mono text-xs whitespace-nowrap text-[var(--insis-text-2)];
 	}
 
-	/* ── UNIT CARD (expanded row) ── */
+	/* UNIT CARD (expanded row) */
 	.unit-card {
 		@apply mb-[6px] overflow-hidden rounded-[5px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface)];
 		transition:
@@ -481,12 +481,12 @@
 		@apply border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)];
 	}
 
-	/* ── EXPANDED ROW CONTENT ── */
+	/* EXPANDED ROW CONTENT */
 	.expanded-content {
 		@apply border-t-2 border-t-[var(--insis-blue-light)] bg-[var(--insis-surface-2)] p-4;
 	}
 
-	/* ── FILTER SECTION (sidebar) ── */
+	/* FILTER SECTION (sidebar) */
 	.filter-section {
 		@apply border-b border-solid border-[var(--insis-border-light)] py-2;
 	}
@@ -506,12 +506,12 @@
 		@apply inline-block min-w-[18px] rounded-[10px] bg-[var(--insis-blue)] px-[5px] py-px text-center text-[10px] font-medium text-white;
 	}
 
-	/* ── SIDEBAR HEADER ── */
+	/* SIDEBAR HEADER */
 	.sidebar-hd {
 		@apply flex shrink-0 items-center justify-between border-b border-[var(--insis-border)] px-3 py-[10px] pb-2 text-[11px] font-semibold tracking-[0.06em] text-[var(--insis-text-3)] uppercase;
 	}
 
-	/* ── MODAL ── */
+	/* MODAL */
 	.insis-modal-backdrop {
 		@apply fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-6;
 	}

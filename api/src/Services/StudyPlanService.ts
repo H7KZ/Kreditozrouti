@@ -5,13 +5,13 @@ import { Database, ExcludeMethods, Faculty, FacultyTable, StudyPlan, StudyPlanCo
 import type { FacetItem } from '@shared/http/facets'
 import { Nullable, SelectQueryBuilder, sql } from 'kysely'
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// Constants
 
 /** Cache TTL for facet queries (5 minutes) */
 const FACET_CACHE_TTL = 300
 const FACET_CACHE_PREFIX = 'studyplan:facets:'
 
-// ─── Internal Types ───────────────────────────────────────────────────────────
+// Internal Types
 
 type QueryBuilder = SelectQueryBuilder<Database & { sp: StudyPlanTable } & { spc: Nullable<StudyPlanCourseTable> }, 'sp' | 'spc', object>
 
@@ -25,7 +25,7 @@ type QueryBuilder = SelectQueryBuilder<Database & { sp: StudyPlanTable } & { spc
  * 4. Merge in-memory
  */
 export default class StudyPlanService {
-	// ─── Public API ───────────────────────────────────────────────────────────────
+	// Public API
 
 	/**
 	 * Retrieves paginated study plans with full relational data (faculty, courses).
@@ -98,7 +98,7 @@ export default class StudyPlanService {
 		return facets
 	}
 
-	// ─── Querying ─────────────────────────────────────────────────────────────────
+	// Querying
 
 	/**
 	 * Counts study plans matching the given filters.
@@ -161,7 +161,7 @@ export default class StudyPlanService {
 		return mysql.selectFrom(`${StudyPlanCourseTable._table} as spc`).selectAll('spc').where('spc.study_plan_id', 'in', planIds).execute()
 	}
 
-	// ─── Filtering ────────────────────────────────────────────────────────────────
+	// Filtering
 
 	/**
 	 * Builds the base filter query with conditional joins.
@@ -244,7 +244,7 @@ export default class StudyPlanService {
 		return query
 	}
 
-	// ─── Facets ───────────────────────────────────────────────────────────────────
+	// Facets
 
 	/** Computes all facets in parallel for maximum efficiency. */
 	private static async computeAllFacetsInParallel(filters: StudyPlansFilter) {
@@ -316,7 +316,7 @@ export default class StudyPlanService {
 			.execute()
 	}
 
-	// ─── Cache ────────────────────────────────────────────────────────────────────
+	// Cache
 
 	/**
 	 * Generates a deterministic cache key from relevant filter values.
@@ -355,7 +355,7 @@ export default class StudyPlanService {
 		}
 	}
 
-	// ─── Utilities ────────────────────────────────────────────────────────────────
+	// Utilities
 
 	/** Maps sort_by parameter to actual database column. */
 	private static getStudyPlanSortColumn(sortBy?: string): ReturnType<typeof sql.ref> {

@@ -7,7 +7,7 @@ const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
 const numWorkers = specifiedInstances ? parseInt(specifiedInstances) : 1
 
-// ─── Cluster management ───────────────────────────────────────────────────────
+// Cluster management
 
 if (cluster.isPrimary && numWorkers > 1) {
     console.log(`🚀  [Scraper] Master process ${process.pid} is running`)
@@ -27,7 +27,7 @@ if (cluster.isPrimary && numWorkers > 1) {
     })
 }
 
-// ─── Worker startup ───────────────────────────────────────────────────────────
+// Worker startup
 
 async function startWorker(): Promise<void> {
     try {

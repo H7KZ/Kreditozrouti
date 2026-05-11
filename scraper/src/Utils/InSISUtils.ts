@@ -1,6 +1,6 @@
 import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@scraper/types/insis'
 
-// ─── Group Code Data ──────────────────────────────────────────────────────────
+// Group Code Data
 
 /**
  * InSIS Group Code Structure:
@@ -66,7 +66,7 @@ export const CategoryRules: {
     { test: suffix => /V\d?$/.test(suffix) || ['VB', 'VM', 'VOL'].some(v => suffix.includes(v)), category: 'elective' }
 ]
 
-// ─── Group Code Parsing ───────────────────────────────────────────────────────
+// Group Code Parsing
 
 /**
  * Parses an InSIS group code into group scope and category.
@@ -120,7 +120,7 @@ export function determineCategory(groupCode: string): InSISStudyPlanCourseCatego
     return 'elective'
 }
 
-// ─── Semester & Year Extraction ───────────────────────────────────────────────
+// Semester & Year Extraction
 
 export function extractSemester(value: string | null): InSISSemester | null {
     if (!value) return null

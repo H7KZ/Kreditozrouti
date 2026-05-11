@@ -42,7 +42,7 @@ type QueryBuilder = SelectQueryBuilder<
  * This approach scales consistently regardless of page size.
  */
 export default class CourseService {
-	// ─── Public API ───────────────────────────────────────────────────────────────
+	// Public API
 
 	/**
 	 * Retrieves a paginated list of courses with deep relations.
@@ -145,7 +145,7 @@ export default class CourseService {
 		return facets
 	}
 
-	// ─── Querying ─────────────────────────────────────────────────────────────────
+	// Querying
 
 	/**
 	 * Counts courses matching the given filters.
@@ -174,7 +174,7 @@ export default class CourseService {
 		return results.map(r => r.id)
 	}
 
-	// ─── Relations ────────────────────────────────────────────────────────────────
+	// Relations
 
 	/**
 	 * Fetches full course records by IDs, preserving the original order.
@@ -260,7 +260,7 @@ export default class CourseService {
 			.execute()
 	}
 
-	// ─── Filtering ────────────────────────────────────────────────────────────────
+	// Filtering
 
 	/**
 	 * Builds the base filter query with conditional joins.
@@ -482,7 +482,7 @@ export default class CourseService {
 		return query
 	}
 
-	// ─── Facets ───────────────────────────────────────────────────────────────────
+	// Facets
 
 	/**
 	 * Computes all facets in parallel for maximum efficiency.
@@ -691,7 +691,7 @@ export default class CourseService {
 		)
 	}
 
-	// ─── Cache ────────────────────────────────────────────────────────────────────
+	// Cache
 
 	/**
 	 * Generates a deterministic cache key from relevant filter values.
@@ -745,7 +745,7 @@ export default class CourseService {
 		}
 	}
 
-	// ─── Utilities ────────────────────────────────────────────────────────────────
+	// Utilities
 
 	/**
 	 * Splits pipe-delimited facet values into individual entries and aggregates

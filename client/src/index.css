@@ -81,7 +81,7 @@
 	--sidebar-border: #dde1e7;
 	--sidebar-ring: #0066b3;
 
-	/* ── DESIGN SYSTEM TOKENS ── */
+	/* DESIGN SYSTEM TOKENS */
 
 	/* Brand Blues */
 	--insis-blue: #0066b3;
@@ -189,11 +189,11 @@
 	--insis-font-lg: 1rem;
 }
 
-/* ── DARK MODE ──────────────────────────────────────────────────────────────
+/* DARK MODE
    Applied when <html> carries the .dark class (user toggle).
    The @media block below handles the system-preference fallback for users
    who have never interacted with the toggle.
-   ─────────────────────────────────────────────────────────────────────────── */
+   */
 
 html.dark {
 	/* Shadcn base tokens */

@@ -30,7 +30,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 	const announcer = useAnnouncerStore()
 	const selectedUnits = ref<SelectedCourseUnit[]>([])
 
-	// ── Computed ──────────────────────────────────────────────────────────
+	// Computed
 
 	const selectedCourseIds = computed(() => [...new Set(selectedUnits.value.map((u) => u.courseId))])
 
@@ -195,7 +195,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		return count
 	})
 
-	// ── Actions ──────────────────────────────────────────────────────────
+	// Actions
 
 	function getSlotConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
 		if (!slot.time_from || !slot.time_to) return []

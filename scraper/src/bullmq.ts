@@ -5,19 +5,19 @@ import type { ScraperRequestJob, ScraperResponseJob } from '@scraper/types/jobs'
 import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/types/queue'
 import { Queue, Worker } from 'bullmq'
 
-// ─── Queues ──────────────────────────────────────────────────────────────────
+// Queues
 
 const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis.options })
 const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis.options })
 
-// ─── Workers ─────────────────────────────────────────────────────────────────
+// Workers
 
 const requestWorker = new Worker<ScraperRequestJob>(ScraperRequestQueue, withSentryJobHandler(ScraperRequestQueue, ScraperRequestHandler), {
     connection: redis.options,
     concurrency: 1
 })
 
-// ─── Scraper object ───────────────────────────────────────────────────────────
+// Scraper object
 
 const scraper = {
     queue: {

@@ -1,4 +1,4 @@
-// ─── Imports ─────────────────────────────────────────────────────────────────
+// Imports
 
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
@@ -9,7 +9,7 @@ import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names'
 import { Queue, Worker } from 'bullmq'
 
-// ─── Queue & Worker Setup ─────────────────────────────────────────────────────
+// Queue & Worker Setup
 
 const scraperRequestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
 	connection: redis.options
@@ -20,7 +20,7 @@ const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueu
 	concurrency: 4
 })
 
-// ─── Scheduler Job Data ───────────────────────────────────────────────────────
+// Scheduler Job Data
 
 function buildCatalogSchedulerJob(upcomingPeriod: ReturnType<typeof InSISService.getUpcomingPeriod>) {
 	return {
@@ -48,7 +48,7 @@ function buildStudyPlansSchedulerJob(periodsForLastFourYears: ReturnType<typeof 
 	}
 }
 
-// ─── Exported BullMQ Object ───────────────────────────────────────────────────
+// Exported BullMQ Object
 
 const scraper = {
 	queue: {
