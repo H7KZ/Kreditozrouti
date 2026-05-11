@@ -1,7 +1,7 @@
 import { scraper } from '@api/bullmq'
 import { mysql } from '@api/clients'
 import { Request, Response } from 'express'
-import { sql } from 'kysely'
+import { sql, SqlBool } from 'kysely'
 
 // Response Types
 
@@ -88,7 +88,7 @@ export default async function AdminStatsController(req: Request, res: Response) 
 
 	return res.json({
 		queue: {
-			request: requestCounts
+			request: requestCounts as unknown as QueueStats
 		},
 		schedulers: schedulers.map(s => ({
 			id: s.key,
@@ -108,14 +108,14 @@ export default async function AdminStatsController(req: Request, res: Response) 
 				name: j.name,
 				failedReason: j.failedReason,
 				processedOn: j.processedOn,
-				data: j.data
+				data: j.data as unknown as Record<string, unknown>
 			})),
 			completed: completedJobs.map(j => ({
 				id: j.id,
 				name: j.name,
 				finishedOn: j.finishedOn,
 				processedOn: j.processedOn,
-				data: j.data
+				data: j.data as unknown as Record<string, unknown>
 			}))
 		}
 	} satisfies AdminStatsResponse)
@@ -179,7 +179,7 @@ async function getStaleCounts(): Promise<StaleCourseCount[]> {
 			const result = await mysql
 				.selectFrom('insis_courses')
 				.select(eb => [eb.fn.countAll<string>().as('count')])
-				.where(sql`insis_courses.updated_at < DATE_SUB(NOW(), INTERVAL ${days} DAY)`)
+				.where(sql<SqlBool>`insis_courses.updated_at < DATE_SUB(NOW(), INTERVAL ${days} DAY)`)
 				.executeTakeFirst()
 			return { thresholdDays: days, count: Number(result?.count ?? 0) }
 		})
@@ -190,7 +190,7 @@ async function getRecentlyUpdatedCount(): Promise<number> {
 	const result = await mysql
 		.selectFrom('insis_courses')
 		.select(eb => [eb.fn.countAll<string>().as('count')])
-		.where(sql`insis_courses.updated_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)`)
+		.where(sql<SqlBool>`insis_courses.updated_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)`)
 		.executeTakeFirst()
 	return Number(result?.count ?? 0)
 }
