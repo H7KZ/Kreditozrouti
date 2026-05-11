@@ -4,6 +4,7 @@ import { ALL_DAYS } from '@client/constants/timetable'
 import { i18n } from '@client/index'
 import { useAnnouncerStore } from '@client/stores/announcer.store'
 import { useFiltersStore } from '@client/stores/filters.store'
+import { useScheduleSlotsStore } from '@client/stores/schedule-slots.store'
 import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCourseUnit, SlotConflictInfo } from '@client/types'
 import { getSlotType } from '@client/utils/course'
 import { getDayFromDate } from '@client/utils/day'
@@ -383,11 +384,19 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 	function persist() {
 		saveToStorage<PersistedTimetableState>(STORAGE_KEYS.TIMETABLE, { selectedUnits: selectedUnits.value })
+		const scheduleSlotsStore = useScheduleSlotsStore()
+		scheduleSlotsStore.syncActiveSlot(selectedUnits.value)
 	}
 
 	function hydrate() {
 		const state = loadFromStorage<PersistedTimetableState>(STORAGE_KEYS.TIMETABLE)
 		if (state?.selectedUnits) selectedUnits.value = state.selectedUnits
+	}
+
+	function loadUnits(units: SelectedCourseUnit[]) {
+		selectedUnits.value = JSON.parse(JSON.stringify(units))
+		persist()
+		syncCoursesStoreExclusion()
 	}
 
 	function clearAll() {
@@ -433,6 +442,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		requiredUnitTypes,
 		persist,
 		hydrate,
+		loadUnits,
 		clearAll,
 	}
 })
