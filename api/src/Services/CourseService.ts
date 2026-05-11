@@ -23,8 +23,10 @@ const FACET_CACHE_TTL = 300
 const FACET_CACHE_PREFIX = 'course:facets:'
 
 type QueryBuilder = SelectQueryBuilder<
-	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> },
-	'c1' | 'cu1' | 'cus1' | 'spc1',
+	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> } & {
+		fts: Nullable<{ fts_id: number; relevance_score: number }>
+	},
+	'c1' | 'cu1' | 'cus1' | 'spc1' | 'fts',
 	object
 >
 
@@ -459,14 +461,13 @@ export default class CourseService {
 			const sanitized = this.sanitizeFulltextQuery(term)
 
 			if (sanitized) {
-				/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 				query = query.innerJoin(
-					(eb: any) =>
+					eb =>
 						eb
 							.selectFrom('insis_courses as fts_c')
 							.select([
 								'fts_c.id as fts_id',
-								sql`MATCH(fts_c.title_cs, fts_c.title_en, fts_c.aims_of_the_course, fts_c.learning_outcomes, fts_c.course_contents) AGAINST(${sanitized} IN BOOLEAN MODE)`.as(
+								sql<number>`MATCH(fts_c.title_cs, fts_c.title_en, fts_c.aims_of_the_course, fts_c.learning_outcomes, fts_c.course_contents) AGAINST(${sanitized} IN BOOLEAN MODE)`.as(
 									'relevance_score'
 								)
 							])
@@ -476,9 +477,8 @@ export default class CourseService {
 								0
 							)
 							.as('fts'),
-					(join: any) => join.onRef('c1.id', '=', 'fts.fts_id')
-				) as any
-				/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
+					join => join.onRef('c1.id', '=', 'fts.fts_id')
+				) as unknown as QueryBuilder
 			}
 		}
 
