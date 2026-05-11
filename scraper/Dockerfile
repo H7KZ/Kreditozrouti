@@ -38,4 +38,4 @@ WORKDIR /usr/src/scraper
 COPY --from=builder /usr/src/scraper/dist ./dist
 COPY --from=builder /usr/src/scraper/node_modules ./node_modules
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/scraper/src/index.js"]
