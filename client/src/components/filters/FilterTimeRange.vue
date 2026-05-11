@@ -164,7 +164,7 @@ function formatFilter(filter: TimeSelection): string {
 		</button>
 
 		<!-- Add filter form -->
-		<div v-else class="rounded border border-[var(--insis-border)] bg-white p-3">
+		<div v-else class="rounded border border-[var(--insis-border)] bg-[var(--insis-surface)] p-3">
 			<!-- Day selection -->
 			<div class="mb-3">
 				<label class="mb-1 block text-xs text-[var(--insis-gray-600)]" id="day-selection-label">

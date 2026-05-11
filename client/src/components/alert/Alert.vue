@@ -133,7 +133,7 @@ export type AlertProps = Props
 	@apply rounded p-3;
 	border: 1px solid var(--insis-panel-border);
 	border-left-width: 4px; /* Thicker left border for visual emphasis */
-	background-color: white;
+	background-color: var(--insis-surface);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -154,6 +154,6 @@ export type AlertProps = Props
 
 .insis-panel-danger {
 	border-left-color: var(--insis-danger);
-	background-color: #fff5f5;
+	background-color: var(--insis-danger-bg);
 }
 </style>

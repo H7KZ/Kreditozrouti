@@ -117,7 +117,10 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 				type="button"
 				:class="[
 					'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-solid text-xs font-medium cursor-pointer focus:outline-none active:scale-[0.98] transition-all duration-150',
-					getBadgeClasses('campus-conflict', 'bg-orange-50 text-orange-600 border-orange-200 hover:brightness-95'),
+					getBadgeClasses(
+						'campus-conflict',
+						'bg-[var(--insis-warning-light)] text-[var(--insis-warning)] border-[var(--insis-warning-border)] hover:brightness-95',
+					),
 				]"
 				:title="$t('components.courses.CourseStatusSummary.campusConflictTooltip')"
 				@click="handleBadgeClick('campus-conflict')"

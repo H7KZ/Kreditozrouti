@@ -150,7 +150,7 @@ function handleSearchInput(event: Event) {
 						'rounded-full border px-3 py-1 text-xs transition-all duration-150 cursor-pointer active:scale-[0.97]',
 						isCategoryFilterActive(category)
 							? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] text-[var(--insis-blue)]'
-							: 'border-[var(--insis-border)] bg-white text-[var(--insis-gray-600)] hover:border-[var(--insis-blue)] hover:bg-[var(--insis-blue-subtle)]',
+							: 'border-[var(--insis-border)] bg-[var(--insis-surface)] text-[var(--insis-gray-600)] hover:border-[var(--insis-blue)] hover:bg-[var(--insis-blue-subtle)]',
 					]"
 					@click="toggleCategoryFilter(category)"
 				>
@@ -166,7 +166,7 @@ function handleSearchInput(event: Event) {
 
 		<!-- Course list grouped by category -->
 		<div v-else-if="sortedEntries.length > 0" class="space-y-4">
-			<div v-for="[category, courses] in sortedEntries" :key="category" class="rounded border border-[var(--insis-border)] bg-white">
+			<div v-for="[category, courses] in sortedEntries" :key="category" class="rounded border border-[var(--insis-border)] bg-[var(--insis-surface)]">
 				<!-- Category header -->
 				<button
 					type="button"

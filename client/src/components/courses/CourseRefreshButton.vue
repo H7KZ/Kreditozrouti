@@ -36,7 +36,11 @@ function onRefreshClick() {
 
 		<!-- Done: green check, auto-reverts after 3 s -->
 		<template v-else-if="state === 'done'">
-			<div class="flex items-center gap-0.5 text-[11px] text-green-600" role="status" :aria-label="t('components.courses.CourseRefreshButton.done')">
+			<div
+				class="flex items-center gap-0.5 text-[11px] text-[var(--insis-success)]"
+				role="status"
+				:aria-label="t('components.courses.CourseRefreshButton.done')"
+			>
 				<IconCheck class="h-3.5 w-3.5" aria-hidden="true" />
 			</div>
 		</template>
@@ -44,7 +48,7 @@ function onRefreshClick() {
 		<!-- Error: red icon, click to dismiss -->
 		<template v-else-if="state === 'error'">
 			<button
-				class="cursor-pointer rounded p-0.5 text-red-500 transition-colors hover:bg-red-50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
+				class="cursor-pointer rounded p-0.5 text-[var(--insis-danger)] transition-colors hover:bg-[var(--insis-danger-light)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--insis-danger)]"
 				:title="errorMessage ?? t('components.courses.CourseRefreshButton.error')"
 				:aria-label="t('components.courses.CourseRefreshButton.retryAction')"
 				@click="dismiss"

@@ -68,13 +68,13 @@ function getStatusIcon(status: CourseStatusType) {
 function getStatusColorClass(status: CourseStatusType): string {
 	switch (status) {
 		case 'conflict':
-			return 'text-red-600'
+			return 'text-[var(--insis-danger)]'
 		case 'campus-conflict':
-			return 'text-orange-500'
+			return 'text-[var(--insis-warning)]'
 		case 'incomplete':
-			return 'text-amber-600'
+			return 'text-[var(--insis-warning)]'
 		default:
-			return 'text-blue-600'
+			return 'text-[var(--insis-blue)]'
 	}
 }
 
@@ -82,13 +82,13 @@ function getStatusColorClass(status: CourseStatusType): string {
 function getSelectedBgClass(status: CourseStatusType): string {
 	switch (status) {
 		case 'conflict':
-			return 'bg-red-50'
+			return 'bg-[var(--insis-danger-light)]'
 		case 'campus-conflict':
-			return 'bg-orange-50'
+			return 'bg-[var(--insis-warning-light)]'
 		case 'incomplete':
-			return 'bg-amber-50'
+			return 'bg-[var(--insis-warning-light)]'
 		default:
-			return 'bg-blue-50'
+			return 'bg-[var(--insis-blue-subtle)]'
 	}
 }
 
@@ -183,7 +183,7 @@ function toggleCollapsed() {
 					@click="showConflictDetails = !showConflictDetails"
 				>
 					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showConflictDetails }]" aria-hidden="true" />
-					<IconCalendarX class="h-3 w-3 text-red-500" aria-hidden="true" />
+					<IconCalendarX class="h-3 w-3 text-[var(--insis-danger)]" aria-hidden="true" />
 					<span>{{ $t('components.filters.CourseStatusFilter.conflictingCourses') }}</span>
 					<span class="text-[var(--insis-gray-400)]" aria-hidden="true">({{ statusCounts.conflict }})</span>
 				</button>
@@ -203,7 +203,7 @@ function toggleCollapsed() {
 							@change="toggleCourseFilter(course.ident)"
 						/>
 						<span class="flex-1 truncate text-sm">{{ course.ident }}</span>
-						<span class="text-xs text-red-500" aria-hidden="true"> ↔ {{ course.conflictsWith.join(', ') }} </span>
+						<span class="text-xs text-[var(--insis-danger)]" aria-hidden="true"> ↔ {{ course.conflictsWith.join(', ') }} </span>
 					</label>
 				</div>
 			</div>
@@ -217,7 +217,7 @@ function toggleCollapsed() {
 					@click="showCampusConflictDetails = !showCampusConflictDetails"
 				>
 					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showCampusConflictDetails }]" aria-hidden="true" />
-					<IconMapPin class="h-3 w-3 text-orange-500" aria-hidden="true" />
+					<IconMapPin class="h-3 w-3 text-[var(--insis-warning)]" aria-hidden="true" />
 					<span>{{ $t('components.filters.CourseStatusFilter.campusConflictingCourses') }}</span>
 					<span class="text-[var(--insis-gray-400)]" aria-hidden="true">({{ statusCounts['campus-conflict'] }})</span>
 				</button>
@@ -240,7 +240,7 @@ function toggleCollapsed() {
 							@change="toggleCourseFilter(course.ident)"
 						/>
 						<span class="flex-1 truncate text-sm">{{ course.ident }}</span>
-						<span class="text-xs text-orange-500" aria-hidden="true"> ↔ {{ course.campusConflictsWith.join(', ') }} </span>
+						<span class="text-xs text-[var(--insis-warning)]" aria-hidden="true"> ↔ {{ course.campusConflictsWith.join(', ') }} </span>
 					</label>
 				</div>
 			</div>
@@ -254,7 +254,7 @@ function toggleCollapsed() {
 					@click="showIncompleteDetails = !showIncompleteDetails"
 				>
 					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showIncompleteDetails }]" aria-hidden="true" />
-					<IconAlertTriangle class="h-3 w-3 text-amber-500" aria-hidden="true" />
+					<IconAlertTriangle class="h-3 w-3 text-[var(--insis-warning)]" aria-hidden="true" />
 					<span>{{ $t('components.filters.CourseStatusFilter.incompleteCourses') }}</span>
 					<span class="text-[var(--insis-gray-400)]" aria-hidden="true">({{ statusCounts.incomplete }})</span>
 				</button>
@@ -277,7 +277,7 @@ function toggleCollapsed() {
 							@change="toggleCourseFilter(course.ident)"
 						/>
 						<span class="flex-1 truncate text-sm">{{ course.ident }}</span>
-						<span class="text-xs text-amber-600" aria-hidden="true">
+						<span class="text-xs text-[var(--insis-warning)]" aria-hidden="true">
 							{{ $t('components.filters.CourseStatusFilter.missingLabel') }}:
 							{{ course.missingTypes.map(getUnitTypeLabel).join(', ') }}
 						</span>

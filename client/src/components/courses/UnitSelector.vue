@@ -255,7 +255,7 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 								!isUnitSelected(unit.id) && unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
 							'border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)]':
 								!isUnitSelected(unit.id) && unitHasCampusConflictsOnly(unit) && !unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
-							'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)]':
+							'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue)]':
 								!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit) && !unitHasConflicts(unit) && !unitHasCampusConflictsOnly(unit),
 							'bg-[var(--insis-blue-light)] ring-1 ring-[var(--insis-blue)]':
 								!isUnitSelected(unit.id) && unitMatchesTimeFilter(unit) && !unitHasConflicts(unit),
@@ -311,7 +311,7 @@ function getSlotConflictClass(slot: CourseUnitSlot): string {
 								<template v-if="isUnitSelected(unit.id)">
 									<button
 										type="button"
-										class="insis-btn bg-white px-3 py-1.5 text-xs hover:border-[var(--insis-danger)] hover:bg-[var(--insis-danger-light)] hover:text-[var(--insis-danger)]"
+										class="insis-btn bg-[var(--insis-surface)] px-3 py-1.5 text-xs hover:border-[var(--insis-danger)] hover:bg-[var(--insis-danger-light)] hover:text-[var(--insis-danger)]"
 										:aria-label="$t('common.remove')"
 										@click.stop="handleRemoveUnit(unit)"
 									>

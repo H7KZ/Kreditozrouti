@@ -183,7 +183,7 @@ onUnmounted(() => {
 <template>
 	<Teleport to="body">
 		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" @click="handleBackdropClick">
-			<div ref="modalRef" class="modal w-full max-w-3xl max-h-[90vh] overflow-hidden rounded-lg bg-white shadow-xl">
+			<div ref="modalRef" class="modal w-full max-w-3xl max-h-[90vh] overflow-hidden rounded-lg bg-[var(--insis-surface)] shadow-xl">
 				<!-- Header -->
 				<div class="flex items-center justify-between border-b border-[var(--insis-border)] bg-[var(--insis-header-bg)] px-4 py-3">
 					<div class="flex items-center gap-2">
@@ -301,7 +301,7 @@ onUnmounted(() => {
 											:class="
 												isUnitSelected(courseUnit.id)
 													? 'border-[var(--insis-success)] bg-[var(--insis-success-light)]'
-													: 'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)]'
+													: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue)]'
 											"
 										>
 											<div class="flex items-center justify-between p-2">
@@ -326,7 +326,7 @@ onUnmounted(() => {
 													<template v-if="isUnitSelected(courseUnit.id)">
 														<button
 															type="button"
-															class="insis-btn bg-white px-3 py-1.5 text-xs hover:border-[var(--insis-danger)]"
+															class="insis-btn bg-[var(--insis-surface)] px-3 py-1.5 text-xs hover:border-[var(--insis-danger)]"
 															@click.stop="handleRemoveUnit(courseUnit)"
 														>
 															<IconMinus class="h-4 w-4" />

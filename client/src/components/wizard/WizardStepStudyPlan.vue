@@ -161,7 +161,7 @@ function dismissSpecializationInfo() {
 							'rounded border px-3 py-1.5 text-sm transition-all cursor-pointer',
 							levelFilter.includes(level.value as string)
 								? 'border-[var(--insis-blue)] bg-[var(--insis-blue)] text-white'
-								: 'border-[var(--insis-border)] bg-white hover:bg-[var(--insis-gray-50)]',
+								: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:bg-[var(--insis-gray-50)]',
 						]"
 						@click="toggleLevelFilter(level.value as string)"
 					>
@@ -206,7 +206,7 @@ function dismissSpecializationInfo() {
 					'rounded border p-4 transition-all duration-150 cursor-pointer active:scale-[0.99]',
 					isSelected(plan.id)
 						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] ring-2 ring-[var(--insis-blue)] shadow-[var(--insis-shadow-sm)]'
-						: 'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue)] hover:bg-[var(--insis-gray-50)] hover:shadow-[var(--insis-shadow-sm)]',
+						: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue)] hover:bg-[var(--insis-gray-50)] hover:shadow-[var(--insis-shadow-sm)]',
 				]"
 				@click="handleTogglePlan(plan)"
 			>

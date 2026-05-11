@@ -174,12 +174,12 @@ function handleClick() {
 					<!-- Merged count badge -->
 					<span
 						v-if="isMerged && mergedCount && mergedCount > 1"
-						class="shrink-0 rounded bg-white/70 px-1 text-[10px] font-medium"
+						class="shrink-0 rounded bg-white/70 px-1 text-[10px] font-medium text-gray-900"
 						:title="$t('components.timetable.TimetableCourseBlock.mergedSlots', { count: mergedCount })"
 					>
 						×{{ mergedCount }}
 					</span>
-					<span class="shrink-0 rounded bg-white/50 px-1 text-[10px] font-medium">
+					<span class="shrink-0 rounded bg-white/50 px-1 text-[10px] font-medium text-gray-900">
 						{{ typeLabel }}
 					</span>
 				</div>

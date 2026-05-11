@@ -218,10 +218,10 @@
 		@apply bg-[var(--insis-course-compulsory)] text-white;
 	}
 	.insis-badge-elective {
-		@apply bg-[var(--insis-course-elective)] text-[var(--insis-gray-900)];
+		@apply bg-[var(--insis-course-elective)] text-[#1a1a1a];
 	}
 	.insis-badge-other {
-		@apply bg-[var(--insis-course-other)] text-[var(--insis-gray-900)];
+		@apply bg-[var(--insis-course-other)] text-[#1a1a1a];
 	}
 	.insis-badge-optional {
 		@apply bg-[var(--insis-course-optional)] text-white;

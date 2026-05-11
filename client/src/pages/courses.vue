@@ -202,7 +202,10 @@ async function fetchNextCoursesPage(page: () => void) {
 					<template v-else-if="uiStore.viewMode === 'timetable'">
 						<TimetableGrid>
 							<!-- Empty timetable -->
-							<div v-if="showEmptyTimetable" class="absolute inset-0 flex flex-col items-center justify-center bg-white/70 py-12 text-center">
+							<div
+								v-if="showEmptyTimetable"
+								class="absolute inset-0 flex flex-col items-center justify-center bg-[var(--insis-surface)]/80 py-12 text-center"
+							>
 								<div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--insis-gray-200)]">
 									<IconCalendarMinus2 class="h-7 w-7 text-[var(--insis-gray-500)]" />
 								</div>

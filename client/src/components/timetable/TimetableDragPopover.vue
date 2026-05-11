@@ -87,7 +87,11 @@ const durationFormatted = computed(() => {
 </script>
 
 <template>
-	<div ref="popoverRef" class="popover fixed z-50 w-[280px] rounded border border-[var(--insis-border)] bg-white shadow-lg" :style="popoverStyle">
+	<div
+		ref="popoverRef"
+		class="popover fixed z-50 w-[280px] rounded border border-[var(--insis-border)] bg-[var(--insis-surface)] shadow-lg"
+		:style="popoverStyle"
+	>
 		<!-- Header -->
 		<div class="border-b border-[var(--insis-border)] bg-[var(--insis-header-bg)] px-3 py-2">
 			<h3 class="text-sm font-medium text-[var(--insis-text)]">{{ $t('components.timetable.TimetableDragPopover.title') }}</h3>
