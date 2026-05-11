@@ -89,7 +89,7 @@ function handleToggleCompleted() {
 				<IconClock class="h-3 w-3" aria-hidden="true" />
 				{{ $t('components.courses.CourseRowExpanded.lastFetched', { age: formattedAge }) }}
 			</span>
-			<CourseRefreshButton :course-id="course.id" :always-visible="true" />
+			<CourseRefreshButton :course-id="course.id" />
 		</div>
 
 		<!-- Mark as completed -->

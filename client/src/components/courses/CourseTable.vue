@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { CourseWithRelations } from '@api/contracts'
-import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
@@ -180,10 +179,9 @@ function getCourseScheduleSummary(course: CourseWithRelations): string {
 							<!-- Schedule -->
 							<td class="text-[11.5px] text-[var(--insis-text-3)]">{{ getCourseScheduleSummary(course) }}</td>
 
-							<!-- Actions: refresh + expand chevron -->
+							<!-- Actions: expand chevron -->
 							<td class="text-right">
 								<div class="flex items-center justify-end gap-1">
-									<CourseRefreshButton :course-id="course.id" />
 									<IconChevronDown
 										:class="[
 											'inline h-3.5 w-3.5 flex-shrink-0 text-[var(--insis-text-3)] transition-transform duration-200',
