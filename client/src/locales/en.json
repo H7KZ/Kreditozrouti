@@ -312,6 +312,7 @@
 				"incompleteSelectionDescription": "To enroll in this course, you must also select: {types}. Please select all required unit types.",
 				"campusConflictTitle": "Campus travel conflict",
 				"campusConflictDescription": "This course is on a different campus. There may not be enough travel time to reach it from: {courses}. Allow at least 40 minutes between classes on Jižní Město and Žižkov campuses.",
+				"lastFetched": "InSIS data · Last fetched {age}",
 				"markAsCompleted": "Mark as completed",
 				"markedCompleted": "Marked as completed",
 				"conflictsWithCourses": "Conflicts with: {courses}",

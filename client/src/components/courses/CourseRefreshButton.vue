@@ -6,7 +6,7 @@ import IconCheck from '~icons/lucide/check'
 import IconLoader from '~icons/lucide/loader'
 import IconRefreshCw from '~icons/lucide/refresh-cw'
 
-const props = defineProps<{ courseId: number }>()
+const props = defineProps<{ courseId: number; alwaysVisible?: boolean }>()
 
 const { t } = useI18n()
 const { state, errorMessage, rateLimitCountdown, lastRefreshedAt, dismiss, trigger } = useCourseRefresh(props.courseId)
@@ -69,7 +69,10 @@ function onRefreshClick() {
 		<!-- Idle: subtle refresh icon, confirm via browser dialog before triggering -->
 		<template v-else>
 			<button
-				class="cursor-pointer rounded p-0.5 text-[var(--insis-text-3)] opacity-0 transition-all group-hover/row:opacity-100 hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text-1)] focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--insis-border)]"
+				:class="[
+					'cursor-pointer rounded p-0.5 text-[var(--insis-text-3)] transition-all hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text-1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--insis-border)]',
+					props.alwaysVisible ? 'opacity-100' : 'opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100',
+				]"
 				:title="
 					lastRefreshedAt
 						? t('components.courses.CourseRefreshButton.tooltipWithTime', {

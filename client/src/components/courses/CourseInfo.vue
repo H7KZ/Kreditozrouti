@@ -87,9 +87,9 @@ function handleToggleCompleted() {
 				:class="isCourseStale(course.updated_at) ? 'text-[var(--insis-warning)]' : 'text-[var(--insis-text-3)]'"
 			>
 				<IconClock class="h-3 w-3" aria-hidden="true" />
-				{{ formattedAge }}
+				{{ $t('components.courses.CourseRowExpanded.lastFetched', { age: formattedAge }) }}
 			</span>
-			<CourseRefreshButton :course-id="course.id" />
+			<CourseRefreshButton :course-id="course.id" :always-visible="true" />
 		</div>
 
 		<!-- Mark as completed -->
