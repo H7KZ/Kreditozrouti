@@ -97,8 +97,7 @@ export default class CourseService {
 			study_plans: studyPlansMap.get(course.id) ?? []
 		}))
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		return { courses: enrichedCourses as any, total }
+		return { courses: enrichedCourses as CourseWithRelations[], total }
 	}
 
 	/**
@@ -165,7 +164,7 @@ export default class CourseService {
 		const results = await this.buildFilterQuery(filters)
 			.select('c1.id')
 			.groupBy('c1.id')
-			.orderBy(this.resolveSortColumn(filters.sort_by, 'c1') as any, filters.sort_dir ?? 'asc')
+			.orderBy(this.resolveSortColumn(filters.sort_by, 'c1'), filters.sort_dir ?? 'asc')
 			.limit(limit)
 			.offset(offset)
 			.execute()
@@ -460,7 +459,7 @@ export default class CourseService {
 			const sanitized = this.sanitizeFulltextQuery(term)
 
 			if (sanitized) {
-				/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
+				/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 				query = query.innerJoin(
 					(eb: any) =>
 						eb
@@ -780,7 +779,7 @@ export default class CourseService {
 	}
 
 	/** Maps the sort_by parameter to the corresponding database column expression. */
-	private static resolveSortColumn(sortBy?: string, tableAlias = 'c1'): string {
+	private static resolveSortColumn(sortBy?: string, tableAlias = 'c1'): ReturnType<typeof sql.ref> | ReturnType<typeof sql.raw> {
 		const sortMap: Record<string, string> = {
 			relevance: 'fts.relevance_score',
 			ident: `${tableAlias}.ident`,
@@ -790,7 +789,9 @@ export default class CourseService {
 			year: `${tableAlias}.year`,
 			semester: `${tableAlias}.semester`
 		}
-		return sortMap[sortBy ?? 'ident'] ?? `${tableAlias}.ident`
+
+		const col = sortMap[sortBy ?? 'ident'] ?? `${tableAlias}.ident`
+		return col === 'fts.relevance_score' ? sql.raw(col) : sql.ref(col)
 	}
 
 	/**
