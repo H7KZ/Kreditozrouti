@@ -5,6 +5,7 @@ export interface CoursesFilter {
 	ids?: number[]
 	idents?: string[]
 	title?: string
+	search?: string
 	semesters?: InSISSemester[]
 	years?: number[]
 	faculty_ids?: string[]

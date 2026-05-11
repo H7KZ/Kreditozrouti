@@ -315,6 +315,13 @@ export default class CourseService {
 		)
 	}
 
+	private static sanitizeFulltextQuery(input: string): string {
+		const cleaned = input.replace(/[+\-><()~*"@]/g, ' ').trim()
+		if (!cleaned) return ''
+		const words = cleaned.split(/\s+/).filter(w => w.length >= 2)
+		return words.map(w => `+${w}*`).join(' ')
+	}
+
 	/**
 	 * Applies all filter conditions to the query builder.
 	 *
@@ -445,6 +452,35 @@ export default class CourseService {
 		// Availability filters
 		if (filters.completed_course_idents?.length && !['completed_course_idents'].includes(ignore!)) {
 			query = query.where('c1.ident', 'not in', filters.completed_course_idents)
+		}
+
+		// Full-text search filter
+		if (filters.search && filters.search.trim().length >= 2 && ignore !== 'search') {
+			const term = filters.search.trim()
+			const sanitized = this.sanitizeFulltextQuery(term)
+
+			if (sanitized) {
+				/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
+				query = query.innerJoin(
+					(eb: any) =>
+						eb
+							.selectFrom('insis_courses as fts_c')
+							.select([
+								'fts_c.id as fts_id',
+								sql`MATCH(fts_c.title_cs, fts_c.title_en, fts_c.aims_of_the_course, fts_c.learning_outcomes, fts_c.course_contents) AGAINST(${sanitized} IN BOOLEAN MODE)`.as(
+									'relevance_score'
+								)
+							])
+							.where(
+								sql`MATCH(fts_c.title_cs, fts_c.title_en, fts_c.aims_of_the_course, fts_c.learning_outcomes, fts_c.course_contents) AGAINST(${sanitized} IN BOOLEAN MODE)`,
+								'>',
+								0
+							)
+							.as('fts'),
+					(join: any) => join.onRef('c1.id', '=', 'fts.fts_id')
+				) as any
+				/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
+			}
 		}
 
 		return query
@@ -670,6 +706,7 @@ export default class CourseService {
 			ids: filters.ids?.sort(),
 			idents: filters.idents?.sort(),
 			title: filters.title,
+			search: filters.search,
 			faculty_ids: filters.faculty_ids?.sort(),
 			semesters: filters.semesters?.sort(),
 			years: filters.years?.sort(),
@@ -745,6 +782,7 @@ export default class CourseService {
 	/** Maps the sort_by parameter to the corresponding database column expression. */
 	private static resolveSortColumn(sortBy?: string, tableAlias = 'c1'): string {
 		const sortMap: Record<string, string> = {
+			relevance: 'fts.relevance_score',
 			ident: `${tableAlias}.ident`,
 			title: `${tableAlias}.title`,
 			ects: `${tableAlias}.ects`,
@@ -752,7 +790,7 @@ export default class CourseService {
 			year: `${tableAlias}.year`,
 			semester: `${tableAlias}.semester`
 		}
-		return sortMap[sortBy ?? 'ident'] ?? 'c.ident'
+		return sortMap[sortBy ?? 'ident'] ?? `${tableAlias}.ident`
 	}
 
 	/**

@@ -13,6 +13,7 @@ const CoursesFilterSchema = z.object({
 	ids: z.array(z.coerce.number()).optional(),
 	idents: z.array(z.string()).optional(),
 	title: z.string().optional(),
+	search: z.string().max(200).optional(),
 
 	// Academic Period Filters
 	semesters: z.array(SemesterSchema).optional(),
