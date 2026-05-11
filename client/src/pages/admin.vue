@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AdminCompletedJobs from '@client/components/admin/AdminCompletedJobs.vue'
 import AdminDatabaseStats from '@client/components/admin/AdminDatabaseStats.vue'
+import AdminErrorMetrics from '@client/components/admin/AdminErrorMetrics.vue'
 import AdminFailedJobs from '@client/components/admin/AdminFailedJobs.vue'
 import AdminQueueStats from '@client/components/admin/AdminQueueStats.vue'
 import AdminSchedulers from '@client/components/admin/AdminSchedulers.vue'
@@ -79,6 +80,9 @@ function handleConnect() {
 				</div>
 				<div class="mt-6">
 					<AdminSchedulers :schedulers="admin.stats!.schedulers" />
+				</div>
+				<div class="mt-6">
+					<AdminErrorMetrics :metrics="admin.stats!.errorMetrics" />
 				</div>
 				<div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
 					<AdminFailedJobs :jobs="admin.stats!.recentJobs.failed" />

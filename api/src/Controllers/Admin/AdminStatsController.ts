@@ -1,5 +1,5 @@
 import { scraper } from '@api/bullmq'
-import { mysql } from '@api/clients'
+import { mysql, redis } from '@api/clients'
 import { Request, Response } from 'express'
 import { sql, SqlBool } from 'kysely'
 
@@ -57,6 +57,31 @@ export interface CompletedJob {
 	data: Record<string, unknown>
 }
 
+export interface RecentError {
+	status: number
+	method: string
+	path: string
+	query?: Record<string, unknown>
+	ip?: string
+	duration_ms: number
+	timestamp: string
+}
+
+export interface ErrorMetrics {
+	last24h: {
+		total4xx: number
+		total5xx: number
+		byStatus: Record<string, number>
+		topPaths: { path: string; count: number }[]
+	}
+	hourly: {
+		hour: string
+		errors4xx: number
+		errors5xx: number
+	}[]
+	recent: RecentError[]
+}
+
 export interface AdminStatsResponse {
 	queue: { request: QueueStats }
 	schedulers: SchedulerInfo[]
@@ -70,12 +95,13 @@ export interface AdminStatsResponse {
 		failed: FailedJob[]
 		completed: CompletedJob[]
 	}
+	errorMetrics: ErrorMetrics
 }
 
 // Controller
 
 export default async function AdminStatsController(req: Request, res: Response) {
-	const [requestCounts, schedulers, failedJobs, completedJobs, totals, facultyBreakdown, staleCounts, recentCount] = await Promise.all([
+	const [requestCounts, schedulers, failedJobs, completedJobs, totals, facultyBreakdown, staleCounts, recentCount, errorMetrics] = await Promise.all([
 		scraper.queue.request.getJobCounts(),
 		scraper.queue.request.getJobSchedulers(),
 		scraper.queue.request.getFailed(0, 19),
@@ -83,7 +109,8 @@ export default async function AdminStatsController(req: Request, res: Response) 
 		getDbTotals(),
 		getFacultyBreakdown(),
 		getStaleCounts(),
-		getRecentlyUpdatedCount()
+		getRecentlyUpdatedCount(),
+		getErrorMetrics()
 	])
 
 	return res.json({
@@ -117,8 +144,75 @@ export default async function AdminStatsController(req: Request, res: Response) 
 				processedOn: j.processedOn,
 				data: j.data as unknown as Record<string, unknown>
 			}))
-		}
+		},
+		errorMetrics
 	} satisfies AdminStatsResponse)
+}
+
+// Error Metrics Helper
+
+async function getErrorMetrics(): Promise<ErrorMetrics> {
+	const [hourlyHash, recentRaw] = await Promise.all([
+		redis.hgetall('metrics:errors:hourly'),
+		redis.lrange('metrics:errors:recent', 0, 49),
+	])
+
+	const hash = hourlyHash ?? {}
+
+	// Build last 24 hours of hourly buckets
+	const now = new Date()
+	const hourly: ErrorMetrics['hourly'] = []
+	const last24hByStatus: Record<string, number> = {}
+
+	for (let i = 23; i >= 0; i--) {
+		const d = new Date(now.getTime() - i * 3_600_000)
+		const hourKey = d.toISOString().slice(0, 13) // "2026-05-11T14"
+		const label = d.toISOString().slice(11, 16)  // "14:00"
+
+		let errors4xx = 0
+		let errors5xx = 0
+
+		for (const [field, countStr] of Object.entries(hash)) {
+			if (!field.startsWith(hourKey + ':')) continue
+			const status = parseInt(field.split(':').pop()!)
+			const count = parseInt(countStr)
+			if (status >= 500) errors5xx += count
+			else if (status >= 400) errors4xx += count
+
+			const statusStr = String(status)
+			last24hByStatus[statusStr] = (last24hByStatus[statusStr] ?? 0) + count
+		}
+
+		hourly.push({ hour: label, errors4xx, errors5xx })
+	}
+
+	const total4xx = Object.entries(last24hByStatus)
+		.filter(([s]) => parseInt(s) < 500)
+		.reduce((sum, [, n]) => sum + n, 0)
+	const total5xx = Object.entries(last24hByStatus)
+		.filter(([s]) => parseInt(s) >= 500)
+		.reduce((sum, [, n]) => sum + n, 0)
+
+	// Parse recent errors
+	const recent: RecentError[] = recentRaw
+		.map(r => { try { return JSON.parse(r) as RecentError } catch { return null } })
+		.filter((r): r is RecentError => r !== null)
+
+	// Top error paths from recent
+	const pathCounts: Record<string, number> = {}
+	for (const e of recent) {
+		pathCounts[e.path] = (pathCounts[e.path] ?? 0) + 1
+	}
+	const topPaths = Object.entries(pathCounts)
+		.sort(([, a], [, b]) => b - a)
+		.slice(0, 10)
+		.map(([path, count]) => ({ path, count }))
+
+	return {
+		last24h: { total4xx, total5xx, byStatus: last24hByStatus, topPaths },
+		hourly,
+		recent,
+	}
 }
 
 // DB Helpers
