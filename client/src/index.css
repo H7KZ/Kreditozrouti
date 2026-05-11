@@ -189,6 +189,268 @@
 	--insis-font-lg: 1rem;
 }
 
+/* ── DARK MODE ──────────────────────────────────────────────────────────────
+   Applied when <html> carries the .dark class (user toggle).
+   The @media block below handles the system-preference fallback for users
+   who have never interacted with the toggle.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+html.dark {
+	/* Shadcn base tokens */
+	--background: #0f1117;
+	--foreground: #e8eaf0;
+	--card: #1a1f2e;
+	--card-foreground: #e8eaf0;
+	--popover: #1a1f2e;
+	--popover-foreground: #e8eaf0;
+	--primary: #3b9eff;
+	--primary-foreground: #ffffff;
+	--secondary: #1e2231;
+	--secondary-foreground: #e8eaf0;
+	--muted: #1a1f2e;
+	--muted-foreground: #606880;
+	--accent: #0a1929;
+	--accent-foreground: #3b9eff;
+	--destructive: #f87171;
+	--destructive-foreground: #ffffff;
+	--border: #2d3347;
+	--input: #2d3347;
+	--ring: #3b9eff;
+	--chart-1: #3b9eff;
+	--chart-2: #22c55e;
+	--chart-3: #fb923c;
+	--chart-4: #c084fc;
+	--chart-5: #f87171;
+	--sidebar: #1a1f2e;
+	--sidebar-foreground: #e8eaf0;
+	--sidebar-primary: #3b9eff;
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #0a1929;
+	--sidebar-accent-foreground: #3b9eff;
+	--sidebar-border: #2d3347;
+	--sidebar-ring: #3b9eff;
+
+	/* Brand Blues */
+	--insis-blue: #3b9eff;
+	--insis-blue-dark: #2a8ae8;
+	--insis-blue-hover: #1a7fd4;
+	--insis-blue-lighter: #80c1ff;
+	--insis-blue-light: #0a1929;
+	--insis-blue-subtle: #0a1929;
+
+	/* Backgrounds */
+	--insis-bg: #0f1117;
+	--insis-surface: #1a1f2e;
+	--insis-surface-2: #151825;
+
+	/* Borders */
+	--insis-border: #2d3347;
+	--insis-border-mid: #3d4460;
+	--insis-border-light: #252b3b;
+	--insis-border-dark: #3d4460;
+
+	/* Text */
+	--insis-text: #e8eaf0;
+	--insis-text-2: #9ba8bb;
+	--insis-text-3: #606880;
+	--insis-text-inv: #ffffff;
+
+	/* Links */
+	--insis-link: #3b9eff;
+	--insis-link-hover: #2a8ae8;
+	--insis-link-visited: #b388ff;
+
+	/* Success */
+	--insis-success: #22c55e;
+	--insis-success-light: #052e16;
+	--insis-success-border: #166534;
+
+	/* Warning */
+	--insis-warning: #fb923c;
+	--insis-warning-light: #1c0a00;
+	--insis-warning-bg: #1c0a00;
+	--insis-warning-dark: #fb923c;
+	--insis-warning-border: #78350f;
+
+	/* Danger */
+	--insis-danger: #f87171;
+	--insis-danger-light: #1f0505;
+	--insis-danger-bg: #1f0505;
+	--insis-danger-border: #7f1d1d;
+
+	/* Info */
+	--insis-info: #3b9eff;
+	--insis-info-light: #0a1929;
+	--insis-info-bg: #0a1929;
+
+	/* Gray Scale */
+	--insis-gray-50: #151825;
+	--insis-gray-100: #1a1f2e;
+	--insis-gray-200: #252b3b;
+	--insis-gray-300: #2d3347;
+	--insis-gray-400: #4a5568;
+	--insis-gray-500: #606880;
+	--insis-gray-600: #7a8499;
+	--insis-gray-700: #9ba8bb;
+	--insis-gray-800: #c5cdd9;
+	--insis-gray-900: #e8eaf0;
+
+	/* Table */
+	--insis-header-bg: #151825;
+	--insis-header-border: #2d3347;
+	--insis-row-hover: #1e2231;
+	--insis-row-alt: transparent;
+	--insis-row-highlight: #1c0a00;
+	--insis-row-error: #1f0505;
+
+	/* Panel */
+	--insis-panel-bg: #151825;
+	--insis-panel-border: #2d3347;
+
+	/* Timetable blocks */
+	--insis-block-lecture: #4ade80;
+	--insis-block-seminar: #fde047;
+	--insis-block-exercise: #7dd3fc;
+	--insis-block-date-only: #d4c5a9;
+	--insis-block-exam: #e879f9;
+	--insis-block-selected: #4ade80;
+	--insis-block-conflict: #f87171;
+
+	/* Shadows */
+	--insis-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+	--insis-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+	--insis-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+	html:not(.light) {
+		/* Shadcn base tokens */
+		--background: #0f1117;
+		--foreground: #e8eaf0;
+		--card: #1a1f2e;
+		--card-foreground: #e8eaf0;
+		--popover: #1a1f2e;
+		--popover-foreground: #e8eaf0;
+		--primary: #3b9eff;
+		--primary-foreground: #ffffff;
+		--secondary: #1e2231;
+		--secondary-foreground: #e8eaf0;
+		--muted: #1a1f2e;
+		--muted-foreground: #606880;
+		--accent: #0a1929;
+		--accent-foreground: #3b9eff;
+		--destructive: #f87171;
+		--destructive-foreground: #ffffff;
+		--border: #2d3347;
+		--input: #2d3347;
+		--ring: #3b9eff;
+		--chart-1: #3b9eff;
+		--chart-2: #22c55e;
+		--chart-3: #fb923c;
+		--chart-4: #c084fc;
+		--chart-5: #f87171;
+		--sidebar: #1a1f2e;
+		--sidebar-foreground: #e8eaf0;
+		--sidebar-primary: #3b9eff;
+		--sidebar-primary-foreground: #ffffff;
+		--sidebar-accent: #0a1929;
+		--sidebar-accent-foreground: #3b9eff;
+		--sidebar-border: #2d3347;
+		--sidebar-ring: #3b9eff;
+
+		/* Brand Blues */
+		--insis-blue: #3b9eff;
+		--insis-blue-dark: #2a8ae8;
+		--insis-blue-hover: #1a7fd4;
+		--insis-blue-lighter: #80c1ff;
+		--insis-blue-light: #0a1929;
+		--insis-blue-subtle: #0a1929;
+
+		/* Backgrounds */
+		--insis-bg: #0f1117;
+		--insis-surface: #1a1f2e;
+		--insis-surface-2: #151825;
+
+		/* Borders */
+		--insis-border: #2d3347;
+		--insis-border-mid: #3d4460;
+		--insis-border-light: #252b3b;
+		--insis-border-dark: #3d4460;
+
+		/* Text */
+		--insis-text: #e8eaf0;
+		--insis-text-2: #9ba8bb;
+		--insis-text-3: #606880;
+		--insis-text-inv: #ffffff;
+
+		/* Links */
+		--insis-link: #3b9eff;
+		--insis-link-hover: #2a8ae8;
+		--insis-link-visited: #b388ff;
+
+		/* Success */
+		--insis-success: #22c55e;
+		--insis-success-light: #052e16;
+		--insis-success-border: #166534;
+
+		/* Warning */
+		--insis-warning: #fb923c;
+		--insis-warning-light: #1c0a00;
+		--insis-warning-bg: #1c0a00;
+		--insis-warning-dark: #fb923c;
+		--insis-warning-border: #78350f;
+
+		/* Danger */
+		--insis-danger: #f87171;
+		--insis-danger-light: #1f0505;
+		--insis-danger-bg: #1f0505;
+		--insis-danger-border: #7f1d1d;
+
+		/* Info */
+		--insis-info: #3b9eff;
+		--insis-info-light: #0a1929;
+		--insis-info-bg: #0a1929;
+
+		/* Gray Scale */
+		--insis-gray-50: #151825;
+		--insis-gray-100: #1a1f2e;
+		--insis-gray-200: #252b3b;
+		--insis-gray-300: #2d3347;
+		--insis-gray-400: #4a5568;
+		--insis-gray-500: #606880;
+		--insis-gray-600: #7a8499;
+		--insis-gray-700: #9ba8bb;
+		--insis-gray-800: #c5cdd9;
+		--insis-gray-900: #e8eaf0;
+
+		/* Table */
+		--insis-header-bg: #151825;
+		--insis-header-border: #2d3347;
+		--insis-row-hover: #1e2231;
+		--insis-row-alt: transparent;
+		--insis-row-highlight: #1c0a00;
+		--insis-row-error: #1f0505;
+
+		/* Panel */
+		--insis-panel-bg: #151825;
+		--insis-panel-border: #2d3347;
+
+		/* Timetable blocks */
+		--insis-block-lecture: #4ade80;
+		--insis-block-seminar: #fde047;
+		--insis-block-exercise: #7dd3fc;
+		--insis-block-date-only: #d4c5a9;
+		--insis-block-exam: #e879f9;
+		--insis-block-selected: #4ade80;
+		--insis-block-conflict: #f87171;
+
+		/* Shadows */
+		--insis-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+		--insis-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+		--insis-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+	}
+}
+
 @layer base {
 	*,
 	*::before,

@@ -1,4 +1,9 @@
 {
+	"theme": {
+		"light": "Světlý",
+		"dark": "Tmavý",
+		"system": "Systém"
+	},
 	"errors": {
 		"types": {
 			"Unknown": "Neznámá chyba",
