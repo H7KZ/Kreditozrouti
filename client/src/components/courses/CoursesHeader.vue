@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
+import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import { useCourseLabels } from '@client/composables'
 import { useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import { computed } from 'vue'
@@ -72,7 +73,7 @@ function handleClearTimetable() {
 			<button
 				v-if="selectedCoursesCount > 0"
 				type="button"
-				class="insis-btn insis-btn-secondary hover:bg-red-500 hover:text-white hover:border-red-500"
+				class="insis-btn insis-btn-secondary hover:bg-[var(--insis-danger)] hover:text-[var(--insis-text-inv)] hover:border-[var(--insis-danger)]"
 				:aria-label="$t('pages.courses.clearTimetable')"
 				@click="handleClearTimetable"
 			>
@@ -80,11 +81,16 @@ function handleClearTimetable() {
 				<span class="hidden sm:inline" aria-hidden="true">{{ $t('pages.courses.clearTimetable') }}</span>
 			</button>
 
-			<button type="button" class="insis-btn insis-btn-secondary hover:bg-red-500 hover:text-white hover:border-red-500" @click="handleResetWizard">
+			<button
+				type="button"
+				class="insis-btn insis-btn-secondary hover:bg-[var(--insis-danger)] hover:text-[var(--insis-text-inv)] hover:border-[var(--insis-danger)]"
+				@click="handleResetWizard"
+			>
 				<span>{{ $t('pages.courses.changePlan') }}</span>
 			</button>
 
 			<div class="w-px h-6 bg-[var(--insis-border)] shrink-0" />
+			<ThemeToggle />
 			<LanguageSwitcher />
 
 			<!-- Mobile filter toggle -->

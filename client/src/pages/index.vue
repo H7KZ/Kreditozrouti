@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
+import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
 import { useWizardDataStore, useWizardStore } from '@client/stores'
 import { useSeoMeta } from '@unhead/vue'
@@ -51,6 +52,7 @@ onMounted(() => {
 				</div>
 			</div>
 			<div class="flex items-center gap-3">
+				<ThemeToggle />
 				<LanguageSwitcher />
 			</div>
 		</header>
