@@ -3,6 +3,7 @@ import CoursesHeader from '@client/components/courses/CoursesHeader.vue'
 import CourseStatusSummary from '@client/components/courses/CourseStatusSummary.vue'
 import CourseTable from '@client/components/courses/CourseTable.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
+import ScheduleSlotsPanel from '@client/components/timetable/ScheduleSlotsPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
@@ -200,6 +201,8 @@ async function fetchNextCoursesPage(page: () => void) {
 
 					<!-- Timetable View -->
 					<template v-else-if="uiStore.viewMode === 'timetable'">
+						<ScheduleSlotsPanel />
+
 						<TimetableGrid>
 							<!-- Empty timetable -->
 							<div

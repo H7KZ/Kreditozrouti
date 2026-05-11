@@ -441,6 +441,20 @@
 				"searchInTimeslot": "Search in this timeslot",
 				"filterApplied": "Time filter applied",
 				"filterDescription": "Showing courses available on {day} from {from} to {to}"
+			},
+			"SchedulePicker": {
+				"title": "Saved Schedules",
+				"saveCurrentSchedule": "Save Current",
+				"saveSchedulePlaceholder": "Schedule name...",
+				"workingCopy": "Working copy",
+				"maxSlotsReached": "Maximum 5 schedules saved",
+				"deleteConfirm": "Delete this schedule?",
+				"duplicateSchedule": "Duplicate",
+				"emptyHint": "Save your current schedule to compare alternatives",
+				"unsavedChanges": "You have unsaved changes. Switch anyway?",
+				"newSchedule": "New Schedule",
+				"saveToTabs": "Save current to Tabs",
+				"newFromCurrent": "New from this"
 			}
 		}
 	},

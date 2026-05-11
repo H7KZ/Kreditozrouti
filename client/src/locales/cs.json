@@ -441,6 +441,20 @@
 				"searchInTimeslot": "Hledat v tomto čase",
 				"filterApplied": "Časový filtr aplikován",
 				"filterDescription": "Zobrazuji předměty dostupné v {day} od {from} do {to}"
+			},
+			"SchedulePicker": {
+				"title": "Uložené rozvrhy",
+				"saveCurrentSchedule": "Uložit aktuální",
+				"saveSchedulePlaceholder": "Název rozvrhu...",
+				"workingCopy": "Pracovní verze",
+				"maxSlotsReached": "Maximum 5 uložených rozvrhů",
+				"deleteConfirm": "Smazat tento rozvrh?",
+				"duplicateSchedule": "Duplikovat",
+				"emptyHint": "Uložte si aktuální rozvrh pro porovnání variant",
+				"unsavedChanges": "Máte neuložené změny. Opravdu chcete přepnout rozvrh?",
+				"newSchedule": "Nový rozvrh",
+				"saveToTabs": "Uložit aktuální do záložek",
+				"newFromCurrent": "Vytvořit kopii tohoto"
 			}
 		}
 	},

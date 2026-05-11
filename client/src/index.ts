@@ -1,7 +1,7 @@
 import App from '@client/App.vue'
 import { i18n } from '@client/i18n'
 import '@client/index.css'
-import { useAlertsStore, useCoursesStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import { useAlertsStore, useCoursesStore, useScheduleSlotsStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import * as Sentry from '@sentry/vue'
 import { createHead } from '@unhead/vue/client'
 import { createPinia } from 'pinia'
@@ -51,6 +51,7 @@ app.use(head)
 
 useAlertsStore()
 useCoursesStore()
+useScheduleSlotsStore().hydrate()
 useTimetableStore().hydrate()
 useUIStore().hydrate()
 useWizardStore().hydrate()
