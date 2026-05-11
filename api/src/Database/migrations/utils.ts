@@ -33,7 +33,11 @@ export async function dropIndexSafe(db: Kysely<any>, indexName: string, tableNam
 /**
  * Executes a raw SQL query safely by catching and ignoring specific error codes.
  */
-export async function executeSqlSafe(db: Kysely<any>, query: { execute: (db: Kysely<any>) => Promise<unknown> }, ignorableErrorCodes: (string | number)[]): Promise<void> {
+export async function executeSqlSafe(
+	db: Kysely<any>,
+	query: { execute: (db: Kysely<any>) => Promise<unknown> },
+	ignorableErrorCodes: (string | number)[]
+): Promise<void> {
 	try {
 		await query.execute(db)
 	} catch (error: unknown) {

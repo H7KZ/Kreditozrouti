@@ -461,24 +461,21 @@ export default class CourseService {
 			const sanitized = this.sanitizeFulltextQuery(term)
 
 			if (sanitized) {
-				query = query.innerJoin(
-					eb =>
-						eb
-							.selectFrom('insis_courses as fts_c')
-							.select([
-								'fts_c.id as fts_id',
-								sql<number>`MATCH(fts_c.title_cs, fts_c.title_en, fts_c.aims_of_the_course, fts_c.learning_outcomes, fts_c.course_contents) AGAINST(${sanitized} IN BOOLEAN MODE)`.as(
-									'relevance_score'
-								)
-							])
-							.where(
-								sql`MATCH(fts_c.title_cs, fts_c.title_en, fts_c.aims_of_the_course, fts_c.learning_outcomes, fts_c.course_contents) AGAINST(${sanitized} IN BOOLEAN MODE)`,
-								'>',
-								0
-							)
-							.as('fts'),
-					join => join.onRef('c1.id', '=', 'fts.fts_id')
-				) as unknown as QueryBuilder
+				const ftsQuery = mysql
+					.selectFrom('insis_courses as fts_c')
+					.select([
+						'fts_c.id as fts_id',
+						sql<number>`MATCH(fts_c.title_cs, fts_c.title_en, fts_c.aims_of_the_course, fts_c.learning_outcomes, fts_c.course_contents) AGAINST(${sanitized} IN BOOLEAN MODE)`.as(
+							'relevance_score'
+						)
+					])
+					.where(
+						sql`MATCH(fts_c.title_cs, fts_c.title_en, fts_c.aims_of_the_course, fts_c.learning_outcomes, fts_c.course_contents) AGAINST(${sanitized} IN BOOLEAN MODE)`,
+						'>',
+						0
+					)
+
+				query = query.innerJoin(ftsQuery.as('fts'), join => join.onRef('c1.id', '=', 'fts.fts_id'))
 			}
 		}
 
@@ -779,7 +776,7 @@ export default class CourseService {
 	}
 
 	/** Maps the sort_by parameter to the corresponding database column expression. */
-	private static resolveSortColumn(sortBy?: string, tableAlias = 'c1'): ReturnType<typeof sql.ref> | ReturnType<typeof sql.raw> {
+	private static resolveSortColumn(sortBy?: string, tableAlias = 'c1'): ReturnType<typeof sql.ref> {
 		const sortMap: Record<string, string> = {
 			relevance: 'fts.relevance_score',
 			ident: `${tableAlias}.ident`,
@@ -791,7 +788,7 @@ export default class CourseService {
 		}
 
 		const col = sortMap[sortBy ?? 'ident'] ?? `${tableAlias}.ident`
-		return col === 'fts.relevance_score' ? sql.raw(col) : sql.ref(col)
+		return sql.ref(col)
 	}
 
 	/**
