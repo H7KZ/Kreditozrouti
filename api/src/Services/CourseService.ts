@@ -99,7 +99,7 @@ export default class CourseService {
 			study_plans: studyPlansMap.get(course.id) ?? []
 		}))
 
-		return { courses: enrichedCourses as CourseWithRelations[], total }
+		return { courses: enrichedCourses as unknown as CourseWithRelations[], total }
 	}
 
 	/**
