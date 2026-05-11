@@ -31,7 +31,7 @@ function buildCatalogSchedulerJob(upcomingPeriod: ReturnType<typeof InSISService
 			faculties: undefined,
 			periods: [upcomingPeriod]
 		},
-		opts: { removeOnComplete: true, removeOnFail: true }
+		opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
 	}
 }
 
@@ -44,7 +44,7 @@ function buildStudyPlansSchedulerJob(periodsForLastFourYears: ReturnType<typeof 
 			faculties: undefined,
 			periods: periodsForLastFourYears
 		},
-		opts: { removeOnComplete: true, removeOnFail: true }
+		opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
 	}
 }
 
