@@ -3,6 +3,7 @@ import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Handlers/ErrorHandler'
 import { Paths } from '@api/paths'
+import AdminRoutes from '@api/Routes/AdminRoutes'
 import CommandsRoutes from '@api/Routes/CommandsRoutes'
 import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
 import { ScraperPublicRoutes } from '@api/Routes/ScraperPublicRoutes'
@@ -70,6 +71,7 @@ app.use('/health', (req, res) => res.status(200).send('OK'))
 app.use('/', KreditozroutiRoutes)
 app.use('/', ScraperPublicRoutes)
 app.use('/commands', CommandsRoutes)
+app.use('/admin', AdminRoutes)
 
 // Sentry Error Logging
 if (sentry.isEnabled()) sentry.setupExpressErrorHandler(app)
