@@ -1,4 +1,17 @@
 export type {
+	AdminStatsResponse,
+	QueueStats,
+	SchedulerInfo,
+	DbTotals,
+	FacultyStats,
+	StaleCourseCount,
+	FailedJob,
+	CompletedJob,
+	RecentError,
+	ErrorMetrics
+} from './admin'
+
+export type {
 	CourseWithRelations,
 	CourseUnit,
 	CourseUnitSlot,

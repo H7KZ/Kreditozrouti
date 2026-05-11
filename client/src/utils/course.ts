@@ -1,5 +1,5 @@
-import type { CourseUnitSlot } from '@api/contracts'
 import { CourseUnitType } from '@client/types'
+import type { CourseUnitSlot } from '../../../api/src/Contracts'
 
 /**
  * Get slot type from a course unit slot.

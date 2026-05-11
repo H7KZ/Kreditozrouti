@@ -1,2 +1,6 @@
+allowBuilds:
+    esbuild: true
+    msgpackr-extract: true
+    puppeteer: true
 onlyBuiltDependencies:
     - puppeteer

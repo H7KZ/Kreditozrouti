@@ -1,10 +1,10 @@
-import type { Course, StudyPlanWithRelations } from '@api/contracts'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { useWizardDataStore } from '@client/stores/wizard-data.store'
 import { useWizardStore } from '@client/stores/wizard.store'
 import { saveToStorage } from '@client/utils/localstorage'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import type { Course, StudyPlanWithRelations } from '../../../api/src/Contracts'
 
 interface PersistedCompletedCoursesState {
 	completedCourseIdents: string[]

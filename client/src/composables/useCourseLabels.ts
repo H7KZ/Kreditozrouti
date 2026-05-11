@@ -1,8 +1,8 @@
-﻿import type { Course, CourseWithRelations } from '@api/contracts'
-import { i18n } from '@client/index.ts'
+﻿import { i18n } from '@client/index.ts'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { getCategoryBadgeClass, getSlotType, getUnitTypeColorClass } from '@client/utils/course'
 import type { InSISDay } from '@shared/domain/insis'
+import type { Course, CourseWithRelations } from '../../../api/src/Contracts'
 
 /**
  * Course labels composable.

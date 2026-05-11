@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type { FailedJob } from '@api/Controllers/Admin/AdminStatsController'
+﻿<script setup lang="ts">
+import type { FailedJob } from '@api/Contracts/admin'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 
 interface Props {
@@ -9,11 +9,11 @@ interface Props {
 const props = defineProps<Props>()
 
 function truncate(s: string, max = 60): string {
-	return s.length > max ? s.slice(0, max) + '…' : s
+	return s.length > max ? s.slice(0, max) + 'â€¦' : s
 }
 
 function formatFailedAt(processedOn: number | undefined): string {
-	if (processedOn === undefined) return '—'
+	if (processedOn === undefined) return 'â€”'
 	return new Date(processedOn).toLocaleString()
 }
 </script>
@@ -24,36 +24,36 @@ function formatFailedAt(processedOn: number | undefined): string {
 			<div v-if="props.jobs.length === 0" class="text-[var(--insis-gray-500)] text-sm py-2">No failed jobs.</div>
 
 			<div v-else class="overflow-x-auto w-full">
-			<table class="insis-table insis-table-dense w-full">
-				<thead>
-					<tr>
-						<th>Job Name</th>
-						<th>Failed At</th>
-						<th>Reason</th>
-						<th>Type</th>
-						<th>URL / Faculty</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="job in props.jobs" :key="job.id ?? job.name">
-						<td>{{ job.name }}</td>
-						<td>{{ formatFailedAt(job.processedOn) }}</td>
-						<td>{{ job.failedReason ?? '—' }}</td>
-						<td>{{ (job.data.type as string) ?? '—' }}</td>
-						<td>
-							<template v-if="job.data.url as string">
-								<span :title="job.data.url as string">
-									{{ truncate((job.data.url as string) ?? '') }}
-								</span>
-							</template>
-							<template v-else-if="job.data.facultyId as string">
-								{{ job.data.facultyId as string }}
-							</template>
-							<template v-else>—</template>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+				<table class="insis-table insis-table-dense w-full">
+					<thead>
+						<tr>
+							<th>Job Name</th>
+							<th>Failed At</th>
+							<th>Reason</th>
+							<th>Type</th>
+							<th>URL / Faculty</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="job in props.jobs" :key="job.id ?? job.name">
+							<td>{{ job.name }}</td>
+							<td>{{ formatFailedAt(job.processedOn) }}</td>
+							<td>{{ job.failedReason ?? 'â€”' }}</td>
+							<td>{{ (job.data.type as string) ?? 'â€”' }}</td>
+							<td>
+								<template v-if="job.data.url as string">
+									<span :title="job.data.url as string">
+										{{ truncate((job.data.url as string) ?? '') }}
+									</span>
+								</template>
+								<template v-else-if="job.data.facultyId as string">
+									{{ job.data.facultyId as string }}
+								</template>
+								<template v-else>â€”</template>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</CollapsibleSection>
 	</div>

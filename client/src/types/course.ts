@@ -1,8 +1,8 @@
-import type { CoursesResponse, CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/contracts'
 import type { InSISDay } from '@shared/domain/insis'
 import type { TimeSelection } from '@shared/domain/time'
 import type { CoursesFilter } from '@shared/http/courses'
 import type { PaginationMeta } from '@shared/http/pagination'
+import type { CoursesResponse, CourseUnit, CourseUnitSlot, CourseWithRelations } from '../../../api/src/Contracts'
 
 export interface CoursesState {
 	filters: CoursesFilter

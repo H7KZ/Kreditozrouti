@@ -1,11 +1,11 @@
-<script setup lang="ts">
-import type { ErrorMetrics } from '@api/Controllers/Admin/AdminStatsController'
+﻿<script setup lang="ts">
+import type { ErrorMetrics } from '@api/Contracts/admin'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 
 const props = defineProps<{ metrics: ErrorMetrics }>()
 
 function truncate(s: string, max = 60): string {
-	return s.length > max ? s.slice(0, max) + '…' : s
+	return s.length > max ? s.slice(0, max) + 'â€¦' : s
 }
 
 function formatTime(timestamp: string): string {
@@ -41,11 +41,7 @@ const hasErrors = props.metrics.last24h.total4xx + props.metrics.last24h.total5x
 				<div class="mb-2 text-sm text-[var(--insis-text-2)]">By Status Code</div>
 				<div v-if="sortedByStatus(props.metrics.last24h.byStatus).length === 0" class="text-sm text-[var(--insis-gray-500)]">No errors</div>
 				<div v-else class="flex flex-wrap gap-1">
-					<span
-						v-for="item in sortedByStatus(props.metrics.last24h.byStatus)"
-						:key="item.status"
-						:class="statusBadgeClass(parseInt(item.status))"
-					>
+					<span v-for="item in sortedByStatus(props.metrics.last24h.byStatus)" :key="item.status" :class="statusBadgeClass(parseInt(item.status))">
 						{{ item.status }}: {{ item.count }}
 					</span>
 				</div>
@@ -66,7 +62,9 @@ const hasErrors = props.metrics.last24h.total4xx + props.metrics.last24h.total5x
 					</thead>
 					<tbody>
 						<tr v-for="item in props.metrics.last24h.topPaths" :key="item.path">
-							<td><code class="font-mono text-sm">{{ item.path }}</code></td>
+							<td>
+								<code class="font-mono text-sm">{{ item.path }}</code>
+							</td>
 							<td class="text-right font-semibold">{{ item.count }}</td>
 						</tr>
 					</tbody>
@@ -98,7 +96,7 @@ const hasErrors = props.metrics.last24h.total4xx + props.metrics.last24h.total5x
 							<td>
 								<code class="font-mono text-sm" :title="error.path">{{ truncate(error.path) }}</code>
 							</td>
-							<td>{{ error.ip ?? '—' }}</td>
+							<td>{{ error.ip ?? 'â€”' }}</td>
 							<td>{{ error.duration_ms }}ms</td>
 							<td>{{ formatTime(error.timestamp) }}</td>
 						</tr>

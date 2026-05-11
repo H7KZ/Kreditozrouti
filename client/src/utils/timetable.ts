@@ -1,6 +1,6 @@
-import type { CourseUnitSlot } from '@api/contracts'
 import type { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { getDayFromDate } from '@client/utils/day'
+import type { CourseUnitSlot } from '../../../api/src/Contracts'
 
 // Campus detection
 

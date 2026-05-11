@@ -100,7 +100,7 @@ Result: Maximum 4-5 queries per request, regardless of page size.
 ### Prerequisites
 
 - Node.js 22+
-- pnpm 10.20.0+
+- pnpm 11.1.0+
 - MySQL 8+
 - Redis 7+
 

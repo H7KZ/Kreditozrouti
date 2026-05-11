@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type { CompletedJob } from '@api/Controllers/Admin/AdminStatsController'
+﻿<script setup lang="ts">
+import type { CompletedJob } from '@api/Contracts/admin'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 const props = defineProps<Props>()
 
 function formatFinishedOn(finishedOn: number | undefined): string {
-	if (finishedOn === undefined) return '—'
+	if (finishedOn === undefined) return 'â€”'
 	return new Date(finishedOn).toLocaleString()
 }
 </script>
@@ -29,7 +29,7 @@ function formatFinishedOn(finishedOn: number | undefined): string {
 			<tbody>
 				<tr v-for="job in props.jobs" :key="job.id ?? job.name">
 					<td>{{ job.name }}</td>
-					<td>{{ (job.data.type as string) ?? '—' }}</td>
+					<td>{{ (job.data.type as string) ?? 'â€”' }}</td>
 					<td>{{ formatFinishedOn(job.finishedOn) }}</td>
 				</tr>
 			</tbody>

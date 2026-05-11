@@ -2,101 +2,20 @@ import { scraper } from '@api/bullmq'
 import { mysql, redis } from '@api/clients'
 import { Request, Response } from 'express'
 import { sql, SqlBool } from 'kysely'
+import type { AdminStatsResponse, DbTotals, ErrorMetrics, FacultyStats, QueueStats, RecentError, StaleCourseCount } from '../../Contracts/admin'
 
-// Response Types
-
-export interface QueueStats {
-	active: number
-	waiting: number
-	delayed: number
-	completed: number
-	failed: number
-	paused: number
-}
-
-export interface SchedulerInfo {
-	id: string
-	name: string
-	pattern: string
-	nextRun: string | null
-}
-
-export interface DbTotals {
-	courses: number
-	studyPlans: number
-	faculties: number
-}
-
-export interface FacultyStats {
-	facultyId: string
-	facultyTitle: string | null
-	courseCount: number
-	avgAgeHours: number
-	oldestUpdatedAt: string
-	newestUpdatedAt: string
-}
-
-export interface StaleCourseCount {
-	thresholdDays: number
-	count: number
-}
-
-export interface FailedJob {
-	id: string | undefined
-	name: string
-	failedReason: string | undefined
-	processedOn: number | undefined
-	data: Record<string, unknown>
-}
-
-export interface CompletedJob {
-	id: string | undefined
-	name: string
-	finishedOn: number | undefined
-	processedOn: number | undefined
-	data: Record<string, unknown>
-}
-
-export interface RecentError {
-	status: number
-	method: string
-	path: string
-	query?: Record<string, unknown>
-	ip?: string
-	duration_ms: number
-	timestamp: string
-}
-
-export interface ErrorMetrics {
-	last24h: {
-		total4xx: number
-		total5xx: number
-		byStatus: Record<string, number>
-		topPaths: { path: string; count: number }[]
-	}
-	hourly: {
-		hour: string
-		errors4xx: number
-		errors5xx: number
-	}[]
-	recent: RecentError[]
-}
-
-export interface AdminStatsResponse {
-	queue: { request: QueueStats }
-	schedulers: SchedulerInfo[]
-	database: {
-		totals: DbTotals
-		facultyBreakdown: FacultyStats[]
-		staleCourses: StaleCourseCount[]
-		recentlyUpdated: number
-	}
-	recentJobs: {
-		failed: FailedJob[]
-		completed: CompletedJob[]
-	}
-	errorMetrics: ErrorMetrics
-}
+export type {
+	AdminStatsResponse,
+	CompletedJob,
+	DbTotals,
+	ErrorMetrics,
+	FacultyStats,
+	FailedJob,
+	QueueStats,
+	RecentError,
+	SchedulerInfo,
+	StaleCourseCount
+} from '../../Contracts/admin'
 
 // Controller
 
@@ -152,10 +71,7 @@ export default async function AdminStatsController(req: Request, res: Response) 
 // Error Metrics Helper
 
 async function getErrorMetrics(): Promise<ErrorMetrics> {
-	const [hourlyHash, recentRaw] = await Promise.all([
-		redis.hgetall('metrics:errors:hourly'),
-		redis.lrange('metrics:errors:recent', 0, 49),
-	])
+	const [hourlyHash, recentRaw] = await Promise.all([redis.hgetall('metrics:errors:hourly'), redis.lrange('metrics:errors:recent', 0, 49)])
 
 	const hash = hourlyHash ?? {}
 
@@ -167,7 +83,7 @@ async function getErrorMetrics(): Promise<ErrorMetrics> {
 	for (let i = 23; i >= 0; i--) {
 		const d = new Date(now.getTime() - i * 3_600_000)
 		const hourKey = d.toISOString().slice(0, 13) // "2026-05-11T14"
-		const label = d.toISOString().slice(11, 16)  // "14:00"
+		const label = d.toISOString().slice(11, 16) // "14:00"
 
 		let errors4xx = 0
 		let errors5xx = 0
@@ -195,7 +111,13 @@ async function getErrorMetrics(): Promise<ErrorMetrics> {
 
 	// Parse recent errors
 	const recent: RecentError[] = recentRaw
-		.map(r => { try { return JSON.parse(r) as RecentError } catch { return null } })
+		.map(r => {
+			try {
+				return JSON.parse(r) as RecentError
+			} catch {
+				return null
+			}
+		})
 		.filter((r): r is RecentError => r !== null)
 
 	// Top error paths from recent
@@ -211,7 +133,7 @@ async function getErrorMetrics(): Promise<ErrorMetrics> {
 	return {
 		last24h: { total4xx, total5xx, byStatus: last24hByStatus, topPaths },
 		hourly,
-		recent,
+		recent
 	}
 }
 

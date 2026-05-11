@@ -1,10 +1,10 @@
-<script setup lang="ts">
-import type { SchedulerInfo } from '@api/Controllers/Admin/AdminStatsController'
+﻿<script setup lang="ts">
+import type { SchedulerInfo } from '@api/Contracts/admin'
 
 defineProps<{ schedulers: SchedulerInfo[] }>()
 
 function formatDate(iso: string | null): string {
-	if (!iso) return '—'
+	if (!iso) return 'â€”'
 	return new Date(iso).toLocaleString()
 }
 </script>
@@ -33,4 +33,3 @@ function formatDate(iso: string | null): string {
 		</table>
 	</div>
 </template>
-

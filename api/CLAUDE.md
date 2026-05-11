@@ -314,7 +314,7 @@ Defined in `api/tsconfig.json` and resolved by `tsc-alias` at build time:
 | `@api/*`    | `./src/*`     | API source root                                                 |
 | `@shared/*` | `../shared/*` | Cross-package pure utilities (no runtime deps on api or client) |
 
-**`api/src/contracts/index.ts`** — stable barrel that re-exports all types the client consumes. Client imports should use `@api/contracts`, not `@api/Database/types` directly.
+**`api/src/contracts/index.ts`** — stable barrel that re-exports all types the client consumes. Client imports should use `@api/Contracts`, not `@api/Database/types` directly.
 
 **`@shared/domain/period`** exports `getUpcomingPeriod` and `getPeriodsForLastYears`. `InSISService.ts` re-exports these under the same class shape for backward compatibility with existing callers.
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CourseWithRelations } from '@api/contracts'
+import type { CourseWithRelations } from '@api/Contracts'
 import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import { useCourseLabels } from '@client/composables'
 import { useCompletedCoursesStore, useCoursesStore } from '@client/stores'

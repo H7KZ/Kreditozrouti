@@ -1,4 +1,3 @@
-import type { CoursesResponse, CourseWithRelations } from '@api/contracts'
 import { i18n } from '@client/i18n'
 import { fetchCourses as fetchCoursesFromService } from '@client/services/courseService'
 import { useAnnouncerStore } from '@client/stores/announcer.store'
@@ -8,6 +7,7 @@ import { useWizardStore } from '@client/stores/wizard.store'
 import type { CoursesFilter } from '@shared/http/courses'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import type { CoursesResponse, CourseWithRelations } from '../../../api/src/Contracts'
 
 /**
  * Courses Store

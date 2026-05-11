@@ -129,7 +129,7 @@ The Scraper is a headless Node.js service that scrapes course and study plan dat
 ### Prerequisites
 
 - Node.js 22+
-- pnpm 10.20.0+
+- pnpm 11.1.0+
 - Redis 7+
 - Chrome browser (auto-downloaded by Puppeteer postinstall)
 

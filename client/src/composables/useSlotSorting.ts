@@ -1,8 +1,8 @@
-﻿import type { CourseUnitSlot } from '@api/contracts'
-import { CourseUnitWithSlots } from '@client/types'
+﻿import { CourseUnitWithSlots } from '@client/types'
 import { getSlotType } from '@client/utils/course'
 import { compareDateStrings, getDayIndex, getSlotDay } from '@client/utils/day.ts'
 import type { InSISDay } from '@shared/domain/insis'
+import type { CourseUnitSlot } from '../../../api/src/Contracts'
 
 /**
  * Slot sorting composable.

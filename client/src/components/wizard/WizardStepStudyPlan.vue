@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { StudyPlanWithRelations } from '@api/contracts'
+import type { StudyPlanWithRelations } from '@api/Contracts'
 import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import type { FacetItem } from '@shared/http/facets'
 import { computed, ref } from 'vue'

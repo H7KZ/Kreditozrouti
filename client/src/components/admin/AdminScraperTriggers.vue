@@ -13,4 +13,3 @@ const admin = useAdminStore()
 		</div>
 	</div>
 </template>
-

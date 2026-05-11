@@ -73,7 +73,7 @@ Every semester, 16,000+ VŠE students struggle with InSIS's limitations:
 ### Prerequisites
 
 - Node.js 22+
-- pnpm 10.20.0+
+- pnpm 11.1.0+
 - Docker & Docker Compose
 - Make (optional but recommended)
 

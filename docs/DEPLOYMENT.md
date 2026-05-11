@@ -124,7 +124,7 @@ Kreditozrouti uses a modern, containerized deployment architecture with Docker, 
 
 **Local Development:**
 - Node.js 22+
-- pnpm 10.20.0+
+- pnpm 11.1.0+
 - Docker Desktop (for local infrastructure)
 
 ### External Services
@@ -159,7 +159,7 @@ All services use multi-stage builds for optimized production images.
 FROM node:24-alpine AS builder
 WORKDIR /app
 COPY package*.json pnpm-lock.yaml ./
-RUN npm install -g pnpm@10.20.0
+RUN npm install -g pnpm@11.1.0
 RUN pnpm install --frozen-lockfile
 COPY ../deployment .
 RUN pnpm run build
@@ -193,7 +193,7 @@ CMD ["node", "dist/api/src/index.js"]
 FROM node:24-alpine AS builder
 WORKDIR /app
 COPY package*.json pnpm-lock.yaml ./
-RUN npm install -g pnpm@10.20.0
+RUN npm install -g pnpm@11.1.0
 RUN pnpm install --frozen-lockfile
 COPY . .
 ENV VITE_API_URL=__VITE_API_URL_PLACEHOLDER__
@@ -251,7 +251,7 @@ exec "$@"
 FROM node:24-alpine AS builder
 WORKDIR /app
 COPY package*.json pnpm-lock.yaml ./
-RUN npm install -g pnpm@10.20.0
+RUN npm install -g pnpm@11.1.0
 RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm run build

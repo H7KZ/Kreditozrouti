@@ -1,4 +1,4 @@
-import type { AdminStatsResponse } from '@api/Controllers/Admin/AdminStatsController'
+﻿import type { AdminStatsResponse } from '@api/Contracts/admin'
 import api from '@client/api'
 
 export type { AdminStatsResponse }

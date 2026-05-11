@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type { AdminStatsResponse } from '@api/Controllers/Admin/AdminStatsController'
+﻿<script setup lang="ts">
+import type { AdminStatsResponse } from '@api/Contracts/admin'
 
 const props = defineProps<{
 	database: AdminStatsResponse['database']

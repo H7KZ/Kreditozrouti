@@ -1,8 +1,8 @@
-import { fetchAdminStats, triggerCatalogScrape, triggerStudyPlansScrape } from '@client/services/adminService'
 import type { AdminStatsResponse } from '@client/services/adminService'
+import { fetchAdminStats, triggerCatalogScrape, triggerStudyPlansScrape } from '@client/services/adminService'
 import { useAlertsStore } from '@client/stores/alerts.store'
-import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
 export const ADMIN_REFRESH_INTERVAL = 30_000
 

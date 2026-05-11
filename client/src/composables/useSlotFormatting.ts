@@ -1,7 +1,7 @@
-import type { CourseUnitSlot } from '@api/contracts'
 import { useCourseLabels, useTimeUtils } from '@client/composables'
 import { i18n } from '@client/index.ts'
 import { getDayFromDate, parseDateString } from '@client/utils/day.ts'
+import type { CourseUnitSlot } from '../../../api/src/Contracts'
 
 /**
  * Slot formatting composable.

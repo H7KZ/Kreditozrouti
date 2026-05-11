@@ -1,9 +1,9 @@
-import type { CourseWithRelations } from '@api/contracts'
 import { useTimetableStore } from '@client/stores'
 import { CourseUnitType, CourseUnitWithSlots, SelectedCourseUnit, UnitGroup, UnitGroupMap } from '@client/types'
 import { getSlotType } from '@client/utils/course'
 import type { Ref } from 'vue'
 import { computed } from 'vue'
+import type { CourseWithRelations } from '../../../api/src/Contracts'
 
 /**
  * Options for the course unit selection composable.

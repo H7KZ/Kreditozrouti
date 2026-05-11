@@ -1,7 +1,7 @@
-import type { CourseUnitSlot } from '@api/contracts'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 import { compareDateStrings, getDayFromDate, parseDateString } from '@shared/domain/day'
 import type { InSISDay } from '@shared/domain/insis'
+import type { CourseUnitSlot } from '../../../api/src/Contracts'
 
 export { compareDateStrings, getDayFromDate, parseDateString }
 

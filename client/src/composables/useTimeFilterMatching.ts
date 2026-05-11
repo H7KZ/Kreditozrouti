@@ -1,10 +1,10 @@
-import type { CourseUnitSlot } from '@api/contracts'
 import { useTimeUtils } from '@client/composables'
 import { useFiltersStore } from '@client/stores'
 import { CourseUnitWithSlots } from '@client/types'
 import { getSlotDay } from '@client/utils/day.ts'
 import type { TimeSelection } from '@shared/domain/time'
 import { computed } from 'vue'
+import type { CourseUnitSlot } from '../../../api/src/Contracts'
 
 /**
  * Time filter matching composable.

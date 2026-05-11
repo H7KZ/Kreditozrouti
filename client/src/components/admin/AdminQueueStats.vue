@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type { QueueStats } from '@api/Controllers/Admin/AdminStatsController'
+﻿<script setup lang="ts">
+import type { QueueStats } from '@api/Contracts/admin'
 
 interface Props {
 	stats: QueueStats
@@ -41,4 +41,3 @@ const statusLabels: Record<keyof QueueStats, string> = {
 		</div>
 	</div>
 </template>
-

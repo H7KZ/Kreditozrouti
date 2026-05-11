@@ -108,7 +108,7 @@ Kreditožrouti provides:
 ### Prerequisites
 
 - **Node.js** 22.x or higher
-- **pnpm** 10.20.0 or higher
+- **pnpm** 11.1.0 or higher
 - **Docker & Docker Compose** (for local development)
 - **Make** (optional, for convenience commands)
 

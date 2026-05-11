@@ -1,5 +1,4 @@
-﻿import type { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/contracts'
-import { STORAGE_KEYS } from '@client/constants/storage.ts'
+﻿import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { ALL_DAYS } from '@client/constants/timetable'
 import { i18n } from '@client/index'
 import { useAnnouncerStore } from '@client/stores/announcer.store'
@@ -14,6 +13,7 @@ import type { InSISDay } from '@shared/domain/insis'
 import type { TimeSelection } from '@shared/domain/time'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import type { CourseUnit, CourseUnitSlot, CourseWithRelations } from '../../../api/src/Contracts'
 
 const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
 

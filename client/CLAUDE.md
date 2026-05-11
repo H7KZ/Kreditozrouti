@@ -670,10 +670,10 @@ Defined in `client/tsconfig.json` `compilerOptions.paths` and resolved by Vite:
 
 ### Key shared imports
 
-**API types** — always import from `@api/contracts`, not `@api/Database/types`:
+**API types** — always import from `@api/Contracts`, not `@api/Database/types`:
 
 ```typescript
-import type { CourseWithRelations, CourseUnit, CourseUnitSlot, Faculty, StudyPlan, StudyPlanCourse, Course, StudyPlanWithRelations } from '@api/contracts'
+import type { CourseWithRelations, CourseUnit, CourseUnitSlot, Faculty, StudyPlan, StudyPlanCourse, Course, StudyPlanWithRelations } from '@api/Contracts'
 ```
 
 **Shared domain** — pure functions with no server/client dependencies:

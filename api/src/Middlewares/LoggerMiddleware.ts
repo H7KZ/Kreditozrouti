@@ -1,5 +1,5 @@
-import LoggerAPIContext, { LoggerWideEvent } from '@api/Context/LoggerAPIContext'
 import { redis } from '@api/clients'
+import LoggerAPIContext, { LoggerWideEvent } from '@api/Context/LoggerAPIContext'
 import { NextFunction, Request, Response } from 'express'
 
 export default function LoggerMiddleware(req: Request, res: Response, next: NextFunction) {
@@ -49,7 +49,7 @@ export default function LoggerMiddleware(req: Request, res: Response, next: Next
 				query: Object.keys(req.query).length > 0 ? req.query : undefined,
 				ip: req.ip,
 				duration_ms: Math.round(wideEvent.duration_ms ?? 0),
-				timestamp: wideEvent.timestamp,
+				timestamp: wideEvent.timestamp
 			})
 			redis.lpush('metrics:errors:recent', entry).catch(noop)
 			redis.ltrim('metrics:errors:recent', 0, 199).catch(noop)

@@ -1,9 +1,9 @@
-﻿import type { CourseUnit, CourseUnitSlot } from '@api/contracts'
-import { useTimeUtils } from '@client/composables/useTimeUtils'
+﻿import { useTimeUtils } from '@client/composables/useTimeUtils'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 import { i18n } from '@client/index.ts'
 import { getDayFromDate, getDayIndex } from '@client/utils/day.ts'
 import type { InSISDay } from '@shared/domain/insis'
+import type { CourseUnit, CourseUnitSlot } from '../../../api/src/Contracts'
 
 /**
  * Schedule summary composable.
