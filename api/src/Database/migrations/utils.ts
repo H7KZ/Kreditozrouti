@@ -11,11 +11,15 @@ export async function createIndexSafe(db: Kysely<any>, indexName: string, tableN
 		}
 
 		await query.execute()
-	} catch (error: any) {
+	} catch (error: unknown) {
 		// Error 1061: Duplicate key name (Index already exists)
 		// Error 1062: Duplicate entry (Index already exists)
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		if (error.code === 'ER_DUP_KEYNAME' || error.errno === 1061 || error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
+		if (
+			error &&
+			typeof error === 'object' &&
+			(('code' in error && (error.code === 'ER_DUP_KEYNAME' || error.code === 'ER_DUP_ENTRY')) ||
+				('errno' in error && (error.errno === 1061 || error.errno === 1062)))
+		) {
 			return // Safely ignore
 		}
 		throw error
@@ -29,13 +33,16 @@ export async function dropIndexSafe(db: Kysely<any>, indexName: string, tableNam
 /**
  * Executes a raw SQL query safely by catching and ignoring specific error codes.
  */
-export async function executeSqlSafe(db: Kysely<any>, query: any, ignorableErrorCodes: (string | number)[]): Promise<void> {
+export async function executeSqlSafe(db: Kysely<any>, query: { execute: (db: Kysely<any>) => Promise<unknown> }, ignorableErrorCodes: (string | number)[]): Promise<void> {
 	try {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 		await query.execute(db)
-	} catch (error: any) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		if (ignorableErrorCodes.includes(error.code) || ignorableErrorCodes.includes(error.errno)) {
+	} catch (error: unknown) {
+		if (
+			error &&
+			typeof error === 'object' &&
+			(('code' in error && typeof error.code === 'string' && ignorableErrorCodes.includes(error.code)) ||
+				('errno' in error && typeof error.errno === 'number' && ignorableErrorCodes.includes(error.errno)))
+		) {
 			return // Safely ignore
 		}
 		throw error
