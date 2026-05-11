@@ -7,35 +7,8 @@ import {
 	StudyPlanCourseTable,
 	StudyPlanTable
 } from '@api/Database/types'
-import { Expression, Kysely, sql } from 'kysely'
-
-async function createIndexSafe(db: Kysely<any>, indexName: string, tableName: string, columns: string[] | Expression<any>) {
-	try {
-		let query = db.schema.createIndex(indexName).on(tableName)
-
-		// If 'columns' is an array of strings, use standard .columns()
-		// If it's a raw SQL expression (for TEXT columns), use .expression()
-		if (Array.isArray(columns) && typeof columns[0] === 'string') {
-			query = query.columns(columns)
-		} else {
-			query = query.expression(columns as Expression<any>)
-		}
-
-		await query.execute()
-	} catch (error: any) {
-		// Error 1061: Duplicate key name (Index already exists)
-		// Error 1062: Duplicate entry (Index already exists)
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		if (error.code === 'ER_DUP_KEYNAME' || error.errno === 1061 || error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
-			return // Safely ignore
-		}
-		throw error
-	}
-}
-
-async function dropIndex(db: Kysely<any>, idx: string, table: string) {
-	await db.schema.dropIndex(idx).on(table).ifExists().execute()
-}
+import { Kysely, sql } from 'kysely'
+import { createIndexSafe, dropIndexSafe as dropIndex } from './utils'
 
 export async function up(db: Kysely<any>): Promise<void> {
 	// Courses
