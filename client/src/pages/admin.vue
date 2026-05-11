@@ -13,12 +13,21 @@ const admin = useAdminStore()
 const tokenInput = ref('')
 let refreshInterval: ReturnType<typeof setInterval> | null = null
 
+// Force dark theme on admin page
+let wasDark = false
 onMounted(() => {
+	wasDark = document.documentElement.classList.contains('dark')
+	document.documentElement.classList.add('dark')
+
 	admin.loadStats()
 	refreshInterval = setInterval(() => admin.loadStats(), ADMIN_REFRESH_INTERVAL)
 })
 
 onUnmounted(() => {
+	if (!wasDark) {
+		document.documentElement.classList.remove('dark')
+	}
+
 	if (refreshInterval !== null) {
 		clearInterval(refreshInterval)
 	}
@@ -31,27 +40,19 @@ function handleConnect() {
 </script>
 
 <template>
-	<div class="min-h-screen bg-gray-50 p-6">
+	<div class="min-h-screen bg-[var(--insis-bg)] p-6">
 		<div class="mx-auto max-w-7xl">
 			<div class="mb-6 flex items-center justify-between">
-				<h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-				<span v-if="admin.lastRefresh" class="text-sm text-gray-500">
-					Last refreshed: {{ admin.lastRefresh.toLocaleTimeString() }}
-				</span>
+				<h1 class="text-2xl font-bold text-[var(--insis-text)]">Admin Dashboard</h1>
+				<span v-if="admin.lastRefresh" class="text-sm text-[var(--insis-text-2)]"> Last refreshed: {{ admin.lastRefresh.toLocaleTimeString() }} </span>
 			</div>
 
 			<!-- Token input form -->
-			<div v-if="!admin.isAuthenticated" class="rounded-lg bg-white p-6 shadow">
-				<h2 class="mb-4 text-lg font-semibold text-gray-800">Connect to Admin API</h2>
+			<div v-if="!admin.isAuthenticated" class="insis-card p-6">
+				<h2 class="mb-4 text-lg font-semibold text-[var(--insis-text)]">Connect to Admin API</h2>
 				<form @submit.prevent="handleConnect">
 					<label class="insis-label mb-1 block" for="admin-token">API Token</label>
-					<input
-						id="admin-token"
-						v-model="tokenInput"
-						class="insis-input mb-4 w-full"
-						type="password"
-						placeholder="Enter admin token"
-					/>
+					<input id="admin-token" v-model="tokenInput" class="insis-input mb-4 w-full" type="password" placeholder="Enter admin token" />
 					<button type="submit" class="insis-btn insis-btn-primary">Connect</button>
 				</form>
 			</div>

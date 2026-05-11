@@ -15,13 +15,8 @@ function formatFinishedOn(finishedOn: number | undefined): string {
 </script>
 
 <template>
-	<CollapsibleSection
-		title="Completed Jobs"
-		:badge="props.jobs.length > 0 ? props.jobs.length : undefined"
-	>
-		<div v-if="props.jobs.length === 0" class="text-[var(--insis-gray-500)] text-sm py-2">
-			No completed jobs.
-		</div>
+	<CollapsibleSection title="Completed Jobs" :badge="props.jobs.length > 0 ? props.jobs.length : undefined">
+		<div v-if="props.jobs.length === 0" class="text-[var(--insis-gray-500)] text-sm py-2">No completed jobs.</div>
 
 		<table v-else class="insis-table insis-table-dense w-full">
 			<thead>

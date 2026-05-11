@@ -20,16 +20,11 @@ function formatFailedAt(processedOn: number | undefined): string {
 
 <template>
 	<div :class="{ 'admin-failed-jobs--has-errors': props.jobs.length > 0 }">
-		<CollapsibleSection
-			title="Failed Jobs"
-			:badge="props.jobs.length > 0 ? props.jobs.length : undefined"
-			:default-open="props.jobs.length > 0"
-		>
-			<div v-if="props.jobs.length === 0" class="text-[var(--insis-gray-500)] text-sm py-2">
-				No failed jobs.
-			</div>
+		<CollapsibleSection title="Failed Jobs" :badge="props.jobs.length > 0 ? props.jobs.length : undefined" :default-open="props.jobs.length > 0">
+			<div v-if="props.jobs.length === 0" class="text-[var(--insis-gray-500)] text-sm py-2">No failed jobs.</div>
 
-			<table v-else class="insis-table insis-table-dense w-full">
+			<div v-else class="overflow-x-auto w-full">
+			<table class="insis-table insis-table-dense w-full">
 				<thead>
 					<tr>
 						<th>Job Name</th>
@@ -46,12 +41,12 @@ function formatFailedAt(processedOn: number | undefined): string {
 						<td>{{ job.failedReason ?? '—' }}</td>
 						<td>{{ (job.data.type as string) ?? '—' }}</td>
 						<td>
-							<template v-if="(job.data.url as string)">
-								<span :title="(job.data.url as string)">
+							<template v-if="job.data.url as string">
+								<span :title="job.data.url as string">
 									{{ truncate((job.data.url as string) ?? '') }}
 								</span>
 							</template>
-							<template v-else-if="(job.data.facultyId as string)">
+							<template v-else-if="job.data.facultyId as string">
 								{{ job.data.facultyId as string }}
 							</template>
 							<template v-else>—</template>
@@ -59,6 +54,7 @@ function formatFailedAt(processedOn: number | undefined): string {
 					</tr>
 				</tbody>
 			</table>
+			</div>
 		</CollapsibleSection>
 	</div>
 </template>
