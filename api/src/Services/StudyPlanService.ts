@@ -119,7 +119,7 @@ export default class StudyPlanService {
 		const results = await this.buildFilterQuery(filters)
 			.select('sp.id')
 			.groupBy('sp.id')
-			.orderBy(this.getStudyPlanSortColumn(filters.sort_by) as any, filters.sort_dir ?? 'asc')
+			.orderBy(this.getStudyPlanSortColumn(filters.sort_by), filters.sort_dir ?? 'asc')
 			.limit(limit)
 			.offset(offset)
 			.execute()
@@ -347,7 +347,7 @@ export default class StudyPlanService {
 		}
 	}
 
-	private static async writeFacetsToCache(key: string, facets: any): Promise<void> {
+	private static async writeFacetsToCache(key: string, facets: unknown): Promise<void> {
 		try {
 			await redis.setex(key, FACET_CACHE_TTL, JSON.stringify(facets))
 		} catch {
@@ -358,7 +358,7 @@ export default class StudyPlanService {
 	// ─── Utilities ────────────────────────────────────────────────────────────────
 
 	/** Maps sort_by parameter to actual database column. */
-	private static getStudyPlanSortColumn(sortBy?: string): string {
+	private static getStudyPlanSortColumn(sortBy?: string): ReturnType<typeof sql.ref> {
 		const sortMap: Record<string, string> = {
 			ident: 'sp.ident',
 			title: 'sp.title',
@@ -367,7 +367,7 @@ export default class StudyPlanService {
 			semester: 'sp.semester',
 			level: 'sp.level'
 		}
-		return sortMap[sortBy ?? 'ident'] ?? 'sp.ident'
+		return sql.ref(sortMap[sortBy ?? 'ident'] ?? 'sp.ident')
 	}
 
 	/**
