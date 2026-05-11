@@ -12,3 +12,16 @@ export interface DragSelection {
 export interface PersistedTimetableState {
 	selectedUnits: SelectedCourseUnit[]
 }
+
+export interface SavedScheduleSlot {
+	id: string
+	name: string
+	units: SelectedCourseUnit[]
+	createdAt: number
+	updatedAt: number
+}
+
+export interface PersistedScheduleSlotsState {
+	slots: SavedScheduleSlot[]
+	activeSlotId: string | null
+}

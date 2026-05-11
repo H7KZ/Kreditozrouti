@@ -3,6 +3,7 @@
  */
 export const STORAGE_KEYS = {
 	TIMETABLE: 'kreditozrouti:timetable',
+	SCHEDULE_SLOTS: 'kreditozrouti:schedule-slots',
 	WIZARD: 'kreditozrouti:wizard',
 	UI: 'kreditozrouti:ui',
 } as const
