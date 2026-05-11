@@ -108,14 +108,14 @@ export default async function AdminStatsController(req: Request, res: Response) 
 				name: j.name,
 				failedReason: j.failedReason,
 				processedOn: j.processedOn,
-				data: j.data as Record<string, unknown>
+				data: j.data
 			})),
 			completed: completedJobs.map(j => ({
 				id: j.id,
 				name: j.name,
 				finishedOn: j.finishedOn,
 				processedOn: j.processedOn,
-				data: j.data as Record<string, unknown>
+				data: j.data
 			}))
 		}
 	} satisfies AdminStatsResponse)
