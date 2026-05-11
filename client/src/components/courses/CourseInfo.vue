@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import type { CourseWithRelations } from '@api/contracts'
 import { useCourseLabels } from '@client/composables'
+import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import { useCompletedCoursesStore, useCoursesStore } from '@client/stores'
+import { formatRelativeAge, isCourseStale } from '@client/utils/freshness'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import IconCircleCheck from '~icons/lucide/circle-check'
+import IconClock from '~icons/lucide/clock'
 import IconExternalLink from '~icons/lucide/external-link'
 
 interface Props {
@@ -15,9 +19,11 @@ const props = defineProps<Props>()
 const coursesStore = useCoursesStore()
 const completedCoursesStore = useCompletedCoursesStore()
 
+const { locale } = useI18n()
 const { getCompletionLabel, getFacultyLabel, getLanguagesLabel, getCategoryLabel, getCourseTitle, getCategoryBadgeClass } = useCourseLabels()
 
 const isMarkedCompleted = computed(() => completedCoursesStore.isCourseCompleted(props.course.ident))
+const formattedAge = computed(() => formatRelativeAge(props.course.updated_at, locale.value))
 
 function handleToggleCompleted() {
 	coursesStore.toggleCompletedCourse(props.course.ident)
@@ -72,6 +78,18 @@ function handleToggleCompleted() {
 			<ul class="space-y-1 text-sm">
 				<li v-for="assessment in course.assessments" :key="assessment.id">{{ assessment.method }}: {{ assessment.weight }}%</li>
 			</ul>
+		</div>
+
+		<!-- Data freshness -->
+		<div class="mt-3 flex items-center justify-between border-t border-[var(--insis-border-light)] pt-3">
+			<span
+				class="flex items-center gap-1 text-xs"
+				:class="isCourseStale(course.updated_at) ? 'text-[var(--insis-warning)]' : 'text-[var(--insis-text-3)]'"
+			>
+				<IconClock class="h-3 w-3" aria-hidden="true" />
+				{{ formattedAge }}
+			</span>
+			<CourseRefreshButton :course-id="course.id" />
 		</div>
 
 		<!-- Mark as completed -->
