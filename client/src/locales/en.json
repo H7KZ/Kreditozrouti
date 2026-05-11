@@ -1,4 +1,9 @@
 {
+	"filters": {
+		"syllabusSearch": "Search in course content",
+		"syllabusSearchPlaceholder": "e.g. machine learning, účetnictví...",
+		"syllabusSearchHint": "Searches aims, learning outcomes, and syllabus"
+	},
 	"theme": {
 		"light": "Light",
 		"dark": "Dark",

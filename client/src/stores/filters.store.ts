@@ -9,6 +9,7 @@ function createDefaultFilters(): CoursesFilter {
 		ids: [],
 		idents: [],
 		title: '',
+		search: '',
 		semesters: [],
 		years: [],
 		faculty_ids: [],
@@ -46,6 +47,7 @@ export const useFiltersStore = defineStore('filters', () => {
 		const f = filters.value
 		let count = 0
 		if (f.title) count++
+		if (f.search) count++
 		if (f.faculty_ids?.length) count++
 		if (f.levels?.length) count++
 		if (f.languages?.length) count++

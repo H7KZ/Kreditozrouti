@@ -1,4 +1,9 @@
 {
+	"filters": {
+		"syllabusSearch": "Hledat v obsahu předmětu",
+		"syllabusSearchPlaceholder": "např. machine learning, účetnictví...",
+		"syllabusSearchHint": "Vyhledává v cílech, výsledcích učení a osnově"
+	},
 	"theme": {
 		"light": "Světlý",
 		"dark": "Tmavý",

@@ -36,12 +36,26 @@ const completedCoursesStore = useCompletedCoursesStore()
 const uiStore = useUIStore()
 
 const localTitleSearch = ref(filtersStore.filters.title ?? '')
+const syllabusSearchValue = ref(filtersStore.filters.search ?? '')
 
 // Debounced search using composable
 const debouncedFetchCourses = useDebouncedFn(() => {
 	filtersStore.setFilter('title', localTitleSearch.value)
+	if (localTitleSearch.value) {
+		syllabusSearchValue.value = ''
+		filtersStore.setFilter('search', '')
+	}
 	coursesStore.fetchCourses()
 }, 750)
+
+const debouncedFetchSyllabusSearch = useDebouncedFn(() => {
+	filtersStore.setFilter('search', syllabusSearchValue.value)
+	if (syllabusSearchValue.value) {
+		localTitleSearch.value = ''
+		filtersStore.setFilter('title', '')
+	}
+	coursesStore.fetchCourses()
+}, 800)
 
 // Facet configuration for dynamic rendering
 const facetConfig = computed(() => [
@@ -169,9 +183,16 @@ function handleTitleSearchInput(event: Event) {
 	debouncedFetchCourses()
 }
 
+function handleSyllabusSearchInput(event: Event) {
+	const target = event.target as HTMLInputElement
+	syllabusSearchValue.value = target.value
+	debouncedFetchSyllabusSearch()
+}
+
 function handleResetFilters() {
 	coursesStore.resetFilters()
 	localTitleSearch.value = ''
+	syllabusSearchValue.value = ''
 	coursesStore.fetchCourses()
 }
 
@@ -300,6 +321,27 @@ function handleCloseMobileFilter() {
 						@input="handleTitleSearchInput"
 					/>
 				</div>
+			</div>
+
+			<!-- Full-Text Search -->
+			<div class="flex-1 w-full py-1 mt-2 space-y-1">
+				<label class="text-xs font-medium text-[var(--insis-text-2)]" for="syllabus-search">
+					{{ $t('filters.syllabusSearch') }}
+				</label>
+				<div class="relative">
+					<input
+						id="syllabus-search"
+						v-model="syllabusSearchValue"
+						type="text"
+						:placeholder="$t('filters.syllabusSearchPlaceholder')"
+						class="insis-input w-full pl-8 text-sm"
+						@input="handleSyllabusSearchInput"
+					/>
+					<Search class="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--insis-gray-400)]" />
+				</div>
+				<p class="text-[10px] text-[var(--insis-text-3)]">
+					{{ $t('filters.syllabusSearchHint') }}
+				</p>
 			</div>
 		</div>
 
