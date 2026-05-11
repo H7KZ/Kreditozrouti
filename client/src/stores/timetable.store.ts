@@ -402,6 +402,8 @@ export const useTimetableStore = defineStore('timetable', () => {
 	function clearAll() {
 		selectedUnits.value = []
 		removeFromStorage(STORAGE_KEYS.TIMETABLE)
+		const scheduleSlotsStore = useScheduleSlotsStore()
+		scheduleSlotsStore.syncActiveSlot([])
 	}
 
 	return {
