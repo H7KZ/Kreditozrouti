@@ -150,7 +150,13 @@ const isFiltering = computed(() => props.selected.length > 0)
 			</div>
 
 			<!-- Show more button -->
-			<button type="button" class="insis-btn-text mt-2 flex items-center gap-1 text-xs" :aria-expanded="listExpanded" @click="toggleListExpanded">
+			<button
+				v-if="listExpanded || hiddenCount > 0"
+				type="button"
+				class="insis-btn-text mt-2 flex items-center gap-1 text-xs"
+				:aria-expanded="listExpanded"
+				@click="toggleListExpanded"
+			>
 				<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': listExpanded }]" aria-hidden="true" />
 				{{ listExpanded ? $t('common.showLess') : $t('common.showMore', { count: hiddenCount }) }}
 			</button>
