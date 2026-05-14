@@ -111,8 +111,13 @@ export function checkCourseCompleteness(units: ScheduledCourseUnit[]): {
  * then end time. Used to produce deterministic cache keys.
  */
 export function compareTimeSelections(a: TimeSelection, b: TimeSelection): number {
-	const toDateStr = (d: string | Date | undefined | null): string | null | undefined =>
-		d instanceof Date ? d.toISOString().split('T')[0] : d
+	const toDateStr = (d: string | Date | undefined | null): string | null | undefined => {
+		if (!(d instanceof Date)) return d
+		const yyyy = d.getFullYear()
+		const mm = String(d.getMonth() + 1).padStart(2, '0')
+		const dd = String(d.getDate()).padStart(2, '0')
+		return `${yyyy}-${mm}-${dd}`
+	}
 	const aDay = a.day ?? getDayFromDate(toDateStr(a.date))
 	const bDay = b.day ?? getDayFromDate(toDateStr(b.date))
 	if (!aDay && !bDay) return 0
