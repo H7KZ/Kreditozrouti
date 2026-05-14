@@ -6,7 +6,7 @@ export function getDayFromDate(dateStr: string | null | undefined): InSISDay | n
 
 	try {
 		const isoDate = dateStr.split('.').reverse().join('-')
-		const date = new Date(isoDate)
+		const date = new Date(isoDate + 'T00:00')
 
 		if (isNaN(date.getTime())) return null
 
@@ -22,7 +22,7 @@ export function getDayFromDate(dateStr: string | null | undefined): InSISDay | n
 export function parseDateString(dateStr: string): Date | null {
 	try {
 		const isoDate = dateStr.split('.').reverse().join('-')
-		const date = new Date(isoDate)
+		const date = new Date(isoDate + 'T00:00')
 		return isNaN(date.getTime()) ? null : date
 	} catch {
 		return null
