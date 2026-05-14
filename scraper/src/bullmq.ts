@@ -7,14 +7,21 @@ import { Queue, Worker } from 'bullmq'
 
 // Queues
 
-const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis.options })
+const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
+    connection: redis.options,
+    defaultJobOptions: {
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 10_000 }
+    }
+})
 const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis.options })
 
 // Workers
 
 const requestWorker = new Worker<ScraperRequestJob>(ScraperRequestQueue, withSentryJobHandler(ScraperRequestQueue, ScraperRequestHandler), {
     connection: redis.options,
-    concurrency: 1
+    concurrency: 5,
+    limiter: { max: 10, duration: 1000 }
 })
 
 // Scraper object
@@ -27,6 +34,12 @@ const scraper = {
 
     worker: {
         request: requestWorker
+    },
+
+    init(): void {
+        scraper.worker.request.on('failed', (job, err) => {
+            console.error(`[BullMQ] Job ${job?.name} (${job?.id}) permanently failed: ${err.message}`)
+        })
     },
 
     async waitForQueues(): Promise<void> {

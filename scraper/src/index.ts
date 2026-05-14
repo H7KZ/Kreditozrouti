@@ -34,6 +34,7 @@ async function startWorker(): Promise<void> {
         await redis.ping()
         console.log('Connected to Redis successfully.')
 
+        scraper.init()
         await scraper.waitForQueues()
         console.log('Scraper service is up and running.')
     } catch (error) {
