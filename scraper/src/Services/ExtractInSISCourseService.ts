@@ -1,14 +1,15 @@
-import MarkdownService from '@scraper/Services/MarkdownService'
 import type {
+    InSISDay,
     InSISSemester,
     ScraperInSISCourse,
     ScraperInSISCourseAssessmentMethod,
+    ScraperInSISCourseStudyLoad,
     ScraperInSISCourseStudyPlan,
     ScraperInSISCourseTimetableSlot,
     ScraperInSISCourseTimetableUnit,
     ScraperInSISFaculty
 } from '@scraper/types/insis'
-import type InSISDay from '@scraper/types/insis'
+import MarkdownService from '@scraper/Services/MarkdownService'
 import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 import * as cheerio from 'cheerio'
@@ -19,8 +20,6 @@ import type { CheerioAPI } from 'cheerio'
  * Handles metadata, syllabus content, assessments, and timetable parsing.
  */
 export default class ExtractInSISCourseService {
-    // Public API
-
     /**
      * Extracts course ID from a syllabus URL.
      */
@@ -48,13 +47,15 @@ export default class ExtractInSISCourseService {
         const id = this.resolveId($, url)
         const basicInfo = this.extractBasicInfo($)
         const semesterInfo = this.extractSemesterAndYear($)
-        const faculty = this.extractFaculty($)
+        const faculty = this.extractFaculty($, semesterInfo.year)
         const levelInfo = this.extractLevelAndYear($)
-        const lecturers = this.extractLecturers($)
+        const people = this.extractPeople($)
         const syllabus = this.extractSyllabusContent($)
         const assessmentMethods = this.extractAssessmentMethods($)
-        const timetable = this.extractTimetable($)
+        const timetable = faculty.is_schedule_publicly_visible ? this.extractTimetable($) : []
         const plans = this.extractStudyPlans($)
+        const studyLoad = this.extractStudyLoad($)
+        const auditInfo = this.extractAuditInfo($)
 
         return {
             id,
@@ -64,20 +65,18 @@ export default class ExtractInSISCourseService {
             ...semesterInfo,
             faculty,
             ...levelInfo,
-            lecturers: lecturers.length > 0 ? lecturers : null,
+            lecturers: people.lecturers,
+            guarantors: people.guarantors,
             ...syllabus,
             assessment_methods: assessmentMethods.length > 0 ? assessmentMethods : null,
             timetable,
-            study_plans: plans
+            study_plans: plans,
+            study_load: studyLoad.length > 0 ? studyLoad : null,
+            last_modified_date: auditInfo.last_modified_date,
+            last_modified_by: auditInfo.last_modified_by
         }
     }
 
-    // Identity
-
-    /**
-     * Resolves course ID from HTML form input first, then falls back to URL.
-     * Throws if neither source yields an ID.
-     */
     private static resolveId($: CheerioAPI, url: string): number {
         const idInput = $('input[name="predmet"]').attr('value')
         if (idInput) return parseInt(idInput, 10)
@@ -87,8 +86,6 @@ export default class ExtractInSISCourseService {
 
         throw new Error('Course ID not found in the HTML content or URL.')
     }
-
-    // Basic Info
 
     private static extractBasicInfo($: CheerioAPI) {
         const ident = getRowValueCaseInsensitive($, 'Kód předmětu:')
@@ -123,18 +120,26 @@ export default class ExtractInSISCourseService {
         }
     }
 
-    private static extractFaculty($: CheerioAPI): ScraperInSISFaculty {
+    private static extractFaculty($: CheerioAPI, year: number | null): ScraperInSISFaculty {
         const headerText = $('#titulek h1').text() || ''
         // Match last parentheses content
         const bracketMatch = /\(([^)]+)\)\s*$/.exec(headerText)
 
-        if (!bracketMatch) return { ident: null, title: null }
+        if (!bracketMatch) return { ident: null, title: null, is_schedule_publicly_visible: true }
 
         const facultyIdent = bracketMatch[1].trim().split(' - ')[0]
 
-        if (!facultyIdent) return { ident: null, title: null }
+        if (!facultyIdent) return { ident: null, title: null, is_schedule_publicly_visible: true }
 
-        return { ident: facultyIdent, title: null }
+        let is_schedule_publicly_visible = true
+        if (year !== null && facultyIdent) {
+            if (facultyIdent === 'CTVS' && year >= 2017) is_schedule_publicly_visible = false // PE
+            if (facultyIdent === 'OZS'  && year >= 2020) is_schedule_publicly_visible = false
+            if (facultyIdent === 'IOM'  && year >= 2021) is_schedule_publicly_visible = false
+            if (facultyIdent === 'CESP' && year >= 2022) is_schedule_publicly_visible = false
+        }
+
+        return { ident: facultyIdent, title: null, is_schedule_publicly_visible }
     }
 
     private static extractLevelAndYear($: CheerioAPI) {
@@ -169,30 +174,38 @@ export default class ExtractInSISCourseService {
         return { level, year_of_study }
     }
 
-    private static extractLecturers($: CheerioAPI): string[] {
+    private static extractPeople($: CheerioAPI): { lecturers: string[] | null; guarantors: string[] | null } {
         const lecturers: string[] = []
+        const guarantors: string[] = []
         const lecturersCell = $('td')
             .filter((_, el) => cleanText($(el).text()).includes('Vyučující:'))
             .next('td')
 
         if (lecturersCell.length) {
-            // Try extracting from anchor tags first
+            // Try extracting from anchor tags first, splitting guarantors from lecturers
             lecturersCell.find('a').each((_, el) => {
                 const name = cleanText($(el).text())
-                if (name) lecturers.push(name)
+                if (!name) return
+                const nextText = (el as any).nextSibling?.nodeValue || ''
+                if (nextText.includes('(garant)')) {
+                    guarantors.push(name)
+                } else {
+                    lecturers.push(name)
+                }
             })
 
             // Fallback to parsing multi-line cell
-            if (lecturers.length === 0) {
+            if (lecturers.length === 0 && guarantors.length === 0) {
                 const cell = lecturersCell.get(0)
                 if (cell) lecturers.push(...parseMultiLineCell($, cell))
             }
         }
 
-        return lecturers
+        return {
+            lecturers: lecturers.length > 0 ? lecturers : null,
+            guarantors: guarantors.length > 0 ? guarantors : null
+        }
     }
-
-    // Syllabus Content
 
     private static extractSyllabusContent($: CheerioAPI) {
         const prerequisites = getRowValueCaseInsensitive($, 'Omezení pro zápis:')
@@ -204,14 +217,39 @@ export default class ExtractInSISCourseService {
         const special_requirements =
             getSectionContent($, 'Zvláštní podmínky a podrobnosti:') ?? getRowValueCaseInsensitive($, 'Zvláštní podmínky a podrobnosti:')
 
-        // Literature extraction
-        let literature: string | null = null
+        // Literature extraction — split into required and recommended
+        let literature_required: string | null = null
+        let literature_recommended: string | null = null
         const literatureHeaderRow = $('td')
             .filter((_, el) => cleanText($(el).text()).includes('Literatura:'))
             .parent('tr')
 
         if (literatureHeaderRow.length && literatureHeaderRow.next('tr').length) {
-            literature = MarkdownService.formatCheerioElementToMarkdown(literatureHeaderRow.next('tr').find('td'))
+            const literatureCell = literatureHeaderRow.next('tr').find('td')
+            const rawHtml = literatureCell.html() || ''
+
+            // Split on "Doporučená:" label (case-insensitive)
+            const splitIndex = rawHtml.search(/Doporu[cč]en[aá]:/i)
+            if (splitIndex !== -1) {
+                const requiredHtml = rawHtml.substring(0, splitIndex)
+                const recommendedHtml = rawHtml.substring(splitIndex)
+
+                // Strip leading "Základní:" label from required section
+                const requiredStripped = requiredHtml.replace(/Z[aá]kladn[ií]:/i, '').trim()
+
+                const $req = cheerio.load(`<td>${requiredStripped}</td>`)
+                const $rec = cheerio.load(`<td>${recommendedHtml}</td>`)
+
+                const reqMd = MarkdownService.formatCheerioElementToMarkdown($req('td'))
+                const recMd = MarkdownService.formatCheerioElementToMarkdown($rec('td'))
+
+                literature_required = reqMd && reqMd.trim().length > 0 ? reqMd : null
+                literature_recommended = recMd && recMd.trim().length > 0 ? recMd : null
+            } else {
+                // No split found — treat the whole thing as required
+                const fullMd = MarkdownService.formatCheerioElementToMarkdown(literatureCell)
+                literature_required = fullMd && fullMd.trim().length > 0 ? fullMd : null
+            }
         }
 
         return {
@@ -222,11 +260,10 @@ export default class ExtractInSISCourseService {
             learning_outcomes,
             course_contents,
             special_requirements,
-            literature
+            literature_required,
+            literature_recommended
         }
     }
-
-    // Assessment Methods
 
     private static extractAssessmentMethods($: CheerioAPI): ScraperInSISCourseAssessmentMethod[] {
         const methods: ScraperInSISCourseAssessmentMethod[] = []
@@ -256,8 +293,6 @@ export default class ExtractInSISCourseService {
 
         return methods
     }
-
-    // Timetable
 
     private static extractTimetable($: CheerioAPI): ScraperInSISCourseTimetableUnit[] {
         const units = new Set<ScraperInSISCourseTimetableUnit>()
@@ -338,7 +373,56 @@ export default class ExtractInSISCourseService {
         }
     }
 
-    // Study Plans
+    private static extractAuditInfo($: CheerioAPI): { last_modified_by: string | null; last_modified_date: string | null } {
+        const bodyText = $('body').text()
+        const match = /Poslední změnu provedl (.*?)(?: dne | )(\d{1,2}\. \d{1,2}\. \d{4})/.exec(bodyText)
+
+        if (!match) return { last_modified_by: null, last_modified_date: null }
+
+        const last_modified_by = serializeValue(match[1].trim()) as string | null
+        const dateParts = match[2].replace(/\s/g, '').split('.')
+        const last_modified_date = dateParts.length === 3
+            ? `${dateParts[2]}-${dateParts[1].padStart(2, '0')}-${dateParts[0].padStart(2, '0')}`
+            : null
+
+        return { last_modified_by, last_modified_date }
+    }
+
+    private static extractStudyLoad($: CheerioAPI): ScraperInSISCourseStudyLoad[] {
+        const result: ScraperInSISCourseStudyLoad[] = []
+
+        const headerRow = $('td')
+            .filter((_, el) => {
+                const text = cleanText($(el).text())
+                return text.includes('Způsob studia') || text.includes('studijní zátěž') || text.includes('Studijní zátěž')
+            })
+            .parent('tr')
+
+        if (!headerRow.length) return result
+
+        const table = headerRow.next('tr').find('table')
+        if (!table.length) return result
+
+        table.find('tbody tr, tr').each((_, row) => {
+            const cols = $(row).find('td')
+            if (cols.length < 2) return
+
+            const activity = cleanText($(cols[0]).text())
+            const valText = cleanText($(cols[1]).text())
+
+            if (!activity || activity.toLowerCase().includes('celkem')) return
+
+            const hoursMatch = /(\d+)/.exec(valText)
+            if (hoursMatch) {
+                result.push({
+                    activity: serializeValue(activity) as string,
+                    hours: parseInt(hoursMatch[1], 10)
+                })
+            }
+        })
+
+        return result
+    }
 
     /**
      * Extracts study plan references from the course detail tables.
@@ -377,12 +461,14 @@ export default class ExtractInSISCourseService {
                     }
 
                     const planIdent = cleanText($(cells[codeIndex]).text())
-                    const modeOfStudy = cleanText($(cells[formIndex]).text())
-                    const groupCode = cleanText($(cells[groupIndex]).text())
-                    const periodRaw = $(cells[periodIndex]).html()
+                    const modeOfStudy = cleanText($(cells[formIndex]).text()) // e.g. "prezenční"
+                    const groupCode = cleanText($(cells[groupIndex]).text()) // e.g. "cVM", "hP"
+                    const periodRaw = $(cells[periodIndex]).html() // Contains <br>
 
                     if (!planIdent || !periodRaw) return
 
+                    // Parse group code into Study Plan Category and Group
+                    // Use the logic from ExtractInSISStudyPlanService
                     const { group, category } = parseGroupCode(groupCode)
 
                     // Split periods by <br> to create distinct plan entries per semester
@@ -411,7 +497,4 @@ export default class ExtractInSISCourseService {
 
         return Array.from(plans)
     }
-
-    // Utilities
-    // (No private utility helpers beyond those inlined above)
 }
