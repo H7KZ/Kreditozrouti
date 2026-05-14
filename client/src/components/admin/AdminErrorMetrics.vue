@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import type { ErrorMetrics } from '@api/Contracts/admin'
+import type { ErrorMetrics } from '@shared/http/admin'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 
 const props = defineProps<{ metrics: ErrorMetrics }>()

@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import type { SchedulerInfo } from '@api/Contracts/admin'
+import type { SchedulerInfo } from '@shared/http/admin'
 
 defineProps<{ schedulers: SchedulerInfo[] }>()
 

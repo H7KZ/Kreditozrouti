@@ -1,4 +1,4 @@
-﻿import type { AdminStatsResponse } from '@api/Contracts/admin'
+﻿import type { AdminStatsResponse } from '@shared/http/admin'
 import api from '@client/api'
 
 export type { AdminStatsResponse }

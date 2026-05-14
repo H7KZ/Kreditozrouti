@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import type { QueueStats } from '@api/Contracts/admin'
+import type { QueueStats } from '@shared/http/admin'
 
 interface Props {
 	stats: QueueStats
