@@ -1,7 +1,8 @@
 import DateService from '@api/Services/DateService'
 import { TimeSelection } from '@api/Validations'
-import { InSISDayValues } from '@shared/domain/insis'
 import { ExpressionBuilder } from 'kysely'
+
+export { compareTimeSelections } from '@shared/domain/timetable'
 
 /**
  * Builds Kysely filter conditions that determine whether a slot conflicts with
@@ -70,22 +71,3 @@ export function buildSlotConflictConditions(eb: ExpressionBuilder<any, any>, exc
 	return conditions
 }
 
-/**
- * Comparator for sorting TimeSelection objects by day index, then start time,
- * then end time. Used to produce deterministic cache keys.
- */
-export function compareTimeSelections(a: TimeSelection, b: TimeSelection): number {
-	const aDay = a.day ?? DateService.getDayFromDate(a.date!)
-	const bDay = b.day ?? DateService.getDayFromDate(b.date!)
-
-	if (!aDay && !bDay) return 0
-	if (!aDay) return -1
-	if (!bDay) return 1
-
-	const aDayIndex = InSISDayValues.indexOf(aDay)
-	const bDayIndex = InSISDayValues.indexOf(bDay)
-
-	if (aDayIndex !== bDayIndex) return aDayIndex - bDayIndex
-	if (a.time_from !== b.time_from) return a.time_from - b.time_from
-	return a.time_to - b.time_to
-}

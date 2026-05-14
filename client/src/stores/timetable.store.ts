@@ -166,7 +166,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 			const hasCampusConflict = !!campusConflictsWith?.size
 
 			// Use snapshotted available types — no need to look up full course
-			const { isIncomplete, missingTypes } = checkCourseCompleteness(units, getSlotType)
+			const { isIncomplete, missingTypes } = checkCourseCompleteness(units)
 
 			// Priority: hard conflict > campus-conflict > incomplete > selected
 			const status = hasConflict ? 'conflict' : hasCampusConflict ? 'campus-conflict' : isIncomplete ? 'incomplete' : 'selected'
