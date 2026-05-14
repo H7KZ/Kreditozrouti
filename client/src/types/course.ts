@@ -1,4 +1,4 @@
-import type { InSISDay } from '@shared/domain/insis'
+import type { CourseUnitType, InSISDay } from '@shared/domain/insis'
 import type { TimeSelection } from '@shared/domain/time'
 import type { CoursesFilter } from '@shared/http/courses'
 import type { PaginationMeta } from '@shared/http/pagination'
@@ -18,7 +18,6 @@ export interface CoursesState {
 
 export type CourseUnitWithSlots = CourseUnit<void, CourseUnitSlot>
 
-export type CourseUnitType = 'lecture' | 'exercise' | 'seminar'
 
 export interface SelectedCourseUnit {
 	courseId: number

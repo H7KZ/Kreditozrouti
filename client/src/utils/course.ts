@@ -1,29 +1,6 @@
-import { CourseUnitType } from '@client/types'
-import type { CourseUnitSlot } from '../../../api/src/Contracts'
+import type { CourseUnitType } from '@shared/domain/insis'
 
-/**
- * Get slot type from a course unit slot.
- * Determines if the slot is a lecture, exercise, or seminar
- * based on the slot's type field (matches Czech and English DB strings).
- *
- * This is a pure utility — no i18n dependency.
- *
- * @param slot - Course unit slot
- * @returns CourseUnitType ('lecture' | 'exercise' | 'seminar')
- */
-export function getSlotType(slot: CourseUnitSlot): CourseUnitType {
-	const slotType = slot.type?.toLowerCase() || ''
-
-	const hasLecture = slotType.includes('přednáška') || slotType.includes('lecture')
-	const hasExercise = slotType.includes('cvičení') || slotType.includes('exercise')
-	const hasSeminar = slotType.includes('seminář') || slotType.includes('seminar')
-
-	if (hasLecture) return 'lecture'
-	if (hasExercise) return 'exercise'
-	if (hasSeminar) return 'seminar'
-
-	return 'lecture' // Default to lecture
-}
+export { getSlotType } from '@shared/domain/insis'
 
 /**
  * Get Tailwind/CSS color class for a unit type.

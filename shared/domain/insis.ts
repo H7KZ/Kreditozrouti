@@ -30,3 +30,18 @@ export const InSISStudyPlanCourseGroupValues = [
 export type InSISStudyPlanCourseGroup = (typeof InSISStudyPlanCourseGroupValues)[number]
 
 export type ScraperJob = 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan' | 'InSIS:Supervisor'
+
+export type CourseUnitType = 'lecture' | 'exercise' | 'seminar'
+
+/**
+ * Normalises a raw InSIS slot type string to a CourseUnitType.
+ * Matches Czech and English InSIS vocabulary (case-insensitive).
+ * Defaults to 'lecture' when the string matches nothing.
+ */
+export function getSlotType(slot: { type?: string | null }): CourseUnitType {
+	const slotType = slot.type?.toLowerCase() || ''
+	if (slotType.includes('přednáška') || slotType.includes('lecture')) return 'lecture'
+	if (slotType.includes('cvičení') || slotType.includes('exercise')) return 'exercise'
+	if (slotType.includes('seminář') || slotType.includes('seminar')) return 'seminar'
+	return 'lecture'
+}
