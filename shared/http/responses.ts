@@ -4,6 +4,11 @@ import type { PaginationMeta } from './pagination.js'
 
 // ---------------------------------------------------------------------------
 // Entity DTOs — mirror the JSON wire format exactly
+//
+// Note: `created_at` and `updated_at` are typed as `string` because they
+// represent ISO-8601 strings produced by JSON.stringify (which serialises
+// JS Date objects to strings). The Kysely layer inside the API holds these
+// as Date objects — the string type here reflects the over-the-wire format.
 // ---------------------------------------------------------------------------
 
 export interface FacultyDTO {
@@ -123,6 +128,12 @@ export interface StudyPlanWithRelationsDTO extends StudyPlanDTO {
 
 // ---------------------------------------------------------------------------
 // Response DTOs — wire format for each endpoint
+//
+// Facet shapes must stay in sync with the authoritative API response types:
+//   api/src/Controllers/Kreditozrouti/types/CoursesResponse.ts
+//   api/src/Controllers/Kreditozrouti/types/StudyPlansResponse.ts
+//   api/src/Controllers/Kreditozrouti/types/StudyPlanCoursesResponse.ts
+// When the API adds or renames a facet key, update the corresponding DTO here.
 // ---------------------------------------------------------------------------
 
 export interface CoursesResponseDTO {
