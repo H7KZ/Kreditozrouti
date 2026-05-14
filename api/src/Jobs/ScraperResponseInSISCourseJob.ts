@@ -37,7 +37,16 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	if (!course?.id) return
 
-	// Skip full update if course hasn't changed since last scrape
+	// Always upsert faculty first — visibility flag changes must propagate
+	// even when the course syllabus hasn't changed.
+	if (course.faculty) {
+		await mysql.transaction().execute(async trx => {
+			await upsertFaculty(trx, course.faculty!)
+		})
+	}
+
+	// Skip the rest if course hasn't changed since last scrape.
+	// Normalize to string in case mysql2 returns a Date object for the date column.
 	if (course.last_modified_date) {
 		const existing = await mysql
 			.selectFrom(CourseTable._table)
@@ -45,7 +54,11 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			.where('id', '=', course.id)
 			.executeTakeFirst()
 
-		if (existing?.last_modified_date === course.last_modified_date) {
+		const dbDate = existing?.last_modified_date instanceof Date
+			? existing.last_modified_date.toISOString().slice(0, 10)
+			: existing?.last_modified_date
+
+		if (dbDate === course.last_modified_date) {
 			LoggerJobContext.add({ skipped_unchanged: true })
 			return
 		}

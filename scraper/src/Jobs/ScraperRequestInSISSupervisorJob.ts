@@ -23,8 +23,22 @@ const REGISTRATION_WINDOWS: Array<{ start: string; end: string }> = [
     { start: '2027-12-01', end: '2028-02-28' },
 ]
 
+const MAX_KNOWN_WINDOW_END = REGISTRATION_WINDOWS[REGISTRATION_WINDOWS.length - 1]?.end ?? '2000-01-01'
+
 function isInRegistrationWindow(): boolean {
     const today = new Date().toISOString().slice(0, 10)
+
+    // Past all known windows — fail open with a loud warning so the missing
+    // dates get noticed rather than silently stopping all catalog syncs.
+    if (today > MAX_KNOWN_WINDOW_END) {
+        console.error(
+            `[Supervisor] WARNING: today (${today}) is past all known registration windows ` +
+            `(last: ${MAX_KNOWN_WINDOW_END}). Update REGISTRATION_WINDOWS in ` +
+            `ScraperRequestInSISSupervisorJob.ts. Defaulting to SYNC to avoid data staleness.`
+        )
+        return true
+    }
+
     return REGISTRATION_WINDOWS.some(w => today >= w.start && today <= w.end)
 }
 
