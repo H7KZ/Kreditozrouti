@@ -3,6 +3,12 @@ import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyP
 export interface ScraperInSISFaculty {
 	ident: string | null
 	title: string | null
+	is_schedule_publicly_visible: boolean
+}
+
+export interface ScraperInSISCourseStudyLoad {
+	activity: string
+	hours: number
 }
 
 export interface ScraperInSISCatalog {
@@ -27,6 +33,7 @@ export interface ScraperInSISCourse {
 	semester: InSISSemester | null
 	year: number | null
 	lecturers: string[] | null
+	guarantors: string[] | null
 	prerequisites: string | null
 	recommended_programmes: string | null
 	required_work_experience: string | null
@@ -35,7 +42,11 @@ export interface ScraperInSISCourse {
 	course_contents: string | null
 	assessment_methods: ScraperInSISCourseAssessmentMethod[] | null
 	special_requirements: string | null
-	literature: string | null
+	literature_required: string | null
+	literature_recommended: string | null
+	last_modified_date: string | null
+	last_modified_by: string | null
+	study_load: ScraperInSISCourseStudyLoad[] | null
 	timetable: ScraperInSISCourseTimetableUnit[] | null
 	study_plans: ScraperInSISCourseStudyPlan[] | null
 }

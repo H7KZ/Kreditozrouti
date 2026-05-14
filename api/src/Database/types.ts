@@ -20,6 +20,7 @@ export class FacultyTable {
 	updated_at!: ColumnType<Date, string | undefined, string | undefined>
 
 	title!: string | null
+	is_schedule_publicly_visible!: boolean
 }
 
 export type Faculty<C = void, SP = void> = Selectable<FacultyTable> &
@@ -93,6 +94,20 @@ export class CourseTable {
 
 	special_requirements!: string | null
 	literature!: string | null
+
+	/** Pipe-delimited list of course guarantors. */
+	guarantors!: string | null
+
+	/** ISO date string of last InSIS modification (YYYY-MM-DD). */
+	last_modified_date!: string | null
+
+	last_modified_by!: string | null
+
+	/** JSON array of { activity: string, hours: number } study load entries. */
+	study_load!: string | null
+
+	literature_required!: string | null
+	literature_recommended!: string | null
 }
 
 export type Course<F = void, U = void, A = void, SP = void> = Selectable<CourseTable> &
