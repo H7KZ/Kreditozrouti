@@ -37,6 +37,20 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	if (!course?.id) return
 
+	// Skip full update if course hasn't changed since last scrape
+	if (course.last_modified_date) {
+		const existing = await mysql
+			.selectFrom(CourseTable._table)
+			.select('last_modified_date')
+			.where('id', '=', course.id)
+			.executeTakeFirst()
+
+		if (existing?.last_modified_date === course.last_modified_date) {
+			LoggerJobContext.add({ skipped_unchanged: true })
+			return
+		}
+	}
+
 	await mysql.transaction().execute(async trx => {
 		let facultyId: string | null = null
 		if (course.faculty) facultyId = await upsertFaculty(trx, course.faculty)
@@ -65,7 +79,12 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			learning_outcomes: course.learning_outcomes,
 			course_contents: course.course_contents,
 			special_requirements: course.special_requirements,
-			literature: course.literature
+			guarantors: course.guarantors?.join('|') ?? null,
+			last_modified_date: course.last_modified_date,
+			last_modified_by: course.last_modified_by,
+			study_load: course.study_load ? JSON.stringify(course.study_load) : null,
+			literature_required: course.literature_required,
+			literature_recommended: course.literature_recommended
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -262,9 +281,13 @@ async function upsertFaculty(trx: Transaction<Database>, faculty: ScraperInSISFa
 		.insertInto(FacultyTable._table)
 		.values({
 			id: faculty.ident,
-			title: faculty.title
+			title: faculty.title,
+			is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
 		})
-		.onDuplicateKeyUpdate({ title: faculty.title })
+		.onDuplicateKeyUpdate({
+			title: faculty.title,
+			is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
+		})
 		.execute()
 
 	return faculty.ident

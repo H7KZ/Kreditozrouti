@@ -5,6 +5,7 @@ import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
 import { withSentryJobHandler } from '@api/sentry'
 import InSISService from '@api/Services/InSISService'
+import ScraperService from '@api/Services/ScraperService'
 import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names'
 import { Queue, Worker } from 'bullmq'
@@ -73,17 +74,20 @@ const scraper = {
 		await scraper.queue.request.removeJobScheduler(ScraperInSISCatalogRequestScheduler)
 		await scraper.queue.request.removeJobScheduler(ScraperInSISStudyPlansRequestScheduler)
 
-		const upcomingPeriod = InSISService.getUpcomingPeriod()
 		const periodsForLastFourYears = InSISService.getPeriodsForLastYears(4)
 
-		// Daily at 1 AM in Jan, Feb, Aug, Sep
+		// Supervisor: runs daily at 3 AM, dispatches catalog sync only during registration windows
 		await scraper.queue.request.upsertJobScheduler(
-			ScraperInSISCatalogRequestScheduler,
-			{ pattern: '0 1 * 1-2,8-9 *' },
-			buildCatalogSchedulerJob(upcomingPeriod)
+			'SupervisorScheduler',
+			{ pattern: '0 3 * * *' },
+			{
+				name: 'InSIS:Supervisor',
+				data: { type: 'InSIS:Supervisor' as const },
+				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+			}
 		)
 
-		// Daily at 2 AM in Jan, Feb, Aug, Sep
+		// Study Plans: daily at 2 AM in Jan, Feb, Aug, Sep
 		await scraper.queue.request.upsertJobScheduler(
 			ScraperInSISStudyPlansRequestScheduler,
 			{ pattern: '0 2 * 1-2,8-9 *' },

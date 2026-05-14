@@ -30,11 +30,16 @@ export interface ScraperInSISStudyPlanRequestJob extends ScraperRequestJobBase {
 	url: string
 }
 
+export interface ScraperInSISSupervisorRequestJob extends ScraperRequestJobBase {
+	type: 'InSIS:Supervisor'
+}
+
 export type ScraperRequestJob =
 	| ScraperInSISCatalogRequestJob
 	| ScraperInSISCourseRequestJob
 	| ScraperInSISStudyPlansRequestJob
 	| ScraperInSISStudyPlanRequestJob
+	| ScraperInSISSupervisorRequestJob
 
 interface ScraperResponseJobBase {
 	type: ScraperJob
