@@ -9,7 +9,7 @@
  * shares the same logic as CourseRowExpanded through composables.
  */
 
-import type { CourseWithRelations } from '@api/Contracts'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import api from '@client/api.ts'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useUIStore } from '@client/stores'
@@ -52,7 +52,7 @@ const emit = defineEmits<Emits>()
 const modalRef = ref<HTMLElement | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
-const course = ref<CourseWithRelations | null>(null)
+const course = ref<CourseWithRelationsDTO | null>(null)
 
 // ============================================================================
 // Composables
@@ -106,7 +106,7 @@ async function fetchCourse() {
 	error.value = null
 
 	try {
-		const response = await api.post<{ data: CourseWithRelations[] }>('/courses', {
+		const response = await api.post<{ data: CourseWithRelationsDTO[] }>('/courses', {
 			ids: [props.unit.courseId],
 			limit: 1,
 		})

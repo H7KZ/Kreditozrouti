@@ -3,7 +3,7 @@ import { CourseUnitType, CourseUnitWithSlots, SelectedCourseUnit, UnitGroup, Uni
 import { getSlotType } from '@client/utils/course'
 import type { Ref } from 'vue'
 import { computed } from 'vue'
-import type { CourseWithRelations } from '../../../api/src/Contracts'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 
 /**
  * Options for the course unit selection composable.
@@ -13,7 +13,7 @@ export interface UseCourseUnitSelectionOptions {
 	 * The course to manage selection for.
 	 * Can be a ref for reactive updates or null while loading.
 	 */
-	course: Ref<CourseWithRelations | null> | CourseWithRelations
+	course: Ref<CourseWithRelationsDTO | null> | CourseWithRelationsDTO
 }
 
 /**
@@ -21,7 +21,7 @@ export interface UseCourseUnitSelectionOptions {
  *
  * @example
  * ```ts
- * const { course } = defineProps<{ course: CourseWithRelations }>()
+ * const { course } = defineProps<{ course: CourseWithRelationsDTO }>()
  *
  * const {
  *   unitsByGroup,
@@ -35,7 +35,7 @@ export function useCourseUnitSelection(options: UseCourseUnitSelectionOptions) {
 	const timetableStore = useTimetableStore()
 
 	// Normalize course access (handle both Ref and direct value)
-	const getCourse = (): CourseWithRelations | null => {
+	const getCourse = (): CourseWithRelationsDTO | null => {
 		const c = options.course
 		return 'value' in c ? c.value : c
 	}

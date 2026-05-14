@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { StudyPlanWithRelations } from '@api/Contracts'
+import type { StudyPlanWithRelationsDTO } from '@shared/http/responses'
 import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import type { FacetItem } from '@shared/http/facets'
 import { computed, ref } from 'vue'
@@ -26,7 +26,7 @@ interface SelectedStudyPlan {
 }
 
 interface Props {
-	studyPlans: StudyPlanWithRelations[]
+	studyPlans: StudyPlanWithRelationsDTO[]
 	levelFacets: FacetItem[]
 	levelFilter: string[]
 	titleSearch: string
@@ -83,7 +83,7 @@ function toggleLevelFilter(level: string) {
 }
 
 /** Toggle selection of a study plan */
-function handleTogglePlan(plan: StudyPlanWithRelations) {
+function handleTogglePlan(plan: StudyPlanWithRelationsDTO) {
 	emit('toggle', plan.id, plan.ident || '', plan.title || '')
 }
 

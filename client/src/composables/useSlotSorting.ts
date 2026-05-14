@@ -2,7 +2,7 @@
 import { getSlotType } from '@client/utils/course'
 import { compareDateStrings, getDayIndex, getSlotDay } from '@client/utils/day.ts'
 import type { InSISDay } from '@shared/domain/insis'
-import type { CourseUnitSlot } from '../../../api/src/Contracts'
+import type { CourseUnitSlotDTO } from '@shared/http/responses'
 
 /**
  * Slot sorting composable.
@@ -28,7 +28,7 @@ export function useSlotSorting() {
 	 * @param slots - Array of slots to sort
 	 * @returns New sorted array (original not mutated)
 	 */
-	function sortSlots(slots: CourseUnitSlot[]): CourseUnitSlot[] {
+	function sortSlots(slots: CourseUnitSlotDTO[]): CourseUnitSlotDTO[] {
 		return [...slots].sort((a, b) => {
 			// Compare days
 			const dayA = getSlotDay(a)

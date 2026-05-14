@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/Contracts'
+import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useSlotSorting, useTimeFilterMatching } from '@client/composables'
 import { useTimetableStore } from '@client/stores'
 import type { CourseUnitWithSlots, SelectedCourseUnit } from '@client/types'
@@ -17,7 +17,7 @@ import IconTrash from '~icons/lucide/trash-2'
 const { t, te } = useI18n({ useScope: 'global' })
 
 interface Props {
-	course: CourseWithRelations
+	course: CourseWithRelationsDTO
 }
 
 const props = defineProps<Props>()
@@ -45,19 +45,19 @@ const { slotMatchesTimeFilter, unitMatchesTimeFilter } = useTimeFilterMatching()
 
 const hideConflictingUnits = ref(false)
 
-function getSlotConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
+function getSlotConflicts(slot: CourseUnitSlotDTO): SelectedCourseUnit[] {
 	return timetableStore.getSlotConflicts(slot)
 }
 
-function getSlotCampusConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
+function getSlotCampusConflicts(slot: CourseUnitSlotDTO): SelectedCourseUnit[] {
 	return timetableStore.getSlotCampusConflicts(slot)
 }
 
-function unitHasConflicts(unit: CourseUnit<void, CourseUnitSlot>): boolean {
+function unitHasConflicts(unit: CourseUnitDTO): boolean {
 	return timetableStore.unitHasConflicts(unit)
 }
 
-function unitHasCampusConflictsOnly(unit: CourseUnit<void, CourseUnitSlot>): boolean {
+function unitHasCampusConflictsOnly(unit: CourseUnitDTO): boolean {
 	return !timetableStore.unitHasConflicts(unit) && timetableStore.unitHasCampusConflicts(unit)
 }
 
@@ -97,7 +97,7 @@ const conflictingUnitCount = computed(() => {
 	return count
 })
 
-function formatSlotConflictTooltip(slot: CourseUnitSlot): string {
+function formatSlotConflictTooltip(slot: CourseUnitSlotDTO): string {
 	const conflicts = getSlotConflicts(slot)
 	if (conflicts.length > 0) {
 		const courseIdents = [...new Set(conflicts.map((c) => c.courseIdent))]
@@ -111,7 +111,7 @@ function formatSlotConflictTooltip(slot: CourseUnitSlot): string {
 	return ''
 }
 
-function getSlotCampusConflictTooltip(slot: CourseUnitSlot): string {
+function getSlotCampusConflictTooltip(slot: CourseUnitSlotDTO): string {
 	const campusConflicts = getSlotCampusConflicts(slot)
 	if (campusConflicts.length === 0) return ''
 	const courseIdents = [...new Set(campusConflicts.map((c) => c.courseIdent))]
@@ -127,7 +127,7 @@ function getMissingTypesLabel(): string {
 		.join(', ')
 }
 
-function getSlotHighlightClass(slot: CourseUnitSlot): string {
+function getSlotHighlightClass(slot: CourseUnitSlotDTO): string {
 	if (!slotMatchesTimeFilter(slot)) return ''
 	const type = getSlotType(slot)
 	const classes: Record<string, string> = {
@@ -138,7 +138,7 @@ function getSlotHighlightClass(slot: CourseUnitSlot): string {
 	return classes[type] ?? ''
 }
 
-function getSlotConflictClass(slot: CourseUnitSlot): string {
+function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 	if (getSlotConflicts(slot).length > 0) return 'bg-[var(--insis-danger-light)]'
 	if (getSlotCampusConflicts(slot).length > 0) return 'bg-[var(--insis-warning-light)]'
 	return ''

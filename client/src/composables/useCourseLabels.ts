@@ -2,7 +2,7 @@
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { getCategoryBadgeClass, getSlotType, getUnitTypeColorClass } from '@client/utils/course'
 import type { InSISDay } from '@shared/domain/insis'
-import type { Course, CourseWithRelations } from '../../../api/src/Contracts'
+import type { CourseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 
 /**
  * Course labels composable.
@@ -154,7 +154,7 @@ export function useCourseLabels() {
 	 * @param course - Course object
 	 * @returns Title in current locale with fallbacks
 	 */
-	function getCourseTitle(course: CourseWithRelations | Course): string {
+	function getCourseTitle(course: CourseWithRelationsDTO | CourseDTO): string {
 		switch (locale.value) {
 			case 'cs':
 				return course.title_cs ?? course.title ?? ''

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { CourseWithRelations } from '@api/Contracts'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import CourseInfo from '@client/components/courses/CourseInfo.vue'
 import UnitSelector from '@client/components/courses/UnitSelector.vue'
 
 interface Props {
-	course: CourseWithRelations
+	course: CourseWithRelationsDTO
 }
 
 defineProps<Props>()

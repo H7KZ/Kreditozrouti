@@ -4,7 +4,7 @@ import { useWizardStore } from '@client/stores/wizard.store'
 import { saveToStorage } from '@client/utils/localstorage'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import type { Course, StudyPlanWithRelations } from '../../../api/src/Contracts'
+import type { CourseDTO, StudyPlanWithRelationsDTO } from '@shared/http/responses'
 
 interface PersistedCompletedCoursesState {
 	completedCourseIdents: string[]
@@ -38,11 +38,11 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 		const wizardDataStore = useWizardDataStore()
 		let plans = wizardDataStore.studyPlans
 		if (levelFilter.value.length > 0) {
-			plans = plans.filter((p: StudyPlanWithRelations) => p.level && levelFilter.value.includes(p.level))
+			plans = plans.filter((p: StudyPlanWithRelationsDTO) => p.level && levelFilter.value.includes(p.level))
 		}
 		if (titleSearch.value.trim()) {
 			const search = titleSearch.value.toLowerCase().trim()
-			plans = plans.filter((p: StudyPlanWithRelations) => p.title?.toLowerCase().includes(search) || p.ident?.toLowerCase().includes(search))
+			plans = plans.filter((p: StudyPlanWithRelationsDTO) => p.title?.toLowerCase().includes(search) || p.ident?.toLowerCase().includes(search))
 		}
 		return plans
 	})
@@ -77,7 +77,7 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 		const identMap = courseIdentToCategories.value
 
 		if (completedCoursesCategoryFilter.value.length > 0) {
-			courses = courses.filter((c: Course) => {
+			courses = courses.filter((c: CourseDTO) => {
 				const cats = identMap.get(c.ident)
 				return cats && completedCoursesCategoryFilter.value.some((cat) => cats.has(cat))
 			})
@@ -86,7 +86,7 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 		if (completedCoursesSearch.value.trim()) {
 			const search = completedCoursesSearch.value.toLowerCase().trim()
 			courses = courses.filter(
-				(c: Course) =>
+				(c: CourseDTO) =>
 					c.ident?.toLowerCase().includes(search) ||
 					c.title?.toLowerCase().includes(search) ||
 					c.title_cs?.toLowerCase().includes(search) ||
@@ -98,7 +98,7 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 	})
 
 	const studyPlanCoursesByCategory = computed(() => {
-		const map = new Map<string, Course[]>()
+		const map = new Map<string, CourseDTO[]>()
 		const identMap = courseIdentToCategories.value
 
 		for (const course of filteredStudyPlanCourses.value) {

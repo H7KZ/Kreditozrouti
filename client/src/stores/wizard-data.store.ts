@@ -4,7 +4,7 @@ import { useWizardStore } from '@client/stores/wizard.store'
 import type { FacetItem } from '@shared/http/facets'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Course, StudyPlanWithRelations } from '../../../api/src/Contracts'
+import type { CourseDTO, StudyPlanWithRelationsDTO } from '@shared/http/responses'
 
 /**
  * Wizard Data Store
@@ -19,8 +19,8 @@ export const useWizardDataStore = defineStore('wizardData', () => {
 	const facultyFacets = ref<FacetItem[]>([])
 	const yearFacets = ref<FacetItem[]>([])
 	const levelFacets = ref<FacetItem[]>([])
-	const studyPlans = ref<StudyPlanWithRelations[]>([])
-	const studyPlanCourses = ref<Course[]>([])
+	const studyPlans = ref<StudyPlanWithRelationsDTO[]>([])
+	const studyPlanCourses = ref<CourseDTO[]>([])
 
 	const loading = ref(false)
 	const studyPlanCoursesLoading = ref(false)

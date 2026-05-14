@@ -7,7 +7,7 @@ import { useWizardStore } from '@client/stores/wizard.store'
 import type { CoursesFilter } from '@shared/http/courses'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import type { CoursesResponse, CourseWithRelations } from '../../../api/src/Contracts'
+import type { CoursesResponseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 
 /**
  * Courses Store
@@ -19,8 +19,8 @@ import type { CoursesResponse, CourseWithRelations } from '../../../api/src/Cont
 export const useCoursesStore = defineStore('courses', () => {
 	const { t } = i18n.global
 	const announcer = useAnnouncerStore()
-	const courses = ref<CourseWithRelations[]>([])
-	const facets = ref<CoursesResponse['facets']>({
+	const courses = ref<CourseWithRelationsDTO[]>([])
+	const facets = ref<CoursesResponseDTO['facets']>({
 		faculties: [],
 		days: [],
 		lecturers: [],
@@ -149,7 +149,7 @@ export const useCoursesStore = defineStore('courses', () => {
 		expandedCourseIds.value.clear()
 	}
 
-	function updateCourse(updated: CourseWithRelations) {
+	function updateCourse(updated: CourseWithRelationsDTO) {
 		const idx = courses.value.findIndex((c) => c.id === updated.id)
 		if (idx !== -1) {
 			courses.value[idx] = updated

@@ -2,12 +2,12 @@ import type { CourseUnitType, InSISDay } from '@shared/domain/insis'
 import type { TimeSelection } from '@shared/domain/time'
 import type { CoursesFilter } from '@shared/http/courses'
 import type { PaginationMeta } from '@shared/http/pagination'
-import type { CoursesResponse, CourseUnit, CourseUnitSlot, CourseWithRelations } from '../../../api/src/Contracts'
+import type { CoursesResponseDTO, CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 
 export interface CoursesState {
 	filters: CoursesFilter
-	courses: CourseWithRelations[]
-	facets: CoursesResponse['facets']
+	courses: CourseWithRelationsDTO[]
+	facets: CoursesResponseDTO['facets']
 	pagination: PaginationMeta
 	loading: boolean
 	error: string | null
@@ -16,7 +16,7 @@ export interface CoursesState {
 	timetableExcludeTimes: TimeSelection[]
 }
 
-export type CourseUnitWithSlots = CourseUnit<void, CourseUnitSlot>
+export type CourseUnitWithSlots = CourseUnitDTO
 
 
 export interface SelectedCourseUnit {

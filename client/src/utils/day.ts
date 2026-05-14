@@ -1,11 +1,11 @@
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 import { compareDateStrings, getDayFromDate, parseDateString } from '@shared/domain/day'
 import type { InSISDay } from '@shared/domain/insis'
-import type { CourseUnitSlot } from '../../../api/src/Contracts'
+import type { CourseUnitSlotDTO } from '@shared/http/responses'
 
 export { compareDateStrings, getDayFromDate, parseDateString }
 
-export function getSlotDay(slot: CourseUnitSlot): InSISDay | null {
+export function getSlotDay(slot: CourseUnitSlotDTO): InSISDay | null {
 	return slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
 }
 

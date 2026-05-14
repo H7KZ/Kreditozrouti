@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CourseWithRelations } from '@api/Contracts'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import { useCourseLabels } from '@client/composables'
 import { useCompletedCoursesStore, useCoursesStore } from '@client/stores'
@@ -11,7 +11,7 @@ import IconClock from '~icons/lucide/clock'
 import IconExternalLink from '~icons/lucide/external-link'
 
 interface Props {
-	course: CourseWithRelations
+	course: CourseWithRelationsDTO
 }
 
 const props = defineProps<Props>()

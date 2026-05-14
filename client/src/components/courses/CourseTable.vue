@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CourseWithRelations } from '@api/Contracts'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
@@ -61,7 +61,7 @@ function hasCourseCampusConflict(courseId: number): boolean {
 	return timetableStore.courseStatuses.get(courseId)?.status === 'campus-conflict'
 }
 
-function getCourseScheduleSummary(course: CourseWithRelations): string {
+function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 	return getScheduleSummary(course.units)
 }
 </script>
