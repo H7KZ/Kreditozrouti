@@ -150,7 +150,10 @@ export default class ExtractInSISStudyPlanService {
 
         return {
             ident: facultyIdent,
-            title: facultyTitle
+            title: facultyTitle,
+            // Study plan pages do not expose visibility — defaulting to false;
+            // the catalog scraper will update this when it processes the faculty.
+            is_schedule_publicly_visible: false
         }
     }
 

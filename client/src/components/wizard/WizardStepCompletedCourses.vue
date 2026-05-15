@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { CourseDTO } from '@shared/http/responses'
 import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import { computed, ref } from 'vue'
 import IconCheck from '~icons/lucide/check'
@@ -9,6 +8,7 @@ import IconSearch from '~icons/lucide/search'
 import IconSkipForward from '~icons/lucide/skip-forward'
 import IconSquare from '~icons/lucide/square'
 import IconSquareCheck from '~icons/lucide/square-check-big'
+import type { CourseDTO } from '@shared/http/responses'
 
 /**
  * WizardStepCompletedCourses
@@ -22,7 +22,7 @@ const { getCourseTitle, getCategoryLabel, getCategoryBadgeClass, getCompletionLa
 
 interface Props {
 	/** Courses grouped by category (derived from study plan cross-reference) */
-	coursesByCategory: Map<string, Course[]>
+	coursesByCategory: Map<string, CourseDTO[]>
 	availableCategories: string[]
 	completedCourseIdents: string[]
 	categoryFilter: string[]
@@ -84,7 +84,7 @@ function isCategoryFilterActive(category: string): boolean {
 }
 
 /** Completed count in a category */
-function completedInCategory(courses: Course[]): number {
+function completedInCategory(courses: CourseDTO[]): number {
 	return courses.filter((c) => isCompleted(c.ident)).length
 }
 

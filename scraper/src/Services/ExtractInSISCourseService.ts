@@ -1,3 +1,4 @@
+import MarkdownService from '@scraper/Services/MarkdownService'
 import type {
     InSISDay,
     InSISSemester,
@@ -9,7 +10,6 @@ import type {
     ScraperInSISCourseTimetableUnit,
     ScraperInSISFaculty
 } from '@scraper/types/insis'
-import MarkdownService from '@scraper/Services/MarkdownService'
 import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 import * as cheerio from 'cheerio'
@@ -134,8 +134,8 @@ export default class ExtractInSISCourseService {
         let is_schedule_publicly_visible = true
         if (year !== null && facultyIdent) {
             if (facultyIdent === 'CTVS' && year >= 2017) is_schedule_publicly_visible = false // PE
-            if (facultyIdent === 'OZS'  && year >= 2020) is_schedule_publicly_visible = false
-            if (facultyIdent === 'IOM'  && year >= 2021) is_schedule_publicly_visible = false
+            if (facultyIdent === 'OZS' && year >= 2020) is_schedule_publicly_visible = false
+            if (facultyIdent === 'IOM' && year >= 2021) is_schedule_publicly_visible = false
             if (facultyIdent === 'CESP' && year >= 2022) is_schedule_publicly_visible = false
         }
 
@@ -186,7 +186,8 @@ export default class ExtractInSISCourseService {
             lecturersCell.find('a').each((_, el) => {
                 const name = cleanText($(el).text())
                 if (!name) return
-                const nextText = (el as any).nextSibling?.nodeValue || ''
+                const sibling = (el as { nextSibling: { nodeValue?: string | null } | null }).nextSibling
+                const nextText = sibling?.nodeValue ?? ''
                 if (nextText.includes('(garant)')) {
                     guarantors.push(name)
                 } else {
@@ -226,7 +227,7 @@ export default class ExtractInSISCourseService {
 
         if (literatureHeaderRow.length && literatureHeaderRow.next('tr').length) {
             const literatureCell = literatureHeaderRow.next('tr').find('td')
-            const rawHtml = literatureCell.html() || ''
+            const rawHtml = literatureCell.html() ?? ''
 
             // Split on "Doporučená:" label (case-insensitive)
             const splitIndex = rawHtml.search(/Doporu[cč]en[aá]:/i)
@@ -379,11 +380,9 @@ export default class ExtractInSISCourseService {
 
         if (!match) return { last_modified_by: null, last_modified_date: null }
 
-        const last_modified_by = serializeValue(match[1].trim()) as string | null
+        const last_modified_by = serializeValue(match[1].trim())
         const dateParts = match[2].replace(/\s/g, '').split('.')
-        const last_modified_date = dateParts.length === 3
-            ? `${dateParts[2]}-${dateParts[1].padStart(2, '0')}-${dateParts[0].padStart(2, '0')}`
-            : null
+        const last_modified_date = dateParts.length === 3 ? `${dateParts[2]}-${dateParts[1].padStart(2, '0')}-${dateParts[0].padStart(2, '0')}` : null
 
         return { last_modified_by, last_modified_date }
     }
@@ -415,7 +414,7 @@ export default class ExtractInSISCourseService {
             const hoursMatch = /(\d+)/.exec(valText)
             if (hoursMatch) {
                 result.push({
-                    activity: serializeValue(activity) as string,
+                    activity: serializeValue(activity)!,
                     hours: parseInt(hoursMatch[1], 10)
                 })
             }

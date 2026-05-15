@@ -1,14 +1,14 @@
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { QueueService } from '@scraper/Services/QueueService'
-import type { ScraperInSISSupervisorRequestJob } from '@scraper/types/jobs'
 import type { InSISSemester } from '@scraper/types/insis'
+import type { ScraperInSISSupervisorRequestJob } from '@scraper/types/jobs'
 
 /**
  * Registration windows: date ranges when InSIS data changes heavily.
  * Outside these windows, syllabus changes are rare — no full catalog sync needed.
  * Source: InSIS Harmonogram (ZS typically Jun-Sep, LS typically Dec-Feb).
  */
-const REGISTRATION_WINDOWS: Array<{ start: string; end: string }> = [
+const REGISTRATION_WINDOWS: { start: string; end: string }[] = [
     // ZS 2025/2026
     { start: '2025-06-15', end: '2025-09-25' },
     // LS 2025/2026
@@ -20,7 +20,7 @@ const REGISTRATION_WINDOWS: Array<{ start: string; end: string }> = [
     // ZS 2027/2028
     { start: '2027-06-15', end: '2027-09-25' },
     // LS 2027/2028
-    { start: '2027-12-01', end: '2028-02-28' },
+    { start: '2027-12-01', end: '2028-02-28' }
 ]
 
 const MAX_KNOWN_WINDOW_END = REGISTRATION_WINDOWS[REGISTRATION_WINDOWS.length - 1]?.end ?? '2000-01-01'
@@ -33,8 +33,8 @@ function isInRegistrationWindow(): boolean {
     if (today > MAX_KNOWN_WINDOW_END) {
         console.error(
             `[Supervisor] WARNING: today (${today}) is past all known registration windows ` +
-            `(last: ${MAX_KNOWN_WINDOW_END}). Update REGISTRATION_WINDOWS in ` +
-            `ScraperRequestInSISSupervisorJob.ts. Defaulting to SYNC to avoid data staleness.`
+                `(last: ${MAX_KNOWN_WINDOW_END}). Update REGISTRATION_WINDOWS in ` +
+                `ScraperRequestInSISSupervisorJob.ts. Defaulting to SYNC to avoid data staleness.`
         )
         return true
     }
@@ -58,6 +58,7 @@ function getCurrentSemesterInfo(): { semester: InSISSemester; year: number } {
  * and dispatches a full InSIS catalog sync if so.
  * Outside registration windows, the job is a no-op to reduce InSIS load.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default async function ScraperRequestInSISSupervisorJob(_data: ScraperInSISSupervisorRequestJob): Promise<void> {
     if (!isInRegistrationWindow()) {
         LoggerJobContext.add({ status: 'skipped', reason: 'outside_registration_window' })

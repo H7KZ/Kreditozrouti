@@ -1,4 +1,4 @@
-import { Kysely } from 'kysely'
+import { Kysely, sql } from 'kysely'
 
 export async function up(db: Kysely<any>): Promise<void> {
 	// Add new columns to insis_courses
@@ -8,8 +8,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn('last_modified_date', 'varchar(10)', col => col.defaultTo(null))
 		.addColumn('last_modified_by', 'text', col => col.defaultTo(null))
 		.addColumn('study_load', 'json', col => col.defaultTo(null))
-		.addColumn('literature_required', 'longtext', col => col.defaultTo(null))
-		.addColumn('literature_recommended', 'longtext', col => col.defaultTo(null))
+		.addColumn('literature_required', sql`longtext`, col => col.defaultTo(null))
+		.addColumn('literature_recommended', sql`longtext`, col => col.defaultTo(null))
 		.execute()
 
 	// Add visibility flag to insis_faculties
@@ -30,8 +30,5 @@ export async function down(db: Kysely<any>): Promise<void> {
 		.dropColumn('literature_recommended')
 		.execute()
 
-	await db.schema
-		.alterTable('insis_faculties')
-		.dropColumn('is_schedule_publicly_visible')
-		.execute()
+	await db.schema.alterTable('insis_faculties').dropColumn('is_schedule_publicly_visible').execute()
 }

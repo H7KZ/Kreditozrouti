@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { useCourseLabels, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
-import { CourseUnitType, SelectedCourseUnit } from '@client/types'
+import type { CourseUnitType, SelectedCourseUnit } from '@client/types'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconAlertTriangle from '~icons/lucide/alert-triangle'

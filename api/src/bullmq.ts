@@ -5,7 +5,6 @@ import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
 import { withSentryJobHandler } from '@api/sentry'
 import InSISService from '@api/Services/InSISService'
-import ScraperService from '@api/Services/ScraperService'
 import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names'
 import { Queue, Worker } from 'bullmq'
@@ -22,19 +21,6 @@ const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueu
 })
 
 // Scheduler Job Data
-
-function buildCatalogSchedulerJob(upcomingPeriod: ReturnType<typeof InSISService.getUpcomingPeriod>) {
-	return {
-		name: 'InSIS Catalog Request (at 1 AM in Jan, Feb, Aug, Sep)',
-		data: {
-			type: 'InSIS:Catalog' as const,
-			auto_queue_courses: true,
-			faculties: undefined,
-			periods: [upcomingPeriod]
-		},
-		opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
-	}
-}
 
 function buildStudyPlansSchedulerJob(periodsForLastFourYears: ReturnType<typeof InSISService.getPeriodsForLastYears>) {
 	return {

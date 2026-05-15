@@ -48,15 +48,11 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	// Skip the rest if course hasn't changed since last scrape.
 	// Normalize to string in case mysql2 returns a Date object for the date column.
 	if (course.last_modified_date) {
-		const existing = await mysql
-			.selectFrom(CourseTable._table)
-			.select('last_modified_date')
-			.where('id', '=', course.id)
-			.executeTakeFirst()
+		const existing = await mysql.selectFrom(CourseTable._table).select('last_modified_date').where('id', '=', course.id).executeTakeFirst()
 
-		const dbDate = existing?.last_modified_date instanceof Date
-			? existing.last_modified_date.toISOString().slice(0, 10)
-			: existing?.last_modified_date
+		// mysql2 may return Date objects for date-typed columns at runtime despite the string TS type
+		const raw = existing?.last_modified_date as unknown
+		const dbDate = raw instanceof Date ? raw.toISOString().slice(0, 10) : (raw as string | null | undefined)
 
 		if (dbDate === course.last_modified_date) {
 			LoggerJobContext.add({ skipped_unchanged: true })
@@ -236,7 +232,7 @@ async function syncStudyPlansFromCourse(
 	for (const plan of plans) {
 		// 1. Ensure Faculty exists
 		if (plan.facultyIdent) {
-			await trx.insertInto(FacultyTable._table).values({ id: plan.facultyIdent, title: null }).onDuplicateKeyUpdate({ id: plan.facultyIdent }).execute()
+			await trx.insertInto(FacultyTable._table).values({ id: plan.facultyIdent, title: null, is_schedule_publicly_visible: false }).onDuplicateKeyUpdate({ id: plan.facultyIdent }).execute()
 		}
 
 		// 2. Find Study Plan
