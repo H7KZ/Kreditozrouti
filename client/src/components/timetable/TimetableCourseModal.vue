@@ -9,11 +9,11 @@
  * shares the same logic as CourseRowExpanded through composables.
  */
 
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import api from '@client/api.ts'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useUIStore } from '@client/stores'
 import { SelectedCourseUnit } from '@client/types'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconCheck from '~icons/lucide/check'

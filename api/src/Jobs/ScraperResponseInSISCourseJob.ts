@@ -232,7 +232,11 @@ async function syncStudyPlansFromCourse(
 	for (const plan of plans) {
 		// 1. Ensure Faculty exists
 		if (plan.facultyIdent) {
-			await trx.insertInto(FacultyTable._table).values({ id: plan.facultyIdent, title: null, is_schedule_publicly_visible: false }).onDuplicateKeyUpdate({ id: plan.facultyIdent }).execute()
+			await trx
+				.insertInto(FacultyTable._table)
+				.values({ id: plan.facultyIdent, title: null, is_schedule_publicly_visible: false })
+				.onDuplicateKeyUpdate({ id: plan.facultyIdent })
+				.execute()
 		}
 
 		// 2. Find Study Plan

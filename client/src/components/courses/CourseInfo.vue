@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import { useCourseLabels } from '@client/composables'
 import { useCompletedCoursesStore, useCoursesStore } from '@client/stores'
 import { formatRelativeAge, isCourseStale } from '@client/utils/freshness'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconCircleCheck from '~icons/lucide/circle-check'

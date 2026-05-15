@@ -9,7 +9,7 @@ export interface JobWideEvent {
     timestamp: string
 
     duration_ms?: number
-    status?: 'success' | 'failed' | 'skipped'
+    status?: 'success' | 'failed' | 'skipped' | 'dispatching_catalog'
     error_message?: string
 
     [key: string]: unknown

@@ -11,9 +11,9 @@ import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils
 import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from '@client/utils/timetable'
 import type { InSISDay } from '@shared/domain/insis'
 import type { TimeSelection } from '@shared/domain/time'
+import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 
 const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
 

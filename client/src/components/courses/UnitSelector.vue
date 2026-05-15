@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useSlotSorting, useTimeFilterMatching } from '@client/composables'
 import { useTimetableStore } from '@client/stores'
 import type { CourseUnitWithSlots, SelectedCourseUnit } from '@client/types'
+import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconAlertTriangle from '~icons/lucide/alert-triangle'

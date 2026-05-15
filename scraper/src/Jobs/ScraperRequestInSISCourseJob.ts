@@ -1,5 +1,5 @@
-import { InSISNetworkError, InSISParseError } from '@scraper/Errors/InSISErrors'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
+import { InSISNetworkError, InSISParseError } from '@scraper/Errors/InSISErrors'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'

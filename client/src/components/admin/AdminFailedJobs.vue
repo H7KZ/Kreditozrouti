@@ -1,6 +1,6 @@
 ﻿<script setup lang="ts">
-import type { FailedJob } from '@shared/http/admin'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
+import type { FailedJob } from '@shared/http/admin'
 
 interface Props {
 	jobs: FailedJob[]

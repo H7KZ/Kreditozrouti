@@ -1,9 +1,9 @@
 import type { CourseUnitType, InSISDay } from '@shared/domain/insis'
-export type { CourseUnitType } from '@shared/domain/insis'
 import type { TimeSelection } from '@shared/domain/time'
 import type { CoursesFilter } from '@shared/http/courses'
 import type { PaginationMeta } from '@shared/http/pagination'
 import type { CoursesResponseDTO, CourseUnitDTO, CourseWithRelationsDTO } from '@shared/http/responses'
+export type { CourseUnitType } from '@shared/domain/insis'
 
 export interface CoursesState {
 	filters: CoursesFilter

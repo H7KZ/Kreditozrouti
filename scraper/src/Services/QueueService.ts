@@ -1,6 +1,6 @@
 import scraper from '@scraper/bullmq'
-import type { ScraperInSISCatalogRequestJob } from '@scraper/types/jobs'
 import type { ScraperInSISCourse, ScraperInSISStudyPlan } from '@scraper/types/insis'
+import type { ScraperInSISCatalogRequestJob } from '@scraper/types/jobs'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 
 /**

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import type { CourseSortBy } from '@client/types'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconChevronDown from '~icons/lucide/chevron-down'

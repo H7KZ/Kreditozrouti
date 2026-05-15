@@ -8,5 +8,5 @@ export type {
 	CompletedJob,
 	RecentError,
 	ErrorMetrics,
-	AdminStatsResponse,
+	AdminStatsResponse
 } from '@shared/http/admin'

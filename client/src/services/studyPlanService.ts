@@ -1,6 +1,6 @@
 import api from '@client/api'
-import type { StudyPlanCoursesFilter, StudyPlansFilter } from '@shared/http/study-plans'
 import type { StudyPlanCoursesResponseDTO, StudyPlansResponseDTO } from '@shared/http/responses'
+import type { StudyPlanCoursesFilter, StudyPlansFilter } from '@shared/http/study-plans'
 
 export async function fetchStudyPlans(filters: Partial<StudyPlansFilter>): Promise<StudyPlansResponseDTO> {
 	const response = await api.post<StudyPlansResponseDTO>('/study_plans', filters)

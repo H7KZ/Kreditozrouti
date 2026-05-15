@@ -5,9 +5,9 @@ import { useFiltersStore } from '@client/stores/filters.store'
 import { useTimetableStore } from '@client/stores/timetable.store'
 import { useWizardStore } from '@client/stores/wizard.store'
 import type { CoursesFilter } from '@shared/http/courses'
+import type { CoursesResponseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import type { CoursesResponseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 
 /**
  * Courses Store

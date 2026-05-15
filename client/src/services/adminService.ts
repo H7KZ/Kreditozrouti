@@ -1,5 +1,5 @@
-﻿import type { AdminStatsResponse } from '@shared/http/admin'
-import api from '@client/api'
+﻿import api from '@client/api'
+import type { AdminStatsResponse } from '@shared/http/admin'
 
 export type { AdminStatsResponse }
 

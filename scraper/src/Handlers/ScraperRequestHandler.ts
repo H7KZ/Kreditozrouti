@@ -1,9 +1,9 @@
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import ScraperRequestInSISCatalogJob from '@scraper/Jobs/ScraperRequestInSISCatalogJob'
 import ScraperRequestInSISCourseJob from '@scraper/Jobs/ScraperRequestInSISCourseJob'
-import ScraperRequestInSISSupervisorJob from '@scraper/Jobs/ScraperRequestInSISSupervisorJob'
 import ScraperRequestInSISStudyPlanJob from '@scraper/Jobs/ScraperRequestInSISStudyPlanJob'
 import ScraperRequestInSISStudyPlansJob from '@scraper/Jobs/ScraperRequestInSISStudyPlansJob'
+import ScraperRequestInSISSupervisorJob from '@scraper/Jobs/ScraperRequestInSISSupervisorJob'
 import type { ScraperRequestJob } from '@scraper/types/jobs'
 import { Job } from 'bullmq'
 

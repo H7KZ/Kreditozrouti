@@ -3,8 +3,8 @@ import { useFiltersStore } from '@client/stores'
 import { CourseUnitWithSlots } from '@client/types'
 import { getSlotDay } from '@client/utils/day.ts'
 import type { TimeSelection } from '@shared/domain/time'
-import { computed } from 'vue'
 import type { CourseUnitSlotDTO } from '@shared/http/responses'
+import { computed } from 'vue'
 
 /**
  * Time filter matching composable.

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import CourseInfo from '@client/components/courses/CourseInfo.vue'
 import UnitSelector from '@client/components/courses/UnitSelector.vue'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 
 interface Props {
 	course: CourseWithRelationsDTO
