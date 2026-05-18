@@ -29,7 +29,7 @@ export const InSISStudyPlanCourseGroupValues = [
 
 export type InSISStudyPlanCourseGroup = (typeof InSISStudyPlanCourseGroupValues)[number]
 
-export type ScraperJob = 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan' | 'InSIS:Supervisor'
+export type ScraperJob = 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan'
 
 export type CourseUnitType = 'lecture' | 'exercise' | 'seminar'
 

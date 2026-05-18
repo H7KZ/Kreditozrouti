@@ -3,7 +3,6 @@ import ScraperRequestInSISCatalogJob from '@scraper/Jobs/ScraperRequestInSISCata
 import ScraperRequestInSISCourseJob from '@scraper/Jobs/ScraperRequestInSISCourseJob'
 import ScraperRequestInSISStudyPlanJob from '@scraper/Jobs/ScraperRequestInSISStudyPlanJob'
 import ScraperRequestInSISStudyPlansJob from '@scraper/Jobs/ScraperRequestInSISStudyPlansJob'
-import ScraperRequestInSISSupervisorJob from '@scraper/Jobs/ScraperRequestInSISSupervisorJob'
 import type { ScraperRequestJob } from '@scraper/types/jobs'
 import { Job } from 'bullmq'
 
@@ -32,8 +31,7 @@ export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>)
         ['InSIS:Catalog', job => ScraperRequestInSISCatalogJob(job.data as Parameters<typeof ScraperRequestInSISCatalogJob>[0])],
         ['InSIS:Course', job => ScraperRequestInSISCourseJob(job.data as Parameters<typeof ScraperRequestInSISCourseJob>[0])],
         ['InSIS:StudyPlans', job => ScraperRequestInSISStudyPlansJob(job.data as Parameters<typeof ScraperRequestInSISStudyPlansJob>[0])],
-        ['InSIS:StudyPlan', job => ScraperRequestInSISStudyPlanJob(job.data as Parameters<typeof ScraperRequestInSISStudyPlanJob>[0])],
-        ['InSIS:Supervisor', job => ScraperRequestInSISSupervisorJob(job.data as Parameters<typeof ScraperRequestInSISSupervisorJob>[0])]
+        ['InSIS:StudyPlan', job => ScraperRequestInSISStudyPlanJob(job.data as Parameters<typeof ScraperRequestInSISStudyPlanJob>[0])]
     ])
 
     await LoggerJobContext.run(async () => {

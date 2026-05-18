@@ -22,11 +22,10 @@ InSIS has no public API. All data must be extracted by issuing HTTP requests tha
 │  │  ScraperRequestQueue (Redis)  ← API enqueues jobs            │  │
 │  │                                                              │  │
 │  │  ScraperRequestHandler  (routes by job.data.type)            │  │
-│  │    ├─ InSIS:Supervisor   → ScraperRequestInSISSupervisorJob  │  │
-│  │    ├─ InSIS:Catalog      → ScraperRequestInSISCatalogJob     │  │
-│  │    ├─ InSIS:Course       → ScraperRequestInSISCourseJob      │  │
-│  │    ├─ InSIS:StudyPlans   → ScraperRequestInSISStudyPlansJob  │  │
-│  │    └─ InSIS:StudyPlan    → ScraperRequestInSISStudyPlanJob   │  │
+│  │    ├─ InSIS:Catalog    → ScraperRequestInSISCatalogJob       │  │
+│  │    ├─ InSIS:Course     → ScraperRequestInSISCourseJob        │  │
+│  │    ├─ InSIS:StudyPlans → ScraperRequestInSISStudyPlansJob    │  │
+│  │    └─ InSIS:StudyPlan  → ScraperRequestInSISStudyPlanJob     │  │
 │  └──────────────────────────────────────────────────────────────┘  │
 │                                                                    │
 │  ┌───────────────────────────────────────────────────────┐         │
@@ -38,24 +37,20 @@ InSIS has no public API. All data must be extracted by issuing HTTP requests tha
 ## Complete Data Flow
 
 ```
-1. API scheduler runs daily at 3 AM (production only)
-   └─ enqueues InSIS:Supervisor job
+1. API scheduler runs at 3 AM on registration months (Jan, Feb, Jun–Sep, Nov, Dec)
+   └─ enqueues InSIS:Catalog job directly
 
-2. Scraper runs Supervisor job
-   └─ checks if today is within a registration window
-       └─ if YES: enqueues InSIS:Catalog job for the current semester
-
-3. Scraper runs Catalog job (two phases)
+2. Scraper runs Catalog job (two phases)
    Phase 1: GET extended search page → discover faculties + academic periods
    Phase 2: POST search form for each faculty/period → collect course URLs
    └─ sends URL list back via ScraperResponseQueue (InSIS:Catalog response)
    └─ if auto_queue_courses=true: enqueues one InSIS:Course job per URL
 
-4. Scraper runs Course jobs (one per syllabus page)
+3. Scraper runs Course jobs (one per syllabus page)
    └─ GET course page, parse HTML
    └─ sends ScraperInSISCourse object via ScraperResponseQueue
 
-5. API receives results from ScraperResponseQueue
+4. API receives results from ScraperResponseQueue
    └─ ScraperResponseInSISCourseJob: upserts course + units + slots → MySQL
 ```
 
@@ -82,7 +77,6 @@ scraper/src/
 │   └── ScraperRequestHandler.ts      # Routes jobs by type to job functions
 │
 ├── Jobs/                             # One file per job type
-│   ├── ScraperRequestInSISSupervisorJob.ts
 │   ├── ScraperRequestInSISCatalogJob.ts
 │   ├── ScraperRequestInSISCourseJob.ts
 │   ├── ScraperRequestInSISStudyPlansJob.ts

@@ -80,25 +80,30 @@ Processes incoming results from the scraper. Each job is handled by `ScraperResp
 
 ### Scheduler
 
-The API registers a BullMQ job scheduler (repeatable job) on startup:
+The API registers two BullMQ job schedulers on startup (production only). Registration window decisions live entirely in the API — the cron pattern itself is scoped to the months when InSIS data changes:
 
 ```typescript
-// Production only (Config.isEnvProduction())
+// Registration window months (ZS: Jun–Sep, LS: Nov–Feb, with 1-week early-start buffer)
+const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9,11,12'
+
+// Catalog: 3 AM during registration months
 await scraperRequestQueue.upsertJobScheduler(
-  'SupervisorScheduler',
-  { pattern: '0 3 * * *' },   // daily at 3 AM
-  { name: 'InSIS:Supervisor', data: { type: 'InSIS:Supervisor' } }
+  ScraperInSISCatalogRequestScheduler,
+  { pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *` },
+  { name: 'InSIS:Catalog', data: { type: 'InSIS:Catalog', auto_queue_courses: true, periods: [...] } }
+)
+
+// Study Plans: 2 AM during registration months
+await scraperRequestQueue.upsertJobScheduler(
+  ScraperInSISStudyPlansRequestScheduler,
+  { pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *` },
+  { name: 'InSIS:StudyPlans', data: { type: 'InSIS:StudyPlans', auto_queue_study_plans: true, periods: [...] } }
 )
 ```
 
-The scheduler entry is stored in Redis. At 3 AM, BullMQ automatically adds a new `InSIS:Supervisor` job to `ScraperRequestQueue`. The scraper then picks it up.
+Each scheduler entry is stored in Redis. At the scheduled time, BullMQ enqueues the job directly onto `ScraperRequestQueue` — the scraper receives an `InSIS:Catalog` or `InSIS:StudyPlans` job and executes it without any gate logic.
 
-The API also removes old scheduler IDs on startup:
-```typescript
-await scraperRequestQueue.removeJobScheduler(ScraperInSISCatalogRequestScheduler)
-await scraperRequestQueue.removeJobScheduler(ScraperInSISStudyPlansRequestScheduler)
-```
-These were the previous direct-schedule approach, replaced by the Supervisor pattern.
+On startup the API also cleans up the old `SupervisorScheduler` entry left over from the previous architecture.
 
 **In development:** The scheduler is disabled. Trigger scrapes manually via the `/commands/insis/*` API endpoints.
 
@@ -108,7 +113,8 @@ BullMQ's built-in deduplication prevents the same logical job from being queued 
 
 | Job | Dedup key | TTL |
 |---|---|---|
-| `InSIS:Catalog` (from Supervisor) | `InSIS:Catalog:Supervisor` | 30 seconds |
+| `InSIS:Catalog` (manual run) | `InSIS:Catalog:ManualRun` | 30 seconds |
+| `InSIS:StudyPlans` (manual run) | `InSIS:StudyPlans:ManualRun` | 30 seconds |
 | `InSIS:Course` (from catalog) | `InSIS:Course:{courseId}` | until consumed |
 | `InSIS:StudyPlan` (from study plans) | `InSIS:StudyPlan:{planId}` | until consumed |
 
@@ -191,7 +197,6 @@ Centralized, type-safe wrappers around BullMQ operations. All queue writes from 
 |---|---|---|---|
 | `queueCourseRequests(courses)` | ScraperRequestQueue | `InSIS:Course:{courseId}` | Uses `addBulk` for efficiency |
 | `queueStudyPlanRequests(urls, extractIdFn)` | ScraperRequestQueue | `InSIS:StudyPlan:{planId}` | Uses `runWithConcurrency(20)` |
-| `enqueueCatalogRequest(data)` | ScraperRequestQueue | `InSIS:Catalog:Supervisor` TTL 30s | Called by Supervisor job |
 
 ## Operational Notes
 

@@ -6,49 +6,12 @@ All scraper jobs are plain async functions routed through `ScraperRequestHandler
 
 | `job.data.type` | Handler function | Source file |
 |---|---|---|
-| `InSIS:Supervisor` | `ScraperRequestInSISSupervisorJob` | `Jobs/ScraperRequestInSISSupervisorJob.ts` |
 | `InSIS:Catalog` | `ScraperRequestInSISCatalogJob` | `Jobs/ScraperRequestInSISCatalogJob.ts` |
 | `InSIS:Course` | `ScraperRequestInSISCourseJob` | `Jobs/ScraperRequestInSISCourseJob.ts` |
 | `InSIS:StudyPlans` | `ScraperRequestInSISStudyPlansJob` | `Jobs/ScraperRequestInSISStudyPlansJob.ts` |
 | `InSIS:StudyPlan` | `ScraperRequestInSISStudyPlanJob` | `Jobs/ScraperRequestInSISStudyPlanJob.ts` |
 
----
-
-## InSIS:Supervisor
-
-**Purpose:** Acts as a daily gate. Runs at 3 AM (production) and decides whether a full catalog sync is needed based on annual registration windows. Without this job, syncs would run 365 days a year; with it, they only run during the periods when InSIS data actually changes.
-
-**Input payload:**
-```typescript
-{ type: 'InSIS:Supervisor' }
-```
-
-**Flow:**
-```
-1. Call isInRegistrationWindow()
-   └─ computes effective window from ANNUAL_WINDOWS (with 7-day early-start)
-   └─ if outside window: log { status: 'skipped' }, return
-
-2. Call getCurrentSemesterInfo()
-   └─ derive { semester: 'ZS'|'LS', year: number } from current month
-
-3. Enqueue InSIS:Catalog via QueueService.enqueueCatalogRequest()
-   └─ deduplication key: 'InSIS:Catalog:Supervisor' (TTL 30s)
-   └─ auto_queue_courses: true
-```
-
-**Output:** No direct response job. Side effect: enqueues a `InSIS:Catalog` job.
-
-**Registration windows** (`ANNUAL_WINDOWS`):
-
-| Semester | Raw start | Raw end | Effective start (−7 days) |
-|---|---|---|---|
-| ZS (winter) | June 15 | September 25 | June 8 |
-| LS (summer) | December 1 | February 28 | November 24 |
-
-Windows are year-agnostic — the job expands them dynamically for the current year, so the file never needs updating as years roll over. The LS window spans the year boundary (Dec → Feb of the following year) and is handled correctly.
-
-**Error handling:** No retry needed — if the supervisor is skipped due to a transient failure, it runs again next day.
+> **Registration window decisions belong to the API, not the scraper.** The API scheduler uses month-scoped cron patterns (`1,2,6,7,8,9,11,12`) to only fire during registration periods. The scraper receives jobs and executes them — it has no gate logic of its own.
 
 ---
 

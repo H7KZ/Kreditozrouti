@@ -1,6 +1,5 @@
 import scraper from '@scraper/bullmq'
 import type { ScraperInSISCourse, ScraperInSISStudyPlan } from '@scraper/types/insis'
-import type { ScraperInSISCatalogRequestJob } from '@scraper/types/jobs'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 
 /**
@@ -62,11 +61,5 @@ export class QueueService {
                 { deduplication: { id: `InSIS:StudyPlan:${extractIdFn(planUrl)}` } }
             )
         )
-    }
-
-    static async enqueueCatalogRequest(data: ScraperInSISCatalogRequestJob): Promise<void> {
-        await scraper.queue.request.add('InSIS Catalog Request (Supervisor)', data, {
-            deduplication: { id: 'InSIS:Catalog:Supervisor', ttl: 30_000 }
-        })
     }
 }

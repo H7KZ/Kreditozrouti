@@ -63,7 +63,7 @@ type InSISStudyPlanCourseCategory =
 ### `ScraperJob`
 
 ```typescript
-type ScraperJob = 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan' | 'InSIS:Supervisor'
+type ScraperJob = 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan'
 ```
 
 String discriminant used in both request and response job payloads.
@@ -289,17 +289,11 @@ interface ScraperInSISStudyPlanRequestJob extends ScraperRequestJobBase {
   url: string
 }
 
-interface ScraperInSISSupervisorRequestJob extends ScraperRequestJobBase {
-  type: 'InSIS:Supervisor'
-  // No additional fields — supervisor derives all parameters at runtime
-}
-
 type ScraperRequestJob =
   | ScraperInSISCatalogRequestJob
   | ScraperInSISCourseRequestJob
   | ScraperInSISStudyPlansRequestJob
   | ScraperInSISStudyPlanRequestJob
-  | ScraperInSISSupervisorRequestJob
 ```
 
 ### Response Jobs (Scraper → API)
@@ -332,7 +326,7 @@ type ScraperResponseJob =
   | ScraperInSISStudyPlanResponseJob
 ```
 
-Note: `InSIS:Supervisor` is **not** in `ScraperResponseJob` — the supervisor job produces no direct response; it only enqueues further work.
+Note: scheduled jobs (`InSIS:Catalog`, `InSIS:StudyPlans`) are enqueued directly by the API scheduler — they produce response jobs but have no corresponding response type for the scheduler trigger itself.
 
 ---
 

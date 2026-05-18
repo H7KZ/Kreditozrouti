@@ -22,9 +22,31 @@ const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueu
 
 // Scheduler Job Data
 
+/**
+ * Registration window months (with one-week early-start buffer):
+ *   ZS window: June 9 – September 25  → months 6,7,8,9
+ *   LS window: January 1 – February 27 → months 1,2
+ *
+ * Catalog runs at 3 AM, Study Plans at 2 AM — both on this month set.
+ */
+const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9'
+
+function buildCatalogSchedulerJob(periodsForLastFourYears: ReturnType<typeof InSISService.getPeriodsForLastYears>) {
+	return {
+		name: `InSIS Catalog Request (at 3 AM during registration months)`,
+		data: {
+			type: 'InSIS:Catalog' as const,
+			auto_queue_courses: true,
+			faculties: undefined,
+			periods: periodsForLastFourYears
+		},
+		opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+	}
+}
+
 function buildStudyPlansSchedulerJob(periodsForLastFourYears: ReturnType<typeof InSISService.getPeriodsForLastYears>) {
 	return {
-		name: 'InSIS Study Plans Request (at 2 AM in Jan, Feb, Aug, Sep)',
+		name: `InSIS Study Plans Request (at 2 AM during registration months)`,
 		data: {
 			type: 'InSIS:StudyPlans' as const,
 			auto_queue_study_plans: true,
@@ -57,26 +79,23 @@ const scraper = {
 	async schedulers() {
 		if (!Config.isEnvProduction()) return
 
-		await scraper.queue.request.removeJobScheduler(ScraperInSISCatalogRequestScheduler)
-		await scraper.queue.request.removeJobScheduler(ScraperInSISStudyPlansRequestScheduler)
+		// Remove legacy scheduler IDs (SupervisorScheduler was removed in favour of
+		// direct month-scoped cron schedulers on the API side)
+		await scraper.queue.request.removeJobScheduler('SupervisorScheduler')
 
 		const periodsForLastFourYears = InSISService.getPeriodsForLastYears(4)
 
-		// Supervisor: runs daily at 3 AM, dispatches catalog sync only during registration windows
+		// Catalog: daily at 3 AM during registration months
 		await scraper.queue.request.upsertJobScheduler(
-			'SupervisorScheduler',
-			{ pattern: '0 3 * * *' },
-			{
-				name: 'InSIS:Supervisor',
-				data: { type: 'InSIS:Supervisor' as const },
-				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
-			}
+			ScraperInSISCatalogRequestScheduler,
+			{ pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *` },
+			buildCatalogSchedulerJob(periodsForLastFourYears)
 		)
 
-		// Study Plans: daily at 2 AM in Jan, Feb, Aug, Sep
+		// Study Plans: daily at 2 AM during registration months
 		await scraper.queue.request.upsertJobScheduler(
 			ScraperInSISStudyPlansRequestScheduler,
-			{ pattern: '0 2 * 1-2,8-9 *' },
+			{ pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *` },
 			buildStudyPlansSchedulerJob(periodsForLastFourYears)
 		)
 
