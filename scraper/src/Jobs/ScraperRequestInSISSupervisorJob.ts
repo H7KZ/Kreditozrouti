@@ -4,42 +4,47 @@ import type { InSISSemester } from '@scraper/types/insis'
 import type { ScraperInSISSupervisorRequestJob } from '@scraper/types/jobs'
 
 /**
- * Registration windows: date ranges when InSIS data changes heavily.
- * Outside these windows, syllabus changes are rare — no full catalog sync needed.
+ * Annual registration window definitions — month/day boundaries only, applied to every year.
+ * One week before `start` is prepended at runtime so syncing begins before the rush.
  * Source: InSIS Harmonogram (ZS typically Jun-Sep, LS typically Dec-Feb).
  */
-const REGISTRATION_WINDOWS: { start: string; end: string }[] = [
-    // ZS 2025/2026
-    { start: '2025-06-15', end: '2025-09-25' },
-    // LS 2025/2026
-    { start: '2025-12-01', end: '2026-02-28' },
-    // ZS 2026/2027
-    { start: '2026-06-15', end: '2026-09-25' },
-    // LS 2026/2027
-    { start: '2026-12-01', end: '2027-02-28' },
-    // ZS 2027/2028
-    { start: '2027-06-15', end: '2027-09-25' },
-    // LS 2027/2028
-    { start: '2027-12-01', end: '2028-02-28' }
+const ANNUAL_WINDOWS: { start: string; end: string }[] = [
+    // ZS: registration opens mid-June, semester ends late September
+    { start: '06-15', end: '09-25' },
+    // LS: registration opens early December, semester ends late February
+    { start: '12-01', end: '02-28' }
 ]
 
-const MAX_KNOWN_WINDOW_END = REGISTRATION_WINDOWS[REGISTRATION_WINDOWS.length - 1]?.end ?? '2000-01-01'
+/** How many days before the window start we begin syncing. */
+const EARLY_START_DAYS = 7
+
+function addDays(dateStr: string, days: number): string {
+    const d = new Date(dateStr)
+    d.setDate(d.getDate() + days)
+    return d.toISOString().slice(0, 10)
+}
 
 function isInRegistrationWindow(): boolean {
     const today = new Date().toISOString().slice(0, 10)
+    const year = today.slice(0, 4)
+    const nextYear = String(Number(year) + 1)
 
-    // Past all known windows — fail open with a loud warning so the missing
-    // dates get noticed rather than silently stopping all catalog syncs.
-    if (today > MAX_KNOWN_WINDOW_END) {
-        console.error(
-            `[Supervisor] WARNING: today (${today}) is past all known registration windows ` +
-                `(last: ${MAX_KNOWN_WINDOW_END}). Update REGISTRATION_WINDOWS in ` +
-                `ScraperRequestInSISSupervisorJob.ts. Defaulting to SYNC to avoid data staleness.`
-        )
-        return true
+    // Expand each annual window into concrete year-qualified ranges, covering a two-year
+    // span so a Dec window that straddles year boundaries (Dec → Feb) always resolves.
+    for (const w of ANNUAL_WINDOWS) {
+        for (const y of [String(Number(year) - 1), year, nextYear]) {
+            const rawStart = `${y}-${w.start}`
+            const effectiveStart = addDays(rawStart, -EARLY_START_DAYS)
+
+            // LS window end month (Feb) is less than start month (Dec) → end is in next year
+            const endYear = w.end < w.start ? String(Number(y) + 1) : y
+            const effectiveEnd = `${endYear}-${w.end}`
+
+            if (today >= effectiveStart && today <= effectiveEnd) return true
+        }
     }
 
-    return REGISTRATION_WINDOWS.some(w => today >= w.start && today <= w.end)
+    return false
 }
 
 function getCurrentSemesterInfo(): { semester: InSISSemester; year: number } {
