@@ -87,6 +87,15 @@ const { formatTimeRange } = useTimeUtils()
 // Computed
 // ============================================================================
 
+const unitConflictStatuses = computed<Record<number, UnitConflictStatus>>(() => {
+	if (!course.value) return {}
+	const result: Record<number, UnitConflictStatus> = {}
+	for (const unit of course.value.units ?? []) {
+		result[unit.id] = getUnitConflictStatus(unit)
+	}
+	return result
+})
+
 /** Day label for the current unit */
 const dayLabel = computed(() => {
 	if (props.unit.day) return getDayLabel(props.unit.day)
@@ -349,23 +358,22 @@ onUnmounted(() => {
 												</div>
 
 												<!-- Conflict status badge -->
-												<div class="mx-3 shrink-0">
-													<template v-if="getUnitConflictStatus(courseUnit).type === 'conflict'">
+												<div class="mx-3 shrink-0" v-if="unitConflictStatuses[courseUnit.id]?.type !== 'selected'">
+													<template v-if="unitConflictStatuses[courseUnit.id]?.type === 'conflict'">
 														<span class="insis-badge insis-badge-danger text-xs">
-															⚠ {{ $t('components.timetable.TimetableCourseModal.slotConflict', { ident: (getUnitConflictStatus(courseUnit) as { type: 'conflict'; ident: string }).ident }) }}
+															⚠ {{ $t('components.timetable.TimetableCourseModal.slotConflict', { ident: (unitConflictStatuses[courseUnit.id] as { type: 'conflict'; ident: string }).ident }) }}
 														</span>
 													</template>
-													<template v-else-if="getUnitConflictStatus(courseUnit).type === 'campus'">
+													<template v-else-if="unitConflictStatuses[courseUnit.id]?.type === 'campus'">
 														<span class="insis-badge insis-badge-warning text-xs">
-															🏫 {{ $t('components.timetable.TimetableCourseModal.slotCampusConflict', { ident: (getUnitConflictStatus(courseUnit) as { type: 'campus'; ident: string }).ident }) }}
+															🏫 {{ $t('components.timetable.TimetableCourseModal.slotCampusConflict', { ident: (unitConflictStatuses[courseUnit.id] as { type: 'campus'; ident: string }).ident }) }}
 														</span>
 													</template>
-													<template v-else-if="getUnitConflictStatus(courseUnit).type === 'free'">
+													<template v-else-if="unitConflictStatuses[courseUnit.id]?.type === 'free'">
 														<span class="text-xs text-[var(--insis-gray-400)]">
 															✓ {{ $t('components.timetable.TimetableCourseModal.slotFree') }}
 														</span>
 													</template>
-													<!-- 'selected' state: no extra badge — the green row border already signals it -->
 												</div>
 
 												<!-- Action button -->
