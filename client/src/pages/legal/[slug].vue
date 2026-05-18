@@ -78,7 +78,7 @@ watch([() => route.params.slug, locale], loadDoc, { immediate: true })
 
 		<div v-else class="flex gap-10">
 			<LegalSidebar :html="renderedHtml" class="hidden lg:block" />
-			<article class="prose prose-slate min-w-0 max-w-none flex-1" v-html="renderedHtml" />
+			<article class="prose min-w-0 max-w-none flex-1" v-html="renderedHtml" />
 		</div>
 	</div>
 </template>
