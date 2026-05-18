@@ -34,22 +34,12 @@ export async function columnExists(db: Kysely<any>, tableName: string, columnNam
 	return (result.rows[0]?.cnt ?? 0) > 0
 }
 
-export async function addColumnSafe(
-	db: Kysely<any>,
-	tableName: string,
-	columnName: string,
-	columnDef: string
-): Promise<void> {
+export async function addColumnSafe(db: Kysely<any>, tableName: string, columnName: string, columnDef: string): Promise<void> {
 	if (await columnExists(db, tableName, columnName)) return
 	await sql.raw(`ALTER TABLE \`${tableName}\` ADD COLUMN \`${columnName}\` ${columnDef}`).execute(db)
 }
 
-export async function renameColumnSafe(
-	db: Kysely<any>,
-	tableName: string,
-	fromColumn: string,
-	toColumn: string
-): Promise<void> {
+export async function renameColumnSafe(db: Kysely<any>, tableName: string, fromColumn: string, toColumn: string): Promise<void> {
 	// Skip if source column is already gone (already renamed or never existed)
 	if (!(await columnExists(db, tableName, fromColumn))) return
 	await db.schema.alterTable(tableName).renameColumn(fromColumn, toColumn).execute()
