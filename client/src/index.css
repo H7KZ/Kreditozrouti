@@ -497,27 +497,28 @@ html.dark {
 		text-decoration: underline;
 		color: var(--insis-link-hover);
 	}
+}
 
-	/* Tailwind Typography — wire prose vars to design system tokens so prose
-	   content adapts automatically when html.dark / prefers-color-scheme flips. */
-	.prose {
-		--tw-prose-body: var(--insis-text);
-		--tw-prose-headings: var(--insis-text);
-		--tw-prose-lead: var(--insis-text-2);
-		--tw-prose-links: var(--insis-blue);
-		--tw-prose-bold: var(--insis-text);
-		--tw-prose-counters: var(--insis-text-2);
-		--tw-prose-bullets: var(--insis-gray-400);
-		--tw-prose-hr: var(--insis-border);
-		--tw-prose-quotes: var(--insis-text-2);
-		--tw-prose-quote-borders: var(--insis-border-mid);
-		--tw-prose-captions: var(--insis-text-3);
-		--tw-prose-kbd: var(--insis-text);
-		--tw-prose-kbd-shadows: var(--insis-gray-400);
-		--tw-prose-code: var(--insis-text);
-		--tw-prose-pre-code: var(--insis-text);
-		--tw-prose-pre-bg: var(--insis-surface-2);
-		--tw-prose-th-borders: var(--insis-border);
-		--tw-prose-td-borders: var(--insis-border-light);
-	}
+/* Tailwind Typography — unlayered so it wins over @layer components.
+   Maps --tw-prose-* vars to design tokens; dark mode is handled automatically
+   because the insis tokens already flip via html.dark / prefers-color-scheme. */
+.prose {
+	--tw-prose-body: var(--insis-text);
+	--tw-prose-headings: var(--insis-text);
+	--tw-prose-lead: var(--insis-text-2);
+	--tw-prose-links: var(--insis-blue);
+	--tw-prose-bold: var(--insis-text);
+	--tw-prose-counters: var(--insis-text-2);
+	--tw-prose-bullets: var(--insis-gray-400);
+	--tw-prose-hr: var(--insis-border);
+	--tw-prose-quotes: var(--insis-text-2);
+	--tw-prose-quote-borders: var(--insis-border-mid);
+	--tw-prose-captions: var(--insis-text-3);
+	--tw-prose-kbd: var(--insis-text);
+	--tw-prose-kbd-shadows: var(--insis-gray-400);
+	--tw-prose-code: var(--insis-text);
+	--tw-prose-pre-code: var(--insis-text);
+	--tw-prose-pre-bg: var(--insis-surface-2);
+	--tw-prose-th-borders: var(--insis-border);
+	--tw-prose-td-borders: var(--insis-border-light);
 }
