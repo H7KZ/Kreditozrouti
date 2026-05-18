@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import './styles/insis.css';
+@plugin "@tailwindcss/typography";
 
 @theme {
 	/* Custom theme extensions can go here */
