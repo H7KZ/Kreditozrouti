@@ -87,6 +87,12 @@ const { formatTimeRange } = useTimeUtils()
 // Computed
 // ============================================================================
 
+type UnitConflictStatus =
+	| { type: 'selected' }
+	| { type: 'conflict'; ident: string }
+	| { type: 'campus'; ident: string }
+	| { type: 'free' }
+
 const unitConflictStatuses = computed<Record<number, UnitConflictStatus>>(() => {
 	if (!course.value) return {}
 	const result: Record<number, UnitConflictStatus> = {}
@@ -164,12 +170,6 @@ function handleRemoveCourseAndClose() {
 	handleRemoveCourse()
 	emit('close')
 }
-
-type UnitConflictStatus =
-	| { type: 'selected' }
-	| { type: 'conflict'; ident: string }
-	| { type: 'campus'; ident: string }
-	| { type: 'free' }
 
 function getUnitConflictStatus(courseUnit: CourseUnitDTO): UnitConflictStatus {
 	if (isUnitSelected(courseUnit.id)) return { type: 'selected' }
@@ -340,7 +340,7 @@ onUnmounted(() => {
 													: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue)]'
 											"
 										>
-											<div class="flex items-center justify-between p-2">
+											<div class="flex items-center p-2">
 												<div class="flex w-full flex-col gap-1">
 													<div v-for="slot in courseUnit.slots" :key="slot.id" class="flex items-center gap-3">
 														<span class="w-8 shrink-0 rounded bg-[var(--insis-gray-200)] px-1 py-0.5 text-center text-xs">
@@ -357,47 +357,50 @@ onUnmounted(() => {
 													</div>
 												</div>
 
-												<!-- Conflict status badge -->
-												<div class="mx-3 shrink-0" v-if="unitConflictStatuses[courseUnit.id]?.type !== 'selected'">
-													<template v-if="unitConflictStatuses[courseUnit.id]?.type === 'conflict'">
-														<span class="insis-badge insis-badge-danger text-xs">
-															⚠ {{ $t('components.timetable.TimetableCourseModal.slotConflict', { ident: (unitConflictStatuses[courseUnit.id] as { type: 'conflict'; ident: string }).ident }) }}
-														</span>
-													</template>
-													<template v-else-if="unitConflictStatuses[courseUnit.id]?.type === 'campus'">
-														<span class="insis-badge insis-badge-warning text-xs">
-															🏫 {{ $t('components.timetable.TimetableCourseModal.slotCampusConflict', { ident: (unitConflictStatuses[courseUnit.id] as { type: 'campus'; ident: string }).ident }) }}
-														</span>
-													</template>
-													<template v-else-if="unitConflictStatuses[courseUnit.id]?.type === 'free'">
-														<span class="text-xs text-[var(--insis-gray-400)]">
-															✓ {{ $t('components.timetable.TimetableCourseModal.slotFree') }}
-														</span>
-													</template>
-												</div>
+												<!-- Right-anchored group: conflict badge + action button -->
+												<div class="ml-auto flex shrink-0 items-center gap-3">
+													<!-- Conflict status badge -->
+													<div v-if="unitConflictStatuses[courseUnit.id]?.type !== 'selected'">
+														<template v-if="unitConflictStatuses[courseUnit.id]?.type === 'conflict'">
+															<span class="insis-badge insis-badge-danger text-xs">
+																⚠ {{ $t('components.timetable.TimetableCourseModal.slotConflict', { ident: (unitConflictStatuses[courseUnit.id] as { type: 'conflict'; ident: string }).ident }) }}
+															</span>
+														</template>
+														<template v-else-if="unitConflictStatuses[courseUnit.id]?.type === 'campus'">
+															<span class="insis-badge insis-badge-warning text-xs">
+																🏫 {{ $t('components.timetable.TimetableCourseModal.slotCampusConflict', { ident: (unitConflictStatuses[courseUnit.id] as { type: 'campus'; ident: string }).ident }) }}
+															</span>
+														</template>
+														<template v-else-if="unitConflictStatuses[courseUnit.id]?.type === 'free'">
+															<span class="text-xs text-[var(--insis-gray-400)]">
+																✓ {{ $t('components.timetable.TimetableCourseModal.slotFree') }}
+															</span>
+														</template>
+													</div>
 
-												<!-- Action button -->
-												<div class="ml-4 shrink-0">
-													<template v-if="isUnitSelected(courseUnit.id)">
-														<button
-															type="button"
-															class="insis-btn bg-[var(--insis-surface)] px-3 py-1.5 text-xs hover:border-[var(--insis-danger)]"
-															@click.stop="handleRemoveUnit(courseUnit)"
-														>
-															<IconMinus class="h-4 w-4" />
-														</button>
-													</template>
-													<template v-else>
-														<button
-															type="button"
-															class="flex items-center gap-1 px-3 py-1.5 text-xs"
-															:class="isGroupSatisfied(group.types) ? 'insis-btn-secondary' : 'insis-btn-primary'"
-															@click.stop="handleAddUnit(courseUnit)"
-														>
-															<IconPlus v-if="!isGroupSatisfied(group.types)" class="h-3 w-3" />
-															{{ isGroupSatisfied(group.types) ? $t('common.change') : $t('common.add') }}
-														</button>
-													</template>
+													<!-- Action button -->
+													<div class="shrink-0">
+														<template v-if="isUnitSelected(courseUnit.id)">
+															<button
+																type="button"
+																class="insis-btn bg-[var(--insis-surface)] px-3 py-1.5 text-xs hover:border-[var(--insis-danger)]"
+																@click.stop="handleRemoveUnit(courseUnit)"
+															>
+																<IconMinus class="h-4 w-4" />
+															</button>
+														</template>
+														<template v-else>
+															<button
+																type="button"
+																class="flex items-center gap-1 px-3 py-1.5 text-xs"
+																:class="isGroupSatisfied(group.types) ? 'insis-btn-secondary' : 'insis-btn-primary'"
+																@click.stop="handleAddUnit(courseUnit)"
+															>
+																<IconPlus v-if="!isGroupSatisfied(group.types)" class="h-3 w-3" />
+																{{ isGroupSatisfied(group.types) ? $t('common.change') : $t('common.add') }}
+															</button>
+														</template>
+													</div>
 												</div>
 											</div>
 										</div>
