@@ -44,6 +44,17 @@ export async function addColumnSafe(
 	await sql.raw(`ALTER TABLE \`${tableName}\` ADD COLUMN \`${columnName}\` ${columnDef}`).execute(db)
 }
 
+export async function renameColumnSafe(
+	db: Kysely<any>,
+	tableName: string,
+	fromColumn: string,
+	toColumn: string
+): Promise<void> {
+	// Skip if source column is already gone (already renamed or never existed)
+	if (!(await columnExists(db, tableName, fromColumn))) return
+	await db.schema.alterTable(tableName).renameColumn(fromColumn, toColumn).execute()
+}
+
 export async function dropIndexSafe(db: Kysely<any>, indexName: string, tableName: string): Promise<void> {
 	await db.schema.dropIndex(indexName).on(tableName).ifExists().execute()
 }

@@ -5,6 +5,7 @@ export async function up(mysql: Kysely<any>): Promise<void> {
 	// 1. Study Plan Table
 	await mysql.schema
 		.createTable(StudyPlanTable._table)
+		.ifNotExists()
 		.addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
 		.addColumn('faculty_id', 'varchar(32)', col => col.references(`${FacultyTable._table}.id`).onDelete('set null'))
 		.addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
@@ -22,6 +23,7 @@ export async function up(mysql: Kysely<any>): Promise<void> {
 	// 2. Study Plan <-> Course Mapping Table
 	await mysql.schema
 		.createTable(StudyPlanCourseTable._table)
+		.ifNotExists()
 		.addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
 		.addColumn('study_plan_id', 'integer', col => col.notNull().references(`${StudyPlanTable._table}.id`).onDelete('cascade'))
 		.addColumn('course_id', 'integer', col => col.references(`${CourseTable._table}.id`).onDelete('set null'))
@@ -34,6 +36,6 @@ export async function up(mysql: Kysely<any>): Promise<void> {
 }
 
 export async function down(mysql: Kysely<any>): Promise<void> {
-	await mysql.schema.dropTable(StudyPlanCourseTable._table).execute()
-	await mysql.schema.dropTable(StudyPlanTable._table).execute()
+	await mysql.schema.dropTable(StudyPlanCourseTable._table).ifExists().execute()
+	await mysql.schema.dropTable(StudyPlanTable._table).ifExists().execute()
 }
