@@ -119,4 +119,3 @@ const appVersion = APP_VERSION
 		</div>
 	</footer>
 </template>
-

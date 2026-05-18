@@ -44,6 +44,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/legal/[slug]': RouteRecordInfo<
+      '/legal/[slug]',
+      '/legal/:slug',
+      { slug: ParamValue<true> },
+      { slug: ParamValue<false> },
+      | never
+    >,
   }
 
   /**
@@ -72,6 +79,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/courses.vue': {
       routes:
         | '/courses'
+      views:
+        | never
+    }
+    'src/pages/legal/[slug].vue': {
+      routes:
+        | '/legal/[slug]'
       views:
         | never
     }
