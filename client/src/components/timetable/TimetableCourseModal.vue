@@ -11,9 +11,9 @@
 
 import api from '@client/api.ts'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useTimeUtils } from '@client/composables'
-import { useCoursesStore, useFiltersStore, useUIStore } from '@client/stores'
+import { useCoursesStore, useFiltersStore, useUIStore, useTimetableStore } from '@client/stores'
 import { SelectedCourseUnit } from '@client/types'
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
+import type { CourseWithRelationsDTO, CourseUnitDTO } from '@shared/http/responses'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import IconCheck from '~icons/lucide/check'
@@ -29,6 +29,7 @@ const { t } = useI18n()
 const coursesStore = useCoursesStore()
 const filtersStore = useFiltersStore()
 const uiStore = useUIStore()
+const timetableStore = useTimetableStore()
 
 // ============================================================================
 // Props & Emits
@@ -153,6 +154,32 @@ function handleClose() {
 function handleRemoveCourseAndClose() {
 	handleRemoveCourse()
 	emit('close')
+}
+
+type UnitConflictStatus =
+	| { type: 'selected' }
+	| { type: 'conflict'; ident: string }
+	| { type: 'campus'; ident: string }
+	| { type: 'free' }
+
+function getUnitConflictStatus(courseUnit: CourseUnitDTO): UnitConflictStatus {
+	if (isUnitSelected(courseUnit.id)) return { type: 'selected' }
+
+	const hardConflicts = timetableStore
+		.getUnitConflicts(courseUnit)
+		.flatMap((c) => c.conflictingUnits)
+		.filter((u) => u.courseId !== props.unit.courseId)
+
+	if (hardConflicts.length > 0) return { type: 'conflict', ident: hardConflicts[0]!.courseIdent }
+
+	const campusConflicts = timetableStore
+		.getUnitCampusConflicts(courseUnit)
+		.flatMap((c) => c.conflictingUnits)
+		.filter((u) => u.courseId !== props.unit.courseId)
+
+	if (campusConflicts.length > 0) return { type: 'campus', ident: campusConflicts[0]!.courseIdent }
+
+	return { type: 'free' }
 }
 
 // ============================================================================
@@ -319,6 +346,26 @@ onUnmounted(() => {
 															{{ formatCapacity(courseUnit.capacity) }}
 														</span>
 													</div>
+												</div>
+
+												<!-- Conflict status badge -->
+												<div class="mx-3 shrink-0">
+													<template v-if="getUnitConflictStatus(courseUnit).type === 'conflict'">
+														<span class="insis-badge insis-badge-danger text-xs">
+															⚠ {{ $t('components.timetable.TimetableCourseModal.slotConflict', { ident: (getUnitConflictStatus(courseUnit) as { type: 'conflict'; ident: string }).ident }) }}
+														</span>
+													</template>
+													<template v-else-if="getUnitConflictStatus(courseUnit).type === 'campus'">
+														<span class="insis-badge insis-badge-warning text-xs">
+															🏫 {{ $t('components.timetable.TimetableCourseModal.slotCampusConflict', { ident: (getUnitConflictStatus(courseUnit) as { type: 'campus'; ident: string }).ident }) }}
+														</span>
+													</template>
+													<template v-else-if="getUnitConflictStatus(courseUnit).type === 'free'">
+														<span class="text-xs text-[var(--insis-gray-400)]">
+															✓ {{ $t('components.timetable.TimetableCourseModal.slotFree') }}
+														</span>
+													</template>
+													<!-- 'selected' state: no extra badge — the green row border already signals it -->
 												</div>
 
 												<!-- Action button -->
