@@ -1,4 +1,4 @@
-import { Expression, Kysely } from 'kysely'
+import { Expression, Kysely, sql } from 'kysely'
 
 export async function createIndexSafe(db: Kysely<any>, indexName: string, tableName: string, columns: string[] | Expression<any>): Promise<void> {
 	try {
@@ -24,6 +24,24 @@ export async function createIndexSafe(db: Kysely<any>, indexName: string, tableN
 		}
 		throw error
 	}
+}
+
+export async function columnExists(db: Kysely<any>, tableName: string, columnName: string): Promise<boolean> {
+	const result = await sql<{ cnt: number }>`
+		SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS
+		WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ${tableName} AND COLUMN_NAME = ${columnName}
+	`.execute(db)
+	return (result.rows[0]?.cnt ?? 0) > 0
+}
+
+export async function addColumnSafe(
+	db: Kysely<any>,
+	tableName: string,
+	columnName: string,
+	columnDef: string
+): Promise<void> {
+	if (await columnExists(db, tableName, columnName)) return
+	await sql.raw(`ALTER TABLE \`${tableName}\` ADD COLUMN \`${columnName}\` ${columnDef}`).execute(db)
 }
 
 export async function dropIndexSafe(db: Kysely<any>, indexName: string, tableName: string): Promise<void> {
