@@ -440,7 +440,10 @@
 				"removeFromTimetable": "Remove from timetable",
 				"searchInTimeslot": "Search in this timeslot",
 				"filterApplied": "Time filter applied",
-				"filterDescription": "Showing courses available on {day} from {from} to {to}"
+				"filterDescription": "Showing courses available on {day} from {from} to {to}",
+				"slotFree": "Free",
+				"slotConflict": "Conflict: {ident}",
+				"slotCampusConflict": "Campus: {ident}"
 			},
 			"SchedulePicker": {
 				"title": "Saved Schedules",

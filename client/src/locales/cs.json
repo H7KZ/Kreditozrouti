@@ -440,7 +440,10 @@
 				"removeFromTimetable": "Odebrat z rozvrhu",
 				"searchInTimeslot": "Hledat v tomto čase",
 				"filterApplied": "Časový filtr aplikován",
-				"filterDescription": "Zobrazuji předměty dostupné v {day} od {from} do {to}"
+				"filterDescription": "Zobrazuji předměty dostupné v {day} od {from} do {to}",
+				"slotFree": "Volný",
+				"slotConflict": "Konflikt: {ident}",
+				"slotCampusConflict": "Kampus: {ident}"
 			},
 			"SchedulePicker": {
 				"title": "Uložené rozvrhy",
