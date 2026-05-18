@@ -21,7 +21,7 @@ const entries = computed<TocEntry[]>(() => {
 	return Array.from(headings).map((el) => ({
 		id: el.id,
 		text: el.textContent ?? '',
-		level: parseInt(el.tagName[1]) as 2 | 3,
+		level: parseInt(el.tagName[1]!) as 2 | 3,
 	}))
 })
 
