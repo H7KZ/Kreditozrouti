@@ -36,5 +36,6 @@ source "$SCRIPT_DIR/lib.sh"
 
 | Topic | Doc |
 |-------|-----|
+| System architecture, containers, deploy order | [docs/architecture/](../docs/architecture/README.md) |
 | install-docker, traefik, glitchtip, github-runner — all flags | [INFRASTRUCTURE.md](../docs/scripts/INFRASTRUCTURE.md) |
 | maintenance, docker-cleanup — all flags + cron examples | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md) |

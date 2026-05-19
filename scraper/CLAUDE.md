@@ -63,6 +63,7 @@ Failed scrapes stay stale until the next scheduled run re-enqueues them.
 
 | Topic | Doc |
 |-------|-----|
+| System architecture, services, data flow | [docs/architecture/](../docs/architecture/README.md) |
 | Every job type: input, output, flow | [JOBS.md](../docs/scraper/JOBS.md) |
 | How each service parses InSIS HTML | [EXTRACTION.md](../docs/scraper/EXTRACTION.md) |
 | Queue topology, dedup, retry policy | [QUEUE.md](../docs/scraper/QUEUE.md) |

@@ -63,11 +63,24 @@ deployment/   Docker Compose stacks + deploy.sh
 
 ---
 
+## Doc-Review Rule
+
+After completing any task that changes code, configuration, or behavior:
+
+1. **Identify** which `docs/` file(s) describe the changed area (use the table below)
+2. **Update** any doc that describes what changed — keep it accurate
+3. **New behavior with no doc entry?** Ask the engineer: *"This change isn't mentioned in the docs — should I document it?"* If yes, add it; if no, continue
+
+This applies to all changes: new endpoints, new stores, new env vars, changed invariants, new scripts, infra changes, etc.
+
+---
+
 ## Documentation
 
 | Area | Overview | Detail docs |
 |------|----------|------------|
 | Architecture | [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) | [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md) |
+| Engineering | [docs/ENGINEERING.md](../docs/ENGINEERING.md) | [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md) |
 | API | [docs/api/README.md](../docs/api/README.md) | [endpoints](../docs/api/ENDPOINTS.md) · [services](../docs/api/SERVICES.md) · [jobs](../docs/api/JOBS.md) · [database](../docs/api/DATABASE.md) · [internals](../docs/api/INTERNALS.md) |
 | Client | [docs/client/README.md](../docs/client/README.md) | [stores](../docs/client/STORES.md) · [composables](../docs/client/COMPOSABLES.md) · [timetable](../docs/client/TIMETABLE.md) · [internals](../docs/client/INTERNALS.md) |
 | Scraper | [docs/scraper/README.md](../docs/scraper/README.md) | [jobs](../docs/scraper/JOBS.md) · [extraction](../docs/scraper/EXTRACTION.md) · [queue](../docs/scraper/QUEUE.md) · [types](../docs/scraper/TYPES.md) · [internals](../docs/scraper/INTERNALS.md) |

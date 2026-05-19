@@ -67,6 +67,7 @@ export const CoursesController = {
 
 | Topic | Doc |
 |-------|-----|
+| System architecture, services, data flow | [docs/architecture/](../docs/architecture/README.md) |
 | All routes + request/response shapes | [ENDPOINTS.md](../docs/api/ENDPOINTS.md) |
 | CourseService N+1 pattern, facets, time-conflict filtering | [SERVICES.md](../docs/api/SERVICES.md) |
 | BullMQ jobs, schedulers, dedup windows | [JOBS.md](../docs/api/JOBS.md) |

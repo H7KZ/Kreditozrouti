@@ -1,21 +1,71 @@
-# Kreditožrouti Project Instructions
+# Kreditožrouti — Gemini Instructions
 
-## Project Overview
-Kreditožrouti is an advanced schedule finder for VŠE (Prague University of Economics and Business) students. It consists of a Scraper, an API (Node.js), and a Client (Vue.js).
+Kreditožrouti is a course scheduling system for VŠE students. Scrapes InSIS, presents a filterable timetable UI.
 
-## Workspace Guidelines
-- **Project Structure**:
-  - `client/`: Vue 3 frontend. See [client/GEMINI.md](client/GEMINI.md) for details.
-  - `api/`: Express.js backend.
-  - `scraper/`: InSIS data scraper.
-  - `deployment/`: Docker compose and deployment scripts.
-- **Conventions**:
-  - Use `pnpm` for package management.
-  - Follow the Topic Model for multi-step tasks.
-  - Prioritize Accessibility (A11y) and SEO for the client.
+---
 
-## Memory & Documentation
-- `CLAUDE.md`: Architecture guide and technical reference.
-- `CONTEXT.md`: Domain glossary and ADRs.
-- `.claude/COMMANDS.md`: Step-by-step feature recipes.
-- `client/GEMINI.md`: Frontend-specific standards and performance notes.
+## Monorepo Structure
+
+```
+api/          Express API — HTTP, DB writes, job orchestration
+client/       Vue 3 SPA — user interface
+scraper/      BullMQ worker — InSIS HTTP scraping
+shared/       Types only — imported by all packages, imports nothing
+scripts/      Bash — server setup & maintenance
+deployment/   Docker Compose stacks + deploy.sh
+```
+
+---
+
+## Access Points (dev)
+
+| Service | URL |
+|---------|-----|
+| Client | http://localhost:45173 |
+| API | http://localhost:40080 |
+| phpMyAdmin | http://localhost:48080 |
+
+---
+
+## Critical Invariants
+
+**Cross-package imports:**
+- `shared/` must never import from `api/`, `client/`, or `scraper/`
+- `client/` imports API types only from `@api/contracts` (never `@api/Database/types`)
+- `client/` never imports API runtime code
+
+**Time encoding:** all times are **minutes from midnight** (0–1439). `08:00` = 480.
+
+**Env var prefixes:** API: `API_*` | Client: `VITE_*` (baked at build) | Scraper: no prefix | Infra: `MYSQL_*`, `REDIS_*`
+
+**Scraper is a pure consumer:** never writes DB, never schedules its own jobs — schedulers live in the API (`NODE_ENV=production` only).
+
+**Code conventions:**
+- TypeScript strict mode — no `any`
+- Vue 3 Composition API with `<script setup>`
+- API controllers are plain namespace objects, not classes
+- Conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`
+
+---
+
+## Doc-Review Rule
+
+After completing any task that changes code, configuration, or behavior:
+1. Identify which `docs/` file(s) describe the changed area
+2. Update any doc that describes what changed
+3. If a change introduces something undocumented, ask the engineer whether to add it
+
+---
+
+## Documentation
+
+| Area | Overview | Detail docs |
+|------|----------|------------|
+| Architecture | [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) | [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md) |
+| Engineering | [docs/ENGINEERING.md](../docs/ENGINEERING.md) | [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md) |
+| API | [docs/api/README.md](../docs/api/README.md) | [endpoints](../docs/api/ENDPOINTS.md) · [services](../docs/api/SERVICES.md) · [jobs](../docs/api/JOBS.md) · [database](../docs/api/DATABASE.md) · [internals](../docs/api/INTERNALS.md) |
+| Client | [docs/client/README.md](../docs/client/README.md) | [stores](../docs/client/STORES.md) · [composables](../docs/client/COMPOSABLES.md) · [timetable](../docs/client/TIMETABLE.md) · [internals](../docs/client/INTERNALS.md) |
+| Scraper | [docs/scraper/README.md](../docs/scraper/README.md) | [jobs](../docs/scraper/JOBS.md) · [extraction](../docs/scraper/EXTRACTION.md) · [queue](../docs/scraper/QUEUE.md) · [types](../docs/scraper/TYPES.md) · [internals](../docs/scraper/INTERNALS.md) |
+| Shared | [docs/shared/README.md](../docs/shared/README.md) | [domain](../docs/shared/DOMAIN.md) · [http](../docs/shared/HTTP.md) · [queue](../docs/shared/QUEUE.md) |
+| Deployment | [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md) | [docker](../docs/deployment/DOCKER.md) · [ci/cd](../docs/deployment/CICD.md) · [infrastructure](../docs/deployment/INFRASTRUCTURE.md) · [operations](../docs/deployment/OPERATIONS.md) |
+| Scripts | [docs/SCRIPTS.md](../docs/SCRIPTS.md) | [infrastructure](../docs/scripts/INFRASTRUCTURE.md) · [maintenance](../docs/scripts/MAINTENANCE.md) |
