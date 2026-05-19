@@ -39,6 +39,11 @@ if (import.meta.env.VITE_SENTRY_DSN) {
 		// replaysSessionSampleRate: 0.1,
 		// replaysOnErrorSampleRate: 1.0,
 		attachProps: true,
+		ignoreErrors: [
+			// Safari's internal JSON-LD parser (and some browser extensions) fire this
+			// when the page doesn't expose a proper @context object. Not app code.
+			/undefined is not an object \(evaluating '.*\["@context"\]/,
+		],
 	})
 
 	console.log(`Sentry initialized for environment: ${import.meta.env.MODE}`)
