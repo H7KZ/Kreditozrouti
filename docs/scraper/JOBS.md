@@ -1,25 +1,31 @@
 # Scraper — Jobs Reference
 
-All scraper jobs are plain async functions routed through `ScraperRequestHandler` based on `job.data.type`. Each job receives strongly-typed data from `@shared/queue/jobs` and writes results back to `ScraperResponseQueue` via `QueueService`.
+All scraper jobs are plain async functions routed through `ScraperRequestHandler` based on `job.data.type`. Each job
+receives strongly-typed data from `@shared/queue/jobs` and writes results back to `ScraperResponseQueue` via
+`QueueService`.
 
 ## Job Routing Map
 
-| `job.data.type` | Handler function | Source file |
-|---|---|---|
-| `InSIS:Catalog` | `ScraperRequestInSISCatalogJob` | `Jobs/ScraperRequestInSISCatalogJob.ts` |
-| `InSIS:Course` | `ScraperRequestInSISCourseJob` | `Jobs/ScraperRequestInSISCourseJob.ts` |
+| `job.data.type`    | Handler function                   | Source file                                |
+|--------------------|------------------------------------|--------------------------------------------|
+| `InSIS:Catalog`    | `ScraperRequestInSISCatalogJob`    | `Jobs/ScraperRequestInSISCatalogJob.ts`    |
+| `InSIS:Course`     | `ScraperRequestInSISCourseJob`     | `Jobs/ScraperRequestInSISCourseJob.ts`     |
 | `InSIS:StudyPlans` | `ScraperRequestInSISStudyPlansJob` | `Jobs/ScraperRequestInSISStudyPlansJob.ts` |
-| `InSIS:StudyPlan` | `ScraperRequestInSISStudyPlanJob` | `Jobs/ScraperRequestInSISStudyPlanJob.ts` |
+| `InSIS:StudyPlan`  | `ScraperRequestInSISStudyPlanJob`  | `Jobs/ScraperRequestInSISStudyPlanJob.ts`  |
 
-> **Registration window decisions belong to the API, not the scraper.** The API scheduler uses month-scoped cron patterns (`1,2,6,7,8,9,11,12`) to only fire during registration periods. The scraper receives jobs and executes them — it has no gate logic of its own.
+> **Registration window decisions belong to the API, not the scraper.** The API scheduler uses month-scoped cron
+> patterns (`1,2,6,7,8,9,11,12`) to only fire during registration periods. The scraper receives jobs and executes them —
+> it has no gate logic of its own.
 
 ---
 
 ## InSIS:Catalog
 
-**Purpose:** Discovers all courses available in InSIS for given faculties and academic periods, then optionally enqueues individual course scrape jobs.
+**Purpose:** Discovers all courses available in InSIS for given faculties and academic periods, then optionally enqueues
+individual course scrape jobs.
 
 **Input payload:**
+
 ```typescript
 {
   type: 'InSIS:Catalog'
@@ -30,6 +36,7 @@ All scraper jobs are plain async functions routed through `ScraperRequestHandler
 ```
 
 **Flow — Phase 1: Discovery**
+
 ```
 GET https://insis.vse.cz/katalog/index.pl?jak=rozsirene
   └─ ExtractInSISCatalogService.extractSearchOptions(html)
@@ -38,6 +45,7 @@ GET https://insis.vse.cz/katalog/index.pl?jak=rozsirene
 ```
 
 **Flow — Phase 2: Scraping**
+
 ```
 For each (faculty, period) combination:
   POST https://insis.vse.cz/katalog/
@@ -51,17 +59,21 @@ For each (faculty, period) combination:
        → addBulk with dedup key 'InSIS:Course:{courseId}'
 ```
 
-**Output:** Multiple `InSIS:Catalog` response jobs (one per faculty/period), each with a `catalog.urls` array. Also queues `InSIS:Course` jobs if `auto_queue_courses` is set.
+**Output:** Multiple `InSIS:Catalog` response jobs (one per faculty/period), each with a `catalog.urls` array. Also
+queues `InSIS:Course` jobs if `auto_queue_courses` is set.
 
-**Error handling:** A failed faculty/period page is logged and skipped; the job continues with remaining combinations. Returns `null` only if Phase 1 discovery fails entirely.
+**Error handling:** A failed faculty/period page is logged and skipped; the job continues with remaining combinations.
+Returns `null` only if Phase 1 discovery fails entirely.
 
 ---
 
 ## InSIS:Course
 
-**Purpose:** Scrapes a single course syllabus page and extracts all structured course data including metadata, syllabus content, assessment methods, timetable, and study plan references.
+**Purpose:** Scrapes a single course syllabus page and extracts all structured course data including metadata, syllabus
+content, assessment methods, timetable, and study plan references.
 
 **Input payload:**
+
 ```typescript
 {
   type: 'InSIS:Course'
@@ -70,6 +82,7 @@ For each (faculty, period) combination:
 ```
 
 **Flow:**
+
 ```
 1. Extract courseId from URL (/[?&;]predmet=(\d+)/)
 2. GET url + lang=cz param via InSISHTTPClientService
@@ -101,20 +114,20 @@ For each (faculty, period) combination:
 
 **Error handling:**
 
-| Error type | Class | Retry? |
-|---|---|---|
-| HTTP failure (4xx/5xx/timeout) | `InSISNetworkError` | Yes — up to 3× with exponential backoff (10s base) |
-| HTML parse failure | `InSISParseError` extends `UnrecoverableError` | No — BullMQ bypasses retry queue |
+| Error type                     | Class                                          | Retry?                                             |
+|--------------------------------|------------------------------------------------|----------------------------------------------------|
+| HTTP failure (4xx/5xx/timeout) | `InSISNetworkError`                            | Yes — up to 3× with exponential backoff (10s base) |
+| HTML parse failure             | `InSISParseError` extends `UnrecoverableError` | No — BullMQ bypasses retry queue                   |
 
 **Faculty schedule visibility rules** (baked into `extractFaculty`):
 
 | Faculty ident | Year threshold | `is_schedule_publicly_visible` |
-|---|---|---|
-| `CTVS` (PE) | ≥ 2017 | `false` |
-| `OZS` | ≥ 2020 | `false` |
-| `IOM` | ≥ 2021 | `false` |
-| `CESP` | ≥ 2022 | `false` |
-| All others | any | `true` |
+|---------------|----------------|--------------------------------|
+| `CTVS` (PE)   | ≥ 2017         | `false`                        |
+| `OZS`         | ≥ 2020         | `false`                        |
+| `IOM`         | ≥ 2021         | `false`                        |
+| `CESP`        | ≥ 2022         | `false`                        |
+| All others    | any            | `true`                         |
 
 When `false`, the timetable extraction step is skipped and `timetable` is set to `[]`.
 
@@ -122,9 +135,11 @@ When `false`, the timetable extraction step is skipped and `timetable` is set to
 
 ## InSIS:StudyPlans
 
-**Purpose:** Traverses the InSIS study plans hierarchy (faculty → program → specialization → plan) using breadth-first search, collecting all leaf plan URLs. Optionally enqueues individual `InSIS:StudyPlan` jobs.
+**Purpose:** Traverses the InSIS study plans hierarchy (faculty → program → specialization → plan) using breadth-first
+search, collecting all leaf plan URLs. Optionally enqueues individual `InSIS:StudyPlan` jobs.
 
 **Input payload:**
+
 ```typescript
 {
   type: 'InSIS:StudyPlans'
@@ -135,6 +150,7 @@ When `false`, the timetable extraction step is skipped and `timetable` is set to
 ```
 
 **Flow:**
+
 ```
 1. GET https://insis.vse.cz/katalog/plany.pl?lang=cz
    └─ ExtractInSISStudyPlanService.extractFaculties(html)
@@ -166,21 +182,24 @@ When `false`, the timetable extraction step is skipped and `timetable` is set to
 
 **Limits:**
 
-| Parameter | Value | Reason |
-|---|---|---|
-| `MaxDrillDepth` | 8 | Guards against unexpected circular nav structures |
-| `ConcurrencyLimit` | 10 | Balance between throughput and InSIS rate limits |
-| Study plan enqueue concurrency | 20 | Higher than BFS because it's Redis writes, not HTTP |
+| Parameter                      | Value | Reason                                              |
+|--------------------------------|-------|-----------------------------------------------------|
+| `MaxDrillDepth`                | 8     | Guards against unexpected circular nav structures   |
+| `ConcurrencyLimit`             | 10    | Balance between throughput and InSIS rate limits    |
+| Study plan enqueue concurrency | 20    | Higher than BFS because it's Redis writes, not HTTP |
 
-**Error handling:** Individual page failures via `getSilent` return `null` and are skipped. Returns `null` only if the initial faculty list fetch fails.
+**Error handling:** Individual page failures via `getSilent` return `null` and are skipped. Returns `null` only if the
+initial faculty list fetch fails.
 
 ---
 
 ## InSIS:StudyPlan
 
-**Purpose:** Scrapes a single study plan page — metadata (ident, title, faculty, semester/year, level, mode, length) and the full course list with group/category classification.
+**Purpose:** Scrapes a single study plan page — metadata (ident, title, faculty, semester/year, level, mode, length) and
+the full course list with group/category classification.
 
 **Input payload:**
+
 ```typescript
 {
   type: 'InSIS:StudyPlan'
@@ -189,6 +208,7 @@ When `false`, the timetable extraction step is skipped and `timetable` is set to
 ```
 
 **Flow:**
+
 ```
 1. Extract planId from URL (/stud_plan=(\d+)/)
 2. GET url via InSISHTTPClientService
@@ -210,12 +230,15 @@ When `false`, the timetable extraction step is skipped and `timetable` is set to
 
 **Output:** One `InSIS:StudyPlan` response job containing the full `ScraperInSISStudyPlan` object.
 
-**Error handling:** On HTTP failure or parse exception, logs error via `LoggerJobContext` and returns `null` (job completes without retry).
+**Error handling:** On HTTP failure or parse exception, logs error via `LoggerJobContext` and returns `null` (job
+completes without retry).
 
 ---
 
 ## Handler & Timing
 
-`ScraperRequestHandler` measures wall-clock time for every job using `process.hrtime()` and logs the result as `duration_ms` in the wide-event log. All logging flows through `LoggerJobContext` (AsyncLocalStorage), so job-level fields are accumulated throughout the call stack and emitted as a single JSON line on completion.
+`ScraperRequestHandler` measures wall-clock time for every job using `process.hrtime()` and logs the result as
+`duration_ms` in the wide-event log. All logging flows through `LoggerJobContext` (AsyncLocalStorage), so job-level
+fields are accumulated throughout the call stack and emitted as a single JSON line on completion.
 
 See [Internals](INTERNALS.md) for details on the logger and error classes.

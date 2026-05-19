@@ -1,6 +1,7 @@
 # Scraper — Type Reference
 
-All scraper types are defined in the `shared/` package and re-exported from `scraper/src/types/`. This ensures the API and the scraper share identical definitions without circular imports.
+All scraper types are defined in the `shared/` package and re-exported from `scraper/src/types/`. This ensures the API
+and the scraper share identical definitions without circular imports.
 
 ## Import Paths
 
@@ -94,7 +95,8 @@ interface ScraperInSISFaculty {
 
 ### `ScraperInSISCourse`
 
-The primary output of a course scrape job. All nullable fields reflect genuine optionality in InSIS — not all courses fill every syllabus field.
+The primary output of a course scrape job. All nullable fields reflect genuine optionality in InSIS — not all courses
+fill every syllabus field.
 
 ```typescript
 interface ScraperInSISCourse {
@@ -158,7 +160,8 @@ interface ScraperInSISCourseAssessmentMethod {
 
 ### `ScraperInSISCourseTimetableUnit`
 
-A timetable unit represents one row in InSIS's "Periodické rozvrhové akce" table — typically a lecture or seminar group led by one lecturer, possibly occurring in multiple time slots.
+A timetable unit represents one row in InSIS's "Periodické rozvrhové akce" table — typically a lecture or seminar group
+led by one lecturer, possibly occurring in multiple time slots.
 
 ```typescript
 interface ScraperInSISCourseTimetableUnit {
@@ -171,7 +174,8 @@ interface ScraperInSISCourseTimetableUnit {
 
 ### `ScraperInSISCourseTimetableSlot`
 
-A single time occurrence within a timetable unit. One unit can have multiple slots when InSIS uses `<br>` to list multiple days/times in the same row.
+A single time occurrence within a timetable unit. One unit can have multiple slots when InSIS uses `<br>` to list
+multiple days/times in the same row.
 
 ```typescript
 interface ScraperInSISCourseTimetableSlot {
@@ -185,7 +189,8 @@ interface ScraperInSISCourseTimetableSlot {
 }
 ```
 
-> **Note:** `time_from`/`time_to` are stored as raw strings by the scraper. The API layer converts them to minutes-from-midnight integers when persisting to MySQL.
+> **Note:** `time_from`/`time_to` are stored as raw strings by the scraper. The API layer converts them to
+> minutes-from-midnight integers when persisting to MySQL.
 
 ### `ScraperInSISCourseStudyPlan`
 
@@ -326,31 +331,33 @@ type ScraperResponseJob =
   | ScraperInSISStudyPlanResponseJob
 ```
 
-Note: scheduled jobs (`InSIS:Catalog`, `InSIS:StudyPlans`) are enqueued directly by the API scheduler — they produce response jobs but have no corresponding response type for the scheduler trigger itself.
+Note: scheduled jobs (`InSIS:Catalog`, `InSIS:StudyPlans`) are enqueued directly by the API scheduler — they produce
+response jobs but have no corresponding response type for the scheduler trigger itself.
 
 ---
 
 ## Group Code Reference
 
-Group codes are two-character (or longer) codes in InSIS that describe how a course fits into a study plan. See `scraper/src/Utils/InSISUtils.ts` for the full parsing logic.
+Group codes are two-character (or longer) codes in InSIS that describe how a course fits into a study plan. See
+`scraper/src/Utils/InSISUtils.ts` for the full parsing logic.
 
-| First char | Group |
-|---|---|
-| `f` | `faculty_specific` |
-| `c` | `university_wide` |
-| `o` | `field_specific_bachelor` |
-| `h` | `field_specific_master` |
-| `s` | `minor_specialization` |
-| `e` | `field_specific_master` (extended/doctoral fallback) |
+| First char | Group                                                |
+|------------|------------------------------------------------------|
+| `f`        | `faculty_specific`                                   |
+| `c`        | `university_wide`                                    |
+| `o`        | `field_specific_bachelor`                            |
+| `h`        | `field_specific_master`                              |
+| `s`        | `minor_specialization`                               |
+| `e`        | `field_specific_master` (extended/doctoral fallback) |
 
-| Suffix pattern | Category |
-|---|---|
-| includes `TVS` | `physical_education` |
-| includes `SZ` | `state_exam` |
-| includes `ZEXCN` | `exchange_program` (checked before `EXC`) |
-| includes `EXC` | `prohibited` |
-| includes `VOR` | `beyond_scope` |
-| starts with `J` or equals `JV` | `language` |
-| equals `P` or `BP` | `compulsory` |
-| matches `V\d?$` or `VB`/`VM`/`VOL` | `elective` |
-| default | `elective` |
+| Suffix pattern                     | Category                                  |
+|------------------------------------|-------------------------------------------|
+| includes `TVS`                     | `physical_education`                      |
+| includes `SZ`                      | `state_exam`                              |
+| includes `ZEXCN`                   | `exchange_program` (checked before `EXC`) |
+| includes `EXC`                     | `prohibited`                              |
+| includes `VOR`                     | `beyond_scope`                            |
+| starts with `J` or equals `JV`     | `language`                                |
+| equals `P` or `BP`                 | `compulsory`                              |
+| matches `V\d?$` or `VB`/`VM`/`VOL` | `elective`                                |
+| default                            | `elective`                                |

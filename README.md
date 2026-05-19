@@ -11,7 +11,7 @@
 
   Give VŠE students instant, filterable access to every course, timetable slot, and study plan in one modern interface.
 
-  [Features](#-features) • [Getting Started](#-getting-started) • [Documentation](#-documentation) • [Contributing](#-contributing) • [Deployment](#-deployment)
+  [Features](#-features) • [Getting Started](#-getting-started) • [Documentation](#-documentation) • [Contributing](#-contributing) • [Deployment](docs/DEPLOYMENT.md)
 </div>
 
 ---
@@ -76,11 +76,11 @@ Kreditožrouti provides:
 │  Port 45173               Port 40080          (Background)  │
 │  ┌─────────────┐         ┌─────────────┐     ┌───────────┐  │
 │  │ Vue Router  │  HTTP   │ Controllers │     │ Puppeteer │  │
-│  │ Pinia       │─────► │ Services    │ ◄───│ Cheerio   │  │
+│  │ Pinia       │───────► │ Services    │ ◄───│ Cheerio   │  │
 │  │ Tailwind    │         │ Kysely QB   │     │ BullMQ    │  │
 │  └─────────────┘         └─────────────┘     └───────────┘  │
-│                                │   ▲              │         │
-│                                ▼   │              │         │
+│                               │   ▲               │         │
+│                               ▼   │               │         │
 │                          ┌─────────────┐          │         │
 │                          │   MySQL 8   │          │         │
 │                          │ Port 43306  │          │         │
@@ -197,20 +197,44 @@ Comprehensive documentation is available in the [`docs/`](docs/) directory:
 
 | Document | Description |
 |----------|-------------|
-| [**API.md**](docs/API.md) | API architecture, endpoints, services, and job queues |
-| [**CLIENT.md**](docs/CLIENT.md) | Client architecture, components, stores, and composables |
-| [**SCRAPER.md**](docs/SCRAPER.md) | Scraper implementation, jobs, and InSIS interaction |
-| [**SCRIPTS.md**](docs/SCRIPTS.md) | Utility scripts and automation tools |
-| [**DEPLOYMENT.md**](docs/DEPLOYMENT.md) | Production deployment guide and configuration |
-| [**CLAUDE.md**](.claude/CLAUDE.md) | Project overview and development commands |
+| [**docs/api/**](docs/api/README.md) | API — startup, architecture, path aliases |
+| [**→ ENDPOINTS**](docs/api/ENDPOINTS.md) | All routes, request/response shapes, SSE, error format |
+| [**→ SERVICES**](docs/api/SERVICES.md) | CourseService, StudyPlanService, ScraperService |
+| [**→ JOBS**](docs/api/JOBS.md) | BullMQ response jobs, schedulers, CRON windows |
+| [**→ DATABASE**](docs/api/DATABASE.md) | Schema, Kysely patterns, migrations |
+| [**→ INTERNALS**](docs/api/INTERNALS.md) | Config, cache, rate-limit, SSE utils, wide-event logging |
+| [**docs/client/**](docs/client/README.md) | Client — layers, pages, filter flow, bootstrap sequence |
+| [**→ STORES**](docs/client/STORES.md) | All 9 Pinia stores, dependency graph, localStorage |
+| [**→ COMPOSABLES**](docs/client/COMPOSABLES.md) | Pure transforms, store-reading, interactive composables |
+| [**→ TIMETABLE**](docs/client/TIMETABLE.md) | Conflict system, drag-to-filter, status precedence |
+| [**→ INTERNALS**](docs/client/INTERNALS.md) | API client, i18n, utils, component conventions |
+| [**docs/scraper/**](docs/scraper/README.md) | Scraper — jobs, InSIS extraction, BullMQ worker |
+| [**→ JOBS**](docs/scraper/JOBS.md) | Every job type: input, output, flow, error handling |
+| [**→ EXTRACTION**](docs/scraper/EXTRACTION.md) | How each service parses InSIS HTML |
+| [**→ QUEUE**](docs/scraper/QUEUE.md) | Queue topology, deduplication, retry policy |
+| [**→ TYPES**](docs/scraper/TYPES.md) | All interfaces for scraped data and job payloads |
+| [**→ INTERNALS**](docs/scraper/INTERNALS.md) | Utils, logger context, error classes, concurrency |
+| [**docs/shared/**](docs/shared/README.md) | Shared package — domain logic, HTTP contracts, queue types |
+| [**→ DOMAIN**](docs/shared/DOMAIN.md) | InSIS enums, conflict detection, period helpers, time utils |
+| [**→ HTTP**](docs/shared/HTTP.md) | DTO interfaces, CoursesFilter, facets, pagination |
+| [**→ QUEUE**](docs/shared/QUEUE.md) | Queue name constants, job payloads, scraped data types |
+| [**docs/scripts/**](docs/scripts/README.md) | Server management scripts |
+| [**→ INFRASTRUCTURE**](docs/scripts/INFRASTRUCTURE.md) | install-docker, traefik, glitchtip, github-runner |
+| [**→ MAINTENANCE**](docs/scripts/MAINTENANCE.md) | maintenance, docker-cleanup |
+| [**docs/deployment/**](docs/deployment/README.md) | Deployment — architecture, environments, quick-start |
+| [**→ DOCKER**](docs/deployment/DOCKER.md) | Multi-stage builds, runtime env injection, GHCR |
+| [**→ CICD**](docs/deployment/CICD.md) | GitHub Actions workflows, secrets, rollback |
+| [**→ INFRASTRUCTURE**](docs/deployment/INFRASTRUCTURE.md) | Traefik, GlitchTip, networking, volumes, env vars |
+| [**→ OPERATIONS**](docs/deployment/OPERATIONS.md) | Monitoring, security, backup, maintenance, troubleshooting |
 
 ### Quick Links
 
 - **Setup Guide:** [Getting Started](#-getting-started)
-- **API Reference:** [docs/API.md](docs/API.md)
-- **Client Guide:** [docs/CLIENT.md](docs/CLIENT.md)
-- **Deployment:** [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-- **Contributing:** [CONTRIBUTING.md](#-contributing)
+- **API Reference:** [docs/api/](docs/api/README.md)
+- **Client Guide:** [docs/client/](docs/client/README.md)
+- **Shared Types:** [docs/shared/](docs/shared/README.md)
+- **Deployment:** [docs/deployment/](docs/deployment/README.md)
+- **Contributing:** [Contributing](#-contributing)
 
 ---
 
@@ -242,8 +266,7 @@ make clear-redis          # Flush Redis database
 make build-docker-images  # Build production Docker images
 
 # Database
-make migrate              # Run database migrations
-make seed                 # Seed database with sample data
+make migrate              # Run database migrations (auto-runs on API start)
 ```
 
 ### Project Structure
@@ -254,8 +277,9 @@ Kreditozrouti/
 │   ├── src/
 │   │   ├── Controllers/    # HTTP request handlers
 │   │   ├── Services/       # Business logic
-│   │   ├── Database/       # Kysely migrations
+│   │   ├── Database/       # Kysely migrations & types
 │   │   ├── Jobs/           # BullMQ response jobs
+│   │   ├── Schedulers/     # Scheduled scrape triggers
 │   │   └── Handlers/       # Job routing logic
 │   └── bruno/              # API testing (Bruno)
 │
@@ -265,7 +289,7 @@ Kreditozrouti/
 │   │   ├── components/     # Vue components
 │   │   ├── stores/         # Pinia stores
 │   │   ├── composables/    # Composition utilities
-│   │   ├── locales/        # i18n translations
+│   │   ├── locales/        # i18n translations (cs, en)
 │   │   └── types/          # TypeScript types
 │   └── public/             # Static assets
 │
@@ -274,15 +298,36 @@ Kreditozrouti/
 │       ├── Jobs/           # Scraping job implementations
 │       └── Services/       # Scraping business logic
 │
+├── shared/                 # Pure TypeScript shared across all packages
+│   ├── domain/             # InSIS enums, conflict logic, period helpers
+│   ├── http/               # DTO interfaces, CoursesFilter
+│   └── queue/              # Queue names, job/scrape payload types
+│
+├── scripts/                # Server management scripts
+│   ├── lib.sh              # Shared utilities
+│   ├── install-docker.sh   # Docker installation
+│   ├── traefik.sh          # Traefik deployment
+│   ├── glitchtip.sh        # GlitchTip deployment
+│   ├── github-runner.sh    # Self-hosted runner deployment
+│   ├── maintenance.sh      # System maintenance
+│   └── docker-cleanup.sh   # Docker resource cleanup
+│
 ├── docs/                   # Documentation
-│   ├── API.md
-│   ├── CLIENT.md
-│   ├── SCRAPER.md
-│   ├── SCRIPTS.md
-│   ├── DEPLOYMENT.md
+│   ├── api/                # API split docs (README, ENDPOINTS, SERVICES, JOBS, DATABASE, INTERNALS)
+│   ├── client/             # Client split docs (README, STORES, COMPOSABLES, TIMETABLE, INTERNALS)
+│   ├── scraper/            # Scraper split docs (README, JOBS, EXTRACTION, QUEUE, TYPES, INTERNALS)
+│   ├── shared/             # Shared split docs (README, DOMAIN, HTTP, QUEUE)
+│   ├── scripts/            # Scripts split docs (README, INFRASTRUCTURE, MAINTENANCE)
+│   ├── deployment/         # Deployment split docs (README, DOCKER, CICD, INFRASTRUCTURE, OPERATIONS)
+│   ├── API.md              # → navigation index for docs/api/
+│   ├── CLIENT.md           # → navigation index for docs/client/
+│   ├── SCRAPER.md          # → navigation index for docs/scraper/
+│   ├── SHARED.md           # → navigation index for docs/shared/
+│   ├── SCRIPTS.md          # → navigation index for docs/scripts/
+│   ├── DEPLOYMENT.md       # → navigation index for docs/deployment/
 │   └── compliance/         # Legal documents
 │
-├── docker-compose.local.yml    # Local development
+├── docker-compose.local.yml    # Local development infrastructure
 ├── docker-compose.yml          # Production deployment
 ├── Makefile                    # Convenience commands
 └── README.md                   # This file

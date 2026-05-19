@@ -1,10 +1,14 @@
 # Scraper — Overview
 
-The scraper is a standalone Node.js service responsible for fetching all course and study plan data from InSIS (VŠE's information system). It operates entirely through a Redis-backed job queue — the API enqueues work, the scraper processes it, and results flow back to the API via a response queue.
+The scraper is a standalone Node.js service responsible for fetching all course and study plan data from InSIS (VŠE's
+information system). It operates entirely through a Redis-backed job queue — the API enqueues work, the scraper
+processes it, and results flow back to the API via a response queue.
 
 ## Why a Separate Service?
 
-InSIS has no public API. All data must be extracted by issuing HTTP requests that look like a real browser session and parsing the returned HTML. This is inherently slow (hundreds of individual page fetches per catalog sync), so it runs in a dedicated worker process that can be scaled independently of the API.
+InSIS has no public API. All data must be extracted by issuing HTTP requests that look like a real browser session and
+parsing the returned HTML. This is inherently slow (hundreds of individual page fetches per catalog sync), so it runs in
+a dedicated worker process that can be scaled independently of the API.
 
 ## Architecture
 
@@ -105,15 +109,15 @@ scraper/src/
 
 ## Technology Choices
 
-| Concern | Library | Why |
-|---|---|---|
-| HTTP requests | Axios | InSIS pages are server-rendered — no JavaScript execution needed. Puppeteer is installed as a legacy dep but unused. |
-| HTML parsing | Cheerio | Lightweight jQuery-like API; no browser overhead. |
-| Markdown conversion | Turndown | Converts rich text sections (literature, course contents) to portable Markdown. |
-| Job queue | BullMQ + Redis | Reliable, persistent, supports deduplication and retries. |
-| Error tracking | Sentry | Wraps each job in a Sentry transaction; captures uncaught exceptions. |
-| Logging | Pino (JSON) | Structured wide-event logging via AsyncLocalStorage. |
-| Concurrency | `runWithConcurrency` | Custom pool; controls parallelism for bulk HTTP requests. |
+| Concern             | Library              | Why                                                                                                                  |
+|---------------------|----------------------|----------------------------------------------------------------------------------------------------------------------|
+| HTTP requests       | Axios                | InSIS pages are server-rendered — no JavaScript execution needed. Puppeteer is installed as a legacy dep but unused. |
+| HTML parsing        | Cheerio              | Lightweight jQuery-like API; no browser overhead.                                                                    |
+| Markdown conversion | Turndown             | Converts rich text sections (literature, course contents) to portable Markdown.                                      |
+| Job queue           | BullMQ + Redis       | Reliable, persistent, supports deduplication and retries.                                                            |
+| Error tracking      | Sentry               | Wraps each job in a Sentry transaction; captures uncaught exceptions.                                                |
+| Logging             | Pino (JSON)          | Structured wide-event logging via AsyncLocalStorage.                                                                 |
+| Concurrency         | `runWithConcurrency` | Custom pool; controls parallelism for bulk HTTP requests.                                                            |
 
 ## Further Reading
 

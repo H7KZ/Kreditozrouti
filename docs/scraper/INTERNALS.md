@@ -1,6 +1,7 @@
 # Scraper — Internals
 
-This document covers the cross-cutting infrastructure that all jobs rely on: startup and clustering, the logger, error classes, HTTP infrastructure, and the utilities.
+This document covers the cross-cutting infrastructure that all jobs rely on: startup and clustering, the logger, error
+classes, HTTP infrastructure, and the utilities.
 
 ---
 
@@ -14,10 +15,12 @@ node dist/index.js [N]
 ```
 
 **Single-worker mode (N=1 or omitted):**  
-Skips the cluster code entirely and calls `startWorker()` directly in the main process. Simpler, lower overhead, the typical development and single-node production setup.
+Skips the cluster code entirely and calls `startWorker()` directly in the main process. Simpler, lower overhead, the
+typical development and single-node production setup.
 
 **Multi-worker mode (N>1):**  
-The primary process forks N workers and monitors them. On `exit`, it forks a replacement immediately — no manual restart needed.
+The primary process forks N workers and monitors them. On `exit`, it forks a replacement immediately — no manual restart
+needed.
 
 ```
 startWorker():
@@ -33,9 +36,11 @@ If any step throws, the process logs the error, optionally flushes to Sentry, di
 
 ## Logger (`Context/LoggerJobContext.ts`)
 
-The scraper uses a **wide-event logging** pattern: instead of emitting many small log lines during a job, it accumulates key-value pairs throughout the call stack and emits a single JSON log line at the end.
+The scraper uses a **wide-event logging** pattern: instead of emitting many small log lines during a job, it accumulates
+key-value pairs throughout the call stack and emits a single JSON log line at the end.
 
-This is implemented via Node.js `AsyncLocalStorage`, which acts as a request-scoped store without requiring explicit parameter passing.
+This is implemented via Node.js `AsyncLocalStorage`, which acts as a request-scoped store without requiring explicit
+parameter passing.
 
 ```typescript
 // In ScraperRequestHandler — creates the log context for this job execution
@@ -58,7 +63,8 @@ LoggerJobContext.log.info(LoggerJobContext.get())
 // → {"level":"INFO","time":"...","job_id":"...","course_id":42,"status":"success","duration_ms":1234,...}
 ```
 
-**Why wide events?** A single JSON object is far easier to query in log aggregators (Grafana, Datadog, etc.) than scattered multi-line logs. You can filter `status=failed AND attempt>2` with a single index scan.
+**Why wide events?** A single JSON object is far easier to query in log aggregators (Grafana, Datadog, etc.) than
+scattered multi-line logs. You can filter `status=failed AND attempt>2` with a single index scan.
 
 ### `JobWideEvent` interface
 
@@ -97,7 +103,8 @@ class InSISNetworkError extends Error {
 }
 ```
 
-Thrown when an HTTP request fails (4xx, 5xx, network timeout). BullMQ treats this as a normal failure and applies the retry policy (3 attempts, exponential backoff starting at 10 seconds).
+Thrown when an HTTP request fails (4xx, 5xx, network timeout). BullMQ treats this as a normal failure and applies the
+retry policy (3 attempts, exponential backoff starting at 10 seconds).
 
 **Use when:** the failure is transient and retrying makes sense.
 
@@ -109,17 +116,20 @@ class InSISParseError extends UnrecoverableError {
 }
 ```
 
-Thrown when HTML parsing fails. Extends BullMQ's `UnrecoverableError`, which causes BullMQ to immediately move the job to the failed state without any retries.
+Thrown when HTML parsing fails. Extends BullMQ's `UnrecoverableError`, which causes BullMQ to immediately move the job
+to the failed state without any retries.
 
 **Use when:** the failure is deterministic — retrying the same page will produce the same broken parse.
 
-**Currently only `InSIS:Course` jobs use these errors.** All other jobs use the fail-open pattern (catch, log, return null) because partial failures are acceptable in bulk operations.
+**Currently only `InSIS:Course` jobs use these errors.** All other jobs use the fail-open pattern (catch, log, return
+null) because partial failures are acceptable in bulk operations.
 
 ---
 
 ## HTTP Client (`Services/InSISHTTPClientService.ts`)
 
 All HTTP requests go through `InSISHTTPClientService`, a thin Axios wrapper that:
+
 - Merges InSIS-specific browser headers with every request
 - Logs errors to `LoggerJobContext` automatically
 - Returns a discriminated union (`HttpResult<T> | HttpError`) instead of throwing
@@ -135,19 +145,23 @@ This forces callers to handle both cases explicitly rather than wrapping every c
 
 **Three methods:**
 
-| Method | Returns | Use case |
-|---|---|---|
-| `get<T>(url)` | `HttpResponse<T>` | Single, important fetch (check `result.success`) |
-| `post<T>(url, data)` | `HttpResponse<T>` | Search form submission |
-| `getSilent<T>(url)` | `AxiosResponse<T> \| null` | Bulk fetch where failures are silently skipped |
+| Method               | Returns                    | Use case                                         |
+|----------------------|----------------------------|--------------------------------------------------|
+| `get<T>(url)`        | `HttpResponse<T>`          | Single, important fetch (check `result.success`) |
+| `post<T>(url, data)` | `HttpResponse<T>`          | Search form submission                           |
+| `getSilent<T>(url)`  | `AxiosResponse<T> \| null` | Bulk fetch where failures are silently skipped   |
 
-`getSilent` is used in the BFS traversal in `ScraperRequestInSISStudyPlansJob` where 1-of-10 concurrent fetches failing should not abort the whole traversal.
+`getSilent` is used in the BFS traversal in `ScraperRequestInSISStudyPlansJob` where 1-of-10 concurrent fetches failing
+should not abort the whole traversal.
 
 **Factory:**
+
 ```typescript
 export function createInSISClient(logPrefix?: string): InSISHTTPClientService
 ```
-The `logPrefix` scopes log keys to avoid collisions when multiple clients run concurrently (e.g., `catalog_error` vs `course_error`).
+
+The `logPrefix` scopes log keys to avoid collisions when multiple clients run concurrently (e.g., `catalog_error` vs
+`course_error`).
 
 ---
 
@@ -167,7 +181,9 @@ InSIS uses standard web anti-scraping signals. The scraper mimics a modern Chrom
 }
 ```
 
-**`withCzechLang(url)`** appends `lang=cz` to force Czech-language responses (InSIS otherwise serves English for some faculties based on Accept-Language). Uses `;` as a separator when the URL already has a `?` parameter, matching InSIS's own URL convention.
+**`withCzechLang(url)`** appends `lang=cz` to force Czech-language responses (InSIS otherwise serves English for some
+faculties based on Accept-Language). Uses `;` as a separator when the URL already has a `?` parameter, matching InSIS's
+own URL convention.
 
 ---
 
@@ -181,11 +197,15 @@ async function runWithConcurrency<T, R>(
 ): Promise<R[]>
 ```
 
-A simple worker-pool implementation using a shared iterator. Creates `Math.min(items.length, concurrency)` concurrent async workers, each pulling from the iterator until exhausted. Results are written back to a pre-allocated array by index to preserve order.
+A simple worker-pool implementation using a shared iterator. Creates `Math.min(items.length, concurrency)` concurrent
+async workers, each pulling from the iterator until exhausted. Results are written back to a pre-allocated array by
+index to preserve order.
 
-**Error handling:** Individual item failures are caught and logged (`console.error`) but do not abort other items. The slot in `results` for a failed item is `undefined` — callers should guard against this.
+**Error handling:** Individual item failures are caught and logged (`console.error`) but do not abort other items. The
+slot in `results` for a failed item is `undefined` — callers should guard against this.
 
 **Use cases:**
+
 - BFS study plans traversal: 10 concurrent HTTP fetches
 - Study plan request enqueue: 20 concurrent Redis writes
 
@@ -195,11 +215,13 @@ A simple worker-pool implementation using a shared iterator. Creates `Math.min(i
 
 ### `extractSemester(value)` → `InSISSemester | null`
 
-Searches for `ZS` or `LS` as word-boundary tokens (start, middle, or end of string). Case-insensitive via `.toUpperCase()`. Returns null if neither found.
+Searches for `ZS` or `LS` as word-boundary tokens (start, middle, or end of string). Case-insensitive via
+`.toUpperCase()`. Returns null if neither found.
 
 ### `extractYear(value)` → `number | null`
 
-Matches the pattern `YYYY/YYYY` (e.g., `2024/2025`) and returns the first year component as a number. Academic years are identified by their starting year.
+Matches the pattern `YYYY/YYYY` (e.g., `2024/2025`) and returns the first year component as a number. Academic years are
+identified by their starting year.
 
 ### `parseGroupCode(groupCode)` → `{group, category}`
 
@@ -208,7 +230,8 @@ Decodes an InSIS group code (e.g., `"oP"`, `"cVM"`, `"hSZ"`, `"cTVS1"`) into str
 - **First character (lowercase)** → group scope via `GroupPrefixes` map
 - **Remaining characters (uppercased)** → category via `CategoryRules` (ordered list, first match wins)
 
-Rules are checked from most-specific to least-specific. `ZEXCN` is checked before `EXC` to prevent false matches. `TVS`, `SZ`, and `VOR` are checked before the generic `V` pattern.
+Rules are checked from most-specific to least-specific. `ZEXCN` is checked before `EXC` to prevent false matches. `TVS`,
+`SZ`, and `VOR` are checked before the generic `V` pattern.
 
 Default fallbacks: `group='university_wide'`, `category='elective'`.
 
@@ -216,7 +239,8 @@ Default fallbacks: `group='university_wide'`, `category='elective'`.
 
 ## Date Service (`Services/DateService.ts`)
 
-Utility for parsing Czech/European date strings into JavaScript `Date` objects. Supports 40+ format variants including `D. M. YYYY`, `DD.MM.YY`, `YYYY-MM-DD`, `MM/DD/YYYY`, etc.
+Utility for parsing Czech/European date strings into JavaScript `Date` objects. Supports 40+ format variants including
+`D. M. YYYY`, `DD.MM.YY`, `YYYY-MM-DD`, `MM/DD/YYYY`, etc.
 
 ```typescript
 DateService.extractDateTimeFromString('15. 10. 2024 9:15')
@@ -226,13 +250,15 @@ DateService.extractDateTimeFromString('not-a-date')
 // → { datetime: null, date: null, time: null }
 ```
 
-Uses the `moment` library with Prague timezone offset. Not currently called in the main scraping path (timetable dates are stored as raw strings); available for future use or post-processing.
+Uses the `moment` library with Prague timezone offset. Not currently called in the main scraping path (timetable dates
+are stored as raw strings); available for future use or post-processing.
 
 ---
 
 ## Configuration (`Config/Config.ts`)
 
-Environment variables are loaded from `.env` files (searched from the distribution directory upward). All InSIS base URLs are hardcoded as defaults and not configurable via env — they only change if InSIS itself changes.
+Environment variables are loaded from `.env` files (searched from the distribution directory upward). All InSIS base
+URLs are hardcoded as defaults and not configurable via env — they only change if InSIS itself changes.
 
 ```typescript
 Config.insis.baseDomain                // 'https://insis.vse.cz'
@@ -243,6 +269,7 @@ Config.insis.defaultReferrer           // 'https://insis.vse.cz'
 ```
 
 **Environment helpers:**
+
 ```typescript
 Config.isEnvLocal()        // env === 'localhost' | 'local'
 Config.isEnvDevelopment()  // env === 'dev' | 'development'
@@ -250,6 +277,7 @@ Config.isEnvProduction()   // env === 'production' | 'prod'
 ```
 
 **Required env vars:**
+
 ```
 REDIS_URI       — Redis connection string (e.g. redis://localhost:46379)
 REDIS_PASSWORD  — Optional Redis password
@@ -265,6 +293,7 @@ SENTRY_RELEASE  — Optional release identifier for Sentry
 Initialized once per process. Traces 10% of jobs in production, 100% in other environments.
 
 `withSentryJobHandler(jobName, handler)` wraps any BullMQ job processor:
+
 1. Opens a Sentry span (`op: 'queue.process'`)
 2. Attaches job name, id, and data as context
 3. On error: captures the exception with `jobName` and `jobId` tags, then re-throws

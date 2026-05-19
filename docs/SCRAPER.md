@@ -4,14 +4,14 @@ The scraper documentation is split into focused files for easier navigation.
 
 ## Documents
 
-| File | Contents |
-|---|---|
-| [scraper/README.md](scraper/README.md) | Architecture overview, data flow diagram, directory structure, technology choices |
-| [scraper/JOBS.md](scraper/JOBS.md) | Every job type: input payload, step-by-step flow, output, error handling |
+| File                                           | Contents                                                                                  |
+|------------------------------------------------|-------------------------------------------------------------------------------------------|
+| [scraper/README.md](scraper/README.md)         | Architecture overview, data flow diagram, directory structure, technology choices         |
+| [scraper/JOBS.md](scraper/JOBS.md)             | Every job type: input payload, step-by-step flow, output, error handling                  |
 | [scraper/EXTRACTION.md](scraper/EXTRACTION.md) | How each extraction service parses InSIS HTML — selectors, edge cases, parsing strategies |
-| [scraper/QUEUE.md](scraper/QUEUE.md) | BullMQ queue topology, deduplication, retry policy, scheduler, QueueService API |
-| [scraper/TYPES.md](scraper/TYPES.md) | Complete TypeScript type reference for all scraped data and job payload shapes |
-| [scraper/INTERNALS.md](scraper/INTERNALS.md) | Clustering, wide-event logger, error classes, HTTP client, concurrency utility, config |
+| [scraper/QUEUE.md](scraper/QUEUE.md)           | BullMQ queue topology, deduplication, retry policy, scheduler, QueueService API           |
+| [scraper/TYPES.md](scraper/TYPES.md)           | Complete TypeScript type reference for all scraped data and job payload shapes            |
+| [scraper/INTERNALS.md](scraper/INTERNALS.md)   | Clustering, wide-event logger, error classes, HTTP client, concurrency utility, config    |
 
 ## Quick Orientation
 
