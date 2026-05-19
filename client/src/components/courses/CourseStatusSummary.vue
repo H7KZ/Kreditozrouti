@@ -3,11 +3,6 @@ import { useSharedCourseStatusFilter } from '@client/composables/useCourseStatus
 import { useTimetableStore } from '@client/stores'
 import type { CourseStatusType } from '@client/types'
 import { computed } from 'vue'
-import IconAlertTriangle from '~icons/lucide/alert-triangle'
-import IconBookOpen from '~icons/lucide/book-open'
-import IconCalendarX from '~icons/lucide/calendar-x'
-import IconCheck from '~icons/lucide/check'
-import IconMapPin from '~icons/lucide/map-pin'
 
 /**
  * CourseStatusSummary

@@ -76,7 +76,7 @@ services:
       - "traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}"
 
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:80/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -178,7 +178,7 @@ services:
       - "traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.replacement=https://$${1}"
 
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      test: [ "CMD", "curl", "-f", "http://localhost:80" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -231,7 +231,7 @@ services:
       - mysql-dev-network
 
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -328,7 +328,7 @@ services:
       - redis-dev-network
 
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping" ]
       interval: 30s
       timeout: 10s
       retries: 5

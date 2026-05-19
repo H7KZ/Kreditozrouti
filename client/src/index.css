@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import './styles/insis.css';
+
 @plugin '@tailwindcss/typography';
 
 @theme {
@@ -477,13 +478,16 @@ html.dark {
 		width: 6px;
 		height: 6px;
 	}
+
 	::-webkit-scrollbar-track {
 		background: transparent;
 	}
+
 	::-webkit-scrollbar-thumb {
 		background: var(--insis-border-mid);
 		border-radius: 3px;
 	}
+
 	::-webkit-scrollbar-thumb:hover {
 		background: var(--insis-gray-500);
 	}

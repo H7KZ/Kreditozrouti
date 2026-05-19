@@ -3,11 +3,6 @@ import { useScheduleSlotsStore } from '@client/stores/schedule-slots.store'
 import { useTimetableStore } from '@client/stores/timetable.store'
 import { nextTick, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import IconInfo from '~icons/lucide/info'
-import IconPencil from '~icons/lucide/pencil'
-import IconPlus from '~icons/lucide/plus'
-import IconSparkles from '~icons/lucide/sparkles'
-import IconX from '~icons/lucide/x'
 
 const { t } = useI18n()
 const slotsStore = useScheduleSlotsStore()

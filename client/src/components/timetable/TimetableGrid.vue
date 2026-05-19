@@ -1,7 +1,4 @@
 ﻿<script setup lang="ts">
-import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
-import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
-import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
 import type { MergedUnit } from '@client/composables'
 import { isMergedUnit, useCourseLabels, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
 import { WEEKDAYS } from '@client/constants/timetable'

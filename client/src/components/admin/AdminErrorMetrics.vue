@@ -1,5 +1,4 @@
 ﻿<script setup lang="ts">
-import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 import type { ErrorMetrics } from '@shared/http/admin'
 
 const props = defineProps<{ metrics: ErrorMetrics }>()

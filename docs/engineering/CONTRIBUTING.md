@@ -23,14 +23,14 @@
 
 We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-| Prefix | When to use |
-|--------|-------------|
-| `feat:` | New feature |
-| `fix:` | Bug fix |
-| `docs:` | Documentation only |
-| `refactor:` | Code restructuring, no behavior change |
-| `chore:` | Maintenance (deps, config, tooling) |
-| `style:` | Formatting, whitespace (no logic change) |
+| Prefix      | When to use                              |
+|-------------|------------------------------------------|
+| `feat:`     | New feature                              |
+| `fix:`      | Bug fix                                  |
+| `docs:`     | Documentation only                       |
+| `refactor:` | Code restructuring, no behavior change   |
+| `chore:`    | Maintenance (deps, config, tooling)      |
+| `style:`    | Formatting, whitespace (no logic change) |
 
 Example: `feat: add campus conflict detection to timetable store`
 
@@ -40,16 +40,19 @@ Example: `feat: add campus conflict detection to timetable store`
 
 - **TypeScript strict mode** — no `any`. If you need to escape the type system, use `unknown` + a type guard.
 - **Vue 3 Composition API** with `<script setup>` — no Options API.
-- **API controllers** are plain namespace objects, not classes: `export const FooController = { async handleRequest(...) {} }`
+- **API controllers** are plain namespace objects, not classes:
+  `export const FooController = { async handleRequest(...) {} }`
 - **Zod schemas** co-located with their controller file, not in a central `Validations/` folder.
 - **Imports** in the client: use `@api/contracts` for API types, never `@api/Database/types`.
-- **Store deps**: `timetable.store` must never import `courses.store` — see [docs/architecture/MONOREPO.md](../architecture/MONOREPO.md) and `client/CLAUDE.md` for the reason.
+- **Store deps**: `timetable.store` must never import `courses.store` —
+  see [docs/architecture/MONOREPO.md](../architecture/MONOREPO.md) and `client/CLAUDE.md` for the reason.
 
 ---
 
 ## Documentation
 
 When your change affects documented behavior:
+
 - Find the relevant doc in `docs/` (see the table in `CLAUDE.md` or `GEMINI.md`)
 - Update it in the same PR as your code change
 - If it's new behavior with no existing doc entry, add a section or create a new file
@@ -58,13 +61,13 @@ When your change affects documented behavior:
 
 ## Branch Strategy
 
-| Branch | Purpose |
-|--------|---------|
-| `main` | Production — tagged releases only |
+| Branch    | Purpose                                          |
+|-----------|--------------------------------------------------|
+| `main`    | Production — tagged releases only                |
 | `develop` | Integration branch — all feature PRs target this |
-| `feat/*` | Feature development |
-| `fix/*` | Bug fixes |
-| `chore/*` | Maintenance |
+| `feat/*`  | Feature development                              |
+| `fix/*`   | Bug fixes                                        |
+| `chore/*` | Maintenance                                      |
 
 ---
 

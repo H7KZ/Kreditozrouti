@@ -14,7 +14,7 @@ name: CI Pipeline
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 
 concurrency:
   group: ci-${{ github.head_ref || github.ref }}

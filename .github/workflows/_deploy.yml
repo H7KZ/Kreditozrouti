@@ -157,7 +157,7 @@ jobs:
   # ============================================================================
   deploy:
     name: Deploy to ${{ inputs.environment }}
-    needs: [build, prepare]
+    needs: [ build, prepare ]
     if: ${{ always() && (needs.build.result == 'success' || needs.prepare.result == 'success') }}
     runs-on: self-hosted
     timeout-minutes: 15

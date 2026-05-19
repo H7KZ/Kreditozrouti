@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { useCourseRefresh } from '@client/composables'
 import { useI18n } from 'vue-i18n'
-import IconAlertCircle from '~icons/lucide/alert-circle'
-import IconCheck from '~icons/lucide/check'
-import IconLoader from '~icons/lucide/loader'
-import IconRefreshCw from '~icons/lucide/refresh-cw'
 
 const props = defineProps<{ courseId: number }>()
 

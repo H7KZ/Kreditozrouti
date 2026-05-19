@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { AlertButton } from '@client/types'
 import { onMounted, onUnmounted, ref } from 'vue'
-import IconAlertTriangle from '~icons/lucide/alert-triangle'
-import IconCheckCircle from '~icons/lucide/check-circle'
-import IconInfo from '~icons/lucide/info'
-import IconX from '~icons/lucide/x'
-import IconXCircle from '~icons/lucide/x-circle'
 
 interface Props {
 	customId?: string

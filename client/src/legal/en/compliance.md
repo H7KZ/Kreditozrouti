@@ -12,7 +12,9 @@ _Verification of Compliance with VŠE Internal Regulations_
 
 ## 1. Executive Summary
 
-You might be wondering: is Kreditožrouti allowed? Does it break any university rules? Is my data safe? This document answers those questions by mapping every applicable VŠE regulation to the application's actual implementation. The short answer: yes, it's fully compliant. Here's the detailed breakdown.
+You might be wondering: is Kreditožrouti allowed? Does it break any university rules? Is my data safe? This document
+answers those questions by mapping every applicable VŠE regulation to the application's actual implementation. The short
+answer: yes, it's fully compliant. Here's the detailed breakdown.
 
 **Compliance Summary**
 
@@ -23,7 +25,9 @@ You might be wondering: is Kreditožrouti allowed? Does it break any university 
 
 ## 2. Application Overview
 
-Kreditožrouti is a web application that helps VŠE students discover courses, plan schedules, and detect timetable conflicts. It scrapes the publicly accessible InSIS course catalog (no authentication required), normalizes the data, and presents it through a modern search interface with advanced filtering capabilities.
+Kreditožrouti is a web application that helps VŠE students discover courses, plan schedules, and detect timetable
+conflicts. It scrapes the publicly accessible InSIS course catalog (no authentication required), normalizes the data,
+and presents it through a modern search interface with advanced filtering capabilities.
 
 ### 2.1 Data Sources & Scope
 
@@ -40,11 +44,15 @@ Kreditožrouti is a web application that helps VŠE students discover courses, p
 
 ### 2.2 Lecturer Names — Classification
 
-Lecturer names appear as attributes of course records in the publicly accessible InSIS catalog. Per SR 05/2018 Article 19(2), VŠE permits publication of employee names, titles, position, and teaching activities (subparagraphs a–c, e, n). Kreditožrouti displays lecturer names strictly in the context of course teaching assignments, which falls within this permitted scope. No additional personal information (contact details, photos, research output) is scraped or displayed.
+Lecturer names appear as attributes of course records in the publicly accessible InSIS catalog. Per SR 05/2018 Article
+19(2), VŠE permits publication of employee names, titles, position, and teaching activities (subparagraphs a–c, e, n).
+Kreditožrouti displays lecturer names strictly in the context of course teaching assignments, which falls within this
+permitted scope. No additional personal information (contact details, photos, research output) is scraped or displayed.
 
 ## 3. SR 05/2018 — Data Protection
 
-Směrnice rektora 05/2018 (Ochrana a zpracování osobních údajů) implements GDPR requirements within VŠE. This section maps each applicable article to Kreditožrouti's implementation.
+Směrnice rektora 05/2018 (Ochrana a zpracování osobních údajů) implements GDPR requirements within VŠE. This section
+maps each applicable article to Kreditožrouti's implementation.
 
 | Article    | Requirement                                                        | Status | Implementation                                                                                                                                                                                   |
 | ---------- | ------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -59,11 +67,16 @@ Směrnice rektora 05/2018 (Ochrana a zpracování osobních údajů) implements 
 
 ## 4. PR 02/2023 — IS Usage Rules
 
-Pravidla provozování a využívání informačních systémů (PR 02/2023) governs the creation, operation, and usage of information systems at VŠE.
+Pravidla provozování a využívání informačních systémů (PR 02/2023) governs the creation, operation, and usage of
+information systems at VŠE.
 
 ### 4.1 Classification: Is Kreditožrouti a VŠE IS?
 
-**Key Determination:** Kreditožrouti is **NOT** a VŠE Information System as defined in PR 02/2023 Art. 3. It is an independent, externally hosted, student-initiated tool that consumes publicly available data. It is not operated by any VŠE organizational unit, is not registered in the VŠE IS registry, and does not process data within VŠE's infrastructure. However, certain provisions remain relevant because the application interacts with InSIS data. These are analyzed below.
+**Key Determination:** Kreditožrouti is **NOT** a VŠE Information System as defined in PR 02/2023 Art. 3. It is an
+independent, externally hosted, student-initiated tool that consumes publicly available data. It is not operated by any
+VŠE organizational unit, is not registered in the VŠE IS registry, and does not process data within VŠE's
+infrastructure. However, certain provisions remain relevant because the application interacts with InSIS data. These are
+analyzed below.
 
 ### 4.2 Relevant Provisions
 
@@ -76,15 +89,20 @@ Pravidla provozování a využívání informačních systémů (PR 02/2023) gov
 
 ### 4.3 InSIS Steering Committee Approval
 
-The InSIS Řídicí výbor (Steering Committee) — the administrators responsible for the InSIS information system — has reviewed Kreditožrouti's scraping scope, frequency, rate limiting measures, and data usage, and has granted approval for this project use case.
+The InSIS Řídicí výbor (Steering Committee) — the administrators responsible for the InSIS information system — has
+reviewed Kreditožrouti's scraping scope, frequency, rate limiting measures, and data usage, and has granted approval for
+this project use case.
 
-This approval covers read-only scraping of the publicly accessible InSIS course catalog for the purpose of course discovery and schedule planning by VŠE students.
+This approval covers read-only scraping of the publicly accessible InSIS course catalog for the purpose of course
+discovery and schedule planning by VŠE students.
 
 ## 5. PR 04/2019 — Webhosting Rules
 
 Pravidla používání serveru webhosting.vse.cz (PR 04/2019) governs websites hosted on VŠE's webhosting.vse.cz server.
 
-**Applicability Assessment: NOT APPLICABLE.** Kreditožrouti is NOT hosted on webhosting.vse.cz. It is deployed on independent infrastructure using Docker containers with Traefik reverse proxy and its own domain. However, if the project were to migrate to VŠE infrastructure in the future, the following provisions would apply:
+**Applicability Assessment: NOT APPLICABLE.** Kreditožrouti is NOT hosted on webhosting.vse.cz. It is deployed on
+independent infrastructure using Docker containers with Traefik reverse proxy and its own domain. However, if the
+project were to migrate to VŠE infrastructure in the future, the following provisions would apply:
 
 ### 5.1 Future-Proofing: Webhosting Compliance Readiness
 
@@ -98,7 +116,8 @@ Pravidla používání serveru webhosting.vse.cz (PR 04/2019) governs websites h
 
 ## 6. Study & Examination Rules Context
 
-The Studijní a zkušební řád VŠE establishes the framework within which course registration, study plans, and academic scheduling operate. Kreditožrouti supports (but does not replace) the official processes defined in these rules.
+The Studijní a zkušební řád VŠE establishes the framework within which course registration, study plans, and academic
+scheduling operate. Kreditožrouti supports (but does not replace) the official processes defined in these rules.
 
 | Article | Study Rule                                                         | Kreditožrouti Support                                                                                                                                |
 | ------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |

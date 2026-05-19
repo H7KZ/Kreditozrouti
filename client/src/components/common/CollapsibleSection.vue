@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import IconChevronDown from '~icons/lucide/chevron-down'
 
 interface Props {
 	title: string

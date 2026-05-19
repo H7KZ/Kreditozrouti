@@ -3,7 +3,6 @@ import { useClickOutside, useCourseLabels, usePopover, useTimeUtils } from '@cli
 import type { InSISDay } from '@shared/domain/insis'
 import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import IconSearch from '~icons/lucide/search'
 
 /*
  * TimetableDragPopover

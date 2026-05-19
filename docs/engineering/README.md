@@ -6,10 +6,10 @@ Guides for developers working on Kreditožrouti.
 
 ## Documents
 
-| Doc | What it covers |
-|-----|---------------|
-| [SETUP.md](SETUP.md) | Prerequisites, environment variables, running locally, all make commands |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Branching, commit conventions, PR process, code style |
+| Doc                                | What it covers                                                           |
+|------------------------------------|--------------------------------------------------------------------------|
+| [SETUP.md](SETUP.md)               | Prerequisites, environment variables, running locally, all make commands |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Branching, commit conventions, PR process, code style                    |
 
 ---
 

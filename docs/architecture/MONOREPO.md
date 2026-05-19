@@ -12,27 +12,28 @@ Kreditozrouti/
 └── deployment/   # Docker Compose files + deploy.sh
 ```
 
-Each of `api/`, `client/`, `scraper/`, and `shared/` is an independent pnpm package with its own `package.json` and `tsconfig.json`. There is no pnpm workspace hoisting of runtime code — each package installs its own dependencies.
+Each of `api/`, `client/`, `scraper/`, and `shared/` is an independent pnpm package with its own `package.json` and
+`tsconfig.json`. There is no pnpm workspace hoisting of runtime code — each package installs its own dependencies.
 
 ---
 
 ## Package Roles
 
-| Package | Language | Runtime | Purpose |
-|---------|----------|---------|---------|
-| `api` | TypeScript | Node.js | HTTP server, DB writes, job orchestration |
-| `client` | TypeScript + Vue | Browser / Nginx | User interface |
-| `scraper` | TypeScript | Node.js | BullMQ worker, InSIS HTTP scraping |
-| `shared` | TypeScript | N/A (types only) | Shared DTOs, domain logic, queue types |
-| `scripts` | Bash | Server (Ubuntu) | Docker install, Traefik, maintenance |
-| `deployment` | YAML + Bash | CI / Server | Docker Compose stacks, deploy script |
+| Package      | Language         | Runtime          | Purpose                                   |
+|--------------|------------------|------------------|-------------------------------------------|
+| `api`        | TypeScript       | Node.js          | HTTP server, DB writes, job orchestration |
+| `client`     | TypeScript + Vue | Browser / Nginx  | User interface                            |
+| `scraper`    | TypeScript       | Node.js          | BullMQ worker, InSIS HTTP scraping        |
+| `shared`     | TypeScript       | N/A (types only) | Shared DTOs, domain logic, queue types    |
+| `scripts`    | Bash             | Server (Ubuntu)  | Docker install, Traefik, maintenance      |
+| `deployment` | YAML + Bash      | CI / Server      | Docker Compose stacks, deploy script      |
 
 ---
 
 ## Cross-Package Import Rules
 
 ```
-         ┌──────────┐     types only     ┌──────────┐
+         ┌──────────┐     types only      ┌──────────┐
          │  client  │ ──────────────────► │   api    │
          └──────────┘  (@api/contracts)   └──────────┘
                │                               │
@@ -50,6 +51,7 @@ Each of `api/`, `client/`, `scraper/`, and `shared/` is an independent pnpm pack
 ```
 
 **Rules:**
+
 - `shared` must **never** import from `api`, `client`, or `scraper` — it is a pure types/utilities package
 - `client` may import types from `@api/contracts` (the stable public barrel) but **never** runtime code
 - `client` must import from `@api/contracts`, **not** `@api/Database/types` directly
@@ -62,23 +64,26 @@ Each of `api/`, `client/`, `scraper/`, and `shared/` is an independent pnpm pack
 Each package configures `tsconfig.json` `paths` so imports are clean:
 
 ### api/
-| Alias | Resolves to |
-|-------|-------------|
-| `@api/*` | `./src/*` |
+
+| Alias       | Resolves to   |
+|-------------|---------------|
+| `@api/*`    | `./src/*`     |
 | `@shared/*` | `../shared/*` |
 
 ### client/
-| Alias | Resolves to | Note |
-|-------|-------------|------|
-| `@client/*` | `./src/*` | — |
-| `@api/*` | `../api/src/*` | Types only — never import runtime code |
-| `@shared/*` | `../shared/*` | — |
+
+| Alias       | Resolves to    | Note                                   |
+|-------------|----------------|----------------------------------------|
+| `@client/*` | `./src/*`      | —                                      |
+| `@api/*`    | `../api/src/*` | Types only — never import runtime code |
+| `@shared/*` | `../shared/*`  | —                                      |
 
 ### scraper/
-| Alias | Resolves to |
-|-------|-------------|
-| `@scraper/*` | `./src/*` |
-| `@shared/*` | `../shared/*` |
+
+| Alias        | Resolves to   |
+|--------------|---------------|
+| `@scraper/*` | `./src/*`     |
+| `@shared/*`  | `../shared/*` |
 
 ---
 

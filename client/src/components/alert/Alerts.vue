@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Alert from '@client/components/alert/Alert.vue'
 import { useAlertsStore } from '@client/stores'
 
 const alertsStore = useAlertsStore()

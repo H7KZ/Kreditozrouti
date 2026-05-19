@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import Alerts from '@client/components/alert/Alerts.vue'
-import AppFooter from '@client/components/common/AppFooter.vue'
-import ScreenReaderAnnouncer from '@client/components/common/ScreenReaderAnnouncer.vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 

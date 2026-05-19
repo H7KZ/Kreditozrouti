@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
-import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import { useCourseLabels } from '@client/composables'
 import { useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import IconFunnel from '~icons/lucide/funnel'
-import IconTrash from '~icons/lucide/trash-2'
 
 const { t } = useI18n()
 const router = useRouter()

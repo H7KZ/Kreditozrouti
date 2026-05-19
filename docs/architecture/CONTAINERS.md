@@ -2,7 +2,8 @@
 
 ## Local Development
 
-Defined in `docker-compose.local.yml`. Starts only infrastructure — app services run as native Node.js processes (`make dev`).
+Defined in `docker-compose.local.yml`. Starts only infrastructure — app services run as native Node.js processes (
+`make dev`).
 
 ```
 docker-compose.local.yml
@@ -12,6 +13,7 @@ docker-compose.local.yml
 ```
 
 App processes run directly on the host:
+
 ```
 make dev-api      → node on :40080
 make dev-client   → Vite on :45173
@@ -22,9 +24,11 @@ make dev-scraper  → node worker (no port)
 
 ## Production / Staging Stacks
 
-Defined under `deployment/`. Each stack is a separate Compose file with explicit network and volume declarations split into companion files.
+Defined under `deployment/`. Each stack is a separate Compose file with explicit network and volume declarations split
+into companion files.
 
 ### Traefik Stack (`deployment/traefik/`)
+
 Must be deployed first on a fresh server — creates `traefik-network`.
 
 ```
@@ -66,23 +70,24 @@ Self-hosted GitHub Actions runners registered to the repo.
 
 ## Networks
 
-| Network | Purpose | Who joins |
-|---------|---------|-----------|
+| Network           | Purpose                         | Who joins                        |
+|-------------------|---------------------------------|----------------------------------|
 | `traefik-network` | Public ingress, Traefik routing | traefik, api, client, phpmyadmin |
-| `mysql-network` | DB access | api, mysql, phpmyadmin |
-| `redis-network` | Queue + sessions | api, scraper, redis |
+| `mysql-network`   | DB access                       | api, mysql, phpmyadmin           |
+| `redis-network`   | Queue + sessions                | api, scraper, redis              |
 
-Networks are **isolated** — the scraper cannot reach MySQL directly; it can only talk to Redis. The client container (Nginx) cannot reach MySQL or Redis.
+Networks are **isolated** — the scraper cannot reach MySQL directly; it can only talk to Redis. The client container (
+Nginx) cannot reach MySQL or Redis.
 
 ---
 
 ## Volumes
 
-| Volume | Mounted by | Data | Ephemeral? |
-|--------|-----------|------|-----------|
-| `mysql-data-volume` | mysql | All course/study-plan data | No — persisted |
-| `traefik-letsencrypt-volume` | traefik | TLS certificates | No — persisted |
-| Redis (no volume) | redis | BullMQ queues, sessions | Yes — lost on restart |
+| Volume                       | Mounted by | Data                       | Ephemeral?            |
+|------------------------------|------------|----------------------------|-----------------------|
+| `mysql-data-volume`          | mysql      | All course/study-plan data | No — persisted        |
+| `traefik-letsencrypt-volume` | traefik    | TLS certificates           | No — persisted        |
+| Redis (no volume)            | redis      | BullMQ queues, sessions    | Yes — lost on restart |
 
 ---
 
@@ -90,11 +95,11 @@ Networks are **isolated** — the scraper cannot reach MySQL directly; it can on
 
 All production traffic enters through Traefik on port 443 (TLS via Let's Encrypt DNS-01 + Cloudflare).
 
-| Service | Rule | Priority | Notes |
-|---------|------|----------|-------|
-| API | `PathPrefix(/api)` | 100 | Strips `/api` prefix before forwarding |
-| phpMyAdmin | `PathPrefix(/pma)` | 80 | Strips `/pma` prefix |
-| Client | `PathPrefix(/)` | 10 | Catch-all, lowest priority |
+| Service    | Rule               | Priority | Notes                                  |
+|------------|--------------------|----------|----------------------------------------|
+| API        | `PathPrefix(/api)` | 100      | Strips `/api` prefix before forwarding |
+| phpMyAdmin | `PathPrefix(/pma)` | 80       | Strips `/pma` prefix                   |
+| Client     | `PathPrefix(/)`    | 10       | Catch-all, lowest priority             |
 
 Port 80 redirects to 443. The `traefik.yml` static config handles ACME, entrypoints, and ping.
 

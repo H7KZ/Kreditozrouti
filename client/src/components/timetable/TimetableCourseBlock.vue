@@ -5,8 +5,6 @@ import type { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import IconAlertTriangle from '~icons/lucide/alert-triangle'
-import IconX from '~icons/lucide/x'
 
 /*
  * TimetableCourseBlock

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import IconCheck from '~icons/lucide/check'
 
 /*
  * WizardSteps

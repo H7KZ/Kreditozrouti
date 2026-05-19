@@ -12,8 +12,8 @@ import type {
 } from '@scraper/types/insis'
 import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
-import * as cheerio from 'cheerio'
 import type { CheerioAPI } from 'cheerio'
+import * as cheerio from 'cheerio'
 
 /**
  * Extracts course data from InSIS syllabus pages.

@@ -12,18 +12,23 @@ _Ověření souladu s interními předpisy VŠE_
 
 ## 1. Shrnutí
 
-Možná se ptáte: je Kreditožrouti povolený? Porušuje nějaká univerzitní pravidla? Jsou moje data v bezpečí? Tento dokument odpovídá na tyto otázky tím, že mapuje každý příslušný předpis VŠE na skutečnou implementaci aplikace. Stručná odpověď: ano, je plně v souladu. Níže najdete podrobný rozbor.
+Možná se ptáte: je Kreditožrouti povolený? Porušuje nějaká univerzitní pravidla? Jsou moje data v bezpečí? Tento
+dokument odpovídá na tyto otázky tím, že mapuje každý příslušný předpis VŠE na skutečnou implementaci aplikace. Stručná
+odpověď: ano, je plně v souladu. Níže najdete podrobný rozbor.
 
 **Přehled souladu**
 
 - SR 05/2018 (Ochrana osobních údajů): **V SOULADU** — Osobní údaje nejsou zpracovávány
-- PR 02/2023 (Pravidla IS): **V SOULADU** — Přístup pouze pro čtení k veřejným datům, scrapování schváleno řídicím výborem InSIS
+- PR 02/2023 (Pravidla IS): **V SOULADU** — Přístup pouze pro čtení k veřejným datům, scrapování schváleno řídicím
+  výborem InSIS
 - PR 04/2019 (Pravidla webhostingu): **NEAPLIKOVATELNÉ** — Vlastní infrastruktura
 - Studijní a zkušební řád: **V SOULADU** — Podporuje vyhledávání předmětů studenty
 
 ## 2. Přehled aplikace
 
-Kreditožrouti je webová aplikace, která pomáhá studentům VŠE vyhledávat předměty, plánovat rozvrhy a detekovat časové konflikty. Stahuje data z veřejně přístupného katalogu předmětů InSIS (bez nutnosti přihlášení), normalizuje je a prezentuje prostřednictvím moderního rozhraní s pokročilým filtrováním.
+Kreditožrouti je webová aplikace, která pomáhá studentům VŠE vyhledávat předměty, plánovat rozvrhy a detekovat časové
+konflikty. Stahuje data z veřejně přístupného katalogu předmětů InSIS (bez nutnosti přihlášení), normalizuje je a
+prezentuje prostřednictvím moderního rozhraní s pokročilým filtrováním.
 
 ### 2.1 Datové zdroje a rozsah
 
@@ -40,11 +45,15 @@ Kreditožrouti je webová aplikace, která pomáhá studentům VŠE vyhledávat 
 
 ### 2.2 Jména vyučujících — klasifikace
 
-Jména vyučujících se objevují jako atributy záznamů předmětů ve veřejně přístupném katalogu InSIS. Podle SR 05/2018 čl. 19 odst. 2 VŠE umožňuje zveřejňování jmen, titulů, pozice a výukové činnosti zaměstnanců (písm. a–c, e, n). Kreditožrouti zobrazuje jména vyučujících výhradně v kontextu výukové činnosti, což spadá do tohoto povoleného rozsahu. Žádné další osobní informace (kontakty, fotografie, vědecké výstupy) se nestahují ani nezobrazují.
+Jména vyučujících se objevují jako atributy záznamů předmětů ve veřejně přístupném katalogu InSIS. Podle SR 05/2018 čl.
+19 odst. 2 VŠE umožňuje zveřejňování jmen, titulů, pozice a výukové činnosti zaměstnanců (písm. a–c, e, n).
+Kreditožrouti zobrazuje jména vyučujících výhradně v kontextu výukové činnosti, což spadá do tohoto povoleného rozsahu.
+Žádné další osobní informace (kontakty, fotografie, vědecké výstupy) se nestahují ani nezobrazují.
 
 ## 3. SR 05/2018 — Ochrana osobních údajů
 
-Směrnice rektora 05/2018 (Ochrana a zpracování osobních údajů) implementuje požadavky GDPR v rámci VŠE. Tato sekce mapuje každý relevantní článek na implementaci Kreditožrouti.
+Směrnice rektora 05/2018 (Ochrana a zpracování osobních údajů) implementuje požadavky GDPR v rámci VŠE. Tato sekce
+mapuje každý relevantní článek na implementaci Kreditožrouti.
 
 | Článek    | Požadavek                                                            | Stav | Implementace                                                                                                                                                              |
 | --------- | -------------------------------------------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -59,11 +68,15 @@ Směrnice rektora 05/2018 (Ochrana a zpracování osobních údajů) implementuj
 
 ## 4. PR 02/2023 — Pravidla IS
 
-Pravidla provozování a využívání informačních systémů (PR 02/2023) upravují vytváření, provoz a užívání informačních systémů na VŠE.
+Pravidla provozování a využívání informačních systémů (PR 02/2023) upravují vytváření, provoz a užívání informačních
+systémů na VŠE.
 
 ### 4.1 Klasifikace: Je Kreditožrouti IS VŠE?
 
-**Klíčové určení:** Kreditožrouti **NENÍ** informačním systémem VŠE dle PR 02/2023 čl. 3. Jedná se o nezávislý, externě hostovaný, studentský projekt, který pracuje s veřejně dostupnými daty. Není provozován žádnou organizační jednotkou VŠE, není registrován v registru IS VŠE a nezpracovává data v infrastruktuře VŠE. Některá ustanovení jsou nicméně relevantní, protože aplikace pracuje s daty InSIS. Ta jsou analyzována níže.
+**Klíčové určení:** Kreditožrouti **NENÍ** informačním systémem VŠE dle PR 02/2023 čl. 3. Jedná se o nezávislý, externě
+hostovaný, studentský projekt, který pracuje s veřejně dostupnými daty. Není provozován žádnou organizační jednotkou
+VŠE, není registrován v registru IS VŠE a nezpracovává data v infrastruktuře VŠE. Některá ustanovení jsou nicméně
+relevantní, protože aplikace pracuje s daty InSIS. Ta jsou analyzována níže.
 
 ### 4.2 Relevantní ustanovení
 
@@ -76,15 +89,20 @@ Pravidla provozování a využívání informačních systémů (PR 02/2023) upr
 
 ### 4.3 Schválení řídicím výborem InSIS
 
-Řídicí výbor InSIS — administrátoři odpovědní za informační systém InSIS — posoudili rozsah scrapování, frekvenci, opatření pro omezení zátěže a využití dat a udělili schválení pro tento projektový případ použití.
+Řídicí výbor InSIS — administrátoři odpovědní za informační systém InSIS — posoudili rozsah scrapování, frekvenci,
+opatření pro omezení zátěže a využití dat a udělili schválení pro tento projektový případ použití.
 
-Toto schválení pokrývá scrapování veřejně přístupného katalogu předmětů InSIS pouze pro čtení, za účelem vyhledávání předmětů a plánování rozvrhů studenty VŠE.
+Toto schválení pokrývá scrapování veřejně přístupného katalogu předmětů InSIS pouze pro čtení, za účelem vyhledávání
+předmětů a plánování rozvrhů studenty VŠE.
 
 ## 5. PR 04/2019 — Pravidla webhostingu
 
-Pravidla používání serveru webhosting.vse.cz (PR 04/2019) upravují webové stránky hostované na serveru webhosting.vse.cz VŠE.
+Pravidla používání serveru webhosting.vse.cz (PR 04/2019) upravují webové stránky hostované na serveru webhosting.vse.cz
+VŠE.
 
-**Posouzení aplikovatelnosti: NEAPLIKOVATELNÉ.** Kreditožrouti NENÍ hostován na webhosting.vse.cz. Je nasazen na nezávislé infrastruktuře pomocí Docker kontejnerů s Traefik reverse proxy a vlastní doménou. Pokud by však projekt v budoucnu migroval na infrastrukturu VŠE, platila by následující ustanovení:
+**Posouzení aplikovatelnosti: NEAPLIKOVATELNÉ.** Kreditožrouti NENÍ hostován na webhosting.vse.cz. Je nasazen na
+nezávislé infrastruktuře pomocí Docker kontejnerů s Traefik reverse proxy a vlastní doménou. Pokud by však projekt v
+budoucnu migroval na infrastrukturu VŠE, platila by následující ustanovení:
 
 ### 5.1 Připravenost na budoucí soulad s webhostingem
 
@@ -98,7 +116,8 @@ Pravidla používání serveru webhosting.vse.cz (PR 04/2019) upravují webové 
 
 ## 6. Kontext studijního a zkušebního řádu
 
-Studijní a zkušební řád VŠE stanovuje rámec pro registraci předmětů, studijní plány a rozvrhy. Kreditožrouti podporuje (ale nenahrazuje) oficiální procesy definované těmito pravidly.
+Studijní a zkušební řád VŠE stanovuje rámec pro registraci předmětů, studijní plány a rozvrhy. Kreditožrouti podporuje (
+ale nenahrazuje) oficiální procesy definované těmito pravidly.
 
 | Článek | Studijní pravidlo                                              | Podpora Kreditožrouti                                                                                                                                     |
 | ------ | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |

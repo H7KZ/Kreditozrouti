@@ -1,4 +1,4 @@
-import { RateLimitedError, fetchCourses, triggerCourseScrape } from '@client/services'
+import { fetchCourses, RateLimitedError, triggerCourseScrape } from '@client/services'
 import { useCoursesStore } from '@client/stores'
 import { onUnmounted, readonly, ref } from 'vue'
 import { useI18n } from 'vue-i18n'

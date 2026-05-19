@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
-import ThemeToggle from '@client/components/common/ThemeToggle.vue'
-import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
 import { useWizardDataStore, useWizardStore } from '@client/stores'
 import { useSeoMeta } from '@unhead/vue'
 import { onMounted, watch } from 'vue'

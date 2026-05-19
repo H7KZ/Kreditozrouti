@@ -2,8 +2,6 @@
 import { useCourseLabels, useFacetFiltering } from '@client/composables'
 import type { FacetItem } from '@shared/http/facets'
 import { computed, ref, toRef } from 'vue'
-import IconChevronDown from '~icons/lucide/chevron-down'
-import IconSearch from '~icons/lucide/search'
 
 /*
  * FilterCheckboxGroup

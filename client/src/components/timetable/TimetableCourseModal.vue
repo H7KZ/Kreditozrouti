@@ -16,14 +16,6 @@ import { SelectedCourseUnit } from '@client/types'
 import type { CourseUnitDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import IconCheck from '~icons/lucide/check'
-import IconExternalLink from '~icons/lucide/external-link'
-import IconLoader from '~icons/lucide/loader-2'
-import IconMinus from '~icons/lucide/minus'
-import IconPlus from '~icons/lucide/plus'
-import IconSearch from '~icons/lucide/search'
-import IconTrash from '~icons/lucide/trash-2'
-import IconX from '~icons/lucide/x'
 
 const { t } = useI18n()
 const coursesStore = useCoursesStore()

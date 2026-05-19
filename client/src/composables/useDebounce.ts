@@ -1,4 +1,4 @@
-import { onUnmounted, ref, watch, type Ref } from 'vue'
+import { onUnmounted, ref, type Ref, watch } from 'vue'
 
 export interface UseDebounceOptions {
 	/** Delay in milliseconds (default: 300) */

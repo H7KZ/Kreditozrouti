@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import LegalSidebar from '@client/components/legal/LegalSidebar.vue'
 import { marked } from 'marked'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { RouterLink, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const { locale } = useI18n()

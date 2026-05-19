@@ -2,12 +2,12 @@
 
 ## Prerequisites
 
-| Tool | Version | Notes |
-|------|---------|-------|
-| Node.js | 22.x+ | Use nvm or fnm for version management |
-| pnpm | 11.1.0+ | `npm install -g pnpm` |
-| Docker + Docker Compose | Latest stable | Required for MySQL, Redis, phpMyAdmin |
-| Make | Any | Optional — convenience wrapper around pnpm scripts |
+| Tool                    | Version       | Notes                                              |
+|-------------------------|---------------|----------------------------------------------------|
+| Node.js                 | 22.x+         | Use nvm or fnm for version management              |
+| pnpm                    | 11.1.0+       | `npm install -g pnpm`                              |
+| Docker + Docker Compose | Latest stable | Required for MySQL, Redis, phpMyAdmin              |
+| Make                    | Any           | Optional — convenience wrapper around pnpm scripts |
 
 ---
 
@@ -54,7 +54,8 @@ VITE_CLIENT_PORT=45173
 NODE_ENV=development
 ```
 
-> `VITE_*` vars are baked into the client bundle at build time by Vite. Changing them after `pnpm run build` has no effect — you must rebuild.
+> `VITE_*` vars are baked into the client bundle at build time by Vite. Changing them after `pnpm run build` has no
+> effect — you must rebuild.
 
 ### 3. Start infrastructure
 
@@ -89,10 +90,10 @@ make dev-scraper  # BullMQ worker (no port)
 
 ### 6. Access
 
-| Service | URL |
-|---------|-----|
-| Client | http://localhost:45173 |
-| API | http://localhost:40080 |
+| Service    | URL                                            |
+|------------|------------------------------------------------|
+| Client     | http://localhost:45173                         |
+| API        | http://localhost:40080                         |
 | phpMyAdmin | http://localhost:48080 (user: `kreditozrouti`) |
 
 ---
@@ -105,7 +106,8 @@ Migrations run automatically when the API starts in development. To run manually
 make migrate
 ```
 
-Migration files live in `api/src/Database/migrations/`. See [docs/api/DATABASE.md](../api/DATABASE.md) for the schema and migration template.
+Migration files live in `api/src/Database/migrations/`. See [docs/api/DATABASE.md](../api/DATABASE.md) for the schema
+and migration template.
 
 ---
 
@@ -169,13 +171,16 @@ Wait ~15 seconds for MySQL to initialize. `make run-local-docker` then `make dev
 
 **Port conflicts**
 Non-standard ports are used deliberately to avoid clashing with typical dev setups:
+
 - MySQL: 43306 (not 3306)
 - Redis: 46379 (not 6379)
 - Client: 45173 (not 5173)
 - API: 40080 (not 3000/8080)
 
 **Scraper not processing jobs**
-The scraper must be running (`make dev-scraper`). Check Redis is up. Use phpMyAdmin or BullMQ dashboard to inspect queues.
+The scraper must be running (`make dev-scraper`). Check Redis is up. Use phpMyAdmin or BullMQ dashboard to inspect
+queues.
 
 **`VITE_*` env vars not picking up**
-Restart the Vite dev server after changing `.env`. In production, they are baked at build time — see [docs/deployment/DOCKER.md](../deployment/DOCKER.md) for the placeholder-swap pattern.
+Restart the Vite dev server after changing `.env`. In production, they are baked at build time —
+see [docs/deployment/DOCKER.md](../deployment/DOCKER.md) for the placeholder-swap pattern.

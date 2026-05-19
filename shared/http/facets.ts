@@ -1,4 +1,4 @@
 export interface FacetItem {
-	value: string | number | Date | null
-	count: number
+    value: string | number | Date | null
+    count: number
 }
