@@ -24,7 +24,7 @@ function toggle() {
 <template>
 	<button
 		type="button"
-		class="flex cursor-pointer w-full items-center justify-between py-1 px-1 -mx-1 rounded-[3px] text-left hover:bg-[var(--insis-surface-2)] transition-colors duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)] focus-visible:outline-offset-1"
+		class="-mx-1 flex w-full cursor-pointer items-center justify-between rounded-[3px] px-1 py-1 text-left transition-colors duration-100 hover:bg-[var(--insis-surface-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--insis-blue)]"
 		:aria-expanded="isOpen"
 		:aria-controls="contentId"
 		@click="toggle"

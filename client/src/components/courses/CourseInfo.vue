@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import { useCourseLabels } from '@client/composables'
 import { useCompletedCoursesStore, useCoursesStore } from '@client/stores'
 import { formatRelativeAge, isCourseStale } from '@client/utils/freshness'
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import IconCircleCheck from '~icons/lucide/circle-check'
 import IconClock from '~icons/lucide/clock'
 import IconExternalLink from '~icons/lucide/external-link'
@@ -97,7 +97,7 @@ function handleToggleCompleted() {
 			<button
 				type="button"
 				:class="[
-					'flex items-center gap-2 rounded border px-3 py-2 text-sm transition-colors cursor-pointer',
+					'flex cursor-pointer items-center gap-2 rounded border px-3 py-2 text-sm transition-colors',
 					isMarkedCompleted
 						? 'border-[var(--insis-success)] bg-[var(--insis-success-light)] text-[var(--insis-success)]'
 						: 'border-[var(--insis-border)] bg-[var(--insis-surface)] text-[var(--insis-gray-600)] hover:border-[var(--insis-success)] hover:bg-[var(--insis-success-light)]',

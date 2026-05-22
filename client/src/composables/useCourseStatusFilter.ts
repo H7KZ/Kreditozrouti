@@ -1,7 +1,8 @@
-import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import type { CourseStatus, CourseStatusFilterState, CourseStatusType } from '@client/types'
-import { computed, ref, type Ref } from 'vue'
+import type { Ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 
 /**
  * Course status filter options

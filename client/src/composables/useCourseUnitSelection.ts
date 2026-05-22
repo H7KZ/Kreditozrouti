@@ -1,9 +1,9 @@
-import { useTimetableStore } from '@client/stores'
-import { CourseUnitType, CourseUnitWithSlots, SelectedCourseUnit, UnitGroup, UnitGroupMap } from '@client/types'
-import { getSlotType } from '@client/utils/course'
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import type { Ref } from 'vue'
 import { computed } from 'vue'
+import { useTimetableStore } from '@client/stores'
+import { CourseUnitType, CourseUnitWithSlots, SelectedCourseUnit, UnitGroup, UnitGroupMap } from '@client/types'
+import { getSlotType } from '@client/utils/course'
 
 /**
  * Options for the course unit selection composable.
@@ -196,7 +196,7 @@ export function useCourseUnitSelection(options: UseCourseUnitSelectionOptions) {
 		}
 
 		// Remove conflicting units first
-		unitsToRemove.forEach((id) => timetableStore.removeUnit(id))
+		for (const id of unitsToRemove) timetableStore.removeUnit(id)
 
 		// Add all slots from this unit
 		let allSuccess = true

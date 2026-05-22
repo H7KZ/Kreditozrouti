@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useUIStore } from '@client/stores'
 import type { ColorScheme } from '@client/types'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useUIStore } from '@client/stores'
 import IconMonitor from '~icons/lucide/monitor'
 import IconMoon from '~icons/lucide/moon'
 import IconSun from '~icons/lucide/sun'
@@ -31,7 +31,7 @@ const label = computed(() => t(`theme.${uiStore.colorScheme}`))
 		type="button"
 		:aria-label="label"
 		:title="label"
-		class="flex cursor-pointer items-center justify-center rounded-[3px] border border-transparent p-[5px] text-[var(--insis-text-2)] transition-all duration-100 hover:border-[var(--insis-border)] hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)] focus-visible:outline-offset-[1px]"
+		class="flex cursor-pointer items-center justify-center rounded-[3px] border border-transparent p-[5px] text-[var(--insis-text-2)] transition-all duration-100 hover:border-[var(--insis-border)] hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[1px] focus-visible:outline-[var(--insis-blue)]"
 		@click="cycle"
 	>
 		<component :is="icon" class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />

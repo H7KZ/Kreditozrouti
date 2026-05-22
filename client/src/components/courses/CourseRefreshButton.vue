@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useCourseRefresh } from '@client/composables'
 import { useI18n } from 'vue-i18n'
+import { useCourseRefresh } from '@client/composables'
 import IconAlertCircle from '~icons/lucide/alert-circle'
 import IconCheck from '~icons/lucide/check'
 import IconLoader from '~icons/lucide/loader'
@@ -48,7 +48,7 @@ function onRefreshClick() {
 		<!-- Error: red icon, click to dismiss -->
 		<template v-else-if="state === 'error'">
 			<button
-				class="cursor-pointer rounded p-0.5 text-[var(--insis-danger)] transition-colors hover:bg-[var(--insis-danger-light)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--insis-danger)]"
+				class="cursor-pointer rounded p-0.5 text-[var(--insis-danger)] transition-colors hover:bg-[var(--insis-danger-light)] focus-visible:ring-1 focus-visible:ring-[var(--insis-danger)] focus-visible:outline-none"
 				:title="errorMessage ?? t('components.courses.CourseRefreshButton.error')"
 				:aria-label="t('components.courses.CourseRefreshButton.retryAction')"
 				@click="dismiss"
@@ -73,7 +73,7 @@ function onRefreshClick() {
 		<!-- Idle: subtle refresh icon, confirm via browser dialog before triggering -->
 		<template v-else>
 			<button
-				class="cursor-pointer rounded p-0.5 text-[var(--insis-text-3)] transition-all hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text-1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--insis-border)]"
+				class="cursor-pointer rounded p-0.5 text-[var(--insis-text-3)] transition-all hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text-1)] focus-visible:ring-1 focus-visible:ring-[var(--insis-border)] focus-visible:outline-none"
 				:title="
 					lastRefreshedAt
 						? t('components.courses.CourseRefreshButton.tooltipWithTime', {

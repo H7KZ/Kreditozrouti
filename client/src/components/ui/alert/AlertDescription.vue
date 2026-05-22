@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { cn } from '@client/utils/tailwind'
 import type { HTMLAttributes } from 'vue'
+import { cn } from '@client/utils/tailwind'
 
 const props = defineProps<{
 	class?: HTMLAttributes['class']

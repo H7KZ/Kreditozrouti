@@ -1,6 +1,6 @@
+import type { TimeSelection } from '@shared/domain/time'
 import { TIME_CONFIG } from '@client/constants/timetable.ts'
 import { i18n } from '@client/index.ts'
-import type { TimeSelection } from '@shared/domain/time'
 
 /**
  * Time utilities composable.

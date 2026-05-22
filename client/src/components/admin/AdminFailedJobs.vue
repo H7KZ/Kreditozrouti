@@ -1,6 +1,6 @@
 ﻿<script setup lang="ts">
-import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 import type { FailedJob } from '@shared/http/admin'
+import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 
 interface Props {
 	jobs: FailedJob[]
@@ -21,9 +21,9 @@ function formatFailedAt(processedOn: number | undefined): string {
 <template>
 	<div :class="{ 'admin-failed-jobs--has-errors': props.jobs.length > 0 }">
 		<CollapsibleSection title="Failed Jobs" :badge="props.jobs.length > 0 ? props.jobs.length : undefined" :default-open="props.jobs.length > 0">
-			<div v-if="props.jobs.length === 0" class="text-[var(--insis-gray-500)] text-sm py-2">No failed jobs.</div>
+			<div v-if="props.jobs.length === 0" class="py-2 text-sm text-[var(--insis-gray-500)]">No failed jobs.</div>
 
-			<div v-else class="overflow-x-auto w-full">
+			<div v-else class="w-full overflow-x-auto">
 				<table class="insis-table insis-table-dense w-full">
 					<thead>
 						<tr>

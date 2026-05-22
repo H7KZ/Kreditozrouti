@@ -1,8 +1,8 @@
 ﻿<script setup lang="ts">
-import { useScheduleSlotsStore } from '@client/stores/schedule-slots.store'
-import { useTimetableStore } from '@client/stores/timetable.store'
 import { nextTick, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useScheduleSlotsStore } from '@client/stores/schedule-slots.store'
+import { useTimetableStore } from '@client/stores/timetable.store'
 import IconInfo from '~icons/lucide/info'
 import IconPencil from '~icons/lucide/pencil'
 import IconPlus from '~icons/lucide/plus'
@@ -137,24 +137,24 @@ function iconsVisible(slotId: string): boolean {
 </script>
 
 <template>
-	<div class="flex flex-col gap-3 mb-6">
-		<div class="bg-[var(--insis-surface)] border-b border-[var(--insis-border)] px-1 flex items-end justify-between shrink-0">
+	<div class="mb-6 flex flex-col gap-3">
+		<div class="flex shrink-0 items-end justify-between border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-1">
 			<nav class="insis-tabs" style="padding-top: 4px">
 				<!-- Working Copy Tab -->
 				<button v-if="!slotsStore.activeSlotId" type="button" class="insis-tab insis-tab-active gap-2">
-					<span class="w-1.5 h-1.5 rounded-full bg-[var(--insis-blue)] animate-pulse"></span>
+					<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--insis-blue)]"></span>
 					{{ t('components.timetable.SchedulePicker.workingCopy') }}
 				</button>
 
 				<!-- Saved Slot Tabs -->
 				<template v-for="slot in slotsStore.slots" :key="slot.id">
 					<!-- Rename mode -->
-					<div v-if="editingId === slot.id" class="px-2 flex items-center" style="padding-bottom: 7px">
+					<div v-if="editingId === slot.id" class="flex items-center px-2" style="padding-bottom: 7px">
 						<input
 							:id="'edit-input-' + slot.id"
 							v-model="editName"
 							type="text"
-							class="px-2 py-0.5 border border-insis-blue rounded text-xs outline-none w-28"
+							class="border-insis-blue w-28 rounded border px-2 py-0.5 text-xs outline-none"
 							@blur="handleRenameBlur"
 							@keydown.enter.prevent="confirmRename"
 							@keydown.esc.prevent="cancelRename"
@@ -165,32 +165,32 @@ function iconsVisible(slotId: string): boolean {
 					<button
 						v-else
 						type="button"
-						class="insis-tab flex items-center gap-1 max-w-[180px]"
+						class="insis-tab flex max-w-[180px] items-center gap-1"
 						:class="{ 'insis-tab-active': slotsStore.activeSlotId === slot.id }"
 						@mouseenter="hoveredSlotId = slot.id"
 						@mouseleave="hoveredSlotId = null"
 						@click="handleLoadSlot(slot.id)"
 					>
 						<!-- Tab label — truncates when long -->
-						<span class="truncate min-w-0 flex-1">{{ slot.name }}</span>
+						<span class="min-w-0 flex-1 truncate">{{ slot.name }}</span>
 
 						<!--
 							Icons: always in DOM (keeps tab width stable), shown via invisible/visible.
 							Ternary ensures only one class is applied at a time — no CSS specificity conflict.
 							mousedown.prevent fires before blur so rename/delete takes priority over focus loss.
 						-->
-						<span :class="iconsVisible(slot.id) ? 'visible' : 'invisible'" class="flex items-center gap-0.5 shrink-0 ml-0.5">
+						<span :class="iconsVisible(slot.id) ? 'visible' : 'invisible'" class="ml-0.5 flex shrink-0 items-center gap-0.5">
 							<span
-								class="p-0.5 text-slate-400 hover:text-insis-blue transition-colors rounded cursor-pointer"
+								class="hover:text-insis-blue cursor-pointer rounded p-0.5 text-slate-400 transition-colors"
 								@mousedown.prevent.stop="handlePencilClick(slot.id)"
 							>
-								<IconPencil class="w-3 h-3" />
+								<IconPencil class="h-3 w-3" />
 							</span>
 							<span
-								class="p-0.5 text-slate-400 hover:text-red-500 transition-colors rounded cursor-pointer"
+								class="cursor-pointer rounded p-0.5 text-slate-400 transition-colors hover:text-red-500"
 								@mousedown.prevent.stop="confirmDelete(slot.id)"
 							>
-								<IconX class="w-3.5 h-3.5" />
+								<IconX class="h-3.5 w-3.5" />
 							</span>
 						</span>
 					</button>
@@ -198,14 +198,14 @@ function iconsVisible(slotId: string): boolean {
 			</nav>
 
 			<!-- Right side: name input or action button -->
-			<div class="pb-1 px-2 flex items-center gap-2">
+			<div class="flex items-center gap-2 px-2 pb-1">
 				<div v-if="isAdding" class="flex items-center gap-1">
 					<input
 						ref="nameInput"
 						v-model="newSlotName"
 						type="text"
 						:placeholder="t('components.timetable.SchedulePicker.saveSchedulePlaceholder')"
-						class="px-2 py-1 border border-insis-blue rounded text-xs outline-none w-32"
+						class="border-insis-blue w-32 rounded border px-2 py-1 text-xs outline-none"
 						@blur="handleAddBlur"
 						@keydown.enter.prevent="confirmAdd"
 						@keydown.esc.prevent="cancelAdd"
@@ -215,19 +215,19 @@ function iconsVisible(slotId: string): boolean {
 					<button
 						v-if="slotsStore.activeSlotId"
 						type="button"
-						class="insis-btn insis-btn-secondary text-[11px] py-1 px-2.5 flex items-center gap-1.5"
+						class="insis-btn insis-btn-secondary flex items-center gap-1.5 px-2.5 py-1 text-[11px]"
 						@click="handleNewSchedule"
 					>
-						<IconSparkles class="w-3 h-3 text-amber-500" />
+						<IconSparkles class="h-3 w-3 text-amber-500" />
 						{{ t('components.timetable.SchedulePicker.newSchedule') }}
 					</button>
 					<button
 						v-if="slotsStore.canSaveMoreSlots"
 						type="button"
-						class="insis-btn insis-btn-secondary text-[11px] py-1 px-2.5 flex items-center gap-1.5"
+						class="insis-btn insis-btn-secondary flex items-center gap-1.5 px-2.5 py-1 text-[11px]"
 						@click="startAdding"
 					>
-						<IconPlus class="w-3 h-3" />
+						<IconPlus class="h-3 w-3" />
 						{{
 							slotsStore.activeSlotId
 								? t('components.timetable.SchedulePicker.newFromCurrent')
@@ -241,9 +241,9 @@ function iconsVisible(slotId: string): boolean {
 		<!-- Empty hint -->
 		<div
 			v-if="slotsStore.slots.length === 0"
-			class="px-4 py-2 text-[11px] text-slate-500 bg-[var(--insis-bg)] border border-[var(--insis-border)] rounded mx-4 flex items-center gap-2"
+			class="mx-4 flex items-center gap-2 rounded border border-[var(--insis-border)] bg-[var(--insis-bg)] px-4 py-2 text-[11px] text-slate-500"
 		>
-			<IconInfo class="w-3.5 h-3.5 text-insis-blue" />
+			<IconInfo class="text-insis-blue h-3.5 w-3.5" />
 			{{ t('components.timetable.SchedulePicker.emptyHint') }}
 		</div>
 	</div>

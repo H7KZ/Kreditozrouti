@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useCourseLabels } from '@client/composables'
-import { useSharedCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import type { CourseStatus, CourseStatusType } from '@client/types'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useCourseLabels } from '@client/composables'
+import { useSharedCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconBookOpen from '~icons/lucide/book-open'
 import IconCalendarX from '~icons/lucide/calendar-x'
@@ -120,7 +120,7 @@ function toggleCollapsed() {
 </script>
 
 <template>
-	<div v-if="hasCourses" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
+	<div v-if="hasCourses" class="mb-3 border-b border-[var(--insis-border-light)] pb-3 last:mb-0 last:border-b-0">
 		<!-- Collapsible header -->
 		<button
 			type="button"
@@ -144,7 +144,7 @@ function toggleCollapsed() {
 		<!-- Collapsible content -->
 		<div v-show="!isCollapsed" class="mt-2 space-y-3">
 			<!-- Clear filter button -->
-			<button v-if="isFiltering" type="button" class="text-xs cursor-pointer text-[var(--insis-blue)] hover:underline" @click="clearFilters">
+			<button v-if="isFiltering" type="button" class="cursor-pointer text-xs text-[var(--insis-blue)] hover:underline" @click="clearFilters">
 				{{ $t('common.clearFilter') }}
 			</button>
 
@@ -154,7 +154,7 @@ function toggleCollapsed() {
 					v-for="option in filterOptions"
 					:key="option.value"
 					:class="[
-						'insis-checkbox-label cursor-pointer rounded px-1 -mx-1 transition-colors',
+						'insis-checkbox-label -mx-1 cursor-pointer rounded px-1 transition-colors',
 						isStatusSelected(option.value) ? getSelectedBgClass(option.value) : '',
 					]"
 				>
@@ -178,7 +178,7 @@ function toggleCollapsed() {
 			<div v-if="statusCounts.conflict > 0" class="border-t border-[var(--insis-border-light)] pt-2">
 				<button
 					type="button"
-					class="flex cursor-pointer w-full items-center gap-1 text-xs text-[var(--insis-gray-600)] hover:text-[var(--insis-text)]"
+					class="flex w-full cursor-pointer items-center gap-1 text-xs text-[var(--insis-gray-600)] hover:text-[var(--insis-text)]"
 					:aria-expanded="showConflictDetails"
 					@click="showConflictDetails = !showConflictDetails"
 				>
@@ -192,7 +192,7 @@ function toggleCollapsed() {
 					<label
 						v-for="course in courseOptions.conflicts"
 						:key="course.id"
-						:class="['insis-checkbox-label cursor-pointer rounded px-1 -mx-1 transition-colors', isCourseSelected(course.ident) ? 'bg-red-50' : '']"
+						:class="['insis-checkbox-label -mx-1 cursor-pointer rounded px-1 transition-colors', isCourseSelected(course.ident) ? 'bg-red-50' : '']"
 						:title="getCourseTooltip(course)"
 					>
 						<input
@@ -212,7 +212,7 @@ function toggleCollapsed() {
 			<div v-if="statusCounts['campus-conflict'] > 0" class="border-t border-[var(--insis-border-light)] pt-2">
 				<button
 					type="button"
-					class="flex cursor-pointer w-full items-center gap-1 text-xs text-[var(--insis-gray-600)] hover:text-[var(--insis-text)]"
+					class="flex w-full cursor-pointer items-center gap-1 text-xs text-[var(--insis-gray-600)] hover:text-[var(--insis-text)]"
 					:aria-expanded="showCampusConflictDetails"
 					@click="showCampusConflictDetails = !showCampusConflictDetails"
 				>
@@ -227,7 +227,7 @@ function toggleCollapsed() {
 						v-for="course in courseOptions.campusConflicts"
 						:key="course.id"
 						:class="[
-							'insis-checkbox-label cursor-pointer rounded px-1 -mx-1 transition-colors',
+							'insis-checkbox-label -mx-1 cursor-pointer rounded px-1 transition-colors',
 							isCourseSelected(course.ident) ? 'bg-orange-50' : '',
 						]"
 						:title="getCourseTooltip(course)"
@@ -264,7 +264,7 @@ function toggleCollapsed() {
 						v-for="course in courseOptions.incomplete"
 						:key="course.id"
 						:class="[
-							'insis-checkbox-label cursor-pointer rounded px-1 -mx-1 transition-colors',
+							'insis-checkbox-label -mx-1 cursor-pointer rounded px-1 transition-colors',
 							isCourseSelected(course.ident) ? 'bg-amber-50' : '',
 						]"
 						:title="getCourseTooltip(course)"

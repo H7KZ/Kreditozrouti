@@ -1,6 +1,6 @@
 ﻿<script setup lang="ts">
-import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 import type { ErrorMetrics } from '@shared/http/admin'
+import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 
 const props = defineProps<{ metrics: ErrorMetrics }>()
 
@@ -75,7 +75,7 @@ const hasErrors = props.metrics.last24h.total4xx + props.metrics.last24h.total5x
 		<!-- Recent errors table -->
 		<CollapsibleSection title="Recent Errors" :badge="props.metrics.recent.length > 0 ? props.metrics.recent.length : undefined" :default-open="hasErrors">
 			<div v-if="props.metrics.recent.length === 0" class="py-2 text-sm text-[var(--insis-gray-500)]">No recent errors.</div>
-			<div v-else class="overflow-x-auto w-full">
+			<div v-else class="w-full overflow-x-auto">
 				<table class="insis-table insis-table-dense w-full">
 					<thead>
 						<tr>

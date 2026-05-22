@@ -1,10 +1,10 @@
 ﻿<script setup lang="ts">
-import { useTimeUtils } from '@client/composables'
-import { WEEKDAYS } from '@client/constants/timetable'
-import { useCoursesStore, useFiltersStore } from '@client/stores'
 import type { InSISDay } from '@shared/domain/insis'
 import type { TimeSelection } from '@shared/domain/time'
 import { computed, ref, watch } from 'vue'
+import { useTimeUtils } from '@client/composables'
+import { WEEKDAYS } from '@client/constants/timetable'
+import { useCoursesStore, useFiltersStore } from '@client/stores'
 import IconPlus from '~icons/lucide/plus'
 import IconX from '~icons/lucide/x'
 
@@ -125,7 +125,7 @@ function formatFilter(filter: TimeSelection): string {
 			<button
 				v-if="activeTimeFilters.length > 0"
 				type="button"
-				class="text-xs cursor-pointer text-[var(--insis-link)] hover:underline"
+				class="cursor-pointer text-xs text-[var(--insis-link)] hover:underline"
 				@click="handleClearAllTimeFilers"
 			>
 				{{ $t('common.clearFilter') }}

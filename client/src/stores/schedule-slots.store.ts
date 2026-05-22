@@ -1,9 +1,9 @@
-﻿import { STORAGE_KEYS } from '@client/constants/storage.ts'
-import { useTimetableStore } from '@client/stores/timetable.store'
-import type { PersistedScheduleSlotsState, SavedScheduleSlot, SelectedCourseUnit } from '@client/types'
-import { loadFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
-import { defineStore } from 'pinia'
+﻿import type { PersistedScheduleSlotsState, SavedScheduleSlot, SelectedCourseUnit } from '@client/types'
 import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
+import { STORAGE_KEYS } from '@client/constants/storage.ts'
+import { useTimetableStore } from '@client/stores/timetable.store'
+import { loadFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
 
 export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 	const slots = ref<SavedScheduleSlot[]>([])

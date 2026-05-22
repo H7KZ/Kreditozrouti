@@ -1,10 +1,10 @@
+import type { FacetItem } from '@shared/http/facets'
+import type { CourseDTO, StudyPlanWithRelationsDTO } from '@shared/http/responses'
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
 import { i18n } from '@client/i18n'
 import { fetchStudyPlanCourses, fetchStudyPlans } from '@client/services/studyPlanService'
 import { useWizardStore } from '@client/stores/wizard.store'
-import type { FacetItem } from '@shared/http/facets'
-import type { CourseDTO, StudyPlanWithRelationsDTO } from '@shared/http/responses'
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
 
 /**
  * Wizard Data Store

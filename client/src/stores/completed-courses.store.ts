@@ -1,10 +1,10 @@
+import type { CourseDTO, StudyPlanWithRelationsDTO } from '@shared/http/responses'
+import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { useWizardDataStore } from '@client/stores/wizard-data.store'
 import { useWizardStore } from '@client/stores/wizard.store'
 import { saveToStorage } from '@client/utils/localstorage'
-import type { CourseDTO, StudyPlanWithRelationsDTO } from '@shared/http/responses'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 
 interface PersistedCompletedCoursesState {
 	completedCourseIdents: string[]

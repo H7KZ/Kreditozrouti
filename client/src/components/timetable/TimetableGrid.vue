@@ -1,14 +1,14 @@
 ﻿<script setup lang="ts">
-import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
-import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
-import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
 import type { MergedUnit } from '@client/composables'
-import { isMergedUnit, useCourseLabels, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
-import { WEEKDAYS } from '@client/constants/timetable'
-import { useDragStore, useTimetableStore } from '@client/stores'
 import type { SelectedCourseUnit } from '@client/types'
 import type { InSISDay } from '@shared/domain/insis'
 import { ref, toRef } from 'vue'
+import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
+import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
+import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
+import { isMergedUnit, useCourseLabels, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
+import { WEEKDAYS } from '@client/constants/timetable'
+import { useDragStore, useTimetableStore } from '@client/stores'
 
 /*
  * TimetableGrid
@@ -111,7 +111,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 					<th class="w-[50px] min-w-[50px] bg-[var(--insis-header-bg)] text-center align-middle">
 						{{ $t('components.timetable.TimetableGrid.dayHeader') }}
 					</th>
-					<th v-for="slot in timeSlots" :key="slot.minutes" class="text-center align-middle whitespace-nowrap px-2" :style="{ minWidth: '80px' }">
+					<th v-for="slot in timeSlots" :key="slot.minutes" class="px-2 text-center align-middle whitespace-nowrap" :style="{ minWidth: '80px' }">
 						{{ slot.label }}
 					</th>
 				</tr>
@@ -121,14 +121,14 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 			<tbody>
 				<tr v-for="day in WEEKDAYS" :key="day" class="day-row-container">
 					<!-- Day label -->
-					<td class="w-[50px] min-w-[50px] font-medium bg-[var(--insis-surface)] border-r border-[var(--insis-border)] text-center align-middle">
+					<td class="w-[50px] min-w-[50px] border-r border-[var(--insis-border)] bg-[var(--insis-surface)] text-center align-middle font-medium">
 						{{ getShortDayLabel(day) }}
 					</td>
 
 					<!-- Time grid cell spanning all columns -->
 					<td
 						:colspan="timeSlots.length"
-						class="day-row cursor-crosshair hover:bg-[var(--insis-gray-50)] relative p-0"
+						class="day-row relative cursor-crosshair p-0 hover:bg-[var(--insis-gray-50)]"
 						:style="{ height: `${rowHeight}px` }"
 						:data-day="day"
 						@mousedown="handleMouseDown($event, day)"

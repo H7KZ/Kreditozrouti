@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import type { CourseDTO } from '@shared/http/responses'
 import { computed, ref } from 'vue'
+import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import IconCheck from '~icons/lucide/check'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconInfo from '~icons/lucide/info'
@@ -130,7 +130,7 @@ function handleSearchInput(event: Event) {
 		<div class="mb-4 space-y-3">
 			<!-- Search -->
 			<div class="relative">
-				<IconSearch class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
+				<IconSearch class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
 				<input
 					type="text"
 					class="insis-input pl-9"
@@ -147,7 +147,7 @@ function handleSearchInput(event: Event) {
 					:key="category"
 					type="button"
 					:class="[
-						'rounded-full border px-3 py-1 text-xs transition-all duration-150 cursor-pointer active:scale-[0.97]',
+						'cursor-pointer rounded-full border px-3 py-1 text-xs transition-all duration-150 active:scale-[0.97]',
 						isCategoryFilterActive(category)
 							? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] text-[var(--insis-blue)]'
 							: 'border-[var(--insis-border)] bg-[var(--insis-surface)] text-[var(--insis-gray-600)] hover:border-[var(--insis-blue)] hover:bg-[var(--insis-blue-subtle)]',
@@ -194,7 +194,7 @@ function handleSearchInput(event: Event) {
 						v-for="course in courses"
 						:key="course.id"
 						:class="[
-							'flex cursor-pointer items-center gap-3 border-b border-[var(--insis-border-light)] px-3 py-2 last:border-b-0 transition-colors',
+							'flex cursor-pointer items-center gap-3 border-b border-[var(--insis-border-light)] px-3 py-2 transition-colors last:border-b-0',
 							isCompleted(course.ident) ? 'bg-[var(--insis-success-light)]' : 'hover:bg-[var(--insis-gray-50)]',
 						]"
 					>

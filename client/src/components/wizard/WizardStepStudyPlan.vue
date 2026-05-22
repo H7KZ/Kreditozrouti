@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import type { FacetItem } from '@shared/http/facets'
 import type { StudyPlanWithRelationsDTO } from '@shared/http/responses'
 import { computed, ref } from 'vue'
+import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import IconCheck from '~icons/lucide/check'
 import IconChevronLeft from '~icons/lucide/chevron-left'
 import IconInfo from '~icons/lucide/info'
@@ -117,7 +117,7 @@ function dismissSpecializationInfo() {
 
 		<!-- Specialization Info Banner -->
 		<div v-if="showSpecializationInfo" class="mb-4 flex items-start gap-3 rounded border border-[var(--insis-blue)] bg-[var(--insis-blue-light)] p-3">
-			<IconInfo class="h-5 w-5 shrink-0 text-[var(--insis-blue)] mt-0.5" />
+			<IconInfo class="mt-0.5 h-5 w-5 shrink-0 text-[var(--insis-blue)]" />
 			<div class="flex-1">
 				<p class="text-sm font-medium text-[var(--insis-blue-dark)]">
 					{{ $t('components.wizard.WizardStepStudyPlan.specializationInfoTitle') }}
@@ -134,10 +134,10 @@ function dismissSpecializationInfo() {
 		<!-- Filters -->
 		<div class="mb-6 flex flex-wrap gap-4">
 			<!-- Title Search -->
-			<div class="flex-1 min-w-[200px]">
+			<div class="min-w-[200px] flex-1">
 				<label class="insis-label" for="title-search">{{ $t('components.wizard.WizardStepStudyPlan.searchLabel') }}</label>
 				<div class="relative">
-					<Search class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
+					<Search class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
 					<input
 						id="title-search"
 						type="text"
@@ -158,7 +158,7 @@ function dismissSpecializationInfo() {
 						:key="`level-${level.value}`"
 						type="button"
 						:class="[
-							'rounded border px-3 py-1.5 text-sm transition-all cursor-pointer',
+							'cursor-pointer rounded border px-3 py-1.5 text-sm transition-all',
 							levelFilter.includes(level.value as string)
 								? 'border-[var(--insis-blue)] bg-[var(--insis-blue)] text-white'
 								: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:bg-[var(--insis-gray-50)]',
@@ -198,21 +198,21 @@ function dismissSpecializationInfo() {
 			<p>{{ $t('components.wizard.WizardStepStudyPlan.noResults') }}</p>
 		</div>
 
-		<div v-else class="grid gap-3 sm:grid-cols-2 max-h-[450px] overflow-y-auto p-1">
+		<div v-else class="grid max-h-[450px] gap-3 overflow-y-auto p-1 sm:grid-cols-2">
 			<div
 				v-for="plan in studyPlans"
 				:key="plan.id"
 				:class="[
-					'rounded border p-4 transition-all duration-150 cursor-pointer active:scale-[0.99]',
+					'cursor-pointer rounded border p-4 transition-all duration-150 active:scale-[0.99]',
 					isSelected(plan.id)
-						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] ring-2 ring-[var(--insis-blue)] shadow-[var(--insis-shadow-sm)]'
+						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] shadow-[var(--insis-shadow-sm)] ring-2 ring-[var(--insis-blue)]'
 						: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue)] hover:bg-[var(--insis-gray-50)] hover:shadow-[var(--insis-shadow-sm)]',
 				]"
 				@click="handleTogglePlan(plan)"
 			>
 				<div class="flex items-start justify-between gap-2">
 					<div class="min-w-0 flex-1">
-						<div class="flex items-center gap-2 flex-wrap">
+						<div class="flex flex-wrap items-center gap-2">
 							<span class="insis-course-code text-sm">{{ plan.ident }}</span>
 							<span
 								v-if="plan.level"
@@ -220,12 +220,12 @@ function dismissSpecializationInfo() {
 							>
 								{{ getLevelLabel(plan.level) }}
 							</span>
-							<span v-if="isSelected(plan.id)" class="insis-badge insis-badge-primary text-xs flex items-center gap-1">
+							<span v-if="isSelected(plan.id)" class="insis-badge insis-badge-primary flex items-center gap-1 text-xs">
 								<IconCheck class="h-3 w-3" />
 								{{ $t('components.wizard.WizardStepStudyPlan.selected') }}
 							</span>
 						</div>
-						<div class="mt-1.5 font-medium text-[var(--insis-gray-900)] line-clamp-2">
+						<div class="mt-1.5 line-clamp-2 font-medium text-[var(--insis-gray-900)]">
 							{{ plan.title }}
 						</div>
 						<div class="mt-1 text-sm text-[var(--insis-gray-500)]">
@@ -235,10 +235,10 @@ function dismissSpecializationInfo() {
 					</div>
 
 					<!-- Selection indicator / Quick proceed -->
-					<div class="shrink-0 flex flex-col items-end gap-2">
+					<div class="flex shrink-0 flex-col items-end gap-2">
 						<div
 							:class="[
-								'h-5 w-5 rounded border-2 flex items-center justify-center transition-colors',
+								'flex h-5 w-5 items-center justify-center rounded border-2 transition-colors',
 								isSelected(plan.id) ? 'border-[var(--insis-blue)] bg-[var(--insis-blue)] text-white' : 'border-[var(--insis-gray-300)]',
 							]"
 						>

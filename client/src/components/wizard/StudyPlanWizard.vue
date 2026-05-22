@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import WizardStepCompletedCourses from '@client/components/wizard/WizardStepCompletedCourses.vue'
-import WizardStepFaculty from '@client/components/wizard/WizardStepFaculty.vue'
-import WizardStepStudyPlan from '@client/components/wizard/WizardStepStudyPlan.vue'
-import WizardStepYear from '@client/components/wizard/WizardStepYear.vue'
-import WizardSteps from '@client/components/wizard/WizardSteps.vue'
-import { useCompletedCoursesStore, useWizardDataStore, useWizardStore } from '@client/stores'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import WizardStepCompletedCourses from '@client/components/wizard/WizardStepCompletedCourses.vue'
+import WizardStepFaculty from '@client/components/wizard/WizardStepFaculty.vue'
+import WizardSteps from '@client/components/wizard/WizardSteps.vue'
+import WizardStepStudyPlan from '@client/components/wizard/WizardStepStudyPlan.vue'
+import WizardStepYear from '@client/components/wizard/WizardStepYear.vue'
+import { useCompletedCoursesStore, useWizardDataStore, useWizardStore } from '@client/stores'
 
 /*
  * StudyPlanWizard

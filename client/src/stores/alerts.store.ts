@@ -1,6 +1,6 @@
 import type { Alert } from '@client/types'
-import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { defineStore } from 'pinia'
 
 export const useAlertsStore = defineStore('alerts', () => {
 	const alerts = ref<Alert[]>([])

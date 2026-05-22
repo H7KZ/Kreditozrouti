@@ -1,8 +1,8 @@
-import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import type { ColorScheme, PersistedUIState, ViewMode } from '@client/types'
-import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
-import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
+import { STORAGE_KEYS } from '@client/constants/storage.ts'
+import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
 
 export const useUIStore = defineStore('ui', () => {
 	const viewMode = ref<ViewMode>('list')

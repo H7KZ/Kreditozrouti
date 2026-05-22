@@ -52,6 +52,7 @@ so `CourseStatusFilter.vue` and `CourseStatusSummary.vue` share state. Call `res
 
 ```typescript
 import { i18n } from '@client/i18n'
+
 const { t } = i18n.global
 ```
 

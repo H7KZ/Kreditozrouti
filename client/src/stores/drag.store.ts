@@ -1,7 +1,7 @@
 ﻿import type { DragSelection } from '@client/types'
 import type { InSISDay } from '@shared/domain/insis'
-import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
 
 export const useDragStore = defineStore('drag', () => {
 	const dragSelection = ref<DragSelection>({

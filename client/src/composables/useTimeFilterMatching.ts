@@ -1,10 +1,10 @@
+import type { TimeSelection } from '@shared/domain/time'
+import type { CourseUnitSlotDTO } from '@shared/http/responses'
+import { computed } from 'vue'
 import { useTimeUtils } from '@client/composables'
 import { useFiltersStore } from '@client/stores'
 import { CourseUnitWithSlots } from '@client/types'
 import { getSlotDay } from '@client/utils/day.ts'
-import type { TimeSelection } from '@shared/domain/time'
-import type { CourseUnitSlotDTO } from '@shared/http/responses'
-import { computed } from 'vue'
 
 /**
  * Time filter matching composable.

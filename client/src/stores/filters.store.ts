@@ -1,8 +1,8 @@
-import { getUpcomingPeriod } from '@shared/domain/period'
 import type { TimeSelection } from '@shared/domain/time'
 import type { CoursesFilter } from '@shared/http/courses'
-import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
+import { getUpcomingPeriod } from '@shared/domain/period'
 
 function createDefaultFilters(): CoursesFilter {
 	return {

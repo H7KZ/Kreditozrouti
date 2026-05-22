@@ -1,8 +1,8 @@
-﻿import { CourseUnitWithSlots } from '@client/types'
+﻿import type { InSISDay } from '@shared/domain/insis'
+import type { CourseUnitSlotDTO } from '@shared/http/responses'
+import { CourseUnitWithSlots } from '@client/types'
 import { getSlotType } from '@client/utils/course'
 import { compareDateStrings, getDayIndex, getSlotDay } from '@client/utils/day.ts'
-import type { InSISDay } from '@shared/domain/insis'
-import type { CourseUnitSlotDTO } from '@shared/http/responses'
 
 /**
  * Slot sorting composable.

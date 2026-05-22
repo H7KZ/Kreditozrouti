@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { AlertButton } from '@client/types'
 import { onMounted, onUnmounted, ref } from 'vue'
+import { AlertButton } from '@client/types'
 import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconCheckCircle from '~icons/lucide/check-circle'
 import IconInfo from '~icons/lucide/info'
@@ -91,9 +91,9 @@ export type AlertProps = Props
 			</div>
 
 			<!-- Content section: Title, description, and action buttons -->
-			<div class="flex-1 min-w-0">
+			<div class="min-w-0 flex-1">
 				<!-- Alert title with type-specific styling -->
-				<p v-if="title" :class="['font-medium text-sm', style.title]">
+				<p v-if="title" :class="['text-sm font-medium', style.title]">
 					{{ title }}
 				</p>
 				<!-- Alert description with secondary text styling -->
@@ -108,7 +108,7 @@ export type AlertProps = Props
 						:key="idx"
 						type="button"
 						:class="[
-							'text-xs px-2 py-1',
+							'px-2 py-1 text-xs',
 							button.variant === 'primary' ? 'insis-btn-primary' : button.variant === 'danger' ? 'insis-btn-danger' : 'insis-btn',
 						]"
 						@click="handleButtonClick(button)"
@@ -119,7 +119,7 @@ export type AlertProps = Props
 			</div>
 
 			<!-- Close button -->
-			<button type="button" class="shrink-0 text-[var(--insis-gray-500)] hover:text-[var(--insis-gray-700)] transition-colors" @click="handleClose">
+			<button type="button" class="shrink-0 text-[var(--insis-gray-500)] transition-colors hover:text-[var(--insis-gray-700)]" @click="handleClose">
 				<IconX class="h-4 w-4" />
 			</button>
 		</div>

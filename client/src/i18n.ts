@@ -1,6 +1,6 @@
-import { czechPluralRule, datetimeFormats, numberFormats } from '@client/utils/pluralization.ts'
-import messages from '@intlify/unplugin-vue-i18n/messages'
 import { createI18n } from 'vue-i18n'
+import messages from '@intlify/unplugin-vue-i18n/messages'
+import { czechPluralRule, datetimeFormats, numberFormats } from '@client/utils/pluralization.ts'
 
 // Load saved locale preference from localStorage
 const savedLocale = localStorage.getItem('locale')

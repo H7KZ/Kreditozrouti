@@ -1,6 +1,6 @@
-import api from '@client/api'
 import type { CoursesFilter } from '@shared/http/courses'
 import type { CoursesResponseDTO } from '@shared/http/responses'
+import api from '@client/api'
 
 export async function fetchCourses(filters: Partial<CoursesFilter>): Promise<CoursesResponseDTO> {
 	const response = await api.post<CoursesResponseDTO>('/courses', filters)

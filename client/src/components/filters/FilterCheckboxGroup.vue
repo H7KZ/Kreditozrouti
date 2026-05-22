@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useCourseLabels, useFacetFiltering } from '@client/composables'
 import type { FacetItem } from '@shared/http/facets'
 import { computed, ref, toRef } from 'vue'
+import { useCourseLabels, useFacetFiltering } from '@client/composables'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconSearch from '~icons/lucide/search'
 
@@ -89,7 +89,7 @@ const isFiltering = computed(() => props.selected.length > 0)
 		<!-- Collapsible header -->
 		<button
 			type="button"
-			class="flex cursor-pointer w-full items-center justify-between py-1 px-1 -mx-1 rounded-[3px] text-left hover:bg-[var(--insis-surface-2)] transition-colors duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)] focus-visible:outline-offset-1"
+			class="-mx-1 flex w-full cursor-pointer items-center justify-between rounded-[3px] px-1 py-1 text-left transition-colors duration-100 hover:bg-[var(--insis-surface-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--insis-blue)]"
 			:aria-expanded="!isCollapsed"
 			@click="toggleCollapsed"
 		>
@@ -108,13 +108,13 @@ const isFiltering = computed(() => props.selected.length > 0)
 
 		<!-- Collapsible content -->
 		<div v-show="!isCollapsed" class="mt-2 space-y-3">
-			<button v-if="isFiltering" type="button" class="text-xs cursor-pointer text-[var(--insis-blue)] hover:underline" @click="clearFilter">
+			<button v-if="isFiltering" type="button" class="cursor-pointer text-xs text-[var(--insis-blue)] hover:underline" @click="clearFilter">
 				{{ $t('common.clearFilter') }}
 			</button>
 
 			<!-- Search input (if searchable) -->
 			<div v-if="searchable" class="relative mb-2">
-				<IconSearch class="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[var(--insis-gray-500)]" aria-hidden="true" />
+				<IconSearch class="pointer-events-none absolute top-1/2 left-2 h-3 w-3 -translate-y-1/2 text-[var(--insis-gray-500)]" aria-hidden="true" />
 				<input
 					v-model="searchQuery"
 					type="text"

@@ -1,9 +1,9 @@
-﻿import { useTimeUtils } from '@client/composables/useTimeUtils'
+﻿import type { InSISDay } from '@shared/domain/insis'
+import type { CourseUnitDTO, CourseUnitSlotDTO } from '@shared/http/responses'
+import { useTimeUtils } from '@client/composables/useTimeUtils'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 import { i18n } from '@client/index.ts'
 import { getDayFromDate, getDayIndex } from '@client/utils/day.ts'
-import type { InSISDay } from '@shared/domain/insis'
-import type { CourseUnitDTO, CourseUnitSlotDTO } from '@shared/http/responses'
 
 /**
  * Schedule summary composable.

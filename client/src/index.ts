@@ -1,13 +1,13 @@
 import App from '@client/App.vue'
 import { i18n } from '@client/i18n'
 import '@client/index.css'
-import { useAlertsStore, useCoursesStore, useScheduleSlotsStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
-import * as Sentry from '@sentry/vue'
-import { createHead } from '@unhead/vue/client'
-import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
+import { createPinia } from 'pinia'
+import { createHead } from '@unhead/vue/client'
+import * as Sentry from '@sentry/vue'
+import { useAlertsStore, useCoursesStore, useScheduleSlotsStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 
 const app = createApp(App)
 const head = createHead()

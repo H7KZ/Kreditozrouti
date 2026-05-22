@@ -1,13 +1,13 @@
+import type { CoursesFilter } from '@shared/http/courses'
+import type { CoursesResponseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
+import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
 import { i18n } from '@client/i18n'
 import { fetchCourses as fetchCoursesFromService } from '@client/services/courseService'
 import { useAnnouncerStore } from '@client/stores/announcer.store'
 import { useFiltersStore } from '@client/stores/filters.store'
 import { useTimetableStore } from '@client/stores/timetable.store'
 import { useWizardStore } from '@client/stores/wizard.store'
-import type { CoursesFilter } from '@shared/http/courses'
-import type { CoursesResponseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 
 /**
  * Courses Store

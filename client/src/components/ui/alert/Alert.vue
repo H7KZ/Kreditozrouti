@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { cn } from '@client/utils/tailwind'
+import type { AlertVariants } from '.'
 import type { HTMLAttributes } from 'vue'
-import { type AlertVariants, alertVariants } from '.'
+import { cn } from '@client/utils/tailwind'
+import { alertVariants } from '.'
 
 const props = defineProps<{
 	class?: HTMLAttributes['class']

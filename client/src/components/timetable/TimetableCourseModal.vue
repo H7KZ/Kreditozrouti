@@ -9,13 +9,13 @@
  * shares the same logic as CourseRowExpanded through composables.
  */
 
+import type { CourseUnitDTO, CourseWithRelationsDTO } from '@shared/http/responses'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import api from '@client/api.ts'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore } from '@client/stores'
 import { SelectedCourseUnit } from '@client/types'
-import type { CourseUnitDTO, CourseWithRelationsDTO } from '@shared/http/responses'
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 import IconCheck from '~icons/lucide/check'
 import IconExternalLink from '~icons/lucide/external-link'
 import IconLoader from '~icons/lucide/loader-2'
@@ -215,7 +215,7 @@ onUnmounted(() => {
 <template>
 	<Teleport to="body">
 		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" @click="handleBackdropClick">
-			<div ref="modalRef" class="modal w-full max-w-3xl max-h-[90vh] overflow-hidden rounded-lg bg-[var(--insis-surface)] shadow-xl">
+			<div ref="modalRef" class="modal max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-lg bg-[var(--insis-surface)] shadow-xl">
 				<!-- Header -->
 				<div class="flex items-center justify-between border-b border-[var(--insis-border)] bg-[var(--insis-header-bg)] px-4 py-3">
 					<div class="flex items-center gap-2">

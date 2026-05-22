@@ -1,6 +1,7 @@
-﻿import { useCoursesStore, useDragStore, useFiltersStore, useUIStore } from '@client/stores'
-import type { InSISDay } from '@shared/domain/insis'
-import { onMounted, onUnmounted, ref, type Ref } from 'vue'
+﻿import type { InSISDay } from '@shared/domain/insis'
+import type { Ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
+import { useCoursesStore, useDragStore, useFiltersStore, useUIStore } from '@client/stores'
 
 /**
  * Composable encapsulating drag-to-filter interaction on the timetable grid.

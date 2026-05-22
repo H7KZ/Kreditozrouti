@@ -1,5 +1,6 @@
 import type { FacetItem } from '@shared/http/facets'
-import { computed, ref, type Ref } from 'vue'
+import type { Ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export interface UseFacetFilteringOptions {
 	/** Maximum visible items before "show more" */

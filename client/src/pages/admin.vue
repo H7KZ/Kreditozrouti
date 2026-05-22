@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted, ref } from 'vue'
 import AdminCompletedJobs from '@client/components/admin/AdminCompletedJobs.vue'
 import AdminDatabaseStats from '@client/components/admin/AdminDatabaseStats.vue'
 import AdminErrorMetrics from '@client/components/admin/AdminErrorMetrics.vue'
@@ -7,7 +8,6 @@ import AdminQueueStats from '@client/components/admin/AdminQueueStats.vue'
 import AdminSchedulers from '@client/components/admin/AdminSchedulers.vue'
 import AdminScraperTriggers from '@client/components/admin/AdminScraperTriggers.vue'
 import { ADMIN_REFRESH_INTERVAL, useAdminStore } from '@client/stores/admin.store'
-import { onMounted, onUnmounted, ref } from 'vue'
 
 const admin = useAdminStore()
 

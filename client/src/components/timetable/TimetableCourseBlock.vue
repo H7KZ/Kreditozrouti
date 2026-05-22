@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useCourseLabels, useTimeUtils } from '@client/composables'
-import { useCoursesStore, useTimetableStore } from '@client/stores'
 import type { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useCourseLabels, useTimeUtils } from '@client/composables'
+import { useCoursesStore, useTimetableStore } from '@client/stores'
 import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconX from '~icons/lucide/x'
 
@@ -137,7 +137,7 @@ function handleClick() {
 
 <template>
 	<div
-		class="timetable-block group cursor-pointer min-h-6 transition-shadow hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] hover:z-10 absolute left-0 right-0 overflow-hidden border border-[var(--insis-border)] text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)] focus-visible:outline-offset-1"
+		class="timetable-block group absolute right-0 left-0 min-h-6 cursor-pointer overflow-hidden border border-[var(--insis-border)] text-xs transition-shadow hover:z-10 hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--insis-blue)]"
 		:class="[
 			blockColorClass,
 			{
@@ -156,11 +156,11 @@ function handleClick() {
 		<div class="flex h-full flex-col p-1">
 			<!-- Course ident, type badge, and warning icon -->
 			<div class="flex items-start justify-between gap-1">
-				<div class="flex items-center gap-1 min-w-0">
+				<div class="flex min-w-0 items-center gap-1">
 					<!-- Warning icon for missing unit types -->
 					<span
 						v-if="courseStatus.needsAction"
-						class="warning-indicator shrink-0 flex items-center justify-center rounded-full text-[var(--insis-danger)]"
+						class="warning-indicator flex shrink-0 items-center justify-center rounded-full text-[var(--insis-danger)]"
 						:title="warningTooltip"
 						aria-hidden="true"
 					>
@@ -206,7 +206,7 @@ function handleClick() {
 			<!-- Remove button (shown on hover/focus) -->
 			<button
 				type="button"
-				class="cursor-pointer absolute right-0.5 top-0.5 flex opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 h-4 w-4 items-center justify-center rounded bg-[var(--insis-danger-light)] text-[var(--insis-danger)] hover:bg-[var(--insis-danger)] hover:text-white transition-all duration-75 focus:opacity-100 focus:outline-none focus:ring-1 focus:ring-[var(--insis-danger)]"
+				class="absolute top-0.5 right-0.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded bg-[var(--insis-danger-light)] text-[var(--insis-danger)] opacity-0 transition-all duration-75 group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-[var(--insis-danger)] hover:text-white focus:opacity-100 focus:ring-1 focus:ring-[var(--insis-danger)] focus:outline-none"
 				:aria-label="$t('components.timetable.TimetableCourseBlock.removeFromTimetable')"
 				@click="handleRemove"
 			>

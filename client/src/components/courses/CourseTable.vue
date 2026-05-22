@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
-import { useCourseLabels, useScheduleSummary } from '@client/composables'
-import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import type { CourseSortBy } from '@client/types'
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
+import { useCourseLabels, useScheduleSummary } from '@client/composables'
+import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconChevronUp from '~icons/lucide/chevron-up'
 
@@ -100,7 +100,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 								<IconChevronUp v-if="filtersStore.filters.sort_dir === 'asc'" class="h-3 w-3" aria-hidden="true" />
 								<IconChevronDown v-else class="h-3 w-3" aria-hidden="true" />
 							</template>
-							<span v-else-if="col.sortable" class="opacity-30 text-[10px]" aria-hidden="true">↕</span>
+							<span v-else-if="col.sortable" class="text-[10px] opacity-30" aria-hidden="true">↕</span>
 						</div>
 					</th>
 				</tr>
@@ -143,7 +143,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 
 							<!-- Title -->
 							<td>
-								<div class="flex items-center gap-2 min-w-0">
+								<div class="flex min-w-0 items-center gap-2">
 									<span :title="getCourseTitle(course)" class="truncate">{{ getCourseTitle(course) }}</span>
 									<span
 										v-if="hasSelectedUnits(course.id) && !hasMissingUnitTypes(course.id)"

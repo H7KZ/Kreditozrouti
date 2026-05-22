@@ -25,7 +25,7 @@ function formatDate(iso: string | null): string {
 				<tr v-for="s in schedulers" :key="s.id">
 					<td>{{ s.id }}</td>
 					<td>
-						<code class="bg-[var(--insis-bg)] px-1 py-0.5 rounded text-xs font-mono">{{ s.pattern }}</code>
+						<code class="rounded bg-[var(--insis-bg)] px-1 py-0.5 font-mono text-xs">{{ s.pattern }}</code>
 					</td>
 					<td>{{ formatDate(s.nextRun) }}</td>
 				</tr>

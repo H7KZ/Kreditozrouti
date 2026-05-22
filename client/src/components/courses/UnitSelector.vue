@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useSlotSorting, useTimeFilterMatching } from '@client/composables'
-import { useTimetableStore } from '@client/stores'
 import type { CourseUnitWithSlots, SelectedCourseUnit } from '@client/types'
 import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useSlotSorting, useTimeFilterMatching } from '@client/composables'
+import { useTimetableStore } from '@client/stores'
 import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconCheck from '~icons/lucide/check'
 import IconEyeOff from '~icons/lucide/eye-off'
@@ -275,7 +275,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 									>
 										{{ getShortUnitTypeLabel(getSlotType(slot)) }}
 									</span>
-									<span class="shrink-0 whitespace-nowrap font-medium">{{ formatSlotInfo(slot) }}</span>
+									<span class="shrink-0 font-medium whitespace-nowrap">{{ formatSlotInfo(slot) }}</span>
 									<span class="shrink-0 truncate text-[var(--insis-gray-600)]" :title="slot.location || ''">{{ slot.location || '-' }}</span>
 									<span class="hidden truncate text-xs text-[var(--insis-gray-500)] sm:block">{{ unit.lecturer }}</span>
 									<span
@@ -302,7 +302,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 									<span v-if="unit.capacity !== undefined" :class="['text-xs', getCapacityClass(unit.capacity)]">{{
 										formatCapacity(unit.capacity)
 									}}</span>
-									<span v-if="unit.note" class="text-xs italic text-[var(--insis-gray-400)]">{{ unit.note }}</span>
+									<span v-if="unit.note" class="text-xs text-[var(--insis-gray-400)] italic">{{ unit.note }}</span>
 								</div>
 							</div>
 

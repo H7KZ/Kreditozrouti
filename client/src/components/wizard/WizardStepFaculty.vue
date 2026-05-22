@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useCourseLabels } from '@client/composables'
 import type { FacetItem } from '@shared/http/facets'
+import { useCourseLabels } from '@client/composables'
 
 /*
  * WizardStepFaculty
@@ -44,7 +44,7 @@ function handleSelect(facultyId: string) {
 				:key="`faculty-${faculty.value}`"
 				type="button"
 				:class="[
-					'rounded border p-4 text-left transition-all duration-150 cursor-pointer active:scale-[0.99]',
+					'cursor-pointer rounded border p-4 text-left transition-all duration-150 active:scale-[0.99]',
 					selectedFaculty === faculty.value
 						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] shadow-[var(--insis-shadow-sm)]'
 						: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue-dark)] hover:bg-[var(--insis-gray-50)] hover:shadow-[var(--insis-shadow-sm)]',

@@ -1,7 +1,7 @@
-import { fetchCourses, RateLimitedError, triggerCourseScrape } from '@client/services'
-import { useCoursesStore } from '@client/stores'
 import { onUnmounted, readonly, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { fetchCourses, RateLimitedError, triggerCourseScrape } from '@client/services'
+import { useCoursesStore } from '@client/stores'
 
 type RefreshState = 'idle' | 'triggering' | 'streaming' | 'done' | 'error' | 'rate_limited'
 

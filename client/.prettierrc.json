@@ -3,5 +3,21 @@
 	"semi": false,
 	"singleQuote": true,
 	"printWidth": 160,
-	"plugins": ["prettier-plugin-tailwindcss", "prettier-plugin-organize-imports"]
+	"plugins": ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
+	"importOrder": [
+		"<TYPES>",
+		"^vue$",
+		"^vue-(.*)$",
+		"^@vue/(.*)$",
+		"^@vueuse/(.*)$",
+		"^pinia$",
+		"^@unhead/(.*)$",
+		"<THIRD_PARTY_MODULES>",
+		"^@shared/(.*)$",
+		"^@api/(.*)$",
+		"^@client/(.*)$",
+		"^~icons/(.*)$",
+		"^[./]"
+	],
+	"importOrderTypeScriptVersion": "5.0.0"
 }
