@@ -1,19 +1,17 @@
 # Build Stage
 FROM node:24-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@10 --activate
-
 WORKDIR /usr/src/scraper
 
-COPY ./scraper/package.json ./scraper/pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY ./scraper/package.json ./scraper/package-lock.json ./
+RUN npm ci
 
 COPY ./scraper/ ./
 
 # Workspaces: make shared source visible for cross-package type imports
 COPY ./shared/ /usr/src/shared/
 
-RUN pnpm run build && pnpm prune --prod
+RUN npm run build && npm prune --omit=dev
 
 # --------------------------------------------------------------------
 # Production Stage

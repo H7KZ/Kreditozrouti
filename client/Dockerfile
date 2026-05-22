@@ -1,12 +1,10 @@
 # Build Stage
 FROM node:24-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@10 --activate
-
 WORKDIR /usr/src/client
 
-COPY ./client/package.json ./client/pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY ./client/package.json ./client/package-lock.json ./
+RUN npm ci
 
 COPY ./client/ ./
 
@@ -23,7 +21,7 @@ ENV VITE_API_URL="__VITE_API_URL_PLACEHOLDER__"
 ENV VITE_SENTRY_DSN="__VITE_SENTRY_DSN_PLACEHOLDER__"
 ENV VITE_SENTRY_RELEASE="__VITE_SENTRY_RELEASE_PLACEHOLDER__"
 
-RUN pnpm run build
+RUN npm run build
 
 # --------------------------------------------------------------------
 # Production Stage

@@ -26,5 +26,3 @@
 **/.prettierrc
 **/Dockerfile
 **/eslint.config.js
-
-**/package-lock.json

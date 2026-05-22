@@ -1,12 +1,10 @@
 # Build Stage
 FROM node:24-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@10 --activate
-
 WORKDIR /usr/src/api
 
-COPY ./api/package.json ./api/pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY ./api/package.json ./api/package-lock.json ./
+RUN npm ci
 
 COPY ./api/ ./
 
@@ -16,7 +14,7 @@ COPY ./shared/ /usr/src/shared/
 RUN mkdir -p /usr/src/scraper/node_modules && \
     ln -s /usr/src/api/node_modules/* /usr/src/scraper/node_modules/ || true
 
-RUN pnpm run build && pnpm prune --prod
+RUN npm run build && npm prune --omit=dev
 
 # --------------------------------------------------------------------
 # Production Stage

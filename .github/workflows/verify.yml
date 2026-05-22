@@ -5,7 +5,6 @@
 # Trigger: Pull request events (opened, synchronize, reopened)
 #
 # Prerequisites:
-#   - pnpm package manager
 #   - Node.js 24
 #   - Makefile with install, lint, and build targets
 # ==============================================================================
@@ -30,16 +29,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4.2.0
-        with:
-          version: 10
-
       - name: Setup Node.js
         uses: actions/setup-node@v6.2.0
         with:
           node-version: "24"
-          cache: "pnpm"
+          cache: "npm"
 
       - name: Install Dependencies
         run: make install
