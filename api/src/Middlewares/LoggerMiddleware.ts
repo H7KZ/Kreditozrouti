@@ -19,7 +19,7 @@ export default function LoggerMiddleware(req: Request, res: Response, next: Next
     res.locals.wideEvent = wideEvent
     res.setHeader('X-Request-Id', request_id)
 
-    RequestContext.run(async () => {
+    RequestContext.run(() => {
         RequestContext.add({ request_id })
 
         res.on('finish', () => {
