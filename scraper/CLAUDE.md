@@ -38,9 +38,6 @@ scraper/src/
 
 ## Critical Invariants
 
-**No Puppeteer.** All HTTP requests use Axios via `InSISHTTPClientService`. InSIS pages are server-rendered — no JS
-execution needed. Puppeteer is a legacy dep; do not use it for new scrapers.
-
 **Error pattern — jobs never throw:**
 
 ```typescript

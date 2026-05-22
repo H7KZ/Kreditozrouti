@@ -4,11 +4,6 @@ All InSIS pages are server-rendered HTML. The scraper uses **Cheerio** (a jQuery
 data. This document describes how each extraction service works, which CSS selectors and patterns it relies on, and the
 edge cases it handles.
 
-## Why Cheerio, Not Puppeteer?
-
-Puppeteer is installed as a historical dependency but is not used. InSIS pages render fully server-side — there is no
-JavaScript-dependent content that requires a real browser. Axios + Cheerio is ~100× faster and uses far less memory.
-
 ---
 
 ## ExtractInSISCatalogService

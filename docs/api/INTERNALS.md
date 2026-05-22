@@ -123,15 +123,32 @@ missing or wrong. Applied only to `/commands/*` routes.
 ### LoggerMiddleware (`Middlewares/LoggerMiddleware.ts`)
 
 Sets up a **wide-event** per request: a single JSON object that accumulates fields throughout the request lifecycle and
-is emitted as one Pino log line at the end.
+is emitted as one Pino log line at the end. Also wraps the entire downstream request handler in an `AsyncLocalStorage`
+context so that async code can access the `request_id` and other fields via `RequestContext.get()`.
+
+**Workflow:**
+
+1. Generate a unique `request_id` (UUID) per request
+2. Create the initial `wideEvent` and store it in `res.locals.wideEvent`
+3. Set the `X-Request-Id` response header
+4. Wrap the entire request handler (`next()`) in `RequestContext.run()` so async code in controllers/services can access the context
+5. On response `finish`:
+   - Merge any fields controllers added via `LoggerAPIContext.add()` (which delegates to `RequestContext.add()`)
+   - Emit the accumulated event as a Pino log line
+   - Track error metrics in Redis (hourly bucket + recent error list)
 
 ```typescript
 res.locals.wideEvent = {
+    request_id: '...',  // UUID
     method: req.method,
     path: req.path,
     timestamp: new Date().toISOString(),
     environment: config.env,
-    service: 'api',
+    service: 'kreditozrouti-api',
+    duration_ms?: number,     // set on finish
+    status_code?: number,     // set on finish
+    user_id?: number,         // set by controllers via LoggerAPIContext.add()
+    // ... other fields controllers add
 }
 ```
 
@@ -188,20 +205,29 @@ Non-`ApiError` exceptions produce a generic `500 INTERNAL` response and are `con
 
 ## Wide-Event Logging
 
-`LoggerAPIContext` is not AsyncLocalStorage-based (unlike `LoggerJobContext` in the scraper). It stores the wide-event
-object on `res.locals.wideEvent` and lets the response lifecycle accumulate fields into it.
+`LoggerAPIContext` delegates to `RequestContext`, which is AsyncLocalStorage-based. The request handler is wrapped in
+`RequestContext.run()` so that all async code (controllers, services, etc.) can access the context. Fields are added
+via `LoggerAPIContext.add()`, which delegates to `RequestContext.add()`.
 
 ```typescript
-// In any middleware/controller:
-LoggerAPIContext.add(res, {user_id: 42, cache_hit: true})
+// In any controller/service/middleware:
+LoggerAPIContext.add({user_id: 42, cache_hit: true})
 
-// At response end, LoggerMiddleware calls:
+// LoggerAPIContext.add() delegates to:
+RequestContext.add({user_id: 42, cache_hit: true})
+
+// At response end, LoggerMiddleware:
+// 1. Merges all fields from the async context:
+Object.assign(wideEvent, RequestContext.get())
+
+// 2. Emits the accumulated event:
 if (LoggerAPIContext.shouldLog(res)) {
-    LoggerAPIContext.log.info(res.locals.wideEvent)
+    LoggerAPIContext.log.info(wideEvent)
 }
 ```
 
-Fields added via `LoggerAPIContext.add()` are merged (last write wins for duplicate keys).
+Fields added via `LoggerAPIContext.add()` are stored in the `AsyncLocalStorage` and merged into the event on finish
+(last write wins for duplicate keys).
 
 ---
 

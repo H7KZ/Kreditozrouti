@@ -73,5 +73,3 @@ Decisions not to re-litigate:
   hardcoded as `CAMPUS_TRAVEL_MINUTES` and is intentionally not configurable at runtime.
 - **ADR-006**: The Scraper never writes to the database and never schedules its own jobs. All persistence goes through
   the API via `ScraperResponseQueue`. Schedulers live in the API and only run in `NODE_ENV=production`.
-- **ADR-007**: No Puppeteer for new scrapers. InSIS is server-rendered; all HTTP requests use Axios via
-  `InSISHTTPClientService`.

@@ -74,7 +74,6 @@
 
 ### What it does NOT do
 
-- Does **not** use Puppeteer for new scrapers (legacy dep — InSIS is server-rendered)
 - Does **not** schedule its own jobs — schedulers live in the API
 - Does **not** write to the database — all persistence goes through the API via queue
 

@@ -79,15 +79,11 @@ exec "$@"
 Stage 1 (builder)
   ├── Install pnpm + dependencies
   ├── tsc → dist/
-  └── npx puppeteer browsers install chrome
-          (downloads Chromium to /root/.cache/puppeteer)
 
 Stage 2 (production)
-  ├── Copy dist/ + node_modules + Puppeteer cache from builder
+  ├── Copy dist/ + node_modules
   └── CMD ["node", "dist/index.js"]
 ```
-
-Puppeteer is installed as a legacy dep; current scraping uses Axios + Cheerio instead of a headless browser.
 
 ---
 

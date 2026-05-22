@@ -43,7 +43,7 @@ User types search term in browser
         │
         ▼
 [Scraper] ScraperRequestHandler routes job → ScraperRequestInSISCatalogJob
-  → InSISHTTPClientService.get(catalogUrl)   ← Axios, not Puppeteer
+  → InSISHTTPClientService.get(catalogUrl)   ← Axios
   → ExtractInSISCatalogService.extract($)    ← Cheerio parse
   → for each course ident found:
       scraperRequestQueue.add('InSIS:Course', { ident, year, semester })

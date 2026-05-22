@@ -109,15 +109,15 @@ scraper/src/
 
 ## Technology Choices
 
-| Concern             | Library              | Why                                                                                                                  |
-|---------------------|----------------------|----------------------------------------------------------------------------------------------------------------------|
-| HTTP requests       | Axios                | InSIS pages are server-rendered — no JavaScript execution needed. Puppeteer is installed as a legacy dep but unused. |
-| HTML parsing        | Cheerio              | Lightweight jQuery-like API; no browser overhead.                                                                    |
-| Markdown conversion | Turndown             | Converts rich text sections (literature, course contents) to portable Markdown.                                      |
-| Job queue           | BullMQ + Redis       | Reliable, persistent, supports deduplication and retries.                                                            |
-| Error tracking      | Sentry               | Wraps each job in a Sentry transaction; captures uncaught exceptions.                                                |
-| Logging             | Pino (JSON)          | Structured wide-event logging via AsyncLocalStorage.                                                                 |
-| Concurrency         | `runWithConcurrency` | Custom pool; controls parallelism for bulk HTTP requests.                                                            |
+| Concern             | Library              | Why                                                                             |
+|---------------------|----------------------|---------------------------------------------------------------------------------|
+| HTTP requests       | Axios                | InSIS pages are server-rendered — no JavaScript execution needed.               |
+| HTML parsing        | Cheerio              | Lightweight jQuery-like API; no browser overhead.                               |
+| Markdown conversion | Turndown             | Converts rich text sections (literature, course contents) to portable Markdown. |
+| Job queue           | BullMQ + Redis       | Reliable, persistent, supports deduplication and retries.                       |
+| Error tracking      | Sentry               | Wraps each job in a Sentry transaction; captures uncaught exceptions.           |
+| Logging             | Pino (JSON)          | Structured wide-event logging via AsyncLocalStorage.                            |
+| Concurrency         | `runWithConcurrency` | Custom pool; controls parallelism for bulk HTTP requests.                       |
 
 ## Further Reading
 

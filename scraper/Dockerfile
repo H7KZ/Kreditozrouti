@@ -29,10 +29,6 @@ RUN apk add --no-cache \
     ca-certificates \
     ttf-freefont
 
-# Tell Puppeteer to use the system Chromium instead of its bundled binary
-ENV PUPPETEER_SKIP_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-
 WORKDIR /usr/src/scraper
 
 COPY --from=builder /usr/src/scraper/dist ./dist
