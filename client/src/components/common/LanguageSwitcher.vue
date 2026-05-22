@@ -31,7 +31,7 @@ function toggle() {
 		<button
 			type="button"
 			:class="[
-				'flex cursor-pointer items-center gap-1.5 rounded-[3px] border border-solid py-[5px] pr-1.5 pl-2 text-xs font-medium',
+				'flex min-h-[44px] cursor-pointer items-center gap-1.5 rounded-[3px] border border-solid py-[5px] pr-1.5 pl-2 text-xs font-medium sm:min-h-0',
 				'transition-all duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[1px] focus-visible:outline-[var(--insis-blue)]',
 				isOpen
 					? 'border-[var(--insis-border-mid)] bg-[var(--insis-surface-2)] text-[var(--insis-text)]'

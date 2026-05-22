@@ -96,8 +96,7 @@ function handleClearTimetable() {
 			<!-- Mobile filter toggle -->
 			<button
 				type="button"
-				class="insis-btn insis-btn-secondary lg:hidden"
-				style="padding: 5px"
+				class="insis-btn insis-btn-secondary min-h-[44px] min-w-[44px] justify-center lg:hidden"
 				:aria-label="$t('common.openFilters')"
 				@click="uiStore.toggleMobileFilter"
 			>
