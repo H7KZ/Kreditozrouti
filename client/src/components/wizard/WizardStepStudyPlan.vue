@@ -173,7 +173,7 @@ function dismissSpecializationInfo() {
 		</div>
 
 		<!-- Results count and selection info -->
-		<div class="mb-4 flex items-center justify-between">
+		<div class="mb-4 flex flex-wrap items-center justify-between gap-y-2">
 			<p class="text-sm text-[var(--insis-gray-600)]">
 				{{ $t('components.wizard.WizardStepStudyPlan.resultsCount', { count: studyPlans.length }) }}
 			</p>
