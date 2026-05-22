@@ -1,6 +1,6 @@
 import { createHash } from 'crypto'
-import { redis } from '@api/clients'
 import { NextFunction, Request, Response } from 'express'
+import { redis } from '@api/clients'
 
 function buildCacheKey(req: Request): string {
 	const body = JSON.stringify(req.body ?? {}, Object.keys(req.body ?? {}).sort())

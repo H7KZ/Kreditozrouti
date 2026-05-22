@@ -1,8 +1,8 @@
-import { scraper } from '@api/bullmq'
-import { mysql, redis } from '@api/clients'
+import type { AdminStatsResponse, DbTotals, ErrorMetrics, FacultyStats, QueueStats, RecentError, StaleCourseCount } from '../../Contracts/admin'
 import { Request, Response } from 'express'
 import { sql, SqlBool } from 'kysely'
-import type { AdminStatsResponse, DbTotals, ErrorMetrics, FacultyStats, QueueStats, RecentError, StaleCourseCount } from '../../Contracts/admin'
+import { scraper } from '@api/bullmq'
+import { mysql, redis } from '@api/clients'
 
 export type {
 	AdminStatsResponse,

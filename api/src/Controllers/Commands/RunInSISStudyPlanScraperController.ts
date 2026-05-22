@@ -1,7 +1,7 @@
-import { Errors } from '@api/Errors'
-import ScraperService from '@api/Services/ScraperService'
 import { Request, Response } from 'express'
 import * as z from 'zod'
+import { Errors } from '@api/Errors'
+import ScraperService from '@api/Services/ScraperService'
 
 const BodySchema = z.object({
 	url: z.string()

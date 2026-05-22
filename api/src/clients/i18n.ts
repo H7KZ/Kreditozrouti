@@ -1,5 +1,5 @@
-import { Paths } from '@api/paths'
 import { I18n } from 'i18n'
+import { Paths } from '@api/paths'
 
 /**
  * Internationalization (i18n) instance.

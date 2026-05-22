@@ -1,6 +1,6 @@
+import { Router } from 'express'
 import AdminStatsController from '@api/Controllers/Admin/AdminStatsController'
 import CommandMiddleware from '@api/Middlewares/CommandMiddleware'
-import { Router } from 'express'
 
 /**
  * Router definition for Admin endpoints.

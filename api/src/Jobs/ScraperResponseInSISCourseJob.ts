@@ -1,3 +1,13 @@
+import type {
+	ScraperInSISCourseAssessmentMethod,
+	ScraperInSISCourseStudyPlan,
+	ScraperInSISCourseTimetableSlot,
+	ScraperInSISCourseTimetableUnit,
+	ScraperInSISFaculty
+} from '@shared/queue/insis'
+import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
+import { Transaction } from 'kysely'
+import { timeToMinutes } from '@shared/domain/time'
 import { mysql, redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import {
@@ -13,16 +23,6 @@ import {
 	StudyPlanCourseTable,
 	StudyPlanTable
 } from '@api/Database/types'
-import { timeToMinutes } from '@shared/domain/time'
-import type {
-	ScraperInSISCourseAssessmentMethod,
-	ScraperInSISCourseStudyPlan,
-	ScraperInSISCourseTimetableSlot,
-	ScraperInSISCourseTimetableUnit,
-	ScraperInSISFaculty
-} from '@shared/queue/insis'
-import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
-import { Transaction } from 'kysely'
 
 /**
  * Syncs a scraped InSIS course into the database.

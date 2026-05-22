@@ -1,6 +1,6 @@
+import Axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { createRequestHeaders } from '@scraper/Utils/HTTPUtils'
-import Axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export interface HttpClientOptions {
     /** Context key prefix for logging */

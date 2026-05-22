@@ -1,5 +1,5 @@
-import { ApiError } from '@api/Errors'
 import { NextFunction, Request, Response } from 'express'
+import { ApiError } from '@api/Errors'
 
 /**
  * Global Express error handling middleware.

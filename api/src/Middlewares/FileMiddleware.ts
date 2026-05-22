@@ -1,5 +1,5 @@
-import Config from '@api/Config/Config'
 import multer from 'multer'
+import Config from '@api/Config/Config'
 
 /**
  * Multer middleware configuration for handling `multipart/form-data`.

@@ -1,6 +1,6 @@
-import { redis } from '@api/clients'
 import { NextFunction, Request, Response } from 'express'
 import { RateLimiterRedis } from 'rate-limiter-flexible'
+import { redis } from '@api/clients'
 
 const ipLimiter = new RateLimiterRedis({
 	storeClient: redis,

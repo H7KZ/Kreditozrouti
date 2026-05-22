@@ -1,12 +1,12 @@
+import type { CoursesFilter } from '@shared/http/courses'
+import { Request, Response } from 'express'
+import * as z from 'zod'
+import { InSISStudyPlanCourseCategoryValues, InSISStudyPlanCourseGroupValues } from '@shared/domain/insis'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse'
 import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
 import { SemesterSchema, TimeSelectionSchema } from '@api/Validations/index'
-import { InSISStudyPlanCourseCategoryValues, InSISStudyPlanCourseGroupValues } from '@shared/domain/insis'
-import type { CoursesFilter } from '@shared/http/courses'
-import { Request, Response } from 'express'
-import * as z from 'zod'
 
 const CoursesFilterSchema = z.object({
 	// Identity Filters

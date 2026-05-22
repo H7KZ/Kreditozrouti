@@ -1,3 +1,6 @@
+import type { FacetItem } from '@shared/http/facets'
+import { Nullable, SelectQueryBuilder, sql } from 'kysely'
+import { jsonArrayFrom } from 'kysely/helpers/mysql'
 import { mysql, redis } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse'
@@ -14,9 +17,6 @@ import {
 	StudyPlanCourseTable
 } from '@api/Database/types'
 import { buildSlotConflictConditions, compareTimeSelections } from '@api/utils/timeConflict'
-import type { FacetItem } from '@shared/http/facets'
-import { Nullable, SelectQueryBuilder, sql } from 'kysely'
-import { jsonArrayFrom } from 'kysely/helpers/mysql'
 
 /** Cache TTL for facet queries (5 minutes) - facets change infrequently */
 const FACET_CACHE_TTL = 300

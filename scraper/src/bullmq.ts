@@ -1,9 +1,9 @@
+import type { ScraperRequestJob, ScraperResponseJob } from '@scraper/types/jobs'
+import { Queue, Worker } from 'bullmq'
 import { redis } from '@scraper/clients'
 import ScraperRequestHandler from '@scraper/Handlers/ScraperRequestHandler'
 import { withSentryJobHandler } from '@scraper/sentry'
-import type { ScraperRequestJob, ScraperResponseJob } from '@scraper/types/jobs'
 import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/types/queue'
-import { Queue, Worker } from 'bullmq'
 
 // Queues
 

@@ -1,5 +1,5 @@
-import scraper from '@scraper/bullmq'
 import type { ScraperInSISCourse, ScraperInSISStudyPlan } from '@scraper/types/insis'
+import scraper from '@scraper/bullmq'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 
 /**

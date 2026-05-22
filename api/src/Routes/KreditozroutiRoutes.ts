@@ -1,10 +1,10 @@
+import { Router } from 'express'
 import CoursesController from '@api/Controllers/Kreditozrouti/CoursesController'
 import StudyPlanCoursesController from '@api/Controllers/Kreditozrouti/StudyPlanCoursesController'
 import StudyPlansController from '@api/Controllers/Kreditozrouti/StudyPlansController'
 import { withCache } from '@api/Middlewares/CacheMiddleware'
 import LoggerMiddleware from '@api/Middlewares/LoggerMiddleware'
 import { ParserJSONMiddleware } from '@api/Middlewares/ParserMiddleware'
-import { Router } from 'express'
 
 /**
  * Router definition for Kreditožrouti (InSIS data) endpoints.

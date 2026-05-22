@@ -1,6 +1,6 @@
+import { Router } from 'express'
 import { CourseScraperController } from '@api/Controllers/Scraper/CourseScraperController'
 import { scraperRateLimit } from '@api/Middlewares/RateLimitMiddleware'
-import { Router } from 'express'
 
 const router = Router()
 

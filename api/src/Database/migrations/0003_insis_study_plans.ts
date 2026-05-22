@@ -1,5 +1,5 @@
-import { CourseTable, FacultyTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import { Kysely, sql } from 'kysely'
+import { CourseTable, FacultyTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 
 export async function up(mysql: Kysely<any>): Promise<void> {
 	// 1. Study Plan Table

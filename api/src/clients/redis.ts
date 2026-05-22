@@ -1,5 +1,5 @@
-import Config from '@api/Config/Config'
 import Redis from 'ioredis'
+import Config from '@api/Config/Config'
 
 /**
  * Redis client instance.

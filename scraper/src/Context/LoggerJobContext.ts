@@ -25,7 +25,7 @@ const LoggerJobContext = {
 
     add: (context: Partial<JobWideEvent>) => {
         const store = LoggerJobStorage.getStore()
-        if (store) Object.entries(context).forEach(([key, value]) => store.set(key, value))
+        if (store) for (const [key, value] of Object.entries(context)) store.set(key, value)
     },
 
     get: (): Partial<JobWideEvent> => {

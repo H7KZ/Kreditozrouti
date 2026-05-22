@@ -1,7 +1,7 @@
-import ScraperService from '@api/Services/ScraperService'
 import type { InSISSemester } from '@shared/domain/insis'
 import { Request, Response } from 'express'
 import * as z from 'zod'
+import ScraperService from '@api/Services/ScraperService'
 
 const BodySchema = z.object({
 	faculties: z.array(z.string()).optional(),

@@ -1,6 +1,6 @@
+import { ExpressionBuilder } from 'kysely'
 import DateService from '@api/Services/DateService'
 import { TimeSelection } from '@api/Validations'
-import { ExpressionBuilder } from 'kysely'
 
 export { compareTimeSelections } from '@shared/domain/timetable'
 

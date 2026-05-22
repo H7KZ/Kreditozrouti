@@ -1,7 +1,7 @@
-import Config from '@scraper/Config/Config'
-import MarkdownService from '@scraper/Services/MarkdownService'
 import type { CheerioAPI } from 'cheerio'
 import * as cheerio from 'cheerio'
+import Config from '@scraper/Config/Config'
+import MarkdownService from '@scraper/Services/MarkdownService'
 
 /**
  * Cleans text by normalizing whitespace and removing nbsp entities.

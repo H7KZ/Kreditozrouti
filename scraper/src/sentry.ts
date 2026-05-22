@@ -1,5 +1,5 @@
-import Config from '@scraper/Config/Config'
 import * as Sentry from '@sentry/node'
+import Config from '@scraper/Config/Config'
 
 Sentry.init({
     dsn: Config.sentry.dsn,

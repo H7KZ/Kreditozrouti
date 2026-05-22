@@ -1,7 +1,7 @@
+import type { InSISSemester } from '@shared/domain/insis'
 import { scraper } from '@api/bullmq'
 import { mysql } from '@api/clients'
 import { Errors } from '@api/Errors'
-import type { InSISSemester } from '@shared/domain/insis'
 
 interface Period {
 	semester: InSISSemester | null

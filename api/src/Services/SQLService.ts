@@ -1,9 +1,9 @@
 import { promises as fs } from 'fs'
 import * as path from 'path'
 import { pathToFileURL } from 'url'
+import { FileMigrationProvider, Migrator } from 'kysely'
 import { mysql } from '@api/clients'
 import { Paths } from '@api/paths'
-import { FileMigrationProvider, Migrator } from 'kysely'
 
 /**
  * Service responsible for database schema management and initial data seeding.
@@ -32,13 +32,13 @@ export class SQLService {
 
 		const { results, error } = await migrator.migrateToLatest()
 
-		results?.forEach(it => {
+		for (const it of results ?? []) {
 			if (it.status === 'Success') {
 				console.log(`migration "${it.migrationName}" was executed successfully`)
 			} else if (it.status === 'Error') {
 				console.error(`failed to execute migration "${it.migrationName}"`)
 			}
-		})
+		}
 
 		if (error) {
 			console.error('failed to migrate')

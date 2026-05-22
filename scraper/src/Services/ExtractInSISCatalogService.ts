@@ -1,7 +1,7 @@
+import * as cheerio from 'cheerio'
 import Config from '@scraper/Config/Config'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
-import * as cheerio from 'cheerio'
 
 export interface CatalogSearchOptions {
     faculties: {

@@ -1,4 +1,3 @@
-import MarkdownService from '@scraper/Services/MarkdownService'
 import type {
     InSISDay,
     InSISSemester,
@@ -10,10 +9,11 @@ import type {
     ScraperInSISCourseTimetableUnit,
     ScraperInSISFaculty
 } from '@scraper/types/insis'
-import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
-import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 import type { CheerioAPI } from 'cheerio'
 import * as cheerio from 'cheerio'
+import MarkdownService from '@scraper/Services/MarkdownService'
+import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
+import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 
 /**
  * Extracts course data from InSIS syllabus pages.
@@ -232,8 +232,8 @@ export default class ExtractInSISCourseService {
             // Split on "Doporučená:" label (case-insensitive)
             const splitIndex = rawHtml.search(/Doporu[cč]en[aá]:/i)
             if (splitIndex !== -1) {
-                const requiredHtml = rawHtml.substring(0, splitIndex)
-                const recommendedHtml = rawHtml.substring(splitIndex)
+                const requiredHtml = rawHtml.slice(0, splitIndex)
+                const recommendedHtml = rawHtml.slice(splitIndex)
 
                 // Strip leading "Základní:" label from required section
                 const requiredStripped = requiredHtml.replace(/Z[aá]kladn[ií]:/i, '').trim()
@@ -476,8 +476,8 @@ export default class ExtractInSISCourseService {
                         .map(p => cleanText(cheerio.load(p).text()))
                         .filter(p => p)
 
-                    periods.forEach(semester => {
-                        if (!semester) return
+                    for (const semester of periods) {
+                        if (!semester) continue
 
                         const plan: ScraperInSISCourseStudyPlan = {
                             ident: serializeValue(planIdent),
@@ -490,7 +490,7 @@ export default class ExtractInSISCourseService {
                         }
 
                         plans.add(plan)
-                    })
+                    }
                 })
         })
 

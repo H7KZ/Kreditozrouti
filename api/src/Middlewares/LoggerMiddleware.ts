@@ -1,6 +1,6 @@
+import { NextFunction, Request, Response } from 'express'
 import { redis } from '@api/clients'
 import LoggerAPIContext, { LoggerWideEvent } from '@api/Context/LoggerAPIContext'
-import { NextFunction, Request, Response } from 'express'
 
 export default function LoggerMiddleware(req: Request, res: Response, next: NextFunction) {
 	const startTime = process.hrtime()

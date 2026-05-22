@@ -1,9 +1,9 @@
-import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import type { InSISSemester, ScraperInSISFaculty, ScraperInSISStudyPlan, ScraperInSISStudyPlanCourse } from '@scraper/types/insis'
-import { cleanText, getRowValueCaseInsensitive, normalizeUrl, serializeValue } from '@scraper/Utils/HTMLUtils'
-import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 import type { CheerioAPI } from 'cheerio'
 import * as cheerio from 'cheerio'
+import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
+import { cleanText, getRowValueCaseInsensitive, normalizeUrl, serializeValue } from '@scraper/Utils/HTMLUtils'
+import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 
 /**
  * Extracts study plan data from InSIS pages.
@@ -226,7 +226,7 @@ export default class ExtractInSISStudyPlanService {
             const text = cleanText(rowEl.text())
 
             // Detect group header (e.g., "oP - Povinné předměty")
-            const groupMatch = /^([a-zA-Z][a-zA-Z0-9]*)\s+-\s+/.exec(text)
+            const groupMatch = /^([a-z][a-z\d]*)\s+-\s+/i.exec(text)
             if (groupMatch) currentGroupCode = groupMatch[1]
 
             // Detect course row

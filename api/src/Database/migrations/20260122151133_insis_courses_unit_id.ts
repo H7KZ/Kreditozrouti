@@ -1,5 +1,5 @@
-import { CourseUnitSlotTable } from '@api/Database/types'
 import { Kysely } from 'kysely'
+import { CourseUnitSlotTable } from '@api/Database/types'
 import { renameColumnSafe } from './utils'
 
 export async function up(mysql: Kysely<any>): Promise<void> {

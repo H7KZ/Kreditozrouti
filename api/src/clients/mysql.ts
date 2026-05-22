@@ -1,8 +1,8 @@
+import { Kysely, MysqlDialect, ParseJSONResultsPlugin } from 'kysely'
+import { createPool } from 'mysql2'
 import Config from '@api/Config/Config'
 import { Database } from '@api/Database/types'
 import sentry from '@api/sentry'
-import { Kysely, MysqlDialect, ParseJSONResultsPlugin } from 'kysely'
-import { createPool } from 'mysql2'
 
 /**
  * Kysely instance for type-safe MySQL interactions.
@@ -34,7 +34,7 @@ export const mysql = new Kysely<Database>({
 	log(event) {
 		if (event.level === 'query') {
 			if (event.queryDurationMillis > 500) {
-				console.warn(`[SLOW QUERY] ${event.queryDurationMillis}ms:`, event.query.sql.substring(0, 200))
+				console.warn(`[SLOW QUERY] ${event.queryDurationMillis}ms:`, event.query.sql.slice(0, 200))
 			}
 
 			// Report startup errors to Sentry

@@ -1,10 +1,10 @@
+import type { ScraperInSISCatalogRequestJob } from '@scraper/types/jobs'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import ExtractInSISCatalogService from '@scraper/Services/ExtractInSISCatalogService'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
-import type { ScraperInSISCatalogRequestJob } from '@scraper/types/jobs'
 
 /**
  * Scrapes the InSIS course catalog.

@@ -1,5 +1,5 @@
-import { InSISDayValues, InSISSemesterValues } from '@shared/domain/insis'
 import * as z from 'zod'
+import { InSISDayValues, InSISSemesterValues } from '@shared/domain/insis'
 
 export const SemesterSchema = z.enum(InSISSemesterValues)
 

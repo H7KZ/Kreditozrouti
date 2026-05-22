@@ -1,10 +1,10 @@
+import type { ScraperRequestJob } from '@scraper/types/jobs'
+import { Job } from 'bullmq'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import ScraperRequestInSISCatalogJob from '@scraper/Jobs/ScraperRequestInSISCatalogJob'
 import ScraperRequestInSISCourseJob from '@scraper/Jobs/ScraperRequestInSISCourseJob'
 import ScraperRequestInSISStudyPlanJob from '@scraper/Jobs/ScraperRequestInSISStudyPlanJob'
 import ScraperRequestInSISStudyPlansJob from '@scraper/Jobs/ScraperRequestInSISStudyPlansJob'
-import type { ScraperRequestJob } from '@scraper/types/jobs'
-import { Job } from 'bullmq'
 
 /**
  * Entry point for processing scraper request jobs.

@@ -1,6 +1,6 @@
+import { NextFunction, Request, Response } from 'express'
 import Config from '@api/Config/Config'
 import { ApiError, Errors } from '@api/Errors'
-import { NextFunction, Request, Response } from 'express'
 
 /**
  * Middleware to secure administrative and scraper command routes.

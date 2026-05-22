@@ -1,5 +1,5 @@
-import Config from '@scraper/Config/Config'
 import Redis from 'ioredis'
+import Config from '@scraper/Config/Config'
 
 /**
  * The Redis client instance used by the scraper service.

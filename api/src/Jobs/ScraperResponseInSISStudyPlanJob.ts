@@ -1,9 +1,9 @@
+import type { ScraperInSISFaculty } from '@shared/queue/insis'
+import type { ScraperInSISStudyPlanResponseJob } from '@shared/queue/jobs'
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { CourseTable, FacultyTable, NewStudyPlan, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import InSISService from '@api/Services/InSISService'
-import type { ScraperInSISFaculty } from '@shared/queue/insis'
-import type { ScraperInSISStudyPlanResponseJob } from '@shared/queue/jobs'
 
 /**
  * Syncs a scraped InSIS Study Plan into the database.
@@ -88,9 +88,9 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 			.where('year', '=', upcomingPeriod.year)
 			.execute()
 
-		identMatches.forEach(c => {
+		for (const c of identMatches) {
 			if (c.ident) identToIdMap.set(c.ident, c.id)
-		})
+		}
 	}
 
 	const rowsToInsert: NewStudyPlanCourse[] = plan.courses.map(item => {

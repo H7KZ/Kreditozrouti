@@ -3,24 +3,27 @@
 import eslint from '@eslint/js'
 import prettierConfig from 'eslint-config-prettier'
 import importPlugin from 'eslint-plugin-import'
+import pluginPromise from 'eslint-plugin-promise'
+import pluginRegexp from 'eslint-plugin-regexp'
+import pluginUnicorn from 'eslint-plugin-unicorn'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-	// Global ignores
 	{
 		ignores: ['node_modules', 'dist', 'build', '.wrangler']
 	},
 
-	// Base recommended configurations
 	eslint.configs.recommended,
 	...tseslint.configs.recommendedTypeChecked,
 	...tseslint.configs.stylisticTypeChecked,
+	pluginRegexp.configs['flat/recommended'],
+	pluginPromise.configs['flat/recommended'],
 
-	// Configuration for import plugin to resolve TypeScript paths
 	{
 		plugins: {
-			import: importPlugin
+			import: importPlugin,
+			unicorn: pluginUnicorn
 		},
 		settings: {
 			'import/resolver': {
@@ -28,34 +31,20 @@ export default tseslint.config(
 				node: true
 			}
 		},
-		rules: {
-			'import/no-unresolved': 'off',
-			'@typescript-eslint/no-unsafe-argument': 'off',
-			'@typescript-eslint/no-unsafe-enum-comparison': 'off',
-			'@typescript-eslint/no-redundant-type-constituents': 'off'
-		}
-	},
-
-	// Main configuration for your TypeScript files
-	{
-		files: ['**/*.{js,mjs,cjs,ts,tsx}'],
 		languageOptions: {
 			ecmaVersion: 'latest',
 			sourceType: 'module',
-			// This replaces the old `env` block
 			globals: {
-				...globals.browser,
+				...globals.node,
 				...globals.es2021
 			},
-			// This tells typescript-eslint where to find your tsconfig.json
 			parserOptions: {
 				project: true,
 				tsconfigRootDir: import.meta.dirname
 			}
 		},
-		// Your custom rule overrides
 		rules: {
-			// All the rules you turned off in your original config
+			// typescript-eslint — turn off rules that don't fit this codebase
 			'@typescript-eslint/naming-convention': 'off',
 			'@typescript-eslint/no-explicit-any': 'off',
 			'@typescript-eslint/restrict-template-expressions': 'off',
@@ -66,11 +55,42 @@ export default tseslint.config(
 			'@typescript-eslint/no-floating-promises': 'off',
 			'@typescript-eslint/no-extraneous-class': 'off',
 			'@typescript-eslint/no-confusing-void-expression': 'off',
-			'no-useless-catch': 'off'
+			'@typescript-eslint/no-unsafe-argument': 'off',
+			'@typescript-eslint/no-unsafe-enum-comparison': 'off',
+			'@typescript-eslint/no-redundant-type-constituents': 'off',
+			'no-useless-catch': 'off',
+
+			// import
+			'import/no-unresolved': 'off',
+
+			// promise
+			'promise/always-return': 'off',
+			'promise/catch-or-return': 'off',
+
+			// unicorn — high-signal only
+			'unicorn/filename-case': [
+				'error',
+				{ cases: { kebabCase: true, camelCase: true, pascalCase: true }, ignore: [/InSIS/u, /HTML/u, /HTTP/u, /SQL/u, /API/u, /_/u] }
+			],
+			'unicorn/no-array-for-each': 'error',
+			'unicorn/no-useless-undefined': 'error',
+			'unicorn/prefer-array-find': 'error',
+			'unicorn/prefer-includes': 'error',
+			'unicorn/prefer-string-slice': 'error',
+			'unicorn/throw-new-error': 'error',
+			'unicorn/prevent-abbreviations': 'off',
+			'unicorn/no-null': 'off',
+			'unicorn/no-array-reduce': 'off',
+			'unicorn/prefer-ternary': 'off',
+			'unicorn/prefer-module': 'off',
+			'unicorn/no-negated-condition': 'off',
+			'unicorn/prefer-top-level-await': 'off',
+			'unicorn/consistent-function-scoping': 'off',
+			'unicorn/no-anonymous-default-export': 'off',
+			'unicorn/no-process-exit': 'off'
 		}
 	},
 
-	// Prettier configuration must be last
-	// This turns off any ESLint rules that might conflict with Prettier's formatting.
+	// Must be last — disables rules that conflict with Prettier
 	prettierConfig
 )

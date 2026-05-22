@@ -1,3 +1,4 @@
+import { Kysely, sql } from 'kysely'
 import {
 	CourseAssessmentTable,
 	CourseTable,
@@ -7,7 +8,6 @@ import {
 	StudyPlanCourseTable,
 	StudyPlanTable
 } from '@api/Database/types'
-import { Kysely, sql } from 'kysely'
 import { createIndexSafe, dropIndexSafe as dropIndex } from './utils'
 
 export async function up(db: Kysely<any>): Promise<void> {

@@ -1,5 +1,5 @@
-import Config from '@api/Config/Config'
 import Nodemailer from 'nodemailer'
+import Config from '@api/Config/Config'
 
 /**
  * Nodemailer transporter for email delivery.

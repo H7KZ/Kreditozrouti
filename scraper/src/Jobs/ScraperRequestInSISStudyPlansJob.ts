@@ -1,10 +1,10 @@
+import type { ScraperInSISStudyPlans } from '@scraper/types/insis'
+import type { ScraperInSISStudyPlansRequestJob } from '@scraper/types/jobs'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
-import type { ScraperInSISStudyPlans } from '@scraper/types/insis'
-import type { ScraperInSISStudyPlansRequestJob } from '@scraper/types/jobs'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
 
@@ -88,7 +88,7 @@ async function traverseHierarchy(
 
             // Collect final plan URLs (leaves)
             const planUrls = ExtractInSISStudyPlanService.extractPlanUrls(response.data)
-            planUrls.forEach(url => allPlanUrls.add(url))
+            for (const url of planUrls) allPlanUrls.add(url)
 
             // Collect navigation URLs (branches)
             const hasPeriod = response.config.url?.includes('poc_obdobi=') ?? true
@@ -109,7 +109,7 @@ async function traverseHierarchy(
                 }
             } else {
                 // No period filtering needed, add all navigation URLs
-                navigations.forEach(nav => nextLevelUrls.add(nav.url))
+                for (const nav of navigations) nextLevelUrls.add(nav.url)
             }
         }
 

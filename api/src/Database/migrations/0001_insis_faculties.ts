@@ -1,5 +1,5 @@
-import { FacultyTable } from '@api/Database/types'
 import { Kysely, sql } from 'kysely'
+import { FacultyTable } from '@api/Database/types'
 
 export async function up(mysql: Kysely<any>): Promise<void> {
 	await mysql.schema

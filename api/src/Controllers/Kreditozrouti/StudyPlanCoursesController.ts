@@ -1,10 +1,10 @@
+import type { StudyPlanCoursesFilter } from '@shared/http/study-plans'
+import { Request, Response } from 'express'
+import * as z from 'zod'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import StudyPlanCoursesResponse from '@api/Controllers/Kreditozrouti/types/StudyPlanCoursesResponse'
 import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
-import type { StudyPlanCoursesFilter } from '@shared/http/study-plans'
-import { Request, Response } from 'express'
-import * as z from 'zod'
 
 const StudyPlanCoursesFilterSchema = z.object({
 	study_plan_ids: z.array(z.coerce.number())

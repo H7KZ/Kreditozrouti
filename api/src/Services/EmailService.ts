@@ -1,10 +1,10 @@
 import fs from 'fs'
+import Mail from 'nodemailer/lib/mailer'
+import SMTPTransport from 'nodemailer/lib/smtp-transport'
 import { nodemailer } from '@api/clients'
 import Config from '@api/Config/Config'
 import { ApiError } from '@api/Errors'
 import { Paths } from '@api/paths'
-import Mail from 'nodemailer/lib/mailer'
-import SMTPTransport from 'nodemailer/lib/smtp-transport'
 
 /**
  * Service for managing email template rendering and SMTP transmission.
