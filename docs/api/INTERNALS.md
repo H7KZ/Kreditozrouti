@@ -290,19 +290,3 @@ withSentryJobHandler(queueName, handler)
 
 Sentry is initialized from `Config.sentry.dsn`. If DSN is absent, the wrapper is a no-op.
 
----
-
-## Contracts Barrel (`contracts/index.ts`)
-
-The stable public API for client-side type imports. Re-exports only the types the client needs:
-
-```typescript
-export type {CourseWithRelations, StudyPlanWithRelations,
-...
-}
-from
-'@api/Database/types'
-```
-
-**Rule:** Client code imports from `@api/contracts`, never from `@api/Database/types` directly. This lets the DB types
-evolve without breaking the client import surface.

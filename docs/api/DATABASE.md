@@ -256,5 +256,4 @@ export type Course = Selectable<CourseTable>
 export type NewCourse = Insertable<CourseTable>
 ```
 
-**Do not import `Database/types.ts` directly from the client.** Use `contracts/index.ts` which re-exports only the
-stable, client-safe types.
+**Do not import `Database/types.ts` from the client.** All shared types the client needs are in `@shared/`.

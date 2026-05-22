@@ -20,10 +20,8 @@ Pages (src/pages/ — file-based routing via unplugin-vue-router)
 | Alias       | Resolves to    | Rule                                   |
 | ----------- | -------------- | -------------------------------------- |
 | `@client/*` | `./src/*`      | —                                      |
-| `@api/*`    | `../api/src/*` | Types only — never import runtime code |
+| `@api/*`    | `../api/src/*` | Do not use — all shared types are in `@shared/` |
 | `@shared/*` | `../shared/*`  | —                                      |
-
-**API types** → always import from `@api/contracts`, not `@api/Database/types`.
 
 ---
 

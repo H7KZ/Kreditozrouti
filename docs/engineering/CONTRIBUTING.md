@@ -43,7 +43,7 @@ Example: `feat: add campus conflict detection to timetable store`
 - **API controllers** are plain namespace objects, not classes:
   `export const FooController = { async handleRequest(...) {} }`
 - **Zod schemas** co-located with their controller file, not in a central `Validations/` folder.
-- **Imports** in the client: use `@api/contracts` for API types, never `@api/Database/types`.
+- **Imports** in the client: use `@shared/` for all shared types — never import from `api/`.
 - **Store deps**: `timetable.store` must never import `courses.store` —
   see [docs/architecture/MONOREPO.md](../architecture/MONOREPO.md) and `client/CLAUDE.md` for the reason.
 

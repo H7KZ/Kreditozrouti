@@ -23,7 +23,6 @@ api/src/
 ├── Routes/         # KreditozroutiRoutes, ScraperPublicRoutes, CommandsRoutes
 ├── Middlewares/    # CacheMiddleware, RateLimitMiddleware, CommandMiddleware, LoggerMiddleware
 ├── Errors/         # ApiError + Errors factory
-├── contracts/      # Stable barrel for client-consumed types — import from here, not Database/types
 └── utils/          # sse.ts, timeConflict.ts
 ```
 
@@ -48,8 +47,6 @@ export const CoursesController = {
 
 **Zod schemas** are co-located with their controller, not in `Validations/`. `Validations/index.ts` only exports shared
 primitives (`TimeSelectionSchema`, `SemesterSchema`, `DaySchema`).
-
-**Client imports** must use `@api/contracts`, never `@api/Database/types` directly.
 
 **Times** are stored as **minutes from midnight** (0–1439). `08:00` → `480`.
 

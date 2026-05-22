@@ -33,9 +33,9 @@ Each of `api/`, `client/`, `scraper/`, and `shared/` is an independent pnpm pack
 ## Cross-Package Import Rules
 
 ```
-         ┌──────────┐     types only      ┌──────────┐
-         │  client  │ ──────────────────► │   api    │
-         └──────────┘  (@api/contracts)   └──────────┘
+         ┌──────────┐                     ┌──────────┐
+         │  client  │                     │   api    │
+         └──────────┘                     └──────────┘
                │                               │
                │ @shared/*                     │ @shared/*
                ▼                               ▼
@@ -53,8 +53,7 @@ Each of `api/`, `client/`, `scraper/`, and `shared/` is an independent pnpm pack
 **Rules:**
 
 - `shared` must **never** import from `api`, `client`, or `scraper` — it is a pure types/utilities package
-- `client` may import types from `@api/contracts` (the stable public barrel) but **never** runtime code
-- `client` must import from `@api/contracts`, **not** `@api/Database/types` directly
+- `client` must **never** import from `api` — all shared types come from `@shared/`
 - `scraper` and `api` share job payload types via `@shared/queue/insis.ts`
 
 ---

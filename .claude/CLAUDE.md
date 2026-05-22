@@ -44,7 +44,7 @@ deployment/   Docker Compose stacks + deploy.sh
 **Cross-package imports:**
 
 - `shared/` must never import from `api/`, `client/`, or `scraper/`
-- `client/` imports API types only from `@api/contracts` (never `@api/Database/types`)
+- `client/` never imports from `api/` — all shared types come from `@shared/`
 - `client/` never imports API runtime code
 
 **Time encoding:** all times are **minutes from midnight** (0–1439). `08:00` = 480.

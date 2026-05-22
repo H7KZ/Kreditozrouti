@@ -108,7 +108,6 @@ api/src/
 ├── Errors/index.ts             # ApiError class + Errors factory
 ├── Validations/index.ts        # Shared Zod primitives
 ├── Context/                    # Logger contexts
-├── contracts/index.ts          # Stable barrel for client-consumed types
 └── utils/
     ├── sse.ts                  # SSE helpers
     └── timeConflict.ts         # Time conflict Kysely conditions
@@ -125,5 +124,4 @@ api/src/
 
 - **Controllers** use named function namespace objects, not classes (see [ENDPOINTS.md](ENDPOINTS.md))
 - **Zod schemas** are co-located with their controller
-- **Types** consumed by the client are re-exported from `src/contracts/index.ts`
 - **Times** are stored as minutes-from-midnight (0–1439) (see [DATABASE.md](DATABASE.md))
