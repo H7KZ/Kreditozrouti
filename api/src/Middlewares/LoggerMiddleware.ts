@@ -20,16 +20,15 @@ export default function LoggerMiddleware(req: Request, res: Response, next: Next
     res.setHeader('X-Request-Id', request_id)
 
     RequestContext.run(() => {
-        RequestContext.add({ request_id })
-
         res.on('finish', () => {
             const diff = process.hrtime(startTime)
 
             wideEvent.duration_ms = (diff[0] * 1e9 + diff[1]) / 1e6
-            wideEvent.status_code = res.statusCode
 
-            // Merge anything controllers added via LoggerAPIContext.add()
+            // Merge anything controllers added via LoggerAPIContext.add(), then
+            // re-assert status_code so a misbehaving controller cannot overwrite it
             Object.assign(wideEvent, RequestContext.get())
+            wideEvent.status_code = res.statusCode
 
             if (LoggerAPIContext.shouldLog(res)) {
                 if (res.statusCode >= 500) {

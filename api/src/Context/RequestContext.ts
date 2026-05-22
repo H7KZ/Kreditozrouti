@@ -10,7 +10,11 @@ const RequestContext = {
 
     add: (context: Record<string, unknown>) => {
         const store = RequestStorage.getStore()
-        if (store) for (const [k, v] of Object.entries(context)) store.set(k, v)
+        if (!store) {
+            if (process.env.NODE_ENV !== 'production') console.warn('RequestContext.add() called outside a RequestContext.run() scope')
+            return
+        }
+        for (const [k, v] of Object.entries(context)) store.set(k, v)
     },
 
     get: (): Record<string, unknown> => {
