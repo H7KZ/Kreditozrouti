@@ -226,7 +226,7 @@ function handleSearchInput(event: Event) {
 		</div>
 
 		<!-- Summary & Actions -->
-		<div class="mt-6 flex items-center justify-between border-t border-[var(--insis-border)] pt-4">
+		<div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--insis-border)] pt-4">
 			<div class="flex items-center gap-4">
 				<button type="button" class="insis-btn-text text-sm" @click="emit('back')">← {{ $t('common.back') }}</button>
 				<span v-if="totalCompleted > 0" class="text-sm text-[var(--insis-gray-600)]">
