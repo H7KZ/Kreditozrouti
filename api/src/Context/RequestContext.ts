@@ -3,7 +3,7 @@ import { AsyncLocalStorage } from 'async_hooks'
 const RequestStorage = new AsyncLocalStorage<Map<string, unknown>>()
 
 const RequestContext = {
-    run: (fn: () => Promise<void>, initialContext: Record<string, unknown>) => {
+    run: (fn: () => void | Promise<void>, initialContext: Record<string, unknown>) => {
         const store = new Map(Object.entries(initialContext))
         return RequestStorage.run(store, fn)
     },
