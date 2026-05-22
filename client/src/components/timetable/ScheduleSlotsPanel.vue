@@ -138,8 +138,8 @@ function iconsVisible(slotId: string): boolean {
 
 <template>
 	<div class="mb-6 flex flex-col gap-3">
-		<div class="flex shrink-0 items-end justify-between border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-1">
-			<nav class="insis-tabs" style="padding-top: 4px">
+		<div class="flex flex-wrap shrink-0 items-end justify-between gap-y-1 border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-1">
+			<nav class="insis-tabs min-w-0 flex-1 overflow-x-auto" style="padding-top: 4px">
 				<!-- Working Copy Tab -->
 				<button v-if="!slotsStore.activeSlotId" type="button" class="insis-tab insis-tab-active gap-2">
 					<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--insis-blue)]"></span>
@@ -198,7 +198,7 @@ function iconsVisible(slotId: string): boolean {
 			</nav>
 
 			<!-- Right side: name input or action button -->
-			<div class="flex items-center gap-2 px-2 pb-1">
+			<div class="flex shrink-0 items-center gap-2 px-2 pb-1">
 				<div v-if="isAdding" class="flex items-center gap-1">
 					<input
 						ref="nameInput"
