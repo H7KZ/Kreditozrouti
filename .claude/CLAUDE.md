@@ -39,7 +39,7 @@ deployment/   Docker Compose stacks + deploy.sh
 
 ---
 
-## Critical Cross-Cutting Invariants
+## Critical Invariants
 
 **Cross-package imports:**
 
@@ -73,11 +73,7 @@ After completing any task that changes code, configuration, or behavior:
 
 1. **Identify** which `docs/` file(s) describe the changed area (use the table below)
 2. **Update** any doc that describes what changed — keep it accurate
-3. **New behavior with no doc entry?** Ask the engineer: *"This change isn't mentioned in the docs — should I document
-   it?"* If yes, add it; if no, continue
-
-This applies to all changes: new endpoints, new stores, new env vars, changed invariants, new scripts, infra changes,
-etc.
+3. **New behavior with no doc entry?** Ask: *"This change isn't mentioned in the docs — should I document it?"* If yes, add it; if no, continue
 
 ---
 
@@ -85,6 +81,8 @@ etc.
 
 | Area         | Overview                                            | Detail docs                                                                                                                                                                                       |
 |--------------|-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Domain       | [docs/DOMAIN.md](../docs/DOMAIN.md)                 | Glossary · Architecture seams                                                                                                                                                                     |
+| ADRs         | [docs/ADR.md](../docs/ADR.md)                       | Decisions 001–006                                                                                                                                                                                 |
 | Architecture | [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)     | [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md)   |
 | Engineering  | [docs/ENGINEERING.md](../docs/ENGINEERING.md)       | [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md)                                                                                                       |
 | API          | [docs/api/README.md](../docs/api/README.md)         | [endpoints](../docs/api/ENDPOINTS.md) · [services](../docs/api/SERVICES.md) · [jobs](../docs/api/JOBS.md) · [database](../docs/api/DATABASE.md) · [internals](../docs/api/INTERNALS.md)           |
@@ -93,3 +91,25 @@ etc.
 | Shared       | [docs/shared/README.md](../docs/shared/README.md)   | [domain](../docs/shared/DOMAIN.md) · [http](../docs/shared/HTTP.md) · [queue](../docs/shared/QUEUE.md)                                                                                            |
 | Deployment   | [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md)         | [docker](../docs/deployment/DOCKER.md) · [ci/cd](../docs/deployment/CICD.md) · [infrastructure](../docs/deployment/INFRASTRUCTURE.md) · [operations](../docs/deployment/OPERATIONS.md)            |
 | Scripts      | [docs/SCRIPTS.md](../docs/SCRIPTS.md)               | [infrastructure](../docs/scripts/INFRASTRUCTURE.md) · [maintenance](../docs/scripts/MAINTENANCE.md)                                                                                               |
+
+---
+
+## Working in This Repo (Claude)
+
+**Working style**
+
+- Prefer subagent-driven development for multi-step implementation — spawn agents per task rather than running inline
+- Use `TaskCreate` to track progress on any task with 3+ steps
+
+**Skills**
+
+| Skill | When to use |
+|-------|-------------|
+| `/brainstorming` | Before any new feature or significant change |
+| `/gsd-plan-phase` | Planning a phase with multiple tasks |
+| `/gsd-execute-phase` | Executing a planned phase |
+| `/gsd-debug` | Systematic bug investigation |
+| `/tdd` | Test-first implementation |
+| `/gsd-code-review` | Pre-merge review |
+
+**Docs discipline:** After every change, run the doc-review rule above before closing the task.
