@@ -226,7 +226,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 				<!-- Card header -->
 				<div
 					:class="[
-						'cursor-pointer rounded border bg-[var(--insis-surface)] px-3 py-2.5 transition-colors active:bg-[var(--insis-surface-2)]',
+						'cursor-pointer rounded border bg-[var(--insis-surface)] px-3 py-2.5 transition-colors active:bg-[var(--insis-surface-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)]',
 						hasCourseConflict(course.id)
 							? 'border-[var(--insis-danger-border)]'
 							: hasSelectedUnits(course.id)
