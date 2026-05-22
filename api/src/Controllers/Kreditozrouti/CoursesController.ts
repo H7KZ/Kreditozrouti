@@ -69,7 +69,7 @@ export type { CoursesFilter } from '@shared/http/courses'
  * @throws {ApiError} 403 - If the validation of the search request fails.
  */
 export default async function CoursesController(req: Request, res: Response<CoursesResponse>) {
-	LoggerAPIContext.add(res, { body: req.body })
+	LoggerAPIContext.add({ body: req.body })
 
 	// 1. Validation
 	const result = await CoursesFilterSchema.safeParseAsync(req.body)
@@ -84,7 +84,7 @@ export default async function CoursesController(req: Request, res: Response<Cour
 		CourseService.getCourseFacets(filter)
 	])
 
-	LoggerAPIContext.add(res, {
+	LoggerAPIContext.add({
 		courses_count: courses.length,
 		total_count: total,
 		facets_count: Object.keys(facets).length

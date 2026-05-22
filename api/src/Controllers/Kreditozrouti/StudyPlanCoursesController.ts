@@ -20,7 +20,7 @@ export type { StudyPlanCoursesFilter } from '@shared/http/study-plans'
  * @throws {ApiError} 403 - If the validation of the search request fails.
  */
 export default async function StudyPlanCoursesController(req: Request, res: Response<StudyPlanCoursesResponse>) {
-	LoggerAPIContext.add(res, { body: req.body })
+	LoggerAPIContext.add({ body: req.body })
 
 	// 1. Validation
 	const result = await StudyPlanCoursesFilterSchema.safeParseAsync(req.body)
@@ -32,7 +32,7 @@ export default async function StudyPlanCoursesController(req: Request, res: Resp
 	// 2. Service Call
 	const courses = await CourseService.getCoursesByStudyPlan(studyPlanIds)
 
-	LoggerAPIContext.add(res, {
+	LoggerAPIContext.add({
 		courses_count: courses.length
 	})
 

@@ -51,7 +51,7 @@ export type { StudyPlansFilter } from '@shared/http/study-plans'
  * @throws {ApiError} 403 - If the validation of the search request fails.
  */
 export default async function StudyPlansController(req: Request, res: Response<StudyPlansResponse>) {
-	LoggerAPIContext.add(res, { body: req.body })
+	LoggerAPIContext.add({ body: req.body })
 
 	// 1. Validation
 	const result = await StudyPlansFilterSchema.safeParseAsync(req.body)
@@ -68,7 +68,7 @@ export default async function StudyPlansController(req: Request, res: Response<S
 		StudyPlanService.getStudyPlanFacets(filter)
 	])
 
-	LoggerAPIContext.add(res, {
+	LoggerAPIContext.add({
 		plans_count: plans.length,
 		total_count: total,
 		facets_count: Object.keys(facets).length
