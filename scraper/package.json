@@ -9,7 +9,8 @@
         "build": "tsc && tsc-alias",
         "lint": "eslint ./src --ext .ts,.js",
         "format": "prettier --write .",
-        "preview": "node dist/index.js"
+        "preview": "node dist/index.js",
+        "type-check": "tsc --noEmit"
     },
     "dependencies": {
         "@sentry/node": "^10.52.0",

@@ -1,4 +1,4 @@
-.PHONY: install dev dev-api dev-client dev-scraper format lint build preview \
+.PHONY: install dev dev-api dev-client dev-scraper format lint type-check build preview \
         build-docker-images run-local-docker stop-local-docker clear-redis
 
 run-local-docker:
@@ -37,6 +37,9 @@ format:
 
 lint:
 	pnpm -r --parallel run lint
+
+type-check:
+	pnpm -r --parallel run type-check
 
 build:
 	pnpm -r --parallel run build
