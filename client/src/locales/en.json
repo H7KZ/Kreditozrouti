@@ -243,7 +243,8 @@
 				"faculty": "Faculty",
 				"enrollmentYear": "Enrollment Year",
 				"studyPlan": "Study Plan",
-				"completedCourses": "Completed"
+				"completedCourses": "Completed",
+				"stepLabel": "Step {current} of {total} — {label}"
 			},
 			"WizardStepFaculty": {
 				"title": "Select Faculty",

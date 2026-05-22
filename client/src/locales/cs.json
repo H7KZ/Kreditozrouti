@@ -243,7 +243,8 @@
 				"faculty": "Fakulta",
 				"enrollmentYear": "Rok nástupu",
 				"studyPlan": "Studijní plán",
-				"completedCourses": "Dokončené předměty"
+				"completedCourses": "Dokončené předměty",
+				"stepLabel": "Krok {current} z {total} — {label}"
 			},
 			"WizardStepFaculty": {
 				"title": "Vyberte fakultu",
