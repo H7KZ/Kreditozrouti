@@ -398,7 +398,7 @@
 	}
 
 	.insis-wizard-step-label {
-		@apply ml-2 text-xs whitespace-nowrap text-[var(--insis-text-3)] hidden sm:block;
+		@apply ml-2 hidden text-xs whitespace-nowrap text-[var(--insis-text-3)] sm:block;
 	}
 
 	.insis-wizard-step.active .insis-wizard-step-label {
@@ -406,7 +406,7 @@
 	}
 
 	.insis-wizard-connector {
-		@apply mx-1 h-0.5 w-6 sm:w-12 shrink-0 bg-[var(--insis-border)];
+		@apply mx-1 h-0.5 w-6 shrink-0 bg-[var(--insis-border)] sm:w-12;
 	}
 
 	.insis-wizard-connector.completed,

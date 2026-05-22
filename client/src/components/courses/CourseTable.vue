@@ -226,7 +226,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 				<!-- Card header -->
 				<div
 					:class="[
-						'cursor-pointer rounded border bg-[var(--insis-surface)] px-3 py-2.5 transition-colors active:bg-[var(--insis-surface-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)]',
+						'cursor-pointer rounded border bg-[var(--insis-surface)] px-3 py-2.5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)] active:bg-[var(--insis-surface-2)]',
 						hasCourseConflict(course.id)
 							? 'border-[var(--insis-danger-border)]'
 							: hasSelectedUnits(course.id)
@@ -276,7 +276,10 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 								{{ $t('components.courses.CourseTable.campusConflictTag') }}
 							</span>
 							<IconChevronDown
-								:class="['mt-auto h-3.5 w-3.5 text-[var(--insis-text-3)] transition-transform duration-200', isExpanded(course.id) && 'rotate-180']"
+								:class="[
+									'mt-auto h-3.5 w-3.5 text-[var(--insis-text-3)] transition-transform duration-200',
+									isExpanded(course.id) && 'rotate-180',
+								]"
 								aria-hidden="true"
 							/>
 						</div>

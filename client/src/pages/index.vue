@@ -61,7 +61,7 @@ onMounted(() => {
 		<main
 			class="flex flex-1 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] items-start justify-center overflow-y-auto px-6 py-10 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-track]:bg-transparent"
 		>
-			<div class="w-full max-w-[800px] rounded-lg border border-[var(--insis-border)] bg-[var(--insis-surface)] p-4 sm:p-8 shadow-[var(--insis-shadow)]">
+			<div class="w-full max-w-[800px] rounded-lg border border-[var(--insis-border)] bg-[var(--insis-surface)] p-4 shadow-[var(--insis-shadow)] sm:p-8">
 				<!-- Title -->
 				<div class="mb-6 text-center">
 					<h2 class="mb-1 text-[17px] font-semibold text-[var(--insis-text)]">{{ $t('pages.index.welcome') }}</h2>

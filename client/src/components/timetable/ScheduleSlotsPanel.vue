@@ -138,7 +138,7 @@ function iconsVisible(slotId: string): boolean {
 
 <template>
 	<div class="mb-6 flex flex-col gap-3">
-		<div class="flex flex-wrap shrink-0 items-end justify-between gap-y-1 border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-1">
+		<div class="flex shrink-0 flex-wrap items-end justify-between gap-y-1 border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-1">
 			<nav class="insis-tabs min-w-0 flex-1 overflow-x-auto" style="padding-top: 4px">
 				<!-- Working Copy Tab -->
 				<button v-if="!slotsStore.activeSlotId" type="button" class="insis-tab insis-tab-active gap-2">

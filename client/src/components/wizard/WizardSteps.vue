@@ -65,7 +65,7 @@ function handleStepClick(stepNumber: number) {
 </script>
 
 <template>
-	<div class="insis-wizard mb-4 sm:mb-8 justify-center">
+	<div class="insis-wizard mb-4 justify-center sm:mb-8">
 		<template v-for="(step, index) in steps" :key="step.number">
 			<!-- Step -->
 			<div
