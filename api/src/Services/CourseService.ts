@@ -93,7 +93,7 @@ export default class CourseService {
 
 		const enrichedCourses = courses.map(course => ({
 			...course,
-			faculty: facultyMap.get(course.faculty_id!) ?? null,
+			faculty: facultyMap.get(course.faculty_id) ?? null,
 			units: unitsMap.get(course.id) ?? [],
 			assessments: assessmentsMap.get(course.id) ?? [],
 			study_plans: studyPlansMap.get(course.id) ?? []
@@ -108,7 +108,7 @@ export default class CourseService {
 	 * @param studyPlanIds - IDs of the study plans to query
 	 * @returns Array of courses linked to the given study plans
 	 */
-	static async getCoursesByStudyPlan(studyPlanIds: number[]): Promise<Course[]> {
+	static getCoursesByStudyPlan(studyPlanIds: number[]): Promise<Course[]> {
 		return mysql
 			.selectFrom(`${CourseTable._table} as c1`)
 			.innerJoin(`${StudyPlanCourseTable._table} as spc1`, 'c1.id', 'spc1.course_id')
@@ -180,7 +180,7 @@ export default class CourseService {
 	 * Fetches full course records by IDs, preserving the original order.
 	 * Uses MySQL's FIELD() function to maintain pagination order.
 	 */
-	private static async fetchCoursesByIds(ids: number[]) {
+	private static fetchCoursesByIds(ids: number[]) {
 		return mysql
 			.selectFrom(`${CourseTable._table} as c1`)
 			.selectAll('c1')
@@ -193,7 +193,7 @@ export default class CourseService {
 	 * Fetches faculties associated with the given course IDs.
 	 * Uses a subquery to load only referenced faculties.
 	 */
-	private static async fetchFacultiesByCourseIds(courseIds: number[]) {
+	private static fetchFacultiesByCourseIds(courseIds: number[]) {
 		return mysql
 			.selectFrom(`${FacultyTable._table} as f1`)
 			.selectAll('f1')
@@ -243,7 +243,7 @@ export default class CourseService {
 	}
 
 	/** Fetches all assessments for the given course IDs. */
-	private static async fetchAssessmentsByCourseIds(courseIds: number[]) {
+	private static fetchAssessmentsByCourseIds(courseIds: number[]) {
 		return mysql.selectFrom(`${CourseAssessmentTable._table} as ca1`).selectAll('ca1').where('ca1.course_id', 'in', courseIds).execute()
 	}
 
@@ -251,7 +251,7 @@ export default class CourseService {
 	 * Fetches study plan course associations for given courses and plans.
 	 * Only called when the study_plan_ids filter is active.
 	 */
-	private static async fetchStudyPlanCoursesByCourseIds(courseIds: number[], studyPlanIds: number[]) {
+	private static fetchStudyPlanCoursesByCourseIds(courseIds: number[], studyPlanIds: number[]) {
 		return mysql
 			.selectFrom(`${StudyPlanCourseTable._table} as spc1`)
 			.selectAll('spc1')
@@ -389,7 +389,7 @@ export default class CourseService {
 				eb.or(
 					filters
 						.include_times!.filter(t => t.day !== undefined)
-						.map(exc => eb.and([eb('cus1.day', '=', exc.day!), eb('cus1.time_from', '>=', exc.time_from), eb('cus1.time_to', '<=', exc.time_to)]))
+						.map(exc => eb.and([eb('cus1.day', '=', exc.day), eb('cus1.time_from', '>=', exc.time_from), eb('cus1.time_to', '<=', exc.time_to)]))
 				)
 			)
 		}
@@ -548,7 +548,7 @@ export default class CourseService {
 				.select(`c1.${column} as value`)
 				.select(eb => eb.fn.count<number>('c1.id').as('count'))
 				.where(`c1.${column}`, 'is not', null)
-				.$if(!!filters.ids?.length && column !== 'id', q => q.where('c1.id', 'in', filters.ids!))
+				.$if(!!filters.ids?.length && column !== 'id', q => q.where('c1.id', 'in', filters.ids))
 				.$if(!!filters.idents?.length && column !== 'ident', q =>
 					q.where(eb => eb.or(filters.idents!.map((v: string) => eb('c1.ident', 'like', `%${v}%`))))
 				)
@@ -562,16 +562,16 @@ export default class CourseService {
 						])
 					)
 				)
-				.$if(!!filters.faculty_ids?.length && column !== 'faculty_id', q => q.where('c1.faculty_id', 'in', filters.faculty_ids!))
-				.$if(!!filters.semesters?.length && column !== 'semester', q => q.where('c1.semester', 'in', filters.semesters!))
-				.$if(!!filters.years?.length && column !== 'year', q => q.where('c1.year', 'in', filters.years!))
-				.$if(!!filters.levels?.length && column !== 'level', q => q.where('c1.level', 'in', filters.levels!))
-				.$if(!!filters.ects?.length && column !== 'ects', q => q.where('c1.ects', 'in', filters.ects!))
+				.$if(!!filters.faculty_ids?.length && column !== 'faculty_id', q => q.where('c1.faculty_id', 'in', filters.faculty_ids))
+				.$if(!!filters.semesters?.length && column !== 'semester', q => q.where('c1.semester', 'in', filters.semesters))
+				.$if(!!filters.years?.length && column !== 'year', q => q.where('c1.year', 'in', filters.years))
+				.$if(!!filters.levels?.length && column !== 'level', q => q.where('c1.level', 'in', filters.levels))
+				.$if(!!filters.ects?.length && column !== 'ects', q => q.where('c1.ects', 'in', filters.ects))
 				.$if(!!filters.mode_of_completions?.length && column !== 'mode_of_completion', q =>
-					q.where('c1.mode_of_completion', 'in', filters.mode_of_completions!)
+					q.where('c1.mode_of_completion', 'in', filters.mode_of_completions)
 				)
 				.$if(!!filters.mode_of_deliveries?.length && column !== 'mode_of_delivery', q =>
-					q.where('c1.mode_of_delivery', 'in', filters.mode_of_deliveries!)
+					q.where('c1.mode_of_delivery', 'in', filters.mode_of_deliveries)
 				)
 				.$if(!!filters.languages?.length && column !== 'languages', q =>
 					q.where(eb => eb.or(filters.languages!.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))

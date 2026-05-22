@@ -2,6 +2,7 @@
     "name": "kreditozrouti-scraper",
     "private": true,
     "version": "0.0.1",
+    "type": "module",
     "main": "index.js",
     "scripts": {
         "dev": "dotenv -e ../.env -- tsx --watch src --exec ts-node -r tsconfig-paths/register src/index.ts --",
