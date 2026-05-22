@@ -64,7 +64,7 @@ function handleSelectStudyPlan(id: number, ident: string, title: string) {
 </script>
 
 <template>
-	<div class="mx-auto max-w-4xl p-6">
+	<div class="mx-auto max-w-4xl p-3 sm:p-6">
 		<!-- Header -->
 		<div class="mb-8 text-center">
 			<h1 class="mb-2 text-2xl font-bold text-[var(--insis-gray-900)]">{{ $t('components.wizard.StudyPlanWizard.title') }}</h1>
@@ -92,7 +92,7 @@ function handleSelectStudyPlan(id: number, ident: string, title: string) {
 		</div>
 
 		<!-- Step Content -->
-		<div v-else class="min-h-[400px]">
+		<div v-else class="min-h-[280px] sm:min-h-[400px]">
 			<!-- Step 1: Faculty Selection -->
 			<WizardStepFaculty
 				v-if="wizardStore.currentStep === 1"
