@@ -126,7 +126,7 @@ async function fetchNextCoursesPage(page: () => void) {
 				<!-- Content -->
 				<div
 					id="main-content"
-					class="flex-1 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] overflow-y-auto p-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-track]:bg-transparent"
+					class="flex-1 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-track]:bg-transparent"
 					:aria-busy="coursesStore.loading"
 				>
 					<!-- Loading -->
@@ -162,9 +162,9 @@ async function fetchNextCoursesPage(page: () => void) {
 						<!-- Pagination -->
 						<div
 							v-if="coursesStore.pagination.total > coursesStore.pagination.limit"
-							class="mt-4 flex items-center justify-between border-t border-[var(--insis-border)] pt-4"
+							class="mt-4 flex flex-col items-center gap-3 border-t border-[var(--insis-border)] pt-4 sm:flex-row sm:justify-between"
 						>
-							<p class="text-[12px] text-[var(--insis-text-3)]">
+							<p class="text-center text-[12px] text-[var(--insis-text-3)] sm:text-left">
 								{{
 									$t('pages.courses.showingResults', {
 										from: coursesStore.pagination.offset + 1,
@@ -173,10 +173,10 @@ async function fetchNextCoursesPage(page: () => void) {
 									})
 								}}
 							</p>
-							<div class="flex items-center gap-2">
+							<div class="flex w-full items-center gap-2 sm:w-auto">
 								<button
 									type="button"
-									class="insis-btn insis-btn-secondary"
+									class="insis-btn insis-btn-secondary flex-1 justify-center sm:flex-none"
 									:disabled="!coursesStore.hasPrevPage"
 									:aria-label="$t('common.previousPage')"
 									@click="fetchNextCoursesPage(coursesStore.prevPage)"
@@ -188,7 +188,7 @@ async function fetchNextCoursesPage(page: () => void) {
 								</span>
 								<button
 									type="button"
-									class="insis-btn insis-btn-secondary"
+									class="insis-btn insis-btn-secondary flex-1 justify-center sm:flex-none"
 									:disabled="!coursesStore.hasNextPage"
 									:aria-label="$t('common.nextPage')"
 									@click="fetchNextCoursesPage(coursesStore.nextPage)"
