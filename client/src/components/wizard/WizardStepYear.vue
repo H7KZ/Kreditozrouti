@@ -2,6 +2,7 @@
 import { getPeriodsForLastYears } from '@shared/domain/period'
 import type { FacetItem } from '@shared/http/facets'
 import { computed } from 'vue'
+import IconArrowLeft from '~icons/lucide/arrow-left'
 
 /*
  * WizardStepYear

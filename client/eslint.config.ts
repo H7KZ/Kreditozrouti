@@ -23,6 +23,8 @@ export default defineConfigWithVueTs(
 	{
 		rules: {
 			'vue/multi-word-component-names': 'off',
+			// Ensure vars used only in <template> are not flagged as unused
+			'vue/script-setup-uses-vars': 'error',
 		},
 	},
 

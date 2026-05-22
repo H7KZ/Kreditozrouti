@@ -2,6 +2,11 @@
 import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import type { CourseDTO } from '@shared/http/responses'
 import { computed, ref } from 'vue'
+import IconCheck from '~icons/lucide/check'
+import IconChevronDown from '~icons/lucide/chevron-down'
+import IconInfo from '~icons/lucide/info'
+import IconSearch from '~icons/lucide/search'
+import IconSkipForward from '~icons/lucide/skip-forward'
 import IconSquare from '~icons/lucide/square'
 import IconSquareCheck from '~icons/lucide/square-check-big'
 

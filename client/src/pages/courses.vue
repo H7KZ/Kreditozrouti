@@ -1,10 +1,19 @@
 <script setup lang="ts">
+import CoursesHeader from '@client/components/courses/CoursesHeader.vue'
+import CourseStatusSummary from '@client/components/courses/CourseStatusSummary.vue'
+import CourseTable from '@client/components/courses/CourseTable.vue'
+import FilterPanel from '@client/components/filters/FilterPanel.vue'
+import ScheduleSlotsPanel from '@client/components/timetable/ScheduleSlotsPanel.vue'
+import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import { useSeoMeta } from '@unhead/vue'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import IconCalendar from '~icons/lucide/calendar'
+import IconCalendarMinus2 from '~icons/lucide/calendar-minus-2'
+import IconTable from '~icons/lucide/table'
 
 const { t } = useI18n()
 const router = useRouter()

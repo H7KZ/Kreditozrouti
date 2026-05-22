@@ -5,6 +5,8 @@ import { useCoursesStore, useFiltersStore } from '@client/stores'
 import type { InSISDay } from '@shared/domain/insis'
 import type { TimeSelection } from '@shared/domain/time'
 import { computed, ref, watch } from 'vue'
+import IconPlus from '~icons/lucide/plus'
+import IconX from '~icons/lucide/x'
 
 /*
  * FilterTimeRange

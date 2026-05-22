@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n'
 import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconBookOpen from '~icons/lucide/book-open'
 import IconCalendarX from '~icons/lucide/calendar-x'
+import IconChevronDown from '~icons/lucide/chevron-down'
 import IconMapPin from '~icons/lucide/map-pin'
 
 /**

@@ -3,6 +3,11 @@ import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import type { FacetItem } from '@shared/http/facets'
 import type { StudyPlanWithRelationsDTO } from '@shared/http/responses'
 import { computed, ref } from 'vue'
+import IconCheck from '~icons/lucide/check'
+import IconChevronLeft from '~icons/lucide/chevron-left'
+import IconInfo from '~icons/lucide/info'
+import Search from '~icons/lucide/search'
+import IconX from '~icons/lucide/x'
 
 /*
  * WizardStepStudyPlan

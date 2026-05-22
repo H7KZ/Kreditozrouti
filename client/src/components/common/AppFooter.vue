@@ -1,5 +1,11 @@
 ﻿<script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { RouterLink } from 'vue-router'
+import IconExternalLink from '~icons/lucide/external-link'
+import IconFileText from '~icons/lucide/file-text'
+import IconFingerPrintPattern from '~icons/lucide/fingerprint-pattern'
+import IconGithub from '~icons/lucide/github'
+import IconMail from '~icons/lucide/mail'
 
 const { t } = useI18n()
 

@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import { useCourseLabels } from '@client/composables'
 import { useCompletedCoursesStore, useCoursesStore } from '@client/stores'
 import { formatRelativeAge, isCourseStale } from '@client/utils/freshness'
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import IconCircleCheck from '~icons/lucide/circle-check'
+import IconClock from '~icons/lucide/clock'
+import IconExternalLink from '~icons/lucide/external-link'
 
 interface Props {
 	course: CourseWithRelationsDTO

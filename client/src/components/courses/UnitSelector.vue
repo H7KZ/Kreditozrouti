@@ -5,6 +5,14 @@ import type { CourseUnitWithSlots, SelectedCourseUnit } from '@client/types'
 import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
+import IconAlertTriangle from '~icons/lucide/alert-triangle'
+import IconCheck from '~icons/lucide/check'
+import IconEyeOff from '~icons/lucide/eye-off'
+import IconMapPin from '~icons/lucide/map-pin'
+import IconMinus from '~icons/lucide/minus'
+import IconOctagonAlert from '~icons/lucide/octagon-alert'
+import IconPlus from '~icons/lucide/plus'
+import IconTrash from '~icons/lucide/trash-2'
 
 const { t, te } = useI18n({ useScope: 'global' })
 
