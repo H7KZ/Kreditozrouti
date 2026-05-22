@@ -93,7 +93,7 @@ export default class CourseService {
 
 		const enrichedCourses = courses.map(course => ({
 			...course,
-			faculty: facultyMap.get(course.faculty_id) ?? null,
+			faculty: course.faculty_id ? (facultyMap.get(course.faculty_id) ?? null) : null,
 			units: unitsMap.get(course.id) ?? [],
 			assessments: assessmentsMap.get(course.id) ?? [],
 			study_plans: studyPlansMap.get(course.id) ?? []
@@ -389,7 +389,7 @@ export default class CourseService {
 				eb.or(
 					filters
 						.include_times!.filter(t => t.day !== undefined)
-						.map(exc => eb.and([eb('cus1.day', '=', exc.day), eb('cus1.time_from', '>=', exc.time_from), eb('cus1.time_to', '<=', exc.time_to)]))
+						.map(exc => eb.and([eb('cus1.day', '=', exc.day!), eb('cus1.time_from', '>=', exc.time_from), eb('cus1.time_to', '<=', exc.time_to)]))
 				)
 			)
 		}
@@ -548,7 +548,7 @@ export default class CourseService {
 				.select(`c1.${column} as value`)
 				.select(eb => eb.fn.count<number>('c1.id').as('count'))
 				.where(`c1.${column}`, 'is not', null)
-				.$if(!!filters.ids?.length && column !== 'id', q => q.where('c1.id', 'in', filters.ids))
+				.$if(!!filters.ids?.length && column !== 'id', q => q.where('c1.id', 'in', filters.ids!))
 				.$if(!!filters.idents?.length && column !== 'ident', q =>
 					q.where(eb => eb.or(filters.idents!.map((v: string) => eb('c1.ident', 'like', `%${v}%`))))
 				)
@@ -562,16 +562,16 @@ export default class CourseService {
 						])
 					)
 				)
-				.$if(!!filters.faculty_ids?.length && column !== 'faculty_id', q => q.where('c1.faculty_id', 'in', filters.faculty_ids))
-				.$if(!!filters.semesters?.length && column !== 'semester', q => q.where('c1.semester', 'in', filters.semesters))
-				.$if(!!filters.years?.length && column !== 'year', q => q.where('c1.year', 'in', filters.years))
-				.$if(!!filters.levels?.length && column !== 'level', q => q.where('c1.level', 'in', filters.levels))
-				.$if(!!filters.ects?.length && column !== 'ects', q => q.where('c1.ects', 'in', filters.ects))
+				.$if(!!filters.faculty_ids?.length && column !== 'faculty_id', q => q.where('c1.faculty_id', 'in', filters.faculty_ids!))
+				.$if(!!filters.semesters?.length && column !== 'semester', q => q.where('c1.semester', 'in', filters.semesters!))
+				.$if(!!filters.years?.length && column !== 'year', q => q.where('c1.year', 'in', filters.years!))
+				.$if(!!filters.levels?.length && column !== 'level', q => q.where('c1.level', 'in', filters.levels!))
+				.$if(!!filters.ects?.length && column !== 'ects', q => q.where('c1.ects', 'in', filters.ects!))
 				.$if(!!filters.mode_of_completions?.length && column !== 'mode_of_completion', q =>
-					q.where('c1.mode_of_completion', 'in', filters.mode_of_completions)
+					q.where('c1.mode_of_completion', 'in', filters.mode_of_completions!)
 				)
 				.$if(!!filters.mode_of_deliveries?.length && column !== 'mode_of_delivery', q =>
-					q.where('c1.mode_of_delivery', 'in', filters.mode_of_deliveries)
+					q.where('c1.mode_of_delivery', 'in', filters.mode_of_deliveries!)
 				)
 				.$if(!!filters.languages?.length && column !== 'languages', q =>
 					q.where(eb => eb.or(filters.languages!.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))

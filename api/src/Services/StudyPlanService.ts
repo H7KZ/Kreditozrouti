@@ -72,7 +72,7 @@ export default class StudyPlanService {
 
 		const enrichedPlans = plans.map(plan => ({
 			...plan,
-			faculty: facultyMap.get(plan.faculty_id) ?? null,
+			faculty: plan.faculty_id ? (facultyMap.get(plan.faculty_id) ?? null) : null,
 			courses: coursesMap.get(plan.id) ?? []
 		}))
 
@@ -290,17 +290,17 @@ export default class StudyPlanService {
 				.select(`sp.${column} as value`)
 				.select(eb => eb.fn.count<number>('sp.id').as('count'))
 				.where(`sp.${column}`, 'is not', null)
-				.$if(!!filters.ids?.length && column !== 'id', q => q.where('sp.id', 'in', filters.ids))
+				.$if(!!filters.ids?.length && column !== 'id', q => q.where('sp.id', 'in', filters.ids!))
 				.$if(!!filters.idents?.length && column !== 'ident', q =>
 					q.where(eb => eb.or(filters.idents!.map((v: string) => eb('sp.ident', 'like', `%${v}%`))))
 				)
 				.$if(!!filters.title, q => q.where('sp.title', 'like', `%${filters.title}%`))
-				.$if(!!filters.faculty_ids?.length && column !== 'faculty_id', q => q.where('sp.faculty_id', 'in', filters.faculty_ids))
-				.$if(!!filters.semesters?.length && column !== 'semester', q => q.where('sp.semester', 'in', filters.semesters))
-				.$if(!!filters.years?.length && column !== 'year', q => q.where('sp.year', 'in', filters.years))
-				.$if(!!filters.levels?.length && column !== 'level', q => q.where('sp.level', 'in', filters.levels))
-				.$if(!!filters.mode_of_studies?.length && column !== 'mode_of_study', q => q.where('sp.mode_of_study', 'in', filters.mode_of_studies))
-				.$if(!!filters.study_lengths?.length && column !== 'study_length', q => q.where('sp.study_length', 'in', filters.study_lengths))
+				.$if(!!filters.faculty_ids?.length && column !== 'faculty_id', q => q.where('sp.faculty_id', 'in', filters.faculty_ids!))
+				.$if(!!filters.semesters?.length && column !== 'semester', q => q.where('sp.semester', 'in', filters.semesters!))
+				.$if(!!filters.years?.length && column !== 'year', q => q.where('sp.year', 'in', filters.years!))
+				.$if(!!filters.levels?.length && column !== 'level', q => q.where('sp.level', 'in', filters.levels!))
+				.$if(!!filters.mode_of_studies?.length && column !== 'mode_of_study', q => q.where('sp.mode_of_study', 'in', filters.mode_of_studies!))
+				.$if(!!filters.study_lengths?.length && column !== 'study_length', q => q.where('sp.study_length', 'in', filters.study_lengths!))
 				.groupBy(`sp.${column}`)
 				.orderBy('count', 'desc')
 				.execute()

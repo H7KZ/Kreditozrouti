@@ -131,11 +131,12 @@ context so that async code can access the `request_id` and other fields via `Req
 1. Generate a unique `request_id` (UUID) per request
 2. Create the initial `wideEvent` and store it in `res.locals.wideEvent`
 3. Set the `X-Request-Id` response header
-4. Wrap the entire request handler (`next()`) in `RequestContext.run()` so async code in controllers/services can access the context
+4. Wrap the entire request handler (`next()`) in `RequestContext.run()` so async code in controllers/services can access
+   the context
 5. On response `finish`:
-   - Merge any fields controllers added via `LoggerAPIContext.add()` (which delegates to `RequestContext.add()`)
-   - Emit the accumulated event as a Pino log line
-   - Track error metrics in Redis (hourly bucket + recent error list)
+    - Merge any fields controllers added via `LoggerAPIContext.add()` (which delegates to `RequestContext.add()`)
+    - Emit the accumulated event as a Pino log line
+    - Track error metrics in Redis (hourly bucket + recent error list)
 
 ```typescript
 res.locals.wideEvent = {

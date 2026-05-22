@@ -17,11 +17,11 @@ Pages (src/pages/ — file-based routing via unplugin-vue-router)
 
 ## Path Aliases
 
-| Alias       | Resolves to    | Rule                                   |
-| ----------- | -------------- | -------------------------------------- |
-| `@client/*` | `./src/*`      | —                                      |
+| Alias       | Resolves to    | Rule                                            |
+| ----------- | -------------- | ----------------------------------------------- |
+| `@client/*` | `./src/*`      | —                                               |
 | `@api/*`    | `../api/src/*` | Do not use — all shared types are in `@shared/` |
-| `@shared/*` | `../shared/*`  | —                                      |
+| `@shared/*` | `../shared/*`  | —                                               |
 
 ---
 

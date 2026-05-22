@@ -41,7 +41,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	// even when the course syllabus hasn't changed.
 	if (course.faculty) {
 		await mysql.transaction().execute(async trx => {
-			await upsertFaculty(trx, course.faculty)
+			await upsertFaculty(trx, course.faculty!)
 		})
 	}
 
