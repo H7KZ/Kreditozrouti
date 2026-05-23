@@ -93,7 +93,7 @@ function handleClearTimetable() {
 			</button>
 
 			<div class="hidden h-6 w-px shrink-0 bg-[var(--insis-border)] sm:block" />
-			<ThemeToggle class="hidden sm:block" />
+			<ThemeToggle class="hidden sm:flex" />
 			<LanguageSwitcher />
 
 			<!-- Mobile filter toggle -->
