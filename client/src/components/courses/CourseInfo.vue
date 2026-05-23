@@ -62,8 +62,8 @@ function handleToggleCompleted() {
 
 			<template v-if="course.study_plans?.length">
 				<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.category') }}</dt>
-				<dd>
-					<span v-for="spc in course.study_plans" :key="spc.id" class="insis-badge mr-1" :class="getCategoryBadgeClass(spc.category || '')">
+				<dd class="flex min-w-0 flex-wrap gap-1">
+					<span v-for="spc in course.study_plans" :key="spc.id" class="insis-badge" :class="getCategoryBadgeClass(spc.category || '')">
 						{{ getCategoryLabel(spc.category || '') }}
 					</span>
 				</dd>
