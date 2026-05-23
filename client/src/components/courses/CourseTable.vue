@@ -226,7 +226,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 				<!-- Card header -->
 				<div
 					:class="[
-						'cursor-pointer rounded border bg-[var(--insis-surface)] px-3 py-2.5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)] active:bg-[var(--insis-surface-2)]',
+						'cursor-pointer rounded border bg-[var(--insis-surface)] px-3 py-3 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)] active:bg-[var(--insis-surface-2)]',
 						hasCourseConflict(course.id)
 							? 'border-[var(--insis-danger-border)]'
 							: hasSelectedUnits(course.id)
@@ -245,11 +245,11 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 						<div class="min-w-0 flex-1">
 							<!-- Code + title -->
 							<div class="mb-0.5 flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-								<span class="shrink-0 text-[11px] font-bold text-[var(--insis-blue)]">{{ course.ident }}</span>
-								<span class="min-w-0 truncate text-[10px] font-medium text-[var(--insis-text)]">{{ getCourseTitle(course) }}</span>
+								<span class="shrink-0 text-[13px] font-bold text-[var(--insis-blue)]">{{ course.ident }}</span>
+								<span class="min-w-0 truncate text-[12px] font-medium text-[var(--insis-text)]">{{ getCourseTitle(course) }}</span>
 							</div>
 							<!-- Faculty · ECTS · Completion -->
-							<div class="text-[10px] text-[var(--insis-text-3)]">
+							<div class="text-[11px] text-[var(--insis-text-3)]">
 								<span v-if="course.faculty_id">{{ getFacultyLabel(course.faculty_id) }}</span>
 								<template v-if="course.faculty_id && course.ects"> · </template>
 								<span v-if="course.ects">{{ course.ects }} ECTS</span>
@@ -257,22 +257,22 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 								<span v-if="course.mode_of_completion">{{ getCompletionLabel(course.mode_of_completion) }}</span>
 							</div>
 							<!-- Schedule -->
-							<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-[10px] text-[var(--insis-text-3)]">
+							<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-[11px] text-[var(--insis-text-3)]">
 								{{ getCourseScheduleSummary(course) }}
 							</div>
 						</div>
 						<!-- Status badges + chevron -->
 						<div class="flex shrink-0 flex-col items-end gap-1">
-							<span v-if="hasSelectedUnits(course.id) && !hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-success text-[9px]">
+							<span v-if="hasSelectedUnits(course.id) && !hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-success text-[10px]">
 								{{ $t('components.courses.CourseTable.inTimetable') }}
 							</span>
-							<span v-if="hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-amber text-[9px]">
+							<span v-if="hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-amber text-[10px]">
 								{{ $t('components.courses.CourseTable.missingUnitTypes') }}
 							</span>
-							<span v-if="hasCourseConflict(course.id)" class="insis-badge insis-badge-danger text-[9px]">
+							<span v-if="hasCourseConflict(course.id)" class="insis-badge insis-badge-danger text-[10px]">
 								{{ $t('components.courses.CourseTable.conflictTag') }}
 							</span>
-							<span v-if="hasCourseCampusConflict(course.id)" class="insis-badge insis-badge-amber text-[9px]">
+							<span v-if="hasCourseCampusConflict(course.id)" class="insis-badge insis-badge-amber text-[10px]">
 								{{ $t('components.courses.CourseTable.campusConflictTag') }}
 							</span>
 							<IconChevronDown
