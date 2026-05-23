@@ -187,7 +187,7 @@ function dismissSpecializationInfo() {
 				>
 					{{ $t('components.wizard.WizardStepStudyPlan.selectedCount', { count: selectedCount }) }}
 				</span>
-				<button type="button" class="insis-btn insis-btn-primary text-sm" :disabled="!canProceed" @click="handleProceed">
+				<button type="button" class="insis-btn insis-btn-primary w-full text-sm sm:w-auto" :disabled="!canProceed" @click="handleProceed">
 					{{ $t('components.wizard.WizardStepStudyPlan.proceed') }}
 				</button>
 			</div>
@@ -225,7 +225,7 @@ function dismissSpecializationInfo() {
 								{{ $t('components.wizard.WizardStepStudyPlan.selected') }}
 							</span>
 						</div>
-						<div class="mt-1.5 line-clamp-2 font-medium text-[var(--insis-gray-900)]">
+						<div class="mt-1.5 line-clamp-2 break-words font-medium text-[var(--insis-gray-900)]">
 							{{ plan.title }}
 						</div>
 						<div class="mt-1 text-sm text-[var(--insis-gray-500)]">
