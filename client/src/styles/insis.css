@@ -311,7 +311,7 @@
 
 	/* TIMETABLE */
 	.insis-timetable {
-		@apply w-full min-w-[700px] border-collapse text-[11.5px];
+		@apply w-full min-w-[520px] border-collapse text-[11.5px];
 	}
 
 	.insis-timetable th {

@@ -105,7 +105,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 <template>
 	<div class="relative">
 		<div ref="gridRef" class="overflow-x-auto">
-			<table class="insis-timetable min-w-[520px] w-full">
+			<table class="insis-timetable w-full">
 				<!-- Header with time slots -->
 				<thead>
 					<tr>
@@ -175,7 +175,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 		</div>
 
 		<!-- Right-edge scroll affordance -->
-		<div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[var(--insis-bg)] to-transparent" />
+		<div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[var(--insis-surface)] to-transparent" />
 
 		<!-- Drag-to-filter popover -->
 		<TimetableDragPopover
