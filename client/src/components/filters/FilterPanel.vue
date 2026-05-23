@@ -202,13 +202,7 @@ function handleCloseMobileFilter() {
 </script>
 
 <template>
-	<aside
-		:class="[
-			'insis-search-panel h-full overflow-y-auto',
-			'width-fit fixed inset-y-0 left-0 z-30 transition-transform lg:relative lg:translate-x-0',
-			uiStore.mobileFilterOpen ? 'w-full translate-x-0' : '-translate-x-full',
-		]"
-	>
+	<aside class="insis-search-panel h-full overflow-y-auto">
 		<!-- Mobile header -->
 		<div class="flex items-center justify-between border-b border-[var(--insis-border)] p-3 lg:hidden">
 			<div class="flex items-center gap-2 font-medium">
