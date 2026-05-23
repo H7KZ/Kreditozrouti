@@ -8,6 +8,7 @@ import { useCourseLabels } from '@client/composables'
 import { useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import IconFunnel from '~icons/lucide/funnel'
 import IconTrash from '~icons/lucide/trash-2'
+import IconArrowLeft from '~icons/lucide/arrow-left'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -84,13 +85,15 @@ function handleClearTimetable() {
 			<button
 				type="button"
 				class="insis-btn insis-btn-secondary hover:border-[var(--insis-danger)] hover:bg-[var(--insis-danger)] hover:text-[var(--insis-text-inv)]"
+				:aria-label="$t('pages.courses.changePlan')"
 				@click="handleResetWizard"
 			>
-				<span>{{ $t('pages.courses.changePlan') }}</span>
+				<IconArrowLeft class="h-3.5 w-3.5 sm:hidden" aria-hidden="true" />
+				<span class="hidden sm:inline">{{ $t('pages.courses.changePlan') }}</span>
 			</button>
 
-			<div class="h-6 w-px shrink-0 bg-[var(--insis-border)]" />
-			<ThemeToggle />
+			<div class="hidden h-6 w-px shrink-0 bg-[var(--insis-border)] sm:block" />
+			<ThemeToggle class="hidden sm:block" />
 			<LanguageSwitcher />
 
 			<!-- Mobile filter toggle -->
