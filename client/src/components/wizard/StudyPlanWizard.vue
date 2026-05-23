@@ -147,17 +147,15 @@ function handleSelectStudyPlan(id: number, ident: string, title: string) {
 
 		<!-- Selection Summary & Actions -->
 		<div v-if="wizardStore.selectionSummary" class="mt-6 border-t border-[var(--insis-border)] pt-4">
-			<div class="flex items-center justify-between">
-				<div>
-					<span class="text-sm text-[var(--insis-gray-600)]"> {{ $t('components.wizard.StudyPlanWizard.currentSelection') }} </span>
-					<span class="ml-2 text-sm font-medium">
-						{{ wizardStore.selectionSummary }}
-					</span>
-					<span v-if="completedCoursesStore.completedCourseCount > 0" class="ml-2 text-xs text-[var(--insis-gray-500)]">
+			<div class="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
+				<div class="flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+					<span class="shrink-0 text-sm text-[var(--insis-gray-600)]">{{ $t('components.wizard.StudyPlanWizard.currentSelection') }}</span>
+					<span class="min-w-0 truncate text-sm font-medium">{{ wizardStore.selectionSummary }}</span>
+					<span v-if="completedCoursesStore.completedCourseCount > 0" class="shrink-0 text-xs text-[var(--insis-gray-500)]">
 						({{ $t('components.wizard.WizardStepCompletedCourses.completedCount', { count: completedCoursesStore.completedCourseCount }) }})
 					</span>
 				</div>
-				<button type="button" class="insis-btn-text text-sm" @click="handleReset">{{ $t('components.wizard.StudyPlanWizard.startOver') }}</button>
+				<button type="button" class="shrink-0 self-end insis-btn-text text-sm sm:self-auto" @click="handleReset">{{ $t('components.wizard.StudyPlanWizard.startOver') }}</button>
 			</div>
 		</div>
 	</div>
