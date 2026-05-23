@@ -41,7 +41,7 @@ onMounted(() => {
 	<div class="flex min-h-screen flex-col bg-[var(--insis-bg)]">
 		<!-- Header -->
 		<header
-			class="flex shrink-0 items-center justify-between border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-6 py-3 shadow-[var(--insis-shadow-sm)]"
+			class="flex shrink-0 items-center justify-between border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-4 py-3 shadow-[var(--insis-shadow-sm)] sm:px-6"
 		>
 			<div class="flex items-center gap-3">
 				<!-- Logo mark -->
@@ -59,7 +59,7 @@ onMounted(() => {
 
 		<!-- Main Content -->
 		<main
-			class="flex flex-1 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] items-start justify-center overflow-y-auto px-6 py-10 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-track]:bg-transparent"
+			class="flex flex-1 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] items-start justify-center overflow-y-auto px-3 py-6 sm:px-6 sm:py-10 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-track]:bg-transparent"
 		>
 			<div class="w-full max-w-[800px] rounded-lg border border-[var(--insis-border)] bg-[var(--insis-surface)] p-4 shadow-[var(--insis-shadow)] sm:p-8">
 				<!-- Title -->
