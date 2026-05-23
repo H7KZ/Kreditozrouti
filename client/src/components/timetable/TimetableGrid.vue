@@ -122,7 +122,9 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 				<tbody>
 					<tr v-for="day in WEEKDAYS" :key="day" class="day-row-container">
 						<!-- Day label -->
-						<td class="sticky left-0 z-10 w-[50px] min-w-[50px] border-r border-[var(--insis-border)] bg-[var(--insis-surface)] text-center align-middle font-medium">
+						<td
+							class="sticky left-0 z-10 w-[50px] min-w-[50px] border-r border-[var(--insis-border)] bg-[var(--insis-surface)] text-center align-middle font-medium"
+						>
 							{{ getShortDayLabel(day) }}
 						</td>
 

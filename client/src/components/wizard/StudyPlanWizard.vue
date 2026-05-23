@@ -155,7 +155,9 @@ function handleSelectStudyPlan(id: number, ident: string, title: string) {
 						({{ $t('components.wizard.WizardStepCompletedCourses.completedCount', { count: completedCoursesStore.completedCourseCount }) }})
 					</span>
 				</div>
-				<button type="button" class="shrink-0 self-end insis-btn-text text-sm sm:self-auto" @click="handleReset">{{ $t('components.wizard.StudyPlanWizard.startOver') }}</button>
+				<button type="button" class="insis-btn-text shrink-0 self-end text-sm sm:self-auto" @click="handleReset">
+					{{ $t('components.wizard.StudyPlanWizard.startOver') }}
+				</button>
 			</div>
 		</div>
 	</div>

@@ -6,9 +6,9 @@ import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import { useCourseLabels } from '@client/composables'
 import { useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import IconArrowLeft from '~icons/lucide/arrow-left'
 import IconFunnel from '~icons/lucide/funnel'
 import IconTrash from '~icons/lucide/trash-2'
-import IconArrowLeft from '~icons/lucide/arrow-left'
 
 const { t } = useI18n()
 const router = useRouter()

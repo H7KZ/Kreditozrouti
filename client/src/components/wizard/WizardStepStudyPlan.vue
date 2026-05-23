@@ -225,7 +225,7 @@ function dismissSpecializationInfo() {
 								{{ $t('components.wizard.WizardStepStudyPlan.selected') }}
 							</span>
 						</div>
-						<div class="mt-1.5 line-clamp-2 break-words font-medium text-[var(--insis-gray-900)]">
+						<div class="mt-1.5 line-clamp-2 font-medium break-words text-[var(--insis-gray-900)]">
 							{{ plan.title }}
 						</div>
 						<div class="mt-1 text-sm text-[var(--insis-gray-500)]">
