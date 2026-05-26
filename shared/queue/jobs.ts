@@ -11,6 +11,7 @@ export interface ScraperInSISCatalogRequestJob extends ScraperRequestJobBase {
     faculties?: string[]
     periods?: { semester: InSISSemester | null; year: number }[]
     auto_queue_courses?: boolean
+    allowed_idents?: string[]
 }
 
 export interface ScraperInSISCourseRequestJob extends ScraperRequestJobBase {
