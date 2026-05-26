@@ -36,10 +36,15 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
         periods_count: periods.length
     })
 
+    const allowedIdents =
+        data.allowed_idents && data.allowed_idents.length > 0
+            ? new Set(data.allowed_idents)
+            : null
+
     // Phase 2: Scrape each faculty/period combination
     for (const faculty of faculties) {
         for (const period of periods) {
-            await scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false)
+            await scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false, allowedIdents)
         }
     }
 }
@@ -64,7 +69,8 @@ async function scrapeCatalogPage(
     facultyId: number,
     periodId: number,
     facultyPeriodId: number,
-    autoQueueCourses: boolean
+    autoQueueCourses: boolean,
+    allowedIdents: Set<string> | null
 ): Promise<void> {
     const params = new URLSearchParams({
         kredity_od: '',
@@ -86,14 +92,18 @@ async function scrapeCatalogPage(
         return
     }
 
-    const courseUrls = ExtractInSISCatalogService.extractCourseUrls(result.data)
+    let courses = ExtractInSISCatalogService.extractCourses(result.data)
 
-    await QueueService.addCatalogResponse(courseUrls)
+    if (allowedIdents !== null) {
+        courses = courses.filter(c => allowedIdents.has(c.ident))
+    }
 
-    if (courseUrls.length && autoQueueCourses) {
-        const coursesWithIds = courseUrls.map(url => ({
-            url,
-            courseId: ExtractInSISCourseService.extractIdFromUrl(url)
+    await QueueService.addCatalogResponse(courses.map(c => c.url))
+
+    if (courses.length && autoQueueCourses) {
+        const coursesWithIds = courses.map(c => ({
+            url: c.url,
+            courseId: ExtractInSISCourseService.extractIdFromUrl(c.url)
         }))
 
         await QueueService.queueCourseRequests(coursesWithIds)
