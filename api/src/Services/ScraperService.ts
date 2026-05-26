@@ -1,6 +1,7 @@
 import type { InSISSemester } from '@shared/domain/insis'
 import { scraper } from '@api/bullmq'
 import { mysql } from '@api/clients'
+import { StudyPlanCourseTable } from '@api/Database/types'
 import { Errors } from '@api/Errors'
 
 interface Period {
@@ -16,18 +17,27 @@ export default class ScraperService {
 	 * Enqueues a job to scrape the InSIS course catalog.
 	 */
 	static async enqueueCatalogScrape(options?: { faculties?: string[]; periods?: Period[] }): Promise<void> {
+		const rows = await mysql
+			.selectFrom(StudyPlanCourseTable._table)
+			.select('course_ident')
+			.distinct()
+			.execute()
+
+		const allowedIdents = rows.map(r => r.course_ident)
+
 		await scraper.queue.request.add(
 			'InSIS Catalog Request (Manual)',
 			{
 				type: 'InSIS:Catalog',
 				faculties: options?.faculties,
 				periods: options?.periods,
-				auto_queue_courses: true
+				auto_queue_courses: true,
+				...(allowedIdents.length > 0 && { allowed_idents: allowedIdents })
 			},
 			{
 				deduplication: {
 					id: 'InSIS:Catalog:ManualRun',
-					ttl: 30 * 1000 // 30 seconds
+					ttl: 30 * 1000
 				}
 			}
 		)
