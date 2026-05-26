@@ -6,7 +6,7 @@ import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse'
 import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
-import { SemesterSchema, TimeSelectionSchema } from '@api/Validations/index'
+import { SemesterSchema, TimeSelectionSchema } from '@api/Validations'
 
 const CoursesFilterSchema = z.object({
 	// Identity Filters

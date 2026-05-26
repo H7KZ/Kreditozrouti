@@ -19,11 +19,7 @@ export default class ScraperService {
 	static async enqueueCatalogScrape(options?: { faculties?: string[]; periods?: Period[] }): Promise<void> {
 		let allowedIdents: string[] = []
 		try {
-			const rows = await mysql
-				.selectFrom(StudyPlanCourseTable._table)
-				.select('course_ident')
-				.distinct()
-				.execute()
+			const rows = await mysql.selectFrom(StudyPlanCourseTable._table).select('course_ident').distinct().execute()
 			allowedIdents = rows.map(r => r.course_ident)
 		} catch {
 			// DB unavailable — fall back to unrestricted scrape

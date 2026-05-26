@@ -36,10 +36,7 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
         periods_count: periods.length
     })
 
-    const allowedIdents =
-        data.allowed_idents && data.allowed_idents.length > 0
-            ? new Set(data.allowed_idents)
-            : null
+    const allowedIdents = data.allowed_idents && data.allowed_idents.length > 0 ? new Set(data.allowed_idents) : null
 
     // Phase 2: Scrape each faculty/period combination
     for (const faculty of faculties) {

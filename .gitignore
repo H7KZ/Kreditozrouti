@@ -8,7 +8,7 @@
 **/dist
 **/build
 
-/.superpowers
+docs/superpowers/
 
 /data
 /di-fis-ka.wiki
@@ -16,4 +16,6 @@
 .gitlab-ci-local
 
 .claude/**/worktrees
+.claude/files
+.claude/sessions
 .gemini/files

@@ -6,7 +6,7 @@ import StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansR
 import { Errors } from '@api/Errors'
 import InSISService from '@api/Services/InSISService'
 import StudyPlanService from '@api/Services/StudyPlanService'
-import { SemesterSchema } from '@api/Validations/index'
+import { SemesterSchema } from '@api/Validations'
 
 const StudyPlansFilterSchema = z.object({
 	// Identity Filters
