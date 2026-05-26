@@ -36,16 +36,18 @@ selector: input[name="obdobi_fak"]
   → extractSemester() + extractYear() parse label into typed values
 ```
 
-### `extractCourseUrls(html)` → `string[]`
+### `extractCourses(html)` → `CatalogCourse[]`
 
-Parses a **catalog results** page after submitting the search form.
+Parses a **catalog results** page after submitting the search form. Returns `{ url: string; ident: string }[]`.
 
 ```
 selector: a[href*="syllabus.pl?predmet="]
   href attr → course syllabus URL
-  → deduplicated via Set
-  → relative URLs prefixed with catalogUrl
-  → strips query-string fragments after ";" (session tokens)
+    → relative URLs prefixed with catalogUrl
+    → strips query-string fragments after ";" (session tokens)
+    → deduplicated via Set (on URL)
+  anchor text → first whitespace-delimited token → course ident (e.g. "4IZ210")
+    → entries with empty ident are skipped
 ```
 
 ---

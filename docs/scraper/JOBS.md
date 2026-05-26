@@ -32,8 +32,11 @@ individual course scrape jobs.
   faculties?: string[]          // Filter by faculty name (case-insensitive). All if omitted.
   periods?: { semester: 'ZS'|'LS'; year: number }[]  // Filter by period. All if omitted.
   auto_queue_courses?: boolean  // If true, enqueues InSIS:Course for every discovered URL.
+  allowed_idents?: string[]     // If set, only courses whose ident is in this list are queued. Absent = no filter.
 }
 ```
+
+> **Note:** Manual triggers via `ScraperService.enqueueCatalogScrape` populate `allowed_idents` from `DISTINCT course_ident` in `insis_study_plans_courses`. Scheduled runs (nightly cron) omit `allowed_idents` and scrape everything — BullMQ schedulers store static job data at definition time, making per-run DB queries impractical.
 
 **Flow — Phase 1: Discovery**
 
@@ -50,8 +53,9 @@ GET https://insis.vse.cz/katalog/index.pl?jak=rozsirene
 For each (faculty, period) combination:
   POST https://insis.vse.cz/katalog/
     body: fakulta=<id>&obdobi=<yearId>&obdobi_fak=<id>&jak=rozsirene&...
-  └─ ExtractInSISCatalogService.extractCourseUrls(html)
-       → string[] of unique syllabus URLs
+  └─ ExtractInSISCatalogService.extractCourses(html)
+       → CatalogCourse[] of unique { url, ident } pairs
+  └─ if allowed_idents present: filter courses to only those whose ident is in the set
   └─ QueueService.addCatalogResponse(urls)
        → sends InSIS:Catalog response to API
   └─ if auto_queue_courses=true:
