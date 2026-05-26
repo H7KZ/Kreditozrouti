@@ -99,6 +99,7 @@ export default class ExtractInSISCatalogService {
 
             const text = $(el).text().trim()
             const ident = text.split(/\s/)[0] ?? ''
+            if (!ident) return
 
             courses.push({ url, ident })
         })

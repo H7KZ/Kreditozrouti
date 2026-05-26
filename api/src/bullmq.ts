@@ -34,6 +34,9 @@ const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9'
 function buildCatalogSchedulerJob(periodsForLastFourYears: ReturnType<typeof InSISService.getPeriodsForLastYears>) {
 	return {
 		name: `InSIS Catalog Request (at 3 AM during registration months)`,
+		// NOTE: Scheduled runs are intentionally unfiltered — upsertJobScheduler stores
+		// static data at definition time, not at fire time, so we cannot query allowed_idents
+		// here. Manual triggers via ScraperService.enqueueCatalogScrape ARE filtered.
 		data: {
 			type: 'InSIS:Catalog' as const,
 			auto_queue_courses: true,
