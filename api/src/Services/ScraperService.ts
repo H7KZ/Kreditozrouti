@@ -17,14 +17,19 @@ export default class ScraperService {
 	 * Enqueues a job to scrape the InSIS course catalog.
 	 */
 	static async enqueueCatalogScrape(options?: { faculties?: string[]; periods?: Period[] }): Promise<void> {
-		const rows = await mysql
-			.selectFrom(StudyPlanCourseTable._table)
-			.select('course_ident')
-			.distinct()
-			.execute()
+		let allowedIdents: string[] = []
+		try {
+			const rows = await mysql
+				.selectFrom(StudyPlanCourseTable._table)
+				.select('course_ident')
+				.distinct()
+				.execute()
+			allowedIdents = rows.map(r => r.course_ident)
+		} catch {
+			// DB unavailable — fall back to unrestricted scrape
+		}
 
-		const allowedIdents = rows.map(r => r.course_ident)
-
+		// VŠE has a bounded set of study plan courses (~hundreds), safe for a Redis job payload
 		await scraper.queue.request.add(
 			'InSIS Catalog Request (Manual)',
 			{
