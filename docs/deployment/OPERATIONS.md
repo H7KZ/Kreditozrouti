@@ -6,6 +6,24 @@ Monitoring, security, backup, maintenance, and troubleshooting for running envir
 
 ## Monitoring & Logging
 
+### Prometheus + Grafana
+
+The monitoring stack (`deployment/monitoring/`) provides metrics collection and dashboards.
+
+- **Prometheus** scrapes `GET /metrics` from each API container every 15 s. Metrics include HTTP request counts,
+  latency histograms, and default Node.js runtime metrics (event loop lag, GC, memory) via `prom-client`.
+- **Grafana** is available at `/grafana` (internal) and is pre-provisioned with Prometheus as the default datasource.
+
+```bash
+# Check monitoring stack status
+docker compose -p monitoring ps
+
+# Restart after config changes (e.g. prometheus.yml edits)
+docker compose -p monitoring -f deployment/monitoring/docker-compose.monitoring.yml up -d --force-recreate
+```
+
+---
+
 ### Container logs
 
 ```bash

@@ -77,7 +77,26 @@ labels:
   - "traefik.http.middlewares.phpmyadmin-stripprefix.stripprefix.prefixes=/phpmyadmin"
 ```
 
-Priority rule: API (100) > phpMyAdmin (80) > Client (10).
+**Bull Board** (`/bullboard` prefix, priority 90, internal only):
+
+```yaml
+labels:
+  - "traefik.http.routers.bullboard.rule=Host(`${DOMAIN}`) && PathPrefix(`/bullboard`)"
+  - "traefik.http.routers.bullboard.priority=90"
+```
+
+Note: `/bullboard` is **not** exposed publicly in production. The Traefik label exists so the route is consistently
+addressable on the internal network. Access via SSH port-forwarding or a bastion host.
+
+**Grafana** (`/grafana` prefix, priority 85, internal only — monitoring stack):
+
+```yaml
+labels:
+  - "traefik.http.routers.grafana.rule=Host(`${DOMAIN}`) && PathPrefix(`/grafana`)"
+  - "traefik.http.routers.grafana.priority=85"
+```
+
+Priority rule: API (100) > Bull Board (90) > phpMyAdmin (80+) > Grafana (85) > Client (10).
 
 ### Deploy Traefik
 
@@ -91,6 +110,21 @@ Priority rule: API (100) > phpMyAdmin (80) > Client (10).
 ```
 
 See [scripts/INFRASTRUCTURE.md](../scripts/INFRASTRUCTURE.md#traefiksh) for full flag reference.
+
+### Deploy Monitoring Stack
+
+The monitoring stack (`deployment/monitoring/`) runs Prometheus and Grafana as a separate compose project.
+
+```bash
+cd deployment/monitoring
+docker compose -p monitoring -f docker-compose.monitoring.yml up -d
+```
+
+**Deploy order:** Traefik must be up first (monitoring containers attach to `traefik-network`). Deploy monitoring before
+the app stack so Prometheus is ready to scrape from the moment API containers come up.
+
+Prometheus scrapes `GET /metrics` on each API container at a configurable interval (default: 15 s). Grafana is
+auto-provisioned with Prometheus as the default datasource via `grafana/provisioning/datasources/prometheus.yml`.
 
 ---
 

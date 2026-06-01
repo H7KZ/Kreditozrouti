@@ -22,6 +22,16 @@ deployment/
 │   ├── traefik.yml                        # Static config — entrypoints, ACME, ping
 │   ├── networks.yml
 │   └── volumes.yml
+├── monitoring/
+│   ├── docker-compose.monitoring.yml     # Prometheus + Grafana stack
+│   ├── networks.yml
+│   ├── volumes.yml
+│   ├── prometheus/
+│   │   ├── prometheus.yml                # Production scrape config (scrapes /metrics on API containers)
+│   │   └── prometheus.local.yml          # Local scrape config
+│   └── grafana/
+│       └── provisioning/datasources/
+│           └── prometheus.yml            # Auto-provisions Prometheus datasource in Grafana
 └── github-runner/
     └── docker-compose.github-runner.yml
 ```
@@ -39,7 +49,7 @@ Requires `.env` (secrets) and `.images` (CI-written: `IMAGE_REGISTRY`, `IMAGE_PR
 
 ## Critical Invariants
 
-**Deploy order on a fresh server:** Traefik → GitHub Runner (optional) → app stack. Traefik must
+**Deploy order on a fresh server:** Traefik → monitoring stack (optional) → GitHub Runner (optional) → app stack. Traefik must
 exist before any app stack because it creates `traefik-network`.
 
 **`deployment/.env` is gitignored.** Secrets never go in compose files. The file lives in `~/variables/.env.prod` on the
