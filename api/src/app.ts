@@ -33,11 +33,14 @@ app.use('/assets', express.static(Paths.assets))
 app.options('/{*any}', cors(corsOptions))
 app.use(cors(corsOptions))
 
-// Bull Board must be mounted before helmet — its UI uses inline styles/scripts
-// that helmet's CSP would otherwise block.
-app.use('/admin/queues', CommandMiddleware, bullboardRouter)
-
-app.use(helmet())
+// Apply helmet to all routes. For /admin/queues, disable CSP only (Bull Board
+// uses inline styles/scripts that CSP would block).
+app.use((req, res, next) => {
+	if (req.path.startsWith('/admin/queues')) {
+		return helmet({ contentSecurityPolicy: false })(req, res, next)
+	}
+	return helmet()(req, res, next)
+})
 app.disable('x-powered-by')
 
 /**
@@ -79,6 +82,7 @@ app.use('/', KreditozroutiRoutes)
 app.use('/', ScraperPublicRoutes)
 app.use('/commands', CommandsRoutes)
 app.use('/admin', AdminRoutes)
+app.use('/admin/queues', CommandMiddleware, bullboardRouter)
 
 // Sentry Error Logging
 if (sentry.isEnabled()) sentry.setupExpressErrorHandler(app)

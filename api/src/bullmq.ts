@@ -16,11 +16,7 @@ const scraperRequestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
 })
 
 const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
-	connection: redis.options,
-	defaultJobOptions: {
-		removeOnComplete: { count: 500 },
-		removeOnFail: { age: 86400 }
-	}
+	connection: redis.options
 })
 
 const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, withSentryJobHandler(ScraperResponseQueue, ScraperResponseHandler), {
