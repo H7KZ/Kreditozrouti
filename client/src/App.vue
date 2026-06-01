@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
 import Alerts from '@client/components/alert/Alerts.vue'
 import AppFooter from '@client/components/common/AppFooter.vue'
 import ScreenReaderAnnouncer from '@client/components/common/ScreenReaderAnnouncer.vue'
 
 const { t } = useI18n()
-const route = useRoute()
 </script>
 
 <template>
@@ -19,7 +17,7 @@ const route = useRoute()
 			{{ t('common.skipToContent') }}
 		</a>
 		<RouterView class="flex-1" />
-		<AppFooter v-if="!route.path.startsWith('/admin')" />
+		<AppFooter />
 		<Alerts />
 	</div>
 </template>
