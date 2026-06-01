@@ -18,6 +18,7 @@
 #   - REDIS_*: Cache credentials
 #   - API_*: API configuration
 #   - SENTRY_*_DSN: Sentry DSNs for error tracking (optional)
+#   - BULL_BOARD_USERS: htpasswd-format credentials for /bullboard BasicAuth (e.g. admin:$$apr1$$...)
 #
 # Usage: docker compose -f docker-compose.development.yml up -d
 # ==============================================================================

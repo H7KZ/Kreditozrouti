@@ -80,7 +80,12 @@ app.use(responseTime())
 app.use(metricsMiddleware)
 
 app.use('/health', (req, res) => res.status(200).send('OK'))
-app.get('/metrics', metricsHandler)
+app.get('/metrics', (req, res, next) => {
+	if (req.get('x-forwarded-for')) {
+		return res.status(404).end()
+	}
+	return metricsHandler(req, res)
+})
 
 // Routes
 app.use('/', KreditozroutiRoutes)
