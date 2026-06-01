@@ -1,0 +1,13 @@
+# ==============================================================================
+# Networks Configuration: Monitoring Stack
+# ==============================================================================
+
+networks:
+  monitoring-network:
+    name: monitoring-network
+    driver: overlay
+    attachable: true
+
+  traefik-network:
+    external: true
+    name: traefik-network

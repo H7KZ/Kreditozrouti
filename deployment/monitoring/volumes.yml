@@ -1,0 +1,10 @@
+# ==============================================================================
+# Volumes Configuration: Monitoring Stack
+# ==============================================================================
+
+volumes:
+  prometheus-data:
+    name: prometheus-data
+
+  grafana-data:
+    name: grafana-data
