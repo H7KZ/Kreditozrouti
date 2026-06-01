@@ -12,6 +12,8 @@
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@bull-board/api": "^7.1.5",
+		"@bull-board/express": "^7.1.5",
 		"@sentry/node": "^10.52.0",
 		"axios": "^1.16.0",
 		"body-parser": "^2.2.2",
