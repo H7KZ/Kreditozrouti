@@ -12,7 +12,6 @@ logging, file validation, and Docker utilities.
 | `lib.sh`            | Shared utilities (logging, `validate_files`, `create_networks`, `create_volumes`) | No            |
 | `install-docker.sh` | Install Docker Engine on Ubuntu/Debian                                            | Yes (`sudo`)  |
 | `traefik.sh`        | Deploy Traefik reverse proxy                                                      | No            |
-| `glitchtip.sh`      | Deploy GlitchTip error tracking                                                   | No            |
 | `github-runner.sh`  | Deploy self-hosted GitHub Actions runners                                         | No            |
 | `maintenance.sh`    | System maintenance (apt, cleanup, security, health)                               | Yes (`sudo`)  |
 | `docker-cleanup.sh` | Clean unused Docker resources                                                     | No            |
@@ -46,5 +45,5 @@ source "$SCRIPT_DIR/lib.sh"
 
 ## Further Reading
 
-- [Infrastructure scripts](INFRASTRUCTURE.md) — install-docker, traefik, glitchtip, github-runner
+- [Infrastructure scripts](INFRASTRUCTURE.md) — install-docker, traefik, github-runner
 - [Maintenance scripts](MAINTENANCE.md) — maintenance, docker-cleanup

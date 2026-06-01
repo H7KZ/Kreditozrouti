@@ -9,6 +9,7 @@
 **/build
 
 docs/superpowers/
+.superpowers/
 
 /data
 /di-fis-ka.wiki

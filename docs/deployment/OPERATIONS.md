@@ -169,7 +169,6 @@ Estimated RTO: 2–4 hours. RPO: 24 hours (daily backups).
 
 | Cadence   | Task                                                            |
 |-----------|-----------------------------------------------------------------|
-| Weekly    | Review error logs in GlitchTip; check disk usage                |
 | Monthly   | Run `maintenance.sh`; verify backups; Docker cleanup            |
 | Quarterly | Rotate secrets; review Traefik access logs; update dependencies |
 

@@ -94,7 +94,6 @@ These run as Docker containers but are not part of the application codebase.
 | Redis         | `redis:alpine`           | BullMQ queues + session store (ephemeral) |
 | phpMyAdmin    | `phpmyadmin`             | DB admin UI (dev/prod, port 48080 dev)    |
 | Traefik       | `traefik:v3`             | Reverse proxy, TLS termination, routing   |
-| GlitchTip     | `glitchtip/*`            | Error tracking (optional, production)     |
 | GitHub Runner | `myoung34/github-runner` | Self-hosted CI runner (optional)          |
 
 Full container details: [CONTAINERS.md](CONTAINERS.md)

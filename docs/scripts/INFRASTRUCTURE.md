@@ -1,6 +1,6 @@
 # Scripts — Infrastructure
 
-Scripts for provisioning server infrastructure: Docker, Traefik, GlitchTip, and GitHub Actions runners.
+Scripts for provisioning server infrastructure: Docker, Traefik, and GitHub Actions runners.
 
 ---
 
@@ -65,47 +65,6 @@ htpasswd -c ~/.htpasswd admin
 3. Creates persistent volumes for TLS certs and access logs
 4. Generates `.env` with Cloudflare credentials
 5. Deploys Traefik via Docker Compose
-
----
-
-## `glitchtip.sh`
-
-Deploys GlitchTip self-hosted error tracking. Reads its compose config from `deployment/glitchtip/`.
-
-```bash
-./glitchtip.sh \
-  --path ~/deployment \
-  --domain glitchtip.example.com \
-  --secret "$(openssl rand -hex 32)" \
-  --postgres-password "securepass"
-```
-
-**Required flags:**
-
-| Flag                  | Description                                      |
-|-----------------------|--------------------------------------------------|
-| `--path`              | Path to the deployment directory                 |
-| `--domain`            | Domain for the GlitchTip web UI                  |
-| `--secret`            | Django `SECRET_KEY` (use `openssl rand -hex 32`) |
-| `--postgres-password` | PostgreSQL password                              |
-
-**Optional flags:**
-
-| Flag                     | Default            | Purpose                   |
-|--------------------------|--------------------|---------------------------|
-| `-e, --email <url>`      | `consolemail://`   | SMTP connection URL       |
-| `--from-email <addr>`    | `noreply@<domain>` | Sender address            |
-| `--max-event-days <n>`   | `90`               | Event retention in days   |
-| `--disable-registration` | (enabled)          | Disable new user sign-ups |
-
-**Env var equivalents:** `DEPLOYMENT_PATH`, `GLITCHTIP_DOMAIN`, `SECRET_KEY`, `POSTGRES_PASSWORD`, `EMAIL_URL`,
-`DEFAULT_FROM_EMAIL`, `GLITCHTIP_MAX_EVENT_LIFE_DAYS`, `ENABLE_USER_REGISTRATION`
-
-**After deployment**, create the superuser:
-
-```bash
-docker compose -p glitchtip exec web python manage.py createsuperuser
-```
 
 ---
 

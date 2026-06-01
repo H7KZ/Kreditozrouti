@@ -1,6 +1,6 @@
 # Deployment — Infrastructure
 
-Traefik reverse proxy, GlitchTip error tracking, Docker networking, volumes, and environment variable configuration.
+Traefik reverse proxy, Docker networking, volumes, and environment variable configuration.
 
 ---
 
@@ -94,48 +94,12 @@ See [scripts/INFRASTRUCTURE.md](../scripts/INFRASTRUCTURE.md#traefiksh) for full
 
 ---
 
-## GlitchTip (Error Tracking)
-
-GlitchTip is a self-hosted, open-source error tracker compatible with the Sentry SDK.
-
 ### Services
 
 | Container  | Image                    | Purpose                           |
 |------------|--------------------------|-----------------------------------|
-| `web`      | `glitchtip/glitchtip`    | Web UI + API                      |
-| `worker`   | `glitchtip/glitchtip`    | Background jobs (Celery + Beat)   |
-| `migrate`  | `glitchtip/glitchtip`    | DB migrations (one-shot on start) |
 | `postgres` | `postgres:16-alpine`     | Database                          |
 | `valkey`   | `valkey/valkey:8-alpine` | Redis-compatible cache            |
-
-### Deploy GlitchTip
-
-```bash
-./scripts/glitchtip.sh \
-  --path ~/deployment \
-  --domain glitchtip.example.com \
-  --secret "$(openssl rand -hex 32)" \
-  --postgres-password "securepass"
-```
-
-### Initial setup
-
-1. Open `https://glitchtip.example.com`
-2. Create admin account
-3. Create organisation (e.g. "Kreditožrouti") and projects (API, Client, Scraper)
-4. Copy each project's DSN
-
-### Integration
-
-```env
-# API and Scraper .env
-SENTRY_DSN=https://<key>@glitchtip.example.com/1
-SENTRY_RELEASE=v1.0.0
-
-# Client docker-compose env
-VITE_SENTRY_DSN=https://<key>@glitchtip.example.com/2
-VITE_SENTRY_RELEASE=v1.0.0
-```
 
 ---
 
@@ -230,8 +194,8 @@ MYSQL_URI=mysql://kreditozrouti:<password>@mysql:3306/kreditozrouti
 REDIS_URI=redis://redis:6379
 REDIS_PASSWORD=<redis-password>
 
-# Optional — Sentry/GlitchTip
-SENTRY_DSN=<glitchtip-dsn>
+# Optional — Sentry
+SENTRY_DSN=<sentry-dsn>
 SENTRY_RELEASE=v1.0.0
 
 # Traefik

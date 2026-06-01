@@ -52,16 +52,6 @@ docker-compose.production.yml
 
 Development uses lower replica counts and `dev-*` image tags; network names include `-dev-` suffix.
 
-### GlitchTip Stack (optional, `deployment/glitchtip/`)
-
-```
-glitchtip-web      ← Django frontend
-glitchtip-worker   ← Celery worker
-glitchtip-migrate  ← One-shot DB migration
-glitchtip-postgres ← Postgres (GlitchTip's own DB)
-glitchtip-valkey   ← Valkey (Redis-compatible cache)
-```
-
 ### GitHub Runner Stack (optional, `deployment/github-runner/`)
 
 Self-hosted GitHub Actions runners registered to the repo.
@@ -109,9 +99,8 @@ Port 80 redirects to 443. The `traefik.yml` static config handles ACME, entrypoi
 
 ```
 1. Traefik stack      ← creates traefik-network, TLS
-2. GlitchTip stack    ← (optional) error tracking
-3. GitHub Runner      ← (optional) CI runners
-4. App stack          ← api, scraper, client, mysql, redis
+2. GitHub Runner      ← (optional) CI runners
+3. App stack          ← api, scraper, client, mysql, redis
 ```
 
 App stack must come last because it depends on `traefik-network` already existing.

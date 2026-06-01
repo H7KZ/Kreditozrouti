@@ -56,7 +56,7 @@ deployment/   Docker Compose stacks + deploy.sh
 **Scraper is a pure consumer:** never writes DB, never schedules its own jobs — schedulers live in the API (
 `NODE_ENV=production` only).
 
-**Deploy order on a fresh server:** Traefik → GlitchTip (opt) → GitHub Runner (opt) → app stack.
+**Deploy order on a fresh server:** Traefik → GitHub Runner (opt) → app stack.
 
 **Code conventions:**
 

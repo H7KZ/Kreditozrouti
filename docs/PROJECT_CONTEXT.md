@@ -50,7 +50,7 @@ deployment/   Docker Compose stacks + deploy.sh
 - **Scraper is a pure consumer:** It never schedules its own jobs (API handles scheduling).
 
 ## 4. Deployment & Scripts
-- **Deploy order on fresh server:** Traefik → GlitchTip (opt) → GitHub Runner (opt) → app stack.
+- **Deploy order on fresh server:** Traefik → GitHub Runner (opt) → app stack.
 - **`deployment/.env` is gitignored.** Secrets never go in compose files. Lives in `~/variables/.env.prod` on VPS.
 - **`VITE_*` env vars** are baked into the client image at build time by Vite.
 - **Redis data is ephemeral**. No named volume for Redis. Only MySQL data is persisted.
