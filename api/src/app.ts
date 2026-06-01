@@ -36,7 +36,7 @@ app.use(cors(corsOptions))
 // Apply helmet to all routes. For /admin/queues, disable CSP only (Bull Board
 // uses inline styles/scripts that CSP would block).
 app.use((req, res, next) => {
-	if (req.path.startsWith('/admin/queues')) {
+	if (req.originalUrl.startsWith('/admin/queues')) {
 		return helmet({ contentSecurityPolicy: false })(req, res, next)
 	}
 	return helmet()(req, res, next)
