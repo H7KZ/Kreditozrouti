@@ -21,7 +21,7 @@ export function metricsMiddleware(req: Request, res: Response, next: NextFunctio
 	res.on('finish', () => {
 		end({
 			method: req.method,
-			route: req.route?.path ?? req.path,
+			route: req.route?.path ?? 'unknown',
 			status_code: String(res.statusCode),
 		})
 	})
