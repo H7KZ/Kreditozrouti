@@ -15,6 +15,14 @@ const scraperRequestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
 	connection: redis.options
 })
 
+const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
+	connection: redis.options,
+	defaultJobOptions: {
+		removeOnComplete: { count: 500 },
+		removeOnFail: { age: 86400 }
+	}
+})
+
 const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, withSentryJobHandler(ScraperResponseQueue, ScraperResponseHandler), {
 	connection: redis.options,
 	concurrency: 4
@@ -64,7 +72,8 @@ function buildStudyPlansSchedulerJob(periodsForLastFourYears: ReturnType<typeof 
 
 const scraper = {
 	queue: {
-		request: scraperRequestQueue
+		request: scraperRequestQueue,
+		response: scraperResponseQueue
 	},
 
 	worker: {
@@ -74,6 +83,9 @@ const scraper = {
 	async waitForQueues() {
 		await scraper.queue.request.waitUntilReady()
 		console.log('Scraper request queue is ready.')
+
+		await scraper.queue.response.waitUntilReady()
+		console.log('Scraper response queue is ready.')
 
 		await scraper.worker.response.waitUntilReady()
 		console.log('Scraper response worker is ready.')
