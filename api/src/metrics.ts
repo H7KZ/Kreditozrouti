@@ -10,7 +10,7 @@ const httpDuration = new Histogram({
 	help: 'Duration of HTTP requests in seconds',
 	labelNames: ['method', 'route', 'status_code'] as const,
 	buckets: [0.01, 0.05, 0.1, 0.3, 0.5, 1, 2, 5],
-	registers: [register],
+	registers: [register]
 })
 
 export function metricsMiddleware(req: Request, res: Response, next: NextFunction): void {
@@ -22,7 +22,7 @@ export function metricsMiddleware(req: Request, res: Response, next: NextFunctio
 		end({
 			method: req.method,
 			route: req.route?.path ?? 'unknown',
-			status_code: String(res.statusCode),
+			status_code: String(res.statusCode)
 		})
 	})
 	next()
