@@ -12,7 +12,7 @@ import { bullboardRouter } from '@api/bullboard'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Handlers/ErrorHandler'
-import CommandMiddleware from '@api/Middlewares/CommandMiddleware'
+import { metricsHandler, metricsMiddleware } from '@api/metrics'
 import { Paths } from '@api/paths'
 import AdminRoutes from '@api/Routes/AdminRoutes'
 import CommandsRoutes from '@api/Routes/CommandsRoutes'
@@ -34,12 +34,12 @@ app.options('/{*any}', cors(corsOptions))
 app.use(cors(corsOptions))
 
 // Pre-instantiated helmet configs — avoid creating new instances per request.
-// /admin/queues disables CSP only; Bull Board's UI uses inline styles/scripts.
+// /bullboard disables CSP only; Bull Board's UI uses inline styles/scripts.
 const standardHelmet = helmet()
 const noCspHelmet = helmet({ contentSecurityPolicy: false })
 
 app.use((req, res, next) => {
-	if (req.originalUrl.startsWith('/admin/queues')) {
+	if (req.originalUrl.startsWith('/bullboard')) {
 		return noCspHelmet(req, res, next)
 	}
 	return standardHelmet(req, res, next)
@@ -77,15 +77,17 @@ app.use(compression({}))
 // Logging and Metrics
 app.use(morgan(Config.isEnvLocal() ? 'dev' : 'combined'))
 app.use(responseTime())
+app.use(metricsMiddleware)
 
 app.use('/health', (req, res) => res.status(200).send('OK'))
+app.get('/metrics', metricsHandler)
 
 // Routes
 app.use('/', KreditozroutiRoutes)
 app.use('/', ScraperPublicRoutes)
 app.use('/commands', CommandsRoutes)
 app.use('/admin', AdminRoutes)
-app.use('/admin/queues', CommandMiddleware, bullboardRouter)
+app.use('/bullboard', bullboardRouter)
 
 // Sentry Error Logging
 if (sentry.isEnabled()) sentry.setupExpressErrorHandler(app)
