@@ -73,6 +73,15 @@ services:
       - "traefik.http.middlewares.${PROJECT}-api-stripprefix.stripprefix.prefixes=/api"
       - "traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\\.(.*)"
       - "traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}"
+      # Traefik Configuration — Bull Board (/bullboard → this API container, no prefix strip)
+      - "traefik.http.routers.${PROJECT}-bullboard.priority=90"
+      - "traefik.http.routers.${PROJECT}-bullboard.rule=Host(`${DOMAIN}`) && PathPrefix(`/bullboard`)"
+      - "traefik.http.routers.${PROJECT}-bullboard.entrypoints=websecure"
+      - "traefik.http.routers.${PROJECT}-bullboard.tls=true"
+      - "traefik.http.routers.${PROJECT}-bullboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.${PROJECT}-bullboard.service=${PROJECT}-api"
+      - "traefik.http.routers.${PROJECT}-bullboard.middlewares=${PROJECT}-bullboard-auth"
+      - "traefik.http.middlewares.${PROJECT}-bullboard-auth.basicauth.users=${BULL_BOARD_USERS}"
 
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:80/health" ]
