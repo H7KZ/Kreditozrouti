@@ -8,9 +8,11 @@ import session from 'express-session'
 import helmet from 'helmet'
 import morgan from 'morgan'
 import responseTime from 'response-time'
+import { bullboardRouter } from '@api/bullboard'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Handlers/ErrorHandler'
+import CommandMiddleware from '@api/Middlewares/CommandMiddleware'
 import { Paths } from '@api/paths'
 import AdminRoutes from '@api/Routes/AdminRoutes'
 import CommandsRoutes from '@api/Routes/CommandsRoutes'
@@ -30,6 +32,10 @@ const corsOptions: CorsOptions = {
 app.use('/assets', express.static(Paths.assets))
 app.options('/{*any}', cors(corsOptions))
 app.use(cors(corsOptions))
+
+// Bull Board must be mounted before helmet — its UI uses inline styles/scripts
+// that helmet's CSP would otherwise block.
+app.use('/admin/queues', CommandMiddleware, bullboardRouter)
 
 app.use(helmet())
 app.disable('x-powered-by')
