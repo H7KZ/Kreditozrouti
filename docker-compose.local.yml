@@ -146,3 +146,66 @@ services:
           memory: 4096M
 
     restart: unless-stopped
+
+  # ================================================================ #
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kreditozrouti-prometheus
+
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=7d'
+
+    volumes:
+      - ./deployment/monitoring/prometheus/prometheus.local.yml:/etc/prometheus/prometheus.yml:ro
+
+    ports:
+      - "49090:9090"
+
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kreditozrouti-grafana
+
+    environment:
+      - GF_SERVER_ROOT_URL=http://localhost:43000
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+
+    volumes:
+      - ./deployment/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+
+    ports:
+      - "43000:3000"
+
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+
+    restart: unless-stopped
