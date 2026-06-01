@@ -5,7 +5,7 @@ import { scraper } from '@api/bullmq'
 import Config from '@api/Config/Config'
 
 const serverAdapter = new ExpressAdapter()
-serverAdapter.setBasePath('/admin/queues')
+serverAdapter.setBasePath('/bullboard')
 
 createBullBoard({
 	queues: [
@@ -28,7 +28,6 @@ createBullBoard({
 				color: Config.isEnvProduction() ? '#c0392b' : Config.isEnvDevelopment() ? '#e67e22' : '#27ae60',
 				textColor: '#ffffff'
 			},
-			miscLinks: [{ text: 'Stats API', url: '/admin/stats' }],
 			pollingInterval: { showSetting: true },
 			dateFormats: {
 				short: 'HH:mm:ss',
