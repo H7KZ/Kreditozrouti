@@ -33,13 +33,16 @@ app.use('/assets', express.static(Paths.assets))
 app.options('/{*any}', cors(corsOptions))
 app.use(cors(corsOptions))
 
-// Apply helmet to all routes. For /admin/queues, disable CSP only (Bull Board
-// uses inline styles/scripts that CSP would block).
+// Pre-instantiated helmet configs — avoid creating new instances per request.
+// /admin/queues disables CSP only; Bull Board's UI uses inline styles/scripts.
+const standardHelmet = helmet()
+const noCspHelmet = helmet({ contentSecurityPolicy: false })
+
 app.use((req, res, next) => {
 	if (req.originalUrl.startsWith('/admin/queues')) {
-		return helmet({ contentSecurityPolicy: false })(req, res, next)
+		return noCspHelmet(req, res, next)
 	}
-	return helmet()(req, res, next)
+	return standardHelmet(req, res, next)
 })
 app.disable('x-powered-by')
 
