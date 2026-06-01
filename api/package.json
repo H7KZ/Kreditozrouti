@@ -37,14 +37,12 @@
 		"pino-http": "^11.0.0",
 		"rate-limiter-flexible": "^5.0.5",
 		"response-time": "^2.3.4",
-		"swagger-stats": "^0.99.7",
 		"zod": "^4.4.3"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.39.4",
 		"@ianvs/prettier-plugin-sort-imports": "^4.7.1",
 		"@types/body-parser": "^1.19.6",
-		"@types/swagger-stats": "^0.95.11",
 		"@types/compression": "^1.8.1",
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.6",
