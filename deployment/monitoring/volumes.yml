@@ -1,10 +1,9 @@
-# ==============================================================================
-# Volumes Configuration: Monitoring Stack
-# ==============================================================================
-
 volumes:
   prometheus-data:
-    name: prometheus-data
-
+    driver: local
   grafana-data:
-    name: grafana-data
+    driver: local
+  loki-data:
+    driver: local
+  alloy-data:
+    driver: local

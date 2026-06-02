@@ -1,10 +1,12 @@
 # ==============================================================================
 # Docker Compose: Monitoring Stack
-# Description: Prometheus metrics collection + Grafana visualization.
+# Description: Prometheus metrics + Grafana Loki logs + Grafana visualization.
 #
 # Services:
 #   - prometheus: Scrapes /metrics from the API; stores time series data
 #   - grafana:    Visualization dashboard, exposed at domain/grafana via Traefik
+#   - loki:       Log aggregation storage (30-day retention)
+#   - alloy:      Log shipping agent — reads Docker stdout, receives Faro browser telemetry
 #
 # Required Environment Variables (in .env):
 #   - DOMAIN: Primary domain for Traefik routing (e.g. kreditozrouti.cz)
@@ -103,3 +105,75 @@ services:
         reservations:
           cpus: "0.1"
           memory: 128M
+
+  # ============================================================================
+  # Log Storage (Loki)
+  # Internal only — no Traefik labels. Grafana accesses it at http://loki:3100.
+  # ============================================================================
+  loki:
+    image: grafana/loki:3
+    restart: unless-stopped
+
+    command: -config.file=/etc/loki/loki.yml
+
+    volumes:
+      - loki-data:/loki
+      - ./loki/loki.yml:/etc/loki/loki.yml:ro
+
+    networks:
+      - monitoring-network
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+        reservations:
+          cpus: "0.1"
+          memory: 64M
+
+  # ============================================================================
+  # Log Shipping Agent (Alloy)
+  # Reads Docker container stdout via Docker socket → Loki.
+  # Also receives Grafana Faro browser telemetry on port 12347 (added in Plan 2).
+  # ============================================================================
+  alloy:
+    image: grafana/alloy:latest
+    restart: unless-stopped
+
+    command:
+      - run
+      - /etc/alloy/config.alloy
+      - --storage.path=/var/lib/alloy/data
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - alloy-data:/var/lib/alloy/data
+      - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
+
+    networks:
+      - monitoring-network
+      - traefik-network
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 256M
+        reservations:
+          cpus: "0.05"
+          memory: 64M
