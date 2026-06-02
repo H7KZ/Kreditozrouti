@@ -34,7 +34,7 @@ ACME_EMAIL="your@email.com"                  # Let's Encrypt notification email
 # Purpose: Prometheus, Grafana, Loki, Alloy
 # ------------------------------------------------------------------------------
 
-MONITORING_DOMAIN="yourdomain.com"           # Public domain for Grafana and Faro routing
+DOMAIN="yourdomain.com"                      # Public domain for Grafana and Faro routing (read as DOMAIN by monitoring.sh)
 MONITORING_PROJECT="kreditozrouti"           # Project name prefix for Traefik labels
 GRAFANA_ADMIN_USER="admin"                   # Grafana admin username
 GRAFANA_ADMIN_PASSWORD="changeme"            # Grafana admin password
