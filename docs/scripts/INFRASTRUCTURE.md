@@ -23,7 +23,7 @@ nano ~/scripts/server.conf   # fill in all values
 bash ~/scripts/bootstrap.sh
 ```
 
-`bootstrap.sh` runs: generate htpasswd → `traefik.sh` → `monitoring.sh` → `github-runner.sh`
+`bootstrap.sh` runs: generate htpasswd → `traefik.sh` → `monitoring.sh` → `github-runner.sh` → install backup cron
 
 ---
 
@@ -38,6 +38,8 @@ All scripts source `scripts/server.conf` automatically when present. CLI flags r
 - `RUNNER_PROJECT` for `github-runner.sh`
 
 Both scripts fall back to `PROJECT` if the namespaced var is not set.
+
+**Backups (`backup.sh`):** `MYSQL_CONTAINER`, `BACKUP_DIR`, `BACKUP_RETENTION_DAYS`. The container name must match a running container — find it with `docker ps --format '{{.Names}}'`.
 
 ---
 
