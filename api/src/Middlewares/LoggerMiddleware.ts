@@ -12,8 +12,7 @@ export default function LoggerMiddleware(req: Request, res: Response, next: Next
 		method: req.method,
 		path: req.path,
 		timestamp: new Date().toISOString(),
-		environment: process.env.NODE_ENV ?? 'local',
-		service: 'api'
+		environment: process.env.NODE_ENV ?? 'local'
 	}
 
 	res.locals.wideEvent = wideEvent
