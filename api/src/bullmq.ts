@@ -6,7 +6,7 @@ import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestSched
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
-import { withSentryJobHandler } from '@api/sentry'
+import { withJobLogger, logger } from '@api/logger'
 import InSISService from '@api/Services/InSISService'
 
 // Queue & Worker Setup
@@ -19,7 +19,7 @@ const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue,
 	connection: redis.options
 })
 
-const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, withSentryJobHandler(ScraperResponseQueue, ScraperResponseHandler), {
+const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, withJobLogger(ScraperResponseQueue, ScraperResponseHandler), {
 	connection: redis.options,
 	concurrency: 4
 })
@@ -78,13 +78,13 @@ const scraper = {
 
 	async waitForQueues() {
 		await scraper.queue.request.waitUntilReady()
-		console.log('Scraper request queue is ready.')
+		logger.info('bullmq.request_queue_ready')
 
 		await scraper.queue.response.waitUntilReady()
-		console.log('Scraper response queue is ready.')
+		logger.info('bullmq.response_queue_ready')
 
 		await scraper.worker.response.waitUntilReady()
-		console.log('Scraper response worker is ready.')
+		logger.info('bullmq.response_worker_ready')
 	},
 
 	async schedulers() {
@@ -110,7 +110,7 @@ const scraper = {
 			buildStudyPlansSchedulerJob(periodsForLastFourYears)
 		)
 
-		console.log('BullMQ schedulers have been configured.')
+		logger.info('bullmq.schedulers_configured')
 	}
 }
 

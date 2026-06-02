@@ -4,7 +4,7 @@ import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
 import Config, { CheckRequiredEnvironmentVariables, LoadConfig } from '@api/Config/Config'
-import sentry from '@api/sentry'
+import { logger } from '@api/logger'
 import { SQLService } from '@api/Services/SQLService'
 
 LoadConfig()
@@ -14,15 +14,15 @@ const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
 const numWorkers = specifiedInstances ? parseInt(specifiedInstances) : 1
 
 if (cluster.isPrimary && numWorkers > 1) {
-	console.log(`🚀  [API] Master process ${process.pid} is running`)
-	console.log(`⚙️  [API] Forking ${numWorkers} workers...`)
+	logger.info({ pid: process.pid }, 'api.cluster_primary_started')
+	logger.info({ workers: numWorkers }, 'api.forking_workers')
 
 	for (let i = 0; i < numWorkers; i++) {
 		cluster.fork()
 	}
 
 	cluster.on('exit', worker => {
-		console.log(`❌  [API] Worker ${worker.process.pid} died. Restarting...`)
+		logger.warn({ pid: worker.process.pid }, 'api.worker_died_restarting')
 		cluster.fork()
 	})
 } else {
@@ -33,45 +33,40 @@ async function startWorker(): Promise<void> {
 	try {
 		CheckRequiredEnvironmentVariables(Config)
 
-		if (sentry.isEnabled()) {
-			console.log('Sentry is enabled.')
-		}
-
 		await mysql.connection().execute(db => Promise.resolve(db))
-		console.log('Connected to MySQL successfully.')
+		logger.info('mysql.connected')
 
 		await SQLService.migrateToLatest()
-		console.log('Database migrations executed.')
+		logger.info('db.migrated')
 
 		await SQLService.seedInitialData()
-		console.log('Initial data seeding completed.')
+		logger.info('db.seeded')
 
 		await redis.ping()
-		console.log('Connected to Redis successfully.')
+		logger.info('redis.connected')
 
 		if (Config.isEmailEnabled()) {
 			const mailVerified = await nodemailer.verify()
 			if (!mailVerified) throw new Error('Nodemailer verification failed')
-			console.log('Nodemailer configured.')
+			logger.info('mailer.configured')
 		}
 
 		await scraper.waitForQueues()
-		console.log('BullMQ queues and workers are ready.')
+		logger.info('bullmq.ready')
 
 		await scraper.schedulers()
-		console.log('BullMQ schedulers configured.')
+		logger.info('bullmq.schedulers_configured')
 
 		const server = app.listen(Config.port, () => {
-			console.log(`Environment: ${Config.env}`)
-			console.log(`Server running on port ${Config.port}`)
+			logger.info({ port: Config.port, env: Config.env }, 'api.started')
 		})
 
 		const shutdown = () => {
-			console.log('Shutting down server...')
+			logger.info('api.shutdown')
 			server.close(async () => {
 				await mysql.destroy()
 				redis.disconnect()
-				console.log('Server shut down gracefully')
+				logger.info('api.stopped')
 				process.exit(0)
 			})
 		}
@@ -79,15 +74,9 @@ async function startWorker(): Promise<void> {
 		process.on('SIGTERM', shutdown)
 		process.on('SIGINT', shutdown)
 
-		console.log(`🚀  [API] Worker process ${process.pid} started`)
+		logger.info({ pid: process.pid }, 'api.worker_started')
 	} catch (error) {
-		console.error('Failed to start the server:', error)
-
-		if (sentry.isEnabled()) {
-			sentry.captureException(error)
-			await sentry.flush(2000)
-		}
-
+		logger.fatal({ err: error }, 'api.startup_failed')
 		await mysql.destroy()
 		redis.disconnect()
 		process.exit(1)

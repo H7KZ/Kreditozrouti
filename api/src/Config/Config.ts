@@ -37,11 +37,6 @@ interface Config {
 
 	fileDestination: string
 
-	sentry: {
-		dsn: string | undefined
-		release: string | undefined
-	}
-
 	google: {
 		user: string
 		appPassword: string
@@ -78,11 +73,6 @@ const config: Config = {
 	commandToken: process.env.API_COMMAND_TOKEN,
 
 	fileDestination: process.env.API_FILE_DESTINATION ?? 'uploads/',
-
-	sentry: {
-		dsn: process.env.SENTRY_DSN,
-		release: process.env.SENTRY_RELEASE
-	},
 
 	google: {
 		user: process.env.GOOGLE_USER ?? '',

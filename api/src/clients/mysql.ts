@@ -2,7 +2,7 @@ import { Kysely, MysqlDialect, ParseJSONResultsPlugin } from 'kysely'
 import { createPool } from 'mysql2'
 import Config from '@api/Config/Config'
 import { Database } from '@api/Database/types'
-import sentry from '@api/sentry'
+import { logger } from '@api/logger'
 
 /**
  * Kysely instance for type-safe MySQL interactions.
@@ -34,36 +34,12 @@ export const mysql = new Kysely<Database>({
 	log(event) {
 		if (event.level === 'query') {
 			if (event.queryDurationMillis > 500) {
-				console.warn(`[SLOW QUERY] ${event.queryDurationMillis}ms:`, event.query.sql.slice(0, 200))
-			}
-
-			// Report startup errors to Sentry
-			if (sentry.isEnabled()) {
-				sentry.captureEvent({
-					message: 'Database Query Executed',
-					level: 'info',
-					extra: {
-						sql: event.query.sql,
-						query: event.query,
-						parameters: event.query.parameters,
-						duration: event.queryDurationMillis
-					}
-				})
+				logger.warn({ duration_ms: event.queryDurationMillis, sql: event.query.sql.slice(0, 200) }, 'db.slow_query')
 			}
 		} else if (event.level === 'error') {
 			if ((event.error as { sql: string }).sql.includes('idx_')) return
 
-			console.error('[DB ERROR]', event.error)
-
-			if (sentry.isEnabled()) {
-				sentry.captureException(event.error, {
-					extra: {
-						sql: event.query.sql,
-						query: event.query,
-						parameters: event.query.parameters
-					}
-				})
-			}
+			logger.error({ err: event.error, sql: event.query.sql }, 'db.query_error')
 		}
 	}
 })

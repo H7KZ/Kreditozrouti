@@ -6,7 +6,6 @@ import cors, { CorsOptions } from 'cors'
 import express from 'express'
 import session from 'express-session'
 import helmet from 'helmet'
-import morgan from 'morgan'
 import responseTime from 'response-time'
 import { bullboardRouter } from '@api/bullboard'
 import { redis } from '@api/clients'
@@ -18,7 +17,6 @@ import AdminRoutes from '@api/Routes/AdminRoutes'
 import CommandsRoutes from '@api/Routes/CommandsRoutes'
 import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
 import { ScraperPublicRoutes } from '@api/Routes/ScraperPublicRoutes'
-import sentry from '@api/sentry'
 
 const app = express()
 
@@ -74,8 +72,7 @@ if (!Config.isEnvLocal()) {
 app.use(session(sessionOptions))
 app.use(compression({}))
 
-// Logging and Metrics
-app.use(morgan(Config.isEnvLocal() ? 'dev' : 'combined'))
+// Metrics
 app.use(responseTime())
 app.use(metricsMiddleware)
 
@@ -93,9 +90,6 @@ app.use('/', ScraperPublicRoutes)
 app.use('/commands', CommandsRoutes)
 app.use('/admin', AdminRoutes)
 app.use('/bullboard', bullboardRouter)
-
-// Sentry Error Logging
-if (sentry.isEnabled()) sentry.setupExpressErrorHandler(app)
 
 // Error Handling
 app.use(ErrorHandler)
