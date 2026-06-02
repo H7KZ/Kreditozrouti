@@ -1,7 +1,7 @@
 import type { ScraperInSISCatalogRequestJob } from '@scraper/types/jobs'
+import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import { redis } from '@scraper/clients'
 import ExtractInSISCatalogService from '@scraper/Services/ExtractInSISCatalogService'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'

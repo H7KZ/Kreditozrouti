@@ -12,8 +12,8 @@ Kreditozrouti/
 └── deployment/   # Docker Compose files + deploy.sh
 ```
 
-Each of `api/`, `client/`, `scraper/`, and `shared/` is an independent pnpm package with its own `package.json` and
-`tsconfig.json`. There is no pnpm workspace hoisting of runtime code — each package installs its own dependencies.
+Each of `api/`, `client/`, `scraper/`, and `shared/` is an independent npm package with its own `package.json` and
+`tsconfig.json`. There is no npm workspace hoisting of runtime code — each package installs its own dependencies.
 
 ---
 
@@ -118,4 +118,4 @@ make format         # Format all packages
 make build          # Production build for all packages
 ```
 
-Individual packages: `cd api && pnpm run dev` etc.
+Individual packages: `cd api && npm run dev` etc.

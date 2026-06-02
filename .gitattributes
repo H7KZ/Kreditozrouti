@@ -114,7 +114,7 @@ Dockerfile  text eol=lf
 # but keeps them technically readable.
 package-lock.json binary
 yarn.lock binary
-pnpm-lock.yaml binary
+binary
 
 # LINGUIST OVERRIDES
 # Tell GitHub to ignore these files when calculating language statistics 

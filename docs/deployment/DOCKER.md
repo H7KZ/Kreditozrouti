@@ -13,7 +13,7 @@ Registry (GHCR).
 
 ```
 Stage 1 (builder)
-  ├── Install pnpm + dependencies (--frozen-lockfile)
+  ├── Install npm + dependencies (--frozen-lockfile)
   ├── Copy source
   └── tsc → dist/
 
@@ -35,7 +35,7 @@ Stage 2 (production)
 
 ```
 Stage 1 (builder)
-  ├── Install pnpm + dependencies
+  ├── Install npm + dependencies
   ├── Set placeholder env vars:
   │     VITE_API_URL=__VITE_API_URL_PLACEHOLDER__
   │     VITE_FARO_COLLECTOR_URL=__VITE_FARO_COLLECTOR_URL_PLACEHOLDER__
@@ -75,7 +75,7 @@ exec "$@"
 
 ```
 Stage 1 (builder)
-  ├── Install pnpm + dependencies
+  ├── Install npm + dependencies
   ├── tsc → dist/
 
 Stage 2 (production)

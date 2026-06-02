@@ -1,6 +1,6 @@
 import type { ScraperInSISStudyPlanRequestJob } from '@scraper/types/jobs'
-import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { redis } from '@scraper/clients'
+import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'

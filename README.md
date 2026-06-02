@@ -67,13 +67,13 @@ For **local development and deployment**, see the engineering docs:
 
 ## Tech Stack
 
-| Layer    | Technology                                       |
-|----------|--------------------------------------------------|
-| Frontend | Vue 3, Pinia, Tailwind CSS 4, Vite, Vue I18n     |
-| Backend  | Express 5, Kysely, BullMQ, Zod, TypeScript       |
-| Scraper  | Axios, Cheerio, BullMQ                           |
-| Database | MySQL 8, Redis                                   |
-| DevOps   | Docker, GitHub Actions, Traefik, pnpm workspaces |
+| Layer    | Technology                                   |
+|----------|----------------------------------------------|
+| Frontend | Vue 3, Pinia, Tailwind CSS 4, Vite, Vue I18n |
+| Backend  | Express 5, Kysely, BullMQ, Zod, TypeScript   |
+| Scraper  | Axios, Cheerio, BullMQ                       |
+| Database | MySQL 8, Redis                               |
+| DevOps   | Docker, GitHub Actions, Traefik              |
 
 ---
 

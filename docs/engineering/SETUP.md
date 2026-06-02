@@ -2,12 +2,11 @@
 
 ## Prerequisites
 
-| Tool                    | Version       | Notes                                              |
-|-------------------------|---------------|----------------------------------------------------|
-| Node.js                 | 22.x+         | Use nvm or fnm for version management              |
-| pnpm                    | 11.1.0+       | `npm install -g pnpm`                              |
-| Docker + Docker Compose | Latest stable | Required for MySQL, Redis, phpMyAdmin              |
-| Make                    | Any           | Optional — convenience wrapper around pnpm scripts |
+| Tool                    | Version       | Notes                                             |
+|-------------------------|---------------|---------------------------------------------------|
+| Node.js                 | 22.x+         | Use nvm or fnm for version management             |
+| Docker + Docker Compose | Latest stable | Required for MySQL, Redis, phpMyAdmin             |
+| Make                    | Any           | Optional — convenience wrapper around npm scripts |
 
 ---
 
@@ -54,7 +53,7 @@ VITE_CLIENT_PORT=45173
 NODE_ENV=development
 ```
 
-> `VITE_*` vars are baked into the client bundle at build time by Vite. Changing them after `pnpm run build` has no
+> `VITE_*` vars are baked into the client bundle at build time by Vite. Changing them after `npm run build` has no
 > effect — you must rebuild.
 
 ### 3. Start infrastructure
@@ -70,7 +69,7 @@ Wait ~10 seconds for MySQL to initialize on first run.
 
 ```bash
 make install
-# Equivalent to: pnpm install (installs all workspace packages)
+# Equivalent to: npm install (installs all workspace packages)
 ```
 
 ### 5. Run the app

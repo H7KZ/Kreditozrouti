@@ -12,8 +12,16 @@
       "id": 1,
       "title": "Queue Waiting Count",
       "type": "stat",
-      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
-      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
       "targets": [
         {
           "expr": "bullmq_queue_depth{status=\"waiting\"}",
@@ -23,7 +31,9 @@
       ],
       "options": {
         "reduceOptions": {
-          "calcs": ["lastNotNull"]
+          "calcs": [
+            "lastNotNull"
+          ]
         },
         "orientation": "auto",
         "textMode": "auto",
@@ -40,8 +50,16 @@
       "id": 2,
       "title": "Active Jobs",
       "type": "stat",
-      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
-      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
       "targets": [
         {
           "expr": "bullmq_queue_depth{status=\"active\"}",
@@ -51,7 +69,9 @@
       ],
       "options": {
         "reduceOptions": {
-          "calcs": ["lastNotNull"]
+          "calcs": [
+            "lastNotNull"
+          ]
         },
         "orientation": "auto",
         "textMode": "auto",
@@ -68,8 +88,16 @@
       "id": 3,
       "title": "Failed Jobs",
       "type": "stat",
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
-      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
       "targets": [
         {
           "expr": "bullmq_queue_depth{status=\"failed\"}",
@@ -79,7 +107,9 @@
       ],
       "options": {
         "reduceOptions": {
-          "calcs": ["lastNotNull"]
+          "calcs": [
+            "lastNotNull"
+          ]
         },
         "orientation": "auto",
         "textMode": "auto",
@@ -92,11 +122,19 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "red", "value": 1 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
             ]
           },
-          "color": { "mode": "thresholds" }
+          "color": {
+            "mode": "thresholds"
+          }
         }
       }
     },
@@ -104,8 +142,16 @@
       "id": 4,
       "title": "Queue Depth Over Time",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
-      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
       "targets": [
         {
           "expr": "bullmq_queue_depth",
@@ -117,7 +163,10 @@
         "defaults": {
           "unit": "short",
           "custom": {
-            "stacking": { "mode": "normal", "group": "A" }
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            }
           }
         }
       }
@@ -126,8 +175,16 @@
       "id": 5,
       "title": "Recent Scraper Job Logs",
       "type": "logs",
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
-      "datasource": { "type": "loki", "uid": "Loki" },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
       "targets": [
         {
           "expr": "{service=\"scraper\", context=\"job\"}",

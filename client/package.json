@@ -13,6 +13,7 @@
 		"format": "prettier --write ./"
 	},
 	"devDependencies": {
+		"@grafana/faro-web-sdk": "^2.7.0",
 		"@ianvs/prettier-plugin-sort-imports": "^4.7.1",
 		"@iconify-json/lucide": "^1.2.106",
 		"@intlify/unplugin-vue-i18n": "^11.1.2",
@@ -58,8 +59,5 @@
 		"vue-router": "^4.6.4",
 		"vue-tsc": "^3.2.8",
 		"zod": "^4.4.3"
-	},
-	"dependencies": {
-		"@grafana/faro-web-sdk": "^2.7.0"
 	}
 }

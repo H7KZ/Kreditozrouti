@@ -1,7 +1,7 @@
+import Redis from 'ioredis'
+import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
-import { redis } from '@api/clients'
-import Redis from 'ioredis'
 
 const redisSubscriber = new Redis(Config.redis.uri, {
 	password: Config.redis.password,

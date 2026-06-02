@@ -1,7 +1,7 @@
-import { scraper } from '@api/bullmq'
-import { redis } from '@api/clients'
 import type { NextFunction, Request, Response } from 'express'
 import { collectDefaultMetrics, Gauge, Histogram, Registry } from 'prom-client'
+import { scraper } from '@api/bullmq'
+import { redis } from '@api/clients'
 
 const register = new Registry()
 
