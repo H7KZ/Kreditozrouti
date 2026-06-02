@@ -1,0 +1,85 @@
+# ==============================================================================
+# Workflow: Deploy Traefik
+# Description: Uploads Traefik config and redeploys the reverse proxy stack.
+#              Runs automatically when traefik config or script changes on main.
+#
+# Required Secrets (repository-level):
+#   SSH_HOST, SSH_USER, SSH_PORT, SSH_PRIVATE_KEY
+#   TRAEFIK_DOMAIN, TRAEFIK_HTPASSWD, CF_API_EMAIL, CF_DNS_API_TOKEN, ACME_EMAIL
+#
+# TRAEFIK_HTPASSWD format: a single htpasswd line, e.g.:
+#   admin:$apr1$xyz...   (generate with: htpasswd -nb admin yourpassword)
+# ==============================================================================
+
+name: Deploy Traefik
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "deployment/traefik/**"
+      - "scripts/traefik.sh"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-traefik
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy Traefik
+    runs-on: self-hosted
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Upload Traefik Config
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "deployment/traefik/"
+          target: "~/deployment/"
+          strip_components: 1
+          overwrite: true
+
+      - name: Write htpasswd
+        uses: appleboy/ssh-action@v1.2.4
+        env:
+          TRAEFIK_HTPASSWD: ${{ secrets.TRAEFIK_HTPASSWD }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          envs: TRAEFIK_HTPASSWD
+          script: |
+            set -euo pipefail
+            printf '%s\n' "$TRAEFIK_HTPASSWD" > "$HOME/.htpasswd"
+            chmod 600 "$HOME/.htpasswd"
+
+      - name: Deploy Traefik
+        uses: appleboy/ssh-action@v1.2.4
+        env:
+          DEPLOYMENT_PATH: "$HOME/deployment"
+          TRAEFIK_DOMAIN: ${{ secrets.TRAEFIK_DOMAIN }}
+          TRAEFIK_CREDENTIALS_PATH: "$HOME/.htpasswd"
+          CF_API_EMAIL: ${{ secrets.CF_API_EMAIL }}
+          CF_DNS_API_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
+          ACME_EMAIL: ${{ secrets.ACME_EMAIL }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          envs: DEPLOYMENT_PATH,TRAEFIK_DOMAIN,TRAEFIK_CREDENTIALS_PATH,CF_API_EMAIL,CF_DNS_API_TOKEN,ACME_EMAIL
+          script: |
+            set -euo pipefail
+            bash ~/scripts/traefik.sh
