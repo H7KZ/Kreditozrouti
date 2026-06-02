@@ -167,8 +167,8 @@ services:
     environment:
       - ENV=production
       - VITE_API_URL=https://${DOMAIN}/api
-      - VITE_SENTRY_DSN=${SENTRY_CLIENT_DSN:-}
-      - VITE_SENTRY_RELEASE=${IMAGE_TAG:-latest}
+      - VITE_FARO_COLLECTOR_URL=https://${DOMAIN}/faro/collect
+      - VITE_APP_VERSION=${IMAGE_TAG:-latest}
 
     networks:
       - traefik-network
