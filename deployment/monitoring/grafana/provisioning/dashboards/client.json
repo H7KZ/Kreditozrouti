@@ -3,75 +3,340 @@
   "uid": "kreditozrouti-client",
   "title": "Kreditožrouti — Client (Browser)",
   "refresh": "60s",
-  "time": { "from": "now-3h", "to": "now" },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
   "panels": [
     {
-      "id": 1, "title": "JS Errors (last 1h)", "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
-      "datasource": { "type": "loki", "uid": "Loki" },
-      "targets": [{ "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"exception\"}[1h]))", "legendFormat": "errors", "refId": "A" }],
-      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "background", "graphMode": "none" },
-      "fieldConfig": { "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 10 }] }, "color": { "mode": "thresholds" } } }
+      "id": 1,
+      "title": "JS Errors (last 1h)",
+      "type": "stat",
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"exception\"}[1h]))",
+          "legendFormat": "errors",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        }
+      }
     },
     {
-      "id": 2, "title": "Page Views (last 1h)", "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
-      "datasource": { "type": "loki", "uid": "Loki" },
-      "targets": [{ "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"event\"} |= \"navigation\" [1h]))", "legendFormat": "navigations", "refId": "A" }],
-      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "background", "graphMode": "none" },
-      "fieldConfig": { "defaults": { "unit": "short" } }
+      "id": 2,
+      "title": "Page Views (last 1h)",
+      "type": "stat",
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"event\"} |= \"navigation\" [1h]))",
+          "legendFormat": "navigations",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
     },
     {
-      "id": 3, "title": "Total Client Telemetry (last 1h)", "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
-      "datasource": { "type": "loki", "uid": "Loki" },
-      "targets": [{ "expr": "sum(count_over_time({app=\"kreditozrouti\"}[1h]))", "legendFormat": "events", "refId": "A" }],
-      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "background", "graphMode": "none" },
-      "fieldConfig": { "defaults": { "unit": "short" } }
+      "id": 3,
+      "title": "Total Client Telemetry (last 1h)",
+      "type": "stat",
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({app=\"kreditozrouti\"}[1h]))",
+          "legendFormat": "events",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
     },
     {
-      "id": 4, "title": "Faro Active", "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
-      "datasource": { "type": "loki", "uid": "Loki" },
+      "id": 4,
+      "title": "Faro Active",
+      "type": "stat",
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
       "description": "Shows 1 when Faro has sent data in the last 5 minutes, 0 otherwise. Requires VITE_FARO_COLLECTOR_URL to be set.",
-      "targets": [{ "expr": "count(count_over_time({app=\"kreditozrouti\"}[5m])) > 0 or vector(0)", "legendFormat": "active", "refId": "A" }],
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
-      "fieldConfig": { "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }, "color": { "mode": "thresholds" } } }
+      "targets": [
+        {
+          "expr": "count(count_over_time({app=\"kreditozrouti\"}[5m])) > 0 or vector(0)",
+          "legendFormat": "active",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        }
+      }
     },
     {
-      "id": 5, "title": "JS Error Rate Over Time", "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
-      "datasource": { "type": "loki", "uid": "Loki" },
-      "targets": [{ "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"exception\"}[5m]))", "legendFormat": "errors / 5m", "refId": "A" }],
-      "fieldConfig": { "defaults": { "unit": "short", "custom": { "fillOpacity": 15 }, "color": { "mode": "fixed", "fixedColor": "red" } } }
+      "id": 5,
+      "title": "JS Error Rate Over Time",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"exception\"}[5m]))",
+          "legendFormat": "errors / 5m",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "fillOpacity": 15
+          },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "red"
+          }
+        }
+      }
     },
     {
-      "id": 6, "title": "Page Navigation Rate Over Time", "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
-      "datasource": { "type": "loki", "uid": "Loki" },
-      "targets": [{ "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"event\"} |= \"navigation\" [5m]))", "legendFormat": "navigations / 5m", "refId": "A" }],
-      "fieldConfig": { "defaults": { "unit": "short", "custom": { "fillOpacity": 10 } } }
+      "id": 6,
+      "title": "Page Navigation Rate Over Time",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"event\"} |= \"navigation\" [5m]))",
+          "legendFormat": "navigations / 5m",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "fillOpacity": 10
+          }
+        }
+      }
     },
     {
-      "id": 7, "title": "Telemetry Breakdown by Kind", "type": "timeseries",
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 14 },
-      "datasource": { "type": "loki", "uid": "Loki" },
-      "targets": [{ "expr": "sum by (kind) (count_over_time({app=\"kreditozrouti\"}[5m]))", "legendFormat": "{{kind}}", "refId": "A" }],
-      "fieldConfig": { "defaults": { "unit": "short" } }
+      "id": 7,
+      "title": "Telemetry Breakdown by Kind",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
+      "targets": [
+        {
+          "expr": "sum by (kind) (count_over_time({app=\"kreditozrouti\"}[5m]))",
+          "legendFormat": "{{kind}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
     },
     {
-      "id": 8, "title": "Recent Browser Errors", "type": "logs",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 22 },
-      "datasource": { "type": "loki", "uid": "Loki" },
-      "targets": [{ "expr": "{app=\"kreditozrouti\", kind=\"exception\"}", "refId": "A", "maxLines": 100 }],
-      "options": { "showTime": true, "showLabels": true, "enableLogDetails": true, "sortOrder": "Descending", "dedupStrategy": "none" }
+      "id": 8,
+      "title": "Recent Browser Errors",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
+      "targets": [
+        {
+          "expr": "{app=\"kreditozrouti\", kind=\"exception\"}",
+          "refId": "A",
+          "maxLines": 100
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "enableLogDetails": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      }
     },
     {
-      "id": 9, "title": "Recent Navigation Events", "type": "logs",
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 32 },
-      "datasource": { "type": "loki", "uid": "Loki" },
-      "targets": [{ "expr": "{app=\"kreditozrouti\", kind=\"event\"} |= \"navigation\"", "refId": "A", "maxLines": 50 }],
-      "options": { "showTime": true, "showLabels": false, "enableLogDetails": true, "sortOrder": "Descending", "dedupStrategy": "none" }
+      "id": 9,
+      "title": "Recent Navigation Events",
+      "type": "logs",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
+      "targets": [
+        {
+          "expr": "{app=\"kreditozrouti\", kind=\"event\"} |= \"navigation\"",
+          "refId": "A",
+          "maxLines": 50
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "enableLogDetails": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      }
     }
   ]
 }

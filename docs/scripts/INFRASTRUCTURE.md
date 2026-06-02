@@ -29,17 +29,20 @@ bash ~/scripts/bootstrap.sh
 
 ## Shared Config File (`server.conf`)
 
-All scripts source `scripts/server.conf` automatically when present. CLI flags remain valid as explicit overrides (most specific wins: config → env var → CLI flag).
+All scripts source `scripts/server.conf` automatically when present. CLI flags remain valid as explicit overrides (most
+specific wins: config → env var → CLI flag).
 
 `server.conf` is gitignored. `server.conf.example` is the committed template — copy and fill it in.
 
 **Variable namespacing:** `PROJECT` would conflict between monitoring and runner. Use:
+
 - `MONITORING_PROJECT` for `monitoring.sh`
 - `RUNNER_PROJECT` for `github-runner.sh`
 
 Both scripts fall back to `PROJECT` if the namespaced var is not set.
 
-**Backups (`backup.sh`):** `MYSQL_CONTAINER`, `BACKUP_DIR`, `BACKUP_RETENTION_DAYS`. The container name must match a running container — find it with `docker ps --format '{{.Names}}'`.
+**Backups (`backup.sh`):** `MYSQL_CONTAINER`, `BACKUP_DIR`, `BACKUP_RETENTION_DAYS`. The container name must match a
+running container — find it with `docker ps --format '{{.Names}}'`.
 
 ---
 

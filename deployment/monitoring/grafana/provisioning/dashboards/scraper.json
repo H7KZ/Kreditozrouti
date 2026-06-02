@@ -3,74 +3,332 @@
   "uid": "kreditozrouti-scraper",
   "title": "Kreditožrouti — Scraper",
   "refresh": "30s",
-  "time": { "from": "now-1h", "to": "now" },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
   "panels": [
     {
-      "id": 1, "title": "Queue Waiting", "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
-      "datasource": { "type": "prometheus", "uid": "Prometheus" },
-      "targets": [{ "expr": "bullmq_queue_depth{status=\"waiting\"}", "legendFormat": "{{queue}}", "refId": "A" }],
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
-      "fieldConfig": { "defaults": { "unit": "short" } }
+      "id": 1,
+      "title": "Queue Waiting",
+      "type": "stat",
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "targets": [
+        {
+          "expr": "bullmq_queue_depth{status=\"waiting\"}",
+          "legendFormat": "{{queue}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
     },
     {
-      "id": 2, "title": "Active Jobs", "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
-      "datasource": { "type": "prometheus", "uid": "Prometheus" },
-      "targets": [{ "expr": "bullmq_queue_depth{status=\"active\"}", "legendFormat": "{{queue}}", "refId": "A" }],
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
-      "fieldConfig": { "defaults": { "unit": "short" } }
+      "id": 2,
+      "title": "Active Jobs",
+      "type": "stat",
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "targets": [
+        {
+          "expr": "bullmq_queue_depth{status=\"active\"}",
+          "legendFormat": "{{queue}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
     },
     {
-      "id": 3, "title": "Failed Jobs", "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
-      "datasource": { "type": "prometheus", "uid": "Prometheus" },
-      "targets": [{ "expr": "bullmq_queue_depth{status=\"failed\"}", "legendFormat": "{{queue}}", "refId": "A" }],
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
-      "fieldConfig": { "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }, "color": { "mode": "thresholds" } } }
+      "id": 3,
+      "title": "Failed Jobs",
+      "type": "stat",
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "targets": [
+        {
+          "expr": "bullmq_queue_depth{status=\"failed\"}",
+          "legendFormat": "{{queue}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        }
+      }
     },
     {
-      "id": 4, "title": "Silent Failures (total)", "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
-      "datasource": { "type": "prometheus", "uid": "Prometheus" },
-      "targets": [{ "expr": "sum(scraper_silent_failures_total)", "legendFormat": "silent failures", "refId": "A" }],
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
-      "fieldConfig": { "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 10 }] }, "color": { "mode": "thresholds" } } }
+      "id": 4,
+      "title": "Silent Failures (total)",
+      "type": "stat",
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(scraper_silent_failures_total)",
+          "legendFormat": "silent failures",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        }
+      }
     },
     {
-      "id": 5, "title": "Queue Depth Over Time", "type": "timeseries",
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 6 },
-      "datasource": { "type": "prometheus", "uid": "Prometheus" },
-      "targets": [{ "expr": "bullmq_queue_depth", "legendFormat": "{{queue}} — {{status}}", "refId": "A" }],
-      "fieldConfig": { "defaults": { "unit": "short" } }
+      "id": 5,
+      "title": "Queue Depth Over Time",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "targets": [
+        {
+          "expr": "bullmq_queue_depth",
+          "legendFormat": "{{queue}} — {{status}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
     },
     {
-      "id": 6, "title": "Silent Failures by Job Type", "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
-      "datasource": { "type": "prometheus", "uid": "Prometheus" },
-      "targets": [{ "expr": "scraper_silent_failures_total", "legendFormat": "{{job_type}}", "refId": "A" }],
-      "fieldConfig": { "defaults": { "unit": "short", "custom": { "fillOpacity": 10 } } }
+      "id": 6,
+      "title": "Silent Failures by Job Type",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "targets": [
+        {
+          "expr": "scraper_silent_failures_total",
+          "legendFormat": "{{job_type}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "fillOpacity": 10
+          }
+        }
+      }
     },
     {
-      "id": 7, "title": "Job Completion Rate", "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
-      "datasource": { "type": "loki", "uid": "Loki" },
-      "targets": [{ "expr": "sum by (status) (count_over_time({service=\"scraper\", context=\"job\"}[5m]))", "legendFormat": "{{status}}", "refId": "A" }],
-      "fieldConfig": { "defaults": { "unit": "short" } }
+      "id": 7,
+      "title": "Job Completion Rate",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
+      "targets": [
+        {
+          "expr": "sum by (status) (count_over_time({service=\"scraper\", context=\"job\"}[5m]))",
+          "legendFormat": "{{status}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
     },
     {
-      "id": 8, "title": "Recent Job Errors", "type": "logs",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 22 },
-      "datasource": { "type": "loki", "uid": "Loki" },
-      "targets": [{ "expr": "{service=\"scraper\", level=\"ERROR\"}", "refId": "A", "maxLines": 100 }],
-      "options": { "showTime": true, "showLabels": false, "enableLogDetails": true, "sortOrder": "Descending", "dedupStrategy": "none" }
+      "id": 8,
+      "title": "Recent Job Errors",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
+      "targets": [
+        {
+          "expr": "{service=\"scraper\", level=\"ERROR\"}",
+          "refId": "A",
+          "maxLines": 100
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "enableLogDetails": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      }
     },
     {
-      "id": 9, "title": "All Scraper Job Logs", "type": "logs",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 32 },
-      "datasource": { "type": "loki", "uid": "Loki" },
-      "targets": [{ "expr": "{service=\"scraper\", context=\"job\"}", "refId": "A", "maxLines": 100 }],
-      "options": { "showTime": true, "showLabels": false, "enableLogDetails": true, "sortOrder": "Descending", "dedupStrategy": "none" }
+      "id": 9,
+      "title": "All Scraper Job Logs",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "Loki"
+      },
+      "targets": [
+        {
+          "expr": "{service=\"scraper\", context=\"job\"}",
+          "refId": "A",
+          "maxLines": 100
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "enableLogDetails": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      }
     }
   ]
 }
