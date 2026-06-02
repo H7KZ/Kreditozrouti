@@ -1,0 +1,67 @@
+// ============================================================
+// Docker container log discovery → Loki
+// Reads container stdout/stderr via Docker socket.
+// Parses JSON lines (pino output) and extracts log level,
+// service, and env as Loki stream labels.
+// ============================================================
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "container_labels" {
+  targets = discovery.docker.containers.targets
+
+  // Use container name as the "app" label (strip leading /)
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "app"
+  }
+
+  // Expose container image for filtering
+  rule {
+    source_labels = ["__meta_docker_container_image"]
+    target_label  = "image"
+  }
+}
+
+loki.source.docker "docker_logs" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.container_labels.output
+  forward_to = [loki.process.parse_json.receiver]
+}
+
+loki.process "parse_json" {
+  // Attempt to parse JSON; non-JSON lines pass through as plain text
+  stage.json {
+    expressions = {
+      level   = "level",
+      service = "service",
+      env     = "env",
+    }
+  }
+
+  // Promote pino fields to Loki stream labels for indexed queries
+  stage.labels {
+    values = {
+      level   = "",
+      service = "",
+      env     = "",
+    }
+  }
+
+  forward_to = [loki.write.default.receiver]
+}
+
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
+
+// ============================================================
+// Grafana Faro receiver
+// Accepts browser telemetry pushed by @grafana/faro-web-sdk.
+// Added in Plan 2 (client migration).
+// ============================================================
