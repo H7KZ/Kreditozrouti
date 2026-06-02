@@ -98,11 +98,11 @@ These run as Docker containers but are not part of the application codebase.
 
 ### Observability Services (monitoring stack)
 
-| Service    | Image                       | Purpose                                                                                              |
-|------------|-----------------------------|------------------------------------------------------------------------------------------------------|
-| Prometheus | `prom/prometheus`           | Metrics collection. Scrapes `/metrics` on API. 15-day retention.                                     |
-| Grafana    | `grafana/grafana`           | Dashboards and alerting. Queries Prometheus and Loki.                                                |
-| Loki       | `grafana/loki`              | Log aggregation. Receives structured JSON from Alloy. 30-day retention. Internal: `http://loki:3100`. |
-| Alloy      | `grafana/alloy`             | Log shipping agent. Reads Docker stdout via Docker socket, parses pino JSON, ships to Loki. Also receives Grafana Faro telemetry on port 12347 (Plan 2). |
+| Service    | Image             | Purpose                                                                                                                                                  |
+|------------|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Prometheus | `prom/prometheus` | Metrics collection. Scrapes `/metrics` on API. 15-day retention.                                                                                         |
+| Grafana    | `grafana/grafana` | Dashboards and alerting. Queries Prometheus and Loki.                                                                                                    |
+| Loki       | `grafana/loki`    | Log aggregation. Receives structured JSON from Alloy. 30-day retention. Internal: `http://loki:3100`.                                                    |
+| Alloy      | `grafana/alloy`   | Log shipping agent. Reads Docker stdout via Docker socket, parses pino JSON, ships to Loki. Also receives Grafana Faro telemetry on port 12347 (Plan 2). |
 
 Full container details: [CONTAINERS.md](CONTAINERS.md)

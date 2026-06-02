@@ -82,19 +82,19 @@ Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy). Traefik must al
 
 **Required flags:**
 
-| Flag                  | Description                                     |
-|-----------------------|-------------------------------------------------|
-| `--path`              | Path to the deployment directory                |
-| `--domain`            | Public domain (used for Grafana + Faro routing) |
-| `--project`           | Project name prefix for Traefik labels          |
-| `--grafana-password`  | Grafana admin password                          |
+| Flag                 | Description                                     |
+|----------------------|-------------------------------------------------|
+| `--path`             | Path to the deployment directory                |
+| `--domain`           | Public domain (used for Grafana + Faro routing) |
+| `--project`          | Project name prefix for Traefik labels          |
+| `--grafana-password` | Grafana admin password                          |
 
 **Optional flags:**
 
-| Flag               | Default  | Purpose                                    |
-|--------------------|----------|--------------------------------------------|
-| `--grafana-user`   | `admin`  | Grafana admin username                     |
-| `--action`         | `up`     | `up`, `down`, `restart`, `logs`, `status`  |
+| Flag             | Default | Purpose                                   |
+|------------------|---------|-------------------------------------------|
+| `--grafana-user` | `admin` | Grafana admin username                    |
+| `--action`       | `up`    | `up`, `down`, `restart`, `logs`, `status` |
 
 **Env var equivalents:** `DEPLOYMENT_PATH`, `DOMAIN`, `PROJECT`, `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD`
 
@@ -118,6 +118,7 @@ Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy). Traefik must al
 ```
 
 After deploy, services are exposed via Traefik at:
+
 - `https://domain/grafana` — Grafana dashboard
 - `https://domain/faro/collect` — Alloy Faro receiver (browser telemetry)
 

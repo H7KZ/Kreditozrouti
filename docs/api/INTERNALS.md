@@ -154,12 +154,12 @@ res.locals.wideEvent = {
 
 Log emission uses **level-based routing** (replaces the old `shouldLog` probability sampling):
 
-| Condition          | Level   | Rationale                        |
-|--------------------|---------|----------------------------------|
-| status ≥ 500       | `error` | Server error — always emitted    |
-| status 4xx         | `warn`  | Client error — always emitted    |
-| duration > 1000ms  | `info`  | Slow request — always emitted    |
-| otherwise          | `debug` | Routine — dropped in production  |
+| Condition         | Level   | Rationale                       |
+|-------------------|---------|---------------------------------|
+| status ≥ 500      | `error` | Server error — always emitted   |
+| status 4xx        | `warn`  | Client error — always emitted   |
+| duration > 1000ms | `info`  | Slow request — always emitted   |
+| otherwise         | `debug` | Routine — dropped in production |
 
 `LoggerAPIContext.log` is a Pino child logger (`logger.child({ context: 'http' })`) derived from the root logger in
 `api/src/logger.ts` (which binds `service: 'api'` and `env`).
@@ -308,8 +308,10 @@ Re-exported from `@shared/domain/timetable`. Used by the client to sort or compa
 
 All logging is handled by **Pino** via the root logger at `api/src/logger.ts`. There is no Sentry or Morgan dependency.
 
-- **Root logger** — binds `service: 'api'` and `env` on every line; level defaults to `debug` locally, `info` in production.
-- **HTTP logging** — `LoggerAPIContext.log` (child `{ context: 'http' }`), emitted by `LoggerMiddleware` using level-based routing (see above).
+- **Root logger** — binds `service: 'api'` and `env` on every line; level defaults to `debug` locally, `info` in
+  production.
+- **HTTP logging** — `LoggerAPIContext.log` (child `{ context: 'http' }`), emitted by `LoggerMiddleware` using
+  level-based routing (see above).
 - **Job logging** — `LoggerJobContext.log` (child `{ context: 'job' }`), wrapped by `withJobLogger` for BullMQ workers.
 - **Structured JSON** — output goes to stdout; Alloy reads Docker stdout and ships to Loki.
 

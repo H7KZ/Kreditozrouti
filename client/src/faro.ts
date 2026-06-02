@@ -1,11 +1,7 @@
-import {
-	createSession,
-	getWebInstrumentations,
-	initializeFaro,
-	type Faro,
-} from '@grafana/faro-web-sdk'
+import type { Faro } from '@grafana/faro-web-sdk'
 import type { App } from 'vue'
 import type { Router } from 'vue-router'
+import { createSession, getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk'
 
 // TracingInstrumentation from @grafana/faro-web-tracing intentionally omitted —
 // it requires a Tempo backend. We only route to Loki.
@@ -33,9 +29,7 @@ const faroModule = {
 			},
 			// Filter Safari's internal JSON-LD parser false-positive.
 			// The parser fires this when a page has no @context object.
-			ignoreErrors: [
-				/undefined is not an object \(evaluating '.*\["@context"\]/,
-			],
+			ignoreErrors: [/undefined is not an object \(evaluating '.*\["@context"\]/],
 			instrumentations: [
 				...getWebInstrumentations({
 					captureConsole: false,
@@ -54,7 +48,7 @@ const faroModule = {
 		}
 
 		// Track SPA route navigations
-		router.afterEach(to => {
+		router.afterEach((to) => {
 			_faro?.api.pushEvent('navigation', { path: to.fullPath })
 		})
 	},

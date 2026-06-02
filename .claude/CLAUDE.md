@@ -73,7 +73,8 @@ After completing any task that changes code, configuration, or behavior:
 
 1. **Identify** which `docs/` file(s) describe the changed area (use the table below)
 2. **Update** any doc that describes what changed — keep it accurate
-3. **New behavior with no doc entry?** Ask: *"This change isn't mentioned in the docs — should I document it?"* If yes, add it; if no, continue
+3. **New behavior with no doc entry?** Ask: *"This change isn't mentioned in the docs — should I document it?"* If yes,
+   add it; if no, continue
 
 ---
 
@@ -103,13 +104,13 @@ After completing any task that changes code, configuration, or behavior:
 
 **Skills**
 
-| Skill | When to use |
-|-------|-------------|
-| `/brainstorming` | Before any new feature or significant change |
-| `/gsd-plan-phase` | Planning a phase with multiple tasks |
-| `/gsd-execute-phase` | Executing a planned phase |
-| `/gsd-debug` | Systematic bug investigation |
-| `/tdd` | Test-first implementation |
-| `/gsd-code-review` | Pre-merge review |
+| Skill                | When to use                                  |
+|----------------------|----------------------------------------------|
+| `/brainstorming`     | Before any new feature or significant change |
+| `/gsd-plan-phase`    | Planning a phase with multiple tasks         |
+| `/gsd-execute-phase` | Executing a planned phase                    |
+| `/gsd-debug`         | Systematic bug investigation                 |
+| `/tdd`               | Test-first implementation                    |
+| `/gsd-code-review`   | Pre-merge review                             |
 
 **Docs discipline:** After every change, run the doc-review rule above before closing the task.

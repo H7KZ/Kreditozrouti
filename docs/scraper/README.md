@@ -109,15 +109,15 @@ scraper/src/
 
 ## Technology Choices
 
-| Concern             | Library              | Why                                                                             |
-|---------------------|----------------------|---------------------------------------------------------------------------------|
-| HTTP requests       | Axios                | InSIS pages are server-rendered — no JavaScript execution needed.               |
-| HTML parsing        | Cheerio              | Lightweight jQuery-like API; no browser overhead.                               |
-| Markdown conversion | Turndown             | Converts rich text sections (literature, course contents) to portable Markdown. |
-| Job queue           | BullMQ + Redis       | Reliable, persistent, supports deduplication and retries.                       |
+| Concern             | Library              | Why                                                                                 |
+|---------------------|----------------------|-------------------------------------------------------------------------------------|
+| HTTP requests       | Axios                | InSIS pages are server-rendered — no JavaScript execution needed.                   |
+| HTML parsing        | Cheerio              | Lightweight jQuery-like API; no browser overhead.                                   |
+| Markdown conversion | Turndown             | Converts rich text sections (literature, course contents) to portable Markdown.     |
+| Job queue           | BullMQ + Redis       | Reliable, persistent, supports deduplication and retries.                           |
 | Error tracking      | Pino (JSON)          | Errors logged as structured wide-events; job failures surfaced via `withJobLogger`. |
-| Logging             | Pino (JSON)          | Structured wide-event logging via AsyncLocalStorage.                            |
-| Concurrency         | `runWithConcurrency` | Custom pool; controls parallelism for bulk HTTP requests.                       |
+| Logging             | Pino (JSON)          | Structured wide-event logging via AsyncLocalStorage.                                |
+| Concurrency         | `runWithConcurrency` | Custom pool; controls parallelism for bulk HTTP requests.                           |
 
 ## Further Reading
 

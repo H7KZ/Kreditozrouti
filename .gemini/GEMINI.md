@@ -73,7 +73,8 @@ After completing any task that changes code, configuration, or behavior:
 
 1. **Identify** which `docs/` file(s) describe the changed area (use the table below)
 2. **Update** any doc that describes what changed — keep it accurate
-3. **New behavior with no doc entry?** Ask: *"This change isn't mentioned in the docs — should I document it?"* If yes, add it; if no, continue
+3. **New behavior with no doc entry?** Ask: *"This change isn't mentioned in the docs — should I document it?"* If yes,
+   add it; if no, continue
 
 ---
 
@@ -104,8 +105,10 @@ After completing any task that changes code, configuration, or behavior:
 
 **Tool discipline**
 
-- Use `grep_search` with file extension filters (e.g. `Includes: *.ts`) to pinpoint exact files and lines rather than guessing paths — the repo has many files
-- For broad codebase exploration (more than 3 searches), use `invoke_subagent` with the `research` subagent to avoid polluting the main context
+- Use `grep_search` with file extension filters (e.g. `Includes: *.ts`) to pinpoint exact files and lines rather than
+  guessing paths — the repo has many files
+- For broad codebase exploration (more than 3 searches), use `invoke_subagent` with the `research` subagent to avoid
+  polluting the main context
 
 **Phased execution**
 

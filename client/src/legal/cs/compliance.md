@@ -64,7 +64,7 @@ mapuje každý relevantní článek na implementaci Kreditožrouti.
 | Čl. 17    | Transparentní informování subjektů údajů                             | ✅   | Vyučující jsou zobrazeni pouze v kontextu svých veřejně uvedených výukových činností. Na aplikaci je zobrazeno prohlášení.                                                |
 | Čl. 19(2) | Zveřejnitelné údaje: jméno, tituly, pozice, výuka                    | ✅   | Zobrazeno je pouze jméno vyučujícího jako atribut předmětu, což je výslovně v povoleném rozsahu (písm. n: výuková činnost na VŠE).                                        |
 | Čl. 20    | Sdílení dat třetím stranám vyžaduje oznámení DPO                     | N/A  | Kreditožrouti nesdílí žádná data s třetími stranami. Žádná analytika, sledování ani externí API nepřenáší data ven.                                                       |
-| Čl. 21    | Bezpečnostní opatření: šifrování, řízení přístupu, hlášení incidentů | ✅   | HTTPS přes Traefik/Let's Encrypt. Tajemství v env proměnných. Parametrizované dotazy. Bearer token autentizace pro admin endpointy. Grafana Faro monitoring.                    |
+| Čl. 21    | Bezpečnostní opatření: šifrování, řízení přístupu, hlášení incidentů | ✅   | HTTPS přes Traefik/Let's Encrypt. Tajemství v env proměnných. Parametrizované dotazy. Bearer token autentizace pro admin endpointy. Grafana Faro monitoring.              |
 
 ## 4. PR 02/2023 — Pravidla IS
 

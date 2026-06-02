@@ -28,9 +28,11 @@ Browser telemetry from `@grafana/faro-web-sdk` is collected at `https://<domain>
 
 **Routing:** Browser → Traefik (`/faro` stripprefix rule) → Alloy port 12347 → Loki
 
-**Query in Grafana:** use the Loki datasource with label selector `{app=~".*alloy.*"}` to find browser telemetry entries (errors, Web Vitals, route navigations).
+**Query in Grafana:** use the Loki datasource with label selector `{app=~".*alloy.*"}` to find browser telemetry
+entries (errors, Web Vitals, route navigations).
 
-**Local dev:** set `VITE_FARO_COLLECTOR_URL=http://localhost:41247/collect` in your local env to enable Faro in development.
+**Local dev:** set `VITE_FARO_COLLECTOR_URL=http://localhost:41247/collect` in your local env to enable Faro in
+development.
 
 ---
 

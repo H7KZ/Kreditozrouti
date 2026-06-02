@@ -450,10 +450,10 @@ useSeoMeta({
 
 All Vite env vars must be prefixed with `VITE_`:
 
-| Variable                   | Default | Purpose                             |
-|----------------------------|---------|-------------------------------------|
-| `VITE_API_URL`             | `/api`  | Axios baseURL                       |
-| `VITE_FARO_COLLECTOR_URL`  | —       | Grafana Faro collector URL (opt-in) |
+| Variable                  | Default | Purpose                             |
+|---------------------------|---------|-------------------------------------|
+| `VITE_API_URL`            | `/api`  | Axios baseURL                       |
+| `VITE_FARO_COLLECTOR_URL` | —       | Grafana Faro collector URL (opt-in) |
 
 ---
 
@@ -463,7 +463,8 @@ Browser telemetry is handled by `@grafana/faro-web-sdk`. `@sentry/vue` has been 
 
 ### Activation
 
-Faro is **opt-in**: it only initialises when `VITE_FARO_COLLECTOR_URL` is set. If the env var is absent, `faroModule.init()` is a no-op. This mirrors the previous Sentry behaviour with `VITE_SENTRY_DSN`.
+Faro is **opt-in**: it only initialises when `VITE_FARO_COLLECTOR_URL` is set. If the env var is absent,
+`faroModule.init()` is a no-op. This mirrors the previous Sentry behaviour with `VITE_SENTRY_DSN`.
 
 ### Initialisation
 
@@ -477,22 +478,25 @@ app.mount('#app')
 
 ### What is captured
 
-| Signal                      | Mechanism                                            |
-|-----------------------------|------------------------------------------------------|
-| JS errors                   | `app.config.errorHandler`                            |
-| Unhandled promise rejections | `window.unhandledrejection` listener                |
-| Vue component errors        | forwarded through `app.config.errorHandler`          |
-| Web Vitals (CLS, LCP, …)   | `@grafana/faro-web-sdk` built-in instrumentation     |
-| Route navigations           | `router.afterEach` pushes a view event to Faro       |
+| Signal                       | Mechanism                                        |
+|------------------------------|--------------------------------------------------|
+| JS errors                    | `app.config.errorHandler`                        |
+| Unhandled promise rejections | `window.unhandledrejection` listener             |
+| Vue component errors         | forwarded through `app.config.errorHandler`      |
+| Web Vitals (CLS, LCP, …)     | `@grafana/faro-web-sdk` built-in instrumentation |
+| Route navigations            | `router.afterEach` pushes a view event to Faro   |
 
 ### Filters
 
-Safari injects `<script type="application/ld+json">` tags that trigger spurious script errors. These are filtered out before being sent to the collector.
+Safari injects `<script type="application/ld+json">` tags that trigger spurious script errors. These are filtered out
+before being sent to the collector.
 
 ### Intentional exclusion
 
-`TracingInstrumentation` (distributed tracing) is **not** enabled — it requires a Tempo backend. If Tempo is added in future, re-enable it in `faro.ts`.
+`TracingInstrumentation` (distributed tracing) is **not** enabled — it requires a Tempo backend. If Tempo is added in
+future, re-enable it in `faro.ts`.
 
 ### Local dev
 
-Set `VITE_FARO_COLLECTOR_URL=http://localhost:41247/collect` in your local `.env` to send browser telemetry to the local Alloy instance.
+Set `VITE_FARO_COLLECTOR_URL=http://localhost:41247/collect` in your local `.env` to send browser telemetry to the local
+Alloy instance.

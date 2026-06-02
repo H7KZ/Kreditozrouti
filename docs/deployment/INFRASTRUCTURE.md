@@ -130,10 +130,10 @@ auto-provisioned with Prometheus as the default datasource via `grafana/provisio
 
 ### Services
 
-| Container  | Image                    | Purpose                           |
-|------------|--------------------------|-----------------------------------|
-| `postgres` | `postgres:16-alpine`     | Database                          |
-| `valkey`   | `valkey/valkey:8-alpine` | Redis-compatible cache            |
+| Container  | Image                    | Purpose                |
+|------------|--------------------------|------------------------|
+| `postgres` | `postgres:16-alpine`     | Database               |
+| `valkey`   | `valkey/valkey:8-alpine` | Redis-compatible cache |
 
 ---
 

@@ -191,7 +191,8 @@ const requestWorker = new Worker(
 )
 ```
 
-This emits a structured `job.completed` or `job.failed` log line with `duration_ms`, `job_id`, `job_name`, and `attempt`. If the handler throws, the error is logged before being re-thrown (so BullMQ still sees the failure).
+This emits a structured `job.completed` or `job.failed` log line with `duration_ms`, `job_id`, `job_name`, and
+`attempt`. If the handler throws, the error is logged before being re-thrown (so BullMQ still sees the failure).
 
 ## QueueService
 

@@ -36,7 +36,9 @@ individual course scrape jobs.
 }
 ```
 
-> **Note:** Manual triggers via `ScraperService.enqueueCatalogScrape` populate `allowed_idents` from `DISTINCT course_ident` in `insis_study_plans_courses`. Scheduled runs (nightly cron) omit `allowed_idents` and scrape everything — BullMQ schedulers store static job data at definition time, making per-run DB queries impractical.
+> **Note:** Manual triggers via `ScraperService.enqueueCatalogScrape` populate `allowed_idents` from
+`DISTINCT course_ident` in `insis_study_plans_courses`. Scheduled runs (nightly cron) omit `allowed_idents` and scrape
+> everything — BullMQ schedulers store static job data at definition time, making per-run DB queries impractical.
 
 **Flow — Phase 1: Discovery**
 

@@ -11,5 +11,5 @@ global:
 scrape_configs:
   - job_name: 'kreditozrouti-api'
     static_configs:
-      - targets: ['api:80']
+      - targets: [ 'api:80' ]
     metrics_path: '/metrics'

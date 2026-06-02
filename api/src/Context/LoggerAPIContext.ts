@@ -1,5 +1,5 @@
-import { logger } from '@api/logger'
 import RequestContext from '@api/Context/RequestContext'
+import { logger } from '@api/logger'
 
 export interface LoggerWideEvent {
 	method: string

@@ -49,7 +49,8 @@ Requires `.env` (secrets) and `.images` (CI-written: `IMAGE_REGISTRY`, `IMAGE_PR
 
 ## Critical Invariants
 
-**Deploy order on a fresh server:** Traefik → monitoring stack (optional) → GitHub Runner (optional) → app stack. Traefik must
+**Deploy order on a fresh server:** Traefik → monitoring stack (optional) → GitHub Runner (optional) → app stack.
+Traefik must
 exist before any app stack because it creates `traefik-network`.
 
 **`deployment/.env` is gitignored.** Secrets never go in compose files. The file lives in `~/variables/.env.prod` on the
@@ -73,10 +74,10 @@ working directory doesn't matter; only the script's own location does.
 
 ## Key Docs
 
-| Topic                                        | Doc                                                       |
-|----------------------------------------------|-----------------------------------------------------------|
-| System architecture, containers, networks    | [docs/architecture/](../docs/architecture/README.md)      |
-| Docker multi-stage builds, GHCR registry     | [DOCKER.md](../docs/deployment/DOCKER.md)                 |
-| GitHub Actions workflows, secrets, rollback  | [CICD.md](../docs/deployment/CICD.md)                     |
-| Traefik, networking, env vars       | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md) |
+| Topic                                          | Doc                                                       |
+|------------------------------------------------|-----------------------------------------------------------|
+| System architecture, containers, networks      | [docs/architecture/](../docs/architecture/README.md)      |
+| Docker multi-stage builds, GHCR registry       | [DOCKER.md](../docs/deployment/DOCKER.md)                 |
+| GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                     |
+| Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md) |
 | Monitoring, backups, security, troubleshooting | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)         |

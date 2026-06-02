@@ -6,7 +6,7 @@ import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestSched
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
-import { withJobLogger, logger } from '@api/logger'
+import { logger, withJobLogger } from '@api/logger'
 import InSISService from '@api/Services/InSISService'
 
 // Queue & Worker Setup

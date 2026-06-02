@@ -201,10 +201,10 @@ Docker network port.
 
 Metrics exposed:
 
-| Metric                          | Type      | Description                                   |
-|---------------------------------|-----------|-----------------------------------------------|
-| `http_requests_total`           | Counter   | Total HTTP requests, labelled by method/route/status |
-| `http_request_duration_seconds` | Histogram | Request latency in seconds                    |
+| Metric                          | Type      | Description                                           |
+|---------------------------------|-----------|-------------------------------------------------------|
+| `http_requests_total`           | Counter   | Total HTTP requests, labelled by method/route/status  |
+| `http_request_duration_seconds` | Histogram | Request latency in seconds                            |
 | Default Node.js metrics         | Various   | Event loop lag, GC, memory, etc. (from `prom-client`) |
 
 **Implementation:** `api/src/metrics.ts` — uses `prom-client`. `metricsMiddleware` is applied globally; `metricsHandler`
