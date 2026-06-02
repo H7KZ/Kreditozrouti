@@ -68,6 +68,61 @@ htpasswd -c ~/.htpasswd admin
 
 ---
 
+## `monitoring.sh`
+
+Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy). Traefik must already be running.
+
+```bash
+./monitoring.sh \
+  --path ~/deployment \
+  --domain kreditozrouti.cz \
+  --project kreditozrouti \
+  --grafana-password secret
+```
+
+**Required flags:**
+
+| Flag                  | Description                                     |
+|-----------------------|-------------------------------------------------|
+| `--path`              | Path to the deployment directory                |
+| `--domain`            | Public domain (used for Grafana + Faro routing) |
+| `--project`           | Project name prefix for Traefik labels          |
+| `--grafana-password`  | Grafana admin password                          |
+
+**Optional flags:**
+
+| Flag               | Default  | Purpose                                    |
+|--------------------|----------|--------------------------------------------|
+| `--grafana-user`   | `admin`  | Grafana admin username                     |
+| `--action`         | `up`     | `up`, `down`, `restart`, `logs`, `status`  |
+
+**Env var equivalents:** `DEPLOYMENT_PATH`, `DOMAIN`, `PROJECT`, `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD`
+
+**Actions:**
+
+```bash
+# Deploy / update
+./monitoring.sh --path ~/deployment --domain example.com --project myproject --grafana-password secret
+
+# Tail logs
+./monitoring.sh ... --action logs
+
+# Status of all containers
+./monitoring.sh ... --action status
+
+# Stop (keeps volumes — data is preserved)
+./monitoring.sh ... --action down
+
+# Restart all services
+./monitoring.sh ... --action restart
+```
+
+After deploy, services are exposed via Traefik at:
+- `https://domain/grafana` — Grafana dashboard
+- `https://domain/faro/collect` — Alloy Faro receiver (browser telemetry)
+
+---
+
 ## `github-runner.sh`
 
 Deploys self-hosted GitHub Actions runners. Runners auto-register to the repository on container startup.
