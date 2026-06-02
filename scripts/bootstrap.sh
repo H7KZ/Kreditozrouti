@@ -89,7 +89,7 @@ main() {
 
     # Step 1: Generate htpasswd
     log ""
-    log "Step 1/3: Generating Traefik dashboard credentials..."
+    log "Step 1/4: Generating Traefik dashboard credentials..."
     if ! command -v htpasswd &>/dev/null; then
         log "htpasswd not found — installing apache2-utils..."
         sudo apt-get install -y apache2-utils
@@ -100,7 +100,7 @@ main() {
 
     # Step 2: Deploy Traefik
     log ""
-    log "Step 2/3: Deploying Traefik..."
+    log "Step 2/4: Deploying Traefik..."
     bash "$SCRIPT_DIR/traefik.sh"
 
     # Step 3: Deploy Monitoring
