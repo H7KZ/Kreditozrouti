@@ -3,257 +3,78 @@
   "uid": "kreditozrouti-api",
   "title": "Kreditožrouti — API",
   "refresh": "30s",
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
+  "time": { "from": "now-1h", "to": "now" },
   "panels": [
     {
-      "id": 1,
-      "title": "Request Rate",
-      "type": "stat",
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 0,
-        "y": 0
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
-      "targets": [
-        {
-          "expr": "sum(rate(http_request_duration_seconds_count[5m]))",
-          "legendFormat": "req/s",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "reqps"
-        }
-      }
+      "id": 1, "title": "Request Rate", "type": "stat",
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "targets": [{ "expr": "sum(rate(http_request_duration_seconds_count[5m]))", "legendFormat": "req/s", "refId": "A" }],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
     },
     {
-      "id": 2,
-      "title": "Error Rate %",
-      "type": "stat",
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 6,
-        "y": 0
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
-      "targets": [
-        {
-          "expr": "sum(rate(http_request_duration_seconds_count{status_code=~\"5..\"}[5m])) / sum(rate(http_request_duration_seconds_count[5m])) * 100",
-          "legendFormat": "error %",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 5
-              },
-              {
-                "color": "red",
-                "value": 10
-              }
-            ]
-          },
-          "color": {
-            "mode": "thresholds"
-          }
-        }
-      }
+      "id": 2, "title": "Error Rate %", "type": "stat",
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "targets": [{ "expr": "sum(rate(http_request_duration_seconds_count{status_code=~\"5..\"}[5m])) / sum(rate(http_request_duration_seconds_count[5m])) * 100", "legendFormat": "error %", "refId": "A" }],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": { "defaults": { "unit": "percent", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 5 }, { "color": "red", "value": 10 }] }, "color": { "mode": "thresholds" } } }
     },
     {
-      "id": 3,
-      "title": "p95 Latency",
-      "type": "gauge",
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 12,
-        "y": 0
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.95, sum by(le)(rate(http_request_duration_seconds_bucket[5m]))) * 1000",
-          "legendFormat": "p95 ms",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "ms",
-          "min": 0,
-          "max": 2000,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "color": {
-            "mode": "thresholds"
-          }
-        }
-      }
+      "id": 3, "title": "p95 Latency", "type": "gauge",
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "targets": [{ "expr": "histogram_quantile(0.95, sum by(le)(rate(http_request_duration_seconds_bucket[5m]))) * 1000", "legendFormat": "p95 ms", "refId": "A" }],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "showThresholdMarkers": true },
+      "fieldConfig": { "defaults": { "unit": "ms", "min": 0, "max": 2000, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 500 }, { "color": "red", "value": 1000 }] }, "color": { "mode": "thresholds" } } }
     },
     {
-      "id": 4,
-      "title": "HTTP Status Breakdown",
-      "type": "timeseries",
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 18,
-        "y": 0
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
-      "targets": [
-        {
-          "expr": "sum by (status_code) (rate(http_request_duration_seconds_count[5m]))",
-          "legendFormat": "{{status_code}}",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "reqps"
-        }
-      }
+      "id": 4, "title": "HTTP Status Breakdown", "type": "timeseries",
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "targets": [{ "expr": "sum by (status_code) (rate(http_request_duration_seconds_count[5m]))", "legendFormat": "{{status_code}}", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
     },
     {
-      "id": 5,
-      "title": "Request Duration Heatmap",
-      "type": "heatmap",
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 8
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
-      "targets": [
-        {
-          "expr": "sum by (le) (rate(http_request_duration_seconds_bucket[5m]))",
-          "legendFormat": "{{le}}",
-          "refId": "A",
-          "format": "heatmap"
-        }
-      ],
-      "options": {
-        "calculate": false,
-        "yAxis": {
-          "unit": "s"
-        },
-        "color": {
-          "mode": "scheme",
-          "scheme": "Oranges"
-        }
-      }
+      "id": 5, "title": "Request Duration Heatmap", "type": "heatmap",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "targets": [{ "expr": "sum by (le) (rate(http_request_duration_seconds_bucket[5m]))", "legendFormat": "{{le}}", "refId": "A", "format": "heatmap" }],
+      "options": { "calculate": false, "yAxis": { "unit": "s" }, "color": { "mode": "scheme", "scheme": "Oranges" } }
     },
     {
-      "id": 6,
-      "title": "Recent Error Logs",
-      "type": "logs",
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 16
-      },
-      "datasource": {
-        "type": "loki",
-        "uid": "Loki"
-      },
+      "id": 6, "title": "Top Routes by Request Rate", "type": "table",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "targets": [{ "expr": "sort_desc(sum by (route, status_code) (rate(http_request_duration_seconds_count[5m])))", "legendFormat": "", "refId": "A", "instant": true, "format": "table" }],
+      "options": { "sortBy": [{ "displayName": "Value", "desc": true }] },
+      "fieldConfig": { "defaults": { "unit": "reqps" } },
+      "transformations": [{ "id": "organize", "options": { "excludeByName": { "Time": true }, "renameByName": { "route": "Route", "status_code": "Status", "Value": "req/s" } } }]
+    },
+    {
+      "id": 7, "title": "Node.js Heap Usage", "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
       "targets": [
-        {
-          "expr": "{service=\"api\", level=\"ERROR\"}",
-          "refId": "A",
-          "maxLines": 50
-        }
+        { "expr": "nodejs_heap_size_used_bytes", "legendFormat": "used", "refId": "A" },
+        { "expr": "nodejs_heap_size_total_bytes", "legendFormat": "total", "refId": "B" }
       ],
-      "options": {
-        "showTime": true,
-        "showLabels": false,
-        "showCommonLabels": false,
-        "wrapLogMessage": false,
-        "prettifyLogMessage": false,
-        "enableLogDetails": true,
-        "sortOrder": "Descending",
-        "dedupStrategy": "none"
-      }
+      "fieldConfig": { "defaults": { "unit": "bytes" } }
+    },
+    {
+      "id": 8, "title": "Recent Error Logs", "type": "logs",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 24 },
+      "datasource": { "type": "loki", "uid": "Loki" },
+      "targets": [{ "expr": "{service=\"api\", level=\"ERROR\"}", "refId": "A", "maxLines": 100 }],
+      "options": { "showTime": true, "showLabels": false, "enableLogDetails": true, "sortOrder": "Descending", "dedupStrategy": "none" }
+    },
+    {
+      "id": 9, "title": "Recent Warn Logs", "type": "logs",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 34 },
+      "datasource": { "type": "loki", "uid": "Loki" },
+      "targets": [{ "expr": "{service=\"api\", level=\"WARN\"}", "refId": "A", "maxLines": 50 }],
+      "options": { "showTime": true, "showLabels": false, "enableLogDetails": true, "sortOrder": "Descending", "dedupStrategy": "none" }
     }
   ]
 }
