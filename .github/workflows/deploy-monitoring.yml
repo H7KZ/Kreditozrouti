@@ -1,0 +1,65 @@
+# ==============================================================================
+# Workflow: Deploy Monitoring
+# Description: Uploads monitoring config and redeploys the monitoring stack.
+#              Runs automatically when monitoring config or script changes on main.
+#
+# Required Secrets (repository-level):
+#   SSH_HOST, SSH_USER, SSH_PORT, SSH_PRIVATE_KEY
+#   MONITORING_DOMAIN, MONITORING_PROJECT, GRAFANA_ADMIN_PASSWORD
+# ==============================================================================
+
+name: Deploy Monitoring
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "deployment/monitoring/**"
+      - "scripts/monitoring.sh"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-monitoring
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy Monitoring
+    runs-on: self-hosted
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Upload Monitoring Config
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "deployment/monitoring/"
+          target: "~/deployment/"
+          strip_components: 1
+          overwrite: true
+
+      - name: Deploy Monitoring Stack
+        uses: appleboy/ssh-action@v1.2.4
+        env:
+          DEPLOYMENT_PATH: "$HOME/deployment"
+          DOMAIN: ${{ secrets.MONITORING_DOMAIN }}
+          MONITORING_PROJECT: ${{ secrets.MONITORING_PROJECT }}
+          GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          envs: DEPLOYMENT_PATH,DOMAIN,MONITORING_PROJECT,GRAFANA_ADMIN_PASSWORD
+          script: |
+            set -euo pipefail
+            bash ~/scripts/monitoring.sh
