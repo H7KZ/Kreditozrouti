@@ -54,12 +54,13 @@ jobs:
           DOMAIN: ${{ secrets.MONITORING_DOMAIN }}
           MONITORING_PROJECT: ${{ secrets.MONITORING_PROJECT }}
           GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: DEPLOYMENT_PATH,DOMAIN,MONITORING_PROJECT,GRAFANA_ADMIN_PASSWORD
+          envs: DEPLOYMENT_PATH,DOMAIN,MONITORING_PROJECT,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL
           script: |
             set -euo pipefail
             bash ~/scripts/monitoring.sh
