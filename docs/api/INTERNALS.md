@@ -45,7 +45,6 @@ All clients are module-level singletons, initialized once and shared across the 
 Kysely instance backed by `mysql2` connection pool. Features:
 
 - **Slow query logging:** queries > 1000ms are logged with duration
-- **Sentry span:** each query is wrapped in a Sentry database span
 
 ### Redis (`clients/redis.ts`)
 
@@ -135,7 +134,7 @@ context so that async code can access the `request_id` and other fields via `Req
    the context
 5. On response `finish`:
     - Merge any fields controllers added via `LoggerAPIContext.add()` (which delegates to `RequestContext.add()`)
-    - Emit the accumulated event as a Pino log line
+    - Emit the accumulated event as a Pino log line via `LoggerAPIContext.log`
     - Track error metrics in Redis (hourly bucket + recent error list)
 
 ```typescript
@@ -153,11 +152,17 @@ res.locals.wideEvent = {
 }
 ```
 
-Log emission decision (in `LoggerAPIContext.shouldLog`):
+Log emission uses **level-based routing** (replaces the old `shouldLog` probability sampling):
 
-- Always log if status ≥ 400
-- Always log if duration > 1000ms
-- Otherwise log with 10% probability (sampling in production)
+| Condition          | Level   | Rationale                        |
+|--------------------|---------|----------------------------------|
+| status ≥ 500       | `error` | Server error — always emitted    |
+| status 4xx         | `warn`  | Client error — always emitted    |
+| duration > 1000ms  | `info`  | Slow request — always emitted    |
+| otherwise          | `debug` | Routine — dropped in production  |
+
+`LoggerAPIContext.log` is a Pino child logger (`logger.child({ context: 'http' })`) derived from the root logger in
+`api/src/logger.ts` (which binds `service: 'api'` and `env`).
 
 ### ParserMiddleware (`Middlewares/ParserMiddleware.ts`)
 
@@ -221,14 +226,34 @@ RequestContext.add({user_id: 42, cache_hit: true})
 // 1. Merges all fields from the async context:
 Object.assign(wideEvent, RequestContext.get())
 
-// 2. Emits the accumulated event:
-if (LoggerAPIContext.shouldLog(res)) {
-    LoggerAPIContext.log.info(wideEvent)
-}
+// 2. Emits at the appropriate level:
+LoggerAPIContext.log.error(wideEvent)  // status ≥ 500
+LoggerAPIContext.log.warn(wideEvent)   // status 4xx
+LoggerAPIContext.log.info(wideEvent)   // duration > 1000ms
+LoggerAPIContext.log.debug(wideEvent)  // routine (dropped in prod)
 ```
 
 Fields added via `LoggerAPIContext.add()` are stored in the `AsyncLocalStorage` and merged into the event on finish
 (last write wins for duplicate keys).
+
+### Root logger (`api/src/logger.ts`)
+
+The root pino logger is created once and shared across the process:
+
+```typescript
+import logger from '@api/logger'
+
+// Root logger — binds service: 'api' and env on every line
+logger.info({ msg: 'startup' })
+
+// Context loggers are child loggers derived from root:
+// LoggerAPIContext.log  = logger.child({ context: 'http' })
+// LoggerJobContext.log  = logger.child({ context: 'job' })
+```
+
+`withJobLogger` (exported from `api/src/logger.ts`) wraps BullMQ worker processors — it creates the job-scoped
+AsyncLocalStorage context and emits the wide-event on completion, equivalent to what `ScraperRequestHandler` does in
+the scraper.
 
 ---
 
@@ -279,15 +304,12 @@ Re-exported from `@shared/domain/timetable`. Used by the client to sort or compa
 
 ---
 
-## Sentry Integration (`sentry.ts`)
+## Logging Infrastructure
 
-```typescript
-withSentryJobHandler(queueName, handler)
-// Wraps a BullMQ job handler function
-// Creates a Sentry transaction: op='queue.process', name=queueName
-// Attaches job.id and job.data as context
-// Captures error before re-throwing (so BullMQ still sees the failure)
-```
+All logging is handled by **Pino** via the root logger at `api/src/logger.ts`. There is no Sentry or Morgan dependency.
 
-Sentry is initialized from `Config.sentry.dsn`. If DSN is absent, the wrapper is a no-op.
+- **Root logger** — binds `service: 'api'` and `env` on every line; level defaults to `debug` locally, `info` in production.
+- **HTTP logging** — `LoggerAPIContext.log` (child `{ context: 'http' }`), emitted by `LoggerMiddleware` using level-based routing (see above).
+- **Job logging** — `LoggerJobContext.log` (child `{ context: 'job' }`), wrapped by `withJobLogger` for BullMQ workers.
+- **Structured JSON** — output goes to stdout; Alloy reads Docker stdout and ships to Loki.
 

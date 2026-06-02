@@ -30,7 +30,7 @@ startWorker():
   4. (ready to process jobs)
 ```
 
-If any step throws, the process logs the error, optionally flushes to Sentry, disconnects Redis, and exits with code 1.
+If any step throws, the process logs the error, disconnects Redis, and exits with code 1.
 
 ---
 
@@ -63,8 +63,21 @@ LoggerJobContext.log.info(LoggerJobContext.get())
 // → {"level":"INFO","time":"...","job_id":"...","course_id":42,"status":"success","duration_ms":1234,...}
 ```
 
-**Why wide events?** A single JSON object is far easier to query in log aggregators (Grafana, Datadog, etc.) than
+**Why wide events?** A single JSON object is far easier to query in log aggregators (Grafana, Loki, etc.) than
 scattered multi-line logs. You can filter `status=failed AND attempt>2` with a single index scan.
+
+### Root logger (`scraper/src/logger.ts`)
+
+A Pino root logger is created once and binds `service: 'scraper'` on every line. `LoggerJobContext.log` is a child
+logger derived from this root — no separate logger instantiation is needed in individual jobs.
+
+```typescript
+// Root logger (scraper/src/logger.ts) — binds service: 'scraper'
+// LoggerJobContext.log = logger.child({ context: 'job' })
+```
+
+No wrapper function is needed: `ScraperRequestHandler` owns the full job lifecycle (AsyncLocalStorage setup,
+field accumulation, final emit) directly.
 
 ### `JobWideEvent` interface
 
@@ -87,7 +100,8 @@ interface JobWideEvent {
 }
 ```
 
-**Pino** is used as the underlying logger with ISO timestamps and uppercase level labels.
+**Pino** is used as the underlying logger with ISO timestamps and uppercase level labels. Output is structured JSON to
+stdout; Alloy reads Docker stdout and ships to Loki.
 
 ---
 
@@ -282,21 +296,4 @@ Config.isEnvProduction()   // env === 'production' | 'prod'
 REDIS_URI       — Redis connection string (e.g. redis://localhost:46379)
 REDIS_PASSWORD  — Optional Redis password
 ENV             — Runtime environment (default: 'development')
-SENTRY_DSN      — Optional Sentry DSN
-SENTRY_RELEASE  — Optional release identifier for Sentry
 ```
-
----
-
-## Sentry (`sentry.ts`)
-
-Initialized once per process. Traces 10% of jobs in production, 100% in other environments.
-
-`withSentryJobHandler(jobName, handler)` wraps any BullMQ job processor:
-
-1. Opens a Sentry span (`op: 'queue.process'`)
-2. Attaches job name, id, and data as context
-3. On error: captures the exception with `jobName` and `jobId` tags, then re-throws
-4. Always ends the span and clears job context
-
-The re-throw ensures BullMQ still sees the failure and applies its retry/failure logic correctly.
