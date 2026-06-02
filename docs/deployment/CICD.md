@@ -62,6 +62,46 @@ Same structure as production but:
 
 ---
 
+### `deploy-traefik.yml` — Traefik reverse proxy
+
+**Trigger:** Push to `main` touching `deployment/traefik/**` or `scripts/traefik.sh`, or manual `workflow_dispatch`.
+
+**Steps:**
+1. Upload `deployment/traefik/` to `~/deployment/traefik/` on the VPS
+2. Write `TRAEFIK_HTPASSWD` secret to `~/.htpasswd` (600 perms)
+3. SSH → run `~/scripts/traefik.sh` with secrets passed as env vars
+
+**Required repository secrets:** `TRAEFIK_DOMAIN`, `TRAEFIK_HTPASSWD`, `CF_API_EMAIL`, `CF_DNS_API_TOKEN`, `ACME_EMAIL`
+
+Generate `TRAEFIK_HTPASSWD` with: `htpasswd -nb admin yourpassword`
+
+---
+
+### `deploy-monitoring.yml` — Monitoring stack
+
+**Trigger:** Push to `main` touching `deployment/monitoring/**` or `scripts/monitoring.sh`, or manual `workflow_dispatch`.
+
+**Steps:**
+1. Upload `deployment/monitoring/` to `~/deployment/monitoring/` on the VPS
+2. SSH → run `~/scripts/monitoring.sh` with secrets passed as env vars
+
+**Required repository secrets:** `MONITORING_DOMAIN`, `MONITORING_PROJECT`, `GRAFANA_ADMIN_PASSWORD`
+
+---
+
+### Environment secrets: `ENV_FILE`
+
+The `deploy-development.yml` and `deploy-production.yml` workflows read the app `.env` from a GitHub Environment Secret called `ENV_FILE` — no manually-placed file on the server is needed.
+
+**To update an env var:** GitHub → Settings → Environments → `development` (or `production`) → edit `ENV_FILE` → next deploy picks it up.
+
+| Environment | Secret | Contents |
+|---|---|---|
+| `development` | `ENV_FILE` | Full `.env.dev` file content |
+| `production` | `ENV_FILE` | Full `.env.prod` file content |
+
+---
+
 ## Required GitHub Secrets
 
 Configure in **Settings → Secrets and variables → Actions**:

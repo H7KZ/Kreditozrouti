@@ -4,6 +4,43 @@ Scripts for provisioning server infrastructure: Docker, Traefik, and GitHub Acti
 
 ---
 
+## Bootstrap
+
+For fresh server setup, use `bootstrap.sh` with a config file instead of running scripts with individual flags.
+
+### Setup
+
+```bash
+# 1. Install Docker (requires sudo, one-time)
+sudo bash ~/scripts/install-docker.sh
+# Log out and back in after installation
+
+# 2. Configure
+cp ~/scripts/server.conf.example ~/scripts/server.conf
+nano ~/scripts/server.conf   # fill in all values
+
+# 3. Bootstrap everything
+bash ~/scripts/bootstrap.sh
+```
+
+`bootstrap.sh` runs: generate htpasswd → `traefik.sh` → `monitoring.sh` → `github-runner.sh`
+
+---
+
+## Shared Config File (`server.conf`)
+
+All scripts source `scripts/server.conf` automatically when present. CLI flags remain valid as explicit overrides (most specific wins: config → env var → CLI flag).
+
+`server.conf` is gitignored. `server.conf.example` is the committed template — copy and fill it in.
+
+**Variable namespacing:** `PROJECT` would conflict between monitoring and runner. Use:
+- `MONITORING_PROJECT` for `monitoring.sh`
+- `RUNNER_PROJECT` for `github-runner.sh`
+
+Both scripts fall back to `PROJECT` if the namespaced var is not set.
+
+---
+
 ## `install-docker.sh`
 
 Installs Docker Engine on Ubuntu 20.04+ / Debian 11+. Run once on a fresh server.
