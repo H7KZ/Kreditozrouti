@@ -56,6 +56,11 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 		if (dbDate === course.last_modified_date) {
 			LoggerJobContext.add({ skipped_unchanged: true })
+			await mysql
+				.updateTable(CourseTable._table)
+				.set({ last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ') })
+				.where('id', '=', course.id)
+				.execute()
 			return
 		}
 	}
@@ -93,7 +98,8 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			last_modified_by: course.last_modified_by,
 			study_load: course.study_load ? JSON.stringify(course.study_load) : null,
 			literature_required: course.literature_required,
-			literature_recommended: course.literature_recommended
+			literature_recommended: course.literature_recommended,
+			last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
