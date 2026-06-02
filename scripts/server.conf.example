@@ -4,7 +4,7 @@
 # server.conf is gitignored — never commit it.
 #
 # Used by: traefik.sh, monitoring.sh, github-runner.sh, bootstrap.sh
-# All variables are optional if you pass CLI flags instead.
+# Variables can also be set as environment variables (env var takes precedence).
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
@@ -47,7 +47,6 @@ DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/..."  # Discord webhook fo
 
 GITHUB_REPO_URL="https://github.com/ORG/REPO"   # Repository URL (must match https://github.com/owner/repo)
 GITHUB_ACCESS_TOKEN="your-pat-token"             # Personal Access Token (repo scope)
-RUNNER_PROJECT="github"                          # Docker Compose project name for runners
 RUNNER_REPLICAS="2"                              # Number of runner instances
 RUNNER_LABELS="self-hosted,linux,x64"            # Runner labels (comma-separated)
 

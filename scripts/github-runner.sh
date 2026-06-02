@@ -15,14 +15,13 @@ set -euo pipefail
 #   GITHUB_ACCESS_TOKEN   Personal Access Token (repo scope)
 #
 # Optional:
-#   RUNNER_PROJECT        Docker Compose project name (default: github)
 #   RUNNER_REPLICAS       Number of runner instances (default: 2)
 #   RUNNER_LABELS         Additional labels, comma-separated
 # ==============================================================================
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
-readonly STACK_NAME="github-runner"
+readonly STACK_NAME="global"
 
 source "$SCRIPT_DIR/lib.sh"
 
@@ -67,7 +66,7 @@ main() {
 
     export GITHUB_REPO_URL
     export GITHUB_ACCESS_TOKEN
-    export PROJECT="${RUNNER_PROJECT:-github}"
+    export PROJECT="$STACK_NAME"
     export RUNNER_REPLICAS="$replicas"
     export RUNNER_LABELS="$labels"
 

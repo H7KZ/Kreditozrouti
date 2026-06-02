@@ -20,16 +20,16 @@ set -euo pipefail
 #   DISCORD_WEBHOOK_URL   Discord webhook for Grafana alerts
 #
 # Operational commands (use docker compose directly):
-#   docker compose -p monitoring logs -f
-#   docker compose -p monitoring ps
-#   docker compose -p monitoring down
+#   docker compose -p global logs -f
+#   docker compose -p global ps
+#   docker compose -p global down
 #
 # Deploy order: Traefik → this script → app stack
 # ==============================================================================
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
-readonly STACK_NAME="monitoring"
+readonly STACK_NAME="global"
 
 source "$SCRIPT_DIR/lib.sh"
 
@@ -76,7 +76,7 @@ main() {
         -f "$networks_config" \
         -f "$volumes_config" \
         -f "$compose_file" \
-        up -d --remove-orphans
+        up -d
 
     log_success "=========================================="
     log_success "Monitoring Stack Deployed"
