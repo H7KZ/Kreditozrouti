@@ -13,7 +13,6 @@ set -euo pipefail
 # Required variables:
 #   DEPLOYMENT_PATH       Path to deployment directory
 #   DOMAIN                Public domain for Grafana + Faro routing
-#   MONITORING_PROJECT    Project name prefix for Traefik labels
 #   GRAFANA_ADMIN_PASSWORD  Grafana admin password
 #
 # Optional:
@@ -43,13 +42,12 @@ main() {
 
     [[ -z "${DEPLOYMENT_PATH:-}" ]]       && { log_error "DEPLOYMENT_PATH not set — add to server.conf";       exit 1; }
     [[ -z "${DOMAIN:-}" ]]                && { log_error "DOMAIN not set — add to server.conf";                exit 1; }
-    [[ -z "${MONITORING_PROJECT:-}" ]]    && { log_error "MONITORING_PROJECT not set — add to server.conf";    exit 1; }
     [[ -z "${GRAFANA_ADMIN_PASSWORD:-}" ]] && { log_error "GRAFANA_ADMIN_PASSWORD not set — add to server.conf"; exit 1; }
 
     [[ -d "$DEPLOYMENT_PATH" ]] || { log_error "Deployment directory not found: $DEPLOYMENT_PATH"; exit 1; }
 
     export DOMAIN
-    export PROJECT="${MONITORING_PROJECT}"
+    export PROJECT="$STACK_NAME"
     export GRAFANA_ADMIN_USER="${GRAFANA_ADMIN_USER:-admin}"
     export GRAFANA_ADMIN_PASSWORD
     export DISCORD_WEBHOOK_URL="${DISCORD_WEBHOOK_URL:-}"
@@ -59,7 +57,6 @@ main() {
     log "=========================================="
     log "Path:             $DEPLOYMENT_PATH"
     log "Domain:           $DOMAIN"
-    log "Project:          $PROJECT"
     log "Grafana user:     $GRAFANA_ADMIN_USER"
     log "Grafana password: ${GRAFANA_ADMIN_PASSWORD:0:3}..."
     log "=========================================="

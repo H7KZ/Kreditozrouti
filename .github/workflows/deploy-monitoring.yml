@@ -5,7 +5,7 @@
 #
 # Required Secrets (repository-level):
 #   SSH_HOST, SSH_USER, SSH_PORT, SSH_PRIVATE_KEY
-#   MONITORING_DOMAIN, MONITORING_PROJECT, GRAFANA_ADMIN_PASSWORD
+#   MONITORING_DOMAIN, GRAFANA_ADMIN_PASSWORD, DISCORD_WEBHOOK_URL
 # ==============================================================================
 
 name: Deploy Monitoring
@@ -52,7 +52,6 @@ jobs:
         env:
           DEPLOYMENT_PATH: "$HOME/deployment"
           DOMAIN: ${{ secrets.MONITORING_DOMAIN }}
-          MONITORING_PROJECT: ${{ secrets.MONITORING_PROJECT }}
           GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         with:
@@ -60,7 +59,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: DEPLOYMENT_PATH,DOMAIN,MONITORING_PROJECT,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL
+          envs: DEPLOYMENT_PATH,DOMAIN,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL
           script: |
             set -euo pipefail
             bash ~/scripts/monitoring.sh

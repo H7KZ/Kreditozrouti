@@ -88,8 +88,7 @@ Generate `TRAEFIK_HTPASSWD` with: `htpasswd -nb admin yourpassword`
 1. Upload `deployment/monitoring/` to `~/deployment/monitoring/` on the VPS
 2. SSH → run `~/scripts/monitoring.sh` with secrets passed as env vars
 
-**Required repository secrets:** `MONITORING_DOMAIN`, `MONITORING_PROJECT`, `GRAFANA_ADMIN_PASSWORD`,
-`DISCORD_WEBHOOK_URL`
+**Required repository secrets:** `MONITORING_DOMAIN`, `GRAFANA_ADMIN_PASSWORD`, `DISCORD_WEBHOOK_URL`
 
 ---
 
