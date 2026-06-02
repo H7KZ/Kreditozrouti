@@ -13,7 +13,7 @@ export default function LoggerMiddleware(req: Request, res: Response, next: Next
 		path: req.path,
 		timestamp: new Date().toISOString(),
 		environment: process.env.NODE_ENV ?? 'local',
-		service: 'kreditozrouti-api'
+		service: 'api'
 	}
 
 	res.locals.wideEvent = wideEvent
@@ -31,15 +31,19 @@ export default function LoggerMiddleware(req: Request, res: Response, next: Next
 				Object.assign(wideEvent, RequestContext.get())
 				wideEvent.status_code = res.statusCode
 
-				if (LoggerAPIContext.shouldLog(res)) {
-					if (res.statusCode >= 500) {
-						LoggerAPIContext.log.error(wideEvent)
-					} else if (res.statusCode >= 400) {
-						LoggerAPIContext.log.warn(wideEvent)
-					} else {
-						LoggerAPIContext.log.info(wideEvent)
-					}
-				}
+				// Level-based routing — replaces random shouldLog sampling:
+				// - error  → 5xx (always logged in production)
+				// - warn   → 4xx (always logged in production)
+				// - info   → slow requests >1s (always logged in production)
+				// - debug  → routine requests (dropped in production by level: 'info')
+				if (res.statusCode >= 500)
+					LoggerAPIContext.log.error(wideEvent, 'http.request')
+				else if (res.statusCode >= 400)
+					LoggerAPIContext.log.warn(wideEvent, 'http.request')
+				else if ((wideEvent.duration_ms ?? 0) > 1000)
+					LoggerAPIContext.log.info(wideEvent, 'http.slow')
+				else
+					LoggerAPIContext.log.debug(wideEvent, 'http.request')
 
 				// Track error metrics in Redis — fire and forget
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function

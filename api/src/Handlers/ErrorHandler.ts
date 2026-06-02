@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { ApiError } from '@api/Errors'
+import { logger } from '@api/logger'
 
 /**
  * Global Express error handling middleware.
@@ -17,7 +18,7 @@ export function ErrorHandler(err: unknown, _req: Request, res: Response, _next: 
 		return
 	}
 
-	console.error(err)
+	logger.error({ err }, 'express.unhandled_error')
 	res.status(500).json({
 		type: 'INTERNAL',
 		message: err instanceof Error ? err.message : 'Internal server error',
