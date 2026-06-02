@@ -4,6 +4,7 @@ import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
+import { redis } from '@scraper/clients'
 import { QueueService } from '@scraper/Services/QueueService'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
@@ -23,7 +24,11 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
     // Fetch initial faculty list
     const initialResult = await client.get<string>(Config.insis.studyPlansUrl)
 
-    if (!initialResult.success) return null
+    if (!initialResult.success) {
+        redis.incr('metrics:scraper:silent_failures:study_plans').catch(() => {})
+        redis.expire('metrics:scraper:silent_failures:study_plans', 604800).catch(() => {})
+        return null
+    }
 
     let faculties = ExtractInSISStudyPlanService.extractFaculties(initialResult.data)
 
