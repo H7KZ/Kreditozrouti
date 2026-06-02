@@ -11,6 +11,8 @@ ingester:
       replication_factor: 1
   chunk_idle_period: 5m
   chunk_retain_period: 30s
+  wal:
+    dir: /loki/wal
 
 schema_config:
   configs:
@@ -38,3 +40,4 @@ compactor:
   compaction_interval: 10m
   retention_enabled: true
   retention_delete_delay: 2h
+  delete_request_store: filesystem
