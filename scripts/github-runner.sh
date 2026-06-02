@@ -109,11 +109,18 @@ validate_number() {
 # ------------------------------------------------------------------------------
 
 main() {
+    # Load config file if present (CLI flags override)
+    readonly CONFIG_FILE="$SCRIPT_DIR/server.conf"
+    if [[ -f "$CONFIG_FILE" ]]; then
+        # shellcheck source=/dev/null
+        source "$CONFIG_FILE"
+    fi
+
     # Default values from environment
     local deployment_path="${DEPLOYMENT_PATH:-}"
     local repo_url="${GITHUB_REPO_URL:-}"
     local access_token="${GITHUB_ACCESS_TOKEN:-}"
-    local project="${PROJECT:-github}"
+    local project="${RUNNER_PROJECT:-${PROJECT:-github}}"
     local replicas="${RUNNER_REPLICAS:-2}"
     local extra_labels="${RUNNER_LABELS:-}"
 
