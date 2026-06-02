@@ -7,7 +7,6 @@ export interface LoggerWideEvent {
 
 	timestamp: string
 	environment: string
-	service: string
 
 	duration_ms?: number
 	status_code?: number
