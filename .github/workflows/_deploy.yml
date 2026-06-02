@@ -212,13 +212,28 @@ jobs:
           IMG_REGISTRY: ${{ env.REGISTRY }}
           IMG_PREFIX: ${{ steps.vars.outputs.image_prefix }}
           IMG_TAG: ${{ steps.vars.outputs.image_tag }}
-          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE }}
+          # Non-sensitive config — stored as GitHub Variables (readable in UI)
+          APP_PROJECT: ${{ vars.PROJECT }}
+          APP_DOMAIN: ${{ vars.DOMAIN }}
+          APP_API_ALLOWED_ORIGINS: ${{ vars.API_ALLOWED_ORIGINS }}
+          APP_VITE_API_URL: ${{ vars.VITE_API_URL }}
+          APP_VITE_FARO_COLLECTOR_URL: ${{ vars.VITE_FARO_COLLECTOR_URL }}
+          APP_MYSQL_USER: ${{ vars.MYSQL_USER }}
+          APP_MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
+          APP_REDIS_URI: ${{ vars.REDIS_URI }}
+          # Sensitive credentials — stored as GitHub Secrets (masked)
+          APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
+          APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
+          APP_MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          APP_MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          APP_MYSQL_URI: ${{ secrets.MYSQL_URI }}
+          APP_REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,ENV_FILE_CONTENT
+          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_PROJECT,APP_DOMAIN,APP_API_ALLOWED_ORIGINS,APP_VITE_API_URL,APP_VITE_FARO_COLLECTOR_URL,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_REDIS_URI,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_PASSWORD
           script: |
             set -euo pipefail
 
@@ -231,7 +246,22 @@ jobs:
 
             echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
 
-            printf '%s\n' "$ENV_FILE_CONTENT" > "$VERSION_DIR/.env"
+            {
+              echo "PROJECT=$APP_PROJECT"
+              echo "DOMAIN=$APP_DOMAIN"
+              echo "API_ALLOWED_ORIGINS=$APP_API_ALLOWED_ORIGINS"
+              echo "VITE_API_URL=$APP_VITE_API_URL"
+              echo "VITE_FARO_COLLECTOR_URL=$APP_VITE_FARO_COLLECTOR_URL"
+              echo "MYSQL_USER=$APP_MYSQL_USER"
+              echo "MYSQL_DATABASE=$APP_MYSQL_DATABASE"
+              echo "REDIS_URI=$APP_REDIS_URI"
+              echo "API_SESSION_SECRET=$APP_API_SESSION_SECRET"
+              echo "API_COMMAND_TOKEN=$APP_API_COMMAND_TOKEN"
+              echo "MYSQL_PASSWORD=$APP_MYSQL_PASSWORD"
+              echo "MYSQL_ROOT_PASSWORD=$APP_MYSQL_ROOT_PASSWORD"
+              echo "MYSQL_URI=$APP_MYSQL_URI"
+              echo "REDIS_PASSWORD=$APP_REDIS_PASSWORD"
+            } > "$VERSION_DIR/.env"
             chmod 600 "$VERSION_DIR/.env"
 
             printf 'IMAGE_REGISTRY="%s"\nIMAGE_PREFIX="%s"\nIMAGE_TAG="%s"\n' \
