@@ -1,5 +1,6 @@
+import { scraper } from '@api/bullmq'
 import type { NextFunction, Request, Response } from 'express'
-import { collectDefaultMetrics, Histogram, Registry } from 'prom-client'
+import { collectDefaultMetrics, Gauge, Histogram, Registry } from 'prom-client'
 
 const register = new Registry()
 
@@ -11,6 +12,26 @@ const httpDuration = new Histogram({
 	labelNames: ['method', 'route', 'status_code'] as const,
 	buckets: [0.01, 0.05, 0.1, 0.3, 0.5, 1, 2, 5],
 	registers: [register]
+})
+
+new Gauge({
+	name: 'bullmq_queue_depth',
+	help: 'BullMQ queue job count by queue and status',
+	labelNames: ['queue', 'status'] as const,
+	registers: [register],
+	async collect() {
+		const queues = [scraper.queue.request, scraper.queue.response]
+		for (const queue of queues) {
+			try {
+				const counts: Record<string, number> = await queue.getJobCounts('waiting', 'active', 'failed', 'delayed')
+				for (const [status, count] of Object.entries(counts)) {
+					this.labels(queue.name, status).set(count)
+				}
+			} catch {
+				// queue not ready yet
+			}
+		}
+	}
 })
 
 export function metricsMiddleware(req: Request, res: Response, next: NextFunction): void {
