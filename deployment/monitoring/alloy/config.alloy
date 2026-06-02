@@ -76,6 +76,32 @@ faro.receiver "browser" {
   }
 
   output {
-    logs = [loki.write.default.receiver]
+    logs = [loki.process.faro_labels.receiver]
   }
+}
+
+// Enrich Faro log lines before writing to Loki.
+// Faro lines are logfmt (key=value). We add a static app label and
+// promote the `kind` field (exception/event/log/measurement) to a
+// stream label so dashboards can filter by {app="kreditozrouti", kind="exception"}.
+loki.process "faro_labels" {
+  stage.static_labels {
+    values = {
+      app = "kreditozrouti",
+    }
+  }
+
+  stage.logfmt {
+    mapping = {
+      "kind" = "kind",
+    }
+  }
+
+  stage.labels {
+    values = {
+      kind = "",
+    }
+  }
+
+  forward_to = [loki.write.default.receiver]
 }
