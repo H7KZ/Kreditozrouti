@@ -1,7 +1,7 @@
 import cluster from 'cluster'
 import scraper from '@scraper/bullmq'
 import { redis } from '@scraper/clients'
-import sentry from '@scraper/sentry'
+import { logger } from '@scraper/logger'
 
 const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
@@ -10,42 +10,36 @@ const numWorkers = specifiedInstances ? parseInt(specifiedInstances) : 1
 // Cluster management
 
 if (cluster.isPrimary && numWorkers > 1) {
-    console.log(`🚀  [Scraper] Master process ${process.pid} is running`)
-    console.log(`⚙️  [Scraper] Forking ${numWorkers} workers...`)
+	logger.info({ pid: process.pid }, 'scraper.cluster_primary_started')
+	logger.info({ workers: numWorkers }, 'scraper.forking_workers')
 
-    for (let i = 0; i < numWorkers; i++) {
-        cluster.fork()
-    }
+	for (let i = 0; i < numWorkers; i++) {
+		cluster.fork()
+	}
 
-    cluster.on('exit', worker => {
-        console.log(`❌  [Scraper] Worker ${worker.process.pid} died. Restarting...`)
-        cluster.fork()
-    })
+	cluster.on('exit', worker => {
+		logger.warn({ pid: worker.process.pid }, 'scraper.worker_died_restarting')
+		cluster.fork()
+	})
 } else {
-    startWorker().then(() => {
-        console.log(`🚀  [Scraper] Worker process ${process.pid} started`)
-    })
+	startWorker().then(() => {
+		logger.info({ pid: process.pid }, 'scraper.worker_started')
+	})
 }
 
 // Worker startup
 
 async function startWorker(): Promise<void> {
-    try {
-        await redis.ping()
-        console.log('Connected to Redis successfully.')
+	try {
+		await redis.ping()
+		logger.info('redis.connected')
 
-        scraper.init()
-        await scraper.waitForQueues()
-        console.log('Scraper service is up and running.')
-    } catch (error) {
-        console.error('Failed to start the server:', error)
-
-        if (sentry.isEnabled()) {
-            sentry.captureException(error)
-            await sentry.flush(2000)
-        }
-
-        redis.disconnect()
-        process.exit(1)
-    }
+		scraper.init()
+		await scraper.waitForQueues()
+		logger.info('scraper.ready')
+	} catch (error) {
+		logger.fatal({ err: error }, 'scraper.startup_failed')
+		redis.disconnect()
+		process.exit(1)
+	}
 }
