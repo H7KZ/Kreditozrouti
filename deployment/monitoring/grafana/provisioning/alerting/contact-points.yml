@@ -1,0 +1,17 @@
+# ==============================================================================
+# Grafana Alerting: Contact Points
+# Provisions a Discord webhook contact point.
+# DISCORD_WEBHOOK_URL is injected via the Grafana container's environment.
+# ==============================================================================
+
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: discord
+    receivers:
+      - uid: discord-webhook
+        type: discord
+        settings:
+          url: ${DISCORD_WEBHOOK_URL}
+        disableResolveMessage: false
