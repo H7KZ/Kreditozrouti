@@ -1,6 +1,7 @@
 .vscode
 
 .env
+scripts/server.conf
 
 /.idea
 

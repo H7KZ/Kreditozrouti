@@ -1,0 +1,52 @@
+# ==============================================================================
+# Server Configuration
+# Copy this file to server.conf and fill in your values.
+# server.conf is gitignored — never commit it.
+#
+# Used by: traefik.sh, monitoring.sh, github-runner.sh, bootstrap.sh
+# All variables are optional if you pass CLI flags instead.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Global
+# Used by: all scripts
+# ------------------------------------------------------------------------------
+
+DEPLOYMENT_PATH="$HOME/deployment"
+
+# ------------------------------------------------------------------------------
+# Traefik
+# Used by: traefik.sh
+# Purpose: Reverse proxy with Cloudflare DNS-01 TLS
+# ------------------------------------------------------------------------------
+
+TRAEFIK_DOMAIN="traefik.yourdomain.com"      # Traefik dashboard domain
+TRAEFIK_ADMIN_USER="admin"                   # Dashboard basic-auth username
+TRAEFIK_ADMIN_PASSWORD="changeme"            # Dashboard basic-auth password (plaintext — bootstrap hashes it)
+TRAEFIK_CREDENTIALS_PATH="$HOME/.htpasswd"   # Where to store the generated htpasswd file
+CF_API_EMAIL="your@email.com"                # Cloudflare account email
+CF_DNS_API_TOKEN="your-cloudflare-token"     # Cloudflare API token (Zone → DNS → Edit)
+ACME_EMAIL="your@email.com"                  # Let's Encrypt notification email
+
+# ------------------------------------------------------------------------------
+# Monitoring
+# Used by: monitoring.sh
+# Purpose: Prometheus, Grafana, Loki, Alloy
+# ------------------------------------------------------------------------------
+
+MONITORING_DOMAIN="yourdomain.com"           # Public domain for Grafana and Faro routing
+MONITORING_PROJECT="kreditozrouti"           # Project name prefix for Traefik labels
+GRAFANA_ADMIN_USER="admin"                   # Grafana admin username
+GRAFANA_ADMIN_PASSWORD="changeme"            # Grafana admin password
+
+# ------------------------------------------------------------------------------
+# GitHub Runner
+# Used by: github-runner.sh
+# Purpose: Self-hosted GitHub Actions runners
+# ------------------------------------------------------------------------------
+
+GITHUB_REPO_URL="https://github.com/ORG/REPO"   # Repository URL (must match https://github.com/owner/repo)
+GITHUB_ACCESS_TOKEN="your-pat-token"             # Personal Access Token (repo scope)
+RUNNER_PROJECT="github"                          # Docker Compose project name for runners
+RUNNER_REPLICAS="2"                              # Number of runner instances
+RUNNER_LABELS="self-hosted,linux,x64"            # Runner labels (comma-separated)
