@@ -17,7 +17,6 @@
 #   - MYSQL_*: Database credentials
 #   - REDIS_*: Cache credentials
 #   - API_*: API configuration
-#   - SENTRY_*_DSN: Sentry DSNs for error tracking (optional)
 #   - BULL_BOARD_USERS: htpasswd-format credentials for /bullboard BasicAuth (e.g. admin:$$apr1$$...)
 #
 # Usage: docker compose -f docker-compose.production.yml up -d
@@ -52,8 +51,6 @@ services:
       - MYSQL_URI=${MYSQL_URI}
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - SENTRY_DSN=${SENTRY_API_DSN:-}
-      - SENTRY_RELEASE=${IMAGE_TAG:-latest}
 
     networks:
       - traefik-network
@@ -132,8 +129,6 @@ services:
       - ENV=production
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - SENTRY_DSN=${SENTRY_SCRAPER_DSN:-}
-      - SENTRY_RELEASE=${IMAGE_TAG:-latest}
 
     networks:
       - redis-network
