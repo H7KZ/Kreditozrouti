@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'async_hooks'
-import pino from 'pino'
+import { logger } from '@api/logger'
 
 export interface JobWideEvent {
 	job_id: string
@@ -33,14 +33,7 @@ const LoggerJobContext = {
 		return store ? Object.fromEntries(store) : {}
 	},
 
-	log: pino({
-		formatters: {
-			level: label => {
-				return { level: label.toUpperCase() }
-			}
-		},
-		timestamp: pino.stdTimeFunctions.isoTime
-	})
+	log: logger.child({ context: 'job' })
 }
 
 export default LoggerJobContext

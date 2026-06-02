@@ -1,5 +1,4 @@
-import { Response } from 'express'
-import pino from 'pino'
+import { logger } from '@api/logger'
 import RequestContext from '@api/Context/RequestContext'
 
 export interface LoggerWideEvent {
@@ -24,24 +23,7 @@ const LoggerAPIContext = {
 		RequestContext.add(context)
 	},
 
-	shouldLog: (res: Response): boolean => {
-		const event: LoggerWideEvent = res.locals.wideEvent
-		if (!event) return false
-
-		if ((event.status_code ?? 200) >= 400) return true
-		if ((event.duration_ms ?? 0) > 1000) return true
-
-		return Math.random() < 0.1
-	},
-
-	log: pino({
-		formatters: {
-			level: label => {
-				return { level: label.toUpperCase() }
-			}
-		},
-		timestamp: pino.stdTimeFunctions.isoTime
-	})
+	log: logger.child({ context: 'http' })
 }
 
 export default LoggerAPIContext
