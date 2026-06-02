@@ -162,6 +162,17 @@ services:
       - monitoring-network
       - traefik-network
 
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${PROJECT}-faro.priority=80"
+      - "traefik.http.routers.${PROJECT}-faro.rule=Host(`${DOMAIN}`) && PathPrefix(`/faro`)"
+      - "traefik.http.routers.${PROJECT}-faro.entrypoints=websecure"
+      - "traefik.http.routers.${PROJECT}-faro.tls=true"
+      - "traefik.http.routers.${PROJECT}-faro.tls.certresolver=letsencrypt"
+      - "traefik.http.middlewares.${PROJECT}-faro-strip.stripprefix.prefixes=/faro"
+      - "traefik.http.routers.${PROJECT}-faro.middlewares=${PROJECT}-faro-strip"
+      - "traefik.http.services.${PROJECT}-faro.loadbalancer.server.port=12347"
+
     logging:
       driver: "json-file"
       options:
