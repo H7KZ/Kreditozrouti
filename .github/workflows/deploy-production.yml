@@ -7,7 +7,7 @@
 # Directory Structure on VPS:
 #   ~/versions/production/<tag>/   — versioned deployment files
 #   ~/versions/production/current  — symlink to active version
-#   ~/variables/.env.prod          — environment variables
+#   ENV_FILE (GitHub Environment Secret) — environment variables
 # ==============================================================================
 
 name: Production Deployment
