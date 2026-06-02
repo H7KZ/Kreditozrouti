@@ -209,3 +209,63 @@ services:
           memory: 512M
 
     restart: unless-stopped
+
+  # ================================================================ #
+
+  loki:
+    image: grafana/loki:3
+    container_name: kreditozrouti-loki
+
+    command: -config.file=/etc/loki/loki.yml
+
+    volumes:
+      - ./deployment/monitoring/loki/loki.yml:/etc/loki/loki.yml:ro
+
+    ports:
+      - "43100:3100"
+
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: kreditozrouti-alloy
+
+    command:
+      - run
+      - /etc/alloy/config.alloy
+      - --storage.path=/var/lib/alloy/data
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./deployment/monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
+
+    ports:
+      - "41247:12347"
+
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+
+    restart: unless-stopped
