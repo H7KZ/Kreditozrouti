@@ -96,6 +96,13 @@ EOF
 # ------------------------------------------------------------------------------
 
 main() {
+    # Load config file if present (CLI flags override)
+    readonly CONFIG_FILE="$SCRIPT_DIR/server.conf"
+    if [[ -f "$CONFIG_FILE" ]]; then
+        # shellcheck source=/dev/null
+        source "$CONFIG_FILE"
+    fi
+
     # Default values from environment
     local deployment_path="${DEPLOYMENT_PATH:-}"
     local domain="${TRAEFIK_DOMAIN:-}"
