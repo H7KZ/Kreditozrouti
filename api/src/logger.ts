@@ -31,7 +31,7 @@ export function withJobLogger<T extends { id?: string; name?: string; attemptsMa
 			queue: queueName,
 			job_id: job.id ?? 'unknown',
 			job_name: job.name ?? queueName,
-			attempt: job.attemptsMade ?? 0,
+			attempt: (job.attemptsMade ?? 0) + 1,
 		})
 		const start = Date.now()
 		try {
