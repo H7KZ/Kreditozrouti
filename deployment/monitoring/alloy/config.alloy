@@ -63,5 +63,18 @@ loki.write "default" {
 // ============================================================
 // Grafana Faro receiver
 // Accepts browser telemetry pushed by @grafana/faro-web-sdk.
-// Added in Plan 2 (client migration).
+// Forwards errors, logs, and web vitals to Loki.
+// Browser SDK points to: https://domain/faro/collect (production)
+//                        http://localhost:41247/collect (local dev)
 // ============================================================
+
+faro.receiver "browser" {
+  server {
+    listen_addr          = "0.0.0.0:12347"
+    cors_allowed_origins = ["*"]
+  }
+
+  output {
+    logs = [loki.write.default.receiver]
+  }
+}
