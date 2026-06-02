@@ -35,6 +35,7 @@ validate_config() {
         TRAEFIK_CREDENTIALS_PATH CF_API_EMAIL CF_DNS_API_TOKEN ACME_EMAIL
         DOMAIN MONITORING_PROJECT GRAFANA_ADMIN_PASSWORD
         GITHUB_REPO_URL GITHUB_ACCESS_TOKEN
+        MYSQL_CONTAINER BACKUP_DIR BACKUP_RETENTION_DAYS
     )
 
     for var in "${required_vars[@]}"; do
@@ -110,8 +111,16 @@ main() {
 
     # Step 4: Deploy GitHub Runner
     log ""
-    log "Step 4/4: Deploying GitHub Runner..."
+    log "Step 4/5: Deploying GitHub Runner..."
     bash "$SCRIPT_DIR/github-runner.sh"
+
+    # Step 5: Install backup cron job
+    log ""
+    log "Step 5/5: Installing backup cron job..."
+    mkdir -p "$HOME/logs"
+    (crontab -l 2>/dev/null | grep -v "backup.sh"; \
+     echo "0 2 * * * bash $SCRIPT_DIR/backup.sh >> $HOME/logs/backup.log 2>&1") | crontab -
+    log_success "Backup cron installed (daily at 02:00 → $HOME/logs/backup.log)"
 
     log ""
     log_success "=========================================="

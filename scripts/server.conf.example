@@ -38,6 +38,7 @@ DOMAIN="yourdomain.com"                      # Public domain for Grafana and Far
 MONITORING_PROJECT="kreditozrouti"           # Project name prefix for Traefik labels
 GRAFANA_ADMIN_USER="admin"                   # Grafana admin username
 GRAFANA_ADMIN_PASSWORD="changeme"            # Grafana admin password
+DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/..."  # Discord webhook for alerts (optional)
 
 # ------------------------------------------------------------------------------
 # GitHub Runner
@@ -50,3 +51,13 @@ GITHUB_ACCESS_TOKEN="your-pat-token"             # Personal Access Token (repo s
 RUNNER_PROJECT="github"                          # Docker Compose project name for runners
 RUNNER_REPLICAS="2"                              # Number of runner instances
 RUNNER_LABELS="self-hosted,linux,x64"            # Runner labels (comma-separated)
+
+# ------------------------------------------------------------------------------
+# Backups
+# Used by: backup.sh
+# Purpose: Automated daily MySQL backup via cron
+# ------------------------------------------------------------------------------
+
+MYSQL_CONTAINER="prod-mysql-1"      # Container name — find with: docker ps --format '{{.Names}}'
+BACKUP_DIR="$HOME/backups/mysql"    # Directory to store .sql.gz files
+BACKUP_RETENTION_DAYS="7"           # Delete backups older than this many days
