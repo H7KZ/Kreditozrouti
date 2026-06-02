@@ -72,6 +72,7 @@ services:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
 
     volumes:
       - grafana-data:/var/lib/grafana
@@ -188,3 +189,42 @@ services:
         reservations:
           cpus: "0.05"
           memory: 64M
+
+  # ============================================================================
+  # Host Metrics (node-exporter)
+  # Exposes CPU, memory, disk, and network metrics for the host.
+  # Internal only — Prometheus scrapes it at node-exporter:9100.
+  # ============================================================================
+  node-exporter:
+    image: prom/node-exporter:latest
+    restart: unless-stopped
+
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/host'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host:ro,rslave
+
+    networks:
+      - monitoring-network
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 64M
+        reservations:
+          cpus: "0.05"
+          memory: 32M
