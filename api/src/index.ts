@@ -4,6 +4,7 @@ import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
 import Config, { CheckRequiredEnvironmentVariables, LoadConfig } from '@api/Config/Config'
+import { closeCacheInvalidationSubscriber, initCacheInvalidationSubscriber } from '@api/CacheInvalidationSubscriber'
 import sentry from '@api/sentry'
 import { SQLService } from '@api/Services/SQLService'
 
@@ -56,6 +57,9 @@ async function start() {
 		await redis.ping()
 		console.log('Connected to Redis successfully.')
 
+		await initCacheInvalidationSubscriber()
+		console.log('cache.pubsub_subscriber_ready')
+
 		if (Config.isEmailEnabled()) {
 			const mailVerified = await nodemailer.verify()
 			if (!mailVerified) throw new Error('Nodemailer verification failed')
@@ -76,6 +80,7 @@ async function start() {
 				console.log('Shutting down server...')
 				server.close(async () => {
 					await mysql.destroy()
+					await closeCacheInvalidationSubscriber()
 					redis.disconnect()
 					console.log('Server shut down gracefully')
 					process.exit(0)
