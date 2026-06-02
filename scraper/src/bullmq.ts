@@ -20,8 +20,7 @@ const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, { conn
 
 const requestWorker = new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestHandler, {
     connection: redis.options,
-    concurrency: 5,
-    limiter: { max: 10, duration: 1000 }
+    concurrency: 1
 })
 
 // Scraper object
