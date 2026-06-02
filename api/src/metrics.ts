@@ -1,4 +1,5 @@
 import { scraper } from '@api/bullmq'
+import { redis } from '@api/clients'
 import type { NextFunction, Request, Response } from 'express'
 import { collectDefaultMetrics, Gauge, Histogram, Registry } from 'prom-client'
 
@@ -29,6 +30,24 @@ new Gauge({
 				}
 			} catch {
 				// queue not ready yet
+			}
+		}
+	}
+})
+
+new Gauge({
+	name: 'scraper_silent_failures_total',
+	help: 'Cumulative scraper jobs that caught an error and returned null (silent failures)',
+	labelNames: ['job_type'] as const,
+	registers: [register],
+	async collect() {
+		const jobTypes = ['catalog', 'course', 'study_plan', 'study_plans']
+		for (const jobType of jobTypes) {
+			try {
+				const val = await redis.get(`metrics:scraper:silent_failures:${jobType}`)
+				this.labels(jobType).set(val ? Number(val) : 0)
+			} catch {
+				// redis not ready
 			}
 		}
 	}
