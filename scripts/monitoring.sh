@@ -20,7 +20,7 @@ set -euo pipefail
 # Environment Variables (alternative to flags):
 #   DEPLOYMENT_PATH                 Path to deployment directory
 #   DOMAIN                          Public domain
-#   PROJECT                         Project name prefix for Traefik labels
+#   MONITORING_PROJECT              Project name prefix for Traefik labels (preferred; falls back to PROJECT)
 #   GRAFANA_ADMIN_USER              Grafana admin username
 #   GRAFANA_ADMIN_PASSWORD          Grafana admin password
 #
@@ -93,7 +93,7 @@ Optional:
 Environment Variables:
     DEPLOYMENT_PATH                 Path to deployment directory
     DOMAIN                          Public domain
-    PROJECT                         Project name prefix
+    MONITORING_PROJECT              Project name prefix (preferred; falls back to PROJECT)
     GRAFANA_ADMIN_USER              Grafana admin username
     GRAFANA_ADMIN_PASSWORD          Grafana admin password
 
@@ -120,10 +120,17 @@ EOF
 # ------------------------------------------------------------------------------
 
 main() {
+    # Load config file if present (CLI flags override)
+    readonly CONFIG_FILE="$SCRIPT_DIR/server.conf"
+    if [[ -f "$CONFIG_FILE" ]]; then
+        # shellcheck source=/dev/null
+        source "$CONFIG_FILE"
+    fi
+
     # Default values from environment
     local deployment_path="${DEPLOYMENT_PATH:-}"
     local domain="${DOMAIN:-}"
-    local project="${PROJECT:-}"
+    local project="${MONITORING_PROJECT:-${PROJECT:-}}"
     local grafana_user="${GRAFANA_ADMIN_USER:-admin}"
     local grafana_password="${GRAFANA_ADMIN_PASSWORD:-}"
     local action="up"
