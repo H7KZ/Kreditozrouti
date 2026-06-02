@@ -20,7 +20,7 @@ set -euo pipefail
 #   DEPLOYMENT_PATH         Path to deployment directory
 #   GITHUB_REPO_URL         Repository URL
 #   GITHUB_ACCESS_TOKEN     Personal Access Token
-#   PROJECT                 Project name prefix
+#   RUNNER_PROJECT          Project name prefix (preferred; falls back to PROJECT)
 #   RUNNER_REPLICAS         Number of runners
 #   RUNNER_LABELS           Additional labels
 #
@@ -61,7 +61,7 @@ Environment Variables:
     DEPLOYMENT_PATH         Path to deployment directory
     GITHUB_REPO_URL         Repository URL
     GITHUB_ACCESS_TOKEN     Personal Access Token
-    PROJECT                 Project name prefix
+    RUNNER_PROJECT          Project name prefix (preferred; falls back to PROJECT)
     RUNNER_REPLICAS         Number of runners
     RUNNER_LABELS           Additional labels
 
