@@ -4,6 +4,7 @@ import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
 import Config, { CheckRequiredEnvironmentVariables, LoadConfig } from '@api/Config/Config'
+import { closeCacheInvalidationSubscriber, initCacheInvalidationSubscriber } from '@api/CacheInvalidationSubscriber'
 import { logger } from '@api/logger'
 import { SQLService } from '@api/Services/SQLService'
 
@@ -45,6 +46,9 @@ async function startWorker(): Promise<void> {
 		await redis.ping()
 		logger.info('redis.connected')
 
+		await initCacheInvalidationSubscriber()
+		logger.info('cache.pubsub_subscriber_ready')
+
 		if (Config.isEmailEnabled()) {
 			const mailVerified = await nodemailer.verify()
 			if (!mailVerified) throw new Error('Nodemailer verification failed')
@@ -65,6 +69,7 @@ async function startWorker(): Promise<void> {
 			logger.info('api.shutdown')
 			server.close(async () => {
 				await mysql.destroy()
+				await closeCacheInvalidationSubscriber()
 				redis.disconnect()
 				logger.info('api.stopped')
 				process.exit(0)
