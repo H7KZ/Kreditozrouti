@@ -57,11 +57,11 @@ api/src/
 ├── app.ts                      # Express app: middleware, routing, error handling
 ├── bullmq.ts                   # BullMQ queues, workers, schedulers
 ├── paths.ts                    # Static path helpers
-├── sentry.ts                   # Sentry init + withSentryJobHandler wrapper
+├── logger.ts                   # Root pino logger + withJobLogger wrapper
 ├── types.ts                    # Express.Locals augmentation (wideEvent)
 │
 ├── clients/                    # Infrastructure clients
-│   ├── mysql.ts                # Kysely instance + slow query logging + Sentry
+│   ├── mysql.ts                # Kysely instance + slow query logging
 │   ├── redis.ts                # ioredis instance + createRedisSubscriber()
 │   ├── i18n.ts                 # i18n setup
 │   ├── mailer.ts               # Nodemailer transporter

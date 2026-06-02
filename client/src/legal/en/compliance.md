@@ -63,7 +63,7 @@ maps each applicable article to Kreditožrouti's implementation.
 | Art. 17    | Inform data subjects transparently                                 | ✅     | Lecturers are displayed only within the context of their publicly listed teaching assignments. A disclaimer is shown on the application.                                                         |
 | Art. 19(2) | Publishable data limited to: name, titles, position, teaching      | ✅     | Only lecturer name as a course attribute is displayed, which is explicitly within the permitted scope (subparagraph n: teaching carried out at VŠE).                                             |
 | Art. 20    | Third-party data sharing requires DPO notification                 | N/A    | Kreditožrouti does not share any data with third parties. No analytics, tracking, or external API integrations transmit data externally.                                                         |
-| Art. 21    | Security measures: encryption, access controls, incident reporting | ✅     | HTTPS via Traefik/Let's Encrypt. Environment-based secrets. Parameterized queries. Bearer token authentication for admin endpoints. Sentry error tracking.                                       |
+| Art. 21    | Security measures: encryption, access controls, incident reporting | ✅     | HTTPS via Traefik/Let's Encrypt. Environment-based secrets. Parameterized queries. Bearer token authentication for admin endpoints. Grafana Faro error tracking.                                       |
 
 ## 4. PR 02/2023 — IS Usage Rules
 

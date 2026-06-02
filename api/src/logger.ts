@@ -19,7 +19,7 @@ export const logger = pino({
 /**
  * Wraps a BullMQ job handler with structured lifecycle logging.
  * Logs job.completed or job.failed with duration_ms and job metadata.
- * Replaces withSentryJobHandler — drop-in replacement for the Worker second argument.
+ * Drop-in replacement for the Worker second argument.
  */
 export function withJobLogger<T extends { id?: string; name?: string; attemptsMade?: number }>(
 	queueName: string,

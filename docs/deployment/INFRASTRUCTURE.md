@@ -228,9 +228,8 @@ MYSQL_URI=mysql://kreditozrouti:<password>@mysql:3306/kreditozrouti
 REDIS_URI=redis://redis:6379
 REDIS_PASSWORD=<redis-password>
 
-# Optional — Sentry
-SENTRY_DSN=<sentry-dsn>
-SENTRY_RELEASE=v1.0.0
+# Optional — Faro browser telemetry
+VITE_FARO_COLLECTOR_URL=https://example.com/faro/collect
 
 # Traefik
 CLOUDFLARE_DNS_API_TOKEN=<cloudflare-token>

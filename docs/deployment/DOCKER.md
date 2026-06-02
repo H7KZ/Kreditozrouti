@@ -38,8 +38,7 @@ Stage 1 (builder)
   ├── Install pnpm + dependencies
   ├── Set placeholder env vars:
   │     VITE_API_URL=__VITE_API_URL_PLACEHOLDER__
-  │     VITE_SENTRY_DSN=__VITE_SENTRY_DSN_PLACEHOLDER__
-  │     VITE_SENTRY_RELEASE=__VITE_SENTRY_RELEASE_PLACEHOLDER__
+  │     VITE_FARO_COLLECTOR_URL=__VITE_FARO_COLLECTOR_URL_PLACEHOLDER__
   └── vite build → dist/
 
 Stage 2 (production)
@@ -59,8 +58,7 @@ environment-agnostic:
 find /usr/share/nginx/html -type f -name "*.js" -exec \
   sed -i \
     -e "s|__VITE_API_URL_PLACEHOLDER__|${VITE_API_URL}|g" \
-    -e "s|__VITE_SENTRY_DSN_PLACEHOLDER__|${VITE_SENTRY_DSN}|g" \
-    -e "s|__VITE_SENTRY_RELEASE_PLACEHOLDER__|${VITE_SENTRY_RELEASE}|g" \
+    -e "s|__VITE_FARO_COLLECTOR_URL_PLACEHOLDER__|${VITE_FARO_COLLECTOR_URL}|g" \
     {} \;
 exec "$@"
 ```

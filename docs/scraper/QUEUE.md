@@ -179,20 +179,19 @@ The difference is intentional: Course jobs are worth retrying because a transien
 study plan jobs are best-effort — a failed faculty/period combination is just skipped, and the next daily sync will
 retry.
 
-## Sentry Integration
+## Job Logging
 
-Every job handler is wrapped in `withSentryJobHandler`:
+Every job handler is wrapped in `withJobLogger` (from `api/src/logger.ts`):
 
 ```typescript
 const requestWorker = new Worker(
   ScraperRequestQueue,
-  withSentryJobHandler(ScraperRequestQueue, ScraperRequestHandler),
+  withJobLogger(ScraperRequestQueue, ScraperRequestHandler),
   { ... }
 )
 ```
 
-This creates a Sentry transaction (`op: 'queue.process'`) per job and attaches `job.id` and `job.data` as context. If
-the handler throws, the error is captured before being re-thrown (so BullMQ still sees the failure).
+This emits a structured `job.completed` or `job.failed` log line with `duration_ms`, `job_id`, `job_name`, and `attempt`. If the handler throws, the error is logged before being re-thrown (so BullMQ still sees the failure).
 
 ## QueueService
 

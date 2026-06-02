@@ -69,7 +69,7 @@ triggers.
 2. createRouter           — auto-routes from src/pages/
 3. createI18n             — locale from localStorage 'locale', default 'cs'
 4. createPinia
-5. Sentry.init            — if VITE_SENTRY_DSN is set
+5. faroModule.init(app, router) — if VITE_FARO_COLLECTOR_URL is set
 6. app.use(router, i18n, pinia)
 7. useAlertsStore()       — initializes store
 8. useCoursesStore()      — initializes store

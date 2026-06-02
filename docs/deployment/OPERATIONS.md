@@ -22,6 +22,16 @@ docker compose -p monitoring ps
 docker compose -p monitoring -f deployment/monitoring/docker-compose.monitoring.yml up -d --force-recreate
 ```
 
+### Faro Browser Telemetry
+
+Browser telemetry from `@grafana/faro-web-sdk` is collected at `https://<domain>/faro/collect`.
+
+**Routing:** Browser → Traefik (`/faro` stripprefix rule) → Alloy port 12347 → Loki
+
+**Query in Grafana:** use the Loki datasource with label selector `{app=~".*alloy.*"}` to find browser telemetry entries (errors, Web Vitals, route navigations).
+
+**Local dev:** set `VITE_FARO_COLLECTOR_URL=http://localhost:41247/collect` in your local env to enable Faro in development.
+
 ---
 
 ### Container logs

@@ -142,10 +142,10 @@ const responseWorker = new Worker(ScraperResponseQueue, handler, {
 })
 ```
 
-Four jobs process in parallel. The handler is wrapped in `withSentryJobHandler` (Sentry transaction per job).
+Four jobs process in parallel. The handler is wrapped in `withJobLogger` (structured lifecycle logging per job).
 
 **Retry policy:** Response jobs are not retried. If a job fails, the error is logged and the job is marked as failed.
-Sentry captures the error. The next scheduled catalog run will re-scrape the affected courses.
+The next scheduled catalog run will re-scrape the affected courses.
 
 **Retention:** Failed jobs are kept for 24 hours (`removeOnFail: { age: 86400 }`), then purged.
 
