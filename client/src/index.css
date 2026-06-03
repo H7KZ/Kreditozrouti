@@ -241,9 +241,9 @@ html.dark {
 	--sidebar-ring: #5b8ef5;
 
 	/* Brand Blues */
-	--insis-blue: #5b8ef5;
-	--insis-blue-dark: #3f72e8;
-	--insis-blue-hover: #2b60d4;
+	--insis-blue: #4075ea;
+	--insis-blue-dark: #3669df;
+	--insis-blue-hover: #2359ca;
 	--insis-blue-lighter: #93b4f8;
 	--insis-blue-light: #1e1e1e;
 	--insis-blue-subtle: #242424;
@@ -383,6 +383,10 @@ html.dark {
 }
 
 .prose {
+	h1 {
+		font-weight: 700;
+	}
+
 	--tw-prose-body: var(--insis-text);
 	--tw-prose-headings: var(--insis-text);
 	--tw-prose-lead: var(--insis-text-2);

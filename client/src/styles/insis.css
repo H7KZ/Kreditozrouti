@@ -45,7 +45,7 @@
 	}
 
 	.insis-btn-primary {
-		@apply border-(--insis-blue-dark) bg-(--insis-blue) text-white;
+		@apply border-(--insis-blue-dark) bg-(--insis-blue) text-white!;
 	}
 
 	.insis-btn-primary:hover:not(:disabled) {

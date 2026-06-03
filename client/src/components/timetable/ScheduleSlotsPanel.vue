@@ -181,7 +181,7 @@ function iconsVisible(slotId: string): boolean {
 						-->
 						<span :class="iconsVisible(slot.id) ? 'visible' : 'invisible'" class="ml-0.5 flex shrink-0 items-center gap-0.5">
 							<span
-								class="hover:text-insis-blue cursor-pointer rounded p-0.5 text-slate-400 transition-colors"
+								class="cursor-pointer rounded p-0.5 text-slate-400 transition-colors hover:text-(--insis-blue)"
 								@mousedown.prevent.stop="handlePencilClick(slot.id)"
 							>
 								<IconPencil class="h-3 w-3" />
@@ -243,7 +243,7 @@ function iconsVisible(slotId: string): boolean {
 			v-if="slotsStore.slots.length === 0"
 			class="mx-4 flex items-center gap-2 rounded border border-(--insis-border) bg-(--insis-bg) px-4 py-2 text-[11px] text-slate-500"
 		>
-			<IconInfo class="text-insis-blue h-3.5 w-3.5" />
+			<IconInfo class="h-3.5 w-3.5 text-(--insis-blue)" />
 			{{ t('components.timetable.SchedulePicker.emptyHint') }}
 		</div>
 	</div>

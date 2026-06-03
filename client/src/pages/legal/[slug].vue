@@ -71,9 +71,9 @@ watch([() => route.params.slug, locale], loadDoc, { immediate: true })
 		</div>
 
 		<div v-else-if="notFound" class="py-20 text-center">
-			<h1 class="text-insis-gray-800 text-2xl font-bold">Document not found</h1>
-			<p class="text-insis-gray-600 mt-2">The requested document does not exist.</p>
-			<RouterLink to="/" class="text-insis-blue mt-6 inline-block text-sm hover:underline">← Back to home</RouterLink>
+			<h1 class="text-2xl font-bold text-(--insis-gray-800)">Document not found</h1>
+			<p class="mt-2 text-(--insis-gray-600)">The requested document does not exist.</p>
+			<RouterLink to="/" class="mt-6 inline-block text-sm text-(--insis-blue) hover:underline">← Back to home</RouterLink>
 		</div>
 
 		<div v-else class="flex gap-10">
