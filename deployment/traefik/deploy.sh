@@ -2,14 +2,13 @@
 set -euo pipefail
 
 # ==============================================================================
-# Script Name: traefik.sh
+# Script Name: deploy.sh
 # Description: Deploys the global Traefik reverse proxy stack.
-#              Configuration via scripts/server.conf or environment variables.
+#              Configuration via environment variables.
 #
-# Usage:       bash ./traefik.sh
-# Config:      See scripts/server.conf.example for all variables.
+# Usage:       bash ./deploy.sh
 #
-# Required variables:
+# Required variables (set as environment variables):
 #   DEPLOYMENT_PATH             Path to deployment directory
 #   TRAEFIK_DOMAIN              Traefik dashboard domain
 #   TRAEFIK_CREDENTIALS_PATH    Path to htpasswd credentials file
@@ -24,24 +23,17 @@ set -euo pipefail
 #     docker-compose.traefik.yml, traefik.yml, networks.yml, volumes.yml
 # ==============================================================================
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly STACK_NAME="global"
 
-source "$SCRIPT_DIR/lib.sh"
+source "$HOME/scripts/lib.sh"
 
 main() {
-    readonly CONFIG_FILE="$SCRIPT_DIR/server.conf"
-    if [[ -f "$CONFIG_FILE" ]]; then
-        # shellcheck source=/dev/null
-        source "$CONFIG_FILE"
-    fi
-
-    [[ -z "${DEPLOYMENT_PATH:-}" ]]        && { log_error "DEPLOYMENT_PATH not set — add to server.conf";        exit 1; }
-    [[ -z "${TRAEFIK_DOMAIN:-}" ]]         && { log_error "TRAEFIK_DOMAIN not set — add to server.conf";         exit 1; }
-    [[ -z "${TRAEFIK_CREDENTIALS_PATH:-}" ]] && { log_error "TRAEFIK_CREDENTIALS_PATH not set — add to server.conf"; exit 1; }
-    [[ -z "${CF_API_EMAIL:-}" ]]           && { log_error "CF_API_EMAIL not set — add to server.conf";           exit 1; }
-    [[ -z "${CF_DNS_API_TOKEN:-}" ]]       && { log_error "CF_DNS_API_TOKEN not set — add to server.conf";       exit 1; }
+    [[ -z "${DEPLOYMENT_PATH:-}" ]]          && { log_error "DEPLOYMENT_PATH is not set";          exit 1; }
+    [[ -z "${TRAEFIK_DOMAIN:-}" ]]           && { log_error "TRAEFIK_DOMAIN is not set";           exit 1; }
+    [[ -z "${TRAEFIK_CREDENTIALS_PATH:-}" ]] && { log_error "TRAEFIK_CREDENTIALS_PATH is not set"; exit 1; }
+    [[ -z "${CF_API_EMAIL:-}" ]]             && { log_error "CF_API_EMAIL is not set";             exit 1; }
+    [[ -z "${CF_DNS_API_TOKEN:-}" ]]         && { log_error "CF_DNS_API_TOKEN is not set";         exit 1; }
 
     [[ -d "$DEPLOYMENT_PATH" ]]         || { log_error "Deployment directory not found: $DEPLOYMENT_PATH";       exit 1; }
     [[ -f "$TRAEFIK_CREDENTIALS_PATH" ]] || { log_error "Credentials file not found: $TRAEFIK_CREDENTIALS_PATH"; exit 1; }

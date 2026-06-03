@@ -2,15 +2,14 @@
 set -euo pipefail
 
 # ==============================================================================
-# Script Name: monitoring.sh
+# Script Name: deploy.sh
 # Description: Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy).
 #              Traefik must already be running before this script is called.
-#              Configuration via scripts/server.conf or environment variables.
+#              Configuration via environment variables.
 #
-# Usage:       bash ./monitoring.sh
-# Config:      See scripts/server.conf.example for all variables.
+# Usage:       bash ./deploy.sh
 #
-# Required variables:
+# Required variables (set as environment variables):
 #   DEPLOYMENT_PATH       Path to deployment directory
 #   DOMAIN                Public domain for Grafana + Faro routing
 #   GRAFANA_ADMIN_PASSWORD  Grafana admin password
@@ -27,22 +26,15 @@ set -euo pipefail
 # Deploy order: Traefik → this script → app stack
 # ==============================================================================
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly STACK_NAME="global"
 
-source "$SCRIPT_DIR/lib.sh"
+source "$HOME/scripts/lib.sh"
 
 main() {
-    readonly CONFIG_FILE="$SCRIPT_DIR/server.conf"
-    if [[ -f "$CONFIG_FILE" ]]; then
-        # shellcheck source=/dev/null
-        source "$CONFIG_FILE"
-    fi
-
-    [[ -z "${DEPLOYMENT_PATH:-}" ]]       && { log_error "DEPLOYMENT_PATH not set — add to server.conf";       exit 1; }
-    [[ -z "${DOMAIN:-}" ]]                && { log_error "DOMAIN not set — add to server.conf";                exit 1; }
-    [[ -z "${GRAFANA_ADMIN_PASSWORD:-}" ]] && { log_error "GRAFANA_ADMIN_PASSWORD not set — add to server.conf"; exit 1; }
+    [[ -z "${DEPLOYMENT_PATH:-}" ]]       && { log_error "DEPLOYMENT_PATH not set";       exit 1; }
+    [[ -z "${DOMAIN:-}" ]]                && { log_error "DOMAIN not set";                exit 1; }
+    [[ -z "${GRAFANA_ADMIN_PASSWORD:-}" ]] && { log_error "GRAFANA_ADMIN_PASSWORD not set"; exit 1; }
 
     [[ -d "$DEPLOYMENT_PATH" ]] || { log_error "Deployment directory not found: $DEPLOYMENT_PATH"; exit 1; }
 

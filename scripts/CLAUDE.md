@@ -10,8 +10,6 @@
 |---------------------|-------------------------------------------------------------|---------------|
 | `lib.sh`            | Shared utilities — sourced by all scripts, not run directly | No            |
 | `install-docker.sh` | Install Docker Engine on Ubuntu/Debian                      | Yes           |
-| `traefik.sh`        | Deploy Traefik reverse proxy                                | No            |
-| `monitoring.sh`     | Deploy monitoring stack (Prometheus, Grafana, Loki, Alloy)  | No            |
 | `github-runner.sh`  | Deploy self-hosted GitHub Actions runners                   | No            |
 | `maintenance.sh`    | System maintenance (apt, cleanup, security, health)         | Yes           |
 | `docker-cleanup.sh` | Clean unused Docker resources                               | No            |

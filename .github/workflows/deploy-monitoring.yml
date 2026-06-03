@@ -15,7 +15,6 @@ on:
     branches: [ main ]
     paths:
       - "deployment/monitoring/**"
-      - "scripts/monitoring.sh"
   workflow_dispatch:
 
 concurrency:
@@ -63,4 +62,4 @@ jobs:
           envs: DEPLOYMENT_PATH,DOMAIN,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL
           script: |
             set -euo pipefail
-            bash ~/scripts/monitoring.sh
+            bash ~/deployment/monitoring/deploy.sh

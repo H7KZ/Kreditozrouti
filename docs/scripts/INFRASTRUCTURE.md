@@ -6,40 +6,22 @@ Scripts for provisioning server infrastructure: Docker, Traefik, and GitHub Acti
 
 ## Bootstrap
 
-For fresh server setup, use `bootstrap.sh` with a config file instead of running scripts with individual flags.
+Fresh server setup is done via the **Bootstrap Server** GitHub Actions workflow
+(`.github/workflows/bootstrap.yml`). Trigger it manually from GitHub → Actions → Bootstrap Server.
 
-### Setup
+**Prerequisites:**
+1. Docker must be installed on the server (use a Docker-ready VPS image, or run `scripts/install-docker.sh` manually and log back in)
+2. All required GitHub Secrets must be set (see [ci/cd docs](../deployment/CICD.md))
 
-```bash
-# 1. Install Docker (requires sudo, one-time)
-sudo bash ~/scripts/install-docker.sh
-# Log out and back in after installation
+The workflow runs in order: write htpasswd → `deployment/traefik/deploy.sh` → `deployment/monitoring/deploy.sh` → `github-runner.sh` → install backup cron.
 
-# 2. Configure
-cp ~/scripts/server.conf.example ~/scripts/server.conf
-nano ~/scripts/server.conf   # fill in all values
-
-# 3. Bootstrap everything
-bash ~/scripts/bootstrap.sh
-```
-
-`bootstrap.sh` runs: generate htpasswd → `traefik.sh` → `monitoring.sh` → `github-runner.sh` → install backup cron
+After the first app deployment, re-run the workflow with `mysql_container` filled in to install the backup cron.
 
 ---
 
-## Shared Config File (`server.conf`)
+## Configuration
 
-All scripts source `scripts/server.conf` automatically when present. CLI flags remain valid as explicit overrides (most
-specific wins: config → env var → CLI flag).
-
-`server.conf` is gitignored. `server.conf.example` is the committed template — copy and fill it in.
-
-**Variable namespacing:** `PROJECT` would conflict between monitoring and runner. Use:
-
-- `MONITORING_PROJECT` for `monitoring.sh`
-- `RUNNER_PROJECT` for `github-runner.sh`
-
-Both scripts fall back to `PROJECT` if the namespaced var is not set.
+All scripts read configuration from environment variables only — no config file. This allows them to be driven by GitHub Actions secrets/variables without any file on disk.
 
 **Backups (`backup.sh`):** `MYSQL_CONTAINER`, `BACKUP_DIR`, `BACKUP_RETENTION_DAYS`. The container name must match a
 running container — find it with `docker ps --format '{{.Names}}'`.
@@ -68,101 +50,65 @@ After install, log out and back in for group membership to take effect.
 
 ---
 
-## `traefik.sh`
+## `deployment/traefik/deploy.sh`
 
 Deploys the global Traefik reverse proxy. Reads its compose config from `deployment/traefik/`.
 
-```bash
-./traefik.sh \
-  --path ~/deployment \
-  --domain traefik.example.com \
-  --credentials ~/.htpasswd \
-  --cf-email user@example.com \
-  --cf-token CF_TOKEN
-```
+**Required environment variables:**
 
-**Required flags:**
+| Variable                  | Description                                |
+|---------------------------|--------------------------------------------|
+| `DEPLOYMENT_PATH`         | Path to the deployment directory           |
+| `TRAEFIK_DOMAIN`          | Domain for the Traefik dashboard           |
+| `TRAEFIK_CREDENTIALS_PATH`| Path to htpasswd file for basic auth       |
+| `CF_API_EMAIL`            | Cloudflare account email                   |
+| `CF_DNS_API_TOKEN`        | Cloudflare API token (`Zone → DNS → Edit`) |
 
-| Flag            | Description                                |
-|-----------------|--------------------------------------------|
-| `--path`        | Path to the deployment directory           |
-| `--domain`      | Domain for the Traefik dashboard           |
-| `--credentials` | Path to htpasswd file for basic auth       |
-| `--cf-email`    | Cloudflare account email                   |
-| `--cf-token`    | Cloudflare API token (`Zone → DNS → Edit`) |
+**Optional:** `ACME_EMAIL` (defaults to `CF_API_EMAIL`)
 
-**Env var equivalents:** `DEPLOYMENT_PATH`, `TRAEFIK_DOMAIN`, `TRAEFIK_CREDENTIALS_PATH`, `CF_API_EMAIL`,
-`CF_DNS_API_TOKEN`, `ACME_EMAIL`
-
-**Generate htpasswd:**
+**Generate htpasswd** (run once, store result as `TRAEFIK_HTPASSWD` secret):
 
 ```bash
-htpasswd -c ~/.htpasswd admin
+htpasswd -nb admin yourpassword
 ```
 
 **Steps:**
 
-1. Validates all parameters
+1. Validates all parameters and file paths
 2. Creates `traefik-network` Docker network if it doesn't exist
 3. Creates persistent volumes for TLS certs and access logs
-4. Generates `.env` with Cloudflare credentials
-5. Deploys Traefik via Docker Compose
+4. Deploys Traefik via Docker Compose under project `global`
 
 ---
 
-## `monitoring.sh`
+## `deployment/monitoring/deploy.sh`
 
 Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy). Traefik must already be running.
 
-```bash
-./monitoring.sh \
-  --path ~/deployment \
-  --domain kreditozrouti.cz \
-  --project kreditozrouti \
-  --grafana-password secret
-```
+**Required environment variables:**
 
-**Required flags:**
+| Variable               | Description                                     |
+|------------------------|-------------------------------------------------|
+| `DEPLOYMENT_PATH`      | Path to the deployment directory                |
+| `DOMAIN`               | Public domain (used for Grafana + Faro routing) |
+| `GRAFANA_ADMIN_PASSWORD` | Grafana admin password                        |
 
-| Flag                 | Description                                     |
-|----------------------|-------------------------------------------------|
-| `--path`             | Path to the deployment directory                |
-| `--domain`           | Public domain (used for Grafana + Faro routing) |
-| `--project`          | Project name prefix for Traefik labels          |
-| `--grafana-password` | Grafana admin password                          |
+**Optional:** `GRAFANA_ADMIN_USER` (default: `admin`), `DISCORD_WEBHOOK_URL`
 
-**Optional flags:**
-
-| Flag             | Default | Purpose                                   |
-|------------------|---------|-------------------------------------------|
-| `--grafana-user` | `admin` | Grafana admin username                    |
-| `--action`       | `up`    | `up`, `down`, `restart`, `logs`, `status` |
-
-**Env var equivalents:** `DEPLOYMENT_PATH`, `DOMAIN`, `PROJECT`, `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD`
-
-**Actions:**
-
-```bash
-# Deploy / update
-./monitoring.sh --path ~/deployment --domain example.com --project myproject --grafana-password secret
-
-# Tail logs
-./monitoring.sh ... --action logs
-
-# Status of all containers
-./monitoring.sh ... --action status
-
-# Stop (keeps volumes — data is preserved)
-./monitoring.sh ... --action down
-
-# Restart all services
-./monitoring.sh ... --action restart
-```
+Deployed under Docker Compose project `global` (shared with Traefik and runners).
 
 After deploy, services are exposed via Traefik at:
 
 - `https://domain/grafana` — Grafana dashboard
 - `https://domain/faro/collect` — Alloy Faro receiver (browser telemetry)
+
+**Operational commands:**
+
+```bash
+docker compose -p global ps
+docker compose -p global logs -f
+docker compose -p global logs grafana -f
+```
 
 ---
 
@@ -170,30 +116,14 @@ After deploy, services are exposed via Traefik at:
 
 Deploys self-hosted GitHub Actions runners. Runners auto-register to the repository on container startup.
 
-```bash
-./github-runner.sh \
-  --path ~/deployment \
-  --repo https://github.com/owner/repo \
-  --token ghp_xxx \
-  --replicas 3
-```
+**Required environment variables:**
 
-**Required flags:**
+| Variable              | Description                               |
+|-----------------------|-------------------------------------------|
+| `DEPLOYMENT_PATH`     | Path to the deployment directory          |
+| `GITHUB_REPO_URL`     | Full GitHub repository URL                |
+| `GITHUB_ACCESS_TOKEN` | GitHub personal access token (repo scope) |
 
-| Flag      | Description                               |
-|-----------|-------------------------------------------|
-| `--path`  | Path to the deployment directory          |
-| `--repo`  | Full GitHub repository URL                |
-| `--token` | GitHub personal access token (repo scope) |
+**Optional:** `RUNNER_REPLICAS` (default: `2`), `RUNNER_LABELS` (appended to `docker,self-hosted`)
 
-**Optional flags:**
-
-| Flag              | Default              | Purpose                              |
-|-------------------|----------------------|--------------------------------------|
-| `--replicas <n>`  | `1`                  | Number of runner containers to start |
-| `--labels <list>` | `docker,self-hosted` | Comma-separated runner labels        |
-
-**Env var equivalents:** `DEPLOYMENT_PATH`, `GITHUB_REPO_URL`, `GITHUB_ACCESS_TOKEN`, `PROJECT`, `RUNNER_REPLICAS`,
-`RUNNER_LABELS`
-
-Runners share the Docker socket — required for container image builds in CI workflows.
+Deployed under Docker Compose project `global`. Runners share the Docker socket — required for container image builds in CI workflows.
