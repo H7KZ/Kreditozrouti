@@ -111,6 +111,7 @@ validate_environment_vars() {
             api)     [[ -z "${API_IMAGE_TAG:-}" ]]     && missing+=("API_IMAGE_TAG") ;;
             client)  [[ -z "${CLIENT_IMAGE_TAG:-}" ]]  && missing+=("CLIENT_IMAGE_TAG") ;;
             scraper) [[ -z "${SCRAPER_IMAGE_TAG:-}" ]] && missing+=("SCRAPER_IMAGE_TAG") ;;
+            *) log_error "Unknown service: '$service'. Valid values: api, client, scraper"; exit 1 ;;
         esac
     fi
 
@@ -163,6 +164,7 @@ cleanup_old_versions() {
     done
 
     [[ $deleted -gt 0 ]] && log_success "Cleaned up $deleted old version(s), kept $kept"
+    [[ $deleted -eq 0 ]] && log "Version cleanup: $kept version(s) kept, nothing removed"
 }
 
 # ------------------------------------------------------------------------------
@@ -223,7 +225,7 @@ main() {
             scraper) log "Tag:         ${SCRAPER_IMAGE_TAG}" ;;
         esac
     else
-        log "Tags:        api=${API_IMAGE_TAG} client=${CLIENT_IMAGE_TAG} scraper=${SCRAPER_IMAGE_TAG}"
+        log "Tags:        api=${API_IMAGE_TAG:-} client=${CLIENT_IMAGE_TAG:-} scraper=${SCRAPER_IMAGE_TAG:-}"
     fi
     log "=========================================="
 
@@ -285,7 +287,7 @@ main() {
     trap - ERR
 
     # Clean up old version directories
-    cleanup_old_versions "$environment"
+    cleanup_old_versions "$environment" || true
 
     log_success "=========================================="
     log_success "Deployment Complete"

@@ -295,8 +295,8 @@ jobs:
             } > "$VERSION_DIR/.env"
             chmod 600 "$VERSION_DIR/.env"
 
-            printf 'IMAGE_REGISTRY="%s"\nIMAGE_PREFIX="%s"\nIMAGE_TAG="%s"\n' \
-              "$IMG_REGISTRY" "$IMG_PREFIX" "$IMG_TAG" > "$VERSION_DIR/.images"
+            printf 'IMAGE_REGISTRY="%s"\nIMAGE_PREFIX="%s"\nAPI_IMAGE_TAG="%s"\nCLIENT_IMAGE_TAG="%s"\nSCRAPER_IMAGE_TAG="%s"\n' \
+              "$IMG_REGISTRY" "$IMG_PREFIX" "$IMG_TAG" "$IMG_TAG" "$IMG_TAG" > "$VERSION_DIR/.images"
 
             cd "$VERSION_DIR"
             bash ./deploy.sh "${{ inputs.project_name }}" "${{ inputs.environment }}"
