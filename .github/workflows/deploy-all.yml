@@ -93,7 +93,7 @@ jobs:
         run: |
           if [[ -n "${{ inputs.image_tag }}" ]]; then
             TAG="${{ inputs.image_tag }}"
-            PREFIX="ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
+            PREFIX="$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
           else
             TAG="${{ needs.build-api.outputs.image_tag }}"
             PREFIX="${{ needs.build-api.outputs.image_prefix }}"
