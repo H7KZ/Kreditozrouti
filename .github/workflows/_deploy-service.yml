@@ -107,7 +107,7 @@ jobs:
             set -euo pipefail
 
             VERSION_DIR="$HOME/versions/${{ inputs.environment }}/$IMG_TAG"
-            LATEST_LINK="$HOME/versions/${{ inputs.environment }}/latest"
+            CURRENT_LINK="$HOME/versions/${{ inputs.environment }}/current"
 
             echo "=========================================="
             echo "Service Deploy: $APP_SERVICE @ $IMG_TAG → ${{ inputs.environment }}"
@@ -152,7 +152,7 @@ jobs:
               IMAGE_PREFIX="$IMG_PREFIX" \
               bash ./deploy.sh "${{ inputs.project_name }}" "${{ inputs.environment }}" "$APP_SERVICE"
 
-            ln -sfn "$VERSION_DIR" "$LATEST_LINK"
+            ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
 
             echo "=========================================="
             echo "Service deploy complete: $APP_SERVICE"
