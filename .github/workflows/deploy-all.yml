@@ -1,0 +1,217 @@
+# ==============================================================================
+# Workflow: Deploy All Services
+# Description: Full-stack deploy of all three services. Use for initial setup,
+#              emergency redeployments, or when all services must move together.
+#              For routine deploys, use deploy-api/client/scraper.yml instead.
+#
+# Trigger: manual (workflow_dispatch) only
+# ==============================================================================
+
+name: Deploy All Services
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        type: choice
+        options: [production, development]
+        default: production
+      image_tag:
+        description: "Specific image tag to deploy (skips build if set)"
+        required: false
+        type: string
+        default: ""
+      skip_build:
+        description: "Skip build (images must already exist in registry)"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: deploy-all-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  build-api:
+    name: Build API
+    if: ${{ !inputs.skip_build && inputs.image_tag == '' }}
+    uses: ./.github/workflows/_build-service.yml
+    with:
+      service: api
+      float_tag: ${{ inputs.environment == 'production' && 'latest' || 'dev-latest' }}
+      cache_scope: api-${{ inputs.environment == 'production' && 'prod' || 'dev' }}
+    secrets: inherit
+
+  build-client:
+    name: Build Client
+    if: ${{ !inputs.skip_build && inputs.image_tag == '' }}
+    uses: ./.github/workflows/_build-service.yml
+    with:
+      service: client
+      float_tag: ${{ inputs.environment == 'production' && 'latest' || 'dev-latest' }}
+      cache_scope: client-${{ inputs.environment == 'production' && 'prod' || 'dev' }}
+    secrets: inherit
+
+  build-scraper:
+    name: Build Scraper
+    if: ${{ !inputs.skip_build && inputs.image_tag == '' }}
+    uses: ./.github/workflows/_build-service.yml
+    with:
+      service: scraper
+      float_tag: ${{ inputs.environment == 'production' && 'latest' || 'dev-latest' }}
+      cache_scope: scraper-${{ inputs.environment == 'production' && 'prod' || 'dev' }}
+    secrets: inherit
+
+  deploy:
+    name: Deploy All to ${{ inputs.environment }}
+    needs: [build-api, build-client, build-scraper]
+    if: ${{ always() && (needs.build-api.result == 'success' || needs.build-api.result == 'skipped') }}
+    runs-on: self-hosted
+    timeout-minutes: 20
+    environment: ${{ inputs.environment }}
+
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Deploy Variables
+        id: vars
+        run: |
+          if [[ -n "${{ inputs.image_tag }}" ]]; then
+            TAG="${{ inputs.image_tag }}"
+            PREFIX="ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
+          else
+            TAG="${{ needs.build-api.outputs.image_tag }}"
+            PREFIX="${{ needs.build-api.outputs.image_prefix }}"
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
+          echo "project=${{ inputs.environment == 'production' && 'prod' || 'dev' }}" >> "$GITHUB_OUTPUT"
+
+      - name: Create Version Directory
+        uses: appleboy/ssh-action@v1.2.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            mkdir -p "$HOME/versions/${{ inputs.environment }}/${{ steps.vars.outputs.tag }}"
+
+      - name: Upload Deployment Files
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "deployment/"
+          target: "~/versions/${{ inputs.environment }}/${{ steps.vars.outputs.tag }}"
+          strip_components: 1
+          overwrite: true
+
+      - name: Execute Full-Stack Deployment
+        uses: appleboy/ssh-action@v1.2.4
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
+          IMG_REGISTRY: ghcr.io
+          IMG_PREFIX: ${{ steps.vars.outputs.prefix }}
+          IMG_TAG: ${{ steps.vars.outputs.tag }}
+          APP_ENV: ${{ inputs.environment }}
+          APP_VITE_APP_VERSION: ${{ steps.vars.outputs.tag }}
+          APP_PROJECT: ${{ vars.PROJECT }}
+          APP_DOMAIN: ${{ vars.DOMAIN }}
+          APP_API_PORT: ${{ vars.API_PORT }}
+          APP_API_URI: ${{ vars.API_URI }}
+          APP_API_DOMAIN: ${{ vars.API_DOMAIN }}
+          APP_API_ALLOWED_ORIGINS: ${{ vars.API_ALLOWED_ORIGINS }}
+          APP_API_FILE_DESTINATION: ${{ vars.API_FILE_DESTINATION }}
+          APP_CLIENT_URI: ${{ vars.CLIENT_URI }}
+          APP_VITE_API_URL: ${{ vars.VITE_API_URL }}
+          APP_VITE_FARO_COLLECTOR_URL: ${{ vars.VITE_FARO_COLLECTOR_URL }}
+          APP_MYSQL_USER: ${{ vars.MYSQL_USER }}
+          APP_MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
+          APP_REDIS_URI: ${{ vars.REDIS_URI }}
+          APP_ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
+          APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
+          APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
+          APP_MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          APP_MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          APP_MYSQL_URI: ${{ secrets.MYSQL_URI }}
+          APP_REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          APP_BULL_BOARD_USERS: ${{ secrets.BULL_BOARD_USERS }}
+          APP_GOOGLE_USER: ${{ secrets.GOOGLE_USER }}
+          APP_GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_ENV,APP_VITE_APP_VERSION,APP_PROJECT,APP_DOMAIN,APP_API_PORT,APP_API_URI,APP_API_DOMAIN,APP_API_ALLOWED_ORIGINS,APP_API_FILE_DESTINATION,APP_CLIENT_URI,APP_VITE_API_URL,APP_VITE_FARO_COLLECTOR_URL,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_REDIS_URI,APP_ADMIN_EMAIL,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_PASSWORD,APP_BULL_BOARD_USERS,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD
+          script: |
+            set -euo pipefail
+
+            VERSION_DIR="$HOME/versions/${{ inputs.environment }}/$IMG_TAG"
+            CURRENT_LINK="$HOME/versions/${{ inputs.environment }}/current"
+            PROJECT_NAME="${{ steps.vars.outputs.project }}"
+
+            echo "=========================================="
+            echo "Full-Stack Deploy: $IMG_TAG → ${{ inputs.environment }}"
+            echo "=========================================="
+
+            echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
+
+            {
+              echo "ENV=$APP_ENV"
+              echo "PROJECT=$APP_PROJECT"
+              echo "DOMAIN=$APP_DOMAIN"
+              echo "API_PORT=$APP_API_PORT"
+              echo "API_URI=$APP_API_URI"
+              echo "API_DOMAIN=$APP_API_DOMAIN"
+              echo "API_ALLOWED_ORIGINS=$APP_API_ALLOWED_ORIGINS"
+              echo "API_FILE_DESTINATION=$APP_API_FILE_DESTINATION"
+              echo "API_SESSION_SECRET=$APP_API_SESSION_SECRET"
+              echo "API_COMMAND_TOKEN=$APP_API_COMMAND_TOKEN"
+              echo "CLIENT_URI=$APP_CLIENT_URI"
+              echo "VITE_API_URL=$APP_VITE_API_URL"
+              echo "VITE_API_COMMAND_TOKEN=$APP_API_COMMAND_TOKEN"
+              echo "VITE_FARO_COLLECTOR_URL=$APP_VITE_FARO_COLLECTOR_URL"
+              echo "VITE_APP_VERSION=$APP_VITE_APP_VERSION"
+              echo "MYSQL_USER=$APP_MYSQL_USER"
+              echo "MYSQL_DATABASE=$APP_MYSQL_DATABASE"
+              echo "MYSQL_PASSWORD=$APP_MYSQL_PASSWORD"
+              echo "MYSQL_ROOT_PASSWORD=$APP_MYSQL_ROOT_PASSWORD"
+              echo "MYSQL_URI=$APP_MYSQL_URI"
+              echo "REDIS_URI=$APP_REDIS_URI"
+              echo "REDIS_PASSWORD=$APP_REDIS_PASSWORD"
+              echo "ADMIN_EMAIL=$APP_ADMIN_EMAIL"
+              echo "GOOGLE_USER=$APP_GOOGLE_USER"
+              echo "GOOGLE_APP_PASSWORD=$APP_GOOGLE_APP_PASSWORD"
+              printf 'BULL_BOARD_USERS=%s\n' "$APP_BULL_BOARD_USERS"
+            } > "$VERSION_DIR/.env"
+            chmod 600 "$VERSION_DIR/.env"
+
+            cd "$VERSION_DIR"
+            IMAGE_REGISTRY="$IMG_REGISTRY" \
+              IMAGE_PREFIX="$IMG_PREFIX" \
+              API_IMAGE_TAG="$IMG_TAG" \
+              CLIENT_IMAGE_TAG="$IMG_TAG" \
+              SCRAPER_IMAGE_TAG="$IMG_TAG" \
+              bash ./deploy.sh "$PROJECT_NAME" "${{ inputs.environment }}"
+
+            ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
+
+            echo "=========================================="
+            echo "Full-stack deployment complete"
+            echo "=========================================="
