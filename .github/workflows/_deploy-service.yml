@@ -147,9 +147,9 @@ jobs:
             esac
 
             cd "$VERSION_DIR"
+            export "${SERVICE_TAG_VAR}=${IMG_TAG}"
             IMAGE_REGISTRY="ghcr.io" \
               IMAGE_PREFIX="$IMG_PREFIX" \
-              ${SERVICE_TAG_VAR}="$IMG_TAG" \
               bash ./deploy.sh "${{ inputs.project_name }}" "${{ inputs.environment }}" "$APP_SERVICE"
 
             ln -sfn "$VERSION_DIR" "$LATEST_LINK"
