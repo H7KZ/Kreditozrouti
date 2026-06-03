@@ -1,7 +1,7 @@
 # Scripts — Overview
 
-Server management and infrastructure deployment scripts. All scripts live in `scripts/` and source `lib.sh` for shared
-logging, file validation, and Docker utilities.
+Manual server management scripts. All scripts in `scripts/` source `lib.sh` for shared logging and Docker utilities.
+Automated deployment scripts live in `deployment/` instead.
 
 ---
 
@@ -10,9 +10,8 @@ logging, file validation, and Docker utilities.
 | Script              | Purpose                                                                           | Requires Root |
 |---------------------|-----------------------------------------------------------------------------------|---------------|
 | `lib.sh`            | Shared utilities (logging, `validate_files`, `create_networks`, `create_volumes`) | No            |
-| `install-docker.sh` | Install Docker Engine on Ubuntu/Debian                                            | Yes (`sudo`)  |
-| `traefik.sh`        | Deploy Traefik reverse proxy                                                      | No            |
-| `github-runner.sh`  | Deploy self-hosted GitHub Actions runners                                         | No            |
+| `install-docker.sh` | Install Docker Engine on Ubuntu/Debian — run once on a fresh server               | Yes (`sudo`)  |
+| `backup.sh`         | MySQL dump via docker exec — run manually or via cron                             | No            |
 | `maintenance.sh`    | System maintenance (apt, cleanup, security, health)                               | Yes (`sudo`)  |
 | `docker-cleanup.sh` | Clean unused Docker resources                                                     | No            |
 
@@ -45,5 +44,5 @@ source "$SCRIPT_DIR/lib.sh"
 
 ## Further Reading
 
-- [Infrastructure scripts](INFRASTRUCTURE.md) — install-docker, traefik, github-runner
+- [Infrastructure scripts](INFRASTRUCTURE.md) — install-docker, github-runner (deployment/github-runner/deploy.sh)
 - [Maintenance scripts](MAINTENANCE.md) — maintenance, docker-cleanup

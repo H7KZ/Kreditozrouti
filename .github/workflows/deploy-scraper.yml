@@ -10,7 +10,7 @@ name: Deploy Scraper
 
 on:
   push:
-    branches: [main, develop]
+    branches: [ main, develop ]
     paths:
       - "scraper/**"
       - "shared/**"
@@ -30,7 +30,7 @@ on:
         description: "Target environment"
         required: false
         type: choice
-        options: [production, development]
+        options: [ production, development ]
         default: production
 
 permissions:
@@ -54,7 +54,7 @@ jobs:
 
   deploy:
     name: Deploy Scraper
-    needs: [build]
+    needs: [ build ]
     if: ${{ always() && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
     uses: ./.github/workflows/_deploy-service.yml
     with:

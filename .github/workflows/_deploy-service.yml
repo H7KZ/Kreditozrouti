@@ -45,10 +45,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Create Version Directory
-        uses: appleboy/ssh-action@v1.2.4
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -70,7 +70,7 @@ jobs:
           overwrite: true
 
       - name: Deploy Service
-        uses: appleboy/ssh-action@v1.2.4
+        uses: appleboy/ssh-action@v1
         env:
           # Auth
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -116,7 +116,7 @@ jobs:
             set -euo pipefail
 
             VERSION_DIR="$HOME/versions/${{ inputs.environment }}/$IMG_TAG"
-            CURRENT_LINK="$HOME/versions/${{ inputs.environment }}/current"
+            LATEST_LINK="$HOME/versions/${{ inputs.environment }}/latest"
 
             echo "=========================================="
             echo "Service Deploy: $APP_SERVICE @ $IMG_TAG → ${{ inputs.environment }}"
@@ -171,7 +171,7 @@ jobs:
               ${SERVICE_TAG_VAR}="$IMG_TAG" \
               bash ./deploy.sh "${{ inputs.project_name }}" "${{ inputs.environment }}" "$APP_SERVICE"
 
-            ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
+            ln -sfn "$VERSION_DIR" "$LATEST_LINK"
 
             echo "=========================================="
             echo "Service deploy complete: $APP_SERVICE"

@@ -55,7 +55,7 @@ set -euo pipefail
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-source "$HOME/scripts/lib.sh"
+source "$SCRIPT_DIR/lib.sh"
 
 # ------------------------------------------------------------------------------
 # Functions

@@ -9,7 +9,7 @@ GitHub Actions automates building, pushing, and deploying all three services.
 Deployments are **path-triggered and per-service**. When code changes are pushed to `main` or `develop`, only the
 service(s) whose source files changed are rebuilt and redeployed.
 
-| Branch    | Environment  |
+| Branch    | Environment |
 |-----------|-------------|
 | `main`    | production  |
 | `develop` | development |
@@ -128,17 +128,6 @@ Generate `TRAEFIK_HTPASSWD` with: `htpasswd -nb admin yourpassword`
 
 ---
 
-### `bootstrap.yml` — Fresh server setup
-
-**Trigger:** `workflow_dispatch` only (manual, one-time).
-
-Runs on `ubuntu-latest` (GitHub-hosted) because the self-hosted runner doesn't exist yet.
-Sequence: Docker check → upload scripts + deployment config → Traefik → Monitoring → GitHub Runner → backup cron.
-
-See [OPERATIONS.md](OPERATIONS.md) for the full bootstrap procedure.
-
----
-
 ### Environment variables: GitHub Variables & Secrets
 
 Per-service deploy workflows pass all required env vars from **GitHub Environments** (`production` / `development`)
@@ -206,13 +195,13 @@ After a successful deploy, `deploy.sh` automatically removes version directories
 
 Push to `main` or `develop` — the path filters determine which workflow(s) run:
 
-| Changed path       | Workflow triggered     |
-|--------------------|------------------------|
-| `api/**`           | `deploy-api.yml`       |
-| `client/**`        | `deploy-client.yml`    |
-| `scraper/**`       | `deploy-scraper.yml`   |
-| `shared/**`        | all three              |
-| `deployment/traefik/**` | `deploy-traefik.yml` |
+| Changed path               | Workflow triggered      |
+|----------------------------|-------------------------|
+| `api/**`                   | `deploy-api.yml`        |
+| `client/**`                | `deploy-client.yml`     |
+| `scraper/**`               | `deploy-scraper.yml`    |
+| `shared/**`                | all three               |
+| `deployment/traefik/**`    | `deploy-traefik.yml`    |
 | `deployment/monitoring/**` | `deploy-monitoring.yml` |
 
 Only changed services are rebuilt and redeployed — unchanged services keep their current image tag.

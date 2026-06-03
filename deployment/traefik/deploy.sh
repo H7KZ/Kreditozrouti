@@ -26,7 +26,7 @@ set -euo pipefail
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly STACK_NAME="global"
 
-source "$HOME/scripts/lib.sh"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
 
 main() {
     [[ -z "${DEPLOYMENT_PATH:-}" ]]          && { log_error "DEPLOYMENT_PATH is not set";          exit 1; }

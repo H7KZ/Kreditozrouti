@@ -75,9 +75,10 @@ MySQL and Redis are never directly reachable from outside the host.
 1. Provision VPS (Ubuntu 22.04+)
 2. Install Docker               → scripts/install-docker.sh (or Docker-ready image)
 3. Set GitHub Secrets           → SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, SSH_PORT + env secrets
-4. Run bootstrap.yml workflow   → deploys Traefik, Monitoring, GitHub Runner, backup cron
-5. Push to main branch          → path-triggered CI builds + deploys each changed service
-6. Verify                       → curl https://example.com/api/health
+4. Set up GitHub runner         → bash deployment/github-runner/deploy.sh (manual)
+5. Deploy Traefik + Monitoring  → push to deployment/traefik/** and deployment/monitoring/**
+6. Push to main branch          → path-triggered CI builds + deploys each changed service
+7. Verify                       → curl https://example.com/api/health
 ```
 
 ---

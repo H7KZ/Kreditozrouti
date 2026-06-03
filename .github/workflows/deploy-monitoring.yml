@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Upload Monitoring Config
         uses: appleboy/scp-action@v1
@@ -47,7 +47,7 @@ jobs:
           overwrite: true
 
       - name: Deploy Monitoring Stack
-        uses: appleboy/ssh-action@v1.2.4
+        uses: appleboy/ssh-action@v1
         env:
           DEPLOYMENT_PATH: "$HOME/deployment"
           DOMAIN: ${{ secrets.MONITORING_DOMAIN }}

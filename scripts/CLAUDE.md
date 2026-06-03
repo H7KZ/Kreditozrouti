@@ -10,7 +10,6 @@
 |---------------------|-------------------------------------------------------------|---------------|
 | `lib.sh`            | Shared utilities — sourced by all scripts, not run directly | No            |
 | `install-docker.sh` | Install Docker Engine on Ubuntu/Debian                      | Yes           |
-| `github-runner.sh`  | Deploy self-hosted GitHub Actions runners                   | No            |
 | `maintenance.sh`    | System maintenance (apt, cleanup, security, health)         | Yes           |
 | `docker-cleanup.sh` | Clean unused Docker resources                               | No            |
 
@@ -38,5 +37,5 @@ unexpected reboots.
 | Topic                                                   | Doc                                                    |
 |---------------------------------------------------------|--------------------------------------------------------|
 | System architecture, containers, deploy order           | [docs/architecture/](../docs/architecture/README.md)   |
-| install-docker, traefik, github-runner — all flags      | [INFRASTRUCTURE.md](../docs/scripts/INFRASTRUCTURE.md) |
+| install-docker — all flags                              | [INFRASTRUCTURE.md](../docs/scripts/INFRASTRUCTURE.md) |
 | maintenance, docker-cleanup — all flags + cron examples | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md)       |

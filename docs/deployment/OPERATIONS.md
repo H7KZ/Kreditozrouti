@@ -127,47 +127,6 @@ security_opt:
 
 ---
 
-## Backup & Recovery
-
-### MySQL — manual backup
-
-```bash
-docker exec prod-mysql-1 mysqldump \
-  -u root -p${MYSQL_ROOT_PASSWORD} \
-  kreditozrouti > backup-$(date +%Y%m%d).sql
-```
-
-### MySQL — automated daily backup
-
-```bash
-#!/bin/bash
-# /root/scripts/mysql-backup.sh
-BACKUP_DIR="/backups/mysql"
-RETENTION_DAYS=30
-mkdir -p $BACKUP_DIR
-
-docker exec prod-mysql-1 mysqldump \
-  -u root -p${MYSQL_ROOT_PASSWORD} \
-  kreditozrouti | gzip > $BACKUP_DIR/kreditozrouti-$(date +%Y%m%d).sql.gz
-
-find $BACKUP_DIR -name "*.sql.gz" -mtime +$RETENTION_DAYS -delete
-```
-
-Cron (daily at 2 AM):
-
-```
-0 2 * * * /root/scripts/mysql-backup.sh >> /var/log/mysql-backup.log 2>&1
-```
-
-### MySQL — restore
-
-```bash
-gunzip < backup-20240131.sql.gz | \
-  docker exec -i prod-mysql-1 mysql \
-    -u root -p${MYSQL_ROOT_PASSWORD} \
-    kreditozrouti
-```
-
 ### Volume backup
 
 ```bash
@@ -182,14 +141,15 @@ done
 ### Disaster recovery checklist
 
 1. Provision new VPS
-2. Install Docker (run `sudo bash scripts/install-docker.sh` or use a Docker-ready VPS image; log out and back in after)
-3. Restore `~/variables/.env.prod`
-4. Run the **`bootstrap.yml`** workflow (`workflow_dispatch`) — it deploys Traefik, Monitoring, GitHub Runner, and
-   installs the backup cron automatically
-5. Restore `mysql-data-volume` and `traefik-certificates-volume` from backup
-6. Run `deploy-all.yml` (`workflow_dispatch`) for the first app deployment — or push to `main`/`develop` and let the
+2. Install Docker: `sudo bash scripts/install-docker.sh` (log out and back in after)
+3. Set up GitHub runner: `GITHUB_REPO_URL=... GITHUB_ACCESS_TOKEN=... bash deployment/github-runner/deploy.sh`
+4. Restore `~/variables/.env.prod`
+5. Push to `deployment/traefik/**` or trigger `deploy-traefik.yml` (`workflow_dispatch`) — Traefik up
+6. Push to `deployment/monitoring/**` or trigger `deploy-monitoring.yml` (`workflow_dispatch`) — Monitoring up
+7. Restore `mysql-data-volume` and `traefik-certificates-volume` from backup
+8. Run `deploy-all.yml` (`workflow_dispatch`) for the first app deployment — or push to `main`/`develop` and let the
    path-triggered workflows deploy each service
-7. `curl https://example.com/api/health`
+9. `curl https://example.com/api/health`
 
 Estimated RTO: 2–4 hours. RPO: 24 hours (daily backups).
 

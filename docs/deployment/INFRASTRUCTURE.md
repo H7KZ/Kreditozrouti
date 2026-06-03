@@ -100,7 +100,7 @@ Priority rule: API (100) > Bull Board (90) > phpMyAdmin (80+) > Grafana (85) > C
 
 ### Deploy Traefik
 
-Traefik is deployed via the `bootstrap.yml` or `deploy-traefik.yml` GitHub Actions workflows. To run manually:
+Traefik is deployed via the `deploy-traefik.yml` GitHub Actions workflow. To run manually:
 
 ```bash
 DEPLOYMENT_PATH=~/deployment \

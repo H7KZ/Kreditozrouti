@@ -2,15 +2,13 @@
 set -euo pipefail
 
 # ==============================================================================
-# Script Name: github-runner.sh
+# Script Name: deploy.sh
 # Description: Deploys self-hosted GitHub Actions runners.
-#              Configuration via scripts/server.conf or environment variables.
+#              Configuration via environment variables.
 #
-# Usage:       bash ./github-runner.sh
-# Config:      See scripts/server.conf.example for all variables.
+# Usage:       bash ./deploy.sh
 #
-# Required variables:
-#   DEPLOYMENT_PATH       Path to deployment directory
+# Required variables (set as environment variables):
 #   GITHUB_REPO_URL       Repository URL (https://github.com/owner/repo)
 #   GITHUB_ACCESS_TOKEN   Personal Access Token (repo scope)
 #
@@ -23,7 +21,7 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly STACK_NAME="global"
 
-source "$SCRIPT_DIR/lib.sh"
+source "$(cd "$SCRIPT_DIR/.." && pwd)/lib.sh"
 
 validate_url() {
     local url="$1"
@@ -44,17 +42,8 @@ validate_number() {
 }
 
 main() {
-    readonly CONFIG_FILE="$SCRIPT_DIR/server.conf"
-    if [[ -f "$CONFIG_FILE" ]]; then
-        # shellcheck source=/dev/null
-        source "$CONFIG_FILE"
-    fi
-
-    [[ -z "${DEPLOYMENT_PATH:-}" ]]     && { log_error "DEPLOYMENT_PATH not set — add to server.conf";     exit 1; }
-    [[ -z "${GITHUB_REPO_URL:-}" ]]     && { log_error "GITHUB_REPO_URL not set — add to server.conf";     exit 1; }
-    [[ -z "${GITHUB_ACCESS_TOKEN:-}" ]] && { log_error "GITHUB_ACCESS_TOKEN not set — add to server.conf"; exit 1; }
-
-    [[ -d "$DEPLOYMENT_PATH" ]] || { log_error "Deployment directory not found: $DEPLOYMENT_PATH"; exit 1; }
+    [[ -z "${GITHUB_REPO_URL:-}" ]]     && { log_error "GITHUB_REPO_URL not set";     exit 1; }
+    [[ -z "${GITHUB_ACCESS_TOKEN:-}" ]] && { log_error "GITHUB_ACCESS_TOKEN not set"; exit 1; }
 
     validate_url "$GITHUB_REPO_URL"
 
@@ -70,19 +59,17 @@ main() {
     export RUNNER_REPLICAS="$replicas"
     export RUNNER_LABELS="$labels"
 
+    local compose_file="$SCRIPT_DIR/docker-compose.github-runner.yml"
+    local networks_config="$(cd "$SCRIPT_DIR/.." && pwd)/traefik/networks.yml"
+
     log "=========================================="
     log "GitHub Actions Runner Deployment"
     log "=========================================="
-    log "Path:       $DEPLOYMENT_PATH"
     log "Repository: $GITHUB_REPO_URL"
     log "Project:    $PROJECT"
     log "Replicas:   $RUNNER_REPLICAS"
     log "Labels:     $RUNNER_LABELS"
     log "=========================================="
-
-    local runner_dir="$DEPLOYMENT_PATH/github-runner"
-    local compose_file="$runner_dir/docker-compose.github-runner.yml"
-    local networks_config="$DEPLOYMENT_PATH/traefik/networks.yml"
 
     validate_files "$compose_file" "$networks_config"
 

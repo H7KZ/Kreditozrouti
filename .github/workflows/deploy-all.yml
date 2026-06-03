@@ -16,7 +16,7 @@ on:
         description: "Target environment"
         required: true
         type: choice
-        options: [production, development]
+        options: [ production, development ]
         default: production
       image_tag:
         description: "Specific image tag to deploy (skips build if set)"
@@ -70,7 +70,7 @@ jobs:
 
   deploy:
     name: Deploy All to ${{ inputs.environment }}
-    needs: [build-api, build-client, build-scraper]
+    needs: [ build-api, build-client, build-scraper ]
     if: >-
       ${{ always() &&
       (needs.build-api.result == 'success' || needs.build-api.result == 'skipped') &&
@@ -86,7 +86,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set Deploy Variables
         id: vars
@@ -103,7 +103,7 @@ jobs:
           echo "project=${{ inputs.environment == 'production' && 'prod' || 'dev' }}" >> "$GITHUB_OUTPUT"
 
       - name: Create Version Directory
-        uses: appleboy/ssh-action@v1.2.4
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -125,7 +125,7 @@ jobs:
           overwrite: true
 
       - name: Execute Full-Stack Deployment
-        uses: appleboy/ssh-action@v1.2.4
+        uses: appleboy/ssh-action@v1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_ACTOR: ${{ github.actor }}
@@ -167,7 +167,7 @@ jobs:
             set -euo pipefail
 
             VERSION_DIR="$HOME/versions/${{ inputs.environment }}/$IMG_TAG"
-            CURRENT_LINK="$HOME/versions/${{ inputs.environment }}/current"
+            LATEST_LINK="$HOME/versions/${{ inputs.environment }}/latest"
             PROJECT_NAME="${{ steps.vars.outputs.project }}"
 
             echo "=========================================="
@@ -214,7 +214,7 @@ jobs:
               SCRAPER_IMAGE_TAG="$IMG_TAG" \
               bash ./deploy.sh "$PROJECT_NAME" "${{ inputs.environment }}"
 
-            ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
+            ln -sfn "$VERSION_DIR" "$LATEST_LINK"
 
             echo "=========================================="
             echo "Full-stack deployment complete"

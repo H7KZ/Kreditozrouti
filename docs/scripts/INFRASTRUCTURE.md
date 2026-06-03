@@ -6,22 +6,22 @@ Scripts for provisioning server infrastructure: Docker, Traefik, and GitHub Acti
 
 ## Bootstrap
 
-Fresh server setup is done via the **Bootstrap Server** GitHub Actions workflow
-(`.github/workflows/bootstrap.yml`). Trigger it manually from GitHub → Actions → Bootstrap Server.
+Fresh server setup is done manually in order:
 
-**Prerequisites:**
-1. Docker must be installed on the server (use a Docker-ready VPS image, or run `scripts/install-docker.sh` manually and log back in)
-2. All required GitHub Secrets must be set (see [ci/cd docs](../deployment/CICD.md))
+1. **Install Docker** — `sudo bash scripts/install-docker.sh` then log out and back in
+2. **Set up GitHub runner** — `GITHUB_REPO_URL=... GITHUB_ACCESS_TOKEN=... bash deployment/github-runner/deploy.sh`
+3. **Deploy Traefik** — push to `deployment/traefik/**` or trigger `deploy-traefik.yml` via `workflow_dispatch`
+4. **Deploy Monitoring** — push to `deployment/monitoring/**` or trigger `deploy-monitoring.yml` via `workflow_dispatch`
+5. **Deploy app** — push to `main`/`develop` or trigger `deploy-all.yml` via `workflow_dispatch`
 
-The workflow runs in order: write htpasswd → `deployment/traefik/deploy.sh` → `deployment/monitoring/deploy.sh` → `github-runner.sh` → install backup cron.
-
-After the first app deployment, re-run the workflow with `mysql_container` filled in to install the backup cron.
+All required GitHub Secrets must be set before steps 3–5 (see [ci/cd docs](../deployment/CICD.md)).
 
 ---
 
 ## Configuration
 
-All scripts read configuration from environment variables only — no config file. This allows them to be driven by GitHub Actions secrets/variables without any file on disk.
+All scripts read configuration from environment variables only — no config file. This allows them to be driven by GitHub
+Actions secrets/variables without any file on disk.
 
 **Backups (`backup.sh`):** `MYSQL_CONTAINER`, `BACKUP_DIR`, `BACKUP_RETENTION_DAYS`. The container name must match a
 running container — find it with `docker ps --format '{{.Names}}'`.
@@ -56,13 +56,13 @@ Deploys the global Traefik reverse proxy. Reads its compose config from `deploym
 
 **Required environment variables:**
 
-| Variable                  | Description                                |
-|---------------------------|--------------------------------------------|
-| `DEPLOYMENT_PATH`         | Path to the deployment directory           |
-| `TRAEFIK_DOMAIN`          | Domain for the Traefik dashboard           |
-| `TRAEFIK_CREDENTIALS_PATH`| Path to htpasswd file for basic auth       |
-| `CF_API_EMAIL`            | Cloudflare account email                   |
-| `CF_DNS_API_TOKEN`        | Cloudflare API token (`Zone → DNS → Edit`) |
+| Variable                   | Description                                |
+|----------------------------|--------------------------------------------|
+| `DEPLOYMENT_PATH`          | Path to the deployment directory           |
+| `TRAEFIK_DOMAIN`           | Domain for the Traefik dashboard           |
+| `TRAEFIK_CREDENTIALS_PATH` | Path to htpasswd file for basic auth       |
+| `CF_API_EMAIL`             | Cloudflare account email                   |
+| `CF_DNS_API_TOKEN`         | Cloudflare API token (`Zone → DNS → Edit`) |
 
 **Optional:** `ACME_EMAIL` (defaults to `CF_API_EMAIL`)
 
@@ -87,11 +87,11 @@ Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy). Traefik must al
 
 **Required environment variables:**
 
-| Variable               | Description                                     |
-|------------------------|-------------------------------------------------|
-| `DEPLOYMENT_PATH`      | Path to the deployment directory                |
-| `DOMAIN`               | Public domain (used for Grafana + Faro routing) |
-| `GRAFANA_ADMIN_PASSWORD` | Grafana admin password                        |
+| Variable                 | Description                                     |
+|--------------------------|-------------------------------------------------|
+| `DEPLOYMENT_PATH`        | Path to the deployment directory                |
+| `DOMAIN`                 | Public domain (used for Grafana + Faro routing) |
+| `GRAFANA_ADMIN_PASSWORD` | Grafana admin password                          |
 
 **Optional:** `GRAFANA_ADMIN_USER` (default: `admin`), `DISCORD_WEBHOOK_URL`
 
@@ -112,7 +112,7 @@ docker compose -p global logs grafana -f
 
 ---
 
-## `github-runner.sh`
+## `deployment/github-runner/deploy.sh`
 
 Deploys self-hosted GitHub Actions runners. Runners auto-register to the repository on container startup.
 
@@ -120,10 +120,10 @@ Deploys self-hosted GitHub Actions runners. Runners auto-register to the reposit
 
 | Variable              | Description                               |
 |-----------------------|-------------------------------------------|
-| `DEPLOYMENT_PATH`     | Path to the deployment directory          |
 | `GITHUB_REPO_URL`     | Full GitHub repository URL                |
 | `GITHUB_ACCESS_TOKEN` | GitHub personal access token (repo scope) |
 
 **Optional:** `RUNNER_REPLICAS` (default: `2`), `RUNNER_LABELS` (appended to `docker,self-hosted`)
 
-Deployed under Docker Compose project `global`. Runners share the Docker socket — required for container image builds in CI workflows.
+Deployed under Docker Compose project `global`. Runners share the Docker socket — required for container image builds in
+CI workflows.

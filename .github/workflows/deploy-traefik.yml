@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Upload Traefik Config
         uses: appleboy/scp-action@v1
@@ -50,7 +50,7 @@ jobs:
           overwrite: true
 
       - name: Write htpasswd
-        uses: appleboy/ssh-action@v1.2.4
+        uses: appleboy/ssh-action@v1
         env:
           TRAEFIK_HTPASSWD: ${{ secrets.TRAEFIK_HTPASSWD }}
         with:
@@ -65,7 +65,7 @@ jobs:
             chmod 600 "$HOME/.htpasswd"
 
       - name: Deploy Traefik
-        uses: appleboy/ssh-action@v1.2.4
+        uses: appleboy/ssh-action@v1
         env:
           DEPLOYMENT_PATH: "$HOME/deployment"
           TRAEFIK_DOMAIN: ${{ secrets.TRAEFIK_DOMAIN }}

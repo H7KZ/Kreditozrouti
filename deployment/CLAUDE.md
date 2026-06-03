@@ -33,6 +33,7 @@ deployment/
 │       └── provisioning/datasources/
 │           └── prometheus.yml            # Auto-provisions Prometheus datasource in Grafana
 └── github-runner/
+    ├── deploy.sh                         # Manual runner setup (run directly on VPS)
     └── docker-compose.github-runner.yml
 ```
 
@@ -45,9 +46,11 @@ deployment/
 ./deploy.sh prod production client       # deploy client service only
 ```
 
-Requires `.env` (secrets) and `.images` (CI-written: `IMAGE_REGISTRY`, `IMAGE_PREFIX`, `API_IMAGE_TAG`, `CLIENT_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`).
+Requires `.env` (written by CI from GitHub Secrets — never placed manually) and image tag env vars passed inline.
 
-For single-service deploys, only the relevant tag env var is required (e.g. `API_IMAGE_TAG` for `service=api`). Old version directories under `$HOME/versions/<environment>/` older than 7 days are cleaned up after each deploy (minimum 3 kept).
+For single-service deploys, only the relevant tag env var is required (e.g. `API_IMAGE_TAG` for `service=api`). Old
+version directories under `$HOME/versions/<environment>/` older than 7 days are cleaned up after each deploy (minimum 3
+kept).
 
 ---
 
@@ -57,8 +60,9 @@ For single-service deploys, only the relevant tag env var is required (e.g. `API
 Traefik must
 exist before any app stack because it creates `traefik-network`.
 
-**`deployment/.env` is gitignored.** Secrets never go in compose files. The file lives in `~/variables/.env.prod` on the
-VPS and is symlinked or copied into the deployment directory.
+**`.env` is written by CI, never committed.** `_deploy-service.yml` and `deploy-all.yml` construct it from GitHub
+Environment secrets/variables and write it into the version directory (`~/versions/<env>/<sha>/.env`) before calling
+`deploy.sh`.
 
 **`VITE_*` env vars** are baked into the client image at build time by Vite. Setting them at container runtime has no
 effect — the `docker-entrypoint.sh` placeholder-swap handles this at startup instead.
@@ -71,8 +75,8 @@ working directory doesn't matter; only the script's own location does.
 
 **MySQL healthcheck** uses `MYSQL_ROOT_PASSWORD` — it must be present in `.env`.
 
-**Production vs development** differ in: image tag prefix (`v*` vs `dev-*`), replica counts, network names (
-`mysql-network` vs `mysql-dev-network`), volume names.
+**Production vs development** differ in: float tag (`latest` vs `dev-latest`), replica counts, network names (
+`mysql-network` vs `mysql-dev-network`), volume names. Both use `${GITHUB_SHA::8}` as the versioned tag.
 
 ---
 
