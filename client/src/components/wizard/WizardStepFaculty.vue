@@ -30,9 +30,9 @@ function handleSelect(facultyId: string) {
 
 <template>
 	<div>
-		<h2 class="mb-4 text-lg font-medium text-[var(--insis-gray-900)]">{{ $t('components.wizard.WizardStepFaculty.title') }}</h2>
+		<h2 class="mb-4 text-lg font-medium text-(--insis-gray-900)">{{ $t('components.wizard.WizardStepFaculty.title') }}</h2>
 
-		<p class="mb-6 text-sm text-[var(--insis-gray-600)]">{{ $t('components.wizard.WizardStepFaculty.description') }}</p>
+		<p class="mb-6 text-sm text-(--insis-gray-600)">{{ $t('components.wizard.WizardStepFaculty.description') }}</p>
 
 		<div v-if="faculties.length === 0" class="insis-panel insis-panel-info">
 			<p>{{ $t('components.wizard.WizardStepFaculty.loading') }}</p>
@@ -46,21 +46,21 @@ function handleSelect(facultyId: string) {
 				:class="[
 					'cursor-pointer rounded border p-4 text-left transition-all duration-150 active:scale-[0.99]',
 					selectedFaculty === faculty.value
-						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] shadow-[var(--insis-shadow-sm)]'
-						: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue-dark)] hover:bg-[var(--insis-gray-50)] hover:shadow-[var(--insis-shadow-sm)]',
+						? 'border-(--insis-blue) bg-(--insis-blue-light) shadow-(--insis-shadow-sm)'
+						: 'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue-dark) hover:bg-(--insis-gray-50) hover:shadow-(--insis-shadow-sm)',
 				]"
 				@click="handleSelect(faculty.value as string)"
 			>
 				<div class="flex items-center justify-between">
 					<div>
-						<div class="font-medium text-[var(--insis-gray-900)]">
+						<div class="font-medium text-(--insis-gray-900)">
 							{{ faculty.value }}
 						</div>
-						<div class="mt-1 text-sm text-[var(--insis-gray-600)]">
+						<div class="mt-1 text-sm text-(--insis-gray-600)">
 							{{ getFacultyLabel(faculty.value as string) }}
 						</div>
 					</div>
-					<div class="text-sm text-[var(--insis-gray-500)]">{{ faculty.count }} {{ $t('common.plans') }}</div>
+					<div class="text-sm text-(--insis-gray-500)">{{ faculty.count }} {{ $t('common.plans') }}</div>
 				</div>
 			</button>
 		</div>

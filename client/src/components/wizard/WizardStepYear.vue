@@ -53,10 +53,10 @@ function handleBack() {
 				<IconArrowLeft class="h-4 w-4" />
 				{{ $t('common.back') }}
 			</button>
-			<h2 class="text-lg font-medium text-[var(--insis-gray-900)]">{{ $t('components.wizard.WizardStepYear.title') }}</h2>
+			<h2 class="text-lg font-medium text-(--insis-gray-900)">{{ $t('components.wizard.WizardStepYear.title') }}</h2>
 		</div>
 
-		<p class="mb-6 text-sm text-[var(--insis-gray-600)]">{{ $t('components.wizard.WizardStepYear.description') }}</p>
+		<p class="mb-6 text-sm text-(--insis-gray-600)">{{ $t('components.wizard.WizardStepYear.description') }}</p>
 
 		<div v-if="years.length === 0" class="insis-panel insis-panel-info">
 			<p>{{ $t('components.wizard.WizardStepYear.loading') }}</p>
@@ -70,20 +70,20 @@ function handleBack() {
 				:class="[
 					'cursor-pointer rounded border p-4 text-center transition-all duration-150 active:scale-[0.99]',
 					selectedYear === year.value
-						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] shadow-[var(--insis-shadow-sm)]'
-						: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue-dark)] hover:bg-[var(--insis-gray-50)] hover:shadow-[var(--insis-shadow-sm)]',
+						? 'border-(--insis-blue) bg-(--insis-blue-light) shadow-(--insis-shadow-sm)'
+						: 'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue-dark) hover:bg-(--insis-gray-50) hover:shadow-(--insis-shadow-sm)',
 				]"
 				@click="handleSelect(Number(year.value))"
 			>
-				<div class="text-lg font-medium text-[var(--insis-gray-900)]">
+				<div class="text-lg font-medium text-(--insis-gray-900)">
 					{{ formatAcademicYear(Number(year.value)) }}
 				</div>
-				<div class="mt-1 text-sm text-[var(--insis-gray-500)]">{{ year.count }} {{ $t('common.plans') }}</div>
+				<div class="mt-1 text-sm text-(--insis-gray-500)">{{ year.count }} {{ $t('common.plans') }}</div>
 			</button>
 		</div>
 
-		<div class="mt-6 rounded border border-[var(--insis-info)] bg-[var(--insis-info-bg)] p-3">
-			<p class="text-sm text-[var(--insis-gray-700)]">
+		<div class="mt-6 rounded border border-(--insis-info) bg-(--insis-info-bg) p-3">
+			<p class="text-sm text-(--insis-gray-700)">
 				<strong>{{ $t('common.tip') }}:</strong> {{ $t('components.wizard.WizardStepYear.tip') }}
 			</p>
 		</div>

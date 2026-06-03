@@ -131,16 +131,16 @@ function getSlotHighlightClass(slot: CourseUnitSlotDTO): string {
 	if (!slotMatchesTimeFilter(slot)) return ''
 	const type = getSlotType(slot)
 	const classes: Record<string, string> = {
-		lecture: 'bg-[var(--insis-block-lecture)]!',
-		exercise: 'bg-[var(--insis-block-exercise)]!',
-		seminar: 'bg-[var(--insis-block-seminar)]!',
+		lecture: 'bg-(--insis-block-lecture)!',
+		exercise: 'bg-(--insis-block-exercise)!',
+		seminar: 'bg-(--insis-block-seminar)!',
 	}
 	return classes[type] ?? ''
 }
 
 function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
-	if (getSlotConflicts(slot).length > 0) return 'bg-[var(--insis-danger-light)]'
-	if (getSlotCampusConflicts(slot).length > 0) return 'bg-[var(--insis-warning-light)]'
+	if (getSlotConflicts(slot).length > 0) return 'bg-(--insis-danger-light)'
+	if (getSlotCampusConflicts(slot).length > 0) return 'bg-(--insis-warning-light)'
 	return ''
 }
 </script>
@@ -148,7 +148,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 <template>
 	<div>
 		<div class="mb-3 flex items-center justify-between">
-			<h4 class="font-medium text-[var(--insis-gray-900)]">
+			<h4 class="font-medium text-(--insis-gray-900)">
 				{{ $t('components.courses.CourseRowExpanded.unitSelection') }}
 			</h4>
 			<div class="flex items-center gap-2">
@@ -159,7 +159,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 				<button
 					v-if="selectedUnitsStore.length > 0"
 					type="button"
-					class="insis-btn-text text-xs text-[var(--insis-danger)]"
+					class="insis-btn-text text-xs text-(--insis-danger)"
 					:aria-label="$t('components.courses.CourseRowExpanded.removeAll')"
 					@click="handleRemoveCourse"
 				>
@@ -172,13 +172,13 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 		<!-- Conflict filter toggle -->
 		<div
 			v-if="hasAnyConflicts"
-			class="mb-3 flex items-center justify-between rounded border border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)] px-3 py-2"
+			class="mb-3 flex items-center justify-between rounded border border-(--insis-warning-border) bg-(--insis-warning-light) px-3 py-2"
 		>
-			<div class="flex items-center gap-2 text-sm text-[var(--insis-warning)]">
+			<div class="flex items-center gap-2 text-sm text-(--insis-warning)">
 				<IconOctagonAlert class="h-4 w-4 shrink-0" aria-hidden="true" />
 				<span>{{ $t('components.courses.CourseRowExpanded.slotsWithConflicts', { count: conflictingUnitCount }) }}</span>
 			</div>
-			<label class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--insis-warning)] hover:text-[var(--insis-warning-dark)]">
+			<label class="flex cursor-pointer items-center gap-1.5 text-xs text-(--insis-warning) hover:text-(--insis-warning-dark)">
 				<input
 					v-model="hideConflictingUnits"
 					type="checkbox"
@@ -191,16 +191,13 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 		</div>
 
 		<!-- Incomplete selection warning -->
-		<div
-			v-if="hasIncompleteSelection"
-			class="mb-4 flex items-start gap-2 rounded border border-[var(--insis-warning)] bg-[var(--insis-warning-light)] p-3 text-sm"
-		>
-			<IconAlertTriangle class="mt-0.5 h-4 w-4 shrink-0 text-[var(--insis-warning-dark)]" aria-hidden="true" />
+		<div v-if="hasIncompleteSelection" class="mb-4 flex items-start gap-2 rounded border border-(--insis-warning) bg-(--insis-warning-light) p-3 text-sm">
+			<IconAlertTriangle class="mt-0.5 h-4 w-4 shrink-0 text-(--insis-warning-dark)" aria-hidden="true" />
 			<div>
-				<p class="font-medium text-[var(--insis-warning-dark)]">
+				<p class="font-medium text-(--insis-warning-dark)">
 					{{ $t('components.courses.CourseRowExpanded.incompleteSelectionTitle') }}
 				</p>
-				<p class="text-[var(--insis-gray-700)]">
+				<p class="text-(--insis-gray-700)">
 					{{ $t('components.courses.CourseRowExpanded.incompleteSelectionDescription', { types: getMissingTypesLabel() }) }}
 				</p>
 			</div>
@@ -209,14 +206,14 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 		<!-- Campus conflict warning -->
 		<div
 			v-if="hasCampusConflictForCourse"
-			class="mb-4 flex items-start gap-2 rounded border border-[var(--insis-warning)] bg-[var(--insis-warning-light)] p-3 text-sm"
+			class="mb-4 flex items-start gap-2 rounded border border-(--insis-warning) bg-(--insis-warning-light) p-3 text-sm"
 		>
-			<IconMapPin class="mt-0.5 h-4 w-4 shrink-0 text-[var(--insis-warning-dark)]" aria-hidden="true" />
+			<IconMapPin class="mt-0.5 h-4 w-4 shrink-0 text-(--insis-warning-dark)" aria-hidden="true" />
 			<div>
-				<p class="font-medium text-[var(--insis-warning-dark)]">
+				<p class="font-medium text-(--insis-warning-dark)">
 					{{ $t('components.courses.CourseRowExpanded.campusConflictTitle') }}
 				</p>
-				<p class="text-[var(--insis-gray-700)]">
+				<p class="text-(--insis-gray-700)">
 					{{ $t('components.courses.CourseRowExpanded.campusConflictDescription', { courses: campusConflictingCourses.join(', ') }) }}
 				</p>
 			</div>
@@ -226,11 +223,11 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 		<div class="space-y-5">
 			<div v-for="[key, group] in unitsByGroup" :key="key">
 				<div class="mb-2 flex items-center gap-2">
-					<span class="text-sm font-medium text-[var(--insis-gray-700)]">{{ getUnitTypesGroupLabel(group.types) }}</span>
+					<span class="text-sm font-medium text-(--insis-gray-700)">{{ getUnitTypesGroupLabel(group.types) }}</span>
 					<span v-if="isGroupSatisfied(group.types)" class="insis-badge insis-badge-success">
 						{{ $t('components.courses.CourseRowExpanded.selected') }}
 					</span>
-					<span v-else class="text-xs text-[var(--insis-gray-500)]">
+					<span v-else class="text-xs text-(--insis-gray-500)">
 						({{
 							group.units.length === 1
 								? $t('components.courses.CourseRowExpanded.selectAction')
@@ -238,7 +235,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 						}}
 						{{ group.units.length }})
 					</span>
-					<span v-if="hiddenConflictCount(group.units) > 0" class="text-xs text-[var(--insis-warning)]">
+					<span v-if="hiddenConflictCount(group.units) > 0" class="text-xs text-(--insis-warning)">
 						({{ $t('components.courses.CourseRowExpanded.hiddenConflicts', { count: hiddenConflictCount(group.units) }) }})
 					</span>
 				</div>
@@ -250,14 +247,14 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 						:key="unit.id"
 						class="rounded border text-sm transition-colors"
 						:class="{
-							'border-[var(--insis-success)] bg-[var(--insis-success-light)]': isUnitSelected(unit.id),
-							'border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)]':
+							'border-(--insis-success) bg-(--insis-success-light)': isUnitSelected(unit.id),
+							'border-(--insis-danger-border) bg-(--insis-danger-light)':
 								!isUnitSelected(unit.id) && unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
-							'border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)]':
+							'border-(--insis-warning-border) bg-(--insis-warning-light)':
 								!isUnitSelected(unit.id) && unitHasCampusConflictsOnly(unit) && !unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
-							'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue)]':
+							'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue)':
 								!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit) && !unitHasConflicts(unit) && !unitHasCampusConflictsOnly(unit),
-							'bg-[var(--insis-blue-light)] ring-1 ring-[var(--insis-blue)]':
+							'bg-(--insis-blue-light) ring-1 ring-(--insis-blue)':
 								!isUnitSelected(unit.id) && unitMatchesTimeFilter(unit) && !unitHasConflicts(unit),
 						}"
 					>
@@ -270,17 +267,17 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 									:title="formatSlotConflictTooltip(slot)"
 								>
 									<span
-										class="w-8 shrink-0 rounded bg-[var(--insis-gray-200)] px-1 py-0.5 text-center text-xs text-[var(--insis-gray-700)]"
+										class="w-8 shrink-0 rounded bg-(--insis-gray-200) px-1 py-0.5 text-center text-xs text-(--insis-gray-700)"
 										:class="getSlotHighlightClass(slot)"
 									>
 										{{ getShortUnitTypeLabel(getSlotType(slot)) }}
 									</span>
 									<span class="shrink-0 font-medium whitespace-nowrap">{{ formatSlotInfo(slot) }}</span>
-									<span class="shrink-0 truncate text-[var(--insis-gray-600)]" :title="slot.location || ''">{{ slot.location || '-' }}</span>
-									<span class="hidden truncate text-xs text-[var(--insis-gray-500)] sm:block">{{ unit.lecturer }}</span>
+									<span class="shrink-0 truncate text-(--insis-gray-600)" :title="slot.location || ''">{{ slot.location || '-' }}</span>
+									<span class="hidden truncate text-xs text-(--insis-gray-500) sm:block">{{ unit.lecturer }}</span>
 									<span
 										v-if="getSlotConflicts(slot).length > 0"
-										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-[var(--insis-danger)]"
+										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-(--insis-danger)"
 										:title="formatSlotConflictTooltip(slot)"
 									>
 										<IconOctagonAlert class="h-3 w-3" aria-hidden="true" />
@@ -288,7 +285,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 									</span>
 									<span
 										v-else-if="getSlotCampusConflicts(slot).length > 0"
-										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-[var(--insis-warning)]"
+										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-(--insis-warning)"
 										:title="getSlotCampusConflictTooltip(slot)"
 									>
 										<IconAlertTriangle class="h-3 w-3" aria-hidden="true" />
@@ -302,7 +299,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 									<span v-if="unit.capacity !== undefined" :class="['text-xs', getCapacityClass(unit.capacity)]">{{
 										formatCapacity(unit.capacity)
 									}}</span>
-									<span v-if="unit.note" class="text-xs text-[var(--insis-gray-400)] italic">{{ unit.note }}</span>
+									<span v-if="unit.note" class="text-xs text-(--insis-gray-400) italic">{{ unit.note }}</span>
 								</div>
 							</div>
 
@@ -311,7 +308,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 								<template v-if="isUnitSelected(unit.id)">
 									<button
 										type="button"
-										class="insis-btn bg-[var(--insis-surface)] px-3 py-1.5 text-xs hover:border-[var(--insis-danger)] hover:bg-[var(--insis-danger-light)] hover:text-[var(--insis-danger)]"
+										class="insis-btn bg-(--insis-surface) px-3 py-1.5 text-xs hover:border-(--insis-danger) hover:bg-(--insis-danger-light) hover:text-(--insis-danger)"
 										:aria-label="$t('common.remove')"
 										@click.stop="handleRemoveUnit(unit)"
 									>

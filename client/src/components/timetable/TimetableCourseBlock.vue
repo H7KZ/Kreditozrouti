@@ -91,15 +91,15 @@ const courseStatus = computed(() => {
 /** Background color based on unit type */
 const blockColorClass = computed(() => {
 	if (props.unit.date) {
-		return 'bg-[var(--insis-block-date-only)]'
+		return 'bg-(--insis-block-date-only)'
 	}
 
 	const typeColors: Record<CourseUnitType, string> = {
-		lecture: 'bg-[var(--insis-block-lecture)]',
-		exercise: 'bg-[var(--insis-block-exercise)]',
-		seminar: 'bg-[var(--insis-block-seminar)]',
+		lecture: 'bg-(--insis-block-lecture)',
+		exercise: 'bg-(--insis-block-exercise)',
+		seminar: 'bg-(--insis-block-seminar)',
 	}
-	return typeColors[props.unit.unitType] || 'bg-[var(--insis-block-lecture)]'
+	return typeColors[props.unit.unitType] || 'bg-(--insis-block-lecture)'
 })
 
 /** Formatted time range */
@@ -137,12 +137,12 @@ function handleClick() {
 
 <template>
 	<div
-		class="timetable-block group absolute right-0 left-0 min-h-6 cursor-pointer overflow-hidden border border-[var(--insis-border)] text-xs transition-shadow hover:z-10 hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--insis-blue)]"
+		class="timetable-block group absolute right-0 left-0 min-h-6 cursor-pointer overflow-hidden border border-(--insis-border) text-xs transition-shadow hover:z-10 hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--insis-blue)"
 		:class="[
 			blockColorClass,
 			{
-				'ring-2 ring-[var(--insis-danger)]': hasConflict,
-				'ring-2 ring-[var(--insis-warning)]': hasCampusConflict && !hasConflict,
+				'ring-2 ring-(--insis-danger)': hasConflict,
+				'ring-2 ring-(--insis-warning)': hasCampusConflict && !hasConflict,
 				'merged-block': isMerged,
 			},
 		]"
@@ -160,13 +160,13 @@ function handleClick() {
 					<!-- Warning icon for missing unit types -->
 					<span
 						v-if="courseStatus.needsAction"
-						class="warning-indicator flex shrink-0 items-center justify-center rounded-full text-[var(--insis-danger)]"
+						class="warning-indicator flex shrink-0 items-center justify-center rounded-full text-(--insis-danger)"
 						:title="warningTooltip"
 						aria-hidden="true"
 					>
 						<IconAlertTriangle class="h-3 w-3" />
 					</span>
-					<span class="truncate font-medium text-[var(--insis-text)]">
+					<span class="truncate font-medium text-(--insis-text)">
 						{{ unit.courseIdent }}
 					</span>
 				</div>
@@ -186,19 +186,19 @@ function handleClick() {
 			</div>
 
 			<!-- Course title (truncated) -->
-			<div class="mt-0.5 flex-1 truncate text-[10px] text-[var(--insis-gray-600)]">
+			<div class="mt-0.5 flex-1 truncate text-[10px] text-(--insis-gray-600)">
 				{{ getUnitCourseTitle(unit) }}
 			</div>
 
 			<!-- Time and room / date range for merged -->
 			<div class="mt-auto flex items-end justify-between gap-1 text-[10px]">
-				<span class="text-[var(--insis-gray-500)]">
+				<span class="text-(--insis-gray-500)">
 					{{ timeRange }}
 				</span>
-				<span v-if="dateRange" class="truncate text-[var(--insis-gray-500)]" :title="dateRange">
+				<span v-if="dateRange" class="truncate text-(--insis-gray-500)" :title="dateRange">
 					{{ dateRange }}
 				</span>
-				<span v-else-if="unit.location" class="truncate text-[var(--insis-gray-500)]">
+				<span v-else-if="unit.location" class="truncate text-(--insis-gray-500)">
 					{{ unit.location }}
 				</span>
 			</div>
@@ -206,7 +206,7 @@ function handleClick() {
 			<!-- Remove button (shown on hover/focus) -->
 			<button
 				type="button"
-				class="absolute top-0.5 right-0.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded bg-[var(--insis-danger-light)] text-[var(--insis-danger)] opacity-0 transition-all duration-75 group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-[var(--insis-danger)] hover:text-white focus:opacity-100 focus:ring-1 focus:ring-[var(--insis-danger)] focus:outline-none"
+				class="absolute top-0.5 right-0.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded bg-(--insis-danger-light) text-(--insis-danger) opacity-0 transition-all duration-75 group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-(--insis-danger) hover:text-white focus:opacity-100 focus:ring-1 focus:ring-(--insis-danger) focus:outline-none"
 				:aria-label="$t('components.timetable.TimetableCourseBlock.removeFromTimetable')"
 				@click="handleRemove"
 			>

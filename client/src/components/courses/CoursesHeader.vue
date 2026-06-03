@@ -45,23 +45,21 @@ function handleClearTimetable() {
 </script>
 
 <template>
-	<header
-		class="z-30 flex h-[52px] shrink-0 items-center gap-3 border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-4 shadow-[var(--insis-shadow-sm)]"
-	>
+	<header class="z-30 flex h-[52px] shrink-0 items-center gap-3 border-b border-(--insis-border) bg-(--insis-surface) px-4 shadow-(--insis-shadow-sm)">
 		<!-- Left: logo + plan info -->
 		<div class="flex min-w-0 items-center gap-3">
 			<router-link to="/" class="flex h-8 w-8 shrink-0 items-center justify-center" :title="$t('pages.courses.changePlan')">
 				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="flex h-8 w-8 shrink-0 items-center justify-center object-contain" />
 			</router-link>
-			<span class="hidden text-[15px] font-semibold text-[var(--insis-blue)] sm:block">{{ $t('pages.index.title') }}</span>
+			<span class="hidden text-[15px] font-semibold text-(--insis-blue) sm:block">{{ $t('pages.index.title') }}</span>
 
-			<div class="hidden h-6 w-px shrink-0 bg-[var(--insis-border)] sm:block" />
+			<div class="hidden h-6 w-px shrink-0 bg-(--insis-border) sm:block" />
 
 			<div class="hidden min-w-0 flex-col md:flex">
-				<div class="max-w-[400px] truncate text-[13px] font-medium text-[var(--insis-text)]">
+				<div class="max-w-[400px] truncate text-[13px] font-medium text-(--insis-text)">
 					{{ studyPlanInfo.titles.length > 0 ? studyPlanInfo.titles.join(' / ') : $t('pages.courses.studyPlanFallback') }}
 				</div>
-				<div class="text-[11px] text-[var(--insis-text-3)]">
+				<div class="text-[11px] text-(--insis-text-3)">
 					{{ $t('pages.courses.searchingForCourses', { semester: coursesInfo.semester, year: coursesInfo.years?.join('/') }) }}
 				</div>
 			</div>
@@ -74,7 +72,7 @@ function handleClearTimetable() {
 			<button
 				v-if="selectedCoursesCount > 0"
 				type="button"
-				class="insis-btn insis-btn-secondary hover:border-[var(--insis-danger)] hover:bg-[var(--insis-danger)] hover:text-[var(--insis-text-inv)]"
+				class="insis-btn insis-btn-secondary hover:border-(--insis-danger) hover:bg-(--insis-danger) hover:text-(--insis-text-inv)"
 				:aria-label="$t('pages.courses.clearTimetable')"
 				@click="handleClearTimetable"
 			>
@@ -84,7 +82,7 @@ function handleClearTimetable() {
 
 			<button
 				type="button"
-				class="insis-btn insis-btn-secondary hover:border-[var(--insis-danger)] hover:bg-[var(--insis-danger)] hover:text-[var(--insis-text-inv)]"
+				class="insis-btn insis-btn-secondary hover:border-(--insis-danger) hover:bg-(--insis-danger) hover:text-(--insis-text-inv)"
 				:aria-label="$t('pages.courses.changePlan')"
 				@click="handleResetWizard"
 			>
@@ -92,7 +90,7 @@ function handleClearTimetable() {
 				<span class="hidden sm:inline">{{ $t('pages.courses.changePlan') }}</span>
 			</button>
 
-			<div class="hidden h-6 w-px shrink-0 bg-[var(--insis-border)] sm:block" />
+			<div class="hidden h-6 w-px shrink-0 bg-(--insis-border) sm:block" />
 			<ThemeToggle class="hidden sm:flex" />
 			<LanguageSwitcher />
 

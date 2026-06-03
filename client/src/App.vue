@@ -12,7 +12,7 @@ const { t } = useI18n()
 		<ScreenReaderAnnouncer />
 		<a
 			href="#main-content"
-			class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-[var(--insis-surface)] focus:px-4 focus:py-2 focus:text-[var(--insis-blue)] focus:shadow-lg focus:outline-none"
+			class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-(--insis-surface) focus:px-4 focus:py-2 focus:text-(--insis-blue) focus:shadow-lg focus:outline-none"
 		>
 			{{ t('common.skipToContent') }}
 		</a>

@@ -68,13 +68,13 @@ function getStatusIcon(status: CourseStatusType) {
 function getStatusColorClass(status: CourseStatusType): string {
 	switch (status) {
 		case 'conflict':
-			return 'text-[var(--insis-danger)]'
+			return 'text-(--insis-danger)'
 		case 'campus-conflict':
-			return 'text-[var(--insis-warning)]'
+			return 'text-(--insis-warning)'
 		case 'incomplete':
-			return 'text-[var(--insis-warning)]'
+			return 'text-(--insis-warning)'
 		default:
-			return 'text-[var(--insis-blue)]'
+			return 'text-(--insis-blue)'
 	}
 }
 
@@ -82,13 +82,13 @@ function getStatusColorClass(status: CourseStatusType): string {
 function getSelectedBgClass(status: CourseStatusType): string {
 	switch (status) {
 		case 'conflict':
-			return 'bg-[var(--insis-danger-light)]'
+			return 'bg-(--insis-danger-light)'
 		case 'campus-conflict':
-			return 'bg-[var(--insis-warning-light)]'
+			return 'bg-(--insis-warning-light)'
 		case 'incomplete':
-			return 'bg-[var(--insis-warning-light)]'
+			return 'bg-(--insis-warning-light)'
 		default:
-			return 'bg-[var(--insis-blue-subtle)]'
+			return 'bg-(--insis-blue-subtle)'
 	}
 }
 
@@ -120,7 +120,7 @@ function toggleCollapsed() {
 </script>
 
 <template>
-	<div v-if="hasCourses" class="mb-3 border-b border-[var(--insis-border-light)] pb-3 last:mb-0 last:border-b-0">
+	<div v-if="hasCourses" class="mb-3 border-b border-(--insis-border-light) pb-3 last:mb-0 last:border-b-0">
 		<!-- Collapsible header -->
 		<button
 			type="button"
@@ -132,19 +132,19 @@ function toggleCollapsed() {
 				{{ $t('components.filters.CourseStatusFilter.title') }}
 				<span
 					v-if="activeFilterCount > 0"
-					class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-[10px] text-white"
+					class="rounded-full bg-(--insis-blue) px-1.5 py-0.5 text-[10px] text-white"
 					:aria-label="$t('components.filters.FilterPanel.activeFilterCount', { count: activeFilterCount })"
 				>
 					{{ activeFilterCount }}
 				</span>
 			</span>
-			<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': !isCollapsed }]" aria-hidden="true" />
+			<IconChevronDown :class="['h-4 w-4 text-(--insis-gray-500) transition-transform', { 'rotate-180': !isCollapsed }]" aria-hidden="true" />
 		</button>
 
 		<!-- Collapsible content -->
 		<div v-show="!isCollapsed" class="mt-2 space-y-3">
 			<!-- Clear filter button -->
-			<button v-if="isFiltering" type="button" class="cursor-pointer text-xs text-[var(--insis-blue)] hover:underline" @click="clearFilters">
+			<button v-if="isFiltering" type="button" class="cursor-pointer text-xs text-(--insis-blue) hover:underline" @click="clearFilters">
 				{{ $t('common.clearFilter') }}
 			</button>
 
@@ -168,24 +168,24 @@ function toggleCollapsed() {
 					/>
 					<component :is="getStatusIcon(option.value)" :class="['h-4 w-4 shrink-0', getStatusColorClass(option.value)]" aria-hidden="true" />
 					<span class="flex-1 text-sm">{{ option.label }}</span>
-					<span :class="['text-xs', option.count === 0 ? 'text-[var(--insis-gray-400)] italic' : 'text-[var(--insis-gray-500)]']" aria-hidden="true">
+					<span :class="['text-xs', option.count === 0 ? 'text-(--insis-gray-400) italic' : 'text-(--insis-gray-500)']" aria-hidden="true">
 						({{ option.count }})
 					</span>
 				</label>
 			</div>
 
 			<!-- Conflict courses details -->
-			<div v-if="statusCounts.conflict > 0" class="border-t border-[var(--insis-border-light)] pt-2">
+			<div v-if="statusCounts.conflict > 0" class="border-t border-(--insis-border-light) pt-2">
 				<button
 					type="button"
-					class="flex w-full cursor-pointer items-center gap-1 text-xs text-[var(--insis-gray-600)] hover:text-[var(--insis-text)]"
+					class="flex w-full cursor-pointer items-center gap-1 text-xs text-(--insis-gray-600) hover:text-(--insis-text)"
 					:aria-expanded="showConflictDetails"
 					@click="showConflictDetails = !showConflictDetails"
 				>
 					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showConflictDetails }]" aria-hidden="true" />
-					<IconCalendarX class="h-3 w-3 text-[var(--insis-danger)]" aria-hidden="true" />
+					<IconCalendarX class="h-3 w-3 text-(--insis-danger)" aria-hidden="true" />
 					<span>{{ $t('components.filters.CourseStatusFilter.conflictingCourses') }}</span>
-					<span class="text-[var(--insis-gray-400)]" aria-hidden="true">({{ statusCounts.conflict }})</span>
+					<span class="text-(--insis-gray-400)" aria-hidden="true">({{ statusCounts.conflict }})</span>
 				</button>
 
 				<div v-if="showConflictDetails" class="mt-2 space-y-1 pl-4">
@@ -203,23 +203,23 @@ function toggleCollapsed() {
 							@change="toggleCourseFilter(course.ident)"
 						/>
 						<span class="flex-1 truncate text-sm">{{ course.ident }}</span>
-						<span class="text-xs text-[var(--insis-danger)]" aria-hidden="true"> ↔ {{ course.conflictsWith.join(', ') }} </span>
+						<span class="text-xs text-(--insis-danger)" aria-hidden="true"> ↔ {{ course.conflictsWith.join(', ') }} </span>
 					</label>
 				</div>
 			</div>
 
 			<!-- Campus conflict courses details -->
-			<div v-if="statusCounts['campus-conflict'] > 0" class="border-t border-[var(--insis-border-light)] pt-2">
+			<div v-if="statusCounts['campus-conflict'] > 0" class="border-t border-(--insis-border-light) pt-2">
 				<button
 					type="button"
-					class="flex w-full cursor-pointer items-center gap-1 text-xs text-[var(--insis-gray-600)] hover:text-[var(--insis-text)]"
+					class="flex w-full cursor-pointer items-center gap-1 text-xs text-(--insis-gray-600) hover:text-(--insis-text)"
 					:aria-expanded="showCampusConflictDetails"
 					@click="showCampusConflictDetails = !showCampusConflictDetails"
 				>
 					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showCampusConflictDetails }]" aria-hidden="true" />
-					<IconMapPin class="h-3 w-3 text-[var(--insis-warning)]" aria-hidden="true" />
+					<IconMapPin class="h-3 w-3 text-(--insis-warning)" aria-hidden="true" />
 					<span>{{ $t('components.filters.CourseStatusFilter.campusConflictingCourses') }}</span>
-					<span class="text-[var(--insis-gray-400)]" aria-hidden="true">({{ statusCounts['campus-conflict'] }})</span>
+					<span class="text-(--insis-gray-400)" aria-hidden="true">({{ statusCounts['campus-conflict'] }})</span>
 				</button>
 
 				<div v-if="showCampusConflictDetails" class="mt-2 space-y-1 pl-4">
@@ -240,23 +240,23 @@ function toggleCollapsed() {
 							@change="toggleCourseFilter(course.ident)"
 						/>
 						<span class="flex-1 truncate text-sm">{{ course.ident }}</span>
-						<span class="text-xs text-[var(--insis-warning)]" aria-hidden="true"> ↔ {{ course.campusConflictsWith.join(', ') }} </span>
+						<span class="text-xs text-(--insis-warning)" aria-hidden="true"> ↔ {{ course.campusConflictsWith.join(', ') }} </span>
 					</label>
 				</div>
 			</div>
 
 			<!-- Incomplete courses details -->
-			<div v-if="statusCounts.incomplete > 0" class="border-t border-[var(--insis-border-light)] pt-2">
+			<div v-if="statusCounts.incomplete > 0" class="border-t border-(--insis-border-light) pt-2">
 				<button
 					type="button"
-					class="flex w-full cursor-pointer items-center gap-1 text-xs text-[var(--insis-gray-600)] hover:text-[var(--insis-text)]"
+					class="flex w-full cursor-pointer items-center gap-1 text-xs text-(--insis-gray-600) hover:text-(--insis-text)"
 					:aria-expanded="showIncompleteDetails"
 					@click="showIncompleteDetails = !showIncompleteDetails"
 				>
 					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showIncompleteDetails }]" aria-hidden="true" />
-					<IconAlertTriangle class="h-3 w-3 text-[var(--insis-warning)]" aria-hidden="true" />
+					<IconAlertTriangle class="h-3 w-3 text-(--insis-warning)" aria-hidden="true" />
 					<span>{{ $t('components.filters.CourseStatusFilter.incompleteCourses') }}</span>
-					<span class="text-[var(--insis-gray-400)]" aria-hidden="true">({{ statusCounts.incomplete }})</span>
+					<span class="text-(--insis-gray-400)" aria-hidden="true">({{ statusCounts.incomplete }})</span>
 				</button>
 
 				<div v-if="showIncompleteDetails" class="mt-2 space-y-1 pl-4">
@@ -277,7 +277,7 @@ function toggleCollapsed() {
 							@change="toggleCourseFilter(course.ident)"
 						/>
 						<span class="flex-1 truncate text-sm">{{ course.ident }}</span>
-						<span class="text-xs text-[var(--insis-warning)]" aria-hidden="true">
+						<span class="text-xs text-(--insis-warning)" aria-hidden="true">
 							{{ $t('components.filters.CourseStatusFilter.missingLabel') }}:
 							{{ course.missingTypes.map(getUnitTypeLabel).join(', ') }}
 						</span>
@@ -286,7 +286,7 @@ function toggleCollapsed() {
 			</div>
 
 			<!-- Help text -->
-			<p class="text-[10px] text-[var(--insis-gray-500)]">
+			<p class="text-[10px] text-(--insis-gray-500)">
 				{{ $t('components.filters.CourseStatusFilter.helpText') }}
 			</p>
 		</div>

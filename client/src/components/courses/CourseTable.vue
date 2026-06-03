@@ -76,7 +76,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 						v-for="col in columns"
 						:key="col.key"
 						:class="[
-							col.sortable && 'sortable focus-visible:bg-[var(--insis-surface-2)] focus-visible:outline-none',
+							col.sortable && 'sortable focus-visible:bg-(--insis-surface-2) focus-visible:outline-none',
 							col.key === 'ident' && 'w-24',
 							col.key === 'ects' && 'w-16 text-center',
 							col.key === 'actions' && 'w-10',
@@ -109,7 +109,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 			<tbody>
 				<template v-if="coursesStore.courses.length === 0">
 					<tr>
-						<td :colspan="columns.length" class="py-8 text-center text-[var(--insis-text-3)]">
+						<td :colspan="columns.length" class="py-8 text-center text-(--insis-text-3)">
 							<template v-if="coursesStore.loading">
 								<div class="insis-loading">
 									<div class="insis-spinner" aria-hidden="true" />
@@ -125,7 +125,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 						<!-- Main Row -->
 						<tr
 							:class="[
-								'group/row insis-table-row-clickable focus-within:bg-[var(--insis-surface-2)] focus-within:outline-none',
+								'group/row insis-table-row-clickable focus-within:bg-(--insis-surface-2) focus-within:outline-none',
 								isExpanded(course.id) && 'row-expanded',
 								hasSelectedUnits(course.id) && 'row-in-timetable',
 							]"
@@ -148,24 +148,24 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 									<span :title="getCourseTitle(course)" class="truncate">{{ getCourseTitle(course) }}</span>
 									<span
 										v-if="hasSelectedUnits(course.id) && !hasMissingUnitTypes(course.id)"
-										class="insis-badge insis-badge-success flex-shrink-0"
+										class="insis-badge insis-badge-success shrink-0"
 									>
 										{{ $t('components.courses.CourseTable.inTimetable') }}
 									</span>
-									<span v-if="hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-amber flex-shrink-0">
+									<span v-if="hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-amber shrink-0">
 										{{ $t('components.courses.CourseTable.missingUnitTypes') }}
 									</span>
-									<span v-if="hasCourseConflict(course.id)" class="insis-badge insis-badge-danger flex-shrink-0">
+									<span v-if="hasCourseConflict(course.id)" class="insis-badge insis-badge-danger shrink-0">
 										{{ $t('components.courses.CourseTable.conflictTag') }}
 									</span>
-									<span v-if="hasCourseCampusConflict(course.id)" class="insis-badge insis-badge-amber flex-shrink-0">
+									<span v-if="hasCourseCampusConflict(course.id)" class="insis-badge insis-badge-amber shrink-0">
 										{{ $t('components.courses.CourseTable.campusConflictTag') }}
 									</span>
 								</div>
 							</td>
 
 							<!-- Faculty -->
-							<td class="text-[12px] text-[var(--insis-text-3)]">
+							<td class="text-[12px] text-(--insis-text-3)">
 								{{ course.faculty_id ? getFacultyLabel(course.faculty_id) : '-' }}
 							</td>
 
@@ -173,19 +173,19 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 							<td class="text-center font-medium">{{ course.ects ?? '-' }}</td>
 
 							<!-- Completion -->
-							<td class="text-[12px] text-[var(--insis-text-2)]">
+							<td class="text-[12px] text-(--insis-text-2)">
 								{{ course.mode_of_completion ? getCompletionLabel(course.mode_of_completion) : '-' }}
 							</td>
 
 							<!-- Schedule -->
-							<td class="text-[11.5px] text-[var(--insis-text-3)]">{{ getCourseScheduleSummary(course) }}</td>
+							<td class="text-[11.5px] text-(--insis-text-3)">{{ getCourseScheduleSummary(course) }}</td>
 
 							<!-- Actions: expand chevron -->
 							<td class="text-right">
 								<div class="flex items-center justify-end gap-1">
 									<IconChevronDown
 										:class="[
-											'inline h-3.5 w-3.5 flex-shrink-0 text-[var(--insis-text-3)] transition-transform duration-200',
+											'inline h-3.5 w-3.5 shrink-0 text-(--insis-text-3) transition-transform duration-200',
 											isExpanded(course.id) && 'rotate-180',
 										]"
 										aria-hidden="true"
@@ -210,7 +210,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 	<div class="flex flex-col gap-1.5 sm:hidden">
 		<!-- Empty / loading -->
 		<template v-if="coursesStore.courses.length === 0">
-			<div class="py-8 text-center text-[var(--insis-text-3)]">
+			<div class="py-8 text-center text-(--insis-text-3)">
 				<template v-if="coursesStore.loading">
 					<div class="insis-loading">
 						<div class="insis-spinner" aria-hidden="true" />
@@ -226,12 +226,12 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 				<!-- Card header -->
 				<div
 					:class="[
-						'cursor-pointer rounded border bg-[var(--insis-surface)] px-3 py-3 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)] active:bg-[var(--insis-surface-2)]',
+						'cursor-pointer rounded border bg-(--insis-surface) px-3 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-(--insis-blue) active:bg-(--insis-surface-2)',
 						hasCourseConflict(course.id)
-							? 'border-[var(--insis-danger-border)]'
+							? 'border-(--insis-danger-border)'
 							: hasSelectedUnits(course.id)
-								? 'border-[var(--insis-blue-lighter)]'
-								: 'border-[var(--insis-border)]',
+								? 'border-(--insis-blue-lighter)'
+								: 'border-(--insis-border)',
 					]"
 					role="button"
 					:tabindex="0"
@@ -245,11 +245,11 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 						<div class="min-w-0 flex-1">
 							<!-- Code + title -->
 							<div class="mb-0.5 flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-								<span class="shrink-0 text-[13px] font-bold text-[var(--insis-blue)]">{{ course.ident }}</span>
-								<span class="min-w-0 truncate text-[12px] font-medium text-[var(--insis-text)]">{{ getCourseTitle(course) }}</span>
+								<span class="shrink-0 text-[13px] font-bold text-(--insis-blue)">{{ course.ident }}</span>
+								<span class="min-w-0 truncate text-[12px] font-medium text-(--insis-text)">{{ getCourseTitle(course) }}</span>
 							</div>
 							<!-- Faculty · ECTS · Completion -->
-							<div class="text-[11px] text-[var(--insis-text-3)]">
+							<div class="text-[11px] text-(--insis-text-3)">
 								<span v-if="course.faculty_id">{{ getFacultyLabel(course.faculty_id) }}</span>
 								<template v-if="course.faculty_id && course.ects"> · </template>
 								<span v-if="course.ects">{{ course.ects }} ECTS</span>
@@ -257,7 +257,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 								<span v-if="course.mode_of_completion">{{ getCompletionLabel(course.mode_of_completion) }}</span>
 							</div>
 							<!-- Schedule -->
-							<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-[11px] text-[var(--insis-text-3)]">
+							<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-[11px] text-(--insis-text-3)">
 								{{ getCourseScheduleSummary(course) }}
 							</div>
 						</div>
@@ -276,10 +276,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 								{{ $t('components.courses.CourseTable.campusConflictTag') }}
 							</span>
 							<IconChevronDown
-								:class="[
-									'mt-auto h-3.5 w-3.5 text-[var(--insis-text-3)] transition-transform duration-200',
-									isExpanded(course.id) && 'rotate-180',
-								]"
+								:class="['mt-auto h-3.5 w-3.5 text-(--insis-text-3) transition-transform duration-200', isExpanded(course.id) && 'rotate-180']"
 								aria-hidden="true"
 							/>
 						</div>
@@ -287,7 +284,7 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 				</div>
 
 				<!-- Expanded panel -->
-				<div v-if="isExpanded(course.id)" class="-mt-1 rounded border border-[var(--insis-blue-light)] bg-[var(--insis-surface-2)]">
+				<div v-if="isExpanded(course.id)" class="-mt-1 rounded border border-(--insis-blue-light) bg-(--insis-surface-2)">
 					<CourseRowExpanded :course="course" />
 				</div>
 			</template>

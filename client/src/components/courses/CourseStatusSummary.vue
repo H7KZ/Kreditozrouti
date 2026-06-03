@@ -54,7 +54,7 @@ function handleBadgeClick(status: CourseStatusType) {
 function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 	const isSelected = isStatusSelected(status)
 	if (isSelected) {
-		return `${baseClass} ring-2 ring-offset-1 ring-[var(--insis-blue)]`
+		return `${baseClass} ring-2 ring-offset-1 ring-(--insis-blue)`
 	}
 	return baseClass
 }
@@ -71,8 +71,8 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 					getBadgeClasses(
 						'selected',
 						isAllComplete
-							? 'border-[var(--insis-success-border)] bg-[var(--insis-success-light)] text-[var(--insis-success)] hover:brightness-95'
-							: 'border-[var(--insis-blue-lighter)] bg-[var(--insis-blue-subtle)] text-[var(--insis-blue)] hover:bg-[var(--insis-blue-light)]',
+							? 'border-(--insis-success-border) bg-(--insis-success-light) text-(--insis-success) hover:brightness-95'
+							: 'border-(--insis-blue-lighter) bg-(--insis-blue-subtle) text-(--insis-blue) hover:bg-(--insis-blue-light)',
 					),
 				]"
 				:title="$t('components.courses.CourseStatusSummary.selectedTooltip')"
@@ -86,10 +86,10 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 			</button>
 
 			<!-- ECTS total (non-interactive) -->
-			<span v-if="totalEcts > 0" class="border-l border-[var(--insis-border)] px-2 text-xs text-[var(--insis-gray-500)]"> {{ totalEcts }} ECTS </span>
+			<span v-if="totalEcts > 0" class="border-l border-(--insis-border) px-2 text-xs text-(--insis-gray-500)"> {{ totalEcts }} ECTS </span>
 
 			<!-- Divider when there are issues -->
-			<span v-if="hasIssues" class="text-[var(--insis-gray-300)]">|</span>
+			<span v-if="hasIssues" class="text-(--insis-gray-300)">|</span>
 
 			<!-- Conflict warning badge -->
 			<button
@@ -97,10 +97,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 				type="button"
 				:class="[
 					'inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-solid px-2.5 py-1 text-xs font-medium transition-all duration-150 focus:outline-none active:scale-[0.98]',
-					getBadgeClasses(
-						'conflict',
-						'border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)] text-[var(--insis-danger)] hover:brightness-95',
-					),
+					getBadgeClasses('conflict', 'border-(--insis-danger-border) bg-(--insis-danger-light) text-(--insis-danger) hover:brightness-95'),
 				]"
 				:title="$t('components.courses.CourseStatusSummary.conflictTooltip')"
 				@click="handleBadgeClick('conflict')"
@@ -117,10 +114,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 				type="button"
 				:class="[
 					'inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-solid px-2.5 py-1 text-xs font-medium transition-all duration-150 focus:outline-none active:scale-[0.98]',
-					getBadgeClasses(
-						'campus-conflict',
-						'border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)] text-[var(--insis-warning)] hover:brightness-95',
-					),
+					getBadgeClasses('campus-conflict', 'border-(--insis-warning-border) bg-(--insis-warning-light) text-(--insis-warning) hover:brightness-95'),
 				]"
 				:title="$t('components.courses.CourseStatusSummary.campusConflictTooltip')"
 				@click="handleBadgeClick('campus-conflict')"
@@ -137,10 +131,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 				type="button"
 				:class="[
 					'inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-solid px-2.5 py-1 text-xs font-medium transition-all duration-150 focus:outline-none active:scale-[0.98]',
-					getBadgeClasses(
-						'incomplete',
-						'border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)] text-[var(--insis-warning)] hover:brightness-95',
-					),
+					getBadgeClasses('incomplete', 'border-(--insis-warning-border) bg-(--insis-warning-light) text-(--insis-warning) hover:brightness-95'),
 				]"
 				:title="$t('components.courses.CourseStatusSummary.incompleteTooltip')"
 				@click="handleBadgeClick('incomplete')"
@@ -152,13 +143,13 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 			</button>
 
 			<!-- Clear filter indicator -->
-			<button v-if="isFiltering" type="button" class="ml-2 text-xs text-[var(--insis-blue)] hover:underline" @click="clearFilters">
+			<button v-if="isFiltering" type="button" class="ml-2 text-xs text-(--insis-blue) hover:underline" @click="clearFilters">
 				{{ $t('common.clearFilter') }}
 			</button>
 		</div>
 
 		<!-- Success message when all complete -->
-		<p v-if="isAllComplete" class="mt-1 text-xs text-[var(--insis-success)]">
+		<p v-if="isAllComplete" class="mt-1 text-xs text-(--insis-success)">
 			<IconCheck class="mr-0.5 inline h-3 w-3" />
 			{{ $t('components.courses.CourseStatusSummary.allComplete') }}
 		</p>

@@ -189,6 +189,7 @@ services:
       - GF_SECURITY_ADMIN_USER=root
       - GF_SECURITY_ADMIN_PASSWORD=root
       - GF_USERS_ALLOW_SIGN_UP=false
+      - DISCORD_WEBHOOK_URL=-
 
     volumes:
       - ./deployment/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro

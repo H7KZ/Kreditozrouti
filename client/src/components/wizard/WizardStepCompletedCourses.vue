@@ -110,18 +110,18 @@ function handleSearchInput(event: Event) {
 
 <template>
 	<div>
-		<h2 class="mb-2 text-lg font-medium text-[var(--insis-gray-900)]">
+		<h2 class="mb-2 text-lg font-medium text-(--insis-gray-900)">
 			{{ $t('components.wizard.WizardStepCompletedCourses.title') }}
 		</h2>
 
-		<p class="mb-4 text-sm text-[var(--insis-gray-600)]">
+		<p class="mb-4 text-sm text-(--insis-gray-600)">
 			{{ $t('components.wizard.WizardStepCompletedCourses.description') }}
 		</p>
 
 		<!-- Info panel -->
-		<div class="mb-4 flex items-start gap-2 rounded border border-[var(--insis-blue)] bg-[var(--insis-blue-light)] p-3 text-sm">
-			<IconInfo class="mt-0.5 h-4 w-4 shrink-0 text-[var(--insis-blue)]" />
-			<p class="text-[var(--insis-gray-700)]">
+		<div class="mb-4 flex items-start gap-2 rounded border border-(--insis-blue) bg-(--insis-blue-light) p-3 text-sm">
+			<IconInfo class="mt-0.5 h-4 w-4 shrink-0 text-(--insis-blue)" />
+			<p class="text-(--insis-gray-700)">
 				{{ $t('components.wizard.WizardStepCompletedCourses.infoText') }}
 			</p>
 		</div>
@@ -130,7 +130,7 @@ function handleSearchInput(event: Event) {
 		<div class="mb-4 space-y-3">
 			<!-- Search -->
 			<div class="relative">
-				<IconSearch class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
+				<IconSearch class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-(--insis-gray-500)" />
 				<input
 					type="text"
 					class="insis-input pl-9"
@@ -149,8 +149,8 @@ function handleSearchInput(event: Event) {
 					:class="[
 						'cursor-pointer rounded-full border px-3 py-1 text-xs transition-all duration-150 active:scale-[0.97]',
 						isCategoryFilterActive(category)
-							? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] text-[var(--insis-blue)]'
-							: 'border-[var(--insis-border)] bg-[var(--insis-surface)] text-[var(--insis-gray-600)] hover:border-[var(--insis-blue)] hover:bg-[var(--insis-blue-subtle)]',
+							? 'border-(--insis-blue) bg-(--insis-blue-light) text-(--insis-blue)'
+							: 'border-(--insis-border) bg-(--insis-surface) text-(--insis-gray-600) hover:border-(--insis-blue) hover:bg-(--insis-blue-subtle)',
 					]"
 					@click="toggleCategoryFilter(category)"
 				>
@@ -166,49 +166,49 @@ function handleSearchInput(event: Event) {
 
 		<!-- Course list grouped by category -->
 		<div v-else-if="sortedEntries.length > 0" class="space-y-4">
-			<div v-for="[category, courses] in sortedEntries" :key="category" class="rounded border border-[var(--insis-border)] bg-[var(--insis-surface)]">
+			<div v-for="[category, courses] in sortedEntries" :key="category" class="rounded border border-(--insis-border) bg-(--insis-surface)">
 				<!-- Category header -->
 				<button
 					type="button"
-					class="flex w-full cursor-pointer items-center justify-between p-3 text-left hover:bg-[var(--insis-gray-50)]"
+					class="flex w-full cursor-pointer items-center justify-between p-3 text-left hover:bg-(--insis-gray-50)"
 					@click="toggleCategory(category)"
 				>
 					<div class="flex items-center gap-2">
 						<IconChevronDown
-							:class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { '-rotate-90': collapsedCategories.has(category) }]"
+							:class="['h-4 w-4 text-(--insis-gray-500) transition-transform', { '-rotate-90': collapsedCategories.has(category) }]"
 						/>
 						<span class="insis-badge" :class="getCategoryBadgeClass(category)">
 							{{ getCategoryLabel(category) }}
 						</span>
-						<span class="text-sm text-[var(--insis-gray-500)]"> ({{ courses.length }}) </span>
+						<span class="text-sm text-(--insis-gray-500)"> ({{ courses.length }}) </span>
 					</div>
-					<span v-if="completedInCategory(courses) > 0" class="text-xs text-[var(--insis-success)]">
+					<span v-if="completedInCategory(courses) > 0" class="text-xs text-(--insis-success)">
 						<IconCheck class="mr-1 inline h-3 w-3" />
 						{{ completedInCategory(courses) }} {{ $t('components.wizard.WizardStepCompletedCourses.marked') }}
 					</span>
 				</button>
 
 				<!-- Course list -->
-				<div v-show="!collapsedCategories.has(category)" class="border-t border-[var(--insis-border)]">
+				<div v-show="!collapsedCategories.has(category)" class="border-t border-(--insis-border)">
 					<label
 						v-for="course in courses"
 						:key="course.id"
 						:class="[
-							'flex cursor-pointer items-center gap-3 border-b border-[var(--insis-border-light)] px-3 py-2 transition-colors last:border-b-0',
-							isCompleted(course.ident) ? 'bg-[var(--insis-success-light)]' : 'hover:bg-[var(--insis-gray-50)]',
+							'flex cursor-pointer items-center gap-3 border-b border-(--insis-border-light) px-3 py-2 transition-colors last:border-b-0',
+							isCompleted(course.ident) ? 'bg-(--insis-success-light)' : 'hover:bg-(--insis-gray-50)',
 						]"
 					>
 						<input type="checkbox" class="sr-only" :checked="isCompleted(course.ident)" @change="emit('toggle', course.ident)" />
 						<component
 							:is="isCompleted(course.ident) ? IconSquareCheck : IconSquare"
-							:class="['h-5 w-5 shrink-0', isCompleted(course.ident) ? 'text-[var(--insis-success)]' : 'text-[var(--insis-gray-400)]']"
+							:class="['h-5 w-5 shrink-0', isCompleted(course.ident) ? 'text-(--insis-success)' : 'text-(--insis-gray-400)']"
 						/>
 						<div class="min-w-0 flex-1">
 							<div class="flex items-center gap-2">
-								<span class="text-sm font-medium text-[var(--insis-gray-700)]">{{ course.ident }}</span>
-								<span class="truncate text-sm text-[var(--insis-gray-600)]">{{ getCourseTitle(course) }}</span>
+								<span class="text-sm font-medium text-(--insis-gray-700)">{{ course.ident }}</span>
+								<span class="truncate text-sm text-(--insis-gray-600)">{{ getCourseTitle(course) }}</span>
 							</div>
-							<div class="flex items-center gap-3 text-xs text-[var(--insis-gray-500)]">
+							<div class="flex items-center gap-3 text-xs text-(--insis-gray-500)">
 								<span v-if="course.ects">{{ course.ects }} ECTS</span>
 								<span v-if="course.mode_of_completion">{{ getCompletionLabel(course.mode_of_completion) }}</span>
 							</div>
@@ -220,16 +220,16 @@ function handleSearchInput(event: Event) {
 
 		<!-- Empty state -->
 		<div v-else class="py-12 text-center">
-			<p class="text-[var(--insis-gray-500)]">
+			<p class="text-(--insis-gray-500)">
 				{{ $t('components.wizard.WizardStepCompletedCourses.noCoursesFound') }}
 			</p>
 		</div>
 
 		<!-- Summary & Actions -->
-		<div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--insis-border)] pt-4">
+		<div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-(--insis-border) pt-4">
 			<div class="flex items-center gap-4">
 				<button type="button" class="insis-btn-text text-sm" @click="emit('back')">← {{ $t('common.back') }}</button>
-				<span v-if="totalCompleted > 0" class="text-sm text-[var(--insis-gray-600)]">
+				<span v-if="totalCompleted > 0" class="text-sm text-(--insis-gray-600)">
 					{{ $t('components.wizard.WizardStepCompletedCourses.selectedCount', { count: totalCompleted }) }}
 				</span>
 			</div>

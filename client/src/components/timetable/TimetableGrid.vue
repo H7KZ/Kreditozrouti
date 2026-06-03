@@ -109,7 +109,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 				<!-- Header with time slots -->
 				<thead>
 					<tr>
-						<th class="sticky left-0 z-10 w-[50px] min-w-[50px] bg-[var(--insis-header-bg)] text-center align-middle">
+						<th class="sticky left-0 z-10 w-[50px] min-w-[50px] bg-(--insis-header-bg) text-center align-middle">
 							{{ $t('components.timetable.TimetableGrid.dayHeader') }}
 						</th>
 						<th v-for="slot in timeSlots" :key="slot.minutes" class="px-2 text-center align-middle whitespace-nowrap" :style="{ minWidth: '80px' }">
@@ -123,7 +123,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 					<tr v-for="day in WEEKDAYS" :key="day" class="day-row-container">
 						<!-- Day label -->
 						<td
-							class="sticky left-0 z-10 w-[50px] min-w-[50px] border-r border-[var(--insis-border)] bg-[var(--insis-surface)] text-center align-middle font-medium"
+							class="sticky left-0 z-10 w-[50px] min-w-[50px] border-r border-(--insis-border) bg-(--insis-surface) text-center align-middle font-medium"
 						>
 							{{ getShortDayLabel(day) }}
 						</td>
@@ -131,7 +131,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 						<!-- Time grid cell spanning all columns -->
 						<td
 							:colspan="timeSlots.length"
-							class="day-row relative cursor-crosshair p-0 hover:bg-[var(--insis-gray-50)]"
+							class="day-row relative cursor-crosshair p-0 hover:bg-(--insis-gray-50)"
 							:style="{ height: `${rowHeight}px` }"
 							:data-day="day"
 							@mousedown="handleMouseDown($event, day)"
@@ -141,7 +141,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 								<div
 									v-for="(slot, idx) in timeSlots"
 									:key="slot.minutes"
-									class="h-full w-full border-r border-[var(--insis-border-light)]"
+									class="h-full w-full border-r border-(--insis-border-light)"
 									:class="{
 										'border-r-0': idx === timeSlots.length - 1,
 									}"
@@ -151,7 +151,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 							<!-- Drag selection overlay (horizontal) -->
 							<template v-if="getDragSelectionStyleForDay(day) as Record<string, string> | null">
 								<div
-									class="pointer-events-none absolute top-0 bottom-0 bg-[var(--insis-block-selected)] opacity-50"
+									class="pointer-events-none absolute top-0 bottom-0 bg-(--insis-block-selected) opacity-50"
 									:style="getDragSelectionStyleForDay(day)!"
 								/>
 							</template>
@@ -177,7 +177,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 		</div>
 
 		<!-- Right-edge scroll affordance -->
-		<div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[var(--insis-surface)] to-transparent" />
+		<div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-(--insis-surface) to-transparent" />
 
 		<!-- Drag-to-filter popover -->
 		<TimetableDragPopover

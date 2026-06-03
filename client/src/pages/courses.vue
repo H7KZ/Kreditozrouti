@@ -77,7 +77,7 @@ async function fetchNextCoursesPage(page: () => void) {
 		<div class="flex flex-1 overflow-hidden">
 			<!-- Sidebar / Filter Panel -->
 			<aside
-				class="shrink-0 flex-col overflow-hidden border-r border-[var(--insis-border)] bg-[var(--insis-surface)]"
+				class="shrink-0 flex-col overflow-hidden border-r border-(--insis-border) bg-(--insis-surface)"
 				:class="{
 					'hidden lg:flex lg:w-[268px]': !uiStore.mobileFilterOpen,
 					'fixed inset-0 z-50 flex w-full sm:w-80': uiStore.mobileFilterOpen,
@@ -92,21 +92,18 @@ async function fetchNextCoursesPage(page: () => void) {
 			<!-- Main Content -->
 			<div class="flex flex-1 flex-col overflow-hidden">
 				<!-- Status bar (only when courses selected) -->
-				<div
-					v-if="selectedCoursesCount > 0"
-					class="flex shrink-0 items-center gap-2 border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-4 py-1.5"
-				>
+				<div v-if="selectedCoursesCount > 0" class="flex shrink-0 items-center gap-2 border-b border-(--insis-border) bg-(--insis-surface) px-4 py-1.5">
 					<CourseStatusSummary />
 					<div class="flex-1" />
 				</div>
 
 				<!-- Tab bar -->
-				<div class="flex shrink-0 items-end gap-2 border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-4">
+				<div class="flex shrink-0 items-end gap-2 border-b border-(--insis-border) bg-(--insis-surface) px-4">
 					<nav class="insis-tabs" style="width: 100%; padding-top: 4px">
 						<button type="button" class="insis-tab" :class="{ 'insis-tab-active': uiStore.viewMode === 'list' }" @click="uiStore.switchToListView">
 							<IconTable class="h-3.5 w-3.5" />
 							{{ $t('pages.courses.courseList') }}
-							<span v-if="coursesStore.pagination.total" class="ml-0.5 text-[11px] text-[var(--insis-text-3)]">
+							<span v-if="coursesStore.pagination.total" class="ml-0.5 text-[11px] text-(--insis-text-3)">
 								({{ coursesStore.pagination.total }})
 							</span>
 						</button>
@@ -118,7 +115,7 @@ async function fetchNextCoursesPage(page: () => void) {
 						>
 							<IconCalendar class="h-3.5 w-3.5" />
 							{{ $t('pages.courses.myTimetable') }}
-							<span v-if="selectedCoursesCount > 0" class="ml-0.5 text-[11px] text-[var(--insis-text-3)]">({{ selectedCoursesCount }})</span>
+							<span v-if="selectedCoursesCount > 0" class="ml-0.5 text-[11px] text-(--insis-text-3)">({{ selectedCoursesCount }})</span>
 						</button>
 					</nav>
 				</div>
@@ -126,21 +123,21 @@ async function fetchNextCoursesPage(page: () => void) {
 				<!-- Content -->
 				<div
 					id="main-content"
-					class="flex-1 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-track]:bg-transparent"
+					class="flex-1 scrollbar-thin [scrollbar-color:var(--insis-border-mid)_transparent] overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-(--insis-border-mid) [&::-webkit-scrollbar-track]:bg-transparent"
 					:aria-busy="coursesStore.loading"
 				>
 					<!-- Loading -->
 					<div v-if="coursesStore.loading" class="flex items-center justify-center py-12">
 						<div class="text-center" role="status" :aria-label="$t('common.loadingCourses')">
 							<div class="insis-spinner mx-auto mb-3" aria-hidden="true" />
-							<p class="text-[12px] text-[var(--insis-text-3)]">{{ $t('pages.courses.loadingCourses') }}</p>
+							<p class="text-[12px] text-(--insis-text-3)">{{ $t('pages.courses.loadingCourses') }}</p>
 						</div>
 					</div>
 
 					<!-- Error -->
 					<div
 						v-else-if="coursesStore.error"
-						class="rounded border border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)] p-4 text-sm text-[var(--insis-danger)]"
+						class="rounded border border-(--insis-danger-border) bg-(--insis-danger-light) p-4 text-sm text-(--insis-danger)"
 					>
 						<p class="font-medium">{{ $t('pages.courses.loadingError') }}</p>
 						<p>{{ coursesStore.error }}</p>
@@ -151,7 +148,7 @@ async function fetchNextCoursesPage(page: () => void) {
 					<template v-else-if="uiStore.viewMode === 'list'">
 						<!-- Empty state -->
 						<div v-if="coursesStore.courses.length === 0" class="py-12 text-center">
-							<p class="text-[var(--insis-text-3)]">{{ $t('pages.courses.noCoursesFound') }}</p>
+							<p class="text-(--insis-text-3)">{{ $t('pages.courses.noCoursesFound') }}</p>
 							<button v-if="filtersStore.hasActiveFilters" type="button" class="insis-btn-text mt-2 text-sm" @click="coursesStore.resetFilters">
 								{{ $t('pages.courses.clearFilters') }}
 							</button>
@@ -162,9 +159,9 @@ async function fetchNextCoursesPage(page: () => void) {
 						<!-- Pagination -->
 						<div
 							v-if="coursesStore.pagination.total > coursesStore.pagination.limit"
-							class="mt-4 flex flex-col items-center gap-3 border-t border-[var(--insis-border)] pt-4 sm:flex-row sm:justify-between"
+							class="mt-4 flex flex-col items-center gap-3 border-t border-(--insis-border) pt-4 sm:flex-row sm:justify-between"
 						>
-							<p class="text-center text-[12px] text-[var(--insis-text-3)] sm:text-left">
+							<p class="text-center text-[12px] text-(--insis-text-3) sm:text-left">
 								{{
 									$t('pages.courses.showingResults', {
 										from: coursesStore.pagination.offset + 1,
@@ -183,7 +180,7 @@ async function fetchNextCoursesPage(page: () => void) {
 								>
 									← {{ $t('common.previous') }}
 								</button>
-								<span class="text-[12px] text-[var(--insis-text-2)]" aria-live="polite">
+								<span class="text-[12px] text-(--insis-text-2)" aria-live="polite">
 									{{ $t('pages.courses.pageInfo', { current: coursesStore.currentPage, total: coursesStore.totalPages }) }}
 								</span>
 								<button
@@ -207,15 +204,15 @@ async function fetchNextCoursesPage(page: () => void) {
 							<!-- Empty timetable -->
 							<div
 								v-if="showEmptyTimetable"
-								class="absolute inset-0 flex flex-col items-center justify-center bg-[var(--insis-surface)]/80 py-12 text-center"
+								class="absolute inset-0 flex flex-col items-center justify-center bg-(--insis-surface)/80 py-12 text-center"
 							>
-								<div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--insis-gray-200)]">
-									<IconCalendarMinus2 class="h-7 w-7 text-[var(--insis-gray-500)]" />
+								<div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-(--insis-gray-200)">
+									<IconCalendarMinus2 class="h-7 w-7 text-(--insis-gray-500)" />
 								</div>
-								<p class="mb-1 text-[15px] font-medium text-[var(--insis-text)]">
+								<p class="mb-1 text-[15px] font-medium text-(--insis-text)">
 									{{ $t('pages.courses.emptyTimetable.title') }}
 								</p>
-								<p class="mb-5 text-sm text-[var(--insis-text-3)]">
+								<p class="mb-5 text-sm text-(--insis-text-3)">
 									{{ $t('pages.courses.emptyTimetable.description') }}
 								</p>
 								<div class="flex flex-col items-center gap-3">
@@ -230,10 +227,10 @@ async function fetchNextCoursesPage(page: () => void) {
 						</TimetableGrid>
 
 						<!-- Legend -->
-						<div class="mt-4 border-t border-[var(--insis-border)] pt-4">
+						<div class="mt-4 border-t border-(--insis-border) pt-4">
 							<button
 								type="button"
-								class="flex cursor-pointer items-center gap-2 text-[12px] text-[var(--insis-text-3)] hover:text-[var(--insis-text)]"
+								class="flex cursor-pointer items-center gap-2 text-[12px] text-(--insis-text-3) hover:text-(--insis-text)"
 								@click="uiStore.toggleLegend"
 							>
 								<span>{{ uiStore.showLegend ? '▼' : '▶' }}</span>
@@ -242,23 +239,23 @@ async function fetchNextCoursesPage(page: () => void) {
 							<div v-if="uiStore.showLegend" class="mt-2 flex flex-wrap gap-4">
 								<div class="flex items-center gap-1.5">
 									<span class="h-2.5 w-2.5 rounded" style="background: var(--insis-block-lecture)" />
-									<span class="text-[11.5px] text-[var(--insis-text-2)]">{{ $t('unitTypes.lecture') }}</span>
+									<span class="text-[11.5px] text-(--insis-text-2)">{{ $t('unitTypes.lecture') }}</span>
 								</div>
 								<div class="flex items-center gap-1.5">
 									<span class="h-2.5 w-2.5 rounded" style="background: var(--insis-block-exercise)" />
-									<span class="text-[11.5px] text-[var(--insis-text-2)]">{{ $t('unitTypes.exercise') }}</span>
+									<span class="text-[11.5px] text-(--insis-text-2)">{{ $t('unitTypes.exercise') }}</span>
 								</div>
 								<div class="flex items-center gap-1.5">
 									<span class="h-2.5 w-2.5 rounded" style="background: var(--insis-block-seminar)" />
-									<span class="text-[11.5px] text-[var(--insis-text-2)]">{{ $t('unitTypes.seminar') }}</span>
+									<span class="text-[11.5px] text-(--insis-text-2)">{{ $t('unitTypes.seminar') }}</span>
 								</div>
 								<div class="flex items-center gap-1.5">
 									<span class="h-2.5 w-2.5 rounded" style="background: var(--insis-block-date-only)" />
-									<span class="text-[11.5px] text-[var(--insis-text-2)]">{{ $t('unitTypes.dateOnly') }}</span>
+									<span class="text-[11.5px] text-(--insis-text-2)">{{ $t('unitTypes.dateOnly') }}</span>
 								</div>
 								<div class="flex items-center gap-1.5">
-									<span class="h-2.5 w-2.5 rounded ring-2 ring-[var(--insis-danger)]" />
-									<span class="text-[11.5px] text-[var(--insis-text-2)]">{{ $t('pages.courses.conflict') }}</span>
+									<span class="h-2.5 w-2.5 rounded ring-2 ring-(--insis-danger)" />
+									<span class="text-[11.5px] text-(--insis-text-2)">{{ $t('pages.courses.conflict') }}</span>
 								</div>
 							</div>
 						</div>

@@ -38,17 +38,17 @@ onMounted(() => {
 </script>
 
 <template>
-	<div class="flex min-h-screen flex-col bg-[var(--insis-bg)]">
+	<div class="flex min-h-screen flex-col bg-(--insis-bg)">
 		<!-- Header -->
 		<header
-			class="flex shrink-0 items-center justify-between border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-4 py-3 shadow-[var(--insis-shadow-sm)] sm:px-6"
+			class="flex shrink-0 items-center justify-between border-b border-(--insis-border) bg-(--insis-surface) px-4 py-3 shadow-(--insis-shadow-sm) sm:px-6"
 		>
 			<div class="flex items-center gap-3">
 				<!-- Logo mark -->
 				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="flex h-8 w-8 shrink-0 items-center justify-center object-contain" />
 				<div>
-					<div class="text-[15px] font-semibold text-[var(--insis-blue)]">{{ $t('pages.index.title') }}</div>
-					<div class="text-[11px] text-[var(--insis-text-3)]">{{ $t('pages.index.subtitle') }}</div>
+					<div class="text-[15px] font-semibold text-(--insis-blue)">{{ $t('pages.index.title') }}</div>
+					<div class="text-[11px] text-(--insis-text-3)">{{ $t('pages.index.subtitle') }}</div>
 				</div>
 			</div>
 			<div class="flex items-center gap-3">
@@ -59,22 +59,22 @@ onMounted(() => {
 
 		<!-- Main Content -->
 		<main
-			class="flex flex-1 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] items-start justify-center overflow-y-auto px-3 py-6 sm:px-6 sm:py-10 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-track]:bg-transparent"
+			class="flex flex-1 scrollbar-thin [scrollbar-color:var(--insis-border-mid)_transparent] items-start justify-center overflow-y-auto px-3 py-6 sm:px-6 sm:py-10 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-(--insis-border-mid) [&::-webkit-scrollbar-track]:bg-transparent"
 		>
-			<div class="w-full max-w-[800px] rounded-lg border border-[var(--insis-border)] bg-[var(--insis-surface)] p-4 shadow-[var(--insis-shadow)] sm:p-8">
+			<div class="w-full max-w-[800px] rounded-lg border border-(--insis-border) bg-(--insis-surface) p-4 shadow-(--insis-shadow) sm:p-8">
 				<!-- Title -->
 				<div class="mb-6 text-center">
-					<h2 class="mb-1 text-[17px] font-semibold text-[var(--insis-text)]">{{ $t('pages.index.welcome') }}</h2>
-					<p class="text-sm text-[var(--insis-text-3)]">{{ $t('pages.index.description') }}</p>
+					<h2 class="mb-1 text-[17px] font-semibold text-(--insis-text)">{{ $t('pages.index.welcome') }}</h2>
+					<p class="text-sm text-(--insis-text-3)">{{ $t('pages.index.description') }}</p>
 				</div>
 
 				<!-- Wizard Component -->
 				<StudyPlanWizard />
 
 				<!-- How it works -->
-				<div class="mt-6 rounded border border-[var(--insis-border)] bg-[var(--insis-surface-2)] p-4">
-					<h3 class="mb-2 text-[12.5px] font-semibold text-[var(--insis-text)]">{{ $t('pages.index.howItWorks') }}</h3>
-					<ul class="space-y-1 text-[12px] text-[var(--insis-text-2)]">
+				<div class="mt-6 rounded border border-(--insis-border) bg-(--insis-surface-2) p-4">
+					<h3 class="mb-2 text-[12.5px] font-semibold text-(--insis-text)">{{ $t('pages.index.howItWorks') }}</h3>
+					<ul class="space-y-1 text-[12px] text-(--insis-text-2)">
 						<li><strong>1.</strong> {{ $t('pages.index.step1') }}</li>
 						<li><strong>2.</strong> {{ $t('pages.index.step2') }}</li>
 						<li><strong>3.</strong> {{ $t('pages.index.step3') }}</li>

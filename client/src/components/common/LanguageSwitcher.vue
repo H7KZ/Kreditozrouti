@@ -32,10 +32,10 @@ function toggle() {
 			type="button"
 			:class="[
 				'flex min-h-[44px] cursor-pointer items-center gap-1.5 rounded-[3px] border border-solid py-[5px] pr-1.5 pl-2 text-xs font-medium sm:min-h-0',
-				'transition-all duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[1px] focus-visible:outline-[var(--insis-blue)]',
+				'transition-all duration-100 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--insis-blue)',
 				isOpen
-					? 'border-[var(--insis-border-mid)] bg-[var(--insis-surface-2)] text-[var(--insis-text)]'
-					: 'border-transparent bg-transparent text-[var(--insis-text-2)] hover:border-[var(--insis-border)] hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text)]',
+					? 'border-(--insis-border-mid) bg-(--insis-surface-2) text-(--insis-text)'
+					: 'border-transparent bg-transparent text-(--insis-text-2) hover:border-(--insis-border) hover:bg-(--insis-surface-2) hover:text-(--insis-text)',
 			]"
 			:aria-expanded="isOpen"
 			:aria-label="$t('common.switchLanguage')"
@@ -58,7 +58,7 @@ function toggle() {
 		>
 			<div
 				v-if="isOpen"
-				class="absolute top-full right-0 z-50 mt-1 min-w-[90px] origin-top-right overflow-hidden rounded-[5px] border border-[var(--insis-border)] bg-[var(--insis-surface)] shadow-[var(--insis-shadow)]"
+				class="absolute top-full right-0 z-50 mt-1 min-w-[90px] origin-top-right overflow-hidden rounded-[5px] border border-(--insis-border) bg-(--insis-surface) shadow-(--insis-shadow)"
 				role="listbox"
 			>
 				<button
@@ -70,13 +70,13 @@ function toggle() {
 					:class="[
 						'flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left text-xs font-medium transition-colors duration-75',
 						(locale as string) === (l as string)
-							? 'bg-[var(--insis-blue-subtle)] text-[var(--insis-blue)]'
-							: 'text-[var(--insis-text)] hover:bg-[var(--insis-surface-2)]',
+							? 'bg-(--insis-blue-subtle) text-(--insis-blue)'
+							: 'text-(--insis-text) hover:bg-(--insis-surface-2)',
 					]"
 					@click="setLocale(l as string)"
 				>
 					<span>{{ (l as string).toUpperCase() }}</span>
-					<span v-if="(locale as string) === (l as string)" class="h-[7px] w-[7px] shrink-0 rounded-full bg-[var(--insis-blue)]" />
+					<span v-if="(locale as string) === (l as string)" class="h-[7px] w-[7px] shrink-0 rounded-full bg-(--insis-blue)" />
 				</button>
 			</div>
 		</Transition>
