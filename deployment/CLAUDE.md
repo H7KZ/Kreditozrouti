@@ -39,11 +39,15 @@ deployment/
 ## deploy.sh
 
 ```bash
-./deploy.sh prod production    # production
-./deploy.sh dev development    # staging
+./deploy.sh prod production              # full-stack production deploy
+./deploy.sh dev development              # full-stack development deploy
+./deploy.sh prod production api          # deploy api service only
+./deploy.sh prod production client       # deploy client service only
 ```
 
-Requires `.env` (secrets) and `.images` (CI-written: `IMAGE_REGISTRY`, `IMAGE_PREFIX`, `IMAGE_TAG`).
+Requires `.env` (secrets) and `.images` (CI-written: `IMAGE_REGISTRY`, `IMAGE_PREFIX`, `API_IMAGE_TAG`, `CLIENT_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`).
+
+For single-service deploys, only the relevant tag env var is required (e.g. `API_IMAGE_TAG` for `service=api`). Old version directories under `$HOME/versions/<environment>/` older than 7 days are cleaned up after each deploy (minimum 3 kept).
 
 ---
 

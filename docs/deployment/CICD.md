@@ -147,11 +147,18 @@ On the VPS, each deployment gets its own directory:
 `deploy.sh` is called inside the version directory and runs:
 
 ```bash
+# Full-stack deploy (all services)
 docker compose -p prod \
   -f production/docker-compose.production.yml \
   --env-file .env \
   pull && up --remove-orphans -d
+
+# Single-service deploy (e.g. api only)
+# ./deploy.sh prod production api
+docker compose -p prod ... pull api && up --no-deps -d api
 ```
+
+After a successful deploy, `deploy.sh` automatically removes version directories older than 7 days from `~/versions/<environment>/` (minimum 3 kept, active symlink target always preserved).
 
 ---
 
