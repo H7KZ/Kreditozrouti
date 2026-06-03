@@ -1,0 +1,82 @@
+# Reusable Workflow: Build Service Image
+# Description: Builds and pushes a single service Docker image to GHCR.
+#              Called by per-service deploy workflows (deploy-api.yml, etc.)
+#
+# Inputs:  service, float_tag, cache_scope
+# Outputs: image_tag (short SHA), image_prefix
+
+name: Build Service Image (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        description: "Service to build: api | client | scraper"
+        required: true
+        type: string
+      float_tag:
+        description: "Floating tag to push alongside the versioned tag (latest | dev-latest)"
+        required: true
+        type: string
+      cache_scope:
+        description: "GHA cache scope (e.g. api-prod, client-dev)"
+        required: true
+        type: string
+    outputs:
+      image_tag:
+        description: "Short SHA used as the versioned image tag"
+        value: ${{ jobs.build.outputs.image_tag }}
+      image_prefix:
+        description: "Registry path prefix (e.g. ghcr.io/h7kz/kreditozrouti)"
+        value: ${{ jobs.build.outputs.image_prefix }}
+
+jobs:
+  build:
+    name: Build and Push ${{ inputs.service }}
+    runs-on: self-hosted
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image_tag: ${{ steps.meta.outputs.image_tag }}
+      image_prefix: ${{ steps.meta.outputs.image_prefix }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Extract Metadata
+        id: meta
+        run: |
+          TAG="${GITHUB_SHA::8}"
+          PREFIX="ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
+          echo "image_tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
+          echo "::notice::Building ${{ inputs.service }} image with tag: ${TAG}"
+          echo "::notice::Image prefix: ${PREFIX}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./${{ inputs.service }}/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
+            ${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.float_tag }}
+          cache-from: type=gha,scope=${{ inputs.cache_scope }}
+          cache-to: type=gha,mode=max,scope=${{ inputs.cache_scope }}
+          platforms: linux/amd64
