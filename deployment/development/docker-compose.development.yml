@@ -18,7 +18,7 @@
 #   - MYSQL_*: Database credentials
 #   - REDIS_*: Cache credentials
 #   - API_*: API configuration
-#   - BULL_BOARD_USERS: htpasswd-format credentials for /bullboard BasicAuth (e.g. admin:$$apr1$$...)
+#   - BULL_BOARD_USER: htpasswd-format credentials for /bullboard BasicAuth (e.g. admin:$$apr1$$...)
 #
 # Usage: docker compose -f docker-compose.development.yml up -d
 # ==============================================================================
@@ -39,6 +39,7 @@ services:
 
     environment:
       - ENV=development
+      - NODE_ENV=development
       - API_PORT=80
       - API_URI=https://${DOMAIN}/api
       - API_DOMAIN=${DOMAIN}
@@ -80,7 +81,7 @@ services:
       - "traefik.http.routers.${PROJECT}-bullboard.tls.certresolver=letsencrypt"
       - "traefik.http.routers.${PROJECT}-bullboard.service=${PROJECT}-api"
       - "traefik.http.routers.${PROJECT}-bullboard.middlewares=${PROJECT}-bullboard-auth"
-      - "traefik.http.middlewares.${PROJECT}-bullboard-auth.basicauth.users=${BULL_BOARD_USERS}"
+      - "traefik.http.middlewares.${PROJECT}-bullboard-auth.basicauth.users=${BULL_BOARD_USER}"
 
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:80/health" ]

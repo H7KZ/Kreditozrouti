@@ -84,26 +84,17 @@ jobs:
           # Non-sensitive (GitHub Variables)
           APP_PROJECT: ${{ vars.PROJECT }}
           APP_DOMAIN: ${{ vars.DOMAIN }}
-          APP_API_PORT: ${{ vars.API_PORT }}
-          APP_API_URI: ${{ vars.API_URI }}
-          APP_API_DOMAIN: ${{ vars.API_DOMAIN }}
-          APP_API_ALLOWED_ORIGINS: ${{ vars.API_ALLOWED_ORIGINS }}
-          APP_API_FILE_DESTINATION: ${{ vars.API_FILE_DESTINATION }}
-          APP_CLIENT_URI: ${{ vars.CLIENT_URI }}
-          APP_VITE_API_URL: ${{ vars.VITE_API_URL }}
-          APP_VITE_FARO_COLLECTOR_URL: ${{ vars.VITE_FARO_COLLECTOR_URL }}
           APP_MYSQL_USER: ${{ vars.MYSQL_USER }}
           APP_MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
-          APP_REDIS_URI: ${{ vars.REDIS_URI }}
-          APP_ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
           # Sensitive (GitHub Secrets)
           APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
           APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
           APP_MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
           APP_MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           APP_MYSQL_URI: ${{ secrets.MYSQL_URI }}
+          APP_REDIS_URI: ${{ secrets.REDIS_URI }}
           APP_REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          APP_BULL_BOARD_USERS: ${{ secrets.BULL_BOARD_USERS }}
+          APP_BULL_BOARD_USER: ${{ secrets.BULL_BOARD_USER }}
           APP_GOOGLE_USER: ${{ secrets.GOOGLE_USER }}
           APP_GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
         with:
@@ -111,7 +102,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_PROJECT,APP_DOMAIN,APP_API_PORT,APP_API_URI,APP_API_DOMAIN,APP_API_ALLOWED_ORIGINS,APP_API_FILE_DESTINATION,APP_CLIENT_URI,APP_VITE_API_URL,APP_VITE_FARO_COLLECTOR_URL,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_REDIS_URI,APP_ADMIN_EMAIL,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_PASSWORD,APP_BULL_BOARD_USERS,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD
+          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_BULL_BOARD_USER,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD
           script: |
             set -euo pipefail
 
@@ -130,17 +121,8 @@ jobs:
               echo "ENV=${{ inputs.environment }}"
               echo "PROJECT=$APP_PROJECT"
               echo "DOMAIN=$APP_DOMAIN"
-              echo "API_PORT=$APP_API_PORT"
-              echo "API_URI=$APP_API_URI"
-              echo "API_DOMAIN=$APP_API_DOMAIN"
-              echo "API_ALLOWED_ORIGINS=$APP_API_ALLOWED_ORIGINS"
-              echo "API_FILE_DESTINATION=$APP_API_FILE_DESTINATION"
               echo "API_SESSION_SECRET=$APP_API_SESSION_SECRET"
               echo "API_COMMAND_TOKEN=$APP_API_COMMAND_TOKEN"
-              echo "CLIENT_URI=$APP_CLIENT_URI"
-              echo "VITE_API_URL=$APP_VITE_API_URL"
-              echo "VITE_API_COMMAND_TOKEN=$APP_API_COMMAND_TOKEN"
-              echo "VITE_FARO_COLLECTOR_URL=$APP_VITE_FARO_COLLECTOR_URL"
               echo "VITE_APP_VERSION=$IMG_TAG"
               echo "MYSQL_USER=$APP_MYSQL_USER"
               echo "MYSQL_DATABASE=$APP_MYSQL_DATABASE"
@@ -149,10 +131,9 @@ jobs:
               echo "MYSQL_URI=$APP_MYSQL_URI"
               echo "REDIS_URI=$APP_REDIS_URI"
               echo "REDIS_PASSWORD=$APP_REDIS_PASSWORD"
-              echo "ADMIN_EMAIL=$APP_ADMIN_EMAIL"
               echo "GOOGLE_USER=$APP_GOOGLE_USER"
               echo "GOOGLE_APP_PASSWORD=$APP_GOOGLE_APP_PASSWORD"
-              printf 'BULL_BOARD_USERS=%s\n' "$APP_BULL_BOARD_USERS"
+              printf 'BULL_BOARD_USER=%s\n' "$APP_BULL_BOARD_USER"
             } > "$VERSION_DIR/.env"
             chmod 600 "$VERSION_DIR/.env"
 
