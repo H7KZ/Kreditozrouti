@@ -44,7 +44,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "deployment/traefik/"
+          source: "deployment/traefik/,deployment/lib.sh"
           target: "~/deployment/"
           strip_components: 1
           overwrite: true

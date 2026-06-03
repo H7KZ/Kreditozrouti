@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "deployment/monitoring/"
+          source: "deployment/monitoring/,deployment/lib.sh"
           target: "~/deployment/"
           strip_components: 1
           overwrite: true
