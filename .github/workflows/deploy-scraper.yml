@@ -60,7 +60,7 @@ jobs:
     with:
       service: scraper
       environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'development') }}
-      project_name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+      project_name: ${{ (github.event_name == 'workflow_dispatch' && inputs.environment == 'production') || github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
       image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build.outputs.image_tag }}
       image_prefix: ${{ needs.build.outputs.image_prefix || github.repository }}
     secrets: inherit
