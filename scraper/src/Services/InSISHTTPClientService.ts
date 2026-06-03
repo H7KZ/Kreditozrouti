@@ -1,6 +1,7 @@
+import Axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axiosRetry from 'axios-retry'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { createRequestHeaders } from '@scraper/Utils/HTTPUtils'
-import Axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export interface HttpClientOptions {
     /** Context key prefix for logging */
@@ -29,12 +30,19 @@ export type HttpResponse<T> = HttpResult<T> | HttpError
  * Provides consistent error handling, logging, and header management.
  */
 export default class InSISHTTPClientService {
+    private readonly client: AxiosInstance
     private readonly headers: Record<string, string>
     private readonly logPrefix: string
 
     constructor(options: HttpClientOptions = {}) {
         this.headers = { ...createRequestHeaders(), ...options.headers }
         this.logPrefix = options.logPrefix ?? 'http'
+        this.client = Axios.create()
+        axiosRetry(this.client, {
+            retries: 3,
+            retryDelay: axiosRetry.exponentialDelay,
+            retryCondition: axiosRetry.isNetworkOrIdempotentRequestError
+        })
     }
 
     /**
@@ -42,7 +50,7 @@ export default class InSISHTTPClientService {
      */
     async get<T = string>(url: string, config?: AxiosRequestConfig): Promise<HttpResponse<T>> {
         try {
-            const response = await Axios.get<T>(url, {
+            const response = await this.client.get<T>(url, {
                 ...config,
                 headers: { ...this.headers, ...config?.headers }
             })
@@ -57,7 +65,7 @@ export default class InSISHTTPClientService {
      */
     async post<T = string>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<HttpResponse<T>> {
         try {
-            const response = await Axios.post<T>(url, data, {
+            const response = await this.client.post<T>(url, data, {
                 ...config,
                 headers: { ...this.headers, ...config?.headers }
             })

@@ -1,13 +1,24 @@
 <script setup lang="ts">
+import { onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { useSeoMeta } from '@unhead/vue'
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
+import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
 import { useWizardDataStore, useWizardStore } from '@client/stores'
-import { onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
 
+const { t } = useI18n()
 const router = useRouter()
 const wizardStore = useWizardStore()
 const wizardDataStore = useWizardDataStore()
+
+useSeoMeta({
+	title: () => `${t('pages.index.title')} – ${t('pages.index.subtitle')}`,
+	description: () => t('pages.index.description'),
+	ogTitle: () => `${t('pages.index.title')} – ${t('pages.index.subtitle')}`,
+	ogDescription: () => t('pages.index.description'),
+})
 
 watch(
 	() => wizardStore.completed,
@@ -27,32 +38,33 @@ onMounted(() => {
 </script>
 
 <template>
-	<div class="min-h-screen bg-[var(--insis-bg)] flex flex-col">
+	<div class="flex min-h-screen flex-col bg-[var(--insis-bg)]">
 		<!-- Header -->
 		<header
-			class="bg-[var(--insis-surface)] border-b border-[var(--insis-border)] py-3 px-6 flex items-center justify-between shadow-[var(--insis-shadow-sm)] shrink-0"
+			class="flex shrink-0 items-center justify-between border-b border-[var(--insis-border)] bg-[var(--insis-surface)] px-4 py-3 shadow-[var(--insis-shadow-sm)] sm:px-6"
 		>
 			<div class="flex items-center gap-3">
 				<!-- Logo mark -->
-				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-8 w-8 object-contain flex items-center justify-center shrink-0" />
+				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="flex h-8 w-8 shrink-0 items-center justify-center object-contain" />
 				<div>
 					<div class="text-[15px] font-semibold text-[var(--insis-blue)]">{{ $t('pages.index.title') }}</div>
 					<div class="text-[11px] text-[var(--insis-text-3)]">{{ $t('pages.index.subtitle') }}</div>
 				</div>
 			</div>
 			<div class="flex items-center gap-3">
+				<ThemeToggle />
 				<LanguageSwitcher />
 			</div>
 		</header>
 
 		<!-- Main Content -->
 		<main
-			class="flex-1 overflow-y-auto flex items-start justify-center py-10 px-6 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-thumb]:rounded-[3px]"
+			class="flex flex-1 [scrollbar-width:thin] [scrollbar-color:var(--insis-border-mid)_transparent] items-start justify-center overflow-y-auto px-3 py-6 sm:px-6 sm:py-10 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-[var(--insis-border-mid)] [&::-webkit-scrollbar-track]:bg-transparent"
 		>
-			<div class="bg-[var(--insis-surface)] border border-[var(--insis-border)] rounded-lg p-8 max-w-[800px] w-full shadow-[var(--insis-shadow)]">
+			<div class="w-full max-w-[800px] rounded-lg border border-[var(--insis-border)] bg-[var(--insis-surface)] p-4 shadow-[var(--insis-shadow)] sm:p-8">
 				<!-- Title -->
 				<div class="mb-6 text-center">
-					<h2 class="text-[17px] font-semibold text-[var(--insis-text)] mb-1">{{ $t('pages.index.welcome') }}</h2>
+					<h2 class="mb-1 text-[17px] font-semibold text-[var(--insis-text)]">{{ $t('pages.index.welcome') }}</h2>
 					<p class="text-sm text-[var(--insis-text-3)]">{{ $t('pages.index.description') }}</p>
 				</div>
 

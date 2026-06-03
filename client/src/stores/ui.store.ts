@@ -1,8 +1,8 @@
-import { STORAGE_KEYS } from '@client/constants/storage.ts'
-import type { PersistedUIState, ViewMode } from '@client/types'
-import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
-import { defineStore } from 'pinia'
+import type { ColorScheme, PersistedUIState, ViewMode } from '@client/types'
 import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
+import { STORAGE_KEYS } from '@client/constants/storage.ts'
+import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
 
 export const useUIStore = defineStore('ui', () => {
 	const viewMode = ref<ViewMode>('list')
@@ -11,15 +11,48 @@ export const useUIStore = defineStore('ui', () => {
 	const globalLoading = ref(false)
 	const mobileMenuOpen = ref(false)
 	const mobileFilterOpen = ref(false)
+	const colorScheme = ref<ColorScheme>('system')
 
 	const isListView = computed(() => viewMode.value === 'list')
 	const isTimetableView = computed(() => viewMode.value === 'timetable')
+
+	const effectiveColorScheme = computed<'light' | 'dark'>(() => {
+		if (colorScheme.value === 'system') return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+		return colorScheme.value
+	})
+
+	const isDark = computed(() => effectiveColorScheme.value === 'dark')
+
+	function applyColorScheme() {
+		const html = document.documentElement
+		if (effectiveColorScheme.value === 'dark') {
+			html.classList.add('dark')
+			html.classList.remove('light')
+		} else {
+			html.classList.remove('dark')
+			html.classList.add('light')
+		}
+		const meta = document.querySelector('meta[name="theme-color"]')
+		if (meta) meta.setAttribute('content', effectiveColorScheme.value === 'dark' ? '#0f1117' : '#0066b3')
+	}
+
+	function setColorScheme(scheme: ColorScheme) {
+		colorScheme.value = scheme
+		applyColorScheme()
+		persist()
+	}
+
+	// Singleton store — listener lives for the app's lifetime, no cleanup needed
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+		if (colorScheme.value === 'system') applyColorScheme()
+	})
 
 	function persist() {
 		saveToStorage<PersistedUIState>(STORAGE_KEYS.UI, {
 			viewMode: viewMode.value,
 			sidebarCollapsed: sidebarCollapsed.value,
 			showLegend: showLegend.value,
+			colorScheme: colorScheme.value,
 		})
 	}
 
@@ -29,6 +62,8 @@ export const useUIStore = defineStore('ui', () => {
 		viewMode.value = state.viewMode || 'list'
 		sidebarCollapsed.value = state.sidebarCollapsed || false
 		showLegend.value = state.showLegend || false
+		colorScheme.value = state.colorScheme ?? 'system'
+		applyColorScheme()
 	}
 
 	function clearPersisted() {
@@ -81,11 +116,16 @@ export const useUIStore = defineStore('ui', () => {
 		globalLoading,
 		mobileMenuOpen,
 		mobileFilterOpen,
+		colorScheme,
+		effectiveColorScheme,
+		isDark,
 		isListView,
 		isTimetableView,
 		persist,
 		hydrate,
 		clearPersisted,
+		applyColorScheme,
+		setColorScheme,
 		setViewMode,
 		switchToListView: () => setViewMode('list'),
 		switchToTimetableView: () => setViewMode('timetable'),

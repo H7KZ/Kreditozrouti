@@ -1,0 +1,159 @@
+# Reusable Workflow: Deploy Service
+# Description: Deploys a single service to the VPS using deploy.sh with --no-deps.
+#              Called by per-service deploy workflows (deploy-api.yml, etc.)
+#
+# Inputs:  service, environment, project_name, image_tag, image_prefix
+# Scopes:  GitHub Environment secrets via `environment: ${{ inputs.environment }}`
+
+name: Deploy Service (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        description: "Service to deploy: api | client | scraper"
+        required: true
+        type: string
+      environment:
+        description: "Target environment: production | development"
+        required: true
+        type: string
+      project_name:
+        description: "Docker Compose project name: prod | dev"
+        required: true
+        type: string
+      image_tag:
+        description: "Image tag (short SHA from build step)"
+        required: true
+        type: string
+      image_prefix:
+        description: "Registry path prefix (e.g. ghcr.io/h7kz/kreditozrouti)"
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Deploy ${{ inputs.service }} to ${{ inputs.environment }}
+    runs-on: self-hosted
+    timeout-minutes: 15
+
+    environment: ${{ inputs.environment }}
+
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Create Version Directory
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            mkdir -p "$HOME/versions/${{ inputs.environment }}/${{ inputs.image_tag }}"
+
+      - name: Upload Deployment Files
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "deployment/"
+          target: "~/versions/${{ inputs.environment }}/${{ inputs.image_tag }}"
+          strip_components: 1
+          overwrite: true
+
+      - name: Deploy Service
+        uses: appleboy/ssh-action@v1
+        env:
+          # Auth
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
+          # Image
+          IMG_REGISTRY: ghcr.io
+          IMG_PREFIX: ${{ inputs.image_prefix }}
+          IMG_TAG: ${{ inputs.image_tag }}
+          # Service
+          APP_SERVICE: ${{ inputs.service }}
+          # Non-sensitive (GitHub Variables)
+          APP_PROJECT: ${{ vars.PROJECT }}
+          APP_DOMAIN: ${{ vars.DOMAIN }}
+          APP_MYSQL_USER: ${{ vars.MYSQL_USER }}
+          APP_MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
+          # Sensitive (GitHub Secrets)
+          APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
+          APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
+          APP_MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          APP_MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          APP_MYSQL_URI: ${{ secrets.MYSQL_URI }}
+          APP_REDIS_URI: ${{ secrets.REDIS_URI }}
+          APP_REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          APP_BULL_BOARD_USER: ${{ secrets.BULL_BOARD_USER }}
+          APP_GOOGLE_USER: ${{ secrets.GOOGLE_USER }}
+          APP_GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_BULL_BOARD_USER,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD
+          script: |
+            set -euo pipefail
+
+            VERSION_DIR="$HOME/versions/${{ inputs.environment }}/$IMG_TAG"
+            LATEST_LINK="$HOME/versions/${{ inputs.environment }}/latest"
+
+            echo "=========================================="
+            echo "Service Deploy: $APP_SERVICE @ $IMG_TAG → ${{ inputs.environment }}"
+            echo "=========================================="
+
+            # Login to GHCR
+            echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
+
+            # Write .env
+            {
+              echo "ENV=${{ inputs.environment }}"
+              echo "PROJECT=$APP_PROJECT"
+              echo "DOMAIN=$APP_DOMAIN"
+              echo "API_SESSION_SECRET=$APP_API_SESSION_SECRET"
+              echo "API_COMMAND_TOKEN=$APP_API_COMMAND_TOKEN"
+              echo "VITE_APP_VERSION=$IMG_TAG"
+              echo "MYSQL_USER=$APP_MYSQL_USER"
+              echo "MYSQL_DATABASE=$APP_MYSQL_DATABASE"
+              echo "MYSQL_PASSWORD=$APP_MYSQL_PASSWORD"
+              echo "MYSQL_ROOT_PASSWORD=$APP_MYSQL_ROOT_PASSWORD"
+              echo "MYSQL_URI=$APP_MYSQL_URI"
+              echo "REDIS_URI=$APP_REDIS_URI"
+              echo "REDIS_PASSWORD=$APP_REDIS_PASSWORD"
+              echo "GOOGLE_USER=$APP_GOOGLE_USER"
+              echo "GOOGLE_APP_PASSWORD=$APP_GOOGLE_APP_PASSWORD"
+              printf 'BULL_BOARD_USER=%s\n' "$APP_BULL_BOARD_USER"
+            } > "$VERSION_DIR/.env"
+            chmod 600 "$VERSION_DIR/.env"
+
+            # Pass tag as env var (not via .images — avoids write race when all 3 services deploy simultaneously)
+            # derive the correct SERVICE_IMAGE_TAG var name from $APP_SERVICE
+            case "$APP_SERVICE" in
+              api)     SERVICE_TAG_VAR="API_IMAGE_TAG" ;;
+              client)  SERVICE_TAG_VAR="CLIENT_IMAGE_TAG" ;;
+              scraper) SERVICE_TAG_VAR="SCRAPER_IMAGE_TAG" ;;
+              *)       echo "Unknown service: '$APP_SERVICE'. Valid: api, client, scraper"; exit 1 ;;
+            esac
+
+            cd "$VERSION_DIR"
+            IMAGE_REGISTRY="ghcr.io" \
+              IMAGE_PREFIX="$IMG_PREFIX" \
+              ${SERVICE_TAG_VAR}="$IMG_TAG" \
+              bash ./deploy.sh "${{ inputs.project_name }}" "${{ inputs.environment }}" "$APP_SERVICE"
+
+            ln -sfn "$VERSION_DIR" "$LATEST_LINK"
+
+            echo "=========================================="
+            echo "Service deploy complete: $APP_SERVICE"
+            echo "=========================================="

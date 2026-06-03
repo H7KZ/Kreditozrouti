@@ -1,7 +1,7 @@
+import * as cheerio from 'cheerio'
 import Config from '@scraper/Config/Config'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
-import * as cheerio from 'cheerio'
 
 export interface CatalogSearchOptions {
     faculties: {
@@ -17,6 +17,11 @@ export interface CatalogSearchOptions {
         semester: string | null
         year: number | null
     }[]
+}
+
+export interface CatalogCourse {
+    url: string
+    ident: string
 }
 
 /**
@@ -74,20 +79,31 @@ export default class ExtractInSISCatalogService {
     }
 
     /**
-     * Extracts a unique list of course syllabus URLs from the catalog listing page.
+     * Extracts a unique list of courses (URL + ident) from the catalog listing page.
+     * The ident is the first whitespace-delimited token of the anchor text (e.g. "4IZ210").
      */
-    static extractCourseUrls(html: string): string[] {
+    static extractCourses(html: string): CatalogCourse[] {
         const $ = cheerio.load(html)
-        const urls = new Set<string>()
+        const seen = new Set<string>()
+        const courses: CatalogCourse[] = []
 
         $('a[href*="syllabus.pl?predmet="]').each((_, el) => {
             const href = $(el).attr('href')
-            if (href) {
-                const fullUrl = href.startsWith('http') ? href : Config.insis.catalogUrl + href
-                urls.add(fullUrl.trim().split(';')[0])
-            }
+            if (!href) return
+
+            const fullUrl = href.startsWith('http') ? href : Config.insis.catalogUrl + href
+            const url = fullUrl.trim().split(';')[0]
+
+            if (seen.has(url)) return
+            seen.add(url)
+
+            const text = $(el).text().trim()
+            const ident = text.split(/\s/)[0] ?? ''
+            if (!ident) return
+
+            courses.push({ url, ident })
         })
 
-        return [...urls]
+        return courses
     }
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onClickOutside } from '@vueuse/core'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { onClickOutside } from '@vueuse/core'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconGlobe from '~icons/lucide/globe'
 
@@ -31,19 +31,20 @@ function toggle() {
 		<button
 			type="button"
 			:class="[
-				'flex items-center gap-1.5 cursor-pointer rounded-[3px] pl-2 pr-1.5 py-[5px] text-xs font-medium border border-solid',
-				'transition-all duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--insis-blue)] focus-visible:outline-offset-[1px]',
+				'flex min-h-[44px] cursor-pointer items-center gap-1.5 rounded-[3px] border border-solid py-[5px] pr-1.5 pl-2 text-xs font-medium sm:min-h-0',
+				'transition-all duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[1px] focus-visible:outline-[var(--insis-blue)]',
 				isOpen
-					? 'bg-[var(--insis-surface-2)] border-[var(--insis-border-mid)] text-[var(--insis-text)]'
-					: 'bg-transparent border-transparent text-[var(--insis-text-2)] hover:bg-[var(--insis-surface-2)] hover:border-[var(--insis-border)] hover:text-[var(--insis-text)]',
+					? 'border-[var(--insis-border-mid)] bg-[var(--insis-surface-2)] text-[var(--insis-text)]'
+					: 'border-transparent bg-transparent text-[var(--insis-text-2)] hover:border-[var(--insis-border)] hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text)]',
 			]"
 			:aria-expanded="isOpen"
+			:aria-label="$t('common.switchLanguage')"
 			aria-haspopup="listbox"
 			@click="toggle"
 		>
-			<IconGlobe class="h-3.5 w-3.5 shrink-0" />
+			<IconGlobe class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
 			<span>{{ (locale as string).toUpperCase() }}</span>
-			<IconChevronDown :class="['h-3 w-3 transition-transform duration-150 shrink-0', isOpen && 'rotate-180']" />
+			<IconChevronDown :class="['h-3 w-3 shrink-0 transition-transform duration-150', isOpen && 'rotate-180']" aria-hidden="true" />
 		</button>
 
 		<!-- Dropdown panel -->
@@ -57,7 +58,7 @@ function toggle() {
 		>
 			<div
 				v-if="isOpen"
-				class="absolute right-0 top-full mt-1 z-50 min-w-[90px] rounded-[5px] border border-[var(--insis-border)] bg-[var(--insis-surface)] shadow-[var(--insis-shadow)] overflow-hidden origin-top-right"
+				class="absolute top-full right-0 z-50 mt-1 min-w-[90px] origin-top-right overflow-hidden rounded-[5px] border border-[var(--insis-border)] bg-[var(--insis-surface)] shadow-[var(--insis-shadow)]"
 				role="listbox"
 			>
 				<button
@@ -67,7 +68,7 @@ function toggle() {
 					role="option"
 					:aria-selected="(locale as string) === (l as string)"
 					:class="[
-						'flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-xs font-medium cursor-pointer transition-colors duration-75',
+						'flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left text-xs font-medium transition-colors duration-75',
 						(locale as string) === (l as string)
 							? 'bg-[var(--insis-blue-subtle)] text-[var(--insis-blue)]'
 							: 'text-[var(--insis-text)] hover:bg-[var(--insis-surface-2)]',

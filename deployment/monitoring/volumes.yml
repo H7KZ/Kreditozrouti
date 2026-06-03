@@ -1,0 +1,21 @@
+# ==============================================================================
+# Volumes Configuration: Monitoring Stack
+# Description: Persistent volume definitions for monitoring stack services (Prometheus, Grafana, Loki, Alloy).
+# ==============================================================================
+
+volumes:
+  prometheus-data:
+    name: prometheus-data
+    external: true
+
+  grafana-data:
+    name: grafana-data
+    external: true
+
+  loki-data:
+    name: loki-data
+    external: true
+
+  alloy-data:
+    name: alloy-data
+    external: true

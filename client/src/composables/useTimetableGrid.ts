@@ -1,8 +1,9 @@
+﻿import type { SelectedCourseUnit } from '@client/types'
+import type { InSISDay } from '@shared/domain/insis'
+import type { ComputedRef, Ref } from 'vue'
+import { computed } from 'vue'
 import { useTimeUtils } from '@client/composables'
 import { TIME_CONFIG, WEEKDAYS } from '@client/constants/timetable.ts'
-import type { SelectedCourseUnit } from '@client/types'
-import type InSISDay from '@scraper/Types/InSISDay'
-import { computed, type ComputedRef, type Ref } from 'vue'
 
 export interface OverlapInfo {
 	/** Position index in the overlap group */

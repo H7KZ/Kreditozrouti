@@ -1,10 +1,11 @@
+import type { ScraperInSISCatalogRequestJob } from '@scraper/types/jobs'
+import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import { ScraperInSISCatalogRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISCatalogService from '@scraper/Services/ExtractInSISCatalogService'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
-import { InSISQueueService } from '@scraper/Services/InSISQueueService'
+import { QueueService } from '@scraper/Services/QueueService'
 
 /**
  * Scrapes the InSIS course catalog.
@@ -17,7 +18,11 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
 
     // Phase 1: Discovery
     const options = await discoverSearchOptions(client)
-    if (!options) return null
+    if (!options) {
+        redis.incr('metrics:scraper:silent_failures:catalog').catch(() => {})
+        redis.expire('metrics:scraper:silent_failures:catalog', 604800).catch(() => {})
+        return null
+    }
 
     let faculties = options.faculties
     if (data.faculties && data.faculties.length > 0) {
@@ -36,10 +41,12 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
         periods_count: periods.length
     })
 
+    const allowedIdents = data.allowed_idents && data.allowed_idents.length > 0 ? new Set(data.allowed_idents) : null
+
     // Phase 2: Scrape each faculty/period combination
     for (const faculty of faculties) {
         for (const period of periods) {
-            await scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false)
+            await scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false, allowedIdents)
         }
     }
 }
@@ -64,7 +71,8 @@ async function scrapeCatalogPage(
     facultyId: number,
     periodId: number,
     facultyPeriodId: number,
-    autoQueueCourses: boolean
+    autoQueueCourses: boolean,
+    allowedIdents: Set<string> | null
 ): Promise<void> {
     const params = new URLSearchParams({
         kredity_od: '',
@@ -83,19 +91,25 @@ async function scrapeCatalogPage(
         LoggerJobContext.add({
             error: 'Catalog page fetch failed'
         })
+        redis.incr('metrics:scraper:silent_failures:catalog').catch(() => {})
+        redis.expire('metrics:scraper:silent_failures:catalog', 604800).catch(() => {})
         return
     }
 
-    const courseUrls = ExtractInSISCatalogService.extractCourseUrls(result.data)
+    let courses = ExtractInSISCatalogService.extractCourses(result.data)
 
-    await InSISQueueService.addCatalogResponse(courseUrls)
+    if (allowedIdents !== null) {
+        courses = courses.filter(c => allowedIdents.has(c.ident))
+    }
 
-    if (courseUrls.length && autoQueueCourses) {
-        const coursesWithIds = courseUrls.map(url => ({
-            url,
-            courseId: ExtractInSISCourseService.extractIdFromUrl(url)
+    await QueueService.addCatalogResponse(courses.map(c => c.url))
+
+    if (courses.length && autoQueueCourses) {
+        const coursesWithIds = courses.map(c => ({
+            url: c.url,
+            courseId: ExtractInSISCourseService.extractIdFromUrl(c.url)
         }))
 
-        await InSISQueueService.queueCourseRequests(coursesWithIds)
+        await QueueService.queueCourseRequests(coursesWithIds)
     }
 }

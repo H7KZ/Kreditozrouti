@@ -1,0 +1,9 @@
+# ==============================================================================
+# Networks Configuration: Monitoring Stack
+# Description: Defines the external network for the monitoring stack.
+# ==============================================================================
+
+networks:
+  monitoring-network:
+    name: monitoring-network
+    external: true

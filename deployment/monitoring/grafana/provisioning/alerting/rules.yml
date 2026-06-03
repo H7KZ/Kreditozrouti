@@ -1,0 +1,76 @@
+# ==============================================================================
+# Grafana Alerting: Alert Rules
+# Three rules: container down, disk > 80%, memory < 10% available.
+# datasourceUid must match the uid in datasources/prometheus.yml.
+# ==============================================================================
+
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: infrastructure
+    folder: Infrastructure
+    interval: 1m
+    rules:
+      - uid: container-down
+        title: Container Down
+        condition: A
+        for: 1m
+        annotations:
+          summary: "A scraped target is down"
+          description: "Job {{ $labels.job }} has been down for more than 1 minute."
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: up == 0
+              instant: true
+              refId: A
+
+      - uid: disk-usage-high
+        title: Disk Usage High
+        condition: A
+        for: 5m
+        annotations:
+          summary: "Disk usage above 80%"
+          description: "Available disk on {{ $labels.mountpoint }} is below 20%."
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) < 0.2
+              instant: true
+              refId: A
+
+      - uid: memory-usage-high
+        title: Memory Usage High
+        condition: A
+        for: 5m
+        annotations:
+          summary: "Less than 10% memory available"
+          description: "Host memory is critically low — less than 10% available."
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) < 0.1
+              instant: true
+              refId: A

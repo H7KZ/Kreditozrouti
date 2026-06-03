@@ -2,9 +2,10 @@ import '@api/types'
 import cluster from 'cluster'
 import app from '@api/app'
 import { scraper } from '@api/bullmq'
+import { closeCacheInvalidationSubscriber, initCacheInvalidationSubscriber } from '@api/CacheInvalidationSubscriber'
 import { mysql, nodemailer, redis } from '@api/clients'
 import Config, { CheckRequiredEnvironmentVariables, LoadConfig } from '@api/Config/Config'
-import sentry from '@api/sentry'
+import { logger } from '@api/logger'
 import { SQLService } from '@api/Services/SQLService'
 
 LoadConfig()
@@ -13,87 +14,74 @@ const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
 const numWorkers = specifiedInstances ? parseInt(specifiedInstances) : 1
 
-// Cluster Management
 if (cluster.isPrimary && numWorkers > 1) {
-	console.log(`🚀  [API] Master process ${process.pid} is running`)
-	console.log(`⚙️  [API] Forking ${numWorkers} workers...`)
+	logger.info({ pid: process.pid }, 'api.cluster_primary_started')
+	logger.info({ workers: numWorkers }, 'api.forking_workers')
 
 	for (let i = 0; i < numWorkers; i++) {
 		cluster.fork()
 	}
 
 	cluster.on('exit', worker => {
-		console.log(`❌  [API] Worker ${worker.process.pid} died. Restarting...`)
+		logger.warn({ pid: worker.process.pid }, 'api.worker_died_restarting')
 		cluster.fork()
 	})
 } else {
-	start().then(() => {
-		console.log(`🚀  [API] Worker process ${process.pid} started`)
-	})
+	startWorker()
 }
 
-/**
- * Application entry point.
- * Initializes infrastructure, executes migrations, sets up jobs, and starts the HTTP server.
- */
-async function start() {
+async function startWorker(): Promise<void> {
 	try {
 		CheckRequiredEnvironmentVariables(Config)
 
-		if (sentry.isEnabled()) {
-			console.log('Sentry is enabled.')
-		}
-
 		await mysql.connection().execute(db => Promise.resolve(db))
-		console.log('Connected to MySQL successfully.')
+		logger.info('mysql.connected')
 
 		await SQLService.migrateToLatest()
-		console.log('Database migrations executed.')
+		logger.info('db.migrated')
 
 		await SQLService.seedInitialData()
-		console.log('Initial data seeding completed.')
+		logger.info('db.seeded')
 
 		await redis.ping()
-		console.log('Connected to Redis successfully.')
+		logger.info('redis.connected')
+
+		await initCacheInvalidationSubscriber()
+		logger.info('cache.pubsub_subscriber_ready')
 
 		if (Config.isEmailEnabled()) {
 			const mailVerified = await nodemailer.verify()
 			if (!mailVerified) throw new Error('Nodemailer verification failed')
-			console.log('Nodemailer configured.')
+			logger.info('mailer.configured')
 		}
 
 		await scraper.waitForQueues()
-		console.log('BullMQ queues and workers are ready.')
+		logger.info('bullmq.ready')
 
 		await scraper.schedulers()
-		console.log('BullMQ schedulers configured.')
+		logger.info('bullmq.schedulers_configured')
 
 		const server = app.listen(Config.port, () => {
-			console.log(`Environment: ${Config.env}`)
-			console.log(`Server running on port ${Config.port}`)
-
-			const shutdown = () => {
-				console.log('Shutting down server...')
-				server.close(async () => {
-					await mysql.destroy()
-					redis.disconnect()
-					console.log('Server shut down gracefully')
-					process.exit(0)
-				})
-			}
-
-			process.on('SIGTERM', shutdown)
-			process.on('SIGINT', shutdown)
+			logger.info({ port: Config.port, env: Config.env }, 'api.started')
 		})
-	} catch (error) {
-		console.error('Failed to start the server:', error)
 
-		// Report startup errors to Sentry
-		if (sentry.isEnabled()) {
-			sentry.captureException(error)
-			await sentry.flush(2000)
+		const shutdown = () => {
+			logger.info('api.shutdown')
+			server.close(async () => {
+				await mysql.destroy()
+				await closeCacheInvalidationSubscriber()
+				redis.disconnect()
+				logger.info('api.stopped')
+				process.exit(0)
+			})
 		}
 
+		process.on('SIGTERM', shutdown)
+		process.on('SIGINT', shutdown)
+
+		logger.info({ pid: process.pid }, 'api.worker_started')
+	} catch (error) {
+		logger.fatal({ err: error }, 'api.startup_failed')
 		await mysql.destroy()
 		redis.disconnect()
 		process.exit(1)

@@ -1,7 +1,7 @@
+import { fileURLToPath, URL } from 'node:url'
 import vueI18n from '@intlify/unplugin-vue-i18n/vite'
 import vueTailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
-import { fileURLToPath, URL } from 'node:url'
 import vueIcons from 'unplugin-icons/vite'
 import vueRouter from 'unplugin-vue-router/vite'
 import { defineConfig, loadEnv } from 'vite'

@@ -1,51 +1,44 @@
 import cluster from 'cluster'
 import scraper from '@scraper/bullmq'
 import { redis } from '@scraper/clients'
-import sentry from '@scraper/sentry'
+import { logger } from '@scraper/logger'
 
 const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
 const numWorkers = specifiedInstances ? parseInt(specifiedInstances) : 1
 
-// Cluster Management
+// Cluster management
+
 if (cluster.isPrimary && numWorkers > 1) {
-    console.log(`🚀  [Scraper] Master process ${process.pid} is running`)
-    console.log(`⚙️  [Scraper] Forking ${numWorkers} workers...`)
+    logger.info({ pid: process.pid }, 'scraper.cluster_primary_started')
+    logger.info({ workers: numWorkers }, 'scraper.forking_workers')
 
     for (let i = 0; i < numWorkers; i++) {
         cluster.fork()
     }
 
     cluster.on('exit', worker => {
-        console.log(`❌  [Scraper] Worker ${worker.process.pid} died. Restarting...`)
+        logger.warn({ pid: worker.process.pid }, 'scraper.worker_died_restarting')
         cluster.fork()
     })
 } else {
-    start().then(() => {
-        console.log(`🚀  [Scraper] Worker process ${process.pid} started`)
+    startWorker().then(() => {
+        logger.info({ pid: process.pid }, 'scraper.worker_started')
     })
 }
 
-/**
- * Scraper service entry point.
- * Verifies Redis connectivity and initializes BullMQ job queues and workers.
- */
-async function start() {
+// Worker startup
+
+async function startWorker(): Promise<void> {
     try {
         await redis.ping()
-        console.log('Connected to Redis successfully.')
+        logger.info('redis.connected')
 
+        scraper.init()
         await scraper.waitForQueues()
-        console.log('Scraper service is up and running.')
+        logger.info('scraper.ready')
     } catch (error) {
-        console.error('Failed to start the server:', error)
-
-        // Report startup errors to Sentry
-        if (sentry.isEnabled()) {
-            sentry.captureException(error)
-            await sentry.flush(2000)
-        }
-
+        logger.fatal({ err: error }, 'scraper.startup_failed')
         redis.disconnect()
         process.exit(1)
     }

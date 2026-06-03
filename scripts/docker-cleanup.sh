@@ -13,7 +13,7 @@ set -euo pipefail
 #   -a, --all               Clean everything (default: only dangling/unused)
 #   -n, --dry-run           Show what would be removed without removing
 #   -f, --force             Skip confirmation prompts
-#   -k, --keep-recent <hrs> Keep images used within N hours (default: 24)
+#   -k, --keep-recent <hrs> Keep images newer than N hours (default: 24, requires --all)
 #   --skip-containers       Skip container cleanup
 #   --skip-images           Skip image cleanup
 #   --skip-volumes          Skip volume cleanup
@@ -34,6 +34,7 @@ set -euo pipefail
 # ------------------------------------------------------------------------------
 
 readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly LOG_FILE="/tmp/docker-cleanup-$(date +%Y%m%d-%H%M%S).log"
 
 # Flags
@@ -55,34 +56,11 @@ VOLUMES_REMOVED=0
 NETWORKS_REMOVED=0
 SPACE_RECLAIMED=""
 
-# Colors for output
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[1;33m'
-readonly BLUE='\033[0;34m'
-readonly CYAN='\033[0;36m'
-readonly DIM='\033[2m'
-readonly NC='\033[0m' # No Color
+source "$SCRIPT_DIR/lib.sh"
 
 # ------------------------------------------------------------------------------
-# Functions
+# Script-specific log helpers (extend lib.sh)
 # ------------------------------------------------------------------------------
-
-log() {
-    echo -e "${BLUE}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1" | tee -a "$LOG_FILE"
-}
-
-log_success() {
-    echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1" | tee -a "$LOG_FILE"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1" | tee -a "$LOG_FILE"
-}
-
-log_error() {
-    echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1" | tee -a "$LOG_FILE" >&2
-}
 
 log_verbose() {
     if [[ "$VERBOSE" == true ]]; then
@@ -94,6 +72,10 @@ log_dry_run() {
     echo -e "${CYAN}[DRY-RUN]${NC} $1" | tee -a "$LOG_FILE"
 }
 
+# ------------------------------------------------------------------------------
+# Functions
+# ------------------------------------------------------------------------------
+
 usage() {
     cat << EOF
 Usage: $SCRIPT_NAME [OPTIONS]
@@ -102,7 +84,7 @@ Options:
     -a, --all               Clean everything (images, even if tagged)
     -n, --dry-run           Preview what would be removed
     -f, --force             Skip confirmation prompts
-    -k, --keep-recent <hrs> Keep images used within N hours (default: 24)
+    -k, --keep-recent <hrs> Keep images newer than N hours (default: 24, only with --all)
     --skip-containers       Skip container cleanup
     --skip-images           Skip image cleanup
     --skip-volumes          Skip volume cleanup
@@ -116,7 +98,7 @@ Examples:
     $SCRIPT_NAME --dry-run              # Preview what would be removed
     $SCRIPT_NAME -a -f                  # Aggressive cleanup, no confirmation
     $SCRIPT_NAME --skip-volumes -f      # Clean all except volumes
-    $SCRIPT_NAME -k 48                  # Keep images used in last 48 hours
+    $SCRIPT_NAME -a -k 48              # Remove unused images older than 48 hours
 
 What gets cleaned:
     - Stopped containers
@@ -131,6 +113,7 @@ Protected resources:
     - Images used by running containers
     - Named volumes (unless --all)
     - Default networks (bridge, host, none)
+    - Images newer than --keep-recent hours (when used with --all)
 
 Log file: $LOG_FILE
 EOF
@@ -152,10 +135,6 @@ check_docker() {
 
 get_disk_usage() {
     docker system df 2>/dev/null || true
-}
-
-get_detailed_disk_usage() {
-    docker system df -v 2>/dev/null || true
 }
 
 confirm_cleanup() {
@@ -194,7 +173,6 @@ cleanup_containers() {
 
     log "Cleaning up containers..."
 
-    # Get stopped containers
     local stopped_containers
     stopped_containers=$(docker ps -aq --filter "status=exited" --filter "status=dead" --filter "status=created" 2>/dev/null || true)
 
@@ -232,13 +210,10 @@ cleanup_images() {
     log "Cleaning up images..."
 
     if [[ "$CLEAN_ALL" == true ]]; then
-        # Remove all unused images
-        local unused_images
-        unused_images=$(docker images -q --filter "dangling=false" 2>/dev/null | wc -l || echo "0")
-        local dangling_images
-        dangling_images=$(docker images -q --filter "dangling=true" 2>/dev/null | wc -l || echo "0")
-
-        local total=$((unused_images + dangling_images))
+        # Remove all unused images, keeping those newer than KEEP_RECENT_HOURS
+        local filter_args=("--filter" "until=${KEEP_RECENT_HOURS}h")
+        local total
+        total=$(docker images -q 2>/dev/null | wc -l || echo "0")
 
         if [[ "$total" -eq 0 ]]; then
             log_verbose "No images to remove."
@@ -246,16 +221,16 @@ cleanup_images() {
         fi
 
         if [[ "$DRY_RUN" == true ]]; then
-            log_dry_run "Would remove unused images (including tagged):"
+            log_dry_run "Would remove unused images older than ${KEEP_RECENT_HOURS}h:"
             docker images --format "  - {{.Repository}}:{{.Tag}} ({{.Size}}, created {{.CreatedSince}})" 2>/dev/null | head -20 || true
             local more=$((total - 20))
             [[ $more -gt 0 ]] && log_dry_run "  ... and $more more"
             return
         fi
 
-        log "Removing all unused images..."
+        log "Removing unused images older than ${KEEP_RECENT_HOURS}h..."
         local output
-        output=$(docker image prune -af 2>&1)
+        output=$(docker image prune -af "${filter_args[@]}" 2>&1)
         echo "$output" >> "$LOG_FILE"
 
         IMAGES_REMOVED=$(echo "$output" | grep -c "deleted" || echo "0")
@@ -298,7 +273,6 @@ cleanup_volumes() {
 
     log "Cleaning up volumes..."
 
-    # Get dangling volumes
     local dangling_volumes
     dangling_volumes=$(docker volume ls -q --filter "dangling=true" 2>/dev/null || true)
 
@@ -339,7 +313,6 @@ cleanup_networks() {
 
     log "Cleaning up networks..."
 
-    # Get unused networks (excluding default ones)
     local networks
     networks=$(docker network ls --filter "type=custom" -q 2>/dev/null || true)
 
@@ -395,7 +368,6 @@ cleanup_build_cache() {
 
     log "Cleaning up build cache..."
 
-    # Check if there's any build cache
     local cache_size
     cache_size=$(docker system df --format '{{.Size}}' 2>/dev/null | tail -1 || echo "0B")
 
@@ -525,7 +497,7 @@ main() {
     fi
 
     if [[ "$CLEAN_ALL" == true ]]; then
-        log_warning "Running in AGGRESSIVE mode (--all)"
+        log_warning "Running in AGGRESSIVE mode (--all), keeping images newer than ${KEEP_RECENT_HOURS}h"
     fi
 
     log "=========================================="

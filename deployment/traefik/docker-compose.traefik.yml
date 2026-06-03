@@ -63,7 +63,7 @@ services:
       - "traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt"
 
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/ping"]
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8080/ping" ]
       interval: 30s
       timeout: 10s
       retries: 3

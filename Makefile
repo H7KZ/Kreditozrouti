@@ -1,48 +1,71 @@
-.PHONY: install dev dev-api dev-client dev-scraper format lint build preview build-docker-images run-local-docker clear-redis
+.PHONY: install dev format lint \
+		type-check build preview \
+		build-docker-images run-local-docker \
+		stop-local-docker clear-redis
 
 run-local-docker:
-	docker compose -f docker-compose.local.yml down --remove-orphans && \
-	docker compose -f docker-compose.local.yml build --pull --no-cache && \
 	docker compose -f docker-compose.local.yml up -d
+
+stop-local-docker:
+	docker compose -f docker-compose.local.yml down --remove-orphans
 
 clear-redis:
 	docker exec kreditozrouti-redis redis-cli FLUSHDB
 
 install:
-	pnpm -r install && \
-	pnpm install -g dotenv-cli
+	npm install && \
+	npm install -g concurrently && \
+	npm install -g dotenv-cli
 
 dev:
-	pnpm -r --parallel run dev
-
-dev-api:
-	cd api && \
-	pnpm install && \
-	pnpm run dev
-
-dev-scraper:
-	cd scraper && \
-	pnpm install && \
-	pnpm run dev
-
-dev-client:
-	cd client && \
-	pnpm install && \
-	pnpm run dev
+	concurrently \
+	'cd api && npm run dev' \
+	'cd client && npm run dev' \
+	'cd scraper && npm run dev' \
+	--names "API,CLIENT,SCRAPER" \
+	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
 
 format:
-	pnpm -r --parallel run format
+	concurrently \
+	'cd api && npm run format' \
+	'cd client && npm run format' \
+	'cd scraper && npm run format' \
+	--names "API,CLIENT,SCRAPER" \
+	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
 
 lint:
-	pnpm -r --parallel run lint
+	concurrently \
+	'cd api && npm run lint' \
+	'cd client && npm run lint' \
+	'cd scraper && npm run lint' \
+	--names "API,CLIENT,SCRAPER" \
+	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
+
+type-check:
+	concurrently \
+	'cd api && npm run type-check' \
+	'cd client && npm run type-check' \
+	'cd scraper && npm run type-check' \
+	--names "API,CLIENT,SCRAPER" \
+	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
 
 build:
-	pnpm -r --parallel run build
+	concurrently \
+	'cd api && npm run build' \
+	'cd client && npm run build' \
+	'cd scraper && npm run build' \
+	--names "API,CLIENT,SCRAPER" \
+	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
 
 preview:
-	pnpm -r --parallel run preview
+	concurrently \
+	'cd api && npm run preview' \
+	'cd client && npm run preview' \
+	'cd scraper && npm run preview' \
+	--names "API,CLIENT,SCRAPER" \
+	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
 
 build-docker-images:
-	docker build -t kreditozrouti-api -f ./api/Dockerfile . && \
-	docker build -t kreditozrouti-client -f ./client/Dockerfile . && \
-	docker build -t kreditozrouti-scraper -f ./scraper/Dockerfile .
+	docker buildx build -t kreditozrouti-api -f ./api/Dockerfile . && \
+	docker buildx build -t kreditozrouti-client -f ./client/Dockerfile . && \
+	docker buildx build -t kreditozrouti-scraper -f ./scraper/Dockerfile .

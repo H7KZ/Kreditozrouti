@@ -1,0 +1,121 @@
+# Kreditožrouti — Gemini Instructions
+
+Kreditožrouti — course scheduling system for VŠE students. Scrapes InSIS, presents filterable timetable UI.
+
+---
+
+## Access Points (dev)
+
+| Service    | URL                    |
+|------------|------------------------|
+| Client     | http://localhost:45173 |
+| API        | http://localhost:40080 |
+| phpMyAdmin | http://localhost:48080 |
+
+---
+
+## Essential Commands
+
+```bash
+make install              # Install all dependencies
+make dev                  # Run api + client + scraper in parallel
+make run-local-docker     # Start MySQL, Redis, phpMyAdmin
+make lint && make format  # Code quality
+make build                # Production build
+```
+
+---
+
+## Monorepo Structure
+
+```
+api/          Express API — HTTP, DB writes, job orchestration
+client/       Vue 3 SPA — user interface
+scraper/      BullMQ worker — InSIS HTTP scraping
+shared/       Types only — imported by all packages, imports nothing
+scripts/      Bash — server setup & maintenance
+deployment/   Docker Compose stacks + deploy.sh
+```
+
+---
+
+## Critical Invariants
+
+**Cross-package imports:**
+
+- `shared/` must never import from `api/`, `client/`, or `scraper/`
+- `client/` never imports from `api/` — all shared types come from `@shared/`
+- `client/` never imports API runtime code
+
+**Time encoding:** all times are **minutes from midnight** (0–1439). `08:00` = 480.
+
+**Env var prefixes:**
+
+- API: `API_*` | Client: `VITE_*` (baked at build) | Scraper: no prefix | Infra: `MYSQL_*`, `REDIS_*`
+
+**Scraper is a pure consumer:** never writes DB, never schedules its own jobs — schedulers live in the API (
+`NODE_ENV=production` only).
+
+**Deploy order on a fresh server:** Traefik → GitHub Runner (opt) → app stack.
+
+**Code conventions:**
+
+- TypeScript strict mode — no `any`
+- Vue 3 Composition API with `<script setup>`
+- API controllers are plain namespace objects, not classes
+- Conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`
+
+---
+
+## Doc-Review Rule
+
+After completing any task that changes code, configuration, or behavior:
+
+1. **Identify** which `docs/` file(s) describe the changed area (use the table below)
+2. **Update** any doc that describes what changed — keep it accurate
+3. **New behavior with no doc entry?** Ask: *"This change isn't mentioned in the docs — should I document it?"* If yes,
+   add it; if no, continue
+
+---
+
+## Documentation
+
+| Area         | Overview                                            | Detail docs                                                                                                                                                                                       |
+|--------------|-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Domain       | [docs/DOMAIN.md](../docs/DOMAIN.md)                 | Glossary · Architecture seams                                                                                                                                                                     |
+| ADRs         | [docs/ADR.md](../docs/ADR.md)                       | Decisions 001–006                                                                                                                                                                                 |
+| Architecture | [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)     | [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md)   |
+| Engineering  | [docs/ENGINEERING.md](../docs/ENGINEERING.md)       | [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md)                                                                                                       |
+| API          | [docs/api/README.md](../docs/api/README.md)         | [endpoints](../docs/api/ENDPOINTS.md) · [services](../docs/api/SERVICES.md) · [jobs](../docs/api/JOBS.md) · [database](../docs/api/DATABASE.md) · [internals](../docs/api/INTERNALS.md)           |
+| Client       | [docs/client/README.md](../docs/client/README.md)   | [stores](../docs/client/STORES.md) · [composables](../docs/client/COMPOSABLES.md) · [timetable](../docs/client/TIMETABLE.md) · [internals](../docs/client/INTERNALS.md)                           |
+| Scraper      | [docs/scraper/README.md](../docs/scraper/README.md) | [jobs](../docs/scraper/JOBS.md) · [extraction](../docs/scraper/EXTRACTION.md) · [queue](../docs/scraper/QUEUE.md) · [types](../docs/scraper/TYPES.md) · [internals](../docs/scraper/INTERNALS.md) |
+| Shared       | [docs/shared/README.md](../docs/shared/README.md)   | [domain](../docs/shared/DOMAIN.md) · [http](../docs/shared/HTTP.md) · [queue](../docs/shared/QUEUE.md)                                                                                            |
+| Deployment   | [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md)         | [docker](../docs/deployment/DOCKER.md) · [ci/cd](../docs/deployment/CICD.md) · [infrastructure](../docs/deployment/INFRASTRUCTURE.md) · [operations](../docs/deployment/OPERATIONS.md)            |
+| Scripts      | [docs/SCRIPTS.md](../docs/SCRIPTS.md)               | [infrastructure](../docs/scripts/INFRASTRUCTURE.md) · [maintenance](../docs/scripts/MAINTENANCE.md)                                                                                               |
+
+---
+
+## Working in This Repo (Gemini)
+
+**Context management**
+
+- Always read `docs/PROJECT_CONTEXT.md` first when starting a new task — it is the central knowledge base
+- For domain vocabulary, read `docs/DOMAIN.md`; for architectural decisions, read `docs/ADR.md`
+- Do not assume you know file paths — verify with search tools before editing
+
+**Tool discipline**
+
+- Use `grep_search` with file extension filters (e.g. `Includes: *.ts`) to pinpoint exact files and lines rather than
+  guessing paths — the repo has many files
+- For broad codebase exploration (more than 3 searches), use `invoke_subagent` with the `research` subagent to avoid
+  polluting the main context
+
+**Phased execution**
+
+Divide non-trivial tasks into three phases:
+
+1. **Plan** — read the relevant `docs/` files, map the affected files with `grep_search`
+2. **Execute** — edit files atomically, one logical change at a time
+3. **Verify** — run `make lint`, check the doc-review rule above
+
+Never skip the Plan phase on tasks that touch multiple packages.

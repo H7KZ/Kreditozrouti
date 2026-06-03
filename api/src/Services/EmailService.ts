@@ -1,11 +1,10 @@
 import fs from 'fs'
-import { nodemailer } from '@api/clients'
-import Config from '@api/Config/Config'
-import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
-import Exception from '@api/Error/Exception'
-import { Paths } from '@api/paths'
 import Mail from 'nodemailer/lib/mailer'
 import SMTPTransport from 'nodemailer/lib/smtp-transport'
+import { nodemailer } from '@api/clients'
+import Config from '@api/Config/Config'
+import { ApiError } from '@api/Errors'
+import { Paths } from '@api/paths'
 
 /**
  * Service for managing email template rendering and SMTP transmission.
@@ -26,7 +25,7 @@ export default class EmailService {
 		try {
 			template = await fs.promises.readFile(Paths.Emails.htmlTemplate(name), 'utf-8')
 		} catch {
-			throw new Exception(500, ErrorTypeEnum.UNKNOWN, ErrorCodeEnum.INTERNAL_SERVER_ERROR, 'Failed to read email template')
+			throw new ApiError(500, 'INTERNAL', 'Failed to read email template')
 		}
 
 		for (const [key, value] of Object.entries(variables)) {
@@ -51,7 +50,7 @@ export default class EmailService {
 
 			return true
 		} catch {
-			throw new Exception(500, ErrorTypeEnum.UNKNOWN, ErrorCodeEnum.EMAIL_NOT_SENT, 'Failed to send email')
+			throw new ApiError(500, 'INTERNAL', 'Failed to send email')
 		}
 	}
 

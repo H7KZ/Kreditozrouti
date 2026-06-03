@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Course } from '@api/Database/types'
-import { useCourseLabels, useDebouncedFn } from '@client/composables'
+import type { CourseDTO } from '@shared/http/responses'
 import { computed, ref } from 'vue'
+import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import IconCheck from '~icons/lucide/check'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconInfo from '~icons/lucide/info'
@@ -22,7 +22,7 @@ const { getCourseTitle, getCategoryLabel, getCategoryBadgeClass, getCompletionLa
 
 interface Props {
 	/** Courses grouped by category (derived from study plan cross-reference) */
-	coursesByCategory: Map<string, Course[]>
+	coursesByCategory: Map<string, CourseDTO[]>
 	availableCategories: string[]
 	completedCourseIdents: string[]
 	categoryFilter: string[]
@@ -84,7 +84,7 @@ function isCategoryFilterActive(category: string): boolean {
 }
 
 /** Completed count in a category */
-function completedInCategory(courses: Course[]): number {
+function completedInCategory(courses: CourseDTO[]): number {
 	return courses.filter((c) => isCompleted(c.ident)).length
 }
 
@@ -130,7 +130,7 @@ function handleSearchInput(event: Event) {
 		<div class="mb-4 space-y-3">
 			<!-- Search -->
 			<div class="relative">
-				<IconSearch class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
+				<IconSearch class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
 				<input
 					type="text"
 					class="insis-input pl-9"
@@ -147,10 +147,10 @@ function handleSearchInput(event: Event) {
 					:key="category"
 					type="button"
 					:class="[
-						'rounded-full border px-3 py-1 text-xs transition-all duration-150 cursor-pointer active:scale-[0.97]',
+						'cursor-pointer rounded-full border px-3 py-1 text-xs transition-all duration-150 active:scale-[0.97]',
 						isCategoryFilterActive(category)
 							? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] text-[var(--insis-blue)]'
-							: 'border-[var(--insis-border)] bg-white text-[var(--insis-gray-600)] hover:border-[var(--insis-blue)] hover:bg-[var(--insis-blue-subtle)]',
+							: 'border-[var(--insis-border)] bg-[var(--insis-surface)] text-[var(--insis-gray-600)] hover:border-[var(--insis-blue)] hover:bg-[var(--insis-blue-subtle)]',
 					]"
 					@click="toggleCategoryFilter(category)"
 				>
@@ -166,7 +166,7 @@ function handleSearchInput(event: Event) {
 
 		<!-- Course list grouped by category -->
 		<div v-else-if="sortedEntries.length > 0" class="space-y-4">
-			<div v-for="[category, courses] in sortedEntries" :key="category" class="rounded border border-[var(--insis-border)] bg-white">
+			<div v-for="[category, courses] in sortedEntries" :key="category" class="rounded border border-[var(--insis-border)] bg-[var(--insis-surface)]">
 				<!-- Category header -->
 				<button
 					type="button"
@@ -194,7 +194,7 @@ function handleSearchInput(event: Event) {
 						v-for="course in courses"
 						:key="course.id"
 						:class="[
-							'flex cursor-pointer items-center gap-3 border-b border-[var(--insis-border-light)] px-3 py-2 last:border-b-0 transition-colors',
+							'flex cursor-pointer items-center gap-3 border-b border-[var(--insis-border-light)] px-3 py-2 transition-colors last:border-b-0',
 							isCompleted(course.ident) ? 'bg-[var(--insis-success-light)]' : 'hover:bg-[var(--insis-gray-50)]',
 						]"
 					>
@@ -226,7 +226,7 @@ function handleSearchInput(event: Event) {
 		</div>
 
 		<!-- Summary & Actions -->
-		<div class="mt-6 flex items-center justify-between border-t border-[var(--insis-border)] pt-4">
+		<div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--insis-border)] pt-4">
 			<div class="flex items-center gap-4">
 				<button type="button" class="insis-btn-text text-sm" @click="emit('back')">← {{ $t('common.back') }}</button>
 				<span v-if="totalCompleted > 0" class="text-sm text-[var(--insis-gray-600)]">

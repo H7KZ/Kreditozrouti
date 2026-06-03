@@ -1,8 +1,8 @@
-import type { Course, CourseWithRelations } from '@api/Database/types'
+﻿import type { InSISDay } from '@shared/domain/insis'
+import type { CourseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { i18n } from '@client/index.ts'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { getCategoryBadgeClass, getSlotType, getUnitTypeColorClass } from '@client/utils/course'
-import type InSISDay from '@scraper/Types/InSISDay'
 
 /**
  * Course labels composable.
@@ -154,7 +154,7 @@ export function useCourseLabels() {
 	 * @param course - Course object
 	 * @returns Title in current locale with fallbacks
 	 */
-	function getCourseTitle(course: CourseWithRelations | Course): string {
+	function getCourseTitle(course: CourseWithRelationsDTO | CourseDTO): string {
 		switch (locale.value) {
 			case 'cs':
 				return course.title_cs ?? course.title ?? ''

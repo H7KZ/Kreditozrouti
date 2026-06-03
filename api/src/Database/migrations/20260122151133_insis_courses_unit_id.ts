@@ -1,10 +1,11 @@
-import { CourseUnitSlotTable } from '@api/Database/types'
 import { Kysely } from 'kysely'
+import { CourseUnitSlotTable } from '@api/Database/types'
+import { renameColumnSafe } from './utils'
 
 export async function up(mysql: Kysely<any>): Promise<void> {
-	await mysql.schema.alterTable(CourseUnitSlotTable._table).renameColumn('timetable_unit_id', 'unit_id').execute()
+	await renameColumnSafe(mysql, CourseUnitSlotTable._table, 'timetable_unit_id', 'unit_id')
 }
 
 export async function down(mysql: Kysely<any>): Promise<void> {
-	await mysql.schema.alterTable(CourseUnitSlotTable._table).renameColumn('unit_id', 'timetable_unit_id').execute()
+	await renameColumnSafe(mysql, CourseUnitSlotTable._table, 'unit_id', 'timetable_unit_id')
 }

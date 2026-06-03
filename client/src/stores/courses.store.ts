@@ -1,12 +1,13 @@
-import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse.ts'
-import type { CourseWithRelations } from '@api/Database/types'
-import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
+import type { CoursesFilter } from '@shared/http/courses'
+import type { CoursesResponseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
+import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
+import { i18n } from '@client/i18n'
 import { fetchCourses as fetchCoursesFromService } from '@client/services/courseService'
+import { useAnnouncerStore } from '@client/stores/announcer.store'
 import { useFiltersStore } from '@client/stores/filters.store'
 import { useTimetableStore } from '@client/stores/timetable.store'
 import { useWizardStore } from '@client/stores/wizard.store'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 
 /**
  * Courses Store
@@ -16,8 +17,10 @@ import { computed, ref } from 'vue'
  * The two sources of exclude_times (manual + timetable) are merged by filtersStore.
  */
 export const useCoursesStore = defineStore('courses', () => {
-	const courses = ref<CourseWithRelations[]>([])
-	const facets = ref<CoursesResponse['facets']>({
+	const { t } = i18n.global
+	const announcer = useAnnouncerStore()
+	const courses = ref<CourseWithRelationsDTO[]>([])
+	const facets = ref<CoursesResponseDTO['facets']>({
 		faculties: [],
 		days: [],
 		lecturers: [],
@@ -76,9 +79,17 @@ export const useCoursesStore = defineStore('courses', () => {
 			courses.value = data.data
 			facets.value = data.facets
 			pagination.value = data.meta
+
+			// Announce result count to screen readers
+			if (data.meta.total === 0) {
+				announcer.announce(t('common.announcements.noCoursesFound'))
+			} else {
+				announcer.announce(t('common.announcements.coursesFound', { count: data.meta.total }))
+			}
 		} catch (e) {
-			error.value = 'Failed to load courses'
+			error.value = t('stores.wizardData.errors.loadCourses')
 			console.error('Courses: Failed to fetch', e)
+			announcer.announce(t('common.announcements.loadingError'), 'assertive')
 		} finally {
 			loading.value = false
 		}
@@ -138,6 +149,13 @@ export const useCoursesStore = defineStore('courses', () => {
 		expandedCourseIds.value.clear()
 	}
 
+	function updateCourse(updated: CourseWithRelationsDTO) {
+		const idx = courses.value.findIndex((c) => c.id === updated.id)
+		if (idx !== -1) {
+			courses.value[idx] = updated
+		}
+	}
+
 	function resetFilters() {
 		const wizardStore = useWizardStore()
 		const filtersStore = useFiltersStore()
@@ -183,6 +201,7 @@ export const useCoursesStore = defineStore('courses', () => {
 		toggleCourseExpansion,
 		isCourseExpanded,
 		collapseAllCourses,
+		updateCourse,
 		resetFilters,
 		resetAll,
 		toggleHideConflictingCourses,

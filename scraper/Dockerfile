@@ -1,35 +1,35 @@
 # Build Stage
 FROM node:24-alpine AS builder
 
-
 WORKDIR /usr/src/scraper
 
-COPY ./scraper/package.json /usr/src/scraper/
-RUN npm install --include=dev
+COPY ./scraper/package.json ./scraper/package-lock.json ./
+RUN npm ci
 
-COPY ./scraper/ /usr/src/scraper/
+COPY ./scraper/ ./
 
+# Workspaces: make shared source visible for cross-package type imports
+COPY ./shared/ /usr/src/shared/
 
-# "Workspaces" setup
-# COPY ./api/src/ /usr/src/api/src/
-
-
-RUN npm run build
-RUN npm prune --omit=dev
-RUN npx puppeteer browsers install chrome
-
+RUN npm run build && npm prune --omit=dev
 
 # --------------------------------------------------------------------
 # Production Stage
 FROM node:24-alpine
 
+# Alpine system Chromium — avoids downloading a second browser binary at build time
+# and works on musl/Alpine without glibc compatibility shims
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
 
 WORKDIR /usr/src/scraper
 
-COPY --from=builder /usr/src/scraper/dist /usr/src/scraper/dist
-COPY --from=builder /usr/src/scraper/node_modules /usr/src/scraper/node_modules
+COPY --from=builder /usr/src/scraper/dist ./dist
+COPY --from=builder /usr/src/scraper/node_modules ./node_modules
 
-CMD ["node", "dist/index.js"]
-
-# "Workspaces" setup
-# CMD ["node", "dist/scraper/src/index.js"]
+CMD ["node", "dist/scraper/src/index.js"]

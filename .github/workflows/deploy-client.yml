@@ -1,0 +1,66 @@
+# ==============================================================================
+# Workflow: Deploy Client
+# Description: Builds and deploys the Client service when client/ or shared/ changes.
+#              main → production | develop → development
+#
+# Trigger: push to main/develop with path filter, or manual dispatch
+# ==============================================================================
+
+name: Deploy Client
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - "client/**"
+      - "shared/**"
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag to deploy (skips build if set)"
+        required: false
+        type: string
+        default: ""
+      skip_build:
+        description: "Skip build (image must already exist in registry)"
+        required: false
+        type: boolean
+        default: false
+      environment:
+        description: "Target environment"
+        required: false
+        type: choice
+        options: [ production, development ]
+        default: production
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: deploy-client-${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Client Image
+    if: ${{ !inputs.skip_build && inputs.image_tag == '' }}
+    uses: ./.github/workflows/_build-service.yml
+    with:
+      service: client
+      float_tag: ${{ github.ref == 'refs/heads/main' && 'latest' || 'dev-latest' }}
+      cache_scope: client-${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+    secrets: inherit
+
+  deploy:
+    name: Deploy Client
+    needs: [ build ]
+    if: ${{ always() && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
+    uses: ./.github/workflows/_deploy-service.yml
+    with:
+      service: client
+      environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'development') }}
+      project_name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+      image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build.outputs.image_tag }}
+      image_prefix: ${{ needs.build.outputs.image_prefix || github.repository }}
+    secrets: inherit

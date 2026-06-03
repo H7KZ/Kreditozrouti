@@ -1,6 +1,19 @@
-import { scraper } from '@api/bullmq'
-import InSISSemester from '@scraper/Types/InSISSemester'
+import type { InSISSemester } from '@shared/domain/insis'
 import { Request, Response } from 'express'
+import * as z from 'zod'
+import ScraperService from '@api/Services/ScraperService'
+
+const BodySchema = z.object({
+	faculties: z.array(z.string()).optional(),
+	periods: z
+		.array(
+			z.object({
+				semester: z.enum(['ZS', 'LS'] as [InSISSemester, ...InSISSemester[]]).nullable(),
+				year: z.coerce.number()
+			})
+		)
+		.optional()
+})
 
 /**
  * Manually triggers the scraper for the InSIS Course Catalog.
@@ -11,32 +24,10 @@ import { Request, Response } from 'express'
  * @route POST /commands/insis/catalog
  */
 export default async function RunInSISCatalogScraperController(req: Request, res: Response) {
-	interface Body {
-		faculties?: string[]
+	const result = BodySchema.safeParse(req.body)
+	const body = result.success ? result.data : {}
 
-		periods?: {
-			semester: InSISSemester | null
-			year: number
-		}[]
-	}
+	await ScraperService.enqueueCatalogScrape(body)
 
-	const body: Body = req.body as Body
-
-	await scraper.queue.request.add(
-		'InSIS Catalog Request (Manual)',
-		{
-			type: 'InSIS:Catalog',
-			faculties: body.faculties,
-			periods: body.periods,
-			auto_queue_courses: true
-		},
-		{
-			deduplication: {
-				id: 'InSIS:Catalog:ManualRun',
-				ttl: 30 * 1000 // 30 seconds
-			}
-		}
-	)
-
-	return res.sendStatus(200)
+	return res.sendStatus(202)
 }

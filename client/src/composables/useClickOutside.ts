@@ -1,4 +1,5 @@
-import { onMounted, onUnmounted, type Ref } from 'vue'
+import type { Ref } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 
 export interface UseClickOutsideOptions {
 	/** Callback when click outside is detected */

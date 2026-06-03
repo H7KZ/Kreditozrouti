@@ -1,9 +1,9 @@
-import type { CourseUnit, CourseUnitSlot } from '@api/Database/types'
+﻿import type { InSISDay } from '@shared/domain/insis'
+import type { CourseUnitDTO, CourseUnitSlotDTO } from '@shared/http/responses'
 import { useTimeUtils } from '@client/composables/useTimeUtils'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 import { i18n } from '@client/index.ts'
 import { getDayFromDate, getDayIndex } from '@client/utils/day.ts'
-import type InSISDay from '@scraper/Types/InSISDay'
 
 /**
  * Schedule summary composable.
@@ -23,7 +23,7 @@ export function useScheduleSummary() {
 	 * Get unique days from an array of course units.
 	 * Handles both recurring slots (with day) and block slots (with date).
 	 */
-	function getUniqueDaysFromUnits(units: CourseUnit<void, CourseUnitSlot>[] | undefined): Set<InSISDay> {
+	function getUniqueDaysFromUnits(units: CourseUnitDTO[] | undefined): Set<InSISDay> {
 		const daysSet = new Set<InSISDay>()
 
 		if (!units || units.length === 0) return daysSet
@@ -56,7 +56,7 @@ export function useScheduleSummary() {
 	 * @param units - Course units with slots
 	 * @returns Formatted string like "Po, St, Pá" or "-" if no schedule
 	 */
-	function getScheduleSummary(units: CourseUnit<void, CourseUnitSlot>[] | undefined): string {
+	function getScheduleSummary(units: CourseUnitDTO[] | undefined): string {
 		const daysSet = getUniqueDaysFromUnits(units)
 
 		if (daysSet.size === 0) return '-'
@@ -75,7 +75,7 @@ export function useScheduleSummary() {
 	 * @param units - Course units with slots
 	 * @returns Formatted string like "Monday, Wednesday, Friday"
 	 */
-	function getScheduleSummaryFull(units: CourseUnit<void, CourseUnitSlot>[] | undefined): string {
+	function getScheduleSummaryFull(units: CourseUnitDTO[] | undefined): string {
 		const daysSet = getUniqueDaysFromUnits(units)
 
 		if (daysSet.size === 0) return '-'
@@ -94,7 +94,7 @@ export function useScheduleSummary() {
 	 * @param units - Course units with slots
 	 * @returns Formatted string like "09:00 - 17:30" or "-" if no times
 	 */
-	function getTimeRangeSummary(units: CourseUnit<void, CourseUnitSlot>[] | undefined): string {
+	function getTimeRangeSummary(units: CourseUnitDTO[] | undefined): string {
 		if (!units || units.length === 0) return '-'
 
 		let minTime = Infinity
@@ -121,19 +121,19 @@ export function useScheduleSummary() {
 	/**
 	 * Check if a course has block/date-only slots.
 	 */
-	function hasBlockSlots(units: CourseUnit<void, CourseUnitSlot>[] | undefined): boolean {
+	function hasBlockSlots(units: CourseUnitDTO[] | undefined): boolean {
 		if (!units) return false
 
-		return units.some((unit) => unit.slots?.some((slot: CourseUnitSlot) => slot.date && !slot.day))
+		return units.some((unit) => unit.slots?.some((slot: CourseUnitSlotDTO) => slot.date && !slot.day))
 	}
 
 	/**
 	 * Check if a course has recurring slots.
 	 */
-	function hasRecurringSlots(units: CourseUnit<void, CourseUnitSlot>[] | undefined): boolean {
+	function hasRecurringSlots(units: CourseUnitDTO[] | undefined): boolean {
 		if (!units) return false
 
-		return units.some((unit) => unit.slots?.some((slot: CourseUnitSlot) => slot.day))
+		return units.some((unit) => unit.slots?.some((slot: CourseUnitSlotDTO) => slot.day))
 	}
 
 	return {

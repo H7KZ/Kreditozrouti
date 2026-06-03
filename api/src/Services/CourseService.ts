@@ -1,4 +1,8 @@
+import type { FacetItem } from '@shared/http/facets'
+import { Nullable, SelectQueryBuilder, sql } from 'kysely'
+import { jsonArrayFrom } from 'kysely/helpers/mysql'
 import { mysql, redis } from '@api/clients'
+import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse'
 import {
 	Course,
@@ -12,21 +16,17 @@ import {
 	FacultyTable,
 	StudyPlanCourseTable
 } from '@api/Database/types'
-import FacetItem from '@api/Interfaces/FacetItem'
-import DateService from '@api/Services/DateService'
-import { TimeSelection } from '@api/Validations'
-import { CoursesFilter } from '@api/Validations/CoursesFilterValidation'
-import { InSISDayValues } from '@scraper/Types/InSISDay'
-import { ExpressionBuilder, Nullable, SelectQueryBuilder, sql } from 'kysely'
-import { jsonArrayFrom } from 'kysely/helpers/mysql'
+import { buildSlotConflictConditions, compareTimeSelections } from '@api/utils/timeConflict'
 
 /** Cache TTL for facet queries (5 minutes) - facets change infrequently */
 const FACET_CACHE_TTL = 300
 const FACET_CACHE_PREFIX = 'course:facets:'
 
 type QueryBuilder = SelectQueryBuilder<
-	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> },
-	'c1' | 'cu1' | 'cus1' | 'spc1',
+	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> } & {
+		fts: Nullable<{ fts_id: number; relevance_score: number }>
+	},
+	'c1' | 'cu1' | 'cus1' | 'spc1' | 'fts',
 	object
 >
 
@@ -42,6 +42,8 @@ type QueryBuilder = SelectQueryBuilder<
  * This approach scales consistently regardless of page size.
  */
 export default class CourseService {
+	// Public API
+
 	/**
 	 * Retrieves a paginated list of courses with deep relations.
 	 *
@@ -67,20 +69,20 @@ export default class CourseService {
 		if (limit <= 0) return { courses: [], total: 0 }
 
 		// 1. Count total matching courses
-		const total = await this.getFilteredCourseCount(filters)
+		const total = await this.countFilteredCourses(filters)
 		if (total === 0) return { courses: [], total: 0 }
 
 		// 2. Fetch paginated course IDs only
-		const courseIds = await this.getPaginatedCourseIds(filters, limit, offset)
+		const courseIds = await this.fetchPaginatedCourseIds(filters, limit, offset)
 		if (courseIds.length === 0) return { courses: [], total }
 
 		// 3. Load all relations in parallel
 		const [courses, faculties, units, assessments, studyPlans] = await Promise.all([
-			this.getCoursesByIds(courseIds),
-			this.getFacultiesByIds(courseIds),
-			this.getUnitsWithSlotsByIds(courseIds),
-			this.getAssessmentsByIds(courseIds),
-			filters.study_plan_ids?.length ? this.getStudyPlanCoursesByIds(courseIds, filters.study_plan_ids) : Promise.resolve([])
+			this.fetchCoursesByIds(courseIds),
+			this.fetchFacultiesByCourseIds(courseIds),
+			this.fetchUnitsWithSlotsByCourseIds(courseIds),
+			this.fetchAssessmentsByCourseIds(courseIds),
+			filters.study_plan_ids?.length ? this.fetchStudyPlanCoursesByCourseIds(courseIds, filters.study_plan_ids) : Promise.resolve([])
 		])
 
 		// 4. Merge relations in-memory
@@ -91,23 +93,22 @@ export default class CourseService {
 
 		const enrichedCourses = courses.map(course => ({
 			...course,
-			faculty: facultyMap.get(course.faculty_id!) ?? null,
+			faculty: course.faculty_id ? (facultyMap.get(course.faculty_id) ?? null) : null,
 			units: unitsMap.get(course.id) ?? [],
 			assessments: assessmentsMap.get(course.id) ?? [],
 			study_plans: studyPlansMap.get(course.id) ?? []
 		}))
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		return { courses: enrichedCourses as any, total }
+		return { courses: enrichedCourses as unknown as CourseWithRelations[], total }
 	}
 
 	/**
-	 * Retrieves courses associated with a specific study plan.
+	 * Retrieves courses associated with specific study plans.
 	 *
-	 * @param studyPlanIds[] - ID of the study plan
-	 * @returns Array of courses linked to the study plan
+	 * @param studyPlanIds - IDs of the study plans to query
+	 * @returns Array of courses linked to the given study plans
 	 */
-	static async getCoursesByStudyPlan(studyPlanIds: number[]): Promise<Course[]> {
+	static getCoursesByStudyPlan(studyPlanIds: number[]): Promise<Course[]> {
 		return mysql
 			.selectFrom(`${CourseTable._table} as c1`)
 			.innerJoin(`${StudyPlanCourseTable._table} as spc1`, 'c1.id', 'spc1.course_id')
@@ -125,10 +126,32 @@ export default class CourseService {
 	}
 
 	/**
+	 * Retrieves facet counts for the filtering UI (dropdowns, checkboxes).
+	 * Results are cached in Redis to reduce DB load.
+	 *
+	 * @param filters - Current filter state (affects available facet values)
+	 * @returns Object containing count arrays for each facetable field
+	 */
+	static async getCourseFacets(filters: CoursesFilter) {
+		const cacheKey = this.buildFacetCacheKey(filters)
+
+		const cached = await this.readFacetsFromCache(cacheKey)
+		if (cached) return cached
+
+		const facets = await this.computeAllFacets(filters)
+
+		await this.writeFacetsToCache(cacheKey, facets)
+
+		return facets
+	}
+
+	// Querying
+
+	/**
 	 * Counts courses matching the given filters.
 	 * Uses COUNT(DISTINCT) to handle potential duplicates from joins.
 	 */
-	private static async getFilteredCourseCount(filters: Partial<CoursesFilter>): Promise<number> {
+	private static async countFilteredCourses(filters: Partial<CoursesFilter>): Promise<number> {
 		const query = this.buildFilterQuery(filters).select(eb => eb.fn.count<number>('c1.id').distinct().as('total'))
 
 		const result = await query.executeTakeFirst()
@@ -139,11 +162,11 @@ export default class CourseService {
 	 * Fetches only the IDs of courses for the current page.
 	 * Keeps the initial query lightweight before loading full relations.
 	 */
-	private static async getPaginatedCourseIds(filters: Partial<CoursesFilter>, limit: number, offset: number): Promise<number[]> {
+	private static async fetchPaginatedCourseIds(filters: Partial<CoursesFilter>, limit: number, offset: number): Promise<number[]> {
 		const results = await this.buildFilterQuery(filters)
 			.select('c1.id')
 			.groupBy('c1.id')
-			.orderBy(this.getSortColumn(filters.sort_by, 'c1') as any, filters.sort_dir ?? 'asc')
+			.orderBy(this.resolveSortColumn(filters.sort_by, 'c1'), filters.sort_dir ?? 'asc')
 			.limit(limit)
 			.offset(offset)
 			.execute()
@@ -151,11 +174,13 @@ export default class CourseService {
 		return results.map(r => r.id)
 	}
 
+	// Relations
+
 	/**
 	 * Fetches full course records by IDs, preserving the original order.
 	 * Uses MySQL's FIELD() function to maintain pagination order.
 	 */
-	private static async getCoursesByIds(ids: number[]) {
+	private static fetchCoursesByIds(ids: number[]) {
 		return mysql
 			.selectFrom(`${CourseTable._table} as c1`)
 			.selectAll('c1')
@@ -168,7 +193,7 @@ export default class CourseService {
 	 * Fetches faculties associated with the given course IDs.
 	 * Uses a subquery to load only referenced faculties.
 	 */
-	private static async getFacultiesByIds(courseIds: number[]) {
+	private static fetchFacultiesByCourseIds(courseIds: number[]) {
 		return mysql
 			.selectFrom(`${FacultyTable._table} as f1`)
 			.selectAll('f1')
@@ -184,7 +209,7 @@ export default class CourseService {
 	 * Fetches course units with their time slots using Kysely's jsonArrayFrom helper.
 	 * Slots are nested directly into each unit to avoid additional mapping.
 	 */
-	private static async getUnitsWithSlotsByIds(courseIds: number[]) {
+	private static async fetchUnitsWithSlotsByCourseIds(courseIds: number[]) {
 		const units = await mysql
 			.selectFrom(`${CourseUnitTable._table} as cu1`)
 			.selectAll('cu1')
@@ -218,15 +243,15 @@ export default class CourseService {
 	}
 
 	/** Fetches all assessments for the given course IDs. */
-	private static async getAssessmentsByIds(courseIds: number[]) {
+	private static fetchAssessmentsByCourseIds(courseIds: number[]) {
 		return mysql.selectFrom(`${CourseAssessmentTable._table} as ca1`).selectAll('ca1').where('ca1.course_id', 'in', courseIds).execute()
 	}
 
 	/**
 	 * Fetches study plan course associations for given courses and plans.
-	 * Only called when study_plan_ids filter is active.
+	 * Only called when the study_plan_ids filter is active.
 	 */
-	private static async getStudyPlanCoursesByIds(courseIds: number[], studyPlanIds: number[]) {
+	private static fetchStudyPlanCoursesByCourseIds(courseIds: number[], studyPlanIds: number[]) {
 		return mysql
 			.selectFrom(`${StudyPlanCourseTable._table} as spc1`)
 			.selectAll('spc1')
@@ -235,23 +260,25 @@ export default class CourseService {
 			.execute()
 	}
 
+	// Filtering
+
 	/**
 	 * Builds the base filter query with conditional joins.
 	 * Only joins tables that are actually needed by the active filters.
 	 *
 	 * @param filters - Filter criteria
 	 * @param ignore - Filter key to exclude (used for facet computation to avoid self-filtering)
-	 * @param forceJoin - Force specific joins regardless of filters
-	 * @returns Kysely query builder with applied joins and filters
+	 * @param forceJoin - Force specific joins regardless of active filters
+	 * @returns Kysely query builder with applied joins and WHERE conditions
 	 */
 	private static buildFilterQuery(
 		filters: Partial<CoursesFilter>,
 		ignore?: string,
 		forceJoin: { units?: boolean; slots?: boolean; studyPlan?: boolean } = {}
 	): QueryBuilder {
-		const needsUnitsJoin = this.needsUnitsJoin(filters, ignore) || forceJoin.units
-		const needsSlotsJoin = this.needsSlotsJoin(filters, ignore) || forceJoin.slots
-		const needsStudyPlanJoin = this.needsStudyPlanJoin(filters, ignore) || forceJoin.studyPlan
+		const needsUnitsJoin = this.requiresUnitsJoin(filters, ignore) || forceJoin.units
+		const needsSlotsJoin = this.requiresSlotsJoin(filters, ignore) || forceJoin.slots
+		const needsStudyPlanJoin = this.requiresStudyPlanJoin(filters, ignore) || forceJoin.studyPlan
 
 		let query: QueryBuilder = mysql.selectFrom(`${CourseTable._table} as c1`) as QueryBuilder
 
@@ -267,26 +294,33 @@ export default class CourseService {
 			query = query.leftJoin(`${StudyPlanCourseTable._table} as spc1`, 'c1.id', 'spc1.course_id')
 		}
 
-		return this.applyFilters(query, filters, ignore)
+		return this.applyAllFilters(query, filters, ignore)
 	}
 
-	/** Determines if units join is needed (for lecturer filters). */
-	private static needsUnitsJoin(filters: Partial<CoursesFilter>, ignore?: string): boolean {
+	/** Returns true when the units table join is required by active filters. */
+	private static requiresUnitsJoin(filters: Partial<CoursesFilter>, ignore?: string): boolean {
 		return !!filters.lecturers?.length && ignore !== 'lecturers'
 	}
 
-	/** Determines if slots join is needed (for time-based filters). */
-	private static needsSlotsJoin(filters: Partial<CoursesFilter>, ignore?: string): boolean {
+	/** Returns true when the slots table join is required by active filters. */
+	private static requiresSlotsJoin(filters: Partial<CoursesFilter>, ignore?: string): boolean {
 		return (!!filters.include_times?.length && ignore !== 'include_times') || (!!filters.exclude_times?.length && ignore !== 'exclude_times')
 	}
 
-	/** Determines if study plan join is needed (for plan/group/category filters). */
-	private static needsStudyPlanJoin(filters: Partial<CoursesFilter>, ignore?: string): boolean {
+	/** Returns true when the study plan join is required by active filters. */
+	private static requiresStudyPlanJoin(filters: Partial<CoursesFilter>, ignore?: string): boolean {
 		return (
 			(!!filters.study_plan_ids?.length && ignore !== 'study_plan_ids') ||
 			(!!filters.groups?.length && ignore !== 'groups') ||
 			(!!filters.categories?.length && ignore !== 'categories')
 		)
+	}
+
+	private static sanitizeFulltextQuery(input: string): string {
+		const cleaned = input.replace(/[+\-><()~*"@]/g, ' ').trim()
+		if (!cleaned) return ''
+		const words = cleaned.split(/\s+/).filter(w => w.length >= 2)
+		return words.map(w => `+${w}*`).join(' ')
 	}
 
 	/**
@@ -300,12 +334,13 @@ export default class CourseService {
 	 * - Personnel: lecturers
 	 * - Study plan: study_plan_ids, groups, categories
 	 * - Course properties: ects, mode_of_completion, mode_of_delivery
+	 * - Availability: completed_course_idents
 	 *
 	 * @param query - Kysely query builder
 	 * @param filters - Filter criteria
-	 * @param ignore - Filter to skip (for facet computation)
+	 * @param ignore - Filter key to skip (for facet cross-filtering)
 	 */
-	private static applyFilters(query: QueryBuilder, filters: Partial<CoursesFilter>, ignore?: string) {
+	private static applyAllFilters(query: QueryBuilder, filters: Partial<CoursesFilter>, ignore?: string) {
 		// Identity filters
 		if (filters.ids?.length && !['id', 'ids'].includes(ignore!)) {
 			query = query.where('c1.id', 'in', filters.ids)
@@ -348,7 +383,7 @@ export default class CourseService {
 			query = query.where(eb => eb.or(filters.languages!.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
 		}
 
-		// Time filters (only if slots join exists)
+		// Time filters (only applied when slots join exists)
 		if (filters.include_times?.length && !['include_times'].includes(ignore!)) {
 			query = query.where(eb =>
 				eb.or(
@@ -362,11 +397,11 @@ export default class CourseService {
 		if (filters.exclude_times?.length && !['exclude_times'].includes(ignore!)) {
 			query = query.where(eb => {
 				return eb.or([
-					// Case 1: The course has NO units (Catalog-only entry) - keep these
+					// Case 1: The course has NO units (catalog-only entry) — keep these
 					eb.not(eb.exists(eb.selectFrom(`${CourseUnitTable._table} as cu2`).select('cu2.id').whereRef('cu2.course_id', '=', 'c1.id'))),
 					// Case 2: The course has at least one unit with at least one NON-conflicting slot
-					// Key fix: INNER JOIN ensures the slot actually exists (not vacuous truth)
-					// Then we check that the slot does NOT match ANY of the conflict conditions
+					// INNER JOIN ensures the slot actually exists (not vacuous truth), then we verify
+					// the slot does NOT match ANY of the exclusion conflict conditions
 					eb.exists(
 						eb
 							.selectFrom(`${CourseUnitTable._table} as cu3`)
@@ -374,11 +409,8 @@ export default class CourseService {
 							.select('cus3.id')
 							.whereRef('cu3.course_id', '=', 'c1.id')
 							.where(ebSlot => {
-								// Build all conflict conditions for all exclusions
-								const allConflictConditions = filters.exclude_times!.flatMap(exc => this.buildSlotConflictCondition(ebSlot, exc, 'cus3'))
-								// This slot is "safe" if NONE of the conflict conditions match
-								// i.e., NOT (condition1 OR condition2 OR ...)
-								return allConflictConditions.length > 0 ? ebSlot.not(ebSlot.or(allConflictConditions)) : ebSlot.val(true) // No exclusions = all slots are safe
+								const allConflictConditions = filters.exclude_times!.flatMap(exc => buildSlotConflictConditions(ebSlot, exc, 'cus3'))
+								return allConflictConditions.length > 0 ? ebSlot.not(ebSlot.or(allConflictConditions)) : ebSlot.val(true)
 							})
 					)
 				])
@@ -405,7 +437,7 @@ export default class CourseService {
 			query = query.where('spc1.category', 'in', filters.categories)
 		}
 
-		// Course properties filters
+		// Course property filters
 		if (filters.ects?.length && !['ects'].includes(ignore!)) {
 			query = query.where('c1.ects', 'in', filters.ects)
 		}
@@ -423,37 +455,41 @@ export default class CourseService {
 			query = query.where('c1.ident', 'not in', filters.completed_course_idents)
 		}
 
+		// Full-text search filter
+		if (filters.search && filters.search.trim().length >= 2 && ignore !== 'search') {
+			const term = filters.search.trim()
+			const sanitized = this.sanitizeFulltextQuery(term)
+
+			if (sanitized) {
+				const ftsQuery = mysql
+					.selectFrom('insis_courses as fts_c')
+					.select([
+						'fts_c.id as fts_id',
+						sql<number>`MATCH(fts_c.title_cs, fts_c.title_en, fts_c.aims_of_the_course, fts_c.learning_outcomes, fts_c.course_contents) AGAINST(${sanitized} IN BOOLEAN MODE)`.as(
+							'relevance_score'
+						)
+					])
+					.where(
+						sql`MATCH(fts_c.title_cs, fts_c.title_en, fts_c.aims_of_the_course, fts_c.learning_outcomes, fts_c.course_contents) AGAINST(${sanitized} IN BOOLEAN MODE)`,
+						'>',
+						0
+					)
+
+				query = query.innerJoin(ftsQuery.as('fts'), join => join.onRef('c1.id', '=', 'fts.fts_id'))
+			}
+		}
+
 		return query
 	}
 
-	/**
-	 * Retrieves facet counts for filtering UI (dropdowns, checkboxes).
-	 * Results are cached in Redis to reduce DB load.
-	 *
-	 * @param filters - Current filter state (affects available facet values)
-	 * @returns Object containing count arrays for each facetable field
-	 */
-	static async getCourseFacets(filters: CoursesFilter) {
-		const cacheKey = this.getFacetCacheKey(filters)
-
-		// Try cache first
-		const cached = await this.getCachedFacets(cacheKey)
-		if (cached) return cached
-
-		// Compute facets
-		const facets = await this.computeCourseFacets(filters)
-
-		// Cache for 5 minutes
-		await this.cacheFacets(cacheKey, facets)
-
-		return facets
-	}
+	// Facets
 
 	/**
 	 * Computes all facets in parallel for maximum efficiency.
-	 * Each facet query excludes its own filter to show all possible values.
+	 * Each facet query excludes its own filter to show all possible values
+	 * (cross-filtering pattern).
 	 */
-	private static async computeCourseFacets(filters: CoursesFilter) {
+	private static async computeAllFacets(filters: CoursesFilter) {
 		const [faculties, days, lecturersRaw, languagesRaw, levels, semesters, years, groups, categories, ects, modesOfCompletion, timeRange] =
 			await Promise.all([
 				this.getSimpleFacet(filters, 'faculty_id'),
@@ -470,8 +506,8 @@ export default class CourseService {
 				this.getTimeRangeFacet(filters)
 			])
 
-		const lecturers = this.processPipeFacet(lecturersRaw, 50)
-		const languages = this.processPipeFacet(languagesRaw)
+		const lecturers = this.splitPipeDelimitedFacet(lecturersRaw, 50)
+		const languages = this.splitPipeDelimitedFacet(languagesRaw)
 
 		return {
 			faculties,
@@ -502,7 +538,7 @@ export default class CourseService {
 	 * @param column - Column to compute facet for
 	 */
 	private static async getSimpleFacet(filters: CoursesFilter, column: keyof ExcludeMethods<Course>): Promise<FacetItem[]> {
-		const needsComplexQuery = this.needsComplexQueryForFacet(filters)
+		const needsComplexQuery = this.filtersRequireJoins(filters)
 
 		if (!needsComplexQuery) {
 			// FAST PATH: Direct query on courses table only
@@ -545,7 +581,7 @@ export default class CourseService {
 				.execute()
 		}
 
-		// SLOW PATH: Need full filter query (already handles ignore correctly via buildFilterQuery)
+		// SLOW PATH: Filters require joins — use the full filter query
 		return this.buildFilterQuery(filters, column as string)
 			.select(`c1.${column} as value`)
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
@@ -556,82 +592,8 @@ export default class CourseService {
 	}
 
 	/**
-	 * Helper to build conflict conditions using Kysely ExpressionBuilder.
-	 * Generates expressions for day/time or date/time overlaps.
-	 *
-	 * A slot "conflicts" with an exclusion if:
-	 * - Same day AND times overlap (for day-based exclusions)
-	 * - Same date AND times overlap (for date-based exclusions)
-	 * - Day matches date's weekday AND times overlap (for date-based exclusions, catches weekly slots)
-	 *
-	 * If slot_id is provided, that specific slot is EXCLUDED from being considered a conflict
-	 * (because it's the slot the user already selected for that course).
-	 */
-	private static buildSlotConflictCondition(eb: ExpressionBuilder<any, any>, exc: TimeSelection, slotAlias: string) {
-		const conditions = []
-
-		if (exc.day) {
-			// Day-based exclusion: matches slots on the same weekday with overlapping time
-			const dayConditions = [
-				eb(`${slotAlias}.day`, '=', exc.day),
-				eb(`${slotAlias}.time_from`, '<', exc.time_to),
-				eb(`${slotAlias}.time_to`, '>', exc.time_from)
-			]
-			// If slot_id provided, exclude that specific slot from conflict detection
-			if (exc.slot_id) {
-				dayConditions.push(eb(`${slotAlias}.id`, '!=', exc.slot_id))
-			}
-			conditions.push(eb.and(dayConditions))
-		}
-
-		if (exc.date) {
-			const dateStr = exc.date instanceof Date ? exc.date.toISOString().split('T')[0] : String(exc.date)
-
-			// Date-based exclusion: matches slots on the exact same date with overlapping time
-			const dateConditions = [
-				eb(`${slotAlias}.date`, '=', dateStr),
-				eb(`${slotAlias}.time_from`, '<', exc.time_to),
-				eb(`${slotAlias}.time_to`, '>', exc.time_from)
-			]
-			if (exc.slot_id) {
-				dateConditions.push(eb(`${slotAlias}.id`, '!=', exc.slot_id))
-			}
-			conditions.push(eb.and(dateConditions))
-
-			// Also check day-based slots that fall on the same weekday
-			// (e.g., if exclusion is for 2025-03-17 which is Monday, also catch weekly Monday slots)
-			const dateDay = DateService.getDayFromDate(exc.date)
-			if (dateDay) {
-				const dateDayConditions = [
-					eb(`${slotAlias}.day`, '=', dateDay),
-					eb(`${slotAlias}.time_from`, '<', exc.time_to),
-					eb(`${slotAlias}.time_to`, '>', exc.time_from)
-				]
-				if (exc.slot_id) {
-					dateDayConditions.push(eb(`${slotAlias}.id`, '!=', exc.slot_id))
-				}
-				conditions.push(eb.and(dateDayConditions))
-			}
-		}
-
-		return conditions
-	}
-
-	/** Checks if any filters require joins (units, slots, or study plans). */
-	private static needsComplexQueryForFacet(filters: CoursesFilter): boolean {
-		return !!(
-			filters.include_times?.length ??
-			filters.exclude_times?.length ??
-			filters.lecturers?.length ??
-			filters.study_plan_ids?.length ??
-			filters.groups?.length ??
-			filters.categories?.length
-		)
-	}
-
-	/**
 	 * Computes day-of-week facet from course unit slots.
-	 * Always requires slots join.
+	 * Always requires the slots join.
 	 */
 	private static async getDayFacet(filters: CoursesFilter): Promise<FacetItem[]> {
 		return this.buildFilterQuery(filters, 'include_times', { slots: true })
@@ -701,7 +663,7 @@ export default class CourseService {
 
 	/**
 	 * Computes the min/max time range across all course slots.
-	 * Used for time range slider in UI.
+	 * Used to populate the time range slider in the UI.
 	 *
 	 * @returns Object with min_time and max_time in minutes from midnight
 	 */
@@ -717,15 +679,30 @@ export default class CourseService {
 		}
 	}
 
+	/** Returns true when any active filter requires table joins (units, slots, or study plans). */
+	private static filtersRequireJoins(filters: CoursesFilter): boolean {
+		return !!(
+			filters.include_times?.length ??
+			filters.exclude_times?.length ??
+			filters.lecturers?.length ??
+			filters.study_plan_ids?.length ??
+			filters.groups?.length ??
+			filters.categories?.length
+		)
+	}
+
+	// Cache
+
 	/**
 	 * Generates a deterministic cache key from relevant filter values.
 	 * Only includes filters that significantly affect facet distribution.
 	 */
-	private static getFacetCacheKey(filters: CoursesFilter): string {
+	private static buildFacetCacheKey(filters: CoursesFilter): string {
 		const relevantFilters = {
 			ids: filters.ids?.sort(),
 			idents: filters.idents?.sort(),
 			title: filters.title,
+			search: filters.search,
 			faculty_ids: filters.faculty_ids?.sort(),
 			semesters: filters.semesters?.sort(),
 			years: filters.years?.sort(),
@@ -739,10 +716,10 @@ export default class CourseService {
 			groups: filters.groups?.sort(),
 			categories: filters.categories?.sort(),
 			include_times: filters.include_times
-				? filters.include_times.map(t => ({ day: t.day, time_from: t.time_from, time_to: t.time_to })).sort((a, b) => this.sortTimeSelection(a, b))
+				? filters.include_times.map(t => ({ day: t.day, time_from: t.time_from, time_to: t.time_to })).sort(compareTimeSelections)
 				: undefined,
 			exclude_times: filters.exclude_times
-				? filters.exclude_times.map(t => ({ day: t.day, time_from: t.time_from, time_to: t.time_to })).sort((a, b) => this.sortTimeSelection(a, b))
+				? filters.exclude_times.map(t => ({ day: t.day, time_from: t.time_from, time_to: t.time_to })).sort(compareTimeSelections)
 				: undefined,
 			completed_course_idents: filters.completed_course_idents?.sort()
 		}
@@ -751,7 +728,7 @@ export default class CourseService {
 		return `${FACET_CACHE_PREFIX}${hash}`
 	}
 
-	private static async getCachedFacets(key: string): Promise<CoursesResponse['facets'] | null> {
+	private static async readFacetsFromCache(key: string): Promise<CoursesResponse['facets'] | null> {
 		try {
 			const cached = await redis.get(key)
 			return cached ? (JSON.parse(cached) as CoursesResponse['facets']) : null
@@ -760,7 +737,7 @@ export default class CourseService {
 		}
 	}
 
-	private static async cacheFacets(key: string, facets: CoursesResponse['facets']): Promise<void> {
+	private static async writeFacetsToCache(key: string, facets: CoursesResponse['facets']): Promise<void> {
 		try {
 			await redis.setex(key, FACET_CACHE_TTL, JSON.stringify(facets))
 		} catch {
@@ -768,14 +745,16 @@ export default class CourseService {
 		}
 	}
 
+	// Utilities
+
 	/**
-	 * Processes pipe-delimited facet values (e.g., "EN|CS" → separate entries).
-	 * Aggregates counts across all occurrences and sorts by frequency.
+	 * Splits pipe-delimited facet values into individual entries and aggregates
+	 * their counts (e.g. "EN|CS" → separate EN and CS entries).
 	 *
 	 * @param data - Raw facet data with potentially pipe-delimited values
-	 * @param limit - Optional max number of results
+	 * @param limit - Optional max number of results to return
 	 */
-	private static processPipeFacet(data: { value: string | null; count: number }[], limit?: number): FacetItem[] {
+	private static splitPipeDelimitedFacet(data: { value: string | null; count: number }[], limit?: number): FacetItem[] {
 		const map = new Map<string, number>()
 
 		for (const row of data) {
@@ -796,39 +775,25 @@ export default class CourseService {
 		return limit ? result.slice(0, limit) : result
 	}
 
-	/** Maps sort_by parameter to actual database column. */
-	private static getSortColumn(sortBy?: string, slotAlias = 'c1'): string {
+	/** Maps the sort_by parameter to the corresponding database column expression. */
+	private static resolveSortColumn(sortBy?: string, tableAlias = 'c1'): ReturnType<typeof sql.ref> {
 		const sortMap: Record<string, string> = {
-			ident: `${slotAlias}.ident`,
-			title: `${slotAlias}.title`,
-			ects: `${slotAlias}.ects`,
-			faculty: `${slotAlias}.faculty_id`,
-			year: `${slotAlias}.year`,
-			semester: `${slotAlias}.semester`
+			relevance: 'fts.relevance_score',
+			ident: `${tableAlias}.ident`,
+			title: `${tableAlias}.title`,
+			ects: `${tableAlias}.ects`,
+			faculty: `${tableAlias}.faculty_id`,
+			year: `${tableAlias}.year`,
+			semester: `${tableAlias}.semester`
 		}
-		return sortMap[sortBy ?? 'ident'] ?? 'c.ident'
-	}
 
-	/** Sorts time selection objects by day, then start time, then end time. */
-	private static sortTimeSelection(a: TimeSelection, b: TimeSelection): number {
-		const aDay = a.day ?? DateService.getDayFromDate(a.date!)
-		const bDay = b.day ?? DateService.getDayFromDate(b.date!)
-
-		if (!aDay && !bDay) return 0
-		if (!aDay) return -1
-		if (!bDay) return 1
-
-		const aDayIndex = InSISDayValues.indexOf(aDay)
-		const bDayIndex = InSISDayValues.indexOf(bDay)
-
-		if (aDayIndex !== bDayIndex) return aDayIndex - bDayIndex
-		if (a.time_from !== b.time_from) return a.time_from - b.time_from
-		return a.time_to - b.time_to
+		const col = sortMap[sortBy ?? 'ident'] ?? `${tableAlias}.ident`
+		return sql.ref(col)
 	}
 
 	/**
 	 * Groups an array of objects by a specified key.
-	 * Used for efficient in-memory relation mapping.
+	 * Used for efficient in-memory relation mapping after parallel queries.
 	 */
 	private static groupBy<T, K extends keyof T>(array: T[], key: K): Map<T[K], T[]> {
 		return array.reduce((map, item) => {

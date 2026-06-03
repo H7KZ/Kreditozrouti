@@ -1,8 +1,9 @@
+import type { ScraperInSISStudyPlanRequestJob } from '@scraper/types/jobs'
+import { redis } from '@scraper/clients'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import { ScraperInSISStudyPlanRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
-import { InSISQueueService } from '@scraper/Services/InSISQueueService'
+import { QueueService } from '@scraper/Services/QueueService'
 
 /**
  * Scrapes a single InSIS study plan page.
@@ -20,17 +21,23 @@ export default async function ScraperRequestInSISStudyPlanJob(data: ScraperInSIS
 
     const result = await client.get<string>(data.url)
 
-    if (!result.success) return null
+    if (!result.success) {
+        redis.incr('metrics:scraper:silent_failures:study_plan').catch(() => {})
+        redis.expire('metrics:scraper:silent_failures:study_plan', 604800).catch(() => {})
+        return null
+    }
 
     try {
         const plan = ExtractInSISStudyPlanService.extract(result.data, data.url)
 
-        await InSISQueueService.addStudyPlanResponse(plan)
+        await QueueService.addStudyPlanResponse(plan)
     } catch (error) {
         LoggerJobContext.add({
             error: 'Extraction error',
             message: (error as Error).message
         })
+        redis.incr('metrics:scraper:silent_failures:study_plan').catch(() => {})
+        redis.expire('metrics:scraper:silent_failures:study_plan', 604800).catch(() => {})
         return null
     }
 }

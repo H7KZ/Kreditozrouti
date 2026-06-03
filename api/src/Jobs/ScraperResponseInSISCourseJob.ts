@@ -1,4 +1,14 @@
-import { mysql } from '@api/clients'
+import type {
+	ScraperInSISCourseAssessmentMethod,
+	ScraperInSISCourseStudyPlan,
+	ScraperInSISCourseTimetableSlot,
+	ScraperInSISCourseTimetableUnit,
+	ScraperInSISFaculty
+} from '@shared/queue/insis'
+import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
+import { Transaction } from 'kysely'
+import { timeToMinutes } from '@shared/domain/time'
+import { mysql, redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import {
 	CourseAssessmentTable,
@@ -8,19 +18,11 @@ import {
 	Database,
 	FacultyTable,
 	NewCourse,
+	NewCourseUnit,
 	NewCourseUnitSlot,
 	StudyPlanCourseTable,
 	StudyPlanTable
 } from '@api/Database/types'
-import {
-	ScraperInSISCourseAssessmentMethod,
-	ScraperInSISCourseStudyPlan,
-	ScraperInSISCourseTimetableSlot,
-	ScraperInSISCourseTimetableUnit
-} from '@scraper/Interfaces/ScraperInSISCourse'
-import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
-import { ScraperInSISCourseResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
-import { Transaction } from 'kysely'
 
 /**
  * Syncs a scraped InSIS course into the database.
@@ -34,6 +36,34 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	})
 
 	if (!course?.id) return
+
+	// Always upsert faculty first — visibility flag changes must propagate
+	// even when the course syllabus hasn't changed.
+	if (course.faculty) {
+		await mysql.transaction().execute(async trx => {
+			await upsertFaculty(trx, course.faculty!)
+		})
+	}
+
+	// Skip the rest if course hasn't changed since last scrape.
+	// Normalize to string in case mysql2 returns a Date object for the date column.
+	if (course.last_modified_date) {
+		const existing = await mysql.selectFrom(CourseTable._table).select('last_modified_date').where('id', '=', course.id).executeTakeFirst()
+
+		// mysql2 may return Date objects for date-typed columns at runtime despite the string TS type
+		const raw = existing?.last_modified_date as unknown
+		const dbDate = raw instanceof Date ? raw.toISOString().slice(0, 10) : (raw as string | null | undefined)
+
+		if (dbDate === course.last_modified_date) {
+			LoggerJobContext.add({ skipped_unchanged: true })
+			await mysql
+				.updateTable(CourseTable._table)
+				.set({ last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ') })
+				.where('id', '=', course.id)
+				.execute()
+			return
+		}
+	}
 
 	await mysql.transaction().execute(async trx => {
 		let facultyId: string | null = null
@@ -63,17 +93,19 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			learning_outcomes: course.learning_outcomes,
 			course_contents: course.course_contents,
 			special_requirements: course.special_requirements,
-			literature: course.literature
+			guarantors: course.guarantors?.join('|') ?? null,
+			last_modified_date: course.last_modified_date,
+			last_modified_by: course.last_modified_by,
+			study_load: course.study_load ? JSON.stringify(course.study_load) : null,
+			literature_required: course.literature_required,
+			literature_recommended: course.literature_recommended,
+			last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { id, ...updatePayload } = coursePayload
 
-		await trx
-			.insertInto(CourseTable._table)
-			.values(coursePayload as never)
-			.onDuplicateKeyUpdate(updatePayload)
-			.execute()
+		await trx.insertInto(CourseTable._table).values(coursePayload).onDuplicateKeyUpdate(updatePayload).execute()
 
 		await syncAssessmentMethods(trx, course.id, course.assessment_methods ?? [])
 		await syncTimetable(trx, course.id, course.timetable ?? [])
@@ -82,6 +114,17 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			await syncStudyPlansFromCourse(trx, course.id, course.ident ?? '', course.study_plans)
 		}
 	})
+
+	await redis.publish(
+		`course:updated:${course.id}`,
+		JSON.stringify({
+			status: 'done',
+			courseId: course.id,
+			updatedAt: new Date().toISOString()
+		})
+	)
+
+	await flushResponseCaches()
 
 	LoggerJobContext.add({
 		assessment_method_count: course.assessment_methods?.length ?? 0,
@@ -125,10 +168,7 @@ async function syncAssessmentMethods(trx: Transaction<Database>, courseId: numbe
 		}))
 
 	if (toInsert.length > 0) {
-		await trx
-			.insertInto(CourseAssessmentTable._table)
-			.values(toInsert as never)
-			.execute()
+		await trx.insertInto(CourseAssessmentTable._table).values(toInsert).execute()
 	}
 }
 
@@ -151,15 +191,13 @@ async function syncTimetable(trx: Transaction<Database>, courseId: number, incom
 
 	// 3. Recreate: Insert new units and their slots
 	for (const incoming of incomingUnits) {
-		const res = await trx
-			.insertInto(CourseUnitTable._table)
-			.values({
-				course_id: courseId,
-				lecturer: incoming.lecturer,
-				capacity: incoming.capacity,
-				note: incoming.note
-			} as never)
-			.executeTakeFirstOrThrow()
+		const unitValues: NewCourseUnit = {
+			course_id: courseId,
+			lecturer: incoming.lecturer,
+			capacity: incoming.capacity,
+			note: incoming.note
+		}
+		const res = await trx.insertInto(CourseUnitTable._table).values(unitValues).executeTakeFirstOrThrow()
 
 		const newUnitId = Number(res.insertId)
 
@@ -184,10 +222,7 @@ async function syncSlotsForUnit(trx: Transaction<Database>, unitId: number, inco
 			location: slot.location
 		}))
 
-		await trx
-			.insertInto(CourseUnitSlotTable._table)
-			.values(slotRows as never)
-			.execute()
+		await trx.insertInto(CourseUnitSlotTable._table).values(slotRows).execute()
 	}
 }
 
@@ -203,7 +238,11 @@ async function syncStudyPlansFromCourse(
 	for (const plan of plans) {
 		// 1. Ensure Faculty exists
 		if (plan.facultyIdent) {
-			await trx.insertInto(FacultyTable._table).values({ id: plan.facultyIdent, title: null }).onDuplicateKeyUpdate({ id: plan.facultyIdent }).execute()
+			await trx
+				.insertInto(FacultyTable._table)
+				.values({ id: plan.facultyIdent, title: null, is_schedule_publicly_visible: false })
+				.onDuplicateKeyUpdate({ id: plan.facultyIdent })
+				.execute()
 		}
 
 		// 2. Find Study Plan
@@ -235,6 +274,23 @@ async function syncStudyPlansFromCourse(
 }
 
 /**
+ * Scans and deletes all response-cache and facet-cache keys so the next
+ * request fetches fresh data from the DB after a course is updated.
+ */
+async function flushResponseCaches(): Promise<void> {
+	for (const pattern of ['cache:*', 'course:facets:*']) {
+		let cursor = '0'
+		do {
+			const [nextCursor, keys] = await redis.scan(cursor, 'MATCH', pattern, 'COUNT', 100)
+			cursor = nextCursor
+			if (keys.length > 0) {
+				await redis.del(...keys)
+			}
+		} while (cursor !== '0')
+	}
+}
+
+/**
  * Helper to Upsert Faculty and return its ID.
  */
 async function upsertFaculty(trx: Transaction<Database>, faculty: ScraperInSISFaculty): Promise<string | null> {
@@ -244,16 +300,14 @@ async function upsertFaculty(trx: Transaction<Database>, faculty: ScraperInSISFa
 		.insertInto(FacultyTable._table)
 		.values({
 			id: faculty.ident,
-			title: faculty.title
-		} as never)
-		.onDuplicateKeyUpdate({ title: faculty.title })
+			title: faculty.title,
+			is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
+		})
+		.onDuplicateKeyUpdate({
+			title: faculty.title,
+			is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
+		})
 		.execute()
 
 	return faculty.ident
-}
-
-function timeToMinutes(time: string | null): number | null {
-	if (!time?.includes(':')) return null
-	const [hours, minutes] = time.split(':').map(Number)
-	return hours * 60 + minutes
 }

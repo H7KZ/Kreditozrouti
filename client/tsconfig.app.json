@@ -11,6 +11,7 @@
 			"@client/*": ["./src/*"],
 			"@api/*": ["../api/src/*"],
 			"@scraper/*": ["../scraper/src/*"],
+			"@shared/*": ["../shared/*"],
 			"kysely": ["./node_modules/kysely"]
 		}
 	}

@@ -1,35 +1,72 @@
-import LoggerAPIContext, { LoggerWideEvent } from '@api/Context/LoggerAPIContext'
 import { NextFunction, Request, Response } from 'express'
+import { redis } from '@api/clients'
+import LoggerAPIContext, { LoggerWideEvent } from '@api/Context/LoggerAPIContext'
+import RequestContext from '@api/Context/RequestContext'
 
 export default function LoggerMiddleware(req: Request, res: Response, next: NextFunction) {
+	const request_id = crypto.randomUUID()
 	const startTime = process.hrtime()
 
 	const wideEvent: LoggerWideEvent = {
+		request_id,
 		method: req.method,
 		path: req.path,
 		timestamp: new Date().toISOString(),
-		environment: process.env.NODE_ENV ?? 'local',
-		service: 'kreditozrouti-api'
+		environment: process.env.NODE_ENV ?? 'local'
 	}
 
 	res.locals.wideEvent = wideEvent
+	res.setHeader('X-Request-Id', request_id)
 
-	res.on('finish', () => {
-		const diff = process.hrtime(startTime)
+	RequestContext.run(
+		() => {
+			res.on('finish', () => {
+				const diff = process.hrtime(startTime)
 
-		wideEvent.duration_ms = (diff[0] * 1e9 + diff[1]) / 1e6
-		wideEvent.status_code = res.statusCode
+				wideEvent.duration_ms = (diff[0] * 1e9 + diff[1]) / 1e6
 
-		if (LoggerAPIContext.shouldLog(res)) {
-			if (res.statusCode >= 500) {
-				LoggerAPIContext.log.error(wideEvent)
-			} else if (res.statusCode >= 400) {
-				LoggerAPIContext.log.warn(wideEvent)
-			} else {
-				LoggerAPIContext.log.info(wideEvent)
-			}
-		}
-	})
+				// Merge anything controllers added via LoggerAPIContext.add(), then
+				// re-assert status_code so a misbehaving controller cannot overwrite it
+				Object.assign(wideEvent, RequestContext.get())
+				wideEvent.status_code = res.statusCode
 
-	next()
+				// Level-based routing — replaces random shouldLog sampling:
+				// - error  → 5xx (always logged in production)
+				// - warn   → 4xx (always logged in production)
+				// - info   → slow requests >1s (always logged in production)
+				// - debug  → routine requests (dropped in production by level: 'info')
+				if (res.statusCode >= 500) LoggerAPIContext.log.error(wideEvent, 'http.request')
+				else if (res.statusCode >= 400) LoggerAPIContext.log.warn(wideEvent, 'http.request')
+				else if ((wideEvent.duration_ms ?? 0) > 1000) LoggerAPIContext.log.info(wideEvent, 'http.slow')
+				else LoggerAPIContext.log.debug(wideEvent, 'http.request')
+
+				// Track error metrics in Redis — fire and forget
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+				const noop = (_e: unknown) => {}
+				if (res.statusCode >= 400) {
+					const hour = new Date().toISOString().slice(0, 13)
+
+					redis.hincrby('metrics:errors:hourly', `${hour}:${res.statusCode}`, 1).catch(noop)
+					redis.expire('metrics:errors:hourly', 90_000).catch(noop)
+
+					const entry = JSON.stringify({
+						request_id,
+						status: res.statusCode,
+						method: req.method,
+						path: req.path,
+						query: Object.keys(req.query).length > 0 ? req.query : undefined,
+						ip: req.ip,
+						duration_ms: Math.round(wideEvent.duration_ms ?? 0),
+						timestamp: wideEvent.timestamp
+					})
+					redis.lpush('metrics:errors:recent', entry).catch(noop)
+					redis.ltrim('metrics:errors:recent', 0, 199).catch(noop)
+					redis.expire('metrics:errors:recent', 86_400).catch(noop)
+				}
+			})
+
+			next()
+		},
+		{ request_id }
+	)
 }

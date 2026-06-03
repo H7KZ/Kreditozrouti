@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { CourseWithRelations } from '@api/Database/types'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import { useCourseLabels } from '@client/composables'
 import { useCompletedCoursesStore, useCoursesStore } from '@client/stores'
-import { computed } from 'vue'
+import { formatRelativeAge, isCourseStale } from '@client/utils/freshness'
 import IconCircleCheck from '~icons/lucide/circle-check'
+import IconClock from '~icons/lucide/clock'
 import IconExternalLink from '~icons/lucide/external-link'
 
 interface Props {
-	course: CourseWithRelations
+	course: CourseWithRelationsDTO
 }
 
 const props = defineProps<Props>()
@@ -15,9 +19,11 @@ const props = defineProps<Props>()
 const coursesStore = useCoursesStore()
 const completedCoursesStore = useCompletedCoursesStore()
 
+const { locale } = useI18n()
 const { getCompletionLabel, getFacultyLabel, getLanguagesLabel, getCategoryLabel, getCourseTitle, getCategoryBadgeClass } = useCourseLabels()
 
 const isMarkedCompleted = computed(() => completedCoursesStore.isCourseCompleted(props.course.ident))
+const formattedAge = computed(() => formatRelativeAge(props.course.updated_at, locale.value))
 
 function handleToggleCompleted() {
 	coursesStore.toggleCompletedCourse(props.course.ident)
@@ -34,9 +40,10 @@ function handleToggleCompleted() {
 				target="_blank"
 				rel="noopener noreferrer"
 				class="text-[var(--insis-blue)] hover:text-[var(--insis-blue-dark)]"
+				:aria-label="$t('common.openInInsis')"
 				:title="$t('common.openInInsis')"
 			>
-				<IconExternalLink class="h-3 w-3" />
+				<IconExternalLink class="h-3 w-3" aria-hidden="true" />
 			</a>
 		</h3>
 
@@ -55,8 +62,8 @@ function handleToggleCompleted() {
 
 			<template v-if="course.study_plans?.length">
 				<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.category') }}</dt>
-				<dd>
-					<span v-for="spc in course.study_plans" :key="spc.id" class="insis-badge mr-1" :class="getCategoryBadgeClass(spc.category || '')">
+				<dd class="flex min-w-0 flex-wrap gap-1">
+					<span v-for="spc in course.study_plans" :key="spc.id" class="insis-badge" :class="getCategoryBadgeClass(spc.category || '')">
 						{{ getCategoryLabel(spc.category || '') }}
 					</span>
 				</dd>
@@ -73,19 +80,34 @@ function handleToggleCompleted() {
 			</ul>
 		</div>
 
+		<!-- Data freshness -->
+		<div class="mt-3 flex items-center justify-between border-t border-[var(--insis-border-light)] pt-3">
+			<span
+				class="flex items-center gap-1 text-xs"
+				:class="isCourseStale(course.updated_at) ? 'text-[var(--insis-warning)]' : 'text-[var(--insis-text-3)]'"
+			>
+				<IconClock class="h-3 w-3" aria-hidden="true" />
+				{{ $t('components.courses.CourseRowExpanded.lastFetched', { age: formattedAge }) }}
+			</span>
+			<CourseRefreshButton :course-id="course.id" />
+		</div>
+
 		<!-- Mark as completed -->
 		<div class="mt-4 border-t border-[var(--insis-border-light)] pt-3">
 			<button
 				type="button"
 				:class="[
-					'flex items-center gap-2 rounded border px-3 py-2 text-sm transition-colors cursor-pointer',
+					'flex cursor-pointer items-center gap-2 rounded border px-3 py-2 text-sm transition-colors',
 					isMarkedCompleted
 						? 'border-[var(--insis-success)] bg-[var(--insis-success-light)] text-[var(--insis-success)]'
-						: 'border-[var(--insis-border)] bg-white text-[var(--insis-gray-600)] hover:border-[var(--insis-success)] hover:bg-[var(--insis-success-light)]',
+						: 'border-[var(--insis-border)] bg-[var(--insis-surface)] text-[var(--insis-gray-600)] hover:border-[var(--insis-success)] hover:bg-[var(--insis-success-light)]',
 				]"
+				:aria-label="
+					isMarkedCompleted ? $t('components.courses.CourseRowExpanded.markedCompleted') : $t('components.courses.CourseRowExpanded.markAsCompleted')
+				"
 				@click="handleToggleCompleted"
 			>
-				<IconCircleCheck :class="['h-4 w-4', isMarkedCompleted ? 'text-[var(--insis-success)]' : 'text-[var(--insis-gray-400)]']" />
+				<IconCircleCheck :class="['h-4 w-4', isMarkedCompleted ? 'text-[var(--insis-success)]' : 'text-[var(--insis-gray-400)]']" aria-hidden="true" />
 				{{
 					isMarkedCompleted ? $t('components.courses.CourseRowExpanded.markedCompleted') : $t('components.courses.CourseRowExpanded.markAsCompleted')
 				}}

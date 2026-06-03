@@ -1,10 +1,10 @@
-<script setup lang="ts">
-import type { TimeSelection } from '@api/Validations'
+﻿<script setup lang="ts">
+import type { InSISDay } from '@shared/domain/insis'
+import type { TimeSelection } from '@shared/domain/time'
+import { computed, ref, watch } from 'vue'
 import { useTimeUtils } from '@client/composables'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useCoursesStore, useFiltersStore } from '@client/stores'
-import type InSISDay from '@scraper/Types/InSISDay'
-import { computed, ref, watch } from 'vue'
 import IconPlus from '~icons/lucide/plus'
 import IconX from '~icons/lucide/x'
 
@@ -125,7 +125,7 @@ function formatFilter(filter: TimeSelection): string {
 			<button
 				v-if="activeTimeFilters.length > 0"
 				type="button"
-				class="text-xs cursor-pointer text-[var(--insis-link)] hover:underline"
+				class="cursor-pointer text-xs text-[var(--insis-link)] hover:underline"
 				@click="handleClearAllTimeFilers"
 			>
 				{{ $t('common.clearFilter') }}
@@ -146,8 +146,13 @@ function formatFilter(filter: TimeSelection): string {
 					{{ filter.type === 'include' ? '✓' : '✗' }}
 					{{ formatFilter(filter) }}
 				</span>
-				<button type="button" class="ml-2 cursor-pointer hover:text-[var(--insis-danger)]" @click="handleRemoveTimeFilter(filter.type, filter.index)">
-					<IconX class="h-3 w-3" />
+				<button
+					type="button"
+					class="ml-2 cursor-pointer hover:text-[var(--insis-danger)]"
+					:aria-label="$t('common.removeTimeFilter')"
+					@click="handleRemoveTimeFilter(filter.type, filter.index)"
+				>
+					<IconX class="h-3 w-3" aria-hidden="true" />
 				</button>
 			</div>
 		</div>
@@ -159,16 +164,20 @@ function formatFilter(filter: TimeSelection): string {
 		</button>
 
 		<!-- Add filter form -->
-		<div v-else class="rounded border border-[var(--insis-border)] bg-white p-3">
+		<div v-else class="rounded border border-[var(--insis-border)] bg-[var(--insis-surface)] p-3">
 			<!-- Day selection -->
 			<div class="mb-3">
-				<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> {{ $t('components.filters.FilterTimeRange.dayLabel') }} </label>
-				<div class="flex">
+				<label class="mb-1 block text-xs text-[var(--insis-gray-600)]" id="day-selection-label">
+					{{ $t('components.filters.FilterTimeRange.dayLabel') }}
+				</label>
+				<div class="flex" role="group" aria-labelledby="day-selection-label">
 					<button
 						v-for="day in WEEKDAYS"
 						:key="day"
 						type="button"
 						:class="['insis-day-toggle', selectedDay === day && 'active']"
+						:aria-pressed="selectedDay === day"
+						:aria-label="$t(`days.${day}`)"
 						@click="toggleDay(day)"
 					>
 						{{ $t(`daysShort.${day}`) }}
@@ -179,16 +188,16 @@ function formatFilter(filter: TimeSelection): string {
 			<!-- Time range -->
 			<div class="mb-3 grid grid-cols-2 gap-2">
 				<div>
-					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> {{ $t('common.from') }} </label>
-					<select v-model="timeFrom" class="insis-select">
+					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]" for="time-from"> {{ $t('common.from') }} </label>
+					<select id="time-from" v-model="timeFrom" class="insis-select" :aria-label="$t('common.from')">
 						<option v-for="opt in timeOptions" :key="opt.value" :value="opt.value">
 							{{ opt.label }}
 						</option>
 					</select>
 				</div>
 				<div>
-					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]"> {{ $t('common.to') }} </label>
-					<select v-model="timeTo" class="insis-select">
+					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]" for="time-to"> {{ $t('common.to') }} </label>
+					<select id="time-to" v-model="timeTo" class="insis-select" :aria-label="$t('common.to')">
 						<option v-for="opt in timeOptions" :key="opt.value" :value="opt.value">
 							{{ opt.label }}
 						</option>
@@ -200,7 +209,7 @@ function formatFilter(filter: TimeSelection): string {
 			<div class="flex gap-2">
 				<button type="button" class="insis-btn flex-1" @click="showAddForm = false">{{ $t('common.cancel') }}</button>
 				<button type="button" class="insis-btn-primary flex-1" :disabled="!selectedDay" @click="handleAddTimeFilter">
-					<IconPlus class="mr-1 inline h-3 w-3" />
+					<IconPlus class="mr-1 inline h-3 w-3" aria-hidden="true" />
 					{{ $t('common.add') }}
 				</button>
 			</div>

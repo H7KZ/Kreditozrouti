@@ -1,19 +1,22 @@
 import '@api/types'
-import { redis } from '@api/clients'
-import Config from '@api/Config/Config'
-import ErrorHandler from '@api/Handlers/ErrorHandler'
-import { Paths } from '@api/paths'
-import CommandsRoutes from '@api/Routes/CommandsRoutes'
-import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
-import sentry from '@api/sentry'
+import type { SessionOptions } from 'express-session'
 import compression from 'compression'
 import { RedisStore } from 'connect-redis'
 import cors, { CorsOptions } from 'cors'
 import express from 'express'
-import session, { type SessionOptions } from 'express-session'
+import session from 'express-session'
 import helmet from 'helmet'
-import morgan from 'morgan'
 import responseTime from 'response-time'
+import { bullboardRouter } from '@api/bullboard'
+import { redis } from '@api/clients'
+import Config from '@api/Config/Config'
+import ErrorHandler from '@api/Handlers/ErrorHandler'
+import { metricsHandler, metricsMiddleware } from '@api/metrics'
+import { Paths } from '@api/paths'
+import AdminRoutes from '@api/Routes/AdminRoutes'
+import CommandsRoutes from '@api/Routes/CommandsRoutes'
+import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
+import { ScraperPublicRoutes } from '@api/Routes/ScraperPublicRoutes'
 
 const app = express()
 
@@ -28,7 +31,17 @@ app.use('/assets', express.static(Paths.assets))
 app.options('/{*any}', cors(corsOptions))
 app.use(cors(corsOptions))
 
-app.use(helmet())
+// Pre-instantiated helmet configs — avoid creating new instances per request.
+// /bullboard disables CSP only; Bull Board's UI uses inline styles/scripts.
+const standardHelmet = helmet()
+const noCspHelmet = helmet({ contentSecurityPolicy: false })
+
+app.use((req, res, next) => {
+	if (req.originalUrl.startsWith('/bullboard')) {
+		return noCspHelmet(req, res, next)
+	}
+	return standardHelmet(req, res, next)
+})
 app.disable('x-powered-by')
 
 /**
@@ -47,27 +60,36 @@ const sessionOptions: SessionOptions = {
 
 if (!Config.isEnvLocal()) {
 	app.set('trust proxy', 1)
-	sessionOptions.cookie!.secure = true
-	sessionOptions.cookie!.httpOnly = true
-	sessionOptions.cookie!.domain = Config.domain
-	sessionOptions.cookie!.sameSite = 'none'
+
+	const cookies: session.CookieOptions = sessionOptions.cookie! as session.CookieOptions
+
+	cookies.secure = true
+	cookies.httpOnly = true
+	cookies.domain = Config.domain
+	cookies.sameSite = 'none'
 }
 
 app.use(session(sessionOptions))
 app.use(compression({}))
 
-// Logging and Metrics
-app.use(morgan(Config.isEnvLocal() ? 'dev' : 'combined'))
+// Metrics
 app.use(responseTime())
+app.use(metricsMiddleware)
 
 app.use('/health', (req, res) => res.status(200).send('OK'))
+app.get('/metrics', (req, res) => {
+	if (req.get('x-forwarded-for')) {
+		return res.status(404).end()
+	}
+	return metricsHandler(req, res)
+})
 
 // Routes
 app.use('/', KreditozroutiRoutes)
+app.use('/', ScraperPublicRoutes)
 app.use('/commands', CommandsRoutes)
-
-// Sentry Error Logging
-if (sentry.isEnabled()) sentry.setupExpressErrorHandler(app)
+app.use('/admin', AdminRoutes)
+app.use('/bullboard', bullboardRouter)
 
 // Error Handling
 app.use(ErrorHandler)

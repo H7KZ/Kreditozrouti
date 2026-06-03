@@ -48,7 +48,7 @@ jobs:
           strip_components: 1
 
       - name: Set Permissions
-        uses: appleboy/ssh-action@v1.2.4
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}

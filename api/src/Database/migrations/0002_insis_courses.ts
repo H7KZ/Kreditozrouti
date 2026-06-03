@@ -1,10 +1,11 @@
-import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, FacultyTable } from '@api/Database/types'
 import { Kysely, sql } from 'kysely'
+import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, FacultyTable } from '@api/Database/types'
 
 export async function up(mysql: Kysely<any>): Promise<void> {
 	// 1. Main Course Table
 	await mysql.schema
 		.createTable(CourseTable._table)
+		.ifNotExists()
 		.addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
 		.addColumn('faculty_id', 'varchar(32)', col => col.references(`${FacultyTable._table}.id`).onDelete('set null'))
 		.addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
@@ -36,6 +37,7 @@ export async function up(mysql: Kysely<any>): Promise<void> {
 	// 2. Assessment Methods
 	await mysql.schema
 		.createTable(CourseAssessmentTable._table)
+		.ifNotExists()
 		.addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
 		.addColumn('course_id', 'integer', col => col.notNull().references(`${CourseTable._table}.id`).onDelete('cascade'))
 		.addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
@@ -47,6 +49,7 @@ export async function up(mysql: Kysely<any>): Promise<void> {
 	// 3. Timetable Units (Groups)
 	await mysql.schema
 		.createTable(CourseUnitTable._table)
+		.ifNotExists()
 		.addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
 		.addColumn('course_id', 'integer', col => col.notNull().references(`${CourseTable._table}.id`).onDelete('cascade'))
 		.addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
@@ -59,6 +62,7 @@ export async function up(mysql: Kysely<any>): Promise<void> {
 	// 4. Timetable Slots (Events)
 	await mysql.schema
 		.createTable(CourseUnitSlotTable._table)
+		.ifNotExists()
 		.addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
 		.addColumn('timetable_unit_id', 'integer', col => col.notNull().references(`${CourseUnitTable._table}.id`).onDelete('cascade'))
 		.addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
@@ -74,8 +78,8 @@ export async function up(mysql: Kysely<any>): Promise<void> {
 }
 
 export async function down(mysql: Kysely<any>): Promise<void> {
-	await mysql.schema.dropTable(CourseUnitSlotTable._table).execute()
-	await mysql.schema.dropTable(CourseUnitTable._table).execute()
-	await mysql.schema.dropTable(CourseAssessmentTable._table).execute()
-	await mysql.schema.dropTable(CourseTable._table).execute()
+	await mysql.schema.dropTable(CourseUnitSlotTable._table).ifExists().execute()
+	await mysql.schema.dropTable(CourseUnitTable._table).ifExists().execute()
+	await mysql.schema.dropTable(CourseAssessmentTable._table).ifExists().execute()
+	await mysql.schema.dropTable(CourseTable._table).ifExists().execute()
 }

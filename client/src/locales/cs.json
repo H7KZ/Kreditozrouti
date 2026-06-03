@@ -1,4 +1,14 @@
 {
+	"filters": {
+		"syllabusSearch": "Hledat v obsahu předmětu",
+		"syllabusSearchPlaceholder": "např. machine learning, účetnictví...",
+		"syllabusSearchHint": "Vyhledává v cílech, výsledcích učení a osnově"
+	},
+	"theme": {
+		"light": "Světlý",
+		"dark": "Tmavý",
+		"system": "Systém"
+	},
 	"errors": {
 		"types": {
 			"Unknown": "Neznámá chyba",
@@ -160,7 +170,24 @@
 		"showLess": "Zobrazit méně",
 		"noResults": "Žádné výsledky",
 		"noOptions": "Žádné možnosti",
-		"tip": "Tip"
+		"tip": "Tip",
+		"skipToContent": "Přeskočit na hlavní obsah",
+		"closeFilters": "Zavřít filtry",
+		"openFilters": "Otevřít filtry",
+		"previousPage": "Předchozí stránka",
+		"nextPage": "Další stránka",
+		"dismissAlert": "Zavřít oznámení",
+		"loadingCourses": "Načítání předmětů",
+		"removeTimeFilter": "Odebrat časový filtr",
+		"closeCourseModal": "Zavřít detail předmětu",
+		"switchLanguage": "Změnit jazyk",
+		"announcements": {
+			"coursesFound": "Nalezen {count} kurz | Nalezeny {count} kurzy | Nalezeno {count} kurzů",
+			"noCoursesFound": "Nebyly nalezeny žádné kurzy",
+			"loadingError": "Chyba při načítání kurzů",
+			"courseAdded": "{code} přidán do rozvrhu",
+			"courseRemoved": "{code} odebrán z rozvrhu"
+		}
 	},
 	"pages": {
 		"index": {
@@ -216,7 +243,8 @@
 				"faculty": "Fakulta",
 				"enrollmentYear": "Rok nástupu",
 				"studyPlan": "Studijní plán",
-				"completedCourses": "Dokončené předměty"
+				"completedCourses": "Dokončené předměty",
+				"stepLabel": "Krok {current} z {total} — {label}"
 			},
 			"WizardStepFaculty": {
 				"title": "Vyberte fakultu",
@@ -273,7 +301,9 @@
 				"missingUnitTypes": "Nekompletní",
 				"conflictTag": "Kolize",
 				"campusConflictTag": "Kampusová kolize",
-				"completed": "Dokončeno"
+				"completed": "Dokončeno",
+				"sortLabel": "Seřadit podle {column}",
+				"rowLabel": "Předmět {code}: {title}. Klikněte pro zobrazení detailů."
 			},
 			"CourseRowExpanded": {
 				"faculty": "Fakulta",
@@ -293,6 +323,7 @@
 				"incompleteSelectionDescription": "Chcete-li se zapsat do tohoto kurzu, musíte také vybrat: {types}. Vyberte všechny požadované typy jednotek.",
 				"campusConflictTitle": "Kolize přesunu mezi kampusy",
 				"campusConflictDescription": "Tento kurz je na jiném kampusu. Mezi ním a kurzem: {courses} nemusí být dostatek času na přesun. Mezi výukou na kampusech Jižní Město a Žižkov ponechte alespoň 40 minut.",
+				"lastFetched": "Data z InSIS · Načteno {age}",
 				"markAsCompleted": "Označit jako dokončené",
 				"markedCompleted": "Označeno jako dokončené",
 				"conflictsWithCourses": "Konflikt s: {courses}",
@@ -310,6 +341,24 @@
 				"campusConflictTooltip": "Klikněte pro zobrazení předmětů s kampusovými kolizemi",
 				"incompleteTooltip": "Klikněte pro zobrazení předmětů s chybějícími typy výuky",
 				"allComplete": "Všechny jednotky vybrány, bez kolizí!"
+			},
+			"CourseRefreshButton": {
+				"confirmMessage": "Znovu načíst tento předmět z InSIS?\n\nAktualizují se rozvrh, vyučující a veškeré informace o předmětu. Toto lze provést jednou za 10 minut pro každý předmět.",
+				"tooltip": "Aktualizovat data předmětu z InSIS",
+				"tooltipWithTime": "Aktualizovat data předmětu z InSIS (naposledy aktualizováno v {time})",
+				"confirm": "Aktualizovat?",
+				"confirmAction": "Potvrdit aktualizaci",
+				"cancelAction": "Zrušit",
+				"streaming": "Načítám z InSIS...",
+				"done": "Aktualizováno!",
+				"error": "Aktualizace selhala",
+				"retryAction": "Zavřít",
+				"rateLimited": "Zkuste za {countdown}",
+				"countdownMinutes": "{minutes}m {seconds}s",
+				"countdownSeconds": "{seconds}s",
+				"unknownError": "Nastala neznámá chyba",
+				"timeoutError": "Vypršel časový limit — InSIS může být pomalý, zkuste znovu.",
+				"connectionError": "Ztraceno připojení"
 			}
 		},
 		"filters": {
@@ -328,6 +377,7 @@
 				"completedCourses": "Dokončené kurzy",
 				"showCompletedCourses": "Zobrazit dokončené kurzy",
 				"completedCoursesCount": "{count} skrytých | {count} skrytý | {count} skryté",
+				"activeFilterCount": "{count} aktivní filtr | {count} aktivní filtry | {count} aktivních filtrů",
 				"timetableConflicts": "Konflikty rozvrhu",
 				"timetableSlotsCount": "{count} vybraných časových slotů | {count} vybraný časový slot | {count} vybrané časové sloty",
 				"hideConflictingCourses": "Skrýt kurzy, které jsou v rozporu s mým rozvrhem",
@@ -375,7 +425,8 @@
 			"TimetableCourseBlock": {
 				"removeFromTimetable": "Odebrat z rozvrhu",
 				"missingTypesWarning": "Chybějící {types}. Klikněte pro přidání.",
-				"mergedSlots": "{count} sloučený časový slot | {count} sloučené časové sloty | {count} sloučených časových slotů"
+				"mergedSlots": "{count} sloučený časový slot | {count} sloučené časové sloty | {count} sloučených časových slotů",
+				"courseBlockLabel": "{code}, {type}, {time}. Klikněte pro zobrazení detailů."
 			},
 			"TimetableDragPopover": {
 				"title": "Vyhledat předměty",
@@ -390,7 +441,24 @@
 				"removeFromTimetable": "Odebrat z rozvrhu",
 				"searchInTimeslot": "Hledat v tomto čase",
 				"filterApplied": "Časový filtr aplikován",
-				"filterDescription": "Zobrazuji předměty dostupné v {day} od {from} do {to}"
+				"filterDescription": "Zobrazuji předměty dostupné v {day} od {from} do {to}",
+				"slotFree": "Volný",
+				"slotConflict": "Konflikt: {ident}",
+				"slotCampusConflict": "Kampus: {ident}"
+			},
+			"SchedulePicker": {
+				"title": "Uložené rozvrhy",
+				"saveCurrentSchedule": "Uložit aktuální",
+				"saveSchedulePlaceholder": "Název rozvrhu...",
+				"workingCopy": "Pracovní verze",
+				"maxSlotsReached": "Maximum 5 uložených rozvrhů",
+				"deleteConfirm": "Smazat tento rozvrh?",
+				"duplicateSchedule": "Duplikovat",
+				"emptyHint": "Uložte si aktuální rozvrh pro porovnání variant",
+				"unsavedChanges": "Máte neuložené změny. Opravdu chcete přepnout rozvrh?",
+				"newSchedule": "Nový rozvrh",
+				"saveToTabs": "Uložit aktuální do záložek",
+				"newFromCurrent": "Vytvořit kopii tohoto"
 			}
 		}
 	},
@@ -400,6 +468,15 @@
 				"slotAlreadySelected": "Tento slot je již vybrán",
 				"unitTypeAlreadySelected": "Pro tento předmět již máte vybranou {unitType}",
 				"timeConflict": "Časový konflikt s předmětem {courseIdent}"
+			}
+		},
+		"wizardData": {
+			"errors": {
+				"loadFaculties": "Nepodařilo se načíst fakulty",
+				"loadYears": "Nepodařilo se načíst roky",
+				"loadStudyPlans": "Nepodařilo se načíst studijní plány",
+				"loadStudyPlanCourses": "Nepodařilo se načíst předměty pro studijní plány",
+				"loadCourses": "Nepodařilo se načíst předměty"
 			}
 		}
 	},

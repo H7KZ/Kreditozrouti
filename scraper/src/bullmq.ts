@@ -1,45 +1,55 @@
+import type { ScraperRequestJob, ScraperResponseJob } from '@scraper/types/jobs'
+import { Queue, Worker } from 'bullmq'
 import { redis } from '@scraper/clients'
 import ScraperRequestHandler from '@scraper/Handlers/ScraperRequestHandler'
-import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/Interfaces/ScraperQueue'
-import ScraperRequestJob from '@scraper/Interfaces/ScraperRequestJob'
-import ScraperResponseJob from '@scraper/Interfaces/ScraperResponseJob'
-import { withSentryJobHandler } from '@scraper/sentry'
-import { Queue, Worker } from 'bullmq'
+import { logger } from '@scraper/logger'
+import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/types/queue'
 
-/**
- * Manages the BullMQ infrastructure specifically for the scraper service.
- * Handles queue initialization and the worker responsible for executing scrape requests.
- */
+// Queues
+
+const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
+    connection: redis.options,
+    defaultJobOptions: {
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 10_000 }
+    }
+})
+const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis.options })
+
+// Workers
+
+const requestWorker = new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestHandler, {
+    connection: redis.options,
+    concurrency: 1
+})
+
+// Scraper object
+
 const scraper = {
     queue: {
-        request: new Queue<ScraperRequestJob>(ScraperRequestQueue, { connection: redis.options }),
-        response: new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis.options })
+        request: requestQueue,
+        response: responseQueue
     },
 
     worker: {
-        request: new Worker<ScraperRequestJob>(ScraperRequestQueue, withSentryJobHandler(ScraperRequestQueue, ScraperRequestHandler), {
-            connection: redis.options,
-            concurrency: 1
-        })
-        // response: new Worker<ScraperResponseJobInterface>(ScraperResponseQueue, ScraperResponseJobHandler, { connection: redis })
+        request: requestWorker
     },
 
-    /**
-     * Awaits the readiness of all configured queues and workers.
-     * Ensures Redis connections are established before processing begins.
-     */
-    async waitForQueues() {
+    init(): void {
+        scraper.worker.request.on('failed', (job, err) => {
+            logger.error({ job_id: job?.id, job_name: job?.name, err }, 'scraper.job_permanently_failed')
+        })
+    },
+
+    async waitForQueues(): Promise<void> {
         await scraper.queue.request.waitUntilReady()
-        console.log('Scraper request queue is ready and processing jobs.')
+        logger.info('scraper.request_queue_ready')
 
         await scraper.queue.response.waitUntilReady()
-        console.log('Scraper response queue is ready and processing jobs.')
+        logger.info('scraper.response_queue_ready')
 
         await scraper.worker.request.waitUntilReady()
-        console.log('Scraper request worker is ready and processing jobs.')
-
-        // await scraper.worker.response.waitUntilReady()
-        // console.log('Scraper response worker is ready and processing jobs.')
+        logger.info('scraper.request_worker_ready')
     }
 }
 

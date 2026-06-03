@@ -1,9 +1,9 @@
+import type { ScraperInSISFaculty } from '@shared/queue/insis'
+import type { ScraperInSISStudyPlanResponseJob } from '@shared/queue/jobs'
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
-import { CourseTable, FacultyTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import { CourseTable, FacultyTable, NewStudyPlan, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import InSISService from '@api/Services/InSISService'
-import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
-import { ScraperInSISStudyPlanResponseJob } from '@scraper/Interfaces/ScraperResponseJob'
 
 /**
  * Syncs a scraped InSIS Study Plan into the database.
@@ -48,16 +48,14 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 
 		await mysql.updateTable(StudyPlanTable._table).set(planMetadata).where('id', '=', studyPlanId).execute()
 	} else {
-		const result = await mysql
-			.insertInto(StudyPlanTable._table)
-			.values({
-				ident: plan.ident,
-				faculty_id: facultyId,
-				semester: plan.semester,
-				year: plan.year,
-				...planMetadata
-			} as never)
-			.executeTakeFirst()
+		const newPlanValues: NewStudyPlan = {
+			ident: plan.ident,
+			faculty_id: facultyId,
+			semester: plan.semester,
+			year: plan.year,
+			...planMetadata
+		}
+		const result = await mysql.insertInto(StudyPlanTable._table).values(newPlanValues).executeTakeFirst()
 
 		studyPlanId = Number(result.insertId)
 	}
@@ -90,9 +88,9 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 			.where('year', '=', upcomingPeriod.year)
 			.execute()
 
-		identMatches.forEach(c => {
+		for (const c of identMatches) {
 			if (c.ident) identToIdMap.set(c.ident, c.id)
-		})
+		}
 	}
 
 	const rowsToInsert: NewStudyPlanCourse[] = plan.courses.map(item => {
@@ -112,10 +110,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 	})
 
 	if (rowsToInsert.length > 0) {
-		await mysql
-			.insertInto(StudyPlanCourseTable._table)
-			.values(rowsToInsert as never)
-			.execute()
+		await mysql.insertInto(StudyPlanCourseTable._table).values(rowsToInsert).execute()
 	}
 
 	LoggerJobContext.add({
@@ -133,9 +128,10 @@ async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | nul
 		.insertInto(FacultyTable._table)
 		.values({
 			id: faculty.ident,
-			title: faculty.title
-		} as never)
-		.onDuplicateKeyUpdate({ title: faculty.title })
+			title: faculty.title,
+			is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
+		})
+		.onDuplicateKeyUpdate({ title: faculty.title, is_schedule_publicly_visible: faculty.is_schedule_publicly_visible })
 		.execute()
 
 	return faculty.ident

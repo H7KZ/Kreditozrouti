@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import FacetItem from '@api/Interfaces/FacetItem.ts'
-import InSISService from '@api/Services/InSISService.ts'
+import type { FacetItem } from '@shared/http/facets'
 import { computed } from 'vue'
+import { getPeriodsForLastYears } from '@shared/domain/period'
 import IconArrowLeft from '~icons/lucide/arrow-left'
 
 /*
@@ -25,7 +25,7 @@ const emit = defineEmits<Emits>()
 const sortedYears = computed(() => {
 	return props.years
 		.filter((year) =>
-			InSISService.getPeriodsForLastYears(4)
+			getPeriodsForLastYears(4)
 				.map((p) => p.year)
 				.includes(Number(year.value)),
 		)
@@ -68,10 +68,10 @@ function handleBack() {
 				:key="`year-${year.value}`"
 				type="button"
 				:class="[
-					'rounded border p-4 text-center transition-all duration-150 cursor-pointer active:scale-[0.99]',
+					'cursor-pointer rounded border p-4 text-center transition-all duration-150 active:scale-[0.99]',
 					selectedYear === year.value
 						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] shadow-[var(--insis-shadow-sm)]'
-						: 'border-[var(--insis-border)] bg-white hover:border-[var(--insis-blue-dark)] hover:bg-[var(--insis-gray-50)] hover:shadow-[var(--insis-shadow-sm)]',
+						: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue-dark)] hover:bg-[var(--insis-gray-50)] hover:shadow-[var(--insis-shadow-sm)]',
 				]"
 				@click="handleSelect(Number(year.value))"
 			>

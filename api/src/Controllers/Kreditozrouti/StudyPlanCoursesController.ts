@@ -1,54 +1,42 @@
-import { redis } from '@api/clients'
+import type { StudyPlanCoursesFilter } from '@shared/http/study-plans'
+import { Request, Response } from 'express'
+import * as z from 'zod'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import StudyPlanCoursesResponse from '@api/Controllers/Kreditozrouti/types/StudyPlanCoursesResponse'
-import { ErrorCodeEnum, ErrorTypeEnum } from '@api/Enums/ErrorEnum'
-import Exception from '@api/Error/Exception'
+import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
-import StudyPlanCoursesFilterValidation from '@api/Validations/StudyPlanCoursesFilterValidation'
-import { Request, Response } from 'express'
+
+const StudyPlanCoursesFilterSchema = z.object({
+	study_plan_ids: z.array(z.coerce.number())
+}) satisfies z.ZodType<StudyPlanCoursesFilter>
+
+export type { StudyPlanCoursesFilter } from '@shared/http/study-plans'
 
 /**
- * Retrieves a list of courses associated with a specific study plan, including full relations based on complex filtering criteria.
- *
- * Results are cached in Redis for 5 minutes.
+ * Retrieves a list of courses associated with a specific study plan, including full relations.
  *
  * @param req - Express request object containing the filter payload.
  * @param res - Express response object.
- * @throws {Exception} 400 - If the validation of the search request fails.
+ * @throws {ApiError} 403 - If the validation of the search request fails.
  */
 export default async function StudyPlanCoursesController(req: Request, res: Response<StudyPlanCoursesResponse>) {
-	LoggerAPIContext.add(res, { body: req.body })
+	LoggerAPIContext.add({ body: req.body })
 
 	// 1. Validation
-	const result = await StudyPlanCoursesFilterValidation.safeParseAsync(req.body)
+	const result = await StudyPlanCoursesFilterSchema.safeParseAsync(req.body)
 
-	if (!result.success) {
-		throw new Exception(400, ErrorTypeEnum.ZOD_VALIDATION, ErrorCodeEnum.VALIDATION, 'Invalid search request', {
-			zodIssues: result.error.issues
-		})
-	}
+	if (!result.success) throw Errors.validation(result.error.issues)
 
 	const studyPlanIds = result.data.study_plan_ids
 
-	// 2. Cache Check
-	const cacheKey = `insis:study_plans:courses:${studyPlanIds.join(':')}`
-	const cachedData = await redis.get(cacheKey)
-
-	if (cachedData) {
-		LoggerAPIContext.add(res, { cache: true })
-		return res.status(200).send(JSON.parse(cachedData))
-	}
-
-	// 3. Service Call
+	// 2. Service Call
 	const courses = await CourseService.getCoursesByStudyPlan(studyPlanIds)
 
-	LoggerAPIContext.add(res, {
-		cache: false,
+	LoggerAPIContext.add({
 		courses_count: courses.length
 	})
 
-	// 4. Response Assembly
-	// LTS Note: The type 'CoursesResponse' is now strictly enforced against the data returned by the service.
+	// 3. Response Assembly
 	const response: StudyPlanCoursesResponse = {
 		data: courses,
 		meta: {
@@ -56,9 +44,6 @@ export default async function StudyPlanCoursesController(req: Request, res: Resp
 			total: courses.length
 		}
 	}
-
-	// 5. Cache Set (TTL: 5 minutes)
-	await redis.setex(cacheKey, 300, JSON.stringify(response))
 
 	return res.status(200).send(response)
 }

@@ -1,78 +1,9 @@
-import ScraperInSISFaculty from '@scraper/Interfaces/ScraperInSISFaculty'
-import ScraperInSISStudyPlan, { ScraperInSISStudyPlanCourse } from '@scraper/Interfaces/ScraperInSISStudyPlan'
-import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
-import InSISSemester from '@scraper/Types/InSISSemester'
-import InSISStudyPlanCourseCategory from '@scraper/Types/InSISStudyPlanCourseCategory'
-import InSISStudyPlanCourseGroup from '@scraper/Types/InSISStudyPlanCourseGroup'
-import { cleanText, getRowValueCaseInsensitive, normalizeUrl, serializeValue } from '@scraper/Utils/HTMLUtils'
-import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
-import * as cheerio from 'cheerio'
+import type { InSISSemester, ScraperInSISFaculty, ScraperInSISStudyPlan, ScraperInSISStudyPlanCourse } from '@scraper/types/insis'
 import type { CheerioAPI } from 'cheerio'
-
-/**
- * InSIS Group Code Structure:
- *
- * First letter (lowercase) = Group scope:
- *   f* = faculty_specific (fakultně specifické skupiny)
- *   c* = university_wide (celoškolně používané skupiny)
- *   o* = field_specific_bachelor (oborově specifické skupiny - bakalářské)
- *   h* = field_specific_master (oborově specifické skupiny - magisterské)
- *   s* = minor_specialization (skupiny vedlejších specializací)
- *   e* = field_specific_master (extended/doctoral - fallback to master)
- *
- * Suffix (uppercase + numbers) = Category:
- *   *P = compulsory (povinné předměty)
- *   *V[*] = elective (volitelné předměty)
- *   *J[*] = language (jazykově povinně volitelné předměty)
- *   *SZ[*] = state_exam (státní zkoušky)
- *   *EXC = prohibited (zakázaný předmět)
- *   *VOR = beyond_scope (předměty nad rámec studijního plánu)
- *   *ZEXCN* = exchange_program (předměty pro výměnné programy)
- *   *TVS[*] = physical_education (tělesná výchova a sport)
- */
-
-const GroupPrefixes: Record<string, InSISStudyPlanCourseGroup> = {
-    f: 'faculty_specific',
-    c: 'university_wide',
-    o: 'field_specific_bachelor',
-    h: 'field_specific_master',
-    s: 'minor_specialization',
-    e: 'field_specific_master' // Extended/doctoral programs - fallback to master
-}
-
-/**
- * Category detection rules - order matters (most specific first)
- */
-const CategoryRules: {
-    test: (suffix: string) => boolean
-    category: InSISStudyPlanCourseCategory
-}[] = [
-    // *TVS[*] - Tělesná výchova a sport
-    { test: suffix => suffix.includes('TVS'), category: 'physical_education' },
-
-    // *SZ[*] - Státní zkoušky
-    { test: suffix => suffix.includes('SZ'), category: 'state_exam' },
-
-    // *ZEXCN* - Předměty pro výměnné programy (must check before EXC)
-    { test: suffix => suffix.includes('ZEXCN'), category: 'exchange_program' },
-
-    // *EXC - Zakázaný předmět
-    { test: suffix => suffix.includes('EXC'), category: 'prohibited' },
-
-    // *VOR - Předměty nad rámec studijního plánu
-    { test: suffix => suffix.includes('VOR'), category: 'beyond_scope' },
-
-    // *J[*] - Jazykově povinně volitelné předměty
-    // Pattern: suffix starts with J (e.g., J1, J2, JV)
-    { test: suffix => /^J\d?/.test(suffix) || suffix === 'JV', category: 'language' },
-
-    // *P - Povinné předměty (strictly ends with P, but not part of other patterns)
-    // Must check after TVS, VOR to avoid false matches
-    { test: suffix => suffix === 'P' || suffix === 'BP', category: 'compulsory' },
-
-    // *V[*] - Volitelné předměty (contains V but not VOR, TVS, JV)
-    { test: suffix => /V\d?$/.test(suffix) || ['VB', 'VM', 'VOL'].some(v => suffix.includes(v)), category: 'elective' }
-]
+import * as cheerio from 'cheerio'
+import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
+import { cleanText, getRowValueCaseInsensitive, normalizeUrl, serializeValue } from '@scraper/Utils/HTMLUtils'
+import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 
 /**
  * Extracts study plan data from InSIS pages.
@@ -80,6 +11,8 @@ const CategoryRules: {
  * and study plan extraction from course pages.
  */
 export default class ExtractInSISStudyPlanService {
+    // Public API
+
     /**
      * Extracts study plan ID from URL.
      */
@@ -163,11 +96,9 @@ export default class ExtractInSISStudyPlanService {
         const $ = cheerio.load(html)
 
         const id = this.extractIdFromUrl(url)
-        // If ID is null, we can't form a valid plan object, though typically this would throw or return null
-        // depending on strictness. Here we follow the interface which allows ID to be null, or throw if critical.
         if (id === null) console.warn('Study Plan ID not found in the URL:', url)
 
-        // Extract metadata components
+        // Extraction
         const { ident, title } = this.extractIdentAndTitle($)
         const faculty = this.extractFaculty($)
         const { semester, year } = this.extractSemesterAndYear($)
@@ -191,6 +122,8 @@ export default class ExtractInSISStudyPlanService {
             courses: courses.length > 0 ? courses : null
         }
     }
+
+    // Extraction
 
     /**
      * Extracts Faculty object (title and ident).
@@ -217,7 +150,10 @@ export default class ExtractInSISStudyPlanService {
 
         return {
             ident: facultyIdent,
-            title: facultyTitle
+            title: facultyTitle,
+            // Study plan pages do not expose visibility — defaulting to false;
+            // the catalog scraper will update this when it processes the faculty.
+            is_schedule_publicly_visible: false
         }
     }
 
@@ -235,57 +171,10 @@ export default class ExtractInSISStudyPlanService {
     }
 
     /**
-     * Parses an InSIS group code into group scope and category.
-     *
-     * @param groupCode - The group code (e.g., "oP", "cVB", "fJ1", "hSZ")
-     * @returns Object with parsed group and category
-     *
-     * @example
-     * parseGroupCode("oP")    // { group: 'field_specific_bachelor', category: 'compulsory' }
-     * parseGroupCode("cVB")   // { group: 'university_wide', category: 'elective' }
-     * parseGroupCode("fJ1")   // { group: 'faculty_specific', category: 'language' }
-     * parseGroupCode("cTVS1") // { group: 'university_wide', category: 'physical_education' }
-     * parseGroupCode("hSZ")   // { group: 'field_specific_master', category: 'state_exam' }
-     * parseGroupCode("sP")    // { group: 'minor_specialization', category: 'compulsory' }
-     * parseGroupCode("cVM")   // { group: 'university_wide', category: 'elective' }
-     * parseGroupCode("oV")    // { group: 'field_specific_bachelor', category: 'elective' }
-     * parseGroupCode("hV")    // { group: 'field_specific_master', category: 'elective' }
-     * parseGroupCode("sV")    // { group: 'minor_specialization', category: 'elective' }
-     * parseGroupCode("eV")    // { group: 'field_specific_master', category: 'elective' }
+     * Extracts ident and title from the plan header row.
+     * The ident is identified by an uppercase/number + optional dash pattern;
+     * the remainder of the string becomes the title.
      */
-    static parseGroupCode(groupCode: string): { group: InSISStudyPlanCourseGroup; category: InSISStudyPlanCourseCategory } {
-        const group = this.determineGroup(groupCode)
-        const category = this.determineCategory(groupCode)
-        return { group, category }
-    }
-
-    /**
-     * Determines the group scope from the first character of the group code.
-     */
-    static determineGroup(groupCode: string): InSISStudyPlanCourseGroup {
-        if (!groupCode || groupCode.length === 0) return 'university_wide' // Default fallback
-
-        const firstChar = groupCode[0].toLowerCase()
-        return GroupPrefixes[firstChar] ?? 'university_wide'
-    }
-
-    /**
-     * Determines the category from the suffix of the group code.
-     */
-    static determineCategory(groupCode: string): InSISStudyPlanCourseCategory {
-        if (!groupCode || groupCode.length < 2) return 'elective' // Default fallback
-
-        // Extract suffix (everything after the first lowercase letter)
-        const suffix = groupCode.slice(1).toUpperCase()
-
-        for (const rule of CategoryRules) {
-            if (rule.test(suffix)) return rule.category
-        }
-
-        // Default to elective if no match
-        return 'elective'
-    }
-
     private static extractIdentAndTitle($: CheerioAPI): { ident: string | null; title: string | null } {
         const rawTitle =
             getRowValueCaseInsensitive($, 'Program:')?.trim() ??
@@ -324,6 +213,10 @@ export default class ExtractInSISStudyPlanService {
         return { ident, title }
     }
 
+    /**
+     * Extracts all courses listed in the study plan table,
+     * grouping them by the nearest group header row above each course row.
+     */
     private static extractCourses($: CheerioAPI): ScraperInSISStudyPlanCourse[] {
         const courses: ScraperInSISStudyPlanCourse[] = []
         let currentGroupCode: string | null = null
@@ -333,7 +226,7 @@ export default class ExtractInSISStudyPlanService {
             const text = cleanText(rowEl.text())
 
             // Detect group header (e.g., "oP - Povinné předměty")
-            const groupMatch = /^([a-zA-Z][a-zA-Z0-9]*)\s+-\s+/.exec(text)
+            const groupMatch = /^([a-z][a-z\d]*)\s+-\s+/i.exec(text)
             if (groupMatch) currentGroupCode = groupMatch[1]
 
             // Detect course row
@@ -344,7 +237,7 @@ export default class ExtractInSISStudyPlanService {
                 const href = anchor.attr('href') ?? ''
 
                 if (courseIdent && courseIdent.length >= 3) {
-                    const { group, category } = this.parseGroupCode(currentGroupCode)
+                    const { group, category } = parseGroupCode(currentGroupCode)
 
                     courses.push({
                         id: ExtractInSISCourseService.extractIdFromUrl(href),

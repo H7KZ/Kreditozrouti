@@ -1,10 +1,11 @@
+import type { ScraperInSISStudyPlans } from '@scraper/types/insis'
+import type { ScraperInSISStudyPlansRequestJob } from '@scraper/types/jobs'
+import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import ScraperInSISStudyPlans from '@scraper/Interfaces/ScraperInSISStudyPlans'
-import { ScraperInSISStudyPlansRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
-import { InSISQueueService } from '@scraper/Services/InSISQueueService'
+import { QueueService } from '@scraper/Services/QueueService'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
 
@@ -23,7 +24,11 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
     // Fetch initial faculty list
     const initialResult = await client.get<string>(Config.insis.studyPlansUrl)
 
-    if (!initialResult.success) return null
+    if (!initialResult.success) {
+        redis.incr('metrics:scraper:silent_failures:study_plans').catch(() => {})
+        redis.expire('metrics:scraper:silent_failures:study_plans', 604800).catch(() => {})
+        return null
+    }
 
     let faculties = ExtractInSISStudyPlanService.extractFaculties(initialResult.data)
 
@@ -50,7 +55,7 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
         total_plans_found: plans.urls.length
     })
 
-    await InSISQueueService.addStudyPlansResponse(plans)
+    await QueueService.addStudyPlansResponse(plans)
 
     // Queue individual plan requests if enabled
     if (plans.urls.length && data.auto_queue_study_plans) {
@@ -59,7 +64,7 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
             total_plans_to_queue: plans.urls.length
         })
 
-        await InSISQueueService.queueStudyPlanRequests(plans.urls, url => ExtractInSISStudyPlanService.extractIdFromUrl(url))
+        await QueueService.queueStudyPlanRequests(plans.urls, url => ExtractInSISStudyPlanService.extractIdFromUrl(url))
     }
 
     return plans
@@ -88,7 +93,7 @@ async function traverseHierarchy(
 
             // Collect final plan URLs (leaves)
             const planUrls = ExtractInSISStudyPlanService.extractPlanUrls(response.data)
-            planUrls.forEach(url => allPlanUrls.add(url))
+            for (const url of planUrls) allPlanUrls.add(url)
 
             // Collect navigation URLs (branches)
             const hasPeriod = response.config.url?.includes('poc_obdobi=') ?? true
@@ -109,7 +114,7 @@ async function traverseHierarchy(
                 }
             } else {
                 // No period filtering needed, add all navigation URLs
-                navigations.forEach(nav => nextLevelUrls.add(nav.url))
+                for (const nav of navigations) nextLevelUrls.add(nav.url)
             }
         }
 

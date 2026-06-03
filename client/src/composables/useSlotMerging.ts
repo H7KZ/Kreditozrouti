@@ -1,7 +1,8 @@
+﻿import type { SelectedCourseUnit } from '@client/types'
+import type { InSISDay } from '@shared/domain/insis'
+import type { Ref } from 'vue'
+import { computed } from 'vue'
 import { WEEKDAYS } from '@client/constants/timetable'
-import type { SelectedCourseUnit } from '@client/types'
-import type InSISDay from '@scraper/Types/InSISDay'
-import { computed, type Ref } from 'vue'
 
 /**
  * Represents a merged block containing multiple one-time slots

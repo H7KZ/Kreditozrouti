@@ -1,7 +1,6 @@
-import { SelectedCourseUnit } from '@client/types'
-import InSISDay from '@scraper/Types/InSISDay.ts'
+import type { SelectedCourseUnit } from '@client/types'
+import type { InSISDay } from '@shared/domain/insis'
 
-/** Drag selection state for timetable */
 export interface DragSelection {
 	active: boolean
 	startDay: InSISDay | null
@@ -14,9 +13,15 @@ export interface PersistedTimetableState {
 	selectedUnits: SelectedCourseUnit[]
 }
 
-export interface TimetableState {
-	selectedUnits: SelectedCourseUnit[]
-	dragSelection: DragSelection
-	showDragPopover: boolean
-	dragPopoverPosition: { x: number; y: number }
+export interface SavedScheduleSlot {
+	id: string
+	name: string
+	units: SelectedCourseUnit[]
+	createdAt: number
+	updatedAt: number
+}
+
+export interface PersistedScheduleSlotsState {
+	slots: SavedScheduleSlot[]
+	activeSlotId: string | null
 }

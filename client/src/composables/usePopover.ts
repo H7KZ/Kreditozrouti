@@ -1,4 +1,5 @@
-import { computed, type Ref } from 'vue'
+import type { Ref } from 'vue'
+import { computed } from 'vue'
 
 export interface PopoverPosition {
 	x: number

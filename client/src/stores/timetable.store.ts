@@ -1,17 +1,19 @@
-import type { CourseUnit, CourseUnitSlot, CourseWithRelations } from '@api/Database/types'
-import type { TimeSelection } from '@api/Validations'
+﻿import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCourseUnit, SlotConflictInfo } from '@client/types'
+import type { InSISDay } from '@shared/domain/insis'
+import type { TimeSelection } from '@shared/domain/time'
+import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
+import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { ALL_DAYS } from '@client/constants/timetable'
 import { i18n } from '@client/index'
+import { useAnnouncerStore } from '@client/stores/announcer.store'
 import { useFiltersStore } from '@client/stores/filters.store'
-import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCourseUnit, SlotConflictInfo } from '@client/types'
+import { useScheduleSlotsStore } from '@client/stores/schedule-slots.store'
 import { getSlotType } from '@client/utils/course'
 import { getDayFromDate } from '@client/utils/day'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
 import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from '@client/utils/timetable'
-import type InSISDay from '@scraper/Types/InSISDay'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 
 const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
 
@@ -25,9 +27,10 @@ const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, 
  * into SelectedCourseUnit.snapshotAvailableTypes at add-time.
  */
 export const useTimetableStore = defineStore('timetable', () => {
+	const announcer = useAnnouncerStore()
 	const selectedUnits = ref<SelectedCourseUnit[]>([])
 
-	// ── Computed ──────────────────────────────────────────────────────────
+	// Computed
 
 	const selectedCourseIds = computed(() => [...new Set(selectedUnits.value.map((u) => u.courseId))])
 
@@ -163,7 +166,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 			const hasCampusConflict = !!campusConflictsWith?.size
 
 			// Use snapshotted available types — no need to look up full course
-			const { isIncomplete, missingTypes } = checkCourseCompleteness(units, getSlotType)
+			const { isIncomplete, missingTypes } = checkCourseCompleteness(units)
 
 			// Priority: hard conflict > campus-conflict > incomplete > selected
 			const status = hasConflict ? 'conflict' : hasCampusConflict ? 'campus-conflict' : isIncomplete ? 'incomplete' : 'selected'
@@ -192,9 +195,9 @@ export const useTimetableStore = defineStore('timetable', () => {
 		return count
 	})
 
-	// ── Actions ──────────────────────────────────────────────────────────
+	// Actions
 
-	function getSlotConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
+	function getSlotConflicts(slot: CourseUnitSlotDTO): SelectedCourseUnit[] {
 		if (!slot.time_from || !slot.time_to) return []
 		const slotDay = slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
 		if (!slotDay) return []
@@ -208,7 +211,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		})
 	}
 
-	function getSlotCampusConflicts(slot: CourseUnitSlot): SelectedCourseUnit[] {
+	function getSlotCampusConflicts(slot: CourseUnitSlotDTO): SelectedCourseUnit[] {
 		if (!slot.time_from || !slot.time_to) return []
 		const slotDay = slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
 		if (!slotDay) return []
@@ -236,40 +239,40 @@ export const useTimetableStore = defineStore('timetable', () => {
 		})
 	}
 
-	function getUnitConflicts(unit: CourseUnit<void, CourseUnitSlot>): SlotConflictInfo[] {
+	function getUnitConflicts(unit: CourseUnitDTO): SlotConflictInfo[] {
 		const result: SlotConflictInfo[] = []
 		for (const slot of unit.slots ?? []) {
-			const slotConflicts = getSlotConflicts(slot as CourseUnitSlot)
-			if (slotConflicts.length > 0) result.push({ slotId: (slot as CourseUnitSlot).id, conflictingUnits: slotConflicts, conflictType: 'hard' })
+			const slotConflicts = getSlotConflicts(slot as CourseUnitSlotDTO)
+			if (slotConflicts.length > 0) result.push({ slotId: (slot as CourseUnitSlotDTO).id, conflictingUnits: slotConflicts, conflictType: 'hard' })
 		}
 		return result
 	}
 
-	function getUnitCampusConflicts(unit: CourseUnit<void, CourseUnitSlot>): SlotConflictInfo[] {
+	function getUnitCampusConflicts(unit: CourseUnitDTO): SlotConflictInfo[] {
 		const result: SlotConflictInfo[] = []
 		for (const slot of unit.slots ?? []) {
-			const slotConflicts = getSlotCampusConflicts(slot as CourseUnitSlot)
-			if (slotConflicts.length > 0) result.push({ slotId: (slot as CourseUnitSlot).id, conflictingUnits: slotConflicts, conflictType: 'campus' })
+			const slotConflicts = getSlotCampusConflicts(slot as CourseUnitSlotDTO)
+			if (slotConflicts.length > 0) result.push({ slotId: (slot as CourseUnitSlotDTO).id, conflictingUnits: slotConflicts, conflictType: 'campus' })
 		}
 		return result
 	}
 
-	function unitHasConflicts(unit: CourseUnit<void, CourseUnitSlot>): boolean {
-		return (unit.slots ?? []).some((slot: CourseUnitSlot) => getSlotConflicts(slot).length > 0)
+	function unitHasConflicts(unit: CourseUnitDTO): boolean {
+		return (unit.slots ?? []).some((slot: CourseUnitSlotDTO) => getSlotConflicts(slot).length > 0)
 	}
 
-	function unitHasCampusConflicts(unit: CourseUnit<void, CourseUnitSlot>): boolean {
-		return (unit.slots ?? []).some((slot: CourseUnitSlot) => getSlotCampusConflicts(slot).length > 0)
+	function unitHasCampusConflicts(unit: CourseUnitDTO): boolean {
+		return (unit.slots ?? []).some((slot: CourseUnitSlotDTO) => getSlotCampusConflicts(slot).length > 0)
 	}
 
-	function canAddUnit(course: CourseWithRelations, _unit: CourseUnit<void, CourseUnitSlot>, slot: CourseUnitSlot): string | null {
+	function canAddUnit(course: CourseWithRelationsDTO, _unit: CourseUnitDTO, slot: CourseUnitSlotDTO): string | null {
 		if (selectedUnits.value.some((u) => u.slotId === slot.id)) {
 			return t('stores.timetable.errors.slotAlreadySelected')
 		}
 		return null
 	}
 
-	function addUnit(course: CourseWithRelations, unit: CourseUnit<void, CourseUnitSlot>, slot: CourseUnitSlot): boolean {
+	function addUnit(course: CourseWithRelationsDTO, unit: CourseUnitDTO, slot: CourseUnitSlotDTO): boolean {
 		if (canAddUnit(course, unit, slot)) return false
 
 		// Snapshot available unit types from the full course so we never need
@@ -277,7 +280,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		const snapshotAvailableTypes: CourseUnitType[] = []
 		for (const u of course.units ?? []) {
 			for (const s of u.slots ?? []) {
-				const type = getSlotType(s as CourseUnitSlot)
+				const type = getSlotType(s as CourseUnitSlotDTO)
 				if (!snapshotAvailableTypes.includes(type)) snapshotAvailableTypes.push(type)
 			}
 		}
@@ -301,24 +304,35 @@ export const useTimetableStore = defineStore('timetable', () => {
 			snapshotAvailableTypes,
 		})
 
+		announcer.announce(t('common.announcements.courseAdded', { code: course.ident }))
 		persist()
 		syncCoursesStoreExclusion()
 		return true
 	}
 
 	function removeUnit(unitId: number) {
+		const unit = selectedUnits.value.find((u) => u.unitId === unitId)
+		if (unit) {
+			announcer.announce(t('common.announcements.courseRemoved', { code: unit.courseIdent }))
+		}
+
 		selectedUnits.value = selectedUnits.value.filter((u) => u.unitId !== unitId)
 		persist()
 		syncCoursesStoreExclusion()
 	}
 
 	function removeCourse(courseId: number) {
+		const units = selectedUnits.value.filter((u) => u.courseId === courseId)
+		if (units.length > 0) {
+			announcer.announce(t('common.announcements.courseRemoved', { code: units[0]?.courseIdent }))
+		}
+
 		selectedUnits.value = selectedUnits.value.filter((u) => u.courseId !== courseId)
 		persist()
 		syncCoursesStoreExclusion()
 	}
 
-	function changeUnit(course: CourseWithRelations, oldSlotId: number, newUnit: CourseUnit<void, CourseUnitSlot>, newSlot: CourseUnitSlot): boolean {
+	function changeUnit(course: CourseWithRelationsDTO, oldSlotId: number, newUnit: CourseUnitDTO, newSlot: CourseUnitSlotDTO): boolean {
 		const oldIndex = selectedUnits.value.findIndex((u) => u.slotId === oldSlotId)
 		const oldUnit = oldIndex !== -1 ? selectedUnits.value[oldIndex] : null
 
@@ -360,7 +374,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		return courseStatuses.value.get(courseId)
 	}
 
-	function requiredUnitTypes(units: CourseUnit<void, CourseUnitSlot>[]): Set<CourseUnitType> {
+	function requiredUnitTypes(units: CourseUnitDTO[]): Set<CourseUnitType> {
 		const types = new Set<CourseUnitType>()
 		for (const unit of units ?? []) {
 			for (const slot of unit.slots ?? []) types.add(getSlotType(slot))
@@ -370,6 +384,8 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 	function persist() {
 		saveToStorage<PersistedTimetableState>(STORAGE_KEYS.TIMETABLE, { selectedUnits: selectedUnits.value })
+		const scheduleSlotsStore = useScheduleSlotsStore()
+		scheduleSlotsStore.syncActiveSlot(selectedUnits.value)
 	}
 
 	function hydrate() {
@@ -377,9 +393,17 @@ export const useTimetableStore = defineStore('timetable', () => {
 		if (state?.selectedUnits) selectedUnits.value = state.selectedUnits
 	}
 
+	function loadUnits(units: SelectedCourseUnit[]) {
+		selectedUnits.value = JSON.parse(JSON.stringify(units))
+		persist()
+		syncCoursesStoreExclusion()
+	}
+
 	function clearAll() {
 		selectedUnits.value = []
 		removeFromStorage(STORAGE_KEYS.TIMETABLE)
+		const scheduleSlotsStore = useScheduleSlotsStore()
+		scheduleSlotsStore.syncActiveSlot([])
 	}
 
 	return {
@@ -420,6 +444,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		requiredUnitTypes,
 		persist,
 		hydrate,
+		loadUnits,
 		clearAll,
 	}
 })

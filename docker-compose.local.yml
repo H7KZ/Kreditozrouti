@@ -49,7 +49,7 @@ services:
       resources:
         limits:
           cpus: 2
-          memory: 4096M
+          memory: 8192M
 
     restart: unless-stopped
 
@@ -142,7 +142,130 @@ services:
 
       resources:
         limits:
-          cpus: 1
-          memory: 2048M
+          cpus: 2
+          memory: 4096M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kreditozrouti-prometheus
+
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=7d'
+
+    volumes:
+      - ./deployment/monitoring/prometheus/prometheus.local.yml:/etc/prometheus/prometheus.yml:ro
+
+    ports:
+      - "49090:9090"
+
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kreditozrouti-grafana
+
+    environment:
+      - GF_SERVER_ROOT_URL=http://localhost:43000
+      - GF_SECURITY_ADMIN_USER=root
+      - GF_SECURITY_ADMIN_PASSWORD=root
+      - GF_USERS_ALLOW_SIGN_UP=false
+
+    volumes:
+      - ./deployment/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+
+    ports:
+      - "43000:3000"
+
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  loki:
+    image: grafana/loki:3
+    container_name: kreditozrouti-loki
+
+    command: -config.file=/etc/loki/loki.yml
+
+    volumes:
+      - ./deployment/monitoring/loki/loki.yml:/etc/loki/loki.yml:ro
+
+    ports:
+      - "43100:3100"
+
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: kreditozrouti-alloy
+
+    command:
+      - run
+      - /etc/alloy/config.alloy
+      - --storage.path=/var/lib/alloy/data
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./deployment/monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
+
+    ports:
+      - "41247:12347"
+
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
 
     restart: unless-stopped

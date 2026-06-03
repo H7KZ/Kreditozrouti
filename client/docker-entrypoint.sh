@@ -10,7 +10,7 @@ set -e
 #
 # Supported Variables:
 #   - VITE_API_URL: Backend API URL
-#   - VITE_SENTRY_DSN: GlitchTip/Sentry DSN
+#   - VITE_SENTRY_DSN: Sentry DSN
 #   - VITE_SENTRY_RELEASE: Release version tag
 # ==============================================================================
 

@@ -1,8 +1,7 @@
-import StudyPlanCoursesFilterValidation from '@api/Validations/StudyPlanCoursesFilterValidation'
-import { z } from 'zod'
+import { StudyPlanCoursesFilter } from '@api/Controllers/Kreditozrouti/StudyPlanCoursesController'
 
 /**
- * Documented inside `api/src/Validations/Validations/StudyPlanCoursesFilter.ts`
+ * Request type for the study plan courses endpoint.
  */
-type StudyPlanCoursesRequest = z.infer<typeof StudyPlanCoursesFilterValidation>
+type StudyPlanCoursesRequest = StudyPlanCoursesFilter
 export default StudyPlanCoursesRequest

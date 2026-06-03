@@ -65,7 +65,7 @@ function handleStepClick(stepNumber: number) {
 </script>
 
 <template>
-	<div class="insis-wizard mb-8 justify-center">
+	<div class="insis-wizard mb-4 justify-center sm:mb-8">
 		<template v-for="(step, index) in steps" :key="step.number">
 			<!-- Step -->
 			<div
@@ -94,4 +94,8 @@ function handleStepClick(stepNumber: number) {
 			<div v-if="index < steps.length - 1" :class="['insis-wizard-connector', { completed: isStepComplete(step.number) }]" />
 		</template>
 	</div>
+	<!-- Active step name shown only on mobile (labels hidden above) -->
+	<p class="mb-6 text-center text-xs font-medium text-[var(--insis-blue)] sm:hidden">
+		{{ t('components.wizard.WizardSteps.stepLabel', { current: currentStep, total: steps.length, label: steps[currentStep - 1]?.label }) }}
+	</p>
 </template>

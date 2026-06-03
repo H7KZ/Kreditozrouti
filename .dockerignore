@@ -1,4 +1,9 @@
 .vscode
+.idea
+.claude
+.gemini
+.github
+
 /data/
 /deployment/
 
@@ -21,6 +26,3 @@
 **/.prettierrc
 **/Dockerfile
 **/eslint.config.js
-
-**/package-lock.json
-**/pnpm-lock.yaml

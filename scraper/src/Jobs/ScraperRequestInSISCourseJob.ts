@@ -1,17 +1,21 @@
+import type { ScraperInSISCourse } from '@scraper/types/insis'
+import type { ScraperInSISCourseRequestJob } from '@scraper/types/jobs'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import ScraperInSISCourse from '@scraper/Interfaces/ScraperInSISCourse'
-import { ScraperInSISCourseRequestJob } from '@scraper/Interfaces/ScraperRequestJob'
+import { InSISNetworkError, InSISParseError } from '@scraper/Errors/InSISErrors'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
-import { InSISQueueService } from '@scraper/Services/InSISQueueService'
+import { QueueService } from '@scraper/Services/QueueService'
 import { withCzechLang } from '@scraper/Utils/HTTPUtils'
 
 /**
  * Scrapes a single InSIS course syllabus page.
  * Extracts course metadata, syllabus content, assessments, timetable,
  * and associated study plan references found on the page.
+ *
+ * Throws InSISNetworkError on HTTP failures (retryable, up to 3 attempts).
+ * Throws InSISParseError on extraction failures (UnrecoverableError, not retried).
  */
-export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCourseRequestJob): Promise<ScraperInSISCourse | null> {
+export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCourseRequestJob): Promise<ScraperInSISCourse> {
     const courseId = ExtractInSISCourseService.extractIdFromUrl(data.url)
     const client = createInSISClient('course')
 
@@ -22,24 +26,27 @@ export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCou
 
     const result = await client.get<string>(withCzechLang(data.url))
 
-    if (!result.success) return null
+    if (!result.success) {
+        throw new InSISNetworkError(`HTTP request failed for course ${courseId} at ${data.url}`)
+    }
 
     try {
         const course = ExtractInSISCourseService.extract(result.data, data.url)
 
         if (!course) {
-            LoggerJobContext.add({ error: 'Course extraction returned null' })
-            return null
+            throw new InSISParseError(`Course extraction returned null for ${courseId}`)
         }
 
-        await InSISQueueService.addCourseResponse(course)
+        await QueueService.addCourseResponse(course)
 
         return course
     } catch (error) {
+        if (error instanceof InSISParseError) throw error
+
         LoggerJobContext.add({
             error: 'Extraction error',
             message: (error as Error).message
         })
-        return null
+        throw new InSISParseError(`Extraction error for course ${courseId}: ${(error as Error).message}`)
     }
 }

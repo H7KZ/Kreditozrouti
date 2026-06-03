@@ -1,14 +1,14 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
+import type { MergedUnit } from '@client/composables'
+import type { SelectedCourseUnit } from '@client/types'
+import type { InSISDay } from '@shared/domain/insis'
+import { ref, toRef } from 'vue'
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
-import type { MergedUnit } from '@client/composables'
 import { isMergedUnit, useCourseLabels, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useDragStore, useTimetableStore } from '@client/stores'
-import type { SelectedCourseUnit } from '@client/types'
-import type InSISDay from '@scraper/Types/InSISDay'
-import { ref, toRef } from 'vue'
 
 /*
  * TimetableGrid
@@ -103,74 +103,81 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 </script>
 
 <template>
-	<div ref="gridRef" class="relative overflow-x-auto">
-		<table class="insis-timetable w-full">
-			<!-- Header with time slots -->
-			<thead>
-				<tr>
-					<th class="w-[50px] min-w-[50px] bg-[var(--insis-header-bg)] text-center align-middle">
-						{{ $t('components.timetable.TimetableGrid.dayHeader') }}
-					</th>
-					<th v-for="slot in timeSlots" :key="slot.minutes" class="text-center align-middle whitespace-nowrap px-2" :style="{ minWidth: '80px' }">
-						{{ slot.label }}
-					</th>
-				</tr>
-			</thead>
+	<div class="relative">
+		<div ref="gridRef" class="overflow-x-auto">
+			<table class="insis-timetable w-full">
+				<!-- Header with time slots -->
+				<thead>
+					<tr>
+						<th class="sticky left-0 z-10 w-[50px] min-w-[50px] bg-[var(--insis-header-bg)] text-center align-middle">
+							{{ $t('components.timetable.TimetableGrid.dayHeader') }}
+						</th>
+						<th v-for="slot in timeSlots" :key="slot.minutes" class="px-2 text-center align-middle whitespace-nowrap" :style="{ minWidth: '80px' }">
+							{{ slot.label }}
+						</th>
+					</tr>
+				</thead>
 
-			<!-- Body with days and course blocks -->
-			<tbody>
-				<tr v-for="day in WEEKDAYS" :key="day" class="day-row-container">
-					<!-- Day label -->
-					<td class="w-[50px] min-w-[50px] font-medium bg-white border-r border-[var(--insis-border)] text-center align-middle">
-						{{ getShortDayLabel(day) }}
-					</td>
+				<!-- Body with days and course blocks -->
+				<tbody>
+					<tr v-for="day in WEEKDAYS" :key="day" class="day-row-container">
+						<!-- Day label -->
+						<td
+							class="sticky left-0 z-10 w-[50px] min-w-[50px] border-r border-[var(--insis-border)] bg-[var(--insis-surface)] text-center align-middle font-medium"
+						>
+							{{ getShortDayLabel(day) }}
+						</td>
 
-					<!-- Time grid cell spanning all columns -->
-					<td
-						:colspan="timeSlots.length"
-						class="day-row cursor-crosshair hover:bg-[var(--insis-gray-50)] relative p-0"
-						:style="{ height: `${rowHeight}px` }"
-						:data-day="day"
-						@mousedown="handleMouseDown($event, day)"
-					>
-						<!-- Background grid lines (every hour) -->
-						<div class="pointer-events-none absolute inset-0 flex">
-							<div
-								v-for="(slot, idx) in timeSlots"
-								:key="slot.minutes"
-								class="h-full w-full border-r border-[var(--insis-border-light)]"
-								:class="{
-									'border-r-0': idx === timeSlots.length - 1,
-								}"
+						<!-- Time grid cell spanning all columns -->
+						<td
+							:colspan="timeSlots.length"
+							class="day-row relative cursor-crosshair p-0 hover:bg-[var(--insis-gray-50)]"
+							:style="{ height: `${rowHeight}px` }"
+							:data-day="day"
+							@mousedown="handleMouseDown($event, day)"
+						>
+							<!-- Background grid lines (every hour) -->
+							<div class="pointer-events-none absolute inset-0 flex">
+								<div
+									v-for="(slot, idx) in timeSlots"
+									:key="slot.minutes"
+									class="h-full w-full border-r border-[var(--insis-border-light)]"
+									:class="{
+										'border-r-0': idx === timeSlots.length - 1,
+									}"
+								/>
+							</div>
+
+							<!-- Drag selection overlay (horizontal) -->
+							<template v-if="getDragSelectionStyleForDay(day) as Record<string, string> | null">
+								<div
+									class="pointer-events-none absolute top-0 bottom-0 bg-[var(--insis-block-selected)] opacity-50"
+									:style="getDragSelectionStyleForDay(day)!"
+								/>
+							</template>
+
+							<!-- Course blocks (positioned horizontally) - using merged units -->
+							<TimetableCourseBlock
+								v-for="unit in getMergedUnitsForDay(day)"
+								:key="isMergedUnit(unit) ? `merged-${unit.slotId}` : unit.slotId"
+								:unit="unit"
+								:style="getBlockStyle(unit, day)"
+								:has-conflict="hasConflict(unit)"
+								:has-campus-conflict="hasCampusConflict(unit)"
+								:is-merged="isMergedUnit(unit)"
+								:merged-count="isMergedUnit(unit) ? unit.mergedCount : undefined"
+								:date-range="isMergedUnit(unit) ? unit.dateRange : undefined"
+								@click="handleCourseBlockClick(unit)"
+								@remove="handleRemoveUnit(unit)"
 							/>
-						</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
-						<!-- Drag selection overlay (horizontal) -->
-						<template v-if="getDragSelectionStyleForDay(day) as Record<string, string> | null">
-							<div
-								class="pointer-events-none absolute top-0 bottom-0 bg-[var(--insis-block-selected)] opacity-50"
-								:style="getDragSelectionStyleForDay(day)!"
-							/>
-						</template>
-
-						<!-- Course blocks (positioned horizontally) - using merged units -->
-						<TimetableCourseBlock
-							v-for="unit in getMergedUnitsForDay(day)"
-							:key="isMergedUnit(unit) ? `merged-${unit.slotId}` : unit.slotId"
-							:unit="unit"
-							:style="getBlockStyle(unit, day)"
-							:has-conflict="hasConflict(unit)"
-							:has-campus-conflict="hasCampusConflict(unit)"
-							:is-merged="isMergedUnit(unit)"
-							:merged-count="isMergedUnit(unit) ? unit.mergedCount : undefined"
-							:date-range="isMergedUnit(unit) ? unit.dateRange : undefined"
-							@click="handleCourseBlockClick(unit)"
-							@remove="handleRemoveUnit(unit)"
-						/>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<!-- Right-edge scroll affordance -->
+		<div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[var(--insis-surface)] to-transparent" />
 
 		<!-- Drag-to-filter popover -->
 		<TimetableDragPopover

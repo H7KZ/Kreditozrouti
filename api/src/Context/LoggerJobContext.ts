@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'async_hooks'
-import pino from 'pino'
+import { logger } from '@api/logger'
 
 export interface JobWideEvent {
 	job_id: string
@@ -25,7 +25,7 @@ const LoggerJobContext = {
 
 	add: (context: Partial<JobWideEvent>) => {
 		const store = LoggerJobStorage.getStore()
-		if (store) Object.entries(context).forEach(([key, value]) => store.set(key, value))
+		if (store) for (const [key, value] of Object.entries(context)) store.set(key, value)
 	},
 
 	get: (): Partial<JobWideEvent> => {
@@ -33,14 +33,7 @@ const LoggerJobContext = {
 		return store ? Object.fromEntries(store) : {}
 	},
 
-	log: pino({
-		formatters: {
-			level: label => {
-				return { level: label.toUpperCase() }
-			}
-		},
-		timestamp: pino.stdTimeFunctions.isoTime
-	})
+	log: logger.child({ context: 'job' })
 }
 
 export default LoggerJobContext

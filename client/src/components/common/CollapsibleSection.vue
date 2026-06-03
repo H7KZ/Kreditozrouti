@@ -14,6 +14,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const isOpen = ref(props.defaultOpen)
+const contentId = `collapsible-content-${Math.random().toString(36).slice(2, 9)}`
 
 function toggle() {
 	isOpen.value = !isOpen.value
@@ -23,7 +24,9 @@ function toggle() {
 <template>
 	<button
 		type="button"
-		class="flex cursor-pointer w-full items-center justify-between py-1 px-1 -mx-1 rounded-[3px] text-left hover:bg-[var(--insis-surface-2)] transition-colors duration-100"
+		class="-mx-1 flex w-full cursor-pointer items-center justify-between rounded-[3px] px-1 py-1 text-left transition-colors duration-100 hover:bg-[var(--insis-surface-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--insis-blue)]"
+		:aria-expanded="isOpen"
+		:aria-controls="contentId"
 		@click="toggle"
 	>
 		<span class="insis-label mb-0 flex items-center gap-1.5">
@@ -32,9 +35,9 @@ function toggle() {
 				{{ badge }}
 			</span>
 		</span>
-		<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': isOpen }]" />
+		<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': isOpen }]" aria-hidden="true" />
 	</button>
-	<div v-show="isOpen" class="mt-2">
+	<div v-show="isOpen" :id="contentId" class="mt-2">
 		<slot />
 	</div>
 </template>

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { CoursesFilter } from '@api/Validations/CoursesFilterValidation.ts'
+import type { CoursesFilter } from '@shared/http/courses'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
 import CourseStatusFilter from '@client/components/filters/CourseStatusFilter.vue'
 import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
 import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
 import { useDebouncedFn } from '@client/composables'
 import { useCompletedCoursesStore, useCoursesStore, useFiltersStore, useTimetableStore, useUIStore } from '@client/stores'
-import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import IconCalendarX from '~icons/lucide/calendar-x'
 import IconCircleCheck from '~icons/lucide/circle-check'
 import IconFilter from '~icons/lucide/filter'
@@ -36,12 +36,26 @@ const completedCoursesStore = useCompletedCoursesStore()
 const uiStore = useUIStore()
 
 const localTitleSearch = ref(filtersStore.filters.title ?? '')
+const syllabusSearchValue = ref(filtersStore.filters.search ?? '')
 
 // Debounced search using composable
 const debouncedFetchCourses = useDebouncedFn(() => {
 	filtersStore.setFilter('title', localTitleSearch.value)
+	if (localTitleSearch.value) {
+		syllabusSearchValue.value = ''
+		filtersStore.setFilter('search', '')
+	}
 	coursesStore.fetchCourses()
 }, 750)
+
+const debouncedFetchSyllabusSearch = useDebouncedFn(() => {
+	filtersStore.setFilter('search', syllabusSearchValue.value)
+	if (syllabusSearchValue.value) {
+		localTitleSearch.value = ''
+		filtersStore.setFilter('title', '')
+	}
+	coursesStore.fetchCourses()
+}, 800)
 
 // Facet configuration for dynamic rendering
 const facetConfig = computed(() => [
@@ -169,9 +183,16 @@ function handleTitleSearchInput(event: Event) {
 	debouncedFetchCourses()
 }
 
+function handleSyllabusSearchInput(event: Event) {
+	const target = event.target as HTMLInputElement
+	syllabusSearchValue.value = target.value
+	debouncedFetchSyllabusSearch()
+}
+
 function handleResetFilters() {
 	coursesStore.resetFilters()
 	localTitleSearch.value = ''
+	syllabusSearchValue.value = ''
 	coursesStore.fetchCourses()
 }
 
@@ -181,72 +202,89 @@ function handleCloseMobileFilter() {
 </script>
 
 <template>
-	<aside
-		:class="[
-			'insis-search-panel h-full overflow-y-auto',
-			'fixed inset-y-0 left-0 z-30 width-fit transition-transform lg:relative lg:translate-x-0',
-			uiStore.mobileFilterOpen ? 'translate-x-0 w-full' : '-translate-x-full',
-		]"
-	>
+	<aside class="insis-search-panel h-full overflow-y-auto">
 		<!-- Mobile header -->
 		<div class="flex items-center justify-between border-b border-[var(--insis-border)] p-3 lg:hidden">
 			<div class="flex items-center gap-2 font-medium">
-				<IconFilter class="h-4 w-4" />
+				<IconFilter class="h-4 w-4" aria-hidden="true" />
 				{{ $t('common.filters') }}
 			</div>
-			<button type="button" class="insis-btn-text" @click="handleCloseMobileFilter">
-				<IconX class="h-5 w-5" />
+			<button type="button" class="insis-btn-text" :aria-label="$t('common.closeFilters')" @click="handleCloseMobileFilter">
+				<IconX class="h-5 w-5" aria-hidden="true" />
 			</button>
 		</div>
 
 		<!-- Header with reset button -->
 		<div class="mb-4 flex items-center justify-between">
 			<div v-if="!uiStore.mobileFilterOpen" class="flex items-center gap-2 text-sm font-medium text-[var(--insis-gray-900)]">
-				<IconFilter class="h-4 w-4" />
+				<IconFilter class="h-4 w-4" aria-hidden="true" />
 				{{ $t('common.filters') }}
-				<span v-if="filtersStore.activeFilterCount > 0" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-xs text-white">
+				<span
+					v-if="filtersStore.activeFilterCount > 0"
+					class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-xs text-white"
+					:aria-label="$t('components.filters.FilterPanel.activeFilterCount', { count: filtersStore.activeFilterCount })"
+				>
 					{{ filtersStore.activeFilterCount }}
 				</span>
 			</div>
-			<button v-if="filtersStore.hasActiveFilters" type="button" class="insis-btn-text flex items-center gap-1 text-xs" @click="handleResetFilters">
-				<IconRotateCcw class="h-3 w-3" />
+			<button
+				v-if="filtersStore.hasActiveFilters"
+				type="button"
+				class="insis-btn-text flex items-center gap-1 text-xs"
+				:aria-label="$t('common.reset')"
+				@click="handleResetFilters"
+			>
+				<IconRotateCcw class="h-3 w-3" aria-hidden="true" />
 				{{ $t('common.reset') }}
 			</button>
 		</div>
 
 		<!-- Completed Courses Toggle -->
-		<div v-if="hasCompletedCourses" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
+		<div v-if="hasCompletedCourses" class="mb-3 border-b border-[var(--insis-border-light)] pb-3 last:mb-0 last:border-b-0">
 			<div class="flex items-center justify-between">
 				<span class="insis-label mb-0 flex items-center gap-1.5">
-					<IconCircleCheck class="h-4 w-4 text-[var(--insis-success)]" />
+					<IconCircleCheck class="h-4 w-4 text-[var(--insis-success)]" aria-hidden="true" />
 					{{ $t('components.filters.FilterPanel.completedCourses') }}
 				</span>
-				<span class="text-xs text-[var(--insis-gray-500)]">
+				<span
+					class="text-xs text-[var(--insis-gray-500)]"
+					:aria-label="$t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount })"
+				>
 					{{ $t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount }) }}
 				</span>
 			</div>
-			<label class="mt-2 flex items-center gap-2 cursor-pointer text-sm text-[var(--insis-gray-600)]">
-				<input type="checkbox" class="insis-checkbox" :checked="!isHidingCompletedCourses" @change="toggleShowCompletedCourses" />
+			<label class="mt-2 flex cursor-pointer items-center gap-2 text-sm text-[var(--insis-gray-600)]">
+				<input
+					type="checkbox"
+					class="insis-checkbox"
+					:checked="!isHidingCompletedCourses"
+					:aria-label="$t('components.filters.FilterPanel.showCompletedCourses')"
+					@change="toggleShowCompletedCourses"
+				/>
 				{{ $t('components.filters.FilterPanel.showCompletedCourses') }}
 			</label>
 		</div>
 
 		<!-- Timetable Collision Exclusion Toggle -->
-		<div v-if="hasSelectedCourses" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
+		<div v-if="hasSelectedCourses" class="mb-3 border-b border-[var(--insis-border-light)] pb-3 last:mb-0 last:border-b-0">
 			<div class="flex items-center justify-between">
 				<span class="insis-label mb-0 flex items-center gap-1.5">
-					<IconCalendarX class="h-4 w-4 text-[var(--insis-danger)]" />
+					<IconCalendarX class="h-4 w-4 text-[var(--insis-danger)]" aria-hidden="true" />
 					{{ $t('components.filters.FilterPanel.timetableConflicts') }}
 				</span>
-				<span class="text-xs text-[var(--insis-gray-500)]">
+				<span
+					class="text-xs text-[var(--insis-gray-500)]"
+					:aria-label="$t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount })"
+				>
 					{{ $t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount }) }}
 				</span>
 			</div>
-			<label class="mt-2 flex items-center gap-2 cursor-pointer text-sm text-[var(--insis-gray-600)]">
+			<label class="mt-2 flex cursor-pointer items-center gap-2 text-sm text-[var(--insis-gray-600)]">
 				<input
 					type="checkbox"
 					class="insis-checkbox"
 					:checked="filtersStore.hideConflictingCourses"
+					:aria-label="$t('components.filters.FilterPanel.hideConflictingCourses')"
 					@change="coursesStore.toggleHideConflictingCourses()"
 				/>
 				{{ $t('components.filters.FilterPanel.hideConflictingCourses') }}
@@ -259,28 +297,50 @@ function handleCloseMobileFilter() {
 		<!-- Course Status Filter (replaces FilterQuickTags) -->
 		<CourseStatusFilter v-if="hasSelectedCourses" />
 
-		<div class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
+		<div class="mb-3 border-b border-[var(--insis-border-light)] pb-3 last:mb-0 last:border-b-0">
 			<!-- Title Search -->
-			<div class="flex-1 w-full py-1">
+			<div class="w-full flex-1 py-1">
 				<label class="insis-label" for="title-search">
 					{{ $t('components.filters.FilterPanel.searchLabel') }}
 				</label>
 				<div class="relative">
-					<Search class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
+					<Search class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" aria-hidden="true" />
 					<input
 						id="title-search"
 						type="text"
 						class="insis-input pl-9"
 						:placeholder="$t('components.filters.FilterPanel.searchPlaceholder')"
 						:value="localTitleSearch"
+						:aria-label="$t('components.filters.FilterPanel.searchLabel')"
 						@input="handleTitleSearchInput"
 					/>
 				</div>
 			</div>
+
+			<!-- Full-Text Search -->
+			<div class="mt-2 w-full flex-1 space-y-1 py-1">
+				<label class="text-xs font-medium text-[var(--insis-text-2)]" for="syllabus-search">
+					{{ $t('filters.syllabusSearch') }}
+				</label>
+				<div class="relative">
+					<input
+						id="syllabus-search"
+						v-model="syllabusSearchValue"
+						type="text"
+						:placeholder="$t('filters.syllabusSearchPlaceholder')"
+						class="insis-input w-full pl-8 text-sm"
+						@input="handleSyllabusSearchInput"
+					/>
+					<Search class="absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-[var(--insis-gray-400)]" />
+				</div>
+				<p class="text-[10px] text-[var(--insis-text-3)]">
+					{{ $t('filters.syllabusSearchHint') }}
+				</p>
+			</div>
 		</div>
 
 		<!-- Time Range Filter (collapsible) -->
-		<div class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
+		<div class="mb-3 border-b border-[var(--insis-border-light)] pb-3 last:mb-0 last:border-b-0">
 			<CollapsibleSection
 				:title="$t('components.filters.FilterPanel.timeRestriction')"
 				:badge="activeTimeFilterCount > 0 ? activeTimeFilterCount : undefined"
@@ -291,7 +351,7 @@ function handleCloseMobileFilter() {
 		</div>
 
 		<!-- Dynamic Facet Filters -->
-		<div v-for="facet in visibleFacets" :key="facet.key" class="border-b border-[var(--insis-border-light)] pb-3 mb-3 last:border-b-0 last:mb-0">
+		<div v-for="facet in visibleFacets" :key="facet.key" class="mb-3 border-b border-[var(--insis-border-light)] pb-3 last:mb-0 last:border-b-0">
 			<FilterCheckboxGroup
 				:label="facet.label"
 				:facets="facet.facets"
@@ -299,7 +359,7 @@ function handleCloseMobileFilter() {
 				:selected="facet.selected?.map(String) ?? []"
 				:searchable="facet.searchable"
 				:default-collapsed="facet.defaultCollapsed"
-				@update:selected="(values) => handleFilterChange(facet.setter, values)"
+				@update:selected="(values: string[]) => handleFilterChange(facet.setter, values)"
 			/>
 		</div>
 	</aside>

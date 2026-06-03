@@ -61,7 +61,7 @@ jobs:
 
       - name: Prepare Target Directory
         if: ${{ inputs.clean_target }}
-        uses: appleboy/ssh-action@v1.2.4
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -88,7 +88,7 @@ jobs:
           rm: false
 
       - name: Verify Upload
-        uses: appleboy/ssh-action@v1.2.4
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}

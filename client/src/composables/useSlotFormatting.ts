@@ -1,4 +1,4 @@
-import type { CourseUnitSlot } from '@api/Database/types'
+import type { CourseUnitSlotDTO } from '@shared/http/responses'
 import { useCourseLabels, useTimeUtils } from '@client/composables'
 import { i18n } from '@client/index.ts'
 import { getDayFromDate, parseDateString } from '@client/utils/day.ts'
@@ -30,7 +30,7 @@ export function useSlotFormatting() {
 	 * @param slot - The slot to format
 	 * @returns Formatted slot info string
 	 */
-	function formatSlotInfo(slot: CourseUnitSlot): string {
+	function formatSlotInfo(slot: CourseUnitSlotDTO): string {
 		const parts: string[] = []
 
 		// Day from recurring schedule
@@ -69,7 +69,7 @@ export function useSlotFormatting() {
 	 * @param slot - The slot to format
 	 * @returns Day label or '-' if no day info
 	 */
-	function formatSlotDay(slot: CourseUnitSlot): string {
+	function formatSlotDay(slot: CourseUnitSlotDTO): string {
 		if (slot.day) {
 			return getShortDayLabel(slot.day)
 		}
@@ -90,7 +90,7 @@ export function useSlotFormatting() {
 	 * @param slot - The slot to format
 	 * @returns Time range string
 	 */
-	function formatSlotTime(slot: CourseUnitSlot): string {
+	function formatSlotTime(slot: CourseUnitSlotDTO): string {
 		return formatTimeRange(slot.time_from, slot.time_to)
 	}
 
@@ -100,7 +100,7 @@ export function useSlotFormatting() {
 	 * @param slot - The slot to format
 	 * @returns Location string or '-' if not available
 	 */
-	function formatSlotLocation(slot: CourseUnitSlot): string {
+	function formatSlotLocation(slot: CourseUnitSlotDTO): string {
 		return slot.location || '-'
 	}
 
@@ -110,7 +110,7 @@ export function useSlotFormatting() {
 	 * @param slot - The slot to format
 	 * @returns Formatted date or null if no date
 	 */
-	function formatSlotDate(slot: CourseUnitSlot): string | null {
+	function formatSlotDate(slot: CourseUnitSlotDTO): string | null {
 		if (!slot.date) return null
 
 		const date = parseDateString(slot.date)
@@ -120,14 +120,14 @@ export function useSlotFormatting() {
 	/**
 	 * Check if a slot is a block/single-occurrence slot (has date, no recurring day).
 	 */
-	function isBlockSlot(slot: CourseUnitSlot): boolean {
+	function isBlockSlot(slot: CourseUnitSlotDTO): boolean {
 		return !!slot.date && !slot.day
 	}
 
 	/**
 	 * Check if a slot is a recurring slot (has day, no specific date).
 	 */
-	function isRecurringSlot(slot: CourseUnitSlot): boolean {
+	function isRecurringSlot(slot: CourseUnitSlotDTO): boolean {
 		return !!slot.day && !slot.date
 	}
 
@@ -138,7 +138,7 @@ export function useSlotFormatting() {
 	 * @param slots - Array of slots
 	 * @returns Summary like "Po, St, Pá" or "-" if no slots
 	 */
-	function formatSlotsSummary(slots: CourseUnitSlot[]): string {
+	function formatSlotsSummary(slots: CourseUnitSlotDTO[]): string {
 		if (!slots || slots.length === 0) return '-'
 
 		const daysSet = new Set<string>()

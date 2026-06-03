@@ -1,0 +1,16 @@
+# ==============================================================================
+# Grafana Alerting: Notification Policies
+# Routes all alerts to the Discord contact point.
+# group_wait: how long to wait before sending the first alert in a group
+# repeat_interval: how long to wait before re-alerting a still-firing alert
+# ==============================================================================
+
+apiVersion: 1
+
+policies:
+  - orgId: 1
+    receiver: discord
+    group_by: [ alertname ]
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 4h

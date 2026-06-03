@@ -1,10 +1,10 @@
-import type { CourseUnitSlot } from '@api/Database/types'
-import type { TimeSelection } from '@api/Validations'
+import type { TimeSelection } from '@shared/domain/time'
+import type { CourseUnitSlotDTO } from '@shared/http/responses'
+import { computed } from 'vue'
 import { useTimeUtils } from '@client/composables'
 import { useFiltersStore } from '@client/stores'
 import { CourseUnitWithSlots } from '@client/types'
 import { getSlotDay } from '@client/utils/day.ts'
-import { computed } from 'vue'
 
 /**
  * Time filter matching composable.
@@ -59,7 +59,7 @@ export function useTimeFilterMatching() {
 	 * @param slot - The slot to check
 	 * @returns True if the slot matches at least one filter
 	 */
-	function slotMatchesTimeFilter(slot: CourseUnitSlot): boolean {
+	function slotMatchesTimeFilter(slot: CourseUnitSlotDTO): boolean {
 		if (!hasActiveTimeFilter.value) return false
 
 		const slotDay = getSlotDay(slot)
@@ -86,7 +86,7 @@ export function useTimeFilterMatching() {
 	 * @param slot - The slot to check
 	 * @returns True if the slot should be excluded
 	 */
-	function slotMatchesExcludeFilter(slot: CourseUnitSlot): boolean {
+	function slotMatchesExcludeFilter(slot: CourseUnitSlotDTO): boolean {
 		if (activeExcludeFilters.value.length === 0) return false
 
 		const slotDay = getSlotDay(slot)
@@ -135,7 +135,7 @@ export function useTimeFilterMatching() {
 		const slots = unit.slots ?? []
 		if (slots.length === 0) return false
 
-		return slots.every((slot: CourseUnitSlot) => slotMatchesTimeFilter(slot))
+		return slots.every((slot: CourseUnitSlotDTO) => slotMatchesTimeFilter(slot))
 	}
 
 	/**
@@ -147,7 +147,7 @@ export function useTimeFilterMatching() {
 	function countMatchingSlots(unit: CourseUnitWithSlots): number {
 		if (!hasActiveTimeFilter.value) return 0
 
-		return (unit.slots ?? []).filter((slot: CourseUnitSlot) => slotMatchesTimeFilter(slot)).length
+		return (unit.slots ?? []).filter((slot: CourseUnitSlotDTO) => slotMatchesTimeFilter(slot)).length
 	}
 
 	/**
@@ -157,7 +157,7 @@ export function useTimeFilterMatching() {
 	 * @param slotType - The type of the slot (lecture, exercise, seminar)
 	 * @returns CSS class string or empty string
 	 */
-	function getSlotHighlightClass(slot: CourseUnitSlot, slotType: 'lecture' | 'exercise' | 'seminar'): string {
+	function getSlotHighlightClass(slot: CourseUnitSlotDTO, slotType: 'lecture' | 'exercise' | 'seminar'): string {
 		if (!slotMatchesTimeFilter(slot)) return ''
 
 		const classes: Record<string, string> = {

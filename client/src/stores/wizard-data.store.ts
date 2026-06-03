@@ -1,9 +1,10 @@
-import type { Course, StudyPlanWithRelations } from '@api/Database/types'
-import type FacetItem from '@api/Interfaces/FacetItem'
+import type { FacetItem } from '@shared/http/facets'
+import type { CourseDTO, StudyPlanWithRelationsDTO } from '@shared/http/responses'
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { i18n } from '@client/i18n'
 import { fetchStudyPlanCourses, fetchStudyPlans } from '@client/services/studyPlanService'
 import { useWizardStore } from '@client/stores/wizard.store'
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
 
 /**
  * Wizard Data Store
@@ -18,14 +19,15 @@ export const useWizardDataStore = defineStore('wizardData', () => {
 	const facultyFacets = ref<FacetItem[]>([])
 	const yearFacets = ref<FacetItem[]>([])
 	const levelFacets = ref<FacetItem[]>([])
-	const studyPlans = ref<StudyPlanWithRelations[]>([])
-	const studyPlanCourses = ref<Course[]>([])
+	const studyPlans = ref<StudyPlanWithRelationsDTO[]>([])
+	const studyPlanCourses = ref<CourseDTO[]>([])
 
 	const loading = ref(false)
 	const studyPlanCoursesLoading = ref(false)
 	const error = ref<string | null>(null)
+	const { t } = i18n.global
 
-	// ── API calls ──────────────────────────────────────────────────────────
+	// API calls
 
 	async function loadInitialFacets() {
 		loading.value = true
@@ -35,7 +37,7 @@ export const useWizardDataStore = defineStore('wizardData', () => {
 			facultyFacets.value = data.facets.faculties
 			yearFacets.value = data.facets.years
 		} catch (e) {
-			error.value = 'Failed to load faculties'
+			error.value = t('stores.wizardData.errors.loadFaculties')
 			console.error('Wizard: Failed to load initial facets', e)
 		} finally {
 			loading.value = false
@@ -51,7 +53,7 @@ export const useWizardDataStore = defineStore('wizardData', () => {
 			const data = await fetchStudyPlans({ faculty_ids: [wizardStore.facultyId], semesters: ['ZS'], limit: 0, offset: 0 })
 			yearFacets.value = data.facets.years
 		} catch (e) {
-			error.value = 'Failed to load years'
+			error.value = t('stores.wizardData.errors.loadYears')
 			console.error('Wizard: Failed to load year facets', e)
 		} finally {
 			loading.value = false
@@ -74,7 +76,7 @@ export const useWizardDataStore = defineStore('wizardData', () => {
 			studyPlans.value = data.data
 			levelFacets.value = data.facets.levels
 		} catch (e) {
-			error.value = 'Failed to load study plans'
+			error.value = t('stores.wizardData.errors.loadStudyPlans')
 			console.error('Wizard: Failed to load study plans', e)
 		} finally {
 			loading.value = false
@@ -90,7 +92,7 @@ export const useWizardDataStore = defineStore('wizardData', () => {
 			const data = await fetchStudyPlanCourses({ study_plan_ids: wizardStore.studyPlanIds })
 			studyPlanCourses.value = data.data
 		} catch (e) {
-			error.value = 'Failed to load courses for study plans'
+			error.value = t('stores.wizardData.errors.loadStudyPlanCourses')
 			console.error('Wizard: Failed to load study plan courses', e)
 		} finally {
 			studyPlanCoursesLoading.value = false
