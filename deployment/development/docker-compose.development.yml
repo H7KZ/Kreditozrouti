@@ -11,7 +11,8 @@
 #   - phpmyadmin: Database management UI
 #
 # Required Environment Variables:
-#   - IMAGE_REGISTRY, IMAGE_PREFIX, IMAGE_TAG: Container image references
+#   - IMAGE_REGISTRY, IMAGE_PREFIX: Container image registry config
+#   - API_IMAGE_TAG, CLIENT_IMAGE_TAG, SCRAPER_IMAGE_TAG: Per-service image tags
 #   - DOMAIN: Primary domain for routing
 #   - PROJECT: Project name for Traefik labels
 #   - MYSQL_*: Database credentials
@@ -27,7 +28,7 @@ services:
   # API Service
   # ============================================================================
   api:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/api:${IMAGE_TAG:-dev-latest}
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/api:${API_IMAGE_TAG:-dev-latest}
     restart: unless-stopped
 
     depends_on:
@@ -114,7 +115,7 @@ services:
   # Scraper Service
   # ============================================================================
   scraper:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/scraper:${IMAGE_TAG:-dev-latest}
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/scraper:${SCRAPER_IMAGE_TAG:-dev-latest}
     restart: unless-stopped
 
     depends_on:
@@ -150,7 +151,7 @@ services:
   # Client Service
   # ============================================================================
   client:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/client:${IMAGE_TAG:-dev-latest}
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/client:${CLIENT_IMAGE_TAG:-dev-latest}
     restart: unless-stopped
 
     depends_on:
@@ -160,7 +161,7 @@ services:
       - ENV=development
       - VITE_API_URL=https://${DOMAIN}/api
       - VITE_FARO_COLLECTOR_URL=https://${DOMAIN}/faro/collect
-      - VITE_APP_VERSION=${IMAGE_TAG:-dev-latest}
+      - VITE_APP_VERSION=${CLIENT_IMAGE_TAG:-dev-latest}
 
     networks:
       - traefik-network
