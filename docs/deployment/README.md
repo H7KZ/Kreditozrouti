@@ -61,11 +61,11 @@ MySQL and Redis are never directly reachable from outside the host.
 
 ## Environments
 
-| Environment | Purpose           | Tag pattern | Domain            |
-|-------------|-------------------|-------------|-------------------|
-| Local       | Developer machine | —           | `localhost`       |
-| Development | VPS staging       | `dev-*.*.*` | `dev.example.com` |
-| Production  | VPS live          | `v*.*.*`    | `example.com`     |
+| Environment | Purpose           | Branch    | Domain            |
+|-------------|-------------------|-----------|-------------------|
+| Local       | Developer machine | —         | `localhost`       |
+| Development | VPS staging       | `develop` | `dev.example.com` |
+| Production  | VPS live          | `main`    | `example.com`     |
 
 ---
 
@@ -73,10 +73,10 @@ MySQL and Redis are never directly reachable from outside the host.
 
 ```
 1. Provision VPS (Ubuntu 22.04+)
-2. Install Docker               → scripts/install-docker.sh
-3. Deploy Traefik               → scripts/traefik.sh
-4. Configure env vars           → ~/variables/.env.prod
-5. Push git tag v*.*.* to repo  → GitHub Actions builds + deploys automatically
+2. Install Docker               → scripts/install-docker.sh (or Docker-ready image)
+3. Set GitHub Secrets           → SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, SSH_PORT + env secrets
+4. Run bootstrap.yml workflow   → deploys Traefik, Monitoring, GitHub Runner, backup cron
+5. Push to main branch          → path-triggered CI builds + deploys each changed service
 6. Verify                       → curl https://example.com/api/health
 ```
 

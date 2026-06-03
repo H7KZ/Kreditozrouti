@@ -100,16 +100,18 @@ Priority rule: API (100) > Bull Board (90) > phpMyAdmin (80+) > Grafana (85) > C
 
 ### Deploy Traefik
 
+Traefik is deployed via the `bootstrap.yml` or `deploy-traefik.yml` GitHub Actions workflows. To run manually:
+
 ```bash
-./scripts/traefik.sh \
-  --path ~/deployment \
-  --domain traefik.example.com \
-  --credentials ~/.htpasswd \
-  --cf-email your@email.com \
-  --cf-token YOUR_CF_TOKEN
+DEPLOYMENT_PATH=~/deployment \
+  TRAEFIK_DOMAIN=traefik.example.com \
+  TRAEFIK_CREDENTIALS_PATH=~/.htpasswd \
+  CF_API_EMAIL=your@email.com \
+  CF_DNS_API_TOKEN=YOUR_CF_TOKEN \
+  bash ~/deployment/traefik/deploy.sh
 ```
 
-See [scripts/INFRASTRUCTURE.md](../scripts/INFRASTRUCTURE.md#traefiksh) for full flag reference.
+See [scripts/INFRASTRUCTURE.md](../scripts/INFRASTRUCTURE.md) for the deploy script reference.
 
 ### Deploy Monitoring Stack
 

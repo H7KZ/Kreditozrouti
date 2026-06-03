@@ -182,11 +182,13 @@ done
 ### Disaster recovery checklist
 
 1. Provision new VPS
-2. `./scripts/install-docker.sh`
+2. Install Docker (run `sudo bash scripts/install-docker.sh` or use a Docker-ready VPS image; log out and back in after)
 3. Restore `~/variables/.env.prod`
-4. `./scripts/traefik.sh ...`
+4. Run the **`bootstrap.yml`** workflow (`workflow_dispatch`) — it deploys Traefik, Monitoring, GitHub Runner, and
+   installs the backup cron automatically
 5. Restore `mysql-data-volume` and `traefik-certificates-volume` from backup
-6. Push a new git tag (or run the deploy workflow manually with `skip-build`)
+6. Run `deploy-all.yml` (`workflow_dispatch`) for the first app deployment — or push to `main`/`develop` and let the
+   path-triggered workflows deploy each service
 7. `curl https://example.com/api/health`
 
 Estimated RTO: 2–4 hours. RPO: 24 hours (daily backups).
@@ -287,8 +289,11 @@ docker compose -p prod up -d
 
 ### Rollback
 
-```bash
-ln -sfn ~/versions/production/v1.1.0 ~/versions/production/current
-cd ~/versions/production/current
-docker compose -p prod up -d
-```
+Rollback is done by re-triggering the relevant per-service workflow with a previous image SHA:
+
+1. GitHub → Actions → `Deploy API` (or `Deploy Client` / `Deploy Scraper`)
+2. **Run workflow** → set `image_tag` to the old short SHA (e.g. `a1b2c3d4`)
+3. Set `skip_build: true` (the image already exists in GHCR)
+4. Select the target environment and run
+
+To roll back all services at once, use `Deploy All Services` (`deploy-all.yml`) with the same inputs.
