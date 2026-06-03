@@ -71,7 +71,11 @@ jobs:
   deploy:
     name: Deploy All to ${{ inputs.environment }}
     needs: [build-api, build-client, build-scraper]
-    if: ${{ always() && (needs.build-api.result == 'success' || needs.build-api.result == 'skipped') }}
+    if: >-
+      ${{ always() &&
+      (needs.build-api.result == 'success' || needs.build-api.result == 'skipped') &&
+      (needs.build-client.result == 'success' || needs.build-client.result == 'skipped') &&
+      (needs.build-scraper.result == 'success' || needs.build-scraper.result == 'skipped') }}
     runs-on: self-hosted
     timeout-minutes: 20
     environment: ${{ inputs.environment }}

@@ -27,7 +27,7 @@ on:
         description: "Short SHA used as the versioned image tag"
         value: ${{ jobs.build.outputs.image_tag }}
       image_prefix:
-        description: "Registry path prefix (e.g. ghcr.io/h7kz/kreditozrouti)"
+        description: "Registry path prefix without registry host (e.g. h7kz/kreditozrouti)"
         value: ${{ jobs.build.outputs.image_prefix }}
 
 jobs:
@@ -52,7 +52,7 @@ jobs:
         id: meta
         run: |
           TAG="${GITHUB_SHA::8}"
-          PREFIX="ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
+          PREFIX="$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
           echo "image_tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "image_prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
           echo "::notice::Building ${{ inputs.service }} image with tag: ${TAG}"
@@ -75,8 +75,8 @@ jobs:
           file: ./${{ inputs.service }}/Dockerfile
           push: true
           tags: |
-            ${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
-            ${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.float_tag }}
+            ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
+            ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.float_tag }}
           cache-from: type=gha,scope=${{ inputs.cache_scope }}
           cache-to: type=gha,mode=max,scope=${{ inputs.cache_scope }}
           platforms: linux/amd64

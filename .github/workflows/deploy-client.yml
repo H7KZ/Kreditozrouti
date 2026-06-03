@@ -33,11 +33,6 @@ on:
         options: [production, development]
         default: production
 
-env:
-  ENVIRONMENT:  ${{ github.event_name == 'workflow_dispatch' && inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'development') }}
-  FLOAT_TAG:    ${{ github.ref == 'refs/heads/main' && 'latest' || 'dev-latest' }}
-  PROJECT_NAME: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
-
 permissions:
   contents: read
   packages: write
@@ -67,5 +62,5 @@ jobs:
       environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'development') }}
       project_name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
       image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build.outputs.image_tag }}
-      image_prefix: ${{ needs.build.outputs.image_prefix }}
+      image_prefix: ${{ needs.build.outputs.image_prefix || github.repository }}
     secrets: inherit
