@@ -152,7 +152,7 @@ jobs:
               echo "ADMIN_EMAIL=$APP_ADMIN_EMAIL"
               echo "GOOGLE_USER=$APP_GOOGLE_USER"
               echo "GOOGLE_APP_PASSWORD=$APP_GOOGLE_APP_PASSWORD"
-              echo "BULL_BOARD_USERS=$APP_BULL_BOARD_USERS"
+              printf 'BULL_BOARD_USERS=%s\n' "$APP_BULL_BOARD_USERS"
             } > "$VERSION_DIR/.env"
             chmod 600 "$VERSION_DIR/.env"
 
@@ -162,6 +162,7 @@ jobs:
               api)     SERVICE_TAG_VAR="API_IMAGE_TAG" ;;
               client)  SERVICE_TAG_VAR="CLIENT_IMAGE_TAG" ;;
               scraper) SERVICE_TAG_VAR="SCRAPER_IMAGE_TAG" ;;
+              *)       echo "Unknown service: '$APP_SERVICE'. Valid: api, client, scraper"; exit 1 ;;
             esac
 
             cd "$VERSION_DIR"
