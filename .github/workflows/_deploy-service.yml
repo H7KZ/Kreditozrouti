@@ -84,8 +84,8 @@ jobs:
           # Non-sensitive (GitHub Variables)
           APP_PROJECT: ${{ vars.PROJECT }}
           APP_DOMAIN: ${{ vars.DOMAIN }}
-          APP_MYSQL_USER: ${{ vars.MYSQL_USER }}
-          APP_MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
+          APP_MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          APP_MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
           # Sensitive (GitHub Secrets)
           APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
           APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
