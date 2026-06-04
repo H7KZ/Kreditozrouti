@@ -8,7 +8,7 @@
 
 ```
 scraper/src/
-├── index.ts / bullmq.ts / sentry.ts
+├── index.ts / bullmq.ts
 ├── Config/Config.ts          # Env vars, InSIS URLs
 ├── Context/LoggerJobContext.ts
 ├── Errors/InSISErrors.ts     # InSISNetworkError, InSISParseError

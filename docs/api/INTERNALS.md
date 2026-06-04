@@ -145,9 +145,9 @@ res.locals.wideEvent = {
     timestamp: new Date().toISOString(),
     environment: config.env,
     service: 'kreditozrouti-api',
-    duration_ms?: number,     // set on finish
-    status_code?: number,     // set on finish
-    user_id?: number,         // set by controllers via LoggerAPIContext.add()
+    duration_ms? : number,     // set on finish
+    status_code? : number,     // set on finish
+    user_id? : number,         // set by controllers via LoggerAPIContext.add()
     // ... other fields controllers add
 }
 ```
@@ -244,7 +244,7 @@ The root pino logger is created once and shared across the process:
 import logger from '@api/logger'
 
 // Root logger — binds service: 'api' and env on every line
-logger.info({ msg: 'startup' })
+logger.info({msg: 'startup'})
 
 // Context loggers are child loggers derived from root:
 // LoggerAPIContext.log  = logger.child({ context: 'http' })
@@ -306,7 +306,7 @@ Re-exported from `@shared/domain/timetable`. Used by the client to sort or compa
 
 ## Logging Infrastructure
 
-All logging is handled by **Pino** via the root logger at `api/src/logger.ts`. There is no Sentry or Morgan dependency.
+All logging is handled by **Pino** via the root logger at `api/src/logger.ts`.
 
 - **Root logger** — binds `service: 'api'` and `env` on every line; level defaults to `debug` locally, `info` in
   production.

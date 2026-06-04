@@ -66,7 +66,6 @@ Study plan syncing follows an equivalent path via `InSIS:StudyPlans` and `InSIS:
 scraper/src/
 ├── index.ts                          # Cluster manager + worker startup
 ├── bullmq.ts                         # Queue and worker initialization
-├── sentry.ts                         # Error tracking integration
 │
 ├── Config/
 │   └── Config.ts                     # Env vars, InSIS URLs, runtime helpers

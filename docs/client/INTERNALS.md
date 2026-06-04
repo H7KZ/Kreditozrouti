@@ -459,12 +459,12 @@ All Vite env vars must be prefixed with `VITE_`:
 
 ## Error Tracking & Observability (`src/faro.ts`)
 
-Browser telemetry is handled by `@grafana/faro-web-sdk`. `@sentry/vue` has been removed.
+Browser telemetry is handled by `@grafana/faro-web-sdk`.
 
 ### Activation
 
 Faro is **opt-in**: it only initialises when `VITE_FARO_COLLECTOR_URL` is set. If the env var is absent,
-`faroModule.init()` is a no-op. This mirrors the previous Sentry behaviour with `VITE_SENTRY_DSN`.
+`faroModule.init()` is a no-op.
 
 ### Initialisation
 
