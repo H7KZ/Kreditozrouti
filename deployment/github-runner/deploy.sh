@@ -4,11 +4,15 @@ set -euo pipefail
 # ==============================================================================
 # Script Name: deploy.sh
 # Description: Deploys self-hosted GitHub Actions runners.
-#              Configuration via environment variables.
+#              Configuration via environment variables or an env file.
 #
-# Usage:       bash ./deploy.sh
+# Usage:       bash ./deploy.sh [--env-file <path>]
 #
-# Required variables (set as environment variables):
+# Options:
+#   --env-file <path>     Path to a file of KEY=VALUE pairs to source before
+#                         validation (useful for local/manual runs)
+#
+# Required variables (set as environment variables or in the env file):
 #   GITHUB_REPO_URL       Repository URL (https://github.com/owner/repo)
 #   GITHUB_ACCESS_TOKEN   Personal Access Token (repo scope)
 #
@@ -22,6 +26,20 @@ readonly SCRIPT_NAME="$(basename "$0")"
 readonly STACK_NAME="global"
 
 source "$(cd "$SCRIPT_DIR/.." && pwd)/lib.sh"
+
+ENV_FILE=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --env-file) ENV_FILE="$2"; shift 2 ;;
+        *) log_error "Unknown argument: $1"; exit 1 ;;
+    esac
+done
+
+if [[ -n "$ENV_FILE" ]]; then
+    [[ -f "$ENV_FILE" ]] || { log_error "Env file not found: $ENV_FILE"; exit 1; }
+    # shellcheck source=/dev/null
+    set -a; source "$ENV_FILE"; set +a
+fi
 
 validate_url() {
     local url="$1"
