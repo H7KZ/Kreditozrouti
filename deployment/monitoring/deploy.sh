@@ -43,10 +43,10 @@ if [[ -n "$ENV_FILE" ]]; then
 fi
 
 main() {
-    [[ -z "${MONITORING_DOMAIN:-}" ]]      && { log_error "DOMAIN not set";                exit 1; }
+    [[ -z "${MONITORING_DOMAIN:-}" ]]      && { log_error "MONITORING_DOMAIN not set";                exit 1; }
     [[ -z "${GRAFANA_ADMIN_PASSWORD:-}" ]] && { log_error "GRAFANA_ADMIN_PASSWORD not set"; exit 1; }
 
-    export MONITORING_DOMAIN
+    export DOMAIN="$MONITORING_DOMAIN"
     export PROJECT="$STACK_NAME"
     export GRAFANA_ADMIN_USER="${GRAFANA_ADMIN_USER:-admin}"
     export GRAFANA_ADMIN_PASSWORD
@@ -67,6 +67,11 @@ main() {
     validate_files "$compose_file" "$networks_config" "$volumes_config"
     create_networks "$networks_config"
     create_volumes "$volumes_config"
+
+    if ! docker network inspect "traefik-network" &>/dev/null; then
+        log "Creating network: traefik-network"
+        docker network create "traefik-network"
+    fi
 
     log "Deploying monitoring stack..."
     docker compose \

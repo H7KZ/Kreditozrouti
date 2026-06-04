@@ -4,6 +4,10 @@
 # ==============================================================================
 
 networks:
+  traefik-network:
+    name: traefik-network
+    external: true
+
   monitoring-network:
     name: monitoring-network
     external: true
