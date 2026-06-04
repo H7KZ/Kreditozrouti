@@ -78,3 +78,12 @@ jobs:
       image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build.outputs.image_tag }}
       image_prefix: ${{ needs.resolve.outputs.image_prefix }}
     secrets: inherit
+
+  cleanup:
+    name: Cleanup Scraper package versions
+    needs: [ deploy ]
+    if: ${{ needs.deploy.result == 'success' }}
+    uses: ./.github/workflows/_cleanup-package.yml
+    with:
+      package-name: scraper
+    secrets: inherit
