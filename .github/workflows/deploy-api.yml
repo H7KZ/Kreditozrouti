@@ -52,15 +52,29 @@ jobs:
       cache_scope: api-${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
     secrets: inherit
 
-  deploy:
-    name: Deploy API
+  resolve:
+    name: Resolve Image Prefix
+    runs-on: self-hosted
     needs: [ build ]
     if: ${{ always() && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
+    outputs:
+      image_prefix: ${{ steps.prefix.outputs.value }}
+    steps:
+      - name: Compute lowercase prefix
+        id: prefix
+        run: |
+          RAW="${{ needs.build.outputs.image_prefix || github.repository }}"
+          echo "value=${RAW,,}" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy API
+    needs: [ build, resolve ]
+    if: ${{ always() && (needs.build.result == 'success' || needs.build.result == 'skipped') && needs.resolve.result == 'success' }}
     uses: ./.github/workflows/_deploy-service.yml
     with:
       service: api
       environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'development') }}
-      project_name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+      project_name: ${{ (github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'prod') || github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
       image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build.outputs.image_tag }}
-      image_prefix: ${{ needs.build.outputs.image_prefix || github.repository }}
+      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
     secrets: inherit

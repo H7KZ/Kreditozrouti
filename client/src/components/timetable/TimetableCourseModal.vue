@@ -215,12 +215,12 @@ onUnmounted(() => {
 <template>
 	<Teleport to="body">
 		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" @click="handleBackdropClick">
-			<div ref="modalRef" class="modal max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-lg bg-[var(--insis-surface)] shadow-xl">
+			<div ref="modalRef" class="modal max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-lg bg-(--insis-surface) shadow-xl">
 				<!-- Header -->
-				<div class="flex items-center justify-between border-b border-[var(--insis-border)] bg-[var(--insis-header-bg)] px-4 py-3">
+				<div class="flex items-center justify-between border-b border-(--insis-border) bg-(--insis-header-bg) px-4 py-3">
 					<div class="flex items-center gap-2">
 						<span class="insis-course-code font-medium">{{ unit.courseIdent }}</span>
-						<span class="text-[var(--insis-gray-600)]">{{ getUnitCourseTitle(unit) }}</span>
+						<span class="text-(--insis-gray-600)">{{ getUnitCourseTitle(unit) }}</span>
 					</div>
 					<button type="button" class="insis-btn-text" @click="handleClose">
 						<IconX class="h-5 w-5" />
@@ -229,7 +229,7 @@ onUnmounted(() => {
 
 				<!-- Loading State -->
 				<div v-if="loading" class="flex items-center justify-center p-8">
-					<IconLoader class="h-8 w-8 animate-spin text-[var(--insis-blue)]" />
+					<IconLoader class="h-8 w-8 animate-spin text-(--insis-blue)" />
 				</div>
 
 				<!-- Error State -->
@@ -244,28 +244,28 @@ onUnmounted(() => {
 					<div class="grid gap-6 lg:grid-cols-2">
 						<!-- Course Info (uses same label helpers as CourseRowExpanded!) -->
 						<div>
-							<h3 class="mb-3 flex items-center gap-1.5 font-medium text-[var(--insis-gray-900)]">
+							<h3 class="mb-3 flex items-center gap-1.5 font-medium text-(--insis-gray-900)">
 								{{ course.ident }} - {{ getCourseTitle(course) }}
 								<a
 									v-if="course.url"
 									:href="course.url"
 									target="_blank"
 									rel="noopener noreferrer"
-									class="text-[var(--insis-blue)] hover:text-[var(--insis-blue-dark)]"
+									class="text-(--insis-blue) hover:text-(--insis-blue-dark)"
 								>
 									<IconExternalLink class="h-3 w-3" />
 								</a>
 							</h3>
 
 							<dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-								<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.ectsCredits') }}</dt>
+								<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.ectsCredits') }}</dt>
 								<dd class="font-medium">{{ course.ects ?? '-' }}</dd>
 
-								<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.completion') }}</dt>
+								<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.completion') }}</dt>
 								<dd>{{ course.mode_of_completion ? getCompletionLabel(course.mode_of_completion) : '-' }}</dd>
 
 								<template v-if="course.study_plans?.length">
-									<dt class="text-[var(--insis-gray-500)]">{{ $t('components.courses.CourseRowExpanded.category') }}</dt>
+									<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.category') }}</dt>
 									<dd>
 										<span
 											v-for="spc in course.study_plans"
@@ -280,21 +280,21 @@ onUnmounted(() => {
 							</dl>
 
 							<!-- Current Selection Info -->
-							<div class="mt-4 rounded border border-[var(--insis-border)] bg-[var(--insis-gray-50)] p-3">
-								<h4 class="mb-2 text-sm font-medium text-[var(--insis-gray-700)]">
+							<div class="mt-4 rounded border border-(--insis-border) bg-(--insis-gray-50) p-3">
+								<h4 class="mb-2 text-sm font-medium text-(--insis-gray-700)">
 									{{ $t('components.timetable.TimetableCourseModal.selectedSlot') }}
 								</h4>
 								<div class="space-y-1 text-sm">
 									<div class="flex items-center justify-between">
-										<span class="text-[var(--insis-gray-500)]">{{ $t('common.day') }}:</span>
+										<span class="text-(--insis-gray-500)">{{ $t('common.day') }}:</span>
 										<span class="font-medium">{{ dayLabel }}</span>
 									</div>
 									<div class="flex items-center justify-between">
-										<span class="text-[var(--insis-gray-500)]">{{ $t('common.time') }}:</span>
+										<span class="text-(--insis-gray-500)">{{ $t('common.time') }}:</span>
 										<span class="font-medium">{{ timeRange }}</span>
 									</div>
 									<div v-if="unit.location" class="flex items-center justify-between">
-										<span class="text-[var(--insis-gray-500)]">{{ $t('common.location') }}:</span>
+										<span class="text-(--insis-gray-500)">{{ $t('common.location') }}:</span>
 										<span>{{ unit.location }}</span>
 									</div>
 								</div>
@@ -304,7 +304,7 @@ onUnmounted(() => {
 						<!-- Unit Selection (uses same selection logic as CourseRowExpanded!) -->
 						<div>
 							<div class="mb-3 flex items-center justify-between">
-								<h4 class="font-medium text-[var(--insis-gray-900)]">
+								<h4 class="font-medium text-(--insis-gray-900)">
 									{{ $t('components.courses.CourseRowExpanded.unitSelection') }}
 								</h4>
 								<span v-if="isSelectionComplete" class="insis-badge insis-badge-success">
@@ -317,7 +317,7 @@ onUnmounted(() => {
 							<div class="space-y-4">
 								<div v-for="[key, group] in unitsByGroup" :key="key">
 									<div class="mb-2 flex items-center gap-2">
-										<span class="text-sm font-medium text-[var(--insis-gray-700)]">
+										<span class="text-sm font-medium text-(--insis-gray-700)">
 											{{ getUnitTypesGroupLabel(group.types) }}
 										</span>
 										<span v-if="isGroupSatisfied(group.types)" class="insis-badge insis-badge-success text-xs">
@@ -332,18 +332,18 @@ onUnmounted(() => {
 											class="rounded border text-sm transition-colors"
 											:class="
 												isUnitSelected(courseUnit.id)
-													? 'border-[var(--insis-success)] bg-[var(--insis-success-light)]'
-													: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue)]'
+													? 'border-(--insis-success) bg-(--insis-success-light)'
+													: 'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue)'
 											"
 										>
 											<div class="flex items-start justify-between p-2">
 												<div class="flex flex-col gap-1">
 													<div v-for="slot in courseUnit.slots" :key="slot.id" class="flex items-center gap-3">
-														<span class="w-8 shrink-0 rounded bg-[var(--insis-gray-200)] px-1 py-0.5 text-center text-xs">
+														<span class="w-8 shrink-0 rounded bg-(--insis-gray-200) px-1 py-0.5 text-center text-xs">
 															{{ getShortUnitTypeLabel(getSlotType(slot)) }}
 														</span>
 														<span class="font-medium">{{ formatSlotInfo(slot) }}</span>
-														<span class="truncate text-[var(--insis-gray-600)]">{{ slot.location || '-' }}</span>
+														<span class="truncate text-(--insis-gray-600)">{{ slot.location || '-' }}</span>
 													</div>
 
 													<div v-if="courseUnit.capacity !== undefined" class="mt-1 pl-[44px]">
@@ -389,7 +389,7 @@ onUnmounted(() => {
 													<template v-if="isUnitSelected(courseUnit.id)">
 														<button
 															type="button"
-															class="insis-btn bg-[var(--insis-surface)] px-3 py-1.5 text-xs hover:border-[var(--insis-danger)]"
+															class="insis-btn bg-(--insis-surface) px-3 py-1.5 text-xs hover:border-(--insis-danger)"
 															@click.stop="handleRemoveUnit(courseUnit)"
 														>
 															<IconMinus class="h-4 w-4" />
@@ -417,8 +417,8 @@ onUnmounted(() => {
 				</div>
 
 				<!-- Footer -->
-				<div class="flex items-center justify-between border-t border-[var(--insis-border)] bg-[var(--insis-gray-50)] px-4 py-3">
-					<button type="button" class="insis-btn-text flex items-center gap-1 text-sm text-[var(--insis-danger)]" @click="handleRemoveCourseAndClose">
+				<div class="flex items-center justify-between border-t border-(--insis-border) bg-(--insis-gray-50) px-4 py-3">
+					<button type="button" class="insis-btn-text flex items-center gap-1 text-sm text-(--insis-danger)" @click="handleRemoveCourseAndClose">
 						<IconTrash class="h-4 w-4" />
 						{{ $t('components.timetable.TimetableCourseModal.removeFromTimetable') }}
 					</button>

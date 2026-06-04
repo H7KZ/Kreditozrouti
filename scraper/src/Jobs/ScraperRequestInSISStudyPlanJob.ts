@@ -22,8 +22,12 @@ export default async function ScraperRequestInSISStudyPlanJob(data: ScraperInSIS
     const result = await client.get<string>(data.url)
 
     if (!result.success) {
-        redis.incr('metrics:scraper:silent_failures:study_plan').catch(() => {})
-        redis.expire('metrics:scraper:silent_failures:study_plan', 604800).catch(() => {})
+        redis.incr('metrics:scraper:silent_failures:study_plan').catch(() => {
+            /* empty */
+        })
+        redis.expire('metrics:scraper:silent_failures:study_plan', 604800).catch(() => {
+            /* empty */
+        })
         return null
     }
 
@@ -36,8 +40,12 @@ export default async function ScraperRequestInSISStudyPlanJob(data: ScraperInSIS
             error: 'Extraction error',
             message: (error as Error).message
         })
-        redis.incr('metrics:scraper:silent_failures:study_plan').catch(() => {})
-        redis.expire('metrics:scraper:silent_failures:study_plan', 604800).catch(() => {})
+        redis.incr('metrics:scraper:silent_failures:study_plan').catch(() => {
+            /* empty */
+        })
+        redis.expire('metrics:scraper:silent_failures:study_plan', 604800).catch(() => {
+            /* empty */
+        })
         return null
     }
 }

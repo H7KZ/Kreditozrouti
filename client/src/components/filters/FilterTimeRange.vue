@@ -125,7 +125,7 @@ function formatFilter(filter: TimeSelection): string {
 			<button
 				v-if="activeTimeFilters.length > 0"
 				type="button"
-				class="cursor-pointer text-xs text-[var(--insis-link)] hover:underline"
+				class="cursor-pointer text-xs text-(--insis-link) hover:underline"
 				@click="handleClearAllTimeFilers"
 			>
 				{{ $t('common.clearFilter') }}
@@ -139,7 +139,7 @@ function formatFilter(filter: TimeSelection): string {
 				:key="`${filter.type}-${filter.index}`"
 				:class="[
 					'flex items-center justify-between rounded px-2 py-1 text-xs',
-					filter.type === 'include' ? 'bg-[var(--insis-success-light)]' : 'bg-[var(--insis-danger-light)]',
+					filter.type === 'include' ? 'bg-(--insis-success-light)' : 'bg-(--insis-danger-light)',
 				]"
 			>
 				<span>
@@ -148,7 +148,7 @@ function formatFilter(filter: TimeSelection): string {
 				</span>
 				<button
 					type="button"
-					class="ml-2 cursor-pointer hover:text-[var(--insis-danger)]"
+					class="ml-2 cursor-pointer hover:text-(--insis-danger)"
 					:aria-label="$t('common.removeTimeFilter')"
 					@click="handleRemoveTimeFilter(filter.type, filter.index)"
 				>
@@ -164,10 +164,10 @@ function formatFilter(filter: TimeSelection): string {
 		</button>
 
 		<!-- Add filter form -->
-		<div v-else class="rounded border border-[var(--insis-border)] bg-[var(--insis-surface)] p-3">
+		<div v-else class="rounded border border-(--insis-border) bg-(--insis-surface) p-3">
 			<!-- Day selection -->
 			<div class="mb-3">
-				<label class="mb-1 block text-xs text-[var(--insis-gray-600)]" id="day-selection-label">
+				<label class="mb-1 block text-xs text-(--insis-gray-600)" id="day-selection-label">
 					{{ $t('components.filters.FilterTimeRange.dayLabel') }}
 				</label>
 				<div class="flex" role="group" aria-labelledby="day-selection-label">
@@ -188,7 +188,7 @@ function formatFilter(filter: TimeSelection): string {
 			<!-- Time range -->
 			<div class="mb-3 grid grid-cols-2 gap-2">
 				<div>
-					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]" for="time-from"> {{ $t('common.from') }} </label>
+					<label class="mb-1 block text-xs text-(--insis-gray-600)" for="time-from"> {{ $t('common.from') }} </label>
 					<select id="time-from" v-model="timeFrom" class="insis-select" :aria-label="$t('common.from')">
 						<option v-for="opt in timeOptions" :key="opt.value" :value="opt.value">
 							{{ opt.label }}
@@ -196,7 +196,7 @@ function formatFilter(filter: TimeSelection): string {
 					</select>
 				</div>
 				<div>
-					<label class="mb-1 block text-xs text-[var(--insis-gray-600)]" for="time-to"> {{ $t('common.to') }} </label>
+					<label class="mb-1 block text-xs text-(--insis-gray-600)" for="time-to"> {{ $t('common.to') }} </label>
 					<select id="time-to" v-model="timeTo" class="insis-select" :aria-label="$t('common.to')">
 						<option v-for="opt in timeOptions" :key="opt.value" :value="opt.value">
 							{{ opt.label }}
@@ -216,7 +216,7 @@ function formatFilter(filter: TimeSelection): string {
 		</div>
 
 		<!-- Time range slider hint -->
-		<p class="mt-2 text-xs text-[var(--insis-gray-500)]">
+		<p class="mt-2 text-xs text-(--insis-gray-500)">
 			{{
 				$t('components.filters.FilterTimeRange.availableRange', {
 					from: minutesToTime(coursesStore.facets.time_range.min_time),

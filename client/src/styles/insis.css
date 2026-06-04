@@ -4,13 +4,6 @@
 /* =========================================================================
    KREDITOŽROUTI DESIGN SYSTEM
    Component classes expressed via Tailwind @apply utilities.
-   Raw CSS is kept only where @apply is not feasible:
-     - font-family (not configured in Tailwind)
-     - complex multi-property transition values
-     - color-mix() function calls
-     - SVG background-image data URIs
-     - accent-color (not a standard Tailwind utility)
-     - @keyframes / animation declarations
    ========================================================================= */
 
 @layer components {
@@ -20,7 +13,7 @@
 	.insis-btn-secondary,
 	.insis-btn-danger {
 		@apply inline-flex cursor-pointer items-center gap-[5px] rounded-[3px] border border-solid px-3 py-[5px] text-[12.5px] leading-[1.4] font-medium whitespace-nowrap no-underline;
-		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		font-family: var(--insis-font-sans), sans-serif;
 		transition:
 			background 0.12s,
 			border-color 0.12s,
@@ -31,7 +24,7 @@
 	.insis-btn-primary:focus-visible,
 	.insis-btn-secondary:focus-visible,
 	.insis-btn-danger:focus-visible {
-		@apply outline outline-2 outline-offset-[1px] outline-[var(--insis-blue)];
+		@apply outline-2 outline-offset-1 outline-(--insis-blue);
 	}
 
 	.insis-btn:disabled,
@@ -41,39 +34,35 @@
 		@apply cursor-not-allowed opacity-[0.45];
 	}
 
-	/* Default / Secondary button */
 	.insis-btn,
 	.insis-btn-secondary {
-		@apply border-[var(--insis-border-mid)] bg-[var(--insis-surface)] text-[var(--insis-text-2)];
+		@apply border-(--insis-border-mid) bg-(--insis-surface) text-(--insis-text-2);
 	}
 
 	.insis-btn:hover:not(:disabled),
 	.insis-btn-secondary:hover:not(:disabled) {
-		@apply border-[var(--insis-gray-500)] bg-[var(--insis-surface-2)] text-[var(--insis-text)];
+		@apply border-(--insis-gray-500) bg-(--insis-surface-2) text-(--insis-text);
 	}
 
-	/* Primary button */
 	.insis-btn-primary {
-		@apply border-[var(--insis-blue-dark)] bg-[var(--insis-blue)] text-white;
+		@apply border-(--insis-blue-dark) bg-(--insis-blue) text-white!;
 	}
 
 	.insis-btn-primary:hover:not(:disabled) {
-		@apply bg-[var(--insis-blue-dark)];
+		@apply bg-(--insis-blue-dark);
 	}
 
-	/* Danger button */
 	.insis-btn-danger {
-		@apply border-[var(--insis-danger-border)] bg-[var(--insis-surface)] text-[var(--insis-danger)];
+		@apply border-(--insis-danger-border) bg-(--insis-surface) text-(--insis-danger);
 	}
 
 	.insis-btn-danger:hover:not(:disabled) {
-		@apply bg-[var(--insis-danger-light)];
+		@apply bg-(--insis-danger-light);
 	}
 
-	/* Text / ghost button */
 	.insis-btn-text {
-		@apply inline-flex cursor-pointer items-center gap-1 border-0 bg-transparent p-0 text-xs text-[var(--insis-blue)] no-underline;
-		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		@apply inline-flex cursor-pointer items-center gap-1 border-0 bg-transparent p-0 text-xs text-(--insis-blue) no-underline;
+		font-family: var(--insis-font-sans), sans-serif;
 	}
 
 	.insis-btn-text:hover {
@@ -83,8 +72,8 @@
 	/* INPUTS */
 	.insis-input,
 	.insis-select {
-		@apply w-full rounded-[3px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface-2)] px-2 py-[5px] text-[12.5px] text-[var(--insis-text)];
-		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		@apply w-full rounded-[3px] border border-solid border-(--insis-border) bg-(--insis-surface-2) px-2 py-[5px] text-[12.5px] text-(--insis-text);
+		font-family: var(--insis-font-sans), sans-serif;
 		transition:
 			border-color 0.15s,
 			box-shadow 0.15s;
@@ -92,17 +81,17 @@
 
 	.insis-input:focus,
 	.insis-select:focus {
-		@apply border-[var(--insis-blue)] outline-none;
+		@apply border-(--insis-blue) outline-none;
 		box-shadow: 0 0 0 2px color-mix(in srgb, var(--insis-blue) 20%, transparent);
 	}
 
 	.insis-input:disabled,
 	.insis-select:disabled {
-		@apply cursor-not-allowed bg-[var(--insis-gray-200)];
+		@apply cursor-not-allowed bg-(--insis-gray-200);
 	}
 
 	.insis-input::placeholder {
-		@apply text-[var(--insis-text-3)];
+		@apply text-(--insis-text-3);
 	}
 
 	.insis-select {
@@ -119,20 +108,20 @@
 	}
 
 	.insis-label {
-		@apply mb-1 block text-[12.5px] font-medium text-[var(--insis-text)];
+		@apply mb-1 block text-[12.5px] font-medium text-(--insis-text);
 	}
 
 	.insis-checkbox-label {
-		@apply flex cursor-pointer items-center gap-[7px] rounded-[3px] px-1 py-[3px] text-[12.5px] text-[var(--insis-text)];
+		@apply flex cursor-pointer items-center gap-[7px] rounded-[3px] px-1 py-[3px] text-[12.5px] text-(--insis-text);
 		transition: background 0.1s;
 	}
 
 	.insis-checkbox-label:hover {
-		@apply bg-[var(--insis-surface-2)];
+		@apply bg-(--insis-surface-2);
 	}
 
 	.insis-checkbox-label.active {
-		@apply bg-[var(--insis-blue-subtle)];
+		@apply bg-(--insis-blue-subtle);
 	}
 
 	/* TABLE */
@@ -141,7 +130,7 @@
 	}
 
 	.insis-table th {
-		@apply sticky top-0 z-[2] border border-[var(--insis-border)] bg-[var(--insis-surface-2)] px-[10px] py-[6px] text-left text-xs font-medium whitespace-nowrap text-[var(--insis-text-2)];
+		@apply sticky top-0 z-2 border border-(--insis-border) bg-(--insis-surface-2) px-[10px] py-[6px] text-left text-xs font-medium whitespace-nowrap text-(--insis-text-2);
 	}
 
 	.insis-table th.sortable {
@@ -149,11 +138,11 @@
 	}
 
 	.insis-table th.sortable:hover {
-		@apply bg-[var(--insis-bg)];
+		@apply bg-(--insis-bg);
 	}
 
 	.insis-table td {
-		@apply border border-[var(--insis-border)] px-[10px] py-[6px] align-middle;
+		@apply border border-(--insis-border) px-[10px] py-[6px] align-middle;
 	}
 
 	.insis-table-row-clickable {
@@ -162,15 +151,15 @@
 	}
 
 	.insis-table-row-clickable:hover td {
-		@apply bg-[var(--insis-surface-2)];
+		@apply bg-(--insis-surface-2);
 	}
 
 	.insis-table-row-clickable.row-expanded td {
-		@apply bg-[var(--insis-blue-subtle)];
+		@apply bg-(--insis-blue-subtle);
 	}
 
 	.insis-table-row-clickable.row-in-timetable td {
-		@apply bg-[var(--insis-success-light)];
+		@apply bg-(--insis-success-light);
 	}
 
 	.insis-table-dense th,
@@ -181,24 +170,24 @@
 
 	/* TABS */
 	.insis-tabs {
-		@apply flex gap-[2px] border-b border-[var(--insis-border)];
+		@apply flex gap-[2px] border-b border-(--insis-border);
 	}
 
 	.insis-tab {
-		@apply flex cursor-pointer items-center gap-[5px] rounded-t-[3px] border border-b-0 border-solid border-transparent bg-transparent px-[14px] py-[6px] text-[13px] font-normal text-[var(--insis-text-3)];
-		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		@apply flex cursor-pointer items-center gap-[5px] rounded-t-[3px] border border-b-0 border-solid border-transparent bg-transparent px-[14px] py-[6px] text-[13px] font-normal text-(--insis-text-3);
+		font-family: var(--insis-font-sans), sans-serif;
 		transition:
 			color 0.12s,
 			background 0.12s;
 	}
 
 	.insis-tab:hover {
-		@apply bg-[var(--insis-surface-2)] text-[var(--insis-text-2)];
+		@apply bg-(--insis-surface-2) text-(--insis-text-2);
 	}
 
 	.insis-tab-active,
 	.insis-tab.active {
-		@apply z-[1] -mb-px border-[var(--insis-border)] bg-[var(--insis-surface)] font-medium text-[var(--insis-text)] shadow-[var(--insis-shadow-sm)];
+		@apply z-1 -mb-px border-(--insis-border) bg-(--insis-surface) font-medium text-(--insis-text) shadow-(--insis-shadow-sm);
 		border-bottom-color: var(--insis-surface);
 	}
 
@@ -209,65 +198,65 @@
 
 	.insis-badge-success,
 	.insis-badge-green {
-		@apply bg-[var(--insis-success-light)] text-[var(--insis-success)];
+		@apply bg-(--insis-success-light) text-(--insis-success);
 	}
 
 	.insis-badge-warning,
 	.insis-badge-amber {
-		@apply bg-[var(--insis-warning-light)] text-[var(--insis-warning)];
+		@apply bg-(--insis-warning-light) text-(--insis-warning);
 	}
 
 	.insis-badge-danger,
 	.insis-badge-red {
-		@apply bg-[var(--insis-danger-light)] text-[var(--insis-danger)];
+		@apply bg-(--insis-danger-light) text-(--insis-danger);
 	}
 
 	.insis-badge-info,
 	.insis-badge-blue {
-		@apply bg-[var(--insis-blue-light)] text-[var(--insis-blue)];
+		@apply bg-(--insis-blue-light) text-(--insis-blue);
 	}
 
 	.insis-badge-gray {
-		@apply border border-[var(--insis-border)] bg-[var(--insis-surface-2)] text-[var(--insis-text-3)];
+		@apply border border-(--insis-border) bg-(--insis-surface-2) text-(--insis-text-3);
 	}
 
 	.insis-badge-compulsory {
-		@apply bg-[var(--insis-course-compulsory)] text-white;
+		@apply bg-(--insis-course-compulsory) text-white;
 	}
 
 	.insis-badge-elective {
-		@apply bg-[var(--insis-course-elective)] text-[#1a1a1a];
+		@apply bg-(--insis-course-elective) text-[#1a1a1a];
 	}
 
 	.insis-badge-other {
-		@apply bg-[var(--insis-course-other)] text-[#1a1a1a];
+		@apply bg-(--insis-course-other) text-[#1a1a1a];
 	}
 
 	.insis-badge-optional {
-		@apply bg-[var(--insis-course-optional)] text-white;
+		@apply bg-(--insis-course-optional) text-white;
 	}
 
 	/* STATUS CHIPS */
 	.status-chip {
 		@apply inline-flex cursor-pointer items-center gap-1 rounded-xl border border-solid bg-transparent px-[9px] py-[3px] text-[11.5px] font-medium;
-		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		font-family: var(--insis-font-sans), sans-serif;
 		transition: all 0.15s;
 	}
 
 	.chip-green {
-		@apply border-[var(--insis-success-border)] bg-[var(--insis-success-light)] text-[var(--insis-success)];
+		@apply border-(--insis-success-border) bg-(--insis-success-light) text-(--insis-success);
 	}
 
 	.chip-red {
-		@apply border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)] text-[var(--insis-danger)];
+		@apply border-(--insis-danger-border) bg-(--insis-danger-light) text-(--insis-danger);
 	}
 
 	.chip-amber {
-		@apply border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)] text-[var(--insis-warning)];
+		@apply border-(--insis-warning-border) bg-(--insis-warning-light) text-(--insis-warning);
 	}
 
 	.chip-blue {
-		@apply bg-[var(--insis-blue-subtle)] text-[var(--insis-blue)];
+		@apply bg-(--insis-blue-subtle) text-(--insis-blue);
 		border-color: color-mix(in srgb, var(--insis-blue) 30%, transparent);
 	}
 
@@ -289,24 +278,24 @@
 	}
 
 	.insis-panel {
-		@apply border-[var(--insis-panel-border)] bg-[var(--insis-panel-bg)] text-[var(--insis-text-2)];
+		@apply border-(--insis-panel-border) bg-(--insis-panel-bg) text-(--insis-text-2);
 	}
 
 	.insis-panel-info {
-		@apply bg-[var(--insis-info-bg)] text-[var(--insis-text-2)];
+		@apply bg-(--insis-info-bg) text-(--insis-text-2);
 		border-color: color-mix(in srgb, var(--insis-blue) 25%, transparent);
 	}
 
 	.insis-panel-warning {
-		@apply border-[var(--insis-warning-border)] bg-[var(--insis-warning-light)] text-[var(--insis-warning)];
+		@apply border-(--insis-warning-border) bg-(--insis-warning-light) text-(--insis-warning);
 	}
 
 	.insis-panel-danger {
-		@apply border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)] text-[var(--insis-danger)];
+		@apply border-(--insis-danger-border) bg-(--insis-danger-light) text-(--insis-danger);
 	}
 
 	.insis-panel-success {
-		@apply border-[var(--insis-success-border)] bg-[var(--insis-success-light)] text-[var(--insis-success)];
+		@apply border-(--insis-success-border) bg-(--insis-success-light) text-(--insis-success);
 	}
 
 	/* TIMETABLE */
@@ -315,15 +304,15 @@
 	}
 
 	.insis-timetable th {
-		@apply min-w-[70px] border border-[var(--insis-border)] bg-[var(--insis-surface-2)] px-[6px] py-1 text-center text-[11px] font-normal whitespace-nowrap text-[var(--insis-text-2)];
+		@apply min-w-[70px] border border-(--insis-border) bg-(--insis-surface-2) px-[6px] py-1 text-center text-[11px] font-normal whitespace-nowrap text-(--insis-text-2);
 	}
 
 	.insis-timetable td {
-		@apply border border-[var(--insis-border)] p-0 align-top;
+		@apply border border-(--insis-border) p-0 align-top;
 	}
 
 	.insis-timetable .day-header {
-		@apply w-9 min-w-9 bg-[var(--insis-surface-2)] p-1 text-center text-[11.5px] font-semibold text-[var(--insis-text)];
+		@apply w-9 min-w-9 bg-(--insis-surface-2) p-1 text-center text-[11.5px] font-semibold text-(--insis-text);
 	}
 
 	.insis-timetable .time-slot {
@@ -331,7 +320,7 @@
 	}
 
 	.insis-timetable .time-slot:hover {
-		@apply bg-[var(--insis-surface-2)];
+		@apply bg-(--insis-surface-2);
 	}
 
 	.insis-timetable .time-slot.selected {
@@ -343,28 +332,28 @@
 	}
 
 	.insis-course-block {
-		@apply absolute top-0.5 bottom-0.5 cursor-pointer overflow-hidden rounded-[3px] border border-solid border-black/[0.12] px-[5px] py-[3px] text-[10.5px] leading-[1.3];
+		@apply absolute top-0.5 bottom-0.5 cursor-pointer overflow-hidden rounded-[3px] border border-solid border-black/12 px-[5px] py-[3px] text-[10.5px] leading-[1.3];
 		transition: box-shadow 0.12s;
 	}
 
 	.insis-course-block:hover {
-		@apply z-10 shadow-[var(--insis-shadow)];
+		@apply z-10 shadow-(--insis-shadow);
 	}
 
 	.insis-course-block.conflict {
-		@apply outline outline-2 outline-[var(--insis-danger)];
+		@apply outline-2 outline-(--insis-danger);
 	}
 
 	.insis-course-block.lecture {
-		@apply bg-[var(--insis-block-lecture)];
+		@apply bg-(--insis-block-lecture);
 	}
 
 	.insis-course-block.seminar {
-		@apply bg-[var(--insis-block-seminar)];
+		@apply bg-(--insis-block-seminar);
 	}
 
 	.insis-course-block.exercise {
-		@apply bg-[var(--insis-block-exercise)];
+		@apply bg-(--insis-block-exercise);
 	}
 
 	.insis-course-block-title {
@@ -385,33 +374,33 @@
 	}
 
 	.insis-wizard-step-number {
-		@apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-solid border-[var(--insis-border)] bg-[var(--insis-surface-2)] text-[13px] font-semibold text-[var(--insis-text-3)];
+		@apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-solid border-(--insis-border) bg-(--insis-surface-2) text-[13px] font-semibold text-(--insis-text-3);
 		transition: transform 0.15s ease-in-out;
 	}
 
 	.insis-wizard-step.active .insis-wizard-step-number {
-		@apply border-[var(--insis-blue)] bg-[var(--insis-blue)] text-white;
+		@apply border-(--insis-blue) bg-(--insis-blue) text-white;
 	}
 
 	.insis-wizard-step.completed .insis-wizard-step-number {
-		@apply border-[var(--insis-success)] bg-[var(--insis-success)] text-white;
+		@apply border-(--insis-success) bg-(--insis-success) text-white;
 	}
 
 	.insis-wizard-step-label {
-		@apply ml-2 hidden text-xs whitespace-nowrap text-[var(--insis-text-3)] sm:block;
+		@apply ml-2 hidden text-xs whitespace-nowrap text-(--insis-text-3) sm:block;
 	}
 
 	.insis-wizard-step.active .insis-wizard-step-label {
-		@apply font-medium text-[var(--insis-text)];
+		@apply font-medium text-(--insis-text);
 	}
 
 	.insis-wizard-connector {
-		@apply mx-1 h-0.5 w-6 shrink-0 bg-[var(--insis-border)] sm:w-12;
+		@apply mx-1 h-0.5 w-6 shrink-0 bg-(--insis-border) sm:w-12;
 	}
 
 	.insis-wizard-connector.completed,
 	.insis-wizard-connector.done {
-		@apply bg-[var(--insis-success)];
+		@apply bg-(--insis-success);
 	}
 
 	.insis-wizard-step.clickable {
@@ -428,7 +417,7 @@
 	}
 
 	.insis-spinner {
-		@apply h-[22px] w-[22px] rounded-full border-[2.5px] border-solid border-[var(--insis-border)] border-t-[var(--insis-blue)];
+		@apply h-[22px] w-[22px] rounded-full border-[2.5px] border-solid border-(--insis-border) border-t-(--insis-blue);
 		animation: spin 0.7s linear infinite;
 	}
 
@@ -440,31 +429,31 @@
 
 	/* DAY TOGGLE BUTTONS */
 	.insis-day-toggle {
-		@apply cursor-pointer rounded-[3px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface)] px-[7px] py-[3px] text-[11.5px] text-[var(--insis-text-2)];
-		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		@apply cursor-pointer rounded-[3px] border border-solid border-(--insis-border) bg-(--insis-surface) px-[7px] py-[3px] text-[11.5px] text-(--insis-text-2);
+		font-family: var(--insis-font-sans), sans-serif;
 		transition: all 0.12s;
 	}
 
 	.insis-day-toggle:hover {
-		@apply border-[var(--insis-blue)] text-[var(--insis-blue)];
+		@apply border-(--insis-blue) text-(--insis-blue);
 	}
 
 	.insis-day-toggle.active {
-		@apply border-[var(--insis-blue-dark)] bg-[var(--insis-blue)] text-white;
+		@apply border-(--insis-blue-dark) bg-(--insis-blue) text-white;
 	}
 
 	/* POPOVER */
 	.insis-popover {
-		@apply absolute z-50 min-w-[180px] rounded-[5px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface)] px-3 py-[10px] text-[12.5px] shadow-[var(--insis-shadow)];
+		@apply absolute z-50 min-w-[180px] rounded-[5px] border border-solid border-(--insis-border) bg-(--insis-surface) px-3 py-[10px] text-[12.5px] shadow-(--insis-shadow);
 	}
 
 	.insis-popover-title {
-		@apply mb-2 border-b border-[var(--insis-border)] pb-2 text-[13px] font-semibold;
+		@apply mb-2 border-b border-(--insis-border) pb-2 text-[13px] font-semibold;
 	}
 
-	/* SEARCH PANEL (sidebar wrapper) */
+	/* SEARCH PANEL */
 	.insis-search-panel {
-		@apply h-full overflow-y-auto bg-[var(--insis-surface)] p-3;
+		@apply h-full overflow-y-auto bg-(--insis-surface) p-3;
 	}
 
 	/* LEGEND */
@@ -473,7 +462,7 @@
 	}
 
 	.insis-legend-title {
-		@apply cursor-pointer text-[var(--insis-link)];
+		@apply cursor-pointer text-(--insis-link);
 	}
 
 	.insis-legend-content {
@@ -481,7 +470,7 @@
 	}
 
 	.insis-legend-item {
-		@apply flex items-center gap-[5px] text-[var(--insis-text-2)];
+		@apply flex items-center gap-[5px] text-(--insis-text-2);
 	}
 
 	/* BREADCRUMBS */
@@ -490,54 +479,54 @@
 	}
 
 	.insis-breadcrumbs a {
-		@apply text-[var(--insis-link)];
+		@apply text-(--insis-link);
 	}
 
 	.insis-breadcrumbs .separator {
-		@apply mx-2 text-[var(--insis-gray-500)];
+		@apply mx-2 text-(--insis-gray-500);
 	}
 
 	.insis-breadcrumbs .current {
-		@apply text-[var(--insis-gray-700)];
+		@apply text-(--insis-gray-700);
 	}
 
 	/* COURSE CODE */
 	.insis-course-code {
-		@apply font-mono text-xs whitespace-nowrap text-[var(--insis-text-2)];
+		@apply font-mono text-xs whitespace-nowrap text-(--insis-text-2);
 	}
 
-	/* UNIT CARD (expanded row) */
+	/* UNIT CARD */
 	.unit-card {
-		@apply mb-[6px] overflow-hidden rounded-[5px] border border-solid border-[var(--insis-border)] bg-[var(--insis-surface)];
+		@apply mb-[6px] overflow-hidden rounded-[5px] border border-solid border-(--insis-border) bg-(--insis-surface);
 		transition:
 			border-color 0.15s,
 			box-shadow 0.15s;
 	}
 
 	.unit-card:hover {
-		@apply border-[var(--insis-blue)] shadow-[var(--insis-shadow-sm)];
+		@apply border-(--insis-blue) shadow-(--insis-shadow-sm);
 	}
 
 	.unit-card.selected {
-		@apply border-[var(--insis-success)] bg-[var(--insis-success-light)];
+		@apply border-(--insis-success) bg-(--insis-success-light);
 	}
 
 	.unit-card.time-match {
-		@apply border-[var(--insis-blue)] bg-[var(--insis-blue-subtle)];
+		@apply border-(--insis-blue) bg-(--insis-blue-subtle);
 	}
 
 	.unit-card.conflict {
-		@apply border-[var(--insis-danger-border)] bg-[var(--insis-danger-light)];
+		@apply border-(--insis-danger-border) bg-(--insis-danger-light);
 	}
 
 	/* EXPANDED ROW CONTENT */
 	.expanded-content {
-		@apply border-t-2 border-t-[var(--insis-blue-light)] bg-[var(--insis-surface-2)] p-4;
+		@apply border-t-2 border-t-(--insis-blue-light) bg-(--insis-surface-2) p-4;
 	}
 
-	/* FILTER SECTION (sidebar) */
+	/* FILTER SECTION */
 	.filter-section {
-		@apply border-b border-solid border-[var(--insis-border-light)] py-2;
+		@apply border-b border-solid border-(--insis-border-light) py-2;
 	}
 
 	.filter-section:last-child {
@@ -545,30 +534,30 @@
 	}
 
 	.filter-toggle {
-		@apply flex w-full cursor-pointer items-center justify-between rounded-[3px] border-0 bg-transparent px-0.5 py-1 text-[12.5px] font-medium text-[var(--insis-text)];
-		font-family: 'Outfit', Arial, Helvetica, sans-serif;
+		@apply flex w-full cursor-pointer items-center justify-between rounded-[3px] border-0 bg-transparent px-0.5 py-1 text-[12.5px] font-medium text-(--insis-text);
+		font-family: var(--insis-font-sans), sans-serif;
 	}
 
 	.filter-toggle:hover {
-		@apply bg-[var(--insis-surface-2)];
+		@apply bg-(--insis-surface-2);
 	}
 
 	.filter-badge {
-		@apply inline-block min-w-[18px] rounded-[10px] bg-[var(--insis-blue)] px-[5px] py-px text-center text-[10px] font-medium text-white;
+		@apply inline-block min-w-[18px] rounded-[10px] bg-(--insis-blue) px-[5px] py-px text-center text-[10px] font-medium text-white;
 	}
 
 	/* SIDEBAR HEADER */
 	.sidebar-hd {
-		@apply flex shrink-0 items-center justify-between border-b border-[var(--insis-border)] px-3 py-[10px] pb-2 text-[11px] font-semibold tracking-[0.06em] text-[var(--insis-text-3)] uppercase;
+		@apply flex shrink-0 items-center justify-between border-b border-(--insis-border) px-3 py-[10px] pb-2 text-[11px] font-semibold tracking-[0.06em] text-(--insis-text-3) uppercase;
 	}
 
 	/* MODAL */
 	.insis-modal-backdrop {
-		@apply fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-6;
+		@apply fixed inset-0 z-100 flex items-center justify-center bg-black/50 p-6;
 	}
 
 	.insis-modal {
-		@apply flex max-h-[85vh] w-full max-w-[660px] flex-col rounded-lg bg-[var(--insis-surface)] shadow-[var(--insis-shadow-lg)];
+		@apply flex max-h-[85vh] w-full max-w-[660px] flex-col rounded-lg bg-(--insis-surface) shadow-(--insis-shadow-lg);
 		animation: modal-in 0.18s ease-out;
 	}
 
@@ -584,7 +573,7 @@
 	}
 
 	.insis-modal-header {
-		@apply flex shrink-0 items-center justify-between rounded-t-lg border-b border-[var(--insis-border)] bg-[var(--insis-surface-2)] px-4 py-[14px];
+		@apply flex shrink-0 items-center justify-between rounded-t-lg border-b border-(--insis-border) bg-(--insis-surface-2) px-4 py-[14px];
 	}
 
 	.insis-modal-body {
@@ -592,6 +581,6 @@
 	}
 
 	.insis-modal-footer {
-		@apply flex shrink-0 items-center justify-between rounded-b-lg border-t border-[var(--insis-border)] bg-[var(--insis-surface-2)] px-4 py-[10px];
+		@apply flex shrink-0 items-center justify-between rounded-b-lg border-t border-(--insis-border) bg-(--insis-surface-2) px-4 py-[10px];
 	}
 }

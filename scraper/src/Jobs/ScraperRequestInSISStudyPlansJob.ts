@@ -25,8 +25,12 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
     const initialResult = await client.get<string>(Config.insis.studyPlansUrl)
 
     if (!initialResult.success) {
-        redis.incr('metrics:scraper:silent_failures:study_plans').catch(() => {})
-        redis.expire('metrics:scraper:silent_failures:study_plans', 604800).catch(() => {})
+        redis.incr('metrics:scraper:silent_failures:study_plans').catch(() => {
+            /* empty */
+        })
+        redis.expire('metrics:scraper:silent_failures:study_plans', 604800).catch(() => {
+            /* empty */
+        })
         return null
     }
 

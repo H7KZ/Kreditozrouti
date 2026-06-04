@@ -24,18 +24,18 @@ function toggle() {
 <template>
 	<button
 		type="button"
-		class="-mx-1 flex w-full cursor-pointer items-center justify-between rounded-[3px] px-1 py-1 text-left transition-colors duration-100 hover:bg-[var(--insis-surface-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--insis-blue)]"
+		class="-mx-1 flex w-full cursor-pointer items-center justify-between rounded-[3px] px-1 py-1 text-left transition-colors duration-100 hover:bg-(--insis-surface-2) focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--insis-blue)"
 		:aria-expanded="isOpen"
 		:aria-controls="contentId"
 		@click="toggle"
 	>
 		<span class="insis-label mb-0 flex items-center gap-1.5">
 			{{ title }}
-			<span v-if="badge !== undefined && badge !== ''" class="rounded-full bg-[var(--insis-blue)] px-1.5 py-0.5 text-[10px] text-white">
+			<span v-if="badge !== undefined && badge !== ''" class="rounded-full bg-(--insis-blue) px-1.5 py-0.5 text-[10px] text-white">
 				{{ badge }}
 			</span>
 		</span>
-		<IconChevronDown :class="['h-4 w-4 text-[var(--insis-gray-500)] transition-transform', { 'rotate-180': isOpen }]" aria-hidden="true" />
+		<IconChevronDown :class="['h-4 w-4 text-(--insis-gray-500) transition-transform', { 'rotate-180': isOpen }]" aria-hidden="true" />
 	</button>
 	<div v-show="isOpen" :id="contentId" class="mt-2">
 		<slot />

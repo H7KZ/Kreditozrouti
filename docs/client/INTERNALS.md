@@ -221,7 +221,7 @@ CourseUnitType
 getUnitTypeColorClass(type)
 :
 string
-// Returns CSS var class: bg-[var(--insis-block-lecture|exercise|seminar)]
+// Returns CSS var class: bg-(--insis-block-lecture|exercise|seminar)
 
 getCategoryBadgeClass(category)
 :

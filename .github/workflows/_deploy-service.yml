@@ -84,8 +84,8 @@ jobs:
           # Non-sensitive (GitHub Variables)
           APP_PROJECT: ${{ vars.PROJECT }}
           APP_DOMAIN: ${{ vars.DOMAIN }}
-          APP_MYSQL_USER: ${{ vars.MYSQL_USER }}
-          APP_MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
+          APP_MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          APP_MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
           # Sensitive (GitHub Secrets)
           APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
           APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
@@ -107,7 +107,7 @@ jobs:
             set -euo pipefail
 
             VERSION_DIR="$HOME/versions/${{ inputs.environment }}/$IMG_TAG"
-            LATEST_LINK="$HOME/versions/${{ inputs.environment }}/latest"
+            CURRENT_LINK="$HOME/versions/${{ inputs.environment }}/current"
 
             echo "=========================================="
             echo "Service Deploy: $APP_SERVICE @ $IMG_TAG → ${{ inputs.environment }}"
@@ -147,12 +147,12 @@ jobs:
             esac
 
             cd "$VERSION_DIR"
+            export "${SERVICE_TAG_VAR}=${IMG_TAG}"
             IMAGE_REGISTRY="ghcr.io" \
               IMAGE_PREFIX="$IMG_PREFIX" \
-              ${SERVICE_TAG_VAR}="$IMG_TAG" \
               bash ./deploy.sh "${{ inputs.project_name }}" "${{ inputs.environment }}" "$APP_SERVICE"
 
-            ln -sfn "$VERSION_DIR" "$LATEST_LINK"
+            ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
 
             echo "=========================================="
             echo "Service deploy complete: $APP_SERVICE"

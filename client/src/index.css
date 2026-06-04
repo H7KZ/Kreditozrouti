@@ -33,9 +33,9 @@
 	--color-chart-3: var(--chart-3);
 	--color-chart-4: var(--chart-4);
 	--color-chart-5: var(--chart-5);
-	--radius-sm: calc(var(--radius) - 4px);
-	--radius-md: calc(var(--radius) - 2px);
-	--radius-lg: var(--radius);
+	--radius-sm: calc(var(--radius) - 2px);
+	--radius-md: var(--radius);
+	--radius-lg: calc(var(--radius) + 2px);
 	--radius-xl: calc(var(--radius) + 4px);
 	--color-sidebar: var(--sidebar);
 	--color-sidebar-foreground: var(--sidebar-foreground);
@@ -47,78 +47,79 @@
 	--color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* LIGHT MODE */
 :root {
-	/* Shadcn base tokens (updated to new palette) */
-	--background: #f4f5f7;
-	--foreground: #1a1f2e;
+	/* Shadcn base tokens */
+	--background: #f4f5f8;
+	--foreground: #0e1520;
 	--card: #ffffff;
-	--card-foreground: #1a1f2e;
+	--card-foreground: #0e1520;
 	--popover: #ffffff;
-	--popover-foreground: #1a1f2e;
-	--primary: #0066b3;
+	--popover-foreground: #0e1520;
+	--primary: #1654e8;
 	--primary-foreground: #ffffff;
 	--secondary: #f9fafb;
-	--secondary-foreground: #1a1f2e;
-	--muted: #f4f5f7;
-	--muted-foreground: #8b95a1;
-	--accent: #f0f7ff;
-	--accent-foreground: #0066b3;
-	--destructive: #c40f16;
+	--secondary-foreground: #0e1520;
+	--muted: #f4f5f8;
+	--muted-foreground: #7e8fa4;
+	--accent: #eef4ff;
+	--accent-foreground: #1654e8;
+	--destructive: #c0392b;
 	--destructive-foreground: #ffffff;
-	--border: #dde1e7;
-	--input: #dde1e7;
-	--ring: #0066b3;
+	--border: #e2e6ec;
+	--input: #e2e6ec;
+	--ring: #1654e8;
 	--radius: 0.1875rem;
-	--chart-1: #0066b3;
-	--chart-2: #008000;
+	--chart-1: #1654e8;
+	--chart-2: #0a6e28;
 	--chart-3: #b45309;
-	--chart-4: #8b008b;
-	--chart-5: #c40f16;
+	--chart-4: #7c3aed;
+	--chart-5: #c0392b;
 	--sidebar: #ffffff;
-	--sidebar-foreground: #1a1f2e;
-	--sidebar-primary: #0066b3;
+	--sidebar-foreground: #0e1520;
+	--sidebar-primary: #1654e8;
 	--sidebar-primary-foreground: #ffffff;
-	--sidebar-accent: #f0f7ff;
-	--sidebar-accent-foreground: #0066b3;
-	--sidebar-border: #dde1e7;
-	--sidebar-ring: #0066b3;
+	--sidebar-accent: #eef4ff;
+	--sidebar-accent-foreground: #1654e8;
+	--sidebar-border: #e2e6ec;
+	--sidebar-ring: #1654e8;
 
 	/* DESIGN SYSTEM TOKENS */
 
 	/* Brand Blues */
-	--insis-blue: #0066b3;
-	--insis-blue-dark: #005296;
-	--insis-blue-hover: #004a87;
-	--insis-blue-lighter: #80c1ff;
-	--insis-blue-light: #daeeff;
-	--insis-blue-subtle: #f0f7ff;
+	--insis-blue: #1654e8;
+	--insis-blue-dark: #1048cc;
+	--insis-blue-hover: #0d3faa;
+	--insis-blue-lighter: #93b4f8;
+	--insis-blue-light: #dce9ff;
+	--insis-blue-subtle: #eef4ff;
 
 	/* Backgrounds */
-	--insis-bg: #f4f5f7;
+	--insis-bg: #f4f5f8;
 	--insis-surface: #ffffff;
 	--insis-surface-2: #f9fafb;
 
 	/* Borders */
-	--insis-border: #dde1e7;
-	--insis-border-mid: #c5cad4;
-	--insis-border-light: #e8ecf0;
-	--insis-border-dark: #c5cad4;
+	--insis-border: #e2e6ec;
+	--insis-border-mid: #ccd2dc;
+	--insis-border-light: #eef1f5;
+	--insis-border-dark: #ccd2dc;
 
 	/* Text */
-	--insis-text: #1a1f2e;
-	--insis-text-2: #4b5563;
-	--insis-text-3: #8b95a1;
+	--insis-text: #0e1520;
+	--insis-text-2: #3c4a5c;
+	--insis-text-3: #7e8fa4;
 	--insis-text-inv: #ffffff;
 
 	/* Links */
-	--insis-link: #0066b3;
-	--insis-link-hover: #005296;
-	--insis-link-visited: #551a8b;
+	--insis-link: #1654e8;
+	--insis-link-hover: #1048cc;
+	--insis-link-visited: #6b21a8;
 
 	/* Success / Green */
-	--insis-success: #008000;
-	--insis-success-light: #e6f4e6;
-	--insis-success-border: #7ecf7e;
+	--insis-success: #0a6e28;
+	--insis-success-light: #e4f4e8;
+	--insis-success-border: #6abf7e;
 
 	/* Warning / Amber */
 	--insis-warning: #b45309;
@@ -128,31 +129,31 @@
 	--insis-warning-border: #f6c343;
 
 	/* Danger / Red */
-	--insis-danger: #c40f16;
+	--insis-danger: #c0392b;
 	--insis-danger-light: #fee2e2;
 	--insis-danger-bg: #fee2e2;
-	--insis-danger-border: #fca5a5;
+	--insis-danger-border: #f7a8a8;
 
 	/* Info */
-	--insis-info: #0066b3;
-	--insis-info-light: #daeeff;
-	--insis-info-bg: #f0f7ff;
+	--insis-info: #1654e8;
+	--insis-info-light: #dce9ff;
+	--insis-info-bg: #eef4ff;
 
 	/* Gray Scale */
 	--insis-gray-50: #f9fafb;
-	--insis-gray-100: #f4f5f7;
-	--insis-gray-200: #e8ecf0;
-	--insis-gray-300: #dde1e7;
-	--insis-gray-400: #c5cad4;
-	--insis-gray-500: #8b95a1;
-	--insis-gray-600: #4b5563;
-	--insis-gray-700: #374151;
-	--insis-gray-800: #1f2937;
-	--insis-gray-900: #1a1f2e;
+	--insis-gray-100: #f4f5f8;
+	--insis-gray-200: #eef1f5;
+	--insis-gray-300: #e2e6ec;
+	--insis-gray-400: #ccd2dc;
+	--insis-gray-500: #7e8fa4;
+	--insis-gray-600: #3c4a5c;
+	--insis-gray-700: #2a3444;
+	--insis-gray-800: #1a2333;
+	--insis-gray-900: #0e1520;
 
 	/* Table */
 	--insis-header-bg: #f9fafb;
-	--insis-header-border: #dde1e7;
+	--insis-header-border: #e2e6ec;
 	--insis-row-hover: #f9fafb;
 	--insis-row-alt: transparent;
 	--insis-row-highlight: #fef3cd;
@@ -160,7 +161,7 @@
 
 	/* Panel */
 	--insis-panel-bg: #f9fafb;
-	--insis-panel-border: #dde1e7;
+	--insis-panel-border: #e2e6ec;
 
 	/* Timetable Block Colors */
 	--insis-block-lecture: #a1eda1;
@@ -185,85 +186,92 @@
 	--insis-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12), 0 3px 8px rgba(0, 0, 0, 0.07);
 
 	/* Font Sizes */
-	--insis-font-xs: 0.6875rem;
-	--insis-font-sm: 0.75rem;
-	--insis-font-base: 0.84375rem;
-	--insis-font-lg: 1rem;
+	--insis-font-xs: 0.65625rem;
+	--insis-font-sm: 0.71875rem;
+	--insis-font-base: 0.8125rem;
+	--insis-font-md: 0.90625rem;
+	--insis-font-lg: 1.0625rem;
+	--insis-font-xl: 1.3125rem;
+	--insis-font-2xl: 1.75rem;
+
+	/* Font Families */
+	--insis-font-sans: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+	--insis-font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+
+	/* Radii */
+	--insis-radius-sm: 2px;
+	--insis-radius-md: 3px;
+	--insis-radius-lg: 5px;
 }
 
-/* DARK MODE
-   Applied when <html> carries the .dark class (user toggle).
-   The @media block below handles the system-preference fallback for users
-   who have never interacted with the toggle.
-   */
-
+/* DARK MODE - True Monochromatic Minimalism */
 html.dark {
 	/* Shadcn base tokens */
-	--background: #0f1117;
-	--foreground: #e8eaf0;
-	--card: #1a1f2e;
-	--card-foreground: #e8eaf0;
-	--popover: #1a1f2e;
-	--popover-foreground: #e8eaf0;
-	--primary: #3b9eff;
+	--background: #121212;
+	--foreground: #e0e0e0;
+	--card: #1e1e1e;
+	--card-foreground: #e0e0e0;
+	--popover: #1e1e1e;
+	--popover-foreground: #e0e0e0;
+	--primary: #5b8ef5;
 	--primary-foreground: #ffffff;
-	--secondary: #1e2231;
-	--secondary-foreground: #e8eaf0;
-	--muted: #1a1f2e;
-	--muted-foreground: #606880;
-	--accent: #0a1929;
-	--accent-foreground: #3b9eff;
+	--secondary: #2c2c2c;
+	--secondary-foreground: #e0e0e0;
+	--muted: #1e1e1e;
+	--muted-foreground: #888888;
+	--accent: #2c2c2c;
+	--accent-foreground: #e0e0e0;
 	--destructive: #f87171;
 	--destructive-foreground: #ffffff;
-	--border: #2d3347;
-	--input: #2d3347;
-	--ring: #3b9eff;
-	--chart-1: #3b9eff;
-	--chart-2: #22c55e;
+	--border: #333333;
+	--input: #333333;
+	--ring: #5b8ef5;
+	--chart-1: #5b8ef5;
+	--chart-2: #34d399;
 	--chart-3: #fb923c;
 	--chart-4: #c084fc;
 	--chart-5: #f87171;
-	--sidebar: #1a1f2e;
-	--sidebar-foreground: #e8eaf0;
-	--sidebar-primary: #3b9eff;
+	--sidebar: #121212;
+	--sidebar-foreground: #e0e0e0;
+	--sidebar-primary: #5b8ef5;
 	--sidebar-primary-foreground: #ffffff;
-	--sidebar-accent: #0a1929;
-	--sidebar-accent-foreground: #3b9eff;
-	--sidebar-border: #2d3347;
-	--sidebar-ring: #3b9eff;
+	--sidebar-accent: #1e1e1e;
+	--sidebar-accent-foreground: #e0e0e0;
+	--sidebar-border: #333333;
+	--sidebar-ring: #5b8ef5;
 
 	/* Brand Blues */
-	--insis-blue: #3b9eff;
-	--insis-blue-dark: #2a8ae8;
-	--insis-blue-hover: #1a7fd4;
-	--insis-blue-lighter: #80c1ff;
-	--insis-blue-light: #0a1929;
-	--insis-blue-subtle: #0a1929;
+	--insis-blue: #4075ea;
+	--insis-blue-dark: #3669df;
+	--insis-blue-hover: #2359ca;
+	--insis-blue-lighter: #93b4f8;
+	--insis-blue-light: #1e1e1e;
+	--insis-blue-subtle: #242424;
 
-	/* Backgrounds */
-	--insis-bg: #0f1117;
-	--insis-surface: #1a1f2e;
-	--insis-surface-2: #151825;
+	/* Backgrounds - Charcoal & Dark Gray */
+	--insis-bg: #121212;
+	--insis-surface: #1e1e1e;
+	--insis-surface-2: #242424;
 
 	/* Borders */
-	--insis-border: #2d3347;
-	--insis-border-mid: #3d4460;
-	--insis-border-light: #252b3b;
-	--insis-border-dark: #3d4460;
+	--insis-border: #333333;
+	--insis-border-mid: #444444;
+	--insis-border-light: #2c2c2c;
+	--insis-border-dark: #555555;
 
 	/* Text */
-	--insis-text: #e8eaf0;
-	--insis-text-2: #9ba8bb;
-	--insis-text-3: #606880;
-	--insis-text-inv: #ffffff;
+	--insis-text: #e0e0e0;
+	--insis-text-2: #b0b0b0;
+	--insis-text-3: #888888;
+	--insis-text-inv: #121212;
 
 	/* Links */
-	--insis-link: #3b9eff;
-	--insis-link-hover: #2a8ae8;
+	--insis-link: #5b8ef5;
+	--insis-link-hover: #3f72e8;
 	--insis-link-visited: #b388ff;
 
 	/* Success */
-	--insis-success: #22c55e;
+	--insis-success: #34d399;
 	--insis-success-light: #052e16;
 	--insis-success-border: #166534;
 
@@ -281,33 +289,33 @@ html.dark {
 	--insis-danger-border: #7f1d1d;
 
 	/* Info */
-	--insis-info: #3b9eff;
-	--insis-info-light: #0a1929;
-	--insis-info-bg: #0a1929;
+	--insis-info: #5b8ef5;
+	--insis-info-light: #1e1e1e;
+	--insis-info-bg: #1e1e1e;
 
-	/* Gray Scale */
-	--insis-gray-50: #151825;
-	--insis-gray-100: #1a1f2e;
-	--insis-gray-200: #252b3b;
-	--insis-gray-300: #2d3347;
-	--insis-gray-400: #4a5568;
-	--insis-gray-500: #606880;
-	--insis-gray-600: #7a8499;
-	--insis-gray-700: #9ba8bb;
-	--insis-gray-800: #c5cdd9;
-	--insis-gray-900: #e8eaf0;
+	/* Gray Scale - Mapped to Neutral Dark Mode */
+	--insis-gray-50: #1a1a1a;
+	--insis-gray-100: #1e1e1e;
+	--insis-gray-200: #242424;
+	--insis-gray-300: #2c2c2c;
+	--insis-gray-400: #333333;
+	--insis-gray-500: #444444;
+	--insis-gray-600: #888888;
+	--insis-gray-700: #b0b0b0;
+	--insis-gray-800: #d4d4d4;
+	--insis-gray-900: #e0e0e0;
 
 	/* Table */
-	--insis-header-bg: #151825;
-	--insis-header-border: #2d3347;
-	--insis-row-hover: #1e2231;
+	--insis-header-bg: #1e1e1e;
+	--insis-header-border: #333333;
+	--insis-row-hover: #242424;
 	--insis-row-alt: transparent;
 	--insis-row-highlight: #1c0a00;
 	--insis-row-error: #1f0505;
 
 	/* Panel */
-	--insis-panel-bg: #151825;
-	--insis-panel-border: #2d3347;
+	--insis-panel-bg: #1e1e1e;
+	--insis-panel-border: #333333;
 
 	/* Timetable blocks */
 	--insis-block-lecture: #4ade80;
@@ -324,135 +332,6 @@ html.dark {
 	--insis-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
-@media (prefers-color-scheme: dark) {
-	html:not(.light) {
-		/* Shadcn base tokens */
-		--background: #0f1117;
-		--foreground: #e8eaf0;
-		--card: #1a1f2e;
-		--card-foreground: #e8eaf0;
-		--popover: #1a1f2e;
-		--popover-foreground: #e8eaf0;
-		--primary: #3b9eff;
-		--primary-foreground: #ffffff;
-		--secondary: #1e2231;
-		--secondary-foreground: #e8eaf0;
-		--muted: #1a1f2e;
-		--muted-foreground: #606880;
-		--accent: #0a1929;
-		--accent-foreground: #3b9eff;
-		--destructive: #f87171;
-		--destructive-foreground: #ffffff;
-		--border: #2d3347;
-		--input: #2d3347;
-		--ring: #3b9eff;
-		--chart-1: #3b9eff;
-		--chart-2: #22c55e;
-		--chart-3: #fb923c;
-		--chart-4: #c084fc;
-		--chart-5: #f87171;
-		--sidebar: #1a1f2e;
-		--sidebar-foreground: #e8eaf0;
-		--sidebar-primary: #3b9eff;
-		--sidebar-primary-foreground: #ffffff;
-		--sidebar-accent: #0a1929;
-		--sidebar-accent-foreground: #3b9eff;
-		--sidebar-border: #2d3347;
-		--sidebar-ring: #3b9eff;
-
-		/* Brand Blues */
-		--insis-blue: #3b9eff;
-		--insis-blue-dark: #2a8ae8;
-		--insis-blue-hover: #1a7fd4;
-		--insis-blue-lighter: #80c1ff;
-		--insis-blue-light: #0a1929;
-		--insis-blue-subtle: #0a1929;
-
-		/* Backgrounds */
-		--insis-bg: #0f1117;
-		--insis-surface: #1a1f2e;
-		--insis-surface-2: #151825;
-
-		/* Borders */
-		--insis-border: #2d3347;
-		--insis-border-mid: #3d4460;
-		--insis-border-light: #252b3b;
-		--insis-border-dark: #3d4460;
-
-		/* Text */
-		--insis-text: #e8eaf0;
-		--insis-text-2: #9ba8bb;
-		--insis-text-3: #606880;
-		--insis-text-inv: #ffffff;
-
-		/* Links */
-		--insis-link: #3b9eff;
-		--insis-link-hover: #2a8ae8;
-		--insis-link-visited: #b388ff;
-
-		/* Success */
-		--insis-success: #22c55e;
-		--insis-success-light: #052e16;
-		--insis-success-border: #166534;
-
-		/* Warning */
-		--insis-warning: #fb923c;
-		--insis-warning-light: #1c0a00;
-		--insis-warning-bg: #1c0a00;
-		--insis-warning-dark: #fb923c;
-		--insis-warning-border: #78350f;
-
-		/* Danger */
-		--insis-danger: #f87171;
-		--insis-danger-light: #1f0505;
-		--insis-danger-bg: #1f0505;
-		--insis-danger-border: #7f1d1d;
-
-		/* Info */
-		--insis-info: #3b9eff;
-		--insis-info-light: #0a1929;
-		--insis-info-bg: #0a1929;
-
-		/* Gray Scale */
-		--insis-gray-50: #151825;
-		--insis-gray-100: #1a1f2e;
-		--insis-gray-200: #252b3b;
-		--insis-gray-300: #2d3347;
-		--insis-gray-400: #4a5568;
-		--insis-gray-500: #606880;
-		--insis-gray-600: #7a8499;
-		--insis-gray-700: #9ba8bb;
-		--insis-gray-800: #c5cdd9;
-		--insis-gray-900: #e8eaf0;
-
-		/* Table */
-		--insis-header-bg: #151825;
-		--insis-header-border: #2d3347;
-		--insis-row-hover: #1e2231;
-		--insis-row-alt: transparent;
-		--insis-row-highlight: #1c0a00;
-		--insis-row-error: #1f0505;
-
-		/* Panel */
-		--insis-panel-bg: #151825;
-		--insis-panel-border: #2d3347;
-
-		/* Timetable blocks */
-		--insis-block-lecture: #4ade80;
-		--insis-block-seminar: #fde047;
-		--insis-block-exercise: #7dd3fc;
-		--insis-block-date-only: #d4c5a9;
-		--insis-block-exam: #e879f9;
-		--insis-block-selected: #4ade80;
-		--insis-block-conflict: #f87171;
-
-		/* Shadows */
-		--insis-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-		--insis-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-		--insis-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
-	}
-}
-
 @layer base {
 	*,
 	*::before,
@@ -466,8 +345,8 @@ html.dark {
 	}
 
 	body {
-		font-family: 'Outfit', Arial, Helvetica, sans-serif;
-		font-size: 13.5px;
+		font-family: var(--insis-font-sans), sans-serif;
+		font-size: var(--insis-font-base);
 		line-height: 1.5;
 		color: var(--insis-text);
 		background: var(--insis-bg);
@@ -503,10 +382,11 @@ html.dark {
 	}
 }
 
-/* Tailwind Typography — unlayered so it wins over @layer components.
-   Maps --tw-prose-* vars to design tokens; dark mode is handled automatically
-   because the insis tokens already flip via html.dark / prefers-color-scheme. */
 .prose {
+	h1 {
+		font-weight: 700;
+	}
+
 	--tw-prose-body: var(--insis-text);
 	--tw-prose-headings: var(--insis-text);
 	--tw-prose-lead: var(--insis-text-2);

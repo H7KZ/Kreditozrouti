@@ -110,23 +110,23 @@ function dismissSpecializationInfo() {
 				<IconChevronLeft class="h-4 w-4" />
 				{{ $t('common.back') }}
 			</button>
-			<h2 class="text-lg font-medium text-[var(--insis-gray-900)]">{{ $t('components.wizard.WizardStepStudyPlan.title') }}</h2>
+			<h2 class="text-lg font-medium text-(--insis-gray-900)">{{ $t('components.wizard.WizardStepStudyPlan.title') }}</h2>
 		</div>
 
-		<p class="mb-4 text-sm text-[var(--insis-gray-600)]">{{ $t('components.wizard.WizardStepStudyPlan.description') }}</p>
+		<p class="mb-4 text-sm text-(--insis-gray-600)">{{ $t('components.wizard.WizardStepStudyPlan.description') }}</p>
 
 		<!-- Specialization Info Banner -->
-		<div v-if="showSpecializationInfo" class="mb-4 flex items-start gap-3 rounded border border-[var(--insis-blue)] bg-[var(--insis-blue-light)] p-3">
-			<IconInfo class="mt-0.5 h-5 w-5 shrink-0 text-[var(--insis-blue)]" />
+		<div v-if="showSpecializationInfo" class="mb-4 flex items-start gap-3 rounded border border-(--insis-blue) bg-(--insis-blue-light) p-3">
+			<IconInfo class="mt-0.5 h-5 w-5 shrink-0 text-(--insis-blue)" />
 			<div class="flex-1">
-				<p class="text-sm font-medium text-[var(--insis-blue-dark)]">
+				<p class="text-sm font-medium text-(--insis-blue-dark)">
 					{{ $t('components.wizard.WizardStepStudyPlan.specializationInfoTitle') }}
 				</p>
-				<p class="text-sm text-[var(--insis-gray-700)]">
+				<p class="text-sm text-(--insis-gray-700)">
 					{{ $t('components.wizard.WizardStepStudyPlan.specializationInfoDescription') }}
 				</p>
 			</div>
-			<button type="button" class="shrink-0 text-[var(--insis-gray-500)] hover:text-[var(--insis-gray-700)]" @click="dismissSpecializationInfo">
+			<button type="button" class="shrink-0 text-(--insis-gray-500) hover:text-(--insis-gray-700)" @click="dismissSpecializationInfo">
 				<IconX class="h-4 w-4" />
 			</button>
 		</div>
@@ -137,7 +137,7 @@ function dismissSpecializationInfo() {
 			<div class="min-w-[200px] flex-1">
 				<label class="insis-label" for="title-search">{{ $t('components.wizard.WizardStepStudyPlan.searchLabel') }}</label>
 				<div class="relative">
-					<Search class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-[var(--insis-gray-500)]" />
+					<Search class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-(--insis-gray-500)" />
 					<input
 						id="title-search"
 						type="text"
@@ -160,8 +160,8 @@ function dismissSpecializationInfo() {
 						:class="[
 							'cursor-pointer rounded border px-3 py-1.5 text-sm transition-all',
 							levelFilter.includes(level.value as string)
-								? 'border-[var(--insis-blue)] bg-[var(--insis-blue)] text-white'
-								: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:bg-[var(--insis-gray-50)]',
+								? 'border-(--insis-blue) bg-(--insis-blue) text-white'
+								: 'border-(--insis-border) bg-(--insis-surface) hover:bg-(--insis-gray-50)',
 						]"
 						@click="toggleLevelFilter(level.value as string)"
 					>
@@ -174,15 +174,15 @@ function dismissSpecializationInfo() {
 
 		<!-- Results count and selection info -->
 		<div class="mb-4 flex flex-wrap items-center justify-between gap-y-2">
-			<p class="text-sm text-[var(--insis-gray-600)]">
+			<p class="text-sm text-(--insis-gray-600)">
 				{{ $t('components.wizard.WizardStepStudyPlan.resultsCount', { count: studyPlans.length }) }}
 			</p>
 			<div class="flex items-center gap-3">
 				<span
 					class="text-sm font-medium"
 					:class="{
-						'text-[var(--insis-blue)]': selectedCount > 0,
-						'text-[var(--insis-gray-500)]': selectedCount === 0,
+						'text-(--insis-blue)': selectedCount > 0,
+						'text-(--insis-gray-500)': selectedCount === 0,
 					}"
 				>
 					{{ $t('components.wizard.WizardStepStudyPlan.selectedCount', { count: selectedCount }) }}
@@ -205,8 +205,8 @@ function dismissSpecializationInfo() {
 				:class="[
 					'cursor-pointer rounded border p-4 transition-all duration-150 active:scale-[0.99]',
 					isSelected(plan.id)
-						? 'border-[var(--insis-blue)] bg-[var(--insis-blue-light)] shadow-[var(--insis-shadow-sm)] ring-2 ring-[var(--insis-blue)]'
-						: 'border-[var(--insis-border)] bg-[var(--insis-surface)] hover:border-[var(--insis-blue)] hover:bg-[var(--insis-gray-50)] hover:shadow-[var(--insis-shadow-sm)]',
+						? 'border-(--insis-blue) bg-(--insis-blue-light) shadow-(--insis-shadow-sm) ring-2 ring-(--insis-blue)'
+						: 'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue) hover:bg-(--insis-gray-50) hover:shadow-(--insis-shadow-sm)',
 				]"
 				@click="handleTogglePlan(plan)"
 			>
@@ -225,10 +225,10 @@ function dismissSpecializationInfo() {
 								{{ $t('components.wizard.WizardStepStudyPlan.selected') }}
 							</span>
 						</div>
-						<div class="mt-1.5 line-clamp-2 font-medium break-words text-[var(--insis-gray-900)]">
+						<div class="mt-1.5 line-clamp-2 font-medium wrap-break-word text-(--insis-gray-900)">
 							{{ plan.title }}
 						</div>
-						<div class="mt-1 text-sm text-[var(--insis-gray-500)]">
+						<div class="mt-1 text-sm text-(--insis-gray-500)">
 							<span v-if="plan.faculty">{{ plan.faculty.title }}</span>
 							<span v-if="plan.mode_of_study" class="ml-1.5">• {{ plan.mode_of_study }}</span>
 						</div>
@@ -239,7 +239,7 @@ function dismissSpecializationInfo() {
 						<div
 							:class="[
 								'flex h-5 w-5 items-center justify-center rounded border-2 transition-colors',
-								isSelected(plan.id) ? 'border-[var(--insis-blue)] bg-[var(--insis-blue)] text-white' : 'border-[var(--insis-gray-300)]',
+								isSelected(plan.id) ? 'border-(--insis-blue) bg-(--insis-blue) text-white' : 'border-(--insis-gray-300)',
 							]"
 						>
 							<IconCheck v-if="isSelected(plan.id)" class="h-3 w-3" />
@@ -250,7 +250,7 @@ function dismissSpecializationInfo() {
 		</div>
 
 		<!-- Tip about double-click -->
-		<p class="mt-4 text-xs text-[var(--insis-gray-500)] italic">
+		<p class="mt-4 text-xs text-(--insis-gray-500) italic">
 			{{ $t('components.wizard.WizardStepStudyPlan.doubleClickTip') }}
 		</p>
 	</div>

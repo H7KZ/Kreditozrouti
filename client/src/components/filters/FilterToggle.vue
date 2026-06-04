@@ -28,7 +28,7 @@ function handleChange(event: Event) {
 		<input type="checkbox" class="insis-checkbox" :checked="checked" @change="handleChange" />
 		<div class="flex-1">
 			<span class="text-sm">{{ label }}</span>
-			<p v-if="description" class="text-xs text-[var(--insis-gray-500)]">
+			<p v-if="description" class="text-xs text-(--insis-gray-500)">
 				{{ description }}
 			</p>
 		</div>

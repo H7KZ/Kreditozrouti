@@ -171,7 +171,7 @@ export function useSlotFormatting() {
 	 */
 	function getCapacityClass(capacity: number | null | undefined): string {
 		if (capacity == null) return ''
-		return capacity > 0 ? 'text-[var(--insis-success)]' : 'text-[var(--insis-danger)]'
+		return capacity > 0 ? 'text-(--insis-success)' : 'text-(--insis-danger)'
 	}
 
 	return {

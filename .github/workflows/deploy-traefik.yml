@@ -44,7 +44,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "deployment/traefik/"
+          source: "deployment/traefik/,deployment/lib.sh"
           target: "~/deployment/"
           strip_components: 1
           overwrite: true
@@ -67,9 +67,7 @@ jobs:
       - name: Deploy Traefik
         uses: appleboy/ssh-action@v1
         env:
-          DEPLOYMENT_PATH: "$HOME/deployment"
           TRAEFIK_DOMAIN: ${{ secrets.TRAEFIK_DOMAIN }}
-          TRAEFIK_CREDENTIALS_PATH: "$HOME/.htpasswd"
           CF_API_EMAIL: ${{ secrets.CF_API_EMAIL }}
           CF_DNS_API_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
           ACME_EMAIL: ${{ secrets.ACME_EMAIL }}
@@ -78,7 +76,9 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: DEPLOYMENT_PATH,TRAEFIK_DOMAIN,TRAEFIK_CREDENTIALS_PATH,CF_API_EMAIL,CF_DNS_API_TOKEN,ACME_EMAIL
+          envs: TRAEFIK_DOMAIN,CF_API_EMAIL,CF_DNS_API_TOKEN,ACME_EMAIL
           script: |
             set -euo pipefail
+            export DEPLOYMENT_PATH="$HOME/deployment"
+            export TRAEFIK_CREDENTIALS_PATH="$HOME/.htpasswd"
             bash ~/deployment/traefik/deploy.sh

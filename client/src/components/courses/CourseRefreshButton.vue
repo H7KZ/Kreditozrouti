@@ -26,7 +26,7 @@ function onRefreshClick() {
 		<!-- Triggering / Streaming: spinner -->
 		<template v-if="state === 'triggering' || state === 'streaming'">
 			<div
-				class="flex items-center gap-1 text-[11px] text-[var(--insis-text-3)]"
+				class="flex items-center gap-1 text-[11px] text-(--insis-text-3)"
 				role="status"
 				:aria-label="t('components.courses.CourseRefreshButton.streaming')"
 			>
@@ -37,7 +37,7 @@ function onRefreshClick() {
 		<!-- Done: green check, auto-reverts after 3 s -->
 		<template v-else-if="state === 'done'">
 			<div
-				class="flex items-center gap-0.5 text-[11px] text-[var(--insis-success)]"
+				class="flex items-center gap-0.5 text-[11px] text-(--insis-success)"
 				role="status"
 				:aria-label="t('components.courses.CourseRefreshButton.done')"
 			>
@@ -48,7 +48,7 @@ function onRefreshClick() {
 		<!-- Error: red icon, click to dismiss -->
 		<template v-else-if="state === 'error'">
 			<button
-				class="cursor-pointer rounded p-0.5 text-[var(--insis-danger)] transition-colors hover:bg-[var(--insis-danger-light)] focus-visible:ring-1 focus-visible:ring-[var(--insis-danger)] focus-visible:outline-none"
+				class="cursor-pointer rounded p-0.5 text-(--insis-danger) transition-colors hover:bg-(--insis-danger-light) focus-visible:ring-1 focus-visible:ring-(--insis-danger) focus-visible:outline-none"
 				:title="errorMessage ?? t('components.courses.CourseRefreshButton.error')"
 				:aria-label="t('components.courses.CourseRefreshButton.retryAction')"
 				@click="dismiss"
@@ -66,14 +66,14 @@ function onRefreshClick() {
 				:aria-label="t('components.courses.CourseRefreshButton.rateLimited', { countdown: rateLimitCountdown })"
 				:aria-disabled="true"
 			>
-				<IconRefreshCw class="h-3.5 w-3.5 text-[var(--insis-text-3)]" aria-hidden="true" />
+				<IconRefreshCw class="h-3.5 w-3.5 text-(--insis-text-3)" aria-hidden="true" />
 			</button>
 		</template>
 
 		<!-- Idle: subtle refresh icon, confirm via browser dialog before triggering -->
 		<template v-else>
 			<button
-				class="cursor-pointer rounded p-0.5 text-[var(--insis-text-3)] transition-all hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text-1)] focus-visible:ring-1 focus-visible:ring-[var(--insis-border)] focus-visible:outline-none"
+				class="cursor-pointer rounded p-0.5 text-(--insis-text-3) transition-all hover:bg-(--insis-surface-2) hover:text-(--insis-text-1) focus-visible:ring-1 focus-visible:ring-(--insis-border) focus-visible:outline-none"
 				:title="
 					lastRefreshedAt
 						? t('components.courses.CourseRefreshButton.tooltipWithTime', {

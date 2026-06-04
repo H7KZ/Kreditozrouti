@@ -31,7 +31,7 @@ const label = computed(() => t(`theme.${uiStore.colorScheme}`))
 		type="button"
 		:aria-label="label"
 		:title="label"
-		class="flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-[3px] border border-transparent p-[5px] text-[var(--insis-text-2)] transition-all duration-100 hover:border-[var(--insis-border)] hover:bg-[var(--insis-surface-2)] hover:text-[var(--insis-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[1px] focus-visible:outline-[var(--insis-blue)] sm:min-h-0 sm:min-w-0"
+		class="flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-[3px] border border-transparent p-[5px] text-(--insis-text-2) transition-all duration-100 hover:border-(--insis-border) hover:bg-(--insis-surface-2) hover:text-(--insis-text) focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--insis-blue) sm:min-h-0 sm:min-w-0"
 		@click="cycle"
 	>
 		<component :is="icon" class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />

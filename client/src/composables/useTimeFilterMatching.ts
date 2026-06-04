@@ -161,9 +161,9 @@ export function useTimeFilterMatching() {
 		if (!slotMatchesTimeFilter(slot)) return ''
 
 		const classes: Record<string, string> = {
-			lecture: 'bg-[var(--insis-block-lecture)]!',
-			exercise: 'bg-[var(--insis-block-exercise)]!',
-			seminar: 'bg-[var(--insis-block-seminar)]!',
+			lecture: 'bg-(--insis-block-lecture)!',
+			exercise: 'bg-(--insis-block-exercise)!',
+			seminar: 'bg-(--insis-block-seminar)!',
 		}
 
 		return classes[slotType] ?? ''

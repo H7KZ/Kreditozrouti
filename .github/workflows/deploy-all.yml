@@ -136,8 +136,8 @@ jobs:
           APP_VITE_APP_VERSION: ${{ steps.vars.outputs.tag }}
           APP_PROJECT: ${{ vars.PROJECT }}
           APP_DOMAIN: ${{ vars.DOMAIN }}
-          APP_MYSQL_USER: ${{ vars.MYSQL_USER }}
-          APP_MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
+          APP_MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          APP_MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
           APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
           APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
           APP_MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
@@ -158,7 +158,7 @@ jobs:
             set -euo pipefail
 
             VERSION_DIR="$HOME/versions/${{ inputs.environment }}/$IMG_TAG"
-            LATEST_LINK="$HOME/versions/${{ inputs.environment }}/latest"
+            CURRENT_LINK="$HOME/versions/${{ inputs.environment }}/current"
             PROJECT_NAME="${{ steps.vars.outputs.project }}"
 
             echo "=========================================="
@@ -195,7 +195,7 @@ jobs:
               SCRAPER_IMAGE_TAG="$IMG_TAG" \
               bash ./deploy.sh "$PROJECT_NAME" "${{ inputs.environment }}"
 
-            ln -sfn "$VERSION_DIR" "$LATEST_LINK"
+            ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
 
             echo "=========================================="
             echo "Full-stack deployment complete"

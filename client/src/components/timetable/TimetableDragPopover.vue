@@ -87,14 +87,10 @@ const durationFormatted = computed(() => {
 </script>
 
 <template>
-	<div
-		ref="popoverRef"
-		class="popover fixed z-50 w-[280px] rounded border border-[var(--insis-border)] bg-[var(--insis-surface)] shadow-lg"
-		:style="popoverStyle"
-	>
+	<div ref="popoverRef" class="popover fixed z-50 w-[280px] rounded border border-(--insis-border) bg-(--insis-surface) shadow-lg" :style="popoverStyle">
 		<!-- Header -->
-		<div class="border-b border-[var(--insis-border)] bg-[var(--insis-header-bg)] px-3 py-2">
-			<h3 class="text-sm font-medium text-[var(--insis-text)]">{{ $t('components.timetable.TimetableDragPopover.title') }}</h3>
+		<div class="border-b border-(--insis-border) bg-(--insis-header-bg) px-3 py-2">
+			<h3 class="text-sm font-medium text-(--insis-text)">{{ $t('components.timetable.TimetableDragPopover.title') }}</h3>
 		</div>
 
 		<!-- Content -->
@@ -102,21 +98,21 @@ const durationFormatted = computed(() => {
 			<!-- Selected time info -->
 			<div class="mb-3 space-y-1 text-sm">
 				<div class="flex items-center justify-between">
-					<span class="text-[var(--insis-gray-500)]">{{ $t('common.day') }}:</span>
-					<span class="font-medium text-[var(--insis-text)]">{{ dayLabel }}</span>
+					<span class="text-(--insis-gray-500)">{{ $t('common.day') }}:</span>
+					<span class="font-medium text-(--insis-text)">{{ dayLabel }}</span>
 				</div>
 				<div class="flex items-center justify-between">
-					<span class="text-[var(--insis-gray-500)]">{{ $t('common.time') }}:</span>
-					<span class="font-medium text-[var(--insis-text)]">{{ timeRange }}</span>
+					<span class="text-(--insis-gray-500)">{{ $t('common.time') }}:</span>
+					<span class="font-medium text-(--insis-text)">{{ timeRange }}</span>
 				</div>
 				<div class="flex items-center justify-between">
-					<span class="text-[var(--insis-gray-500)]">{{ $t('common.duration') }}:</span>
-					<span class="text-[var(--insis-gray-600)]">{{ durationFormatted }}</span>
+					<span class="text-(--insis-gray-500)">{{ $t('common.duration') }}:</span>
+					<span class="text-(--insis-gray-600)">{{ durationFormatted }}</span>
 				</div>
 			</div>
 
 			<!-- Description -->
-			<p class="mb-3 text-xs text-[var(--insis-gray-500)]">{{ $t('components.timetable.TimetableDragPopover.description') }}</p>
+			<p class="mb-3 text-xs text-(--insis-gray-500)">{{ $t('components.timetable.TimetableDragPopover.description') }}</p>
 
 			<!-- Actions -->
 			<div class="flex items-center justify-end gap-2">

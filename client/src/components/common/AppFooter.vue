@@ -20,27 +20,27 @@ const appVersion = APP_VERSION
 			<div class="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4">
 				<!-- About Section -->
 				<div class="lg:col-span-2">
-					<h3 class="text-insis-blue mb-3 text-lg font-semibold">
+					<h3 class="mb-3 text-lg font-medium text-(--insis-blue)">
 						{{ t('footer.about.title') }}
 					</h3>
-					<p class="text-insis-gray-700 mb-3 text-sm">
+					<p class="mb-3 text-sm text-(--insis-gray-700)">
 						{{ t('footer.about.description') }}
 					</p>
-					<p class="text-insis-gray-600 text-xs">
+					<p class="text-xs text-(--insis-gray-600)">
 						{{ t('footer.about.university') }}
 					</p>
 				</div>
 
 				<!-- Links Section -->
 				<div>
-					<h3 class="text-insis-blue mb-3 text-lg font-semibold">
+					<h3 class="mb-3 text-lg font-medium text-(--insis-blue)">
 						{{ t('footer.links.title') }}
 					</h3>
 					<ul class="space-y-2 text-sm">
 						<li>
 							<RouterLink
 								to="/legal/compliance"
-								class="text-insis-gray-700 hover:text-insis-blue flex items-center gap-2 text-left transition-colors"
+								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 							>
 								<IconFileText class="h-4 w-4 shrink-0" aria-hidden="true" />
 								{{ t('footer.links.compliance') }}
@@ -51,7 +51,7 @@ const appVersion = APP_VERSION
 								href="https://github.com/H7KZ/Kreditozrouti"
 								target="_blank"
 								rel="noopener noreferrer"
-								class="text-insis-gray-700 hover:text-insis-blue flex items-center gap-2 text-left transition-colors"
+								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 							>
 								<IconGithub class="h-4 w-4 shrink-0" aria-hidden="true" />
 								{{ t('footer.links.github') }}
@@ -63,7 +63,7 @@ const appVersion = APP_VERSION
 								href="https://insis.vse.cz"
 								target="_blank"
 								rel="noopener noreferrer"
-								class="text-insis-gray-700 hover:text-insis-blue flex items-center gap-2 text-left transition-colors"
+								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 							>
 								<IconFingerPrintPattern class="h-4 w-4 shrink-0" aria-hidden="true" />
 								{{ t('footer.links.insis') }}
@@ -75,15 +75,15 @@ const appVersion = APP_VERSION
 
 				<!-- Contact Section -->
 				<div>
-					<h3 class="text-insis-blue mb-3 text-left text-lg font-semibold">
+					<h3 class="mb-3 text-left text-lg font-medium text-(--insis-blue)">
 						{{ t('footer.contact.title') }}
 					</h3>
-					<p class="text-insis-gray-700 mb-3 text-left text-sm">
+					<p class="mb-3 text-left text-sm text-(--insis-gray-700)">
 						{{ t('footer.contact.description') }}
 					</p>
 					<a
 						href="mailto:support@kreditozrouti.cz"
-						class="text-insis-gray-700 hover:text-insis-blue flex items-center gap-2 text-left text-sm transition-colors"
+						class="flex items-center gap-2 text-left text-sm text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 					>
 						<IconMail class="h-4 w-4 shrink-0" aria-hidden="true" />
 						support@kreditozrouti.cz
@@ -95,7 +95,7 @@ const appVersion = APP_VERSION
 			<div class="border-insis-gray-200 my-6 border-t"></div>
 
 			<!-- Bottom Footer -->
-			<div class="text-insis-gray-600 flex flex-col items-center justify-between gap-4 text-sm sm:flex-row">
+			<div class="flex flex-col items-center justify-between gap-4 text-sm text-(--insis-gray-600) sm:flex-row">
 				<div class="text-center sm:text-left">
 					<p>
 						{{ t('footer.bottom.copyright', { year: currentYear }) }}
@@ -108,10 +108,10 @@ const appVersion = APP_VERSION
 				<div class="flex flex-col items-center gap-2 sm:items-end">
 					<div class="flex items-center gap-3">
 						<span class="text-xs">{{ t('footer.bottom.version', { version: appVersion }) }}</span>
-						<span class="text-insis-gray-400 text-xs">|</span>
+						<span class="text-xs text-(--insis-gray-400)">|</span>
 						<span class="text-xs">{{ t('footer.bottom.beta') }}</span>
 					</div>
-					<p class="text-insis-gray-500 text-xs">
+					<p class="text-xs text-(--insis-gray-500)">
 						{{ t('footer.bottom.disclaimer') }}
 					</p>
 				</div>

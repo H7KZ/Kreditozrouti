@@ -54,23 +54,23 @@ function handleButtonClick(button: AlertButton) {
 const alertStyles = {
 	info: {
 		panel: 'insis-panel-info',
-		icon: 'text-[var(--insis-info)]',
-		title: 'text-[var(--insis-info)]',
+		icon: 'text-(--insis-info)',
+		title: 'text-(--insis-info)',
 	},
 	success: {
 		panel: 'insis-panel-success',
-		icon: 'text-[var(--insis-success)]',
-		title: 'text-[var(--insis-success)]',
+		icon: 'text-(--insis-success)',
+		title: 'text-(--insis-success)',
 	},
 	warning: {
 		panel: 'insis-panel-warning',
-		icon: 'text-[var(--insis-warning)]',
-		title: 'text-[var(--insis-gray-900)]',
+		icon: 'text-(--insis-warning)',
+		title: 'text-(--insis-gray-900)',
 	},
 	error: {
 		panel: 'insis-panel-danger',
-		icon: 'text-[var(--insis-danger)]',
-		title: 'text-[var(--insis-danger)]',
+		icon: 'text-(--insis-danger)',
+		title: 'text-(--insis-danger)',
 	},
 }
 
@@ -97,7 +97,7 @@ export type AlertProps = Props
 					{{ title }}
 				</p>
 				<!-- Alert description with secondary text styling -->
-				<p v-if="description" class="mt-1 text-sm text-[var(--insis-gray-700)]">
+				<p v-if="description" class="mt-1 text-sm text-(--insis-gray-700)">
 					{{ description }}
 				</p>
 
@@ -119,7 +119,7 @@ export type AlertProps = Props
 			</div>
 
 			<!-- Close button -->
-			<button type="button" class="shrink-0 text-[var(--insis-gray-500)] transition-colors hover:text-[var(--insis-gray-700)]" @click="handleClose">
+			<button type="button" class="shrink-0 text-(--insis-gray-500) transition-colors hover:text-(--insis-gray-700)" @click="handleClose">
 				<IconX class="h-4 w-4" />
 			</button>
 		</div>

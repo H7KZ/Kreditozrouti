@@ -40,8 +40,8 @@ export default class InSISHTTPClientService {
         this.client = Axios.create()
         axiosRetry(this.client, {
             retries: 3,
-            retryDelay: axiosRetry.exponentialDelay,
-            retryCondition: axiosRetry.isNetworkOrIdempotentRequestError
+            retryDelay: (retryCount, error) => axiosRetry.exponentialDelay(retryCount, error),
+            retryCondition: error => axiosRetry.isNetworkOrIdempotentRequestError(error)
         })
     }
 

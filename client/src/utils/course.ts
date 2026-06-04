@@ -10,9 +10,9 @@ export { getSlotType } from '@shared/domain/insis'
  */
 export function getUnitTypeColorClass(type: CourseUnitType): string {
 	const colors: Record<CourseUnitType, string> = {
-		lecture: 'bg-[var(--insis-block-lecture)]',
-		exercise: 'bg-[var(--insis-block-exercise)]',
-		seminar: 'bg-[var(--insis-block-seminar)]',
+		lecture: 'bg-(--insis-block-lecture)',
+		exercise: 'bg-(--insis-block-exercise)',
+		seminar: 'bg-(--insis-block-seminar)',
 	}
 	return colors[type] || colors.lecture
 }

@@ -269,7 +269,7 @@ but re-exports it for convenience alongside color/badge class helpers.
   `getUnitTypesGroupLabel(types)`
 - `getDayLabel(day)`, `getShortDayLabel(day)`
 - `getCourseTitle(course)`, `getUnitCourseTitle(unit)`
-- `getUnitTypeColorClass(type)` — returns `bg-[var(--insis-block-lecture|exercise|seminar)]`
+- `getUnitTypeColorClass(type)` — returns `bg-(--insis-block-lecture|exercise|seminar)`
 - `getCategoryBadgeClass(category)` — returns badge CSS class
 
 ### `useCourseStatusFilter()`
