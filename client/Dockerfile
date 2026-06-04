@@ -18,8 +18,9 @@ RUN mkdir -p /usr/src/api/node_modules /usr/src/scraper/node_modules && \
 
 # Build with placeholder values replaced at container start via docker-entrypoint.sh
 ENV VITE_API_URL="__VITE_API_URL_PLACEHOLDER__"
-ENV VITE_SENTRY_DSN="__VITE_SENTRY_DSN_PLACEHOLDER__"
-ENV VITE_SENTRY_RELEASE="__VITE_SENTRY_RELEASE_PLACEHOLDER__"
+ENV VITE_API_COMMAND_TOKEN="__VITE_API_COMMAND_TOKEN_PLACEHOLDER__"
+ENV VITE_FARO_COLLECTOR_URL="__VITE_FARO_COLLECTOR_URL_PLACEHOLDER__"
+ENV VITE_APP_VERSION="__VITE_APP_VERSION_PLACEHOLDER__"
 
 RUN npm run build
 
@@ -29,8 +30,9 @@ FROM nginx:stable-alpine
 
 ENV PORT=80
 ENV VITE_API_URL="/api"
-ENV VITE_SENTRY_DSN=""
-ENV VITE_SENTRY_RELEASE="latest"
+ENV VITE_API_COMMAND_TOKEN=""
+ENV VITE_FARO_COLLECTOR_URL=""
+ENV VITE_APP_VERSION="latest"
 
 RUN rm -rf /usr/share/nginx/html/*
 

@@ -8,7 +8,7 @@
 
 ```
 api/src/
-├── index.ts / app.ts / bullmq.ts / sentry.ts
+├── index.ts / app.ts / bullmq.ts
 ├── clients/        # mysql, redis, i18n, mailer
 ├── Config/         # Config.ts — env vars
 ├── Controllers/    # thin: validate (Zod) → service → respond
@@ -41,7 +41,8 @@ api/src/
 
 ```typescript
 export const CoursesController = {
-  async handleRequest(req: Request, res: Response) { ... }
+    async handleRequest(req: Request, res: Response) { ...
+    }
 }
 ```
 

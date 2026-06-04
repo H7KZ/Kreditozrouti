@@ -61,5 +61,4 @@ jobs:
           envs: MONITORING_DOMAIN,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL
           script: |
             set -euo pipefail
-            export DEPLOYMENT_PATH="$HOME/deployment"
             bash ~/deployment/monitoring/deploy.sh
