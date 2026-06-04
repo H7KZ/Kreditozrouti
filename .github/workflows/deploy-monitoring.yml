@@ -49,7 +49,7 @@ jobs:
       - name: Deploy Monitoring Stack
         uses: appleboy/ssh-action@v1
         env:
-          DOMAIN: ${{ secrets.MONITORING_DOMAIN }}
+          MONITORING_DOMAIN: ${{ secrets.MONITORING_DOMAIN }}
           GRAFANA_ADMIN_USER: ${{ secrets.GRAFANA_ADMIN_USER }}
           GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
@@ -58,7 +58,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: DOMAIN,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL
+          envs: MONITORING_DOMAIN,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL
           script: |
             set -euo pipefail
             export DEPLOYMENT_PATH="$HOME/deployment"

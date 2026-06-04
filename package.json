@@ -2,8 +2,9 @@
   "name": "kreditozrouti",
   "private": true,
   "workspaces": [
-    "kreditozrouti-api",
-    "kreditozrouti-client",
-    "kreditozrouti-scraper"
+    "api",
+    "client",
+    "scraper",
+    "shared"
   ]
 }

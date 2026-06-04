@@ -5,40 +5,48 @@ set -euo pipefail
 # Script Name: deploy.sh
 # Description: Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy).
 #              Traefik must already be running before this script is called.
-#              Configuration via environment variables.
+#              Configuration via environment variables or an env file.
 #
-# Usage:       bash ./deploy.sh
+# Usage:       bash ./deploy.sh [--env-file <path>]
 #
-# Required variables (set as environment variables):
-#   DEPLOYMENT_PATH       Path to deployment directory
-#   DOMAIN                Public domain for Grafana + Faro routing
+# Options:
+#   --env-file <path>     Path to a file of KEY=VALUE pairs to source before
+#                         validation (useful for local/manual runs)
+#
+# Required variables (set as environment variables or in the env file):
+#   MONITORING_DOMAIN       Public domain for Grafana + Faro routing
 #   GRAFANA_ADMIN_PASSWORD  Grafana admin password
 #
 # Optional:
 #   GRAFANA_ADMIN_USER    Grafana admin username (default: admin)
 #   DISCORD_WEBHOOK_URL   Discord webhook for Grafana alerts
-#
-# Operational commands (use docker compose directly):
-#   docker compose -p global logs -f
-#   docker compose -p global ps
-#   docker compose -p global down
-#
-# Deploy order: Traefik → this script → app stack
 # ==============================================================================
 
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly STACK_NAME="global"
 
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
 
+ENV_FILE=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --env-file) ENV_FILE="$2"; shift 2 ;;
+        *) log_error "Unknown argument: $1"; exit 1 ;;
+    esac
+done
+
+if [[ -n "$ENV_FILE" ]]; then
+    [[ -f "$ENV_FILE" ]] || { log_error "Env file not found: $ENV_FILE"; exit 1; }
+    # shellcheck source=/dev/null
+    set -a; source "$ENV_FILE"; set +a
+fi
+
 main() {
-    [[ -z "${DEPLOYMENT_PATH:-}" ]]       && { log_error "DEPLOYMENT_PATH not set";       exit 1; }
-    [[ -z "${DOMAIN:-}" ]]                && { log_error "DOMAIN not set";                exit 1; }
+    [[ -z "${MONITORING_DOMAIN:-}" ]]      && { log_error "DOMAIN not set";                exit 1; }
     [[ -z "${GRAFANA_ADMIN_PASSWORD:-}" ]] && { log_error "GRAFANA_ADMIN_PASSWORD not set"; exit 1; }
 
-    [[ -d "$DEPLOYMENT_PATH" ]] || { log_error "Deployment directory not found: $DEPLOYMENT_PATH"; exit 1; }
-
-    export DOMAIN
+    export MONITORING_DOMAIN
     export PROJECT="$STACK_NAME"
     export GRAFANA_ADMIN_USER="${GRAFANA_ADMIN_USER:-admin}"
     export GRAFANA_ADMIN_PASSWORD
@@ -47,16 +55,14 @@ main() {
     log "=========================================="
     log "Monitoring Stack Deployment"
     log "=========================================="
-    log "Path:             $DEPLOYMENT_PATH"
-    log "Domain:           $DOMAIN"
-    log "Grafana user:     $GRAFANA_ADMIN_USER"
-    log "Grafana password: ${GRAFANA_ADMIN_PASSWORD:0:3}..."
+    log "Monitoring domain: $MONITORING_DOMAIN"
+    log "Grafana user:      $GRAFANA_ADMIN_USER"
+    log "Grafana password:  ${GRAFANA_ADMIN_PASSWORD:0:3}..."
     log "=========================================="
 
-    local monitoring_dir="$DEPLOYMENT_PATH/monitoring"
-    local compose_file="$monitoring_dir/docker-compose.monitoring.yml"
-    local networks_config="$monitoring_dir/networks.yml"
-    local volumes_config="$monitoring_dir/volumes.yml"
+    local compose_file="$SCRIPT_DIR/docker-compose.monitoring.yml"
+    local networks_config="$SCRIPT_DIR/networks.yml"
+    local volumes_config="$SCRIPT_DIR/volumes.yml"
 
     validate_files "$compose_file" "$networks_config" "$volumes_config"
     create_networks "$networks_config"
@@ -73,8 +79,8 @@ main() {
     log_success "=========================================="
     log_success "Monitoring Stack Deployed"
     log_success "=========================================="
-    log "Grafana:  https://$DOMAIN/grafana"
-    log "Faro:     https://$DOMAIN/faro/collect"
+    log "Grafana:  https://$MONITORING_DOMAIN/grafana"
+    log "Faro:     https://$MONITORING_DOMAIN/faro/collect"
     log ""
     log "Logs:   docker compose -p $STACK_NAME logs -f"
     log "Status: docker compose -p $STACK_NAME ps"
