@@ -1,7 +1,7 @@
 import type { ScraperInSISCourse } from '@scraper/types/insis'
 import type { ScraperInSISCourseRequestJob } from '@scraper/types/jobs'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import { InSISNetworkError, InSISParseError } from '@scraper/Errors/InSISErrors'
+import { InSISNetworkError, InSISParseError, InSISRateLimitError } from '@scraper/Errors/InSISErrors'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
@@ -27,6 +27,7 @@ export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCou
     const result = await client.get<string>(withCzechLang(data.url))
 
     if (!result.success) {
+        if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
         throw new InSISNetworkError(`HTTP request failed for course ${courseId} at ${data.url}`)
     }
 

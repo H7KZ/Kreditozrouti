@@ -1,6 +1,7 @@
 import type { ScraperRequestJob } from '@scraper/types/jobs'
-import { Job } from 'bullmq'
+import { Job, DelayedError } from 'bullmq'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
+import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'
 import ScraperRequestInSISCatalogJob from '@scraper/Jobs/ScraperRequestInSISCatalogJob'
 import ScraperRequestInSISCourseJob from '@scraper/Jobs/ScraperRequestInSISCourseJob'
 import ScraperRequestInSISStudyPlanJob from '@scraper/Jobs/ScraperRequestInSISStudyPlanJob'
@@ -14,7 +15,7 @@ import ScraperRequestInSISStudyPlansJob from '@scraper/Jobs/ScraperRequestInSISS
  * @param job - The BullMQ job object containing the scrape request configuration.
  * @throws Propagates exceptions to trigger BullMQ retry logic or failure handling.
  */
-export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>): Promise<void> {
+export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>, token?: string): Promise<void> {
     const { type } = job.data
     const start = process.hrtime()
 
@@ -57,6 +58,12 @@ export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>)
         } catch (error) {
             const diff = process.hrtime(start)
             const durationMs = (diff[0] * 1e9 + diff[1]) / 1e6
+
+            if (error instanceof InSISRateLimitError) {
+                LoggerJobContext.add({ rate_limited: true, retry_after_seconds: error.retryAfterSeconds })
+                await job.moveToDelayed(Date.now() + error.retryAfterSeconds * 1000, token)
+                throw new DelayedError()
+            }
 
             LoggerJobContext.add({
                 status: 'failed',

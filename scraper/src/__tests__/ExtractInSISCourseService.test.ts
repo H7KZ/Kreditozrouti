@@ -47,8 +47,8 @@ describe('ExtractInSISCourseService', () => {
         it('extracts faculty ident from page title', () => {
             const course = ExtractInSISCourseService.extract(fixture('course.html'), COURSE_URL)
 
-            expect(course.faculty.ident).toBe('FIS')
-            expect(course.faculty.is_schedule_publicly_visible).toBe(true)
+            expect(course.faculty?.ident).toBe('FIS')
+            expect(course.faculty?.is_schedule_publicly_visible).toBe(true)
         })
 
         it('separates lecturers from guarantors', () => {
@@ -62,7 +62,7 @@ describe('ExtractInSISCourseService', () => {
             const course = ExtractInSISCourseService.extract(fixture('course.html'), COURSE_URL)
 
             expect(course.timetable).toHaveLength(1)
-            const slot = course.timetable[0].slots[0]
+            const slot = course.timetable![0].slots![0]
             expect(slot.day).toBe('Pondělí')
             expect(slot.time_from).toBe('8:00')
             expect(slot.time_to).toBe('9:30')
@@ -81,9 +81,9 @@ describe('ExtractInSISCourseService', () => {
             const course = ExtractInSISCourseService.extract(fixture('course.html'), COURSE_URL)
 
             expect(course.study_plans).toHaveLength(1)
-            expect(course.study_plans[0].ident).toBe('B-AIN1')
-            expect(course.study_plans[0].group).toBe('field_specific_bachelor')
-            expect(course.study_plans[0].category).toBe('compulsory')
+            expect(course.study_plans![0].ident).toBe('B-AIN1')
+            expect(course.study_plans![0].group).toBe('field_specific_bachelor')
+            expect(course.study_plans![0].category).toBe('compulsory')
         })
 
         it('extracts audit info', () => {

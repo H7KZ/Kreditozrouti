@@ -2,6 +2,7 @@ import type { ScraperInSISCatalogRequestJob } from '@scraper/types/jobs'
 import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
+import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'
 import ExtractInSISCatalogService from '@scraper/Services/ExtractInSISCatalogService'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
@@ -62,7 +63,10 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
 async function discoverSearchOptions(client: ReturnType<typeof createInSISClient>) {
     const result = await client.get(Config.insis.catalogExtendedSearchUrl)
 
-    if (!result.success) return null
+    if (!result.success) {
+        if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
+        return null
+    }
 
     const options = ExtractInSISCatalogService.extractSearchOptions(result.data)
 
@@ -96,6 +100,7 @@ async function scrapeCatalogPage(
     const result = await client.post<string>(Config.insis.catalogUrl, params.toString())
 
     if (!result.success) {
+        if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
         LoggerJobContext.add({
             error: 'Catalog page fetch failed'
         })

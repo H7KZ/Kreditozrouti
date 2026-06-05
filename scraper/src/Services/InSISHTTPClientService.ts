@@ -21,6 +21,8 @@ export interface HttpError {
     error: Error | AxiosError
     status?: number
     statusText?: string
+    /** Seconds to wait before retrying (only set for HTTP 429 responses) */
+    retryAfter?: number
 }
 
 export type HttpResponse<T> = HttpResult<T> | HttpError
@@ -91,11 +93,29 @@ export default class InSISHTTPClientService {
                 [`${this.logPrefix}_status_text`]: error.response?.statusText,
                 [`${this.logPrefix}_url`]: url
             })
+
+            let retryAfter: number | undefined
+            if (error.response?.status === 429) {
+                const headerValue = error.response.headers['retry-after'] as string | undefined
+                if (headerValue !== undefined) {
+                    let parsed: number
+                    if (/^\d+$/.test(headerValue)) {
+                        parsed = parseInt(headerValue, 10)
+                    } else {
+                        parsed = Math.max(0, Math.floor((new Date(headerValue).getTime() - Date.now()) / 1000))
+                    }
+                    if (!isNaN(parsed)) {
+                        retryAfter = Math.min(parsed, 3600)
+                    }
+                }
+            }
+
             return {
                 success: false,
                 error,
                 status: error.response?.status,
-                statusText: error.response?.statusText
+                statusText: error.response?.statusText,
+                ...(retryAfter !== undefined ? { retryAfter } : {})
             }
         }
 

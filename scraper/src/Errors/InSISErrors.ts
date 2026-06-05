@@ -15,3 +15,11 @@ export class InSISParseError extends UnrecoverableError {
         this.name = 'InSISParseError'
     }
 }
+
+/** Rate-limit response (HTTP 429) — retryable via BullMQ delayed set, not standard retry */
+export class InSISRateLimitError extends Error {
+    constructor(public readonly retryAfterSeconds: number) {
+        super(`InSIS rate limited — retry after ${retryAfterSeconds}s`)
+        this.name = 'InSISRateLimitError'
+    }
+}

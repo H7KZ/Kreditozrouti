@@ -3,6 +3,7 @@ import type { ScraperInSISStudyPlansRequestJob } from '@scraper/types/jobs'
 import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
+import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
@@ -25,6 +26,7 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
     const initialResult = await client.get<string>(Config.insis.studyPlansUrl)
 
     if (!initialResult.success) {
+        if (initialResult.status === 429) throw new InSISRateLimitError(initialResult.retryAfter ?? 60)
         redis.incr('metrics:scraper:silent_failures:study_plans').catch(() => {
             /* empty */
         })
