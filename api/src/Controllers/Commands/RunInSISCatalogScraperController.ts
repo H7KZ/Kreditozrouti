@@ -4,6 +4,7 @@ import * as z from 'zod'
 import ScraperService from '@api/Services/ScraperService'
 
 const BodySchema = z.object({
+	mode: z.enum(['turbo', 'normal', 'polite']).optional().default('polite'),
 	faculties: z.array(z.string()).optional(),
 	periods: z
 		.array(
@@ -25,7 +26,7 @@ const BodySchema = z.object({
  */
 export default async function RunInSISCatalogScraperController(req: Request, res: Response) {
 	const result = BodySchema.safeParse(req.body)
-	const body = result.success ? result.data : {}
+	const body = result.success ? result.data : { mode: 'polite' as const }
 
 	await ScraperService.enqueueCatalogScrape(body)
 
