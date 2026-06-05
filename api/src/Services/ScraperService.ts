@@ -1,5 +1,4 @@
 import type { InSISSemester } from '@shared/domain/insis'
-import type { ScrapingMode } from '@shared/queue/jobs'
 import { scraper } from '@api/bullmq'
 import { mysql } from '@api/clients'
 import { StudyPlanCourseTable } from '@api/Database/types'
@@ -17,7 +16,7 @@ export default class ScraperService {
 	/**
 	 * Enqueues a job to scrape the InSIS course catalog.
 	 */
-	static async enqueueCatalogScrape(options?: { faculties?: string[]; periods?: Period[]; mode?: ScrapingMode }): Promise<void> {
+	static async enqueueCatalogScrape(options?: { faculties?: string[]; periods?: Period[] }): Promise<void> {
 		let allowedIdents: string[] = []
 		try {
 			const rows = await mysql.selectFrom(StudyPlanCourseTable._table).select('course_ident').distinct().execute()
@@ -31,7 +30,6 @@ export default class ScraperService {
 			'InSIS Catalog Request (Manual)',
 			{
 				type: 'InSIS:Catalog',
-				mode: options?.mode ?? 'polite',
 				faculties: options?.faculties,
 				periods: options?.periods,
 				auto_queue_courses: true,
@@ -68,12 +66,11 @@ export default class ScraperService {
 	/**
 	 * Enqueues a job to scrape the InSIS study plans catalog.
 	 */
-	static async enqueueStudyPlansScrape(options?: { faculties?: string[]; periods?: Period[]; mode?: ScrapingMode }): Promise<void> {
+	static async enqueueStudyPlansScrape(options?: { faculties?: string[]; periods?: Period[] }): Promise<void> {
 		await scraper.queue.request.add(
 			'InSIS Study Plans Request (Manual)',
 			{
 				type: 'InSIS:StudyPlans',
-				mode: options?.mode ?? 'polite',
 				faculties: options?.faculties,
 				periods: options?.periods,
 				auto_queue_study_plans: true

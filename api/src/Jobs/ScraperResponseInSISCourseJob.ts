@@ -6,7 +6,7 @@ import type {
 	ScraperInSISFaculty
 } from '@shared/queue/insis'
 import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
-import { Transaction } from 'kysely'
+import { Kysely, Transaction } from 'kysely'
 import { timeToMinutes } from '@shared/domain/time'
 import { mysql, redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
@@ -37,12 +37,12 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	if (!course?.id) return
 
-	// Always upsert faculty first — visibility flag changes must propagate
-	// even when the course syllabus hasn't changed.
+	// Upsert faculty outside any transaction — faculty rows are shared across many
+	// concurrent course jobs and holding a faculty row lock inside a long transaction
+	// causes deadlocks. A bare upsert releases the lock in microseconds.
+	let facultyId: string | null = null
 	if (course.faculty) {
-		await mysql.transaction().execute(async trx => {
-			await upsertFaculty(trx, course.faculty!)
-		})
+		facultyId = await upsertFaculty(mysql, course.faculty)
 	}
 
 	// Skip the rest if course hasn't changed since last scrape.
@@ -65,10 +65,20 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		}
 	}
 
-	await mysql.transaction().execute(async trx => {
-		let facultyId: string | null = null
-		if (course.faculty) facultyId = await upsertFaculty(trx, course.faculty)
+	// Pre-upsert all faculty idents referenced by study plans outside the transaction
+	// for the same reason as the course faculty above.
+	if (course.study_plans && course.study_plans.length > 0) {
+		const uniqueFacultyIdents = [...new Set(course.study_plans.map(p => p.facultyIdent).filter((id): id is string => !!id))]
+		for (const ident of uniqueFacultyIdents) {
+			await mysql
+				.insertInto(FacultyTable._table)
+				.values({ id: ident, title: null, is_schedule_publicly_visible: false })
+				.onDuplicateKeyUpdate({ id: ident })
+				.execute()
+		}
+	}
 
+	await mysql.transaction().execute(async trx => {
 		const coursePayload: NewCourse = {
 			id: course.id,
 			url: course.url,
@@ -111,6 +121,8 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		await syncTimetable(trx, course.id, course.timetable ?? [])
 
 		if (course.study_plans && course.study_plans.length > 0) {
+			// Faculty idents referenced by study plans are pre-upserted outside
+			// this transaction (see below) to avoid holding locks inside it.
 			await syncStudyPlansFromCourse(trx, course.id, course.ident ?? '', course.study_plans)
 		}
 	})
@@ -236,16 +248,10 @@ async function syncStudyPlansFromCourse(
 	plans: ScraperInSISCourseStudyPlan[]
 ): Promise<void> {
 	for (const plan of plans) {
-		// 1. Ensure Faculty exists
-		if (plan.facultyIdent) {
-			await trx
-				.insertInto(FacultyTable._table)
-				.values({ id: plan.facultyIdent, title: null, is_schedule_publicly_visible: false })
-				.onDuplicateKeyUpdate({ id: plan.facultyIdent })
-				.execute()
-		}
+		// Faculty is guaranteed to exist — pre-upserted outside the transaction
+		// to avoid deadlocks from concurrent jobs locking the same faculty rows.
 
-		// 2. Find Study Plan
+		// 1. Find Study Plan
 		const studyPlan = await trx
 			.selectFrom(StudyPlanTable._table)
 			.select('id')
@@ -293,7 +299,7 @@ async function flushResponseCaches(): Promise<void> {
 /**
  * Helper to Upsert Faculty and return its ID.
  */
-async function upsertFaculty(trx: Transaction<Database>, faculty: ScraperInSISFaculty): Promise<string | null> {
+async function upsertFaculty(trx: Kysely<Database>, faculty: ScraperInSISFaculty): Promise<string | null> {
 	if (!faculty.ident) return null
 
 	await trx
