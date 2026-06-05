@@ -1,6 +1,8 @@
 import type {InSISSemester, ScraperJob} from '../domain/insis.js'
 import type {ScraperInSISCatalog, ScraperInSISCourse, ScraperInSISStudyPlan, ScraperInSISStudyPlans} from './insis.js'
 
+export type ScrapingMode = 'turbo' | 'normal' | 'polite'
+
 interface ScraperRequestJobBase {
     type: ScraperJob
     error?: { message: string }
@@ -8,6 +10,7 @@ interface ScraperRequestJobBase {
 
 export interface ScraperInSISCatalogRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:Catalog'
+    mode: ScrapingMode
     faculties?: string[]
     periods?: { semester: InSISSemester | null; year: number }[]
     auto_queue_courses?: boolean
@@ -21,6 +24,7 @@ export interface ScraperInSISCourseRequestJob extends ScraperRequestJobBase {
 
 export interface ScraperInSISStudyPlansRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:StudyPlans'
+    mode: ScrapingMode
     faculties?: string[]
     periods?: { semester: InSISSemester | null; year: number }[]
     auto_queue_study_plans?: boolean

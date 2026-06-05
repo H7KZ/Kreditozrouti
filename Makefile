@@ -1,7 +1,14 @@
 .PHONY: install dev format lint \
 		type-check build preview \
 		build-docker-images run-local-docker \
-		stop-local-docker clear-redis
+		stop-local-docker clear-redis \
+		scrape-catalog scrape-catalog-turbo scrape-catalog-normal \
+		scrape-studyplans scrape-studyplans-turbo scrape-studyplans-normal
+
+# API_URL and COMMAND_TOKEN can be overridden:
+#   make scrape-catalog API_URL=https://api.kreditozrouti.cz COMMAND_TOKEN=mytoken
+API_URL        ?= http://localhost:40080
+COMMAND_TOKEN  ?= $(error COMMAND_TOKEN is required. Run: make scrape-catalog COMMAND_TOKEN=mytoken)
 
 run-local-docker:
 	docker compose -f docker-compose.local.yml up -d
@@ -64,6 +71,24 @@ preview:
 	'cd scraper && npm run preview' \
 	--names "API,CLIENT,SCRAPER" \
 	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
+
+scrape-catalog:
+	bash scripts/scrape.sh $(API_URL) polite catalog $(COMMAND_TOKEN)
+
+scrape-catalog-normal:
+	bash scripts/scrape.sh $(API_URL) normal catalog $(COMMAND_TOKEN)
+
+scrape-catalog-turbo:
+	bash scripts/scrape.sh $(API_URL) turbo catalog $(COMMAND_TOKEN)
+
+scrape-studyplans:
+	bash scripts/scrape.sh $(API_URL) polite studyplans $(COMMAND_TOKEN)
+
+scrape-studyplans-normal:
+	bash scripts/scrape.sh $(API_URL) normal studyplans $(COMMAND_TOKEN)
+
+scrape-studyplans-turbo:
+	bash scripts/scrape.sh $(API_URL) turbo studyplans $(COMMAND_TOKEN)
 
 build-docker-images:
 	docker buildx build -t kreditozrouti-api -f ./api/Dockerfile . && \

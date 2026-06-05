@@ -1,0 +1,106 @@
+# ==============================================================================
+# Workflow: Cleanup GHCR Package Versions
+# Description: Manually triggered workflow to delete old container image
+#              versions for all three services (api, client, scraper).
+#              Floating tags (latest, dev-latest) are always preserved.
+#
+# Trigger: workflow_dispatch only
+# ==============================================================================
+
+name: Cleanup GHCR Package Versions
+
+on:
+  workflow_dispatch:
+    inputs:
+      min_versions_to_keep:
+        description: "Number of recent SHA-tagged versions to keep per package"
+        required: false
+        type: number
+        default: 10
+      dry_run:
+        description: "Dry run — print what would be deleted without deleting"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  packages: write
+
+jobs:
+  cleanup-api:
+    name: Cleanup API
+    if: ${{ !inputs.dry_run }}
+    uses: ./.github/workflows/_cleanup-package.yml
+    with:
+      package-name: kreditozrouti/api
+      min-versions-to-keep: ${{ inputs.min_versions_to_keep }}
+    secrets: inherit
+
+  cleanup-client:
+    name: Cleanup Client
+    if: ${{ !inputs.dry_run }}
+    uses: ./.github/workflows/_cleanup-package.yml
+    with:
+      package-name: kreditozrouti/client
+      min-versions-to-keep: ${{ inputs.min_versions_to_keep }}
+    secrets: inherit
+
+  cleanup-scraper:
+    name: Cleanup Scraper
+    if: ${{ !inputs.dry_run }}
+    uses: ./.github/workflows/_cleanup-package.yml
+    with:
+      package-name: kreditozrouti/scraper
+      min-versions-to-keep: ${{ inputs.min_versions_to_keep }}
+    secrets: inherit
+
+  dry-run:
+    name: Dry Run — List versions that would be deleted
+    if: ${{ inputs.dry_run }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: List package versions via API
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          KEEP: ${{ inputs.min_versions_to_keep }}
+        run: |
+          set -euo pipefail
+
+          OWNER="$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
+          REPO="$(echo "${{ github.event.repository.name }}" | tr '[:upper:]' '[:lower:]')"
+
+          for SERVICE in api client scraper; do
+            PACKAGE="${REPO}/${SERVICE}"
+            echo "========================================"
+            echo "Package: ghcr.io/${OWNER}/${PACKAGE}"
+            echo "Keeping ${KEEP} most recent, ignoring: latest, dev-latest"
+            echo "----------------------------------------"
+
+            VERSIONS=$(gh api \
+              -H "Accept: application/vnd.github+json" \
+              "/user/packages/container/$(python3 -c "import urllib.parse; print(urllib.parse.quote('${PACKAGE}', safe=''))")/versions" \
+              --paginate \
+              --jq '[.[] | select(.metadata.container.tags | map(test("^(latest|dev-latest)$")) | any | not)] | sort_by(.created_at) | reverse')
+
+            TOTAL=$(echo "$VERSIONS" | python3 -c "import sys,json; print(len(json.load(sys.stdin)))")
+            TO_DELETE=$(( TOTAL > KEEP ? TOTAL - KEEP : 0 ))
+
+            if [ "$TO_DELETE" -eq 0 ]; then
+              echo "Nothing to delete ($TOTAL versions, keeping $KEEP)"
+            else
+              echo "Would delete $TO_DELETE of $TOTAL versions (keeping newest $KEEP):"
+              echo "$VERSIONS" | python3 -c "
+          import sys, json
+          versions = json.load(sys.stdin)
+          keep = int('$KEEP')
+          to_delete = versions[keep:]
+          for v in to_delete:
+              tags = v['metadata']['container']['tags']
+              tag_str = ', '.join(tags) if tags else '(untagged)'
+              print(f\"  {v['id']:>12}  {v['created_at']}  {tag_str}\")
+          "
+            fi
+            echo ""
+          done

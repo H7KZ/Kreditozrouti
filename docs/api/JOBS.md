@@ -162,22 +162,26 @@ const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9,11,12'
 // Covers: LS window (Nov–Feb) and ZS window (Jun–Sep)
 // with 1-week early-start buffer absorbed into month selection
 
-// Catalog scrape: 3 AM during registration months
+// Catalog scrape: 3 AM during registration months — turbo (no delays, InSIS is quiet at night)
 upsertJobScheduler(ScraperInSISCatalogRequestScheduler, {
     pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *`
 }, {
-    data: {type: 'InSIS:Catalog', auto_queue_courses: true, periods: [...last 4 years]}
+    data: {type: 'InSIS:Catalog', mode: 'turbo', auto_queue_courses: true, periods: [...last 4 years]}
 })
 
-// Study plans scrape: 2 AM during registration months
+// Study plans scrape: 2 AM during registration months — turbo
 upsertJobScheduler(ScraperInSISStudyPlansRequestScheduler, {
     pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *`
 }, {
-    data: {type: 'InSIS:StudyPlans', auto_queue_study_plans: true, periods: [...last 4 years]}
+    data: {type: 'InSIS:StudyPlans', mode: 'turbo', auto_queue_study_plans: true, periods: [...last 4 years]}
 })
 ```
 
 On startup the API also removes the legacy `SupervisorScheduler` entry from Redis if it exists.
 
 **In development:** schedulers are disabled. Use the `/commands/insis/*` endpoints with a Bearer token to trigger
-scrapes manually.
+scrapes manually. See [Scripts](../SCRIPTS.md) for pre-built curl helpers and Makefile targets.
+
+**Scraping modes:** scheduled jobs always use `turbo`. Manual triggers default to `polite`. Pass `"mode": "normal"` or
+`"mode": "turbo"` in the request body to override. See [Scraper JOBS.md](../scraper/JOBS.md#scraping-modes) for the
+full mode reference.

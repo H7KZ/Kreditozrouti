@@ -29,10 +29,11 @@ individual course scrape jobs.
 ```typescript
 {
   type: 'InSIS:Catalog'
-  faculties?: string[]          // Filter by faculty name (case-insensitive). All if omitted.
+  mode: 'turbo' | 'normal' | 'polite'  // Scraping aggressiveness — see Scraping Modes below.
+  faculties?: string[]                  // Filter by faculty name (case-insensitive). All if omitted.
   periods?: { semester: 'ZS'|'LS'; year: number }[]  // Filter by period. All if omitted.
-  auto_queue_courses?: boolean  // If true, enqueues InSIS:Course for every discovered URL.
-  allowed_idents?: string[]     // If set, only courses whose ident is in this list are queued. Absent = no filter.
+  auto_queue_courses?: boolean          // If true, enqueues InSIS:Course for every discovered URL.
+  allowed_idents?: string[]             // If set, only courses whose ident is in this list are queued. Absent = no filter.
 }
 ```
 
@@ -52,18 +53,30 @@ GET https://insis.vse.cz/katalog/index.pl?jak=rozsirene
 **Flow — Phase 2: Scraping**
 
 ```
-For each (faculty, period) combination:
-  POST https://insis.vse.cz/katalog/
-    body: fakulta=<id>&obdobi=<yearId>&obdobi_fak=<id>&jak=rozsirene&...
-  └─ ExtractInSISCatalogService.extractCourses(html)
-       → CatalogCourse[] of unique { url, ident } pairs
-  └─ if allowed_idents present: filter courses to only those whose ident is in the set
-  └─ QueueService.addCatalogResponse(urls)
-       → sends InSIS:Catalog response to API
-  └─ if auto_queue_courses=true:
-       QueueService.queueCourseRequests(courses)
-       → addBulk with dedup key 'InSIS:Course:{courseId}'
+Flatten faculties × periods into combos array.
+Run runWithConcurrency(combos, catalogConcurrencyForMode(mode), scrapeCatalogPage):
+
+  For each (faculty, period) combo (in parallel, mode-bounded):
+    POST https://insis.vse.cz/katalog/
+      body: fakulta=<id>&obdobi=<yearId>&obdobi_fak=<id>&jak=rozsirene&...
+    └─ ExtractInSISCatalogService.extractCourses(html)
+         → CatalogCourse[] of unique { url, ident } pairs
+    └─ if allowed_idents present: filter courses to only those whose ident is in the set
+    └─ QueueService.addCatalogResponse(urls)
+         → sends InSIS:Catalog response to API
+    └─ if auto_queue_courses=true:
+         QueueService.queueCourseRequests(courses, mode)
+         → addBulk with dedup key 'InSIS:Course:{courseId}'
+         → delay: index * leafDelayForMode(mode) per job (crash-safe, stored in Redis)
 ```
+
+**Concurrency by mode (Phase 2):**
+
+| Mode     | Catalog concurrency | Leaf job delay |
+|----------|--------------------:|---------------:|
+| `turbo`  |                   6 |           0 ms |
+| `normal` |                   3 |       1 000 ms |
+| `polite` |      1 (sequential) |       3 000 ms |
 
 **Output:** Multiple `InSIS:Catalog` response jobs (one per faculty/period), each with a `catalog.urls` array. Also
 queues `InSIS:Course` jobs if `auto_queue_courses` is set.
@@ -149,7 +162,8 @@ search, collecting all leaf plan URLs. Optionally enqueues individual `InSIS:Stu
 ```typescript
 {
   type: 'InSIS:StudyPlans'
-  faculties?: string[]          // Filter by faculty title (case-insensitive)
+  mode: 'turbo' | 'normal' | 'polite'  // Scraping aggressiveness — see Scraping Modes below.
+  faculties?: string[]                  // Filter by faculty title (case-insensitive)
   periods?: { semester: 'ZS'|'LS'; year: number }[]  // Filter navigation by period
   auto_queue_study_plans?: boolean
 }
@@ -163,10 +177,10 @@ search, collecting all leaf plan URLs. Optionally enqueues individual `InSIS:Stu
         → [{title, url}] for each faculty link
    └─ apply faculties filter
 
-2. traverseHierarchy(client, faculty_urls, periods)
-   BFS loop (max depth 8, concurrency 10):
+2. traverseHierarchy(client, faculty_urls, periods, bfsConcurrencyForMode(mode))
+   BFS loop (max depth 8, concurrency driven by mode):
    
-   For each URL at the current level:
+   For each URL at the current level (in parallel, mode-bounded):
      GET url via client.getSilent()
      
      ├─ extractPlanUrls(html)    → URLs containing 'stud_plan='  → collected as leaves
@@ -180,19 +194,21 @@ search, collecting all leaf plan URLs. Optionally enqueues individual `InSIS:Stu
    → sends InSIS:StudyPlans response to API
 
 4. if auto_queue_study_plans:
-   QueueService.queueStudyPlanRequests(urls, extractIdFn, concurrency=20)
+   QueueService.queueStudyPlanRequests(urls, extractIdFn, mode, concurrency=20)
    → one InSIS:StudyPlan job per URL, dedup key 'InSIS:StudyPlan:{planId}'
+   → delay: index * leafDelayForMode(mode) per job (crash-safe, stored in Redis)
 ```
 
 **Output:** One `InSIS:StudyPlans` response job with `plans.urls` array. Optionally queues `InSIS:StudyPlan` jobs.
 
 **Limits:**
 
-| Parameter                      | Value | Reason                                              |
-|--------------------------------|-------|-----------------------------------------------------|
-| `MaxDrillDepth`                | 8     | Guards against unexpected circular nav structures   |
-| `ConcurrencyLimit`             | 10    | Balance between throughput and InSIS rate limits    |
-| Study plan enqueue concurrency | 20    | Higher than BFS because it's Redis writes, not HTTP |
+| Parameter                      | turbo |   normal |   polite | Reason                                             |
+|--------------------------------|------:|---------:|---------:|----------------------------------------------------|
+| `MaxDrillDepth`                |     8 |        8 |        8 | Guards against unexpected circular nav structures  |
+| BFS concurrency                |    10 |        4 |        2 | Mode-driven — see `bfsConcurrencyForMode()`        |
+| Leaf job delay                 |  0 ms | 1 000 ms | 3 000 ms | Per-job delay stored in BullMQ (Redis), crash-safe |
+| Study plan enqueue concurrency |    20 |       20 |       20 | Redis writes, not HTTP — concurrency not a concern |
 
 **Error handling:** Individual page failures via `getSilent` return `null` and are skipped. Returns `null` only if the
 initial faculty list fetch fails.
@@ -238,6 +254,28 @@ the full course list with group/category classification.
 
 **Error handling:** On HTTP failure or parse exception, logs error via `LoggerJobContext` and returns `null` (job
 completes without retry).
+
+---
+
+## Scraping Modes
+
+`InSIS:Catalog` and `InSIS:StudyPlans` jobs accept a required `mode` field that controls how aggressively the scraper
+hits InSIS. This protects InSIS during peak daytime usage when students are actively browsing.
+
+| Mode     | When to use                      | Catalog concurrency | BFS concurrency | Leaf job delay |
+|----------|----------------------------------|--------------------:|----------------:|---------------:|
+| `turbo`  | Scheduled 2 AM / 3 AM night runs |                   6 |              10 |           0 ms |
+| `normal` | Manual off-hours trigger         |                   3 |               4 |   1 000 ms/job |
+| `polite` | Manual daytime trigger (default) |      1 (sequential) |               2 |   3 000 ms/job |
+
+**Leaf job delay** applies to `InSIS:Course` and `InSIS:StudyPlan` jobs enqueued by the meta-job. The delay is set as a
+BullMQ `delay` option at enqueue time (stored in Redis) — it survives scraper crashes and restarts. At `polite` + 1000
+courses, the spread is ~50 minutes.
+
+**Scheduled jobs** always use `turbo` (set in `api/src/bullmq.ts`). Manual triggers via `/commands/insis/*` default to
+`polite` if no `mode` is provided in the request body.
+
+See `scraper/src/Utils/ThrottleUtils.ts` for the exact values.
 
 ---
 
