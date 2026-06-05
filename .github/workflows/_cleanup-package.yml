@@ -1,9 +1,11 @@
 # Reusable Workflow: Cleanup Package Versions
-# Description: Deletes old GHCR container versions after a deploy, keeping
-#              the 10 most recent SHA-tagged versions. Floating tags
-#              (latest, dev-latest) are always preserved.
+# Description: Deletes old GHCR container versions, keeping N most recent
+#              SHA-tagged versions. Floating tags (latest, dev-latest) are
+#              always preserved via ignore-versions.
 #
-# Inputs: package-name
+# Inputs:
+#   package-name         Full GHCR package name, e.g. kreditozrouti/api
+#   min-versions-to-keep Number of recent versions to keep (default: 10)
 
 name: Cleanup Package Versions (reusable)
 
@@ -11,9 +13,14 @@ on:
   workflow_call:
     inputs:
       package-name:
-        description: "GHCR package to clean up: api | client | scraper"
+        description: "Full GHCR package name, e.g. kreditozrouti/api"
         required: true
         type: string
+      min-versions-to-keep:
+        description: "Number of most-recent versions to keep (floating tags excluded from count)"
+        required: false
+        type: number
+        default: 10
 
 jobs:
   cleanup:
@@ -30,6 +37,6 @@ jobs:
         with:
           package-name: ${{ inputs.package-name }}
           package-type: container
-          min-versions-to-keep: 10
+          min-versions-to-keep: ${{ inputs.min-versions-to-keep }}
           ignore-versions: '^(latest|dev-latest)$'
           token: ${{ secrets.GITHUB_TOKEN }}
