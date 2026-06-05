@@ -16,12 +16,12 @@ Fires an InSIS scrape job via the API command endpoint.
 ./scripts/scrape.sh <API_URL> <MODE> <JOB> <TOKEN>
 ```
 
-| Argument  | Values                                    |
-|-----------|-------------------------------------------|
-| `API_URL` | `http://localhost:40080` or prod URL      |
-| `MODE`    | `turbo` \| `normal` \| `polite`           |
-| `JOB`     | `catalog` \| `studyplans`                 |
-| `TOKEN`   | Value of `COMMAND_TOKEN` env var          |
+| Argument  | Values                               |
+|-----------|--------------------------------------|
+| `API_URL` | `http://localhost:40080` or prod URL |
+| `MODE`    | `turbo` \| `normal` \| `polite`      |
+| `JOB`     | `catalog` \| `studyplans`            |
+| `TOKEN`   | Value of `COMMAND_TOKEN` env var     |
 
 **Modes:**
 

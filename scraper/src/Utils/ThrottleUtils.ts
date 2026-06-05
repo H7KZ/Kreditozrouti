@@ -7,17 +7,23 @@ import type { ScrapingMode } from '@scraper/types/jobs'
  */
 export function catalogConcurrencyForMode(mode: ScrapingMode): number {
     switch (mode) {
-        case 'turbo': return 6
-        case 'normal': return 3
-        case 'polite': return 1
+        case 'turbo':
+            return 6
+        case 'normal':
+            return 3
+        case 'polite':
+            return 1
     }
 }
 
 export function bfsConcurrencyForMode(mode: ScrapingMode): number {
     switch (mode) {
-        case 'turbo': return 10
-        case 'normal': return 4
-        case 'polite': return 2
+        case 'turbo':
+            return 10
+        case 'normal':
+            return 4
+        case 'polite':
+            return 2
     }
 }
 
@@ -28,8 +34,11 @@ export function bfsConcurrencyForMode(mode: ScrapingMode): number {
  */
 export function leafDelayForMode(mode: ScrapingMode): number {
     switch (mode) {
-        case 'turbo': return 0
-        case 'normal': return 1000
-        case 'polite': return 3000
+        case 'turbo':
+            return 0
+        case 'normal':
+            return 1000
+        case 'polite':
+            return 3000
     }
 }

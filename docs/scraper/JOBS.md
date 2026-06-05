@@ -74,9 +74,9 @@ Run runWithConcurrency(combos, catalogConcurrencyForMode(mode), scrapeCatalogPag
 
 | Mode     | Catalog concurrency | Leaf job delay |
 |----------|--------------------:|---------------:|
-| `turbo`  | 6                   | 0 ms           |
-| `normal` | 3                   | 1 000 ms       |
-| `polite` | 1 (sequential)      | 3 000 ms       |
+| `turbo`  |                   6 |           0 ms |
+| `normal` |                   3 |       1 000 ms |
+| `polite` |      1 (sequential) |       3 000 ms |
 
 **Output:** Multiple `InSIS:Catalog` response jobs (one per faculty/period), each with a `catalog.urls` array. Also
 queues `InSIS:Course` jobs if `auto_queue_courses` is set.
@@ -203,12 +203,12 @@ search, collecting all leaf plan URLs. Optionally enqueues individual `InSIS:Stu
 
 **Limits:**
 
-| Parameter                      | turbo | normal | polite | Reason                                              |
-|--------------------------------|------:|-------:|-------:|-----------------------------------------------------|
-| `MaxDrillDepth`                | 8     | 8      | 8      | Guards against unexpected circular nav structures   |
-| BFS concurrency                | 10    | 4      | 2      | Mode-driven — see `bfsConcurrencyForMode()`         |
-| Leaf job delay                 | 0 ms  | 1 000 ms | 3 000 ms | Per-job delay stored in BullMQ (Redis), crash-safe |
-| Study plan enqueue concurrency | 20    | 20     | 20     | Redis writes, not HTTP — concurrency not a concern  |
+| Parameter                      | turbo |   normal |   polite | Reason                                             |
+|--------------------------------|------:|---------:|---------:|----------------------------------------------------|
+| `MaxDrillDepth`                |     8 |        8 |        8 | Guards against unexpected circular nav structures  |
+| BFS concurrency                |    10 |        4 |        2 | Mode-driven — see `bfsConcurrencyForMode()`        |
+| Leaf job delay                 |  0 ms | 1 000 ms | 3 000 ms | Per-job delay stored in BullMQ (Redis), crash-safe |
+| Study plan enqueue concurrency |    20 |       20 |       20 | Redis writes, not HTTP — concurrency not a concern |
 
 **Error handling:** Individual page failures via `getSilent` return `null` and are skipped. Returns `null` only if the
 initial faculty list fetch fails.
@@ -262,11 +262,11 @@ completes without retry).
 `InSIS:Catalog` and `InSIS:StudyPlans` jobs accept a required `mode` field that controls how aggressively the scraper
 hits InSIS. This protects InSIS during peak daytime usage when students are actively browsing.
 
-| Mode     | When to use                        | Catalog concurrency | BFS concurrency | Leaf job delay |
-|----------|------------------------------------|--------------------:|----------------:|---------------:|
-| `turbo`  | Scheduled 2 AM / 3 AM night runs   | 6                   | 10              | 0 ms           |
-| `normal` | Manual off-hours trigger           | 3                   | 4               | 1 000 ms/job   |
-| `polite` | Manual daytime trigger (default)   | 1 (sequential)      | 2               | 3 000 ms/job   |
+| Mode     | When to use                      | Catalog concurrency | BFS concurrency | Leaf job delay |
+|----------|----------------------------------|--------------------:|----------------:|---------------:|
+| `turbo`  | Scheduled 2 AM / 3 AM night runs |                   6 |              10 |           0 ms |
+| `normal` | Manual off-hours trigger         |                   3 |               4 |   1 000 ms/job |
+| `polite` | Manual daytime trigger (default) |      1 (sequential) |               2 |   3 000 ms/job |
 
 **Leaf job delay** applies to `InSIS:Course` and `InSIS:StudyPlan` jobs enqueued by the meta-job. The delay is set as a
 BullMQ `delay` option at enqueue time (stored in Redis) — it survives scraper crashes and restarts. At `polite` + 1000

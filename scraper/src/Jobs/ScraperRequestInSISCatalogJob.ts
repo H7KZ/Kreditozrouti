@@ -56,10 +56,8 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
     // Phase 2: Scrape each faculty/period combination with mode-driven concurrency
     const combos = faculties.flatMap(faculty => periods.map(period => ({ faculty, period })))
 
-    await runWithConcurrency(
-        combos,
-        concurrency,
-        ({ faculty, period }) => scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false, allowedIdents, data.mode)
+    await runWithConcurrency(combos, concurrency, ({ faculty, period }) =>
+        scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false, allowedIdents, data.mode)
     )
 }
 
