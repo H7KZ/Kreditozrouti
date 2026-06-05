@@ -92,10 +92,6 @@ const scraper = {
 	async schedulers() {
 		if (!Config.isEnvProduction()) return
 
-		// Remove legacy scheduler IDs (SupervisorScheduler was removed in favour of
-		// direct month-scoped cron schedulers on the API side)
-		await scraper.queue.request.removeJobScheduler('SupervisorScheduler')
-
 		const periodsForLastFourYears = InSISService.getPeriodsForLastYears(4)
 
 		// Catalog: daily at 3 AM during registration months
