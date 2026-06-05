@@ -74,3 +74,29 @@ groups:
               expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) < 0.1
               instant: true
               refId: A
+
+  - orgId: 1
+    name: scraper
+    folder: Infrastructure
+    interval: 1m
+    rules:
+      - uid: scraper-jobs-failed
+        title: Scraper Jobs Failed
+        condition: A
+        for: 5m
+        annotations:
+          summary: "BullMQ scraper jobs are failing"
+          description: "Queue {{ $labels.queue }} has had {{ $values.A }} failed job(s) for more than 5 minutes. Check BullBoard for details."
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: bullmq_queue_depth{queue=~"Scraper.*", status="failed"} > 0
+              instant: true
+              refId: A
