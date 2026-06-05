@@ -19,8 +19,8 @@ on:
       min-versions-to-keep:
         description: "Number of most-recent versions to keep (floating tags excluded from count)"
         required: false
-        type: number
-        default: 10
+        type: string
+        default: '10'
 
 jobs:
   cleanup:
