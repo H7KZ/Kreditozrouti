@@ -166,7 +166,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.${PROJECT}-faro.priority=80"
-      - "traefik.http.routers.${PROJECT}-faro.rule=Host(`${DOMAIN}`) && PathPrefix(`/faro`)"
+      - "traefik.http.routers.${PROJECT}-faro.rule=PathPrefix(`/faro`)"
       - "traefik.http.routers.${PROJECT}-faro.entrypoints=websecure"
       - "traefik.http.routers.${PROJECT}-faro.tls=true"
       - "traefik.http.routers.${PROJECT}-faro.tls.certresolver=letsencrypt"

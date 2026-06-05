@@ -1,6 +1,8 @@
 import type { ScraperInSISCourse, ScraperInSISStudyPlan } from '@scraper/types/insis'
+import type { ScrapingMode } from '@scraper/types/jobs'
 import scraper from '@scraper/bullmq'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
+import { leafDelayForMode } from '@scraper/Utils/ThrottleUtils'
 
 /**
  * Centralized queue operations for InSIS scraper jobs.
@@ -35,30 +37,37 @@ export class QueueService {
         })
     }
 
-    static async queueCourseRequests(courses: { url: string; courseId: number | null }[]): Promise<void> {
+    static async queueCourseRequests(courses: { url: string; courseId: number | null }[], mode: ScrapingMode): Promise<void> {
+        const delay = leafDelayForMode(mode)
         await scraper.queue.request.addBulk(
-            courses.map(({ url, courseId }) => ({
+            courses.map(({ url, courseId }, index) => ({
                 name: 'InSIS Course Request (Catalog)',
                 data: {
                     type: 'InSIS:Course',
                     url
                 },
                 opts: {
-                    deduplication: { id: `InSIS:Course:${courseId}` }
+                    deduplication: { id: `InSIS:Course:${courseId}` },
+                    ...(delay > 0 && { delay: index * delay })
                 }
             }))
         )
     }
 
-    static async queueStudyPlanRequests(planUrls: string[], extractIdFn: (url: string) => number | null, concurrency = 20): Promise<void> {
-        await runWithConcurrency(planUrls, concurrency, planUrl =>
+    static async queueStudyPlanRequests(planUrls: string[], extractIdFn: (url: string) => number | null, mode: ScrapingMode, concurrency = 20): Promise<void> {
+        const delay = leafDelayForMode(mode)
+        const indexed = planUrls.map((url, index) => ({ url, index }))
+        await runWithConcurrency(indexed, concurrency, ({ url, index }) =>
             scraper.queue.request.add(
                 'InSIS Study Plan Request (Study Plans)',
                 {
                     type: 'InSIS:StudyPlan',
-                    url: planUrl
+                    url
                 },
-                { deduplication: { id: `InSIS:StudyPlan:${extractIdFn(planUrl)}` } }
+                {
+                    deduplication: { id: `InSIS:StudyPlan:${extractIdFn(url)}` },
+                    ...(delay > 0 && { delay: index * delay })
+                }
             )
         )
     }
