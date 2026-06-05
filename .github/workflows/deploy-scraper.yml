@@ -85,5 +85,5 @@ jobs:
     if: ${{ needs.deploy.result == 'success' }}
     uses: ./.github/workflows/_cleanup-package.yml
     with:
-      package-name: scraper
+      package-name: kreditozrouti/scraper
     secrets: inherit
