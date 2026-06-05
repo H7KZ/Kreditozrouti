@@ -6,6 +6,8 @@ import ExtractInSISCatalogService from '@scraper/Services/ExtractInSISCatalogSer
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
+import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
+import { catalogConcurrencyForMode } from '@scraper/Utils/ThrottleUtils'
 
 /**
  * Scrapes the InSIS course catalog.
@@ -40,19 +42,25 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
         )
     }
 
+    const concurrency = catalogConcurrencyForMode(data.mode)
+
     LoggerJobContext.add({
         faculties_count: faculties.length,
-        periods_count: periods.length
+        periods_count: periods.length,
+        mode: data.mode,
+        concurrency
     })
 
     const allowedIdents = data.allowed_idents && data.allowed_idents.length > 0 ? new Set(data.allowed_idents) : null
 
-    // Phase 2: Scrape each faculty/period combination
-    for (const faculty of faculties) {
-        for (const period of periods) {
-            await scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false, allowedIdents)
-        }
-    }
+    // Phase 2: Scrape each faculty/period combination with mode-driven concurrency
+    const combos = faculties.flatMap(faculty => periods.map(period => ({ faculty, period })))
+
+    await runWithConcurrency(
+        combos,
+        concurrency,
+        ({ faculty, period }) => scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false, allowedIdents, data.mode)
+    )
 }
 
 async function discoverSearchOptions(client: ReturnType<typeof createInSISClient>) {
@@ -76,7 +84,8 @@ async function scrapeCatalogPage(
     periodId: number,
     facultyPeriodId: number,
     autoQueueCourses: boolean,
-    allowedIdents: Set<string> | null
+    allowedIdents: Set<string> | null,
+    mode: ScraperInSISCatalogRequestJob['mode']
 ): Promise<void> {
     const params = new URLSearchParams({
         kredity_od: '',
@@ -118,6 +127,6 @@ async function scrapeCatalogPage(
             courseId: ExtractInSISCourseService.extractIdFromUrl(c.url)
         }))
 
-        await QueueService.queueCourseRequests(coursesWithIds)
+        await QueueService.queueCourseRequests(coursesWithIds, mode)
     }
 }
