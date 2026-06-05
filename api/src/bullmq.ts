@@ -43,7 +43,6 @@ function buildCatalogSchedulerJob(periodsForLastFourYears: ReturnType<typeof InS
 		// here. Manual triggers via ScraperService.enqueueCatalogScrape ARE filtered.
 		data: {
 			type: 'InSIS:Catalog' as const,
-			mode: 'turbo' as const,
 			auto_queue_courses: true,
 			faculties: undefined,
 			periods: periodsForLastFourYears
@@ -57,7 +56,6 @@ function buildStudyPlansSchedulerJob(periodsForLastFourYears: ReturnType<typeof 
 		name: `InSIS Study Plans Request (at 2 AM during registration months)`,
 		data: {
 			type: 'InSIS:StudyPlans' as const,
-			mode: 'turbo' as const,
 			auto_queue_study_plans: true,
 			faculties: undefined,
 			periods: periodsForLastFourYears

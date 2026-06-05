@@ -1,8 +1,6 @@
 import type { ScraperInSISCourse, ScraperInSISStudyPlan } from '@scraper/types/insis'
-import type { ScrapingMode } from '@scraper/types/jobs'
 import scraper from '@scraper/bullmq'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
-import { leafDelayForMode } from '@scraper/Utils/ThrottleUtils'
 
 /**
  * Centralized queue operations for InSIS scraper jobs.
@@ -37,27 +35,23 @@ export class QueueService {
         })
     }
 
-    static async queueCourseRequests(courses: { url: string; courseId: number | null }[], mode: ScrapingMode): Promise<void> {
-        const delay = leafDelayForMode(mode)
+    static async queueCourseRequests(courses: { url: string; courseId: number | null }[]): Promise<void> {
         await scraper.queue.request.addBulk(
-            courses.map(({ url, courseId }, index) => ({
+            courses.map(({ url, courseId }) => ({
                 name: 'InSIS Course Request (Catalog)',
                 data: {
                     type: 'InSIS:Course',
                     url
                 },
                 opts: {
-                    deduplication: { id: `InSIS:Course:${courseId}` },
-                    ...(delay > 0 && { delay: index * delay })
+                    deduplication: { id: `InSIS:Course:${courseId}` }
                 }
             }))
         )
     }
 
-    static async queueStudyPlanRequests(planUrls: string[], extractIdFn: (url: string) => number | null, mode: ScrapingMode, concurrency = 20): Promise<void> {
-        const delay = leafDelayForMode(mode)
-        const indexed = planUrls.map((url, index) => ({ url, index }))
-        await runWithConcurrency(indexed, concurrency, ({ url, index }) =>
+    static async queueStudyPlanRequests(planUrls: string[], extractIdFn: (url: string) => number | null, concurrency = 20): Promise<void> {
+        await runWithConcurrency(planUrls, concurrency, url =>
             scraper.queue.request.add(
                 'InSIS Study Plan Request (Study Plans)',
                 {
@@ -65,8 +59,7 @@ export class QueueService {
                     url
                 },
                 {
-                    deduplication: { id: `InSIS:StudyPlan:${extractIdFn(url)}` },
-                    ...(delay > 0 && { delay: index * delay })
+                    deduplication: { id: `InSIS:StudyPlan:${extractIdFn(url)}` }
                 }
             )
         )
