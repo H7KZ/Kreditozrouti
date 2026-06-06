@@ -81,6 +81,28 @@ load_credentials() {
     printf '%s\t%s' "$root_pw" "$db_name"
 }
 
+confirm_clone() {
+    log_warning "=========================================="
+    log_warning "  DESTRUCTIVE OPERATION"
+    log_warning "=========================================="
+    log_warning "This will WIPE the '$TARGET_PROJECT' database ($TARGET_DB)"
+    log_warning "and replace it with a copy of '$SOURCE_PROJECT' ($SOURCE_DB)."
+    log_warning ""
+    log_warning "A backup of '$TARGET_PROJECT' will be taken first, but this"
+    log_warning "is still a destructive, hard-to-fully-undo operation."
+    log_warning "=========================================="
+
+    local typed=""
+    read -r -p "Type the target environment name ('$TARGET_PROJECT') to continue: " typed
+
+    if [[ "$typed" != "$TARGET_PROJECT" ]]; then
+        log_error "Confirmation did not match '$TARGET_PROJECT'. Aborting."
+        exit 1
+    fi
+
+    log_success "Confirmed — proceeding with clone into '$TARGET_PROJECT'"
+}
+
 resolve_projects() {
     case "$DIRECTION" in
         dev-to-prod)
@@ -128,3 +150,5 @@ IFS=$'\t' read -r TARGET_ROOT_PW TARGET_DB <<< "$(load_credentials "$TARGET_ENV"
 log_success "Credentials loaded for both environments"
 log "Source DB: $SOURCE_DB ($SOURCE_ENV)"
 log "Target DB: $TARGET_DB ($TARGET_ENV)"
+
+confirm_clone
