@@ -82,18 +82,28 @@ load_credentials() {
 }
 
 confirm_clone() {
+    # Requires an interactive terminal — this is a manual, operator-run safety gate,
+    # not something that should ever run unattended (CI, cron, piped stdin, etc.)
+    [[ -t 0 ]] || {
+        log_error "Confirmation requires an interactive terminal (stdin is not a TTY). Aborting."
+        exit 1
+    }
+
     log_warning "=========================================="
     log_warning "  DESTRUCTIVE OPERATION"
     log_warning "=========================================="
     log_warning "This will WIPE the '$TARGET_PROJECT' database ($TARGET_DB)"
     log_warning "and replace it with a copy of '$SOURCE_PROJECT' ($SOURCE_DB)."
-    log_warning ""
+    echo
     log_warning "A backup of '$TARGET_PROJECT' will be taken first, but this"
     log_warning "is still a destructive, hard-to-fully-undo operation."
     log_warning "=========================================="
 
     local typed=""
-    read -r -p "Type the target environment name ('$TARGET_PROJECT') to continue: " typed
+    read -r -p "Type the target environment name ('$TARGET_PROJECT') to continue: " typed || {
+        log_error "No input received. Aborting."
+        exit 1
+    }
 
     if [[ "$typed" != "$TARGET_PROJECT" ]]; then
         log_error "Confirmation did not match '$TARGET_PROJECT'. Aborting."
