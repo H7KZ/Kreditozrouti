@@ -12,6 +12,7 @@
 | `install-docker.sh` | Install Docker Engine on Ubuntu/Debian                      | Yes           |
 | `maintenance.sh`    | System maintenance (apt, cleanup, security, health)         | Yes           |
 | `docker-cleanup.sh` | Clean unused Docker resources                               | No            |
+| `clone-db.sh`       | Clone MySQL DB between dev and prod stacks on the same VPS  | Yes           |
 
 ---
 
@@ -38,4 +39,4 @@ unexpected reboots.
 |---------------------------------------------------------|--------------------------------------------------------|
 | System architecture, containers, deploy order           | [docs/architecture/](../docs/architecture/README.md)   |
 | install-docker — all flags                              | [INFRASTRUCTURE.md](../docs/scripts/INFRASTRUCTURE.md) |
-| maintenance, docker-cleanup — all flags + cron examples | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md)       |
+| maintenance, docker-cleanup, clone-db — all flags + cron examples | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md)       |

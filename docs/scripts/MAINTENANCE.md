@@ -90,3 +90,38 @@ Logs to `/tmp/docker-cleanup-<timestamp>.log`.
 # Full system prune (⚠️ removes all stopped containers and unused volumes)
 ./docker-cleanup.sh --all --force
 ```
+
+---
+
+## `clone-db.sh`
+
+Clones the MySQL database between the `dev` and `prod` Docker Compose stacks on the same VPS. Use this to seed an
+environment from the other's already-scraped InSIS data without triggering a full re-scrape.
+
+```bash
+sudo ./scripts/clone-db.sh <dev-to-prod|prod-to-dev>
+```
+
+| Argument        | Description                                      |
+|-----------------|--------------------------------------------------|
+| `dev-to-prod`   | Copy the dev database into the prod database     |
+| `prod-to-dev`   | Copy the prod database into the dev database     |
+
+**Safety:**
+
+- Before wiping the target database, takes a timestamped gzip backup to `~/backups/db-clones/`.
+- Prompts the operator to type the target environment's Docker Compose project name before proceeding — no automated
+  confirmation is possible.
+- Redis/BullMQ queue data is **not** cloned (by design — queues belong to each environment independently).
+
+**Verification:**
+
+After the clone, the script runs a row-count check on the `insis_courses` table in the target database and prints the
+result so the operator can confirm the data landed correctly.
+
+**Example:**
+
+```bash
+# Seed prod from dev after a successful dev scrape
+sudo ./scripts/clone-db.sh dev-to-prod
+```
