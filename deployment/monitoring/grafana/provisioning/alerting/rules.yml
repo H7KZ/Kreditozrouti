@@ -100,3 +100,71 @@ groups:
               expr: bullmq_queue_depth{queue=~"Scraper.*", status="failed"} > 0
               instant: true
               refId: A
+
+  - orgId: 1
+    name: application
+    folder: Application
+    interval: 1m
+    rules:
+      - uid: api-error-rate-high
+        title: API Error Rate High
+        condition: A
+        for: 5m
+        annotations:
+          summary: "API 5xx error rate above 5%"
+          description: "More than 5% of API requests are returning 5xx errors over the last 5 minutes."
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: sum(rate(http_request_duration_seconds_count{status_code=~"5.."}[5m])) / sum(rate(http_request_duration_seconds_count[5m])) > 0.05
+              instant: true
+              refId: A
+
+      - uid: api-p99-latency-high
+        title: API p99 Latency High
+        condition: A
+        for: 5m
+        annotations:
+          summary: "API p99 latency above 2 seconds"
+          description: "The 99th percentile API response time has exceeded 2 seconds over the last 5 minutes."
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 2
+              instant: true
+              refId: A
+
+      - uid: scraper-queue-stalled
+        title: Scraper Queue Stalled
+        condition: A
+        for: 24h
+        annotations:
+          summary: "Scraper response queue has been idle for 24 hours"
+          description: "No jobs have been waiting or active in the ScraperResponseQueue for 24 hours. The scraper may be down or misconfigured."
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 86400
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: (bullmq_queue_depth{queue="ScraperResponseQueue", status="waiting"} + bullmq_queue_depth{queue="ScraperResponseQueue", status="active"}) == 0
+              instant: true
+              refId: A
