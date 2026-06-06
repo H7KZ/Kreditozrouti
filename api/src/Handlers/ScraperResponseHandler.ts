@@ -3,6 +3,7 @@ import { Job } from 'bullmq'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import ScraperResponseInSISCourseJob from '@api/Jobs/ScraperResponseInSISCourseJob'
 import ScraperResponseInSISStudyPlanJob from '@api/Jobs/ScraperResponseInSISStudyPlanJob'
+import ScraperResponseInSISAcademicScheduleJob from '@api/Jobs/ScraperResponseInSISAcademicScheduleJob'
 
 /**
  * Main entry point for processing scraper response jobs.
@@ -33,10 +34,14 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
 				case 'InSIS:StudyPlan':
 					await ScraperResponseInSISStudyPlanJob(job.data)
 					break
+				case 'InSIS:AcademicSchedule':
+					await ScraperResponseInSISAcademicScheduleJob(job.data)
+					break
 
 				// Types currently handled without specific DB sync logic
 				case 'InSIS:Catalog':
 				case 'InSIS:StudyPlans':
+				case 'InSIS:AcademicSchedules':
 					break
 
 				default:
