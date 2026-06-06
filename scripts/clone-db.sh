@@ -67,9 +67,11 @@ load_credentials() {
 
     # Extract just the two vars we need without sourcing the whole file
     # (the deployed .env also carries image tags, registry creds, etc.)
+    # Strip a single layer of surrounding quotes in case the .env uses KEY="value" or KEY='value'
+    local strip_quotes='s/^"(.*)"$/\1/; s/^'"'"'(.*)'"'"'$/\1/'
     local root_pw db_name
-    root_pw="$(grep -E '^MYSQL_ROOT_PASSWORD=' "$env_file" | head -n1 | cut -d'=' -f2-)"
-    db_name="$(grep -E '^MYSQL_DATABASE=' "$env_file" | head -n1 | cut -d'=' -f2-)"
+    root_pw="$(grep -E '^MYSQL_ROOT_PASSWORD=' "$env_file" | head -n1 | cut -d'=' -f2- | sed -E "$strip_quotes")"
+    db_name="$(grep -E '^MYSQL_DATABASE=' "$env_file" | head -n1 | cut -d'=' -f2- | sed -E "$strip_quotes")"
 
     [[ -n "$root_pw" && -n "$db_name" ]] || {
         log_error "Could not read MYSQL_ROOT_PASSWORD / MYSQL_DATABASE from: $env_file"
