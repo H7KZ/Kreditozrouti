@@ -3,7 +3,7 @@ FROM node:24-alpine AS builder
 
 WORKDIR /usr/src/scraper
 
-COPY ./scraper/package.json ./scraper/package-lock.json ./
+COPY ./scraper/package.json ./package-lock.json ./
 RUN npm ci
 
 COPY ./scraper/ ./
