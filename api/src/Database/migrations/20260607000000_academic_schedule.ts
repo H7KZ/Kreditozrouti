@@ -14,9 +14,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn('ends_at', 'date', col => col.notNull())
 		.addColumn('last_scraped_at', 'datetime')
 		.addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
-		.addColumn('updated_at', 'datetime', col =>
-			col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull()
-		)
+		.addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
 		.execute()
 
 	await db.schema
@@ -28,15 +26,10 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn('starts_at', 'datetime')
 		.addColumn('ends_at', 'datetime')
 		.addColumn('created_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
-		.addColumn('updated_at', 'datetime', col =>
-			col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull()
-		)
+		.addColumn('updated_at', 'datetime', col => col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`).notNull())
 		.execute()
 
-	await db.schema
-		.alterTable('insis_academic_periods')
-		.addUniqueConstraint('uq_academic_periods_insis_period_id', ['insis_period_id'])
-		.execute()
+	await db.schema.alterTable('insis_academic_periods').addUniqueConstraint('uq_academic_periods_insis_period_id', ['insis_period_id']).execute()
 
 	await db.schema
 		.alterTable('insis_academic_schedule_events')

@@ -6,7 +6,9 @@ import ExtractInSISAcademicScheduleService from '@scraper/Services/ExtractInSISA
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
 
-export default async function ScraperRequestInSISAcademicScheduleJob(data: ScraperInSISAcademicScheduleRequestJob): Promise<ScraperInSISAcademicSchedule | null> {
+export default async function ScraperRequestInSISAcademicScheduleJob(
+    data: ScraperInSISAcademicScheduleRequestJob
+): Promise<ScraperInSISAcademicSchedule | null> {
     const client = createInSISClient('harmonogram_period')
 
     LoggerJobContext.add({

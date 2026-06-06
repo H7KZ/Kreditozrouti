@@ -9,7 +9,9 @@ import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 
 const FACULTY_CONCURRENCY = 4
 
-export default async function ScraperRequestInSISAcademicSchedulesJob(_data: ScraperInSISAcademicSchedulesRequestJob): Promise<ScraperInSISAcademicSchedules | null> {
+export default async function ScraperRequestInSISAcademicSchedulesJob(
+    _data: ScraperInSISAcademicSchedulesRequestJob
+): Promise<ScraperInSISAcademicSchedules | null> {
     const client = createInSISClient('harmonogram')
 
     const initialResult = await client.get<string>(Config.insis.harmonogramUrl)

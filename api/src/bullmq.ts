@@ -2,7 +2,13 @@
 
 import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 import { Queue, Worker } from 'bullmq'
-import { ScraperInSISAcademicSchedulesRequestScheduler, ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names'
+import {
+	ScraperInSISAcademicSchedulesRequestScheduler,
+	ScraperInSISCatalogRequestScheduler,
+	ScraperInSISStudyPlansRequestScheduler,
+	ScraperRequestQueue,
+	ScraperResponseQueue
+} from '@shared/queue/names'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'

@@ -7,7 +7,7 @@ import ScraperService from '@api/Services/ScraperService'
  * @route POST /commands/insis/academic-schedules
  */
 export default async function RunInSISAcademicSchedulesScraperController(_req: Request, res: Response) {
-    await ScraperService.enqueueAcademicSchedulesScrape()
+	await ScraperService.enqueueAcademicSchedulesScrape()
 
-    return res.sendStatus(202)
+	return res.sendStatus(202)
 }

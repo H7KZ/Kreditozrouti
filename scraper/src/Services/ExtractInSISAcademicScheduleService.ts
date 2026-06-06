@@ -1,7 +1,7 @@
-﻿import * as cheerio from 'cheerio'
+﻿import type { InSISSemester } from '@scraper/types/insis'
+import * as cheerio from 'cheerio'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
-import type { InSISSemester } from '@scraper/types/insis'
 
 export interface HarmonogramFaculty {
     insis_faculty_id: number
@@ -15,14 +15,14 @@ export interface HarmonogramPeriod {
     semester: InSISSemester | null
     year: number
     level: string | null
-    starts_at: string  // YYYY-MM-DD
-    ends_at: string    // YYYY-MM-DD
+    starts_at: string // YYYY-MM-DD
+    ends_at: string // YYYY-MM-DD
 }
 
 export interface HarmonogramEvent {
     title: string
-    starts_at: string | null  // YYYY-MM-DDTHH:mm:00
-    ends_at: string | null    // YYYY-MM-DDTHH:mm:00
+    starts_at: string | null // YYYY-MM-DDTHH:mm:00
+    ends_at: string | null // YYYY-MM-DDTHH:mm:00
 }
 
 export default class ExtractInSISAcademicScheduleService {
@@ -59,10 +59,14 @@ export default class ExtractInSISAcademicScheduleService {
             const ends_at = parseDateDMY(endText)
             if (!starts_at || !ends_at) return
             periods.push({
-                insis_period_id, insis_faculty_id,
+                insis_period_id,
+                insis_faculty_id,
                 faculty_ident: parsed.facultyIdent,
-                semester: parsed.semester, year: parsed.year, level: parsed.level,
-                starts_at, ends_at
+                semester: parsed.semester,
+                year: parsed.year,
+                level: parsed.level,
+                starts_at,
+                ends_at
             })
         })
         return periods
@@ -91,7 +95,10 @@ export default class ExtractInSISAcademicScheduleService {
 }
 
 function parsePeriodLabel(label: string): { semester: InSISSemester | null; year: number; level: string | null; facultyIdent: string } | null {
-    const parts = label.split(' - ').map(p => p.trim()).filter(Boolean)
+    const parts = label
+        .split(' - ')
+        .map(p => p.trim())
+        .filter(Boolean)
     if (parts.length < 2) return null
     const facultyIdent = parts[parts.length - 1]
     if (!facultyIdent) return null
@@ -120,6 +127,9 @@ function parseDateTimeRange(text: string): { starts_at: string | null; ends_at: 
         const [, day, month, year, time] = m
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${time}:00`
     }
-    if (matches.length === 1) { const dt = toISO(matches[0]); return { starts_at: dt, ends_at: dt } }
+    if (matches.length === 1) {
+        const dt = toISO(matches[0])
+        return { starts_at: dt, ends_at: dt }
+    }
     return { starts_at: toISO(matches[0]), ends_at: toISO(matches[1]) }
 }

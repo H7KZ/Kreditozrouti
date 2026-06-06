@@ -2,12 +2,12 @@ import type { ScraperRequestJob } from '@scraper/types/jobs'
 import { DelayedError, Job } from 'bullmq'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'
+import ScraperRequestInSISAcademicScheduleJob from '@scraper/Jobs/ScraperRequestInSISAcademicScheduleJob'
+import ScraperRequestInSISAcademicSchedulesJob from '@scraper/Jobs/ScraperRequestInSISAcademicSchedulesJob'
 import ScraperRequestInSISCatalogJob from '@scraper/Jobs/ScraperRequestInSISCatalogJob'
 import ScraperRequestInSISCourseJob from '@scraper/Jobs/ScraperRequestInSISCourseJob'
 import ScraperRequestInSISStudyPlanJob from '@scraper/Jobs/ScraperRequestInSISStudyPlanJob'
 import ScraperRequestInSISStudyPlansJob from '@scraper/Jobs/ScraperRequestInSISStudyPlansJob'
-import ScraperRequestInSISAcademicSchedulesJob from '@scraper/Jobs/ScraperRequestInSISAcademicSchedulesJob'
-import ScraperRequestInSISAcademicScheduleJob from '@scraper/Jobs/ScraperRequestInSISAcademicScheduleJob'
 
 /**
  * Entry point for processing scraper request jobs.
