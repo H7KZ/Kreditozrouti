@@ -1,4 +1,5 @@
-import type { ScraperInSISCourse, ScraperInSISStudyPlan } from '@scraper/types/insis'
+import type { ScraperInSISAcademicSchedule, ScraperInSISAcademicSchedules, ScraperInSISCourse, ScraperInSISStudyPlan } from '@scraper/types/insis'
+import type { ScraperInSISAcademicScheduleRequestJob } from '@scraper/types/jobs'
 import scraper from '@scraper/bullmq'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 
@@ -62,6 +63,38 @@ export class QueueService {
                 },
                 {
                     deduplication: { id: `InSIS:StudyPlan:${extractIdFn(url)}` }
+                }
+            )
+        )
+    }
+
+    static async addAcademicSchedulesResponse(schedules: ScraperInSISAcademicSchedules): Promise<void> {
+        await scraper.queue.response.add('InSIS Academic Schedules Response', {
+            type: 'InSIS:AcademicSchedules',
+            schedules
+        })
+    }
+
+    static async addAcademicScheduleResponse(schedule: ScraperInSISAcademicSchedule): Promise<void> {
+        await scraper.queue.response.add('InSIS Academic Schedule Response', {
+            type: 'InSIS:AcademicSchedule',
+            schedule
+        })
+    }
+
+    static async queueAcademicScheduleRequests(periods: Omit<ScraperInSISAcademicScheduleRequestJob, 'type'>[]): Promise<void> {
+        await runWithConcurrency(periods, 4, period =>
+            scraper.queue.request.add(
+                'InSIS Academic Schedule Request',
+                {
+                    type: 'InSIS:AcademicSchedule',
+                    ...period
+                },
+                {
+                    deduplication: {
+                        id: `InSIS:AcademicSchedule:${period.faculty_ident}:${period.insis_period_id}`,
+                        ttl: 3600000
+                    }
                 }
             )
         )
