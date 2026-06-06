@@ -29,6 +29,14 @@ readonly BACKUP_DIR="$HOME/backups/db-clones"
 
 source "$SCRIPT_DIR/lib.sh"
 
+check_root() {
+    if [[ $EUID -ne 0 ]]; then
+        log_error "This script must be run as root."
+        log_error "Use: sudo $SCRIPT_NAME"
+        exit 1
+    fi
+}
+
 DIRECTION="${1:-}"
 
 usage() {
@@ -68,9 +76,12 @@ resolve_projects() {
             ;;
     esac
 
+    # Docker Compose auto-names containers as <project>-<service>-<replica>
     SOURCE_CONTAINER="${SOURCE_PROJECT}-mysql-1"
     TARGET_CONTAINER="${TARGET_PROJECT}-mysql-1"
 }
+
+check_root
 
 [[ -z "$DIRECTION" ]] && usage
 
