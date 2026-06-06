@@ -175,6 +175,27 @@ clone_database() {
     log_success "Clone complete: '$SOURCE_PROJECT' -> '$TARGET_PROJECT'"
 }
 
+verify_clone() {
+    local table="insis_courses"
+    local source_count target_count
+
+    source_count="$(docker exec "$SOURCE_CONTAINER" \
+        mysql -u root -p"$SOURCE_ROOT_PW" -N -e "SELECT COUNT(*) FROM $SOURCE_DB.$table")"
+    target_count="$(docker exec "$TARGET_CONTAINER" \
+        mysql -u root -p"$TARGET_ROOT_PW" -N -e "SELECT COUNT(*) FROM $TARGET_DB.$table")"
+
+    log "Verification — '$table' row count:"
+    log "  $SOURCE_PROJECT (source): $source_count"
+    log "  $TARGET_PROJECT (target): $target_count"
+
+    if [[ "$source_count" == "$target_count" ]]; then
+        log_success "Row counts match — clone looks correct."
+    else
+        log_warning "Row counts differ! Investigate before trusting '$TARGET_PROJECT'."
+        log_warning "A pre-clone backup is available at: $BACKUP_DIR"
+    fi
+}
+
 resolve_projects() {
     case "$DIRECTION" in
         dev-to-prod)
@@ -228,3 +249,11 @@ confirm_clone
 backup_target
 
 clone_database
+
+verify_clone
+
+log "=========================================="
+log_success "Done. '$TARGET_PROJECT' now mirrors '$SOURCE_PROJECT'."
+log "Pre-clone backup kept at: $BACKUP_DIR"
+log "Note: Redis/BullMQ queue data was NOT cloned (by design — see script header)."
+log "=========================================="
