@@ -17,6 +17,7 @@ export interface ScraperInSISCatalogRequestJob extends ScraperRequestJobBase {
 export interface ScraperInSISCourseRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:Course'
     url: string
+    content_hash?: string | null
 }
 
 export interface ScraperInSISStudyPlansRequestJob extends ScraperRequestJobBase {
@@ -50,6 +51,7 @@ export interface ScraperInSISCatalogResponseJob extends ScraperResponseJobBase {
 export interface ScraperInSISCourseResponseJob extends ScraperResponseJobBase {
     type: 'InSIS:Course'
     course: ScraperInSISCourse | null
+    content_hash: string
 }
 
 export interface ScraperInSISStudyPlansResponseJob extends ScraperResponseJobBase {

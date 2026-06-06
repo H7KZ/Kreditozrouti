@@ -110,6 +110,8 @@ export class CourseTable {
 	literature_recommended!: string | null
 
 	last_scraped_at!: ColumnType<Date, string | undefined, string | undefined> | null
+
+	content_hash!: string | null
 }
 
 export type Course<F = void, U = void, A = void, SP = void> = Selectable<CourseTable> &
