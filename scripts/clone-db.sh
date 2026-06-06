@@ -122,12 +122,25 @@ backup_target() {
 
     log "Backing up '$TARGET_PROJECT' ($TARGET_DB) to $backup_file ..."
 
+    # gzip exits 0 even on empty/truncated input, so `pipefail`'s combined exit code
+    # alone can't be trusted — check mysqldump's own exit code via PIPESTATUS, and
+    # clean up the partial file on any failure so the backup dir stays trustworthy.
+    set +e
     docker exec "$TARGET_CONTAINER" \
         mysqldump --single-transaction --routines --triggers \
             -u root -p"$TARGET_ROOT_PW" "$TARGET_DB" \
         | gzip > "$backup_file"
+    local dump_status="${PIPESTATUS[0]}"
+    set -e
+
+    if [[ "$dump_status" -ne 0 ]]; then
+        rm -f "$backup_file"
+        log_error "mysqldump failed (exit $dump_status) — aborting before touching '$TARGET_PROJECT'"
+        exit 1
+    fi
 
     if [[ ! -s "$backup_file" ]]; then
+        rm -f "$backup_file"
         log_error "Backup file is empty or missing: $backup_file"
         exit 1
     fi
