@@ -109,3 +109,25 @@ export interface ScraperInSISStudyPlanCourse {
 export interface ScraperInSISStudyPlans {
     urls: string[]
 }
+
+export interface ScraperInSISAcademicScheduleEvent {
+    title: string
+    starts_at: string | null  // "YYYY-MM-DDTHH:mm:00"
+    ends_at: string | null    // "YYYY-MM-DDTHH:mm:00"
+}
+
+export interface ScraperInSISAcademicSchedule {
+    insis_period_id: number
+    faculty_ident: string
+    semester: InSISSemester | null
+    year: number
+    level: string | null
+    starts_at: string  // "YYYY-MM-DD"
+    ends_at: string    // "YYYY-MM-DD"
+    events: ScraperInSISAcademicScheduleEvent[]
+}
+
+export interface ScraperInSISAcademicSchedules {
+    faculties_count: number
+    periods_count: number
+}

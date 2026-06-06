@@ -1,5 +1,5 @@
 import type {InSISSemester, ScraperJob} from '../domain/insis.js'
-import type {ScraperInSISCatalog, ScraperInSISCourse, ScraperInSISStudyPlan, ScraperInSISStudyPlans} from './insis.js'
+import type {ScraperInSISCatalog, ScraperInSISCourse, ScraperInSISStudyPlan, ScraperInSISStudyPlans, ScraperInSISAcademicSchedule, ScraperInSISAcademicSchedules} from './insis.js'
 
 interface ScraperRequestJobBase {
     type: ScraperJob
@@ -32,11 +32,29 @@ export interface ScraperInSISStudyPlanRequestJob extends ScraperRequestJobBase {
     url: string
 }
 
+export interface ScraperInSISAcademicSchedulesRequestJob extends ScraperRequestJobBase {
+    type: 'InSIS:AcademicSchedules'
+}
+
+export interface ScraperInSISAcademicScheduleRequestJob extends ScraperRequestJobBase {
+    type: 'InSIS:AcademicSchedule'
+    insis_faculty_id: number
+    insis_period_id: number
+    faculty_ident: string
+    semester: InSISSemester | null
+    year: number
+    level: string | null
+    starts_at: string  // "YYYY-MM-DD"
+    ends_at: string    // "YYYY-MM-DD"
+}
+
 export type ScraperRequestJob =
     | ScraperInSISCatalogRequestJob
     | ScraperInSISCourseRequestJob
     | ScraperInSISStudyPlansRequestJob
     | ScraperInSISStudyPlanRequestJob
+    | ScraperInSISAcademicSchedulesRequestJob
+    | ScraperInSISAcademicScheduleRequestJob
 
 interface ScraperResponseJobBase {
     type: ScraperJob
@@ -64,8 +82,20 @@ export interface ScraperInSISStudyPlanResponseJob extends ScraperResponseJobBase
     plan: ScraperInSISStudyPlan | null
 }
 
+export interface ScraperInSISAcademicSchedulesResponseJob extends ScraperResponseJobBase {
+    type: 'InSIS:AcademicSchedules'
+    schedules: ScraperInSISAcademicSchedules
+}
+
+export interface ScraperInSISAcademicScheduleResponseJob extends ScraperResponseJobBase {
+    type: 'InSIS:AcademicSchedule'
+    schedule: ScraperInSISAcademicSchedule
+}
+
 export type ScraperResponseJob =
     | ScraperInSISCatalogResponseJob
     | ScraperInSISCourseResponseJob
     | ScraperInSISStudyPlansResponseJob
     | ScraperInSISStudyPlanResponseJob
+    | ScraperInSISAcademicSchedulesResponseJob
+    | ScraperInSISAcademicScheduleResponseJob
