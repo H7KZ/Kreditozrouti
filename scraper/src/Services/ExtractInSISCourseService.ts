@@ -73,7 +73,9 @@ export default class ExtractInSISCourseService {
             study_plans: plans,
             study_load: studyLoad.length > 0 ? studyLoad : null,
             last_modified_date: auditInfo.last_modified_date,
-            last_modified_by: auditInfo.last_modified_by
+            last_modified_by: auditInfo.last_modified_by,
+            // Placeholder — overwritten by ScraperRequestInSISCourseJob with the SHA-256 of the raw HTML
+            content_hash: ''
         }
     }
 

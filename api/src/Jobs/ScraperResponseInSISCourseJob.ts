@@ -109,7 +109,8 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			study_load: course.study_load ? JSON.stringify(course.study_load) : null,
 			literature_required: course.literature_required,
 			literature_recommended: course.literature_recommended,
-			last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+			last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
+			content_hash: course.content_hash
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars

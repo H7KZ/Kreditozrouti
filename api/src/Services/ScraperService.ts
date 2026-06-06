@@ -89,7 +89,7 @@ export default class ScraperService {
 	 * Returns the job ID string.
 	 */
 	static async enqueueCourseScrapeById(courseId: number): Promise<string> {
-		const course = await mysql.selectFrom('insis_courses').select('url').where('id', '=', courseId).executeTakeFirst()
+		const course = await mysql.selectFrom('insis_courses').select(['url', 'content_hash']).where('id', '=', courseId).executeTakeFirst()
 
 		if (!course) throw Errors.notFound('Course not found')
 
@@ -97,7 +97,8 @@ export default class ScraperService {
 			'InSIS Course Request (Manual)',
 			{
 				type: 'InSIS:Course',
-				url: course.url
+				url: course.url,
+				content_hash: course.content_hash ?? null
 			},
 			{
 				deduplication: {

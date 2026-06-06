@@ -1,6 +1,6 @@
-import path from 'node:path'
 import { readFileSync } from 'node:fs'
-import { describe, it, expect } from 'vitest'
+import path from 'node:path'
+import { describe, expect, it } from 'vitest'
 import ExtractInSISCatalogService from '@scraper/Services/ExtractInSISCatalogService'
 
 const fixture = (name: string) => readFileSync(path.join(__dirname, '../__fixtures__', name), 'utf8')

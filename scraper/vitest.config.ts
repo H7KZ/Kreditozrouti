@@ -4,12 +4,12 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
     test: {
         globals: true,
-        environment: 'node',
+        environment: 'node'
     },
     resolve: {
         alias: {
             '@scraper': path.resolve(__dirname, './src'),
-            '@shared': path.resolve(__dirname, '../shared'),
-        },
-    },
+            '@shared': path.resolve(__dirname, '../shared')
+        }
+    }
 })

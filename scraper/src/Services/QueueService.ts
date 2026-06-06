@@ -17,7 +17,8 @@ export class QueueService {
     static async addCourseResponse(course: ScraperInSISCourse): Promise<void> {
         await scraper.queue.response.add('InSIS Course Response', {
             type: 'InSIS:Course',
-            course
+            course,
+            content_hash: course.content_hash
         })
     }
 
@@ -35,13 +36,14 @@ export class QueueService {
         })
     }
 
-    static async queueCourseRequests(courses: { url: string; courseId: number | null }[]): Promise<void> {
+    static async queueCourseRequests(courses: { url: string; courseId: number | null; content_hash?: string | null }[]): Promise<void> {
         await scraper.queue.request.addBulk(
-            courses.map(({ url, courseId }) => ({
+            courses.map(({ url, courseId, content_hash }) => ({
                 name: 'InSIS Course Request (Catalog)',
                 data: {
                     type: 'InSIS:Course',
-                    url
+                    url,
+                    content_hash
                 },
                 opts: {
                     deduplication: { id: `InSIS:Course:${courseId}` }
