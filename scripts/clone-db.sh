@@ -56,6 +56,29 @@ EOF
     exit 1
 }
 
+load_credentials() {
+    local env_name="$1"
+    local env_file="$HOME/versions/$env_name/current/.env"
+
+    [[ -f "$env_file" ]] || {
+        log_error "Missing .env for '$env_name' at: $env_file"
+        exit 1
+    }
+
+    # Extract just the two vars we need without sourcing the whole file
+    # (the deployed .env also carries image tags, registry creds, etc.)
+    local root_pw db_name
+    root_pw="$(grep -E '^MYSQL_ROOT_PASSWORD=' "$env_file" | head -n1 | cut -d'=' -f2-)"
+    db_name="$(grep -E '^MYSQL_DATABASE=' "$env_file" | head -n1 | cut -d'=' -f2-)"
+
+    [[ -n "$root_pw" && -n "$db_name" ]] || {
+        log_error "Could not read MYSQL_ROOT_PASSWORD / MYSQL_DATABASE from: $env_file"
+        exit 1
+    }
+
+    printf '%s\t%s' "$root_pw" "$db_name"
+}
+
 resolve_projects() {
     case "$DIRECTION" in
         dev-to-prod)
@@ -86,6 +109,15 @@ check_root
 [[ -z "$DIRECTION" ]] && usage
 
 resolve_projects
+
+log "Loading credentials..."
+
+IFS=$'\t' read -r SOURCE_ROOT_PW SOURCE_DB <<< "$(load_credentials "$SOURCE_ENV")"
+IFS=$'\t' read -r TARGET_ROOT_PW TARGET_DB <<< "$(load_credentials "$TARGET_ENV")"
+
+log_success "Credentials loaded for both environments"
+log "Source DB: $SOURCE_DB ($SOURCE_ENV)"
+log "Target DB: $TARGET_DB ($TARGET_ENV)"
 
 log "=========================================="
 log "Kreditozrouti DB Clone"
