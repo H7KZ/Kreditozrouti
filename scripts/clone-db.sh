@@ -161,8 +161,9 @@ clone_database() {
             -u root -p"$SOURCE_ROOT_PW" "$SOURCE_DB" \
         | docker exec -i "$TARGET_CONTAINER" \
             mysql -u root -p"$TARGET_ROOT_PW" "$TARGET_DB"
-    local dump_status="${PIPESTATUS[0]}"
-    local restore_status="${PIPESTATUS[1]}"
+    local -a pipe_status=("${PIPESTATUS[@]}")
+    local dump_status="${pipe_status[0]}"
+    local restore_status="${pipe_status[1]}"
     set -e
 
     if [[ "$dump_status" -ne 0 || "$restore_status" -ne 0 ]]; then
