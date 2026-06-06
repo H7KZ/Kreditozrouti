@@ -2,7 +2,7 @@
 
 import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 import { Queue, Worker } from 'bullmq'
-import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names'
+import { ScraperInSISAcademicSchedulesRequestScheduler, ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
@@ -104,6 +104,19 @@ const scraper = {
 			ScraperInSISStudyPlansRequestScheduler,
 			{ pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *` },
 			buildStudyPlansSchedulerJob(periodsForLastFourYears)
+		)
+
+		// Academic Schedules: daily at 1 AM year-round
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISAcademicSchedulesRequestScheduler,
+			{ pattern: '0 1 * * *' },
+			{
+				name: 'InSIS Academic Schedules Request (daily at 1 AM)',
+				data: {
+					type: 'InSIS:AcademicSchedules' as const
+				},
+				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+			}
 		)
 
 		logger.info('bullmq.schedulers_configured')

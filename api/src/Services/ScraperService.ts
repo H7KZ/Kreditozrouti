@@ -112,6 +112,24 @@ export default class ScraperService {
 	}
 
 	/**
+	 * Enqueues a job to scrape the InSIS academic schedules (harmonogram).
+	 */
+	static async enqueueAcademicSchedulesScrape(): Promise<void> {
+		await scraper.queue.request.add(
+			'InSIS Academic Schedules Request (Manual)',
+			{
+				type: 'InSIS:AcademicSchedules'
+			},
+			{
+				deduplication: {
+					id: 'InSIS:AcademicSchedules:ManualRun',
+					ttl: 30 * 1000
+				}
+			}
+		)
+	}
+
+	/**
 	 * Enqueues a job to scrape a specific InSIS study plan page.
 	 */
 	static async enqueueStudyPlanScrape(url: string): Promise<void> {
@@ -128,5 +146,53 @@ export default class ScraperService {
 				}
 			}
 		)
+	}
+
+	/**
+	 * Re-enqueues failed jobs of the given types from the request queue's failed set.
+	 * Used to recover from bursts of failures (e.g. staging deadlocks) without manually
+	 * re-triggering each scrape. Each retried job is removed from the failed set first,
+	 * then re-added as a fresh job (BullMQ's `Job.retry()` re-runs in place but our jobs
+	 * never throw on failure — see scraper/CLAUDE.md — so failures here mean the job was
+	 * explicitly marked failed, e.g. via `moveToFailed`, and a clean re-add is simplest).
+	 *
+	 * Returns the count of jobs retried per type.
+	 */
+	static async retryFailedScrapes(types: Array<'InSIS:Course' | 'InSIS:StudyPlan'>): Promise<Record<string, number>> {
+		const counts: Record<string, number> = {}
+		for (const type of types) counts[type] = 0
+
+		const typeSet = new Set<string>(types)
+
+		// Snapshot the whole failed set up front — removing jobs mid-pagination would
+		// shift indices and skip entries. The failed set is bounded (removeOnFail keeps
+		// at most 24h of jobs), so a single bulk fetch is safe.
+		const failed = await scraper.queue.request.getJobs(['failed'], 0, 5000)
+
+		for (const job of failed) {
+			const data = job.data
+
+			if (!data || !typeSet.has(data.type)) continue
+
+			await job.remove()
+
+			if (data.type === 'InSIS:Course') {
+				await scraper.queue.request.add(
+					'InSIS Course Request (Retry)',
+					{ type: 'InSIS:Course', url: data.url, content_hash: data.content_hash ?? null },
+					{ deduplication: { id: `InSIS:Course:Retry:${data.url}`, ttl: 1000 } }
+				)
+			} else if (data.type === 'InSIS:StudyPlan') {
+				await scraper.queue.request.add(
+					'InSIS Study Plan Request (Retry)',
+					{ type: 'InSIS:StudyPlan', url: data.url },
+					{ deduplication: { id: `InSIS:StudyPlan:Retry:${data.url}`, ttl: 1000 } }
+				)
+			}
+
+			counts[data.type]++
+		}
+
+		return counts
 	}
 }
