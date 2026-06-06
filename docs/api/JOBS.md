@@ -11,20 +11,12 @@ The API consumes results from the scraper via `ScraperResponseQueue`. Each incom
 
 ```typescript
 // Simplified routing map:
-'InSIS:Course'     → ScraperResponseInSISCourseJob
-'InSIS:StudyPlan'  → ScraperResponseInSISStudyPlanJob
-'InSIS:Catalog'    → (no - op — catalog
-responses
-just
-discover
-URLs;
-no
-DB
-sync
-needed
-)
-'InSIS:StudyPlans' → (no - op — same as above
-)
+'InSIS:Course'           → ScraperResponseInSISCourseJob
+'InSIS:StudyPlan'        → ScraperResponseInSISStudyPlanJob
+'InSIS:AcademicSchedule' → ScraperResponseInSISAcademicScheduleJob
+'InSIS:Catalog'          → (no-op — catalog responses just discover URLs; no DB sync needed)
+'InSIS:StudyPlans'       → (no-op — same as above)
+'InSIS:AcademicSchedules'→ (no-op — discovery metadata only; per-period jobs handle the sync)
 ```
 
 ---
@@ -40,15 +32,24 @@ Syncs a fully scraped `ScraperInSISCourse` into MySQL and notifies waiting SSE c
 If `course.last_modified_date` matches the existing `updated_at` in the DB, the job exits early with no writes. This
 prevents unnecessary DB churn when a catalog run re-scrapes unchanged courses.
 
+### Faculty upsert (outside the transaction, read-first)
+
+`upsertFaculty` and the study-plan faculty-ident pre-creation loop run **before** the
+transaction below and outside it — faculty rows are shared across hundreds of concurrent
+course jobs (5 scraper replicas), and an unconditional `INSERT ... ON DUPLICATE KEY UPDATE`
+acquires an exclusive lock on every call, which is a classic MySQL deadlock generator
+("Deadlock found when trying to get lock; try restarting transaction") under concurrency.
+
+Both now **SELECT first** and only write when the data actually differs (or the row is
+missing): faculty title/visibility changes are extremely rare, so this turns the vast
+majority of calls into lock-free reads and removes the contention entirely.
+
 ### Transaction
 
-All DB writes happen inside a single Kysely transaction:
+All remaining DB writes happen inside a single Kysely transaction:
 
 ```
-1. upsertFaculty
-   INSERT INTO insis_faculties ... ON DUPLICATE KEY UPDATE title, is_schedule_publicly_visible
-
-2. upsert course
+1. upsert course
    INSERT INTO insis_courses ... ON DUPLICATE KEY UPDATE (all fields)
    Time fields converted: timeToMinutes('9:15') → 555
 
@@ -132,6 +133,41 @@ write latency would compound across large catalog runs.
 
 ---
 
+## ScraperResponseInSISAcademicScheduleJob
+
+**File:** `src/Jobs/ScraperResponseInSISAcademicScheduleJob.ts`
+
+Syncs a scraped academic period and its events into MySQL.
+
+### Faculty Upsert (read-first)
+
+Checks if the faculty row (by `faculty_ident`) exists. If not, inserts a stub
+(`title: null, is_schedule_publicly_visible: false`) to satisfy the FK constraint.
+The faculty title is populated when the catalog scrape runs.
+
+### Period Upsert
+
+```
+INSERT INTO insis_academic_periods ... ON DUPLICATE KEY UPDATE
+Unique key: insis_period_id
+Updates: faculty_id, semester, year, level, starts_at, ends_at, last_scraped_at
+```
+
+No `label` column — period is identified by semester, year, and level.
+
+### Event Reconciliation
+
+Events have no stable natural key, so they are reconciled via delete+recreate:
+
+```
+DELETE FROM insis_academic_schedule_events WHERE period_id = ?
+INSERT new events for the period
+```
+
+Each event row: `period_id`, `title`, `starts_at` (datetime | null), `ends_at` (datetime | null).
+
+---
+
 ## BullMQ Worker Configuration
 
 **File:** `src/bullmq.ts`
@@ -174,6 +210,13 @@ upsertJobScheduler(ScraperInSISStudyPlansRequestScheduler, {
     pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *`
 }, {
     data: {type: 'InSIS:StudyPlans', mode: 'turbo', auto_queue_study_plans: true, periods: [...last 4 years]}
+})
+
+// Academic schedules: 1 AM daily (year-round — schedule changes affect all students)
+upsertJobScheduler(ScraperInSISAcademicSchedulesRequestScheduler, {
+    pattern: '0 1 * * *'
+}, {
+    data: { type: 'InSIS:AcademicSchedules' }
 })
 ```
 

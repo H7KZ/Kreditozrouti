@@ -342,6 +342,39 @@ Triggers scraping of a single study plan by URL.
 
 ---
 
+### `POST /commands/insis/retry-failed`
+
+Re-enqueues all currently-failed `InSIS:Course` and/or `InSIS:StudyPlan` scrape jobs from the
+request queue's failed set. Eases recovery after a burst of failures (e.g. faculty-upsert
+deadlocks under concurrent load).
+
+**Controller:** `RetryFailedInSISScrapesController`
+
+**Body:**
+
+```typescript
+{
+    types?: ('InSIS:Course' | 'InSIS:StudyPlan')[]  // defaults to both when omitted
+}
+```
+
+**Response:** `200 { retried: Record<string, number> }` — count of jobs re-enqueued per type.
+
+---
+
+### `POST /commands/insis/academic-schedules`
+
+Triggers a full InSIS academic schedule scrape (harmonogram akademického roku).
+Scrapes all faculties, discovers all academic periods, and enqueues per-period event scraping.
+
+**Controller:** `RunInSISAcademicSchedulesScraperController`
+
+No request body — triggers a full scrape covering all InSIS faculties.
+
+**Response:** `202 Accepted`
+
+---
+
 ## Controller Convention
 
 Controllers use **named function namespace objects**, not class instances:
