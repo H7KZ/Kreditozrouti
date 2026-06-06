@@ -113,6 +113,28 @@ confirm_clone() {
     log_success "Confirmed — proceeding with clone into '$TARGET_PROJECT'"
 }
 
+backup_target() {
+    mkdir -p "$BACKUP_DIR"
+
+    local timestamp backup_file
+    timestamp="$(date -u +'%Y%m%dT%H%M%SZ')"
+    backup_file="$BACKUP_DIR/${TARGET_PROJECT}-pre-clone-${timestamp}.sql.gz"
+
+    log "Backing up '$TARGET_PROJECT' ($TARGET_DB) to $backup_file ..."
+
+    docker exec "$TARGET_CONTAINER" \
+        mysqldump --single-transaction --routines --triggers \
+            -u root -p"$TARGET_ROOT_PW" "$TARGET_DB" \
+        | gzip > "$backup_file"
+
+    if [[ ! -s "$backup_file" ]]; then
+        log_error "Backup file is empty or missing: $backup_file"
+        exit 1
+    fi
+
+    log_success "Backup written: $backup_file ($(du -h "$backup_file" | cut -f1))"
+}
+
 resolve_projects() {
     case "$DIRECTION" in
         dev-to-prod)
@@ -162,3 +184,5 @@ log "Source DB: $SOURCE_DB ($SOURCE_ENV)"
 log "Target DB: $TARGET_DB ($TARGET_ENV)"
 
 confirm_clone
+
+backup_target
