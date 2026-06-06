@@ -19,42 +19,50 @@ export default async function ScraperRequestInSISAcademicSchedulesJob(_data: Scr
         return null
     }
 
-    const faculties = ExtractInSISAcademicScheduleService.extractFaculties(initialResult.data)
+    try {
+        const faculties = ExtractInSISAcademicScheduleService.extractFaculties(initialResult.data)
 
-    LoggerJobContext.add({ faculties_count: faculties.length })
+        LoggerJobContext.add({ faculties_count: faculties.length })
 
-    const allPeriods = (
-        await runWithConcurrency(faculties, FACULTY_CONCURRENCY, async faculty => {
-            const url = `${Config.insis.harmonogramUrl}?fakulta=${faculty.insis_faculty_id}`
-            const result = await client.getSilent<string>(url)
-            if (!result?.data) return []
-            return ExtractInSISAcademicScheduleService.extractPeriods(result.data, faculty.insis_faculty_id)
+        const allPeriods = (
+            await runWithConcurrency(faculties, FACULTY_CONCURRENCY, async faculty => {
+                const url = `${Config.insis.harmonogramUrl}?fakulta=${faculty.insis_faculty_id}`
+                const result = await client.getSilent<string>(url)
+                if (!result?.data) return []
+                return ExtractInSISAcademicScheduleService.extractPeriods(result.data, faculty.insis_faculty_id)
+            })
+        ).flat()
+
+        LoggerJobContext.add({ periods_count: allPeriods.length })
+
+        const schedules: ScraperInSISAcademicSchedules = {
+            faculties_count: faculties.length,
+            periods_count: allPeriods.length
+        }
+
+        await QueueService.addAcademicSchedulesResponse(schedules)
+
+        if (allPeriods.length > 0) {
+            await QueueService.queueAcademicScheduleRequests(
+                allPeriods.map(period => ({
+                    insis_faculty_id: period.insis_faculty_id,
+                    insis_period_id: period.insis_period_id,
+                    faculty_ident: period.faculty_ident,
+                    semester: period.semester,
+                    year: period.year,
+                    level: period.level,
+                    starts_at: period.starts_at,
+                    ends_at: period.ends_at
+                }))
+            )
+        }
+
+        return schedules
+    } catch (error) {
+        LoggerJobContext.add({
+            error: 'Processing error',
+            message: (error as Error).message
         })
-    ).flat()
-
-    LoggerJobContext.add({ periods_count: allPeriods.length })
-
-    const schedules: ScraperInSISAcademicSchedules = {
-        faculties_count: faculties.length,
-        periods_count: allPeriods.length
+        return null
     }
-
-    await QueueService.addAcademicSchedulesResponse(schedules)
-
-    if (allPeriods.length > 0) {
-        await QueueService.queueAcademicScheduleRequests(
-            allPeriods.map(period => ({
-                insis_faculty_id: period.insis_faculty_id,
-                insis_period_id: period.insis_period_id,
-                faculty_ident: period.faculty_ident,
-                semester: period.semester,
-                year: period.year,
-                level: period.level,
-                starts_at: period.starts_at,
-                ends_at: period.ends_at
-            }))
-        )
-    }
-
-    return schedules
 }
