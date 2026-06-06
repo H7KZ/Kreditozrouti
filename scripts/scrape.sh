@@ -32,8 +32,9 @@ usage() {
     echo "  TOKEN     command bearer token"
     echo ""
     echo "Examples:"
-    echo "  $0 http://localhost:40080 polite catalog mytoken"
-    echo "  $0 https://api.kreditozrouti.cz turbo studyplans mytoken"
+    echo "  $0 http://localhost:40080 catalog mytoken"
+    echo "  $0 https://api.kreditozrouti.cz studyplans mytoken"
+    echo "  $0 http://localhost:40080 academic-schedules mytoken"
     exit 1
 }
 
@@ -58,13 +59,11 @@ URL="${API_URL}${ENDPOINT}"
 
 log "Triggering ${JOB} scrape"
 log "  URL:  ${URL}"
-log "  Body: ${BODY}"
 
 HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
     -X POST "$URL" \
     -H "Content-Type: application/json" \
-    -H "Authorization: Bearer ${TOKEN}" \
-    -d "$BODY")
+    -H "Authorization: Bearer ${TOKEN}")
 
 if [[ "$HTTP_CODE" == "202" ]]; then
     log_success "Accepted (202) — job enqueued."
