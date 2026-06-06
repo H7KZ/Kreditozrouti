@@ -110,6 +110,14 @@ check_root
 
 resolve_projects
 
+log "=========================================="
+log "Kreditozrouti DB Clone"
+log "=========================================="
+log "Direction: $DIRECTION"
+log "Source:    $SOURCE_PROJECT ($SOURCE_CONTAINER)"
+log "Target:    $TARGET_PROJECT ($TARGET_CONTAINER)"
+log "=========================================="
+
 log "Loading credentials..."
 
 IFS=$'\t' read -r SOURCE_ROOT_PW SOURCE_DB <<< "$(load_credentials "$SOURCE_ENV")"
@@ -118,11 +126,3 @@ IFS=$'\t' read -r TARGET_ROOT_PW TARGET_DB <<< "$(load_credentials "$TARGET_ENV"
 log_success "Credentials loaded for both environments"
 log "Source DB: $SOURCE_DB ($SOURCE_ENV)"
 log "Target DB: $TARGET_DB ($TARGET_ENV)"
-
-log "=========================================="
-log "Kreditozrouti DB Clone"
-log "=========================================="
-log "Direction: $DIRECTION"
-log "Source:    $SOURCE_PROJECT ($SOURCE_CONTAINER)"
-log "Target:    $TARGET_PROJECT ($TARGET_CONTAINER)"
-log "=========================================="
