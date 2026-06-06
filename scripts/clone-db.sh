@@ -148,6 +148,32 @@ backup_target() {
     log_success "Backup written: $backup_file ($(du -h "$backup_file" | cut -f1))"
 }
 
+clone_database() {
+    log "Cloning '$SOURCE_PROJECT' ($SOURCE_DB) -> '$TARGET_PROJECT' ($TARGET_DB) ..."
+    log "This may take a while depending on database size — please wait."
+
+    # Both mysqldump (source) and mysql (target restore) must succeed — check each
+    # stage's exit code explicitly via PIPESTATUS, since the pipeline's combined
+    # exit code alone can mask a source-side failure if the target client exits 0.
+    set +e
+    docker exec "$SOURCE_CONTAINER" \
+        mysqldump --single-transaction --routines --triggers --add-drop-table \
+            -u root -p"$SOURCE_ROOT_PW" "$SOURCE_DB" \
+        | docker exec -i "$TARGET_CONTAINER" \
+            mysql -u root -p"$TARGET_ROOT_PW" "$TARGET_DB"
+    local dump_status="${PIPESTATUS[0]}"
+    local restore_status="${PIPESTATUS[1]}"
+    set -e
+
+    if [[ "$dump_status" -ne 0 || "$restore_status" -ne 0 ]]; then
+        log_error "Clone failed (mysqldump exit $dump_status, mysql restore exit $restore_status)"
+        log_error "'$TARGET_PROJECT' may be left in a partially-restored state — restore from the pre-clone backup in $BACKUP_DIR if needed."
+        exit 1
+    fi
+
+    log_success "Clone complete: '$SOURCE_PROJECT' -> '$TARGET_PROJECT'"
+}
+
 resolve_projects() {
     case "$DIRECTION" in
         dev-to-prod)
@@ -199,3 +225,5 @@ log "Target DB: $TARGET_DB ($TARGET_ENV)"
 confirm_clone
 
 backup_target
+
+clone_database
