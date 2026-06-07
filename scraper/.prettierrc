@@ -12,13 +12,5 @@
     "arrowParens": "avoid",
     "plugins": ["@ianvs/prettier-plugin-sort-imports"],
     "importOrder": ["<TYPES>", "<BUILT_IN_MODULES>", "<THIRD_PARTY_MODULES>", "^@shared/(.*)$", "^@scraper/(.*)$", "^[./]"],
-    "importOrderTypeScriptVersion": "5.0.0",
-    "overrides": [
-        {
-            "files": ["src/tests/fixtures/**"],
-            "options": {
-                "plugins": []
-            }
-        }
-    ]
+    "importOrderTypeScriptVersion": "5.0.0"
 }

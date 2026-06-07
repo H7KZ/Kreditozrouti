@@ -3,3 +3,5 @@ tsconfig.json
 node_modules
 dist
 build
+
+src/tests/fixtures
