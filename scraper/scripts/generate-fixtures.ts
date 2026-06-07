@@ -27,10 +27,6 @@ for (const file of htmlFiles('courses', /^course-.+\.html$/)) {
     const result = ExtractInSISCourseService.extract(html('courses', file), '')
     write('courses', file.replace('.html', '.expected.json'), result)
 }
-if (htmlFiles('courses', /^catalog\.html$/).length) {
-    const result = ExtractInSISCourseService.extract(html('courses', 'catalog.html'), '')
-    write('courses', 'catalog.expected.json', result)
-}
 
 // studyplans
 if (htmlFiles('studyplans', /^studyplans\.html$/).length) {
