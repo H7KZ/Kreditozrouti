@@ -34,7 +34,7 @@ if (htmlFiles('studyplans', /^studyplans\.html$/).length) {
     const result = {
         faculties: ExtractInSISStudyPlanService.extractFaculties(navHtml),
         navigationUrls: ExtractInSISStudyPlanService.extractNavigationUrls(navHtml),
-        planUrls: ExtractInSISStudyPlanService.extractPlanUrls(navHtml),
+        planUrls: ExtractInSISStudyPlanService.extractPlanUrls(navHtml)
     }
     write('studyplans', 'studyplans.expected.json', result)
 }
@@ -69,7 +69,11 @@ if (htmlFiles('faculty-timetables', /^nav\.html$/).length) {
     write('faculty-timetables', 'nav.expected.json', ExtractInSISFacultyTimetableService.extractFaculties(html('faculty-timetables', 'nav.html')))
 }
 for (const file of htmlFiles('faculty-timetables', /^timetable-.+\.html$/)) {
-    write('faculty-timetables', file.replace('.html', '.expected.json'), ExtractInSISFacultyTimetableService.extractFacultyTimetable(html('faculty-timetables', file)))
+    write(
+        'faculty-timetables',
+        file.replace('.html', '.expected.json'),
+        ExtractInSISFacultyTimetableService.extractFacultyTimetable(html('faculty-timetables', file))
+    )
 }
 
 console.log('done')

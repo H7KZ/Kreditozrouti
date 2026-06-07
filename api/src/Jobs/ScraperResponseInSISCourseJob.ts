@@ -38,11 +38,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	let facultyId: string | null = null
 	if (course.faculty?.ident) {
 		facultyId = course.faculty.ident
-		await mysql
-			.insertInto('insis_faculties')
-			.ignore()
-			.values({ id: facultyId, title: null, is_schedule_publicly_visible: false })
-			.execute()
+		await mysql.insertInto('insis_faculties').ignore().values({ id: facultyId, title: null, is_schedule_publicly_visible: false }).execute()
 	}
 
 	// Skip the rest if course hasn't changed since last scrape.
@@ -68,11 +64,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	if (course.study_plans && course.study_plans.length > 0) {
 		const uniqueFacultyIdents = [...new Set(course.study_plans.map(p => p.facultyIdent).filter((id): id is string => !!id))]
 		for (const ident of uniqueFacultyIdents) {
-			await mysql
-				.insertInto('insis_faculties')
-				.ignore()
-				.values({ id: ident, title: null, is_schedule_publicly_visible: false })
-				.execute()
+			await mysql.insertInto('insis_faculties').ignore().values({ id: ident, title: null, is_schedule_publicly_visible: false }).execute()
 		}
 	}
 
@@ -294,4 +286,3 @@ async function flushResponseCaches(): Promise<void> {
 		} while (cursor !== '0')
 	}
 }
-

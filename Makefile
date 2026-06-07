@@ -49,6 +49,16 @@ lint:
 	--names "API,CLIENT,SCRAPER" \
 	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
 
+# 'cd api && npm run test' \
+# 'cd client && npm run test' \
+# --names "API,CLIENT,SCRAPER" \
+# --prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
+test:
+	concurrently \
+	'cd scraper && npm run test' \
+	--names "SCRAPER" \
+	--prefix-colors "bgMagenta.bold"
+
 type-check:
 	concurrently \
 	'cd api && npm run type-check' \

@@ -7,11 +7,7 @@ export default async function ScraperResponseInSISFacultyTimetableJob(data: Scra
 	const { timetable } = data
 	if (!timetable?.ident) return
 
-	await mysql
-		.insertInto(FacultyTable._table)
-		.ignore()
-		.values({ id: timetable.ident, title: null, is_schedule_publicly_visible: false })
-		.execute()
+	await mysql.insertInto(FacultyTable._table).ignore().values({ id: timetable.ident, title: null, is_schedule_publicly_visible: false }).execute()
 
 	await mysql
 		.updateTable(FacultyTable._table)
