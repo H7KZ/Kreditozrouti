@@ -11,7 +11,7 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
     {
-        ignores: ['node_modules', 'dist', 'build', '.wrangler', 'src/tests/**']
+        ignores: ['node_modules', 'dist', 'build', '.wrangler']
     },
 
     eslint.configs.recommended,
