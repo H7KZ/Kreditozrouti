@@ -56,7 +56,7 @@ export default class ScraperService {
 			},
 			{
 				deduplication: {
-					id: 'InSIS:Course:ManualRun',
+					id: `InSIS:Course:ManualRun:${url}`,
 					ttl: 1000 // 1 second
 				}
 			}
