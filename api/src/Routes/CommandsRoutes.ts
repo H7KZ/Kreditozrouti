@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import RetryFailedInSISScrapesController from '@api/Controllers/Commands/RetryFailedInSISScrapesController'
 import RunInSISAcademicSchedulesScraperController from '@api/Controllers/Commands/RunInSISAcademicSchedulesScraperController'
+import RunInSISFacultyTimetablesScraperController from '@api/Controllers/Commands/RunInSISFacultyTimetablesScraperController'
 import RunInSISCatalogScraperController from '@api/Controllers/Commands/RunInSISCatalogScraperController'
 import RunInSISCourseScraperController from '@api/Controllers/Commands/RunInSISCourseScraperController'
 import RunInSISStudyPlanScraperController from '@api/Controllers/Commands/RunInSISStudyPlanScraperController'
@@ -24,6 +25,7 @@ CommandsRoutes.post('/insis/studyplans', ParserJSONMiddleware, CommandMiddleware
 CommandsRoutes.post('/insis/studyplan', ParserJSONMiddleware, CommandMiddleware, LoggerMiddleware, RunInSISStudyPlanScraperController)
 
 CommandsRoutes.post('/insis/academic-schedules', ParserJSONMiddleware, CommandMiddleware, LoggerMiddleware, RunInSISAcademicSchedulesScraperController)
+CommandsRoutes.post('/insis/faculty-timetables', ParserJSONMiddleware, CommandMiddleware, LoggerMiddleware, RunInSISFacultyTimetablesScraperController)
 
 CommandsRoutes.post('/insis/retry-failed', ParserJSONMiddleware, CommandMiddleware, LoggerMiddleware, RetryFailedInSISScrapesController)
 

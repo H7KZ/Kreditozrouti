@@ -112,6 +112,24 @@ export default class ScraperService {
 	}
 
 	/**
+	 * Enqueues a job to scrape InSIS faculty timetable visibility.
+	 */
+	static async enqueueFacultyTimetablesScrape(): Promise<void> {
+		await scraper.queue.request.add(
+			'InSIS Faculty Timetables Request (Manual)',
+			{
+				type: 'InSIS:FacultyTimetables'
+			},
+			{
+				deduplication: {
+					id: 'InSIS:FacultyTimetables:ManualRun',
+					ttl: 30 * 1000
+				}
+			}
+		)
+	}
+
+	/**
 	 * Enqueues a job to scrape the InSIS academic schedules (harmonogram).
 	 */
 	static async enqueueAcademicSchedulesScrape(): Promise<void> {
