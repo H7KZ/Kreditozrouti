@@ -105,5 +105,6 @@
     },
     "ts-node": {
         "require": ["tsconfig-paths/register"]
-    }
+    },
+    "exclude": ["src/tests"]
 }
