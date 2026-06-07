@@ -2,11 +2,10 @@ import type {
 	ScraperInSISCourseAssessmentMethod,
 	ScraperInSISCourseStudyPlan,
 	ScraperInSISCourseTimetableSlot,
-	ScraperInSISCourseTimetableUnit,
-	ScraperInSISFaculty
+	ScraperInSISCourseTimetableUnit
 } from '@shared/queue/insis'
 import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
-import { Kysely, Transaction } from 'kysely'
+import { Transaction } from 'kysely'
 import { timeToMinutes } from '@shared/domain/time'
 import { mysql, redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
@@ -16,7 +15,6 @@ import {
 	CourseUnitSlotTable,
 	CourseUnitTable,
 	Database,
-	FacultyTable,
 	NewCourse,
 	NewCourseUnit,
 	NewCourseUnitSlot,
@@ -37,13 +35,14 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	if (!course?.id) return
 
-	// Sync faculty outside any transaction — faculty rows are shared across hundreds of
-	// concurrent course jobs (5 scraper replicas), so even a bare `ON DUPLICATE KEY UPDATE`
-	// here would acquire an exclusive lock on every call and deadlock under load.
-	// upsertFaculty reads first and only writes when something actually changed.
 	let facultyId: string | null = null
-	if (course.faculty) {
-		facultyId = await upsertFaculty(mysql, course.faculty)
+	if (course.faculty?.ident) {
+		facultyId = course.faculty.ident
+		await mysql
+			.insertInto('insis_faculties')
+			.ignore()
+			.values({ id: facultyId, title: null, is_schedule_publicly_visible: false })
+			.execute()
 	}
 
 	// Skip the rest if course hasn't changed since last scrape.
@@ -66,21 +65,14 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		}
 	}
 
-	// Pre-create faculty stubs for idents referenced by study plans, outside the transaction
-	// for the same reason as the course faculty above. Read-first: skip the write entirely
-	// when the row already exists — turns the hot path into a lock-free SELECT.
 	if (course.study_plans && course.study_plans.length > 0) {
 		const uniqueFacultyIdents = [...new Set(course.study_plans.map(p => p.facultyIdent).filter((id): id is string => !!id))]
 		for (const ident of uniqueFacultyIdents) {
-			const exists = await mysql.selectFrom(FacultyTable._table).select('id').where('id', '=', ident).executeTakeFirst()
-
-			if (!exists) {
-				await mysql
-					.insertInto(FacultyTable._table)
-					.values({ id: ident, title: null, is_schedule_publicly_visible: false })
-					.onDuplicateKeyUpdate({ id: ident })
-					.execute()
-			}
+			await mysql
+				.insertInto('insis_faculties')
+				.ignore()
+				.values({ id: ident, title: null, is_schedule_publicly_visible: false })
+				.execute()
 		}
 	}
 
@@ -303,53 +295,3 @@ async function flushResponseCaches(): Promise<void> {
 	}
 }
 
-/**
- * Helper to Upsert Faculty and return its ID.
- *
- * Read-first change detection: faculty rows are shared across hundreds of concurrent
- * course jobs (5 scraper replicas), and an unconditional `INSERT ... ON DUPLICATE KEY UPDATE`
- * acquires an exclusive row/index lock on every single call — even when nothing changed.
- * Under concurrency that's a textbook MySQL deadlock generator (lock-wait cycles between
- * connections upserting the same row). Faculty title/visibility changes are extremely rare,
- * so we SELECT first (shared, momentary lock) and only perform the write when the data
- * actually differs — turning the overwhelming majority of calls into lock-free reads.
- */
-async function upsertFaculty(trx: Kysely<Database>, faculty: ScraperInSISFaculty): Promise<string | null> {
-	if (!faculty.ident) return null
-
-	const existing = await trx
-		.selectFrom(FacultyTable._table)
-		.select(['title', 'is_schedule_publicly_visible'])
-		.where('id', '=', faculty.ident)
-		.executeTakeFirst()
-
-	if (!existing) {
-		// Race-safe creation: concurrent first-sightings resolve via a no-op update.
-		await trx
-			.insertInto(FacultyTable._table)
-			.values({
-				id: faculty.ident,
-				title: faculty.title,
-				is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
-			})
-			.onDuplicateKeyUpdate({ id: faculty.ident })
-			.execute()
-
-		return faculty.ident
-	}
-
-	const changed = existing.title !== faculty.title || existing.is_schedule_publicly_visible !== faculty.is_schedule_publicly_visible
-
-	if (changed) {
-		await trx
-			.updateTable(FacultyTable._table)
-			.set({
-				title: faculty.title,
-				is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
-			})
-			.where('id', '=', faculty.ident)
-			.execute()
-	}
-
-	return faculty.ident
-}
