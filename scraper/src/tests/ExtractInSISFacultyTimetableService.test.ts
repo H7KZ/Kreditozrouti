@@ -1,37 +1,28 @@
-import { readdirSync, readFileSync } from 'node:fs'
+import { readdirSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import ExtractInSISFacultyTimetableService from '@scraper/Services/ExtractInSISFacultyTimetableService'
+import { makeFixtureLoaders } from './helpers'
 
 const dir = path.join(import.meta.dirname, 'fixtures/faculty-timetables')
-
-function load(file: string): string {
-    return readFileSync(path.join(dir, file), 'utf8')
-}
-
-function expected<T>(file: string): T {
-    return JSON.parse(readFileSync(path.join(dir, file), 'utf8')) as T
-}
+const { load, expected } = makeFixtureLoaders(dir)
 
 describe('ExtractInSISFacultyTimetableService', () => {
     describe('extractFaculties', () => {
         it('nav.html', () => {
-            expect(ExtractInSISFacultyTimetableService.extractFaculties(load('nav.html')))
-                .toEqual(expected('nav.expected.json'))
+            expect(ExtractInSISFacultyTimetableService.extractFaculties(load('nav.html'))).toEqual(expected('nav.expected.json'))
         })
 
         it('returns empty array when no faculty table is found', () => {
-            expect(ExtractInSISFacultyTimetableService.extractFaculties('<html><body></body></html>'))
-                .toEqual([])
+            expect(ExtractInSISFacultyTimetableService.extractFaculties('<html><body></body></html>')).toEqual([])
         })
     })
 
     describe('extractFacultyTimetable', () => {
         const fixtures = readdirSync(dir).filter(f => /^timetable-.+\.html$/.test(f))
 
-        it.each(fixtures)('%s', (file) => {
-            expect(ExtractInSISFacultyTimetableService.extractFacultyTimetable(load(file)))
-                .toEqual(expected(file.replace('.html', '.expected.json')))
+        it.each(fixtures)('%s', file => {
+            expect(ExtractInSISFacultyTimetableService.extractFacultyTimetable(load(file))).toEqual(expected(file.replace('.html', '.expected.json')))
         })
 
         it('returns nulls when page has no schedule rows', () => {

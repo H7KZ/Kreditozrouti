@@ -1,35 +1,22 @@
-import { readdirSync, readFileSync } from 'node:fs'
+import { readdirSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import ExtractInSISAcademicScheduleService, {
-    parseDateDMY,
-    parseDateTimeRange,
-    parsePeriodLabel,
-} from '@scraper/Services/ExtractInSISAcademicScheduleService'
+import ExtractInSISAcademicScheduleService, { parseDateDMY, parseDateTimeRange, parsePeriodLabel } from '@scraper/Services/ExtractInSISAcademicScheduleService'
+import { makeFixtureLoaders } from './helpers'
 
 const dir = path.join(import.meta.dirname, 'fixtures/academic-schedules')
-
-function load(file: string): string {
-    return readFileSync(path.join(dir, file), 'utf8')
-}
-
-function expected<T>(file: string): T {
-    return JSON.parse(readFileSync(path.join(dir, file), 'utf8')) as T
-}
-
-function fileExists(file: string): boolean {
-    try { readFileSync(path.join(dir, file)); return true } catch { return false }
-}
+const { load, expected, exists } = makeFixtureLoaders(dir)
 
 describe('ExtractInSISAcademicScheduleService', () => {
     describe('extractFaculties', () => {
-        if (fileExists('index.html')) {
+        if (exists('index.html')) {
             it('index.html', () => {
-                expect(ExtractInSISAcademicScheduleService.extractFaculties(load('index.html')))
-                    .toEqual(expected('index.expected.json'))
+                expect(ExtractInSISAcademicScheduleService.extractFaculties(load('index.html'))).toEqual(expected('index.expected.json'))
             })
         } else {
-            it('no fixtures yet', () => { /* skipped until HTML fixtures are added */ })
+            it('no fixtures yet', () => {
+                /* skipped until HTML fixtures are added */
+            })
         }
     })
 
@@ -37,12 +24,13 @@ describe('ExtractInSISAcademicScheduleService', () => {
         const fixtures = readdirSync(dir).filter(f => /^faculty-\d+\.html$/.test(f))
 
         if (fixtures.length === 0) {
-            it('no fixtures yet', () => { /* skipped until HTML fixtures are added */ })
+            it('no fixtures yet', () => {
+                /* skipped until HTML fixtures are added */
+            })
         } else {
-            it.each(fixtures)('%s', (file) => {
+            it.each(fixtures)('%s', file => {
                 const exp = expected<{ _facultyId: number; periods: unknown[] }>(file.replace('.html', '.expected.json'))
-                expect(ExtractInSISAcademicScheduleService.extractPeriods(load(file), exp._facultyId))
-                    .toEqual(exp.periods)
+                expect(ExtractInSISAcademicScheduleService.extractPeriods(load(file), exp._facultyId)).toEqual(exp.periods)
             })
         }
     })
@@ -51,11 +39,12 @@ describe('ExtractInSISAcademicScheduleService', () => {
         const fixtures = readdirSync(dir).filter(f => /^events-\d+\.html$/.test(f))
 
         if (fixtures.length === 0) {
-            it('no fixtures yet', () => { /* skipped until HTML fixtures are added */ })
+            it('no fixtures yet', () => {
+                /* skipped until HTML fixtures are added */
+            })
         } else {
-            it.each(fixtures)('%s', (file) => {
-                expect(ExtractInSISAcademicScheduleService.extractEvents(load(file)))
-                    .toEqual(expected(file.replace('.html', '.expected.json')))
+            it.each(fixtures)('%s', file => {
+                expect(ExtractInSISAcademicScheduleService.extractEvents(load(file))).toEqual(expected(file.replace('.html', '.expected.json')))
             })
         }
     })
