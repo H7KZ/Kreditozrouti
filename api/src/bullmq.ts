@@ -5,6 +5,7 @@ import { Queue, Worker } from 'bullmq'
 import {
 	ScraperInSISAcademicSchedulesRequestScheduler,
 	ScraperInSISCatalogRequestScheduler,
+	ScraperInSISFacultyTimetablesRequestScheduler,
 	ScraperInSISStudyPlansRequestScheduler,
 	ScraperRequestQueue,
 	ScraperResponseQueue
@@ -120,6 +121,19 @@ const scraper = {
 				name: 'InSIS Academic Schedules Request (daily at 1 AM)',
 				data: {
 					type: 'InSIS:AcademicSchedules' as const
+				},
+				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+			}
+		)
+
+		// Faculty Timetables: weekly on Sunday at midnight, year-round
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISFacultyTimetablesRequestScheduler,
+			{ pattern: '0 0 * * 0' },
+			{
+				name: 'InSIS Faculty Timetables Request (weekly Sunday midnight)',
+				data: {
+					type: 'InSIS:FacultyTimetables' as const
 				},
 				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
 			}
