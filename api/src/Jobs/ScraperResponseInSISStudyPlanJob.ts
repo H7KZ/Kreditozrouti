@@ -126,12 +126,8 @@ async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | nul
 
 	await mysql
 		.insertInto(FacultyTable._table)
-		.values({
-			id: faculty.ident,
-			title: faculty.title,
-			is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
-		})
-		.onDuplicateKeyUpdate({ title: faculty.title, is_schedule_publicly_visible: faculty.is_schedule_publicly_visible })
+		.ignore()
+		.values({ id: faculty.ident, title: null, is_schedule_publicly_visible: false })
 		.execute()
 
 	return faculty.ident
