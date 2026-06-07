@@ -17,7 +17,8 @@ describe('ExtractInSISCourseService', () => {
             })
         } else {
             it.each(fixtures)('%s', file => {
-                expect(ExtractInSISCourseService.extract(load(file), '')).toEqual(expected(file.replace('.html', '.expected.json')))
+                const actual = ExtractInSISCourseService.extract(load(file), '')
+                expect(actual).toEqual(expected(file.replace('.html', '.expected.json'), actual))
             })
         }
     })

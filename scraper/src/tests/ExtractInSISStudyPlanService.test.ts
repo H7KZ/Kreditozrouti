@@ -12,10 +12,13 @@ describe('ExtractInSISStudyPlanService', () => {
         if (exists('studyplans.html')) {
             it('studyplans.html', () => {
                 const html = load('studyplans.html')
-                const exp = expected<{ faculties: unknown; navigationUrls: unknown; planUrls: unknown }>('studyplans.expected.json')
-                expect(ExtractInSISStudyPlanService.extractFaculties(html)).toEqual(exp.faculties)
-                expect(ExtractInSISStudyPlanService.extractNavigationUrls(html)).toEqual(exp.navigationUrls)
-                expect(ExtractInSISStudyPlanService.extractPlanUrls(html)).toEqual(exp.planUrls)
+                const faculties = ExtractInSISStudyPlanService.extractFaculties(html)
+                const navigationUrls = ExtractInSISStudyPlanService.extractNavigationUrls(html)
+                const planUrls = ExtractInSISStudyPlanService.extractPlanUrls(html)
+                const exp = expected('studyplans.expected.json', { faculties, navigationUrls, planUrls })
+                expect(faculties).toEqual(exp.faculties)
+                expect(navigationUrls).toEqual(exp.navigationUrls)
+                expect(planUrls).toEqual(exp.planUrls)
             })
         } else {
             it('no fixtures yet', () => {
@@ -33,7 +36,8 @@ describe('ExtractInSISStudyPlanService', () => {
             })
         } else {
             it.each(fixtures)('%s', file => {
-                expect(ExtractInSISStudyPlanService.extract(load(file), '')).toEqual(expected(file.replace('.html', '.expected.json')))
+                const actual = ExtractInSISStudyPlanService.extract(load(file), '')
+                expect(actual).toEqual(expected(file.replace('.html', '.expected.json'), actual))
             })
         }
     })

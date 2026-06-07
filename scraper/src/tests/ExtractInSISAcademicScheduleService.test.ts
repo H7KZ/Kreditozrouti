@@ -11,7 +11,8 @@ describe('ExtractInSISAcademicScheduleService', () => {
     describe('extractFaculties', () => {
         if (exists('index.html')) {
             it('index.html', () => {
-                expect(ExtractInSISAcademicScheduleService.extractFaculties(load('index.html'))).toEqual(expected('index.expected.json'))
+                const actual = ExtractInSISAcademicScheduleService.extractFaculties(load('index.html'))
+                expect(actual).toEqual(expected('index.expected.json', actual))
             })
         } else {
             it('no fixtures yet', () => {
@@ -29,8 +30,13 @@ describe('ExtractInSISAcademicScheduleService', () => {
             })
         } else {
             it.each(fixtures)('%s', file => {
-                const exp = expected<{ _facultyId: number; periods: unknown[] }>(file.replace('.html', '.expected.json'))
-                expect(ExtractInSISAcademicScheduleService.extractPeriods(load(file), exp._facultyId)).toEqual(exp.periods)
+                // Faculty ID is encoded in the filename (faculty-{id}.html) and stored in the
+                // expected JSON under _facultyId so it can be passed back to extractPeriods.
+                const match = /^faculty-(\d+)\.html$/.exec(file)
+                const facultyId = parseInt(match![1], 10)
+                const periods = ExtractInSISAcademicScheduleService.extractPeriods(load(file), facultyId)
+                const exp = expected(file.replace('.html', '.expected.json'), { _facultyId: facultyId, periods })
+                expect(periods).toEqual(exp.periods)
             })
         }
     })
@@ -44,7 +50,8 @@ describe('ExtractInSISAcademicScheduleService', () => {
             })
         } else {
             it.each(fixtures)('%s', file => {
-                expect(ExtractInSISAcademicScheduleService.extractEvents(load(file))).toEqual(expected(file.replace('.html', '.expected.json')))
+                const actual = ExtractInSISAcademicScheduleService.extractEvents(load(file))
+                expect(actual).toEqual(expected(file.replace('.html', '.expected.json'), actual))
             })
         }
     })

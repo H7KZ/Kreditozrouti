@@ -1,0 +1,2510 @@
+{
+    "faculties": [
+        {
+            "id": 31110,
+            "identifier": "I10",
+            "name": "fakulta financí a účetnictví"
+        },
+        {
+            "id": 31120,
+            "identifier": "I20",
+            "name": "fakulta mezinárodních vztahů"
+        },
+        {
+            "id": 31130,
+            "identifier": "I30",
+            "name": "fakulta podnikohospodářská"
+        },
+        {
+            "id": 31140,
+            "identifier": "I40",
+            "name": "fakulta informatiky a statistiky"
+        },
+        {
+            "id": 31150,
+            "identifier": "I50",
+            "name": "národohospodářská fakulta"
+        },
+        {
+            "id": 31160,
+            "identifier": "I60",
+            "name": "fakulta managementu"
+        },
+        {
+            "id": 31190141,
+            "identifier": "I141",
+            "name": "francouzsko-český institut řízení"
+        },
+        {
+            "id": 31190115,
+            "identifier": "I115",
+            "name": "oddělení vědy a výzkumu"
+        },
+        {
+            "id": 31190096,
+            "identifier": "I96",
+            "name": "centrum tělesné výchovy a sportu"
+        },
+        {
+            "id": 31190114,
+            "identifier": "I114",
+            "name": "oddělení zahraničních styků"
+        },
+        {
+            "id": 31190142,
+            "identifier": "I142",
+            "name": "program studií střední a východní evropy"
+        },
+        {
+            "id": 31190143,
+            "identifier": "I143",
+            "name": "institut oceňování majetku"
+        },
+        {
+            "id": 31190105,
+            "identifier": "I105",
+            "name": "pedagogické oddělení"
+        },
+        {
+            "id": 31190230,
+            "identifier": "I230",
+            "name": "univerzita třetího věku"
+        },
+        {
+            "id": 31190248,
+            "identifier": "I248",
+            "name": "univerzita třetího věku - jindřichův hradec"
+        }
+    ],
+    "periods": [
+        {
+            "id": 1472,
+            "identifier": "I20_1472",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1203,
+            "identifier": "I10_1203",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1231,
+            "identifier": "I20_1231",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1279,
+            "identifier": "I50_1279",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1272,
+            "identifier": "I30_1272",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1266,
+            "identifier": "I40_1266",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1223,
+            "identifier": "I40_1223",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1220,
+            "identifier": "I30_1220",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1214,
+            "identifier": "I20_1214",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1218,
+            "identifier": "I10_1218",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1284,
+            "identifier": "I60_1284",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1292,
+            "identifier": "I50_1292",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1376,
+            "identifier": "I142_1376",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1467,
+            "identifier": "I105_1467",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1227,
+            "identifier": "I60_1227",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1459,
+            "identifier": "I20_1459",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1481,
+            "identifier": "I115_1481",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1486,
+            "identifier": "I10_1486",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1422,
+            "identifier": "I60_1422",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1340,
+            "identifier": "I114_1340",
+            "yearId": 401,
+            "semester": "LS",
+            "year": 2026
+        },
+        {
+            "id": 1339,
+            "identifier": "I114_1339",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1462,
+            "identifier": "I30_1462",
+            "yearId": 401,
+            "semester": null,
+            "year": 2026
+        },
+        {
+            "id": 1201,
+            "identifier": "I10_1201",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1230,
+            "identifier": "I20_1230",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1278,
+            "identifier": "I50_1278",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1271,
+            "identifier": "I30_1271",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1265,
+            "identifier": "I40_1265",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1222,
+            "identifier": "I40_1222",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1219,
+            "identifier": "I30_1219",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1213,
+            "identifier": "I20_1213",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1217,
+            "identifier": "I10_1217",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1493,
+            "identifier": "I230_1493",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1488,
+            "identifier": "I96_1488",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1281,
+            "identifier": "I60_1281",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1291,
+            "identifier": "I50_1291",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1375,
+            "identifier": "I142_1375",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1466,
+            "identifier": "I105_1466",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1226,
+            "identifier": "I60_1226",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1383,
+            "identifier": "I20_1383",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1480,
+            "identifier": "I115_1480",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1490,
+            "identifier": "I50_1490",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1483,
+            "identifier": "I10_1483",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1421,
+            "identifier": "I60_1421",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1381,
+            "identifier": "I20_1381",
+            "yearId": 401,
+            "semester": "ZS",
+            "year": 2026
+        },
+        {
+            "id": 1468,
+            "identifier": "I105_1468",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1200,
+            "identifier": "I10_1200",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1195,
+            "identifier": "I20_1195",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1249,
+            "identifier": "I50_1249",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1198,
+            "identifier": "I30_1198",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1187,
+            "identifier": "I40_1187",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1160,
+            "identifier": "I40_1160",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1158,
+            "identifier": "I30_1158",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1154,
+            "identifier": "I20_1154",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1156,
+            "identifier": "I10_1156",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1476,
+            "identifier": "I230_1476",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1477,
+            "identifier": "I96_1477",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1280,
+            "identifier": "I60_1280",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1225,
+            "identifier": "I50_1225",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1374,
+            "identifier": "I142_1374",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1465,
+            "identifier": "I105_1465",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1178,
+            "identifier": "I60_1178",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1382,
+            "identifier": "I20_1382",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1431,
+            "identifier": "I248_1431",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1482,
+            "identifier": "I96_1482",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1429,
+            "identifier": "I115_1429",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1489,
+            "identifier": "I50_1489",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1453,
+            "identifier": "I10_1453",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1420,
+            "identifier": "I60_1420",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1487,
+            "identifier": "I40_1487",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1380,
+            "identifier": "I20_1380",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1461,
+            "identifier": "I114_1461",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1457,
+            "identifier": "I40_1457",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1315,
+            "identifier": "I114_1315",
+            "yearId": 381,
+            "semester": "LS",
+            "year": 2025
+        },
+        {
+            "id": 1314,
+            "identifier": "I114_1314",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1463,
+            "identifier": "I105_1463",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1199,
+            "identifier": "I10_1199",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1212,
+            "identifier": "I50_1212",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1197,
+            "identifier": "I30_1197",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1194,
+            "identifier": "I20_1194",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1186,
+            "identifier": "I40_1186",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1159,
+            "identifier": "I40_1159",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1157,
+            "identifier": "I30_1157",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1153,
+            "identifier": "I20_1153",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1155,
+            "identifier": "I10_1155",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1417,
+            "identifier": "I230_1417",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1418,
+            "identifier": "I96_1418",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1264,
+            "identifier": "I60_1264",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1224,
+            "identifier": "I50_1224",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1373,
+            "identifier": "I142_1373",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1363,
+            "identifier": "I105_1363",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1177,
+            "identifier": "I60_1177",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1458,
+            "identifier": "I141_1458",
+            "yearId": 381,
+            "semester": null,
+            "year": 2025
+        },
+        {
+            "id": 1455,
+            "identifier": "I143_1455",
+            "yearId": 381,
+            "semester": null,
+            "year": 2025
+        },
+        {
+            "id": 1333,
+            "identifier": "I20_1333",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1430,
+            "identifier": "I248_1430",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1471,
+            "identifier": "I96_1471",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1428,
+            "identifier": "I115_1428",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1415,
+            "identifier": "I50_1415",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1452,
+            "identifier": "I10_1452",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1419,
+            "identifier": "I60_1419",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1451,
+            "identifier": "I40_1451",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1379,
+            "identifier": "I20_1379",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1460,
+            "identifier": "I114_1460",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1456,
+            "identifier": "I40_1456",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1454,
+            "identifier": "I10_1454",
+            "yearId": 381,
+            "semester": null,
+            "year": 2025
+        },
+        {
+            "id": 1473,
+            "identifier": "I30_1473",
+            "yearId": 381,
+            "semester": "ZS",
+            "year": 2025
+        },
+        {
+            "id": 1360,
+            "identifier": "I30_1360",
+            "yearId": 381,
+            "semester": null,
+            "year": 2025
+        },
+        {
+            "id": 1318,
+            "identifier": "I105_1318",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1146,
+            "identifier": "I10_1146",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1188,
+            "identifier": "I50_1188",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1196,
+            "identifier": "I30_1196",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1170,
+            "identifier": "I20_1170",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1143,
+            "identifier": "I40_1143",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1105,
+            "identifier": "I40_1105",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1104,
+            "identifier": "I30_1104",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1103,
+            "identifier": "I20_1103",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1102,
+            "identifier": "I10_1102",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1388,
+            "identifier": "I230_1388",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1393,
+            "identifier": "I96_1393",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1126,
+            "identifier": "I60_1126",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1110,
+            "identifier": "I50_1110",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1313,
+            "identifier": "I142_1313",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1362,
+            "identifier": "I105_1362",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1112,
+            "identifier": "I60_1112",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1303,
+            "identifier": "I20_1303",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1395,
+            "identifier": "I248_1395",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1403,
+            "identifier": "I96_1403",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1270,
+            "identifier": "I115_1270",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1414,
+            "identifier": "I50_1414",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1394,
+            "identifier": "I10_1394",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1412,
+            "identifier": "I60_1412",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1416,
+            "identifier": "I40_1416",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1299,
+            "identifier": "I20_1299",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1390,
+            "identifier": "I114_1390",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1402,
+            "identifier": "I40_1402",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1401,
+            "identifier": "I30_1401",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1309,
+            "identifier": "I114_1309",
+            "yearId": 361,
+            "semester": "LS",
+            "year": 2024
+        },
+        {
+            "id": 1308,
+            "identifier": "I114_1308",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1317,
+            "identifier": "I105_1317",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1145,
+            "identifier": "I10_1145",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1164,
+            "identifier": "I50_1164",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1139,
+            "identifier": "I30_1139",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1169,
+            "identifier": "I20_1169",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1140,
+            "identifier": "I40_1140",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1096,
+            "identifier": "I40_1096",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1095,
+            "identifier": "I30_1095",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1094,
+            "identifier": "I20_1094",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1093,
+            "identifier": "I10_1093",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1329,
+            "identifier": "I230_1329",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1327,
+            "identifier": "I96_1327",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1125,
+            "identifier": "I60_1125",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1109,
+            "identifier": "I50_1109",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1312,
+            "identifier": "I142_1312",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1307,
+            "identifier": "I105_1307",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1111,
+            "identifier": "I60_1111",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1332,
+            "identifier": "I141_1332",
+            "yearId": 361,
+            "semester": null,
+            "year": 2024
+        },
+        {
+            "id": 1359,
+            "identifier": "I143_1359",
+            "yearId": 361,
+            "semester": null,
+            "year": 2024
+        },
+        {
+            "id": 1300,
+            "identifier": "I20_1300",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1336,
+            "identifier": "I248_1336",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1387,
+            "identifier": "I96_1387",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1269,
+            "identifier": "I115_1269",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1413,
+            "identifier": "I50_1413",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1372,
+            "identifier": "I10_1372",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1411,
+            "identifier": "I60_1411",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1326,
+            "identifier": "I40_1326",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1298,
+            "identifier": "I20_1298",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1389,
+            "identifier": "I114_1389",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1328,
+            "identifier": "I40_1328",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1361,
+            "identifier": "I10_1361",
+            "yearId": 361,
+            "semester": null,
+            "year": 2024
+        },
+        {
+            "id": 2951,
+            "identifier": "I30_2951",
+            "yearId": 361,
+            "semester": "ZS",
+            "year": 2024
+        },
+        {
+            "id": 1358,
+            "identifier": "I30_1358",
+            "yearId": 361,
+            "semester": null,
+            "year": 2024
+        },
+        {
+            "id": 1316,
+            "identifier": "I105_1316",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1144,
+            "identifier": "I10_1144",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1163,
+            "identifier": "I50_1163",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1049,
+            "identifier": "I30_1049",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1118,
+            "identifier": "I20_1118",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1035,
+            "identifier": "I40_1035",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1091,
+            "identifier": "I40_1091",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1084,
+            "identifier": "I30_1084",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1058,
+            "identifier": "I20_1058",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1076,
+            "identifier": "I10_1076",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1304,
+            "identifier": "I230_1304",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1306,
+            "identifier": "I96_1306",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1042,
+            "identifier": "I60_1042",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1108,
+            "identifier": "I50_1108",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1311,
+            "identifier": "I142_1311",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1256,
+            "identifier": "I105_1256",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1069,
+            "identifier": "I60_1069",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1295,
+            "identifier": "I20_1295",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1310,
+            "identifier": "I248_1310",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1320,
+            "identifier": "I96_1320",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1245,
+            "identifier": "I115_1245",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1330,
+            "identifier": "I10_1330",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1410,
+            "identifier": "I60_1410",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1319,
+            "identifier": "I40_1319",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1296,
+            "identifier": "I20_1296",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1277,
+            "identifier": "I114_1277",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1258,
+            "identifier": "I40_1258",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1400,
+            "identifier": "I30_1400",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1248,
+            "identifier": "I114_1248",
+            "yearId": 342,
+            "semester": "LS",
+            "year": 2023
+        },
+        {
+            "id": 1275,
+            "identifier": "I105_1275",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1018,
+            "identifier": "I10_1018",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1031,
+            "identifier": "I50_1031",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1048,
+            "identifier": "I30_1048",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1025,
+            "identifier": "I20_1025",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1034,
+            "identifier": "I40_1034",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1090,
+            "identifier": "I40_1090",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1083,
+            "identifier": "I30_1083",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1057,
+            "identifier": "I20_1057",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1075,
+            "identifier": "I10_1075",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1254,
+            "identifier": "I230_1254",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1255,
+            "identifier": "I96_1255",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1247,
+            "identifier": "I114_1247",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1040,
+            "identifier": "I60_1040",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1107,
+            "identifier": "I50_1107",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1260,
+            "identifier": "I142_1260",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1243,
+            "identifier": "I105_1243",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1068,
+            "identifier": "I60_1068",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1331,
+            "identifier": "I141_1331",
+            "yearId": 342,
+            "semester": null,
+            "year": 2023
+        },
+        {
+            "id": 1274,
+            "identifier": "I143_1274",
+            "yearId": 342,
+            "semester": null,
+            "year": 2023
+        },
+        {
+            "id": 1235,
+            "identifier": "I20_1235",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1259,
+            "identifier": "I248_1259",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1297,
+            "identifier": "I96_1297",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1244,
+            "identifier": "I115_1244",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1305,
+            "identifier": "I10_1305",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1404,
+            "identifier": "I60_1404",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1250,
+            "identifier": "I40_1250",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1233,
+            "identifier": "I20_1233",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1276,
+            "identifier": "I114_1276",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1257,
+            "identifier": "I40_1257",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1208,
+            "identifier": "I10_1208",
+            "yearId": 342,
+            "semester": null,
+            "year": 2023
+        },
+        {
+            "id": 2948,
+            "identifier": "I30_2948",
+            "yearId": 342,
+            "semester": "ZS",
+            "year": 2023
+        },
+        {
+            "id": 1273,
+            "identifier": "I30_1273",
+            "yearId": 342,
+            "semester": null,
+            "year": 2023
+        },
+        {
+            "id": 1210,
+            "identifier": "I105_1210",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1017,
+            "identifier": "I10_1017",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1030,
+            "identifier": "I50_1030",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1047,
+            "identifier": "I30_1047",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1024,
+            "identifier": "I20_1024",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1033,
+            "identifier": "I40_1033",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1089,
+            "identifier": "I40_1089",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1082,
+            "identifier": "I30_1082",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1056,
+            "identifier": "I20_1056",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1074,
+            "identifier": "I10_1074",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1239,
+            "identifier": "I230_1239",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1238,
+            "identifier": "I96_1238",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1039,
+            "identifier": "I60_1039",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1106,
+            "identifier": "I50_1106",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1236,
+            "identifier": "I142_1236",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1209,
+            "identifier": "I105_1209",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1067,
+            "identifier": "I60_1067",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1234,
+            "identifier": "I20_1234",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1240,
+            "identifier": "I248_1240",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1253,
+            "identifier": "I96_1253",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1183,
+            "identifier": "I115_1183",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1252,
+            "identifier": "I60_1252",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1232,
+            "identifier": "I20_1232",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1229,
+            "identifier": "I114_1229",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1246,
+            "identifier": "I40_1246",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1399,
+            "identifier": "I30_1399",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1185,
+            "identifier": "I114_1185",
+            "yearId": 341,
+            "semester": "LS",
+            "year": 2022
+        },
+        {
+            "id": 1184,
+            "identifier": "I114_1184",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1191,
+            "identifier": "I105_1191",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1016,
+            "identifier": "I10_1016",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1029,
+            "identifier": "I50_1029",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1046,
+            "identifier": "I30_1046",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1023,
+            "identifier": "I20_1023",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1032,
+            "identifier": "I40_1032",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1088,
+            "identifier": "I40_1088",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1080,
+            "identifier": "I30_1080",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1055,
+            "identifier": "I20_1055",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1073,
+            "identifier": "I10_1073",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1190,
+            "identifier": "I230_1190",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1192,
+            "identifier": "I96_1192",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1038,
+            "identifier": "I60_1038",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1100,
+            "identifier": "I50_1100",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1167,
+            "identifier": "I142_1167",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1175,
+            "identifier": "I105_1175",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1066,
+            "identifier": "I60_1066",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1206,
+            "identifier": "I141_1206",
+            "yearId": 341,
+            "semester": null,
+            "year": 2022
+        },
+        {
+            "id": 1179,
+            "identifier": "I143_1179",
+            "yearId": 341,
+            "semester": null,
+            "year": 2022
+        },
+        {
+            "id": 1205,
+            "identifier": "I20_1205",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1193,
+            "identifier": "I248_1193",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1237,
+            "identifier": "I96_1237",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1251,
+            "identifier": "I60_1251",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1211,
+            "identifier": "I20_1211",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1228,
+            "identifier": "I114_1228",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1207,
+            "identifier": "I40_1207",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1204,
+            "identifier": "I10_1204",
+            "yearId": 341,
+            "semester": null,
+            "year": 2022
+        },
+        {
+            "id": 2949,
+            "identifier": "I30_2949",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1180,
+            "identifier": "I115_1180",
+            "yearId": 341,
+            "semester": "ZS",
+            "year": 2022
+        },
+        {
+            "id": 1162,
+            "identifier": "I30_1162",
+            "yearId": 341,
+            "semester": null,
+            "year": 2022
+        },
+        {
+            "id": 1176,
+            "identifier": "I105_1176",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1015,
+            "identifier": "I10_1015",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1028,
+            "identifier": "I50_1028",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1045,
+            "identifier": "I30_1045",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1020,
+            "identifier": "I20_1020",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1026,
+            "identifier": "I40_1026",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1087,
+            "identifier": "I40_1087",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1079,
+            "identifier": "I30_1079",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1054,
+            "identifier": "I20_1054",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1072,
+            "identifier": "I10_1072",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1172,
+            "identifier": "I230_1172",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1173,
+            "identifier": "I96_1173",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1037,
+            "identifier": "I60_1037",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1099,
+            "identifier": "I50_1099",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1129,
+            "identifier": "I142_1129",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1147,
+            "identifier": "I105_1147",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1065,
+            "identifier": "I60_1065",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1171,
+            "identifier": "I20_1171",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1131,
+            "identifier": "I248_1131",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1189,
+            "identifier": "I96_1189",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1174,
+            "identifier": "I20_1174",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1166,
+            "identifier": "I114_1166",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1168,
+            "identifier": "I40_1168",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1398,
+            "identifier": "I30_1398",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1136,
+            "identifier": "I115_1136",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1124,
+            "identifier": "I114_1124",
+            "yearId": 321,
+            "semester": "LS",
+            "year": 2021
+        },
+        {
+            "id": 1092,
+            "identifier": "I114_1092",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1152,
+            "identifier": "I105_1152",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1148,
+            "identifier": "I30_1148",
+            "yearId": 321,
+            "semester": null,
+            "year": 2021
+        },
+        {
+            "id": 1120,
+            "identifier": "I115_1120",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 2950,
+            "identifier": "I30_2950",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1150,
+            "identifier": "I10_1150",
+            "yearId": 321,
+            "semester": null,
+            "year": 2021
+        },
+        {
+            "id": 1138,
+            "identifier": "I40_1138",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1165,
+            "identifier": "I114_1165",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1137,
+            "identifier": "I20_1137",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1135,
+            "identifier": "I96_1135",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1130,
+            "identifier": "I248_1130",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1149,
+            "identifier": "I20_1149",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1119,
+            "identifier": "I143_1119",
+            "yearId": 321,
+            "semester": null,
+            "year": 2021
+        },
+        {
+            "id": 1151,
+            "identifier": "I141_1151",
+            "yearId": 321,
+            "semester": null,
+            "year": 2021
+        },
+        {
+            "id": 1060,
+            "identifier": "I60_1060",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1122,
+            "identifier": "I105_1122",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1128,
+            "identifier": "I142_1128",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1098,
+            "identifier": "I50_1098",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1036,
+            "identifier": "I60_1036",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1134,
+            "identifier": "I96_1134",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1132,
+            "identifier": "I230_1132",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1071,
+            "identifier": "I10_1071",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1053,
+            "identifier": "I20_1053",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1078,
+            "identifier": "I30_1078",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1086,
+            "identifier": "I40_1086",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 2804,
+            "identifier": "I40_2804",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1019,
+            "identifier": "I20_1019",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1044,
+            "identifier": "I30_1044",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1027,
+            "identifier": "I50_1027",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        },
+        {
+            "id": 1014,
+            "identifier": "I10_1014",
+            "yearId": 321,
+            "semester": "ZS",
+            "year": 2021
+        }
+    ]
+}

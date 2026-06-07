@@ -10,7 +10,8 @@ const { load, expected } = makeFixtureLoaders(dir)
 describe('ExtractInSISFacultyTimetableService', () => {
     describe('extractFaculties', () => {
         it('nav.html', () => {
-            expect(ExtractInSISFacultyTimetableService.extractFaculties(load('nav.html'))).toEqual(expected('nav.expected.json'))
+            const actual = ExtractInSISFacultyTimetableService.extractFaculties(load('nav.html'))
+            expect(actual).toEqual(expected('nav.expected.json', actual))
         })
 
         it('returns empty array when no faculty table is found', () => {
@@ -22,7 +23,8 @@ describe('ExtractInSISFacultyTimetableService', () => {
         const fixtures = readdirSync(dir).filter(f => /^timetable-.+\.html$/.test(f))
 
         it.each(fixtures)('%s', file => {
-            expect(ExtractInSISFacultyTimetableService.extractFacultyTimetable(load(file))).toEqual(expected(file.replace('.html', '.expected.json')))
+            const actual = ExtractInSISFacultyTimetableService.extractFacultyTimetable(load(file))
+            expect(actual).toEqual(expected(file.replace('.html', '.expected.json'), actual))
         })
 
         it('returns nulls when page has no schedule rows', () => {

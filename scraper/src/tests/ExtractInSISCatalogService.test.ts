@@ -9,7 +9,8 @@ describe('ExtractInSISCatalogService', () => {
     describe('extractSearchOptions', () => {
         if (exists('catalog-search.html')) {
             it('catalog-search.html', () => {
-                expect(ExtractInSISCatalogService.extractSearchOptions(load('catalog-search.html'))).toEqual(expected('catalog-search.expected.json'))
+                const actual = ExtractInSISCatalogService.extractSearchOptions(load('catalog-search.html'))
+                expect(actual).toEqual(expected('catalog-search.expected.json', actual))
             })
         } else {
             it('no fixtures yet', () => {
@@ -21,7 +22,8 @@ describe('ExtractInSISCatalogService', () => {
     describe('extractCourses', () => {
         if (exists('catalog-courses.html')) {
             it('catalog-courses.html', () => {
-                expect(ExtractInSISCatalogService.extractCourses(load('catalog-courses.html'))).toEqual(expected('catalog-courses.expected.json'))
+                const actual = ExtractInSISCatalogService.extractCourses(load('catalog-courses.html'))
+                expect(actual).toEqual(expected('catalog-courses.expected.json', actual))
             })
         }
 
