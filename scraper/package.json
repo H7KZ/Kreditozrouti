@@ -11,7 +11,7 @@
         "preview": "node dist/index.js",
         "type-check": "tsc --noEmit",
         "test": "vitest run",
-        "test:regen": "dotenv -e ../.env.regen -- vitest run",
+        "test:regen": "FORCE_FIXTURES=1 vitest run",
         "generate-fixtures": "tsx --tsconfig tsconfig.json scripts/generate-fixtures.ts"
     },
     "dependencies": {
