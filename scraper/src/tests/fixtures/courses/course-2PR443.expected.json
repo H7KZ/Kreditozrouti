@@ -9,9 +9,7 @@
     "ects": 3,
     "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
     "mode_of_completion": "zkouška",
-    "languages": [
-        "čeština"
-    ],
+    "languages": ["čeština"],
     "semester": "LS",
     "year": 2025,
     "faculty": {
@@ -21,12 +19,7 @@
     },
     "level": "magisterský navazující",
     "year_of_study": 1,
-    "lecturers": [
-        "Ing. Lucie Andreisová, Ph.D.",
-        "Mgr. Ing. Jan Levý, Ph.D.",
-        "doc. JUDr. Ing. Tomáš Moravec, Ph.D.",
-        "Mgr. Ing. Tereza Vaňkátová, Ph.D."
-    ],
+    "lecturers": ["Ing. Lucie Andreisová, Ph.D.", "Mgr. Ing. Jan Levý, Ph.D.", "doc. JUDr. Ing. Tomáš Moravec, Ph.D.", "Mgr. Ing. Tereza Vaňkátová, Ph.D."],
     "guarantors": null,
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",

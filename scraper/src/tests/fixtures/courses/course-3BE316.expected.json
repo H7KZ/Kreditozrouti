@@ -9,9 +9,7 @@
     "ects": 6,
     "mode_of_delivery": "prezenční; 2/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výucedistanční; 2/2 (počet hodin přednášek za období / počet hodin cvičení za období) pro distanční (kombinované) programy",
     "mode_of_completion": "zkouška",
-    "languages": [
-        "angličtina"
-    ],
+    "languages": ["angličtina"],
     "semester": "ZS",
     "year": 2025,
     "faculty": {
@@ -21,10 +19,7 @@
     },
     "level": "bakalářský",
     "year_of_study": 3,
-    "lecturers": [
-        "Tanweer Ali, M.A., PhD.",
-        "Ing. Patrik Sieber, Ph.D."
-    ],
+    "lecturers": ["Tanweer Ali, M.A., PhD.", "Ing. Patrik Sieber, Ph.D."],
     "guarantors": null,
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",

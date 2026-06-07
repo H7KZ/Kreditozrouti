@@ -9,9 +9,7 @@
     "ects": 5,
     "mode_of_delivery": "prezenční; 2/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
     "mode_of_completion": "zkouška",
-    "languages": [
-        "angličtina"
-    ],
+    "languages": ["angličtina"],
     "semester": "LS",
     "year": 2025,
     "faculty": {
@@ -21,13 +19,8 @@
     },
     "level": "magisterský navazující",
     "year_of_study": 2,
-    "lecturers": [
-        "doc. PhDr. Lubomír Cingl, Ph.D.",
-        "Ing. Tomáš Miklánek, M.A., Ph.D."
-    ],
-    "guarantors": [
-        "doc. Ing. Marek Hudík, Ph.D."
-    ],
+    "lecturers": ["doc. PhDr. Lubomír Cingl, Ph.D.", "Ing. Tomáš Miklánek, M.A., Ph.D."],
+    "guarantors": ["doc. Ing. Marek Hudík, Ph.D."],
     "prerequisites": "nelze (studovat po absolvování 3MI407 nebo studovat současně s 3MI407 nebo studovat po absolvování 3MI707 nebo studovat současně s 3MI707)",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

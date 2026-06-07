@@ -9,9 +9,7 @@
     "ects": 12,
     "mode_of_delivery": "žádná",
     "mode_of_completion": "zkouška",
-    "languages": [
-        "čeština"
-    ],
+    "languages": ["čeština"],
     "semester": "ZS",
     "year": 2023,
     "faculty": {
@@ -21,11 +19,7 @@
     },
     "level": null,
     "year_of_study": null,
-    "lecturers": [
-        "prof. Ing. Petr Doucek, CSc.",
-        "Mgr. Ing. Tomáš Sigmund, Ph.D.",
-        "doc. Ing. Vlasta Svatá, CSc."
-    ],
+    "lecturers": ["prof. Ing. Petr Doucek, CSc.", "Mgr. Ing. Tomáš Sigmund, Ph.D.", "doc. Ing. Vlasta Svatá, CSc."],
     "guarantors": null,
     "prerequisites": "nelze studovat po absolvování IM2_2 nebo nelze studovat po absolvování 4ODP",
     "recommended_programmes": "žádné",

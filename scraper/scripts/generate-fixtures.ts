@@ -44,11 +44,11 @@ for (const file of htmlFiles('studyplans', /^studyplan-.+\.html$/)) {
 }
 
 // catalog
-if (htmlFiles('catalog', /^catalog-search\.html$/).length) {
-    write('catalog', 'catalog-search.expected.json', ExtractInSISCatalogService.extractSearchOptions(html('catalog', 'catalog-search.html')))
+if (htmlFiles('courses/catalog', /^index\.html$/).length) {
+    write('courses/catalog', 'index.expected.json', ExtractInSISCatalogService.extractSearchOptions(html('courses/catalog', 'index.html')))
 }
-if (htmlFiles('catalog', /^catalog-courses\.html$/).length) {
-    write('catalog', 'catalog-courses.expected.json', ExtractInSISCatalogService.extractCourses(html('catalog', 'catalog-courses.html')))
+if (htmlFiles('courses/catalog', /^courses\.html$/).length) {
+    write('courses/catalog', 'courses.expected.json', ExtractInSISCatalogService.extractCourses(html('courses/catalog', 'courses.html')))
 }
 
 // academic-schedules

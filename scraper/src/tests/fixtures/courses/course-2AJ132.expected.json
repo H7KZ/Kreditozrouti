@@ -9,9 +9,7 @@
     "ects": 3,
     "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
     "mode_of_completion": "zkouška",
-    "languages": [
-        "angličtina"
-    ],
+    "languages": ["angličtina"],
     "semester": "LS",
     "year": 2025,
     "faculty": {
@@ -21,9 +19,7 @@
     },
     "level": "bakalářský",
     "year_of_study": 1,
-    "lecturers": [
-        "Mgr. Šárka Baštýřová"
-    ],
+    "lecturers": ["Mgr. Šárka Baštýřová"],
     "guarantors": null,
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",

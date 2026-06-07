@@ -9,9 +9,7 @@
     "ects": null,
     "mode_of_delivery": "konzultační při semestrální výucekonzultační pro distanční (kombinované) programy",
     "mode_of_completion": "zkouška",
-    "languages": [
-        "čeština"
-    ],
+    "languages": ["čeština"],
     "semester": "LS",
     "year": 2025,
     "faculty": {
@@ -22,9 +20,7 @@
     "level": "doktorský",
     "year_of_study": 2,
     "lecturers": null,
-    "guarantors": [
-        "prof. JUDr. Jan Dědič"
-    ],
+    "guarantors": ["prof. JUDr. Jan Dědič"],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

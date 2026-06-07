@@ -9,9 +9,7 @@
     "ects": 3,
     "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výucemimosemestr; 0/26 (počet hodin přednášek za období / počet hodin cvičení za období) při mimosemestrální výuce",
     "mode_of_completion": "zkouška",
-    "languages": [
-        "angličtina"
-    ],
+    "languages": ["angličtina"],
     "semester": "ZS",
     "year": 2023,
     "faculty": {
@@ -21,9 +19,7 @@
     },
     "level": "magisterský navazující",
     "year_of_study": 1,
-    "lecturers": [
-        "Ing. PhDr. Antonín Pavlíček, Ph.D."
-    ],
+    "lecturers": ["Ing. PhDr. Antonín Pavlíček, Ph.D."],
     "guarantors": null,
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",

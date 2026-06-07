@@ -9,9 +9,7 @@
     "ects": 0,
     "mode_of_delivery": "žádná",
     "mode_of_completion": "zápočet",
-    "languages": [
-        "čeština"
-    ],
+    "languages": ["čeština"],
     "semester": null,
     "year": 2025,
     "faculty": {
@@ -22,9 +20,7 @@
     "level": null,
     "year_of_study": null,
     "lecturers": null,
-    "guarantors": [
-        "prof. Ing. Miloš Mařík, CSc."
-    ],
+    "guarantors": ["prof. Ing. Miloš Mařík, CSc."],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

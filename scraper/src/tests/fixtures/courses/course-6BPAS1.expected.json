@@ -9,9 +9,7 @@
     "ects": 7,
     "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výucekombinovaná; 8/0 (počet hodin přednášek za období / počet hodin cvičení za období) pro distanční (kombinované) programy",
     "mode_of_completion": "zápočet",
-    "languages": [
-        "čeština"
-    ],
+    "languages": ["čeština"],
     "semester": "ZS",
     "year": 2025,
     "faculty": {

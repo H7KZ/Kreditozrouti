@@ -3,14 +3,14 @@ import { describe, expect, it } from 'vitest'
 import ExtractInSISCatalogService from '@scraper/Services/ExtractInSISCatalogService'
 import { makeFixtureLoaders } from './helpers'
 
-const { load, expected, exists } = makeFixtureLoaders(path.join(import.meta.dirname, 'fixtures/catalog'))
+const { load, expected, exists } = makeFixtureLoaders(path.join(import.meta.dirname, 'fixtures/courses/catalog'))
 
 describe('ExtractInSISCatalogService', () => {
     describe('extractSearchOptions', () => {
-        if (exists('catalog-search.html')) {
-            it('catalog-search.html', () => {
-                const actual = ExtractInSISCatalogService.extractSearchOptions(load('catalog-search.html'))
-                expect(actual).toEqual(expected('catalog-search.expected.json', actual))
+        if (exists('index.html')) {
+            it('index.html', () => {
+                const actual = ExtractInSISCatalogService.extractSearchOptions(load('index.html'))
+                expect(actual).toEqual(expected('index.expected.json', actual))
             })
         } else {
             it('no fixtures yet', () => {
@@ -20,10 +20,10 @@ describe('ExtractInSISCatalogService', () => {
     })
 
     describe('extractCourses', () => {
-        if (exists('catalog-courses.html')) {
-            it('catalog-courses.html', () => {
-                const actual = ExtractInSISCatalogService.extractCourses(load('catalog-courses.html'))
-                expect(actual).toEqual(expected('catalog-courses.expected.json', actual))
+        if (exists('courses.html')) {
+            it('courses.html', () => {
+                const actual = ExtractInSISCatalogService.extractCourses(load('courses.html'))
+                expect(actual).toEqual(expected('courses.expected.json', actual))
             })
         }
 

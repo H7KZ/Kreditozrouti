@@ -9,10 +9,7 @@
     "ects": null,
     "mode_of_delivery": "konzultační při semestrální výucekonzultační pro distanční (kombinované) programy",
     "mode_of_completion": "zkouška",
-    "languages": [
-        "čeština",
-        "angličtina"
-    ],
+    "languages": ["čeština", "angličtina"],
     "semester": "LS",
     "year": 2025,
     "faculty": {
@@ -22,10 +19,7 @@
     },
     "level": "doktorský",
     "year_of_study": 1,
-    "lecturers": [
-        "doc. Ing. Vladislav Bína, Ph.D.",
-        "doc. Ing. Tomáš Kincl, Ph.D."
-    ],
+    "lecturers": ["doc. Ing. Vladislav Bína, Ph.D.", "doc. Ing. Tomáš Kincl, Ph.D."],
     "guarantors": null,
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",

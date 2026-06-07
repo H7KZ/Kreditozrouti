@@ -9,9 +9,7 @@
     "ects": null,
     "mode_of_delivery": "mimosemestr; 0/26 (počet hodin přednášek za období / počet hodin cvičení za období) při mimosemestrální výuce",
     "mode_of_completion": "obhajoba",
-    "languages": [
-        "čeština"
-    ],
+    "languages": ["čeština"],
     "semester": "LS",
     "year": 2025,
     "faculty": {
@@ -21,13 +19,8 @@
     },
     "level": "kurz",
     "year_of_study": null,
-    "lecturers": [
-        "Mgr. Gabriela Fliedrová",
-        "Mgr. Šárka Kopřivová"
-    ],
-    "guarantors": [
-        "Mgr. Jindra Musilová"
-    ],
+    "lecturers": ["Mgr. Gabriela Fliedrová", "Mgr. Šárka Kopřivová"],
+    "guarantors": ["Mgr. Jindra Musilová"],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

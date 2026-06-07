@@ -1,0 +1,13 @@
+{
+    "navigationUrls": [
+        {
+            "texts": ["Doktorský", "4", ""],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1075;typ_ss=23;typ_studia=3;misto_vyuky="
+        },
+        {
+            "texts": ["Celoživotní vzdělávání PhD", "1", ""],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1075;typ_ss=23;typ_studia=8;misto_vyuky="
+        }
+    ],
+    "planUrls": []
+}
