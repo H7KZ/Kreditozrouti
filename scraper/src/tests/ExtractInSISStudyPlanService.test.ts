@@ -4,40 +4,55 @@ import { describe, expect, it } from 'vitest'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import { makeFixtureLoaders } from './helpers'
 
-const dir = path.join(import.meta.dirname, 'fixtures/studyplans')
-const { load, expected, exists } = makeFixtureLoaders(dir)
+const navDir = path.join(import.meta.dirname, 'fixtures/studyplans/navigation')
+const planDir = path.join(import.meta.dirname, 'fixtures/studyplans')
+const nav = makeFixtureLoaders(navDir)
+const plan = makeFixtureLoaders(planDir)
 
 describe('ExtractInSISStudyPlanService', () => {
-    describe('extractFaculties + extractNavigationUrls + extractPlanUrls', () => {
-        if (exists('studyplans.html')) {
-            it('studyplans.html', () => {
-                const html = load('studyplans.html')
-                const faculties = ExtractInSISStudyPlanService.extractFaculties(html)
-                const navigationUrls = ExtractInSISStudyPlanService.extractNavigationUrls(html)
-                const planUrls = ExtractInSISStudyPlanService.extractPlanUrls(html)
-                const exp = expected('studyplans.expected.json', { faculties, navigationUrls, planUrls })
-                expect(faculties).toEqual(exp.faculties)
-                expect(navigationUrls).toEqual(exp.navigationUrls)
-                expect(planUrls).toEqual(exp.planUrls)
+    describe('extractFaculties', () => {
+        if (nav.exists('index.html')) {
+            it('index.html', () => {
+                const actual = ExtractInSISStudyPlanService.extractFaculties(nav.load('index.html'))
+                expect(actual).toEqual(nav.expected('index.expected.json', actual))
             })
         } else {
             it('no fixtures yet', () => {
-                /* skipped until HTML fixtures are added */
+                /* skipped until index.html fixture is added to fixtures/studyplans/navigation/ */
+            })
+        }
+    })
+
+    describe('extractNavigationUrls + extractPlanUrls', () => {
+        const fixtures = readdirSync(navDir).filter(f => /^nav-.+\.html$/.test(f))
+
+        if (fixtures.length === 0) {
+            it('no fixtures yet', () => {
+                /* skipped until nav-*.html fixtures are added to fixtures/studyplans/navigation/ */
+            })
+        } else {
+            it.each(fixtures)('%s', file => {
+                const html = nav.load(file)
+                const navigationUrls = ExtractInSISStudyPlanService.extractNavigationUrls(html)
+                const planUrls = ExtractInSISStudyPlanService.extractPlanUrls(html)
+                const exp = nav.expected(file.replace('.html', '.expected.json'), { navigationUrls, planUrls })
+                expect(navigationUrls).toEqual(exp.navigationUrls)
+                expect(planUrls).toEqual(exp.planUrls)
             })
         }
     })
 
     describe('extract', () => {
-        const fixtures = readdirSync(dir).filter(f => /^studyplan-.+\.html$/.test(f))
+        const fixtures = readdirSync(planDir).filter(f => /^studyplan-.+\.html$/.test(f))
 
         if (fixtures.length === 0) {
             it('no fixtures yet', () => {
-                /* skipped until HTML fixtures are added */
+                /* skipped until studyplan-*.html fixtures are added to fixtures/studyplans/ */
             })
         } else {
             it.each(fixtures)('%s', file => {
-                const actual = ExtractInSISStudyPlanService.extract(load(file), '')
-                expect(actual).toEqual(expected(file.replace('.html', '.expected.json'), actual))
+                const actual = ExtractInSISStudyPlanService.extract(plan.load(file), '')
+                expect(actual).toEqual(plan.expected(file.replace('.html', '.expected.json'), actual))
             })
         }
     })
