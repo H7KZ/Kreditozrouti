@@ -30,6 +30,7 @@ interface Config {
         catalogExtendedSearchUrl: string
         studyPlansUrl: string
         harmonogramUrl: string
+        rozvrhyViewUrl: string
         defaultReferrer: string
     }
 
@@ -52,6 +53,7 @@ const config: Config = {
         catalogExtendedSearchUrl: 'https://insis.vse.cz/katalog/index.pl?jak=rozsirene',
         studyPlansUrl: 'https://insis.vse.cz/katalog/plany.pl?lang=cz',
         harmonogramUrl: 'https://insis.vse.cz/student/harmonogram.pl',
+        rozvrhyViewUrl: 'https://insis.vse.cz/katalog/rozvrhy_view.pl',
         defaultReferrer: 'https://insis.vse.cz'
     },
 

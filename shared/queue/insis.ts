@@ -131,3 +131,12 @@ export interface ScraperInSISAcademicSchedules {
     faculties_count: number
     periods_count: number
 }
+
+export interface ScraperInSISFacultyTimetables {
+    faculties_count: number
+}
+
+export interface ScraperInSISFacultyTimetable {
+    ident: string
+    is_schedule_publicly_visible: boolean
+}

@@ -1,5 +1,5 @@
 import type {InSISSemester, ScraperJob} from '../domain/insis.js'
-import type {ScraperInSISCatalog, ScraperInSISCourse, ScraperInSISStudyPlan, ScraperInSISStudyPlans, ScraperInSISAcademicSchedule, ScraperInSISAcademicSchedules} from './insis.js'
+import type {ScraperInSISCatalog, ScraperInSISCourse, ScraperInSISStudyPlan, ScraperInSISStudyPlans, ScraperInSISAcademicSchedule, ScraperInSISAcademicSchedules, ScraperInSISFacultyTimetable, ScraperInSISFacultyTimetables} from './insis.js'
 
 interface ScraperRequestJobBase {
     type: ScraperJob
@@ -48,6 +48,16 @@ export interface ScraperInSISAcademicScheduleRequestJob extends ScraperRequestJo
     ends_at: string    // "YYYY-MM-DD"
 }
 
+export interface ScraperInSISFacultyTimetablesRequestJob extends ScraperRequestJobBase {
+    type: 'InSIS:FacultyTimetables'
+}
+
+export interface ScraperInSISFacultyTimetableRequestJob extends ScraperRequestJobBase {
+    type: 'InSIS:FacultyTimetable'
+    f_id: number
+    name: string
+}
+
 export type ScraperRequestJob =
     | ScraperInSISCatalogRequestJob
     | ScraperInSISCourseRequestJob
@@ -55,6 +65,8 @@ export type ScraperRequestJob =
     | ScraperInSISStudyPlanRequestJob
     | ScraperInSISAcademicSchedulesRequestJob
     | ScraperInSISAcademicScheduleRequestJob
+    | ScraperInSISFacultyTimetablesRequestJob
+    | ScraperInSISFacultyTimetableRequestJob
 
 interface ScraperResponseJobBase {
     type: ScraperJob
@@ -92,6 +104,16 @@ export interface ScraperInSISAcademicScheduleResponseJob extends ScraperResponse
     schedule: ScraperInSISAcademicSchedule
 }
 
+export interface ScraperInSISFacultyTimetablesResponseJob extends ScraperResponseJobBase {
+    type: 'InSIS:FacultyTimetables'
+    data: ScraperInSISFacultyTimetables
+}
+
+export interface ScraperInSISFacultyTimetableResponseJob extends ScraperResponseJobBase {
+    type: 'InSIS:FacultyTimetable'
+    timetable: ScraperInSISFacultyTimetable
+}
+
 export type ScraperResponseJob =
     | ScraperInSISCatalogResponseJob
     | ScraperInSISCourseResponseJob
@@ -99,3 +121,5 @@ export type ScraperResponseJob =
     | ScraperInSISStudyPlanResponseJob
     | ScraperInSISAcademicSchedulesResponseJob
     | ScraperInSISAcademicScheduleResponseJob
+    | ScraperInSISFacultyTimetablesResponseJob
+    | ScraperInSISFacultyTimetableResponseJob
