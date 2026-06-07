@@ -42,8 +42,6 @@ export default async function ScraperRequestInSISAcademicSchedulesJob(
             periods_count: allPeriods.length
         }
 
-        await QueueService.addAcademicSchedulesResponse(schedules)
-
         if (allPeriods.length > 0) {
             await QueueService.queueAcademicScheduleRequests(
                 allPeriods.map(period => ({
@@ -58,6 +56,8 @@ export default async function ScraperRequestInSISAcademicSchedulesJob(
                 }))
             )
         }
+
+        await QueueService.addAcademicSchedulesResponse(schedules)
 
         return schedules
     } catch (error) {
