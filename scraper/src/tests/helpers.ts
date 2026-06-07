@@ -10,6 +10,9 @@ import path from 'node:path'
  * `expected(file, fallback)` — if the JSON file is missing, writes `fallback` to disk and returns it.
  * This lets you drop in an HTML fixture, run tests, and get the expected JSON generated automatically
  * for manual review. On subsequent runs the saved file is used for the assertion.
+ *
+ * Set FORCE_FIXTURES=1 to overwrite all existing expected JSONs (useful after extraction changes).
+ * Use `npm run test:regen` as a convenience wrapper.
  */
 export function makeFixtureLoaders(dir: string) {
     return {
@@ -17,10 +20,13 @@ export function makeFixtureLoaders(dir: string) {
 
         expected: <T>(file: string, fallback?: T): T => {
             const filePath = path.join(dir, file)
-            if (!existsSync(filePath)) {
+            const forceRegen = process.env.FORCE_FIXTURES === '1'
+
+            if (!existsSync(filePath) || forceRegen) {
                 if (fallback === undefined) throw new Error(`Missing expected fixture: ${file}`)
                 writeFileSync(filePath, JSON.stringify(fallback, null, 4))
-                console.warn(`\n  ⚠  Generated ${file} — review and edit if needed`)
+                if (forceRegen) console.warn(`\n  ♻  Regenerated ${file}`)
+                else console.warn(`\n  ⚠  Generated ${file} — review and edit if needed`)
                 return fallback
             }
             return JSON.parse(readFileSync(filePath, 'utf8')) as T
