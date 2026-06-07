@@ -12,16 +12,11 @@ export default async function ScraperResponseInSISAcademicScheduleJob(data: Scra
 		events_count: schedule.events.length
 	})
 
-	// Ensure faculty row exists (FK constraint)
-	const existingFaculty = await mysql.selectFrom(FacultyTable._table).select('id').where('id', '=', schedule.faculty_ident).executeTakeFirst()
-
-	if (!existingFaculty) {
-		await mysql
-			.insertInto(FacultyTable._table)
-			.values({ id: schedule.faculty_ident, title: null, is_schedule_publicly_visible: false })
-			.onDuplicateKeyUpdate({ id: schedule.faculty_ident })
-			.execute()
-	}
+	await mysql
+		.insertInto(FacultyTable._table)
+		.ignore()
+		.values({ id: schedule.faculty_ident, title: null, is_schedule_publicly_visible: false })
+		.execute()
 
 	const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
 
@@ -41,14 +36,12 @@ export default async function ScraperResponseInSISAcademicScheduleJob(data: Scra
 
 	await mysql.insertInto(AcademicPeriodTable._table).values(periodPayload).onDuplicateKeyUpdate(updatePayload).execute()
 
-	// Fetch the period id for event reconciliation
 	const period = await mysql
 		.selectFrom(AcademicPeriodTable._table)
 		.select('id')
 		.where('insis_period_id', '=', schedule.insis_period_id)
 		.executeTakeFirstOrThrow()
 
-	// Delete + recreate events (no stable natural key)
 	await mysql.deleteFrom(AcademicScheduleEventTable._table).where('period_id', '=', period.id).execute()
 
 	if (schedule.events.length > 0) {
