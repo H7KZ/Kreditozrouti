@@ -11,12 +11,14 @@ The API consumes results from the scraper via `ScraperResponseQueue`. Each incom
 
 ```typescript
 // Simplified routing map:
-'InSIS:Course'           → ScraperResponseInSISCourseJob
-'InSIS:StudyPlan'        → ScraperResponseInSISStudyPlanJob
-'InSIS:AcademicSchedule' → ScraperResponseInSISAcademicScheduleJob
-'InSIS:Catalog'          → (no-op — catalog responses just discover URLs; no DB sync needed)
-'InSIS:StudyPlans'       → (no-op — same as above)
-'InSIS:AcademicSchedules'→ (no-op — discovery metadata only; per-period jobs handle the sync)
+'InSIS:Course'              → ScraperResponseInSISCourseJob
+'InSIS:StudyPlan'           → ScraperResponseInSISStudyPlanJob
+'InSIS:AcademicSchedule'    → ScraperResponseInSISAcademicScheduleJob
+'InSIS:FacultyTimetable'    → ScraperResponseInSISFacultyTimetableJob
+'InSIS:Catalog'             → (no-op — catalog responses just discover URLs; no DB sync needed)
+'InSIS:StudyPlans'          → (no-op — same as above)
+'InSIS:AcademicSchedules'   → (no-op — discovery metadata only; per-period jobs handle the sync)
+'InSIS:FacultyTimetables'   → (no-op — discovery metadata only; logs faculties_count)
 ```
 
 ---
@@ -165,6 +167,38 @@ INSERT new events for the period
 ```
 
 Each event row: `period_id`, `title`, `starts_at` (datetime | null), `ends_at` (datetime | null).
+
+---
+
+## ScraperResponseInSISFacultyTimetablesJob
+
+**File:** `src/Jobs/ScraperResponseInSISFacultyTimetablesJob.ts`
+
+Discovery response for the faculty timetables pipeline. No DB writes — logs `faculties_count` from the response
+payload so operators can confirm that discovery completed and how many faculties were queued.
+
+---
+
+## ScraperResponseInSISFacultyTimetableJob
+
+**File:** `src/Jobs/ScraperResponseInSISFacultyTimetableJob.ts`
+
+Updates the `is_schedule_publicly_visible` flag for a single faculty.
+
+### Flow
+
+```
+1. INSERT IGNORE INTO insis_faculties (id) VALUES (ident)
+   Ensures the faculty row exists before the UPDATE.
+   Uses INSERT IGNORE so that concurrent jobs (course, study plan) are not blocked.
+
+2. UPDATE insis_faculties
+   SET is_schedule_publicly_visible = <value>
+   WHERE id = ident
+```
+
+The INSERT IGNORE step satisfies the FK constraint if the faculty has never been seen before. Title and other
+faculty fields are populated by subsequent course or study plan scrapes.
 
 ---
 

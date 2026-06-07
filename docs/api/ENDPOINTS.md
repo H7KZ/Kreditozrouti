@@ -375,6 +375,20 @@ No request body — triggers a full scrape covering all InSIS faculties.
 
 ---
 
+### `POST /commands/insis/faculty-timetables`
+
+Triggers a faculty timetable scrape to refresh `is_schedule_publicly_visible` flags for all InSIS faculties.
+Enqueues `InSIS:FacultyTimetables`, which discovers all faculties and queues one `InSIS:FacultyTimetable` job per
+faculty. Also runs automatically on a weekly Sunday midnight cron in production.
+
+**Controller:** `RunInSISFacultyTimetablesScraperController`
+
+No request body.
+
+**Response:** `202 Accepted`
+
+---
+
 ## Controller Convention
 
 Controllers use **named function namespace objects**, not class instances:
