@@ -94,7 +94,7 @@ export default class ExtractInSISAcademicScheduleService {
     }
 }
 
-function parsePeriodLabel(label: string): { semester: InSISSemester | null; year: number; level: string | null; facultyIdent: string } | null {
+export function parsePeriodLabel(label: string): { semester: InSISSemester | null; year: number; level: string | null; facultyIdent: string } | null {
     const parts = label
         .split(' - ')
         .map(p => p.trim())
@@ -111,7 +111,7 @@ function parsePeriodLabel(label: string): { semester: InSISSemester | null; year
     return { semester, year, level, facultyIdent }
 }
 
-function parseDateDMY(text: string): string | null {
+export function parseDateDMY(text: string): string | null {
     const parts = text.trim().split('.')
     if (parts.length !== 3) return null
     const [day, month, year] = parts.map(p => p.trim())
@@ -119,7 +119,7 @@ function parseDateDMY(text: string): string | null {
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
 }
 
-function parseDateTimeRange(text: string): { starts_at: string | null; ends_at: string | null } | null {
+export function parseDateTimeRange(text: string): { starts_at: string | null; ends_at: string | null } | null {
     const dtPattern = /(\d{1,2})\. (\d{1,2})\. (\d{4}) (\d{1,2}:\d{2})/g
     const matches = [...text.matchAll(dtPattern)]
     if (matches.length === 0) return null
