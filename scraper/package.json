@@ -10,7 +10,8 @@
         "format": "prettier --write .",
         "preview": "node dist/index.js",
         "type-check": "tsc --noEmit",
-        "test": "vitest run"
+        "test": "vitest run",
+        "generate-fixtures": "tsx --tsconfig tsconfig.json scripts/generate-fixtures.ts"
     },
     "dependencies": {
         "axios": "^1.16.0",
