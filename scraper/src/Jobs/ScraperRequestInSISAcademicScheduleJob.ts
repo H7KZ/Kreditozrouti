@@ -2,6 +2,7 @@ import type { ScraperInSISAcademicSchedule } from '@scraper/types/insis'
 import type { ScraperInSISAcademicScheduleRequestJob } from '@scraper/types/jobs'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
+import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'
 import ExtractInSISAcademicScheduleService from '@scraper/Services/ExtractInSISAcademicScheduleService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
@@ -20,6 +21,7 @@ export default async function ScraperRequestInSISAcademicScheduleJob(
     const result = await client.get<string>(url)
 
     if (!result.success) {
+        if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
         LoggerJobContext.add({ error: 'Failed to fetch period schedule', http_status: result.status })
         return null
     }
