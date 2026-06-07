@@ -176,7 +176,7 @@ export default class ScraperService {
 	 *
 	 * Returns the count of jobs retried per type.
 	 */
-	static async retryFailedScrapes(types: Array<'InSIS:Course' | 'InSIS:StudyPlan'>): Promise<Record<string, number>> {
+	static async retryFailedScrapes(types: ('InSIS:Course' | 'InSIS:StudyPlan')[]): Promise<Record<string, number>> {
 		const counts: Record<string, number> = {}
 		for (const type of types) counts[type] = 0
 

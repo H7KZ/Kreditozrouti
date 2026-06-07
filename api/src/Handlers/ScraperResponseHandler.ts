@@ -40,7 +40,7 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
 					await ScraperResponseInSISAcademicScheduleJob(job.data)
 					break
 				case 'InSIS:FacultyTimetables':
-					await ScraperResponseInSISFacultyTimetablesJob(job.data)
+					ScraperResponseInSISFacultyTimetablesJob(job.data)
 					break
 				case 'InSIS:FacultyTimetable':
 					await ScraperResponseInSISFacultyTimetableJob(job.data)

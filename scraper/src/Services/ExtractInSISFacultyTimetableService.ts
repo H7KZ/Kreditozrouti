@@ -2,27 +2,29 @@ import * as cheerio from 'cheerio'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
 
 export default class ExtractInSISFacultyTimetableService {
-    static extractFaculties(html: string): Array<{ f_id: number; name: string }> {
+    static extractFaculties(html: string): { f_id: number; name: string }[] {
         const $ = cheerio.load(html)
-        const result: Array<{ f_id: number; name: string }> = []
+        const result: { f_id: number; name: string }[] = []
 
         $('table').each((_, table) => {
             if (cleanText($(table).find('th').first().text()) !== 'Pracoviště') return
 
-            $(table).find('tbody tr').each((_, row) => {
-                const tds = $(row).find('td')
-                if (tds.length < 3) return
+            $(table)
+                .find('tbody tr')
+                .each((_, row) => {
+                    const tds = $(row).find('td')
+                    if (tds.length < 3) return
 
-                const name = cleanText(tds.eq(0).text())
-                const href = tds.eq(2).find('a').attr('href') ?? ''
-                const match = /[?;]f=(-?\d+)/.exec(href)
-                if (!match) return
+                    const name = cleanText(tds.eq(0).text())
+                    const href = tds.eq(2).find('a').attr('href') ?? ''
+                    const match = /[?;]f=(-?\d+)/.exec(href)
+                    if (!match) return
 
-                const f_id = parseInt(match[1], 10)
-                if (f_id === -1 || !name) return
+                    const f_id = parseInt(match[1], 10)
+                    if (f_id === -1 || !name) return
 
-                result.push({ f_id, name })
-            })
+                    result.push({ f_id, name })
+                })
         })
 
         return result

@@ -1,4 +1,11 @@
-import type { ScraperInSISAcademicSchedule, ScraperInSISAcademicSchedules, ScraperInSISCourse, ScraperInSISFacultyTimetable, ScraperInSISFacultyTimetables, ScraperInSISStudyPlan } from '@scraper/types/insis'
+import type {
+    ScraperInSISAcademicSchedule,
+    ScraperInSISAcademicSchedules,
+    ScraperInSISCourse,
+    ScraperInSISFacultyTimetable,
+    ScraperInSISFacultyTimetables,
+    ScraperInSISStudyPlan
+} from '@scraper/types/insis'
 import type { ScraperInSISAcademicScheduleRequestJob } from '@scraper/types/jobs'
 import scraper from '@scraper/bullmq'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
@@ -114,7 +121,7 @@ export class QueueService {
         })
     }
 
-    static async queueFacultyTimetableRequests(faculties: Array<{ f_id: number; name: string }>): Promise<void> {
+    static async queueFacultyTimetableRequests(faculties: { f_id: number; name: string }[]): Promise<void> {
         await runWithConcurrency(faculties, 4, faculty =>
             scraper.queue.request.add(
                 'InSIS Faculty Timetable Request',
