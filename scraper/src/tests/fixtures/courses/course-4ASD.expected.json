@@ -9,9 +9,7 @@
     "ects": 3,
     "mode_of_delivery": "žádná",
     "mode_of_completion": "zkouška",
-    "languages": [
-        "čeština"
-    ],
+    "languages": ["čeština"],
     "semester": "ZS",
     "year": 2023,
     "faculty": {
@@ -22,9 +20,7 @@
     "level": "magisterský navazující",
     "year_of_study": 2,
     "lecturers": null,
-    "guarantors": [
-        "prof. Ing. Josef Arlt, CSc."
-    ],
+    "guarantors": ["prof. Ing. Josef Arlt, CSc."],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

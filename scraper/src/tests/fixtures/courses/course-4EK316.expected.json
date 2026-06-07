@@ -9,9 +9,7 @@
     "ects": 6,
     "mode_of_delivery": "prezenční; 0/4 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
     "mode_of_completion": "zkouška",
-    "languages": [
-        "čeština"
-    ],
+    "languages": ["čeština"],
     "semester": "ZS",
     "year": 2023,
     "faculty": {
@@ -21,14 +19,8 @@
     },
     "level": "bakalářský",
     "year_of_study": 3,
-    "lecturers": [
-        "doc. Mgr. Vladimír Holý, Ph.D.",
-        "Ing. Ondřej Sokol, Ph.D.",
-        "Ing. Petra Tomanová, Ph.D., MSc"
-    ],
-    "guarantors": [
-        "prof. RNDr. Ing. Michal Černý, Ph.D."
-    ],
+    "lecturers": ["doc. Mgr. Vladimír Holý, Ph.D.", "Ing. Ondřej Sokol, Ph.D.", "Ing. Petra Tomanová, Ph.D., MSc"],
+    "guarantors": ["prof. RNDr. Ing. Michal Černý, Ph.D."],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "Znalost na úrovni kurzů 4ST110, 4ST220, 4EK310",

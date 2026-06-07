@@ -96,7 +96,8 @@ export default class ExtractInSISCourseService {
         const title = getRowValueCaseInsensitive($, 'Název v jazyce výuky:')
 
         const ectsRaw = getRowValueCaseInsensitive($, 'Počet přidělených ECTS kreditů:')
-        const ects = ectsRaw ? parseInt(ectsRaw.split(' ')[0], 10) : null
+        const ectsParsed = ectsRaw ? parseInt(ectsRaw.split(' ')[0], 10) : NaN
+        const ects = isNaN(ectsParsed) ? null : ectsParsed
 
         const mode_of_delivery = getRowValueCaseInsensitive($, 'Forma výuky kurzu:')?.trim().toLowerCase() ?? null
         const mode_of_completion = getRowValueCaseInsensitive($, 'Forma ukončení kurzu:')?.trim().toLowerCase() ?? null
@@ -377,7 +378,7 @@ export default class ExtractInSISCourseService {
     }
 
     private static extractAuditInfo($: CheerioAPI): { last_modified_by: string | null; last_modified_date: string | null } {
-        const bodyText = $('body').text()
+        const bodyText = $('body').text().replace(/\s+/g, ' ')
         const match = /Poslední změnu provedl (.*?)(?: dne | )(\d{1,2}\. \d{1,2}\. \d{4})/.exec(bodyText)
 
         if (!match) return { last_modified_by: null, last_modified_date: null }
