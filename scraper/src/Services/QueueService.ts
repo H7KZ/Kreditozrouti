@@ -1,4 +1,4 @@
-import type { ScraperInSISAcademicSchedule, ScraperInSISAcademicSchedules, ScraperInSISCourse, ScraperInSISStudyPlan } from '@scraper/types/insis'
+import type { ScraperInSISAcademicSchedule, ScraperInSISAcademicSchedules, ScraperInSISCourse, ScraperInSISFacultyTimetable, ScraperInSISFacultyTimetables, ScraperInSISStudyPlan } from '@scraper/types/insis'
 import type { ScraperInSISAcademicScheduleRequestJob } from '@scraper/types/jobs'
 import scraper from '@scraper/bullmq'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
@@ -93,6 +93,39 @@ export class QueueService {
                 {
                     deduplication: {
                         id: `InSIS:AcademicSchedule:${period.faculty_ident}:${period.insis_period_id}`,
+                        ttl: 3600000
+                    }
+                }
+            )
+        )
+    }
+
+    static async addFacultyTimetablesResponse(data: ScraperInSISFacultyTimetables): Promise<void> {
+        await scraper.queue.response.add('InSIS Faculty Timetables Response', {
+            type: 'InSIS:FacultyTimetables',
+            data
+        })
+    }
+
+    static async addFacultyTimetableResponse(timetable: ScraperInSISFacultyTimetable): Promise<void> {
+        await scraper.queue.response.add('InSIS Faculty Timetable Response', {
+            type: 'InSIS:FacultyTimetable',
+            timetable
+        })
+    }
+
+    static async queueFacultyTimetableRequests(faculties: Array<{ f_id: number; name: string }>): Promise<void> {
+        await runWithConcurrency(faculties, 4, faculty =>
+            scraper.queue.request.add(
+                'InSIS Faculty Timetable Request',
+                {
+                    type: 'InSIS:FacultyTimetable',
+                    f_id: faculty.f_id,
+                    name: faculty.name
+                },
+                {
+                    deduplication: {
+                        id: `InSIS:FacultyTimetable:${faculty.f_id}`,
                         ttl: 3600000
                     }
                 }
