@@ -6,6 +6,8 @@ import ScraperRequestInSISAcademicScheduleJob from '@scraper/Jobs/ScraperRequest
 import ScraperRequestInSISAcademicSchedulesJob from '@scraper/Jobs/ScraperRequestInSISAcademicSchedulesJob'
 import ScraperRequestInSISCatalogJob from '@scraper/Jobs/ScraperRequestInSISCatalogJob'
 import ScraperRequestInSISCourseJob from '@scraper/Jobs/ScraperRequestInSISCourseJob'
+import ScraperRequestInSISFacultyTimetableJob from '@scraper/Jobs/ScraperRequestInSISFacultyTimetableJob'
+import ScraperRequestInSISFacultyTimetablesJob from '@scraper/Jobs/ScraperRequestInSISFacultyTimetablesJob'
 import ScraperRequestInSISStudyPlanJob from '@scraper/Jobs/ScraperRequestInSISStudyPlanJob'
 import ScraperRequestInSISStudyPlansJob from '@scraper/Jobs/ScraperRequestInSISStudyPlansJob'
 
@@ -36,7 +38,9 @@ export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>,
         ['InSIS:StudyPlans', job => ScraperRequestInSISStudyPlansJob(job.data as Parameters<typeof ScraperRequestInSISStudyPlansJob>[0])],
         ['InSIS:StudyPlan', job => ScraperRequestInSISStudyPlanJob(job.data as Parameters<typeof ScraperRequestInSISStudyPlanJob>[0])],
         ['InSIS:AcademicSchedules', job => ScraperRequestInSISAcademicSchedulesJob(job.data as Parameters<typeof ScraperRequestInSISAcademicSchedulesJob>[0])],
-        ['InSIS:AcademicSchedule', job => ScraperRequestInSISAcademicScheduleJob(job.data as Parameters<typeof ScraperRequestInSISAcademicScheduleJob>[0])]
+        ['InSIS:AcademicSchedule', job => ScraperRequestInSISAcademicScheduleJob(job.data as Parameters<typeof ScraperRequestInSISAcademicScheduleJob>[0])],
+        ['InSIS:FacultyTimetables', job => ScraperRequestInSISFacultyTimetablesJob(job.data as Parameters<typeof ScraperRequestInSISFacultyTimetablesJob>[0])],
+        ['InSIS:FacultyTimetable', job => ScraperRequestInSISFacultyTimetableJob(job.data as Parameters<typeof ScraperRequestInSISFacultyTimetableJob>[0])]
     ])
 
     await LoggerJobContext.run(async () => {
