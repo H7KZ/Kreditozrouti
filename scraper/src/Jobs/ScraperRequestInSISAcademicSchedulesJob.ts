@@ -2,6 +2,7 @@ import type { ScraperInSISAcademicSchedules } from '@scraper/types/insis'
 import type { ScraperInSISAcademicSchedulesRequestJob } from '@scraper/types/jobs'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
+import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'
 import ExtractInSISAcademicScheduleService from '@scraper/Services/ExtractInSISAcademicScheduleService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
@@ -17,6 +18,7 @@ export default async function ScraperRequestInSISAcademicSchedulesJob(
     const initialResult = await client.get<string>(Config.insis.harmonogramUrl)
 
     if (!initialResult.success) {
+        if (initialResult.status === 429) throw new InSISRateLimitError(initialResult.retryAfter ?? 60)
         LoggerJobContext.add({ error: 'Failed to fetch harmonogram index', http_status: initialResult.status })
         return null
     }
@@ -30,7 +32,10 @@ export default async function ScraperRequestInSISAcademicSchedulesJob(
             await runWithConcurrency(faculties, FACULTY_CONCURRENCY, async faculty => {
                 const url = `${Config.insis.harmonogramUrl}?fakulta=${faculty.insis_faculty_id}`
                 const result = await client.getSilent<string>(url)
-                if (!result?.data) return []
+                if (!result?.data) {
+                    LoggerJobContext.add({ warning: 'Failed to fetch faculty periods', insis_faculty_id: faculty.insis_faculty_id })
+                    return []
+                }
                 return ExtractInSISAcademicScheduleService.extractPeriods(result.data, faculty.insis_faculty_id)
             })
         ).flat()
