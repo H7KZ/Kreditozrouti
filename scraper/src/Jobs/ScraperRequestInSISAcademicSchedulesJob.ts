@@ -28,11 +28,14 @@ export default async function ScraperRequestInSISAcademicSchedulesJob(
 
         LoggerJobContext.add({ faculties_count: faculties.length })
 
+        let failedFacultiesCount = 0
         const allPeriods = (
             await runWithConcurrency(faculties, FACULTY_CONCURRENCY, async faculty => {
                 const url = `${Config.insis.harmonogramUrl}?fakulta=${faculty.insis_faculty_id}`
-                const result = await client.getSilent<string>(url)
-                if (!result?.data) {
+                const result = await client.get<string>(url)
+                if (!result.success) {
+                    if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
+                    failedFacultiesCount++
                     LoggerJobContext.add({ warning: 'Failed to fetch faculty periods', insis_faculty_id: faculty.insis_faculty_id })
                     return []
                 }
@@ -40,7 +43,10 @@ export default async function ScraperRequestInSISAcademicSchedulesJob(
             })
         ).flat()
 
-        LoggerJobContext.add({ periods_count: allPeriods.length })
+        LoggerJobContext.add({
+            periods_count: allPeriods.length,
+            ...(failedFacultiesCount > 0 && { failed_faculties_count: failedFacultiesCount, periods_may_be_incomplete: true })
+        })
 
         const schedules: ScraperInSISAcademicSchedules = {
             faculties_count: faculties.length,
