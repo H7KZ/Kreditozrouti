@@ -1,7 +1,11 @@
 {
     "navigationUrls": [
         {
-            "texts": ["Celoživotní vzdělávání", "1", ""],
+            "texts": [
+                "Celoživotní vzdělávání",
+                "1",
+                ""
+            ],
             "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1454;typ_ss=12;typ_studia=5;misto_vyuky="
         }
     ],

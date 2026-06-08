@@ -1,15 +1,30 @@
 {
     "navigationUrls": [
         {
-            "texts": ["Bakalářský", "4", "0", ""],
+            "texts": [
+                "Bakalářský",
+                "4",
+                "0",
+                ""
+            ],
             "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;misto_vyuky="
         },
         {
-            "texts": ["Magisterský navazující", "10", "9", ""],
+            "texts": [
+                "Magisterský navazující",
+                "10",
+                "9",
+                ""
+            ],
             "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=4;misto_vyuky="
         },
         {
-            "texts": ["Celoživotní vzdělávání", "2", "0", ""],
+            "texts": [
+                "Celoživotní vzdělávání",
+                "2",
+                "0",
+                ""
+            ],
             "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=5;misto_vyuky="
         }
     ],

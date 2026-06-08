@@ -9,7 +9,9 @@
     "ects": 0,
     "mode_of_delivery": "mimosemestr; 28/0 (počet hodin přednášek za období / počet hodin cvičení za období) při mimosemestrální výuce",
     "mode_of_completion": "zkouška",
-    "languages": ["čeština"],
+    "languages": [
+        "čeština"
+    ],
     "semester": null,
     "year": 2025,
     "faculty": {
@@ -19,7 +21,9 @@
     },
     "level": null,
     "year_of_study": null,
-    "lecturers": ["JUDr. Mgr. Karel Mošna"],
+    "lecturers": [
+        "JUDr. Mgr. Karel Mošna"
+    ],
     "guarantors": null,
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
@@ -36,5 +40,5 @@
     "study_load": null,
     "last_modified_date": null,
     "last_modified_by": null,
-    "content_hash": ""
+    "content_hash": null
 }

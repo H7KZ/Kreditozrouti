@@ -9,7 +9,9 @@
     "ects": null,
     "mode_of_delivery": "kombinovaná; 32/0 (počet hodin přednášek za období / počet hodin cvičení za období) pro distanční (kombinované) programy",
     "mode_of_completion": "zkouška",
-    "languages": ["angličtina"],
+    "languages": [
+        "angličtina"
+    ],
     "semester": "LS",
     "year": 2025,
     "faculty": {
@@ -20,7 +22,9 @@
     "level": "doktorský",
     "year_of_study": 1,
     "lecturers": null,
-    "guarantors": ["doc. Mgr. et Mgr. Ing. Štěpán Bahník, Ph.D."],
+    "guarantors": [
+        "doc. Mgr. et Mgr. Ing. Štěpán Bahník, Ph.D."
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",
@@ -58,5 +62,5 @@
     ],
     "last_modified_date": null,
     "last_modified_by": null,
-    "content_hash": ""
+    "content_hash": null
 }

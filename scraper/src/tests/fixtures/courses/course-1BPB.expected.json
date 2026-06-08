@@ -9,7 +9,9 @@
     "ects": 9,
     "mode_of_delivery": "žádná",
     "mode_of_completion": "zkouška",
-    "languages": ["čeština"],
+    "languages": [
+        "čeština"
+    ],
     "semester": "LS",
     "year": 2025,
     "faculty": {
@@ -20,7 +22,9 @@
     "level": "bakalářský",
     "year_of_study": 3,
     "lecturers": null,
-    "guarantors": ["prof. PhDr. Petr Teplý, Ph.D."],
+    "guarantors": [
+        "prof. PhDr. Petr Teplý, Ph.D."
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",
@@ -83,5 +87,5 @@
     ],
     "last_modified_date": null,
     "last_modified_by": null,
-    "content_hash": ""
+    "content_hash": null
 }
