@@ -11,6 +11,17 @@ import ScraperRequestInSISFacultyTimetablesJob from '@scraper/Jobs/ScraperReques
 import ScraperRequestInSISStudyPlanJob from '@scraper/Jobs/ScraperRequestInSISStudyPlanJob'
 import ScraperRequestInSISStudyPlansJob from '@scraper/Jobs/ScraperRequestInSISStudyPlansJob'
 
+const handlers = new Map<string, (job: Job<ScraperRequestJob>) => Promise<unknown>>([
+    ['InSIS:Catalog', job => ScraperRequestInSISCatalogJob(job.data as Parameters<typeof ScraperRequestInSISCatalogJob>[0])],
+    ['InSIS:Course', job => ScraperRequestInSISCourseJob(job.data as Parameters<typeof ScraperRequestInSISCourseJob>[0])],
+    ['InSIS:StudyPlans', job => ScraperRequestInSISStudyPlansJob(job.data as Parameters<typeof ScraperRequestInSISStudyPlansJob>[0])],
+    ['InSIS:StudyPlan', job => ScraperRequestInSISStudyPlanJob(job.data as Parameters<typeof ScraperRequestInSISStudyPlanJob>[0])],
+    ['InSIS:AcademicSchedules', job => ScraperRequestInSISAcademicSchedulesJob(job.data as Parameters<typeof ScraperRequestInSISAcademicSchedulesJob>[0])],
+    ['InSIS:AcademicSchedule', job => ScraperRequestInSISAcademicScheduleJob(job.data as Parameters<typeof ScraperRequestInSISAcademicScheduleJob>[0])],
+    ['InSIS:FacultyTimetables', job => ScraperRequestInSISFacultyTimetablesJob(job.data as Parameters<typeof ScraperRequestInSISFacultyTimetablesJob>[0])],
+    ['InSIS:FacultyTimetable', job => ScraperRequestInSISFacultyTimetableJob(job.data as Parameters<typeof ScraperRequestInSISFacultyTimetableJob>[0])]
+])
+
 /**
  * Entry point for processing scraper request jobs.
  * Routes execution to specific job processors based on the job type defined in the payload.
@@ -31,17 +42,6 @@ export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>,
         attempt: job.attemptsMade + 1,
         timestamp: new Date().toISOString()
     }
-
-    const handlers = new Map<string, (job: Job<ScraperRequestJob>) => Promise<unknown>>([
-        ['InSIS:Catalog', job => ScraperRequestInSISCatalogJob(job.data as Parameters<typeof ScraperRequestInSISCatalogJob>[0])],
-        ['InSIS:Course', job => ScraperRequestInSISCourseJob(job.data as Parameters<typeof ScraperRequestInSISCourseJob>[0])],
-        ['InSIS:StudyPlans', job => ScraperRequestInSISStudyPlansJob(job.data as Parameters<typeof ScraperRequestInSISStudyPlansJob>[0])],
-        ['InSIS:StudyPlan', job => ScraperRequestInSISStudyPlanJob(job.data as Parameters<typeof ScraperRequestInSISStudyPlanJob>[0])],
-        ['InSIS:AcademicSchedules', job => ScraperRequestInSISAcademicSchedulesJob(job.data as Parameters<typeof ScraperRequestInSISAcademicSchedulesJob>[0])],
-        ['InSIS:AcademicSchedule', job => ScraperRequestInSISAcademicScheduleJob(job.data as Parameters<typeof ScraperRequestInSISAcademicScheduleJob>[0])],
-        ['InSIS:FacultyTimetables', job => ScraperRequestInSISFacultyTimetablesJob(job.data as Parameters<typeof ScraperRequestInSISFacultyTimetablesJob>[0])],
-        ['InSIS:FacultyTimetable', job => ScraperRequestInSISFacultyTimetableJob(job.data as Parameters<typeof ScraperRequestInSISFacultyTimetableJob>[0])]
-    ])
 
     await LoggerJobContext.run(async () => {
         try {
