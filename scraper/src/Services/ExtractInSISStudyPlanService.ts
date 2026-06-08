@@ -96,7 +96,6 @@ export default class ExtractInSISStudyPlanService {
         const $ = cheerio.load(html)
 
         const id = this.extractIdFromUrl(url)
-        if (id === null) console.warn('Study Plan ID not found in the URL:', url)
 
         // Extraction
         const { ident, title } = this.extractIdentAndTitle($)

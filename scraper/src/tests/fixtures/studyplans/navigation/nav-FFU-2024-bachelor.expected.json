@@ -1,0 +1,21 @@
+{
+    "navigationUrls": [
+        {
+            "texts": ["B0412A050008", "B-BP Bankovnictví a pojišťovnictví", "Čeština", "", "", "-"],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=842;misto_vyuky="
+        },
+        {
+            "texts": ["B0412A050007", "B-FI Finance", "Čeština", "", "", "-"],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=843;misto_vyuky="
+        },
+        {
+            "texts": ["B0411A050002", "B-UC Účetnictví a finanční řízení podniku", "Čeština", "", "", "-"],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=844;misto_vyuky="
+        },
+        {
+            "texts": ["B0411A050003", "B-DP Zdanění a daňová politika", "Čeština", "", "", "-"],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=845;misto_vyuky="
+        }
+    ],
+    "planUrls": []
+}

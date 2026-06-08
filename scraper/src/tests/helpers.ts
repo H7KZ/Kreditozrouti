@@ -25,8 +25,8 @@ export function makeFixtureLoaders(dir: string) {
             if (!existsSync(filePath) || forceRegen) {
                 if (fallback === undefined) throw new Error(`Missing expected fixture: ${file}`)
                 writeFileSync(filePath, JSON.stringify(fallback, null, 4))
-                if (forceRegen) console.warn(`\n  ♻  Regenerated ${file}`)
-                else console.warn(`\n  ⚠  Generated ${file} — review and edit if needed`)
+                if (forceRegen) console.warn(`\n  Regenerated ${file}`)
+                else console.warn(`\n  Generated ${file} — review and edit if needed`)
                 return fallback
             }
             return JSON.parse(readFileSync(filePath, 'utf8')) as T

@@ -9,9 +9,9 @@ const { load, expected } = makeFixtureLoaders(dir)
 
 describe('ExtractInSISFacultyTimetableService', () => {
     describe('extractFaculties', () => {
-        it('nav.html', () => {
-            const actual = ExtractInSISFacultyTimetableService.extractFaculties(load('nav.html'))
-            expect(actual).toEqual(expected('nav.expected.json', actual))
+        it('index.html', () => {
+            const actual = ExtractInSISFacultyTimetableService.extractFaculties(load('index.html'))
+            expect(actual).toEqual(expected('index.expected.json', actual))
         })
 
         it('returns empty array when no faculty table is found', () => {

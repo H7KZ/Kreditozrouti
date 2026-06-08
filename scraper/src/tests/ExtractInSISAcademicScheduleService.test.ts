@@ -1,5 +1,6 @@
 import { readdirSync } from 'node:fs'
 import path from 'node:path'
+import type { HarmonogramPeriod } from '@scraper/Services/ExtractInSISAcademicScheduleService'
 import { describe, expect, it } from 'vitest'
 import ExtractInSISAcademicScheduleService, { parseDateDMY, parseDateTimeRange, parsePeriodLabel } from '@scraper/Services/ExtractInSISAcademicScheduleService'
 import { makeFixtureLoaders } from './helpers'
@@ -22,7 +23,8 @@ describe('ExtractInSISAcademicScheduleService', () => {
     })
 
     describe('extractPeriods', () => {
-        const fixtures = readdirSync(dir).filter(f => /^faculty-\d+\.html$/.test(f))
+        const facultyIdentPattern = /^faculty-.+\.html$/
+        const fixtures = readdirSync(dir).filter(f => facultyIdentPattern.test(f))
 
         if (fixtures.length === 0) {
             it('no fixtures yet', () => {
@@ -30,19 +32,23 @@ describe('ExtractInSISAcademicScheduleService', () => {
             })
         } else {
             it.each(fixtures)('%s', file => {
-                // Faculty ID is encoded in the filename (faculty-{id}.html) and stored in the
-                // expected JSON under _facultyId so it can be passed back to extractPeriods.
-                const match = /^faculty-(\d+)\.html$/.exec(file)
-                const facultyId = parseInt(match![1], 10)
-                const periods = ExtractInSISAcademicScheduleService.extractPeriods(load(file), facultyId)
-                const exp = expected(file.replace('.html', '.expected.json'), { _facultyId: facultyId, periods })
-                expect(periods).toEqual(exp.periods)
+                // Faculty ident is encoded in the filename (faculty-{ident}.html) and stored in
+                // the expected JSON under _facultyIdent. The numeric _facultyId must also be stored
+                // in the expected JSON so it can be passed back to extractPeriods.
+                const match = facultyIdentPattern.exec(file)
+                const facultyIdent = match![1]
+                const expFile = file.replace('.html', '.expected.json')
+                const stub = { _facultyIdent: facultyIdent, _facultyId: 0, periods: [] as HarmonogramPeriod[] }
+                const exp = expected(expFile, stub)
+                const periods = ExtractInSISAcademicScheduleService.extractPeriods(load(file), exp._facultyId)
+                expect(periods).toEqual(expected(expFile, { ...stub, periods }).periods)
             })
         }
     })
 
     describe('extractEvents', () => {
-        const fixtures = readdirSync(dir).filter(f => /^events-\d+\.html$/.test(f))
+        const eventsPattern = /^events-.+\.html$/
+        const fixtures = readdirSync(dir).filter(f => eventsPattern.test(f))
 
         if (fixtures.length === 0) {
             it('no fixtures yet', () => {
