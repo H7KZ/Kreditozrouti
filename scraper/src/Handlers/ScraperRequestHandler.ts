@@ -69,6 +69,7 @@ export default async function ScraperRequestHandler(job: Job<ScraperRequestJob>,
 
             if (error instanceof InSISRateLimitError) {
                 LoggerJobContext.add({ rate_limited: true, retry_after_seconds: error.retryAfterSeconds })
+                LoggerJobContext.log.warn(LoggerJobContext.get())
                 await job.moveToDelayed(Date.now() + error.retryAfterSeconds * 1000, token)
                 throw new DelayedError()
             }
