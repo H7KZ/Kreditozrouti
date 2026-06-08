@@ -33,7 +33,10 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		course_ident: course?.ident
 	})
 
-	if (!course?.id) return
+	if (!course?.id) {
+		LoggerJobContext.add({ skipped_no_id: true })
+		return
+	}
 
 	let facultyId: string | null = null
 	if (course.faculty?.ident) {
