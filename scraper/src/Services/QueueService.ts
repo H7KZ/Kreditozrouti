@@ -54,7 +54,7 @@ export class QueueService {
                     content_hash
                 },
                 opts: {
-                    deduplication: { id: `InSIS:Course:${courseId}` }
+                    deduplication: { id: courseId !== null ? `InSIS:Course:${courseId}` : `InSIS:Course:url:${url}` }
                 }
             }))
         )
