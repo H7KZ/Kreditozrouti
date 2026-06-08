@@ -172,12 +172,11 @@ export default class ScraperService {
 	}
 
 	/**
-	 * Re-enqueues failed jobs of the given types from the request queue's failed set.
-	 * Used to recover from bursts of failures (e.g. staging deadlocks) without manually
-	 * re-triggering each scrape. Each retried job is removed from the failed set first,
-	 * then re-added as a fresh job (BullMQ's `Job.retry()` re-runs in place but our jobs
-	 * never throw on failure — see scraper/CLAUDE.md — so failures here mean the job was
-	 * explicitly marked failed, e.g. via `moveToFailed`, and a clean re-add is simplest).
+	 * Re-enqueues failed jobs of the given types from both queues:
+	 *
+	 * - Request queue failures: removed and re-added as fresh jobs (scraper re-fetches the page).
+	 * - Response queue failures: retried in place via `job.retry()` — the data is already valid,
+	 *   only the DB write failed (e.g. deadlock), so no re-scrape is needed.
 	 *
 	 * Returns the count of jobs retried per type.
 	 */
@@ -187,12 +186,13 @@ export default class ScraperService {
 
 		const typeSet = new Set<string>(types)
 
-		// Snapshot the whole failed set up front — removing jobs mid-pagination would
-		// shift indices and skip entries. The failed set is bounded (removeOnFail keeps
-		// at most 24h of jobs), so a single bulk fetch is safe.
-		const failed = await scraper.queue.request.getJobs(['failed'], 0, 5000)
+		// Snapshot both failed sets up front — removing jobs mid-pagination shifts indices.
+		const [failedRequests, failedResponses] = await Promise.all([
+			scraper.queue.request.getJobs(['failed'], 0, 5000),
+			scraper.queue.response.getJobs(['failed'], 0, 5000)
+		])
 
-		for (const job of failed) {
+		for (const job of failedRequests) {
 			const data = job.data
 
 			if (!data || !typeSet.has(data.type)) continue
@@ -212,6 +212,15 @@ export default class ScraperService {
 			}
 
 			await job.remove()
+			counts[data.type]++
+		}
+
+		for (const job of failedResponses) {
+			const data = job.data
+
+			if (!data || !typeSet.has(data.type)) continue
+
+			await job.retry('failed')
 			counts[data.type]++
 		}
 

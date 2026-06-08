@@ -92,6 +92,9 @@ scrape-studyplans:
 scrape-academic-schedules:
 	bash scripts/scrape.sh $(API_URL) academic-schedules $(COMMAND_TOKEN)
 
+scrape-retry-failed:
+	bash scripts/scrape.sh $(API_URL) retry-failed $(COMMAND_TOKEN)
+
 build-docker-images:
 	docker buildx build -t kreditozrouti-api -f ./api/Dockerfile . && \
 	docker buildx build -t kreditozrouti-client -f ./client/Dockerfile . && \
