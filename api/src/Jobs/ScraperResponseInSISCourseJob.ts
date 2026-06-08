@@ -2,11 +2,10 @@ import type {
 	ScraperInSISCourseAssessmentMethod,
 	ScraperInSISCourseStudyPlan,
 	ScraperInSISCourseTimetableSlot,
-	ScraperInSISCourseTimetableUnit,
-	ScraperInSISFaculty
+	ScraperInSISCourseTimetableUnit
 } from '@shared/queue/insis'
 import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
-import { Kysely, Transaction } from 'kysely'
+import { Transaction } from 'kysely'
 import { timeToMinutes } from '@shared/domain/time'
 import { mysql, redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
@@ -16,7 +15,6 @@ import {
 	CourseUnitSlotTable,
 	CourseUnitTable,
 	Database,
-	FacultyTable,
 	NewCourse,
 	NewCourseUnit,
 	NewCourseUnitSlot,
@@ -35,14 +33,22 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		course_ident: course?.ident
 	})
 
-	if (!course?.id) return
+	if (!course?.id) {
+		LoggerJobContext.add({ skipped_no_id: true })
+		return
+	}
 
-	// Upsert faculty outside any transaction — faculty rows are shared across many
-	// concurrent course jobs and holding a faculty row lock inside a long transaction
-	// causes deadlocks. A bare upsert releases the lock in microseconds.
 	let facultyId: string | null = null
-	if (course.faculty) {
-		facultyId = await upsertFaculty(mysql, course.faculty)
+	if (course.faculty?.ident) {
+		facultyId = course.faculty.ident
+		await mysql
+			.insertInto('insis_faculties')
+			.ignore()
+			.values({ id: facultyId, title: course.faculty.title ?? null, is_schedule_publicly_visible: false })
+			.execute()
+		if (course.faculty.title) {
+			await mysql.updateTable('insis_faculties').set({ title: course.faculty.title }).where('id', '=', facultyId).where('title', 'is', null).execute()
+		}
 	}
 
 	// Skip the rest if course hasn't changed since last scrape.
@@ -65,16 +71,10 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		}
 	}
 
-	// Pre-upsert all faculty idents referenced by study plans outside the transaction
-	// for the same reason as the course faculty above.
 	if (course.study_plans && course.study_plans.length > 0) {
 		const uniqueFacultyIdents = [...new Set(course.study_plans.map(p => p.facultyIdent).filter((id): id is string => !!id))]
 		for (const ident of uniqueFacultyIdents) {
-			await mysql
-				.insertInto(FacultyTable._table)
-				.values({ id: ident, title: null, is_schedule_publicly_visible: false })
-				.onDuplicateKeyUpdate({ id: ident })
-				.execute()
+			await mysql.insertInto('insis_faculties').ignore().values({ id: ident, title: null, is_schedule_publicly_visible: false }).execute()
 		}
 	}
 
@@ -109,7 +109,8 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			study_load: course.study_load ? JSON.stringify(course.study_load) : null,
 			literature_required: course.literature_required,
 			literature_recommended: course.literature_recommended,
-			last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+			last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
+			content_hash: course.content_hash
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -294,26 +295,4 @@ async function flushResponseCaches(): Promise<void> {
 			}
 		} while (cursor !== '0')
 	}
-}
-
-/**
- * Helper to Upsert Faculty and return its ID.
- */
-async function upsertFaculty(trx: Kysely<Database>, faculty: ScraperInSISFaculty): Promise<string | null> {
-	if (!faculty.ident) return null
-
-	await trx
-		.insertInto(FacultyTable._table)
-		.values({
-			id: faculty.ident,
-			title: faculty.title,
-			is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
-		})
-		.onDuplicateKeyUpdate({
-			title: faculty.title,
-			is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
-		})
-		.execute()
-
-	return faculty.ident
 }

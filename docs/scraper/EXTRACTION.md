@@ -108,8 +108,7 @@ selector: #titulek h1
   split on " - " → first token is faculty ident
 ```
 
-**Schedule visibility** is determined by faculty ident + year thresholds (hardcoded). Faculties CTVS, OZS, IOM, CESP
-hide timetables after certain years when they stopped publishing them publicly.
+**Schedule visibility** (`is_schedule_publicly_visible`) is set by the faculty timetable scraper (`InSIS:FacultyTimetable` response job). The course extractor reads this flag from the DB via the faculty record — it does not determine visibility itself.
 
 ### Level & Year of Study (`extractLevelAndYear`)
 
@@ -255,8 +254,7 @@ Faculty title from `Fakulta:` row (split before the first ` (`).
 Faculty ident is extracted from the `Počáteční období:` value: `"ZS 2023/2024 - FIS"` → split on `-`, last segment
 validated as `[A-Z0-9]+`.
 
-`is_schedule_publicly_visible` is always `false` from study plan pages — the catalog scraper is the authoritative source
-for this flag.
+`is_schedule_publicly_visible` is always `false` from study plan pages — the faculty timetable scraper (`InSIS:FacultyTimetable`) is the authoritative source for this flag.
 
 ### `extractCourses($)` → `ScraperInSISStudyPlanCourse[]`
 
@@ -267,6 +265,56 @@ Iterates every `<tr>`. Two patterns:
   nested `<a>`
 
 Group code → `{group, category}` via `parseGroupCode()`.
+
+---
+
+## ExtractInSISFacultyTimetableService
+
+**File:** `scraper/src/Services/ExtractInSISFacultyTimetableService.ts`
+
+Handles the InSIS faculty timetable index page (`rozvrhy_view.pl`) and individual faculty timetable pages
+(`rozvrhy_view.pl?konf=1;f=<f_id>`).
+
+### `extractFaculties(html)` → `{ f_id: string; name: string }[]`
+
+Parses the faculty listing table from the main timetable index.
+
+```
+1. Find the first <th> with text "Pracoviště" → identifies the faculty table
+2. For each data row in that table:
+   - href of the row's anchor → extract f_id from query param "f"
+   - cell text → faculty name
+   - Skip rows where f_id === "-1" (the "all faculties" entry)
+```
+
+### `extractFacultyTimetable(html)` → `{ ident: string | null; max_year: number | null }`
+
+Parses a single faculty's timetable page to determine the most recent published academic year.
+
+```
+For each schedule row:
+  - Column 3 (Pracoviště): faculty ident, e.g. "FIS"
+  - Column 2 (Období): period label, e.g. "ZS 2009/2010"
+    → extract first 4-digit year component → 2009
+  - Track maximum year seen across all rows
+
+Returns: { ident: (from first row, or null), max_year: (max seen, or null if no rows) }
+```
+
+### `isPubliclyVisible(maxYear, referenceDate?)` → `boolean`
+
+Determines visibility based on whether the faculty has published timetables for the current academic year.
+
+```
+currentAcademicYear = referenceDate.month >= 8
+  ? referenceDate.year
+  : referenceDate.year - 1
+
+return maxYear !== null && maxYear >= currentAcademicYear
+```
+
+The September boundary (`month >= 8`) reflects the InSIS academic calendar: the new academic year starts in September.
+A faculty that has not published any timetable rows for the current or upcoming year is treated as non-public.
 
 ---
 

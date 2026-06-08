@@ -7,3 +7,7 @@ volumes:
   mysql-data-dev-volume:
     name: mysql-data-dev-volume
     external: true
+
+  redis-data-dev-volume:
+    name: redis-data-dev-volume
+    external: true

@@ -110,6 +110,8 @@ export class CourseTable {
 	literature_recommended!: string | null
 
 	last_scraped_at!: ColumnType<Date, string | undefined, string | undefined> | null
+
+	content_hash!: string | null
 }
 
 export type Course<F = void, U = void, A = void, SP = void> = Selectable<CourseTable> &
@@ -297,6 +299,54 @@ export type NewStudyPlanCourse = Insertable<Omit<ExcludeMethods<StudyPlanCourseT
 export type StudyPlanCourseWithRelations = StudyPlanCourse<StudyPlanTable, null>
 
 // ---------------------------------------------------------------------------
+// AcademicPeriod
+// ---------------------------------------------------------------------------
+
+export class AcademicPeriodTable {
+	static readonly _table = 'insis_academic_periods' as const
+
+	id!: Generated<number>
+
+	insis_period_id!: number
+	faculty_id!: string
+
+	created_at!: ColumnType<Date, string | undefined, never>
+	updated_at!: ColumnType<Date, string | undefined, string | undefined>
+
+	semester!: InSISSemester | null
+	year!: number
+	level!: string | null
+	starts_at!: ColumnType<Date, string, string>
+	ends_at!: ColumnType<Date, string, string>
+	last_scraped_at!: ColumnType<Date, string | undefined, string | undefined> | null
+}
+
+export type AcademicPeriod = Selectable<AcademicPeriodTable>
+export type NewAcademicPeriod = Insertable<Omit<ExcludeMethods<AcademicPeriodTable>, 'id' | 'created_at' | 'updated_at'>>
+
+// ---------------------------------------------------------------------------
+// AcademicScheduleEvent
+// ---------------------------------------------------------------------------
+
+export class AcademicScheduleEventTable {
+	static readonly _table = 'insis_academic_schedule_events' as const
+
+	id!: Generated<number>
+
+	period_id!: number
+
+	created_at!: ColumnType<Date, string | undefined, never>
+	updated_at!: ColumnType<Date, string | undefined, string | undefined>
+
+	title!: string
+	starts_at!: ColumnType<Date, string | null, string | null> | null
+	ends_at!: ColumnType<Date, string | null, string | null> | null
+}
+
+export type AcademicScheduleEvent = Selectable<AcademicScheduleEventTable>
+export type NewAcademicScheduleEvent = Insertable<Omit<ExcludeMethods<AcademicScheduleEventTable>, 'id' | 'created_at' | 'updated_at'>>
+
+// ---------------------------------------------------------------------------
 // Database mapping
 // ---------------------------------------------------------------------------
 
@@ -308,6 +358,8 @@ type AllTableClasses =
 	| typeof StudyPlanTable
 	| typeof StudyPlanCourseTable
 	| typeof FacultyTable
+	| typeof AcademicPeriodTable
+	| typeof AcademicScheduleEventTable
 
 /**
  * Master mapping of table names to Kysely table interfaces.

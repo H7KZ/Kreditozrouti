@@ -1,0 +1,133 @@
+# ==============================================================================
+# Workflow: Rollback Deployment
+# Description: Redeploys a previously deployed SHA for one service or all three.
+#              Guard check ensures the target version directory exists on the server
+#              before any deploy job runs.
+#
+# Trigger: manual (workflow_dispatch) only
+# ==============================================================================
+
+name: Rollback Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "Short SHA to roll back to (8 chars, e.g. a1b2c3d4)"
+        required: true
+        type: string
+      service:
+        description: "Service to roll back (api | client | scraper | all)"
+        required: true
+        type: choice
+        options:
+          - api
+          - client
+          - scraper
+          - all
+      environment:
+        description: "Target environment"
+        required: true
+        type: choice
+        options:
+          - production
+          - development
+        default: production
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: rollback-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate — version ${{ inputs.sha }} exists on server
+    runs-on: self-hosted
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Check version directory exists
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -euo pipefail
+            VERSION_DIR="$HOME/versions/${{ inputs.environment }}/${{ inputs.sha }}"
+            if [[ ! -d "$VERSION_DIR" ]]; then
+              echo "ERROR: Version ${{ inputs.sha }} not found on server."
+              echo "Available versions:"
+              ls "$HOME/versions/${{ inputs.environment }}/" 2>/dev/null | grep -v '^current$' || echo "  (none)"
+              exit 1
+            fi
+            echo "OK: $VERSION_DIR exists — proceeding with rollback."
+
+  resolve:
+    name: Resolve Deploy Variables
+    runs-on: self-hosted
+    needs: [validate]
+    outputs:
+      image_prefix: ${{ steps.vars.outputs.image_prefix }}
+      project_name: ${{ steps.vars.outputs.project_name }}
+    steps:
+      - name: Compute variables
+        id: vars
+        run: |
+          REPO="${{ github.repository }}"
+          echo "image_prefix=ghcr.io/${REPO,,}" >> "$GITHUB_OUTPUT"
+          if [[ "${{ inputs.environment }}" == "production" ]]; then
+            echo "project_name=prod" >> "$GITHUB_OUTPUT"
+          else
+            echo "project_name=dev" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy-api:
+    name: Rollback API to ${{ inputs.sha }}
+    needs: [resolve]
+    if: ${{ inputs.service == 'api' || inputs.service == 'all' }}
+    uses: ./.github/workflows/_deploy-service.yml
+    with:
+      service: api
+      environment: ${{ inputs.environment }}
+      project_name: ${{ needs.resolve.outputs.project_name }}
+      image_tag: ${{ inputs.sha }}
+      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+    secrets: inherit
+
+  deploy-client:
+    name: Rollback Client to ${{ inputs.sha }}
+    needs: [resolve, deploy-api]
+    if: >-
+      ${{ always() &&
+          needs.resolve.result == 'success' &&
+          (needs.deploy-api.result == 'success' || needs.deploy-api.result == 'skipped') &&
+          (inputs.service == 'client' || inputs.service == 'all') }}
+    uses: ./.github/workflows/_deploy-service.yml
+    with:
+      service: client
+      environment: ${{ inputs.environment }}
+      project_name: ${{ needs.resolve.outputs.project_name }}
+      image_tag: ${{ inputs.sha }}
+      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+    secrets: inherit
+
+  deploy-scraper:
+    name: Rollback Scraper to ${{ inputs.sha }}
+    needs: [resolve, deploy-client]
+    if: >-
+      ${{ always() &&
+          needs.resolve.result == 'success' &&
+          (needs.deploy-client.result == 'success' || needs.deploy-client.result == 'skipped') &&
+          (inputs.service == 'scraper' || inputs.service == 'all') }}
+    uses: ./.github/workflows/_deploy-service.yml
+    with:
+      service: scraper
+      environment: ${{ inputs.environment }}
+      project_name: ${{ needs.resolve.outputs.project_name }}
+      image_tag: ${{ inputs.sha }}
+      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+    secrets: inherit

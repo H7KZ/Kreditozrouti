@@ -319,6 +319,8 @@ services:
       - --save
       - "20"
       - "1"
+      - --appendonly
+      - "yes"
       - --loglevel
       - warning
       - --requirepass
@@ -326,7 +328,10 @@ services:
       - --maxmemory
       - 512mb
       - --maxmemory-policy
-      - allkeys-lru
+      - noeviction
+
+    volumes:
+      - redis-data-dev-volume:/data
 
     networks:
       - redis-dev-network

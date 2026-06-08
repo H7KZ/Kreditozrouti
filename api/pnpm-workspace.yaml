@@ -1,5 +1,0 @@
-allowBuilds:
-    esbuild: true
-    msgpackr-extract: true
-onlyBuiltDependencies:
-    - msgpackr-extract

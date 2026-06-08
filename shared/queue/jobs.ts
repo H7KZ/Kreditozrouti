@@ -1,5 +1,5 @@
 import type {InSISSemester, ScraperJob} from '../domain/insis.js'
-import type {ScraperInSISCatalog, ScraperInSISCourse, ScraperInSISStudyPlan, ScraperInSISStudyPlans} from './insis.js'
+import type {ScraperInSISCatalog, ScraperInSISCourse, ScraperInSISStudyPlan, ScraperInSISStudyPlans, ScraperInSISAcademicSchedule, ScraperInSISAcademicSchedules, ScraperInSISFacultyTimetable, ScraperInSISFacultyTimetables} from './insis.js'
 
 interface ScraperRequestJobBase {
     type: ScraperJob
@@ -17,6 +17,7 @@ export interface ScraperInSISCatalogRequestJob extends ScraperRequestJobBase {
 export interface ScraperInSISCourseRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:Course'
     url: string
+    content_hash?: string | null
 }
 
 export interface ScraperInSISStudyPlansRequestJob extends ScraperRequestJobBase {
@@ -24,11 +25,39 @@ export interface ScraperInSISStudyPlansRequestJob extends ScraperRequestJobBase 
     faculties?: string[]
     periods?: { semester: InSISSemester | null; year: number }[]
     auto_queue_study_plans?: boolean
+    auto_queue_courses?: boolean
 }
 
 export interface ScraperInSISStudyPlanRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:StudyPlan'
     url: string
+    auto_queue_courses?: boolean
+}
+
+export interface ScraperInSISAcademicSchedulesRequestJob extends ScraperRequestJobBase {
+    type: 'InSIS:AcademicSchedules'
+}
+
+export interface ScraperInSISAcademicScheduleRequestJob extends ScraperRequestJobBase {
+    type: 'InSIS:AcademicSchedule'
+    insis_faculty_id: number
+    insis_period_id: number
+    faculty_ident: string
+    semester: InSISSemester | null
+    year: number
+    level: string | null
+    starts_at: string  // "YYYY-MM-DD"
+    ends_at: string    // "YYYY-MM-DD"
+}
+
+export interface ScraperInSISFacultyTimetablesRequestJob extends ScraperRequestJobBase {
+    type: 'InSIS:FacultyTimetables'
+}
+
+export interface ScraperInSISFacultyTimetableRequestJob extends ScraperRequestJobBase {
+    type: 'InSIS:FacultyTimetable'
+    f_id: number
+    name: string
 }
 
 export type ScraperRequestJob =
@@ -36,6 +65,10 @@ export type ScraperRequestJob =
     | ScraperInSISCourseRequestJob
     | ScraperInSISStudyPlansRequestJob
     | ScraperInSISStudyPlanRequestJob
+    | ScraperInSISAcademicSchedulesRequestJob
+    | ScraperInSISAcademicScheduleRequestJob
+    | ScraperInSISFacultyTimetablesRequestJob
+    | ScraperInSISFacultyTimetableRequestJob
 
 interface ScraperResponseJobBase {
     type: ScraperJob
@@ -62,8 +95,32 @@ export interface ScraperInSISStudyPlanResponseJob extends ScraperResponseJobBase
     plan: ScraperInSISStudyPlan | null
 }
 
+export interface ScraperInSISAcademicSchedulesResponseJob extends ScraperResponseJobBase {
+    type: 'InSIS:AcademicSchedules'
+    schedules: ScraperInSISAcademicSchedules
+}
+
+export interface ScraperInSISAcademicScheduleResponseJob extends ScraperResponseJobBase {
+    type: 'InSIS:AcademicSchedule'
+    schedule: ScraperInSISAcademicSchedule
+}
+
+export interface ScraperInSISFacultyTimetablesResponseJob extends ScraperResponseJobBase {
+    type: 'InSIS:FacultyTimetables'
+    data: ScraperInSISFacultyTimetables
+}
+
+export interface ScraperInSISFacultyTimetableResponseJob extends ScraperResponseJobBase {
+    type: 'InSIS:FacultyTimetable'
+    timetable: ScraperInSISFacultyTimetable
+}
+
 export type ScraperResponseJob =
     | ScraperInSISCatalogResponseJob
     | ScraperInSISCourseResponseJob
     | ScraperInSISStudyPlansResponseJob
     | ScraperInSISStudyPlanResponseJob
+    | ScraperInSISAcademicSchedulesResponseJob
+    | ScraperInSISAcademicScheduleResponseJob
+    | ScraperInSISFacultyTimetablesResponseJob
+    | ScraperInSISFacultyTimetableResponseJob

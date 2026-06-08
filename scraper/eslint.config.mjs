@@ -45,6 +45,7 @@ export default tseslint.config(
         },
         rules: {
             // typescript-eslint — turn off rules that don't fit this codebase
+            '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
             '@typescript-eslint/naming-convention': 'off',
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/restrict-template-expressions': 'off',

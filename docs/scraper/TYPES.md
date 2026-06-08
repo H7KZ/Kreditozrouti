@@ -64,7 +64,13 @@ type InSISStudyPlanCourseCategory =
 ### `ScraperJob`
 
 ```typescript
-type ScraperJob = 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan'
+type ScraperJob =
+  | 'InSIS:Catalog'
+  | 'InSIS:Course'
+  | 'InSIS:StudyPlans'
+  | 'InSIS:StudyPlan'
+  | 'InSIS:FacultyTimetables'
+  | 'InSIS:FacultyTimetable'
 ```
 
 String discriminant used in both request and response job payloads.
@@ -88,8 +94,8 @@ interface ScraperInSISFaculty {
   ident: string | null    // e.g. "FIS", "NF", "CTVS"
   title: string | null    // e.g. "Fakulta informatiky a statistiky"
   is_schedule_publicly_visible: boolean
-  // false for CTVS≥2017, OZS≥2020, IOM≥2021, CESP≥2022
-  // always false when extracted from study plan pages
+  // Set authoritatively by InSIS:FacultyTimetable response job
+  // Always false when extracted from study plan or course pages
 }
 ```
 
@@ -257,6 +263,27 @@ interface ScraperInSISStudyPlans {
 }
 ```
 
+### `ScraperInSISFacultyTimetables`
+
+Discovery response for the faculty timetables pipeline.
+
+```typescript
+interface ScraperInSISFacultyTimetables {
+  faculties_count: number   // Number of InSIS:FacultyTimetable jobs enqueued
+}
+```
+
+### `ScraperInSISFacultyTimetable`
+
+Per-faculty visibility result.
+
+```typescript
+interface ScraperInSISFacultyTimetable {
+  ident: string                      // Faculty ident, e.g. "FIS"
+  is_schedule_publicly_visible: boolean
+}
+```
+
 ---
 
 ## Job Payload Types (`shared/queue/jobs.ts`)
@@ -294,11 +321,23 @@ interface ScraperInSISStudyPlanRequestJob extends ScraperRequestJobBase {
   url: string
 }
 
+interface ScraperInSISFacultyTimetablesRequestJob extends ScraperRequestJobBase {
+  type: 'InSIS:FacultyTimetables'
+}
+
+interface ScraperInSISFacultyTimetableRequestJob extends ScraperRequestJobBase {
+  type: 'InSIS:FacultyTimetable'
+  f_id: string   // InSIS faculty numeric ID
+  name: string   // Faculty display name
+}
+
 type ScraperRequestJob =
   | ScraperInSISCatalogRequestJob
   | ScraperInSISCourseRequestJob
   | ScraperInSISStudyPlansRequestJob
   | ScraperInSISStudyPlanRequestJob
+  | ScraperInSISFacultyTimetablesRequestJob
+  | ScraperInSISFacultyTimetableRequestJob
 ```
 
 ### Response Jobs (Scraper → API)
@@ -324,11 +363,23 @@ interface ScraperInSISStudyPlanResponseJob {
   plan: ScraperInSISStudyPlan | null
 }
 
+interface ScraperInSISFacultyTimetablesResponseJob {
+  type: 'InSIS:FacultyTimetables'
+  result: ScraperInSISFacultyTimetables  // { faculties_count: number }
+}
+
+interface ScraperInSISFacultyTimetableResponseJob {
+  type: 'InSIS:FacultyTimetable'
+  result: ScraperInSISFacultyTimetable   // { ident, is_schedule_publicly_visible }
+}
+
 type ScraperResponseJob =
   | ScraperInSISCatalogResponseJob
   | ScraperInSISCourseResponseJob
   | ScraperInSISStudyPlansResponseJob
   | ScraperInSISStudyPlanResponseJob
+  | ScraperInSISFacultyTimetablesResponseJob
+  | ScraperInSISFacultyTimetableResponseJob
 ```
 
 Note: scheduled jobs (`InSIS:Catalog`, `InSIS:StudyPlans`) are enqueued directly by the API scheduler — they produce

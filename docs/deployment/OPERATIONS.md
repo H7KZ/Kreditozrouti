@@ -22,6 +22,20 @@ docker compose -p monitoring ps
 docker compose -p monitoring -f deployment/monitoring/docker-compose.monitoring.yml up -d --force-recreate
 ```
 
+### Alert Rules
+
+Grafana alerting is provisioned from `deployment/monitoring/grafana/provisioning/alerting/rules.yml`. All rules route
+to the Discord contact point via the default notification policy.
+
+| Rule                     | Group          | Condition                                                       | Severity |
+|--------------------------|----------------|-----------------------------------------------------------------|----------|
+| `container-down`         | infrastructure | Any scraped target unreachable for 1 min                        | critical |
+| `disk-usage-high`        | infrastructure | Disk usage above 80% for 5 min                                  | warning  |
+| `memory-usage-high`      | infrastructure | Less than 10% memory available for 5 min                        | warning  |
+| `api-error-rate-high`    | application    | 5xx responses exceed 5% of all requests over 5 min              | warning  |
+| `api-p99-latency-high`   | application    | API p99 latency exceeds 2 s over 5 min                          | warning  |
+| `scraper-queue-stalled`  | application    | `ScraperResponseQueue` idle (waiting + active = 0) for 24 h     | warning  |
+
 ### Faro Browser Telemetry
 
 Browser telemetry from `@grafana/faro-web-sdk` is collected at `https://<domain>/faro/collect`.

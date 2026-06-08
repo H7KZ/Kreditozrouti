@@ -6,11 +6,7 @@ export async function runWithConcurrency<T, R>(items: T[], concurrency: number, 
         .fill(null)
         .map(async () => {
             for (const [index, item] of iterator) {
-                try {
-                    results[index] = await task(item)
-                } catch (error) {
-                    console.error(`Error processing item at index ${index}:`, error)
-                }
+                results[index] = await task(item)
             }
         })
 

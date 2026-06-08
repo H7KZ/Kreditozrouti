@@ -1,8 +1,14 @@
-// Imports
+﻿// Imports
 
 import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 import { Queue, Worker } from 'bullmq'
-import { ScraperInSISCatalogRequestScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names'
+import {
+	ScraperInSISAcademicSchedulesRequestScheduler,
+	ScraperInSISFacultyTimetablesRequestScheduler,
+	ScraperInSISStudyPlansRequestScheduler,
+	ScraperRequestQueue,
+	ScraperResponseQueue
+} from '@shared/queue/names'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
@@ -28,28 +34,14 @@ const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueu
 
 /**
  * Registration window months (with one-week early-start buffer):
- *   ZS window: June 9 – September 25  → months 6,7,8,9
- *   LS window: January 1 – February 27 → months 1,2
+ *   ZS window: June 9 â€“ September 25  â†’ months 6,7,8,9
+ *   LS window: January 1 â€“ February 27 â†’ months 1,2
  *
- * Catalog runs at 3 AM, Study Plans at 2 AM — both on this month set.
+ * Study Plans runs at 2 AM during registration months.
+ * It queues individual plan jobs which in turn queue course scrapes directly â€”
+ * no separate catalog scheduler needed.
  */
 const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9'
-
-function buildCatalogSchedulerJob(periodsForLastFourYears: ReturnType<typeof InSISService.getPeriodsForLastYears>) {
-	return {
-		name: `InSIS Catalog Request (at 3 AM during registration months)`,
-		// NOTE: Scheduled runs are intentionally unfiltered — upsertJobScheduler stores
-		// static data at definition time, not at fire time, so we cannot query allowed_idents
-		// here. Manual triggers via ScraperService.enqueueCatalogScrape ARE filtered.
-		data: {
-			type: 'InSIS:Catalog' as const,
-			auto_queue_courses: true,
-			faculties: undefined,
-			periods: periodsForLastFourYears
-		},
-		opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
-	}
-}
 
 function buildStudyPlansSchedulerJob(periodsForLastFourYears: ReturnType<typeof InSISService.getPeriodsForLastYears>) {
 	return {
@@ -57,6 +49,7 @@ function buildStudyPlansSchedulerJob(periodsForLastFourYears: ReturnType<typeof 
 		data: {
 			type: 'InSIS:StudyPlans' as const,
 			auto_queue_study_plans: true,
+			auto_queue_courses: true,
 			faculties: undefined,
 			periods: periodsForLastFourYears
 		},
@@ -92,18 +85,38 @@ const scraper = {
 
 		const periodsForLastFourYears = InSISService.getPeriodsForLastYears(4)
 
-		// Catalog: daily at 3 AM during registration months
-		await scraper.queue.request.upsertJobScheduler(
-			ScraperInSISCatalogRequestScheduler,
-			{ pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *` },
-			buildCatalogSchedulerJob(periodsForLastFourYears)
-		)
-
-		// Study Plans: daily at 2 AM during registration months
+		// Study Plans: daily at 2 AM during registration months.
+		// Queues individual plan jobs which queue course scrapes directly.
 		await scraper.queue.request.upsertJobScheduler(
 			ScraperInSISStudyPlansRequestScheduler,
 			{ pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *` },
 			buildStudyPlansSchedulerJob(periodsForLastFourYears)
+		)
+
+		// Academic Schedules: daily at 1 AM year-round
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISAcademicSchedulesRequestScheduler,
+			{ pattern: '0 1 * * *' },
+			{
+				name: 'InSIS Academic Schedules Request (daily at 1 AM)',
+				data: {
+					type: 'InSIS:AcademicSchedules' as const
+				},
+				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+			}
+		)
+
+		// Faculty Timetables: weekly on Sunday at midnight, year-round
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISFacultyTimetablesRequestScheduler,
+			{ pattern: '0 0 * * 0' },
+			{
+				name: 'InSIS Faculty Timetables Request (weekly Sunday midnight)',
+				data: {
+					type: 'InSIS:FacultyTimetables' as const
+				},
+				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+			}
 		)
 
 		logger.info('bullmq.schedulers_configured')

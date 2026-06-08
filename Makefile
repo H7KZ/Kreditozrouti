@@ -3,7 +3,8 @@
 		build-docker-images run-local-docker \
 		stop-local-docker clear-redis \
 		scrape-catalog scrape-catalog-turbo scrape-catalog-normal \
-		scrape-studyplans scrape-studyplans-turbo scrape-studyplans-normal
+		scrape-studyplans scrape-studyplans-turbo scrape-studyplans-normal \
+		scrape-academic-schedules
 
 # API_URL and COMMAND_TOKEN can be overridden:
 #   make scrape-catalog API_URL=https://api.kreditozrouti.cz COMMAND_TOKEN=mytoken
@@ -48,6 +49,16 @@ lint:
 	--names "API,CLIENT,SCRAPER" \
 	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
 
+# 'cd api && npm run test' \
+# 'cd client && npm run test' \
+# --names "API,CLIENT,SCRAPER" \
+# --prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
+test:
+	concurrently \
+	'cd scraper && npm run test' \
+	--names "SCRAPER" \
+	--prefix-colors "bgMagenta.bold"
+
 type-check:
 	concurrently \
 	'cd api && npm run type-check' \
@@ -73,22 +84,13 @@ preview:
 	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
 
 scrape-catalog:
-	bash scripts/scrape.sh $(API_URL) polite catalog $(COMMAND_TOKEN)
-
-scrape-catalog-normal:
-	bash scripts/scrape.sh $(API_URL) normal catalog $(COMMAND_TOKEN)
-
-scrape-catalog-turbo:
-	bash scripts/scrape.sh $(API_URL) turbo catalog $(COMMAND_TOKEN)
+	bash scripts/scrape.sh $(API_URL) catalog $(COMMAND_TOKEN)
 
 scrape-studyplans:
-	bash scripts/scrape.sh $(API_URL) polite studyplans $(COMMAND_TOKEN)
+	bash scripts/scrape.sh $(API_URL) studyplans $(COMMAND_TOKEN)
 
-scrape-studyplans-normal:
-	bash scripts/scrape.sh $(API_URL) normal studyplans $(COMMAND_TOKEN)
-
-scrape-studyplans-turbo:
-	bash scripts/scrape.sh $(API_URL) turbo studyplans $(COMMAND_TOKEN)
+scrape-academic-schedules:
+	bash scripts/scrape.sh $(API_URL) academic-schedules $(COMMAND_TOKEN)
 
 build-docker-images:
 	docker buildx build -t kreditozrouti-api -f ./api/Dockerfile . && \
