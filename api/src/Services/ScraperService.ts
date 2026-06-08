@@ -3,6 +3,7 @@ import { scraper } from '@api/bullmq'
 import { mysql } from '@api/clients'
 import { StudyPlanCourseTable } from '@api/Database/types'
 import { Errors } from '@api/Errors'
+import { getPeriodsForLastYears } from '@shared/domain/period'
 
 interface Period {
 	semester: InSISSemester | null
@@ -17,13 +18,14 @@ export default class ScraperService {
 	 * Enqueues a job to scrape the InSIS course catalog.
 	 */
 	static async enqueueCatalogScrape(options?: { faculties?: string[]; periods?: Period[] }): Promise<void> {
-		let allowedIdents: string[] = []
-		try {
-			const rows = await mysql.selectFrom(StudyPlanCourseTable._table).select('course_ident').distinct().execute()
-			allowedIdents = rows.map(r => r.course_ident)
-		} catch {
-			// DB unavailable — fall back to unrestricted scrape
+		const rows = await mysql.selectFrom(StudyPlanCourseTable._table).select('course_ident').distinct().execute()
+		const allowedIdents = rows.map(r => r.course_ident)
+
+		if (allowedIdents.length === 0) {
+			throw Errors.internal('No study plan courses in DB — run study plans scrape first before catalog')
 		}
+
+		const periods = options?.periods?.length ? options.periods : getPeriodsForLastYears(4)
 
 		// VŠE has a bounded set of study plan courses (~hundreds), safe for a Redis job payload
 		await scraper.queue.request.add(
@@ -31,9 +33,9 @@ export default class ScraperService {
 			{
 				type: 'InSIS:Catalog',
 				faculties: options?.faculties,
-				periods: options?.periods,
+				periods,
 				auto_queue_courses: true,
-				...(allowedIdents.length > 0 && { allowed_idents: allowedIdents })
+				allowed_idents: allowedIdents
 			},
 			{
 				deduplication: {
@@ -66,14 +68,17 @@ export default class ScraperService {
 	/**
 	 * Enqueues a job to scrape the InSIS study plans catalog.
 	 */
-	static async enqueueStudyPlansScrape(options?: { faculties?: string[]; periods?: Period[] }): Promise<void> {
+	static async enqueueStudyPlansScrape(options?: { faculties?: string[]; periods?: Period[]; auto_queue_courses?: boolean }): Promise<void> {
+		const periods = options?.periods?.length ? options.periods : getPeriodsForLastYears(4)
+
 		await scraper.queue.request.add(
 			'InSIS Study Plans Request (Manual)',
 			{
 				type: 'InSIS:StudyPlans',
 				faculties: options?.faculties,
-				periods: options?.periods,
-				auto_queue_study_plans: true
+				periods,
+				auto_queue_study_plans: true,
+				...(options?.auto_queue_courses && { auto_queue_courses: true })
 			},
 			{
 				deduplication: {

@@ -25,11 +25,13 @@ export interface ScraperInSISStudyPlansRequestJob extends ScraperRequestJobBase 
     faculties?: string[]
     periods?: { semester: InSISSemester | null; year: number }[]
     auto_queue_study_plans?: boolean
+    auto_queue_courses?: boolean
 }
 
 export interface ScraperInSISStudyPlanRequestJob extends ScraperRequestJobBase {
     type: 'InSIS:StudyPlan'
     url: string
+    auto_queue_courses?: boolean
 }
 
 export interface ScraperInSISAcademicSchedulesRequestJob extends ScraperRequestJobBase {

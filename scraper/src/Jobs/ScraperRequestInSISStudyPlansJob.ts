@@ -71,7 +71,11 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
             total_plans_to_queue: plans.urls.length
         })
 
-        await QueueService.queueStudyPlanRequests(plans.urls, url => ExtractInSISStudyPlanService.extractIdFromUrl(url))
+        await QueueService.queueStudyPlanRequests(
+            plans.urls,
+            url => ExtractInSISStudyPlanService.extractIdFromUrl(url),
+            { auto_queue_courses: data.auto_queue_courses }
+        )
     }
 
     return plans

@@ -60,13 +60,19 @@ export class QueueService {
         )
     }
 
-    static async queueStudyPlanRequests(planUrls: string[], extractIdFn: (url: string) => number | null, concurrency = 20): Promise<void> {
+    static async queueStudyPlanRequests(
+        planUrls: string[],
+        extractIdFn: (url: string) => number | null,
+        options?: { auto_queue_courses?: boolean },
+        concurrency = 20
+    ): Promise<void> {
         await runWithConcurrency(planUrls, concurrency, url =>
             scraper.queue.request.add(
                 'InSIS Study Plan Request (Study Plans)',
                 {
                     type: 'InSIS:StudyPlan',
-                    url
+                    url,
+                    ...(options?.auto_queue_courses && { auto_queue_courses: true })
                 },
                 {
                     deduplication: { id: `InSIS:StudyPlan:${extractIdFn(url)}` }
