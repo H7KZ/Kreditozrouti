@@ -83,7 +83,6 @@ export interface ScraperInSISCatalogResponseJob extends ScraperResponseJobBase {
 export interface ScraperInSISCourseResponseJob extends ScraperResponseJobBase {
     type: 'InSIS:Course'
     course: ScraperInSISCourse | null
-    content_hash: string
 }
 
 export interface ScraperInSISStudyPlansResponseJob extends ScraperResponseJobBase {

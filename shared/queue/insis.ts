@@ -49,7 +49,7 @@ export interface ScraperInSISCourse {
     study_load: ScraperInSISCourseStudyLoad[] | null
     timetable: ScraperInSISCourseTimetableUnit[] | null
     study_plans: ScraperInSISCourseStudyPlan[] | null
-    content_hash: string
+    content_hash: string | null
 }
 
 export interface ScraperInSISCourseAssessmentMethod {
