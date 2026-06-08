@@ -28,7 +28,7 @@ export default async function ScraperResponseInSISAcademicScheduleJob(data: Scra
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { insis_period_id, ...updatePayload } = periodPayload
+	const { insis_period_id, faculty_id: _faculty_id, ...updatePayload } = periodPayload
 
 	await mysql.insertInto(AcademicPeriodTable._table).values(periodPayload).onDuplicateKeyUpdate(updatePayload).execute()
 
@@ -38,16 +38,18 @@ export default async function ScraperResponseInSISAcademicScheduleJob(data: Scra
 		.where('insis_period_id', '=', schedule.insis_period_id)
 		.executeTakeFirstOrThrow()
 
-	await mysql.deleteFrom(AcademicScheduleEventTable._table).where('period_id', '=', period.id).execute()
+	await mysql.transaction().execute(async trx => {
+		await trx.deleteFrom(AcademicScheduleEventTable._table).where('period_id', '=', period.id).execute()
 
-	if (schedule.events.length > 0) {
-		const eventRows: NewAcademicScheduleEvent[] = schedule.events.map(event => ({
-			period_id: period.id,
-			title: event.title,
-			starts_at: event.starts_at,
-			ends_at: event.ends_at
-		}))
+		if (schedule.events.length > 0) {
+			const eventRows: NewAcademicScheduleEvent[] = schedule.events.map(event => ({
+				period_id: period.id,
+				title: event.title,
+				starts_at: event.starts_at,
+				ends_at: event.ends_at
+			}))
 
-		await mysql.insertInto(AcademicScheduleEventTable._table).values(eventRows).execute()
-	}
+			await trx.insertInto(AcademicScheduleEventTable._table).values(eventRows).execute()
+		}
+	})
 }

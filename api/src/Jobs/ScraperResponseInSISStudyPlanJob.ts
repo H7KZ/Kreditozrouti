@@ -121,7 +121,14 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | null> {
 	if (!faculty.ident) return null
 
-	await mysql.insertInto(FacultyTable._table).ignore().values({ id: faculty.ident, title: null, is_schedule_publicly_visible: false }).execute()
+	await mysql
+		.insertInto(FacultyTable._table)
+		.ignore()
+		.values({ id: faculty.ident, title: faculty.title ?? null, is_schedule_publicly_visible: false })
+		.execute()
+	if (faculty.title) {
+		await mysql.updateTable(FacultyTable._table).set({ title: faculty.title }).where('id', '=', faculty.ident).where('title', 'is', null).execute()
+	}
 
 	return faculty.ident
 }

@@ -1,9 +1,9 @@
 import type { InSISSemester } from '@shared/domain/insis'
+import { getPeriodsForLastYears } from '@shared/domain/period'
 import { scraper } from '@api/bullmq'
 import { mysql } from '@api/clients'
 import { StudyPlanCourseTable } from '@api/Database/types'
 import { Errors } from '@api/Errors'
-import { getPeriodsForLastYears } from '@shared/domain/period'
 
 interface Period {
 	semester: InSISSemester | null
@@ -197,8 +197,6 @@ export default class ScraperService {
 
 			if (!data || !typeSet.has(data.type)) continue
 
-			await job.remove()
-
 			if (data.type === 'InSIS:Course') {
 				await scraper.queue.request.add(
 					'InSIS Course Request (Retry)',
@@ -213,6 +211,7 @@ export default class ScraperService {
 				)
 			}
 
+			await job.remove()
 			counts[data.type]++
 		}
 

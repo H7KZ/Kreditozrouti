@@ -72,6 +72,7 @@ export default async function ScraperRequestInSISAcademicSchedulesJob(
 
         return schedules
     } catch (error) {
+        if (error instanceof InSISRateLimitError) throw error
         LoggerJobContext.add({
             error: 'Processing error',
             message: (error as Error).message
