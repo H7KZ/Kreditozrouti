@@ -44,8 +44,11 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		await mysql
 			.insertInto('insis_faculties')
 			.ignore()
-			.values({ id: facultyId, title: null, is_schedule_publicly_visible: false })
+			.values({ id: facultyId, title: course.faculty.title ?? null, is_schedule_publicly_visible: false })
 			.execute()
+		if (course.faculty.title) {
+			await mysql.updateTable('insis_faculties').set({ title: course.faculty.title }).where('id', '=', facultyId).where('title', 'is', null).execute()
+		}
 	}
 
 	// Skip the rest if course hasn't changed since last scrape.
