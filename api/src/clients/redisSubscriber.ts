@@ -1,5 +1,5 @@
 import Redis from 'ioredis'
-import { redis } from '@api/clients'
+import { redis } from '@api/clients/index'
 import Config from '@api/Config/Config'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 

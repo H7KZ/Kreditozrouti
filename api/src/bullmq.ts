@@ -34,11 +34,11 @@ const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueu
 
 /**
  * Registration window months (with one-week early-start buffer):
- *   ZS window: June 9 â€“ September 25  â†’ months 6,7,8,9
- *   LS window: January 1 â€“ February 27 â†’ months 1,2
+ *   ZS window: June 9 to September 25 - months 6,7,8,9
+ *   LS window: January 1 to February 27 - months 1,2
  *
  * Study Plans runs at 2 AM during registration months.
- * It queues individual plan jobs which in turn queue course scrapes directly â€”
+ * It queues individual plan jobs which in turn queue course scrapes directly
  * no separate catalog scheduler needed.
  */
 const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9'
