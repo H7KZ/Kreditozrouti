@@ -2,7 +2,7 @@ import type { ScraperInSISFaculty } from '@shared/queue/insis'
 import type { ScraperInSISStudyPlanResponseJob } from '@shared/queue/jobs'
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
-import { CourseTable, FacultyTable, NewStudyPlan, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import { CourseTable, FacultyTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 
 /**
  * Syncs a scraped InSIS Study Plan into the database.
@@ -28,12 +28,6 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		return
 	}
 
-	const existingPlan = await mysql
-		.selectFrom(StudyPlanTable._table)
-		.select('id')
-		.where(eb => eb.and([eb('ident', '=', plan.ident), eb('faculty_id', '=', facultyId), eb('semester', '=', plan.semester), eb('year', '=', plan.year)]))
-		.executeTakeFirst()
-
 	const planMetadata = {
 		url: plan.url,
 		title: plan.title,
@@ -42,21 +36,33 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		study_length: plan.study_length
 	}
 
-	if (existingPlan) {
-		studyPlanId = existingPlan.id
-
-		await mysql.updateTable(StudyPlanTable._table).set(planMetadata).where('id', '=', studyPlanId).execute()
-	} else {
-		const newPlanValues: NewStudyPlan = {
+	const upsertResult = await mysql
+		.insertInto(StudyPlanTable._table)
+		.values({
 			ident: plan.ident,
 			faculty_id: facultyId,
 			semester: plan.semester,
 			year: plan.year,
 			...planMetadata
-		}
-		const result = await mysql.insertInto(StudyPlanTable._table).values(newPlanValues).executeTakeFirst()
+		})
+		.onDuplicateKeyUpdate(planMetadata)
+		.executeTakeFirst()
 
-		studyPlanId = Number(result.insertId)
+	if (upsertResult.insertId) {
+		studyPlanId = Number(upsertResult.insertId)
+	} else {
+		// ODKU on an existing row returns insertId=0 in mysql2 — fall back to a SELECT
+		const existing = await mysql
+			.selectFrom(StudyPlanTable._table)
+			.select('id')
+			.where(eb => eb.and([
+				eb('ident', '=', plan.ident),
+				eb('faculty_id', '=', facultyId),
+				eb('semester', '=', plan.semester),
+				eb('year', '=', plan.year)
+			]))
+			.executeTakeFirstOrThrow()
+		studyPlanId = existing.id
 	}
 
 	LoggerJobContext.add({
@@ -64,11 +70,11 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		study_plan_ident: plan.ident
 	})
 
-	// 3. Sync Courses (Always overwrite for a full plan scrape)
-	// Wipe existing courses for this plan to ensure deleted courses are removed
-	await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', studyPlanId).execute()
-
-	if (!plan.courses || plan.courses.length === 0) return
+	// Sync Courses (Always overwrite for a full plan scrape)
+	if (!plan.courses || plan.courses.length === 0) {
+		await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', studyPlanId).execute()
+		return
+	}
 
 	const incomingCourseIdents = plan.courses.map(c => c.ident)
 
@@ -106,9 +112,14 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		}
 	})
 
-	if (rowsToInsert.length > 0) {
-		await mysql.insertInto(StudyPlanCourseTable._table).values(rowsToInsert).execute()
-	}
+	// Transaction ensures DELETE+INSERT is atomic — a crash mid-sync won't leave the plan empty
+	await mysql.transaction().execute(async trx => {
+		await trx.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', studyPlanId).execute()
+
+		if (rowsToInsert.length > 0) {
+			await trx.insertInto(StudyPlanCourseTable._table).values(rowsToInsert).execute()
+		}
+	})
 
 	LoggerJobContext.add({
 		course_count: rowsToInsert.length
@@ -121,14 +132,9 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | null> {
 	if (!faculty.ident) return null
 
-	await mysql
-		.insertInto(FacultyTable._table)
-		.ignore()
-		.values({ id: faculty.ident, title: faculty.title ?? null, is_schedule_publicly_visible: false })
+	await mysql.insertInto(FacultyTable._table).ignore()
+		.values({ id: faculty.ident, is_schedule_publicly_visible: false })
 		.execute()
-	if (faculty.title) {
-		await mysql.updateTable(FacultyTable._table).set({ title: faculty.title }).where('id', '=', faculty.ident).where('title', 'is', null).execute()
-	}
 
 	return faculty.ident
 }
