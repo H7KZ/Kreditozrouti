@@ -93,21 +93,20 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		}
 	}
 
-	const rowsToInsert: NewStudyPlanCourse[] = plan.courses.map(item => {
-		let verifiedId: number | null = null
-
-		if (identToIdMap.has(item.ident)) {
-			verifiedId = identToIdMap.get(item.ident)!
-		}
-
-		return {
+	const seen = new Set<string>()
+	const rowsToInsert: NewStudyPlanCourse[] = []
+	for (const item of plan.courses) {
+		const key = `${item.ident}|${item.group}|${item.category}`
+		if (seen.has(key)) continue
+		seen.add(key)
+		rowsToInsert.push({
 			study_plan_id: studyPlanId,
 			course_ident: item.ident,
-			course_id: verifiedId,
+			course_id: identToIdMap.get(item.ident) ?? null,
 			group: item.group,
 			category: item.category
-		}
-	})
+		})
+	}
 
 	// Transaction ensures DELETE+INSERT is atomic — a crash mid-sync won't leave the plan empty
 	await mysql.transaction().execute(async trx => {
