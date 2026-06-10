@@ -27,12 +27,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		)
 	}
 
-	await createUniqueIndexSafe(db, 'idx_plan_courses_unique_lookup', StudyPlanCourseTable._table, [
-		'study_plan_id',
-		'course_ident',
-		'group',
-		'category',
-	])
+	await createUniqueIndexSafe(db, 'idx_plan_courses_unique_lookup', StudyPlanCourseTable._table, ['study_plan_id', 'course_ident', 'group', 'category'])
 }
 
 export async function down(db: Kysely<any>): Promise<void> {

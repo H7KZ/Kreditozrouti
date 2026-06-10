@@ -42,9 +42,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	let facultyId: string | null = null
 	if (course.faculty?.ident) {
 		facultyId = course.faculty.ident
-		await mysql.insertInto(FacultyTable._table).ignore()
-			.values({ id: facultyId, is_schedule_publicly_visible: false })
-			.execute()
+		await mysql.insertInto(FacultyTable._table).ignore().values({ id: facultyId }).execute()
 	}
 
 	// Skip the rest if course hasn't changed since last scrape.
@@ -70,8 +68,10 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	if (course.study_plans && course.study_plans.length > 0) {
 		const uniqueFacultyIdents = [...new Set(course.study_plans.map(p => p.facultyIdent).filter((id): id is string => !!id))]
 		if (uniqueFacultyIdents.length > 0) {
-			await mysql.insertInto(FacultyTable._table).ignore()
-				.values(uniqueFacultyIdents.map(id => ({ id, is_schedule_publicly_visible: false })))
+			await mysql
+				.insertInto(FacultyTable._table)
+				.ignore()
+				.values(uniqueFacultyIdents.map(id => ({ id })))
 				.execute()
 		}
 	}

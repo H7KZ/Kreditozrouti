@@ -55,12 +55,9 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		const existing = await mysql
 			.selectFrom(StudyPlanTable._table)
 			.select('id')
-			.where(eb => eb.and([
-				eb('ident', '=', plan.ident),
-				eb('faculty_id', '=', facultyId),
-				eb('semester', '=', plan.semester),
-				eb('year', '=', plan.year)
-			]))
+			.where(eb =>
+				eb.and([eb('ident', '=', plan.ident), eb('faculty_id', '=', facultyId), eb('semester', '=', plan.semester), eb('year', '=', plan.year)])
+			)
 			.executeTakeFirstOrThrow()
 		studyPlanId = existing.id
 	}
@@ -132,9 +129,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | null> {
 	if (!faculty.ident) return null
 
-	await mysql.insertInto(FacultyTable._table).ignore()
-		.values({ id: faculty.ident, is_schedule_publicly_visible: false })
-		.execute()
+	await mysql.insertInto(FacultyTable._table).ignore().values({ id: faculty.ident }).execute()
 
 	return faculty.ident
 }
