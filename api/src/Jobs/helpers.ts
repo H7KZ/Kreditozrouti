@@ -1,5 +1,5 @@
-import type { Kysely, Transaction } from 'kysely'
 import type { Database } from '@api/Database/types'
+import type { Kysely, Transaction } from 'kysely'
 import { FacultyTable } from '@api/Database/types'
 
 type DbClient = Kysely<Database> | Transaction<Database>
@@ -15,8 +15,7 @@ export async function withDeadlockRetry<T>(fn: () => Promise<T>, maxAttempts = 3
 		try {
 			return await fn()
 		} catch (error) {
-			const isDeadlock =
-				typeof error === 'object' && error !== null && (error as { errno?: number }).errno === DEADLOCK_ERRNO
+			const isDeadlock = typeof error === 'object' && error !== null && (error as { errno?: number }).errno === DEADLOCK_ERRNO
 			if (!isDeadlock || attempt === maxAttempts - 1) throw error
 			await new Promise<void>(resolve => setTimeout(resolve, 100 * 2 ** attempt))
 		}
@@ -32,5 +31,9 @@ export async function withDeadlockRetry<T>(fn: () => Promise<T>, maxAttempts = 3
 export async function insertFacultiesBatch(db: DbClient, ids: (string | null | undefined)[]): Promise<void> {
 	const unique = [...new Set(ids.filter((id): id is string => !!id))].sort()
 	if (unique.length === 0) return
-	await db.insertInto(FacultyTable._table).ignore().values(unique.map(id => ({ id }))).execute()
+	await db
+		.insertInto(FacultyTable._table)
+		.ignore()
+		.values(unique.map(id => ({ id })))
+		.execute()
 }

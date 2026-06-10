@@ -41,10 +41,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	const facultyId = course.faculty?.ident ?? null
 
-	await insertFacultiesBatch(mysql, [
-		course.faculty?.ident,
-		...(course.study_plans?.map(p => p.facultyIdent) ?? [])
-	])
+	await insertFacultiesBatch(mysql, [course.faculty?.ident, ...(course.study_plans?.map(p => p.facultyIdent) ?? [])])
 
 	// Skip the rest if course hasn't changed since last scrape.
 	// Normalize to string in case mysql2 returns a Date object for the date column.
@@ -140,11 +137,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 /**
  * Reconciles assessment methods.
  */
-async function syncAssessmentMethods(
-	trx: Transaction<Database>,
-	courseId: number,
-	incomingMethods: ScraperInSISCourseAssessmentMethod[]
-): Promise<void> {
+async function syncAssessmentMethods(trx: Transaction<Database>, courseId: number, incomingMethods: ScraperInSISCourseAssessmentMethod[]): Promise<void> {
 	await trx.deleteFrom(CourseAssessmentTable._table).where('course_id', '=', courseId).execute()
 
 	const unique = [...new Map(incomingMethods.map(m => [m.method, m])).values()].map(m => ({

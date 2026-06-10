@@ -11,7 +11,7 @@ const dialect = new MysqlDialect({
 	pool: createPool({
 		uri: Config.mysql.uri,
 		// mysql2 supports sessionVariables at runtime but the TS types omit it — cast is intentional
-		sessionVariables: { 'transaction_isolation': 'READ-COMMITTED' },
+		sessionVariables: { transaction_isolation: 'READ-COMMITTED' },
 		timezone: 'Z',
 		connectionLimit: 100, // Max 100 connections in pool
 		connectTimeout: 10_000, // 10 seconds to establish connection
