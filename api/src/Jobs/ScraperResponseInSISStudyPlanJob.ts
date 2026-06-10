@@ -48,7 +48,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		.onDuplicateKeyUpdate(planMetadata)
 		.executeTakeFirst()
 
-	if (upsertResult.insertId) {
+	if (Number(upsertResult.insertId) > 0) {
 		studyPlanId = Number(upsertResult.insertId)
 	} else {
 		// ODKU on an existing row returns insertId=0 in mysql2 — fall back to a SELECT
