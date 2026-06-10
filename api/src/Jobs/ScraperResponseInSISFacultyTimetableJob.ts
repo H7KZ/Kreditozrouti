@@ -2,12 +2,13 @@ import type { ScraperInSISFacultyTimetableResponseJob } from '@shared/queue/jobs
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { FacultyTable } from '@api/Database/types'
+import { insertFacultiesBatch } from '@api/Jobs/helpers'
 
 export default async function ScraperResponseInSISFacultyTimetableJob(data: ScraperInSISFacultyTimetableResponseJob): Promise<void> {
 	const { timetable } = data
 	if (!timetable?.ident) return
 
-	await mysql.insertInto(FacultyTable._table).ignore().values({ id: timetable.ident }).execute()
+	await insertFacultiesBatch(mysql, [timetable.ident])
 
 	await mysql
 		.updateTable(FacultyTable._table)

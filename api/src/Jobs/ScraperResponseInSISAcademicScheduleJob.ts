@@ -1,7 +1,8 @@
 import type { ScraperInSISAcademicScheduleResponseJob } from '@shared/queue/jobs'
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
-import { AcademicPeriodTable, AcademicScheduleEventTable, FacultyTable, NewAcademicPeriod, NewAcademicScheduleEvent } from '@api/Database/types'
+import { AcademicPeriodTable, AcademicScheduleEventTable, NewAcademicPeriod, NewAcademicScheduleEvent } from '@api/Database/types'
+import { insertFacultiesBatch } from '@api/Jobs/helpers'
 
 export default async function ScraperResponseInSISAcademicScheduleJob(data: ScraperInSISAcademicScheduleResponseJob): Promise<void> {
 	const { schedule } = data
@@ -12,7 +13,7 @@ export default async function ScraperResponseInSISAcademicScheduleJob(data: Scra
 		events_count: schedule.events.length
 	})
 
-	await mysql.insertInto(FacultyTable._table).ignore().values({ id: schedule.faculty_ident }).execute()
+	await insertFacultiesBatch(mysql, [schedule.faculty_ident])
 
 	const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
 
