@@ -122,8 +122,11 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		await syncTimetable(trx, course.id, course.timetable ?? [])
 	})
 
-	// Study-plan linking runs outside the transaction so a missing study plan row
-	// (race with the study plan scraper) doesn't roll back the entire course upsert.
+	// Study-plan linking runs outside the transaction to avoid deadlocks: concurrent jobs
+	// holding course-write locks contend on InnoDB range locks when UPDATing study_plan_courses.
+	// The unique index (idx_plan_courses_unique_lookup) reduces this to a single-row lock,
+	// but keeping the step outside also ensures a missing study plan row (race with the study
+	// plan scraper) never rolls back the entire course upsert.
 	if (course.study_plans && course.study_plans.length > 0) {
 		await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.study_plans)
 	}
