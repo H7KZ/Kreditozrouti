@@ -27,7 +27,7 @@ const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue,
 
 const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, withJobLogger(ScraperResponseQueue, ScraperResponseHandler), {
 	connection: redis.options,
-	concurrency: 4
+	concurrency: 2
 })
 
 // Scheduler Job Data

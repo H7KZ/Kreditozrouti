@@ -1,25 +1,16 @@
-import type { ScraperInSISFaculty } from '@shared/queue/insis'
 import type { ScraperInSISStudyPlanResponseJob } from '@shared/queue/jobs'
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
-import { CourseTable, FacultyTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import { CourseTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import { insertFacultiesBatch } from '@api/Jobs/helpers'
 
-/**
- * Syncs a scraped InSIS Study Plan into the database.
- */
 export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSISStudyPlanResponseJob): Promise<void> {
 	const { plan } = data
 
 	if (!plan) return
 
-	let facultyId: string | null = null
-	if (plan.faculty) {
-		facultyId = await upsertFaculty(plan.faculty)
-	}
+	const facultyId = plan.faculty?.ident ?? null
 
-	let studyPlanId: number | null = null
-
-	// We need these 4 fields to uniquely identify a plan
 	if (!plan.ident || !facultyId || !plan.semester || !plan.year) {
 		LoggerJobContext.add({
 			error: 'Missing required metadata (ident, faculty, semester, or year) for study plan resolution',
@@ -27,6 +18,8 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		})
 		return
 	}
+
+	await insertFacultiesBatch(mysql, [facultyId])
 
 	const planMetadata = {
 		url: plan.url,
@@ -36,7 +29,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		study_length: plan.study_length
 	}
 
-	const upsertResult = await mysql
+	await mysql
 		.insertInto(StudyPlanTable._table)
 		.values({
 			ident: plan.ident,
@@ -46,28 +39,24 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 			...planMetadata
 		})
 		.onDuplicateKeyUpdate(planMetadata)
-		.executeTakeFirst()
+		.execute()
 
-	if (Number(upsertResult.insertId) > 0) {
-		studyPlanId = Number(upsertResult.insertId)
-	} else {
-		// ODKU on an existing row returns insertId=0 in mysql2 — fall back to a SELECT
-		const existing = await mysql
-			.selectFrom(StudyPlanTable._table)
-			.select('id')
-			.where(eb =>
-				eb.and([eb('ident', '=', plan.ident), eb('faculty_id', '=', facultyId), eb('semester', '=', plan.semester), eb('year', '=', plan.year)])
-			)
-			.executeTakeFirstOrThrow()
-		studyPlanId = existing.id
-	}
+	const planRow = await mysql
+		.selectFrom(StudyPlanTable._table)
+		.select('id')
+		.where('ident', '=', plan.ident)
+		.where('faculty_id', '=', facultyId)
+		.where('semester', '=', plan.semester)
+		.where('year', '=', plan.year)
+		.executeTakeFirstOrThrow()
+
+	const studyPlanId = planRow.id
 
 	LoggerJobContext.add({
 		study_plan_id: studyPlanId,
 		study_plan_ident: plan.ident
 	})
 
-	// Sync Courses (Always overwrite for a full plan scrape)
 	if (!plan.courses || plan.courses.length === 0) {
 		await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', studyPlanId).execute()
 		return
@@ -75,11 +64,9 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 
 	const incomingCourseIdents = plan.courses.map(c => c.ident)
 
-	// Map from ident -> verified DB ID (for ident+semester+year matches)
 	const identToIdMap = new Map<string, number>()
 
-	// Check by ident + semester + year
-	if (incomingCourseIdents.length > 0 && plan.semester && plan.year) {
+	if (incomingCourseIdents.length > 0) {
 		const identMatches = await mysql
 			.selectFrom(CourseTable._table)
 			.select(['id', 'ident'])
@@ -108,27 +95,28 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		})
 	}
 
-	// Transaction ensures DELETE+INSERT is atomic — a crash mid-sync won't leave the plan empty
-	await mysql.transaction().execute(async trx => {
-		await trx.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', studyPlanId).execute()
+	// Fetch existing rows for this plan
+	const existing = await mysql
+		.selectFrom(StudyPlanCourseTable._table)
+		.select(['id', 'course_ident', 'group', 'category'])
+		.where('study_plan_id', '=', studyPlanId)
+		.execute()
 
-		if (rowsToInsert.length > 0) {
-			await trx.insertInto(StudyPlanCourseTable._table).values(rowsToInsert).execute()
-		}
-	})
+	// INSERT IGNORE new rows — insert intention locks only, no range lock
+	if (rowsToInsert.length > 0) {
+		await mysql.insertInto(StudyPlanCourseTable._table).ignore().values(rowsToInsert).execute()
+	}
+
+	// DELETE only the specific IDs no longer in the plan — point locks, not a range lock
+	const newKeys = new Set(rowsToInsert.map(r => `${r.course_ident}|${r.group}|${r.category}`))
+	const toDeleteIds = existing.filter(e => !newKeys.has(`${e.course_ident}|${e.group}|${e.category}`)).map(e => e.id)
+
+	if (toDeleteIds.length > 0) {
+		await mysql.deleteFrom(StudyPlanCourseTable._table).where('id', 'in', toDeleteIds).execute()
+	}
 
 	LoggerJobContext.add({
-		course_count: rowsToInsert.length
+		incoming_course_count: rowsToInsert.length,
+		deleted_course_count: toDeleteIds.length
 	})
-}
-
-/**
- * Helper to Upsert Faculty and return its ID.
- */
-async function upsertFaculty(faculty: ScraperInSISFaculty): Promise<string | null> {
-	if (!faculty.ident) return null
-
-	await mysql.insertInto(FacultyTable._table).ignore().values({ id: faculty.ident }).execute()
-
-	return faculty.ident
 }

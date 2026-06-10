@@ -6,12 +6,13 @@
 #
 # Arguments:
 #   API_URL  Base URL of the API  (e.g. http://localhost:40080 or https://api.kreditozrouti.cz)
-#   JOB      Which scraper to run:   catalog | studyplans | academic-schedules | retry-failed
+#   JOB      Which scraper to run:   catalog | studyplans | academic-schedules | faculty-timetables | retry-failed
 #   TOKEN    Command token (Authorization: Bearer)
 #
 # Examples:
 #   ./scripts/scrape.sh http://localhost:40080 catalog mysecrettoken
 #   ./scripts/scrape.sh http://localhost:40080 academic-schedules mysecrettoken
+#   ./scripts/scrape.sh http://localhost:40080 faculty-timetables mysecrettoken
 #   ./scripts/scrape.sh http://localhost:40080 retry-failed mysecrettoken
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -29,13 +30,14 @@ usage() {
     echo "Usage: $0 <API_URL> <JOB> <TOKEN>"
     echo ""
     echo "  API_URL   e.g. http://localhost:40080"
-    echo "  JOB       catalog | studyplans | academic-schedules | retry-failed"
+    echo "  JOB       catalog | studyplans | academic-schedules | faculty-timetables | retry-failed"
     echo "  TOKEN     command bearer token"
     echo ""
     echo "Examples:"
     echo "  $0 http://localhost:40080 catalog mytoken"
     echo "  $0 https://api.kreditozrouti.cz studyplans mytoken"
     echo "  $0 http://localhost:40080 academic-schedules mytoken"
+    echo "  $0 http://localhost:40080 faculty-timetables mytoken"
     echo "  $0 http://localhost:40080 retry-failed mytoken"
     exit 1
 }
@@ -50,8 +52,9 @@ case "$JOB" in
     catalog)            ENDPOINT="/commands/insis/catalog" ;;
     studyplans)         ENDPOINT="/commands/insis/studyplans" ;;
     academic-schedules) ENDPOINT="/commands/insis/academic-schedules" ;;
+    faculty-timetables) ENDPOINT="/commands/insis/faculty-timetables" ;;
     retry-failed)       ENDPOINT="/commands/insis/retry-failed" ;;
-    *) log_error "Invalid JOB '$JOB'. Must be: catalog | studyplans | academic-schedules | retry-failed"; usage ;;
+    *) log_error "Invalid JOB '$JOB'. Must be: catalog | studyplans | academic-schedules | faculty-timetables | retry-failed"; usage ;;
 esac
 
 # ------------------------------------------------------------------------------

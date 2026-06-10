@@ -10,6 +10,8 @@ import { logger } from '@api/logger'
 const dialect = new MysqlDialect({
 	pool: createPool({
 		uri: Config.mysql.uri,
+		// mysql2 supports sessionVariables at runtime but the TS types omit it — cast is intentional
+		sessionVariables: { transaction_isolation: 'READ-COMMITTED' },
 		timezone: 'Z',
 		connectionLimit: 100, // Max 100 connections in pool
 		connectTimeout: 10_000, // 10 seconds to establish connection
@@ -19,7 +21,7 @@ const dialect = new MysqlDialect({
 		keepAliveInitialDelay: 30_000, // 30 seconds
 		idleTimeout: 60_000, // Close idle connections after 60s
 		maxIdle: 10 // Keep max 10 idle connections
-	})
+	} as any)
 })
 
 /**
