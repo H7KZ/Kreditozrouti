@@ -193,6 +193,7 @@ export default class ScraperService {
 		])
 
 		for (const job of failedRequests) {
+			if (!job) continue
 			const data = job.data
 
 			if (!data || !typeSet.has(data.type)) continue
@@ -216,6 +217,7 @@ export default class ScraperService {
 		}
 
 		for (const job of failedResponses) {
+			if (!job) continue
 			const data = job.data
 
 			if (!data || !typeSet.has(data.type)) continue
