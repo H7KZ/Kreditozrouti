@@ -15,6 +15,7 @@ import {
 	CourseUnitSlotTable,
 	CourseUnitTable,
 	Database,
+	FacultyTable,
 	NewCourse,
 	NewCourseUnit,
 	NewCourseUnitSlot,
@@ -41,14 +42,9 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	let facultyId: string | null = null
 	if (course.faculty?.ident) {
 		facultyId = course.faculty.ident
-		await mysql
-			.insertInto('insis_faculties')
-			.ignore()
-			.values({ id: facultyId, title: course.faculty.title ?? null, is_schedule_publicly_visible: false })
+		await mysql.insertInto(FacultyTable._table).ignore()
+			.values({ id: facultyId, is_schedule_publicly_visible: false })
 			.execute()
-		if (course.faculty.title) {
-			await mysql.updateTable('insis_faculties').set({ title: course.faculty.title }).where('id', '=', facultyId).where('title', 'is', null).execute()
-		}
 	}
 
 	// Skip the rest if course hasn't changed since last scrape.
@@ -73,8 +69,10 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	if (course.study_plans && course.study_plans.length > 0) {
 		const uniqueFacultyIdents = [...new Set(course.study_plans.map(p => p.facultyIdent).filter((id): id is string => !!id))]
-		for (const ident of uniqueFacultyIdents) {
-			await mysql.insertInto('insis_faculties').ignore().values({ id: ident, title: null, is_schedule_publicly_visible: false }).execute()
+		if (uniqueFacultyIdents.length > 0) {
+			await mysql.insertInto(FacultyTable._table).ignore()
+				.values(uniqueFacultyIdents.map(id => ({ id, is_schedule_publicly_visible: false })))
+				.execute()
 		}
 	}
 
