@@ -1,0 +1,41 @@
+{
+    "general": {
+        "defaultApprovalMode": "auto_edit",
+        "topicUpdateNarration": true,
+        "checkpointing": {
+            "enabled": true
+        },
+        "maxAttempts": 10
+    },
+    "model": {
+        "name": "gemini-3.1-pro-preview",
+        "maxSessionTurns": -1,
+        "disableLoopDetection": false
+    },
+    "ui": {
+        "inlineThinkingMode": "full",
+        "compactToolOutput": true,
+        "collapseDrawerDuringApproval": true
+    },
+    "tools": {
+        "useRipgrep": true,
+        "disableLLMCorrection": false,
+        "shell": {
+            "enableShellOutputEfficiency": true
+        }
+    },
+    "security": {
+        "enablePermanentToolApproval": true,
+        "autoAddToPolicyByDefault": true,
+        "enableConseca": false
+    },
+    "experimental": {
+        "enableAgents": true,
+        "autoMemory": true,
+        "contextManagement": true,
+        "worktrees": true
+    },
+    "skills": {
+        "enabled": true
+    }
+}
