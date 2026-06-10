@@ -118,6 +118,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 	}
 
 	LoggerJobContext.add({
-		course_count: rowsToInsert.length
+		incoming_course_count: rowsToInsert.length,
+		deleted_course_count: toDeleteIds.length
 	})
 }
