@@ -20,7 +20,7 @@ export class FacultyTable {
 	updated_at!: ColumnType<Date, string | undefined, string | undefined>
 
 	title!: string | null
-	is_schedule_publicly_visible!: boolean
+	is_schedule_publicly_visible!: ColumnType<boolean, boolean | undefined, boolean>
 }
 
 export type Faculty<C = void, SP = void> = Selectable<FacultyTable> &
