@@ -1,18 +1,12 @@
 import type { ScraperResponseJob } from '@shared/queue/jobs'
 import { Job } from 'bullmq'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
+import { withDeadlockRetry } from '@api/Jobs/helpers'
 import ScraperResponseInSISAcademicScheduleJob from '@api/Jobs/ScraperResponseInSISAcademicScheduleJob'
 import ScraperResponseInSISCourseJob from '@api/Jobs/ScraperResponseInSISCourseJob'
 import ScraperResponseInSISFacultyTimetableJob from '@api/Jobs/ScraperResponseInSISFacultyTimetableJob'
 import ScraperResponseInSISStudyPlanJob from '@api/Jobs/ScraperResponseInSISStudyPlanJob'
 
-/**
- * Main entry point for processing scraper response jobs.
- * Routes jobs to specific handlers based on the job type and logs execution time.
- *
- * @param job - The BullMQ job object containing the scraper response data.
- * @throws Propagates exceptions to trigger BullMQ retry logic.
- */
 export default async function ScraperResponseHandler(job: Job<ScraperResponseJob>): Promise<void> {
 	const { type } = job.data
 	const start = process.hrtime()
@@ -28,30 +22,29 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
 
 	await LoggerJobContext.run(async () => {
 		try {
-			switch (type) {
-				case 'InSIS:Course':
-					await ScraperResponseInSISCourseJob(job.data)
-					break
-				case 'InSIS:StudyPlan':
-					await ScraperResponseInSISStudyPlanJob(job.data)
-					break
-				case 'InSIS:AcademicSchedule':
-					await ScraperResponseInSISAcademicScheduleJob(job.data)
-					break
-				case 'InSIS:FacultyTimetable':
-					await ScraperResponseInSISFacultyTimetableJob(job.data)
-					break
-
-				// Types currently handled without specific DB sync logic
-				case 'InSIS:Catalog':
-				case 'InSIS:StudyPlans':
-				case 'InSIS:AcademicSchedules':
-					break
-
-				default:
-					LoggerJobContext.add({ status: 'skipped', reason: 'unknown_type' })
-					break
-			}
+			await withDeadlockRetry(async () => {
+				switch (type) {
+					case 'InSIS:Course':
+						await ScraperResponseInSISCourseJob(job.data)
+						break
+					case 'InSIS:StudyPlan':
+						await ScraperResponseInSISStudyPlanJob(job.data)
+						break
+					case 'InSIS:AcademicSchedule':
+						await ScraperResponseInSISAcademicScheduleJob(job.data)
+						break
+					case 'InSIS:FacultyTimetable':
+						await ScraperResponseInSISFacultyTimetableJob(job.data)
+						break
+					case 'InSIS:Catalog':
+					case 'InSIS:StudyPlans':
+					case 'InSIS:AcademicSchedules':
+						break
+					default:
+						LoggerJobContext.add({ status: 'skipped', reason: 'unknown_type' })
+						break
+				}
+			})
 
 			const diff = process.hrtime(start)
 			const durationMs = (diff[0] * 1e9 + diff[1]) / 1e6
