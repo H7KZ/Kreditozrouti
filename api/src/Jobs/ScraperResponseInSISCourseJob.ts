@@ -44,11 +44,8 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		await mysql
 			.insertInto('insis_faculties')
 			.ignore()
-			.values({ id: facultyId, title: course.faculty.title ?? null, is_schedule_publicly_visible: false })
+			.values({ id: facultyId, title: null, is_schedule_publicly_visible: false })
 			.execute()
-		if (course.faculty.title) {
-			await mysql.updateTable('insis_faculties').set({ title: course.faculty.title }).where('id', '=', facultyId).where('title', 'is', null).execute()
-		}
 	}
 
 	// Skip the rest if course hasn't changed since last scrape.
@@ -122,9 +119,8 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		await syncTimetable(trx, course.id, course.timetable ?? [])
 	})
 
-	// Study-plan linking runs outside the transaction — same pattern as the faculty
-	// pre-upserts above — to avoid deadlocks when concurrent jobs UPDATE
-	// study_plan_courses rows in different orders while holding course-write locks.
+	// Study-plan linking runs outside the transaction so a missing study plan row
+	// (race with the study plan scraper) doesn't roll back the entire course upsert.
 	if (course.study_plans && course.study_plans.length > 0) {
 		await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.study_plans)
 	}
