@@ -120,13 +120,14 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 		await syncAssessmentMethods(trx, course.id, course.assessment_methods ?? [])
 		await syncTimetable(trx, course.id, course.timetable ?? [])
-
-		if (course.study_plans && course.study_plans.length > 0) {
-			// Faculty idents referenced by study plans are pre-upserted outside
-			// this transaction (see below) to avoid holding locks inside it.
-			await syncStudyPlansFromCourse(trx, course.id, course.ident ?? '', course.study_plans)
-		}
 	})
+
+	// Study-plan linking runs outside the transaction — same pattern as the faculty
+	// pre-upserts above — to avoid deadlocks when concurrent jobs UPDATE
+	// study_plan_courses rows in different orders while holding course-write locks.
+	if (course.study_plans && course.study_plans.length > 0) {
+		await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.study_plans)
+	}
 
 	await redis.publish(
 		`course:updated:${course.id}`,
@@ -242,18 +243,9 @@ async function syncSlotsForUnit(trx: Transaction<Database>, unitId: number, inco
 /**
  * Links this course to Study Plans found on the course page.
  */
-async function syncStudyPlansFromCourse(
-	trx: Transaction<Database>,
-	courseId: number,
-	courseIdent: string,
-	plans: ScraperInSISCourseStudyPlan[]
-): Promise<void> {
+async function syncStudyPlansFromCourse(courseId: number, courseIdent: string, plans: ScraperInSISCourseStudyPlan[]): Promise<void> {
 	for (const plan of plans) {
-		// Faculty is guaranteed to exist — pre-upserted outside the transaction
-		// to avoid deadlocks from concurrent jobs locking the same faculty rows.
-
-		// 1. Find Study Plan
-		const studyPlan = await trx
+		const studyPlan = await mysql
 			.selectFrom(StudyPlanTable._table)
 			.select('id')
 			.where(eb =>
@@ -268,8 +260,7 @@ async function syncStudyPlansFromCourse(
 
 		if (!studyPlan) continue
 
-		// 3. Link Course to Plan
-		await trx
+		await mysql
 			.updateTable(StudyPlanCourseTable._table)
 			.set({ course_id: courseId })
 			.where('study_plan_id', '=', studyPlan.id)
