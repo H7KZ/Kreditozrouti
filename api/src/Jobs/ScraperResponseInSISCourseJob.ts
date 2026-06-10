@@ -15,13 +15,13 @@ import {
 	CourseUnitSlotTable,
 	CourseUnitTable,
 	Database,
-	FacultyTable,
 	NewCourse,
 	NewCourseUnit,
 	NewCourseUnitSlot,
 	StudyPlanCourseTable,
 	StudyPlanTable
 } from '@api/Database/types'
+import { insertFacultiesBatch } from '@api/Jobs/helpers'
 
 /**
  * Syncs a scraped InSIS course into the database.
@@ -39,11 +39,12 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		return
 	}
 
-	let facultyId: string | null = null
-	if (course.faculty?.ident) {
-		facultyId = course.faculty.ident
-		await mysql.insertInto(FacultyTable._table).ignore().values({ id: facultyId }).execute()
-	}
+	const facultyId = course.faculty?.ident ?? null
+
+	await insertFacultiesBatch(mysql, [
+		course.faculty?.ident,
+		...(course.study_plans?.map(p => p.facultyIdent) ?? [])
+	])
 
 	// Skip the rest if course hasn't changed since last scrape.
 	// Normalize to string in case mysql2 returns a Date object for the date column.
@@ -62,17 +63,6 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 				.where('id', '=', course.id)
 				.execute()
 			return
-		}
-	}
-
-	if (course.study_plans && course.study_plans.length > 0) {
-		const uniqueFacultyIdents = [...new Set(course.study_plans.map(p => p.facultyIdent).filter((id): id is string => !!id))]
-		if (uniqueFacultyIdents.length > 0) {
-			await mysql
-				.insertInto(FacultyTable._table)
-				.ignore()
-				.values(uniqueFacultyIdents.map(id => ({ id })))
-				.execute()
 		}
 	}
 
@@ -150,39 +140,21 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 /**
  * Reconciles assessment methods.
  */
-async function syncAssessmentMethods(trx: Transaction<Database>, courseId: number, incomingMethods: ScraperInSISCourseAssessmentMethod[]): Promise<void> {
-	const existingMethods = await trx.selectFrom(CourseAssessmentTable._table).selectAll().where('course_id', '=', courseId).execute()
+async function syncAssessmentMethods(
+	trx: Transaction<Database>,
+	courseId: number,
+	incomingMethods: ScraperInSISCourseAssessmentMethod[]
+): Promise<void> {
+	await trx.deleteFrom(CourseAssessmentTable._table).where('course_id', '=', courseId).execute()
 
-	// 1. Deduplicate incoming methods using a Map
-	const incomingMap = new Map(incomingMethods.map(m => [m.method, m]))
-	const existingMap = new Map(existingMethods.map(m => [m.method, m]))
+	const unique = [...new Map(incomingMethods.map(m => [m.method, m])).values()].map(m => ({
+		course_id: courseId,
+		method: m.method,
+		weight: m.weight
+	}))
 
-	// Delete removed
-	// (Iterate existing methods; if not found in incoming unique map, delete it)
-	const toDeleteIds = existingMethods.filter(em => em.method && !incomingMap.has(em.method)).map(em => em.id)
-	if (toDeleteIds.length > 0) {
-		await trx.deleteFrom(CourseAssessmentTable._table).where('id', 'in', toDeleteIds).execute()
-	}
-
-	// Update weights
-	for (const existing of existingMethods) {
-		const incoming = existing.method ? incomingMap.get(existing.method) : null
-		if (incoming && existing.weight !== incoming.weight) {
-			await trx.updateTable(CourseAssessmentTable._table).set({ weight: incoming.weight }).where('id', '=', existing.id).execute()
-		}
-	}
-
-	// Insert new
-	const toInsert = Array.from(incomingMap.values())
-		.filter(im => im.method && !existingMap.has(im.method))
-		.map(im => ({
-			course_id: courseId,
-			method: im.method,
-			weight: im.weight
-		}))
-
-	if (toInsert.length > 0) {
-		await trx.insertInto(CourseAssessmentTable._table).values(toInsert).execute()
+	if (unique.length > 0) {
+		await trx.insertInto(CourseAssessmentTable._table).values(unique).execute()
 	}
 }
 
