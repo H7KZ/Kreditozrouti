@@ -108,7 +108,9 @@ selector: #titulek h1
   split on " - " → first token is faculty ident
 ```
 
-**Schedule visibility** (`is_schedule_publicly_visible`) is set by the faculty timetable scraper (`InSIS:FacultyTimetable` response job). The course extractor reads this flag from the DB via the faculty record — it does not determine visibility itself.
+**Schedule visibility** (`is_schedule_publicly_visible`) is set by the faculty timetable scraper (
+`InSIS:FacultyTimetable` response job). The course extractor reads this flag from the DB via the faculty record — it
+does not determine visibility itself.
 
 ### Level & Year of Study (`extractLevelAndYear`)
 
@@ -254,7 +256,8 @@ Faculty title from `Fakulta:` row (split before the first ` (`).
 Faculty ident is extracted from the `Počáteční období:` value: `"ZS 2023/2024 - FIS"` → split on `-`, last segment
 validated as `[A-Z0-9]+`.
 
-`is_schedule_publicly_visible` is always `false` from study plan pages — the faculty timetable scraper (`InSIS:FacultyTimetable`) is the authoritative source for this flag.
+`is_schedule_publicly_visible` is always `false` from study plan pages — the faculty timetable scraper (
+`InSIS:FacultyTimetable`) is the authoritative source for this flag.
 
 ### `extractCourses($)` → `ScraperInSISStudyPlanCourse[]`
 
