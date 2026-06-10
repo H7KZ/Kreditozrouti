@@ -12,7 +12,7 @@ export default async function ScraperResponseInSISAcademicScheduleJob(data: Scra
 		events_count: schedule.events.length
 	})
 
-	await mysql.insertInto(FacultyTable._table).ignore().values({ id: schedule.faculty_ident, title: null, is_schedule_publicly_visible: false }).execute()
+	await mysql.insertInto(FacultyTable._table).ignore().values({ id: schedule.faculty_ident }).execute()
 
 	const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
 

@@ -15,6 +15,7 @@ import {
 	CourseUnitSlotTable,
 	CourseUnitTable,
 	Database,
+	FacultyTable,
 	NewCourse,
 	NewCourseUnit,
 	NewCourseUnitSlot,
@@ -41,14 +42,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	let facultyId: string | null = null
 	if (course.faculty?.ident) {
 		facultyId = course.faculty.ident
-		await mysql
-			.insertInto('insis_faculties')
-			.ignore()
-			.values({ id: facultyId, title: course.faculty.title ?? null, is_schedule_publicly_visible: false })
-			.execute()
-		if (course.faculty.title) {
-			await mysql.updateTable('insis_faculties').set({ title: course.faculty.title }).where('id', '=', facultyId).where('title', 'is', null).execute()
-		}
+		await mysql.insertInto(FacultyTable._table).ignore().values({ id: facultyId }).execute()
 	}
 
 	// Skip the rest if course hasn't changed since last scrape.
@@ -73,8 +67,12 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	if (course.study_plans && course.study_plans.length > 0) {
 		const uniqueFacultyIdents = [...new Set(course.study_plans.map(p => p.facultyIdent).filter((id): id is string => !!id))]
-		for (const ident of uniqueFacultyIdents) {
-			await mysql.insertInto('insis_faculties').ignore().values({ id: ident, title: null, is_schedule_publicly_visible: false }).execute()
+		if (uniqueFacultyIdents.length > 0) {
+			await mysql
+				.insertInto(FacultyTable._table)
+				.ignore()
+				.values(uniqueFacultyIdents.map(id => ({ id })))
+				.execute()
 		}
 	}
 
@@ -122,9 +120,11 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		await syncTimetable(trx, course.id, course.timetable ?? [])
 	})
 
-	// Study-plan linking runs outside the transaction — same pattern as the faculty
-	// pre-upserts above — to avoid deadlocks when concurrent jobs UPDATE
-	// study_plan_courses rows in different orders while holding course-write locks.
+	// Study-plan linking runs outside the transaction to avoid deadlocks: concurrent jobs
+	// holding course-write locks contend on InnoDB range locks when UPDATing study_plan_courses.
+	// The unique index (idx_plan_courses_unique_lookup) reduces this to a single-row lock,
+	// but keeping the step outside also ensures a missing study plan row (race with the study
+	// plan scraper) never rolls back the entire course upsert.
 	if (course.study_plans && course.study_plans.length > 0) {
 		await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.study_plans)
 	}
