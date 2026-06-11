@@ -281,7 +281,7 @@ export class StudyPlanCourseTable {
 	study_plan_id!: number
 	course_id!: number
 
-	/** Cached course identifier (e.g., "4IT101") for lookups when course_id is null. */
+	/** Course identifier (e.g., "4IT101") — used as the natural key alongside study_plan_id. */
 	course_ident!: string
 
 	created_at!: ColumnType<Date, string | undefined, never>
