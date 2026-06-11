@@ -1,6 +1,5 @@
 import type {
 	ScraperInSISCourseAssessmentMethod,
-	ScraperInSISCourseStudyPlan,
 	ScraperInSISCourseTimetableSlot,
 	ScraperInSISCourseTimetableUnit
 } from '@shared/queue/insis'
@@ -18,8 +17,8 @@ import {
 	NewCourse,
 	NewCourseUnit,
 	NewCourseUnitSlot,
-	StudyPlanCourseTable,
-	StudyPlanTable
+	StudyPlanCourseIdentTable,
+	StudyPlanCourseTable
 } from '@api/Database/types'
 import { insertFacultiesBatch } from '@api/Jobs/helpers'
 
@@ -112,9 +111,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	// The unique index (idx_plan_courses_unique_lookup) reduces this to a single-row lock,
 	// but keeping the step outside also ensures a missing study plan row (race with the study
 	// plan scraper) never rolls back the entire course upsert.
-	if (course.study_plans && course.study_plans.length > 0) {
-		await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.study_plans)
-	}
+	await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.year)
 
 	await redis.publish(
 		`course:updated:${course.id}`,
@@ -206,33 +203,55 @@ async function syncSlotsForUnit(trx: Transaction<Database>, unitId: number, inco
 }
 
 /**
- * Links this course to Study Plans found on the course page.
+ * Links this course to all study plan editions that list its ident.
+ *
+ * Reads from study_plans_course_idents (owned by the study plan scraper) to find
+ * every plan edition that includes this course ident. For each, upserts into
+ * study_plan_courses with "newer year wins" semantics: only overwrites an existing
+ * course_id if the incoming course year is >= the year of the currently linked course.
  */
-async function syncStudyPlansFromCourse(courseId: number, courseIdent: string, plans: ScraperInSISCourseStudyPlan[]): Promise<void> {
-	for (const plan of plans) {
-		const studyPlan = await mysql
-			.selectFrom(StudyPlanTable._table)
-			.select('id')
-			.where(eb =>
-				eb.and([
-					eb('ident', '=', plan.ident),
-					plan.facultyIdent ? eb('faculty_id', '=', plan.facultyIdent) : eb.val(true),
-					eb('semester', '=', plan.semester),
-					eb('year', '=', plan.year)
-				])
-			)
+async function syncStudyPlansFromCourse(
+	courseId: number,
+	courseIdent: string,
+	courseYear: number | null
+): Promise<void> {
+	const planEntries = await mysql
+		.selectFrom(StudyPlanCourseIdentTable._table)
+		.select(['study_plan_id', 'group', 'category'])
+		.where('course_ident', '=', courseIdent)
+		.execute()
+
+	for (const entry of planEntries) {
+		const existing = await mysql
+			.selectFrom(`${StudyPlanCourseTable._table} as spc`)
+			.innerJoin(`${CourseTable._table} as ec`, 'ec.id', 'spc.course_id')
+			.select('ec.year')
+			.where('spc.study_plan_id', '=', entry.study_plan_id)
+			.where('spc.course_ident', '=', courseIdent)
 			.executeTakeFirst()
 
-		if (!studyPlan) continue
-
-		await mysql
-			.updateTable(StudyPlanCourseTable._table)
-			.set({ course_id: courseId })
-			.where('study_plan_id', '=', studyPlan.id)
-			.where('course_ident', '=', courseIdent)
-			.where('group', '=', plan.group)
-			.where('category', '=', plan.category)
-			.execute()
+		if (!existing) {
+			await mysql
+				.insertInto(StudyPlanCourseTable._table)
+				.values({
+					study_plan_id: entry.study_plan_id,
+					course_id: courseId,
+					course_ident: courseIdent,
+					group: entry.group,
+					category: entry.category
+				})
+				.execute()
+		} else {
+			const existingYear = existing.year as number | null
+			if (courseYear !== null && (existingYear === null || courseYear >= existingYear)) {
+				await mysql
+					.updateTable(StudyPlanCourseTable._table)
+					.set({ course_id: courseId })
+					.where('study_plan_id', '=', entry.study_plan_id)
+					.where('course_ident', '=', courseIdent)
+					.execute()
+			}
+		}
 	}
 }
 
