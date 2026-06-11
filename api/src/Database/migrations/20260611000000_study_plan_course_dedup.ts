@@ -3,6 +3,24 @@ import { StudyPlanCourseTable } from '@api/Database/types'
 import { createUniqueIndexSafe, dropIndexSafe } from './utils'
 
 export async function up(db: Kysely<any>): Promise<void> {
+	// Before deduplication: propagate any non-null course_id to sibling rows that
+	// have null. This ensures the winner row doesn't lose a course_id that a
+	// lower-priority sibling happened to have (e.g. the field_specific_bachelor row
+	// was scraped before the course existed; the university_wide row was scraped later
+	// and got course_id resolved).
+	await sql`
+		UPDATE ${sql.table(StudyPlanCourseTable._table)} t1
+		INNER JOIN (
+			SELECT study_plan_id, course_ident, MAX(course_id) AS best_course_id
+			FROM ${sql.table(StudyPlanCourseTable._table)}
+			WHERE course_id IS NOT NULL
+			GROUP BY study_plan_id, course_ident
+		) t2 ON t1.study_plan_id = t2.study_plan_id
+		     AND t1.course_ident  = t2.course_ident
+		SET t1.course_id = t2.best_course_id
+		WHERE t1.course_id IS NULL
+	`.execute(db)
+
 	// Delete all rows whose priority rank is worse than the best row for the
 	// same (study_plan_id, course_ident) pair. Rows with COUNT(*) = 1 are
 	// excluded by the HAVING clause — they have no competitor and are safe.
