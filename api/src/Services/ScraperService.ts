@@ -1,8 +1,8 @@
 import type { InSISSemester } from '@shared/domain/insis'
-import { getPeriodsForLastYears } from '@shared/domain/period'
+import { getPeriodsForLastYears, getUpcomingPeriod } from '@shared/domain/period'
 import { scraper } from '@api/bullmq'
 import { mysql } from '@api/clients'
-import { StudyPlanCourseTable } from '@api/Database/types'
+import { StudyPlanCourseIdentTable } from '@api/Database/types'
 import { Errors } from '@api/Errors'
 
 interface Period {
@@ -18,14 +18,14 @@ export default class ScraperService {
 	 * Enqueues a job to scrape the InSIS course catalog.
 	 */
 	static async enqueueCatalogScrape(options?: { faculties?: string[]; periods?: Period[] }): Promise<void> {
-		const rows = await mysql.selectFrom(StudyPlanCourseTable._table).select('course_ident').distinct().execute()
+		const rows = await mysql.selectFrom(StudyPlanCourseIdentTable._table).select('course_ident').distinct().execute()
 		const allowedIdents = rows.map(r => r.course_ident)
 
 		if (allowedIdents.length === 0) {
-			throw Errors.internal('No study plan courses in DB — run study plans scrape first before catalog')
+			throw Errors.internal('No course idents in DB — run study plans scrape first before catalog')
 		}
 
-		const periods = options?.periods?.length ? options.periods : getPeriodsForLastYears(4)
+		const periods = options?.periods?.length ? options.periods : [getUpcomingPeriod()]
 
 		// VŠE has a bounded set of study plan courses (~hundreds), safe for a Redis job payload
 		await scraper.queue.request.add(
