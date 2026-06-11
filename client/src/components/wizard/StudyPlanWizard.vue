@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { InSISSemester } from '@shared/domain/insis'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import WizardStepCompletedCourses from '@client/components/wizard/WizardStepCompletedCourses.vue'
@@ -53,13 +54,13 @@ function handleProceedToStep4() {
 }
 
 /** Handle toggling a study plan selection */
-function handleToggleStudyPlan(id: number, ident: string, title: string) {
-	wizardStore.toggleStudyPlan(id, ident, title)
+function handleToggleStudyPlan(id: number, ident: string, title: string, year: number | null, semester: string | null) {
+	wizardStore.toggleStudyPlan(id, ident, title, year, semester as InSISSemester | null)
 }
 
 /** Handle selecting a single study plan (for quick proceed) */
-function handleSelectStudyPlan(id: number, ident: string, title: string) {
-	wizardStore.selectStudyPlan(id, ident, title)
+function handleSelectStudyPlan(id: number, ident: string, title: string, year: number | null, semester: string | null) {
+	wizardStore.selectStudyPlan(id, ident, title, year, semester as InSISSemester | null)
 }
 </script>
 

@@ -99,24 +99,24 @@ export const useWizardStore = defineStore('wizard', () => {
 		persist()
 	}
 
-	function toggleStudyPlan(id: number, ident: string | null, title: string | null) {
+	function toggleStudyPlan(id: number, ident: string | null, title: string | null, year: number | null = null, semester: InSISSemester | null = null) {
 		const completedCoursesStore = useCompletedCoursesStore()
 		const wizardDataStore = useWizardDataStore()
 		const idx = selectedStudyPlans.value.findIndex((p) => p.id === id)
 		if (idx !== -1) {
 			selectedStudyPlans.value.splice(idx, 1)
 		} else {
-			selectedStudyPlans.value.push({ id, ident, title })
+			selectedStudyPlans.value.push({ id, ident, title, year, semester })
 		}
 		completedCoursesStore.clearCompletedCourses()
 		wizardDataStore.studyPlanCourses.splice(0)
 		persist()
 	}
 
-	function selectStudyPlan(id: number, ident: string | null, title: string | null) {
+	function selectStudyPlan(id: number, ident: string | null, title: string | null, year: number | null = null, semester: InSISSemester | null = null) {
 		const completedCoursesStore = useCompletedCoursesStore()
 		const wizardDataStore = useWizardDataStore()
-		selectedStudyPlans.value = [{ id, ident, title }]
+		selectedStudyPlans.value = [{ id, ident, title, year, semester }]
 		completedCoursesStore.clearCompletedCourses()
 		wizardDataStore.studyPlanCourses.splice(0)
 		persist()

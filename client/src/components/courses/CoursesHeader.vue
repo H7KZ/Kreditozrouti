@@ -25,11 +25,16 @@ const studyPlanInfo = computed(() => ({
 }))
 
 const coursesInfo = computed(() => {
-	const years = filtersStore.filters.years?.length ? filtersStore.filters.years : wizardStore.year ? [wizardStore.year] : []
-	const semesters = filtersStore.filters.semesters?.length ? filtersStore.filters.semesters : wizardStore.semester ? [wizardStore.semester] : []
+	const activePlan = wizardStore.selectedStudyPlans[0] ?? null
+	const years = filtersStore.filters.years?.length
+		? filtersStore.filters.years
+		: activePlan?.year ? [activePlan.year] : wizardStore.year ? [wizardStore.year] : []
+	const rawSemesters = filtersStore.filters.semesters?.length
+		? filtersStore.filters.semesters
+		: activePlan?.semester ? [activePlan.semester] : wizardStore.semester ? [wizardStore.semester] : []
 	return {
 		years,
-		semester: semesters.map((s) => getSemesterLabel(s)).join(', '),
+		semester: rawSemesters.map((s) => getSemesterLabel(s)).join(', '),
 	}
 })
 
