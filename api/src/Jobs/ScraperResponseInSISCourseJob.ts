@@ -111,7 +111,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	// The unique index (idx_plan_courses_unique_lookup) reduces this to a single-row lock,
 	// but keeping the step outside also ensures a missing study plan row (race with the study
 	// plan scraper) never rolls back the entire course upsert.
-	await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.year)
+	const planEntryCount = await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.year)
 
 	await redis.publish(
 		`course:updated:${course.id}`,
@@ -127,7 +127,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	LoggerJobContext.add({
 		assessment_method_count: course.assessment_methods?.length ?? 0,
 		timetable_unit_count: course.timetable?.length ?? 0,
-		study_plan_link_count: course.study_plans?.length ?? 0
+		study_plan_link_count: planEntryCount
 	})
 }
 
@@ -214,12 +214,14 @@ async function syncStudyPlansFromCourse(
 	courseId: number,
 	courseIdent: string,
 	courseYear: number | null
-): Promise<void> {
+): Promise<number> {
 	const planEntries = await mysql
 		.selectFrom(StudyPlanCourseIdentTable._table)
 		.select(['study_plan_id', 'group', 'category'])
 		.where('course_ident', '=', courseIdent)
 		.execute()
+
+	if (planEntries.length === 0) return 0
 
 	for (const entry of planEntries) {
 		const existing = await mysql
@@ -253,6 +255,8 @@ async function syncStudyPlansFromCourse(
 			}
 		}
 	}
+
+	return planEntries.length
 }
 
 /**
