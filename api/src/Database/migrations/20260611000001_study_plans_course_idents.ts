@@ -1,5 +1,5 @@
 import { Kysely, sql } from 'kysely'
-import { StudyPlanCourseIdentTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import { CourseTable, StudyPlanCourseIdentTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import { createUniqueIndexSafe, dropIndexSafe } from './utils'
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -65,7 +65,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     await sql.raw(`
         ALTER TABLE \`${StudyPlanCourseTable._table}\`
         ADD CONSTRAINT fk_spc_course_cascade
-        FOREIGN KEY (course_id) REFERENCES \`insis_courses\`(id) ON DELETE CASCADE
+        FOREIGN KEY (course_id) REFERENCES \`${CourseTable._table}\`(id) ON DELETE CASCADE
     `).execute(db)
 }
 
@@ -95,7 +95,7 @@ export async function down(db: Kysely<any>): Promise<void> {
     await sql.raw(`
         ALTER TABLE \`${StudyPlanCourseTable._table}\`
         ADD CONSTRAINT fk_spc_course_nullable
-        FOREIGN KEY (course_id) REFERENCES \`insis_courses\`(id) ON DELETE SET NULL
+        FOREIGN KEY (course_id) REFERENCES \`${CourseTable._table}\`(id) ON DELETE SET NULL
     `).execute(db)
 
     await dropIndexSafe(db, 'idx_spc_idents_unique', StudyPlanCourseIdentTable._table)
