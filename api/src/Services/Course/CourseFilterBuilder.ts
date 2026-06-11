@@ -13,6 +13,17 @@ type QueryBuilder = SelectQueryBuilder<
 >
 
 export class CourseFilterBuilder {
+	/**
+	 * Builds the base Kysely query for filtering courses, applying all necessary table joins
+	 * and filter predicates.
+	 *
+	 * @param {Partial<CoursesFilter>} filters - Active filter criteria to apply.
+	 * @param {string} [ignore] - The filter key to exclude for cross-filtering facet computation.
+	 * @param {{ units?: boolean; slots?: boolean; studyPlan?: boolean }} [forceJoin={}] - Forces
+	 *   inclusion of unit/slot/studyPlan joins even when filters don't require them (used by facet
+	 *   fast-path overrides).
+	 * @returns {QueryBuilder} Kysely query builder with joins and predicates applied.
+	 */
 	public static buildFilterQuery(
 		filters: Partial<CoursesFilter>,
 		ignore?: string,
@@ -39,14 +50,29 @@ export class CourseFilterBuilder {
 		return this.applyAllFilters(query, filters, ignore)
 	}
 
+	/**
+	 * @param {Partial<CoursesFilter>} filters - Active filter criteria.
+	 * @param {string} [ignore] - Filter key to skip (used for cross-filtering).
+	 * @returns {boolean} true when lecturers filter is active and not ignored.
+	 */
 	public static requiresUnitsJoin(filters: Partial<CoursesFilter>, ignore?: string): boolean {
 		return !!filters.lecturers?.length && ignore !== 'lecturers'
 	}
 
+	/**
+	 * @param {Partial<CoursesFilter>} filters - Active filter criteria.
+	 * @param {string} [ignore] - Filter key to skip (used for cross-filtering).
+	 * @returns {boolean} true when include_times or exclude_times filter is active and not ignored.
+	 */
 	public static requiresSlotsJoin(filters: Partial<CoursesFilter>, ignore?: string): boolean {
 		return (!!filters.include_times?.length && ignore !== 'include_times') || (!!filters.exclude_times?.length && ignore !== 'exclude_times')
 	}
 
+	/**
+	 * @param {Partial<CoursesFilter>} filters - Active filter criteria.
+	 * @param {string} [ignore] - Filter key to skip (used for cross-filtering).
+	 * @returns {boolean} true when study_plan_ids, groups, or categories filter is active and not ignored.
+	 */
 	public static requiresStudyPlanJoin(filters: Partial<CoursesFilter>, ignore?: string): boolean {
 		return (
 			(!!filters.study_plan_ids?.length && ignore !== 'study_plan_ids') ||
@@ -55,6 +81,14 @@ export class CourseFilterBuilder {
 		)
 	}
 
+	/**
+	 * Sanitizes a raw user search string into a boolean-mode MySQL FULLTEXT query string.
+	 * Special characters are stripped, words are prefixed with `+` and `*` wildcard.
+	 *
+	 * @param {string} input - Raw user search string.
+	 * @returns {string} Boolean-mode MySQL FULLTEXT query string with special chars stripped and
+	 *   words prefixed with `+` and `*` wildcard. Returns empty string if no valid words found.
+	 */
 	public static sanitizeFulltextQuery(input: string): string {
 		const cleaned = input.replace(/[+\-><()~*"@]/g, ' ').trim()
 		if (!cleaned) return ''
@@ -62,6 +96,14 @@ export class CourseFilterBuilder {
 		return words.map(w => `+${w}*`).join(' ')
 	}
 
+	/**
+	 * Applies all active filter predicates to the given query builder.
+	 *
+	 * @param {QueryBuilder} query - The base Kysely query builder to extend.
+	 * @param {Partial<CoursesFilter>} filters - Active filter criteria.
+	 * @param {string} [ignore] - Filter key to skip (used for cross-filtering).
+	 * @returns {QueryBuilder} Query builder with all active filter predicates applied.
+	 */
 	public static applyAllFilters(query: QueryBuilder, filters: Partial<CoursesFilter>, ignore?: string) {
 		// Identity filters
 		if (filters.ids?.length && !['id', 'ids'].includes(ignore!)) {
@@ -204,14 +246,19 @@ export class CourseFilterBuilder {
 		return query
 	}
 
+	/**
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @returns {boolean} true when any filter that requires table joins (times, lecturers, study
+	 *   plan) is active.
+	 */
 	public static filtersRequireJoins(filters: CoursesFilter): boolean {
 		return !!(
-			filters.include_times?.length ||
-			filters.exclude_times?.length ||
-			filters.lecturers?.length ||
-			filters.study_plan_ids?.length ||
-			filters.groups?.length ||
-			filters.categories?.length
+			(filters.include_times?.length ??
+			(filters.exclude_times?.length) ??
+			(filters.lecturers?.length) ??
+			(filters.study_plan_ids?.length) ??
+			filters.groups?.length) ??
+			(filters.categories?.length)
 		)
 	}
 }

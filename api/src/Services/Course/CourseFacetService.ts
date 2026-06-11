@@ -2,11 +2,18 @@ import { sql } from 'kysely'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import type { FacetItem } from '@shared/http/facets'
-import { Course, CourseTable, CourseUnitTable, ExcludeMethods } from '@api/Database/types'
+import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 import { CourseCacheService } from './CourseCacheService'
 
 export class CourseFacetService {
+	/**
+	 * Returns the facet object for the given filters, reading from Redis cache on hit
+	 * and writing on miss. Results are cached in Redis for 5 minutes.
+	 *
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @returns All facet dimensions. Results are cached in Redis for 5 minutes.
+	 */
 	static async getCourseFacets(filters: CoursesFilter) {
 		const cacheKey = CourseCacheService.buildFacetCacheKey(filters)
 
@@ -20,6 +27,12 @@ export class CourseFacetService {
 		return facets
 	}
 
+	/**
+	 * Fires all facet dimension queries concurrently and returns the combined result.
+	 *
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @returns Object with all facet dimensions computed in parallel.
+	 */
 	static async computeAllFacets(filters: CoursesFilter) {
 		const [faculties, days, lecturersRaw, languagesRaw, levels, semesters, years, groups, categories, ects, modesOfCompletion, timeRange] =
 			await Promise.all([
@@ -56,6 +69,16 @@ export class CourseFacetService {
 		}
 	}
 
+	/**
+	 * Computes a single facet dimension for a given Course table column.
+	 * Uses a direct-table fast path when no joins are required; falls back to the full filtered
+	 * query with joins otherwise.
+	 *
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @param {keyof ExcludeMethods<Course>} column - A Course table column to facet on.
+	 * @returns {Promise<FacetItem[]>} `{ value, count }[]` sorted by count desc. Uses direct-table
+	 *   fast path when no joins are required.
+	 */
 	static async getSimpleFacet(filters: CoursesFilter, column: keyof ExcludeMethods<Course>): Promise<FacetItem[]> {
 		const needsComplexQuery = CourseFilterBuilder.filtersRequireJoins(filters)
 
@@ -110,6 +133,12 @@ export class CourseFacetService {
 			.execute()
 	}
 
+	/**
+	 * Returns day values from course_unit_slots. Always forces the slots join.
+	 *
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @returns {Promise<FacetItem[]>} Day values from course_unit_slots; always forces slots join.
+	 */
 	// Always requires the slots join
 	static async getDayFacet(filters: CoursesFilter): Promise<FacetItem[]> {
 		return CourseFilterBuilder.buildFilterQuery(filters, 'include_times', { slots: true })
@@ -121,6 +150,14 @@ export class CourseFacetService {
 			.execute()
 	}
 
+	/**
+	 * Returns COALESCE(unit.lecturer, course.lecturers) aggregated, limited to top 50.
+	 * Always forces the units join.
+	 *
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @returns COALESCE(unit.lecturer, course.lecturers) aggregated, limited to top 50.
+	 *   Always forces units join.
+	 */
 	// Uses COALESCE to prefer unit-level lecturer when available
 	static async getLecturerFacet(filters: CoursesFilter) {
 		return CourseFilterBuilder.buildFilterQuery(filters, 'lecturers', { units: true })
@@ -133,6 +170,14 @@ export class CourseFacetService {
 			.execute()
 	}
 
+	/**
+	 * Returns pipe-delimited language strings from courses. Split into individual entries in
+	 * post-processing via splitPipeDelimitedFacet.
+	 *
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @returns Pipe-delimited language strings from courses; split in post-processing via
+	 *   splitPipeDelimitedFacet.
+	 */
 	// Pipe-delimited values handled in post-processing via splitPipeDelimitedFacet
 	static async getLanguageFacet(filters: CoursesFilter) {
 		return CourseFilterBuilder.buildFilterQuery(filters, 'languages')
@@ -144,6 +189,13 @@ export class CourseFacetService {
 			.execute()
 	}
 
+	/**
+	 * Returns group values from study_plan_course rows.
+	 * Returns empty array when no study_plan_ids filter is active.
+	 *
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @returns {Promise<FacetItem[]>} Empty array when no study_plan_ids filter is active.
+	 */
 	// Only available when filtering by study_plan_ids
 	static async getGroupFacet(filters: CoursesFilter): Promise<FacetItem[]> {
 		if (!filters.study_plan_ids) return []
@@ -156,6 +208,13 @@ export class CourseFacetService {
 			.execute()
 	}
 
+	/**
+	 * Returns category values from study_plan_course rows.
+	 * Returns empty array when no study_plan_ids filter is active.
+	 *
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @returns {Promise<FacetItem[]>} Empty array when no study_plan_ids filter is active.
+	 */
 	// Only available when filtering by study_plan_ids
 	static async getCategoryFacet(filters: CoursesFilter): Promise<FacetItem[]> {
 		if (!filters.study_plan_ids) return []
@@ -168,6 +227,14 @@ export class CourseFacetService {
 			.execute()
 	}
 
+	/**
+	 * Returns the min and max time values across all course unit slots matching the filters.
+	 * Defaults to `{ min_time: 0, max_time: 1440 }` when no slots exist.
+	 *
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @returns `{ min_time, max_time }` in minutes from midnight; defaults to `{ 0, 1440 }` when
+	 *   no slots exist.
+	 */
 	// Returns min/max time in minutes from midnight; used for the time range slider
 	static async getTimeRangeFacet(filters: CoursesFilter) {
 		const result = await CourseFilterBuilder.buildFilterQuery(filters, 'include_times', { slots: true })
@@ -181,6 +248,15 @@ export class CourseFacetService {
 		}
 	}
 
+	/**
+	 * Splits pipe-delimited facet values (e.g. "EN|CS") into individual entries, aggregates their
+	 * counts, deduplicates, sorts by count descending, and optionally limits the result.
+	 *
+	 * @param {{ value: string | null; count: number }[]} data - Raw facet rows with pipe-delimited
+	 *   value strings.
+	 * @param {number} [limit] - Optional max entries to return after sorting.
+	 * @returns {FacetItem[]} Deduplicated and aggregated FacetItem[].
+	 */
 	// Splits pipe-delimited facet values (e.g. "EN|CS") into individual entries and aggregates counts
 	static splitPipeDelimitedFacet(data: { value: string | null; count: number }[], limit?: number): FacetItem[] {
 		const map = new Map<string, number>()

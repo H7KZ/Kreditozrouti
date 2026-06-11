@@ -15,6 +15,16 @@ import {
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 
 export class CourseQueryService {
+	/**
+	 * Retrieves a paginated list of courses enriched with all relations.
+	 * Orchestrates count → ID pagination → parallel relation loads → in-memory merge.
+	 *
+	 * @param {Partial<CoursesFilter>} filters - Partial filter criteria to apply.
+	 * @param {number} [limit=20] - Maximum number of courses to return.
+	 * @param {number} [offset=0] - Number of courses to skip for pagination.
+	 * @returns {Promise<{ courses: CourseWithRelations[]; total: number }>} Courses enriched with
+	 *   faculty, units (with slots), assessments, and study plan membership, plus total match count.
+	 */
 	static async getCoursesWithRelations(filters: Partial<CoursesFilter>, limit = 20, offset = 0): Promise<{ courses: CourseWithRelations[]; total: number }> {
 		if (limit <= 0) return { courses: [], total: 0 }
 
@@ -52,6 +62,12 @@ export class CourseQueryService {
 		return { courses: enrichedCourses as unknown as CourseWithRelations[], total }
 	}
 
+	/**
+	 * Fetches the latest version of each course (MAX id per ident) linked to any of the given study plans.
+	 *
+	 * @param {number[]} studyPlanIds - Study plan IDs to filter by.
+	 * @returns {Promise<Course[]>} Latest version of each course linked to any of the given study plans.
+	 */
 	static getCoursesByStudyPlan(studyPlanIds: number[]): Promise<Course[]> {
 		return mysql
 			.selectFrom(`${CourseTable._table} as c1`)
@@ -69,6 +85,10 @@ export class CourseQueryService {
 			.execute()
 	}
 
+	/**
+	 * @param {Partial<CoursesFilter>} filters - Active filter criteria.
+	 * @returns {Promise<number>} COUNT DISTINCT on c1.id matching the filter.
+	 */
 	static async countFilteredCourses(filters: Partial<CoursesFilter>): Promise<number> {
 		const query = CourseFilterBuilder.buildFilterQuery(filters).select(eb => eb.fn.count<number>('c1.id').distinct().as('total'))
 
@@ -76,6 +96,12 @@ export class CourseQueryService {
 		return result?.total ?? 0
 	}
 
+	/**
+	 * @param {Partial<CoursesFilter>} filters - Active filter criteria.
+	 * @param {number} limit - Maximum number of IDs to return.
+	 * @param {number} offset - Number of IDs to skip.
+	 * @returns {Promise<number[]>} Ordered page of course IDs.
+	 */
 	static async fetchPaginatedCourseIds(filters: Partial<CoursesFilter>, limit: number, offset: number): Promise<number[]> {
 		const results = await CourseFilterBuilder.buildFilterQuery(filters)
 			.select('c1.id')
@@ -88,6 +114,13 @@ export class CourseQueryService {
 		return results.map(r => r.id)
 	}
 
+	/**
+	 * Fetches course rows for the given IDs, preserving the order of the input array
+	 * via a MySQL FIELD() sort expression.
+	 *
+	 * @param {number[]} ids - Array of course IDs to fetch.
+	 * @returns Courses in the same order as ids (FIELD() sort).
+	 */
 	static fetchCoursesByIds(ids: number[]) {
 		return mysql
 			.selectFrom(`${CourseTable._table} as c1`)
@@ -97,6 +130,10 @@ export class CourseQueryService {
 			.execute()
 	}
 
+	/**
+	 * @param {number[]} courseIds - Array of course IDs.
+	 * @returns Faculty rows for all faculties referenced by the given courses.
+	 */
 	static fetchFacultiesByCourseIds(courseIds: number[]) {
 		return mysql
 			.selectFrom(`${FacultyTable._table} as f1`)
@@ -109,6 +146,10 @@ export class CourseQueryService {
 			.execute()
 	}
 
+	/**
+	 * @param {number[]} courseIds - Array of course IDs.
+	 * @returns Course units with embedded slots array (jsonArrayFrom).
+	 */
 	static async fetchUnitsWithSlotsByCourseIds(courseIds: number[]) {
 		const units = await mysql
 			.selectFrom(`${CourseUnitTable._table} as cu1`)
@@ -142,10 +183,19 @@ export class CourseQueryService {
 		}))
 	}
 
+	/**
+	 * @param {number[]} courseIds - Array of course IDs.
+	 * @returns Assessment rows for the given course IDs.
+	 */
 	static fetchAssessmentsByCourseIds(courseIds: number[]) {
 		return mysql.selectFrom(`${CourseAssessmentTable._table} as ca1`).selectAll('ca1').where('ca1.course_id', 'in', courseIds).execute()
 	}
 
+	/**
+	 * @param {number[]} courseIds - Array of course IDs.
+	 * @param {number[]} studyPlanIds - Array of study plan IDs to restrict the join.
+	 * @returns study_plan_course rows linking the given courses to the given study plans.
+	 */
 	static fetchStudyPlanCoursesByCourseIds(courseIds: number[], studyPlanIds: number[]) {
 		return mysql
 			.selectFrom(`${StudyPlanCourseTable._table} as spc1`)
