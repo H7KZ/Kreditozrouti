@@ -6,10 +6,28 @@ Business logic lives in `api/src/Services/`. Controllers are thin: they validate
 
 ## CourseService
 
-**File:** `src/Services/CourseService.ts`
+**File:** `src/Services/CourseService.ts` (thin facade — ~20 lines)
 
-The most complex service in the API. Handles paginated course queries, facet calculation, time-conflict filtering, and
-full-text search — all while avoiding N+1 queries.
+`CourseService` is a public delegation facade. All implementation lives in focused sub-modules under
+`src/Services/Course/`:
+
+| Sub-module | Responsibility |
+|---|---|
+| `CourseFilterBuilder` | `buildFilterQuery`, `applyAllFilters`, join-requirement checks |
+| `CourseCacheService` | `buildFacetCacheKey`, Redis facet cache read/write |
+| `CourseQueryService` | Pagination, relation loading, `getCoursesByStudyPlan` |
+| `CourseFacetService` | All `get*Facet` methods, `computeAllFacets` |
+
+All existing consumers import from `@api/Services/CourseService` without change.
+
+The combined logic handles paginated course queries, facet calculation, time-conflict filtering, and full-text
+search — all while avoiding N+1 queries.
+
+### Study Plan Filter Guard
+
+When `study_plan_ids` is active, `CourseFilterBuilder.applyAllFilters` skips the `years` and `semesters`
+WHERE clauses. The `course_id` join already scopes results to exactly the plan's courses; applying a
+year/semester filter on `insis_courses` would incorrectly exclude linked courses scraped in a prior year.
 
 ### N+1 Avoidance Pattern
 

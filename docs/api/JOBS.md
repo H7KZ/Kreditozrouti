@@ -123,10 +123,16 @@ Syncs a fully scraped `ScraperInSISStudyPlan` into MySQL.
    INSERT new rows for each course in plan.courses:
    - Looks up course_id from DB by ident (nullable if course not yet scraped)
    - Stores course_ident as a cached fallback for future linking
+   ON DUPLICATE KEY UPDATE course_id = VALUES(course_id)
+   — updates the course_id pointer when the same (study_plan_id, ident, group, category)
+     row is re-inserted after the course has been re-scraped for a new year/semester.
 ```
 
 The `course_ident` field allows courses to be linked to study plans even when the course record doesn't exist yet —
 `ScraperResponseInSISCourseJob.syncStudyPlansFromCourse` handles the reverse link.
+
+The `ON DUPLICATE KEY UPDATE course_id` ensures that when a course is re-scraped for a new year, the link
+always points to the most recently scraped `insis_courses` row rather than accumulating stale ZS-YYYY pointers.
 
 ### No Cache Flush
 
