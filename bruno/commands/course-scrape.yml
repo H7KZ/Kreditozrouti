@@ -6,15 +6,18 @@ info:
 http:
   method: POST
   url: "{{base_url}}/commands/insis/course"
-  auth:
-    type: bearer
-    token: "{{api_command_token}}"
   body:
     type: json
     data: |-
       {
         "url": "https://insis.vse.cz/syllabus/..."
       }
+  auth:
+    type: bearer
+    token: "{{api_command_token}}"
 
 settings:
   encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

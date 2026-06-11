@@ -6,9 +6,6 @@ info:
 http:
   method: POST
   url: "{{base_url}}/commands/insis/studyplans"
-  auth:
-    type: bearer
-    token: "{{api_command_token}}"
   body:
     type: json
     data: |-
@@ -17,6 +14,12 @@ http:
         "periods": [],
         "auto_queue_study_plans": true
       }
+  auth:
+    type: bearer
+    token: "{{api_command_token}}"
 
 settings:
   encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
