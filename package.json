@@ -1,10 +1,10 @@
 {
-  "name": "kreditozrouti",
-  "private": true,
-  "workspaces": [
-    "api",
-    "client",
-    "scraper",
-    "shared"
-  ]
+    "name": "kreditozrouti",
+    "private": true,
+    "workspaces": [
+        "api",
+        "client",
+        "scraper",
+        "shared"
+    ]
 }

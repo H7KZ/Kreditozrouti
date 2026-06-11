@@ -1,0 +1,20 @@
+info:
+  name: Scrape Single Study Plan
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{base_url}}/commands/insis/studyplan"
+  auth:
+    type: bearer
+    token: "{{api_command_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "url": "https://insis.vse.cz/studijni/..."
+      }
+
+settings:
+  encodeUrl: true

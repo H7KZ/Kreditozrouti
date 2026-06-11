@@ -1,0 +1,11 @@
+info:
+  name: Trigger Course Scrape
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{base_url}}/courses/1/scrape"
+
+settings:
+  encodeUrl: true

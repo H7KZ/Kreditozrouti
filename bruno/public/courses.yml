@@ -1,0 +1,33 @@
+info:
+  name: List Courses
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{base_url}}/courses"
+  body:
+    type: json
+    data: |-
+      {
+        "page": 1,
+        "page_size": 20,
+        "title": "",
+        "faculty_ids": [],
+        "levels": [],
+        "semesters": [],
+        "years": [],
+        "modes_of_delivery": [],
+        "modes_of_completion": [],
+        "languages": [],
+        "years_of_study": [],
+        "lecturers": [],
+        "ects": [],
+        "study_plan_idents": [],
+        "study_plan_groups": [],
+        "study_plan_categories": [],
+        "exclude_times": []
+      }
+
+settings:
+  encodeUrl: true

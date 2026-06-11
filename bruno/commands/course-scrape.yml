@@ -1,0 +1,20 @@
+info:
+  name: Scrape Single Course
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{base_url}}/commands/insis/course"
+  auth:
+    type: bearer
+    token: "{{api_command_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "url": "https://insis.vse.cz/syllabus/..."
+      }
+
+settings:
+  encodeUrl: true

@@ -1,0 +1,20 @@
+info:
+  name: Retry Failed Scrapes
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{base_url}}/commands/insis/retry-failed"
+  auth:
+    type: bearer
+    token: "{{api_command_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "types": ["InSIS:Course", "InSIS:StudyPlan"]
+      }
+
+settings:
+  encodeUrl: true

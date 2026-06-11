@@ -1,0 +1,25 @@
+info:
+  name: Run Catalog Scrape
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{base_url}}/commands/insis/catalog"
+  body:
+    type: json
+    data: |-
+      {
+        "faculties": [],
+        "periods": [],
+        "auto_queue_courses": true
+      }
+  auth:
+    type: bearer
+    token: "{{api_command_token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

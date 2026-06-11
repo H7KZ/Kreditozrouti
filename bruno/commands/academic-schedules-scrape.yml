@@ -1,0 +1,14 @@
+info:
+  name: Run Academic Schedules Scrape
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{base_url}}/commands/insis/academic-schedules"
+  auth:
+    type: bearer
+    token: "{{api_command_token}}"
+
+settings:
+  encodeUrl: true

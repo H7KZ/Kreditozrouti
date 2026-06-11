@@ -6,7 +6,7 @@ import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseServi
 import ExtractInSISFacultyTimetableService from '@scraper/Services/ExtractInSISFacultyTimetableService'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 
-const fixturesRoot = path.join(__dirname, '../src/tests/fixtures')
+const fixturesRoot = path.join(__dirname, '../src/Tests/fixtures')
 
 function html(dir: string, file: string): string {
     return readFileSync(path.join(fixturesRoot, dir, file), 'utf8')

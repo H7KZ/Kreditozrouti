@@ -4,4 +4,4 @@ node_modules
 dist
 build
 
-src/tests/fixtures
+src/Tests/fixtures
