@@ -1,8 +1,33 @@
+import type { InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@shared/domain/insis'
 import type { ScraperInSISStudyPlanResponseJob } from '@shared/queue/jobs'
+import { sql } from 'kysely'
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
-import { CourseTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
+import { NewStudyPlanCourseIdent, StudyPlanCourseIdentTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import { insertFacultiesBatch } from '@api/Jobs/helpers'
+
+const GROUP_RANK: Record<InSISStudyPlanCourseGroup, number> = {
+	field_specific_bachelor: 0,
+	field_specific_master: 1,
+	faculty_specific: 2,
+	minor_specialization: 3,
+	university_wide: 4
+}
+
+const CATEGORY_RANK: Record<InSISStudyPlanCourseCategory, number> = {
+	state_exam: 0,
+	compulsory: 1,
+	elective: 2,
+	language: 3,
+	physical_education: 4,
+	beyond_scope: 5,
+	exchange_program: 6,
+	prohibited: 7
+}
+
+function priorityOf(group: InSISStudyPlanCourseGroup, category: InSISStudyPlanCourseCategory): number {
+	return GROUP_RANK[group] * 10 + CATEGORY_RANK[category]
+}
 
 export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSISStudyPlanResponseJob): Promise<void> {
 	const { plan } = data
@@ -58,61 +83,53 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 	})
 
 	if (!plan.courses || plan.courses.length === 0) {
+		await mysql.deleteFrom(StudyPlanCourseIdentTable._table).where('study_plan_id', '=', studyPlanId).execute()
 		await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', studyPlanId).execute()
 		return
 	}
 
-	const incomingCourseIdents = plan.courses.map(c => c.ident)
-
-	const identToIdMap = new Map<string, number>()
-
-	if (incomingCourseIdents.length > 0) {
-		const identMatches = await mysql
-			.selectFrom(CourseTable._table)
-			.select(['id', 'ident'])
-			.where('ident', 'in', incomingCourseIdents)
-			.where('semester', '=', plan.semester)
-			.where('year', '=', plan.year)
-			.execute()
-
-		for (const c of identMatches) {
-			if (c.ident) identToIdMap.set(c.ident, c.id)
-		}
-	}
-
-	const seen = new Set<string>()
-	const rowsToInsert: NewStudyPlanCourse[] = []
+	const bestByCourseIdent = new Map<string, NewStudyPlanCourseIdent>()
 	for (const item of plan.courses) {
-		const key = `${item.ident}|${item.group}|${item.category}`
-		if (seen.has(key)) continue
-		seen.add(key)
-		rowsToInsert.push({
+		const candidate: NewStudyPlanCourseIdent = {
 			study_plan_id: studyPlanId,
 			course_ident: item.ident,
-			course_id: identToIdMap.get(item.ident) ?? null,
 			group: item.group,
 			category: item.category
-		})
+		}
+		const existing = bestByCourseIdent.get(item.ident)
+		if (!existing || priorityOf(item.group, item.category) < priorityOf(existing.group, existing.category)) {
+			bestByCourseIdent.set(item.ident, candidate)
+		}
 	}
+	const rowsToInsert = [...bestByCourseIdent.values()]
 
 	// Fetch existing rows for this plan
-	const existing = await mysql
-		.selectFrom(StudyPlanCourseTable._table)
+	const existingRows = await mysql
+		.selectFrom(StudyPlanCourseIdentTable._table)
 		.select(['id', 'course_ident', 'group', 'category'])
 		.where('study_plan_id', '=', studyPlanId)
 		.execute()
 
-	// INSERT IGNORE new rows — insert intention locks only, no range lock
 	if (rowsToInsert.length > 0) {
-		await mysql.insertInto(StudyPlanCourseTable._table).ignore().values(rowsToInsert).execute()
+		await mysql
+			.insertInto(StudyPlanCourseIdentTable._table)
+			.values(rowsToInsert)
+			.onDuplicateKeyUpdate({
+				group: sql`VALUES(\`group\`)`, // group is a MySQL reserved word — must be escaped in VALUES()
+				category: sql`VALUES(category)`
+			})
+			.execute()
 	}
 
 	// DELETE only the specific IDs no longer in the plan — point locks, not a range lock
-	const newKeys = new Set(rowsToInsert.map(r => `${r.course_ident}|${r.group}|${r.category}`))
-	const toDeleteIds = existing.filter(e => !newKeys.has(`${e.course_ident}|${e.group}|${e.category}`)).map(e => e.id)
+	const newIdents = new Set(rowsToInsert.map(r => r.course_ident))
+	const staleIdents = existingRows.filter(e => !newIdents.has(e.course_ident))
+	const toDeleteIds = staleIdents.map(e => e.id)
+	const toDeleteIdents = staleIdents.map(e => e.course_ident)
 
 	if (toDeleteIds.length > 0) {
-		await mysql.deleteFrom(StudyPlanCourseTable._table).where('id', 'in', toDeleteIds).execute()
+		await mysql.deleteFrom(StudyPlanCourseIdentTable._table).where('id', 'in', toDeleteIds).execute()
+		await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', studyPlanId).where('course_ident', 'in', toDeleteIdents).execute()
 	}
 
 	LoggerJobContext.add({

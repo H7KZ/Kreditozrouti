@@ -279,9 +279,9 @@ export class StudyPlanCourseTable {
 	id!: Generated<number>
 
 	study_plan_id!: number
-	course_id!: number | null
+	course_id!: number
 
-	/** Cached course identifier (e.g., "4IT101") for lookups when course_id is null. */
+	/** Course identifier (e.g., "4IT101") — used as the natural key alongside study_plan_id. */
 	course_ident!: string
 
 	created_at!: ColumnType<Date, string | undefined, never>
@@ -297,6 +297,32 @@ export type StudyPlanCourse<SP = void, C = void> = Selectable<StudyPlanCourseTab
 export type NewStudyPlanCourse = Insertable<Omit<ExcludeMethods<StudyPlanCourseTable>, 'id' | 'created_at' | 'updated_at'>>
 
 export type StudyPlanCourseWithRelations = StudyPlanCourse<StudyPlanTable, null>
+
+// ---------------------------------------------------------------------------
+// StudyPlanCourseIdent
+// ---------------------------------------------------------------------------
+
+/**
+ * Authoritative list of course idents per study plan edition.
+ * Owned by the study plan scraper — never contains course_id.
+ */
+export class StudyPlanCourseIdentTable {
+	static readonly _table = 'study_plans_course_idents' as const
+
+	id!: Generated<number>
+
+	study_plan_id!: number
+	course_ident!: string
+
+	created_at!: ColumnType<Date, string | undefined, never>
+	updated_at!: ColumnType<Date, string | undefined, string | undefined>
+
+	group!: InSISStudyPlanCourseGroup
+	category!: InSISStudyPlanCourseCategory
+}
+
+export type StudyPlanCourseIdent<SP = void> = Selectable<StudyPlanCourseIdentTable> & (SP extends void ? unknown : { study_plan: SP | null })
+export type NewStudyPlanCourseIdent = Insertable<Omit<ExcludeMethods<StudyPlanCourseIdentTable>, 'id' | 'created_at' | 'updated_at'>>
 
 // ---------------------------------------------------------------------------
 // AcademicPeriod
@@ -357,6 +383,7 @@ type AllTableClasses =
 	| typeof CourseUnitSlotTable
 	| typeof StudyPlanTable
 	| typeof StudyPlanCourseTable
+	| typeof StudyPlanCourseIdentTable
 	| typeof FacultyTable
 	| typeof AcademicPeriodTable
 	| typeof AcademicScheduleEventTable

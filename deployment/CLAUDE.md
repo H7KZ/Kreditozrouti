@@ -67,9 +67,13 @@ Environment secrets/variables and write it into the version directory (`~/versio
 **`VITE_*` env vars** are baked into the client image at build time by Vite. Setting them at container runtime has no
 effect — the `docker-entrypoint.sh` placeholder-swap handles this at startup instead.
 
-**Redis data is persisted** via a named Docker volume (`redis-data-volume` in production, `redis-data-dev-volume` in development). Redis runs with AOF persistence (`--appendonly yes`) and `noeviction` policy so sessions and queue jobs are never silently dropped.
+**Redis data is persisted** via a named Docker volume (`redis-data-volume` in production, `redis-data-dev-volume` in
+development). Redis runs with AOF persistence (`--appendonly yes`) and `noeviction` policy so sessions and queue jobs
+are never silently dropped.
 
-**Both MySQL and Redis require named volumes to be created on the host before first `docker compose up`.** Production: `docker volume create mysql-data-volume && docker volume create redis-data-volume`. Development: `docker volume create mysql-data-dev-volume && docker volume create redis-data-dev-volume`.
+**Both MySQL and Redis require named volumes to be created on the host before first `docker compose up`.** Production:
+`docker volume create mysql-data-volume && docker volume create redis-data-volume`. Development:
+`docker volume create mysql-data-dev-volume && docker volume create redis-data-dev-volume`.
 
 **`deploy.sh` uses `$SCRIPT_DIR`** — must be called by path (`./deployment/deploy.sh`) or from within `deployment/`. The
 working directory doesn't matter; only the script's own location does.

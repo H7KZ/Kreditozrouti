@@ -378,7 +378,7 @@ export default class ExtractInSISCourseService {
 
     private static extractAuditInfo($: CheerioAPI): { last_modified_by: string | null; last_modified_date: string | null } {
         const bodyText = $('body').text().replace(/\s+/g, ' ')
-        const match = /Poslední změnu provedl (.*?)(?: dne | )(\d{1,2}\. \d{1,2}\. \d{4})/.exec(bodyText)
+        const match = /Poslední změnu provedla? (.*?)(?: dne | )(\d{1,2}\. \d{1,2}\. \d{4})/.exec(bodyText)
 
         if (!match) return { last_modified_by: null, last_modified_date: null }
 

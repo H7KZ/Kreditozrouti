@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { getUpcomingPeriod } from '@shared/domain/period'
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import { useCourseLabels } from '@client/composables'
@@ -24,10 +25,15 @@ const studyPlanInfo = computed(() => ({
 	idents: wizardStore.studyPlanIdents || [],
 }))
 
-const coursesInfo = computed(() => ({
-	years: filtersStore.filters.years,
-	semester: filtersStore.filters.semesters?.map((s) => getSemesterLabel(s)).join(', '),
-}))
+const coursesInfo = computed(() => {
+	const upcoming = getUpcomingPeriod()
+	const years = filtersStore.filters.years?.length ? filtersStore.filters.years : [upcoming.year]
+	const rawSemesters = filtersStore.filters.semesters?.length ? filtersStore.filters.semesters : [upcoming.semester]
+	return {
+		years,
+		semester: rawSemesters.map((s) => getSemesterLabel(s)).join(', '),
+	}
+})
 
 const selectedCoursesCount = computed(() => timetableStore.selectedCourseIds.length)
 

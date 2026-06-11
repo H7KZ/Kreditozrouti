@@ -108,9 +108,11 @@ export const useFiltersStore = defineStore('filters', () => {
 		if (completedIdents.length > 0) {
 			filters.value.completed_course_idents = [...completedIdents]
 		}
-		const period = getUpcomingPeriod()
-		filters.value.years = [period.year]
-		filters.value.semesters = [period.semester]
+		if (studyPlanIds.length === 0) {
+			const period = getUpcomingPeriod()
+			filters.value.years = [period.year]
+			filters.value.semesters = [period.semester]
+		}
 	}
 
 	function syncTimetableExcludeTimes(times: TimeSelection[]) {
@@ -125,9 +127,11 @@ export const useFiltersStore = defineStore('filters', () => {
 
 	function resetFilters(studyPlanIds: number[], completedIdents: string[]) {
 		filters.value = createDefaultFilters()
-		const period = getUpcomingPeriod()
-		filters.value.years = [period.year]
-		filters.value.semesters = [period.semester]
+		if (studyPlanIds.length === 0) {
+			const period = getUpcomingPeriod()
+			filters.value.years = [period.year]
+			filters.value.semesters = [period.semester]
+		}
 		if (studyPlanIds.length > 0) filters.value.study_plan_ids = [...studyPlanIds]
 		if (completedIdents.length > 0) filters.value.completed_course_idents = [...completedIdents]
 		hideConflictingCourses.value = false

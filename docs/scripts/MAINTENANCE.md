@@ -102,10 +102,10 @@ environment from the other's already-scraped InSIS data without triggering a ful
 sudo ./scripts/clone-db.sh <dev-to-prod|prod-to-dev>
 ```
 
-| Argument        | Description                                      |
-|-----------------|--------------------------------------------------|
-| `dev-to-prod`   | Copy the dev database into the prod database     |
-| `prod-to-dev`   | Copy the prod database into the dev database     |
+| Argument      | Description                                  |
+|---------------|----------------------------------------------|
+| `dev-to-prod` | Copy the dev database into the prod database |
+| `prod-to-dev` | Copy the prod database into the dev database |
 
 **Safety:**
 

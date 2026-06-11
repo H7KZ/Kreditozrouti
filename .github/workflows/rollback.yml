@@ -69,7 +69,7 @@ jobs:
   resolve:
     name: Resolve Deploy Variables
     runs-on: self-hosted
-    needs: [validate]
+    needs: [ validate ]
     outputs:
       image_prefix: ${{ steps.vars.outputs.image_prefix }}
       project_name: ${{ steps.vars.outputs.project_name }}
@@ -87,7 +87,7 @@ jobs:
 
   deploy-api:
     name: Rollback API to ${{ inputs.sha }}
-    needs: [resolve]
+    needs: [ resolve ]
     if: ${{ inputs.service == 'api' || inputs.service == 'all' }}
     uses: ./.github/workflows/_deploy-service.yml
     with:
@@ -100,7 +100,7 @@ jobs:
 
   deploy-client:
     name: Rollback Client to ${{ inputs.sha }}
-    needs: [resolve, deploy-api]
+    needs: [ resolve, deploy-api ]
     if: >-
       ${{ always() &&
           needs.resolve.result == 'success' &&
@@ -117,7 +117,7 @@ jobs:
 
   deploy-scraper:
     name: Rollback Scraper to ${{ inputs.sha }}
-    needs: [resolve, deploy-client]
+    needs: [ resolve, deploy-client ]
     if: >-
       ${{ always() &&
           needs.resolve.result == 'success' &&

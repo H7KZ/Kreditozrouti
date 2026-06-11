@@ -6,14 +6,14 @@ receives strongly-typed data from `@shared/queue/jobs` and writes results back t
 
 ## Job Routing Map
 
-| `job.data.type`            | Handler function                           | Source file                                        |
-|----------------------------|--------------------------------------------|-----------------------------------------------------|
-| `InSIS:Catalog`            | `ScraperRequestInSISCatalogJob`            | `Jobs/ScraperRequestInSISCatalogJob.ts`             |
-| `InSIS:Course`             | `ScraperRequestInSISCourseJob`             | `Jobs/ScraperRequestInSISCourseJob.ts`              |
-| `InSIS:StudyPlans`         | `ScraperRequestInSISStudyPlansJob`         | `Jobs/ScraperRequestInSISStudyPlansJob.ts`          |
-| `InSIS:StudyPlan`          | `ScraperRequestInSISStudyPlanJob`          | `Jobs/ScraperRequestInSISStudyPlanJob.ts`           |
-| `InSIS:FacultyTimetables`  | `ScraperRequestInSISFacultyTimetablesJob`  | `Jobs/ScraperRequestInSISFacultyTimetablesJob.ts`   |
-| `InSIS:FacultyTimetable`   | `ScraperRequestInSISFacultyTimetableJob`   | `Jobs/ScraperRequestInSISFacultyTimetableJob.ts`    |
+| `job.data.type`           | Handler function                          | Source file                                       |
+|---------------------------|-------------------------------------------|---------------------------------------------------|
+| `InSIS:Catalog`           | `ScraperRequestInSISCatalogJob`           | `Jobs/ScraperRequestInSISCatalogJob.ts`           |
+| `InSIS:Course`            | `ScraperRequestInSISCourseJob`            | `Jobs/ScraperRequestInSISCourseJob.ts`            |
+| `InSIS:StudyPlans`        | `ScraperRequestInSISStudyPlansJob`        | `Jobs/ScraperRequestInSISStudyPlansJob.ts`        |
+| `InSIS:StudyPlan`         | `ScraperRequestInSISStudyPlanJob`         | `Jobs/ScraperRequestInSISStudyPlanJob.ts`         |
+| `InSIS:FacultyTimetables` | `ScraperRequestInSISFacultyTimetablesJob` | `Jobs/ScraperRequestInSISFacultyTimetablesJob.ts` |
+| `InSIS:FacultyTimetable`  | `ScraperRequestInSISFacultyTimetableJob`  | `Jobs/ScraperRequestInSISFacultyTimetableJob.ts`  |
 
 > **Registration window decisions belong to the API, not the scraper.** The API scheduler uses month-scoped cron
 > patterns (`1,2,6,7,8,9,11,12`) to only fire during registration periods. The scraper receives jobs and executes them —
@@ -140,7 +140,9 @@ content, assessment methods, timetable, and study plan references.
 | HTTP failure (4xx/5xx/timeout) | `InSISNetworkError`                            | Yes — up to 3× with exponential backoff (10s base) |
 | HTML parse failure             | `InSISParseError` extends `UnrecoverableError` | No — BullMQ bypasses retry queue                   |
 
-**Faculty schedule visibility** is determined by the `InSIS:FacultyTimetable` scraper job (see below). The `is_schedule_publicly_visible` flag on each faculty is set dynamically based on whether the faculty publishes current timetable data. When `false`, the timetable extraction step is skipped and `timetable` is set to `[]`.
+**Faculty schedule visibility** is determined by the `InSIS:FacultyTimetable` scraper job (see below). The
+`is_schedule_publicly_visible` flag on each faculty is set dynamically based on whether the faculty publishes current
+timetable data. When `false`, the timetable extraction step is skipped and `timetable` is set to `[]`.
 
 ---
 

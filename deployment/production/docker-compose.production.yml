@@ -289,6 +289,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - PMA_ABSOLUTE_URI=https://${DOMAIN}/phpmyadmin/
+      - UPLOAD_LIMIT=2G
 
     networks:
       - traefik-network
