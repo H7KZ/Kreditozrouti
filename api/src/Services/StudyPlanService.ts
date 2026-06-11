@@ -7,7 +7,7 @@ import { Database, ExcludeMethods, Faculty, FacultyTable, StudyPlan, StudyPlanCo
 
 // Constants
 
-/** Cache TTL for facet queries (5 minutes) */
+// Cache TTL for facet queries (5 minutes)
 const FACET_CACHE_TTL = 300
 const FACET_CACHE_PREFIX = 'studyplan:facets:'
 
@@ -15,35 +15,9 @@ const FACET_CACHE_PREFIX = 'studyplan:facets:'
 
 type QueryBuilder = SelectQueryBuilder<Database & { sp: StudyPlanTable } & { spc: Nullable<StudyPlanCourseTable> }, 'sp' | 'spc', object>
 
-/**
- * Service for StudyPlan-related database operations.
- *
- * Uses an optimized query pattern to avoid N+1 problems:
- * 1. Count filtered results
- * 2. Fetch paginated IDs
- * 3. Load relations in parallel
- * 4. Merge in-memory
- */
 export default class StudyPlanService {
 	// Public API
 
-	/**
-	 * Retrieves paginated study plans with full relational data (faculty, courses).
-	 *
-	 * @param filters - Filter criteria for study plans
-	 * @param limit - Maximum number of results (default: 20)
-	 * @param offset - Number of results to skip for pagination
-	 * @returns Object containing enriched plans and total count
-	 *
-	 * @example
-	 * ```ts
-	 * const { plans, total } = await StudyPlanService.getStudyPlansWithRelations(
-	 *   { faculty_ids: [1, 2], years: [2024] },
-	 *   10,
-	 *   0
-	 * )
-	 * ```
-	 */
 	static async getStudyPlansWithRelations(
 		filters: Partial<StudyPlansFilter>,
 		limit = 20,
@@ -79,13 +53,6 @@ export default class StudyPlanService {
 		return { plans: enrichedPlans, total }
 	}
 
-	/**
-	 * Retrieves facet counts for filtering UI (dropdowns, checkboxes).
-	 * Results are cached in Redis to reduce DB load.
-	 *
-	 * @param filters - Current filter state (affects available facet values)
-	 * @returns Object containing count arrays for each facetable field
-	 */
 	static async getStudyPlanFacets(filters: StudyPlansFilter) {
 		const cacheKey = this.buildFacetCacheKey(filters)
 
@@ -100,10 +67,6 @@ export default class StudyPlanService {
 
 	// Querying
 
-	/**
-	 * Counts study plans matching the given filters.
-	 * Uses COUNT(DISTINCT) to handle potential duplicates from joins.
-	 */
 	private static async getFilteredPlanCount(filters: Partial<StudyPlansFilter>): Promise<number> {
 		const query = this.buildFilterQuery(filters).select(eb => eb.fn.count<number>('sp.id').distinct().as('total'))
 
@@ -111,10 +74,6 @@ export default class StudyPlanService {
 		return result?.total ?? 0
 	}
 
-	/**
-	 * Fetches only the IDs of study plans for the current page.
-	 * Keeps the initial query lightweight before loading full relations.
-	 */
 	private static async getPaginatedPlanIds(filters: Partial<StudyPlansFilter>, limit: number, offset: number): Promise<number[]> {
 		const results = await this.buildFilterQuery(filters)
 			.select('sp.id')
@@ -127,10 +86,6 @@ export default class StudyPlanService {
 		return results.map(r => r.id)
 	}
 
-	/**
-	 * Fetches full study plan records by IDs, preserving the original order.
-	 * Uses MySQL's FIELD() function to maintain pagination order.
-	 */
 	private static getPlansByIds(ids: number[]) {
 		return mysql
 			.selectFrom(`${StudyPlanTable._table} as sp`)
@@ -140,10 +95,6 @@ export default class StudyPlanService {
 			.execute()
 	}
 
-	/**
-	 * Fetches faculties associated with the given plan IDs.
-	 * Uses a subquery to avoid loading unnecessary faculty records.
-	 */
 	private static getFacultiesForPlanIds(planIds: number[]) {
 		return mysql
 			.selectFrom(`${FacultyTable._table} as f`)
@@ -156,19 +107,12 @@ export default class StudyPlanService {
 			.execute()
 	}
 
-	/** Fetches all courses belonging to the given study plan IDs. */
 	private static getCoursesForPlanIds(planIds: number[]) {
 		return mysql.selectFrom(`${StudyPlanCourseTable._table} as spc`).selectAll('spc').where('spc.study_plan_id', 'in', planIds).execute()
 	}
 
 	// Filtering
 
-	/**
-	 * Builds the base filter query with conditional joins.
-	 *
-	 * @param filters - Filter criteria
-	 * @param ignoreFacet - Facet column to exclude (used when computing facets to avoid self-filtering)
-	 */
 	private static buildFilterQuery(filters: Partial<StudyPlansFilter>, ignoreFacet?: string) {
 		const needsCoursesJoin = this.needsCoursesJoin(filters, ignoreFacet)
 
@@ -181,18 +125,10 @@ export default class StudyPlanService {
 		return this.applyFilters(query, filters, ignoreFacet)
 	}
 
-	/** Determines if the courses join is required based on active filters. */
 	private static needsCoursesJoin(filters: Partial<StudyPlansFilter>, ignore?: string): boolean {
 		return (!!filters.has_course_ids?.length && ignore !== 'has_course_ids') || (!!filters.has_course_idents?.length && ignore !== 'has_course_idents')
 	}
 
-	/**
-	 * Applies all filter conditions to the query builder.
-	 *
-	 * @param query - Kysely query builder
-	 * @param filters - Filter criteria
-	 * @param ignoreFacet - Filter to skip (for facet computation)
-	 */
 	private static applyFilters(query: QueryBuilder, filters: Partial<StudyPlansFilter>, ignoreFacet?: string) {
 		// Identity filters
 		if (filters.ids?.length && ignoreFacet !== 'ids') {
@@ -246,7 +182,6 @@ export default class StudyPlanService {
 
 	// Facets
 
-	/** Computes all facets in parallel for maximum efficiency. */
 	private static async computeAllFacetsInParallel(filters: StudyPlansFilter) {
 		const [faculties, levels, modesOfStudies, semesters, years, studyLengths] = await Promise.all([
 			this.getSimpleFacet(filters, 'faculty_id'),
@@ -267,20 +202,8 @@ export default class StudyPlanService {
 		}
 	}
 
-	/**
-	 * Computes facet counts for a single column.
-	 *
-	 * Uses a fast path (direct table query) when no course-related filters are active,
-	 * falling back to the full join query when necessary.
-	 *
-	 * Cross-filtering: applies all filters EXCEPT the one being computed,
-	 * so users see available options given their other active selections.
-	 *
-	 * @param filters - Current filter state
-	 * @param column - Column to compute facet for
-	 */
 	private static async getSimpleFacet(filters: StudyPlansFilter, column: keyof ExcludeMethods<StudyPlan>): Promise<FacetItem[]> {
-		const needsComplexQuery = !!(filters.has_course_ids?.length ?? filters.has_course_idents?.length)
+		const needsComplexQuery = !!(filters.has_course_ids?.length || filters.has_course_idents?.length)
 
 		if (!needsComplexQuery) {
 			// FAST PATH: Direct query on study_plans table only
@@ -318,10 +241,6 @@ export default class StudyPlanService {
 
 	// Cache
 
-	/**
-	 * Generates a deterministic cache key from relevant filter values.
-	 * Only includes filters that affect facet counts.
-	 */
 	private static buildFacetCacheKey(filters: StudyPlansFilter): string {
 		const relevantFilters = {
 			faculty_ids: filters.faculty_ids?.sort(),
@@ -357,7 +276,6 @@ export default class StudyPlanService {
 
 	// Utilities
 
-	/** Maps sort_by parameter to actual database column. */
 	private static getStudyPlanSortColumn(sortBy?: string): ReturnType<typeof sql.ref> {
 		const sortMap: Record<string, string> = {
 			ident: 'sp.ident',
@@ -370,10 +288,6 @@ export default class StudyPlanService {
 		return sql.ref(sortMap[sortBy ?? 'ident'] ?? 'sp.ident')
 	}
 
-	/**
-	 * Groups an array of objects by a specified key.
-	 * Used for efficient in-memory relation mapping.
-	 */
 	private static groupBy<T, K extends keyof T>(array: T[], key: K): Map<T[K], T[]> {
 		return array.reduce((map, item) => {
 			const keyValue = item[key]
