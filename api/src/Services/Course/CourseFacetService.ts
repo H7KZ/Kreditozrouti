@@ -1,10 +1,10 @@
+import type { FacetItem } from '@shared/http/facets'
 import { sql } from 'kysely'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
-import type { FacetItem } from '@shared/http/facets'
 import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
-import { CourseFilterBuilder } from './CourseFilterBuilder'
 import { CourseCacheService } from './CourseCacheService'
+import { CourseFilterBuilder } from './CourseFilterBuilder'
 
 export class CourseFacetService {
 	/**

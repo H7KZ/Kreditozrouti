@@ -64,7 +64,13 @@ export async function renameColumnSafe(db: Kysely<any>, tableName: string, fromC
 }
 
 export async function dropIndexSafe(db: Kysely<any>, indexName: string, tableName: string): Promise<void> {
-	await db.schema.dropIndex(indexName).on(tableName).ifExists().execute()
+	// IF EXISTS syntax is not supported on all MySQL versions — check INFORMATION_SCHEMA first
+	const result = await sql<{ cnt: number }>`
+		SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.STATISTICS
+		WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ${tableName} AND INDEX_NAME = ${indexName}
+	`.execute(db)
+	if ((result.rows[0]?.cnt ?? 0) === 0) return
+	await db.schema.dropIndex(indexName).on(tableName).execute()
 }
 
 /**

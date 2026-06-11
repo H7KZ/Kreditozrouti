@@ -1,9 +1,9 @@
+import type { FacetItem } from '@shared/http/facets'
 import { mysql } from '@api/clients'
 import { StudyPlansFilter } from '@api/Controllers/Kreditozrouti/StudyPlansController'
-import type { FacetItem } from '@shared/http/facets'
 import { ExcludeMethods, StudyPlan, StudyPlanTable } from '@api/Database/types'
-import { StudyPlanFilterBuilder } from './StudyPlanFilterBuilder'
 import { StudyPlanCacheService } from './StudyPlanCacheService'
+import { StudyPlanFilterBuilder } from './StudyPlanFilterBuilder'
 
 export class StudyPlanFacetService {
 	/**
@@ -65,7 +65,7 @@ export class StudyPlanFacetService {
 	 *   with join otherwise.
 	 */
 	public static async getSimpleFacet(filters: StudyPlansFilter, column: keyof ExcludeMethods<StudyPlan>): Promise<FacetItem[]> {
-		const needsComplexQuery = !!(filters.has_course_ids?.length || filters.has_course_idents?.length)
+		const needsComplexQuery = !!(filters.has_course_ids?.length ?? filters.has_course_idents?.length)
 
 		if (!needsComplexQuery) {
 			// FAST PATH: Direct query on study_plans table only

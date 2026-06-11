@@ -8,21 +8,21 @@ import { insertFacultiesBatch } from '@api/Jobs/helpers'
 
 const GROUP_RANK: Record<InSISStudyPlanCourseGroup, number> = {
 	field_specific_bachelor: 0,
-	field_specific_master:   1,
-	faculty_specific:        2,
-	minor_specialization:    3,
-	university_wide:         4,
+	field_specific_master: 1,
+	faculty_specific: 2,
+	minor_specialization: 3,
+	university_wide: 4
 }
 
 const CATEGORY_RANK: Record<InSISStudyPlanCourseCategory, number> = {
-	state_exam:         0,
-	compulsory:         1,
-	elective:           2,
-	language:           3,
+	state_exam: 0,
+	compulsory: 1,
+	elective: 2,
+	language: 3,
 	physical_education: 4,
-	beyond_scope:       5,
-	exchange_program:   6,
-	prohibited:         7,
+	beyond_scope: 5,
+	exchange_program: 6,
+	prohibited: 7
 }
 
 function priorityOf(group: InSISStudyPlanCourseGroup, category: InSISStudyPlanCourseCategory): number {
@@ -112,7 +112,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 			course_ident: item.ident,
 			course_id: identToIdMap.get(item.ident) ?? null,
 			group: item.group,
-			category: item.category,
+			category: item.category
 		}
 		const existing = bestByCourseIdent.get(item.ident)
 		if (!existing || priorityOf(item.group, item.category) < priorityOf(existing.group, existing.category)) {
@@ -134,8 +134,8 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 			.values(rowsToInsert)
 			.onDuplicateKeyUpdate({
 				course_id: sql`VALUES(course_id)`,
-				group:     sql`VALUES(\`group\`)`, // group is a MySQL reserved word — must be escaped in VALUES()
-				category:  sql`VALUES(category)`,
+				group: sql`VALUES(\`group\`)`, // group is a MySQL reserved word — must be escaped in VALUES()
+				category: sql`VALUES(category)`
 			})
 			.execute()
 	}

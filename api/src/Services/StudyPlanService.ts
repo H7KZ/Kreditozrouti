@@ -13,7 +13,11 @@ export default class StudyPlanService {
 	 * @returns {Promise<{ plans: StudyPlan<Faculty, StudyPlanCourse>[]; total: number }>}
 	 *   Paginated plans with faculty and course relations, and the total match count.
 	 */
-	static getStudyPlansWithRelations(filters: Partial<StudyPlansFilter>, limit = 20, offset = 0): Promise<{ plans: StudyPlan<Faculty, StudyPlanCourse>[]; total: number }> {
+	static getStudyPlansWithRelations(
+		filters: Partial<StudyPlansFilter>,
+		limit = 20,
+		offset = 0
+	): Promise<{ plans: StudyPlan<Faculty, StudyPlanCourse>[]; total: number }> {
 		return StudyPlanQueryService.getStudyPlansWithRelations(filters, limit, offset)
 	}
 

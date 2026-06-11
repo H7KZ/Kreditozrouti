@@ -65,6 +65,7 @@ services:
       - PMA_PORT=3306
       - PMA_USER=root
       - PMA_PASSWORD=root
+      - UPLOAD_LIMIT=2G
 
     ports:
       - "43307:80"
