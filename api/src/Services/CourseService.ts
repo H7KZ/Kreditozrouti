@@ -118,7 +118,7 @@ export default class CourseService {
 				eb
 					.selectFrom(`${CourseTable._table} as c2`)
 					.innerJoin(`${StudyPlanCourseTable._table} as spc2`, 'c2.id', 'spc2.course_id')
-					.select(eb2 => eb2.fn.min('c2.id').as('id'))
+					.select(eb2 => eb2.fn.max('c2.id').as('id'))
 					.where('spc2.study_plan_id', 'in', studyPlanIds)
 					.whereRef('c2.ident', '=', 'c1.ident')
 			)
@@ -362,11 +362,11 @@ export default class CourseService {
 		}
 
 		// Academic period filters
-		if (filters.semesters?.length && !['semester', 'semesters'].includes(ignore!)) {
+		if (filters.semesters?.length && !['semester', 'semesters'].includes(ignore!) && !filters.study_plan_ids?.length) {
 			query = query.where('c1.semester', 'in', filters.semesters)
 		}
 
-		if (filters.years?.length && !['year', 'years'].includes(ignore!)) {
+		if (filters.years?.length && !['year', 'years'].includes(ignore!) && !filters.study_plan_ids?.length) {
 			query = query.where('c1.year', 'in', filters.years)
 		}
 
