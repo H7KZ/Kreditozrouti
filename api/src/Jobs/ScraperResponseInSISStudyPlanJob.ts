@@ -1,4 +1,5 @@
 import type { ScraperInSISStudyPlanResponseJob } from '@shared/queue/jobs'
+import { sql } from 'kysely'
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { CourseTable, NewStudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
@@ -102,9 +103,12 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 		.where('study_plan_id', '=', studyPlanId)
 		.execute()
 
-	// INSERT IGNORE new rows — insert intention locks only, no range lock
 	if (rowsToInsert.length > 0) {
-		await mysql.insertInto(StudyPlanCourseTable._table).ignore().values(rowsToInsert).execute()
+		await mysql
+			.insertInto(StudyPlanCourseTable._table)
+			.values(rowsToInsert)
+			.onDuplicateKeyUpdate({ course_id: sql`VALUES(course_id)` })
+			.execute()
 	}
 
 	// DELETE only the specific IDs no longer in the plan — point locks, not a range lock
