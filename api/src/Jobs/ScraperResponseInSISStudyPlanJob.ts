@@ -122,7 +122,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 	const rowsToInsert = [...bestByCourseIdent.values()]
 
 	// Fetch existing rows for this plan
-	const existing = await mysql
+	const existingRows = await mysql
 		.selectFrom(StudyPlanCourseTable._table)
 		.select(['id', 'course_ident', 'group', 'category'])
 		.where('study_plan_id', '=', studyPlanId)
@@ -134,7 +134,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 			.values(rowsToInsert)
 			.onDuplicateKeyUpdate({
 				course_id: sql`VALUES(course_id)`,
-				group:     sql`VALUES(\`group\`)`,
+				group:     sql`VALUES(\`group\`)`, // group is a MySQL reserved word — must be escaped in VALUES()
 				category:  sql`VALUES(category)`,
 			})
 			.execute()
@@ -142,7 +142,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 
 	// DELETE only the specific IDs no longer in the plan — point locks, not a range lock
 	const newKeys = new Set(rowsToInsert.map(r => `${r.course_ident}|${r.group}|${r.category}`))
-	const toDeleteIds = existing.filter(e => !newKeys.has(`${e.course_ident}|${e.group}|${e.category}`)).map(e => e.id)
+	const toDeleteIds = existingRows.filter(e => !newKeys.has(`${e.course_ident}|${e.group}|${e.category}`)).map(e => e.id)
 
 	if (toDeleteIds.length > 0) {
 		await mysql.deleteFrom(StudyPlanCourseTable._table).where('id', 'in', toDeleteIds).execute()
