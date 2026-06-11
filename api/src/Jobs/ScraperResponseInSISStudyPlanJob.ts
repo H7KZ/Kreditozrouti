@@ -141,8 +141,8 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 	}
 
 	// DELETE only the specific IDs no longer in the plan — point locks, not a range lock
-	const newKeys = new Set(rowsToInsert.map(r => `${r.course_ident}|${r.group}|${r.category}`))
-	const toDeleteIds = existingRows.filter(e => !newKeys.has(`${e.course_ident}|${e.group}|${e.category}`)).map(e => e.id)
+	const newIdents = new Set(rowsToInsert.map(r => r.course_ident))
+	const toDeleteIds = existingRows.filter(e => !newIdents.has(e.course_ident)).map(e => e.id)
 
 	if (toDeleteIds.length > 0) {
 		await mysql.deleteFrom(StudyPlanCourseTable._table).where('id', 'in', toDeleteIds).execute()
