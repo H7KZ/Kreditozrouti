@@ -1,0 +1,28 @@
+opencollection: 1.0.0
+
+info:
+  name: bruno
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  variables:
+    - name: base_url
+      value: http://localhost:40080
+    - name: api_command_token
+      value: local
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

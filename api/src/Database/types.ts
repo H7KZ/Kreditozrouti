@@ -307,7 +307,7 @@ export type StudyPlanCourseWithRelations = StudyPlanCourse<StudyPlanTable, null>
  * Owned by the study plan scraper — never contains course_id.
  */
 export class StudyPlanCourseIdentTable {
-	static readonly _table = 'study_plans_course_idents' as const
+	static readonly _table = 'insis_study_plans_course_idents' as const
 
 	id!: Generated<number>
 

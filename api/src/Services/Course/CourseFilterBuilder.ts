@@ -226,7 +226,7 @@ export class CourseFilterBuilder {
 
 			if (sanitized) {
 				const ftsQuery = mysql
-					.selectFrom('insis_courses as fts_c')
+					.selectFrom(`${CourseTable._table} as fts_c`)
 					.select([
 						'fts_c.id as fts_id',
 						sql<number>`MATCH(fts_c.title_cs, fts_c.title_en, fts_c.aims_of_the_course, fts_c.learning_outcomes, fts_c.course_contents) AGAINST(${sanitized} IN BOOLEAN MODE)`.as(

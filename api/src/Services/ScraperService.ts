@@ -2,7 +2,7 @@ import type { InSISSemester } from '@shared/domain/insis'
 import { getPeriodsForLastYears, getUpcomingPeriod } from '@shared/domain/period'
 import { scraper } from '@api/bullmq'
 import { mysql } from '@api/clients'
-import { StudyPlanCourseIdentTable } from '@api/Database/types'
+import { CourseTable, StudyPlanCourseIdentTable } from '@api/Database/types'
 import { Errors } from '@api/Errors'
 
 interface Period {
@@ -94,7 +94,7 @@ export default class ScraperService {
 	 * Returns the job ID string.
 	 */
 	static async enqueueCourseScrapeById(courseId: number): Promise<string> {
-		const course = await mysql.selectFrom('insis_courses').select(['url', 'content_hash']).where('id', '=', courseId).executeTakeFirst()
+		const course = await mysql.selectFrom(CourseTable._table).select(['url', 'content_hash']).where('id', '=', courseId).executeTakeFirst()
 
 		if (!course) throw Errors.notFound('Course not found')
 

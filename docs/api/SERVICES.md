@@ -11,12 +11,12 @@ Business logic lives in `api/src/Services/`. Controllers are thin: they validate
 `CourseService` is a public delegation facade. All implementation lives in focused sub-modules under
 `src/Services/Course/`:
 
-| Sub-module | Responsibility |
-|---|---|
+| Sub-module            | Responsibility                                                 |
+|-----------------------|----------------------------------------------------------------|
 | `CourseFilterBuilder` | `buildFilterQuery`, `applyAllFilters`, join-requirement checks |
-| `CourseCacheService` | `buildFacetCacheKey`, Redis facet cache read/write |
-| `CourseQueryService` | Pagination, relation loading, `getCoursesByStudyPlan` |
-| `CourseFacetService` | All `get*Facet` methods, `computeAllFacets` |
+| `CourseCacheService`  | `buildFacetCacheKey`, Redis facet cache read/write             |
+| `CourseQueryService`  | Pagination, relation loading, `getCoursesByStudyPlan`          |
+| `CourseFacetService`  | All `get*Facet` methods, `computeAllFacets`                    |
 
 All existing consumers import from `@api/Services/CourseService` without change.
 
@@ -114,12 +114,12 @@ remove MySQL boolean operators before transformation.
 `StudyPlanService` is a public delegation facade. All implementation lives in focused sub-modules under
 `src/Services/StudyPlan/`:
 
-| Sub-module | Responsibility |
-|---|---|
-| `StudyPlanFilterBuilder` | `buildFilterQuery`, `needsCoursesJoin`, `applyFilters` |
-| `StudyPlanCacheService` | `buildFacetCacheKey`, Redis facet cache read/write |
-| `StudyPlanQueryService` | Pagination, relation loading (`getStudyPlansWithRelations`) |
-| `StudyPlanFacetService` | `getStudyPlanFacets`, `computeAllFacetsInParallel`, `getSimpleFacet` |
+| Sub-module               | Responsibility                                                       |
+|--------------------------|----------------------------------------------------------------------|
+| `StudyPlanFilterBuilder` | `buildFilterQuery`, `needsCoursesJoin`, `applyFilters`               |
+| `StudyPlanCacheService`  | `buildFacetCacheKey`, Redis facet cache read/write                   |
+| `StudyPlanQueryService`  | Pagination, relation loading (`getStudyPlansWithRelations`)          |
+| `StudyPlanFacetService`  | `getStudyPlanFacets`, `computeAllFacetsInParallel`, `getSimpleFacet` |
 
 All existing consumers import from `@api/Services/StudyPlanService` without change.
 
