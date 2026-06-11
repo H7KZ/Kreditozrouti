@@ -321,8 +321,7 @@ export class StudyPlanCourseIdentTable {
 	category!: InSISStudyPlanCourseCategory
 }
 
-export type StudyPlanCourseIdent<SP = void> = Selectable<StudyPlanCourseIdentTable> &
-	(SP extends void ? unknown : { study_plan: SP | null })
+export type StudyPlanCourseIdent<SP = void> = Selectable<StudyPlanCourseIdentTable> & (SP extends void ? unknown : { study_plan: SP | null })
 export type NewStudyPlanCourseIdent = Insertable<Omit<ExcludeMethods<StudyPlanCourseIdentTable>, 'id' | 'created_at' | 'updated_at'>>
 
 // ---------------------------------------------------------------------------

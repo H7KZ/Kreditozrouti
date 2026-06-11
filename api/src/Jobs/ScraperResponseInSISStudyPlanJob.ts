@@ -129,11 +129,7 @@ export default async function ScraperResponseInSISStudyPlanJob(data: ScraperInSI
 
 	if (toDeleteIds.length > 0) {
 		await mysql.deleteFrom(StudyPlanCourseIdentTable._table).where('id', 'in', toDeleteIds).execute()
-		await mysql
-			.deleteFrom(StudyPlanCourseTable._table)
-			.where('study_plan_id', '=', studyPlanId)
-			.where('course_ident', 'in', toDeleteIdents)
-			.execute()
+		await mysql.deleteFrom(StudyPlanCourseTable._table).where('study_plan_id', '=', studyPlanId).where('course_ident', 'in', toDeleteIdents).execute()
 	}
 
 	LoggerJobContext.add({

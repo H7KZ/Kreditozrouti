@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { getUpcomingPeriod } from '@shared/domain/period'
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import { useCourseLabels } from '@client/composables'
@@ -25,21 +26,9 @@ const studyPlanInfo = computed(() => ({
 }))
 
 const coursesInfo = computed(() => {
-	const activePlan = wizardStore.selectedStudyPlans[0] ?? null
-	const years = filtersStore.filters.years?.length
-		? filtersStore.filters.years
-		: activePlan?.year
-			? [activePlan.year]
-			: wizardStore.year
-				? [wizardStore.year]
-				: []
-	const rawSemesters = filtersStore.filters.semesters?.length
-		? filtersStore.filters.semesters
-		: activePlan?.semester
-			? [activePlan.semester]
-			: wizardStore.semester
-				? [wizardStore.semester]
-				: []
+	const upcoming = getUpcomingPeriod()
+	const years = filtersStore.filters.years?.length ? filtersStore.filters.years : [upcoming.year]
+	const rawSemesters = filtersStore.filters.semesters?.length ? filtersStore.filters.semesters : [upcoming.semester]
 	return {
 		years,
 		semester: rawSemesters.map((s) => getSemesterLabel(s)).join(', '),

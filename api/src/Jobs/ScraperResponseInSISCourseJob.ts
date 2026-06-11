@@ -1,8 +1,4 @@
-import type {
-	ScraperInSISCourseAssessmentMethod,
-	ScraperInSISCourseTimetableSlot,
-	ScraperInSISCourseTimetableUnit
-} from '@shared/queue/insis'
+import type { ScraperInSISCourseAssessmentMethod, ScraperInSISCourseTimetableSlot, ScraperInSISCourseTimetableUnit } from '@shared/queue/insis'
 import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
 import { Transaction } from 'kysely'
 import { timeToMinutes } from '@shared/domain/time'
@@ -21,6 +17,12 @@ import {
 	StudyPlanCourseTable
 } from '@api/Database/types'
 import { insertFacultiesBatch } from '@api/Jobs/helpers'
+
+const SEMESTER_RANK: Partial<Record<string, number>> = { LS: 0, ZS: 1 }
+
+function semesterRank(semester: string | null | undefined): number {
+	return SEMESTER_RANK[semester ?? ''] ?? 0
+}
 
 /**
  * Syncs a scraped InSIS course into the database.
@@ -111,7 +113,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	// The unique index (idx_plan_courses_unique_lookup) reduces this to a single-row lock,
 	// but keeping the step outside also ensures a missing study plan row (race with the study
 	// plan scraper) never rolls back the entire course upsert.
-	const planEntryCount = await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.year)
+	const planEntryCount = await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.year, course.semester ?? null)
 
 	await redis.publish(
 		`course:updated:${course.id}`,
@@ -209,12 +211,9 @@ async function syncSlotsForUnit(trx: Transaction<Database>, unitId: number, inco
  * every plan edition that includes this course ident. For each, upserts into
  * study_plan_courses with "newer year wins" semantics: only overwrites an existing
  * course_id if the incoming course year is >= the year of the currently linked course.
+ * When years are equal, ZS (winter) beats LS (summer) as a tiebreaker.
  */
-async function syncStudyPlansFromCourse(
-	courseId: number,
-	courseIdent: string,
-	courseYear: number | null
-): Promise<number> {
+async function syncStudyPlansFromCourse(courseId: number, courseIdent: string, courseYear: number | null, courseSemester: string | null): Promise<number> {
 	const planEntries = await mysql
 		.selectFrom(StudyPlanCourseIdentTable._table)
 		.select(['study_plan_id', 'group', 'category'])
@@ -227,7 +226,7 @@ async function syncStudyPlansFromCourse(
 		const existing = await mysql
 			.selectFrom(`${StudyPlanCourseTable._table} as spc`)
 			.innerJoin(`${CourseTable._table} as ec`, 'ec.id', 'spc.course_id')
-			.select('ec.year')
+			.select(['ec.year', 'ec.semester'])
 			.where('spc.study_plan_id', '=', entry.study_plan_id)
 			.where('spc.course_ident', '=', courseIdent)
 			.executeTakeFirst()
@@ -244,8 +243,10 @@ async function syncStudyPlansFromCourse(
 				})
 				.execute()
 		} else {
-			const existingYear = existing.year as number | null
-			if (courseYear !== null && (existingYear === null || courseYear >= existingYear)) {
+			const incomingScore = (courseYear ?? -1) * 10 + semesterRank(courseSemester)
+			const existingScore = (existing.year ?? -1) * 10 + semesterRank(existing.semester)
+
+			if (courseYear !== null && incomingScore >= existingScore) {
 				await mysql
 					.updateTable(StudyPlanCourseTable._table)
 					.set({ course_id: courseId })

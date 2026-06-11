@@ -16,6 +16,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 	`.execute(db)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function down(_db: Kysely<any>): Promise<void> {
 	// Historical data cannot be restored from a down migration.
 	// Re-run the catalog scraper to restore course data if needed.
