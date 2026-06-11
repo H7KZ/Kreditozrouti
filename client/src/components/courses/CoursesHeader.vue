@@ -24,10 +24,14 @@ const studyPlanInfo = computed(() => ({
 	idents: wizardStore.studyPlanIdents || [],
 }))
 
-const coursesInfo = computed(() => ({
-	years: filtersStore.filters.years,
-	semester: filtersStore.filters.semesters?.map((s) => getSemesterLabel(s)).join(', '),
-}))
+const coursesInfo = computed(() => {
+	const years = filtersStore.filters.years?.length ? filtersStore.filters.years : wizardStore.year ? [wizardStore.year] : []
+	const semesters = filtersStore.filters.semesters?.length ? filtersStore.filters.semesters : wizardStore.semester ? [wizardStore.semester] : []
+	return {
+		years,
+		semester: semesters.map((s) => getSemesterLabel(s)).join(', '),
+	}
+})
 
 const selectedCoursesCount = computed(() => timetableStore.selectedCourseIds.length)
 
