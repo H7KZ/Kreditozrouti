@@ -214,7 +214,7 @@ export const useWizardStore = defineStore('wizard', () => {
 		if (state.selectedStudyPlans?.length > 0) {
 			selectedStudyPlans.value = state.selectedStudyPlans
 		} else if (state.studyPlanId) {
-			selectedStudyPlans.value = [{ id: state.studyPlanId, ident: state.studyPlanIdent, title: state.studyPlanTitle }]
+			selectedStudyPlans.value = [{ id: state.studyPlanId, ident: state.studyPlanIdent, title: state.studyPlanTitle, year: null, semester: null }]
 		} else {
 			selectedStudyPlans.value = []
 		}
