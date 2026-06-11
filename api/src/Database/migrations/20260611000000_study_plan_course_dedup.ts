@@ -6,6 +6,11 @@ export async function up(db: Kysely<any>): Promise<void> {
 	// Delete all rows whose priority rank is worse than the best row for the
 	// same (study_plan_id, course_ident) pair. Rows with COUNT(*) = 1 are
 	// excluded by the HAVING clause — they have no competitor and are safe.
+	//
+	// Tie note: rows with identical (group, category) — i.e., the same rank — are
+	// not touched by this DELETE. In practice they cannot exist because migration
+	// 20260610000000_study_plan_course_unique_key already enforces uniqueness on
+	// (study_plan_id, course_ident, group, category).
 	await sql`
 		DELETE spc
 		FROM ${sql.table(StudyPlanCourseTable._table)} spc
