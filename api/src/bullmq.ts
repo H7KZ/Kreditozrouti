@@ -19,7 +19,11 @@ import InSISService from '@api/Services/InSISService'
 // Queue & Worker Setup
 
 const scraperRequestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
-	connection: redis.options
+	connection: redis.options,
+	defaultJobOptions: {
+		removeOnComplete: { count: 100 },
+		removeOnFail: { age: 86_400 }
+	}
 })
 
 const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
@@ -28,7 +32,8 @@ const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue,
 
 const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, withJobLogger(ScraperResponseQueue, ScraperResponseHandler), {
 	connection: redis.options,
-	concurrency: 2
+	concurrency: 2,
+	maxStalledCount: 2 // allow 2 stall recoveries before permanent failure
 })
 
 // Scheduler Job Data
