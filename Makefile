@@ -6,11 +6,6 @@
 		scrape-studyplans scrape-studyplans-turbo scrape-studyplans-normal \
 		scrape-academic-schedules
 
-# API_URL and COMMAND_TOKEN can be overridden:
-#   make scrape-catalog API_URL=https://api.kreditozrouti.cz COMMAND_TOKEN=mytoken
-API_URL        ?= http://localhost:40080
-COMMAND_TOKEN  ?= $(error COMMAND_TOKEN is required. Run: make scrape-catalog COMMAND_TOKEN=mytoken)
-
 run-local-docker:
 	docker compose -f docker-compose.local.yml up -d
 
@@ -82,21 +77,6 @@ preview:
 	'cd scraper && npm run preview' \
 	--names "API,CLIENT,SCRAPER" \
 	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
-
-scrape-catalog:
-	bash scripts/scrape.sh $(API_URL) catalog $(COMMAND_TOKEN)
-
-scrape-studyplans:
-	bash scripts/scrape.sh $(API_URL) studyplans $(COMMAND_TOKEN)
-
-scrape-academic-schedules:
-	bash scripts/scrape.sh $(API_URL) academic-schedules $(COMMAND_TOKEN)
-
-scrape-faculty-timetables:
-	bash scripts/scrape.sh $(API_URL) faculty-timetables $(COMMAND_TOKEN)
-
-scrape-retry-failed:
-	bash scripts/scrape.sh $(API_URL) retry-failed $(COMMAND_TOKEN)
 
 build-docker-images:
 	docker buildx build -t kreditozrouti-api -f ./api/Dockerfile . && \
