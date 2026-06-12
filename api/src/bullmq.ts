@@ -1,19 +1,12 @@
-import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
-import { Queue, Worker } from 'bullmq'
-import {
-	ScraperInSISAcademicSchedulesRequestScheduler,
-	ScraperInSISCatalogRequestScheduler,
-	ScraperInSISFacultyTimetablesRequestScheduler,
-	ScraperInSISGapSweeperScheduler,
-	ScraperInSISStudyPlansRequestScheduler,
-	ScraperRequestQueue,
-	ScraperResponseQueue
-} from '@shared/queue/names'
-import { redis } from '@api/clients'
-import Config from '@api/Config/Config'
-import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
-import { logger, withJobLogger } from '@api/logger'
-import InSISService from '@api/Services/InSISService'
+import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs';
+import { Queue, Worker } from 'bullmq';
+import { ScraperInSISAcademicSchedulesRequestScheduler, ScraperInSISCatalogRequestScheduler, ScraperInSISFacultyTimetablesRequestScheduler, ScraperInSISGapSweeperScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names';
+import { redis } from '@api/clients';
+import Config from '@api/Config/Config';
+import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler';
+import { logger, withJobLogger } from '@api/logger';
+import InSISService from '@api/Services/InSISService';
+
 
 // Queue & Worker Setup
 
@@ -133,13 +126,13 @@ const scraper = {
 			}
 		)
 
-		// Gap Sweep: every 4 hours year-round.
+		// Gap Sweep: every 4 hours year-round (0:00, 4:00, 8:00, 12:00, 16:00, 20:00).
 		// Queries for course idents missing from insis_courses and triggers a targeted catalog scrape.
 		await scraper.queue.response.upsertJobScheduler(
 			ScraperInSISGapSweeperScheduler,
-			{ every: 4 * 60 * 60 * 1000 },
+			{ pattern: '0 */4 * * *' },
 			{
-				name: 'InSIS Gap Sweep (every 4h)',
+				name: 'InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00)',
 				data: { type: 'InSIS:GapSweep' as const },
 				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
 			}
