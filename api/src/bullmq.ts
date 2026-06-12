@@ -1,12 +1,19 @@
-import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs';
-import { Queue, Worker } from 'bullmq';
-import { ScraperInSISAcademicSchedulesRequestScheduler, ScraperInSISCatalogRequestScheduler, ScraperInSISFacultyTimetablesRequestScheduler, ScraperInSISGapSweeperScheduler, ScraperInSISStudyPlansRequestScheduler, ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names';
-import { redis } from '@api/clients';
-import Config from '@api/Config/Config';
-import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler';
-import { logger, withJobLogger } from '@api/logger';
-import InSISService from '@api/Services/InSISService';
-
+import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
+import { Queue, Worker } from 'bullmq'
+import {
+	ScraperInSISAcademicSchedulesRequestScheduler,
+	ScraperInSISCatalogRequestScheduler,
+	ScraperInSISFacultyTimetablesRequestScheduler,
+	ScraperInSISGapSweeperScheduler,
+	ScraperInSISStudyPlansRequestScheduler,
+	ScraperRequestQueue,
+	ScraperResponseQueue
+} from '@shared/queue/names'
+import { redis } from '@api/clients'
+import Config from '@api/Config/Config'
+import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
+import { logger, withJobLogger } from '@api/logger'
+import InSISService from '@api/Services/InSISService'
 
 // Queue & Worker Setup
 

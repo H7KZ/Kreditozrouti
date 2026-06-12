@@ -12,8 +12,7 @@ const BodySchema = z.object({
 				year: z.coerce.number()
 			})
 		)
-		.optional(),
-	auto_queue_courses: z.boolean().optional()
+		.optional()
 })
 
 /**

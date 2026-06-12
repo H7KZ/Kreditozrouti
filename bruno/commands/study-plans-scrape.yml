@@ -11,8 +11,7 @@ http:
     data: |-
       {
         "faculties": [],
-        "periods": [],
-        "auto_queue_study_plans": true
+        "periods": []
       }
   auth:
     type: bearer

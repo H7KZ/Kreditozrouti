@@ -1,8 +1,9 @@
 import type { ScraperInSISGapSweepResponseJob } from '@shared/queue/jobs'
 import { scraper } from '@api/bullmq'
-import ScraperGapSweeperService from '@api/Services/ScraperGapSweeperService'
 import { logger } from '@api/logger'
+import ScraperGapSweeperService from '@api/Services/ScraperGapSweeperService'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default async function ScraperResponseInSISGapSweepJob(_data: ScraperInSISGapSweepResponseJob): Promise<void> {
 	const missingIdents = await ScraperGapSweeperService.getMissingIdents()
 

@@ -1,11 +1,10 @@
-import type { InSISSemester } from '@shared/domain/insis';
-import { getPeriodsForLastYears, getUpcomingPeriod } from '@shared/domain/period';
-import { scraper } from '@api/bullmq';
-import { mysql } from '@api/clients';
-import { CourseTable, StudyPlanCourseIdentTable } from '@api/Database/types';
-import { Errors } from '@api/Errors';
-import ScraperGapSweeperService from '@api/Services/ScraperGapSweeperService';
-
+import type { InSISSemester } from '@shared/domain/insis'
+import { getPeriodsForLastYears, getUpcomingPeriod } from '@shared/domain/period'
+import { scraper } from '@api/bullmq'
+import { mysql } from '@api/clients'
+import { CourseTable, StudyPlanCourseIdentTable } from '@api/Database/types'
+import { Errors } from '@api/Errors'
+import ScraperGapSweeperService from '@api/Services/ScraperGapSweeperService'
 
 interface Period {
 	semester: InSISSemester | null

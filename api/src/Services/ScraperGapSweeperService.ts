@@ -8,15 +8,15 @@ import { CourseTable, StudyPlanCourseIdentTable } from '@api/Database/types'
  * Safe to import from bullmq.ts — does NOT import from @api/bullmq.
  */
 export default class ScraperGapSweeperService {
-    static async getMissingIdents(): Promise<string[]> {
-        const rows = await mysql
-            .selectFrom(`${StudyPlanCourseIdentTable._table} as sci`)
-            .leftJoin(`${CourseTable._table} as ic`, 'ic.ident', 'sci.course_ident')
-            .select('sci.course_ident')
-            .where('ic.id', 'is', null)
-            .distinct()
-            .execute()
+	static async getMissingIdents(): Promise<string[]> {
+		const rows = await mysql
+			.selectFrom(`${StudyPlanCourseIdentTable._table} as sci`)
+			.leftJoin(`${CourseTable._table} as ic`, 'ic.ident', 'sci.course_ident')
+			.select('sci.course_ident')
+			.where('ic.id', 'is', null)
+			.distinct()
+			.execute()
 
-        return rows.map(r => r.course_ident)
-    }
+		return rows.map(r => r.course_ident)
+	}
 }
