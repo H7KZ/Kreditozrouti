@@ -1,9 +1,11 @@
-import type { InSISSemester } from '@shared/domain/insis'
-import { getPeriodsForLastYears, getUpcomingPeriod } from '@shared/domain/period'
-import { scraper } from '@api/bullmq'
-import { mysql } from '@api/clients'
-import { CourseTable, StudyPlanCourseIdentTable } from '@api/Database/types'
-import { Errors } from '@api/Errors'
+import type { InSISSemester } from '@shared/domain/insis';
+import { getPeriodsForLastYears, getUpcomingPeriod } from '@shared/domain/period';
+import { scraper } from '@api/bullmq';
+import { mysql } from '@api/clients';
+import { CourseTable, StudyPlanCourseIdentTable } from '@api/Database/types';
+import { Errors } from '@api/Errors';
+import ScraperGapSweeperService from '@api/Services/ScraperGapSweeperService';
+
 
 interface Period {
 	semester: InSISSemester | null
@@ -17,7 +19,7 @@ export default class ScraperService {
 	/**
 	 * Enqueues a job to scrape the InSIS course catalog.
 	 */
-	static async enqueueCatalogScrape(options?: { faculties?: string[]; periods?: Period[] }): Promise<void> {
+	static async enqueueCatalogScrape(options?: { faculties?: string[]; periods?: Period[]; auto_queue_courses?: boolean }): Promise<void> {
 		const rows = await mysql.selectFrom(StudyPlanCourseIdentTable._table).select('course_ident').distinct().execute()
 		const allowedIdents = rows.map(r => r.course_ident)
 
@@ -34,7 +36,7 @@ export default class ScraperService {
 				type: 'InSIS:Catalog',
 				faculties: options?.faculties,
 				periods,
-				auto_queue_courses: true,
+				auto_queue_courses: options?.auto_queue_courses,
 				allowed_idents: allowedIdents
 			},
 			{
@@ -68,7 +70,7 @@ export default class ScraperService {
 	/**
 	 * Enqueues a job to scrape the InSIS study plans catalog.
 	 */
-	static async enqueueStudyPlansScrape(options?: { faculties?: string[]; periods?: Period[]; auto_queue_courses?: boolean }): Promise<void> {
+	static async enqueueStudyPlansScrape(options?: { faculties?: string[]; periods?: Period[] }): Promise<void> {
 		const periods = options?.periods?.length ? options.periods : getPeriodsForLastYears(4)
 
 		await scraper.queue.request.add(
@@ -77,8 +79,7 @@ export default class ScraperService {
 				type: 'InSIS:StudyPlans',
 				faculties: options?.faculties,
 				periods,
-				auto_queue_study_plans: true,
-				...(options?.auto_queue_courses && { auto_queue_courses: true })
+				auto_queue_study_plans: true
 			},
 			{
 				deduplication: {
@@ -169,6 +170,33 @@ export default class ScraperService {
 				}
 			}
 		)
+	}
+
+	/**
+	 * Scans for missing course idents and enqueues a catalog scrape with gap-sweep deduplication.
+	 * Returns the count of missing idents found.
+	 */
+	static async sweepMissingCourses(): Promise<{ missing: number }> {
+		const missingIdents = await ScraperGapSweeperService.getMissingIdents()
+
+		if (missingIdents.length === 0) return { missing: 0 }
+
+		await scraper.queue.request.add(
+			'InSIS Catalog Request (Gap Sweep)',
+			{
+				type: 'InSIS:Catalog',
+				auto_queue_courses: true,
+				allowed_idents: missingIdents
+			},
+			{
+				deduplication: {
+					id: 'InSIS:Catalog:GapSweep',
+					ttl: 60 * 60 * 1000
+				}
+			}
+		)
+
+		return { missing: missingIdents.length }
 	}
 
 	/**
