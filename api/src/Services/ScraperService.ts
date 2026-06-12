@@ -1,10 +1,12 @@
-import type { InSISSemester } from '@shared/domain/insis'
-import { getPeriodsForLastYears, getUpcomingPeriod } from '@shared/domain/period'
-import { scraper } from '@api/bullmq'
-import { mysql } from '@api/clients'
-import { CourseTable, StudyPlanCourseIdentTable } from '@api/Database/types'
-import { Errors } from '@api/Errors'
-import ScraperGapSweeperService from '@api/Services/ScraperGapSweeperService'
+import type { InSISSemester } from '@shared/domain/insis';
+import { getPeriodsForLastYears, getUpcomingPeriod } from '@shared/domain/period';
+import { scraper } from '@api/bullmq';
+import { mysql } from '@api/clients';
+import { CourseTable, StudyPlanCourseIdentTable } from '@api/Database/types';
+import { Errors } from '@api/Errors';
+import InSISService from '@api/Services/InSISService';
+import ScraperGapSweeperService from '@api/Services/ScraperGapSweeperService';
+
 
 interface Period {
 	semester: InSISSemester | null
@@ -180,12 +182,16 @@ export default class ScraperService {
 
 		if (missingIdents.length === 0) return { missing: 0 }
 
+		const upcomingPeriod = InSISService.getUpcomingPeriod()
+
 		await scraper.queue.request.add(
 			'InSIS Catalog Request (Gap Sweep)',
 			{
 				type: 'InSIS:Catalog',
-				auto_queue_courses: true,
-				allowed_idents: missingIdents
+				faculties: undefined,
+				periods: [upcomingPeriod],
+				allowed_idents: missingIdents,
+				auto_queue_courses: true
 			},
 			{
 				deduplication: {
