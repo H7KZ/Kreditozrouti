@@ -1,6 +1,7 @@
 import type { ScraperInSISGapSweepResponseJob } from '@shared/queue/jobs'
 import { scraper } from '@api/bullmq'
 import { logger } from '@api/logger'
+import InSISService from '@api/Services/InSISService'
 import ScraperGapSweeperService from '@api/Services/ScraperGapSweeperService'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -12,12 +13,16 @@ export default async function ScraperResponseInSISGapSweepJob(_data: ScraperInSI
 		return
 	}
 
+	const upcomingPeriod = InSISService.getUpcomingPeriod()
+
 	await scraper.queue.request.add(
 		'InSIS Catalog Request (Gap Sweep)',
 		{
 			type: 'InSIS:Catalog',
-			auto_queue_courses: true,
-			allowed_idents: missingIdents
+			faculties: undefined,
+			periods: [upcomingPeriod],
+			allowed_idents: missingIdents,
+			auto_queue_courses: true
 		},
 		{
 			deduplication: {
