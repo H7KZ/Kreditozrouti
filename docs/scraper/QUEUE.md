@@ -11,7 +11,7 @@ topology, job lifecycle, deduplication, retry policy, and how the API scheduler 
 │  ┌──────────────────────┐   ┌─────────────────────────┐    │
 │  │ ScraperRequestQueue  │   │ ScraperResponseQueue    │    │
 │  │   (producer)         │   │   (consumer — Worker)   │    │
-│  │                      │   │   concurrency: 4        │    │
+│  │                      │   │   concurrency: 2        │    │
 │  │ + upsertJobScheduler │   │                         │    │
 │  │   (cron at 3 AM)     │   │                         │    │
 │  └──────────────────────┘   └─────────────────────────┘    │
@@ -23,7 +23,7 @@ topology, job lifecycle, deduplication, retry policy, and how the API scheduler 
 │  ┌──────────────────────┐   ┌─────────────────────────┐    │
 │  │ ScraperRequestQueue  │   │ ScraperResponseQueue    │    │
 │  │   (consumer — Worker)│   │   (producer)            │    │
-│  │   concurrency: 5     │   │                         │    │
+│  │   concurrency: 1     │   │                         │    │
 │  │   rate: 10/sec       │   │                         │    │
 │  └──────────────────────┘   └─────────────────────────┘    │
 └────────────────────────────────────────────────────────────┘
@@ -45,13 +45,13 @@ which side creates a `Queue` (producer) vs a `Worker` (consumer).
 
 ```typescript
 new Worker(ScraperRequestQueue, handler, {
-  concurrency: 5,
+  concurrency: 1,
   limiter: { max: 10, duration: 1000 }
 })
 ```
 
-- **Concurrency 5:** up to 5 jobs run simultaneously per worker process. Combined with the cluster (default 1 process),
-  this means 5 concurrent scrapes per node.
+- **Concurrency 1:** up to 1 job runs at a time per worker process. Combined with the cluster (default 1 process),
+  this means 1 concurrent scrape per node.
 - **Limiter 10/sec:** hard cap of 10 job starts per second, regardless of concurrency. This is the primary InSIS
   rate-limit guard.
 
@@ -60,7 +60,9 @@ new Worker(ScraperRequestQueue, handler, {
 ```typescript
 defaultJobOptions: {
   attempts: 3,
-  backoff: { type: 'exponential', delay: 10_000 }
+  backoff: { type: 'exponential', delay: 10_000 },
+  removeOnComplete: { count: 200 },
+  removeOnFail: { age: 86_400 }
 }
 ```
 
@@ -70,7 +72,16 @@ skip the retry queue immediately.
 
 ### Response Queue
 
-The response queue is a plain `Queue` (producer only). The scraper writes results into it; the API consumes them.
+The response queue is a `Queue` (producer only from the scraper's perspective). The scraper writes results into it; the API consumes them. It has its own `defaultJobOptions`:
+
+```typescript
+defaultJobOptions: {
+  attempts: 3,
+  backoff: { type: 'exponential', delay: 5_000 },
+  removeOnComplete: { count: 200 },
+  removeOnFail: { age: 86_400 }
+}
+```
 
 ## API-side Configuration (`api/src/bullmq.ts`)
 
@@ -78,7 +89,8 @@ The response queue is a plain `Queue` (producer only). The scraper writes result
 
 ```typescript
 new Worker(ScraperResponseQueue, handler, {
-  concurrency: 4
+  concurrency: 2,
+  maxStalledCount: 2 // allow 2 stall recoveries before permanent failure
 })
 ```
 
@@ -127,11 +139,12 @@ scraper uses it to avoid re-scraping courses that are already queued.
 |--------------------------------------|------------------------------|----------------|
 | `InSIS:Catalog` (manual run)         | `InSIS:Catalog:ManualRun`    | 30 seconds     |
 | `InSIS:StudyPlans` (manual run)      | `InSIS:StudyPlans:ManualRun` | 30 seconds     |
-| `InSIS:Course` (from catalog)        | `InSIS:Course:{courseId}`    | until consumed |
-| `InSIS:StudyPlan` (from study plans) | `InSIS:StudyPlan:{planId}`   | until consumed |
+| `InSIS:Course` (from catalog)        | `InSIS:Course:{courseId}`    | 5 minutes      |
+| `InSIS:StudyPlan` (from study plans) | `InSIS:StudyPlan:{planId}`   | 1 hour         |
+| `InSIS:AcademicSchedule`             | `InSIS:AcademicSchedule:{faculty}:{period}` | 1 hour |
+| `InSIS:FacultyTimetable`             | `InSIS:FacultyTimetable:{f_id}` | 1 hour      |
 
-Course and study plan dedup keys have no TTL, meaning a course already sitting in the queue will not be re-added even if
-the catalog job runs again before the scraper processes it.
+All dedup keys now have explicit TTLs. Course and study plan keys use longer windows (5 min / 1 hour) to prevent re-queueing while the scraper works through its backlog.
 
 ## Job Lifecycle
 
@@ -142,7 +155,7 @@ API enqueues job
   → SUCCESS or FAILED
 
 On SUCCESS:
-  removeOnComplete: true (job removed from Redis immediately)
+  removeOnComplete: { count: 200 } (last 200 completed jobs kept; older ones removed)
 
 On FAILURE:
   removeOnFail: { age: 86400 }  (kept for 24h for inspection, then purged)
