@@ -4,6 +4,7 @@ import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 import { Queue, Worker } from 'bullmq'
 import {
 	ScraperInSISAcademicSchedulesRequestScheduler,
+	ScraperInSISCatalogRequestScheduler,
 	ScraperInSISFacultyTimetablesRequestScheduler,
 	ScraperInSISStudyPlansRequestScheduler,
 	ScraperRequestQueue,
@@ -14,6 +15,7 @@ import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
 import { logger, withJobLogger } from '@api/logger'
 import InSISService from '@api/Services/InSISService'
+import ScraperGapSweeperService from '@api/Services/ScraperGapSweeperService'
 
 // Queue & Worker Setup
 
@@ -49,7 +51,6 @@ function buildStudyPlansSchedulerJob(periodsForLastFourYears: ReturnType<typeof 
 		data: {
 			type: 'InSIS:StudyPlans' as const,
 			auto_queue_study_plans: true,
-			auto_queue_courses: true,
 			faculties: undefined,
 			periods: periodsForLastFourYears
 		},
@@ -93,6 +94,21 @@ const scraper = {
 			buildStudyPlansSchedulerJob(periodsForLastFourYears)
 		)
 
+		// Catalog: daily at 3 AM during registration months (after study plans at 2 AM).
+		// Scrapes upcoming semester only; always queues discovered courses.
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISCatalogRequestScheduler,
+			{ pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *` },
+			{
+				name: 'InSIS Catalog Request (at 3 AM during registration months)',
+				data: {
+					type: 'InSIS:Catalog' as const,
+					auto_queue_courses: true
+				},
+				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+			}
+		)
+
 		// Academic Schedules: daily at 1 AM year-round
 		await scraper.queue.request.upsertJobScheduler(
 			ScraperInSISAcademicSchedulesRequestScheduler,
@@ -118,6 +134,31 @@ const scraper = {
 				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
 			}
 		)
+
+		const runGapSweep = async () => {
+			try {
+				const missingIdents = await ScraperGapSweeperService.getMissingIdents()
+				if (missingIdents.length === 0) return
+				await scraper.queue.request.add(
+					'InSIS Catalog Request (Gap Sweep)',
+					{
+						type: 'InSIS:Catalog',
+						auto_queue_courses: true,
+						allowed_idents: missingIdents
+					},
+					{
+						deduplication: {
+							id: 'InSIS:Catalog:GapSweep',
+							ttl: 60 * 60 * 1000
+						}
+					}
+				)
+				logger.info({ missing_count: missingIdents.length }, 'bullmq.gap_sweep_triggered')
+			} catch (err) {
+				logger.error({ err }, 'bullmq.gap_sweep_failed')
+			}
+		}
+		setInterval(runGapSweep, 4 * 60 * 60 * 1000)
 
 		logger.info('bullmq.schedulers_configured')
 	}
