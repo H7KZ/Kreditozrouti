@@ -38,6 +38,7 @@ export type ScraperJob =
     | 'InSIS:AcademicSchedule'
     | 'InSIS:FacultyTimetables'
     | 'InSIS:FacultyTimetable'
+    | 'InSIS:GapSweep'
 
 export type CourseUnitType = 'lecture' | 'exercise' | 'seminar'
 
