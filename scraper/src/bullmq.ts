@@ -11,10 +11,20 @@ const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
     connection: redis.options,
     defaultJobOptions: {
         attempts: 3,
-        backoff: { type: 'exponential', delay: 10_000 }
+        backoff: { type: 'exponential', delay: 10_000 },
+        removeOnComplete: { count: 200 },
+        removeOnFail: { age: 86_400 }
     }
 })
-const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis.options })
+const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
+    connection: redis.options,
+    defaultJobOptions: {
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 5_000 },
+        removeOnComplete: { count: 200 },
+        removeOnFail: { age: 86_400 }
+    }
+})
 
 // Workers
 
