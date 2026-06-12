@@ -33,7 +33,7 @@ const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue,
 const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, withJobLogger(ScraperResponseQueue, ScraperResponseHandler), {
 	connection: redis.options,
 	concurrency: 2,
-	maxStalledCount: 2
+	maxStalledCount: 2 // allow 2 stall recoveries before permanent failure
 })
 
 // Scheduler Job Data
