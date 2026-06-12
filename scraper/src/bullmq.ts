@@ -16,6 +16,9 @@ const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
         removeOnFail: { age: 86_400 }
     }
 })
+
+// attempts: 3 adds a BullMQ-level retry layer on top of withDeadlockRetry in the API handler.
+// Both are safe together because response jobs use upsert semantics — re-running them is idempotent.
 const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
     connection: redis.options,
     defaultJobOptions: {

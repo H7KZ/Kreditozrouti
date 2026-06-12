@@ -13,7 +13,10 @@
                 "type": "query",
                 "name": "service",
                 "label": "Service",
-                "datasource": { "type": "loki", "uid": "Loki" },
+                "datasource": {
+                    "type": "loki",
+                    "uid": "Loki"
+                },
                 "definition": "label_values(service)",
                 "query": "label_values(service)",
                 "multi": true,
@@ -22,7 +25,11 @@
                 "sort": 1,
                 "refresh": 2,
                 "hide": 0,
-                "current": { "selected": true, "text": "All", "value": "$__all" },
+                "current": {
+                    "selected": true,
+                    "text": "All",
+                    "value": "$__all"
+                },
                 "options": []
             },
             {
@@ -34,12 +41,32 @@
                 "includeAll": true,
                 "allValue": ".*",
                 "hide": 0,
-                "current": { "selected": true, "text": "All", "value": "$__all" },
+                "current": {
+                    "selected": true,
+                    "text": "All",
+                    "value": "$__all"
+                },
                 "options": [
-                    { "selected": false, "text": "ERROR", "value": "ERROR" },
-                    { "selected": false, "text": "WARN",  "value": "WARN"  },
-                    { "selected": false, "text": "INFO",  "value": "INFO"  },
-                    { "selected": false, "text": "DEBUG", "value": "DEBUG" }
+                    {
+                        "selected": false,
+                        "text": "ERROR",
+                        "value": "ERROR"
+                    },
+                    {
+                        "selected": false,
+                        "text": "WARN",
+                        "value": "WARN"
+                    },
+                    {
+                        "selected": false,
+                        "text": "INFO",
+                        "value": "INFO"
+                    },
+                    {
+                        "selected": false,
+                        "text": "DEBUG",
+                        "value": "DEBUG"
+                    }
                 ]
             },
             {
@@ -51,10 +78,22 @@
                 "includeAll": true,
                 "allValue": ".*",
                 "hide": 0,
-                "current": { "selected": true, "text": "All", "value": "$__all" },
+                "current": {
+                    "selected": true,
+                    "text": "All",
+                    "value": "$__all"
+                },
                 "options": [
-                    { "selected": false, "text": "http", "value": "http" },
-                    { "selected": false, "text": "job",  "value": "job"  }
+                    {
+                        "selected": false,
+                        "text": "http",
+                        "value": "http"
+                    },
+                    {
+                        "selected": false,
+                        "text": "job",
+                        "value": "job"
+                    }
                 ]
             },
             {
@@ -62,14 +101,18 @@
                 "name": "search",
                 "label": "Search text",
                 "hide": 0,
-                "current": { "value": "" }
+                "current": {
+                    "value": ""
+                }
             },
             {
                 "type": "textbox",
                 "name": "request_id",
                 "label": "Request ID",
                 "hide": 0,
-                "current": { "value": ".*" }
+                "current": {
+                    "value": ".*"
+                }
             },
             {
                 "type": "custom",
@@ -80,16 +123,52 @@
                 "includeAll": true,
                 "allValue": ".*",
                 "hide": 0,
-                "current": { "selected": true, "text": "All", "value": "$__all" },
+                "current": {
+                    "selected": true,
+                    "text": "All",
+                    "value": "$__all"
+                },
                 "options": [
-                    { "selected": false, "text": "InSIS:Course",              "value": "InSIS:Course"              },
-                    { "selected": false, "text": "InSIS:Catalog",             "value": "InSIS:Catalog"             },
-                    { "selected": false, "text": "InSIS:StudyPlan",           "value": "InSIS:StudyPlan"           },
-                    { "selected": false, "text": "InSIS:StudyPlans",          "value": "InSIS:StudyPlans"          },
-                    { "selected": false, "text": "InSIS:AcademicSchedules",   "value": "InSIS:AcademicSchedules"   },
-                    { "selected": false, "text": "InSIS:AcademicSchedule",    "value": "InSIS:AcademicSchedule"    },
-                    { "selected": false, "text": "InSIS:FacultyTimetables",   "value": "InSIS:FacultyTimetables"   },
-                    { "selected": false, "text": "InSIS:FacultyTimetable",    "value": "InSIS:FacultyTimetable"    }
+                    {
+                        "selected": false,
+                        "text": "InSIS:Course",
+                        "value": "InSIS:Course"
+                    },
+                    {
+                        "selected": false,
+                        "text": "InSIS:Catalog",
+                        "value": "InSIS:Catalog"
+                    },
+                    {
+                        "selected": false,
+                        "text": "InSIS:StudyPlan",
+                        "value": "InSIS:StudyPlan"
+                    },
+                    {
+                        "selected": false,
+                        "text": "InSIS:StudyPlans",
+                        "value": "InSIS:StudyPlans"
+                    },
+                    {
+                        "selected": false,
+                        "text": "InSIS:AcademicSchedules",
+                        "value": "InSIS:AcademicSchedules"
+                    },
+                    {
+                        "selected": false,
+                        "text": "InSIS:AcademicSchedule",
+                        "value": "InSIS:AcademicSchedule"
+                    },
+                    {
+                        "selected": false,
+                        "text": "InSIS:FacultyTimetables",
+                        "value": "InSIS:FacultyTimetables"
+                    },
+                    {
+                        "selected": false,
+                        "text": "InSIS:FacultyTimetable",
+                        "value": "InSIS:FacultyTimetable"
+                    }
                 ]
             }
         ]
@@ -99,8 +178,16 @@
             "id": 1,
             "title": "Errors",
             "type": "stat",
-            "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
-            "datasource": { "type": "loki", "uid": "Loki" },
+            "gridPos": {
+                "h": 4,
+                "w": 6,
+                "x": 0,
+                "y": 0
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "count_over_time({service=~\"${service:pipe}\", level=\"ERROR\"}[$__range])",
@@ -110,7 +197,11 @@
                 }
             ],
             "options": {
-                "reduceOptions": { "calcs": ["last"] },
+                "reduceOptions": {
+                    "calcs": [
+                        "last"
+                    ]
+                },
                 "colorMode": "background",
                 "graphMode": "none"
             },
@@ -119,11 +210,19 @@
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
-                            { "color": "green", "value": null },
-                            { "color": "red",   "value": 1    }
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 1
+                            }
                         ]
                     },
-                    "color": { "mode": "thresholds" }
+                    "color": {
+                        "mode": "thresholds"
+                    }
                 }
             }
         },
@@ -131,8 +230,16 @@
             "id": 2,
             "title": "Warnings",
             "type": "stat",
-            "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
-            "datasource": { "type": "loki", "uid": "Loki" },
+            "gridPos": {
+                "h": 4,
+                "w": 6,
+                "x": 6,
+                "y": 0
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "count_over_time({service=~\"${service:pipe}\", level=\"WARN\"}[$__range])",
@@ -142,7 +249,11 @@
                 }
             ],
             "options": {
-                "reduceOptions": { "calcs": ["last"] },
+                "reduceOptions": {
+                    "calcs": [
+                        "last"
+                    ]
+                },
                 "colorMode": "background",
                 "graphMode": "none"
             },
@@ -151,11 +262,19 @@
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
-                            { "color": "green",  "value": null },
-                            { "color": "yellow", "value": 1    }
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 1
+                            }
                         ]
                     },
-                    "color": { "mode": "thresholds" }
+                    "color": {
+                        "mode": "thresholds"
+                    }
                 }
             }
         },
@@ -163,8 +282,16 @@
             "id": 3,
             "title": "Info",
             "type": "stat",
-            "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
-            "datasource": { "type": "loki", "uid": "Loki" },
+            "gridPos": {
+                "h": 4,
+                "w": 6,
+                "x": 12,
+                "y": 0
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "count_over_time({service=~\"${service:pipe}\", level=\"INFO\"}[$__range])",
@@ -174,13 +301,20 @@
                 }
             ],
             "options": {
-                "reduceOptions": { "calcs": ["last"] },
+                "reduceOptions": {
+                    "calcs": [
+                        "last"
+                    ]
+                },
                 "colorMode": "value",
                 "graphMode": "none"
             },
             "fieldConfig": {
                 "defaults": {
-                    "color": { "fixedColor": "blue", "mode": "fixed" }
+                    "color": {
+                        "fixedColor": "blue",
+                        "mode": "fixed"
+                    }
                 }
             }
         },
@@ -188,8 +322,16 @@
             "id": 4,
             "title": "Total lines",
             "type": "stat",
-            "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
-            "datasource": { "type": "loki", "uid": "Loki" },
+            "gridPos": {
+                "h": 4,
+                "w": 6,
+                "x": 18,
+                "y": 0
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "count_over_time({service=~\"${service:pipe}\"}[$__range])",
@@ -199,13 +341,20 @@
                 }
             ],
             "options": {
-                "reduceOptions": { "calcs": ["last"] },
+                "reduceOptions": {
+                    "calcs": [
+                        "last"
+                    ]
+                },
                 "colorMode": "value",
                 "graphMode": "none"
             },
             "fieldConfig": {
                 "defaults": {
-                    "color": { "fixedColor": "green", "mode": "fixed" }
+                    "color": {
+                        "fixedColor": "green",
+                        "mode": "fixed"
+                    }
                 }
             }
         },
@@ -213,8 +362,16 @@
             "id": 5,
             "title": "Log volume by level",
             "type": "timeseries",
-            "gridPos": { "h": 8, "w": 24, "x": 0, "y": 4 },
-            "datasource": { "type": "loki", "uid": "Loki" },
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 4
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "sum by (level) (count_over_time({service=~\"${service:pipe}\"}[$__interval]))",
@@ -223,32 +380,82 @@
                 }
             ],
             "options": {
-                "legend": { "displayMode": "list", "placement": "bottom" }
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom"
+                }
             },
             "fieldConfig": {
                 "defaults": {
                     "custom": {
-                        "stacking": { "mode": "normal", "group": "A" },
+                        "stacking": {
+                            "mode": "normal",
+                            "group": "A"
+                        },
                         "fillOpacity": 70,
                         "lineWidth": 0
                     }
                 },
                 "overrides": [
                     {
-                        "matcher": { "id": "byName", "options": "ERROR" },
-                        "properties": [{ "id": "color", "value": { "fixedColor": "#e05252", "mode": "fixed" } }]
+                        "matcher": {
+                            "id": "byName",
+                            "options": "ERROR"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "#e05252",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
                     },
                     {
-                        "matcher": { "id": "byName", "options": "WARN" },
-                        "properties": [{ "id": "color", "value": { "fixedColor": "#d48f1e", "mode": "fixed" } }]
+                        "matcher": {
+                            "id": "byName",
+                            "options": "WARN"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "#d48f1e",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
                     },
                     {
-                        "matcher": { "id": "byName", "options": "INFO" },
-                        "properties": [{ "id": "color", "value": { "fixedColor": "#4a9ede", "mode": "fixed" } }]
+                        "matcher": {
+                            "id": "byName",
+                            "options": "INFO"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "#4a9ede",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
                     },
                     {
-                        "matcher": { "id": "byName", "options": "DEBUG" },
-                        "properties": [{ "id": "color", "value": { "fixedColor": "#7a9fc8", "mode": "fixed" } }]
+                        "matcher": {
+                            "id": "byName",
+                            "options": "DEBUG"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "#7a9fc8",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
                     }
                 ]
             }
@@ -257,8 +464,16 @@
             "id": 6,
             "title": "Log stream",
             "type": "logs",
-            "gridPos": { "h": 14, "w": 24, "x": 0, "y": 12 },
-            "datasource": { "type": "loki", "uid": "Loki" },
+            "gridPos": {
+                "h": 14,
+                "w": 24,
+                "x": 0,
+                "y": 12
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "{service=~\"${service:pipe}\", level=~\"${level:pipe}\", context=~\"${context:pipe}\"} |~ \"$search\"",
@@ -282,8 +497,16 @@
             "title": "All errors",
             "description": "Fixed query — not affected by the filters above",
             "type": "logs",
-            "gridPos": { "h": 10, "w": 8, "x": 0, "y": 26 },
-            "datasource": { "type": "loki", "uid": "Loki" },
+            "gridPos": {
+                "h": 10,
+                "w": 8,
+                "x": 0,
+                "y": 26
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "{service=~\"api|scraper\", level=\"ERROR\"}",
@@ -304,8 +527,16 @@
             "title": "HTTP requests",
             "description": "Set Request ID above to trace one request end-to-end",
             "type": "logs",
-            "gridPos": { "h": 10, "w": 8, "x": 8, "y": 26 },
-            "datasource": { "type": "loki", "uid": "Loki" },
+            "gridPos": {
+                "h": 10,
+                "w": 8,
+                "x": 8,
+                "y": 26
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "{service=\"api\", context=\"http\"} | json | request_id=~\"$request_id\"",
@@ -326,8 +557,16 @@
             "title": "Scraper jobs",
             "description": "Set Job above to filter by job type",
             "type": "logs",
-            "gridPos": { "h": 10, "w": 8, "x": 16, "y": 26 },
-            "datasource": { "type": "loki", "uid": "Loki" },
+            "gridPos": {
+                "h": 10,
+                "w": 8,
+                "x": 16,
+                "y": 26
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "{service=\"scraper\", context=\"job\"} | json | job_name=~\"${job_name:pipe}\"",

@@ -72,7 +72,8 @@ skip the retry queue immediately.
 
 ### Response Queue
 
-The response queue is a `Queue` (producer only from the scraper's perspective). The scraper writes results into it; the API consumes them. It has its own `defaultJobOptions`:
+The response queue is a `Queue` (producer only from the scraper's perspective). The scraper writes results into it; the
+API consumes them. It has its own `defaultJobOptions`:
 
 ```typescript
 defaultJobOptions: {
@@ -104,8 +105,8 @@ The API registers two BullMQ job schedulers on startup (production only). Regist
 the API — the cron pattern itself is scoped to the months when InSIS data changes:
 
 ```typescript
-// Registration window months (ZS: Jun–Sep, LS: Nov–Feb, with 1-week early-start buffer)
-const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9,11,12'
+// Registration window months (ZS: Jun–Sep, LS: Jan–Feb, with 1-week early-start buffer)
+const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9'
 
 // Catalog: 3 AM during registration months
 await scraperRequestQueue.upsertJobScheduler(
@@ -135,16 +136,17 @@ On startup the API also cleans up the old `SupervisorScheduler` entry left over 
 BullMQ's built-in deduplication prevents the same logical job from being queued multiple times within a TTL window. The
 scraper uses it to avoid re-scraping courses that are already queued.
 
-| Job                                  | Dedup key                    | TTL            |
-|--------------------------------------|------------------------------|----------------|
-| `InSIS:Catalog` (manual run)         | `InSIS:Catalog:ManualRun`    | 30 seconds     |
-| `InSIS:StudyPlans` (manual run)      | `InSIS:StudyPlans:ManualRun` | 30 seconds     |
-| `InSIS:Course` (from catalog)        | `InSIS:Course:{courseId}`    | 5 minutes      |
-| `InSIS:StudyPlan` (from study plans) | `InSIS:StudyPlan:{planId}`   | 1 hour         |
-| `InSIS:AcademicSchedule`             | `InSIS:AcademicSchedule:{faculty}:{period}` | 1 hour |
-| `InSIS:FacultyTimetable`             | `InSIS:FacultyTimetable:{f_id}` | 1 hour      |
+| Job                                  | Dedup key                                   | TTL        |
+|--------------------------------------|---------------------------------------------|------------|
+| `InSIS:Catalog` (manual run)         | `InSIS:Catalog:ManualRun`                   | 30 seconds |
+| `InSIS:StudyPlans` (manual run)      | `InSIS:StudyPlans:ManualRun`                | 30 seconds |
+| `InSIS:Course` (from catalog)        | `InSIS:Course:{courseId}`                   | 5 minutes  |
+| `InSIS:StudyPlan` (from study plans) | `InSIS:StudyPlan:{planId}`                  | 1 hour     |
+| `InSIS:AcademicSchedule`             | `InSIS:AcademicSchedule:{faculty}:{period}` | 1 hour     |
+| `InSIS:FacultyTimetable`             | `InSIS:FacultyTimetable:{f_id}`             | 1 hour     |
 
-All dedup keys now have explicit TTLs. Course and study plan keys use longer windows (5 min / 1 hour) to prevent re-queueing while the scraper works through its backlog.
+All dedup keys now have explicit TTLs. Course and study plan keys use longer windows (5 min / 1 hour) to prevent
+re-queueing while the scraper works through its backlog.
 
 ## Job Lifecycle
 
