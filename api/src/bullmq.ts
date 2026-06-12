@@ -1,11 +1,10 @@
-﻿// Imports
-
 import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 import { Queue, Worker } from 'bullmq'
 import {
 	ScraperInSISAcademicSchedulesRequestScheduler,
 	ScraperInSISCatalogRequestScheduler,
 	ScraperInSISFacultyTimetablesRequestScheduler,
+	ScraperInSISGapSweeperScheduler,
 	ScraperInSISStudyPlansRequestScheduler,
 	ScraperRequestQueue,
 	ScraperResponseQueue
@@ -15,7 +14,6 @@ import Config from '@api/Config/Config'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
 import { logger, withJobLogger } from '@api/logger'
 import InSISService from '@api/Services/InSISService'
-import ScraperGapSweeperService from '@api/Services/ScraperGapSweeperService'
 
 // Queue & Worker Setup
 
@@ -135,30 +133,17 @@ const scraper = {
 			}
 		)
 
-		const runGapSweep = async () => {
-			try {
-				const missingIdents = await ScraperGapSweeperService.getMissingIdents()
-				if (missingIdents.length === 0) return
-				await scraper.queue.request.add(
-					'InSIS Catalog Request (Gap Sweep)',
-					{
-						type: 'InSIS:Catalog',
-						auto_queue_courses: true,
-						allowed_idents: missingIdents
-					},
-					{
-						deduplication: {
-							id: 'InSIS:Catalog:GapSweep',
-							ttl: 60 * 60 * 1000
-						}
-					}
-				)
-				logger.info({ missing_count: missingIdents.length }, 'bullmq.gap_sweep_triggered')
-			} catch (err) {
-				logger.error({ err }, 'bullmq.gap_sweep_failed')
+		// Gap Sweep: every 4 hours year-round.
+		// Queries for course idents missing from insis_courses and triggers a targeted catalog scrape.
+		await scraper.queue.response.upsertJobScheduler(
+			ScraperInSISGapSweeperScheduler,
+			{ every: 4 * 60 * 60 * 1000 },
+			{
+				name: 'InSIS Gap Sweep (every 4h)',
+				data: { type: 'InSIS:GapSweep' as const },
+				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
 			}
-		}
-		setInterval(runGapSweep, 4 * 60 * 60 * 1000)
+		)
 
 		logger.info('bullmq.schedulers_configured')
 	}
