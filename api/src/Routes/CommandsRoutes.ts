@@ -6,6 +6,7 @@ import RunInSISCourseScraperController from '@api/Controllers/Commands/RunInSISC
 import RunInSISFacultyTimetablesScraperController from '@api/Controllers/Commands/RunInSISFacultyTimetablesScraperController'
 import RunInSISStudyPlanScraperController from '@api/Controllers/Commands/RunInSISStudyPlanScraperController'
 import RunInSISStudyPlansScraperController from '@api/Controllers/Commands/RunInSISStudyPlansScraperController'
+import RunInSISSweeperController from '@api/Controllers/Commands/RunInSISSweeperController'
 import CommandMiddleware from '@api/Middlewares/CommandMiddleware'
 import LoggerMiddleware from '@api/Middlewares/LoggerMiddleware'
 import { ParserJSONMiddleware } from '@api/Middlewares/ParserMiddleware'
@@ -26,6 +27,7 @@ CommandsRoutes.post('/insis/studyplan', ParserJSONMiddleware, CommandMiddleware,
 
 CommandsRoutes.post('/insis/academic-schedules', ParserJSONMiddleware, CommandMiddleware, LoggerMiddleware, RunInSISAcademicSchedulesScraperController)
 CommandsRoutes.post('/insis/faculty-timetables', ParserJSONMiddleware, CommandMiddleware, LoggerMiddleware, RunInSISFacultyTimetablesScraperController)
+CommandsRoutes.post('/insis/sweep', CommandMiddleware, LoggerMiddleware, RunInSISSweeperController)
 
 CommandsRoutes.post('/insis/retry-failed', ParserJSONMiddleware, CommandMiddleware, LoggerMiddleware, RetryFailedInSISScrapesController)
 

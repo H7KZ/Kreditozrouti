@@ -11,8 +11,13 @@ http:
     data: |-
       {
         "faculties": [],
-        "periods": [],
-        "auto_queue_courses": true
+        "periods": [
+          {
+            "semester": "ZS",
+            "year": 2026
+          }
+        ],
+        "auto_queue_courses": false
       }
   auth:
     type: bearer

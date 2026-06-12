@@ -1,16 +1,17 @@
-﻿// Imports
-
 import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 import { Queue, Worker } from 'bullmq'
 import {
 	ScraperInSISAcademicSchedulesRequestScheduler,
+	ScraperInSISCatalogRequestScheduler,
 	ScraperInSISFacultyTimetablesRequestScheduler,
+	ScraperInSISGapSweeperScheduler,
 	ScraperInSISStudyPlansRequestScheduler,
 	ScraperRequestQueue,
 	ScraperResponseQueue
 } from '@shared/queue/names'
-import { redis } from '@api/clients'
+import { mysql, redis } from '@api/clients'
 import Config from '@api/Config/Config'
+import { StudyPlanCourseIdentTable } from '@api/Database/types'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
 import { logger, withJobLogger } from '@api/logger'
 import InSISService from '@api/Services/InSISService'
@@ -43,15 +44,34 @@ const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueu
  */
 const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9'
 
-function buildStudyPlansSchedulerJob(periodsForLastFourYears: ReturnType<typeof InSISService.getPeriodsForLastYears>) {
+function buildStudyPlansSchedulerJob() {
+	const periodsForLastFourYears = InSISService.getPeriodsForLastYears(4)
+
 	return {
 		name: `InSIS Study Plans Request (at 2 AM during registration months)`,
 		data: {
 			type: 'InSIS:StudyPlans' as const,
-			auto_queue_study_plans: true,
-			auto_queue_courses: true,
 			faculties: undefined,
-			periods: periodsForLastFourYears
+			periods: periodsForLastFourYears,
+			auto_queue_study_plans: true
+		},
+		opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+	}
+}
+
+async function buildCatalogSchedulerJob() {
+	const upcomingPeriod = InSISService.getUpcomingPeriod()
+	const rows = await mysql.selectFrom(StudyPlanCourseIdentTable._table).select('course_ident').distinct().execute()
+	const allowedIdents = rows.map(r => r.course_ident)
+
+	return {
+		name: 'InSIS Catalog Request (at 3 AM during registration months)',
+		data: {
+			type: 'InSIS:Catalog' as const,
+			faculties: undefined,
+			periods: [upcomingPeriod],
+			allowed_idents: allowedIdents,
+			auto_queue_courses: true
 		},
 		opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
 	}
@@ -83,16 +103,6 @@ const scraper = {
 	async schedulers() {
 		if (!Config.isEnvProduction()) return
 
-		const periodsForLastFourYears = InSISService.getPeriodsForLastYears(4)
-
-		// Study Plans: daily at 2 AM during registration months.
-		// Queues individual plan jobs which queue course scrapes directly.
-		await scraper.queue.request.upsertJobScheduler(
-			ScraperInSISStudyPlansRequestScheduler,
-			{ pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *` },
-			buildStudyPlansSchedulerJob(periodsForLastFourYears)
-		)
-
 		// Academic Schedules: daily at 1 AM year-round
 		await scraper.queue.request.upsertJobScheduler(
 			ScraperInSISAcademicSchedulesRequestScheduler,
@@ -106,6 +116,22 @@ const scraper = {
 			}
 		)
 
+		// Study Plans: daily at 2 AM during registration months.
+		// Queues individual plan jobs which queue course scrapes directly.
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISStudyPlansRequestScheduler,
+			{ pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *` },
+			buildStudyPlansSchedulerJob()
+		)
+
+		// Catalog: daily at 3 AM during registration months (after study plans at 2 AM).
+		// Scrapes upcoming semester only; always queues discovered courses.
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISCatalogRequestScheduler,
+			{ pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *` },
+			await buildCatalogSchedulerJob()
+		)
+
 		// Faculty Timetables: weekly on Sunday at midnight, year-round
 		await scraper.queue.request.upsertJobScheduler(
 			ScraperInSISFacultyTimetablesRequestScheduler,
@@ -115,6 +141,18 @@ const scraper = {
 				data: {
 					type: 'InSIS:FacultyTimetables' as const
 				},
+				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+			}
+		)
+
+		// Gap Sweep: every 4 hours year-round (0:00, 4:00, 8:00, 12:00, 16:00, 20:00).
+		// Queries for course idents missing from insis_courses and triggers a targeted catalog scrape.
+		await scraper.queue.response.upsertJobScheduler(
+			ScraperInSISGapSweeperScheduler,
+			{ pattern: '0 */4 * * *' },
+			{
+				name: 'InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00)',
+				data: { type: 'InSIS:GapSweep' as const },
 				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
 			}
 		)

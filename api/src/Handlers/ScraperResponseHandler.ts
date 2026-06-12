@@ -5,6 +5,7 @@ import { withDeadlockRetry } from '@api/Jobs/helpers'
 import ScraperResponseInSISAcademicScheduleJob from '@api/Jobs/ScraperResponseInSISAcademicScheduleJob'
 import ScraperResponseInSISCourseJob from '@api/Jobs/ScraperResponseInSISCourseJob'
 import ScraperResponseInSISFacultyTimetableJob from '@api/Jobs/ScraperResponseInSISFacultyTimetableJob'
+import ScraperResponseInSISGapSweepJob from '@api/Jobs/ScraperResponseInSISGapSweepJob'
 import ScraperResponseInSISStudyPlanJob from '@api/Jobs/ScraperResponseInSISStudyPlanJob'
 
 export default async function ScraperResponseHandler(job: Job<ScraperResponseJob>): Promise<void> {
@@ -35,6 +36,9 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
 						break
 					case 'InSIS:FacultyTimetable':
 						await ScraperResponseInSISFacultyTimetableJob(job.data)
+						break
+					case 'InSIS:GapSweep':
+						await ScraperResponseInSISGapSweepJob(job.data)
 						break
 					case 'InSIS:Catalog':
 					case 'InSIS:StudyPlans':
