@@ -75,17 +75,21 @@
                 "type": "custom",
                 "name": "job_name",
                 "label": "Job",
-                "query": "InSIS:Course,InSIS:Catalog,InSIS:StudyPlan,InSIS:StudyPlans",
+                "query": "InSIS:Course,InSIS:Catalog,InSIS:StudyPlan,InSIS:StudyPlans,InSIS:AcademicSchedules,InSIS:AcademicSchedule,InSIS:FacultyTimetables,InSIS:FacultyTimetable",
                 "multi": true,
                 "includeAll": true,
                 "allValue": ".*",
                 "hide": 0,
                 "current": { "selected": true, "text": "All", "value": "$__all" },
                 "options": [
-                    { "selected": false, "text": "InSIS:Course",     "value": "InSIS:Course"     },
-                    { "selected": false, "text": "InSIS:Catalog",    "value": "InSIS:Catalog"    },
-                    { "selected": false, "text": "InSIS:StudyPlan",  "value": "InSIS:StudyPlan"  },
-                    { "selected": false, "text": "InSIS:StudyPlans", "value": "InSIS:StudyPlans" }
+                    { "selected": false, "text": "InSIS:Course",              "value": "InSIS:Course"              },
+                    { "selected": false, "text": "InSIS:Catalog",             "value": "InSIS:Catalog"             },
+                    { "selected": false, "text": "InSIS:StudyPlan",           "value": "InSIS:StudyPlan"           },
+                    { "selected": false, "text": "InSIS:StudyPlans",          "value": "InSIS:StudyPlans"          },
+                    { "selected": false, "text": "InSIS:AcademicSchedules",   "value": "InSIS:AcademicSchedules"   },
+                    { "selected": false, "text": "InSIS:AcademicSchedule",    "value": "InSIS:AcademicSchedule"    },
+                    { "selected": false, "text": "InSIS:FacultyTimetables",   "value": "InSIS:FacultyTimetables"   },
+                    { "selected": false, "text": "InSIS:FacultyTimetable",    "value": "InSIS:FacultyTimetable"    }
                 ]
             }
         ]
