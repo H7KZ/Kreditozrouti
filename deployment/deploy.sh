@@ -231,6 +231,16 @@ main() {
 
     if [[ -n "$service" ]]; then
         # ---- Per-service deploy ----
+        create_networks "$networks_config"
+
+        # Ensure traefik network exists (external dependency)
+        if ! docker network inspect "traefik-network" &>/dev/null; then
+            log "Creating network: traefik-network"
+            docker network create "traefik-network"
+        fi
+
+        create_volumes "$volumes_config"
+
         log "Pulling image for $service..."
         docker compose \
             -p "$project_name" \
