@@ -39,6 +39,7 @@ loki.process "parse_json" {
       level   = "level",
       service = "service",
       env     = "env",
+      context = "context",
     }
   }
 
@@ -48,6 +49,7 @@ loki.process "parse_json" {
       level   = "",
       service = "",
       env     = "",
+      context = "",
     }
   }
 

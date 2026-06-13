@@ -11,20 +11,14 @@ The API consumes results from the scraper via `ScraperResponseQueue`. Each incom
 
 ```typescript
 // Simplified routing map:
-'InSIS:Course'     → ScraperResponseInSISCourseJob
-'InSIS:StudyPlan'  → ScraperResponseInSISStudyPlanJob
-'InSIS:Catalog'    → (no - op — catalog
-responses
-just
-discover
-URLs;
-no
-DB
-sync
-needed
-)
-'InSIS:StudyPlans' → (no - op — same as above
-)
+'InSIS:Course'              → ScraperResponseInSISCourseJob
+'InSIS:StudyPlan'           → ScraperResponseInSISStudyPlanJob
+'InSIS:AcademicSchedule'    → ScraperResponseInSISAcademicScheduleJob
+'InSIS:FacultyTimetable'    → ScraperResponseInSISFacultyTimetableJob
+'InSIS:Catalog'             → (no-op — catalog responses just discover URLs; no DB sync needed)
+'InSIS:StudyPlans'          → (no-op — same as above)
+'InSIS:AcademicSchedules'   → (no-op — discovery metadata only; per-period jobs handle the sync)
+'InSIS:FacultyTimetables'   → (no-op — discovery metadata only; logs faculties_count)
 ```
 
 ---
@@ -40,15 +34,24 @@ Syncs a fully scraped `ScraperInSISCourse` into MySQL and notifies waiting SSE c
 If `course.last_modified_date` matches the existing `updated_at` in the DB, the job exits early with no writes. This
 prevents unnecessary DB churn when a catalog run re-scrapes unchanged courses.
 
+### Faculty upsert (outside the transaction, read-first)
+
+`upsertFaculty` and the study-plan faculty-ident pre-creation loop run **before** the
+transaction below and outside it — faculty rows are shared across hundreds of concurrent
+course jobs (5 scraper replicas), and an unconditional `INSERT ... ON DUPLICATE KEY UPDATE`
+acquires an exclusive lock on every call, which is a classic MySQL deadlock generator
+("Deadlock found when trying to get lock; try restarting transaction") under concurrency.
+
+Both now **SELECT first** and only write when the data actually differs (or the row is
+missing): faculty title/visibility changes are extremely rare, so this turns the vast
+majority of calls into lock-free reads and removes the contention entirely.
+
 ### Transaction
 
-All DB writes happen inside a single Kysely transaction:
+All remaining DB writes happen inside a single Kysely transaction:
 
 ```
-1. upsertFaculty
-   INSERT INTO insis_faculties ... ON DUPLICATE KEY UPDATE title, is_schedule_publicly_visible
-
-2. upsert course
+1. upsert course
    INSERT INTO insis_courses ... ON DUPLICATE KEY UPDATE (all fields)
    Time fields converted: timeToMinutes('9:15') → 555
 
@@ -120,15 +123,88 @@ Syncs a fully scraped `ScraperInSISStudyPlan` into MySQL.
    INSERT new rows for each course in plan.courses:
    - Looks up course_id from DB by ident (nullable if course not yet scraped)
    - Stores course_ident as a cached fallback for future linking
+   ON DUPLICATE KEY UPDATE course_id = VALUES(course_id)
+   — updates the course_id pointer when the same (study_plan_id, ident, group, category)
+     row is re-inserted after the course has been re-scraped for a new year/semester.
 ```
 
 The `course_ident` field allows courses to be linked to study plans even when the course record doesn't exist yet —
 `ScraperResponseInSISCourseJob.syncStudyPlansFromCourse` handles the reverse link.
 
+The `ON DUPLICATE KEY UPDATE course_id` ensures that when a course is re-scraped for a new year, the link
+always points to the most recently scraped `insis_courses` row rather than accumulating stale ZS-YYYY pointers.
+
 ### No Cache Flush
 
 Study plan responses don't flush the full response cache because study plan data changes much less frequently and the
 write latency would compound across large catalog runs.
+
+---
+
+## ScraperResponseInSISAcademicScheduleJob
+
+**File:** `src/Jobs/ScraperResponseInSISAcademicScheduleJob.ts`
+
+Syncs a scraped academic period and its events into MySQL.
+
+### Faculty Upsert (read-first)
+
+Checks if the faculty row (by `faculty_ident`) exists. If not, inserts a stub
+(`title: null, is_schedule_publicly_visible: false`) to satisfy the FK constraint.
+The faculty title is populated when the catalog scrape runs.
+
+### Period Upsert
+
+```
+INSERT INTO insis_academic_periods ... ON DUPLICATE KEY UPDATE
+Unique key: insis_period_id
+Updates: faculty_id, semester, year, level, starts_at, ends_at, last_scraped_at
+```
+
+No `label` column — period is identified by semester, year, and level.
+
+### Event Reconciliation
+
+Events have no stable natural key, so they are reconciled via delete+recreate:
+
+```
+DELETE FROM insis_academic_schedule_events WHERE period_id = ?
+INSERT new events for the period
+```
+
+Each event row: `period_id`, `title`, `starts_at` (datetime | null), `ends_at` (datetime | null).
+
+---
+
+## ScraperResponseInSISFacultyTimetablesJob
+
+**File:** `src/Jobs/ScraperResponseInSISFacultyTimetablesJob.ts`
+
+Discovery response for the faculty timetables pipeline. No DB writes — logs `faculties_count` from the response
+payload so operators can confirm that discovery completed and how many faculties were queued.
+
+---
+
+## ScraperResponseInSISFacultyTimetableJob
+
+**File:** `src/Jobs/ScraperResponseInSISFacultyTimetableJob.ts`
+
+Updates the `is_schedule_publicly_visible` flag for a single faculty.
+
+### Flow
+
+```
+1. INSERT IGNORE INTO insis_faculties (id) VALUES (ident)
+   Ensures the faculty row exists before the UPDATE.
+   Uses INSERT IGNORE so that concurrent jobs (course, study plan) are not blocked.
+
+2. UPDATE insis_faculties
+   SET is_schedule_publicly_visible = <value>
+   WHERE id = ident
+```
+
+The INSERT IGNORE step satisfies the FK constraint if the faculty has never been seen before. Title and other
+faculty fields are populated by subsequent course or study plan scrapes.
 
 ---
 
@@ -174,6 +250,13 @@ upsertJobScheduler(ScraperInSISStudyPlansRequestScheduler, {
     pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *`
 }, {
     data: {type: 'InSIS:StudyPlans', mode: 'turbo', auto_queue_study_plans: true, periods: [...last 4 years]}
+})
+
+// Academic schedules: 1 AM daily (year-round — schedule changes affect all students)
+upsertJobScheduler(ScraperInSISAcademicSchedulesRequestScheduler, {
+    pattern: '0 1 * * *'
+}, {
+    data: { type: 'InSIS:AcademicSchedules' }
 })
 ```
 

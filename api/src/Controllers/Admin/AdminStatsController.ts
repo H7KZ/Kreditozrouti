@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import { sql, SqlBool } from 'kysely'
 import { scraper } from '@api/bullmq'
 import { mysql, redis } from '@api/clients'
+import { CourseTable, FacultyTable, StudyPlanTable } from '@api/Database/types'
 
 export type {
 	AdminStatsResponse,
@@ -142,15 +143,15 @@ async function getErrorMetrics(): Promise<ErrorMetrics> {
 async function getDbTotals(): Promise<DbTotals> {
 	const [courses, plans, faculties] = await Promise.all([
 		mysql
-			.selectFrom('insis_courses')
+			.selectFrom(CourseTable._table)
 			.select(eb => [eb.fn.countAll<string>().as('count')])
 			.executeTakeFirst(),
 		mysql
-			.selectFrom('insis_study_plans')
+			.selectFrom(StudyPlanTable._table)
 			.select(eb => [eb.fn.countAll<string>().as('count')])
 			.executeTakeFirst(),
 		mysql
-			.selectFrom('insis_faculties')
+			.selectFrom(FacultyTable._table)
 			.select(eb => [eb.fn.countAll<string>().as('count')])
 			.executeTakeFirst()
 	])
@@ -163,8 +164,8 @@ async function getDbTotals(): Promise<DbTotals> {
 
 async function getFacultyBreakdown(): Promise<FacultyStats[]> {
 	const rows = await mysql
-		.selectFrom('insis_courses')
-		.leftJoin('insis_faculties', 'insis_faculties.id', 'insis_courses.faculty_id')
+		.selectFrom(CourseTable._table)
+		.leftJoin(FacultyTable._table, 'insis_faculties.id', 'insis_courses.faculty_id')
 		.select(eb => [
 			'insis_courses.faculty_id',
 			sql<string | null>`insis_faculties.title`.as('faculty_title'),
@@ -193,7 +194,7 @@ async function getStaleCounts(): Promise<StaleCourseCount[]> {
 	return Promise.all(
 		thresholds.map(async days => {
 			const result = await mysql
-				.selectFrom('insis_courses')
+				.selectFrom(CourseTable._table)
 				.select(eb => [eb.fn.countAll<string>().as('count')])
 				.where(sql<SqlBool>`insis_courses.updated_at < DATE_SUB(NOW(), INTERVAL ${days} DAY)`)
 				.executeTakeFirst()
@@ -204,7 +205,7 @@ async function getStaleCounts(): Promise<StaleCourseCount[]> {
 
 async function getRecentlyUpdatedCount(): Promise<number> {
 	const result = await mysql
-		.selectFrom('insis_courses')
+		.selectFrom(CourseTable._table)
 		.select(eb => [eb.fn.countAll<string>().as('count')])
 		.where(sql<SqlBool>`insis_courses.updated_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)`)
 		.executeTakeFirst()

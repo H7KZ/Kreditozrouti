@@ -15,8 +15,8 @@ on:
       min_versions_to_keep:
         description: "Number of recent SHA-tagged versions to keep per package"
         required: false
-        type: number
-        default: 10
+        type: string
+        default: '10'
       dry_run:
         description: "Dry run — print what would be deleted without deleting"
         required: false

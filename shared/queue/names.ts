@@ -1,4 +1,7 @@
 export const ScraperRequestQueue = 'ScraperRequestQueue'
 export const ScraperResponseQueue = 'ScraperResponseQueue'
-export const ScraperInSISCatalogRequestScheduler = 'ScraperInSISCatalogRequestScheduler'
 export const ScraperInSISStudyPlansRequestScheduler = 'ScraperInSISStudyPlansRequestScheduler'
+export const ScraperInSISAcademicSchedulesRequestScheduler = 'ScraperInSISAcademicSchedulesRequestScheduler'
+export const ScraperInSISFacultyTimetablesRequestScheduler = 'ScraperInSISFacultyTimetablesRequestScheduler'
+export const ScraperInSISCatalogRequestScheduler = 'ScraperInSISCatalogRequestScheduler'
+export const ScraperInSISGapSweeperScheduler = 'ScraperInSISGapSweeperScheduler'

@@ -9,13 +9,13 @@ auto-migrations, and no relationship tracking. You write SQL via a typed builder
 
 ### `insis_faculties`
 
-| Column                         | Type               | Notes                                              |
-|--------------------------------|--------------------|----------------------------------------------------|
-| `id`                           | `varchar` PK       | Faculty ident, e.g. `"FIS"`, `"NF"`                |
-| `title`                        | `varchar` nullable | Full faculty name                                  |
-| `is_schedule_publicly_visible` | `boolean`          | False for CTVS≥2017, OZS≥2020, IOM≥2021, CESP≥2022 |
-| `created_at`                   | `timestamp`        | Auto-set on insert                                 |
-| `updated_at`                   | `timestamp`        | Updated on each sync                               |
+| Column                         | Type               | Notes                                                                                                                     |
+|--------------------------------|--------------------|---------------------------------------------------------------------------------------------------------------------------|
+| `id`                           | `varchar` PK       | Faculty ident, e.g. `"FIS"`, `"NF"`                                                                                       |
+| `title`                        | `varchar` nullable | Full faculty name                                                                                                         |
+| `is_schedule_publicly_visible` | `boolean`          | Set by the faculty timetable scraper (`InSIS:FacultyTimetable` response job). Defaults to `false` until the scraper runs. |
+| `created_at`                   | `timestamp`        | Auto-set on insert                                                                                                        |
+| `updated_at`                   | `timestamp`        | Updated on each sync                                                                                                      |
 
 ---
 

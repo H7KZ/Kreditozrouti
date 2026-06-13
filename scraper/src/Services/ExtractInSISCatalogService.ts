@@ -97,7 +97,7 @@ export default class ExtractInSISCatalogService {
             if (seen.has(url)) return
             seen.add(url)
 
-            const text = $(el).text().trim()
+            const text = cleanText($(el).text())
             const ident = text.split(/\s/)[0] ?? ''
             if (!ident) return
 

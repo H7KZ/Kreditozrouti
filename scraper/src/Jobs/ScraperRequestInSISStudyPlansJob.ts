@@ -3,14 +3,15 @@ import type { ScraperInSISStudyPlansRequestJob } from '@scraper/types/jobs'
 import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
+import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
-import { bfsConcurrencyForMode } from '@scraper/Utils/ThrottleUtils'
 
 const MaxDrillDepth = 8
+const BFS_CONCURRENCY = 6
 
 /**
  * Scrapes the InSIS study plans hierarchy.
@@ -25,6 +26,7 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
     const initialResult = await client.get<string>(Config.insis.studyPlansUrl)
 
     if (!initialResult.success) {
+        if (initialResult.status === 429) throw new InSISRateLimitError(initialResult.retryAfter ?? 60)
         redis.incr('metrics:scraper:silent_failures:study_plans').catch(() => {
             /* empty */
         })
@@ -36,13 +38,10 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
 
     let faculties = ExtractInSISStudyPlanService.extractFaculties(initialResult.data)
 
-    const concurrency = bfsConcurrencyForMode(data.mode)
-
     LoggerJobContext.add({
         faculty_urls_count: faculties.length,
         max_drill_depth: MaxDrillDepth,
-        concurrency_limit: concurrency,
-        mode: data.mode
+        concurrency_limit: BFS_CONCURRENCY
     })
 
     if (data.faculties && data.faculties.length > 0) {
@@ -54,7 +53,7 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
         client,
         faculties.map(f => f.url),
         data.periods,
-        concurrency
+        BFS_CONCURRENCY
     )
 
     const plans: ScraperInSISStudyPlans = { urls: planUrls }
@@ -72,7 +71,7 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
             total_plans_to_queue: plans.urls.length
         })
 
-        await QueueService.queueStudyPlanRequests(plans.urls, url => ExtractInSISStudyPlanService.extractIdFromUrl(url), data.mode)
+        await QueueService.queueStudyPlanRequests(plans.urls, url => ExtractInSISStudyPlanService.extractIdFromUrl(url))
     }
 
     return plans

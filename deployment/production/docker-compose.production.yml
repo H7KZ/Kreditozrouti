@@ -289,6 +289,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - PMA_ABSOLUTE_URI=https://${DOMAIN}/phpmyadmin/
+      - UPLOAD_LIMIT=2G
 
     networks:
       - traefik-network
@@ -332,6 +333,8 @@ services:
       - --save
       - "60"
       - "1"
+      - --appendonly
+      - "yes"
       - --loglevel
       - warning
       - --requirepass
@@ -339,7 +342,10 @@ services:
       - --maxmemory
       - 256mb
       - --maxmemory-policy
-      - allkeys-lru
+      - noeviction
+
+    volumes:
+      - redis-data-volume:/data
 
     networks:
       - redis-network

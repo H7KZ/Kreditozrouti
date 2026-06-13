@@ -1,10 +1,4 @@
-import type {
-	ScraperInSISCourseAssessmentMethod,
-	ScraperInSISCourseStudyPlan,
-	ScraperInSISCourseTimetableSlot,
-	ScraperInSISCourseTimetableUnit,
-	ScraperInSISFaculty
-} from '@shared/queue/insis'
+import type { ScraperInSISCourseAssessmentMethod, ScraperInSISCourseTimetableSlot, ScraperInSISCourseTimetableUnit } from '@shared/queue/insis'
 import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
 import { Transaction } from 'kysely'
 import { timeToMinutes } from '@shared/domain/time'
@@ -16,13 +10,19 @@ import {
 	CourseUnitSlotTable,
 	CourseUnitTable,
 	Database,
-	FacultyTable,
 	NewCourse,
 	NewCourseUnit,
 	NewCourseUnitSlot,
-	StudyPlanCourseTable,
-	StudyPlanTable
+	StudyPlanCourseIdentTable,
+	StudyPlanCourseTable
 } from '@api/Database/types'
+import { insertFacultiesBatch } from '@api/Jobs/helpers'
+
+const SEMESTER_RANK: Partial<Record<string, number>> = { LS: 0, ZS: 1 }
+
+function semesterRank(semester: string | null | undefined): number {
+	return SEMESTER_RANK[semester ?? ''] ?? 0
+}
 
 /**
  * Syncs a scraped InSIS course into the database.
@@ -35,15 +35,14 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		course_ident: course?.ident
 	})
 
-	if (!course?.id) return
-
-	// Always upsert faculty first — visibility flag changes must propagate
-	// even when the course syllabus hasn't changed.
-	if (course.faculty) {
-		await mysql.transaction().execute(async trx => {
-			await upsertFaculty(trx, course.faculty!)
-		})
+	if (!course?.id) {
+		LoggerJobContext.add({ skipped_no_id: true })
+		return
 	}
+
+	const facultyId = course.faculty?.ident ?? null
+
+	await insertFacultiesBatch(mysql, [course.faculty?.ident, ...(course.study_plans?.map(p => p.facultyIdent) ?? [])])
 
 	// Skip the rest if course hasn't changed since last scrape.
 	// Normalize to string in case mysql2 returns a Date object for the date column.
@@ -66,9 +65,6 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	}
 
 	await mysql.transaction().execute(async trx => {
-		let facultyId: string | null = null
-		if (course.faculty) facultyId = await upsertFaculty(trx, course.faculty)
-
 		const coursePayload: NewCourse = {
 			id: course.id,
 			url: course.url,
@@ -99,7 +95,8 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			study_load: course.study_load ? JSON.stringify(course.study_load) : null,
 			literature_required: course.literature_required,
 			literature_recommended: course.literature_recommended,
-			last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+			last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
+			content_hash: course.content_hash
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -109,11 +106,14 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 		await syncAssessmentMethods(trx, course.id, course.assessment_methods ?? [])
 		await syncTimetable(trx, course.id, course.timetable ?? [])
-
-		if (course.study_plans && course.study_plans.length > 0) {
-			await syncStudyPlansFromCourse(trx, course.id, course.ident ?? '', course.study_plans)
-		}
 	})
+
+	// Study-plan linking runs outside the transaction to avoid deadlocks: concurrent jobs
+	// holding course-write locks contend on InnoDB range locks when UPDATing study_plan_courses.
+	// The unique index (idx_plan_courses_unique_lookup) reduces this to a single-row lock,
+	// but keeping the step outside also ensures a missing study plan row (race with the study
+	// plan scraper) never rolls back the entire course upsert.
+	const planEntryCount = await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.year, course.semester ?? null)
 
 	await redis.publish(
 		`course:updated:${course.id}`,
@@ -129,7 +129,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	LoggerJobContext.add({
 		assessment_method_count: course.assessment_methods?.length ?? 0,
 		timetable_unit_count: course.timetable?.length ?? 0,
-		study_plan_link_count: course.study_plans?.length ?? 0
+		study_plan_link_count: planEntryCount
 	})
 }
 
@@ -137,38 +137,16 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
  * Reconciles assessment methods.
  */
 async function syncAssessmentMethods(trx: Transaction<Database>, courseId: number, incomingMethods: ScraperInSISCourseAssessmentMethod[]): Promise<void> {
-	const existingMethods = await trx.selectFrom(CourseAssessmentTable._table).selectAll().where('course_id', '=', courseId).execute()
+	await trx.deleteFrom(CourseAssessmentTable._table).where('course_id', '=', courseId).execute()
 
-	// 1. Deduplicate incoming methods using a Map
-	const incomingMap = new Map(incomingMethods.map(m => [m.method, m]))
-	const existingMap = new Map(existingMethods.map(m => [m.method, m]))
+	const unique = [...new Map(incomingMethods.map(m => [m.method, m])).values()].map(m => ({
+		course_id: courseId,
+		method: m.method,
+		weight: m.weight
+	}))
 
-	// Delete removed
-	// (Iterate existing methods; if not found in incoming unique map, delete it)
-	const toDeleteIds = existingMethods.filter(em => em.method && !incomingMap.has(em.method)).map(em => em.id)
-	if (toDeleteIds.length > 0) {
-		await trx.deleteFrom(CourseAssessmentTable._table).where('id', 'in', toDeleteIds).execute()
-	}
-
-	// Update weights
-	for (const existing of existingMethods) {
-		const incoming = existing.method ? incomingMap.get(existing.method) : null
-		if (incoming && existing.weight !== incoming.weight) {
-			await trx.updateTable(CourseAssessmentTable._table).set({ weight: incoming.weight }).where('id', '=', existing.id).execute()
-		}
-	}
-
-	// Insert new
-	const toInsert = Array.from(incomingMap.values())
-		.filter(im => im.method && !existingMap.has(im.method))
-		.map(im => ({
-			course_id: courseId,
-			method: im.method,
-			weight: im.weight
-		}))
-
-	if (toInsert.length > 0) {
-		await trx.insertInto(CourseAssessmentTable._table).values(toInsert).execute()
+	if (unique.length > 0) {
+		await trx.insertInto(CourseAssessmentTable._table).values(unique).execute()
 	}
 }
 
@@ -227,50 +205,59 @@ async function syncSlotsForUnit(trx: Transaction<Database>, unitId: number, inco
 }
 
 /**
- * Links this course to Study Plans found on the course page.
+ * Links this course to all study plan editions that list its ident.
+ *
+ * Reads from study_plans_course_idents (owned by the study plan scraper) to find
+ * every plan edition that includes this course ident. For each, upserts into
+ * study_plan_courses with "newer year wins" semantics: only overwrites an existing
+ * course_id if the incoming course year is >= the year of the currently linked course.
+ * When years are equal, ZS (winter) beats LS (summer) as a tiebreaker.
  */
-async function syncStudyPlansFromCourse(
-	trx: Transaction<Database>,
-	courseId: number,
-	courseIdent: string,
-	plans: ScraperInSISCourseStudyPlan[]
-): Promise<void> {
-	for (const plan of plans) {
-		// 1. Ensure Faculty exists
-		if (plan.facultyIdent) {
-			await trx
-				.insertInto(FacultyTable._table)
-				.values({ id: plan.facultyIdent, title: null, is_schedule_publicly_visible: false })
-				.onDuplicateKeyUpdate({ id: plan.facultyIdent })
-				.execute()
-		}
+async function syncStudyPlansFromCourse(courseId: number, courseIdent: string, courseYear: number | null, courseSemester: string | null): Promise<number> {
+	const planEntries = await mysql
+		.selectFrom(StudyPlanCourseIdentTable._table)
+		.select(['study_plan_id', 'group', 'category'])
+		.where('course_ident', '=', courseIdent)
+		.execute()
 
-		// 2. Find Study Plan
-		const studyPlan = await trx
-			.selectFrom(StudyPlanTable._table)
-			.select('id')
-			.where(eb =>
-				eb.and([
-					eb('ident', '=', plan.ident),
-					plan.facultyIdent ? eb('faculty_id', '=', plan.facultyIdent) : eb.val(true),
-					eb('semester', '=', plan.semester),
-					eb('year', '=', plan.year)
-				])
-			)
+	if (planEntries.length === 0) return 0
+
+	for (const entry of planEntries) {
+		const existing = await mysql
+			.selectFrom(`${StudyPlanCourseTable._table} as spc`)
+			.innerJoin(`${CourseTable._table} as ec`, 'ec.id', 'spc.course_id')
+			.select(['ec.year', 'ec.semester'])
+			.where('spc.study_plan_id', '=', entry.study_plan_id)
+			.where('spc.course_ident', '=', courseIdent)
 			.executeTakeFirst()
 
-		if (!studyPlan) continue
+		if (!existing) {
+			await mysql
+				.insertInto(StudyPlanCourseTable._table)
+				.values({
+					study_plan_id: entry.study_plan_id,
+					course_id: courseId,
+					course_ident: courseIdent,
+					group: entry.group,
+					category: entry.category
+				})
+				.execute()
+		} else {
+			const incomingScore = (courseYear ?? -1) * 10 + semesterRank(courseSemester)
+			const existingScore = (existing.year ?? -1) * 10 + semesterRank(existing.semester)
 
-		// 3. Link Course to Plan
-		await trx
-			.updateTable(StudyPlanCourseTable._table)
-			.set({ course_id: courseId })
-			.where('study_plan_id', '=', studyPlan.id)
-			.where('course_ident', '=', courseIdent)
-			.where('group', '=', plan.group)
-			.where('category', '=', plan.category)
-			.execute()
+			if (courseYear !== null && incomingScore >= existingScore) {
+				await mysql
+					.updateTable(StudyPlanCourseTable._table)
+					.set({ course_id: courseId })
+					.where('study_plan_id', '=', entry.study_plan_id)
+					.where('course_ident', '=', courseIdent)
+					.execute()
+			}
+		}
 	}
+
+	return planEntries.length
 }
 
 /**
@@ -288,26 +275,4 @@ async function flushResponseCaches(): Promise<void> {
 			}
 		} while (cursor !== '0')
 	}
-}
-
-/**
- * Helper to Upsert Faculty and return its ID.
- */
-async function upsertFaculty(trx: Transaction<Database>, faculty: ScraperInSISFaculty): Promise<string | null> {
-	if (!faculty.ident) return null
-
-	await trx
-		.insertInto(FacultyTable._table)
-		.values({
-			id: faculty.ident,
-			title: faculty.title,
-			is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
-		})
-		.onDuplicateKeyUpdate({
-			title: faculty.title,
-			is_schedule_publicly_visible: faculty.is_schedule_publicly_visible
-		})
-		.execute()
-
-	return faculty.ident
 }

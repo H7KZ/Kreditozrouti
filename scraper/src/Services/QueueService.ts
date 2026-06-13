@@ -1,8 +1,14 @@
-import type { ScraperInSISCourse, ScraperInSISStudyPlan } from '@scraper/types/insis'
-import type { ScrapingMode } from '@scraper/types/jobs'
+import type {
+    ScraperInSISAcademicSchedule,
+    ScraperInSISAcademicSchedules,
+    ScraperInSISCourse,
+    ScraperInSISFacultyTimetable,
+    ScraperInSISFacultyTimetables,
+    ScraperInSISStudyPlan
+} from '@scraper/types/insis'
+import type { ScraperInSISAcademicScheduleRequestJob } from '@scraper/types/jobs'
 import scraper from '@scraper/bullmq'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
-import { leafDelayForMode } from '@scraper/Utils/ThrottleUtils'
 
 /**
  * Centralized queue operations for InSIS scraper jobs.
@@ -37,27 +43,26 @@ export class QueueService {
         })
     }
 
-    static async queueCourseRequests(courses: { url: string; courseId: number | null }[], mode: ScrapingMode): Promise<void> {
-        const delay = leafDelayForMode(mode)
+    static async queueCourseRequests(courses: { url: string; courseId: number | null }[]): Promise<void> {
         await scraper.queue.request.addBulk(
-            courses.map(({ url, courseId }, index) => ({
+            courses.map(({ url, courseId }) => ({
                 name: 'InSIS Course Request (Catalog)',
                 data: {
                     type: 'InSIS:Course',
                     url
                 },
                 opts: {
-                    deduplication: { id: `InSIS:Course:${courseId}` },
-                    ...(delay > 0 && { delay: index * delay })
+                    deduplication: {
+                        id: courseId !== null ? `InSIS:Course:${courseId}` : `InSIS:Course:url:${url}`,
+                        ttl: 5 * 60 * 1000
+                    }
                 }
             }))
         )
     }
 
-    static async queueStudyPlanRequests(planUrls: string[], extractIdFn: (url: string) => number | null, mode: ScrapingMode, concurrency = 20): Promise<void> {
-        const delay = leafDelayForMode(mode)
-        const indexed = planUrls.map((url, index) => ({ url, index }))
-        await runWithConcurrency(indexed, concurrency, ({ url, index }) =>
+    static async queueStudyPlanRequests(planUrls: string[], extractIdFn: (url: string) => number | null, concurrency = 20): Promise<void> {
+        await runWithConcurrency(planUrls, concurrency, url =>
             scraper.queue.request.add(
                 'InSIS Study Plan Request (Study Plans)',
                 {
@@ -65,10 +70,74 @@ export class QueueService {
                     url
                 },
                 {
-                    deduplication: { id: `InSIS:StudyPlan:${extractIdFn(url)}` },
-                    ...(delay > 0 && { delay: index * delay })
+                    deduplication: { id: `InSIS:StudyPlan:${extractIdFn(url)}`, ttl: 60 * 60 * 1000 }
                 }
             )
+        )
+    }
+
+    static async addAcademicSchedulesResponse(schedules: ScraperInSISAcademicSchedules): Promise<void> {
+        await scraper.queue.response.add('InSIS Academic Schedules Response', {
+            type: 'InSIS:AcademicSchedules',
+            schedules
+        })
+    }
+
+    static async addAcademicScheduleResponse(schedule: ScraperInSISAcademicSchedule): Promise<void> {
+        await scraper.queue.response.add('InSIS Academic Schedule Response', {
+            type: 'InSIS:AcademicSchedule',
+            schedule
+        })
+    }
+
+    static async queueAcademicScheduleRequests(periods: Omit<ScraperInSISAcademicScheduleRequestJob, 'type'>[]): Promise<void> {
+        await scraper.queue.request.addBulk(
+            periods.map(period => ({
+                name: 'InSIS Academic Schedule Request',
+                data: {
+                    type: 'InSIS:AcademicSchedule' as const,
+                    ...period
+                },
+                opts: {
+                    deduplication: {
+                        id: `InSIS:AcademicSchedule:${period.faculty_ident}:${period.insis_period_id}`,
+                        ttl: 3600000
+                    }
+                }
+            }))
+        )
+    }
+
+    static async addFacultyTimetablesResponse(data: ScraperInSISFacultyTimetables): Promise<void> {
+        await scraper.queue.response.add('InSIS Faculty Timetables Response', {
+            type: 'InSIS:FacultyTimetables',
+            data
+        })
+    }
+
+    static async addFacultyTimetableResponse(timetable: ScraperInSISFacultyTimetable): Promise<void> {
+        await scraper.queue.response.add('InSIS Faculty Timetable Response', {
+            type: 'InSIS:FacultyTimetable',
+            timetable
+        })
+    }
+
+    static async queueFacultyTimetableRequests(faculties: { f_id: number; name: string }[]): Promise<void> {
+        await scraper.queue.request.addBulk(
+            faculties.map(faculty => ({
+                name: 'InSIS Faculty Timetable Request',
+                data: {
+                    type: 'InSIS:FacultyTimetable' as const,
+                    f_id: faculty.f_id,
+                    name: faculty.name
+                },
+                opts: {
+                    deduplication: {
+                        id: `InSIS:FacultyTimetable:${faculty.f_id}`,
+                        ttl: 3600000
+                    }
+                }
+            }))
         )
     }
 }

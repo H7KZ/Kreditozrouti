@@ -1,0 +1,26 @@
+info:
+  name: List Study Plans
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{base_url}}/study_plans"
+  body:
+    type: json
+    data: |-
+      {
+        "page": 1,
+        "page_size": 20,
+        "faculty_ids": [],
+        "levels": [],
+        "semesters": [],
+        "years": [],
+        "modes_of_study": []
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,7 +1,8 @@
+import { createHash } from 'crypto'
 import type { ScraperInSISCourse } from '@scraper/types/insis'
 import type { ScraperInSISCourseRequestJob } from '@scraper/types/jobs'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
-import { InSISNetworkError, InSISParseError } from '@scraper/Errors/InSISErrors'
+import { InSISNetworkError, InSISParseError, InSISRateLimitError } from '@scraper/Errors/InSISErrors'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
@@ -15,7 +16,7 @@ import { withCzechLang } from '@scraper/Utils/HTTPUtils'
  * Throws InSISNetworkError on HTTP failures (retryable, up to 3 attempts).
  * Throws InSISParseError on extraction failures (UnrecoverableError, not retried).
  */
-export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCourseRequestJob): Promise<ScraperInSISCourse> {
+export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCourseRequestJob): Promise<ScraperInSISCourse | null> {
     const courseId = ExtractInSISCourseService.extractIdFromUrl(data.url)
     const client = createInSISClient('course')
 
@@ -27,8 +28,17 @@ export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCou
     const result = await client.get<string>(withCzechLang(data.url))
 
     if (!result.success) {
+        if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
         throw new InSISNetworkError(`HTTP request failed for course ${courseId} at ${data.url}`)
     }
+
+    const htmlHash = createHash('sha256').update(result.data).digest('hex')
+
+    if (data.content_hash && data.content_hash === htmlHash) {
+        LoggerJobContext.add({ hash_hit: true, course_id: courseId })
+        return null
+    }
+    LoggerJobContext.add({ hash_miss: true, course_id: courseId })
 
     try {
         const course = ExtractInSISCourseService.extract(result.data, data.url)
@@ -36,6 +46,8 @@ export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCou
         if (!course) {
             throw new InSISParseError(`Course extraction returned null for ${courseId}`)
         }
+
+        course.content_hash = htmlHash
 
         await QueueService.addCourseResponse(course)
 

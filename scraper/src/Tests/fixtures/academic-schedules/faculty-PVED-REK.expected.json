@@ -1,0 +1,25 @@
+{
+    "_facultyId": 0,
+    "periods": [
+        {
+            "insis_period_id": 1429,
+            "insis_faculty_id": 0,
+            "faculty_ident": "OVV",
+            "semester": "LS",
+            "year": 2025,
+            "level": "doktorská studia",
+            "starts_at": "2026-02-16",
+            "ends_at": "2026-09-01"
+        },
+        {
+            "insis_period_id": 1428,
+            "insis_faculty_id": 0,
+            "faculty_ident": "OVV",
+            "semester": "ZS",
+            "year": 2025,
+            "level": "doktorská studia",
+            "starts_at": "2025-09-01",
+            "ends_at": "2026-02-16"
+        }
+    ]
+}

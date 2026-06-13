@@ -14,6 +14,7 @@ Automated deployment scripts live in `deployment/` instead.
 | `backup.sh`         | MySQL dump via docker exec — run manually or via cron                             | No            |
 | `maintenance.sh`    | System maintenance (apt, cleanup, security, health)                               | Yes (`sudo`)  |
 | `docker-cleanup.sh` | Clean unused Docker resources                                                     | No            |
+| `clone-db.sh`       | Clone MySQL DB between dev and prod stacks on the same VPS                        | Yes (`sudo`)  |
 
 ---
 
@@ -45,4 +46,4 @@ source "$SCRIPT_DIR/lib.sh"
 ## Further Reading
 
 - [Infrastructure scripts](INFRASTRUCTURE.md) — install-docker, github-runner (deployment/github-runner/deploy.sh)
-- [Maintenance scripts](MAINTENANCE.md) — maintenance, docker-cleanup
+- [Maintenance scripts](MAINTENANCE.md) — maintenance, docker-cleanup, clone-db

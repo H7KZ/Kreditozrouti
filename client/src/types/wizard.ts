@@ -4,6 +4,8 @@ export interface SelectedStudyPlan {
 	id: number
 	ident: string | null
 	title: string | null
+	year: number | null
+	semester: InSISSemester | null
 }
 
 export interface PersistedWizardState {

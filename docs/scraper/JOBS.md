@@ -6,12 +6,14 @@ receives strongly-typed data from `@shared/queue/jobs` and writes results back t
 
 ## Job Routing Map
 
-| `job.data.type`    | Handler function                   | Source file                                |
-|--------------------|------------------------------------|--------------------------------------------|
-| `InSIS:Catalog`    | `ScraperRequestInSISCatalogJob`    | `Jobs/ScraperRequestInSISCatalogJob.ts`    |
-| `InSIS:Course`     | `ScraperRequestInSISCourseJob`     | `Jobs/ScraperRequestInSISCourseJob.ts`     |
-| `InSIS:StudyPlans` | `ScraperRequestInSISStudyPlansJob` | `Jobs/ScraperRequestInSISStudyPlansJob.ts` |
-| `InSIS:StudyPlan`  | `ScraperRequestInSISStudyPlanJob`  | `Jobs/ScraperRequestInSISStudyPlanJob.ts`  |
+| `job.data.type`           | Handler function                          | Source file                                       |
+|---------------------------|-------------------------------------------|---------------------------------------------------|
+| `InSIS:Catalog`           | `ScraperRequestInSISCatalogJob`           | `Jobs/ScraperRequestInSISCatalogJob.ts`           |
+| `InSIS:Course`            | `ScraperRequestInSISCourseJob`            | `Jobs/ScraperRequestInSISCourseJob.ts`            |
+| `InSIS:StudyPlans`        | `ScraperRequestInSISStudyPlansJob`        | `Jobs/ScraperRequestInSISStudyPlansJob.ts`        |
+| `InSIS:StudyPlan`         | `ScraperRequestInSISStudyPlanJob`         | `Jobs/ScraperRequestInSISStudyPlanJob.ts`         |
+| `InSIS:FacultyTimetables` | `ScraperRequestInSISFacultyTimetablesJob` | `Jobs/ScraperRequestInSISFacultyTimetablesJob.ts` |
+| `InSIS:FacultyTimetable`  | `ScraperRequestInSISFacultyTimetableJob`  | `Jobs/ScraperRequestInSISFacultyTimetableJob.ts`  |
 
 > **Registration window decisions belong to the API, not the scraper.** The API scheduler uses month-scoped cron
 > patterns (`1,2,6,7,8,9,11,12`) to only fire during registration periods. The scraper receives jobs and executes them —
@@ -138,17 +140,9 @@ content, assessment methods, timetable, and study plan references.
 | HTTP failure (4xx/5xx/timeout) | `InSISNetworkError`                            | Yes — up to 3× with exponential backoff (10s base) |
 | HTML parse failure             | `InSISParseError` extends `UnrecoverableError` | No — BullMQ bypasses retry queue                   |
 
-**Faculty schedule visibility rules** (baked into `extractFaculty`):
-
-| Faculty ident | Year threshold | `is_schedule_publicly_visible` |
-|---------------|----------------|--------------------------------|
-| `CTVS` (PE)   | ≥ 2017         | `false`                        |
-| `OZS`         | ≥ 2020         | `false`                        |
-| `IOM`         | ≥ 2021         | `false`                        |
-| `CESP`        | ≥ 2022         | `false`                        |
-| All others    | any            | `true`                         |
-
-When `false`, the timetable extraction step is skipped and `timetable` is set to `[]`.
+**Faculty schedule visibility** is determined by the `InSIS:FacultyTimetable` scraper job (see below). The
+`is_schedule_publicly_visible` flag on each faculty is set dynamically based on whether the faculty publishes current
+timetable data. When `false`, the timetable extraction step is skipped and `timetable` is set to `[]`.
 
 ---
 
@@ -254,6 +248,95 @@ the full course list with group/category classification.
 
 **Error handling:** On HTTP failure or parse exception, logs error via `LoggerJobContext` and returns `null` (job
 completes without retry).
+
+---
+
+## InSIS:FacultyTimetables
+
+**Purpose:** Discovery job. Fetches the InSIS faculty timetable index (`rozvrhy_view.pl`), extracts the list of
+faculties, and enqueues one `InSIS:FacultyTimetable` job per faculty. Triggered weekly on Sunday midnight and via
+`POST /commands/insis/faculty-timetables`.
+
+**Input payload:**
+
+```typescript
+{
+  type: 'InSIS:FacultyTimetables'
+}
+```
+
+**Flow:**
+
+```
+1. GET https://insis.vse.cz/rozvrhy_view.pl
+   └─ ExtractInSISFacultyTimetableService.extractFaculties(html)
+        → [{ f_id: string, name: string }]
+        → faculty table identified by first <th> = "Pracoviště"
+        → f_id extracted from href query param; f=-1 entries skipped
+
+2. For each faculty:
+   QueueService.addFacultyTimetableRequest({ f_id, name })
+   → enqueues InSIS:FacultyTimetable job
+
+3. QueueService.addFacultyTimetablesResponse({ faculties_count })
+   → sends discovery response to API
+```
+
+**Output:** One `InSIS:FacultyTimetables` response job with `faculties_count`. One `InSIS:FacultyTimetable` request
+job per discovered faculty.
+
+**Error handling:** Returns `null` if the initial page fetch fails.
+
+---
+
+## InSIS:FacultyTimetable
+
+**Purpose:** Scrapes one faculty's timetable page, determines whether the faculty's schedule is publicly visible, and
+emits a response for the API to update `is_schedule_publicly_visible` in the DB.
+
+**Input payload:**
+
+```typescript
+{
+  type: 'InSIS:FacultyTimetable'
+  f_id: string   // InSIS faculty numeric ID
+  name: string   // Faculty display name (for logging)
+}
+```
+
+**Flow:**
+
+```
+1. GET https://insis.vse.cz/rozvrhy_view.pl?konf=1;f=<f_id>
+   └─ ExtractInSISFacultyTimetableService.extractFacultyTimetable(html)
+        → { ident: string | null, max_year: number | null }
+        → reads schedule rows; ident from col 3 (Pracoviště), max_year from col 2
+        → period label e.g. "ZS 2009/2010" → year = 2009 (first 4-digit component)
+        → max_year = highest year found across all rows
+
+2. If ident is null → skip (log warning, return null)
+
+3. ExtractInSISFacultyTimetableService.isPubliclyVisible(max_year)
+   → max_year >= currentAcademicYear
+   → currentAcademicYear: if month >= 8 (August), use current year; else use current year - 1
+   → if max_year is null (no rows) → false
+
+4. QueueService.addFacultyTimetableResponse({ ident, is_schedule_publicly_visible })
+   → sends InSIS:FacultyTimetable response to API
+```
+
+**Output:** One `InSIS:FacultyTimetable` response job containing `{ ident, is_schedule_publicly_visible }`.
+
+**Visibility rule:**
+
+```
+currentAcademicYear = (month >= 8) ? year : year - 1
+is_schedule_publicly_visible = (max_year !== null) && (max_year >= currentAcademicYear)
+```
+
+A faculty that has not published timetables for the current or upcoming academic year is considered non-public.
+
+**Error handling:** Logs and returns `null` if the page fetch fails or ident cannot be determined.
 
 ---
 

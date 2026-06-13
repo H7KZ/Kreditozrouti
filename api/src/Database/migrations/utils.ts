@@ -26,6 +26,24 @@ export async function createIndexSafe(db: Kysely<any>, indexName: string, tableN
 	}
 }
 
+export async function createUniqueIndexSafe(db: Kysely<any>, indexName: string, tableName: string, columns: string[]): Promise<void> {
+	try {
+		await db.schema.createIndex(indexName).unique().on(tableName).columns(columns).execute()
+	} catch (error: unknown) {
+		// Error 1061: Duplicate key name (Index already exists)
+		// Error 1062: Duplicate entry (Index already exists)
+		if (
+			error &&
+			typeof error === 'object' &&
+			(('code' in error && (error.code === 'ER_DUP_KEYNAME' || error.code === 'ER_DUP_ENTRY')) ||
+				('errno' in error && (error.errno === 1061 || error.errno === 1062)))
+		) {
+			return // Safely ignore
+		}
+		throw error
+	}
+}
+
 export async function columnExists(db: Kysely<any>, tableName: string, columnName: string): Promise<boolean> {
 	const result = await sql<{ cnt: number }>`
 		SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS
@@ -46,7 +64,13 @@ export async function renameColumnSafe(db: Kysely<any>, tableName: string, fromC
 }
 
 export async function dropIndexSafe(db: Kysely<any>, indexName: string, tableName: string): Promise<void> {
-	await db.schema.dropIndex(indexName).on(tableName).ifExists().execute()
+	// IF EXISTS syntax is not supported on all MySQL versions — check INFORMATION_SCHEMA first
+	const result = await sql<{ cnt: number }>`
+		SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.STATISTICS
+		WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ${tableName} AND INDEX_NAME = ${indexName}
+	`.execute(db)
+	if ((result.rows[0]?.cnt ?? 0) === 0) return
+	await db.schema.dropIndex(indexName).on(tableName).execute()
 }
 
 /**

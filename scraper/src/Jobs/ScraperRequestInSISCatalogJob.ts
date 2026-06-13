@@ -2,12 +2,14 @@ import type { ScraperInSISCatalogRequestJob } from '@scraper/types/jobs'
 import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
+import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'
 import ExtractInSISCatalogService from '@scraper/Services/ExtractInSISCatalogService'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
-import { catalogConcurrencyForMode } from '@scraper/Utils/ThrottleUtils'
+
+const CATALOG_CONCURRENCY = 4
 
 /**
  * Scrapes the InSIS course catalog.
@@ -42,13 +44,10 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
         )
     }
 
-    const concurrency = catalogConcurrencyForMode(data.mode)
-
     LoggerJobContext.add({
         faculties_count: faculties.length,
         periods_count: periods.length,
-        mode: data.mode,
-        concurrency
+        concurrency: CATALOG_CONCURRENCY
     })
 
     const allowedIdents = data.allowed_idents && data.allowed_idents.length > 0 ? new Set(data.allowed_idents) : null
@@ -56,15 +55,18 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
     // Phase 2: Scrape each faculty/period combination with mode-driven concurrency
     const combos = faculties.flatMap(faculty => periods.map(period => ({ faculty, period })))
 
-    await runWithConcurrency(combos, concurrency, ({ faculty, period }) =>
-        scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false, allowedIdents, data.mode)
+    await runWithConcurrency(combos, CATALOG_CONCURRENCY, ({ faculty, period }) =>
+        scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false, allowedIdents)
     )
 }
 
 async function discoverSearchOptions(client: ReturnType<typeof createInSISClient>) {
     const result = await client.get(Config.insis.catalogExtendedSearchUrl)
 
-    if (!result.success) return null
+    if (!result.success) {
+        if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
+        return null
+    }
 
     const options = ExtractInSISCatalogService.extractSearchOptions(result.data)
 
@@ -82,8 +84,7 @@ async function scrapeCatalogPage(
     periodId: number,
     facultyPeriodId: number,
     autoQueueCourses: boolean,
-    allowedIdents: Set<string> | null,
-    mode: ScraperInSISCatalogRequestJob['mode']
+    allowedIdents: Set<string> | null
 ): Promise<void> {
     const params = new URLSearchParams({
         kredity_od: '',
@@ -99,6 +100,7 @@ async function scrapeCatalogPage(
     const result = await client.post<string>(Config.insis.catalogUrl, params.toString())
 
     if (!result.success) {
+        if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
         LoggerJobContext.add({
             error: 'Catalog page fetch failed'
         })
@@ -125,6 +127,6 @@ async function scrapeCatalogPage(
             courseId: ExtractInSISCourseService.extractIdFromUrl(c.url)
         }))
 
-        await QueueService.queueCourseRequests(coursesWithIds, mode)
+        await QueueService.queueCourseRequests(coursesWithIds)
     }
 }

@@ -78,6 +78,18 @@ After completing any task that changes code, configuration, or behavior:
 
 ---
 
+## Test-Review Rule
+
+After completing any task that adds or changes code in `scraper/`:
+
+1. **Check** whether the changed extraction logic has fixture coverage in `scraper/src/Tests/`
+2. **Add or update** HTML fixtures + expected JSON for any new or changed extraction behaviour
+3. **Run** `npm run test` from `scraper/` to confirm all tests pass
+4. **New extraction with no test?** Add one. Use `npm run test:regen` to bootstrap expected JSONs
+   from real HTML rather than writing them by hand.
+
+---
+
 ## Documentation
 
 | Area         | Overview                                            | Detail docs                                                                                                                                                                                       |

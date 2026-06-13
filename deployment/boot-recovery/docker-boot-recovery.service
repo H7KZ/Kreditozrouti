@@ -1,0 +1,13 @@
+[Unit]
+Description=Docker boot recovery — start all stopped containers after reboot
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash -c 'docker ps -aq --filter status=exited | xargs --no-run-if-empty docker start'
+
+[Install]
+WantedBy=multi-user.target

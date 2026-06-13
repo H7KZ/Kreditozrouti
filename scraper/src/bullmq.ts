@@ -11,16 +11,31 @@ const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
     connection: redis.options,
     defaultJobOptions: {
         attempts: 3,
-        backoff: { type: 'exponential', delay: 10_000 }
+        backoff: { type: 'exponential', delay: 10_000 },
+        removeOnComplete: { count: 200 },
+        removeOnFail: { age: 86_400 }
     }
 })
-const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, { connection: redis.options })
+
+// attempts: 3 adds a BullMQ-level retry layer on top of withDeadlockRetry in the API handler.
+// Both are safe together because response jobs use upsert semantics — re-running them is idempotent.
+const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
+    connection: redis.options,
+    defaultJobOptions: {
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 5_000 },
+        removeOnComplete: { count: 200 },
+        removeOnFail: { age: 86_400 }
+    }
+})
 
 // Workers
 
 const requestWorker = new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestHandler, {
     connection: redis.options,
-    concurrency: 1
+    concurrency: 1,
+    lockDuration: 900_000, // 15 min; covers the longest expected job; auto-renewed while worker is alive
+    maxStalledCount: 3 // allow 3 stall recoveries before permanent failure
 })
 
 // Scraper object

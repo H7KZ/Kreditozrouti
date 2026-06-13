@@ -3,7 +3,7 @@ FROM node:24-alpine AS builder
 
 WORKDIR /usr/src/api
 
-COPY ./api/package.json ./api/package-lock.json ./
+COPY ./api/package.json ./package-lock.json ./
 RUN npm ci
 
 COPY ./api/ ./
