@@ -4,7 +4,7 @@ _Ověření souladu s interními předpisy VŠE_
 
 | Pole               | Hodnota                                          |
 | ------------------ | ------------------------------------------------ |
-| Verze dokumentu    | V0.0.1 — Beta verze                              |
+| Verze dokumentu    | v1.0.0 — Beta verze                              |
 | Datum              | 31. ledna 2026                                   |
 | Aplikace           | Webová aplikace Kreditožrouti                    |
 | Posouzené předpisy | SR 05/2018, PR 04/2019, PR 02/2023, Studijní řád |
