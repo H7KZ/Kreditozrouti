@@ -264,10 +264,10 @@ services:
       mode: global
       resources:
         limits:
-          cpus: "2.5"
+          cpus: "1.5"
           memory: 4096M
         reservations:
-          cpus: "1"
+          cpus: "0.5"
           memory: 1024M
 
   # ============================================================================
