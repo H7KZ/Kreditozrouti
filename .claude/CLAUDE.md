@@ -72,8 +72,10 @@ deployment/   Docker Compose stacks + deploy.sh
 After completing any task that changes code, configuration, or behavior:
 
 1. **Identify** which `docs/` file(s) describe the changed area (use the table below)
-2. **Update** any doc that describes what changed — keep it accurate
-3. **New behavior with no doc entry?** Ask: *"This change isn't mentioned in the docs — should I document it?"* If yes,
+2. **Also check `docs/user/FEATURES.md`** — if the change affects a user-visible feature (filters, timetable,
+   conflict detection, wizard, course refresh, saved schedules, language, theme, etc.), update the relevant section
+3. **Update** any doc that describes what changed — keep it accurate
+4. **New behavior with no doc entry?** Ask: *"This change isn't mentioned in the docs — should I document it?"* If yes,
    add it; if no, continue
 
 ---
@@ -94,8 +96,8 @@ After completing any task that adds or changes code in `scraper/`:
 
 | Area         | Overview                                            | Detail docs                                                                                                                                                                                       |
 |--------------|-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| User Guide   | [docs/user/README.md](../docs/user/README.md)       | [getting started](../docs/user/GETTING_STARTED.md) · [features](../docs/user/FEATURES.md)                                                                                                        |
 | Domain       | [docs/DOMAIN.md](../docs/DOMAIN.md)                 | Glossary · Architecture seams                                                                                                                                                                     |
-| ADRs         | [docs/ADR.md](../docs/ADR.md)                       | Decisions 001–006                                                                                                                                                                                 |
 | Architecture | [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)     | [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md)   |
 | Engineering  | [docs/ENGINEERING.md](../docs/ENGINEERING.md)       | [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md)                                                                                                       |
 | API          | [docs/api/README.md](../docs/api/README.md)         | [endpoints](../docs/api/ENDPOINTS.md) · [services](../docs/api/SERVICES.md) · [jobs](../docs/api/JOBS.md) · [database](../docs/api/DATABASE.md) · [internals](../docs/api/INTERNALS.md)           |
