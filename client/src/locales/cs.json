@@ -493,6 +493,7 @@
 		},
 		"links": {
 			"title": "Odkazy",
+			"about": "O aplikaci",
 			"compliance": "Compliance a ochrana soukromí",
 			"github": "GitHub repozitář",
 			"insis": "Oficiální InSIS"

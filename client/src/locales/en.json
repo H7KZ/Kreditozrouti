@@ -493,6 +493,7 @@
 		},
 		"links": {
 			"title": "Links",
+			"about": "About",
 			"compliance": "Compliance & Privacy Policy",
 			"github": "GitHub Repository",
 			"insis": "InSIS Official"
