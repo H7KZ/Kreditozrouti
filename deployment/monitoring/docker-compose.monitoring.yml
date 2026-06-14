@@ -277,7 +277,7 @@ services:
 
   # ============================================================================
   # Umami Analytics (Product analytics, UTM attribution, conversion funnel)
-  # Exposed at umami.${DOMAIN} via Traefik.
+  # Exposed at ${DOMAIN}/umami via Traefik (subpath, no subdomain needed).
   # ============================================================================
   umami:
     image: ghcr.io/umami-software/umami:mysql-latest
@@ -290,6 +290,7 @@ services:
     environment:
       - DATABASE_URL=mysql://umami:${UMAMI_DB_PASSWORD}@umami-db:3306/umami
       - APP_SECRET=${UMAMI_APP_SECRET}
+      - BASE_PATH=/umami
 
     networks:
       - monitoring-network
@@ -298,7 +299,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.${PROJECT}-umami.priority=75"
-      - "traefik.http.routers.${PROJECT}-umami.rule=Host(`umami.${DOMAIN}`)"
+      - "traefik.http.routers.${PROJECT}-umami.rule=Host(`${DOMAIN}`) && PathPrefix(`/umami`)"
       - "traefik.http.routers.${PROJECT}-umami.entrypoints=websecure"
       - "traefik.http.routers.${PROJECT}-umami.tls=true"
       - "traefik.http.routers.${PROJECT}-umami.tls.certresolver=letsencrypt"
