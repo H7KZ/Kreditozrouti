@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { InSISSemester } from '@shared/domain/insis'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import WizardStepCompletedCourses from '@client/components/wizard/WizardStepCompletedCourses.vue'
 import WizardStepFaculty from '@client/components/wizard/WizardStepFaculty.vue'
@@ -8,6 +8,7 @@ import WizardSteps from '@client/components/wizard/WizardSteps.vue'
 import WizardStepStudyPlan from '@client/components/wizard/WizardStepStudyPlan.vue'
 import WizardStepYear from '@client/components/wizard/WizardStepYear.vue'
 import { useCompletedCoursesStore, useWizardDataStore, useWizardStore } from '@client/stores'
+import analytics from '@client/analytics'
 
 /*
  * StudyPlanWizard
@@ -26,13 +27,26 @@ onMounted(async () => {
 	if (wizardDataStore.facultyFacets.length === 0) {
 		await wizardDataStore.loadInitialFacets()
 	}
+	analytics.track('wizard_start')
 })
+
+watch(
+	() => wizardStore.currentStep,
+	(step) => {
+		if (step === 2) analytics.track('wizard_step_2')
+		if (step === 3) analytics.track('wizard_step_3')
+	},
+)
 
 /** Selected plans for the WizardStepStudyPlan component */
 const selectedPlans = computed(() => wizardStore.selectedStudyPlans)
 
 function handleComplete() {
 	if (wizardStore.completeWizard()) {
+		analytics.track('wizard_complete', {
+			faculty_id: wizardStore.facultyId ?? '',
+			plan_count: wizardStore.selectedStudyPlans.length,
+		})
 		router.push('/courses')
 	}
 }
@@ -40,6 +54,10 @@ function handleComplete() {
 function handleSkipCompletedCourses() {
 	// Complete wizard without selecting completed courses
 	if (wizardStore.completeWizard()) {
+		analytics.track('wizard_complete', {
+			faculty_id: wizardStore.facultyId ?? '',
+			plan_count: wizardStore.selectedStudyPlans.length,
+		})
 		router.push('/courses')
 	}
 }
