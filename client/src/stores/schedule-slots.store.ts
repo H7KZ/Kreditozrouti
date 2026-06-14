@@ -1,6 +1,7 @@
 ﻿import type { PersistedScheduleSlotsState, SavedScheduleSlot, SelectedCourseUnit } from '@client/types'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import analytics from '@client/analytics'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { useTimetableStore } from '@client/stores/timetable.store'
 import { loadFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
@@ -26,6 +27,7 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 		slots.value.push(newSlot)
 		activeSlotId.value = newSlot.id
 		persist()
+		analytics.track('schedule_saved', { slot_count: units.length })
 		return newSlot
 	}
 
@@ -37,6 +39,7 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 		activeSlotId.value = slot.id
 		timetableStore.loadUnits(slot.units)
 		persist()
+		analytics.track('schedule_loaded')
 	}
 
 	function renameSlot(slotId: string, name: string) {

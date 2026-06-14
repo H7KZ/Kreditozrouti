@@ -83,7 +83,6 @@ After completing any task that changes code, configuration, or behavior:
 | Area         | Overview                                            | Detail docs                                                                                                                                                                                       |
 |--------------|-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Domain       | [docs/DOMAIN.md](../docs/DOMAIN.md)                 | Glossary · Architecture seams                                                                                                                                                                     |
-| ADRs         | [docs/ADR.md](../docs/ADR.md)                       | Decisions 001–006                                                                                                                                                                                 |
 | Architecture | [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)     | [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md)   |
 | Engineering  | [docs/ENGINEERING.md](../docs/ENGINEERING.md)       | [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md)                                                                                                       |
 | API          | [docs/api/README.md](../docs/api/README.md)         | [endpoints](../docs/api/ENDPOINTS.md) · [services](../docs/api/SERVICES.md) · [jobs](../docs/api/JOBS.md) · [database](../docs/api/DATABASE.md) · [internals](../docs/api/INTERNALS.md)           |
@@ -100,7 +99,7 @@ After completing any task that changes code, configuration, or behavior:
 **Context management**
 
 - Always read `docs/PROJECT_CONTEXT.md` first when starting a new task — it is the central knowledge base
-- For domain vocabulary, read `docs/DOMAIN.md`; for architectural decisions, read `docs/ADR.md`
+- For domain vocabulary, read `docs/DOMAIN.md`
 - Do not assume you know file paths — verify with search tools before editing
 
 **Tool discipline**

@@ -30,19 +30,23 @@
 		}
 	},
 	"faculties": {
+		"CESP": "Program studií střední a východní Evropy",
+		"CESP PZAH REK": "Program studií střední a východní Evropy",
+		"CTVS": "Centrum tělesné výchovy a sportu",
 		"FFU": "Fakulta financí a účetnictví",
+		"FIS": "Fakulta informatiky a statistiky",
+		"FMJH": "Fakulta managementu",
 		"FMV": "Fakulta mezinárodních vztahů",
 		"FPH": "Fakulta podnikohospodářská",
-		"FIS": "Fakulta informatiky a statistiky",
+		"IFTG": "Francouzsko-český institut řízení",
+		"IOM": "Institut oceňování majetku",
 		"NF": "Národohospodářská fakulta",
-		"FMJH": "Fakulta managementu",
-		"OZS": "Oddělení zahraničních styků (PZAH REK)",
-		"IFTG": "Francouzsko-český institut řízení (PZAH REK)",
-		"CESP": "Program studií střední a východní Evropy (PZAH REK)",
-		"IOM": "Institut oceňování majetku (PSTR REK)",
+		"OVV": "Oddělení vědy a výzkumu",
+		"OZS": "Oddělení zahraničních styků",
+		"OZS PZAH REK": "Oddělení zahraničních styků",
+		"PEDO": "Pedagogické oddělení",
 		"U3V": "Univerzita třetího věku",
-		"U3V-JH": "Univerzita třetího věku - Jindřichův Hradec (PSTR REK)",
-		"CTVS": "Centrum tělesné výchovy a sportu"
+		"U3V-JH": "Univerzita třetího věku - Jindřichův Hradec"
 	},
 	"days": {
 		"Pondělí": "Pondělí",
@@ -205,6 +209,7 @@
 			"insisLink": "InSIS VŠE"
 		},
 		"courses": {
+			"metaDescription": "Procházej předměty VŠE, filtruj rozvrh a sestav bezkonfliktní studijní plán. Detekce kolizí v reálném čase.",
 			"studyPlanFallback": "Studijní plán",
 			"coursesInTimetable": "{count} předmět v rozvrhu | {count} předměty v rozvrhu | {count} předmětů v rozvrhu",
 			"searchingForCourses": "Hledání předmětů pro {semester} {year}",
@@ -488,6 +493,7 @@
 		},
 		"links": {
 			"title": "Odkazy",
+			"about": "O aplikaci",
 			"compliance": "Compliance a ochrana soukromí",
 			"github": "GitHub repozitář",
 			"insis": "Oficiální InSIS"

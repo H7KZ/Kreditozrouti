@@ -209,7 +209,7 @@ services:
   # Database (MySQL)
   # ============================================================================
   mysql:
-    image: mysql:8.4
+    image: mysql:9
     restart: unless-stopped
 
     volumes:

@@ -3,6 +3,8 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useSeoMeta } from '@unhead/vue'
+import { getUpcomingPeriod } from '@shared/domain/period'
+import analytics from '@client/analytics'
 import CoursesHeader from '@client/components/courses/CoursesHeader.vue'
 import CourseStatusSummary from '@client/components/courses/CourseStatusSummary.vue'
 import CourseTable from '@client/components/courses/CourseTable.vue'
@@ -26,14 +28,16 @@ const wizardStore = useWizardStore()
 useSeoMeta({
 	title: () => {
 		const base = t('pages.courses.myTimetable')
-		const period = wizardStore.year && wizardStore.semester ? ` | ${wizardStore.year} ${t(`semesters.${wizardStore.semester}`)}` : ''
-		return `${base}${period} – Kreditožrouti`
+		const { year, semester } = getUpcomingPeriod()
+		return `${base} | ${year} ${t(`semesters.${semester}`)} – Kreditožrouti`
 	},
 	ogTitle: () => {
 		const base = t('pages.courses.myTimetable')
-		const period = wizardStore.year && wizardStore.semester ? ` | ${wizardStore.year} ${t(`semesters.${wizardStore.semester}`)}` : ''
-		return `${base}${period} – Kreditožrouti`
+		const { year, semester } = getUpcomingPeriod()
+		return `${base} | ${year} ${t(`semesters.${semester}`)} – Kreditožrouti`
 	},
+	description: () => t('pages.courses.metaDescription'),
+	ogDescription: () => t('pages.courses.metaDescription'),
 })
 
 watch(
@@ -44,6 +48,89 @@ watch(
 		}
 	},
 	{ immediate: true },
+)
+
+// Analytics: track filter usage events
+watch(
+	() => filtersStore.filters.title,
+	(val) => {
+		if (val) analytics.track('filter_used', { filter_type: 'search' })
+	},
+)
+watch(
+	() => filtersStore.filters.search,
+	(val) => {
+		if (val) analytics.track('filter_used', { filter_type: 'syllabus' })
+	},
+)
+watch(
+	() => filtersStore.filters.faculty_ids,
+	(val) => {
+		if (val?.length) analytics.track('filter_used', { filter_type: 'faculty' })
+	},
+	{ deep: true },
+)
+watch(
+	() => filtersStore.filters.levels,
+	(val) => {
+		if (val?.length) analytics.track('filter_used', { filter_type: 'study_level' })
+	},
+	{ deep: true },
+)
+watch(
+	() => filtersStore.filters.languages,
+	(val) => {
+		if (val?.length) analytics.track('filter_used', { filter_type: 'language' })
+	},
+	{ deep: true },
+)
+watch(
+	() => filtersStore.filters.groups,
+	(val) => {
+		if (val?.length) analytics.track('filter_used', { filter_type: 'course_group' })
+	},
+	{ deep: true },
+)
+watch(
+	() => filtersStore.filters.categories,
+	(val) => {
+		if (val?.length) analytics.track('filter_used', { filter_type: 'category' })
+	},
+	{ deep: true },
+)
+watch(
+	() => filtersStore.filters.ects,
+	(val) => {
+		if (val?.length) analytics.track('filter_used', { filter_type: 'ects' })
+	},
+	{ deep: true },
+)
+watch(
+	() => filtersStore.filters.mode_of_completions,
+	(val) => {
+		if (val?.length) analytics.track('filter_used', { filter_type: 'completion' })
+	},
+	{ deep: true },
+)
+watch(
+	() => filtersStore.filters.lecturers,
+	(val) => {
+		if (val?.length) analytics.track('filter_used', { filter_type: 'lecturer' })
+	},
+	{ deep: true },
+)
+watch(
+	() => filtersStore.filters.include_times,
+	(val) => {
+		if (val?.length) analytics.track('filter_used', { filter_type: 'time' })
+	},
+	{ deep: true },
+)
+watch(
+	() => filtersStore.hideConflictingCourses,
+	(val) => {
+		if (val) analytics.track('filter_used', { filter_type: 'hide_conflicts' })
+	},
 )
 
 onMounted(async () => {

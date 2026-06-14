@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import analytics from '@client/analytics'
 import { useCourseRefresh } from '@client/composables'
 import IconAlertCircle from '~icons/lucide/alert-circle'
 import IconCheck from '~icons/lucide/check'
@@ -13,6 +14,7 @@ const { state, errorMessage, rateLimitCountdown, lastRefreshedAt, dismiss, trigg
 
 function onRefreshClick() {
 	if (!window.confirm(t('components.courses.CourseRefreshButton.confirmMessage'))) return
+	analytics.track('refresh_triggered')
 	trigger()
 }
 </script>

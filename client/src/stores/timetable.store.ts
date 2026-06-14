@@ -2,8 +2,9 @@
 import type { InSISDay } from '@shared/domain/insis'
 import type { TimeSelection } from '@shared/domain/time'
 import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
+import analytics from '@client/analytics'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { ALL_DAYS } from '@client/constants/timetable'
 import { i18n } from '@client/index'
@@ -129,6 +130,15 @@ export const useTimetableStore = defineStore('timetable', () => {
 	const hasConflicts = computed(() => conflicts.value.length > 0)
 
 	const hasCampusConflicts = computed(() => campusConflicts.value.length > 0)
+
+	watch(
+		() => conflicts.value.length,
+		(newLen, oldLen) => {
+			if ((oldLen ?? 0) === 0 && newLen > 0) {
+				analytics.track('conflict_detected', { count: newLen })
+			}
+		},
+	)
 
 	const coursesWithConflicts = computed(() => {
 		const map = new Map<number, Set<string>>()
@@ -307,6 +317,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		announcer.announce(t('common.announcements.courseAdded', { code: course.ident }))
 		persist()
 		syncCoursesStoreExclusion()
+		analytics.track('course_added')
 		return true
 	}
 
@@ -317,6 +328,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		}
 
 		selectedUnits.value = selectedUnits.value.filter((u) => u.unitId !== unitId)
+		analytics.track('course_removed')
 		persist()
 		syncCoursesStoreExclusion()
 	}
@@ -328,6 +340,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		}
 
 		selectedUnits.value = selectedUnits.value.filter((u) => u.courseId !== courseId)
+		analytics.track('course_removed')
 		persist()
 		syncCoursesStoreExclusion()
 	}

@@ -13,6 +13,8 @@ set -e
 #   - VITE_API_COMMAND_TOKEN: Bearer token for manual scrape trigger
 #   - VITE_FARO_COLLECTOR_URL: Grafana Faro collector endpoint
 #   - VITE_APP_VERSION: App version tag sent to Faro
+#   - VITE_UMAMI_WEBSITE_ID: Umami Analytics website ID (leave empty to disable)
+#   - VITE_UMAMI_SRC: Umami script URL
 # ==============================================================================
 
 DIST_DIR="/usr/share/nginx/html"
@@ -56,6 +58,20 @@ find "$DIST_DIR" -type f -name "*.js" | while read -r file; do
         else
             sed -i "s|__VITE_APP_VERSION_PLACEHOLDER__|latest|g" "$file"
         fi
+
+        # Replace VITE_UMAMI_WEBSITE_ID
+        if [ -n "$VITE_UMAMI_WEBSITE_ID" ]; then
+            sed -i "s|__VITE_UMAMI_WEBSITE_ID_PLACEHOLDER__|$(escape_sed "$VITE_UMAMI_WEBSITE_ID")|g" "$file"
+        else
+            sed -i "s|__VITE_UMAMI_WEBSITE_ID_PLACEHOLDER__||g" "$file"
+        fi
+
+        # Replace VITE_UMAMI_SRC
+        if [ -n "$VITE_UMAMI_SRC" ]; then
+            sed -i "s|__VITE_UMAMI_SRC_PLACEHOLDER__|$(escape_sed "$VITE_UMAMI_SRC")|g" "$file"
+        else
+            sed -i "s|__VITE_UMAMI_SRC_PLACEHOLDER__||g" "$file"
+        fi
     fi
 done
 
@@ -64,3 +80,5 @@ echo "  VITE_API_URL: ${VITE_API_URL:-<not set>}"
 echo "  VITE_API_COMMAND_TOKEN: ${VITE_API_COMMAND_TOKEN:-<not set>}"
 echo "  VITE_FARO_COLLECTOR_URL: ${VITE_FARO_COLLECTOR_URL:-<not set>}"
 echo "  VITE_APP_VERSION: ${VITE_APP_VERSION:-latest}"
+echo "  VITE_UMAMI_WEBSITE_ID: ${VITE_UMAMI_WEBSITE_ID:-<not set>}"
+echo "  VITE_UMAMI_SRC: ${VITE_UMAMI_SRC:-<not set>}"

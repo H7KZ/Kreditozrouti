@@ -1,6 +1,7 @@
 import type { ColorScheme, PersistedUIState, ViewMode } from '@client/types'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import analytics from '@client/analytics'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage'
 
@@ -72,6 +73,7 @@ export const useUIStore = defineStore('ui', () => {
 
 	function setViewMode(mode: ViewMode) {
 		viewMode.value = mode
+		if (mode === 'timetable') analytics.track('timetable_viewed')
 		persist()
 	}
 
