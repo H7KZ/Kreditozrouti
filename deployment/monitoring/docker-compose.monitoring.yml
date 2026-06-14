@@ -13,7 +13,9 @@
 #   - PROJECT: Project name prefix for Traefik labels (e.g. kreditozrouti)
 #   - GRAFANA_ADMIN_USER: Grafana admin username
 #   - GRAFANA_ADMIN_PASSWORD: Grafana admin password
-#   - UMAMI_DB_PASSWORD       — MySQL password for the umami user (generate once, store in GitHub Secrets)
+#   - UMAMI_DB_NAME           — MySQL database name for Umami (e.g. umami)
+#   - UMAMI_DB_USER           — MySQL user for Umami (e.g. umami)
+#   - UMAMI_DB_PASSWORD       — MySQL password for the Umami user (generate once, store in GitHub Secrets)
 #   - UMAMI_DB_ROOT_PASSWORD  — MySQL root password for umami-db (generate once, store in GitHub Secrets)
 #   - UMAMI_APP_SECRET        — Umami app secret for session signing (generate once, store in GitHub Secrets)
 #
@@ -241,8 +243,8 @@ services:
     restart: unless-stopped
 
     environment:
-      - MYSQL_DATABASE=umami
-      - MYSQL_USER=umami
+      - MYSQL_DATABASE=${UMAMI_DB_NAME}
+      - MYSQL_USER=${UMAMI_DB_USER}
       - MYSQL_PASSWORD=${UMAMI_DB_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${UMAMI_DB_ROOT_PASSWORD}
 
@@ -253,7 +255,7 @@ services:
       - monitoring-network
 
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u umami --password=$$UMAMI_DB_PASSWORD"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u $$UMAMI_DB_USER --password=$$UMAMI_DB_PASSWORD"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -288,7 +290,7 @@ services:
         condition: service_healthy
 
     environment:
-      - DATABASE_URL=mysql://umami:${UMAMI_DB_PASSWORD}@umami-db:3306/umami
+      - DATABASE_URL=mysql://${UMAMI_DB_USER}:${UMAMI_DB_PASSWORD}@umami-db:3306/${UMAMI_DB_NAME}
       - APP_SECRET=${UMAMI_APP_SECRET}
       - BASE_PATH=/umami
 
