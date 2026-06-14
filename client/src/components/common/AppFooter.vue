@@ -14,7 +14,7 @@ const { t, locale } = useI18n()
 const currentYear = new Date().getFullYear()
 const appVersion = APP_VERSION
 
-const aboutPath = computed(() => (locale.value === 'en' ? '/about/en' : '/about/cs'))
+const aboutPath = computed(() => (locale.value === 'cs' ? '/about/cs' : '/about/en'))
 </script>
 
 <template>
