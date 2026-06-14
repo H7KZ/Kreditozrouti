@@ -35,6 +35,8 @@ useSeoMeta({
 		const { year, semester } = getUpcomingPeriod()
 		return `${base} | ${year} ${t(`semesters.${semester}`)} – Kreditožrouti`
 	},
+	description: () => t('pages.courses.metaDescription'),
+	ogDescription: () => t('pages.courses.metaDescription'),
 })
 
 watch(

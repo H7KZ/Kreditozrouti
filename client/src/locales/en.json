@@ -209,6 +209,7 @@
 			"insisLink": "InSIS VŠE"
 		},
 		"courses": {
+			"metaDescription": "Browse VŠE courses, filter your timetable, and build a conflict-free study plan. Real-time conflict detection.",
 			"studyPlanFallback": "Study Plan",
 			"coursesInTimetable": "{count} course in timetable | {count} courses in timetable",
 			"searchingForCourses": "Searching for courses in {semester} {year}",

@@ -209,6 +209,7 @@
 			"insisLink": "InSIS VŠE"
 		},
 		"courses": {
+			"metaDescription": "Procházej předměty VŠE, filtruj rozvrh a sestav bezkonfliktní studijní plán. Detekce kolizí v reálném čase.",
 			"studyPlanFallback": "Studijní plán",
 			"coursesInTimetable": "{count} předmět v rozvrhu | {count} předměty v rozvrhu | {count} předmětů v rozvrhu",
 			"searchingForCourses": "Hledání předmětů pro {semester} {year}",
