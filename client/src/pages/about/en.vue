@@ -66,7 +66,7 @@ useHead({
 						name: 'What are "kreditožrouti" (credit eaters)?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: '"Kreditožrouti" (literally "credit eaters") are notoriously difficult courses at VŠE that tend to consume students\'s reserve credits — either through failed exams or general workload. The app is named after them as a nod to this shared student experience.',
+							text: '"Kreditožrouti" (literally "credit eaters") are notoriously difficult courses at VŠE that tend to consume students\' reserve credits — either through failed exams or general workload. The app is named after them as a nod to this shared student experience.',
 						},
 					},
 					{
