@@ -62,7 +62,7 @@ maps each applicable article to Kreditožrouti's implementation.
 | Art. 16    | Special categories (biometric, health) require explicit consent    | N/A    | No special category data is collected or processed. The application has no user accounts, no biometric data, no health data.                                                                     |
 | Art. 17    | Inform data subjects transparently                                 | ✅     | Lecturers are displayed only within the context of their publicly listed teaching assignments. A disclaimer is shown on the application.                                                         |
 | Art. 19(2) | Publishable data limited to: name, titles, position, teaching      | ✅     | Only lecturer name as a course attribute is displayed, which is explicitly within the permitted scope (subparagraph n: teaching carried out at VŠE).                                             |
-| Art. 20    | Third-party data sharing requires DPO notification                 | N/A    | Kreditožrouti does not share any data with third parties. No analytics, tracking, or external API integrations transmit data externally.                                                         |
+| Art. 20    | Third-party data sharing requires DPO notification                 | N/A    | Kreditožrouti does not share any data with third parties. A self-hosted analytics instance (Umami) runs on the same server — no data is transmitted externally. See section 7. |
 | Art. 21    | Security measures: encryption, access controls, incident reporting | ✅     | HTTPS via Traefik/Let's Encrypt. Environment-based secrets. Parameterized queries. Bearer token authentication for admin endpoints. Grafana Faro error tracking.                                 |
 
 ## 4. PR 02/2023 — IS Usage Rules
@@ -126,3 +126,17 @@ scheduling operate. Kreditožrouti supports (but does not replace) the official 
 | Art. 13 | Credit system: students must maintain credit thresholds            | Course credit values are displayed prominently. Completeness checking verifies course unit selection.                                                |
 | Art. 10 | Grading/classification recorded in InSIS                           | Kreditožrouti does NOT access, display, or process any grade or classification data. It is strictly a course discovery tool.                         |
 | Art. 8  | Course accreditation changes must be published before registration | Kreditožrouti scrapes during registration preparation periods to ensure data reflects current semester offerings.                                    |
+
+## 7. Analytics and Privacy
+
+Kreditožrouti uses **Umami Analytics** — a self-hosted instance running at `kreditozrouti.cz/umami`. Umami is an open-source analytics tool designed with privacy as a default:
+
+| Property | Detail |
+| -------- | ------ |
+| Cookies | Not used |
+| IP addresses | Hashed before storage, never stored in readable form |
+| Personal identifiers | Not collected |
+| Third-party sharing | None — data stays on our own server |
+| Legal basis (GDPR) | Legitimate interest (Art. 6(1)(f)) — anonymised usage measurement without individual identification |
+
+Data collected: page views, session duration, referrer, feature interactions (course added, conflict detected, wizard completed). None of this data can identify a specific user.
