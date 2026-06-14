@@ -331,6 +331,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		}
 
 		selectedUnits.value = selectedUnits.value.filter((u) => u.courseId !== courseId)
+		analytics.track('course_removed')
 		persist()
 		syncCoursesStoreExclusion()
 	}
