@@ -19,6 +19,7 @@
         <loc>https://kreditozrouti.cz/about/cs</loc>
         <xhtml:link rel="alternate" hreflang="cs" href="https://kreditozrouti.cz/about/cs"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://kreditozrouti.cz/about/en"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://kreditozrouti.cz/about/cs"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -26,6 +27,7 @@
         <loc>https://kreditozrouti.cz/about/en</loc>
         <xhtml:link rel="alternate" hreflang="en" href="https://kreditozrouti.cz/about/en"/>
         <xhtml:link rel="alternate" hreflang="cs" href="https://kreditozrouti.cz/about/cs"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://kreditozrouti.cz/about/cs"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
