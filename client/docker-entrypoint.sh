@@ -13,6 +13,7 @@ set -e
 #   - VITE_API_COMMAND_TOKEN: Bearer token for manual scrape trigger
 #   - VITE_FARO_COLLECTOR_URL: Grafana Faro collector endpoint
 #   - VITE_APP_VERSION: App version tag sent to Faro
+#   - VITE_UMAMI_WEBSITE_ID: Umami Analytics website ID (leave empty to disable)
 # ==============================================================================
 
 DIST_DIR="/usr/share/nginx/html"

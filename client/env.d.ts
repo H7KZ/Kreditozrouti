@@ -4,3 +4,11 @@
 /// <reference types="unplugin-icons/types/vue" />
 
 declare const APP_VERSION: string
+
+interface ImportMetaEnv {
+	readonly VITE_UMAMI_WEBSITE_ID?: string
+}
+
+interface ImportMeta {
+	readonly env: ImportMetaEnv
+}

@@ -9,7 +9,7 @@ declare global {
 const UMAMI_SRC = 'https://kreditozrouti.cz/umami/script.js'
 
 function init(): void {
-	const websiteId = import.meta.env.VITE_UMAMI_WEBSITE_ID as string | undefined
+	const websiteId = import.meta.env.VITE_UMAMI_WEBSITE_ID
 	if (!websiteId) return
 
 	if (document.querySelector('script[data-website-id]')) return
