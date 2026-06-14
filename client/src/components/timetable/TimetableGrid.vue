@@ -108,6 +108,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 	<div class="relative">
 		<div class="mb-2 flex justify-end">
 			<button
+				type="button"
 				v-if="timetableStore.selectedUnits.length > 0"
 				:disabled="exporting"
 				class="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:opacity-50"
