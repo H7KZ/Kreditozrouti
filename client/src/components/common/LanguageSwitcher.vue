@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { onClickOutside } from '@vueuse/core'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconGlobe from '~icons/lucide/globe'
+import analytics from '@client/analytics'
 
 const { locale, availableLocales } = useI18n()
 
@@ -17,6 +18,7 @@ onClickOutside(containerRef, () => {
 function setLocale(newLocale: string) {
 	locale.value = newLocale
 	localStorage.setItem('locale', newLocale) // Persist selection
+	analytics.track('language_changed', { language: newLocale })
 	isOpen.value = false
 }
 
