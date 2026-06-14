@@ -114,12 +114,32 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 				class="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:opacity-50"
 				@click="exportSchedule"
 			>
-				<svg v-if="!exporting" xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<svg
+					v-if="!exporting"
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-3.5 w-3.5"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
 					<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
 					<polyline points="7 10 12 15 17 10" />
 					<line x1="12" y1="15" x2="12" y2="3" />
 				</svg>
-				<svg v-else xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+				<svg
+					v-else
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-3.5 w-3.5 animate-spin"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					aria-hidden="true"
+				>
 					<path d="M21 12a9 9 0 1 1-6.219-8.56" />
 				</svg>
 				{{ exporting ? 'Exportuji...' : 'Uložit jako obrázek' }}

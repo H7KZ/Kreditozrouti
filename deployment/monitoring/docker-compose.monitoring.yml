@@ -239,7 +239,7 @@ services:
   # Internal only — no Traefik labels. Umami connects at http://umami-db:3306.
   # ============================================================================
   umami-db:
-    image: mysql:8
+    image: mysql:9
     restart: unless-stopped
 
     environment:
@@ -282,7 +282,7 @@ services:
   # Exposed at ${DOMAIN}/umami via Traefik (subpath, no subdomain needed).
   # ============================================================================
   umami:
-    image: ghcr.io/umami-software/umami:mysql-latest
+    image: ghcr.io/umami-software/umami:latest
     restart: unless-stopped
 
     depends_on:
