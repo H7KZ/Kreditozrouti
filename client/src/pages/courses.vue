@@ -3,6 +3,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useSeoMeta } from '@unhead/vue'
+import { getUpcomingPeriod } from '@shared/domain/period'
 import CoursesHeader from '@client/components/courses/CoursesHeader.vue'
 import CourseStatusSummary from '@client/components/courses/CourseStatusSummary.vue'
 import CourseTable from '@client/components/courses/CourseTable.vue'
@@ -26,13 +27,13 @@ const wizardStore = useWizardStore()
 useSeoMeta({
 	title: () => {
 		const base = t('pages.courses.myTimetable')
-		const period = wizardStore.year && wizardStore.semester ? ` | ${wizardStore.year} ${t(`semesters.${wizardStore.semester}`)}` : ''
-		return `${base}${period} – Kreditožrouti`
+		const { year, semester } = getUpcomingPeriod()
+		return `${base} | ${year} ${t(`semesters.${semester}`)} – Kreditožrouti`
 	},
 	ogTitle: () => {
 		const base = t('pages.courses.myTimetable')
-		const period = wizardStore.year && wizardStore.semester ? ` | ${wizardStore.year} ${t(`semesters.${wizardStore.semester}`)}` : ''
-		return `${base}${period} – Kreditožrouti`
+		const { year, semester } = getUpcomingPeriod()
+		return `${base} | ${year} ${t(`semesters.${semester}`)} – Kreditožrouti`
 	},
 })
 
