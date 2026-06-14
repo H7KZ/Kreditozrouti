@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { useHead, useSeoMeta } from '@unhead/vue'
-import { RouterLink } from 'vue-router'
-import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
+import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import { Button } from '@client/components/ui/button'
 import { i18n } from '@client/i18n'
-import IconShieldCheck from '~icons/lucide/shield-check'
-import IconFilter from '~icons/lucide/filter'
 import IconBookmark from '~icons/lucide/bookmark'
-import IconGlobe from '~icons/lucide/globe'
 import IconBuilding2 from '~icons/lucide/building-2'
 import IconCheckCircle2 from '~icons/lucide/check-circle-2'
+import IconFilter from '~icons/lucide/filter'
+import IconGlobe from '~icons/lucide/globe'
+import IconShieldCheck from '~icons/lucide/shield-check'
 
 const router = useRouter()
 
@@ -103,7 +102,9 @@ useHead({
 <template>
 	<div class="flex min-h-screen flex-col bg-(--insis-bg)">
 		<!-- Header -->
-		<header class="flex shrink-0 items-center justify-between border-b border-(--insis-border) bg-(--insis-surface) px-4 py-3 shadow-(--insis-shadow-sm) sm:px-6">
+		<header
+			class="flex shrink-0 items-center justify-between border-b border-(--insis-border) bg-(--insis-surface) px-4 py-3 shadow-(--insis-shadow-sm) sm:px-6"
+		>
 			<RouterLink to="/" class="flex items-center gap-3">
 				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-8 w-8 shrink-0 object-contain" />
 				<div>
@@ -118,14 +119,12 @@ useHead({
 		</header>
 
 		<main class="mx-auto w-full max-w-4xl flex-1 px-4 py-12 sm:px-6">
-
 			<!-- Hero -->
 			<section class="mb-16 text-center">
-				<h1 class="mb-4 text-3xl font-semibold text-(--insis-blue) sm:text-4xl">
-					Bezkonfliktní rozvrh VŠE za pár minut
-				</h1>
+				<h1 class="mb-4 text-3xl font-semibold text-(--insis-blue) sm:text-4xl">Bezkonfliktní rozvrh VŠE za pár minut</h1>
 				<p class="mx-auto mb-8 max-w-2xl text-base text-(--insis-text-2)">
-					Kreditožrouti nahrazuje hodiny přepínání záložek v InSISu. Zobrazí všechny předměty tvého studijního plánu najednou, detekuje kolize automaticky a umožní ti sestavit rozvrh ještě před samotným zápisem.
+					Kreditožrouti nahrazuje hodiny přepínání záložek v InSISu. Zobrazí všechny předměty tvého studijního plánu najednou, detekuje kolize
+					automaticky a umožní ti sestavit rozvrh ještě před samotným zápisem.
 				</p>
 				<Button as-child size="lg">
 					<RouterLink to="/">Spustit aplikaci →</RouterLink>
@@ -161,7 +160,9 @@ useHead({
 						<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-sm font-semibold text-white">4</span>
 						<div>
 							<p class="font-medium text-(--insis-text)">Zkontroluj konflikty</p>
-							<p class="mt-1 text-sm text-(--insis-text-2)">Kolize se zobrazí okamžitě. Vyřeš je před zápisem — ne až při samotném klikání v InSISu.</p>
+							<p class="mt-1 text-sm text-(--insis-text-2)">
+								Kolize se zobrazí okamžitě. Vyřeš je před zápisem — ne až při samotném klikání v InSISu.
+							</p>
 						</div>
 					</li>
 				</ol>
@@ -210,27 +211,47 @@ useHead({
 				<div class="space-y-6">
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Jak sestavit bezkonfliktní rozvrh na VŠE?</h3>
-						<p class="text-sm text-(--insis-text-2)">Kreditožrouti zobrazí všechny předměty z tvého studijního plánu na jednom místě. Vybereš si rozvrhové akce kliknutím — aplikace okamžitě ukáže, které se překrývají. Stačí zvolit jiné cvičení nebo přednášku a konflikt zmizí.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							Kreditožrouti zobrazí všechny předměty z tvého studijního plánu na jednom místě. Vybereš si rozvrhové akce kliknutím — aplikace
+							okamžitě ukáže, které se překrývají. Stačí zvolit jiné cvičení nebo přednášku a konflikt zmizí.
+						</p>
 					</div>
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Jak fungují zápisy na VŠE?</h3>
-						<p class="text-sm text-(--insis-text-2)">Zápisy probíhají v několika vlnách podle počtu získaných kreditů. Studenti s více kredity mají přístup dříve a mohou obsadit místa v oblíbených rozvrhových akcích. V Kreditožroutech si lze rozvrh sestavit předem a v moment otevření zápisů zadat vše rychle do InSISu.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							Zápisy probíhají v několika vlnách podle počtu získaných kreditů. Studenti s více kredity mají přístup dříve a mohou obsadit místa v
+							oblíbených rozvrhových akcích. V Kreditožroutech si lze rozvrh sestavit předem a v moment otevření zápisů zadat vše rychle do
+							InSISu.
+						</p>
 					</div>
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Co jsou kreditožrouti a proč jsou problém?</h3>
-						<p class="text-sm text-(--insis-text-2)">Kreditožrouti jsou předměty, které studentům spotřebují rezervní kredity — buď kvůli neúspěchu u zkoušky, nebo kvůli náročnosti celého semestru. Kreditožrouti (aplikace) ti pomůže sestavit rozvrh tak, abys věděl, do čeho jdeš.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							Kreditožrouti jsou předměty, které studentům spotřebují rezervní kredity — buď kvůli neúspěchu u zkoušky, nebo kvůli náročnosti
+							celého semestru. Kreditožrouti (aplikace) ti pomůže sestavit rozvrh tak, abys věděl, do čeho jdeš.
+						</p>
 					</div>
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Čím se Kreditožrouti liší od InSISu?</h3>
-						<p class="text-sm text-(--insis-text-2)">InSIS je oficiální systém VŠE — nutný pro finální zápis. Kreditožrouti je pomocný nástroj, který ti umožňuje prohlédnout si všechny dostupné předměty najednou, filtrovat je a sestavit si rozvrh ještě před tím, než InSIS otevřeš. Šetří hodiny přepínání mezi záložkami.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							InSIS je oficiální systém VŠE — nutný pro finální zápis. Kreditožrouti je pomocný nástroj, který ti umožňuje prohlédnout si všechny
+							dostupné předměty najednou, filtrovat je a sestavit si rozvrh ještě před tím, než InSIS otevřeš. Šetří hodiny přepínání mezi
+							záložkami.
+						</p>
 					</div>
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Je aplikace zdarma?</h3>
-						<p class="text-sm text-(--insis-text-2)">Ano, Kreditožrouti je zcela zdarma a nevyžaduje registraci ani přihlášení. Stačí přejít na kreditozrouti.cz a vybrat svůj studijní plán.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							Ano, Kreditožrouti je zcela zdarma a nevyžaduje registraci ani přihlášení. Stačí přejít na kreditozrouti.cz a vybrat svůj studijní
+							plán.
+						</p>
 					</div>
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Pro které fakulty aplikace funguje?</h3>
-						<p class="text-sm text-(--insis-text-2)">Kreditožrouti funguje pro všechny fakulty VŠE Praha: FIS, NF, FPH, FMV, FFÚ, FMJH i pro ostatní programy včetně zahraničních studentů. Data jsou pravidelně aktualizována z InSISu.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							Kreditožrouti funguje pro všechny fakulty VŠE Praha: FIS, NF, FPH, FMV, FFÚ, FMJH i pro ostatní programy včetně zahraničních
+							studentů. Data jsou pravidelně aktualizována z InSISu.
+						</p>
 					</div>
 				</div>
 			</section>
@@ -243,7 +264,6 @@ useHead({
 					<RouterLink to="/">Spustit Kreditožrouti →</RouterLink>
 				</Button>
 			</section>
-
 		</main>
 	</div>
 </template>

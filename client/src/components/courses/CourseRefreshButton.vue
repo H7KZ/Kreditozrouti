@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { useCourseRefresh } from '@client/composables'
 import analytics from '@client/analytics'
+import { useCourseRefresh } from '@client/composables'
 import IconAlertCircle from '~icons/lucide/alert-circle'
 import IconCheck from '~icons/lucide/check'
 import IconLoader from '~icons/lucide/loader'

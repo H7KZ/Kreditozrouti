@@ -2,13 +2,13 @@
 import type { InSISSemester } from '@shared/domain/insis'
 import { computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import analytics from '@client/analytics'
 import WizardStepCompletedCourses from '@client/components/wizard/WizardStepCompletedCourses.vue'
 import WizardStepFaculty from '@client/components/wizard/WizardStepFaculty.vue'
 import WizardSteps from '@client/components/wizard/WizardSteps.vue'
 import WizardStepStudyPlan from '@client/components/wizard/WizardStepStudyPlan.vue'
 import WizardStepYear from '@client/components/wizard/WizardStepYear.vue'
 import { useCompletedCoursesStore, useWizardDataStore, useWizardStore } from '@client/stores'
-import analytics from '@client/analytics'
 
 /*
  * StudyPlanWizard

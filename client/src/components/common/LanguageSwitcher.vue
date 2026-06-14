@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onClickOutside } from '@vueuse/core'
+import analytics from '@client/analytics'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconGlobe from '~icons/lucide/globe'
-import analytics from '@client/analytics'
 
 const { locale, availableLocales } = useI18n()
 

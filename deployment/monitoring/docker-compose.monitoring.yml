@@ -255,7 +255,7 @@ services:
       - monitoring-network
 
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u $$UMAMI_DB_USER --password=$$UMAMI_DB_PASSWORD"]
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u $$UMAMI_DB_USER --password=$$UMAMI_DB_PASSWORD" ]
       interval: 10s
       timeout: 5s
       retries: 10

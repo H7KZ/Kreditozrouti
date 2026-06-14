@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { useHead, useSeoMeta } from '@unhead/vue'
-import { RouterLink } from 'vue-router'
-import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
+import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import { Button } from '@client/components/ui/button'
 import { i18n } from '@client/i18n'
-import IconShieldCheck from '~icons/lucide/shield-check'
-import IconFilter from '~icons/lucide/filter'
 import IconBookmark from '~icons/lucide/bookmark'
-import IconGlobe from '~icons/lucide/globe'
 import IconBuilding2 from '~icons/lucide/building-2'
 import IconCheckCircle2 from '~icons/lucide/check-circle-2'
+import IconFilter from '~icons/lucide/filter'
+import IconGlobe from '~icons/lucide/globe'
+import IconShieldCheck from '~icons/lucide/shield-check'
 
 const router = useRouter()
 
@@ -103,7 +102,9 @@ useHead({
 <template>
 	<div class="flex min-h-screen flex-col bg-(--insis-bg)">
 		<!-- Header -->
-		<header class="flex shrink-0 items-center justify-between border-b border-(--insis-border) bg-(--insis-surface) px-4 py-3 shadow-(--insis-shadow-sm) sm:px-6">
+		<header
+			class="flex shrink-0 items-center justify-between border-b border-(--insis-border) bg-(--insis-surface) px-4 py-3 shadow-(--insis-shadow-sm) sm:px-6"
+		>
 			<RouterLink to="/" class="flex items-center gap-3">
 				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-8 w-8 shrink-0 object-contain" />
 				<div>
@@ -118,14 +119,12 @@ useHead({
 		</header>
 
 		<main class="mx-auto w-full max-w-4xl flex-1 px-4 py-12 sm:px-6">
-
 			<!-- Hero -->
 			<section class="mb-16 text-center">
-				<h1 class="mb-4 text-3xl font-semibold text-(--insis-blue) sm:text-4xl">
-					Build a conflict-free VŠE timetable in minutes
-				</h1>
+				<h1 class="mb-4 text-3xl font-semibold text-(--insis-blue) sm:text-4xl">Build a conflict-free VŠE timetable in minutes</h1>
 				<p class="mx-auto mb-8 max-w-2xl text-base text-(--insis-text-2)">
-					Kreditožrouti replaces hours of tab-switching in InSIS. It shows all courses from your study plan in one place, detects conflicts automatically, and lets you build your timetable before enrollment opens.
+					Kreditožrouti replaces hours of tab-switching in InSIS. It shows all courses from your study plan in one place, detects conflicts
+					automatically, and lets you build your timetable before enrollment opens.
 				</p>
 				<Button as-child size="lg">
 					<RouterLink to="/">Launch the app →</RouterLink>
@@ -140,7 +139,9 @@ useHead({
 						<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-sm font-semibold text-white">1</span>
 						<div>
 							<p class="font-medium text-(--insis-text)">Choose your faculty and study plan</p>
-							<p class="mt-1 text-sm text-(--insis-text-2)">A short wizard walks you through faculty, enrollment year, and field of study. Takes two minutes.</p>
+							<p class="mt-1 text-sm text-(--insis-text-2)">
+								A short wizard walks you through faculty, enrollment year, and field of study. Takes two minutes.
+							</p>
 						</div>
 					</li>
 					<li class="flex gap-4 rounded-lg border border-(--insis-border) bg-(--insis-surface) p-5">
@@ -161,7 +162,9 @@ useHead({
 						<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-sm font-semibold text-white">4</span>
 						<div>
 							<p class="font-medium text-(--insis-text)">Check for conflicts</p>
-							<p class="mt-1 text-sm text-(--insis-text-2)">Overlaps are flagged instantly. Resolve them before enrollment — not while clicking through InSIS.</p>
+							<p class="mt-1 text-sm text-(--insis-text-2)">
+								Overlaps are flagged instantly. Resolve them before enrollment — not while clicking through InSIS.
+							</p>
 						</div>
 					</li>
 				</ol>
@@ -210,27 +213,46 @@ useHead({
 				<div class="space-y-6">
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">How do I build a conflict-free timetable at VŠE?</h3>
-						<p class="text-sm text-(--insis-text-2)">Kreditožrouti shows all courses from your study plan in one place. Click a time slot to add it to your timetable — the app instantly highlights any conflicts. Simply choose a different exercise or lecture session to resolve them.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							Kreditožrouti shows all courses from your study plan in one place. Click a time slot to add it to your timetable — the app instantly
+							highlights any conflicts. Simply choose a different exercise or lecture session to resolve them.
+						</p>
 					</div>
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">How does VŠE course enrollment (zápisy) work?</h3>
-						<p class="text-sm text-(--insis-text-2)">Enrollment at VŠE happens in waves based on how many credits you have accumulated. Students with more credits get access earlier and can secure spots in popular time slots. Use Kreditožrouti to plan your full timetable in advance so you can enter it into InSIS the moment enrollment opens.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							Enrollment at VŠE happens in waves based on how many credits you have accumulated. Students with more credits get access earlier and
+							can secure spots in popular time slots. Use Kreditožrouti to plan your full timetable in advance so you can enter it into InSIS the
+							moment enrollment opens.
+						</p>
 					</div>
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">What are "kreditožrouti" (credit eaters)?</h3>
-						<p class="text-sm text-(--insis-text-2)">"Kreditožrouti" (literally "credit eaters") are notoriously difficult courses at VŠE that tend to consume students' reserve credits — either through failed exams or general workload. The app is named after them as a nod to this shared student experience.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							"Kreditožrouti" (literally "credit eaters") are notoriously difficult courses at VŠE that tend to consume students' reserve credits
+							— either through failed exams or general workload. The app is named after them as a nod to this shared student experience.
+						</p>
 					</div>
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Does it work for Erasmus and exchange students?</h3>
-						<p class="text-sm text-(--insis-text-2)">Yes. Kreditožrouti is available in English and is designed to be accessible to students who are unfamiliar with the Czech credit system or the InSIS interface. Filter courses by language of instruction to find English-taught options.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							Yes. Kreditožrouti is available in English and is designed to be accessible to students who are unfamiliar with the Czech credit
+							system or the InSIS interface. Filter courses by language of instruction to find English-taught options.
+						</p>
 					</div>
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Is Kreditožrouti free?</h3>
-						<p class="text-sm text-(--insis-text-2)">Yes, Kreditožrouti is completely free and requires no registration or login. Open kreditozrouti.cz, select your faculty and study plan, and start building your timetable immediately.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							Yes, Kreditožrouti is completely free and requires no registration or login. Open kreditozrouti.cz, select your faculty and study
+							plan, and start building your timetable immediately.
+						</p>
 					</div>
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Which VŠE faculties are supported?</h3>
-						<p class="text-sm text-(--insis-text-2)">All VŠE Prague faculties are supported: FIS, NF, FPH, FMV, FFÚ, FMJH, and others including exchange student programmes. Course data is regularly updated from InSIS.</p>
+						<p class="text-sm text-(--insis-text-2)">
+							All VŠE Prague faculties are supported: FIS, NF, FPH, FMV, FFÚ, FMJH, and others including exchange student programmes. Course data
+							is regularly updated from InSIS.
+						</p>
 					</div>
 				</div>
 			</section>
@@ -243,7 +265,6 @@ useHead({
 					<RouterLink to="/">Launch Kreditožrouti →</RouterLink>
 				</Button>
 			</section>
-
 		</main>
 	</div>
 </template>

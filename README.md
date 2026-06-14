@@ -10,6 +10,7 @@
 [![VŠE](https://img.shields.io/badge/university-VŠE%20Prague-0066b3.svg)](https://www.vse.cz)
 
 Give VŠE students instant, filterable access to every course, timetable slot, and study plan in one modern interface.
+
 </div>
 
 ---
@@ -61,9 +62,9 @@ For **local development and deployment**, see the engineering docs:
 
 ### For users
 
-| Area       | Doc                                         |
-|------------|---------------------------------------------|
-| User Guide | [docs/user/README.md](docs/user/README.md)  |
+| Area       | Doc                                        |
+|------------|--------------------------------------------|
+| User Guide | [docs/user/README.md](docs/user/README.md) |
 
 ### For engineers
 
