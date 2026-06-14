@@ -12,6 +12,7 @@ import ScheduleSlotsPanel from '@client/components/timetable/ScheduleSlotsPanel.
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import analytics from '@client/analytics'
 import IconCalendar from '~icons/lucide/calendar'
 import IconCalendarMinus2 from '~icons/lucide/calendar-minus-2'
 import IconTable from '~icons/lucide/table'
@@ -48,6 +49,20 @@ watch(
 	},
 	{ immediate: true },
 )
+
+// Analytics: track filter usage events
+watch(() => filtersStore.filters.title, (val) => { if (val) analytics.track('filter_used', { filter_type: 'search' }) })
+watch(() => filtersStore.filters.search, (val) => { if (val) analytics.track('filter_used', { filter_type: 'syllabus' }) })
+watch(() => filtersStore.filters.faculty_ids, (val) => { if (val?.length) analytics.track('filter_used', { filter_type: 'faculty' }) }, { deep: true })
+watch(() => filtersStore.filters.levels, (val) => { if (val?.length) analytics.track('filter_used', { filter_type: 'study_level' }) }, { deep: true })
+watch(() => filtersStore.filters.languages, (val) => { if (val?.length) analytics.track('filter_used', { filter_type: 'language' }) }, { deep: true })
+watch(() => filtersStore.filters.groups, (val) => { if (val?.length) analytics.track('filter_used', { filter_type: 'course_group' }) }, { deep: true })
+watch(() => filtersStore.filters.categories, (val) => { if (val?.length) analytics.track('filter_used', { filter_type: 'category' }) }, { deep: true })
+watch(() => filtersStore.filters.ects, (val) => { if (val?.length) analytics.track('filter_used', { filter_type: 'ects' }) }, { deep: true })
+watch(() => filtersStore.filters.mode_of_completions, (val) => { if (val?.length) analytics.track('filter_used', { filter_type: 'completion' }) }, { deep: true })
+watch(() => filtersStore.filters.lecturers, (val) => { if (val?.length) analytics.track('filter_used', { filter_type: 'lecturer' }) }, { deep: true })
+watch(() => filtersStore.filters.include_times, (val) => { if (val?.length) analytics.track('filter_used', { filter_type: 'time' }) }, { deep: true })
+watch(() => filtersStore.hideConflictingCourses, (val) => { if (val) analytics.track('filter_used', { filter_type: 'hide_conflicts' }) })
 
 onMounted(async () => {
 	if (wizardStore.completed && wizardStore.studyPlanId) {
