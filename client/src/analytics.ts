@@ -6,17 +6,16 @@ declare global {
 	}
 }
 
-const UMAMI_SRC = 'https://kreditozrouti.cz/umami/script.js'
-
 function init(): void {
 	const websiteId = import.meta.env.VITE_UMAMI_WEBSITE_ID
-	if (!websiteId) return
+	const src = import.meta.env.VITE_UMAMI_SRC
+	if (!websiteId || !src) return
 
 	if (document.querySelector('script[data-website-id]')) return
 
 	const script = document.createElement('script')
 	script.defer = true
-	script.src = UMAMI_SRC
+	script.src = src
 	script.setAttribute('data-website-id', websiteId)
 	document.head.appendChild(script)
 }
