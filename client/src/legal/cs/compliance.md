@@ -63,7 +63,7 @@ mapuje každý relevantní článek na implementaci Kreditožrouti.
 | Čl. 16    | Zvláštní kategorie (biometrie, zdraví) vyžadují výslovný souhlas     | N/A  | Žádná data zvláštní kategorie nejsou sbírána. Aplikace nemá uživatelské účty ani biometrická či zdravotní data.                                                           |
 | Čl. 17    | Transparentní informování subjektů údajů                             | ✅   | Vyučující jsou zobrazeni pouze v kontextu svých veřejně uvedených výukových činností. Na aplikaci je zobrazeno prohlášení.                                                |
 | Čl. 19(2) | Zveřejnitelné údaje: jméno, tituly, pozice, výuka                    | ✅   | Zobrazeno je pouze jméno vyučujícího jako atribut předmětu, což je výslovně v povoleném rozsahu (písm. n: výuková činnost na VŠE).                                        |
-| Čl. 20    | Sdílení dat třetím stranám vyžaduje oznámení DPO                     | N/A  | Kreditožrouti nesdílí žádná data s třetími stranami. Žádná analytika, sledování ani externí API nepřenáší data ven.                                                       |
+| Čl. 20    | Sdílení dat třetím stranám vyžaduje oznámení DPO                     | N/A  | Kreditožrouti nesdílí žádná data s třetími stranami. Vlastní analytická instance (Umami) běží na stejném serveru — žádná data se nepřenáší externě. Viz oddíl 7.          |
 | Čl. 21    | Bezpečnostní opatření: šifrování, řízení přístupu, hlášení incidentů | ✅   | HTTPS přes Traefik/Let's Encrypt. Tajemství v env proměnných. Parametrizované dotazy. Bearer token autentizace pro admin endpointy. Grafana Faro monitoring.              |
 
 ## 4. PR 02/2023 — Pravidla IS
@@ -126,3 +126,19 @@ ale nenahrazuje) oficiální procesy definované těmito pravidly.
 | Čl. 13 | Kreditní systém: studenti musí dodržovat kreditní prahy        | Kreditové hodnoty předmětů jsou výrazně zobrazeny. Kontrola úplnosti ověřuje výběr výukových jednotek.                                                    |
 | Čl. 10 | Hodnocení/klasifikace se zaznamenává v InSIS                   | Kreditožrouti NEPŘISTUPUJE k žádným datům o hodnocení či klasifikaci, nezobrazuje je ani nezpracovává. Jedná se čistě o nástroj pro vyhledávání předmětů. |
 | Čl. 8  | Změny akreditace musí být zveřejněny před registračním obdobím | Kreditožrouti stahuje data během přípravných registračních období, aby data odpovídala aktuální nabídce semestru.                                         |
+
+## 7. Analytika a soukromí
+
+Kreditožrouti používá **Umami Analytics** — vlastní instanci provozovanou na `kreditozrouti.cz/umami`. Umami je
+open-source analytický nástroj navržený tak, aby respektoval soukromí:
+
+| Vlastnost                  | Detail                                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------------------------- |
+| Cookies                    | Nepoužívají se                                                                                    |
+| IP adresy                  | Hashují se před uložením, nikdy neukládány v čitelné podobě                                       |
+| Osobní identifikátory      | Neshromažďovány                                                                                   |
+| Sdílení s třetími stranami | Žádné — data zůstávají na vlastním serveru                                                        |
+| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) — anonymizovaná měření návštěvnosti bez identifikace osob |
+
+Shromažďovaná data: zobrazení stránek, délka sezení, odkaz příchodu, použité funkce (přidání předmětu, detekce
+konfliktu, dokončení průvodce). Žádné z těchto dat neumožňuje identifikaci konkrétního uživatele.

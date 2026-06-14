@@ -13,6 +13,11 @@
 #   - PROJECT: Project name prefix for Traefik labels (e.g. kreditozrouti)
 #   - GRAFANA_ADMIN_USER: Grafana admin username
 #   - GRAFANA_ADMIN_PASSWORD: Grafana admin password
+#   - UMAMI_DB_NAME           — MySQL database name for Umami (e.g. umami)
+#   - UMAMI_DB_USER           — MySQL user for Umami (e.g. umami)
+#   - UMAMI_DB_PASSWORD       — MySQL password for the Umami user (generate once, store in GitHub Secrets)
+#   - UMAMI_DB_ROOT_PASSWORD  — MySQL root password for umami-db (generate once, store in GitHub Secrets)
+#   - UMAMI_APP_SECRET        — Umami app secret for session signing (generate once, store in GitHub Secrets)
 #
 # Deploy order: Traefik → this stack → app stack
 # Usage: docker compose -f docker-compose.monitoring.yml -f networks.yml -f volumes.yml up -d
@@ -228,3 +233,92 @@ services:
         reservations:
           cpus: "0.05"
           memory: 32M
+
+  # ============================================================================
+  # Umami Analytics Database (MySQL 8)
+  # Internal only — no Traefik labels. Umami connects at http://umami-db:3306.
+  # ============================================================================
+  umami-db:
+    image: mysql:9
+    restart: unless-stopped
+
+    environment:
+      - MYSQL_DATABASE=${UMAMI_DB_NAME}
+      - MYSQL_USER=${UMAMI_DB_USER}
+      - MYSQL_PASSWORD=${UMAMI_DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${UMAMI_DB_ROOT_PASSWORD}
+
+    volumes:
+      - umami-mysql-data:/var/lib/mysql
+
+    networks:
+      - monitoring-network
+
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u $$UMAMI_DB_USER --password=$$UMAMI_DB_PASSWORD" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.1"
+          memory: 128M
+
+  # ============================================================================
+  # Umami Analytics (Product analytics, UTM attribution, conversion funnel)
+  # Exposed at ${DOMAIN}/umami via Traefik (subpath, no subdomain needed).
+  # ============================================================================
+  umami:
+    image: ghcr.io/umami-software/umami:latest
+    restart: unless-stopped
+
+    depends_on:
+      umami-db:
+        condition: service_healthy
+
+    environment:
+      - DATABASE_URL=mysql://${UMAMI_DB_USER}:${UMAMI_DB_PASSWORD}@umami-db:3306/${UMAMI_DB_NAME}
+      - APP_SECRET=${UMAMI_APP_SECRET}
+      - BASE_PATH=/umami
+
+    networks:
+      - monitoring-network
+      - traefik-network
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${PROJECT}-umami.priority=75"
+      - "traefik.http.routers.${PROJECT}-umami.rule=Host(`${DOMAIN}`) && PathPrefix(`/umami`)"
+      - "traefik.http.routers.${PROJECT}-umami.entrypoints=websecure"
+      - "traefik.http.routers.${PROJECT}-umami.tls=true"
+      - "traefik.http.routers.${PROJECT}-umami.tls.certresolver=letsencrypt"
+      - "traefik.http.services.${PROJECT}-umami.loadbalancer.server.port=3000"
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.1"
+          memory: 128M

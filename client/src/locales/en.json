@@ -30,19 +30,23 @@
 		}
 	},
 	"faculties": {
+		"CESP": "Central and East European Studies Program",
+		"CESP PZAH REK": "Central and East European Studies Program",
+		"CTVS": "Centre for Physical Education and Sport",
 		"FFU": "Faculty of Finance and Accounting",
+		"FIS": "Faculty of Informatics and Statistics",
+		"FMJH": "Faculty of Management",
 		"FMV": "Faculty of International Relations",
 		"FPH": "Faculty of Business Administration",
-		"FIS": "Faculty of Informatics and Statistics",
+		"IFTG": "French-Czech Institute of Management",
+		"IOM": "Institute of Property Appraisal",
 		"NF": "Faculty of Economics",
-		"FMJH": "Faculty of Management",
-		"OZS": "International Office (PZAH REK)",
-		"IFTG": "French-Czech Institute of Management (PZAH REK)",
-		"CESP": "Central and East European Studies Program (PZAH REK)",
-		"IOM": "Institute of Property Appraisal (PSTR REK)",
+		"OVV": "Department of Science and Research",
+		"OZS": "International Office",
+		"OZS PZAH REK": "International Office",
+		"PEDO": "Pedagogical Department",
 		"U3V": "University of the Third Age",
-		"U3V-JH": "University of the Third Age - Jindřichův Hradec (PSTR REK)",
-		"CTVS": "Centre for Physical Education and Sport"
+		"U3V-JH": "University of the Third Age - Jindřichův Hradec"
 	},
 	"days": {
 		"Pondělí": "Monday",
@@ -205,6 +209,7 @@
 			"insisLink": "InSIS VŠE"
 		},
 		"courses": {
+			"metaDescription": "Browse VŠE courses, filter your timetable, and build a conflict-free study plan. Real-time conflict detection.",
 			"studyPlanFallback": "Study Plan",
 			"coursesInTimetable": "{count} course in timetable | {count} courses in timetable",
 			"searchingForCourses": "Searching for courses in {semester} {year}",
@@ -488,6 +493,7 @@
 		},
 		"links": {
 			"title": "Links",
+			"about": "About",
 			"compliance": "Compliance & Privacy Policy",
 			"github": "GitHub Repository",
 			"insis": "InSIS Official"

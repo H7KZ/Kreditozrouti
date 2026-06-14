@@ -108,10 +108,7 @@ services:
     image: redis:alpine
     container_name: kreditozrouti-redis
 
-    command: [
-      "--save", "20", "1",
-      "--loglevel", "warning"
-    ]
+    command: [ "--save", "20", "1", "--loglevel", "warning" ]
 
     ports:
       - "46379:6379"
@@ -155,9 +152,9 @@ services:
     container_name: kreditozrouti-prometheus
 
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=7d'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=7d"
 
     volumes:
       - ./deployment/monitoring/prometheus/prometheus.local.yml:/etc/prometheus/prometheus.yml:ro

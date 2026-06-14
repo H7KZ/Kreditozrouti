@@ -1,16 +1,20 @@
 ﻿<script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import IconExternalLink from '~icons/lucide/external-link'
 import IconFileText from '~icons/lucide/file-text'
 import IconFingerPrintPattern from '~icons/lucide/fingerprint-pattern'
 import IconGithub from '~icons/lucide/github'
+import IconInfo from '~icons/lucide/info'
 import IconMail from '~icons/lucide/mail'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const currentYear = new Date().getFullYear()
 const appVersion = APP_VERSION
+
+const aboutPath = computed(() => (locale.value === 'cs' ? '/about/cs' : '/about/en'))
 </script>
 
 <template>
@@ -37,6 +41,15 @@ const appVersion = APP_VERSION
 						{{ t('footer.links.title') }}
 					</h3>
 					<ul class="space-y-2 text-sm">
+						<li>
+							<RouterLink
+								:to="aboutPath"
+								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
+							>
+								<IconInfo class="h-4 w-4 shrink-0" aria-hidden="true" />
+								{{ t('footer.links.about') }}
+							</RouterLink>
+						</li>
 						<li>
 							<RouterLink
 								to="/legal/compliance"

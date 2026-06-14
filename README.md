@@ -10,6 +10,7 @@
 [![VŠE](https://img.shields.io/badge/university-VŠE%20Prague-0066b3.svg)](https://www.vse.cz)
 
 Give VŠE students instant, filterable access to every course, timetable slot, and study plan in one modern interface.
+
 </div>
 
 ---
@@ -36,9 +37,18 @@ timetable preview, and no conflict detection. Kreditožrouti fixes that.
 
 ---
 
-## Getting Started
+## User Guide
 
-The app runs at **[kreditozrouti.cz](https://kreditozrouti.cz)** — no sign-up needed.
+New to Kreditožrouti? The user guide walks you through every feature:
+
+- [Getting Started](docs/user/GETTING_STARTED.md) — wizard setup, first use
+- [Features Reference](docs/user/FEATURES.md) — filters, timetable, conflicts, saved schedules
+
+> The app runs at **[kreditozrouti.cz](https://kreditozrouti.cz)** — no sign-up needed.
+
+---
+
+## Getting Started
 
 For **local development and deployment**, see the engineering docs:
 
@@ -49,6 +59,12 @@ For **local development and deployment**, see the engineering docs:
 ---
 
 ## Documentation
+
+### For users
+
+| Area       | Doc                                        |
+|------------|--------------------------------------------|
+| User Guide | [docs/user/README.md](docs/user/README.md) |
 
 ### For engineers
 

@@ -19,3 +19,7 @@ volumes:
   alloy-data:
     name: alloy-data
     external: true
+
+  umami-mysql-data:
+    name: umami-mysql-data
+    external: true

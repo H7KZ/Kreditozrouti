@@ -29,6 +29,7 @@ jobs:
 
     permissions:
       contents: read
+      packages: read
 
     steps:
       - name: Checkout Code
@@ -49,16 +50,24 @@ jobs:
       - name: Deploy Monitoring Stack
         uses: appleboy/ssh-action@v1
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
           MONITORING_DOMAIN: ${{ secrets.MONITORING_DOMAIN }}
           GRAFANA_ADMIN_USER: ${{ secrets.GRAFANA_ADMIN_USER }}
           GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          UMAMI_DB_NAME: ${{ secrets.UMAMI_DB_NAME }}
+          UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
+          UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
+          UMAMI_DB_ROOT_PASSWORD: ${{ secrets.UMAMI_DB_ROOT_PASSWORD }}
+          UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: MONITORING_DOMAIN,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL
+          envs: GH_TOKEN,GH_ACTOR,MONITORING_DOMAIN,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL,UMAMI_DB_NAME,UMAMI_DB_USER,UMAMI_DB_PASSWORD,UMAMI_DB_ROOT_PASSWORD,UMAMI_APP_SECRET
           script: |
             set -euo pipefail
+            echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
             bash ~/deployment/monitoring/deploy.sh
