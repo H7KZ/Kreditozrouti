@@ -104,7 +104,10 @@
                 "x": 6,
                 "y": 0
             },
-            "datasource": {"type": "loki", "uid": "Loki"},
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "count_over_time({kind=\"exception\", app=\"kreditozrouti\", env=\"$env\"}[1h])",
@@ -118,16 +121,29 @@
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
-                            {"color": "green", "value": null},
-                            {"color": "yellow", "value": 1},
-                            {"color": "red", "value": 10}
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 1
+                            },
+                            {
+                                "color": "red",
+                                "value": 10
+                            }
                         ]
                     }
                 },
                 "overrides": []
             },
             "options": {
-                "reduceOptions": {"calcs": ["lastNotNull"]},
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ]
+                },
                 "colorMode": "background",
                 "graphMode": "none"
             }
@@ -265,7 +281,10 @@
                 "x": 12,
                 "y": 6
             },
-            "datasource": {"type": "loki", "uid": "Loki"},
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"lcp\" | unwrap value [5m])",
@@ -279,17 +298,31 @@
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
-                            {"color": "green", "value": null},
-                            {"color": "yellow", "value": 2500},
-                            {"color": "red", "value": 4000}
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 2500
+                            },
+                            {
+                                "color": "red",
+                                "value": 4000
+                            }
                         ]
                     }
                 },
                 "overrides": []
             },
             "options": {
-                "tooltip": {"mode": "single"},
-                "legend": {"displayMode": "list", "placement": "bottom"}
+                "tooltip": {
+                    "mode": "single"
+                },
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom"
+                }
             }
         },
         {
@@ -358,7 +391,10 @@
                 "x": 0,
                 "y": 32
             },
-            "datasource": {"type": "loki", "uid": "Loki"},
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
             "targets": [
                 {
                     "expr": "{kind=\"log\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | level =~ \"error|ERROR\"",
@@ -378,41 +414,217 @@
             "id": 10,
             "title": "CLS (p75)",
             "type": "stat",
-            "gridPos": {"x": 0, "y": 40, "w": 6, "h": 4},
-            "datasource": {"type": "loki", "uid": "Loki"},
-            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"cls\" | unwrap value [5m])", "legendFormat": "CLS p75", "refId": "A"}],
-            "fieldConfig": {"defaults": {"unit": "none", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 0.1}, {"color": "red", "value": 0.25}]}}, "overrides": []},
-            "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
+            "gridPos": {
+                "x": 0,
+                "y": 40,
+                "w": 6,
+                "h": 4
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
+            "targets": [
+                {
+                    "expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"cls\" | unwrap value [5m])",
+                    "legendFormat": "CLS p75",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "none",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 0.1
+                            },
+                            {
+                                "color": "red",
+                                "value": 0.25
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ]
+                },
+                "colorMode": "background",
+                "graphMode": "none"
+            }
         },
         {
             "id": 11,
             "title": "INP (p75)",
             "type": "stat",
-            "gridPos": {"x": 6, "y": 40, "w": 6, "h": 4},
-            "datasource": {"type": "loki", "uid": "Loki"},
-            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"inp\" | unwrap value [5m])", "legendFormat": "INP p75", "refId": "A"}],
-            "fieldConfig": {"defaults": {"unit": "ms", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 200}, {"color": "red", "value": 500}]}}, "overrides": []},
-            "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
+            "gridPos": {
+                "x": 6,
+                "y": 40,
+                "w": 6,
+                "h": 4
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
+            "targets": [
+                {
+                    "expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"inp\" | unwrap value [5m])",
+                    "legendFormat": "INP p75",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "ms",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 200
+                            },
+                            {
+                                "color": "red",
+                                "value": 500
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ]
+                },
+                "colorMode": "background",
+                "graphMode": "none"
+            }
         },
         {
             "id": 12,
             "title": "FCP (p75)",
             "type": "stat",
-            "gridPos": {"x": 12, "y": 40, "w": 6, "h": 4},
-            "datasource": {"type": "loki", "uid": "Loki"},
-            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"fcp\" | unwrap value [5m])", "legendFormat": "FCP p75", "refId": "A"}],
-            "fieldConfig": {"defaults": {"unit": "ms", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1800}, {"color": "red", "value": 3000}]}}, "overrides": []},
-            "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
+            "gridPos": {
+                "x": 12,
+                "y": 40,
+                "w": 6,
+                "h": 4
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
+            "targets": [
+                {
+                    "expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"fcp\" | unwrap value [5m])",
+                    "legendFormat": "FCP p75",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "ms",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 1800
+                            },
+                            {
+                                "color": "red",
+                                "value": 3000
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ]
+                },
+                "colorMode": "background",
+                "graphMode": "none"
+            }
         },
         {
             "id": 13,
             "title": "TTFB (p75)",
             "type": "stat",
-            "gridPos": {"x": 18, "y": 40, "w": 6, "h": 4},
-            "datasource": {"type": "loki", "uid": "Loki"},
-            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"ttfb\" | unwrap value [5m])", "legendFormat": "TTFB p75", "refId": "A"}],
-            "fieldConfig": {"defaults": {"unit": "ms", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 800}, {"color": "red", "value": 1800}]}}, "overrides": []},
-            "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
+            "gridPos": {
+                "x": 18,
+                "y": 40,
+                "w": 6,
+                "h": 4
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "Loki"
+            },
+            "targets": [
+                {
+                    "expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"ttfb\" | unwrap value [5m])",
+                    "legendFormat": "TTFB p75",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "ms",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 800
+                            },
+                            {
+                                "color": "red",
+                                "value": 1800
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ]
+                },
+                "colorMode": "background",
+                "graphMode": "none"
+            }
         }
     ]
 }
