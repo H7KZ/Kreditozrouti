@@ -1,17 +1,20 @@
 # Build Stage
 FROM node:26-alpine AS builder
 
-WORKDIR /usr/src/scraper
+WORKDIR /usr/src
 
-COPY ./scraper/package.json ./package-lock.json ./
+COPY ./package.json ./package-lock.json ./
+COPY ./scraper/package.json ./scraper/
 RUN npm ci -w scraper
+
+WORKDIR /usr/src/scraper
 
 COPY ./scraper/ ./
 
 # Workspaces: make shared source visible for cross-package type imports
 COPY ./shared/ /usr/src/shared/
 
-RUN npm run build && npm prune --omit=dev
+RUN npm run build && cd /usr/src && npm prune --omit=dev -w scraper
 
 # --------------------------------------------------------------------
 # Production Stage
@@ -30,6 +33,6 @@ RUN apk add --no-cache \
 WORKDIR /usr/src/scraper
 
 COPY --from=builder /usr/src/scraper/dist ./dist
-COPY --from=builder /usr/src/scraper/node_modules ./node_modules
+COPY --from=builder /usr/src/node_modules ./node_modules
 
 CMD ["node", "--require", "./dist/scraper/src/telemetry.js", "dist/scraper/src/index.js"]

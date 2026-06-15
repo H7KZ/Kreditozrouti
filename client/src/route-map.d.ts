@@ -7,7 +7,7 @@
 // It's recommended to commit this file.
 // Make sure to add this file to your tsconfig.json file as an "includes" or "files" entry.
 
-import type { ParamValue, ParamValueOneOrMore, ParamValueZeroOrMore, ParamValueZeroOrOne, RouteRecordInfo } from 'vue-router';
+import type { RouteRecordInfo, ParamValue, ParamValueOneOrMore, ParamValueZeroOrMore, ParamValueZeroOrOne } from 'vue-router';
 import type { _ExtractParamParserType } from 'vue-router/experimental'
 
 declare module 'vue-router' {
