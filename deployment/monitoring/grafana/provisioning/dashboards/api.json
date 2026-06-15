@@ -358,6 +358,101 @@
                 "sortOrder": "Descending",
                 "dedupStrategy": "none"
             }
+        },
+        {
+            "id": 10,
+            "title": "HTTP Latency — p95 / p99",
+            "type": "timeseries",
+            "gridPos": {"x": 0, "y": 44, "w": 24, "h": 8},
+            "datasource": {"type": "prometheus", "uid": "Prometheus"},
+            "targets": [
+                {
+                    "expr": "job:http_request_duration_p95:rate5m",
+                    "legendFormat": "p95",
+                    "refId": "A"
+                },
+                {
+                    "expr": "job:http_request_duration_p99:rate5m",
+                    "legendFormat": "p99",
+                    "refId": "B"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "s",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {"color": "green", "value": null},
+                            {"color": "yellow", "value": 1},
+                            {"color": "red", "value": 2}
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "options": {
+                "tooltip": {"mode": "multi"},
+                "legend": {"displayMode": "list", "placement": "bottom"}
+            }
+        },
+        {
+            "id": 11,
+            "title": "HTTP Error Rate (5xx)",
+            "type": "timeseries",
+            "gridPos": {"x": 0, "y": 52, "w": 24, "h": 8},
+            "datasource": {"type": "prometheus", "uid": "Prometheus"},
+            "targets": [
+                {
+                    "expr": "job:http_errors_ratio:rate5m * 100",
+                    "legendFormat": "5xx error %",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "min": 0,
+                    "max": 100,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {"color": "green", "value": null},
+                            {"color": "yellow", "value": 1},
+                            {"color": "red", "value": 5}
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "options": {
+                "tooltip": {"mode": "single"},
+                "legend": {"displayMode": "list", "placement": "bottom"}
+            }
+        },
+        {
+            "id": 12,
+            "title": "p95 Latency by Route",
+            "type": "table",
+            "gridPos": {"x": 0, "y": 60, "w": 24, "h": 8},
+            "datasource": {"type": "prometheus", "uid": "Prometheus"},
+            "targets": [
+                {
+                    "expr": "topk(10, route:http_request_duration_p95:rate5m)",
+                    "legendFormat": "{{route}}",
+                    "refId": "A",
+                    "instant": true
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "s"
+                },
+                "overrides": []
+            },
+            "options": {
+                "sortBy": [{"displayName": "Value", "desc": true}]
+            }
         }
     ]
 }
