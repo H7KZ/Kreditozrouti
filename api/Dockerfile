@@ -33,4 +33,4 @@ RUN mkdir -p /usr/src/uploads && chown api:api /usr/src/uploads
 USER api
 
 EXPOSE 80
-CMD ["node", "dist/api/src/index.js"]
+CMD ["node", "--require", "./dist/api/src/telemetry.js", "dist/api/src/index.js"]
