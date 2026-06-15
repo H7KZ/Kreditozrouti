@@ -171,8 +171,8 @@ services:
       - VITE_API_URL=https://${DOMAIN}/api
       - VITE_FARO_COLLECTOR_URL=https://${DOMAIN}/faro/collect
       - VITE_APP_VERSION=${CLIENT_IMAGE_TAG:-latest}
-      - VITE_UMAMI_WEBSITE_ID=${UMAMI_WEBSITE_ID}
-      - VITE_UMAMI_SRC=${UMAMI_SRC}
+      - VITE_UMAMI_WEBSITE_ID=${VITE_UMAMI_WEBSITE_ID}
+      - VITE_UMAMI_SRC=${VITE_UMAMI_SRC}
 
     networks:
       - traefik-network
