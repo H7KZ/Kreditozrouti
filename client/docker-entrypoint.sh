@@ -10,7 +10,6 @@ set -e
 #
 # Supported Variables:
 #   - VITE_API_URL: Backend API URL
-#   - VITE_API_COMMAND_TOKEN: Bearer token for manual scrape trigger
 #   - VITE_FARO_COLLECTOR_URL: Grafana Faro collector endpoint
 #   - VITE_APP_VERSION: App version tag sent to Faro
 #   - VITE_UMAMI_WEBSITE_ID: Umami Analytics website ID (leave empty to disable)
@@ -36,13 +35,6 @@ find "$DIST_DIR" -type f -name "*.js" | while read -r file; do
         # Replace VITE_API_URL
         if [ -n "$VITE_API_URL" ]; then
             sed -i "s|__VITE_API_URL_PLACEHOLDER__|$(escape_sed "$VITE_API_URL")|g" "$file"
-        fi
-
-        # Replace VITE_API_COMMAND_TOKEN
-        if [ -n "$VITE_API_COMMAND_TOKEN" ]; then
-            sed -i "s|__VITE_API_COMMAND_TOKEN_PLACEHOLDER__|$(escape_sed "$VITE_API_COMMAND_TOKEN")|g" "$file"
-        else
-            sed -i "s|__VITE_API_COMMAND_TOKEN_PLACEHOLDER__||g" "$file"
         fi
 
         # Replace VITE_FARO_COLLECTOR_URL
@@ -77,7 +69,6 @@ done
 
 echo "Environment injection complete."
 echo "  VITE_API_URL: ${VITE_API_URL:-<not set>}"
-echo "  VITE_API_COMMAND_TOKEN: ${VITE_API_COMMAND_TOKEN:-<not set>}"
 echo "  VITE_FARO_COLLECTOR_URL: ${VITE_FARO_COLLECTOR_URL:-<not set>}"
 echo "  VITE_APP_VERSION: ${VITE_APP_VERSION:-latest}"
 echo "  VITE_UMAMI_WEBSITE_ID: ${VITE_UMAMI_WEBSITE_ID:-<not set>}"
