@@ -155,7 +155,7 @@ services:
     restart: unless-stopped
 
     environment:
-      - FARO_ALLOWED_ORIGIN=${FARO_ALLOWED_ORIGIN}
+      - FARO_ALLOWED_ORIGIN=${FARO_ALLOWED_ORIGIN:-*}
 
     command:
       - run
