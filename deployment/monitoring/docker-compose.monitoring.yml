@@ -234,11 +234,11 @@ services:
           memory: 32M
 
   # ============================================================================
-  # Umami Analytics Database (PostgreSQL 18-alpine)
+  # Umami Analytics Database (PostgreSQL 16-alpine)
   # Internal only — no Traefik labels. Umami connects at umami-db:5432.
   # ============================================================================
   umami-db:
-    image: postgres:18-alpine
+    image: postgres:16-alpine
     restart: unless-stopped
 
     environment:
