@@ -51,6 +51,8 @@ loki.process "parse_json" {
       context    = "context",
       request_id = "request_id",
       path       = "path",
+      traceId    = "traceId",
+      spanId     = "spanId",
     }
   }
 
@@ -74,7 +76,11 @@ loki.process "parse_json" {
   // Store request_id as structured metadata (not a stream label) for per-request
   // trace correlation without blowing up label cardinality.
   stage.structured_metadata {
-    values = { request_id = "" }
+    values = {
+      request_id = ""
+      traceId    = ""
+      spanId     = ""
+    }
   }
 
   forward_to = [loki.write.default.receiver]
@@ -102,7 +108,8 @@ faro.receiver "browser" {
   }
 
   output {
-    logs = [loki.process.faro_labels.receiver]
+    logs   = [loki.process.faro_labels.receiver]
+    traces = [otelcol.exporter.otlp.tempo.input]
   }
 }
 
@@ -119,15 +126,44 @@ loki.process "faro_labels" {
 
   stage.logfmt {
     mapping = {
-      "kind" = "kind",
+      "kind"        = "kind",
+      "environment" = "environment",
     }
   }
 
   stage.labels {
     values = {
       kind = "",
+      env  = "environment",
     }
   }
 
   forward_to = [loki.write.default.receiver]
+}
+
+// ============================================================
+// OTLP receiver — API and Scraper push traces here.
+// Accessible from app containers via traefik-network.
+// ============================================================
+
+otelcol.receiver.otlp "default" {
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+  http {
+    endpoint = "0.0.0.0:4318"
+  }
+
+  output {
+    traces = [otelcol.exporter.otlp.tempo.input]
+  }
+}
+
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = "tempo:4317"
+    tls {
+      insecure = true
+    }
+  }
 }
