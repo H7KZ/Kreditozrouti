@@ -1,10 +1,10 @@
 # Build Stage
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /usr/src/api
 
 COPY ./api/package.json ./package-lock.json ./
-RUN npm ci
+RUN npm ci -w api
 
 COPY ./api/ ./
 
@@ -18,7 +18,7 @@ RUN npm run build && npm prune --omit=dev
 
 # --------------------------------------------------------------------
 # Production Stage
-FROM node:24-alpine
+FROM node:26-alpine
 
 RUN apk add --no-cache curl && \
     addgroup -S api && adduser -S api -G api

@@ -1,10 +1,10 @@
 # Build Stage
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /usr/src/scraper
 
 COPY ./scraper/package.json ./package-lock.json ./
-RUN npm ci
+RUN npm ci -w scraper
 
 COPY ./scraper/ ./
 
@@ -15,7 +15,7 @@ RUN npm run build && npm prune --omit=dev
 
 # --------------------------------------------------------------------
 # Production Stage
-FROM node:24-alpine
+FROM node:26-alpine
 
 # Alpine system Chromium — avoids downloading a second browser binary at build time
 # and works on musl/Alpine without glibc compatibility shims

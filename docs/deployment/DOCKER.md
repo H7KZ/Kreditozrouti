@@ -7,7 +7,7 @@ Registry (GHCR).
 
 ## API Image
 
-**Location:** `api/Dockerfile` — Base: `node:24-alpine`
+**Location:** `api/Dockerfile` — Base: `node:26-alpine`
 
 **Build stages:**
 
@@ -29,7 +29,7 @@ Stage 2 (production)
 
 ## Client Image
 
-**Location:** `client/Dockerfile` — Base: `node:24-alpine` → `nginx:stable-alpine`
+**Location:** `client/Dockerfile` — Base: `node:26-alpine` → `nginx:stable-alpine`
 
 **Build stages:**
 
@@ -69,7 +69,7 @@ exec "$@"
 
 ## Scraper Image
 
-**Location:** `scraper/Dockerfile` — Base: `node:24-alpine`
+**Location:** `scraper/Dockerfile` — Base: `node:26-alpine`
 
 **Build stages:**
 
