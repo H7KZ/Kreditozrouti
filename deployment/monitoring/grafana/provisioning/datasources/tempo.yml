@@ -16,7 +16,7 @@ datasources:
         spanEndTimeShift: '5m'
         customQuery: false
       serviceMap:
-        datasourceUid: prometheus
+        datasourceUid: Prometheus
       nodeGraph:
         enabled: true
       search:
