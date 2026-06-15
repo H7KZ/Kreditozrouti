@@ -1,9 +1,9 @@
 import { fileURLToPath, URL } from 'node:url'
+import vueRouter from 'vue-router/vite'
 import vueI18n from '@intlify/unplugin-vue-i18n/vite'
 import vueTailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import vueIcons from 'unplugin-icons/vite'
-import vueRouter from 'unplugin-vue-router/vite'
 import { defineConfig, loadEnv } from 'vite'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
@@ -19,7 +19,7 @@ export default ({ mode }: { mode: string }) => {
 			APP_VERSION: JSON.stringify(process.env.npm_package_version),
 		},
 		plugins: [
-			vueRouter(), // vueRouter must be before vue !!!
+			vueRouter({ dts: 'src/route-map.d.ts' }), // vueRouter must be before vue !!!
 			vue(),
 			vueDevTools(),
 			vueTailwindcss(),

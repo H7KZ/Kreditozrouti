@@ -4,6 +4,7 @@
 	"compilerOptions": {
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
 		"verbatimModuleSyntax": false,
+		"ignoreDeprecations": "6.0",
 
 		"baseUrl": ".",
 		"paths": {

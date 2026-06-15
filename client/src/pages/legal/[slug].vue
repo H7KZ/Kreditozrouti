@@ -5,7 +5,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import { marked } from 'marked'
 import LegalSidebar from '@client/components/legal/LegalSidebar.vue'
 
-const route = useRoute()
+const route = useRoute('/legal/[slug]')
 const { locale } = useI18n()
 
 const allDocs = import.meta.glob('../../legal/**/*.md', {
