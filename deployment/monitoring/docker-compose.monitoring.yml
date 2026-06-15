@@ -113,6 +113,40 @@ services:
           memory: 128M
 
   # ============================================================================
+  # Distributed Trace Storage (Tempo)
+  # Internal only. Alloy pushes traces via OTLP gRPC (4317).
+  # Grafana reads at http://tempo:3200.
+  # ============================================================================
+  tempo:
+    image: grafana/tempo:latest
+    restart: unless-stopped
+
+    command: -config.file=/etc/tempo/tempo.yml
+
+    volumes:
+      - tempo-data:/tmp/tempo
+      - ./tempo/tempo.yml:/etc/tempo/tempo.yml:ro
+
+    networks:
+      - monitoring-network
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 256M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+
+  # ============================================================================
   # Log Storage (Loki)
   # Internal only — no Traefik labels. Grafana accesses it at http://loki:3100.
   # ============================================================================

@@ -23,3 +23,6 @@ volumes:
   umami-postgres-data:
     name: umami-postgres-data
     external: true
+
+  tempo-data:
+    name: tempo-data
