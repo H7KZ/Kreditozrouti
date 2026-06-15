@@ -24,7 +24,7 @@ const router = createRouter({
 const pinia = createPinia()
 
 // Initialise Faro browser telemetry (no-op if VITE_FARO_COLLECTOR_URL is unset)
-faro.init(app, router)
+faro.init(app)
 
 app.use(router)
 app.use(i18n)

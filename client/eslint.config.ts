@@ -29,7 +29,7 @@ export default defineConfigWithVueTs(
 
 			// Unicorn — keep only high-signal rules, disable opinionated style ones
 			'unicorn/filename-case': ['error', { cases: { kebabCase: true, camelCase: true, pascalCase: true } }],
-			'unicorn/no-array-for-each': 'error',
+
 			'unicorn/no-useless-undefined': 'error',
 			'unicorn/prefer-array-find': 'error',
 			'unicorn/prefer-includes': 'error',

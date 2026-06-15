@@ -28,12 +28,7 @@ createBullBoard({
 				color: Config.isEnvProduction() ? '#c0392b' : Config.isEnvDevelopment() ? '#e67e22' : '#27ae60',
 				textColor: '#ffffff'
 			},
-			pollingInterval: { showSetting: true },
-			dateFormats: {
-				short: 'HH:mm:ss',
-				common: 'MM-dd HH:mm:ss',
-				full: 'yyyy-MM-dd HH:mm:ss'
-			}
+			pollingInterval: { showSetting: true }
 		}
 	}
 })

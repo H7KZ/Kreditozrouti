@@ -53,6 +53,44 @@ new Gauge({
 	}
 })
 
+new Gauge({
+	name: 'scraper_items_processed_total',
+	help: 'Cumulative scraper response jobs processed by type and status',
+	labelNames: ['job_type', 'status'] as const,
+	registers: [register],
+	async collect() {
+		const jobTypes = ['InSIS:Course', 'InSIS:StudyPlan', 'InSIS:AcademicSchedule', 'InSIS:FacultyTimetable', 'InSIS:GapSweep']
+		for (const jobType of jobTypes) {
+			for (const status of ['success', 'failure'] as const) {
+				try {
+					const val = await redis.get(`metrics:scraper:items_processed:${jobType}:${status}`)
+					this.labels(jobType, status).set(val ? Number(val) : 0)
+				} catch {
+					// redis not ready
+				}
+			}
+		}
+	}
+})
+
+new Gauge({
+	name: 'scraper_last_run_timestamp',
+	help: 'Unix timestamp of the last successfully completed scraper job by type',
+	labelNames: ['job_type'] as const,
+	registers: [register],
+	async collect() {
+		const jobTypes = ['InSIS:Course', 'InSIS:StudyPlan', 'InSIS:AcademicSchedule', 'InSIS:FacultyTimetable', 'InSIS:GapSweep']
+		for (const jobType of jobTypes) {
+			try {
+				const val = await redis.get(`metrics:scraper:last_run:${jobType}`)
+				this.labels(jobType).set(val ? Number(val) : 0)
+			} catch {
+				// redis not ready
+			}
+		}
+	}
+})
+
 export function metricsMiddleware(req: Request, res: Response, next: NextFunction): void {
 	if (req.path === '/metrics') {
 		return next()

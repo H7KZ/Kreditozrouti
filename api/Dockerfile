@@ -1,10 +1,13 @@
 # Build Stage
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
+
+WORKDIR /usr/src
+
+COPY ./package.json ./package-lock.json ./
+COPY ./api/package.json ./api/
+RUN npm ci -w api
 
 WORKDIR /usr/src/api
-
-COPY ./api/package.json ./package-lock.json ./
-RUN npm ci
 
 COPY ./api/ ./
 
@@ -12,13 +15,13 @@ COPY ./api/ ./
 COPY ./scraper/src/ /usr/src/scraper/src/
 COPY ./shared/ /usr/src/shared/
 RUN mkdir -p /usr/src/scraper/node_modules && \
-    ln -s /usr/src/api/node_modules/* /usr/src/scraper/node_modules/ || true
+    ln -s /usr/src/node_modules/* /usr/src/scraper/node_modules/ || true
 
-RUN npm run build && npm prune --omit=dev
+RUN npm run build && cd /usr/src && npm prune --omit=dev -w api
 
 # --------------------------------------------------------------------
 # Production Stage
-FROM node:24-alpine
+FROM node:26-alpine
 
 RUN apk add --no-cache curl && \
     addgroup -S api && adduser -S api -G api
@@ -26,11 +29,11 @@ RUN apk add --no-cache curl && \
 WORKDIR /usr/src/api
 
 COPY --from=builder --chown=api:api /usr/src/api/dist ./dist
-COPY --from=builder --chown=api:api /usr/src/api/node_modules ./node_modules
+COPY --from=builder --chown=api:api /usr/src/node_modules ./node_modules
 
 RUN mkdir -p /usr/src/uploads && chown api:api /usr/src/uploads
 
 USER api
 
 EXPOSE 80
-CMD ["node", "dist/api/src/index.js"]
+CMD ["node", "--require", "./dist/api/src/telemetry.js", "dist/api/src/index.js"]

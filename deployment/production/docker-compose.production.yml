@@ -53,6 +53,7 @@ services:
       - MYSQL_URI=${MYSQL_URI}
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4318
 
     networks:
       - traefik-network
@@ -131,6 +132,7 @@ services:
       - ENV=production
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4318
 
     networks:
       - redis-network
@@ -171,8 +173,8 @@ services:
       - VITE_API_URL=https://${DOMAIN}/api
       - VITE_FARO_COLLECTOR_URL=https://${DOMAIN}/faro/collect
       - VITE_APP_VERSION=${CLIENT_IMAGE_TAG:-latest}
-      - VITE_UMAMI_WEBSITE_ID=${UMAMI_WEBSITE_ID}
-      - VITE_UMAMI_SRC=${UMAMI_SRC}
+      - VITE_UMAMI_WEBSITE_ID=${VITE_UMAMI_WEBSITE_ID}
+      - VITE_UMAMI_SRC=${VITE_UMAMI_SRC}
 
     networks:
       - traefik-network
