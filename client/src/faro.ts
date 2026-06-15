@@ -1,6 +1,5 @@
 import type { Faro } from '@grafana/faro-web-sdk'
 import type { App } from 'vue'
-import type { Router } from 'vue-router'
 import { createSession, getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk'
 
 // TracingInstrumentation from @grafana/faro-web-tracing intentionally omitted —
@@ -13,7 +12,7 @@ const faroModule = {
 		return !!import.meta.env.VITE_FARO_COLLECTOR_URL
 	},
 
-	init(app: App, router: Router): void {
+	init(app: App): void {
 		if (!faroModule.isEnabled()) return
 
 		_faro = initializeFaro({
@@ -32,7 +31,7 @@ const faroModule = {
 			ignoreErrors: [/undefined is not an object \(evaluating '.*\["@context"\]/],
 			instrumentations: [
 				...getWebInstrumentations({
-					captureConsole: false,
+					captureConsole: true,
 				}),
 				// TracingInstrumentation omitted — requires Tempo; we only have Loki.
 			],
@@ -46,11 +45,6 @@ const faroModule = {
 			// Re-throw so Vue's own console.error still fires in development
 			throw error
 		}
-
-		// Track SPA route navigations
-		router.afterEach((to) => {
-			_faro?.api.pushEvent('navigation', { path: to.fullPath })
-		})
 	},
 }
 

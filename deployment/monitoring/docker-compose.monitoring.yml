@@ -13,10 +13,11 @@
 #   - PROJECT: Project name prefix for Traefik labels (e.g. kreditozrouti)
 #   - GRAFANA_ADMIN_USER: Grafana admin username
 #   - GRAFANA_ADMIN_PASSWORD: Grafana admin password
-#   - UMAMI_DB_NAME      — PostgreSQL database name for Umami (e.g. umami)
-#   - UMAMI_DB_USER      — PostgreSQL user for Umami (e.g. umami)
-#   - UMAMI_DB_PASSWORD  — PostgreSQL password (generate once, store in GitHub Secrets)
-#   - UMAMI_APP_SECRET   — Umami app secret for session signing (generate once, store in GitHub Secrets)
+#   - UMAMI_DB_NAME        — PostgreSQL database name for Umami (e.g. umami)
+#   - UMAMI_DB_USER        — PostgreSQL user for Umami (e.g. umami)
+#   - UMAMI_DB_PASSWORD    — PostgreSQL password (generate once, store in GitHub Secrets)
+#   - UMAMI_APP_SECRET     — Umami app secret for session signing (generate once, store in GitHub Secrets)
+#   - FARO_ALLOWED_ORIGIN  — Allowed CORS origin for Faro receiver (e.g. https://kreditozrouti.cz)
 #
 # Deploy order: Traefik → this stack → app stack
 # Usage: docker compose -f docker-compose.monitoring.yml -f networks.yml -f volumes.yml up -d
@@ -152,6 +153,9 @@ services:
   alloy:
     image: grafana/alloy:latest
     restart: unless-stopped
+
+    environment:
+      - FARO_ALLOWED_ORIGIN=${FARO_ALLOWED_ORIGIN:-*}
 
     command:
       - run

@@ -12,6 +12,14 @@ discovery.docker "containers" {
 discovery.relabel "container_labels" {
   targets = discovery.docker.containers.targets
 
+  // Drop monitoring infrastructure containers — their logs are noise, not application data.
+  // Placed first so dropped containers never enter any downstream pipeline stage.
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(grafana|prometheus|loki|alloy|node-exporter|umami|postgres).*"
+    action        = "drop"
+  }
+
   // Use container name as the "app" label (strip leading /)
   rule {
     source_labels = ["__meta_docker_container_name"]
@@ -33,14 +41,24 @@ loki.source.docker "docker_logs" {
 }
 
 loki.process "parse_json" {
-  // Attempt to parse JSON; non-JSON lines pass through as plain text
+  // Attempt to parse JSON; non-JSON lines pass through as plain text.
+  // Extract request_id and path in addition to standard label fields.
   stage.json {
     expressions = {
-      level   = "level",
-      service = "service",
-      env     = "env",
-      context = "context",
+      level      = "level",
+      service    = "service",
+      env        = "env",
+      context    = "context",
+      request_id = "request_id",
+      path       = "path",
     }
+  }
+
+  // Drop health-check and metrics-scrape log lines — high-frequency, zero signal.
+  stage.drop {
+    source              = "path"
+    expression          = "^/(health|metrics)$"
+    drop_counter_reason = "healthcheck_or_metrics_endpoint"
   }
 
   // Promote pino fields to Loki stream labels for indexed queries
@@ -51,6 +69,12 @@ loki.process "parse_json" {
       env     = "",
       context = "",
     }
+  }
+
+  // Store request_id as structured metadata (not a stream label) for per-request
+  // trace correlation without blowing up label cardinality.
+  stage.structured_metadata {
+    values = { request_id = "" }
   }
 
   forward_to = [loki.write.default.receiver]
@@ -74,7 +98,7 @@ faro.receiver "browser" {
   server {
     listen_address       = "0.0.0.0"
     listen_port          = 12347
-    cors_allowed_origins = ["*"]
+    cors_allowed_origins = [sys.env("FARO_ALLOWED_ORIGIN")]
   }
 
   output {

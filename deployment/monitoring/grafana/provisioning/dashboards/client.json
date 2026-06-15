@@ -66,7 +66,7 @@
         },
         {
             "id": 2,
-            "title": "Page Views (last 1h)",
+            "title": "JS Errors (last 1h)",
             "type": "stat",
             "gridPos": {
                 "h": 6,
@@ -74,30 +74,32 @@
                 "x": 6,
                 "y": 0
             },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
+            "datasource": {"type": "loki", "uid": "Loki"},
             "targets": [
                 {
-                    "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"event\"} |= \"navigation\" [1h]))",
-                    "legendFormat": "navigations",
+                    "expr": "count_over_time({kind=\"exception\", app=\"kreditozrouti\"}[1h])",
+                    "legendFormat": "errors",
                     "refId": "A"
                 }
             ],
-            "options": {
-                "reduceOptions": {
-                    "calcs": [
-                        "sum"
-                    ]
-                },
-                "colorMode": "background",
-                "graphMode": "none"
-            },
             "fieldConfig": {
                 "defaults": {
-                    "unit": "short"
-                }
+                    "unit": "short",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {"color": "green", "value": null},
+                            {"color": "yellow", "value": 1},
+                            {"color": "red", "value": 10}
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "options": {
+                "reduceOptions": {"calcs": ["lastNotNull"]},
+                "colorMode": "background",
+                "graphMode": "none"
             }
         },
         {
@@ -225,7 +227,7 @@
         },
         {
             "id": 6,
-            "title": "Page Navigation Rate Over Time",
+            "title": "LCP Over Time (p75)",
             "type": "timeseries",
             "gridPos": {
                 "h": 8,
@@ -233,24 +235,31 @@
                 "x": 12,
                 "y": 6
             },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
+            "datasource": {"type": "loki", "uid": "Loki"},
             "targets": [
                 {
-                    "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"event\"} |= \"navigation\" [5m]))",
-                    "legendFormat": "navigations / 5m",
+                    "expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\"} | logfmt | name=\"lcp\" | unwrap value [5m])",
+                    "legendFormat": "LCP p75",
                     "refId": "A"
                 }
             ],
             "fieldConfig": {
                 "defaults": {
-                    "unit": "short",
-                    "custom": {
-                        "fillOpacity": 10
+                    "unit": "ms",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {"color": "green", "value": null},
+                            {"color": "yellow", "value": 2500},
+                            {"color": "red", "value": 4000}
+                        ]
                     }
-                }
+                },
+                "overrides": []
+            },
+            "options": {
+                "tooltip": {"mode": "single"},
+                "legend": {"displayMode": "list", "placement": "bottom"}
             }
         },
         {
@@ -311,7 +320,7 @@
         },
         {
             "id": 9,
-            "title": "Recent Navigation Events",
+            "title": "Console Errors",
             "type": "logs",
             "gridPos": {
                 "h": 8,
@@ -319,24 +328,61 @@
                 "x": 0,
                 "y": 32
             },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
+            "datasource": {"type": "loki", "uid": "Loki"},
             "targets": [
                 {
-                    "expr": "{app=\"kreditozrouti\", kind=\"event\"} |= \"navigation\"",
-                    "refId": "A",
-                    "maxLines": 50
+                    "expr": "{kind=\"log\", app=\"kreditozrouti\"} | logfmt | level =~ \"error|ERROR\"",
+                    "legendFormat": "",
+                    "refId": "A"
                 }
             ],
             "options": {
-                "showTime": true,
+                "dedupStrategy": "none",
                 "showLabels": false,
-                "enableLogDetails": true,
+                "showTime": true,
                 "sortOrder": "Descending",
-                "dedupStrategy": "none"
+                "wrapLogMessage": true
             }
+        },
+        {
+            "id": 10,
+            "title": "CLS (p75)",
+            "type": "stat",
+            "gridPos": {"x": 0, "y": 40, "w": 6, "h": 4},
+            "datasource": {"type": "loki", "uid": "Loki"},
+            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\"} | logfmt | name=\"cls\" | unwrap value [5m])", "legendFormat": "CLS p75", "refId": "A"}],
+            "fieldConfig": {"defaults": {"unit": "none", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 0.1}, {"color": "red", "value": 0.25}]}}, "overrides": []},
+            "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
+        },
+        {
+            "id": 11,
+            "title": "INP (p75)",
+            "type": "stat",
+            "gridPos": {"x": 6, "y": 40, "w": 6, "h": 4},
+            "datasource": {"type": "loki", "uid": "Loki"},
+            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\"} | logfmt | name=\"inp\" | unwrap value [5m])", "legendFormat": "INP p75", "refId": "A"}],
+            "fieldConfig": {"defaults": {"unit": "ms", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 200}, {"color": "red", "value": 500}]}}, "overrides": []},
+            "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
+        },
+        {
+            "id": 12,
+            "title": "FCP (p75)",
+            "type": "stat",
+            "gridPos": {"x": 12, "y": 40, "w": 6, "h": 4},
+            "datasource": {"type": "loki", "uid": "Loki"},
+            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\"} | logfmt | name=\"fcp\" | unwrap value [5m])", "legendFormat": "FCP p75", "refId": "A"}],
+            "fieldConfig": {"defaults": {"unit": "ms", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1800}, {"color": "red", "value": 3000}]}}, "overrides": []},
+            "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
+        },
+        {
+            "id": 13,
+            "title": "TTFB (p75)",
+            "type": "stat",
+            "gridPos": {"x": 18, "y": 40, "w": 6, "h": 4},
+            "datasource": {"type": "loki", "uid": "Loki"},
+            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\"} | logfmt | name=\"ttfb\" | unwrap value [5m])", "legendFormat": "TTFB p75", "refId": "A"}],
+            "fieldConfig": {"defaults": {"unit": "ms", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 800}, {"color": "red", "value": 1800}]}}, "overrides": []},
+            "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
         }
     ]
 }

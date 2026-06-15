@@ -45,19 +45,22 @@ fi
 main() {
     [[ -z "${MONITORING_DOMAIN:-}" ]]      && { log_error "MONITORING_DOMAIN not set";                exit 1; }
     [[ -z "${GRAFANA_ADMIN_PASSWORD:-}" ]] && { log_error "GRAFANA_ADMIN_PASSWORD not set"; exit 1; }
+    [[ -z "${FARO_ALLOWED_ORIGIN:-}" ]]    && { log_error "FARO_ALLOWED_ORIGIN not set";    exit 1; }
 
     export DOMAIN="$MONITORING_DOMAIN"
     export PROJECT="$STACK_NAME"
     export GRAFANA_ADMIN_USER="${GRAFANA_ADMIN_USER:-admin}"
     export GRAFANA_ADMIN_PASSWORD
     export DISCORD_WEBHOOK_URL="${DISCORD_WEBHOOK_URL:-}"
+    export FARO_ALLOWED_ORIGIN
 
     log "=========================================="
     log "Monitoring Stack Deployment"
     log "=========================================="
-    log "Monitoring domain: $MONITORING_DOMAIN"
-    log "Grafana user:      $GRAFANA_ADMIN_USER"
-    log "Grafana password:  ${GRAFANA_ADMIN_PASSWORD:0:3}..."
+    log "Monitoring domain:    $MONITORING_DOMAIN"
+    log "Grafana user:         $GRAFANA_ADMIN_USER"
+    log "Grafana password:     ${GRAFANA_ADMIN_PASSWORD:0:3}..."
+    log "Faro allowed origin:  $FARO_ALLOWED_ORIGIN"
     log "=========================================="
 
     local compose_file="$SCRIPT_DIR/docker-compose.monitoring.yml"
