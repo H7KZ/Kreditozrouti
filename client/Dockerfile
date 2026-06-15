@@ -36,7 +36,7 @@ ENV VITE_API_COMMAND_TOKEN=""
 ENV VITE_FARO_COLLECTOR_URL=""
 ENV VITE_APP_VERSION="latest"
 ENV VITE_UMAMI_WEBSITE_ID=""
-ENV VITE_UMAMI_SRC="https://kreditozrouti.cz/umami/script.js"
+ENV VITE_UMAMI_SRC=""
 
 RUN rm -rf /usr/share/nginx/html/*
 
