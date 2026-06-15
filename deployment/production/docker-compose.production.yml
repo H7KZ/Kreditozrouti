@@ -132,6 +132,7 @@ services:
       - ENV=production
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4318
 
     networks:
       - redis-network
