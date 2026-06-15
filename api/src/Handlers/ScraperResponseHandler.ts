@@ -1,8 +1,8 @@
 import type { ScraperResponseJob } from '@shared/queue/jobs'
 import { Job } from 'bullmq'
+import { redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { withDeadlockRetry } from '@api/Jobs/helpers'
-import { redis } from '@api/clients'
 import ScraperResponseInSISAcademicScheduleJob from '@api/Jobs/ScraperResponseInSISAcademicScheduleJob'
 import ScraperResponseInSISCourseJob from '@api/Jobs/ScraperResponseInSISCourseJob'
 import ScraperResponseInSISFacultyTimetableJob from '@api/Jobs/ScraperResponseInSISFacultyTimetableJob'
@@ -54,7 +54,10 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
 			})
 
 			if ((REAL_WORK_TYPES as readonly string[]).includes(type)) {
-				const noop = (_e: unknown) => {}
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const noop = (_e: unknown) => {
+					/* empty */
+				}
 				redis.incr(`metrics:scraper:items_processed:${type}:success`).catch(noop)
 				redis.set(`metrics:scraper:last_run:${type}`, Math.floor(Date.now() / 1000)).catch(noop)
 			}
@@ -70,7 +73,10 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
 			LoggerJobContext.log.info(LoggerJobContext.get())
 		} catch (error) {
 			if ((REAL_WORK_TYPES as readonly string[]).includes(type)) {
-				const noop = (_e: unknown) => {}
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const noop = (_e: unknown) => {
+					/* empty */
+				}
 				redis.incr(`metrics:scraper:items_processed:${type}:failure`).catch(noop)
 			}
 

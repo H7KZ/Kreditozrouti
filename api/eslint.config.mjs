@@ -2,7 +2,6 @@
 
 import eslint from '@eslint/js'
 import prettierConfig from 'eslint-config-prettier'
-import importPlugin from 'eslint-plugin-import'
 import pluginPromise from 'eslint-plugin-promise'
 import pluginRegexp from 'eslint-plugin-regexp'
 import pluginUnicorn from 'eslint-plugin-unicorn'
@@ -22,14 +21,7 @@ export default tseslint.config(
 
 	{
 		plugins: {
-			import: importPlugin,
 			unicorn: pluginUnicorn
-		},
-		settings: {
-			'import/resolver': {
-				typescript: true,
-				node: true
-			}
 		},
 		languageOptions: {
 			ecmaVersion: 'latest',
@@ -64,9 +56,6 @@ export default tseslint.config(
 			'@typescript-eslint/no-redundant-type-constituents': 'off',
 			'no-useless-catch': 'off',
 
-			// import
-			'import/no-unresolved': 'off',
-
 			// promise
 			'promise/always-return': 'off',
 			'promise/catch-or-return': 'off',
@@ -76,7 +65,7 @@ export default tseslint.config(
 				'error',
 				{ cases: { kebabCase: true, camelCase: true, pascalCase: true }, ignore: [/InSIS/u, /HTML/u, /HTTP/u, /SQL/u, /API/u, /_/u] }
 			],
-			'unicorn/no-array-for-each': 'error',
+
 			'unicorn/no-useless-undefined': 'error',
 			'unicorn/prefer-array-find': 'error',
 			'unicorn/prefer-includes': 'error',

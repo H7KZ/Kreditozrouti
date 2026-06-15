@@ -446,19 +446,17 @@ export default class ExtractInSISCourseService {
                     const cells = $(row).find('td')
                     if (cells.length < 4) return
 
-                    let facultyCellIndex = -1
                     let codeIndex = 0
                     let formIndex = 1
                     let groupIndex = 2
                     let periodIndex = 3
 
                     if (cells.length === 5) {
-                        facultyCellIndex = 0
                         codeIndex = 1
                         formIndex = 2
                         groupIndex = 3
                         periodIndex = 4
-                        lastFaculty = cleanText($(cells[facultyCellIndex]).text())
+                        lastFaculty = cleanText($(cells[0]).text())
                     }
 
                     const planIdent = cleanText($(cells[codeIndex]).text())

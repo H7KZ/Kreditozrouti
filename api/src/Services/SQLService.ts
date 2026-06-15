@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import * as path from 'path'
 import { pathToFileURL } from 'url'
-import { FileMigrationProvider, Migrator } from 'kysely'
+import { FileMigrationProvider, Migrator } from 'kysely/migration'
 import { mysql } from '@api/clients'
 import { Paths } from '@api/paths'
 
