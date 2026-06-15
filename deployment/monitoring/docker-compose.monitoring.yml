@@ -6,6 +6,7 @@
 #   - prometheus: Scrapes /metrics from the API; stores time series data
 #   - grafana:    Visualization dashboard, exposed at domain/grafana via Traefik
 #   - loki:       Log aggregation storage (30-day retention)
+#   - tempo:      Distributed trace storage — OTLP ingress on 4317/4318, query on 3200
 #   - alloy:      Log shipping agent — reads Docker stdout, receives Faro browser telemetry
 #
 # Required Environment Variables (in .env):
