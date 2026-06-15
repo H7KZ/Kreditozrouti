@@ -16,6 +16,11 @@ set -euo pipefail
 # Required variables (set as environment variables or in the env file):
 #   MONITORING_DOMAIN       Public domain for Grafana + Faro routing
 #   GRAFANA_ADMIN_PASSWORD  Grafana admin password
+#   FARO_ALLOWED_ORIGIN     Allowed origin for Faro (e.g. https://example.com)
+#   UMAMI_DB_NAME           PostgreSQL database name for Umami
+#   UMAMI_DB_USER           PostgreSQL user for Umami
+#   UMAMI_DB_PASSWORD       PostgreSQL password for Umami
+#   UMAMI_APP_SECRET        Umami app secret for session signing
 #
 # Optional:
 #   GRAFANA_ADMIN_USER    Grafana admin username (default: admin)
@@ -43,21 +48,33 @@ if [[ -n "$ENV_FILE" ]]; then
 fi
 
 main() {
-    [[ -z "${MONITORING_DOMAIN:-}" ]]      && { log_error "MONITORING_DOMAIN not set";                exit 1; }
+    [[ -z "${MONITORING_DOMAIN:-}" ]]      && { log_error "MONITORING_DOMAIN not set";      exit 1; }
     [[ -z "${GRAFANA_ADMIN_PASSWORD:-}" ]] && { log_error "GRAFANA_ADMIN_PASSWORD not set"; exit 1; }
+    [[ -z "${FARO_ALLOWED_ORIGIN:-}" ]]    && { log_error "FARO_ALLOWED_ORIGIN not set";    exit 1; }
+    [[ -z "${UMAMI_DB_NAME:-}" ]]          && { log_error "UMAMI_DB_NAME not set";          exit 1; }
+    [[ -z "${UMAMI_DB_USER:-}" ]]          && { log_error "UMAMI_DB_USER not set";          exit 1; }
+    [[ -z "${UMAMI_DB_PASSWORD:-}" ]]      && { log_error "UMAMI_DB_PASSWORD not set";      exit 1; }
+    [[ -z "${UMAMI_APP_SECRET:-}" ]]       && { log_error "UMAMI_APP_SECRET not set";       exit 1; }
 
     export DOMAIN="$MONITORING_DOMAIN"
     export PROJECT="$STACK_NAME"
     export GRAFANA_ADMIN_USER="${GRAFANA_ADMIN_USER:-admin}"
     export GRAFANA_ADMIN_PASSWORD
     export DISCORD_WEBHOOK_URL="${DISCORD_WEBHOOK_URL:-}"
+    export FARO_ALLOWED_ORIGIN
+    export UMAMI_DB_NAME
+    export UMAMI_DB_USER
+    export UMAMI_DB_PASSWORD
+    export UMAMI_APP_SECRET
 
     log "=========================================="
     log "Monitoring Stack Deployment"
     log "=========================================="
-    log "Monitoring domain: $MONITORING_DOMAIN"
-    log "Grafana user:      $GRAFANA_ADMIN_USER"
-    log "Grafana password:  ${GRAFANA_ADMIN_PASSWORD:0:3}..."
+    log "Monitoring domain:    $MONITORING_DOMAIN"
+    log "Grafana user:         $GRAFANA_ADMIN_USER"
+    log "Grafana password:     ${GRAFANA_ADMIN_PASSWORD:0:3}..."
+    log "Faro allowed origin:  $FARO_ALLOWED_ORIGIN"
+    log "Umami DB:          $UMAMI_DB_NAME (user: $UMAMI_DB_USER)"
     log "=========================================="
 
     local compose_file="$SCRIPT_DIR/docker-compose.monitoring.yml"

@@ -7,6 +7,36 @@
         "from": "now-1h",
         "to": "now"
     },
+    "templating": {
+        "list": [
+            {
+                "type": "custom",
+                "name": "env",
+                "label": "Environment",
+                "query": "production,development",
+                "multi": false,
+                "includeAll": false,
+                "hide": 0,
+                "current": {
+                    "selected": true,
+                    "text": "production",
+                    "value": "production"
+                },
+                "options": [
+                    {
+                        "selected": true,
+                        "text": "production",
+                        "value": "production"
+                    },
+                    {
+                        "selected": false,
+                        "text": "development",
+                        "value": "development"
+                    }
+                ]
+            }
+        ]
+    },
     "panels": [
         {
             "id": 1,
@@ -24,7 +54,7 @@
             },
             "targets": [
                 {
-                    "expr": "bullmq_queue_depth{status=\"waiting\"}",
+                    "expr": "bullmq_queue_depth{status=\"waiting\", env=\"$env\"}",
                     "legendFormat": "{{queue}}",
                     "refId": "A"
                 }
@@ -60,7 +90,7 @@
             },
             "targets": [
                 {
-                    "expr": "bullmq_queue_depth{status=\"active\"}",
+                    "expr": "bullmq_queue_depth{status=\"active\", env=\"$env\"}",
                     "legendFormat": "{{queue}}",
                     "refId": "A"
                 }
@@ -96,7 +126,7 @@
             },
             "targets": [
                 {
-                    "expr": "bullmq_queue_depth{status=\"failed\"}",
+                    "expr": "bullmq_queue_depth{status=\"failed\", env=\"$env\"}",
                     "legendFormat": "{{queue}}",
                     "refId": "A"
                 }
@@ -148,7 +178,7 @@
             },
             "targets": [
                 {
-                    "expr": "sum(scraper_silent_failures_total)",
+                    "expr": "sum(scraper_silent_failures_total{env=\"$env\"})",
                     "legendFormat": "silent failures",
                     "refId": "A"
                 }
@@ -204,7 +234,7 @@
             },
             "targets": [
                 {
-                    "expr": "bullmq_queue_depth",
+                    "expr": "bullmq_queue_depth{env=\"$env\"}",
                     "legendFormat": "{{queue}} — {{status}}",
                     "refId": "A"
                 }
@@ -231,7 +261,7 @@
             },
             "targets": [
                 {
-                    "expr": "scraper_silent_failures_total",
+                    "expr": "scraper_silent_failures_total{env=\"$env\"}",
                     "legendFormat": "{{job_type}}",
                     "refId": "A"
                 }
@@ -261,7 +291,7 @@
             },
             "targets": [
                 {
-                    "expr": "sum by (status) (count_over_time({service=\"scraper\", context=\"job\"}[5m]))",
+                    "expr": "sum by (status) (count_over_time({service=\"scraper\", context=\"job\", env=\"$env\"}[5m]))",
                     "legendFormat": "{{status}}",
                     "refId": "A"
                 }
@@ -288,7 +318,7 @@
             },
             "targets": [
                 {
-                    "expr": "{service=\"scraper\", level=\"ERROR\"}",
+                    "expr": "{service=\"scraper\", level=\"ERROR\", env=\"$env\"}",
                     "refId": "A",
                     "maxLines": 100
                 }
@@ -317,7 +347,7 @@
             },
             "targets": [
                 {
-                    "expr": "{service=\"scraper\", context=\"job\"}",
+                    "expr": "{service=\"scraper\", context=\"job\", env=\"$env\"}",
                     "refId": "A",
                     "maxLines": 100
                 }
@@ -328,6 +358,155 @@
                 "enableLogDetails": true,
                 "sortOrder": "Descending",
                 "dedupStrategy": "none"
+            }
+        },
+        {
+            "id": 10,
+            "title": "Scraper Items Processed / min",
+            "type": "timeseries",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 42
+            },
+            "datasource": {
+                "type": "prometheus",
+                "uid": "Prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "rate(scraper_items_processed_total{status=\"success\", env=\"$env\"}[5m]) * 60",
+                    "legendFormat": "{{job_type}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "short"
+                },
+                "overrides": []
+            },
+            "options": {
+                "tooltip": {
+                    "mode": "multi"
+                },
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom"
+                }
+            }
+        },
+        {
+            "id": 11,
+            "title": "Scraper Job Success Rate",
+            "type": "timeseries",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 42
+            },
+            "datasource": {
+                "type": "prometheus",
+                "uid": "Prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "rate(scraper_items_processed_total{status=\"success\", env=\"$env\"}[5m]) / (rate(scraper_items_processed_total{status=\"success\", env=\"$env\"}[5m]) + rate(scraper_items_processed_total{status=\"failure\", env=\"$env\"}[5m])) * 100",
+                    "legendFormat": "{{job_type}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "min": 0,
+                    "max": 100,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 80
+                            },
+                            {
+                                "color": "green",
+                                "value": 95
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "options": {
+                "tooltip": {
+                    "mode": "multi"
+                },
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom"
+                }
+            }
+        },
+        {
+            "id": 12,
+            "title": "Time Since Last Scraper Run",
+            "type": "stat",
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 50
+            },
+            "datasource": {
+                "type": "prometheus",
+                "uid": "Prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "(scraper_last_run_timestamp{env=\"$env\"} > 0) and (time() - scraper_last_run_timestamp{env=\"$env\"})",
+                    "legendFormat": "{{job_type}}",
+                    "refId": "A",
+                    "instant": true
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "s",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 3600
+                            },
+                            {
+                                "color": "red",
+                                "value": 86400
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ]
+                },
+                "colorMode": "background",
+                "graphMode": "none",
+                "textMode": "auto"
             }
         }
     ]

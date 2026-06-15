@@ -1,14 +1,18 @@
 import type { ScraperRequestJob, ScraperResponseJob } from '@scraper/types/jobs'
 import { Queue, Worker } from 'bullmq'
+import { BullMQOtel } from 'bullmq-otel'
 import { redis } from '@scraper/clients'
 import ScraperRequestHandler from '@scraper/Handlers/ScraperRequestHandler'
 import { logger } from '@scraper/logger'
 import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/types/queue'
 
+const bullmqTelemetry = new BullMQOtel({ tracerName: 'kreditozrouti-scraper' })
+
 // Queues
 
 const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
     connection: redis.options,
+    telemetry: bullmqTelemetry,
     defaultJobOptions: {
         attempts: 3,
         backoff: { type: 'exponential', delay: 10_000 },
@@ -21,6 +25,7 @@ const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
 // Both are safe together because response jobs use upsert semantics — re-running them is idempotent.
 const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
     connection: redis.options,
+    telemetry: bullmqTelemetry,
     defaultJobOptions: {
         attempts: 3,
         backoff: { type: 'exponential', delay: 5_000 },
@@ -33,6 +38,7 @@ const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
 
 const requestWorker = new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestHandler, {
     connection: redis.options,
+    telemetry: bullmqTelemetry,
     concurrency: 1,
     lockDuration: 900_000, // 15 min; covers the longest expected job; auto-renewed while worker is alive
     maxStalledCount: 3 // allow 3 stall recoveries before permanent failure

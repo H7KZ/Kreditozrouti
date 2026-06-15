@@ -1,12 +1,12 @@
 ﻿<script setup lang="ts">
 import type { MergedUnit } from '@client/composables'
+import { isMergedUnit, useCourseLabels, useScheduleExport, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
 import type { InSISDay } from '@shared/domain/insis'
 import { ref, toRef } from 'vue'
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
-import { isMergedUnit, useCourseLabels, useScheduleExport, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useDragStore, useTimetableStore } from '@client/stores'
 

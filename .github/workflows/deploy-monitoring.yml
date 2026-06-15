@@ -6,6 +6,7 @@
 # Required Secrets (repository-level):
 #   SSH_HOST, SSH_USER, SSH_PORT, SSH_PRIVATE_KEY
 #   MONITORING_DOMAIN, GRAFANA_ADMIN_PASSWORD, DISCORD_WEBHOOK_URL
+#   FARO_ALLOWED_ORIGIN
 # ==============================================================================
 
 name: Deploy Monitoring
@@ -60,12 +61,13 @@ jobs:
           UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
           UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
           UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
+          FARO_ALLOWED_ORIGIN: ${{ secrets.FARO_ALLOWED_ORIGIN }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: GH_TOKEN,GH_ACTOR,MONITORING_DOMAIN,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL,UMAMI_DB_NAME,UMAMI_DB_USER,UMAMI_DB_PASSWORD,UMAMI_APP_SECRET
+          envs: GH_TOKEN,GH_ACTOR,MONITORING_DOMAIN,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL,UMAMI_DB_NAME,UMAMI_DB_USER,UMAMI_DB_PASSWORD,UMAMI_APP_SECRET,FARO_ALLOWED_ORIGIN
           script: |
             set -euo pipefail
             echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin

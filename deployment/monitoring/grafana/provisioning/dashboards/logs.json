@@ -10,6 +10,32 @@
     "templating": {
         "list": [
             {
+                "type": "custom",
+                "name": "env",
+                "label": "Environment",
+                "query": "production,development",
+                "multi": false,
+                "includeAll": false,
+                "hide": 0,
+                "current": {
+                    "selected": true,
+                    "text": "production",
+                    "value": "production"
+                },
+                "options": [
+                    {
+                        "selected": true,
+                        "text": "production",
+                        "value": "production"
+                    },
+                    {
+                        "selected": false,
+                        "text": "development",
+                        "value": "development"
+                    }
+                ]
+            },
+            {
                 "type": "query",
                 "name": "service",
                 "label": "Service",
@@ -190,7 +216,7 @@
             },
             "targets": [
                 {
-                    "expr": "count_over_time({service=~\"${service:pipe}\", level=\"ERROR\"}[$__range])",
+                    "expr": "count_over_time({service=~\"${service:pipe}\", level=\"ERROR\", env=\"$env\"}[$__range])",
                     "refId": "A",
                     "instant": true,
                     "legendFormat": ""
@@ -242,7 +268,7 @@
             },
             "targets": [
                 {
-                    "expr": "count_over_time({service=~\"${service:pipe}\", level=\"WARN\"}[$__range])",
+                    "expr": "count_over_time({service=~\"${service:pipe}\", level=\"WARN\", env=\"$env\"}[$__range])",
                     "refId": "A",
                     "instant": true,
                     "legendFormat": ""
@@ -294,7 +320,7 @@
             },
             "targets": [
                 {
-                    "expr": "count_over_time({service=~\"${service:pipe}\", level=\"INFO\"}[$__range])",
+                    "expr": "count_over_time({service=~\"${service:pipe}\", level=\"INFO\", env=\"$env\"}[$__range])",
                     "refId": "A",
                     "instant": true,
                     "legendFormat": ""
@@ -334,7 +360,7 @@
             },
             "targets": [
                 {
-                    "expr": "count_over_time({service=~\"${service:pipe}\"}[$__range])",
+                    "expr": "count_over_time({service=~\"${service:pipe}\", env=\"$env\"}[$__range])",
                     "refId": "A",
                     "instant": true,
                     "legendFormat": ""
@@ -374,7 +400,7 @@
             },
             "targets": [
                 {
-                    "expr": "sum by (level) (count_over_time({service=~\"${service:pipe}\"}[$__interval]))",
+                    "expr": "sum by (level) (count_over_time({service=~\"${service:pipe}\", env=\"$env\"}[$__interval]))",
                     "refId": "A",
                     "legendFormat": "{{level}}"
                 }
@@ -476,7 +502,7 @@
             },
             "targets": [
                 {
-                    "expr": "{service=~\"${service:pipe}\", level=~\"${level:pipe}\", context=~\"${context:pipe}\"} |~ \"$search\"",
+                    "expr": "{service=~\"${service:pipe}\", level=~\"${level:pipe}\", context=~\"${context:pipe}\", env=\"$env\"} |~ \"$search\"",
                     "refId": "A",
                     "maxLines": 5000
                 }
@@ -509,7 +535,7 @@
             },
             "targets": [
                 {
-                    "expr": "{service=~\"api|scraper\", level=\"ERROR\"}",
+                    "expr": "{service=~\"api|scraper\", level=\"ERROR\", env=\"$env\"}",
                     "refId": "A",
                     "maxLines": 200
                 }
@@ -539,7 +565,7 @@
             },
             "targets": [
                 {
-                    "expr": "{service=\"api\", context=\"http\"} | json | request_id=~\"$request_id\"",
+                    "expr": "{service=\"api\", context=\"http\", env=\"$env\"} | json | request_id=~\"$request_id\"",
                     "refId": "A",
                     "maxLines": 200
                 }
@@ -569,7 +595,7 @@
             },
             "targets": [
                 {
-                    "expr": "{service=\"scraper\", context=\"job\"} | json | job_name=~\"${job_name:pipe}\"",
+                    "expr": "{service=\"scraper\", context=\"job\", env=\"$env\"} | json | job_name=~\"${job_name:pipe}\"",
                     "refId": "A",
                     "maxLines": 200
                 }

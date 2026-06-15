@@ -1,5 +1,6 @@
 import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 import { Queue, Worker } from 'bullmq'
+import { BullMQOtel } from 'bullmq-otel'
 import {
 	ScraperInSISAcademicSchedulesRequestScheduler,
 	ScraperInSISCatalogRequestScheduler,
@@ -18,8 +19,11 @@ import InSISService from '@api/Services/InSISService'
 
 // Queue & Worker Setup
 
+const bullmqTelemetry = new BullMQOtel({ tracerName: 'kreditozrouti-api' })
+
 const scraperRequestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
 	connection: redis.options,
+	telemetry: bullmqTelemetry,
 	defaultJobOptions: {
 		removeOnComplete: { count: 100 },
 		removeOnFail: { age: 86_400 }
@@ -27,11 +31,13 @@ const scraperRequestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
 })
 
 const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
-	connection: redis.options
+	connection: redis.options,
+	telemetry: bullmqTelemetry
 })
 
 const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, withJobLogger(ScraperResponseQueue, ScraperResponseHandler), {
 	connection: redis.options,
+	telemetry: bullmqTelemetry,
 	concurrency: 2,
 	maxStalledCount: 2 // allow 2 stall recoveries before permanent failure
 })
