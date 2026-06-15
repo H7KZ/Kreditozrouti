@@ -1,9 +1,7 @@
 import type { Faro } from '@grafana/faro-web-sdk'
 import type { App } from 'vue'
 import { createSession, getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk'
-
-// TracingInstrumentation from @grafana/faro-web-tracing intentionally omitted —
-// it requires a Tempo backend. We only route to Loki.
+import { TracingInstrumentation } from '@grafana/faro-web-tracing'
 
 let _faro: Faro | null = null
 
@@ -33,7 +31,7 @@ const faroModule = {
 				...getWebInstrumentations({
 					captureConsole: true,
 				}),
-				// TracingInstrumentation omitted — requires Tempo; we only have Loki.
+				new TracingInstrumentation(),
 			],
 		})
 
