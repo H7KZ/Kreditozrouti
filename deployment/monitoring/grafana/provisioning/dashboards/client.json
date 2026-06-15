@@ -7,6 +7,36 @@
         "from": "now-3h",
         "to": "now"
     },
+    "templating": {
+        "list": [
+            {
+                "type": "custom",
+                "name": "env",
+                "label": "Environment",
+                "query": "production,development",
+                "multi": false,
+                "includeAll": false,
+                "hide": 0,
+                "current": {
+                    "selected": true,
+                    "text": "production",
+                    "value": "production"
+                },
+                "options": [
+                    {
+                        "selected": true,
+                        "text": "production",
+                        "value": "production"
+                    },
+                    {
+                        "selected": false,
+                        "text": "development",
+                        "value": "development"
+                    }
+                ]
+            }
+        ]
+    },
     "panels": [
         {
             "id": 1,
@@ -24,7 +54,7 @@
             },
             "targets": [
                 {
-                    "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"exception\"}[1h]))",
+                    "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"exception\", env=\"$env\"}[1h]))",
                     "legendFormat": "errors",
                     "refId": "A"
                 }
@@ -77,7 +107,7 @@
             "datasource": {"type": "loki", "uid": "Loki"},
             "targets": [
                 {
-                    "expr": "count_over_time({kind=\"exception\", app=\"kreditozrouti\"}[1h])",
+                    "expr": "count_over_time({kind=\"exception\", app=\"kreditozrouti\", env=\"$env\"}[1h])",
                     "legendFormat": "errors",
                     "refId": "A"
                 }
@@ -118,7 +148,7 @@
             },
             "targets": [
                 {
-                    "expr": "sum(count_over_time({app=\"kreditozrouti\"}[1h]))",
+                    "expr": "sum(count_over_time({app=\"kreditozrouti\", env=\"$env\"}[1h]))",
                     "legendFormat": "events",
                     "refId": "A"
                 }
@@ -155,7 +185,7 @@
             "description": "Shows 1 when Faro has sent data in the last 5 minutes, 0 otherwise. Requires VITE_FARO_COLLECTOR_URL to be set.",
             "targets": [
                 {
-                    "expr": "count(count_over_time({app=\"kreditozrouti\"}[5m])) > 0 or vector(0)",
+                    "expr": "count(count_over_time({app=\"kreditozrouti\", env=\"$env\"}[5m])) > 0 or vector(0)",
                     "legendFormat": "active",
                     "refId": "A"
                 }
@@ -207,7 +237,7 @@
             },
             "targets": [
                 {
-                    "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"exception\"}[5m]))",
+                    "expr": "sum(count_over_time({app=\"kreditozrouti\", kind=\"exception\", env=\"$env\"}[5m]))",
                     "legendFormat": "errors / 5m",
                     "refId": "A"
                 }
@@ -238,7 +268,7 @@
             "datasource": {"type": "loki", "uid": "Loki"},
             "targets": [
                 {
-                    "expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\"} | logfmt | name=\"lcp\" | unwrap value [5m])",
+                    "expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"lcp\" | unwrap value [5m])",
                     "legendFormat": "LCP p75",
                     "refId": "A"
                 }
@@ -278,7 +308,7 @@
             },
             "targets": [
                 {
-                    "expr": "sum by (kind) (count_over_time({app=\"kreditozrouti\"}[5m]))",
+                    "expr": "sum by (kind) (count_over_time({app=\"kreditozrouti\", env=\"$env\"}[5m]))",
                     "legendFormat": "{{kind}}",
                     "refId": "A"
                 }
@@ -305,7 +335,7 @@
             },
             "targets": [
                 {
-                    "expr": "{app=\"kreditozrouti\", kind=\"exception\"}",
+                    "expr": "{app=\"kreditozrouti\", kind=\"exception\", env=\"$env\"}",
                     "refId": "A",
                     "maxLines": 100
                 }
@@ -331,7 +361,7 @@
             "datasource": {"type": "loki", "uid": "Loki"},
             "targets": [
                 {
-                    "expr": "{kind=\"log\", app=\"kreditozrouti\"} | logfmt | level =~ \"error|ERROR\"",
+                    "expr": "{kind=\"log\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | level =~ \"error|ERROR\"",
                     "legendFormat": "",
                     "refId": "A"
                 }
@@ -350,7 +380,7 @@
             "type": "stat",
             "gridPos": {"x": 0, "y": 40, "w": 6, "h": 4},
             "datasource": {"type": "loki", "uid": "Loki"},
-            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\"} | logfmt | name=\"cls\" | unwrap value [5m])", "legendFormat": "CLS p75", "refId": "A"}],
+            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"cls\" | unwrap value [5m])", "legendFormat": "CLS p75", "refId": "A"}],
             "fieldConfig": {"defaults": {"unit": "none", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 0.1}, {"color": "red", "value": 0.25}]}}, "overrides": []},
             "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
         },
@@ -360,7 +390,7 @@
             "type": "stat",
             "gridPos": {"x": 6, "y": 40, "w": 6, "h": 4},
             "datasource": {"type": "loki", "uid": "Loki"},
-            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\"} | logfmt | name=\"inp\" | unwrap value [5m])", "legendFormat": "INP p75", "refId": "A"}],
+            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"inp\" | unwrap value [5m])", "legendFormat": "INP p75", "refId": "A"}],
             "fieldConfig": {"defaults": {"unit": "ms", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 200}, {"color": "red", "value": 500}]}}, "overrides": []},
             "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
         },
@@ -370,7 +400,7 @@
             "type": "stat",
             "gridPos": {"x": 12, "y": 40, "w": 6, "h": 4},
             "datasource": {"type": "loki", "uid": "Loki"},
-            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\"} | logfmt | name=\"fcp\" | unwrap value [5m])", "legendFormat": "FCP p75", "refId": "A"}],
+            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"fcp\" | unwrap value [5m])", "legendFormat": "FCP p75", "refId": "A"}],
             "fieldConfig": {"defaults": {"unit": "ms", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1800}, {"color": "red", "value": 3000}]}}, "overrides": []},
             "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
         },
@@ -380,7 +410,7 @@
             "type": "stat",
             "gridPos": {"x": 18, "y": 40, "w": 6, "h": 4},
             "datasource": {"type": "loki", "uid": "Loki"},
-            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\"} | logfmt | name=\"ttfb\" | unwrap value [5m])", "legendFormat": "TTFB p75", "refId": "A"}],
+            "targets": [{"expr": "quantile_over_time(0.75, {kind=\"measurement\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | name=\"ttfb\" | unwrap value [5m])", "legendFormat": "TTFB p75", "refId": "A"}],
             "fieldConfig": {"defaults": {"unit": "ms", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 800}, {"color": "red", "value": 1800}]}}, "overrides": []},
             "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none"}
         }
