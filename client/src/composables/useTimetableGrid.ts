@@ -15,7 +15,7 @@ export interface OverlapInfo {
 export interface BlockStyle {
 	left: string
 	width: string
-	top: string
+	bottom: string
 	height: string
 }
 
@@ -58,6 +58,7 @@ export function useTimetableGrid(
 	options: UseTimetableGridOptions = {},
 ) {
 	const { rowHeight = 60, blockPadding = 2 } = options
+	const MIN_BLOCK_HEIGHT = 56
 	const { minutesToTime, calculateTimePosition, calculateTimeDuration } = useTimeUtils()
 
 	/**
@@ -132,26 +133,42 @@ export function useTimetableGrid(
 	})
 
 	/**
+	 * Computed row height per day — expands when overlapping blocks require more space.
+	 */
+	const rowHeightPerDay = computed(() => {
+		const map = new Map<InSISDay, number>()
+		for (const day of WEEKDAYS) {
+			const dayOverlaps = overlapCache.value.get(day)
+			let maxTotal = 1
+			if (dayOverlaps) {
+				for (const info of dayOverlaps.values()) {
+					if (info.total > maxTotal) maxTotal = info.total
+				}
+			}
+			const required = blockPadding + maxTotal * MIN_BLOCK_HEIGHT + blockPadding
+			map.set(day, Math.max(rowHeight, required))
+		}
+		return map
+	})
+
+	/**
 	 * Calculate style for a course block (position and size).
+	 * Blocks are bottom-anchored with a fixed minimum height.
 	 */
 	function getBlockStyle(unit: SelectedCourseUnit | ExtendedUnit, day: InSISDay): BlockStyle {
 		const left = calculateTimePosition(unit.timeFrom, TIME_CONFIG.START, TIME_CONFIG.END)
 		const width = calculateTimeDuration(unit.timeFrom, unit.timeTo, TIME_CONFIG.START, TIME_CONFIG.END)
 
-		// Get overlap info for this unit
 		const dayOverlaps = overlapCache.value.get(day)
 		const overlapInfo = dayOverlaps?.get(unit.slotId) ?? { index: 0, total: 1 }
 
-		// Calculate vertical position within the row
-		const availableHeight = rowHeight - blockPadding * 2
-		const blockHeight = availableHeight / overlapInfo.total
-		const topOffset = blockPadding + overlapInfo.index * blockHeight
+		const bottomOffset = blockPadding + overlapInfo.index * MIN_BLOCK_HEIGHT
 
 		return {
 			left: `${left}%`,
 			width: `${width}%`,
-			top: `${topOffset}px`,
-			height: `${blockHeight}px`,
+			bottom: `${bottomOffset}px`,
+			height: `${MIN_BLOCK_HEIGHT}px`,
 		}
 	}
 
@@ -203,6 +220,7 @@ export function useTimetableGrid(
 		getBlockStyle,
 		getOverlapInfo,
 		overlapCache,
+		rowHeightPerDay,
 
 		// Drag selection
 		getTimeFromX,

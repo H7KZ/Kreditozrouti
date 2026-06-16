@@ -190,6 +190,11 @@ function handleClick() {
 				{{ getUnitCourseTitle(unit) }}
 			</div>
 
+			<!-- Lecturer name -->
+			<p v-if="!isMerged && unit.lecturer" class="mt-0.5 shrink-0 truncate text-[10px] opacity-70">
+				{{ unit.lecturer }}
+			</p>
+
 			<!-- Time and room / date range for merged -->
 			<div class="mt-auto flex items-end justify-between gap-1 text-[10px]">
 				<span class="text-(--insis-gray-500)">
