@@ -12,6 +12,7 @@ import {
 	FacultyTable,
 	StudyPlanCourseTable
 } from '@api/Database/types'
+import { priorityOf } from '@shared/domain/studyPlan'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 
 export class CourseQueryService {
@@ -195,15 +196,25 @@ export class CourseQueryService {
 	/**
 	 * @param {number[]} courseIds - Array of course IDs.
 	 * @param {number[]} studyPlanIds - Array of study plan IDs to restrict the join.
-	 * @returns study_plan_course rows linking the given courses to the given study plans.
+	 * @returns study_plan_course rows linking the given courses to the given study plans, deduplicated to best row per course_id.
 	 */
-	static fetchStudyPlanCoursesByCourseIds(courseIds: number[], studyPlanIds: number[]) {
-		return mysql
+	static async fetchStudyPlanCoursesByCourseIds(courseIds: number[], studyPlanIds: number[]) {
+		const rows = await mysql
 			.selectFrom(`${StudyPlanCourseTable._table} as spc1`)
 			.selectAll('spc1')
 			.where('spc1.course_id', 'in', courseIds)
 			.where('spc1.study_plan_id', 'in', studyPlanIds)
 			.execute()
+
+		// Keep only the best-priority row per course_id so CourseInfo.vue shows one badge.
+		const best = new Map<number, typeof rows[number]>()
+		for (const row of rows) {
+			const current = best.get(row.course_id)
+			if (!current || priorityOf(row.group, row.category) < priorityOf(current.group, current.category)) {
+				best.set(row.course_id, row)
+			}
+		}
+		return [...best.values()]
 	}
 
 	private static resolveSortColumn(sortBy?: string, tableAlias = 'c1'): ReturnType<typeof sql.ref> {
