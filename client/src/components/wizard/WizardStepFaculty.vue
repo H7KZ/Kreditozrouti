@@ -60,7 +60,7 @@ function handleSelect(facultyId: string) {
 							{{ getFacultyLabel(faculty.value as string) }}
 						</div>
 					</div>
-					<div class="text-sm text-(--insis-gray-500)">{{ faculty.count }} {{ $t('common.plans') }}</div>
+					<div class="shrink-0 text-sm text-(--insis-gray-500)">{{ faculty.count }} {{ $t('common.plans') }}</div>
 				</div>
 			</button>
 		</div>

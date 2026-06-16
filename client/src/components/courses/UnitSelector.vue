@@ -172,13 +172,13 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 		<!-- Conflict filter toggle -->
 		<div
 			v-if="hasAnyConflicts"
-			class="mb-3 flex items-center justify-between rounded border border-(--insis-warning-border) bg-(--insis-warning-light) px-3 py-2"
+			class="mb-3 flex items-center justify-between rounded border border-(--insis-danger-border) bg-(--insis-danger-light) px-3 py-2"
 		>
-			<div class="flex items-center gap-2 text-sm text-(--insis-warning)">
+			<div class="flex items-center gap-2 text-sm text-(--insis-danger)">
 				<IconOctagonAlert class="h-4 w-4 shrink-0" aria-hidden="true" />
 				<span>{{ $t('components.courses.CourseRowExpanded.slotsWithConflicts', { count: conflictingUnitCount }) }}</span>
 			</div>
-			<label class="flex cursor-pointer items-center gap-1.5 text-xs text-(--insis-warning) hover:text-(--insis-warning-dark)">
+			<label class="flex cursor-pointer items-center gap-1.5 text-xs text-(--insis-danger)">
 				<input
 					v-model="hideConflictingUnits"
 					type="checkbox"
