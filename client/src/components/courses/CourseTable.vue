@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { CourseSortBy } from '@client/types'
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import CourseRow from '@client/components/courses/CourseRow.vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
+import CourseStatusIndicator from '@client/components/courses/CourseStatusIndicator.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
@@ -37,6 +38,8 @@ function handleSort(key: CourseSortBy) {
 	coursesStore.fetchCourses()
 }
 
+// Mobile card helpers (desktop rows are handled by CourseRow.vue)
+
 function handleRowClick(courseId: number) {
 	coursesStore.toggleCourseExpansion(courseId)
 }
@@ -45,24 +48,21 @@ function isExpanded(courseId: number): boolean {
 	return coursesStore.isCourseExpanded(courseId)
 }
 
-function hasSelectedUnits(courseId: number): boolean {
-	return timetableStore.hasCourseSelected(courseId)
-}
-
-function hasMissingUnitTypes(courseId: number): boolean {
-	return timetableStore.courseHasMissingUnitTypes(courseId)
-}
-
-function hasCourseConflict(courseId: number): boolean {
-	return timetableStore.courseStatuses.get(courseId)?.status === 'conflict'
-}
-
-function hasCourseCampusConflict(courseId: number): boolean {
-	return timetableStore.courseStatuses.get(courseId)?.status === 'campus-conflict'
-}
-
-function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
+function getCourseScheduleSummary(course: { units: Parameters<typeof getScheduleSummary>[0] }): string {
 	return getScheduleSummary(course.units)
+}
+
+function getMobileStatus(courseId: number) {
+	const status = timetableStore.getCourseStatus(courseId)?.status
+	return {
+		status,
+		isSelected: status !== undefined,
+		isIncomplete: status === 'incomplete',
+		hasConflict: status === 'conflict',
+		hasCampusConflict: status === 'campus-conflict',
+		borderClass:
+			status === 'conflict' ? 'border-(--insis-danger-border)' : status !== undefined ? 'border-(--insis-blue-lighter)' : 'border-(--insis-border)',
+	}
 }
 </script>
 
@@ -121,86 +121,11 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 				</template>
 
 				<template v-else>
-					<template v-for="course in coursesStore.courses" :key="course.id">
-						<!-- Main Row -->
-						<tr
-							:class="[
-								'group/row insis-table-row-clickable focus-within:bg-(--insis-surface-2) focus-within:outline-none',
-								isExpanded(course.id) && 'row-expanded',
-								hasSelectedUnits(course.id) && 'row-in-timetable',
-							]"
-							role="button"
-							:tabindex="0"
-							:aria-expanded="isExpanded(course.id)"
-							:aria-label="$t('components.courses.CourseTable.rowLabel', { code: course.ident, title: getCourseTitle(course) })"
-							@click="handleRowClick(course.id)"
-							@keydown.enter="handleRowClick(course.id)"
-							@keydown.space.prevent="handleRowClick(course.id)"
-						>
-							<!-- Ident -->
-							<td>
-								<span class="insis-course-code font-medium">{{ course.ident }}</span>
-							</td>
-
-							<!-- Title -->
-							<td>
-								<div class="flex min-w-0 items-center gap-2">
-									<span :title="getCourseTitle(course)" class="truncate">{{ getCourseTitle(course) }}</span>
-									<span
-										v-if="hasSelectedUnits(course.id) && !hasMissingUnitTypes(course.id)"
-										class="insis-badge insis-badge-success shrink-0"
-									>
-										{{ $t('components.courses.CourseTable.inTimetable') }}
-									</span>
-									<span v-if="hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-amber shrink-0">
-										{{ $t('components.courses.CourseTable.missingUnitTypes') }}
-									</span>
-									<span v-if="hasCourseConflict(course.id)" class="insis-badge insis-badge-danger shrink-0">
-										{{ $t('components.courses.CourseTable.conflictTag') }}
-									</span>
-									<span v-if="hasCourseCampusConflict(course.id)" class="insis-badge insis-badge-amber shrink-0">
-										{{ $t('components.courses.CourseTable.campusConflictTag') }}
-									</span>
-								</div>
-							</td>
-
-							<!-- Faculty -->
-							<td class="text-[12px] text-(--insis-text-3)">
-								{{ course.faculty_id ? getFacultyLabel(course.faculty_id) : '-' }}
-							</td>
-
-							<!-- ECTS -->
-							<td class="text-center font-medium">{{ course.ects ?? '-' }}</td>
-
-							<!-- Completion -->
-							<td class="text-[12px] text-(--insis-text-2)">
-								{{ course.mode_of_completion ? getCompletionLabel(course.mode_of_completion) : '-' }}
-							</td>
-
-							<!-- Schedule -->
-							<td class="text-[11.5px] text-(--insis-text-3)">{{ getCourseScheduleSummary(course) }}</td>
-
-							<!-- Actions: expand chevron -->
-							<td class="text-right">
-								<div class="flex items-center justify-end gap-1">
-									<IconChevronDown
-										:class="[
-											'inline h-3.5 w-3.5 shrink-0 text-(--insis-text-3) transition-transform duration-200',
-											isExpanded(course.id) && 'rotate-180',
-										]"
-										aria-hidden="true"
-									/>
-								</div>
-							</td>
-						</tr>
-
-						<!-- Expanded Row -->
-						<tr v-if="isExpanded(course.id)">
-							<td :colspan="columns.length" class="p-0" style="border-top: 2px solid var(--insis-blue-light)">
-								<CourseRowExpanded :course="course" />
-							</td>
-						</tr>
-					</template>
+					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length">
+						<template #status-indicator>
+							<CourseStatusIndicator :course-id="course.id" />
+						</template>
+					</CourseRow>
 				</template>
 			</tbody>
 		</table>
@@ -225,13 +150,11 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 			<template v-for="course in coursesStore.courses" :key="course.id">
 				<!-- Card header -->
 				<div
+					v-for="(ms, _i) in [getMobileStatus(course.id)]"
+					:key="_i"
 					:class="[
 						'cursor-pointer rounded border bg-(--insis-surface) px-3 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-(--insis-blue) active:bg-(--insis-surface-2)',
-						hasCourseConflict(course.id)
-							? 'border-(--insis-danger-border)'
-							: hasSelectedUnits(course.id)
-								? 'border-(--insis-blue-lighter)'
-								: 'border-(--insis-border)',
+						ms.borderClass,
 					]"
 					role="button"
 					:tabindex="0"
@@ -263,16 +186,16 @@ function getCourseScheduleSummary(course: CourseWithRelationsDTO): string {
 						</div>
 						<!-- Status badges + chevron -->
 						<div class="flex shrink-0 flex-col items-end gap-1">
-							<span v-if="hasSelectedUnits(course.id) && !hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-success text-[10px]">
+							<span v-if="ms.status === 'selected'" class="insis-badge insis-badge-success text-[10px]">
 								{{ $t('components.courses.CourseTable.inTimetable') }}
 							</span>
-							<span v-if="hasMissingUnitTypes(course.id)" class="insis-badge insis-badge-amber text-[10px]">
+							<span v-if="ms.isIncomplete" class="insis-badge insis-badge-amber text-[10px]">
 								{{ $t('components.courses.CourseTable.missingUnitTypes') }}
 							</span>
-							<span v-if="hasCourseConflict(course.id)" class="insis-badge insis-badge-danger text-[10px]">
+							<span v-if="ms.hasConflict" class="insis-badge insis-badge-danger text-[10px]">
 								{{ $t('components.courses.CourseTable.conflictTag') }}
 							</span>
-							<span v-if="hasCourseCampusConflict(course.id)" class="insis-badge insis-badge-amber text-[10px]">
+							<span v-if="ms.hasCampusConflict" class="insis-badge insis-badge-amber text-[10px]">
 								{{ $t('components.courses.CourseTable.campusConflictTag') }}
 							</span>
 							<IconChevronDown
