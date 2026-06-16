@@ -150,8 +150,8 @@ function getMobileStatus(courseId: number) {
 			<template v-for="course in coursesStore.courses" :key="course.id">
 				<!-- Card header -->
 				<div
-					v-for="ms in [getMobileStatus(course.id)]"
-					:key="course.id"
+					v-for="(ms, _i) in [getMobileStatus(course.id)]"
+					:key="_i"
 					:class="[
 						'cursor-pointer rounded border bg-(--insis-surface) px-3 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-(--insis-blue) active:bg-(--insis-surface-2)',
 						ms.borderClass,
@@ -180,9 +180,9 @@ function getMobileStatus(courseId: number) {
 								<span v-if="course.mode_of_completion">{{ getCompletionLabel(course.mode_of_completion) }}</span>
 							</div>
 							<!-- Schedule -->
-							<template v-for="summary in [getCourseScheduleSummary(course)]" :key="0">
-								<div v-if="summary" class="mt-0.5 text-[11px] text-(--insis-text-3)">{{ summary }}</div>
-							</template>
+							<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-[11px] text-(--insis-text-3)">
+								{{ getCourseScheduleSummary(course) }}
+							</div>
 						</div>
 						<!-- Status badges + chevron -->
 						<div class="flex shrink-0 flex-col items-end gap-1">
