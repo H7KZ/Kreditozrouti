@@ -3,7 +3,10 @@ import { NextFunction, Request, Response } from 'express'
 import { redis } from '@api/clients'
 
 function buildCacheKey(req: Request): string {
-	const body = JSON.stringify(req.body ?? {}, Object.keys(req.body ?? {}).sort())
+	// ponytail: replacer sorts keys at every nesting level so nested filter props (day, time_from, etc.) are included
+	const replacer = (_key: string, value: unknown) =>
+		value && typeof value === 'object' && !Array.isArray(value) ? Object.fromEntries(Object.entries(value as Record<string, unknown>).sort()) : value
+	const body = JSON.stringify(req.body ?? {}, replacer)
 	const hash = createHash('sha256').update(`${req.method}:${req.path}:${body}`).digest('hex')
 	return `cache:${hash}`
 }
