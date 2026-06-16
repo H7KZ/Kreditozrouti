@@ -247,7 +247,7 @@ function handleCloseMobileFilter() {
 					{{ $t('components.filters.FilterPanel.completedCourses') }}
 				</span>
 				<span
-					class="text-xs text-(--insis-gray-500)"
+					class="text-end text-xs text-(--insis-gray-500)"
 					:aria-label="$t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount })"
 				>
 					{{ $t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount }) }}
@@ -273,7 +273,7 @@ function handleCloseMobileFilter() {
 					{{ $t('components.filters.FilterPanel.timetableConflicts') }}
 				</span>
 				<span
-					class="text-xs text-(--insis-gray-500)"
+					class="text-end text-xs text-(--insis-gray-500)"
 					:aria-label="$t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount })"
 				>
 					{{ $t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount }) }}

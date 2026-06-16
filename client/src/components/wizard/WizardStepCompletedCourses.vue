@@ -139,7 +139,7 @@ function clearSearch() {
 				<IconSearch class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-(--insis-gray-500)" />
 				<input
 					type="text"
-					class="insis-input pl-9 pr-8"
+					class="insis-input pr-8 pl-9"
 					:placeholder="$t('components.wizard.WizardStepCompletedCourses.searchPlaceholder')"
 					:value="localSearch"
 					@input="handleSearchInput"
@@ -180,7 +180,7 @@ function clearSearch() {
 		</div>
 
 		<!-- Course list grouped by category -->
-		<div v-else-if="sortedEntries.length > 0" class="max-h-[450px] overflow-y-auto space-y-4 pr-1">
+		<div v-else-if="sortedEntries.length > 0" class="max-h-[450px] space-y-4 overflow-y-auto pr-1">
 			<div v-for="[category, courses] in sortedEntries" :key="category" class="rounded border border-(--insis-border) bg-(--insis-surface)">
 				<!-- Category header -->
 				<button

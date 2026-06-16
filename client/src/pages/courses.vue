@@ -166,7 +166,7 @@ async function fetchNextCoursesPage(page: () => void) {
 			<aside
 				class="shrink-0 flex-col overflow-hidden border-r border-(--insis-border) bg-(--insis-surface)"
 				:class="{
-					'hidden lg:flex lg:w-[268px] lg:min-w-[268px]': !uiStore.mobileFilterOpen,
+					'hidden lg:flex lg:w-[280px] lg:min-w-[290px] xl:w-[300px] xl:min-w-[300px]': !uiStore.mobileFilterOpen,
 					'fixed inset-0 z-50 flex w-full sm:w-80 sm:min-w-80': uiStore.mobileFilterOpen,
 				}"
 			>
