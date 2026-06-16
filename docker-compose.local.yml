@@ -243,6 +243,9 @@ services:
     image: grafana/alloy:latest
     container_name: kreditozrouti-alloy
 
+    environment:
+      - FARO_ALLOWED_ORIGIN=http://localhost:45173
+
     command:
       - run
       - /etc/alloy/config.alloy

@@ -18,4 +18,5 @@ export interface PersistedWizardState {
 	selectedStudyPlans: SelectedStudyPlan[]
 	completedCourseIdents: string[]
 	completed: boolean
+	currentStep?: number
 }

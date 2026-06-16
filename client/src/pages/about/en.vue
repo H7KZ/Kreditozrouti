@@ -4,7 +4,6 @@ import { RouterLink, useRouter } from 'vue-router'
 import { useHead, useSeoMeta } from '@unhead/vue'
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import ThemeToggle from '@client/components/common/ThemeToggle.vue'
-import { Button } from '@client/components/ui/button'
 import { i18n } from '@client/i18n'
 import IconBookmark from '~icons/lucide/bookmark'
 import IconBuilding2 from '~icons/lucide/building-2'
@@ -126,9 +125,7 @@ useHead({
 					Kreditožrouti replaces hours of tab-switching in InSIS. It shows all courses from your study plan in one place, detects conflicts
 					automatically, and lets you build your timetable before enrollment opens.
 				</p>
-				<Button as-child size="lg">
-					<RouterLink to="/">Launch the app →</RouterLink>
-				</Button>
+				<RouterLink to="/" class="insis-btn-primary px-6 py-2.5 text-sm">Launch the app →</RouterLink>
 			</section>
 
 			<!-- How it works -->
@@ -261,9 +258,7 @@ useHead({
 			<section class="rounded-lg border border-(--insis-border) bg-(--insis-surface) p-8 text-center">
 				<h2 class="mb-3 text-xl font-semibold text-(--insis-blue)">Ready for enrollment?</h2>
 				<p class="mb-6 text-sm text-(--insis-text-2)">No registration, no login. Just pick your study plan and start.</p>
-				<Button as-child size="lg">
-					<RouterLink to="/">Launch Kreditožrouti →</RouterLink>
-				</Button>
+				<RouterLink to="/" class="insis-btn-primary px-6 py-2.5 text-sm">Launch Kreditožrouti →</RouterLink>
 			</section>
 		</main>
 	</div>

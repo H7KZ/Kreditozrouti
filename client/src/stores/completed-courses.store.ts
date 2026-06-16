@@ -1,6 +1,8 @@
+import type { InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@shared/domain/insis'
 import type { CourseDTO, StudyPlanWithRelationsDTO } from '@shared/http/responses'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { priorityOf } from '@shared/domain/studyPlan'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { useWizardDataStore } from '@client/stores/wizard-data.store'
 import { useWizardStore } from '@client/stores/wizard.store'
@@ -54,14 +56,17 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 	const courseIdentToCategories = computed(() => {
 		const wizardStore = useWizardStore()
 		const wizardDataStore = useWizardDataStore()
-		const map = new Map<string, Set<string>>()
+		const map = new Map<string, { group: InSISStudyPlanCourseGroup; category: InSISStudyPlanCourseCategory }>()
 		const selectedIds = new Set(wizardStore.studyPlanIds)
 
 		for (const plan of wizardDataStore.studyPlans) {
 			if (!selectedIds.has(plan.id)) continue
 			for (const spc of plan.courses ?? []) {
-				if (!map.has(spc.course_ident)) map.set(spc.course_ident, new Set())
-				map.get(spc.course_ident)!.add(spc.category)
+				const current = map.get(spc.course_ident)
+				const score = priorityOf(spc.group, spc.category)
+				if (!current || score < priorityOf(current.group, current.category)) {
+					map.set(spc.course_ident, { group: spc.group, category: spc.category })
+				}
 			}
 		}
 
@@ -78,8 +83,8 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 
 		if (completedCoursesCategoryFilter.value.length > 0) {
 			courses = courses.filter((c: CourseDTO) => {
-				const cats = identMap.get(c.ident)
-				return cats && completedCoursesCategoryFilter.value.some((cat) => cats.has(cat))
+				const best = identMap.get(c.ident)
+				return best !== undefined && completedCoursesCategoryFilter.value.includes(best.category)
 			})
 		}
 
@@ -102,18 +107,17 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 		const identMap = courseIdentToCategories.value
 
 		for (const course of filteredStudyPlanCourses.value) {
-			const categories = identMap.get(course.ident)
+			const best = identMap.get(course.ident)
 
-			if (!categories || categories.size === 0) {
+			if (!best) {
 				if (!map.has('uncategorized')) map.set('uncategorized', [])
 				map.get('uncategorized')!.push(course)
 				continue
 			}
 
-			for (const category of categories) {
-				if (!map.has(category)) map.set(category, [])
-				map.get(category)!.push(course)
-			}
+			const { category } = best
+			if (!map.has(category)) map.set(category, [])
+			map.get(category)!.push(course)
 		}
 
 		return map
@@ -121,8 +125,8 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 
 	const availableCourseCategories = computed(() => {
 		const categories = new Set<string>()
-		for (const cats of courseIdentToCategories.value.values()) {
-			for (const cat of cats) categories.add(cat)
+		for (const best of courseIdentToCategories.value.values()) {
+			categories.add(best.category)
 		}
 		const priority = ['compulsory', 'elective', 'language', 'state_exam', 'physical_education', 'beyond_scope']
 		return [...categories].sort((a, b) => {
