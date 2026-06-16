@@ -1,6 +1,7 @@
 import { createHash } from 'crypto'
 import { NextFunction, Request, Response } from 'express'
 import { redis } from '@api/clients'
+import config from '@api/Config/Config'
 
 function buildCacheKey(req: Request): string {
 	// ponytail: replacer sorts keys at every nesting level so nested filter props (day, time_from, etc.) are included
@@ -13,6 +14,11 @@ function buildCacheKey(req: Request): string {
 
 export function withCache(ttl: number) {
 	return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+		if (config.cacheDisabled) {
+			next()
+			return
+		}
+
 		const key = buildCacheKey(req)
 
 		try {

@@ -56,6 +56,8 @@ interface Config {
 		uri: string
 	}
 
+	cacheDisabled: boolean
+
 	isEmailEnabled: () => boolean
 	isEnvProduction: () => boolean
 	isEnvDevelopment: () => boolean
@@ -92,6 +94,8 @@ const config: Config = {
 	mysql: {
 		uri: process.env.MYSQL_URI ?? ''
 	},
+
+	cacheDisabled: process.env.API_CACHE_DISABLED === 'true',
 
 	isEmailEnabled: () => config.google.user.length > 0 && config.google.appPassword.length > 0,
 	isEnvProduction: () => config.env === 'production' || config.env === 'prod',
