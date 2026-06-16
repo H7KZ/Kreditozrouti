@@ -4,7 +4,7 @@ import type { TimeSelection } from '@shared/domain/time'
 import { computed, ref, watch } from 'vue'
 import { useTimeUtils } from '@client/composables'
 import { WEEKDAYS } from '@client/constants/timetable'
-import { useCoursesStore, useFiltersStore } from '@client/stores'
+import { useCoursesStore, useFiltersStore, useUIStore } from '@client/stores'
 import IconPlus from '~icons/lucide/plus'
 import IconX from '~icons/lucide/x'
 
@@ -17,6 +17,7 @@ import IconX from '~icons/lucide/x'
 
 const coursesStore = useCoursesStore()
 const filtersStore = useFiltersStore()
+const uiStore = useUIStore()
 
 // Composables
 const { minutesToTime, timeToMinutes, formatTimeSelection, generateTimeOptions } = useTimeUtils()
@@ -91,6 +92,7 @@ function handleAddTimeFilter() {
 	}
 
 	filtersStore.addIncludeTime(selection)
+	uiStore.switchToListView()
 	coursesStore.fetchCourses()
 
 	// Reset form
@@ -104,12 +106,14 @@ function handleRemoveTimeFilter(type: 'include' | 'exclude', index: number) {
 	} else {
 		filtersStore.removeExcludeTime(index)
 	}
+	uiStore.switchToListView()
 	coursesStore.fetchCourses()
 }
 
 function handleClearAllTimeFilers() {
 	filtersStore.clearIncludeTimes()
 	filtersStore.clearExcludeTimes()
+	uiStore.switchToListView()
 	coursesStore.fetchCourses()
 }
 

@@ -73,6 +73,7 @@ export class CourseQueryService {
 			.selectFrom(`${CourseTable._table} as c1`)
 			.innerJoin(`${StudyPlanCourseTable._table} as spc1`, 'c1.id', 'spc1.course_id')
 			.selectAll('c1')
+			.distinct()
 			.where('spc1.study_plan_id', 'in', studyPlanIds)
 			.where('c1.id', '=', eb =>
 				eb
