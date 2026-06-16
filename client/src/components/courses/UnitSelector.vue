@@ -247,11 +247,10 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 						:key="unit.id"
 						class="rounded border text-sm transition-colors"
 						:class="{
-							'border-(--insis-success) bg-(--insis-success-light)': isUnitSelected(unit.id),
-							'border-(--insis-danger-border) bg-(--insis-danger-light)':
-								!isUnitSelected(unit.id) && unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
-							'border-(--insis-warning-border) bg-(--insis-warning-light)':
-								!isUnitSelected(unit.id) && unitHasCampusConflictsOnly(unit) && !unitHasConflicts(unit) && !unitMatchesTimeFilter(unit),
+							'border-(--insis-danger-border) bg-(--insis-danger-light)': unitHasConflicts(unit),
+							'border-(--insis-warning-border) bg-(--insis-warning-light)': !unitHasConflicts(unit) && unitHasCampusConflictsOnly(unit),
+							'border-(--insis-success) bg-(--insis-success-light)':
+								isUnitSelected(unit.id) && !unitHasConflicts(unit) && !unitHasCampusConflictsOnly(unit),
 							'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue)':
 								!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit) && !unitHasConflicts(unit) && !unitHasCampusConflictsOnly(unit),
 							'bg-(--insis-blue-light) ring-1 ring-(--insis-blue)':

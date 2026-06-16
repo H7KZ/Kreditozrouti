@@ -51,7 +51,7 @@ function handleSelect(facultyId: string) {
 				]"
 				@click="handleSelect(faculty.value as string)"
 			>
-				<div class="flex items-center justify-between">
+				<div class="flex items-center justify-between gap-4">
 					<div>
 						<div class="font-medium text-(--insis-gray-900)">
 							{{ faculty.value }}
