@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CourseRow from '@client/components/courses/CourseRow.vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
+import CourseStatusIndicator from '@client/components/courses/CourseStatusIndicator.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
@@ -135,7 +136,11 @@ function mobileHasCampusConflict(courseId: number): boolean {
 						:key="course.id"
 						:course="course"
 						:colspan="columns.length"
-					/>
+					>
+						<template #status-indicator>
+							<CourseStatusIndicator :course-id="course.id" />
+						</template>
+					</CourseRow>
 				</template>
 			</tbody>
 		</table>
