@@ -191,6 +191,18 @@ export class CourseFilterBuilder {
 		// Study plan filters
 		if (filters.study_plan_ids?.length && !['study_plan_id', 'study_plan_ids'].includes(ignore!)) {
 			query = query.where('spc1.study_plan_id', 'in', filters.study_plan_ids)
+			// Deduplicate: when same ident appears across multiple study plans (different scraped versions),
+			// keep only the latest version (MAX id per ident).
+			query = query.where(eb =>
+				eb('c1.id', '=', eb2 =>
+					eb2
+						.selectFrom(`${CourseTable._table} as c_dedup`)
+						.innerJoin(`${StudyPlanCourseTable._table} as spc_dedup`, 'c_dedup.id', 'spc_dedup.course_id')
+						.select(eb3 => eb3.fn.max('c_dedup.id').as('id'))
+						.where('spc_dedup.study_plan_id', 'in', filters.study_plan_ids!)
+						.whereRef('c_dedup.ident', '=', 'c1.ident')
+				)
+			)
 		}
 
 		if (filters.groups?.length && !['groups'].includes(ignore!)) {
