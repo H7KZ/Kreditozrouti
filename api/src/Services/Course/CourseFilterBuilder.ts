@@ -153,7 +153,7 @@ export class CourseFilterBuilder {
 				eb.or(
 					filters
 						.include_times!.filter(t => t.day !== undefined)
-						.map(exc => eb.and([eb('cus1.day', '=', exc.day!), eb('cus1.time_from', '>=', exc.time_from), eb('cus1.time_to', '<=', exc.time_to)]))
+						.map(exc => eb.and([eb('cus1.day', '=', exc.day!), eb('cus1.time_from', '<', exc.time_to), eb('cus1.time_to', '>', exc.time_from)]))
 				)
 			)
 		}
