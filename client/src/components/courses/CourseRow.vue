@@ -20,30 +20,19 @@ const timetableStore = useTimetableStore()
 const { getCourseTitle, getFacultyLabel, getCompletionLabel } = useCourseLabels()
 const { getScheduleSummary } = useScheduleSummary()
 
-// ── Status ─────────────────────────────────────────────────────────────────
-
-/** Full CourseStatus for this course, or undefined if not in the timetable. */
 const courseStatus = computed<CourseStatus | undefined>(() => timetableStore.getCourseStatus(props.course.id))
 
-/** Whether the course has any selected units. */
-const isSelected = computed(() => timetableStore.hasCourseSelected(props.course.id))
+const isSelected = computed(() => courseStatus.value !== undefined)
 
-/** Whether the course has a hard time conflict. */
 const hasConflict = computed(() => courseStatus.value?.status === 'conflict')
 
-/** Whether the course has a campus travel-time conflict. */
 const hasCampusConflict = computed(() => courseStatus.value?.status === 'campus-conflict')
 
-/** Whether the course is missing required unit types (incomplete selection). */
 const isIncomplete = computed(() => courseStatus.value?.status === 'incomplete')
-
-// ── Row state ───────────────────────────────────────────────────────────────
 
 const isExpanded = computed(() => coursesStore.isCourseExpanded(props.course.id))
 
 const scheduleSummary = computed(() => getScheduleSummary(props.course.units))
-
-// ── Handlers ────────────────────────────────────────────────────────────────
 
 function handleRowClick() {
 	coursesStore.toggleCourseExpansion(props.course.id)
@@ -84,20 +73,8 @@ function handleRowClick() {
 				-->
 				<slot name="status-indicator" v-bind="{ courseStatus, isSelected, hasConflict, hasCampusConflict, isIncomplete }" />
 
-				<span
-					v-if="isSelected && !isIncomplete"
-					class="insis-badge insis-badge-success shrink-0"
-				>
+				<span v-if="courseStatus?.status === 'selected'" class="insis-badge insis-badge-success shrink-0">
 					{{ $t('components.courses.CourseTable.inTimetable') }}
-				</span>
-				<span v-if="isIncomplete" class="insis-badge insis-badge-amber shrink-0">
-					{{ $t('components.courses.CourseTable.missingUnitTypes') }}
-				</span>
-				<span v-if="hasConflict" class="insis-badge insis-badge-danger shrink-0">
-					{{ $t('components.courses.CourseTable.conflictTag') }}
-				</span>
-				<span v-if="hasCampusConflict" class="insis-badge insis-badge-amber shrink-0">
-					{{ $t('components.courses.CourseTable.campusConflictTag') }}
 				</span>
 			</div>
 		</td>
@@ -122,10 +99,7 @@ function handleRowClick() {
 		<td class="text-right">
 			<div class="flex items-center justify-end gap-1">
 				<IconChevronDown
-					:class="[
-						'inline h-3.5 w-3.5 shrink-0 text-(--insis-text-3) transition-transform duration-200',
-						isExpanded && 'rotate-180',
-					]"
+					:class="['inline h-3.5 w-3.5 shrink-0 text-(--insis-text-3) transition-transform duration-200', isExpanded && 'rotate-180']"
 					aria-hidden="true"
 				/>
 			</div>

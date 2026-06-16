@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useTimetableStore } from '@client/stores'
 
 interface Props {
@@ -8,15 +9,15 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const { t } = useI18n()
 const timetableStore = useTimetableStore()
 
 const selectedUnits = computed(() => timetableStore.unitsByCourse.get(props.courseId) ?? [])
 
-const conflictingUnits = computed(() =>
-	selectedUnits.value.filter((u) =>
-		timetableStore.conflicts.some(([a, b]) => a.unitId === u.unitId || b.unitId === u.unitId),
-	),
-)
+const conflictingUnits = computed(() => {
+	const allConflicts = [...timetableStore.conflicts, ...timetableStore.campusConflicts]
+	return selectedUnits.value.filter((u) => allConflicts.some(([a, b]) => a.slotId === u.slotId || b.slotId === u.slotId))
+})
 
 const totalSelected = computed(() => selectedUnits.value.length)
 
@@ -37,10 +38,8 @@ const hasCampusConflict = computed(() => status.value?.status === 'campus-confli
 		<span
 			v-if="hasConflict || hasCampusConflict"
 			:class="[
-				'inline-flex items-center rounded px-1 py-0.5 text-[10px] font-medium leading-none',
-				hasConflict
-					? 'bg-(--insis-danger-light) text-(--insis-danger)'
-					: 'bg-(--insis-warning-light) text-(--insis-warning)',
+				'inline-flex items-center rounded px-1 py-0.5 text-[10px] leading-none font-medium',
+				hasConflict ? 'bg-(--insis-danger-light) text-(--insis-danger)' : 'bg-(--insis-warning-light) text-(--insis-warning)',
 			]"
 		>
 			{{ conflictCount }}/{{ totalSelected }}
@@ -49,7 +48,7 @@ const hasCampusConflict = computed(() => status.value?.status === 'campus-confli
 		<span
 			v-else-if="isIncomplete"
 			class="inline-block h-2 w-2 animate-pulse rounded-full bg-amber-400"
-			title="Course incomplete — missing unit type"
+			:title="t('components.courses.CourseTable.missingUnitTypes')"
 		/>
 	</span>
 </template>

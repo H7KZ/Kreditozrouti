@@ -38,7 +38,7 @@ function handleSort(key: CourseSortBy) {
 	coursesStore.fetchCourses()
 }
 
-// ── Mobile card helpers (desktop rows are handled by CourseRow.vue) ─────────
+// Mobile card helpers (desktop rows are handled by CourseRow.vue)
 
 function handleRowClick(courseId: number) {
 	coursesStore.toggleCourseExpansion(courseId)
@@ -52,27 +52,17 @@ function getCourseScheduleSummary(course: { units: Parameters<typeof getSchedule
 	return getScheduleSummary(course.units)
 }
 
-function mobileCardBorderClass(courseId: number): string {
+function getMobileStatus(courseId: number) {
 	const status = timetableStore.getCourseStatus(courseId)?.status
-	if (status === 'conflict') return 'border-(--insis-danger-border)'
-	if (timetableStore.hasCourseSelected(courseId)) return 'border-(--insis-blue-lighter)'
-	return 'border-(--insis-border)'
-}
-
-function mobileHasSelectedUnits(courseId: number): boolean {
-	return timetableStore.hasCourseSelected(courseId)
-}
-
-function mobileIsIncomplete(courseId: number): boolean {
-	return timetableStore.getCourseStatus(courseId)?.status === 'incomplete'
-}
-
-function mobileHasConflict(courseId: number): boolean {
-	return timetableStore.getCourseStatus(courseId)?.status === 'conflict'
-}
-
-function mobileHasCampusConflict(courseId: number): boolean {
-	return timetableStore.getCourseStatus(courseId)?.status === 'campus-conflict'
+	return {
+		status,
+		isSelected: status !== undefined,
+		isIncomplete: status === 'incomplete',
+		hasConflict: status === 'conflict',
+		hasCampusConflict: status === 'campus-conflict',
+		borderClass:
+			status === 'conflict' ? 'border-(--insis-danger-border)' : status !== undefined ? 'border-(--insis-blue-lighter)' : 'border-(--insis-border)',
+	}
 }
 </script>
 
@@ -131,12 +121,7 @@ function mobileHasCampusConflict(courseId: number): boolean {
 				</template>
 
 				<template v-else>
-					<CourseRow
-						v-for="course in coursesStore.courses"
-						:key="course.id"
-						:course="course"
-						:colspan="columns.length"
-					>
+					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length">
 						<template #status-indicator>
 							<CourseStatusIndicator :course-id="course.id" />
 						</template>
@@ -165,9 +150,11 @@ function mobileHasCampusConflict(courseId: number): boolean {
 			<template v-for="course in coursesStore.courses" :key="course.id">
 				<!-- Card header -->
 				<div
+					v-for="ms in [getMobileStatus(course.id)]"
+					:key="course.id"
 					:class="[
 						'cursor-pointer rounded border bg-(--insis-surface) px-3 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-(--insis-blue) active:bg-(--insis-surface-2)',
-						mobileCardBorderClass(course.id),
+						ms.borderClass,
 					]"
 					role="button"
 					:tabindex="0"
@@ -193,22 +180,22 @@ function mobileHasCampusConflict(courseId: number): boolean {
 								<span v-if="course.mode_of_completion">{{ getCompletionLabel(course.mode_of_completion) }}</span>
 							</div>
 							<!-- Schedule -->
-							<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-[11px] text-(--insis-text-3)">
-								{{ getCourseScheduleSummary(course) }}
-							</div>
+							<template v-for="summary in [getCourseScheduleSummary(course)]" :key="0">
+								<div v-if="summary" class="mt-0.5 text-[11px] text-(--insis-text-3)">{{ summary }}</div>
+							</template>
 						</div>
 						<!-- Status badges + chevron -->
 						<div class="flex shrink-0 flex-col items-end gap-1">
-							<span v-if="mobileHasSelectedUnits(course.id) && !mobileIsIncomplete(course.id)" class="insis-badge insis-badge-success text-[10px]">
+							<span v-if="ms.status === 'selected'" class="insis-badge insis-badge-success text-[10px]">
 								{{ $t('components.courses.CourseTable.inTimetable') }}
 							</span>
-							<span v-if="mobileIsIncomplete(course.id)" class="insis-badge insis-badge-amber text-[10px]">
+							<span v-if="ms.isIncomplete" class="insis-badge insis-badge-amber text-[10px]">
 								{{ $t('components.courses.CourseTable.missingUnitTypes') }}
 							</span>
-							<span v-if="mobileHasConflict(course.id)" class="insis-badge insis-badge-danger text-[10px]">
+							<span v-if="ms.hasConflict" class="insis-badge insis-badge-danger text-[10px]">
 								{{ $t('components.courses.CourseTable.conflictTag') }}
 							</span>
-							<span v-if="mobileHasCampusConflict(course.id)" class="insis-badge insis-badge-amber text-[10px]">
+							<span v-if="ms.hasCampusConflict" class="insis-badge insis-badge-amber text-[10px]">
 								{{ $t('components.courses.CourseTable.campusConflictTag') }}
 							</span>
 							<IconChevronDown
