@@ -1,5 +1,6 @@
 import { sql } from 'kysely'
 import { jsonArrayFrom } from 'kysely/helpers/mysql'
+import { priorityOf } from '@shared/domain/studyPlan'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import {
@@ -12,7 +13,6 @@ import {
 	FacultyTable,
 	StudyPlanCourseTable
 } from '@api/Database/types'
-import { priorityOf } from '@shared/domain/studyPlan'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 
 export class CourseQueryService {
@@ -207,7 +207,7 @@ export class CourseQueryService {
 			.execute()
 
 		// Keep only the best-priority row per course_id so CourseInfo.vue shows one badge.
-		const best = new Map<number, typeof rows[number]>()
+		const best = new Map<number, (typeof rows)[number]>()
 		for (const row of rows) {
 			const current = best.get(row.course_id)
 			if (!current || priorityOf(row.group, row.category) < priorityOf(current.group, current.category)) {

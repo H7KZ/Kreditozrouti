@@ -1,6 +1,6 @@
 import type { ScraperInSISStudyPlanResponseJob } from '@shared/queue/jobs'
-import { priorityOf } from '@shared/domain/studyPlan'
 import { sql } from 'kysely'
+import { priorityOf } from '@shared/domain/studyPlan'
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { NewStudyPlanCourseIdent, StudyPlanCourseIdentTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'

@@ -200,6 +200,7 @@ export const useWizardStore = defineStore('wizard', () => {
 			selectedStudyPlans: selectedStudyPlans.value,
 			completedCourseIdents: completedCoursesStore.completedCourseIdents,
 			completed: completed.value,
+			currentStep: currentStep.value,
 		})
 	}
 
@@ -224,12 +225,18 @@ export const useWizardStore = defineStore('wizard', () => {
 		completed.value = state.completed
 
 		const wizardDataStore = useWizardDataStore()
+		const restoredStep = state.currentStep ?? null
+
 		if (state.completed) {
+			currentStep.value = restoredStep ?? 4
+		} else if (restoredStep === 4 && selectedStudyPlans.value.length > 0) {
 			currentStep.value = 4
-		} else if (selectedStudyPlans.value.length > 0) {
+			wizardDataStore.loadYearFacets()
+			wizardDataStore.loadStudyPlans()
+			wizardDataStore.loadStudyPlanCourses()
+		} else if (selectedStudyPlans.value.length > 0 || state.year) {
 			currentStep.value = 3
-		} else if (state.year) {
-			currentStep.value = 3
+			wizardDataStore.loadYearFacets()
 			wizardDataStore.loadStudyPlans()
 		} else if (state.facultyId) {
 			currentStep.value = 2
