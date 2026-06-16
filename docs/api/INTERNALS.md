@@ -27,6 +27,7 @@ config.isEnvProduction() // env === 'production' || 'prod'
 config.isEnvDevelopment()
 config.isEnvLocal()
 config.isEmailEnabled()  // true if GOOGLE_USER + GOOGLE_APP_PASSWORD are set
+config.cacheDisabled     // true if API_CACHE_DISABLED=true
 ```
 
 **Validation:** `CheckRequiredEnvironmentVariables(config)` throws on startup if `REDIS_URI` or `MYSQL_URI` is missing.
@@ -90,6 +91,9 @@ Wraps a route with Redis response caching.
 2. On hit → return cached JSON immediately
 3. On miss → intercept `res.json()`, store response in Redis with TTL, then proceed normally
 4. Redis errors are silently swallowed — the route still works without cache
+
+**Disabling cache:** set `API_CACHE_DISABLED=true` in `.env` to bypass caching entirely (useful on localhost to always
+see live data).
 
 **Cache invalidation:** `ScraperResponseInSISCourseJob` flushes all `cache:*` keys after a successful course sync using
 `SCAN` + `DEL`.
