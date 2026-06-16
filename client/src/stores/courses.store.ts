@@ -1,6 +1,6 @@
 import type { CoursesFilter } from '@shared/http/courses'
 import type { CoursesResponseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { i18n } from '@client/i18n'
 import { fetchCourses as fetchCoursesFromService } from '@client/services/courseService'
@@ -176,6 +176,18 @@ export const useCoursesStore = defineStore('courses', () => {
 		filtersStore.filters.offset = 0
 		fetchCourses()
 	}
+
+	// Sync collision filter when timetable changes while hide-conflicting is active
+	const filtersStore = useFiltersStore()
+	watch(
+		() => filtersStore.timetableExcludeTimes,
+		() => {
+			if (filtersStore.hideConflictingCourses) {
+				fetchCourses()
+			}
+		},
+		{ deep: true },
+	)
 
 	return {
 		courses,

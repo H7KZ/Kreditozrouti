@@ -4,7 +4,6 @@ import { RouterLink, useRouter } from 'vue-router'
 import { useHead, useSeoMeta } from '@unhead/vue'
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import ThemeToggle from '@client/components/common/ThemeToggle.vue'
-import { Button } from '@client/components/ui/button'
 import { i18n } from '@client/i18n'
 import IconBookmark from '~icons/lucide/bookmark'
 import IconBuilding2 from '~icons/lucide/building-2'
@@ -126,9 +125,7 @@ useHead({
 					Kreditožrouti nahrazuje hodiny přepínání záložek v InSISu. Zobrazí všechny předměty tvého studijního plánu najednou, detekuje kolize
 					automaticky a umožní ti sestavit rozvrh ještě před samotným zápisem.
 				</p>
-				<Button as-child size="lg">
-					<RouterLink to="/">Spustit aplikaci →</RouterLink>
-				</Button>
+				<RouterLink to="/" class="insis-btn-primary px-6 py-2.5 text-sm">Spustit aplikaci →</RouterLink>
 			</section>
 
 			<!-- How it works -->
@@ -260,9 +257,7 @@ useHead({
 			<section class="rounded-lg border border-(--insis-border) bg-(--insis-surface) p-8 text-center">
 				<h2 class="mb-3 text-xl font-semibold text-(--insis-blue)">Připraven na zápisy?</h2>
 				<p class="mb-6 text-sm text-(--insis-text-2)">Žádná registrace, žádné přihlašování. Jen vyber studijní plán a začni.</p>
-				<Button as-child size="lg">
-					<RouterLink to="/">Spustit Kreditožrouti →</RouterLink>
-				</Button>
+				<RouterLink to="/" class="insis-btn-primary px-6 py-2.5 text-sm">Spustit Kreditožrouti →</RouterLink>
 			</section>
 		</main>
 	</div>

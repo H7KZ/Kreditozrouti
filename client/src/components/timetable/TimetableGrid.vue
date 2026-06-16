@@ -27,7 +27,7 @@ const { getShortDayLabel } = useCourseLabels()
 // Slot merging composable
 const { mergedUnitsByDay } = useSlotMerging(toRef(() => timetableStore.unitsByDay))
 
-const { timeSlots, rowHeight, getBlockStyle, getTimeFromX, getDragSelectionStyle } = useTimetableGrid(
+const { timeSlots, rowHeight, rowHeightPerDay, getBlockStyle, getTimeFromX, getDragSelectionStyle } = useTimetableGrid(
 	toRef(() => mergedUnitsByDay.value),
 	{
 		rowHeight: 60,
@@ -105,13 +105,13 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 </script>
 
 <template>
-	<div class="relative">
+	<div>
 		<div class="mb-2 flex justify-end">
 			<button
 				type="button"
 				v-if="timetableStore.selectedUnits.length > 0"
 				:disabled="exporting"
-				class="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:opacity-50"
+				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
 				@click="exportSchedule"
 			>
 				<svg
@@ -173,7 +173,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 						<td
 							:colspan="timeSlots.length"
 							class="day-row relative cursor-crosshair p-0 hover:bg-(--insis-gray-50)"
-							:style="{ height: `${rowHeight}px` }"
+							:style="{ height: `${rowHeightPerDay.get(day) ?? rowHeight}px` }"
 							:data-day="day"
 							@mousedown="handleMouseDown($event, day)"
 						>
@@ -216,9 +216,6 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 				</tbody>
 			</table>
 		</div>
-
-		<!-- Right-edge scroll affordance -->
-		<div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-(--insis-surface) to-transparent" />
 
 		<!-- Drag-to-filter popover -->
 		<TimetableDragPopover

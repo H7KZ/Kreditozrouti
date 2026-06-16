@@ -77,11 +77,12 @@ loki.process "parse_json" {
   // trace correlation without blowing up label cardinality.
   stage.structured_metadata {
     values = {
-      request_id = ""
-      traceId    = ""
-      spanId     = ""
+      request_id = "",
+      traceId    = "",
+      spanId     = "",
     }
   }
+
 
   forward_to = [loki.write.default.receiver]
 }
