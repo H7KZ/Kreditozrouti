@@ -10,12 +10,23 @@ export function useScheduleExport(gridRef: Ref<HTMLElement | null>) {
 		if (!gridRef.value || exporting.value) return
 		exporting.value = true
 
+		const el = gridRef.value
+		const prevScrollLeft = el.scrollLeft
+		el.scrollLeft = 0
+
 		try {
-			const canvas = await html2canvas(gridRef.value, {
+			const bgColor = getComputedStyle(el).backgroundColor
+			const isTransparent = bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent'
+			const backgroundColor = isTransparent ? '#ffffff' : bgColor
+
+			const canvas = await html2canvas(el, {
 				scale: 2,
 				useCORS: true,
-				backgroundColor: getComputedStyle(gridRef.value).backgroundColor || '#ffffff',
+				backgroundColor,
 				logging: false,
+				width: el.scrollWidth,
+				height: el.scrollHeight,
+				windowWidth: el.scrollWidth,
 			})
 
 			const ctx = canvas.getContext('2d')
@@ -39,6 +50,7 @@ export function useScheduleExport(gridRef: Ref<HTMLElement | null>) {
 
 			analytics.track('schedule_shared')
 		} finally {
+			el.scrollLeft = prevScrollLeft
 			exporting.value = false
 		}
 	}
