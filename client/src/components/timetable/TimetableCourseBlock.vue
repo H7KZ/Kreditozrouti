@@ -137,7 +137,7 @@ function handleClick() {
 
 <template>
 	<div
-		class="timetable-block group absolute right-0 left-0 min-h-6 cursor-pointer overflow-hidden border border-(--insis-border) text-xs transition-shadow hover:z-10 hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--insis-blue)"
+		class="timetable-block group absolute right-0 left-0 min-h-6 cursor-pointer overflow-hidden border border-(--insis-border) text-xs text-gray-900 transition-shadow hover:z-10 hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--insis-blue)"
 		:class="[
 			blockColorClass,
 			{
@@ -166,7 +166,7 @@ function handleClick() {
 					>
 						<IconAlertTriangle class="h-3 w-3" />
 					</span>
-					<span class="truncate font-medium text-(--insis-text)">
+					<span class="truncate font-medium">
 						{{ unit.courseIdent }}
 					</span>
 				</div>
@@ -186,7 +186,7 @@ function handleClick() {
 			</div>
 
 			<!-- Course title (truncated) -->
-			<div class="mt-0.5 flex-1 truncate text-[10px] text-(--insis-gray-600)">
+			<div class="mt-0.5 flex-1 truncate text-[10px] text-gray-600">
 				{{ getUnitCourseTitle(unit) }}
 			</div>
 
@@ -197,13 +197,13 @@ function handleClick() {
 
 			<!-- Time and room / date range for merged -->
 			<div class="mt-auto flex items-end justify-between gap-1 text-[10px]">
-				<span class="text-(--insis-gray-500)">
+				<span class="text-gray-500">
 					{{ timeRange }}
 				</span>
-				<span v-if="dateRange" class="truncate text-(--insis-gray-500)" :title="dateRange">
+				<span v-if="dateRange" class="truncate text-gray-500" :title="dateRange">
 					{{ dateRange }}
 				</span>
-				<span v-else-if="unit.location" class="truncate text-(--insis-gray-500)">
+				<span v-else-if="unit.location" class="truncate text-gray-500">
 					{{ unit.location }}
 				</span>
 			</div>
