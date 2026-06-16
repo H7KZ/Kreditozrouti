@@ -9,6 +9,7 @@ import IconSearch from '~icons/lucide/search'
 import IconSkipForward from '~icons/lucide/skip-forward'
 import IconSquare from '~icons/lucide/square'
 import IconSquareCheck from '~icons/lucide/square-check-big'
+import IconX from '~icons/lucide/x'
 
 /**
  * WizardStepCompletedCourses
@@ -106,6 +107,11 @@ function handleSearchInput(event: Event) {
 	localSearch.value = value
 	debouncedSetSearch(value)
 }
+
+function clearSearch() {
+	localSearch.value = ''
+	emit('setSearch', '')
+}
 </script>
 
 <template>
@@ -133,11 +139,20 @@ function handleSearchInput(event: Event) {
 				<IconSearch class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-(--insis-gray-500)" />
 				<input
 					type="text"
-					class="insis-input pl-9"
+					class="insis-input pl-9 pr-8"
 					:placeholder="$t('components.wizard.WizardStepCompletedCourses.searchPlaceholder')"
 					:value="localSearch"
 					@input="handleSearchInput"
 				/>
+				<button
+					v-if="localSearch"
+					type="button"
+					class="absolute top-1/2 right-2.5 -translate-y-1/2 text-(--insis-gray-400) hover:text-(--insis-gray-600)"
+					:aria-label="$t('common.clear')"
+					@click="clearSearch"
+				>
+					<IconX class="h-4 w-4" />
+				</button>
 			</div>
 
 			<!-- Category filter chips -->
@@ -165,7 +180,7 @@ function handleSearchInput(event: Event) {
 		</div>
 
 		<!-- Course list grouped by category -->
-		<div v-else-if="sortedEntries.length > 0" class="space-y-4">
+		<div v-else-if="sortedEntries.length > 0" class="max-h-[450px] overflow-y-auto space-y-4 pr-1">
 			<div v-for="[category, courses] in sortedEntries" :key="category" class="rounded border border-(--insis-border) bg-(--insis-surface)">
 				<!-- Category header -->
 				<button
