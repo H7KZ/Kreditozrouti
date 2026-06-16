@@ -20,7 +20,7 @@ const timetableStore = useTimetableStore()
 const { getCourseTitle, getFacultyLabel, getCompletionLabel } = useCourseLabels()
 const { getScheduleSummary } = useScheduleSummary()
 
-// ── Status ─────────────────────────────────────────────────────────────────
+// Status
 
 /** Full CourseStatus for this course, or undefined if not in the timetable. */
 const courseStatus = computed<CourseStatus | undefined>(() => timetableStore.getCourseStatus(props.course.id))
@@ -37,13 +37,13 @@ const hasCampusConflict = computed(() => courseStatus.value?.status === 'campus-
 /** Whether the course is missing required unit types (incomplete selection). */
 const isIncomplete = computed(() => courseStatus.value?.status === 'incomplete')
 
-// ── Row state ───────────────────────────────────────────────────────────────
+// Row state
 
 const isExpanded = computed(() => coursesStore.isCourseExpanded(props.course.id))
 
 const scheduleSummary = computed(() => getScheduleSummary(props.course.units))
 
-// ── Handlers ────────────────────────────────────────────────────────────────
+// Handlers
 
 function handleRowClick() {
 	coursesStore.toggleCourseExpansion(props.course.id)

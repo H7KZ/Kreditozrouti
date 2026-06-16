@@ -37,7 +37,7 @@ function handleSort(key: CourseSortBy) {
 	coursesStore.fetchCourses()
 }
 
-// ── Mobile card helpers (desktop rows are handled by CourseRow.vue) ─────────
+// Mobile card helpers (desktop rows are handled by CourseRow.vue)
 
 function handleRowClick(courseId: number) {
 	coursesStore.toggleCourseExpansion(courseId)
