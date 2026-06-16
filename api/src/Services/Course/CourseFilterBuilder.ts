@@ -1,4 +1,4 @@
-import { Nullable, SelectQueryBuilder, sql } from 'kysely'
+import { AliasedExpression, Nullable, SelectQueryBuilder, sql } from 'kysely'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import { CourseTable, CourseUnitSlotTable, CourseUnitTable, Database, StudyPlanCourseTable } from '@api/Database/types'
@@ -44,7 +44,17 @@ export class CourseFilterBuilder {
 		}
 
 		if (needsStudyPlanJoin) {
-			query = query.leftJoin(`${StudyPlanCourseTable._table} as spc1`, 'c1.id', 'spc1.course_id')
+			if (filters.study_plan_ids?.length) {
+				// ponytail: derived table picks the best-priority (group, category) per course
+				// across the selected plans so each course has exactly one spc1 row.
+				query = query.leftJoin(
+					this.buildBestSpcSubquery(filters.study_plan_ids) as unknown as AliasedExpression<StudyPlanCourseTable, 'spc1'>,
+					'c1.id',
+					'spc1.course_id'
+				)
+			} else {
+				query = query.leftJoin(`${StudyPlanCourseTable._table} as spc1`, 'c1.id', 'spc1.course_id')
+			}
 		}
 
 		return this.applyAllFilters(query, filters, ignore)
@@ -188,23 +198,6 @@ export class CourseFilterBuilder {
 			)
 		}
 
-		// Study plan filters
-		if (filters.study_plan_ids?.length && !['study_plan_id', 'study_plan_ids'].includes(ignore!)) {
-			query = query.where('spc1.study_plan_id', 'in', filters.study_plan_ids)
-			// Deduplicate: when same ident appears across multiple study plans (different scraped versions),
-			// keep only the latest version (MAX id per ident).
-			query = query.where(eb =>
-				eb('c1.id', '=', eb2 =>
-					eb2
-						.selectFrom(`${CourseTable._table} as c_dedup`)
-						.innerJoin(`${StudyPlanCourseTable._table} as spc_dedup`, 'c_dedup.id', 'spc_dedup.course_id')
-						.select(eb3 => eb3.fn.max('c_dedup.id').as('id'))
-						.where('spc_dedup.study_plan_id', 'in', filters.study_plan_ids!)
-						.whereRef('c_dedup.ident', '=', 'c1.ident')
-				)
-			)
-		}
-
 		if (filters.groups?.length && !['groups'].includes(ignore!)) {
 			query = query.where('spc1.group', 'in', filters.groups)
 		}
@@ -256,6 +249,47 @@ export class CourseFilterBuilder {
 		}
 
 		return query
+	}
+
+	/**
+	 * Returns a Kysely raw SQL fragment for a derived table that yields the single best
+	 * (group, category) row per course_id across the given study plans.
+	 * Used as the spc1 join target so all downstream predicates see one row per course.
+	 */
+	private static buildBestSpcSubquery(studyPlanIds: number[]) {
+		const idList = sql.join(studyPlanIds.map(id => sql.lit(id)))
+		return sql<{ course_id: number; group: string; category: string }>`(
+			SELECT course_id, \`group\`, category
+			FROM (
+				SELECT course_id, \`group\`, category,
+					ROW_NUMBER() OVER (
+						PARTITION BY course_id
+						ORDER BY (
+							CASE \`group\`
+								WHEN 'field_specific_bachelor' THEN 0
+								WHEN 'field_specific_master'   THEN 10
+								WHEN 'faculty_specific'        THEN 20
+								WHEN 'minor_specialization'    THEN 30
+								WHEN 'university_wide'         THEN 40
+							END
+							+
+							CASE category
+								WHEN 'state_exam'         THEN 0
+								WHEN 'compulsory'         THEN 1
+								WHEN 'elective'           THEN 2
+								WHEN 'language'           THEN 3
+								WHEN 'physical_education' THEN 4
+								WHEN 'beyond_scope'       THEN 5
+								WHEN 'exchange_program'   THEN 6
+								WHEN 'prohibited'         THEN 7
+							END
+						) ASC
+					) AS rn
+				FROM ${sql.table(StudyPlanCourseTable._table)}
+				WHERE study_plan_id IN (${idList})
+			) ranked
+			WHERE rn = 1
+		)`.as('spc1')
 	}
 
 	/**
