@@ -25,12 +25,16 @@ const { getScheduleSummary } = useScheduleSummary()
 /** Full CourseStatus for this course, or undefined if not in the timetable. */
 const courseStatus = computed<CourseStatus | undefined>(() => timetableStore.getCourseStatus(props.course.id))
 
+/** Whether the course has any selected units. */
 const isSelected = computed(() => courseStatus.value !== undefined)
 
+/** Whether the course has a hard time conflict. */
 const hasConflict = computed(() => courseStatus.value?.status === 'conflict')
 
+/** Whether the course has a campus travel-time conflict. */
 const hasCampusConflict = computed(() => courseStatus.value?.status === 'campus-conflict')
 
+/** Whether the course is missing required unit types (incomplete selection). */
 const isIncomplete = computed(() => courseStatus.value?.status === 'incomplete')
 
 // Row state
