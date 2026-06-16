@@ -106,6 +106,7 @@ export const useCoursesStore = defineStore('courses', () => {
 		const filtersStore = useFiltersStore()
 		wizardStore.toggleCompletedCourse(courseIdent)
 		filtersStore.setFilter('completed_course_idents', [...wizardStore.completedCourseIdents])
+		fetchCourses()
 	}
 
 	function isCourseCompleted(courseIdent: string): boolean {
