@@ -13,7 +13,7 @@ import type { CourseUnitDTO, CourseWithRelationsDTO } from '@shared/http/respons
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import api from '@client/api.ts'
-import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useTimeUtils } from '@client/composables'
+import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useSlotSorting, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore } from '@client/stores'
 import { SelectedCourseUnit } from '@client/types'
 import IconCheck from '~icons/lucide/check'
@@ -79,6 +79,9 @@ const { unitsByGroup, isSelectionComplete, isUnitSelected, isGroupSatisfied, han
 
 // Shared slot formatting (same as CourseRowExpanded!)
 const { formatSlotInfo, formatCapacity, getCapacityClass } = useSlotFormatting()
+
+// Slot sorting (same as UnitSelector!)
+const { sortSlots, sortUnits } = useSlotSorting()
 
 // Time utilities
 const { formatTimeRange } = useTimeUtils()
@@ -327,7 +330,7 @@ onUnmounted(() => {
 
 									<div class="space-y-2">
 										<div
-											v-for="courseUnit in group.units"
+											v-for="courseUnit in sortUnits(group.units)"
 											:key="courseUnit.id"
 											class="rounded border text-sm transition-colors"
 											:class="
@@ -338,7 +341,7 @@ onUnmounted(() => {
 										>
 											<div class="flex items-start justify-between p-2">
 												<div class="flex flex-col gap-1">
-													<div v-for="slot in courseUnit.slots" :key="slot.id" class="flex items-center gap-3">
+													<div v-for="slot in sortSlots(courseUnit.slots)" :key="slot.id" class="flex items-center gap-3">
 														<span class="w-8 shrink-0 rounded bg-(--insis-gray-200) px-1 py-0.5 text-center text-xs">
 															{{ getShortUnitTypeLabel(getSlotType(slot)) }}
 														</span>
