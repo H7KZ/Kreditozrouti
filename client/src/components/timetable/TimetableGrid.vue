@@ -27,7 +27,7 @@ const { getShortDayLabel } = useCourseLabels()
 // Slot merging composable
 const { mergedUnitsByDay } = useSlotMerging(toRef(() => timetableStore.unitsByDay))
 
-const { timeSlots, rowHeight, getBlockStyle, getTimeFromX, getDragSelectionStyle } = useTimetableGrid(
+const { timeSlots, rowHeight, rowHeightPerDay, getBlockStyle, getTimeFromX, getDragSelectionStyle } = useTimetableGrid(
 	toRef(() => mergedUnitsByDay.value),
 	{
 		rowHeight: 60,
@@ -173,7 +173,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 						<td
 							:colspan="timeSlots.length"
 							class="day-row relative cursor-crosshair p-0 hover:bg-(--insis-gray-50)"
-							:style="{ height: `${rowHeight}px` }"
+							:style="{ height: `${rowHeightPerDay.get(day) ?? rowHeight}px` }"
 							:data-day="day"
 							@mousedown="handleMouseDown($event, day)"
 						>
