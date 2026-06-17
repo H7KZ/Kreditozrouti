@@ -11,6 +11,7 @@ import { bullboardRouter } from '@api/bullboard'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Handlers/ErrorHandler'
+import LoggerMiddleware from '@api/Middlewares/LoggerMiddleware'
 import { metricsHandler, metricsMiddleware } from '@api/metrics'
 import { Paths } from '@api/paths'
 import AdminRoutes from '@api/Routes/AdminRoutes'
@@ -71,6 +72,7 @@ if (!Config.isEnvLocal()) {
 
 app.use(session(sessionOptions))
 app.use(compression({}))
+app.use(LoggerMiddleware)
 
 // Metrics
 app.use(responseTime())
