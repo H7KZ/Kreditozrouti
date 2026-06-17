@@ -103,11 +103,20 @@ function handleClearTimetable() {
 			<!-- Mobile filter toggle -->
 			<button
 				type="button"
-				class="insis-btn insis-btn-secondary min-h-[44px] min-w-[44px] justify-center lg:hidden"
+				class="relative flex items-center gap-1.5 lg:hidden"
+				:class="filtersStore.hasActiveFilters ? 'insis-btn insis-btn-primary min-h-[44px] px-3' : 'insis-btn insis-btn-secondary min-h-[44px] min-w-[44px] justify-center'"
 				:aria-label="$t('common.openFilters')"
 				@click="uiStore.toggleMobileFilter"
 			>
-				<IconFunnel class="h-4 w-4" aria-hidden="true" />
+				<IconFunnel class="h-4 w-4 shrink-0" aria-hidden="true" />
+				<span class="text-sm">{{ $t('common.filters') }}</span>
+				<span
+					v-if="filtersStore.activeFilterCount > 0"
+					class="rounded-full bg-white px-1.5 py-0.5 text-[10px] font-medium leading-none text-(--insis-blue)"
+					:aria-label="$t('components.filters.FilterPanel.activeFilterCount', { count: filtersStore.activeFilterCount })"
+				>
+					{{ filtersStore.activeFilterCount }}
+				</span>
 			</button>
 		</div>
 	</header>
