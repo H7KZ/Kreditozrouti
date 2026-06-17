@@ -185,6 +185,9 @@
 		"removeTimeFilter": "Odebrat časový filtr",
 		"closeCourseModal": "Zavřít detail předmětu",
 		"switchLanguage": "Změnit jazyk",
+		"mobileBanner": {
+			"message": "Kreditožrouti je optimalizován pro počítač. Pro nejlepší zážitek doporučujeme použít PC."
+		},
 		"announcements": {
 			"coursesFound": "Nalezen {count} kurz | Nalezeny {count} kurzy | Nalezeno {count} kurzů",
 			"noCoursesFound": "Nebyly nalezeny žádné kurzy",
