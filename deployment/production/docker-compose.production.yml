@@ -136,6 +136,7 @@ services:
 
     networks:
       - redis-network
+      - traefik-network
 
     logging:
       driver: "json-file"
