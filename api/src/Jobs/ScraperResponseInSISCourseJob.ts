@@ -44,26 +44,6 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	await insertFacultiesBatch(mysql, [course.faculty?.ident, ...(course.study_plans?.map(p => p.facultyIdent) ?? [])])
 
-	// Skip the rest if course hasn't changed since last scrape.
-	// Normalize to string in case mysql2 returns a Date object for the date column.
-	if (course.last_modified_date) {
-		const existing = await mysql.selectFrom(CourseTable._table).select('last_modified_date').where('id', '=', course.id).executeTakeFirst()
-
-		// mysql2 may return Date objects for date-typed columns at runtime despite the string TS type
-		const raw = existing?.last_modified_date as unknown
-		const dbDate = raw instanceof Date ? raw.toISOString().slice(0, 10) : (raw as string | null | undefined)
-
-		if (dbDate === course.last_modified_date) {
-			LoggerJobContext.add({ skipped_unchanged: true })
-			await mysql
-				.updateTable(CourseTable._table)
-				.set({ last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ') })
-				.where('id', '=', course.id)
-				.execute()
-			return
-		}
-	}
-
 	await mysql.transaction().execute(async trx => {
 		const coursePayload: NewCourse = {
 			id: course.id,
