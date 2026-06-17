@@ -44,9 +44,9 @@ export const useCoursesStore = defineStore('courses', () => {
 	const hasNextPage = computed(() => currentPage.value < totalPages.value)
 	const hasPrevPage = computed(() => currentPage.value > 1)
 
-	async function fetchCourses() {
+	async function fetchCourses(silent = false) {
 		const filtersStore = useFiltersStore()
-		loading.value = true
+		if (!silent) loading.value = true
 		error.value = null
 
 		try {
@@ -91,7 +91,7 @@ export const useCoursesStore = defineStore('courses', () => {
 			console.error('Courses: Failed to fetch', e)
 			announcer.announce(t('common.announcements.loadingError'), 'assertive')
 		} finally {
-			loading.value = false
+			if (!silent) loading.value = false
 		}
 	}
 
@@ -184,7 +184,7 @@ export const useCoursesStore = defineStore('courses', () => {
 		() => filtersStore.timetableExcludeTimes,
 		() => {
 			if (filtersStore.hideConflictingCourses) {
-				fetchCourses()
+				fetchCourses(true)
 			}
 		},
 		{ deep: true },
