@@ -242,7 +242,9 @@
 				"title": "Vítejte v Kreditožroutech",
 				"description": "Vyberte svůj studijní plán pro zobrazení dostupných předmětů",
 				"currentSelection": "Aktuální výběr:",
-				"startOver": "Začít znovu"
+				"startOver": "Začít znovu",
+				"setupCompleteTitle": "Nastavení dokončeno!",
+				"setupCompleteDescription": "Nyní si procházejte předměty a sestavte svůj rozvrh."
 			},
 			"WizardSteps": {
 				"faculty": "Fakulta",

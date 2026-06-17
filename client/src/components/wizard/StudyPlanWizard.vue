@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { InSISSemester } from '@shared/domain/insis'
 import { computed, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import analytics from '@client/analytics'
 import WizardStepCompletedCourses from '@client/components/wizard/WizardStepCompletedCourses.vue'
@@ -8,7 +9,7 @@ import WizardStepFaculty from '@client/components/wizard/WizardStepFaculty.vue'
 import WizardSteps from '@client/components/wizard/WizardSteps.vue'
 import WizardStepStudyPlan from '@client/components/wizard/WizardStepStudyPlan.vue'
 import WizardStepYear from '@client/components/wizard/WizardStepYear.vue'
-import { useCompletedCoursesStore, useWizardDataStore, useWizardStore } from '@client/stores'
+import { useAlertsStore, useCompletedCoursesStore, useWizardDataStore, useWizardStore } from '@client/stores'
 
 /*
  * StudyPlanWizard
@@ -17,10 +18,12 @@ import { useCompletedCoursesStore, useWizardDataStore, useWizardStore } from '@c
  * Steps: 1. Faculty → 2. Year → 3. Study Plans (multi-select) → 4. Completed Courses
  */
 
+const { t } = useI18n()
 const router = useRouter()
 const wizardStore = useWizardStore()
 const wizardDataStore = useWizardDataStore()
 const completedCoursesStore = useCompletedCoursesStore()
+const alertsStore = useAlertsStore()
 
 // Load initial facet data
 onMounted(async () => {
@@ -47,16 +50,27 @@ function handleComplete() {
 			faculty_id: wizardStore.facultyId ?? '',
 			plan_count: wizardStore.selectedStudyPlans.length,
 		})
+		alertsStore.addAlert({
+			type: 'success',
+			title: t('components.wizard.StudyPlanWizard.setupCompleteTitle'),
+			description: t('components.wizard.StudyPlanWizard.setupCompleteDescription'),
+			timeout: 6000,
+		})
 		router.push('/courses')
 	}
 }
 
 function handleSkipCompletedCourses() {
-	// Complete wizard without selecting completed courses
 	if (wizardStore.completeWizard()) {
 		analytics.track('wizard_complete', {
 			faculty_id: wizardStore.facultyId ?? '',
 			plan_count: wizardStore.selectedStudyPlans.length,
+		})
+		alertsStore.addAlert({
+			type: 'success',
+			title: t('components.wizard.StudyPlanWizard.setupCompleteTitle'),
+			description: t('components.wizard.StudyPlanWizard.setupCompleteDescription'),
+			timeout: 6000,
 		})
 		router.push('/courses')
 	}

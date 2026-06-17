@@ -242,7 +242,9 @@
 				"title": "Welcome to Kreditožrouti",
 				"description": "Select your study plan to view available courses",
 				"currentSelection": "Current selection:",
-				"startOver": "Start over"
+				"startOver": "Start over",
+				"setupCompleteTitle": "Setup complete!",
+				"setupCompleteDescription": "Now browse courses and build your timetable."
 			},
 			"WizardSteps": {
 				"faculty": "Faculty",
