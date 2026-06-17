@@ -258,7 +258,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 						}"
 					>
 						<div class="flex items-center justify-between p-2">
-							<div class="flex w-full flex-col gap-1">
+							<div class="flex min-w-0 flex-1 flex-col gap-1">
 								<div
 									v-for="slot in sortSlots(unit.slots)"
 									:key="slot.id"
@@ -272,8 +272,8 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 										{{ getShortUnitTypeLabel(getSlotType(slot)) }}
 									</span>
 									<span class="shrink-0 font-medium whitespace-nowrap">{{ formatSlotInfo(slot) }}</span>
-									<span class="shrink-0 truncate text-(--insis-gray-600)" :title="slot.location || ''">{{ slot.location || '-' }}</span>
-									<span class="hidden truncate text-xs text-(--insis-gray-500) sm:block">{{ unit.lecturer }}</span>
+									<span class="min-w-0 truncate text-(--insis-gray-600)" :title="slot.location || ''">{{ slot.location || '-' }}</span>
+									<span class="hidden min-w-0 truncate text-xs text-(--insis-gray-500) sm:block">{{ unit.lecturer }}</span>
 									<span
 										v-if="getSlotConflicts(slot).length > 0"
 										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-(--insis-danger)"

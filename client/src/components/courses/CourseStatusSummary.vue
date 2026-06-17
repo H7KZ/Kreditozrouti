@@ -25,6 +25,9 @@ const timetableStore = useTimetableStore()
 
 const { statusCounts, totalSelectedCount, toggleStatusFilter, isStatusSelected, clearFilters, isFiltering } = useSharedCourseStatusFilter()
 
+const conflictGroupCount = computed(() => timetableStore.conflictGroupCount)
+const campusConflictGroupCount = computed(() => timetableStore.campusConflictGroupCount)
+
 /** Whether all selections are complete (no conflicts or incomplete) */
 const isAllComplete = computed(
 	() =>
@@ -93,7 +96,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 
 			<!-- Conflict warning badge -->
 			<button
-				v-if="statusCounts.conflict > 0"
+				v-if="conflictGroupCount > 0"
 				type="button"
 				:class="[
 					'inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-solid px-2.5 py-1 text-xs font-medium transition-all duration-150 focus:outline-none active:scale-[0.98]',
@@ -104,13 +107,13 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 			>
 				<IconCalendarX class="h-3.5 w-3.5" />
 				<span>
-					{{ $t('components.courses.CourseStatusSummary.conflicts', { count: statusCounts.conflict }) }}
+					{{ $t('components.courses.CourseStatusSummary.conflicts', { count: conflictGroupCount }) }}
 				</span>
 			</button>
 
 			<!-- Campus conflict warning badge (orange) -->
 			<button
-				v-if="statusCounts['campus-conflict'] > 0"
+				v-if="campusConflictGroupCount > 0"
 				type="button"
 				:class="[
 					'inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-solid px-2.5 py-1 text-xs font-medium transition-all duration-150 focus:outline-none active:scale-[0.98]',
@@ -121,7 +124,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 			>
 				<IconMapPin class="h-3.5 w-3.5" />
 				<span>
-					{{ $t('components.courses.CourseStatusSummary.campusConflicts', { count: statusCounts['campus-conflict'] }) }}
+					{{ $t('components.courses.CourseStatusSummary.campusConflicts', { count: campusConflictGroupCount }) }}
 				</span>
 			</button>
 

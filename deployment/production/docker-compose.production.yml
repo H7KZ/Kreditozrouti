@@ -59,6 +59,7 @@ services:
       - traefik-network
       - mysql-network
       - redis-network
+      - alloy-network
 
     labels:
       # Traefik Configuration
@@ -136,6 +137,7 @@ services:
 
     networks:
       - redis-network
+      - alloy-network
 
     logging:
       driver: "json-file"
