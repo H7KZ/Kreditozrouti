@@ -78,7 +78,7 @@ function handleClearTimetable() {
 			<button
 				v-if="selectedCoursesCount > 0"
 				type="button"
-				class="insis-btn insis-btn-secondary hover:border-(--insis-danger) hover:bg-(--insis-danger) hover:text-(--insis-text-inv)"
+				class="insis-btn insis-btn-secondary h-7 hover:border-(--insis-danger) hover:bg-(--insis-danger) hover:text-(--insis-text-inv)"
 				:aria-label="$t('pages.courses.clearTimetable')"
 				@click="handleClearTimetable"
 			>
@@ -88,7 +88,7 @@ function handleClearTimetable() {
 
 			<button
 				type="button"
-				class="insis-btn insis-btn-secondary hover:border-(--insis-danger) hover:bg-(--insis-danger) hover:text-(--insis-text-inv)"
+				class="insis-btn insis-btn-secondary h-7 hover:border-(--insis-danger) hover:bg-(--insis-danger) hover:text-(--insis-text-inv)"
 				:aria-label="$t('pages.courses.changePlan')"
 				@click="handleResetWizard"
 			>
@@ -104,15 +104,17 @@ function handleClearTimetable() {
 			<button
 				type="button"
 				class="relative flex items-center gap-1.5 lg:hidden"
-				:class="filtersStore.hasActiveFilters ? 'insis-btn insis-btn-primary min-h-[44px] px-3' : 'insis-btn insis-btn-secondary min-h-[44px] min-w-[44px] justify-center'"
+				:class="
+					filtersStore.hasActiveFilters ? 'insis-btn insis-btn-primary h-7 px-3' : 'insis-btn insis-btn-secondary h-7 min-w-[44px] justify-center'
+				"
 				:aria-label="$t('common.openFilters')"
 				@click="uiStore.toggleMobileFilter"
 			>
-				<IconFunnel class="h-4 w-4 shrink-0" aria-hidden="true" />
-				<span class="text-sm">{{ $t('common.filters') }}</span>
+				<IconFunnel class="h-3.25 w-3.25 shrink-0" aria-hidden="true" />
+				<span class="text-xs">{{ $t('common.filters') }}</span>
 				<span
 					v-if="filtersStore.activeFilterCount > 0"
-					class="rounded-full bg-white px-1.5 py-0.5 text-[10px] font-medium leading-none text-(--insis-blue)"
+					class="rounded-full bg-white px-1.5 py-0.5 text-[10px] leading-none font-medium text-(--insis-blue)"
 					:aria-label="$t('components.filters.FilterPanel.activeFilterCount', { count: filtersStore.activeFilterCount })"
 				>
 					{{ filtersStore.activeFilterCount }}
