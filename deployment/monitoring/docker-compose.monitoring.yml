@@ -125,7 +125,7 @@ services:
     command: -config.file=/etc/tempo/tempo.yml
 
     volumes:
-      - tempo-data:/tmp/tempo
+      - tempo-data:/var/tempo
       - ./tempo/tempo.yml:/etc/tempo/tempo.yml:ro
 
     networks:
