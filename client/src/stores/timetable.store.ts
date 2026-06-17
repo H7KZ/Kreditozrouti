@@ -131,6 +131,27 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 	const hasCampusConflicts = computed(() => campusConflicts.value.length > 0)
 
+	// ponytail: union-find to count collision groups (connected components), not individual courses
+	function countConflictGroups(pairs: Array<[SelectedCourseUnit, SelectedCourseUnit]>): number {
+		if (pairs.length === 0) return 0
+		const parent = new Map<string, string>()
+		const find = (x: string): string => {
+			if (!parent.has(x)) parent.set(x, x)
+			if (parent.get(x) !== x) parent.set(x, find(parent.get(x)!))
+			return parent.get(x)!
+		}
+		for (const [a, b] of pairs) {
+			const ra = find(a.courseIdent)
+			const rb = find(b.courseIdent)
+			if (ra !== rb) parent.set(ra, rb)
+		}
+		const roots = new Set(pairs.flatMap(([a, b]) => [find(a.courseIdent), find(b.courseIdent)]))
+		return roots.size
+	}
+
+	const conflictGroupCount = computed(() => countConflictGroups(conflicts.value))
+	const campusConflictGroupCount = computed(() => countConflictGroups(campusConflicts.value))
+
 	watch(
 		() => conflicts.value.length,
 		(newLen, oldLen) => {
@@ -431,6 +452,8 @@ export const useTimetableStore = defineStore('timetable', () => {
 		campusConflicts,
 		hasConflicts,
 		hasCampusConflicts,
+		conflictGroupCount,
+		campusConflictGroupCount,
 		coursesWithConflicts,
 		coursesWithCampusConflicts,
 		courseStatuses,

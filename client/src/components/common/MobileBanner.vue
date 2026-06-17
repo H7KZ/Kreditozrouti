@@ -13,19 +13,10 @@ function dismiss() {
 </script>
 
 <template>
-	<div
-		v-if="visible"
-		class="md:hidden flex items-center gap-3 bg-(--insis-blue) px-4 py-3 text-sm text-white"
-		role="banner"
-	>
+	<div v-if="visible" class="flex items-center gap-3 bg-(--insis-blue) px-4 py-3 text-sm text-white md:hidden" role="banner">
 		<IconMonitor class="h-4 w-4 shrink-0 opacity-80" aria-hidden="true" />
 		<span class="flex-1">{{ $t('common.mobileBanner.message') }}</span>
-		<button
-			type="button"
-			class="shrink-0 opacity-70 hover:opacity-100 transition-opacity"
-			:aria-label="$t('common.close')"
-			@click="dismiss"
-		>
+		<button type="button" class="shrink-0 opacity-70 transition-opacity hover:opacity-100" :aria-label="$t('common.close')" @click="dismiss">
 			<IconX class="h-4 w-4" />
 		</button>
 	</div>
