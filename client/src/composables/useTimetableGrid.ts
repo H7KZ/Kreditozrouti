@@ -107,8 +107,12 @@ export function useTimetableGrid(
 		for (const unit of sortedUnits) {
 			const overlapping = sortedUnits.filter((other) => other.timeFrom < unit.timeTo && unit.timeFrom < other.timeTo)
 
-			// Sort overlapping group consistently to assign stable indices
+			// Sort overlapping group consistently to assign stable indices.
+			// Date-only (block) events come first → lowest index → rendered at the bottom of the row.
 			overlapping.sort((a, b) => {
+				const aIsBlock = !!a.date
+				const bIsBlock = !!b.date
+				if (aIsBlock !== bIsBlock) return aIsBlock ? -1 : 1
 				if (a.timeFrom !== b.timeFrom) return a.timeFrom - b.timeFrom
 				if (a.timeTo !== b.timeTo) return a.timeTo - b.timeTo
 				return a.slotId - b.slotId
