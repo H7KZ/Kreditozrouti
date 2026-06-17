@@ -15,3 +15,7 @@ networks:
   redis-network:
     name: redis-network
     external: true
+
+  alloy-network:
+    name: alloy-network
+    external: true
