@@ -204,7 +204,7 @@ function handleCloseMobileFilter() {
 <template>
 	<aside class="insis-search-panel h-full overflow-y-auto">
 		<!-- Mobile header -->
-		<div class="flex items-center justify-between border-b border-(--insis-border) p-3 lg:hidden">
+		<div class="flex items-center justify-between border-b border-(--insis-border) pt-2 pb-5 lg:hidden">
 			<div class="flex items-center gap-2 font-medium">
 				<IconFilter class="h-4 w-4" aria-hidden="true" />
 				{{ $t('common.filters') }}
