@@ -1,3 +1,4 @@
+import '@scraper/telemetry'
 import cluster from 'cluster'
 import scraper from '@scraper/bullmq'
 import { redis } from '@scraper/clients'
