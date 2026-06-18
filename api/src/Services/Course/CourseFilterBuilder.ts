@@ -318,12 +318,12 @@ export class CourseFilterBuilder {
 	 */
 	public static filtersRequireJoins(filters: CoursesFilter): boolean {
 		return !!(
-			filters.include_times?.length ??
-			filters.exclude_times?.length ??
-			filters.lecturers?.length ??
-			filters.study_plan_ids?.length ??
-			filters.groups?.length ??
-			filters.categories?.length ??
+			filters.include_times?.length ||
+			filters.exclude_times?.length ||
+			filters.lecturers?.length ||
+			filters.study_plan_ids?.length ||
+			filters.groups?.length ||
+			filters.categories?.length ||
 			filters.assessment_methods?.length
 		)
 	}
