@@ -470,7 +470,8 @@
 				"filterDescription": "Showing courses available on {day} from {from} to {to}",
 				"slotFree": "Free",
 				"slotConflict": "Conflict: {ident}",
-				"slotCampusConflict": "Campus: {ident}"
+				"slotCampusConflict": "Campus: {ident}",
+				"lecturer": "Lecturer"
 			},
 			"SchedulePicker": {
 				"title": "Saved Schedules",
