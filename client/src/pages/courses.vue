@@ -228,7 +228,7 @@ async function fetchNextCoursesPage(page: () => void) {
 					>
 						<p class="font-medium">{{ $t('pages.courses.loadingError') }}</p>
 						<p>{{ coursesStore.error }}</p>
-						<button type="button" class="insis-btn-text mt-2" @click="coursesStore.fetchCourses">{{ $t('common.tryAgain') }}</button>
+						<button type="button" class="insis-btn-text mt-2" @click="() => coursesStore.fetchCourses()">{{ $t('common.tryAgain') }}</button>
 					</div>
 
 					<!-- List View -->
