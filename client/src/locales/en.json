@@ -84,6 +84,8 @@
 	"courseCategories": {
 		"compulsory": "Compulsory courses",
 		"elective": "Elective courses",
+		"elective_faculty": "Faculty elective courses",
+		"elective_university": "University-wide elective courses",
 		"language": "Language courses (compulsory electives)",
 		"state_exam": "State exams",
 		"prohibited": "Prohibited course",
