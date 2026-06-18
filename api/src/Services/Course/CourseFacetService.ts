@@ -2,7 +2,7 @@ import type { FacetItem } from '@shared/http/facets'
 import { sql } from 'kysely'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
-import { Course, CourseAssessmentTable, CourseTable, ExcludeMethods } from '@api/Database/types'
+import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 
@@ -34,22 +34,35 @@ export class CourseFacetService {
 	 * @returns Object with all facet dimensions computed in parallel.
 	 */
 	static async computeAllFacets(filters: CoursesFilter) {
-		const [faculties, days, lecturersRaw, languagesRaw, levels, semesters, years, groups, categories, ects, modesOfCompletion, assessmentMethods, timeRange] =
-			await Promise.all([
-				this.getSimpleFacet(filters, 'faculty_id'),
-				this.getDayFacet(filters),
-				this.getLecturerFacet(filters),
-				this.getLanguageFacet(filters),
-				this.getSimpleFacet(filters, 'level'),
-				this.getSimpleFacet(filters, 'semester'),
-				this.getSimpleFacet(filters, 'year'),
-				this.getGroupFacet(filters),
-				this.getCategoryFacet(filters),
-				this.getSimpleFacet(filters, 'ects'),
-				this.getSimpleFacet(filters, 'mode_of_completion'),
-				this.getAssessmentMethodFacet(filters),
-				this.getTimeRangeFacet(filters)
-			])
+		const [
+			faculties,
+			days,
+			lecturersRaw,
+			languagesRaw,
+			levels,
+			semesters,
+			years,
+			groups,
+			categories,
+			ects,
+			modesOfCompletion,
+			assessmentMethods,
+			timeRange
+		] = await Promise.all([
+			this.getSimpleFacet(filters, 'faculty_id'),
+			this.getDayFacet(filters),
+			this.getLecturerFacet(filters),
+			this.getLanguageFacet(filters),
+			this.getSimpleFacet(filters, 'level'),
+			this.getSimpleFacet(filters, 'semester'),
+			this.getSimpleFacet(filters, 'year'),
+			this.getGroupFacet(filters),
+			this.getCategoryFacet(filters),
+			this.getSimpleFacet(filters, 'ects'),
+			this.getSimpleFacet(filters, 'mode_of_completion'),
+			this.getAssessmentMethodFacet(filters),
+			this.getTimeRangeFacet(filters)
+		])
 
 		const lecturers = this.splitPipeDelimitedFacet(lecturersRaw, 50)
 		const languages = this.splitPipeDelimitedFacet(languagesRaw)
@@ -243,7 +256,7 @@ export class CourseFacetService {
 			.where('ca1.method', 'is not', null)
 			.groupBy('ca1.method')
 			.orderBy('count', 'desc')
-			.execute() as Promise<FacetItem[]>
+			.execute()
 	}
 
 	/**

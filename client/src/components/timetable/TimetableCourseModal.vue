@@ -383,7 +383,7 @@ onUnmounted(() => {
 														</template>
 														<template v-else-if="unitConflictStatuses[courseUnit.id]?.type === 'campus'">
 															<span class="insis-badge insis-badge-warning text-xs">
-																ðŸ«
+																🏫
 																{{
 																	$t('components.timetable.TimetableCourseModal.slotCampusConflict', {
 																		ident: (unitConflictStatuses[courseUnit.id] as { type: 'campus'; ident: string }).ident,
