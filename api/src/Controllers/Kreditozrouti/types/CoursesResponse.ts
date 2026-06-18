@@ -23,6 +23,7 @@ export default interface CoursesResponse {
 		categories: FacetItem[] // Only when study_plan_id filter applied
 		ects: FacetItem[]
 		modes_of_completion: FacetItem[]
+		assessment_methods: FacetItem[]
 		time_range: { min_time: number; max_time: number }
 	}
 

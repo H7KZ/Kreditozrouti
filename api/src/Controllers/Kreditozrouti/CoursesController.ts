@@ -40,6 +40,7 @@ const CoursesFilterSchema = z.object({
 	ects: z.array(z.coerce.number()).optional(),
 	mode_of_completions: z.array(z.string()).optional(),
 	mode_of_deliveries: z.array(z.string()).optional(),
+	assessment_methods: z.array(z.string()).optional(),
 
 	// Availability Filters
 	completed_course_idents: z.array(z.coerce.string()).optional(),

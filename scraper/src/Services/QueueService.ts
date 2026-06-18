@@ -25,7 +25,16 @@ export class QueueService {
     static async addCourseResponse(course: ScraperInSISCourse): Promise<void> {
         await scraper.queue.response.add('InSIS Course Response', {
             type: 'InSIS:Course',
+            course_id: course.id,
             course
+        })
+    }
+
+    static async addCourseNotFound(courseId: number): Promise<void> {
+        await scraper.queue.response.add('InSIS Course Response', {
+            type: 'InSIS:Course',
+            course_id: courseId,
+            course: null
         })
     }
 

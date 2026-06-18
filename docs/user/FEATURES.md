@@ -42,6 +42,7 @@ The left sidebar contains all filters. Active filters are counted in the sidebar
 | **Category**                 | Compulsory, elective, language courses, state exams, physical education, etc.                                                                                |
 | **ECTS credits**             | Filter to specific credit values                                                                                                                             |
 | **Completion mode**          | Exam (zkouška), credit (zápočet), or defense (obhajoba)                                                                                                      |
+| **Assessment methods**       | Filter by how the course is assessed — written exam, oral exam, project, seminar paper, test, presentation, and more                                         |
 | **Lecturers**                | Filter to courses taught by a specific lecturer                                                                                                              |
 | **Time restriction**         | Include only courses that have a slot in a specific day + time range (see also [Drag-to-filter](#drag-to-filter))                                            |
 | **Completed courses**        | Toggle to show or hide courses you've marked as already passed                                                                                               |
