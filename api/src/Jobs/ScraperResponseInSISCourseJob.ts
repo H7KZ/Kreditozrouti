@@ -273,11 +273,7 @@ async function syncStudyPlansFromCourse(courseId: number, courseIdent: string, c
  * No-ops silently when the course is not present in the DB.
  */
 async function deleteCourse(courseId: number): Promise<void> {
-	const existing = await mysql
-		.selectFrom(CourseTable._table)
-		.select('id')
-		.where('id', '=', courseId)
-		.executeTakeFirst()
+	const existing = await mysql.selectFrom(CourseTable._table).select('id').where('id', '=', courseId).executeTakeFirst()
 
 	if (!existing) {
 		LoggerJobContext.add({ skipped_not_in_db: true })
@@ -285,11 +281,7 @@ async function deleteCourse(courseId: number): Promise<void> {
 	}
 
 	await mysql.transaction().execute(async trx => {
-		const units = await trx
-			.selectFrom(CourseUnitTable._table)
-			.select('id')
-			.where('course_id', '=', courseId)
-			.execute()
+		const units = await trx.selectFrom(CourseUnitTable._table).select('id').where('course_id', '=', courseId).execute()
 
 		const unitIds = units.map(u => u.id)
 
@@ -303,10 +295,7 @@ async function deleteCourse(courseId: number): Promise<void> {
 		await trx.deleteFrom(CourseTable._table).where('id', '=', courseId).execute()
 	})
 
-	await redis.publish(
-		`course:updated:${courseId}`,
-		JSON.stringify({ status: 'deleted', courseId, updatedAt: new Date().toISOString() })
-	)
+	await redis.publish(`course:updated:${courseId}`, JSON.stringify({ status: 'deleted', courseId, updatedAt: new Date().toISOString() }))
 
 	await flushResponseCaches()
 
