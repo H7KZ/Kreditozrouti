@@ -228,12 +228,16 @@ export class CourseFilterBuilder {
 
 		if (filters.assessment_methods?.length && !['assessment_methods'].includes(ignore!)) {
 			query = query.where(eb =>
-				eb.exists(
-					eb
-						.selectFrom(`${CourseAssessmentTable._table} as ca_filter`)
-						.select(sql.lit(1).as('one'))
-						.whereRef('ca_filter.course_id', '=', 'c1.id')
-						.where('ca_filter.method', 'in', filters.assessment_methods!)
+				eb.and(
+					filters.assessment_methods!.map(method =>
+						eb.exists(
+							eb
+								.selectFrom(`${CourseAssessmentTable._table} as ca_filter`)
+								.select(sql.lit(1).as('one'))
+								.whereRef('ca_filter.course_id', '=', 'c1.id')
+								.where('ca_filter.method', '=', method)
+						)
+					)
 				)
 			)
 		}
