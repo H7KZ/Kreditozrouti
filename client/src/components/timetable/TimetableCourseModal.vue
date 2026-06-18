@@ -218,7 +218,7 @@ onUnmounted(() => {
 <template>
 	<Teleport to="body">
 		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" @click="handleBackdropClick">
-			<div ref="modalRef" class="modal max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-lg bg-(--insis-surface) shadow-xl">
+			<div ref="modalRef" class="modal max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-lg bg-(--insis-surface) shadow-xl">
 				<!-- Header -->
 				<div class="flex items-center justify-between border-b border-(--insis-border) bg-(--insis-header-bg) px-4 py-3">
 					<div class="flex items-center gap-2">

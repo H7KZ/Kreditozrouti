@@ -14,13 +14,14 @@ storage:
   trace:
     backend: local
     local:
-      path: /tmp/tempo/traces
+      path: /var/tempo/traces
     wal:
-      path: /tmp/tempo/wal
+      path: /var/tempo/wal
 
-compactor:
-  compaction:
-    block_retention: 168h
+overrides:
+  defaults:
+    compaction:
+      block_retention: 168h
 
 query_frontend:
   search:

@@ -1,3 +1,4 @@
+import '@api/telemetry'
 import '@api/types'
 import cluster from 'cluster'
 import app from '@api/app'

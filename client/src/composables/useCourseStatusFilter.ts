@@ -105,14 +105,14 @@ export function useCourseStatusFilter() {
 		{
 			value: 'conflict',
 			label: t('components.filters.CourseStatusFilter.withConflicts'),
-			count: statusCounts.value.conflict,
+			count: timetableStore.conflicts.length,
 			icon: 'conflict',
 			colorClass: 'text-red-600 bg-red-100',
 		},
 		{
 			value: 'campus-conflict',
 			label: t('components.filters.CourseStatusFilter.withCampusConflicts'),
-			count: statusCounts.value['campus-conflict'],
+			count: timetableStore.campusConflicts.length,
 			icon: 'conflict',
 			colorClass: 'text-amber-600 bg-amber-100',
 		},
