@@ -73,6 +73,14 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 		return map
 	})
 
+	/** Returns the display key for a course, splitting 'elective' by group. */
+	function electiveKey(group: InSISStudyPlanCourseGroup, category: InSISStudyPlanCourseCategory): string {
+		if (category !== 'elective') return category
+		if (group === 'faculty_specific') return 'elective_faculty'
+		if (group === 'university_wide') return 'elective_university'
+		return 'elective'
+	}
+
 	/**
 	 * Study plan courses filtered by search and category.
 	 */
@@ -84,7 +92,7 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 		if (completedCoursesCategoryFilter.value.length > 0) {
 			courses = courses.filter((c: CourseDTO) => {
 				const best = identMap.get(c.ident)
-				return best !== undefined && completedCoursesCategoryFilter.value.includes(best.category)
+				return best !== undefined && completedCoursesCategoryFilter.value.includes(electiveKey(best.group, best.category))
 			})
 		}
 
@@ -115,9 +123,9 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 				continue
 			}
 
-			const { category } = best
-			if (!map.has(category)) map.set(category, [])
-			map.get(category)!.push(course)
+			const key = electiveKey(best.group, best.category)
+			if (!map.has(key)) map.set(key, [])
+			map.get(key)!.push(course)
 		}
 
 		return map
@@ -126,9 +134,9 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 	const availableCourseCategories = computed(() => {
 		const categories = new Set<string>()
 		for (const best of courseIdentToCategories.value.values()) {
-			categories.add(best.category)
+			categories.add(electiveKey(best.group, best.category))
 		}
-		const priority = ['compulsory', 'elective', 'language', 'state_exam', 'physical_education', 'beyond_scope']
+		const priority = ['compulsory', 'elective_faculty', 'elective_university', 'elective', 'language', 'state_exam', 'physical_education', 'beyond_scope']
 		return [...categories].sort((a, b) => {
 			const ai = priority.indexOf(a)
 			const bi = priority.indexOf(b)

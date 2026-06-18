@@ -93,13 +93,19 @@ export function useCourseRefresh(courseId: number) {
 		state.value = 'triggering'
 		errorMessage.value = null
 
+		// Open SSE before triggering so the subscriber is always listening
+		// before the scrape job can publish course:updated. Triggering first
+		// causes a race: a fast hash-miss scrape (~1.5s) can publish before
+		// the EventSource connection and server-side subscribe() complete.
+		openSSE()
+
 		try {
 			await triggerCourseScrape(courseId)
 			saveTriggeredAt()
 			rateLimitedUntil.value = new Date(Date.now() + RATE_LIMIT_MS)
 			state.value = 'streaming'
-			openSSE()
 		} catch (err) {
+			closeSSE()
 			if (err instanceof RateLimitedError) {
 				saveTriggeredAt()
 				rateLimitedUntil.value = new Date(Date.now() + RATE_LIMIT_MS)
