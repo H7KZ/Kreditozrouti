@@ -456,7 +456,8 @@
 				"filterDescription": "Zobrazuji předměty dostupné v {day} od {from} do {to}",
 				"slotFree": "Volný",
 				"slotConflict": "Konflikt: {ident}",
-				"slotCampusConflict": "Kampus: {ident}"
+				"slotCampusConflict": "Kampus: {ident}",
+				"lecturer": "Vyučující"
 			},
 			"SchedulePicker": {
 				"title": "Uložené rozvrhy",
