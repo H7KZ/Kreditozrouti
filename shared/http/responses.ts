@@ -150,6 +150,7 @@ export interface CoursesResponseDTO {
         categories: FacetItem[]
         ects: FacetItem[]
         modes_of_completion: FacetItem[]
+        assessment_methods: FacetItem[]
         time_range: { min_time: number; max_time: number }
     }
     meta: PaginationMeta

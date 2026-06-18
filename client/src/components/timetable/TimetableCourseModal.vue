@@ -148,7 +148,7 @@ watch(() => props.unit.courseId, fetchCourse, { immediate: true })
 
 function handleSearchInTimeslot() {
 	// Apply time filter for this slot
-	filtersStore.filters.include_times = [{ day: props.unit.day ?? 'PondÄ›lÃ­', time_from: props.unit.timeFrom, time_to: props.unit.timeTo }]
+	filtersStore.filters.include_times = [{ day: props.unit.day ?? 'Pondělí', time_from: props.unit.timeFrom, time_to: props.unit.timeTo }]
 	filtersStore.filters.offset = 0
 
 	// Switch to list view
@@ -383,7 +383,7 @@ onUnmounted(() => {
 														</template>
 														<template v-else-if="unitConflictStatuses[courseUnit.id]?.type === 'campus'">
 															<span class="insis-badge insis-badge-warning text-xs">
-																ðŸ«
+																🏫
 																{{
 																	$t('components.timetable.TimetableCourseModal.slotCampusConflict', {
 																		ident: (unitConflictStatuses[courseUnit.id] as { type: 'campus'; ident: string }).ident,
