@@ -38,7 +38,7 @@ useHead({
 </script>
 
 <template>
-	<div class="min-h-screen bg-(--insis-bg)">
+	<div class="min-h-screen bg-(--insis-bg)" lang="cs">
 		<header class="border-b border-(--insis-border) bg-(--insis-surface) px-4 py-3">
 			<div class="mx-auto flex max-w-3xl items-center justify-between">
 				<RouterLink to="/" class="text-lg font-bold text-(--insis-blue)">Kreditožrouti</RouterLink>
@@ -53,20 +53,20 @@ useHead({
 			<h1 class="mb-2 text-3xl font-bold text-(--insis-gray-900)">Průvodce pro studenty</h1>
 			<p class="mb-10 text-(--insis-gray-500)">Vše, co potřebujete k naplánování semestru na VŠE.</p>
 
-			<section class="mb-10">
+			<section class="mb-10" aria-labelledby="guide-insis">
 				<div class="mb-3 flex items-center gap-2">
 					<IconInfo class="h-5 w-5 text-(--insis-blue)" aria-hidden="true" />
-					<h2 class="text-xl font-semibold text-(--insis-gray-900)">Co je InSIS?</h2>
+					<h2 id="guide-insis" class="text-xl font-semibold text-(--insis-gray-900)">Co je InSIS?</h2>
 				</div>
 				<p class="text-(--insis-gray-700)">
 					InSIS je informační systém VŠE Praha. Slouží k zápisu předmětů, zobrazení rozvrhů, kontrole výsledků a správě studijního plánu.
 				</p>
 			</section>
 
-			<section class="mb-10">
+			<section class="mb-10" aria-labelledby="guide-credits">
 				<div class="mb-3 flex items-center gap-2">
 					<IconGraduationCap class="h-5 w-5 text-(--insis-blue)" aria-hidden="true" />
-					<h2 class="text-xl font-semibold text-(--insis-gray-900)">Kreditový systém VŠE</h2>
+					<h2 id="guide-credits" class="text-xl font-semibold text-(--insis-gray-900)">Kreditový systém VŠE</h2>
 				</div>
 				<p class="mb-3 text-(--insis-gray-700)">
 					VŠE používá kreditový systém ECTS. Každý předmět má určitý počet kreditů a pro absolvování je nutné získat požadovaný celkový počet.
@@ -87,39 +87,39 @@ useHead({
 				</ul>
 			</section>
 
-			<section class="mb-10">
+			<section class="mb-10" aria-labelledby="guide-howto">
 				<div class="mb-3 flex items-center gap-2">
 					<IconCalendar class="h-5 w-5 text-(--insis-blue)" aria-hidden="true" />
-					<h2 class="text-xl font-semibold text-(--insis-gray-900)">Jak používat Kreditožrouti</h2>
+					<h2 id="guide-howto" class="text-xl font-semibold text-(--insis-gray-900)">Jak používat Kreditožrouti</h2>
 				</div>
 				<ol class="space-y-3 text-(--insis-gray-700)">
 					<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">1</span>
+						<span aria-hidden="true" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">1</span>
 						<span><strong>Vyberte studijní program</strong> v průvodci nastavením, aby aplikace věděla, které předměty jsou pro vás relevantní.</span>
 					</li>
 					<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">2</span>
+						<span aria-hidden="true" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">2</span>
 						<span><strong>Filtrujte předměty</strong> podle dne, času, jazyka nebo fakulty, abyste zúžili výběr.</span>
 					</li>
 					<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">3</span>
+						<span aria-hidden="true" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">3</span>
 						<span><strong>Přidejte předměty</strong> do rozvrhu a okamžitě zkontrolujte kolize.</span>
 					</li>
 					<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">4</span>
+						<span aria-hidden="true" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">4</span>
 						<span><strong>Vyřešte kolize</strong> výměnou časových bloků, dokud nemáte čistý rozvrh.</span>
 					</li>
 					<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">5</span>
+						<span aria-hidden="true" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">5</span>
 						<span><strong>Zapište se v InSIS</strong> — Kreditožrouti je pouze plánovací nástroj. Skutečný zápis probíhá v InSISu.</span>
 					</li>
 				</ol>
 			</section>
 
-			<section class="mb-10">
+			<section class="mb-10" aria-labelledby="guide-limitations">
 				<div class="mb-3 flex items-center gap-2">
 					<IconBookOpen class="h-5 w-5 text-(--insis-blue)" aria-hidden="true" />
-					<h2 class="text-xl font-semibold text-(--insis-gray-900)">Co Kreditožrouti NEDĚLÁ</h2>
+					<h2 id="guide-limitations" class="text-xl font-semibold text-(--insis-gray-900)">Co Kreditožrouti NEDĚLÁ</h2>
 				</div>
 				<ul class="space-y-2 text-(--insis-gray-700)">
 					<li class="flex items-start gap-2">

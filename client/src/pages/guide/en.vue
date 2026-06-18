@@ -38,7 +38,7 @@ useHead({
 </script>
 
 <template>
-	<div class="min-h-screen bg-(--insis-bg)">
+	<div class="min-h-screen bg-(--insis-bg)" lang="en">
 		<header class="border-b border-(--insis-border) bg-(--insis-surface) px-4 py-3">
 			<div class="mx-auto flex max-w-3xl items-center justify-between">
 				<RouterLink to="/" class="text-lg font-bold text-(--insis-blue)">Kreditožrouti</RouterLink>
@@ -53,10 +53,10 @@ useHead({
 			<h1 class="mb-2 text-3xl font-bold text-(--insis-gray-900)">International Student Guide</h1>
 			<p class="mb-10 text-(--insis-gray-500)">Everything you need to plan your VŠE Prague semester.</p>
 
-			<section class="mb-10">
+			<section class="mb-10" aria-labelledby="guide-insis">
 				<div class="mb-3 flex items-center gap-2">
 					<IconInfo class="h-5 w-5 text-(--insis-blue)" aria-hidden="true" />
-					<h2 class="text-xl font-semibold text-(--insis-gray-900)">What is InSIS?</h2>
+					<h2 id="guide-insis" class="text-xl font-semibold text-(--insis-gray-900)">What is InSIS?</h2>
 				</div>
 				<p class="text-(--insis-gray-700)">
 					InSIS is the information system of VŠE Prague. It is used for course registration (zápisy),
@@ -65,10 +65,10 @@ useHead({
 				</p>
 			</section>
 
-			<section class="mb-10">
+			<section class="mb-10" aria-labelledby="guide-credits">
 				<div class="mb-3 flex items-center gap-2">
 					<IconGraduationCap class="h-5 w-5 text-(--insis-blue)" aria-hidden="true" />
-					<h2 class="text-xl font-semibold text-(--insis-gray-900)">The VŠE Credit System</h2>
+					<h2 id="guide-credits" class="text-xl font-semibold text-(--insis-gray-900)">The VŠE Credit System</h2>
 				</div>
 				<p class="mb-3 text-(--insis-gray-700)">
 					VŠE uses the ECTS credit system. Each course is worth a certain number of credits,
@@ -90,39 +90,39 @@ useHead({
 				</ul>
 			</section>
 
-			<section class="mb-10">
+			<section class="mb-10" aria-labelledby="guide-howto">
 				<div class="mb-3 flex items-center gap-2">
 					<IconCalendar class="h-5 w-5 text-(--insis-blue)" aria-hidden="true" />
-					<h2 class="text-xl font-semibold text-(--insis-gray-900)">How to use Kreditožrouti</h2>
+					<h2 id="guide-howto" class="text-xl font-semibold text-(--insis-gray-900)">How to use Kreditožrouti</h2>
 				</div>
 				<ol class="space-y-3 text-(--insis-gray-700)">
 					<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">1</span>
+						<span aria-hidden="true" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">1</span>
 						<span><strong>Select your study programme</strong> in the setup wizard so the app knows which courses are relevant to you.</span>
 					</li>
 					<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">2</span>
+						<span aria-hidden="true" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">2</span>
 						<span><strong>Filter courses</strong> by day, time, language, or faculty to narrow down your options.</span>
 					</li>
 					<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">3</span>
+						<span aria-hidden="true" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">3</span>
 						<span><strong>Add courses</strong> to your timetable and check for scheduling conflicts instantly.</span>
 					</li>
 					<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">4</span>
+						<span aria-hidden="true" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">4</span>
 						<span><strong>Resolve conflicts</strong> by swapping time slots until you have a clean schedule.</span>
 					</li>
 					<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">5</span>
+						<span aria-hidden="true" class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-xs font-bold text-white">5</span>
 						<span><strong>Register in InSIS</strong> — Kreditožrouti is a planning tool only. Actual enrollment happens in InSIS.</span>
 					</li>
 				</ol>
 			</section>
 
-			<section class="mb-10">
+			<section class="mb-10" aria-labelledby="guide-limitations">
 				<div class="mb-3 flex items-center gap-2">
 					<IconBookOpen class="h-5 w-5 text-(--insis-blue)" aria-hidden="true" />
-					<h2 class="text-xl font-semibold text-(--insis-gray-900)">What Kreditožrouti does NOT do</h2>
+					<h2 id="guide-limitations" class="text-xl font-semibold text-(--insis-gray-900)">What Kreditožrouti does NOT do</h2>
 				</div>
 				<ul class="space-y-2 text-(--insis-gray-700)">
 					<li class="flex items-start gap-2">
