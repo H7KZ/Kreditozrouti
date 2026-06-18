@@ -28,6 +28,25 @@ The API consumes results from the scraper via `ScraperResponseQueue`. Each incom
 **File:** `src/Jobs/ScraperResponseInSISCourseJob.ts`
 
 Syncs a fully scraped `ScraperInSISCourse` into MySQL and notifies waiting SSE clients via Redis.
+When the scraper signals that a course no longer exists (`course: null, course_id: <id>`), the job
+deletes the ghost course and all its child rows instead of upserting.
+
+### Not-Found / Ghost Course Deletion
+
+When `data.course === null` and `data.course_id` is present, the job calls `deleteCourse(courseId)`:
+
+```
+1. SELECT id from insis_courses WHERE id = courseId — no-op if not found
+2. Transaction:
+   a. SELECT unit ids from insis_courses_units WHERE course_id = ?
+   b. DELETE insis_courses_units_slots WHERE unit_id IN (...)
+   c. DELETE insis_courses_units WHERE id IN (...)
+   d. DELETE insis_courses_assessments WHERE course_id = ?
+   e. DELETE insis_study_plans_courses WHERE course_id = ?
+   f. DELETE insis_courses WHERE id = ?
+3. redis.publish('course:updated:{id}', { status: 'deleted', ... })
+4. flushResponseCaches()
+```
 
 ### Change Detection
 

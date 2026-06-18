@@ -109,7 +109,13 @@ content, assessment methods, timetable, and study plan references.
 2. GET url + lang=cz param via InSISHTTPClientService
    └─ on failure: throw InSISNetworkError (retried up to 3×)
 
-3. ExtractInSISCourseService.extract(html, url)
+3. ExtractInSISCourseService.isNotFound(html)
+   If InSIS returns a "course does not exist" error page (detected by the Czech string
+   "neexistuje nebo jeho sylabus není veřejně přístupný"), the job calls
+   QueueService.addCourseNotFound(courseId) instead of extracting, then returns null.
+   The API job will delete the ghost course on receiving this signal.
+
+4. ExtractInSISCourseService.extract(html, url)
    Internally:
    ├─ sanitizeBodyHtml (normalize &nbsp;)
    ├─ resolveId (from <input name="predmet"> or URL)
@@ -125,13 +131,14 @@ content, assessment methods, timetable, and study plan references.
    ├─ extractStudyLoad (activity + hours table)
    └─ extractAuditInfo (last_modified_by + last_modified_date from body text)
 
-4. QueueService.addCourseResponse(course)
-   → sends ScraperInSISCourse via InSIS:Course response job
+5. QueueService.addCourseResponse(course)
+   → sends ScraperInSISCourse + course_id via InSIS:Course response job
 
-5. return course
+6. return course
 ```
 
-**Output:** One `InSIS:Course` response job containing the full `ScraperInSISCourse` object.
+**Output:** One `InSIS:Course` response job containing the full `ScraperInSISCourse` object, or a
+`course: null` deletion signal when InSIS reports the course does not exist.
 
 **Error handling:**
 
