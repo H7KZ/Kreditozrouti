@@ -168,13 +168,15 @@ Both settings are in the top bar and are saved in your browser.
 
 ## International Student Guide
 
-A dedicated `/guide` page explains VŠE Prague's systems and tools for international students in plain English and Czech.
+A dedicated `/guide` page is a full onboarding tutorial covering VŠE Prague's systems, the enrollment process, and how to use Kreditožrouti — available in Czech and English.
 
-**What it covers:**
-- What InSIS is and how to navigate it
-- The ECTS credit system at VŠE
-- How to use Kreditožrouti step-by-step (5 steps from setup to enrollment)
-- What Kreditožrouti does NOT do (to avoid confusion with InSIS enrollment)
+**What it covers (6 sections):**
+1. **VŠE Credit System** — 216 vouchers, 180-credit goal, 20-credit/semester rule, course categories (oP/oV/oJ1/TV/cVB), grading table with the 4+ resit mechanic, linked FIS video guides
+2. **Campus Locations** — Žižkov (RB/NB/SB/IB) vs Jižní Město (JM) with 45-minute transit warning
+3. **Registration & Enrollment** — 3-phase flow: Registrace → Automatický zápis (3 rounds) → Ruční zápis; priority rules; first-year pre-assignment warning
+4. **Kreditožrouti Walkthrough** — 7 illustrated steps from faculty selection through timetable view
+5. **InSIS Registration** — 5-step InSIS walkthrough with screenshots; English version includes Czech UI label translations
+6. **Useful Links** — InSIS, VŠE IT Centre, FMV, ESN Buddy Programme, Exchange Office, academic calendar PDF
 
 **Access:** Footer → Student Guide, or navigate directly to `/guide`. The page redirects to `/guide/en` or `/guide/cs` based on your active language.
 
