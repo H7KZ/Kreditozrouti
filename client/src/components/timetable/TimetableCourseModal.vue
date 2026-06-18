@@ -23,6 +23,7 @@ import IconMinus from '~icons/lucide/minus'
 import IconPlus from '~icons/lucide/plus'
 import IconSearch from '~icons/lucide/search'
 import IconTrash from '~icons/lucide/trash-2'
+import IconUser from '~icons/lucide/user'
 import IconX from '~icons/lucide/x'
 
 const { t } = useI18n()
@@ -299,6 +300,13 @@ onUnmounted(() => {
 									<div v-if="unit.location" class="flex items-center justify-between">
 										<span class="text-(--insis-gray-500)">{{ $t('common.location') }}:</span>
 										<span>{{ unit.location }}</span>
+									</div>
+									<div v-if="unit.lecturer" class="flex items-center justify-between">
+										<span class="flex items-center gap-1 text-(--insis-gray-500)">
+											<IconUser class="h-3.5 w-3.5" />
+											{{ $t('components.timetable.TimetableCourseModal.lecturer') }}
+										</span>
+										<span class="font-medium">{{ unit.lecturer }}</span>
 									</div>
 								</div>
 							</div>
