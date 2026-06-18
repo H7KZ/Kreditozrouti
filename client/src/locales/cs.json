@@ -98,6 +98,19 @@
 		"zápočet": "Zápočet",
 		"obhajoba": "Obhajoba"
 	},
+	"assessmentMethods": {
+		"písemná zkouška": "Písemná zkouška",
+		"ústní zkouška": "Ústní zkouška",
+		"projekt": "Projekt",
+		"seminární práce": "Seminární práce",
+		"aktivita": "Aktivita",
+		"test": "Test",
+		"průběžný test": "Průběžný test",
+		"závěrečný test": "Závěrečný test",
+		"prezentace": "Prezentace",
+		"esej": "Esej",
+		"případová studie": "Případová studie"
+	},
 	"courseLanguages": {
 		"čeština": "Čeština",
 		"angličtina": "Angličtina",
@@ -384,6 +397,7 @@
 				"category": "Kategorie",
 				"ectsCredits": "ECTS kredity",
 				"completionMode": "Způsob ukončení",
+				"assessmentMethods": "Způsoby hodnocení",
 				"lecturers": "Vyučující",
 				"timeRestriction": "Časové omezení",
 				"completedCourses": "Dokončené kurzy",
@@ -456,7 +470,8 @@
 				"filterDescription": "Zobrazuji předměty dostupné v {day} od {from} do {to}",
 				"slotFree": "Volný",
 				"slotConflict": "Konflikt: {ident}",
-				"slotCampusConflict": "Kampus: {ident}"
+				"slotCampusConflict": "Kampus: {ident}",
+				"lecturer": "Vyučující"
 			},
 			"SchedulePicker": {
 				"title": "Uložené rozvrhy",

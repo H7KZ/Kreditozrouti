@@ -70,7 +70,7 @@ values for its own dimension.
 **Fast path** (no joins needed): facets that only use `insis_courses` columns (`faculty_ids`, `semesters`, `years`,
 `modes_of_delivery`, `modes_of_completion`, `levels`, `years_of_study`, `ects`).
 
-**Slow path** (joins required): `lecturers` (needs units join + pipe-splitting), `languages` (needs pipe-splitting).
+**Slow path** (joins required): `lecturers` (needs units join + pipe-splitting), `languages` (needs pipe-splitting), `assessment_methods` (needs assessments join via `ca1` alias).
 
 **Pipe-delimited fields:** `languages` and `lecturers` are stored as `|`-delimited strings. `splitPipeDelimitedFacet`
 extracts individual values and deduplicates them across rows.

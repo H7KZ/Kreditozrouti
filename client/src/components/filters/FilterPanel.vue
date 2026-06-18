@@ -123,6 +123,15 @@ const facetConfig = computed(() => [
 		defaultCollapsed: true,
 	},
 	{
+		key: 'assessment_methods',
+		label: t('components.filters.FilterPanel.assessmentMethods'),
+		facets: coursesStore.facets.assessment_methods,
+		translations: 'assessmentMethods',
+		selected: filtersStore.filters.assessment_methods,
+		setter: (methods: string[]) => filtersStore.setFilter('assessment_methods', methods),
+		defaultCollapsed: true,
+	},
+	{
 		key: 'lecturers',
 		label: t('components.filters.FilterPanel.lecturers'),
 		facets: coursesStore.facets.lecturers,
@@ -134,7 +143,7 @@ const facetConfig = computed(() => [
 ])
 
 // Only show facets that have items and are visible
-const visibleFacets = computed(() => facetConfig.value.filter((f) => f.facets.length > 0 && (f.visible === undefined || f.visible)))
+const visibleFacets = computed(() => facetConfig.value.filter((f) => f.facets?.length > 0 && (f.visible === undefined || f.visible)))
 
 // Count active time filters
 const activeTimeFilterCount = computed(() => (filtersStore.filters.include_times?.length || 0) + (filtersStore.filters.exclude_times?.length || 0))

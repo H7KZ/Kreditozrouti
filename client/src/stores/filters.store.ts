@@ -24,6 +24,7 @@ function createDefaultFilters(): CoursesFilter {
 		ects: [],
 		mode_of_completions: [],
 		mode_of_deliveries: [],
+		assessment_methods: [],
 		completed_course_idents: [],
 		sort_by: 'ident',
 		sort_dir: 'asc',
@@ -56,6 +57,7 @@ export const useFiltersStore = defineStore('filters', () => {
 		if (f.categories?.length) count++
 		if (f.ects?.length) count++
 		if (f.mode_of_completions?.length) count++
+		if (f.assessment_methods?.length) count++
 		if (f.include_times?.length) count++
 		if (f.exclude_times?.length) count++
 		if (hideConflictingCourses.value) count++

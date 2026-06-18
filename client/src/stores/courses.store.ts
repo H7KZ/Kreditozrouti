@@ -32,6 +32,7 @@ export const useCoursesStore = defineStore('courses', () => {
 		categories: [],
 		ects: [],
 		modes_of_completion: [],
+		assessment_methods: [],
 		time_range: { min_time: 420, max_time: 1200 },
 	})
 	const pagination = ref({ limit: 50, offset: 0, count: 0, total: 0 })
@@ -72,6 +73,7 @@ export const useCoursesStore = defineStore('courses', () => {
 				ects: f.ects?.length ? f.ects : undefined,
 				mode_of_completions: f.mode_of_completions?.length ? f.mode_of_completions : undefined,
 				mode_of_deliveries: f.mode_of_deliveries?.length ? f.mode_of_deliveries : undefined,
+				assessment_methods: f.assessment_methods?.length ? f.assessment_methods : undefined,
 				completed_course_idents: f.completed_course_idents?.length ? f.completed_course_idents : undefined,
 			}
 
