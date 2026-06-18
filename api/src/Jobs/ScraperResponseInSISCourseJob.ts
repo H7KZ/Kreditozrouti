@@ -44,6 +44,24 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	await insertFacultiesBatch(mysql, [course.faculty?.ident, ...(course.study_plans?.map(p => p.facultyIdent) ?? [])])
 
+	if (course.content_hash) {
+		const existing = await mysql.selectFrom(CourseTable._table).select('content_hash').where('id', '=', course.id).executeTakeFirst()
+
+		if (existing?.content_hash === course.content_hash) {
+			LoggerJobContext.add({ skipped_unchanged: true })
+
+			await mysql
+				.updateTable(CourseTable._table)
+				.set({ last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ') })
+				.where('id', '=', course.id)
+				.execute()
+
+			await redis.publish(`course:updated:${course.id}`, JSON.stringify({ status: 'done', courseId: course.id, updatedAt: new Date().toISOString() }))
+
+			return
+		}
+	}
+
 	await mysql.transaction().execute(async trx => {
 		const coursePayload: NewCourse = {
 			id: course.id,
