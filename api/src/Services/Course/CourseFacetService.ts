@@ -230,14 +230,6 @@ export class CourseFacetService {
 	}
 
 	/**
-	 * Returns the min and max time values across all course unit slots matching the filters.
-	 * Defaults to `{ min_time: 0, max_time: 1440 }` when no slots exist.
-	 *
-	 * @param {CoursesFilter} filters - The full filter object for the current request.
-	 * @returns `{ min_time, max_time }` in minutes from midnight; defaults to `{ 0, 1440 }` when
-	 *   no slots exist.
-	 */
-	/**
 	 * Returns assessment method values from course_assessments joined via ca1 alias.
 	 * Always forces the assessments join.
 	 *
@@ -254,7 +246,14 @@ export class CourseFacetService {
 			.execute() as Promise<FacetItem[]>
 	}
 
-	// Returns min/max time in minutes from midnight; used for the time range slider
+	/**
+	 * Returns the min and max time values across all course unit slots matching the filters.
+	 * Defaults to `{ min_time: 0, max_time: 1440 }` when no slots exist.
+	 *
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @returns `{ min_time, max_time }` in minutes from midnight; defaults to `{ 0, 1440 }` when
+	 *   no slots exist.
+	 */
 	static async getTimeRangeFacet(filters: CoursesFilter) {
 		const result = await CourseFilterBuilder.buildFilterQuery(filters, 'include_times', { slots: true })
 			.select(eb => [eb.fn.min<number>('cus1.time_from').as('min_time'), eb.fn.max<number>('cus1.time_to').as('max_time')])
