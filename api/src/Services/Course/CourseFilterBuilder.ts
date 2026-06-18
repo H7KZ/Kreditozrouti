@@ -1,14 +1,16 @@
 import { AliasedExpression, Nullable, SelectQueryBuilder, sql } from 'kysely'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
-import { CourseTable, CourseUnitSlotTable, CourseUnitTable, Database, StudyPlanCourseTable } from '@api/Database/types'
+import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, Database, StudyPlanCourseTable } from '@api/Database/types'
 import { buildSlotConflictConditions } from '@api/utils/timeConflict'
 
 type QueryBuilder = SelectQueryBuilder<
 	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> } & {
+		ca1: Nullable<CourseAssessmentTable>
+	} & {
 		fts: Nullable<{ fts_id: number; relevance_score: number }>
 	},
-	'c1' | 'cu1' | 'cus1' | 'spc1' | 'fts',
+	'c1' | 'cu1' | 'cus1' | 'spc1' | 'ca1' | 'fts',
 	object
 >
 
@@ -27,11 +29,12 @@ export class CourseFilterBuilder {
 	public static buildFilterQuery(
 		filters: Partial<CoursesFilter>,
 		ignore?: string,
-		forceJoin: { units?: boolean; slots?: boolean; studyPlan?: boolean } = {}
+		forceJoin: { units?: boolean; slots?: boolean; studyPlan?: boolean; assessments?: boolean } = {}
 	): QueryBuilder {
 		const needsUnitsJoin = this.requiresUnitsJoin(filters, ignore) || forceJoin.units
 		const needsSlotsJoin = this.requiresSlotsJoin(filters, ignore) || forceJoin.slots
 		const needsStudyPlanJoin = this.requiresStudyPlanJoin(filters, ignore) || forceJoin.studyPlan
+		const needsAssessmentsJoin = (!!filters.assessment_methods?.length && ignore !== 'assessment_methods') || forceJoin.assessments
 
 		let query: QueryBuilder = mysql.selectFrom(`${CourseTable._table} as c1`) as QueryBuilder
 
@@ -55,6 +58,10 @@ export class CourseFilterBuilder {
 			} else {
 				query = query.leftJoin(`${StudyPlanCourseTable._table} as spc1`, 'c1.id', 'spc1.course_id')
 			}
+		}
+
+		if (needsAssessmentsJoin) {
+			query = query.leftJoin(`${CourseAssessmentTable._table} as ca1`, 'ca1.course_id', 'c1.id')
 		}
 
 		return this.applyAllFilters(query, filters, ignore)
@@ -219,6 +226,18 @@ export class CourseFilterBuilder {
 			query = query.where('c1.mode_of_delivery', 'in', filters.mode_of_deliveries)
 		}
 
+		if (filters.assessment_methods?.length && !['assessment_methods'].includes(ignore!)) {
+			query = query.where(eb =>
+				eb.exists(
+					eb
+						.selectFrom(`${CourseAssessmentTable._table} as ca_filter`)
+						.select(sql.lit(1).as('one'))
+						.whereRef('ca_filter.course_id', '=', 'c1.id')
+						.where('ca_filter.method', 'in', filters.assessment_methods!)
+				)
+			)
+		}
+
 		// Availability filters
 		if (filters.completed_course_idents?.length && !['completed_course_idents'].includes(ignore!)) {
 			query = query.where('c1.ident', 'not in', filters.completed_course_idents)
@@ -304,7 +323,8 @@ export class CourseFilterBuilder {
 			filters.lecturers?.length ??
 			filters.study_plan_ids?.length ??
 			filters.groups?.length ??
-			filters.categories?.length
+			filters.categories?.length ??
+			filters.assessment_methods?.length
 		)
 	}
 }
