@@ -11,6 +11,8 @@ A complete reference for every Kreditožrouti feature. Jump to the section you n
 - [Saved Schedules](#saved-schedules)
 - [Mark as completed](#mark-as-completed)
 - [Language and theme](#language-and-theme)
+- [International Student Guide](#international-student-guide)
+- [First-visit onboarding modal](#first-visit-onboarding-modal)
 
 ---
 
@@ -160,3 +162,27 @@ Both settings are in the top bar and are saved in your browser.
 |--------------|-------------------------------------------------|
 | **Language** | Czech (čeština) · English                       |
 | **Theme**    | Light · Dark · System (follows your OS setting) |
+
+---
+
+## International Student Guide
+
+A dedicated `/guide` page explains VŠE Prague's systems and tools for international students in plain English and Czech.
+
+**What it covers:**
+- What InSIS is and how to navigate it
+- The ECTS credit system at VŠE
+- How to use Kreditožrouti step-by-step (5 steps from setup to enrollment)
+- What Kreditožrouti does NOT do (to avoid confusion with InSIS enrollment)
+
+**Access:** Footer → Student Guide, or navigate directly to `/guide`. The page redirects to `/guide/en` or `/guide/cs` based on your active language.
+
+---
+
+## First-visit onboarding modal
+
+Non-Czech browsers (detected via `navigator.language`) see a welcome modal on their first visit. The modal explains what Kreditožrouti does and links directly to the English guide.
+
+- Shown once per browser — dismissed state saved in `localStorage` (`kreditozrouti:guide-seen`)
+- Dismissed by: clicking ×, clicking "Got it", or clicking "Read the international student guide"
+- Czech browsers never see the modal
