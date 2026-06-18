@@ -84,6 +84,8 @@
 	"courseCategories": {
 		"compulsory": "Compulsory courses",
 		"elective": "Elective courses",
+		"elective_faculty": "Faculty elective courses",
+		"elective_university": "University-wide elective courses",
 		"language": "Language courses (compulsory electives)",
 		"state_exam": "State exams",
 		"prohibited": "Prohibited course",
@@ -185,6 +187,9 @@
 		"removeTimeFilter": "Remove time filter",
 		"closeCourseModal": "Close course details",
 		"switchLanguage": "Switch language",
+		"mobileBanner": {
+			"message": "Kreditožrouti is optimized for desktop. For the best experience, we recommend using a PC."
+		},
 		"announcements": {
 			"coursesFound": "Found {count} course | Found {count} courses",
 			"noCoursesFound": "No courses found",

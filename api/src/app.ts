@@ -12,6 +12,7 @@ import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Handlers/ErrorHandler'
 import { metricsHandler, metricsMiddleware } from '@api/metrics'
+import LoggerMiddleware from '@api/Middlewares/LoggerMiddleware'
 import { Paths } from '@api/paths'
 import AdminRoutes from '@api/Routes/AdminRoutes'
 import CommandsRoutes from '@api/Routes/CommandsRoutes'
@@ -71,6 +72,7 @@ if (!Config.isEnvLocal()) {
 
 app.use(session(sessionOptions))
 app.use(compression({}))
+app.use(LoggerMiddleware)
 
 // Metrics
 app.use(responseTime())

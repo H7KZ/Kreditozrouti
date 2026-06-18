@@ -54,7 +54,7 @@ function handleComplete() {
 			type: 'success',
 			title: t('components.wizard.StudyPlanWizard.setupCompleteTitle'),
 			description: t('components.wizard.StudyPlanWizard.setupCompleteDescription'),
-			timeout: 6000,
+			timeout: 20_000,
 		})
 		router.push('/courses')
 	}
@@ -70,7 +70,7 @@ function handleSkipCompletedCourses() {
 			type: 'success',
 			title: t('components.wizard.StudyPlanWizard.setupCompleteTitle'),
 			description: t('components.wizard.StudyPlanWizard.setupCompleteDescription'),
-			timeout: 6000,
+			timeout: 20_000,
 		})
 		router.push('/courses')
 	}

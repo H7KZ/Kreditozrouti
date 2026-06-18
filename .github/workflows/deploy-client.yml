@@ -10,7 +10,7 @@ name: Deploy Client
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
     paths:
       - "client/**"
       - "shared/**"
