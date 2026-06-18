@@ -501,6 +501,7 @@
 		"links": {
 			"title": "Odkazy",
 			"about": "O aplikaci",
+			"guide": "Průvodce studenta",
 			"compliance": "Compliance a ochrana soukromí",
 			"github": "GitHub repozitář",
 			"insis": "Oficiální InSIS"
@@ -515,6 +516,14 @@
 			"version": "Verze {version}",
 			"beta": "Beta verze",
 			"disclaimer": "Data jsou stažena z InSISu a nemusí být 100% přesná."
+		}
+	},
+	"guide": {
+		"onboardingModal": {
+			"title": "Vítejte v Kreditožroutech",
+			"body": "Kreditožrouti vám pomůže naplánovat rozvrh na VŠE před otevřením zápisů — filtrujte předměty, odhalte kolize a sestavte bezkolizní rozvrh.",
+			"readGuide": "Přečíst průvodce pro studenty",
+			"dismiss": "Rozumím"
 		}
 	}
 }
