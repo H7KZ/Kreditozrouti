@@ -2,7 +2,7 @@ import type { FacetItem } from '@shared/http/facets'
 import { sql } from 'kysely'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
-import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
+import { Course, CourseAssessmentTable, CourseTable, ExcludeMethods } from '@api/Database/types'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 
@@ -34,7 +34,7 @@ export class CourseFacetService {
 	 * @returns Object with all facet dimensions computed in parallel.
 	 */
 	static async computeAllFacets(filters: CoursesFilter) {
-		const [faculties, days, lecturersRaw, languagesRaw, levels, semesters, years, groups, categories, ects, modesOfCompletion, timeRange] =
+		const [faculties, days, lecturersRaw, languagesRaw, levels, semesters, years, groups, categories, ects, modesOfCompletion, assessmentMethods, timeRange] =
 			await Promise.all([
 				this.getSimpleFacet(filters, 'faculty_id'),
 				this.getDayFacet(filters),
@@ -47,6 +47,7 @@ export class CourseFacetService {
 				this.getCategoryFacet(filters),
 				this.getSimpleFacet(filters, 'ects'),
 				this.getSimpleFacet(filters, 'mode_of_completion'),
+				this.getAssessmentMethodFacet(filters),
 				this.getTimeRangeFacet(filters)
 			])
 
@@ -65,6 +66,7 @@ export class CourseFacetService {
 			categories,
 			ects,
 			modes_of_completion: modesOfCompletion,
+			assessment_methods: assessmentMethods,
 			time_range: timeRange
 		}
 	}
@@ -235,6 +237,23 @@ export class CourseFacetService {
 	 * @returns `{ min_time, max_time }` in minutes from midnight; defaults to `{ 0, 1440 }` when
 	 *   no slots exist.
 	 */
+	/**
+	 * Returns assessment method values from course_assessments joined via ca1 alias.
+	 * Always forces the assessments join.
+	 *
+	 * @param {CoursesFilter} filters - The full filter object for the current request.
+	 * @returns {Promise<FacetItem[]>} Assessment method values; always forces assessments join.
+	 */
+	static async getAssessmentMethodFacet(filters: CoursesFilter): Promise<FacetItem[]> {
+		return CourseFilterBuilder.buildFilterQuery(filters, 'assessment_methods', { assessments: true })
+			.select('ca1.method as value')
+			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
+			.where('ca1.method', 'is not', null)
+			.groupBy('ca1.method')
+			.orderBy('count', 'desc')
+			.execute() as Promise<FacetItem[]>
+	}
+
 	// Returns min/max time in minutes from midnight; used for the time range slider
 	static async getTimeRangeFacet(filters: CoursesFilter) {
 		const result = await CourseFilterBuilder.buildFilterQuery(filters, 'include_times', { slots: true })
