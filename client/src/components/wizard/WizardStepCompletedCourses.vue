@@ -94,7 +94,7 @@ const totalCompleted = computed(() => props.completedCourseIdents.length)
 
 /** Sorted categories — ordered by priority */
 const sortedEntries = computed(() => {
-	const priority = ['compulsory', 'elective', 'language', 'state_exam', 'physical_education', 'beyond_scope']
+	const priority = ['compulsory', 'elective_faculty', 'elective_university', 'elective', 'language', 'state_exam', 'physical_education', 'beyond_scope']
 	return [...props.coursesByCategory.entries()].sort(([a], [b]) => {
 		const ai = priority.indexOf(a)
 		const bi = priority.indexOf(b)
@@ -209,7 +209,7 @@ function clearSearch() {
 						v-for="course in courses"
 						:key="course.id"
 						:class="[
-							'flex cursor-pointer items-center gap-3 border-b border-(--insis-border-light) px-3 py-2 transition-colors last:border-b-0',
+							'relative flex cursor-pointer items-center gap-3 border-b border-(--insis-border-light) px-3 py-2 transition-colors last:border-b-0',
 							isCompleted(course.ident) ? 'bg-(--insis-success-light)' : 'hover:bg-(--insis-gray-50)',
 						]"
 					>

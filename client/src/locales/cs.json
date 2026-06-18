@@ -84,6 +84,8 @@
 	"courseCategories": {
 		"compulsory": "Povinné předměty",
 		"elective": "Volitelné předměty",
+		"elective_faculty": "Oborové volitelné předměty",
+		"elective_university": "Celoškolsky volitelné předměty",
 		"language": "Jazykově (povinně volitelné) předměty",
 		"state_exam": "Státní zkoušky",
 		"prohibited": "Zakázaný předmět",
@@ -185,6 +187,9 @@
 		"removeTimeFilter": "Odebrat časový filtr",
 		"closeCourseModal": "Zavřít detail předmětu",
 		"switchLanguage": "Změnit jazyk",
+		"mobileBanner": {
+			"message": "Kreditožrouti je optimalizován pro počítač. Pro nejlepší zážitek doporučujeme použít PC."
+		},
 		"announcements": {
 			"coursesFound": "Nalezen {count} kurz | Nalezeny {count} kurzy | Nalezeno {count} kurzů",
 			"noCoursesFound": "Nebyly nalezeny žádné kurzy",
@@ -242,7 +247,9 @@
 				"title": "Vítejte v Kreditožroutech",
 				"description": "Vyberte svůj studijní plán pro zobrazení dostupných předmětů",
 				"currentSelection": "Aktuální výběr:",
-				"startOver": "Začít znovu"
+				"startOver": "Začít znovu",
+				"setupCompleteTitle": "Nastavení dokončeno!",
+				"setupCompleteDescription": "Nyní si procházejte předměty a sestavte svůj rozvrh."
 			},
 			"WizardSteps": {
 				"faculty": "Fakulta",

@@ -11,3 +11,7 @@ networks:
   monitoring-network:
     name: monitoring-network
     external: true
+
+  alloy-network:
+    name: alloy-network
+    external: true
