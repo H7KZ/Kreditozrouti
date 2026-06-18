@@ -40,6 +40,14 @@ export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCou
     }
     LoggerJobContext.add({ hash_miss: true, course_id: courseId })
 
+    if (ExtractInSISCourseService.isNotFound(result.data)) {
+        LoggerJobContext.add({ not_found: true, course_id: courseId })
+        if (courseId !== null) {
+            await QueueService.addCourseNotFound(courseId)
+        }
+        return null
+    }
+
     try {
         const course = ExtractInSISCourseService.extract(result.data, data.url)
 
