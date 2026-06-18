@@ -20,6 +20,7 @@ export interface CoursesFilter {
     ects?: number[]
     mode_of_completions?: string[]
     mode_of_deliveries?: string[]
+    assessment_methods?: string[]
     completed_course_idents?: string[]
     sort_by: 'ident' | 'title' | 'ects' | 'faculty' | 'year' | 'semester'
     sort_dir: 'asc' | 'desc'
