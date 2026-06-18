@@ -123,6 +123,15 @@ const facetConfig = computed(() => [
 		defaultCollapsed: true,
 	},
 	{
+		key: 'assessment_methods',
+		label: t('components.filters.FilterPanel.assessmentMethods'),
+		facets: coursesStore.facets.assessment_methods,
+		translations: 'assessmentMethods',
+		selected: filtersStore.filters.assessment_methods,
+		setter: (methods: string[]) => filtersStore.setFilter('assessment_methods', methods),
+		defaultCollapsed: true,
+	},
+	{
 		key: 'lecturers',
 		label: t('components.filters.FilterPanel.lecturers'),
 		facets: coursesStore.facets.lecturers,
