@@ -55,11 +55,15 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 		if (dbDate === course.last_modified_date) {
 			LoggerJobContext.add({ skipped_unchanged: true })
+
 			await mysql
 				.updateTable(CourseTable._table)
 				.set({ last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ') })
 				.where('id', '=', course.id)
 				.execute()
+
+			await redis.publish(`course:updated:${course.id}`, JSON.stringify({ status: 'done', courseId: course.id, updatedAt: new Date().toISOString() }))
+
 			return
 		}
 	}
