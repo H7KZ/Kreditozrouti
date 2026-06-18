@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 /**
  * TimetableCourseModal
  *
@@ -148,7 +148,7 @@ watch(() => props.unit.courseId, fetchCourse, { immediate: true })
 
 function handleSearchInTimeslot() {
 	// Apply time filter for this slot
-	filtersStore.filters.include_times = [{ day: props.unit.day ?? 'Pondělí', time_from: props.unit.timeFrom, time_to: props.unit.timeTo }]
+	filtersStore.filters.include_times = [{ day: props.unit.day ?? 'PondÄ›lÃ­', time_from: props.unit.timeFrom, time_to: props.unit.timeTo }]
 	filtersStore.filters.offset = 0
 
 	// Switch to list view
@@ -300,6 +300,10 @@ onUnmounted(() => {
 										<span class="text-(--insis-gray-500)">{{ $t('common.location') }}:</span>
 										<span>{{ unit.location }}</span>
 									</div>
+									<div v-if="unit.lecturer" class="flex items-center justify-between">
+										<span class="text-(--insis-gray-500)">{{ $t('components.timetable.TimetableCourseModal.lecturer') }}:</span>
+										<span class="font-medium">{{ unit.lecturer }}</span>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -348,6 +352,9 @@ onUnmounted(() => {
 														<span class="font-medium">{{ formatSlotInfo(slot) }}</span>
 														<span class="truncate text-(--insis-gray-600)">{{ slot.location || '-' }}</span>
 													</div>
+													<div v-if="courseUnit.lecturer" class="pl-[44px] text-xs text-(--insis-gray-500)">
+														{{ courseUnit.lecturer }}
+													</div>
 
 													<div v-if="courseUnit.capacity !== undefined" class="mt-1 pl-[44px]">
 														<span :class="['text-xs', getCapacityClass(courseUnit.capacity)]">
@@ -355,7 +362,7 @@ onUnmounted(() => {
 														</span>
 													</div>
 
-													<!-- Conflict status badge — full width below slot info -->
+													<!-- Conflict status badge â€” full width below slot info -->
 													<div
 														v-if="
 															unitConflictStatuses[courseUnit.id]?.type === 'conflict' ||
@@ -365,7 +372,7 @@ onUnmounted(() => {
 													>
 														<template v-if="unitConflictStatuses[courseUnit.id]?.type === 'conflict'">
 															<span class="insis-badge insis-badge-danger text-xs">
-																⚠
+																âš 
 																{{
 																	$t('components.timetable.TimetableCourseModal.slotConflict', {
 																		ident: (unitConflictStatuses[courseUnit.id] as { type: 'conflict'; ident: string })
@@ -376,7 +383,7 @@ onUnmounted(() => {
 														</template>
 														<template v-else-if="unitConflictStatuses[courseUnit.id]?.type === 'campus'">
 															<span class="insis-badge insis-badge-warning text-xs">
-																🏫
+																ðŸ«
 																{{
 																	$t('components.timetable.TimetableCourseModal.slotCampusConflict', {
 																		ident: (unitConflictStatuses[courseUnit.id] as { type: 'campus'; ident: string }).ident,
