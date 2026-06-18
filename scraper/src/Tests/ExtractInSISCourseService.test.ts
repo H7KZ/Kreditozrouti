@@ -47,4 +47,15 @@ describe('ExtractInSISCourseService', () => {
             expect(ExtractInSISCourseService.extractIdFromHtml('<html><body></body></html>')).toBeNull()
         })
     })
+
+    describe('isNotFound', () => {
+        it('returns true for InSIS not-found error page fixture', () => {
+            const html = load('not-found.html')
+            expect(ExtractInSISCourseService.isNotFound(html)).toBe(true)
+        })
+
+        it('returns false for normal course page', () => {
+            expect(ExtractInSISCourseService.isNotFound('<html><body>Kód předmětu: 4IT123</body></html>')).toBe(false)
+        })
+    })
 })

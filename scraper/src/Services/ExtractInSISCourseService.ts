@@ -38,6 +38,14 @@ export default class ExtractInSISCourseService {
     }
 
     /**
+     * Returns true when InSIS reports that the course does not exist
+     * or its syllabus is not publicly accessible.
+     */
+    static isNotFound(html: string): boolean {
+        return html.includes('neexistuje nebo jeho sylabus není veřejně přístupný')
+    }
+
+    /**
      * Main extraction method - parses complete course data from syllabus page.
      */
     static extract(html: string, url: string): ScraperInSISCourse {
