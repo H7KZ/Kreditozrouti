@@ -516,6 +516,7 @@
 		"links": {
 			"title": "Links",
 			"about": "About",
+			"guide": "Student Guide",
 			"compliance": "Compliance & Privacy Policy",
 			"github": "GitHub Repository",
 			"insis": "InSIS Official"
@@ -530,6 +531,14 @@
 			"version": "Version {version}",
 			"beta": "Beta Release",
 			"disclaimer": "Data is scraped from InSIS and may not be 100% accurate."
+		}
+	},
+	"guide": {
+		"onboardingModal": {
+			"title": "Welcome to Kreditožrouti",
+			"body": "Kreditožrouti helps you plan your VŠE Prague timetable before enrollment opens — filter courses, detect conflicts, and build a conflict-free schedule.",
+			"readGuide": "Read the international student guide",
+			"dismiss": "Got it"
 		}
 	}
 }

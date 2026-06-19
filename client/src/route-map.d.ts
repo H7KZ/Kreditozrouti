@@ -66,6 +66,27 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/guide/': RouteRecordInfo<
+      '/guide/',
+      '/guide',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/guide/cs': RouteRecordInfo<
+      '/guide/cs',
+      '/guide/cs',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/guide/en': RouteRecordInfo<
+      '/guide/en',
+      '/guide/en',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/legal/[slug]': RouteRecordInfo<
       '/legal/[slug]',
       '/legal/:slug',
@@ -121,6 +142,30 @@ declare module 'vue-router/auto-routes' {
     'src/pages/courses.vue': {
       routes:
         | '/courses'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/guide/index.vue': {
+      routes:
+        | '/guide/'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/guide/cs.vue': {
+      routes:
+        | '/guide/cs'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/guide/en.vue': {
+      routes:
+        | '/guide/en'
       views:
         | never
       pathParamNames:
