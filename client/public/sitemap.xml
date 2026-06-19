@@ -31,4 +31,20 @@
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
+    <url>
+        <loc>https://kreditozrouti.cz/guide/cs</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://kreditozrouti.cz/guide/cs"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kreditozrouti.cz/guide/en"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://kreditozrouti.cz/guide/cs"/>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://kreditozrouti.cz/guide/en</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kreditozrouti.cz/guide/en"/>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://kreditozrouti.cz/guide/cs"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://kreditozrouti.cz/guide/cs"/>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
 </urlset>
