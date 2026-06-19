@@ -3,8 +3,7 @@ import { onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useSeoMeta } from '@unhead/vue'
-import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
-import ThemeToggle from '@client/components/common/ThemeToggle.vue'
+import AppHeader from '@client/components/common/AppHeader.vue'
 import StudyPlanWizard from '@client/components/wizard/StudyPlanWizard.vue'
 import { useWizardDataStore, useWizardStore } from '@client/stores'
 
@@ -39,23 +38,7 @@ onMounted(() => {
 
 <template>
 	<div class="flex min-h-screen flex-col bg-(--insis-bg)">
-		<!-- Header -->
-		<header
-			class="flex shrink-0 items-center justify-between border-b border-(--insis-border) bg-(--insis-surface) px-4 py-3 shadow-(--insis-shadow-sm) sm:px-6"
-		>
-			<div class="flex items-center gap-3">
-				<!-- Logo mark -->
-				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="flex h-8 w-8 shrink-0 items-center justify-center object-contain" />
-				<div>
-					<div class="text-[15px] font-semibold text-(--insis-blue)">{{ $t('pages.index.title') }}</div>
-					<div class="text-[11px] text-(--insis-text-3)">{{ $t('pages.index.subtitle') }}</div>
-				</div>
-			</div>
-			<div class="flex items-center gap-3">
-				<ThemeToggle />
-				<LanguageSwitcher />
-			</div>
-		</header>
+		<AppHeader />
 
 		<!-- Main Content -->
 		<main

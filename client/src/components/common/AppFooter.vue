@@ -6,6 +6,7 @@ import IconExternalLink from '~icons/lucide/external-link'
 import IconFileText from '~icons/lucide/file-text'
 import IconFingerPrintPattern from '~icons/lucide/fingerprint-pattern'
 import IconGithub from '~icons/lucide/github'
+import IconBookOpen from '~icons/lucide/book-open'
 import IconInfo from '~icons/lucide/info'
 import IconMail from '~icons/lucide/mail'
 
@@ -41,6 +42,15 @@ const aboutPath = computed(() => (locale.value === 'cs' ? '/about/cs' : '/about/
 						{{ t('footer.links.title') }}
 					</h3>
 					<ul class="space-y-2 text-sm">
+						<li>
+							<RouterLink
+								to="/guide"
+								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
+							>
+								<IconBookOpen class="h-4 w-4 shrink-0" aria-hidden="true" />
+								{{ t('footer.links.guide') }}
+							</RouterLink>
+						</li>
 						<li>
 							<RouterLink
 								:to="aboutPath"

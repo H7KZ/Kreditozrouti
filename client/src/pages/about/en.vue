@@ -2,8 +2,7 @@
 import { watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useHead, useSeoMeta } from '@unhead/vue'
-import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
-import ThemeToggle from '@client/components/common/ThemeToggle.vue'
+import AppHeader from '@client/components/common/AppHeader.vue'
 import { i18n } from '@client/i18n'
 import IconBookmark from '~icons/lucide/bookmark'
 import IconBuilding2 from '~icons/lucide/building-2'
@@ -100,22 +99,7 @@ useHead({
 
 <template>
 	<div class="flex min-h-screen flex-col bg-(--insis-bg)">
-		<!-- Header -->
-		<header
-			class="flex shrink-0 items-center justify-between border-b border-(--insis-border) bg-(--insis-surface) px-4 py-3 shadow-(--insis-shadow-sm) sm:px-6"
-		>
-			<RouterLink to="/" class="flex items-center gap-3">
-				<img src="/logo/kreditozrouti-transparent-cropped.png" alt="K" class="h-8 w-8 shrink-0 object-contain" />
-				<div>
-					<div class="text-[15px] font-semibold text-(--insis-blue)">Kreditožrouti</div>
-					<div class="text-[11px] text-(--insis-text-3)">VŠE Timetable Planner</div>
-				</div>
-			</RouterLink>
-			<div class="flex items-center gap-3">
-				<ThemeToggle />
-				<LanguageSwitcher />
-			</div>
-		</header>
+		<AppHeader />
 
 		<main class="mx-auto w-full max-w-4xl flex-1 px-4 py-12 sm:px-6">
 			<!-- Hero -->

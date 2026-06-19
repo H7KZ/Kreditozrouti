@@ -5,6 +5,7 @@ import analytics from '@client/analytics'
 import Alerts from '@client/components/alert/Alerts.vue'
 import AppFooter from '@client/components/common/AppFooter.vue'
 import MobileBanner from '@client/components/common/MobileBanner.vue'
+import OnboardingModal from '@client/components/common/OnboardingModal.vue'
 import ScreenReaderAnnouncer from '@client/components/common/ScreenReaderAnnouncer.vue'
 
 const { t } = useI18n()
@@ -24,6 +25,7 @@ onMounted(() => {
 			{{ t('common.skipToContent') }}
 		</a>
 		<MobileBanner />
+		<OnboardingModal />
 		<RouterView class="flex-1" />
 		<AppFooter />
 		<Alerts />
