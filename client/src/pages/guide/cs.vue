@@ -47,15 +47,10 @@ useHead({
 
 		<main id="main-content" class="mx-auto max-w-4xl px-4 py-10">
 			<h1 class="mb-2 text-3xl font-bold text-(--insis-gray-900)">Průvodce pro studenty</h1>
-			<p class="mb-8 text-(--insis-gray-500)">
-				Vše, co potřebuješ vědět pro úspěšný start na VŠE — od kreditů přes Kreditožrouti až po zápis v InSISu.
-			</p>
+			<p class="mb-8 text-(--insis-gray-500)">Vše, co potřebuješ vědět pro úspěšný start na VŠE — od kreditů přes Kreditožrouti až po zápis v InSISu.</p>
 
 			<!-- TOC -->
-			<nav
-				class="mb-12 rounded-lg border border-(--insis-border) bg-(--insis-surface) p-5"
-				aria-label="Obsah průvodce"
-			>
+			<nav class="mb-12 rounded-lg border border-(--insis-border) bg-(--insis-surface) p-5" aria-label="Obsah průvodce">
 				<p class="mb-3 font-semibold text-(--insis-gray-900)">V tomto průvodci</p>
 				<ol class="space-y-1 text-sm">
 					<li><a href="#credits" class="text-(--insis-blue) hover:underline">1. Kreditový systém VŠE</a></li>
@@ -75,18 +70,17 @@ useHead({
 				</div>
 
 				<p class="mb-4 text-(--insis-gray-700)">
-					Na začátku bakalářského studia dostaneš <strong>216 kreditových poukázek</strong>. Ty fungují jako
-					„vysokoškolská měna" — za každý zapsaný předmět zaplatíš poukázky odpovídající počtu jeho kreditů.
-					Pokud předmět úspěšně splníš, přičtou se ti kredity na konto. Pro získání bakalářského titulu
-					potřebuješ nasbírat <strong>180 kreditů</strong> rozdělených do předepsaných kategorií.
+					Na začátku bakalářského studia dostaneš <strong>216 kreditových poukázek</strong>. Ty fungují jako „vysokoškolská měna" — za každý zapsaný
+					předmět zaplatíš poukázky odpovídající počtu jeho kreditů. Pokud předmět úspěšně splníš, přičtou se ti kredity na konto. Pro získání
+					bakalářského titulu potřebuješ nasbírat <strong>180 kreditů</strong> rozdělených do předepsaných kategorií.
 				</p>
 
 				<div class="mb-6 flex gap-3 rounded-lg border border-(--insis-border) bg-(--insis-surface) p-4">
 					<IconInfo class="mt-0.5 h-5 w-5 shrink-0 text-(--insis-blue)" aria-hidden="true" />
 					<p class="text-sm text-(--insis-gray-700)">
-						<strong>Pravidlo 20 kreditů za semestr:</strong> ke konci každého semestru musíš mít v součtu
-						odstudováno alespoň <code class="rounded bg-(--insis-border) px-1">semestr × 20</code> kreditů.
-						Pokud za tuto hranici spadneš, jsou ti z poukázek odečteny kredity za chybějící počet — tzv. penalizace.
+						<strong>Pravidlo 20 kreditů za semestr:</strong> ke konci každého semestru musíš mít v součtu odstudováno alespoň
+						<code class="rounded bg-(--insis-border) px-1">semestr × 20</code> kreditů. Pokud za tuto hranici spadneš, jsou ti z poukázek odečteny
+						kredity za chybějící počet — tzv. penalizace.
 					</p>
 				</div>
 
@@ -109,23 +103,17 @@ useHead({
 							<tr>
 								<td class="px-4 py-2 font-mono font-semibold">oV</td>
 								<td class="px-4 py-2">Povinně volitelný</td>
-								<td class="px-4 py-2">
-									Vyber si libovolné předměty z nabídky, dokud nedosáhneš požadovaného počtu kreditů.
-								</td>
+								<td class="px-4 py-2">Vyber si libovolné předměty z nabídky, dokud nedosáhneš požadovaného počtu kreditů.</td>
 							</tr>
 							<tr>
 								<td class="px-4 py-2 font-mono font-semibold">oJ1</td>
 								<td class="px-4 py-2">Jazykový – 1. jazyk</td>
-								<td class="px-4 py-2">
-									Na FIS je to angličtina — celkem 12 kreditů (4 předměty × 3 kr). Na jiných fakultách může být jinak.
-								</td>
+								<td class="px-4 py-2">Na FIS je to angličtina — celkem 12 kreditů (4 předměty × 3 kr). Na jiných fakultách může být jinak.</td>
 							</tr>
 							<tr>
 								<td class="px-4 py-2 font-mono font-semibold">TV</td>
 								<td class="px-4 py-2">Tělesná výchova</td>
-								<td class="px-4 py-2">
-									0 kreditů, nestojí žádné poukázky. Za celé bakalářské studium musíš splnit 2 semestry.
-								</td>
+								<td class="px-4 py-2">0 kreditů, nestojí žádné poukázky. Za celé bakalářské studium musíš splnit 2 semestry.</td>
 							</tr>
 							<tr>
 								<td class="px-4 py-2 font-mono font-semibold">cVB</td>
@@ -179,9 +167,8 @@ useHead({
 				<div class="mb-6 flex gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4">
 					<IconAlertTriangle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
 					<p class="text-sm text-amber-800">
-						<strong>Specialita VŠE – známka 4+:</strong> Pokud získáš 50–59 bodů, dostaneš 4+ a máš nárok
-						na jeden opravný pokus zkoušky ještě během probíhajícího zkouškového období. Pokud uspěješ
-						(60+ bodů), 4+ se smaže. Pokud neuspěješ nebo pokus nevyužiješ, dostaneš 4.
+						<strong>Specialita VŠE – známka 4+:</strong> Pokud získáš 50–59 bodů, dostaneš 4+ a máš nárok na jeden opravný pokus zkoušky ještě během
+						probíhajícího zkouškového období. Pokud uspěješ (60+ bodů), 4+ se smaže. Pokud neuspěješ nebo pokus nevyužiješ, dostaneš 4.
 					</p>
 				</div>
 
@@ -196,9 +183,7 @@ useHead({
 						<IconYoutube class="h-6 w-6 shrink-0 text-red-500" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">Kreditový systém na VŠE</div>
-							<div class="text-sm text-(--insis-gray-500)">
-								Videopříručky FIS – kreditové poukázky, 180 kreditů a cesta k titulu
-							</div>
+							<div class="text-sm text-(--insis-gray-600)">Videopříručky FIS – kreditové poukázky, 180 kreditů a cesta k titulu</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
@@ -211,9 +196,7 @@ useHead({
 						<IconYoutube class="h-6 w-6 shrink-0 text-red-500" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">Předměty a studijní plány</div>
-							<div class="text-sm text-(--insis-gray-500)">
-								Videopříručky FIS – povinné, volitelné, jazyky, tělocvik a studijní plán
-							</div>
+							<div class="text-sm text-(--insis-gray-600)">Videopříručky FIS – povinné, volitelné, jazyky, tělocvik a studijní plán</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
@@ -226,9 +209,7 @@ useHead({
 						<IconYoutube class="h-6 w-6 shrink-0 text-red-500" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">Hodnocení z předmětů</div>
-							<div class="text-sm text-(--insis-gray-500)">
-								Videopříručky FIS – bodový systém, grading, 4+ a jak předmět splnit
-							</div>
+							<div class="text-sm text-(--insis-gray-600)">Videopříručky FIS – bodový systém, grading, 4+ a jak předmět splnit</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
@@ -247,7 +228,7 @@ useHead({
 				<div class="mb-4 grid gap-4 sm:grid-cols-2">
 					<div class="rounded-lg border border-(--insis-border) bg-(--insis-surface) p-4">
 						<p class="mb-1 font-semibold text-(--insis-gray-900)">Žižkov (hlavní kampus)</p>
-						<p class="text-sm text-(--insis-gray-500)">Náměstí W. Churchilla, Praha 3</p>
+						<p class="text-sm text-(--insis-gray-600)">Náměstí W. Churchilla, Praha 3</p>
 						<p class="mt-2 text-sm text-(--insis-gray-700)">
 							Místnosti začínají na:
 							<span class="font-mono font-semibold">RB, NB, SB, IB</span>
@@ -255,7 +236,7 @@ useHead({
 					</div>
 					<div class="rounded-lg border border-(--insis-border) bg-(--insis-surface) p-4">
 						<p class="mb-1 font-semibold text-(--insis-gray-900)">Jižní Město</p>
-						<p class="text-sm text-(--insis-gray-500)">Jižní Město, Praha 4</p>
+						<p class="text-sm text-(--insis-gray-600)">Jižní Město, Praha 4</p>
 						<p class="mt-2 text-sm text-(--insis-gray-700)">
 							Místnosti začínají na:
 							<span class="font-mono font-semibold">JM</span>
@@ -266,9 +247,8 @@ useHead({
 				<div class="flex gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4">
 					<IconAlertTriangle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
 					<p class="text-sm text-amber-800">
-						<strong>Pozor na přejezdy!</strong> Cesta mezi Žižkovem a Jižním Městem trvá přibližně
-						<strong>45 minut</strong> MHD. Nikdy si nezapisuj předměty v různých areálech s méně než
-						jedním volným blokem mezi sebou — stihnout přejezd za 15 minut je prakticky nemožné.
+						<strong>Pozor na přejezdy!</strong> Cesta mezi Žižkovem a Jižním Městem trvá přibližně <strong>45 minut</strong> MHD. Nikdy si nezapisuj
+						předměty v různých areálech s méně než jedním volným blokem mezi sebou — stihnout přejezd za 15 minut je prakticky nemožné.
 					</p>
 				</div>
 			</section>
@@ -281,8 +261,8 @@ useHead({
 				</div>
 
 				<p class="mb-6 text-(--insis-gray-700)">
-					Předměty se nezapisují najednou — probíhají dvě oddělené fáze před začátkem každého semestru.
-					Termíny najdeš v harmonogramu akademického roku na stránkách VŠE.
+					Předměty se nezapisují najednou — probíhají dvě oddělené fáze před začátkem každého semestru. Termíny najdeš v harmonogramu akademického
+					roku na stránkách VŠE.
 				</p>
 
 				<ol class="mb-6 space-y-6">
@@ -295,8 +275,8 @@ useHead({
 						<div>
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Registrace</h3>
 							<p class="text-(--insis-gray-700)">
-								Vyjádříš zájem o předměty a vybereš preferované časy přednášek a cvičení. V registracích
-								lze zvolit i přeplněná cvičení — systém to zatím neřeší.
+								Vyjádříš zájem o předměty a vybereš preferované časy přednášek a cvičení. V registracích lze zvolit i přeplněná cvičení — systém
+								to zatím neřeší.
 							</p>
 						</div>
 					</li>
@@ -309,8 +289,7 @@ useHead({
 						<div>
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Automatický zápis (3 kola)</h3>
 							<p class="mb-2 text-(--insis-gray-700)">
-								Systém automaticky přidělí místa na základě priorit. Pokud je o cvičení větší zájem než
-								kapacita, rozhoduje:
+								Systém automaticky přidělí místa na základě priorit. Pokud je o cvičení větší zájem než kapacita, rozhoduje:
 							</p>
 							<ul class="space-y-1 text-sm text-(--insis-gray-700)">
 								<li class="flex items-start gap-2">
@@ -341,9 +320,8 @@ useHead({
 						<div>
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Ruční zápis</h3>
 							<p class="text-(--insis-gray-700)">
-								Po automatickém zápisu si můžeš ručně upravit rozvrh — měnit časy nebo vyučující, dokud
-								jsou volná místa. Platí pravidlo „kdo dřív přijde". Ve <strong>3. kole</strong> si lze
-								zapsat i předměty, které jsi nezaregistroval/a.
+								Po automatickém zápisu si můžeš ručně upravit rozvrh — měnit časy nebo vyučující, dokud jsou volná místa. Platí pravidlo „kdo
+								dřív přijde". Ve <strong>3. kole</strong> si lze zapsat i předměty, které jsi nezaregistroval/a.
 							</p>
 						</div>
 					</li>
@@ -352,9 +330,9 @@ useHead({
 				<div class="mb-6 flex gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4">
 					<IconAlertTriangle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
 					<p class="text-sm text-amber-800">
-						<strong>Pro prváky:</strong> Předměty prvního semestru ti přidělí fakulta automaticky — máš
-						garantované místo. Pokud si ale v registracích změníš čas cvičení nebo předmět odhlásíš, tuto
-						prioritu ztratíš a místo ti nikdo nezaručí. Změny rozvrhu nech raději až na fázi ručního zápisu.
+						<strong>Pro prváky:</strong> Předměty prvního semestru ti přidělí fakulta automaticky — máš garantované místo. Pokud si ale v
+						registracích změníš čas cvičení nebo předmět odhlásíš, tuto prioritu ztratíš a místo ti nikdo nezaručí. Změny rozvrhu nech raději až na
+						fázi ručního zápisu.
 					</p>
 				</div>
 
@@ -368,9 +346,7 @@ useHead({
 						<IconYoutube class="h-6 w-6 shrink-0 text-red-500" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">Registrace a zápisy předmětů</div>
-							<div class="text-sm text-(--insis-gray-500)">
-								Videopříručky FIS – jak registrace probíhají, priority, ruční zápis
-							</div>
+							<div class="text-sm text-(--insis-gray-600)">Videopříručky FIS – jak registrace probíhají, priority, ruční zápis</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
@@ -381,14 +357,12 @@ useHead({
 			<section id="tool" class="mb-14" aria-labelledby="h-tool">
 				<div class="mb-4 flex items-center gap-2">
 					<IconCalendar class="h-5 w-5 text-(--insis-blue)" aria-hidden="true" />
-					<h2 id="h-tool" class="text-2xl font-bold text-(--insis-gray-900)">
-						4. Kreditožrouti – průvodce nástrojem
-					</h2>
+					<h2 id="h-tool" class="text-2xl font-bold text-(--insis-gray-900)">4. Kreditožrouti – průvodce nástrojem</h2>
 				</div>
 
 				<p class="mb-6 text-(--insis-gray-700)">
-					Kreditožrouti ti pomůže naplánovat rozvrh <em>před tím</em>, než se otevřou zápisy v InSISu.
-					Nejde o přihlašovací systém — skutečný zápis vždy probíhá v InSISu.
+					Kreditožrouti ti pomůže naplánovat rozvrh <em>před tím</em>, než se otevřou zápisy v InSISu. Nejde o přihlašovací systém — skutečný zápis
+					vždy probíhá v InSISu.
 				</p>
 
 				<ol class="space-y-10">
@@ -401,8 +375,7 @@ useHead({
 						<div class="flex-1">
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Vyber svoji fakultu</h3>
 							<p class="mb-3 text-(--insis-gray-700)">
-								Při prvním spuštění tě průvodce vyzve k výběru fakulty, na které studuješ nebo plánuješ
-								studovat.
+								Při prvním spuštění tě průvodce vyzve k výběru fakulty, na které studuješ nebo plánuješ studovat.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
 								<img
@@ -411,7 +384,7 @@ useHead({
 									class="w-full"
 									loading="lazy"
 								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Vyberte fakultu, na které studujete nebo plánujete studovat.
 								</figcaption>
 							</figure>
@@ -427,17 +400,12 @@ useHead({
 						<div class="flex-1">
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Vyber rok nástupu</h3>
 							<p class="mb-3 text-(--insis-gray-700)">
-								Zvol akademický rok, ve kterém jsi začal/a studovat. Pokud si nejsi jistý/á, zkontroluj
-								e-index v InSISu nebo se podívej na akademický rok prvního zapsaného semestru.
+								Zvol akademický rok, ve kterém jsi začal/a studovat. Pokud si nejsi jistý/á, zkontroluj e-index v InSISu nebo se podívej na
+								akademický rok prvního zapsaného semestru.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img
-									src="/guide/kreditozrouti_step_2.png"
-									alt="Krok 2 – výběr roku nástupu"
-									class="w-full"
-									loading="lazy"
-								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<img src="/guide/kreditozrouti_step_2.png" alt="Krok 2 – výběr roku nástupu" class="w-full" loading="lazy" />
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Pokud nevíš, který rok vybrat, zkontroluj svůj e-index v InSISu.
 								</figcaption>
 							</figure>
@@ -453,17 +421,12 @@ useHead({
 						<div class="flex-1">
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Vyber studijní plán</h3>
 							<p class="mb-3 text-(--insis-gray-700)">
-								Filtruj podle úrovně studia (Bc./Mgr.) nebo vyhledej podle názvu. Klikni na svůj
-								studijní plán. Pokud máš specializaci, vyber ji.
+								Filtruj podle úrovně studia (Bc./Mgr.) nebo vyhledej podle názvu. Klikni na svůj studijní plán. Pokud máš specializaci, vyber
+								ji.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img
-									src="/guide/kreditozrouti_step_3.png"
-									alt="Krok 3 – výběr studijního plánu"
-									class="w-full"
-									loading="lazy"
-								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<img src="/guide/kreditozrouti_step_3.png" alt="Krok 3 – výběr studijního plánu" class="w-full" loading="lazy" />
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Každý studijní program má vlastní sadu povinných a volitelných předmětů.
 								</figcaption>
 							</figure>
@@ -479,17 +442,12 @@ useHead({
 						<div class="flex-1">
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Označ splněné předměty</h3>
 							<p class="mb-3 text-(--insis-gray-700)">
-								Odškrtni předměty, které jsi již úspěšně splnil/a — přestanou se ti zobrazovat v hlavním
-								seznamu. Tento krok je volitelný, ale výrazně zpřehlední výběr.
+								Odškrtni předměty, které jsi již úspěšně splnil/a — přestanou se ti zobrazovat v hlavním seznamu. Tento krok je volitelný, ale
+								výrazně zpřehlední výběr.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img
-									src="/guide/kreditozrouti_step_4_select.png"
-									alt="Krok 4 – označení dokončených předmětů"
-									class="w-full"
-									loading="lazy"
-								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<img src="/guide/kreditozrouti_step_4_select.png" alt="Krok 4 – označení dokončených předmětů" class="w-full" loading="lazy" />
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Označ předměty, které jsi již absolvoval/a — aplikace je skryje ze seznamu.
 								</figcaption>
 							</figure>
@@ -505,17 +463,12 @@ useHead({
 						<div class="flex-1">
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Prohlédni si seznam předmětů</h3>
 							<p class="mb-3 text-(--insis-gray-700)">
-								Zobrazí se ti předměty relevantní pro tvůj studijní plán s jejich rozvrhovou akcí, ECTS
-								hodnotami a informacemi o vyučujícím. Kliknutím na řádek zobrazíš detail.
+								Zobrazí se ti předměty relevantní pro tvůj studijní plán s jejich rozvrhovou akcí, ECTS hodnotami a informacemi o vyučujícím.
+								Kliknutím na řádek zobrazíš detail.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img
-									src="/guide/kreditozrouti_courses.png"
-									alt="Kreditožrouti – seznam předmětů"
-									class="w-full"
-									loading="lazy"
-								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<img src="/guide/kreditozrouti_courses.png" alt="Kreditožrouti – seznam předmětů" class="w-full" loading="lazy" />
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Zvýrazněné předměty patří do tvého studijního plánu. Zelená = přidáno do rozvrhu.
 								</figcaption>
 							</figure>
@@ -534,13 +487,8 @@ useHead({
 								V levém panelu filtruj podle dne, jazyka, fakulty nebo kategorie předmětu. Filtry se kombinují.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img
-									src="/guide/kreditozrouti_courses_filter.png"
-									alt="Kreditožrouti – filtry předmětů"
-									class="w-full"
-									loading="lazy"
-								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<img src="/guide/kreditozrouti_courses_filter.png" alt="Kreditožrouti – filtry předmětů" class="w-full" loading="lazy" />
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Například: angličtina + pátek = předměty vyučované v angličtině v pátek.
 								</figcaption>
 							</figure>
@@ -556,17 +504,12 @@ useHead({
 						<div class="flex-1">
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Přepni na zobrazení rozvrhu</h3>
 							<p class="mb-3 text-(--insis-gray-700)">
-								Pohled rozvrhu zobrazuje tvůj týden jako mřížku. Kolize jsou zvýrazněny červeně.
-								Zkontroluj, že nemáš vedle sebe předměty z různých areálů.
+								Pohled rozvrhu zobrazuje tvůj týden jako mřížku. Kolize jsou zvýrazněny červeně. Zkontroluj, že nemáš vedle sebe předměty z
+								různých areálů.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img
-									src="/guide/kreditozrouti_courses_timetable.png"
-									alt="Kreditožrouti – zobrazení rozvrhu"
-									class="w-full"
-									loading="lazy"
-								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<img src="/guide/kreditozrouti_courses_timetable.png" alt="Kreditožrouti – zobrazení rozvrhu" class="w-full" loading="lazy" />
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Zkontroluj, že nemáš předměty z různých areálů hned po sobě bez přestávky.
 								</figcaption>
 							</figure>
@@ -583,8 +526,7 @@ useHead({
 				</div>
 
 				<p class="mb-6 text-(--insis-gray-700)">
-					Jakmile máš rozvrh naplánovaný v Kreditožroutech, přesuň se do InSISu a zapiš si předměty
-					oficiálně. Níže najdeš postup krok za krokem.
+					Jakmile máš rozvrh naplánovaný v Kreditožroutech, přesuň se do InSISu a zapiš si předměty oficiálně. Níže najdeš postup krok za krokem.
 				</p>
 
 				<ol class="space-y-10">
@@ -598,18 +540,12 @@ useHead({
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Přihlas se a otevři Portál studenta</h3>
 							<p class="mb-3 text-(--insis-gray-700)">
 								Přejdi na
-								<a href="https://insis.vse.cz" target="_blank" rel="noopener" class="text-(--insis-blue) underline"
-									>insis.vse.cz</a
-								>, přihlas se a klikni na <strong>Portál studenta</strong> v horní navigaci.
+								<a href="https://insis.vse.cz" target="_blank" rel="noopener" class="text-(--insis-blue) underline">insis.vse.cz</a>, přihlas se
+								a klikni na <strong>Portál studenta</strong> v horní navigaci.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img
-									src="/guide/insis_student_view.png"
-									alt="InSIS – Portál studenta"
-									class="w-full"
-									loading="lazy"
-								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<img src="/guide/insis_student_view.png" alt="InSIS – Portál studenta" class="w-full" loading="lazy" />
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Portál studenta je rozcestník pro všechny studijní aplikace.
 								</figcaption>
 							</figure>
@@ -629,13 +565,8 @@ useHead({
 								<strong>Registrace a zápisy</strong>.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img
-									src="/guide/full_view_registration.png"
-									alt="InSIS – arch registrací"
-									class="w-full"
-									loading="lazy"
-								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<img src="/guide/full_view_registration.png" alt="InSIS – arch registrací" class="w-full" loading="lazy" />
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Arch předmětů – každý řádek je jeden předmět. Sloupec Stav ukazuje, zda je vše v pořádku.
 								</figcaption>
 							</figure>
@@ -651,17 +582,12 @@ useHead({
 						<div class="flex-1">
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Přidej předměty ze skupin</h3>
 							<p class="mb-3 text-(--insis-gray-700)">
-								Sjeď dolů na skupiny předmětů (oP, oV atd.), rozbal skupinu kliknutím na šipku, zaškrtni
-								předměty a klikni na <strong>Přidat označené předměty</strong>.
+								Sjeď dolů na skupiny předmětů (oP, oV atd.), rozbal skupinu kliknutím na šipku, zaškrtni předměty a klikni na
+								<strong>Přidat označené předměty</strong>.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img
-									src="/guide/course_added_view.png"
-									alt="InSIS – přidané předměty se stavovými tečkami"
-									class="w-full"
-									loading="lazy"
-								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<img src="/guide/course_added_view.png" alt="InSIS – přidané předměty se stavovými tečkami" class="w-full" loading="lazy" />
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Zelená tečka = předmět správně zaregistrován. Červená tečka = ještě jsi nezvolil/a čas výuky.
 								</figcaption>
 							</figure>
@@ -677,18 +603,12 @@ useHead({
 						<div class="flex-1">
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Vyber čas a vyučujícího</h3>
 							<p class="mb-3 text-(--insis-gray-700)">
-								U každého předmětu s červenou tečkou klikni ve sloupci <strong>Rozvrh</strong> na odkaz
-								<strong>Vyberte</strong>. Zvol čas přednášky i cvičení a potvrď tlačítkem
-								<strong>Uložit</strong>.
+								U každého předmětu s červenou tečkou klikni ve sloupci <strong>Rozvrh</strong> na odkaz <strong>Vyberte</strong>. Zvol čas
+								přednášky i cvičení a potvrď tlačítkem <strong>Uložit</strong>.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img
-									src="/guide/course_select_unit_slots.png"
-									alt="InSIS – volba rozvrhové akce"
-									class="w-full"
-									loading="lazy"
-								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<img src="/guide/course_select_unit_slots.png" alt="InSIS – volba rozvrhové akce" class="w-full" loading="lazy" />
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Kapacita je zobrazena jako obsazeno/celkem. Zkontroluj areál, aby ses vyhnul/a problematickým přejezdům.
 								</figcaption>
 							</figure>
@@ -704,17 +624,12 @@ useHead({
 						<div class="flex-1">
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Zkontroluj finální rozvrh</h3>
 							<p class="mb-3 text-(--insis-gray-700)">
-								Klikni na <strong>Zobrazení rozvrhů</strong> pro přehled celého týdne. Ujisti se, že
-								žádné dva předměty z různých areálů nejdou hned za sebou.
+								Klikni na <strong>Zobrazení rozvrhů</strong> pro přehled celého týdne. Ujisti se, že žádné dva předměty z různých areálů nejdou
+								hned za sebou.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img
-									src="/guide/timetable.png"
-									alt="InSIS – zobrazení rozvrhu"
-									class="w-full"
-									loading="lazy"
-								/>
-								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-500)">
+								<img src="/guide/timetable.png" alt="InSIS – zobrazení rozvrhu" class="w-full" loading="lazy" />
+								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									InSIS zobrazuje rozvrh jako týdenní mřížku. JM v místnosti = Jižní Město; RB/NB/SB = Žižkov.
 								</figcaption>
 							</figure>
@@ -725,8 +640,8 @@ useHead({
 				<div class="mt-6 flex gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4">
 					<IconAlertTriangle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
 					<p class="text-sm text-amber-800">
-						<strong>Nezapomeň:</strong> Kreditožrouti je pouze plánovací nástroj. Dokud se nezapíšeš
-						v InSISu, nemáš předměty úředně zapsané. Kreditožrouti nezapisuje předměty za tebe.
+						<strong>Nezapomeň:</strong> Kreditožrouti je pouze plánovací nástroj. Dokud se nezapíšeš v InSISu, nemáš předměty úředně zapsané.
+						Kreditožrouti nezapisuje předměty za tebe.
 					</p>
 				</div>
 
@@ -740,9 +655,7 @@ useHead({
 						<IconLink class="h-5 w-5 shrink-0 text-(--insis-blue)" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">InSIS nápověda: Registrace a zápis</div>
-							<div class="text-sm text-(--insis-gray-500)">
-								Podrobný popis všech funkcí aplikace Registrace a zápisy
-							</div>
+							<div class="text-sm text-(--insis-gray-600)">Podrobný popis všech funkcí aplikace Registrace a zápisy</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
@@ -755,9 +668,7 @@ useHead({
 						<IconLink class="h-5 w-5 shrink-0 text-(--insis-blue)" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">VŠE CI: Jak na registrace předmětů</div>
-							<div class="text-sm text-(--insis-gray-500)">
-								Praktický průvodce od VŠE IT centra — priority, penalizace, ruční zápis
-							</div>
+							<div class="text-sm text-(--insis-gray-600)">Praktický průvodce od VŠE IT centra — priority, penalizace, ruční zápis</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
@@ -781,7 +692,7 @@ useHead({
 						<IconLink class="h-5 w-5 shrink-0 text-(--insis-blue)" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">InSIS</div>
-							<div class="text-sm text-(--insis-gray-500)">Studijní informační systém VŠE</div>
+							<div class="text-sm text-(--insis-gray-600)">Studijní informační systém VŠE</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
@@ -794,7 +705,7 @@ useHead({
 						<IconLink class="h-5 w-5 shrink-0 text-(--insis-blue)" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">Průvodce prváka po InSISu</div>
-							<div class="text-sm text-(--insis-gray-500)">Officiální nápověda k prvnímu přihlášení</div>
+							<div class="text-sm text-(--insis-gray-600)">Officiální nápověda k prvnímu přihlášení</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
@@ -807,7 +718,7 @@ useHead({
 						<IconLink class="h-5 w-5 shrink-0 text-(--insis-blue)" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">Jak na registrace předmětů</div>
-							<div class="text-sm text-(--insis-gray-500)">VŠE IT centrum – detailní průvodce zápisem</div>
+							<div class="text-sm text-(--insis-gray-600)">VŠE IT centrum – detailní průvodce zápisem</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
@@ -820,7 +731,7 @@ useHead({
 						<IconLink class="h-5 w-5 shrink-0 text-(--insis-blue)" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">FMV: Kredity, registrace a zápisy</div>
-							<div class="text-sm text-(--insis-gray-500)">Průvodce pro studenty Fakulty mezinárodních vztahů</div>
+							<div class="text-sm text-(--insis-gray-600)">Průvodce pro studenty Fakulty mezinárodních vztahů</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
@@ -833,7 +744,7 @@ useHead({
 						<IconLink class="h-5 w-5 shrink-0 text-(--insis-blue)" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">ESN Buddy Programme</div>
-							<div class="text-sm text-(--insis-gray-500)">Propojení s českými studenty pro zahraniční studenty</div>
+							<div class="text-sm text-(--insis-gray-600)">Propojení s českými studenty pro zahraniční studenty</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
@@ -846,9 +757,7 @@ useHead({
 						<IconLink class="h-5 w-5 shrink-0 text-(--insis-blue)" aria-hidden="true" />
 						<div class="flex-1">
 							<div class="font-medium text-(--insis-gray-900)">Harmonogram ZS 2026/2027</div>
-							<div class="text-sm text-(--insis-gray-500)">
-								PDF – termíny registrací, zápisů a zkouškového období
-							</div>
+							<div class="text-sm text-(--insis-gray-600)">PDF – termíny registrací, zápisů a zkouškového období</div>
 						</div>
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
