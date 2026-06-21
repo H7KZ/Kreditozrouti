@@ -8,6 +8,7 @@ import analytics from '@client/analytics'
 import CoursesHeader from '@client/components/courses/CoursesHeader.vue'
 import CourseStatusSummary from '@client/components/courses/CourseStatusSummary.vue'
 import CourseTable from '@client/components/courses/CourseTable.vue'
+import MobileBottomNav from '@client/components/common/MobileBottomNav.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
 import ScheduleSlotsPanel from '@client/components/timetable/ScheduleSlotsPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
@@ -185,7 +186,7 @@ async function fetchNextCoursesPage(page: () => void) {
 				</div>
 
 				<!-- Tab bar -->
-				<div class="flex shrink-0 items-end gap-2 border-b border-(--insis-border) bg-(--insis-surface) px-4">
+				<div class="hidden lg:flex shrink-0 items-end gap-2 border-b border-(--insis-border) bg-(--insis-surface) px-4">
 					<nav class="insis-tabs" style="width: 100%; padding-top: 4px">
 						<button type="button" class="insis-tab" :class="{ 'insis-tab-active': uiStore.viewMode === 'list' }" @click="uiStore.switchToListView">
 							<IconTable class="h-3.5 w-3.5" />
@@ -350,5 +351,7 @@ async function fetchNextCoursesPage(page: () => void) {
 				</div>
 			</div>
 		</div>
+
+		<MobileBottomNav class="lg:hidden shrink-0" />
 	</div>
 </template>
