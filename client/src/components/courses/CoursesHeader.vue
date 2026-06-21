@@ -6,16 +6,14 @@ import { getUpcomingPeriod } from '@shared/domain/period'
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import { useCourseLabels } from '@client/composables'
-import { useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import { useFiltersStore, useTimetableStore, useWizardStore } from '@client/stores'
 import IconArrowLeft from '~icons/lucide/arrow-left'
-import IconFunnel from '~icons/lucide/funnel'
 import IconTrash from '~icons/lucide/trash-2'
 
 const { t } = useI18n()
 const router = useRouter()
 const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
-const uiStore = useUIStore()
 const wizardStore = useWizardStore()
 
 const { getSemesterLabel } = useCourseLabels()
@@ -61,7 +59,7 @@ function handleClearTimetable() {
 
 			<div class="hidden h-6 w-px shrink-0 bg-(--insis-border) sm:block" />
 
-			<div class="hidden min-w-0 flex-col md:flex">
+			<div class="flex min-w-0 flex-col">
 				<div class="max-w-[400px] truncate text-[13px] font-medium text-(--insis-text)">
 					{{ studyPlanInfo.titles.length > 0 ? studyPlanInfo.titles.join(' / ') : $t('pages.courses.studyPlanFallback') }}
 				</div>
@@ -99,27 +97,6 @@ function handleClearTimetable() {
 			<div class="hidden h-6 w-px shrink-0 bg-(--insis-border) sm:block" />
 			<ThemeToggle class="hidden sm:flex" />
 			<LanguageSwitcher />
-
-			<!-- Mobile filter toggle -->
-			<button
-				type="button"
-				class="relative flex items-center gap-1.5 lg:hidden"
-				:class="
-					filtersStore.hasActiveFilters ? 'insis-btn insis-btn-primary h-7 px-3' : 'insis-btn insis-btn-secondary h-7 min-w-[44px] justify-center'
-				"
-				:aria-label="$t('common.openFilters')"
-				@click="uiStore.toggleMobileFilter"
-			>
-				<IconFunnel class="h-3.25 w-3.25 shrink-0" aria-hidden="true" />
-				<span class="text-xs">{{ $t('common.filters') }}</span>
-				<span
-					v-if="filtersStore.activeFilterCount > 0"
-					class="rounded-full bg-white px-1.5 py-0.5 text-[10px] leading-none font-medium text-(--insis-blue)"
-					:aria-label="$t('components.filters.FilterPanel.activeFilterCount', { count: filtersStore.activeFilterCount })"
-				>
-					{{ filtersStore.activeFilterCount }}
-				</span>
-			</button>
 		</div>
 	</header>
 </template>
