@@ -30,7 +30,7 @@ All workflow files live in `.github/workflows/`.
 **Steps:**
 
 1. Checkout code
-2. Setup Node.js 24 + pnpm
+2. Setup Node.js 24
 3. `make install`
 4. `make lint`
 5. `make build`
