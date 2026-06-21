@@ -218,7 +218,7 @@ onUnmounted(() => {
 <template>
 	<Teleport to="body">
 		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" @click="handleBackdropClick">
-			<div ref="modalRef" class="modal max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-lg bg-(--insis-surface) shadow-xl">
+			<div ref="modalRef" class="modal flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-(--insis-surface) shadow-xl">
 				<!-- Header -->
 				<div class="flex items-center justify-between border-b border-(--insis-border) bg-(--insis-header-bg) px-4 py-3">
 					<div class="flex items-center gap-2">
@@ -231,19 +231,19 @@ onUnmounted(() => {
 				</div>
 
 				<!-- Loading State -->
-				<div v-if="loading" class="flex items-center justify-center p-8">
+				<div v-if="loading" class="flex flex-1 items-center justify-center p-8">
 					<IconLoader class="h-8 w-8 animate-spin text-(--insis-blue)" />
 				</div>
 
 				<!-- Error State -->
-				<div v-else-if="error" class="p-4">
+				<div v-else-if="error" class="flex-1 p-4">
 					<div class="insis-panel insis-panel-danger">
 						<p>{{ error }}</p>
 					</div>
 				</div>
 
 				<!-- Content -->
-				<div v-else-if="course" class="max-h-[60vh] overflow-y-auto p-4">
+				<div v-else-if="course" class="min-h-0 flex-1 overflow-y-auto p-4">
 					<div class="grid gap-6 lg:grid-cols-2">
 						<!-- Course Info (uses same label helpers as CourseRowExpanded!) -->
 						<div>
@@ -427,7 +427,7 @@ onUnmounted(() => {
 				</div>
 
 				<!-- Footer -->
-				<div class="flex items-center justify-between border-t border-(--insis-border) bg-(--insis-gray-50) px-4 py-3">
+				<div class="flex flex-wrap items-center gap-2 border-t border-(--insis-border) bg-(--insis-gray-50) px-4 py-3 sm:justify-between">
 					<button type="button" class="insis-btn-text flex items-center gap-1 text-sm text-(--insis-danger)" @click="handleRemoveCourseAndClose">
 						<IconTrash class="h-4 w-4" />
 						{{ $t('components.timetable.TimetableCourseModal.removeFromTimetable') }}

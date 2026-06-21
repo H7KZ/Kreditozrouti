@@ -147,11 +147,11 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 
 <template>
 	<div>
-		<div class="mb-3 flex items-center justify-between">
-			<h4 class="font-medium text-(--insis-gray-900)">
+		<div class="mb-3 flex flex-wrap items-center gap-2">
+			<h4 class="mr-auto font-medium text-(--insis-gray-900)">
 				{{ $t('components.courses.CourseRowExpanded.unitSelection') }}
 			</h4>
-			<div class="flex items-center gap-2">
+			<div class="flex shrink-0 items-center gap-2">
 				<span v-if="isSelectionComplete" class="insis-badge insis-badge-success">
 					<IconCheck class="mr-1 inline h-3 w-3" />
 					{{ $t('components.courses.CourseRowExpanded.complete') }}
@@ -172,13 +172,13 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 		<!-- Conflict filter toggle -->
 		<div
 			v-if="hasAnyConflicts"
-			class="mb-3 flex items-center justify-between rounded border border-(--insis-danger-border) bg-(--insis-danger-light) px-3 py-2"
+			class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded border border-(--insis-danger-border) bg-(--insis-danger-light) px-3 py-2"
 		>
-			<div class="flex items-center gap-2 text-sm text-(--insis-danger)">
+			<div class="flex flex-1 items-center gap-2 text-sm text-(--insis-danger)">
 				<IconOctagonAlert class="h-4 w-4 shrink-0" aria-hidden="true" />
 				<span>{{ $t('components.courses.CourseRowExpanded.slotsWithConflicts', { count: conflictingUnitCount }) }}</span>
 			</div>
-			<label class="flex cursor-pointer items-center gap-1.5 text-xs text-(--insis-danger)">
+			<label class="flex shrink-0 cursor-pointer items-center gap-1.5 text-xs text-(--insis-danger)">
 				<input
 					v-model="hideConflictingUnits"
 					type="checkbox"
@@ -262,36 +262,38 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 								<div
 									v-for="slot in sortSlots(unit.slots)"
 									:key="slot.id"
-									:class="['-mx-1 flex items-center gap-3 rounded px-1', getSlotConflictClass(slot)]"
+									:class="['-mx-1 flex flex-col rounded px-1', getSlotConflictClass(slot)]"
 									:title="formatSlotConflictTooltip(slot)"
 								>
-									<span
-										class="w-8 shrink-0 rounded bg-(--insis-gray-200) px-1 py-0.5 text-center text-xs text-(--insis-gray-700)"
-										:class="getSlotHighlightClass(slot)"
-									>
-										{{ getShortUnitTypeLabel(getSlotType(slot)) }}
-									</span>
-									<span class="shrink-0 font-medium whitespace-nowrap">{{ formatSlotInfo(slot) }}</span>
-									<span class="min-w-0 truncate text-(--insis-gray-600)" :title="slot.location || ''">{{ slot.location || '-' }}</span>
-									<span class="hidden min-w-0 truncate text-xs text-(--insis-gray-500) sm:block">{{ unit.lecturer }}</span>
-									<span
-										v-if="getSlotConflicts(slot).length > 0"
-										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-(--insis-danger)"
-										:title="formatSlotConflictTooltip(slot)"
-									>
-										<IconOctagonAlert class="h-3 w-3" aria-hidden="true" />
-										<span class="hidden sm:inline">{{ [...new Set(getSlotConflicts(slot).map(c => c.courseIdent))].join(', ') }}</span>
-									</span>
-									<span
-										v-else-if="getSlotCampusConflicts(slot).length > 0"
-										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-(--insis-warning)"
-										:title="getSlotCampusConflictTooltip(slot)"
-									>
-										<IconAlertTriangle class="h-3 w-3" aria-hidden="true" />
-										<span class="hidden sm:inline">{{
-											[...new Set(getSlotCampusConflicts(slot).map(c => c.courseIdent))].join(', ')
-										}}</span>
-									</span>
+									<div class="flex items-center gap-2">
+										<span
+											class="w-8 shrink-0 rounded bg-(--insis-gray-200) px-1 py-0.5 text-center text-xs text-(--insis-gray-700)"
+											:class="getSlotHighlightClass(slot)"
+										>
+											{{ getShortUnitTypeLabel(getSlotType(slot)) }}
+										</span>
+										<span class="min-w-0 flex-1 truncate font-medium">{{ formatSlotInfo(slot) }}</span>
+										<span class="hidden min-w-0 truncate text-xs text-(--insis-gray-500) sm:inline">{{ unit.lecturer }}</span>
+										<span
+											v-if="getSlotConflicts(slot).length > 0"
+											class="flex shrink-0 items-center gap-1 text-xs text-(--insis-danger)"
+											:title="formatSlotConflictTooltip(slot)"
+										>
+											<IconOctagonAlert class="h-3 w-3" aria-hidden="true" />
+											<span class="hidden sm:inline">{{ [...new Set(getSlotConflicts(slot).map(c => c.courseIdent))].join(', ') }}</span>
+										</span>
+										<span
+											v-else-if="getSlotCampusConflicts(slot).length > 0"
+											class="flex shrink-0 items-center gap-1 text-xs text-(--insis-warning)"
+											:title="getSlotCampusConflictTooltip(slot)"
+										>
+											<IconAlertTriangle class="h-3 w-3" aria-hidden="true" />
+											<span class="hidden sm:inline">{{
+												[...new Set(getSlotCampusConflicts(slot).map(c => c.courseIdent))].join(', ')
+											}}</span>
+										</span>
+									</div>
+									<div v-if="slot.location" class="truncate pl-10 text-xs text-(--insis-gray-600)">{{ slot.location }}</div>
 								</div>
 
 								<div class="mt-1 flex items-center gap-2 pl-[44px]">

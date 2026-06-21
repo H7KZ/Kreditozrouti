@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useTimetableStore } from '@client/stores'
+import IconX from '~icons/lucide/x'
 
 const { locale } = useI18n()
 const timetableStore = useTimetableStore()
@@ -82,6 +83,14 @@ function closeModal() {
 	showModal.value = false
 	modalUnit.value = null
 }
+
+function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
+	if (isMergedUnit(unit)) {
+		unit.originalUnits.forEach(u => timetableStore.removeUnit(u.unitId))
+	} else {
+		timetableStore.removeUnit(unit.unitId)
+	}
+}
 </script>
 
 <template>
@@ -123,38 +132,50 @@ function closeModal() {
 				</div>
 
 				<div v-if="dayData.hasUnits" class="space-y-2">
-					<button
+					<div
 						v-for="unit in dayData.units"
 						:key="isMergedUnit(unit) ? `merged-${unit.slotId}` : unit.slotId"
-						type="button"
-						class="flex min-h-[52px] w-full items-start gap-3 rounded-md border bg-(--insis-surface) px-3 py-2.5 text-left transition-colors active:bg-(--insis-surface-2)"
+						class="relative flex items-stretch rounded-md border bg-(--insis-surface) transition-colors"
 						:class="hasConflict(unit) ? 'border-(--insis-danger-border)' : 'border-(--insis-border)'"
 						:style="{
 							borderLeftWidth: '3px',
 							borderLeftColor: hasConflict(unit) ? 'var(--insis-danger)' : borderColor(unit)
 						}"
-						@click="openModal(unit)"
 					>
-						<div class="min-w-0 flex-1">
-							<div class="truncate text-sm font-semibold text-(--insis-text)">{{ unit.courseTitle }}</div>
-							<div class="mt-0.5 text-xs text-(--insis-text-3)">
-								{{ formatTime(unit.timeFrom) }} – {{ formatTime(unit.timeTo) }}
-								<template v-if="unit.location"> · {{ unit.location }}</template>
+						<button
+							type="button"
+							class="flex min-h-[52px] flex-1 items-start gap-3 px-3 py-2.5 pr-8 text-left active:bg-(--insis-surface-2) rounded-md"
+							@click="openModal(unit)"
+						>
+							<div class="min-w-0 flex-1">
+								<div class="truncate text-sm font-semibold text-(--insis-text)">{{ unit.courseTitle }}</div>
+								<div class="mt-0.5 text-xs text-(--insis-text-3)">
+									{{ formatTime(unit.timeFrom) }} – {{ formatTime(unit.timeTo) }}
+									<template v-if="unit.location"> · {{ unit.location }}</template>
+								</div>
 							</div>
-						</div>
-						<div class="flex shrink-0 flex-col items-end gap-1 pt-0.5">
-							<span
-								class="rounded-full px-2 py-0.5 text-xs font-medium"
-								:style="{
-									color: borderColor(unit),
-									background: `color-mix(in srgb, ${borderColor(unit)} 18%, transparent)`
-								}"
-							>
-								{{ $t(`unitTypes.${unit.unitType}`, unit.unitType) }}
-							</span>
-							<span v-if="hasConflict(unit)" class="text-xs text-(--insis-danger)" role="img" :aria-label="$t('pages.courses.conflict')">⚠</span>
-						</div>
-					</button>
+							<div class="flex shrink-0 flex-col items-end gap-1 pt-0.5">
+								<span
+									class="rounded-full px-2 py-0.5 text-xs font-medium"
+									:style="{
+										color: borderColor(unit),
+										background: `color-mix(in srgb, ${borderColor(unit)} 18%, transparent)`
+									}"
+								>
+									{{ $t(`unitTypes.${unit.unitType}`, unit.unitType) }}
+								</span>
+								<span v-if="hasConflict(unit)" class="text-xs text-(--insis-danger)" role="img" :aria-label="$t('pages.courses.conflict')">⚠</span>
+							</div>
+						</button>
+						<button
+							type="button"
+							class="absolute right-1 top-1 rounded p-1 text-(--insis-text-3) hover:text-(--insis-text)"
+							:aria-label="$t('common.remove')"
+							@click.stop="removeFromTimetable(unit)"
+						>
+							<IconX class="h-3.5 w-3.5" aria-hidden="true" />
+						</button>
+					</div>
 				</div>
 			</div>
 		</template>

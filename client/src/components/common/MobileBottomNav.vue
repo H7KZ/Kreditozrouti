@@ -10,7 +10,7 @@ const filtersStore = useFiltersStore()
 
 <template>
 	<nav
-		class="flex border-t border-(--insis-border) bg-(--insis-surface) pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+		class="fixed inset-x-0 bottom-0 z-40 flex border-t border-(--insis-border) bg-(--insis-surface) pb-[max(0.5rem,env(safe-area-inset-bottom))]"
 		:aria-label="$t('common.mainNavigation')"
 	>
 		<button
