@@ -391,7 +391,7 @@ useHead({
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
 								<img
-									src="/guide/kreditozrouti_step_1.png"
+									src="/guide-assets/kreditozrouti_step_1.png"
 									alt="Step 1 – select faculty in Kreditožrouti setup wizard"
 									class="w-full"
 									loading="lazy"
@@ -416,7 +416,7 @@ useHead({
 								enrolled semester.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_step_2.png" alt="Step 2 – select entry year" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_step_2.png" alt="Step 2 – select entry year" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Not sure which year? Check your e-index in InSIS.
 								</figcaption>
@@ -437,7 +437,7 @@ useHead({
 								select it here.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_step_3.png" alt="Step 3 – select study plan" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_step_3.png" alt="Step 3 – select study plan" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Each programme has its own set of mandatory and elective courses.
 								</figcaption>
@@ -458,7 +458,7 @@ useHead({
 								optional but greatly improves clarity.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_step_4_select.png" alt="Step 4 – mark completed courses" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_step_4_select.png" alt="Step 4 – mark completed courses" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Tick the courses you have already completed — the app will hide them from the list.
 								</figcaption>
@@ -479,7 +479,7 @@ useHead({
 								details.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_courses.png" alt="Kreditožrouti – course list" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_courses.png" alt="Kreditožrouti – course list" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Highlighted rows belong to your study plan. Green = already added to your timetable.
 								</figcaption>
@@ -500,7 +500,7 @@ useHead({
 								English-taught courses on Fridays.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_courses_filter.png" alt="Kreditožrouti – course filters" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_courses_filter.png" alt="Kreditožrouti – course filters" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Filters combine — e.g. language: English + day: Friday shows only English courses on Fridays.
 								</figcaption>
@@ -521,7 +521,7 @@ useHead({
 								different campuses.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_courses_timetable.png" alt="Kreditožrouti – timetable view" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_courses_timetable.png" alt="Kreditožrouti – timetable view" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Check that no back-to-back classes span different campuses without a gap.
 								</figcaption>
@@ -559,7 +559,7 @@ useHead({
 								(= Student Portal) in the top navigation.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/insis_student_view.png" alt="InSIS – Student Portal home" class="w-full" loading="lazy" />
+								<img src="/guide-assets/insis_student_view.png" alt="InSIS – Student Portal home" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									<strong>Portál studenta</strong> = Student Portal. All study applications are accessible from here.
 								</figcaption>
@@ -580,7 +580,7 @@ useHead({
 								<strong>Registrace a zápisy</strong> (= Course Registration &amp; Enrollment).
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/full_view_registration.png" alt="InSIS – registration sheet" class="w-full" loading="lazy" />
+								<img src="/guide-assets/full_view_registration.png" alt="InSIS – registration sheet" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									<strong>Arch</strong> = enrollment sheet. Each row is one course. <strong>Stav</strong> = status (green dot = OK, red dot =
 									time slot missing).
@@ -602,7 +602,7 @@ useHead({
 								<strong>Přidat označené předměty</strong> (= Add selected courses).
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/course_added_view.png" alt="InSIS – courses added with status dots" class="w-full" loading="lazy" />
+								<img src="/guide-assets/course_added_view.png" alt="InSIS – courses added with status dots" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Green dot = registered correctly. Red dot = you still need to pick a time slot.
 									<strong>Přidat označené předměty</strong> = Add selected courses.
@@ -624,7 +624,7 @@ useHead({
 								Choose lecture and seminar times, then confirm with <strong>Uložit</strong> (= Save).
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/course_select_unit_slots.png" alt="InSIS – choosing a time slot" class="w-full" loading="lazy" />
+								<img src="/guide-assets/course_select_unit_slots.png" alt="InSIS – choosing a time slot" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									<strong>Kapacita</strong> = Capacity (enrolled / total). <strong>Vyberte</strong> = Select. <strong>Uložit</strong> = Save.
 									Check the room code — <strong>JM</strong> = Jižní Město, <strong>RB/NB/SB</strong> = Žižkov.
@@ -646,7 +646,7 @@ useHead({
 								different campuses.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/timetable.png" alt="InSIS – weekly timetable view" class="w-full" loading="lazy" />
+								<img src="/guide-assets/timetable.png" alt="InSIS – weekly timetable view" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									<strong>Zobrazení rozvrhů</strong> = View timetable. Room codes: <strong>JM…</strong> = Jižní Město campus;
 									<strong>RB/NB/SB/IB</strong> = Žižkov campus.
@@ -768,7 +768,7 @@ useHead({
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
 					<a
-						href="/guide/Harmonogram_ZS_2026-2027_060526-1.pdf"
+						href="/guide-assets/Harmonogram_ZS_2026-2027_060526-1.pdf"
 						target="_blank"
 						rel="noopener"
 						class="flex items-center gap-3 rounded-lg border border-(--insis-border) bg-(--insis-surface) p-4 transition-colors hover:border-(--insis-blue)"

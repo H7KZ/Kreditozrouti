@@ -379,7 +379,7 @@ useHead({
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
 								<img
-									src="/guide/kreditozrouti_step_1.png"
+									src="/guide-assets/kreditozrouti_step_1.png"
 									alt="Krok 1 – výběr fakulty v průvodci Kreditožrouti"
 									class="w-full"
 									loading="lazy"
@@ -404,7 +404,7 @@ useHead({
 								akademický rok prvního zapsaného semestru.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_step_2.png" alt="Krok 2 – výběr roku nástupu" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_step_2.png" alt="Krok 2 – výběr roku nástupu" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Pokud nevíš, který rok vybrat, zkontroluj svůj e-index v InSISu.
 								</figcaption>
@@ -425,7 +425,7 @@ useHead({
 								ji.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_step_3.png" alt="Krok 3 – výběr studijního plánu" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_step_3.png" alt="Krok 3 – výběr studijního plánu" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Každý studijní program má vlastní sadu povinných a volitelných předmětů.
 								</figcaption>
@@ -446,7 +446,7 @@ useHead({
 								výrazně zpřehlední výběr.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_step_4_select.png" alt="Krok 4 – označení dokončených předmětů" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_step_4_select.png" alt="Krok 4 – označení dokončených předmětů" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Označ předměty, které jsi již absolvoval/a — aplikace je skryje ze seznamu.
 								</figcaption>
@@ -467,7 +467,7 @@ useHead({
 								Kliknutím na řádek zobrazíš detail.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_courses.png" alt="Kreditožrouti – seznam předmětů" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_courses.png" alt="Kreditožrouti – seznam předmětů" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Zvýrazněné předměty patří do tvého studijního plánu. Zelená = přidáno do rozvrhu.
 								</figcaption>
@@ -487,7 +487,7 @@ useHead({
 								V levém panelu filtruj podle dne, jazyka, fakulty nebo kategorie předmětu. Filtry se kombinují.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_courses_filter.png" alt="Kreditožrouti – filtry předmětů" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_courses_filter.png" alt="Kreditožrouti – filtry předmětů" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Například: angličtina + pátek = předměty vyučované v angličtině v pátek.
 								</figcaption>
@@ -508,7 +508,7 @@ useHead({
 								různých areálů.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/kreditozrouti_courses_timetable.png" alt="Kreditožrouti – zobrazení rozvrhu" class="w-full" loading="lazy" />
+								<img src="/guide-assets/kreditozrouti_courses_timetable.png" alt="Kreditožrouti – zobrazení rozvrhu" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Zkontroluj, že nemáš předměty z různých areálů hned po sobě bez přestávky.
 								</figcaption>
@@ -544,7 +544,7 @@ useHead({
 								a klikni na <strong>Portál studenta</strong> v horní navigaci.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/insis_student_view.png" alt="InSIS – Portál studenta" class="w-full" loading="lazy" />
+								<img src="/guide-assets/insis_student_view.png" alt="InSIS – Portál studenta" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Portál studenta je rozcestník pro všechny studijní aplikace.
 								</figcaption>
@@ -565,7 +565,7 @@ useHead({
 								<strong>Registrace a zápisy</strong>.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/full_view_registration.png" alt="InSIS – arch registrací" class="w-full" loading="lazy" />
+								<img src="/guide-assets/full_view_registration.png" alt="InSIS – arch registrací" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Arch předmětů – každý řádek je jeden předmět. Sloupec Stav ukazuje, zda je vše v pořádku.
 								</figcaption>
@@ -586,7 +586,7 @@ useHead({
 								<strong>Přidat označené předměty</strong>.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/course_added_view.png" alt="InSIS – přidané předměty se stavovými tečkami" class="w-full" loading="lazy" />
+								<img src="/guide-assets/course_added_view.png" alt="InSIS – přidané předměty se stavovými tečkami" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Zelená tečka = předmět správně zaregistrován. Červená tečka = ještě jsi nezvolil/a čas výuky.
 								</figcaption>
@@ -607,7 +607,7 @@ useHead({
 								přednášky i cvičení a potvrď tlačítkem <strong>Uložit</strong>.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/course_select_unit_slots.png" alt="InSIS – volba rozvrhové akce" class="w-full" loading="lazy" />
+								<img src="/guide-assets/course_select_unit_slots.png" alt="InSIS – volba rozvrhové akce" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Kapacita je zobrazena jako obsazeno/celkem. Zkontroluj areál, aby ses vyhnul/a problematickým přejezdům.
 								</figcaption>
@@ -628,7 +628,7 @@ useHead({
 								hned za sebou.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide/timetable.png" alt="InSIS – zobrazení rozvrhu" class="w-full" loading="lazy" />
+								<img src="/guide-assets/timetable.png" alt="InSIS – zobrazení rozvrhu" class="w-full" loading="lazy" />
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									InSIS zobrazuje rozvrh jako týdenní mřížku. JM v místnosti = Jižní Město; RB/NB/SB = Žižkov.
 								</figcaption>
@@ -749,7 +749,7 @@ useHead({
 						<IconExternalLink class="h-4 w-4 shrink-0 text-(--insis-gray-400)" aria-hidden="true" />
 					</a>
 					<a
-						href="/guide/Harmonogram_ZS_2026-2027_060526-1.pdf"
+						href="/guide-assets/Harmonogram_ZS_2026-2027_060526-1.pdf"
 						target="_blank"
 						rel="noopener"
 						class="flex items-center gap-3 rounded-lg border border-(--insis-border) bg-(--insis-surface) p-4 transition-colors hover:border-(--insis-blue)"
