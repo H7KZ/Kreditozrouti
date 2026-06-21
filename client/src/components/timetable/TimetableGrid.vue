@@ -4,6 +4,7 @@ import { isMergedUnit, useCourseLabels, useScheduleExport, useSlotMerging, useTi
 import type { SelectedCourseUnit } from '@client/types'
 import type { InSISDay } from '@shared/domain/insis'
 import { ref, toRef } from 'vue'
+import TimetableAgenda from '@client/components/timetable/TimetableAgenda.vue'
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
@@ -106,6 +107,11 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 
 <template>
 	<div>
+		<!-- Mobile: agenda view -->
+		<TimetableAgenda class="lg:hidden" />
+
+		<!-- Desktop: time grid -->
+		<div class="hidden lg:block">
 		<div class="mb-2 flex justify-end">
 			<button
 				type="button"
@@ -230,5 +236,6 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 		<TimetableCourseModal v-if="showCourseModal && selectedModalUnit" :unit="selectedModalUnit" @close="handleCloseModal" />
 
 		<slot />
+		</div>
 	</div>
 </template>
