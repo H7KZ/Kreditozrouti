@@ -307,7 +307,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 								<template v-if="isUnitSelected(unit.id)">
 									<button
 										type="button"
-										class="insis-btn bg-(--insis-surface) px-3 py-1.5 text-xs hover:border-(--insis-danger) hover:bg-(--insis-danger-light) hover:text-(--insis-danger)"
+										class="insis-btn min-h-[44px] bg-(--insis-surface) px-3 py-1.5 text-xs hover:border-(--insis-danger) hover:bg-(--insis-danger-light) hover:text-(--insis-danger)"
 										:aria-label="$t('common.remove')"
 										@click.stop="handleRemoveUnit(unit)"
 									>
@@ -317,7 +317,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 								<template v-else>
 									<button
 										type="button"
-										class="flex items-center gap-1 px-3 py-1.5 text-xs"
+										class="flex min-h-[44px] items-center gap-1 px-3 py-1.5 text-xs"
 										:class="{
 											'insis-btn-primary': !isGroupSatisfied(group.types),
 											'insis-btn-secondary opacity-90': isGroupSatisfied(group.types),

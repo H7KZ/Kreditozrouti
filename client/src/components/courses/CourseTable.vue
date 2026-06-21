@@ -172,7 +172,7 @@ function getMobileStatus(courseId: number) {
 								<span class="min-w-0 truncate text-[12px] font-medium text-(--insis-text)">{{ getCourseTitle(course) }}</span>
 							</div>
 							<!-- Faculty · ECTS · Completion -->
-							<div class="text-[11px] text-(--insis-text-3)">
+							<div class="text-xs text-(--insis-text-3)">
 								<span v-if="course.faculty_id">{{ getFacultyLabel(course.faculty_id) }}</span>
 								<template v-if="course.faculty_id && course.ects"> · </template>
 								<span v-if="course.ects">{{ course.ects }} ECTS</span>
@@ -180,22 +180,22 @@ function getMobileStatus(courseId: number) {
 								<span v-if="course.mode_of_completion">{{ getCompletionLabel(course.mode_of_completion) }}</span>
 							</div>
 							<!-- Schedule -->
-							<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-[11px] text-(--insis-text-3)">
+							<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-xs text-(--insis-text-3)">
 								{{ getCourseScheduleSummary(course) }}
 							</div>
 						</div>
 						<!-- Status badges + chevron -->
 						<div class="flex shrink-0 flex-col items-end gap-1">
-							<span v-if="ms.status === 'selected'" class="insis-badge insis-badge-success text-[10px]">
+							<span v-if="ms.status === 'selected'" class="insis-badge insis-badge-success text-xs">
 								{{ $t('components.courses.CourseTable.inTimetable') }}
 							</span>
-							<span v-if="ms.isIncomplete" class="insis-badge insis-badge-amber text-[10px]">
+							<span v-if="ms.isIncomplete" class="insis-badge insis-badge-amber text-xs">
 								{{ $t('components.courses.CourseTable.missingUnitTypes') }}
 							</span>
-							<span v-if="ms.hasConflict" class="insis-badge insis-badge-danger text-[10px]">
+							<span v-if="ms.hasConflict" class="insis-badge insis-badge-danger text-xs">
 								{{ $t('components.courses.CourseTable.conflictTag') }}
 							</span>
-							<span v-if="ms.hasCampusConflict" class="insis-badge insis-badge-amber text-[10px]">
+							<span v-if="ms.hasCampusConflict" class="insis-badge insis-badge-amber text-xs">
 								{{ $t('components.courses.CourseTable.campusConflictTag') }}
 							</span>
 							<IconChevronDown
