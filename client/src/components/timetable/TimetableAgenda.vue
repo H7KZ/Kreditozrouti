@@ -30,19 +30,21 @@ function dayLabel(day: InSISDay): string {
 	return locale.value === 'en' ? (DAY_EN[day] ?? day) : day
 }
 
-function unitsForDay(day: InSISDay): (SelectedCourseUnit | MergedUnit)[] {
-	return [...(mergedUnitsByDay.value.get(day) ?? [])].sort((a, b) => a.timeFrom - b.timeFrom)
+interface DayData {
+	day: InSISDay
+	units: (SelectedCourseUnit | MergedUnit)[]
+	hasUnits: boolean
+	count: number
 }
 
-function hasUnits(day: InSISDay): boolean {
-	return (mergedUnitsByDay.value.get(day)?.length ?? 0) > 0
-}
+const agendaDays = computed<DayData[]>(() =>
+	WEEKDAYS.map(day => {
+		const units = [...(mergedUnitsByDay.value.get(day) ?? [])].sort((a, b) => a.timeFrom - b.timeFrom)
+		return { day, units, hasUnits: units.length > 0, count: units.length }
+	}),
+)
 
-const hasAnyCourses = computed(() => WEEKDAYS.some(hasUnits))
-
-function unitCount(day: InSISDay): number {
-	return mergedUnitsByDay.value.get(day)?.length ?? 0
-}
+const hasAnyCourses = computed(() => agendaDays.value.some(d => d.hasUnits))
 
 function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 	const ids = isMergedUnit(unit) ? unit.mergedSlotIds : [unit.slotId]
@@ -70,7 +72,7 @@ const modalUnit = ref<SelectedCourseUnit | null>(null)
 function openModal(unit: SelectedCourseUnit | MergedUnit) {
 	// MergedUnit has originalUnits[]; pass the first original unit to the modal
 	// (TimetableCourseModal expects a SelectedCourseUnit, not a MergedUnit)
-	modalUnit.value = isMergedUnit(unit) ? (unit.originalUnits[0] ?? unit) : unit
+	modalUnit.value = isMergedUnit(unit) ? unit.originalUnits[0] : unit
 	showModal.value = true
 }
 
@@ -106,24 +108,24 @@ function closeModal() {
 
 		<!-- Day sections -->
 		<template v-else>
-			<div v-for="day in WEEKDAYS" :key="day" class="mb-5">
+			<div v-for="dayData in agendaDays" :key="dayData.day" class="mb-5">
 				<div class="mb-2 flex items-center gap-2">
 					<span
 						class="text-xs font-bold uppercase tracking-wide"
-						:class="hasUnits(day) ? 'text-(--insis-blue)' : 'text-(--insis-text-3)'"
+						:class="dayData.hasUnits ? 'text-(--insis-blue)' : 'text-(--insis-text-3)'"
 					>
-						{{ dayLabel(day) }}
+						{{ dayLabel(dayData.day) }}
 					</span>
 					<div class="h-px flex-1 bg-(--insis-border)" />
 					<span class="text-xs text-(--insis-text-3)">
-						<template v-if="hasUnits(day)">{{ unitCount(day) }}×</template>
+						<template v-if="dayData.hasUnits">{{ dayData.count }}×</template>
 						<template v-else>{{ $t('components.timetable.TimetableAgenda.free') }}</template>
 					</span>
 				</div>
 
-				<div v-if="hasUnits(day)" class="space-y-2">
+				<div v-if="dayData.hasUnits" class="space-y-2">
 					<button
-						v-for="unit in unitsForDay(day)"
+						v-for="unit in dayData.units"
 						:key="isMergedUnit(unit) ? `merged-${unit.slotId}` : unit.slotId"
 						type="button"
 						class="flex w-full min-h-[52px] items-start gap-3 rounded-md border bg-(--insis-surface) px-3 py-2.5 text-left transition-colors active:bg-(--insis-surface-2)"
@@ -151,7 +153,12 @@ function closeModal() {
 							>
 								{{ $t(`unitTypes.${unit.unitType}`, unit.unitType) }}
 							</span>
-							<span v-if="hasConflict(unit)" class="text-xs text-(--insis-danger)">⚠</span>
+							<span
+								v-if="hasConflict(unit)"
+								class="text-xs text-(--insis-danger)"
+								role="img"
+								:aria-label="$t('common.conflict', 'Conflict')"
+							>⚠</span>
 						</div>
 					</button>
 				</div>
