@@ -65,29 +65,29 @@ The full request body sent to `POST /courses`.
 
 ```typescript
 interface CoursesFilter {
-    ids?: number[]
-    idents?: string[]
-    title?: string
-    search?: string
-    semesters?: InSISSemester[]
-    years?: number[]
-    faculty_ids?: number[]
-    levels?: string[]
-    languages?: string[]
-    include_times?: TimeSelection[]
-    exclude_times?: TimeSelection[]
-    lecturers?: string[]
-    study_plan_ids?: number[]
-    groups?: InSISStudyPlanCourseGroup[]
-    categories?: InSISStudyPlanCourseCategory[]
-    ects?: number[]
-    mode_of_completions?: string[]
-    mode_of_deliveries?: string[]
-    completed_course_idents?: string[]
-    sort_by: 'ident' | 'title' | 'ects' | 'faculty' | 'year' | 'semester'
-    sort_dir: 'asc' | 'desc'
-    limit: number
-    offset: number
+	ids?: number[]
+	idents?: string[]
+	title?: string
+	search?: string
+	semesters?: InSISSemester[]
+	years?: number[]
+	faculty_ids?: number[]
+	levels?: string[]
+	languages?: string[]
+	include_times?: TimeSelection[]
+	exclude_times?: TimeSelection[]
+	lecturers?: string[]
+	study_plan_ids?: number[]
+	groups?: InSISStudyPlanCourseGroup[]
+	categories?: InSISStudyPlanCourseCategory[]
+	ects?: number[]
+	mode_of_completions?: string[]
+	mode_of_deliveries?: string[]
+	completed_course_idents?: string[]
+	sort_by: 'ident' | 'title' | 'ects' | 'faculty' | 'year' | 'semester'
+	sort_dir: 'asc' | 'desc'
+	limit: number
+	offset: number
 }
 ```
 
@@ -101,15 +101,15 @@ The full request body sent to `POST /study_plans`.
 
 ```typescript
 interface StudyPlansFilter {
-    ids?: number[]
-    title?: string
-    faculty_ids?: number[]
-    years?: number[]
-    semesters?: InSISSemester[]
-    sort_by: 'title' | 'faculty' | 'year' | 'semester'
-    sort_dir: 'asc' | 'desc'
-    limit: number
-    offset: number
+	ids?: number[]
+	title?: string
+	faculty_ids?: number[]
+	years?: number[]
+	semesters?: InSISSemester[]
+	sort_by: 'title' | 'faculty' | 'year' | 'semester'
+	sort_dir: 'asc' | 'desc'
+	limit: number
+	offset: number
 }
 ```
 
@@ -119,8 +119,8 @@ interface StudyPlansFilter {
 
 ```typescript
 interface FacetItem {
-    value: string
-    count: number
+	value: string
+	count: number
 }
 ```
 
@@ -132,10 +132,10 @@ Used in `CoursesResponseDTO.facets` and `StudyPlansResponseDTO.facets` to power 
 
 ```typescript
 interface PaginationMeta {
-    limit: number
-    offset: number
-    count: number   // items in this page
-    total: number   // total matching items across all pages
+	limit: number
+	offset: number
+	count: number // items in this page
+	total: number // total matching items across all pages
 }
 ```
 

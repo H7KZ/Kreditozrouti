@@ -36,7 +36,7 @@ const {
 	toggleCourseFilter,
 	clearFilters,
 	isStatusSelected,
-	isCourseSelected,
+	isCourseSelected
 } = useSharedCourseStatusFilter()
 
 // Collapsed states
@@ -96,12 +96,12 @@ function getSelectedBgClass(status: CourseStatusType): string {
 function getCourseTooltip(course: CourseStatus): string {
 	if (course.status === 'conflict') {
 		return t('components.filters.CourseStatusFilter.conflictsWith', {
-			courses: course.conflictsWith.join(', '),
+			courses: course.conflictsWith.join(', ')
 		})
 	}
 	if (course.status === 'campus-conflict') {
 		return t('components.filters.CourseStatusFilter.campusConflictsWith', {
-			courses: course.campusConflictsWith.join(', '),
+			courses: course.campusConflictsWith.join(', ')
 		})
 	}
 	if (course.status === 'incomplete') {
@@ -155,7 +155,7 @@ function toggleCollapsed() {
 					:key="option.value"
 					:class="[
 						'insis-checkbox-label -mx-1 cursor-pointer rounded px-1 transition-colors',
-						isStatusSelected(option.value) ? getSelectedBgClass(option.value) : '',
+						isStatusSelected(option.value) ? getSelectedBgClass(option.value) : ''
 					]"
 				>
 					<input
@@ -228,7 +228,7 @@ function toggleCollapsed() {
 						:key="course.id"
 						:class="[
 							'insis-checkbox-label -mx-1 cursor-pointer rounded px-1 transition-colors',
-							isCourseSelected(course.ident) ? 'bg-orange-50' : '',
+							isCourseSelected(course.ident) ? 'bg-orange-50' : ''
 						]"
 						:title="getCourseTooltip(course)"
 					>
@@ -265,7 +265,7 @@ function toggleCollapsed() {
 						:key="course.id"
 						:class="[
 							'insis-checkbox-label -mx-1 cursor-pointer rounded px-1 transition-colors',
-							isCourseSelected(course.ident) ? 'bg-amber-50' : '',
+							isCourseSelected(course.ident) ? 'bg-amber-50' : ''
 						]"
 						:title="getCourseTooltip(course)"
 					>

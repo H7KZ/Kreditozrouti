@@ -35,10 +35,10 @@ onMounted(async () => {
 
 watch(
 	() => wizardStore.currentStep,
-	(step) => {
+	step => {
 		if (step === 2) analytics.track('wizard_step_2')
 		if (step === 3) analytics.track('wizard_step_3')
-	},
+	}
 )
 
 /** Selected plans for the WizardStepStudyPlan component */
@@ -48,13 +48,13 @@ function handleComplete() {
 	if (wizardStore.completeWizard()) {
 		analytics.track('wizard_complete', {
 			faculty_id: wizardStore.facultyId ?? '',
-			plan_count: wizardStore.selectedStudyPlans.length,
+			plan_count: wizardStore.selectedStudyPlans.length
 		})
 		alertsStore.addAlert({
 			type: 'success',
 			title: t('components.wizard.StudyPlanWizard.setupCompleteTitle'),
 			description: t('components.wizard.StudyPlanWizard.setupCompleteDescription'),
-			timeout: 20_000,
+			timeout: 20_000
 		})
 		router.push('/courses')
 	}
@@ -64,13 +64,13 @@ function handleSkipCompletedCourses() {
 	if (wizardStore.completeWizard()) {
 		analytics.track('wizard_complete', {
 			faculty_id: wizardStore.facultyId ?? '',
-			plan_count: wizardStore.selectedStudyPlans.length,
+			plan_count: wizardStore.selectedStudyPlans.length
 		})
 		alertsStore.addAlert({
 			type: 'success',
 			title: t('components.wizard.StudyPlanWizard.setupCompleteTitle'),
 			description: t('components.wizard.StudyPlanWizard.setupCompleteDescription'),
-			timeout: 20_000,
+			timeout: 20_000
 		})
 		router.push('/courses')
 	}

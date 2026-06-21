@@ -13,12 +13,12 @@ on:
   workflow_dispatch:
     inputs:
       min_versions_to_keep:
-        description: "Number of recent SHA-tagged versions to keep per package"
+        description: 'Number of recent SHA-tagged versions to keep per package'
         required: false
         type: string
         default: '10'
       dry_run:
-        description: "Dry run — print what would be deleted without deleting"
+        description: 'Dry run — print what would be deleted without deleting'
         required: false
         type: boolean
         default: false

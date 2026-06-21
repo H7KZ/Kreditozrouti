@@ -39,100 +39,100 @@ useSeoMeta({
 		return `${base} | ${year} ${t(`semesters.${semester}`)} – Kreditožrouti`
 	},
 	description: () => t('pages.courses.metaDescription'),
-	ogDescription: () => t('pages.courses.metaDescription'),
+	ogDescription: () => t('pages.courses.metaDescription')
 })
 
 watch(
 	() => wizardStore.completed,
-	(completed) => {
+	completed => {
 		if (!completed) {
 			router.push('/')
 		}
 	},
-	{ immediate: true },
+	{ immediate: true }
 )
 
 // Analytics: track filter usage events
 watch(
 	() => filtersStore.filters.title,
-	(val) => {
+	val => {
 		if (val) analytics.track('filter_used', { filter_type: 'search' })
-	},
+	}
 )
 watch(
 	() => filtersStore.filters.search,
-	(val) => {
+	val => {
 		if (val) analytics.track('filter_used', { filter_type: 'syllabus' })
-	},
+	}
 )
 watch(
 	() => filtersStore.filters.faculty_ids,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'faculty' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.levels,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'study_level' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.languages,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'language' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.groups,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'course_group' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.categories,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'category' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.ects,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'ects' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.mode_of_completions,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'completion' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.lecturers,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'lecturer' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.include_times,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'time' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.hideConflictingCourses,
-	(val) => {
+	val => {
 		if (val) analytics.track('filter_used', { filter_type: 'hide_conflicts' })
-	},
+	}
 )
 
 onMounted(async () => {
@@ -248,7 +248,7 @@ async function fetchNextCoursesPage(page: () => void) {
 									$t('pages.courses.showingResults', {
 										from: coursesStore.pagination.offset + 1,
 										to: Math.min(coursesStore.pagination.offset + coursesStore.pagination.count, coursesStore.pagination.total),
-										total: coursesStore.pagination.total,
+										total: coursesStore.pagination.total
 									})
 								}}
 							</p>

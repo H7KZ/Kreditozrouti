@@ -69,12 +69,12 @@ const {
 	getDayLabel,
 	getCategoryBadgeClass,
 	getCourseTitle,
-	getUnitCourseTitle,
+	getUnitCourseTitle
 } = useCourseLabels()
 
 // Shared unit selection logic (same as CourseRowExpanded!)
 const { unitsByGroup, isSelectionComplete, isUnitSelected, isGroupSatisfied, handleAddUnit, handleRemoveUnit, handleRemoveCourse } = useCourseUnitSelection({
-	course,
+	course
 })
 
 // Shared slot formatting (same as CourseRowExpanded!)
@@ -123,7 +123,7 @@ async function fetchCourse() {
 	try {
 		const response = await api.post<{ data: CourseWithRelationsDTO[] }>('/courses', {
 			ids: [props.unit.courseId],
-			limit: 1,
+			limit: 1
 		})
 
 		if (response.data.data.length > 0) {
@@ -173,15 +173,15 @@ function handleRemoveCourseAndClose() {
 function getUnitConflictStatus(courseUnit: CourseUnitDTO): UnitConflictStatus {
 	const hardConflicts = timetableStore
 		.getUnitConflicts(courseUnit)
-		.flatMap((c) => c.conflictingUnits)
-		.filter((u) => u.courseId !== props.unit.courseId)
+		.flatMap(c => c.conflictingUnits)
+		.filter(u => u.courseId !== props.unit.courseId)
 
 	if (hardConflicts.length > 0) return { type: 'conflict', ident: hardConflicts[0]!.courseIdent }
 
 	const campusConflicts = timetableStore
 		.getUnitCampusConflicts(courseUnit)
-		.flatMap((c) => c.conflictingUnits)
-		.filter((u) => u.courseId !== props.unit.courseId)
+		.flatMap(c => c.conflictingUnits)
+		.filter(u => u.courseId !== props.unit.courseId)
 
 	if (campusConflicts.length > 0) return { type: 'campus', ident: campusConflicts[0]!.courseIdent }
 
@@ -376,7 +376,7 @@ onUnmounted(() => {
 																{{
 																	$t('components.timetable.TimetableCourseModal.slotConflict', {
 																		ident: (unitConflictStatuses[courseUnit.id] as { type: 'conflict'; ident: string })
-																			.ident,
+																			.ident
 																	})
 																}}
 															</span>
@@ -386,7 +386,7 @@ onUnmounted(() => {
 																🏫
 																{{
 																	$t('components.timetable.TimetableCourseModal.slotCampusConflict', {
-																		ident: (unitConflictStatuses[courseUnit.id] as { type: 'campus'; ident: string }).ident,
+																		ident: (unitConflictStatuses[courseUnit.id] as { type: 'campus'; ident: string }).ident
 																	})
 																}}
 															</span>

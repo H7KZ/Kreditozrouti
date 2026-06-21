@@ -16,17 +16,17 @@ useSeoMeta({
 	title: () => `${t('pages.index.title')} – ${t('pages.index.subtitle')}`,
 	description: () => t('pages.index.description'),
 	ogTitle: () => `${t('pages.index.title')} – ${t('pages.index.subtitle')}`,
-	ogDescription: () => t('pages.index.description'),
+	ogDescription: () => t('pages.index.description')
 })
 
 watch(
 	() => wizardStore.completed,
-	(completed) => {
+	completed => {
 		if (completed) {
 			router.push('/courses')
 		}
 	},
-	{ immediate: true },
+	{ immediate: true }
 )
 
 onMounted(() => {

@@ -42,10 +42,10 @@ scraper/src/
 
 ```typescript
 try {
-    // scrape + enqueue response
+	// scrape + enqueue response
 } catch (e) {
-    logger.add({ error: e, context: '...' })
-    return null // BullMQ sees success; no automatic retry
+	logger.add({ error: e, context: '...' })
+	return null // BullMQ sees success; no automatic retry
 }
 ```
 

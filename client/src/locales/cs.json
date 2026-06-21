@@ -535,9 +535,11 @@
 			"copyright": "© {year} Kreditožrouti. Všechna práva vyhrazena.",
 			"license": "Tento projekt není oficiálně spojen s VŠE.",
 			"version": "Verze {version}",
-			"beta": "Beta verze",
 			"disclaimer": "Data jsou stažena z InSISu a nemusí být 100% přesná."
 		}
+	},
+	"legal": {
+		"onThisPage": "Na této stránce"
 	},
 	"guide": {
 		"onboardingModal": {

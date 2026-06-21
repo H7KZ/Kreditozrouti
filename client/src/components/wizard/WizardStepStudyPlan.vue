@@ -46,7 +46,7 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	selectedPlans: () => [],
+	selectedPlans: () => []
 })
 const emit = defineEmits<Emits>()
 
@@ -62,7 +62,7 @@ const showSpecializationInfo = ref(true)
 
 /** Check if a study plan is selected */
 function isSelected(planId: number): boolean {
-	return props.selectedPlans.some((p) => p.id === planId)
+	return props.selectedPlans.some(p => p.id === planId)
 }
 
 /** Number of selected plans */
@@ -78,7 +78,7 @@ function handleTitleSearchInput(event: Event) {
 }
 
 function toggleLevelFilter(level: string) {
-	const newLevels = props.levelFilter.includes(level) ? props.levelFilter.filter((l) => l !== level) : [...props.levelFilter, level]
+	const newLevels = props.levelFilter.includes(level) ? props.levelFilter.filter(l => l !== level) : [...props.levelFilter, level]
 	emit('setLevelFilter', newLevels)
 }
 
@@ -161,7 +161,7 @@ function dismissSpecializationInfo() {
 							'cursor-pointer rounded border px-3 py-1.5 text-sm transition-all',
 							levelFilter.includes(level.value as string)
 								? 'border-(--insis-blue) bg-(--insis-blue) text-white'
-								: 'border-(--insis-border) bg-(--insis-surface) hover:bg-(--insis-gray-50)',
+								: 'border-(--insis-border) bg-(--insis-surface) hover:bg-(--insis-gray-50)'
 						]"
 						@click="toggleLevelFilter(level.value as string)"
 					>
@@ -182,7 +182,7 @@ function dismissSpecializationInfo() {
 					class="text-sm font-medium"
 					:class="{
 						'text-(--insis-blue)': selectedCount > 0,
-						'text-(--insis-gray-500)': selectedCount === 0,
+						'text-(--insis-gray-500)': selectedCount === 0
 					}"
 				>
 					{{ $t('components.wizard.WizardStepStudyPlan.selectedCount', { count: selectedCount }) }}
@@ -206,7 +206,7 @@ function dismissSpecializationInfo() {
 					'cursor-pointer rounded border p-4 transition-all duration-150 active:scale-[0.99]',
 					isSelected(plan.id)
 						? 'border-(--insis-blue) bg-(--insis-blue-light) shadow-(--insis-shadow-sm) ring-2 ring-(--insis-blue)'
-						: 'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue) hover:bg-(--insis-gray-50) hover:shadow-(--insis-shadow-sm)',
+						: 'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue) hover:bg-(--insis-gray-50) hover:shadow-(--insis-shadow-sm)'
 				]"
 				@click="handleTogglePlan(plan)"
 			>
@@ -239,7 +239,7 @@ function dismissSpecializationInfo() {
 						<div
 							:class="[
 								'flex h-5 w-5 items-center justify-center rounded border-2 transition-colors',
-								isSelected(plan.id) ? 'border-(--insis-blue) bg-(--insis-blue) text-white' : 'border-(--insis-gray-300)',
+								isSelected(plan.id) ? 'border-(--insis-blue) bg-(--insis-blue) text-white' : 'border-(--insis-gray-300)'
 							]"
 						>
 							<IconCheck v-if="isSelected(plan.id)" class="h-3 w-3" />

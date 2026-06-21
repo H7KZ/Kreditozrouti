@@ -56,6 +56,6 @@ export function useClickOutside(elementRef: Ref<HTMLElement | null>, options: Us
 
 	return {
 		handleClickOutside,
-		handleKeyDown,
+		handleKeyDown
 	}
 }

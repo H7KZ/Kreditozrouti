@@ -61,7 +61,7 @@ export function useCourseStatusFilter() {
 			selected: 0,
 			conflict: 0,
 			'campus-conflict': 0,
-			incomplete: 0,
+			incomplete: 0
 		}
 
 		for (const status of allCourseStatuses.value) {
@@ -79,17 +79,17 @@ export function useCourseStatusFilter() {
 	/**
 	 * Courses that have hard time conflicts
 	 */
-	const coursesWithConflicts = computed<CourseStatus[]>(() => allCourseStatuses.value.filter((s) => s.status === 'conflict'))
+	const coursesWithConflicts = computed<CourseStatus[]>(() => allCourseStatuses.value.filter(s => s.status === 'conflict'))
 
 	/**
 	 * Courses that have campus travel-time conflicts (softer, no hard overlap)
 	 */
-	const coursesWithCampusConflicts = computed<CourseStatus[]>(() => allCourseStatuses.value.filter((s) => s.status === 'campus-conflict'))
+	const coursesWithCampusConflicts = computed<CourseStatus[]>(() => allCourseStatuses.value.filter(s => s.status === 'campus-conflict'))
 
 	/**
 	 * Courses that have incomplete selections
 	 */
-	const coursesWithIncomplete = computed<CourseStatus[]>(() => allCourseStatuses.value.filter((s) => s.status === 'incomplete'))
+	const coursesWithIncomplete = computed<CourseStatus[]>(() => allCourseStatuses.value.filter(s => s.status === 'incomplete'))
 
 	/**
 	 * Filter options for the checkbox group
@@ -100,29 +100,29 @@ export function useCourseStatusFilter() {
 			label: t('components.filters.CourseStatusFilter.allSelected'),
 			count: totalSelectedCount.value,
 			icon: 'selected',
-			colorClass: 'text-blue-600 bg-blue-100',
+			colorClass: 'text-blue-600 bg-blue-100'
 		},
 		{
 			value: 'conflict',
 			label: t('components.filters.CourseStatusFilter.withConflicts'),
 			count: timetableStore.conflicts.length,
 			icon: 'conflict',
-			colorClass: 'text-red-600 bg-red-100',
+			colorClass: 'text-red-600 bg-red-100'
 		},
 		{
 			value: 'campus-conflict',
 			label: t('components.filters.CourseStatusFilter.withCampusConflicts'),
 			count: timetableStore.campusConflicts.length,
 			icon: 'conflict',
-			colorClass: 'text-amber-600 bg-amber-100',
+			colorClass: 'text-amber-600 bg-amber-100'
 		},
 		{
 			value: 'incomplete',
 			label: t('components.filters.CourseStatusFilter.incomplete'),
 			count: statusCounts.value.incomplete,
 			icon: 'incomplete',
-			colorClass: 'text-amber-600 bg-amber-100',
-		},
+			colorClass: 'text-amber-600 bg-amber-100'
+		}
 	])
 
 	/**
@@ -130,19 +130,19 @@ export function useCourseStatusFilter() {
 	 * Grouped by status for better UX
 	 */
 	const courseOptions = computed(() => {
-		const conflicts = coursesWithConflicts.value.map((c) => ({
+		const conflicts = coursesWithConflicts.value.map(c => ({
 			...c,
-			groupLabel: t('components.filters.CourseStatusFilter.conflictingCourses'),
+			groupLabel: t('components.filters.CourseStatusFilter.conflictingCourses')
 		}))
 
-		const campusConflicts = coursesWithCampusConflicts.value.map((c) => ({
+		const campusConflicts = coursesWithCampusConflicts.value.map(c => ({
 			...c,
-			groupLabel: t('components.filters.CourseStatusFilter.campusConflictingCourses'),
+			groupLabel: t('components.filters.CourseStatusFilter.campusConflictingCourses')
 		}))
 
-		const incomplete = coursesWithIncomplete.value.map((c) => ({
+		const incomplete = coursesWithIncomplete.value.map(c => ({
 			...c,
-			groupLabel: t('components.filters.CourseStatusFilter.incompleteCourses'),
+			groupLabel: t('components.filters.CourseStatusFilter.incompleteCourses')
 		}))
 
 		return { conflicts, campusConflicts, incomplete }
@@ -207,7 +207,7 @@ export function useCourseStatusFilter() {
 			idents.add(ident)
 
 			// If this course has conflicts, also add conflicting courses
-			const courseStatus = allCourseStatuses.value.find((c) => c.ident === ident)
+			const courseStatus = allCourseStatuses.value.find(c => c.ident === ident)
 			if (courseStatus?.status === 'conflict') {
 				for (const conflictIdent of courseStatus.conflictsWith) {
 					idents.add(conflictIdent)
@@ -307,7 +307,7 @@ export function useCourseStatusFilter() {
 	function getFilterState(): CourseStatusFilterState {
 		return {
 			selectedStatuses: [...selectedStatuses.value],
-			selectedCourseIdents: [...selectedCourseIdents.value],
+			selectedCourseIdents: [...selectedCourseIdents.value]
 		}
 	}
 
@@ -348,7 +348,7 @@ export function useCourseStatusFilter() {
 		isStatusSelected,
 		isCourseSelected,
 		getFilterState,
-		setFilterState,
+		setFilterState
 	}
 }
 

@@ -4,7 +4,7 @@ _Verification of Compliance with VŠE Internal Regulations_
 
 | Field                | Value                                           |
 | -------------------- | ----------------------------------------------- |
-| Document Version     | v1.0.0 — Beta Launch                            |
+| Document Version     | v1.0.0                                          |
 | Date                 | January 31, 2026                                |
 | Applicable To        | Kreditožrouti Web Application                   |
 | Regulations Reviewed | SR 05/2018, PR 04/2019, PR 02/2023, Study Rules |

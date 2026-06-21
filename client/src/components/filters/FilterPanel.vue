@@ -65,7 +65,7 @@ const facetConfig = computed(() => [
 		facets: coursesStore.facets.faculties,
 		selected: filtersStore.filters.faculty_ids,
 		setter: (ids: string[]) => filtersStore.setFilter('faculty_ids', ids),
-		defaultCollapsed: false,
+		defaultCollapsed: false
 	},
 	{
 		key: 'levels',
@@ -74,7 +74,7 @@ const facetConfig = computed(() => [
 		translations: 'courseLevels',
 		selected: filtersStore.filters.levels,
 		setter: (levels: string[]) => filtersStore.setFilter('levels', levels),
-		defaultCollapsed: false,
+		defaultCollapsed: false
 	},
 	{
 		key: 'languages',
@@ -83,7 +83,7 @@ const facetConfig = computed(() => [
 		translations: 'courseLanguages',
 		selected: filtersStore.filters.languages,
 		setter: (languages: string[]) => filtersStore.setFilter('languages', languages),
-		defaultCollapsed: true,
+		defaultCollapsed: true
 	},
 	{
 		key: 'groups',
@@ -93,7 +93,7 @@ const facetConfig = computed(() => [
 		selected: filtersStore.filters.groups,
 		setter: (groups: string[]) => filtersStore.setFilter('groups', groups as CoursesFilter['groups']),
 		visible: filtersStore.filters.study_plan_ids && filtersStore.filters.study_plan_ids.length > 0,
-		defaultCollapsed: false,
+		defaultCollapsed: false
 	},
 	{
 		key: 'categories',
@@ -103,7 +103,7 @@ const facetConfig = computed(() => [
 		selected: filtersStore.filters.categories,
 		setter: (categories: string[]) => filtersStore.setFilter('categories', categories as CoursesFilter['categories']),
 		visible: filtersStore.filters.study_plan_ids && filtersStore.filters.study_plan_ids.length > 0,
-		defaultCollapsed: false,
+		defaultCollapsed: false
 	},
 	{
 		key: 'ects',
@@ -111,7 +111,7 @@ const facetConfig = computed(() => [
 		facets: coursesStore.facets.ects,
 		selected: filtersStore.filters.ects?.map(String),
 		setter: (values: string[]) => filtersStore.setFilter('ects', values.map(Number)),
-		defaultCollapsed: true,
+		defaultCollapsed: true
 	},
 	{
 		key: 'modes_of_completion',
@@ -120,7 +120,7 @@ const facetConfig = computed(() => [
 		translations: 'courseModesOfCompletion',
 		selected: filtersStore.filters.mode_of_completions,
 		setter: (modes: string[]) => filtersStore.setFilter('mode_of_completions', modes),
-		defaultCollapsed: true,
+		defaultCollapsed: true
 	},
 	{
 		key: 'assessment_methods',
@@ -129,7 +129,7 @@ const facetConfig = computed(() => [
 		translations: 'assessmentMethods',
 		selected: filtersStore.filters.assessment_methods,
 		setter: (methods: string[]) => filtersStore.setFilter('assessment_methods', methods),
-		defaultCollapsed: true,
+		defaultCollapsed: true
 	},
 	{
 		key: 'lecturers',
@@ -138,12 +138,12 @@ const facetConfig = computed(() => [
 		selected: filtersStore.filters.lecturers,
 		setter: (lecturers: string[]) => filtersStore.setFilter('lecturers', lecturers),
 		searchable: true,
-		defaultCollapsed: true,
-	},
+		defaultCollapsed: true
+	}
 ])
 
 // Only show facets that have items and are visible
-const visibleFacets = computed(() => facetConfig.value.filter((f) => f.facets?.length > 0 && (f.visible === undefined || f.visible)))
+const visibleFacets = computed(() => facetConfig.value.filter(f => f.facets?.length > 0 && (f.visible === undefined || f.visible)))
 
 // Count active time filters
 const activeTimeFilterCount = computed(() => (filtersStore.filters.include_times?.length || 0) + (filtersStore.filters.exclude_times?.length || 0))

@@ -55,7 +55,7 @@ interface ExtendedUnit extends SelectedCourseUnit {
  */
 export function useTimetableGrid(
 	unitsByDay: Ref<Map<InSISDay, (SelectedCourseUnit | ExtendedUnit)[]>> | ComputedRef<Map<InSISDay, (SelectedCourseUnit | ExtendedUnit)[]>>,
-	options: UseTimetableGridOptions = {},
+	options: UseTimetableGridOptions = {}
 ) {
 	const { rowHeight = 60, blockPadding = 2 } = options
 	const MIN_BLOCK_HEIGHT = 56
@@ -71,7 +71,7 @@ export function useTimetableGrid(
 		while (time <= TIME_CONFIG.END) {
 			slots.push({
 				minutes: time,
-				label: minutesToTime(time),
+				label: minutesToTime(time)
 			})
 			time += 60 // Every hour
 		}
@@ -105,7 +105,7 @@ export function useTimetableGrid(
 
 		// Find all units that overlap with each unit
 		for (const unit of sortedUnits) {
-			const overlapping = sortedUnits.filter((other) => other.timeFrom < unit.timeTo && unit.timeFrom < other.timeTo)
+			const overlapping = sortedUnits.filter(other => other.timeFrom < unit.timeTo && unit.timeFrom < other.timeTo)
 
 			// Sort overlapping group consistently to assign stable indices.
 			// Date-only (block) events come first → lowest index → rendered at the bottom of the row.
@@ -118,7 +118,7 @@ export function useTimetableGrid(
 				return a.slotId - b.slotId
 			})
 
-			const index = overlapping.findIndex((u) => u.slotId === unit.slotId)
+			const index = overlapping.findIndex(u => u.slotId === unit.slotId)
 			overlapMap.set(unit.slotId, { index, total: overlapping.length })
 		}
 
@@ -172,7 +172,7 @@ export function useTimetableGrid(
 			left: `${left}%`,
 			width: `${width}%`,
 			bottom: `${bottomOffset}px`,
-			height: `${MIN_BLOCK_HEIGHT}px`,
+			height: `${MIN_BLOCK_HEIGHT}px`
 		}
 	}
 
@@ -196,7 +196,7 @@ export function useTimetableGrid(
 	function getDragSelectionStyle(
 		day: InSISDay,
 		selection: { day: InSISDay; timeFrom: number; timeTo: number } | null,
-		active: boolean,
+		active: boolean
 	): { left: string; width: string } | null {
 		if (!selection || selection.day !== day || !active) {
 			return null
@@ -207,7 +207,7 @@ export function useTimetableGrid(
 
 		return {
 			left: `${left}%`,
-			width: `${width}%`,
+			width: `${width}%`
 		}
 	}
 
@@ -228,6 +228,6 @@ export function useTimetableGrid(
 
 		// Drag selection
 		getTimeFromX,
-		getDragSelectionStyle,
+		getDragSelectionStyle
 	}
 }

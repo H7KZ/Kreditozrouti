@@ -20,12 +20,12 @@ export function useScheduleExport(gridRef: Ref<HTMLElement | null>) {
 				width: el.scrollWidth,
 				height: el.scrollHeight,
 				style: { overflow: 'visible' },
-				skipFonts: true,
+				skipFonts: true
 			})
 
 			// Stamp watermark onto canvas
 			const img = new Image()
-			await new Promise<void>((resolve) => {
+			await new Promise<void>(resolve => {
 				img.onload = () => resolve()
 				img.src = dataUrl
 			})

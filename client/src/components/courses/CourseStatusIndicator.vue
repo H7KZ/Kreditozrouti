@@ -16,7 +16,7 @@ const selectedUnits = computed(() => timetableStore.unitsByCourse.get(props.cour
 
 const conflictingUnits = computed(() => {
 	const allConflicts = [...timetableStore.conflicts, ...timetableStore.campusConflicts]
-	return selectedUnits.value.filter((u) => allConflicts.some(([a, b]) => a.slotId === u.slotId || b.slotId === u.slotId))
+	return selectedUnits.value.filter(u => allConflicts.some(([a, b]) => a.slotId === u.slotId || b.slotId === u.slotId))
 })
 
 const totalSelected = computed(() => selectedUnits.value.length)
@@ -39,7 +39,7 @@ const hasCampusConflict = computed(() => status.value?.status === 'campus-confli
 			v-if="hasConflict || hasCampusConflict"
 			:class="[
 				'inline-flex items-center rounded px-1 py-0.5 text-[10px] leading-none font-medium',
-				hasConflict ? 'bg-(--insis-danger-light) text-(--insis-danger)' : 'bg-(--insis-warning-light) text-(--insis-warning)',
+				hasConflict ? 'bg-(--insis-danger-light) text-(--insis-danger)' : 'bg-(--insis-warning-light) text-(--insis-warning)'
 			]"
 		>
 			{{ conflictCount }}/{{ totalSelected }}

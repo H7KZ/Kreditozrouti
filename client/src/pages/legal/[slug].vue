@@ -11,7 +11,7 @@ const { locale } = useI18n()
 
 const allDocs = import.meta.glob('../../legal/**/*.md', {
 	query: '?raw',
-	import: 'default',
+	import: 'default'
 }) as Record<string, () => Promise<string>>
 
 marked.use({
@@ -22,8 +22,8 @@ marked.use({
 				.replace(/[^\w\s-]/g, '')
 				.replace(/\s+/g, '-')
 			return `<h${token.depth} id="${id}">${token.text}</h${token.depth}>\n`
-		},
-	},
+		}
+	}
 })
 
 const renderedHtml = ref('')

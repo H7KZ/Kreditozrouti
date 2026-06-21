@@ -13,11 +13,11 @@ on:
   workflow_dispatch:
     inputs:
       sha:
-        description: "Short SHA to roll back to (8 chars, e.g. a1b2c3d4)"
+        description: 'Short SHA to roll back to (8 chars, e.g. a1b2c3d4)'
         required: true
         type: string
       service:
-        description: "Service to roll back (api | client | scraper | all)"
+        description: 'Service to roll back (api | client | scraper | all)'
         required: true
         type: choice
         options:
@@ -26,7 +26,7 @@ on:
           - scraper
           - all
       environment:
-        description: "Target environment"
+        description: 'Target environment'
         required: true
         type: choice
         options:

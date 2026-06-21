@@ -535,9 +535,11 @@
 			"copyright": "© {year} Kreditožrouti. All rights reserved.",
 			"license": "This project is not officially affiliated with VŠE.",
 			"version": "Version {version}",
-			"beta": "Beta Release",
 			"disclaimer": "Data is scraped from InSIS and may not be 100% accurate."
 		}
+	},
+	"legal": {
+		"onThisPage": "On this page"
 	},
 	"guide": {
 		"onboardingModal": {

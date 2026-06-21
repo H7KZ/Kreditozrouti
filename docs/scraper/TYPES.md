@@ -40,37 +40,31 @@ type InSISSemester = 'ZS' | 'LS'
 
 ```typescript
 type InSISStudyPlanCourseGroup =
-  | 'faculty_specific'       // f* codes — applies within a single faculty
-  | 'university_wide'        // c* codes — shared across all faculties
-  | 'field_specific_bachelor' // o* codes — specific to a bachelor's field
-  | 'field_specific_master'  // h* and e* codes — specific to a master's field
-  | 'minor_specialization'   // s* codes — minor/secondary specializations
+	| 'faculty_specific' // f* codes — applies within a single faculty
+	| 'university_wide' // c* codes — shared across all faculties
+	| 'field_specific_bachelor' // o* codes — specific to a bachelor's field
+	| 'field_specific_master' // h* and e* codes — specific to a master's field
+	| 'minor_specialization' // s* codes — minor/secondary specializations
 ```
 
 ### `InSISStudyPlanCourseCategory`
 
 ```typescript
 type InSISStudyPlanCourseCategory =
-  | 'compulsory'         // *P  — must complete
-  | 'elective'           // *V* — choose from a list
-  | 'language'           // *J* — language requirement
-  | 'state_exam'         // *SZ* — state exam component
-  | 'prohibited'         // *EXC — cannot enroll
-  | 'beyond_scope'       // *VOR — outside study plan scope
-  | 'exchange_program'   // *ZEXCN* — for exchange students only
-  | 'physical_education' // *TVS* — sports/PE requirement
+	| 'compulsory' // *P  — must complete
+	| 'elective' // *V* — choose from a list
+	| 'language' // *J* — language requirement
+	| 'state_exam' // *SZ* — state exam component
+	| 'prohibited' // *EXC — cannot enroll
+	| 'beyond_scope' // *VOR — outside study plan scope
+	| 'exchange_program' // *ZEXCN* — for exchange students only
+	| 'physical_education' // *TVS* — sports/PE requirement
 ```
 
 ### `ScraperJob`
 
 ```typescript
-type ScraperJob =
-  | 'InSIS:Catalog'
-  | 'InSIS:Course'
-  | 'InSIS:StudyPlans'
-  | 'InSIS:StudyPlan'
-  | 'InSIS:FacultyTimetables'
-  | 'InSIS:FacultyTimetable'
+type ScraperJob = 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan' | 'InSIS:FacultyTimetables' | 'InSIS:FacultyTimetable'
 ```
 
 String discriminant used in both request and response job payloads.
@@ -91,11 +85,11 @@ Normalized slot type. The helper `getSlotType(slot)` converts raw InSIS Czech/En
 
 ```typescript
 interface ScraperInSISFaculty {
-  ident: string | null    // e.g. "FIS", "NF", "CTVS"
-  title: string | null    // e.g. "Fakulta informatiky a statistiky"
-  is_schedule_publicly_visible: boolean
-  // Set authoritatively by InSIS:FacultyTimetable response job
-  // Always false when extracted from study plan or course pages
+	ident: string | null // e.g. "FIS", "NF", "CTVS"
+	title: string | null // e.g. "Fakulta informatiky a statistiky"
+	is_schedule_publicly_visible: boolean
+	// Set authoritatively by InSIS:FacultyTimetable response job
+	// Always false when extracted from study plan or course pages
 }
 ```
 
@@ -106,52 +100,52 @@ fill every syllabus field.
 
 ```typescript
 interface ScraperInSISCourse {
-  // Identity
-  id: number               // Resolved from form input or URL param
-  url: string              // Full syllabus URL
-  url_id: number | null    // Numeric ID from URL (may differ from form id in rare cases)
+	// Identity
+	id: number // Resolved from form input or URL param
+	url: string // Full syllabus URL
+	url_id: number | null // Numeric ID from URL (may differ from form id in rare cases)
 
-  // Basic metadata
-  ident: string | null     // Course code, e.g. "4IT101"
-  title: string | null     // Title in language of instruction
-  title_cs: string | null  // Czech title
-  title_en: string | null  // English title
-  ects: number | null      // Credit value
+	// Basic metadata
+	ident: string | null // Course code, e.g. "4IT101"
+	title: string | null // Title in language of instruction
+	title_cs: string | null // Czech title
+	title_en: string | null // English title
+	ects: number | null // Credit value
 
-  // Classification
-  faculty: ScraperInSISFaculty | null
-  mode_of_delivery: string | null   // e.g. "prezenční", "kombinovaná"
-  mode_of_completion: string | null // e.g. "zkouška", "klasifikovaný zápočet"
-  languages: string[] | null        // e.g. ["čeština"], ["angličtina", "čeština"]
-  level: string | null              // e.g. "bakalářský", "magisterský", "MBA"
-  year_of_study: number | null      // Recommended year (1–5)
-  semester: InSISSemester | null
-  year: number | null               // Starting year of academic year, e.g. 2024 for 2024/2025
+	// Classification
+	faculty: ScraperInSISFaculty | null
+	mode_of_delivery: string | null // e.g. "prezenční", "kombinovaná"
+	mode_of_completion: string | null // e.g. "zkouška", "klasifikovaný zápočet"
+	languages: string[] | null // e.g. ["čeština"], ["angličtina", "čeština"]
+	level: string | null // e.g. "bakalářský", "magisterský", "MBA"
+	year_of_study: number | null // Recommended year (1–5)
+	semester: InSISSemester | null
+	year: number | null // Starting year of academic year, e.g. 2024 for 2024/2025
 
-  // People
-  lecturers: string[] | null
-  guarantors: string[] | null
+	// People
+	lecturers: string[] | null
+	guarantors: string[] | null
 
-  // Syllabus content (all stored as Markdown strings)
-  prerequisites: string | null
-  recommended_programmes: string | null
-  required_work_experience: string | null
-  aims_of_the_course: string | null
-  learning_outcomes: string | null
-  course_contents: string | null
-  special_requirements: string | null
-  literature_required: string | null
-  literature_recommended: string | null
+	// Syllabus content (all stored as Markdown strings)
+	prerequisites: string | null
+	recommended_programmes: string | null
+	required_work_experience: string | null
+	aims_of_the_course: string | null
+	learning_outcomes: string | null
+	course_contents: string | null
+	special_requirements: string | null
+	literature_required: string | null
+	literature_recommended: string | null
 
-  // Structured data
-  assessment_methods: ScraperInSISCourseAssessmentMethod[] | null
-  timetable: ScraperInSISCourseTimetableUnit[] | null  // [] if not publicly visible
-  study_plans: ScraperInSISCourseStudyPlan[] | null
-  study_load: ScraperInSISCourseStudyLoad[] | null
+	// Structured data
+	assessment_methods: ScraperInSISCourseAssessmentMethod[] | null
+	timetable: ScraperInSISCourseTimetableUnit[] | null // [] if not publicly visible
+	study_plans: ScraperInSISCourseStudyPlan[] | null
+	study_load: ScraperInSISCourseStudyLoad[] | null
 
-  // Audit
-  last_modified_date: string | null  // ISO date, e.g. "2024-09-15"
-  last_modified_by: string | null    // Person name
+	// Audit
+	last_modified_date: string | null // ISO date, e.g. "2024-09-15"
+	last_modified_by: string | null // Person name
 }
 ```
 
@@ -159,8 +153,8 @@ interface ScraperInSISCourse {
 
 ```typescript
 interface ScraperInSISCourseAssessmentMethod {
-  method: string | null   // e.g. "Zkouška písemná", "Průběžný test"
-  weight: number | null   // Percentage weight (0–100)
+	method: string | null // e.g. "Zkouška písemná", "Průběžný test"
+	weight: number | null // Percentage weight (0–100)
 }
 ```
 
@@ -171,10 +165,10 @@ led by one lecturer, possibly occurring in multiple time slots.
 
 ```typescript
 interface ScraperInSISCourseTimetableUnit {
-  lecturer: string | null
-  capacity: number | null  // Maximum enrollment for this unit
-  note: string | null
-  slots: ScraperInSISCourseTimetableSlot[] | null
+	lecturer: string | null
+	capacity: number | null // Maximum enrollment for this unit
+	note: string | null
+	slots: ScraperInSISCourseTimetableSlot[] | null
 }
 ```
 
@@ -185,13 +179,13 @@ multiple days/times in the same row.
 
 ```typescript
 interface ScraperInSISCourseTimetableSlot {
-  type: string | null          // Raw InSIS type string, e.g. "Přednáška", "Cvičení"
-  frequency: 'weekly' | 'single' | null
-  date: string | null          // Set only for single/irregular occurrences, e.g. "15.10.2024"
-  day: InSISDay | null         // Set only for recurring slots
-  time_from: string | null     // Raw time string, e.g. "9:15"
-  time_to: string | null       // Raw time string, e.g. "10:45"
-  location: string | null      // Room/building, e.g. "NB 169"
+	type: string | null // Raw InSIS type string, e.g. "Přednáška", "Cvičení"
+	frequency: 'weekly' | 'single' | null
+	date: string | null // Set only for single/irregular occurrences, e.g. "15.10.2024"
+	day: InSISDay | null // Set only for recurring slots
+	time_from: string | null // Raw time string, e.g. "9:15"
+	time_to: string | null // Raw time string, e.g. "10:45"
+	location: string | null // Room/building, e.g. "NB 169"
 }
 ```
 
@@ -204,13 +198,13 @@ Cross-reference: which study plans include this course, in which semester.
 
 ```typescript
 interface ScraperInSISCourseStudyPlan {
-  ident: string | null             // Plan code, e.g. "B-AIN1"
-  facultyIdent: string | null      // e.g. "FIS"
-  semester: InSISSemester | null
-  year: number | null
-  mode_of_study: string | null     // e.g. "prezenční"
-  group: InSISStudyPlanCourseGroup
-  category: InSISStudyPlanCourseCategory
+	ident: string | null // Plan code, e.g. "B-AIN1"
+	facultyIdent: string | null // e.g. "FIS"
+	semester: InSISSemester | null
+	year: number | null
+	mode_of_study: string | null // e.g. "prezenční"
+	group: InSISStudyPlanCourseGroup
+	category: InSISStudyPlanCourseCategory
 }
 ```
 
@@ -218,8 +212,8 @@ interface ScraperInSISCourseStudyPlan {
 
 ```typescript
 interface ScraperInSISCourseStudyLoad {
-  activity: string   // e.g. "Příprava na přednášky"
-  hours: number
+	activity: string // e.g. "Příprava na přednášky"
+	hours: number
 }
 ```
 
@@ -227,17 +221,17 @@ interface ScraperInSISCourseStudyLoad {
 
 ```typescript
 interface ScraperInSISStudyPlan {
-  id: number            // Numeric ID from URL (?stud_plan=...). -1 if not found.
-  url: string
-  ident: string | null  // Plan code, e.g. "B-AIN1"
-  title: string | null  // Plan full title
-  faculty: ScraperInSISFaculty | null
-  semester: InSISSemester | null
-  year: number | null
-  level: string | null         // e.g. "bakalářský"
-  mode_of_study: string | null // e.g. "prezenční"
-  study_length: string | null  // e.g. "3 roky"
-  courses: ScraperInSISStudyPlanCourse[] | null
+	id: number // Numeric ID from URL (?stud_plan=...). -1 if not found.
+	url: string
+	ident: string | null // Plan code, e.g. "B-AIN1"
+	title: string | null // Plan full title
+	faculty: ScraperInSISFaculty | null
+	semester: InSISSemester | null
+	year: number | null
+	level: string | null // e.g. "bakalářský"
+	mode_of_study: string | null // e.g. "prezenční"
+	study_length: string | null // e.g. "3 roky"
+	courses: ScraperInSISStudyPlanCourse[] | null
 }
 ```
 
@@ -245,11 +239,11 @@ interface ScraperInSISStudyPlan {
 
 ```typescript
 interface ScraperInSISStudyPlanCourse {
-  id: number | null      // Numeric course ID from href, if present
-  url: string | null     // Absolute course URL
-  ident: string          // Course code, e.g. "4IT101"
-  group: InSISStudyPlanCourseGroup
-  category: InSISStudyPlanCourseCategory
+	id: number | null // Numeric course ID from href, if present
+	url: string | null // Absolute course URL
+	ident: string // Course code, e.g. "4IT101"
+	group: InSISStudyPlanCourseGroup
+	category: InSISStudyPlanCourseCategory
 }
 ```
 
@@ -259,7 +253,7 @@ Minimal envelope for the list of discovered study plan URLs.
 
 ```typescript
 interface ScraperInSISStudyPlans {
-  urls: string[]
+	urls: string[]
 }
 ```
 
@@ -269,7 +263,7 @@ Discovery response for the faculty timetables pipeline.
 
 ```typescript
 interface ScraperInSISFacultyTimetables {
-  faculties_count: number   // Number of InSIS:FacultyTimetable jobs enqueued
+	faculties_count: number // Number of InSIS:FacultyTimetable jobs enqueued
 }
 ```
 
@@ -279,8 +273,8 @@ Per-faculty visibility result.
 
 ```typescript
 interface ScraperInSISFacultyTimetable {
-  ident: string                      // Faculty ident, e.g. "FIS"
-  is_schedule_publicly_visible: boolean
+	ident: string // Faculty ident, e.g. "FIS"
+	is_schedule_publicly_visible: boolean
 }
 ```
 
@@ -293,93 +287,93 @@ interface ScraperInSISFacultyTimetable {
 ```typescript
 // Shared base
 interface ScraperRequestJobBase {
-  type: ScraperJob
-  error?: { message: string }
+	type: ScraperJob
+	error?: { message: string }
 }
 
 interface ScraperInSISCatalogRequestJob extends ScraperRequestJobBase {
-  type: 'InSIS:Catalog'
-  faculties?: string[]
-  periods?: { semester: InSISSemester | null; year: number }[]
-  auto_queue_courses?: boolean
+	type: 'InSIS:Catalog'
+	faculties?: string[]
+	periods?: { semester: InSISSemester | null; year: number }[]
+	auto_queue_courses?: boolean
 }
 
 interface ScraperInSISCourseRequestJob extends ScraperRequestJobBase {
-  type: 'InSIS:Course'
-  url: string
+	type: 'InSIS:Course'
+	url: string
 }
 
 interface ScraperInSISStudyPlansRequestJob extends ScraperRequestJobBase {
-  type: 'InSIS:StudyPlans'
-  faculties?: string[]
-  periods?: { semester: InSISSemester | null; year: number }[]
-  auto_queue_study_plans?: boolean
+	type: 'InSIS:StudyPlans'
+	faculties?: string[]
+	periods?: { semester: InSISSemester | null; year: number }[]
+	auto_queue_study_plans?: boolean
 }
 
 interface ScraperInSISStudyPlanRequestJob extends ScraperRequestJobBase {
-  type: 'InSIS:StudyPlan'
-  url: string
+	type: 'InSIS:StudyPlan'
+	url: string
 }
 
 interface ScraperInSISFacultyTimetablesRequestJob extends ScraperRequestJobBase {
-  type: 'InSIS:FacultyTimetables'
+	type: 'InSIS:FacultyTimetables'
 }
 
 interface ScraperInSISFacultyTimetableRequestJob extends ScraperRequestJobBase {
-  type: 'InSIS:FacultyTimetable'
-  f_id: string   // InSIS faculty numeric ID
-  name: string   // Faculty display name
+	type: 'InSIS:FacultyTimetable'
+	f_id: string // InSIS faculty numeric ID
+	name: string // Faculty display name
 }
 
 type ScraperRequestJob =
-  | ScraperInSISCatalogRequestJob
-  | ScraperInSISCourseRequestJob
-  | ScraperInSISStudyPlansRequestJob
-  | ScraperInSISStudyPlanRequestJob
-  | ScraperInSISFacultyTimetablesRequestJob
-  | ScraperInSISFacultyTimetableRequestJob
+	| ScraperInSISCatalogRequestJob
+	| ScraperInSISCourseRequestJob
+	| ScraperInSISStudyPlansRequestJob
+	| ScraperInSISStudyPlanRequestJob
+	| ScraperInSISFacultyTimetablesRequestJob
+	| ScraperInSISFacultyTimetableRequestJob
 ```
 
 ### Response Jobs (Scraper → API)
 
 ```typescript
 interface ScraperInSISCatalogResponseJob {
-  type: 'InSIS:Catalog'
-  catalog: ScraperInSISCatalog  // { urls: string[] }
+	type: 'InSIS:Catalog'
+	catalog: ScraperInSISCatalog // { urls: string[] }
 }
 
 interface ScraperInSISCourseResponseJob {
-  type: 'InSIS:Course'
-  course: ScraperInSISCourse | null
+	type: 'InSIS:Course'
+	course: ScraperInSISCourse | null
 }
 
 interface ScraperInSISStudyPlansResponseJob {
-  type: 'InSIS:StudyPlans'
-  plans: ScraperInSISStudyPlans  // { urls: string[] }
+	type: 'InSIS:StudyPlans'
+	plans: ScraperInSISStudyPlans // { urls: string[] }
 }
 
 interface ScraperInSISStudyPlanResponseJob {
-  type: 'InSIS:StudyPlan'
-  plan: ScraperInSISStudyPlan | null
+	type: 'InSIS:StudyPlan'
+	plan: ScraperInSISStudyPlan | null
 }
 
 interface ScraperInSISFacultyTimetablesResponseJob {
-  type: 'InSIS:FacultyTimetables'
-  result: ScraperInSISFacultyTimetables  // { faculties_count: number }
+	type: 'InSIS:FacultyTimetables'
+	result: ScraperInSISFacultyTimetables // { faculties_count: number }
 }
 
 interface ScraperInSISFacultyTimetableResponseJob {
-  type: 'InSIS:FacultyTimetable'
-  result: ScraperInSISFacultyTimetable   // { ident, is_schedule_publicly_visible }
+	type: 'InSIS:FacultyTimetable'
+	result: ScraperInSISFacultyTimetable // { ident, is_schedule_publicly_visible }
 }
 
 type ScraperResponseJob =
-  | ScraperInSISCatalogResponseJob
-  | ScraperInSISCourseResponseJob
-  | ScraperInSISStudyPlansResponseJob
-  | ScraperInSISStudyPlanResponseJob
-  | ScraperInSISFacultyTimetablesResponseJob
-  | ScraperInSISFacultyTimetableResponseJob
+	| ScraperInSISCatalogResponseJob
+	| ScraperInSISCourseResponseJob
+	| ScraperInSISStudyPlansResponseJob
+	| ScraperInSISStudyPlanResponseJob
+	| ScraperInSISFacultyTimetablesResponseJob
+	| ScraperInSISFacultyTimetableResponseJob
 ```
 
 Note: scheduled jobs (`InSIS:Catalog`, `InSIS:StudyPlans`) are enqueued directly by the API scheduler — they produce

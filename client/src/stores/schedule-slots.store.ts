@@ -10,7 +10,7 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 	const slots = ref<SavedScheduleSlot[]>([])
 	const activeSlotId = ref<string | null>(null)
 
-	const activeSlot = computed(() => slots.value.find((s) => s.id === activeSlotId.value) ?? null)
+	const activeSlot = computed(() => slots.value.find(s => s.id === activeSlotId.value) ?? null)
 	const canSaveMoreSlots = computed(() => slots.value.length < 5)
 
 	function saveCurrentAsSlot(name: string, units: SelectedCourseUnit[]) {
@@ -21,7 +21,7 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 			name,
 			units: JSON.parse(JSON.stringify(units)),
 			createdAt: Date.now(),
-			updatedAt: Date.now(),
+			updatedAt: Date.now()
 		}
 
 		slots.value.push(newSlot)
@@ -32,7 +32,7 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 	}
 
 	function loadSlot(slotId: string) {
-		const slot = slots.value.find((s) => s.id === slotId)
+		const slot = slots.value.find(s => s.id === slotId)
 		if (!slot) return
 
 		const timetableStore = useTimetableStore()
@@ -43,7 +43,7 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 	}
 
 	function renameSlot(slotId: string, name: string) {
-		const slot = slots.value.find((s) => s.id === slotId)
+		const slot = slots.value.find(s => s.id === slotId)
 		if (slot) {
 			slot.name = name
 			slot.updatedAt = Date.now()
@@ -52,7 +52,7 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 	}
 
 	function deleteSlot(slotId: string) {
-		const index = slots.value.findIndex((s) => s.id === slotId)
+		const index = slots.value.findIndex(s => s.id === slotId)
 		if (index === -1) return
 
 		const wasActive = activeSlotId.value === slotId
@@ -78,7 +78,7 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 	function syncActiveSlot(units: SelectedCourseUnit[]) {
 		if (!activeSlotId.value) return
 
-		const slot = slots.value.find((s) => s.id === activeSlotId.value)
+		const slot = slots.value.find(s => s.id === activeSlotId.value)
 		if (slot) {
 			slot.units = JSON.parse(JSON.stringify(units))
 			slot.updatedAt = Date.now()
@@ -87,7 +87,7 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 	}
 
 	function duplicateSlot(slotId: string, name: string) {
-		const sourceSlot = slots.value.find((s) => s.id === slotId)
+		const sourceSlot = slots.value.find(s => s.id === slotId)
 		if (!sourceSlot || !canSaveMoreSlots.value) return null
 
 		const newSlot: SavedScheduleSlot = {
@@ -95,7 +95,7 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 			name,
 			units: JSON.parse(JSON.stringify(sourceSlot.units)),
 			createdAt: Date.now(),
-			updatedAt: Date.now(),
+			updatedAt: Date.now()
 		}
 
 		slots.value.push(newSlot)
@@ -114,7 +114,7 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 	function persist() {
 		saveToStorage<PersistedScheduleSlotsState>(STORAGE_KEYS.SCHEDULE_SLOTS, {
 			slots: slots.value,
-			activeSlotId: activeSlotId.value,
+			activeSlotId: activeSlotId.value
 		})
 	}
 
@@ -139,6 +139,6 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 		duplicateSlot,
 		clearActiveSlot,
 		persist,
-		hydrate,
+		hydrate
 	}
 })

@@ -70,13 +70,13 @@ export function useSlotMerging(unitsByDay: Ref<Map<InSISDay, SelectedCourseUnit[
 
 				// This is a one-time (date-only) slot - find others to merge with
 				const mergeCandidates = dayUnits.filter(
-					(other) =>
+					other =>
 						!processedSlotIds.has(other.slotId) &&
 						other.date && // Must also be one-time
 						other.courseId === unit.courseId &&
 						other.unitType === unit.unitType &&
 						other.timeFrom === unit.timeFrom &&
-						other.timeTo === unit.timeTo,
+						other.timeTo === unit.timeTo
 				)
 
 				if (mergeCandidates.length <= 1) {
@@ -88,7 +88,7 @@ export function useSlotMerging(unitsByDay: Ref<Map<InSISDay, SelectedCourseUnit[
 
 				// Merge the candidates
 				const dates = mergeCandidates
-					.map((u) => u.date!)
+					.map(u => u.date!)
 					.sort((a, b) => {
 						// Sort dates (DD.MM.YYYY format)
 						const [dA, mA, yA] = a.split('.').map(Number)
@@ -105,9 +105,9 @@ export function useSlotMerging(unitsByDay: Ref<Map<InSISDay, SelectedCourseUnit[
 					...unit,
 					isMerged: true,
 					mergedCount: mergeCandidates.length,
-					mergedSlotIds: mergeCandidates.map((u) => u.slotId),
+					mergedSlotIds: mergeCandidates.map(u => u.slotId),
 					dateRange,
-					originalUnits: mergeCandidates,
+					originalUnits: mergeCandidates
 				}
 
 				mergedUnits.push(mergedUnit)
@@ -125,6 +125,6 @@ export function useSlotMerging(unitsByDay: Ref<Map<InSISDay, SelectedCourseUnit[
 	})
 
 	return {
-		mergedUnitsByDay,
+		mergedUnitsByDay
 	}
 }

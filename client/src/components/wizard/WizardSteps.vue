@@ -30,7 +30,7 @@ const steps = computed(() => [
 	{ number: 1, label: t('components.wizard.WizardSteps.faculty') },
 	{ number: 2, label: t('components.wizard.WizardSteps.enrollmentYear') },
 	{ number: 3, label: t('components.wizard.WizardSteps.studyPlan') },
-	{ number: 4, label: t('components.wizard.WizardSteps.completedCourses') },
+	{ number: 4, label: t('components.wizard.WizardSteps.completedCourses') }
 ])
 
 function isStepComplete(stepNumber: number): boolean {
@@ -74,8 +74,8 @@ function handleStepClick(stepNumber: number) {
 					{
 						active: currentStep === step.number,
 						completed: isStepComplete(step.number),
-						clickable: isStepClickable(step.number),
-					},
+						clickable: isStepClickable(step.number)
+					}
 				]"
 				:disabled="!isStepClickable(step.number)"
 				@click="handleStepClick(step.number)"

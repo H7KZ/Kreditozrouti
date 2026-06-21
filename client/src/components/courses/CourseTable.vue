@@ -25,7 +25,7 @@ const columns = computed(() => [
 	{ key: 'ects', label: t('components.courses.CourseTable.columns.ects'), sortable: true },
 	{ key: 'completion', label: t('components.courses.CourseTable.columns.completion'), sortable: false },
 	{ key: 'schedule', label: t('components.courses.CourseTable.columns.schedule'), sortable: false },
-	{ key: 'actions', label: '', sortable: false },
+	{ key: 'actions', label: '', sortable: false }
 ])
 
 function handleSort(key: CourseSortBy) {
@@ -61,7 +61,7 @@ function getMobileStatus(courseId: number) {
 		hasConflict: status === 'conflict',
 		hasCampusConflict: status === 'campus-conflict',
 		borderClass:
-			status === 'conflict' ? 'border-(--insis-danger-border)' : status !== undefined ? 'border-(--insis-blue-lighter)' : 'border-(--insis-border)',
+			status === 'conflict' ? 'border-(--insis-danger-border)' : status !== undefined ? 'border-(--insis-blue-lighter)' : 'border-(--insis-border)'
 	}
 }
 </script>
@@ -79,7 +79,7 @@ function getMobileStatus(courseId: number) {
 							col.sortable && 'sortable focus-visible:bg-(--insis-surface-2) focus-visible:outline-none',
 							col.key === 'ident' && 'w-24',
 							col.key === 'ects' && 'w-16 text-center',
-							col.key === 'actions' && 'w-10',
+							col.key === 'actions' && 'w-10'
 						]"
 						:role="col.sortable ? 'button' : undefined"
 						:tabindex="col.sortable ? 0 : undefined"
@@ -154,7 +154,7 @@ function getMobileStatus(courseId: number) {
 					:key="_i"
 					:class="[
 						'cursor-pointer rounded border bg-(--insis-surface) px-3 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-(--insis-blue) active:bg-(--insis-surface-2)',
-						ms.borderClass,
+						ms.borderClass
 					]"
 					role="button"
 					:tabindex="0"

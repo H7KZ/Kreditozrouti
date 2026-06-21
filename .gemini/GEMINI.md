@@ -73,7 +73,7 @@ After completing any task that changes code, configuration, or behavior:
 
 1. **Identify** which `docs/` file(s) describe the changed area (use the table below)
 2. **Update** any doc that describes what changed — keep it accurate
-3. **New behavior with no doc entry?** Ask: *"This change isn't mentioned in the docs — should I document it?"* If yes,
+3. **New behavior with no doc entry?** Ask: _"This change isn't mentioned in the docs — should I document it?"_ If yes,
    add it; if no, continue
 
 ---

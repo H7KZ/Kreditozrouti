@@ -33,9 +33,9 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 	// Computed
 
-	const selectedCourseIds = computed(() => [...new Set(selectedUnits.value.map((u) => u.courseId))])
+	const selectedCourseIds = computed(() => [...new Set(selectedUnits.value.map(u => u.courseId))])
 
-	const selectedSlotIds = computed(() => selectedUnits.value.map((u) => u.slotId))
+	const selectedSlotIds = computed(() => selectedUnits.value.map(u => u.slotId))
 
 	const unitsByCourse = computed(() => {
 		const map = new Map<number, SelectedCourseUnit[]>()
@@ -158,7 +158,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 			if ((oldLen ?? 0) === 0 && newLen > 0) {
 				analytics.track('conflict_detected', { count: newLen })
 			}
-		},
+		}
 	)
 
 	const coursesWithConflicts = computed(() => {
@@ -211,7 +211,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 				status,
 				conflictsWith: conflictsWith ? [...conflictsWith] : [],
 				campusConflictsWith: campusConflictsWith ? [...campusConflictsWith] : [],
-				missingTypes,
+				missingTypes
 			})
 		}
 
@@ -233,7 +233,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 		const slotDay = slot.day ?? (slot.date ? getDayFromDate(slot.date) : null)
 		if (!slotDay) return []
 
-		return selectedUnits.value.filter((unit) => {
+		return selectedUnits.value.filter(unit => {
 			if (unit.slotId === slot.id) return false
 			const unitDay = unit.day ?? (unit.date ? getDayFromDate(unit.date) : null)
 			if (!unitDay || unitDay !== slotDay) return false
@@ -261,10 +261,10 @@ export const useTimetableStore = defineStore('timetable', () => {
 			date: slot.date ?? undefined,
 			timeFrom: slot.time_from!,
 			timeTo: slot.time_to!,
-			location: slot.location ?? undefined,
+			location: slot.location ?? undefined
 		}
 
-		return selectedUnits.value.filter((unit) => {
+		return selectedUnits.value.filter(unit => {
 			if (unit.slotId === slot.id) return false
 			return unitsCampusConflict(slotAsUnit, unit)
 		})
@@ -297,7 +297,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 	}
 
 	function canAddUnit(course: CourseWithRelationsDTO, _unit: CourseUnitDTO, slot: CourseUnitSlotDTO): string | null {
-		if (selectedUnits.value.some((u) => u.slotId === slot.id)) {
+		if (selectedUnits.value.some(u => u.slotId === slot.id)) {
 			return t('stores.timetable.errors.slotAlreadySelected')
 		}
 		return null
@@ -332,7 +332,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 			location: slot.location ?? undefined,
 			lecturer: unit.lecturer ?? undefined,
 			ects: course.ects ?? undefined,
-			snapshotAvailableTypes,
+			snapshotAvailableTypes
 		})
 
 		announcer.announce(t('common.announcements.courseAdded', { code: course.ident }))
@@ -343,31 +343,31 @@ export const useTimetableStore = defineStore('timetable', () => {
 	}
 
 	function removeUnit(unitId: number) {
-		const unit = selectedUnits.value.find((u) => u.unitId === unitId)
+		const unit = selectedUnits.value.find(u => u.unitId === unitId)
 		if (unit) {
 			announcer.announce(t('common.announcements.courseRemoved', { code: unit.courseIdent }))
 		}
 
-		selectedUnits.value = selectedUnits.value.filter((u) => u.unitId !== unitId)
+		selectedUnits.value = selectedUnits.value.filter(u => u.unitId !== unitId)
 		analytics.track('course_removed')
 		persist()
 		syncCoursesStoreExclusion()
 	}
 
 	function removeCourse(courseId: number) {
-		const units = selectedUnits.value.filter((u) => u.courseId === courseId)
+		const units = selectedUnits.value.filter(u => u.courseId === courseId)
 		if (units.length > 0) {
 			announcer.announce(t('common.announcements.courseRemoved', { code: units[0]?.courseIdent }))
 		}
 
-		selectedUnits.value = selectedUnits.value.filter((u) => u.courseId !== courseId)
+		selectedUnits.value = selectedUnits.value.filter(u => u.courseId !== courseId)
 		analytics.track('course_removed')
 		persist()
 		syncCoursesStoreExclusion()
 	}
 
 	function changeUnit(course: CourseWithRelationsDTO, oldSlotId: number, newUnit: CourseUnitDTO, newSlot: CourseUnitSlotDTO): boolean {
-		const oldIndex = selectedUnits.value.findIndex((u) => u.slotId === oldSlotId)
+		const oldIndex = selectedUnits.value.findIndex(u => u.slotId === oldSlotId)
 		const oldUnit = oldIndex !== -1 ? selectedUnits.value[oldIndex] : null
 
 		if (oldUnit) selectedUnits.value.splice(oldIndex, 1)
@@ -393,11 +393,11 @@ export const useTimetableStore = defineStore('timetable', () => {
 	}
 
 	function hasCourseSelected(courseId: number): boolean {
-		return selectedUnits.value.some((u) => u.courseId === courseId)
+		return selectedUnits.value.some(u => u.courseId === courseId)
 	}
 
 	function hasUnitTypeSelected(courseId: number, unitType: CourseUnitType): boolean {
-		return selectedUnits.value.some((u) => u.courseId === courseId && u.unitType === unitType)
+		return selectedUnits.value.some(u => u.courseId === courseId && u.unitType === unitType)
 	}
 
 	function courseHasMissingUnitTypes(courseId: number): boolean {
@@ -481,6 +481,6 @@ export const useTimetableStore = defineStore('timetable', () => {
 		persist,
 		hydrate,
 		loadUnits,
-		clearAll,
+		clearAll
 	}
 })

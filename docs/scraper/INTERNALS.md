@@ -44,15 +44,18 @@ parameter passing.
 
 ```typescript
 // In ScraperRequestHandler — creates the log context for this job execution
-await LoggerJobContext.run(async () => {
-  await handler(job)
-}, {
-  job_id: job.id,
-  job_name: job.name,
-  queue_name: job.queueName,
-  attempt: job.attemptsMade + 1,
-  timestamp: new Date().toISOString()
-})
+await LoggerJobContext.run(
+	async () => {
+		await handler(job)
+	},
+	{
+		job_id: job.id,
+		job_name: job.name,
+		queue_name: job.queueName,
+		attempt: job.attemptsMade + 1,
+		timestamp: new Date().toISOString()
+	}
+)
 
 // In any job or service — accumulates fields without knowing the caller
 LoggerJobContext.add({ course_id: 42, url: 'https://...' })
@@ -83,20 +86,20 @@ field accumulation, final emit) directly.
 
 ```typescript
 interface JobWideEvent {
-  // Always present (set in ScraperRequestHandler)
-  job_id: string
-  job_name: string
-  queue_name: string
-  attempt: number
-  timestamp: string
+	// Always present (set in ScraperRequestHandler)
+	job_id: string
+	job_name: string
+	queue_name: string
+	attempt: number
+	timestamp: string
 
-  // Set by ScraperRequestHandler on completion
-  duration_ms?: number
-  status?: 'success' | 'failed' | 'skipped' | 'dispatching_catalog'
-  error_message?: string
+	// Set by ScraperRequestHandler on completion
+	duration_ms?: number
+	status?: 'success' | 'failed' | 'skipped' | 'dispatching_catalog'
+	error_message?: string
 
-  // Dynamic — any job can add arbitrary fields
-  [key: string]: unknown
+	// Dynamic — any job can add arbitrary fields
+	[key: string]: unknown
 }
 ```
 
@@ -113,7 +116,7 @@ Two distinct error types control BullMQ's retry behavior.
 
 ```typescript
 class InSISNetworkError extends Error {
-  name = 'InSISNetworkError'
+	name = 'InSISNetworkError'
 }
 ```
 
@@ -126,7 +129,7 @@ retry policy (3 attempts, exponential backoff starting at 10 seconds).
 
 ```typescript
 class InSISParseError extends UnrecoverableError {
-  name = 'InSISParseError'
+	name = 'InSISParseError'
 }
 ```
 
@@ -149,8 +152,17 @@ All HTTP requests go through `InSISHTTPClientService`, a thin Axios wrapper that
 - Returns a discriminated union (`HttpResult<T> | HttpError`) instead of throwing
 
 ```typescript
-interface HttpResult<T> { success: true; data: T; response: AxiosResponse<T> }
-interface HttpError    { success: false; error: Error | AxiosError; status?: number }
+interface HttpResult<T> {
+	success: true
+	data: T
+	response: AxiosResponse<T>
+}
+
+interface HttpError {
+	success: false
+	error: Error | AxiosError
+	status?: number
+}
 
 type HttpResponse<T> = HttpResult<T> | HttpError
 ```
@@ -185,13 +197,25 @@ InSIS uses standard web anti-scraping signals. The scraper mimics a modern Chrom
 
 ```typescript
 {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ...',
-  'Accept-Language': 'cs-CZ,cs;q=0.9,en;q=0.8',
-  'sec-ch-ua': '"Chromium";v="142", "Google Chrome";v="142", ...',
-  'sec-ch-ua-platform': '"Windows"',
-  'Upgrade-Insecure-Requests': '1',
-  Referer: 'https://insis.vse.cz',
-  ...
+	'User-Agent'
+:
+	'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ...',
+		'Accept-Language'
+:
+	'cs-CZ,cs;q=0.9,en;q=0.8',
+		'sec-ch-ua'
+:
+	'"Chromium";v="142", "Google Chrome";v="142", ...',
+		'sec-ch-ua-platform'
+:
+	'"Windows"',
+		'Upgrade-Insecure-Requests'
+:
+	'1',
+		Referer
+:
+	'https://insis.vse.cz',
+...
 }
 ```
 
@@ -204,11 +228,7 @@ own URL convention.
 ## Concurrency (`Utils/ConcurrencyUtils.ts`)
 
 ```typescript
-async function runWithConcurrency<T, R>(
-  items: T[],
-  concurrency: number,
-  task: (item: T) => Promise<R>
-): Promise<R[]>
+async function runWithConcurrency<T, R>(items: T[], concurrency: number, task: (item: T) => Promise<R>): Promise<R[]>
 ```
 
 A simple worker-pool implementation using a shared iterator. Creates `Math.min(items.length, concurrency)` concurrent
@@ -275,19 +295,19 @@ Environment variables are loaded from `.env` files (searched from the distributi
 URLs are hardcoded as defaults and not configurable via env — they only change if InSIS itself changes.
 
 ```typescript
-Config.insis.baseDomain                // 'https://insis.vse.cz'
-Config.insis.catalogUrl                // 'https://insis.vse.cz/katalog/'
-Config.insis.catalogExtendedSearchUrl  // '.../katalog/index.pl?jak=rozsirene'
-Config.insis.studyPlansUrl             // '.../katalog/plany.pl?lang=cz'
-Config.insis.defaultReferrer           // 'https://insis.vse.cz'
+Config.insis.baseDomain // 'https://insis.vse.cz'
+Config.insis.catalogUrl // 'https://insis.vse.cz/katalog/'
+Config.insis.catalogExtendedSearchUrl // '.../katalog/index.pl?jak=rozsirene'
+Config.insis.studyPlansUrl // '.../katalog/plany.pl?lang=cz'
+Config.insis.defaultReferrer // 'https://insis.vse.cz'
 ```
 
 **Environment helpers:**
 
 ```typescript
-Config.isEnvLocal()        // env === 'localhost' | 'local'
-Config.isEnvDevelopment()  // env === 'dev' | 'development'
-Config.isEnvProduction()   // env === 'production' | 'prod'
+Config.isEnvLocal() // env === 'localhost' | 'local'
+Config.isEnvDevelopment() // env === 'dev' | 'development'
+Config.isEnvProduction() // env === 'production' | 'prod'
 ```
 
 **Required env vars:**

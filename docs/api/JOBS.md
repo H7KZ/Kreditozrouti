@@ -97,14 +97,17 @@ After the transaction commits:
 
 ```typescript
 // Notify SSE clients watching this course
-redis.publish(`course:updated:${courseId}`, JSON.stringify({
-    status: 'done',
-    courseId,
-    updatedAt: new Date().toISOString()
-}))
+redis.publish(
+	`course:updated:${courseId}`,
+	JSON.stringify({
+		status: 'done',
+		courseId,
+		updatedAt: new Date().toISOString()
+	})
+)
 
 // Flush cached responses so next request gets fresh data
-flushResponseCaches()   // SCAN + DEL cache:* and course:facets:*
+flushResponseCaches() // SCAN + DEL cache:* and course:facets:*
 ```
 
 Cache flushing uses Redis `SCAN` (not `KEYS`) to avoid blocking the Redis event loop on large keyspaces.
@@ -113,8 +116,8 @@ Cache flushing uses Redis `SCAN` (not `KEYS`) to avoid blocking the Redis event 
 
 ```typescript
 function timeToMinutes(time: string): number {
-    const [h, m] = time.split(':').map(Number)
-    return h * 60 + m
+	const [h, m] = time.split(':').map(Number)
+	return h * 60 + m
 }
 
 // '9:15'  → 555
@@ -233,7 +236,7 @@ faculty fields are populated by subsequent course or study plan scrapes.
 
 ```typescript
 const responseWorker = new Worker(ScraperResponseQueue, handler, {
-    concurrency: 4
+	concurrency: 4
 })
 ```
 

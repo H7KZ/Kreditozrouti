@@ -13,18 +13,18 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Target environment"
+        description: 'Target environment'
         required: true
         type: choice
         options: [ production, development ]
         default: production
       image_tag:
-        description: "Specific image tag to deploy (skips build if set)"
+        description: 'Specific image tag to deploy (skips build if set)'
         required: false
         type: string
-        default: ""
+        default: ''
       skip_build:
-        description: "Skip build (images must already exist in registry)"
+        description: 'Skip build (images must already exist in registry)'
         required: false
         type: boolean
         default: false
@@ -119,8 +119,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "deployment/"
-          target: "~/versions/${{ inputs.environment }}/${{ steps.vars.outputs.tag }}"
+          source: 'deployment/'
+          target: '~/versions/${{ inputs.environment }}/${{ steps.vars.outputs.tag }}'
           strip_components: 1
           overwrite: true
 

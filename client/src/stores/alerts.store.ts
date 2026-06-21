@@ -23,7 +23,7 @@ export const useAlertsStore = defineStore('alerts', () => {
 	}
 
 	function removeAlertById(customId: string) {
-		const index = alerts.value.findIndex((a) => a.customId === customId)
+		const index = alerts.value.findIndex(a => a.customId === customId)
 		if (index > -1) {
 			const a = alerts.value[index]
 			if (a?._timeout) clearTimeout(a._timeout as ReturnType<typeof setTimeout>)

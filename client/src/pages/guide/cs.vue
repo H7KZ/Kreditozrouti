@@ -19,16 +19,16 @@ const router = useRouter()
 
 watch(
 	() => i18n.global.locale.value,
-	(locale) => {
+	locale => {
 		if (locale === 'en') router.push('/guide/en')
-	},
+	}
 )
 
 useSeoMeta({
 	title: 'Průvodce pro studenty – Kreditožrouti',
 	description: 'Kompletní průvodce pro studenty VŠE Praha: kreditový systém, registrace předmětů v InSIS a jak používat Kreditožrouti k plánování rozvrhu.',
 	ogTitle: 'Průvodce pro studenty – Kreditožrouti',
-	ogDescription: 'Kreditový systém, registrace a InSIS vysvětleny krok za krokem. Plánujte rozvrh na VŠE Praha.',
+	ogDescription: 'Kreditový systém, registrace a InSIS vysvětleny krok za krokem. Plánujte rozvrh na VŠE Praha.'
 })
 
 useHead({
@@ -36,8 +36,8 @@ useHead({
 		{ rel: 'alternate', hreflang: 'en', href: 'https://kreditozrouti.cz/guide/en' },
 		{ rel: 'alternate', hreflang: 'cs', href: 'https://kreditozrouti.cz/guide/cs' },
 		{ rel: 'alternate', hreflang: 'x-default', href: 'https://kreditozrouti.cz/guide/en' },
-		{ rel: 'canonical', href: 'https://kreditozrouti.cz/guide/cs' },
-	],
+		{ rel: 'canonical', href: 'https://kreditozrouti.cz/guide/cs' }
+	]
 })
 </script>
 
@@ -321,7 +321,8 @@ useHead({
 							<h3 class="mb-1 font-semibold text-(--insis-gray-900)">Ruční zápis</h3>
 							<p class="text-(--insis-gray-700)">
 								Po automatickém zápisu si můžeš ručně upravit rozvrh — měnit časy nebo vyučující, dokud jsou volná místa. Platí pravidlo „kdo
-								dřív přijde". Ve <strong>3. kole</strong> si lze zapsat i předměty, které jsi nezaregistroval/a.
+								dřív přijde". Ve
+								<strong>3. kole</strong> si lze zapsat i předměty, které jsi nezaregistroval/a.
 							</p>
 						</div>
 					</li>

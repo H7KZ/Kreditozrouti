@@ -131,7 +131,7 @@ export function useTimeUtils() {
 		while (time <= TIME_CONFIG.END) {
 			slots.push({
 				minutes: time,
-				label: minutesToTime(time),
+				label: minutesToTime(time)
 			})
 			time += interval
 		}
@@ -185,6 +185,6 @@ export function useTimeUtils() {
 		generateTimeSlots,
 		snapToInterval,
 		clampTime,
-		timeRangesOverlap,
+		timeRangesOverlap
 	}
 }

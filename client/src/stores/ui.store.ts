@@ -53,7 +53,7 @@ export const useUIStore = defineStore('ui', () => {
 			viewMode: viewMode.value,
 			sidebarCollapsed: sidebarCollapsed.value,
 			showLegend: showLegend.value,
-			colorScheme: colorScheme.value,
+			colorScheme: colorScheme.value
 		})
 	}
 
@@ -138,6 +138,6 @@ export const useUIStore = defineStore('ui', () => {
 		toggleMobileMenu,
 		closeMobileMenu,
 		toggleMobileFilter,
-		closeMobileFilter,
+		closeMobileFilter
 	}
 })

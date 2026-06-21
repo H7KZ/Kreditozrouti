@@ -21,13 +21,17 @@ type InSISSemester = 'LS' | 'ZS'
 
 // Study plan course category
 type InSISStudyPlanCourseCategory =
-    | 'compulsory' | 'elective' | 'language' | 'state_exam'
-    | 'prohibited' | 'beyond_scope' | 'exchange_program' | 'physical_education'
+	| 'compulsory'
+	| 'elective'
+	| 'language'
+	| 'state_exam'
+	| 'prohibited'
+	| 'beyond_scope'
+	| 'exchange_program'
+	| 'physical_education'
 
 // Study plan course group
-type InSISStudyPlanCourseGroup =
-    | 'faculty_specific' | 'university_wide' | 'field_specific_bachelor'
-    | 'field_specific_master' | 'minor_specialization'
+type InSISStudyPlanCourseGroup = 'faculty_specific' | 'university_wide' | 'field_specific_bachelor' | 'field_specific_master' | 'minor_specialization'
 
 // BullMQ job type discriminant
 type ScraperJob = 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan'
@@ -42,9 +46,9 @@ Normalises a raw InSIS slot type string (which may be Czech or English) to a `Co
 `přednáška/lecture`, `cvičení/exercise`, `seminář/seminar`; defaults to `'lecture'`.
 
 ```typescript
-getSlotType({type: 'Přednáška'})  // → 'lecture'
-getSlotType({type: 'Exercise'})   // → 'exercise'
-getSlotType({type: null})         // → 'lecture'
+getSlotType({ type: 'Přednáška' }) // → 'lecture'
+getSlotType({ type: 'Exercise' }) // → 'exercise'
+getSlotType({ type: null }) // → 'lecture'
 ```
 
 ---
@@ -60,11 +64,11 @@ Minimal shape required by conflict functions — both `SelectedCourseUnit` (clie
 
 ```typescript
 interface ScheduledUnit {
-    day?: InSISDay
-    date?: string        // DD.MM.YYYY for one-time slots
-    timeFrom: number     // minutes from midnight
-    timeTo: number
-    location?: string
+	day?: InSISDay
+	date?: string // DD.MM.YYYY for one-time slots
+	timeFrom: number // minutes from midnight
+	timeTo: number
+	location?: string
 }
 ```
 
@@ -109,8 +113,8 @@ checkCourseCompleteness(units
 ScheduledCourseUnit[]
 ):
 {
-    isIncomplete: boolean
-    missingTypes: CourseUnitType[]
+	isIncomplete: boolean
+	missingTypes: CourseUnitType[]
 }
 ```
 
@@ -133,8 +137,8 @@ Academic period calculation. Pure functions, no side effects.
 getUpcomingPeriod(date ? : Date)
 :
 {
-    semester: InSISSemester;
-    year: number
+	semester: InSISSemester;
+	year: number
 }
 ```
 
@@ -150,7 +154,7 @@ Determines which registration period is next:
 getPeriodsForLastYears(yearsBack = 4, date ? : Date)
 :
 {
-    semester, year
+	semester, year
 }
 []
 ```
@@ -164,11 +168,11 @@ scheduler to determine which periods to pass to catalog scrape jobs.
 
 ```typescript
 interface TimeSelection {
-    slot_id?: number      // optional — exclude this slot from self-conflict detection
-    day?: InSISDay | null
-    date?: Date | null    // for one-time exclusions
-    time_from: number     // minutes from midnight
-    time_to: number       // minutes from midnight
+	slot_id?: number      // optional — exclude this slot from self-conflict detection
+	day?: InSISDay | null
+	date?: Date | null    // for one-time exclusions
+	time_from: number     // minutes from midnight
+	time_to: number       // minutes from midnight
 }
 
 timeToMinutes(time

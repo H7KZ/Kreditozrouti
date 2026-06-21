@@ -227,17 +227,17 @@ Edit `deployment/production/docker-compose.production.yml`:
 
 ```yaml
 services:
-  api:
-    deploy:
-      replicas: 4      # default: 2
+	api:
+		deploy:
+			replicas: 4 # default: 2
 
-  client:
-    deploy:
-      replicas: 5      # default: 3
+	client:
+		deploy:
+			replicas: 5 # default: 3
 
-  scraper:
-    deploy:
-      replicas: 10     # default: 5
+	scraper:
+		deploy:
+			replicas: 10 # default: 5
 ```
 
 Then redeploy: `docker compose -p prod up -d`

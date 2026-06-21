@@ -5,10 +5,10 @@ info:
 
 http:
   method: POST
-  url: "{{base_url}}/commands/insis/academic-schedules"
+  url: '{{base_url}}/commands/insis/academic-schedules'
   auth:
     type: bearer
-    token: "{{api_command_token}}"
+    token: '{{api_command_token}}'
 
 settings:
   encodeUrl: true

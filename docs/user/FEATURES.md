@@ -48,7 +48,7 @@ The left sidebar contains all filters. Active filters are counted in the sidebar
 | **Lecturers**                | Filter to courses taught by a specific lecturer                                                                                                              |
 | **Time restriction**         | Include only courses that have a slot in a specific day + time range (see also [Drag-to-filter](#drag-to-filter))                                            |
 | **Completed courses**        | Toggle to show or hide courses you've marked as already passed                                                                                               |
-| **Hide conflicting courses** | Hides courses where *all* available time slots overlap with your current timetable selection. Courses with at least one non-conflicting slot remain visible. |
+| **Hide conflicting courses** | Hides courses where _all_ available time slots overlap with your current timetable selection. Courses with at least one non-conflicting slot remain visible. |
 
 Filters are combined — all active filters apply at once. Use **Clear all** in the sidebar header to reset everything.
 
@@ -59,7 +59,7 @@ Filters are combined — all active filters apply at once. Use **Clear all** in 
 1. Click any course row to expand it
 2. The expanded row shows all available **unit types** (lecture, exercise, seminar) and their time slots
 3. Click a slot to add it to your timetable
-    - If you already have a unit of the same type selected for this course, it is swapped out automatically
+	- If you already have a unit of the same type selected for this course, it is swapped out automatically
 4. Repeat for each unit type the course requires (some courses have only lectures; others require both a lecture and an
    exercise)
 
@@ -103,8 +103,8 @@ Available in **My Timetable** view.
 
 This is the fastest way to answer "what's available Tuesday morning between 9 and 11?"
 
-To remove the time filter: open the **Time restriction** section in the filter sidebar and remove the entry, or click *
-*Clear all**.
+To remove the time filter: open the **Time restriction** section in the filter sidebar and remove the entry, or click \*
+\*Clear all\*\*.
 
 ---
 

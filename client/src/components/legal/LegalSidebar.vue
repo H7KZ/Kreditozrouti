@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps<{
 	html: string
@@ -18,10 +21,10 @@ const entries = computed<TocEntry[]>(() => {
 	const parser = new DOMParser()
 	const doc = parser.parseFromString(props.html, 'text/html')
 	const headings = doc.querySelectorAll('h2, h3')
-	return Array.from(headings).map((el) => ({
+	return Array.from(headings).map(el => ({
 		id: el.id,
 		text: el.textContent ?? '',
-		level: parseInt(el.tagName[1]!) as 2 | 3,
+		level: parseInt(el.tagName[1]!) as 2 | 3
 	}))
 })
 
@@ -30,7 +33,7 @@ let observer: IntersectionObserver | null = null
 function setupObserver() {
 	observer?.disconnect()
 	observer = new IntersectionObserver(
-		(observerEntries) => {
+		observerEntries => {
 			for (const entry of observerEntries) {
 				if (entry.isIntersecting) {
 					activeId.value = entry.target.id
@@ -38,7 +41,7 @@ function setupObserver() {
 				}
 			}
 		},
-		{ rootMargin: '0px 0px -80% 0px', threshold: 0 },
+		{ rootMargin: '0px 0px -80% 0px', threshold: 0 }
 	)
 	for (const { id } of entries.value) {
 		const el = document.getElementById(id)
@@ -51,7 +54,7 @@ watch(
 	() => {
 		setTimeout(setupObserver, 50)
 	},
-	{ immediate: true },
+	{ immediate: true }
 )
 
 onUnmounted(() => observer?.disconnect())
@@ -60,7 +63,7 @@ onUnmounted(() => observer?.disconnect())
 <template>
 	<nav class="w-56 shrink-0">
 		<div class="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
-			<p class="mb-3 text-xs font-semibold tracking-wider text-(--insis-gray-500) uppercase">On this page</p>
+			<p class="mb-3 text-xs font-semibold tracking-wider text-(--insis-gray-500) uppercase">{{ t('legal.onThisPage') }}</p>
 			<ul class="space-y-1">
 				<li v-for="entry in entries" :key="entry.id">
 					<a
@@ -68,7 +71,7 @@ onUnmounted(() => observer?.disconnect())
 						:class="[
 							'block truncate py-0.5 text-sm transition-colors hover:text-(--insis-blue)',
 							entry.level === 3 ? 'pl-3' : '',
-							activeId === entry.id ? 'font-medium text-(--insis-text)!' : 'text-(--insis-gray-600)!',
+							activeId === entry.id ? 'font-medium text-(--insis-text)!' : 'text-(--insis-gray-600)!'
 						]"
 					>
 						{{ entry.text }}

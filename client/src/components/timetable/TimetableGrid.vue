@@ -32,8 +32,8 @@ const { timeSlots, rowHeight, rowHeightPerDay, getBlockStyle, getTimeFromX, getD
 	toRef(() => mergedUnitsByDay.value),
 	{
 		rowHeight: 60,
-		blockPadding: 2,
-	},
+		blockPadding: 2
+	}
 )
 
 // Drag handling
@@ -53,7 +53,7 @@ function getMergedUnitsForDay(day: InSISDay): (SelectedCourseUnit | MergedUnit)[
 // Check if a unit has a hard time conflict
 function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 	if (isMergedUnit(unit)) {
-		return unit.mergedSlotIds.some((slotId) => timetableStore.conflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
+		return unit.mergedSlotIds.some(slotId => timetableStore.conflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
 	}
 	return timetableStore.conflicts.some(([a, b]) => a.slotId === unit.slotId || b.slotId === unit.slotId)
 }
@@ -61,7 +61,7 @@ function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 // Check if a unit has a campus travel-time conflict (softer, orange)
 function hasCampusConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 	if (isMergedUnit(unit)) {
-		return unit.mergedSlotIds.some((slotId) => timetableStore.campusConflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
+		return unit.mergedSlotIds.some(slotId => timetableStore.campusConflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
 	}
 	return timetableStore.campusConflicts.some(([a, b]) => a.slotId === unit.slotId || b.slotId === unit.slotId)
 }
@@ -195,7 +195,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 										:key="slot.minutes"
 										class="h-full w-full border-r border-(--insis-border-light)"
 										:class="{
-											'border-r-0': idx === timeSlots.length - 1,
+											'border-r-0': idx === timeSlots.length - 1
 										}"
 									/>
 								</div>

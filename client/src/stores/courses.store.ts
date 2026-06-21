@@ -33,7 +33,7 @@ export const useCoursesStore = defineStore('courses', () => {
 		ects: [],
 		modes_of_completion: [],
 		assessment_methods: [],
-		time_range: { min_time: 420, max_time: 1200 },
+		time_range: { min_time: 420, max_time: 1200 }
 	})
 	const pagination = ref({ limit: 50, offset: 0, count: 0, total: 0 })
 	const loading = ref(false)
@@ -74,7 +74,7 @@ export const useCoursesStore = defineStore('courses', () => {
 				mode_of_completions: f.mode_of_completions?.length ? f.mode_of_completions : undefined,
 				mode_of_deliveries: f.mode_of_deliveries?.length ? f.mode_of_deliveries : undefined,
 				assessment_methods: f.assessment_methods?.length ? f.assessment_methods : undefined,
-				completed_course_idents: f.completed_course_idents?.length ? f.completed_course_idents : undefined,
+				completed_course_idents: f.completed_course_idents?.length ? f.completed_course_idents : undefined
 			}
 
 			const data = await fetchCoursesFromService(payload)
@@ -153,7 +153,7 @@ export const useCoursesStore = defineStore('courses', () => {
 	}
 
 	function updateCourse(updated: CourseWithRelationsDTO) {
-		const idx = courses.value.findIndex((c) => c.id === updated.id)
+		const idx = courses.value.findIndex(c => c.id === updated.id)
 		if (idx !== -1) {
 			courses.value[idx] = updated
 		}
@@ -189,7 +189,7 @@ export const useCoursesStore = defineStore('courses', () => {
 				fetchCourses(true)
 			}
 		},
-		{ deep: true },
+		{ deep: true }
 	)
 
 	return {
@@ -219,6 +219,6 @@ export const useCoursesStore = defineStore('courses', () => {
 		updateCourse,
 		resetFilters,
 		resetAll,
-		toggleHideConflictingCourses,
+		toggleHideConflictingCourses
 	}
 })

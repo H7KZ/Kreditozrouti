@@ -18,32 +18,32 @@ const faroModule = {
 			app: {
 				name: 'kreditozrouti',
 				version: (import.meta.env.VITE_APP_VERSION as string | undefined) ?? 'unknown',
-				environment: import.meta.env.MODE,
+				environment: import.meta.env.MODE
 			},
 			sessionTracking: {
 				enabled: true,
-				session: createSession(),
+				session: createSession()
 			},
 			// Filter Safari's internal JSON-LD parser false-positive.
 			// The parser fires this when a page has no @context object.
 			ignoreErrors: [/undefined is not an object \(evaluating '.*\["@context"\]/],
 			instrumentations: [
 				...getWebInstrumentations({
-					captureConsole: true,
+					captureConsole: true
 				}),
-				new TracingInstrumentation(),
-			],
+				new TracingInstrumentation()
+			]
 		})
 
 		// Vue component error handler — captures errors thrown inside Vue components
 		app.config.errorHandler = (error, _instance, info) => {
 			_faro?.api.pushError(error instanceof Error ? error : new Error(String(error)), {
-				context: { componentInfo: info ?? 'unknown' },
+				context: { componentInfo: info ?? 'unknown' }
 			})
 			// Re-throw so Vue's own console.error still fires in development
 			throw error
 		}
-	},
+	}
 }
 
 export default faroModule

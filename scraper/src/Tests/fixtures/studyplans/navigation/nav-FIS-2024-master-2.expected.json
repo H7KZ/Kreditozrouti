@@ -1,153 +1,153 @@
 {
-    "navigationUrls": [
-        {
-            "texts": ["N0688P140002", "N-ADA Aplikovaná datová analytika a umělá inteligence", "Čeština", "", "", "-"],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=1764;misto_vyuky="
-        },
-        {
-            "texts": ["N0588A050001", "N-EDA1 Economic Data Analysis", "Angličtina", "", "", "-"],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=965;misto_vyuky="
-        },
-        {
-            "texts": ["N0311A050028", "N-EO1 Ekonometrie a operační výzkum", "Čeština", "", "", "-"],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=866;misto_vyuky="
-        },
-        {
-            "texts": ["N0388A050003", "N-ED Ekonomická demografie", "Čeština", "", "", "-"],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=865;misto_vyuky="
-        },
-        {
-            "texts": ["N0688A140021", "N-IM Informační management", "Čeština", "", "", "-"],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=822;misto_vyuky="
-        },
-        {
-            "texts": ["N0613A140026", "N-IT Informační systémy a technologie", "Čeština", "", "", "-"],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=966;misto_vyuky="
-        },
-        {
-            "texts": ["N0688A140028", "N-ISM Information Systems Management", "Angličtina", "", "", "-"],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=1542;misto_vyuky="
-        },
-        {
-            "texts": ["N0619A140004", "N-KI Kognitivní informatika", "Čeština", "", "", "-"],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=863;misto_vyuky="
-        },
-        {
-            "texts": ["N0688A140022", "N-PI Podniková informatika", "Čeština", "", "", "-"],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=823;misto_vyuky="
-        },
-        {
-            "texts": ["N0542A050002", "N-ST Statistika", "Čeština", "", "", "-"],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=864;misto_vyuky="
-        },
-        {
-            "texts": ["N0619A140005", "N-ZW Znalostní a webové technologie", "Čeština", "", "", "-"],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=923;misto_vyuky="
-        },
-        {
-            "texts": ["BA", "BA Business analýza", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1462;misto_vyuky="
-        },
-        {
-            "texts": ["BI", "BI Business Intelligence", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1463;misto_vyuky="
-        },
-        {
-            "texts": ["DAB", "DAB Data and Business", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1703;misto_vyuky="
-        },
-        {
-            "texts": ["DAM", "DAM Data Analysis and Modeling", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1464;misto_vyuky="
-        },
-        {
-            "texts": ["ECO", "ECO Datová analytika v marketingu a e-commerce", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1843;misto_vyuky="
-        },
-        {
-            "texts": ["EGO", "EGO Datová analytika v e-governmentu", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1842;misto_vyuky="
-        },
-        {
-            "texts": ["MBI", "MBI Management of Business Informatics", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1702;misto_vyuky="
-        },
-        {
-            "texts": ["MOS", "MOS Official Statistics", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1465;misto_vyuky="
-        },
-        {
-            "texts": ["RI", "RI Řízení podnikové informatiky", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1466;misto_vyuky="
-        },
-        {
-            "texts": ["UX", "UX UX výzkum a design", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1582;misto_vyuky="
-        },
-        {
-            "texts": ["VY", "VY Vývoj informačních systémů", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1467;misto_vyuky="
-        },
-        {
-            "texts": ["VYR", "VYR Datová analytika ve výrobních podnicích", "Specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1844;misto_vyuky="
-        },
-        {
-            "texts": ["4AD", "4AD Analýzy sociálně ekonomických dat", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=117;misto_vyuky="
-        },
-        {
-            "texts": ["4DI", "4DI Datové inženýrství", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=704;misto_vyuky="
-        },
-        {
-            "texts": ["4DS", "4DS Demografie a sociální analýza", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=212;misto_vyuky="
-        },
-        {
-            "texts": ["4EK", "4EK Ekonometrie", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1142;misto_vyuky="
-        },
-        {
-            "texts": ["4EST", "4EST EMOS - Ekonomická statistika", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1864;misto_vyuky="
-        },
-        {
-            "texts": ["4IQ", "4IQ Inteligentní systémy", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=115;misto_vyuky="
-        },
-        {
-            "texts": ["4KA", "4KA Kvantitativní analýza", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=703;misto_vyuky="
-        },
-        {
-            "texts": ["4KI", "4KI Komunikace informací", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1862;misto_vyuky="
-        },
-        {
-            "texts": ["4KIM", "4KIM Komunikace, interpretace, multimédia", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1502;misto_vyuky="
-        },
-        {
-            "texts": ["4KM", "4KM Kvantitativní metody v managementu", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=62;misto_vyuky="
-        },
-        {
-            "texts": ["4KMI", "4KMI Kvantitativní metody pro informatiky", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1482;misto_vyuky="
-        },
-        {
-            "texts": ["4MK", "4MK Multimediální komunikace", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=463;misto_vyuky="
-        },
-        {
-            "texts": ["4PI", "4PI Pojistné inženýrství", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=63;misto_vyuky="
-        },
-        {
-            "texts": ["4SM", "4SM Security Management", "Vedlejší specializace", ""],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1262;misto_vyuky="
-        }
-    ],
-    "planUrls": []
+	"navigationUrls": [
+		{
+			"texts": ["N0688P140002", "N-ADA Aplikovaná datová analytika a umělá inteligence", "Čeština", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=1764;misto_vyuky="
+		},
+		{
+			"texts": ["N0588A050001", "N-EDA1 Economic Data Analysis", "Angličtina", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=965;misto_vyuky="
+		},
+		{
+			"texts": ["N0311A050028", "N-EO1 Ekonometrie a operační výzkum", "Čeština", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=866;misto_vyuky="
+		},
+		{
+			"texts": ["N0388A050003", "N-ED Ekonomická demografie", "Čeština", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=865;misto_vyuky="
+		},
+		{
+			"texts": ["N0688A140021", "N-IM Informační management", "Čeština", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=822;misto_vyuky="
+		},
+		{
+			"texts": ["N0613A140026", "N-IT Informační systémy a technologie", "Čeština", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=966;misto_vyuky="
+		},
+		{
+			"texts": ["N0688A140028", "N-ISM Information Systems Management", "Angličtina", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=1542;misto_vyuky="
+		},
+		{
+			"texts": ["N0619A140004", "N-KI Kognitivní informatika", "Čeština", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=863;misto_vyuky="
+		},
+		{
+			"texts": ["N0688A140022", "N-PI Podniková informatika", "Čeština", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=823;misto_vyuky="
+		},
+		{
+			"texts": ["N0542A050002", "N-ST Statistika", "Čeština", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=864;misto_vyuky="
+		},
+		{
+			"texts": ["N0619A140005", "N-ZW Znalostní a webové technologie", "Čeština", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;program=923;misto_vyuky="
+		},
+		{
+			"texts": ["BA", "BA Business analýza", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1462;misto_vyuky="
+		},
+		{
+			"texts": ["BI", "BI Business Intelligence", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1463;misto_vyuky="
+		},
+		{
+			"texts": ["DAB", "DAB Data and Business", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1703;misto_vyuky="
+		},
+		{
+			"texts": ["DAM", "DAM Data Analysis and Modeling", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1464;misto_vyuky="
+		},
+		{
+			"texts": ["ECO", "ECO Datová analytika v marketingu a e-commerce", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1843;misto_vyuky="
+		},
+		{
+			"texts": ["EGO", "EGO Datová analytika v e-governmentu", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1842;misto_vyuky="
+		},
+		{
+			"texts": ["MBI", "MBI Management of Business Informatics", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1702;misto_vyuky="
+		},
+		{
+			"texts": ["MOS", "MOS Official Statistics", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1465;misto_vyuky="
+		},
+		{
+			"texts": ["RI", "RI Řízení podnikové informatiky", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1466;misto_vyuky="
+		},
+		{
+			"texts": ["UX", "UX UX výzkum a design", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1582;misto_vyuky="
+		},
+		{
+			"texts": ["VY", "VY Vývoj informačních systémů", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1467;misto_vyuky="
+		},
+		{
+			"texts": ["VYR", "VYR Datová analytika ve výrobních podnicích", "Specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1844;misto_vyuky="
+		},
+		{
+			"texts": ["4AD", "4AD Analýzy sociálně ekonomických dat", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=117;misto_vyuky="
+		},
+		{
+			"texts": ["4DI", "4DI Datové inženýrství", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=704;misto_vyuky="
+		},
+		{
+			"texts": ["4DS", "4DS Demografie a sociální analýza", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=212;misto_vyuky="
+		},
+		{
+			"texts": ["4EK", "4EK Ekonometrie", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1142;misto_vyuky="
+		},
+		{
+			"texts": ["4EST", "4EST EMOS - Ekonomická statistika", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1864;misto_vyuky="
+		},
+		{
+			"texts": ["4IQ", "4IQ Inteligentní systémy", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=115;misto_vyuky="
+		},
+		{
+			"texts": ["4KA", "4KA Kvantitativní analýza", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=703;misto_vyuky="
+		},
+		{
+			"texts": ["4KI", "4KI Komunikace informací", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1862;misto_vyuky="
+		},
+		{
+			"texts": ["4KIM", "4KIM Komunikace, interpretace, multimédia", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1502;misto_vyuky="
+		},
+		{
+			"texts": ["4KM", "4KM Kvantitativní metody v managementu", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=62;misto_vyuky="
+		},
+		{
+			"texts": ["4KMI", "4KMI Kvantitativní metody pro informatiky", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1482;misto_vyuky="
+		},
+		{
+			"texts": ["4MK", "4MK Multimediální komunikace", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=463;misto_vyuky="
+		},
+		{
+			"texts": ["4PI", "4PI Pojistné inženýrství", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=63;misto_vyuky="
+		},
+		{
+			"texts": ["4SM", "4SM Security Management", "Vedlejší specializace", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1140;typ_ss=5;typ_studia=4;new_spec=1262;misto_vyuky="
+		}
+	],
+	"planUrls": []
 }

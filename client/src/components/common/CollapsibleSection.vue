@@ -10,7 +10,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	defaultOpen: true,
-	badge: undefined,
+	badge: undefined
 })
 
 const isOpen = ref(props.defaultOpen)

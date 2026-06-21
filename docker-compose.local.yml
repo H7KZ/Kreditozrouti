@@ -11,7 +11,7 @@ services:
       - MYSQL_DATABASE=kreditozrouti
 
     ports:
-      - "43306:3306"
+      - '43306:3306'
 
     command:
       - --sort_buffer_size=256M
@@ -68,7 +68,7 @@ services:
       - UPLOAD_LIMIT=2G
 
     ports:
-      - "43307:80"
+      - '43307:80'
 
     deploy:
       mode: global
@@ -108,10 +108,10 @@ services:
     image: redis:alpine
     container_name: kreditozrouti-redis
 
-    command: [ "--save", "20", "1", "--loglevel", "warning" ]
+    command: [ '--save', '20', '1', '--loglevel', 'warning' ]
 
     ports:
-      - "46379:6379"
+      - '46379:6379'
 
     deploy:
       mode: global
@@ -152,15 +152,15 @@ services:
     container_name: kreditozrouti-prometheus
 
     command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
-      - "--storage.tsdb.retention.time=7d"
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=7d'
 
     volumes:
       - ./deployment/monitoring/prometheus/prometheus.local.yml:/etc/prometheus/prometheus.yml:ro
 
     ports:
-      - "49090:9090"
+      - '49090:9090'
 
     deploy:
       mode: global
@@ -193,7 +193,7 @@ services:
       - ./deployment/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
 
     ports:
-      - "43000:3000"
+      - '43000:3000'
 
     deploy:
       mode: global
@@ -221,7 +221,7 @@ services:
       - ./deployment/monitoring/loki/loki.yml:/etc/loki/loki.yml:ro
 
     ports:
-      - "43100:3100"
+      - '43100:3100'
 
     deploy:
       mode: global
@@ -256,7 +256,7 @@ services:
       - ./deployment/monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
 
     ports:
-      - "41247:12347"
+      - '41247:12347'
 
     deploy:
       mode: global

@@ -22,17 +22,17 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: "Branch to upload"
+        description: 'Branch to upload'
         required: true
-        default: "main"
+        default: 'main'
         type: string
       target_folder:
-        description: "Target folder on VPS (relative to home)"
+        description: 'Target folder on VPS (relative to home)'
         required: true
-        default: "repository"
+        default: 'repository'
         type: string
       clean_target:
-        description: "Remove existing files before upload"
+        description: 'Remove existing files before upload'
         required: true
         default: true
         type: boolean
@@ -83,8 +83,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "."
-          target: "~/${{ inputs.target_folder }}"
+          source: '.'
+          target: '~/${{ inputs.target_folder }}'
           rm: false
 
       - name: Verify Upload

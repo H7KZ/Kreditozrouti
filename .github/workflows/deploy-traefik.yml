@@ -17,7 +17,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "deployment/traefik/**"
+      - 'deployment/traefik/**'
   workflow_dispatch:
 
 concurrency:
@@ -44,8 +44,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "deployment/traefik/,deployment/lib.sh"
-          target: "~/deployment/"
+          source: 'deployment/traefik/,deployment/lib.sh'
+          target: '~/deployment/'
           strip_components: 1
           overwrite: true
 

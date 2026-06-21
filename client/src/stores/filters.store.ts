@@ -29,7 +29,7 @@ function createDefaultFilters(): CoursesFilter {
 		sort_by: 'ident',
 		sort_dir: 'asc',
 		limit: 50,
-		offset: 0,
+		offset: 0
 	}
 }
 
@@ -164,6 +164,6 @@ export const useFiltersStore = defineStore('filters', () => {
 		syncTimetableExcludeTimes,
 		toggleHideConflicting,
 		resetFilters,
-		resetAll,
+		resetAll
 	}
 })

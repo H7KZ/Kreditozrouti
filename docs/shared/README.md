@@ -41,25 +41,22 @@ shared/
 
 ```typescript
 // Domain types and logic
-import type {InSISDay, InSISSemester, CourseUnitType, ScraperJob} from '@shared/domain/insis'
-import {getSlotType} from '@shared/domain/insis'
-import type {TimeSelection} from '@shared/domain/time'
-import {timeToMinutes, minutesToTime} from '@shared/domain/time'
-import {getUpcomingPeriod, getPeriodsForLastYears} from '@shared/domain/period'
-import {
-    unitsConflict, unitsCampusConflict, checkCourseCompleteness,
-    CAMPUS_TRAVEL_MINUTES, getCampus
-} from '@shared/domain/timetable'
+import type { InSISDay, InSISSemester, CourseUnitType, ScraperJob } from '@shared/domain/insis'
+import { getSlotType } from '@shared/domain/insis'
+import type { TimeSelection } from '@shared/domain/time'
+import { timeToMinutes, minutesToTime } from '@shared/domain/time'
+import { getUpcomingPeriod, getPeriodsForLastYears } from '@shared/domain/period'
+import { unitsConflict, unitsCampusConflict, checkCourseCompleteness, CAMPUS_TRAVEL_MINUTES, getCampus } from '@shared/domain/timetable'
 
 // HTTP contracts
-import type {CoursesFilter} from '@shared/http/courses'
-import type {CoursesResponseDTO, CourseWithRelationsDTO, CourseUnitSlotDTO} from '@shared/http/responses'
-import type {FacetItem} from '@shared/http/facets'
-import type {PaginationMeta} from '@shared/http/pagination'
+import type { CoursesFilter } from '@shared/http/courses'
+import type { CoursesResponseDTO, CourseWithRelationsDTO, CourseUnitSlotDTO } from '@shared/http/responses'
+import type { FacetItem } from '@shared/http/facets'
+import type { PaginationMeta } from '@shared/http/pagination'
 
 // Queue contracts
-import {ScraperRequestQueue, ScraperResponseQueue} from '@shared/queue/names'
-import type {ScraperRequestJob, ScraperResponseJob} from '@shared/queue/jobs'
+import { ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names'
+import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 ```
 
 ---

@@ -64,7 +64,7 @@ export function useScheduleSummary() {
 		// Sort days by week order and get short names
 		const sortedDays = Array.from(daysSet)
 			.sort((a, b) => getDayIndex(a) - getDayIndex(b))
-			.map((day) => t(`daysShort.${day}`))
+			.map(day => t(`daysShort.${day}`))
 
 		return sortedDays.join(', ')
 	}
@@ -82,7 +82,7 @@ export function useScheduleSummary() {
 
 		const sortedDays = Array.from(daysSet)
 			.sort((a, b) => getDayIndex(a) - getDayIndex(b))
-			.map((day) => t(`days.${day}`))
+			.map(day => t(`days.${day}`))
 
 		return sortedDays.join(', ')
 	}
@@ -124,7 +124,7 @@ export function useScheduleSummary() {
 	function hasBlockSlots(units: CourseUnitDTO[] | undefined): boolean {
 		if (!units) return false
 
-		return units.some((unit) => unit.slots?.some((slot: CourseUnitSlotDTO) => slot.date && !slot.day))
+		return units.some(unit => unit.slots?.some((slot: CourseUnitSlotDTO) => slot.date && !slot.day))
 	}
 
 	/**
@@ -133,7 +133,7 @@ export function useScheduleSummary() {
 	function hasRecurringSlots(units: CourseUnitDTO[] | undefined): boolean {
 		if (!units) return false
 
-		return units.some((unit) => unit.slots?.some((slot: CourseUnitSlotDTO) => slot.day))
+		return units.some(unit => unit.slots?.some((slot: CourseUnitSlotDTO) => slot.day))
 	}
 
 	return {
@@ -143,6 +143,6 @@ export function useScheduleSummary() {
 		getTimeRangeSummary,
 		hasBlockSlots,
 		hasRecurringSlots,
-		DAYS_ORDER,
+		DAYS_ORDER
 	}
 }

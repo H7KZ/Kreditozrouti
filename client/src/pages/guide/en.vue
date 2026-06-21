@@ -19,9 +19,9 @@ const router = useRouter()
 
 watch(
 	() => i18n.global.locale.value,
-	(locale) => {
+	locale => {
 		if (locale === 'cs') router.push('/guide/cs')
-	},
+	}
 )
 
 useSeoMeta({
@@ -29,7 +29,7 @@ useSeoMeta({
 	description:
 		'Complete guide for VŠE Prague students: credit system, grading, course types, InSIS registration walkthrough, and how to use Kreditožrouti to plan your timetable.',
 	ogTitle: 'International Student Guide – Kreditožrouti',
-	ogDescription: 'VŠE Prague credit system, InSIS registration and Kreditožrouti explained step-by-step for international students.',
+	ogDescription: 'VŠE Prague credit system, InSIS registration and Kreditožrouti explained step-by-step for international students.'
 })
 
 useHead({
@@ -37,8 +37,8 @@ useHead({
 		{ rel: 'alternate', hreflang: 'en', href: 'https://kreditozrouti.cz/guide/en' },
 		{ rel: 'alternate', hreflang: 'cs', href: 'https://kreditozrouti.cz/guide/cs' },
 		{ rel: 'alternate', hreflang: 'x-default', href: 'https://kreditozrouti.cz/guide/en' },
-		{ rel: 'canonical', href: 'https://kreditozrouti.cz/guide/en' },
-	],
+		{ rel: 'canonical', href: 'https://kreditozrouti.cz/guide/en' }
+	]
 })
 </script>
 

@@ -56,7 +56,7 @@ function handleRowClick() {
 		:class="[
 			'group/row insis-table-row-clickable focus-within:bg-(--insis-surface-2) focus-within:outline-none',
 			isExpanded && 'row-expanded',
-			isSelected && 'row-in-timetable',
+			isSelected && 'row-in-timetable'
 		]"
 		role="button"
 		:tabindex="0"

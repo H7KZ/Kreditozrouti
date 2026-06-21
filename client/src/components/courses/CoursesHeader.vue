@@ -20,7 +20,7 @@ const { getSemesterLabel } = useCourseLabels()
 
 const studyPlanInfo = computed(() => ({
 	titles: wizardStore.studyPlanTitles || [],
-	idents: wizardStore.studyPlanIdents || [],
+	idents: wizardStore.studyPlanIdents || []
 }))
 
 const coursesInfo = computed(() => {
@@ -29,7 +29,7 @@ const coursesInfo = computed(() => {
 	const rawSemesters = filtersStore.filters.semesters?.length ? filtersStore.filters.semesters : [upcoming.semester]
 	return {
 		years,
-		semester: rawSemesters.map((s) => getSemesterLabel(s)).join(', '),
+		semester: rawSemesters.map(s => getSemesterLabel(s)).join(', ')
 	}
 })
 

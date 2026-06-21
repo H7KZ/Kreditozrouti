@@ -23,7 +23,7 @@ const DAY_EN: Record<string, string> = {
 	Úterý: 'Tuesday',
 	Středa: 'Wednesday',
 	Čtvrtek: 'Thursday',
-	Pátek: 'Friday',
+	Pátek: 'Friday'
 }
 
 function dayLabel(day: InSISDay): string {
@@ -38,13 +38,13 @@ interface DayData {
 }
 
 const agendaDays = computed<DayData[]>(() =>
-	WEEKDAYS.map((day) => {
+	WEEKDAYS.map(day => {
 		const units = [...(mergedUnitsByDay.value.get(day) ?? [])].sort((a, b) => a.timeFrom - b.timeFrom)
 		return { day, units, hasUnits: units.length > 0, count: units.length }
-	}),
+	})
 )
 
-const hasAnyCourses = computed(() => agendaDays.value.some((d) => d.hasUnits))
+const hasAnyCourses = computed(() => agendaDays.value.some(d => d.hasUnits))
 
 function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 	const ids = isMergedUnit(unit) ? unit.mergedSlotIds : [unit.slotId]
@@ -60,7 +60,7 @@ function formatTime(minutes: number): string {
 const UNIT_COLORS: Record<string, string> = {
 	lecture: 'var(--insis-block-lecture)',
 	exercise: 'var(--insis-block-exercise)',
-	seminar: 'var(--insis-block-seminar)',
+	seminar: 'var(--insis-block-seminar)'
 }
 
 function borderColor(unit: SelectedCourseUnit | MergedUnit): string {
@@ -131,7 +131,7 @@ function closeModal() {
 						:class="hasConflict(unit) ? 'border-(--insis-danger-border)' : 'border-(--insis-border)'"
 						:style="{
 							borderLeftWidth: '3px',
-							borderLeftColor: hasConflict(unit) ? 'var(--insis-danger)' : borderColor(unit),
+							borderLeftColor: hasConflict(unit) ? 'var(--insis-danger)' : borderColor(unit)
 						}"
 						@click="openModal(unit)"
 					>
@@ -147,7 +147,7 @@ function closeModal() {
 								class="rounded-full px-2 py-0.5 text-xs font-medium"
 								:style="{
 									color: borderColor(unit),
-									background: `color-mix(in srgb, ${borderColor(unit)} 18%, transparent)`,
+									background: `color-mix(in srgb, ${borderColor(unit)} 18%, transparent)`
 								}"
 							>
 								{{ $t(`unitTypes.${unit.unitType}`, unit.unitType) }}

@@ -1,612 +1,604 @@
 {
-    "schemaVersion": 38,
-    "uid": "kreditozrouti-logs",
-    "title": "Kreditožrouti — Log Explorer",
-    "refresh": "30s",
-    "time": {
-        "from": "now-1h",
-        "to": "now"
-    },
-    "templating": {
-        "list": [
-            {
-                "type": "custom",
-                "name": "env",
-                "label": "Environment",
-                "query": "production,development",
-                "multi": false,
-                "includeAll": false,
-                "hide": 0,
-                "current": {
-                    "selected": true,
-                    "text": "production",
-                    "value": "production"
-                },
-                "options": [
-                    {
-                        "selected": true,
-                        "text": "production",
-                        "value": "production"
-                    },
-                    {
-                        "selected": false,
-                        "text": "development",
-                        "value": "development"
-                    }
-                ]
-            },
-            {
-                "type": "query",
-                "name": "service",
-                "label": "Service",
-                "datasource": {
-                    "type": "loki",
-                    "uid": "Loki"
-                },
-                "definition": "label_values(service)",
-                "query": "label_values(service)",
-                "multi": true,
-                "includeAll": true,
-                "allValue": "api|scraper",
-                "sort": 1,
-                "refresh": 2,
-                "hide": 0,
-                "current": {
-                    "selected": true,
-                    "text": "All",
-                    "value": "$__all"
-                },
-                "options": []
-            },
-            {
-                "type": "custom",
-                "name": "level",
-                "label": "Level",
-                "query": "ERROR,WARN,INFO,DEBUG",
-                "multi": true,
-                "includeAll": true,
-                "allValue": ".*",
-                "hide": 0,
-                "current": {
-                    "selected": true,
-                    "text": "All",
-                    "value": "$__all"
-                },
-                "options": [
-                    {
-                        "selected": false,
-                        "text": "ERROR",
-                        "value": "ERROR"
-                    },
-                    {
-                        "selected": false,
-                        "text": "WARN",
-                        "value": "WARN"
-                    },
-                    {
-                        "selected": false,
-                        "text": "INFO",
-                        "value": "INFO"
-                    },
-                    {
-                        "selected": false,
-                        "text": "DEBUG",
-                        "value": "DEBUG"
-                    }
-                ]
-            },
-            {
-                "type": "custom",
-                "name": "context",
-                "label": "Context",
-                "query": "http,job",
-                "multi": true,
-                "includeAll": true,
-                "allValue": ".*",
-                "hide": 0,
-                "current": {
-                    "selected": true,
-                    "text": "All",
-                    "value": "$__all"
-                },
-                "options": [
-                    {
-                        "selected": false,
-                        "text": "http",
-                        "value": "http"
-                    },
-                    {
-                        "selected": false,
-                        "text": "job",
-                        "value": "job"
-                    }
-                ]
-            },
-            {
-                "type": "textbox",
-                "name": "search",
-                "label": "Search text",
-                "hide": 0,
-                "current": {
-                    "value": ""
-                }
-            },
-            {
-                "type": "textbox",
-                "name": "request_id",
-                "label": "Request ID",
-                "hide": 0,
-                "current": {
-                    "value": ".*"
-                }
-            },
-            {
-                "type": "custom",
-                "name": "job_name",
-                "label": "Job",
-                "query": "InSIS:Course,InSIS:Catalog,InSIS:StudyPlan,InSIS:StudyPlans,InSIS:AcademicSchedules,InSIS:AcademicSchedule,InSIS:FacultyTimetables,InSIS:FacultyTimetable",
-                "multi": true,
-                "includeAll": true,
-                "allValue": ".*",
-                "hide": 0,
-                "current": {
-                    "selected": true,
-                    "text": "All",
-                    "value": "$__all"
-                },
-                "options": [
-                    {
-                        "selected": false,
-                        "text": "InSIS:Course",
-                        "value": "InSIS:Course"
-                    },
-                    {
-                        "selected": false,
-                        "text": "InSIS:Catalog",
-                        "value": "InSIS:Catalog"
-                    },
-                    {
-                        "selected": false,
-                        "text": "InSIS:StudyPlan",
-                        "value": "InSIS:StudyPlan"
-                    },
-                    {
-                        "selected": false,
-                        "text": "InSIS:StudyPlans",
-                        "value": "InSIS:StudyPlans"
-                    },
-                    {
-                        "selected": false,
-                        "text": "InSIS:AcademicSchedules",
-                        "value": "InSIS:AcademicSchedules"
-                    },
-                    {
-                        "selected": false,
-                        "text": "InSIS:AcademicSchedule",
-                        "value": "InSIS:AcademicSchedule"
-                    },
-                    {
-                        "selected": false,
-                        "text": "InSIS:FacultyTimetables",
-                        "value": "InSIS:FacultyTimetables"
-                    },
-                    {
-                        "selected": false,
-                        "text": "InSIS:FacultyTimetable",
-                        "value": "InSIS:FacultyTimetable"
-                    }
-                ]
-            }
-        ]
-    },
-    "panels": [
-        {
-            "id": 1,
-            "title": "Errors",
-            "type": "stat",
-            "gridPos": {
-                "h": 4,
-                "w": 6,
-                "x": 0,
-                "y": 0
-            },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
-            "targets": [
-                {
-                    "expr": "count_over_time({service=~\"${service:pipe}\", level=\"ERROR\", env=\"$env\"}[$__range])",
-                    "refId": "A",
-                    "instant": true,
-                    "legendFormat": ""
-                }
-            ],
-            "options": {
-                "reduceOptions": {
-                    "calcs": [
-                        "last"
-                    ]
-                },
-                "colorMode": "background",
-                "graphMode": "none"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 1
-                            }
-                        ]
-                    },
-                    "color": {
-                        "mode": "thresholds"
-                    }
-                }
-            }
-        },
-        {
-            "id": 2,
-            "title": "Warnings",
-            "type": "stat",
-            "gridPos": {
-                "h": 4,
-                "w": 6,
-                "x": 6,
-                "y": 0
-            },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
-            "targets": [
-                {
-                    "expr": "count_over_time({service=~\"${service:pipe}\", level=\"WARN\", env=\"$env\"}[$__range])",
-                    "refId": "A",
-                    "instant": true,
-                    "legendFormat": ""
-                }
-            ],
-            "options": {
-                "reduceOptions": {
-                    "calcs": [
-                        "last"
-                    ]
-                },
-                "colorMode": "background",
-                "graphMode": "none"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "yellow",
-                                "value": 1
-                            }
-                        ]
-                    },
-                    "color": {
-                        "mode": "thresholds"
-                    }
-                }
-            }
-        },
-        {
-            "id": 3,
-            "title": "Info",
-            "type": "stat",
-            "gridPos": {
-                "h": 4,
-                "w": 6,
-                "x": 12,
-                "y": 0
-            },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
-            "targets": [
-                {
-                    "expr": "count_over_time({service=~\"${service:pipe}\", level=\"INFO\", env=\"$env\"}[$__range])",
-                    "refId": "A",
-                    "instant": true,
-                    "legendFormat": ""
-                }
-            ],
-            "options": {
-                "reduceOptions": {
-                    "calcs": [
-                        "last"
-                    ]
-                },
-                "colorMode": "value",
-                "graphMode": "none"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "fixedColor": "blue",
-                        "mode": "fixed"
-                    }
-                }
-            }
-        },
-        {
-            "id": 4,
-            "title": "Total lines",
-            "type": "stat",
-            "gridPos": {
-                "h": 4,
-                "w": 6,
-                "x": 18,
-                "y": 0
-            },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
-            "targets": [
-                {
-                    "expr": "count_over_time({service=~\"${service:pipe}\", env=\"$env\"}[$__range])",
-                    "refId": "A",
-                    "instant": true,
-                    "legendFormat": ""
-                }
-            ],
-            "options": {
-                "reduceOptions": {
-                    "calcs": [
-                        "last"
-                    ]
-                },
-                "colorMode": "value",
-                "graphMode": "none"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "fixedColor": "green",
-                        "mode": "fixed"
-                    }
-                }
-            }
-        },
-        {
-            "id": 5,
-            "title": "Log volume by level",
-            "type": "timeseries",
-            "gridPos": {
-                "h": 8,
-                "w": 24,
-                "x": 0,
-                "y": 4
-            },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
-            "targets": [
-                {
-                    "expr": "sum by (level) (count_over_time({service=~\"${service:pipe}\", env=\"$env\"}[$__interval]))",
-                    "refId": "A",
-                    "legendFormat": "{{level}}"
-                }
-            ],
-            "options": {
-                "legend": {
-                    "displayMode": "list",
-                    "placement": "bottom"
-                }
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "custom": {
-                        "stacking": {
-                            "mode": "normal",
-                            "group": "A"
-                        },
-                        "fillOpacity": 70,
-                        "lineWidth": 0
-                    }
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "ERROR"
-                        },
-                        "properties": [
-                            {
-                                "id": "color",
-                                "value": {
-                                    "fixedColor": "#e05252",
-                                    "mode": "fixed"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "WARN"
-                        },
-                        "properties": [
-                            {
-                                "id": "color",
-                                "value": {
-                                    "fixedColor": "#d48f1e",
-                                    "mode": "fixed"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "INFO"
-                        },
-                        "properties": [
-                            {
-                                "id": "color",
-                                "value": {
-                                    "fixedColor": "#4a9ede",
-                                    "mode": "fixed"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "DEBUG"
-                        },
-                        "properties": [
-                            {
-                                "id": "color",
-                                "value": {
-                                    "fixedColor": "#7a9fc8",
-                                    "mode": "fixed"
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        {
-            "id": 6,
-            "title": "Log stream",
-            "type": "logs",
-            "gridPos": {
-                "h": 14,
-                "w": 24,
-                "x": 0,
-                "y": 12
-            },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
-            "targets": [
-                {
-                    "expr": "{service=~\"${service:pipe}\", level=~\"${level:pipe}\", context=~\"${context:pipe}\", env=\"$env\"} |~ \"$search\"",
-                    "refId": "A",
-                    "maxLines": 5000
-                }
-            ],
-            "options": {
-                "showTime": true,
-                "showLabels": false,
-                "showCommonLabels": false,
-                "wrapLogMessage": false,
-                "enableLogDetails": true,
-                "sortOrder": "Descending",
-                "dedupStrategy": "none",
-                "prettifyLogMessage": false
-            }
-        },
-        {
-            "id": 7,
-            "title": "All errors",
-            "description": "Fixed query — not affected by the filters above",
-            "type": "logs",
-            "gridPos": {
-                "h": 10,
-                "w": 8,
-                "x": 0,
-                "y": 26
-            },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
-            "targets": [
-                {
-                    "expr": "{service=~\"api|scraper\", level=\"ERROR\", env=\"$env\"}",
-                    "refId": "A",
-                    "maxLines": 200
-                }
-            ],
-            "options": {
-                "showTime": true,
-                "showLabels": true,
-                "enableLogDetails": true,
-                "sortOrder": "Descending",
-                "dedupStrategy": "none"
-            }
-        },
-        {
-            "id": 8,
-            "title": "HTTP requests",
-            "description": "Set Request ID above to trace one request end-to-end",
-            "type": "logs",
-            "gridPos": {
-                "h": 10,
-                "w": 8,
-                "x": 8,
-                "y": 26
-            },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
-            "targets": [
-                {
-                    "expr": "{service=\"api\", context=\"http\", env=\"$env\"} | json | request_id=~\"$request_id\"",
-                    "refId": "A",
-                    "maxLines": 200
-                }
-            ],
-            "options": {
-                "showTime": true,
-                "showLabels": false,
-                "enableLogDetails": true,
-                "sortOrder": "Descending",
-                "dedupStrategy": "none"
-            }
-        },
-        {
-            "id": 9,
-            "title": "Scraper jobs",
-            "description": "Set Job above to filter by job type",
-            "type": "logs",
-            "gridPos": {
-                "h": 10,
-                "w": 8,
-                "x": 16,
-                "y": 26
-            },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
-            "targets": [
-                {
-                    "expr": "{service=\"scraper\", context=\"job\", env=\"$env\"} | json | job_name=~\"${job_name:pipe}\"",
-                    "refId": "A",
-                    "maxLines": 200
-                }
-            ],
-            "options": {
-                "showTime": true,
-                "showLabels": false,
-                "enableLogDetails": true,
-                "sortOrder": "Descending",
-                "dedupStrategy": "none"
-            }
-        }
-    ]
+	"schemaVersion": 38,
+	"uid": "kreditozrouti-logs",
+	"title": "Kreditožrouti — Log Explorer",
+	"refresh": "30s",
+	"time": {
+		"from": "now-1h",
+		"to": "now"
+	},
+	"templating": {
+		"list": [
+			{
+				"type": "custom",
+				"name": "env",
+				"label": "Environment",
+				"query": "production,development",
+				"multi": false,
+				"includeAll": false,
+				"hide": 0,
+				"current": {
+					"selected": true,
+					"text": "production",
+					"value": "production"
+				},
+				"options": [
+					{
+						"selected": true,
+						"text": "production",
+						"value": "production"
+					},
+					{
+						"selected": false,
+						"text": "development",
+						"value": "development"
+					}
+				]
+			},
+			{
+				"type": "query",
+				"name": "service",
+				"label": "Service",
+				"datasource": {
+					"type": "loki",
+					"uid": "Loki"
+				},
+				"definition": "label_values(service)",
+				"query": "label_values(service)",
+				"multi": true,
+				"includeAll": true,
+				"allValue": "api|scraper",
+				"sort": 1,
+				"refresh": 2,
+				"hide": 0,
+				"current": {
+					"selected": true,
+					"text": "All",
+					"value": "$__all"
+				},
+				"options": []
+			},
+			{
+				"type": "custom",
+				"name": "level",
+				"label": "Level",
+				"query": "ERROR,WARN,INFO,DEBUG",
+				"multi": true,
+				"includeAll": true,
+				"allValue": ".*",
+				"hide": 0,
+				"current": {
+					"selected": true,
+					"text": "All",
+					"value": "$__all"
+				},
+				"options": [
+					{
+						"selected": false,
+						"text": "ERROR",
+						"value": "ERROR"
+					},
+					{
+						"selected": false,
+						"text": "WARN",
+						"value": "WARN"
+					},
+					{
+						"selected": false,
+						"text": "INFO",
+						"value": "INFO"
+					},
+					{
+						"selected": false,
+						"text": "DEBUG",
+						"value": "DEBUG"
+					}
+				]
+			},
+			{
+				"type": "custom",
+				"name": "context",
+				"label": "Context",
+				"query": "http,job",
+				"multi": true,
+				"includeAll": true,
+				"allValue": ".*",
+				"hide": 0,
+				"current": {
+					"selected": true,
+					"text": "All",
+					"value": "$__all"
+				},
+				"options": [
+					{
+						"selected": false,
+						"text": "http",
+						"value": "http"
+					},
+					{
+						"selected": false,
+						"text": "job",
+						"value": "job"
+					}
+				]
+			},
+			{
+				"type": "textbox",
+				"name": "search",
+				"label": "Search text",
+				"hide": 0,
+				"current": {
+					"value": ""
+				}
+			},
+			{
+				"type": "textbox",
+				"name": "request_id",
+				"label": "Request ID",
+				"hide": 0,
+				"current": {
+					"value": ".*"
+				}
+			},
+			{
+				"type": "custom",
+				"name": "job_name",
+				"label": "Job",
+				"query": "InSIS:Course,InSIS:Catalog,InSIS:StudyPlan,InSIS:StudyPlans,InSIS:AcademicSchedules,InSIS:AcademicSchedule,InSIS:FacultyTimetables,InSIS:FacultyTimetable",
+				"multi": true,
+				"includeAll": true,
+				"allValue": ".*",
+				"hide": 0,
+				"current": {
+					"selected": true,
+					"text": "All",
+					"value": "$__all"
+				},
+				"options": [
+					{
+						"selected": false,
+						"text": "InSIS:Course",
+						"value": "InSIS:Course"
+					},
+					{
+						"selected": false,
+						"text": "InSIS:Catalog",
+						"value": "InSIS:Catalog"
+					},
+					{
+						"selected": false,
+						"text": "InSIS:StudyPlan",
+						"value": "InSIS:StudyPlan"
+					},
+					{
+						"selected": false,
+						"text": "InSIS:StudyPlans",
+						"value": "InSIS:StudyPlans"
+					},
+					{
+						"selected": false,
+						"text": "InSIS:AcademicSchedules",
+						"value": "InSIS:AcademicSchedules"
+					},
+					{
+						"selected": false,
+						"text": "InSIS:AcademicSchedule",
+						"value": "InSIS:AcademicSchedule"
+					},
+					{
+						"selected": false,
+						"text": "InSIS:FacultyTimetables",
+						"value": "InSIS:FacultyTimetables"
+					},
+					{
+						"selected": false,
+						"text": "InSIS:FacultyTimetable",
+						"value": "InSIS:FacultyTimetable"
+					}
+				]
+			}
+		]
+	},
+	"panels": [
+		{
+			"id": 1,
+			"title": "Errors",
+			"type": "stat",
+			"gridPos": {
+				"h": 4,
+				"w": 6,
+				"x": 0,
+				"y": 0
+			},
+			"datasource": {
+				"type": "loki",
+				"uid": "Loki"
+			},
+			"targets": [
+				{
+					"expr": "count_over_time({service=~\"${service:pipe}\", level=\"ERROR\", env=\"$env\"}[$__range])",
+					"refId": "A",
+					"instant": true,
+					"legendFormat": ""
+				}
+			],
+			"options": {
+				"reduceOptions": {
+					"calcs": ["last"]
+				},
+				"colorMode": "background",
+				"graphMode": "none"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": null
+							},
+							{
+								"color": "red",
+								"value": 1
+							}
+						]
+					},
+					"color": {
+						"mode": "thresholds"
+					}
+				}
+			}
+		},
+		{
+			"id": 2,
+			"title": "Warnings",
+			"type": "stat",
+			"gridPos": {
+				"h": 4,
+				"w": 6,
+				"x": 6,
+				"y": 0
+			},
+			"datasource": {
+				"type": "loki",
+				"uid": "Loki"
+			},
+			"targets": [
+				{
+					"expr": "count_over_time({service=~\"${service:pipe}\", level=\"WARN\", env=\"$env\"}[$__range])",
+					"refId": "A",
+					"instant": true,
+					"legendFormat": ""
+				}
+			],
+			"options": {
+				"reduceOptions": {
+					"calcs": ["last"]
+				},
+				"colorMode": "background",
+				"graphMode": "none"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": null
+							},
+							{
+								"color": "yellow",
+								"value": 1
+							}
+						]
+					},
+					"color": {
+						"mode": "thresholds"
+					}
+				}
+			}
+		},
+		{
+			"id": 3,
+			"title": "Info",
+			"type": "stat",
+			"gridPos": {
+				"h": 4,
+				"w": 6,
+				"x": 12,
+				"y": 0
+			},
+			"datasource": {
+				"type": "loki",
+				"uid": "Loki"
+			},
+			"targets": [
+				{
+					"expr": "count_over_time({service=~\"${service:pipe}\", level=\"INFO\", env=\"$env\"}[$__range])",
+					"refId": "A",
+					"instant": true,
+					"legendFormat": ""
+				}
+			],
+			"options": {
+				"reduceOptions": {
+					"calcs": ["last"]
+				},
+				"colorMode": "value",
+				"graphMode": "none"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"fixedColor": "blue",
+						"mode": "fixed"
+					}
+				}
+			}
+		},
+		{
+			"id": 4,
+			"title": "Total lines",
+			"type": "stat",
+			"gridPos": {
+				"h": 4,
+				"w": 6,
+				"x": 18,
+				"y": 0
+			},
+			"datasource": {
+				"type": "loki",
+				"uid": "Loki"
+			},
+			"targets": [
+				{
+					"expr": "count_over_time({service=~\"${service:pipe}\", env=\"$env\"}[$__range])",
+					"refId": "A",
+					"instant": true,
+					"legendFormat": ""
+				}
+			],
+			"options": {
+				"reduceOptions": {
+					"calcs": ["last"]
+				},
+				"colorMode": "value",
+				"graphMode": "none"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"fixedColor": "green",
+						"mode": "fixed"
+					}
+				}
+			}
+		},
+		{
+			"id": 5,
+			"title": "Log volume by level",
+			"type": "timeseries",
+			"gridPos": {
+				"h": 8,
+				"w": 24,
+				"x": 0,
+				"y": 4
+			},
+			"datasource": {
+				"type": "loki",
+				"uid": "Loki"
+			},
+			"targets": [
+				{
+					"expr": "sum by (level) (count_over_time({service=~\"${service:pipe}\", env=\"$env\"}[$__interval]))",
+					"refId": "A",
+					"legendFormat": "{{level}}"
+				}
+			],
+			"options": {
+				"legend": {
+					"displayMode": "list",
+					"placement": "bottom"
+				}
+			},
+			"fieldConfig": {
+				"defaults": {
+					"custom": {
+						"stacking": {
+							"mode": "normal",
+							"group": "A"
+						},
+						"fillOpacity": 70,
+						"lineWidth": 0
+					}
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "ERROR"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"fixedColor": "#e05252",
+									"mode": "fixed"
+								}
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "WARN"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"fixedColor": "#d48f1e",
+									"mode": "fixed"
+								}
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "INFO"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"fixedColor": "#4a9ede",
+									"mode": "fixed"
+								}
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "DEBUG"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"fixedColor": "#7a9fc8",
+									"mode": "fixed"
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		{
+			"id": 6,
+			"title": "Log stream",
+			"type": "logs",
+			"gridPos": {
+				"h": 14,
+				"w": 24,
+				"x": 0,
+				"y": 12
+			},
+			"datasource": {
+				"type": "loki",
+				"uid": "Loki"
+			},
+			"targets": [
+				{
+					"expr": "{service=~\"${service:pipe}\", level=~\"${level:pipe}\", context=~\"${context:pipe}\", env=\"$env\"} |~ \"$search\"",
+					"refId": "A",
+					"maxLines": 5000
+				}
+			],
+			"options": {
+				"showTime": true,
+				"showLabels": false,
+				"showCommonLabels": false,
+				"wrapLogMessage": false,
+				"enableLogDetails": true,
+				"sortOrder": "Descending",
+				"dedupStrategy": "none",
+				"prettifyLogMessage": false
+			}
+		},
+		{
+			"id": 7,
+			"title": "All errors",
+			"description": "Fixed query — not affected by the filters above",
+			"type": "logs",
+			"gridPos": {
+				"h": 10,
+				"w": 8,
+				"x": 0,
+				"y": 26
+			},
+			"datasource": {
+				"type": "loki",
+				"uid": "Loki"
+			},
+			"targets": [
+				{
+					"expr": "{service=~\"api|scraper\", level=\"ERROR\", env=\"$env\"}",
+					"refId": "A",
+					"maxLines": 200
+				}
+			],
+			"options": {
+				"showTime": true,
+				"showLabels": true,
+				"enableLogDetails": true,
+				"sortOrder": "Descending",
+				"dedupStrategy": "none"
+			}
+		},
+		{
+			"id": 8,
+			"title": "HTTP requests",
+			"description": "Set Request ID above to trace one request end-to-end",
+			"type": "logs",
+			"gridPos": {
+				"h": 10,
+				"w": 8,
+				"x": 8,
+				"y": 26
+			},
+			"datasource": {
+				"type": "loki",
+				"uid": "Loki"
+			},
+			"targets": [
+				{
+					"expr": "{service=\"api\", context=\"http\", env=\"$env\"} | json | request_id=~\"$request_id\"",
+					"refId": "A",
+					"maxLines": 200
+				}
+			],
+			"options": {
+				"showTime": true,
+				"showLabels": false,
+				"enableLogDetails": true,
+				"sortOrder": "Descending",
+				"dedupStrategy": "none"
+			}
+		},
+		{
+			"id": 9,
+			"title": "Scraper jobs",
+			"description": "Set Job above to filter by job type",
+			"type": "logs",
+			"gridPos": {
+				"h": 10,
+				"w": 8,
+				"x": 16,
+				"y": 26
+			},
+			"datasource": {
+				"type": "loki",
+				"uid": "Loki"
+			},
+			"targets": [
+				{
+					"expr": "{service=\"scraper\", context=\"job\", env=\"$env\"} | json | job_name=~\"${job_name:pipe}\"",
+					"refId": "A",
+					"maxLines": 200
+				}
+			],
+			"options": {
+				"showTime": true,
+				"showLabels": false,
+				"enableLogDetails": true,
+				"sortOrder": "Descending",
+				"dedupStrategy": "none"
+			}
+		}
+	]
 }

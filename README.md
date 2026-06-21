@@ -5,7 +5,6 @@
 
 **The course scheduling tool that InSIS should have been**
 
-[![Beta Release](https://img.shields.io/badge/status-beta-blue.svg)](https://github.com/H7KZ/Kreditozrouti)
 [![License](https://img.shields.io/badge/license-See%20Compliance-green.svg)](client/src/legal)
 [![VŠE](https://img.shields.io/badge/university-VŠE%20Prague-0066b3.svg)](https://www.vse.cz)
 
@@ -117,10 +116,6 @@ This project is provided for educational and personal use. Not officially affili
 Data is scraped from InSIS. Use at your own risk. Respect InSIS rate limits and terms of service.
 
 ---
-
-## Status
-
-**Beta** — core features implemented and tested. Active development toward a February 2026 launch (registration period).
 
 Bugs and feature requests: [GitHub Issues](https://github.com/H7KZ/Kreditozrouti/issues)
 

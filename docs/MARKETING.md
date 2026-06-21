@@ -35,7 +35,7 @@ Your friends are your warmest audience. Message them first, before posting anywh
 
 ---
 
-**Variant A — Quick share** *(2–3 sentences)*
+**Variant A — Quick share** _(2–3 sentences)_
 
 ```
 Hele, napsal jsem nástroj na sestavování rozvrhu pro VŠE — kreditozrouti.cz. Automaticky ukáže konflikty a jde filtrovat podle dne nebo jazyka. Zdarma, bez přihlášení — dej vědět jestli se hodí 🙂
@@ -116,7 +116,7 @@ začaly. Rád přijmu zpětnou vazbu 🙂
 👉 kreditozrouti.cz?utm_source=facebook&utm_medium=group&utm_content=prvaci
 ```
 
-**Template B — FIS / FM / NF / FFÚ** *(swap utm_content per group)*
+**Template B — FIS / FM / NF / FFÚ** _(swap utm_content per group)_
 
 ```
 Ahoj, hodím sem odkaz na věc co jsem napsal — kreditozrouti.cz. Vizuální
@@ -247,7 +247,7 @@ zdarma bez registrace. Myslíte, že by to stálo za zmínku na profilu?
 
 ---
 
-### Unie studentů VŠE *(new)*
+### Unie studentů VŠE _(new)_
 
 Go to facebook.com/usvse and send a message:
 
@@ -279,8 +279,8 @@ Go to github.com/H7KZ/Kreditozrouti/releases → Draft new release
 ```
 Kreditožrouti is a free visual timetable planner for students at VŠE Prague.
 
-**The problem:** InSIS shows one course at a time, makes conflict detection manual, 
-and has no way to filter by day, language, or campus. Building a schedule takes 
+**The problem:** InSIS shows one course at a time, makes conflict detection manual,
+and has no way to filter by day, language, or campus. Building a schedule takes
 hours of tab-switching.
 
 **What this does:**

@@ -35,8 +35,8 @@ Full reference: [docs/scraper/TYPES.md — Job payload types](../scraper/TYPES.m
 
 ```typescript
 interface ScraperRequestJob {
-    type: ScraperJob   // 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan'
-    // ...type-specific payload fields
+	type: ScraperJob // 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan'
+	// ...type-specific payload fields
 }
 ```
 
@@ -53,8 +53,8 @@ Each `type` variant carries a different payload:
 
 ```typescript
 interface ScraperResponseJob {
-    type: ScraperJob
-    // ...type-specific result fields
+	type: ScraperJob
+	// ...type-specific result fields
 }
 ```
 
@@ -71,54 +71,54 @@ Full reference: [docs/scraper/TYPES.md — Scraped data types](../scraper/TYPES.
 
 ```typescript
 interface ScraperInSISCourse {
-    ident: string
-    title_cs: string | null
-    title_en: string | null
-    annotation_cs: string | null
-    annotation_en: string | null
-    ects: number | null
-    semester: InSISSemester
-    year: number
-    language: string | null
-    mode_of_completion: string | null
-    mode_of_delivery: string | null
-    capacity: number | null
-    faculty_ident: string | null
-    lecturer: string | null
-    guarantor: string | null
-    units: ScraperInSISCourseUnit[]
-    assessments: ScraperInSISCourseAssessment[]
+	ident: string
+	title_cs: string | null
+	title_en: string | null
+	annotation_cs: string | null
+	annotation_en: string | null
+	ects: number | null
+	semester: InSISSemester
+	year: number
+	language: string | null
+	mode_of_completion: string | null
+	mode_of_delivery: string | null
+	capacity: number | null
+	faculty_ident: string | null
+	lecturer: string | null
+	guarantor: string | null
+	units: ScraperInSISCourseUnit[]
+	assessments: ScraperInSISCourseAssessment[]
 }
 
 interface ScraperInSISCourseUnit {
-    type: string | null    // raw string, normalised to CourseUnitType by API
-    capacity: number | null
-    note: string | null
-    lecturer: string | null
-    slots: ScraperInSISCourseUnitSlot[]
+	type: string | null // raw string, normalised to CourseUnitType by API
+	capacity: number | null
+	note: string | null
+	lecturer: string | null
+	slots: ScraperInSISCourseUnitSlot[]
 }
 
 interface ScraperInSISCourseUnitSlot {
-    day: string | null     // raw InSIS day string
-    date: string | null    // DD.MM.YYYY for one-time slots
-    time_from: string | null  // 'HH:MM'
-    time_to: string | null    // 'HH:MM'
-    location: string | null
-    type: string | null
+	day: string | null // raw InSIS day string
+	date: string | null // DD.MM.YYYY for one-time slots
+	time_from: string | null // 'HH:MM'
+	time_to: string | null // 'HH:MM'
+	location: string | null
+	type: string | null
 }
 
 interface ScraperInSISStudyPlan {
-    ident: string
-    title: string | null
-    faculty_ident: string | null
-    semester: InSISSemester
-    year: number
-    courses: ScraperInSISStudyPlanCourse[]
+	ident: string
+	title: string | null
+	faculty_ident: string | null
+	semester: InSISSemester
+	year: number
+	courses: ScraperInSISStudyPlanCourse[]
 }
 
 interface ScraperInSISStudyPlanCourse {
-    course_ident: string
-    group: string | null    // raw group string, normalised by API
-    category: string | null // raw category string, normalised by API
+	course_ident: string
+	group: string | null // raw group string, normalised by API
+	category: string | null // raw category string, normalised by API
 }
 ```

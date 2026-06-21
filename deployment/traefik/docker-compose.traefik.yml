@@ -24,7 +24,7 @@ services:
     restart: always
 
     command:
-      - "--configFile=/traefik.yml"
+      - '--configFile=/traefik.yml'
 
     # Cloudflare DNS Challenge credentials
     environment:
@@ -42,38 +42,38 @@ services:
       - traefik-network
 
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
 
     labels:
       # Enable Traefik for this container
-      - "traefik.enable=true"
+      - 'traefik.enable=true'
 
       # Dashboard Router
-      - "traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_DOMAIN}`)"
-      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
-      - "traefik.http.routers.traefik-dashboard.tls=true"
-      - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - 'traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_DOMAIN}`)'
+      - 'traefik.http.routers.traefik-dashboard.entrypoints=websecure'
+      - 'traefik.http.routers.traefik-dashboard.tls=true'
+      - 'traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.traefik-dashboard.service=api@internal'
 
       # Middlewares
-      - "traefik.http.routers.traefik-dashboard.middlewares=traefik-auth"
+      - 'traefik.http.routers.traefik-dashboard.middlewares=traefik-auth'
 
       # Basic Auth Middleware
-      - "traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt"
+      - 'traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt'
 
     healthcheck:
-      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8080/ping" ]
+      test: [ 'CMD', 'wget', '-q', '--spider', 'http://localhost:8080/ping' ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 15s
 
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "20m"
-        max-file: "5"
+        max-size: '20m'
+        max-file: '5'
 
     deploy:
       mode: global
@@ -82,10 +82,10 @@ services:
           - node.role == manager
       resources:
         limits:
-          cpus: "2"
+          cpus: '2'
           memory: 2048M
         reservations:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
       restart_policy:
         condition: on-failure

@@ -112,7 +112,7 @@ export function useCourseUnitSelection(options: UseCourseUnitSelectionOptions) {
 	 * Get currently selected unit types.
 	 */
 	const selectedUnitTypes = computed((): Set<CourseUnitType> => {
-		return new Set(selectedUnits.value.map((u) => u.unitType))
+		return new Set(selectedUnits.value.map(u => u.unitType))
 	})
 
 	/**
@@ -155,14 +155,14 @@ export function useCourseUnitSelection(options: UseCourseUnitSelectionOptions) {
 	 * Check if a specific unit is selected.
 	 */
 	function isUnitSelected(unitId: number): boolean {
-		return selectedUnits.value.some((u) => u.unitId === unitId)
+		return selectedUnits.value.some(u => u.unitId === unitId)
 	}
 
 	/**
 	 * Check if a specific slot is selected.
 	 */
 	function isSlotSelected(slotId: number): boolean {
-		return selectedUnits.value.some((u) => u.slotId === slotId)
+		return selectedUnits.value.some(u => u.slotId === slotId)
 	}
 
 	/**
@@ -170,7 +170,7 @@ export function useCourseUnitSelection(options: UseCourseUnitSelectionOptions) {
 	 * Returns true if all types in the group have been selected.
 	 */
 	function isGroupSatisfied(types: CourseUnitType[]): boolean {
-		return types.every((t) => selectedUnitTypes.value.has(t))
+		return types.every(t => selectedUnitTypes.value.has(t))
 	}
 
 	/**
@@ -189,7 +189,7 @@ export function useCourseUnitSelection(options: UseCourseUnitSelectionOptions) {
 		// Find existing selected units that clash with these types
 		const unitsToRemove: number[] = []
 		for (const type of typesInUnit) {
-			const existing = selectedUnits.value.find((u) => u.unitType === type)
+			const existing = selectedUnits.value.find(u => u.unitType === type)
 			if (existing) {
 				unitsToRemove.push(existing.unitId)
 			}
@@ -263,6 +263,6 @@ export function useCourseUnitSelection(options: UseCourseUnitSelectionOptions) {
 		handleAddUnit,
 		handleRemoveUnit,
 		handleRemoveCourse,
-		toggleUnit,
+		toggleUnit
 	}
 }

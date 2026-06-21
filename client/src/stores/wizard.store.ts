@@ -29,11 +29,11 @@ export const useWizardStore = defineStore('wizard', () => {
 
 	// Derived IDs
 
-	const studyPlanIds = computed(() => selectedStudyPlans.value.map((p) => p.id))
+	const studyPlanIds = computed(() => selectedStudyPlans.value.map(p => p.id))
 	const studyPlanId = computed(() => selectedStudyPlans.value[0]?.id ?? null)
-	const studyPlanIdents = computed(() => (selectedStudyPlans.value.length === 0 ? null : selectedStudyPlans.value.map((p) => p.ident || String(p.id))))
+	const studyPlanIdents = computed(() => (selectedStudyPlans.value.length === 0 ? null : selectedStudyPlans.value.map(p => p.ident || String(p.id))))
 	const studyPlanTitles = computed(() =>
-		selectedStudyPlans.value.length === 0 ? null : selectedStudyPlans.value.map((p) => p.title || p.ident || String(p.id)),
+		selectedStudyPlans.value.length === 0 ? null : selectedStudyPlans.value.map(p => p.title || p.ident || String(p.id))
 	)
 
 	// Step completion
@@ -61,12 +61,12 @@ export const useWizardStore = defineStore('wizard', () => {
 		const wizardDataStore = useWizardDataStore()
 		const parts: string[] = []
 		if (facultyId.value) {
-			const faculty = wizardDataStore.facultyFacets.find((f) => f.value === facultyId.value)
+			const faculty = wizardDataStore.facultyFacets.find(f => f.value === facultyId.value)
 			parts.push((faculty?.value || facultyId.value) as string)
 		}
 		if (year.value) parts.push(`${year.value}/${year.value + 1}`)
 		if (selectedStudyPlans.value.length > 0) {
-			parts.push(selectedStudyPlans.value.map((p) => p.title || p.ident || `ID: ${p.id}`).join(', '))
+			parts.push(selectedStudyPlans.value.map(p => p.title || p.ident || `ID: ${p.id}`).join(', '))
 		}
 		return parts.join(' → ')
 	})
@@ -102,7 +102,7 @@ export const useWizardStore = defineStore('wizard', () => {
 	function toggleStudyPlan(id: number, ident: string | null, title: string | null, year: number | null = null, semester: InSISSemester | null = null) {
 		const completedCoursesStore = useCompletedCoursesStore()
 		const wizardDataStore = useWizardDataStore()
-		const idx = selectedStudyPlans.value.findIndex((p) => p.id === id)
+		const idx = selectedStudyPlans.value.findIndex(p => p.id === id)
 		if (idx !== -1) {
 			selectedStudyPlans.value.splice(idx, 1)
 		} else {
@@ -200,7 +200,7 @@ export const useWizardStore = defineStore('wizard', () => {
 			selectedStudyPlans: selectedStudyPlans.value,
 			completedCourseIdents: completedCoursesStore.completedCourseIdents,
 			completed: completed.value,
-			currentStep: currentStep.value,
+			currentStep: currentStep.value
 		})
 	}
 
@@ -281,6 +281,6 @@ export const useWizardStore = defineStore('wizard', () => {
 		completeWizard,
 		reset,
 		persist,
-		hydrate,
+		hydrate
 	}
 })

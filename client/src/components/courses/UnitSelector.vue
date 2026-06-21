@@ -36,7 +36,7 @@ const {
 	isGroupSatisfied,
 	handleAddUnit,
 	handleRemoveUnit,
-	handleRemoveCourse,
+	handleRemoveCourse
 } = useCourseUnitSelection({ course: toRef(props, 'course') })
 
 const { sortSlots, sortUnits } = useSlotSorting()
@@ -63,12 +63,12 @@ function unitHasCampusConflictsOnly(unit: CourseUnitDTO): boolean {
 
 function hiddenConflictCount(units: CourseUnitWithSlots[]): number {
 	if (!hideConflictingUnits.value) return 0
-	return units.filter((u) => unitHasConflicts(u)).length
+	return units.filter(u => unitHasConflicts(u)).length
 }
 
 function getVisibleUnits(units: CourseUnitWithSlots[]): CourseUnitWithSlots[] {
 	if (!hideConflictingUnits.value) return units
-	return units.filter((u) => !unitHasConflicts(u) || isUnitSelected(u.id))
+	return units.filter(u => !unitHasConflicts(u) || isUnitSelected(u.id))
 }
 
 const hasAnyConflicts = computed(() => {
@@ -100,12 +100,12 @@ const conflictingUnitCount = computed(() => {
 function formatSlotConflictTooltip(slot: CourseUnitSlotDTO): string {
 	const conflicts = getSlotConflicts(slot)
 	if (conflicts.length > 0) {
-		const courseIdents = [...new Set(conflicts.map((c) => c.courseIdent))]
+		const courseIdents = [...new Set(conflicts.map(c => c.courseIdent))]
 		return t('components.courses.CourseRowExpanded.conflictsWithCourses', { courses: courseIdents.join(', ') })
 	}
 	const campusConflicts = getSlotCampusConflicts(slot)
 	if (campusConflicts.length > 0) {
-		const courseIdents = [...new Set(campusConflicts.map((c) => c.courseIdent))]
+		const courseIdents = [...new Set(campusConflicts.map(c => c.courseIdent))]
 		return t('components.filters.CampusConflict.campusConflictTooltip') + ' (' + courseIdents.join(', ') + ')'
 	}
 	return ''
@@ -114,13 +114,13 @@ function formatSlotConflictTooltip(slot: CourseUnitSlotDTO): string {
 function getSlotCampusConflictTooltip(slot: CourseUnitSlotDTO): string {
 	const campusConflicts = getSlotCampusConflicts(slot)
 	if (campusConflicts.length === 0) return ''
-	const courseIdents = [...new Set(campusConflicts.map((c) => c.courseIdent))]
+	const courseIdents = [...new Set(campusConflicts.map(c => c.courseIdent))]
 	return t('components.filters.CampusConflict.campusConflictTooltip') + ' (' + courseIdents.join(', ') + ')'
 }
 
 function getMissingTypesLabel(): string {
 	return missingUnitTypes.value
-		.map((type) => {
+		.map(type => {
 			const key = `unitTypes.${type}`
 			return te(key) ? t(key) : type
 		})
@@ -133,7 +133,7 @@ function getSlotHighlightClass(slot: CourseUnitSlotDTO): string {
 	const classes: Record<string, string> = {
 		lecture: 'bg-(--insis-block-lecture)!',
 		exercise: 'bg-(--insis-block-exercise)!',
-		seminar: 'bg-(--insis-block-seminar)!',
+		seminar: 'bg-(--insis-block-seminar)!'
 	}
 	return classes[type] ?? ''
 }
@@ -254,7 +254,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 							'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue)':
 								!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit) && !unitHasConflicts(unit) && !unitHasCampusConflictsOnly(unit),
 							'bg-(--insis-blue-light) ring-1 ring-(--insis-blue)':
-								!isUnitSelected(unit.id) && unitMatchesTimeFilter(unit) && !unitHasConflicts(unit),
+								!isUnitSelected(unit.id) && unitMatchesTimeFilter(unit) && !unitHasConflicts(unit)
 						}"
 					>
 						<div class="flex items-center justify-between p-2">
@@ -280,7 +280,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 										:title="formatSlotConflictTooltip(slot)"
 									>
 										<IconOctagonAlert class="h-3 w-3" aria-hidden="true" />
-										<span class="hidden sm:inline">{{ [...new Set(getSlotConflicts(slot).map((c) => c.courseIdent))].join(', ') }}</span>
+										<span class="hidden sm:inline">{{ [...new Set(getSlotConflicts(slot).map(c => c.courseIdent))].join(', ') }}</span>
 									</span>
 									<span
 										v-else-if="getSlotCampusConflicts(slot).length > 0"
@@ -289,7 +289,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 									>
 										<IconAlertTriangle class="h-3 w-3" aria-hidden="true" />
 										<span class="hidden sm:inline">{{
-											[...new Set(getSlotCampusConflicts(slot).map((c) => c.courseIdent))].join(', ')
+											[...new Set(getSlotCampusConflicts(slot).map(c => c.courseIdent))].join(', ')
 										}}</span>
 									</span>
 								</div>
@@ -320,7 +320,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 										class="flex min-h-[44px] items-center gap-1 px-3 py-1.5 text-xs"
 										:class="{
 											'insis-btn-primary': !isGroupSatisfied(group.types),
-											'insis-btn-secondary opacity-90': isGroupSatisfied(group.types),
+											'insis-btn-secondary opacity-90': isGroupSatisfied(group.types)
 										}"
 										:aria-label="isGroupSatisfied(group.types) ? $t('common.change') : $t('common.add')"
 										@click.stop="handleAddUnit(unit)"
