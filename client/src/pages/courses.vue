@@ -165,7 +165,9 @@ async function fetchNextCoursesPage(page: () => void) {
 		<!-- Body -->
 		<div class="flex flex-1 overflow-hidden">
 			<!-- Sidebar / Filter Panel -->
-			<aside class="hidden lg:flex lg:w-[280px] lg:min-w-[290px] xl:w-[300px] xl:min-w-[300px] shrink-0 flex-col overflow-hidden border-r border-(--insis-border) bg-(--insis-surface)">
+			<aside
+				class="hidden shrink-0 flex-col overflow-hidden border-r border-(--insis-border) bg-(--insis-surface) lg:flex lg:w-[280px] lg:min-w-[290px] xl:w-[300px] xl:min-w-[300px]"
+			>
 				<FilterPanel />
 			</aside>
 
@@ -178,7 +180,7 @@ async function fetchNextCoursesPage(page: () => void) {
 				</div>
 
 				<!-- Tab bar -->
-				<div class="hidden lg:flex shrink-0 items-end gap-2 border-b border-(--insis-border) bg-(--insis-surface) px-4">
+				<div class="hidden shrink-0 items-end gap-2 border-b border-(--insis-border) bg-(--insis-surface) px-4 lg:flex">
 					<nav class="insis-tabs" style="width: 100%; padding-top: 4px">
 						<button type="button" class="insis-tab" :class="{ 'insis-tab-active': uiStore.viewMode === 'list' }" @click="uiStore.switchToListView">
 							<IconTable class="h-3.5 w-3.5" />
@@ -345,6 +347,6 @@ async function fetchNextCoursesPage(page: () => void) {
 		</div>
 
 		<FilterFullScreen v-if="uiStore.mobileFilterOpen" class="lg:hidden" />
-		<MobileBottomNav class="lg:hidden shrink-0" />
+		<MobileBottomNav class="shrink-0 lg:hidden" />
 	</div>
 </template>

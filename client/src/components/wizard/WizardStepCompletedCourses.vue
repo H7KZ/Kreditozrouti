@@ -209,7 +209,7 @@ function clearSearch() {
 						v-for="course in courses"
 						:key="course.id"
 						:class="[
-							'relative flex cursor-pointer items-center gap-3 border-b border-(--insis-border-light) px-3 py-2 min-h-[44px] transition-colors last:border-b-0',
+							'relative flex min-h-[44px] cursor-pointer items-center gap-3 border-b border-(--insis-border-light) px-3 py-2 transition-colors last:border-b-0',
 							isCompleted(course.ident) ? 'bg-(--insis-success-light)' : 'hover:bg-(--insis-gray-50)',
 						]"
 					>

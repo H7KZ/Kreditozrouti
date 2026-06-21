@@ -1,4 +1,4 @@
-{
+﻿{
 	"filters": {
 		"syllabusSearch": "Search in course content",
 		"syllabusSearchPlaceholder": "e.g. machine learning, účetnictví...",
@@ -193,6 +193,7 @@
 		"skipToContent": "Skip to main content",
 		"closeFilters": "Close filters",
 		"openFilters": "Open filters",
+		"mainNavigation": "Main navigation",
 		"previousPage": "Previous page",
 		"nextPage": "Next page",
 		"dismissAlert": "Dismiss notification",

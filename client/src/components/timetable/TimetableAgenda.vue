@@ -19,11 +19,11 @@ const { exportSchedule, exporting } = useScheduleExport(agendaRef)
 
 // InSISDay values ARE the Czech names; map to English for en locale
 const DAY_EN: Record<string, string> = {
-	'Pondělí': 'Monday',
-	'Úterý': 'Tuesday',
-	'Středa': 'Wednesday',
-	'Čtvrtek': 'Thursday',
-	'Pátek': 'Friday',
+	Pondělí: 'Monday',
+	Úterý: 'Tuesday',
+	Středa: 'Wednesday',
+	Čtvrtek: 'Thursday',
+	Pátek: 'Friday',
 }
 
 function dayLabel(day: InSISDay): string {
@@ -38,13 +38,13 @@ interface DayData {
 }
 
 const agendaDays = computed<DayData[]>(() =>
-	WEEKDAYS.map(day => {
+	WEEKDAYS.map((day) => {
 		const units = [...(mergedUnitsByDay.value.get(day) ?? [])].sort((a, b) => a.timeFrom - b.timeFrom)
 		return { day, units, hasUnits: units.length > 0, count: units.length }
 	}),
 )
 
-const hasAnyCourses = computed(() => agendaDays.value.some(d => d.hasUnits))
+const hasAnyCourses = computed(() => agendaDays.value.some((d) => d.hasUnits))
 
 function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 	const ids = isMergedUnit(unit) ? unit.mergedSlotIds : [unit.slotId]
@@ -52,7 +52,9 @@ function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 }
 
 function formatTime(minutes: number): string {
-	return `${Math.floor(minutes / 60).toString().padStart(2, '0')}:${(minutes % 60).toString().padStart(2, '0')}`
+	return `${Math.floor(minutes / 60)
+		.toString()
+		.padStart(2, '0')}:${(minutes % 60).toString().padStart(2, '0')}`
 }
 
 const UNIT_COLORS: Record<string, string> = {
@@ -110,10 +112,7 @@ function closeModal() {
 		<template v-else>
 			<div v-for="dayData in agendaDays" :key="dayData.day" class="mb-5">
 				<div class="mb-2 flex items-center gap-2">
-					<span
-						class="text-xs font-bold uppercase tracking-wide"
-						:class="dayData.hasUnits ? 'text-(--insis-blue)' : 'text-(--insis-text-3)'"
-					>
+					<span class="text-xs font-bold tracking-wide uppercase" :class="dayData.hasUnits ? 'text-(--insis-blue)' : 'text-(--insis-text-3)'">
 						{{ dayLabel(dayData.day) }}
 					</span>
 					<div class="h-px flex-1 bg-(--insis-border)" />
@@ -128,7 +127,7 @@ function closeModal() {
 						v-for="unit in dayData.units"
 						:key="isMergedUnit(unit) ? `merged-${unit.slotId}` : unit.slotId"
 						type="button"
-						class="flex w-full min-h-[52px] items-start gap-3 rounded-md border bg-(--insis-surface) px-3 py-2.5 text-left transition-colors active:bg-(--insis-surface-2)"
+						class="flex min-h-[52px] w-full items-start gap-3 rounded-md border bg-(--insis-surface) px-3 py-2.5 text-left transition-colors active:bg-(--insis-surface-2)"
 						:class="hasConflict(unit) ? 'border-(--insis-danger-border)' : 'border-(--insis-border)'"
 						:style="{
 							borderLeftWidth: '3px',
@@ -143,7 +142,7 @@ function closeModal() {
 								<template v-if="unit.location"> · {{ unit.location }}</template>
 							</div>
 						</div>
-						<div class="shrink-0 flex flex-col items-end gap-1 pt-0.5">
+						<div class="flex shrink-0 flex-col items-end gap-1 pt-0.5">
 							<span
 								class="rounded-full px-2 py-0.5 text-xs font-medium"
 								:style="{
@@ -153,12 +152,7 @@ function closeModal() {
 							>
 								{{ $t(`unitTypes.${unit.unitType}`, unit.unitType) }}
 							</span>
-							<span
-								v-if="hasConflict(unit)"
-								class="text-xs text-(--insis-danger)"
-								role="img"
-								:aria-label="$t('common.conflict', 'Conflict')"
-							>⚠</span>
+							<span v-if="hasConflict(unit)" class="text-xs text-(--insis-danger)" role="img" :aria-label="$t('pages.courses.conflict')">⚠</span>
 						</div>
 					</button>
 				</div>

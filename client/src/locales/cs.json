@@ -1,4 +1,4 @@
-{
+﻿{
 	"filters": {
 		"syllabusSearch": "Hledat v obsahu předmětu",
 		"syllabusSearchPlaceholder": "např. machine learning, účetnictví...",
@@ -193,6 +193,7 @@
 		"skipToContent": "Přeskočit na hlavní obsah",
 		"closeFilters": "Zavřít filtry",
 		"openFilters": "Otevřít filtry",
+		"mainNavigation": "Hlavní navigace",
 		"previousPage": "Předchozí stránka",
 		"nextPage": "Další stránka",
 		"dismissAlert": "Zavřít oznámení",

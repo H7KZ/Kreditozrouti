@@ -112,130 +112,135 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 
 		<!-- Desktop: time grid -->
 		<div class="hidden lg:block">
-		<div class="mb-2 flex justify-end">
-			<button
-				type="button"
-				v-if="timetableStore.selectedUnits.length > 0"
-				:disabled="exporting"
-				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
-				@click="exportSchedule"
-			>
-				<svg
-					v-if="!exporting"
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-3.5 w-3.5"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					aria-hidden="true"
+			<div class="mb-2 flex justify-end">
+				<button
+					type="button"
+					v-if="timetableStore.selectedUnits.length > 0"
+					:disabled="exporting"
+					class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
+					@click="exportSchedule"
 				>
-					<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-					<polyline points="7 10 12 15 17 10" />
-					<line x1="12" y1="15" x2="12" y2="3" />
-				</svg>
-				<svg
-					v-else
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-3.5 w-3.5 animate-spin"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					aria-hidden="true"
-				>
-					<path d="M21 12a9 9 0 1 1-6.219-8.56" />
-				</svg>
-				{{ exporting ? 'Exportuji...' : 'Uložit jako obrázek' }}
-			</button>
-		</div>
-		<div ref="gridRef" class="overflow-x-auto">
-			<table class="insis-timetable w-full">
-				<!-- Header with time slots -->
-				<thead>
-					<tr>
-						<th class="sticky left-0 z-10 w-[50px] min-w-[50px] bg-(--insis-header-bg) text-center align-middle">
-							{{ $t('components.timetable.TimetableGrid.dayHeader') }}
-						</th>
-						<th v-for="slot in timeSlots" :key="slot.minutes" class="px-2 text-center align-middle whitespace-nowrap" :style="{ minWidth: '80px' }">
-							{{ slot.label }}
-						</th>
-					</tr>
-				</thead>
+					<svg
+						v-if="!exporting"
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-3.5 w-3.5"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+						<polyline points="7 10 12 15 17 10" />
+						<line x1="12" y1="15" x2="12" y2="3" />
+					</svg>
+					<svg
+						v-else
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-3.5 w-3.5 animate-spin"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						aria-hidden="true"
+					>
+						<path d="M21 12a9 9 0 1 1-6.219-8.56" />
+					</svg>
+					{{ exporting ? 'Exportuji...' : 'Uložit jako obrázek' }}
+				</button>
+			</div>
+			<div ref="gridRef" class="overflow-x-auto">
+				<table class="insis-timetable w-full">
+					<!-- Header with time slots -->
+					<thead>
+						<tr>
+							<th class="sticky left-0 z-10 w-[50px] min-w-[50px] bg-(--insis-header-bg) text-center align-middle">
+								{{ $t('components.timetable.TimetableGrid.dayHeader') }}
+							</th>
+							<th
+								v-for="slot in timeSlots"
+								:key="slot.minutes"
+								class="px-2 text-center align-middle whitespace-nowrap"
+								:style="{ minWidth: '80px' }"
+							>
+								{{ slot.label }}
+							</th>
+						</tr>
+					</thead>
 
-				<!-- Body with days and course blocks -->
-				<tbody>
-					<tr v-for="day in WEEKDAYS" :key="day" class="day-row-container">
-						<!-- Day label -->
-						<td
-							class="sticky left-0 z-10 w-[50px] min-w-[50px] border-r border-(--insis-border) bg-(--insis-surface) text-center align-middle font-medium"
-						>
-							{{ getShortDayLabel(day) }}
-						</td>
+					<!-- Body with days and course blocks -->
+					<tbody>
+						<tr v-for="day in WEEKDAYS" :key="day" class="day-row-container">
+							<!-- Day label -->
+							<td
+								class="sticky left-0 z-10 w-[50px] min-w-[50px] border-r border-(--insis-border) bg-(--insis-surface) text-center align-middle font-medium"
+							>
+								{{ getShortDayLabel(day) }}
+							</td>
 
-						<!-- Time grid cell spanning all columns -->
-						<td
-							:colspan="timeSlots.length"
-							class="day-row relative cursor-crosshair p-0 hover:bg-(--insis-gray-50)"
-							:style="{ height: `${rowHeightPerDay.get(day) ?? rowHeight}px` }"
-							:data-day="day"
-							@mousedown="handleMouseDown($event, day)"
-						>
-							<!-- Background grid lines (every hour) -->
-							<div class="pointer-events-none absolute inset-0 flex">
-								<div
-									v-for="(slot, idx) in timeSlots"
-									:key="slot.minutes"
-									class="h-full w-full border-r border-(--insis-border-light)"
-									:class="{
-										'border-r-0': idx === timeSlots.length - 1,
-									}"
+							<!-- Time grid cell spanning all columns -->
+							<td
+								:colspan="timeSlots.length"
+								class="day-row relative cursor-crosshair p-0 hover:bg-(--insis-gray-50)"
+								:style="{ height: `${rowHeightPerDay.get(day) ?? rowHeight}px` }"
+								:data-day="day"
+								@mousedown="handleMouseDown($event, day)"
+							>
+								<!-- Background grid lines (every hour) -->
+								<div class="pointer-events-none absolute inset-0 flex">
+									<div
+										v-for="(slot, idx) in timeSlots"
+										:key="slot.minutes"
+										class="h-full w-full border-r border-(--insis-border-light)"
+										:class="{
+											'border-r-0': idx === timeSlots.length - 1,
+										}"
+									/>
+								</div>
+
+								<!-- Drag selection overlay (horizontal) -->
+								<template v-if="getDragSelectionStyleForDay(day) as Record<string, string> | null">
+									<div
+										class="pointer-events-none absolute top-0 bottom-0 bg-(--insis-block-selected) opacity-50"
+										:style="getDragSelectionStyleForDay(day)!"
+									/>
+								</template>
+
+								<!-- Course blocks (positioned horizontally) - using merged units -->
+								<TimetableCourseBlock
+									v-for="unit in getMergedUnitsForDay(day)"
+									:key="isMergedUnit(unit) ? `merged-${unit.slotId}` : unit.slotId"
+									:unit="unit"
+									:style="getBlockStyle(unit, day)"
+									:has-conflict="hasConflict(unit)"
+									:has-campus-conflict="hasCampusConflict(unit)"
+									:is-merged="isMergedUnit(unit)"
+									:merged-count="isMergedUnit(unit) ? unit.mergedCount : undefined"
+									:date-range="isMergedUnit(unit) ? unit.dateRange : undefined"
+									@click="handleCourseBlockClick(unit)"
+									@remove="handleRemoveUnit(unit)"
 								/>
-							</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
-							<!-- Drag selection overlay (horizontal) -->
-							<template v-if="getDragSelectionStyleForDay(day) as Record<string, string> | null">
-								<div
-									class="pointer-events-none absolute top-0 bottom-0 bg-(--insis-block-selected) opacity-50"
-									:style="getDragSelectionStyleForDay(day)!"
-								/>
-							</template>
+			<!-- Drag-to-filter popover -->
+			<TimetableDragPopover
+				v-if="dragStore.showDragPopover"
+				:position="dragStore.dragPopoverPosition"
+				:selection="dragStore.normalizedDragSelection"
+				@filter="handleDragFilter"
+				@cancel="handleDragCancel"
+			/>
 
-							<!-- Course blocks (positioned horizontally) - using merged units -->
-							<TimetableCourseBlock
-								v-for="unit in getMergedUnitsForDay(day)"
-								:key="isMergedUnit(unit) ? `merged-${unit.slotId}` : unit.slotId"
-								:unit="unit"
-								:style="getBlockStyle(unit, day)"
-								:has-conflict="hasConflict(unit)"
-								:has-campus-conflict="hasCampusConflict(unit)"
-								:is-merged="isMergedUnit(unit)"
-								:merged-count="isMergedUnit(unit) ? unit.mergedCount : undefined"
-								:date-range="isMergedUnit(unit) ? unit.dateRange : undefined"
-								@click="handleCourseBlockClick(unit)"
-								@remove="handleRemoveUnit(unit)"
-							/>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+			<!-- Course details modal -->
+			<TimetableCourseModal v-if="showCourseModal && selectedModalUnit" :unit="selectedModalUnit" @close="handleCloseModal" />
 
-		<!-- Drag-to-filter popover -->
-		<TimetableDragPopover
-			v-if="dragStore.showDragPopover"
-			:position="dragStore.dragPopoverPosition"
-			:selection="dragStore.normalizedDragSelection"
-			@filter="handleDragFilter"
-			@cancel="handleDragCancel"
-		/>
-
-		<!-- Course details modal -->
-		<TimetableCourseModal v-if="showCourseModal && selectedModalUnit" :unit="selectedModalUnit" @close="handleCloseModal" />
-
-		<slot />
+			<slot />
 		</div>
 	</div>
 </template>
