@@ -9,6 +9,7 @@ import CoursesHeader from '@client/components/courses/CoursesHeader.vue'
 import CourseStatusSummary from '@client/components/courses/CourseStatusSummary.vue'
 import CourseTable from '@client/components/courses/CourseTable.vue'
 import MobileBottomNav from '@client/components/common/MobileBottomNav.vue'
+import FilterFullScreen from '@client/components/filters/FilterFullScreen.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
 import ScheduleSlotsPanel from '@client/components/timetable/ScheduleSlotsPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
@@ -164,18 +165,9 @@ async function fetchNextCoursesPage(page: () => void) {
 		<!-- Body -->
 		<div class="flex flex-1 overflow-hidden">
 			<!-- Sidebar / Filter Panel -->
-			<aside
-				class="shrink-0 flex-col overflow-hidden border-r border-(--insis-border) bg-(--insis-surface)"
-				:class="{
-					'hidden lg:flex lg:w-[280px] lg:min-w-[290px] xl:w-[300px] xl:min-w-[300px]': !uiStore.mobileFilterOpen,
-					'fixed inset-0 z-50 flex w-full sm:w-80 sm:min-w-80': uiStore.mobileFilterOpen,
-				}"
-			>
+			<aside class="hidden lg:flex lg:w-[280px] lg:min-w-[290px] xl:w-[300px] xl:min-w-[300px] shrink-0 flex-col overflow-hidden border-r border-(--insis-border) bg-(--insis-surface)">
 				<FilterPanel />
 			</aside>
-
-			<!-- Mobile filter backdrop -->
-			<div v-if="uiStore.mobileFilterOpen" class="fixed inset-0 z-40 bg-black/50 lg:hidden" @click="uiStore.closeMobileFilter" />
 
 			<!-- Main Content -->
 			<div class="flex flex-1 flex-col overflow-hidden">
@@ -352,6 +344,7 @@ async function fetchNextCoursesPage(page: () => void) {
 			</div>
 		</div>
 
+		<FilterFullScreen v-if="uiStore.mobileFilterOpen" class="lg:hidden" />
 		<MobileBottomNav class="lg:hidden shrink-0" />
 	</div>
 </template>
