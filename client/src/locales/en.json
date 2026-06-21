@@ -250,7 +250,9 @@
 				"title": "Your timetable is empty",
 				"description": "Add courses from the list or drag across empty slots to search for courses at that time.",
 				"browseCourses": "Browse courses",
-				"orDragTimetable": "or drag across the timetable"
+				"orDragTimetable": "or drag across the timetable",
+				"export": "Save as image",
+				"exporting": "Exporting..."
 			}
 		}
 	},
@@ -443,6 +445,9 @@
 			}
 		},
 		"timetable": {
+			"TimetableAgenda": {
+				"free": "free"
+			},
 			"TimetableGrid": {
 				"dayHeader": "Day",
 				"filterApplied": "Filter applied",

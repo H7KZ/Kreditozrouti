@@ -250,7 +250,9 @@
 				"title": "Váš rozvrh je prázdný",
 				"description": "Přidejte předměty ze seznamu nebo táhněte přes prázdné sloty pro vyhledání předmětů v daném čase.",
 				"browseCourses": "Procházet předměty",
-				"orDragTimetable": "Nebo táhnout přes rozvrhové sloty"
+				"orDragTimetable": "Nebo táhnout přes rozvrhové sloty",
+				"export": "Uložit jako obrázek",
+				"exporting": "Exportuji..."
 			}
 		}
 	},
@@ -443,6 +445,9 @@
 			}
 		},
 		"timetable": {
+			"TimetableAgenda": {
+				"free": "volno"
+			},
 			"TimetableGrid": {
 				"dayHeader": "Den",
 				"filterApplied": "Filtr aplikován",
