@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { isMergedUnit, useScheduleExport, useSlotMerging } from '@client/composables'
 import type { MergedUnit } from '@client/composables'
+import { isMergedUnit, useScheduleExport, useSlotMerging } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
 import type { InSISDay } from '@shared/domain/insis'
 import { computed, ref, toRef } from 'vue'

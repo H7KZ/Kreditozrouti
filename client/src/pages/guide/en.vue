@@ -521,7 +521,12 @@ useHead({
 								different campuses.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide-assets/kreditozrouti_courses_timetable.png" alt="Kreditožrouti – timetable view" class="w-full" loading="lazy" />
+								<img
+									src="/guide-assets/kreditozrouti_courses_timetable.png"
+									alt="Kreditožrouti – timetable view"
+									class="w-full"
+									loading="lazy"
+								/>
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Check that no back-to-back classes span different campuses without a gap.
 								</figcaption>

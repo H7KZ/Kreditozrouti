@@ -446,7 +446,12 @@ useHead({
 								výrazně zpřehlední výběr.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide-assets/kreditozrouti_step_4_select.png" alt="Krok 4 – označení dokončených předmětů" class="w-full" loading="lazy" />
+								<img
+									src="/guide-assets/kreditozrouti_step_4_select.png"
+									alt="Krok 4 – označení dokončených předmětů"
+									class="w-full"
+									loading="lazy"
+								/>
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Označ předměty, které jsi již absolvoval/a — aplikace je skryje ze seznamu.
 								</figcaption>
@@ -508,7 +513,12 @@ useHead({
 								různých areálů.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide-assets/kreditozrouti_courses_timetable.png" alt="Kreditožrouti – zobrazení rozvrhu" class="w-full" loading="lazy" />
+								<img
+									src="/guide-assets/kreditozrouti_courses_timetable.png"
+									alt="Kreditožrouti – zobrazení rozvrhu"
+									class="w-full"
+									loading="lazy"
+								/>
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Zkontroluj, že nemáš předměty z různých areálů hned po sobě bez přestávky.
 								</figcaption>
@@ -586,7 +596,12 @@ useHead({
 								<strong>Přidat označené předměty</strong>.
 							</p>
 							<figure class="overflow-hidden rounded-lg border border-(--insis-border)">
-								<img src="/guide-assets/course_added_view.png" alt="InSIS – přidané předměty se stavovými tečkami" class="w-full" loading="lazy" />
+								<img
+									src="/guide-assets/course_added_view.png"
+									alt="InSIS – přidané předměty se stavovými tečkami"
+									class="w-full"
+									loading="lazy"
+								/>
 								<figcaption class="bg-(--insis-surface) px-4 py-2 text-sm text-(--insis-gray-600)">
 									Zelená tečka = předmět správně zaregistrován. Červená tečka = ještě jsi nezvolil/a čas výuky.
 								</figcaption>

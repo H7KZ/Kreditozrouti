@@ -1,4 +1,4 @@
-import type { InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from './insis.js'
+import type {InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup} from './insis.js'
 
 export const GROUP_RANK: Record<InSISStudyPlanCourseGroup, number> = {
     field_specific_bachelor: 0,

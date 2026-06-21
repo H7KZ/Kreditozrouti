@@ -25,6 +25,7 @@ Registration is open. Do all of this now.
 Your friends are your warmest audience. Message them first, before posting anywhere public.
 
 **Who to prioritize:**
+
 - Friends currently doing registrations
 - Friends in different faculties — each seeds a new network
 - Friends active in group chats, Discord, Facebook groups — natural amplifiers
@@ -86,20 +87,21 @@ Hele, spustil jsem kreditozrouti.cz — vizuální rozvrhovač pro studenty VŠE
 
 ### Facebook — Post in all 8 groups
 
-Post the relevant template below in each group. Lightly reword between groups (swap a sentence, change the opening word) so it doesn't look like a mass paste.
+Post the relevant template below in each group. Lightly reword between groups (swap a sentence, change the opening word)
+so it doesn't look like a mass paste.
 
 **Groups:**
 
-| Group | URL | Template |
-|---|---|---|
-| Prváci VŠE | facebook.com/groups/PrvaciVSE | A |
-| VŠE main | facebook.com/groups/2233410301 | D |
-| FIS VŠE | facebook.com/groups/fis.vse | B (utm_content=fis) |
-| FM VŠE | facebook.com/groups/fmvse | B (utm_content=fm) |
-| Příležitosti na VŠE | facebook.com/groups/prilezitostinavse | C |
-| Křižovatka Národa NF | facebook.com/groups/827611338052222 | B (utm_content=nf) |
-| VŠE International Students | facebook.com/groups/2465843450307928 | EN |
-| Studuj FFÚ | facebook.com/groups/studujffu.2025 | B (utm_content=ffu) |
+| Group                      | URL                                   | Template            |
+|----------------------------|---------------------------------------|---------------------|
+| Prváci VŠE                 | facebook.com/groups/PrvaciVSE         | A                   |
+| VŠE main                   | facebook.com/groups/2233410301        | D                   |
+| FIS VŠE                    | facebook.com/groups/fis.vse           | B (utm_content=fis) |
+| FM VŠE                     | facebook.com/groups/fmvse             | B (utm_content=fm)  |
+| Příležitosti na VŠE        | facebook.com/groups/prilezitostinavse | C                   |
+| Křižovatka Národa NF       | facebook.com/groups/827611338052222   | B (utm_content=nf)  |
+| VŠE International Students | facebook.com/groups/2465843450307928  | EN                  |
+| Studuj FFÚ                 | facebook.com/groups/studujffu.2025    | B (utm_content=ffu) |
 
 ---
 
@@ -299,7 +301,8 @@ Built with Vue 3, TypeScript, Express, BullMQ. Source is here.
 
 Nothing required. One optional mid-August check-in post if you want to stay visible:
 
-> "Registrace na ZS jsou stále otevřené — kreditozrouti.cz ti pomůže složit bezkonfliktní rozvrh za pár minut. Zdarma, bez registrace. 👉 kreditozrouti.cz"
+> "Registrace na ZS jsou stále otevřené — kreditozrouti.cz ti pomůže složit bezkonfliktní rozvrh za pár minut. Zdarma,
+> bez registrace. 👉 kreditozrouti.cz"
 
 Otherwise: save energy for September. Confirm the app is stable and Faro tracking is firing.
 
@@ -386,6 +389,7 @@ Zdarma, bez registrace 👉 kreditozrouti.cz?utm_source=discord&utm_content=zapi
 Set up the campaign at sklik.cz before September 4.
 
 **Keywords:**
+
 - `insis rozvrh`
 - `rozvrh VŠE`
 - `vše rozvrh`
@@ -394,11 +398,11 @@ Set up the campaign at sklik.cz before September 4.
 
 **Ad variants — run all three, pause the weakest after 48 hours:**
 
-| Variant | Headline |
-|---|---|
-| A | Bezkonfliktní rozvrh VŠE během minut — zdarma |
-| B | Plánuj si rozvrh mimo InSIS — bez registrace |
-| C | Vizuální rozvrhovač pro studenty VŠE — zkus zdarma |
+| Variant | Headline                                           |
+|---------|----------------------------------------------------|
+| A       | Bezkonfliktní rozvrh VŠE během minut — zdarma      |
+| B       | Plánuj si rozvrh mimo InSIS — bez registrace       |
+| C       | Vizuální rozvrhovač pro studenty VŠE — zkus zdarma |
 
 **Landing URL:** `kreditozrouti.cz?utm_source=sklik`
 
@@ -410,35 +414,35 @@ Pause September 8 unless budget remains and clicks are still converting.
 
 Check Grafana Faro after each phase. The number that matters is **wizard completions** (step 4), not raw visits.
 
-| Checkpoint | Date | Target |
-|---|---|---|
-| After Phase 0 posts | Jun 30 | Any completions = tracking works |
-| Before deadline push | Sep 1 | 50+ completions |
-| End of zápisy | Sep 16 | **250 completions** |
+| Checkpoint           | Date   | Target                           |
+|----------------------|--------|----------------------------------|
+| After Phase 0 posts  | Jun 30 | Any completions = tracking works |
+| Before deadline push | Sep 1  | 50+ completions                  |
+| End of zápisy        | Sep 16 | **250 completions**              |
 
 ---
 
 ## Attribution Table
 
-| Channel | utm_source | utm_medium | utm_content |
-|---|---|---|---|
-| Facebook – Prváci VŠE | facebook | group | prvaci |
-| Facebook – FIS | facebook | group | fis |
-| Facebook – FM | facebook | group | fm |
-| Facebook – NF | facebook | group | nf |
-| Facebook – FFÚ | facebook | group | ffu |
-| Facebook – Příležitosti | facebook | group | prilezitosti |
-| Facebook – Main VŠE | facebook | group | main |
-| Facebook – Intl Students | facebook | group | intl |
-| Facebook – deadline CZ | facebook | group | deadline |
-| Facebook – deadline EN | facebook | group | deadline_intl |
-| Facebook – zápisy CZ | facebook | group | zapisy |
-| Facebook – zápisy EN | facebook | group | zapisy_intl |
-| Discord (all posts) | discord | — | launch / deadline / zapisy |
-| Friends | friends | — | — |
-| ESN email | esn | — | — |
-| Instagram – Intl | instagram_intl | — | — |
-| Instagram – FIS | instagram_fis | — | — |
-| Unie studentů VŠE | usvse | — | — |
-| GitHub Release | github | — | — |
-| Sklik | sklik | — | — |
+| Channel                  | utm_source     | utm_medium | utm_content                |
+|--------------------------|----------------|------------|----------------------------|
+| Facebook – Prváci VŠE    | facebook       | group      | prvaci                     |
+| Facebook – FIS           | facebook       | group      | fis                        |
+| Facebook – FM            | facebook       | group      | fm                         |
+| Facebook – NF            | facebook       | group      | nf                         |
+| Facebook – FFÚ           | facebook       | group      | ffu                        |
+| Facebook – Příležitosti  | facebook       | group      | prilezitosti               |
+| Facebook – Main VŠE      | facebook       | group      | main                       |
+| Facebook – Intl Students | facebook       | group      | intl                       |
+| Facebook – deadline CZ   | facebook       | group      | deadline                   |
+| Facebook – deadline EN   | facebook       | group      | deadline_intl              |
+| Facebook – zápisy CZ     | facebook       | group      | zapisy                     |
+| Facebook – zápisy EN     | facebook       | group      | zapisy_intl                |
+| Discord (all posts)      | discord        | —          | launch / deadline / zapisy |
+| Friends                  | friends        | —          | —                          |
+| ESN email                | esn            | —          | —                          |
+| Instagram – Intl         | instagram_intl | —          | —                          |
+| Instagram – FIS          | instagram_fis  | —          | —                          |
+| Unie studentů VŠE        | usvse          | —          | —                          |
+| GitHub Release           | github         | —          | —                          |
+| Sklik                    | sklik          | —          | —                          |
