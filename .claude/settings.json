@@ -1,23 +1,44 @@
 {
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "npx prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
-          },
-          {
-            "type": "command",
-            "command": "bash -c 'if [[ \"$CLAUDE_FILE_PATH\" == *.ts || \"$CLAUDE_FILE_PATH\" == *.vue ]]; then npx eslint --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null || true; fi'"
-          },
-          {
-            "type": "command",
-            "command": "bash -c 'if [[ \"$CLAUDE_FILE_PATH\" == *.ts || \"$CLAUDE_FILE_PATH\" == *.vue ]]; then cd client && npx vue-tsc --noEmit 2>&1 | head -20 || true; fi'"
-          }
+    "env": {
+        "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
+    },
+    "permissions": {
+        "defaultMode": "acceptEdits",
+        "allow": [
+            "Bash(git:*)",
+            "Bash(npm:*)",
+            "Bash(npx:*)",
+            "Bash(node:*)",
+            "Bash(ls:*)",
+            "Bash(grep:*)",
+            "Bash(jq:*)",
+            "Bash(curl:*)",
+            "Bash(cat:*)",
+            "Bash(echo:*)",
+            "Read",
+            "WebFetch",
+            "WebSearch"
         ]
-      }
-    ]
-  }
+    },
+    "hooks": {
+        "PostToolUse": [
+            {
+                "matcher": "Edit|Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "npx prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash -c 'if [[ \"$CLAUDE_FILE_PATH\" == *.ts || \"$CLAUDE_FILE_PATH\" == *.vue ]]; then npx eslint --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null || true; fi'"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash -c 'if [[ \"$CLAUDE_FILE_PATH\" == *.ts || \"$CLAUDE_FILE_PATH\" == *.vue ]]; then cd client && npx vue-tsc --noEmit 2>&1 | head -20 || true; fi'"
+                    }
+                ]
+            }
+        ]
+    }
 }

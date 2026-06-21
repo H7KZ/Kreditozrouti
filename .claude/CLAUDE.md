@@ -3,19 +3,23 @@
 ## Token Discipline
 
 **Planning sessions** — When asked to plan, design, or explore architecture:
+
 - Stay read-only. Do not edit files.
 - Scope exploration to the specific module/area named. No broad codebase tours unless explicitly asked.
 
 **Feature sessions** — Before starting any feature implementation:
+
 - State which files/modules you expect to touch.
 - If scope needs to expand beyond what was stated, stop and ask before proceeding.
 
 **Small fix sessions** — When asked to fix something specific:
+
 - Read only the file(s) explicitly named.
 - Do not explore related files "just in case".
 - One file in, one fix out.
 
 **Session boundaries** — After completing a feature session:
+
 - Remind the user to run `/clear` before starting a new unrelated task.
 - Small fixes involving ≤2 files can chain without clearing.
 - Anything touching more than 2 files triggers the `/clear` reminder.
@@ -97,7 +101,7 @@ After completing any task that changes code, configuration, or behavior:
 2. **Also check `docs/user/FEATURES.md`** — if the change affects a user-visible feature (filters, timetable,
    conflict detection, wizard, course refresh, saved schedules, language, theme, etc.), update the relevant section
 3. **Update** any doc that describes what changed — keep it accurate
-4. **New behavior with no doc entry?** Ask: *"This change isn't mentioned in the docs — should I document it?"* If yes,
+4. **New behavior with no doc entry?** Ask: _"This change isn't mentioned in the docs — should I document it?"_ If yes,
    add it; if no, continue
 
 ---
