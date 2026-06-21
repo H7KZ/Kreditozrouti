@@ -1,5 +1,27 @@
 # CLAUDE.md
 
+## Token Discipline
+
+**Planning sessions** — When asked to plan, design, or explore architecture:
+- Stay read-only. Do not edit files.
+- Scope exploration to the specific module/area named. No broad codebase tours unless explicitly asked.
+
+**Feature sessions** — Before starting any feature implementation:
+- State which files/modules you expect to touch.
+- If scope needs to expand beyond what was stated, stop and ask before proceeding.
+
+**Small fix sessions** — When asked to fix something specific:
+- Read only the file(s) explicitly named.
+- Do not explore related files "just in case".
+- One file in, one fix out.
+
+**Session boundaries** — After completing a feature session:
+- Remind the user to run `/clear` before starting a new unrelated task.
+- Small fixes involving ≤2 files can chain without clearing.
+- Anything touching more than 2 files triggers the `/clear` reminder.
+
+---
+
 Kreditožrouti — course scheduling system for VŠE students. Scrapes InSIS, presents filterable timetable UI.
 
 ---
