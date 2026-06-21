@@ -42,7 +42,7 @@ onMounted(() => {
 
 		<!-- Main Content -->
 		<main
-			class="flex flex-1 scrollbar-thin [scrollbar-color:var(--insis-border-mid)_transparent] items-start justify-center overflow-y-auto px-3 py-6 sm:px-6 sm:py-10 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-(--insis-border-mid) [&::-webkit-scrollbar-track]:bg-transparent"
+			class="flex flex-1 scrollbar-thin [scrollbar-color:var(--insis-border-mid)_transparent] items-start justify-center overflow-y-auto px-3 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:px-6 sm:py-10 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-(--insis-border-mid) [&::-webkit-scrollbar-track]:bg-transparent"
 		>
 			<div class="w-full max-w-[800px] rounded-lg border border-(--insis-border) bg-(--insis-surface) p-4 shadow-(--insis-shadow) sm:p-8">
 				<!-- Title -->
@@ -57,7 +57,7 @@ onMounted(() => {
 				<!-- How it works -->
 				<div class="mt-6 rounded border border-(--insis-border) bg-(--insis-surface-2) p-4">
 					<h3 class="mb-2 text-[12.5px] font-semibold text-(--insis-text)">{{ $t('pages.index.howItWorks') }}</h3>
-					<ul class="space-y-1 text-[12px] text-(--insis-text-2)">
+					<ul class="space-y-1 text-xs text-(--insis-text-2)">
 						<li><strong>1.</strong> {{ $t('pages.index.step1') }}</li>
 						<li><strong>2.</strong> {{ $t('pages.index.step2') }}</li>
 						<li><strong>3.</strong> {{ $t('pages.index.step3') }}</li>
