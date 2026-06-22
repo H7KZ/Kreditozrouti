@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { toPng } from 'html-to-image'
 import analytics from '@client/analytics'
 
+const EXPORT_WIDTH = 1200
+
 export function useScheduleExport(gridRef: Ref<HTMLElement | null>) {
 	const exporting = ref(false)
 
@@ -11,21 +13,26 @@ export function useScheduleExport(gridRef: Ref<HTMLElement | null>) {
 		exporting.value = true
 
 		const el = gridRef.value
-		const prevScrollLeft = el.scrollLeft
-		el.scrollLeft = 0
+
+		const wrapper = document.createElement('div')
+		wrapper.style.cssText = `position:fixed;left:-9999px;top:-9999px;width:${EXPORT_WIDTH}px;overflow:visible;`
+		const clone = el.cloneNode(true) as HTMLElement
+		clone.style.cssText = `width:${EXPORT_WIDTH}px;overflow:visible;`
+		wrapper.appendChild(clone)
+		document.body.appendChild(wrapper)
 
 		try {
-			const dataUrl = await toPng(el, {
+			const dataUrl = await toPng(clone, {
 				pixelRatio: 2,
-				width: el.scrollWidth,
-				height: el.scrollHeight,
+				width: EXPORT_WIDTH,
+				height: clone.scrollHeight,
 				style: { overflow: 'visible' },
-				skipFonts: true,
+				skipFonts: true
 			})
 
 			// Stamp watermark onto canvas
 			const img = new Image()
-			await new Promise<void>((resolve) => {
+			await new Promise<void>(resolve => {
 				img.onload = () => resolve()
 				img.src = dataUrl
 			})
@@ -52,7 +59,7 @@ export function useScheduleExport(gridRef: Ref<HTMLElement | null>) {
 		} catch (err) {
 			console.error('[useScheduleExport] export failed:', err)
 		} finally {
-			el.scrollLeft = prevScrollLeft
+			document.body.removeChild(wrapper)
 			exporting.value = false
 		}
 	}

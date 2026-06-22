@@ -29,11 +29,11 @@ sudo ./maintenance.sh [OPTIONS]
 4. Docker prune (if `--docker-cleanup`)
 5. `unattended-upgrades --dry-run` + Lynis security audit (unless `--skip-security`)
 6. Health check — reports on:
-    - Failed systemd services
-    - Disk usage > 80 %
-    - Memory usage > 90 %
-    - Load average > CPU count
-    - Zombie processes
+	- Failed systemd services
+	- Disk usage > 80 %
+	- Memory usage > 90 %
+	- Load average > CPU count
+	- Zombie processes
 7. Reboot handling (warns, then reboots with `--auto-reboot`)
 
 ### Recommended cron

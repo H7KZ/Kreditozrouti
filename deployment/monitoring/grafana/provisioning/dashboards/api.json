@@ -1,545 +1,539 @@
 {
-    "schemaVersion": 38,
-    "uid": "kreditozrouti-api",
-    "title": "Kreditožrouti — API",
-    "refresh": "30s",
-    "time": {
-        "from": "now-1h",
-        "to": "now"
-    },
-    "templating": {
-        "list": [
-            {
-                "type": "custom",
-                "name": "env",
-                "label": "Environment",
-                "query": "production,development",
-                "multi": false,
-                "includeAll": false,
-                "hide": 0,
-                "current": {
-                    "selected": true,
-                    "text": "production",
-                    "value": "production"
-                },
-                "options": [
-                    {
-                        "selected": true,
-                        "text": "production",
-                        "value": "production"
-                    },
-                    {
-                        "selected": false,
-                        "text": "development",
-                        "value": "development"
-                    }
-                ]
-            }
-        ]
-    },
-    "panels": [
-        {
-            "id": 1,
-            "title": "Request Rate",
-            "type": "stat",
-            "gridPos": {
-                "h": 8,
-                "w": 6,
-                "x": 0,
-                "y": 0
-            },
-            "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-            },
-            "targets": [
-                {
-                    "expr": "sum(rate(http_request_duration_seconds_count{env=\"$env\"}[5m]))",
-                    "legendFormat": "req/s",
-                    "refId": "A"
-                }
-            ],
-            "options": {
-                "reduceOptions": {
-                    "calcs": [
-                        "lastNotNull"
-                    ]
-                },
-                "colorMode": "background",
-                "graphMode": "area"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "unit": "reqps"
-                }
-            }
-        },
-        {
-            "id": 2,
-            "title": "Error Rate %",
-            "type": "stat",
-            "gridPos": {
-                "h": 8,
-                "w": 6,
-                "x": 6,
-                "y": 0
-            },
-            "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-            },
-            "targets": [
-                {
-                    "expr": "sum(rate(http_request_duration_seconds_count{status_code=~\"5..\",env=\"$env\"}[5m])) / sum(rate(http_request_duration_seconds_count{env=\"$env\"}[5m])) * 100",
-                    "legendFormat": "error %",
-                    "refId": "A"
-                }
-            ],
-            "options": {
-                "reduceOptions": {
-                    "calcs": [
-                        "lastNotNull"
-                    ]
-                },
-                "colorMode": "background",
-                "graphMode": "area"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "unit": "percent",
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "yellow",
-                                "value": 5
-                            },
-                            {
-                                "color": "red",
-                                "value": 10
-                            }
-                        ]
-                    },
-                    "color": {
-                        "mode": "thresholds"
-                    }
-                }
-            }
-        },
-        {
-            "id": 3,
-            "title": "p95 Latency",
-            "type": "gauge",
-            "gridPos": {
-                "h": 8,
-                "w": 6,
-                "x": 12,
-                "y": 0
-            },
-            "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-            },
-            "targets": [
-                {
-                    "expr": "histogram_quantile(0.95, sum by(le)(rate(http_request_duration_seconds_bucket{env=\"$env\"}[5m]))) * 1000",
-                    "legendFormat": "p95 ms",
-                    "refId": "A"
-                }
-            ],
-            "options": {
-                "reduceOptions": {
-                    "calcs": [
-                        "lastNotNull"
-                    ]
-                },
-                "showThresholdMarkers": true
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "unit": "ms",
-                    "min": 0,
-                    "max": 2000,
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "yellow",
-                                "value": 500
-                            },
-                            {
-                                "color": "red",
-                                "value": 1000
-                            }
-                        ]
-                    },
-                    "color": {
-                        "mode": "thresholds"
-                    }
-                }
-            }
-        },
-        {
-            "id": 4,
-            "title": "HTTP Status Breakdown",
-            "type": "timeseries",
-            "gridPos": {
-                "h": 8,
-                "w": 6,
-                "x": 18,
-                "y": 0
-            },
-            "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-            },
-            "targets": [
-                {
-                    "expr": "sum by (status_code) (rate(http_request_duration_seconds_count{env=\"$env\"}[5m]))",
-                    "legendFormat": "{{status_code}}",
-                    "refId": "A"
-                }
-            ],
-            "fieldConfig": {
-                "defaults": {
-                    "unit": "reqps"
-                }
-            }
-        },
-        {
-            "id": 5,
-            "title": "Request Duration Heatmap",
-            "type": "heatmap",
-            "gridPos": {
-                "h": 8,
-                "w": 24,
-                "x": 0,
-                "y": 8
-            },
-            "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-            },
-            "targets": [
-                {
-                    "expr": "sum by (le) (rate(http_request_duration_seconds_bucket{env=\"$env\"}[5m]))",
-                    "legendFormat": "{{le}}",
-                    "refId": "A",
-                    "format": "heatmap"
-                }
-            ],
-            "options": {
-                "calculate": false,
-                "yAxis": {
-                    "unit": "s"
-                },
-                "color": {
-                    "mode": "scheme",
-                    "scheme": "Oranges"
-                }
-            }
-        },
-        {
-            "id": 6,
-            "title": "Top Routes by Request Rate",
-            "type": "table",
-            "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 0,
-                "y": 16
-            },
-            "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-            },
-            "targets": [
-                {
-                    "expr": "sort_desc(sum by (route, status_code) (rate(http_request_duration_seconds_count{env=\"$env\"}[5m])))",
-                    "legendFormat": "",
-                    "refId": "A",
-                    "instant": true,
-                    "format": "table"
-                }
-            ],
-            "options": {
-                "sortBy": [
-                    {
-                        "displayName": "Value",
-                        "desc": true
-                    }
-                ]
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "unit": "reqps"
-                }
-            },
-            "transformations": [
-                {
-                    "id": "organize",
-                    "options": {
-                        "excludeByName": {
-                            "Time": true
-                        },
-                        "renameByName": {
-                            "route": "Route",
-                            "status_code": "Status",
-                            "Value": "req/s"
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "id": 7,
-            "title": "Node.js Heap Usage",
-            "type": "timeseries",
-            "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 12,
-                "y": 16
-            },
-            "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-            },
-            "targets": [
-                {
-                    "expr": "nodejs_heap_size_used_bytes{env=\"$env\"}",
-                    "legendFormat": "used",
-                    "refId": "A"
-                },
-                {
-                    "expr": "nodejs_heap_size_total_bytes{env=\"$env\"}",
-                    "legendFormat": "total",
-                    "refId": "B"
-                }
-            ],
-            "fieldConfig": {
-                "defaults": {
-                    "unit": "bytes"
-                }
-            }
-        },
-        {
-            "id": 8,
-            "title": "Recent Error Logs",
-            "type": "logs",
-            "gridPos": {
-                "h": 10,
-                "w": 24,
-                "x": 0,
-                "y": 24
-            },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
-            "targets": [
-                {
-                    "expr": "{service=\"api\", level=\"ERROR\", env=\"$env\"}",
-                    "refId": "A",
-                    "maxLines": 100
-                }
-            ],
-            "options": {
-                "showTime": true,
-                "showLabels": false,
-                "enableLogDetails": true,
-                "sortOrder": "Descending",
-                "dedupStrategy": "none"
-            }
-        },
-        {
-            "id": 9,
-            "title": "Recent Warn Logs",
-            "type": "logs",
-            "gridPos": {
-                "h": 10,
-                "w": 24,
-                "x": 0,
-                "y": 34
-            },
-            "datasource": {
-                "type": "loki",
-                "uid": "Loki"
-            },
-            "targets": [
-                {
-                    "expr": "{service=\"api\", level=\"WARN\", env=\"$env\"}",
-                    "refId": "A",
-                    "maxLines": 50
-                }
-            ],
-            "options": {
-                "showTime": true,
-                "showLabels": false,
-                "enableLogDetails": true,
-                "sortOrder": "Descending",
-                "dedupStrategy": "none"
-            }
-        },
-        {
-            "id": 10,
-            "title": "HTTP Latency — p95 / p99",
-            "type": "timeseries",
-            "gridPos": {
-                "x": 0,
-                "y": 44,
-                "w": 24,
-                "h": 8
-            },
-            "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-            },
-            "targets": [
-                {
-                    "expr": "job:http_request_duration_p95:rate5m{env=\"$env\"}",
-                    "legendFormat": "p95",
-                    "refId": "A"
-                },
-                {
-                    "expr": "job:http_request_duration_p99:rate5m{env=\"$env\"}",
-                    "legendFormat": "p99",
-                    "refId": "B"
-                }
-            ],
-            "fieldConfig": {
-                "defaults": {
-                    "unit": "s",
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "yellow",
-                                "value": 1
-                            },
-                            {
-                                "color": "red",
-                                "value": 2
-                            }
-                        ]
-                    }
-                },
-                "overrides": []
-            },
-            "options": {
-                "tooltip": {
-                    "mode": "multi"
-                },
-                "legend": {
-                    "displayMode": "list",
-                    "placement": "bottom"
-                }
-            }
-        },
-        {
-            "id": 11,
-            "title": "HTTP Error Rate (5xx)",
-            "type": "timeseries",
-            "gridPos": {
-                "x": 0,
-                "y": 52,
-                "w": 24,
-                "h": 8
-            },
-            "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-            },
-            "targets": [
-                {
-                    "expr": "job:http_errors_ratio:rate5m{env=\"$env\"} * 100",
-                    "legendFormat": "5xx error %",
-                    "refId": "A"
-                }
-            ],
-            "fieldConfig": {
-                "defaults": {
-                    "unit": "percent",
-                    "min": 0,
-                    "max": 100,
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "yellow",
-                                "value": 1
-                            },
-                            {
-                                "color": "red",
-                                "value": 5
-                            }
-                        ]
-                    }
-                },
-                "overrides": []
-            },
-            "options": {
-                "tooltip": {
-                    "mode": "single"
-                },
-                "legend": {
-                    "displayMode": "list",
-                    "placement": "bottom"
-                }
-            }
-        },
-        {
-            "id": 12,
-            "title": "p95 Latency by Route",
-            "type": "table",
-            "gridPos": {
-                "x": 0,
-                "y": 60,
-                "w": 24,
-                "h": 8
-            },
-            "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-            },
-            "targets": [
-                {
-                    "expr": "topk(10, route:http_request_duration_p95:rate5m{env=\"$env\"})",
-                    "legendFormat": "{{route}}",
-                    "refId": "A",
-                    "instant": true
-                }
-            ],
-            "fieldConfig": {
-                "defaults": {
-                    "unit": "s"
-                },
-                "overrides": []
-            },
-            "options": {
-                "sortBy": [
-                    {
-                        "displayName": "Value",
-                        "desc": true
-                    }
-                ]
-            }
-        }
-    ]
+	"schemaVersion": 38,
+	"uid": "kreditozrouti-api",
+	"title": "Kreditožrouti — API",
+	"refresh": "30s",
+	"time": {
+		"from": "now-1h",
+		"to": "now"
+	},
+	"templating": {
+		"list": [
+			{
+				"type": "custom",
+				"name": "env",
+				"label": "Environment",
+				"query": "production,development",
+				"multi": false,
+				"includeAll": false,
+				"hide": 0,
+				"current": {
+					"selected": true,
+					"text": "production",
+					"value": "production"
+				},
+				"options": [
+					{
+						"selected": true,
+						"text": "production",
+						"value": "production"
+					},
+					{
+						"selected": false,
+						"text": "development",
+						"value": "development"
+					}
+				]
+			}
+		]
+	},
+	"panels": [
+		{
+			"id": 1,
+			"title": "Request Rate",
+			"type": "stat",
+			"gridPos": {
+				"h": 8,
+				"w": 6,
+				"x": 0,
+				"y": 0
+			},
+			"datasource": {
+				"type": "prometheus",
+				"uid": "Prometheus"
+			},
+			"targets": [
+				{
+					"expr": "sum(rate(http_request_duration_seconds_count{env=\"$env\"}[5m]))",
+					"legendFormat": "req/s",
+					"refId": "A"
+				}
+			],
+			"options": {
+				"reduceOptions": {
+					"calcs": ["lastNotNull"]
+				},
+				"colorMode": "background",
+				"graphMode": "area"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"unit": "reqps"
+				}
+			}
+		},
+		{
+			"id": 2,
+			"title": "Error Rate %",
+			"type": "stat",
+			"gridPos": {
+				"h": 8,
+				"w": 6,
+				"x": 6,
+				"y": 0
+			},
+			"datasource": {
+				"type": "prometheus",
+				"uid": "Prometheus"
+			},
+			"targets": [
+				{
+					"expr": "sum(rate(http_request_duration_seconds_count{status_code=~\"5..\",env=\"$env\"}[5m])) / sum(rate(http_request_duration_seconds_count{env=\"$env\"}[5m])) * 100",
+					"legendFormat": "error %",
+					"refId": "A"
+				}
+			],
+			"options": {
+				"reduceOptions": {
+					"calcs": ["lastNotNull"]
+				},
+				"colorMode": "background",
+				"graphMode": "area"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"unit": "percent",
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": null
+							},
+							{
+								"color": "yellow",
+								"value": 5
+							},
+							{
+								"color": "red",
+								"value": 10
+							}
+						]
+					},
+					"color": {
+						"mode": "thresholds"
+					}
+				}
+			}
+		},
+		{
+			"id": 3,
+			"title": "p95 Latency",
+			"type": "gauge",
+			"gridPos": {
+				"h": 8,
+				"w": 6,
+				"x": 12,
+				"y": 0
+			},
+			"datasource": {
+				"type": "prometheus",
+				"uid": "Prometheus"
+			},
+			"targets": [
+				{
+					"expr": "histogram_quantile(0.95, sum by(le)(rate(http_request_duration_seconds_bucket{env=\"$env\"}[5m]))) * 1000",
+					"legendFormat": "p95 ms",
+					"refId": "A"
+				}
+			],
+			"options": {
+				"reduceOptions": {
+					"calcs": ["lastNotNull"]
+				},
+				"showThresholdMarkers": true
+			},
+			"fieldConfig": {
+				"defaults": {
+					"unit": "ms",
+					"min": 0,
+					"max": 2000,
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": null
+							},
+							{
+								"color": "yellow",
+								"value": 500
+							},
+							{
+								"color": "red",
+								"value": 1000
+							}
+						]
+					},
+					"color": {
+						"mode": "thresholds"
+					}
+				}
+			}
+		},
+		{
+			"id": 4,
+			"title": "HTTP Status Breakdown",
+			"type": "timeseries",
+			"gridPos": {
+				"h": 8,
+				"w": 6,
+				"x": 18,
+				"y": 0
+			},
+			"datasource": {
+				"type": "prometheus",
+				"uid": "Prometheus"
+			},
+			"targets": [
+				{
+					"expr": "sum by (status_code) (rate(http_request_duration_seconds_count{env=\"$env\"}[5m]))",
+					"legendFormat": "{{status_code}}",
+					"refId": "A"
+				}
+			],
+			"fieldConfig": {
+				"defaults": {
+					"unit": "reqps"
+				}
+			}
+		},
+		{
+			"id": 5,
+			"title": "Request Duration Heatmap",
+			"type": "heatmap",
+			"gridPos": {
+				"h": 8,
+				"w": 24,
+				"x": 0,
+				"y": 8
+			},
+			"datasource": {
+				"type": "prometheus",
+				"uid": "Prometheus"
+			},
+			"targets": [
+				{
+					"expr": "sum by (le) (rate(http_request_duration_seconds_bucket{env=\"$env\"}[5m]))",
+					"legendFormat": "{{le}}",
+					"refId": "A",
+					"format": "heatmap"
+				}
+			],
+			"options": {
+				"calculate": false,
+				"yAxis": {
+					"unit": "s"
+				},
+				"color": {
+					"mode": "scheme",
+					"scheme": "Oranges"
+				}
+			}
+		},
+		{
+			"id": 6,
+			"title": "Top Routes by Request Rate",
+			"type": "table",
+			"gridPos": {
+				"h": 8,
+				"w": 12,
+				"x": 0,
+				"y": 16
+			},
+			"datasource": {
+				"type": "prometheus",
+				"uid": "Prometheus"
+			},
+			"targets": [
+				{
+					"expr": "sort_desc(sum by (route, status_code) (rate(http_request_duration_seconds_count{env=\"$env\"}[5m])))",
+					"legendFormat": "",
+					"refId": "A",
+					"instant": true,
+					"format": "table"
+				}
+			],
+			"options": {
+				"sortBy": [
+					{
+						"displayName": "Value",
+						"desc": true
+					}
+				]
+			},
+			"fieldConfig": {
+				"defaults": {
+					"unit": "reqps"
+				}
+			},
+			"transformations": [
+				{
+					"id": "organize",
+					"options": {
+						"excludeByName": {
+							"Time": true
+						},
+						"renameByName": {
+							"route": "Route",
+							"status_code": "Status",
+							"Value": "req/s"
+						}
+					}
+				}
+			]
+		},
+		{
+			"id": 7,
+			"title": "Node.js Heap Usage",
+			"type": "timeseries",
+			"gridPos": {
+				"h": 8,
+				"w": 12,
+				"x": 12,
+				"y": 16
+			},
+			"datasource": {
+				"type": "prometheus",
+				"uid": "Prometheus"
+			},
+			"targets": [
+				{
+					"expr": "nodejs_heap_size_used_bytes{env=\"$env\"}",
+					"legendFormat": "used",
+					"refId": "A"
+				},
+				{
+					"expr": "nodejs_heap_size_total_bytes{env=\"$env\"}",
+					"legendFormat": "total",
+					"refId": "B"
+				}
+			],
+			"fieldConfig": {
+				"defaults": {
+					"unit": "bytes"
+				}
+			}
+		},
+		{
+			"id": 8,
+			"title": "Recent Error Logs",
+			"type": "logs",
+			"gridPos": {
+				"h": 10,
+				"w": 24,
+				"x": 0,
+				"y": 24
+			},
+			"datasource": {
+				"type": "loki",
+				"uid": "Loki"
+			},
+			"targets": [
+				{
+					"expr": "{service=\"api\", level=\"ERROR\", env=\"$env\"}",
+					"refId": "A",
+					"maxLines": 100
+				}
+			],
+			"options": {
+				"showTime": true,
+				"showLabels": false,
+				"enableLogDetails": true,
+				"sortOrder": "Descending",
+				"dedupStrategy": "none"
+			}
+		},
+		{
+			"id": 9,
+			"title": "Recent Warn Logs",
+			"type": "logs",
+			"gridPos": {
+				"h": 10,
+				"w": 24,
+				"x": 0,
+				"y": 34
+			},
+			"datasource": {
+				"type": "loki",
+				"uid": "Loki"
+			},
+			"targets": [
+				{
+					"expr": "{service=\"api\", level=\"WARN\", env=\"$env\"}",
+					"refId": "A",
+					"maxLines": 50
+				}
+			],
+			"options": {
+				"showTime": true,
+				"showLabels": false,
+				"enableLogDetails": true,
+				"sortOrder": "Descending",
+				"dedupStrategy": "none"
+			}
+		},
+		{
+			"id": 10,
+			"title": "HTTP Latency — p95 / p99",
+			"type": "timeseries",
+			"gridPos": {
+				"x": 0,
+				"y": 44,
+				"w": 24,
+				"h": 8
+			},
+			"datasource": {
+				"type": "prometheus",
+				"uid": "Prometheus"
+			},
+			"targets": [
+				{
+					"expr": "job:http_request_duration_p95:rate5m{env=\"$env\"}",
+					"legendFormat": "p95",
+					"refId": "A"
+				},
+				{
+					"expr": "job:http_request_duration_p99:rate5m{env=\"$env\"}",
+					"legendFormat": "p99",
+					"refId": "B"
+				}
+			],
+			"fieldConfig": {
+				"defaults": {
+					"unit": "s",
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": null
+							},
+							{
+								"color": "yellow",
+								"value": 1
+							},
+							{
+								"color": "red",
+								"value": 2
+							}
+						]
+					}
+				},
+				"overrides": []
+			},
+			"options": {
+				"tooltip": {
+					"mode": "multi"
+				},
+				"legend": {
+					"displayMode": "list",
+					"placement": "bottom"
+				}
+			}
+		},
+		{
+			"id": 11,
+			"title": "HTTP Error Rate (5xx)",
+			"type": "timeseries",
+			"gridPos": {
+				"x": 0,
+				"y": 52,
+				"w": 24,
+				"h": 8
+			},
+			"datasource": {
+				"type": "prometheus",
+				"uid": "Prometheus"
+			},
+			"targets": [
+				{
+					"expr": "job:http_errors_ratio:rate5m{env=\"$env\"} * 100",
+					"legendFormat": "5xx error %",
+					"refId": "A"
+				}
+			],
+			"fieldConfig": {
+				"defaults": {
+					"unit": "percent",
+					"min": 0,
+					"max": 100,
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": null
+							},
+							{
+								"color": "yellow",
+								"value": 1
+							},
+							{
+								"color": "red",
+								"value": 5
+							}
+						]
+					}
+				},
+				"overrides": []
+			},
+			"options": {
+				"tooltip": {
+					"mode": "single"
+				},
+				"legend": {
+					"displayMode": "list",
+					"placement": "bottom"
+				}
+			}
+		},
+		{
+			"id": 12,
+			"title": "p95 Latency by Route",
+			"type": "table",
+			"gridPos": {
+				"x": 0,
+				"y": 60,
+				"w": 24,
+				"h": 8
+			},
+			"datasource": {
+				"type": "prometheus",
+				"uid": "Prometheus"
+			},
+			"targets": [
+				{
+					"expr": "topk(10, route:http_request_duration_p95:rate5m{env=\"$env\"})",
+					"legendFormat": "{{route}}",
+					"refId": "A",
+					"instant": true
+				}
+			],
+			"fieldConfig": {
+				"defaults": {
+					"unit": "s"
+				},
+				"overrides": []
+			},
+			"options": {
+				"sortBy": [
+					{
+						"displayName": "Value",
+						"desc": true
+					}
+				]
+			}
+		}
+	]
 }

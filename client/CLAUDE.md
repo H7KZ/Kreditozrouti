@@ -89,10 +89,9 @@ filters.store / ui.store / drag.store / alerts.store — no circular deps
 
 ## Key Docs
 
-| Topic                                             | Doc                                                  |
-| ------------------------------------------------- | ---------------------------------------------------- |
-| System architecture, services, data flow          | [docs/architecture/](../docs/architecture/README.md) |
-| All 9 stores in full detail                       | [STORES.md](../docs/client/STORES.md)                |
-| All composables                                   | [COMPOSABLES.md](../docs/client/COMPOSABLES.md)      |
-| Conflict detection, status system, timetable grid | [TIMETABLE.md](../docs/client/TIMETABLE.md)          |
-| API client, i18n, utils, types, constants         | [INTERNALS.md](../docs/client/INTERNALS.md)          |
+| Topic                                             | Doc                                             |
+| ------------------------------------------------- | ----------------------------------------------- |
+| All 9 stores in full detail                       | [STORES.md](../docs/client/STORES.md)           |
+| All composables                                   | [COMPOSABLES.md](../docs/client/COMPOSABLES.md) |
+| Conflict detection, status system, timetable grid | [TIMETABLE.md](../docs/client/TIMETABLE.md)     |
+| API client, i18n, utils, types, constants         | [INTERNALS.md](../docs/client/INTERNALS.md)     |

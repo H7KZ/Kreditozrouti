@@ -5,12 +5,12 @@ info:
 
 http:
   method: POST
-  url: "{{base_url}}/commands/insis/sweep"
+  url: '{{base_url}}/commands/insis/sweep'
   body:
     type: none
   auth:
     type: bearer
-    token: "{{api_command_token}}"
+    token: '{{api_command_token}}'
 
 settings:
   encodeUrl: true

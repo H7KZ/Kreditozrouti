@@ -17,56 +17,56 @@ import { withCzechLang } from '@scraper/Utils/HTTPUtils'
  * Throws InSISParseError on extraction failures (UnrecoverableError, not retried).
  */
 export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCourseRequestJob): Promise<ScraperInSISCourse | null> {
-    const courseId = ExtractInSISCourseService.extractIdFromUrl(data.url)
-    const client = createInSISClient('course')
+	const courseId = ExtractInSISCourseService.extractIdFromUrl(data.url)
+	const client = createInSISClient('course')
 
-    LoggerJobContext.add({
-        course_id: courseId,
-        url: data.url
-    })
+	LoggerJobContext.add({
+		course_id: courseId,
+		url: data.url
+	})
 
-    const result = await client.get<string>(withCzechLang(data.url))
+	const result = await client.get<string>(withCzechLang(data.url))
 
-    if (!result.success) {
-        if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
-        throw new InSISNetworkError(`HTTP request failed for course ${courseId} at ${data.url}`)
-    }
+	if (!result.success) {
+		if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
+		throw new InSISNetworkError(`HTTP request failed for course ${courseId} at ${data.url}`)
+	}
 
-    const htmlHash = createHash('sha256').update(result.data).digest('hex')
+	const htmlHash = createHash('sha256').update(result.data).digest('hex')
 
-    if (data.content_hash && data.content_hash === htmlHash) {
-        LoggerJobContext.add({ hash_hit: true, course_id: courseId })
-        return null
-    }
-    LoggerJobContext.add({ hash_miss: true, course_id: courseId })
+	if (data.content_hash && data.content_hash === htmlHash) {
+		LoggerJobContext.add({ hash_hit: true, course_id: courseId })
+		return null
+	}
+	LoggerJobContext.add({ hash_miss: true, course_id: courseId })
 
-    if (ExtractInSISCourseService.isNotFound(result.data)) {
-        LoggerJobContext.add({ not_found: true, course_id: courseId })
-        if (courseId !== null) {
-            await QueueService.addCourseNotFound(courseId)
-        }
-        return null
-    }
+	if (ExtractInSISCourseService.isNotFound(result.data)) {
+		LoggerJobContext.add({ not_found: true, course_id: courseId })
+		if (courseId !== null) {
+			await QueueService.addCourseNotFound(courseId)
+		}
+		return null
+	}
 
-    try {
-        const course = ExtractInSISCourseService.extract(result.data, data.url)
+	try {
+		const course = ExtractInSISCourseService.extract(result.data, data.url)
 
-        if (!course) {
-            throw new InSISParseError(`Course extraction returned null for ${courseId}`)
-        }
+		if (!course) {
+			throw new InSISParseError(`Course extraction returned null for ${courseId}`)
+		}
 
-        course.content_hash = htmlHash
+		course.content_hash = htmlHash
 
-        await QueueService.addCourseResponse(course)
+		await QueueService.addCourseResponse(course)
 
-        return course
-    } catch (error) {
-        if (error instanceof InSISParseError) throw error
+		return course
+	} catch (error) {
+		if (error instanceof InSISParseError) throw error
 
-        LoggerJobContext.add({
-            error: 'Extraction error',
-            message: (error as Error).message
-        })
-        throw new InSISParseError(`Extraction error for course ${courseId}: ${(error as Error).message}`)
-    }
+		LoggerJobContext.add({
+			error: 'Extraction error',
+			message: (error as Error).message
+		})
+		throw new InSISParseError(`Extraction error for course ${courseId}: ${(error as Error).message}`)
+	}
 }

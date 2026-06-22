@@ -4,7 +4,7 @@ _Verification of Compliance with VŠE Internal Regulations_
 
 | Field                | Value                                           |
 | -------------------- | ----------------------------------------------- |
-| Document Version     | v1.0.0 — Beta Launch                            |
+| Document Version     | v1.0.0                                          |
 | Date                 | January 31, 2026                                |
 | Applicable To        | Kreditožrouti Web Application                   |
 | Regulations Reviewed | SR 05/2018, PR 04/2019, PR 02/2023, Study Rules |
@@ -129,7 +129,7 @@ scheduling operate. Kreditožrouti supports (but does not replace) the official 
 
 ## 7. Analytics and Privacy
 
-Kreditožrouti uses **Umami Analytics** — a self-hosted instance running at `kreditozrouti.cz/umami`. Umami is an
+Kreditožrouti uses **Umami Analytics** — a self-hosted instance. Umami is an
 open-source analytics tool designed with privacy as a default:
 
 | Property             | Detail                                                                                              |

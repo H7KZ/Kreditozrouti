@@ -48,13 +48,13 @@ stores filters — it only reads them.
 
 ```typescript
 filters: CoursesFilter = {
-    ids, idents, title, search,
-    semesters, years, faculty_ids, levels, languages,
-    include_times, exclude_times, lecturers,
-    study_plan_ids, groups, categories, ects,
-    mode_of_completions, mode_of_deliveries,
-    completed_course_idents,
-    sort_by: 'ident', sort_dir: 'asc', limit: 50, offset: 0
+	ids, idents, title, search,
+	semesters, years, faculty_ids, levels, languages,
+	include_times, exclude_times, lecturers,
+	study_plan_ids, groups, categories, ects,
+	mode_of_completions, mode_of_deliveries,
+	completed_course_idents,
+	sort_by: 'ident', sort_dir: 'asc', limit: 50, offset: 0
 }
 hideConflictingCourses: boolean
 timetableExcludeTimes: TimeSelection[]
@@ -97,7 +97,7 @@ Owns course results, pagination, and row expansion state. Does NOT own filter st
 courses: CourseWithRelationsDTO[]
 facets: CoursesResponseDTO['facets']
 pagination: {
-    limit, offset, count, total
+	limit, offset, count, total
 }
 loading: boolean
 error: string | null
@@ -324,7 +324,7 @@ Timetable drag-to-select state. Used exclusively by `useTimetableDrag` composabl
 dragSelection: DragSelection
 showDragPopover: boolean
 dragPopoverPosition: {
-    x, y
+	;(x, y)
 }
 ```
 

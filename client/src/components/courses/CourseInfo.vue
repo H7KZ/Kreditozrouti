@@ -97,7 +97,7 @@ function handleToggleCompleted() {
 					'flex cursor-pointer items-center gap-2 rounded border px-3 py-2 text-sm transition-colors',
 					isMarkedCompleted
 						? 'border-(--insis-success) bg-(--insis-success-light) text-(--insis-success)'
-						: 'border-(--insis-border) bg-(--insis-surface) text-(--insis-gray-600) hover:border-(--insis-success) hover:bg-(--insis-success-light)',
+						: 'border-(--insis-border) bg-(--insis-surface) text-(--insis-gray-600) hover:border-(--insis-success) hover:bg-(--insis-success-light)'
 				]"
 				:aria-label="
 					isMarkedCompleted ? $t('components.courses.CourseRowExpanded.markedCompleted') : $t('components.courses.CourseRowExpanded.markAsCompleted')

@@ -7,34 +7,34 @@ import MarkdownService from '@scraper/Services/MarkdownService'
  * Cleans text by normalizing whitespace and removing nbsp entities.
  */
 export function cleanText(text: string | null | undefined): string {
-    if (!text) return ''
+	if (!text) return ''
 
-    return text
-        .replace(/\u00A0|&nbsp;/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim()
+	return text
+		.replace(/\u00A0|&nbsp;/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim()
 }
 
 /**
  * Normalizes a string by removing newlines, tabs, and excessive whitespace.
  */
 export function serializeValue(value: string | null): string | null {
-    if (!value) return null
+	if (!value) return null
 
-    return value
-        .replace(/[\n\r\t]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim()
+	return value
+		.replace(/[\n\r\t]/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim()
 }
 
 /**
  * Normalizes a relative or absolute URL to a full InSIS URL.
  */
 export function normalizeUrl(href: string): string {
-    if (href.startsWith('http')) return href
-    if (href.startsWith('/')) return Config.insis.baseDomain + href
+	if (href.startsWith('http')) return href
+	if (href.startsWith('/')) return Config.insis.baseDomain + href
 
-    return Config.insis.catalogUrl + href
+	return Config.insis.catalogUrl + href
 }
 
 /**
@@ -42,55 +42,55 @@ export function normalizeUrl(href: string): string {
  * Useful for study plan parsing where label casing varies.
  */
 export function getRowValueCaseInsensitive($: CheerioAPI, targetLabel: string): string | null {
-    const cleanTarget = cleanText(targetLabel).toLowerCase()
-    let foundValue: string | null = null
+	const cleanTarget = cleanText(targetLabel).toLowerCase()
+	let foundValue: string | null = null
 
-    $('td').each((_, el) => {
-        const cellText = cleanText($(el).text()).toLowerCase()
+	$('td').each((_, el) => {
+		const cellText = cleanText($(el).text()).toLowerCase()
 
-        if (cellText.includes(cleanTarget) && !foundValue) {
-            const nextCell = $(el).next('td')
+		if (cellText.includes(cleanTarget) && !foundValue) {
+			const nextCell = $(el).next('td')
 
-            if (nextCell.length) foundValue = cleanText(nextCell.text())
-        }
-    })
-    return serializeValue(foundValue)
+			if (nextCell.length) foundValue = cleanText(nextCell.text())
+		}
+	})
+	return serializeValue(foundValue)
 }
 
 /**
  * Extracts markdown content from a section identified by its header text.
  */
 export function getSectionContent($: CheerioAPI, headerText: string): string | null {
-    const cleanHeader = cleanText(headerText)
-    const headerRow = $('td')
-        .filter((_, el) => cleanText($(el).text()).includes(cleanHeader))
-        .parent('tr')
+	const cleanHeader = cleanText(headerText)
+	const headerRow = $('td')
+		.filter((_, el) => cleanText($(el).text()).includes(cleanHeader))
+		.parent('tr')
 
-    if (headerRow.length && headerRow.next('tr').length) {
-        return MarkdownService.formatCheerioElementToMarkdown(headerRow.next('tr').find('td'))
-    }
+	if (headerRow.length && headerRow.next('tr').length) {
+		return MarkdownService.formatCheerioElementToMarkdown(headerRow.next('tr').find('td'))
+	}
 
-    return null
+	return null
 }
 
 /**
  * Parses a cell that contains multiple values separated by <br> tags.
  */
 export function parseMultiLineCell($: CheerioAPI, element: any): string[] {
-    const htmlContent = $(element).html()
-    if (!htmlContent) return []
+	const htmlContent = $(element).html()
+	if (!htmlContent) return []
 
-    return htmlContent
-        .split(/<br\s*\/?>/i)
-        .map(part => cleanText(cheerio.load(part).text()))
-        .filter(part => part.length > 0)
+	return htmlContent
+		.split(/<br\s*\/?>/i)
+		.map(part => cleanText(cheerio.load(part).text()))
+		.filter(part => part.length > 0)
 }
 
 /**
  * Replaces &nbsp; entities in the body HTML for consistent parsing.
  */
 export function sanitizeBodyHtml($: CheerioAPI): void {
-    const body = $('body')
+	const body = $('body')
 
-    if (body.length) body.html(body.html()?.replace(/&nbsp;/g, ' ') ?? '')
+	if (body.length) body.html(body.html()?.replace(/&nbsp;/g, ' ') ?? '')
 }

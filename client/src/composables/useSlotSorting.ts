@@ -106,7 +106,7 @@ export function useSlotSorting() {
 		const typeOrder: Record<string, number> = {
 			lecture: 0,
 			exercise: 1,
-			seminar: 2,
+			seminar: 2
 		}
 
 		return [...units].sort((a, b) => {
@@ -164,6 +164,6 @@ export function useSlotSorting() {
 		sortSlots,
 		sortUnits,
 		sortUnitsByType,
-		getUniqueDays,
+		getUniqueDays
 	}
 }

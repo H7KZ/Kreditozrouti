@@ -19,7 +19,7 @@ on:
       - main
       - develop
     paths:
-      - "scripts/**"
+      - 'scripts/**'
   workflow_dispatch:
 
 concurrency:
@@ -43,8 +43,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "scripts/*"
-          target: "~/scripts"
+          source: 'scripts/*'
+          target: '~/scripts'
           strip_components: 1
 
       - name: Set Permissions

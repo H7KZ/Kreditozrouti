@@ -11,23 +11,23 @@ on:
   workflow_call:
     inputs:
       service:
-        description: "Service to deploy: api | client | scraper"
+        description: 'Service to deploy: api | client | scraper'
         required: true
         type: string
       environment:
-        description: "Target environment: production | development"
+        description: 'Target environment: production | development'
         required: true
         type: string
       project_name:
-        description: "Docker Compose project name: prod | dev"
+        description: 'Docker Compose project name: prod | dev'
         required: true
         type: string
       image_tag:
-        description: "Image tag (short SHA from build step)"
+        description: 'Image tag (short SHA from build step)'
         required: true
         type: string
       image_prefix:
-        description: "Registry path prefix (e.g. ghcr.io/h7kz/kreditozrouti)"
+        description: 'Registry path prefix (e.g. ghcr.io/h7kz/kreditozrouti)'
         required: true
         type: string
 
@@ -64,8 +64,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "deployment/"
-          target: "~/versions/${{ inputs.environment }}/${{ inputs.image_tag }}"
+          source: 'deployment/'
+          target: '~/versions/${{ inputs.environment }}/${{ inputs.image_tag }}'
           strip_components: 1
           overwrite: true
 

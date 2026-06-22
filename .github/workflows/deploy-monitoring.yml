@@ -15,7 +15,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "deployment/monitoring/**"
+      - 'deployment/monitoring/**'
   workflow_dispatch:
 
 concurrency:
@@ -43,8 +43,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "deployment/monitoring/,deployment/lib.sh"
-          target: "~/deployment/"
+          source: 'deployment/monitoring/,deployment/lib.sh'
+          target: '~/deployment/'
           strip_components: 1
           overwrite: true
 

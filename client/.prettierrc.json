@@ -1,8 +1,15 @@
 {
 	"$schema": "https://json.schemastore.org/prettierrc",
+	"useTabs": true,
+	"tabWidth": 4,
 	"semi": false,
 	"singleQuote": true,
+	"trailingComma": "none",
 	"printWidth": 160,
+	"quoteProps": "as-needed",
+	"bracketSpacing": true,
+	"bracketSameLine": false,
+	"arrowParens": "avoid",
 	"plugins": ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
 	"importOrder": [
 		"<TYPES>",

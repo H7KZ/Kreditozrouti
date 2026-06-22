@@ -6,12 +6,12 @@ High-level documentation for developers learning the Kreditožrouti system.
 
 ## Documents
 
-| Doc                            | What it covers                                                                      |
-|--------------------------------|-------------------------------------------------------------------------------------|
-| [MONOREPO.md](MONOREPO.md)     | pnpm workspaces, package roles, cross-package import rules, TypeScript path aliases |
-| [SERVICES.md](SERVICES.md)     | What each service does, responsibilities, why it's a separate process               |
-| [DATA_FLOW.md](DATA_FLOW.md)   | End-to-end: user action → API → BullMQ → Scraper → InSIS → DB → Client              |
-| [CONTAINERS.md](CONTAINERS.md) | Docker Compose topology, networks, volumes, local vs production                     |
+| Doc                            | What it covers                                                                     |
+|--------------------------------|------------------------------------------------------------------------------------|
+| [MONOREPO.md](MONOREPO.md)     | npm workspaces, package roles, cross-package import rules, TypeScript path aliases |
+| [SERVICES.md](SERVICES.md)     | What each service does, responsibilities, why it's a separate process              |
+| [DATA_FLOW.md](DATA_FLOW.md)   | End-to-end: user action → API → BullMQ → Scraper → InSIS → DB → Client             |
+| [CONTAINERS.md](CONTAINERS.md) | Docker Compose topology, networks, volumes, local vs production                    |
 
 ---
 

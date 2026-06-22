@@ -31,7 +31,7 @@ const campusConflictGroupCount = computed(() => timetableStore.campusConflictGro
 /** Whether all selections are complete (no conflicts or incomplete) */
 const isAllComplete = computed(
 	() =>
-		totalSelectedCount.value > 0 && statusCounts.value.conflict === 0 && statusCounts.value['campus-conflict'] === 0 && statusCounts.value.incomplete === 0,
+		totalSelectedCount.value > 0 && statusCounts.value.conflict === 0 && statusCounts.value['campus-conflict'] === 0 && statusCounts.value.incomplete === 0
 )
 
 /** Whether there are issues to address */
@@ -41,7 +41,7 @@ const hasIssues = computed(() => statusCounts.value.conflict > 0 || statusCounts
 const totalEcts = computed(() => {
 	let total = 0
 	for (const unit of timetableStore.selectedUnits) {
-		if (unit.ects && !timetableStore.selectedUnits.some((u) => u.courseId === unit.courseId && u.slotId < unit.slotId)) {
+		if (unit.ects && !timetableStore.selectedUnits.some(u => u.courseId === unit.courseId && u.slotId < unit.slotId)) {
 			total += unit.ects
 		}
 	}
@@ -75,8 +75,8 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 						'selected',
 						isAllComplete
 							? 'border-(--insis-success-border) bg-(--insis-success-light) text-(--insis-success) hover:brightness-95'
-							: 'border-(--insis-blue-lighter) bg-(--insis-blue-subtle) text-(--insis-blue) hover:bg-(--insis-blue-light)',
-					),
+							: 'border-(--insis-blue-lighter) bg-(--insis-blue-subtle) text-(--insis-blue) hover:bg-(--insis-blue-light)'
+					)
 				]"
 				:title="$t('components.courses.CourseStatusSummary.selectedTooltip')"
 				@click="handleBadgeClick('selected')"
@@ -100,7 +100,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 				type="button"
 				:class="[
 					'inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-solid px-2.5 py-1 text-xs font-medium transition-all duration-150 focus:outline-none active:scale-[0.98]',
-					getBadgeClasses('conflict', 'border-(--insis-danger-border) bg-(--insis-danger-light) text-(--insis-danger) hover:brightness-95'),
+					getBadgeClasses('conflict', 'border-(--insis-danger-border) bg-(--insis-danger-light) text-(--insis-danger) hover:brightness-95')
 				]"
 				:title="$t('components.courses.CourseStatusSummary.conflictTooltip')"
 				@click="handleBadgeClick('conflict')"
@@ -117,7 +117,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 				type="button"
 				:class="[
 					'inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-solid px-2.5 py-1 text-xs font-medium transition-all duration-150 focus:outline-none active:scale-[0.98]',
-					getBadgeClasses('campus-conflict', 'border-(--insis-warning-border) bg-(--insis-warning-light) text-(--insis-warning) hover:brightness-95'),
+					getBadgeClasses('campus-conflict', 'border-(--insis-warning-border) bg-(--insis-warning-light) text-(--insis-warning) hover:brightness-95')
 				]"
 				:title="$t('components.courses.CourseStatusSummary.campusConflictTooltip')"
 				@click="handleBadgeClick('campus-conflict')"
@@ -134,7 +134,7 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 				type="button"
 				:class="[
 					'inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-solid px-2.5 py-1 text-xs font-medium transition-all duration-150 focus:outline-none active:scale-[0.98]',
-					getBadgeClasses('incomplete', 'border-(--insis-warning-border) bg-(--insis-warning-light) text-(--insis-warning) hover:brightness-95'),
+					getBadgeClasses('incomplete', 'border-(--insis-warning-border) bg-(--insis-warning-light) text-(--insis-warning) hover:brightness-95')
 				]"
 				:title="$t('components.courses.CourseStatusSummary.incompleteTooltip')"
 				@click="handleBadgeClick('incomplete')"

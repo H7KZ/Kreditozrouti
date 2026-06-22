@@ -98,6 +98,6 @@ export function useTimetableDrag(gridRef: Ref<HTMLElement | null>, getTimeFromX:
 	return {
 		handleMouseDown,
 		handleDragFilter,
-		handleDragCancel,
+		handleDragCancel
 	}
 }

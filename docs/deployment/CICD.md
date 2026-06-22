@@ -30,7 +30,7 @@ All workflow files live in `.github/workflows/`.
 **Steps:**
 
 1. Checkout code
-2. Setup Node.js 24 + pnpm
+2. Setup Node.js 24
 3. `make install`
 4. `make lint`
 5. `make build`
@@ -227,17 +227,17 @@ Edit `deployment/production/docker-compose.production.yml`:
 
 ```yaml
 services:
-  api:
-    deploy:
-      replicas: 4      # default: 2
+	api:
+		deploy:
+			replicas: 4 # default: 2
 
-  client:
-    deploy:
-      replicas: 5      # default: 3
+	client:
+		deploy:
+			replicas: 5 # default: 3
 
-  scraper:
-    deploy:
-      replicas: 10     # default: 5
+	scraper:
+		deploy:
+			replicas: 10 # default: 5
 ```
 
 Then redeploy: `docker compose -p prod up -d`

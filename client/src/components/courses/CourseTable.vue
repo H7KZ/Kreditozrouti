@@ -6,6 +6,7 @@ import CourseRow from '@client/components/courses/CourseRow.vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import CourseStatusIndicator from '@client/components/courses/CourseStatusIndicator.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
+
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconChevronUp from '~icons/lucide/chevron-up'
@@ -25,7 +26,7 @@ const columns = computed(() => [
 	{ key: 'ects', label: t('components.courses.CourseTable.columns.ects'), sortable: true },
 	{ key: 'completion', label: t('components.courses.CourseTable.columns.completion'), sortable: false },
 	{ key: 'schedule', label: t('components.courses.CourseTable.columns.schedule'), sortable: false },
-	{ key: 'actions', label: '', sortable: false },
+	{ key: 'actions', label: '', sortable: false }
 ])
 
 function handleSort(key: CourseSortBy) {
@@ -52,17 +53,10 @@ function getCourseScheduleSummary(course: { units: Parameters<typeof getSchedule
 	return getScheduleSummary(course.units)
 }
 
-function getMobileStatus(courseId: number) {
-	const status = timetableStore.getCourseStatus(courseId)?.status
-	return {
-		status,
-		isSelected: status !== undefined,
-		isIncomplete: status === 'incomplete',
-		hasConflict: status === 'conflict',
-		hasCampusConflict: status === 'campus-conflict',
-		borderClass:
-			status === 'conflict' ? 'border-(--insis-danger-border)' : status !== undefined ? 'border-(--insis-blue-lighter)' : 'border-(--insis-border)',
-	}
+function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): string {
+	const status = timetableStore.getCourseStatus(course.id)?.status
+	const hasConflict = status === 'conflict' || (!status && (course.units?.some(u => timetableStore.unitHasConflicts(u)) ?? false))
+	return hasConflict ? 'border-(--insis-danger-border)' : status !== undefined ? 'border-(--insis-blue-lighter)' : 'border-(--insis-border)'
 }
 </script>
 
@@ -79,7 +73,7 @@ function getMobileStatus(courseId: number) {
 							col.sortable && 'sortable focus-visible:bg-(--insis-surface-2) focus-visible:outline-none',
 							col.key === 'ident' && 'w-24',
 							col.key === 'ects' && 'w-16 text-center',
-							col.key === 'actions' && 'w-10',
+							col.key === 'actions' && 'w-10'
 						]"
 						:role="col.sortable ? 'button' : undefined"
 						:tabindex="col.sortable ? 0 : undefined"
@@ -121,11 +115,7 @@ function getMobileStatus(courseId: number) {
 				</template>
 
 				<template v-else>
-					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length">
-						<template #status-indicator>
-							<CourseStatusIndicator :course-id="course.id" />
-						</template>
-					</CourseRow>
+					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length" />
 				</template>
 			</tbody>
 		</table>
@@ -150,11 +140,9 @@ function getMobileStatus(courseId: number) {
 			<template v-for="course in coursesStore.courses" :key="course.id">
 				<!-- Card header -->
 				<div
-					v-for="(ms, _i) in [getMobileStatus(course.id)]"
-					:key="_i"
 					:class="[
 						'cursor-pointer rounded border bg-(--insis-surface) px-3 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-(--insis-blue) active:bg-(--insis-surface-2)',
-						ms.borderClass,
+						getMobileBorderClass(course)
 					]"
 					role="button"
 					:tabindex="0"
@@ -172,7 +160,7 @@ function getMobileStatus(courseId: number) {
 								<span class="min-w-0 truncate text-[12px] font-medium text-(--insis-text)">{{ getCourseTitle(course) }}</span>
 							</div>
 							<!-- Faculty · ECTS · Completion -->
-							<div class="text-[11px] text-(--insis-text-3)">
+							<div class="text-xs text-(--insis-text-3)">
 								<span v-if="course.faculty_id">{{ getFacultyLabel(course.faculty_id) }}</span>
 								<template v-if="course.faculty_id && course.ects"> · </template>
 								<span v-if="course.ects">{{ course.ects }} ECTS</span>
@@ -180,24 +168,13 @@ function getMobileStatus(courseId: number) {
 								<span v-if="course.mode_of_completion">{{ getCompletionLabel(course.mode_of_completion) }}</span>
 							</div>
 							<!-- Schedule -->
-							<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-[11px] text-(--insis-text-3)">
+							<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-xs text-(--insis-text-3)">
 								{{ getCourseScheduleSummary(course) }}
 							</div>
 						</div>
 						<!-- Status badges + chevron -->
-						<div class="flex shrink-0 flex-col items-end gap-1">
-							<span v-if="ms.status === 'selected'" class="insis-badge insis-badge-success text-[10px]">
-								{{ $t('components.courses.CourseTable.inTimetable') }}
-							</span>
-							<span v-if="ms.isIncomplete" class="insis-badge insis-badge-amber text-[10px]">
-								{{ $t('components.courses.CourseTable.missingUnitTypes') }}
-							</span>
-							<span v-if="ms.hasConflict" class="insis-badge insis-badge-danger text-[10px]">
-								{{ $t('components.courses.CourseTable.conflictTag') }}
-							</span>
-							<span v-if="ms.hasCampusConflict" class="insis-badge insis-badge-amber text-[10px]">
-								{{ $t('components.courses.CourseTable.campusConflictTag') }}
-							</span>
+						<div class="flex shrink-0 flex-col items-center gap-1">
+							<CourseStatusIndicator :course="course" />
 							<IconChevronDown
 								:class="['mt-auto h-3.5 w-3.5 text-(--insis-text-3) transition-transform duration-200', isExpanded(course.id) && 'rotate-180']"
 								aria-hidden="true"

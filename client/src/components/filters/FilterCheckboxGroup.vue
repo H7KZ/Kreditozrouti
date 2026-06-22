@@ -33,7 +33,7 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), {
 	searchable: false,
 	maxVisible: 5,
-	defaultCollapsed: false,
+	defaultCollapsed: false
 })
 
 const emit = defineEmits<Emits>()
@@ -43,8 +43,8 @@ const { searchQuery, listExpanded, filterBySearch, getVisibleFacets, getHiddenCo
 	toRef(props, 'facets'),
 	toRef(props, 'selected'),
 	{
-		maxVisible: props.maxVisible,
-	},
+		maxVisible: props.maxVisible
+	}
 )
 
 /** Whether the entire filter group is collapsed */

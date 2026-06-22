@@ -12,22 +12,22 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "scraper/**"
-      - "shared/**"
+      - 'scraper/**'
+      - 'shared/**'
   workflow_dispatch:
     inputs:
       image_tag:
-        description: "Image tag to deploy (skips build if set)"
+        description: 'Image tag to deploy (skips build if set)'
         required: false
         type: string
-        default: ""
+        default: ''
       skip_build:
-        description: "Skip build (image must already exist in registry)"
+        description: 'Skip build (image must already exist in registry)'
         required: false
         type: boolean
         default: false
       environment:
-        description: "Target environment"
+        description: 'Target environment'
         required: false
         type: choice
         options: [ production, development ]

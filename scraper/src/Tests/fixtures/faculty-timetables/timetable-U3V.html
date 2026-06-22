@@ -1,875 +1,875 @@
 <html>
-    <head>
-        <title>Zobrazení a&nbsp;tisk rozvrhů</title>
-        <meta http-equiv="Content-Language" content="cs" />
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="description" content="Univerzitní informační systém VŠE" />
-        <meta name="lang" content="cs" />
-        <meta name="charset" content="UTF-8" />
-        <link rel="icon" href="/favicon/fav-prod.ico" sizes="32x32" />
-        <link rel="icon" href="/favicon/fav-prod.svg" type="image/svg+xml" />
-        <script type="text/javascript">
-            var defaultClass = ''
-        </script>
-        <link rel="stylesheet" type="text/css" href="/css/base.css?1777900356" />
-        <link rel="stylesheet" type="text/css" href="/css/local.css?1673252855" />
-        <link rel="stylesheet" type="text/css" href="/img.pl?css=34171" />
-        <link rel="stylesheet" type="text/css" href="/js/jquery/ui/ui-1.12.1/jquery-ui.min.css?1510843879" />
-        <script type="text/javascript" src="/js/jquery/jquery/jquery-3.3.1/jquery-3.3.1.min.js"></script>
-        <link type="text/css" rel="stylesheet" id="dark-mode-custom-link" />
-        <link type="text/css" rel="stylesheet" id="dark-mode-general-link" />
-        <style lang="en" type="text/css" id="dark-mode-custom-style"></style>
-        <style lang="en" type="text/css" id="dark-mode-native-style"></style>
-        <style lang="en" type="text/css" id="dark-mode-native-sheet"></style>
-        <script type="text/javascript" src="/js/common.js?1515155616"></script>
-        <script type="text/javascript" src="/js/uisplugins/uis.js?1727865117"></script>
-        <script type="text/javascript" src="/js/translate.js?1777892588"></script>
-        <script type="text/javascript" src="/js/icons.js?1758189455"></script>
-        <script type="text/javascript" src="/js/js.cookie.min.js"></script>
-        <script type="text/javascript">
-            uis.translator.setLang('CZ')
-        </script>
-        <script type="text/javascript" src="/js/pseudostrap.js?1780052805"></script>
-        <script type="text/javascript">
-            uis.params.transport.add('lang', 'cz')
-        </script>
-        <script type="text/javascript" src="/js/jquery/ui/ui-1.12.1/jquery-ui.min.js?1473867246"></script>
-        <script type="text/javascript" src="/js/jquery/ui/corrector.js?1638201715"></script>
-        <script type="text/javascript" src="/js/help.js?1758176588"></script>
-    </head>
-    <body>
-        <div id="base">
-            <div id="head">
-                <!-- head zacatek -->
-                <div id="uis-nazev">
-                    <h1>Integrovaný studijní informační systém</h1>
-                    <img class="in-header" src="/img.pl?userunid=8615" title="Dnes je" />
-                    8. 6. 2026&nbsp; 14:44 &nbsp;&nbsp;&nbsp;
-                    <img class="in-header" src="/img.pl?userunid=8616" title="Svátek má" />
-                    Medard
-                </div>
-                <div id="univerzita">
-                    <a href="http://www.vse.cz"><span></span></a>
-                </div>
+	<head>
+		<title>Zobrazení a&nbsp;tisk rozvrhů</title>
+		<meta http-equiv="Content-Language" content="cs" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="description" content="Univerzitní informační systém VŠE" />
+		<meta name="lang" content="cs" />
+		<meta name="charset" content="UTF-8" />
+		<link rel="icon" href="/favicon/fav-prod.ico" sizes="32x32" />
+		<link rel="icon" href="/favicon/fav-prod.svg" type="image/svg+xml" />
+		<script type="text/javascript">
+			var defaultClass = ''
+		</script>
+		<link rel="stylesheet" type="text/css" href="/css/base.css?1777900356" />
+		<link rel="stylesheet" type="text/css" href="/css/local.css?1673252855" />
+		<link rel="stylesheet" type="text/css" href="/img.pl?css=34171" />
+		<link rel="stylesheet" type="text/css" href="/js/jquery/ui/ui-1.12.1/jquery-ui.min.css?1510843879" />
+		<script type="text/javascript" src="/js/jquery/jquery/jquery-3.3.1/jquery-3.3.1.min.js"></script>
+		<link type="text/css" rel="stylesheet" id="dark-mode-custom-link" />
+		<link type="text/css" rel="stylesheet" id="dark-mode-general-link" />
+		<style lang="en" type="text/css" id="dark-mode-custom-style"></style>
+		<style lang="en" type="text/css" id="dark-mode-native-style"></style>
+		<style lang="en" type="text/css" id="dark-mode-native-sheet"></style>
+		<script type="text/javascript" src="/js/common.js?1515155616"></script>
+		<script type="text/javascript" src="/js/uisplugins/uis.js?1727865117"></script>
+		<script type="text/javascript" src="/js/translate.js?1777892588"></script>
+		<script type="text/javascript" src="/js/icons.js?1758189455"></script>
+		<script type="text/javascript" src="/js/js.cookie.min.js"></script>
+		<script type="text/javascript">
+			uis.translator.setLang('CZ')
+		</script>
+		<script type="text/javascript" src="/js/pseudostrap.js?1780052805"></script>
+		<script type="text/javascript">
+			uis.params.transport.add('lang', 'cz')
+		</script>
+		<script type="text/javascript" src="/js/jquery/ui/ui-1.12.1/jquery-ui.min.js?1473867246"></script>
+		<script type="text/javascript" src="/js/jquery/ui/corrector.js?1638201715"></script>
+		<script type="text/javascript" src="/js/help.js?1758176588"></script>
+	</head>
+	<body>
+		<div id="base">
+			<div id="head">
+				<!-- head zacatek -->
+				<div id="uis-nazev">
+					<h1>Integrovaný studijní informační systém</h1>
+					<img class="in-header" src="/img.pl?userunid=8615" title="Dnes je" />
+					8. 6. 2026&nbsp; 14:44 &nbsp;&nbsp;&nbsp;
+					<img class="in-header" src="/img.pl?userunid=8616" title="Svátek má" />
+					Medard
+				</div>
+				<div id="univerzita">
+					<a href="http://www.vse.cz"><span></span></a>
+				</div>
 
-                <div id="shead">
-                    <!-- prava -->
+				<div id="shead">
+					<!-- prava -->
 
-                    <div id="vlajky">
-                        &nbsp;
-                        <a href="https://insis.vse.cz/katalog/rozvrhy_view.pl?konf=1;f=230;lang=en" title="">ENGLISH</a>&nbsp; &nbsp;
+					<div id="vlajky">
+						&nbsp;
+						<a href="https://insis.vse.cz/katalog/rozvrhy_view.pl?konf=1;f=230;lang=en" title="">ENGLISH</a>&nbsp; &nbsp;
 
-                        <a href="https://insis.vse.cz/katalog/rozvrhy_view.pl?konf=1;f=230;lang=sk" title="">SLOVENSKY</a>&nbsp;
-                    </div>
-                </div>
-                <!-- shead -->
-                <div id="spomoc2">
-                    <div id="ikonky"></div>
-                </div>
-                <!-- -- konec spomoc2 ---->
-            </div>
-            <!-- end head -->
-            <!-- zacatek stranky -->
+						<a href="https://insis.vse.cz/katalog/rozvrhy_view.pl?konf=1;f=230;lang=sk" title="">SLOVENSKY</a>&nbsp;
+					</div>
+				</div>
+				<!-- shead -->
+				<div id="spomoc2">
+					<div id="ikonky"></div>
+				</div>
+				<!-- -- konec spomoc2 ---->
+			</div>
+			<!-- end head -->
+			<!-- zacatek stranky -->
 
-            <div id="navigace">
-                <span id="ikonecky"> </span>
+			<div id="navigace">
+				<span id="ikonecky"> </span>
 
-                <span id="logs"> <strong> </strong>&nbsp; </span>
+				<span id="logs"> <strong> </strong>&nbsp; </span>
 
-                <ul>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <ul></ul>
-                </ul>
-            </div>
+				<ul>
+					<li></li>
+					<li></li>
+					<li></li>
+					<ul></ul>
+				</ul>
+			</div>
 
-            <blockquote id="str">
-                <div class="mainpage">
-                    <div id="str1">
-                        <div>
-                            <div>
-                                <nav aria-label="breadcrumb">
-                                    <ol class="breadcrumb">
-                                        <li class="breadcrumb-item">
-                                            <a href="https://insis.vse.cz/" title=""
-                                                ><span
-                                                    class="uf-icon xs"
-                                                    role="img"
-                                                    data-sysid="base-home"
-                                                    data-id="2016"
-                                                    aria-label="Osobní administrativa"
-                                                    alt="Osobní administrativa"
-                                                >
-                                                    <svg
-                                                        style="--_left: 0px; --_top: 0px; --_width: 48px; --_height: 48px; z-index: 5"
-                                                        data-size-sysid="fullsize"
-                                                        aria-hidden="true"
-                                                        role="img"
-                                                    >
-                                                        <use xlink:href="/icons.svg?1772024892#uc-glyph1481" href="/icons.svg?1772024892#uc-glyph1481"></use>
-                                                    </svg> </span
-                                            ></a>
-                                        </li>
-                                        <li class="breadcrumb-item"><a href="rozvrhy_view.pl?konf=1" title="">Úvodní stránka</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page"><span>Zobrazení a&nbsp;tisk rozvrhů</span></li>
-                                    </ol>
-                                    <div class="helpinbreadcrumbs">
-                                        <a
-                                            href="/help.pl?page=8780"
-                                            class="context-help-invoke"
-                                            target="_blank"
-                                            title="Zobrazit nápovědu k&nbsp;aplikaci"
-                                            data-contexthelppage="8780"
-                                            ><span class="uf-icon xs" role="img" data-sysid="base-help" data-id="1035" aria-label="" alt="">
-                                                <svg
-                                                    style="--uc-fill-inner: #ffffff; --_left: 0px; --_top: 0px; --_width: 48px; --_height: 48px; z-index: 20"
-                                                    data-size-sysid="fullsize"
-                                                    aria-hidden="true"
-                                                    role="img"
-                                                >
-                                                    <use xlink:href="/icons.svg?1772024892#uc-glyph1218" href="/icons.svg?1772024892#uc-glyph1218"></use></svg
-                                                ><svg
-                                                    style="--uc-fill-inner: #231f20; --_left: 0px; --_top: 0px; --_width: 48px; --_height: 48px; z-index: 5"
-                                                    data-size-sysid="fullsize"
-                                                    aria-hidden="true"
-                                                    role="img"
-                                                >
-                                                    <use xlink:href="/icons.svg?1772024892#uc-glyph1021" href="/icons.svg?1772024892#uc-glyph1021"></use>
-                                                </svg> </span
-                                        ></a>
-                                    </div>
-                                </nav>
-                                <div id="titulek">
-                                    <h1>Výběr rozvrhů - Univerzita třetího věku</h1>
-                                    <hr class="uisseparator" />
-                                </div>
-                                <div class="small"><span class="small">V&nbsp;tabulce zvolte rozvrhy, z&nbsp;nichž si přejete zobrazit akce.</span></div>
-                                <br />
-                                <script type="text/javascript">
-                                    <!--
-                                    function oznac_forma1() {
-                                        document.rozvrhy_vyber.rozvrh[0].checked = true
-                                        document.rozvrhy_vyber.rozvrh[1].checked = true
-                                        document.rozvrhy_vyber.rozvrh[2].checked = true
-                                        document.rozvrhy_vyber.rozvrh[3].checked = true
-                                        document.rozvrhy_vyber.rozvrh[4].checked = true
-                                        document.rozvrhy_vyber.rozvrh[5].checked = true
-                                        document.rozvrhy_vyber.rozvrh[6].checked = true
-                                        document.rozvrhy_vyber.rozvrh[7].checked = true
-                                        document.rozvrhy_vyber.rozvrh[8].checked = true
-                                        document.rozvrhy_vyber.rozvrh[9].checked = true
-                                        document.rozvrhy_vyber.rozvrh[10].checked = true
-                                        document.rozvrhy_vyber.rozvrh[11].checked = true
-                                        document.rozvrhy_vyber.rozvrh[12].checked = true
-                                        document.rozvrhy_vyber.rozvrh[13].checked = true
-                                        document.rozvrhy_vyber.rozvrh[14].checked = true
-                                        document.rozvrhy_vyber.rozvrh[15].checked = true
-                                        document.rozvrhy_vyber.rozvrh[16].checked = true
-                                        document.rozvrhy_vyber.rozvrh[17].checked = true
-                                        document.rozvrhy_vyber.rozvrh[18].checked = true
-                                        document.rozvrhy_vyber.rozvrh[19].checked = true
-                                        document.rozvrhy_vyber.rozvrh[20].checked = true
-                                        document.rozvrhy_vyber.rozvrh[21].checked = true
-                                        document.rozvrhy_vyber.rozvrh[22].checked = true
-                                        document.rozvrhy_vyber.rozvrh[23].checked = true
-                                        document.rozvrhy_vyber.rozvrh[24].checked = true
-                                        document.rozvrhy_vyber.rozvrh[25].checked = true
-                                        document.rozvrhy_vyber.rozvrh[26].checked = true
-                                        document.rozvrhy_vyber.rozvrh[27].checked = true
-                                        document.rozvrhy_vyber.rozvrh[28].checked = true
-                                        document.rozvrhy_vyber.rozvrh[29].checked = true
-                                        document.rozvrhy_vyber.rozvrh[30].checked = true
-                                        document.rozvrhy_vyber.rozvrh[31].checked = true
-                                        document.rozvrhy_vyber.rozvrh[32].checked = true
-                                        document.rozvrhy_vyber.rozvrh[33].checked = true
-                                        document.rozvrhy_vyber.rozvrh[34].checked = true
-                                        document.rozvrhy_vyber.rozvrh[35].checked = true
-                                        document.rozvrhy_vyber.rozvrh[36].checked = true
-                                        document.rozvrhy_vyber.rozvrh[37].checked = true
-                                        document.rozvrhy_vyber.rozvrh[38].checked = true
-                                        document.rozvrhy_vyber.rozvrh[39].checked = true
-                                        document.rozvrhy_vyber.rozvrh[40].checked = true
-                                        document.rozvrhy_vyber.rozvrh[41].checked = true
-                                        document.rozvrhy_vyber.rozvrh[42].checked = true
-                                    }
+			<blockquote id="str">
+				<div class="mainpage">
+					<div id="str1">
+						<div>
+							<div>
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item">
+											<a href="https://insis.vse.cz/" title=""
+												><span
+													class="uf-icon xs"
+													role="img"
+													data-sysid="base-home"
+													data-id="2016"
+													aria-label="Osobní administrativa"
+													alt="Osobní administrativa"
+												>
+													<svg
+														style="--_left: 0px; --_top: 0px; --_width: 48px; --_height: 48px; z-index: 5"
+														data-size-sysid="fullsize"
+														aria-hidden="true"
+														role="img"
+													>
+														<use xlink:href="/icons.svg?1772024892#uc-glyph1481" href="/icons.svg?1772024892#uc-glyph1481"></use>
+													</svg> </span
+											></a>
+										</li>
+										<li class="breadcrumb-item"><a href="rozvrhy_view.pl?konf=1" title="">Úvodní stránka</a></li>
+										<li class="breadcrumb-item active" aria-current="page"><span>Zobrazení a&nbsp;tisk rozvrhů</span></li>
+									</ol>
+									<div class="helpinbreadcrumbs">
+										<a
+											href="/help.pl?page=8780"
+											class="context-help-invoke"
+											target="_blank"
+											title="Zobrazit nápovědu k&nbsp;aplikaci"
+											data-contexthelppage="8780"
+											><span class="uf-icon xs" role="img" data-sysid="base-help" data-id="1035" aria-label="" alt="">
+												<svg
+													style="--uc-fill-inner: #ffffff; --_left: 0px; --_top: 0px; --_width: 48px; --_height: 48px; z-index: 20"
+													data-size-sysid="fullsize"
+													aria-hidden="true"
+													role="img"
+												>
+													<use xlink:href="/icons.svg?1772024892#uc-glyph1218" href="/icons.svg?1772024892#uc-glyph1218"></use></svg
+												><svg
+													style="--uc-fill-inner: #231f20; --_left: 0px; --_top: 0px; --_width: 48px; --_height: 48px; z-index: 5"
+													data-size-sysid="fullsize"
+													aria-hidden="true"
+													role="img"
+												>
+													<use xlink:href="/icons.svg?1772024892#uc-glyph1021" href="/icons.svg?1772024892#uc-glyph1021"></use>
+												</svg> </span
+										></a>
+									</div>
+								</nav>
+								<div id="titulek">
+									<h1>Výběr rozvrhů - Univerzita třetího věku</h1>
+									<hr class="uisseparator" />
+								</div>
+								<div class="small"><span class="small">V&nbsp;tabulce zvolte rozvrhy, z&nbsp;nichž si přejete zobrazit akce.</span></div>
+								<br />
+								<script type="text/javascript">
+									<!--
+									function oznac_forma1() {
+										document.rozvrhy_vyber.rozvrh[0].checked = true
+										document.rozvrhy_vyber.rozvrh[1].checked = true
+										document.rozvrhy_vyber.rozvrh[2].checked = true
+										document.rozvrhy_vyber.rozvrh[3].checked = true
+										document.rozvrhy_vyber.rozvrh[4].checked = true
+										document.rozvrhy_vyber.rozvrh[5].checked = true
+										document.rozvrhy_vyber.rozvrh[6].checked = true
+										document.rozvrhy_vyber.rozvrh[7].checked = true
+										document.rozvrhy_vyber.rozvrh[8].checked = true
+										document.rozvrhy_vyber.rozvrh[9].checked = true
+										document.rozvrhy_vyber.rozvrh[10].checked = true
+										document.rozvrhy_vyber.rozvrh[11].checked = true
+										document.rozvrhy_vyber.rozvrh[12].checked = true
+										document.rozvrhy_vyber.rozvrh[13].checked = true
+										document.rozvrhy_vyber.rozvrh[14].checked = true
+										document.rozvrhy_vyber.rozvrh[15].checked = true
+										document.rozvrhy_vyber.rozvrh[16].checked = true
+										document.rozvrhy_vyber.rozvrh[17].checked = true
+										document.rozvrhy_vyber.rozvrh[18].checked = true
+										document.rozvrhy_vyber.rozvrh[19].checked = true
+										document.rozvrhy_vyber.rozvrh[20].checked = true
+										document.rozvrhy_vyber.rozvrh[21].checked = true
+										document.rozvrhy_vyber.rozvrh[22].checked = true
+										document.rozvrhy_vyber.rozvrh[23].checked = true
+										document.rozvrhy_vyber.rozvrh[24].checked = true
+										document.rozvrhy_vyber.rozvrh[25].checked = true
+										document.rozvrhy_vyber.rozvrh[26].checked = true
+										document.rozvrhy_vyber.rozvrh[27].checked = true
+										document.rozvrhy_vyber.rozvrh[28].checked = true
+										document.rozvrhy_vyber.rozvrh[29].checked = true
+										document.rozvrhy_vyber.rozvrh[30].checked = true
+										document.rozvrhy_vyber.rozvrh[31].checked = true
+										document.rozvrhy_vyber.rozvrh[32].checked = true
+										document.rozvrhy_vyber.rozvrh[33].checked = true
+										document.rozvrhy_vyber.rozvrh[34].checked = true
+										document.rozvrhy_vyber.rozvrh[35].checked = true
+										document.rozvrhy_vyber.rozvrh[36].checked = true
+										document.rozvrhy_vyber.rozvrh[37].checked = true
+										document.rozvrhy_vyber.rozvrh[38].checked = true
+										document.rozvrhy_vyber.rozvrh[39].checked = true
+										document.rozvrhy_vyber.rozvrh[40].checked = true
+										document.rozvrhy_vyber.rozvrh[41].checked = true
+										document.rozvrhy_vyber.rozvrh[42].checked = true
+									}
 
-                                    //-->
-                                </script>
-                                <script type="text/javascript">
-                                    <!--
-                                    function oznac_vse() {
-                                        document.rozvrhy_vyber.rozvrh[0].checked = true
-                                        document.rozvrhy_vyber.rozvrh[1].checked = true
-                                        document.rozvrhy_vyber.rozvrh[2].checked = true
-                                        document.rozvrhy_vyber.rozvrh[3].checked = true
-                                        document.rozvrhy_vyber.rozvrh[4].checked = true
-                                        document.rozvrhy_vyber.rozvrh[5].checked = true
-                                        document.rozvrhy_vyber.rozvrh[6].checked = true
-                                        document.rozvrhy_vyber.rozvrh[7].checked = true
-                                        document.rozvrhy_vyber.rozvrh[8].checked = true
-                                        document.rozvrhy_vyber.rozvrh[9].checked = true
-                                        document.rozvrhy_vyber.rozvrh[10].checked = true
-                                        document.rozvrhy_vyber.rozvrh[11].checked = true
-                                        document.rozvrhy_vyber.rozvrh[12].checked = true
-                                        document.rozvrhy_vyber.rozvrh[13].checked = true
-                                        document.rozvrhy_vyber.rozvrh[14].checked = true
-                                        document.rozvrhy_vyber.rozvrh[15].checked = true
-                                        document.rozvrhy_vyber.rozvrh[16].checked = true
-                                        document.rozvrhy_vyber.rozvrh[17].checked = true
-                                        document.rozvrhy_vyber.rozvrh[18].checked = true
-                                        document.rozvrhy_vyber.rozvrh[19].checked = true
-                                        document.rozvrhy_vyber.rozvrh[20].checked = true
-                                        document.rozvrhy_vyber.rozvrh[21].checked = true
-                                        document.rozvrhy_vyber.rozvrh[22].checked = true
-                                        document.rozvrhy_vyber.rozvrh[23].checked = true
-                                        document.rozvrhy_vyber.rozvrh[24].checked = true
-                                        document.rozvrhy_vyber.rozvrh[25].checked = true
-                                        document.rozvrhy_vyber.rozvrh[26].checked = true
-                                        document.rozvrhy_vyber.rozvrh[27].checked = true
-                                        document.rozvrhy_vyber.rozvrh[28].checked = true
-                                        document.rozvrhy_vyber.rozvrh[29].checked = true
-                                        document.rozvrhy_vyber.rozvrh[30].checked = true
-                                        document.rozvrhy_vyber.rozvrh[31].checked = true
-                                        document.rozvrhy_vyber.rozvrh[32].checked = true
-                                        document.rozvrhy_vyber.rozvrh[33].checked = true
-                                        document.rozvrhy_vyber.rozvrh[34].checked = true
-                                        document.rozvrhy_vyber.rozvrh[35].checked = true
-                                        document.rozvrhy_vyber.rozvrh[36].checked = true
-                                        document.rozvrhy_vyber.rozvrh[37].checked = true
-                                        document.rozvrhy_vyber.rozvrh[38].checked = true
-                                        document.rozvrhy_vyber.rozvrh[39].checked = true
-                                        document.rozvrhy_vyber.rozvrh[40].checked = true
-                                        document.rozvrhy_vyber.rozvrh[41].checked = true
-                                        document.rozvrhy_vyber.rozvrh[42].checked = true
-                                    }
+									//-->
+								</script>
+								<script type="text/javascript">
+									<!--
+									function oznac_vse() {
+										document.rozvrhy_vyber.rozvrh[0].checked = true
+										document.rozvrhy_vyber.rozvrh[1].checked = true
+										document.rozvrhy_vyber.rozvrh[2].checked = true
+										document.rozvrhy_vyber.rozvrh[3].checked = true
+										document.rozvrhy_vyber.rozvrh[4].checked = true
+										document.rozvrhy_vyber.rozvrh[5].checked = true
+										document.rozvrhy_vyber.rozvrh[6].checked = true
+										document.rozvrhy_vyber.rozvrh[7].checked = true
+										document.rozvrhy_vyber.rozvrh[8].checked = true
+										document.rozvrhy_vyber.rozvrh[9].checked = true
+										document.rozvrhy_vyber.rozvrh[10].checked = true
+										document.rozvrhy_vyber.rozvrh[11].checked = true
+										document.rozvrhy_vyber.rozvrh[12].checked = true
+										document.rozvrhy_vyber.rozvrh[13].checked = true
+										document.rozvrhy_vyber.rozvrh[14].checked = true
+										document.rozvrhy_vyber.rozvrh[15].checked = true
+										document.rozvrhy_vyber.rozvrh[16].checked = true
+										document.rozvrhy_vyber.rozvrh[17].checked = true
+										document.rozvrhy_vyber.rozvrh[18].checked = true
+										document.rozvrhy_vyber.rozvrh[19].checked = true
+										document.rozvrhy_vyber.rozvrh[20].checked = true
+										document.rozvrhy_vyber.rozvrh[21].checked = true
+										document.rozvrhy_vyber.rozvrh[22].checked = true
+										document.rozvrhy_vyber.rozvrh[23].checked = true
+										document.rozvrhy_vyber.rozvrh[24].checked = true
+										document.rozvrhy_vyber.rozvrh[25].checked = true
+										document.rozvrhy_vyber.rozvrh[26].checked = true
+										document.rozvrhy_vyber.rozvrh[27].checked = true
+										document.rozvrhy_vyber.rozvrh[28].checked = true
+										document.rozvrhy_vyber.rozvrh[29].checked = true
+										document.rozvrhy_vyber.rozvrh[30].checked = true
+										document.rozvrhy_vyber.rozvrh[31].checked = true
+										document.rozvrhy_vyber.rozvrh[32].checked = true
+										document.rozvrhy_vyber.rozvrh[33].checked = true
+										document.rozvrhy_vyber.rozvrh[34].checked = true
+										document.rozvrhy_vyber.rozvrh[35].checked = true
+										document.rozvrhy_vyber.rozvrh[36].checked = true
+										document.rozvrhy_vyber.rozvrh[37].checked = true
+										document.rozvrhy_vyber.rozvrh[38].checked = true
+										document.rozvrhy_vyber.rozvrh[39].checked = true
+										document.rozvrhy_vyber.rozvrh[40].checked = true
+										document.rozvrhy_vyber.rozvrh[41].checked = true
+										document.rozvrhy_vyber.rozvrh[42].checked = true
+									}
 
-                                    function odznac_vse() {
-                                        document.rozvrhy_vyber.rozvrh[0].checked = false
-                                        document.rozvrhy_vyber.rozvrh[1].checked = false
-                                        document.rozvrhy_vyber.rozvrh[2].checked = false
-                                        document.rozvrhy_vyber.rozvrh[3].checked = false
-                                        document.rozvrhy_vyber.rozvrh[4].checked = false
-                                        document.rozvrhy_vyber.rozvrh[5].checked = false
-                                        document.rozvrhy_vyber.rozvrh[6].checked = false
-                                        document.rozvrhy_vyber.rozvrh[7].checked = false
-                                        document.rozvrhy_vyber.rozvrh[8].checked = false
-                                        document.rozvrhy_vyber.rozvrh[9].checked = false
-                                        document.rozvrhy_vyber.rozvrh[10].checked = false
-                                        document.rozvrhy_vyber.rozvrh[11].checked = false
-                                        document.rozvrhy_vyber.rozvrh[12].checked = false
-                                        document.rozvrhy_vyber.rozvrh[13].checked = false
-                                        document.rozvrhy_vyber.rozvrh[14].checked = false
-                                        document.rozvrhy_vyber.rozvrh[15].checked = false
-                                        document.rozvrhy_vyber.rozvrh[16].checked = false
-                                        document.rozvrhy_vyber.rozvrh[17].checked = false
-                                        document.rozvrhy_vyber.rozvrh[18].checked = false
-                                        document.rozvrhy_vyber.rozvrh[19].checked = false
-                                        document.rozvrhy_vyber.rozvrh[20].checked = false
-                                        document.rozvrhy_vyber.rozvrh[21].checked = false
-                                        document.rozvrhy_vyber.rozvrh[22].checked = false
-                                        document.rozvrhy_vyber.rozvrh[23].checked = false
-                                        document.rozvrhy_vyber.rozvrh[24].checked = false
-                                        document.rozvrhy_vyber.rozvrh[25].checked = false
-                                        document.rozvrhy_vyber.rozvrh[26].checked = false
-                                        document.rozvrhy_vyber.rozvrh[27].checked = false
-                                        document.rozvrhy_vyber.rozvrh[28].checked = false
-                                        document.rozvrhy_vyber.rozvrh[29].checked = false
-                                        document.rozvrhy_vyber.rozvrh[30].checked = false
-                                        document.rozvrhy_vyber.rozvrh[31].checked = false
-                                        document.rozvrhy_vyber.rozvrh[32].checked = false
-                                        document.rozvrhy_vyber.rozvrh[33].checked = false
-                                        document.rozvrhy_vyber.rozvrh[34].checked = false
-                                        document.rozvrhy_vyber.rozvrh[35].checked = false
-                                        document.rozvrhy_vyber.rozvrh[36].checked = false
-                                        document.rozvrhy_vyber.rozvrh[37].checked = false
-                                        document.rozvrhy_vyber.rozvrh[38].checked = false
-                                        document.rozvrhy_vyber.rozvrh[39].checked = false
-                                        document.rozvrhy_vyber.rozvrh[40].checked = false
-                                        document.rozvrhy_vyber.rozvrh[41].checked = false
-                                        document.rozvrhy_vyber.rozvrh[42].checked = false
-                                    }
+									function odznac_vse() {
+										document.rozvrhy_vyber.rozvrh[0].checked = false
+										document.rozvrhy_vyber.rozvrh[1].checked = false
+										document.rozvrhy_vyber.rozvrh[2].checked = false
+										document.rozvrhy_vyber.rozvrh[3].checked = false
+										document.rozvrhy_vyber.rozvrh[4].checked = false
+										document.rozvrhy_vyber.rozvrh[5].checked = false
+										document.rozvrhy_vyber.rozvrh[6].checked = false
+										document.rozvrhy_vyber.rozvrh[7].checked = false
+										document.rozvrhy_vyber.rozvrh[8].checked = false
+										document.rozvrhy_vyber.rozvrh[9].checked = false
+										document.rozvrhy_vyber.rozvrh[10].checked = false
+										document.rozvrhy_vyber.rozvrh[11].checked = false
+										document.rozvrhy_vyber.rozvrh[12].checked = false
+										document.rozvrhy_vyber.rozvrh[13].checked = false
+										document.rozvrhy_vyber.rozvrh[14].checked = false
+										document.rozvrhy_vyber.rozvrh[15].checked = false
+										document.rozvrhy_vyber.rozvrh[16].checked = false
+										document.rozvrhy_vyber.rozvrh[17].checked = false
+										document.rozvrhy_vyber.rozvrh[18].checked = false
+										document.rozvrhy_vyber.rozvrh[19].checked = false
+										document.rozvrhy_vyber.rozvrh[20].checked = false
+										document.rozvrhy_vyber.rozvrh[21].checked = false
+										document.rozvrhy_vyber.rozvrh[22].checked = false
+										document.rozvrhy_vyber.rozvrh[23].checked = false
+										document.rozvrhy_vyber.rozvrh[24].checked = false
+										document.rozvrhy_vyber.rozvrh[25].checked = false
+										document.rozvrhy_vyber.rozvrh[26].checked = false
+										document.rozvrhy_vyber.rozvrh[27].checked = false
+										document.rozvrhy_vyber.rozvrh[28].checked = false
+										document.rozvrhy_vyber.rozvrh[29].checked = false
+										document.rozvrhy_vyber.rozvrh[30].checked = false
+										document.rozvrhy_vyber.rozvrh[31].checked = false
+										document.rozvrhy_vyber.rozvrh[32].checked = false
+										document.rozvrhy_vyber.rozvrh[33].checked = false
+										document.rozvrhy_vyber.rozvrh[34].checked = false
+										document.rozvrhy_vyber.rozvrh[35].checked = false
+										document.rozvrhy_vyber.rozvrh[36].checked = false
+										document.rozvrhy_vyber.rozvrh[37].checked = false
+										document.rozvrhy_vyber.rozvrh[38].checked = false
+										document.rozvrhy_vyber.rozvrh[39].checked = false
+										document.rozvrhy_vyber.rozvrh[40].checked = false
+										document.rozvrhy_vyber.rozvrh[41].checked = false
+										document.rozvrhy_vyber.rozvrh[42].checked = false
+									}
 
-                                    function oznac_prac() {
-                                        document.rozvrhy_vyber.rozvrh[0].checked = false
-                                        document.rozvrhy_vyber.rozvrh[1].checked = false
-                                        document.rozvrhy_vyber.rozvrh[2].checked = false
-                                        document.rozvrhy_vyber.rozvrh[3].checked = false
-                                        document.rozvrhy_vyber.rozvrh[4].checked = false
-                                        document.rozvrhy_vyber.rozvrh[5].checked = false
-                                        document.rozvrhy_vyber.rozvrh[6].checked = false
-                                        document.rozvrhy_vyber.rozvrh[7].checked = false
-                                        document.rozvrhy_vyber.rozvrh[8].checked = false
-                                        document.rozvrhy_vyber.rozvrh[9].checked = false
-                                        document.rozvrhy_vyber.rozvrh[10].checked = false
-                                        document.rozvrhy_vyber.rozvrh[11].checked = false
-                                        document.rozvrhy_vyber.rozvrh[12].checked = false
-                                        document.rozvrhy_vyber.rozvrh[13].checked = false
-                                        document.rozvrhy_vyber.rozvrh[14].checked = false
-                                        document.rozvrhy_vyber.rozvrh[15].checked = false
-                                        document.rozvrhy_vyber.rozvrh[16].checked = false
-                                        document.rozvrhy_vyber.rozvrh[17].checked = false
-                                        document.rozvrhy_vyber.rozvrh[18].checked = false
-                                        document.rozvrhy_vyber.rozvrh[19].checked = false
-                                        document.rozvrhy_vyber.rozvrh[20].checked = false
-                                        document.rozvrhy_vyber.rozvrh[21].checked = false
-                                        document.rozvrhy_vyber.rozvrh[22].checked = false
-                                        document.rozvrhy_vyber.rozvrh[23].checked = false
-                                        document.rozvrhy_vyber.rozvrh[24].checked = false
-                                        document.rozvrhy_vyber.rozvrh[25].checked = false
-                                        document.rozvrhy_vyber.rozvrh[26].checked = false
-                                        document.rozvrhy_vyber.rozvrh[27].checked = false
-                                        document.rozvrhy_vyber.rozvrh[28].checked = false
-                                        document.rozvrhy_vyber.rozvrh[29].checked = false
-                                        document.rozvrhy_vyber.rozvrh[30].checked = false
-                                        document.rozvrhy_vyber.rozvrh[31].checked = false
-                                        document.rozvrhy_vyber.rozvrh[32].checked = false
-                                        document.rozvrhy_vyber.rozvrh[33].checked = false
-                                        document.rozvrhy_vyber.rozvrh[34].checked = false
-                                        document.rozvrhy_vyber.rozvrh[35].checked = false
-                                        document.rozvrhy_vyber.rozvrh[36].checked = false
-                                        document.rozvrhy_vyber.rozvrh[37].checked = false
-                                        document.rozvrhy_vyber.rozvrh[38].checked = false
-                                        document.rozvrhy_vyber.rozvrh[39].checked = false
-                                        document.rozvrhy_vyber.rozvrh[40].checked = false
-                                        document.rozvrhy_vyber.rozvrh[41].checked = false
-                                        document.rozvrhy_vyber.rozvrh[42].checked = false
-                                    }
+									function oznac_prac() {
+										document.rozvrhy_vyber.rozvrh[0].checked = false
+										document.rozvrhy_vyber.rozvrh[1].checked = false
+										document.rozvrhy_vyber.rozvrh[2].checked = false
+										document.rozvrhy_vyber.rozvrh[3].checked = false
+										document.rozvrhy_vyber.rozvrh[4].checked = false
+										document.rozvrhy_vyber.rozvrh[5].checked = false
+										document.rozvrhy_vyber.rozvrh[6].checked = false
+										document.rozvrhy_vyber.rozvrh[7].checked = false
+										document.rozvrhy_vyber.rozvrh[8].checked = false
+										document.rozvrhy_vyber.rozvrh[9].checked = false
+										document.rozvrhy_vyber.rozvrh[10].checked = false
+										document.rozvrhy_vyber.rozvrh[11].checked = false
+										document.rozvrhy_vyber.rozvrh[12].checked = false
+										document.rozvrhy_vyber.rozvrh[13].checked = false
+										document.rozvrhy_vyber.rozvrh[14].checked = false
+										document.rozvrhy_vyber.rozvrh[15].checked = false
+										document.rozvrhy_vyber.rozvrh[16].checked = false
+										document.rozvrhy_vyber.rozvrh[17].checked = false
+										document.rozvrhy_vyber.rozvrh[18].checked = false
+										document.rozvrhy_vyber.rozvrh[19].checked = false
+										document.rozvrhy_vyber.rozvrh[20].checked = false
+										document.rozvrhy_vyber.rozvrh[21].checked = false
+										document.rozvrhy_vyber.rozvrh[22].checked = false
+										document.rozvrhy_vyber.rozvrh[23].checked = false
+										document.rozvrhy_vyber.rozvrh[24].checked = false
+										document.rozvrhy_vyber.rozvrh[25].checked = false
+										document.rozvrhy_vyber.rozvrh[26].checked = false
+										document.rozvrhy_vyber.rozvrh[27].checked = false
+										document.rozvrhy_vyber.rozvrh[28].checked = false
+										document.rozvrhy_vyber.rozvrh[29].checked = false
+										document.rozvrhy_vyber.rozvrh[30].checked = false
+										document.rozvrhy_vyber.rozvrh[31].checked = false
+										document.rozvrhy_vyber.rozvrh[32].checked = false
+										document.rozvrhy_vyber.rozvrh[33].checked = false
+										document.rozvrhy_vyber.rozvrh[34].checked = false
+										document.rozvrhy_vyber.rozvrh[35].checked = false
+										document.rozvrhy_vyber.rozvrh[36].checked = false
+										document.rozvrhy_vyber.rozvrh[37].checked = false
+										document.rozvrhy_vyber.rozvrh[38].checked = false
+										document.rozvrhy_vyber.rozvrh[39].checked = false
+										document.rozvrhy_vyber.rozvrh[40].checked = false
+										document.rozvrhy_vyber.rozvrh[41].checked = false
+										document.rozvrhy_vyber.rozvrh[42].checked = false
+									}
 
-                                    function oznac_akt() {
-                                        document.rozvrhy_vyber.rozvrh[0].checked = false
-                                        document.rozvrhy_vyber.rozvrh[1].checked = false
-                                        document.rozvrhy_vyber.rozvrh[2].checked = false
-                                        document.rozvrhy_vyber.rozvrh[3].checked = false
-                                        document.rozvrhy_vyber.rozvrh[4].checked = false
-                                        document.rozvrhy_vyber.rozvrh[5].checked = false
-                                        document.rozvrhy_vyber.rozvrh[6].checked = false
-                                        document.rozvrhy_vyber.rozvrh[7].checked = false
-                                        document.rozvrhy_vyber.rozvrh[8].checked = false
-                                        document.rozvrhy_vyber.rozvrh[9].checked = false
-                                        document.rozvrhy_vyber.rozvrh[10].checked = false
-                                        document.rozvrhy_vyber.rozvrh[11].checked = false
-                                        document.rozvrhy_vyber.rozvrh[12].checked = false
-                                        document.rozvrhy_vyber.rozvrh[13].checked = false
-                                        document.rozvrhy_vyber.rozvrh[14].checked = false
-                                        document.rozvrhy_vyber.rozvrh[15].checked = false
-                                        document.rozvrhy_vyber.rozvrh[16].checked = false
-                                        document.rozvrhy_vyber.rozvrh[17].checked = false
-                                        document.rozvrhy_vyber.rozvrh[18].checked = false
-                                        document.rozvrhy_vyber.rozvrh[19].checked = false
-                                        document.rozvrhy_vyber.rozvrh[20].checked = false
-                                        document.rozvrhy_vyber.rozvrh[21].checked = false
-                                        document.rozvrhy_vyber.rozvrh[22].checked = false
-                                        document.rozvrhy_vyber.rozvrh[23].checked = false
-                                        document.rozvrhy_vyber.rozvrh[24].checked = false
-                                        document.rozvrhy_vyber.rozvrh[25].checked = false
-                                        document.rozvrhy_vyber.rozvrh[26].checked = false
-                                        document.rozvrhy_vyber.rozvrh[27].checked = false
-                                        document.rozvrhy_vyber.rozvrh[28].checked = false
-                                        document.rozvrhy_vyber.rozvrh[29].checked = false
-                                        document.rozvrhy_vyber.rozvrh[30].checked = false
-                                        document.rozvrhy_vyber.rozvrh[31].checked = false
-                                        document.rozvrhy_vyber.rozvrh[32].checked = false
-                                        document.rozvrhy_vyber.rozvrh[33].checked = false
-                                        document.rozvrhy_vyber.rozvrh[34].checked = false
-                                        document.rozvrhy_vyber.rozvrh[35].checked = false
-                                        document.rozvrhy_vyber.rozvrh[36].checked = false
-                                        document.rozvrhy_vyber.rozvrh[37].checked = false
-                                        document.rozvrhy_vyber.rozvrh[38].checked = false
-                                        document.rozvrhy_vyber.rozvrh[39].checked = false
-                                        document.rozvrhy_vyber.rozvrh[40].checked = false
-                                        document.rozvrhy_vyber.rozvrh[41].checked = false
-                                        document.rozvrhy_vyber.rozvrh[42].checked = false
-                                    }
+									function oznac_akt() {
+										document.rozvrhy_vyber.rozvrh[0].checked = false
+										document.rozvrhy_vyber.rozvrh[1].checked = false
+										document.rozvrhy_vyber.rozvrh[2].checked = false
+										document.rozvrhy_vyber.rozvrh[3].checked = false
+										document.rozvrhy_vyber.rozvrh[4].checked = false
+										document.rozvrhy_vyber.rozvrh[5].checked = false
+										document.rozvrhy_vyber.rozvrh[6].checked = false
+										document.rozvrhy_vyber.rozvrh[7].checked = false
+										document.rozvrhy_vyber.rozvrh[8].checked = false
+										document.rozvrhy_vyber.rozvrh[9].checked = false
+										document.rozvrhy_vyber.rozvrh[10].checked = false
+										document.rozvrhy_vyber.rozvrh[11].checked = false
+										document.rozvrhy_vyber.rozvrh[12].checked = false
+										document.rozvrhy_vyber.rozvrh[13].checked = false
+										document.rozvrhy_vyber.rozvrh[14].checked = false
+										document.rozvrhy_vyber.rozvrh[15].checked = false
+										document.rozvrhy_vyber.rozvrh[16].checked = false
+										document.rozvrhy_vyber.rozvrh[17].checked = false
+										document.rozvrhy_vyber.rozvrh[18].checked = false
+										document.rozvrhy_vyber.rozvrh[19].checked = false
+										document.rozvrhy_vyber.rozvrh[20].checked = false
+										document.rozvrhy_vyber.rozvrh[21].checked = false
+										document.rozvrhy_vyber.rozvrh[22].checked = false
+										document.rozvrhy_vyber.rozvrh[23].checked = false
+										document.rozvrhy_vyber.rozvrh[24].checked = false
+										document.rozvrhy_vyber.rozvrh[25].checked = false
+										document.rozvrhy_vyber.rozvrh[26].checked = false
+										document.rozvrhy_vyber.rozvrh[27].checked = false
+										document.rozvrhy_vyber.rozvrh[28].checked = false
+										document.rozvrhy_vyber.rozvrh[29].checked = false
+										document.rozvrhy_vyber.rozvrh[30].checked = false
+										document.rozvrhy_vyber.rozvrh[31].checked = false
+										document.rozvrhy_vyber.rozvrh[32].checked = false
+										document.rozvrhy_vyber.rozvrh[33].checked = false
+										document.rozvrhy_vyber.rozvrh[34].checked = false
+										document.rozvrhy_vyber.rozvrh[35].checked = false
+										document.rozvrhy_vyber.rozvrh[36].checked = false
+										document.rozvrhy_vyber.rozvrh[37].checked = false
+										document.rozvrhy_vyber.rozvrh[38].checked = false
+										document.rozvrhy_vyber.rozvrh[39].checked = false
+										document.rozvrhy_vyber.rozvrh[40].checked = false
+										document.rozvrhy_vyber.rozvrh[41].checked = false
+										document.rozvrhy_vyber.rozvrh[42].checked = false
+									}
 
-                                    //-->
-                                </script>
-                                <form method="post" action="/katalog/rozvrhy_view.pl" enctype="application/x-www-form-urlencoded" name="rozvrhy_vyber">
-                                    <input type="hidden" name="z" value="0" /><input type="hidden" name="k" value="0" /><input
-                                        type="hidden"
-                                        name="f"
-                                        value="230"
-                                    /><input type="hidden" name="studijni_zpet" value="0" />
-                                    <table>
-                                        <thead>
-                                            <tr class="zahlavi zahlavi-int">
-                                                <th class="zahlavi">Ozn.</th>
-                                                <th class="zahlavi">Rozvrh</th>
-                                                <th class="zahlavi">Období</th>
-                                                <th class="zahlavi">Pracoviště</th>
-                                                <th class="zahlavi">Forma</th>
-                                                <th class="zahlavi">Začátek</th>
-                                                <th class="zahlavi">Konec</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="535" /></td>
-                                                <td class="odsazena" align="left">Univerzita třetího věku</td>
-                                                <td class="odsazena" align="left">ZS 2009/2010</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">21.09.2009</td>
-                                                <td class="odsazena" align="left">20.12.2009</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="755" /></td>
-                                                <td class="odsazena" align="left">Univerzita třetího věku</td>
-                                                <td class="odsazena" align="left">LS 2009/2010</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">15.02.2010</td>
-                                                <td class="odsazena" align="left">16.05.2010</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="831" /></td>
-                                                <td class="odsazena" align="left">U3V - před zimním semestrem</td>
-                                                <td class="odsazena" align="left">ZS 2010/2011</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">06.09.2010</td>
-                                                <td class="odsazena" align="left">19.09.2010</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="830" /></td>
-                                                <td class="odsazena" align="left">U3V - zimní semestr</td>
-                                                <td class="odsazena" align="left">ZS 2010/2011</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">20.09.2010</td>
-                                                <td class="odsazena" align="left">19.12.2010</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="832" /></td>
-                                                <td class="odsazena" align="left">U3V - po zimním semestru</td>
-                                                <td class="odsazena" align="left">ZS 2010/2011</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">03.01.2011</td>
-                                                <td class="odsazena" align="left">06.02.2011</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="915" /></td>
-                                                <td class="odsazena" align="left">U3V - letní semestr</td>
-                                                <td class="odsazena" align="left">LS 2010/2011</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">14.02.2011</td>
-                                                <td class="odsazena" align="left">15.05.2011</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="916" /></td>
-                                                <td class="odsazena" align="left">U3V - po letním semestru</td>
-                                                <td class="odsazena" align="left">LS 2010/2011</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">16.05.2011</td>
-                                                <td class="odsazena" align="left">26.06.2011</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="965" /></td>
-                                                <td class="odsazena" align="left">U3V - 2. týden před zimním semestrem</td>
-                                                <td class="odsazena" align="left">ZS 2011/2012</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">12.09.2011</td>
-                                                <td class="odsazena" align="left">18.09.2011</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="964" /></td>
-                                                <td class="odsazena" align="left">U3V - 1. týden před zimním semestrem</td>
-                                                <td class="odsazena" align="left">ZS 2011/2012</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">19.09.2011</td>
-                                                <td class="odsazena" align="left">25.09.2011</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="957" /></td>
-                                                <td class="odsazena" align="left">U3V - 2. zimní semestr</td>
-                                                <td class="odsazena" align="left">ZS 2011/2012</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">26.09.2011</td>
-                                                <td class="odsazena" align="left">25.12.2011</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="963" /></td>
-                                                <td class="odsazena" align="left">U3V - 3. po zimním semestru</td>
-                                                <td class="odsazena" align="left">ZS 2011/2012</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">02.01.2012</td>
-                                                <td class="odsazena" align="left">12.02.2012</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1068" /></td>
-                                                <td class="odsazena" align="left">U3V - 1. letní semestr</td>
-                                                <td class="odsazena" align="left">LS 2011/2012</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">20.02.2012</td>
-                                                <td class="odsazena" align="left">20.05.2012</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1069" /></td>
-                                                <td class="odsazena" align="left">U3V - 2. po letním semestru</td>
-                                                <td class="odsazena" align="left">LS 2011/2012</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">21.05.2012</td>
-                                                <td class="odsazena" align="left">01.07.2012</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1087" /></td>
-                                                <td class="odsazena" align="left">U3V - 2. zimní semestr</td>
-                                                <td class="odsazena" align="left">ZS 2012/2013</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">24.09.2012</td>
-                                                <td class="odsazena" align="left">23.12.2012</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1132" /></td>
-                                                <td class="odsazena" align="left">U3V - letní semestr</td>
-                                                <td class="odsazena" align="left">LS 2012/2013</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">18.02.2013</td>
-                                                <td class="odsazena" align="left">19.05.2013</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1189" /></td>
-                                                <td class="odsazena" align="left">U3V - zimní semestr</td>
-                                                <td class="odsazena" align="left">ZS 2013/2014</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">23.09.2013</td>
-                                                <td class="odsazena" align="left">22.12.2013</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1206" /></td>
-                                                <td class="odsazena" align="left">U3V - zimní semestr 2</td>
-                                                <td class="odsazena" align="left">ZS 2013/2014</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">06.01.2014</td>
-                                                <td class="odsazena" align="left">12.01.2014</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1232" /></td>
-                                                <td class="odsazena" align="left">U3V - letní semestr</td>
-                                                <td class="odsazena" align="left">LS 2013/2014</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">24.02.2014</td>
-                                                <td class="odsazena" align="left">25.05.2014</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1269" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2014/2015</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">22.09.2014</td>
-                                                <td class="odsazena" align="left">21.12.2014</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1391" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2014/2015</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">16.02.2015</td>
-                                                <td class="odsazena" align="left">17.05.2015</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1570" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2015/2016</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">21.09.2015</td>
-                                                <td class="odsazena" align="left">20.12.2015</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1729" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2015/2016</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">15.02.2016</td>
-                                                <td class="odsazena" align="left">15.05.2016</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1814" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2016/2017</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">19.09.2016</td>
-                                                <td class="odsazena" align="left">18.12.2016</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1998" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2016/2017</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">13.02.2017</td>
-                                                <td class="odsazena" align="left">14.05.2017</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2134" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2017/2018</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">18.09.2017</td>
-                                                <td class="odsazena" align="left">17.12.2017</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2254" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2017/2018</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">12.02.2018</td>
-                                                <td class="odsazena" align="left">13.05.2018</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2374" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2018/2019</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">17.09.2018</td>
-                                                <td class="odsazena" align="left">16.12.2018</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2576" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2018/2019</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">11.02.2019</td>
-                                                <td class="odsazena" align="left">12.05.2019</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2794" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2019/2020</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">16.09.2019</td>
-                                                <td class="odsazena" align="left">15.12.2019</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2955" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2019/2020</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">17.02.2020</td>
-                                                <td class="odsazena" align="left">17.05.2020</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="3254" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2020/2021</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">21.09.2020</td>
-                                                <td class="odsazena" align="left">20.12.2020</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="3394" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2020/2021</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">15.02.2021</td>
-                                                <td class="odsazena" align="left">16.05.2021</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="3606" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2021/2022</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">20.09.2021</td>
-                                                <td class="odsazena" align="left">19.12.2021</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="3814" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2021/2022</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">14.02.2022</td>
-                                                <td class="odsazena" align="left">15.05.2022</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4095" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2022/2023</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">19.09.2022</td>
-                                                <td class="odsazena" align="left">18.12.2022</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4274" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2022/2023</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">13.02.2023</td>
-                                                <td class="odsazena" align="left">14.05.2023</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4454" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2023/2024</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">18.09.2023</td>
-                                                <td class="odsazena" align="left">17.12.2023</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4634" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2023/2024</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">12.02.2024</td>
-                                                <td class="odsazena" align="left">12.05.2024</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4837" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2024/2025</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">16.09.2024</td>
-                                                <td class="odsazena" align="left">15.12.2024</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4975" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2024/2025</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">17.02.2025</td>
-                                                <td class="odsazena" align="left">18.05.2025</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="5135" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2025/2026</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">15.09.2025</td>
-                                                <td class="odsazena" align="left">14.12.2025</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="5275" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">LS 2025/2026</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">16.02.2026</td>
-                                                <td class="odsazena" align="left">17.05.2026</td>
-                                            </tr>
-                                            <tr class="uis-hl-table lbn">
-                                                <td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="5455" /></td>
-                                                <td class="odsazena" align="left">U3V Praha</td>
-                                                <td class="odsazena" align="left">ZS 2026/2027</td>
-                                                <td class="odsazena" align="left">U3V</td>
-                                                <td class="odsazena" align="left">prezenční</td>
-                                                <td class="odsazena" align="left">21.09.2026</td>
-                                                <td class="odsazena" align="left">20.12.2026</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <p></p>
-                                    <input type="button" value="Označit vše" onclick="oznac_vse()" />&nbsp;<input
-                                        type="button"
-                                        value="Odznačit vše"
-                                        onclick="odznac_vse()"
-                                    /><br /><br /><input type="submit" name="filtrshow" value="Vybrat označené rozvrhy" />
-                                </form>
-                                <div class="pseudostrap-activated"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </blockquote>
-        </div>
-        <!-- konec base -->
-        <script async="" src="//www.googletagmanager.com/gtag/js?id=G-1H88NNDR00"></script>
-        <script>
-            window.dataLayer = window.dataLayer || []
+									//-->
+								</script>
+								<form method="post" action="/katalog/rozvrhy_view.pl" enctype="application/x-www-form-urlencoded" name="rozvrhy_vyber">
+									<input type="hidden" name="z" value="0" /><input type="hidden" name="k" value="0" /><input
+										type="hidden"
+										name="f"
+										value="230"
+									/><input type="hidden" name="studijni_zpet" value="0" />
+									<table>
+										<thead>
+											<tr class="zahlavi zahlavi-int">
+												<th class="zahlavi">Ozn.</th>
+												<th class="zahlavi">Rozvrh</th>
+												<th class="zahlavi">Období</th>
+												<th class="zahlavi">Pracoviště</th>
+												<th class="zahlavi">Forma</th>
+												<th class="zahlavi">Začátek</th>
+												<th class="zahlavi">Konec</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="535" /></td>
+												<td class="odsazena" align="left">Univerzita třetího věku</td>
+												<td class="odsazena" align="left">ZS 2009/2010</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">21.09.2009</td>
+												<td class="odsazena" align="left">20.12.2009</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="755" /></td>
+												<td class="odsazena" align="left">Univerzita třetího věku</td>
+												<td class="odsazena" align="left">LS 2009/2010</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">15.02.2010</td>
+												<td class="odsazena" align="left">16.05.2010</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="831" /></td>
+												<td class="odsazena" align="left">U3V - před zimním semestrem</td>
+												<td class="odsazena" align="left">ZS 2010/2011</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">06.09.2010</td>
+												<td class="odsazena" align="left">19.09.2010</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="830" /></td>
+												<td class="odsazena" align="left">U3V - zimní semestr</td>
+												<td class="odsazena" align="left">ZS 2010/2011</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">20.09.2010</td>
+												<td class="odsazena" align="left">19.12.2010</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="832" /></td>
+												<td class="odsazena" align="left">U3V - po zimním semestru</td>
+												<td class="odsazena" align="left">ZS 2010/2011</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">03.01.2011</td>
+												<td class="odsazena" align="left">06.02.2011</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="915" /></td>
+												<td class="odsazena" align="left">U3V - letní semestr</td>
+												<td class="odsazena" align="left">LS 2010/2011</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">14.02.2011</td>
+												<td class="odsazena" align="left">15.05.2011</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="916" /></td>
+												<td class="odsazena" align="left">U3V - po letním semestru</td>
+												<td class="odsazena" align="left">LS 2010/2011</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">16.05.2011</td>
+												<td class="odsazena" align="left">26.06.2011</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="965" /></td>
+												<td class="odsazena" align="left">U3V - 2. týden před zimním semestrem</td>
+												<td class="odsazena" align="left">ZS 2011/2012</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">12.09.2011</td>
+												<td class="odsazena" align="left">18.09.2011</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="964" /></td>
+												<td class="odsazena" align="left">U3V - 1. týden před zimním semestrem</td>
+												<td class="odsazena" align="left">ZS 2011/2012</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">19.09.2011</td>
+												<td class="odsazena" align="left">25.09.2011</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="957" /></td>
+												<td class="odsazena" align="left">U3V - 2. zimní semestr</td>
+												<td class="odsazena" align="left">ZS 2011/2012</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">26.09.2011</td>
+												<td class="odsazena" align="left">25.12.2011</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="963" /></td>
+												<td class="odsazena" align="left">U3V - 3. po zimním semestru</td>
+												<td class="odsazena" align="left">ZS 2011/2012</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">02.01.2012</td>
+												<td class="odsazena" align="left">12.02.2012</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1068" /></td>
+												<td class="odsazena" align="left">U3V - 1. letní semestr</td>
+												<td class="odsazena" align="left">LS 2011/2012</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">20.02.2012</td>
+												<td class="odsazena" align="left">20.05.2012</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1069" /></td>
+												<td class="odsazena" align="left">U3V - 2. po letním semestru</td>
+												<td class="odsazena" align="left">LS 2011/2012</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">21.05.2012</td>
+												<td class="odsazena" align="left">01.07.2012</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1087" /></td>
+												<td class="odsazena" align="left">U3V - 2. zimní semestr</td>
+												<td class="odsazena" align="left">ZS 2012/2013</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">24.09.2012</td>
+												<td class="odsazena" align="left">23.12.2012</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1132" /></td>
+												<td class="odsazena" align="left">U3V - letní semestr</td>
+												<td class="odsazena" align="left">LS 2012/2013</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">18.02.2013</td>
+												<td class="odsazena" align="left">19.05.2013</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1189" /></td>
+												<td class="odsazena" align="left">U3V - zimní semestr</td>
+												<td class="odsazena" align="left">ZS 2013/2014</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">23.09.2013</td>
+												<td class="odsazena" align="left">22.12.2013</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1206" /></td>
+												<td class="odsazena" align="left">U3V - zimní semestr 2</td>
+												<td class="odsazena" align="left">ZS 2013/2014</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">06.01.2014</td>
+												<td class="odsazena" align="left">12.01.2014</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1232" /></td>
+												<td class="odsazena" align="left">U3V - letní semestr</td>
+												<td class="odsazena" align="left">LS 2013/2014</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">24.02.2014</td>
+												<td class="odsazena" align="left">25.05.2014</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1269" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2014/2015</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">22.09.2014</td>
+												<td class="odsazena" align="left">21.12.2014</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1391" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2014/2015</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">16.02.2015</td>
+												<td class="odsazena" align="left">17.05.2015</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1570" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2015/2016</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">21.09.2015</td>
+												<td class="odsazena" align="left">20.12.2015</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1729" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2015/2016</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">15.02.2016</td>
+												<td class="odsazena" align="left">15.05.2016</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1814" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2016/2017</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">19.09.2016</td>
+												<td class="odsazena" align="left">18.12.2016</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="1998" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2016/2017</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">13.02.2017</td>
+												<td class="odsazena" align="left">14.05.2017</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2134" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2017/2018</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">18.09.2017</td>
+												<td class="odsazena" align="left">17.12.2017</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2254" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2017/2018</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">12.02.2018</td>
+												<td class="odsazena" align="left">13.05.2018</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2374" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2018/2019</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">17.09.2018</td>
+												<td class="odsazena" align="left">16.12.2018</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2576" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2018/2019</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">11.02.2019</td>
+												<td class="odsazena" align="left">12.05.2019</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2794" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2019/2020</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">16.09.2019</td>
+												<td class="odsazena" align="left">15.12.2019</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="2955" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2019/2020</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">17.02.2020</td>
+												<td class="odsazena" align="left">17.05.2020</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="3254" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2020/2021</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">21.09.2020</td>
+												<td class="odsazena" align="left">20.12.2020</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="3394" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2020/2021</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">15.02.2021</td>
+												<td class="odsazena" align="left">16.05.2021</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="3606" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2021/2022</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">20.09.2021</td>
+												<td class="odsazena" align="left">19.12.2021</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="3814" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2021/2022</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">14.02.2022</td>
+												<td class="odsazena" align="left">15.05.2022</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4095" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2022/2023</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">19.09.2022</td>
+												<td class="odsazena" align="left">18.12.2022</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4274" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2022/2023</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">13.02.2023</td>
+												<td class="odsazena" align="left">14.05.2023</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4454" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2023/2024</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">18.09.2023</td>
+												<td class="odsazena" align="left">17.12.2023</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4634" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2023/2024</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">12.02.2024</td>
+												<td class="odsazena" align="left">12.05.2024</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4837" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2024/2025</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">16.09.2024</td>
+												<td class="odsazena" align="left">15.12.2024</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="4975" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2024/2025</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">17.02.2025</td>
+												<td class="odsazena" align="left">18.05.2025</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="5135" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2025/2026</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">15.09.2025</td>
+												<td class="odsazena" align="left">14.12.2025</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="5275" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">LS 2025/2026</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">16.02.2026</td>
+												<td class="odsazena" align="left">17.05.2026</td>
+											</tr>
+											<tr class="uis-hl-table lbn">
+												<td class="odsazena" align="center"><input type="checkbox" name="rozvrh" value="5455" /></td>
+												<td class="odsazena" align="left">U3V Praha</td>
+												<td class="odsazena" align="left">ZS 2026/2027</td>
+												<td class="odsazena" align="left">U3V</td>
+												<td class="odsazena" align="left">prezenční</td>
+												<td class="odsazena" align="left">21.09.2026</td>
+												<td class="odsazena" align="left">20.12.2026</td>
+											</tr>
+										</tbody>
+									</table>
+									<p></p>
+									<input type="button" value="Označit vše" onclick="oznac_vse()" />&nbsp;<input
+										type="button"
+										value="Odznačit vše"
+										onclick="odznac_vse()"
+									/><br /><br /><input type="submit" name="filtrshow" value="Vybrat označené rozvrhy" />
+								</form>
+								<div class="pseudostrap-activated"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</blockquote>
+		</div>
+		<!-- konec base -->
+		<script async="" src="//www.googletagmanager.com/gtag/js?id=G-1H88NNDR00"></script>
+		<script>
+			window.dataLayer = window.dataLayer || []
 
-            function gtag() {
-                dataLayer.push(arguments)
-            }
+			function gtag() {
+				dataLayer.push(arguments)
+			}
 
-            gtag('js', new Date())
-            gtag('consent', 'default', { ad_storage: 'denied', analytics_storage: 'denied' })
-            gtag('config', 'G-1H88NNDR00', { language: 'cs-CZ', transaction_id: '2288105812' })
-        </script>
-        <div
-            id="uis-control-data"
-            data-nove_ikonky="1"
-            data-uis_ang_lokalizace="GB"
-            data-stat_tel_predvolba="+420"
-            data-cookie_cooperation=""
-            data-module_cookiebar="0"
-        ></div>
-        <div id="automatic-go-to-container">
-            <span
-                class="uf-icon md"
-                role="img"
-                data-sysid="auto-sipka"
-                data-id="2586"
-                aria-label=""
-                alt=""
-                title="Na začátek stránky"
-                id="automatic-back-to-home"
-                style="display: none"
-            >
-                <svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0" data-size-sysid="base" aria-hidden="true" role="img">
-                    <use xlink:href="/icons.svg?20250918115709#uc-glyph960" href="/icons.svg?20250918115709#uc-glyph960"></use>
-                </svg> </span
-            ><span
-                class="uf-icon md"
-                role="img"
-                data-sysid="auto-pin"
-                data-id="2587"
-                aria-label=""
-                alt=""
-                title="Na označenou část stránky"
-                id="automatic-go-to-marker"
-                style="display: none"
-            >
-                <svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0" data-size-sysid="base" aria-hidden="true" role="img">
-                    <use xlink:href="/icons.svg?20250918115709#uc-glyph710" href="/icons.svg?20250918115709#uc-glyph710"></use>
-                </svg> </span
-            ><span
-                class="uf-icon md"
-                role="img"
-                data-sysid="auto-sipka"
-                data-id="2586"
-                aria-label=""
-                alt=""
-                title="Na konec stránky"
-                id="automatic-go-to-page-end"
-            >
-                <svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0" data-size-sysid="base" aria-hidden="true" role="img">
-                    <use xlink:href="/icons.svg?20250918115709#uc-glyph960" href="/icons.svg?20250918115709#uc-glyph960"></use>
-                </svg>
-            </span>
-        </div>
-    </body>
+			gtag('js', new Date())
+			gtag('consent', 'default', { ad_storage: 'denied', analytics_storage: 'denied' })
+			gtag('config', 'G-1H88NNDR00', { language: 'cs-CZ', transaction_id: '2288105812' })
+		</script>
+		<div
+			id="uis-control-data"
+			data-nove_ikonky="1"
+			data-uis_ang_lokalizace="GB"
+			data-stat_tel_predvolba="+420"
+			data-cookie_cooperation=""
+			data-module_cookiebar="0"
+		></div>
+		<div id="automatic-go-to-container">
+			<span
+				class="uf-icon md"
+				role="img"
+				data-sysid="auto-sipka"
+				data-id="2586"
+				aria-label=""
+				alt=""
+				title="Na začátek stránky"
+				id="automatic-back-to-home"
+				style="display: none"
+			>
+				<svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0" data-size-sysid="base" aria-hidden="true" role="img">
+					<use xlink:href="/icons.svg?20250918115709#uc-glyph960" href="/icons.svg?20250918115709#uc-glyph960"></use>
+				</svg> </span
+			><span
+				class="uf-icon md"
+				role="img"
+				data-sysid="auto-pin"
+				data-id="2587"
+				aria-label=""
+				alt=""
+				title="Na označenou část stránky"
+				id="automatic-go-to-marker"
+				style="display: none"
+			>
+				<svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0" data-size-sysid="base" aria-hidden="true" role="img">
+					<use xlink:href="/icons.svg?20250918115709#uc-glyph710" href="/icons.svg?20250918115709#uc-glyph710"></use>
+				</svg> </span
+			><span
+				class="uf-icon md"
+				role="img"
+				data-sysid="auto-sipka"
+				data-id="2586"
+				aria-label=""
+				alt=""
+				title="Na konec stránky"
+				id="automatic-go-to-page-end"
+			>
+				<svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0" data-size-sysid="base" aria-hidden="true" role="img">
+					<use xlink:href="/icons.svg?20250918115709#uc-glyph960" href="/icons.svg?20250918115709#uc-glyph960"></use>
+				</svg>
+			</span>
+		</div>
+	</body>
 </html>

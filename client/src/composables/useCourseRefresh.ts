@@ -146,7 +146,7 @@ export function useCourseRefresh(courseId: number) {
 			}, 3000)
 		})
 
-		eventSource.addEventListener('error', (event) => {
+		eventSource.addEventListener('error', event => {
 			if (event instanceof MessageEvent && event.data) {
 				// Server-sent named 'error' event (e.g. TIMEOUT)
 				closeSSE()
@@ -189,6 +189,6 @@ export function useCourseRefresh(courseId: number) {
 		rateLimitCountdown: readonly(rateLimitCountdown),
 		lastRefreshedAt: readonly(lastRefreshedAt),
 		dismiss,
-		trigger,
+		trigger
 	}
 }

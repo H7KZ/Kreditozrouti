@@ -17,8 +17,8 @@ groups:
         condition: A
         for: 1m
         annotations:
-          summary: "A scraped target is down"
-          description: "Job {{ $labels.job }} has been down for more than 1 minute."
+          summary: 'A scraped target is down'
+          description: 'Job {{ $labels.job }} has been down for more than 1 minute.'
         labels:
           severity: critical
         data:
@@ -38,8 +38,8 @@ groups:
         condition: A
         for: 5m
         annotations:
-          summary: "Disk usage above 80%"
-          description: "Available disk on {{ $labels.mountpoint }} is below 20%."
+          summary: 'Disk usage above 80%'
+          description: 'Available disk on {{ $labels.mountpoint }} is below 20%.'
         labels:
           severity: warning
         data:
@@ -59,8 +59,8 @@ groups:
         condition: A
         for: 5m
         annotations:
-          summary: "Less than 10% memory available"
-          description: "Host memory is critically low — less than 10% available."
+          summary: 'Less than 10% memory available'
+          description: 'Host memory is critically low — less than 10% available.'
         labels:
           severity: warning
         data:
@@ -85,8 +85,8 @@ groups:
         condition: A
         for: 5m
         annotations:
-          summary: "BullMQ scraper jobs are failing"
-          description: "Queue {{ $labels.queue }} has had {{ $values.A }} failed job(s) for more than 5 minutes. Check BullBoard for details."
+          summary: 'BullMQ scraper jobs are failing'
+          description: 'Queue {{ $labels.queue }} has had {{ $values.A }} failed job(s) for more than 5 minutes. Check BullBoard for details.'
         labels:
           severity: critical
         data:
@@ -111,8 +111,8 @@ groups:
         condition: A
         for: 5m
         annotations:
-          summary: "API 5xx error rate above 5%"
-          description: "More than 5% of API requests are returning 5xx errors over the last 5 minutes."
+          summary: 'API 5xx error rate above 5%'
+          description: 'More than 5% of API requests are returning 5xx errors over the last 5 minutes.'
         labels:
           severity: warning
         data:
@@ -132,8 +132,8 @@ groups:
         condition: A
         for: 5m
         annotations:
-          summary: "API p99 latency above 2 seconds"
-          description: "The 99th percentile API response time has exceeded 2 seconds over the last 5 minutes."
+          summary: 'API p99 latency above 2 seconds'
+          description: 'The 99th percentile API response time has exceeded 2 seconds over the last 5 minutes.'
         labels:
           severity: warning
         data:
@@ -153,8 +153,8 @@ groups:
         condition: A
         for: 24h
         annotations:
-          summary: "Scraper response queue has been idle for 24 hours"
-          description: "No jobs have been waiting or active in the ScraperResponseQueue for 24 hours. The scraper may be down or misconfigured."
+          summary: 'Scraper response queue has been idle for 24 hours'
+          description: 'No jobs have been waiting or active in the ScraperResponseQueue for 24 hours. The scraper may be down or misconfigured.'
         labels:
           severity: warning
         data:
@@ -179,8 +179,8 @@ groups:
         condition: A
         for: 2m
         annotations:
-          summary: "HTTP error rate above 5%"
-          description: "5xx error rate is {{ $value | humanizePercentage }} over last 5 minutes."
+          summary: 'HTTP error rate above 5%'
+          description: '5xx error rate is {{ $value | humanizePercentage }} over last 5 minutes.'
         labels:
           severity: critical
         data:
@@ -200,8 +200,8 @@ groups:
         condition: A
         for: 3m
         annotations:
-          summary: "HTTP p95 latency above 2s"
-          description: "p95 request latency is {{ $value | humanizeDuration }} over last 5 minutes."
+          summary: 'HTTP p95 latency above 2s'
+          description: 'p95 request latency is {{ $value | humanizeDuration }} over last 5 minutes.'
         labels:
           severity: warning
         data:
@@ -221,8 +221,8 @@ groups:
         condition: A
         for: 5m
         annotations:
-          summary: "Scraper has not run in 24h"
-          description: "Job type {{ $labels.job_type }} last ran more than 24 hours ago."
+          summary: 'Scraper has not run in 24h'
+          description: 'Job type {{ $labels.job_type }} last ran more than 24 hours ago.'
         labels:
           severity: warning
         data:
@@ -242,8 +242,8 @@ groups:
         condition: A
         for: 0m
         annotations:
-          summary: "Scraper silent failures rising"
-          description: "{{ $value }} silent failures in the last 30 minutes."
+          summary: 'Scraper silent failures rising'
+          description: '{{ $value }} silent failures in the last 30 minutes.'
         labels:
           severity: warning
         data:
@@ -263,8 +263,8 @@ groups:
         condition: A
         for: 5m
         annotations:
-          summary: "Scraper failure rate above 10%"
-          description: "Scraper failure rate for {{ $labels.job_type }} is {{ $value | humanizePercentage }}."
+          summary: 'Scraper failure rate above 10%'
+          description: 'Scraper failure rate for {{ $labels.job_type }} is {{ $value | humanizePercentage }}.'
         labels:
           severity: warning
         data:

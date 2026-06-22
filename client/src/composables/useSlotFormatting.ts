@@ -184,6 +184,6 @@ export function useSlotFormatting() {
 		isRecurringSlot,
 		formatSlotsSummary,
 		formatCapacity,
-		getCapacityClass,
+		getCapacityClass
 	}
 }

@@ -9,5 +9,5 @@ export const DEBOUNCE_TIMING = {
 	RESIZE: 150,
 
 	/** API request debounce */
-	API: 300,
+	API: 300
 } as const

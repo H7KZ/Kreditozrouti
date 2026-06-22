@@ -24,10 +24,10 @@ const emit = defineEmits<Emits>()
 
 const sortedYears = computed(() => {
 	return props.years
-		.filter((year) =>
+		.filter(year =>
 			getPeriodsForLastYears(4)
-				.map((p) => p.year)
-				.includes(Number(year.value)),
+				.map(p => p.year)
+				.includes(Number(year.value))
 		)
 		.slice()
 		.sort((a, b) => Number(b.value) - Number(a.value))
@@ -71,7 +71,7 @@ function handleBack() {
 					'cursor-pointer rounded border p-4 text-center transition-all duration-150 active:scale-[0.99]',
 					selectedYear === year.value
 						? 'border-(--insis-blue) bg-(--insis-blue-light) shadow-(--insis-shadow-sm)'
-						: 'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue-dark) hover:bg-(--insis-gray-50) hover:shadow-(--insis-shadow-sm)',
+						: 'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue-dark) hover:bg-(--insis-gray-50) hover:shadow-(--insis-shadow-sm)'
 				]"
 				@click="handleSelect(Number(year.value))"
 			>

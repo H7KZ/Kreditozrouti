@@ -103,7 +103,7 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 					c.ident?.toLowerCase().includes(search) ||
 					c.title?.toLowerCase().includes(search) ||
 					c.title_cs?.toLowerCase().includes(search) ||
-					c.title_en?.toLowerCase().includes(search),
+					c.title_en?.toLowerCase().includes(search)
 			)
 		}
 
@@ -148,7 +148,7 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 
 	const isStudyPlanSelected = computed(() => (id: number) => {
 		const wizardStore = useWizardStore()
-		return wizardStore.selectedStudyPlans.some((p) => p.id === id)
+		return wizardStore.selectedStudyPlans.some(p => p.id === id)
 	})
 
 	const isCourseCompleted = computed(() => (courseIdent: string) => completedCourseIdents.value.includes(courseIdent))
@@ -209,7 +209,7 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 
 	function persist() {
 		saveToStorage<PersistedCompletedCoursesState>(STORAGE_KEYS.WIZARD, {
-			completedCourseIdents: completedCourseIdents.value,
+			completedCourseIdents: completedCourseIdents.value
 		})
 	}
 
@@ -244,6 +244,6 @@ export const useCompletedCoursesStore = defineStore('completedCourses', () => {
 		clearCompletedCourses,
 		resetUIFilters,
 		persist,
-		hydrate,
+		hydrate
 	}
 })

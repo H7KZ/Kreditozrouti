@@ -129,10 +129,8 @@ const aboutPath = computed(() => (locale.value === 'cs' ? '/about/cs' : '/about/
 				</div>
 
 				<div class="flex flex-col items-center gap-2 sm:items-end">
-					<div class="flex items-center gap-3">
-						<span class="text-xs">{{ t('footer.bottom.version', { version: appVersion }) }}</span>
-						<span class="text-xs text-(--insis-gray-400)">|</span>
-						<span class="text-xs">{{ t('footer.bottom.beta') }}</span>
+					<div class="flex items-center gap-3 text-xs">
+						{{ t('footer.bottom.version', { version: appVersion }) }}
 					</div>
 					<p class="text-xs text-(--insis-gray-500)">
 						{{ t('footer.bottom.disclaimer') }}

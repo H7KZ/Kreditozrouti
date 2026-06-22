@@ -35,14 +35,14 @@ export function useFacetFiltering(facets: Ref<FacetItem[]>, selected: Ref<string
 	 * Shows selected items that may have been filtered out with count 0.
 	 */
 	const combinedFacets = computed(() => {
-		const facetValues = new Set(facets.value.map((f) => String(f.value)))
+		const facetValues = new Set(facets.value.map(f => String(f.value)))
 
 		// Find selected items not in current facets
 		const missingSelectedFacets: FacetItem[] = selected.value
-			.filter((selectedValue) => !facetValues.has(selectedValue))
-			.map((value) => ({
+			.filter(selectedValue => !facetValues.has(selectedValue))
+			.map(value => ({
 				value,
-				count: 0,
+				count: 0
 			}))
 
 		return [...missingSelectedFacets, ...facets.value]
@@ -80,7 +80,7 @@ export function useFacetFiltering(facets: Ref<FacetItem[]>, selected: Ref<string
 			if (!searchQuery.value.trim()) return sortedFacets.value
 
 			const query = searchQuery.value.toLowerCase()
-			return sortedFacets.value.filter((f) => {
+			return sortedFacets.value.filter(f => {
 				const valueStr = String(f.value).toLowerCase()
 				const displayLabel = getLabel(f).toLowerCase()
 				return valueStr.includes(query) || displayLabel.includes(query)
@@ -96,8 +96,8 @@ export function useFacetFiltering(facets: Ref<FacetItem[]>, selected: Ref<string
 		return computed(() => {
 			if (listExpanded.value) return filteredFacets.value
 
-			const selectedItems = filteredFacets.value.filter((f) => selected.value.includes(String(f.value)))
-			const nonSelectedItems = filteredFacets.value.filter((f) => !selected.value.includes(String(f.value)))
+			const selectedItems = filteredFacets.value.filter(f => selected.value.includes(String(f.value)))
+			const nonSelectedItems = filteredFacets.value.filter(f => !selected.value.includes(String(f.value)))
 
 			const remainingSlots = Math.max(0, maxVisible - selectedItems.length)
 			return [...selectedItems, ...nonSelectedItems.slice(0, remainingSlots)]
@@ -137,7 +137,7 @@ export function useFacetFiltering(facets: Ref<FacetItem[]>, selected: Ref<string
 	 */
 	function toggleSelection(value: unknown): string[] {
 		const strValue = String(value)
-		return isSelected(value) ? selected.value.filter((v) => v !== strValue) : [...selected.value, strValue]
+		return isSelected(value) ? selected.value.filter(v => v !== strValue) : [...selected.value, strValue]
 	}
 
 	return {
@@ -156,6 +156,6 @@ export function useFacetFiltering(facets: Ref<FacetItem[]>, selected: Ref<string
 		getHiddenCount,
 		toggleListExpanded,
 		isSelected,
-		toggleSelection,
+		toggleSelection
 	}
 }

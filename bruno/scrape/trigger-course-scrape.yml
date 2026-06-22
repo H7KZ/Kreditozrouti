@@ -5,7 +5,7 @@ info:
 
 http:
   method: POST
-  url: "{{base_url}}/courses/1/scrape"
+  url: '{{base_url}}/courses/1/scrape'
 
 settings:
   encodeUrl: true

@@ -13,36 +13,36 @@ HTTP→HTTPS redirect, and routes traffic to the right container by host/path.
 
 ```yaml
 api:
-  dashboard: true
-  insecure: false
+	dashboard: true
+	insecure: false
 
 entryPoints:
-  web:
-    address: ":80"
-    http:
-      redirections:
-        entryPoint:
-          to: websecure
-          scheme: https
-  websecure:
-    address: ":443"
-  traefik:
-    address: ":8080"
+	web:
+		address: ':80'
+		http:
+			redirections:
+				entryPoint:
+					to: websecure
+					scheme: https
+	websecure:
+		address: ':443'
+	traefik:
+		address: ':8080'
 
 providers:
-  docker:
-    endpoint: "unix:///var/run/docker.sock"
-    exposedByDefault: false
-    network: traefik-network
+	docker:
+		endpoint: 'unix:///var/run/docker.sock'
+		exposedByDefault: false
+		network: traefik-network
 
 certificatesResolvers:
-  cloudflare:
-    acme:
-      email: ${ACME_EMAIL}
-      storage: /certs/acme.json
-      dnsChallenge:
-        provider: cloudflare
-        resolvers: [ "1.1.1.1:53", "8.8.8.8:53" ]
+	cloudflare:
+		acme:
+			email: ${ACME_EMAIL}
+			storage: /certs/acme.json
+			dnsChallenge:
+				provider: cloudflare
+				resolvers: [ '1.1.1.1:53', '8.8.8.8:53' ]
 ```
 
 ### Routing labels
@@ -51,38 +51,38 @@ certificatesResolvers:
 
 ```yaml
 labels:
-  - "traefik.enable=true"
-  - "traefik.http.routers.client.rule=Host(`${DOMAIN}`)"
-  - "traefik.http.routers.client.entrypoints=websecure"
-  - "traefik.http.routers.client.tls.certresolver=cloudflare"
-  - "traefik.http.routers.client.priority=10"
+	- 'traefik.enable=true'
+	- 'traefik.http.routers.client.rule=Host(`${DOMAIN}`)'
+	- 'traefik.http.routers.client.entrypoints=websecure'
+	- 'traefik.http.routers.client.tls.certresolver=cloudflare'
+	- 'traefik.http.routers.client.priority=10'
 ```
 
 **API** (`/api` prefix, strips prefix before forwarding):
 
 ```yaml
 labels:
-  - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
-  - "traefik.http.routers.api.priority=100"
-  - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
-  - "traefik.http.routers.api.middlewares=api-stripprefix"
+	- 'traefik.http.routers.api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)'
+	- 'traefik.http.routers.api.priority=100'
+	- 'traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api'
+	- 'traefik.http.routers.api.middlewares=api-stripprefix'
 ```
 
 **phpMyAdmin** (`/phpmyadmin` prefix, priority 80):
 
 ```yaml
 labels:
-  - "traefik.http.routers.phpmyadmin.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)"
-  - "traefik.http.routers.phpmyadmin.priority=80"
-  - "traefik.http.middlewares.phpmyadmin-stripprefix.stripprefix.prefixes=/phpmyadmin"
+	- 'traefik.http.routers.phpmyadmin.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)'
+	- 'traefik.http.routers.phpmyadmin.priority=80'
+	- 'traefik.http.middlewares.phpmyadmin-stripprefix.stripprefix.prefixes=/phpmyadmin'
 ```
 
 **Bull Board** (`/bullboard` prefix, priority 90, internal only):
 
 ```yaml
 labels:
-  - "traefik.http.routers.bullboard.rule=Host(`${DOMAIN}`) && PathPrefix(`/bullboard`)"
-  - "traefik.http.routers.bullboard.priority=90"
+	- 'traefik.http.routers.bullboard.rule=Host(`${DOMAIN}`) && PathPrefix(`/bullboard`)'
+	- 'traefik.http.routers.bullboard.priority=90'
 ```
 
 Note: `/bullboard` is **not** exposed publicly in production. The Traefik label exists so the route is consistently
@@ -92,8 +92,8 @@ addressable on the internal network. Access via SSH port-forwarding or a bastion
 
 ```yaml
 labels:
-  - "traefik.http.routers.grafana.rule=Host(`${DOMAIN}`) && PathPrefix(`/grafana`)"
-  - "traefik.http.routers.grafana.priority=85"
+	- 'traefik.http.routers.grafana.rule=Host(`${DOMAIN}`) && PathPrefix(`/grafana`)'
+	- 'traefik.http.routers.grafana.priority=85'
 ```
 
 Priority rule: API (100) > Bull Board (90) > phpMyAdmin (80+) > Grafana (85) > Client (10).

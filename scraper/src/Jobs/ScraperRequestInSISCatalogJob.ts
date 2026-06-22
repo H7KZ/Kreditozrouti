@@ -18,115 +18,115 @@ const CATALOG_CONCURRENCY = 4
  * Phase 2: Iterates through each combination, extracting course URLs
  */
 export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCatalogRequestJob): Promise<void | null> {
-    const client = createInSISClient('catalog')
+	const client = createInSISClient('catalog')
 
-    // Phase 1: Discovery
-    const options = await discoverSearchOptions(client)
-    if (!options) {
-        redis.incr('metrics:scraper:silent_failures:catalog').catch(() => {
-            /* empty */
-        })
-        redis.expire('metrics:scraper:silent_failures:catalog', 604800).catch(() => {
-            /* empty */
-        })
-        return null
-    }
+	// Phase 1: Discovery
+	const options = await discoverSearchOptions(client)
+	if (!options) {
+		redis.incr('metrics:scraper:silent_failures:catalog').catch(() => {
+			/* empty */
+		})
+		redis.expire('metrics:scraper:silent_failures:catalog', 604800).catch(() => {
+			/* empty */
+		})
+		return null
+	}
 
-    let faculties = options.faculties
-    if (data.faculties && data.faculties.length > 0) {
-        faculties = faculties.filter(faculty => data.faculties!.map(f => f.toLowerCase()).includes(faculty.name.toLowerCase()))
-    }
+	let faculties = options.faculties
+	if (data.faculties && data.faculties.length > 0) {
+		faculties = faculties.filter(faculty => data.faculties!.map(f => f.toLowerCase()).includes(faculty.name.toLowerCase()))
+	}
 
-    let periods = options.periods
-    if (data.periods && data.periods.length > 0) {
-        periods = periods.filter(op =>
-            data.periods!.some(dp => dp.semester === op.semester && dp.year === op.year && faculties.some(f => f.identifier === op.identifier?.split('_')[0]))
-        )
-    }
+	let periods = options.periods
+	if (data.periods && data.periods.length > 0) {
+		periods = periods.filter(op =>
+			data.periods!.some(dp => dp.semester === op.semester && dp.year === op.year && faculties.some(f => f.identifier === op.identifier?.split('_')[0]))
+		)
+	}
 
-    LoggerJobContext.add({
-        faculties_count: faculties.length,
-        periods_count: periods.length,
-        concurrency: CATALOG_CONCURRENCY
-    })
+	LoggerJobContext.add({
+		faculties_count: faculties.length,
+		periods_count: periods.length,
+		concurrency: CATALOG_CONCURRENCY
+	})
 
-    const allowedIdents = data.allowed_idents && data.allowed_idents.length > 0 ? new Set(data.allowed_idents) : null
+	const allowedIdents = data.allowed_idents && data.allowed_idents.length > 0 ? new Set(data.allowed_idents) : null
 
-    // Phase 2: Scrape each faculty/period combination with mode-driven concurrency
-    const combos = faculties.flatMap(faculty => periods.map(period => ({ faculty, period })))
+	// Phase 2: Scrape each faculty/period combination with mode-driven concurrency
+	const combos = faculties.flatMap(faculty => periods.map(period => ({ faculty, period })))
 
-    await runWithConcurrency(combos, CATALOG_CONCURRENCY, ({ faculty, period }) =>
-        scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false, allowedIdents)
-    )
+	await runWithConcurrency(combos, CATALOG_CONCURRENCY, ({ faculty, period }) =>
+		scrapeCatalogPage(client, faculty.id, period.yearId, period.id, data.auto_queue_courses ?? false, allowedIdents)
+	)
 }
 
 async function discoverSearchOptions(client: ReturnType<typeof createInSISClient>) {
-    const result = await client.get(Config.insis.catalogExtendedSearchUrl)
+	const result = await client.get(Config.insis.catalogExtendedSearchUrl)
 
-    if (!result.success) {
-        if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
-        return null
-    }
+	if (!result.success) {
+		if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
+		return null
+	}
 
-    const options = ExtractInSISCatalogService.extractSearchOptions(result.data)
+	const options = ExtractInSISCatalogService.extractSearchOptions(result.data)
 
-    if (!options.faculties.length || !options.periods.length) {
-        LoggerJobContext.add({ error: 'Discovery failed: No faculties or periods found.' })
-        return null
-    }
+	if (!options.faculties.length || !options.periods.length) {
+		LoggerJobContext.add({ error: 'Discovery failed: No faculties or periods found.' })
+		return null
+	}
 
-    return options
+	return options
 }
 
 async function scrapeCatalogPage(
-    client: ReturnType<typeof createInSISClient>,
-    facultyId: number,
-    periodId: number,
-    facultyPeriodId: number,
-    autoQueueCourses: boolean,
-    allowedIdents: Set<string> | null
+	client: ReturnType<typeof createInSISClient>,
+	facultyId: number,
+	periodId: number,
+	facultyPeriodId: number,
+	autoQueueCourses: boolean,
+	allowedIdents: Set<string> | null
 ): Promise<void> {
-    const params = new URLSearchParams({
-        kredity_od: '',
-        kredity_do: '',
-        fakulta: facultyId.toString(),
-        obdobi: periodId.toString(),
-        obdobi_fak: facultyPeriodId.toString(),
-        vyhledat_rozsirene: 'Vyhledat předměty',
-        jak: 'rozsirene',
-        lang: 'cz'
-    })
+	const params = new URLSearchParams({
+		kredity_od: '',
+		kredity_do: '',
+		fakulta: facultyId.toString(),
+		obdobi: periodId.toString(),
+		obdobi_fak: facultyPeriodId.toString(),
+		vyhledat_rozsirene: 'Vyhledat předměty',
+		jak: 'rozsirene',
+		lang: 'cz'
+	})
 
-    const result = await client.post<string>(Config.insis.catalogUrl, params.toString())
+	const result = await client.post<string>(Config.insis.catalogUrl, params.toString())
 
-    if (!result.success) {
-        if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
-        LoggerJobContext.add({
-            error: 'Catalog page fetch failed'
-        })
-        redis.incr('metrics:scraper:silent_failures:catalog').catch(() => {
-            /* empty */
-        })
-        redis.expire('metrics:scraper:silent_failures:catalog', 604800).catch(() => {
-            /* empty */
-        })
-        return
-    }
+	if (!result.success) {
+		if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
+		LoggerJobContext.add({
+			error: 'Catalog page fetch failed'
+		})
+		redis.incr('metrics:scraper:silent_failures:catalog').catch(() => {
+			/* empty */
+		})
+		redis.expire('metrics:scraper:silent_failures:catalog', 604800).catch(() => {
+			/* empty */
+		})
+		return
+	}
 
-    let courses = ExtractInSISCatalogService.extractCourses(result.data)
+	let courses = ExtractInSISCatalogService.extractCourses(result.data)
 
-    if (allowedIdents !== null) {
-        courses = courses.filter(c => allowedIdents.has(c.ident))
-    }
+	if (allowedIdents !== null) {
+		courses = courses.filter(c => allowedIdents.has(c.ident))
+	}
 
-    await QueueService.addCatalogResponse(courses.map(c => c.url))
+	await QueueService.addCatalogResponse(courses.map(c => c.url))
 
-    if (courses.length && autoQueueCourses) {
-        const coursesWithIds = courses.map(c => ({
-            url: c.url,
-            courseId: ExtractInSISCourseService.extractIdFromUrl(c.url)
-        }))
+	if (courses.length && autoQueueCourses) {
+		const coursesWithIds = courses.map(c => ({
+			url: c.url,
+			courseId: ExtractInSISCourseService.extractIdFromUrl(c.url)
+		}))
 
-        await QueueService.queueCourseRequests(coursesWithIds)
-    }
+		await QueueService.queueCourseRequests(coursesWithIds)
+	}
 }

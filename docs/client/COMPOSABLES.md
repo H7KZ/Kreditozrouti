@@ -95,7 +95,9 @@ InSISDay | null        // slot.day ?? getDayFromDate(slot.date)
 Debounced reactive ref pair:
 
 ```typescript
-const {value, debouncedValue, cancel, flush} = useDebounce('', {delay: 750})
+const { value, debouncedValue, cancel, flush } = useDebounce('', {
+	delay: 750
+})
 ```
 
 `value` updates immediately; `debouncedValue` updates after the delay. Useful for search inputs.
@@ -110,7 +112,7 @@ Viewport-safe popover positioning. Given a trigger position and a desired anchor
 popover visible.
 
 ```typescript
-const {popoverStyle, calculatePosition, wouldOverflow} = usePopover(position, opts)
+const { popoverStyle, calculatePosition, wouldOverflow } = usePopover(position, opts)
 ```
 
 ### `useSlotFormatting()`
@@ -212,10 +214,7 @@ group, all "exercise only" in another). Each group shows a selector so the user 
 swap behaviour). Then calls `timetableStore.addUnit()`.
 
 ```typescript
-const {
-    unitsByGroup, missingUnitTypes, isSelectionComplete, hasIncompleteSelection,
-    handleAddUnit, handleRemoveUnit
-} = useCourseUnitSelection({course})
+const { unitsByGroup, missingUnitTypes, isSelectionComplete, hasIncompleteSelection, handleAddUnit, handleRemoveUnit } = useCourseUnitSelection({ course })
 ```
 
 ### `useTimeFilterMatching()`
@@ -246,10 +245,7 @@ Handles the display of checkbox facets in `FilterCheckboxGroup`. Re-injects sele
 count (so selected filters stay visible even when the API would remove them from the facet list).
 
 ```typescript
-const {
-    combinedFacets, sortedFacets, filterBySearch, getVisibleFacets,
-    toggleListExpanded, toggleSelection
-} = useFacetFiltering(facets, selected, opts)
+const { combinedFacets, sortedFacets, filterBySearch, getVisibleFacets, toggleListExpanded, toggleSelection } = useFacetFiltering(facets, selected, opts)
 ```
 
 ---
@@ -285,10 +281,7 @@ filter state is shared between `CourseStatusFilter.vue` and `CourseStatusSummary
 on page unmount.
 
 ```typescript
-const {
-    selectedStatuses, filterOptions, filteredCourseIdents,
-    toggleStatus, clearFilter, applyFilter
-} = useSharedCourseStatusFilter()
+const { selectedStatuses, filterOptions, filteredCourseIdents, toggleStatus, clearFilter, applyFilter } = useSharedCourseStatusFilter()
 ```
 
 ### `useCourseRefresh(courseId)`
@@ -296,7 +289,7 @@ const {
 Triggers a course scrape via SSE and updates `coursesStore` when complete.
 
 ```typescript
-const {isRefreshing, refreshStatus, triggerRefresh} = useCourseRefresh(courseId)
+const { isRefreshing, refreshStatus, triggerRefresh } = useCourseRefresh(courseId)
 ```
 
 **Flow:**
@@ -320,7 +313,7 @@ Manages mouse-event drag-to-select on the timetable grid. Registers global `mous
 3. Calls `coursesStore.fetchCourses()`
 
 ```typescript
-const {handleMouseDown, handleDragFilter, handleDragCancel} = useTimetableDrag(gridRef, getTimeFromX)
+const { handleMouseDown, handleDragFilter, handleDragCancel } = useTimetableDrag(gridRef, getTimeFromX)
 ```
 
 ### `useClickOutside(ref, opts)`
@@ -328,9 +321,9 @@ const {handleMouseDown, handleDragFilter, handleDragCancel} = useTimetableDrag(g
 Registers click-outside and Escape key handlers via `onMounted`/`onUnmounted`.
 
 ```typescript
-const {handleClickOutside, handleKeyDown} = useClickOutside(elementRef, {
-    onClickOutside: () => close(),
-    onEscape: () => close()
+const { handleClickOutside, handleKeyDown } = useClickOutside(elementRef, {
+	onClickOutside: () => close(),
+	onEscape: () => close()
 })
 ```
 
@@ -364,10 +357,10 @@ Composables run outside component setup (when called from stores), so `useI18n()
 instead:
 
 ```typescript
-import {i18n} from '@client/i18n'
+import { i18n } from '@client/i18n'
 
 export function useMyLabels() {
-    const {t} = i18n.global
-    return {label: t('some.key')}
+	const { t } = i18n.global
+	return { label: t('some.key') }
 }
 ```

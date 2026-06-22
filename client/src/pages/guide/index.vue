@@ -7,10 +7,10 @@ const router = useRouter()
 
 watch(
 	() => i18n.global.locale.value,
-	(locale) => {
+	locale => {
 		router.replace(locale === 'cs' ? '/guide/cs' : '/guide/en')
 	},
-	{ immediate: true },
+	{ immediate: true }
 )
 </script>
 

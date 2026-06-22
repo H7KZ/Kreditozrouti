@@ -86,7 +86,7 @@ function isCategoryFilterActive(category: string): boolean {
 
 /** Completed count in a category */
 function completedInCategory(courses: CourseDTO[]): number {
-	return courses.filter((c) => isCompleted(c.ident)).length
+	return courses.filter(c => isCompleted(c.ident)).length
 }
 
 /** Total completed count */
@@ -162,10 +162,10 @@ function clearSearch() {
 					:key="category"
 					type="button"
 					:class="[
-						'cursor-pointer rounded-full border px-3 py-1 text-xs transition-all duration-150 active:scale-[0.97]',
+						'cursor-pointer rounded-full border px-3 py-2.5 text-xs transition-all duration-150 active:scale-[0.97]',
 						isCategoryFilterActive(category)
 							? 'border-(--insis-blue) bg-(--insis-blue-light) text-(--insis-blue)'
-							: 'border-(--insis-border) bg-(--insis-surface) text-(--insis-gray-600) hover:border-(--insis-blue) hover:bg-(--insis-blue-subtle)',
+							: 'border-(--insis-border) bg-(--insis-surface) text-(--insis-gray-600) hover:border-(--insis-blue) hover:bg-(--insis-blue-subtle)'
 					]"
 					@click="toggleCategoryFilter(category)"
 				>
@@ -209,8 +209,8 @@ function clearSearch() {
 						v-for="course in courses"
 						:key="course.id"
 						:class="[
-							'relative flex cursor-pointer items-center gap-3 border-b border-(--insis-border-light) px-3 py-2 transition-colors last:border-b-0',
-							isCompleted(course.ident) ? 'bg-(--insis-success-light)' : 'hover:bg-(--insis-gray-50)',
+							'relative flex min-h-[32px] cursor-pointer items-center gap-3 border-b border-(--insis-border-light) px-3 py-2 transition-colors last:border-b-0',
+							isCompleted(course.ident) ? 'bg-(--insis-success-light)' : 'hover:bg-(--insis-gray-50)'
 						]"
 					>
 						<input type="checkbox" class="sr-only" :checked="isCompleted(course.ident)" @change="emit('toggle', course.ident)" />

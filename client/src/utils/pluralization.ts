@@ -40,52 +40,52 @@ export const datetimeFormats: Record<string, Record<string, Intl.DateTimeFormatO
 		short: {
 			year: 'numeric',
 			month: 'numeric',
-			day: 'numeric',
+			day: 'numeric'
 		},
 		long: {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric',
-			weekday: 'long',
+			weekday: 'long'
 		},
 		time: {
 			hour: '2-digit',
-			minute: '2-digit',
+			minute: '2-digit'
 		},
 		datetime: {
 			year: 'numeric',
 			month: 'numeric',
 			day: 'numeric',
 			hour: '2-digit',
-			minute: '2-digit',
+			minute: '2-digit'
 		},
 		monthYear: {
 			year: 'numeric',
-			month: 'long',
+			month: 'long'
 		},
 		weekday: {
-			weekday: 'long',
+			weekday: 'long'
 		},
 		weekdayShort: {
-			weekday: 'short',
-		},
+			weekday: 'short'
+		}
 	},
 	en: {
 		short: {
 			year: 'numeric',
 			month: 'short',
-			day: 'numeric',
+			day: 'numeric'
 		},
 		long: {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric',
-			weekday: 'long',
+			weekday: 'long'
 		},
 		time: {
 			hour: '2-digit',
 			minute: '2-digit',
-			hour12: false,
+			hour12: false
 		},
 		datetime: {
 			year: 'numeric',
@@ -93,19 +93,19 @@ export const datetimeFormats: Record<string, Record<string, Intl.DateTimeFormatO
 			day: 'numeric',
 			hour: '2-digit',
 			minute: '2-digit',
-			hour12: false,
+			hour12: false
 		},
 		monthYear: {
 			year: 'numeric',
-			month: 'long',
+			month: 'long'
 		},
 		weekday: {
-			weekday: 'long',
+			weekday: 'long'
 		},
 		weekdayShort: {
-			weekday: 'short',
-		},
-	},
+			weekday: 'short'
+		}
+	}
 }
 
 /**
@@ -117,54 +117,54 @@ export const numberFormats: Record<string, Record<string, Intl.NumberFormatOptio
 		decimal: {
 			style: 'decimal',
 			minimumFractionDigits: 0,
-			maximumFractionDigits: 2,
+			maximumFractionDigits: 2
 		},
 		integer: {
 			style: 'decimal',
 			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
+			maximumFractionDigits: 0
 		},
 		ects: {
 			style: 'decimal',
 			minimumFractionDigits: 0,
-			maximumFractionDigits: 1,
+			maximumFractionDigits: 1
 		},
 		percent: {
 			style: 'percent',
 			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
+			maximumFractionDigits: 0
 		},
 		percentDecimal: {
 			style: 'percent',
 			minimumFractionDigits: 1,
-			maximumFractionDigits: 1,
-		},
+			maximumFractionDigits: 1
+		}
 	},
 	en: {
 		decimal: {
 			style: 'decimal',
 			minimumFractionDigits: 0,
-			maximumFractionDigits: 2,
+			maximumFractionDigits: 2
 		},
 		integer: {
 			style: 'decimal',
 			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
+			maximumFractionDigits: 0
 		},
 		ects: {
 			style: 'decimal',
 			minimumFractionDigits: 0,
-			maximumFractionDigits: 1,
+			maximumFractionDigits: 1
 		},
 		percent: {
 			style: 'percent',
 			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
+			maximumFractionDigits: 0
 		},
 		percentDecimal: {
 			style: 'percent',
 			minimumFractionDigits: 1,
-			maximumFractionDigits: 1,
-		},
-	},
+			maximumFractionDigits: 1
+		}
+	}
 }

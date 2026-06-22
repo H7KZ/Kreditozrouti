@@ -45,8 +45,8 @@ which side creates a `Queue` (producer) vs a `Worker` (consumer).
 
 ```typescript
 new Worker(ScraperRequestQueue, handler, {
-  concurrency: 1,
-  limiter: { max: 10, duration: 1000 }
+	concurrency: 1,
+	limiter: { max: 10, duration: 1000 }
 })
 ```
 
@@ -90,8 +90,8 @@ defaultJobOptions: {
 
 ```typescript
 new Worker(ScraperResponseQueue, handler, {
-  concurrency: 2,
-  maxStalledCount: 2 // allow 2 stall recoveries before permanent failure
+	concurrency: 2,
+	maxStalledCount: 2 // allow 2 stall recoveries before permanent failure
 })
 ```
 

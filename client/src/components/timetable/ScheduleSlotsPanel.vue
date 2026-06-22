@@ -119,7 +119,7 @@ function handlePencilClick(slotId: string) {
 	if (slotsStore.activeSlotId !== slotId) {
 		slotsStore.loadSlot(slotId)
 	}
-	const slot = slotsStore.slots.find((s) => s.id === slotId)
+	const slot = slotsStore.slots.find(s => s.id === slotId)
 	if (slot) startEditing(slotId, slot.name)
 }
 

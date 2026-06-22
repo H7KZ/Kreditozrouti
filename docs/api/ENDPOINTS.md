@@ -31,34 +31,34 @@ Returns a paginated list of courses with facets for all filter dimensions.
 
 ```typescript
 {
-    page ? : number           // default 1
-    page_size ? : number      // default 20, max 100
+	page ? : number           // default 1
+	page_size ? : number      // default 20, max 100
 
-    // Text search
-    title ? : string
+	// Text search
+	title ? : string
 
-    // Categorical filters
-    faculty_ids ? : string[]
-    levels ? : string[]
-    semesters ? : InSISSemester[]        // 'ZS' | 'LS'
-    years ? : number[]
-    modes_of_delivery ? : string[]
-    modes_of_completion ? : string[]
-    languages ? : string[]
-    years_of_study ? : number[]
-    lecturers ? : string[]
-    ects ? : number[]
+	// Categorical filters
+	faculty_ids ? : string[]
+	levels ? : string[]
+	semesters ? : InSISSemester[]        // 'ZS' | 'LS'
+	years ? : number[]
+	modes_of_delivery ? : string[]
+	modes_of_completion ? : string[]
+	languages ? : string[]
+	years_of_study ? : number[]
+	lecturers ? : string[]
+	ects ? : number[]
 
-    // Study plan filters
-    study_plan_idents ? : string[]
-    study_plan_groups ? : InSISStudyPlanCourseGroup[]
-    study_plan_categories ? : InSISStudyPlanCourseCategory[]
+	// Study plan filters
+	study_plan_idents ? : string[]
+	study_plan_groups ? : InSISStudyPlanCourseGroup[]
+	study_plan_categories ? : InSISStudyPlanCourseCategory[]
 
-    // Time-conflict exclusions — slots overlapping any of these are excluded
-    exclude_times ? : TimeSelection[]
+	// Time-conflict exclusions — slots overlapping any of these are excluded
+	exclude_times ? : TimeSelection[]
 
-    // Specific study plan linkage
-    study_plan_id ? : number
+	// Specific study plan linkage
+	study_plan_id ? : number
 }
 ```
 
@@ -66,11 +66,11 @@ Returns a paginated list of courses with facets for all filter dimensions.
 
 ```typescript
 {
-    day ? : InSISDay          // Czech day name
-    date ? : string           // ISO date for one-time exclusions
-    time_from: number       // minutes from midnight
-    time_to: number         // minutes from midnight
-    slot_id ? : number        // exclude a specific slot from conflict detection
+	day ? : InSISDay          // Czech day name
+	date ? : string           // ISO date for one-time exclusions
+	time_from: number       // minutes from midnight
+	time_to: number         // minutes from midnight
+	slot_id ? : number        // exclude a specific slot from conflict detection
 }
 ```
 
@@ -78,65 +78,65 @@ Returns a paginated list of courses with facets for all filter dimensions.
 
 ```typescript
 {
-    data: CourseWithRelations[]
-    facets: {
-        faculty_ids: {
-            value: string;
-            count: number
-        }
-        []
-        levels: {
-            value: string;
-            count: number
-        }
-        []
-        semesters: {
-            value: string;
-            count: number
-        }
-        []
-        years: {
-            value: string;
-            count: number
-        }
-        []
-        modes_of_delivery: {
-            value: string;
-            count: number
-        }
-        []
-        modes_of_completion: {
-            value: string;
-            count: number
-        }
-        []
-        languages: {
-            value: string;
-            count: number
-        }
-        []
-        years_of_study: {
-            value: string;
-            count: number
-        }
-        []
-        lecturers: {
-            value: string;
-            count: number
-        }
-        []
-        ects: {
-            value: string;
-            count: number
-        }
-        []
-    }
-    meta: {
-        page: number
-        page_size: number
-        total: number
-        total_pages: number
-    }
+	data: CourseWithRelations[]
+	facets: {
+		faculty_ids: {
+			value: string;
+			count: number
+		}
+		[]
+		levels: {
+			value: string;
+			count: number
+		}
+		[]
+		semesters: {
+			value: string;
+			count: number
+		}
+		[]
+		years: {
+			value: string;
+			count: number
+		}
+		[]
+		modes_of_delivery: {
+			value: string;
+			count: number
+		}
+		[]
+		modes_of_completion: {
+			value: string;
+			count: number
+		}
+		[]
+		languages: {
+			value: string;
+			count: number
+		}
+		[]
+		years_of_study: {
+			value: string;
+			count: number
+		}
+		[]
+		lecturers: {
+			value: string;
+			count: number
+		}
+		[]
+		ects: {
+			value: string;
+			count: number
+		}
+		[]
+	}
+	meta: {
+		page: number
+		page_size: number
+		total: number
+		total_pages: number
+	}
 }
 ```
 
@@ -152,14 +152,14 @@ Returns a paginated list of study plans with facets.
 
 ```typescript
 {
-    page ? : number
-    page_size ? : number
+	page ? : number
+	page_size ? : number
 
-    faculty_ids ? : string[]
-    levels ? : string[]
-    semesters ? : InSISSemester[]
-    years ? : number[]
-    modes_of_study ? : string[]
+	faculty_ids ? : string[]
+	levels ? : string[]
+	semesters ? : InSISSemester[]
+	years ? : number[]
+	modes_of_study ? : string[]
 }
 ```
 
@@ -177,10 +177,10 @@ Returns courses belonging to a specific study plan.
 
 ```typescript
 {
-    study_plan_id: number     // required
-    page ? : number
-    page_size ? : number
-    // ... same course filters as POST /courses
+	study_plan_id: number     // required
+	page ? : number
+	page_size ? : number
+	// ... same course filters as POST /courses
 }
 ```
 
@@ -284,9 +284,9 @@ Triggers a full InSIS course catalog scrape.
 
 ```typescript
 {
-    faculties ? : string[]       // filter to specific faculty idents
-    periods ? : {semester: InSISSemester | null; year: number}[]
-    auto_queue_courses ? : boolean   // default true
+	faculties ? : string[]       // filter to specific faculty idents
+	periods ? : {semester: InSISSemester | null; year: number}[]
+	auto_queue_courses ? : boolean   // default true
 }
 ```
 
@@ -302,7 +302,7 @@ Triggers scraping of a single course by URL.
 
 ```typescript
 {
-    url: string
+	url: string
 }
 ```
 
@@ -318,9 +318,9 @@ Triggers a full study plans catalog scrape.
 
 ```typescript
 {
-    faculties ? : string[]
-    periods ? : {semester: InSISSemester | null; year: number}[]
-    auto_queue_study_plans ? : boolean
+	faculties ? : string[]
+	periods ? : {semester: InSISSemester | null; year: number}[]
+	auto_queue_study_plans ? : boolean
 }
 ```
 
@@ -336,7 +336,7 @@ Triggers scraping of a single study plan by URL.
 
 ```typescript
 {
-    url: string
+	url: string
 }
 ```
 
@@ -354,7 +354,7 @@ deadlocks under concurrent load).
 
 ```typescript
 {
-    types?: ('InSIS:Course' | 'InSIS:StudyPlan')[]  // defaults to both when omitted
+	types ? : ('InSIS:Course' | 'InSIS:StudyPlan')[]  // defaults to both when omitted
 }
 ```
 
@@ -396,8 +396,8 @@ Controllers use **named function namespace objects**, not class instances:
 ```typescript
 // ✅ Correct
 export const CoursesController = {
-    async handleRequest(req: Request, res: Response) { ...
-    }
+	async handleRequest(req: Request, res: Response) { ...
+	}
 }
 
 // ❌ Wrong
@@ -416,9 +416,9 @@ All errors thrown via `Errors.*` produce this shape:
 
 ```typescript
 {
-    type: 'UNAUTHORIZED' | 'VALIDATION' | 'NOT_FOUND' | 'INTERNAL'
-    message: string
-    details: Record<string, unknown>   // e.g. { issues: ZodIssue[] } for VALIDATION
+	type: 'UNAUTHORIZED' | 'VALIDATION' | 'NOT_FOUND' | 'INTERNAL'
+	message: string
+	details: Record<string, unknown> // e.g. { issues: ZodIssue[] } for VALIDATION
 }
 ```
 

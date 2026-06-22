@@ -13,13 +13,13 @@ const api: AxiosInstance = axios.create({
 	baseURL: import.meta.env.VITE_API_URL ?? '/api',
 	headers: {
 		'Content-Type': 'application/json',
-		Accept: 'application/json',
+		Accept: 'application/json'
 	},
-	timeout: 10000,
+	timeout: 10000
 })
 
 api.interceptors.response.use(
-	(response) => response,
+	response => response,
 	(error: Error | AxiosError<ErrorResponse>): Promise<Error | ErrorResponse> => {
 		const alerts = useAlertsStore()
 		const t = (key: string) => i18n.global.t(key)
@@ -46,7 +46,7 @@ api.interceptors.response.use(
 			type: 'error',
 			title,
 			description,
-			timeout: 20000,
+			timeout: 20000
 		})
 
 		if (axios.isAxiosError(error)) {
@@ -54,7 +54,7 @@ api.interceptors.response.use(
 		}
 
 		return Promise.reject(error)
-	},
+	}
 )
 
 export default api

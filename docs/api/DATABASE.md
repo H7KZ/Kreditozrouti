@@ -142,15 +142,15 @@ Conversion:
 ```typescript
 // DB write (in ScraperResponseInSISCourseJob)
 function timeToMinutes(time: string): number {
-    const [h, m] = time.split(':').map(Number)
-    return h * 60 + m
+	const [h, m] = time.split(':').map(Number)
+	return h * 60 + m
 }
 
 // Display (in client/src/composables/useTimeUtils.ts)
 function minutesToTime(minutes: number): string {
-    const h = Math.floor(minutes / 60)
-    const m = minutes % 60
-    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+	const h = Math.floor(minutes / 60)
+	const m = minutes % 60
+	return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
 }
 ```
 
@@ -175,19 +175,19 @@ have run in a `kysely_migration` table (created automatically).
 **Migration template:**
 
 ```typescript
-import {Kysely, sql} from 'kysely'
+import { Kysely, sql } from 'kysely'
 
 export async function up(db: Kysely<any>): Promise<void> {
-    await db.schema
-        .createTable('new_table')
-        .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
-        .addColumn('name', 'varchar(255)', col => col.notNull())
-        .addColumn('created_at', 'timestamp', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .execute()
+	await db.schema
+		.createTable('new_table')
+		.addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
+		.addColumn('name', 'varchar(255)', col => col.notNull())
+		.addColumn('created_at', 'timestamp', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+		.execute()
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-    await db.schema.dropTable('new_table').execute()
+	await db.schema.dropTable('new_table').execute()
 }
 ```
 
@@ -202,37 +202,37 @@ After a migration changes the schema, update `Database/types.ts` with the corres
 ```typescript
 // Select with filter
 const courses = await mysql
-    .selectFrom('insis_courses')
-    .selectAll()
-    .where('faculty_id', '=', 'FIS')
-    .orderBy('ident', 'asc')
-    .limit(20)
-    .execute()
+	.selectFrom('insis_courses')
+	.selectAll()
+	.where('faculty_id', '=', 'FIS')
+	.orderBy('ident', 'asc')
+	.limit(20)
+	.execute()
 
 // Upsert (MySQL ON DUPLICATE KEY UPDATE)
 await mysql
-    .insertInto('insis_courses')
-    .values({ident: '4IT101', title_cs: 'Java', ...})
-    .onConflict(oc => oc.column('ident').doUpdateSet({title_cs: '4IT101'}))
-    .execute()
+	.insertInto('insis_courses')
+	.values({ident: '4IT101', title_cs: 'Java', ...})
+	.onConflict(oc => oc.column('ident').doUpdateSet({title_cs: '4IT101'}))
+	.execute()
 
 // Subquery relation (jsonArrayFrom)
 const result = await mysql
-    .selectFrom('insis_courses as c')
-    .selectAll('c')
-    .select(eb => [
-        jsonArrayFrom(
-            eb.selectFrom('insis_courses_units as u')
-                .selectAll('u')
-                .whereRef('u.course_id', '=', 'c.id')
-        ).as('units')
-    ])
-    .execute()
+	.selectFrom('insis_courses as c')
+	.selectAll('c')
+	.select(eb => [
+		jsonArrayFrom(
+			eb.selectFrom('insis_courses_units as u')
+				.selectAll('u')
+				.whereRef('u.course_id', '=', 'c.id')
+		).as('units')
+	])
+	.execute()
 
 // Transaction
 await mysql.transaction().execute(async trx => {
-    await trx.insertInto('insis_faculties').values(...).execute()
-    await trx.insertInto('insis_courses').values(...).execute()
+	await trx.insertInto('insis_faculties').values(...).execute()
+	await trx.insertInto('insis_courses').values(...).execute()
 })
 ```
 
@@ -246,10 +246,10 @@ All table interfaces live in a single file (`Database/types.ts`). Each table use
 
 ```typescript
 export class CourseTable {
-    static readonly _table = 'insis_courses' as const
-    id!: Generated<number>
-    ident!: string
-    // ...
+	static readonly _table = 'insis_courses' as const
+	id!: Generated<number>
+	ident!: string
+	// ...
 }
 
 export type Course = Selectable<CourseTable>

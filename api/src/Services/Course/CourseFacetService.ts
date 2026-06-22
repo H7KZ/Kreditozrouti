@@ -133,6 +133,7 @@ export class CourseFacetService {
 				.$if(!!filters.languages?.length && column !== 'languages', q =>
 					q.where(eb => eb.or(filters.languages!.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
 				)
+				.$if(!!filters.completed_course_idents?.length, q => q.where('c1.ident', 'not in', filters.completed_course_idents!))
 				.groupBy(`c1.${column}`)
 				.orderBy('count', 'desc')
 				.execute()
@@ -213,7 +214,7 @@ export class CourseFacetService {
 	 */
 	// Only available when filtering by study_plan_ids
 	static async getGroupFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		if (!filters.study_plan_ids) return []
+		if (!filters.study_plan_ids?.length) return []
 		return CourseFilterBuilder.buildFilterQuery(filters, 'groups', { studyPlan: true })
 			.select('spc1.group as value')
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
@@ -232,7 +233,7 @@ export class CourseFacetService {
 	 */
 	// Only available when filtering by study_plan_ids
 	static async getCategoryFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		if (!filters.study_plan_ids) return []
+		if (!filters.study_plan_ids?.length) return []
 		return CourseFilterBuilder.buildFilterQuery(filters, 'categories', { studyPlan: true })
 			.select('spc1.category as value')
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))

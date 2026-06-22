@@ -18,7 +18,7 @@ const router = createRouter({
 	scrollBehavior() {
 		// resets scroll position to top on route change
 		return { top: 0, left: 0 }
-	},
+	}
 })
 
 const pinia = createPinia()

@@ -30,7 +30,7 @@ const steps = computed(() => [
 	{ number: 1, label: t('components.wizard.WizardSteps.faculty') },
 	{ number: 2, label: t('components.wizard.WizardSteps.enrollmentYear') },
 	{ number: 3, label: t('components.wizard.WizardSteps.studyPlan') },
-	{ number: 4, label: t('components.wizard.WizardSteps.completedCourses') },
+	{ number: 4, label: t('components.wizard.WizardSteps.completedCourses') }
 ])
 
 function isStepComplete(stepNumber: number): boolean {
@@ -67,27 +67,25 @@ function handleStepClick(stepNumber: number) {
 	<div class="insis-wizard mb-4 justify-center sm:mb-8">
 		<template v-for="(step, index) in steps" :key="step.number">
 			<!-- Step -->
-			<div
+			<button
+				type="button"
 				:class="[
-					'insis-wizard-step',
+					'insis-wizard-step flex min-h-[32px] min-w-[44px] items-center justify-center',
 					{
 						active: currentStep === step.number,
 						completed: isStepComplete(step.number),
-						clickable: isStepClickable(step.number),
-					},
+						clickable: isStepClickable(step.number)
+					}
 				]"
-				:role="isStepClickable(step.number) ? 'button' : undefined"
-				:tabindex="isStepClickable(step.number) ? 0 : undefined"
+				:disabled="!isStepClickable(step.number)"
 				@click="handleStepClick(step.number)"
-				@keydown.enter="handleStepClick(step.number)"
-				@keydown.space.prevent="handleStepClick(step.number)"
 			>
 				<div class="insis-wizard-step-number">
 					<IconCheck v-if="isStepComplete(step.number) && currentStep !== step.number" class="h-4 w-4" />
 					<span v-else>{{ step.number }}</span>
 				</div>
 				<span class="insis-wizard-step-label">{{ step.label }}</span>
-			</div>
+			</button>
 
 			<!-- Connector -->
 			<div v-if="index < steps.length - 1" :class="['insis-wizard-connector', { completed: isStepComplete(step.number) }]" />
