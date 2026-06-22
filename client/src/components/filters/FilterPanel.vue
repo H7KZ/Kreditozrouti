@@ -60,32 +60,6 @@ const debouncedFetchSyllabusSearch = useDebouncedFn(() => {
 // Facet configuration for dynamic rendering
 const facetConfig = computed(() => [
 	{
-		key: 'faculties',
-		label: t('components.filters.FilterPanel.faculties'),
-		facets: coursesStore.facets.faculties,
-		selected: filtersStore.filters.faculty_ids,
-		setter: (ids: string[]) => filtersStore.setFilter('faculty_ids', ids),
-		defaultCollapsed: false
-	},
-	{
-		key: 'levels',
-		label: t('components.filters.FilterPanel.studyLevel'),
-		facets: coursesStore.facets.levels,
-		translations: 'courseLevels',
-		selected: filtersStore.filters.levels,
-		setter: (levels: string[]) => filtersStore.setFilter('levels', levels),
-		defaultCollapsed: false
-	},
-	{
-		key: 'languages',
-		label: t('components.filters.FilterPanel.language'),
-		facets: coursesStore.facets.languages,
-		translations: 'courseLanguages',
-		selected: filtersStore.filters.languages,
-		setter: (languages: string[]) => filtersStore.setFilter('languages', languages),
-		defaultCollapsed: true
-	},
-	{
 		key: 'groups',
 		label: t('components.filters.FilterPanel.courseGroups'),
 		facets: coursesStore.facets.groups,
@@ -106,6 +80,33 @@ const facetConfig = computed(() => [
 		defaultCollapsed: false
 	},
 	{
+		key: 'levels',
+		label: t('components.filters.FilterPanel.studyLevel'),
+		facets: coursesStore.facets.levels,
+		translations: 'courseLevels',
+		selected: filtersStore.filters.levels,
+		setter: (levels: string[]) => filtersStore.setFilter('levels', levels),
+		defaultCollapsed: true
+	},
+	{
+		key: 'languages',
+		label: t('components.filters.FilterPanel.language'),
+		facets: coursesStore.facets.languages,
+		translations: 'courseLanguages',
+		selected: filtersStore.filters.languages,
+		setter: (languages: string[]) => filtersStore.setFilter('languages', languages),
+		defaultCollapsed: false
+	},
+	{
+		key: 'lecturers',
+		label: t('components.filters.FilterPanel.lecturers'),
+		facets: coursesStore.facets.lecturers,
+		selected: filtersStore.filters.lecturers,
+		setter: (lecturers: string[]) => filtersStore.setFilter('lecturers', lecturers),
+		searchable: true,
+		defaultCollapsed: true
+	},
+	{
 		key: 'ects',
 		label: t('components.filters.FilterPanel.ectsCredits'),
 		facets: coursesStore.facets.ects,
@@ -120,7 +121,7 @@ const facetConfig = computed(() => [
 		translations: 'courseModesOfCompletion',
 		selected: filtersStore.filters.mode_of_completions,
 		setter: (modes: string[]) => filtersStore.setFilter('mode_of_completions', modes),
-		defaultCollapsed: true
+		defaultCollapsed: false
 	},
 	{
 		key: 'assessment_methods',
@@ -132,12 +133,11 @@ const facetConfig = computed(() => [
 		defaultCollapsed: true
 	},
 	{
-		key: 'lecturers',
-		label: t('components.filters.FilterPanel.lecturers'),
-		facets: coursesStore.facets.lecturers,
-		selected: filtersStore.filters.lecturers,
-		setter: (lecturers: string[]) => filtersStore.setFilter('lecturers', lecturers),
-		searchable: true,
+		key: 'faculties',
+		label: t('components.filters.FilterPanel.faculties'),
+		facets: coursesStore.facets.faculties,
+		selected: filtersStore.filters.faculty_ids,
+		setter: (ids: string[]) => filtersStore.setFilter('faculty_ids', ids),
 		defaultCollapsed: true
 	}
 ])
