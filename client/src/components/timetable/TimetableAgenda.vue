@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { MergedUnit } from '@client/composables'
-import { isMergedUnit, useScheduleExport, useSlotMerging } from '@client/composables'
+import { isMergedUnit, useSlotMerging } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
 import type { InSISDay } from '@shared/domain/insis'
 import { computed, ref, toRef } from 'vue'
@@ -10,13 +10,10 @@ import { WEEKDAYS } from '@client/constants/timetable'
 import { useTimetableStore } from '@client/stores'
 import IconX from '~icons/lucide/x'
 
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 const timetableStore = useTimetableStore()
 
 const { mergedUnitsByDay } = useSlotMerging(toRef(() => timetableStore.unitsByDay))
-
-const agendaRef = ref<HTMLElement | null>(null)
-const { exportSchedule, exporting } = useScheduleExport(agendaRef)
 
 // InSISDay values ARE the Czech names; map to English for en locale
 const DAY_EN: Record<string, string> = {
@@ -85,6 +82,9 @@ function closeModal() {
 }
 
 function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
+	if (window.innerWidth < 1024) {
+		if (!window.confirm(t('components.timetable.TimetableAgenda.confirmRemove'))) return
+	}
 	if (isMergedUnit(unit)) {
 		unit.originalUnits.forEach(u => timetableStore.removeUnit(u.unitId))
 	} else {
@@ -94,19 +94,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 </script>
 
 <template>
-	<div ref="agendaRef" class="px-4 py-3">
-		<!-- Export button (only when courses selected) -->
-		<div v-if="timetableStore.selectedUnits.length > 0" class="mb-3 flex justify-end">
-			<button
-				type="button"
-				:disabled="exporting"
-				class="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:opacity-50"
-				@click="exportSchedule"
-			>
-				{{ exporting ? $t('pages.courses.emptyTimetable.exporting') : $t('pages.courses.emptyTimetable.export') }}
-			</button>
-		</div>
-
+	<div class="px-4 py-3">
 		<!-- Empty state -->
 		<div v-if="!hasAnyCourses" class="flex flex-col items-center py-12 text-center">
 			<p class="mb-1 text-[15px] font-medium text-(--insis-text)">
@@ -135,7 +123,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 					<div
 						v-for="unit in dayData.units"
 						:key="isMergedUnit(unit) ? `merged-${unit.slotId}` : unit.slotId"
-						class="relative flex items-stretch rounded-md border bg-(--insis-surface) transition-colors"
+						class="flex items-stretch rounded-md border bg-(--insis-surface) transition-colors"
 						:class="hasConflict(unit) ? 'border-(--insis-danger-border)' : 'border-(--insis-border)'"
 						:style="{
 							borderLeftWidth: '3px',
@@ -144,7 +132,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 					>
 						<button
 							type="button"
-							class="flex min-h-[52px] flex-1 items-start gap-3 px-3 py-2.5 pr-8 text-left active:bg-(--insis-surface-2) rounded-md"
+							class="flex min-h-[52px] flex-1 items-start gap-3 px-3 py-2.5 text-left active:bg-(--insis-surface-2) rounded-md"
 							@click="openModal(unit)"
 						>
 							<div class="min-w-0 flex-1">
@@ -169,9 +157,9 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 						</button>
 						<button
 							type="button"
-							class="absolute right-1 top-1 rounded p-1 text-(--insis-text-3) hover:text-(--insis-text)"
+							class="flex shrink-0 items-start px-2 pt-2.5 text-(--insis-text-3) hover:text-(--insis-text)"
 							:aria-label="$t('common.remove')"
-							@click.stop="removeFromTimetable(unit)"
+							@click="removeFromTimetable(unit)"
 						>
 							<IconX class="h-3.5 w-3.5" aria-hidden="true" />
 						</button>

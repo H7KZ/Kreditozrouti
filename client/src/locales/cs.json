@@ -447,7 +447,8 @@
 		},
 		"timetable": {
 			"TimetableAgenda": {
-				"free": "volno"
+				"free": "volno",
+				"confirmRemove": "Odebrat kurz z rozvrhu?"
 			},
 			"TimetableGrid": {
 				"dayHeader": "Den",
