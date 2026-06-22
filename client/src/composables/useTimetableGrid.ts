@@ -143,13 +143,13 @@ export function useTimetableGrid(
 		const map = new Map<InSISDay, number>()
 		for (const day of WEEKDAYS) {
 			const dayOverlaps = overlapCache.value.get(day)
-			let maxTotal = 1
+			let maxDepth = 1
 			if (dayOverlaps) {
 				for (const info of dayOverlaps.values()) {
-					if (info.total > maxTotal) maxTotal = info.total
+					if (info.index + 1 > maxDepth) maxDepth = info.index + 1
 				}
 			}
-			const required = blockPadding + maxTotal * MIN_BLOCK_HEIGHT + blockPadding
+			const required = blockPadding + maxDepth * MIN_BLOCK_HEIGHT + blockPadding
 			map.set(day, Math.max(rowHeight, required))
 		}
 		return map
