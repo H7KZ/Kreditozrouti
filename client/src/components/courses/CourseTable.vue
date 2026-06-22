@@ -6,6 +6,7 @@ import CourseRow from '@client/components/courses/CourseRow.vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import CourseStatusIndicator from '@client/components/courses/CourseStatusIndicator.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
+
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconChevronUp from '~icons/lucide/chevron-up'
@@ -52,25 +53,10 @@ function getCourseScheduleSummary(course: { units: Parameters<typeof getSchedule
 	return getScheduleSummary(course.units)
 }
 
-function getMobileStatus(course: (typeof coursesStore.courses)[number]) {
+function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): string {
 	const status = timetableStore.getCourseStatus(course.id)?.status
-	const isSelected = status !== undefined
-	const hasPotentialConflict = !isSelected && (course.units?.some(u => timetableStore.unitHasConflicts(u)) ?? false)
-	const hasPotentialCampusConflict =
-		!isSelected && !hasPotentialConflict && (course.units?.some(u => !timetableStore.unitHasConflicts(u) && timetableStore.unitHasCampusConflicts(u)) ?? false)
-	return {
-		status,
-		isSelected,
-		isIncomplete: status === 'incomplete',
-		hasConflict: status === 'conflict' || hasPotentialConflict,
-		hasCampusConflict: status === 'campus-conflict' || hasPotentialCampusConflict,
-		borderClass:
-			status === 'conflict' || hasPotentialConflict
-				? 'border-(--insis-danger-border)'
-				: status !== undefined
-					? 'border-(--insis-blue-lighter)'
-					: 'border-(--insis-border)'
-	}
+	const hasConflict = status === 'conflict' || (!status && (course.units?.some(u => timetableStore.unitHasConflicts(u)) ?? false))
+	return hasConflict ? 'border-(--insis-danger-border)' : status !== undefined ? 'border-(--insis-blue-lighter)' : 'border-(--insis-border)'
 }
 </script>
 
@@ -129,11 +115,7 @@ function getMobileStatus(course: (typeof coursesStore.courses)[number]) {
 				</template>
 
 				<template v-else>
-					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length">
-						<template #status-indicator>
-							<CourseStatusIndicator :course-id="course.id" />
-						</template>
-					</CourseRow>
+					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length" />
 				</template>
 			</tbody>
 		</table>
@@ -158,11 +140,9 @@ function getMobileStatus(course: (typeof coursesStore.courses)[number]) {
 			<template v-for="course in coursesStore.courses" :key="course.id">
 				<!-- Card header -->
 				<div
-					v-for="(ms, _i) in [getMobileStatus(course)]"
-					:key="_i"
 					:class="[
 						'cursor-pointer rounded border bg-(--insis-surface) px-3 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-(--insis-blue) active:bg-(--insis-surface-2)',
-						ms.borderClass
+						getMobileBorderClass(course)
 					]"
 					role="button"
 					:tabindex="0"
@@ -194,18 +174,7 @@ function getMobileStatus(course: (typeof coursesStore.courses)[number]) {
 						</div>
 						<!-- Status badges + chevron -->
 						<div class="flex shrink-0 flex-col items-end gap-1">
-							<span v-if="ms.status === 'selected'" class="insis-badge insis-badge-success text-xs">
-								{{ $t('components.courses.CourseTable.inTimetable') }}
-							</span>
-							<span v-if="ms.isIncomplete" class="insis-badge insis-badge-amber text-xs">
-								{{ $t('components.courses.CourseTable.missingUnitTypes') }}
-							</span>
-							<span v-if="ms.hasConflict" class="insis-badge insis-badge-danger text-xs">
-								{{ $t('components.courses.CourseTable.conflictTag') }}
-							</span>
-							<span v-if="ms.hasCampusConflict" class="insis-badge insis-badge-amber text-xs">
-								{{ $t('components.courses.CourseTable.campusConflictTag') }}
-							</span>
+							<CourseStatusIndicator :course="course" />
 							<IconChevronDown
 								:class="['mt-auto h-3.5 w-3.5 text-(--insis-text-3) transition-transform duration-200', isExpanded(course.id) && 'rotate-180']"
 								aria-hidden="true"
