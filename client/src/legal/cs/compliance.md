@@ -129,7 +129,7 @@ ale nenahrazuje) oficiální procesy definované těmito pravidly.
 
 ## 7. Analytika a soukromí
 
-Kreditožrouti používá **Umami Analytics** — vlastní instanci provozovanou na `kreditozrouti.cz/umami`. Umami je
+Kreditožrouti používá **Umami Analytics** — vlastní instanci. Umami je
 open-source analytický nástroj navržený tak, aby respektoval soukromí:
 
 | Vlastnost                  | Detail                                                                                            |

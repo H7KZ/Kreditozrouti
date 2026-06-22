@@ -173,7 +173,7 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 							</div>
 						</div>
 						<!-- Status badges + chevron -->
-						<div class="flex shrink-0 flex-col items-end gap-1">
+						<div class="flex shrink-0 flex-col items-center gap-1">
 							<CourseStatusIndicator :course="course" />
 							<IconChevronDown
 								:class="['mt-auto h-3.5 w-3.5 text-(--insis-text-3) transition-transform duration-200', isExpanded(course.id) && 'rotate-180']"

@@ -70,7 +70,7 @@ function handleStepClick(stepNumber: number) {
 			<button
 				type="button"
 				:class="[
-					'insis-wizard-step flex min-h-[44px] min-w-[44px] items-center justify-center',
+					'insis-wizard-step flex min-h-[32px] min-w-[44px] items-center justify-center',
 					{
 						active: currentStep === step.number,
 						completed: isStepComplete(step.number),

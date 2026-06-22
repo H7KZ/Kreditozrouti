@@ -1,26 +1,14 @@
-﻿<script setup lang="ts">
-/**
- * TimetableCourseModal
- *
- * Modal displayed when clicking a course block in the timetable.
- * Shows course details and allows managing slots or searching for alternatives.
- *
- * REFACTORED: Uses shared composables - notice how this component now
- * shares the same logic as CourseRowExpanded through composables.
- */
-
-import type { CourseUnitDTO, CourseWithRelationsDTO } from '@shared/http/responses'
+<script setup lang="ts">
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import api from '@client/api.ts'
-import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useSlotSorting, useTimeUtils } from '@client/composables'
+import CourseInfo from '@client/components/courses/CourseInfo.vue'
+import UnitSelector from '@client/components/courses/UnitSelector.vue'
+import { useCourseLabels, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore } from '@client/stores'
 import { SelectedCourseUnit } from '@client/types'
-import IconCheck from '~icons/lucide/check'
-import IconExternalLink from '~icons/lucide/external-link'
 import IconLoader from '~icons/lucide/loader-2'
-import IconMinus from '~icons/lucide/minus'
-import IconPlus from '~icons/lucide/plus'
 import IconSearch from '~icons/lucide/search'
 import IconTrash from '~icons/lucide/trash-2'
 import IconX from '~icons/lucide/x'
@@ -28,8 +16,8 @@ import IconX from '~icons/lucide/x'
 const { t } = useI18n()
 const coursesStore = useCoursesStore()
 const filtersStore = useFiltersStore()
-const uiStore = useUIStore()
 const timetableStore = useTimetableStore()
+const uiStore = useUIStore()
 
 // ============================================================================
 // Props & Emits
@@ -59,58 +47,15 @@ const course = ref<CourseWithRelationsDTO | null>(null)
 // Composables
 // ============================================================================
 
-// Shared course labels (same as CourseRowExpanded!)
-const {
-	getCompletionLabel,
-	getCategoryLabel,
-	getUnitTypesGroupLabel,
-	getShortUnitTypeLabel,
-	getSlotType,
-	getDayLabel,
-	getCategoryBadgeClass,
-	getCourseTitle,
-	getUnitCourseTitle
-} = useCourseLabels()
-
-// Shared unit selection logic (same as CourseRowExpanded!)
-const { unitsByGroup, isSelectionComplete, isUnitSelected, isGroupSatisfied, handleAddUnit, handleRemoveUnit, handleRemoveCourse } = useCourseUnitSelection({
-	course
-})
-
-// Shared slot formatting (same as CourseRowExpanded!)
-const { formatSlotInfo, formatCapacity, getCapacityClass } = useSlotFormatting()
-
-// Slot sorting (same as UnitSelector!)
-const { sortSlots, sortUnits } = useSlotSorting()
-
-// Time utilities
+const { getDayLabel, getUnitCourseTitle } = useCourseLabels()
 const { formatTimeRange } = useTimeUtils()
 
 // ============================================================================
 // Computed
 // ============================================================================
 
-type UnitConflictStatus = { type: 'selected' } | { type: 'conflict'; ident: string } | { type: 'campus'; ident: string } | { type: 'free' }
-
-const unitConflictStatuses = computed<Record<number, UnitConflictStatus>>(() => {
-	if (!course.value) return {}
-	const result: Record<number, UnitConflictStatus> = {}
-	for (const unit of course.value.units ?? []) {
-		result[unit.id] = getUnitConflictStatus(unit)
-	}
-	return result
-})
-
-/** Day label for the current unit */
-const dayLabel = computed(() => {
-	if (props.unit.day) return getDayLabel(props.unit.day)
-	return '-'
-})
-
-/** Time range for the current unit */
-const timeRange = computed(() => {
-	return formatTimeRange(props.unit.timeFrom, props.unit.timeTo)
-})
+const dayLabel = computed(() => (props.unit.day ? getDayLabel(props.unit.day) : '-'))
+const timeRange = computed(() => formatTimeRange(props.unit.timeFrom, props.unit.timeTo))
 
 // ============================================================================
 // API
@@ -139,7 +84,6 @@ async function fetchCourse() {
 	}
 }
 
-// Fetch course on mount and when unit changes
 watch(() => props.unit.courseId, fetchCourse, { immediate: true })
 
 // ============================================================================
@@ -147,17 +91,10 @@ watch(() => props.unit.courseId, fetchCourse, { immediate: true })
 // ============================================================================
 
 function handleSearchInTimeslot() {
-	// Apply time filter for this slot
 	filtersStore.filters.include_times = [{ day: props.unit.day ?? 'Pondělí', time_from: props.unit.timeFrom, time_to: props.unit.timeTo }]
 	filtersStore.filters.offset = 0
-
-	// Switch to list view
 	uiStore.switchToListView()
-
-	// Fetch courses
 	coursesStore.fetchCourses()
-
-	// Close modal
 	emit('close')
 }
 
@@ -166,28 +103,8 @@ function handleClose() {
 }
 
 function handleRemoveCourseAndClose() {
-	handleRemoveCourse()
+	if (course.value) timetableStore.removeCourse(course.value.id)
 	emit('close')
-}
-
-function getUnitConflictStatus(courseUnit: CourseUnitDTO): UnitConflictStatus {
-	const hardConflicts = timetableStore
-		.getUnitConflicts(courseUnit)
-		.flatMap(c => c.conflictingUnits)
-		.filter(u => u.courseId !== props.unit.courseId)
-
-	if (hardConflicts.length > 0) return { type: 'conflict', ident: hardConflicts[0]!.courseIdent }
-
-	const campusConflicts = timetableStore
-		.getUnitCampusConflicts(courseUnit)
-		.flatMap(c => c.conflictingUnits)
-		.filter(u => u.courseId !== props.unit.courseId)
-
-	if (campusConflicts.length > 0) return { type: 'campus', ident: campusConflicts[0]!.courseIdent }
-
-	if (isUnitSelected(courseUnit.id)) return { type: 'selected' }
-
-	return { type: 'free' }
 }
 
 // ============================================================================
@@ -195,24 +112,15 @@ function getUnitConflictStatus(courseUnit: CourseUnitDTO): UnitConflictStatus {
 // ============================================================================
 
 function handleKeydown(event: KeyboardEvent) {
-	if (event.key === 'Escape') {
-		emit('close')
-	}
+	if (event.key === 'Escape') emit('close')
 }
 
 function handleBackdropClick(event: MouseEvent) {
-	if (event.target === event.currentTarget) {
-		emit('close')
-	}
+	if (event.target === event.currentTarget) emit('close')
 }
 
-onMounted(() => {
-	document.addEventListener('keydown', handleKeydown)
-})
-
-onUnmounted(() => {
-	document.removeEventListener('keydown', handleKeydown)
-})
+onMounted(() => document.addEventListener('keydown', handleKeydown))
+onUnmounted(() => document.removeEventListener('keydown', handleKeydown))
 </script>
 
 <template>
@@ -245,44 +153,11 @@ onUnmounted(() => {
 				<!-- Content -->
 				<div v-else-if="course" class="min-h-0 flex-1 overflow-y-auto p-4">
 					<div class="grid gap-6 lg:grid-cols-2">
-						<!-- Course Info (uses same label helpers as CourseRowExpanded!) -->
+						<!-- Course Info -->
 						<div>
-							<h3 class="mb-3 flex items-center gap-1.5 font-medium text-(--insis-gray-900)">
-								{{ course.ident }} - {{ getCourseTitle(course) }}
-								<a
-									v-if="course.url"
-									:href="course.url"
-									target="_blank"
-									rel="noopener noreferrer"
-									class="text-(--insis-blue) hover:text-(--insis-blue-dark)"
-								>
-									<IconExternalLink class="h-3 w-3" />
-								</a>
-							</h3>
+							<CourseInfo :course="course" />
 
-							<dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-								<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.ectsCredits') }}</dt>
-								<dd class="font-medium">{{ course.ects ?? '-' }}</dd>
-
-								<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.completion') }}</dt>
-								<dd>{{ course.mode_of_completion ? getCompletionLabel(course.mode_of_completion) : '-' }}</dd>
-
-								<template v-if="course.study_plans?.length">
-									<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.category') }}</dt>
-									<dd>
-										<span
-											v-for="spc in course.study_plans"
-											:key="spc.id"
-											class="insis-badge mr-1"
-											:class="getCategoryBadgeClass(spc.category || '')"
-										>
-											{{ getCategoryLabel(spc.category || '') }}
-										</span>
-									</dd>
-								</template>
-							</dl>
-
-							<!-- Current Selection Info -->
+							<!-- Selected Slot (modal-specific) -->
 							<div class="mt-4 rounded border border-(--insis-border) bg-(--insis-gray-50) p-3">
 								<h4 class="mb-2 text-sm font-medium text-(--insis-gray-700)">
 									{{ $t('components.timetable.TimetableCourseModal.selectedSlot') }}
@@ -308,123 +183,8 @@ onUnmounted(() => {
 							</div>
 						</div>
 
-						<!-- Unit Selection (uses same selection logic as CourseRowExpanded!) -->
-						<div>
-							<div class="mb-3 flex items-center justify-between">
-								<h4 class="font-medium text-(--insis-gray-900)">
-									{{ $t('components.courses.CourseRowExpanded.unitSelection') }}
-								</h4>
-								<span v-if="isSelectionComplete" class="insis-badge insis-badge-success">
-									<IconCheck class="mr-1 inline h-3 w-3" />
-									{{ $t('components.courses.CourseRowExpanded.complete') }}
-								</span>
-							</div>
-
-							<!-- Unit groups (same structure as CourseRowExpanded!) -->
-							<div class="space-y-4">
-								<div v-for="[key, group] in unitsByGroup" :key="key">
-									<div class="mb-2 flex items-center gap-2">
-										<span class="text-sm font-medium text-(--insis-gray-700)">
-											{{ getUnitTypesGroupLabel(group.types) }}
-										</span>
-										<span v-if="isGroupSatisfied(group.types)" class="insis-badge insis-badge-success text-xs">
-											{{ $t('components.courses.CourseRowExpanded.selected') }}
-										</span>
-									</div>
-
-									<div class="space-y-2">
-										<div
-											v-for="courseUnit in sortUnits(group.units)"
-											:key="courseUnit.id"
-											class="rounded border text-sm transition-colors"
-											:class="
-												isUnitSelected(courseUnit.id)
-													? 'border-(--insis-success) bg-(--insis-success-light)'
-													: 'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue)'
-											"
-										>
-											<div class="flex items-start justify-between p-2">
-												<div class="flex min-w-0 flex-1 flex-col gap-1">
-													<div v-for="slot in sortSlots(courseUnit.slots)" :key="slot.id" class="flex items-start gap-2">
-														<span class="w-8 shrink-0 rounded bg-(--insis-gray-200) px-1 py-0.5 text-center text-xs">
-															{{ getShortUnitTypeLabel(getSlotType(slot)) }}
-														</span>
-														<div class="min-w-0 flex-1">
-															<div class="font-medium">{{ formatSlotInfo(slot) }}</div>
-															<div class="text-xs text-(--insis-gray-600)">{{ slot.location || '-' }}</div>
-														</div>
-													</div>
-													<div v-if="courseUnit.lecturer" class="pl-10 text-xs text-(--insis-gray-500)">
-														{{ courseUnit.lecturer }}
-													</div>
-
-													<div v-if="courseUnit.capacity !== undefined" class="mt-1 pl-10">
-														<span :class="['text-xs', getCapacityClass(courseUnit.capacity)]">
-															{{ formatCapacity(courseUnit.capacity) }}
-														</span>
-													</div>
-
-													<!-- Conflict status badge — full width below slot info -->
-													<div
-														v-if="
-															unitConflictStatuses[courseUnit.id]?.type === 'conflict' ||
-															unitConflictStatuses[courseUnit.id]?.type === 'campus'
-														"
-														class="mt-1 pl-10"
-													>
-														<template v-if="unitConflictStatuses[courseUnit.id]?.type === 'conflict'">
-															<span class="insis-badge insis-badge-danger text-xs">
-																⚠
-																{{
-																	$t('components.timetable.TimetableCourseModal.slotConflict', {
-																		ident: (unitConflictStatuses[courseUnit.id] as { type: 'conflict'; ident: string })
-																			.ident
-																	})
-																}}
-															</span>
-														</template>
-														<template v-else-if="unitConflictStatuses[courseUnit.id]?.type === 'campus'">
-															<span class="insis-badge insis-badge-warning text-xs">
-																🏫
-																{{
-																	$t('components.timetable.TimetableCourseModal.slotCampusConflict', {
-																		ident: (unitConflictStatuses[courseUnit.id] as { type: 'campus'; ident: string }).ident
-																	})
-																}}
-															</span>
-														</template>
-													</div>
-												</div>
-
-												<!-- Action button -->
-												<div class="ml-3 shrink-0">
-													<template v-if="isUnitSelected(courseUnit.id)">
-														<button
-															type="button"
-															class="insis-btn bg-(--insis-surface) px-3 py-1.5 text-xs hover:border-(--insis-danger)"
-															@click.stop="handleRemoveUnit(courseUnit)"
-														>
-															<IconMinus class="h-4 w-4" />
-														</button>
-													</template>
-													<template v-else>
-														<button
-															type="button"
-															class="flex items-center gap-1 px-3 py-1.5 text-xs"
-															:class="isGroupSatisfied(group.types) ? 'insis-btn-secondary' : 'insis-btn-primary'"
-															@click.stop="handleAddUnit(courseUnit)"
-														>
-															<IconPlus v-if="!isGroupSatisfied(group.types)" class="h-3 w-3" />
-															{{ isGroupSatisfied(group.types) ? $t('common.change') : $t('common.add') }}
-														</button>
-													</template>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+						<!-- Unit Selector -->
+						<UnitSelector :course="course" />
 					</div>
 				</div>
 

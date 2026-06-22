@@ -9,7 +9,6 @@ import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconCheck from '~icons/lucide/check'
 import IconEyeOff from '~icons/lucide/eye-off'
 import IconMapPin from '~icons/lucide/map-pin'
-import IconMinus from '~icons/lucide/minus'
 import IconOctagonAlert from '~icons/lucide/octagon-alert'
 import IconPlus from '~icons/lucide/plus'
 import IconTrash from '~icons/lucide/trash-2'
@@ -257,12 +256,12 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 								!isUnitSelected(unit.id) && unitMatchesTimeFilter(unit) && !unitHasConflicts(unit)
 						}"
 					>
-						<div class="flex items-center justify-between p-2">
+						<div class="flex flex-col gap-2 p-2 sm:flex-row sm:items-center sm:justify-between">
 							<div class="flex min-w-0 flex-1 flex-col gap-1">
 								<div
 									v-for="slot in sortSlots(unit.slots)"
 									:key="slot.id"
-									:class="['-mx-1 flex flex-col rounded px-1', getSlotConflictClass(slot)]"
+									:class="['-mx-1 flex flex-col gap-1 rounded px-1', getSlotConflictClass(slot)]"
 									:title="formatSlotConflictTooltip(slot)"
 								>
 									<div class="flex items-center gap-2">
@@ -273,7 +272,6 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 											{{ getShortUnitTypeLabel(getSlotType(slot)) }}
 										</span>
 										<span class="min-w-0 flex-1 truncate font-medium">{{ formatSlotInfo(slot) }}</span>
-										<span class="hidden min-w-0 truncate text-xs text-(--insis-gray-500) sm:inline">{{ unit.lecturer }}</span>
 										<span
 											v-if="getSlotConflicts(slot).length > 0"
 											class="flex shrink-0 items-center gap-1 text-xs text-(--insis-danger)"
@@ -293,6 +291,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 											}}</span>
 										</span>
 									</div>
+									<div v-if="unit.lecturer" class="truncate pl-10 text-xs text-(--insis-gray-500)">{{ unit.lecturer }}</div>
 									<div v-if="slot.location" class="truncate pl-10 text-xs text-(--insis-gray-600)">{{ slot.location }}</div>
 								</div>
 
@@ -305,21 +304,21 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 							</div>
 
 							<!-- Add/Remove Button -->
-							<div class="ml-4 shrink-0">
+							<div class="mt-1 shrink-0 sm:mt-0 sm:ml-4">
 								<template v-if="isUnitSelected(unit.id)">
 									<button
 										type="button"
-										class="insis-btn min-h-[44px] bg-(--insis-surface) px-3 py-1.5 text-xs hover:border-(--insis-danger) hover:bg-(--insis-danger-light) hover:text-(--insis-danger)"
+										class="insis-btn flex min-h-[32px] w-full items-center justify-center bg-(--insis-surface) px-3 py-1.5 text-center text-xs hover:border-(--insis-danger) hover:bg-(--insis-danger-light) hover:text-(--insis-danger) sm:w-auto"
 										:aria-label="$t('common.remove')"
 										@click.stop="handleRemoveUnit(unit)"
 									>
-										<IconMinus class="h-4 w-4" aria-hidden="true" />
+										{{ $t('common.remove') }}
 									</button>
 								</template>
 								<template v-else>
 									<button
 										type="button"
-										class="flex min-h-[44px] items-center gap-1 px-3 py-1.5 text-xs"
+										class="flex min-h-[32px] w-full items-center justify-center gap-1 px-3 py-1.5 text-center text-xs sm:w-auto sm:justify-start"
 										:class="{
 											'insis-btn-primary': !isGroupSatisfied(group.types),
 											'insis-btn-secondary opacity-90': isGroupSatisfied(group.types)

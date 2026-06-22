@@ -129,7 +129,7 @@ scheduling operate. Kreditožrouti supports (but does not replace) the official 
 
 ## 7. Analytics and Privacy
 
-Kreditožrouti uses **Umami Analytics** — a self-hosted instance running at `kreditozrouti.cz/umami`. Umami is an
+Kreditožrouti uses **Umami Analytics** — a self-hosted instance. Umami is an
 open-source analytics tool designed with privacy as a default:
 
 | Property             | Detail                                                                                              |

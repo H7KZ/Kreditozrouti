@@ -183,7 +183,6 @@ function toggleShowCompletedCourses() {
 	coursesStore.fetchCourses()
 }
 
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function handleFilterChange(setter: (values: any[]) => void, values: string[]) {
 	setter(values)

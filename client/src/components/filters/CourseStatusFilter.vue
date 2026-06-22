@@ -24,7 +24,7 @@ import IconMapPin from '~icons/lucide/map-pin'
 const { t } = useI18n()
 const { getUnitTypeLabel } = useCourseLabels()
 
-const props = withDefaults(defineProps<{ hideStatusOptions?: boolean }>(), { hideStatusOptions: false })
+withDefaults(defineProps<{ hideStatusOptions?: boolean }>(), { hideStatusOptions: false })
 
 const {
 	statusCounts,

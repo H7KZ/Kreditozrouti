@@ -36,15 +36,10 @@ const campusConflictCount = computed(
 // Potential conflicts for unselected courses
 const totalUnits = computed(() => props.course.units?.length ?? 0)
 
-const potentialConflictCount = computed(
-	() => (!isSelected.value ? (props.course.units?.filter(u => timetableStore.unitHasConflicts(u)).length ?? 0) : 0)
-)
+const potentialConflictCount = computed(() => (!isSelected.value ? (props.course.units?.filter(u => timetableStore.unitHasConflicts(u)).length ?? 0) : 0))
 
-const potentialCampusConflictCount = computed(
-	() =>
-		!isSelected.value
-			? (props.course.units?.filter(u => !timetableStore.unitHasConflicts(u) && timetableStore.unitHasCampusConflicts(u)).length ?? 0)
-			: 0
+const potentialCampusConflictCount = computed(() =>
+	!isSelected.value ? (props.course.units?.filter(u => !timetableStore.unitHasConflicts(u) && timetableStore.unitHasCampusConflicts(u)).length ?? 0) : 0
 )
 
 const hasPotentialConflict = computed(() => potentialConflictCount.value > 0)
@@ -60,7 +55,7 @@ const hasPotentialCampusConflict = computed(() => !hasPotentialConflict.value &&
 	<!-- Hard conflict: X/Y count badge (selected) -->
 	<span
 		v-if="hasConflict"
-		class="inline-flex shrink-0 items-center rounded bg-(--insis-danger-light) px-1 py-0.5 text-[10px] font-medium leading-none text-(--insis-danger)"
+		class="inline-flex shrink-0 items-center rounded-full bg-(--insis-danger-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-danger)"
 	>
 		{{ hardConflictCount }}/{{ totalSelected }}
 	</span>
@@ -68,7 +63,7 @@ const hasPotentialCampusConflict = computed(() => !hasPotentialConflict.value &&
 	<!-- Campus conflict: X/Y count badge (selected) -->
 	<span
 		v-else-if="hasCampusConflict"
-		class="inline-flex shrink-0 items-center rounded bg-(--insis-warning-light) px-1 py-0.5 text-[10px] font-medium leading-none text-(--insis-warning)"
+		class="inline-flex shrink-0 items-center rounded-full bg-(--insis-warning-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-warning)"
 	>
 		{{ campusConflictCount }}/{{ totalSelected }}
 	</span>
@@ -83,7 +78,7 @@ const hasPotentialCampusConflict = computed(() => !hasPotentialConflict.value &&
 	<!-- Potential hard conflict: X/Y count badge (unselected) -->
 	<span
 		v-if="hasPotentialConflict"
-		class="inline-flex shrink-0 items-center rounded bg-(--insis-danger-light) px-1 py-0.5 text-[10px] font-medium leading-none text-(--insis-danger)"
+		class="inline-flex shrink-0 items-center rounded-full bg-(--insis-danger-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-danger)"
 	>
 		{{ potentialConflictCount }}/{{ totalUnits }}
 	</span>
@@ -91,7 +86,7 @@ const hasPotentialCampusConflict = computed(() => !hasPotentialConflict.value &&
 	<!-- Potential campus conflict: X/Y count badge (unselected) -->
 	<span
 		v-else-if="hasPotentialCampusConflict"
-		class="inline-flex shrink-0 items-center rounded bg-(--insis-warning-light) px-1 py-0.5 text-[10px] font-medium leading-none text-(--insis-warning)"
+		class="inline-flex shrink-0 items-center rounded-full bg-(--insis-warning-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-warning)"
 	>
 		{{ potentialCampusConflictCount }}/{{ totalUnits }}
 	</span>
