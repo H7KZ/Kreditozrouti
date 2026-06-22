@@ -135,6 +135,13 @@ After completing any task that adds or changes code in `scraper/`:
 
 ---
 
+## Encoding
+
+Encoding (Strict UTF-8): Zero tolerance for mojibake. Fix garbled characters directly at the byte level.
+For new Vue/TS code, paste raw Unicode literals directly instead of using HTML entities or escape sequences.
+
+---
+
 ## Working in This Repo (Claude)
 
 **Working style**
