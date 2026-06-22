@@ -175,7 +175,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 					>
 						<button
 							type="button"
-							class="flex min-h-[52px] flex-1 items-start gap-3 rounded-md px-3 py-2.5 text-left active:bg-(--insis-surface-2)"
+							class="flex min-h-[52px] min-w-0 flex-1 overflow-hidden items-start gap-3 rounded-md px-3 py-2.5 text-left active:bg-(--insis-surface-2)"
 							@click="openModal(unit)"
 						>
 							<div class="min-w-0 flex-1">
