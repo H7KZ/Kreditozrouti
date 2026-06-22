@@ -37,6 +37,19 @@ const hasCampusConflict = computed(() => courseStatus.value?.status === 'campus-
 /** Whether the course is missing required unit types (incomplete selection). */
 const isIncomplete = computed(() => courseStatus.value?.status === 'incomplete')
 
+/** Whether any unit of this unselected course would hard-conflict with the current timetable. */
+const hasPotentialConflict = computed(
+	() => !isSelected.value && (props.course.units?.some(u => timetableStore.unitHasConflicts(u)) ?? false)
+)
+
+/** Whether any unit of this unselected course would campus-conflict (but not hard-conflict) with the current timetable. */
+const hasPotentialCampusConflict = computed(
+	() =>
+		!isSelected.value &&
+		!hasPotentialConflict.value &&
+		(props.course.units?.some(u => !timetableStore.unitHasConflicts(u) && timetableStore.unitHasCampusConflicts(u)) ?? false)
+)
+
 // Row state
 
 const isExpanded = computed(() => coursesStore.isCourseExpanded(props.course.id))
@@ -86,6 +99,12 @@ function handleRowClick() {
 
 				<span v-if="courseStatus?.status === 'selected'" class="insis-badge insis-badge-success shrink-0">
 					{{ $t('components.courses.CourseTable.inTimetable') }}
+				</span>
+				<span v-if="hasPotentialConflict" class="insis-badge insis-badge-danger shrink-0">
+					{{ $t('components.courses.CourseTable.conflictTag') }}
+				</span>
+				<span v-else-if="hasPotentialCampusConflict" class="insis-badge insis-badge-amber shrink-0">
+					{{ $t('components.courses.CourseTable.campusConflictTag') }}
 				</span>
 			</div>
 		</td>

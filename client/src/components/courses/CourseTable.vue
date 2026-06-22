@@ -52,16 +52,24 @@ function getCourseScheduleSummary(course: { units: Parameters<typeof getSchedule
 	return getScheduleSummary(course.units)
 }
 
-function getMobileStatus(courseId: number) {
-	const status = timetableStore.getCourseStatus(courseId)?.status
+function getMobileStatus(course: (typeof coursesStore.courses)[number]) {
+	const status = timetableStore.getCourseStatus(course.id)?.status
+	const isSelected = status !== undefined
+	const hasPotentialConflict = !isSelected && (course.units?.some(u => timetableStore.unitHasConflicts(u)) ?? false)
+	const hasPotentialCampusConflict =
+		!isSelected && !hasPotentialConflict && (course.units?.some(u => !timetableStore.unitHasConflicts(u) && timetableStore.unitHasCampusConflicts(u)) ?? false)
 	return {
 		status,
-		isSelected: status !== undefined,
+		isSelected,
 		isIncomplete: status === 'incomplete',
-		hasConflict: status === 'conflict',
-		hasCampusConflict: status === 'campus-conflict',
+		hasConflict: status === 'conflict' || hasPotentialConflict,
+		hasCampusConflict: status === 'campus-conflict' || hasPotentialCampusConflict,
 		borderClass:
-			status === 'conflict' ? 'border-(--insis-danger-border)' : status !== undefined ? 'border-(--insis-blue-lighter)' : 'border-(--insis-border)'
+			status === 'conflict' || hasPotentialConflict
+				? 'border-(--insis-danger-border)'
+				: status !== undefined
+					? 'border-(--insis-blue-lighter)'
+					: 'border-(--insis-border)'
 	}
 }
 </script>
@@ -150,7 +158,7 @@ function getMobileStatus(courseId: number) {
 			<template v-for="course in coursesStore.courses" :key="course.id">
 				<!-- Card header -->
 				<div
-					v-for="(ms, _i) in [getMobileStatus(course.id)]"
+					v-for="(ms, _i) in [getMobileStatus(course)]"
 					:key="_i"
 					:class="[
 						'cursor-pointer rounded border bg-(--insis-surface) px-3 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-(--insis-blue) active:bg-(--insis-surface-2)',
