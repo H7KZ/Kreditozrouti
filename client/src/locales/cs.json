@@ -448,7 +448,9 @@
 		"timetable": {
 			"TimetableAgenda": {
 				"free": "volno",
-				"confirmRemove": "Odebrat kurz z rozvrhu?"
+				"confirmRemove": "Odebrat kurz z rozvrhu?",
+				"saveAsImage": "Uložit jako obrázek",
+				"exporting": "Exportuji..."
 			},
 			"TimetableGrid": {
 				"dayHeader": "Den",

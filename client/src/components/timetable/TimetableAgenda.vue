@@ -8,10 +8,14 @@ import { useI18n } from 'vue-i18n'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useTimetableStore } from '@client/stores'
+import { useScheduleExport } from '@client/composables'
 import IconX from '~icons/lucide/x'
 
 const { locale, t } = useI18n()
 const timetableStore = useTimetableStore()
+
+const agendaRef = ref<HTMLElement | null>(null)
+const { exportSchedule, exporting } = useScheduleExport(agendaRef)
 
 const { mergedUnitsByDay } = useSlotMerging(toRef(() => timetableStore.unitsByDay))
 
@@ -94,7 +98,27 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 </script>
 
 <template>
-	<div class="px-4 py-3">
+	<div ref="agendaRef" class="px-4 py-3">
+		<!-- Export button -->
+		<div v-if="hasAnyCourses" class="mb-3 flex justify-end">
+			<button
+				type="button"
+				:disabled="exporting"
+				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
+				@click="exportSchedule"
+			>
+				<svg v-if="!exporting" xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+					<polyline points="7 10 12 15 17 10" />
+					<line x1="12" y1="15" x2="12" y2="3" />
+				</svg>
+				<svg v-else xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+					<path d="M21 12a9 9 0 1 1-6.219-8.56" />
+				</svg>
+				{{ exporting ? $t('components.timetable.TimetableAgenda.exporting') : $t('components.timetable.TimetableAgenda.saveAsImage') }}
+			</button>
+		</div>
+
 		<!-- Empty state -->
 		<div v-if="!hasAnyCourses" class="flex flex-col items-center py-12 text-center">
 			<p class="mb-1 text-[15px] font-medium text-(--insis-text)">
@@ -123,7 +147,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 					<div
 						v-for="unit in dayData.units"
 						:key="isMergedUnit(unit) ? `merged-${unit.slotId}` : unit.slotId"
-						class="flex items-stretch rounded-md border bg-(--insis-surface) transition-colors"
+						class="flex items-stretch overflow-hidden rounded-md border bg-(--insis-surface) transition-colors"
 						:class="hasConflict(unit) ? 'border-(--insis-danger-border)' : 'border-(--insis-border)'"
 						:style="{
 							borderLeftWidth: '3px',

@@ -448,7 +448,9 @@
 		"timetable": {
 			"TimetableAgenda": {
 				"free": "free",
-				"confirmRemove": "Remove course from timetable?"
+				"confirmRemove": "Remove course from timetable?",
+				"saveAsImage": "Save as image",
+				"exporting": "Exporting..."
 			},
 			"TimetableGrid": {
 				"dayHeader": "Day",
