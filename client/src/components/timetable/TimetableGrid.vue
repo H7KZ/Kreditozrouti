@@ -106,16 +106,15 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 </script>
 
 <template>
-	<div>
+	<div class="relative">
 		<!-- Mobile: agenda view -->
 		<TimetableAgenda class="lg:hidden" />
 
 		<!-- Desktop: time grid -->
-		<div class="hidden lg:block">
-			<div class="mb-2 flex justify-end">
+		<div class="hidden flex-col gap-2 lg:flex">
+			<div v-if="timetableStore.selectedUnits.length > 0" class="flex justify-end">
 				<button
 					type="button"
-					v-if="timetableStore.selectedUnits.length > 0"
 					:disabled="exporting"
 					class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
 					@click="exportSchedule"
