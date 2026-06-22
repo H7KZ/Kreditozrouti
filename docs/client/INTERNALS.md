@@ -10,9 +10,9 @@ A single Axios instance shared by all services:
 
 ```typescript
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL ?? '/api',
-    headers: {'Content-Type': 'application/json', Accept: 'application/json'},
-    timeout: 10000,
+	baseURL: import.meta.env.VITE_API_URL ?? '/api',
+	headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+	timeout: 10000
 })
 ```
 
@@ -22,13 +22,13 @@ All non-2xx responses automatically add an alert to `alertsStore`:
 
 ```typescript
 api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        // Formats title: "404. Not Found"
-        // Formats description from error code enum
-        alerts.addAlert({type: 'error', title, description, timeout: 20000})
-        return Promise.reject(error.response?.data ?? error)
-    }
+	response => response,
+	error => {
+		// Formats title: "404. Not Found"
+		// Formats description from error code enum
+		alerts.addAlert({ type: 'error', title, description, timeout: 20000 })
+		return Promise.reject(error.response?.data ?? error)
+	}
 )
 ```
 
@@ -71,9 +71,9 @@ Czech (`cs`) and English (`en`), with Czech as default. Locale persisted to `loc
 **In stores and composables (outside component setup):** use `i18n.global`:
 
 ```typescript
-import {i18n} from '@client/i18n'
+import { i18n } from '@client/i18n'
 
-const {t} = i18n.global
+const { t } = i18n.global
 ```
 
 **Czech plural rules** (`utils/pluralization.ts`):
@@ -189,11 +189,11 @@ interface PaginationMeta {
 Types imported from `@shared/*` are used directly — no re-export wrappers:
 
 ```typescript
-import type {InSISDay, InSISSemester} from '@shared/domain/insis'
-import type {TimeSelection} from '@shared/domain/time'
-import type {CourseWithRelationsDTO, CourseUnitDTO, CourseUnitSlotDTO} from '@shared/http/responses'
-import type {CoursesFilter} from '@shared/http/courses'
-import type {FacetItem} from '@shared/http/facets'
+import type { InSISDay, InSISSemester } from '@shared/domain/insis'
+import type { TimeSelection } from '@shared/domain/time'
+import type { CourseWithRelationsDTO, CourseUnitDTO, CourseUnitSlotDTO } from '@shared/http/responses'
+import type { CoursesFilter } from '@shared/http/courses'
+import type { FacetItem } from '@shared/http/facets'
 ```
 
 API types consumed by the client come from `@api/Contracts`, not from `@api/Database/types` directly.
@@ -273,10 +273,7 @@ Date | null
 Re-exports from `@shared/domain/timetable`:
 
 ```typescript
-export {
-    CAMPUS_TRAVEL_MINUTES, checkCourseCompleteness, getCampus,
-    unitsCampusConflict, unitsConflict
-} from '@shared/domain/timetable'
+export { CAMPUS_TRAVEL_MINUTES, checkCourseCompleteness, getCampus, unitsCampusConflict, unitsConflict } from '@shared/domain/timetable'
 ```
 
 The actual conflict detection logic lives in the shared package so it can be used by both client and API.
@@ -341,24 +338,24 @@ TIME_SNAP_INTERVAL = 15      // minutes
 
 ```typescript
 DEBOUNCE_TIMING = {
-    SEARCH: 750,  // ms — for user-visible search inputs
-    API: 300,     // ms — for rapid filter changes
+	SEARCH: 750, // ms — for user-visible search inputs
+	API: 300 // ms — for rapid filter changes
 }
 ```
 
 ### `constants/pagination.ts`
 
 ```typescript
-PAGINATION_DEFAULTS = {PAGE_SIZE: 50}
+PAGINATION_DEFAULTS = { PAGE_SIZE: 50 }
 ```
 
 ### `constants/storage.ts`
 
 ```typescript
 STORAGE_KEYS = {
-    TIMETABLE: 'kreditozrouti:timetable',
-    WIZARD: 'kreditozrouti:wizard',
-    UI: 'kreditozrouti:ui',
+	TIMETABLE: 'kreditozrouti:timetable',
+	WIZARD: 'kreditozrouti:wizard',
+	UI: 'kreditozrouti:ui'
 }
 ```
 
@@ -384,41 +381,38 @@ All components use `<script setup lang="ts">`. No Options API.
 ### Props Typing
 
 ```vue
-
 <script setup lang="ts">
-  interface Props {
-    courseId: number
-    title?: string
-  }
+interface Props {
+	courseId: number
+	title?: string
+}
 
-  const props = withDefaults(defineProps<Props>(), {title: ''})
+const props = withDefaults(defineProps<Props>(), { title: '' })
 </script>
 ```
 
 ### Emit Typing
 
 ```vue
-
 <script setup lang="ts">
-  const emit = defineEmits<{
-    change: [value: string]
-    close: []
-  }>()
+const emit = defineEmits<{
+	change: [value: string]
+	close: []
+}>()
 </script>
 ```
 
 ### Store Access in Components
 
 ```vue
-
 <script setup lang="ts">
-  import {useCoursesStore} from '@client/stores'
+import { useCoursesStore } from '@client/stores'
 
-  const coursesStore = useCoursesStore()
+const coursesStore = useCoursesStore()
 </script>
 
 <template>
-  <p>{{ coursesStore.pagination.total }} courses</p>
+	<p>{{ coursesStore.pagination.total }} courses</p>
 </template>
 ```
 
@@ -440,7 +434,7 @@ context:
 
 ```typescript
 useSeoMeta({
-    title: () => `${t('pages.courses.myTimetable')} | ${year} ${semester} – Kreditožrouti`
+	title: () => `${t('pages.courses.myTimetable')} | ${year} ${semester} – Kreditožrouti`
 })
 ```
 

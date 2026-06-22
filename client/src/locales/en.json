@@ -1,4 +1,4 @@
-{
+﻿{
 	"filters": {
 		"syllabusSearch": "Search in course content",
 		"syllabusSearchPlaceholder": "e.g. machine learning, účetnictví...",
@@ -193,6 +193,7 @@
 		"skipToContent": "Skip to main content",
 		"closeFilters": "Close filters",
 		"openFilters": "Open filters",
+		"mainNavigation": "Main navigation",
 		"previousPage": "Previous page",
 		"nextPage": "Next page",
 		"dismissAlert": "Dismiss notification",
@@ -250,7 +251,9 @@
 				"title": "Your timetable is empty",
 				"description": "Add courses from the list or drag across empty slots to search for courses at that time.",
 				"browseCourses": "Browse courses",
-				"orDragTimetable": "or drag across the timetable"
+				"orDragTimetable": "or drag across the timetable",
+				"export": "Save as image",
+				"exporting": "Exporting..."
 			}
 		}
 	},
@@ -443,6 +446,12 @@
 			}
 		},
 		"timetable": {
+			"TimetableAgenda": {
+				"free": "free",
+				"confirmRemove": "Remove course from timetable?",
+				"saveAsImage": "Save as image",
+				"exporting": "Exporting..."
+			},
 			"TimetableGrid": {
 				"dayHeader": "Day",
 				"filterApplied": "Filter applied",
@@ -529,9 +538,11 @@
 			"copyright": "© {year} Kreditožrouti. All rights reserved.",
 			"license": "This project is not officially affiliated with VŠE.",
 			"version": "Version {version}",
-			"beta": "Beta Release",
 			"disclaimer": "Data is scraped from InSIS and may not be 100% accurate."
 		}
+	},
+	"legal": {
+		"onThisPage": "On this page"
 	},
 	"guide": {
 		"onboardingModal": {

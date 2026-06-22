@@ -1,1806 +1,1806 @@
 {
-    "id": 204382,
-    "url": "",
-    "url_id": null,
-    "ident": "2PR443",
-    "title": "Efektivní řešení sporů – simulace soudního řízení, arbitráže a mediace",
-    "title_cs": "Efektivní řešení sporů – simulace soudního řízení, arbitráže a mediace",
-    "title_en": "Effective Dispute Resolution – Moot Court, Mock Arbitration and Mediation",
-    "ects": 3,
-    "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
-    "mode_of_completion": "zkouška",
-    "languages": ["čeština"],
-    "semester": "LS",
-    "year": 2025,
-    "faculty": {
-        "ident": "FMV",
-        "title": null,
-        "is_schedule_publicly_visible": true
-    },
-    "level": "magisterský navazující",
-    "year_of_study": 1,
-    "lecturers": ["Ing. Lucie Andreisová, Ph.D.", "Mgr. Ing. Jan Levý, Ph.D.", "doc. JUDr. Ing. Tomáš Moravec, Ph.D.", "Mgr. Ing. Tereza Vaňkátová, Ph.D."],
-    "guarantors": null,
-    "prerequisites": "žádné",
-    "recommended_programmes": "žádné",
-    "required_work_experience": "žádná",
-    "aims_of_the_course": "Kurz je zaměřen na rozvoj tzv. měkkých dovedností, zejména argumentačních a prezentačních dovedností, týmové práce a aktivního naslouchání prostřednictvím simulace vyjednávání, mediace, arbitráže a soudního řízení. Studentům umožní efektivně aplikovat základní právní koncepty způsobů vymáhání práva v praxi.",
-    "learning_outcomes": "Absolventi kurzu:  \n\\- budou schopni charakterizovat hlavní způsoby řešení sporů, a především posoudit jejich výhody a nevýhody v různých situacích;  \n\\- dokáží před jednáním kriticky analyzovat postavení protistrany (nejen v obchodním sporu), včetně identifikace jejích slabých míst a přípravy na ně;  \n\\- dokáží aplikovat v praxi zásady soudního a rozhodčího řízení a mediace, tj. navrhnout vlastní vyjednávací, mediační a arbitrážní strategii na míru reálným situacím;  \n\\- zdokonalí své komunikační dovednosti a schopnosti týmové práce;  \n\\- dokáží provést kvalifikovaný výběr typu řízení, které by bylo pro řešení konkrétního sporu efektivní;  \n\\- dokáží odhadnout přepokládané náklady u jednotlivých typů řízení a vyhodnotit jejich smysluplnost z pohledu účinného vymáhání práva;  \n\\- dokáží obhájit svoji pozici vůči protistraně v simulovaném vyjednávání / mediaci / arbitráži / soudním řízení a taktéž vyhodnotit vlastní výkon po simulovaných schůzkách s protistranou (protistranami).",
-    "course_contents": "**1.**\n\n**Vyjednávání** (dotace 0/6)\n\na.\n\nÚvod do vyjednávání\n\nb.\n\nVyjednávací strategie\n\nc.\n\nTypy vyjednávání\n\nd.\n\nIdentifikace klíčových aspektů přípravy na úspěšné vyjednávání, včetně strategie vyjednávání a argumentačních klamů (simulační cvičení)\n\ne.\n\n9 tváří vyjednávajících = představení nástroje „Enneagram“ (typologie osobnosti) a jednotlivých enneagramových typů – včetně „sebehodnocení“ a hodnocení ostatních účastníků kurzu\n\n**2.**\n\n**Mediace** (dotace 0/6)\n\na.\n\nMetoda mediace\n\nb.\n\nCharakteristika dobrého mediátora\n\nc.\n\nIdentifikace situací, kdy je mediace jako způsob řešení sporů plně použitelná a především smysluplná\n\nd.\n\nSimulace sporu řešeného mediátorem\n\n**3.**\n\n**Rozhodčí řízení neboli arbitráž** (dotace 0/6)\n\na.\n\nPochopení metody arbitráže se změřením na její odlišnosti oproti soudnímu řízení\n\nb.\n\nRozhodčí smlouva, rozhodčí doložka a její součásti\n\nc.\n\nNávrh rozhodčí doložky ve vztahu ke konkrétní situaci\n\nd.\n\nRozhodčí řízení a rozhodčí nález, výhody rozhodčího řízení\n\ne.\n\nObchodní arbitráž a další typy arbitráže\n\nf.\n\nSimulace sporu řešeného arbitráží\n\n**4.**\n\n**Soudní řízení** (dotace 0/8)\n\na.\n\nZákladní zásady soudního řízení\n\nb.\n\nPříslušnost soudu\n\nc.\n\nŽaloba a její obsah\n\nd.\n\nUnesení břemene tvrzení a důkazního břemene\n\ne.\n\nRozhodnutí soudu (usnesení, rozsudek)\n\nf.\n\nOdvolání a další opravné prostředky\n\ng.\n\nNáklady soudního řízení aneb kolik stojí se soudit?\n\nh.\n\nSimulovaný soudní proces neboli „Moot Court“ a individuální návštěva soudu",
-    "special_requirements": "Docházka na semináře je povinná, o omluvě rozhodne vyučující.",
-    "literature_required": null,
-    "literature_recommended": "RAZ, Tahl; VOSS, Chris. _Nikdy nedělej kompromis, aneb, Vyjednávej tak, jako by ti šlo o život._ \\[Brno\\]: Jan Melvil Publishing, 2016. ISBN 978-80-7555-002-6.[](https://library.vse.cz/sysno?000310119)",
-    "assessment_methods": [
-        {
-            "method": "Aktivita na přednáškách/cvičeních/seminářích",
-            "weight": 60
-        },
-        {
-            "method": "Vypracování semestrální práce",
-            "weight": 15
-        },
-        {
-            "method": "Prezentace nebo obhajoba",
-            "weight": 10
-        },
-        {
-            "method": "Hodnocení závěrečného projektu (eseje) ze strany ostatních účastníků kurzu v Moodle",
-            "weight": 15
-        }
-    ],
-    "timetable": [
-        {
-            "lecturer": "Ing. Lucie Andreisová, Ph.D.",
-            "capacity": 25,
-            "note": null,
-            "slots": [
-                {
-                    "type": "Cvičení",
-                    "frequency": "single",
-                    "date": "20.02.2026",
-                    "day": null,
-                    "time_from": "09:15",
-                    "time_to": "12:30",
-                    "location": "SB 211"
-                },
-                {
-                    "type": "Cvičení",
-                    "frequency": "single",
-                    "date": "27.02.2026",
-                    "day": null,
-                    "time_from": "09:15",
-                    "time_to": "12:30",
-                    "location": "SB 211"
-                },
-                {
-                    "type": "Cvičení",
-                    "frequency": "single",
-                    "date": "06.03.2026",
-                    "day": null,
-                    "time_from": "09:15",
-                    "time_to": "12:30",
-                    "location": "SB 211"
-                },
-                {
-                    "type": "Cvičení",
-                    "frequency": "single",
-                    "date": "13.03.2026",
-                    "day": null,
-                    "time_from": "09:15",
-                    "time_to": "12:30",
-                    "location": "SB 211"
-                },
-                {
-                    "type": "Cvičení",
-                    "frequency": "single",
-                    "date": "20.03.2026",
-                    "day": null,
-                    "time_from": "09:15",
-                    "time_to": "12:30",
-                    "location": "SB 211"
-                }
-            ]
-        }
-    ],
-    "study_plans": [
-        {
-            "ident": "N-BP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-BP",
-            "facultyIdent": "FFU",
-            "semester": "LS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-BP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-BP",
-            "facultyIdent": "FFU",
-            "semester": "LS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-BP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-BP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-BP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-BP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-DP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-DP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-DP",
-            "facultyIdent": "FFU",
-            "semester": "LS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-DP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-DP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-DP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-DP",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FG",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FG",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FG",
-            "facultyIdent": "FFU",
-            "semester": "LS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FG",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FG",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FG",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FG",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FI",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FI",
-            "facultyIdent": "FFU",
-            "semester": "LS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FI",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FI",
-            "facultyIdent": "FFU",
-            "semester": "LS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FI",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FI",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FI",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FI",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FO",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FO",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FO",
-            "facultyIdent": "FFU",
-            "semester": "LS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FO",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FO",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FO",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-FO",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-UC",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-UC",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-UC",
-            "facultyIdent": "FFU",
-            "semester": "LS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-UC",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-UC",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-UC",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-UC",
-            "facultyIdent": "FFU",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ADA",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ADA",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ADA",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-DAB",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-DAB",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-DAB",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ED",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ED",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ED",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ED",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ED",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EDA1",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EDA1",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EDA1",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EDA1",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EDA1",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EDA1",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EO1",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EO1",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EO1",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EO1",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EO1",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IM",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IM",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IM",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IM",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IM",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IS",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IS",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ISM",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ISM",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ISM",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ISM",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IT",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IT",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IT",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IT",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IT",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-KI",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-KI",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-KI",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-KI",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-KI",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ST",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ST",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ST",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ST",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ST",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ZW",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ZW",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ZW",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ZW",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ZW",
-            "facultyIdent": "FIS",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-CR",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-CR",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EI",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EI",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EI",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EI",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ID",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ID",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ID",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ID",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ID",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-ID",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MO",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MO",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MO",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MO",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MO",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MO",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MS",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MS",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MS",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MS",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MS",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MS",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-PP",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-PP",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-PP",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-PP",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-PP",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-PP",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-TM",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-TM",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-TM",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-TM",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-UT",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-UT",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MNG",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MNG",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MNG",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MNG",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-MNG",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EK",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EK",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EK",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EK",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EK",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EK",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EK",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EK",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EK",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EPP",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EPP",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EPP",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EPP",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EPP",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-EPP",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HD",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HD",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HD",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HD",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HD",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HD",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HD",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HD",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HD",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HP",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HP",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HP",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HP",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HP",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HP",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HP",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HP",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-HP",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-RVS",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-RVS",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-RVS",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-RVS",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-RVS",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-RVS",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-RVS",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-RVS",
-            "facultyIdent": "NF",
-            "semester": "LS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        },
-        {
-            "ident": "N-RVS",
-            "facultyIdent": "NF",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "elective"
-        }
-    ],
-    "study_load": [
-        {
-            "activity": "Účast na cvičeních/seminářích/tutoriálech",
-            "hours": 26
-        },
-        {
-            "activity": "Příprava na přednášky a cvičení samostudiem",
-            "hours": 28
-        },
-        {
-            "activity": "Příprava semestrální práce",
-            "hours": 12
-        },
-        {
-            "activity": "Příprava prezentace nebo obhajoby",
-            "hours": 8
-        },
-        {
-            "activity": "Hodnocení závěrečných projektů (esejí) ostatních účastníků kurzu v Moodle",
-            "hours": 4
-        }
-    ],
-    "last_modified_date": "2026-01-05",
-    "last_modified_by": "Ing. Dominik Proch, Ph.D.",
-    "content_hash": null
+	"id": 204382,
+	"url": "",
+	"url_id": null,
+	"ident": "2PR443",
+	"title": "Efektivní řešení sporů – simulace soudního řízení, arbitráže a mediace",
+	"title_cs": "Efektivní řešení sporů – simulace soudního řízení, arbitráže a mediace",
+	"title_en": "Effective Dispute Resolution – Moot Court, Mock Arbitration and Mediation",
+	"ects": 3,
+	"mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+	"mode_of_completion": "zkouška",
+	"languages": ["čeština"],
+	"semester": "LS",
+	"year": 2025,
+	"faculty": {
+		"ident": "FMV",
+		"title": null,
+		"is_schedule_publicly_visible": true
+	},
+	"level": "magisterský navazující",
+	"year_of_study": 1,
+	"lecturers": ["Ing. Lucie Andreisová, Ph.D.", "Mgr. Ing. Jan Levý, Ph.D.", "doc. JUDr. Ing. Tomáš Moravec, Ph.D.", "Mgr. Ing. Tereza Vaňkátová, Ph.D."],
+	"guarantors": null,
+	"prerequisites": "žádné",
+	"recommended_programmes": "žádné",
+	"required_work_experience": "žádná",
+	"aims_of_the_course": "Kurz je zaměřen na rozvoj tzv. měkkých dovedností, zejména argumentačních a prezentačních dovedností, týmové práce a aktivního naslouchání prostřednictvím simulace vyjednávání, mediace, arbitráže a soudního řízení. Studentům umožní efektivně aplikovat základní právní koncepty způsobů vymáhání práva v praxi.",
+	"learning_outcomes": "Absolventi kurzu:  \n\\- budou schopni charakterizovat hlavní způsoby řešení sporů, a především posoudit jejich výhody a nevýhody v různých situacích;  \n\\- dokáží před jednáním kriticky analyzovat postavení protistrany (nejen v obchodním sporu), včetně identifikace jejích slabých míst a přípravy na ně;  \n\\- dokáží aplikovat v praxi zásady soudního a rozhodčího řízení a mediace, tj. navrhnout vlastní vyjednávací, mediační a arbitrážní strategii na míru reálným situacím;  \n\\- zdokonalí své komunikační dovednosti a schopnosti týmové práce;  \n\\- dokáží provést kvalifikovaný výběr typu řízení, které by bylo pro řešení konkrétního sporu efektivní;  \n\\- dokáží odhadnout přepokládané náklady u jednotlivých typů řízení a vyhodnotit jejich smysluplnost z pohledu účinného vymáhání práva;  \n\\- dokáží obhájit svoji pozici vůči protistraně v simulovaném vyjednávání / mediaci / arbitráži / soudním řízení a taktéž vyhodnotit vlastní výkon po simulovaných schůzkách s protistranou (protistranami).",
+	"course_contents": "**1.**\n\n**Vyjednávání** (dotace 0/6)\n\na.\n\nÚvod do vyjednávání\n\nb.\n\nVyjednávací strategie\n\nc.\n\nTypy vyjednávání\n\nd.\n\nIdentifikace klíčových aspektů přípravy na úspěšné vyjednávání, včetně strategie vyjednávání a argumentačních klamů (simulační cvičení)\n\ne.\n\n9 tváří vyjednávajících = představení nástroje „Enneagram“ (typologie osobnosti) a jednotlivých enneagramových typů – včetně „sebehodnocení“ a hodnocení ostatních účastníků kurzu\n\n**2.**\n\n**Mediace** (dotace 0/6)\n\na.\n\nMetoda mediace\n\nb.\n\nCharakteristika dobrého mediátora\n\nc.\n\nIdentifikace situací, kdy je mediace jako způsob řešení sporů plně použitelná a především smysluplná\n\nd.\n\nSimulace sporu řešeného mediátorem\n\n**3.**\n\n**Rozhodčí řízení neboli arbitráž** (dotace 0/6)\n\na.\n\nPochopení metody arbitráže se změřením na její odlišnosti oproti soudnímu řízení\n\nb.\n\nRozhodčí smlouva, rozhodčí doložka a její součásti\n\nc.\n\nNávrh rozhodčí doložky ve vztahu ke konkrétní situaci\n\nd.\n\nRozhodčí řízení a rozhodčí nález, výhody rozhodčího řízení\n\ne.\n\nObchodní arbitráž a další typy arbitráže\n\nf.\n\nSimulace sporu řešeného arbitráží\n\n**4.**\n\n**Soudní řízení** (dotace 0/8)\n\na.\n\nZákladní zásady soudního řízení\n\nb.\n\nPříslušnost soudu\n\nc.\n\nŽaloba a její obsah\n\nd.\n\nUnesení břemene tvrzení a důkazního břemene\n\ne.\n\nRozhodnutí soudu (usnesení, rozsudek)\n\nf.\n\nOdvolání a další opravné prostředky\n\ng.\n\nNáklady soudního řízení aneb kolik stojí se soudit?\n\nh.\n\nSimulovaný soudní proces neboli „Moot Court“ a individuální návštěva soudu",
+	"special_requirements": "Docházka na semináře je povinná, o omluvě rozhodne vyučující.",
+	"literature_required": null,
+	"literature_recommended": "RAZ, Tahl; VOSS, Chris. _Nikdy nedělej kompromis, aneb, Vyjednávej tak, jako by ti šlo o život._ \\[Brno\\]: Jan Melvil Publishing, 2016. ISBN 978-80-7555-002-6.[](https://library.vse.cz/sysno?000310119)",
+	"assessment_methods": [
+		{
+			"method": "Aktivita na přednáškách/cvičeních/seminářích",
+			"weight": 60
+		},
+		{
+			"method": "Vypracování semestrální práce",
+			"weight": 15
+		},
+		{
+			"method": "Prezentace nebo obhajoba",
+			"weight": 10
+		},
+		{
+			"method": "Hodnocení závěrečného projektu (eseje) ze strany ostatních účastníků kurzu v Moodle",
+			"weight": 15
+		}
+	],
+	"timetable": [
+		{
+			"lecturer": "Ing. Lucie Andreisová, Ph.D.",
+			"capacity": 25,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "single",
+					"date": "20.02.2026",
+					"day": null,
+					"time_from": "09:15",
+					"time_to": "12:30",
+					"location": "SB 211"
+				},
+				{
+					"type": "Cvičení",
+					"frequency": "single",
+					"date": "27.02.2026",
+					"day": null,
+					"time_from": "09:15",
+					"time_to": "12:30",
+					"location": "SB 211"
+				},
+				{
+					"type": "Cvičení",
+					"frequency": "single",
+					"date": "06.03.2026",
+					"day": null,
+					"time_from": "09:15",
+					"time_to": "12:30",
+					"location": "SB 211"
+				},
+				{
+					"type": "Cvičení",
+					"frequency": "single",
+					"date": "13.03.2026",
+					"day": null,
+					"time_from": "09:15",
+					"time_to": "12:30",
+					"location": "SB 211"
+				},
+				{
+					"type": "Cvičení",
+					"frequency": "single",
+					"date": "20.03.2026",
+					"day": null,
+					"time_from": "09:15",
+					"time_to": "12:30",
+					"location": "SB 211"
+				}
+			]
+		}
+	],
+	"study_plans": [
+		{
+			"ident": "N-BP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-BP",
+			"facultyIdent": "FFU",
+			"semester": "LS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-BP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-BP",
+			"facultyIdent": "FFU",
+			"semester": "LS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-BP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-BP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-BP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-BP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-DP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-DP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-DP",
+			"facultyIdent": "FFU",
+			"semester": "LS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-DP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-DP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-DP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-DP",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FG",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FG",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FG",
+			"facultyIdent": "FFU",
+			"semester": "LS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FG",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FG",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FG",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FG",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FI",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FI",
+			"facultyIdent": "FFU",
+			"semester": "LS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FI",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FI",
+			"facultyIdent": "FFU",
+			"semester": "LS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FI",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FI",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FI",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FI",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FO",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FO",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FO",
+			"facultyIdent": "FFU",
+			"semester": "LS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FO",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FO",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FO",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-FO",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-UC",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-UC",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-UC",
+			"facultyIdent": "FFU",
+			"semester": "LS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-UC",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-UC",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-UC",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-UC",
+			"facultyIdent": "FFU",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ADA",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ADA",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ADA",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-DAB",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-DAB",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-DAB",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ED",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ED",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ED",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ED",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ED",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EDA1",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EDA1",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EDA1",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EDA1",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EDA1",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EDA1",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EO1",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EO1",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EO1",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EO1",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EO1",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IM",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IM",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IM",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IM",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IM",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IS",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IS",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ISM",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ISM",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ISM",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ISM",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IT",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IT",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IT",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IT",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IT",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-KI",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-KI",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-KI",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-KI",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-KI",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ST",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ST",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ST",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ST",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ST",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ZW",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ZW",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ZW",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ZW",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ZW",
+			"facultyIdent": "FIS",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-CR",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-CR",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EI",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EI",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EI",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EI",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ID",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ID",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ID",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ID",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ID",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-ID",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MO",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MO",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MO",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MO",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MO",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MO",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MS",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MS",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MS",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MS",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MS",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MS",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-PP",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-PP",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-PP",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-PP",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-PP",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-PP",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-TM",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-TM",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-TM",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-TM",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-UT",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-UT",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MNG",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MNG",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MNG",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MNG",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-MNG",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EK",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EK",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EK",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EK",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EK",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EK",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EK",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EK",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EK",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EPP",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EPP",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EPP",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EPP",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EPP",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-EPP",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HD",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HD",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HD",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HD",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HD",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HD",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HD",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HD",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HD",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HP",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HP",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HP",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HP",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HP",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HP",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HP",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HP",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-HP",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-RVS",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-RVS",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-RVS",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-RVS",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-RVS",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-RVS",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-RVS",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-RVS",
+			"facultyIdent": "NF",
+			"semester": "LS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		},
+		{
+			"ident": "N-RVS",
+			"facultyIdent": "NF",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "elective"
+		}
+	],
+	"study_load": [
+		{
+			"activity": "Účast na cvičeních/seminářích/tutoriálech",
+			"hours": 26
+		},
+		{
+			"activity": "Příprava na přednášky a cvičení samostudiem",
+			"hours": 28
+		},
+		{
+			"activity": "Příprava semestrální práce",
+			"hours": 12
+		},
+		{
+			"activity": "Příprava prezentace nebo obhajoby",
+			"hours": 8
+		},
+		{
+			"activity": "Hodnocení závěrečných projektů (esejí) ostatních účastníků kurzu v Moodle",
+			"hours": 4
+		}
+	],
+	"last_modified_date": "2026-01-05",
+	"last_modified_by": "Ing. Dominik Proch, Ph.D.",
+	"content_hash": null
 }

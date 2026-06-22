@@ -9,7 +9,6 @@ import IconAlertTriangle from '~icons/lucide/alert-triangle'
 import IconCheck from '~icons/lucide/check'
 import IconEyeOff from '~icons/lucide/eye-off'
 import IconMapPin from '~icons/lucide/map-pin'
-import IconMinus from '~icons/lucide/minus'
 import IconOctagonAlert from '~icons/lucide/octagon-alert'
 import IconPlus from '~icons/lucide/plus'
 import IconTrash from '~icons/lucide/trash-2'
@@ -36,7 +35,7 @@ const {
 	isGroupSatisfied,
 	handleAddUnit,
 	handleRemoveUnit,
-	handleRemoveCourse,
+	handleRemoveCourse
 } = useCourseUnitSelection({ course: toRef(props, 'course') })
 
 const { sortSlots, sortUnits } = useSlotSorting()
@@ -63,12 +62,12 @@ function unitHasCampusConflictsOnly(unit: CourseUnitDTO): boolean {
 
 function hiddenConflictCount(units: CourseUnitWithSlots[]): number {
 	if (!hideConflictingUnits.value) return 0
-	return units.filter((u) => unitHasConflicts(u)).length
+	return units.filter(u => unitHasConflicts(u)).length
 }
 
 function getVisibleUnits(units: CourseUnitWithSlots[]): CourseUnitWithSlots[] {
 	if (!hideConflictingUnits.value) return units
-	return units.filter((u) => !unitHasConflicts(u) || isUnitSelected(u.id))
+	return units.filter(u => !unitHasConflicts(u) || isUnitSelected(u.id))
 }
 
 const hasAnyConflicts = computed(() => {
@@ -100,12 +99,12 @@ const conflictingUnitCount = computed(() => {
 function formatSlotConflictTooltip(slot: CourseUnitSlotDTO): string {
 	const conflicts = getSlotConflicts(slot)
 	if (conflicts.length > 0) {
-		const courseIdents = [...new Set(conflicts.map((c) => c.courseIdent))]
+		const courseIdents = [...new Set(conflicts.map(c => c.courseIdent))]
 		return t('components.courses.CourseRowExpanded.conflictsWithCourses', { courses: courseIdents.join(', ') })
 	}
 	const campusConflicts = getSlotCampusConflicts(slot)
 	if (campusConflicts.length > 0) {
-		const courseIdents = [...new Set(campusConflicts.map((c) => c.courseIdent))]
+		const courseIdents = [...new Set(campusConflicts.map(c => c.courseIdent))]
 		return t('components.filters.CampusConflict.campusConflictTooltip') + ' (' + courseIdents.join(', ') + ')'
 	}
 	return ''
@@ -114,13 +113,13 @@ function formatSlotConflictTooltip(slot: CourseUnitSlotDTO): string {
 function getSlotCampusConflictTooltip(slot: CourseUnitSlotDTO): string {
 	const campusConflicts = getSlotCampusConflicts(slot)
 	if (campusConflicts.length === 0) return ''
-	const courseIdents = [...new Set(campusConflicts.map((c) => c.courseIdent))]
+	const courseIdents = [...new Set(campusConflicts.map(c => c.courseIdent))]
 	return t('components.filters.CampusConflict.campusConflictTooltip') + ' (' + courseIdents.join(', ') + ')'
 }
 
 function getMissingTypesLabel(): string {
 	return missingUnitTypes.value
-		.map((type) => {
+		.map(type => {
 			const key = `unitTypes.${type}`
 			return te(key) ? t(key) : type
 		})
@@ -133,7 +132,7 @@ function getSlotHighlightClass(slot: CourseUnitSlotDTO): string {
 	const classes: Record<string, string> = {
 		lecture: 'bg-(--insis-block-lecture)!',
 		exercise: 'bg-(--insis-block-exercise)!',
-		seminar: 'bg-(--insis-block-seminar)!',
+		seminar: 'bg-(--insis-block-seminar)!'
 	}
 	return classes[type] ?? ''
 }
@@ -147,11 +146,11 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 
 <template>
 	<div>
-		<div class="mb-3 flex items-center justify-between">
-			<h4 class="font-medium text-(--insis-gray-900)">
+		<div class="mb-3 flex flex-wrap items-center gap-2">
+			<h4 class="mr-auto font-medium text-(--insis-gray-900)">
 				{{ $t('components.courses.CourseRowExpanded.unitSelection') }}
 			</h4>
-			<div class="flex items-center gap-2">
+			<div class="flex shrink-0 items-center gap-2">
 				<span v-if="isSelectionComplete" class="insis-badge insis-badge-success">
 					<IconCheck class="mr-1 inline h-3 w-3" />
 					{{ $t('components.courses.CourseRowExpanded.complete') }}
@@ -172,13 +171,13 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 		<!-- Conflict filter toggle -->
 		<div
 			v-if="hasAnyConflicts"
-			class="mb-3 flex items-center justify-between rounded border border-(--insis-danger-border) bg-(--insis-danger-light) px-3 py-2"
+			class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded border border-(--insis-danger-border) bg-(--insis-danger-light) px-3 py-2"
 		>
-			<div class="flex items-center gap-2 text-sm text-(--insis-danger)">
+			<div class="flex flex-1 items-center gap-2 text-sm text-(--insis-danger)">
 				<IconOctagonAlert class="h-4 w-4 shrink-0" aria-hidden="true" />
 				<span>{{ $t('components.courses.CourseRowExpanded.slotsWithConflicts', { count: conflictingUnitCount }) }}</span>
 			</div>
-			<label class="flex cursor-pointer items-center gap-1.5 text-xs text-(--insis-danger)">
+			<label class="flex shrink-0 cursor-pointer items-center gap-1.5 text-xs text-(--insis-danger)">
 				<input
 					v-model="hideConflictingUnits"
 					type="checkbox"
@@ -254,44 +253,46 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 							'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue)':
 								!isUnitSelected(unit.id) && !unitMatchesTimeFilter(unit) && !unitHasConflicts(unit) && !unitHasCampusConflictsOnly(unit),
 							'bg-(--insis-blue-light) ring-1 ring-(--insis-blue)':
-								!isUnitSelected(unit.id) && unitMatchesTimeFilter(unit) && !unitHasConflicts(unit),
+								!isUnitSelected(unit.id) && unitMatchesTimeFilter(unit) && !unitHasConflicts(unit)
 						}"
 					>
-						<div class="flex items-center justify-between p-2">
+						<div class="flex flex-col gap-2 p-2 sm:flex-row sm:items-center sm:justify-between">
 							<div class="flex min-w-0 flex-1 flex-col gap-1">
 								<div
 									v-for="slot in sortSlots(unit.slots)"
 									:key="slot.id"
-									:class="['-mx-1 flex items-center gap-3 rounded px-1', getSlotConflictClass(slot)]"
+									:class="['-mx-1 flex flex-col gap-1 rounded px-1', getSlotConflictClass(slot)]"
 									:title="formatSlotConflictTooltip(slot)"
 								>
-									<span
-										class="w-8 shrink-0 rounded bg-(--insis-gray-200) px-1 py-0.5 text-center text-xs text-(--insis-gray-700)"
-										:class="getSlotHighlightClass(slot)"
-									>
-										{{ getShortUnitTypeLabel(getSlotType(slot)) }}
-									</span>
-									<span class="shrink-0 font-medium whitespace-nowrap">{{ formatSlotInfo(slot) }}</span>
-									<span class="min-w-0 truncate text-(--insis-gray-600)" :title="slot.location || ''">{{ slot.location || '-' }}</span>
-									<span class="hidden min-w-0 truncate text-xs text-(--insis-gray-500) sm:block">{{ unit.lecturer }}</span>
-									<span
-										v-if="getSlotConflicts(slot).length > 0"
-										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-(--insis-danger)"
-										:title="formatSlotConflictTooltip(slot)"
-									>
-										<IconOctagonAlert class="h-3 w-3" aria-hidden="true" />
-										<span class="hidden sm:inline">{{ [...new Set(getSlotConflicts(slot).map((c) => c.courseIdent))].join(', ') }}</span>
-									</span>
-									<span
-										v-else-if="getSlotCampusConflicts(slot).length > 0"
-										class="ml-auto flex shrink-0 items-center gap-1 text-xs text-(--insis-warning)"
-										:title="getSlotCampusConflictTooltip(slot)"
-									>
-										<IconAlertTriangle class="h-3 w-3" aria-hidden="true" />
-										<span class="hidden sm:inline">{{
-											[...new Set(getSlotCampusConflicts(slot).map((c) => c.courseIdent))].join(', ')
-										}}</span>
-									</span>
+									<div class="flex items-center gap-2">
+										<span
+											class="w-8 shrink-0 rounded bg-(--insis-gray-200) px-1 py-0.5 text-center text-xs text-(--insis-gray-700)"
+											:class="getSlotHighlightClass(slot)"
+										>
+											{{ getShortUnitTypeLabel(getSlotType(slot)) }}
+										</span>
+										<span class="min-w-0 flex-1 truncate font-medium">{{ formatSlotInfo(slot) }}</span>
+										<span
+											v-if="getSlotConflicts(slot).length > 0"
+											class="flex shrink-0 items-center gap-1 text-xs text-(--insis-danger)"
+											:title="formatSlotConflictTooltip(slot)"
+										>
+											<IconOctagonAlert class="h-3 w-3" aria-hidden="true" />
+											<span class="hidden sm:inline">{{ [...new Set(getSlotConflicts(slot).map(c => c.courseIdent))].join(', ') }}</span>
+										</span>
+										<span
+											v-else-if="getSlotCampusConflicts(slot).length > 0"
+											class="flex shrink-0 items-center gap-1 text-xs text-(--insis-warning)"
+											:title="getSlotCampusConflictTooltip(slot)"
+										>
+											<IconAlertTriangle class="h-3 w-3" aria-hidden="true" />
+											<span class="hidden sm:inline">{{
+												[...new Set(getSlotCampusConflicts(slot).map(c => c.courseIdent))].join(', ')
+											}}</span>
+										</span>
+									</div>
+									<div v-if="unit.lecturer" class="truncate pl-10 text-xs text-(--insis-gray-500)">{{ unit.lecturer }}</div>
+									<div v-if="slot.location" class="truncate pl-10 text-xs text-(--insis-gray-600)">{{ slot.location }}</div>
 								</div>
 
 								<div class="mt-1 flex items-center gap-2 pl-[44px]">
@@ -303,24 +304,24 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 							</div>
 
 							<!-- Add/Remove Button -->
-							<div class="ml-4 shrink-0">
+							<div class="mt-1 shrink-0 sm:mt-0 sm:ml-4">
 								<template v-if="isUnitSelected(unit.id)">
 									<button
 										type="button"
-										class="insis-btn bg-(--insis-surface) px-3 py-1.5 text-xs hover:border-(--insis-danger) hover:bg-(--insis-danger-light) hover:text-(--insis-danger)"
+										class="insis-btn flex min-h-[32px] w-full items-center justify-center bg-(--insis-surface) px-3 py-1.5 text-center text-xs hover:border-(--insis-danger) hover:bg-(--insis-danger-light) hover:text-(--insis-danger) sm:w-auto"
 										:aria-label="$t('common.remove')"
 										@click.stop="handleRemoveUnit(unit)"
 									>
-										<IconMinus class="h-4 w-4" aria-hidden="true" />
+										{{ $t('common.remove') }}
 									</button>
 								</template>
 								<template v-else>
 									<button
 										type="button"
-										class="flex items-center gap-1 px-3 py-1.5 text-xs"
+										class="flex min-h-[32px] w-full items-center justify-center gap-1 px-3 py-1.5 text-center text-xs sm:w-auto sm:justify-start"
 										:class="{
 											'insis-btn-primary': !isGroupSatisfied(group.types),
-											'insis-btn-secondary opacity-90': isGroupSatisfied(group.types),
+											'insis-btn-secondary opacity-90': isGroupSatisfied(group.types)
 										}"
 										:aria-label="isGroupSatisfied(group.types) ? $t('common.change') : $t('common.add')"
 										@click.stop="handleAddUnit(unit)"

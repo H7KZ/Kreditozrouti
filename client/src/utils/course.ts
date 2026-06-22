@@ -12,7 +12,7 @@ export function getUnitTypeColorClass(type: CourseUnitType): string {
 	const colors: Record<CourseUnitType, string> = {
 		lecture: 'bg-(--insis-block-lecture)',
 		exercise: 'bg-(--insis-block-exercise)',
-		seminar: 'bg-(--insis-block-seminar)',
+		seminar: 'bg-(--insis-block-seminar)'
 	}
 	return colors[type] || colors.lecture
 }

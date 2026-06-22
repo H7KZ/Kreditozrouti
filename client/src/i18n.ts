@@ -15,10 +15,10 @@ export const i18n = createI18n({
 	allowComposition: true,
 	// Czech pluralization rules
 	pluralRules: {
-		cs: czechPluralRule,
+		cs: czechPluralRule
 	},
 	// Datetime formatting
 	datetimeFormats,
 	// Number formatting
-	numberFormats,
+	numberFormats
 })

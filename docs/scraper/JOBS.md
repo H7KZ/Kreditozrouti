@@ -30,17 +30,17 @@ individual course scrape jobs.
 
 ```typescript
 {
-  type: 'InSIS:Catalog'
-  mode: 'turbo' | 'normal' | 'polite'  // Scraping aggressiveness — see Scraping Modes below.
-  faculties?: string[]                  // Filter by faculty name (case-insensitive). All if omitted.
-  periods?: { semester: 'ZS'|'LS'; year: number }[]  // Filter by period. All if omitted.
-  auto_queue_courses?: boolean          // If true, enqueues InSIS:Course for every discovered URL.
-  allowed_idents?: string[]             // If set, only courses whose ident is in this list are queued. Absent = no filter.
+	type: 'InSIS:Catalog'
+	mode: 'turbo' | 'normal' | 'polite'  // Scraping aggressiveness — see Scraping Modes below.
+	faculties ? : string[]                  // Filter by faculty name (case-insensitive). All if omitted.
+	periods ? : {semester: 'ZS' | 'LS'; year: number}[]  // Filter by period. All if omitted.
+	auto_queue_courses ? : boolean          // If true, enqueues InSIS:Course for every discovered URL.
+	allowed_idents ? : string[]             // If set, only courses whose ident is in this list are queued. Absent = no filter.
 }
 ```
 
 > **Note:** Manual triggers via `ScraperService.enqueueCatalogScrape` populate `allowed_idents` from
-`DISTINCT course_ident` in `insis_study_plans_courses`. Scheduled runs (nightly cron) omit `allowed_idents` and scrape
+> `DISTINCT course_ident` in `insis_study_plans_courses`. Scheduled runs (nightly cron) omit `allowed_idents` and scrape
 > everything — BullMQ schedulers store static job data at definition time, making per-run DB queries impractical.
 
 **Flow — Phase 1: Discovery**
@@ -97,8 +97,8 @@ content, assessment methods, timetable, and study plan references.
 
 ```typescript
 {
-  type: 'InSIS:Course'
-  url: string   // Full InSIS syllabus URL (must contain ?predmet=<id>)
+	type: 'InSIS:Course'
+	url: string // Full InSIS syllabus URL (must contain ?predmet=<id>)
 }
 ```
 
@@ -162,11 +162,11 @@ search, collecting all leaf plan URLs. Optionally enqueues individual `InSIS:Stu
 
 ```typescript
 {
-  type: 'InSIS:StudyPlans'
-  mode: 'turbo' | 'normal' | 'polite'  // Scraping aggressiveness — see Scraping Modes below.
-  faculties?: string[]                  // Filter by faculty title (case-insensitive)
-  periods?: { semester: 'ZS'|'LS'; year: number }[]  // Filter navigation by period
-  auto_queue_study_plans?: boolean
+	type: 'InSIS:StudyPlans'
+	mode: 'turbo' | 'normal' | 'polite'  // Scraping aggressiveness — see Scraping Modes below.
+	faculties ? : string[]                  // Filter by faculty title (case-insensitive)
+	periods ? : {semester: 'ZS' | 'LS'; year: number}[]  // Filter navigation by period
+	auto_queue_study_plans ? : boolean
 }
 ```
 
@@ -180,15 +180,15 @@ search, collecting all leaf plan URLs. Optionally enqueues individual `InSIS:Stu
 
 2. traverseHierarchy(client, faculty_urls, periods, bfsConcurrencyForMode(mode))
    BFS loop (max depth 8, concurrency driven by mode):
-   
+
    For each URL at the current level (in parallel, mode-bounded):
      GET url via client.getSilent()
-     
+
      ├─ extractPlanUrls(html)    → URLs containing 'stud_plan='  → collected as leaves
      └─ extractNavigationUrls(html) → URLs without 'stud_plan=' → next-level frontier
          └─ if periods filter active and URL lacks 'poc_obdobi=':
               match nav texts against period filter (extractSemester + extractYear)
-   
+
    Repeat with next-level frontier until depth=8 or no more URLs
 
 3. QueueService.addStudyPlansResponse({ urls })
@@ -225,8 +225,8 @@ the full course list with group/category classification.
 
 ```typescript
 {
-  type: 'InSIS:StudyPlan'
-  url: string   // Full URL containing stud_plan=<id>
+	type: 'InSIS:StudyPlan'
+	url: string // Full URL containing stud_plan=<id>
 }
 ```
 
@@ -268,7 +268,7 @@ faculties, and enqueues one `InSIS:FacultyTimetable` job per faculty. Triggered 
 
 ```typescript
 {
-  type: 'InSIS:FacultyTimetables'
+	type: 'InSIS:FacultyTimetables'
 }
 ```
 
@@ -305,9 +305,9 @@ emits a response for the API to update `is_schedule_publicly_visible` in the DB.
 
 ```typescript
 {
-  type: 'InSIS:FacultyTimetable'
-  f_id: string   // InSIS faculty numeric ID
-  name: string   // Faculty display name (for logging)
+	type: 'InSIS:FacultyTimetable'
+	f_id: string // InSIS faculty numeric ID
+	name: string // Faculty display name (for logging)
 }
 ```
 

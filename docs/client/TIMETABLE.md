@@ -41,12 +41,12 @@ The timetable grid spans `TIME_CONFIG.START` (450) to `TIME_CONFIG.END` (1200).
 Conversions:
 
 ```typescript
-import {useTimeUtils} from '@client/composables'
+import { useTimeUtils } from '@client/composables'
 
-const {minutesToTime, timeToMinutes} = useTimeUtils()
+const { minutesToTime, timeToMinutes } = useTimeUtils()
 
-minutesToTime(540)     // → '09:00'
-timeToMinutes('9:15')  // → 555
+minutesToTime(540) // → '09:00'
+timeToMinutes('9:15') // → 555
 ```
 
 ---
@@ -57,22 +57,22 @@ Every selected unit is stored as a flat snapshot. This avoids the need to look u
 
 ```typescript
 interface SelectedCourseUnit {
-    courseId: number
-    courseIdent: string
-    courseTitle: string
-    courseTitleCs: string
-    courseTitleEn: string
-    unitId: number
-    unitType: CourseUnitType       // 'lecture' | 'exercise' | 'seminar'
-    slotId: number
-    day?: InSISDay                 // set for recurring slots
-    date?: string                  // set for one-time slots (DD.MM.YYYY)
-    timeFrom: number               // minutes from midnight
-    timeTo: number
-    location?: string
-    lecturer?: string
-    ects?: number
-    snapshotAvailableTypes?: CourseUnitType[]  // all types the course had at add-time
+	courseId: number
+	courseIdent: string
+	courseTitle: string
+	courseTitleCs: string
+	courseTitleEn: string
+	unitId: number
+	unitType: CourseUnitType // 'lecture' | 'exercise' | 'seminar'
+	slotId: number
+	day?: InSISDay // set for recurring slots
+	date?: string // set for one-time slots (DD.MM.YYYY)
+	timeFrom: number // minutes from midnight
+	timeTo: number
+	location?: string
+	lecturer?: string
+	ects?: number
+	snapshotAvailableTypes?: CourseUnitType[] // all types the course had at add-time
 }
 ```
 
@@ -100,15 +100,15 @@ A course gets its highest-severity status across all its units.
 
 ```typescript
 interface CourseStatus {
-    id: number
-    ident: string
-    title: string
-    titleCs: string
-    titleEn: string
-    status: 'selected' | 'conflict' | 'campus-conflict' | 'incomplete'
-    conflictsWith: string[]         // course idents of conflicting courses
-    campusConflictsWith: string[]
-    missingTypes: CourseUnitType[]  // types not yet selected for this course
+	id: number
+	ident: string
+	title: string
+	titleCs: string
+	titleEn: string
+	status: 'selected' | 'conflict' | 'campus-conflict' | 'incomplete'
+	conflictsWith: string[] // course idents of conflicting courses
+	campusConflictsWith: string[]
+	missingTypes: CourseUnitType[] // types not yet selected for this course
 }
 ```
 
@@ -163,7 +163,7 @@ checkCourseCompleteness(units
 SelectedCourseUnit[]
 ):
 {
-    isIncomplete, missingTypes
+	isIncomplete, missingTypes
 }
 // Reads snapshotAvailableTypes from units[0]
 // Compares to selected unit types
@@ -199,9 +199,9 @@ column assignments. Each overlapping block gets a fractional width (e.g. 50% of 
 2. `mousemove` → `dragStore.updateDrag(day, time)` (snaps to 15-min intervals)
 3. `mouseup` → `dragStore.endDrag(x, y)` → shows `TimetableDragPopover`
 4. User confirms → `handleDragFilter()`:
-    - Adds time selection to `filtersStore.include_times`
-    - Calls `uiStore.switchToListView()`
-    - Calls `coursesStore.fetchCourses()`
+	- Adds time selection to `filtersStore.include_times`
+	- Calls `uiStore.switchToListView()`
+	- Calls `coursesStore.fetchCourses()`
 5. User cancels → `handleDragCancel()` → `dragStore.cancelDrag()`
 
 `DRAG_THRESHOLD = 20px` prevents accidental drags on click.
@@ -266,15 +266,15 @@ Uses `useScheduleSummary` for compact schedule text (e.g. "Po, St").
 
 ```typescript
 // src/constants/timetable.ts
-TIME_CONFIG.START = 450      // 07:30
-TIME_CONFIG.END = 1200       // 20:00
-TIME_CONFIG.SLOT_DURATION = 45   // minutes per teaching slot
-TIME_CONFIG.BREAK_DURATION = 15  // minutes break between slots
+TIME_CONFIG.START = 450 // 07:30
+TIME_CONFIG.END = 1200 // 20:00
+TIME_CONFIG.SLOT_DURATION = 45 // minutes per teaching slot
+TIME_CONFIG.BREAK_DURATION = 15 // minutes break between slots
 
-GRID_ROW_HEIGHT = 60         // px per 60-minute block
-GRID_BLOCK_PADDING = 2       // px padding at block edges
-DRAG_THRESHOLD = 20          // px minimum drag distance
-TIME_SNAP_INTERVAL = 15      // minutes for drag snap
+GRID_ROW_HEIGHT = 60 // px per 60-minute block
+GRID_BLOCK_PADDING = 2 // px padding at block edges
+DRAG_THRESHOLD = 20 // px minimum drag distance
+TIME_SNAP_INTERVAL = 15 // minutes for drag snap
 
 WEEKDAYS = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek']
 ALL_DAYS = [...WEEKDAYS, 'Sobota', 'Neděle']

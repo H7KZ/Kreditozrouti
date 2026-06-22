@@ -1,6 +1,6 @@
 # Kreditozrouti — Project Context
 
-*Course scheduling system for VŠE students. Scrapes InSIS, presents filterable timetable UI.*
+_Course scheduling system for VŠE students. Scrapes InSIS, presents filterable timetable UI._
 
 ## Monorepo Architecture
 
@@ -16,12 +16,12 @@ deployment/   Docker Compose stacks + deploy.sh
 ## Critical Global Invariants
 
 - **Cross-package imports:**
-    - `shared/` must never import from `api/`, `client/`, or `scraper/`
-    - `client/` never imports from `api/` — all shared types come from `@shared/`
-    - `client/` never imports API runtime code
+	- `shared/` must never import from `api/`, `client/`, or `scraper/`
+	- `client/` never imports from `api/` — all shared types come from `@shared/`
+	- `client/` never imports API runtime code
 - **Time encoding:** all times are **minutes from midnight** (0–1439). e.g., `08:00` = 480.
 - **Env var prefixes:**
-    - API: `API_*` | Client: `VITE_*` (baked at build) | Scraper: no prefix | Infra: `MYSQL_*`, `REDIS_*`
+	- API: `API_*` | Client: `VITE_*` (baked at build) | Scraper: no prefix | Infra: `MYSQL_*`, `REDIS_*`
 - **Doc-Review Rule**: After modifying code/config, you MUST update relevant docs in the `docs/` folder.
 
 ---

@@ -31,7 +31,7 @@ export const TIME_CONFIG = {
 	SLOT_DURATION: 45,
 
 	/** Break duration between slots */
-	BREAK_DURATION: 15,
+	BREAK_DURATION: 15
 } as const
 
 /**

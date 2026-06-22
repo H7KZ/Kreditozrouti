@@ -28,12 +28,12 @@ The app automatically selects the winter semester (ZS) for the chosen year as yo
 
 Pick your field of study from the list. You can search by name or field code.
 
-**If you have a specialization or minor:** select *both* your base study plan *and* your specialization plan. The app
+**If you have a specialization or minor:** select _both_ your base study plan _and_ your specialization plan. The app
 merges them and shows all relevant courses.
 
 > **Tip:** Double-click a plan to select it and proceed to the next step immediately.
 
-### Step 4 — Mark completed courses *(optional)*
+### Step 4 — Mark completed courses _(optional)_
 
 This step shows every course in your study plan. Tick the ones you've already passed — they'll be hidden from the course
 list so you can focus on what's left.

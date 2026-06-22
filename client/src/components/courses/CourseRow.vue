@@ -3,6 +3,7 @@ import type { CourseStatus } from '@client/types'
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
+import CourseStatusIndicator from '@client/components/courses/CourseStatusIndicator.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
@@ -28,15 +29,6 @@ const courseStatus = computed<CourseStatus | undefined>(() => timetableStore.get
 /** Whether the course has any selected units. */
 const isSelected = computed(() => courseStatus.value !== undefined)
 
-/** Whether the course has a hard time conflict. */
-const hasConflict = computed(() => courseStatus.value?.status === 'conflict')
-
-/** Whether the course has a campus travel-time conflict. */
-const hasCampusConflict = computed(() => courseStatus.value?.status === 'campus-conflict')
-
-/** Whether the course is missing required unit types (incomplete selection). */
-const isIncomplete = computed(() => courseStatus.value?.status === 'incomplete')
-
 // Row state
 
 const isExpanded = computed(() => coursesStore.isCourseExpanded(props.course.id))
@@ -56,7 +48,7 @@ function handleRowClick() {
 		:class="[
 			'group/row insis-table-row-clickable focus-within:bg-(--insis-surface-2) focus-within:outline-none',
 			isExpanded && 'row-expanded',
-			isSelected && 'row-in-timetable',
+			isSelected && 'row-in-timetable'
 		]"
 		role="button"
 		:tabindex="0"
@@ -75,18 +67,7 @@ function handleRowClick() {
 		<td>
 			<div class="flex min-w-0 items-center gap-2">
 				<span :title="getCourseTitle(course)" class="truncate">{{ getCourseTitle(course) }}</span>
-
-				<!--
-					@slot status-indicator
-					Placeholder for issue #38: per-course status indicator next to the title
-					(e.g. conflict count "3/5", pulsing incomplete circle).
-					Slot scope: { courseStatus, isSelected, hasConflict, hasCampusConflict, isIncomplete }
-				-->
-				<slot name="status-indicator" v-bind="{ courseStatus, isSelected, hasConflict, hasCampusConflict, isIncomplete }" />
-
-				<span v-if="courseStatus?.status === 'selected'" class="insis-badge insis-badge-success shrink-0">
-					{{ $t('components.courses.CourseTable.inTimetable') }}
-				</span>
+				<CourseStatusIndicator :course="course" />
 			</div>
 		</td>
 

@@ -1,4 +1,4 @@
-{
+﻿{
 	"filters": {
 		"syllabusSearch": "Hledat v obsahu předmětu",
 		"syllabusSearchPlaceholder": "např. machine learning, účetnictví...",
@@ -193,6 +193,7 @@
 		"skipToContent": "Přeskočit na hlavní obsah",
 		"closeFilters": "Zavřít filtry",
 		"openFilters": "Otevřít filtry",
+		"mainNavigation": "Hlavní navigace",
 		"previousPage": "Předchozí stránka",
 		"nextPage": "Další stránka",
 		"dismissAlert": "Zavřít oznámení",
@@ -250,7 +251,9 @@
 				"title": "Váš rozvrh je prázdný",
 				"description": "Přidejte předměty ze seznamu nebo táhněte přes prázdné sloty pro vyhledání předmětů v daném čase.",
 				"browseCourses": "Procházet předměty",
-				"orDragTimetable": "Nebo táhnout přes rozvrhové sloty"
+				"orDragTimetable": "Nebo táhnout přes rozvrhové sloty",
+				"export": "Uložit jako obrázek",
+				"exporting": "Exportuji..."
 			}
 		}
 	},
@@ -443,6 +446,12 @@
 			}
 		},
 		"timetable": {
+			"TimetableAgenda": {
+				"free": "volno",
+				"confirmRemove": "Odebrat kurz z rozvrhu?",
+				"saveAsImage": "Uložit jako obrázek",
+				"exporting": "Exportuji..."
+			},
 			"TimetableGrid": {
 				"dayHeader": "Den",
 				"filterApplied": "Filtr aplikován",
@@ -529,9 +538,11 @@
 			"copyright": "© {year} Kreditožrouti. Všechna práva vyhrazena.",
 			"license": "Tento projekt není oficiálně spojen s VŠE.",
 			"version": "Verze {version}",
-			"beta": "Beta verze",
 			"disclaimer": "Data jsou stažena z InSISu a nemusí být 100% přesná."
 		}
+	},
+	"legal": {
+		"onThisPage": "Na této stránce"
 	},
 	"guide": {
 		"onboardingModal": {

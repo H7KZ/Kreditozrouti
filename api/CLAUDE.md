@@ -41,8 +41,8 @@ api/src/
 
 ```typescript
 export const CoursesController = {
-    async handleRequest(req: Request, res: Response) { ...
-    }
+	async handleRequest(req: Request, res: Response) { ...
+	}
 }
 ```
 
@@ -68,11 +68,10 @@ delete+recreate units+slots → link study plans → `redis.publish('course:upda
 
 ## Key Docs
 
-| Topic                                                      | Doc                                                  |
-| ---------------------------------------------------------- | ---------------------------------------------------- |
-| System architecture, services, data flow                   | [docs/architecture/](../docs/architecture/README.md) |
-| All routes + request/response shapes                       | [ENDPOINTS.md](../docs/api/ENDPOINTS.md)             |
-| CourseService N+1 pattern, facets, time-conflict filtering | [SERVICES.md](../docs/api/SERVICES.md)               |
-| BullMQ jobs, schedulers, dedup windows                     | [JOBS.md](../docs/api/JOBS.md)                       |
-| DB schema, Kysely patterns, migration template             | [DATABASE.md](../docs/api/DATABASE.md)               |
-| Config, cache, rate-limit, SSE, wide-event logging         | [INTERNALS.md](../docs/api/INTERNALS.md)             |
+| Topic                                                      | Doc                                      |
+| ---------------------------------------------------------- | ---------------------------------------- |
+| All routes + request/response shapes                       | [ENDPOINTS.md](../docs/api/ENDPOINTS.md) |
+| CourseService N+1 pattern, facets, time-conflict filtering | [SERVICES.md](../docs/api/SERVICES.md)   |
+| BullMQ jobs, schedulers, dedup windows                     | [JOBS.md](../docs/api/JOBS.md)           |
+| DB schema, Kysely patterns, migration template             | [DATABASE.md](../docs/api/DATABASE.md)   |
+| Config, cache, rate-limit, SSE, wide-event logging         | [INTERNALS.md](../docs/api/INTERNALS.md) |

@@ -7,10 +7,14 @@ import CourseStatusFilter from '@client/components/filters/CourseStatusFilter.vu
 import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
 import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
 import { useDebouncedFn } from '@client/composables'
+import { useSharedCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import { useCompletedCoursesStore, useCoursesStore, useFiltersStore, useTimetableStore, useUIStore } from '@client/stores'
+import IconAlertTriangle from '~icons/lucide/alert-triangle'
+import IconBookOpen from '~icons/lucide/book-open'
 import IconCalendarX from '~icons/lucide/calendar-x'
 import IconCircleCheck from '~icons/lucide/circle-check'
 import IconFilter from '~icons/lucide/filter'
+import IconMapPin from '~icons/lucide/map-pin'
 import IconRotateCcw from '~icons/lucide/rotate-ccw'
 import Search from '~icons/lucide/search'
 import IconX from '~icons/lucide/x'
@@ -34,6 +38,8 @@ const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
 const completedCoursesStore = useCompletedCoursesStore()
 const uiStore = useUIStore()
+
+const { filterOptions, isStatusSelected, toggleStatusFilter } = useSharedCourseStatusFilter()
 
 const localTitleSearch = ref(filtersStore.filters.title ?? '')
 const syllabusSearchValue = ref(filtersStore.filters.search ?? '')
@@ -60,32 +66,6 @@ const debouncedFetchSyllabusSearch = useDebouncedFn(() => {
 // Facet configuration for dynamic rendering
 const facetConfig = computed(() => [
 	{
-		key: 'faculties',
-		label: t('components.filters.FilterPanel.faculties'),
-		facets: coursesStore.facets.faculties,
-		selected: filtersStore.filters.faculty_ids,
-		setter: (ids: string[]) => filtersStore.setFilter('faculty_ids', ids),
-		defaultCollapsed: false,
-	},
-	{
-		key: 'levels',
-		label: t('components.filters.FilterPanel.studyLevel'),
-		facets: coursesStore.facets.levels,
-		translations: 'courseLevels',
-		selected: filtersStore.filters.levels,
-		setter: (levels: string[]) => filtersStore.setFilter('levels', levels),
-		defaultCollapsed: false,
-	},
-	{
-		key: 'languages',
-		label: t('components.filters.FilterPanel.language'),
-		facets: coursesStore.facets.languages,
-		translations: 'courseLanguages',
-		selected: filtersStore.filters.languages,
-		setter: (languages: string[]) => filtersStore.setFilter('languages', languages),
-		defaultCollapsed: true,
-	},
-	{
 		key: 'groups',
 		label: t('components.filters.FilterPanel.courseGroups'),
 		facets: coursesStore.facets.groups,
@@ -93,7 +73,7 @@ const facetConfig = computed(() => [
 		selected: filtersStore.filters.groups,
 		setter: (groups: string[]) => filtersStore.setFilter('groups', groups as CoursesFilter['groups']),
 		visible: filtersStore.filters.study_plan_ids && filtersStore.filters.study_plan_ids.length > 0,
-		defaultCollapsed: false,
+		defaultCollapsed: false
 	},
 	{
 		key: 'categories',
@@ -103,33 +83,25 @@ const facetConfig = computed(() => [
 		selected: filtersStore.filters.categories,
 		setter: (categories: string[]) => filtersStore.setFilter('categories', categories as CoursesFilter['categories']),
 		visible: filtersStore.filters.study_plan_ids && filtersStore.filters.study_plan_ids.length > 0,
-		defaultCollapsed: false,
+		defaultCollapsed: false
 	},
 	{
-		key: 'ects',
-		label: t('components.filters.FilterPanel.ectsCredits'),
-		facets: coursesStore.facets.ects,
-		selected: filtersStore.filters.ects?.map(String),
-		setter: (values: string[]) => filtersStore.setFilter('ects', values.map(Number)),
-		defaultCollapsed: true,
+		key: 'levels',
+		label: t('components.filters.FilterPanel.studyLevel'),
+		facets: coursesStore.facets.levels,
+		translations: 'courseLevels',
+		selected: filtersStore.filters.levels,
+		setter: (levels: string[]) => filtersStore.setFilter('levels', levels),
+		defaultCollapsed: true
 	},
 	{
-		key: 'modes_of_completion',
-		label: t('components.filters.FilterPanel.completionMode'),
-		facets: coursesStore.facets.modes_of_completion,
-		translations: 'courseModesOfCompletion',
-		selected: filtersStore.filters.mode_of_completions,
-		setter: (modes: string[]) => filtersStore.setFilter('mode_of_completions', modes),
-		defaultCollapsed: true,
-	},
-	{
-		key: 'assessment_methods',
-		label: t('components.filters.FilterPanel.assessmentMethods'),
-		facets: coursesStore.facets.assessment_methods,
-		translations: 'assessmentMethods',
-		selected: filtersStore.filters.assessment_methods,
-		setter: (methods: string[]) => filtersStore.setFilter('assessment_methods', methods),
-		defaultCollapsed: true,
+		key: 'languages',
+		label: t('components.filters.FilterPanel.language'),
+		facets: coursesStore.facets.languages,
+		translations: 'courseLanguages',
+		selected: filtersStore.filters.languages,
+		setter: (languages: string[]) => filtersStore.setFilter('languages', languages),
+		defaultCollapsed: false
 	},
 	{
 		key: 'lecturers',
@@ -138,12 +110,46 @@ const facetConfig = computed(() => [
 		selected: filtersStore.filters.lecturers,
 		setter: (lecturers: string[]) => filtersStore.setFilter('lecturers', lecturers),
 		searchable: true,
-		defaultCollapsed: true,
+		defaultCollapsed: true
 	},
+	{
+		key: 'ects',
+		label: t('components.filters.FilterPanel.ectsCredits'),
+		facets: coursesStore.facets.ects,
+		selected: filtersStore.filters.ects?.map(String),
+		setter: (values: string[]) => filtersStore.setFilter('ects', values.map(Number)),
+		defaultCollapsed: true
+	},
+	{
+		key: 'modes_of_completion',
+		label: t('components.filters.FilterPanel.completionMode'),
+		facets: coursesStore.facets.modes_of_completion,
+		translations: 'courseModesOfCompletion',
+		selected: filtersStore.filters.mode_of_completions,
+		setter: (modes: string[]) => filtersStore.setFilter('mode_of_completions', modes),
+		defaultCollapsed: false
+	},
+	{
+		key: 'assessment_methods',
+		label: t('components.filters.FilterPanel.assessmentMethods'),
+		facets: coursesStore.facets.assessment_methods,
+		translations: 'assessmentMethods',
+		selected: filtersStore.filters.assessment_methods,
+		setter: (methods: string[]) => filtersStore.setFilter('assessment_methods', methods),
+		defaultCollapsed: true
+	},
+	{
+		key: 'faculties',
+		label: t('components.filters.FilterPanel.faculties'),
+		facets: coursesStore.facets.faculties,
+		selected: filtersStore.filters.faculty_ids,
+		setter: (ids: string[]) => filtersStore.setFilter('faculty_ids', ids),
+		defaultCollapsed: true
+	}
 ])
 
 // Only show facets that have items and are visible
-const visibleFacets = computed(() => facetConfig.value.filter((f) => f.facets?.length > 0 && (f.visible === undefined || f.visible)))
+const visibleFacets = computed(() => facetConfig.value.filter(f => f.facets?.length > 0 && (f.visible === undefined || f.visible)))
 
 // Count active time filters
 const activeTimeFilterCount = computed(() => (filtersStore.filters.include_times?.length || 0) + (filtersStore.filters.exclude_times?.length || 0))
@@ -176,9 +182,6 @@ function toggleShowCompletedCourses() {
 	}
 	coursesStore.fetchCourses()
 }
-
-// Timetable collision info
-const timetableSlotCount = computed(() => timetableStore.selectedUnits.length)
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function handleFilterChange(setter: (values: any[]) => void, values: string[]) {
@@ -248,63 +251,57 @@ function handleCloseMobileFilter() {
 			</button>
 		</div>
 
-		<!-- Completed Courses Toggle -->
-		<div v-if="hasCompletedCourses" class="mb-3 border-b border-(--insis-border-light) pb-3 last:mb-0 last:border-b-0">
-			<div class="flex items-center justify-between">
-				<span class="insis-label mb-0 flex items-center gap-1.5">
-					<IconCircleCheck class="h-4 w-4 text-(--insis-success)" aria-hidden="true" />
-					{{ $t('components.filters.FilterPanel.completedCourses') }}
-				</span>
-				<span
-					class="text-end text-xs text-(--insis-gray-500)"
-					:aria-label="$t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount })"
+		<!-- Compact quick-toggle pill row -->
+		<div v-if="hasCompletedCourses || hasSelectedCourses" class="mb-3 flex flex-wrap gap-1.5">
+			<!-- Hide completed courses -->
+			<button
+				v-if="hasCompletedCourses"
+				type="button"
+				:aria-pressed="!isHidingCompletedCourses"
+				:title="$t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount })"
+				:class="[
+					'flex cursor-pointer items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors',
+					!isHidingCompletedCourses
+						? 'border-(--insis-success) bg-green-50 text-(--insis-success)'
+						: 'border-(--insis-border) text-(--insis-gray-600) hover:border-(--insis-blue) hover:bg-(--insis-blue-subtle)'
+				]"
+				@click="toggleShowCompletedCourses"
+			>
+				<IconCircleCheck class="h-3 w-3 shrink-0" aria-hidden="true" />
+				{{ $t('components.filters.FilterPanel.completedCourses') }}
+				<span class="rounded-full bg-current/15 px-1 py-px text-[10px] leading-none tabular-nums">{{ completedCourseCount }}</span>
+			</button>
+
+			<!-- Course status filter pills -->
+			<template v-if="hasSelectedCourses">
+				<button
+					v-for="opt in filterOptions"
+					:key="opt.value"
+					type="button"
+					:disabled="opt.count === 0"
+					:aria-pressed="isStatusSelected(opt.value)"
+					:class="[
+						'flex cursor-pointer items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors',
+						opt.count === 0
+							? 'cursor-default border-(--insis-border) text-(--insis-gray-400)'
+							: isStatusSelected(opt.value)
+								? opt.colorClass + ' border-current'
+								: 'border-(--insis-border) text-(--insis-gray-600) hover:border-(--insis-blue) hover:bg-(--insis-blue-subtle)'
+					]"
+					@click="opt.count > 0 && toggleStatusFilter(opt.value)"
 				>
-					{{ $t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount }) }}
-				</span>
-			</div>
-			<label class="mt-2 flex cursor-pointer items-center gap-2 text-sm text-(--insis-gray-600)">
-				<input
-					type="checkbox"
-					class="insis-checkbox"
-					:checked="!isHidingCompletedCourses"
-					:aria-label="$t('components.filters.FilterPanel.showCompletedCourses')"
-					@change="toggleShowCompletedCourses"
-				/>
-				{{ $t('components.filters.FilterPanel.showCompletedCourses') }}
-			</label>
+					<IconCalendarX v-if="opt.value === 'conflict'" class="h-3 w-3 shrink-0" aria-hidden="true" />
+					<IconMapPin v-else-if="opt.value === 'campus-conflict'" class="h-3 w-3 shrink-0" aria-hidden="true" />
+					<IconAlertTriangle v-else-if="opt.value === 'incomplete'" class="h-3 w-3 shrink-0" aria-hidden="true" />
+					<IconBookOpen v-else class="h-3 w-3 shrink-0" aria-hidden="true" />
+					{{ opt.label }}
+					<span class="rounded-full bg-current/15 px-1 py-px text-[10px] leading-none tabular-nums">{{ opt.count }}</span>
+				</button>
+			</template>
 		</div>
 
-		<!-- Timetable Collision Exclusion Toggle -->
-		<div v-if="hasSelectedCourses" class="mb-3 border-b border-(--insis-border-light) pb-3 last:mb-0 last:border-b-0">
-			<div class="flex items-center justify-between">
-				<span class="insis-label mb-0 flex items-center gap-1.5">
-					<IconCalendarX class="h-4 w-4 text-(--insis-danger)" aria-hidden="true" />
-					{{ $t('components.filters.FilterPanel.timetableConflicts') }}
-				</span>
-				<span
-					class="text-end text-xs text-(--insis-gray-500)"
-					:aria-label="$t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount })"
-				>
-					{{ $t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount }) }}
-				</span>
-			</div>
-			<label class="mt-2 flex cursor-pointer items-center gap-2 text-sm text-(--insis-gray-600)">
-				<input
-					type="checkbox"
-					class="insis-checkbox"
-					:checked="filtersStore.hideConflictingCourses"
-					:aria-label="$t('components.filters.FilterPanel.hideConflictingCourses')"
-					@change="coursesStore.toggleHideConflictingCourses()"
-				/>
-				{{ $t('components.filters.FilterPanel.hideConflictingCourses') }}
-			</label>
-			<p v-if="filtersStore.hideConflictingCourses" class="mt-1 text-[10px] text-(--insis-gray-500)">
-				{{ $t('components.filters.FilterPanel.hideConflictingCoursesHelp') }}
-			</p>
-		</div>
-
-		<!-- Course Status Filter (replaces FilterQuickTags) -->
-		<CourseStatusFilter v-if="hasSelectedCourses" />
+		<!-- Course status detail panels (conflict/incomplete drilldowns) -->
+		<CourseStatusFilter v-if="hasSelectedCourses" :hide-status-options="true" />
 
 		<div class="mb-3 border-b border-(--insis-border-light) pb-3 last:mb-0 last:border-b-0">
 			<!-- Title Search -->

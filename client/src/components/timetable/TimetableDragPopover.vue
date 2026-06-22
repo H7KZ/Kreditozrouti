@@ -48,14 +48,14 @@ const popoverRef = ref<HTMLElement | null>(null)
 useClickOutside(popoverRef, {
 	onClickOutside: () => emit('cancel'),
 	onEscape: () => emit('cancel'),
-	delay: 0,
+	delay: 0
 })
 
 // Use popover positioning composable
 const { popoverStyle } = usePopover(toRef(props, 'position'), {
 	width: 280,
 	height: 140,
-	margin: 16,
+	margin: 16
 })
 
 /** Day label translated */

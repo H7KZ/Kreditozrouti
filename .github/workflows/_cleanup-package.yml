@@ -13,11 +13,11 @@ on:
   workflow_call:
     inputs:
       package-name:
-        description: "Full GHCR package name, e.g. kreditozrouti/api"
+        description: 'Full GHCR package name, e.g. kreditozrouti/api'
         required: true
         type: string
       min-versions-to-keep:
-        description: "Number of most-recent versions to keep (floating tags excluded from count)"
+        description: 'Number of most-recent versions to keep (floating tags excluded from count)'
         required: false
         type: string
         default: '10'

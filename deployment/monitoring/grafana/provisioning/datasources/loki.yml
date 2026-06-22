@@ -15,4 +15,4 @@ datasources:
           matcherRegex: '"traceId":"(\w+)"'
           url: '${__value.raw}'
           datasourceUid: tempo
-          urlDisplayLabel: "Open in Tempo"
+          urlDisplayLabel: 'Open in Tempo'

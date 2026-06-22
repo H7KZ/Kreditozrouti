@@ -17,7 +17,7 @@ interface Props {
 	index: number
 }
 const props = withDefaults(defineProps<AlertProps>(), {
-	type: 'info',
+	type: 'info'
 })
 
 interface Emits {
@@ -55,23 +55,23 @@ const alertStyles = {
 	info: {
 		panel: 'insis-panel-info',
 		icon: 'text-(--insis-info)',
-		title: 'text-(--insis-info)',
+		title: 'text-(--insis-info)'
 	},
 	success: {
 		panel: 'insis-panel-success',
 		icon: 'text-(--insis-success)',
-		title: 'text-(--insis-success)',
+		title: 'text-(--insis-success)'
 	},
 	warning: {
 		panel: 'insis-panel-warning',
 		icon: 'text-(--insis-warning)',
-		title: 'text-(--insis-gray-900)',
+		title: 'text-(--insis-gray-900)'
 	},
 	error: {
 		panel: 'insis-panel-danger',
 		icon: 'text-(--insis-danger)',
-		title: 'text-(--insis-danger)',
-	},
+		title: 'text-(--insis-danger)'
+	}
 }
 
 const style = alertStyles[props.type]
@@ -109,7 +109,7 @@ export type AlertProps = Props
 						type="button"
 						:class="[
 							'px-2 py-1 text-xs',
-							button.variant === 'primary' ? 'insis-btn-primary' : button.variant === 'danger' ? 'insis-btn-danger' : 'insis-btn',
+							button.variant === 'primary' ? 'insis-btn-primary' : button.variant === 'danger' ? 'insis-btn-danger' : 'insis-btn'
 						]"
 						@click="handleButtonClick(button)"
 					>

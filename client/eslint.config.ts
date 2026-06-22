@@ -10,7 +10,7 @@ import { globalIgnores } from 'eslint/config'
 export default defineConfigWithVueTs(
 	{
 		name: 'app/files-to-lint',
-		files: ['**/*.{ts,mts,tsx,vue}'],
+		files: ['**/*.{ts,mts,tsx,vue}']
 	},
 
 	globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
@@ -48,13 +48,13 @@ export default defineConfigWithVueTs(
 
 			// Promise hygiene
 			'promise/always-return': 'off',
-			'promise/catch-or-return': 'off',
-		},
+			'promise/catch-or-return': 'off'
+		}
 	},
 
 	{
 		settings: {
-			'import/core-modules': ['vue-router/auto-routes'],
-		},
-	},
+			'import/core-modules': ['vue-router/auto-routes']
+		}
+	}
 ) as unknown

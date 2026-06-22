@@ -71,7 +71,7 @@ const courseStatus = computed(() => {
 	}
 
 	// Get selected unit types
-	const selectedTypes = new Set(courseUnits.map((u) => u.unitType))
+	const selectedTypes = new Set(courseUnits.map(u => u.unitType))
 
 	// Find missing types
 	const missingTypes: CourseUnitType[] = []
@@ -84,7 +84,7 @@ const courseStatus = computed(() => {
 	// If there are missing types AND we have at least one selected, needs action
 	return {
 		needsAction: missingTypes.length > 0 && selectedTypes.size > 0,
-		missingTypes,
+		missingTypes
 	}
 })
 
@@ -97,7 +97,7 @@ const blockColorClass = computed(() => {
 	const typeColors: Record<CourseUnitType, string> = {
 		lecture: 'bg-(--insis-block-lecture)',
 		exercise: 'bg-(--insis-block-exercise)',
-		seminar: 'bg-(--insis-block-seminar)',
+		seminar: 'bg-(--insis-block-seminar)'
 	}
 	return typeColors[props.unit.unitType] || 'bg-(--insis-block-lecture)'
 })
@@ -116,7 +116,7 @@ const warningTooltip = computed(() => {
 	if (!courseStatus.value.needsAction) return ''
 
 	const types = courseStatus.value.missingTypes
-		.map((type) => {
+		.map(type => {
 			const key = `unitTypes.${type}`
 			return te(key) ? t(key) : type
 		})
@@ -143,8 +143,8 @@ function handleClick() {
 			{
 				'ring-2 ring-(--insis-danger)': hasConflict,
 				'ring-2 ring-(--insis-warning)': hasCampusConflict && !hasConflict,
-				'merged-block': isMerged,
-			},
+				'merged-block': isMerged
+			}
 		]"
 		role="button"
 		:tabindex="0"

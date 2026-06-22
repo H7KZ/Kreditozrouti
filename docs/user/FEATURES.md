@@ -48,7 +48,7 @@ The left sidebar contains all filters. Active filters are counted in the sidebar
 | **Lecturers**                | Filter to courses taught by a specific lecturer                                                                                                              |
 | **Time restriction**         | Include only courses that have a slot in a specific day + time range (see also [Drag-to-filter](#drag-to-filter))                                            |
 | **Completed courses**        | Toggle to show or hide courses you've marked as already passed                                                                                               |
-| **Hide conflicting courses** | Hides courses where *all* available time slots overlap with your current timetable selection. Courses with at least one non-conflicting slot remain visible. |
+| **Hide conflicting courses** | Hides courses where _all_ available time slots overlap with your current timetable selection. Courses with at least one non-conflicting slot remain visible. |
 
 Filters are combined — all active filters apply at once. Use **Clear all** in the sidebar header to reset everything.
 
@@ -59,7 +59,7 @@ Filters are combined — all active filters apply at once. Use **Clear all** in 
 1. Click any course row to expand it
 2. The expanded row shows all available **unit types** (lecture, exercise, seminar) and their time slots
 3. Click a slot to add it to your timetable
-    - If you already have a unit of the same type selected for this course, it is swapped out automatically
+	- If you already have a unit of the same type selected for this course, it is swapped out automatically
 4. Repeat for each unit type the course requires (some courses have only lectures; others require both a lecture and an
    exercise)
 
@@ -103,8 +103,8 @@ Available in **My Timetable** view.
 
 This is the fastest way to answer "what's available Tuesday morning between 9 and 11?"
 
-To remove the time filter: open the **Time restriction** section in the filter sidebar and remove the entry, or click *
-*Clear all**.
+To remove the time filter: open the **Time restriction** section in the filter sidebar and remove the entry, or click \*
+\*Clear all\*\*.
 
 ---
 
@@ -168,23 +168,30 @@ Both settings are in the top bar and are saved in your browser.
 
 ## International Student Guide
 
-A dedicated `/guide` page is a full onboarding tutorial covering VŠE Prague's systems, the enrollment process, and how to use Kreditožrouti — available in Czech and English.
+A dedicated `/guide` page is a full onboarding tutorial covering VŠE Prague's systems, the enrollment process, and how
+to use Kreditožrouti — available in Czech and English.
 
 **What it covers (6 sections):**
-1. **VŠE Credit System** — 216 vouchers, 180-credit goal, 20-credit/semester rule, course categories (oP/oV/oJ1/TV/cVB), grading table with the 4+ resit mechanic, linked FIS video guides
+
+1. **VŠE Credit System** — 216 vouchers, 180-credit goal, 20-credit/semester rule, course categories (oP/oV/oJ1/TV/cVB),
+   grading table with the 4+ resit mechanic, linked FIS video guides
 2. **Campus Locations** — Žižkov (RB/NB/SB/IB) vs Jižní Město (JM) with 45-minute transit warning
-3. **Registration & Enrollment** — 3-phase flow: Registrace → Automatický zápis (3 rounds) → Ruční zápis; priority rules; first-year pre-assignment warning
+3. **Registration & Enrollment** — 3-phase flow: Registrace → Automatický zápis (3 rounds) → Ruční zápis; priority
+   rules; first-year pre-assignment warning
 4. **Kreditožrouti Walkthrough** — 7 illustrated steps from faculty selection through timetable view
-5. **InSIS Registration** — 5-step InSIS walkthrough with screenshots; English version includes Czech UI label translations
+5. **InSIS Registration** — 5-step InSIS walkthrough with screenshots; English version includes Czech UI label
+   translations
 6. **Useful Links** — InSIS, VŠE IT Centre, FMV, ESN Buddy Programme, Exchange Office, academic calendar PDF
 
-**Access:** Footer → Student Guide, or navigate directly to `/guide`. The page redirects to `/guide/en` or `/guide/cs` based on your active language.
+**Access:** Footer → Student Guide, or navigate directly to `/guide`. The page redirects to `/guide/en` or `/guide/cs`
+based on your active language.
 
 ---
 
 ## First-visit onboarding modal
 
-Non-Czech browsers (detected via `navigator.language`) see a welcome modal on their first visit. The modal explains what Kreditožrouti does and links directly to the English guide.
+Non-Czech browsers (detected via `navigator.language`) see a welcome modal on their first visit. The modal explains what
+Kreditožrouti does and links directly to the English guide.
 
 - Shown once per browser — dismissed state saved in `localStorage` (`kreditozrouti:guide-seen`)
 - Dismissed by: clicking ×, clicking "Got it", or clicking "Read the international student guide"

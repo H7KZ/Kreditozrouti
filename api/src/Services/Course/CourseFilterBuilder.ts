@@ -205,6 +205,10 @@ export class CourseFilterBuilder {
 			)
 		}
 
+		if (filters.study_plan_ids?.length && ignore !== 'study_plan_ids') {
+			query = query.where('spc1.course_id', 'is not', null)
+		}
+
 		if (filters.groups?.length && !['groups'].includes(ignore!)) {
 			query = query.where('spc1.group', 'in', filters.groups)
 		}
@@ -328,7 +332,8 @@ export class CourseFilterBuilder {
 			!!filters.study_plan_ids?.length ||
 			!!filters.groups?.length ||
 			!!filters.categories?.length ||
-			!!filters.assessment_methods?.length
+			!!filters.assessment_methods?.length ||
+			!!filters.search?.trim()
 		)
 	}
 }

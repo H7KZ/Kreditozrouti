@@ -11,23 +11,23 @@ A single module-level object exported as `config`. Populated from environment va
 ```typescript
 import config from '@api/Config/Config'
 
-config.env               // 'local' | 'development' | 'production'
-config.port              // default 40080
-config.uri               // full API public URI
-config.domain            // top-level domain for cookie scoping
-config.allowedOrigins    // string[] from API_ALLOWED_ORIGINS (comma-split)
-config.sessionSecret     // API_SESSION_SECRET
-config.commandToken      // API_COMMAND_TOKEN (Bearer token for /commands)
-config.redis.uri         // REDIS_URI
-config.mysql.uri         // MYSQL_URI
-config.client.uri        // CLIENT_URI
-config.client.createURL  // (path: string) => full client URL
+config.env // 'local' | 'development' | 'production'
+config.port // default 40080
+config.uri // full API public URI
+config.domain // top-level domain for cookie scoping
+config.allowedOrigins // string[] from API_ALLOWED_ORIGINS (comma-split)
+config.sessionSecret // API_SESSION_SECRET
+config.commandToken // API_COMMAND_TOKEN (Bearer token for /commands)
+config.redis.uri // REDIS_URI
+config.mysql.uri // MYSQL_URI
+config.client.uri // CLIENT_URI
+config.client.createURL // (path: string) => full client URL
 
 config.isEnvProduction() // env === 'production' || 'prod'
 config.isEnvDevelopment()
 config.isEnvLocal()
-config.isEmailEnabled()  // true if GOOGLE_USER + GOOGLE_APP_PASSWORD are set
-config.cacheDisabled     // true if API_CACHE_DISABLED=true
+config.isEmailEnabled() // true if GOOGLE_USER + GOOGLE_APP_PASSWORD are set
+config.cacheDisabled // true if API_CACHE_DISABLED=true
 ```
 
 **Validation:** `CheckRequiredEnvironmentVariables(config)` throws on startup if `REDIS_URI` or `MYSQL_URI` is missing.
@@ -52,10 +52,10 @@ Kysely instance backed by `mysql2` connection pool. Features:
 Two exports:
 
 ```typescript
-import {redis, createRedisSubscriber} from '@api/clients'
+import { redis, createRedisSubscriber } from '@api/clients'
 
-redis                         // shared ioredis instance for all read/write ops
-createRedisSubscriber()       // creates a fresh ioredis connection for pub/sub
+redis // shared ioredis instance for all read/write ops
+createRedisSubscriber() // creates a fresh ioredis connection for pub/sub
 ```
 
 A separate subscriber connection is required because a subscribed ioredis client cannot issue regular commands.
@@ -137,9 +137,9 @@ context so that async code can access the `request_id` and other fields via `Req
 4. Wrap the entire request handler (`next()`) in `RequestContext.run()` so async code in controllers/services can access
    the context
 5. On response `finish`:
-    - Merge any fields controllers added via `LoggerAPIContext.add()` (which delegates to `RequestContext.add()`)
-    - Emit the accumulated event as a Pino log line via `LoggerAPIContext.log`
-    - Track error metrics in Redis (hourly bucket + recent error list)
+	- Merge any fields controllers added via `LoggerAPIContext.add()` (which delegates to `RequestContext.add()`)
+	- Emit the accumulated event as a Pino log line via `LoggerAPIContext.log`
+	- Track error metrics in Redis (hourly bucket + recent error list)
 
 ```typescript
 res.locals.wideEvent = {
@@ -180,9 +180,9 @@ Registers `body-parser` for JSON, raw, and urlencoded bodies.
 
 ```typescript
 class ApiError extends Error {
-    status: number    // HTTP status code
-    type: string      // Error type constant
-    details?: Record<string, unknown>
+	status: number // HTTP status code
+	type: string // Error type constant
+	details?: Record<string, unknown>
 }
 ```
 
@@ -221,20 +221,20 @@ via `LoggerAPIContext.add()`, which delegates to `RequestContext.add()`.
 
 ```typescript
 // In any controller/service/middleware:
-LoggerAPIContext.add({user_id: 42, cache_hit: true})
+LoggerAPIContext.add({ user_id: 42, cache_hit: true })
 
 // LoggerAPIContext.add() delegates to:
-RequestContext.add({user_id: 42, cache_hit: true})
+RequestContext.add({ user_id: 42, cache_hit: true })
 
 // At response end, LoggerMiddleware:
 // 1. Merges all fields from the async context:
 Object.assign(wideEvent, RequestContext.get())
 
 // 2. Emits at the appropriate level:
-LoggerAPIContext.log.error(wideEvent)  // status ≥ 500
-LoggerAPIContext.log.warn(wideEvent)   // status 4xx
-LoggerAPIContext.log.info(wideEvent)   // duration > 1000ms
-LoggerAPIContext.log.debug(wideEvent)  // routine (dropped in prod)
+LoggerAPIContext.log.error(wideEvent) // status ≥ 500
+LoggerAPIContext.log.warn(wideEvent) // status 4xx
+LoggerAPIContext.log.info(wideEvent) // duration > 1000ms
+LoggerAPIContext.log.debug(wideEvent) // routine (dropped in prod)
 ```
 
 Fields added via `LoggerAPIContext.add()` are stored in the `AsyncLocalStorage` and merged into the event on finish
@@ -248,7 +248,7 @@ The root pino logger is created once and shared across the process:
 import logger from '@api/logger'
 
 // Root logger — binds service: 'api' and env on every line
-logger.info({msg: 'startup'})
+logger.info({ msg: 'startup' })
 
 // Context loggers are child loggers derived from root:
 // LoggerAPIContext.log  = logger.child({ context: 'http' })
@@ -272,7 +272,7 @@ initSSE(res)
 sendSSEEvent(res, event, data)
 // Writes: "event: {event}\ndata: {JSON.stringify(data)}\n\n"
 
-startSSEHeartbeat(res, intervalMs = 30_000)
+startSSEHeartbeat(res, (intervalMs = 30_000))
 // Writes ": heartbeat\n\n" every intervalMs ms
 // Returns NodeJS.Timeout (clear it on disconnect/timeout)
 
@@ -318,4 +318,3 @@ All logging is handled by **Pino** via the root logger at `api/src/logger.ts`.
   level-based routing (see above).
 - **Job logging** — `LoggerJobContext.log` (child `{ context: 'job' }`), wrapped by `withJobLogger` for BullMQ workers.
 - **Structured JSON** — output goes to stdout; Alloy reads Docker stdout and ships to Loki.
-

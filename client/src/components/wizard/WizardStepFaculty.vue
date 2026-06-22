@@ -47,7 +47,7 @@ function handleSelect(facultyId: string) {
 					'cursor-pointer rounded border p-4 text-left transition-all duration-150 active:scale-[0.99]',
 					selectedFaculty === faculty.value
 						? 'border-(--insis-blue) bg-(--insis-blue-light) shadow-(--insis-shadow-sm)'
-						: 'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue-dark) hover:bg-(--insis-gray-50) hover:shadow-(--insis-shadow-sm)',
+						: 'border-(--insis-border) bg-(--insis-surface) hover:border-(--insis-blue-dark) hover:bg-(--insis-gray-50) hover:shadow-(--insis-shadow-sm)'
 				]"
 				@click="handleSelect(faculty.value as string)"
 			>

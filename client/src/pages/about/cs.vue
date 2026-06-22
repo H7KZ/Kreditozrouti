@@ -15,9 +15,9 @@ const router = useRouter()
 
 watch(
 	() => i18n.global.locale.value,
-	(locale) => {
+	locale => {
 		if (locale === 'en') router.push('/about/en')
-	},
+	}
 )
 
 useSeoMeta({
@@ -25,7 +25,7 @@ useSeoMeta({
 	description:
 		'Sestav bezkonfliktní rozvrh na VŠE Praha bez stresu. Filtruj předměty InSIS podle dne, času a jazyka výuky, detekuj kolize rozvrhů a plánuj zápisy dopředu. Zdarma, bez registrace.',
 	ogTitle: 'Kreditožrouti – Bezkonfliktní rozvrh VŠE',
-	ogDescription: 'Vizuální rozvrhovač pro studenty VŠE Praha. Filtruj předměty, detekuj kolize a plánuj zápisy. Zdarma.',
+	ogDescription: 'Vizuální rozvrhovač pro studenty VŠE Praha. Filtruj předměty, detekuj kolize a plánuj zápisy. Zdarma.'
 })
 
 useHead({
@@ -33,7 +33,7 @@ useHead({
 		{ rel: 'alternate', hreflang: 'cs', href: 'https://kreditozrouti.cz/about/cs' },
 		{ rel: 'alternate', hreflang: 'en', href: 'https://kreditozrouti.cz/about/en' },
 		{ rel: 'alternate', hreflang: 'x-default', href: 'https://kreditozrouti.cz/about/cs' },
-		{ rel: 'canonical', href: 'https://kreditozrouti.cz/about/cs' },
+		{ rel: 'canonical', href: 'https://kreditozrouti.cz/about/cs' }
 	],
 	script: [
 		{
@@ -47,53 +47,53 @@ useHead({
 						name: 'Jak sestavit bezkonfliktní rozvrh na VŠE?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Kreditožrouti zobrazí všechny předměty z tvého studijního plánu na jednom místě. Vybereš si rozvrhové akce kliknutím — aplikace okamžitě ukáže, které se překrývají. Stačí zvolit jiné cvičení nebo přednášku a konflikt zmizí.',
-						},
+							text: 'Kreditožrouti zobrazí všechny předměty z tvého studijního plánu na jednom místě. Vybereš si rozvrhové akce kliknutím — aplikace okamžitě ukáže, které se překrývají. Stačí zvolit jiné cvičení nebo přednášku a konflikt zmizí.'
+						}
 					},
 					{
 						'@type': 'Question',
 						name: 'Jak fungují zápisy na VŠE?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Zápisy probíhají v několika vlnách podle počtu získaných kreditů. Studenti s více kredity mají přístup dříve a mohou obsadit místa v oblíbených rozvrhových akcích. V Kreditožroutech si lze rozvrh sestavit předem a v moment otevření zápisů zadat vše rychle do InSISu.',
-						},
+							text: 'Zápisy probíhají v několika vlnách podle počtu získaných kreditů. Studenti s více kredity mají přístup dříve a mohou obsadit místa v oblíbených rozvrhových akcích. V Kreditožroutech si lze rozvrh sestavit předem a v moment otevření zápisů zadat vše rychle do InSISu.'
+						}
 					},
 					{
 						'@type': 'Question',
 						name: 'Co jsou kreditožrouti a proč jsou problém?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Kreditožrouti jsou předměty, které studentům spotřebují rezervní kredity — buď kvůli neúspěchu u zkoušky, nebo kvůli náročnosti celého semestru. Kreditožrouti (aplikace) ti pomůže sestavit rozvrh tak, abys věděl, do čeho jdeš.',
-						},
+							text: 'Kreditožrouti jsou předměty, které studentům spotřebují rezervní kredity — buď kvůli neúspěchu u zkoušky, nebo kvůli náročnosti celého semestru. Kreditožrouti (aplikace) ti pomůže sestavit rozvrh tak, abys věděl, do čeho jdeš.'
+						}
 					},
 					{
 						'@type': 'Question',
 						name: 'Čím se Kreditožrouti liší od InSISu?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'InSIS je oficiální systém VŠE — nutný pro finální zápis. Kreditožrouti je pomocný nástroj, který ti umožňuje prohlédnout si všechny dostupné předměty najednou, filtrovat je a sestavit si rozvrh ještě před tím, než InSIS otevřeš. Šetří hodiny přepínání mezi záložkami.',
-						},
+							text: 'InSIS je oficiální systém VŠE — nutný pro finální zápis. Kreditožrouti je pomocný nástroj, který ti umožňuje prohlédnout si všechny dostupné předměty najednou, filtrovat je a sestavit si rozvrh ještě před tím, než InSIS otevřeš. Šetří hodiny přepínání mezi záložkami.'
+						}
 					},
 					{
 						'@type': 'Question',
 						name: 'Je aplikace zdarma?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Ano, Kreditožrouti je zcela zdarma a nevyžaduje registraci ani přihlášení. Stačí přejít na kreditozrouti.cz a vybrat svůj studijní plán.',
-						},
+							text: 'Ano, Kreditožrouti je zcela zdarma a nevyžaduje registraci ani přihlášení. Stačí přejít na kreditozrouti.cz a vybrat svůj studijní plán.'
+						}
 					},
 					{
 						'@type': 'Question',
 						name: 'Pro které fakulty aplikace funguje?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Kreditožrouti funguje pro všechny fakulty VŠE Praha: FIS, NF, FPH, FMV, FFÚ, FMJH i pro ostatní programy včetně zahraničních studentů. Data jsou pravidelně aktualizována z InSISu.',
-						},
-					},
-				],
-			}),
-		},
-	],
+							text: 'Kreditožrouti funguje pro všechny fakulty VŠE Praha: FIS, NF, FPH, FMV, FFÚ, FMJH i pro ostatní programy včetně zahraničních studentů. Data jsou pravidelně aktualizována z InSISu.'
+						}
+					}
+				]
+			})
+		}
+	]
 })
 </script>
 

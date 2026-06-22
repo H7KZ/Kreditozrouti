@@ -15,9 +15,9 @@ const router = useRouter()
 
 watch(
 	() => i18n.global.locale.value,
-	(locale) => {
+	locale => {
 		if (locale === 'cs') router.push('/about/cs')
-	},
+	}
 )
 
 useSeoMeta({
@@ -25,7 +25,7 @@ useSeoMeta({
 	description:
 		'Plan your VŠE Prague timetable without the InSIS headache. Filter courses by day, time, and language, detect schedule conflicts instantly, and prepare for enrollment (zápisy) in advance. Free, no registration.',
 	ogTitle: 'Kreditožrouti – VŠE Prague Timetable Planner',
-	ogDescription: 'Visual timetable builder for VŠE Prague students. Filter courses, detect conflicts, plan enrollment. Free.',
+	ogDescription: 'Visual timetable builder for VŠE Prague students. Filter courses, detect conflicts, plan enrollment. Free.'
 })
 
 useHead({
@@ -33,7 +33,7 @@ useHead({
 		{ rel: 'alternate', hreflang: 'en', href: 'https://kreditozrouti.cz/about/en' },
 		{ rel: 'alternate', hreflang: 'cs', href: 'https://kreditozrouti.cz/about/cs' },
 		{ rel: 'alternate', hreflang: 'x-default', href: 'https://kreditozrouti.cz/about/cs' },
-		{ rel: 'canonical', href: 'https://kreditozrouti.cz/about/en' },
+		{ rel: 'canonical', href: 'https://kreditozrouti.cz/about/en' }
 	],
 	script: [
 		{
@@ -47,53 +47,53 @@ useHead({
 						name: 'How do I build a conflict-free timetable at VŠE?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Kreditožrouti shows all courses from your study plan in one place. Click a time slot to add it to your timetable — the app instantly highlights any conflicts. Simply choose a different exercise or lecture session to resolve them.',
-						},
+							text: 'Kreditožrouti shows all courses from your study plan in one place. Click a time slot to add it to your timetable — the app instantly highlights any conflicts. Simply choose a different exercise or lecture session to resolve them.'
+						}
 					},
 					{
 						'@type': 'Question',
 						name: 'How does VŠE course enrollment (zápisy) work?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Enrollment at VŠE happens in waves based on how many credits you have accumulated. Students with more credits get access earlier and can secure spots in popular time slots. Use Kreditožrouti to plan your full timetable in advance so you can enter it into InSIS the moment enrollment opens.',
-						},
+							text: 'Enrollment at VŠE happens in waves based on how many credits you have accumulated. Students with more credits get access earlier and can secure spots in popular time slots. Use Kreditožrouti to plan your full timetable in advance so you can enter it into InSIS the moment enrollment opens.'
+						}
 					},
 					{
 						'@type': 'Question',
 						name: 'What are "kreditožrouti" (credit eaters)?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: '"Kreditožrouti" (literally "credit eaters") are notoriously difficult courses at VŠE that tend to consume students\' reserve credits — either through failed exams or general workload. The app is named after them as a nod to this shared student experience.',
-						},
+							text: '"Kreditožrouti" (literally "credit eaters") are notoriously difficult courses at VŠE that tend to consume students\' reserve credits — either through failed exams or general workload. The app is named after them as a nod to this shared student experience.'
+						}
 					},
 					{
 						'@type': 'Question',
 						name: 'Does Kreditožrouti work for Erasmus and exchange students?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Yes. Kreditožrouti is available in English and is designed to be accessible to students who are unfamiliar with the Czech credit system or the InSIS interface. Filter courses by language of instruction to find English-taught options.',
-						},
+							text: 'Yes. Kreditožrouti is available in English and is designed to be accessible to students who are unfamiliar with the Czech credit system or the InSIS interface. Filter courses by language of instruction to find English-taught options.'
+						}
 					},
 					{
 						'@type': 'Question',
 						name: 'Is Kreditožrouti free?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Yes, Kreditožrouti is completely free and requires no registration or login. Open kreditozrouti.cz, select your faculty and study plan, and start building your timetable immediately.',
-						},
+							text: 'Yes, Kreditožrouti is completely free and requires no registration or login. Open kreditozrouti.cz, select your faculty and study plan, and start building your timetable immediately.'
+						}
 					},
 					{
 						'@type': 'Question',
 						name: 'Which VŠE faculties are supported?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'All VŠE Prague faculties are supported: FIS, NF, FPH, FMV, FFÚ, FMJH, and others including exchange student programmes. Course data is regularly updated from InSIS.',
-						},
-					},
-				],
-			}),
-		},
-	],
+							text: 'All VŠE Prague faculties are supported: FIS, NF, FPH, FMV, FFÚ, FMJH, and others including exchange student programmes. Course data is regularly updated from InSIS.'
+						}
+					}
+				]
+			})
+		}
+	]
 })
 </script>
 

@@ -4,16 +4,16 @@
 
 1. **Fork** the repository on GitHub
 2. **Create a feature branch** from `develop`:
-   ```bash
-   git checkout -b feat/your-feature-name
-   ```
+    ```bash
+    git checkout -b feat/your-feature-name
+    ```
 3. **Set up** your dev environment: [SETUP.md](SETUP.md)
 4. **Make your changes** — follow the conventions below
 5. **Lint and format:**
-   ```bash
-   make lint
-   make format
-   ```
+    ```bash
+    make lint
+    make format
+    ```
 6. **Commit** using conventional commits (see below)
 7. **Open a PR** against `develop` — not `main`
 

@@ -68,7 +68,7 @@ export function useTimeFilterMatching() {
 
 		if (!slotDay || slotFrom == null || slotTo == null) return false
 
-		return activeTimeFilters.value.some((filter) => {
+		return activeTimeFilters.value.some(filter => {
 			// Check if day matches
 			if (filter.day !== slotDay) return false
 
@@ -95,7 +95,7 @@ export function useTimeFilterMatching() {
 
 		if (!slotDay || slotFrom == null || slotTo == null) return false
 
-		return activeExcludeFilters.value.some((filter) => {
+		return activeExcludeFilters.value.some(filter => {
 			if (filter.day !== slotDay) return false
 
 			const filterFrom = filter.time_from ?? 0
@@ -163,7 +163,7 @@ export function useTimeFilterMatching() {
 		const classes: Record<string, string> = {
 			lecture: 'bg-(--insis-block-lecture)!',
 			exercise: 'bg-(--insis-block-exercise)!',
-			seminar: 'bg-(--insis-block-seminar)!',
+			seminar: 'bg-(--insis-block-seminar)!'
 		}
 
 		return classes[slotType] ?? ''
@@ -186,6 +186,6 @@ export function useTimeFilterMatching() {
 		countMatchingSlots,
 
 		// Utilities
-		getSlotHighlightClass,
+		getSlotHighlightClass
 	}
 }

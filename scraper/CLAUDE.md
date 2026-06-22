@@ -42,10 +42,10 @@ scraper/src/
 
 ```typescript
 try {
-    // scrape + enqueue response
+	// scrape + enqueue response
 } catch (e) {
-    logger.add({ error: e, context: '...' })
-    return null // BullMQ sees success; no automatic retry
+	logger.add({ error: e, context: '...' })
+	return null // BullMQ sees success; no automatic retry
 }
 ```
 
@@ -60,13 +60,23 @@ both the scraper (producer) and the API (consumer).
 
 ---
 
+## Test-Review Rule
+
+After any change to extraction logic:
+
+1. **Check** fixture coverage in `src/Tests/`
+2. **Add or update** HTML fixtures + expected JSON for changed extraction behaviour
+3. **Run** `npm run test` to confirm all tests pass
+4. **New extraction with no test?** Use `npm run test:regen` to bootstrap from real HTML
+
+---
+
 ## Key Docs
 
-| Topic                                    | Doc                                                  |
-| ---------------------------------------- | ---------------------------------------------------- |
-| System architecture, services, data flow | [docs/architecture/](../docs/architecture/README.md) |
-| Every job type: input, output, flow      | [JOBS.md](../docs/scraper/JOBS.md)                   |
-| How each service parses InSIS HTML       | [EXTRACTION.md](../docs/scraper/EXTRACTION.md)       |
-| Queue topology, dedup, retry policy      | [QUEUE.md](../docs/scraper/QUEUE.md)                 |
-| All scraped data + job payload types     | [TYPES.md](../docs/scraper/TYPES.md)                 |
-| Utils, logger context, concurrency       | [INTERNALS.md](../docs/scraper/INTERNALS.md)         |
+| Topic                                | Doc                                            |
+| ------------------------------------ | ---------------------------------------------- |
+| Every job type: input, output, flow  | [JOBS.md](../docs/scraper/JOBS.md)             |
+| How each service parses InSIS HTML   | [EXTRACTION.md](../docs/scraper/EXTRACTION.md) |
+| Queue topology, dedup, retry policy  | [QUEUE.md](../docs/scraper/QUEUE.md)           |
+| All scraped data + job payload types | [TYPES.md](../docs/scraper/TYPES.md)           |
+| Utils, logger context, concurrency   | [INTERNALS.md](../docs/scraper/INTERNALS.md)   |

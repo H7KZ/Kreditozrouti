@@ -5,7 +5,7 @@ info:
 
 http:
   method: POST
-  url: "{{base_url}}/commands/insis/course"
+  url: '{{base_url}}/commands/insis/course'
   body:
     type: json
     data: |-
@@ -14,7 +14,7 @@ http:
       }
   auth:
     type: bearer
-    token: "{{api_command_token}}"
+    token: '{{api_command_token}}'
 
 settings:
   encodeUrl: true

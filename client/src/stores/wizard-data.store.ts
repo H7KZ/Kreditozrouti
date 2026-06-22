@@ -71,7 +71,7 @@ export const useWizardDataStore = defineStore('wizardData', () => {
 				years: [wizardStore.year],
 				semesters: [wizardStore.semester],
 				limit: 100,
-				offset: 0,
+				offset: 0
 			})
 			studyPlans.value = data.data
 			levelFacets.value = data.facets.levels
@@ -117,6 +117,6 @@ export const useWizardDataStore = defineStore('wizardData', () => {
 		loadYearFacets,
 		loadStudyPlans,
 		loadStudyPlanCourses,
-		resetData,
+		resetData
 	}
 })

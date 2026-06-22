@@ -54,7 +54,7 @@ export function usePopover(position: Ref<PopoverPosition>, options: UsePopoverOp
 
 		return {
 			left: `${Math.max(margin, x)}px`,
-			top: `${Math.max(margin, y)}px`,
+			top: `${Math.max(margin, y)}px`
 		}
 	})
 
@@ -64,7 +64,7 @@ export function usePopover(position: Ref<PopoverPosition>, options: UsePopoverOp
 	function wouldOverflow(pos: PopoverPosition): { x: boolean; y: boolean } {
 		return {
 			x: pos.x + popoverWidth + margin > window.innerWidth,
-			y: pos.y + popoverHeight + margin > window.innerHeight,
+			y: pos.y + popoverHeight + margin > window.innerHeight
 		}
 	}
 
@@ -78,22 +78,22 @@ export function usePopover(position: Ref<PopoverPosition>, options: UsePopoverOp
 			case 'above':
 				return {
 					x: rect.left + rect.width / 2 - popoverWidth / 2,
-					y: rect.top - popoverHeight - 10,
+					y: rect.top - popoverHeight - 10
 				}
 			case 'below':
 				return {
 					x: rect.left + rect.width / 2 - popoverWidth / 2,
-					y: rect.bottom + 10,
+					y: rect.bottom + 10
 				}
 			case 'left':
 				return {
 					x: rect.left - popoverWidth - 10,
-					y: rect.top + rect.height / 2 - popoverHeight / 2,
+					y: rect.top + rect.height / 2 - popoverHeight / 2
 				}
 			case 'right':
 				return {
 					x: rect.right + 10,
-					y: rect.top + rect.height / 2 - popoverHeight / 2,
+					y: rect.top + rect.height / 2 - popoverHeight / 2
 				}
 		}
 	}
@@ -104,6 +104,6 @@ export function usePopover(position: Ref<PopoverPosition>, options: UsePopoverOp
 		calculatePosition,
 		popoverWidth,
 		popoverHeight,
-		margin,
+		margin
 	}
 }

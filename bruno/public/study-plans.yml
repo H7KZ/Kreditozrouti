@@ -5,7 +5,7 @@ info:
 
 http:
   method: POST
-  url: "{{base_url}}/study_plans"
+  url: '{{base_url}}/study_plans'
   body:
     type: json
     data: |-

@@ -22,8 +22,8 @@ export async function triggerCourseScrape(courseId: number): Promise<{ jobId: st
 		{
 			// Treat 429 as a non-error response so the global alert interceptor is bypassed.
 			// The composable checks response.status and throws RateLimitedError itself.
-			validateStatus: (s) => s === 202 || s === 429,
-		},
+			validateStatus: s => s === 202 || s === 429
+		}
 	)
 	if (response.status === 429) {
 		throw new RateLimitedError()

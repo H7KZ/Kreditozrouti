@@ -79,7 +79,7 @@ function onRefreshClick() {
 				:title="
 					lastRefreshedAt
 						? t('components.courses.CourseRefreshButton.tooltipWithTime', {
-								time: lastRefreshedAt.toLocaleTimeString(),
+								time: lastRefreshedAt.toLocaleTimeString()
 							})
 						: t('components.courses.CourseRefreshButton.tooltip')
 				"

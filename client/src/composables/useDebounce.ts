@@ -41,7 +41,7 @@ export function useDebounce<T>(initialValue: T, options: UseDebounceOptions = {}
 
 	watch(
 		value,
-		(newValue) => {
+		newValue => {
 			cancel()
 
 			if (immediate && timeoutId.value === null) {
@@ -53,7 +53,7 @@ export function useDebounce<T>(initialValue: T, options: UseDebounceOptions = {}
 				timeoutId.value = null
 			}, delay)
 		},
-		{ immediate: false },
+		{ immediate: false }
 	)
 
 	onUnmounted(cancel)
@@ -66,7 +66,7 @@ export function useDebounce<T>(initialValue: T, options: UseDebounceOptions = {}
 		/** Cancel pending debounce */
 		cancel,
 		/** Immediately flush the debounced value */
-		flush,
+		flush
 	}
 }
 

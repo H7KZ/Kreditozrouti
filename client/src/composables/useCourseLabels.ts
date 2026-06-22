@@ -71,7 +71,7 @@ export function useCourseLabels() {
 		if (!languages) return '-'
 		return languages
 			.split('|')
-			.map((lang) => getLanguageLabel(lang.trim()))
+			.map(lang => getLanguageLabel(lang.trim()))
 			.join(', ')
 	}
 
@@ -131,7 +131,7 @@ export function useCourseLabels() {
 	 * @returns Combined label like "Lecture & Exercise"
 	 */
 	function getUnitTypesGroupLabel(types: CourseUnitType[]): string {
-		return types.map((type) => getUnitTypeLabel(type)).join(' & ')
+		return types.map(type => getUnitTypeLabel(type)).join(' & ')
 	}
 
 	/**
@@ -210,6 +210,6 @@ export function useCourseLabels() {
 
 		// Days
 		getDayLabel,
-		getShortDayLabel,
+		getShortDayLabel
 	}
 }

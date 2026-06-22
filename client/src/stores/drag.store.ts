@@ -9,7 +9,7 @@ export const useDragStore = defineStore('drag', () => {
 		startDay: null,
 		startTime: null,
 		endDay: null,
-		endTime: null,
+		endTime: null
 	})
 	const showDragPopover = ref(false)
 	const dragPopoverPosition = ref({ x: 0, y: 0 })
@@ -20,7 +20,7 @@ export const useDragStore = defineStore('drag', () => {
 		return {
 			day: ds.startDay,
 			timeFrom: Math.min(ds.startTime, ds.endTime),
-			timeTo: Math.max(ds.startTime, ds.endTime),
+			timeTo: Math.max(ds.startTime, ds.endTime)
 		}
 	})
 
@@ -63,6 +63,6 @@ export const useDragStore = defineStore('drag', () => {
 		updateDrag,
 		endDrag,
 		cancelDrag,
-		isInDragSelection,
+		isInDragSelection
 	}
 })

@@ -47,19 +47,19 @@ services:
       - traefik-network
 
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
     deploy:
       mode: global
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.1"
+          cpus: '0.1'
           memory: 128M
 
   # ============================================================================
@@ -89,28 +89,28 @@ services:
       - monitoring-network
 
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.${PROJECT}-grafana.priority=70"
-      - "traefik.http.routers.${PROJECT}-grafana.rule=Host(`${DOMAIN}`) && PathPrefix(`/grafana`)"
-      - "traefik.http.routers.${PROJECT}-grafana.entrypoints=websecure"
-      - "traefik.http.routers.${PROJECT}-grafana.tls=true"
-      - "traefik.http.routers.${PROJECT}-grafana.tls.certresolver=letsencrypt"
-      - "traefik.http.services.${PROJECT}-grafana.loadbalancer.server.port=3000"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.${PROJECT}-grafana.priority=70'
+      - 'traefik.http.routers.${PROJECT}-grafana.rule=Host(`${DOMAIN}`) && PathPrefix(`/grafana`)'
+      - 'traefik.http.routers.${PROJECT}-grafana.entrypoints=websecure'
+      - 'traefik.http.routers.${PROJECT}-grafana.tls=true'
+      - 'traefik.http.routers.${PROJECT}-grafana.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.${PROJECT}-grafana.loadbalancer.server.port=3000'
 
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
     deploy:
       mode: global
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.1"
+          cpus: '0.1'
           memory: 128M
 
   # ============================================================================
@@ -132,19 +132,19 @@ services:
       - monitoring-network
 
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
     deploy:
       mode: global
       resources:
         limits:
-          cpus: "0.3"
+          cpus: '0.3'
           memory: 256M
         reservations:
-          cpus: "0.05"
+          cpus: '0.05'
           memory: 128M
 
   # ============================================================================
@@ -165,19 +165,19 @@ services:
       - monitoring-network
 
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
     deploy:
       mode: global
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 256M
         reservations:
-          cpus: "0.1"
+          cpus: '0.1'
           memory: 64M
 
   # ============================================================================
@@ -208,30 +208,30 @@ services:
       - alloy-network
 
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.${PROJECT}-faro.priority=80"
-      - "traefik.http.routers.${PROJECT}-faro.rule=PathPrefix(`/faro`)"
-      - "traefik.http.routers.${PROJECT}-faro.entrypoints=websecure"
-      - "traefik.http.routers.${PROJECT}-faro.tls=true"
-      - "traefik.http.routers.${PROJECT}-faro.tls.certresolver=letsencrypt"
-      - "traefik.http.middlewares.${PROJECT}-faro-strip.stripprefix.prefixes=/faro"
-      - "traefik.http.routers.${PROJECT}-faro.middlewares=${PROJECT}-faro-strip"
-      - "traefik.http.services.${PROJECT}-faro.loadbalancer.server.port=12347"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.${PROJECT}-faro.priority=80'
+      - 'traefik.http.routers.${PROJECT}-faro.rule=PathPrefix(`/faro`)'
+      - 'traefik.http.routers.${PROJECT}-faro.entrypoints=websecure'
+      - 'traefik.http.routers.${PROJECT}-faro.tls=true'
+      - 'traefik.http.routers.${PROJECT}-faro.tls.certresolver=letsencrypt'
+      - 'traefik.http.middlewares.${PROJECT}-faro-strip.stripprefix.prefixes=/faro'
+      - 'traefik.http.routers.${PROJECT}-faro.middlewares=${PROJECT}-faro-strip'
+      - 'traefik.http.services.${PROJECT}-faro.loadbalancer.server.port=12347'
 
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
     deploy:
       mode: global
       resources:
         limits:
-          cpus: "0.3"
+          cpus: '0.3'
           memory: 256M
         reservations:
-          cpus: "0.05"
+          cpus: '0.05'
           memory: 64M
 
   # ============================================================================
@@ -258,19 +258,19 @@ services:
       - monitoring-network
 
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
     deploy:
       mode: global
       resources:
         limits:
-          cpus: "0.1"
+          cpus: '0.1'
           memory: 64M
         reservations:
-          cpus: "0.05"
+          cpus: '0.05'
           memory: 32M
 
   # ============================================================================
@@ -293,26 +293,26 @@ services:
       - monitoring-network
 
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      test: [ 'CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB' ]
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 30s
 
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
     deploy:
       mode: global
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.1"
+          cpus: '0.1'
           memory: 128M
 
   # ============================================================================
@@ -336,25 +336,25 @@ services:
       - traefik-network
 
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.${PROJECT}-umami.rule=Host(`umami.${DOMAIN}`)"
-      - "traefik.http.routers.${PROJECT}-umami.entrypoints=websecure"
-      - "traefik.http.routers.${PROJECT}-umami.tls=true"
-      - "traefik.http.routers.${PROJECT}-umami.tls.certresolver=letsencrypt"
-      - "traefik.http.services.${PROJECT}-umami.loadbalancer.server.port=3000"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.${PROJECT}-umami.rule=Host(`umami.${DOMAIN}`)'
+      - 'traefik.http.routers.${PROJECT}-umami.entrypoints=websecure'
+      - 'traefik.http.routers.${PROJECT}-umami.tls=true'
+      - 'traefik.http.routers.${PROJECT}-umami.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.${PROJECT}-umami.loadbalancer.server.port=3000'
 
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
     deploy:
       mode: global
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.1"
+          cpus: '0.1'
           memory: 128M

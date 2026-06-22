@@ -32,7 +32,7 @@ ping:
 # ------------------------------------------------------------------------------
 entryPoints:
   web:
-    address: ":80"
+    address: ':80'
     http:
       redirections:
         entryPoint:
@@ -41,21 +41,21 @@ entryPoints:
           permanent: true
 
   websecure:
-    address: ":443"
+    address: ':443'
     http:
       tls:
         certResolver: letsencrypt
 
   # Internal entrypoint for healthchecks
   traefik:
-    address: ":8080"
+    address: ':8080'
 
 # ------------------------------------------------------------------------------
 # Providers
 # ------------------------------------------------------------------------------
 providers:
   docker:
-    endpoint: "unix:///var/run/docker.sock"
+    endpoint: 'unix:///var/run/docker.sock'
     exposedByDefault: false
     network: traefik-network
     watch: true
@@ -82,8 +82,8 @@ certificatesResolvers:
         # Wait for DNS propagation before verification
         delayBeforeCheck: 15
         resolvers:
-          - "1.1.1.1:53"
-          - "8.8.8.8:53"
+          - '1.1.1.1:53'
+          - '8.8.8.8:53'
 
 # ------------------------------------------------------------------------------
 # Logging
@@ -97,4 +97,4 @@ accessLog:
   bufferingSize: 100
   filters:
     statusCodes:
-      - "400-599"
+      - '400-599'

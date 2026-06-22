@@ -130,7 +130,7 @@ Traefik and sensitive containers run with:
 
 ```yaml
 security_opt:
-  - no-new-privileges:true
+	- no-new-privileges:true
 ```
 
 ### Secrets hygiene

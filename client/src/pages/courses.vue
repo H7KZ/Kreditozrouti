@@ -8,6 +8,8 @@ import analytics from '@client/analytics'
 import CoursesHeader from '@client/components/courses/CoursesHeader.vue'
 import CourseStatusSummary from '@client/components/courses/CourseStatusSummary.vue'
 import CourseTable from '@client/components/courses/CourseTable.vue'
+import MobileBottomNav from '@client/components/common/MobileBottomNav.vue'
+import FilterFullScreen from '@client/components/filters/FilterFullScreen.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
 import ScheduleSlotsPanel from '@client/components/timetable/ScheduleSlotsPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
@@ -37,100 +39,100 @@ useSeoMeta({
 		return `${base} | ${year} ${t(`semesters.${semester}`)} – Kreditožrouti`
 	},
 	description: () => t('pages.courses.metaDescription'),
-	ogDescription: () => t('pages.courses.metaDescription'),
+	ogDescription: () => t('pages.courses.metaDescription')
 })
 
 watch(
 	() => wizardStore.completed,
-	(completed) => {
+	completed => {
 		if (!completed) {
 			router.push('/')
 		}
 	},
-	{ immediate: true },
+	{ immediate: true }
 )
 
 // Analytics: track filter usage events
 watch(
 	() => filtersStore.filters.title,
-	(val) => {
+	val => {
 		if (val) analytics.track('filter_used', { filter_type: 'search' })
-	},
+	}
 )
 watch(
 	() => filtersStore.filters.search,
-	(val) => {
+	val => {
 		if (val) analytics.track('filter_used', { filter_type: 'syllabus' })
-	},
+	}
 )
 watch(
 	() => filtersStore.filters.faculty_ids,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'faculty' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.levels,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'study_level' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.languages,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'language' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.groups,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'course_group' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.categories,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'category' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.ects,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'ects' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.mode_of_completions,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'completion' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.lecturers,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'lecturer' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.filters.include_times,
-	(val) => {
+	val => {
 		if (val?.length) analytics.track('filter_used', { filter_type: 'time' })
 	},
-	{ deep: true },
+	{ deep: true }
 )
 watch(
 	() => filtersStore.hideConflictingCourses,
-	(val) => {
+	val => {
 		if (val) analytics.track('filter_used', { filter_type: 'hide_conflicts' })
-	},
+	}
 )
 
 onMounted(async () => {
@@ -164,17 +166,10 @@ async function fetchNextCoursesPage(page: () => void) {
 		<div class="flex flex-1 overflow-hidden">
 			<!-- Sidebar / Filter Panel -->
 			<aside
-				class="shrink-0 flex-col overflow-hidden border-r border-(--insis-border) bg-(--insis-surface)"
-				:class="{
-					'hidden lg:flex lg:w-[280px] lg:min-w-[290px] xl:w-[300px] xl:min-w-[300px]': !uiStore.mobileFilterOpen,
-					'fixed inset-0 z-50 flex w-full sm:w-80 sm:min-w-80': uiStore.mobileFilterOpen,
-				}"
+				class="hidden shrink-0 flex-col overflow-hidden border-r border-(--insis-border) bg-(--insis-surface) lg:flex lg:w-[280px] lg:min-w-[290px] xl:w-[300px] xl:min-w-[300px]"
 			>
 				<FilterPanel />
 			</aside>
-
-			<!-- Mobile filter backdrop -->
-			<div v-if="uiStore.mobileFilterOpen" class="fixed inset-0 z-40 bg-black/50 lg:hidden" @click="uiStore.closeMobileFilter" />
 
 			<!-- Main Content -->
 			<div class="flex flex-1 flex-col overflow-hidden">
@@ -185,7 +180,7 @@ async function fetchNextCoursesPage(page: () => void) {
 				</div>
 
 				<!-- Tab bar -->
-				<div class="flex shrink-0 items-end gap-2 border-b border-(--insis-border) bg-(--insis-surface) px-4">
+				<div class="hidden shrink-0 items-end gap-2 border-b border-(--insis-border) bg-(--insis-surface) px-4 lg:flex">
 					<nav class="insis-tabs" style="width: 100%; padding-top: 4px">
 						<button type="button" class="insis-tab" :class="{ 'insis-tab-active': uiStore.viewMode === 'list' }" @click="uiStore.switchToListView">
 							<IconTable class="h-3.5 w-3.5" />
@@ -210,7 +205,7 @@ async function fetchNextCoursesPage(page: () => void) {
 				<!-- Content -->
 				<div
 					id="main-content"
-					class="flex-1 scrollbar-thin [scrollbar-color:var(--insis-border-mid)_transparent] overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-(--insis-border-mid) [&::-webkit-scrollbar-track]:bg-transparent"
+					class="flex-1 scrollbar-thin [scrollbar-color:var(--insis-border-mid)_transparent] overflow-y-auto p-4 pb-[calc(3.5rem+max(0.5rem,env(safe-area-inset-bottom)))] lg:pb-[max(1rem,env(safe-area-inset-bottom))] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-(--insis-border-mid) [&::-webkit-scrollbar-track]:bg-transparent"
 					:aria-busy="coursesStore.loading"
 				>
 					<!-- Loading -->
@@ -253,7 +248,7 @@ async function fetchNextCoursesPage(page: () => void) {
 									$t('pages.courses.showingResults', {
 										from: coursesStore.pagination.offset + 1,
 										to: Math.min(coursesStore.pagination.offset + coursesStore.pagination.count, coursesStore.pagination.total),
-										total: coursesStore.pagination.total,
+										total: coursesStore.pagination.total
 									})
 								}}
 							</p>
@@ -350,5 +345,8 @@ async function fetchNextCoursesPage(page: () => void) {
 				</div>
 			</div>
 		</div>
+
+		<FilterFullScreen v-if="uiStore.mobileFilterOpen" class="lg:hidden" />
+		<MobileBottomNav class="lg:hidden" />
 	</div>
 </template>

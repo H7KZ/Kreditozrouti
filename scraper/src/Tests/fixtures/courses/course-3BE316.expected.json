@@ -1,790 +1,790 @@
 {
-    "id": 210006,
-    "url": "",
-    "url_id": null,
-    "ident": "3BE316",
-    "title": "Managerial Accounting and Performance Analysis",
-    "title_cs": "Manažerské účetnictví a analýza výkonnosti",
-    "title_en": "Managerial Accounting and Performance Analysis",
-    "ects": 6,
-    "mode_of_delivery": "prezenční; 2/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výucedistanční; 2/2 (počet hodin přednášek za období / počet hodin cvičení za období) pro distanční (kombinované) programy",
-    "mode_of_completion": "zkouška",
-    "languages": ["angličtina"],
-    "semester": "ZS",
-    "year": 2025,
-    "faculty": {
-        "ident": "FPH",
-        "title": null,
-        "is_schedule_publicly_visible": true
-    },
-    "level": "bakalářský",
-    "year_of_study": 3,
-    "lecturers": ["Tanweer Ali, M.A., PhD.", "Ing. Patrik Sieber, Ph.D."],
-    "guarantors": null,
-    "prerequisites": "žádné",
-    "recommended_programmes": "žádné",
-    "required_work_experience": "žádná",
-    "aims_of_the_course": "Kurs je zaměřen na analýzu účetních informací z pozice managementu společnosti a na detailní analýzu nákladů firmy. Dále jsou studenti obeznámeni s problematikou rozpočetnictví a investičního plánování.",
-    "learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n\\- vysvětlit odlišnosti v obsahu a zpracování informací pro rozhodování o optimální struktuře výkonů, v porovnání s účetními informacemi pro motivaci řídicích pracovníků na různých úrovních podnikového managementu;  \n\\- provést analýzu bodu zvratu a analýzu nákladů a výstupu  \n\\- vybrat vhodné varianty sestavovaných kalkulací v návaznosti na odlišné rozhodovací úlohy, které řídicí pracovníci řeší;  \n\\- vybrat vhodné varianty pro analýzu investičního plánování v podmínkách rizika a nejistoty.",
-    "course_contents": "1\\. Vztah finančního účetnictví, manažerského účetnictví a finančního řízení  \n2\\. Pojetí nákladů a výkonnosti  \n3\\. Hospodářský výsledek. Analýza bodu zvratu. Analýza nákladů - výstupu a zisku.  \n4\\. Kalkulace  \n5\\. Rozpočetnictví  \n6\\. Vazba manažerského účetnictví a investičního rozhodování.",
-    "special_requirements": "Na přednáškách je vyžadována nejméně 50% účast, při nižší účasti je student hodnocen známkou nevyhověl. Pokud student z vážných důvodů nemohl splnit tuto studijní povinnost, postupuje se dle článku 14 Studijního a zkušebního řádu.",
-    "literature_required": "**Základní:**\n\nDRURY, Colin. _Management accounting for business._ Andover: Cengage Learning, 2009. ISBN 978-1-4080-1771-5.[](https://library.vse.cz/sysno?000168157)\n\nDRURY, Colin. _Management and cost accounting._ London: South-Western/Cengage Learning, 2008. ISBN 978-1-84480-566-2.[](https://library.vse.cz/sysno?000182561)\n\nHORNGREN, Charles T. _Cost accounting : a managerial emphasis._ Toronto: Pearson Prentice Hall, 2007. ISBN 978-0-13-197190-5.[](https://library.vse.cz/sysno?000133415)\n\nHORNGREN, Charles T. _Cost accounting : a managerial emphasis : student's solutions manual._ Toronto: Pearson Prentice Hall, 2007. ISBN 978-0-13-197224-7.[](https://library.vse.cz/sysno?000133417)\n\nGARRISON, Ray H. a NOREEN, Eric W. _Managerial accounting._ Boston: Irwin/McGraw-Hill, 2000. ISBN 0-07-109249-8.[](https://library.vse.cz/sysno?000034270)",
-    "literature_recommended": null,
-    "assessment_methods": [
-        {
-            "method": "Aktivita na přednáškách/cvičeních/seminářích",
-            "weight": 0
-        },
-        {
-            "method": "Absolvování průběžného testu (testů)",
-            "weight": 0
-        },
-        {
-            "method": "Absolvování závěrečného testu",
-            "weight": 0
-        }
-    ],
-    "timetable": [
-        {
-            "lecturer": "Tanweer Ali, M.A., PhD.",
-            "capacity": 25,
-            "note": null,
-            "slots": [
-                {
-                    "type": "Cvičení",
-                    "frequency": "weekly",
-                    "date": null,
-                    "day": "Čtvrtek",
-                    "time_from": "12:45",
-                    "time_to": "14:15",
-                    "location": "NB 471"
-                }
-            ]
-        },
-        {
-            "lecturer": "Tanweer Ali, M.A., PhD.",
-            "capacity": 36,
-            "note": null,
-            "slots": [
-                {
-                    "type": "Cvičení",
-                    "frequency": "weekly",
-                    "date": null,
-                    "day": "Čtvrtek",
-                    "time_from": "14:30",
-                    "time_to": "16:00",
-                    "location": "SB 228"
-                }
-            ]
-        },
-        {
-            "lecturer": "Ing. Patrik Sieber, Ph.D.",
-            "capacity": 61,
-            "note": null,
-            "slots": [
-                {
-                    "type": "Přednáška",
-                    "frequency": "weekly",
-                    "date": null,
-                    "day": "Čtvrtek",
-                    "time_from": "16:15",
-                    "time_to": "17:45",
-                    "location": "RB 435"
-                }
-            ]
-        }
-    ],
-    "study_plans": [
-        {
-            "ident": "Z-CESP",
-            "facultyIdent": "CESP PZAH REK",
-            "semester": "LS",
-            "year": 2020,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-CESP",
-            "facultyIdent": "CESP PZAH REK",
-            "semester": "LS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "B-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2019,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2020,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-ME-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2013,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-ME-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2014,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-ME-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2015,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-ME-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2016,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-ME-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2017,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-ME-IB",
-            "facultyIdent": "FMV",
-            "semester": "ZS",
-            "year": 2018,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "ident": "B-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2019,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2020,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2022,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2026,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-EM-BBACFM",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2017,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-EM-BBACFM",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2018,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-EM-CFM",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2013,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-EM-CFM",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2014,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-EM-CFM",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2015,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "B-EM-CFM",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2016,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "C-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "C-MIM-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2014,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "C-MIM-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2020,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "C-MIM-BBA",
-            "facultyIdent": "FPH",
-            "semester": "ZS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "ident": "Z-EXC-CEP",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2015,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-CEP",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2016,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-CEP",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2018,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-CEP",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2019,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-CEP",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2020,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-CEP",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-CEP",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-CEP",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-CEP",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-CEP",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2015,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2016,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2017,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2018,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2019,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2020,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-JINB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2015,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2016,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2017,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2018,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2019,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2020,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2023,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-LLPB",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-MEZ",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2016,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-MEZ",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2019,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-MEZ",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2021,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-MEZ",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "ZS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-MEZ",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "LS",
-            "year": 2024,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        },
-        {
-            "ident": "Z-EXC-MEZ",
-            "facultyIdent": "OZS PZAH REK",
-            "semester": "ZS",
-            "year": 2025,
-            "mode_of_study": "prezenční",
-            "group": "university_wide",
-            "category": "prohibited"
-        }
-    ],
-    "study_load": [
-        {
-            "activity": "Účast na přednáškách",
-            "hours": 26
-        },
-        {
-            "activity": "Účast na cvičeních/seminářích/tutoriálech",
-            "hours": 26
-        },
-        {
-            "activity": "Příprava na přednášky a cvičení samostudiem",
-            "hours": 39
-        },
-        {
-            "activity": "Příprava na průběžný test (testy)",
-            "hours": 13
-        },
-        {
-            "activity": "Příprava na závěrečný test",
-            "hours": 52
-        }
-    ],
-    "last_modified_date": "2025-03-04",
-    "last_modified_by": "Ing. Pavel Mikan",
-    "content_hash": null
+	"id": 210006,
+	"url": "",
+	"url_id": null,
+	"ident": "3BE316",
+	"title": "Managerial Accounting and Performance Analysis",
+	"title_cs": "Manažerské účetnictví a analýza výkonnosti",
+	"title_en": "Managerial Accounting and Performance Analysis",
+	"ects": 6,
+	"mode_of_delivery": "prezenční; 2/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výucedistanční; 2/2 (počet hodin přednášek za období / počet hodin cvičení za období) pro distanční (kombinované) programy",
+	"mode_of_completion": "zkouška",
+	"languages": ["angličtina"],
+	"semester": "ZS",
+	"year": 2025,
+	"faculty": {
+		"ident": "FPH",
+		"title": null,
+		"is_schedule_publicly_visible": true
+	},
+	"level": "bakalářský",
+	"year_of_study": 3,
+	"lecturers": ["Tanweer Ali, M.A., PhD.", "Ing. Patrik Sieber, Ph.D."],
+	"guarantors": null,
+	"prerequisites": "žádné",
+	"recommended_programmes": "žádné",
+	"required_work_experience": "žádná",
+	"aims_of_the_course": "Kurs je zaměřen na analýzu účetních informací z pozice managementu společnosti a na detailní analýzu nákladů firmy. Dále jsou studenti obeznámeni s problematikou rozpočetnictví a investičního plánování.",
+	"learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n\\- vysvětlit odlišnosti v obsahu a zpracování informací pro rozhodování o optimální struktuře výkonů, v porovnání s účetními informacemi pro motivaci řídicích pracovníků na různých úrovních podnikového managementu;  \n\\- provést analýzu bodu zvratu a analýzu nákladů a výstupu  \n\\- vybrat vhodné varianty sestavovaných kalkulací v návaznosti na odlišné rozhodovací úlohy, které řídicí pracovníci řeší;  \n\\- vybrat vhodné varianty pro analýzu investičního plánování v podmínkách rizika a nejistoty.",
+	"course_contents": "1\\. Vztah finančního účetnictví, manažerského účetnictví a finančního řízení  \n2\\. Pojetí nákladů a výkonnosti  \n3\\. Hospodářský výsledek. Analýza bodu zvratu. Analýza nákladů - výstupu a zisku.  \n4\\. Kalkulace  \n5\\. Rozpočetnictví  \n6\\. Vazba manažerského účetnictví a investičního rozhodování.",
+	"special_requirements": "Na přednáškách je vyžadována nejméně 50% účast, při nižší účasti je student hodnocen známkou nevyhověl. Pokud student z vážných důvodů nemohl splnit tuto studijní povinnost, postupuje se dle článku 14 Studijního a zkušebního řádu.",
+	"literature_required": "**Základní:**\n\nDRURY, Colin. _Management accounting for business._ Andover: Cengage Learning, 2009. ISBN 978-1-4080-1771-5.[](https://library.vse.cz/sysno?000168157)\n\nDRURY, Colin. _Management and cost accounting._ London: South-Western/Cengage Learning, 2008. ISBN 978-1-84480-566-2.[](https://library.vse.cz/sysno?000182561)\n\nHORNGREN, Charles T. _Cost accounting : a managerial emphasis._ Toronto: Pearson Prentice Hall, 2007. ISBN 978-0-13-197190-5.[](https://library.vse.cz/sysno?000133415)\n\nHORNGREN, Charles T. _Cost accounting : a managerial emphasis : student's solutions manual._ Toronto: Pearson Prentice Hall, 2007. ISBN 978-0-13-197224-7.[](https://library.vse.cz/sysno?000133417)\n\nGARRISON, Ray H. a NOREEN, Eric W. _Managerial accounting._ Boston: Irwin/McGraw-Hill, 2000. ISBN 0-07-109249-8.[](https://library.vse.cz/sysno?000034270)",
+	"literature_recommended": null,
+	"assessment_methods": [
+		{
+			"method": "Aktivita na přednáškách/cvičeních/seminářích",
+			"weight": 0
+		},
+		{
+			"method": "Absolvování průběžného testu (testů)",
+			"weight": 0
+		},
+		{
+			"method": "Absolvování závěrečného testu",
+			"weight": 0
+		}
+	],
+	"timetable": [
+		{
+			"lecturer": "Tanweer Ali, M.A., PhD.",
+			"capacity": 25,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Čtvrtek",
+					"time_from": "12:45",
+					"time_to": "14:15",
+					"location": "NB 471"
+				}
+			]
+		},
+		{
+			"lecturer": "Tanweer Ali, M.A., PhD.",
+			"capacity": 36,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Čtvrtek",
+					"time_from": "14:30",
+					"time_to": "16:00",
+					"location": "SB 228"
+				}
+			]
+		},
+		{
+			"lecturer": "Ing. Patrik Sieber, Ph.D.",
+			"capacity": 61,
+			"note": null,
+			"slots": [
+				{
+					"type": "Přednáška",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Čtvrtek",
+					"time_from": "16:15",
+					"time_to": "17:45",
+					"location": "RB 435"
+				}
+			]
+		}
+	],
+	"study_plans": [
+		{
+			"ident": "Z-CESP",
+			"facultyIdent": "CESP PZAH REK",
+			"semester": "LS",
+			"year": 2020,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-CESP",
+			"facultyIdent": "CESP PZAH REK",
+			"semester": "LS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "B-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2019,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2020,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-ME-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2013,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-ME-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2014,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-ME-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2015,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-ME-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2016,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-ME-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2017,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-ME-IB",
+			"facultyIdent": "FMV",
+			"semester": "ZS",
+			"year": 2018,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"ident": "B-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2019,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2020,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2022,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2026,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-EM-BBACFM",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2017,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-EM-BBACFM",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2018,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-EM-CFM",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2013,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-EM-CFM",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2014,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-EM-CFM",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2015,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "B-EM-CFM",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2016,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "C-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "C-MIM-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2014,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "C-MIM-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2020,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "C-MIM-BBA",
+			"facultyIdent": "FPH",
+			"semester": "ZS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"ident": "Z-EXC-CEP",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2015,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-CEP",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2016,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-CEP",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2018,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-CEP",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2019,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-CEP",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2020,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-CEP",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-CEP",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-CEP",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-CEP",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-CEP",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2015,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2016,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2017,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2018,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2019,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2020,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-JINB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2015,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2016,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2017,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2018,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2019,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2020,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2023,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-LLPB",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-MEZ",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2016,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-MEZ",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2019,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-MEZ",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2021,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-MEZ",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "ZS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-MEZ",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "LS",
+			"year": 2024,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		},
+		{
+			"ident": "Z-EXC-MEZ",
+			"facultyIdent": "OZS PZAH REK",
+			"semester": "ZS",
+			"year": 2025,
+			"mode_of_study": "prezenční",
+			"group": "university_wide",
+			"category": "prohibited"
+		}
+	],
+	"study_load": [
+		{
+			"activity": "Účast na přednáškách",
+			"hours": 26
+		},
+		{
+			"activity": "Účast na cvičeních/seminářích/tutoriálech",
+			"hours": 26
+		},
+		{
+			"activity": "Příprava na přednášky a cvičení samostudiem",
+			"hours": 39
+		},
+		{
+			"activity": "Příprava na průběžný test (testy)",
+			"hours": 13
+		},
+		{
+			"activity": "Příprava na závěrečný test",
+			"hours": 52
+		}
+	],
+	"last_modified_date": "2025-03-04",
+	"last_modified_by": "Ing. Pavel Mikan",
+	"content_hash": null
 }

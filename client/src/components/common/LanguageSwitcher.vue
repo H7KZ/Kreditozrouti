@@ -37,7 +37,7 @@ function toggle() {
 				'transition-all duration-100 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--insis-blue)',
 				isOpen
 					? 'border-(--insis-border-mid) bg-(--insis-surface-2) text-(--insis-text)'
-					: 'border-transparent bg-transparent text-(--insis-text-2) hover:border-(--insis-border) hover:bg-(--insis-surface-2) hover:text-(--insis-text)',
+					: 'border-transparent bg-transparent text-(--insis-text-2) hover:border-(--insis-border) hover:bg-(--insis-surface-2) hover:text-(--insis-text)'
 			]"
 			:aria-expanded="isOpen"
 			:aria-label="$t('common.switchLanguage')"
@@ -73,7 +73,7 @@ function toggle() {
 						'flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left text-xs font-medium transition-colors duration-75',
 						(locale as string) === (l as string)
 							? 'bg-(--insis-blue-subtle) text-(--insis-blue)'
-							: 'text-(--insis-text) hover:bg-(--insis-surface-2)',
+							: 'text-(--insis-text) hover:bg-(--insis-surface-2)'
 					]"
 					@click="setLocale(l as string)"
 				>

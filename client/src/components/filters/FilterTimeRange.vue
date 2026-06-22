@@ -29,7 +29,7 @@ const timeTo = ref('14:15')
 const showAddForm = ref(false)
 
 // Ensure timeFrom is always less than timeTo
-watch(timeFrom, (newFrom) => {
+watch(timeFrom, newFrom => {
 	const fromMins = timeToMinutes(newFrom)
 	const toMins = timeToMinutes(timeTo.value)
 	if (fromMins >= toMins) {
@@ -40,7 +40,7 @@ watch(timeFrom, (newFrom) => {
 })
 
 // Ensure timeTo is always greater than timeFrom
-watch(timeTo, (newTo) => {
+watch(timeTo, newTo => {
 	const toMins = timeToMinutes(newTo)
 	const fromMins = timeToMinutes(timeFrom.value)
 	if (toMins <= fromMins) {
@@ -59,13 +59,13 @@ const activeTimeFilters = computed(() => {
 		filtersStore.filters.include_times?.map((t, i) => ({
 			...t,
 			type: 'include' as const,
-			index: i,
+			index: i
 		})) ?? []
 	const exclude =
 		filtersStore.filters.exclude_times?.map((t, i) => ({
 			...t,
 			type: 'exclude' as const,
-			index: i,
+			index: i
 		})) ?? []
 	return [...include, ...exclude]
 })
@@ -88,7 +88,7 @@ function handleAddTimeFilter() {
 	const selection: TimeSelection = {
 		day: selectedDay.value,
 		time_from: fromMins,
-		time_to: toMins,
+		time_to: toMins
 	}
 
 	filtersStore.addIncludeTime(selection)
@@ -143,7 +143,7 @@ function formatFilter(filter: TimeSelection): string {
 				:key="`${filter.type}-${filter.index}`"
 				:class="[
 					'flex items-center justify-between rounded px-2 py-1 text-xs',
-					filter.type === 'include' ? 'bg-(--insis-success-light)' : 'bg-(--insis-danger-light)',
+					filter.type === 'include' ? 'bg-(--insis-success-light)' : 'bg-(--insis-danger-light)'
 				]"
 			>
 				<span>
@@ -224,7 +224,7 @@ function formatFilter(filter: TimeSelection): string {
 			{{
 				$t('components.filters.FilterTimeRange.availableRange', {
 					from: minutesToTime(coursesStore.facets.time_range.min_time),
-					to: minutesToTime(coursesStore.facets.time_range.max_time),
+					to: minutesToTime(coursesStore.facets.time_range.max_time)
 				})
 			}}
 		</p>
