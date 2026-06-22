@@ -7,10 +7,14 @@ import CourseStatusFilter from '@client/components/filters/CourseStatusFilter.vu
 import FilterCheckboxGroup from '@client/components/filters/FilterCheckboxGroup.vue'
 import FilterTimeRange from '@client/components/filters/FilterTimeRange.vue'
 import { useDebouncedFn } from '@client/composables'
+import { useSharedCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import { useCompletedCoursesStore, useCoursesStore, useFiltersStore, useTimetableStore, useUIStore } from '@client/stores'
+import IconAlertTriangle from '~icons/lucide/alert-triangle'
+import IconBookOpen from '~icons/lucide/book-open'
 import IconCalendarX from '~icons/lucide/calendar-x'
 import IconCircleCheck from '~icons/lucide/circle-check'
 import IconFilter from '~icons/lucide/filter'
+import IconMapPin from '~icons/lucide/map-pin'
 import IconRotateCcw from '~icons/lucide/rotate-ccw'
 import Search from '~icons/lucide/search'
 import IconX from '~icons/lucide/x'
@@ -34,6 +38,8 @@ const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
 const completedCoursesStore = useCompletedCoursesStore()
 const uiStore = useUIStore()
+
+const { filterOptions, isStatusSelected, toggleStatusFilter } = useSharedCourseStatusFilter()
 
 const localTitleSearch = ref(filtersStore.filters.title ?? '')
 const syllabusSearchValue = ref(filtersStore.filters.search ?? '')
@@ -177,8 +183,6 @@ function toggleShowCompletedCourses() {
 	coursesStore.fetchCourses()
 }
 
-// Timetable collision info
-const timetableSlotCount = computed(() => timetableStore.selectedUnits.length)
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function handleFilterChange(setter: (values: any[]) => void, values: string[]) {
@@ -248,63 +252,57 @@ function handleCloseMobileFilter() {
 			</button>
 		</div>
 
-		<!-- Completed Courses Toggle -->
-		<div v-if="hasCompletedCourses" class="mb-3 border-b border-(--insis-border-light) pb-3 last:mb-0 last:border-b-0">
-			<div class="flex items-center justify-between">
-				<span class="insis-label mb-0 flex items-center gap-1.5">
-					<IconCircleCheck class="h-4 w-4 text-(--insis-success)" aria-hidden="true" />
-					{{ $t('components.filters.FilterPanel.completedCourses') }}
-				</span>
-				<span
-					class="text-end text-xs text-(--insis-gray-500)"
-					:aria-label="$t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount })"
+		<!-- Compact quick-toggle pill row -->
+		<div v-if="hasCompletedCourses || hasSelectedCourses" class="mb-3 flex flex-wrap gap-1.5">
+			<!-- Hide completed courses -->
+			<button
+				v-if="hasCompletedCourses"
+				type="button"
+				:aria-pressed="!isHidingCompletedCourses"
+				:title="$t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount })"
+				:class="[
+					'flex cursor-pointer items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors',
+					!isHidingCompletedCourses
+						? 'border-(--insis-success) bg-green-50 text-(--insis-success)'
+						: 'border-(--insis-border) text-(--insis-gray-600) hover:border-(--insis-blue) hover:bg-(--insis-blue-subtle)'
+				]"
+				@click="toggleShowCompletedCourses"
+			>
+				<IconCircleCheck class="h-3 w-3 shrink-0" aria-hidden="true" />
+				{{ $t('components.filters.FilterPanel.completedCourses') }}
+				<span class="rounded-full bg-current/15 px-1 py-px text-[10px] leading-none tabular-nums">{{ completedCourseCount }}</span>
+			</button>
+
+			<!-- Course status filter pills -->
+			<template v-if="hasSelectedCourses">
+				<button
+					v-for="opt in filterOptions"
+					:key="opt.value"
+					type="button"
+					:disabled="opt.count === 0"
+					:aria-pressed="isStatusSelected(opt.value)"
+					:class="[
+						'flex cursor-pointer items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors',
+						opt.count === 0
+							? 'cursor-default border-(--insis-border) text-(--insis-gray-400)'
+							: isStatusSelected(opt.value)
+								? opt.colorClass + ' border-current'
+								: 'border-(--insis-border) text-(--insis-gray-600) hover:border-(--insis-blue) hover:bg-(--insis-blue-subtle)'
+					]"
+					@click="opt.count > 0 && toggleStatusFilter(opt.value)"
 				>
-					{{ $t('components.filters.FilterPanel.completedCoursesCount', { count: completedCourseCount }) }}
-				</span>
-			</div>
-			<label class="mt-2 flex cursor-pointer items-center gap-2 text-sm text-(--insis-gray-600)">
-				<input
-					type="checkbox"
-					class="insis-checkbox"
-					:checked="!isHidingCompletedCourses"
-					:aria-label="$t('components.filters.FilterPanel.showCompletedCourses')"
-					@change="toggleShowCompletedCourses"
-				/>
-				{{ $t('components.filters.FilterPanel.showCompletedCourses') }}
-			</label>
+					<IconCalendarX v-if="opt.value === 'conflict'" class="h-3 w-3 shrink-0" aria-hidden="true" />
+					<IconMapPin v-else-if="opt.value === 'campus-conflict'" class="h-3 w-3 shrink-0" aria-hidden="true" />
+					<IconAlertTriangle v-else-if="opt.value === 'incomplete'" class="h-3 w-3 shrink-0" aria-hidden="true" />
+					<IconBookOpen v-else class="h-3 w-3 shrink-0" aria-hidden="true" />
+					{{ opt.label }}
+					<span class="rounded-full bg-current/15 px-1 py-px text-[10px] leading-none tabular-nums">{{ opt.count }}</span>
+				</button>
+			</template>
 		</div>
 
-		<!-- Timetable Collision Exclusion Toggle -->
-		<div v-if="hasSelectedCourses" class="mb-3 border-b border-(--insis-border-light) pb-3 last:mb-0 last:border-b-0">
-			<div class="flex items-center justify-between">
-				<span class="insis-label mb-0 flex items-center gap-1.5">
-					<IconCalendarX class="h-4 w-4 text-(--insis-danger)" aria-hidden="true" />
-					{{ $t('components.filters.FilterPanel.timetableConflicts') }}
-				</span>
-				<span
-					class="text-end text-xs text-(--insis-gray-500)"
-					:aria-label="$t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount })"
-				>
-					{{ $t('components.filters.FilterPanel.timetableSlotsCount', { count: timetableSlotCount }) }}
-				</span>
-			</div>
-			<label class="mt-2 flex cursor-pointer items-center gap-2 text-sm text-(--insis-gray-600)">
-				<input
-					type="checkbox"
-					class="insis-checkbox"
-					:checked="filtersStore.hideConflictingCourses"
-					:aria-label="$t('components.filters.FilterPanel.hideConflictingCourses')"
-					@change="coursesStore.toggleHideConflictingCourses()"
-				/>
-				{{ $t('components.filters.FilterPanel.hideConflictingCourses') }}
-			</label>
-			<p v-if="filtersStore.hideConflictingCourses" class="mt-1 text-[10px] text-(--insis-gray-500)">
-				{{ $t('components.filters.FilterPanel.hideConflictingCoursesHelp') }}
-			</p>
-		</div>
-
-		<!-- Course Status Filter (replaces FilterQuickTags) -->
-		<CourseStatusFilter v-if="hasSelectedCourses" />
+		<!-- Course status detail panels (conflict/incomplete drilldowns) -->
+		<CourseStatusFilter v-if="hasSelectedCourses" :hide-status-options="true" />
 
 		<div class="mb-3 border-b border-(--insis-border-light) pb-3 last:mb-0 last:border-b-0">
 			<!-- Title Search -->

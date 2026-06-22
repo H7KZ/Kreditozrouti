@@ -24,6 +24,8 @@ import IconMapPin from '~icons/lucide/map-pin'
 const { t } = useI18n()
 const { getUnitTypeLabel } = useCourseLabels()
 
+const props = withDefaults(defineProps<{ hideStatusOptions?: boolean }>(), { hideStatusOptions: false })
+
 const {
 	statusCounts,
 	totalSelectedCount,
@@ -41,7 +43,6 @@ const {
 
 // Collapsed states
 const isCollapsed = ref(false)
-const showConflictDetails = ref(false)
 const showIncompleteDetails = ref(false)
 
 /** Total active filter count */
@@ -120,9 +121,13 @@ function toggleCollapsed() {
 </script>
 
 <template>
-	<div v-if="hasCourses" class="mb-3 border-b border-(--insis-border-light) pb-3 last:mb-0 last:border-b-0">
-		<!-- Collapsible header -->
+	<div
+		v-if="hasCourses && (!hideStatusOptions || statusCounts.conflict > 0 || statusCounts['campus-conflict'] > 0 || statusCounts.incomplete > 0)"
+		class="mb-3 border-b border-(--insis-border-light) pb-3 last:mb-0 last:border-b-0"
+	>
+		<!-- Collapsible header (hidden when status pills live in the parent) -->
 		<button
+			v-if="!hideStatusOptions"
 			type="button"
 			class="flex w-full cursor-pointer items-center justify-between py-1 text-left"
 			:aria-expanded="!isCollapsed"
@@ -141,15 +146,15 @@ function toggleCollapsed() {
 			<IconChevronDown :class="['h-4 w-4 text-(--insis-gray-500) transition-transform', { 'rotate-180': !isCollapsed }]" aria-hidden="true" />
 		</button>
 
-		<!-- Collapsible content -->
-		<div v-show="!isCollapsed" class="mt-2 space-y-3">
+		<!-- Collapsible content (always visible when header is hidden) -->
+		<div v-show="hideStatusOptions || !isCollapsed" class="mt-2 space-y-3">
 			<!-- Clear filter button -->
 			<button v-if="isFiltering" type="button" class="cursor-pointer text-xs text-(--insis-blue) hover:underline" @click="clearFilters">
 				{{ $t('common.clearFilter') }}
 			</button>
 
-			<!-- Status type filters -->
-			<div class="space-y-1">
+			<!-- Status type filters (hidden when pills in parent row handle this) -->
+			<div v-if="!hideStatusOptions" class="space-y-1">
 				<label
 					v-for="option in filterOptions"
 					:key="option.value"
@@ -172,40 +177,6 @@ function toggleCollapsed() {
 						({{ option.count }})
 					</span>
 				</label>
-			</div>
-
-			<!-- Conflict courses details -->
-			<div v-if="statusCounts.conflict > 0" class="border-t border-(--insis-border-light) pt-2">
-				<button
-					type="button"
-					class="flex w-full cursor-pointer items-center gap-1 text-xs text-(--insis-gray-600) hover:text-(--insis-text)"
-					:aria-expanded="showConflictDetails"
-					@click="showConflictDetails = !showConflictDetails"
-				>
-					<IconChevronDown :class="['h-3 w-3 transition-transform', { 'rotate-180': showConflictDetails }]" aria-hidden="true" />
-					<IconCalendarX class="h-3 w-3 text-(--insis-danger)" aria-hidden="true" />
-					<span>{{ $t('components.filters.CourseStatusFilter.conflictingCourses') }}</span>
-					<span class="text-(--insis-gray-400)" aria-hidden="true">({{ statusCounts.conflict }})</span>
-				</button>
-
-				<div v-if="showConflictDetails" class="mt-2 space-y-1 pl-4">
-					<label
-						v-for="course in courseOptions.conflicts"
-						:key="course.id"
-						:class="['insis-checkbox-label -mx-1 cursor-pointer rounded px-1 transition-colors', isCourseSelected(course.ident) ? 'bg-red-50' : '']"
-						:title="getCourseTooltip(course)"
-					>
-						<input
-							type="checkbox"
-							class="insis-checkbox"
-							:checked="isCourseSelected(course.ident)"
-							:aria-label="course.ident"
-							@change="toggleCourseFilter(course.ident)"
-						/>
-						<span class="flex-1 truncate text-sm">{{ course.ident }}</span>
-						<span class="text-xs text-(--insis-danger)" aria-hidden="true"> ↔ {{ course.conflictsWith.join(', ') }} </span>
-					</label>
-				</div>
 			</div>
 
 			<!-- Campus conflict courses details -->
