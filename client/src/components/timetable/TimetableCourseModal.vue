@@ -302,7 +302,7 @@ onUnmounted(() => {
 									</div>
 									<div v-if="unit.lecturer" class="flex flex-wrap items-baseline justify-between gap-x-2">
 										<span class="shrink-0 text-(--insis-gray-500)">{{ $t('components.timetable.TimetableCourseModal.lecturer') }}:</span>
-										<span class="font-medium text-right">{{ unit.lecturer }}</span>
+										<span class="text-right font-medium">{{ unit.lecturer }}</span>
 									</div>
 								</div>
 							</div>
@@ -344,7 +344,7 @@ onUnmounted(() => {
 											"
 										>
 											<div class="flex items-start justify-between p-2">
-												<div class="min-w-0 flex-1 flex flex-col gap-1">
+												<div class="flex min-w-0 flex-1 flex-col gap-1">
 													<div v-for="slot in sortSlots(courseUnit.slots)" :key="slot.id" class="flex items-start gap-2">
 														<span class="w-8 shrink-0 rounded bg-(--insis-gray-200) px-1 py-0.5 text-center text-xs">
 															{{ getShortUnitTypeLabel(getSlotType(slot)) }}
@@ -429,7 +429,9 @@ onUnmounted(() => {
 				</div>
 
 				<!-- Footer -->
-				<div class="flex flex-wrap-reverse items-center gap-2 gap-y-4 border-t border-(--insis-border) bg-(--insis-gray-50) px-4 py-3 sm:justify-between">
+				<div
+					class="flex flex-wrap-reverse items-center gap-2 gap-y-4 border-t border-(--insis-border) bg-(--insis-gray-50) px-4 py-3 sm:justify-between"
+				>
 					<button type="button" class="insis-btn-text flex items-center gap-1 text-sm text-(--insis-danger)" @click="handleRemoveCourseAndClose">
 						<IconTrash class="h-4 w-4" />
 						{{ $t('components.timetable.TimetableCourseModal.removeFromTimetable') }}

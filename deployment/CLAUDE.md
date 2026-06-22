@@ -89,7 +89,6 @@ working directory doesn't matter; only the script's own location does.
 
 | Topic                                          | Doc                                                       |
 |------------------------------------------------|-----------------------------------------------------------|
-| System architecture, containers, networks      | [docs/architecture/](../docs/architecture/README.md)      |
 | Docker multi-stage builds, GHCR registry       | [DOCKER.md](../docs/deployment/DOCKER.md)                 |
 | GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                     |
 | Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md) |
