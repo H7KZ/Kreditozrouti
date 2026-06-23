@@ -11,7 +11,8 @@ import {
 	CourseUnitTable,
 	CourseWithRelations,
 	FacultyTable,
-	StudyPlanCourseTable
+	StudyPlanCourseTable,
+	StudyPlanTable
 } from '@api/Database/types'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 
@@ -105,14 +106,30 @@ export class CourseQueryService {
 	 * @returns {Promise<number[]>} Ordered page of course IDs.
 	 */
 	static async fetchPaginatedCourseIds(filters: Partial<CoursesFilter>, limit: number, offset: number): Promise<number[]> {
-		const results = await CourseFilterBuilder.buildFilterQuery(filters)
-			.select('c1.id')
-			.groupBy('c1.id')
-			.orderBy(this.resolveSortColumn(filters.sort_by, 'c1'), filters.sort_dir ?? 'asc')
-			.limit(limit)
-			.offset(offset)
-			.execute()
+		const isDefaultSort = !filters.sort_by
 
+		let priorityFacultyId: string | null = null
+		if (isDefaultSort && filters.study_plan_ids?.length) {
+			// ponytail: one extra query to derive faculty from study plans; avoids any API contract change
+			const row = await mysql
+				.selectFrom(`${StudyPlanTable._table} as sp`)
+				.select('sp.faculty_id')
+				.where('sp.id', 'in', filters.study_plan_ids)
+				.where('sp.faculty_id', 'is not', null)
+				.limit(1)
+				.executeTakeFirst()
+			priorityFacultyId = row?.faculty_id ?? null
+		}
+
+		let query = CourseFilterBuilder.buildFilterQuery(filters).select('c1.id').groupBy('c1.id')
+
+		if (priorityFacultyId) {
+			query = query.orderBy(sql`CASE WHEN c1.faculty_id = ${priorityFacultyId} THEN 0 ELSE 1 END`).orderBy(sql.ref('c1.ident'), 'asc')
+		} else {
+			query = query.orderBy(this.resolveSortColumn(filters.sort_by, 'c1'), filters.sort_dir ?? 'asc')
+		}
+
+		const results = await query.limit(limit).offset(offset).execute()
 		return results.map(r => r.id)
 	}
 

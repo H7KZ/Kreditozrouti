@@ -26,8 +26,8 @@ function createDefaultFilters(): CoursesFilter {
 		mode_of_deliveries: [],
 		assessment_methods: [],
 		completed_course_idents: [],
-		sort_by: 'ident',
-		sort_dir: 'asc',
+		sort_by: undefined,
+		sort_dir: undefined,
 		limit: 50,
 		offset: 0
 	}
