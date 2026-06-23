@@ -106,7 +106,7 @@ export class CourseQueryService {
 	 * @returns {Promise<number[]>} Ordered page of course IDs.
 	 */
 	static async fetchPaginatedCourseIds(filters: Partial<CoursesFilter>, limit: number, offset: number): Promise<number[]> {
-		const isDefaultSort = (filters.sort_by === 'ident' || !filters.sort_by) && (filters.sort_dir === 'asc' || !filters.sort_dir)
+		const isDefaultSort = !filters.sort_by
 
 		let priorityFacultyId: string | null = null
 		if (isDefaultSort && filters.study_plan_ids?.length) {
@@ -124,9 +124,7 @@ export class CourseQueryService {
 		let query = CourseFilterBuilder.buildFilterQuery(filters).select('c1.id').groupBy('c1.id')
 
 		if (priorityFacultyId) {
-			query = query
-				.orderBy(sql`CASE WHEN c1.faculty_id = ${priorityFacultyId} THEN 0 ELSE 1 END`)
-				.orderBy(sql.ref('c1.ident'), 'asc')
+			query = query.orderBy(sql`CASE WHEN c1.faculty_id = ${priorityFacultyId} THEN 0 ELSE 1 END`).orderBy(sql.ref('c1.ident'), 'asc')
 		} else {
 			query = query.orderBy(this.resolveSortColumn(filters.sort_by, 'c1'), filters.sort_dir ?? 'asc')
 		}

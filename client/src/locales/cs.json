@@ -332,7 +332,7 @@
 				"completed": "Dokončeno",
 				"sortLabel": "Seřadit podle {column}",
 				"rowLabel": "Předmět {code}: {title}. Klikněte pro zobrazení detailů."
-				},
+			},
 			"CourseRowExpanded": {
 				"faculty": "Fakulta",
 				"ectsCredits": "ECTS kredity",
