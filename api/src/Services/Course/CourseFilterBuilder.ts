@@ -4,6 +4,7 @@ import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, Database, StudyPlanCourseTable } from '@api/Database/types'
 import { buildSlotConflictConditions } from '@api/utils/timeConflict'
 import { ASSESSMENT_BUCKETS } from './assessmentBuckets'
+import { LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from './facetNormalizers'
 
 type QueryBuilder = SelectQueryBuilder<
 	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> } & {
@@ -158,11 +159,13 @@ export class CourseFilterBuilder {
 		}
 
 		if (filters.levels?.length && !['level', 'levels'].includes(ignore!)) {
-			query = query.where('c1.level', 'in', filters.levels)
+			const rawLevels = filters.levels.map(v => LEVEL_DENORM[v] ?? v)
+			query = query.where('c1.level', 'in', rawLevels)
 		}
 
 		if (filters.languages?.length && !['language', 'languages'].includes(ignore!)) {
-			query = query.where(eb => eb.or(filters.languages!.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
+			const rawLanguages = filters.languages.map(v => LANGUAGE_DENORM[v] ?? v)
+			query = query.where(eb => eb.or(rawLanguages.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
 		}
 
 		// Time filters (only applied when slots join exists)
@@ -224,7 +227,8 @@ export class CourseFilterBuilder {
 		}
 
 		if (filters.mode_of_completions?.length && !['mode_of_completion', 'mode_of_completions'].includes(ignore!)) {
-			query = query.where('c1.mode_of_completion', 'in', filters.mode_of_completions)
+			const rawModes = filters.mode_of_completions.map(v => MODE_OF_COMPLETION_DENORM[v] ?? v)
+			query = query.where('c1.mode_of_completion', 'in', rawModes)
 		}
 
 		if (filters.mode_of_deliveries?.length && !['mode_of_delivery', 'mode_of_deliveries'].includes(ignore!)) {

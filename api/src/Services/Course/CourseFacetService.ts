@@ -6,7 +6,7 @@ import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
 import { ASSESSMENT_BUCKETS } from './assessmentBuckets'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
-import { LANGUAGE_NORM, LEVEL_NORM, MODE_OF_COMPLETION_NORM, normalizeFacet } from './facetNormalizers'
+import { LANGUAGE_DENORM, LANGUAGE_NORM, LEVEL_DENORM, LEVEL_NORM, MODE_OF_COMPLETION_DENORM, MODE_OF_COMPLETION_NORM, normalizeFacet } from './facetNormalizers'
 
 export class CourseFacetService {
 	/**
@@ -127,17 +127,22 @@ export class CourseFacetService {
 				.$if(!!filters.faculty_ids?.length && column !== 'faculty_id', q => q.where('c1.faculty_id', 'in', filters.faculty_ids!))
 				.$if(!!filters.semesters?.length && column !== 'semester', q => q.where('c1.semester', 'in', filters.semesters!))
 				.$if(!!filters.years?.length && column !== 'year', q => q.where('c1.year', 'in', filters.years!))
-				.$if(!!filters.levels?.length && column !== 'level', q => q.where('c1.level', 'in', filters.levels!))
+				.$if(!!filters.levels?.length && column !== 'level', q => {
+					const rawLevels = filters.levels!.map(v => LEVEL_DENORM[v] ?? v)
+					return q.where('c1.level', 'in', rawLevels)
+				})
 				.$if(!!filters.ects?.length && column !== 'ects', q => q.where('c1.ects', 'in', filters.ects!))
-				.$if(!!filters.mode_of_completions?.length && column !== 'mode_of_completion', q =>
-					q.where('c1.mode_of_completion', 'in', filters.mode_of_completions!)
-				)
+				.$if(!!filters.mode_of_completions?.length && column !== 'mode_of_completion', q => {
+					const rawModes = filters.mode_of_completions!.map(v => MODE_OF_COMPLETION_DENORM[v] ?? v)
+					return q.where('c1.mode_of_completion', 'in', rawModes)
+				})
 				.$if(!!filters.mode_of_deliveries?.length && column !== 'mode_of_delivery', q =>
 					q.where('c1.mode_of_delivery', 'in', filters.mode_of_deliveries!)
 				)
-				.$if(!!filters.languages?.length && column !== 'languages', q =>
-					q.where(eb => eb.or(filters.languages!.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
-				)
+				.$if(!!filters.languages?.length && column !== 'languages', q => {
+					const rawLanguages = filters.languages!.map(v => LANGUAGE_DENORM[v] ?? v)
+					return q.where(eb => eb.or(rawLanguages.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
+				})
 				.$if(!!filters.completed_course_idents?.length, q => q.where('c1.ident', 'not in', filters.completed_course_idents!))
 				.groupBy(`c1.${column}`)
 				.orderBy('count', 'desc')
