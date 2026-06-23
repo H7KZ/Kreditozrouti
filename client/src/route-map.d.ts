@@ -101,6 +101,13 @@ declare module 'vue-router/auto-routes' {
       { slug: ParamValue<false> },
       | never
     >,
+    '/s/[id]': RouteRecordInfo<
+      '/s/[id]',
+      '/s/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
   }
 
   /**
@@ -193,6 +200,14 @@ declare module 'vue-router/auto-routes' {
         | never
       pathParamNames:
         | 'slug'
+    }
+    'src/pages/s/[id].vue': {
+      routes:
+        | '/s/[id]'
+      views:
+        | never
+      pathParamNames:
+        | 'id'
     }
   }
 

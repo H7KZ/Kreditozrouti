@@ -12,12 +12,21 @@ import TimetableDragPopover from '@client/components/timetable/TimetableDragPopo
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useAlertsStore, useDragStore, useTimetableStore } from '@client/stores'
 
-const props = withDefaults(defineProps<{
-	/** External units to display. When provided, store units are ignored (read-only mode). */
-	units?: SelectedCourseUnit[]
-	/** Disables drag, course modals, remove, and the toolbar. */
-	readOnly?: boolean
-}>(), { units: undefined, readOnly: false })
+const props = withDefaults(
+	defineProps<{
+		/** External units to display. When provided, store units are ignored. */
+		units?: SelectedCourseUnit[]
+		/** Show the share button in the toolbar. */
+		showShare?: boolean
+		/** Show the export-to-image button in the toolbar. */
+		showExport?: boolean
+		/** Enable drag-to-filter interaction on the grid. */
+		enableDrag?: boolean
+		/** Open the course detail modal when a block is clicked. */
+		enableCourseModal?: boolean
+	}>(),
+	{ units: undefined, showShare: true, showExport: true, enableDrag: true, enableCourseModal: true }
+)
 
 /*
  * TimetableGrid
@@ -36,18 +45,20 @@ const alertsStore = useAlertsStore()
 const { getShortDayLabel } = useCourseLabels()
 
 // Slot merging composable — use external units when in readOnly mode, otherwise fall back to store
-const { mergedUnitsByDay } = useSlotMerging(computed(() => {
-	if (props.units) {
-		const map = new Map<InSISDay, SelectedCourseUnit[]>()
-		for (const u of props.units) {
-			if (!u.day) continue
-			if (!map.has(u.day)) map.set(u.day, [])
-			map.get(u.day)!.push(u)
+const { mergedUnitsByDay } = useSlotMerging(
+	computed(() => {
+		if (props.units) {
+			const map = new Map<InSISDay, SelectedCourseUnit[]>()
+			for (const u of props.units) {
+				if (!u.day) continue
+				if (!map.has(u.day)) map.set(u.day, [])
+				map.get(u.day)!.push(u)
+			}
+			return map
 		}
-		return map
-	}
-	return timetableStore.unitsByDay
-}))
+		return timetableStore.unitsByDay
+	})
+)
 
 const { timeSlots, rowHeight, rowHeightPerDay, getBlockStyle, getTimeFromX, getDragSelectionStyle } = useTimetableGrid(
 	toRef(() => mergedUnitsByDay.value),
@@ -83,7 +94,7 @@ function getMergedUnitsForDay(day: InSISDay): (SelectedCourseUnit | MergedUnit)[
 
 // Check if a unit has a hard time conflict
 function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
-	if (props.readOnly) return false
+	if (props.units) return false
 	if (isMergedUnit(unit)) {
 		return unit.mergedSlotIds.some(slotId => timetableStore.conflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
 	}
@@ -92,7 +103,7 @@ function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 
 // Check if a unit has a campus travel-time conflict (softer, orange)
 function hasCampusConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
-	if (props.readOnly) return false
+	if (props.units) return false
 	if (isMergedUnit(unit)) {
 		return unit.mergedSlotIds.some(slotId => timetableStore.campusConflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
 	}
@@ -141,13 +152,14 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 <template>
 	<div class="relative">
 		<!-- Mobile: agenda view -->
-		<TimetableAgenda class="lg:hidden" :units="units" :read-only="readOnly" />
+		<TimetableAgenda class="lg:hidden" :units="units" :show-share="showShare" :show-export="showExport" :enable-course-modal="enableCourseModal" />
 
 		<!-- Desktop: time grid -->
 		<div class="hidden flex-col gap-2 lg:flex">
-			<div v-if="!readOnly && timetableStore.selectedUnits.length > 0" class="flex justify-end gap-2">
+			<div v-if="(showShare || showExport) && timetableStore.selectedUnits.length > 0" class="flex justify-end gap-2">
 				<!-- Share button -->
 				<button
+					v-if="showShare"
 					type="button"
 					:disabled="sharing"
 					class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
@@ -188,6 +200,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 
 				<!-- Export button -->
 				<button
+					v-if="showExport"
 					type="button"
 					:disabled="exporting"
 					class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
@@ -256,10 +269,10 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 							<!-- Time grid cell spanning all columns -->
 							<td
 								:colspan="timeSlots.length"
-								:class="readOnly ? 'day-row relative p-0' : 'day-row relative cursor-crosshair p-0 hover:bg-(--insis-gray-50)'"
-							:style="{ height: `${rowHeightPerDay.get(day) ?? rowHeight}px` }"
-							:data-day="day"
-							@mousedown="!readOnly && handleMouseDown($event, day)"
+								:class="enableDrag ? 'day-row relative cursor-crosshair p-0 hover:bg-(--insis-gray-50)' : 'day-row relative p-0'"
+								:style="{ height: `${rowHeightPerDay.get(day) ?? rowHeight}px` }"
+								:data-day="day"
+								@mousedown="enableDrag && handleMouseDown($event, day)"
 							>
 								<!-- Background grid lines (every hour) -->
 								<div class="pointer-events-none absolute inset-0 flex">
@@ -274,7 +287,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 								</div>
 
 								<!-- Drag selection overlay (horizontal) -->
-								<template v-if="!readOnly && (getDragSelectionStyleForDay(day) as Record<string, string> | null)">
+								<template v-if="enableDrag && (getDragSelectionStyleForDay(day) as Record<string, string> | null)">
 									<div
 										class="pointer-events-none absolute top-0 bottom-0 bg-(--insis-block-selected) opacity-50"
 										:style="getDragSelectionStyleForDay(day)!"
@@ -292,9 +305,9 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 									:is-merged="isMergedUnit(unit)"
 									:merged-count="isMergedUnit(unit) ? unit.mergedCount : undefined"
 									:date-range="isMergedUnit(unit) ? unit.dateRange : undefined"
-									:read-only="readOnly"
-									@click="!readOnly && handleCourseBlockClick(unit)"
-									@remove="!readOnly && handleRemoveUnit(unit)"
+									:read-only="!enableCourseModal"
+									@click="enableCourseModal && handleCourseBlockClick(unit)"
+									@remove="handleRemoveUnit(unit)"
 								/>
 							</td>
 						</tr>
@@ -304,7 +317,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 
 			<!-- Drag-to-filter popover -->
 			<TimetableDragPopover
-				v-if="!readOnly && dragStore.showDragPopover"
+				v-if="enableDrag && dragStore.showDragPopover"
 				:position="dragStore.dragPopoverPosition"
 				:selection="dragStore.normalizedDragSelection"
 				@filter="handleDragFilter"
@@ -312,7 +325,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 			/>
 
 			<!-- Course details modal -->
-			<TimetableCourseModal v-if="!readOnly && showCourseModal && selectedModalUnit" :unit="selectedModalUnit" @close="handleCloseModal" />
+			<TimetableCourseModal v-if="enableCourseModal && showCourseModal && selectedModalUnit" :unit="selectedModalUnit" @close="handleCloseModal" />
 
 			<slot />
 		</div>

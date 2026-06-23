@@ -232,6 +232,8 @@
 			"savedAlert": "Timetable saved to your slots.",
 			"slotsFull": "Your slots are full (max 5). Delete one and try again.",
 			"slotName": "Shared timetable",
+			"backupSlotName": "My timetable backup",
+			"backupSavedAlert": "Your previous timetable was automatically saved as a backup.",
 			"courseCount": "{n} course | {n} courses",
 			"ects": "{n} ECTS"
 		},

@@ -232,6 +232,8 @@
 			"savedAlert": "Rozvrh byl uložen do tvých slotů.",
 			"slotsFull": "Máš plné sloty (max 5). Smaž jeden a zkus znovu.",
 			"slotName": "Sdílený rozvrh",
+			"backupSlotName": "Záloha mého rozvrhu",
+			"backupSavedAlert": "Tvůj předchozí rozvrh byl automaticky uložen jako záloha.",
 			"courseCount": "{n} předmět | {n} předměty | {n} předmětů",
 			"ects": "{n} ECTS"
 		},

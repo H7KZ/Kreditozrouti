@@ -10,10 +10,15 @@ import { WEEKDAYS } from '@client/constants/timetable'
 import { useAlertsStore, useTimetableStore } from '@client/stores'
 import IconX from '~icons/lucide/x'
 
-const props = withDefaults(defineProps<{
-	units?: SelectedCourseUnit[]
-	readOnly?: boolean
-}>(), { units: undefined, readOnly: false })
+const props = withDefaults(
+	defineProps<{
+		units?: SelectedCourseUnit[]
+		showShare?: boolean
+		showExport?: boolean
+		enableCourseModal?: boolean
+	}>(),
+	{ units: undefined, showShare: true, showExport: true, enableCourseModal: true }
+)
 
 const { locale, t } = useI18n()
 const timetableStore = useTimetableStore()
@@ -33,18 +38,20 @@ async function handleShare() {
 	}
 }
 
-const { mergedUnitsByDay } = useSlotMerging(computed(() => {
-	if (props.units) {
-		const map = new Map<InSISDay, SelectedCourseUnit[]>()
-		for (const u of props.units) {
-			if (!u.day) continue
-			if (!map.has(u.day)) map.set(u.day, [])
-			map.get(u.day)!.push(u)
+const { mergedUnitsByDay } = useSlotMerging(
+	computed(() => {
+		if (props.units) {
+			const map = new Map<InSISDay, SelectedCourseUnit[]>()
+			for (const u of props.units) {
+				if (!u.day) continue
+				if (!map.has(u.day)) map.set(u.day, [])
+				map.get(u.day)!.push(u)
+			}
+			return map
 		}
-		return map
-	}
-	return timetableStore.unitsByDay
-}))
+		return timetableStore.unitsByDay
+	})
+)
 
 // InSISDay values ARE the Czech names; map to English for en locale
 const DAY_EN: Record<string, string> = {
@@ -76,7 +83,7 @@ const agendaDays = computed<DayData[]>(() =>
 const hasAnyCourses = computed(() => agendaDays.value.some(d => d.hasUnits))
 
 function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
-	if (props.readOnly) return false
+	if (props.units) return false
 	const ids = isMergedUnit(unit) ? unit.mergedSlotIds : [unit.slotId]
 	return timetableStore.conflicts.some(([a, b]) => ids.includes(a.slotId) || ids.includes(b.slotId))
 }
@@ -128,9 +135,10 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 <template>
 	<div ref="agendaRef" class="px-4 py-3">
 		<!-- Toolbar: share + export -->
-		<div v-if="hasAnyCourses && !readOnly" class="mb-3 flex justify-end gap-2">
+		<div v-if="hasAnyCourses && (showShare || showExport)" class="mb-3 flex justify-end gap-2">
 			<!-- Share button -->
 			<button
+				v-if="showShare"
 				type="button"
 				:disabled="sharing"
 				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
@@ -170,6 +178,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 			</button>
 			<!-- Export button -->
 			<button
+				v-if="showExport"
 				type="button"
 				:disabled="exporting"
 				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
@@ -245,7 +254,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 						<button
 							type="button"
 							class="flex min-h-[52px] min-w-0 flex-1 items-start gap-3 overflow-hidden rounded-md px-3 py-2.5 text-left active:bg-(--insis-surface-2)"
-							@click="!readOnly && openModal(unit)"
+							@click="enableCourseModal && openModal(unit)"
 						>
 							<div class="min-w-0 flex-1">
 								<div class="truncate text-sm font-semibold text-(--insis-text)">{{ unit.courseTitle }}</div>
@@ -270,7 +279,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 							</div>
 						</button>
 						<button
-							v-if="!readOnly"
+							v-if="enableCourseModal"
 							type="button"
 							class="flex shrink-0 items-start px-2 pt-2.5 text-(--insis-text-3) hover:text-(--insis-text)"
 							:aria-label="$t('common.remove')"
@@ -283,6 +292,6 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 			</div>
 		</template>
 
-		<TimetableCourseModal v-if="!readOnly && showModal && modalUnit" :unit="modalUnit" @close="closeModal" />
+		<TimetableCourseModal v-if="enableCourseModal && showModal && modalUnit" :unit="modalUnit" @close="closeModal" />
 	</div>
 </template>

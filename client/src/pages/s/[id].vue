@@ -41,6 +41,7 @@ const totalEcts = computed(() => {
 
 // Save user's own timetable so we can restore it on unmount
 let savedUnits: SelectedCourseUnit[] = []
+let skipRestore = false
 
 onMounted(async () => {
 	savedUnits = [...timetableStore.selectedUnits]
@@ -58,8 +59,9 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-	// Restore user's own timetable
-	timetableStore.selectedUnits.splice(0, timetableStore.selectedUnits.length, ...savedUnits)
+	if (!skipRestore) {
+		timetableStore.selectedUnits.splice(0, timetableStore.selectedUnits.length, ...savedUnits)
+	}
 })
 
 async function handleCopyLink() {
@@ -70,12 +72,19 @@ async function handleCopyLink() {
 }
 
 function handleSave() {
-	if (!slotsStore.canSaveMoreSlots) {
+	const slotsNeeded = savedUnits.length > 0 ? 2 : 1
+	if (slotsStore.slots.length + slotsNeeded > 5) {
 		alertsStore.addAlert({ type: 'error', title: t('pages.share.slotsFull'), timeout: 6000 })
 		return
 	}
+	// Auto-save the user's previous unsaved timetable before replacing it
+	if (savedUnits.length > 0) {
+		slotsStore.saveCurrentAsSlot(`${t('pages.share.backupSlotName')} – ${new Date().toLocaleDateString()}`, savedUnits)
+		alertsStore.addAlert({ type: 'success', title: t('pages.share.backupSavedAlert'), timeout: 5000 })
+	}
 	const name = `${t('pages.share.slotName')} – ${new Date().toLocaleDateString()}`
 	slotsStore.saveCurrentAsSlot(name, units.value)
+	skipRestore = true
 	analytics.track('share_forked')
 	alertsStore.addAlert({ type: 'success', title: t('pages.share.savedAlert'), timeout: 4000 })
 	router.push('/courses')
@@ -98,35 +107,35 @@ function handleSave() {
 		</div>
 
 		<!-- Content -->
-		<div v-else class="flex flex-1 flex-col">
-			<!-- Action bar -->
-			<div class="flex flex-wrap items-center justify-between gap-3 border-b border-(--insis-border) bg-(--insis-surface) px-4 py-2 sm:px-6">
-				<div class="flex items-center gap-3 text-sm text-gray-500">
-					<span>{{ $t('pages.share.courseCount', uniqueCourseCount) }}</span>
-					<span v-if="totalEcts > 0">·</span>
-					<span v-if="totalEcts > 0">{{ $t('pages.share.ects', totalEcts) }}</span>
+		<div v-else class="flex w-full items-center justify-center">
+			<!-- Timetable — exact same component as courses page, with interactive features disabled -->
+			<div class="flex w-full max-w-320 flex-col justify-center gap-2 overflow-auto px-2 py-8 sm:px-16">
+				<!-- Action bar -->
+				<div class="flex flex-wrap items-center justify-between gap-3 py-2 pl-2 sm:pl-4">
+					<div class="flex items-center gap-3 text-sm text-gray-200">
+						<span>{{ $t('pages.share.courseCount', uniqueCourseCount) }}</span>
+						<span v-if="totalEcts > 0">·</span>
+						<span v-if="totalEcts > 0">{{ $t('pages.share.ects', totalEcts) }}</span>
+					</div>
+					<div class="flex gap-2">
+						<button
+							type="button"
+							class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8"
+							@click="handleCopyLink"
+						>
+							{{ copying ? '...' : $t('pages.share.copyButton') }}
+						</button>
+						<button
+							type="button"
+							class="flex cursor-pointer items-center gap-1.5 rounded-md bg-(--insis-blue) px-3 py-1.5 text-xs font-medium text-white transition hover:opacity-90"
+							@click="handleSave"
+						>
+							{{ $t('pages.share.saveButton') }}
+						</button>
+					</div>
 				</div>
-				<div class="flex gap-2">
-					<button
-						type="button"
-						class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8"
-						@click="handleCopyLink"
-					>
-						{{ copying ? '...' : $t('pages.share.copyButton') }}
-					</button>
-					<button
-						type="button"
-						class="flex cursor-pointer items-center gap-1.5 rounded-md bg-(--insis-blue) px-3 py-1.5 text-xs font-medium text-white transition hover:opacity-90"
-						@click="handleSave"
-					>
-						{{ $t('pages.share.saveButton') }}
-					</button>
-				</div>
-			</div>
 
-			<!-- Timetable — exact same component as courses page -->
-			<div class="flex-1 overflow-auto">
-				<TimetableGrid />
+				<TimetableGrid :show-share="false" :show-export="false" :enable-drag="false" :enable-course-modal="false" />
 			</div>
 		</div>
 	</div>
