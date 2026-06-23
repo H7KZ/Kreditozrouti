@@ -8,7 +8,7 @@ import { useSeoMeta } from '@unhead/vue'
 import analytics from '@client/analytics'
 import api from '@client/api'
 import { useAlertsStore, useScheduleSlotsStore, useTimetableStore } from '@client/stores'
-import TimetableGridReadOnly from '@client/components/timetable/TimetableGridReadOnly.vue'
+import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -111,8 +111,8 @@ function handleSave() {
 				</div>
 			</div>
 
-			<!-- Read-only timetable -->
-			<TimetableGridReadOnly :units="units" />
+			<!-- Read-only timetable (same component, drag + modals disabled) -->
+			<TimetableGrid :units="(units as unknown as SelectedCourseUnit[])" :read-only="true" />
 		</div>
 	</div>
 </template>

@@ -3,7 +3,7 @@ import type { MergedUnit } from '@client/composables'
 import { isMergedUnit, useCourseLabels, useScheduleExport, useShareTimetable, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
 import type { InSISDay } from '@shared/domain/insis'
-import { ref, toRef } from 'vue'
+import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TimetableAgenda from '@client/components/timetable/TimetableAgenda.vue'
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
@@ -11,6 +11,13 @@ import TimetableCourseModal from '@client/components/timetable/TimetableCourseMo
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useAlertsStore, useDragStore, useTimetableStore } from '@client/stores'
+
+const props = withDefaults(defineProps<{
+	/** External units to display. When provided, store units are ignored (read-only mode). */
+	units?: SelectedCourseUnit[]
+	/** Disables drag, course modals, remove, and the toolbar. */
+	readOnly?: boolean
+}>(), { units: undefined, readOnly: false })
 
 /*
  * TimetableGrid
@@ -28,8 +35,19 @@ const alertsStore = useAlertsStore()
 // Composables
 const { getShortDayLabel } = useCourseLabels()
 
-// Slot merging composable
-const { mergedUnitsByDay } = useSlotMerging(toRef(() => timetableStore.unitsByDay))
+// Slot merging composable — use external units when in readOnly mode, otherwise fall back to store
+const { mergedUnitsByDay } = useSlotMerging(computed(() => {
+	if (props.units) {
+		const map = new Map<InSISDay, SelectedCourseUnit[]>()
+		for (const u of props.units) {
+			if (!u.day) continue
+			if (!map.has(u.day)) map.set(u.day, [])
+			map.get(u.day)!.push(u)
+		}
+		return map
+	}
+	return timetableStore.unitsByDay
+}))
 
 const { timeSlots, rowHeight, rowHeightPerDay, getBlockStyle, getTimeFromX, getDragSelectionStyle } = useTimetableGrid(
 	toRef(() => mergedUnitsByDay.value),
@@ -65,6 +83,7 @@ function getMergedUnitsForDay(day: InSISDay): (SelectedCourseUnit | MergedUnit)[
 
 // Check if a unit has a hard time conflict
 function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
+	if (props.readOnly) return false
 	if (isMergedUnit(unit)) {
 		return unit.mergedSlotIds.some(slotId => timetableStore.conflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
 	}
@@ -73,6 +92,7 @@ function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 
 // Check if a unit has a campus travel-time conflict (softer, orange)
 function hasCampusConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
+	if (props.readOnly) return false
 	if (isMergedUnit(unit)) {
 		return unit.mergedSlotIds.some(slotId => timetableStore.campusConflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
 	}
@@ -121,11 +141,11 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 <template>
 	<div class="relative">
 		<!-- Mobile: agenda view -->
-		<TimetableAgenda class="lg:hidden" />
+		<TimetableAgenda class="lg:hidden" :units="units" :read-only="readOnly" />
 
 		<!-- Desktop: time grid -->
 		<div class="hidden flex-col gap-2 lg:flex">
-			<div v-if="timetableStore.selectedUnits.length > 0" class="flex justify-end gap-2">
+			<div v-if="!readOnly && timetableStore.selectedUnits.length > 0" class="flex justify-end gap-2">
 				<!-- Share button -->
 				<button
 					type="button"
@@ -236,10 +256,10 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 							<!-- Time grid cell spanning all columns -->
 							<td
 								:colspan="timeSlots.length"
-								class="day-row relative cursor-crosshair p-0 hover:bg-(--insis-gray-50)"
-								:style="{ height: `${rowHeightPerDay.get(day) ?? rowHeight}px` }"
-								:data-day="day"
-								@mousedown="handleMouseDown($event, day)"
+								:class="readOnly ? 'day-row relative p-0' : 'day-row relative cursor-crosshair p-0 hover:bg-(--insis-gray-50)'"
+							:style="{ height: `${rowHeightPerDay.get(day) ?? rowHeight}px` }"
+							:data-day="day"
+							@mousedown="!readOnly && handleMouseDown($event, day)"
 							>
 								<!-- Background grid lines (every hour) -->
 								<div class="pointer-events-none absolute inset-0 flex">
@@ -254,7 +274,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 								</div>
 
 								<!-- Drag selection overlay (horizontal) -->
-								<template v-if="getDragSelectionStyleForDay(day) as Record<string, string> | null">
+								<template v-if="!readOnly && (getDragSelectionStyleForDay(day) as Record<string, string> | null)">
 									<div
 										class="pointer-events-none absolute top-0 bottom-0 bg-(--insis-block-selected) opacity-50"
 										:style="getDragSelectionStyleForDay(day)!"
@@ -272,8 +292,9 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 									:is-merged="isMergedUnit(unit)"
 									:merged-count="isMergedUnit(unit) ? unit.mergedCount : undefined"
 									:date-range="isMergedUnit(unit) ? unit.dateRange : undefined"
-									@click="handleCourseBlockClick(unit)"
-									@remove="handleRemoveUnit(unit)"
+									:read-only="readOnly"
+									@click="!readOnly && handleCourseBlockClick(unit)"
+									@remove="!readOnly && handleRemoveUnit(unit)"
 								/>
 							</td>
 						</tr>
@@ -283,7 +304,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 
 			<!-- Drag-to-filter popover -->
 			<TimetableDragPopover
-				v-if="dragStore.showDragPopover"
+				v-if="!readOnly && dragStore.showDragPopover"
 				:position="dragStore.dragPopoverPosition"
 				:selection="dragStore.normalizedDragSelection"
 				@filter="handleDragFilter"
@@ -291,7 +312,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 			/>
 
 			<!-- Course details modal -->
-			<TimetableCourseModal v-if="showCourseModal && selectedModalUnit" :unit="selectedModalUnit" @close="handleCloseModal" />
+			<TimetableCourseModal v-if="!readOnly && showCourseModal && selectedModalUnit" :unit="selectedModalUnit" @close="handleCloseModal" />
 
 			<slot />
 		</div>

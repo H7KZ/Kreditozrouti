@@ -1,22 +1,50 @@
 <script setup lang="ts">
 import type { MergedUnit } from '@client/composables'
-import { isMergedUnit, useScheduleExport, useSlotMerging } from '@client/composables'
+import { isMergedUnit, useScheduleExport, useShareTimetable, useSlotMerging } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
 import type { InSISDay } from '@shared/domain/insis'
-import { computed, ref, toRef } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
-import { useTimetableStore } from '@client/stores'
+import { useAlertsStore, useTimetableStore } from '@client/stores'
 import IconX from '~icons/lucide/x'
+
+const props = withDefaults(defineProps<{
+	units?: SelectedCourseUnit[]
+	readOnly?: boolean
+}>(), { units: undefined, readOnly: false })
 
 const { locale, t } = useI18n()
 const timetableStore = useTimetableStore()
+const alertsStore = useAlertsStore()
 
 const agendaRef = ref<HTMLElement | null>(null)
 const { exportSchedule, exporting } = useScheduleExport(agendaRef)
+const { sharing, shareTimetable } = useShareTimetable()
 
-const { mergedUnitsByDay } = useSlotMerging(toRef(() => timetableStore.unitsByDay))
+async function handleShare() {
+	const units = props.units ?? timetableStore.selectedUnits
+	const url = await shareTimetable(units)
+	if (url) {
+		alertsStore.addAlert({ type: 'success', title: t('components.timetable.TimetableGrid.shareCopied'), timeout: 4000 })
+	} else if (!sharing.value) {
+		alertsStore.addAlert({ type: 'error', title: t('components.timetable.TimetableGrid.shareError'), timeout: 6000 })
+	}
+}
+
+const { mergedUnitsByDay } = useSlotMerging(computed(() => {
+	if (props.units) {
+		const map = new Map<InSISDay, SelectedCourseUnit[]>()
+		for (const u of props.units) {
+			if (!u.day) continue
+			if (!map.has(u.day)) map.set(u.day, [])
+			map.get(u.day)!.push(u)
+		}
+		return map
+	}
+	return timetableStore.unitsByDay
+}))
 
 // InSISDay values ARE the Czech names; map to English for en locale
 const DAY_EN: Record<string, string> = {
@@ -48,6 +76,7 @@ const agendaDays = computed<DayData[]>(() =>
 const hasAnyCourses = computed(() => agendaDays.value.some(d => d.hasUnits))
 
 function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
+	if (props.readOnly) return false
 	const ids = isMergedUnit(unit) ? unit.mergedSlotIds : [unit.slotId]
 	return timetableStore.conflicts.some(([a, b]) => ids.includes(a.slotId) || ids.includes(b.slotId))
 }
@@ -98,8 +127,48 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 
 <template>
 	<div ref="agendaRef" class="px-4 py-3">
-		<!-- Export button -->
-		<div v-if="hasAnyCourses" class="mb-3 flex justify-end">
+		<!-- Toolbar: share + export -->
+		<div v-if="hasAnyCourses && !readOnly" class="mb-3 flex justify-end gap-2">
+			<!-- Share button -->
+			<button
+				type="button"
+				:disabled="sharing"
+				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
+				@click="handleShare"
+			>
+				<svg
+					v-if="!sharing"
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-3.5 w-3.5"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<circle cx="18" cy="5" r="3" />
+					<circle cx="6" cy="12" r="3" />
+					<circle cx="18" cy="19" r="3" />
+					<line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+					<line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+				</svg>
+				<svg
+					v-else
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-3.5 w-3.5 animate-spin"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					aria-hidden="true"
+				>
+					<path d="M21 12a9 9 0 1 1-6.219-8.56" />
+				</svg>
+				{{ sharing ? $t('components.timetable.TimetableGrid.sharing') : $t('components.timetable.TimetableGrid.share') }}
+			</button>
+			<!-- Export button -->
 			<button
 				type="button"
 				:disabled="exporting"
@@ -176,7 +245,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 						<button
 							type="button"
 							class="flex min-h-[52px] min-w-0 flex-1 items-start gap-3 overflow-hidden rounded-md px-3 py-2.5 text-left active:bg-(--insis-surface-2)"
-							@click="openModal(unit)"
+							@click="!readOnly && openModal(unit)"
 						>
 							<div class="min-w-0 flex-1">
 								<div class="truncate text-sm font-semibold text-(--insis-text)">{{ unit.courseTitle }}</div>
@@ -201,6 +270,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 							</div>
 						</button>
 						<button
+							v-if="!readOnly"
 							type="button"
 							class="flex shrink-0 items-start px-2 pt-2.5 text-(--insis-text-3) hover:text-(--insis-text)"
 							:aria-label="$t('common.remove')"
@@ -213,6 +283,6 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 			</div>
 		</template>
 
-		<TimetableCourseModal v-if="showModal && modalUnit" :unit="modalUnit" @close="closeModal" />
+		<TimetableCourseModal v-if="!readOnly && showModal && modalUnit" :unit="modalUnit" @close="closeModal" />
 	</div>
 </template>
