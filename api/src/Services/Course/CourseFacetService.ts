@@ -78,7 +78,7 @@ export class CourseFacetService {
 		const languages = normalizeFacet(this.splitPipeDelimitedFacet(languagesRaw), LANGUAGE_NORM)
 		const levels = normalizeFacet(levelsRaw, LEVEL_NORM)
 		const modes_of_completion = normalizeFacet(modesOfCompletionRaw, MODE_OF_COMPLETION_NORM)
-		const assessment_methods = this.bucketAssessmentMethods(assessmentMethodsRaw)
+		const assessment_methods = assessmentMethodsRaw
 
 		return {
 			faculties,
@@ -305,25 +305,6 @@ export class CourseFacetService {
 			min_time: result?.min_time ?? 0,
 			max_time: result?.max_time ?? 1440
 		}
-	}
-
-	/**
-	 * Collapses raw assessment method strings into bucket keys using ASSESSMENT_BUCKETS.
-	 * Raw values not matching any bucket are dropped (they are InSIS noise).
-	 */
-	static bucketAssessmentMethods(data: FacetItem[]): FacetItem[] {
-		const map = new Map<string, number>()
-
-		for (const row of data) {
-			if (typeof row.value !== 'string') continue
-			const bucket = ASSESSMENT_BUCKETS.find(b => (b.methods as readonly string[]).includes(row.value as string))
-			if (!bucket) continue
-			map.set(bucket.key, (map.get(bucket.key) ?? 0) + Number(row.count))
-		}
-
-		return Array.from(map.entries())
-			.map(([value, count]) => ({ value, count }))
-			.sort((a, b) => b.count - a.count)
 	}
 
 	/**
