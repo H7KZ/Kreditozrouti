@@ -31,7 +31,12 @@ const columns = computed(() => [
 
 function handleSort(key: CourseSortBy) {
 	if (key === filtersStore.filters.sort_by) {
-		filtersStore.filters.sort_dir = filtersStore.filters.sort_dir === 'asc' ? 'desc' : 'asc'
+		if (filtersStore.filters.sort_dir === 'asc') {
+			filtersStore.filters.sort_dir = 'desc'
+		} else {
+			filtersStore.filters.sort_by = undefined
+			filtersStore.filters.sort_dir = undefined
+		}
 	} else {
 		filtersStore.filters.sort_by = key
 		filtersStore.filters.sort_dir = 'asc'
@@ -83,7 +88,7 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 								? filtersStore.filters.sort_dir === 'asc'
 									? 'ascending'
 									: 'descending'
-								: undefined
+								: 'none'
 						"
 						@click="col.sortable && handleSort(col.key as CourseSortBy)"
 						@keydown.enter="col.sortable && handleSort(col.key as CourseSortBy)"

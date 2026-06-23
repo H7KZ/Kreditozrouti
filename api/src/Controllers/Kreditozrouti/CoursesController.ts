@@ -46,8 +46,8 @@ const CoursesFilterSchema = z.object({
 	completed_course_idents: z.array(z.coerce.string()).optional(),
 
 	// Sorting
-	sort_by: z.enum(['ident', 'title', 'ects', 'faculty', 'year', 'semester']).optional().default('ident'),
-	sort_dir: z.enum(['asc', 'desc']).optional().default('asc'),
+	sort_by: z.enum(['ident', 'title', 'ects', 'faculty', 'year', 'semester']).optional(),
+	sort_dir: z.enum(['asc', 'desc']).optional(),
 
 	// Pagination
 	limit: z.coerce.number().min(0).max(500).optional().default(20),

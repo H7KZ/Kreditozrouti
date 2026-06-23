@@ -22,8 +22,8 @@ export interface CoursesFilter {
 	mode_of_deliveries?: string[]
 	assessment_methods?: string[]
 	completed_course_idents?: string[]
-	sort_by: 'ident' | 'title' | 'ects' | 'faculty' | 'year' | 'semester'
-	sort_dir: 'asc' | 'desc'
+	sort_by?: 'ident' | 'title' | 'ects' | 'faculty' | 'year' | 'semester'
+	sort_dir?: 'asc' | 'desc'
 	limit: number
 	offset: number
 }
