@@ -68,11 +68,11 @@
 		"-": "-"
 	},
 	"courseLevels": {
-		"bakalářský": "Bachelor's",
-		"doktorský": "Doctoral",
-		"kurz": "Course",
-		"magisterský navazující": "Follow-up Master's",
-		"MBA": "MBA"
+		"bachelor": "Bachelor's",
+		"master": "Follow-up Master's",
+		"doctoral": "Doctoral",
+		"mba": "MBA",
+		"course": "Course"
 	},
 	"courseGroups": {
 		"faculty_specific": "Faculty-specific groups",
@@ -94,34 +94,29 @@
 		"physical_education": "Physical education and sports"
 	},
 	"courseModesOfCompletion": {
-		"zkouška": "Exam",
-		"zápočet": "Credit",
-		"obhajoba": "Defense"
+		"exam": "Exam",
+		"credit": "Credit",
+		"defense": "Defense"
 	},
 	"assessmentMethods": {
-		"písemná zkouška": "Written exam",
-		"ústní zkouška": "Oral exam",
-		"projekt": "Project",
-		"seminární práce": "Seminar paper",
-		"aktivita": "Class participation",
-		"test": "Test",
-		"průběžný test": "Midterm test",
-		"závěrečný test": "Final test",
-		"prezentace": "Presentation",
-		"esej": "Essay",
-		"případová studie": "Case study"
+		"final_test": "Final test",
+		"oral_exam": "Oral exam",
+		"ongoing_tests": "Ongoing tests",
+		"paper_project": "Paper / project",
+		"presentation": "Presentation / defence",
+		"activity": "Activity / attendance"
 	},
 	"courseLanguages": {
-		"čeština": "Czech",
-		"angličtina": "English",
-		"němčina": "German",
-		"španělština": "Spanish",
-		"francouzština": "French",
-		"ruština": "Russian",
-		"italština": "Italian",
-		"čínština": "Chinese",
-		"švédština": "Swedish",
-		"portugalština": "Portuguese"
+		"czech": "Czech",
+		"english": "English",
+		"german": "German",
+		"spanish": "Spanish",
+		"french": "French",
+		"russian": "Russian",
+		"italian": "Italian",
+		"chinese": "Chinese",
+		"swedish": "Swedish",
+		"portuguese": "Portuguese"
 	},
 	"unitTypes": {
 		"lecture": "Lecture",
