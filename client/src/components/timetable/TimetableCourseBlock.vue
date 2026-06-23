@@ -140,8 +140,7 @@ function handleClick() {
 <template>
 	<div
 		class="timetable-block group absolute right-0 left-0 min-h-6 overflow-hidden border border-(--insis-border) text-xs text-gray-900 transition-shadow hover:z-10 hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--insis-blue)"
-		:class="{ 'cursor-pointer': !readOnly, 'cursor-default': readOnly }"
-		:class="[
+		:class="[{ 'cursor-pointer': !readOnly, 'cursor-default': readOnly },
 			blockColorClass,
 			{
 				'ring-2 ring-(--insis-danger)': hasConflict,

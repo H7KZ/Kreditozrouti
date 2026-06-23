@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ShareableUnit } from '@shared/http/share'
+import type { SelectedCourseUnit } from '@client/types'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -23,7 +24,7 @@ const loading = ref(true)
 const error = ref(false)
 const copying = ref(false)
 
-const id = computed(() => route.params.id as string)
+const id = computed(() => (route.params as { id: string }).id)
 const uniqueCourseCount = computed(() => new Set(units.value.map(u => u.courseId)).size)
 const totalEcts = computed(() => {
 	const seen = new Set<number>()
@@ -62,9 +63,8 @@ function handleSave() {
 		return
 	}
 	const name = `${t('pages.share.slotName')} – ${new Date().toLocaleDateString()}`
-	// ShareableUnit is structurally identical to SelectedCourseUnit
-	slotsStore.saveCurrentAsSlot(name, units.value as any)
-	timetableStore.loadUnits(units.value as any)
+	slotsStore.saveCurrentAsSlot(name, units.value as unknown as SelectedCourseUnit[])
+	timetableStore.loadUnits(units.value as unknown as SelectedCourseUnit[])
 	analytics.track('share_forked')
 	alertsStore.addAlert({ type: 'success', title: t('pages.share.savedAlert'), timeout: 4000 })
 	router.push('/courses')
