@@ -2,6 +2,7 @@
 import type { CourseDTO } from '@shared/http/responses'
 import { computed, ref } from 'vue'
 import { useCourseLabels, useDebouncedFn } from '@client/composables'
+import IconArrowLeft from '~icons/lucide/arrow-left'
 import IconCheck from '~icons/lucide/check'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconInfo from '~icons/lucide/info'
@@ -116,9 +117,13 @@ function clearSearch() {
 
 <template>
 	<div>
-		<h2 class="mb-2 text-lg font-medium text-(--insis-gray-900)">
-			{{ $t('components.wizard.WizardStepCompletedCourses.title') }}
-		</h2>
+		<div class="mb-4 flex items-center gap-4">
+			<button type="button" class="insis-btn-text flex items-center gap-1" @click="emit('back')">
+				<IconArrowLeft class="h-4 w-4" />
+				{{ $t('common.back') }}
+			</button>
+			<h2 class="text-lg font-medium text-(--insis-gray-900)">{{ $t('components.wizard.WizardStepCompletedCourses.title') }}</h2>
+		</div>
 
 		<p class="mb-4 text-sm text-(--insis-gray-600)">
 			{{ $t('components.wizard.WizardStepCompletedCourses.description') }}
@@ -240,15 +245,12 @@ function clearSearch() {
 			</p>
 		</div>
 
-		<!-- Summary & Actions -->
+		<!-- Actions -->
 		<div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-(--insis-border) pt-4">
-			<div class="flex items-center gap-4">
-				<button type="button" class="insis-btn-text text-sm" @click="emit('back')">← {{ $t('common.back') }}</button>
-				<span v-if="totalCompleted > 0" class="text-sm text-(--insis-gray-600)">
-					{{ $t('components.wizard.WizardStepCompletedCourses.selectedCount', { count: totalCompleted }) }}
-				</span>
-			</div>
-			<div class="flex items-center gap-3">
+			<span v-if="totalCompleted > 0" class="text-sm text-(--insis-gray-600)">
+				{{ $t('components.wizard.WizardStepCompletedCourses.selectedCount', { count: totalCompleted }) }}
+			</span>
+			<div class="ml-auto flex items-center gap-3">
 				<button type="button" class="insis-btn insis-btn-secondary flex items-center gap-1.5 text-sm" @click="emit('skip')">
 					<IconSkipForward class="h-4 w-4" />
 					{{ $t('components.wizard.WizardStepCompletedCourses.skip') }}
