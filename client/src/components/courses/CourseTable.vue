@@ -114,27 +114,6 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 					</tr>
 				</template>
 
-				<template v-else-if="coursesStore.hasFacultyPrioritisation">
-					<!-- Faculty-matching courses -->
-					<template v-if="coursesStore.facultyCourses.length > 0">
-						<tr>
-							<td :colspan="columns.length" class="bg-(--insis-surface-2) px-3 py-1 text-xs font-semibold text-(--insis-text-3)">
-								{{ $t('components.courses.CourseTable.groupFaculty') }}
-							</td>
-						</tr>
-						<CourseRow v-for="course in coursesStore.facultyCourses" :key="course.id" :course="course" :colspan="columns.length" />
-					</template>
-					<!-- Other courses -->
-					<template v-if="coursesStore.otherCourses.length > 0">
-						<tr>
-							<td :colspan="columns.length" class="bg-(--insis-surface-2) px-3 py-1 text-xs font-semibold text-(--insis-text-3)">
-								{{ $t('components.courses.CourseTable.groupOther') }}
-							</td>
-						</tr>
-						<CourseRow v-for="course in coursesStore.otherCourses" :key="course.id" :course="course" :colspan="columns.length" />
-					</template>
-				</template>
-
 				<template v-else>
 					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length" />
 				</template>
@@ -156,109 +135,7 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 			</div>
 		</template>
 
-		<!-- Course cards — faculty-priority split -->
-		<template v-else-if="coursesStore.hasFacultyPrioritisation">
-			<template v-if="coursesStore.facultyCourses.length > 0">
-				<div class="px-1 py-1 text-xs font-semibold text-(--insis-text-3)">
-					{{ $t('components.courses.CourseTable.groupFaculty') }}
-				</div>
-				<template v-for="course in coursesStore.facultyCourses" :key="course.id">
-					<div
-						:class="[
-							'cursor-pointer rounded border bg-(--insis-surface) px-3 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-(--insis-blue) active:bg-(--insis-surface-2)',
-							getMobileBorderClass(course)
-						]"
-						role="button"
-						:tabindex="0"
-						:aria-expanded="isExpanded(course.id)"
-						:aria-label="$t('components.courses.CourseTable.rowLabel', { code: course.ident, title: getCourseTitle(course) })"
-						@click="handleRowClick(course.id)"
-						@keydown.enter="handleRowClick(course.id)"
-						@keydown.space.prevent="handleRowClick(course.id)"
-					>
-						<div class="flex items-start justify-between gap-2">
-							<div class="min-w-0 flex-1">
-								<div class="mb-0.5 flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-									<span class="shrink-0 text-[13px] font-bold text-(--insis-blue)">{{ course.ident }}</span>
-									<span class="min-w-0 truncate text-[12px] font-medium text-(--insis-text)">{{ getCourseTitle(course) }}</span>
-								</div>
-								<div class="text-xs text-(--insis-text-3)">
-									<span v-if="course.faculty_id">{{ getFacultyLabel(course.faculty_id) }}</span>
-									<template v-if="course.faculty_id && course.ects"> · </template>
-									<span v-if="course.ects">{{ course.ects }} ECTS</span>
-									<template v-if="course.mode_of_completion && (course.faculty_id || course.ects)"> · </template>
-									<span v-if="course.mode_of_completion">{{ getCompletionLabel(course.mode_of_completion) }}</span>
-								</div>
-								<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-xs text-(--insis-text-3)">
-									{{ getCourseScheduleSummary(course) }}
-								</div>
-							</div>
-							<div class="flex shrink-0 flex-col items-center gap-1">
-								<CourseStatusIndicator :course="course" />
-								<IconChevronDown
-									:class="['mt-auto h-3.5 w-3.5 text-(--insis-text-3) transition-transform duration-200', isExpanded(course.id) && 'rotate-180']"
-									aria-hidden="true"
-								/>
-							</div>
-						</div>
-					</div>
-					<div v-if="isExpanded(course.id)" class="-mt-1 rounded border border-(--insis-blue-light) bg-(--insis-surface-2)">
-						<CourseRowExpanded :course="course" />
-					</div>
-				</template>
-			</template>
-			<template v-if="coursesStore.otherCourses.length > 0">
-				<div class="px-1 py-1 text-xs font-semibold text-(--insis-text-3)">
-					{{ $t('components.courses.CourseTable.groupOther') }}
-				</div>
-				<template v-for="course in coursesStore.otherCourses" :key="course.id">
-					<div
-						:class="[
-							'cursor-pointer rounded border bg-(--insis-surface) px-3 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-(--insis-blue) active:bg-(--insis-surface-2)',
-							getMobileBorderClass(course)
-						]"
-						role="button"
-						:tabindex="0"
-						:aria-expanded="isExpanded(course.id)"
-						:aria-label="$t('components.courses.CourseTable.rowLabel', { code: course.ident, title: getCourseTitle(course) })"
-						@click="handleRowClick(course.id)"
-						@keydown.enter="handleRowClick(course.id)"
-						@keydown.space.prevent="handleRowClick(course.id)"
-					>
-						<div class="flex items-start justify-between gap-2">
-							<div class="min-w-0 flex-1">
-								<div class="mb-0.5 flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-									<span class="shrink-0 text-[13px] font-bold text-(--insis-blue)">{{ course.ident }}</span>
-									<span class="min-w-0 truncate text-[12px] font-medium text-(--insis-text)">{{ getCourseTitle(course) }}</span>
-								</div>
-								<div class="text-xs text-(--insis-text-3)">
-									<span v-if="course.faculty_id">{{ getFacultyLabel(course.faculty_id) }}</span>
-									<template v-if="course.faculty_id && course.ects"> · </template>
-									<span v-if="course.ects">{{ course.ects }} ECTS</span>
-									<template v-if="course.mode_of_completion && (course.faculty_id || course.ects)"> · </template>
-									<span v-if="course.mode_of_completion">{{ getCompletionLabel(course.mode_of_completion) }}</span>
-								</div>
-								<div v-if="getCourseScheduleSummary(course)" class="mt-0.5 text-xs text-(--insis-text-3)">
-									{{ getCourseScheduleSummary(course) }}
-								</div>
-							</div>
-							<div class="flex shrink-0 flex-col items-center gap-1">
-								<CourseStatusIndicator :course="course" />
-								<IconChevronDown
-									:class="['mt-auto h-3.5 w-3.5 text-(--insis-text-3) transition-transform duration-200', isExpanded(course.id) && 'rotate-180']"
-									aria-hidden="true"
-								/>
-							</div>
-						</div>
-					</div>
-					<div v-if="isExpanded(course.id)" class="-mt-1 rounded border border-(--insis-blue-light) bg-(--insis-surface-2)">
-						<CourseRowExpanded :course="course" />
-					</div>
-				</template>
-			</template>
-		</template>
-
-		<!-- Course cards — no faculty prioritisation -->
+		<!-- Course cards -->
 		<template v-else>
 			<template v-for="course in coursesStore.courses" :key="course.id">
 				<!-- Card header -->

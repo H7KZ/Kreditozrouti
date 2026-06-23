@@ -331,9 +331,7 @@
 				"campusConflictTag": "Kampusová kolize",
 				"completed": "Dokončeno",
 				"sortLabel": "Seřadit podle {column}",
-				"rowLabel": "Předmět {code}: {title}. Klikněte pro zobrazení detailů.",
-					"groupFaculty": "Vaše fakulta",
-					"groupOther": "Ostatní fakulty"
+				"rowLabel": "Předmět {code}: {title}. Klikněte pro zobrazení detailů."
 				},
 			"CourseRowExpanded": {
 				"faculty": "Fakulta",

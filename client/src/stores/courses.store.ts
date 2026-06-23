@@ -45,31 +45,6 @@ export const useCoursesStore = defineStore('courses', () => {
 	const hasNextPage = computed(() => currentPage.value < totalPages.value)
 	const hasPrevPage = computed(() => currentPage.value > 1)
 
-	// Faculty-priority sort: when the wizard has a faculty selected, split courses into
-	// faculty-matching (first, sorted by ident) and all others (after, sorted by ident).
-	const hasFacultyPrioritisation = computed(() => {
-		const wizardStore = useWizardStore()
-		return wizardStore.facultyId !== null
-	})
-
-	const facultyCourses = computed(() => {
-		const wizardStore = useWizardStore()
-		const fid = wizardStore.facultyId
-		if (!fid) return []
-		return [...courses.value]
-			.filter(c => c.faculty_id === fid)
-			.sort((a, b) => (a.ident ?? '').localeCompare(b.ident ?? ''))
-	})
-
-	const otherCourses = computed(() => {
-		const wizardStore = useWizardStore()
-		const fid = wizardStore.facultyId
-		if (!fid) return courses.value
-		return [...courses.value]
-			.filter(c => c.faculty_id !== fid)
-			.sort((a, b) => (a.ident ?? '').localeCompare(b.ident ?? ''))
-	})
-
 	async function fetchCourses(silent = false) {
 		const filtersStore = useFiltersStore()
 		if (!silent) loading.value = true
@@ -224,10 +199,6 @@ export const useCoursesStore = defineStore('courses', () => {
 		loading,
 		error,
 		expandedCourseIds,
-		// Faculty-priority sort
-		hasFacultyPrioritisation,
-		facultyCourses,
-		otherCourses,
 		// Pagination
 		totalPages,
 		currentPage,
