@@ -68,11 +68,11 @@
 		"-": "-"
 	},
 	"courseLevels": {
-		"bakalářský": "Bakalářský",
-		"doktorský": "Doktorský",
-		"kurz": "Kurz",
-		"magisterský navazující": "Magisterský navazující",
-		"MBA": "MBA"
+		"bachelor": "Bakalářský",
+		"master": "Magisterský navazující",
+		"doctoral": "Doktorský",
+		"mba": "MBA",
+		"course": "Kurz"
 	},
 	"courseGroups": {
 		"faculty_specific": "Fakultně specifické skupiny",
@@ -94,9 +94,9 @@
 		"physical_education": "Tělesná výchova a sport"
 	},
 	"courseModesOfCompletion": {
-		"zkouška": "Zkouška",
-		"zápočet": "Zápočet",
-		"obhajoba": "Obhajoba"
+		"exam": "Zkouška",
+		"credit": "Zápočet",
+		"defense": "Obhajoba"
 	},
 	"assessmentMethods": {
 		"final_test": "Závěrečný test",
@@ -107,16 +107,16 @@
 		"activity": "Aktivita / účast"
 	},
 	"courseLanguages": {
-		"čeština": "Čeština",
-		"angličtina": "Angličtina",
-		"němčina": "Němčina",
-		"španělština": "Španělština",
-		"francouzština": "Francouzština",
-		"ruština": "Ruština",
-		"italština": "Italština",
-		"čínština": "Čínština",
-		"švédština": "Švédština",
-		"portugalština": "Portugalština"
+		"czech": "Čeština",
+		"english": "Angličtina",
+		"german": "Němčina",
+		"spanish": "Španělština",
+		"french": "Francouzština",
+		"russian": "Ruština",
+		"italian": "Italština",
+		"chinese": "Čínština",
+		"swedish": "Švédština",
+		"portuguese": "Portugalština"
 	},
 	"unitTypes": {
 		"lecture": "Přednáška",
