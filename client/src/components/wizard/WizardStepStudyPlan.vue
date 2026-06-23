@@ -177,20 +177,15 @@ function dismissSpecializationInfo() {
 			<p class="text-sm text-(--insis-gray-600)">
 				{{ $t('components.wizard.WizardStepStudyPlan.resultsCount', { count: studyPlans.length }) }}
 			</p>
-			<div class="flex items-center gap-3">
-				<span
-					class="text-sm font-medium"
-					:class="{
-						'text-(--insis-blue)': selectedCount > 0,
-						'text-(--insis-gray-500)': selectedCount === 0
-					}"
-				>
-					{{ $t('components.wizard.WizardStepStudyPlan.selectedCount', { count: selectedCount }) }}
-				</span>
-				<button type="button" class="insis-btn insis-btn-primary w-full text-sm sm:w-auto" :disabled="!canProceed" @click="handleProceed">
-					{{ $t('components.wizard.WizardStepStudyPlan.proceed') }}
-				</button>
-			</div>
+			<span
+				class="text-sm font-medium"
+				:class="{
+					'text-(--insis-blue)': selectedCount > 0,
+					'text-(--insis-gray-500)': selectedCount === 0
+				}"
+			>
+				{{ $t('components.wizard.WizardStepStudyPlan.selectedCount', { count: selectedCount }) }}
+			</span>
 		</div>
 
 		<!-- Study Plans Grid -->
@@ -253,5 +248,12 @@ function dismissSpecializationInfo() {
 		<p class="mt-4 text-xs text-(--insis-gray-500) italic">
 			{{ $t('components.wizard.WizardStepStudyPlan.doubleClickTip') }}
 		</p>
+
+		<!-- Actions -->
+		<div class="mt-6 flex items-center justify-end gap-3 border-t border-(--insis-border) pt-4">
+			<button type="button" class="insis-btn insis-btn-primary text-sm" :disabled="!canProceed" @click="handleProceed">
+				{{ $t('components.wizard.WizardStepStudyPlan.proceed') }}
+			</button>
+		</div>
 	</div>
 </template>

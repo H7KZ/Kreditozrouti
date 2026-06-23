@@ -41,7 +41,7 @@ export const useWizardStore = defineStore('wizard', () => {
 	const step1Complete = computed(() => facultyId.value !== null)
 	const step2Complete = computed(() => year.value !== null)
 	const step3Complete = computed(() => selectedStudyPlans.value.length > 0)
-	const step4Complete = computed(() => step3Complete.value)
+	const step4Complete = computed(() => currentStep.value >= 4 && step3Complete.value)
 	const canProceedToStep2 = computed(() => step1Complete.value)
 	const canProceedToStep3 = computed(() => step1Complete.value && step2Complete.value)
 	const canProceedToStep4 = computed(() => step1Complete.value && step2Complete.value && step3Complete.value)
