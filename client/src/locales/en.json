@@ -222,6 +222,19 @@
 			"footer": "Kreditožrouti · Data from",
 			"insisLink": "InSIS VŠE"
 		},
+		"share": {
+			"loading": "Loading shared timetable...",
+			"errorTitle": "Link not found or expired",
+			"errorDescription": "This link doesn't exist or has expired. Ask the owner to share it again.",
+			"saveButton": "Save to my timetable",
+			"copyButton": "Copy link",
+			"copied": "Link copied!",
+			"savedAlert": "Timetable saved to your slots.",
+			"slotsFull": "Your slots are full (max 5). Delete one and try again.",
+			"slotName": "Shared timetable",
+			"courseCount": "{n} course | {n} courses",
+			"ects": "{n} ECTS"
+		},
 		"courses": {
 			"metaDescription": "Browse VŠE courses, filter your timetable, and build a conflict-free study plan. Real-time conflict detection.",
 			"studyPlanFallback": "Study Plan",
@@ -450,7 +463,11 @@
 			"TimetableGrid": {
 				"dayHeader": "Day",
 				"filterApplied": "Filter applied",
-				"filterDescription": "Showing courses at {from}–{to} ({day})"
+				"filterDescription": "Showing courses at {from}–{to} ({day})",
+				"share": "Share timetable",
+				"sharing": "Sharing...",
+				"shareCopied": "Link copied!",
+				"shareError": "Sharing failed"
 			},
 			"TimetableCourseBlock": {
 				"removeFromTimetable": "Remove from timetable",

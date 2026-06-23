@@ -222,6 +222,19 @@
 			"footer": "Kreditožrouti · Data z",
 			"insisLink": "InSIS VŠE"
 		},
+		"share": {
+			"loading": "Načítám sdílený rozvrh...",
+			"errorTitle": "Odkaz je neplatný nebo expiroval",
+			"errorDescription": "Tento odkaz neexistuje nebo vypršela jeho platnost. Požádej autora o nový odkaz.",
+			"saveButton": "Uložit do mého rozvrhu",
+			"copyButton": "Kopírovat odkaz",
+			"copied": "Odkaz zkopírován!",
+			"savedAlert": "Rozvrh byl uložen do tvých slotů.",
+			"slotsFull": "Máš plné sloty (max 5). Smaž jeden a zkus znovu.",
+			"slotName": "Sdílený rozvrh",
+			"courseCount": "{n} předmět | {n} předměty | {n} předmětů",
+			"ects": "{n} ECTS"
+		},
 		"courses": {
 			"metaDescription": "Procházej předměty VŠE, filtruj rozvrh a sestav bezkonfliktní studijní plán. Detekce kolizí v reálném čase.",
 			"studyPlanFallback": "Studijní plán",
@@ -450,7 +463,11 @@
 			"TimetableGrid": {
 				"dayHeader": "Den",
 				"filterApplied": "Filtr aplikován",
-				"filterDescription": "Zobrazuji předměty v čase {from}–{to} ({day})"
+				"filterDescription": "Zobrazuji předměty v čase {from}–{to} ({day})",
+				"share": "Sdílet rozvrh",
+				"sharing": "Sdílím...",
+				"shareCopied": "Odkaz zkopírován!",
+				"shareError": "Sdílení se nezdařilo"
 			},
 			"TimetableCourseBlock": {
 				"removeFromTimetable": "Odebrat z rozvrhu",
