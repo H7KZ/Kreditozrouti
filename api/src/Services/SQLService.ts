@@ -25,7 +25,7 @@ export class SQLService {
 			allowUnorderedMigrations: false,
 			provider: new FileMigrationProvider({
 				fs,
-				// ponytail: ESM on Windows rejects bare C:\ paths — join must return a file:// URL
+				// ESM on Windows rejects bare C:\ paths — join must return a file:// URL
 				path: { join: (...args: string[]) => pathToFileURL(path.join(...args)).href },
 				migrationFolder: Paths.Database.migrations
 			})

@@ -1,5 +1,5 @@
-import { Request, Response } from 'express'
 import type { ShareableUnit, ShareGetResponse } from '@shared/http/share'
+import { Request, Response } from 'express'
 import { redis } from '@api/clients'
 import { Errors } from '@api/Errors'
 

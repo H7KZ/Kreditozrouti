@@ -1,7 +1,7 @@
 import { randomBytes } from 'crypto'
+import type { ShareCreateResponse } from '@shared/http/share'
 import { Request, Response } from 'express'
 import * as z from 'zod'
-import type { ShareCreateResponse } from '@shared/http/share'
 import { CourseUnitTypeValues, InSISDayValues } from '@shared/domain/insis'
 import { redis } from '@api/clients'
 import { Errors } from '@api/Errors'

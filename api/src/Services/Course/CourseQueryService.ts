@@ -110,7 +110,7 @@ export class CourseQueryService {
 
 		let priorityFacultyId: string | null = null
 		if (isDefaultSort && filters.study_plan_ids?.length) {
-			// ponytail: one extra query to derive faculty from study plans; avoids any API contract change
+			// one extra query to derive faculty from study plans; avoids any API contract change
 			const row = await mysql
 				.selectFrom(`${StudyPlanTable._table} as sp`)
 				.select('sp.faculty_id')

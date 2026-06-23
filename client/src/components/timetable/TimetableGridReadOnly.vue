@@ -13,7 +13,7 @@ const props = defineProps<{ units: ShareableUnit[] }>()
 
 const { getShortDayLabel } = useCourseLabels()
 
-// ponytail: cast is safe — ShareableUnit is structurally identical to SelectedCourseUnit
+// cast is safe — ShareableUnit is structurally identical to SelectedCourseUnit
 const unitsByDay = computed(() => {
 	const map = new Map<InSISDay, SelectedCourseUnit[]>()
 	for (const u of props.units) {
@@ -41,12 +41,7 @@ function getMergedUnitsForDay(day: InSISDay) {
 					<th class="sticky left-0 z-10 w-[50px] min-w-[50px] bg-(--insis-header-bg) text-center align-middle">
 						{{ $t('components.timetable.TimetableGrid.dayHeader') }}
 					</th>
-					<th
-						v-for="slot in timeSlots"
-						:key="slot.minutes"
-						class="px-2 text-center align-middle whitespace-nowrap"
-						:style="{ minWidth: '80px' }"
-					>
+					<th v-for="slot in timeSlots" :key="slot.minutes" class="px-2 text-center align-middle whitespace-nowrap" :style="{ minWidth: '80px' }">
 						{{ slot.label }}
 					</th>
 				</tr>
@@ -58,11 +53,7 @@ function getMergedUnitsForDay(day: InSISDay) {
 					>
 						{{ getShortDayLabel(day) }}
 					</td>
-					<td
-						:colspan="timeSlots.length"
-						class="day-row relative p-0"
-						:style="{ height: `${rowHeightPerDay.get(day) ?? rowHeight}px` }"
-					>
+					<td :colspan="timeSlots.length" class="day-row relative p-0" :style="{ height: `${rowHeightPerDay.get(day) ?? rowHeight}px` }">
 						<!-- Background grid lines -->
 						<div class="pointer-events-none absolute inset-0 flex">
 							<div

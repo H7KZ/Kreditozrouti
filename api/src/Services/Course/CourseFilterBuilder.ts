@@ -50,7 +50,7 @@ export class CourseFilterBuilder {
 
 		if (needsStudyPlanJoin) {
 			if (filters.study_plan_ids?.length) {
-				// ponytail: derived table picks the best-priority (group, category) per course
+				// derived table picks the best-priority (group, category) per course
 				// across the selected plans so each course has exactly one spc1 row.
 				query = query.leftJoin(
 					this.buildBestSpcSubquery(filters.study_plan_ids) as unknown as AliasedExpression<StudyPlanCourseTable, 'spc1'>,
@@ -240,7 +240,7 @@ export class CourseFilterBuilder {
 				eb.and(
 					filters.assessment_methods!.map(bucketKey => {
 						const bucket = ASSESSMENT_BUCKETS.find(b => b.key === bucketKey)
-						// ponytail: fall back to literal string so legacy/unknown values don't silently drop
+						// fall back to literal string so legacy/unknown values don't silently drop
 						const methods = bucket ? [...bucket.methods] : [bucketKey]
 						return eb.or(
 							methods.map(method =>
