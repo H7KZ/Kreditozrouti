@@ -3,9 +3,9 @@ import { sql } from 'kysely'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
+import { ASSESSMENT_BUCKETS } from './assessmentBuckets'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
-import { ASSESSMENT_BUCKETS } from './assessmentBuckets'
 
 export class CourseFacetService {
 	/**
@@ -260,11 +260,11 @@ export class CourseFacetService {
 			.orderBy('count', 'desc')
 			.execute()
 
-		const counts = new Map(raw.map(r => [r.value as string, r.count as number]))
+		const counts = new Map(raw.map(r => [r.value!, r.count]))
 
 		return ASSESSMENT_BUCKETS.map(bucket => ({
 			value: bucket.key,
-			count: bucket.methods.reduce((sum, m) => sum + (counts.get(m) ?? 0), 0),
+			count: bucket.methods.reduce((sum, m) => sum + (counts.get(m) ?? 0), 0)
 		}))
 			.filter(b => b.count > 0)
 			.sort((a, b) => b.count - a.count)
