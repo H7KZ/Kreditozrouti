@@ -6,6 +6,7 @@ import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
 import { ASSESSMENT_BUCKETS } from './assessmentBuckets'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
+import { LANGUAGE_NORM, LEVEL_NORM, MODE_OF_COMPLETION_NORM, normalizeFacet } from './facetNormalizers'
 
 export class CourseFacetService {
 	/**
@@ -40,14 +41,14 @@ export class CourseFacetService {
 			days,
 			lecturersRaw,
 			languagesRaw,
-			levels,
+			levelsRaw,
 			semesters,
 			years,
 			groups,
 			categories,
 			ects,
-			modesOfCompletion,
-			assessmentMethods,
+			modesOfCompletionRaw,
+			assessmentMethodsRaw,
 			timeRange
 		] = await Promise.all([
 			this.getSimpleFacet(filters, 'faculty_id'),
@@ -66,7 +67,10 @@ export class CourseFacetService {
 		])
 
 		const lecturers = this.splitPipeDelimitedFacet(lecturersRaw, 50)
-		const languages = this.splitPipeDelimitedFacet(languagesRaw)
+		const languages = normalizeFacet(this.splitPipeDelimitedFacet(languagesRaw), LANGUAGE_NORM)
+		const levels = normalizeFacet(levelsRaw, LEVEL_NORM)
+		const modes_of_completion = normalizeFacet(modesOfCompletionRaw, MODE_OF_COMPLETION_NORM)
+		const assessment_methods = this.bucketAssessmentMethods(assessmentMethodsRaw)
 
 		return {
 			faculties,
@@ -79,8 +83,8 @@ export class CourseFacetService {
 			groups,
 			categories,
 			ects,
-			modes_of_completion: modesOfCompletion,
-			assessment_methods: assessmentMethods,
+			modes_of_completion,
+			assessment_methods,
 			time_range: timeRange
 		}
 	}
@@ -299,6 +303,25 @@ export class CourseFacetService {
 	 * @param {number} [limit] - Optional max entries to return after sorting.
 	 * @returns {FacetItem[]} Deduplicated and aggregated FacetItem[].
 	 */
+	/**
+	 * Collapses raw assessment method strings into bucket keys using ASSESSMENT_BUCKETS.
+	 * Raw values not matching any bucket are dropped (they are InSIS noise).
+	 */
+	static bucketAssessmentMethods(data: { value: string | null; count: number }[]): FacetItem[] {
+		const map = new Map<string, number>()
+
+		for (const row of data) {
+			if (!row.value) continue
+			const bucket = ASSESSMENT_BUCKETS.find(b => (b.methods as readonly string[]).includes(row.value!))
+			if (!bucket) continue
+			map.set(bucket.key, (map.get(bucket.key) ?? 0) + Number(row.count))
+		}
+
+		return Array.from(map.entries())
+			.map(([value, count]) => ({ value, count }))
+			.sort((a, b) => b.count - a.count)
+	}
+
 	// Splits pipe-delimited facet values (e.g. "EN|CS") into individual entries and aggregates counts
 	static splitPipeDelimitedFacet(data: { value: string | null; count: number }[], limit?: number): FacetItem[] {
 		const map = new Map<string, number>()
