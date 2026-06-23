@@ -218,7 +218,7 @@
 			"subtitle": "VŠE Course Finder",
 			"welcome": "Welcome to Kreditožrouti",
 			"description": "Start by selecting your study plan. We will show you relevant courses and their schedule slots based on your selection.",
-			"howItWorks": "📌 How does it work?",
+			"howItWorks": "?? How does it work?",
 			"step1": "Select your faculty",
 			"step2": "Choose your enrollment year",
 			"step3": "Select your study plan",
@@ -331,7 +331,9 @@
 				"campusConflictTag": "Campus conflict",
 				"completed": "Done",
 				"sortLabel": "Sort by {column}",
-				"rowLabel": "Course {code}: {title}. Click to view details."
+				"rowLabel": "Course {code}: {title}. Click to view details.",
+				"groupFaculty": "Your faculty",
+				"groupOther": "Other faculties"
 			},
 			"CourseRowExpanded": {
 				"faculty": "Faculty",
