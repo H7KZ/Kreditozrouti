@@ -16,6 +16,7 @@ const currentYear = new Date().getFullYear()
 const appVersion = APP_VERSION
 
 const aboutPath = computed(() => (locale.value === 'cs' ? '/about/cs' : '/about/en'))
+const compliancePath = computed(() => `/legal/${locale.value}/compliance`)
 </script>
 
 <template>
@@ -62,7 +63,7 @@ const aboutPath = computed(() => (locale.value === 'cs' ? '/about/cs' : '/about/
 						</li>
 						<li>
 							<RouterLink
-								to="/legal/compliance"
+								:to="compliancePath"
 								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 							>
 								<IconFileText class="h-4 w-4 shrink-0" aria-hidden="true" />
