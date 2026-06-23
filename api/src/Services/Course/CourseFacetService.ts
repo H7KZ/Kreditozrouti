@@ -5,6 +5,7 @@ import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
+import { ASSESSMENT_BUCKETS } from './assessmentBuckets'
 
 export class CourseFacetService {
 	/**
@@ -251,13 +252,22 @@ export class CourseFacetService {
 	 * @returns {Promise<FacetItem[]>} Assessment method values; always forces assessments join.
 	 */
 	static async getAssessmentMethodFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		return CourseFilterBuilder.buildFilterQuery(filters, 'assessment_methods', { assessments: true })
+		const raw = await CourseFilterBuilder.buildFilterQuery(filters, 'assessment_methods', { assessments: true })
 			.select('ca1.method as value')
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
 			.where('ca1.method', 'is not', null)
 			.groupBy('ca1.method')
 			.orderBy('count', 'desc')
 			.execute()
+
+		const counts = new Map(raw.map(r => [r.value as string, r.count as number]))
+
+		return ASSESSMENT_BUCKETS.map(bucket => ({
+			value: bucket.key,
+			count: bucket.methods.reduce((sum, m) => sum + (counts.get(m) ?? 0), 0),
+		}))
+			.filter(b => b.count > 0)
+			.sort((a, b) => b.count - a.count)
 	}
 
 	/**
