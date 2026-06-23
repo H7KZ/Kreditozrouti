@@ -1,5 +1,4 @@
 ﻿<script setup lang="ts">
-import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import IconExternalLink from '~icons/lucide/external-link'
@@ -10,12 +9,10 @@ import IconBookOpen from '~icons/lucide/book-open'
 import IconInfo from '~icons/lucide/info'
 import IconMail from '~icons/lucide/mail'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 const currentYear = new Date().getFullYear()
 const appVersion = APP_VERSION
-
-const aboutPath = computed(() => (locale.value === 'cs' ? '/about/cs' : '/about/en'))
 </script>
 
 <template>
@@ -53,7 +50,7 @@ const aboutPath = computed(() => (locale.value === 'cs' ? '/about/cs' : '/about/
 						</li>
 						<li>
 							<RouterLink
-								:to="aboutPath"
+								to="/about"
 								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 							>
 								<IconInfo class="h-4 w-4 shrink-0" aria-hidden="true" />
