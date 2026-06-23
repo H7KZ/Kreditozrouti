@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import type { ShareableUnit } from '@shared/http/share'
 import type { SelectedCourseUnit } from '@client/types'
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useSeoMeta } from '@unhead/vue'
 import analytics from '@client/analytics'
 import api from '@client/api'
-import { useAlertsStore, useScheduleSlotsStore, useTimetableStore } from '@client/stores'
+import AppHeader from '@client/components/common/AppHeader.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
+import { useAlertsStore, useScheduleSlotsStore, useTimetableStore } from '@client/stores'
 
 const route = useRoute()
 const router = useRouter()
@@ -19,7 +20,7 @@ const timetableStore = useTimetableStore()
 
 useSeoMeta({ title: () => t('pages.share.loading') })
 
-const units = ref<ShareableUnit[]>([])
+const units = ref<SelectedCourseUnit[]>([])
 const loading = ref(true)
 const error = ref(false)
 const copying = ref(false)
@@ -38,16 +39,27 @@ const totalEcts = computed(() => {
 	return total
 })
 
+// Save user's own timetable so we can restore it on unmount
+let savedUnits: SelectedCourseUnit[] = []
+
 onMounted(async () => {
+	savedUnits = [...timetableStore.selectedUnits]
 	try {
 		const { data } = await api.get<{ units: ShareableUnit[] }>(`/share/${id.value}`)
-		units.value = data.units
+		units.value = data.units as unknown as SelectedCourseUnit[]
+		// Swap into store without persisting — restored on unmount
+		timetableStore.selectedUnits.splice(0, timetableStore.selectedUnits.length, ...units.value)
 		analytics.track('share_viewed', { unit_count: data.units.length })
 	} catch {
 		error.value = true
 	} finally {
 		loading.value = false
 	}
+})
+
+onUnmounted(() => {
+	// Restore user's own timetable
+	timetableStore.selectedUnits.splice(0, timetableStore.selectedUnits.length, ...savedUnits)
 })
 
 async function handleCopyLink() {
@@ -63,8 +75,7 @@ function handleSave() {
 		return
 	}
 	const name = `${t('pages.share.slotName')} – ${new Date().toLocaleDateString()}`
-	slotsStore.saveCurrentAsSlot(name, units.value as unknown as SelectedCourseUnit[])
-	timetableStore.loadUnits(units.value as unknown as SelectedCourseUnit[])
+	slotsStore.saveCurrentAsSlot(name, units.value)
 	analytics.track('share_forked')
 	alertsStore.addAlert({ type: 'success', title: t('pages.share.savedAlert'), timeout: 4000 })
 	router.push('/courses')
@@ -72,22 +83,24 @@ function handleSave() {
 </script>
 
 <template>
-	<div class="mx-auto max-w-5xl px-4 py-8">
+	<div class="flex min-h-screen flex-col">
+		<AppHeader />
+
 		<!-- Loading -->
-		<div v-if="loading" class="flex items-center justify-center py-24 text-sm text-gray-500">
+		<div v-if="loading" class="flex flex-1 items-center justify-center py-24 text-sm text-gray-500">
 			{{ $t('pages.share.loading') }}
 		</div>
 
 		<!-- Error -->
-		<div v-else-if="error" class="flex flex-col items-center justify-center gap-3 py-24 text-center">
+		<div v-else-if="error" class="flex flex-1 flex-col items-center justify-center gap-3 py-24 text-center">
 			<p class="text-lg font-semibold">{{ $t('pages.share.errorTitle') }}</p>
 			<p class="max-w-sm text-sm text-gray-500">{{ $t('pages.share.errorDescription') }}</p>
 		</div>
 
 		<!-- Content -->
-		<div v-else class="flex flex-col gap-6">
-			<!-- Header bar -->
-			<div class="flex flex-wrap items-center justify-between gap-3">
+		<div v-else class="flex flex-1 flex-col">
+			<!-- Action bar -->
+			<div class="flex flex-wrap items-center justify-between gap-3 border-b border-(--insis-border) bg-(--insis-surface) px-4 py-2 sm:px-6">
 				<div class="flex items-center gap-3 text-sm text-gray-500">
 					<span>{{ $t('pages.share.courseCount', uniqueCourseCount) }}</span>
 					<span v-if="totalEcts > 0">·</span>
@@ -111,8 +124,10 @@ function handleSave() {
 				</div>
 			</div>
 
-			<!-- Read-only timetable (same component, drag + modals disabled) -->
-			<TimetableGrid :units="(units as unknown as SelectedCourseUnit[])" :read-only="true" />
+			<!-- Timetable — exact same component as courses page -->
+			<div class="flex-1 overflow-auto">
+				<TimetableGrid />
+			</div>
 		</div>
 	</div>
 </template>
