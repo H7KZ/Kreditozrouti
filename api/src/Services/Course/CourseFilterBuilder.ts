@@ -3,6 +3,7 @@ import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, Database, StudyPlanCourseTable } from '@api/Database/types'
 import { buildSlotConflictConditions } from '@api/utils/timeConflict'
+import { ASSESSMENT_BUCKETS } from './assessmentBuckets'
 
 type QueryBuilder = SelectQueryBuilder<
 	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> } & {
@@ -233,15 +234,22 @@ export class CourseFilterBuilder {
 		if (filters.assessment_methods?.length && !['assessment_methods'].includes(ignore!)) {
 			query = query.where(eb =>
 				eb.and(
-					filters.assessment_methods!.map(method =>
-						eb.exists(
-							eb
-								.selectFrom(`${CourseAssessmentTable._table} as ca_filter`)
-								.select(sql.lit(1).as('one'))
-								.whereRef('ca_filter.course_id', '=', 'c1.id')
-								.where('ca_filter.method', '=', method)
+					filters.assessment_methods!.map(bucketKey => {
+						const bucket = ASSESSMENT_BUCKETS.find(b => b.key === bucketKey)
+						// ponytail: fall back to literal string so legacy/unknown values don't silently drop
+						const methods = bucket ? [...bucket.methods] : [bucketKey]
+						return eb.or(
+							methods.map(method =>
+								eb.exists(
+									eb
+										.selectFrom(`${CourseAssessmentTable._table} as ca_filter`)
+										.select(sql.lit(1).as('one'))
+										.whereRef('ca_filter.course_id', '=', 'c1.id')
+										.where('ca_filter.method', '=', method)
+								)
+							)
 						)
-					)
+					})
 				)
 			)
 		}
