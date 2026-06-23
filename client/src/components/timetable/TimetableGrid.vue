@@ -1,15 +1,16 @@
 ﻿<script setup lang="ts">
 import type { MergedUnit } from '@client/composables'
-import { isMergedUnit, useCourseLabels, useScheduleExport, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
+import { isMergedUnit, useCourseLabels, useScheduleExport, useShareTimetable, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
 import type { InSISDay } from '@shared/domain/insis'
 import { ref, toRef } from 'vue'
+import { useI18n } from 'vue-i18n'
 import TimetableAgenda from '@client/components/timetable/TimetableAgenda.vue'
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
-import { useDragStore, useTimetableStore } from '@client/stores'
+import { useAlertsStore, useDragStore, useTimetableStore } from '@client/stores'
 
 /*
  * TimetableGrid
@@ -19,8 +20,10 @@ import { useDragStore, useTimetableStore } from '@client/stores'
  * Refactored to use composables for grid calculations.
  */
 
+const { t } = useI18n()
 const timetableStore = useTimetableStore()
 const dragStore = useDragStore()
+const alertsStore = useAlertsStore()
 
 // Composables
 const { getShortDayLabel } = useCourseLabels()
@@ -42,6 +45,16 @@ const gridRef = ref<HTMLElement | null>(null)
 const { handleMouseDown, handleDragFilter, handleDragCancel } = useTimetableDrag(gridRef, getTimeFromX)
 
 const { exportSchedule, exporting } = useScheduleExport(gridRef)
+const { sharing, shareTimetable } = useShareTimetable()
+
+async function handleShare() {
+	const url = await shareTimetable(timetableStore.selectedUnits)
+	if (url) {
+		alertsStore.addAlert({ type: 'success', title: t('components.timetable.TimetableGrid.shareCopied'), timeout: 4000 })
+	} else if (!sharing.value) {
+		alertsStore.addAlert({ type: 'error', title: t('components.timetable.TimetableGrid.shareError'), timeout: 6000 })
+	}
+}
 
 /**
  * Get units for a specific day (with merging applied)
@@ -112,7 +125,48 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 
 		<!-- Desktop: time grid -->
 		<div class="hidden flex-col gap-2 lg:flex">
-			<div v-if="timetableStore.selectedUnits.length > 0" class="flex justify-end">
+			<div v-if="timetableStore.selectedUnits.length > 0" class="flex justify-end gap-2">
+				<!-- Share button -->
+				<button
+					type="button"
+					:disabled="sharing"
+					class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
+					@click="handleShare"
+				>
+					<svg
+						v-if="!sharing"
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-3.5 w-3.5"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<circle cx="18" cy="5" r="3" />
+						<circle cx="6" cy="12" r="3" />
+						<circle cx="18" cy="19" r="3" />
+						<line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+						<line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+					</svg>
+					<svg
+						v-else
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-3.5 w-3.5 animate-spin"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						aria-hidden="true"
+					>
+						<path d="M21 12a9 9 0 1 1-6.219-8.56" />
+					</svg>
+					{{ sharing ? $t('components.timetable.TimetableGrid.sharing') : $t('components.timetable.TimetableGrid.share') }}
+				</button>
+
+				<!-- Export button -->
 				<button
 					type="button"
 					:disabled="exporting"
