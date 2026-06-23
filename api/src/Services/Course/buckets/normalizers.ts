@@ -43,6 +43,7 @@ export const MODE_OF_COMPLETION_DENORM: Record<string, string> = Object.fromEntr
 export function normalizeFacet(data: FacetItem[], norm: Record<string, string>): FacetItem[] {
 	const map = new Map<string, number>()
 	for (const row of data) {
+		if (typeof row.value !== 'string') continue
 		const key = norm[row.value] ?? row.value
 		map.set(key, (map.get(key) ?? 0) + Number(row.count))
 	}

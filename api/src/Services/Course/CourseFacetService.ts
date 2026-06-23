@@ -308,24 +308,15 @@ export class CourseFacetService {
 	}
 
 	/**
-	 * Splits pipe-delimited facet values (e.g. "EN|CS") into individual entries, aggregates their
-	 * counts, deduplicates, sorts by count descending, and optionally limits the result.
-	 *
-	 * @param {{ value: string | null; count: number }[]} data - Raw facet rows with pipe-delimited
-	 *   value strings.
-	 * @param {number} [limit] - Optional max entries to return after sorting.
-	 * @returns {FacetItem[]} Deduplicated and aggregated FacetItem[].
-	 */
-	/**
 	 * Collapses raw assessment method strings into bucket keys using ASSESSMENT_BUCKETS.
 	 * Raw values not matching any bucket are dropped (they are InSIS noise).
 	 */
-	static bucketAssessmentMethods(data: { value: string | null; count: number }[]): FacetItem[] {
+	static bucketAssessmentMethods(data: FacetItem[]): FacetItem[] {
 		const map = new Map<string, number>()
 
 		for (const row of data) {
-			if (!row.value) continue
-			const bucket = ASSESSMENT_BUCKETS.find(b => (b.methods as readonly string[]).includes(row.value!))
+			if (typeof row.value !== 'string') continue
+			const bucket = ASSESSMENT_BUCKETS.find(b => (b.methods as readonly string[]).includes(row.value as string))
 			if (!bucket) continue
 			map.set(bucket.key, (map.get(bucket.key) ?? 0) + Number(row.count))
 		}
@@ -335,6 +326,15 @@ export class CourseFacetService {
 			.sort((a, b) => b.count - a.count)
 	}
 
+	/**
+	 * Splits pipe-delimited facet values (e.g. "EN|CS") into individual entries, aggregates their
+	 * counts, deduplicates, sorts by count descending, and optionally limits the result.
+	 *
+	 * @param {{ value: string | null; count: number }[]} data - Raw facet rows with pipe-delimited
+	 *   value strings.
+	 * @param {number} [limit] - Optional max entries to return after sorting.
+	 * @returns {FacetItem[]} Deduplicated and aggregated FacetItem[].
+	 */
 	// Splits pipe-delimited facet values (e.g. "EN|CS") into individual entries and aggregates counts
 	static splitPipeDelimitedFacet(data: { value: string | null; count: number }[], limit?: number): FacetItem[] {
 		const map = new Map<string, number>()
