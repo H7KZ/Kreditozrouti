@@ -40,7 +40,9 @@ export type ScraperJob =
 	| 'InSIS:FacultyTimetable'
 	| 'InSIS:GapSweep'
 
-export type CourseUnitType = 'lecture' | 'exercise' | 'seminar'
+export const CourseUnitTypeValues = ['lecture', 'exercise', 'seminar'] as const
+
+export type CourseUnitType = (typeof CourseUnitTypeValues)[number]
 
 /**
  * Normalises a raw InSIS slot type string to a CourseUnitType.
