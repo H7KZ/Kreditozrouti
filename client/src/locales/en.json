@@ -99,17 +99,12 @@
 		"obhajoba": "Defense"
 	},
 	"assessmentMethods": {
-		"písemná zkouška": "Written exam",
-		"ústní zkouška": "Oral exam",
-		"projekt": "Project",
-		"seminární práce": "Seminar paper",
-		"aktivita": "Class participation",
-		"test": "Test",
-		"průběžný test": "Midterm test",
-		"závěrečný test": "Final test",
-		"prezentace": "Presentation",
-		"esej": "Essay",
-		"případová studie": "Case study"
+		"final_test": "Final test",
+		"oral_exam": "Oral exam",
+		"ongoing_tests": "Ongoing tests",
+		"paper_project": "Paper / project",
+		"presentation": "Presentation / defence",
+		"activity": "Activity / attendance"
 	},
 	"courseLanguages": {
 		"čeština": "Czech",
