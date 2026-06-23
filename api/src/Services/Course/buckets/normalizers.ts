@@ -2,44 +2,38 @@ import type { FacetItem } from '@shared/http/facets'
 
 // Forward maps: raw InSIS Czech string → stable enum key
 export const LEVEL_NORM: Record<string, string> = {
-	'bakalářský': 'bachelor',
+	bakalářský: 'bachelor',
 	'magisterský navazující': 'master',
-	'doktorský': 'doctoral',
-	'MBA': 'mba',
-	'kurz': 'course',
+	doktorský: 'doctoral',
+	MBA: 'mba',
+	kurz: 'course'
 }
 
 export const LANGUAGE_NORM: Record<string, string> = {
-	'čeština': 'czech',
-	'angličtina': 'english',
-	'němčina': 'german',
-	'španělština': 'spanish',
-	'francouzština': 'french',
-	'ruština': 'russian',
-	'italština': 'italian',
-	'čínština': 'chinese',
-	'švédština': 'swedish',
-	'portugalština': 'portuguese',
+	čeština: 'czech',
+	angličtina: 'english',
+	němčina: 'german',
+	španělština: 'spanish',
+	francouzština: 'french',
+	ruština: 'russian',
+	italština: 'italian',
+	čínština: 'chinese',
+	švédština: 'swedish',
+	portugalština: 'portuguese'
 }
 
 export const MODE_OF_COMPLETION_NORM: Record<string, string> = {
-	'zkouška': 'exam',
-	'zápočet': 'credit',
-	'obhajoba': 'defense',
+	zkouška: 'exam',
+	zápočet: 'credit',
+	obhajoba: 'defense'
 }
 
 // Reverse maps: stable enum key → raw InSIS Czech string
-export const LEVEL_DENORM: Record<string, string> = Object.fromEntries(
-	Object.entries(LEVEL_NORM).map(([raw, key]) => [key, raw])
-)
+export const LEVEL_DENORM: Record<string, string> = Object.fromEntries(Object.entries(LEVEL_NORM).map(([raw, key]) => [key, raw]))
 
-export const LANGUAGE_DENORM: Record<string, string> = Object.fromEntries(
-	Object.entries(LANGUAGE_NORM).map(([raw, key]) => [key, raw])
-)
+export const LANGUAGE_DENORM: Record<string, string> = Object.fromEntries(Object.entries(LANGUAGE_NORM).map(([raw, key]) => [key, raw]))
 
-export const MODE_OF_COMPLETION_DENORM: Record<string, string> = Object.fromEntries(
-	Object.entries(MODE_OF_COMPLETION_NORM).map(([raw, key]) => [key, raw])
-)
+export const MODE_OF_COMPLETION_DENORM: Record<string, string> = Object.fromEntries(Object.entries(MODE_OF_COMPLETION_NORM).map(([raw, key]) => [key, raw]))
 
 /**
  * Forward-normalizes facet values using a norm map.

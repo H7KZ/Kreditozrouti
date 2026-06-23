@@ -3,8 +3,8 @@ import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, Database, StudyPlanCourseTable } from '@api/Database/types'
 import { buildSlotConflictConditions } from '@api/utils/timeConflict'
-import { ASSESSMENT_BUCKETS } from './assessmentBuckets'
-import { LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from './facetNormalizers'
+import { ASSESSMENT_BUCKETS } from './buckets/assessment'
+import { LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from './buckets/normalizers'
 
 type QueryBuilder = SelectQueryBuilder<
 	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> } & {

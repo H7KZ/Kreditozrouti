@@ -5,16 +5,12 @@ export const ASSESSMENT_BUCKETS = [
 			'Absolvování závěrečného testu',
 			'Absolvování praktického testu',
 			'Absolvování cvičných testů uvažování (CBTs)',
-			'Absolvování závěrečné zkoušky - projekty',
-		],
+			'Absolvování závěrečné zkoušky - projekty'
+		]
 	},
 	{
 		key: 'oral_exam',
-		methods: [
-			'Absolvování závěrečné ústní zkoušky',
-			'Absolvování závěrečné ústní zkoušky – obhajoby případové studie',
-			'Diskuse s panelem hodnotitelů',
-		],
+		methods: ['Absolvování závěrečné ústní zkoušky', 'Absolvování závěrečné ústní zkoušky – obhajoby případové studie', 'Diskuse s panelem hodnotitelů']
 	},
 	{
 		key: 'ongoing_tests',
@@ -31,8 +27,8 @@ export const ASSESSMENT_BUCKETS = [
 			'Testy a dílčí úkoly v průběhu semestru (texty, prezentace ap.)',
 			'Testy a dílčí úkoly v průběhu semestru (texty, videa, prezentace, projekty apod.) Podmínka úspěšného absolvování kurzu - minimálně 60% bodů ze závěrečného elektronického testu (možnost 1 opravy v případě 50-59%).',
 			'Příprava na bodované aktivity v průběhu semestru (písemné úkoly, videa, prezentace, projekty atd.)',
-			'Dílčí úkoly v průběhu semestru (projekty, quízy, videa)',
-		],
+			'Dílčí úkoly v průběhu semestru (projekty, quízy, videa)'
+		]
 	},
 	{
 		key: 'paper_project',
@@ -84,8 +80,8 @@ export const ASSESSMENT_BUCKETS = [
 			'Odevzdání podkladů pro praktický úkol - CV, motivační dopis 30%, splnění praktického úkolu - modelový přijímací pohovor 30%',
 			'Koreferát',
 			'Indiviudální úkoly',
-			'Portfolio sestávající z: a) Sestavení korpusu o rozsahu 30 000 slov na vlastní zvolené téma související s mezinárodními vztahy (např. diplomatický diskurz, mediální prezentace mezinárodních témat). b) Shrnutí (500–1 000 slov) představující klíčové závěry, vizualizace a interpretace ve formátu vhodném pro akademickou nebo profesionální komunikaci.',
-		],
+			'Portfolio sestávající z: a) Sestavení korpusu o rozsahu 30 000 slov na vlastní zvolené téma související s mezinárodními vztahy (např. diplomatický diskurz, mediální prezentace mezinárodních témat). b) Shrnutí (500–1 000 slov) představující klíčové závěry, vizualizace a interpretace ve formátu vhodném pro akademickou nebo profesionální komunikaci.'
+		]
 	},
 	{
 		key: 'presentation',
@@ -96,8 +92,8 @@ export const ASSESSMENT_BUCKETS = [
 			'Obhajoba projektu',
 			'aktivní účast na přednášce (krátká prezentace)',
 			'Projev na vybrané téma',
-			'Recenze',
-		],
+			'Recenze'
+		]
 	},
 	{
 		key: 'activity',
@@ -123,9 +119,9 @@ export const ASSESSMENT_BUCKETS = [
 			'účast v právní hře nebo vypracování semestrální práce',
 			'Průběžná analýza přednášek',
 			'Práce na hodinách, domácí úkoly',
-			'Student je povinen se účastnit cvičení. Aktivita ve formě testů v LMS (Aktivita bude posuzována na základě průměrné úspěšnosti ze čtyř testů, přičemž za 100% úspěšnost z každého testu získá student/ka 20 bodů.',
-		],
-	},
+			'Student je povinen se účastnit cvičení. Aktivita ve formě testů v LMS (Aktivita bude posuzována na základě průměrné úspěšnosti ze čtyř testů, přičemž za 100% úspěšnost z každého testu získá student/ka 20 bodů.'
+		]
+	}
 ] as const
 
 export type AssessmentBucketKey = (typeof ASSESSMENT_BUCKETS)[number]['key']

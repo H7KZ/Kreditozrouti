@@ -3,10 +3,18 @@ import { sql } from 'kysely'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
-import { ASSESSMENT_BUCKETS } from './assessmentBuckets'
+import { ASSESSMENT_BUCKETS } from './buckets/assessment'
+import {
+	LANGUAGE_DENORM,
+	LANGUAGE_NORM,
+	LEVEL_DENORM,
+	LEVEL_NORM,
+	MODE_OF_COMPLETION_DENORM,
+	MODE_OF_COMPLETION_NORM,
+	normalizeFacet
+} from './buckets/normalizers'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
-import { LANGUAGE_DENORM, LANGUAGE_NORM, LEVEL_DENORM, LEVEL_NORM, MODE_OF_COMPLETION_DENORM, MODE_OF_COMPLETION_NORM, normalizeFacet } from './facetNormalizers'
 
 export class CourseFacetService {
 	/**
