@@ -142,6 +142,7 @@ const facetConfig = computed(() => [
 		key: 'faculties',
 		label: t('components.filters.FilterPanel.faculties'),
 		facets: coursesStore.facets.faculties,
+		translations: 'faculties',
 		selected: filtersStore.filters.faculty_ids,
 		setter: (ids: string[]) => filtersStore.setFilter('faculty_ids', ids),
 		defaultCollapsed: true
