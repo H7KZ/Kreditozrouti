@@ -33,10 +33,12 @@
 	"assessment_methods": [
 		{
 			"method": "Aktivita na přednáškách/cvičeních/seminářích",
+			"method_en": null,
 			"weight": 30
 		},
 		{
 			"method": "Vypracování semestrální práce",
+			"method_en": null,
 			"weight": 70
 		}
 	],
@@ -58,5 +60,15 @@
 	],
 	"last_modified_date": "2025-09-22",
 	"last_modified_by": "Mgr. Sabina Zukalová",
-	"content_hash": null
+	"aims_of_the_course_en": null,
+	"learning_outcomes_en": null,
+	"course_contents_en": null,
+	"special_requirements_en": null,
+	"literature_required_en": null,
+	"literature_recommended_en": null,
+	"prerequisites_en": null,
+	"recommended_programmes_en": null,
+	"required_work_experience_en": null,
+	"content_hash_cs": null,
+	"content_hash_en": null
 }

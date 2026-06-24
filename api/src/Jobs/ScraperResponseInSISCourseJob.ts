@@ -53,10 +53,17 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	await insertFacultiesBatch(mysql, [course.faculty?.ident, ...(course.study_plans?.map(p => p.facultyIdent) ?? [])])
 
-	if (course.content_hash) {
-		const existing = await mysql.selectFrom(CourseTable._table).select('content_hash').where('id', '=', course.id).executeTakeFirst()
+	if (course.content_hash_cs) {
+		const existing = await mysql
+			.selectFrom(CourseTable._table)
+			.select(['content_hash_cs', 'content_hash_en'])
+			.where('id', '=', course.id)
+			.executeTakeFirst()
 
-		if (existing?.content_hash === course.content_hash) {
+		const csUnchanged = existing?.content_hash_cs === course.content_hash_cs
+		const enUnchanged = !course.content_hash_en || existing?.content_hash_en === course.content_hash_en
+
+		if (csUnchanged && enUnchanged) {
 			LoggerJobContext.add({ skipped_unchanged: true })
 
 			await mysql
@@ -102,8 +109,18 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			study_load: course.study_load ? JSON.stringify(course.study_load) : null,
 			literature_required: course.literature_required,
 			literature_recommended: course.literature_recommended,
+			aims_of_the_course_en: course.aims_of_the_course_en,
+			learning_outcomes_en: course.learning_outcomes_en,
+			course_contents_en: course.course_contents_en,
+			special_requirements_en: course.special_requirements_en,
+			literature_required_en: course.literature_required_en,
+			literature_recommended_en: course.literature_recommended_en,
+			prerequisites_en: course.prerequisites_en,
+			recommended_programmes_en: course.recommended_programmes_en,
+			required_work_experience_en: course.required_work_experience_en,
 			last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
-			content_hash: course.content_hash
+			content_hash_cs: course.content_hash_cs,
+			content_hash_en: course.content_hash_en
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -149,6 +166,7 @@ async function syncAssessmentMethods(trx: Transaction<Database>, courseId: numbe
 	const unique = [...new Map(incomingMethods.map(m => [m.method, m])).values()].map(m => ({
 		course_id: courseId,
 		method: m.method,
+		method_en: m.method_en ?? null,
 		weight: m.weight
 	}))
 

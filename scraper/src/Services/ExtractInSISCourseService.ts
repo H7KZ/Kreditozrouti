@@ -15,6 +15,18 @@ import MarkdownService from '@scraper/Services/MarkdownService'
 import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 
+export interface ScraperInSISCourseEnFields {
+	aims_of_the_course_en: string | null
+	learning_outcomes_en: string | null
+	course_contents_en: string | null
+	special_requirements_en: string | null
+	literature_required_en: string | null
+	literature_recommended_en: string | null
+	prerequisites_en: string | null
+	recommended_programmes_en: string | null
+	required_work_experience_en: string | null
+}
+
 /**
  * Extracts course data from InSIS syllabus pages.
  * Handles metadata, syllabus content, assessments, and timetable parsing.
@@ -82,7 +94,17 @@ export default class ExtractInSISCourseService {
 			study_load: studyLoad.length > 0 ? studyLoad : null,
 			last_modified_date: auditInfo.last_modified_date,
 			last_modified_by: auditInfo.last_modified_by,
-			content_hash: null
+			aims_of_the_course_en: null,
+			learning_outcomes_en: null,
+			course_contents_en: null,
+			special_requirements_en: null,
+			literature_required_en: null,
+			literature_recommended_en: null,
+			prerequisites_en: null,
+			recommended_programmes_en: null,
+			required_work_experience_en: null,
+			content_hash_cs: null,
+			content_hash_en: null
 		}
 	}
 
@@ -276,6 +298,63 @@ export default class ExtractInSISCourseService {
 		}
 	}
 
+	static extractEnglishFields(html: string): ScraperInSISCourseEnFields {
+		const $ = cheerio.load(html)
+		sanitizeBodyHtml($)
+
+		const prerequisites_en = getRowValueCaseInsensitive($, 'Prerequisites and co-requisites:')
+		const recommended_programmes_en = getRowValueCaseInsensitive($, 'Recommended optional programme components:')
+		const required_work_experience_en = getRowValueCaseInsensitive($, 'Work placement:')
+		const aims_of_the_course_en = getSectionContent($, 'Aims of the course:')
+		const learning_outcomes_en = getSectionContent($, 'Learning outcomes and competences:')
+		const course_contents_en = getSectionContent($, 'Course contents:')
+		const special_requirements_en =
+			getSectionContent($, 'Special requirements and details:') ?? getRowValueCaseInsensitive($, 'Special requirements and details:')
+
+		let literature_required_en: string | null = null
+		let literature_recommended_en: string | null = null
+		const literatureHeaderRow = $('td')
+			.filter((_, el) => cleanText($(el).text()).includes('Reading:'))
+			.parent('tr')
+
+		if (literatureHeaderRow.length && literatureHeaderRow.next('tr').length) {
+			const literatureCell = literatureHeaderRow.next('tr').find('td')
+			const rawHtml = literatureCell.html() ?? ''
+
+			const splitIndex = rawHtml.search(/Recommended:/i)
+			if (splitIndex !== -1) {
+				const requiredHtml = rawHtml.slice(0, splitIndex)
+				const recommendedHtml = rawHtml.slice(splitIndex)
+
+				const requiredStripped = requiredHtml.replace(/Basic:/i, '').trim()
+
+				const $req = cheerio.load(requiredStripped)
+				const $rec = cheerio.load(recommendedHtml)
+
+				const reqMd = MarkdownService.formatCheerioElementToMarkdown($req('body'))
+				const recMd = MarkdownService.formatCheerioElementToMarkdown($rec('body'))
+
+				literature_required_en = reqMd && reqMd.trim().length > 0 ? reqMd : null
+				literature_recommended_en = recMd && recMd.trim().length > 0 ? recMd : null
+			} else {
+				const fullMd = MarkdownService.formatCheerioElementToMarkdown(literatureCell)
+				literature_required_en = fullMd && fullMd.trim().length > 0 ? fullMd : null
+			}
+		}
+
+		return {
+			aims_of_the_course_en,
+			learning_outcomes_en,
+			course_contents_en,
+			special_requirements_en,
+			literature_required_en,
+			literature_recommended_en,
+			prerequisites_en,
+			recommended_programmes_en,
+			required_work_experience_en
+		}
+	}
+
 	private static extractAssessmentMethods($: CheerioAPI): ScraperInSISCourseAssessmentMethod[] {
 		const methods: ScraperInSISCourseAssessmentMethod[] = []
 
@@ -297,12 +376,46 @@ export default class ExtractInSISCourseService {
 				const weightMatch = /(\d+)/.exec(valText)
 				methods.push({
 					method: serializeValue(method),
+					method_en: null,
 					weight: weightMatch ? parseInt(weightMatch[1], 10) : null
 				})
 			}
 		})
 
 		return methods
+	}
+
+	/**
+	 * Extracts assessment method names from the EN (jazyk=3) page.
+	 * Returns names in row order, to be zipped with CS assessment_methods by index.
+	 */
+	static extractEnglishAssessmentMethods(html: string): string[] {
+		const $ = cheerio.load(html)
+		sanitizeBodyHtml($)
+		const names: string[] = []
+
+		const headerRow = $('td')
+			.filter((_, el) => {
+				const text = cleanText($(el).text()).toLowerCase()
+				return text.includes('assessment') || text.includes('hodnocení')
+			})
+			.parent('tr')
+
+		if (!headerRow.length) return names
+
+		const table = headerRow.next('tr').find('table')
+		table.find('tbody tr').each((_, row) => {
+			const cols = $(row).find('td')
+			if (cols.length < 2) return
+
+			const method = cleanText($(cols[0]).text()) || cleanText($(cols[1]).text())
+			if (method && !method.toLowerCase().includes('celkem') && !method.toLowerCase().includes('total')) {
+				const name = serializeValue(method)
+				if (name) names.push(name)
+			}
+		})
+
+		return names
 	}
 
 	private static extractTimetable($: CheerioAPI): ScraperInSISCourseTimetableUnit[] {

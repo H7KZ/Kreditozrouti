@@ -58,10 +58,13 @@ Filters are combined — all active filters apply at once. Use **Clear all** in 
 ## Building your timetable
 
 1. Click any course row to expand it
-2. The expanded row shows all available **unit types** (lecture, exercise, seminar) and their time slots
-3. Click a slot to add it to your timetable
+2. The expanded row shows course metadata (faculty, ECTS, language, category) and a collapsible **Syllabus**
+   section with aims, learning outcomes, course contents, literature, and other fields. When the UI language
+   is set to English and English content is available for that course, the English version is shown.
+3. Below the syllabus: all available **unit types** (lecture, exercise, seminar) and their time slots
+4. Click a slot to add it to your timetable
 	- If you already have a unit of the same type selected for this course, it is swapped out automatically
-4. Repeat for each unit type the course requires (some courses have only lectures; others require both a lecture and an
+5. Repeat for each unit type the course requires (some courses have only lectures; others require both a lecture and an
    exercise)
 
 Your timetable is saved in your browser's local storage — it survives page reloads, closing the tab, and restarting your

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
+import { marked } from 'marked'
 import { useI18n } from 'vue-i18n'
 import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import { useCourseLabels } from '@client/composables'
@@ -19,11 +20,33 @@ const props = defineProps<Props>()
 const coursesStore = useCoursesStore()
 const completedCoursesStore = useCompletedCoursesStore()
 
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 const { getCompletionLabel, getFacultyLabel, getLanguagesLabel, getCategoryLabel, getCourseTitle, getCategoryBadgeClass } = useCourseLabels()
 
 const isMarkedCompleted = computed(() => completedCoursesStore.isCourseCompleted(props.course.ident))
 const formattedAge = computed(() => formatRelativeAge(props.course.updated_at, locale.value))
+
+type SyllabusField = { key: string; label: string; value: string }
+
+const sortedAssessments = computed(() => [...(props.course.assessments ?? [])].sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0)))
+
+const syllabusFields = computed((): SyllabusField[] => {
+	const c = props.course
+	const isEn = locale.value === 'en'
+	const pick = (cs: string | null, en: string | null) => (isEn && en ? en : cs)
+	const rows: { key: string; labelKey: string; value: string | null }[] = [
+		{ key: 'aims', labelKey: 'syllabusAims', value: pick(c.aims_of_the_course, c.aims_of_the_course_en) },
+		{ key: 'outcomes', labelKey: 'syllabusLearningOutcomes', value: pick(c.learning_outcomes, c.learning_outcomes_en) },
+		{ key: 'contents', labelKey: 'syllabusCourseContents', value: pick(c.course_contents, c.course_contents_en) },
+		{ key: 'prereqs', labelKey: 'syllabusPrerequisites', value: pick(c.prerequisites, c.prerequisites_en) },
+		{ key: 'litReq', labelKey: 'syllabusLiteratureRequired', value: pick(c.literature_required, c.literature_required_en) },
+		{ key: 'litRec', labelKey: 'syllabusLiteratureRecommended', value: pick(c.literature_recommended, c.literature_recommended_en) },
+		{ key: 'special', labelKey: 'syllabusSpecialRequirements', value: pick(c.special_requirements, c.special_requirements_en) },
+		{ key: 'recProg', labelKey: 'syllabusRecommendedProgrammes', value: pick(c.recommended_programmes, c.recommended_programmes_en) },
+		{ key: 'workExp', labelKey: 'syllabusRequiredWorkExperience', value: pick(c.required_work_experience, c.required_work_experience_en) }
+	]
+	return rows.filter(r => r.value).map(r => ({ key: r.key, label: t(`components.courses.CourseRowExpanded.${r.labelKey}`), value: r.value! }))
+})
 
 function handleToggleCompleted() {
 	coursesStore.toggleCompletedCourse(props.course.ident)
@@ -47,7 +70,7 @@ function handleToggleCompleted() {
 			</a>
 		</h3>
 
-		<dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+		<dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
 			<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.faculty') }}</dt>
 			<dd>{{ course.faculty_id ? getFacultyLabel(course.faculty_id) : '-' }}</dd>
 
@@ -68,17 +91,32 @@ function handleToggleCompleted() {
 					</span>
 				</dd>
 			</template>
+
+			<template v-if="course.assessments?.length">
+				<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.assessments') }}</dt>
+				<dd>
+					<ul class="space-y-0.25 text-sm">
+						<li v-for="assessment in sortedAssessments" :key="assessment.id">
+							{{ assessment.weight }}% | {{ locale === 'en' && assessment.method_en ? assessment.method_en : assessment.method }}
+						</li>
+					</ul>
+				</dd>
+			</template>
 		</dl>
 
-		<!-- Assessments -->
-		<div v-if="course.assessments?.length" class="mt-4">
-			<h4 class="mb-2 text-sm font-medium text-(--insis-gray-700)">
-				{{ $t('components.courses.CourseRowExpanded.assessments') }}
-			</h4>
-			<ul class="space-y-1 text-sm">
-				<li v-for="assessment in course.assessments" :key="assessment.id">{{ assessment.method }}: {{ assessment.weight }}%</li>
-			</ul>
-		</div>
+		<!-- Syllabus sections -->
+		<details v-if="syllabusFields.length" class="mt-4 border-t border-(--insis-border-light) pt-3">
+			<summary class="cursor-pointer text-sm font-medium text-(--insis-gray-600)">
+				{{ $t('components.courses.CourseRowExpanded.syllabus') }}
+			</summary>
+			<div class="mt-2 space-y-3">
+				<div v-for="field in syllabusFields" :key="field.key">
+					<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ field.label }}</p>
+					<!-- eslint-disable-next-line vue/no-v-html -->
+					<div class="prose prose-sm max-w-none text-(--insis-gray-700)" v-html="marked.parse(field.value)" />
+				</div>
+			</div>
+		</details>
 
 		<!-- Data freshness -->
 		<div class="mt-3 flex items-center justify-between border-t border-(--insis-border-light) pt-3">

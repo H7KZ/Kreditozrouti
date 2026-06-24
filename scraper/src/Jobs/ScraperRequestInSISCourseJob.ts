@@ -6,12 +6,12 @@ import { InSISNetworkError, InSISParseError, InSISRateLimitError } from '@scrape
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
-import { withCzechLang } from '@scraper/Utils/HTTPUtils'
+import { withCzechLang, withEnglishJazyk } from '@scraper/Utils/HTTPUtils'
 
 /**
  * Scrapes a single InSIS course syllabus page.
- * Extracts course metadata, syllabus content, assessments, timetable,
- * and associated study plan references found on the page.
+ * Fetches both CS (jazyk=1) and EN (jazyk=3) versions.
+ * Skips DB write only when both content hashes are unchanged.
  *
  * Throws InSISNetworkError on HTTP failures (retryable, up to 3 attempts).
  * Throws InSISParseError on extraction failures (UnrecoverableError, not retried).
@@ -20,27 +20,37 @@ export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCou
 	const courseId = ExtractInSISCourseService.extractIdFromUrl(data.url)
 	const client = createInSISClient('course')
 
-	LoggerJobContext.add({
-		course_id: courseId,
-		url: data.url
-	})
+	LoggerJobContext.add({ course_id: courseId, url: data.url })
 
-	const result = await client.get<string>(withCzechLang(data.url))
+	const csResult = await client.get<string>(withCzechLang(data.url))
 
-	if (!result.success) {
-		if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
+	if (!csResult.success) {
+		if (csResult.status === 429) throw new InSISRateLimitError(csResult.retryAfter ?? 60)
 		throw new InSISNetworkError(`HTTP request failed for course ${courseId} at ${data.url}`)
 	}
 
-	const htmlHash = createHash('sha256').update(result.data).digest('hex')
+	const csHash = createHash('sha256').update(csResult.data).digest('hex')
 
-	if (data.content_hash && data.content_hash === htmlHash) {
-		LoggerJobContext.add({ hash_hit: true, course_id: courseId })
-		return null
+	// Best-effort EN fetch — failures are silently ignored
+	let enHtml: string | null = null
+	let enHash: string | null = null
+
+	const enResult = await client.get<string>(withEnglishJazyk(withCzechLang(data.url)))
+	if (enResult.success) {
+		enHtml = enResult.data
+		enHash = createHash('sha256').update(enHtml).digest('hex')
+	}
+
+	// Skip if both hashes are unchanged
+	if (data.content_hash_cs && data.content_hash_cs === csHash) {
+		if (!enHash || (data.content_hash_en && data.content_hash_en === enHash)) {
+			LoggerJobContext.add({ hash_hit: true, course_id: courseId })
+			return null
+		}
 	}
 	LoggerJobContext.add({ hash_miss: true, course_id: courseId })
 
-	if (ExtractInSISCourseService.isNotFound(result.data)) {
+	if (ExtractInSISCourseService.isNotFound(csResult.data)) {
 		LoggerJobContext.add({ not_found: true, course_id: courseId })
 		if (courseId !== null) {
 			await QueueService.addCourseNotFound(courseId)
@@ -49,13 +59,27 @@ export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCou
 	}
 
 	try {
-		const course = ExtractInSISCourseService.extract(result.data, data.url)
+		const course = ExtractInSISCourseService.extract(csResult.data, data.url)
 
 		if (!course) {
 			throw new InSISParseError(`Course extraction returned null for ${courseId}`)
 		}
 
-		course.content_hash = htmlHash
+		course.content_hash_cs = csHash
+		course.content_hash_en = enHash
+
+		if (enHtml) {
+			const enFields = ExtractInSISCourseService.extractEnglishFields(enHtml)
+			Object.assign(course, enFields)
+
+			const enMethodNames = ExtractInSISCourseService.extractEnglishAssessmentMethods(enHtml)
+			if (course.assessment_methods && enMethodNames.length > 0) {
+				course.assessment_methods = course.assessment_methods.map((m, i) => ({
+					...m,
+					method_en: enMethodNames[i] ?? null
+				}))
+			}
+		}
 
 		await QueueService.addCourseResponse(course)
 
