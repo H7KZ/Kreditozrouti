@@ -81,7 +81,7 @@ export type AlertProps = Props
 
 <template>
 	<div :class="['insis-alert', style.panel]" role="alert">
-		<div class="flex gap-3">
+		<div class="flex w-full justify-between gap-3">
 			<!-- Icon section: Displays appropriate icon based on alert type -->
 			<div :class="['shrink-0 text-lg', style.icon]">
 				<IconInfo v-if="type === 'info'" class="h-5 w-5" />

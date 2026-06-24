@@ -18,8 +18,6 @@ const alertsStore = useAlertsStore()
 const slotsStore = useScheduleSlotsStore()
 const timetableStore = useTimetableStore()
 
-useSeoMeta({ title: () => t('pages.share.loading') })
-
 const units = ref<SelectedCourseUnit[]>([])
 const loading = ref(true)
 const error = ref(false)
@@ -27,6 +25,14 @@ const copying = ref(false)
 
 const id = computed(() => (route.params as { id: string }).id)
 const uniqueCourseCount = computed(() => new Set(units.value.map(u => u.courseId)).size)
+
+useSeoMeta({
+	title: () => {
+		if (loading.value) return t('pages.share.loading')
+		if (error.value) return t('pages.share.errorTitle')
+		return t('pages.share.tabTitle', uniqueCourseCount.value)
+	}
+})
 const totalEcts = computed(() => {
 	const seen = new Set<number>()
 	let total = 0

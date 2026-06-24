@@ -11,13 +11,11 @@
 	},
 	"errors": {
 		"types": {
-			"Unknown": "Neznámá chyba",
-			"Validation": "Chyba ověření",
-			"ZodValidation": "Chyba ověření",
-			"Authentication": "Chyba ověření",
-			"Authorization": "Chyba autorizace",
-			"Database": "Chyba databáze",
-			"ExternalService": "Chyba externí služby"
+			"UNKNOWN": "Neznámá chyba",
+			"UNAUTHORIZED": "Neautorizovaný přístup",
+			"VALIDATION": "Chyba ověření",
+			"NOT_FOUND": "Nenalezeno",
+			"INTERNAL": "Interní chyba serveru"
 		},
 		"codes": {
 			"0": "Neznámá chyba",
@@ -234,6 +232,7 @@
 			"slotName": "Sdílený rozvrh",
 			"backupSlotName": "Záloha mého rozvrhu",
 			"backupSavedAlert": "Tvůj předchozí rozvrh byl automaticky uložen jako záloha.",
+			"tabTitle": "Sdílený rozvrh ({n} předmět) | Sdílený rozvrh ({n} předměty) | Sdílený rozvrh ({n} předmětů)",
 			"courseCount": "{n} předmět | {n} předměty | {n} předmětů",
 			"ects": "{n} ECTS"
 		},

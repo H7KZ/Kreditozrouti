@@ -11,13 +11,11 @@
 	},
 	"errors": {
 		"types": {
-			"Unknown": "Unknown error",
-			"Validation": "Validation error",
-			"ZodValidation": "Validation error",
-			"Authentication": "Authentication error",
-			"Authorization": "Authorization error",
-			"Database": "Database error",
-			"ExternalService": "External service error"
+			"UNKNOWN": "Unknown error",
+			"UNAUTHORIZED": "Unauthorized access",
+			"VALIDATION": "Validation error",
+			"NOT_FOUND": "Resource not found",
+			"INTERNAL": "Internal server error"
 		},
 		"codes": {
 			"0": "Unknown error",
@@ -234,6 +232,7 @@
 			"slotName": "Shared timetable",
 			"backupSlotName": "My timetable backup",
 			"backupSavedAlert": "Your previous timetable was automatically saved as a backup.",
+			"tabTitle": "Shared timetable ({n} course) | Shared timetable ({n} courses)",
 			"courseCount": "{n} course | {n} courses",
 			"ects": "{n} ECTS"
 		},
