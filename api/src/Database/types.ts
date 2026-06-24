@@ -93,7 +93,6 @@ export class CourseTable {
 	course_contents!: string | null
 
 	special_requirements!: string | null
-	literature!: string | null
 
 	/** Pipe-delimited list of course guarantors. */
 	guarantors!: string | null
@@ -109,9 +108,20 @@ export class CourseTable {
 	literature_required!: string | null
 	literature_recommended!: string | null
 
+	aims_of_the_course_en!: string | null
+	learning_outcomes_en!: string | null
+	course_contents_en!: string | null
+	special_requirements_en!: string | null
+	literature_required_en!: string | null
+	literature_recommended_en!: string | null
+	prerequisites_en!: string | null
+	recommended_programmes_en!: string | null
+	required_work_experience_en!: string | null
+
 	last_scraped_at!: ColumnType<Date, string | undefined, string | undefined> | null
 
-	content_hash!: string | null
+	content_hash_cs!: string | null
+	content_hash_en!: string | null
 }
 
 export type Course<F = void, U = void, A = void, SP = void> = Selectable<CourseTable> &
