@@ -26,3 +26,15 @@ export function withCzechLang(url: string): string {
 	const separator = url.includes('?') ? ';' : '?'
 	return `${url}${separator}lang=cz`
 }
+
+/**
+ * Replaces or appends jazyk=3 (English syllabus content) to an InSIS URL.
+ * jazyk controls syllabus content language, separate from the UI lang param.
+ */
+export function withEnglishJazyk(url: string): string {
+	if (/[?;]jazyk=\d+/.test(url)) {
+		return url.replace(/([?;]jazyk=)\d+/, '$13')
+	}
+	const separator = url.includes('?') ? ';' : '?'
+	return `${url}${separator}jazyk=3`
+}
