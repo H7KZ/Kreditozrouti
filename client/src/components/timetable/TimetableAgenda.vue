@@ -144,36 +144,8 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
 				@click="handleShare"
 			>
-				<svg
-					v-if="!sharing"
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-3.5 w-3.5"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					aria-hidden="true"
-				>
-					<circle cx="18" cy="5" r="3" />
-					<circle cx="6" cy="12" r="3" />
-					<circle cx="18" cy="19" r="3" />
-					<line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-					<line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-				</svg>
-				<svg
-					v-else
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-3.5 w-3.5 animate-spin"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					aria-hidden="true"
-				>
-					<path d="M21 12a9 9 0 1 1-6.219-8.56" />
-				</svg>
+				<i-lucide-share-2 v-if="!sharing" class="h-3.5 w-3.5" aria-hidden="true" />
+				<i-lucide-loader-circle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
 				{{ sharing ? $t('components.timetable.TimetableGrid.sharing') : $t('components.timetable.TimetableGrid.share') }}
 			</button>
 			<!-- Export button -->
@@ -184,34 +156,8 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
 				@click="exportSchedule"
 			>
-				<svg
-					v-if="!exporting"
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-3.5 w-3.5"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					aria-hidden="true"
-				>
-					<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-					<polyline points="7 10 12 15 17 10" />
-					<line x1="12" y1="15" x2="12" y2="3" />
-				</svg>
-				<svg
-					v-else
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-3.5 w-3.5 animate-spin"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					aria-hidden="true"
-				>
-					<path d="M21 12a9 9 0 1 1-6.219-8.56" />
-				</svg>
+				<i-lucide-download v-if="!exporting" class="h-3.5 w-3.5" aria-hidden="true" />
+				<i-lucide-loader-circle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
 				{{ exporting ? $t('components.timetable.TimetableAgenda.exporting') : $t('components.timetable.TimetableAgenda.saveAsImage') }}
 			</button>
 		</div>
