@@ -40,14 +40,17 @@
     "assessment_methods": [
         {
             "method": "Vypracování semestrální práce",
+            "method_en": null,
             "weight": 20
         },
         {
             "method": "Absolvování průběžného testu (testů)",
+            "method_en": null,
             "weight": 30
         },
         {
             "method": "Absolvování závěrečného testu",
+            "method_en": null,
             "weight": 50
         }
     ],

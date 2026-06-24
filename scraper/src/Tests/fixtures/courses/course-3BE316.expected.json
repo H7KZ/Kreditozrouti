@@ -38,14 +38,17 @@
     "assessment_methods": [
         {
             "method": "Aktivita na přednáškách/cvičeních/seminářích",
+            "method_en": null,
             "weight": 0
         },
         {
             "method": "Absolvování průběžného testu (testů)",
+            "method_en": null,
             "weight": 0
         },
         {
             "method": "Absolvování závěrečného testu",
+            "method_en": null,
             "weight": 0
         }
     ],

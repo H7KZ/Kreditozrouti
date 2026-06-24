@@ -1,2181 +1,2181 @@
 {
-	"id": -1,
-	"url": "",
-	"ident": "Z-EXC",
-	"title": "Výměnné programy",
-	"faculty": {
-		"ident": "OZS",
-		"title": "Oddělení zahraničních styků",
-		"is_schedule_publicly_visible": false
-	},
-	"semester": "ZS",
-	"year": 2024,
-	"level": "zahraniční studenti",
-	"mode_of_study": "prezenční",
-	"study_length": "1 rok",
-	"courses": [
-		{
-			"id": 134569,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134569;aktualni=1;poc_obdobi=1308",
-			"ident": "4ST606",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 3539,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3539;aktualni=1;poc_obdobi=1308",
-			"ident": "2AJ416",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 189683,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189683;aktualni=1;poc_obdobi=1308",
-			"ident": "3SG357",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 134573,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134573;aktualni=1;poc_obdobi=1308",
-			"ident": "4ST611",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 98291,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98291;aktualni=1;poc_obdobi=1308",
-			"ident": "3BE226",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 43635,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=43635;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP260",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 147446,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147446;aktualni=1;poc_obdobi=1308",
-			"ident": "5EN856",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 118619,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118619;aktualni=1;poc_obdobi=1308",
-			"ident": "5IE380",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 150823,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=150823;aktualni=1;poc_obdobi=1308",
-			"ident": "3MI604",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 118424,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118424;aktualni=1;poc_obdobi=1308",
-			"ident": "2SE307",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 118353,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118353;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO338",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 98502,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98502;aktualni=1;poc_obdobi=1308",
-			"ident": "4IT555",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 95837,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=95837;aktualni=1;poc_obdobi=1308",
-			"ident": "4ST631",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 148709,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=148709;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA622",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 2849,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2849;aktualni=1;poc_obdobi=1308",
-			"ident": "2RU131",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 66403,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=66403;aktualni=1;poc_obdobi=1308",
-			"ident": "4DM251",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 193775,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193775;aktualni=1;poc_obdobi=1308",
-			"ident": "2IB354",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 122992,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122992;aktualni=1;poc_obdobi=1308",
-			"ident": "3BE215",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 138321,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138321;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM351",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 155137,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155137;aktualni=1;poc_obdobi=1308",
-			"ident": "3LG629",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 65457,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65457;aktualni=1;poc_obdobi=1308",
-			"ident": "5IE375",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 195173,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=195173;aktualni=1;poc_obdobi=1308",
-			"ident": "3MG301",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 161126,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=161126;aktualni=1;poc_obdobi=1308",
-			"ident": "4EK631",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 111147,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=111147;aktualni=1;poc_obdobi=1308",
-			"ident": "4DM465",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 75399,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75399;aktualni=1;poc_obdobi=1308",
-			"ident": "2SE208",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 105605,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105605;aktualni=1;poc_obdobi=1308",
-			"ident": "5HP700",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 118206,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118206;aktualni=1;poc_obdobi=1308",
-			"ident": "1MT363",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 66262,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=66262;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO642",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 127471,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=127471;aktualni=1;poc_obdobi=1308",
-			"ident": "11F252",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 2873,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2873;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO308",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 106321,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106321;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO121",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 113760,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113760;aktualni=1;poc_obdobi=1308",
-			"ident": "3MA643",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 118410,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118410;aktualni=1;poc_obdobi=1308",
-			"ident": "2OP336",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 87582,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87582;aktualni=1;poc_obdobi=1308",
-			"ident": "4ES611",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 102515,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102515;aktualni=1;poc_obdobi=1308",
-			"ident": "5HD358",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 155984,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155984;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA260",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 87743,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87743;aktualni=1;poc_obdobi=1308",
-			"ident": "2AJ315",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 147588,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147588;aktualni=1;poc_obdobi=1308",
-			"ident": "3PS628",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 109741,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109741;aktualni=1;poc_obdobi=1308",
-			"ident": "2CR313",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 118570,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118570;aktualni=1;poc_obdobi=1308",
-			"ident": "3LG628",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 179229,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=179229;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO151",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 187815,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187815;aktualni=1;poc_obdobi=1308",
-			"ident": "2AJ424",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 114529,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114529;aktualni=1;poc_obdobi=1308",
-			"ident": "5HD450",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 110073,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110073;aktualni=1;poc_obdobi=1308",
-			"ident": "2SE305",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 138319,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138319;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM255",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 41058,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=41058;aktualni=1;poc_obdobi=1308",
-			"ident": "3PA668",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 170139,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=170139;aktualni=1;poc_obdobi=1308",
-			"ident": "2MS321",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 118834,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118834;aktualni=1;poc_obdobi=1308",
-			"ident": "3MA685",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 178226,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=178226;aktualni=1;poc_obdobi=1308",
-			"ident": "4ES614",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 43616,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=43616;aktualni=1;poc_obdobi=1308",
-			"ident": "5EN253",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 170243,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=170243;aktualni=1;poc_obdobi=1308",
-			"ident": "3MA686",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 98303,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98303;aktualni=1;poc_obdobi=1308",
-			"ident": "3BE324",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 98299,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98299;aktualni=1;poc_obdobi=1308",
-			"ident": "3BE322",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 99842,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=99842;aktualni=1;poc_obdobi=1308",
-			"ident": "3BE316",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 164821,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=164821;aktualni=1;poc_obdobi=1308",
-			"ident": "1MU364",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 147583,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147583;aktualni=1;poc_obdobi=1308",
-			"ident": "3MG329",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 161170,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=161170;aktualni=1;poc_obdobi=1308",
-			"ident": "4ST623",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 97597,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97597;aktualni=1;poc_obdobi=1308",
-			"ident": "55F750",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 3276,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3276;aktualni=1;poc_obdobi=1308",
-			"ident": "5HP477",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 123637,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=123637;aktualni=1;poc_obdobi=1308",
-			"ident": "4ES610",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 138323,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138323;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM353",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 105762,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105762;aktualni=1;poc_obdobi=1308",
-			"ident": "2SE212",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 55194,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=55194;aktualni=1;poc_obdobi=1308",
-			"ident": "1MT357",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 187863,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187863;aktualni=1;poc_obdobi=1308",
-			"ident": "2MS325",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 165055,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=165055;aktualni=1;poc_obdobi=1308",
-			"ident": "2ME301",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 177617,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=177617;aktualni=1;poc_obdobi=1308",
-			"ident": "2IB102",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 110217,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110217;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO362",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 114177,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114177;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM271",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 118631,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118631;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM309",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 43615,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=43615;aktualni=1;poc_obdobi=1308",
-			"ident": "5EN252",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 150087,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=150087;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM314",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 118519,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118519;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA551",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 159200,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=159200;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP333",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 106546,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106546;aktualni=1;poc_obdobi=1308",
-			"ident": "2ZP412",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 122201,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122201;aktualni=1;poc_obdobi=1308",
-			"ident": "2NJ153",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 114409,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114409;aktualni=1;poc_obdobi=1308",
-			"ident": "2NJ151",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 2823,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2823;aktualni=1;poc_obdobi=1308",
-			"ident": "2NJ403",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 3091,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3091;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA526",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 199222,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199222;aktualni=1;poc_obdobi=1308",
-			"ident": "6BPSA1E",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 122391,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122391;aktualni=1;poc_obdobi=1308",
-			"ident": "5HD391",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 88110,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88110;aktualni=1;poc_obdobi=1308",
-			"ident": "5HD280",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 161127,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=161127;aktualni=1;poc_obdobi=1308",
-			"ident": "4EK632",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 98283,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98283;aktualni=1;poc_obdobi=1308",
-			"ident": "3BE214",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 93014,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=93014;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO647",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 56400,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=56400;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO332",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 134272,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134272;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO346",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 41059,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=41059;aktualni=1;poc_obdobi=1308",
-			"ident": "3PA669",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 110376,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110376;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP491",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 176891,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=176891;aktualni=1;poc_obdobi=1308",
-			"ident": "2MS323",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 189178,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189178;aktualni=1;poc_obdobi=1308",
-			"ident": "4ES103",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 158044,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=158044;aktualni=1;poc_obdobi=1308",
-			"ident": "1DP044",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 98285,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98285;aktualni=1;poc_obdobi=1308",
-			"ident": "3BE216",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 159198,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=159198;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP461",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 187944,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187944;aktualni=1;poc_obdobi=1308",
-			"ident": "2AJ325",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 2841,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2841;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO464",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 84169,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=84169;aktualni=1;poc_obdobi=1308",
-			"ident": "2OP321",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 122662,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122662;aktualni=1;poc_obdobi=1308",
-			"ident": "2OP337",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 3407,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3407;aktualni=1;poc_obdobi=1308",
-			"ident": "5RE254",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 161129,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=161129;aktualni=1;poc_obdobi=1308",
-			"ident": "4EK621",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 93390,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=93390;aktualni=1;poc_obdobi=1308",
-			"ident": "2OP352",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 75814,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75814;aktualni=1;poc_obdobi=1308",
-			"ident": "2OP309",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 159748,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=159748;aktualni=1;poc_obdobi=1308",
-			"ident": "3PS629",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 2856,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2856;aktualni=1;poc_obdobi=1308",
-			"ident": "2RU412",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 151777,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=151777;aktualni=1;poc_obdobi=1308",
-			"ident": "2RU121",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 156802,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=156802;aktualni=1;poc_obdobi=1308",
-			"ident": "2RU122",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 3439,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3439;aktualni=1;poc_obdobi=1308",
-			"ident": "2OP320",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 62401,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=62401;aktualni=1;poc_obdobi=1308",
-			"ident": "4EK603",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 3116,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3116;aktualni=1;poc_obdobi=1308",
-			"ident": "3PA662",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 118302,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118302;aktualni=1;poc_obdobi=1308",
-			"ident": "1DP050",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 109608,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109608;aktualni=1;poc_obdobi=1308",
-			"ident": "2PL395",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 147581,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147581;aktualni=1;poc_obdobi=1308",
-			"ident": "3MG642",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 97600,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97600;aktualni=1;poc_obdobi=1308",
-			"ident": "5RE755",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 3308,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3308;aktualni=1;poc_obdobi=1308",
-			"ident": "3PS625",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 98293,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98293;aktualni=1;poc_obdobi=1308",
-			"ident": "3BE312",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 134567,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134567;aktualni=1;poc_obdobi=1308",
-			"ident": "4ST605",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 113342,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113342;aktualni=1;poc_obdobi=1308",
-			"ident": "3SG205",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 34124,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34124;aktualni=1;poc_obdobi=1308",
-			"ident": "3PA667",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 97442,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97442;aktualni=1;poc_obdobi=1308",
-			"ident": "2OP326",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 182747,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182747;aktualni=1;poc_obdobi=1308",
-			"ident": "2TM504",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 70665,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70665;aktualni=1;poc_obdobi=1308",
-			"ident": "2OP354",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 100306,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=100306;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO253",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 113445,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113445;aktualni=1;poc_obdobi=1308",
-			"ident": "2SE272",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 2803,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2803;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO369",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 3228,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3228;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO165",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 2625,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2625;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO166",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 106323,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106323;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO181",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 106324,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106324;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO182",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 123022,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=123022;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP464",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 2943,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2943;aktualni=1;poc_obdobi=1308",
-			"ident": "4EK602",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 84159,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=84159;aktualni=1;poc_obdobi=1308",
-			"ident": "1FU361",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 118304,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118304;aktualni=1;poc_obdobi=1308",
-			"ident": "1FU261",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 105727,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105727;aktualni=1;poc_obdobi=1308",
-			"ident": "4EK610",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 75428,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75428;aktualni=1;poc_obdobi=1308",
-			"ident": "2ZP301",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 99095,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=99095;aktualni=1;poc_obdobi=1308",
-			"ident": "5FI771",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 113371,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113371;aktualni=1;poc_obdobi=1308",
-			"ident": "2AJ419",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 102472,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102472;aktualni=1;poc_obdobi=1308",
-			"ident": "5HP750",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 185141,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=185141;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA617",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 114387,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114387;aktualni=1;poc_obdobi=1308",
-			"ident": "3MA683",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 138317,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138317;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM151",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 88772,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88772;aktualni=1;poc_obdobi=1308",
-			"ident": "2PR151",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 188320,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188320;aktualni=1;poc_obdobi=1308",
-			"ident": "2PR152",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 88749,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88749;aktualni=1;poc_obdobi=1308",
-			"ident": "5IE250",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 43617,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=43617;aktualni=1;poc_obdobi=1308",
-			"ident": "5EN254",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 190563,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=190563;aktualni=1;poc_obdobi=1308",
-			"ident": "2IB353",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 55188,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=55188;aktualni=1;poc_obdobi=1308",
-			"ident": "1VF203",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 98672,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98672;aktualni=1;poc_obdobi=1308",
-			"ident": "4MM451",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 61360,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61360;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA220",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 83261,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83261;aktualni=1;poc_obdobi=1308",
-			"ident": "2RU135",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 102481,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102481;aktualni=1;poc_obdobi=1308",
-			"ident": "2AJ171",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 105582,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105582;aktualni=1;poc_obdobi=1308",
-			"ident": "2AJ172",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 142093,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=142093;aktualni=1;poc_obdobi=1308",
-			"ident": "3PO633",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 114385,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114385;aktualni=1;poc_obdobi=1308",
-			"ident": "3MA682",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 2373,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2373;aktualni=1;poc_obdobi=1308",
-			"ident": "1FU301",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 170248,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=170248;aktualni=1;poc_obdobi=1308",
-			"ident": "1FU302",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 189183,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189183;aktualni=1;poc_obdobi=1308",
-			"ident": "4ES104",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 97589,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97589;aktualni=1;poc_obdobi=1308",
-			"ident": "1VF362",
-			"group": "university_wide",
-			"category": "prohibited"
-		},
-		{
-			"id": 147443,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147443;aktualni=1;poc_obdobi=1308",
-			"ident": "5IE857",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 105824,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105824;aktualni=1;poc_obdobi=1308",
-			"ident": "5HD396",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 109700,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109700;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO442",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 134569,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134569;aktualni=1;poc_obdobi=1308",
-			"ident": "4ST606",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 134573,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134573;aktualni=1;poc_obdobi=1308",
-			"ident": "4ST611",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 118343,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118343;aktualni=1;poc_obdobi=1308",
-			"ident": "5IE562",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 106069,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106069;aktualni=1;poc_obdobi=1308",
-			"ident": "5EN457",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2879,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2879;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM411",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 118619,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118619;aktualni=1;poc_obdobi=1308",
-			"ident": "5IE380",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 199214,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199214;aktualni=1;poc_obdobi=1308",
-			"ident": "3MI605",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 199212,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199212;aktualni=1;poc_obdobi=1308",
-			"ident": "3MI607",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 182628,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182628;aktualni=1;poc_obdobi=1308",
-			"ident": "2ME433",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 61282,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61282;aktualni=1;poc_obdobi=1308",
-			"ident": "3MG633",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 98502,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98502;aktualni=1;poc_obdobi=1308",
-			"ident": "4IT555",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 179393,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=179393;aktualni=1;poc_obdobi=1308",
-			"ident": "4IT566",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 182634,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182634;aktualni=1;poc_obdobi=1308",
-			"ident": "3PO645",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 95837,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=95837;aktualni=1;poc_obdobi=1308",
-			"ident": "4ST631",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 148709,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=148709;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA622",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2849,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2849;aktualni=1;poc_obdobi=1308",
-			"ident": "2RU131",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 121633,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=121633;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM558",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 66403,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=66403;aktualni=1;poc_obdobi=1308",
-			"ident": "4DM251",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 122431,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122431;aktualni=1;poc_obdobi=1308",
-			"ident": "3SG556",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 138004,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138004;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM451",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 65457,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65457;aktualni=1;poc_obdobi=1308",
-			"ident": "5IE375",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 111147,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=111147;aktualni=1;poc_obdobi=1308",
-			"ident": "4DM465",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 189845,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189845;aktualni=1;poc_obdobi=1308",
-			"ident": "33F426",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 177526,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=177526;aktualni=1;poc_obdobi=1308",
-			"ident": "2PR513",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 189740,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189740;aktualni=1;poc_obdobi=1308",
-			"ident": "3MA678",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 147453,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147453;aktualni=1;poc_obdobi=1308",
-			"ident": "5HD868",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 187948,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187948;aktualni=1;poc_obdobi=1308",
-			"ident": "2ME434",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 199216,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199216;aktualni=1;poc_obdobi=1308",
-			"ident": "3MI606",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2344,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2344;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP428",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 3363,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3363;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP426",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 57128,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=57128;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP451",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 66262,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=66262;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO642",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 106321,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106321;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO121",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 182473,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182473;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA661",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 34174,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34174;aktualni=1;poc_obdobi=1308",
-			"ident": "3LG623",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 138003,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138003;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM450",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 193693,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193693;aktualni=1;poc_obdobi=1308",
-			"ident": "2MS430",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 67278,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=67278;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM602",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 198503,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=198503;aktualni=1;poc_obdobi=1308",
-			"ident": "4IZ441",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 162122,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=162122;aktualni=1;poc_obdobi=1308",
-			"ident": "3SG847",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 134219,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134219;aktualni=1;poc_obdobi=1308",
-			"ident": "2AJ420",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2492,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2492;aktualni=1;poc_obdobi=1308",
-			"ident": "3PE665",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 87582,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87582;aktualni=1;poc_obdobi=1308",
-			"ident": "4ES611",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 102515,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102515;aktualni=1;poc_obdobi=1308",
-			"ident": "5HD358",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 126825,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126825;aktualni=1;poc_obdobi=1308",
-			"ident": "3PO701",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 179395,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=179395;aktualni=1;poc_obdobi=1308",
-			"ident": "4IT568",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 87743,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87743;aktualni=1;poc_obdobi=1308",
-			"ident": "2AJ315",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 97432,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97432;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM634",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 75422,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75422;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM431",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 187815,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187815;aktualni=1;poc_obdobi=1308",
-			"ident": "2AJ424",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 114529,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114529;aktualni=1;poc_obdobi=1308",
-			"ident": "5HD450",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 165242,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=165242;aktualni=1;poc_obdobi=1308",
-			"ident": "2IB411",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2845,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2845;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO501",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2846,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2846;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO561",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 155994,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155994;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA612",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 176900,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=176900;aktualni=1;poc_obdobi=1308",
-			"ident": "2IB469",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 163913,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=163913;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP489",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 178226,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=178226;aktualni=1;poc_obdobi=1308",
-			"ident": "4ES614",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 75808,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75808;aktualni=1;poc_obdobi=1308",
-			"ident": "3AM595",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 187936,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187936;aktualni=1;poc_obdobi=1308",
-			"ident": "3SG419",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 110490,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110490;aktualni=1;poc_obdobi=1308",
-			"ident": "1MU506",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 188302,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188302;aktualni=1;poc_obdobi=1308",
-			"ident": "3MG311",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 109696,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109696;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO440",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 134560,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134560;aktualni=1;poc_obdobi=1308",
-			"ident": "3MG736",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 134254,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134254;aktualni=1;poc_obdobi=1308",
-			"ident": "3PO753",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 131331,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131331;aktualni=1;poc_obdobi=1308",
-			"ident": "3MG532",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 3276,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3276;aktualni=1;poc_obdobi=1308",
-			"ident": "5HP477",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 123637,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=123637;aktualni=1;poc_obdobi=1308",
-			"ident": "4ES610",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 70653,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70653;aktualni=1;poc_obdobi=1308",
-			"ident": "2SE601",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 79252,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79252;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO428",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 97472,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97472;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO434",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 87580,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87580;aktualni=1;poc_obdobi=1308",
-			"ident": "2OP405",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 138457,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138457;aktualni=1;poc_obdobi=1308",
-			"ident": "3MA674",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 181928,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=181928;aktualni=1;poc_obdobi=1308",
-			"ident": "3MA675",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 61013,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61013;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO432",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2812,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2812;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO403",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 118435,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118435;aktualni=1;poc_obdobi=1308",
-			"ident": "5IE470",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 92280,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=92280;aktualni=1;poc_obdobi=1308",
-			"ident": "2MO646",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 67280,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=67280;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM605",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 122865,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122865;aktualni=1;poc_obdobi=1308",
-			"ident": "5IE457",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 118519,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118519;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA551",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 106546,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106546;aktualni=1;poc_obdobi=1308",
-			"ident": "2ZP412",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 79717,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79717;aktualni=1;poc_obdobi=1308",
-			"ident": "3LG626",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 3091,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3091;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA526",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 122863,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122863;aktualni=1;poc_obdobi=1308",
-			"ident": "3PO651",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 53145,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=53145;aktualni=1;poc_obdobi=1308",
-			"ident": "1FP421",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 122391,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122391;aktualni=1;poc_obdobi=1308",
-			"ident": "5HD391",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 88110,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88110;aktualni=1;poc_obdobi=1308",
-			"ident": "5HD280",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 55898,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=55898;aktualni=1;poc_obdobi=1308",
-			"ident": "5EN551",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 126950,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126950;aktualni=1;poc_obdobi=1308",
-			"ident": "3PA712",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 41059,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=41059;aktualni=1;poc_obdobi=1308",
-			"ident": "3PA669",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 110376,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110376;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP491",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 98311,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98311;aktualni=1;poc_obdobi=1308",
-			"ident": "2PR415",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 171886,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=171886;aktualni=1;poc_obdobi=1308",
-			"ident": "3MG643",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 134247,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134247;aktualni=1;poc_obdobi=1308",
-			"ident": "3PO642",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2415,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2415;aktualni=1;poc_obdobi=1308",
-			"ident": "3MA621",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 159198,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=159198;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP461",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 109602,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109602;aktualni=1;poc_obdobi=1308",
-			"ident": "2NJ330",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 187944,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187944;aktualni=1;poc_obdobi=1308",
-			"ident": "2AJ325",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2841,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2841;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO464",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 126487,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126487;aktualni=1;poc_obdobi=1308",
-			"ident": "2PR417",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2834,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2834;aktualni=1;poc_obdobi=1308",
-			"ident": "2NJ419",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 3407,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3407;aktualni=1;poc_obdobi=1308",
-			"ident": "5RE254",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 102511,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102511;aktualni=1;poc_obdobi=1308",
-			"ident": "1DP023",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 173804,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=173804;aktualni=1;poc_obdobi=1308",
-			"ident": "2IB420",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2856,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2856;aktualni=1;poc_obdobi=1308",
-			"ident": "2RU412",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 151777,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=151777;aktualni=1;poc_obdobi=1308",
-			"ident": "2RU121",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 156802,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=156802;aktualni=1;poc_obdobi=1308",
-			"ident": "2RU122",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 57127,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=57127;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP450",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 177528,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=177528;aktualni=1;poc_obdobi=1308",
-			"ident": "2PR515",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 179392,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=179392;aktualni=1;poc_obdobi=1308",
-			"ident": "4IT565",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 166214,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=166214;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP412",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2458,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2458;aktualni=1;poc_obdobi=1308",
-			"ident": "3PA661",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 177525,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=177525;aktualni=1;poc_obdobi=1308",
-			"ident": "2PR512",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 62401,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=62401;aktualni=1;poc_obdobi=1308",
-			"ident": "4EK603",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 3116,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3116;aktualni=1;poc_obdobi=1308",
-			"ident": "3PA662",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 103087,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=103087;aktualni=1;poc_obdobi=1308",
-			"ident": "3MG640",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 170242,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=170242;aktualni=1;poc_obdobi=1308",
-			"ident": "3LG630",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 166156,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=166156;aktualni=1;poc_obdobi=1308",
-			"ident": "3PO643",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 3308,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3308;aktualni=1;poc_obdobi=1308",
-			"ident": "3PS625",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 3352,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3352;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM425",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 161568,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=161568;aktualni=1;poc_obdobi=1308",
-			"ident": "2SM601",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 134567,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134567;aktualni=1;poc_obdobi=1308",
-			"ident": "4ST605",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 34124,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34124;aktualni=1;poc_obdobi=1308",
-			"ident": "3PA667",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 182747,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182747;aktualni=1;poc_obdobi=1308",
-			"ident": "2TM504",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 189847,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189847;aktualni=1;poc_obdobi=1308",
-			"ident": "3SG545",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 117951,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=117951;aktualni=1;poc_obdobi=1308",
-			"ident": "3SG408",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 127086,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=127086;aktualni=1;poc_obdobi=1308",
-			"ident": "3SG712",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 138634,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138634;aktualni=1;poc_obdobi=1308",
-			"ident": "3SG835",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2803,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2803;aktualni=1;poc_obdobi=1308",
-			"ident": "2RO369",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 123022,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=123022;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP464",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 2943,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2943;aktualni=1;poc_obdobi=1308",
-			"ident": "4EK602",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 147442,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147442;aktualni=1;poc_obdobi=1308",
-			"ident": "5HP855",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 131777,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131777;aktualni=1;poc_obdobi=1308",
-			"ident": "3SG457",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 61460,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61460;aktualni=1;poc_obdobi=1308",
-			"ident": "1FU491",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 189848,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189848;aktualni=1;poc_obdobi=1308",
-			"ident": "3LG540",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 168901,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=168901;aktualni=1;poc_obdobi=1308",
-			"ident": "3PS630",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 199267,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199267;aktualni=1;poc_obdobi=1308",
-			"ident": "2IB453",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 105727,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105727;aktualni=1;poc_obdobi=1308",
-			"ident": "4EK610",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 75428,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75428;aktualni=1;poc_obdobi=1308",
-			"ident": "2ZP301",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 189843,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189843;aktualni=1;poc_obdobi=1308",
-			"ident": "33F425",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 102472,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102472;aktualni=1;poc_obdobi=1308",
-			"ident": "5HP750",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 185141,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=185141;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA617",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 138038,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138038;aktualni=1;poc_obdobi=1308",
-			"ident": "2SE464",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 155021,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155021;aktualni=1;poc_obdobi=1308",
-			"ident": "1BP454",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 98672,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98672;aktualni=1;poc_obdobi=1308",
-			"ident": "4MM451",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 61360,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61360;aktualni=1;poc_obdobi=1308",
-			"ident": "4SA220",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 83261,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83261;aktualni=1;poc_obdobi=1308",
-			"ident": "2RU135",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 79600,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79600;aktualni=1;poc_obdobi=1308",
-			"ident": "1VF462",
-			"group": "university_wide",
-			"category": "exchange_program"
-		},
-		{
-			"id": 199195,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199195;aktualni=1;poc_obdobi=1308",
-			"ident": "3LG631",
-			"group": "university_wide",
-			"category": "exchange_program"
-		}
-	]
+    "id": -1,
+    "url": "",
+    "ident": "Z-EXC",
+    "title": "Výměnné programy",
+    "faculty": {
+        "ident": "OZS",
+        "title": "Oddělení zahraničních styků",
+        "is_schedule_publicly_visible": false
+    },
+    "semester": "ZS",
+    "year": 2024,
+    "level": "zahraniční studenti",
+    "mode_of_study": "prezenční",
+    "study_length": "1 rok",
+    "courses": [
+        {
+            "id": 134569,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134569;aktualni=1;poc_obdobi=1308",
+            "ident": "4ST606",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 3539,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3539;aktualni=1;poc_obdobi=1308",
+            "ident": "2AJ416",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 189683,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189683;aktualni=1;poc_obdobi=1308",
+            "ident": "3SG357",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 134573,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134573;aktualni=1;poc_obdobi=1308",
+            "ident": "4ST611",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 98291,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98291;aktualni=1;poc_obdobi=1308",
+            "ident": "3BE226",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 43635,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=43635;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP260",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 147446,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147446;aktualni=1;poc_obdobi=1308",
+            "ident": "5EN856",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 118619,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118619;aktualni=1;poc_obdobi=1308",
+            "ident": "5IE380",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 150823,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=150823;aktualni=1;poc_obdobi=1308",
+            "ident": "3MI604",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 118424,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118424;aktualni=1;poc_obdobi=1308",
+            "ident": "2SE307",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 118353,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118353;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO338",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 98502,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98502;aktualni=1;poc_obdobi=1308",
+            "ident": "4IT555",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 95837,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=95837;aktualni=1;poc_obdobi=1308",
+            "ident": "4ST631",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 148709,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=148709;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA622",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 2849,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2849;aktualni=1;poc_obdobi=1308",
+            "ident": "2RU131",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 66403,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=66403;aktualni=1;poc_obdobi=1308",
+            "ident": "4DM251",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 193775,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193775;aktualni=1;poc_obdobi=1308",
+            "ident": "2IB354",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 122992,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122992;aktualni=1;poc_obdobi=1308",
+            "ident": "3BE215",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 138321,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138321;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM351",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 155137,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155137;aktualni=1;poc_obdobi=1308",
+            "ident": "3LG629",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 65457,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65457;aktualni=1;poc_obdobi=1308",
+            "ident": "5IE375",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 195173,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=195173;aktualni=1;poc_obdobi=1308",
+            "ident": "3MG301",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 161126,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=161126;aktualni=1;poc_obdobi=1308",
+            "ident": "4EK631",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 111147,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=111147;aktualni=1;poc_obdobi=1308",
+            "ident": "4DM465",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 75399,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75399;aktualni=1;poc_obdobi=1308",
+            "ident": "2SE208",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 105605,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105605;aktualni=1;poc_obdobi=1308",
+            "ident": "5HP700",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 118206,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118206;aktualni=1;poc_obdobi=1308",
+            "ident": "1MT363",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 66262,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=66262;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO642",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 127471,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=127471;aktualni=1;poc_obdobi=1308",
+            "ident": "11F252",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 2873,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2873;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO308",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 106321,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106321;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO121",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 113760,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113760;aktualni=1;poc_obdobi=1308",
+            "ident": "3MA643",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 118410,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118410;aktualni=1;poc_obdobi=1308",
+            "ident": "2OP336",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 87582,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87582;aktualni=1;poc_obdobi=1308",
+            "ident": "4ES611",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 102515,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102515;aktualni=1;poc_obdobi=1308",
+            "ident": "5HD358",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 155984,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155984;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA260",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 87743,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87743;aktualni=1;poc_obdobi=1308",
+            "ident": "2AJ315",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 147588,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147588;aktualni=1;poc_obdobi=1308",
+            "ident": "3PS628",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 109741,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109741;aktualni=1;poc_obdobi=1308",
+            "ident": "2CR313",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 118570,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118570;aktualni=1;poc_obdobi=1308",
+            "ident": "3LG628",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 179229,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=179229;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO151",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 187815,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187815;aktualni=1;poc_obdobi=1308",
+            "ident": "2AJ424",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 114529,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114529;aktualni=1;poc_obdobi=1308",
+            "ident": "5HD450",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 110073,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110073;aktualni=1;poc_obdobi=1308",
+            "ident": "2SE305",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 138319,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138319;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM255",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 41058,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=41058;aktualni=1;poc_obdobi=1308",
+            "ident": "3PA668",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 170139,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=170139;aktualni=1;poc_obdobi=1308",
+            "ident": "2MS321",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 118834,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118834;aktualni=1;poc_obdobi=1308",
+            "ident": "3MA685",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 178226,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=178226;aktualni=1;poc_obdobi=1308",
+            "ident": "4ES614",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 43616,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=43616;aktualni=1;poc_obdobi=1308",
+            "ident": "5EN253",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 170243,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=170243;aktualni=1;poc_obdobi=1308",
+            "ident": "3MA686",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 98303,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98303;aktualni=1;poc_obdobi=1308",
+            "ident": "3BE324",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 98299,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98299;aktualni=1;poc_obdobi=1308",
+            "ident": "3BE322",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 99842,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=99842;aktualni=1;poc_obdobi=1308",
+            "ident": "3BE316",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 164821,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=164821;aktualni=1;poc_obdobi=1308",
+            "ident": "1MU364",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 147583,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147583;aktualni=1;poc_obdobi=1308",
+            "ident": "3MG329",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 161170,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=161170;aktualni=1;poc_obdobi=1308",
+            "ident": "4ST623",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 97597,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97597;aktualni=1;poc_obdobi=1308",
+            "ident": "55F750",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 3276,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3276;aktualni=1;poc_obdobi=1308",
+            "ident": "5HP477",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 123637,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=123637;aktualni=1;poc_obdobi=1308",
+            "ident": "4ES610",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 138323,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138323;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM353",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 105762,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105762;aktualni=1;poc_obdobi=1308",
+            "ident": "2SE212",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 55194,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=55194;aktualni=1;poc_obdobi=1308",
+            "ident": "1MT357",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 187863,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187863;aktualni=1;poc_obdobi=1308",
+            "ident": "2MS325",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 165055,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=165055;aktualni=1;poc_obdobi=1308",
+            "ident": "2ME301",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 177617,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=177617;aktualni=1;poc_obdobi=1308",
+            "ident": "2IB102",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 110217,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110217;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO362",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 114177,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114177;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM271",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 118631,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118631;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM309",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 43615,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=43615;aktualni=1;poc_obdobi=1308",
+            "ident": "5EN252",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 150087,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=150087;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM314",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 118519,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118519;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA551",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 159200,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=159200;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP333",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 106546,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106546;aktualni=1;poc_obdobi=1308",
+            "ident": "2ZP412",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 122201,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122201;aktualni=1;poc_obdobi=1308",
+            "ident": "2NJ153",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 114409,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114409;aktualni=1;poc_obdobi=1308",
+            "ident": "2NJ151",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 2823,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2823;aktualni=1;poc_obdobi=1308",
+            "ident": "2NJ403",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 3091,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3091;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA526",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 199222,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199222;aktualni=1;poc_obdobi=1308",
+            "ident": "6BPSA1E",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 122391,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122391;aktualni=1;poc_obdobi=1308",
+            "ident": "5HD391",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 88110,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88110;aktualni=1;poc_obdobi=1308",
+            "ident": "5HD280",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 161127,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=161127;aktualni=1;poc_obdobi=1308",
+            "ident": "4EK632",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 98283,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98283;aktualni=1;poc_obdobi=1308",
+            "ident": "3BE214",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 93014,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=93014;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO647",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 56400,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=56400;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO332",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 134272,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134272;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO346",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 41059,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=41059;aktualni=1;poc_obdobi=1308",
+            "ident": "3PA669",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 110376,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110376;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP491",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 176891,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=176891;aktualni=1;poc_obdobi=1308",
+            "ident": "2MS323",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 189178,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189178;aktualni=1;poc_obdobi=1308",
+            "ident": "4ES103",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 158044,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=158044;aktualni=1;poc_obdobi=1308",
+            "ident": "1DP044",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 98285,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98285;aktualni=1;poc_obdobi=1308",
+            "ident": "3BE216",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 159198,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=159198;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP461",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 187944,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187944;aktualni=1;poc_obdobi=1308",
+            "ident": "2AJ325",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 2841,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2841;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO464",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 84169,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=84169;aktualni=1;poc_obdobi=1308",
+            "ident": "2OP321",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 122662,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122662;aktualni=1;poc_obdobi=1308",
+            "ident": "2OP337",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 3407,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3407;aktualni=1;poc_obdobi=1308",
+            "ident": "5RE254",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 161129,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=161129;aktualni=1;poc_obdobi=1308",
+            "ident": "4EK621",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 93390,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=93390;aktualni=1;poc_obdobi=1308",
+            "ident": "2OP352",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 75814,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75814;aktualni=1;poc_obdobi=1308",
+            "ident": "2OP309",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 159748,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=159748;aktualni=1;poc_obdobi=1308",
+            "ident": "3PS629",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 2856,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2856;aktualni=1;poc_obdobi=1308",
+            "ident": "2RU412",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 151777,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=151777;aktualni=1;poc_obdobi=1308",
+            "ident": "2RU121",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 156802,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=156802;aktualni=1;poc_obdobi=1308",
+            "ident": "2RU122",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 3439,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3439;aktualni=1;poc_obdobi=1308",
+            "ident": "2OP320",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 62401,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=62401;aktualni=1;poc_obdobi=1308",
+            "ident": "4EK603",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 3116,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3116;aktualni=1;poc_obdobi=1308",
+            "ident": "3PA662",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 118302,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118302;aktualni=1;poc_obdobi=1308",
+            "ident": "1DP050",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 109608,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109608;aktualni=1;poc_obdobi=1308",
+            "ident": "2PL395",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 147581,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147581;aktualni=1;poc_obdobi=1308",
+            "ident": "3MG642",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 97600,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97600;aktualni=1;poc_obdobi=1308",
+            "ident": "5RE755",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 3308,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3308;aktualni=1;poc_obdobi=1308",
+            "ident": "3PS625",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 98293,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98293;aktualni=1;poc_obdobi=1308",
+            "ident": "3BE312",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 134567,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134567;aktualni=1;poc_obdobi=1308",
+            "ident": "4ST605",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 113342,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113342;aktualni=1;poc_obdobi=1308",
+            "ident": "3SG205",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 34124,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34124;aktualni=1;poc_obdobi=1308",
+            "ident": "3PA667",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 97442,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97442;aktualni=1;poc_obdobi=1308",
+            "ident": "2OP326",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 182747,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182747;aktualni=1;poc_obdobi=1308",
+            "ident": "2TM504",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 70665,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70665;aktualni=1;poc_obdobi=1308",
+            "ident": "2OP354",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 100306,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=100306;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO253",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 113445,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113445;aktualni=1;poc_obdobi=1308",
+            "ident": "2SE272",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 2803,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2803;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO369",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 3228,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3228;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO165",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 2625,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2625;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO166",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 106323,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106323;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO181",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 106324,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106324;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO182",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 123022,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=123022;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP464",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 2943,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2943;aktualni=1;poc_obdobi=1308",
+            "ident": "4EK602",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 84159,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=84159;aktualni=1;poc_obdobi=1308",
+            "ident": "1FU361",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 118304,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118304;aktualni=1;poc_obdobi=1308",
+            "ident": "1FU261",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 105727,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105727;aktualni=1;poc_obdobi=1308",
+            "ident": "4EK610",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 75428,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75428;aktualni=1;poc_obdobi=1308",
+            "ident": "2ZP301",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 99095,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=99095;aktualni=1;poc_obdobi=1308",
+            "ident": "5FI771",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 113371,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113371;aktualni=1;poc_obdobi=1308",
+            "ident": "2AJ419",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 102472,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102472;aktualni=1;poc_obdobi=1308",
+            "ident": "5HP750",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 185141,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=185141;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA617",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 114387,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114387;aktualni=1;poc_obdobi=1308",
+            "ident": "3MA683",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 138317,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138317;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM151",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 88772,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88772;aktualni=1;poc_obdobi=1308",
+            "ident": "2PR151",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 188320,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188320;aktualni=1;poc_obdobi=1308",
+            "ident": "2PR152",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 88749,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88749;aktualni=1;poc_obdobi=1308",
+            "ident": "5IE250",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 43617,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=43617;aktualni=1;poc_obdobi=1308",
+            "ident": "5EN254",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 190563,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=190563;aktualni=1;poc_obdobi=1308",
+            "ident": "2IB353",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 55188,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=55188;aktualni=1;poc_obdobi=1308",
+            "ident": "1VF203",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 98672,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98672;aktualni=1;poc_obdobi=1308",
+            "ident": "4MM451",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 61360,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61360;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA220",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 83261,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83261;aktualni=1;poc_obdobi=1308",
+            "ident": "2RU135",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 102481,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102481;aktualni=1;poc_obdobi=1308",
+            "ident": "2AJ171",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 105582,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105582;aktualni=1;poc_obdobi=1308",
+            "ident": "2AJ172",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 142093,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=142093;aktualni=1;poc_obdobi=1308",
+            "ident": "3PO633",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 114385,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114385;aktualni=1;poc_obdobi=1308",
+            "ident": "3MA682",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 2373,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2373;aktualni=1;poc_obdobi=1308",
+            "ident": "1FU301",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 170248,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=170248;aktualni=1;poc_obdobi=1308",
+            "ident": "1FU302",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 189183,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189183;aktualni=1;poc_obdobi=1308",
+            "ident": "4ES104",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 97589,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97589;aktualni=1;poc_obdobi=1308",
+            "ident": "1VF362",
+            "group": "university_wide",
+            "category": "prohibited"
+        },
+        {
+            "id": 147443,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147443;aktualni=1;poc_obdobi=1308",
+            "ident": "5IE857",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 105824,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105824;aktualni=1;poc_obdobi=1308",
+            "ident": "5HD396",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 109700,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109700;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO442",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 134569,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134569;aktualni=1;poc_obdobi=1308",
+            "ident": "4ST606",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 134573,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134573;aktualni=1;poc_obdobi=1308",
+            "ident": "4ST611",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 118343,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118343;aktualni=1;poc_obdobi=1308",
+            "ident": "5IE562",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 106069,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106069;aktualni=1;poc_obdobi=1308",
+            "ident": "5EN457",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2879,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2879;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM411",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 118619,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118619;aktualni=1;poc_obdobi=1308",
+            "ident": "5IE380",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 199214,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199214;aktualni=1;poc_obdobi=1308",
+            "ident": "3MI605",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 199212,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199212;aktualni=1;poc_obdobi=1308",
+            "ident": "3MI607",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 182628,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182628;aktualni=1;poc_obdobi=1308",
+            "ident": "2ME433",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 61282,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61282;aktualni=1;poc_obdobi=1308",
+            "ident": "3MG633",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 98502,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98502;aktualni=1;poc_obdobi=1308",
+            "ident": "4IT555",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 179393,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=179393;aktualni=1;poc_obdobi=1308",
+            "ident": "4IT566",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 182634,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182634;aktualni=1;poc_obdobi=1308",
+            "ident": "3PO645",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 95837,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=95837;aktualni=1;poc_obdobi=1308",
+            "ident": "4ST631",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 148709,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=148709;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA622",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2849,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2849;aktualni=1;poc_obdobi=1308",
+            "ident": "2RU131",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 121633,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=121633;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM558",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 66403,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=66403;aktualni=1;poc_obdobi=1308",
+            "ident": "4DM251",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 122431,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122431;aktualni=1;poc_obdobi=1308",
+            "ident": "3SG556",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 138004,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138004;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM451",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 65457,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65457;aktualni=1;poc_obdobi=1308",
+            "ident": "5IE375",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 111147,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=111147;aktualni=1;poc_obdobi=1308",
+            "ident": "4DM465",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 189845,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189845;aktualni=1;poc_obdobi=1308",
+            "ident": "33F426",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 177526,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=177526;aktualni=1;poc_obdobi=1308",
+            "ident": "2PR513",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 189740,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189740;aktualni=1;poc_obdobi=1308",
+            "ident": "3MA678",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 147453,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147453;aktualni=1;poc_obdobi=1308",
+            "ident": "5HD868",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 187948,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187948;aktualni=1;poc_obdobi=1308",
+            "ident": "2ME434",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 199216,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199216;aktualni=1;poc_obdobi=1308",
+            "ident": "3MI606",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2344,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2344;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP428",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 3363,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3363;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP426",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 57128,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=57128;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP451",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 66262,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=66262;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO642",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 106321,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106321;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO121",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 182473,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182473;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA661",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 34174,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34174;aktualni=1;poc_obdobi=1308",
+            "ident": "3LG623",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 138003,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138003;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM450",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 193693,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193693;aktualni=1;poc_obdobi=1308",
+            "ident": "2MS430",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 67278,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=67278;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM602",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 198503,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=198503;aktualni=1;poc_obdobi=1308",
+            "ident": "4IZ441",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 162122,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=162122;aktualni=1;poc_obdobi=1308",
+            "ident": "3SG847",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 134219,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134219;aktualni=1;poc_obdobi=1308",
+            "ident": "2AJ420",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2492,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2492;aktualni=1;poc_obdobi=1308",
+            "ident": "3PE665",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 87582,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87582;aktualni=1;poc_obdobi=1308",
+            "ident": "4ES611",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 102515,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102515;aktualni=1;poc_obdobi=1308",
+            "ident": "5HD358",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 126825,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126825;aktualni=1;poc_obdobi=1308",
+            "ident": "3PO701",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 179395,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=179395;aktualni=1;poc_obdobi=1308",
+            "ident": "4IT568",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 87743,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87743;aktualni=1;poc_obdobi=1308",
+            "ident": "2AJ315",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 97432,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97432;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM634",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 75422,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75422;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM431",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 187815,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187815;aktualni=1;poc_obdobi=1308",
+            "ident": "2AJ424",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 114529,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114529;aktualni=1;poc_obdobi=1308",
+            "ident": "5HD450",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 165242,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=165242;aktualni=1;poc_obdobi=1308",
+            "ident": "2IB411",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2845,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2845;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO501",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2846,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2846;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO561",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 155994,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155994;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA612",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 176900,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=176900;aktualni=1;poc_obdobi=1308",
+            "ident": "2IB469",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 163913,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=163913;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP489",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 178226,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=178226;aktualni=1;poc_obdobi=1308",
+            "ident": "4ES614",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 75808,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75808;aktualni=1;poc_obdobi=1308",
+            "ident": "3AM595",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 187936,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187936;aktualni=1;poc_obdobi=1308",
+            "ident": "3SG419",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 110490,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110490;aktualni=1;poc_obdobi=1308",
+            "ident": "1MU506",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 188302,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188302;aktualni=1;poc_obdobi=1308",
+            "ident": "3MG311",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 109696,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109696;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO440",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 134560,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134560;aktualni=1;poc_obdobi=1308",
+            "ident": "3MG736",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 134254,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134254;aktualni=1;poc_obdobi=1308",
+            "ident": "3PO753",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 131331,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131331;aktualni=1;poc_obdobi=1308",
+            "ident": "3MG532",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 3276,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3276;aktualni=1;poc_obdobi=1308",
+            "ident": "5HP477",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 123637,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=123637;aktualni=1;poc_obdobi=1308",
+            "ident": "4ES610",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 70653,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70653;aktualni=1;poc_obdobi=1308",
+            "ident": "2SE601",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 79252,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79252;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO428",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 97472,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97472;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO434",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 87580,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87580;aktualni=1;poc_obdobi=1308",
+            "ident": "2OP405",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 138457,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138457;aktualni=1;poc_obdobi=1308",
+            "ident": "3MA674",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 181928,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=181928;aktualni=1;poc_obdobi=1308",
+            "ident": "3MA675",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 61013,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61013;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO432",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2812,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2812;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO403",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 118435,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118435;aktualni=1;poc_obdobi=1308",
+            "ident": "5IE470",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 92280,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=92280;aktualni=1;poc_obdobi=1308",
+            "ident": "2MO646",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 67280,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=67280;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM605",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 122865,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122865;aktualni=1;poc_obdobi=1308",
+            "ident": "5IE457",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 118519,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118519;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA551",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 106546,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106546;aktualni=1;poc_obdobi=1308",
+            "ident": "2ZP412",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 79717,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79717;aktualni=1;poc_obdobi=1308",
+            "ident": "3LG626",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 3091,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3091;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA526",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 122863,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122863;aktualni=1;poc_obdobi=1308",
+            "ident": "3PO651",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 53145,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=53145;aktualni=1;poc_obdobi=1308",
+            "ident": "1FP421",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 122391,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122391;aktualni=1;poc_obdobi=1308",
+            "ident": "5HD391",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 88110,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88110;aktualni=1;poc_obdobi=1308",
+            "ident": "5HD280",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 55898,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=55898;aktualni=1;poc_obdobi=1308",
+            "ident": "5EN551",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 126950,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126950;aktualni=1;poc_obdobi=1308",
+            "ident": "3PA712",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 41059,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=41059;aktualni=1;poc_obdobi=1308",
+            "ident": "3PA669",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 110376,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110376;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP491",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 98311,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98311;aktualni=1;poc_obdobi=1308",
+            "ident": "2PR415",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 171886,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=171886;aktualni=1;poc_obdobi=1308",
+            "ident": "3MG643",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 134247,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134247;aktualni=1;poc_obdobi=1308",
+            "ident": "3PO642",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2415,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2415;aktualni=1;poc_obdobi=1308",
+            "ident": "3MA621",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 159198,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=159198;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP461",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 109602,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109602;aktualni=1;poc_obdobi=1308",
+            "ident": "2NJ330",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 187944,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=187944;aktualni=1;poc_obdobi=1308",
+            "ident": "2AJ325",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2841,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2841;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO464",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 126487,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126487;aktualni=1;poc_obdobi=1308",
+            "ident": "2PR417",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2834,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2834;aktualni=1;poc_obdobi=1308",
+            "ident": "2NJ419",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 3407,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3407;aktualni=1;poc_obdobi=1308",
+            "ident": "5RE254",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 102511,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102511;aktualni=1;poc_obdobi=1308",
+            "ident": "1DP023",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 173804,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=173804;aktualni=1;poc_obdobi=1308",
+            "ident": "2IB420",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2856,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2856;aktualni=1;poc_obdobi=1308",
+            "ident": "2RU412",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 151777,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=151777;aktualni=1;poc_obdobi=1308",
+            "ident": "2RU121",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 156802,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=156802;aktualni=1;poc_obdobi=1308",
+            "ident": "2RU122",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 57127,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=57127;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP450",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 177528,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=177528;aktualni=1;poc_obdobi=1308",
+            "ident": "2PR515",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 179392,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=179392;aktualni=1;poc_obdobi=1308",
+            "ident": "4IT565",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 166214,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=166214;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP412",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2458,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2458;aktualni=1;poc_obdobi=1308",
+            "ident": "3PA661",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 177525,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=177525;aktualni=1;poc_obdobi=1308",
+            "ident": "2PR512",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 62401,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=62401;aktualni=1;poc_obdobi=1308",
+            "ident": "4EK603",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 3116,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3116;aktualni=1;poc_obdobi=1308",
+            "ident": "3PA662",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 103087,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=103087;aktualni=1;poc_obdobi=1308",
+            "ident": "3MG640",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 170242,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=170242;aktualni=1;poc_obdobi=1308",
+            "ident": "3LG630",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 166156,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=166156;aktualni=1;poc_obdobi=1308",
+            "ident": "3PO643",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 3308,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3308;aktualni=1;poc_obdobi=1308",
+            "ident": "3PS625",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 3352,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3352;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM425",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 161568,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=161568;aktualni=1;poc_obdobi=1308",
+            "ident": "2SM601",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 134567,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134567;aktualni=1;poc_obdobi=1308",
+            "ident": "4ST605",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 34124,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34124;aktualni=1;poc_obdobi=1308",
+            "ident": "3PA667",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 182747,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182747;aktualni=1;poc_obdobi=1308",
+            "ident": "2TM504",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 189847,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189847;aktualni=1;poc_obdobi=1308",
+            "ident": "3SG545",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 117951,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=117951;aktualni=1;poc_obdobi=1308",
+            "ident": "3SG408",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 127086,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=127086;aktualni=1;poc_obdobi=1308",
+            "ident": "3SG712",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 138634,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138634;aktualni=1;poc_obdobi=1308",
+            "ident": "3SG835",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2803,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2803;aktualni=1;poc_obdobi=1308",
+            "ident": "2RO369",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 123022,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=123022;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP464",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 2943,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2943;aktualni=1;poc_obdobi=1308",
+            "ident": "4EK602",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 147442,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147442;aktualni=1;poc_obdobi=1308",
+            "ident": "5HP855",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 131777,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131777;aktualni=1;poc_obdobi=1308",
+            "ident": "3SG457",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 61460,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61460;aktualni=1;poc_obdobi=1308",
+            "ident": "1FU491",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 189848,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189848;aktualni=1;poc_obdobi=1308",
+            "ident": "3LG540",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 168901,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=168901;aktualni=1;poc_obdobi=1308",
+            "ident": "3PS630",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 199267,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199267;aktualni=1;poc_obdobi=1308",
+            "ident": "2IB453",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 105727,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105727;aktualni=1;poc_obdobi=1308",
+            "ident": "4EK610",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 75428,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75428;aktualni=1;poc_obdobi=1308",
+            "ident": "2ZP301",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 189843,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189843;aktualni=1;poc_obdobi=1308",
+            "ident": "33F425",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 102472,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102472;aktualni=1;poc_obdobi=1308",
+            "ident": "5HP750",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 185141,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=185141;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA617",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 138038,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138038;aktualni=1;poc_obdobi=1308",
+            "ident": "2SE464",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 155021,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155021;aktualni=1;poc_obdobi=1308",
+            "ident": "1BP454",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 98672,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98672;aktualni=1;poc_obdobi=1308",
+            "ident": "4MM451",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 61360,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61360;aktualni=1;poc_obdobi=1308",
+            "ident": "4SA220",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 83261,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83261;aktualni=1;poc_obdobi=1308",
+            "ident": "2RU135",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 79600,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79600;aktualni=1;poc_obdobi=1308",
+            "ident": "1VF462",
+            "group": "university_wide",
+            "category": "exchange_program"
+        },
+        {
+            "id": 199195,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199195;aktualni=1;poc_obdobi=1308",
+            "ident": "3LG631",
+            "group": "university_wide",
+            "category": "exchange_program"
+        }
+    ]
 }

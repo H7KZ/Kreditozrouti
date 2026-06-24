@@ -37,10 +37,12 @@
     "assessment_methods": [
         {
             "method": "Aktivita na přednáškách/cvičeních/seminářích",
+            "method_en": null,
             "weight": 30
         },
         {
             "method": "Vypracování semestrální práce",
+            "method_en": null,
             "weight": 70
         }
     ],

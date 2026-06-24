@@ -38,6 +38,7 @@
     "assessment_methods": [
         {
             "method": "Obhajoba semestrální práce",
+            "method_en": null,
             "weight": 100
         }
     ],

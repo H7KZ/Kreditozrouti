@@ -71,6 +71,14 @@ export default async function ScraperRequestInSISCourseJob(data: ScraperInSISCou
 		if (enHtml) {
 			const enFields = ExtractInSISCourseService.extractEnglishFields(enHtml)
 			Object.assign(course, enFields)
+
+			const enMethodNames = ExtractInSISCourseService.extractEnglishAssessmentMethods(enHtml)
+			if (course.assessment_methods && enMethodNames.length > 0) {
+				course.assessment_methods = course.assessment_methods.map((m, i) => ({
+					...m,
+					method_en: enMethodNames[i] ?? null
+				}))
+			}
 		}
 
 		await QueueService.addCourseResponse(course)

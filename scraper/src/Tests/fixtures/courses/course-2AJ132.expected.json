@@ -37,18 +37,22 @@
     "assessment_methods": [
         {
             "method": "Prezentace nebo obhajoba",
+            "method_en": null,
             "weight": 10
         },
         {
             "method": "Absolvování průběžného testu (testů)",
+            "method_en": null,
             "weight": 20
         },
         {
             "method": "Absolvování závěrečného testu",
+            "method_en": null,
             "weight": 40
         },
         {
             "method": "Absolvování závěrečné ústní zkoušky",
+            "method_en": null,
             "weight": 30
         }
     ],

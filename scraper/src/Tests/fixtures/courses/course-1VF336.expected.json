@@ -37,14 +37,17 @@
     "assessment_methods": [
         {
             "method": "Vypracování semestrální práce",
+            "method_en": null,
             "weight": 25
         },
         {
             "method": "Prezentace nebo obhajoba",
+            "method_en": null,
             "weight": 25
         },
         {
             "method": "Absolvování závěrečného testu",
+            "method_en": null,
             "weight": 50
         }
     ],

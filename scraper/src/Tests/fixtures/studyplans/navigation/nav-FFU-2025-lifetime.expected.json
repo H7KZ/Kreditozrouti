@@ -1,9 +1,16 @@
 {
-	"navigationUrls": [
-		{
-			"texts": ["C 99 91", "C-MBARE MBA Nemovitosti a jejich oceňování", "Čeština", "", "", "-"],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1454;typ_ss=12;typ_studia=5;program=695;misto_vyuky="
-		}
-	],
-	"planUrls": []
+    "navigationUrls": [
+        {
+            "texts": [
+                "C 99 91",
+                "C-MBARE MBA Nemovitosti a jejich oceňování",
+                "Čeština",
+                "",
+                "",
+                "-"
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1454;typ_ss=12;typ_studia=5;program=695;misto_vyuky="
+        }
+    ],
+    "planUrls": []
 }

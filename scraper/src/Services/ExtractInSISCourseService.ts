@@ -376,12 +376,46 @@ export default class ExtractInSISCourseService {
 				const weightMatch = /(\d+)/.exec(valText)
 				methods.push({
 					method: serializeValue(method),
+					method_en: null,
 					weight: weightMatch ? parseInt(weightMatch[1], 10) : null
 				})
 			}
 		})
 
 		return methods
+	}
+
+	/**
+	 * Extracts assessment method names from the EN (jazyk=3) page.
+	 * Returns names in row order, to be zipped with CS assessment_methods by index.
+	 */
+	static extractEnglishAssessmentMethods(html: string): string[] {
+		const $ = cheerio.load(html)
+		sanitizeBodyHtml($)
+		const names: string[] = []
+
+		const headerRow = $('td')
+			.filter((_, el) => {
+				const text = cleanText($(el).text()).toLowerCase()
+				return text.includes('assessment') || text.includes('hodnocení')
+			})
+			.parent('tr')
+
+		if (!headerRow.length) return names
+
+		const table = headerRow.next('tr').find('table')
+		table.find('tbody tr').each((_, row) => {
+			const cols = $(row).find('td')
+			if (cols.length < 2) return
+
+			const method = cleanText($(cols[0]).text()) || cleanText($(cols[1]).text())
+			if (method && !method.toLowerCase().includes('celkem') && !method.toLowerCase().includes('total')) {
+				const name = serializeValue(method)
+				if (name) names.push(name)
+			}
+		})
+
+		return names
 	}
 
 	private static extractTimetable($: CheerioAPI): ScraperInSISCourseTimetableUnit[] {

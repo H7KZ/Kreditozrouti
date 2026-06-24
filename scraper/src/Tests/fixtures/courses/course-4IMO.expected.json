@@ -39,6 +39,7 @@
     "assessment_methods": [
         {
             "method": "Absolvování závěrečné ústní zkoušky",
+            "method_en": null,
             "weight": 100
         }
     ],

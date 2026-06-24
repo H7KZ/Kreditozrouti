@@ -40,18 +40,22 @@
     "assessment_methods": [
         {
             "method": "Aktivita na přednáškách/cvičeních/seminářích",
+            "method_en": null,
             "weight": 60
         },
         {
             "method": "Vypracování semestrální práce",
+            "method_en": null,
             "weight": 15
         },
         {
             "method": "Prezentace nebo obhajoba",
+            "method_en": null,
             "weight": 10
         },
         {
             "method": "Hodnocení závěrečného projektu (eseje) ze strany ostatních účastníků kurzu v Moodle",
+            "method_en": null,
             "weight": 15
         }
     ],
