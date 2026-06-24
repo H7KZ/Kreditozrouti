@@ -8,6 +8,9 @@ import { useI18n } from 'vue-i18n'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useAlertsStore, useTimetableStore } from '@client/stores'
+import IconDownload from '~icons/lucide/download'
+import IconLoaderCircle from '~icons/lucide/loader-circle'
+import IconShare2 from '~icons/lucide/share-2'
 import IconX from '~icons/lucide/x'
 
 const props = withDefaults(
@@ -144,8 +147,8 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
 				@click="handleShare"
 			>
-				<i-lucide-share-2 v-if="!sharing" class="h-3.5 w-3.5" aria-hidden="true" />
-				<i-lucide-loader-circle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+				<IconShare2 v-if="!sharing" class="h-3.5 w-3.5" aria-hidden="true" />
+				<IconLoaderCircle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
 				{{ sharing ? $t('components.timetable.TimetableGrid.sharing') : $t('components.timetable.TimetableGrid.share') }}
 			</button>
 			<!-- Export button -->
@@ -156,8 +159,8 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
 				@click="exportSchedule"
 			>
-				<i-lucide-download v-if="!exporting" class="h-3.5 w-3.5" aria-hidden="true" />
-				<i-lucide-loader-circle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+				<IconDownload v-if="!exporting" class="h-3.5 w-3.5" aria-hidden="true" />
+				<IconLoaderCircle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
 				{{ exporting ? $t('components.timetable.TimetableAgenda.exporting') : $t('components.timetable.TimetableAgenda.saveAsImage') }}
 			</button>
 		</div>

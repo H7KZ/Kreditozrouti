@@ -11,6 +11,9 @@ import TimetableCourseModal from '@client/components/timetable/TimetableCourseMo
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useAlertsStore, useDragStore, useTimetableStore } from '@client/stores'
+import IconDownload from '~icons/lucide/download'
+import IconLoaderCircle from '~icons/lucide/loader-circle'
+import IconShare2 from '~icons/lucide/share-2'
 
 const props = withDefaults(
 	defineProps<{
@@ -165,8 +168,8 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 					class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
 					@click="handleShare"
 				>
-					<i-lucide-share-2 v-if="!sharing" class="h-3.5 w-3.5" aria-hidden="true" />
-					<i-lucide-loader-circle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+					<IconShare2 v-if="!sharing" class="h-3.5 w-3.5" aria-hidden="true" />
+					<IconLoaderCircle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
 					{{ sharing ? $t('components.timetable.TimetableGrid.sharing') : $t('components.timetable.TimetableGrid.share') }}
 				</button>
 
@@ -178,8 +181,8 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 					class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
 					@click="exportSchedule"
 				>
-					<i-lucide-download v-if="!exporting" class="h-3.5 w-3.5" aria-hidden="true" />
-					<i-lucide-loader-circle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+					<IconDownload v-if="!exporting" class="h-3.5 w-3.5" aria-hidden="true" />
+					<IconLoaderCircle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
 					{{ exporting ? 'Exportuji...' : 'Uložit jako obrázek' }}
 				</button>
 			</div>
