@@ -94,7 +94,17 @@ export default class ExtractInSISCourseService {
 			study_load: studyLoad.length > 0 ? studyLoad : null,
 			last_modified_date: auditInfo.last_modified_date,
 			last_modified_by: auditInfo.last_modified_by,
-			content_hash: null
+			aims_of_the_course_en: null,
+			learning_outcomes_en: null,
+			course_contents_en: null,
+			special_requirements_en: null,
+			literature_required_en: null,
+			literature_recommended_en: null,
+			prerequisites_en: null,
+			recommended_programmes_en: null,
+			required_work_experience_en: null,
+			content_hash_cs: null,
+			content_hash_en: null
 		}
 	}
 
