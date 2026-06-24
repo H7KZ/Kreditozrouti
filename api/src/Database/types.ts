@@ -153,6 +153,9 @@ export class CourseAssessmentTable {
 	/** Description of the method (e.g., "Final Exam"). */
 	method!: string | null
 
+	/** English description of the method. */
+	method_en!: string | null
+
 	/** Percentage weight in the final grade. */
 	weight!: number | null
 }

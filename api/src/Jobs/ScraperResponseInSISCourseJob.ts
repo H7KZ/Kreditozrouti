@@ -166,6 +166,7 @@ async function syncAssessmentMethods(trx: Transaction<Database>, courseId: numbe
 	const unique = [...new Map(incomingMethods.map(m => [m.method, m])).values()].map(m => ({
 		course_id: courseId,
 		method: m.method,
+		method_en: m.method_en ?? null,
 		weight: m.weight
 	}))
 
