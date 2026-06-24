@@ -9,6 +9,7 @@ A complete reference for every Kreditožrouti feature. Jump to the section you n
 - [Drag-to-filter](#drag-to-filter)
 - [Refresh from InSIS](#refresh-from-insis)
 - [Saved Schedules](#saved-schedules)
+- [Share timetable](#share-timetable)
 - [Mark as completed](#mark-as-completed)
 - [Language and theme](#language-and-theme)
 - [International Student Guide](#international-student-guide)
@@ -196,3 +197,28 @@ Kreditožrouti does and links directly to the English guide.
 - Shown once per browser — dismissed state saved in `localStorage` (`kreditozrouti:guide-seen`)
 - Dismissed by: clicking ×, clicking "Got it", or clicking "Read the international student guide"
 - Czech browsers never see the modal
+
+---
+
+## Share timetable
+
+Share your current timetable with anyone via a short link.
+
+**How to share:**
+
+1. Build your timetable as usual.
+2. Click the **Share** button (share icon) in the timetable toolbar.
+3. A link is automatically copied to your clipboard (e.g. `https://kreditozrouti.cz/s/abc123`).
+
+**What the recipient sees:**
+
+- A read-only timetable grid showing all your selected courses.
+- Course count and total ECTS credit load.
+- A **Copy link** button to share the URL further.
+- A **Save to my timetable** button to fork the snapshot into one of their own schedule slots for editing.
+
+**Technical details:**
+
+- Links are backed by Redis; they expire after **180 days of inactivity** (TTL resets on each view).
+- The snapshot is self-contained — it stores full course unit data, so links survive periodic database resets.
+- Rate-limited to 10 new share links per IP per minute.

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import Config from '@api/Config/Config'
-import { ApiError, Errors } from '@api/Errors'
+import { Errors } from '@api/Errors'
 
 /**
  * Middleware to secure administrative and scraper command routes.
@@ -11,7 +11,7 @@ import { ApiError, Errors } from '@api/Errors'
  */
 export default function CommandMiddleware(req: Request, res: Response, next: NextFunction) {
 	if (!Config.commandToken) {
-		throw new ApiError(500, 'INTERNAL', 'Command token not configured')
+		throw Errors.internal('Command token not configured')
 	}
 
 	const token = req.headers.authorization?.split(' ')[1]

@@ -131,7 +131,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 	const hasCampusConflicts = computed(() => campusConflicts.value.length > 0)
 
-	// ponytail: union-find to count collision groups (connected components), not individual courses
+	// union-find to count collision groups (connected components), not individual courses
 	function countConflictGroups(pairs: Array<[SelectedCourseUnit, SelectedCourseUnit]>): number {
 		if (pairs.length === 0) return 0
 		const parent = new Map<string, string>()

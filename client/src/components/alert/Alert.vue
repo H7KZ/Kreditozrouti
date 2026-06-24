@@ -81,7 +81,7 @@ export type AlertProps = Props
 
 <template>
 	<div :class="['insis-alert', style.panel]" role="alert">
-		<div class="flex gap-3">
+		<div class="flex w-full justify-between gap-3">
 			<!-- Icon section: Displays appropriate icon based on alert type -->
 			<div :class="['shrink-0 text-lg', style.icon]">
 				<IconInfo v-if="type === 'info'" class="h-5 w-5" />
@@ -108,7 +108,7 @@ export type AlertProps = Props
 						:key="idx"
 						type="button"
 						:class="[
-							'px-2 py-1 text-xs',
+							'cursor-pointer px-2 py-1 text-xs',
 							button.variant === 'primary' ? 'insis-btn-primary' : button.variant === 'danger' ? 'insis-btn-danger' : 'insis-btn'
 						]"
 						@click="handleButtonClick(button)"
@@ -119,7 +119,7 @@ export type AlertProps = Props
 			</div>
 
 			<!-- Close button -->
-			<button type="button" class="shrink-0 text-(--insis-gray-500) transition-colors hover:text-(--insis-gray-700)" @click="handleClose">
+			<button type="button" class="shrink-0 cursor-pointer text-(--insis-gray-500) transition-colors hover:text-(--insis-gray-700)" @click="handleClose">
 				<IconX class="h-4 w-4" />
 			</button>
 		</div>

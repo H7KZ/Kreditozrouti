@@ -11,13 +11,11 @@
 	},
 	"errors": {
 		"types": {
-			"Unknown": "Unknown error",
-			"Validation": "Validation error",
-			"ZodValidation": "Validation error",
-			"Authentication": "Authentication error",
-			"Authorization": "Authorization error",
-			"Database": "Database error",
-			"ExternalService": "External service error"
+			"UNKNOWN": "Unknown error",
+			"UNAUTHORIZED": "Unauthorized access",
+			"VALIDATION": "Validation error",
+			"NOT_FOUND": "Resource not found",
+			"INTERNAL": "Internal server error"
 		},
 		"codes": {
 			"0": "Unknown error",
@@ -221,6 +219,22 @@
 			"step5": "Browse courses and build your schedule",
 			"footer": "Kreditožrouti · Data from",
 			"insisLink": "InSIS VŠE"
+		},
+		"share": {
+			"loading": "Loading shared timetable...",
+			"errorTitle": "Link not found or expired",
+			"errorDescription": "This link doesn't exist or has expired. Ask the owner to share it again.",
+			"saveButton": "Save to my timetable",
+			"copyButton": "Copy link",
+			"copied": "Link copied!",
+			"savedAlert": "Timetable saved to your slots.",
+			"slotsFull": "Your slots are full (max 5). Delete one and try again.",
+			"slotName": "Shared timetable",
+			"backupSlotName": "My timetable backup",
+			"backupSavedAlert": "Your previous timetable was automatically saved as a backup.",
+			"tabTitle": "Shared timetable ({n} course) | Shared timetable ({n} courses)",
+			"courseCount": "{n} course | {n} courses",
+			"ects": "{n} ECTS"
 		},
 		"courses": {
 			"metaDescription": "Browse VŠE courses, filter your timetable, and build a conflict-free study plan. Real-time conflict detection.",
@@ -450,7 +464,11 @@
 			"TimetableGrid": {
 				"dayHeader": "Day",
 				"filterApplied": "Filter applied",
-				"filterDescription": "Showing courses at {from}–{to} ({day})"
+				"filterDescription": "Showing courses at {from}–{to} ({day})",
+				"share": "Share timetable",
+				"sharing": "Sharing...",
+				"shareCopied": "Link copied!",
+				"shareError": "Sharing failed"
 			},
 			"TimetableCourseBlock": {
 				"removeFromTimetable": "Remove from timetable",

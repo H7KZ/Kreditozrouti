@@ -32,6 +32,8 @@ interface Props {
 	mergedCount?: number
 	/** Date range string for merged blocks */
 	dateRange?: string
+	/** Disables remove button and click interaction (used on share page) */
+	readOnly?: boolean
 }
 
 interface Emits {
@@ -137,8 +139,9 @@ function handleClick() {
 
 <template>
 	<div
-		class="timetable-block group absolute right-0 left-0 min-h-6 cursor-pointer overflow-hidden border border-(--insis-border) text-xs text-gray-900 transition-shadow hover:z-10 hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--insis-blue)"
+		class="timetable-block group absolute right-0 left-0 min-h-6 overflow-hidden border border-(--insis-border) text-xs text-gray-900 transition-shadow hover:z-10 hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--insis-blue)"
 		:class="[
+			{ 'cursor-pointer': !readOnly, 'cursor-default': readOnly },
 			blockColorClass,
 			{
 				'ring-2 ring-(--insis-danger)': hasConflict,
@@ -208,8 +211,9 @@ function handleClick() {
 				</span>
 			</div>
 
-			<!-- Remove button (shown on hover/focus) -->
+			<!-- Remove button (shown on hover/focus, hidden in read-only mode) -->
 			<button
+				v-if="!readOnly"
 				type="button"
 				class="absolute top-0.5 right-0.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded bg-(--insis-danger-light) text-(--insis-danger) opacity-0 transition-all duration-75 group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-(--insis-danger) hover:text-white focus:opacity-100 focus:ring-1 focus:ring-(--insis-danger) focus:outline-none"
 				:aria-label="$t('components.timetable.TimetableCourseBlock.removeFromTimetable')"

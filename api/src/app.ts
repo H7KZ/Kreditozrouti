@@ -18,6 +18,7 @@ import AdminRoutes from '@api/Routes/AdminRoutes'
 import CommandsRoutes from '@api/Routes/CommandsRoutes'
 import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
 import { ScraperPublicRoutes } from '@api/Routes/ScraperPublicRoutes'
+import ShareRoutes from '@api/Routes/ShareRoutes'
 
 const app = express()
 
@@ -89,6 +90,7 @@ app.get('/metrics', (req, res) => {
 // Routes
 app.use('/', KreditozroutiRoutes)
 app.use('/', ScraperPublicRoutes)
+app.use('/share', ShareRoutes)
 app.use('/commands', CommandsRoutes)
 app.use('/admin', AdminRoutes)
 app.use('/bullboard', bullboardRouter)
