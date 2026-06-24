@@ -15,6 +15,18 @@ import MarkdownService from '@scraper/Services/MarkdownService'
 import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 
+export interface ScraperInSISCourseEnFields {
+	aims_of_the_course_en: string | null
+	learning_outcomes_en: string | null
+	course_contents_en: string | null
+	special_requirements_en: string | null
+	literature_required_en: string | null
+	literature_recommended_en: string | null
+	prerequisites_en: string | null
+	recommended_programmes_en: string | null
+	required_work_experience_en: string | null
+}
+
 /**
  * Extracts course data from InSIS syllabus pages.
  * Handles metadata, syllabus content, assessments, and timetable parsing.
@@ -273,6 +285,63 @@ export default class ExtractInSISCourseService {
 			special_requirements,
 			literature_required,
 			literature_recommended
+		}
+	}
+
+	static extractEnglishFields(html: string): ScraperInSISCourseEnFields {
+		const $ = cheerio.load(html)
+		sanitizeBodyHtml($)
+
+		const prerequisites_en = getRowValueCaseInsensitive($, 'Prerequisites and co-requisites:')
+		const recommended_programmes_en = getRowValueCaseInsensitive($, 'Recommended optional programme components:')
+		const required_work_experience_en = getRowValueCaseInsensitive($, 'Work placement:')
+		const aims_of_the_course_en = getSectionContent($, 'Aims of the course:')
+		const learning_outcomes_en = getSectionContent($, 'Learning outcomes and competences:')
+		const course_contents_en = getSectionContent($, 'Course contents:')
+		const special_requirements_en =
+			getSectionContent($, 'Special requirements and details:') ?? getRowValueCaseInsensitive($, 'Special requirements and details:')
+
+		let literature_required_en: string | null = null
+		let literature_recommended_en: string | null = null
+		const literatureHeaderRow = $('td')
+			.filter((_, el) => cleanText($(el).text()).includes('Reading:'))
+			.parent('tr')
+
+		if (literatureHeaderRow.length && literatureHeaderRow.next('tr').length) {
+			const literatureCell = literatureHeaderRow.next('tr').find('td')
+			const rawHtml = literatureCell.html() ?? ''
+
+			const splitIndex = rawHtml.search(/Recommended:/i)
+			if (splitIndex !== -1) {
+				const requiredHtml = rawHtml.slice(0, splitIndex)
+				const recommendedHtml = rawHtml.slice(splitIndex)
+
+				const requiredStripped = requiredHtml.replace(/Basic:/i, '').trim()
+
+				const $req = cheerio.load(requiredStripped)
+				const $rec = cheerio.load(recommendedHtml)
+
+				const reqMd = MarkdownService.formatCheerioElementToMarkdown($req('body'))
+				const recMd = MarkdownService.formatCheerioElementToMarkdown($rec('body'))
+
+				literature_required_en = reqMd && reqMd.trim().length > 0 ? reqMd : null
+				literature_recommended_en = recMd && recMd.trim().length > 0 ? recMd : null
+			} else {
+				const fullMd = MarkdownService.formatCheerioElementToMarkdown(literatureCell)
+				literature_required_en = fullMd && fullMd.trim().length > 0 ? fullMd : null
+			}
+		}
+
+		return {
+			aims_of_the_course_en,
+			learning_outcomes_en,
+			course_contents_en,
+			special_requirements_en,
+			literature_required_en,
+			literature_recommended_en,
+			prerequisites_en,
+			recommended_programmes_en,
+			required_work_experience_en
 		}
 	}
 
