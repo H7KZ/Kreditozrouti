@@ -19,6 +19,17 @@ import { getCategoryBadgeClass, getSlotType, getUnitTypeColorClass } from '@clie
  * const label = getCompletionLabel('zkouška') // "Exam"
  * ```
  */
+// Raw InSIS Czech strings → stable i18n keys
+const COMPLETION_NORM: Record<string, string> = { zkouška: 'exam', zápočet: 'credit', obhajoba: 'defense' }
+const LANGUAGE_NORM: Record<string, string> = {
+	čeština: 'czech', angličtina: 'english', němčina: 'german', španělština: 'spanish',
+	francouzština: 'french', ruština: 'russian', italština: 'italian', čínština: 'chinese',
+	švédština: 'swedish', portugalština: 'portuguese'
+}
+const LEVEL_NORM: Record<string, string> = {
+	bakalářský: 'bachelor', 'magisterský navazující': 'master', doktorský: 'doctoral', mba: 'mba', kurz: 'course'
+}
+
 export function useCourseLabels() {
 	const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
 	const te = (key: string) => i18n.global.te(key)
@@ -29,10 +40,11 @@ export function useCourseLabels() {
 	 *
 	 * @param prefix - Translation key prefix (e.g., 'courseModesOfCompletion')
 	 * @param value - Value to translate
+	 * @param norm - Optional normalization map (Czech raw → i18n key)
 	 * @returns Translated label or original value
 	 */
-	function getLabel(prefix: string, value: string): string {
-		const key = `${prefix}.${value}`
+	function getLabel(prefix: string, value: string, norm?: Record<string, string>): string {
+		const key = `${prefix}.${norm ? (norm[value] ?? value) : value}`
 		return te(key) ? t(key) : value
 	}
 
@@ -47,7 +59,7 @@ export function useCourseLabels() {
 	 * Get mode of completion label.
 	 */
 	function getCompletionLabel(value: string): string {
-		return getLabel('courseModesOfCompletion', value)
+		return getLabel('courseModesOfCompletion', value, COMPLETION_NORM)
 	}
 
 	/**
@@ -61,7 +73,7 @@ export function useCourseLabels() {
 	 * Get language label.
 	 */
 	function getLanguageLabel(value: string): string {
-		return getLabel('courseLanguages', value)
+		return getLabel('courseLanguages', value, LANGUAGE_NORM)
 	}
 
 	/**
@@ -93,7 +105,7 @@ export function useCourseLabels() {
 	 * Get study level label.
 	 */
 	function getLevelLabel(value: string): string {
-		return getLabel('studyLevels', value.toLowerCase())
+		return getLabel('studyLevels', value.toLowerCase(), LEVEL_NORM)
 	}
 
 	/**
