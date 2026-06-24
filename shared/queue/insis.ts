@@ -64,6 +64,7 @@ export interface ScraperInSISCourse {
 
 export interface ScraperInSISCourseAssessmentMethod {
 	method: string | null
+	method_en: string | null
 	weight: number | null
 }
 

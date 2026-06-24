@@ -25,6 +25,7 @@ export interface CourseAssessmentDTO {
 	created_at: string
 	updated_at: string
 	method: string | null
+	method_en: string | null
 	weight: number | null
 }
 
