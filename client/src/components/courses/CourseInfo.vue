@@ -28,6 +28,8 @@ const formattedAge = computed(() => formatRelativeAge(props.course.updated_at, l
 
 type SyllabusField = { key: string; label: string; value: string }
 
+const sortedAssessments = computed(() => [...(props.course.assessments ?? [])].sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0)))
+
 const syllabusFields = computed((): SyllabusField[] => {
 	const c = props.course
 	const isEn = locale.value === 'en'
@@ -68,7 +70,7 @@ function handleToggleCompleted() {
 			</a>
 		</h3>
 
-		<dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+		<dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
 			<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.faculty') }}</dt>
 			<dd>{{ course.faculty_id ? getFacultyLabel(course.faculty_id) : '-' }}</dd>
 
@@ -89,19 +91,18 @@ function handleToggleCompleted() {
 					</span>
 				</dd>
 			</template>
-		</dl>
 
-		<!-- Assessments -->
-		<div v-if="course.assessments?.length" class="mt-4">
-			<h4 class="mb-2 text-sm text-(--insis-gray-500)">
-				{{ $t('components.courses.CourseRowExpanded.assessments') }}
-			</h4>
-			<ul class="space-y-1 text-sm">
-				<li v-for="assessment in course.assessments" :key="assessment.id">
-					{{ locale === 'en' && assessment.method_en ? assessment.method_en : assessment.method }}: {{ assessment.weight }}%
-				</li>
-			</ul>
-		</div>
+			<template v-if="course.assessments?.length">
+				<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.assessments') }}</dt>
+				<dd>
+					<ul class="space-y-0.25 text-sm">
+						<li v-for="assessment in sortedAssessments" :key="assessment.id">
+							{{ assessment.weight }}% | {{ locale === 'en' && assessment.method_en ? assessment.method_en : assessment.method }}
+						</li>
+					</ul>
+				</dd>
+			</template>
+		</dl>
 
 		<!-- Syllabus sections -->
 		<details v-if="syllabusFields.length" class="mt-4 border-t border-(--insis-border-light) pt-3">

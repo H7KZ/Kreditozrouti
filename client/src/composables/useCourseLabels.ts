@@ -22,12 +22,23 @@ import { getCategoryBadgeClass, getSlotType, getUnitTypeColorClass } from '@clie
 // Raw InSIS Czech strings → stable i18n keys
 const COMPLETION_NORM: Record<string, string> = { zkouška: 'exam', zápočet: 'credit', obhajoba: 'defense' }
 const LANGUAGE_NORM: Record<string, string> = {
-	čeština: 'czech', angličtina: 'english', němčina: 'german', španělština: 'spanish',
-	francouzština: 'french', ruština: 'russian', italština: 'italian', čínština: 'chinese',
-	švédština: 'swedish', portugalština: 'portuguese'
+	čeština: 'czech',
+	angličtina: 'english',
+	němčina: 'german',
+	španělština: 'spanish',
+	francouzština: 'french',
+	ruština: 'russian',
+	italština: 'italian',
+	čínština: 'chinese',
+	švédština: 'swedish',
+	portugalština: 'portuguese'
 }
 const LEVEL_NORM: Record<string, string> = {
-	bakalářský: 'bachelor', 'magisterský navazující': 'master', doktorský: 'doctoral', mba: 'mba', kurz: 'course'
+	bakalářský: 'bachelor',
+	'magisterský navazující': 'master',
+	doktorský: 'doctoral',
+	mba: 'mba',
+	kurz: 'course'
 }
 
 export function useCourseLabels() {
