@@ -1,29 +1,13 @@
 {
-    "navigationUrls": [
-        {
-            "texts": [
-                "Z 99 94",
-                "Z-CEMS CEMS",
-                "",
-                "1",
-                "",
-                "",
-                "-"
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=114;poc_obdobi=1315;typ_ss=5;typ_studia=41;program=43;misto_vyuky="
-        },
-        {
-            "texts": [
-                "Z 99 99",
-                "Z-EXC Výměnné programy",
-                "Angličtina",
-                "6",
-                "",
-                "",
-                "-"
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=114;poc_obdobi=1315;typ_ss=5;typ_studia=41;program=40;misto_vyuky="
-        }
-    ],
-    "planUrls": []
+	"navigationUrls": [
+		{
+			"texts": ["Z 99 94", "Z-CEMS CEMS", "", "1", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=114;poc_obdobi=1315;typ_ss=5;typ_studia=41;program=43;misto_vyuky="
+		},
+		{
+			"texts": ["Z 99 99", "Z-EXC Výměnné programy", "Angličtina", "6", "", "", "-"],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=114;poc_obdobi=1315;typ_ss=5;typ_studia=41;program=40;misto_vyuky="
+		}
+	],
+	"planUrls": []
 }

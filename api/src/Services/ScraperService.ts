@@ -95,7 +95,11 @@ export default class ScraperService {
 	 * Returns the job ID string.
 	 */
 	static async enqueueCourseScrapeById(courseId: number): Promise<string> {
-		const course = await mysql.selectFrom(CourseTable._table).select(['url', 'content_hash_cs', 'content_hash_en']).where('id', '=', courseId).executeTakeFirst()
+		const course = await mysql
+			.selectFrom(CourseTable._table)
+			.select(['url', 'content_hash_cs', 'content_hash_en'])
+			.where('id', '=', courseId)
+			.executeTakeFirst()
 
 		if (!course) throw Errors.notFound('Course not found')
 

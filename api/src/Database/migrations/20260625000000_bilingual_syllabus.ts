@@ -28,8 +28,14 @@ export async function down(db: Kysely<any>): Promise<void> {
 		'literature_recommended_en',
 		'prerequisites_en',
 		'recommended_programmes_en',
-		'required_work_experience_en',
+		'required_work_experience_en'
 	]) {
-		await db.schema.alterTable('insis_courses').dropColumn(col).execute().catch(() => {})
+		await db.schema
+			.alterTable('insis_courses')
+			.dropColumn(col)
+			.execute()
+			.catch(() => {
+				/* empty */
+			})
 	}
 }

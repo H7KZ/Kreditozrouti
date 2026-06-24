@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
+import { marked } from 'marked'
 import { useI18n } from 'vue-i18n'
 import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import { useCourseLabels } from '@client/composables'
@@ -40,11 +41,9 @@ const syllabusFields = computed((): SyllabusField[] => {
 		{ key: 'litRec', labelKey: 'syllabusLiteratureRecommended', value: pick(c.literature_recommended, c.literature_recommended_en) },
 		{ key: 'special', labelKey: 'syllabusSpecialRequirements', value: pick(c.special_requirements, c.special_requirements_en) },
 		{ key: 'recProg', labelKey: 'syllabusRecommendedProgrammes', value: pick(c.recommended_programmes, c.recommended_programmes_en) },
-		{ key: 'workExp', labelKey: 'syllabusRequiredWorkExperience', value: pick(c.required_work_experience, c.required_work_experience_en) },
+		{ key: 'workExp', labelKey: 'syllabusRequiredWorkExperience', value: pick(c.required_work_experience, c.required_work_experience_en) }
 	]
-	return rows
-		.filter(r => r.value)
-		.map(r => ({ key: r.key, label: t(`components.courses.CourseRowExpanded.${r.labelKey}`), value: r.value! }))
+	return rows.filter(r => r.value).map(r => ({ key: r.key, label: t(`components.courses.CourseRowExpanded.${r.labelKey}`), value: r.value! }))
 })
 
 function handleToggleCompleted() {
@@ -94,23 +93,26 @@ function handleToggleCompleted() {
 
 		<!-- Assessments -->
 		<div v-if="course.assessments?.length" class="mt-4">
-			<h4 class="mb-2 text-sm font-medium text-(--insis-gray-700)">
+			<h4 class="mb-2 text-sm text-(--insis-gray-500)">
 				{{ $t('components.courses.CourseRowExpanded.assessments') }}
 			</h4>
 			<ul class="space-y-1 text-sm">
-				<li v-for="assessment in course.assessments" :key="assessment.id">{{ assessment.method }}: {{ assessment.weight }}%</li>
+				<li v-for="assessment in course.assessments" :key="assessment.id">
+					{{ locale === 'en' && assessment.method_en ? assessment.method_en : assessment.method }}: {{ assessment.weight }}%
+				</li>
 			</ul>
 		</div>
 
 		<!-- Syllabus sections -->
 		<details v-if="syllabusFields.length" class="mt-4 border-t border-(--insis-border-light) pt-3">
-			<summary class="cursor-pointer text-sm font-medium text-(--insis-gray-700)">
+			<summary class="cursor-pointer text-sm font-medium text-(--insis-gray-600)">
 				{{ $t('components.courses.CourseRowExpanded.syllabus') }}
 			</summary>
 			<div class="mt-2 space-y-3">
 				<div v-for="field in syllabusFields" :key="field.key">
 					<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ field.label }}</p>
-					<p class="whitespace-pre-wrap text-sm text-(--insis-gray-700)">{{ field.value }}</p>
+					<!-- eslint-disable-next-line vue/no-v-html -->
+					<div class="prose prose-sm max-w-none text-(--insis-gray-700)" v-html="marked.parse(field.value)" />
 				</div>
 			</div>
 		</details>
