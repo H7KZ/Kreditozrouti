@@ -10,9 +10,9 @@ import {
 	MODE_OF_COMPLETION_NORM
 } from '@shared/domain/constants'
 import { mysql } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
-import { ASSESSMENT_BUCKETS } from './buckets/assessment'
+import { ASSESSMENT_BUCKETS } from '@shared/domain/assessment'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 
