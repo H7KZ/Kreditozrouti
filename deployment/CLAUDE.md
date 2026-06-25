@@ -93,3 +93,4 @@ working directory doesn't matter; only the script's own location does.
 | GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                     |
 | Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md) |
 | Monitoring, backups, security, troubleshooting | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)         |
+| Observability stack — full pipeline reference  | [MONITORING.md](../docs/deployment/MONITORING.md)         |
