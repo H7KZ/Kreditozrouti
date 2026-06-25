@@ -1,6 +1,7 @@
+import type { Day } from './constants.js'
+import { DayValues } from './constants.js'
 import { getDayFromDate } from './day.js'
-import type { CourseUnitType, InSISDay } from './insis.js'
-import { InSISDayValues } from './insis.js'
+import type { CourseUnitType } from './insis.js'
 import type { TimeSelection } from './time.js'
 
 // Campus detection
@@ -29,7 +30,7 @@ export function getCampus(location: string | null | undefined): Campus {
 
 /** Minimal shape required by conflict detection functions. */
 export interface ScheduledUnit {
-	day?: InSISDay
+	day?: Day
 	date?: string
 	timeFrom: number
 	timeTo: number
@@ -114,8 +115,8 @@ export function compareTimeSelections(a: TimeSelection, b: TimeSelection): numbe
 	if (!aDay && !bDay) return 0
 	if (!aDay) return -1
 	if (!bDay) return 1
-	const aDayIndex = InSISDayValues.indexOf(aDay)
-	const bDayIndex = InSISDayValues.indexOf(bDay)
+	const aDayIndex = DayValues.indexOf(aDay)
+	const bDayIndex = DayValues.indexOf(bDay)
 	if (aDayIndex !== bDayIndex) return aDayIndex - bDayIndex
 	if (a.time_from !== b.time_from) return a.time_from - b.time_from
 	return a.time_to - b.time_to
