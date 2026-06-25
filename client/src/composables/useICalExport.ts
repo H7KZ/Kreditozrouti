@@ -3,6 +3,7 @@ import type { ICalCourseConfig } from '@client/utils/ical'
 import type { InSISSemester } from '@shared/domain/insis'
 import analytics from '@client/analytics'
 import { generateIcal } from '@client/utils/ical'
+import { createICalLink } from '@client/services'
 
 /**
  * Returns default semester start/end dates for the given VŠE academic year and semester.
@@ -13,10 +14,14 @@ import { generateIcal } from '@client/utils/ical'
 export function getDefaultSemesterDates(year: number | null, semester: InSISSemester): { start: string; end: string } {
 	const y = year ?? new Date().getFullYear()
 	if (semester === 'ZS') {
-		return { start: `${y}-09-29`, end: `${y + 1}-01-17` }
+		return { start: `${y}-09-21`, end: `${y}-12-18` }
 	}
-	return { start: `${y + 1}-02-16`, end: `${y + 1}-05-30` }
+	return { start: `${y + 1}-02-16`, end: `${y + 1}-05-17` }
 }
+
+// webcal:// uses same host/path as the HTTP API, just a different scheme
+const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? ''
+const WEBCAL_BASE = API_BASE.replace(/^https?:\/\//, 'webcal://')
 
 export function useICalExport() {
 	function exportIcal(units: SelectedCourseUnit[], configs: ICalCourseConfig[], semesterStart: string, semesterEnd: string): void {
@@ -36,5 +41,15 @@ export function useICalExport() {
 		analytics.track('ical_exported', { unit_count: units.length })
 	}
 
-	return { exportIcal }
+	async function generateWebcalLink(
+		units: SelectedCourseUnit[],
+		configs: ICalCourseConfig[],
+		semesterStart: string,
+		semesterEnd: string
+	): Promise<string> {
+		const { id } = await createICalLink({ units, configs, semesterStart, semesterEnd })
+		return `${WEBCAL_BASE}/ical/${id}`
+	}
+
+	return { exportIcal, generateWebcalLink }
 }

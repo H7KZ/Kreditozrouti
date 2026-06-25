@@ -493,6 +493,8 @@
 				"courseLocation": "Místo",
 				"courseDescription": "Popis",
 				"download": "Stáhnout .ics",
+				"copyLink": "Zkopírovat odkaz na kalendář",
+				"linkCopied": "Zkopírováno!",
 				"cancel": "Zrušit",
 				"noUnits": "Nejsou vybrány žádné předměty."
 			},

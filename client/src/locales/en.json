@@ -493,6 +493,8 @@
 				"courseLocation": "Location",
 				"courseDescription": "Description",
 				"download": "Download .ics",
+				"copyLink": "Copy calendar link",
+				"linkCopied": "Copied!",
 				"cancel": "Cancel",
 				"noUnits": "No courses selected."
 			},

@@ -6,6 +6,8 @@ import { useI18n } from 'vue-i18n'
 import { getDefaultSemesterDates, useICalExport } from '@client/composables'
 import { useWizardStore } from '@client/stores'
 import IconCalendarDown from '~icons/lucide/calendar-arrow-down'
+import IconLink from '~icons/lucide/link'
+import IconCheck from '~icons/lucide/check'
 import IconX from '~icons/lucide/x'
 
 // Props & emits
@@ -26,7 +28,7 @@ const emit = defineEmits<Emits>()
 
 const { t, locale } = useI18n()
 const wizardStore = useWizardStore()
-const { exportIcal } = useICalExport()
+const { exportIcal, generateWebcalLink } = useICalExport()
 
 // Semester date range state
 
@@ -80,6 +82,25 @@ function close() {
 function handleDownload() {
 	exportIcal(props.units, rows.value, semesterStart.value, semesterEnd.value)
 	close()
+}
+
+// Webcal link state
+const webcalUrl = ref<string | null>(null)
+const webcalLoading = ref(false)
+const webcalCopied = ref(false)
+
+async function handleCopyLink() {
+	webcalLoading.value = true
+	webcalUrl.value = null
+	try {
+		const url = await generateWebcalLink(props.units, rows.value, semesterStart.value, semesterEnd.value)
+		webcalUrl.value = url
+		await navigator.clipboard.writeText(url)
+		webcalCopied.value = true
+		setTimeout(() => { webcalCopied.value = false }, 2000)
+	} finally {
+		webcalLoading.value = false
+	}
 }
 </script>
 
@@ -185,11 +206,27 @@ function handleDownload() {
 						</div>
 					</div>
 
+					<!-- Webcal link display -->
+					<div v-if="webcalUrl" class="flex items-center gap-2 rounded border border-(--insis-border) bg-(--insis-surface-secondary) px-3 py-2">
+						<span class="min-w-0 flex-1 truncate font-mono text-xs text-(--insis-gray-700)">{{ webcalUrl }}</span>
+						<span class="shrink-0 text-xs text-(--insis-green)">{{ t('components.timetable.ICalExportDialog.linkCopied') }}</span>
+					</div>
+
 					<!-- Footer buttons -->
 					<div class="flex flex-col gap-2 sm:flex-row-reverse">
 						<button type="button" class="insis-btn insis-btn-primary flex items-center justify-center gap-1.5 text-sm" @click="handleDownload">
 							<IconCalendarDown class="h-4 w-4" aria-hidden="true" />
 							{{ t('components.timetable.ICalExportDialog.download') }}
+						</button>
+						<button
+							type="button"
+							class="insis-btn insis-btn-secondary flex items-center justify-center gap-1.5 text-sm"
+							:disabled="webcalLoading"
+							@click="handleCopyLink"
+						>
+							<IconCheck v-if="webcalCopied" class="h-4 w-4 text-(--insis-green)" aria-hidden="true" />
+							<IconLink v-else class="h-4 w-4" aria-hidden="true" />
+							{{ webcalCopied ? t('components.timetable.ICalExportDialog.linkCopied') : t('components.timetable.ICalExportDialog.copyLink') }}
 						</button>
 						<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="close">
 							{{ t('components.timetable.ICalExportDialog.cancel') }}
