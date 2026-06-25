@@ -1,4 +1,4 @@
-﻿import type { InSISDay } from '@shared/domain/insis'
+﻿import type { Day } from '@shared/domain/constants'
 import type { CourseUnitDTO, CourseUnitSlotDTO } from '@shared/http/responses'
 import { useTimeUtils } from '@client/composables/useTimeUtils'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
@@ -23,8 +23,8 @@ export function useScheduleSummary() {
 	 * Get unique days from an array of course units.
 	 * Handles both recurring slots (with day) and block slots (with date).
 	 */
-	function getUniqueDaysFromUnits(units: CourseUnitDTO[] | undefined): Set<InSISDay> {
-		const daysSet = new Set<InSISDay>()
+	function getUniqueDaysFromUnits(units: CourseUnitDTO[] | undefined): Set<Day> {
+		const daysSet = new Set<Day>()
 
 		if (!units || units.length === 0) return daysSet
 

@@ -1,5 +1,5 @@
 ﻿import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCourseUnit, SlotConflictInfo } from '@client/types'
-import type { InSISDay } from '@shared/domain/insis'
+import type { Day } from '@shared/domain/constants'
 import type { TimeSelection } from '@shared/domain/time'
 import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed, ref, watch } from 'vue'
@@ -48,7 +48,7 @@ export const useTimetableStore = defineStore('timetable', () => {
 	})
 
 	const unitsByDay = computed(() => {
-		const map = new Map<InSISDay, SelectedCourseUnit[]>()
+		const map = new Map<Day, SelectedCourseUnit[]>()
 		for (const day of ALL_DAYS) map.set(day, [])
 		for (const unit of selectedUnits.value) {
 			const day = unit.date ? getDayFromDate(unit.date) : unit.day

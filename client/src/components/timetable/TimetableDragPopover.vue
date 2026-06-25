@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import type { InSISDay } from '@shared/domain/insis'
+import type { Day } from '@shared/domain/constants'
 import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useClickOutside, useCourseLabels, usePopover, useTimeUtils } from '@client/composables'
@@ -24,7 +24,7 @@ interface Position {
 }
 
 interface Selection {
-	day: InSISDay | null
+	day: Day | null
 	timeFrom: number
 	timeTo: number
 }

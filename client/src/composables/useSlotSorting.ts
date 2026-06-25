@@ -1,4 +1,4 @@
-﻿import type { InSISDay } from '@shared/domain/insis'
+﻿import type { Day } from '@shared/domain/constants'
 import type { CourseUnitSlotDTO } from '@shared/http/responses'
 import { CourseUnitWithSlots } from '@client/types'
 import { getSlotType } from '@client/utils/course'
@@ -147,7 +147,7 @@ export function useSlotSorting() {
 	 * @returns Sorted array of unique days
 	 */
 	function getUniqueDays(units: CourseUnitWithSlots[]) {
-		const daysSet = new Set<InSISDay>()
+		const daysSet = new Set<Day>()
 
 		for (const unit of units) {
 			for (const slot of unit.slots ?? []) {

@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import type { InSISDay } from '@shared/domain/insis'
+import type { Day } from '@shared/domain/constants'
 import type { TimeSelection } from '@shared/domain/time'
 import { computed, ref, watch } from 'vue'
 import { useTimeUtils } from '@client/composables'
@@ -23,7 +23,7 @@ const uiStore = useUIStore()
 const { minutesToTime, timeToMinutes, formatTimeSelection, generateTimeOptions } = useTimeUtils()
 
 // Local state for adding new time filter
-const selectedDay = ref<InSISDay | ''>('')
+const selectedDay = ref<Day | ''>('')
 const timeFrom = ref('09:15')
 const timeTo = ref('14:15')
 const showAddForm = ref(false)
@@ -70,7 +70,7 @@ const activeTimeFilters = computed(() => {
 	return [...include, ...exclude]
 })
 
-function toggleDay(day: InSISDay) {
+function toggleDay(day: Day) {
 	selectedDay.value = selectedDay.value === day ? '' : day
 }
 

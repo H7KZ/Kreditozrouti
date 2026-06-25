@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { MergedUnit } from '@client/composables'
-import { isMergedUnit, useScheduleExport, useShareTimetable, useSlotMerging } from '@client/composables'
+import { isMergedUnit, useCourseLabels, useScheduleExport, useShareTimetable, useSlotMerging } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
-import type { InSISDay } from '@shared/domain/insis'
+import type { Day } from '@shared/domain/constants'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
@@ -25,7 +25,8 @@ const props = withDefaults(
 	{ units: undefined, showShare: true, showExport: true, enableCourseModal: true }
 )
 
-const { locale, t } = useI18n()
+const { t } = useI18n()
+const { getDayLabel } = useCourseLabels()
 const timetableStore = useTimetableStore()
 const alertsStore = useAlertsStore()
 
@@ -47,7 +48,7 @@ async function handleShare() {
 const { mergedUnitsByDay } = useSlotMerging(
 	computed(() => {
 		if (props.units) {
-			const map = new Map<InSISDay, SelectedCourseUnit[]>()
+			const map = new Map<Day, SelectedCourseUnit[]>()
 			for (const u of props.units) {
 				if (!u.day) continue
 				if (!map.has(u.day)) map.set(u.day, [])
@@ -59,21 +60,12 @@ const { mergedUnitsByDay } = useSlotMerging(
 	})
 )
 
-// InSISDay values ARE the Czech names; map to English for en locale
-const DAY_EN: Record<string, string> = {
-	Pondělí: 'Monday',
-	Úterý: 'Tuesday',
-	Středa: 'Wednesday',
-	Čtvrtek: 'Thursday',
-	Pátek: 'Friday'
-}
-
-function dayLabel(day: InSISDay): string {
-	return locale.value === 'en' ? (DAY_EN[day] ?? day) : day
+function dayLabel(day: Day): string {
+	return getDayLabel(day)
 }
 
 interface DayData {
-	day: InSISDay
+	day: Day
 	units: (SelectedCourseUnit | MergedUnit)[]
 	hasUnits: boolean
 	count: number

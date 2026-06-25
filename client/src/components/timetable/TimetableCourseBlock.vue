@@ -44,16 +44,6 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-/** Helper to determine slot type from string */
-function getSlotTypeFromString(type: string | null): CourseUnitType | null {
-	if (!type) return null
-	const t = type.toLowerCase()
-	if (t.includes('přednáška') || t.includes('lecture')) return 'lecture'
-	if (t.includes('cvičení') || t.includes('exercise')) return 'exercise'
-	if (t.includes('seminář') || t.includes('seminar')) return 'seminar'
-	return null
-}
-
 /** Check if course has missing unit types (needs action) */
 const courseStatus = computed(() => {
 	const courseUnits = timetableStore.getUnitsForCourse(props.unit.courseId)
@@ -67,8 +57,7 @@ const courseStatus = computed(() => {
 	const availableTypes = new Set<CourseUnitType>()
 	for (const unit of fullCourse.units || []) {
 		for (const slot of unit.slots || []) {
-			const slotType = getSlotTypeFromString(slot.type)
-			if (slotType) availableTypes.add(slotType)
+			if (slot.type) availableTypes.add(slot.type as CourseUnitType)
 		}
 	}
 

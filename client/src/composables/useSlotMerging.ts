@@ -1,5 +1,5 @@
 ﻿import type { SelectedCourseUnit } from '@client/types'
-import type { InSISDay } from '@shared/domain/insis'
+import type { Day } from '@shared/domain/constants'
 import type { Ref } from 'vue'
 import { computed } from 'vue'
 import { WEEKDAYS } from '@client/constants/timetable'
@@ -30,7 +30,7 @@ export function isMergedUnit(unit: SelectedCourseUnit | MergedUnit): unit is Mer
  *
  * Pure data transformation — no store access, no DOM refs.
  *
- * @param unitsByDay - Ref to a Map from InSISDay to SelectedCourseUnit[]
+ * @param unitsByDay - Ref to a Map from Day to SelectedCourseUnit[]
  * @returns mergedUnitsByDay computed, MergedUnit interface (via export), isMergedUnit type guard
  *
  * @example
@@ -38,13 +38,13 @@ export function isMergedUnit(unit: SelectedCourseUnit | MergedUnit): unit is Mer
  * const { mergedUnitsByDay } = useSlotMerging(toRef(() => timetableStore.unitsByDay))
  * ```
  */
-export function useSlotMerging(unitsByDay: Ref<Map<InSISDay, SelectedCourseUnit[]>>) {
+export function useSlotMerging(unitsByDay: Ref<Map<Day, SelectedCourseUnit[]>>) {
 	/**
 	 * Merge one-time blocks that fall on the same day of the week,
 	 * have the same course, same time, and same unit type.
 	 */
 	const mergedUnitsByDay = computed(() => {
-		const result = new Map<InSISDay, (SelectedCourseUnit | MergedUnit)[]>()
+		const result = new Map<Day, (SelectedCourseUnit | MergedUnit)[]>()
 
 		for (const day of WEEKDAYS) {
 			result.set(day, [])
