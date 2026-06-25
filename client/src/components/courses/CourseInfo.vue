@@ -55,6 +55,7 @@ function handleToggleCompleted() {
 
 <template>
 	<div>
+		<!-- Title -->
 		<h3 class="mb-3 flex items-center gap-1.5 font-medium text-(--insis-gray-900)">
 			{{ course.ident }} - {{ getCourseTitle(course) }}
 			<a
@@ -70,65 +71,21 @@ function handleToggleCompleted() {
 			</a>
 		</h3>
 
-		<dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-			<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.faculty') }}</dt>
-			<dd>{{ course.faculty_id ? getFacultyLabel(course.faculty_id) : '-' }}</dd>
-
-			<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.ectsCredits') }}</dt>
-			<dd class="font-medium">{{ course.ects ?? '-' }}</dd>
-
-			<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.completion') }}</dt>
-			<dd>{{ course.mode_of_completion ? getCompletionLabel(course.mode_of_completion) : '-' }}</dd>
-
-			<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.language') }}</dt>
-			<dd>{{ getLanguagesLabel(course.languages) }}</dd>
-
-			<template v-if="course.study_plans?.length">
-				<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.category') }}</dt>
-				<dd class="flex min-w-0 flex-wrap gap-1">
-					<span v-for="spc in course.study_plans" :key="spc.id" class="insis-badge" :class="getCategoryBadgeClass(spc.category || '')">
-						{{ getCategoryLabel(spc.category || '') }}
-					</span>
-				</dd>
-			</template>
-
-			<template v-if="course.assessments?.length">
-				<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.assessments') }}</dt>
-				<dd>
-					<ul class="space-y-0.25 text-sm">
-						<li v-for="assessment in sortedAssessments" :key="assessment.id">
-							{{ assessment.weight }}% | {{ locale === 'en' && assessment.method_en ? assessment.method_en : assessment.method }}
-						</li>
-					</ul>
-				</dd>
-			</template>
-		</dl>
-
-		<!-- Syllabus sections -->
-		<details v-if="syllabusFields.length" class="mt-4 border-t border-(--insis-border-light) pt-3">
-			<summary class="cursor-pointer text-sm font-medium text-(--insis-gray-600)">
-				{{ $t('components.courses.CourseRowExpanded.syllabus') }}
-			</summary>
-			<div class="mt-2 space-y-3">
-				<div v-for="field in syllabusFields" :key="field.key">
-					<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ field.label }}</p>
-					<!-- eslint-disable-next-line vue/no-v-html -->
-					<div class="prose prose-sm max-w-none text-(--insis-gray-700)" v-html="marked.parse(field.value)" />
-				</div>
-			</div>
-		</details>
-
-		<!-- Data freshness -->
-		<div class="mt-3 flex items-center justify-between border-t border-(--insis-border-light) pt-3">
-			<span class="flex items-center gap-1 text-xs" :class="isCourseStale(course.updated_at) ? 'text-(--insis-warning)' : 'text-(--insis-text-3)'">
-				<IconClock class="h-3 w-3" aria-hidden="true" />
-				{{ $t('components.courses.CourseRowExpanded.lastFetched', { age: formattedAge }) }}
+		<!-- Scannable strip: ECTS · completion · language -->
+		<div class="mb-3 flex flex-wrap gap-1.5">
+			<span v-if="course.ects != null" class="inline-flex items-center rounded-full bg-(--insis-blue)/10 px-2.5 py-0.5 text-xs font-semibold text-(--insis-blue)">
+				{{ course.ects }} ECTS
 			</span>
-			<CourseRefreshButton :course-id="course.id" />
+			<span v-if="course.mode_of_completion" class="inline-flex items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700)">
+				{{ getCompletionLabel(course.mode_of_completion) }}
+			</span>
+			<span v-if="course.languages?.length" class="inline-flex items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700)">
+				{{ getLanguagesLabel(course.languages) }}
+			</span>
 		</div>
 
-		<!-- Mark as completed -->
-		<div class="mt-4 border-t border-(--insis-border-light) pt-3">
+		<!-- Mark as completed — promoted above the fold -->
+		<div class="mb-4">
 			<button
 				type="button"
 				:class="[
@@ -147,6 +104,55 @@ function handleToggleCompleted() {
 					isMarkedCompleted ? $t('components.courses.CourseRowExpanded.markedCompleted') : $t('components.courses.CourseRowExpanded.markAsCompleted')
 				}}
 			</button>
+		</div>
+
+		<!-- Secondary context: faculty + category -->
+		<dl class="mb-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+			<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.faculty') }}</dt>
+			<dd>{{ course.faculty_id ? getFacultyLabel(course.faculty_id) : '-' }}</dd>
+
+			<template v-if="course.study_plans?.length">
+				<dt class="text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.category') }}</dt>
+				<dd class="flex min-w-0 flex-wrap gap-1">
+					<span v-for="spc in course.study_plans" :key="spc.id" class="insis-badge" :class="getCategoryBadgeClass(spc.category || '')">
+						{{ getCategoryLabel(spc.category || '') }}
+					</span>
+				</dd>
+			</template>
+		</dl>
+
+		<!-- Assessments — grading breakdown -->
+		<template v-if="course.assessments?.length">
+			<p class="mb-1.5 text-xs font-medium text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.assessments') }}</p>
+			<ul class="mb-4 space-y-1 text-sm">
+				<li v-for="assessment in sortedAssessments" :key="assessment.id" class="flex items-center gap-2">
+					<span class="w-9 shrink-0 text-right font-medium text-(--insis-gray-800)">{{ assessment.weight }}%</span>
+					<span class="text-(--insis-gray-600)">{{ locale === 'en' && assessment.method_en ? assessment.method_en : assessment.method }}</span>
+				</li>
+			</ul>
+		</template>
+
+		<!-- Syllabus sections -->
+		<details v-if="syllabusFields.length" class="mb-4 border-t border-(--insis-border-light) pt-3">
+			<summary class="cursor-pointer text-sm font-medium text-(--insis-gray-600)">
+				{{ $t('components.courses.CourseRowExpanded.syllabus') }}
+			</summary>
+			<div class="mt-2 space-y-3">
+				<div v-for="field in syllabusFields" :key="field.key">
+					<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ field.label }}</p>
+					<!-- eslint-disable-next-line vue/no-v-html -->
+					<div class="prose prose-sm max-w-none text-(--insis-gray-700)" v-html="marked.parse(field.value)" />
+				</div>
+			</div>
+		</details>
+
+		<!-- Footer: data freshness + refresh -->
+		<div class="flex items-center justify-between border-t border-(--insis-border-light) pt-3">
+			<span class="flex items-center gap-1 text-xs" :class="isCourseStale(course.updated_at) ? 'text-(--insis-warning)' : 'text-(--insis-text-3)'">
+				<IconClock class="h-3 w-3" aria-hidden="true" />
+				{{ $t('components.courses.CourseRowExpanded.lastFetched', { age: formattedAge }) }}
+			</span>
+			<CourseRefreshButton :course-id="course.id" />
 		</div>
 	</div>
 </template>
