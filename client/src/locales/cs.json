@@ -511,19 +511,11 @@
 				"description": "Zobrazí předměty, které mají rozvrhovou akci v tomto časovém úseku.",
 				"searchCourses": "Hledat předměty"
 			},
-			"TimetableCourseModal": {
+			"TimetableCoursePanel": {
 				"courseNotFound": "Předmět nenalezen",
 				"loadError": "Nepodařilo se načíst detaily předmětu",
-				"courseInfo": "Informace o předmětu",
-				"selectedSlot": "Vybraný slot",
 				"removeFromTimetable": "Odebrat z rozvrhu",
-				"searchInTimeslot": "Hledat v tomto čase",
-				"filterApplied": "Časový filtr aplikován",
-				"filterDescription": "Zobrazuji předměty dostupné v {day} od {from} do {to}",
-				"slotFree": "Volný",
-				"slotConflict": "Konflikt: {ident}",
-				"slotCampusConflict": "Kampus: {ident}",
-				"lecturer": "Vyučující"
+				"searchInTimeslot": "Hledat v tomto čase"
 			},
 			"SchedulePicker": {
 				"title": "Uložené rozvrhy",
