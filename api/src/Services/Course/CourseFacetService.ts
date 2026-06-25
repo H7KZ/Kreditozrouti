@@ -5,6 +5,7 @@ import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
 import { ASSESSMENT_BUCKETS } from './buckets/assessment'
 import {
+	INSIS_DAY_NORM,
 	LANGUAGE_DENORM,
 	LANGUAGE_NORM,
 	LEVEL_DENORM,
@@ -12,7 +13,7 @@ import {
 	MODE_OF_COMPLETION_DENORM,
 	MODE_OF_COMPLETION_NORM,
 	normalizeFacet
-} from './buckets/normalizers'
+} from '@shared/domain/constants'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 
@@ -82,7 +83,7 @@ export class CourseFacetService {
 
 		return {
 			faculties,
-			days,
+			days: normalizeFacet(days, INSIS_DAY_NORM),
 			lecturers,
 			languages,
 			levels,

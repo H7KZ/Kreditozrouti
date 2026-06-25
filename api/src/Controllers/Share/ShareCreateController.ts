@@ -2,7 +2,8 @@ import { randomBytes } from 'crypto'
 import type { ShareCreateResponse } from '@shared/http/share'
 import { Request, Response } from 'express'
 import * as z from 'zod'
-import { CourseUnitTypeValues, InSISDayValues } from '@shared/domain/insis'
+import { CourseUnitTypeValues } from '@shared/domain/insis'
+import { DayValues } from '@shared/domain/constants'
 import { redis } from '@api/clients'
 import { Errors } from '@api/Errors'
 
@@ -17,7 +18,7 @@ const ShareableUnitSchema = z.object({
 	unitId: z.number(),
 	unitType: z.enum(CourseUnitTypeValues),
 	slotId: z.number(),
-	day: z.enum(InSISDayValues).optional(),
+	day: z.enum(DayValues).optional(),
 	date: z.string().optional(),
 	timeFrom: z.number().int().min(0).max(1439),
 	timeTo: z.number().int().min(0).max(1439),
