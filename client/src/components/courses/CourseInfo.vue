@@ -73,13 +73,22 @@ function handleToggleCompleted() {
 
 		<!-- Scannable strip: ECTS · completion · language -->
 		<div class="mb-3 flex flex-wrap gap-1.5">
-			<span v-if="course.ects != null" class="inline-flex items-center rounded-full bg-(--insis-blue)/10 px-2.5 py-0.5 text-xs font-semibold text-(--insis-blue)">
+			<span
+				v-if="course.ects != null"
+				class="inline-flex items-center rounded-full bg-(--insis-blue)/10 px-2.5 py-0.5 text-xs font-semibold text-(--insis-blue)"
+			>
 				{{ course.ects }} ECTS
 			</span>
-			<span v-if="course.mode_of_completion" class="inline-flex items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700)">
+			<span
+				v-if="course.mode_of_completion"
+				class="inline-flex items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700)"
+			>
 				{{ getCompletionLabel(course.mode_of_completion) }}
 			</span>
-			<span v-if="course.languages?.length" class="inline-flex items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700)">
+			<span
+				v-if="course.languages?.length"
+				class="inline-flex items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700)"
+			>
 				{{ getLanguagesLabel(course.languages) }}
 			</span>
 		</div>

@@ -2,11 +2,11 @@
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import api from '@client/api.ts'
 import CourseInfo from '@client/components/courses/CourseInfo.vue'
 import UnitSelector from '@client/components/courses/UnitSelector.vue'
 import { useCourseLabels, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore } from '@client/stores'
+import { fetchCourses } from '@client/services/courseService'
 import type { SelectedCourseUnit } from '@client/types'
 import IconLoader from '~icons/lucide/loader-2'
 import IconMapPin from '~icons/lucide/map-pin'
@@ -55,13 +55,10 @@ async function fetchCourse() {
 	error.value = null
 
 	try {
-		const response = await api.post<{ data: CourseWithRelationsDTO[] }>('/courses', {
-			ids: [props.unit.courseId],
-			limit: 1
-		})
+		const result = await fetchCourses({ ids: [props.unit.courseId], limit: 1 })
 
-		if (response.data.data.length > 0) {
-			course.value = response.data.data[0] ?? null
+		if (result.data.length > 0) {
+			course.value = result.data[0] ?? null
 		} else {
 			error.value = t('components.timetable.TimetableCoursePanel.courseNotFound')
 		}
@@ -78,7 +75,8 @@ watch(() => props.unit.courseId, fetchCourse, { immediate: true })
 // Actions
 
 function handleSearchInTimeslot() {
-	filtersStore.filters.include_times = [{ day: props.unit.day ?? 'monday', time_from: props.unit.timeFrom, time_to: props.unit.timeTo }]
+	if (!props.unit.day) return
+	filtersStore.filters.include_times = [{ day: props.unit.day, time_from: props.unit.timeFrom, time_to: props.unit.timeTo }]
 	filtersStore.filters.offset = 0
 	uiStore.switchToListView()
 	coursesStore.fetchCourses()
@@ -107,7 +105,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown))
 
 		<!-- Panel -->
 		<div
-			class="fixed inset-y-0 right-0 z-50 flex w-full flex-col bg-(--insis-surface) shadow-xl sm:w-[420px] sm:border-l sm:border-(--insis-border)"
+			class="fixed inset-y-0 right-0 z-50 flex w-full flex-col bg-(--insis-surface) shadow-xl sm:w-160 sm:border-l sm:border-(--insis-border)"
 			role="dialog"
 			aria-modal="true"
 			:aria-label="getUnitCourseTitle(unit)"
@@ -159,12 +157,10 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown))
 			</div>
 
 			<!-- Footer actions -->
-			<div class="flex shrink-0 flex-wrap-reverse items-center gap-2 gap-y-4 border-t border-(--insis-border) bg-(--insis-gray-50) px-4 py-3 sm:justify-between">
-				<button
-					type="button"
-					class="insis-btn-text flex items-center gap-1 text-sm text-(--insis-danger)"
-					@click="handleRemoveCourseAndClose"
-				>
+			<div
+				class="flex shrink-0 flex-wrap-reverse items-center gap-2 gap-y-4 border-t border-(--insis-border) bg-(--insis-gray-50) px-4 py-3 sm:justify-between"
+			>
+				<button type="button" class="insis-btn-text flex items-center gap-1 text-sm text-(--insis-danger)" @click="handleRemoveCourseAndClose">
 					<IconTrash class="h-4 w-4" />
 					{{ $t('components.timetable.TimetableCoursePanel.removeFromTimetable') }}
 				</button>
@@ -175,7 +171,8 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown))
 					</button>
 					<button
 						type="button"
-						class="insis-btn insis-btn-primary flex items-center gap-1.5 text-sm"
+						class="insis-btn insis-btn-primary flex items-center gap-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+						:disabled="!unit.day"
 						@click="handleSearchInTimeslot"
 					>
 						<IconSearch class="h-4 w-4" />
@@ -186,4 +183,3 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown))
 		</div>
 	</Teleport>
 </template>
-

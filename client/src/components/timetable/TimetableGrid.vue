@@ -120,7 +120,7 @@ const showCoursePanel = ref(false)
 const selectedPanelUnit = ref<SelectedCourseUnit | null>(null)
 
 function handleCourseBlockClick(unit: SelectedCourseUnit | MergedUnit) {
-	selectedPanelUnit.value = isMergedUnit(unit) ? unit.originalUnits[0] ?? null : unit
+	selectedPanelUnit.value = isMergedUnit(unit) ? (unit.originalUnits[0] ?? null) : unit
 	showCoursePanel.value = true
 }
 
