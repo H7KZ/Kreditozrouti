@@ -239,6 +239,34 @@ services:
 
   # ================================================================ #
 
+  tempo:
+    image: grafana/tempo:latest
+    container_name: kreditozrouti-tempo
+
+    command: -config.file=/etc/tempo/tempo.yml
+
+    volumes:
+      - ./deployment/monitoring/tempo/tempo.yml:/etc/tempo/tempo.yml:ro
+
+    ports:
+      - '43200:3200'
+
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
   alloy:
     image: grafana/alloy:latest
     container_name: kreditozrouti-alloy
@@ -257,6 +285,8 @@ services:
 
     ports:
       - '41247:12347'
+      - '44317:4317'
+      - '44318:4318'
 
     deploy:
       mode: global
