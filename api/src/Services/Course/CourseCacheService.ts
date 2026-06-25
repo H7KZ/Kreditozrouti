@@ -1,7 +1,7 @@
-import { redis } from '@api/clients'
 import type { CoursesFilter } from '@shared/http/courses'
 import type { CoursesResponseDTO } from '@shared/http/responses'
-import { compareTimeSelections } from '@api/Utils/timeConflict'
+import { redis } from '@api/clients'
+import { compareTimeSelections } from '@api/Utils/TimeConflict'
 
 const FACET_CACHE_TTL = 300
 const FACET_CACHE_PREFIX = 'course:facets:'

@@ -1,4 +1,4 @@
-import type { ScraperRequestJob } from '@scraper/types/jobs'
+import type { ScraperRequestJob } from '@shared/queue/jobs'
 import { DelayedError, Job } from 'bullmq'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'

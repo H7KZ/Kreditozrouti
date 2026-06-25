@@ -1,6 +1,6 @@
-import { redis } from '@api/clients'
-import type { StudyPlansFilter } from '@shared/http/study-plans'
 import type { StudyPlansResponseDTO } from '@shared/http/responses'
+import type { StudyPlansFilter } from '@shared/http/study-plans'
+import { redis } from '@api/clients'
 
 const FACET_CACHE_TTL = 300
 const FACET_CACHE_PREFIX = 'studyplan:facets:'

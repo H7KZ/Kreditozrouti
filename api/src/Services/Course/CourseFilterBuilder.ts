@@ -1,11 +1,11 @@
 import type { InSISDay } from '@shared/domain/insis'
 import { AliasedExpression, Nullable, SelectQueryBuilder, sql } from 'kysely'
+import { ASSESSMENT_BUCKETS } from '@shared/domain/assessment'
 import { INSIS_DAY_DENORM, LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from '@shared/domain/constants'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, Database, StudyPlanCourseTable } from '@api/Database/types'
-import { buildSlotConflictConditions } from '@api/Utils/timeConflict'
-import { ASSESSMENT_BUCKETS } from '@shared/domain/assessment'
+import { buildSlotConflictConditions } from '@api/Utils/TimeConflict'
 
 type QueryBuilder = SelectQueryBuilder<
 	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> } & {

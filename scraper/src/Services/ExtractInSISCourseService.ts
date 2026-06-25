@@ -1,6 +1,5 @@
+import type { InSISDay, InSISSemester } from '@shared/domain/insis'
 import type {
-	InSISDay,
-	InSISSemester,
 	ScraperInSISCourse,
 	ScraperInSISCourseAssessmentMethod,
 	ScraperInSISCourseStudyLoad,
@@ -8,7 +7,7 @@ import type {
 	ScraperInSISCourseTimetableSlot,
 	ScraperInSISCourseTimetableUnit,
 	ScraperInSISFaculty
-} from '@scraper/types/insis'
+} from '@shared/queue/insis'
 import type { CheerioAPI } from 'cheerio'
 import * as cheerio from 'cheerio'
 import MarkdownService from '@scraper/Services/MarkdownService'

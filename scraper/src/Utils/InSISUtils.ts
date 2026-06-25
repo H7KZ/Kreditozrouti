@@ -1,4 +1,4 @@
-import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@scraper/types/insis'
+import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@shared/domain/insis'
 
 // Group Code Data
 

@@ -1,5 +1,6 @@
 import type { FacetItem } from '@shared/http/facets'
 import { sql } from 'kysely'
+import { ASSESSMENT_BUCKETS } from '@shared/domain/assessment'
 import {
 	INSIS_DAY_NORM,
 	LANGUAGE_DENORM,
@@ -12,7 +13,6 @@ import {
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
-import { ASSESSMENT_BUCKETS } from '@shared/domain/assessment'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 

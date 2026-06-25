@@ -1,4 +1,4 @@
-import type { ScraperInSISStudyPlanRequestJob } from '@scraper/types/jobs'
+import type { ScraperInSISStudyPlanRequestJob } from '@shared/queue/jobs'
 import { redis } from '@scraper/clients'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'

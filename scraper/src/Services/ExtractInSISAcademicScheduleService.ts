@@ -1,4 +1,4 @@
-﻿import type { InSISSemester } from '@scraper/types/insis'
+﻿import type { InSISSemester } from '@shared/domain/insis'
 import * as cheerio from 'cheerio'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
 import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
