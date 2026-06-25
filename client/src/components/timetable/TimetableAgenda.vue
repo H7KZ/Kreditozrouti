@@ -5,7 +5,7 @@ import type { SelectedCourseUnit } from '@client/types'
 import type { Day } from '@shared/domain/constants'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
+import TimetableCoursePanel from '@client/components/timetable/TimetableCoursePanel.vue'
 import ICalExportDialog from '@client/components/timetable/ICalExportDialog.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useAlertsStore, useTimetableStore } from '@client/stores'
@@ -103,19 +103,18 @@ function borderColor(unit: SelectedCourseUnit | MergedUnit): string {
 }
 
 // Modal
-const showModal = ref(false)
-const modalUnit = ref<SelectedCourseUnit | null>(null)
+const showPanel = ref(false)
+const panelUnit = ref<SelectedCourseUnit | null>(null)
 
-function openModal(unit: SelectedCourseUnit | MergedUnit) {
-	// MergedUnit has originalUnits[]; pass the first original unit to the modal
-	// (TimetableCourseModal expects a SelectedCourseUnit, not a MergedUnit)
-	modalUnit.value = isMergedUnit(unit) ? unit.originalUnits[0] : unit
-	showModal.value = true
+function openPanel(unit: SelectedCourseUnit | MergedUnit) {
+	// MergedUnit has originalUnits[]; pass the first original unit to the panel
+	panelUnit.value = isMergedUnit(unit) ? unit.originalUnits[0] : unit
+	showPanel.value = true
 }
 
-function closeModal() {
-	showModal.value = false
-	modalUnit.value = null
+function closePanel() {
+	showPanel.value = false
+	panelUnit.value = null
 }
 
 function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
@@ -209,7 +208,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 						<button
 							type="button"
 							class="flex min-h-[52px] min-w-0 flex-1 items-start gap-3 overflow-hidden rounded-md px-3 py-2.5 text-left active:bg-(--insis-surface-2)"
-							@click="enableCourseModal && openModal(unit)"
+							@click="enableCourseModal && openPanel(unit)"
 						>
 							<div class="min-w-0 flex-1">
 								<div class="truncate text-sm font-semibold text-(--insis-text)">{{ unit.courseTitle }}</div>
@@ -247,7 +246,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 			</div>
 		</template>
 
-		<TimetableCourseModal v-if="enableCourseModal && showModal && modalUnit" :unit="modalUnit" @close="closeModal" />
+		<TimetableCoursePanel v-if="enableCourseModal && showPanel && panelUnit" :unit="panelUnit" @close="closePanel" />
 		<ICalExportDialog v-model="showICalDialog" :units="units ?? timetableStore.selectedUnits" />
 	</div>
 </template>
