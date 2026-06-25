@@ -7,7 +7,7 @@ import CourseInfo from '@client/components/courses/CourseInfo.vue'
 import UnitSelector from '@client/components/courses/UnitSelector.vue'
 import { useCourseLabels, useTimeUtils } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore } from '@client/stores'
-import { SelectedCourseUnit } from '@client/types'
+import type { SelectedCourseUnit } from '@client/types'
 import IconLoader from '~icons/lucide/loader-2'
 import IconMapPin from '~icons/lucide/map-pin'
 import IconSearch from '~icons/lucide/search'
@@ -187,6 +187,3 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown))
 	</Teleport>
 </template>
 
-<style scoped>
-/* Panel slides in from the right */
-</style>
