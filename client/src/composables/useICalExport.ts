@@ -2,8 +2,8 @@ import type { SelectedCourseUnit } from '@client/types'
 import type { ICalCourseConfig } from '@client/utils/ical'
 import type { InSISSemester } from '@shared/domain/insis'
 import analytics from '@client/analytics'
-import { generateIcal } from '@client/utils/ical'
 import { createICalLink } from '@client/services'
+import { generateIcal } from '@client/utils/ical'
 
 /**
  * Returns default semester start/end dates for the given VŠE academic year and semester.
@@ -41,12 +41,7 @@ export function useICalExport() {
 		analytics.track('ical_exported', { unit_count: units.length })
 	}
 
-	async function generateWebcalLink(
-		units: SelectedCourseUnit[],
-		configs: ICalCourseConfig[],
-		semesterStart: string,
-		semesterEnd: string
-	): Promise<string> {
+	async function generateWebcalLink(units: SelectedCourseUnit[], configs: ICalCourseConfig[], semesterStart: string, semesterEnd: string): Promise<string> {
 		const { id } = await createICalLink({ units, configs, semesterStart, semesterEnd })
 		return `${WEBCAL_BASE}/ical/${id}`
 	}

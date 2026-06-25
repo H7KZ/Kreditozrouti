@@ -1,5 +1,5 @@
-import type { ICalConfig, ICalUnit } from '@shared/http/ical'
 import type { InSISDay } from '@shared/domain/insis'
+import type { ICalConfig, ICalUnit } from '@shared/http/ical'
 
 const DAY_MAP: Record<InSISDay, { byday: string; jsDay: number }> = {
 	Pondělí: { byday: 'MO', jsDay: 1 },

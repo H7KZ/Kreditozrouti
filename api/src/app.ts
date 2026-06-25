@@ -16,10 +16,10 @@ import LoggerMiddleware from '@api/Middlewares/LoggerMiddleware'
 import { Paths } from '@api/paths'
 import AdminRoutes from '@api/Routes/AdminRoutes'
 import CommandsRoutes from '@api/Routes/CommandsRoutes'
-import KreditozroutiRoutes from '@api/Routes/KreditozroutiRoutes'
-import { ScraperPublicRoutes } from '@api/Routes/ScraperPublicRoutes'
-import ShareRoutes from '@api/Routes/ShareRoutes'
+import CoursesRoutes from '@api/Routes/CoursesRoutes'
 import ICalRoutes from '@api/Routes/ICalRoutes'
+import ShareRoutes from '@api/Routes/ShareRoutes'
+import StudyPlansRoutes from '@api/Routes/StudyPlansRoutes'
 
 const app = express()
 
@@ -89,8 +89,8 @@ app.get('/metrics', (req, res) => {
 })
 
 // Routes
-app.use('/', KreditozroutiRoutes)
-app.use('/', ScraperPublicRoutes)
+app.use('/courses', CoursesRoutes)
+app.use('/study_plans', StudyPlansRoutes)
 app.use('/share', ShareRoutes)
 app.use('/ical', ICalRoutes)
 app.use('/commands', CommandsRoutes)

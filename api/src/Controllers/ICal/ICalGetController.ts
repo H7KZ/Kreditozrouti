@@ -16,12 +16,7 @@ export default async function ICalGetController(req: Request, res: Response) {
 
 	const { units, configs, semesterStart, semesterEnd } = JSON.parse(raw) as ICalCreateRequest
 
-	const ics = generateIcal(
-		units as ICalUnit[],
-		configs as ICalConfig[],
-		new Date(semesterStart),
-		new Date(semesterEnd)
-	)
+	const ics = generateIcal(units as ICalUnit[], configs as ICalConfig[], new Date(semesterStart), new Date(semesterEnd))
 
 	res.setHeader('Content-Type', 'text/calendar; charset=utf-8')
 	res.setHeader('Content-Disposition', 'attachment; filename="rozvrh-kreditozrouti.ics"')

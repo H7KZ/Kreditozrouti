@@ -55,7 +55,7 @@ function initRows() {
 
 	rows.value = props.units.map(unit => {
 		const courseTitle = `${unit.courseIdent} ${locale.value === 'en' ? unit.courseTitleEn || unit.courseTitle : unit.courseTitleCs || unit.courseTitle}`
-		const when = unit.day ? `${unit.day} ${minutesToTime(unit.timeFrom)}` : unit.date ?? ''
+		const when = unit.day ? `${unit.day} ${minutesToTime(unit.timeFrom)}` : (unit.date ?? '')
 		return {
 			slotId: unit.slotId,
 			label: `${unit.courseIdent} · ${unit.unitType ?? ''} · ${when}`,
@@ -97,7 +97,9 @@ async function handleCopyLink() {
 		webcalUrl.value = url
 		await navigator.clipboard.writeText(url)
 		webcalCopied.value = true
-		setTimeout(() => { webcalCopied.value = false }, 2000)
+		setTimeout(() => {
+			webcalCopied.value = false
+		}, 2000)
 	} finally {
 		webcalLoading.value = false
 	}
