@@ -135,12 +135,6 @@ export interface StudyPlanWithRelationsDTO extends StudyPlanDTO {
 }
 
 // Response DTOs — wire format for each endpoint
-//
-// Facet shapes must stay in sync with the authoritative API response types:
-//   api/src/Controllers/Kreditozrouti/types/CoursesResponse.ts
-//   api/src/Controllers/Kreditozrouti/types/StudyPlansResponse.ts
-//   api/src/Controllers/Kreditozrouti/types/StudyPlanCoursesResponse.ts
-// When the API adds or renames a facet key, update the corresponding DTO here.
 
 export interface CoursesResponseDTO {
 	data: CourseWithRelationsDTO[]

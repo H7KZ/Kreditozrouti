@@ -1,7 +1,7 @@
 import { redis } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
-import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse'
-import { compareTimeSelections } from '@api/utils/timeConflict'
+import type { CoursesFilter } from '@shared/http/courses'
+import type { CoursesResponseDTO } from '@shared/http/responses'
+import { compareTimeSelections } from '@api/Utils/timeConflict'
 
 const FACET_CACHE_TTL = 300
 const FACET_CACHE_PREFIX = 'course:facets:'
@@ -49,12 +49,12 @@ export class CourseCacheService {
 	 * Reads parsed facets from the Redis cache. Errors are swallowed (cache is best-effort).
 	 *
 	 * @param {string} key - Redis cache key.
-	 * @returns {Promise<CoursesResponse['facets'] | null>} Parsed facets or null on miss or error.
+	 * @returns {Promise<CoursesResponseDTO['facets'] | null>} Parsed facets or null on miss or error.
 	 */
-	public static async readFacetsFromCache(key: string): Promise<CoursesResponse['facets'] | null> {
+	public static async readFacetsFromCache(key: string): Promise<CoursesResponseDTO['facets'] | null> {
 		try {
 			const cached = await redis.get(key)
-			return cached ? (JSON.parse(cached) as CoursesResponse['facets']) : null
+			return cached ? (JSON.parse(cached) as CoursesResponseDTO['facets']) : null
 		} catch {
 			return null
 		}
@@ -65,9 +65,9 @@ export class CourseCacheService {
 	 * (cache is best-effort).
 	 *
 	 * @param {string} key - Redis cache key.
-	 * @param {CoursesResponse['facets']} facets - Computed facets payload to cache.
+	 * @param {CoursesResponseDTO['facets']} facets - Computed facets payload to cache.
 	 */
-	public static async writeFacetsToCache(key: string, facets: CoursesResponse['facets']): Promise<void> {
+	public static async writeFacetsToCache(key: string, facets: CoursesResponseDTO['facets']): Promise<void> {
 		try {
 			await redis.setex(key, FACET_CACHE_TTL, JSON.stringify(facets))
 		} catch {

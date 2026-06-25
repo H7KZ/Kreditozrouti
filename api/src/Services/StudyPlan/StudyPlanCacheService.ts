@@ -1,6 +1,6 @@
 import { redis } from '@api/clients'
-import { StudyPlansFilter } from '@api/Controllers/Kreditozrouti/StudyPlansController'
-import StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse'
+import type { StudyPlansFilter } from '@shared/http/study-plans'
+import type { StudyPlansResponseDTO } from '@shared/http/responses'
 
 const FACET_CACHE_TTL = 300
 const FACET_CACHE_PREFIX = 'studyplan:facets:'
@@ -34,12 +34,12 @@ export class StudyPlanCacheService {
 	 * Cache reads are best-effort — errors are swallowed.
 	 *
 	 * @param {string} key - Redis cache key produced by {@link buildFacetCacheKey}.
-	 * @returns {Promise<StudyPlansResponse['facets'] | null>} Parsed facets object, or null on miss/error.
+	 * @returns {Promise<StudyPlansResponseDTO['facets'] | null>} Parsed facets object, or null on miss/error.
 	 */
-	public static async readFacetsFromCache(key: string): Promise<StudyPlansResponse['facets'] | null> {
+	public static async readFacetsFromCache(key: string): Promise<StudyPlansResponseDTO['facets'] | null> {
 		try {
 			const cached = await redis.get(key)
-			return cached ? (JSON.parse(cached) as StudyPlansResponse['facets']) : null
+			return cached ? (JSON.parse(cached) as StudyPlansResponseDTO['facets']) : null
 		} catch {
 			return null
 		}
@@ -50,10 +50,10 @@ export class StudyPlanCacheService {
 	 * Errors are swallowed — cache writes are best-effort.
 	 *
 	 * @param {string} key - Redis cache key produced by {@link buildFacetCacheKey}.
-	 * @param {StudyPlansResponse['facets']} facets - The computed facets payload to store.
+	 * @param {StudyPlansResponseDTO['facets']} facets - The computed facets payload to store.
 	 * @returns {Promise<void>}
 	 */
-	public static async writeFacetsToCache(key: string, facets: StudyPlansResponse['facets']): Promise<void> {
+	public static async writeFacetsToCache(key: string, facets: StudyPlansResponseDTO['facets']): Promise<void> {
 		try {
 			await redis.setex(key, FACET_CACHE_TTL, JSON.stringify(facets))
 		} catch {

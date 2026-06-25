@@ -2,7 +2,6 @@ import type { StudyPlansFilter } from '@shared/http/study-plans'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
-import StudyPlansResponse from '@api/Controllers/Kreditozrouti/types/StudyPlansResponse'
 import { Errors } from '@api/Errors'
 import InSISService from '@api/Services/InSISService'
 import StudyPlanService from '@api/Services/StudyPlanService'
@@ -50,7 +49,7 @@ export type { StudyPlansFilter } from '@shared/http/study-plans'
  * @param res - Express response object.
  * @throws {ApiError} 403 - If the validation of the search request fails.
  */
-export default async function StudyPlansController(req: Request, res: Response<StudyPlansResponse>) {
+export default async function StudyPlansController(req: Request, res: Response) {
 	LoggerAPIContext.add({ body: req.body })
 
 	// 1. Validation
@@ -75,7 +74,7 @@ export default async function StudyPlansController(req: Request, res: Response<S
 	})
 
 	// 3. Response Assembly
-	const response: StudyPlansResponse = {
+	const response = {
 		data: plans,
 		facets,
 		meta: {

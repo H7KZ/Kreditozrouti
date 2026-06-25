@@ -1,4 +1,4 @@
-import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import { Course } from '@api/Database/types'
 import { CourseFacetService } from './Course/CourseFacetService'
 import { CourseQueryService } from './Course/CourseQueryService'

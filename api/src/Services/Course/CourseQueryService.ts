@@ -4,7 +4,7 @@ import { INSIS_DAY_NORM, LANGUAGE_NORM, LEVEL_NORM, MODE_OF_COMPLETION_NORM, MOD
 import { getSlotType } from '@shared/domain/insis'
 import { priorityOf } from '@shared/domain/studyPlan'
 import { mysql } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import {
 	Course,
 	CourseAssessmentTable,

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { createRedisSubscriber } from '@api/clients'
 import ScraperService from '@api/Services/ScraperService'
-import { closeSSE, initSSE, sendSSEEvent, startSSEHeartbeat } from '@api/utils/sse'
+import { closeSSE, initSSE, sendSSEEvent, startSSEHeartbeat } from '@api/Utils/sse'
 
 const SSE_TIMEOUT_MS = 5 * 60 * 1000 // 5 minutes
 
