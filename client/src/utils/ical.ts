@@ -2,7 +2,7 @@ import type { SelectedCourseUnit } from '@client/types'
 import type { InSISDay } from '@shared/domain/insis'
 
 export interface ICalCourseConfig {
-	courseId: number
+	slotId: number
 	title: string
 	location: string
 	description: string
@@ -82,7 +82,7 @@ const WATERMARK = 'kreditozrouti.cz'
  * One-off units (date-based) get a single VEVENT with no RRULE.
  */
 export function generateIcal(units: SelectedCourseUnit[], configs: ICalCourseConfig[], semesterStart: Date, semesterEnd: Date): string {
-	const configMap = new Map<number, ICalCourseConfig>(configs.map(c => [c.courseId, c]))
+	const configMap = new Map<number, ICalCourseConfig>(configs.map(c => [c.slotId, c]))
 
 	const untilDate = new Date(semesterEnd)
 	untilDate.setHours(23, 59, 59, 0)
@@ -90,7 +90,7 @@ export function generateIcal(units: SelectedCourseUnit[], configs: ICalCourseCon
 	const lines: string[] = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//kreditozrouti.cz//Kreditozrouti//CS', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH']
 
 	for (const unit of units) {
-		const cfg = configMap.get(unit.courseId)
+		const cfg = configMap.get(unit.slotId)
 		const summary = cfg?.title ?? unit.courseTitle
 		const location = cfg?.location ?? unit.location ?? ''
 		const rawDescription = cfg?.description ?? `${unit.courseIdent}${unit.lecturer ? ` · ${unit.lecturer}` : ''}`

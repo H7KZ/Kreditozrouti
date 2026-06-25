@@ -35,40 +35,33 @@ const defaults = computed(() => getDefaultSemesterDates(wizardStore.year, wizard
 const semesterStart = ref(defaults.value.start)
 const semesterEnd = ref(defaults.value.end)
 
-// Per-course row state
+// Per-slot row state
 
-interface CourseRow extends ICalCourseConfig {
-	courseIdent: string
+interface SlotRow extends ICalCourseConfig {
+	label: string
 }
 
-const rows = ref<CourseRow[]>([])
+const rows = ref<SlotRow[]>([])
+
+function minutesToTime(m: number): string {
+	return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
+}
 
 function initRows() {
 	semesterStart.value = defaults.value.start
 	semesterEnd.value = defaults.value.end
 
-	const seen = new Set<number>()
-	const next: CourseRow[] = []
-
-	for (const unit of props.units) {
-		if (seen.has(unit.courseId)) continue
-		seen.add(unit.courseId)
-
-		const courseTitle = locale.value === 'en' ? unit.courseTitleEn || unit.courseTitle : unit.courseTitleCs || unit.courseTitle
-
-		const firstLocation = props.units.find(u => u.courseId === unit.courseId && u.location)?.location ?? ''
-		const firstLecturer = props.units.find(u => u.courseId === unit.courseId && u.lecturer)?.lecturer ?? ''
-
-		next.push({
-			courseId: unit.courseId,
-			courseIdent: unit.courseIdent,
+	rows.value = props.units.map(unit => {
+		const courseTitle = `${unit.courseIdent} ${locale.value === 'en' ? unit.courseTitleEn || unit.courseTitle : unit.courseTitleCs || unit.courseTitle}`
+		const when = unit.day ? `${unit.day} ${minutesToTime(unit.timeFrom)}` : unit.date ?? ''
+		return {
+			slotId: unit.slotId,
+			label: `${unit.courseIdent} · ${unit.unitType ?? ''} · ${when}`,
 			title: courseTitle,
-			location: firstLocation,
-			description: `${unit.courseIdent}${firstLecturer ? ` · ${firstLecturer}` : ''}`
-		})
-	}
-
-	rows.value = next
+			location: unit.location ?? '',
+			description: unit.lecturer ?? ''
+		}
+	})
 }
 
 watch(
@@ -93,7 +86,7 @@ function handleDownload() {
 <template>
 	<Teleport to="body">
 		<div v-if="modelValue" class="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center" @click.self="close">
-			<div class="flex w-full max-w-3xl flex-col gap-4 rounded-lg bg-(--insis-surface) p-6 shadow-xl">
+			<div class="flex w-full max-w-5xl flex-col gap-4 rounded-lg bg-(--insis-surface) p-6 shadow-xl">
 				<!-- Header -->
 				<div class="flex items-start justify-between gap-4">
 					<h2 class="text-lg font-semibold text-(--insis-gray-900)">
@@ -149,6 +142,9 @@ function handleDownload() {
 								<thead class="sticky top-0 bg-(--insis-header-bg)">
 									<tr>
 										<th class="px-3 py-2 text-left font-medium text-(--insis-gray-700)">
+											{{ t('components.timetable.ICalExportDialog.slot') }}
+										</th>
+										<th class="px-3 py-2 text-left font-medium text-(--insis-gray-700)">
 											{{ t('components.timetable.ICalExportDialog.courseTitle') }}
 										</th>
 										<th class="px-3 py-2 text-left font-medium text-(--insis-gray-700)">
@@ -160,9 +156,9 @@ function handleDownload() {
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-for="row in rows" :key="row.courseId" class="border-t border-(--insis-border)">
+									<tr v-for="row in rows" :key="row.slotId" class="border-t border-(--insis-border)">
+										<td class="px-3 py-2 text-xs whitespace-nowrap text-(--insis-gray-600)">{{ row.label }}</td>
 										<td class="px-3 py-2">
-											<div class="mb-1 font-mono text-xs text-(--insis-gray-500)">{{ row.courseIdent }}</div>
 											<input
 												v-model="row.title"
 												type="text"
