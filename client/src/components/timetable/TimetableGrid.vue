@@ -7,7 +7,7 @@ import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TimetableAgenda from '@client/components/timetable/TimetableAgenda.vue'
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
-import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
+import TimetableCoursePanel from '@client/components/timetable/TimetableCoursePanel.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
 import ICalExportDialog from '@client/components/timetable/ICalExportDialog.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
@@ -116,31 +116,21 @@ function hasCampusConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 	return timetableStore.campusConflicts.some(([a, b]) => a.slotId === unit.slotId || b.slotId === unit.slotId)
 }
 
-// Course modal state
-const showCourseModal = ref(false)
-const selectedModalUnit = ref<SelectedCourseUnit | null>(null)
+const showCoursePanel = ref(false)
+const selectedPanelUnit = ref<SelectedCourseUnit | null>(null)
 
-// Handle clicking on a course block to open the course modal
 function handleCourseBlockClick(unit: SelectedCourseUnit | MergedUnit) {
-	// If merged, use the first original unit for the modal
-	if (isMergedUnit(unit)) {
-		selectedModalUnit.value = unit.originalUnits[0] || unit
-	} else {
-		selectedModalUnit.value = unit
-	}
-	showCourseModal.value = true
+	selectedPanelUnit.value = isMergedUnit(unit) ? (unit.originalUnits[0] ?? null) : unit
+	showCoursePanel.value = true
 }
 
-// Handle closing the course modal
-function handleCloseModal() {
-	showCourseModal.value = false
-	selectedModalUnit.value = null
+function handleClosePanel() {
+	showCoursePanel.value = false
+	selectedPanelUnit.value = null
 }
 
-// Handle removing a unit (or all merged units)
 function handleRemoveUnit(unit: SelectedCourseUnit | MergedUnit) {
 	if (isMergedUnit(unit)) {
-		// Remove all merged units
 		for (const original of unit.originalUnits) {
 			timetableStore.removeUnit(original.unitId)
 		}
@@ -287,8 +277,7 @@ function getDragSelectionStyleForDay(day: Day) {
 				@cancel="handleDragCancel"
 			/>
 
-			<!-- Course details modal -->
-			<TimetableCourseModal v-if="enableCourseModal && showCourseModal && selectedModalUnit" :unit="selectedModalUnit" @close="handleCloseModal" />
+			<TimetableCoursePanel v-if="enableCourseModal && showCoursePanel && selectedPanelUnit" :unit="selectedPanelUnit" @close="handleClosePanel" />
 
 			<slot />
 		</div>

@@ -70,6 +70,14 @@ Filters are combined — all active filters apply at once. Use **Clear all** in 
 Your timetable is saved in your browser's local storage — it survives page reloads, closing the tab, and restarting your
 browser. The right-side panel shows all selected units grouped by course, with your total ECTS count.
 
+**Clicking a block on the timetable grid** opens a course detail panel from the right edge. The panel shows the day,
+time, room, and lecturer for that slot, then loads the full course detail below (ECTS, completion mode, language,
+assessments, syllabus). From the panel you can:
+
+- **Search in timeslot** — switches to the Course List view pre-filtered to courses available in that exact time window
+- **Remove from timetable** — removes all slots of that course at once
+- **Open in InSIS** — external link in the course title
+
 ---
 
 ## Conflict detection

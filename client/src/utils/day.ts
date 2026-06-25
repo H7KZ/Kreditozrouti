@@ -1,7 +1,7 @@
 import type { Day } from '@shared/domain/constants'
 import type { CourseUnitSlotDTO } from '@shared/http/responses'
-import { compareDateStrings, getDayFromDate, parseDateString } from '@shared/domain/day'
 import { INSIS_DAY_NORM } from '@shared/domain/constants'
+import { compareDateStrings, getDayFromDate, parseDateString } from '@shared/domain/day'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 
 export { compareDateStrings, getDayFromDate, parseDateString }

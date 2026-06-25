@@ -123,8 +123,8 @@ client/src/
 │   │                       #   CoursesHeader, CourseStatusSummary, CourseRefreshButton
 │   ├── filters/            # FilterPanel, FilterCheckboxGroup, FilterTimeRange,
 │   │                       #   FilterToggle, CourseStatusFilter
-│   ├── timetable/          # TimetableGrid, TimetableCourseBlock, TimetableDragPopover,
-│   │                       #   ScheduleSlotsPanel
+│   ├── timetable/          # TimetableGrid, TimetableCourseBlock, TimetableCoursePanel,
+│   │                       #   TimetableAgenda, TimetableDragPopover, ScheduleSlotsPanel
 │   ├── wizard/             # StudyPlanWizard, WizardSteps, WizardStep{Faculty,Year,
 │   │                       #   StudyPlan,CompletedCourses}
 │   ├── admin/              # AdminDatabaseStats, AdminQueueStats, AdminSchedulers,

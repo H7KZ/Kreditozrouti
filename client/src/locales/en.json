@@ -511,19 +511,11 @@
 				"description": "Shows courses that have a schedule slot in this time period.",
 				"searchCourses": "Search courses"
 			},
-			"TimetableCourseModal": {
+			"TimetableCoursePanel": {
 				"courseNotFound": "Course not found",
 				"loadError": "Failed to load course details",
-				"courseInfo": "Course Information",
-				"selectedSlot": "Selected Slot",
 				"removeFromTimetable": "Remove from timetable",
-				"searchInTimeslot": "Search in this timeslot",
-				"filterApplied": "Time filter applied",
-				"filterDescription": "Showing courses available on {day} from {from} to {to}",
-				"slotFree": "Free",
-				"slotConflict": "Conflict: {ident}",
-				"slotCampusConflict": "Campus: {ident}",
-				"lecturer": "Lecturer"
+				"searchInTimeslot": "Search in this timeslot"
 			},
 			"SchedulePicker": {
 				"title": "Saved Schedules",
