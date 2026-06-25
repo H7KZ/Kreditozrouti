@@ -1,4 +1,4 @@
-﻿{
+{
 	"filters": {
 		"syllabusSearch": "Search in course content",
 		"syllabusSearchPlaceholder": "e.g. machine learning, účetnictví...",
@@ -47,22 +47,22 @@
 		"U3V-JH": "University of the Third Age - Jindřichův Hradec"
 	},
 	"days": {
-		"Pondělí": "Monday",
-		"Úterý": "Tuesday",
-		"Středa": "Wednesday",
-		"Čtvrtek": "Thursday",
-		"Pátek": "Friday",
-		"Sobota": "Saturday",
-		"Neděle": "Sunday"
+		"monday": "Monday",
+		"tuesday": "Tuesday",
+		"wednesday": "Wednesday",
+		"thursday": "Thursday",
+		"friday": "Friday",
+		"saturday": "Saturday",
+		"sunday": "Sunday"
 	},
 	"daysShort": {
-		"Pondělí": "Mon",
-		"Úterý": "Tue",
-		"Středa": "Wed",
-		"Čtvrtek": "Thu",
-		"Pátek": "Fri",
-		"Sobota": "Sat",
-		"Neděle": "Sun",
+		"monday": "Mon",
+		"tuesday": "Tue",
+		"wednesday": "Wed",
+		"thursday": "Thu",
+		"friday": "Fri",
+		"saturday": "Sat",
+		"sunday": "Sun",
 		"-": "-"
 	},
 	"courseLevels": {
@@ -133,12 +133,14 @@
 		"seminar": "seminar"
 	},
 	"studyLevels": {
-		"magisterský navazující": "Follow-up Master's",
-		"doktorský": "Doctoral",
-		"bakalářský": "Bachelor's",
-		"celoživotní vzdělávání": "Lifelong Learning",
-		"zahraniční studenti": "International Students",
-		"magisterský": "Master's"
+		"bachelor": "Bachelor's",
+		"master": "Follow-up Master's",
+		"doctoral": "Doctoral",
+		"mba": "MBA",
+		"course": "Course",
+		"lifelong_learning": "Lifelong Learning",
+		"international_students": "International Students",
+		"master_undivided": "Master's"
 	},
 	"semesters": {
 		"ZS": "Winter semester",
