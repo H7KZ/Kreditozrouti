@@ -12,7 +12,7 @@ import { useAnnouncerStore } from '@client/stores/announcer.store'
 import { useFiltersStore } from '@client/stores/filters.store'
 import { useScheduleSlotsStore } from '@client/stores/schedule-slots.store'
 import { getSlotType } from '@client/utils/course'
-import { getDayFromDate } from '@client/utils/day'
+import { getDayFromDate, migrateLegacyDay } from '@client/utils/day'
 import { loadFromStorage, removeFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
 import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from '@client/utils/timetable'
 
@@ -424,7 +424,10 @@ export const useTimetableStore = defineStore('timetable', () => {
 
 	function hydrate() {
 		const state = loadFromStorage<PersistedTimetableState>(STORAGE_KEYS.TIMETABLE)
-		if (state?.selectedUnits) selectedUnits.value = state.selectedUnits
+		if (state?.selectedUnits) {
+			// TEMP: migrate old InSIS Czech day strings — remove after 2026-07-25
+			selectedUnits.value = state.selectedUnits.map(u => ({ ...u, day: migrateLegacyDay(u.day) }))
+		}
 	}
 
 	function loadUnits(units: SelectedCourseUnit[]) {
