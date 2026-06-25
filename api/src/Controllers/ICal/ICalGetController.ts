@@ -1,4 +1,4 @@
-import type { ICalConfig, ICalCreateRequest, ICalUnit } from '@shared/http/ical'
+import type { ICalCreateRequest } from '@shared/http/ical'
 import { Request, Response } from 'express'
 import { redis } from '@api/clients'
 import { Errors } from '@api/Errors'
@@ -16,7 +16,7 @@ export default async function ICalGetController(req: Request, res: Response) {
 
 	const { units, configs, semesterStart, semesterEnd } = JSON.parse(raw) as ICalCreateRequest
 
-	const ics = generateIcal(units as ICalUnit[], configs as ICalConfig[], new Date(semesterStart), new Date(semesterEnd))
+	const ics = generateIcal(units, configs, new Date(semesterStart), new Date(semesterEnd))
 
 	res.setHeader('Content-Type', 'text/calendar; charset=utf-8')
 	res.setHeader('Content-Disposition', 'attachment; filename="rozvrh-kreditozrouti.ics"')

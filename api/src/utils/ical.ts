@@ -41,7 +41,7 @@ function fold(line: string): string {
 	while (start < bytes.length) {
 		const limit = firstLine ? 75 : 74
 		let end = start + limit
-		while (end < bytes.length && (bytes[end]! & 0xc0) === 0x80) end--
+		while (end < bytes.length && ((bytes[end] ?? 0) & 0xc0) === 0x80) end--
 		result.push((firstLine ? '' : ' ') + bytes.slice(start, end).toString('utf8'))
 		start = end
 		firstLine = false
@@ -77,8 +77,9 @@ export function generateIcal(units: ICalUnit[], configs: ICalConfig[], semesterS
 		const description = `${rawDescription}\n\n${WATERMARK}`
 		const uid = `slot-${unit.slotId}@kreditozrouti.cz`
 
-		if (unit.day && DAY_MAP[unit.day]) {
-			const { byday, jsDay } = DAY_MAP[unit.day]!
+		const dayEntry = unit.day ? DAY_MAP[unit.day] : undefined
+		if (dayEntry) {
+			const { byday, jsDay } = dayEntry
 			const firstDate = firstOccurrence(semesterStart, jsDay)
 
 			if (firstDate > untilDate) continue
