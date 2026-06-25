@@ -1,5 +1,5 @@
-import type { InSISDay } from '@shared/domain/insis'
 import type { SelectedCourseUnit } from '@client/types'
+import type { InSISDay } from '@shared/domain/insis'
 
 export interface ICalCourseConfig {
 	courseId: number
@@ -16,7 +16,7 @@ const DAY_MAP: Record<InSISDay, { byday: string; jsDay: number }> = {
 	Čtvrtek: { byday: 'TH', jsDay: 4 },
 	Pátek: { byday: 'FR', jsDay: 5 },
 	Sobota: { byday: 'SA', jsDay: 6 },
-	Neděle: { byday: 'SU', jsDay: 0 },
+	Neděle: { byday: 'SU', jsDay: 0 }
 }
 
 function pad(n: number): string {
@@ -27,10 +27,7 @@ function pad(n: number): string {
 function toIcalLocal(date: Date, minutesFromMidnight: number): string {
 	const h = Math.floor(minutesFromMidnight / 60)
 	const m = minutesFromMidnight % 60
-	return (
-		`${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}` +
-		`T${pad(h)}${pad(m)}00`
-	)
+	return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}` + `T${pad(h)}${pad(m)}00`
 }
 
 /** Escape RFC 5545 text: backslash, comma, semicolon, newline */
@@ -84,24 +81,13 @@ const WATERMARK = 'kreditozrouti.cz'
  * Recurring units (day-based) get RRULE:FREQ=WEEKLY;UNTIL=<semesterEnd>.
  * One-off units (date-based) get a single VEVENT with no RRULE.
  */
-export function generateIcal(
-	units: SelectedCourseUnit[],
-	configs: ICalCourseConfig[],
-	semesterStart: Date,
-	semesterEnd: Date
-): string {
+export function generateIcal(units: SelectedCourseUnit[], configs: ICalCourseConfig[], semesterStart: Date, semesterEnd: Date): string {
 	const configMap = new Map<number, ICalCourseConfig>(configs.map(c => [c.courseId, c]))
 
 	const untilDate = new Date(semesterEnd)
 	untilDate.setHours(23, 59, 59, 0)
 
-	const lines: string[] = [
-		'BEGIN:VCALENDAR',
-		'VERSION:2.0',
-		'PRODID:-//kreditozrouti.cz//Kreditozrouti//CS',
-		'CALSCALE:GREGORIAN',
-		'METHOD:PUBLISH',
-	]
+	const lines: string[] = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//kreditozrouti.cz//Kreditozrouti//CS', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH']
 
 	for (const unit of units) {
 		const cfg = configMap.get(unit.courseId)

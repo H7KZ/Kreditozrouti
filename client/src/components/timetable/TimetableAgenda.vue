@@ -6,8 +6,10 @@ import type { InSISDay } from '@shared/domain/insis'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
+import ICalExportDialog from '@client/components/timetable/ICalExportDialog.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useAlertsStore, useTimetableStore } from '@client/stores'
+import IconCalendarDown from '~icons/lucide/calendar-arrow-down'
 import IconDownload from '~icons/lucide/download'
 import IconLoaderCircle from '~icons/lucide/loader-circle'
 import IconShare2 from '~icons/lucide/share-2'
@@ -30,6 +32,7 @@ const alertsStore = useAlertsStore()
 const agendaRef = ref<HTMLElement | null>(null)
 const { exportSchedule, exporting } = useScheduleExport(agendaRef)
 const { sharing, shareTimetable } = useShareTimetable()
+const showICalDialog = ref(false)
 
 async function handleShare() {
 	const units = props.units ?? timetableStore.selectedUnits
@@ -151,7 +154,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 				<IconLoaderCircle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
 				{{ sharing ? $t('components.timetable.TimetableGrid.sharing') : $t('components.timetable.TimetableGrid.share') }}
 			</button>
-			<!-- Export button -->
+			<!-- Export to image button -->
 			<button
 				v-if="showExport"
 				type="button"
@@ -162,6 +165,17 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 				<IconDownload v-if="!exporting" class="h-3.5 w-3.5" aria-hidden="true" />
 				<IconLoaderCircle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
 				{{ exporting ? $t('components.timetable.TimetableAgenda.exporting') : $t('components.timetable.TimetableAgenda.saveAsImage') }}
+			</button>
+
+			<!-- Export to calendar button -->
+			<button
+				v-if="showExport"
+				type="button"
+				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8"
+				@click="showICalDialog = true"
+			>
+				<IconCalendarDown class="h-3.5 w-3.5" aria-hidden="true" />
+				{{ $t('components.timetable.TimetableAgenda.exportToCalendar') }}
 			</button>
 		</div>
 
@@ -242,5 +256,6 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 		</template>
 
 		<TimetableCourseModal v-if="enableCourseModal && showModal && modalUnit" :unit="modalUnit" @close="closeModal" />
+		<ICalExportDialog v-model="showICalDialog" :units="units ?? timetableStore.selectedUnits" />
 	</div>
 </template>

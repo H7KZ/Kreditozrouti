@@ -8,9 +8,7 @@ import { useWizardStore } from '@client/stores'
 import IconCalendarDown from '~icons/lucide/calendar-arrow-down'
 import IconX from '~icons/lucide/x'
 
-// ============================================================================
 // Props & emits
-// ============================================================================
 
 interface Props {
 	modelValue: boolean
@@ -24,26 +22,20 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-// ============================================================================
 // i18n & stores
-// ============================================================================
 
 const { t, locale } = useI18n()
 const wizardStore = useWizardStore()
 const { exportIcal } = useICalExport()
 
-// ============================================================================
 // Semester date range state
-// ============================================================================
 
 const defaults = computed(() => getDefaultSemesterDates(wizardStore.year, wizardStore.semester))
 
 const semesterStart = ref(defaults.value.start)
 const semesterEnd = ref(defaults.value.end)
 
-// ============================================================================
 // Per-course row state
-// ============================================================================
 
 interface CourseRow extends ICalCourseConfig {
 	courseIdent: string
@@ -62,10 +54,7 @@ function initRows() {
 		if (seen.has(unit.courseId)) continue
 		seen.add(unit.courseId)
 
-		const courseTitle =
-			locale.value === 'en'
-				? unit.courseTitleEn || unit.courseTitle
-				: unit.courseTitleCs || unit.courseTitle
+		const courseTitle = locale.value === 'en' ? unit.courseTitleEn || unit.courseTitle : unit.courseTitleCs || unit.courseTitle
 
 		const firstLocation = props.units.find(u => u.courseId === unit.courseId && u.location)?.location ?? ''
 		const firstLecturer = props.units.find(u => u.courseId === unit.courseId && u.lecturer)?.lecturer ?? ''
@@ -75,7 +64,7 @@ function initRows() {
 			courseIdent: unit.courseIdent,
 			title: courseTitle,
 			location: firstLocation,
-			description: `${unit.courseIdent}${firstLecturer ? ` · ${firstLecturer}` : ''}`,
+			description: `${unit.courseIdent}${firstLecturer ? ` · ${firstLecturer}` : ''}`
 		})
 	}
 
@@ -89,9 +78,7 @@ watch(
 	}
 )
 
-// ============================================================================
 // Actions
-// ============================================================================
 
 function close() {
 	emit('update:modelValue', false)
@@ -105,11 +92,7 @@ function handleDownload() {
 
 <template>
 	<Teleport to="body">
-		<div
-			v-if="modelValue"
-			class="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
-			@click.self="close"
-		>
+		<div v-if="modelValue" class="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center" @click.self="close">
 			<div class="flex w-full max-w-3xl flex-col gap-4 rounded-lg bg-(--insis-surface) p-6 shadow-xl">
 				<!-- Header -->
 				<div class="flex items-start justify-between gap-4">
@@ -140,7 +123,7 @@ function handleDownload() {
 								<input
 									v-model="semesterStart"
 									type="date"
-									class="rounded border border-(--insis-border) bg-(--insis-surface) px-2 py-1 text-sm text-(--insis-gray-900) focus:outline-none focus:ring-2 focus:ring-(--insis-blue)/40"
+									class="rounded border border-(--insis-border) bg-(--insis-surface) px-2 py-1 text-sm text-(--insis-gray-900) focus:ring-2 focus:ring-(--insis-blue)/40 focus:outline-none"
 								/>
 							</label>
 							<label class="flex flex-col gap-1">
@@ -150,7 +133,7 @@ function handleDownload() {
 								<input
 									v-model="semesterEnd"
 									type="date"
-									class="rounded border border-(--insis-border) bg-(--insis-surface) px-2 py-1 text-sm text-(--insis-gray-900) focus:outline-none focus:ring-2 focus:ring-(--insis-blue)/40"
+									class="rounded border border-(--insis-border) bg-(--insis-surface) px-2 py-1 text-sm text-(--insis-gray-900) focus:ring-2 focus:ring-(--insis-blue)/40 focus:outline-none"
 								/>
 							</label>
 						</div>
@@ -177,31 +160,27 @@ function handleDownload() {
 									</tr>
 								</thead>
 								<tbody>
-									<tr
-										v-for="row in rows"
-										:key="row.courseId"
-										class="border-t border-(--insis-border)"
-									>
+									<tr v-for="row in rows" :key="row.courseId" class="border-t border-(--insis-border)">
 										<td class="px-3 py-2">
 											<div class="mb-1 font-mono text-xs text-(--insis-gray-500)">{{ row.courseIdent }}</div>
 											<input
 												v-model="row.title"
 												type="text"
-												class="w-full rounded border border-(--insis-border) bg-(--insis-surface) px-2 py-1 text-xs text-(--insis-gray-900) focus:outline-none focus:ring-1 focus:ring-(--insis-blue)/40"
+												class="w-full rounded border border-(--insis-border) bg-(--insis-surface) px-2 py-1 text-xs text-(--insis-gray-900) focus:ring-1 focus:ring-(--insis-blue)/40 focus:outline-none"
 											/>
 										</td>
 										<td class="px-3 py-2">
 											<input
 												v-model="row.location"
 												type="text"
-												class="w-full rounded border border-(--insis-border) bg-(--insis-surface) px-2 py-1 text-xs text-(--insis-gray-900) focus:outline-none focus:ring-1 focus:ring-(--insis-blue)/40"
+												class="w-full rounded border border-(--insis-border) bg-(--insis-surface) px-2 py-1 text-xs text-(--insis-gray-900) focus:ring-1 focus:ring-(--insis-blue)/40 focus:outline-none"
 											/>
 										</td>
 										<td class="px-3 py-2">
 											<input
 												v-model="row.description"
 												type="text"
-												class="w-full rounded border border-(--insis-border) bg-(--insis-surface) px-2 py-1 text-xs text-(--insis-gray-900) focus:outline-none focus:ring-1 focus:ring-(--insis-blue)/40"
+												class="w-full rounded border border-(--insis-border) bg-(--insis-surface) px-2 py-1 text-xs text-(--insis-gray-900) focus:ring-1 focus:ring-(--insis-blue)/40 focus:outline-none"
 											/>
 										</td>
 									</tr>
@@ -212,11 +191,7 @@ function handleDownload() {
 
 					<!-- Footer buttons -->
 					<div class="flex flex-col gap-2 sm:flex-row-reverse">
-						<button
-							type="button"
-							class="insis-btn insis-btn-primary flex items-center justify-center gap-1.5 text-sm"
-							@click="handleDownload"
-						>
+						<button type="button" class="insis-btn insis-btn-primary flex items-center justify-center gap-1.5 text-sm" @click="handleDownload">
 							<IconCalendarDown class="h-4 w-4" aria-hidden="true" />
 							{{ t('components.timetable.ICalExportDialog.download') }}
 						</button>

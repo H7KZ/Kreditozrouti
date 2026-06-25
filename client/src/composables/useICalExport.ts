@@ -1,8 +1,8 @@
-import type { InSISSemester } from '@shared/domain/insis'
 import type { SelectedCourseUnit } from '@client/types'
 import type { ICalCourseConfig } from '@client/utils/ical'
-import { generateIcal } from '@client/utils/ical'
+import type { InSISSemester } from '@shared/domain/insis'
 import analytics from '@client/analytics'
+import { generateIcal } from '@client/utils/ical'
 
 /**
  * Returns default semester start/end dates for the given VŠE academic year and semester.
@@ -10,10 +10,7 @@ import analytics from '@client/analytics'
  * ZS: late September → mid-January next year (13 weeks)
  * LS: mid-February next year → late May next year (13 weeks)
  */
-export function getDefaultSemesterDates(
-	year: number | null,
-	semester: InSISSemester
-): { start: string; end: string } {
+export function getDefaultSemesterDates(year: number | null, semester: InSISSemester): { start: string; end: string } {
 	const y = year ?? new Date().getFullYear()
 	if (semester === 'ZS') {
 		return { start: `${y}-09-29`, end: `${y + 1}-01-17` }
@@ -22,12 +19,7 @@ export function getDefaultSemesterDates(
 }
 
 export function useICalExport() {
-	function exportIcal(
-		units: SelectedCourseUnit[],
-		configs: ICalCourseConfig[],
-		semesterStart: string,
-		semesterEnd: string
-	): void {
+	function exportIcal(units: SelectedCourseUnit[], configs: ICalCourseConfig[], semesterStart: string, semesterEnd: string): void {
 		if (units.length === 0) return
 
 		const icsContent = generateIcal(units, configs, new Date(semesterStart), new Date(semesterEnd))
