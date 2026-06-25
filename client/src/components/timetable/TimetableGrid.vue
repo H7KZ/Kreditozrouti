@@ -9,8 +9,10 @@ import TimetableAgenda from '@client/components/timetable/TimetableAgenda.vue'
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
 import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
+import ICalExportDialog from '@client/components/timetable/ICalExportDialog.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
 import { useAlertsStore, useDragStore, useTimetableStore } from '@client/stores'
+import IconCalendarDown from '~icons/lucide/calendar-arrow-down'
 import IconDownload from '~icons/lucide/download'
 import IconLoaderCircle from '~icons/lucide/loader-circle'
 import IconShare2 from '~icons/lucide/share-2'
@@ -78,6 +80,7 @@ const { handleMouseDown, handleDragFilter, handleDragCancel } = useTimetableDrag
 
 const { exportSchedule, exporting } = useScheduleExport(gridRef)
 const { sharing, shareTimetable } = useShareTimetable()
+const showICalDialog = ref(false)
 
 async function handleShare() {
 	const url = await shareTimetable(timetableStore.selectedUnits)
@@ -173,7 +176,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 					{{ sharing ? $t('components.timetable.TimetableGrid.sharing') : $t('components.timetable.TimetableGrid.share') }}
 				</button>
 
-				<!-- Export button -->
+				<!-- Export to image button -->
 				<button
 					v-if="showExport"
 					type="button"
@@ -183,7 +186,18 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 				>
 					<IconDownload v-if="!exporting" class="h-3.5 w-3.5" aria-hidden="true" />
 					<IconLoaderCircle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
-					{{ exporting ? 'Exportuji...' : 'Uložit jako obrázek' }}
+					{{ exporting ? $t('components.timetable.TimetableAgenda.exporting') : $t('components.timetable.TimetableAgenda.saveAsImage') }}
+				</button>
+
+				<!-- Export to calendar button -->
+				<button
+					v-if="showExport"
+					type="button"
+					class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8"
+					@click="showICalDialog = true"
+				>
+					<IconCalendarDown class="h-3.5 w-3.5" aria-hidden="true" />
+					{{ $t('components.timetable.TimetableGrid.exportToCalendar') }}
 				</button>
 			</div>
 			<div ref="gridRef" class="overflow-x-auto">
@@ -278,5 +292,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 
 			<slot />
 		</div>
+
+		<ICalExportDialog v-model="showICalDialog" :units="units ?? timetableStore.selectedUnits" />
 	</div>
 </template>

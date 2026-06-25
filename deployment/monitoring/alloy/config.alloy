@@ -1,9 +1,7 @@
-// ============================================================
 // Docker container log discovery → Loki
 // Reads container stdout/stderr via Docker socket.
 // Parses JSON lines (pino output) and extracts log level,
 // service, and env as Loki stream labels.
-// ============================================================
 
 discovery.docker "containers" {
   host = "unix:///var/run/docker.sock"
@@ -93,13 +91,11 @@ loki.write "default" {
   }
 }
 
-// ============================================================
 // Grafana Faro receiver
 // Accepts browser telemetry pushed by @grafana/faro-web-sdk.
 // Forwards errors, logs, and web vitals to Loki.
 // Browser SDK points to: https://domain/faro/collect (production)
 //                        http://localhost:41247/collect (local dev)
-// ============================================================
 
 faro.receiver "browser" {
   server {
@@ -142,10 +138,8 @@ loki.process "faro_labels" {
   forward_to = [loki.write.default.receiver]
 }
 
-// ============================================================
 // OTLP receiver — API and Scraper push traces here.
 // Accessible from app containers via traefik-network.
-// ============================================================
 
 otelcol.receiver.otlp "default" {
   grpc {

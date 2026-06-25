@@ -469,7 +469,8 @@
 				"free": "volno",
 				"confirmRemove": "Odebrat kurz z rozvrhu?",
 				"saveAsImage": "Uložit jako obrázek",
-				"exporting": "Exportuji..."
+				"exporting": "Exportuji...",
+				"exportToCalendar": "Exportovat do kalendáře"
 			},
 			"TimetableGrid": {
 				"dayHeader": "Den",
@@ -478,7 +479,24 @@
 				"share": "Sdílet rozvrh",
 				"sharing": "Sdílím...",
 				"shareCopied": "Odkaz zkopírován!",
-				"shareError": "Sdílení se nezdařilo"
+				"shareError": "Sdílení se nezdařilo",
+				"exportToCalendar": "Exportovat do kalendáře"
+			},
+			"ICalExportDialog": {
+				"title": "Exportovat rozvrh do kalendáře",
+				"semesterRange": "Rozsah semestru",
+				"semesterStart": "Začátek semestru",
+				"semesterEnd": "Konec semestru",
+				"courseCustomization": "Přizpůsobení slotů",
+				"slot": "Slot",
+				"courseTitle": "Název",
+				"courseLocation": "Místo",
+				"courseDescription": "Popis",
+				"download": "Stáhnout .ics",
+				"copyLink": "Zkopírovat odkaz na kalendář",
+				"linkCopied": "Zkopírováno!",
+				"cancel": "Zrušit",
+				"noUnits": "Nejsou vybrány žádné předměty."
 			},
 			"TimetableCourseBlock": {
 				"removeFromTimetable": "Odebrat z rozvrhu",

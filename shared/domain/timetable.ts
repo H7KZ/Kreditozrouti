@@ -3,9 +3,7 @@ import type { CourseUnitType, InSISDay } from './insis.js'
 import { InSISDayValues } from './insis.js'
 import type { TimeSelection } from './time.js'
 
-// ---------------------------------------------------------------------------
 // Campus detection
-// ---------------------------------------------------------------------------
 
 const JM_PREFIXES = ['JM']
 const ZIZKOV_PREFIXES = ['RB', 'NB', 'IB', 'SB']
@@ -27,9 +25,7 @@ export function getCampus(location: string | null | undefined): Campus {
 	return 'unknown'
 }
 
-// ---------------------------------------------------------------------------
 // Scheduled unit — minimal structural interface for conflict checks
-// ---------------------------------------------------------------------------
 
 /** Minimal shape required by conflict detection functions. */
 export interface ScheduledUnit {
@@ -70,9 +66,7 @@ export function unitsCampusConflict(a: ScheduledUnit, b: ScheduledUnit): boolean
 	return gap >= 0 && gap < CAMPUS_TRAVEL_MINUTES
 }
 
-// ---------------------------------------------------------------------------
 // Course completeness
-// ---------------------------------------------------------------------------
 
 /** Minimal shape required by checkCourseCompleteness. */
 export interface ScheduledCourseUnit {
@@ -101,9 +95,7 @@ export function checkCourseCompleteness(units: ScheduledCourseUnit[]): {
 	return { isIncomplete: missingTypes.length > 0 && selectedTypes.size > 0, missingTypes }
 }
 
-// ---------------------------------------------------------------------------
 // Time selection sorting
-// ---------------------------------------------------------------------------
 
 /**
  * Comparator for sorting TimeSelection objects by day index, then start time,

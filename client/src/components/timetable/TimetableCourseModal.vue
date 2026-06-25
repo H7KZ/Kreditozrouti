@@ -19,9 +19,7 @@ const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
 const uiStore = useUIStore()
 
-// ============================================================================
 // Props & Emits
-// ============================================================================
 
 interface Props {
 	unit: SelectedCourseUnit
@@ -34,32 +32,24 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-// ============================================================================
 // State
-// ============================================================================
 
 const modalRef = ref<HTMLElement | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const course = ref<CourseWithRelationsDTO | null>(null)
 
-// ============================================================================
 // Composables
-// ============================================================================
 
 const { getDayLabel, getUnitCourseTitle } = useCourseLabels()
 const { formatTimeRange } = useTimeUtils()
 
-// ============================================================================
 // Computed
-// ============================================================================
 
 const dayLabel = computed(() => (props.unit.day ? getDayLabel(props.unit.day) : '-'))
 const timeRange = computed(() => formatTimeRange(props.unit.timeFrom, props.unit.timeTo))
 
-// ============================================================================
 // API
-// ============================================================================
 
 async function fetchCourse() {
 	loading.value = true
@@ -86,9 +76,7 @@ async function fetchCourse() {
 
 watch(() => props.unit.courseId, fetchCourse, { immediate: true })
 
-// ============================================================================
 // Actions
-// ============================================================================
 
 function handleSearchInTimeslot() {
 	filtersStore.filters.include_times = [{ day: props.unit.day ?? 'Pondělí', time_from: props.unit.timeFrom, time_to: props.unit.timeTo }]
@@ -107,9 +95,7 @@ function handleRemoveCourseAndClose() {
 	emit('close')
 }
 
-// ============================================================================
 // Keyboard & Click Outside
-// ============================================================================
 
 function handleKeydown(event: KeyboardEvent) {
 	if (event.key === 'Escape') emit('close')

@@ -469,7 +469,8 @@
 				"free": "free",
 				"confirmRemove": "Remove course from timetable?",
 				"saveAsImage": "Save as image",
-				"exporting": "Exporting..."
+				"exporting": "Exporting...",
+				"exportToCalendar": "Export to calendar"
 			},
 			"TimetableGrid": {
 				"dayHeader": "Day",
@@ -478,7 +479,24 @@
 				"share": "Share timetable",
 				"sharing": "Sharing...",
 				"shareCopied": "Link copied!",
-				"shareError": "Sharing failed"
+				"shareError": "Sharing failed",
+				"exportToCalendar": "Export to calendar"
+			},
+			"ICalExportDialog": {
+				"title": "Export timetable to calendar",
+				"semesterRange": "Semester range",
+				"semesterStart": "Semester start",
+				"semesterEnd": "Semester end",
+				"courseCustomization": "Slot customisation",
+				"slot": "Slot",
+				"courseTitle": "Title",
+				"courseLocation": "Location",
+				"courseDescription": "Description",
+				"download": "Download .ics",
+				"copyLink": "Copy calendar link",
+				"linkCopied": "Copied!",
+				"cancel": "Cancel",
+				"noUnits": "No courses selected."
 			},
 			"TimetableCourseBlock": {
 				"removeFromTimetable": "Remove from timetable",

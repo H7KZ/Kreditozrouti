@@ -2,14 +2,12 @@ import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyP
 import type { FacetItem } from './facets.js'
 import type { PaginationMeta } from './pagination.js'
 
-// ---------------------------------------------------------------------------
 // Entity DTOs — mirror the JSON wire format exactly
 //
 // Note: `created_at` and `updated_at` are typed as `string` because they
 // represent ISO-8601 strings produced by JSON.stringify (which serialises
 // JS Date objects to strings). The Kysely layer inside the API holds these
 // as Date objects — the string type here reflects the over-the-wire format.
-// ---------------------------------------------------------------------------
 
 export interface FacultyDTO {
 	id: string
@@ -135,7 +133,6 @@ export interface StudyPlanWithRelationsDTO extends StudyPlanDTO {
 	courses: StudyPlanCourseDTO[]
 }
 
-// ---------------------------------------------------------------------------
 // Response DTOs — wire format for each endpoint
 //
 // Facet shapes must stay in sync with the authoritative API response types:
@@ -143,7 +140,6 @@ export interface StudyPlanWithRelationsDTO extends StudyPlanDTO {
 //   api/src/Controllers/Kreditozrouti/types/StudyPlansResponse.ts
 //   api/src/Controllers/Kreditozrouti/types/StudyPlanCoursesResponse.ts
 // When the API adds or renames a facet key, update the corresponding DTO here.
-// ---------------------------------------------------------------------------
 
 export interface CoursesResponseDTO {
 	data: CourseWithRelationsDTO[]
