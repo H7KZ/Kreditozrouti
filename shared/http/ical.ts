@@ -30,7 +30,7 @@ export interface ICalCreateRequest {
 	units: ICalUnit[]
 	configs: ICalConfig[]
 	semesterStart: string // YYYY-MM-DD
-	semesterEnd: string   // YYYY-MM-DD
+	semesterEnd: string // YYYY-MM-DD
 }
 
 export interface ICalCreateResponse {

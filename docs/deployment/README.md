@@ -89,4 +89,5 @@ MySQL and Redis are never directly reachable from outside the host.
 - [CI/CD pipeline](CICD.md) — GitHub Actions workflows, secrets, version directories, rollback
 - [Infrastructure](INFRASTRUCTURE.md) — Traefik, networking, volumes, env vars
 - [Operations](OPERATIONS.md) — monitoring, logging, security, backup, maintenance, troubleshooting
-- [Monitoring](MONITORING.md) — full observability stack: pipeline diagram, Loki labels, Prometheus metrics, Grafana dashboards, trace correlation, troubleshooting
+- [Monitoring](MONITORING.md) — full observability stack: pipeline diagram, Loki labels, Prometheus metrics, Grafana
+  dashboards, trace correlation, troubleshooting

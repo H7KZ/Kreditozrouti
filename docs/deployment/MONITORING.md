@@ -74,14 +74,14 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 
 ## Components
 
-| Component     | Image                       | Role                                                  |
-|---------------|-----------------------------|-------------------------------------------------------|
+| Component     | Image                       | Role                                                    |
+|---------------|-----------------------------|---------------------------------------------------------|
 | Alloy         | `grafana/alloy:latest`      | Log shipping (Docker socket), Faro receiver, OTLP relay |
-| Loki          | `grafana/loki:3`            | Log storage (30-day retention, filesystem backend)    |
-| Tempo         | `grafana/tempo:latest`      | Distributed trace storage (7-day retention)           |
-| Prometheus    | `prom/prometheus:latest`    | Metrics scraping and storage (15-day retention)       |
-| Grafana       | `grafana/grafana:latest`    | Dashboards and alerting (served at `/grafana`)        |
-| node-exporter | `prom/node-exporter:latest` | Host CPU / memory / disk metrics                      |
+| Loki          | `grafana/loki:3`            | Log storage (30-day retention, filesystem backend)      |
+| Tempo         | `grafana/tempo:latest`      | Distributed trace storage (7-day retention)             |
+| Prometheus    | `prom/prometheus:latest`    | Metrics scraping and storage (15-day retention)         |
+| Grafana       | `grafana/grafana:latest`    | Dashboards and alerting (served at `/grafana`)          |
+| node-exporter | `prom/node-exporter:latest` | Host CPU / memory / disk metrics                        |
 
 All components run in the `monitoring-network` Docker network. Grafana and Alloy also join `traefik-network`
 (for public routing). API and scraper join `alloy-network` (for OTLP push to Alloy).
@@ -94,47 +94,47 @@ All components run in the `monitoring-network` Docker network. Grafana and Alloy
 
 Every log line carries these base fields (set in `api/src/logger.ts` and `scraper/src/logger.ts`):
 
-| Field       | Type   | Example              | Notes                                      |
-|-------------|--------|----------------------|--------------------------------------------|
-| `level`     | string | `"INFO"`             | Uppercase via `formatters.level`           |
-| `service`   | string | `"api"` / `"scraper"`| Set as pino `base`                        |
-| `env`       | string | `"production"`       | Set as pino `base` from `Config.env`       |
-| `time`      | string | `"2024-01-15T10:23:00.000Z"` | ISO-8601 via `pino.stdTimeFunctions.isoTime` |
-| `msg`       | string | `"http.request"`     |                                            |
+| Field     | Type   | Example                      | Notes                                        |
+|-----------|--------|------------------------------|----------------------------------------------|
+| `level`   | string | `"INFO"`                     | Uppercase via `formatters.level`             |
+| `service` | string | `"api"` / `"scraper"`        | Set as pino `base`                           |
+| `env`     | string | `"production"`               | Set as pino `base` from `Config.env`         |
+| `time`    | string | `"2024-01-15T10:23:00.000Z"` | ISO-8601 via `pino.stdTimeFunctions.isoTime` |
+| `msg`     | string | `"http.request"`             |                                              |
 
 HTTP request logs also carry (via `LoggerAPIContext`):
 
-| Field        | Type   | Notes                                             |
-|--------------|--------|---------------------------------------------------|
-| `context`    | string | `"http"` (stream label in Loki)                   |
-| `request_id` | string | UUID per request (structured metadata in Loki)    |
-| `method`     | string | HTTP method                                       |
-| `path`       | string | Request path (used by Alloy drop rule)            |
-| `status_code`| number |                                                   |
-| `duration_ms`| number |                                                   |
-| `trace_id`   | string | Injected by `@opentelemetry/instrumentation-pino` |
-| `span_id`    | string | Injected by `@opentelemetry/instrumentation-pino` |
+| Field         | Type   | Notes                                             |
+|---------------|--------|---------------------------------------------------|
+| `context`     | string | `"http"` (stream label in Loki)                   |
+| `request_id`  | string | UUID per request (structured metadata in Loki)    |
+| `method`      | string | HTTP method                                       |
+| `path`        | string | Request path (used by Alloy drop rule)            |
+| `status_code` | number |                                                   |
+| `duration_ms` | number |                                                   |
+| `trace_id`    | string | Injected by `@opentelemetry/instrumentation-pino` |
+| `span_id`     | string | Injected by `@opentelemetry/instrumentation-pino` |
 
 Job logs carry (via `LoggerJobContext`):
 
-| Field        | Type   | Notes                                                        |
-|--------------|--------|--------------------------------------------------------------|
-| `context`    | string | `"job"` (stream label in Loki)                               |
-| `queue_name` | string | BullMQ queue name (scraper); API `withJobLogger` emits `queue`) |
-| `job_id`     | string |                                                              |
-| `job_name`   | string |                                                              |
-| `attempt`    | number |                                                              |
-| `duration_ms`| number |                                                              |
+| Field         | Type   | Notes                                                           |
+|---------------|--------|-----------------------------------------------------------------|
+| `context`     | string | `"job"` (stream label in Loki)                                  |
+| `queue_name`  | string | BullMQ queue name (scraper); API `withJobLogger` emits `queue`) |
+| `job_id`      | string |                                                                 |
+| `job_name`    | string |                                                                 |
+| `attempt`     | number |                                                                 |
+| `duration_ms` | number |                                                                 |
 
 ### Log levels
 
-| Level   | When to use                                          |
-|---------|------------------------------------------------------|
-| `debug` | Routine details (dropped in production, level=`info`)|
-| `info`  | Normal lifecycle events                              |
-| `warn`  | 4xx responses, unexpected-but-recoverable situations |
-| `error` | 5xx responses, job failures, unhandled exceptions    |
-| `fatal` | Startup failures that kill the process               |
+| Level   | When to use                                           |
+|---------|-------------------------------------------------------|
+| `debug` | Routine details (dropped in production, level=`info`) |
+| `info`  | Normal lifecycle events                               |
+| `warn`  | 4xx responses, unexpected-but-recoverable situations  |
+| `error` | 5xx responses, job failures, unhandled exceptions     |
+| `fatal` | Startup failures that kill the process                |
 
 ### How to add logging in new code
 
@@ -158,6 +158,7 @@ LoggerAPIContext.add({ user_id: session.userId })
 ```
 
 **What not to do:**
+
 - `console.log` — bypasses structured logging, no labels extracted by Alloy
 - Raw `logger.info(message)` string only — always pass a data object as the first argument
 
@@ -170,22 +171,24 @@ Config: `deployment/monitoring/alloy/config.alloy`
 ### Container log collection
 
 1. `discovery.docker` discovers all containers via Docker socket
-2. `discovery.relabel` drops monitoring infra containers (grafana, prometheus, loki, alloy, node-exporter, umami, postgres)
+2. `discovery.relabel` drops monitoring infra containers (grafana, prometheus, loki, alloy, node-exporter, umami,
+   postgres)
 3. `loki.source.docker` reads stdout from surviving containers
 4. `loki.process.parse_json`:
-   - `stage.json` extracts `level`, `service`, `env`, `context`, `request_id`, `path`, `trace_id`, `span_id`
-   - `stage.drop` discards `/health` and `/metrics` path logs (high-frequency, zero signal)
-   - `stage.labels` promotes `level`, `service`, `env`, `context` to Loki stream labels
-   - `stage.structured_metadata` stores `request_id`, `trace_id`, `span_id` as per-log metadata (not stream labels — avoids cardinality explosion)
+	- `stage.json` extracts `level`, `service`, `env`, `context`, `request_id`, `path`, `trace_id`, `span_id`
+	- `stage.drop` discards `/health` and `/metrics` path logs (high-frequency, zero signal)
+	- `stage.labels` promotes `level`, `service`, `env`, `context` to Loki stream labels
+	- `stage.structured_metadata` stores `request_id`, `trace_id`, `span_id` as per-log metadata (not stream labels —
+	  avoids cardinality explosion)
 5. `loki.write` pushes to `http://loki:3100/loki/api/v1/push`
 
 ### Faro browser telemetry
 
 1. `faro.receiver` listens on `:12347` (Traefik routes `/faro/*` here)
 2. `loki.process.faro_labels`:
-   - `stage.static_labels` sets `app="kreditozrouti"`
-   - `stage.logfmt` extracts `kind`, `environment`
-   - `stage.labels` promotes `kind` and `env` (from `environment`) as stream labels
+	- `stage.static_labels` sets `app="kreditozrouti"`
+	- `stage.logfmt` extracts `kind`, `environment`
+	- `stage.labels` promotes `kind` and `env` (from `environment`) as stream labels
 3. Traces forwarded to Tempo via `otelcol.processor.batch` → `otelcol.exporter.otlp`
 
 ### OTLP traces
@@ -200,22 +203,22 @@ Config: `deployment/monitoring/alloy/config.alloy`
 
 These labels are indexed and should be used in LogQL `{}` selectors:
 
-| Label     | Values                                | Source            |
-|-----------|---------------------------------------|-------------------|
-| `level`   | `INFO`, `WARN`, `ERROR`, `DEBUG`      | pino `level` field |
-| `service` | `api`, `scraper`                      | pino `base.service` |
-| `env`     | `production`, `development`           | pino `base.env`    |
-| `context` | `http`, `job`, *(none for startup)*   | pino child logger  |
-| `app`     | `kreditozrouti`                       | Faro logs only     |
-| `kind`    | `exception`, `log`, `measurement`, `web-vital` | Faro logs only |
+| Label     | Values                                         | Source              |
+|-----------|------------------------------------------------|---------------------|
+| `level`   | `INFO`, `WARN`, `ERROR`, `DEBUG`               | pino `level` field  |
+| `service` | `api`, `scraper`                               | pino `base.service` |
+| `env`     | `production`, `development`                    | pino `base.env`     |
+| `context` | `http`, `job`, *(none for startup)*            | pino child logger   |
+| `app`     | `kreditozrouti`                                | Faro logs only      |
+| `kind`    | `exception`, `log`, `measurement`, `web-vital` | Faro logs only      |
 
 Structured metadata (not indexed, use `| json` or `| logfmt` to filter):
 
-| Key         | Source                                   |
-|-------------|------------------------------------------|
-| `request_id`| per-HTTP-request UUID                    |
-| `trace_id`  | OTel span trace ID (if active span)      |
-| `span_id`   | OTel span ID (if active span)            |
+| Key          | Source                              |
+|--------------|-------------------------------------|
+| `request_id` | per-HTTP-request UUID               |
+| `trace_id`   | OTel span trace ID (if active span) |
+| `span_id`    | OTel span ID (if active span)       |
 
 ---
 
@@ -223,12 +226,12 @@ Structured metadata (not indexed, use `| json` or `| logfmt` to filter):
 
 Provisioned from `deployment/monitoring/grafana/provisioning/dashboards/`.
 
-| Dashboard          | UID                    | Datasource  | Covers                                              |
-|--------------------|------------------------|-------------|-----------------------------------------------------|
-| API                | `kreditozrouti-api`    | Prometheus  | Request rate, error rate, latency histograms, BullMQ queue depth |
-| Scraper            | `kreditozrouti-scraper`| Prometheus  | Queue depth, silent failures, items processed, last-run timestamp |
-| Log Explorer       | `kreditozrouti-logs`   | Loki        | Searchable log view for api + scraper, filterable by level / context / job |
-| Client (Browser)   | `kreditozrouti-client` | Loki        | JS exceptions, Web Vitals, navigation events from Faro |
+| Dashboard        | UID                     | Datasource | Covers                                                                     |
+|------------------|-------------------------|------------|----------------------------------------------------------------------------|
+| API              | `kreditozrouti-api`     | Prometheus | Request rate, error rate, latency histograms, BullMQ queue depth           |
+| Scraper          | `kreditozrouti-scraper` | Prometheus | Queue depth, silent failures, items processed, last-run timestamp          |
+| Log Explorer     | `kreditozrouti-logs`    | Loki       | Searchable log view for api + scraper, filterable by level / context / job |
+| Client (Browser) | `kreditozrouti-client`  | Loki       | JS exceptions, Web Vitals, navigation events from Faro                     |
 
 ### Common LogQL queries
 
@@ -262,15 +265,15 @@ When a log line contains a `trace_id` field (present when OTel has an active spa
 Scraped from `api:80/metrics` every 15 s. The `/metrics` endpoint is only accessible from inside the Docker
 network — it returns 404 for requests with an `x-forwarded-for` header (i.e. via Traefik).
 
-| Metric                           | Type      | Labels                        | Notes                          |
-|----------------------------------|-----------|-------------------------------|--------------------------------|
-| `http_request_duration_seconds`  | Histogram | `method`, `route`, `status_code`, `env` | HTTP latency + rate     |
-| `bullmq_queue_depth`             | Gauge     | `queue`, `status`, `env`      | Collected at scrape time       |
-| `scraper_silent_failures_total`  | Gauge     | `job_type`, `env`             | From Redis counters            |
-| `scraper_items_processed_total`  | Gauge     | `job_type`, `status`, `env`   | From Redis counters            |
-| `scraper_last_run_timestamp`     | Gauge     | `job_type`, `env`             | Unix seconds; 0 = never        |
-| Node.js defaults                 | various   | —                             | GC, event loop, memory via `collectDefaultMetrics` |
-| Host metrics                     | various   | —                             | node-exporter: CPU, disk, network |
+| Metric                          | Type      | Labels                                  | Notes                                              |
+|---------------------------------|-----------|-----------------------------------------|----------------------------------------------------|
+| `http_request_duration_seconds` | Histogram | `method`, `route`, `status_code`, `env` | HTTP latency + rate                                |
+| `bullmq_queue_depth`            | Gauge     | `queue`, `status`, `env`                | Collected at scrape time                           |
+| `scraper_silent_failures_total` | Gauge     | `job_type`, `env`                       | From Redis counters                                |
+| `scraper_items_processed_total` | Gauge     | `job_type`, `status`, `env`             | From Redis counters                                |
+| `scraper_last_run_timestamp`    | Gauge     | `job_type`, `env`                       | Unix seconds; 0 = never                            |
+| Node.js defaults                | various   | —                                       | GC, event loop, memory via `collectDefaultMetrics` |
+| Host metrics                    | various   | —                                       | node-exporter: CPU, disk, network                  |
 
 The `env` label is added by Prometheus `relabel_configs` in `prometheus.yml` / `prometheus.local.yml`,
 not by prom-client itself.
@@ -322,6 +325,7 @@ not by prom-client itself.
 ### Alloy sees containers but Loki has no data
 
 The most common cause is that all log lines are being dropped. Alloy drops:
+
 - Containers whose name matches `/(grafana|prometheus|loki|alloy|node-exporter|umami|postgres).*`
 - Log lines where `path` matches `^/(health|metrics)$`
 

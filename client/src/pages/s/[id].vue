@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ShareableUnit } from '@shared/http/share'
 import type { SelectedCourseUnit } from '@client/types'
-import { onMounted, onUnmounted, computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useSeoMeta } from '@unhead/vue'
