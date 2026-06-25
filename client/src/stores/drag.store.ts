@@ -1,5 +1,5 @@
 ﻿import type { DragSelection } from '@client/types'
-import type { InSISDay } from '@shared/domain/insis'
+import type { Day } from '@shared/domain/constants'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
@@ -14,7 +14,7 @@ export const useDragStore = defineStore('drag', () => {
 	const showDragPopover = ref(false)
 	const dragPopoverPosition = ref({ x: 0, y: 0 })
 
-	const normalizedDragSelection = computed<{ day: InSISDay; timeFrom: number; timeTo: number } | null>(() => {
+	const normalizedDragSelection = computed<{ day: Day; timeFrom: number; timeTo: number } | null>(() => {
 		const ds = dragSelection.value
 		if (!ds.startDay || !ds.startTime || !ds.endTime) return null
 		return {
@@ -24,12 +24,12 @@ export const useDragStore = defineStore('drag', () => {
 		}
 	})
 
-	function startDrag(day: InSISDay, time: number) {
+	function startDrag(day: Day, time: number) {
 		dragSelection.value = { active: true, startDay: day, startTime: time, endDay: day, endTime: time }
 		showDragPopover.value = false
 	}
 
-	function updateDrag(_day: InSISDay, time: number) {
+	function updateDrag(_day: Day, time: number) {
 		if (!dragSelection.value.active) return
 		dragSelection.value.endTime = time
 	}
@@ -48,7 +48,7 @@ export const useDragStore = defineStore('drag', () => {
 		showDragPopover.value = false
 	}
 
-	function isInDragSelection(day: InSISDay, time: number): boolean {
+	function isInDragSelection(day: Day, time: number): boolean {
 		const ds = normalizedDragSelection.value
 		if (!ds || !dragSelection.value.active) return false
 		return day === ds.day && time >= ds.timeFrom && time < ds.timeTo

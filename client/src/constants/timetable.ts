@@ -1,21 +1,21 @@
-﻿import type { InSISDay } from '@shared/domain/insis'
-import { InSISDayValues } from '@shared/domain/insis'
+﻿import type { Day } from '@shared/domain/constants'
+import { DayValues } from '@shared/domain/constants'
 
 /**
  * Weekdays for the timetable grid (Monday to Friday).
  */
-export const WEEKDAYS: InSISDay[] = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek']
+export const WEEKDAYS: Day[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
 
 /**
  * All days of the week (including weekend).
  */
-export const ALL_DAYS: InSISDay[] = [...WEEKDAYS, 'Sobota', 'Neděle']
+export const ALL_DAYS: Day[] = [...WEEKDAYS, 'saturday', 'sunday']
 
 /**
- * Days in chronological order - derived from InSIS types.
+ * Days in chronological order - derived from shared types.
  * Use this for sorting operations.
  */
-export const DAYS_ORDER: readonly InSISDay[] = InSISDayValues
+export const DAYS_ORDER: readonly Day[] = DayValues
 
 /**
  * Time grid configuration (all values in minutes from midnight).

@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import CoursesController from '@api/Controllers/Kreditozrouti/CoursesController'
+import CoursesController from '@api/Controllers/Courses/CoursesController'
 import { CourseScraperController } from '@api/Controllers/Scraper/CourseScraperController'
 import { withCache } from '@api/Middlewares/CacheMiddleware'
 import LoggerMiddleware from '@api/Middlewares/LoggerMiddleware'

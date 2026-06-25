@@ -1,6 +1,6 @@
 import { Nullable, SelectQueryBuilder } from 'kysely'
 import { mysql } from '@api/clients'
-import { StudyPlansFilter } from '@api/Controllers/Kreditozrouti/StudyPlansController'
+import { StudyPlansFilter } from '@api/Controllers/StudyPlans/StudyPlansController'
 import { Database, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 
 type QueryBuilder = SelectQueryBuilder<Database & { sp: StudyPlanTable } & { spc: Nullable<StudyPlanCourseTable> }, 'sp' | 'spc', object>

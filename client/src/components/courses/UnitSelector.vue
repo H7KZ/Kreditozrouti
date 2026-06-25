@@ -23,7 +23,7 @@ const props = defineProps<Props>()
 
 const timetableStore = useTimetableStore()
 
-const { getUnitTypesGroupLabel, getShortUnitTypeLabel, getSlotType } = useCourseLabels()
+const { getUnitTypesGroupLabel, getShortUnitTypeLabel } = useCourseLabels()
 
 const {
 	unitsByGroup,
@@ -128,13 +128,12 @@ function getMissingTypesLabel(): string {
 
 function getSlotHighlightClass(slot: CourseUnitSlotDTO): string {
 	if (!slotMatchesTimeFilter(slot)) return ''
-	const type = getSlotType(slot)
 	const classes: Record<string, string> = {
 		lecture: 'bg-(--insis-block-lecture)!',
 		exercise: 'bg-(--insis-block-exercise)!',
 		seminar: 'bg-(--insis-block-seminar)!'
 	}
-	return classes[type] ?? ''
+	return slot.type ? (classes[slot.type] ?? '') : ''
 }
 
 function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
@@ -269,7 +268,7 @@ function getSlotConflictClass(slot: CourseUnitSlotDTO): string {
 											class="w-8 shrink-0 rounded bg-(--insis-gray-200) px-1 py-0.5 text-center text-xs text-(--insis-gray-700)"
 											:class="getSlotHighlightClass(slot)"
 										>
-											{{ getShortUnitTypeLabel(getSlotType(slot)) }}
+											{{ slot.type ? getShortUnitTypeLabel(slot.type) : slot.type }}
 										</span>
 										<span class="min-w-0 flex-1 truncate font-medium">{{ formatSlotInfo(slot) }}</span>
 										<span

@@ -2,7 +2,7 @@
 import type { MergedUnit } from '@client/composables'
 import { isMergedUnit, useCourseLabels, useScheduleExport, useShareTimetable, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
-import type { InSISDay } from '@shared/domain/insis'
+import type { Day } from '@shared/domain/constants'
 import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TimetableAgenda from '@client/components/timetable/TimetableAgenda.vue'
@@ -53,7 +53,7 @@ const { getShortDayLabel } = useCourseLabels()
 const { mergedUnitsByDay } = useSlotMerging(
 	computed(() => {
 		if (props.units) {
-			const map = new Map<InSISDay, SelectedCourseUnit[]>()
+			const map = new Map<Day, SelectedCourseUnit[]>()
 			for (const u of props.units) {
 				if (!u.day) continue
 				if (!map.has(u.day)) map.set(u.day, [])
@@ -94,7 +94,7 @@ async function handleShare() {
 /**
  * Get units for a specific day (with merging applied)
  */
-function getMergedUnitsForDay(day: InSISDay): (SelectedCourseUnit | MergedUnit)[] {
+function getMergedUnitsForDay(day: Day): (SelectedCourseUnit | MergedUnit)[] {
 	return mergedUnitsByDay.value.get(day) || []
 }
 
@@ -150,7 +150,7 @@ function handleRemoveUnit(unit: SelectedCourseUnit | MergedUnit) {
 }
 
 // Computed drag selection style wrapper
-function getDragSelectionStyleForDay(day: InSISDay) {
+function getDragSelectionStyleForDay(day: Day) {
 	return getDragSelectionStyle(day, dragStore.normalizedDragSelection, dragStore.dragSelection.active)
 }
 </script>

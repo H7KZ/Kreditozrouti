@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import StudyPlanCoursesController from '@api/Controllers/Kreditozrouti/StudyPlanCoursesController'
-import StudyPlansController from '@api/Controllers/Kreditozrouti/StudyPlansController'
+import StudyPlanCoursesController from '@api/Controllers/StudyPlans/StudyPlanCoursesController'
+import StudyPlansController from '@api/Controllers/StudyPlans/StudyPlansController'
 import { withCache } from '@api/Middlewares/CacheMiddleware'
 import LoggerMiddleware from '@api/Middlewares/LoggerMiddleware'
 import { ParserJSONMiddleware } from '@api/Middlewares/ParserMiddleware'

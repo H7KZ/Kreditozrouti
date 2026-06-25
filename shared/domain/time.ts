@@ -1,8 +1,8 @@
-import type { InSISDay } from './insis.js'
+import type { Day } from './constants.js'
 
 export interface TimeSelection {
 	slot_id?: number
-	day?: InSISDay | null
+	day?: Day | null
 	date?: Date | null
 	time_from: number
 	time_to: number

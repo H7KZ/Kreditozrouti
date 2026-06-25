@@ -1,4 +1,4 @@
-﻿import type { InSISDay } from '@shared/domain/insis'
+﻿import type { Day } from '@shared/domain/constants'
 import type { CourseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { i18n } from '@client/index.ts'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
@@ -16,30 +16,9 @@ import { getCategoryBadgeClass, getSlotType, getUnitTypeColorClass } from '@clie
  *   getUnitTypeLabel,
  * } = useCourseLabels()
  *
- * const label = getCompletionLabel('zkouška') // "Exam"
+ * const label = getCompletionLabel('exam') // "Exam"
  * ```
  */
-// Raw InSIS Czech strings → stable i18n keys
-const COMPLETION_NORM: Record<string, string> = { zkouška: 'exam', zápočet: 'credit', obhajoba: 'defense' }
-const LANGUAGE_NORM: Record<string, string> = {
-	čeština: 'czech',
-	angličtina: 'english',
-	němčina: 'german',
-	španělština: 'spanish',
-	francouzština: 'french',
-	ruština: 'russian',
-	italština: 'italian',
-	čínština: 'chinese',
-	švédština: 'swedish',
-	portugalština: 'portuguese'
-}
-const LEVEL_NORM: Record<string, string> = {
-	bakalářský: 'bachelor',
-	'magisterský navazující': 'master',
-	doktorský: 'doctoral',
-	mba: 'mba',
-	kurz: 'course'
-}
 
 export function useCourseLabels() {
 	const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
@@ -50,12 +29,11 @@ export function useCourseLabels() {
 	 * Get translated label with fallback to raw value.
 	 *
 	 * @param prefix - Translation key prefix (e.g., 'courseModesOfCompletion')
-	 * @param value - Value to translate
-	 * @param norm - Optional normalization map (Czech raw → i18n key)
+	 * @param value - Value to translate (already a canonical key)
 	 * @returns Translated label or original value
 	 */
-	function getLabel(prefix: string, value: string, norm?: Record<string, string>): string {
-		const key = `${prefix}.${norm ? (norm[value] ?? value) : value}`
+	function getLabel(prefix: string, value: string): string {
+		const key = `${prefix}.${value}`
 		return te(key) ? t(key) : value
 	}
 
@@ -70,7 +48,7 @@ export function useCourseLabels() {
 	 * Get mode of completion label.
 	 */
 	function getCompletionLabel(value: string): string {
-		return getLabel('courseModesOfCompletion', value, COMPLETION_NORM)
+		return getLabel('courseModesOfCompletion', value)
 	}
 
 	/**
@@ -84,7 +62,7 @@ export function useCourseLabels() {
 	 * Get language label.
 	 */
 	function getLanguageLabel(value: string): string {
-		return getLabel('courseLanguages', value, LANGUAGE_NORM)
+		return getLabel('courseLanguages', value)
 	}
 
 	/**
@@ -116,7 +94,7 @@ export function useCourseLabels() {
 	 * Get study level label.
 	 */
 	function getLevelLabel(value: string): string {
-		return getLabel('studyLevels', value.toLowerCase(), LEVEL_NORM)
+		return getLabel('studyLevels', value)
 	}
 
 	/**
@@ -160,14 +138,14 @@ export function useCourseLabels() {
 	/**
 	 * Get day label (full form: "Monday", "Tuesday", etc.).
 	 */
-	function getDayLabel(day: InSISDay): string {
+	function getDayLabel(day: Day): string {
 		return getLabel('days', day)
 	}
 
 	/**
 	 * Get short day label (abbreviated: "Po", "Út", etc.).
 	 */
-	function getShortDayLabel(day: InSISDay): string {
+	function getShortDayLabel(day: Day): string {
 		return getLabel('daysShort', day)
 	}
 

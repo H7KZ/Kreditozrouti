@@ -3,7 +3,6 @@ import { Request, Response } from 'express'
 import * as z from 'zod'
 import { InSISStudyPlanCourseCategoryValues, InSISStudyPlanCourseGroupValues } from '@shared/domain/insis'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
-import CoursesResponse from '@api/Controllers/Kreditozrouti/types/CoursesResponse'
 import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
 import { SemesterSchema, TimeSelectionSchema } from '@api/Validations'
@@ -69,7 +68,7 @@ export type { CoursesFilter } from '@shared/http/courses'
  * @param res - Express response object.
  * @throws {ApiError} 403 - If the validation of the search request fails.
  */
-export default async function CoursesController(req: Request, res: Response<CoursesResponse>) {
+export default async function CoursesController(req: Request, res: Response) {
 	LoggerAPIContext.add({ body: req.body })
 
 	// 1. Validation
@@ -92,7 +91,7 @@ export default async function CoursesController(req: Request, res: Response<Cour
 	})
 
 	// 3. Response Assembly
-	const response: CoursesResponse = {
+	const response = {
 		data: courses,
 		facets,
 		meta: {

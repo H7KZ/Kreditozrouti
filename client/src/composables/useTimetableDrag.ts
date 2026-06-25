@@ -1,4 +1,4 @@
-﻿import type { InSISDay } from '@shared/domain/insis'
+﻿import type { Day } from '@shared/domain/constants'
 import type { Ref } from 'vue'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useCoursesStore, useDragStore, useFiltersStore, useUIStore } from '@client/stores'
@@ -26,7 +26,7 @@ export function useTimetableDrag(gridRef: Ref<HTMLElement | null>, getTimeFromX:
 	const isDragging = ref(false)
 	const dragStartX = ref(0)
 
-	function handleMouseDown(event: MouseEvent, day: InSISDay) {
+	function handleMouseDown(event: MouseEvent, day: Day) {
 		if (!gridRef.value) return
 
 		// Don't start drag if clicking on a course block
@@ -50,7 +50,7 @@ export function useTimetableDrag(gridRef: Ref<HTMLElement | null>, getTimeFromX:
 		const dayRow = document.elementFromPoint(event.clientX, event.clientY)?.closest('.day-row') as HTMLElement
 		if (!dayRow) return
 
-		const day = dayRow.dataset.day as InSISDay
+		const day = dayRow.dataset.day as Day
 		const time = getTimeFromX(event.clientX, dayRow)
 		dragStore.updateDrag(day, time)
 	}

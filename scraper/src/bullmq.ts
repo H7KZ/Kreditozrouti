@@ -1,10 +1,10 @@
-import type { ScraperRequestJob, ScraperResponseJob } from '@scraper/types/jobs'
+import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
 import { Queue, Worker } from 'bullmq'
 import { BullMQOtel } from 'bullmq-otel'
 import { redis } from '@scraper/clients'
 import ScraperRequestHandler from '@scraper/Handlers/ScraperRequestHandler'
 import { logger } from '@scraper/logger'
-import { ScraperRequestQueue, ScraperResponseQueue } from '@scraper/types/queue'
+import { ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names'
 
 const bullmqTelemetry = new BullMQOtel({ tracerName: 'kreditozrouti-scraper' })
 

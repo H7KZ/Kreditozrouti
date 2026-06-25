@@ -1,11 +1,11 @@
 import type { SelectedCourseUnit } from '@client/types'
-import type { InSISDay } from '@shared/domain/insis'
+import type { Day } from '@shared/domain/constants'
 
 export interface DragSelection {
 	active: boolean
-	startDay: InSISDay | null
+	startDay: Day | null
 	startTime: number | null
-	endDay: InSISDay | null
+	endDay: Day | null
 	endTime: number | null
 }
 

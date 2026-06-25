@@ -1,5 +1,5 @@
-import type { ScraperInSISStudyPlans } from '@scraper/types/insis'
-import type { ScraperInSISStudyPlansRequestJob } from '@scraper/types/jobs'
+import type { ScraperInSISStudyPlans } from '@shared/queue/insis'
+import type { ScraperInSISStudyPlansRequestJob } from '@shared/queue/jobs'
 import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'

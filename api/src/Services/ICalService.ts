@@ -1,15 +1,5 @@
-import type { InSISDay } from '@shared/domain/insis'
 import type { ICalConfig, ICalUnit } from '@shared/http/ical'
-
-const DAY_MAP: Record<InSISDay, { byday: string; jsDay: number }> = {
-	Pondělí: { byday: 'MO', jsDay: 1 },
-	Úterý: { byday: 'TU', jsDay: 2 },
-	Středa: { byday: 'WE', jsDay: 3 },
-	Čtvrtek: { byday: 'TH', jsDay: 4 },
-	Pátek: { byday: 'FR', jsDay: 5 },
-	Sobota: { byday: 'SA', jsDay: 6 },
-	Neděle: { byday: 'SU', jsDay: 0 }
-}
+import { DAY_ICAL_MAP } from '@shared/domain/constants'
 
 function pad(n: number): string {
 	return String(n).padStart(2, '0')
@@ -77,7 +67,7 @@ export function generateIcal(units: ICalUnit[], configs: ICalConfig[], semesterS
 		const description = `${rawDescription}\n\n${WATERMARK}`
 		const uid = `slot-${unit.slotId}@kreditozrouti.cz`
 
-		const dayEntry = unit.day ? DAY_MAP[unit.day] : undefined
+		const dayEntry = unit.day ? DAY_ICAL_MAP[unit.day] : undefined
 		if (dayEntry) {
 			const { byday, jsDay } = dayEntry
 			const firstDate = firstOccurrence(semesterStart, jsDay)

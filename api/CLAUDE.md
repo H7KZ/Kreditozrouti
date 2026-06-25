@@ -23,7 +23,7 @@ api/src/
 ├── Routes/         # KreditozroutiRoutes, ScraperPublicRoutes, CommandsRoutes
 ├── Middlewares/    # CacheMiddleware, RateLimitMiddleware, CommandMiddleware, LoggerMiddleware
 ├── Errors/         # ApiError + Errors factory
-└── utils/          # sse.ts, timeConflict.ts
+└── Utils/          # sse.ts, timeConflict.ts
 ```
 
 ## Path Aliases

@@ -1,4 +1,5 @@
-import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis.js'
+import type { Day } from '../domain/constants.js'
+import type { CourseUnitType, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis.js'
 import type { FacetItem } from './facets.js'
 import type { PaginationMeta } from './pagination.js'
 
@@ -32,10 +33,10 @@ export interface CourseUnitSlotDTO {
 	unit_id: number
 	created_at: string
 	updated_at: string
-	type: string | null
+	type: CourseUnitType | null
 	frequency: 'weekly' | 'single' | null
 	date: string | null
-	day: InSISDay | null
+	day: Day | null
 	time_from: number | null
 	time_to: number | null
 	location: string | null
@@ -75,7 +76,7 @@ export interface CourseDTO {
 	title_en: string | null
 	ects: number | null
 	mode_of_delivery: string | null
-	mode_of_completion: string | null
+	mode_of_completion: 'exam' | 'credit' | 'defense' | null
 	languages: string | null
 	level: string | null
 	year_of_study: number | null
@@ -134,12 +135,6 @@ export interface StudyPlanWithRelationsDTO extends StudyPlanDTO {
 }
 
 // Response DTOs — wire format for each endpoint
-//
-// Facet shapes must stay in sync with the authoritative API response types:
-//   api/src/Controllers/Kreditozrouti/types/CoursesResponse.ts
-//   api/src/Controllers/Kreditozrouti/types/StudyPlansResponse.ts
-//   api/src/Controllers/Kreditozrouti/types/StudyPlanCoursesResponse.ts
-// When the API adds or renames a facet key, update the corresponding DTO here.
 
 export interface CoursesResponseDTO {
 	data: CourseWithRelationsDTO[]

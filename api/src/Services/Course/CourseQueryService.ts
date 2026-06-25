@@ -1,8 +1,10 @@
 import { sql } from 'kysely'
 import { jsonArrayFrom } from 'kysely/helpers/mysql'
+import { INSIS_DAY_NORM, LANGUAGE_NORM, LEVEL_NORM, MODE_OF_COMPLETION_NORM, MODE_OF_DELIVERY_NORM } from '@shared/domain/constants'
+import { getSlotType } from '@shared/domain/insis'
 import { priorityOf } from '@shared/domain/studyPlan'
 import { mysql } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import {
 	Course,
 	CourseAssessmentTable,
@@ -55,6 +57,10 @@ export class CourseQueryService {
 
 		const enrichedCourses = courses.map(course => ({
 			...course,
+			mode_of_completion: MODE_OF_COMPLETION_NORM[course.mode_of_completion ?? ''] ?? course.mode_of_completion ?? null,
+			languages: CourseQueryService.normalizePipeField(course.languages, LANGUAGE_NORM),
+			level: LEVEL_NORM[course.level ?? ''] ?? course.level ?? null,
+			mode_of_delivery: CourseQueryService.normalizeModeOfDelivery(course.mode_of_delivery),
 			faculty: course.faculty_id ? (facultyMap.get(course.faculty_id) ?? null) : null,
 			units: unitsMap.get(course.id) ?? [],
 			assessments: assessmentsMap.get(course.id) ?? [],
@@ -198,7 +204,11 @@ export class CourseQueryService {
 
 		return units.map(u => ({
 			...u,
-			slots: u.slots ?? []
+			slots: (u.slots ?? []).map(slot => ({
+				...slot,
+				day: slot.day ? (INSIS_DAY_NORM[slot.day] ?? null) : null,
+				type: getSlotType({ type: slot.type })
+			}))
 		}))
 	}
 
@@ -232,6 +242,20 @@ export class CourseQueryService {
 			}
 		}
 		return [...best.values()]
+	}
+
+	private static normalizePipeField(raw: string | null, norm: Record<string, string>): string | null {
+		if (!raw) return null
+		return raw
+			.split('|')
+			.map(v => norm[v.trim()] ?? v.trim())
+			.join('|')
+	}
+
+	private static normalizeModeOfDelivery(raw: string | null): string | null {
+		if (!raw) return null
+		const prefix = raw.split(';')[0]?.trim() ?? ''
+		return MODE_OF_DELIVERY_NORM[prefix] ?? prefix
 	}
 
 	private static resolveSortColumn(sortBy?: string, tableAlias = 'c1'): ReturnType<typeof sql.ref> {

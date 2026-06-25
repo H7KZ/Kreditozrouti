@@ -1,10 +1,11 @@
+import type { InSISDay } from '@shared/domain/insis'
 import { AliasedExpression, Nullable, SelectQueryBuilder, sql } from 'kysely'
+import { ASSESSMENT_BUCKETS } from '@shared/domain/assessment'
+import { INSIS_DAY_DENORM, LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from '@shared/domain/constants'
 import { mysql } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, Database, StudyPlanCourseTable } from '@api/Database/types'
-import { buildSlotConflictConditions } from '@api/utils/timeConflict'
-import { ASSESSMENT_BUCKETS } from './buckets/assessment'
-import { LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from './buckets/normalizers'
+import { buildSlotConflictConditions } from '@api/Utils/TimeConflict'
 
 type QueryBuilder = SelectQueryBuilder<
 	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> } & {
@@ -174,7 +175,13 @@ export class CourseFilterBuilder {
 				eb.or(
 					filters
 						.include_times!.filter(t => t.day !== undefined)
-						.map(exc => eb.and([eb('cus1.day', '=', exc.day!), eb('cus1.time_from', '<', exc.time_to), eb('cus1.time_to', '>', exc.time_from)]))
+						.map(exc =>
+							eb.and([
+								eb('cus1.day', '=', INSIS_DAY_DENORM[exc.day!] as InSISDay),
+								eb('cus1.time_from', '<', exc.time_to),
+								eb('cus1.time_to', '>', exc.time_from)
+							])
+						)
 				)
 			)
 		}

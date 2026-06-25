@@ -2,7 +2,7 @@ import type { ICalCreateRequest } from '@shared/http/ical'
 import { Request, Response } from 'express'
 import { redis } from '@api/clients'
 import { Errors } from '@api/Errors'
-import { generateIcal } from '@api/utils/ical'
+import { generateIcal } from '@api/Services/ICalService'
 
 const ICAL_TTL_SECONDS = 180 * 24 * 60 * 60 // 180 days
 

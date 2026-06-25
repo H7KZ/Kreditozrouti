@@ -1,22 +1,11 @@
 import type { SelectedCourseUnit } from '@client/types'
-import type { InSISDay } from '@shared/domain/insis'
+import { DAY_ICAL_MAP } from '@shared/domain/constants'
 
 export interface ICalCourseConfig {
 	slotId: number
 	title: string
 	location: string
 	description: string
-}
-
-// Map Czech InSIS day names to RFC 5545 BYDAY tokens and JS Date.getDay() values
-const DAY_MAP: Record<InSISDay, { byday: string; jsDay: number }> = {
-	Pondělí: { byday: 'MO', jsDay: 1 },
-	Úterý: { byday: 'TU', jsDay: 2 },
-	Středa: { byday: 'WE', jsDay: 3 },
-	Čtvrtek: { byday: 'TH', jsDay: 4 },
-	Pátek: { byday: 'FR', jsDay: 5 },
-	Sobota: { byday: 'SA', jsDay: 6 },
-	Neděle: { byday: 'SU', jsDay: 0 }
 }
 
 function pad(n: number): string {
@@ -99,8 +88,8 @@ export function generateIcal(units: SelectedCourseUnit[], configs: ICalCourseCon
 		const description = `${rawDescription}\n\n${WATERMARK}`
 		const uid = `slot-${unit.slotId}@kreditozrouti.cz`
 
-		if (unit.day && DAY_MAP[unit.day]) {
-			const { byday, jsDay } = DAY_MAP[unit.day]!
+		if (unit.day && DAY_ICAL_MAP[unit.day]) {
+			const { byday, jsDay } = DAY_ICAL_MAP[unit.day]!
 			const firstDate = firstOccurrence(semesterStart, jsDay)
 
 			if (firstDate > untilDate) continue

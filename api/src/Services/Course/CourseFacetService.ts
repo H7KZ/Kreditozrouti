@@ -1,22 +1,39 @@
 import type { FacetItem } from '@shared/http/facets'
 import { sql } from 'kysely'
-import { mysql } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
-import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
-import { ASSESSMENT_BUCKETS } from './buckets/assessment'
+import { ASSESSMENT_BUCKETS } from '@shared/domain/assessment'
 import {
+	INSIS_DAY_NORM,
 	LANGUAGE_DENORM,
 	LANGUAGE_NORM,
 	LEVEL_DENORM,
 	LEVEL_NORM,
 	MODE_OF_COMPLETION_DENORM,
-	MODE_OF_COMPLETION_NORM,
-	normalizeFacet
-} from './buckets/normalizers'
+	MODE_OF_COMPLETION_NORM
+} from '@shared/domain/constants'
+import { mysql } from '@api/clients'
+import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
+import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 
 export class CourseFacetService {
+	/**
+	 * Forward-normalizes facet values using a norm map.
+	 * Aggregates counts for values that map to the same key.
+	 * Unknown values are preserved as-is (no silent data loss).
+	 */
+	static normalizeFacet(data: FacetItem[], norm: Record<string, string>): FacetItem[] {
+		const map = new Map<string, number>()
+		for (const row of data) {
+			if (typeof row.value !== 'string') continue
+			const key = norm[row.value] ?? row.value
+			map.set(key, (map.get(key) ?? 0) + Number(row.count))
+		}
+		return Array.from(map.entries())
+			.map(([value, count]) => ({ value, count }))
+			.sort((a, b) => b.count - a.count)
+	}
+
 	/**
 	 * Returns the facet object for the given filters, reading from Redis cache on hit
 	 * and writing on miss. Results are cached in Redis for 5 minutes.
@@ -75,14 +92,14 @@ export class CourseFacetService {
 		])
 
 		const lecturers = this.splitPipeDelimitedFacet(lecturersRaw, 50)
-		const languages = normalizeFacet(this.splitPipeDelimitedFacet(languagesRaw), LANGUAGE_NORM)
-		const levels = normalizeFacet(levelsRaw, LEVEL_NORM)
-		const modes_of_completion = normalizeFacet(modesOfCompletionRaw, MODE_OF_COMPLETION_NORM)
+		const languages = this.normalizeFacet(this.splitPipeDelimitedFacet(languagesRaw), LANGUAGE_NORM)
+		const levels = this.normalizeFacet(levelsRaw, LEVEL_NORM)
+		const modes_of_completion = this.normalizeFacet(modesOfCompletionRaw, MODE_OF_COMPLETION_NORM)
 		const assessment_methods = assessmentMethodsRaw
 
 		return {
 			faculties,
-			days,
+			days: this.normalizeFacet(days, INSIS_DAY_NORM),
 			lecturers,
 			languages,
 			levels,
