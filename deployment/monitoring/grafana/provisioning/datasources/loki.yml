@@ -12,7 +12,7 @@ datasources:
       maxLines: 5000
       derivedFields:
         - name: TraceID
-          matcherRegex: '"traceId":"(\w+)"'
+          matcherRegex: '"trace_id":"(\w+)"'
           url: '${__value.raw}'
           datasourceUid: tempo
           urlDisplayLabel: 'Open in Tempo'

@@ -49,8 +49,8 @@ loki.process "parse_json" {
       context    = "context",
       request_id = "request_id",
       path       = "path",
-      traceId    = "traceId",
-      spanId     = "spanId",
+      trace_id   = "trace_id",
+      span_id    = "span_id",
     }
   }
 
@@ -76,8 +76,8 @@ loki.process "parse_json" {
   stage.structured_metadata {
     values = {
       request_id = "",
-      traceId    = "",
-      spanId     = "",
+      trace_id   = "",
+      span_id    = "",
     }
   }
 
@@ -123,15 +123,15 @@ loki.process "faro_labels" {
 
   stage.logfmt {
     mapping = {
-      "kind"        = "kind",
-      "environment" = "environment",
+      "kind" = "kind",
+      "env"  = "app_environment",
     }
   }
 
   stage.labels {
     values = {
       kind = "",
-      env  = "environment",
+      env  = "",
     }
   }
 

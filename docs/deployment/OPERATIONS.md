@@ -6,13 +6,17 @@ Monitoring, security, backup, maintenance, and troubleshooting for running envir
 
 ## Monitoring & Logging
 
+> Full observability stack reference: [MONITORING.md](MONITORING.md)
+
 ### Prometheus + Grafana
 
-The monitoring stack (`deployment/monitoring/`) provides metrics collection and dashboards.
+The monitoring stack (`deployment/monitoring/`) provides metrics collection, log aggregation, and dashboards.
 
 - **Prometheus** scrapes `GET /metrics` from each API container every 15 s. Metrics include HTTP request counts,
   latency histograms, and default Node.js runtime metrics (event loop lag, GC, memory) via `prom-client`.
-- **Grafana** is available at `/grafana` (internal) and is pre-provisioned with Prometheus as the default datasource.
+- **Loki** receives structured logs from all app containers via Alloy (reads Docker stdout over the Docker socket).
+- **Alloy** collects container logs and browser Faro telemetry; forwards OTLP traces to Tempo.
+- **Grafana** is available at `/grafana` (internal) and is pre-provisioned with Loki as the default datasource.
 
 ```bash
 # Check monitoring stack status
@@ -42,11 +46,22 @@ Browser telemetry from `@grafana/faro-web-sdk` is collected at `https://<domain>
 
 **Routing:** Browser → Traefik (`/faro` stripprefix rule) → Alloy port 12347 → Loki
 
-**Query in Grafana:** use the Loki datasource with label selector `{app=~".*alloy.*"}` to find browser telemetry
-entries (errors, Web Vitals, route navigations).
+**Query in Grafana:** use the Loki datasource. Alloy labels Faro logs with `app="kreditozrouti"` and a `kind` label
+derived from the Faro signal type. Example selectors:
+
+```logql
+# All browser telemetry
+{app="kreditozrouti"}
+
+# JS exceptions only
+{app="kreditozrouti", kind="exception"}
+
+# Web Vitals
+{app="kreditozrouti", kind="measurement"}
+```
 
 **Local dev:** set `VITE_FARO_COLLECTOR_URL=http://localhost:41247/collect` in your local env to enable Faro in
-development.
+development. Requires the monitoring stack to be running locally.
 
 ---
 
