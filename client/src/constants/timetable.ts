@@ -1,5 +1,5 @@
-﻿import { DayValues } from '@shared/domain/constants'
-import type { Day } from '@shared/domain/constants'
+﻿import type { Day } from '@shared/domain/constants'
+import { DayValues } from '@shared/domain/constants'
 
 /**
  * Weekdays for the timetable grid (Monday to Friday).

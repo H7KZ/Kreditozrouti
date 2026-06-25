@@ -1,5 +1,4 @@
 // shared/domain/constants.ts
-import type { FacetItem } from '../http/facets.js'
 
 export const DayValues = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const
 export type Day = (typeof DayValues)[number]
@@ -81,20 +80,3 @@ export const MODE_OF_COMPLETION_NORM: Record<string, string> = {
 export const MODE_OF_COMPLETION_DENORM: Record<string, string> = Object.fromEntries(
 	Object.entries(MODE_OF_COMPLETION_NORM).map(([raw, key]) => [key, raw])
 )
-
-/**
- * Forward-normalizes facet values using a norm map.
- * Aggregates counts for values that map to the same key.
- * Unknown values are preserved as-is (no silent data loss).
- */
-export function normalizeFacet(data: FacetItem[], norm: Record<string, string>): FacetItem[] {
-	const map = new Map<string, number>()
-	for (const row of data) {
-		if (typeof row.value !== 'string') continue
-		const key = norm[row.value] ?? row.value
-		map.set(key, (map.get(key) ?? 0) + Number(row.count))
-	}
-	return Array.from(map.entries())
-		.map(([value, count]) => ({ value, count }))
-		.sort((a, b) => b.count - a.count)
-}

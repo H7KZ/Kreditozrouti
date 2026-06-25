@@ -1,8 +1,8 @@
 import { sql } from 'kysely'
 import { jsonArrayFrom } from 'kysely/helpers/mysql'
-import { priorityOf } from '@shared/domain/studyPlan'
 import { INSIS_DAY_NORM, LANGUAGE_NORM, LEVEL_NORM, MODE_OF_COMPLETION_NORM, MODE_OF_DELIVERY_NORM } from '@shared/domain/constants'
 import { getSlotType } from '@shared/domain/insis'
+import { priorityOf } from '@shared/domain/studyPlan'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
 import {
@@ -206,7 +206,7 @@ export class CourseQueryService {
 			...u,
 			slots: (u.slots ?? []).map(slot => ({
 				...slot,
-				day:  slot.day  ? (INSIS_DAY_NORM[slot.day] ?? null) : null,
+				day: slot.day ? (INSIS_DAY_NORM[slot.day] ?? null) : null,
 				type: getSlotType({ type: slot.type })
 			}))
 		}))
@@ -246,7 +246,10 @@ export class CourseQueryService {
 
 	private static normalizePipeField(raw: string | null, norm: Record<string, string>): string | null {
 		if (!raw) return null
-		return raw.split('|').map(v => norm[v.trim()] ?? v.trim()).join('|')
+		return raw
+			.split('|')
+			.map(v => norm[v.trim()] ?? v.trim())
+			.join('|')
 	}
 
 	private static normalizeModeOfDelivery(raw: string | null): string | null {
