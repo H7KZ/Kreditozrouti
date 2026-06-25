@@ -117,14 +117,14 @@ HTTP request logs also carry (via `LoggerAPIContext`):
 
 Job logs carry (via `LoggerJobContext`):
 
-| Field        | Type   | Notes                             |
-|--------------|--------|-----------------------------------|
-| `context`    | string | `"job"` (stream label in Loki)    |
-| `queue`      | string |                                   |
-| `job_id`     | string |                                   |
-| `job_name`   | string |                                   |
-| `attempt`    | number |                                   |
-| `duration_ms`| number |                                   |
+| Field        | Type   | Notes                                                        |
+|--------------|--------|--------------------------------------------------------------|
+| `context`    | string | `"job"` (stream label in Loki)                               |
+| `queue_name` | string | BullMQ queue name (scraper); API `withJobLogger` emits `queue`) |
+| `job_id`     | string |                                                              |
+| `job_name`   | string |                                                              |
+| `attempt`    | number |                                                              |
+| `duration_ms`| number |                                                              |
 
 ### Log levels
 
