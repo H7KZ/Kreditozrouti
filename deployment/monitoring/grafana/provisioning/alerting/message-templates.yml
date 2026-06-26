@@ -1,0 +1,29 @@
+# ==============================================================================
+# Grafana Alerting: Message Templates
+# Custom Discord notification templates.
+# discord_alert_title  — embed title (short status line)
+# discord_alert_message — embed body (summary + description)
+# ==============================================================================
+
+apiVersion: 1
+
+templates:
+  - orgId: 1
+    name: discord_alert_title
+    template: |
+      {{ define "discord_alert_title" -}}
+      {{ if eq .Status "firing" }}🔴{{ else }}✅{{ end }} {{ .CommonLabels.alertname | title }}
+      {{- end }}
+
+  - orgId: 1
+    name: discord_alert_message
+    template: |
+      {{ define "discord_alert_message" -}}
+      **Status:** {{ .Status | toUpper }}{{ if .CommonLabels.env }} · **Env:** {{ .CommonLabels.env }}{{ end }}{{ if .CommonLabels.severity }} · **Severity:** {{ .CommonLabels.severity | toUpper }}{{ end }}
+      {{ range .Alerts -}}
+      {{ .Annotations.summary }}
+      {{ if .Annotations.description -}}
+      > {{ .Annotations.description }}
+      {{ end -}}
+      {{ end -}}
+      {{- end }}
