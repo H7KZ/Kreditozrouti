@@ -83,6 +83,10 @@ services:
       - 'traefik.http.routers.${PROJECT}-bullboard.service=${PROJECT}-api'
       - 'traefik.http.routers.${PROJECT}-bullboard.middlewares=${PROJECT}-bullboard-auth'
       - 'traefik.http.middlewares.${PROJECT}-bullboard-auth.basicauth.users=${BULL_BOARD_USER}'
+      # Prometheus Service Discovery
+      - 'prometheus.io/scrape=true'
+      - 'prometheus.io/env=development'
+      - 'prometheus.io/port=80'
 
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:80/health' ]
