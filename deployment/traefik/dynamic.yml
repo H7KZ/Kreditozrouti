@@ -52,6 +52,7 @@ http:
           crowdsecAppsecHost: crowdsec:7422
           crowdsecAppsecFailureBlock: true
           crowdsecAppsecUnreachableBlock: false
+          crowdsecLapiUnreachableBlock: false
 
 # ------------------------------------------------------------------------------
 # TLS options — 'default' is applied automatically to all routers
