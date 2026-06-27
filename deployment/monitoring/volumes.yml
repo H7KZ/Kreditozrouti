@@ -27,3 +27,7 @@ volumes:
   tempo-data:
     name: tempo-data
     external: true
+
+  traefik-logs-volume:
+    name: traefik-logs-volume
+    external: true

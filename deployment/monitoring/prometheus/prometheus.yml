@@ -44,6 +44,13 @@ scrape_configs:
         regex: /(.*)
         target_label: instance
 
+  - job_name: traefik
+    static_configs:
+      - targets: [ 'traefik:8080' ]
+        labels:
+          env: production
+    metrics_path: /metrics
+
   - job_name: node
     static_configs:
       - targets: [ node-exporter:9100 ]

@@ -7,43 +7,112 @@ Traefik reverse proxy, Docker networking, volumes, and environment variable conf
 ## Traefik
 
 Traefik is the single external entry point. It handles TLS termination (via Let's Encrypt + Cloudflare DNS-01),
-HTTP→HTTPS redirect, and routes traffic to the right container by host/path.
+HTTP→HTTPS redirect, routes traffic to the right container by host/path, and enforces global security policies
+for all traffic via entrypoint-level middlewares.
 
-### Configuration (`deployment/traefik/traefik.yml`)
+### Architecture
 
-```yaml
-api:
-	dashboard: true
-	insecure: false
-
-entryPoints:
-	web:
-		address: ':80'
-		http:
-			redirections:
-				entryPoint:
-					to: websecure
-					scheme: https
-	websecure:
-		address: ':443'
-	traefik:
-		address: ':8080'
-
-providers:
-	docker:
-		endpoint: 'unix:///var/run/docker.sock'
-		exposedByDefault: false
-		network: traefik-network
-
-certificatesResolvers:
-	cloudflare:
-		acme:
-			email: ${ACME_EMAIL}
-			storage: /certs/acme.json
-			dnsChallenge:
-				provider: cloudflare
-				resolvers: [ '1.1.1.1:53', '8.8.8.8:53' ]
 ```
+Internet → Cloudflare (orange cloud) → Traefik :443
+                                            │
+                              ┌─────────────┴────────────────┐
+                              │  websecure entrypoint         │
+                              │  middlewares (all requests):  │
+                              │  1. crowdsec-bouncer@file     │  IP ban + OWASP AppSec
+                              │  2. rate-limit@file           │  100 avg / 200 burst per IP
+                              │  3. security-headers@file     │  HSTS, X-Frame, CSP, etc.
+                              └──────────────────────────────┘
+                                            │
+                              ┌─────────────┴────────────────┐
+                              │  CrowdSec sidecar            │
+                              │  LAPI :8080  AppSec :7422    │
+                              └──────────────────────────────┘
+```
+
+### Static config (`deployment/traefik/traefik.yml`)
+
+Key configuration highlights:
+
+- **Real IP extraction** — `forwardedHeaders.trustedIPs` on the `websecure` entrypoint is set to all Cloudflare
+  IPv4 ranges. Traefik reads the real client IP from `X-Forwarded-For` when the request arrives from a trusted
+  Cloudflare edge IP. Without this, rate limiting and CrowdSec would ban Cloudflare's IPs instead of attackers'.
+- **File provider** — `providers.file` points to `/dynamic.yml` (watched). Global middlewares are defined there
+  rather than as Docker labels, keeping per-service labels clean.
+- **Entrypoint-level middlewares** — all three global middlewares are applied on `websecure` so every router
+  inherits them without per-service configuration.
+- **TLS enforcement** — TLS options are defined in `dynamic.yml` with `name: default` (auto-applies to all
+  routers): minimum TLS 1.2, ECDHE+AES-GCM/ChaCha20 cipher suites only.
+- **Prometheus metrics** — enabled via `metrics.prometheus`. Served on the `traefik` entrypoint (port 8080) at
+  `/metrics`. Prometheus scrapes it via a static job (Traefik joins `alloy-network` for this).
+- **CrowdSec bouncer plugin** — declared under `experimental.plugins`. The LAPI key is passed as an env var
+  (`CROWDSEC_BOUNCER_API_KEY`) and read in `dynamic.yml` via Go template: `{{ env "CROWDSEC_BOUNCER_API_KEY" }}`.
+- **Staging cert resolver** — `letsencrypt-staging` resolver available for testing cert issuance without
+  burning Let's Encrypt rate limits. Uses `storage: /certs/acme-staging.json`.
+- **Access log** — full JSON format (all requests, no error-only filter) written to
+  `/var/log/traefik/access.log` on `traefik-logs-volume`. Tailed by Alloy → Loki.
+
+### Dynamic config (`deployment/traefik/dynamic.yml`)
+
+Defines three global middlewares and TLS options:
+
+| Middleware         | What it does                                                                                                                          |
+|--------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `security-headers` | HSTS (1y + preload), X-Frame-Options: DENY, X-Content-Type-Options: nosniff, Referrer-Policy, Permissions-Policy, X-XSS-Protection: 0 |
+| `rate-limit`       | 100 avg / 200 burst per real IP per second; source depth 1 (reads real IP from X-Forwarded-For)                                       |
+| `crowdsec-bouncer` | IP reputation via CrowdSec LAPI; OWASP AppSec CRS request inspection (SQLi, XSS, LFI, etc.)                                           |
+
+API key injection: Traefik's file provider processes Go templates in `dynamic.yml`, so
+`crowdsecLapiKey: '{{ env "CROWDSEC_BOUNCER_API_KEY" }}'` is resolved at runtime from the container env var.
+
+### CrowdSec (`deployment/traefik/crowdsec/`)
+
+CrowdSec runs as a sidecar container in the Traefik compose stack. It provides two threat-detection layers:
+
+1. **Log-based detection** — reads Traefik's JSON access log, applies behavioral scenarios
+   (brute force, scanning, credential stuffing) from the `crowdsecurity/traefik` collection.
+2. **AppSec engine** — per-request OWASP CRS inspection on port 7422. The Traefik bouncer plugin forwards
+   each request to AppSec before it reaches the backend. Blocks SQLi, XSS, LFI, RCE attempts.
+
+**Bootstrap (one-time on VPS):**
+
+```bash
+# Phase 1 — start CrowdSec and generate the bouncer API key
+docker compose -f deployment/traefik/docker-compose.traefik.yml up -d crowdsec
+docker exec crowdsec cscli bouncers add traefik-bouncer
+# → prints the API key — add it to GitHub Secrets as CROWDSEC_BOUNCER_API_KEY
+
+# Phase 2 — full deploy with the key now in place
+# CI/CD handles this automatically via the normal deploy workflow
+```
+
+**Useful commands:**
+
+```bash
+docker exec crowdsec cscli decisions list    # active bans
+docker exec crowdsec cscli alerts list       # triggered scenarios
+docker exec crowdsec cscli bouncers list     # connected bouncers + last_pull
+```
+
+### Dashboard protection
+
+The Traefik dashboard router has one layer of protection:
+
+1. **Basic auth** (`traefik-auth`) — htpasswd file at `TRAEFIK_CREDENTIALS_PATH`.
+
+### Deploy Traefik
+
+Traefik is deployed via the `deploy-traefik.yml` GitHub Actions workflow. To run manually:
+
+```bash
+DEPLOYMENT_PATH=~/deployment \
+  TRAEFIK_DOMAIN=traefik.example.com \
+  TRAEFIK_CREDENTIALS_PATH=~/.htpasswd \
+  CF_API_EMAIL=your@email.com \
+  CF_DNS_API_TOKEN=YOUR_CF_TOKEN \
+  bash ~/deployment/traefik/deploy.sh
+```
+
+See [scripts/INFRASTRUCTURE.md](../scripts/INFRASTRUCTURE.md) for the deploy script reference.
 
 ### Routing labels
 
@@ -173,11 +242,13 @@ docker network create redis-network
 
 ### Production volumes (`deployment/production/volumes.yml`)
 
-| Volume                        | Service | Contents                |
-|-------------------------------|---------|-------------------------|
-| `mysql-data-volume`           | MySQL   | Database files          |
-| `traefik-certificates-volume` | Traefik | TLS certs (`acme.json`) |
-| `traefik-logs-volume`         | Traefik | Access logs             |
+| Volume                        | Service  | Contents                        |
+|-------------------------------|----------|---------------------------------|
+| `mysql-data-volume`           | MySQL    | Database files                  |
+| `traefik-certificates-volume` | Traefik  | TLS certs (`acme.json`)         |
+| `traefik-logs-volume`         | Traefik  | Access logs (shared with Alloy) |
+| `crowdsec-db-volume`          | CrowdSec | CrowdSec database + decisions   |
+| `crowdsec-config-volume`      | CrowdSec | CrowdSec configuration + rules  |
 
 ### Volume management
 
@@ -234,9 +305,13 @@ REDIS_PASSWORD=<redis-password>
 VITE_FARO_COLLECTOR_URL=https://example.com/faro/collect
 
 # Traefik
-CLOUDFLARE_DNS_API_TOKEN=<cloudflare-token>
-CLOUDFLARE_EMAIL=<cloudflare-email>
-ACME_EMAIL=<letsencrypt-email>
+CF_DNS_API_TOKEN=<cloudflare-token>
+CF_API_EMAIL=<cloudflare-email>
+TRAEFIK_DOMAIN=traefik.example.com
+TRAEFIK_CREDENTIALS_PATH=/path/to/.htpasswd
+
+# CrowdSec (generate via: cscli bouncers add traefik-bouncer)
+CROWDSEC_BOUNCER_API_KEY=<generated-key>
 ```
 
 **Generate secrets:**

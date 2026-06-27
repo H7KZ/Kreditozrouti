@@ -174,3 +174,19 @@ otelcol.exporter.otlp "tempo" {
     }
   }
 }
+
+// ---------------------------------------------------------------------------
+// Traefik access log pipeline
+// ---------------------------------------------------------------------------
+local.file_match "traefik_access" {
+  path_targets = [{
+    __path__ = "/var/log/traefik/access.log",
+    job      = "traefik",
+    service  = "traefik",
+  }]
+}
+
+loki.source.file "traefik_access" {
+  targets    = local.file_match.traefik_access.targets
+  forward_to = [loki.write.default.receiver]
+}

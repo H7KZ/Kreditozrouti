@@ -11,3 +11,11 @@ volumes:
   traefik-logs-volume:
     name: traefik-logs-volume
     external: true
+
+  crowdsec-db-volume:
+    name: crowdsec-db-volume
+    external: true
+
+  crowdsec-config-volume:
+    name: crowdsec-config-volume
+    external: true

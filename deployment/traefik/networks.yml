@@ -8,3 +8,7 @@ networks:
     name: traefik-network
     external: true
     driver: bridge
+
+  alloy-network:
+    name: alloy-network
+    external: true

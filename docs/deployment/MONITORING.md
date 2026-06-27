@@ -85,7 +85,11 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 
 All components run in the `monitoring-network` Docker network. Grafana and Alloy also join `traefik-network`
 (for public routing). Prometheus and Alloy also join `alloy-network` — Prometheus to reach container IPs
-discovered via Docker SD, Alloy to receive OTLP pushes from api/scraper.
+discovered via Docker SD and to scrape Traefik metrics (`traefik:8080/metrics`), Alloy to receive OTLP pushes
+from api/scraper.
+
+Alloy mounts `traefik-logs-volume` (read-only) to tail `/var/log/traefik/access.log` — see the Traefik access
+log pipeline below.
 
 ---
 
@@ -199,6 +203,18 @@ Config: `deployment/monitoring/alloy/config.alloy`
 1. `otelcol.receiver.otlp` listens on `:4317` (gRPC) and `:4318` (HTTP/protobuf)
 2. `otelcol.processor.batch` batches spans
 3. `otelcol.exporter.otlp` forwards to Tempo at `tempo:4317`
+
+### Traefik access log
+
+Alloy mounts `traefik-logs-volume` (read-only) to tail `/var/log/traefik/access.log`.
+
+1. `local.file_match "traefik_access"` targets `/var/log/traefik/access.log` with labels `job=traefik`,
+   `service=traefik`
+2. `loki.source.file "traefik_access"` tails the file and forwards raw JSON lines directly to
+   `loki.write.default.receiver` (no processing stage — Traefik's JSON access log is already structured)
+
+Query in Grafana: `{job="traefik"}` → parse with `| json` to filter by `RequestPath`, `DownstreamStatus`,
+`ClientAddr`, `RouterName`, `Duration`, etc.
 
 ---
 
