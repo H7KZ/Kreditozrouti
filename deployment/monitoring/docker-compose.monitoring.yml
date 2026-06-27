@@ -31,6 +31,8 @@ services:
   prometheus:
     image: prom/prometheus:latest
     restart: unless-stopped
+    group_add:
+      - "999"
 
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
