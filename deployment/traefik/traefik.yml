@@ -102,6 +102,18 @@ certificatesResolvers:
           - '1.1.1.1:53'
           - '8.8.8.8:53'
 
+  letsencrypt-staging:
+    acme:
+      email: kreditozrouti@gmail.com
+      storage: /certs/acme-staging.json
+      caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+      dnsChallenge:
+        provider: cloudflare
+        delayBeforeCheck: 15
+        resolvers:
+          - '1.1.1.1:53'
+          - '8.8.8.8:53'
+
 # ------------------------------------------------------------------------------
 # Logging
 # ------------------------------------------------------------------------------
