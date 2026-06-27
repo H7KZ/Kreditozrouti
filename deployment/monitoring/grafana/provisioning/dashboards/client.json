@@ -94,7 +94,7 @@
 		},
 		{
 			"id": 2,
-			"title": "JS Errors (last 1h)",
+			"title": "Console Errors (last 1h)",
 			"type": "stat",
 			"gridPos": {
 				"h": 6,
@@ -108,8 +108,8 @@
 			},
 			"targets": [
 				{
-					"expr": "count_over_time({kind=\"exception\", app=\"kreditozrouti\", env=\"$env\"}[1h])",
-					"legendFormat": "errors",
+					"expr": "sum(count_over_time({kind=\"log\", app=\"kreditozrouti\", env=\"$env\"} | logfmt | level=~\"error|ERROR\"[1h]))",
+					"legendFormat": "console errors",
 					"refId": "A"
 				}
 			],
@@ -132,13 +132,16 @@
 								"value": 10
 							}
 						]
+					},
+					"color": {
+						"mode": "thresholds"
 					}
 				},
 				"overrides": []
 			},
 			"options": {
 				"reduceOptions": {
-					"calcs": ["lastNotNull"]
+					"calcs": ["sum"]
 				},
 				"colorMode": "background",
 				"graphMode": "none"

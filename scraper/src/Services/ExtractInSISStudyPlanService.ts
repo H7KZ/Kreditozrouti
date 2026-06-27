@@ -1,4 +1,5 @@
-import type { InSISSemester, ScraperInSISFaculty, ScraperInSISStudyPlan, ScraperInSISStudyPlanCourse } from '@scraper/types/insis'
+import type { InSISSemester } from '@shared/domain/insis'
+import type { ScraperInSISFaculty, ScraperInSISStudyPlan, ScraperInSISStudyPlanCourse } from '@shared/queue/insis'
 import type { CheerioAPI } from 'cheerio'
 import * as cheerio from 'cheerio'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'

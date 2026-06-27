@@ -1,9 +1,10 @@
 import * as z from 'zod'
-import { InSISDayValues, InSISSemesterValues } from '@shared/domain/insis'
+import { DayValues } from '@shared/domain/constants'
+import { InSISSemesterValues } from '@shared/domain/insis'
 
 export const SemesterSchema = z.enum(InSISSemesterValues)
 
-export const DaySchema = z.enum(InSISDayValues)
+export const DaySchema = z.enum(DayValues)
 
 export const TimeSelectionSchema = z
 	.object({

@@ -1,4 +1,5 @@
-import type { CourseUnitType, InSISDay } from '@shared/domain/insis'
+import type { Day } from '@shared/domain/constants'
+import type { CourseUnitType } from '@shared/domain/insis'
 import type { TimeSelection } from '@shared/domain/time'
 import type { CoursesFilter } from '@shared/http/courses'
 import type { PaginationMeta } from '@shared/http/pagination'
@@ -29,7 +30,7 @@ export interface SelectedCourseUnit {
 	unitId: number
 	unitType: CourseUnitType
 	slotId: number
-	day?: InSISDay
+	day?: Day
 	date?: string
 	timeFrom: number
 	timeTo: number

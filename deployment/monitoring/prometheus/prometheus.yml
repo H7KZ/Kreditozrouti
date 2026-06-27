@@ -1,30 +1,59 @@
 # ==============================================================================
-# Prometheus Scrape Configuration: Production / Staging
-# Description: Scrapes the API service from inside the Docker network.
-#              Prometheus reaches api:80 via traefik-network.
+# Prometheus Scrape Configuration
+# Description: Discovers API containers via Docker Socket SD.
+#              Prometheus reaches containers via alloy-network.
+#              Per-container env label comes from the prometheus.io/env Docker label,
+#              so both prod and dev APIs are scraped with correct env metadata.
 # ==============================================================================
 
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
-  external_labels:
-    env: 'production'
 
 rule_files:
   - 'rules.yml'
 
 scrape_configs:
-  - job_name: 'kreditozrouti-api'
-    static_configs:
-      - targets: [ 'api:80' ]
-    metrics_path: '/metrics'
+  # Discovers kreditozrouti-api containers (prod + dev) via Docker socket.
+  # Containers must have label prometheus.io/scrape=true to be included.
+  # Filters to alloy-network only — avoids duplicate targets from multi-network containers.
+  - job_name: kreditozrouti-api
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+    metrics_path: /metrics
     relabel_configs:
-      - target_label: env
-        replacement: production
+      # Keep only containers that opt in for scraping
+      - source_labels: [ __meta_docker_container_label_prometheus_io_scrape ]
+        regex: "true"
+        action: keep
+      # Keep only the alloy-network interface — one target per container, not 4
+      - source_labels: [ __meta_docker_network_name ]
+        regex: alloy-network
+        action: keep
+      # Build scrape address from the container's alloy-network IP.
+      # Port is hardcoded here — if you change the API metrics port, update this AND the compose labels.
+      - source_labels: [ __meta_docker_network_ip ]
+        regex: (.+)
+        target_label: __address__
+        replacement: '$1:80'
+      # Pull env from the container's prometheus.io/env label (production / development)
+      - source_labels: [ __meta_docker_container_label_prometheus_io_env ]
+        target_label: env
+      # Use container name as instance label (strip leading /)
+      - source_labels: [ __meta_docker_container_name ]
+        regex: /(.*)
+        target_label: instance
 
-  - job_name: 'node'
+  - job_name: traefik
     static_configs:
-      - targets: [ 'node-exporter:9100' ]
+      - targets: [ 'traefik:8080' ]
+        labels:
+          env: production
+    metrics_path: /metrics
+
+  - job_name: node
+    static_configs:
+      - targets: [ node-exporter:9100 ]
     relabel_configs:
       - target_label: env
         replacement: production

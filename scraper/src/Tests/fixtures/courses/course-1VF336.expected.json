@@ -33,14 +33,17 @@
 	"assessment_methods": [
 		{
 			"method": "Vypracování semestrální práce",
+			"method_en": null,
 			"weight": 25
 		},
 		{
 			"method": "Prezentace nebo obhajoba",
+			"method_en": null,
 			"weight": 25
 		},
 		{
 			"method": "Absolvování závěrečného testu",
+			"method_en": null,
 			"weight": 50
 		}
 	],
@@ -228,5 +231,15 @@
 	],
 	"last_modified_date": "2025-09-22",
 	"last_modified_by": "Ing. Jana Víchová",
-	"content_hash": null
+	"aims_of_the_course_en": null,
+	"learning_outcomes_en": null,
+	"course_contents_en": null,
+	"special_requirements_en": null,
+	"literature_required_en": null,
+	"literature_recommended_en": null,
+	"prerequisites_en": null,
+	"recommended_programmes_en": null,
+	"required_work_experience_en": null,
+	"content_hash_cs": null,
+	"content_hash_en": null
 }

@@ -130,7 +130,7 @@ Two strategies, tried in order:
 
 ### Syllabus Content (`extractSyllabusContent`)
 
-Eight text fields extracted from table rows:
+Nine text fields extracted from table rows (Czech source):
 
 | Field                      | Strategy                          | Czech label                 |
 |----------------------------|-----------------------------------|-----------------------------|
@@ -147,6 +147,13 @@ Eight text fields extracted from table rows:
 **Literature splitting:** The literature cell HTML is split at the first occurrence of `/Doporu[cč]en[aá]:/i`.
 Everything before is required; everything after is recommended. Each half is converted to Markdown via
 `MarkdownService`. If no split marker exists, the whole cell becomes `literature_required`.
+
+### English Syllabus Fields (`extractEnglishFields`)
+
+Parses the same page fetched with `jazyk=3` (English content). Extracts the same nine field types using
+English labels. Literature split marker: `Recommended:` (stripping `Basic:` from the required half).
+Results are stored in `*_en` columns (`aims_of_the_course_en`, etc.). Best-effort: if the EN fetch fails,
+all `*_en` fields remain `null`; the CS result is never blocked.
 
 ### Assessment Methods (`extractAssessmentMethods`)
 

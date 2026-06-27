@@ -1,15 +1,14 @@
-import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis.js'
+import type { Day } from '../domain/constants.js'
+import type { CourseUnitType, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis.js'
 import type { FacetItem } from './facets.js'
 import type { PaginationMeta } from './pagination.js'
 
-// ---------------------------------------------------------------------------
 // Entity DTOs — mirror the JSON wire format exactly
 //
 // Note: `created_at` and `updated_at` are typed as `string` because they
 // represent ISO-8601 strings produced by JSON.stringify (which serialises
 // JS Date objects to strings). The Kysely layer inside the API holds these
 // as Date objects — the string type here reflects the over-the-wire format.
-// ---------------------------------------------------------------------------
 
 export interface FacultyDTO {
 	id: string
@@ -25,6 +24,7 @@ export interface CourseAssessmentDTO {
 	created_at: string
 	updated_at: string
 	method: string | null
+	method_en: string | null
 	weight: number | null
 }
 
@@ -33,10 +33,10 @@ export interface CourseUnitSlotDTO {
 	unit_id: number
 	created_at: string
 	updated_at: string
-	type: string | null
+	type: CourseUnitType | null
 	frequency: 'weekly' | 'single' | null
 	date: string | null
-	day: InSISDay | null
+	day: Day | null
 	time_from: number | null
 	time_to: number | null
 	location: string | null
@@ -76,7 +76,7 @@ export interface CourseDTO {
 	title_en: string | null
 	ects: number | null
 	mode_of_delivery: string | null
-	mode_of_completion: string | null
+	mode_of_completion: 'exam' | 'credit' | 'defense' | null
 	languages: string | null
 	level: string | null
 	year_of_study: number | null
@@ -90,13 +90,21 @@ export interface CourseDTO {
 	learning_outcomes: string | null
 	course_contents: string | null
 	special_requirements: string | null
-	literature: string | null
 	guarantors: string | null
 	last_modified_date: string | null
 	last_modified_by: string | null
 	study_load: string | null
 	literature_required: string | null
 	literature_recommended: string | null
+	aims_of_the_course_en: string | null
+	learning_outcomes_en: string | null
+	course_contents_en: string | null
+	special_requirements_en: string | null
+	literature_required_en: string | null
+	literature_recommended_en: string | null
+	prerequisites_en: string | null
+	recommended_programmes_en: string | null
+	required_work_experience_en: string | null
 }
 
 export interface CourseWithRelationsDTO extends CourseDTO {
@@ -126,15 +134,7 @@ export interface StudyPlanWithRelationsDTO extends StudyPlanDTO {
 	courses: StudyPlanCourseDTO[]
 }
 
-// ---------------------------------------------------------------------------
 // Response DTOs — wire format for each endpoint
-//
-// Facet shapes must stay in sync with the authoritative API response types:
-//   api/src/Controllers/Kreditozrouti/types/CoursesResponse.ts
-//   api/src/Controllers/Kreditozrouti/types/StudyPlansResponse.ts
-//   api/src/Controllers/Kreditozrouti/types/StudyPlanCoursesResponse.ts
-// When the API adds or renames a facet key, update the corresponding DTO here.
-// ---------------------------------------------------------------------------
 
 export interface CoursesResponseDTO {
 	data: CourseWithRelationsDTO[]

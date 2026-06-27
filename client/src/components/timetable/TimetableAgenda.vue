@@ -1,38 +1,71 @@
 <script setup lang="ts">
 import type { MergedUnit } from '@client/composables'
-import { isMergedUnit, useScheduleExport, useSlotMerging } from '@client/composables'
+import { isMergedUnit, useCourseLabels, useScheduleExport, useShareTimetable, useSlotMerging } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
-import type { InSISDay } from '@shared/domain/insis'
-import { computed, ref, toRef } from 'vue'
+import type { Day } from '@shared/domain/constants'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
+import TimetableCoursePanel from '@client/components/timetable/TimetableCoursePanel.vue'
+import ICalExportDialog from '@client/components/timetable/ICalExportDialog.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
-import { useTimetableStore } from '@client/stores'
+import { useAlertsStore, useTimetableStore } from '@client/stores'
+import IconCalendarDown from '~icons/lucide/calendar-arrow-down'
+import IconDownload from '~icons/lucide/download'
+import IconLoaderCircle from '~icons/lucide/loader-circle'
+import IconShare2 from '~icons/lucide/share-2'
 import IconX from '~icons/lucide/x'
 
-const { locale, t } = useI18n()
+const props = withDefaults(
+	defineProps<{
+		units?: SelectedCourseUnit[]
+		showShare?: boolean
+		showExport?: boolean
+		enableCourseModal?: boolean
+	}>(),
+	{ units: undefined, showShare: true, showExport: true, enableCourseModal: true }
+)
+
+const { t } = useI18n()
+const { getDayLabel } = useCourseLabels()
 const timetableStore = useTimetableStore()
+const alertsStore = useAlertsStore()
 
 const agendaRef = ref<HTMLElement | null>(null)
 const { exportSchedule, exporting } = useScheduleExport(agendaRef)
+const { sharing, shareTimetable } = useShareTimetable()
+const showICalDialog = ref(false)
 
-const { mergedUnitsByDay } = useSlotMerging(toRef(() => timetableStore.unitsByDay))
-
-// InSISDay values ARE the Czech names; map to English for en locale
-const DAY_EN: Record<string, string> = {
-	Pondělí: 'Monday',
-	Úterý: 'Tuesday',
-	Středa: 'Wednesday',
-	Čtvrtek: 'Thursday',
-	Pátek: 'Friday'
+async function handleShare() {
+	const units = props.units ?? timetableStore.selectedUnits
+	const url = await shareTimetable(units)
+	if (url) {
+		alertsStore.addAlert({ type: 'success', title: t('components.timetable.TimetableGrid.shareCopied'), timeout: 4000 })
+	} else if (!sharing.value) {
+		alertsStore.addAlert({ type: 'error', title: t('components.timetable.TimetableGrid.shareError'), timeout: 6000 })
+	}
 }
 
-function dayLabel(day: InSISDay): string {
-	return locale.value === 'en' ? (DAY_EN[day] ?? day) : day
+const { mergedUnitsByDay } = useSlotMerging(
+	computed(() => {
+		if (props.units) {
+			const map = new Map<Day, SelectedCourseUnit[]>()
+			for (const u of props.units) {
+				if (!u.day) continue
+				if (!map.has(u.day)) map.set(u.day, [])
+				map.get(u.day)!.push(u)
+			}
+			return map
+		}
+		return timetableStore.unitsByDay
+	})
+)
+
+function dayLabel(day: Day): string {
+	return getDayLabel(day)
 }
 
 interface DayData {
-	day: InSISDay
+	day: Day
 	units: (SelectedCourseUnit | MergedUnit)[]
 	hasUnits: boolean
 	count: number
@@ -48,6 +81,7 @@ const agendaDays = computed<DayData[]>(() =>
 const hasAnyCourses = computed(() => agendaDays.value.some(d => d.hasUnits))
 
 function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
+	if (props.units) return false
 	const ids = isMergedUnit(unit) ? unit.mergedSlotIds : [unit.slotId]
 	return timetableStore.conflicts.some(([a, b]) => ids.includes(a.slotId) || ids.includes(b.slotId))
 }
@@ -69,19 +103,18 @@ function borderColor(unit: SelectedCourseUnit | MergedUnit): string {
 }
 
 // Modal
-const showModal = ref(false)
-const modalUnit = ref<SelectedCourseUnit | null>(null)
+const showPanel = ref(false)
+const panelUnit = ref<SelectedCourseUnit | null>(null)
 
-function openModal(unit: SelectedCourseUnit | MergedUnit) {
-	// MergedUnit has originalUnits[]; pass the first original unit to the modal
-	// (TimetableCourseModal expects a SelectedCourseUnit, not a MergedUnit)
-	modalUnit.value = isMergedUnit(unit) ? unit.originalUnits[0] : unit
-	showModal.value = true
+function openPanel(unit: SelectedCourseUnit | MergedUnit) {
+	// MergedUnit has originalUnits[]; pass the first original unit to the panel
+	panelUnit.value = isMergedUnit(unit) ? unit.originalUnits[0] : unit
+	showPanel.value = true
 }
 
-function closeModal() {
-	showModal.value = false
-	modalUnit.value = null
+function closePanel() {
+	showPanel.value = false
+	panelUnit.value = null
 }
 
 function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
@@ -98,43 +131,42 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 
 <template>
 	<div ref="agendaRef" class="px-4 py-3">
-		<!-- Export button -->
-		<div v-if="hasAnyCourses" class="mb-3 flex justify-end">
+		<!-- Toolbar: share + export -->
+		<div v-if="hasAnyCourses && (showShare || showExport)" class="mb-3 flex justify-end gap-2">
+			<!-- Share button -->
 			<button
+				v-if="showShare"
+				type="button"
+				:disabled="sharing"
+				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
+				@click="handleShare"
+			>
+				<IconShare2 v-if="!sharing" class="h-3.5 w-3.5" aria-hidden="true" />
+				<IconLoaderCircle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+				{{ sharing ? $t('components.timetable.TimetableGrid.sharing') : $t('components.timetable.TimetableGrid.share') }}
+			</button>
+			<!-- Export to image button -->
+			<button
+				v-if="showExport"
 				type="button"
 				:disabled="exporting"
 				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
 				@click="exportSchedule"
 			>
-				<svg
-					v-if="!exporting"
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-3.5 w-3.5"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					aria-hidden="true"
-				>
-					<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-					<polyline points="7 10 12 15 17 10" />
-					<line x1="12" y1="15" x2="12" y2="3" />
-				</svg>
-				<svg
-					v-else
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-3.5 w-3.5 animate-spin"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					aria-hidden="true"
-				>
-					<path d="M21 12a9 9 0 1 1-6.219-8.56" />
-				</svg>
+				<IconDownload v-if="!exporting" class="h-3.5 w-3.5" aria-hidden="true" />
+				<IconLoaderCircle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
 				{{ exporting ? $t('components.timetable.TimetableAgenda.exporting') : $t('components.timetable.TimetableAgenda.saveAsImage') }}
+			</button>
+
+			<!-- Export to calendar button -->
+			<button
+				v-if="showExport"
+				type="button"
+				class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8"
+				@click="showICalDialog = true"
+			>
+				<IconCalendarDown class="h-3.5 w-3.5" aria-hidden="true" />
+				{{ $t('components.timetable.TimetableAgenda.exportToCalendar') }}
 			</button>
 		</div>
 
@@ -176,7 +208,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 						<button
 							type="button"
 							class="flex min-h-[52px] min-w-0 flex-1 items-start gap-3 overflow-hidden rounded-md px-3 py-2.5 text-left active:bg-(--insis-surface-2)"
-							@click="openModal(unit)"
+							@click="enableCourseModal && openPanel(unit)"
 						>
 							<div class="min-w-0 flex-1">
 								<div class="truncate text-sm font-semibold text-(--insis-text)">{{ unit.courseTitle }}</div>
@@ -201,6 +233,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 							</div>
 						</button>
 						<button
+							v-if="enableCourseModal"
 							type="button"
 							class="flex shrink-0 items-start px-2 pt-2.5 text-(--insis-text-3) hover:text-(--insis-text)"
 							:aria-label="$t('common.remove')"
@@ -213,6 +246,7 @@ function removeFromTimetable(unit: SelectedCourseUnit | MergedUnit) {
 			</div>
 		</template>
 
-		<TimetableCourseModal v-if="showModal && modalUnit" :unit="modalUnit" @close="closeModal" />
+		<TimetableCoursePanel v-if="enableCourseModal && showPanel && panelUnit" :unit="panelUnit" @close="closePanel" />
+		<ICalExportDialog v-model="showICalDialog" :units="units ?? timetableStore.selectedUnits" />
 	</div>
 </template>

@@ -44,16 +44,27 @@ export interface ScraperInSISCourse {
 	special_requirements: string | null
 	literature_required: string | null
 	literature_recommended: string | null
+	aims_of_the_course_en: string | null
+	learning_outcomes_en: string | null
+	course_contents_en: string | null
+	special_requirements_en: string | null
+	literature_required_en: string | null
+	literature_recommended_en: string | null
+	prerequisites_en: string | null
+	recommended_programmes_en: string | null
+	required_work_experience_en: string | null
 	last_modified_date: string | null
 	last_modified_by: string | null
 	study_load: ScraperInSISCourseStudyLoad[] | null
 	timetable: ScraperInSISCourseTimetableUnit[] | null
 	study_plans: ScraperInSISCourseStudyPlan[] | null
-	content_hash: string | null
+	content_hash_cs: string | null
+	content_hash_en: string | null
 }
 
 export interface ScraperInSISCourseAssessmentMethod {
 	method: string | null
+	method_en: string | null
 	weight: number | null
 }
 

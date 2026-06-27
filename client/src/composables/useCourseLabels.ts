@@ -1,4 +1,4 @@
-﻿import type { InSISDay } from '@shared/domain/insis'
+﻿import type { Day } from '@shared/domain/constants'
 import type { CourseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { i18n } from '@client/index.ts'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
@@ -16,9 +16,10 @@ import { getCategoryBadgeClass, getSlotType, getUnitTypeColorClass } from '@clie
  *   getUnitTypeLabel,
  * } = useCourseLabels()
  *
- * const label = getCompletionLabel('zkouška') // "Exam"
+ * const label = getCompletionLabel('exam') // "Exam"
  * ```
  */
+
 export function useCourseLabels() {
 	const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params ?? {})
 	const te = (key: string) => i18n.global.te(key)
@@ -28,7 +29,7 @@ export function useCourseLabels() {
 	 * Get translated label with fallback to raw value.
 	 *
 	 * @param prefix - Translation key prefix (e.g., 'courseModesOfCompletion')
-	 * @param value - Value to translate
+	 * @param value - Value to translate (already a canonical key)
 	 * @returns Translated label or original value
 	 */
 	function getLabel(prefix: string, value: string): string {
@@ -93,7 +94,7 @@ export function useCourseLabels() {
 	 * Get study level label.
 	 */
 	function getLevelLabel(value: string): string {
-		return getLabel('studyLevels', value.toLowerCase())
+		return getLabel('studyLevels', value)
 	}
 
 	/**
@@ -137,14 +138,14 @@ export function useCourseLabels() {
 	/**
 	 * Get day label (full form: "Monday", "Tuesday", etc.).
 	 */
-	function getDayLabel(day: InSISDay): string {
+	function getDayLabel(day: Day): string {
 		return getLabel('days', day)
 	}
 
 	/**
 	 * Get short day label (abbreviated: "Po", "Út", etc.).
 	 */
-	function getShortDayLabel(day: InSISDay): string {
+	function getShortDayLabel(day: Day): string {
 		return getLabel('daysShort', day)
 	}
 

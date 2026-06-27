@@ -1,7 +1,7 @@
-import type { InSISDay } from './insis.js'
-import { InSISDayValues } from './insis.js'
+import type { Day } from './constants.js'
+import { DayValues } from './constants.js'
 
-export function getDayFromDate(dateStr: string | null | undefined): InSISDay | null {
+export function getDayFromDate(dateStr: string | null | undefined): Day | null {
 	if (!dateStr) return null
 
 	try {
@@ -13,7 +13,7 @@ export function getDayFromDate(dateStr: string | null | undefined): InSISDay | n
 		const jsDay = date.getDay()
 		const dayIndex = jsDay === 0 ? 6 : jsDay - 1
 
-		return InSISDayValues[dayIndex] ?? null
+		return DayValues[dayIndex] ?? null
 	} catch {
 		return null
 	}

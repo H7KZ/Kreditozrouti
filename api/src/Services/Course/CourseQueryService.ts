@@ -1,8 +1,10 @@
 import { sql } from 'kysely'
 import { jsonArrayFrom } from 'kysely/helpers/mysql'
+import { INSIS_DAY_NORM, LANGUAGE_NORM, LEVEL_NORM, MODE_OF_COMPLETION_NORM, MODE_OF_DELIVERY_NORM } from '@shared/domain/constants'
+import { getSlotType } from '@shared/domain/insis'
 import { priorityOf } from '@shared/domain/studyPlan'
 import { mysql } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import {
 	Course,
 	CourseAssessmentTable,
@@ -11,7 +13,8 @@ import {
 	CourseUnitTable,
 	CourseWithRelations,
 	FacultyTable,
-	StudyPlanCourseTable
+	StudyPlanCourseTable,
+	StudyPlanTable
 } from '@api/Database/types'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 
@@ -54,6 +57,10 @@ export class CourseQueryService {
 
 		const enrichedCourses = courses.map(course => ({
 			...course,
+			mode_of_completion: MODE_OF_COMPLETION_NORM[course.mode_of_completion ?? ''] ?? course.mode_of_completion ?? null,
+			languages: CourseQueryService.normalizePipeField(course.languages, LANGUAGE_NORM),
+			level: LEVEL_NORM[course.level ?? ''] ?? course.level ?? null,
+			mode_of_delivery: CourseQueryService.normalizeModeOfDelivery(course.mode_of_delivery),
 			faculty: course.faculty_id ? (facultyMap.get(course.faculty_id) ?? null) : null,
 			units: unitsMap.get(course.id) ?? [],
 			assessments: assessmentsMap.get(course.id) ?? [],
@@ -105,14 +112,30 @@ export class CourseQueryService {
 	 * @returns {Promise<number[]>} Ordered page of course IDs.
 	 */
 	static async fetchPaginatedCourseIds(filters: Partial<CoursesFilter>, limit: number, offset: number): Promise<number[]> {
-		const results = await CourseFilterBuilder.buildFilterQuery(filters)
-			.select('c1.id')
-			.groupBy('c1.id')
-			.orderBy(this.resolveSortColumn(filters.sort_by, 'c1'), filters.sort_dir ?? 'asc')
-			.limit(limit)
-			.offset(offset)
-			.execute()
+		const isDefaultSort = !filters.sort_by
 
+		let priorityFacultyId: string | null = null
+		if (isDefaultSort && filters.study_plan_ids?.length) {
+			// one extra query to derive faculty from study plans; avoids any API contract change
+			const row = await mysql
+				.selectFrom(`${StudyPlanTable._table} as sp`)
+				.select('sp.faculty_id')
+				.where('sp.id', 'in', filters.study_plan_ids)
+				.where('sp.faculty_id', 'is not', null)
+				.limit(1)
+				.executeTakeFirst()
+			priorityFacultyId = row?.faculty_id ?? null
+		}
+
+		let query = CourseFilterBuilder.buildFilterQuery(filters).select('c1.id').groupBy('c1.id')
+
+		if (priorityFacultyId) {
+			query = query.orderBy(sql`CASE WHEN c1.faculty_id = ${priorityFacultyId} THEN 0 ELSE 1 END`).orderBy(sql.ref('c1.ident'), 'asc')
+		} else {
+			query = query.orderBy(this.resolveSortColumn(filters.sort_by, 'c1'), filters.sort_dir ?? 'asc')
+		}
+
+		const results = await query.limit(limit).offset(offset).execute()
 		return results.map(r => r.id)
 	}
 
@@ -181,7 +204,11 @@ export class CourseQueryService {
 
 		return units.map(u => ({
 			...u,
-			slots: u.slots ?? []
+			slots: (u.slots ?? []).map(slot => ({
+				...slot,
+				day: slot.day ? (INSIS_DAY_NORM[slot.day] ?? null) : null,
+				type: getSlotType({ type: slot.type })
+			}))
 		}))
 	}
 
@@ -215,6 +242,20 @@ export class CourseQueryService {
 			}
 		}
 		return [...best.values()]
+	}
+
+	private static normalizePipeField(raw: string | null, norm: Record<string, string>): string | null {
+		if (!raw) return null
+		return raw
+			.split('|')
+			.map(v => norm[v.trim()] ?? v.trim())
+			.join('|')
+	}
+
+	private static normalizeModeOfDelivery(raw: string | null): string | null {
+		if (!raw) return null
+		const prefix = raw.split(';')[0]?.trim() ?? ''
+		return MODE_OF_DELIVERY_NORM[prefix] ?? prefix
 	}
 
 	private static resolveSortColumn(sortBy?: string, tableAlias = 'c1'): ReturnType<typeof sql.ref> {

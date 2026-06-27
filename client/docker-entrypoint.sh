@@ -51,6 +51,13 @@ find "$DIST_DIR" -type f -name "*.js" | while read -r file; do
             sed -i "s|__VITE_APP_VERSION_PLACEHOLDER__|latest|g" "$file"
         fi
 
+        # Replace VITE_APP_ENV
+        if [ -n "$VITE_APP_ENV" ]; then
+            sed -i "s|__VITE_APP_ENV_PLACEHOLDER__|$(escape_sed "$VITE_APP_ENV")|g" "$file"
+        else
+            sed -i "s|__VITE_APP_ENV_PLACEHOLDER__|production|g" "$file"
+        fi
+
         # Replace VITE_UMAMI_WEBSITE_ID
         if [ -n "$VITE_UMAMI_WEBSITE_ID" ]; then
             sed -i "s|__VITE_UMAMI_WEBSITE_ID_PLACEHOLDER__|$(escape_sed "$VITE_UMAMI_WEBSITE_ID")|g" "$file"
@@ -71,5 +78,6 @@ echo "Environment injection complete."
 echo "  VITE_API_URL: ${VITE_API_URL:-<not set>}"
 echo "  VITE_FARO_COLLECTOR_URL: ${VITE_FARO_COLLECTOR_URL:-<not set>}"
 echo "  VITE_APP_VERSION: ${VITE_APP_VERSION:-latest}"
+echo "  VITE_APP_ENV: ${VITE_APP_ENV:-production}"
 echo "  VITE_UMAMI_WEBSITE_ID: ${VITE_UMAMI_WEBSITE_ID:-<not set>}"
 echo "  VITE_UMAMI_SRC: ${VITE_UMAMI_SRC:-<not set>}"

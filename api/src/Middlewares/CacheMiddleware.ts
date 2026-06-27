@@ -4,7 +4,7 @@ import { redis } from '@api/clients'
 import config from '@api/Config/Config'
 
 function buildCacheKey(req: Request): string {
-	// ponytail: replacer sorts keys at every nesting level so nested filter props (day, time_from, etc.) are included
+	// replacer sorts keys at every nesting level so nested filter props (day, time_from, etc.) are included
 	const replacer = (_key: string, value: unknown) =>
 		value && typeof value === 'object' && !Array.isArray(value) ? Object.fromEntries(Object.entries(value as Record<string, unknown>).sort()) : value
 	const body = JSON.stringify(req.body ?? {}, replacer)

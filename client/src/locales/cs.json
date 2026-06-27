@@ -1,4 +1,4 @@
-﻿{
+{
 	"filters": {
 		"syllabusSearch": "Hledat v obsahu předmětu",
 		"syllabusSearchPlaceholder": "např. machine learning, účetnictví...",
@@ -11,13 +11,11 @@
 	},
 	"errors": {
 		"types": {
-			"Unknown": "Neznámá chyba",
-			"Validation": "Chyba ověření",
-			"ZodValidation": "Chyba ověření",
-			"Authentication": "Chyba ověření",
-			"Authorization": "Chyba autorizace",
-			"Database": "Chyba databáze",
-			"ExternalService": "Chyba externí služby"
+			"UNKNOWN": "Neznámá chyba",
+			"UNAUTHORIZED": "Neautorizovaný přístup",
+			"VALIDATION": "Chyba ověření",
+			"NOT_FOUND": "Nenalezeno",
+			"INTERNAL": "Interní chyba serveru"
 		},
 		"codes": {
 			"0": "Neznámá chyba",
@@ -49,30 +47,30 @@
 		"U3V-JH": "Univerzita třetího věku - Jindřichův Hradec"
 	},
 	"days": {
-		"Pondělí": "Pondělí",
-		"Úterý": "Úterý",
-		"Středa": "Středa",
-		"Čtvrtek": "Čtvrtek",
-		"Pátek": "Pátek",
-		"Sobota": "Sobota",
-		"Neděle": "Neděle"
+		"monday": "Pondělí",
+		"tuesday": "Úterý",
+		"wednesday": "Středa",
+		"thursday": "Čtvrtek",
+		"friday": "Pátek",
+		"saturday": "Sobota",
+		"sunday": "Neděle"
 	},
 	"daysShort": {
-		"Pondělí": "Po",
-		"Úterý": "Út",
-		"Středa": "St",
-		"Čtvrtek": "Čt",
-		"Pátek": "Pá",
-		"Sobota": "So",
-		"Neděle": "Ne",
+		"monday": "Po",
+		"tuesday": "Út",
+		"wednesday": "St",
+		"thursday": "Čt",
+		"friday": "Pá",
+		"saturday": "So",
+		"sunday": "Ne",
 		"-": "-"
 	},
 	"courseLevels": {
-		"bakalářský": "Bakalářský",
-		"doktorský": "Doktorský",
-		"kurz": "Kurz",
-		"magisterský navazující": "Magisterský navazující",
-		"MBA": "MBA"
+		"bachelor": "Bakalářský",
+		"master": "Magisterský navazující",
+		"doctoral": "Doktorský",
+		"mba": "MBA",
+		"course": "Kurz"
 	},
 	"courseGroups": {
 		"faculty_specific": "Fakultně specifické skupiny",
@@ -94,34 +92,29 @@
 		"physical_education": "Tělesná výchova a sport"
 	},
 	"courseModesOfCompletion": {
-		"zkouška": "Zkouška",
-		"zápočet": "Zápočet",
-		"obhajoba": "Obhajoba"
+		"exam": "Zkouška",
+		"credit": "Zápočet",
+		"defense": "Obhajoba"
 	},
 	"assessmentMethods": {
-		"písemná zkouška": "Písemná zkouška",
-		"ústní zkouška": "Ústní zkouška",
-		"projekt": "Projekt",
-		"seminární práce": "Seminární práce",
-		"aktivita": "Aktivita",
-		"test": "Test",
-		"průběžný test": "Průběžný test",
-		"závěrečný test": "Závěrečný test",
-		"prezentace": "Prezentace",
-		"esej": "Esej",
-		"případová studie": "Případová studie"
+		"final_test": "Závěrečný test",
+		"oral_exam": "Ústní zkouška",
+		"ongoing_tests": "Průběžné testy",
+		"paper_project": "Práce / projekt",
+		"presentation": "Prezentace / obhajoba",
+		"activity": "Aktivita / účast"
 	},
 	"courseLanguages": {
-		"čeština": "Čeština",
-		"angličtina": "Angličtina",
-		"němčina": "Němčina",
-		"španělština": "Španělština",
-		"francouzština": "Francouzština",
-		"ruština": "Ruština",
-		"italština": "Italština",
-		"čínština": "Čínština",
-		"švédština": "Švédština",
-		"portugalština": "Portugalština"
+		"czech": "Čeština",
+		"english": "Angličtina",
+		"german": "Němčina",
+		"spanish": "Španělština",
+		"french": "Francouzština",
+		"russian": "Ruština",
+		"italian": "Italština",
+		"chinese": "Čínština",
+		"swedish": "Švédština",
+		"portuguese": "Portugalština"
 	},
 	"unitTypes": {
 		"lecture": "Přednáška",
@@ -140,12 +133,14 @@
 		"seminar": "seminář"
 	},
 	"studyLevels": {
-		"magisterský navazující": "Magisterský navazující",
-		"doktorský": "Doktorský",
-		"bakalářský": "Bakalářský",
-		"celoživotní vzdělávání": "Celoživotní vzdělávání",
-		"zahraniční studenti": "Zahraniční studenti",
-		"magisterský": "Magisterský"
+		"bachelor": "Bakalářský",
+		"master": "Magisterský navazující",
+		"doctoral": "Doktorský",
+		"mba": "MBA",
+		"course": "Kurz",
+		"lifelong_learning": "Celoživotní vzdělávání",
+		"international_students": "Zahraniční studenti",
+		"master_undivided": "Magisterský"
 	},
 	"semesters": {
 		"ZS": "Zimní semestr",
@@ -222,10 +217,26 @@
 			"step1": "Vyberte svou fakultu",
 			"step2": "Zvolte rok nástupu ke studiu",
 			"step3": "Vyberte svůj studijní plán",
-			"step3b": "Označte kurzy, které jste již absolvovali (volitelné)",
-			"step4": "Procházejte předměty a sestavte si rozvrh",
+			"step4": "Označte kurzy, které jste již absolvovali (volitelné)",
+			"step5": "Procházejte předměty a sestavte si rozvrh",
 			"footer": "Kreditožrouti · Data z",
 			"insisLink": "InSIS VŠE"
+		},
+		"share": {
+			"loading": "Načítám sdílený rozvrh...",
+			"errorTitle": "Odkaz je neplatný nebo expiroval",
+			"errorDescription": "Tento odkaz neexistuje nebo vypršela jeho platnost. Požádej autora o nový odkaz.",
+			"saveButton": "Uložit do mého rozvrhu",
+			"copyButton": "Kopírovat odkaz",
+			"copied": "Odkaz zkopírován!",
+			"savedAlert": "Rozvrh byl uložen do tvých slotů.",
+			"slotsFull": "Máš plné sloty (max 5). Smaž jeden a zkus znovu.",
+			"slotName": "Sdílený rozvrh",
+			"backupSlotName": "Záloha mého rozvrhu",
+			"backupSavedAlert": "Tvůj předchozí rozvrh byl automaticky uložen jako záloha.",
+			"tabTitle": "Sdílený rozvrh ({n} předmět) | Sdílený rozvrh ({n} předměty) | Sdílený rozvrh ({n} předmětů)",
+			"courseCount": "{n} předmět | {n} předměty | {n} předmětů",
+			"ects": "{n} ECTS"
 		},
 		"courses": {
 			"metaDescription": "Procházej předměty VŠE, filtruj rozvrh a sestav bezkonfliktní studijní plán. Detekce kolizí v reálném čase.",
@@ -351,6 +362,16 @@
 				"incompleteSelectionDescription": "Chcete-li se zapsat do tohoto kurzu, musíte také vybrat: {types}. Vyberte všechny požadované typy jednotek.",
 				"campusConflictTitle": "Kolize přesunu mezi kampusy",
 				"campusConflictDescription": "Tento kurz je na jiném kampusu. Mezi ním a kurzem: {courses} nemusí být dostatek času na přesun. Mezi výukou na kampusech Jižní Město a Žižkov ponechte alespoň 40 minut.",
+				"syllabus": "Sylabus",
+				"syllabusAims": "Zaměření předmětu",
+				"syllabusLearningOutcomes": "Výsledky učení",
+				"syllabusCourseContents": "Obsah předmětu",
+				"syllabusPrerequisites": "Omezení pro zápis",
+				"syllabusLiteratureRequired": "Literatura povinná",
+				"syllabusLiteratureRecommended": "Literatura doporučená",
+				"syllabusSpecialRequirements": "Zvláštní podmínky",
+				"syllabusRecommendedProgrammes": "Doporučené doplňky",
+				"syllabusRequiredWorkExperience": "Vyžadovaná praxe",
 				"lastFetched": "Data z InSIS · Načteno {age}",
 				"markAsCompleted": "Označit jako dokončené",
 				"markedCompleted": "Označeno jako dokončené",
@@ -450,12 +471,34 @@
 				"free": "volno",
 				"confirmRemove": "Odebrat kurz z rozvrhu?",
 				"saveAsImage": "Uložit jako obrázek",
-				"exporting": "Exportuji..."
+				"exporting": "Exportuji...",
+				"exportToCalendar": "Exportovat do kalendáře"
 			},
 			"TimetableGrid": {
 				"dayHeader": "Den",
 				"filterApplied": "Filtr aplikován",
-				"filterDescription": "Zobrazuji předměty v čase {from}–{to} ({day})"
+				"filterDescription": "Zobrazuji předměty v čase {from}–{to} ({day})",
+				"share": "Sdílet rozvrh",
+				"sharing": "Sdílím...",
+				"shareCopied": "Odkaz zkopírován!",
+				"shareError": "Sdílení se nezdařilo",
+				"exportToCalendar": "Exportovat do kalendáře"
+			},
+			"ICalExportDialog": {
+				"title": "Exportovat rozvrh do kalendáře",
+				"semesterRange": "Rozsah semestru",
+				"semesterStart": "Začátek semestru",
+				"semesterEnd": "Konec semestru",
+				"courseCustomization": "Přizpůsobení slotů",
+				"slot": "Slot",
+				"courseTitle": "Název",
+				"courseLocation": "Místo",
+				"courseDescription": "Popis",
+				"download": "Stáhnout .ics",
+				"copyLink": "Zkopírovat odkaz na kalendář",
+				"linkCopied": "Zkopírováno!",
+				"cancel": "Zrušit",
+				"noUnits": "Nejsou vybrány žádné předměty."
 			},
 			"TimetableCourseBlock": {
 				"removeFromTimetable": "Odebrat z rozvrhu",
@@ -468,19 +511,11 @@
 				"description": "Zobrazí předměty, které mají rozvrhovou akci v tomto časovém úseku.",
 				"searchCourses": "Hledat předměty"
 			},
-			"TimetableCourseModal": {
+			"TimetableCoursePanel": {
 				"courseNotFound": "Předmět nenalezen",
 				"loadError": "Nepodařilo se načíst detaily předmětu",
-				"courseInfo": "Informace o předmětu",
-				"selectedSlot": "Vybraný slot",
 				"removeFromTimetable": "Odebrat z rozvrhu",
-				"searchInTimeslot": "Hledat v tomto čase",
-				"filterApplied": "Časový filtr aplikován",
-				"filterDescription": "Zobrazuji předměty dostupné v {day} od {from} do {to}",
-				"slotFree": "Volný",
-				"slotConflict": "Konflikt: {ident}",
-				"slotCampusConflict": "Kampus: {ident}",
-				"lecturer": "Vyučující"
+				"searchInTimeslot": "Hledat v tomto čase"
 			},
 			"SchedulePicker": {
 				"title": "Uložené rozvrhy",

@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import analytics from '@client/analytics'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
 import { useTimetableStore } from '@client/stores/timetable.store'
+import { migrateLegacyDay } from '@client/utils/day'
 import { loadFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
 
 export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
@@ -121,7 +122,11 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 	function hydrate() {
 		const state = loadFromStorage<PersistedScheduleSlotsState>(STORAGE_KEYS.SCHEDULE_SLOTS)
 		if (state) {
-			slots.value = state.slots
+			// TEMP: migrate old InSIS Czech day strings — remove after 2026-07-25
+			slots.value = state.slots.map(slot => ({
+				...slot,
+				units: slot.units.map(u => ({ ...u, day: migrateLegacyDay(u.day) }))
+			}))
 			activeSlotId.value = state.activeSlotId
 		}
 	}

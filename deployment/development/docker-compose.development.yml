@@ -59,6 +59,7 @@ services:
       - traefik-network
       - mysql-dev-network
       - redis-dev-network
+      - alloy-network
 
     labels:
       # Traefik Configuration
@@ -83,6 +84,10 @@ services:
       - 'traefik.http.routers.${PROJECT}-bullboard.service=${PROJECT}-api'
       - 'traefik.http.routers.${PROJECT}-bullboard.middlewares=${PROJECT}-bullboard-auth'
       - 'traefik.http.middlewares.${PROJECT}-bullboard-auth.basicauth.users=${BULL_BOARD_USER}'
+      # Prometheus Service Discovery
+      - 'prometheus.io/scrape=true'
+      - 'prometheus.io/env=development'
+      - 'prometheus.io/port=80'
 
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:80/health' ]
@@ -132,6 +137,7 @@ services:
 
     networks:
       - redis-dev-network
+      - alloy-network
 
     logging:
       driver: 'json-file'
@@ -165,6 +171,7 @@ services:
       - VITE_API_URL=https://${DOMAIN}/api
       - VITE_FARO_COLLECTOR_URL=https://${DOMAIN}/faro/collect
       - VITE_APP_VERSION=${CLIENT_IMAGE_TAG:-dev-latest}
+      - VITE_APP_ENV=development
       - VITE_UMAMI_WEBSITE_ID=${VITE_UMAMI_WEBSITE_ID}
       - VITE_UMAMI_SRC=${VITE_UMAMI_SRC}
 
@@ -213,7 +220,7 @@ services:
   # Database (MySQL)
   # ============================================================================
   mysql:
-    image: mysql:9
+    image: mysql:latest
     restart: unless-stopped
 
     volumes:
@@ -265,7 +272,7 @@ services:
   # Database Interface (phpMyAdmin)
   # ============================================================================
   phpmyadmin:
-    image: phpmyadmin:5
+    image: phpmyadmin:latest
     restart: unless-stopped
 
     depends_on:
@@ -316,7 +323,7 @@ services:
   # Cache (Redis)
   # ============================================================================
   redis:
-    image: redis:7-alpine
+    image: redis:alpine
     restart: unless-stopped
 
     command:

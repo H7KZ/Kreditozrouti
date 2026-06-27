@@ -5,6 +5,6 @@ export type { PaginationMeta } from '@shared/http/pagination'
 
 export type SortDirection = CoursesFilter['sort_dir'] | StudyPlansFilter['sort_dir']
 
-export type CourseSortBy = CoursesFilter['sort_by']
+export type CourseSortBy = NonNullable<CoursesFilter['sort_by']>
 
 export type StudyPlanSortBy = StudyPlansFilter['sort_by']

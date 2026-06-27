@@ -1,12 +1,39 @@
 import type { FacetItem } from '@shared/http/facets'
 import { sql } from 'kysely'
+import { ASSESSMENT_BUCKETS } from '@shared/domain/assessment'
+import {
+	INSIS_DAY_NORM,
+	LANGUAGE_DENORM,
+	LANGUAGE_NORM,
+	LEVEL_DENORM,
+	LEVEL_NORM,
+	MODE_OF_COMPLETION_DENORM,
+	MODE_OF_COMPLETION_NORM
+} from '@shared/domain/constants'
 import { mysql } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
 import { CourseCacheService } from './CourseCacheService'
 import { CourseFilterBuilder } from './CourseFilterBuilder'
 
 export class CourseFacetService {
+	/**
+	 * Forward-normalizes facet values using a norm map.
+	 * Aggregates counts for values that map to the same key.
+	 * Unknown values are preserved as-is (no silent data loss).
+	 */
+	static normalizeFacet(data: FacetItem[], norm: Record<string, string>): FacetItem[] {
+		const map = new Map<string, number>()
+		for (const row of data) {
+			if (typeof row.value !== 'string') continue
+			const key = norm[row.value] ?? row.value
+			map.set(key, (map.get(key) ?? 0) + Number(row.count))
+		}
+		return Array.from(map.entries())
+			.map(([value, count]) => ({ value, count }))
+			.sort((a, b) => b.count - a.count)
+	}
+
 	/**
 	 * Returns the facet object for the given filters, reading from Redis cache on hit
 	 * and writing on miss. Results are cached in Redis for 5 minutes.
@@ -39,14 +66,14 @@ export class CourseFacetService {
 			days,
 			lecturersRaw,
 			languagesRaw,
-			levels,
+			levelsRaw,
 			semesters,
 			years,
 			groups,
 			categories,
 			ects,
-			modesOfCompletion,
-			assessmentMethods,
+			modesOfCompletionRaw,
+			assessmentMethodsRaw,
 			timeRange
 		] = await Promise.all([
 			this.getSimpleFacet(filters, 'faculty_id'),
@@ -65,11 +92,14 @@ export class CourseFacetService {
 		])
 
 		const lecturers = this.splitPipeDelimitedFacet(lecturersRaw, 50)
-		const languages = this.splitPipeDelimitedFacet(languagesRaw)
+		const languages = this.normalizeFacet(this.splitPipeDelimitedFacet(languagesRaw), LANGUAGE_NORM)
+		const levels = this.normalizeFacet(levelsRaw, LEVEL_NORM)
+		const modes_of_completion = this.normalizeFacet(modesOfCompletionRaw, MODE_OF_COMPLETION_NORM)
+		const assessment_methods = assessmentMethodsRaw
 
 		return {
 			faculties,
-			days,
+			days: this.normalizeFacet(days, INSIS_DAY_NORM),
 			lecturers,
 			languages,
 			levels,
@@ -78,8 +108,8 @@ export class CourseFacetService {
 			groups,
 			categories,
 			ects,
-			modes_of_completion: modesOfCompletion,
-			assessment_methods: assessmentMethods,
+			modes_of_completion,
+			assessment_methods,
 			time_range: timeRange
 		}
 	}
@@ -122,17 +152,22 @@ export class CourseFacetService {
 				.$if(!!filters.faculty_ids?.length && column !== 'faculty_id', q => q.where('c1.faculty_id', 'in', filters.faculty_ids!))
 				.$if(!!filters.semesters?.length && column !== 'semester', q => q.where('c1.semester', 'in', filters.semesters!))
 				.$if(!!filters.years?.length && column !== 'year', q => q.where('c1.year', 'in', filters.years!))
-				.$if(!!filters.levels?.length && column !== 'level', q => q.where('c1.level', 'in', filters.levels!))
+				.$if(!!filters.levels?.length && column !== 'level', q => {
+					const rawLevels = filters.levels!.map(v => LEVEL_DENORM[v] ?? v)
+					return q.where('c1.level', 'in', rawLevels)
+				})
 				.$if(!!filters.ects?.length && column !== 'ects', q => q.where('c1.ects', 'in', filters.ects!))
-				.$if(!!filters.mode_of_completions?.length && column !== 'mode_of_completion', q =>
-					q.where('c1.mode_of_completion', 'in', filters.mode_of_completions!)
-				)
+				.$if(!!filters.mode_of_completions?.length && column !== 'mode_of_completion', q => {
+					const rawModes = filters.mode_of_completions!.map(v => MODE_OF_COMPLETION_DENORM[v] ?? v)
+					return q.where('c1.mode_of_completion', 'in', rawModes)
+				})
 				.$if(!!filters.mode_of_deliveries?.length && column !== 'mode_of_delivery', q =>
 					q.where('c1.mode_of_delivery', 'in', filters.mode_of_deliveries!)
 				)
-				.$if(!!filters.languages?.length && column !== 'languages', q =>
-					q.where(eb => eb.or(filters.languages!.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
-				)
+				.$if(!!filters.languages?.length && column !== 'languages', q => {
+					const rawLanguages = filters.languages!.map(v => LANGUAGE_DENORM[v] ?? v)
+					return q.where(eb => eb.or(rawLanguages.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
+				})
 				.$if(!!filters.completed_course_idents?.length, q => q.where('c1.ident', 'not in', filters.completed_course_idents!))
 				.groupBy(`c1.${column}`)
 				.orderBy('count', 'desc')
@@ -251,13 +286,22 @@ export class CourseFacetService {
 	 * @returns {Promise<FacetItem[]>} Assessment method values; always forces assessments join.
 	 */
 	static async getAssessmentMethodFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		return CourseFilterBuilder.buildFilterQuery(filters, 'assessment_methods', { assessments: true })
+		const raw = await CourseFilterBuilder.buildFilterQuery(filters, 'assessment_methods', { assessments: true })
 			.select('ca1.method as value')
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
 			.where('ca1.method', 'is not', null)
 			.groupBy('ca1.method')
 			.orderBy('count', 'desc')
 			.execute()
+
+		const counts = new Map(raw.map(r => [r.value!, r.count]))
+
+		return ASSESSMENT_BUCKETS.map(bucket => ({
+			value: bucket.key,
+			count: bucket.methods.reduce((sum, m) => sum + (counts.get(m) ?? 0), 0)
+		}))
+			.filter(b => b.count > 0)
+			.sort((a, b) => b.count - a.count)
 	}
 
 	/**

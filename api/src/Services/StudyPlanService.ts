@@ -1,4 +1,4 @@
-import { StudyPlansFilter } from '@api/Controllers/Kreditozrouti/StudyPlansController'
+import { StudyPlansFilter } from '@api/Controllers/StudyPlans/StudyPlansController'
 import { Faculty, StudyPlan, StudyPlanCourse } from '@api/Database/types'
 import { StudyPlanFacetService } from './StudyPlan/StudyPlanFacetService'
 import { StudyPlanQueryService } from './StudyPlan/StudyPlanQueryService'

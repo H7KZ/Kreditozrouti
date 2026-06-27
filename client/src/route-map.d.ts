@@ -87,11 +87,25 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/legal/[locale]/[slug]': RouteRecordInfo<
+      '/legal/[locale]/[slug]',
+      '/legal/:locale/:slug',
+      { locale: ParamValue<true>, slug: ParamValue<true> },
+      { locale: ParamValue<false>, slug: ParamValue<false> },
+      | never
+    >,
     '/legal/[slug]': RouteRecordInfo<
       '/legal/[slug]',
       '/legal/:slug',
       { slug: ParamValue<true> },
       { slug: ParamValue<false> },
+      | never
+    >,
+    '/s/[id]': RouteRecordInfo<
+      '/s/[id]',
+      '/s/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
       | never
     >,
   }
@@ -171,6 +185,14 @@ declare module 'vue-router/auto-routes' {
       pathParamNames:
         | never
     }
+    'src/pages/legal/[locale]/[slug].vue': {
+      routes:
+        | '/legal/[locale]/[slug]'
+      views:
+        | never
+      pathParamNames:
+        | 'slug'
+    }
     'src/pages/legal/[slug].vue': {
       routes:
         | '/legal/[slug]'
@@ -178,6 +200,14 @@ declare module 'vue-router/auto-routes' {
         | never
       pathParamNames:
         | 'slug'
+    }
+    'src/pages/s/[id].vue': {
+      routes:
+        | '/s/[id]'
+      views:
+        | never
+      pathParamNames:
+        | 'id'
     }
   }
 

@@ -1,5 +1,5 @@
-import type { ScraperInSISFacultyTimetables } from '@scraper/types/insis'
-import type { ScraperInSISFacultyTimetablesRequestJob } from '@scraper/types/jobs'
+import type { ScraperInSISFacultyTimetables } from '@shared/queue/insis'
+import type { ScraperInSISFacultyTimetablesRequestJob } from '@shared/queue/jobs'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'

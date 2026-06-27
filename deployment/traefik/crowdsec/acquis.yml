@@ -1,0 +1,12 @@
+# Traefik access log → behavioral detection (brute force, scanning, etc.)
+filenames:
+  - /var/log/traefik/access.log
+labels:
+  type: traefik
+---
+# AppSec engine → OWASP CRS request inspection on port 7422
+source: appsec
+listen_addr: 0.0.0.0:7422
+appsec_config: crowdsecurity/appsec-default
+labels:
+  type: appsec

@@ -9,6 +9,7 @@ A complete reference for every Kreditožrouti feature. Jump to the section you n
 - [Drag-to-filter](#drag-to-filter)
 - [Refresh from InSIS](#refresh-from-insis)
 - [Saved Schedules](#saved-schedules)
+- [Share timetable](#share-timetable)
 - [Mark as completed](#mark-as-completed)
 - [Language and theme](#language-and-theme)
 - [International Student Guide](#international-student-guide)
@@ -57,14 +58,25 @@ Filters are combined — all active filters apply at once. Use **Clear all** in 
 ## Building your timetable
 
 1. Click any course row to expand it
-2. The expanded row shows all available **unit types** (lecture, exercise, seminar) and their time slots
-3. Click a slot to add it to your timetable
+2. The expanded row shows course metadata (faculty, ECTS, language, category) and a collapsible **Syllabus**
+   section with aims, learning outcomes, course contents, literature, and other fields. When the UI language
+   is set to English and English content is available for that course, the English version is shown.
+3. Below the syllabus: all available **unit types** (lecture, exercise, seminar) and their time slots
+4. Click a slot to add it to your timetable
 	- If you already have a unit of the same type selected for this course, it is swapped out automatically
-4. Repeat for each unit type the course requires (some courses have only lectures; others require both a lecture and an
+5. Repeat for each unit type the course requires (some courses have only lectures; others require both a lecture and an
    exercise)
 
 Your timetable is saved in your browser's local storage — it survives page reloads, closing the tab, and restarting your
 browser. The right-side panel shows all selected units grouped by course, with your total ECTS count.
+
+**Clicking a block on the timetable grid** opens a course detail panel from the right edge. The panel shows the day,
+time, room, and lecturer for that slot, then loads the full course detail below (ECTS, completion mode, language,
+assessments, syllabus). From the panel you can:
+
+- **Search in timeslot** — switches to the Course List view pre-filtered to courses available in that exact time window
+- **Remove from timetable** — removes all slots of that course at once
+- **Open in InSIS** — external link in the course title
 
 ---
 
@@ -196,3 +208,28 @@ Kreditožrouti does and links directly to the English guide.
 - Shown once per browser — dismissed state saved in `localStorage` (`kreditozrouti:guide-seen`)
 - Dismissed by: clicking ×, clicking "Got it", or clicking "Read the international student guide"
 - Czech browsers never see the modal
+
+---
+
+## Share timetable
+
+Share your current timetable with anyone via a short link.
+
+**How to share:**
+
+1. Build your timetable as usual.
+2. Click the **Share** button (share icon) in the timetable toolbar.
+3. A link is automatically copied to your clipboard (e.g. `https://kreditozrouti.cz/s/abc123`).
+
+**What the recipient sees:**
+
+- A read-only timetable grid showing all your selected courses.
+- Course count and total ECTS credit load.
+- A **Copy link** button to share the URL further.
+- A **Save to my timetable** button to fork the snapshot into one of their own schedule slots for editing.
+
+**Technical details:**
+
+- Links are backed by Redis; they expire after **180 days of inactivity** (TTL resets on each view).
+- The snapshot is self-contained — it stores full course unit data, so links survive periodic database resets.
+- Rate-limited to 10 new share links per IP per minute.

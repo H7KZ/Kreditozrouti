@@ -1,8 +1,11 @@
+import type { InSISDay } from '@shared/domain/insis'
 import { AliasedExpression, Nullable, SelectQueryBuilder, sql } from 'kysely'
+import { ASSESSMENT_BUCKETS } from '@shared/domain/assessment'
+import { INSIS_DAY_DENORM, LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from '@shared/domain/constants'
 import { mysql } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Kreditozrouti/CoursesController'
+import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, Database, StudyPlanCourseTable } from '@api/Database/types'
-import { buildSlotConflictConditions } from '@api/utils/timeConflict'
+import { buildSlotConflictConditions } from '@api/Utils/TimeConflict'
 
 type QueryBuilder = SelectQueryBuilder<
 	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> } & {
@@ -48,7 +51,7 @@ export class CourseFilterBuilder {
 
 		if (needsStudyPlanJoin) {
 			if (filters.study_plan_ids?.length) {
-				// ponytail: derived table picks the best-priority (group, category) per course
+				// derived table picks the best-priority (group, category) per course
 				// across the selected plans so each course has exactly one spc1 row.
 				query = query.leftJoin(
 					this.buildBestSpcSubquery(filters.study_plan_ids) as unknown as AliasedExpression<StudyPlanCourseTable, 'spc1'>,
@@ -157,11 +160,13 @@ export class CourseFilterBuilder {
 		}
 
 		if (filters.levels?.length && !['level', 'levels'].includes(ignore!)) {
-			query = query.where('c1.level', 'in', filters.levels)
+			const rawLevels = filters.levels.map(v => LEVEL_DENORM[v] ?? v)
+			query = query.where('c1.level', 'in', rawLevels)
 		}
 
 		if (filters.languages?.length && !['language', 'languages'].includes(ignore!)) {
-			query = query.where(eb => eb.or(filters.languages!.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
+			const rawLanguages = filters.languages.map(v => LANGUAGE_DENORM[v] ?? v)
+			query = query.where(eb => eb.or(rawLanguages.map((v: string) => eb('c1.languages', 'like', `%${v}%`))))
 		}
 
 		// Time filters (only applied when slots join exists)
@@ -170,7 +175,13 @@ export class CourseFilterBuilder {
 				eb.or(
 					filters
 						.include_times!.filter(t => t.day !== undefined)
-						.map(exc => eb.and([eb('cus1.day', '=', exc.day!), eb('cus1.time_from', '<', exc.time_to), eb('cus1.time_to', '>', exc.time_from)]))
+						.map(exc =>
+							eb.and([
+								eb('cus1.day', '=', INSIS_DAY_DENORM[exc.day!] as InSISDay),
+								eb('cus1.time_from', '<', exc.time_to),
+								eb('cus1.time_to', '>', exc.time_from)
+							])
+						)
 				)
 			)
 		}
@@ -223,7 +234,8 @@ export class CourseFilterBuilder {
 		}
 
 		if (filters.mode_of_completions?.length && !['mode_of_completion', 'mode_of_completions'].includes(ignore!)) {
-			query = query.where('c1.mode_of_completion', 'in', filters.mode_of_completions)
+			const rawModes = filters.mode_of_completions.map(v => MODE_OF_COMPLETION_DENORM[v] ?? v)
+			query = query.where('c1.mode_of_completion', 'in', rawModes)
 		}
 
 		if (filters.mode_of_deliveries?.length && !['mode_of_delivery', 'mode_of_deliveries'].includes(ignore!)) {
@@ -233,15 +245,22 @@ export class CourseFilterBuilder {
 		if (filters.assessment_methods?.length && !['assessment_methods'].includes(ignore!)) {
 			query = query.where(eb =>
 				eb.and(
-					filters.assessment_methods!.map(method =>
-						eb.exists(
-							eb
-								.selectFrom(`${CourseAssessmentTable._table} as ca_filter`)
-								.select(sql.lit(1).as('one'))
-								.whereRef('ca_filter.course_id', '=', 'c1.id')
-								.where('ca_filter.method', '=', method)
+					filters.assessment_methods!.map(bucketKey => {
+						const bucket = ASSESSMENT_BUCKETS.find(b => b.key === bucketKey)
+						// fall back to literal string so legacy/unknown values don't silently drop
+						const methods = bucket ? [...bucket.methods] : [bucketKey]
+						return eb.or(
+							methods.map(method =>
+								eb.exists(
+									eb
+										.selectFrom(`${CourseAssessmentTable._table} as ca_filter`)
+										.select(sql.lit(1).as('one'))
+										.whereRef('ca_filter.course_id', '=', 'c1.id')
+										.where('ca_filter.method', '=', method)
+								)
+							)
 						)
-					)
+					})
 				)
 			)
 		}

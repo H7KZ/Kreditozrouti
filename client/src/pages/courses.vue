@@ -205,7 +205,7 @@ async function fetchNextCoursesPage(page: () => void) {
 				<!-- Content -->
 				<div
 					id="main-content"
-					class="flex-1 scrollbar-thin [scrollbar-color:var(--insis-border-mid)_transparent] overflow-y-auto p-4 pb-[calc(3.5rem+max(0.5rem,env(safe-area-inset-bottom)))] lg:pb-[max(1rem,env(safe-area-inset-bottom))] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-(--insis-border-mid) [&::-webkit-scrollbar-track]:bg-transparent"
+					class="flex-1 overflow-y-auto p-4 pb-[calc(3.5rem+max(0.5rem,env(safe-area-inset-bottom)))] lg:pb-[max(1rem,env(safe-area-inset-bottom))]"
 					:aria-busy="coursesStore.loading"
 				>
 					<!-- Loading -->

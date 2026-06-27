@@ -1,5 +1,5 @@
 ﻿import type { SelectedCourseUnit } from '@client/types'
-import type { InSISDay } from '@shared/domain/insis'
+import type { Day } from '@shared/domain/constants'
 import type { ComputedRef, Ref } from 'vue'
 import { computed } from 'vue'
 import { useTimeUtils } from '@client/composables'
@@ -54,7 +54,7 @@ interface ExtendedUnit extends SelectedCourseUnit {
  * ```
  */
 export function useTimetableGrid(
-	unitsByDay: Ref<Map<InSISDay, (SelectedCourseUnit | ExtendedUnit)[]>> | ComputedRef<Map<InSISDay, (SelectedCourseUnit | ExtendedUnit)[]>>,
+	unitsByDay: Ref<Map<Day, (SelectedCourseUnit | ExtendedUnit)[]>> | ComputedRef<Map<Day, (SelectedCourseUnit | ExtendedUnit)[]>>,
 	options: UseTimetableGridOptions = {}
 ) {
 	const { rowHeight = 60, blockPadding = 2 } = options
@@ -82,7 +82,7 @@ export function useTimetableGrid(
 	/**
 	 * Get units for a specific day.
 	 */
-	function getUnitsForDay(day: InSISDay): (SelectedCourseUnit | ExtendedUnit)[] {
+	function getUnitsForDay(day: Day): (SelectedCourseUnit | ExtendedUnit)[] {
 		return unitsByDay.value.get(day) || []
 	}
 
@@ -91,7 +91,7 @@ export function useTimetableGrid(
 	 * Returns a Map where each unit's slotId maps to its position info.
 	 * Updated to handle merged units by using their primary slotId.
 	 */
-	function getOverlapInfo(day: InSISDay): Map<number, OverlapInfo> {
+	function getOverlapInfo(day: Day): Map<number, OverlapInfo> {
 		const units = getUnitsForDay(day)
 		const overlapMap = new Map<number, OverlapInfo>()
 
@@ -129,7 +129,7 @@ export function useTimetableGrid(
 	 * Cache overlap info per day to avoid recalculating for each block.
 	 */
 	const overlapCache = computed(() => {
-		const cache = new Map<InSISDay, Map<number, OverlapInfo>>()
+		const cache = new Map<Day, Map<number, OverlapInfo>>()
 		for (const day of WEEKDAYS) {
 			cache.set(day, getOverlapInfo(day))
 		}
@@ -140,7 +140,7 @@ export function useTimetableGrid(
 	 * Computed row height per day — expands when overlapping blocks require more space.
 	 */
 	const rowHeightPerDay = computed(() => {
-		const map = new Map<InSISDay, number>()
+		const map = new Map<Day, number>()
 		for (const day of WEEKDAYS) {
 			const dayOverlaps = overlapCache.value.get(day)
 			let maxDepth = 1
@@ -159,7 +159,7 @@ export function useTimetableGrid(
 	 * Calculate style for a course block (position and size).
 	 * Blocks are bottom-anchored with a fixed minimum height.
 	 */
-	function getBlockStyle(unit: SelectedCourseUnit | ExtendedUnit, day: InSISDay): BlockStyle {
+	function getBlockStyle(unit: SelectedCourseUnit | ExtendedUnit, day: Day): BlockStyle {
 		const left = calculateTimePosition(unit.timeFrom, TIME_CONFIG.START, TIME_CONFIG.END)
 		const width = calculateTimeDuration(unit.timeFrom, unit.timeTo, TIME_CONFIG.START, TIME_CONFIG.END)
 
@@ -194,8 +194,8 @@ export function useTimetableGrid(
 	 * Get drag selection style for a day row.
 	 */
 	function getDragSelectionStyle(
-		day: InSISDay,
-		selection: { day: InSISDay; timeFrom: number; timeTo: number } | null,
+		day: Day,
+		selection: { day: Day; timeFrom: number; timeTo: number } | null,
 		active: boolean
 	): { left: string; width: string } | null {
 		if (!selection || selection.day !== day || !active) {

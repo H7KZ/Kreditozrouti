@@ -27,11 +27,17 @@ deployment/
 │   ├── networks.yml
 │   ├── volumes.yml
 │   ├── prometheus/
-│   │   ├── prometheus.yml                # Production scrape config (scrapes /metrics on API containers)
+│   │   ├── prometheus.yml                # Docker SD scrape config — discovers prod + dev API containers
 │   │   └── prometheus.local.yml          # Local scrape config
 │   └── grafana/
-│       └── provisioning/datasources/
-│           └── prometheus.yml            # Auto-provisions Prometheus datasource in Grafana
+│       └── provisioning/
+│           ├── datasources/
+│           │   └── prometheus.yml        # Auto-provisions Prometheus datasource in Grafana
+│           └── alerting/
+│               ├── rules.yml             # Alert rules (infrastructure, scraper, application)
+│               ├── notification-policies.yml
+│               ├── contact-points.yml    # Discord webhook
+│               └── message-templates.yml # discord_alert_title + discord_alert_message templates
 └── github-runner/
     ├── deploy.sh                         # Manual runner setup (run directly on VPS)
     └── docker-compose.github-runner.yml
@@ -93,3 +99,4 @@ working directory doesn't matter; only the script's own location does.
 | GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                     |
 | Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md) |
 | Monitoring, backups, security, troubleshooting | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)         |
+| Observability stack — full pipeline reference  | [MONITORING.md](../docs/deployment/MONITORING.md)         |

@@ -1,9 +1,7 @@
-// ============================================================
 // Docker container log discovery → Loki
 // Reads container stdout/stderr via Docker socket.
 // Parses JSON lines (pino output) and extracts log level,
 // service, and env as Loki stream labels.
-// ============================================================
 
 discovery.docker "containers" {
   host = "unix:///var/run/docker.sock"
@@ -32,6 +30,12 @@ discovery.relabel "container_labels" {
     source_labels = ["__meta_docker_container_image"]
     target_label  = "image"
   }
+
+  // Tag with Compose project for guaranteed env separation in log queries
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    target_label  = "compose_project"
+  }
 }
 
 loki.source.docker "docker_logs" {
@@ -51,8 +55,8 @@ loki.process "parse_json" {
       context    = "context",
       request_id = "request_id",
       path       = "path",
-      traceId    = "traceId",
-      spanId     = "spanId",
+      trace_id   = "trace_id",
+      span_id    = "span_id",
     }
   }
 
@@ -78,8 +82,8 @@ loki.process "parse_json" {
   stage.structured_metadata {
     values = {
       request_id = "",
-      traceId    = "",
-      spanId     = "",
+      trace_id   = "",
+      span_id    = "",
     }
   }
 
@@ -93,13 +97,11 @@ loki.write "default" {
   }
 }
 
-// ============================================================
 // Grafana Faro receiver
 // Accepts browser telemetry pushed by @grafana/faro-web-sdk.
 // Forwards errors, logs, and web vitals to Loki.
 // Browser SDK points to: https://domain/faro/collect (production)
 //                        http://localhost:41247/collect (local dev)
-// ============================================================
 
 faro.receiver "browser" {
   server {
@@ -127,25 +129,23 @@ loki.process "faro_labels" {
 
   stage.logfmt {
     mapping = {
-      "kind"        = "kind",
-      "environment" = "environment",
+      "kind" = "kind",
+      "env"  = "app_environment",
     }
   }
 
   stage.labels {
     values = {
       kind = "",
-      env  = "environment",
+      env  = "",
     }
   }
 
   forward_to = [loki.write.default.receiver]
 }
 
-// ============================================================
 // OTLP receiver — API and Scraper push traces here.
 // Accessible from app containers via traefik-network.
-// ============================================================
 
 otelcol.receiver.otlp "default" {
   grpc {
@@ -173,4 +173,20 @@ otelcol.exporter.otlp "tempo" {
       insecure = true
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Traefik access log pipeline
+// ---------------------------------------------------------------------------
+local.file_match "traefik_access" {
+  path_targets = [{
+    __path__ = "/var/log/traefik/access.log",
+    job      = "traefik",
+    service  = "traefik",
+  }]
+}
+
+loki.source.file "traefik_access" {
+  targets    = local.file_match.traefik_access.targets
+  forward_to = [loki.write.default.receiver]
 }

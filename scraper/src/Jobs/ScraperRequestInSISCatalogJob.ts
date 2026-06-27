@@ -1,4 +1,4 @@
-import type { ScraperInSISCatalogRequestJob } from '@scraper/types/jobs'
+import type { ScraperInSISCatalogRequestJob } from '@shared/queue/jobs'
 import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'

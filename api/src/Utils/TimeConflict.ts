@@ -1,4 +1,6 @@
+import type { InSISDay } from '@shared/domain/insis'
 import { ExpressionBuilder } from 'kysely'
+import { INSIS_DAY_DENORM } from '@shared/domain/constants'
 import DateService from '@api/Services/DateService'
 import { TimeSelection } from '@api/Validations'
 
@@ -28,7 +30,7 @@ export function buildSlotConflictConditions(eb: ExpressionBuilder<any, any>, exc
 	if (exc.day) {
 		// Day-based exclusion: matches slots on the same weekday with overlapping time
 		const dayConditions = [
-			eb(`${slotAlias}.day`, '=', exc.day),
+			eb(`${slotAlias}.day`, '=', INSIS_DAY_DENORM[exc.day] as InSISDay),
 			eb(`${slotAlias}.time_from`, '<', exc.time_to),
 			eb(`${slotAlias}.time_to`, '>', exc.time_from)
 		]

@@ -5,8 +5,8 @@ import type {
 	ScraperInSISFacultyTimetable,
 	ScraperInSISFacultyTimetables,
 	ScraperInSISStudyPlan
-} from '@scraper/types/insis'
-import type { ScraperInSISAcademicScheduleRequestJob } from '@scraper/types/jobs'
+} from '@shared/queue/insis'
+import type { ScraperInSISAcademicScheduleRequestJob } from '@shared/queue/jobs'
 import scraper from '@scraper/bullmq'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 

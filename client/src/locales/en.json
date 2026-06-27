@@ -1,4 +1,4 @@
-﻿{
+{
 	"filters": {
 		"syllabusSearch": "Search in course content",
 		"syllabusSearchPlaceholder": "e.g. machine learning, účetnictví...",
@@ -11,13 +11,11 @@
 	},
 	"errors": {
 		"types": {
-			"Unknown": "Unknown error",
-			"Validation": "Validation error",
-			"ZodValidation": "Validation error",
-			"Authentication": "Authentication error",
-			"Authorization": "Authorization error",
-			"Database": "Database error",
-			"ExternalService": "External service error"
+			"UNKNOWN": "Unknown error",
+			"UNAUTHORIZED": "Unauthorized access",
+			"VALIDATION": "Validation error",
+			"NOT_FOUND": "Resource not found",
+			"INTERNAL": "Internal server error"
 		},
 		"codes": {
 			"0": "Unknown error",
@@ -49,30 +47,30 @@
 		"U3V-JH": "University of the Third Age - Jindřichův Hradec"
 	},
 	"days": {
-		"Pondělí": "Monday",
-		"Úterý": "Tuesday",
-		"Středa": "Wednesday",
-		"Čtvrtek": "Thursday",
-		"Pátek": "Friday",
-		"Sobota": "Saturday",
-		"Neděle": "Sunday"
+		"monday": "Monday",
+		"tuesday": "Tuesday",
+		"wednesday": "Wednesday",
+		"thursday": "Thursday",
+		"friday": "Friday",
+		"saturday": "Saturday",
+		"sunday": "Sunday"
 	},
 	"daysShort": {
-		"Pondělí": "Mon",
-		"Úterý": "Tue",
-		"Středa": "Wed",
-		"Čtvrtek": "Thu",
-		"Pátek": "Fri",
-		"Sobota": "Sat",
-		"Neděle": "Sun",
+		"monday": "Mon",
+		"tuesday": "Tue",
+		"wednesday": "Wed",
+		"thursday": "Thu",
+		"friday": "Fri",
+		"saturday": "Sat",
+		"sunday": "Sun",
 		"-": "-"
 	},
 	"courseLevels": {
-		"bakalářský": "Bachelor's",
-		"doktorský": "Doctoral",
-		"kurz": "Course",
-		"magisterský navazující": "Follow-up Master's",
-		"MBA": "MBA"
+		"bachelor": "Bachelor's",
+		"master": "Follow-up Master's",
+		"doctoral": "Doctoral",
+		"mba": "MBA",
+		"course": "Course"
 	},
 	"courseGroups": {
 		"faculty_specific": "Faculty-specific groups",
@@ -94,34 +92,29 @@
 		"physical_education": "Physical education and sports"
 	},
 	"courseModesOfCompletion": {
-		"zkouška": "Exam",
-		"zápočet": "Credit",
-		"obhajoba": "Defense"
+		"exam": "Exam",
+		"credit": "Credit",
+		"defense": "Defense"
 	},
 	"assessmentMethods": {
-		"písemná zkouška": "Written exam",
-		"ústní zkouška": "Oral exam",
-		"projekt": "Project",
-		"seminární práce": "Seminar paper",
-		"aktivita": "Class participation",
-		"test": "Test",
-		"průběžný test": "Midterm test",
-		"závěrečný test": "Final test",
-		"prezentace": "Presentation",
-		"esej": "Essay",
-		"případová studie": "Case study"
+		"final_test": "Final test",
+		"oral_exam": "Oral exam",
+		"ongoing_tests": "Ongoing tests",
+		"paper_project": "Paper / project",
+		"presentation": "Presentation / defence",
+		"activity": "Activity / attendance"
 	},
 	"courseLanguages": {
-		"čeština": "Czech",
-		"angličtina": "English",
-		"němčina": "German",
-		"španělština": "Spanish",
-		"francouzština": "French",
-		"ruština": "Russian",
-		"italština": "Italian",
-		"čínština": "Chinese",
-		"švédština": "Swedish",
-		"portugalština": "Portuguese"
+		"czech": "Czech",
+		"english": "English",
+		"german": "German",
+		"spanish": "Spanish",
+		"french": "French",
+		"russian": "Russian",
+		"italian": "Italian",
+		"chinese": "Chinese",
+		"swedish": "Swedish",
+		"portuguese": "Portuguese"
 	},
 	"unitTypes": {
 		"lecture": "Lecture",
@@ -140,12 +133,14 @@
 		"seminar": "seminar"
 	},
 	"studyLevels": {
-		"magisterský navazující": "Follow-up Master's",
-		"doktorský": "Doctoral",
-		"bakalářský": "Bachelor's",
-		"celoživotní vzdělávání": "Lifelong Learning",
-		"zahraniční studenti": "International Students",
-		"magisterský": "Master's"
+		"bachelor": "Bachelor's",
+		"master": "Follow-up Master's",
+		"doctoral": "Doctoral",
+		"mba": "MBA",
+		"course": "Course",
+		"lifelong_learning": "Lifelong Learning",
+		"international_students": "International Students",
+		"master_undivided": "Master's"
 	},
 	"semesters": {
 		"ZS": "Winter semester",
@@ -222,10 +217,26 @@
 			"step1": "Select your faculty",
 			"step2": "Choose your enrollment year",
 			"step3": "Select your study plan",
-			"step3b": "Mark courses you've already completed (optional)",
-			"step4": "Browse courses and build your schedule",
+			"step4": "Mark courses you've already completed (optional)",
+			"step5": "Browse courses and build your schedule",
 			"footer": "Kreditožrouti · Data from",
 			"insisLink": "InSIS VŠE"
+		},
+		"share": {
+			"loading": "Loading shared timetable...",
+			"errorTitle": "Link not found or expired",
+			"errorDescription": "This link doesn't exist or has expired. Ask the owner to share it again.",
+			"saveButton": "Save to my timetable",
+			"copyButton": "Copy link",
+			"copied": "Link copied!",
+			"savedAlert": "Timetable saved to your slots.",
+			"slotsFull": "Your slots are full (max 5). Delete one and try again.",
+			"slotName": "Shared timetable",
+			"backupSlotName": "My timetable backup",
+			"backupSavedAlert": "Your previous timetable was automatically saved as a backup.",
+			"tabTitle": "Shared timetable ({n} course) | Shared timetable ({n} courses)",
+			"courseCount": "{n} course | {n} courses",
+			"ects": "{n} ECTS"
 		},
 		"courses": {
 			"metaDescription": "Browse VŠE courses, filter your timetable, and build a conflict-free study plan. Real-time conflict detection.",
@@ -351,6 +362,16 @@
 				"incompleteSelectionDescription": "To enroll in this course, you must also select: {types}. Please select all required unit types.",
 				"campusConflictTitle": "Campus travel conflict",
 				"campusConflictDescription": "This course is on a different campus. There may not be enough travel time to reach it from: {courses}. Allow at least 40 minutes between classes on Jižní Město and Žižkov campuses.",
+				"syllabus": "Syllabus",
+				"syllabusAims": "Aims of the course",
+				"syllabusLearningOutcomes": "Learning outcomes",
+				"syllabusCourseContents": "Course contents",
+				"syllabusPrerequisites": "Prerequisites",
+				"syllabusLiteratureRequired": "Required reading",
+				"syllabusLiteratureRecommended": "Recommended reading",
+				"syllabusSpecialRequirements": "Special requirements",
+				"syllabusRecommendedProgrammes": "Recommended programmes",
+				"syllabusRequiredWorkExperience": "Work experience",
 				"lastFetched": "InSIS data · Last fetched {age}",
 				"markAsCompleted": "Mark as completed",
 				"markedCompleted": "Marked as completed",
@@ -450,12 +471,34 @@
 				"free": "free",
 				"confirmRemove": "Remove course from timetable?",
 				"saveAsImage": "Save as image",
-				"exporting": "Exporting..."
+				"exporting": "Exporting...",
+				"exportToCalendar": "Export to calendar"
 			},
 			"TimetableGrid": {
 				"dayHeader": "Day",
 				"filterApplied": "Filter applied",
-				"filterDescription": "Showing courses at {from}–{to} ({day})"
+				"filterDescription": "Showing courses at {from}–{to} ({day})",
+				"share": "Share timetable",
+				"sharing": "Sharing...",
+				"shareCopied": "Link copied!",
+				"shareError": "Sharing failed",
+				"exportToCalendar": "Export to calendar"
+			},
+			"ICalExportDialog": {
+				"title": "Export timetable to calendar",
+				"semesterRange": "Semester range",
+				"semesterStart": "Semester start",
+				"semesterEnd": "Semester end",
+				"courseCustomization": "Slot customisation",
+				"slot": "Slot",
+				"courseTitle": "Title",
+				"courseLocation": "Location",
+				"courseDescription": "Description",
+				"download": "Download .ics",
+				"copyLink": "Copy calendar link",
+				"linkCopied": "Copied!",
+				"cancel": "Cancel",
+				"noUnits": "No courses selected."
 			},
 			"TimetableCourseBlock": {
 				"removeFromTimetable": "Remove from timetable",
@@ -468,19 +511,11 @@
 				"description": "Shows courses that have a schedule slot in this time period.",
 				"searchCourses": "Search courses"
 			},
-			"TimetableCourseModal": {
+			"TimetableCoursePanel": {
 				"courseNotFound": "Course not found",
 				"loadError": "Failed to load course details",
-				"courseInfo": "Course Information",
-				"selectedSlot": "Selected Slot",
 				"removeFromTimetable": "Remove from timetable",
-				"searchInTimeslot": "Search in this timeslot",
-				"filterApplied": "Time filter applied",
-				"filterDescription": "Showing courses available on {day} from {from} to {to}",
-				"slotFree": "Free",
-				"slotConflict": "Conflict: {ident}",
-				"slotCampusConflict": "Campus: {ident}",
-				"lecturer": "Lecturer"
+				"searchInTimeslot": "Search in this timeslot"
 			},
 			"SchedulePicker": {
 				"title": "Saved Schedules",

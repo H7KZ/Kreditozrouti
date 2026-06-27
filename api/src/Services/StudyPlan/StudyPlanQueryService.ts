@@ -1,6 +1,6 @@
 import { sql } from 'kysely'
 import { mysql } from '@api/clients'
-import { StudyPlansFilter } from '@api/Controllers/Kreditozrouti/StudyPlansController'
+import { StudyPlansFilter } from '@api/Controllers/StudyPlans/StudyPlansController'
 import { Faculty, FacultyTable, StudyPlan, StudyPlanCourse, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 import { StudyPlanFilterBuilder } from './StudyPlanFilterBuilder'
 

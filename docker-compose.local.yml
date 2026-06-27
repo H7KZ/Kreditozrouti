@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql
+    image: mysql:latest
     container_name: kreditozrouti-mysql
 
     volumes:
@@ -56,7 +56,7 @@ services:
   # ================================================================ #
 
   phpmyadmin:
-    image: phpmyadmin
+    image: phpmyadmin:latest
     container_name: kreditozrouti-phpmyadmin
 
     environment:
@@ -212,7 +212,7 @@ services:
   # ================================================================ #
 
   loki:
-    image: grafana/loki:3
+    image: grafana/loki:latest
     container_name: kreditozrouti-loki
 
     command: -config.file=/etc/loki/loki.yml
@@ -222,6 +222,34 @@ services:
 
     ports:
       - '43100:3100'
+
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+
+    restart: unless-stopped
+
+  # ================================================================ #
+
+  tempo:
+    image: grafana/tempo:latest
+    container_name: kreditozrouti-tempo
+
+    command: -config.file=/etc/tempo/tempo.yml
+
+    volumes:
+      - ./deployment/monitoring/tempo/tempo.yml:/etc/tempo/tempo.yml:ro
+
+    ports:
+      - '43200:3200'
 
     deploy:
       mode: global
@@ -257,6 +285,8 @@ services:
 
     ports:
       - '41247:12347'
+      - '44317:4317'
+      - '44318:4318'
 
     deploy:
       mode: global

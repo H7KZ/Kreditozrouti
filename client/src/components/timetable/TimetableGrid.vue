@@ -1,15 +1,37 @@
 ﻿<script setup lang="ts">
 import type { MergedUnit } from '@client/composables'
-import { isMergedUnit, useCourseLabels, useScheduleExport, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
+import { isMergedUnit, useCourseLabels, useScheduleExport, useShareTimetable, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
-import type { InSISDay } from '@shared/domain/insis'
-import { ref, toRef } from 'vue'
+import type { Day } from '@shared/domain/constants'
+import { computed, ref, toRef } from 'vue'
+import { useI18n } from 'vue-i18n'
 import TimetableAgenda from '@client/components/timetable/TimetableAgenda.vue'
 import TimetableCourseBlock from '@client/components/timetable/TimetableCourseBlock.vue'
-import TimetableCourseModal from '@client/components/timetable/TimetableCourseModal.vue'
+import TimetableCoursePanel from '@client/components/timetable/TimetableCoursePanel.vue'
 import TimetableDragPopover from '@client/components/timetable/TimetableDragPopover.vue'
+import ICalExportDialog from '@client/components/timetable/ICalExportDialog.vue'
 import { WEEKDAYS } from '@client/constants/timetable'
-import { useDragStore, useTimetableStore } from '@client/stores'
+import { useAlertsStore, useDragStore, useTimetableStore } from '@client/stores'
+import IconCalendarDown from '~icons/lucide/calendar-arrow-down'
+import IconDownload from '~icons/lucide/download'
+import IconLoaderCircle from '~icons/lucide/loader-circle'
+import IconShare2 from '~icons/lucide/share-2'
+
+const props = withDefaults(
+	defineProps<{
+		/** External units to display. When provided, store units are ignored. */
+		units?: SelectedCourseUnit[]
+		/** Show the share button in the toolbar. */
+		showShare?: boolean
+		/** Show the export-to-image button in the toolbar. */
+		showExport?: boolean
+		/** Enable drag-to-filter interaction on the grid. */
+		enableDrag?: boolean
+		/** Open the course detail modal when a block is clicked. */
+		enableCourseModal?: boolean
+	}>(),
+	{ units: undefined, showShare: true, showExport: true, enableDrag: true, enableCourseModal: true }
+)
 
 /*
  * TimetableGrid
@@ -19,14 +41,29 @@ import { useDragStore, useTimetableStore } from '@client/stores'
  * Refactored to use composables for grid calculations.
  */
 
+const { t } = useI18n()
 const timetableStore = useTimetableStore()
 const dragStore = useDragStore()
+const alertsStore = useAlertsStore()
 
 // Composables
 const { getShortDayLabel } = useCourseLabels()
 
-// Slot merging composable
-const { mergedUnitsByDay } = useSlotMerging(toRef(() => timetableStore.unitsByDay))
+// Slot merging composable — use external units when in readOnly mode, otherwise fall back to store
+const { mergedUnitsByDay } = useSlotMerging(
+	computed(() => {
+		if (props.units) {
+			const map = new Map<Day, SelectedCourseUnit[]>()
+			for (const u of props.units) {
+				if (!u.day) continue
+				if (!map.has(u.day)) map.set(u.day, [])
+				map.get(u.day)!.push(u)
+			}
+			return map
+		}
+		return timetableStore.unitsByDay
+	})
+)
 
 const { timeSlots, rowHeight, rowHeightPerDay, getBlockStyle, getTimeFromX, getDragSelectionStyle } = useTimetableGrid(
 	toRef(() => mergedUnitsByDay.value),
@@ -42,16 +79,28 @@ const gridRef = ref<HTMLElement | null>(null)
 const { handleMouseDown, handleDragFilter, handleDragCancel } = useTimetableDrag(gridRef, getTimeFromX)
 
 const { exportSchedule, exporting } = useScheduleExport(gridRef)
+const { sharing, shareTimetable } = useShareTimetable()
+const showICalDialog = ref(false)
+
+async function handleShare() {
+	const url = await shareTimetable(timetableStore.selectedUnits)
+	if (url) {
+		alertsStore.addAlert({ type: 'success', title: t('components.timetable.TimetableGrid.shareCopied'), timeout: 4000 })
+	} else if (!sharing.value) {
+		alertsStore.addAlert({ type: 'error', title: t('components.timetable.TimetableGrid.shareError'), timeout: 6000 })
+	}
+}
 
 /**
  * Get units for a specific day (with merging applied)
  */
-function getMergedUnitsForDay(day: InSISDay): (SelectedCourseUnit | MergedUnit)[] {
+function getMergedUnitsForDay(day: Day): (SelectedCourseUnit | MergedUnit)[] {
 	return mergedUnitsByDay.value.get(day) || []
 }
 
 // Check if a unit has a hard time conflict
 function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
+	if (props.units) return false
 	if (isMergedUnit(unit)) {
 		return unit.mergedSlotIds.some(slotId => timetableStore.conflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
 	}
@@ -60,37 +109,28 @@ function hasConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
 
 // Check if a unit has a campus travel-time conflict (softer, orange)
 function hasCampusConflict(unit: SelectedCourseUnit | MergedUnit): boolean {
+	if (props.units) return false
 	if (isMergedUnit(unit)) {
 		return unit.mergedSlotIds.some(slotId => timetableStore.campusConflicts.some(([a, b]) => a.slotId === slotId || b.slotId === slotId))
 	}
 	return timetableStore.campusConflicts.some(([a, b]) => a.slotId === unit.slotId || b.slotId === unit.slotId)
 }
 
-// Course modal state
-const showCourseModal = ref(false)
-const selectedModalUnit = ref<SelectedCourseUnit | null>(null)
+const showCoursePanel = ref(false)
+const selectedPanelUnit = ref<SelectedCourseUnit | null>(null)
 
-// Handle clicking on a course block to open the course modal
 function handleCourseBlockClick(unit: SelectedCourseUnit | MergedUnit) {
-	// If merged, use the first original unit for the modal
-	if (isMergedUnit(unit)) {
-		selectedModalUnit.value = unit.originalUnits[0] || unit
-	} else {
-		selectedModalUnit.value = unit
-	}
-	showCourseModal.value = true
+	selectedPanelUnit.value = isMergedUnit(unit) ? (unit.originalUnits[0] ?? null) : unit
+	showCoursePanel.value = true
 }
 
-// Handle closing the course modal
-function handleCloseModal() {
-	showCourseModal.value = false
-	selectedModalUnit.value = null
+function handleClosePanel() {
+	showCoursePanel.value = false
+	selectedPanelUnit.value = null
 }
 
-// Handle removing a unit (or all merged units)
 function handleRemoveUnit(unit: SelectedCourseUnit | MergedUnit) {
 	if (isMergedUnit(unit)) {
-		// Remove all merged units
 		for (const original of unit.originalUnits) {
 			timetableStore.removeUnit(original.unitId)
 		}
@@ -100,7 +140,7 @@ function handleRemoveUnit(unit: SelectedCourseUnit | MergedUnit) {
 }
 
 // Computed drag selection style wrapper
-function getDragSelectionStyleForDay(day: InSISDay) {
+function getDragSelectionStyleForDay(day: Day) {
 	return getDragSelectionStyle(day, dragStore.normalizedDragSelection, dragStore.dragSelection.active)
 }
 </script>
@@ -108,46 +148,46 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 <template>
 	<div class="relative">
 		<!-- Mobile: agenda view -->
-		<TimetableAgenda class="lg:hidden" />
+		<TimetableAgenda class="lg:hidden" :units="units" :show-share="showShare" :show-export="showExport" :enable-course-modal="enableCourseModal" />
 
 		<!-- Desktop: time grid -->
 		<div class="hidden flex-col gap-2 lg:flex">
-			<div v-if="timetableStore.selectedUnits.length > 0" class="flex justify-end">
+			<div v-if="(showShare || showExport) && timetableStore.selectedUnits.length > 0" class="flex justify-end gap-2">
+				<!-- Share button -->
 				<button
+					v-if="showShare"
+					type="button"
+					:disabled="sharing"
+					class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
+					@click="handleShare"
+				>
+					<IconShare2 v-if="!sharing" class="h-3.5 w-3.5" aria-hidden="true" />
+					<IconLoaderCircle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+					{{ sharing ? $t('components.timetable.TimetableGrid.sharing') : $t('components.timetable.TimetableGrid.share') }}
+				</button>
+
+				<!-- Export to image button -->
+				<button
+					v-if="showExport"
 					type="button"
 					:disabled="exporting"
 					class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8 disabled:cursor-not-allowed disabled:opacity-50"
 					@click="exportSchedule"
 				>
-					<svg
-						v-if="!exporting"
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-3.5 w-3.5"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						aria-hidden="true"
-					>
-						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-						<polyline points="7 10 12 15 17 10" />
-						<line x1="12" y1="15" x2="12" y2="3" />
-					</svg>
-					<svg
-						v-else
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-3.5 w-3.5 animate-spin"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						aria-hidden="true"
-					>
-						<path d="M21 12a9 9 0 1 1-6.219-8.56" />
-					</svg>
-					{{ exporting ? 'Exportuji...' : 'Uložit jako obrázek' }}
+					<IconDownload v-if="!exporting" class="h-3.5 w-3.5" aria-hidden="true" />
+					<IconLoaderCircle v-else class="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+					{{ exporting ? $t('components.timetable.TimetableAgenda.exporting') : $t('components.timetable.TimetableAgenda.saveAsImage') }}
+				</button>
+
+				<!-- Export to calendar button -->
+				<button
+					v-if="showExport"
+					type="button"
+					class="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-(--insis-blue) ring-1 ring-(--insis-blue)/30 transition hover:bg-(--insis-blue)/8"
+					@click="showICalDialog = true"
+				>
+					<IconCalendarDown class="h-3.5 w-3.5" aria-hidden="true" />
+					{{ $t('components.timetable.TimetableGrid.exportToCalendar') }}
 				</button>
 			</div>
 			<div ref="gridRef" class="overflow-x-auto">
@@ -182,10 +222,10 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 							<!-- Time grid cell spanning all columns -->
 							<td
 								:colspan="timeSlots.length"
-								class="day-row relative cursor-crosshair p-0 hover:bg-(--insis-gray-50)"
+								:class="enableDrag ? 'day-row relative cursor-crosshair p-0 hover:bg-(--insis-gray-50)' : 'day-row relative p-0'"
 								:style="{ height: `${rowHeightPerDay.get(day) ?? rowHeight}px` }"
 								:data-day="day"
-								@mousedown="handleMouseDown($event, day)"
+								@mousedown="enableDrag && handleMouseDown($event, day)"
 							>
 								<!-- Background grid lines (every hour) -->
 								<div class="pointer-events-none absolute inset-0 flex">
@@ -200,7 +240,7 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 								</div>
 
 								<!-- Drag selection overlay (horizontal) -->
-								<template v-if="getDragSelectionStyleForDay(day) as Record<string, string> | null">
+								<template v-if="enableDrag && (getDragSelectionStyleForDay(day) as Record<string, string> | null)">
 									<div
 										class="pointer-events-none absolute top-0 bottom-0 bg-(--insis-block-selected) opacity-50"
 										:style="getDragSelectionStyleForDay(day)!"
@@ -218,7 +258,8 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 									:is-merged="isMergedUnit(unit)"
 									:merged-count="isMergedUnit(unit) ? unit.mergedCount : undefined"
 									:date-range="isMergedUnit(unit) ? unit.dateRange : undefined"
-									@click="handleCourseBlockClick(unit)"
+									:read-only="!enableCourseModal"
+									@click="enableCourseModal && handleCourseBlockClick(unit)"
 									@remove="handleRemoveUnit(unit)"
 								/>
 							</td>
@@ -229,17 +270,18 @@ function getDragSelectionStyleForDay(day: InSISDay) {
 
 			<!-- Drag-to-filter popover -->
 			<TimetableDragPopover
-				v-if="dragStore.showDragPopover"
+				v-if="enableDrag && dragStore.showDragPopover"
 				:position="dragStore.dragPopoverPosition"
 				:selection="dragStore.normalizedDragSelection"
 				@filter="handleDragFilter"
 				@cancel="handleDragCancel"
 			/>
 
-			<!-- Course details modal -->
-			<TimetableCourseModal v-if="showCourseModal && selectedModalUnit" :unit="selectedModalUnit" @close="handleCloseModal" />
+			<TimetableCoursePanel v-if="enableCourseModal && showCoursePanel && selectedPanelUnit" :unit="selectedPanelUnit" @close="handleClosePanel" />
 
 			<slot />
 		</div>
+
+		<ICalExportDialog v-model="showICalDialog" :units="units ?? timetableStore.selectedUnits" />
 	</div>
 </template>
