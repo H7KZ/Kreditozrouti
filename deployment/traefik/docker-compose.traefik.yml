@@ -41,6 +41,7 @@ services:
 
     networks:
       - traefik-network
+      - alloy-network
 
     ports:
       - '80:80'
