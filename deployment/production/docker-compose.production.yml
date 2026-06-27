@@ -232,7 +232,7 @@ services:
   # Database (MySQL)
   # ============================================================================
   mysql:
-    image: mysql:9
+    image: mysql:latest
     restart: unless-stopped
 
     volumes:
@@ -285,7 +285,7 @@ services:
   # Database Interface (phpMyAdmin)
   # ============================================================================
   phpmyadmin:
-    image: phpmyadmin:5
+    image: phpmyadmin:latest
     restart: unless-stopped
 
     depends_on:
@@ -336,7 +336,7 @@ services:
   # Cache (Redis)
   # ============================================================================
   redis:
-    image: redis:7-alpine
+    image: redis:alpine
     restart: unless-stopped
 
     command:
