@@ -1,24 +1,19 @@
 # ==============================================================================
 # Grafana Alerting: Message Templates
-# Custom Discord notification templates.
-# discord_alert_title  — embed title (short status line)
-# discord_alert_message — embed body (summary + description)
+# Custom Discord notification template.
+# Title line is embedded in the message body since Discord contact point
+# does not support a separate 'title' settings field.
+# disableResolveMessage: true on the contact point, so .Status is always "firing".
 # ==============================================================================
 
 apiVersion: 1
 
 templates:
   - orgId: 1
-    name: discord_alert_title
-    template: |
-      {{ define "discord_alert_title" -}}
-      {{ if eq .Status "firing" }}🔴{{ else }}✅{{ end }} {{ .CommonLabels.alertname | title }}
-      {{- end }}
-
-  - orgId: 1
     name: discord_alert_message
     template: |
       {{ define "discord_alert_message" -}}
+      🔴 **{{ .CommonLabels.alertname | title }}**
       **Status:** {{ .Status | toUpper }}{{ if .CommonLabels.env }} · **Env:** {{ .CommonLabels.env }}{{ end }}{{ if .CommonLabels.severity }} · **Severity:** {{ .CommonLabels.severity | toUpper }}{{ end }}
       {{ range .Alerts -}}
       {{ .Annotations.summary }}

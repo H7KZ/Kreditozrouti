@@ -2,6 +2,8 @@
 # Grafana Alerting: Contact Points
 # Provisions a Discord webhook contact point.
 # DISCORD_WEBHOOK_URL is injected via the Grafana container's environment.
+# Note: Discord contact point only supports url, message, avatar_url, use_discord_username.
+#       Title is embedded as the first line of the message template.
 # ==============================================================================
 
 apiVersion: 1
@@ -14,6 +16,5 @@ contactPoints:
         type: discord
         settings:
           url: ${DISCORD_WEBHOOK_URL}
-          title: '{{ template "discord_alert_title" . }}'
           message: '{{ template "discord_alert_message" . }}'
         disableResolveMessage: true
