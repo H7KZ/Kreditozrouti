@@ -6,6 +6,7 @@
 # Required Secrets (repository-level):
 #   SSH_HOST, SSH_USER, SSH_PORT, SSH_PRIVATE_KEY
 #   TRAEFIK_DOMAIN, TRAEFIK_HTPASSWD, CF_API_EMAIL, CF_DNS_API_TOKEN, ACME_EMAIL
+#   CROWDSEC_BOUNCER_API_KEY
 #
 # TRAEFIK_HTPASSWD format: a single htpasswd line, e.g.:
 #   admin:$apr1$xyz...   (generate with: htpasswd -nb admin yourpassword)
@@ -57,12 +58,13 @@ jobs:
           CF_API_EMAIL: ${{ secrets.CF_API_EMAIL }}
           CF_DNS_API_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
           ACME_EMAIL: ${{ secrets.ACME_EMAIL }}
+          CROWDSEC_BOUNCER_API_KEY: ${{ secrets.CROWDSEC_BOUNCER_API_KEY }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: TRAEFIK_DOMAIN,TRAEFIK_HTPASSWD,CF_API_EMAIL,CF_DNS_API_TOKEN,ACME_EMAIL
+          envs: TRAEFIK_DOMAIN,TRAEFIK_HTPASSWD,CF_API_EMAIL,CF_DNS_API_TOKEN,ACME_EMAIL,CROWDSEC_BOUNCER_API_KEY
           script: |
             set -euo pipefail
             bash ~/deployment/traefik/deploy.sh

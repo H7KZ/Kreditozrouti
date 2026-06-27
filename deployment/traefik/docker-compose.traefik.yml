@@ -13,7 +13,6 @@
 # Required Environment Variables:
 #   - TRAEFIK_DOMAIN: Domain for the Traefik dashboard
 #   - TRAEFIK_CREDENTIALS_PATH: Path to htpasswd file for basic auth
-#   - TRAEFIK_ALLOWED_IPS: Comma-separated CIDRs allowed to access dashboard
 #   - CF_API_EMAIL: Cloudflare account email
 #   - CF_DNS_API_TOKEN: Cloudflare API token with Zone:DNS:Edit permissions
 #   - CROWDSEC_BOUNCER_API_KEY: CrowdSec LAPI key (generated from cscli bouncers add)
@@ -62,11 +61,8 @@ services:
       - 'traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt'
       - 'traefik.http.routers.traefik-dashboard.service=api@internal'
 
-      # IP Allowlist (dashboard only — allows only known admin IPs)
-      - 'traefik.http.middlewares.traefik-ip-allowlist.ipallowlist.sourcerange=${TRAEFIK_ALLOWED_IPS}'
-
       # Middlewares — IP check first, then auth
-      - 'traefik.http.routers.traefik-dashboard.middlewares=traefik-ip-allowlist,traefik-auth'
+      - 'traefik.http.routers.traefik-dashboard.middlewares=traefik-auth'
 
       # Basic Auth Middleware
       - 'traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt'

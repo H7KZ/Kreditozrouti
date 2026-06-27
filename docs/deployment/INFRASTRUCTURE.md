@@ -95,11 +95,9 @@ docker exec crowdsec cscli bouncers list     # connected bouncers + last_pull
 
 ### Dashboard protection
 
-The Traefik dashboard router has two layers of protection:
+The Traefik dashboard router has one layer of protection:
 
-1. **IP allowlist** (`traefik-ip-allowlist`) — `TRAEFIK_ALLOWED_IPS` env var (comma-separated CIDRs). Any IP not
-   in the list gets a `403` before seeing the auth prompt.
-2. **Basic auth** (`traefik-auth`) — htpasswd file at `TRAEFIK_CREDENTIALS_PATH`.
+1. **Basic auth** (`traefik-auth`) — htpasswd file at `TRAEFIK_CREDENTIALS_PATH`.
 
 ### Deploy Traefik
 
@@ -311,7 +309,6 @@ CF_DNS_API_TOKEN=<cloudflare-token>
 CF_API_EMAIL=<cloudflare-email>
 TRAEFIK_DOMAIN=traefik.example.com
 TRAEFIK_CREDENTIALS_PATH=/path/to/.htpasswd
-TRAEFIK_ALLOWED_IPS=1.2.3.4/32,5.6.7.8/32   # admin IP allowlist for dashboard
 
 # CrowdSec (generate via: cscli bouncers add traefik-bouncer)
 CROWDSEC_BOUNCER_API_KEY=<generated-key>
