@@ -61,12 +61,6 @@ providers:
     watch: true
 
 # ------------------------------------------------------------------------------
-# Servers Transport
-# ------------------------------------------------------------------------------
-serversTransport:
-  insecureSkipVerify: true
-
-# ------------------------------------------------------------------------------
 # Certificate Resolvers (Let's Encrypt with Cloudflare DNS Challenge)
 # ------------------------------------------------------------------------------
 certificatesResolvers:
@@ -94,7 +88,5 @@ log:
 
 accessLog:
   filePath: /var/log/traefik/access.log
+  format: json
   bufferingSize: 100
-  filters:
-    statusCodes:
-      - '400-599'
