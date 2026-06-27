@@ -1,0 +1,36 @@
+# ==============================================================================
+# Traefik Dynamic Configuration
+# Global middlewares — applied to all routers via websecure entrypoint.
+# Supports Go template syntax: {{ env "VAR_NAME" }}
+# ==============================================================================
+
+http:
+  middlewares:
+
+    # --------------------------------------------------------------------------
+    # Security headers — added to every response
+    # --------------------------------------------------------------------------
+    security-headers:
+      headers:
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        forceSTSHeader: true
+        frameDeny: true
+        contentTypeNosniff: true
+        referrerPolicy: strict-origin-when-cross-origin
+        customResponseHeaders:
+          X-XSS-Protection: "0"
+          Permissions-Policy: "camera=(), microphone=(), geolocation=()"
+
+    # --------------------------------------------------------------------------
+    # Rate limit — per real IP backstop (CrowdSec handles sophisticated abuse)
+    # --------------------------------------------------------------------------
+    rate-limit:
+      rateLimit:
+        average: 100
+        burst: 200
+        period: 1s
+        sourceCriterion:
+          ipStrategy:
+            depth: 1

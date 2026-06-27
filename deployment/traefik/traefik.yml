@@ -62,6 +62,9 @@ entryPoints:
     http:
       tls:
         certResolver: letsencrypt
+      middlewares:
+        - security-headers@file
+        - rate-limit@file
 
   # Internal entrypoint for healthchecks
   traefik:
@@ -75,6 +78,9 @@ providers:
     endpoint: 'unix:///var/run/docker.sock'
     exposedByDefault: false
     network: traefik-network
+    watch: true
+  file:
+    filename: /dynamic.yml
     watch: true
 
 # ------------------------------------------------------------------------------
