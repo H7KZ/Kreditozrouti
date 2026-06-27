@@ -37,6 +37,15 @@ metrics:
     addServicesLabels: true
 
 # ------------------------------------------------------------------------------
+# Plugins
+# ------------------------------------------------------------------------------
+experimental:
+  plugins:
+    crowdsec-bouncer:
+      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      version: v1.6.0
+
+# ------------------------------------------------------------------------------
 # Entrypoints
 # ------------------------------------------------------------------------------
 entryPoints:
@@ -72,8 +81,9 @@ entryPoints:
       tls:
         certResolver: letsencrypt
       middlewares:
-        - security-headers@file
+        - crowdsec-bouncer@file
         - rate-limit@file
+        - security-headers@file
 
   # Internal entrypoint for healthchecks
   traefik:

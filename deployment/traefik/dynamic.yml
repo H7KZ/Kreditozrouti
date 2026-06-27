@@ -35,6 +35,24 @@ http:
           ipStrategy:
             depth: 1
 
+    # --------------------------------------------------------------------------
+    # CrowdSec WAF bouncer — IP reputation + AppSec OWASP CRS request scanning
+    # Reads LAPI key from Traefik env var via Go template (file provider feature)
+    # --------------------------------------------------------------------------
+    crowdsec-bouncer:
+      plugin:
+        crowdsec-bouncer:
+          enabled: true
+          logLevel: INFO
+          crowdsecMode: live
+          crowdsecLapiScheme: http
+          crowdsecLapiHost: crowdsec:8080
+          crowdsecLapiKey: '{{ env "CROWDSEC_BOUNCER_API_KEY" }}'
+          crowdsecAppsecEnabled: true
+          crowdsecAppsecHost: crowdsec:7422
+          crowdsecAppsecFailureBlock: true
+          crowdsecAppsecUnreachableBlock: false
+
 # ------------------------------------------------------------------------------
 # TLS options — 'default' is applied automatically to all routers
 # ------------------------------------------------------------------------------
