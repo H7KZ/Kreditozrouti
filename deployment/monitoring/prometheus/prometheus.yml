@@ -57,3 +57,10 @@ scrape_configs:
     relabel_configs:
       - target_label: env
         replacement: production
+
+  - job_name: crowdsec
+    static_configs:
+      - targets: [ 'crowdsec:6060' ]
+        labels:
+          env: production
+    metrics_path: /metrics
