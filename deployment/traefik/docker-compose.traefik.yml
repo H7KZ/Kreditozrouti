@@ -6,16 +6,19 @@
 # Features:
 #   - Automatic HTTPS with Let's Encrypt (DNS-01 via Cloudflare)
 #   - HTTP to HTTPS redirect
-#   - Dashboard with basic auth protection
+#   - Dashboard with basic auth + IP allowlist protection
 #   - Docker provider for automatic service discovery
+#   - CrowdSec WAF sidecar (LAPI + AppSec OWASP CRS)
 #
 # Required Environment Variables:
 #   - TRAEFIK_DOMAIN: Domain for the Traefik dashboard
 #   - TRAEFIK_CREDENTIALS_PATH: Path to htpasswd file for basic auth
+#   - TRAEFIK_ALLOWED_IPS: Comma-separated CIDRs allowed to access dashboard
 #   - CF_API_EMAIL: Cloudflare account email
 #   - CF_DNS_API_TOKEN: Cloudflare API token with Zone:DNS:Edit permissions
+#   - CROWDSEC_BOUNCER_API_KEY: CrowdSec LAPI key (generated from cscli bouncers add)
 #
-# Usage: docker compose -f docker-compose.traefik.yml up -d
+# Usage: docker compose -f docker-compose.traefik.yml -f networks.yml -f volumes.yml up -d
 # ==============================================================================
 
 services:
@@ -26,10 +29,11 @@ services:
     command:
       - '--configFile=/traefik.yml'
 
-    # Cloudflare DNS Challenge credentials
+    # Cloudflare DNS Challenge credentials + CrowdSec bouncer API key
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+      - CROWDSEC_BOUNCER_API_KEY=${CROWDSEC_BOUNCER_API_KEY}
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -58,8 +62,11 @@ services:
       - 'traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt'
       - 'traefik.http.routers.traefik-dashboard.service=api@internal'
 
-      # Middlewares
-      - 'traefik.http.routers.traefik-dashboard.middlewares=traefik-auth'
+      # IP Allowlist (dashboard only — allows only known admin IPs)
+      - 'traefik.http.middlewares.traefik-ip-allowlist.ipallowlist.sourcerange=${TRAEFIK_ALLOWED_IPS}'
+
+      # Middlewares — IP check first, then auth
+      - 'traefik.http.routers.traefik-dashboard.middlewares=traefik-ip-allowlist,traefik-auth'
 
       # Basic Auth Middleware
       - 'traefik.http.middlewares.traefik-auth.basicauth.usersfile=/credentials.txt'
@@ -100,3 +107,29 @@ services:
         failure_action: rollback
         monitor: 60s
         order: stop-first
+
+  crowdsec:
+    image: crowdsecurity/crowdsec:v1.7.8
+    restart: always
+    environment:
+      - COLLECTIONS=crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
+      - CUSTOM_HOSTNAME=kreditozrouti-vps
+      - DISABLE_ONLINE_API=false
+    volumes:
+      - crowdsec-db-volume:/var/lib/crowdsec/data
+      - crowdsec-config-volume:/etc/crowdsec
+      - traefik-logs-volume:/var/log/traefik:ro
+      - ./crowdsec/acquis.yml:/etc/crowdsec/acquis.d/traefik.yml:ro
+    networks:
+      - traefik-network
+    healthcheck:
+      test: ['CMD', 'cscli', 'version']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
