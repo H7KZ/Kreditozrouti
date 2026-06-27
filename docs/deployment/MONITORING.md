@@ -84,7 +84,8 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 | node-exporter | `prom/node-exporter:latest` | Host CPU / memory / disk metrics                        |
 
 All components run in the `monitoring-network` Docker network. Grafana and Alloy also join `traefik-network`
-(for public routing). API and scraper join `alloy-network` (for OTLP push to Alloy).
+(for public routing). Prometheus and Alloy also join `alloy-network` — Prometheus to reach container IPs
+discovered via Docker SD, Alloy to receive OTLP pushes from api/scraper.
 
 ---
 
@@ -180,6 +181,8 @@ Config: `deployment/monitoring/alloy/config.alloy`
 	- `stage.labels` promotes `level`, `service`, `env`, `context` to Loki stream labels
 	- `stage.structured_metadata` stores `request_id`, `trace_id`, `span_id` as per-log metadata (not stream labels —
 	  avoids cardinality explosion)
+	- A relabel rule copies `__meta_docker_container_label_com_docker_compose_project` → `compose_project` for
+	  guaranteed env separation in log queries
 5. `loki.write` pushes to `http://loki:3100/loki/api/v1/push`
 
 ### Faro browser telemetry
@@ -203,14 +206,15 @@ Config: `deployment/monitoring/alloy/config.alloy`
 
 These labels are indexed and should be used in LogQL `{}` selectors:
 
-| Label     | Values                                         | Source              |
-|-----------|------------------------------------------------|---------------------|
-| `level`   | `INFO`, `WARN`, `ERROR`, `DEBUG`               | pino `level` field  |
-| `service` | `api`, `scraper`                               | pino `base.service` |
-| `env`     | `production`, `development`                    | pino `base.env`     |
-| `context` | `http`, `job`, *(none for startup)*            | pino child logger   |
-| `app`     | `kreditozrouti`                                | Faro logs only      |
-| `kind`    | `exception`, `log`, `measurement`, `web-vital` | Faro logs only      |
+| Label             | Values                                         | Source                                           |
+|-------------------|------------------------------------------------|--------------------------------------------------|
+| `level`           | `INFO`, `WARN`, `ERROR`, `DEBUG`               | pino `level` field                               |
+| `service`         | `api`, `scraper`                               | pino `base.service`                              |
+| `env`             | `production`, `development`                    | pino `base.env`                                  |
+| `context`         | `http`, `job`, *(none for startup)*            | pino child logger                                |
+| `app`             | `kreditozrouti`                                | Faro logs only                                   |
+| `kind`            | `exception`, `log`, `measurement`, `web-vital` | Faro logs only                                   |
+| `compose_project` | Compose project name (e.g. `production`)       | Docker container label — guaranteed env fallback |
 
 Structured metadata (not indexed, use `| json` or `| logfmt` to filter):
 
@@ -262,8 +266,11 @@ When a log line contains a `trace_id` field (present when OTel has an active spa
 
 ## Prometheus Metrics
 
-Scraped from `api:80/metrics` every 15 s. The `/metrics` endpoint is only accessible from inside the Docker
-network — it returns 404 for requests with an `x-forwarded-for` header (i.e. via Traefik).
+API containers are discovered and scraped via Docker Socket SD (`docker_sd_configs` in `prometheus.yml`).
+Containers must have the `prometheus.io/scrape=true` Docker label to be included; Prometheus filters to the
+`alloy-network` interface only (one target per container, not one per network). The `/metrics` endpoint returns
+404 for requests with an `x-forwarded-for` header (i.e. via Traefik), so it is only reachable from within
+the Docker network.
 
 | Metric                          | Type      | Labels                                  | Notes                                              |
 |---------------------------------|-----------|-----------------------------------------|----------------------------------------------------|
@@ -275,8 +282,40 @@ network — it returns 404 for requests with an `x-forwarded-for` header (i.e. v
 | Node.js defaults                | various   | —                                       | GC, event loop, memory via `collectDefaultMetrics` |
 | Host metrics                    | various   | —                                       | node-exporter: CPU, disk, network                  |
 
-The `env` label is added by Prometheus `relabel_configs` in `prometheus.yml` / `prometheus.local.yml`,
-not by prom-client itself.
+The `env` label on API metrics comes from the `prometheus.io/env` Docker container label (`production` or
+`development`), copied via `relabel_configs`. Both prod and dev API containers are scraped automatically
+with correct per-container env metadata — no static target list required. Node-exporter gets `env=production`
+via a static relabel.
+
+---
+
+## Grafana Alerting
+
+Provisioned from `deployment/monitoring/grafana/provisioning/alerting/`.
+
+| File                        | Purpose                                                              |
+|-----------------------------|----------------------------------------------------------------------|
+| `rules.yml`                 | Alert rules — 3 groups: `infrastructure`, `scraper`, `application`   |
+| `notification-policies.yml` | Routes alerts to the `discord` contact point; `repeat_interval: 24h` |
+| `contact-points.yml`        | Discord webhook receiver; `disableResolveMessage: true`              |
+| `message-templates.yml`     | Go templates: `discord_alert_title` and `discord_alert_message`      |
+
+### Alert rule groups
+
+| Group            | Folder         | Rules                                                                |
+|------------------|----------------|----------------------------------------------------------------------|
+| `infrastructure` | Infrastructure | `container-down`, `disk-usage-high`, `memory-usage-high`             |
+| `scraper`        | Infrastructure | `scraper-jobs-failed` — `bullmq_queue_depth{queue=~"Scraper.*"} > 0` |
+| `application`    | Application    | `api-error-rate-high` (5xx > 5%), `api-p99-latency-high` (p99 > 2 s) |
+
+All alert rules use raw PromQL (`histogram_quantile`, `rate`) — there are no recording rules. The
+`kreditozrouti_application` group that referenced non-existent recording rules has been removed.
+
+### Discord notification format
+
+Title template: `🔴 Alert Name` / `✅ Alert Name` on resolve.
+Message template: status line with env + severity, followed by the alert `summary` and `description`
+annotations. `disableResolveMessage: true` suppresses the automatic "resolved" message.
 
 ---
 
@@ -309,16 +348,22 @@ not by prom-client itself.
    ```
    Alloy's HTTP UI is also available at `alloy:12345` from within `monitoring-network`.
 
-5. Check Prometheus can scrape the API:
+5. Check Prometheus Docker SD targets:
    ```bash
-   # From within the monitoring network
+   # List discovered targets (check api containers appear with correct env label)
+   curl -s http://localhost:9090/api/v1/targets | jq '.data.activeTargets[] | {job: .labels.job, env: .labels.env, health: .health}'
+   # Or check the Prometheus UI → Status → Targets
+   ```
+
+   To test reachability from inside Prometheus, exec into the container and curl a discovered IP:
+   ```bash
    docker compose -p global exec prometheus \
-     wget -O- http://api:80/metrics | head
+     wget -O- http://<container-alloy-network-ip>:80/metrics | head
    ```
 
 6. Verify the monitoring networks are wired correctly:
    ```bash
-   docker network inspect alloy-network   # api, scraper, alloy should appear
+   docker network inspect alloy-network   # api, scraper, alloy, prometheus should appear
    docker network inspect monitoring-network  # alloy, loki, prometheus, grafana, tempo
    ```
 

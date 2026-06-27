@@ -18,7 +18,7 @@ const faroModule = {
 			app: {
 				name: 'kreditozrouti',
 				version: (import.meta.env.VITE_APP_VERSION as string | undefined) ?? 'unknown',
-				environment: import.meta.env.MODE
+				environment: (import.meta.env.VITE_APP_ENV as string | undefined) ?? import.meta.env.MODE
 			},
 			sessionTracking: {
 				enabled: true,
