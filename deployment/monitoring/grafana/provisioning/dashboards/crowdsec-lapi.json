@@ -70,7 +70,7 @@
 			"type": "row"
 		},
 		{
-			"datasource": "${DS_PROMETHEUS}",
+			"datasource": "Prometheus",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
@@ -128,7 +128,7 @@
 			"type": "heatmap"
 		},
 		{
-			"datasource": "${DS_PROMETHEUS}",
+			"datasource": "Prometheus",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
@@ -195,7 +195,7 @@
 			"type": "row"
 		},
 		{
-			"datasource": "${DS_PROMETHEUS}",
+			"datasource": "Prometheus",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
@@ -251,7 +251,7 @@
 			"type": "heatmap"
 		},
 		{
-			"datasource": "${DS_PROMETHEUS}",
+			"datasource": "Prometheus",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
@@ -307,7 +307,7 @@
 			"type": "heatmap"
 		},
 		{
-			"datasource": "${DS_PROMETHEUS}",
+			"datasource": "Prometheus",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
@@ -377,7 +377,7 @@
 			"type": "row"
 		},
 		{
-			"datasource": "${DS_PROMETHEUS}",
+			"datasource": "Prometheus",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
@@ -433,7 +433,7 @@
 			"type": "heatmap"
 		},
 		{
-			"datasource": "${DS_PROMETHEUS}",
+			"datasource": "Prometheus",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
@@ -497,7 +497,7 @@
 			{
 				"allValue": null,
 				"current": {},
-				"datasource": "${DS_PROMETHEUS}",
+				"datasource": "Prometheus",
 				"definition": "label_values(cs_info, instance)",
 				"description": null,
 				"error": null,

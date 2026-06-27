@@ -99,7 +99,7 @@
 					"dashes": false,
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"fieldConfig": {
 						"defaults": {
@@ -148,7 +148,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"expr": "process_resident_memory_bytes{instance=\"$instance\"}",
 							"interval": "",
@@ -195,7 +195,7 @@
 					"dashes": false,
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"fieldConfig": {
 						"defaults": {
@@ -241,7 +241,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"expr": "rate(process_cpu_seconds_total{instance=\"$instance\"}[$__interval])*100",
 							"interval": "",
@@ -284,7 +284,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"fieldConfig": {
 						"defaults": {
@@ -345,7 +345,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"expr": "(process_start_time_seconds{instance=\"$instance\"})*1000",
 							"instant": false,
@@ -389,7 +389,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"fieldConfig": {
 						"defaults": {
@@ -437,7 +437,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"exemplar": true,
 							"expr": "sum(cs_alerts)",
@@ -452,7 +452,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"fieldConfig": {
 						"defaults": {
@@ -525,7 +525,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"exemplar": true,
 							"expr": "cs_alerts{instance=\"$instance\"}",
@@ -571,7 +571,7 @@
 					"dashes": false,
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"decimals": 1,
 					"fieldConfig": {
@@ -622,7 +622,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"exemplar": true,
 							"expr": "sum(increase(cs_filesource_hits_total{instance=\"$instance\"}[$__interval])) by (source)",
@@ -634,7 +634,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"exemplar": true,
 							"expr": "sum(increase(cs_journalctlsource_hits_total{instance=\"$instance\"}[$__interval])) by (source)",
@@ -646,7 +646,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"exemplar": true,
 							"expr": "sum(increase(cs_cloudwatch_stream_hits_total{instance=\"$instance\"}[$__interval])) by (group, stream)",
@@ -658,7 +658,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"exemplar": true,
 							"expr": "sum(increase(cs_syslogsource_hits_total{instance=\"$instance\"}[$__interval])) by (source)",
@@ -706,7 +706,7 @@
 					"dashes": false,
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"decimals": 1,
 					"fieldConfig": {
@@ -757,7 +757,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"expr": "sum(increase(cs_parser_hits_ok_total{instance=\"$instance\"}[$__interval])) by (source)",
 							"interval": "",
@@ -804,7 +804,7 @@
 					"dashes": false,
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"decimals": 1,
 					"fieldConfig": {
@@ -855,7 +855,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"expr": "sum(increase(cs_parser_hits_ko_total{instance=\"$instance\"}[$__interval])) by (source)",
 							"interval": "",
@@ -898,7 +898,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"fieldConfig": {
 						"defaults": {
@@ -946,7 +946,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"editorMode": "code",
 							"exemplar": true,
@@ -994,7 +994,7 @@
 					"dashes": false,
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"decimals": 1,
 					"fieldConfig": {
@@ -1045,7 +1045,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"expr": "sum(cs_buckets{instance=\"$instance\"}) by (name)",
 							"interval": "",
@@ -1091,7 +1091,7 @@
 					"dashes": false,
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"decimals": 1,
 					"fieldConfig": {
@@ -1142,7 +1142,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"expr": "sum(increase(cs_bucket_created_total{instance=\"$instance\"}[$__interval])) by (name)",
 							"interval": "",
@@ -1188,7 +1188,7 @@
 					"dashes": false,
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"decimals": 1,
 					"fieldConfig": {
@@ -1239,7 +1239,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"expr": "sum(increase(cs_bucket_overflowed_total{instance=\"$instance\"}[$__interval])) by (name)",
 							"interval": "",
@@ -1286,7 +1286,7 @@
 					"dashes": false,
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"decimals": 1,
 					"fieldConfig": {
@@ -1337,7 +1337,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"expr": "sum(increase(cs_bucket_underflowed_total{instance=\"$instance\"}[$__interval])) by (name)",
 							"interval": "",
@@ -1380,7 +1380,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "Prometheus"
 					},
 					"fieldConfig": {
 						"defaults": {
@@ -1428,7 +1428,7 @@
 						{
 							"datasource": {
 								"type": "prometheus",
-								"uid": "${DS_PROMETHEUS}"
+								"uid": "Prometheus"
 							},
 							"editorMode": "code",
 							"exemplar": true,
@@ -1466,7 +1466,7 @@
 				"current": {},
 				"datasource": {
 					"type": "prometheus",
-					"uid": "${DS_PROMETHEUS}"
+					"uid": "Prometheus"
 				},
 				"definition": "label_values(cs_info, instance)",
 				"hide": 0,
@@ -1492,7 +1492,7 @@
 				"current": {},
 				"datasource": {
 					"type": "prometheus",
-					"uid": "${DS_PROMETHEUS}"
+					"uid": "Prometheus"
 				},
 				"definition": "label_values(cs_parsing_time_seconds_bucket{instance=\"$instance\"}, type)",
 				"hide": 0,
@@ -1514,7 +1514,7 @@
 				"current": {},
 				"datasource": {
 					"type": "prometheus",
-					"uid": "${DS_PROMETHEUS}"
+					"uid": "Prometheus"
 				},
 				"definition": "label_values(cs_parsing_time_seconds_bucket{instance=\"$instance\", type=\"$datasource_type\"}, source)",
 				"hide": 0,
