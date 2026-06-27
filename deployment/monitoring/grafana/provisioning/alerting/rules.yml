@@ -1,7 +1,7 @@
 # ==============================================================================
 # Grafana Alerting: Alert Rules
-# Three groups: infrastructure (host + container health), scraper (queue),
-# application (API error rate + latency).
+# Three groups: infrastructure (host + container health), scraper (queue +
+# staleness + failure rates), application (API error rate + latency).
 # datasourceUid must match the uid in datasources/prometheus.yml.
 # ==============================================================================
 
@@ -30,7 +30,9 @@ groups:
               to: 0
             datasourceUid: Prometheus
             model:
-              expr: up == 0
+              # up==0 catches static targets (node-exporter) where the target stays in the list but scrape fails.
+              # absent() catches Docker SD targets (api) that disappear from discovery when the container stops.
+              expr: up == 0 or absent(up{job="kreditozrouti-api"})
               instant: true
               refId: A
 
@@ -102,6 +104,69 @@ groups:
               instant: true
               refId: A
 
+      - uid: scraper-stale
+        title: Scraper Stale
+        condition: A
+        for: 5m
+        annotations:
+          summary: 'Scraper has not run in 24h'
+          description: 'A scraper job has not run in more than 24 hours. Check cron schedule and Redis connectivity.'
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: Prometheus
+            model:
+              expr: (scraper_last_run_timestamp > 0) and (time() - scraper_last_run_timestamp > 86400)
+              instant: true
+              refId: A
+
+      - uid: scraper-silent-failures-rising
+        title: Scraper Silent Failures Rising
+        condition: A
+        for: 0m
+        annotations:
+          summary: 'Scraper silent failures rising'
+          description: '{{ $values.A }} silent failures in the last 30 minutes. These are caught exceptions that do not fail BullMQ jobs.'
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: Prometheus
+            model:
+              expr: increase(scraper_silent_failures_total[30m]) > 5
+              instant: true
+              refId: A
+
+      - uid: scraper-failure-rate-high
+        title: Scraper Failure Rate High
+        condition: A
+        for: 5m
+        annotations:
+          summary: 'Scraper item failure rate above 10%'
+          description: 'More than 10% of scraped items are failing to process over the last 5 minutes.'
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: Prometheus
+            model:
+              expr: rate(scraper_items_processed_total{status="failure"}[5m]) / clamp_min(rate(scraper_items_processed_total{status="success"}[5m]) + rate(scraper_items_processed_total{status="failure"}[5m]), 0.00001) > 0.1
+              instant: true
+              refId: A
+
   - orgId: 1
     name: application
     folder: Application
@@ -124,7 +189,7 @@ groups:
               to: 0
             datasourceUid: Prometheus
             model:
-              expr: sum(rate(http_request_duration_seconds_count{status_code=~"5.."}[5m])) / sum(rate(http_request_duration_seconds_count[5m])) > 0.05
+              expr: sum(rate(http_request_duration_seconds_count{status_code=~"5..",env="production"}[5m])) / sum(rate(http_request_duration_seconds_count{env="production"}[5m])) > 0.05
               instant: true
               refId: A
 
@@ -145,6 +210,6 @@ groups:
               to: 0
             datasourceUid: Prometheus
             model:
-              expr: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 2
+              expr: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{env="production"}[5m])) by (le)) > 2
               instant: true
               refId: A

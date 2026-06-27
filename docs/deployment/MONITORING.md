@@ -293,20 +293,20 @@ via a static relabel.
 
 Provisioned from `deployment/monitoring/grafana/provisioning/alerting/`.
 
-| File                        | Purpose                                                                  |
-|-----------------------------|--------------------------------------------------------------------------|
-| `rules.yml`                 | Alert rules — 3 groups: `infrastructure`, `scraper`, `application`       |
-| `notification-policies.yml` | Routes alerts to the `discord` contact point; `repeat_interval: 24h`     |
-| `contact-points.yml`        | Discord webhook receiver; `disableResolveMessage: true`                  |
-| `message-templates.yml`     | Go templates: `discord_alert_title` and `discord_alert_message`          |
+| File                        | Purpose                                                              |
+|-----------------------------|----------------------------------------------------------------------|
+| `rules.yml`                 | Alert rules — 3 groups: `infrastructure`, `scraper`, `application`   |
+| `notification-policies.yml` | Routes alerts to the `discord` contact point; `repeat_interval: 24h` |
+| `contact-points.yml`        | Discord webhook receiver; `disableResolveMessage: true`              |
+| `message-templates.yml`     | Go templates: `discord_alert_title` and `discord_alert_message`      |
 
 ### Alert rule groups
 
-| Group            | Folder         | Rules                                                                       |
-|------------------|----------------|-----------------------------------------------------------------------------|
-| `infrastructure` | Infrastructure | `container-down`, `disk-usage-high`, `memory-usage-high`                   |
-| `scraper`        | Infrastructure | `scraper-jobs-failed` — `bullmq_queue_depth{queue=~"Scraper.*"} > 0`       |
-| `application`    | Application    | `api-error-rate-high` (5xx > 5%), `api-p99-latency-high` (p99 > 2 s)       |
+| Group            | Folder         | Rules                                                                |
+|------------------|----------------|----------------------------------------------------------------------|
+| `infrastructure` | Infrastructure | `container-down`, `disk-usage-high`, `memory-usage-high`             |
+| `scraper`        | Infrastructure | `scraper-jobs-failed` — `bullmq_queue_depth{queue=~"Scraper.*"} > 0` |
+| `application`    | Application    | `api-error-rate-high` (5xx > 5%), `api-p99-latency-high` (p99 > 2 s) |
 
 All alert rules use raw PromQL (`histogram_quantile`, `rate`) — there are no recording rules. The
 `kreditozrouti_application` group that referenced non-existent recording rules has been removed.
