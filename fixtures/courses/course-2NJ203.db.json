@@ -1,74 +1,74 @@
 {
-    "course": {
-        "id": 204313,
-        "url": "",
-        "ident": "2NJ203",
-        "title": "Deutsch für Ökonomen - Fortgeschrittene 3 (B1/B2)",
-        "title_cs": "Němčina pro ekonomy - pokročilá úroveň 3 (B1/B2)",
-        "title_en": "German for Economists 3 (B1/B2)",
-        "ects": 3,
-        "faculty_id": "FMV",
-        "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
-        "mode_of_completion": "zápočet",
-        "languages": "němčina",
-        "level": "bakalářský",
-        "year_of_study": 2,
-        "semester": "LS",
-        "year": 2025,
-        "lecturers": "Mgr. Petra Jeřábková, Ph.D.|Mgr. Iva Michňová, Ph.D.",
-        "prerequisites": "studovat po absolvování 2NJ202 nebo studovat současně s 2NJ202 nebo studovat po absolvování 2NJ212 nebo studovat současně s 2NJ212 nebo nelze studovat na fakultě FMV",
-        "recommended_programmes": "žádné",
-        "required_work_experience": "žádná",
-        "aims_of_the_course": "Na pozadí makro- a mikroekonomických témat si studenti osvojují všechny jazykové prostředky a rozvíjejí všechny cílové řečové dovednosti se zvláštním zřetelem ke specifickým potřebám budoucích ekonomů. Kurz vede k dosažení jazykové kompetence B1+ (B2) v německém jazyce.",
-        "learning_outcomes": "Po úspěšném absolvování kurzu budou studenti schopni:  \n\\- rozumět delším promluvám a většině televizních zpráv  \n\\- rozumět komplexním textům a zprávám, které se zabývají současnou ekonomickou problematikou  \n\\- se spontánně a plynule účastnit rozhovoru  \n\\- vést běžný hovor s rodilým mluvčím  \n\\- se ústně i písemně srozumitelně vyjadřovat k různým hospodářským tématům  \n\\- vysvětlit a obhájit své stanovisko k aktuálním otázkám",
-        "course_contents": "**1.**\n\n**Veletrhy** (dotace 0/4)\n\na.\n\nfunkce veletrhu jako firemního komunikačního prostředku\n\nb.\n\nNěmecko - veletržní velmoc\n\nc.\n\npříprava na veletrh\n\n**2.**\n\n**Průběh veletrhu** (dotace 0/4)\n\na.\n\nnávštěva veletržního stánku\n\nb.\n\nfiremní komunikace, vedení rozhovoru s potencionálním zájemcem\n\n**3.**\n\n**Zahraniční obchod** (dotace 0/4)\n\na.\n\nexport, import, obchodní bilance\n\nb.\n\nprotekcionismus vs. volný trh\n\n**4.**\n\n**první průběžný test** (dotace 0/2)\n\n**5.**\n\n**Rizika zahraničního obchodu** (dotace 0/6)\n\na.\n\nhospodářská a politická rizika\n\nb.\n\ninterkulturní vztahy\n\nc.\n\nrating - příkladová studie Brazílie, Itálie\n\n**6.**\n\n**Vyřízení zakázky, kupní smlouva** (dotace 0/4)\n\na.\n\nprůběh, jednotlivé kroky zakázky\n\nb.\n\nzakázka - případová studie\n\nc.\n\nkupní smlouva - obecné obchodní podmínky\n\n**7.**\n\n**druhý průběžný test** (dotace 0/2)",
-        "special_requirements": "Docházka na semináře je povinná, o omluvě rozhodne vyučující. 70%-ní účast na cvičeních. Při součtu výsledků obou testů musí student dosáhnout minimálně 60% jejich maxima. Aktivita na přednáškách a semestrální práce jsou povinná doplňková kritéria.",
-        "guarantors": "PhDr. Jaroslav Březina, Ph.D.",
-        "last_modified_date": "5. 1. 2026",
-        "last_modified_by": "Ing. Dominik Proch, Ph.D.",
-        "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na přednáškách\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"26 h\"},{\"activity\":\"Příprava semestrální práce\",\"hours\":\"8 h\"},{\"activity\":\"Příprava na průběžný test (testy)\",\"hours\":\"18 h\"}]",
-        "literature_required": null,
-        "literature_recommended": "KIRCHNER, Bernd; POLLERT, Achim a POLZIN, Javier Morato. _Duden - Wirtschaft von A bis Z : Grundlagenwisen für Beruf, Ausbildung und tägliches Leben._ Mannheim: Dudenverlag, 2004. ISBN 3-411-70962-6.[](https://library.vse.cz/sysno?000084504)",
-        "aims_of_the_course_en": null,
-        "learning_outcomes_en": null,
-        "course_contents_en": null,
-        "special_requirements_en": null,
-        "literature_required_en": null,
-        "literature_recommended_en": null,
-        "prerequisites_en": null,
-        "recommended_programmes_en": null,
-        "required_work_experience_en": null,
-        "content_hash_cs": null,
-        "content_hash_en": null
-    },
-    "assessments": [
-        {
-            "method": "Aktivita na přednáškách/cvičeních/seminářích",
-            "method_en": null,
-            "weight": 20
-        },
-        {
-            "method": "Absolvování průběžného testu (testů)",
-            "method_en": null,
-            "weight": 80
-        }
-    ],
-    "timetable": [
-        {
-            "lecturer": "Mgr. Iva Michňová, Ph.D.",
-            "capacity": 21,
-            "note": null,
-            "slots": [
-                {
-                    "type": "Cvičení",
-                    "frequency": "weekly",
-                    "date": null,
-                    "day": "Úterý",
-                    "time_from": 765,
-                    "time_to": 855,
-                    "location": "SB 333"
-                }
-            ]
-        }
-    ]
+	"course": {
+		"id": 204313,
+		"url": "",
+		"ident": "2NJ203",
+		"title": "Deutsch für Ökonomen - Fortgeschrittene 3 (B1/B2)",
+		"title_cs": "Němčina pro ekonomy - pokročilá úroveň 3 (B1/B2)",
+		"title_en": "German for Economists 3 (B1/B2)",
+		"ects": 3,
+		"faculty_id": "FMV",
+		"mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+		"mode_of_completion": "zápočet",
+		"languages": "němčina",
+		"level": "bakalářský",
+		"year_of_study": 2,
+		"semester": "LS",
+		"year": 2025,
+		"lecturers": "Mgr. Petra Jeřábková, Ph.D.|Mgr. Iva Michňová, Ph.D.",
+		"prerequisites": "studovat po absolvování 2NJ202 nebo studovat současně s 2NJ202 nebo studovat po absolvování 2NJ212 nebo studovat současně s 2NJ212 nebo nelze studovat na fakultě FMV",
+		"recommended_programmes": "žádné",
+		"required_work_experience": "žádná",
+		"aims_of_the_course": "Na pozadí makro- a mikroekonomických témat si studenti osvojují všechny jazykové prostředky a rozvíjejí všechny cílové řečové dovednosti se zvláštním zřetelem ke specifickým potřebám budoucích ekonomů. Kurz vede k dosažení jazykové kompetence B1+ (B2) v německém jazyce.",
+		"learning_outcomes": "Po úspěšném absolvování kurzu budou studenti schopni:  \n\\- rozumět delším promluvám a většině televizních zpráv  \n\\- rozumět komplexním textům a zprávám, které se zabývají současnou ekonomickou problematikou  \n\\- se spontánně a plynule účastnit rozhovoru  \n\\- vést běžný hovor s rodilým mluvčím  \n\\- se ústně i písemně srozumitelně vyjadřovat k různým hospodářským tématům  \n\\- vysvětlit a obhájit své stanovisko k aktuálním otázkám",
+		"course_contents": "**1.**\n\n**Veletrhy** (dotace 0/4)\n\na.\n\nfunkce veletrhu jako firemního komunikačního prostředku\n\nb.\n\nNěmecko - veletržní velmoc\n\nc.\n\npříprava na veletrh\n\n**2.**\n\n**Průběh veletrhu** (dotace 0/4)\n\na.\n\nnávštěva veletržního stánku\n\nb.\n\nfiremní komunikace, vedení rozhovoru s potencionálním zájemcem\n\n**3.**\n\n**Zahraniční obchod** (dotace 0/4)\n\na.\n\nexport, import, obchodní bilance\n\nb.\n\nprotekcionismus vs. volný trh\n\n**4.**\n\n**první průběžný test** (dotace 0/2)\n\n**5.**\n\n**Rizika zahraničního obchodu** (dotace 0/6)\n\na.\n\nhospodářská a politická rizika\n\nb.\n\ninterkulturní vztahy\n\nc.\n\nrating - příkladová studie Brazílie, Itálie\n\n**6.**\n\n**Vyřízení zakázky, kupní smlouva** (dotace 0/4)\n\na.\n\nprůběh, jednotlivé kroky zakázky\n\nb.\n\nzakázka - případová studie\n\nc.\n\nkupní smlouva - obecné obchodní podmínky\n\n**7.**\n\n**druhý průběžný test** (dotace 0/2)",
+		"special_requirements": "Docházka na semináře je povinná, o omluvě rozhodne vyučující. 70%-ní účast na cvičeních. Při součtu výsledků obou testů musí student dosáhnout minimálně 60% jejich maxima. Aktivita na přednáškách a semestrální práce jsou povinná doplňková kritéria.",
+		"guarantors": "PhDr. Jaroslav Březina, Ph.D.",
+		"last_modified_date": "5. 1. 2026",
+		"last_modified_by": "Ing. Dominik Proch, Ph.D.",
+		"study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na přednáškách\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"26 h\"},{\"activity\":\"Příprava semestrální práce\",\"hours\":\"8 h\"},{\"activity\":\"Příprava na průběžný test (testy)\",\"hours\":\"18 h\"}]",
+		"literature_required": null,
+		"literature_recommended": "KIRCHNER, Bernd; POLLERT, Achim a POLZIN, Javier Morato. _Duden - Wirtschaft von A bis Z : Grundlagenwisen für Beruf, Ausbildung und tägliches Leben._ Mannheim: Dudenverlag, 2004. ISBN 3-411-70962-6.[](https://library.vse.cz/sysno?000084504)",
+		"aims_of_the_course_en": null,
+		"learning_outcomes_en": null,
+		"course_contents_en": null,
+		"special_requirements_en": null,
+		"literature_required_en": null,
+		"literature_recommended_en": null,
+		"prerequisites_en": null,
+		"recommended_programmes_en": null,
+		"required_work_experience_en": null,
+		"content_hash_cs": null,
+		"content_hash_en": null
+	},
+	"assessments": [
+		{
+			"method": "Aktivita na přednáškách/cvičeních/seminářích",
+			"method_en": null,
+			"weight": 20
+		},
+		{
+			"method": "Absolvování průběžného testu (testů)",
+			"method_en": null,
+			"weight": 80
+		}
+	],
+	"timetable": [
+		{
+			"lecturer": "Mgr. Iva Michňová, Ph.D.",
+			"capacity": 21,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Úterý",
+					"time_from": 765,
+					"time_to": 855,
+					"location": "SB 333"
+				}
+			]
+		}
+	]
 }

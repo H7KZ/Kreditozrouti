@@ -1,402 +1,402 @@
 {
-    "id": -1,
-    "url": "",
-    "ident": "C-EMBA",
-    "title": "Executive MBA",
-    "faculty": {
-        "ident": "FPH",
-        "title": "Fakulta podnikohospodářská"
-    },
-    "semester": null,
-    "year": 2025,
-    "level": "celoživotní vzdělávání",
-    "mode_of_study": "prezenční",
-    "study_length": "2,5 roku",
-    "courses": [
-        {
-            "id": 193010,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193010;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1503",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193005,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193005;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1301",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193004,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193004;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1208",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193013,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193013;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1601",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193014,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193014;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1602",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193015,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193015;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1603",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193016,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193016;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1604",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193012,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193012;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1505",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 192987,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192987;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0801",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 192997,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192997;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1101",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193000,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193000;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1108",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 192999,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192999;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1103",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193037,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193037;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0208",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193034,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193034;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0201",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193051,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193051;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0608",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193042,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193042;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0402",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193017,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193017;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1701",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193018,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193018;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1702",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193019,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193019;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1703",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193020,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193020;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1704",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 192988,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192988;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0808",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 192998,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192998;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1102",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193038,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193038;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0301",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193048,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193048;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0602",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 192989,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192989;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0901",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193036,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193036;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0203",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193033,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193033;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0108",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193035,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193035;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0202",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193041,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193041;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0401",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193044,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193044;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0501",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193046,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193046;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0508",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193006,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193006;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1401",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193040,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193040;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0308",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193011,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193011;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1504",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 205212,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205212;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0103",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 190879,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=190879;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0102",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193043,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193043;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0408",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193009,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193009;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1502",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193008,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193008;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1501",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193001,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193001;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1201",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193003,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193003;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1203",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 192991,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192991;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1002",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 201125,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=201125;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0001",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193039,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193039;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0302",
-            "group": "field_specific_bachelor",
-            "category": "compulsory"
-        },
-        {
-            "id": 193007,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193007;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM1402",
-            "group": "field_specific_bachelor",
-            "category": "state_exam"
-        },
-        {
-            "id": 193081,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193081;aktualni=1;poc_obdobi=1360",
-            "ident": "3ZZEMBA",
-            "group": "field_specific_bachelor",
-            "category": "state_exam"
-        },
-        {
-            "id": 192978,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192978;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0711",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "id": 192977,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192977;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0708",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "id": 192963,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192963;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0702",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "id": 192962,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192962;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0701",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "id": 192983,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192983;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0728",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "id": 205614,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205614;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0723",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "id": 192980,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192980;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0718",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "id": 192981,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192981;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0721",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        },
-        {
-            "id": 192979,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192979;aktualni=1;poc_obdobi=1360",
-            "ident": "3IM0712",
-            "group": "field_specific_bachelor",
-            "category": "elective"
-        }
-    ]
+	"id": -1,
+	"url": "",
+	"ident": "C-EMBA",
+	"title": "Executive MBA",
+	"faculty": {
+		"ident": "FPH",
+		"title": "Fakulta podnikohospodářská"
+	},
+	"semester": null,
+	"year": 2025,
+	"level": "celoživotní vzdělávání",
+	"mode_of_study": "prezenční",
+	"study_length": "2,5 roku",
+	"courses": [
+		{
+			"id": 193010,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193010;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1503",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193005,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193005;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1301",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193004,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193004;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1208",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193013,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193013;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1601",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193014,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193014;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1602",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193015,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193015;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1603",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193016,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193016;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1604",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193012,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193012;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1505",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 192987,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192987;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0801",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 192997,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192997;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1101",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193000,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193000;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1108",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 192999,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192999;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1103",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193037,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193037;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0208",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193034,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193034;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0201",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193051,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193051;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0608",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193042,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193042;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0402",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193017,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193017;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1701",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193018,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193018;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1702",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193019,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193019;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1703",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193020,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193020;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1704",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 192988,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192988;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0808",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 192998,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192998;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1102",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193038,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193038;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0301",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193048,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193048;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0602",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 192989,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192989;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0901",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193036,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193036;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0203",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193033,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193033;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0108",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193035,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193035;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0202",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193041,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193041;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0401",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193044,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193044;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0501",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193046,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193046;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0508",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193006,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193006;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1401",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193040,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193040;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0308",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193011,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193011;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1504",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 205212,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205212;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0103",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 190879,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=190879;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0102",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193043,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193043;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0408",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193009,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193009;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1502",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193008,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193008;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1501",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193001,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193001;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1201",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193003,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193003;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1203",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 192991,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192991;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1002",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 201125,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=201125;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0001",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193039,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193039;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0302",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 193007,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193007;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM1402",
+			"group": "field_specific_bachelor",
+			"category": "state_exam"
+		},
+		{
+			"id": 193081,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=193081;aktualni=1;poc_obdobi=1360",
+			"ident": "3ZZEMBA",
+			"group": "field_specific_bachelor",
+			"category": "state_exam"
+		},
+		{
+			"id": 192978,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192978;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0711",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 192977,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192977;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0708",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 192963,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192963;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0702",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 192962,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192962;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0701",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 192983,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192983;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0728",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 205614,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205614;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0723",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 192980,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192980;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0718",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 192981,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192981;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0721",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 192979,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=192979;aktualni=1;poc_obdobi=1360",
+			"ident": "3IM0712",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		}
+	]
 }

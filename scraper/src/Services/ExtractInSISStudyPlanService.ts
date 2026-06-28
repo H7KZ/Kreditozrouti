@@ -2,9 +2,9 @@ import type { InSISSemester } from '@shared/domain/insis'
 import type { ScraperInSISFaculty, ScraperInSISStudyPlan, ScraperInSISStudyPlanCourse } from '@shared/queue/insis'
 import type { CheerioAPI } from 'cheerio'
 import * as cheerio from 'cheerio'
+import { extractSemester, extractYear, parseGroupCode } from '@shared/utils/insis'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { cleanText, getRowValueCaseInsensitive, normalizeUrl, serializeValue } from '@scraper/Utils/HTMLUtils'
-import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 
 /**
  * Extracts study plan data from InSIS pages.

@@ -4,7 +4,8 @@
 		stop-local-docker clear-redis \
 		scrape-catalog scrape-catalog-turbo scrape-catalog-normal \
 		scrape-studyplans scrape-studyplans-turbo scrape-studyplans-normal \
-		scrape-academic-schedules
+		scrape-academic-schedules \
+		test test-regen
 
 run-local-docker:
 	docker compose -f docker-compose.local.yml up -d
@@ -44,15 +45,13 @@ lint:
 	--names "API,CLIENT,SCRAPER" \
 	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
 
-# 'cd api && npm run test' \
-# 'cd client && npm run test' \
-# --names "API,CLIENT,SCRAPER" \
-# --prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
 test:
-	concurrently \
-	'cd scraper && npm run test' \
-	--names "SCRAPER" \
-	--prefix-colors "bgMagenta.bold"
+	cd scraper && npm run test && \
+	cd ../api && npm run test
+
+test-regen:
+	cd scraper && npm run test:regen && \
+	cd ../api && npm run test:regen
 
 type-check:
 	concurrently \

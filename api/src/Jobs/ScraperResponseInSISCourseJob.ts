@@ -1,8 +1,13 @@
-import type { ScraperInSISCourse, ScraperInSISCourseAssessmentMethod, ScraperInSISCourseTimetableSlot, ScraperInSISCourseTimetableUnit } from '@shared/queue/insis'
-import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
 import type { InSISDay } from '@shared/domain/insis'
-import { InSISDayValues } from '@shared/domain/insis'
+import type {
+	ScraperInSISCourse,
+	ScraperInSISCourseAssessmentMethod,
+	ScraperInSISCourseTimetableSlot,
+	ScraperInSISCourseTimetableUnit
+} from '@shared/queue/insis'
+import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
 import { Transaction } from 'kysely'
+import { InSISDayValues } from '@shared/domain/insis'
 import { timeToMinutes } from '@shared/domain/time'
 import { extractSemester, extractYear } from '@shared/utils/insis'
 import { mysql, redis } from '@api/clients'
@@ -62,7 +67,11 @@ export function buildCoursePayload(course: ScraperInSISCourse, facultyId: string
 		faculty_id: facultyId,
 		mode_of_delivery: course.mode_of_delivery,
 		mode_of_completion: course.mode_of_completion,
-		languages: course.languages?.split(/[,;]\s*/).filter(Boolean).join('|') ?? null,
+		languages:
+			course.languages
+				?.split(/[,;]\s*/)
+				.filter(Boolean)
+				.join('|') ?? null,
 		level,
 		year_of_study,
 		semester: extractSemester(course.period),
@@ -95,7 +104,9 @@ export function buildCoursePayload(course: ScraperInSISCourse, facultyId: string
 	}
 }
 
-export function buildAssessmentRows(methods: ScraperInSISCourseAssessmentMethod[]): { method: string | null; method_en: string | null; weight: number | null }[] {
+export function buildAssessmentRows(
+	methods: ScraperInSISCourseAssessmentMethod[]
+): { method: string | null; method_en: string | null; weight: number | null }[] {
 	return [...new Map(methods.map(m => [m.method, m])).values()].map(m => ({
 		method: m.method,
 		method_en: m.method_en ?? null,

@@ -1,681 +1,759 @@
 <html>
-	<head>
-		<title>Prohlídka studijních programů</title>
-		<meta http-equiv="Content-Language" content="cs" />
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<meta name="description" content="Univerzitní informační systém VŠE" />
-		<meta name="lang" content="cs" />
-		<meta name="charset" content="UTF-8" />
-		<link rel="icon" href="/favicon/fav-prod.ico" sizes="32x32" />
-		<link rel="icon" href="/favicon/fav-prod.svg" type="image/svg+xml" />
-		<script type="text/javascript">
-			var defaultClass = ''
-		</script>
-		<link rel="stylesheet" type="text/css" href="/css/base.css?1777900356" />
-		<link rel="stylesheet" type="text/css" href="/css/local.css?1673252855" />
-		<link rel="stylesheet" type="text/css" href="/img.pl?css=34171" />
-		<link rel="stylesheet" type="text/css" href="/js/jquery/ui/ui-1.12.1/jquery-ui.min.css?1510843879" />
-		<script type="text/javascript" src="/js/jquery/jquery/jquery-3.3.1/jquery-3.3.1.min.js"></script>
-		<script type="text/javascript" src="/js/common.js?1515155616"></script>
-		<script type="text/javascript" src="/js/uisplugins/uis.js?1727865117"></script>
-		<script type="text/javascript" src="/js/translate.js?1777892588"></script>
-		<script type="text/javascript" src="/js/icons.js?1758189455"></script>
-		<script type="text/javascript" src="/js/js.cookie.min.js"></script>
-		<script type="text/javascript">
-			uis.translator.setLang('CZ')
-		</script>
-		<script type="text/javascript" src="/js/pseudostrap.js?1780052805"></script>
-		<script type="text/javascript">
-			uis.params.transport.add('lang', 'cz')
-		</script>
-		<script type="text/javascript" src="/js/jquery/ui/ui-1.12.1/jquery-ui.min.js?1473867246"></script>
-		<script type="text/javascript" src="/js/jquery/ui/corrector.js?1638201715"></script>
-		<script type="text/javascript" src="/js/help.js?1758176588"></script>
-		<link type="text/css" rel="stylesheet" id="dark-mode-custom-link" />
-		<link type="text/css" rel="stylesheet" id="dark-mode-general-link" />
-		<style lang="en" type="text/css" id="dark-mode-custom-style"></style>
-		<style lang="en" type="text/css" id="dark-mode-native-style"></style>
-		<style lang="en" type="text/css" id="dark-mode-native-sheet"></style>
-	</head>
-	<body>
-		<div id="base">
-			<div id="head">
-				<!-- head zacatek -->
-				<div id="uis-nazev">
-					<h1>Integrovaný studijní informační systém</h1>
-					<img class="in-header" src="/img.pl?userunid=8615" title="Dnes je" />
-					7. 6. 2026&nbsp; 14:17 &nbsp;&nbsp;&nbsp;
-					<img class="in-header" src="/img.pl?userunid=8616" title="Svátek má" />
-					Iveta
-				</div>
-				<div id="univerzita">
-					<a href="http://www.vse.cz"><span></span></a>
-				</div>
+<head>
+	<title>Prohlídka studijních programů</title>
+	<meta http-equiv="Content-Language" content="cs"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="description" content="Univerzitní informační systém VŠE"/>
+	<meta name="lang" content="cs"/>
+	<meta name="charset" content="UTF-8"/>
+	<link rel="icon" href="/favicon/fav-prod.ico" sizes="32x32"/>
+	<link rel="icon" href="/favicon/fav-prod.svg" type="image/svg+xml"/>
+	<script type="text/javascript">
+		var defaultClass = ''
+	</script>
+	<link rel="stylesheet" type="text/css" href="/css/base.css?1777900356"/>
+	<link rel="stylesheet" type="text/css" href="/css/local.css?1673252855"/>
+	<link rel="stylesheet" type="text/css" href="/img.pl?css=34171"/>
+	<link rel="stylesheet" type="text/css" href="/js/jquery/ui/ui-1.12.1/jquery-ui.min.css?1510843879"/>
+	<script type="text/javascript" src="/js/jquery/jquery/jquery-3.3.1/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="/js/common.js?1515155616"></script>
+	<script type="text/javascript" src="/js/uisplugins/uis.js?1727865117"></script>
+	<script type="text/javascript" src="/js/translate.js?1777892588"></script>
+	<script type="text/javascript" src="/js/icons.js?1758189455"></script>
+	<script type="text/javascript" src="/js/js.cookie.min.js"></script>
+	<script type="text/javascript">
+		uis.translator.setLang('CZ')
+	</script>
+	<script type="text/javascript" src="/js/pseudostrap.js?1780052805"></script>
+	<script type="text/javascript">
+		uis.params.transport.add('lang', 'cz')
+	</script>
+	<script type="text/javascript" src="/js/jquery/ui/ui-1.12.1/jquery-ui.min.js?1473867246"></script>
+	<script type="text/javascript" src="/js/jquery/ui/corrector.js?1638201715"></script>
+	<script type="text/javascript" src="/js/help.js?1758176588"></script>
+	<link type="text/css" rel="stylesheet" id="dark-mode-custom-link"/>
+	<link type="text/css" rel="stylesheet" id="dark-mode-general-link"/>
+	<style lang="en" type="text/css" id="dark-mode-custom-style"></style>
+	<style lang="en" type="text/css" id="dark-mode-native-style"></style>
+	<style lang="en" type="text/css" id="dark-mode-native-sheet"></style>
+</head>
+<body>
+<div id="base">
+	<div id="head">
+		<!-- head zacatek -->
+		<div id="uis-nazev">
+			<h1>Integrovaný studijní informační systém</h1>
+			<img class="in-header" src="/img.pl?userunid=8615" title="Dnes je"/>
+			7. 6. 2026&nbsp; 14:17 &nbsp;&nbsp;&nbsp;
+			<img class="in-header" src="/img.pl?userunid=8616" title="Svátek má"/>
+			Iveta
+		</div>
+		<div id="univerzita">
+			<a href="http://www.vse.cz"><span></span></a>
+		</div>
 
-				<div id="shead">
-					<!-- prava -->
+		<div id="shead">
+			<!-- prava -->
 
-					<div id="vlajky">
-						&nbsp;
-						<a
-							href="https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1146;misto_vyuky=;typ_ss=5;typ_studia=4;program=;obor=0;specializace=;new_spec=142;podprogram=;forma=1;stud_plan=11784;lang=en"
-							title=""
-							>ENGLISH</a
-						>&nbsp; &nbsp;
+			<div id="vlajky">
+				&nbsp;
+				<a
+					href="https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1146;misto_vyuky=;typ_ss=5;typ_studia=4;program=;obor=0;specializace=;new_spec=142;podprogram=;forma=1;stud_plan=11784;lang=en"
+					title=""
+				>ENGLISH</a
+				>&nbsp; &nbsp;
 
-						<a
-							href="https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1146;misto_vyuky=;typ_ss=5;typ_studia=4;program=;obor=0;specializace=;new_spec=142;podprogram=;forma=1;stud_plan=11784;lang=sk"
-							title=""
-							>SLOVENSKY</a
-						>&nbsp;
-					</div>
-				</div>
-				<!-- shead -->
-				<div id="spomoc2">
-					<div id="ikonky"></div>
-				</div>
-				<!-- -- konec spomoc2 ---->
+				<a
+					href="https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1146;misto_vyuky=;typ_ss=5;typ_studia=4;program=;obor=0;specializace=;new_spec=142;podprogram=;forma=1;stud_plan=11784;lang=sk"
+					title=""
+				>SLOVENSKY</a
+				>&nbsp;
 			</div>
-			<!-- end head -->
-			<!-- zacatek stranky -->
+		</div>
+		<!-- shead -->
+		<div id="spomoc2">
+			<div id="ikonky"></div>
+		</div>
+		<!-- -- konec spomoc2 ---->
+	</div>
+	<!-- end head -->
+	<!-- zacatek stranky -->
 
-			<div id="navigace">
-				<span id="ikonecky"> </span>
+	<div id="navigace">
+		<span id="ikonecky"> </span>
 
-				<span id="logs"> <strong> </strong>&nbsp; </span>
+		<span id="logs"> <strong> </strong>&nbsp; </span>
 
-				<ul>
-					<li></li>
-					<li></li>
-					<li></li>
-					<ul></ul>
-				</ul>
-			</div>
+		<ul>
+			<li></li>
+			<li></li>
+			<li></li>
+			<ul></ul>
+		</ul>
+	</div>
 
-			<blockquote id="str">
-				<div class="mainpage">
-					<div id="str1">
-						<div>
-							<div>
-								<nav aria-label="breadcrumb">
-									<ol class="breadcrumb">
-										<li class="breadcrumb-item">
-											<a href="/" title=""
-												><span
-													class="uf-icon xs"
-													role="img"
-													data-sysid="base-home"
-													data-id="2016"
-													aria-label="Osobní administrativa"
-													alt="Osobní administrativa"
-												>
+	<blockquote id="str">
+		<div class="mainpage">
+			<div id="str1">
+				<div>
+					<div>
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item">
+									<a href="/" title=""
+									><span
+										class="uf-icon xs"
+										role="img"
+										data-sysid="base-home"
+										data-id="2016"
+										aria-label="Osobní administrativa"
+										alt="Osobní administrativa"
+									>
 													<svg
 														style="--_left: 0px; --_top: 0px; --_width: 48px; --_height: 48px; z-index: 5"
 														data-size-sysid="fullsize"
 														aria-hidden="true"
 														role="img"
 													>
-														<use xlink:href="/icons.svg?1772024892#uc-glyph1481" href="/icons.svg?1772024892#uc-glyph1481"></use>
+														<use xlink:href="/icons.svg?1772024892#uc-glyph1481"
+														     href="/icons.svg?1772024892#uc-glyph1481"></use>
 													</svg> </span
-											></a>
-										</li>
-										<li class="breadcrumb-item"><a href="/katalog/plany.pl" title="">Prohlídka studijních programů</a></li>
-										<li class="breadcrumb-item"><a href="/katalog/plany.pl?fakulta=10" title="">FFU</a></li>
-										<li class="breadcrumb-item">
-											<a href="/katalog/plany.pl?fakulta=10;poc_obdobi=1146;typ_ss=5" title="">LS 2024/2025</a>
-										</li>
-										<li class="breadcrumb-item">
-											<a href="/katalog/plany.pl?fakulta=10;poc_obdobi=1146;typ_ss=5;typ_studia=4" title="">Magisterský navazující</a>
-										</li>
-										<li class="breadcrumb-item">
-											<a href="/katalog/plany.pl?fakulta=10;poc_obdobi=1146;typ_ss=5;typ_studia=4;new_spec=142" title=""
-												>1UC Účetnictví</a
-											>
-										</li>
-										<li class="breadcrumb-item active" aria-current="page"><span>Prezenční</span></li>
-									</ol>
-									<div class="helpinbreadcrumbs">
-										<a
-											href="/help.pl?page=8778"
-											class="context-help-invoke"
-											target="_blank"
-											title="Zobrazit nápovědu k aplikaci"
-											data-contexthelppage="8778"
-											><span class="uf-icon xs" role="img" data-sysid="base-help" data-id="1035" aria-label="" alt="">
+									></a>
+								</li>
+								<li class="breadcrumb-item"><a href="/katalog/plany.pl" title="">Prohlídka studijních
+									programů</a></li>
+								<li class="breadcrumb-item"><a href="/katalog/plany.pl?fakulta=10" title="">FFU</a></li>
+								<li class="breadcrumb-item">
+									<a href="/katalog/plany.pl?fakulta=10;poc_obdobi=1146;typ_ss=5" title="">LS
+										2024/2025</a>
+								</li>
+								<li class="breadcrumb-item">
+									<a href="/katalog/plany.pl?fakulta=10;poc_obdobi=1146;typ_ss=5;typ_studia=4"
+									   title="">Magisterský navazující</a>
+								</li>
+								<li class="breadcrumb-item">
+									<a href="/katalog/plany.pl?fakulta=10;poc_obdobi=1146;typ_ss=5;typ_studia=4;new_spec=142"
+									   title=""
+									>1UC Účetnictví</a
+									>
+								</li>
+								<li class="breadcrumb-item active" aria-current="page"><span>Prezenční</span></li>
+							</ol>
+							<div class="helpinbreadcrumbs">
+								<a
+									href="/help.pl?page=8778"
+									class="context-help-invoke"
+									target="_blank"
+									title="Zobrazit nápovědu k aplikaci"
+									data-contexthelppage="8778"
+								><span class="uf-icon xs" role="img" data-sysid="base-help" data-id="1035" aria-label=""
+								       alt="">
 												<svg
 													style="--uc-fill-inner: #ffffff; --_left: 0px; --_top: 0px; --_width: 48px; --_height: 48px; z-index: 20"
 													data-size-sysid="fullsize"
 													aria-hidden="true"
 													role="img"
 												>
-													<use xlink:href="/icons.svg?1772024892#uc-glyph1218" href="/icons.svg?1772024892#uc-glyph1218"></use></svg
+													<use xlink:href="/icons.svg?1772024892#uc-glyph1218"
+													     href="/icons.svg?1772024892#uc-glyph1218"></use></svg
 												><svg
-													style="--uc-fill-inner: #231f20; --_left: 0px; --_top: 0px; --_width: 48px; --_height: 48px; z-index: 5"
-													data-size-sysid="fullsize"
-													aria-hidden="true"
-													role="img"
-												>
-													<use xlink:href="/icons.svg?1772024892#uc-glyph1021" href="/icons.svg?1772024892#uc-glyph1021"></use>
+									style="--uc-fill-inner: #231f20; --_left: 0px; --_top: 0px; --_width: 48px; --_height: 48px; z-index: 5"
+									data-size-sysid="fullsize"
+									aria-hidden="true"
+									role="img"
+								>
+													<use xlink:href="/icons.svg?1772024892#uc-glyph1021"
+													     href="/icons.svg?1772024892#uc-glyph1021"></use>
 												</svg> </span
-										></a>
-									</div>
-								</nav>
-								<div class="small">
+								></a>
+							</div>
+						</nav>
+						<div class="small">
 									<span class="small"
-										>Aplikace zobrazuje studijní plán pro vybranou specializaci a&nbsp;formu. Předměty jsou rozděleny do skupin,
+									>Aplikace zobrazuje studijní plán pro vybranou specializaci a&nbsp;formu. Předměty jsou rozděleny do skupin,
 										z&nbsp;nichž je nutné vždy odstudovat dané minimum.Je-li v&nbsp;závorce za názvem skupiny uvedeno písmeno "t"
 										s&nbsp;příslušnou číslicí, tato číslice značí třídu skupiny.</span
 									>
-								</div>
-								<br />
-								<table>
-									<tbody>
-										<tr class="">
-											<td class="odsazena" align="left"><b>Fakulta: </b></td>
-											<td class="odsazena" align="left">Fakulta financí a&nbsp;účetnictví</td>
-										</tr>
-										<tr class="">
-											<td class="odsazena" align="left"><b>Typ studijního systému: </b></td>
-											<td class="odsazena" align="left">E</td>
-										</tr>
-										<tr class="">
-											<td class="odsazena" align="left"><b>Počáteční období: </b></td>
-											<td class="odsazena" align="left">LS 2024/2025 - FFU</td>
-										</tr>
-										<tr class="">
-											<td class="odsazena" align="left"><b>Typ studia: </b></td>
-											<td class="odsazena" align="left">Magisterský navazující</td>
-										</tr>
-										<tr class="">
-											<td class="odsazena" align="left"><b>Specializace: </b></td>
-											<td class="odsazena" align="left">1UC Účetnictví</td>
-										</tr>
-										<tr class="">
-											<td class="odsazena" align="left"><b>Forma: </b></td>
-											<td class="odsazena" align="left">prezenční</td>
-										</tr>
-									</tbody>
-								</table>
-								<p></p>
-								<table>
-									<tbody>
-										<tr class="">
-											<td class="odsazena" align="center" colspan="4">&nbsp;</td>
-										</tr>
-										<tr class="">
-											<td class="odsazena" align="center" colspan="4">
-												<b><font size="+1">Skupiny předmětů pro celý plán</font></b>
-											</td>
-										</tr>
-										<tr class="">
-											<td class="odsazena" align="center" colspan="4">&nbsp;</td>
-										</tr>
-										<tr class="zahlavi zahlavi-middle">
-											<td class="odsazena" align="left"><a name="22960"></a>Kód</td>
-											<td class="odsazena" align="left">Název předmětu</td>
-											<td class="odsazena" align="left">Ukončení</td>
-											<td class="odsazena" align="center">Kredity</td>
-										</tr>
-										<tr class="">
-											<td class="odsazena" align="center">&nbsp;</td>
-											<td class="odsazena" align="left" colspan="3">
-												<b>sP - Povinný předmět vedl. spec. (t: 1)</b><br /><b>Skupina předmětů povinných</b>
-											</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22960 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=118827;aktualni=1;poc_obdobi=1146" target="_blank">1FU408</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=118827;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Daně v&nbsp;účetnictví ČR II</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">6</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22960 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2685;aktualni=1;poc_obdobi=1146" target="_blank">1FU407</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2685;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Finanční účetnictví pro vedlejší specializaci</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">6</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22960 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=155012;aktualni=1;poc_obdobi=1146" target="_blank">1FU471</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=155012;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Konsolidovaná účetní závěrka v&nbsp;praxi</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22960 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=175035;aktualni=1;poc_obdobi=1146" target="_blank">1FU472</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=175035;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Spojování podniků v&nbsp;účetnictví</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="">
-											<td class="odsazena" align="center" colspan="4">&nbsp;</td>
-										</tr>
-										<tr class="zahlavi zahlavi-int">
-											<td class="odsazena" align="left"><a name="22961"></a>Kód</td>
-											<td class="odsazena" align="left">Název předmětu</td>
-											<td class="odsazena" align="left">Ukončení</td>
-											<td class="odsazena" align="center">Kredity</td>
-										</tr>
-										<tr class="">
-											<td class="odsazena" align="center">&nbsp;</td>
-											<td class="odsazena" align="left" colspan="3">
-												<b>sV - Volitelný předmět vedl. spec. (t: 2)</b><br /><b>Skupina předmětů povinně volitelných (min. 12 kr.)</b>
-											</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2690;aktualni=1;poc_obdobi=1146" target="_blank">1FU505</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2690;aktualni=1;poc_obdobi=1146" target="_blank">Auditing</a>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">6</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=84254;aktualni=1;poc_obdobi=1146" target="_blank">1MU406</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=84254;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Bankovní controlling</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=61461;aktualni=1;poc_obdobi=1146" target="_blank">1MU409</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=61461;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Controlling v&nbsp;neziskových organizacích</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=170201;aktualni=1;poc_obdobi=1146" target="_blank">1FU515</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=170201;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Externí audit (v&nbsp;angličtině)</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=87542;aktualni=1;poc_obdobi=1146" target="_blank">1FP424</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=87542;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Finanční řízení koncernu</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">6</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=162296;aktualni=1;poc_obdobi=1146" target="_blank">1MU555</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=162296;aktualni=1;poc_obdobi=1146" target="_blank"
-													>International Week: Accounting for Sustainability</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=155008;aktualni=1;poc_obdobi=1146" target="_blank">1MT555</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=155008;aktualni=1;poc_obdobi=1146" target="_blank"
-													>International Week: Macroprudential Policymaking: Approaches and Challenges in Preventing Financial
-													Crises</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=199501;aktualni=1;poc_obdobi=1146" target="_blank">1VF555</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=199501;aktualni=1;poc_obdobi=1146" target="_blank"
-													>International Week: Tax Systems</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=179523;aktualni=1;poc_obdobi=1146" target="_blank">1BP555</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=179523;aktualni=1;poc_obdobi=1146" target="_blank"
-													>International Week: The Global Market for Luxury Watches and Asset Pricing</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2363;aktualni=1;poc_obdobi=1146" target="_blank">1FP402</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2363;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Investiční rozhodování a&nbsp;dlouhodobé financování</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">6</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=110490;aktualni=1;poc_obdobi=1146" target="_blank">1MU506</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=110490;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Manažerské řídící systémy (v&nbsp;angličtině)</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=84240;aktualni=1;poc_obdobi=1146" target="_blank">1MU413</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=84240;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Manažerské účetnictví pro vedlejší specializaci</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">6</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=3086;aktualni=1;poc_obdobi=1146" target="_blank">1MU400</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=3086;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Manažerské účetnictví s&nbsp;využitím nástrojů Business Intelligence (BI)</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">6</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=134826;aktualni=1;poc_obdobi=1146" target="_blank">1MU508</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=134826;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Manažerské účetnictví v&nbsp;bankách (v&nbsp;angličtině)</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=41071;aktualni=1;poc_obdobi=1146" target="_blank">1FU441</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=41071;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Mezinárodní aspekty účetního výkaznictví</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=113746;aktualni=1;poc_obdobi=1146" target="_blank">1MU493</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=113746;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Performance Management</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">6</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=159192;aktualni=1;poc_obdobi=1146" target="_blank">1FU596</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=159192;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Pokročilé účetnictví: případové studie (anglicky)</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=3500;aktualni=1;poc_obdobi=1146" target="_blank">1FU485</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=3500;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Pokročilé účetnictví-vybrané problémy (cash flow, oceňování)</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=3288;aktualni=1;poc_obdobi=1146" target="_blank">1FU484</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=3288;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Účetní řešení insolvence</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=102483;aktualni=1;poc_obdobi=1146" target="_blank">1FU573</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=102483;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Účetní výkaznictví a&nbsp;audit v&nbsp;prostředí kapitálových trhů</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=61460;aktualni=1;poc_obdobi=1146" target="_blank">1FU491</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=61460;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Účetní výkaznictví podle IFRS a&nbsp;US GAAP - srovnání a&nbsp;případové studie (v&nbsp;angličtině)</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=166216;aktualni=1;poc_obdobi=1146" target="_blank">1FU492</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=166216;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Účetní výkaznictví (v&nbsp;němčině)</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2694;aktualni=1;poc_obdobi=1146" target="_blank">1FU572</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2694;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Účetnictví bank,vykazování finančních nástrojů</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=3498;aktualni=1;poc_obdobi=1146" target="_blank">1FU454</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=3498;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Účetnictví cenných papírů</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=34148;aktualni=1;poc_obdobi=1146" target="_blank">1FU455</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=34148;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Účetnictví pojišťoven</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=110379;aktualni=1;poc_obdobi=1146" target="_blank">1FU475</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=110379;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Účetnictví veřejného sektoru: koncepční východiska a&nbsp;standardizace</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=205802;aktualni=1;poc_obdobi=1146" target="_blank">11F444</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=205802;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Udržitelné investování a&nbsp;reporting udržitelnosti</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">5</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2687;aktualni=1;poc_obdobi=1146" target="_blank">1FU450</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2687;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Vybrané problémy finančního účetnictví a&nbsp;auditingu</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2684;aktualni=1;poc_obdobi=1146" target="_blank">1FU403</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=2684;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Využití ICT ve finančním účetnictví a&nbsp;auditu</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">6</td>
-										</tr>
-										<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=41070;aktualni=1;poc_obdobi=1146" target="_blank">1FU400</a>
-											</td>
-											<td class="odsazena" align="left">
-												<a href="../katalog/syllabus.pl?predmet=41070;aktualni=1;poc_obdobi=1146" target="_blank"
-													>Základní aspekty US GAAP</a
-												>
-											</td>
-											<td class="odsazena" align="center">zkouška ECTS</td>
-											<td class="odsazena" align="center">3</td>
-										</tr>
-									</tbody>
-								</table>
-								<p></p>
-								<div class="pseudostrap-activated"></div>
-							</div>
 						</div>
+						<br/>
+						<table>
+							<tbody>
+							<tr class="">
+								<td class="odsazena" align="left"><b>Fakulta: </b></td>
+								<td class="odsazena" align="left">Fakulta financí a&nbsp;účetnictví</td>
+							</tr>
+							<tr class="">
+								<td class="odsazena" align="left"><b>Typ studijního systému: </b></td>
+								<td class="odsazena" align="left">E</td>
+							</tr>
+							<tr class="">
+								<td class="odsazena" align="left"><b>Počáteční období: </b></td>
+								<td class="odsazena" align="left">LS 2024/2025 - FFU</td>
+							</tr>
+							<tr class="">
+								<td class="odsazena" align="left"><b>Typ studia: </b></td>
+								<td class="odsazena" align="left">Magisterský navazující</td>
+							</tr>
+							<tr class="">
+								<td class="odsazena" align="left"><b>Specializace: </b></td>
+								<td class="odsazena" align="left">1UC Účetnictví</td>
+							</tr>
+							<tr class="">
+								<td class="odsazena" align="left"><b>Forma: </b></td>
+								<td class="odsazena" align="left">prezenční</td>
+							</tr>
+							</tbody>
+						</table>
+						<p></p>
+						<table>
+							<tbody>
+							<tr class="">
+								<td class="odsazena" align="center" colspan="4">&nbsp;</td>
+							</tr>
+							<tr class="">
+								<td class="odsazena" align="center" colspan="4">
+									<b><font size="+1">Skupiny předmětů pro celý plán</font></b>
+								</td>
+							</tr>
+							<tr class="">
+								<td class="odsazena" align="center" colspan="4">&nbsp;</td>
+							</tr>
+							<tr class="zahlavi zahlavi-middle">
+								<td class="odsazena" align="left"><a name="22960"></a>Kód</td>
+								<td class="odsazena" align="left">Název předmětu</td>
+								<td class="odsazena" align="left">Ukončení</td>
+								<td class="odsazena" align="center">Kredity</td>
+							</tr>
+							<tr class="">
+								<td class="odsazena" align="center">&nbsp;</td>
+								<td class="odsazena" align="left" colspan="3">
+									<b>sP - Povinný předmět vedl. spec. (t: 1)</b><br/><b>Skupina předmětů povinných</b>
+								</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22960 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=118827;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU408</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=118827;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Daně v&nbsp;účetnictví ČR II</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">6</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22960 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2685;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU407</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2685;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Finanční účetnictví pro vedlejší specializaci</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">6</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22960 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=155012;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU471</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=155012;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Konsolidovaná účetní závěrka v&nbsp;praxi</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22960 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=175035;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU472</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=175035;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Spojování podniků v&nbsp;účetnictví</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="">
+								<td class="odsazena" align="center" colspan="4">&nbsp;</td>
+							</tr>
+							<tr class="zahlavi zahlavi-int">
+								<td class="odsazena" align="left"><a name="22961"></a>Kód</td>
+								<td class="odsazena" align="left">Název předmětu</td>
+								<td class="odsazena" align="left">Ukončení</td>
+								<td class="odsazena" align="center">Kredity</td>
+							</tr>
+							<tr class="">
+								<td class="odsazena" align="center">&nbsp;</td>
+								<td class="odsazena" align="left" colspan="3">
+									<b>sV - Volitelný předmět vedl. spec. (t: 2)</b><br/><b>Skupina předmětů povinně
+									volitelných (min. 12 kr.)</b>
+								</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2690;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU505</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2690;aktualni=1;poc_obdobi=1146"
+									   target="_blank">Auditing</a>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">6</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=84254;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1MU406</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=84254;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Bankovní controlling</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=61461;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1MU409</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=61461;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Controlling v&nbsp;neziskových organizacích</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=170201;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU515</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=170201;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Externí audit (v&nbsp;angličtině)</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=87542;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FP424</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=87542;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Finanční řízení koncernu</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">6</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=162296;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1MU555</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=162296;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>International Week: Accounting for Sustainability</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=155008;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1MT555</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=155008;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>International Week: Macroprudential Policymaking: Approaches and Challenges in
+										Preventing Financial
+										Crises</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=199501;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1VF555</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=199501;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>International Week: Tax Systems</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=179523;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1BP555</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=179523;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>International Week: The Global Market for Luxury Watches and Asset Pricing</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2363;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FP402</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2363;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Investiční rozhodování a&nbsp;dlouhodobé financování</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">6</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=110490;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1MU506</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=110490;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Manažerské řídící systémy (v&nbsp;angličtině)</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=84240;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1MU413</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=84240;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Manažerské účetnictví pro vedlejší specializaci</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">6</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=3086;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1MU400</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=3086;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Manažerské účetnictví s&nbsp;využitím nástrojů Business Intelligence (BI)</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">6</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=134826;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1MU508</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=134826;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Manažerské účetnictví v&nbsp;bankách (v&nbsp;angličtině)</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=41071;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU441</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=41071;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Mezinárodní aspekty účetního výkaznictví</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=113746;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1MU493</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=113746;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Performance Management</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">6</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=159192;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU596</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=159192;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Pokročilé účetnictví: případové studie (anglicky)</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=3500;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU485</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=3500;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Pokročilé účetnictví-vybrané problémy (cash flow, oceňování)</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=3288;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU484</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=3288;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Účetní řešení insolvence</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=102483;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU573</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=102483;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Účetní výkaznictví a&nbsp;audit v&nbsp;prostředí kapitálových trhů</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=61460;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU491</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=61460;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Účetní výkaznictví podle IFRS a&nbsp;US GAAP - srovnání a&nbsp;případové studie (v&nbsp;angličtině)</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=166216;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU492</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=166216;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Účetní výkaznictví (v&nbsp;němčině)</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2694;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU572</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2694;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Účetnictví bank,vykazování finančních nástrojů</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=3498;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU454</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=3498;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Účetnictví cenných papírů</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=34148;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU455</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=34148;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Účetnictví pojišťoven</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=110379;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU475</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=110379;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Účetnictví veřejného sektoru: koncepční východiska a&nbsp;standardizace</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=205802;aktualni=1;poc_obdobi=1146"
+									   target="_blank">11F444</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=205802;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Udržitelné investování a&nbsp;reporting udržitelnosti</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">5</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2687;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU450</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2687;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Vybrané problémy finančního účetnictví a&nbsp;auditingu</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2684;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU403</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=2684;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Využití ICT ve finančním účetnictví a&nbsp;auditu</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">6</td>
+							</tr>
+							<tr class="predmety_vse predmety_vse_22961 uis-hl-table sudy">
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=41070;aktualni=1;poc_obdobi=1146"
+									   target="_blank">1FU400</a>
+								</td>
+								<td class="odsazena" align="left">
+									<a href="../katalog/syllabus.pl?predmet=41070;aktualni=1;poc_obdobi=1146"
+									   target="_blank"
+									>Základní aspekty US GAAP</a
+									>
+								</td>
+								<td class="odsazena" align="center">zkouška ECTS</td>
+								<td class="odsazena" align="center">3</td>
+							</tr>
+							</tbody>
+						</table>
+						<p></p>
+						<div class="pseudostrap-activated"></div>
 					</div>
 				</div>
-			</blockquote>
+			</div>
 		</div>
-		<!-- konec base -->
-		<script async="" src="//www.googletagmanager.com/gtag/js?id=G-1H88NNDR00"></script>
-		<script>
-			window.dataLayer = window.dataLayer || []
+	</blockquote>
+</div>
+<!-- konec base -->
+<script async="" src="//www.googletagmanager.com/gtag/js?id=G-1H88NNDR00"></script>
+<script>
+	window.dataLayer = window.dataLayer || []
 
-			function gtag() {
-				dataLayer.push(arguments)
-			}
+	function gtag() {
+		dataLayer.push(arguments)
+	}
 
-			gtag('js', new Date())
-			gtag('consent', 'default', { ad_storage: 'denied', analytics_storage: 'denied' })
-			gtag('config', 'G-1H88NNDR00', { language: 'cs-CZ', transaction_id: '2286687149' })
-		</script>
-		<div
-			id="uis-control-data"
-			data-nove_ikonky="1"
-			data-uis_ang_lokalizace="GB"
-			data-stat_tel_predvolba="+420"
-			data-cookie_cooperation=""
-			data-module_cookiebar="0"
-		></div>
-		<div id="automatic-go-to-container">
+	gtag('js', new Date())
+	gtag('consent', 'default', {ad_storage: 'denied', analytics_storage: 'denied'})
+	gtag('config', 'G-1H88NNDR00', {language: 'cs-CZ', transaction_id: '2286687149'})
+</script>
+<div
+	id="uis-control-data"
+	data-nove_ikonky="1"
+	data-uis_ang_lokalizace="GB"
+	data-stat_tel_predvolba="+420"
+	data-cookie_cooperation=""
+	data-module_cookiebar="0"
+></div>
+<div id="automatic-go-to-container">
 			<span
 				class="uf-icon md"
 				role="img"
@@ -687,37 +765,43 @@
 				id="automatic-back-to-home"
 				style="display: none"
 			>
-				<svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0" data-size-sysid="base" aria-hidden="true" role="img">
-					<use xlink:href="/icons.svg?20250918115709#uc-glyph960" href="/icons.svg?20250918115709#uc-glyph960"></use>
+				<svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0"
+				     data-size-sysid="base" aria-hidden="true" role="img">
+					<use xlink:href="/icons.svg?20250918115709#uc-glyph960"
+					     href="/icons.svg?20250918115709#uc-glyph960"></use>
 				</svg> </span
 			><span
-				class="uf-icon md"
-				role="img"
-				data-sysid="auto-pin"
-				data-id="2587"
-				aria-label=""
-				alt=""
-				title="Na označenou část stránky"
-				id="automatic-go-to-marker"
-				style="display: none"
-			>
-				<svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0" data-size-sysid="base" aria-hidden="true" role="img">
-					<use xlink:href="/icons.svg?20250918115709#uc-glyph710" href="/icons.svg?20250918115709#uc-glyph710"></use>
+	class="uf-icon md"
+	role="img"
+	data-sysid="auto-pin"
+	data-id="2587"
+	aria-label=""
+	alt=""
+	title="Na označenou část stránky"
+	id="automatic-go-to-marker"
+	style="display: none"
+>
+				<svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0"
+				     data-size-sysid="base" aria-hidden="true" role="img">
+					<use xlink:href="/icons.svg?20250918115709#uc-glyph710"
+					     href="/icons.svg?20250918115709#uc-glyph710"></use>
 				</svg> </span
-			><span
-				class="uf-icon md"
-				role="img"
-				data-sysid="auto-sipka"
-				data-id="2586"
-				aria-label=""
-				alt=""
-				title="Na konec stránky"
-				id="automatic-go-to-page-end"
-			>
-				<svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0" data-size-sysid="base" aria-hidden="true" role="img">
-					<use xlink:href="/icons.svg?20250918115709#uc-glyph960" href="/icons.svg?20250918115709#uc-glyph960"></use>
+><span
+	class="uf-icon md"
+	role="img"
+	data-sysid="auto-sipka"
+	data-id="2586"
+	aria-label=""
+	alt=""
+	title="Na konec stránky"
+	id="automatic-go-to-page-end"
+>
+				<svg style="--_left: 8px; --_top: 8px; --_width: 32px; --_height: 32px; z-index: 0"
+				     data-size-sysid="base" aria-hidden="true" role="img">
+					<use xlink:href="/icons.svg?20250918115709#uc-glyph960"
+					     href="/icons.svg?20250918115709#uc-glyph960"></use>
 				</svg>
 			</span>
-		</div>
-	</body>
+</div>
+</body>
 </html>

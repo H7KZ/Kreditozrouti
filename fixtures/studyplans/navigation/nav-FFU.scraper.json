@@ -1,173 +1,89 @@
 {
-    "navigationUrls": [
-        {
-            "texts": [
-                "Doktorská studia",
-                "ZS 2026/2027 - doktorská studia",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1217;typ_ss=23"
-        },
-        {
-            "texts": [
-                "",
-                "ZS 2025/2026 - doktorská studia",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1155;typ_ss=23"
-        },
-        {
-            "texts": [
-                "",
-                "ZS 2024/2025 - doktorská studia",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1093;typ_ss=23"
-        },
-        {
-            "texts": [
-                "",
-                "ZS 2023/2024 - doktorská studia",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1075;typ_ss=23"
-        },
-        {
-            "texts": [
-                "",
-                "ZS 2022/2023 - doktorská studia",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1073;typ_ss=23"
-        },
-        {
-            "texts": [
-                "",
-                "ZS 2021/2022 - doktorská studia",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1071;typ_ss=23"
-        },
-        {
-            "texts": [
-                "E",
-                "ZS 2026/2027",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1201;typ_ss=5"
-        },
-        {
-            "texts": [
-                "",
-                "ZS 2025/2026",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1199;typ_ss=5"
-        },
-        {
-            "texts": [
-                "",
-                "LS 2024/2025",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1146;typ_ss=5"
-        },
-        {
-            "texts": [
-                "",
-                "ZS 2024/2025",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5"
-        },
-        {
-            "texts": [
-                "",
-                "LS 2023/2024",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1144;typ_ss=5"
-        },
-        {
-            "texts": [
-                "",
-                "ZS 2023/2024",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1018;typ_ss=5"
-        },
-        {
-            "texts": [
-                "",
-                "LS 2022/2023",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1017;typ_ss=5"
-        },
-        {
-            "texts": [
-                "",
-                "ZS 2022/2023",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1016;typ_ss=5"
-        },
-        {
-            "texts": [
-                "",
-                "LS 2021/2022",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1015;typ_ss=5"
-        },
-        {
-            "texts": [
-                "",
-                "ZS 2021/2022",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1014;typ_ss=5"
-        },
-        {
-            "texts": [
-                "MBA",
-                "2025/2026 - mba",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1454;typ_ss=12"
-        },
-        {
-            "texts": [
-                "",
-                "2024/2025 - mba",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1361;typ_ss=12"
-        },
-        {
-            "texts": [
-                "",
-                "2023/2024 - mba",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1208;typ_ss=12"
-        },
-        {
-            "texts": [
-                "",
-                "2022/2023 - mba",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1204;typ_ss=12"
-        },
-        {
-            "texts": [
-                "",
-                "2021/2022 - mba",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1150;typ_ss=12"
-        }
-    ],
-    "planUrls": []
+	"navigationUrls": [
+		{
+			"texts": ["Doktorská studia", "ZS 2026/2027 - doktorská studia", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1217;typ_ss=23"
+		},
+		{
+			"texts": ["", "ZS 2025/2026 - doktorská studia", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1155;typ_ss=23"
+		},
+		{
+			"texts": ["", "ZS 2024/2025 - doktorská studia", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1093;typ_ss=23"
+		},
+		{
+			"texts": ["", "ZS 2023/2024 - doktorská studia", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1075;typ_ss=23"
+		},
+		{
+			"texts": ["", "ZS 2022/2023 - doktorská studia", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1073;typ_ss=23"
+		},
+		{
+			"texts": ["", "ZS 2021/2022 - doktorská studia", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1071;typ_ss=23"
+		},
+		{
+			"texts": ["E", "ZS 2026/2027", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1201;typ_ss=5"
+		},
+		{
+			"texts": ["", "ZS 2025/2026", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1199;typ_ss=5"
+		},
+		{
+			"texts": ["", "LS 2024/2025", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1146;typ_ss=5"
+		},
+		{
+			"texts": ["", "ZS 2024/2025", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5"
+		},
+		{
+			"texts": ["", "LS 2023/2024", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1144;typ_ss=5"
+		},
+		{
+			"texts": ["", "ZS 2023/2024", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1018;typ_ss=5"
+		},
+		{
+			"texts": ["", "LS 2022/2023", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1017;typ_ss=5"
+		},
+		{
+			"texts": ["", "ZS 2022/2023", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1016;typ_ss=5"
+		},
+		{
+			"texts": ["", "LS 2021/2022", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1015;typ_ss=5"
+		},
+		{
+			"texts": ["", "ZS 2021/2022", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1014;typ_ss=5"
+		},
+		{
+			"texts": ["MBA", "2025/2026 - mba", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1454;typ_ss=12"
+		},
+		{
+			"texts": ["", "2024/2025 - mba", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1361;typ_ss=12"
+		},
+		{
+			"texts": ["", "2023/2024 - mba", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1208;typ_ss=12"
+		},
+		{
+			"texts": ["", "2022/2023 - mba", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1204;typ_ss=12"
+		},
+		{
+			"texts": ["", "2021/2022 - mba", ""],
+			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1150;typ_ss=12"
+		}
+	],
+	"planUrls": []
 }

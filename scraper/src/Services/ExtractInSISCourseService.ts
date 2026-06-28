@@ -52,7 +52,10 @@ export default class ExtractInSISCourseService {
 	 * or its syllabus is not publicly accessible.
 	 */
 	static isNotFound(html: string): boolean {
-		return html.includes('neexistuje nebo jeho sylabus není veřejně přístupný')
+		const $ = cheerio.load(html)
+		return $('div.text')
+			.toArray()
+			.some(el => $(el).text().replace(/\s+/g, ' ').includes('neexistuje nebo jeho sylabus není veřejně přístupný'))
 	}
 
 	/**

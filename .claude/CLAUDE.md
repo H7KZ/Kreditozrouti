@@ -49,6 +49,8 @@ that directory.
 make install           # Install all dependencies
 make dev               # Run api + client + scraper in parallel
 make run-local-docker  # Start MySQL, Redis, phpMyAdmin
+make test              # Run scraper then API tests sequentially
+make test-regen        # Regenerate scraper + API fixture snapshots
 ```
 
 ---
@@ -58,6 +60,7 @@ make run-local-docker  # Start MySQL, Redis, phpMyAdmin
 ```
 api/          Express API — HTTP, DB writes, job orchestration
 client/       Vue 3 SPA — user interface
+fixtures/     Shared test fixtures — HTML, *.scraper.json (scraper output), *.db.json (API parsing output)
 scraper/      BullMQ worker — InSIS HTTP scraping
 shared/       Types only — imported by all packages, imports nothing
 scripts/      Bash — server setup & maintenance

@@ -1,70 +1,70 @@
 {
-    "id": 210560,
-    "url": "",
-    "url_id": null,
-    "ident": "U041C",
-    "title": "Angličtina 3",
-    "title_cs": "Angličtina 3",
-    "title_en": "-- obsah této položky nebyl definován --",
-    "ects": "žádné",
-    "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
-    "mode_of_completion": "zápočet",
-    "languages": "angličtina",
-    "period": "ZS 2025/2026",
-    "faculty": {
-        "ident": "U3V",
-        "title": null
-    },
-    "level": null,
-    "year_of_study": null,
-    "lecturers": "PhDr. Zuzana Míšková",
-    "guarantors": null,
-    "prerequisites": "žádné",
-    "recommended_programmes": "žádné",
-    "required_work_experience": "žádná",
-    "aims_of_the_course": "  \nKurz pro velmi mírně pokročilé, kteří mají zájem nejen o jazykovou výuku, ale i reálie anglicky mluvícího světa. Učebnice- díl A2 Elementary je spíše opakovací, proto bude probírána tak, aby byl urychlen přechod na další díl, t.j. Tilbury A.: Pre-intermediate coursebook. Jde především o praktické uplatnění získaných jazykových znalostí. Učebnice English Unlimited tvoří pouze základ, je doplňována aktuálním online studijním materiálem od Cambridge University Press, OneStopEnglish apod. Gramatika je procvičována zejména na cvičeních z učebnice English Unlimited Workbook. Studium bude doplněno poslechovými a video cvičeními. Jedná se o kurz hodně založený na konverzaci, včetně diskuzí na aktuální témata přizpůsobených jazykové úrovni studentů.",
-    "learning_outcomes": "Účastníci kurzu si rozšíří základní slovní zásobu. Upevní probranou základní gramatiku, kterou budeme dále rozšiřovat. a procvičovat na jednoduché konverzaci. Výslovnost, přítomný čas, jednoduchý minulý čas, budoucí čas, podmiňovací způsob. Navazuje na látku probranou v zimním semestru šk.r.2023/24, učebnice stupeň Pre-intermediate. Účastníci budou schopni rozumět jednoduchým textům a vést konverzaci na běžná témata.",
-    "course_contents": "**1.**\n\n**Co je nového v naší rodině, co jsem dělal/a mezi semestry.** (dotace 0/2)\n\n**2.**\n\n**Unit 2.3. Take care of a guest** (dotace 0/2)\n\n**3.**\n\n**Unit 3. What do you do in your free time** (dotace 0/2)\n\n**4.**\n\n**Unit 3: What do you like and dislike?** (dotace 0/2)\n\n**5.**\n\n**Unit 3: Take/leave a phone message** (dotace 0/2)\n\n**6.**\n\n**Unit 4: Changes** (dotace 0/2)\n\n**7.**\n\n**Unit 4.3: Past and current events** (dotace 0/2)\n\n**8.**\n\n**Unit 5: Talk about cities and neighbourhoods** (dotace 0/2)\n\n**9.**\n\n**Unit 5.2: Talk about your home** (dotace 0/2)\n\n**10.**\n\n**Unit 6. Shopping** (dotace 0/2)\n\n**11.**\n\n**Unit 6.3: on-line shopping, claims** (dotace 0/2)\n\n**12.**\n\n**Repetition** (dotace 0/2)\n\n**13.**\n\n**Christmas in the Czech Republic and in English-speaking countries** (dotace 0/2)",
-    "special_requirements": "Poplatek za semestrální studium předmětu: 1 500 Kč.",
-    "literature_required": null,
-    "literature_recommended": "Tilbury A, English unlimited. B1 pre-intermedie, Coursebook, Cambridge: Cambridge University Press, 2013. ISBN 978-0-521-69777-4",
-    "assessment_methods": null,
-    "timetable": [
-        {
-            "lecturer": "PhDr. Zuzana Míšková",
-            "capacity": 20,
-            "note": null,
-            "slots": [
-                {
-                    "type": "Cvičení",
-                    "frequency": "Každý týden",
-                    "date": null,
-                    "day": "Pátek",
-                    "time_from": "07:30",
-                    "time_to": "09:00",
-                    "location": "ONLINE (FO)"
-                }
-            ]
-        }
-    ],
-    "study_plans": [],
-    "study_load": [
-        {
-            "activity": "Druh",
-            "hours": "Prezenční studium"
-        }
-    ],
-    "last_modified_date": "13. 5. 2025",
-    "last_modified_by": "doc. Ing. Tomáš Kubálek, CSc.",
-    "aims_of_the_course_en": null,
-    "learning_outcomes_en": null,
-    "course_contents_en": null,
-    "special_requirements_en": null,
-    "literature_required_en": null,
-    "literature_recommended_en": null,
-    "prerequisites_en": null,
-    "recommended_programmes_en": null,
-    "required_work_experience_en": null,
-    "content_hash_cs": null,
-    "content_hash_en": null
+	"id": 210560,
+	"url": "",
+	"url_id": null,
+	"ident": "U041C",
+	"title": "Angličtina 3",
+	"title_cs": "Angličtina 3",
+	"title_en": "-- obsah této položky nebyl definován --",
+	"ects": "žádné",
+	"mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+	"mode_of_completion": "zápočet",
+	"languages": "angličtina",
+	"period": "ZS 2025/2026",
+	"faculty": {
+		"ident": "U3V",
+		"title": null
+	},
+	"level": null,
+	"year_of_study": null,
+	"lecturers": "PhDr. Zuzana Míšková",
+	"guarantors": null,
+	"prerequisites": "žádné",
+	"recommended_programmes": "žádné",
+	"required_work_experience": "žádná",
+	"aims_of_the_course": "  \nKurz pro velmi mírně pokročilé, kteří mají zájem nejen o jazykovou výuku, ale i reálie anglicky mluvícího světa. Učebnice- díl A2 Elementary je spíše opakovací, proto bude probírána tak, aby byl urychlen přechod na další díl, t.j. Tilbury A.: Pre-intermediate coursebook. Jde především o praktické uplatnění získaných jazykových znalostí. Učebnice English Unlimited tvoří pouze základ, je doplňována aktuálním online studijním materiálem od Cambridge University Press, OneStopEnglish apod. Gramatika je procvičována zejména na cvičeních z učebnice English Unlimited Workbook. Studium bude doplněno poslechovými a video cvičeními. Jedná se o kurz hodně založený na konverzaci, včetně diskuzí na aktuální témata přizpůsobených jazykové úrovni studentů.",
+	"learning_outcomes": "Účastníci kurzu si rozšíří základní slovní zásobu. Upevní probranou základní gramatiku, kterou budeme dále rozšiřovat. a procvičovat na jednoduché konverzaci. Výslovnost, přítomný čas, jednoduchý minulý čas, budoucí čas, podmiňovací způsob. Navazuje na látku probranou v zimním semestru šk.r.2023/24, učebnice stupeň Pre-intermediate. Účastníci budou schopni rozumět jednoduchým textům a vést konverzaci na běžná témata.",
+	"course_contents": "**1.**\n\n**Co je nového v naší rodině, co jsem dělal/a mezi semestry.** (dotace 0/2)\n\n**2.**\n\n**Unit 2.3. Take care of a guest** (dotace 0/2)\n\n**3.**\n\n**Unit 3. What do you do in your free time** (dotace 0/2)\n\n**4.**\n\n**Unit 3: What do you like and dislike?** (dotace 0/2)\n\n**5.**\n\n**Unit 3: Take/leave a phone message** (dotace 0/2)\n\n**6.**\n\n**Unit 4: Changes** (dotace 0/2)\n\n**7.**\n\n**Unit 4.3: Past and current events** (dotace 0/2)\n\n**8.**\n\n**Unit 5: Talk about cities and neighbourhoods** (dotace 0/2)\n\n**9.**\n\n**Unit 5.2: Talk about your home** (dotace 0/2)\n\n**10.**\n\n**Unit 6. Shopping** (dotace 0/2)\n\n**11.**\n\n**Unit 6.3: on-line shopping, claims** (dotace 0/2)\n\n**12.**\n\n**Repetition** (dotace 0/2)\n\n**13.**\n\n**Christmas in the Czech Republic and in English-speaking countries** (dotace 0/2)",
+	"special_requirements": "Poplatek za semestrální studium předmětu: 1 500 Kč.",
+	"literature_required": null,
+	"literature_recommended": "Tilbury A, English unlimited. B1 pre-intermedie, Coursebook, Cambridge: Cambridge University Press, 2013. ISBN 978-0-521-69777-4",
+	"assessment_methods": null,
+	"timetable": [
+		{
+			"lecturer": "PhDr. Zuzana Míšková",
+			"capacity": 20,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "Každý týden",
+					"date": null,
+					"day": "Pátek",
+					"time_from": "07:30",
+					"time_to": "09:00",
+					"location": "ONLINE (FO)"
+				}
+			]
+		}
+	],
+	"study_plans": [],
+	"study_load": [
+		{
+			"activity": "Druh",
+			"hours": "Prezenční studium"
+		}
+	],
+	"last_modified_date": "13. 5. 2025",
+	"last_modified_by": "doc. Ing. Tomáš Kubálek, CSc.",
+	"aims_of_the_course_en": null,
+	"learning_outcomes_en": null,
+	"course_contents_en": null,
+	"special_requirements_en": null,
+	"literature_required_en": null,
+	"literature_recommended_en": null,
+	"prerequisites_en": null,
+	"recommended_programmes_en": null,
+	"required_work_experience_en": null,
+	"content_hash_cs": null,
+	"content_hash_en": null
 }

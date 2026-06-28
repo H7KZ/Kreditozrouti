@@ -1,55 +1,55 @@
 {
-    "_facultyId": 0,
-    "periods": [
-        {
-            "insis_period_id": 1488,
-            "insis_faculty_id": 0,
-            "faculty_ident": "CTVS",
-            "semester": "ZS",
-            "year": 2026,
-            "level": null,
-            "starts_at": "2026-09-01",
-            "ends_at": "2027-02-15"
-        },
-        {
-            "insis_period_id": 1482,
-            "insis_faculty_id": 0,
-            "faculty_ident": "CTVS",
-            "semester": "LS",
-            "year": 2025,
-            "level": "kurzy",
-            "starts_at": "2026-02-16",
-            "ends_at": "2026-09-01"
-        },
-        {
-            "insis_period_id": 1477,
-            "insis_faculty_id": 0,
-            "faculty_ident": "CTVS",
-            "semester": "LS",
-            "year": 2025,
-            "level": null,
-            "starts_at": "2026-02-16",
-            "ends_at": "2026-09-01"
-        },
-        {
-            "insis_period_id": 1471,
-            "insis_faculty_id": 0,
-            "faculty_ident": "CTVS",
-            "semester": "ZS",
-            "year": 2025,
-            "level": "kurzy",
-            "starts_at": "2025-09-01",
-            "ends_at": "2026-02-16"
-        },
-        {
-            "insis_period_id": 1418,
-            "insis_faculty_id": 0,
-            "faculty_ident": "CTVS",
-            "semester": "ZS",
-            "year": 2025,
-            "level": null,
-            "starts_at": "2025-09-01",
-            "ends_at": "2026-02-16"
-        }
-    ]
+	"_facultyId": 0,
+	"periods": [
+		{
+			"insis_period_id": 1488,
+			"insis_faculty_id": 0,
+			"faculty_ident": "CTVS",
+			"semester": "ZS",
+			"year": 2026,
+			"level": null,
+			"starts_at": "2026-09-01",
+			"ends_at": "2027-02-15"
+		},
+		{
+			"insis_period_id": 1482,
+			"insis_faculty_id": 0,
+			"faculty_ident": "CTVS",
+			"semester": "LS",
+			"year": 2025,
+			"level": "kurzy",
+			"starts_at": "2026-02-16",
+			"ends_at": "2026-09-01"
+		},
+		{
+			"insis_period_id": 1477,
+			"insis_faculty_id": 0,
+			"faculty_ident": "CTVS",
+			"semester": "LS",
+			"year": 2025,
+			"level": null,
+			"starts_at": "2026-02-16",
+			"ends_at": "2026-09-01"
+		},
+		{
+			"insis_period_id": 1471,
+			"insis_faculty_id": 0,
+			"faculty_ident": "CTVS",
+			"semester": "ZS",
+			"year": 2025,
+			"level": "kurzy",
+			"starts_at": "2025-09-01",
+			"ends_at": "2026-02-16"
+		},
+		{
+			"insis_period_id": 1418,
+			"insis_faculty_id": 0,
+			"faculty_ident": "CTVS",
+			"semester": "ZS",
+			"year": 2025,
+			"level": null,
+			"starts_at": "2025-09-01",
+			"ends_at": "2026-02-16"
+		}
+	]
 }
