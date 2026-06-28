@@ -1,7 +1,7 @@
 ﻿import type { InSISSemester } from '@shared/domain/insis'
 import * as cheerio from 'cheerio'
+import { extractSemester, extractYear } from '@shared/utils/insis'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
-import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
 
 export interface HarmonogramFaculty {
 	insis_faculty_id: number

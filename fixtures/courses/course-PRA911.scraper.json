@@ -1,0 +1,71 @@
+{
+	"id": 213775,
+	"url": "",
+	"url_id": null,
+	"ident": "PRA911",
+	"title": "Právo obchodních korporací",
+	"title_cs": "Právo obchodních korporací",
+	"title_en": "Company Law",
+	"ects": "žádné",
+	"mode_of_delivery": "konzultační při semestrální výucekonzultační pro distanční (kombinované) programy",
+	"mode_of_completion": "zkouška",
+	"languages": "čeština",
+	"period": "LS 2025/2026",
+	"faculty": {
+		"ident": "FMV",
+		"title": null
+	},
+	"level": "doktorský (třetí cyklus): 2",
+	"year_of_study": "doktorský (třetí cyklus): 2",
+	"lecturers": null,
+	"guarantors": "prof. JUDr. Jan Dědič",
+	"prerequisites": "žádné",
+	"recommended_programmes": "žádné",
+	"required_work_experience": "žádná",
+	"aims_of_the_course": "Cílem studia je dát studentům hlubší poznatky o teorii práva obchodních společností, seznámit je se všemi jeho instituty a problémy jejich praktické aplikace, a to jak v kontextu české, tak evropské právní úpravy.",
+	"learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n\\- kvalifikovaně vymezit rozdíly mezi jednotlivými formami společného podnikání  \n\\- vymezit vztah a rozdíly tuzemské a evropské úpravy obchodních společností  \n\\- posoudit ekonomické a právní aspekty založení, vzniku, přeměn, zrušení a zániku společnosti  \n\\- vymezit ekonomické a právní postavení společníků v jednotlivých typech obchodních společností  \n\\- využít znalosti pro vlastní teoretický výzkum",
+	"course_contents": "1) Pojem a druhy obchodních společností, prameny právní úpravy a jejich historie. Obchodní společnosti podle zákona o obchodních korporacích.  \n2) Obchodní majetek obchodních společností a jeho zdroje. Základní kapitál. Rezervní fond a ostatní kapitálové fondy. Obchodní firma a sídlo.  \n3) Vznik obchodních společností. Zakladatelé obchodních společností. Založení a vznik obchodní společnosti. Společenská smlouva, zakladatelská smlouva a zakladatelská listina.  \n4) Obchodní rejstřík. Řízení ve věcech obchodního rejstříku.  \n5) Společníci v obchodní společnosti. Účast v obchodní společnosti. Vklad společníka. Podíl společníka. Ručení společníka.  \n6) Podnikatelská seskupení. Koncernové právo.  \n7) Orgány obchodních společností a zákaz konkurence. Smlouva o výkonu funkce.  \n8) Zrušení a zánik obchodní společnosti. Zrušení obchodní společnosti soudem. Zrušení společnosti s právním nástupcem. Formy přeměn. Zrušení obchodní společnosti s likvidací.  \n9) Veřejná obchodní společnost a komanditní společnost. Charakteristika. Založení a vznik společnosti. Práva a povinnosti společníků. Právní vztahy k třetím osobám. Zrušení společnosti. Vypořádání se společníky a zánik společnosti.  \n10) Evropské hospodářské zájmové sdružení. Charakteristika. Založení a vznik. Zrušení a zánik.  \n11) Společnost s ručením omezeným a akciová společnost. Založení a vznik. Společníci. Orgány společnosti. Základní kapitál. Převod účasti ve společnosti. Zrušení a zánik.  \n12) Evropská (akciová) společnost. Charakteristika. Založení a vznik. Společníci. Orgány společnosti. Základní kapitál. Převod účasti ve společnosti. Zrušení a zánik.",
+	"special_requirements": "žádné",
+	"literature_required": null,
+	"literature_recommended": "ALEXANDER, Juraj; HODÁL, Peter. _Evropské právo obchodních společností._ Praha: Linde, 2005. ISBN 80-7201-520-6.[](https://library.vse.cz/sysno?000085958)",
+	"assessment_methods": [
+		{
+			"method": "Vypracování semestrální práce",
+			"method_en": null,
+			"weight": "0 %"
+		}
+	],
+	"timetable": [],
+	"study_plans": [],
+	"study_load": [
+		{
+			"activity": "Druh",
+			"hours": "Prezenční studium"
+		},
+		{
+			"activity": "Účast na přednáškách",
+			"hours": "26 h"
+		},
+		{
+			"activity": "Příprava na přednášky a cvičení samostudiem",
+			"hours": "40 h"
+		},
+		{
+			"activity": "Příprava semestrální práce",
+			"hours": "90 h"
+		}
+	],
+	"last_modified_date": "22. 9. 2025",
+	"last_modified_by": "Mgr. Sabina Zukalová",
+	"aims_of_the_course_en": null,
+	"learning_outcomes_en": null,
+	"course_contents_en": null,
+	"special_requirements_en": null,
+	"literature_required_en": null,
+	"literature_recommended_en": null,
+	"prerequisites_en": null,
+	"recommended_programmes_en": null,
+	"required_work_experience_en": null,
+	"content_hash_cs": null,
+	"content_hash_en": null
+}

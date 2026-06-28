@@ -9,7 +9,9 @@
 		"lint": "eslint ./src --ext .ts,.js",
 		"format": "prettier --write .",
 		"preview": "node --require ./dist/api/src/telemetry.js dist/api/src/index.js",
-		"type-check": "tsc --noEmit"
+		"type-check": "tsc --noEmit",
+		"test": "vitest run",
+		"test:regen": "dotenv -v FORCE_FIXTURES=1 -- vitest run"
 	},
 	"dependencies": {
 		"@bull-board/api": "^8.0.1",
@@ -68,6 +70,7 @@
 		"tsconfig-paths": "^4.2.0",
 		"tsx": "^4.22.4",
 		"typescript": "^6.0.3",
-		"typescript-eslint": "^8.61.1"
+		"typescript-eslint": "^8.61.1",
+		"vitest": "^4.1.9"
 	}
 }

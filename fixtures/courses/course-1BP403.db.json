@@ -1,0 +1,74 @@
+{
+	"course": {
+		"id": 213349,
+		"url": "",
+		"ident": "1BP403",
+		"title": "Bankovnictví II",
+		"title_cs": "Bankovnictví II",
+		"title_en": "Banking II",
+		"ects": 6,
+		"faculty_id": "FFU",
+		"mode_of_delivery": "prezenční; 4/0 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+		"mode_of_completion": "zkouška",
+		"languages": "čeština",
+		"level": "magisterský navazující",
+		"year_of_study": 1,
+		"semester": "LS",
+		"year": 2025,
+		"lecturers": "doc. Ing. Petr Dvořák, Ph.D.",
+		"prerequisites": "žádné",
+		"recommended_programmes": "žádné",
+		"required_work_experience": "žádná",
+		"aims_of_the_course": "Cílem předmětu je objasnění podstaty jednotlivých bankovních rizik včetně zohlednění ESG indikátorů a metod jejich měření a řízení, včetně správné interpretace výstupů, které tyto metody podávají. Dále je výklad zaměřen na objasnění konstrukce širokého spektra derivátových kontraktů a jejich využití k zajištění i jako nástrojů finančního investování a vyhodnocení realizace enviromentálních rizik.",
+		"learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n\\- pochopit podstatu bankovních rizik včetně nástrojů jejich regulace při zapojení a vyhodnocení přístupu ESG a osvojit si praktické využití metod jejich měření a řízení;  \n\\- pochopit podstatu derivátových kontraktů včetně způsobu jejich obchodování a oceňování;  \n\\- využít deriváty k zajištění bankovních rizik i jako investičního nástroje včetně schopnosti samostatné analýzy jejich výnosnosti a rizikovosti",
+		"course_contents": "1\\. Bankovní bilance  \n2\\. Úrokové, tržní a měnové riziko, jejich měření, řízení a regulace, včetně zohlednění dopadu ESG rizikových faktorů  \n3\\. Podstata derivátů  \n4\\. Forvardové kontrakty, CFD, financial futures , swapy  \n5\\. Opce, cap, floor, collar  \n6\\. Likviditní riziko, jeho měření, řízení a regulace  \n7\\. Úvěrové riziko, jeho měření, řízení a regulace. Zohlednění fyzických a tranzitivních enviromentálních rizik při vyhodnocování a monitoringu úvěrů, zelené úvěry  \n8\\. Kreditní deriváty  \n9\\. Kapitálové riziko, jeho měření, řízení a regulace  \n10\\. Operační riziko banky a zajištění fungování a případné obnovy činnosti banky při výskytu nepříznivé události včetně ESG  \n11\\. Měření a řízení ziskovosti banky  \n12\\. Účetní zobrazení derivátů",
+		"special_requirements": "Nutnou podmínkou pro přihlášení k závěrečnému testu je řádné odevzdání semestrální práce. (Tento kurz byl spolufinancován Evropskou unií, Národním plánem obnovy z projektu NPO\\_VSE\\_MSMT-2146/2024-5.)",
+		"guarantors": null,
+		"last_modified_date": "22. 9. 2025",
+		"last_modified_by": "Ing. Jana Víchová",
+		"study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na přednáškách\",\"hours\":\"52 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"26 h\"},{\"activity\":\"Příprava semestrální práce\",\"hours\":\"39 h\"},{\"activity\":\"Příprava na závěrečný test\",\"hours\":\"39 h\"}]",
+		"literature_required": null,
+		"literature_recommended": "KAŠPAROVSKÁ, Vlasta. _Řízení obchodních bank : vybrané kapitoly._ Praha: Beck, 2006. ISBN 80-7179-381-7.[](https://library.vse.cz/sysno?000094328)",
+		"aims_of_the_course_en": null,
+		"learning_outcomes_en": null,
+		"course_contents_en": null,
+		"special_requirements_en": null,
+		"literature_required_en": null,
+		"literature_recommended_en": null,
+		"prerequisites_en": null,
+		"recommended_programmes_en": null,
+		"required_work_experience_en": null,
+		"content_hash_cs": null,
+		"content_hash_en": null
+	},
+	"assessments": [
+		{
+			"method": "Vypracování semestrální práce",
+			"method_en": null,
+			"weight": 30
+		},
+		{
+			"method": "Absolvování závěrečného testu",
+			"method_en": null,
+			"weight": 70
+		}
+	],
+	"timetable": [
+		{
+			"lecturer": "doc. Ing. Petr Dvořák, Ph.D.",
+			"capacity": 120,
+			"note": null,
+			"slots": [
+				{
+					"type": "Přednáška",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Středa",
+					"time_from": 975,
+					"time_to": 1170,
+					"location": "NB A"
+				}
+			]
+		}
+	]
+}

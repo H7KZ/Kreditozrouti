@@ -3,14 +3,14 @@ import { describe, expect, it } from 'vitest'
 import ExtractInSISCatalogService from '@scraper/Services/ExtractInSISCatalogService'
 import { makeFixtureLoaders } from './helpers'
 
-const { load, expected, exists } = makeFixtureLoaders(path.join(import.meta.dirname, 'fixtures/courses/catalog'))
+const { load, expected, exists } = makeFixtureLoaders(path.join(import.meta.dirname, '../../../fixtures/courses/catalog'))
 
 describe('ExtractInSISCatalogService', () => {
 	describe('extractSearchOptions', () => {
 		if (exists('index.html')) {
 			it('index.html', () => {
 				const actual = ExtractInSISCatalogService.extractSearchOptions(load('index.html'))
-				expect(actual).toEqual(expected('index.expected.json', actual))
+				expect(actual).toEqual(expected('index.scraper.json', actual))
 			})
 		} else {
 			it('no fixtures yet', () => {
@@ -23,7 +23,7 @@ describe('ExtractInSISCatalogService', () => {
 		if (exists('courses.html')) {
 			it('courses.html', () => {
 				const actual = ExtractInSISCatalogService.extractCourses(load('courses.html'))
-				expect(actual).toEqual(expected('courses.expected.json', actual))
+				expect(actual).toEqual(expected('courses.scraper.json', actual))
 			})
 		}
 

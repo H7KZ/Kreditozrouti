@@ -1,5 +1,6 @@
 {
 	// "include": ["src/index.ts"],
+	"exclude": ["src/Tests"],
 	"compilerOptions": {
 		/* Visit https://aka.ms/tsconfig to read more about this file */
 

@@ -1,0 +1,207 @@
+{
+	"course": {
+		"id": 187150,
+		"url": "",
+		"ident": "4IT218",
+		"title": "Databáze",
+		"title_cs": "Databáze",
+		"title_en": "Database Management Systems",
+		"ects": 6,
+		"faculty_id": "FIS",
+		"mode_of_delivery": "prezenční; 2/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+		"mode_of_completion": "zkouška",
+		"languages": "čeština",
+		"level": "bakalářský",
+		"year_of_study": 2,
+		"semester": "ZS",
+		"year": 2023,
+		"lecturers": "Ing. David Hemala|Ing. Dušan Chlapek, Ph.D.|Ing. Jan Kučera, Ph.D.|RNDr. Helena Palovská, Ph.D.|Ing. Pavel Vedral",
+		"prerequisites": "žádné",
+		"recommended_programmes": "žádné",
+		"required_work_experience": "žádná",
+		"aims_of_the_course": "1\\. Naučit studenty navrhovat obsah datové základny v jednotlivých úrovních návrhu (konceptuální, technologická a implementační úroveň).  \n  \n2\\. Poskytnout základní znalosti o správě dat a databázových systémech a trendech v oblasti zpracování dat.  \n  \n3\\. Poskytnout praktické zkušenosti v použití jazyka SQL a CASE nástroje při vytváření aplikace umožňující manipulovat daty uloženými v databázovém systému ORACLE.",
+		"learning_outcomes": "Po úspěšném absolvování budou studenti schopni analyzovat uživatelské požadavky a navrhovat obsah databáze na konceptuální, technologické a implementační úrovni. Používat jazyk SQL k návrhu a údržbě databáze. Orientovat se ve světě databázových systémů, aktivně používat databázové systémy. Rozumět základním procesům v oblasti správy dat.",
+		"course_contents": "Cíle předmětu, základní pojmy a principy  \n\\- základní teoretické principy relačních databázových systémů,  \n\\- relační algebra  \n  \nRelační databázové systémy  \n\\- základní principy RDBS,  \n\\- vlastnosti DBS,  \n\\- databázové jazyky,  \n\\- prostředky 4GL,  \n  \nDatabázový jazyk SQL  \n\\- určení,  \n\\- historie,  \n\\- vlastnosti,  \n\\- základní příkazy  \n\\- přehled a srovnání jednotlivých norem,  \n\\- implementace,  \n  \nNávrh obsahu datové základny  \n\\- zásady návrhu datové základny  \n\\- princip tří architektur  \n\\- datové modelování na konceptuální úrovni,  \n\\- technologická a fyzická úroveň realizace  \n\\- postupy transformace konceptuálního modelu do relačního databázového prostředí  \n  \nDatabázové systémy - fyzická úroveň  \n\\- principy a způsoby realizace vnitřní struktury dbs  \n\\- indexování,  \n\\- hashování,  \n\\- řetězení  \n\\- struktura databázových souborů a struktur  \n  \nDatabázové systémy - ochrana a bezpečnost, transakce  \n\\- požadavky na ochranu a bezpečnost databázového zpracování  \n\\- kopie a databázový žurnál,  \n\\- konflikty v dbs  \n\\- transakce (ACID), způsoby řešení konfliktů  \n\\- trendy v zajištění ochrany a bezpečnosti v DBS  \n  \nSpráva databáze  \n\\- základní činnosti správy databáze,  \n\\- optimalizace datové základny  \n\\- druhy optimalizátorů používaných v DBS  \n\\- ukázka implementace optimalizátorů v DBS ORACLE  \n  \nArchitektury IS  \n\\- vrstvy databázového zpracování  \n\\- distribuce v databázovém zpracování  \n\\- základní techniky  \n\\- varianty řešení  \n\\- ukázka implementace v prostředí DBS ORACLE  \n  \nObjektové databázové systémy  \n\\- principy objektového přístupu  \n\\- vztah objektových a relačních principů  \n\\- srovnání s objektově relačními systémy  \n  \nTrendy a kritéria hodnocení a výběru databázových systémů  \n  \nSpráva dat a role používané ve správě dat  \n  \nNoSQL databázové systémy  \n  \nOtevřená propojená data, RDF, SPARQL  \n  \nDemonstrace vybraného dbs",
+		"special_requirements": "průběžný test: SQL příkaz SELECT (20 bodů)",
+		"guarantors": null,
+		"last_modified_date": "13. 3. 2023",
+		"last_modified_by": "Ing. Tomáš Löster, Ph.D.",
+		"study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na přednáškách\",\"hours\":\"26 h\"},{\"activity\":\"Účast na cvičeních/seminářích/tutoriálech\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"26 h\"},{\"activity\":\"Příprava semestrální práce\",\"hours\":\"39 h\"},{\"activity\":\"Příprava na průběžný test (testy)\",\"hours\":\"13 h\"},{\"activity\":\"Příprava na závěrečný test\",\"hours\":\"26 h\"}]",
+		"literature_required": null,
+		"literature_recommended": "DATE, C. J. _An introduction to database systems._ Reading: Addison-Wesley, 2000. ISBN 0-201-38590-2.[](https://library.vse.cz/sysno?000028370)",
+		"aims_of_the_course_en": null,
+		"learning_outcomes_en": null,
+		"course_contents_en": null,
+		"special_requirements_en": null,
+		"literature_required_en": null,
+		"literature_recommended_en": null,
+		"prerequisites_en": null,
+		"recommended_programmes_en": null,
+		"required_work_experience_en": null,
+		"content_hash_cs": null,
+		"content_hash_en": null
+	},
+	"assessments": [
+		{
+			"method": "Vypracování semestrální práce",
+			"method_en": null,
+			"weight": 40
+		},
+		{
+			"method": "Absolvování průběžného testu (testů)",
+			"method_en": null,
+			"weight": 20
+		},
+		{
+			"method": "Absolvování závěrečného testu",
+			"method_en": null,
+			"weight": 40
+		}
+	],
+	"timetable": [
+		{
+			"lecturer": "Ing. Pavel Vedral",
+			"capacity": 25,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Úterý",
+					"time_from": 975,
+					"time_to": 1065,
+					"location": "SB 108"
+				}
+			]
+		},
+		{
+			"lecturer": "Ing. Pavel Vedral",
+			"capacity": 25,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Úterý",
+					"time_from": 1080,
+					"time_to": 1170,
+					"location": "SB 108"
+				}
+			]
+		},
+		{
+			"lecturer": "Ing. Dušan Chlapek, Ph.D.",
+			"capacity": 25,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Středa",
+					"time_from": 975,
+					"time_to": 1065,
+					"location": "SB 108"
+				}
+			]
+		},
+		{
+			"lecturer": "Ing. Dušan Chlapek, Ph.D.",
+			"capacity": 200,
+			"note": null,
+			"slots": [
+				{
+					"type": "Přednáška",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Čtvrtek",
+					"time_from": 555,
+					"time_to": 645,
+					"location": "Likešova aula"
+				}
+			]
+		},
+		{
+			"lecturer": "Ing. Dušan Chlapek, Ph.D.",
+			"capacity": 25,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Čtvrtek",
+					"time_from": 660,
+					"time_to": 750,
+					"location": "SB 105"
+				}
+			]
+		},
+		{
+			"lecturer": "Ing. David Hemala",
+			"capacity": 25,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Čtvrtek",
+					"time_from": 870,
+					"time_to": 960,
+					"location": "SB 105"
+				}
+			]
+		},
+		{
+			"lecturer": "Ing. David Hemala",
+			"capacity": 25,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Čtvrtek",
+					"time_from": 975,
+					"time_to": 1065,
+					"location": "SB 105"
+				}
+			]
+		},
+		{
+			"lecturer": "RNDr. Helena Palovská, Ph.D.",
+			"capacity": 25,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Pátek",
+					"time_from": 765,
+					"time_to": 855,
+					"location": "SB 109"
+				}
+			]
+		},
+		{
+			"lecturer": "RNDr. Helena Palovská, Ph.D.",
+			"capacity": 25,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Pátek",
+					"time_from": 870,
+					"time_to": 960,
+					"location": "SB 109"
+				}
+			]
+		}
+	]
+}

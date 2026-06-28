@@ -58,8 +58,8 @@ await LoggerJobContext.run(
 )
 
 // In any job or service — accumulates fields without knowing the caller
-LoggerJobContext.add({ course_id: 42, url: 'https://...' })
-LoggerJobContext.add({ status: 'success', duration_ms: 1234 })
+LoggerJobContext.add({course_id: 42, url: 'https://...'})
+LoggerJobContext.add({status: 'success', duration_ms: 1234})
 
 // At the end of ScraperRequestHandler — emits one JSON line
 LoggerJobContext.log.info(LoggerJobContext.get())
@@ -245,7 +245,7 @@ slot in `results` for a failed item is `undefined` — callers should guard agai
 
 ---
 
-## InSIS Domain Utilities (`Utils/InSISUtils.ts`)
+## InSIS Domain Utilities (`shared/utils/insis.ts`)
 
 ### `extractSemester(value)` → `InSISSemester | null`
 

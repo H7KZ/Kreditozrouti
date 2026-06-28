@@ -1,0 +1,52 @@
+{
+	"course": {
+		"id": 213975,
+		"url": "",
+		"ident": "6DVDM1",
+		"title": "Výzkumný design a metodologie",
+		"title_cs": "Výzkumný design a metodologie",
+		"title_en": "Research design and methodology",
+		"ects": null,
+		"faculty_id": "FMJH",
+		"mode_of_delivery": "konzultační při semestrální výucekonzultační pro distanční (kombinované) programy",
+		"mode_of_completion": "zkouška",
+		"languages": "čeština|angličtina",
+		"level": "doktorský",
+		"year_of_study": 1,
+		"semester": "LS",
+		"year": 2025,
+		"lecturers": "doc. Ing. Vladislav Bína, Ph.D.|doc. Ing. Tomáš Kincl, Ph.D.",
+		"prerequisites": "žádné",
+		"recommended_programmes": "žádné",
+		"required_work_experience": "žádná",
+		"aims_of_the_course": "Předmět poskytuje úvod do problematiky výzkumného designu a metodologie na úrovni studentů doktorského studia. Pokrývá základní východiska pro plánování a vykonávání výzkumu v obecné rovině. Poskytuje přehled základních výzkumných paradigmat a přístupů se zvláštním důrazem na výzkum v oblasti společenských věd, resp. managementu. Umožňuje studentům získat znalosti a dovednosti nezbytné ke zpracování záměru jejich disertační práce, formulaci výzkumného problému, zpracování rešerše a hodnocení primární akademické literatury, volbě výzkumného designu a strategie.",
+		"learning_outcomes": "Po úspěšném absolvování předmětu budou studenti schopni:  \na) identifikovat výzkumný problém či oblast ,  \nb) formulovat výzkumný záměr a cíle výzkumu, formulovat výzkumné předpoklady/otázky/hypotézy,  \nc) navrhnout výzkumný design, postup výzkumu,  \nd) rozumět významu konceptualizace, operacionalizace, měření,  \ne) naplánovat vlastní výzkum s ohledem na průběh doktorského studia. Výstupem předmětu je komplexní výzkumný záměr sloužící jako vodítko pro další studium.",
+		"course_contents": "Úvod do výzkumného designu a metodologie. Povaha vědeckého zkoumání, filozofie vědy, metodologie, vědecké přístupy a paradigmata. Výzkumné strategie a metody, kvantitativní a kvalitativní přístup, časové hledisko, spolehlivost, důvěryhodnost a zobecnitelnost výsledků výzkumu.  \nVýzkumný záměr, cíle výzkumu. Formulace zaměření práce (research aim) a obecných cílů práce (research objectives). Hledání a identifikace výzkumného problému či oblasti, formulace výzkumných předpokladů/otázek/hypotéz.  \nVýzkumný rámec (research framework) a strategie (research strategy), konceptuální model (conceptual model)  \nPráce s konstrukty a koncepty. Konceptualizace, operacionalizace, proměnné a jejich měření, konceptuální design  \nPlánování výzkumu, zdroje, výzkumná etika, omezení výzkumu",
+		"special_requirements": "Student v rámci předmětu zpracuje a obhájí vlastní výzkumný záměr.",
+		"guarantors": null,
+		"last_modified_date": "22. 9. 2025",
+		"last_modified_by": "Mgr. Sabina Zukalová",
+		"study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na přednáškách\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"26 h\"},{\"activity\":\"Příprava semestrální práce\",\"hours\":\"104 h\"}]",
+		"literature_required": null,
+		"literature_recommended": "aktuální články o výzkumu ve společenských vědách ze světových žurnálů",
+		"aims_of_the_course_en": null,
+		"learning_outcomes_en": null,
+		"course_contents_en": null,
+		"special_requirements_en": null,
+		"literature_required_en": null,
+		"literature_recommended_en": null,
+		"prerequisites_en": null,
+		"recommended_programmes_en": null,
+		"required_work_experience_en": null,
+		"content_hash_cs": null,
+		"content_hash_en": null
+	},
+	"assessments": [
+		{
+			"method": "Vypracování semestrální práce",
+			"method_en": null,
+			"weight": 100
+		}
+	],
+	"timetable": []
+}

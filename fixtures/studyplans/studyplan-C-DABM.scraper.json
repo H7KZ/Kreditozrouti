@@ -1,0 +1,136 @@
+{
+	"id": -1,
+	"url": "",
+	"ident": "C-DABM",
+	"title": "Data & Analytics for Business Management",
+	"faculty": {
+		"ident": "FIS",
+		"title": "Fakulta informatiky a statistiky"
+	},
+	"semester": "ZS",
+	"year": 2023,
+	"level": "celoživotní vzdělávání",
+	"mode_of_study": "distanční",
+	"study_length": "1,5 roku",
+	"courses": [
+		{
+			"id": 169156,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=169156;aktualni=1;poc_obdobi=1257",
+			"ident": "4OZPMBA",
+			"group": "field_specific_bachelor",
+			"category": "state_exam"
+		},
+		{
+			"id": 153579,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153579;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB105",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153580,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153580;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB106",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153577,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153577;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB103",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153582,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153582;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB108",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 182960,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182960;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB117",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153586,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153586;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB112",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 171909,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=171909;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB115",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153575,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153575;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB101",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153581,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153581;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB107",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153576,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153576;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB102",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153583,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153583;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB109",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 171910,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=171910;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB116",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153585,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153585;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB111",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153578,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153578;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB104",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153588,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153588;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB114",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 153584,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153584;aktualni=1;poc_obdobi=1257",
+			"ident": "4MB110",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		}
+	]
+}

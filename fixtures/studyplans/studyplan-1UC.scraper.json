@@ -1,0 +1,255 @@
+{
+	"id": -1,
+	"url": "",
+	"ident": "1UC",
+	"title": "Účetnictví",
+	"faculty": {
+		"ident": "FFU",
+		"title": "Fakulta financí a účetnictví"
+	},
+	"semester": "LS",
+	"year": 2024,
+	"level": "magisterský navazující",
+	"mode_of_study": "prezenční",
+	"study_length": null,
+	"courses": [
+		{
+			"id": 118827,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118827;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU408",
+			"group": "minor_specialization",
+			"category": "compulsory"
+		},
+		{
+			"id": 2685,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2685;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU407",
+			"group": "minor_specialization",
+			"category": "compulsory"
+		},
+		{
+			"id": 155012,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155012;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU471",
+			"group": "minor_specialization",
+			"category": "compulsory"
+		},
+		{
+			"id": 175035,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=175035;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU472",
+			"group": "minor_specialization",
+			"category": "compulsory"
+		},
+		{
+			"id": 2690,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2690;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU505",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 84254,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=84254;aktualni=1;poc_obdobi=1146",
+			"ident": "1MU406",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 61461,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61461;aktualni=1;poc_obdobi=1146",
+			"ident": "1MU409",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 170201,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=170201;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU515",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 87542,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87542;aktualni=1;poc_obdobi=1146",
+			"ident": "1FP424",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 162296,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=162296;aktualni=1;poc_obdobi=1146",
+			"ident": "1MU555",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 155008,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155008;aktualni=1;poc_obdobi=1146",
+			"ident": "1MT555",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 199501,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199501;aktualni=1;poc_obdobi=1146",
+			"ident": "1VF555",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 179523,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=179523;aktualni=1;poc_obdobi=1146",
+			"ident": "1BP555",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 2363,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2363;aktualni=1;poc_obdobi=1146",
+			"ident": "1FP402",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 110490,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110490;aktualni=1;poc_obdobi=1146",
+			"ident": "1MU506",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 84240,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=84240;aktualni=1;poc_obdobi=1146",
+			"ident": "1MU413",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 3086,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3086;aktualni=1;poc_obdobi=1146",
+			"ident": "1MU400",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 134826,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134826;aktualni=1;poc_obdobi=1146",
+			"ident": "1MU508",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 41071,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=41071;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU441",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 113746,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113746;aktualni=1;poc_obdobi=1146",
+			"ident": "1MU493",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 159192,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=159192;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU596",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 3500,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3500;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU485",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 3288,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3288;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU484",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 102483,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=102483;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU573",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 61460,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61460;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU491",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 166216,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=166216;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU492",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 2694,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2694;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU572",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 3498,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3498;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU454",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 34148,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34148;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU455",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 110379,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=110379;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU475",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 205802,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205802;aktualni=1;poc_obdobi=1146",
+			"ident": "11F444",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 2687,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2687;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU450",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 2684,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2684;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU403",
+			"group": "minor_specialization",
+			"category": "elective"
+		},
+		{
+			"id": 41070,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=41070;aktualni=1;poc_obdobi=1146",
+			"ident": "1FU400",
+			"group": "minor_specialization",
+			"category": "elective"
+		}
+	]
+}

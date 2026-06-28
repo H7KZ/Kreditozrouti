@@ -1,0 +1,3146 @@
+{
+	"id": -1,
+	"url": "",
+	"ident": "B-AM",
+	"title": "Arts Management",
+	"faculty": {
+		"ident": "FPH",
+		"title": "Fakulta podnikohospodářská"
+	},
+	"semester": "ZS",
+	"year": 2024,
+	"level": "bakalářský",
+	"mode_of_study": "prezenční",
+	"study_length": "3 roky",
+	"courses": [
+		{
+			"id": 3529,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3529;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ132",
+			"group": "field_specific_bachelor",
+			"category": "language"
+		},
+		{
+			"id": 3533,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3533;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ136",
+			"group": "field_specific_bachelor",
+			"category": "language"
+		},
+		{
+			"id": 189939,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189939;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM390",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 189744,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=189744;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM333",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 114569,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114569;aktualni=1;poc_obdobi=1139",
+			"ident": "1VF237",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 3458,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3458;aktualni=1;poc_obdobi=1139",
+			"ident": "3MI191",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 62484,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=62484;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM297",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 200178,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=200178;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM184",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 200176,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=200176;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM183",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 71720,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=71720;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM291",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 98271,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98271;aktualni=1;poc_obdobi=1139",
+			"ident": "3MA194",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 3473,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3473;aktualni=1;poc_obdobi=1139",
+			"ident": "3PS391",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 61879,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61879;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM397",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 97563,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97563;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM181",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 70915,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70915;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM192",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 95859,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=95859;aktualni=1;poc_obdobi=1139",
+			"ident": "3PE192",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 97564,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97564;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM282",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 3596,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3596;aktualni=1;poc_obdobi=1139",
+			"ident": "3MA192",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 97566,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97566;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM383",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 97565,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97565;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM382",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 34169,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34169;aktualni=1;poc_obdobi=1139",
+			"ident": "3PA191",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 3526,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3526;aktualni=1;poc_obdobi=1139",
+			"ident": "2PR131",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 61449,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61449;aktualni=1;poc_obdobi=1139",
+			"ident": "3MA390",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 54720,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=54720;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM391",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 100076,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=100076;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM182",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 109973,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109973;aktualni=1;poc_obdobi=1139",
+			"ident": "3SG200",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 3495,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3495;aktualni=1;poc_obdobi=1139",
+			"ident": "1FU232",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 3496,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3496;aktualni=1;poc_obdobi=1139",
+			"ident": "1FU233",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 141995,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=141995;aktualni=1;poc_obdobi=1139",
+			"ident": "33F100",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 55594,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=55594;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM294",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 113149,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113149;aktualni=1;poc_obdobi=1139",
+			"ident": "1VF231",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 3446,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3446;aktualni=1;poc_obdobi=1139",
+			"ident": "3MG191",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 149890,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=149890;aktualni=1;poc_obdobi=1139",
+			"ident": "3PO291",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 3565,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3565;aktualni=1;poc_obdobi=1139",
+			"ident": "4ST231",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 205168,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205168;aktualni=1;poc_obdobi=1139",
+			"ident": "AMD",
+			"group": "field_specific_bachelor",
+			"category": "state_exam"
+		},
+		{
+			"id": 199314,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199314;aktualni=1;poc_obdobi=1139",
+			"ident": "33F306",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 199331,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199331;aktualni=1;poc_obdobi=1139",
+			"ident": "33F307",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 199323,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199323;aktualni=1;poc_obdobi=1139",
+			"ident": "33F304",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 199319,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199319;aktualni=1;poc_obdobi=1139",
+			"ident": "33F303",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 199327,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=199327;aktualni=1;poc_obdobi=1139",
+			"ident": "33F305",
+			"group": "field_specific_bachelor",
+			"category": "compulsory"
+		},
+		{
+			"id": 51165,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=51165;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSAER",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5230,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5230;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSAQU",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 113966,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113966;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSBAD",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5232,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5232;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSBAS",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 175279,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=175279;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSBEA",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105791,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105791;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSFIT",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5234,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5234;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSFLO",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5235,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5235;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSFOT",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105792,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105792;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSFKT",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5237,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5237;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSHAZ",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5238,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5238;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSHOK",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 157918,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=157918;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSJOG",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5239,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5239;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSKAN",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 197148,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=197148;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL57",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70877,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70877;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL01",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 136417,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=136417;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL44",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 97516,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97516;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL30",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70878,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70878;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL02",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70879,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70879;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL03",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 86954,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=86954;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL27",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 86955,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=86955;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL28",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70880,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70880;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL04",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70881,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70881;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL05",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70882,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70882;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL06",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70883,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70883;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL07",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 136414,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=136414;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL43",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 122395,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122395;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL40",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 113889,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113889;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL39",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 136393,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=136393;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL42",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 79290,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79290;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL21",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70884,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70884;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL08",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70885,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70885;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL09",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70886,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70886;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL10",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105624,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105624;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL35",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 79291,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79291;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL20",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 97517,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97517;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL29",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 113890,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113890;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL38",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70887,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70887;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL11",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 130360,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=130360;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL41",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 113891,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113891;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL37",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 196412,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=196412;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL56",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 87492,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87492;aktualni=1;poc_obdobi=1139",
+			"ident": "TVS3AM",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105683,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105683;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL36",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70888,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70888;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL12",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105625,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105625;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL33",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 97518,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97518;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL31",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 97519,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97519;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL32",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70890,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70890;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL14",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 176894,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=176894;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL49",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 195602,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=195602;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL53",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 205455,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205455;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL58",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 196407,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=196407;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL54",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 196410,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=196410;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL55",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70891,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70891;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL15",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 220489,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=220489;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL59",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70894,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70894;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL18",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 79292,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79292;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL24",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 79293,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79293;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL25",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 153300,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153300;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL47",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105623,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105623;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL34",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70895,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70895;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL19",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 79294,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79294;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL26",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 137996,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=137996;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL46",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 153478,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153478;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL48",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 205459,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205459;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSLUK",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 130166,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=130166;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSMFO",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5246,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5246;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSNPL",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60966,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60966;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSOS1",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60967,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60967;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSOS2",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60968,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60968;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSOZ1",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60969,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60969;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSOZ2",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5245,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5245;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSMSP",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5249,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5249;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSOUT",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 61883,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61883;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSPIL",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5250,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5250;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSPLA",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5251,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5251;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSPOS",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5252,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5252;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSRES",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5254,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5254;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSEB",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5256,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5256;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSOF",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5257,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5257;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSPG",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65700,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65700;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSPL",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 130165,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=130165;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSPP",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 153302,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153302;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSTW",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5255,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5255;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSER",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 51168,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=51168;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSTAI",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5258,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5258;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSTEN",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5259,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5259;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSTHA",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60974,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60974;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSUZ1",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60975,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60975;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSUZ2",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 113945,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113945;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSVOD",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5260,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5260;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSVOL",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5263,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5263;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZPL",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 51170,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=51170;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZTV",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 126063,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126063;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ43",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91632,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91632;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ30",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 156154,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=156154;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ44",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 173876,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=173876;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ45",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65326,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65326;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ05",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 101699,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=101699;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ38",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 101700,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=101700;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ39",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 64142,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=64142;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ16",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 201665,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=201665;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ48",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91630,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91630;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ29",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91770,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91770;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ31",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 64144,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=64144;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ15",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 75205,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75205;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ18",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 64145,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=64145;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ14",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83207,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83207;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ19",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 75171,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75171;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ17",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83210,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83210;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ21",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65330,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65330;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ01",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91771,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91771;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ32",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91772,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91772;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ33",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65331,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65331;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ02",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91773,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91773;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ34",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91774,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91774;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ35",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 181914,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=181914;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ46",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 118376,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118376;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ42",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 101698,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=101698;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ37",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 118375,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118375;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ41",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83211,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83211;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ22",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65317,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65317;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ13",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 118374,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118374;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ40",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83212,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83212;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ23",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83213,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83213;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ24",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83214,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83214;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ25",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83215,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83215;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ26",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 92985,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=92985;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ36",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65323,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65323;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ08",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65322,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65322;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ09",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65321,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65321;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ10",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65319,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65319;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ11",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65318,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65318;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ12",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83216,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83216;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ27",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65328,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65328;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ03",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65327,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65327;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ04",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 195242,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=195242;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ47",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91631,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91631;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ28",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 3531,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3531;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ134",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 87398,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87398;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ212",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3229,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3229;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO204",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2588,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2588;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO106",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2593,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2593;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO234",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2602,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2602;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO136",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2577,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2577;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ204",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 79412,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79412;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ106",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2578,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2578;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO196",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2617,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2617;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU204",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3254,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3254;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU206",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3253,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3253;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU106",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3230,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3230;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO264",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2625,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2625;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO166",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 62034,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=62034;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO168",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 51165,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=51165;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSAER",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5230,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5230;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSAQU",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 113966,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113966;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSBAD",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5232,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5232;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSBAS",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 175279,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=175279;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSBEA",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105791,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105791;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSFIT",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5234,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5234;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSFLO",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5235,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5235;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSFOT",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105792,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105792;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSFKT",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5237,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5237;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSHAZ",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5238,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5238;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSHOK",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 157918,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=157918;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSJOG",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5239,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5239;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSKAN",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 197148,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=197148;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL57",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70877,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70877;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL01",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 136417,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=136417;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL44",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 97516,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97516;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL30",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70878,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70878;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL02",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70879,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70879;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL03",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 86954,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=86954;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL27",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 86955,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=86955;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL28",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70880,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70880;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL04",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70881,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70881;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL05",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70882,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70882;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL06",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70883,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70883;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL07",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 136414,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=136414;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL43",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 122395,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122395;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL40",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 113889,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113889;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL39",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 136393,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=136393;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL42",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 79290,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79290;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL21",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70884,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70884;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL08",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70885,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70885;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL09",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70886,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70886;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL10",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105624,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105624;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL35",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 79291,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79291;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL20",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 97517,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97517;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL29",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 113890,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113890;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL38",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70887,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70887;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL11",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 130360,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=130360;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL41",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 113891,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113891;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL37",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 196412,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=196412;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL56",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 87492,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87492;aktualni=1;poc_obdobi=1139",
+			"ident": "TVS3AM",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105683,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105683;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL36",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70888,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70888;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL12",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105625,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105625;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL33",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 97518,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97518;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL31",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 97519,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97519;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL32",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70890,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70890;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL14",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 176894,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=176894;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL49",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 195602,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=195602;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL53",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 205455,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205455;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL58",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 196407,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=196407;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL54",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 196410,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=196410;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL55",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70891,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70891;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL15",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 220489,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=220489;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL59",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70894,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70894;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL18",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 79292,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79292;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL24",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 79293,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79293;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL25",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 153300,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153300;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL47",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 105623,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=105623;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL34",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 70895,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70895;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL19",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 79294,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79294;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL26",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 137996,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=137996;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL46",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 153478,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153478;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSL48",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 205459,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205459;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSLUK",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 130166,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=130166;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSMFO",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5246,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5246;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSNPL",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60966,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60966;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSOS1",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60967,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60967;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSOS2",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60968,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60968;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSOZ1",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60969,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60969;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSOZ2",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5245,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5245;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSMSP",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5249,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5249;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSOUT",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 61883,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61883;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSPIL",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5250,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5250;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSPLA",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5251,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5251;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSPOS",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5252,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5252;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSRES",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5254,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5254;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSEB",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5256,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5256;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSOF",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5257,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5257;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSPG",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65700,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65700;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSPL",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 130165,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=130165;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSPP",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 153302,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153302;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSTW",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5255,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5255;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSSER",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 51168,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=51168;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSTAI",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5258,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5258;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSTEN",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5259,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5259;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSTHA",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60974,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60974;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSUZ1",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 60975,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=60975;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSUZ2",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 113945,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113945;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSVOD",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5260,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5260;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSVOL",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 5263,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=5263;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZPL",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 51170,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=51170;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZTV",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 126063,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126063;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ43",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91632,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91632;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ30",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 156154,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=156154;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ44",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 173876,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=173876;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ45",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65326,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65326;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ05",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 101699,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=101699;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ38",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 101700,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=101700;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ39",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 64142,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=64142;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ16",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 201665,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=201665;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ48",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91630,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91630;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ29",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91770,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91770;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ31",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 64144,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=64144;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ15",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 75205,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75205;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ18",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 64145,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=64145;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ14",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83207,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83207;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ19",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 75171,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75171;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ17",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83210,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83210;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ21",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65330,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65330;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ01",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91771,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91771;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ32",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91772,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91772;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ33",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65331,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65331;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ02",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91773,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91773;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ34",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91774,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91774;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ35",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 181914,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=181914;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ46",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 118376,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118376;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ42",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 101698,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=101698;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ37",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 118375,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118375;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ41",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83211,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83211;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ22",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65317,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65317;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ13",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 118374,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118374;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ40",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83212,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83212;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ23",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83213,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83213;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ24",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83214,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83214;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ25",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83215,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83215;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ26",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 92985,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=92985;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ36",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65323,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65323;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ08",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65322,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65322;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ09",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65321,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65321;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ10",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65319,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65319;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ11",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65318,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65318;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ12",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 83216,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=83216;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ27",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65328,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65328;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ03",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 65327,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=65327;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ04",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 195242,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=195242;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ47",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 91631,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=91631;aktualni=1;poc_obdobi=1139",
+			"ident": "TVSZ28",
+			"group": "university_wide",
+			"category": "physical_education"
+		},
+		{
+			"id": 2735,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2735;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ400",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3524,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3524;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ131",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3529,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3529;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ132",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3530,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3530;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ133",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3532,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3532;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ135",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 87397,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87397;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ211",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2587,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2587;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ105",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2575,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2575;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ106",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 87395,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=87395;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ111",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3543,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3543;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO111",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3544,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3544;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO112",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3545,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3545;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO113",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2618,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2618;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO103",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3227,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3227;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO104",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2623,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2623;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO201",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2581,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2581;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO202",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 130570,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=130570;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO212",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2604,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2604;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO203",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2579,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2579;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO105",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2601,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2601;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO101",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2615,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2615;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO102",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 34142,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34142;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO141",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 34143,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34143;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO142",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2893,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2893;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO133",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2586,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2586;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO134",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2603,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2603;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO233",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2612,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2612;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO135",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2614,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2614;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO131",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2621,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2621;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO132",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2607,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2607;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ103",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2616,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2616;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ104",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2609,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2609;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ201",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2965,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2965;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ202",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 130569,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=130569;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ212",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2599,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2599;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ203",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2952,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2952;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ105",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 66264,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=66264;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ101",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 66265,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=66265;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ102",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2597,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2597;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO193",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2590,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2590;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO194",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2583,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2583;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO195",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2613,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2613;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO191",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2595,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2595;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO192",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 70661,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70661;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ309",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 70662,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70662;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ310",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 70659,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70659;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ307",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 70660,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70660;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ308",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 70658,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70658;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ305",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 70801,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70801;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ306",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 109595,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109595;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ323",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 109594,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109594;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ324",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 70656,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70656;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ303",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 70657,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70657;aktualni=1;poc_obdobi=1139",
+			"ident": "2AJ304",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3252,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3252;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU103",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2847,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2847;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU104",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2611,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2611;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU201",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2619,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2619;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU202",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 130573,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=130573;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU212",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2605,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2605;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU203",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2848,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2848;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU105",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2620,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2620;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU101",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2606,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2606;aktualni=1;poc_obdobi=1139",
+			"ident": "2RU102",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2608,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2608;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO163",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2580,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2580;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO164",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2598,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2598;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO261",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 130572,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=130572;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO272",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2591,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2591;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO263",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 3228,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3228;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO165",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 62031,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=62031;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO167",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2573,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2573;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO161",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2622,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2622;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO162",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 70667,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70667;aktualni=1;poc_obdobi=1139",
+			"ident": "2RO171",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2992,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2992;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ121",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 2993,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2993;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ122",
+			"group": "faculty_specific",
+			"category": "language"
+		},
+		{
+			"id": 47645,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=47645;aktualni=1;poc_obdobi=1139",
+			"ident": "5FI412",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 195173,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=195173;aktualni=1;poc_obdobi=1139",
+			"ident": "3MG301",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 55437,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=55437;aktualni=1;poc_obdobi=1139",
+			"ident": "3MA395",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 149892,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=149892;aktualni=1;poc_obdobi=1139",
+			"ident": "3PO395",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 76751,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=76751;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM381",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 113760,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113760;aktualni=1;poc_obdobi=1139",
+			"ident": "3MA643",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 114589,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114589;aktualni=1;poc_obdobi=1139",
+			"ident": "33F201",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 34152,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34152;aktualni=1;poc_obdobi=1139",
+			"ident": "2NJ309",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 166298,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=166298;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM606",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 166297,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=166297;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM605",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 170243,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=170243;aktualni=1;poc_obdobi=1139",
+			"ident": "3MA686",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 122754,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122754;aktualni=1;poc_obdobi=1139",
+			"ident": "3MA345",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 80257,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=80257;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM295",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 166155,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=166155;aktualni=1;poc_obdobi=1139",
+			"ident": "3MA222",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 182651,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=182651;aktualni=1;poc_obdobi=1139",
+			"ident": "33F302",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 41059,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=41059;aktualni=1;poc_obdobi=1139",
+			"ident": "3PA669",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 113151,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113151;aktualni=1;poc_obdobi=1139",
+			"ident": "1VF236",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 217828,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=217828;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM389",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 79483,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79483;aktualni=1;poc_obdobi=1139",
+			"ident": "3PS325",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 75826,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75826;aktualni=1;poc_obdobi=1139",
+			"ident": "3MA632",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 3116,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3116;aktualni=1;poc_obdobi=1139",
+			"ident": "3PA662",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 205242,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205242;aktualni=1;poc_obdobi=1139",
+			"ident": "3MG365",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 153239,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153239;aktualni=1;poc_obdobi=1139",
+			"ident": "3PO301",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 183062,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=183062;aktualni=1;poc_obdobi=1139",
+			"ident": "3SG360",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 205246,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205246;aktualni=1;poc_obdobi=1139",
+			"ident": "3PS329",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 198560,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=198560;aktualni=1;poc_obdobi=1139",
+			"ident": "3MG302",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 75809,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75809;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM398",
+			"group": "field_specific_bachelor",
+			"category": "elective"
+		},
+		{
+			"id": 139677,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=139677;aktualni=1;poc_obdobi=1139",
+			"ident": "3MI408",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 142007,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=142007;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM481",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 141998,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=141998;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM602",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 70918,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70918;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM495",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 98263,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98263;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM590",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 2403,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2403;aktualni=1;poc_obdobi=1139",
+			"ident": "3MA412",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 139675,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=139675;aktualni=1;poc_obdobi=1139",
+			"ident": "3MI407",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 114539,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114539;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM437",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 71216,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=71216;aktualni=1;poc_obdobi=1139",
+			"ident": "3MG493",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 114891,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114891;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM597",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 68344,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=68344;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM494",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 141999,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=141999;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM603",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 142009,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=142009;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM589",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 109975,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109975;aktualni=1;poc_obdobi=1139",
+			"ident": "3SG400",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		},
+		{
+			"id": 98261,
+			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98261;aktualni=1;poc_obdobi=1139",
+			"ident": "3AM499",
+			"group": "field_specific_bachelor",
+			"category": "beyond_scope"
+		}
+	]
+}

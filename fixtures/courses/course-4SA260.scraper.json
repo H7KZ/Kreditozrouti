@@ -1,0 +1,102 @@
+{
+	"id": 187483,
+	"url": "",
+	"url_id": null,
+	"ident": "4SA620",
+	"title": "Diploma Seminar",
+	"title_cs": "Diplomový seminář (v angličtině)",
+	"title_en": "Diploma Seminar",
+	"ects": "3 (1 ECTS kredit = 26 hodin studijní zátěže)",
+	"mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výucemimosemestr; 0/26 (počet hodin přednášek za období / počet hodin cvičení za období) při mimosemestrální výuce",
+	"mode_of_completion": "zkouška",
+	"languages": "angličtina",
+	"period": "ZS 2023/2024",
+	"faculty": {
+		"ident": "FIS",
+		"title": null
+	},
+	"level": "magisterský navazující (druhý cyklus): 1",
+	"year_of_study": "magisterský navazující (druhý cyklus): 1",
+	"lecturers": "Ing. PhDr. Antonín Pavlíček, Ph.D.",
+	"guarantors": null,
+	"prerequisites": "žádné",
+	"recommended_programmes": "žádné",
+	"required_work_experience": "žádná",
+	"aims_of_the_course": "Poskytnout studentům znalosti a dovednosti umožňující vytvoření diplomové práce. Formulace cílů práce, harmonogramu a postupu řešení, výběr zdrojů. Rozpracování diplomové práce (min. 20%).",
+	"learning_outcomes": "Po úspěšném absolvování budou studenti schopni dokončit rozpracovanou diplomovou práci.",
+	"course_contents": "Vysvětlení způsobu vypracovávání DP (formální náležitosti, obsahové náležitosti, akademické zvyklosti, ...).  \nStanovení hlavních kroků a postupu práce.  \nNalezení vhodného tématu a stanovení vedoucího DP.  \nFormální zapsání DP do informačního systému.  \n  \nVe spolupráci s vedoucím DP pak následně:  \nNávrh struktury práce a harmonogramu řešení diplomové práce.  \nShromáždění a výběr informačních zdrojů.  \nVýběr vhodných vědeckých metod.  \nNávrh textu diplomové práce.  \nNávrh závěrů diplomové práce.  \nPrezentace rozpracovaných částí diplomové práce.",
+	"special_requirements": "V případě, že student nebude mít do konce 7. týdne výuky, kdy má předmět zapsán, téma diplomové práce zadané v InSIS, předmět je zakončen známkou \"nevyhověl\".",
+	"literature_required": null,
+	"literature_recommended": "Kastens, K, at al., How to Write Your Thesis, http://www.ldeo.columbia.edu/~martins/sen\\_sem/thesis\\_org.html",
+	"assessment_methods": [
+		{
+			"method": "Aktivita na přednáškách/cvičeních/seminářích",
+			"method_en": null,
+			"weight": "10 %"
+		},
+		{
+			"method": "Vypracování semestrální práce",
+			"method_en": null,
+			"weight": "70 %"
+		},
+		{
+			"method": "Prezentace nebo obhajoba",
+			"method_en": null,
+			"weight": "20 %"
+		}
+	],
+	"timetable": [
+		{
+			"lecturer": "Ing. PhDr. Antonín Pavlíček, Ph.D.",
+			"capacity": 30,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "Každý týden",
+					"date": null,
+					"day": "Středa",
+					"time_from": "11:00",
+					"time_to": "12:30",
+					"location": "RB 106"
+				}
+			]
+		}
+	],
+	"study_plans": [],
+	"study_load": [
+		{
+			"activity": "Druh",
+			"hours": "Prezenční studium"
+		},
+		{
+			"activity": "Účast na přednáškách",
+			"hours": "20 h"
+		},
+		{
+			"activity": "Příprava na přednášky a cvičení samostudiem",
+			"hours": "16 h"
+		},
+		{
+			"activity": "Příprava semestrální práce",
+			"hours": "32 h"
+		},
+		{
+			"activity": "Příprava prezentace nebo obhajoby",
+			"hours": "10 h"
+		}
+	],
+	"last_modified_date": "13. 3. 2023",
+	"last_modified_by": "Ing. Tomáš Löster, Ph.D.",
+	"aims_of_the_course_en": null,
+	"learning_outcomes_en": null,
+	"course_contents_en": null,
+	"special_requirements_en": null,
+	"literature_required_en": null,
+	"literature_recommended_en": null,
+	"prerequisites_en": null,
+	"recommended_programmes_en": null,
+	"required_work_experience_en": null,
+	"content_hash_cs": null,
+	"content_hash_en": null
+}

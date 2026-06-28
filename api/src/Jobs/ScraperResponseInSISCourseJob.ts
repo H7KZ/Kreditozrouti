@@ -1,7 +1,15 @@
-import type { ScraperInSISCourseAssessmentMethod, ScraperInSISCourseTimetableSlot, ScraperInSISCourseTimetableUnit } from '@shared/queue/insis'
+import type { InSISDay } from '@shared/domain/insis'
+import type {
+	ScraperInSISCourse,
+	ScraperInSISCourseAssessmentMethod,
+	ScraperInSISCourseTimetableSlot,
+	ScraperInSISCourseTimetableUnit
+} from '@shared/queue/insis'
 import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
 import { Transaction } from 'kysely'
+import { InSISDayValues } from '@shared/domain/insis'
 import { timeToMinutes } from '@shared/domain/time'
+import { extractSemester, extractYear } from '@shared/utils/insis'
 import { mysql, redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import {
@@ -20,8 +28,110 @@ import { insertFacultiesBatch } from '@api/Jobs/helpers'
 
 const SEMESTER_RANK: Partial<Record<string, number>> = { LS: 0, ZS: 1 }
 
+function parseDay(raw: string | null): InSISDay | null {
+	if (!raw) return null
+	return (InSISDayValues as readonly string[]).includes(raw) ? (raw as InSISDay) : null
+}
+
+function parseFrequency(raw: string | null): 'weekly' | 'single' | null {
+	if (!raw) return null
+	if (raw === 'single') return 'single'
+	// ponytail: any non-null, non-single frequency from InSIS means weekly
+	return 'weekly'
+}
+
 function semesterRank(semester: string | null | undefined): number {
 	return SEMESTER_RANK[semester ?? ''] ?? 0
+}
+
+// Splits raw InSIS level strings like "magisterský navazující (druhý cyklus): 2"
+// into { level: "magisterský navazující", year_of_study: 2 }
+// Strips parenthetical qualifiers so values match LEVEL_NORM keys.
+function parseLevelAndYear(raw: string | null): { level: string | null; year_of_study: number | null } {
+	if (!raw) return { level: null, year_of_study: null }
+	const m = /^(.*?):\s*(\d+)\s*$/.exec(raw)
+	const levelText = (m ? m[1] : raw).replace(/\s*\([^)]+\)/g, '').trim()
+	return { level: levelText || null, year_of_study: m ? parseInt(m[2], 10) : null }
+}
+
+export function buildCoursePayload(course: ScraperInSISCourse, facultyId: string | null): Omit<NewCourse, 'last_scraped_at'> {
+	const { level, year_of_study } = parseLevelAndYear(course.level)
+	return {
+		id: course.id,
+		url: course.url,
+		ident: course.ident ?? '',
+		title: course.title,
+		title_cs: course.title_cs,
+		title_en: course.title_en,
+		ects: course.ects != null ? (v => (Number.isNaN(v) ? null : v))(parseFloat(course.ects)) : null,
+		faculty_id: facultyId,
+		mode_of_delivery: course.mode_of_delivery,
+		mode_of_completion: course.mode_of_completion,
+		languages:
+			course.languages
+				?.split(/[,;]\s*/)
+				.filter(Boolean)
+				.join('|') ?? null,
+		level,
+		year_of_study,
+		semester: extractSemester(course.period),
+		year: extractYear(course.period),
+		lecturers: course.lecturers,
+		prerequisites: course.prerequisites,
+		recommended_programmes: course.recommended_programmes,
+		required_work_experience: course.required_work_experience,
+		aims_of_the_course: course.aims_of_the_course,
+		learning_outcomes: course.learning_outcomes,
+		course_contents: course.course_contents,
+		special_requirements: course.special_requirements,
+		guarantors: course.guarantors,
+		last_modified_date: course.last_modified_date,
+		last_modified_by: course.last_modified_by,
+		study_load: course.study_load ? JSON.stringify(course.study_load) : null,
+		literature_required: course.literature_required,
+		literature_recommended: course.literature_recommended,
+		aims_of_the_course_en: course.aims_of_the_course_en,
+		learning_outcomes_en: course.learning_outcomes_en,
+		course_contents_en: course.course_contents_en,
+		special_requirements_en: course.special_requirements_en,
+		literature_required_en: course.literature_required_en,
+		literature_recommended_en: course.literature_recommended_en,
+		prerequisites_en: course.prerequisites_en,
+		recommended_programmes_en: course.recommended_programmes_en,
+		required_work_experience_en: course.required_work_experience_en,
+		content_hash_cs: course.content_hash_cs,
+		content_hash_en: course.content_hash_en
+	}
+}
+
+export function buildAssessmentRows(
+	methods: ScraperInSISCourseAssessmentMethod[]
+): { method: string | null; method_en: string | null; weight: number | null }[] {
+	return [...new Map(methods.map(m => [m.method, m])).values()].map(m => ({
+		method: m.method,
+		method_en: m.method_en ?? null,
+		weight: m.weight != null ? parseFloat(m.weight) : null
+	}))
+}
+
+export function buildSlotShape(slot: ScraperInSISCourseTimetableSlot): {
+	type: string | null
+	frequency: 'weekly' | 'single' | null
+	date: string | null
+	day: InSISDay | null
+	time_from: number | null
+	time_to: number | null
+	location: string | null
+} {
+	return {
+		type: slot.type,
+		frequency: parseFrequency(slot.frequency),
+		date: slot.date,
+		day: parseDay(slot.day),
+		time_from: timeToMinutes(slot.time_from),
+		time_to: timeToMinutes(slot.time_to),
+		location: slot.location
+	}
 }
 
 /**
@@ -80,47 +190,8 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 
 	await mysql.transaction().execute(async trx => {
 		const coursePayload: NewCourse = {
-			id: course.id,
-			url: course.url,
-			ident: course.ident ?? '',
-			title: course.title,
-			title_cs: course.title_cs,
-			title_en: course.title_en,
-			ects: course.ects,
-			faculty_id: facultyId,
-			mode_of_delivery: course.mode_of_delivery,
-			mode_of_completion: course.mode_of_completion,
-			languages: course.languages?.join('|') ?? null,
-			level: course.level,
-			year_of_study: course.year_of_study,
-			semester: course.semester,
-			year: course.year,
-			lecturers: course.lecturers?.join('|') ?? null,
-			prerequisites: course.prerequisites,
-			recommended_programmes: course.recommended_programmes,
-			required_work_experience: course.required_work_experience,
-			aims_of_the_course: course.aims_of_the_course,
-			learning_outcomes: course.learning_outcomes,
-			course_contents: course.course_contents,
-			special_requirements: course.special_requirements,
-			guarantors: course.guarantors?.join('|') ?? null,
-			last_modified_date: course.last_modified_date,
-			last_modified_by: course.last_modified_by,
-			study_load: course.study_load ? JSON.stringify(course.study_load) : null,
-			literature_required: course.literature_required,
-			literature_recommended: course.literature_recommended,
-			aims_of_the_course_en: course.aims_of_the_course_en,
-			learning_outcomes_en: course.learning_outcomes_en,
-			course_contents_en: course.course_contents_en,
-			special_requirements_en: course.special_requirements_en,
-			literature_required_en: course.literature_required_en,
-			literature_recommended_en: course.literature_recommended_en,
-			prerequisites_en: course.prerequisites_en,
-			recommended_programmes_en: course.recommended_programmes_en,
-			required_work_experience_en: course.required_work_experience_en,
-			last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
-			content_hash_cs: course.content_hash_cs,
-			content_hash_en: course.content_hash_en
+			...buildCoursePayload(course, facultyId),
+			last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -137,7 +208,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	// The unique index (idx_plan_courses_unique_lookup) reduces this to a single-row lock,
 	// but keeping the step outside also ensures a missing study plan row (race with the study
 	// plan scraper) never rolls back the entire course upsert.
-	const planEntryCount = await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.year, course.semester ?? null)
+	const planEntryCount = await syncStudyPlansFromCourse(course.id, course.ident ?? '', extractYear(course.period), extractSemester(course.period))
 
 	await redis.publish(
 		`course:updated:${course.id}`,
@@ -163,15 +234,10 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 async function syncAssessmentMethods(trx: Transaction<Database>, courseId: number, incomingMethods: ScraperInSISCourseAssessmentMethod[]): Promise<void> {
 	await trx.deleteFrom(CourseAssessmentTable._table).where('course_id', '=', courseId).execute()
 
-	const unique = [...new Map(incomingMethods.map(m => [m.method, m])).values()].map(m => ({
-		course_id: courseId,
-		method: m.method,
-		method_en: m.method_en ?? null,
-		weight: m.weight
-	}))
+	const rows = buildAssessmentRows(incomingMethods).map(r => ({ course_id: courseId, ...r }))
 
-	if (unique.length > 0) {
-		await trx.insertInto(CourseAssessmentTable._table).values(unique).execute()
+	if (rows.length > 0) {
+		await trx.insertInto(CourseAssessmentTable._table).values(rows).execute()
 	}
 }
 
@@ -214,16 +280,7 @@ async function syncSlotsForUnit(trx: Transaction<Database>, unitId: number, inco
 	// We already deleted existing slots in the parent function
 
 	if (incomingSlots.length > 0) {
-		const slotRows: NewCourseUnitSlot[] = incomingSlots.map(slot => ({
-			unit_id: unitId,
-			type: slot.type,
-			frequency: slot.frequency,
-			date: slot.date,
-			day: slot.day,
-			time_from: timeToMinutes(slot.time_from),
-			time_to: timeToMinutes(slot.time_to),
-			location: slot.location
-		}))
+		const slotRows: NewCourseUnitSlot[] = incomingSlots.map(slot => ({ unit_id: unitId, ...buildSlotShape(slot) }))
 
 		await trx.insertInto(CourseUnitSlotTable._table).values(slotRows).execute()
 	}

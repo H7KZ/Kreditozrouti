@@ -1,4 +1,3 @@
-import type { InSISDay, InSISSemester } from '@shared/domain/insis'
 import type {
 	ScraperInSISCourse,
 	ScraperInSISCourseAssessmentMethod,
@@ -12,7 +11,6 @@ import type { CheerioAPI } from 'cheerio'
 import * as cheerio from 'cheerio'
 import MarkdownService from '@scraper/Services/MarkdownService'
 import { cleanText, getRowValueCaseInsensitive, getSectionContent, parseMultiLineCell, sanitizeBodyHtml, serializeValue } from '@scraper/Utils/HTMLUtils'
-import { extractSemester, extractYear, parseGroupCode } from '@scraper/Utils/InSISUtils'
 
 export interface ScraperInSISCourseEnFields {
 	aims_of_the_course_en: string | null
@@ -28,7 +26,8 @@ export interface ScraperInSISCourseEnFields {
 
 /**
  * Extracts course data from InSIS syllabus pages.
- * Handles metadata, syllabus content, assessments, and timetable parsing.
+ * Returns raw DOM text only — no parsing, no type coercion, no enum interpretation.
+ * All transformation happens in ScraperResponseInSISCourseJob.
  */
 export default class ExtractInSISCourseService {
 	/**
@@ -53,7 +52,10 @@ export default class ExtractInSISCourseService {
 	 * or its syllabus is not publicly accessible.
 	 */
 	static isNotFound(html: string): boolean {
-		return html.includes('neexistuje nebo jeho sylabus není veřejně přístupný')
+		const $ = cheerio.load(html)
+		return $('div.text')
+			.toArray()
+			.some(el => $(el).text().replace(/\s+/g, ' ').includes('neexistuje nebo jeho sylabus není veřejně přístupný'))
 	}
 
 	/**
@@ -65,13 +67,13 @@ export default class ExtractInSISCourseService {
 
 		const id = this.resolveId($, url)
 		const basicInfo = this.extractBasicInfo($)
-		const semesterInfo = this.extractSemesterAndYear($)
-		const faculty = this.extractFaculty($, semesterInfo.year)
+		const period = this.extractPeriod($)
+		const faculty = this.extractFaculty($)
 		const levelInfo = this.extractLevelAndYear($)
 		const people = this.extractPeople($)
 		const syllabus = this.extractSyllabusContent($)
 		const assessmentMethods = this.extractAssessmentMethods($)
-		const timetable = faculty.is_schedule_publicly_visible ? this.extractTimetable($) : []
+		const timetable = this.extractTimetable($)
 		const plans = this.extractStudyPlans($)
 		const studyLoad = this.extractStudyLoad($)
 		const auditInfo = this.extractAuditInfo($)
@@ -81,7 +83,7 @@ export default class ExtractInSISCourseService {
 			url,
 			url_id: this.extractIdFromUrl(url),
 			...basicInfo,
-			...semesterInfo,
+			period,
 			faculty,
 			...levelInfo,
 			lecturers: people.lecturers,
@@ -122,90 +124,39 @@ export default class ExtractInSISCourseService {
 		const title_cs = getRowValueCaseInsensitive($, 'Název česky:')
 		const title_en = getRowValueCaseInsensitive($, 'Název anglicky:')
 		const title = getRowValueCaseInsensitive($, 'Název v jazyce výuky:')
-
-		const ectsRaw = getRowValueCaseInsensitive($, 'Počet přidělených ECTS kreditů:')
-		const ectsParsed = ectsRaw ? parseInt(ectsRaw.split(' ')[0], 10) : NaN
-		const ects = isNaN(ectsParsed) ? null : ectsParsed
-
-		const mode_of_delivery = getRowValueCaseInsensitive($, 'Forma výuky kurzu:')?.trim().toLowerCase() ?? null
-		const mode_of_completion = getRowValueCaseInsensitive($, 'Forma ukončení kurzu:')?.trim().toLowerCase() ?? null
-
-		const languagesRaw = getRowValueCaseInsensitive($, 'Jazyk výuky:')?.trim().toLowerCase() ?? null
-		const languages = languagesRaw
-			? languagesRaw
-					.split(', ')
-					.map(l => serializeValue(l.trim()))
-					.filter((l): l is string => l !== null)
-			: null
+		const ects = getRowValueCaseInsensitive($, 'Počet přidělených ECTS kreditů:')
+		const mode_of_delivery = getRowValueCaseInsensitive($, 'Forma výuky kurzu:')
+		const mode_of_completion = getRowValueCaseInsensitive($, 'Forma ukončení kurzu:')
+		const languages = getRowValueCaseInsensitive($, 'Jazyk výuky:')
 
 		return { ident, title, title_cs, title_en, ects, mode_of_delivery, mode_of_completion, languages }
 	}
 
-	private static extractSemesterAndYear($: CheerioAPI): { semester: InSISSemester | null; year: number | null } {
-		const periodValue = getRowValueCaseInsensitive($, 'Semestr:')
-		if (!periodValue) return { semester: null, year: null }
-
-		return {
-			semester: extractSemester(periodValue),
-			year: extractYear(periodValue)
-		}
+	private static extractPeriod($: CheerioAPI): string | null {
+		return getRowValueCaseInsensitive($, 'Semestr:')
 	}
 
-	private static extractFaculty($: CheerioAPI, year: number | null): ScraperInSISFaculty {
+	private static extractFaculty($: CheerioAPI): ScraperInSISFaculty {
 		const headerText = $('#titulek h1').text() || ''
-		// Match last parentheses content
 		const bracketMatch = /\(([^)]+)\)\s*$/.exec(headerText)
 
-		if (!bracketMatch) return { ident: null, title: null, is_schedule_publicly_visible: true }
+		if (!bracketMatch) return { ident: null, title: null }
 
-		const facultyIdent = bracketMatch[1].trim().split(' - ')[0]
+		const facultyIdent = bracketMatch[1].replace(/\s+/g, ' ').trim().split(' - ')[0]
 
-		if (!facultyIdent) return { ident: null, title: null, is_schedule_publicly_visible: true }
-
-		let is_schedule_publicly_visible = true
-		if (year !== null && facultyIdent) {
-			if (facultyIdent === 'CTVS' && year >= 2017) is_schedule_publicly_visible = false // PE
-			if (facultyIdent === 'OZS' && year >= 2020) is_schedule_publicly_visible = false
-			if (facultyIdent === 'IOM' && year >= 2021) is_schedule_publicly_visible = false
-			if (facultyIdent === 'CESP' && year >= 2022) is_schedule_publicly_visible = false
-		}
-
-		return { ident: facultyIdent, title: null, is_schedule_publicly_visible }
+		return { ident: facultyIdent || null, title: null }
 	}
 
 	private static extractLevelAndYear($: CheerioAPI) {
-		const levelYearRaw = getRowValueCaseInsensitive($, 'Doporučený typ a ročník studia:')?.trim().toLowerCase() ?? null
-		let level: string | null = null
-		let year_of_study: number | null = null
-
-		const isUndefined = !levelYearRaw || levelYearRaw.includes('obsah této položky nebyl definován')
-
-		if (!isUndefined && levelYearRaw) {
-			const firstPart = levelYearRaw.split(';')[0].trim()
-			const parts = firstPart.split(':')
-
-			if (parts.length > 0) level = serializeValue(parts[0].replace(/\(.*?\)/g, '').trim())
-
-			if (parts.length > 1) {
-				const yearMatch = /\d+/.exec(parts[1])
-				if (yearMatch) year_of_study = parseInt(yearMatch[0], 10)
-			}
-		} else {
-			// Fallback: infer from page header
-			const headerText = $('#titulek h1').text() || ''
-			const typeMatch = /-\s*(mba|kurzy|kurz)\s*\)/i.exec(headerText)
-
-			if (typeMatch) {
-				const typeRaw = typeMatch[1].toLowerCase()
-				if (typeRaw === 'mba') level = 'MBA'
-				else if (typeRaw.includes('kurz')) level = 'kurz'
-			}
+		const raw = getRowValueCaseInsensitive($, 'Doporučený typ a ročník studia:')
+		const isUndefined = !raw || raw.includes('obsah této položky nebyl definován')
+		return {
+			level: isUndefined ? null : raw,
+			year_of_study: isUndefined ? null : raw
 		}
-
-		return { level, year_of_study }
 	}
 
-	private static extractPeople($: CheerioAPI): { lecturers: string[] | null; guarantors: string[] | null } {
+	private static extractPeople($: CheerioAPI): { lecturers: string | null; guarantors: string | null } {
 		const lecturers: string[] = []
 		const guarantors: string[] = []
 		const lecturersCell = $('td')
@@ -213,7 +164,6 @@ export default class ExtractInSISCourseService {
 			.next('td')
 
 		if (lecturersCell.length) {
-			// Try extracting from anchor tags first, splitting guarantors from lecturers
 			lecturersCell.find('a').each((_, el) => {
 				const name = cleanText($(el).text())
 				if (!name) return
@@ -226,7 +176,6 @@ export default class ExtractInSISCourseService {
 				}
 			})
 
-			// Fallback to parsing multi-line cell
 			if (lecturers.length === 0 && guarantors.length === 0) {
 				const cell = lecturersCell.get(0)
 				if (cell) lecturers.push(...parseMultiLineCell($, cell))
@@ -234,8 +183,8 @@ export default class ExtractInSISCourseService {
 		}
 
 		return {
-			lecturers: lecturers.length > 0 ? lecturers : null,
-			guarantors: guarantors.length > 0 ? guarantors : null
+			lecturers: lecturers.length > 0 ? lecturers.join('|') : null,
+			guarantors: guarantors.length > 0 ? guarantors.join('|') : null
 		}
 	}
 
@@ -249,7 +198,6 @@ export default class ExtractInSISCourseService {
 		const special_requirements =
 			getSectionContent($, 'Zvláštní podmínky a podrobnosti:') ?? getRowValueCaseInsensitive($, 'Zvláštní podmínky a podrobnosti:')
 
-		// Literature extraction — split into required and recommended
 		let literature_required: string | null = null
 		let literature_recommended: string | null = null
 		const literatureHeaderRow = $('td')
@@ -260,13 +208,11 @@ export default class ExtractInSISCourseService {
 			const literatureCell = literatureHeaderRow.next('tr').find('td')
 			const rawHtml = literatureCell.html() ?? ''
 
-			// Split on "Doporučená:" label (case-insensitive)
 			const splitIndex = rawHtml.search(/Doporu[cč]en[aá]:/i)
 			if (splitIndex !== -1) {
 				const requiredHtml = rawHtml.slice(0, splitIndex)
 				const recommendedHtml = rawHtml.slice(splitIndex)
 
-				// Strip leading "Základní:" label from required section
 				const requiredStripped = requiredHtml.replace(/Z[aá]kladn[ií]:/i, '').trim()
 
 				const $req = cheerio.load(`<td>${requiredStripped}</td>`)
@@ -278,7 +224,6 @@ export default class ExtractInSISCourseService {
 				literature_required = reqMd && reqMd.trim().length > 0 ? reqMd : null
 				literature_recommended = recMd && recMd.trim().length > 0 ? recMd : null
 			} else {
-				// No split found — treat the whole thing as required
 				const fullMd = MarkdownService.formatCheerioElementToMarkdown(literatureCell)
 				literature_required = fullMd && fullMd.trim().length > 0 ? fullMd : null
 			}
@@ -372,11 +317,10 @@ export default class ExtractInSISCourseService {
 			const valText = cleanText($(cols).last().text())
 
 			if (method && valText && !method.toLowerCase().includes('celkem')) {
-				const weightMatch = /(\d+)/.exec(valText)
 				methods.push({
 					method: serializeValue(method),
 					method_en: null,
-					weight: weightMatch ? parseInt(weightMatch[1], 10) : null
+					weight: serializeValue(valText)
 				})
 			}
 		})
@@ -481,15 +425,11 @@ export default class ExtractInSISCourseService {
 		const [time_from, time_to] = time.includes('-') ? time.split('-').map(t => t.trim()) : ['', '']
 		const isDate = /^\d{1,2}\.\d{1,2}\.\d{4}$/.test(dayOrDate)
 
-		let freq: 'weekly' | 'single' | null = null
-		if (frequency.toLowerCase().includes('každý')) freq = 'weekly'
-		else if (frequency.toLowerCase().includes('jednoráz') || isDate) freq = 'single'
-
 		return {
 			type: serializeValue(type),
-			frequency: isDate ? 'single' : freq,
+			frequency: serializeValue(frequency) || (isDate ? 'single' : null),
 			date: isDate ? serializeValue(dayOrDate) : null,
-			day: !isDate ? (serializeValue(dayOrDate) as InSISDay) : null,
+			day: !isDate ? serializeValue(dayOrDate) : null,
 			time_from: serializeValue(time_from),
 			time_to: serializeValue(time_to),
 			location: serializeValue(location)
@@ -502,11 +442,10 @@ export default class ExtractInSISCourseService {
 
 		if (!match) return { last_modified_by: null, last_modified_date: null }
 
-		const last_modified_by = serializeValue(match[1].trim())
-		const dateParts = match[2].replace(/\s/g, '').split('.')
-		const last_modified_date = dateParts.length === 3 ? `${dateParts[2]}-${dateParts[1].padStart(2, '0')}-${dateParts[0].padStart(2, '0')}` : null
-
-		return { last_modified_by, last_modified_date }
+		return {
+			last_modified_by: serializeValue(match[1].trim()),
+			last_modified_date: serializeValue(match[2].trim())
+		}
 	}
 
 	private static extractStudyLoad($: CheerioAPI): ScraperInSISCourseStudyLoad[] {
@@ -533,11 +472,10 @@ export default class ExtractInSISCourseService {
 
 			if (!activity || activity.toLowerCase().includes('celkem')) return
 
-			const hoursMatch = /(\d+)/.exec(valText)
-			if (hoursMatch) {
+			if (valText) {
 				result.push({
 					activity: serializeValue(activity)!,
-					hours: parseInt(hoursMatch[1], 10)
+					hours: serializeValue(valText)
 				})
 			}
 		})
@@ -547,10 +485,11 @@ export default class ExtractInSISCourseService {
 
 	/**
 	 * Extracts study plan references from the course detail tables.
-	 * Parses the "Fakulta | Kód programu | Forma | Skupina | Období" tables.
+	 * Returns raw group code and raw period text — parsed by the API job.
 	 */
 	private static extractStudyPlans($: CheerioAPI): ScraperInSISCourseStudyPlan[] {
-		const plans: Set<ScraperInSISCourseStudyPlan> = new Set<ScraperInSISCourseStudyPlan>()
+		const seen = new Set<string>()
+		const result: ScraperInSISCourseStudyPlan[] = []
 
 		const tables = $('table.detailni_ramecek').filter((_, el) => {
 			const text = $(el).find('th').text()
@@ -580,40 +519,35 @@ export default class ExtractInSISCourseService {
 					}
 
 					const planIdent = cleanText($(cells[codeIndex]).text())
-					const modeOfStudy = cleanText($(cells[formIndex]).text()) // e.g. "prezenční"
-					const groupCode = cleanText($(cells[groupIndex]).text()) // e.g. "cVM", "hP"
-					const periodRaw = $(cells[periodIndex]).html() // Contains <br>
+					const modeOfStudy = cleanText($(cells[formIndex]).text())
+					const groupCode = cleanText($(cells[groupIndex]).text())
+					const periodRaw = $(cells[periodIndex]).html()
 
 					if (!planIdent || !periodRaw) return
 
-					// Parse group code into Study Plan Category and Group
-					// Use the logic from ExtractInSISStudyPlanService
-					const { group, category } = parseGroupCode(groupCode)
-
-					// Split periods by <br> to create distinct plan entries per semester
 					const periods = periodRaw
 						.split('<br>')
 						.map(p => cleanText(cheerio.load(p).text()))
 						.filter(p => p)
 
-					for (const semester of periods) {
-						if (!semester) continue
+					for (const period of periods) {
+						if (!period) continue
 
-						const plan: ScraperInSISCourseStudyPlan = {
+						const key = `${planIdent}|${period}|${groupCode}|${lastFaculty}`
+						if (seen.has(key)) continue
+						seen.add(key)
+
+						result.push({
 							ident: serializeValue(planIdent),
 							facultyIdent: serializeValue(lastFaculty),
-							semester: extractSemester(serializeValue(semester)),
-							year: extractYear(serializeValue(semester)),
+							period: serializeValue(period),
 							mode_of_study: serializeValue(modeOfStudy),
-							group: group,
-							category: category
-						}
-
-						plans.add(plan)
+							group_code: serializeValue(groupCode)
+						})
 					}
 				})
 		})
 
-		return Array.from(plans)
+		return result
 	}
 }

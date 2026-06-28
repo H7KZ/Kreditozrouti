@@ -7,8 +7,8 @@ and the scraper share identical definitions without circular imports.
 
 ```typescript
 // Within scraper — use the re-export barrel
-import type { ScraperInSISCourse } from '@scraper/types/insis'
-import type { ScraperInSISCourseRequestJob } from '@scraper/types/jobs'
+import type {ScraperInSISCourse} from '@scraper/types/insis'
+import type {ScraperInSISCourseRequestJob} from '@scraper/types/jobs'
 
 // The actual definitions live in:
 //   shared/queue/insis.ts      → scraped data shapes
@@ -64,7 +64,13 @@ type InSISStudyPlanCourseCategory =
 ### `ScraperJob`
 
 ```typescript
-type ScraperJob = 'InSIS:Catalog' | 'InSIS:Course' | 'InSIS:StudyPlans' | 'InSIS:StudyPlan' | 'InSIS:FacultyTimetables' | 'InSIS:FacultyTimetable'
+type ScraperJob =
+	'InSIS:Catalog'
+	| 'InSIS:Course'
+	| 'InSIS:StudyPlans'
+	| 'InSIS:StudyPlan'
+	| 'InSIS:FacultyTimetables'
+	| 'InSIS:FacultyTimetable'
 ```
 
 String discriminant used in both request and response job payloads.
@@ -384,7 +390,7 @@ response jobs but have no corresponding response type for the scheduler trigger 
 ## Group Code Reference
 
 Group codes are two-character (or longer) codes in InSIS that describe how a course fits into a study plan. See
-`scraper/src/Utils/InSISUtils.ts` for the full parsing logic.
+`shared/utils/insis.ts` for the full parsing logic.
 
 | First char | Group                                                |
 |------------|------------------------------------------------------|
