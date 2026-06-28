@@ -4,14 +4,14 @@ import { describe, expect, it } from 'vitest'
 import ExtractInSISFacultyTimetableService from '@scraper/Services/ExtractInSISFacultyTimetableService'
 import { makeFixtureLoaders } from './helpers'
 
-const dir = path.join(import.meta.dirname, 'fixtures/faculty-timetables')
+const dir = path.join(import.meta.dirname, '../../../fixtures/faculty-timetables')
 const { load, expected } = makeFixtureLoaders(dir)
 
 describe('ExtractInSISFacultyTimetableService', () => {
 	describe('extractFaculties', () => {
 		it('index.html', () => {
 			const actual = ExtractInSISFacultyTimetableService.extractFaculties(load('index.html'))
-			expect(actual).toEqual(expected('index.expected.json', actual))
+			expect(actual).toEqual(expected('index.scraper.json', actual))
 		})
 
 		it('returns empty array when no faculty table is found', () => {
@@ -24,7 +24,7 @@ describe('ExtractInSISFacultyTimetableService', () => {
 
 		it.each(fixtures)('%s', file => {
 			const actual = ExtractInSISFacultyTimetableService.extractFacultyTimetable(load(file))
-			expect(actual).toEqual(expected(file.replace('.html', '.expected.json'), actual))
+			expect(actual).toEqual(expected(file.replace('.html', '.scraper.json'), actual))
 		})
 
 		it('returns nulls when page has no schedule rows', () => {
