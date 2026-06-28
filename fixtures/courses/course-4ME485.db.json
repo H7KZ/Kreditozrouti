@@ -1,95 +1,99 @@
 {
-	"course": {
-		"id": 187390,
-		"url": "",
-		"ident": "4ME485",
-		"title": "Design uživatelských rozhraní",
-		"title_cs": "Design uživatelských rozhraní",
-		"title_en": "User Interface Design",
-		"ects": 6,
-		"faculty_id": "FIS",
-		"mode_of_delivery": "prezenční; 2/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
-		"mode_of_completion": "zkouška",
-		"languages": "čeština",
-		"level": "magisterský navazující",
-		"year_of_study": 2,
-		"semester": "ZS",
-		"year": 2023,
-		"lecturers": "Bc. Petr Ševcovic",
-		"prerequisites": "nelze studovat po absolvování 4ME486 a studovat po absolvování 4ME483",
-		"recommended_programmes": "žádné",
-		"required_work_experience": "žádná",
-		"aims_of_the_course": "Cílem předmětu je seznámit studenty s technickými a vizuálními aspekty designu uživatelských rozhraní a webu.",
-		"learning_outcomes": "Po úspěšném absolvování předmětu budou studenti umět:  \n\\- Základy informační architektury uživatelských rozhraní  \n\\- Pojmenovat, definovat a navrhnout UI komponenty  \n\\- Základy estetiky ve vizuálním designu (typografie, barvy)  \n\\- Vytvořit wireframy i interaktivní prototypy rozhraní podle aktuálně platných principů  \n\\- Definovat aspekty Design Operations a proč jsou v design týmech důležité (design systémy a nástroje)  \n\\- Pokročile pracovat s vybraným designovým nástrojem (Figma)",
-		"course_contents": "1\\. Základy UI Designu (teoretická východiska, analýza, uspořádání, konzistence, jednoduchost atd.)  \n2\\. Vizuální design 1 (barva, kompozice, typografie)  \n3\\. Vizuální design 2 (metody vizuální prezentace informací)  \n4\\. Metody vizuální prezentace informací  \n5\\. Přístupnost (překážky, guideliny, nástroje)  \n6\\. Informační architektura a UI komponenty (fotografie, seznamy, tabulky, vizualizace dat atd.)  \n7\\. UI modely (Fitts's law, Hick's law, GOMS, Keystroke-level model)  \n8\\. Platformy (desktop, mobil - iOS, Android, tablet)  \n9\\. Prototypování (nástroje, wireframy, interaktivní prototypy) - 2 přednášky  \n10\\. Design Operations (design systém, optimalizace, nástroje, měření, integrace atd.)  \n11\\. Design Engineering (design fyzických produktů, budov atd.)  \n12\\. Nedigitální a nefyzická rozhraní a uživatelská zkušenost",
-		"special_requirements": "žádné",
-		"guarantors": "Ing. Zdeněk Vondra, Ph.D.",
-		"last_modified_date": "13. 3. 2023",
-		"last_modified_by": "Ing. Tomáš Löster, Ph.D.",
-		"study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na přednáškách\",\"hours\":\"26 h\"},{\"activity\":\"Účast na cvičeních/seminářích/tutoriálech\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"39 h\"},{\"activity\":\"Příprava semestrální práce\",\"hours\":\"26 h\"},{\"activity\":\"Příprava prezentace nebo obhajoby\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na závěrečný test\",\"hours\":\"13 h\"}]",
-		"literature_required": null,
-		"literature_recommended": "MONTEIRO, M. Design a job. A Book Apart, 2012. ISBN 978-1-937557-04-1",
-		"aims_of_the_course_en": null,
-		"learning_outcomes_en": null,
-		"course_contents_en": null,
-		"special_requirements_en": null,
-		"literature_required_en": null,
-		"literature_recommended_en": null,
-		"prerequisites_en": null,
-		"recommended_programmes_en": null,
-		"required_work_experience_en": null,
-		"content_hash_cs": null,
-		"content_hash_en": null
-	},
-	"assessments": [
-		{
-			"method": "Vypracování semestrální práce",
-			"method_en": null,
-			"weight": 50
-		},
-		{
-			"method": "Prezentace nebo obhajoba",
-			"method_en": null,
-			"weight": 20
-		},
-		{
-			"method": "Absolvování závěrečného testu",
-			"method_en": null,
-			"weight": 30
-		}
-	],
-	"timetable": [
-		{
-			"lecturer": "Bc. Petr Ševcovic",
-			"capacity": 21,
-			"note": null,
-			"slots": [
-				{
-					"type": "Přednáška",
-					"frequency": "weekly",
-					"date": null,
-					"day": "Úterý",
-					"time_from": 555,
-					"time_to": 645,
-					"location": "RB 114"
-				}
-			]
-		},
-		{
-			"lecturer": "Bc. Petr Ševcovic",
-			"capacity": 21,
-			"note": null,
-			"slots": [
-				{
-					"type": "Cvičení",
-					"frequency": "weekly",
-					"date": null,
-					"day": "Čtvrtek",
-					"time_from": 555,
-					"time_to": 645,
-					"location": "SB 232"
-				}
-			]
-		}
-	]
+    "course": {
+        "id": 187390,
+        "url": "",
+        "ident": "4ME485",
+        "title": "Design uživatelských rozhraní",
+        "title_cs": "Design uživatelských rozhraní",
+        "title_en": "User Interface Design",
+        "ects": 6,
+        "faculty_id": "FIS",
+        "mode_of_delivery": "prezenční; 2/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+        "mode_of_completion": "zkouška",
+        "languages": "čeština",
+        "level": "magisterský navazující",
+        "year_of_study": 2,
+        "semester": "ZS",
+        "year": 2023,
+        "lecturers": "Bc. Petr Ševcovic",
+        "prerequisites": "nelze studovat po absolvování 4ME486 a studovat po absolvování 4ME483",
+        "recommended_programmes": "žádné",
+        "required_work_experience": "žádná",
+        "aims_of_the_course": "Cílem předmětu je seznámit studenty s technickými a vizuálními aspekty designu uživatelských rozhraní a webu.",
+        "learning_outcomes": "Po úspěšném absolvování předmětu budou studenti umět:  \n\\- Základy informační architektury uživatelských rozhraní  \n\\- Pojmenovat, definovat a navrhnout UI komponenty  \n\\- Základy estetiky ve vizuálním designu (typografie, barvy)  \n\\- Vytvořit wireframy i interaktivní prototypy rozhraní podle aktuálně platných principů  \n\\- Definovat aspekty Design Operations a proč jsou v design týmech důležité (design systémy a nástroje)  \n\\- Pokročile pracovat s vybraným designovým nástrojem (Figma)",
+        "course_contents": "1\\. Základy UI Designu (teoretická východiska, analýza, uspořádání, konzistence, jednoduchost atd.)  \n2\\. Vizuální design 1 (barva, kompozice, typografie)  \n3\\. Vizuální design 2 (metody vizuální prezentace informací)  \n4\\. Metody vizuální prezentace informací  \n5\\. Přístupnost (překážky, guideliny, nástroje)  \n6\\. Informační architektura a UI komponenty (fotografie, seznamy, tabulky, vizualizace dat atd.)  \n7\\. UI modely (Fitts's law, Hick's law, GOMS, Keystroke-level model)  \n8\\. Platformy (desktop, mobil - iOS, Android, tablet)  \n9\\. Prototypování (nástroje, wireframy, interaktivní prototypy) - 2 přednášky  \n10\\. Design Operations (design systém, optimalizace, nástroje, měření, integrace atd.)  \n11\\. Design Engineering (design fyzických produktů, budov atd.)  \n12\\. Nedigitální a nefyzická rozhraní a uživatelská zkušenost",
+        "special_requirements": "žádné",
+        "guarantors": "Ing. Zdeněk Vondra, Ph.D.",
+        "last_modified_date": "13. 3. 2023",
+        "last_modified_by": "Ing. Tomáš Löster, Ph.D.",
+        "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na přednáškách\",\"hours\":\"26 h\"},{\"activity\":\"Účast na cvičeních/seminářích/tutoriálech\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"39 h\"},{\"activity\":\"Příprava semestrální práce\",\"hours\":\"26 h\"},{\"activity\":\"Příprava prezentace nebo obhajoby\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na závěrečný test\",\"hours\":\"13 h\"}]",
+        "literature_required": null,
+        "literature_recommended": "MONTEIRO, M. Design a job. A Book Apart, 2012. ISBN 978-1-937557-04-1",
+        "aims_of_the_course_en": null,
+        "learning_outcomes_en": null,
+        "course_contents_en": null,
+        "special_requirements_en": null,
+        "literature_required_en": null,
+        "literature_recommended_en": null,
+        "prerequisites_en": null,
+        "recommended_programmes_en": null,
+        "required_work_experience_en": null,
+        "blocked_by_course_idents": "[\"4ME483\"]",
+        "excluded_after_course_idents": "[\"4ME486\"]",
+        "concurrent_exclusion_idents": null,
+        "recommended_before_course_idents": null,
+        "content_hash_cs": null,
+        "content_hash_en": null
+    },
+    "assessments": [
+        {
+            "method": "Vypracování semestrální práce",
+            "method_en": null,
+            "weight": 50
+        },
+        {
+            "method": "Prezentace nebo obhajoba",
+            "method_en": null,
+            "weight": 20
+        },
+        {
+            "method": "Absolvování závěrečného testu",
+            "method_en": null,
+            "weight": 30
+        }
+    ],
+    "timetable": [
+        {
+            "lecturer": "Bc. Petr Ševcovic",
+            "capacity": 21,
+            "note": null,
+            "slots": [
+                {
+                    "type": "Přednáška",
+                    "frequency": "weekly",
+                    "date": null,
+                    "day": "Úterý",
+                    "time_from": 555,
+                    "time_to": 645,
+                    "location": "RB 114"
+                }
+            ]
+        },
+        {
+            "lecturer": "Bc. Petr Ševcovic",
+            "capacity": 21,
+            "note": null,
+            "slots": [
+                {
+                    "type": "Cvičení",
+                    "frequency": "weekly",
+                    "date": null,
+                    "day": "Čtvrtek",
+                    "time_from": 555,
+                    "time_to": 645,
+                    "location": "SB 232"
+                }
+            ]
+        }
+    ]
 }

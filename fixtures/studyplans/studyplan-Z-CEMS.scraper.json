@@ -1,465 +1,465 @@
 {
-	"id": -1,
-	"url": "",
-	"ident": "Z-CEMS",
-	"title": "CEMS",
-	"faculty": {
-		"ident": "OZS",
-		"title": "Oddělení zahraničních styků"
-	},
-	"semester": "LS",
-	"year": 2025,
-	"level": "zahraniční studenti",
-	"mode_of_study": "prezenční",
-	"study_length": "1 rok",
-	"courses": [
-		{
-			"id": 88584,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88584;aktualni=1;poc_obdobi=1315",
-			"ident": "3PS670",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 57199,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=57199;aktualni=1;poc_obdobi=1315",
-			"ident": "3IG703",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 61282,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61282;aktualni=1;poc_obdobi=1315",
-			"ident": "3MG633",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 126464,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126464;aktualni=1;poc_obdobi=1315",
-			"ident": "3SG456",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 114906,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114906;aktualni=1;poc_obdobi=1315",
-			"ident": "3SG406",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 106516,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106516;aktualni=1;poc_obdobi=1315",
-			"ident": "2AJ153",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 162120,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=162120;aktualni=1;poc_obdobi=1315",
-			"ident": "3SG846",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 122431,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122431;aktualni=1;poc_obdobi=1315",
-			"ident": "3SG556",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 3363,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3363;aktualni=1;poc_obdobi=1315",
-			"ident": "1BP426",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 57128,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=57128;aktualni=1;poc_obdobi=1315",
-			"ident": "1BP451",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 118626,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118626;aktualni=1;poc_obdobi=1315",
-			"ident": "2MO444",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 34144,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34144;aktualni=1;poc_obdobi=1315",
-			"ident": "2RO313",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 131305,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131305;aktualni=1;poc_obdobi=1315",
-			"ident": "3PS673",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 34174,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34174;aktualni=1;poc_obdobi=1315",
-			"ident": "3LG623",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 98257,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98257;aktualni=1;poc_obdobi=1315",
-			"ident": "3IG705",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 68342,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=68342;aktualni=1;poc_obdobi=1315",
-			"ident": "3LG625",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2492,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2492;aktualni=1;poc_obdobi=1315",
-			"ident": "3PE665",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 98511,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98511;aktualni=1;poc_obdobi=1315",
-			"ident": "4SA615",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 98503,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98503;aktualni=1;poc_obdobi=1315",
-			"ident": "4IT525",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 3572,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3572;aktualni=1;poc_obdobi=1315",
-			"ident": "3LG622",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 131327,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131327;aktualni=1;poc_obdobi=1315",
-			"ident": "3SG417",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 162124,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=162124;aktualni=1;poc_obdobi=1315",
-			"ident": "3SG848",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 75808,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75808;aktualni=1;poc_obdobi=1315",
-			"ident": "3AM595",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2418,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2418;aktualni=1;poc_obdobi=1315",
-			"ident": "3MA624",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 126944,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126944;aktualni=1;poc_obdobi=1315",
-			"ident": "3MA712",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 42411,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=42411;aktualni=1;poc_obdobi=1315",
-			"ident": "3PS663",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 126945,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126945;aktualni=1;poc_obdobi=1315",
-			"ident": "3MA714",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 109696,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109696;aktualni=1;poc_obdobi=1315",
-			"ident": "2MO440",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 3483,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3483;aktualni=1;poc_obdobi=1315",
-			"ident": "1BP425",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 97472,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97472;aktualni=1;poc_obdobi=1315",
-			"ident": "2MO434",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 113867,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113867;aktualni=1;poc_obdobi=1315",
-			"ident": "3MA671",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 162339,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=162339;aktualni=1;poc_obdobi=1315",
-			"ident": "3MG555",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2812,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2812;aktualni=1;poc_obdobi=1315",
-			"ident": "2MO403",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 131307,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131307;aktualni=1;poc_obdobi=1315",
-			"ident": "3MI623",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 68343,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=68343;aktualni=1;poc_obdobi=1315",
-			"ident": "3AM492",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 79717,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79717;aktualni=1;poc_obdobi=1315",
-			"ident": "3LG626",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2823,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2823;aktualni=1;poc_obdobi=1315",
-			"ident": "2NJ403",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 53145,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=53145;aktualni=1;poc_obdobi=1315",
-			"ident": "1FP421",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 71304,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=71304;aktualni=1;poc_obdobi=1315",
-			"ident": "3MA666",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 113758,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113758;aktualni=1;poc_obdobi=1315",
-			"ident": "3MA640",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 131309,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131309;aktualni=1;poc_obdobi=1315",
-			"ident": "3SG416",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 134247,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134247;aktualni=1;poc_obdobi=1315",
-			"ident": "3PO642",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 88444,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88444;aktualni=1;poc_obdobi=1315",
-			"ident": "3MA533",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2415,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2415;aktualni=1;poc_obdobi=1315",
-			"ident": "3MA621",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 95833,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=95833;aktualni=1;poc_obdobi=1315",
-			"ident": "4ST616",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2458,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2458;aktualni=1;poc_obdobi=1315",
-			"ident": "3PA661",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 97806,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97806;aktualni=1;poc_obdobi=1315",
-			"ident": "4IT528",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 103087,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=103087;aktualni=1;poc_obdobi=1315",
-			"ident": "3MG640",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 3308,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3308;aktualni=1;poc_obdobi=1315",
-			"ident": "3PS625",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2508,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2508;aktualni=1;poc_obdobi=1315",
-			"ident": "3PS624",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 34124,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34124;aktualni=1;poc_obdobi=1315",
-			"ident": "3PA667",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 131310,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131310;aktualni=1;poc_obdobi=1315",
-			"ident": "3MG641",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 117951,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=117951;aktualni=1;poc_obdobi=1315",
-			"ident": "3SG408",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 127086,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=127086;aktualni=1;poc_obdobi=1315",
-			"ident": "3SG712",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 138634,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138634;aktualni=1;poc_obdobi=1315",
-			"ident": "3SG835",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2943,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2943;aktualni=1;poc_obdobi=1315",
-			"ident": "4EK602",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 98677,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98677;aktualni=1;poc_obdobi=1315",
-			"ident": "4ST630",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 131777,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131777;aktualni=1;poc_obdobi=1315",
-			"ident": "3SG457",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 61460,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61460;aktualni=1;poc_obdobi=1315",
-			"ident": "1FU491",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 62055,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=62055;aktualni=1;poc_obdobi=1315",
-			"ident": "4ST608",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 113865,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113865;aktualni=1;poc_obdobi=1315",
-			"ident": "3MA669",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 98672,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98672;aktualni=1;poc_obdobi=1315",
-			"ident": "4MM451",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 61360,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61360;aktualni=1;poc_obdobi=1315",
-			"ident": "4SA220",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 79600,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79600;aktualni=1;poc_obdobi=1315",
-			"ident": "1VF462",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		}
-	]
+    "id": -1,
+    "url": "",
+    "ident": "Z-CEMS",
+    "title": "CEMS",
+    "faculty": {
+        "ident": "OZS",
+        "title": "Oddělení zahraničních styků"
+    },
+    "semester": "LS",
+    "year": 2025,
+    "level": "zahraniční studenti",
+    "mode_of_study": "prezenční",
+    "study_length": "1 rok",
+    "courses": [
+        {
+            "id": 88584,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88584;aktualni=1;poc_obdobi=1315",
+            "ident": "3PS670",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 57199,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=57199;aktualni=1;poc_obdobi=1315",
+            "ident": "3IG703",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 61282,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61282;aktualni=1;poc_obdobi=1315",
+            "ident": "3MG633",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 126464,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126464;aktualni=1;poc_obdobi=1315",
+            "ident": "3SG456",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 114906,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114906;aktualni=1;poc_obdobi=1315",
+            "ident": "3SG406",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 106516,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106516;aktualni=1;poc_obdobi=1315",
+            "ident": "2AJ153",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 162120,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=162120;aktualni=1;poc_obdobi=1315",
+            "ident": "3SG846",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 122431,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122431;aktualni=1;poc_obdobi=1315",
+            "ident": "3SG556",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 3363,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3363;aktualni=1;poc_obdobi=1315",
+            "ident": "1BP426",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 57128,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=57128;aktualni=1;poc_obdobi=1315",
+            "ident": "1BP451",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 118626,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=118626;aktualni=1;poc_obdobi=1315",
+            "ident": "2MO444",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 34144,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34144;aktualni=1;poc_obdobi=1315",
+            "ident": "2RO313",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 131305,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131305;aktualni=1;poc_obdobi=1315",
+            "ident": "3PS673",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 34174,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34174;aktualni=1;poc_obdobi=1315",
+            "ident": "3LG623",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 98257,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98257;aktualni=1;poc_obdobi=1315",
+            "ident": "3IG705",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 68342,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=68342;aktualni=1;poc_obdobi=1315",
+            "ident": "3LG625",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2492,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2492;aktualni=1;poc_obdobi=1315",
+            "ident": "3PE665",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 98511,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98511;aktualni=1;poc_obdobi=1315",
+            "ident": "4SA615",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 98503,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98503;aktualni=1;poc_obdobi=1315",
+            "ident": "4IT525",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 3572,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3572;aktualni=1;poc_obdobi=1315",
+            "ident": "3LG622",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 131327,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131327;aktualni=1;poc_obdobi=1315",
+            "ident": "3SG417",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 162124,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=162124;aktualni=1;poc_obdobi=1315",
+            "ident": "3SG848",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 75808,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=75808;aktualni=1;poc_obdobi=1315",
+            "ident": "3AM595",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2418,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2418;aktualni=1;poc_obdobi=1315",
+            "ident": "3MA624",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 126944,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126944;aktualni=1;poc_obdobi=1315",
+            "ident": "3MA712",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 42411,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=42411;aktualni=1;poc_obdobi=1315",
+            "ident": "3PS663",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 126945,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=126945;aktualni=1;poc_obdobi=1315",
+            "ident": "3MA714",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 109696,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109696;aktualni=1;poc_obdobi=1315",
+            "ident": "2MO440",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 3483,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3483;aktualni=1;poc_obdobi=1315",
+            "ident": "1BP425",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 97472,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97472;aktualni=1;poc_obdobi=1315",
+            "ident": "2MO434",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 113867,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113867;aktualni=1;poc_obdobi=1315",
+            "ident": "3MA671",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 162339,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=162339;aktualni=1;poc_obdobi=1315",
+            "ident": "3MG555",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2812,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2812;aktualni=1;poc_obdobi=1315",
+            "ident": "2MO403",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 131307,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131307;aktualni=1;poc_obdobi=1315",
+            "ident": "3MI623",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 68343,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=68343;aktualni=1;poc_obdobi=1315",
+            "ident": "3AM492",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 79717,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79717;aktualni=1;poc_obdobi=1315",
+            "ident": "3LG626",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2823,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2823;aktualni=1;poc_obdobi=1315",
+            "ident": "2NJ403",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 53145,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=53145;aktualni=1;poc_obdobi=1315",
+            "ident": "1FP421",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 71304,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=71304;aktualni=1;poc_obdobi=1315",
+            "ident": "3MA666",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 113758,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113758;aktualni=1;poc_obdobi=1315",
+            "ident": "3MA640",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 131309,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131309;aktualni=1;poc_obdobi=1315",
+            "ident": "3SG416",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 134247,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134247;aktualni=1;poc_obdobi=1315",
+            "ident": "3PO642",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 88444,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=88444;aktualni=1;poc_obdobi=1315",
+            "ident": "3MA533",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2415,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2415;aktualni=1;poc_obdobi=1315",
+            "ident": "3MA621",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 95833,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=95833;aktualni=1;poc_obdobi=1315",
+            "ident": "4ST616",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2458,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2458;aktualni=1;poc_obdobi=1315",
+            "ident": "3PA661",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 97806,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=97806;aktualni=1;poc_obdobi=1315",
+            "ident": "4IT528",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 103087,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=103087;aktualni=1;poc_obdobi=1315",
+            "ident": "3MG640",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 3308,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3308;aktualni=1;poc_obdobi=1315",
+            "ident": "3PS625",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2508,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2508;aktualni=1;poc_obdobi=1315",
+            "ident": "3PS624",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 34124,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=34124;aktualni=1;poc_obdobi=1315",
+            "ident": "3PA667",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 131310,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131310;aktualni=1;poc_obdobi=1315",
+            "ident": "3MG641",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 117951,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=117951;aktualni=1;poc_obdobi=1315",
+            "ident": "3SG408",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 127086,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=127086;aktualni=1;poc_obdobi=1315",
+            "ident": "3SG712",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 138634,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=138634;aktualni=1;poc_obdobi=1315",
+            "ident": "3SG835",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2943,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2943;aktualni=1;poc_obdobi=1315",
+            "ident": "4EK602",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 98677,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98677;aktualni=1;poc_obdobi=1315",
+            "ident": "4ST630",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 131777,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=131777;aktualni=1;poc_obdobi=1315",
+            "ident": "3SG457",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 61460,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61460;aktualni=1;poc_obdobi=1315",
+            "ident": "1FU491",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 62055,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=62055;aktualni=1;poc_obdobi=1315",
+            "ident": "4ST608",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 113865,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=113865;aktualni=1;poc_obdobi=1315",
+            "ident": "3MA669",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 98672,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=98672;aktualni=1;poc_obdobi=1315",
+            "ident": "4MM451",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 61360,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61360;aktualni=1;poc_obdobi=1315",
+            "ident": "4SA220",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 79600,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79600;aktualni=1;poc_obdobi=1315",
+            "ident": "1VF462",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        }
+    ]
 }

@@ -25,6 +25,7 @@ import {
 	StudyPlanCourseTable
 } from '@api/Database/types'
 import { insertFacultiesBatch } from '@api/Jobs/helpers'
+import { parsePrerequisites } from '@api/Services/PrerequisiteParser'
 
 const SEMESTER_RANK: Partial<Record<string, number>> = { LS: 0, ZS: 1 }
 
@@ -56,6 +57,7 @@ function parseLevelAndYear(raw: string | null): { level: string | null; year_of_
 
 export function buildCoursePayload(course: ScraperInSISCourse, facultyId: string | null): Omit<NewCourse, 'last_scraped_at'> {
 	const { level, year_of_study } = parseLevelAndYear(course.level)
+	const parsed = parsePrerequisites(course.prerequisites, course.recommended_programmes)
 	return {
 		id: course.id,
 		url: course.url,
@@ -99,6 +101,10 @@ export function buildCoursePayload(course: ScraperInSISCourse, facultyId: string
 		prerequisites_en: course.prerequisites_en,
 		recommended_programmes_en: course.recommended_programmes_en,
 		required_work_experience_en: course.required_work_experience_en,
+		blocked_by_course_idents: parsed.blocked_by_course_idents ? JSON.stringify(parsed.blocked_by_course_idents) : null,
+		excluded_after_course_idents: parsed.excluded_after_course_idents ? JSON.stringify(parsed.excluded_after_course_idents) : null,
+		concurrent_exclusion_idents: parsed.concurrent_exclusion_idents ? JSON.stringify(parsed.concurrent_exclusion_idents) : null,
+		recommended_before_course_idents: parsed.recommended_before_course_idents ? JSON.stringify(parsed.recommended_before_course_idents) : null,
 		content_hash_cs: course.content_hash_cs,
 		content_hash_en: course.content_hash_en
 	}

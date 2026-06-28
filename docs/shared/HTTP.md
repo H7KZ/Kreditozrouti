@@ -16,6 +16,10 @@ FacultyDTO
 
 CourseDTO
 // all course scalar fields (ident, title_cs, title_en, ects, semester, year, ...)
+// + blocked_by_course_idents: string[] | null
+// + excluded_after_course_idents: string[] | null
+// + concurrent_exclusion_idents: string[] | null
+// + recommended_before_course_idents: string[] | null
 
 CourseUnitSlotDTO
 // id, day, date, time_from (minutes), time_to, location, type

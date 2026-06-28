@@ -171,7 +171,7 @@ export class CourseFacetService {
 				.$if(!!filters.completed_course_idents?.length, q => q.where('c1.ident', 'not in', filters.completed_course_idents!))
 				.groupBy(`c1.${column}`)
 				.orderBy('count', 'desc')
-				.execute()
+				.execute() as unknown as Promise<FacetItem[]>
 		}
 
 		// SLOW PATH: Filters require joins — use the full filter query
@@ -181,7 +181,7 @@ export class CourseFacetService {
 			.where(`c1.${column}`, 'is not', null)
 			.groupBy(`c1.${column}`)
 			.orderBy('count', 'desc')
-			.execute()
+			.execute() as unknown as Promise<FacetItem[]>
 	}
 
 	/**

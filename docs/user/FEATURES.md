@@ -10,6 +10,7 @@ A complete reference for every Kreditožrouti feature. Jump to the section you n
 - [Refresh from InSIS](#refresh-from-insis)
 - [Saved Schedules](#saved-schedules)
 - [Share timetable](#share-timetable)
+- [Prerequisite information](#prerequisite-information)
 - [Mark as completed](#mark-as-completed)
 - [Language and theme](#language-and-theme)
 - [International Student Guide](#international-student-guide)
@@ -58,9 +59,10 @@ Filters are combined — all active filters apply at once. Use **Clear all** in 
 ## Building your timetable
 
 1. Click any course row to expand it
-2. The expanded row shows course metadata (faculty, ECTS, language, category) and a collapsible **Syllabus**
-   section with aims, learning outcomes, course contents, literature, and other fields. When the UI language
-   is set to English and English content is available for that course, the English version is shown.
+2. The expanded row shows course metadata (faculty, ECTS, language, category), **prerequisite chips** (see
+   [Prerequisite information](#prerequisite-information) below), and a collapsible **Syllabus** section with
+   aims, learning outcomes, course contents, literature, and other fields. When the UI language is set to
+   English and English content is available for that course, the English version is shown.
 3. Below the syllabus: all available **unit types** (lecture, exercise, seminar) and their time slots
 4. Click a slot to add it to your timetable
 	- If you already have a unit of the same type selected for this course, it is swapped out automatically
@@ -147,6 +149,28 @@ Access the schedule picker from the **My Timetable** view.
 | **Delete**       | Removes a saved snapshot                                          |
 
 Use this to build "Plan A: all mornings" and "Plan B: Tuesday/Thursday only" side by side, then compare.
+
+---
+
+## Prerequisite information
+
+When a course's InSIS syllabus lists prerequisites, the expanded course row shows them as clickable chips grouped by
+type:
+
+| Label                      | Meaning                                                        | Clickable? |
+|----------------------------|----------------------------------------------------------------|------------|
+| **Required prerequisites** | Courses you must have passed before enrolling                  | Yes        |
+| **Cannot study after**     | Courses after which you may no longer enrol in this course     | Yes        |
+| **Cannot study alongside** | Courses that cannot be taken in the same semester as this one  | No         |
+| **Recommended before**     | Courses suggested as prior study (from recommended programmes) | Yes        |
+
+Clicking a chip sets the course code as the active **Search** filter — useful for quickly checking whether a
+prerequisite is offered this semester.
+
+**Filter effect:** when you activate **Completed courses** filtering (wizard Step 4 or the filter sidebar toggle):
+
+- Courses where you haven't yet completed all **Required prerequisites** are hidden automatically.
+- Courses that fall under **Cannot study after** for any of your completed courses are also hidden.
 
 ---
 

@@ -1,41 +1,98 @@
 {
-	"navigationUrls": [
-		{
-			"texts": ["B0613A140024", "B-AIN1 Aplikovaná informatika", "Čeština", "", "", "-"],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=964;misto_vyuky="
-		},
-		{
-			"texts": ["B0688P140006", "B-DA1 Data Analytics", "Čeština", "", "", "-"],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=1262;misto_vyuky="
-		},
-		{
-			"texts": ["B0588A050002", "B-EDS Economic Data Science", "Angličtina", "", "", "-"],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=1763;misto_vyuky="
-		},
-		{
-			"texts": ["B0619A140001", "B-IMES Informační média a služby", "Čeština", "", "", "-"],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=962;misto_vyuky="
-		},
-		{
-			"texts": ["B0588A050001", "B-MM Matematické metody v ekonomii", "Čeština", "", "", "-"],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=882;misto_vyuky="
-		},
-		{
-			"texts": ["B0688P140003", "B-MVEP1 Multimédia v ekonomické praxi", "Čeština", "", "", "-"],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=963;misto_vyuky="
-		},
-		{
-			"texts": ["DA", "DA Datové analýzy a modelování", "Specializace", ""],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;new_spec=1468;misto_vyuky="
-		},
-		{
-			"texts": ["ED", "ED Ekonomická demografie", "Specializace", ""],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;new_spec=1470;misto_vyuky="
-		},
-		{
-			"texts": ["EO", "EO Ekonometrie a operační výzkum", "Specializace", ""],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;new_spec=1469;misto_vyuky="
-		}
-	],
-	"planUrls": []
+    "navigationUrls": [
+        {
+            "texts": [
+                "B0613A140024",
+                "B-AIN1 Aplikovaná informatika",
+                "Čeština",
+                "",
+                "",
+                "-"
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=964;misto_vyuky="
+        },
+        {
+            "texts": [
+                "B0688P140006",
+                "B-DA1 Data Analytics",
+                "Čeština",
+                "",
+                "",
+                "-"
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=1262;misto_vyuky="
+        },
+        {
+            "texts": [
+                "B0588A050002",
+                "B-EDS Economic Data Science",
+                "Angličtina",
+                "",
+                "",
+                "-"
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=1763;misto_vyuky="
+        },
+        {
+            "texts": [
+                "B0619A140001",
+                "B-IMES Informační média a služby",
+                "Čeština",
+                "",
+                "",
+                "-"
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=962;misto_vyuky="
+        },
+        {
+            "texts": [
+                "B0588A050001",
+                "B-MM Matematické metody v ekonomii",
+                "Čeština",
+                "",
+                "",
+                "-"
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=882;misto_vyuky="
+        },
+        {
+            "texts": [
+                "B0688P140003",
+                "B-MVEP1 Multimédia v ekonomické praxi",
+                "Čeština",
+                "",
+                "",
+                "-"
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;program=963;misto_vyuky="
+        },
+        {
+            "texts": [
+                "DA",
+                "DA Datové analýzy a modelování",
+                "Specializace",
+                ""
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;new_spec=1468;misto_vyuky="
+        },
+        {
+            "texts": [
+                "ED",
+                "ED Ekonomická demografie",
+                "Specializace",
+                ""
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;new_spec=1470;misto_vyuky="
+        },
+        {
+            "texts": [
+                "EO",
+                "EO Ekonometrie a operační výzkum",
+                "Specializace",
+                ""
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1186;typ_ss=5;typ_studia=1;new_spec=1469;misto_vyuky="
+        }
+    ],
+    "planUrls": []
 }
