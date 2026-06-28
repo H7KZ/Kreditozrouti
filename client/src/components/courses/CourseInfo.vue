@@ -5,7 +5,7 @@ import { marked } from 'marked'
 import { useI18n } from 'vue-i18n'
 import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import { useCourseLabels } from '@client/composables'
-import { useCompletedCoursesStore, useCoursesStore } from '@client/stores'
+import { useCompletedCoursesStore, useCoursesStore, useFiltersStore } from '@client/stores'
 import { formatRelativeAge, isCourseStale } from '@client/utils/freshness'
 import IconCircleCheck from '~icons/lucide/circle-check'
 import IconClock from '~icons/lucide/clock'
@@ -19,6 +19,7 @@ const props = defineProps<Props>()
 
 const coursesStore = useCoursesStore()
 const completedCoursesStore = useCompletedCoursesStore()
+const filtersStore = useFiltersStore()
 
 const { locale, t } = useI18n()
 const { getCompletionLabel, getFacultyLabel, getLanguagesLabel, getCategoryLabel, getCourseTitle, getCategoryBadgeClass } = useCourseLabels()
@@ -47,6 +48,20 @@ const syllabusFields = computed((): SyllabusField[] => {
 	]
 	return rows.filter(r => r.value).map(r => ({ key: r.key, label: t(`components.courses.CourseRowExpanded.${r.labelKey}`), value: r.value! }))
 })
+
+const hasPrerequisiteChips = computed(() =>
+	!!(
+		props.course.blocked_by_course_idents?.length ||
+		props.course.excluded_after_course_idents?.length ||
+		props.course.concurrent_exclusion_idents?.length ||
+		props.course.recommended_before_course_idents?.length
+	)
+)
+
+function filterByIdent(ident: string) {
+	filtersStore.filters.idents = [ident]
+	coursesStore.fetchCourses()
+}
 
 function handleToggleCompleted() {
 	coursesStore.toggleCompletedCourse(props.course.ident)
@@ -140,6 +155,56 @@ function handleToggleCompleted() {
 				</li>
 			</ul>
 		</template>
+
+		<!-- Prerequisite chips -->
+		<div v-if="hasPrerequisiteChips" class="mb-4 space-y-2">
+			<template v-if="course.blocked_by_course_idents?.length">
+				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.prereqBlockedBy') }}</p>
+				<div class="flex flex-wrap gap-1.5">
+					<button
+						v-for="ident in course.blocked_by_course_idents"
+						:key="ident"
+						type="button"
+						class="inline-flex cursor-pointer items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700) hover:bg-(--insis-blue)/10 hover:text-(--insis-blue)"
+						@click="filterByIdent(ident)"
+					>{{ ident }}</button>
+				</div>
+			</template>
+			<template v-if="course.excluded_after_course_idents?.length">
+				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.prereqExcludedAfter') }}</p>
+				<div class="flex flex-wrap gap-1.5">
+					<button
+						v-for="ident in course.excluded_after_course_idents"
+						:key="ident"
+						type="button"
+						class="inline-flex cursor-pointer items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700) hover:bg-(--insis-blue)/10 hover:text-(--insis-blue)"
+						@click="filterByIdent(ident)"
+					>{{ ident }}</button>
+				</div>
+			</template>
+			<template v-if="course.concurrent_exclusion_idents?.length">
+				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.prereqConcurrent') }}</p>
+				<div class="flex flex-wrap gap-1.5">
+					<span
+						v-for="ident in course.concurrent_exclusion_idents"
+						:key="ident"
+						class="inline-flex items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700)"
+					>{{ ident }}</span>
+				</div>
+			</template>
+			<template v-if="course.recommended_before_course_idents?.length">
+				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.prereqRecommendedBefore') }}</p>
+				<div class="flex flex-wrap gap-1.5">
+					<button
+						v-for="ident in course.recommended_before_course_idents"
+						:key="ident"
+						type="button"
+						class="inline-flex cursor-pointer items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700) hover:bg-(--insis-blue)/10 hover:text-(--insis-blue)"
+						@click="filterByIdent(ident)"
+					>{{ ident }}</button>
+				</div>
+			</template>
+		</div>
 
 		<!-- Syllabus sections -->
 		<details v-if="syllabusFields.length" class="mb-4 border-t border-(--insis-border-light) pt-3">
