@@ -1,0 +1,79 @@
+{
+    "course": {
+        "id": 213742,
+        "url": "",
+        "ident": "1VF336",
+        "title": "Zdanění příjmů právnických osob",
+        "title_cs": "Zdanění příjmů právnických osob",
+        "title_en": "Income Taxation of Corporations",
+        "ects": 3,
+        "faculty_id": "FFU",
+        "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+        "mode_of_completion": "zkouška",
+        "languages": "čeština",
+        "level": "bakalářský",
+        "year_of_study": 2,
+        "semester": "LS",
+        "year": 2025,
+        "lecturers": "Ing. Savina Finardi, Ph.D.",
+        "prerequisites": "žádné",
+        "recommended_programmes": "žádné",
+        "required_work_experience": "žádná",
+        "aims_of_the_course": "Cílem tohoto kurzu je získat základní poznatky a základní dovednosti z oblasti zdanění příjmů právnických osob v rozsahu nutném pro rozhodovací procesy na mikroekonomické i makroekonomické úrovni s důrazem na současný právní stav v ČR a využitelnost v ekonomické praxi.",
+        "learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n• určit (odhadnout) výši daně z příjmů u daňových rezidentů, jde-li o příjmy z tuzemska a určit způsob zdanění u příjmů ze zahraničí,  \n• aplikovat metody daňové optimalizace v oblasti zdanění příjmů korporací dle současné české legislativy a judikatury,  \n• identifikovat daňové riziko a prezentovat rozbor řešení některých problémů v oblasti zdanění příjmů korporací.",
+        "course_contents": "1\\. Úvod do zdanění právnických osob, poplatníci daně z příjmů právnických osob, daňový režim u veřejně prospěného poplatníka, osvobozené příjmy, spojené osoby, způsob odvození základu daně u daně z příjmů právnických osob (2 týdny)  \n2\\. Dlouhodobý majetek v základu daně (rovnoměrné a zrychlené odpisy, urychlení odpisování v prvním roce, časové odpisy, výkonové odpisy, mimořádné odpisy, technické zhodnocení, zůstatková cena majetku), možnosti daňové optimalizace dlouhodobého majetku (2 týdny)  \n3\\. Finanční majetek a finanční náklady (operativní nájem, finanční leasing, předčasné ukončení finančního leasingu s odkoupením a bez odkoupení předmětu leasingu, cenné papíry v základu daně, úroky v základu daně, test nízké kapitalizace, samostatný základ daně a jeho využití) (1 týden)  \n4\\. Pohledávky a dluhy v základu daně (opravné položky, rezervy, odpis pohledávek, postoupení pohledávek) (1 týden)  \n5\\. Zaměstnanci a zaměstnanecké benefity, daňové dopady na zaměstnance a na zaměstnavatele, daňová optimalizace zaměstnaneckých benefitů, cestovní náhrady zaměstnanců a jejich daňový režim (2 týdny)  \n6\\. Další významné daňově uznatelné i neuznatelné náklady (daně v základu daně, manka a škody, náklady na reprezentaci, výdaje na provoz motorového vozidla, paušální výdaj na dopravu, sankce a obdobná plnění v základu daně) (2 týdny)  \n7\\. Odpočty od základu daně a jejich funkce (daňová ztráta, odpočet na projekty výzkumu a vývoje, odpočet na odborné vzdělávání) slevy na dani a jejich funkce, placení daně, daňové přiznání a další procesní povinnosti (2 týdny)",
+        "special_requirements": "žádné",
+        "guarantors": null,
+        "last_modified_date": "22. 9. 2025",
+        "last_modified_by": "Ing. Jana Víchová",
+        "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na cvičeních/seminářích/tutoriálech\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"13 h\"},{\"activity\":\"Příprava prezentace nebo obhajoby\",\"hours\":\"13 h\"},{\"activity\":\"Příprava na závěrečný test\",\"hours\":\"26 h\"}]",
+        "literature_required": null,
+        "literature_recommended": "JAROŠ, Tomáš. _Daň z příjmů právnických osob v kontextu aktuální judikatury._ Praha: Wolters Kluwer, 2020. ISBN 978-80-7598-821-8.[](https://library.vse.cz/sysno?000678288)",
+        "aims_of_the_course_en": null,
+        "learning_outcomes_en": null,
+        "course_contents_en": null,
+        "special_requirements_en": null,
+        "literature_required_en": null,
+        "literature_recommended_en": null,
+        "prerequisites_en": null,
+        "recommended_programmes_en": null,
+        "required_work_experience_en": null,
+        "content_hash_cs": null,
+        "content_hash_en": null
+    },
+    "assessments": [
+        {
+            "method": "Vypracování semestrální práce",
+            "method_en": null,
+            "weight": 25
+        },
+        {
+            "method": "Prezentace nebo obhajoba",
+            "method_en": null,
+            "weight": 25
+        },
+        {
+            "method": "Absolvování závěrečného testu",
+            "method_en": null,
+            "weight": 50
+        }
+    ],
+    "timetable": [
+        {
+            "lecturer": "Ing. Savina Finardi, Ph.D.",
+            "capacity": 40,
+            "note": null,
+            "slots": [
+                {
+                    "type": "Cvičení",
+                    "frequency": "weekly",
+                    "date": null,
+                    "day": "Středa",
+                    "time_from": 765,
+                    "time_to": 855,
+                    "location": "SB 236"
+                }
+            ]
+        }
+    ]
+}

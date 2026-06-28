@@ -1,0 +1,120 @@
+{
+    "course": {
+        "id": 204382,
+        "url": "",
+        "ident": "2PR443",
+        "title": "Efektivní řešení sporů – simulace soudního řízení, arbitráže a mediace",
+        "title_cs": "Efektivní řešení sporů – simulace soudního řízení, arbitráže a mediace",
+        "title_en": "Effective Dispute Resolution – Moot Court, Mock Arbitration and Mediation",
+        "ects": 3,
+        "faculty_id": "FMV",
+        "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+        "mode_of_completion": "zkouška",
+        "languages": "čeština",
+        "level": "magisterský navazující",
+        "year_of_study": 1,
+        "semester": "LS",
+        "year": 2025,
+        "lecturers": "Ing. Lucie Andreisová, Ph.D.|Mgr. Ing. Jan Levý, Ph.D.|doc. JUDr. Ing. Tomáš Moravec, Ph.D.|Mgr. Ing. Tereza Vaňkátová, Ph.D.",
+        "prerequisites": "žádné",
+        "recommended_programmes": "žádné",
+        "required_work_experience": "žádná",
+        "aims_of_the_course": "Kurz je zaměřen na rozvoj tzv. měkkých dovedností, zejména argumentačních a prezentačních dovedností, týmové práce a aktivního naslouchání prostřednictvím simulace vyjednávání, mediace, arbitráže a soudního řízení. Studentům umožní efektivně aplikovat základní právní koncepty způsobů vymáhání práva v praxi.",
+        "learning_outcomes": "Absolventi kurzu:  \n\\- budou schopni charakterizovat hlavní způsoby řešení sporů, a především posoudit jejich výhody a nevýhody v různých situacích;  \n\\- dokáží před jednáním kriticky analyzovat postavení protistrany (nejen v obchodním sporu), včetně identifikace jejích slabých míst a přípravy na ně;  \n\\- dokáží aplikovat v praxi zásady soudního a rozhodčího řízení a mediace, tj. navrhnout vlastní vyjednávací, mediační a arbitrážní strategii na míru reálným situacím;  \n\\- zdokonalí své komunikační dovednosti a schopnosti týmové práce;  \n\\- dokáží provést kvalifikovaný výběr typu řízení, které by bylo pro řešení konkrétního sporu efektivní;  \n\\- dokáží odhadnout přepokládané náklady u jednotlivých typů řízení a vyhodnotit jejich smysluplnost z pohledu účinného vymáhání práva;  \n\\- dokáží obhájit svoji pozici vůči protistraně v simulovaném vyjednávání / mediaci / arbitráži / soudním řízení a taktéž vyhodnotit vlastní výkon po simulovaných schůzkách s protistranou (protistranami).",
+        "course_contents": "**1.**\n\n**Vyjednávání** (dotace 0/6)\n\na.\n\nÚvod do vyjednávání\n\nb.\n\nVyjednávací strategie\n\nc.\n\nTypy vyjednávání\n\nd.\n\nIdentifikace klíčových aspektů přípravy na úspěšné vyjednávání, včetně strategie vyjednávání a argumentačních klamů (simulační cvičení)\n\ne.\n\n9 tváří vyjednávajících = představení nástroje „Enneagram“ (typologie osobnosti) a jednotlivých enneagramových typů – včetně „sebehodnocení“ a hodnocení ostatních účastníků kurzu\n\n**2.**\n\n**Mediace** (dotace 0/6)\n\na.\n\nMetoda mediace\n\nb.\n\nCharakteristika dobrého mediátora\n\nc.\n\nIdentifikace situací, kdy je mediace jako způsob řešení sporů plně použitelná a především smysluplná\n\nd.\n\nSimulace sporu řešeného mediátorem\n\n**3.**\n\n**Rozhodčí řízení neboli arbitráž** (dotace 0/6)\n\na.\n\nPochopení metody arbitráže se změřením na její odlišnosti oproti soudnímu řízení\n\nb.\n\nRozhodčí smlouva, rozhodčí doložka a její součásti\n\nc.\n\nNávrh rozhodčí doložky ve vztahu ke konkrétní situaci\n\nd.\n\nRozhodčí řízení a rozhodčí nález, výhody rozhodčího řízení\n\ne.\n\nObchodní arbitráž a další typy arbitráže\n\nf.\n\nSimulace sporu řešeného arbitráží\n\n**4.**\n\n**Soudní řízení** (dotace 0/8)\n\na.\n\nZákladní zásady soudního řízení\n\nb.\n\nPříslušnost soudu\n\nc.\n\nŽaloba a její obsah\n\nd.\n\nUnesení břemene tvrzení a důkazního břemene\n\ne.\n\nRozhodnutí soudu (usnesení, rozsudek)\n\nf.\n\nOdvolání a další opravné prostředky\n\ng.\n\nNáklady soudního řízení aneb kolik stojí se soudit?\n\nh.\n\nSimulovaný soudní proces neboli „Moot Court“ a individuální návštěva soudu",
+        "special_requirements": "Docházka na semináře je povinná, o omluvě rozhodne vyučující.",
+        "guarantors": null,
+        "last_modified_date": "5. 1. 2026",
+        "last_modified_by": "Ing. Dominik Proch, Ph.D.",
+        "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na cvičeních/seminářích/tutoriálech\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"28 h\"},{\"activity\":\"Příprava semestrální práce\",\"hours\":\"12 h\"},{\"activity\":\"Příprava prezentace nebo obhajoby\",\"hours\":\"8 h\"},{\"activity\":\"Hodnocení závěrečných projektů (esejí) ostatních účastníků kurzu v Moodle\",\"hours\":\"4 h\"}]",
+        "literature_required": null,
+        "literature_recommended": "RAZ, Tahl; VOSS, Chris. _Nikdy nedělej kompromis, aneb, Vyjednávej tak, jako by ti šlo o život._ \\[Brno\\]: Jan Melvil Publishing, 2016. ISBN 978-80-7555-002-6.[](https://library.vse.cz/sysno?000310119)",
+        "aims_of_the_course_en": null,
+        "learning_outcomes_en": null,
+        "course_contents_en": null,
+        "special_requirements_en": null,
+        "literature_required_en": null,
+        "literature_recommended_en": null,
+        "prerequisites_en": null,
+        "recommended_programmes_en": null,
+        "required_work_experience_en": null,
+        "content_hash_cs": null,
+        "content_hash_en": null
+    },
+    "assessments": [
+        {
+            "method": "Aktivita na přednáškách/cvičeních/seminářích",
+            "method_en": null,
+            "weight": 60
+        },
+        {
+            "method": "Vypracování semestrální práce",
+            "method_en": null,
+            "weight": 15
+        },
+        {
+            "method": "Prezentace nebo obhajoba",
+            "method_en": null,
+            "weight": 10
+        },
+        {
+            "method": "Hodnocení závěrečného projektu (eseje) ze strany ostatních účastníků kurzu v Moodle",
+            "method_en": null,
+            "weight": 15
+        }
+    ],
+    "timetable": [
+        {
+            "lecturer": "Ing. Lucie Andreisová, Ph.D.",
+            "capacity": 25,
+            "note": null,
+            "slots": [
+                {
+                    "type": "Cvičení",
+                    "frequency": "weekly",
+                    "date": "20.02.2026",
+                    "day": null,
+                    "time_from": 555,
+                    "time_to": 750,
+                    "location": "SB 211"
+                },
+                {
+                    "type": "Cvičení",
+                    "frequency": "weekly",
+                    "date": "27.02.2026",
+                    "day": null,
+                    "time_from": 555,
+                    "time_to": 750,
+                    "location": "SB 211"
+                },
+                {
+                    "type": "Cvičení",
+                    "frequency": "weekly",
+                    "date": "06.03.2026",
+                    "day": null,
+                    "time_from": 555,
+                    "time_to": 750,
+                    "location": "SB 211"
+                },
+                {
+                    "type": "Cvičení",
+                    "frequency": "weekly",
+                    "date": "13.03.2026",
+                    "day": null,
+                    "time_from": 555,
+                    "time_to": 750,
+                    "location": "SB 211"
+                },
+                {
+                    "type": "Cvičení",
+                    "frequency": "weekly",
+                    "date": "20.03.2026",
+                    "day": null,
+                    "time_from": 555,
+                    "time_to": 750,
+                    "location": "SB 211"
+                }
+            ]
+        }
+    ]
+}

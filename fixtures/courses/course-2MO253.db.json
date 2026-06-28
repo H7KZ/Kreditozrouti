@@ -1,0 +1,84 @@
+{
+    "course": {
+        "id": 201931,
+        "url": "",
+        "ident": "2MO253",
+        "title": "Supply Chain Management",
+        "title_cs": "Supply Chain Management - anglicky",
+        "title_en": "Supply Chain Management",
+        "ects": 3,
+        "faculty_id": "FMV",
+        "mode_of_delivery": "prezenční; 2/0 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+        "mode_of_completion": "zkouška",
+        "languages": "angličtina",
+        "level": "bakalářský",
+        "year_of_study": 1,
+        "semester": "LS",
+        "year": 2025,
+        "lecturers": "Ing. Jaroslav Halík, MBA, Ph.D.",
+        "prerequisites": "žádné",
+        "recommended_programmes": "žádné",
+        "required_work_experience": "žádná",
+        "aims_of_the_course": "Předmět je úvodem do problematiky supply chain managementu. Je zaměřen na řízení poptávky v rámci dodavatelsko-odběratelských řetězců, problematiku zásobování a logistiky. Zabývá se plánováním a řízením řetězců, využitím informačních technologií, a to jak v globálním prostředí, tak v jednotlivých regionech.",
+        "learning_outcomes": "Po úspěšném absolvování kurzu budou studenti schopni:  \n\\- vysvětlit principy fungování dodavatelsko-odběratelských řetězců,  \n\\- využít základní modely pro řízení zásob a poptávky,  \n\\- popsat hlavní problémy při tvorbě řetězců,  \n\\- implementovat a modelovat základní konfigurace logistických řetězců,  \n\\- vysvětlit smluvní zajištění a faktory ovlivňující obsah smluv v oblasti logistických řetězců,  \n\\- uvést příklady distribučních strategií,  \n\\- pochopit význam informací pro efektivní řízení,  \n\\- identifikovat, vyhodnotit a řídit rizika,  \n\\- vymezit úlohu informačních technologií v oblasti supply chin managementu,  \n  \n\\-",
+        "course_contents": "1\\. Úvod do problematiky supply chain managementu.  \n2\\. Řízení zásob a rizik.  \n3\\. Plánování a koncipování logistických řetězců.  \n4\\. Supply chian managenet.  \n5\\. Význam informací v oblasti supply chain managementu.  \n6\\. Stretegické řízení dodavatelsko-odběratelských řetězců.  \n7\\. Distribuční strategie.  \n8\\. Možnosti využití strategie outsourcingu.  \n9\\. Strategické aliance.  \n10\\. Řízení rizik a operace v rámci řetězců.",
+        "special_requirements": "žádné",
+        "guarantors": null,
+        "last_modified_date": "5. 1. 2026",
+        "last_modified_by": "Ing. Dominik Proch, Ph.D.",
+        "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na cvičeních/seminářích/tutoriálech\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"13 h\"},{\"activity\":\"Příprava prezentace nebo obhajoby\",\"hours\":\"13 h\"},{\"activity\":\"Příprava na závěrečný test\",\"hours\":\"26 h\"}]",
+        "literature_required": "**Základní:**\n\nKAMINSKY, Philip; SIMCHI-LEVI, David; SIMCHI-LEVI, Edith. _Designing and managing the suply chain : concepts, strategies and case studies._ Boston: McGraw-Hill International, 2008. ISBN 978-0-07-110750-1.[](https://library.vse.cz/sysno?000159391)",
+        "literature_recommended": null,
+        "aims_of_the_course_en": null,
+        "learning_outcomes_en": null,
+        "course_contents_en": null,
+        "special_requirements_en": null,
+        "literature_required_en": null,
+        "literature_recommended_en": null,
+        "prerequisites_en": null,
+        "recommended_programmes_en": null,
+        "required_work_experience_en": null,
+        "content_hash_cs": null,
+        "content_hash_en": null
+    },
+    "assessments": [
+        {
+            "method": "Aktivita na přednáškách/cvičeních/seminářích",
+            "method_en": null,
+            "weight": 20
+        },
+        {
+            "method": "Vypracování semestrální práce",
+            "method_en": null,
+            "weight": 20
+        },
+        {
+            "method": "Prezentace nebo obhajoba",
+            "method_en": null,
+            "weight": 10
+        },
+        {
+            "method": "Absolvování závěrečného testu",
+            "method_en": null,
+            "weight": 50
+        }
+    ],
+    "timetable": [
+        {
+            "lecturer": "Ing. Jaroslav Halík, MBA, Ph.D.",
+            "capacity": 25,
+            "note": null,
+            "slots": [
+                {
+                    "type": "Přednáška",
+                    "frequency": "weekly",
+                    "date": null,
+                    "day": "Čtvrtek",
+                    "time_from": 975,
+                    "time_to": 1065,
+                    "location": "RB 207"
+                }
+            ]
+        }
+    ]
+}

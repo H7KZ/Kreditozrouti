@@ -58,7 +58,7 @@ export function buildCoursePayload(course: ScraperInSISCourse, facultyId: string
 		title: course.title,
 		title_cs: course.title_cs,
 		title_en: course.title_en,
-		ects: course.ects != null ? parseFloat(course.ects) : null,
+		ects: course.ects != null ? (v => (Number.isNaN(v) ? null : v))(parseFloat(course.ects)) : null,
 		faculty_id: facultyId,
 		mode_of_delivery: course.mode_of_delivery,
 		mode_of_completion: course.mode_of_completion,

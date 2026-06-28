@@ -1,0 +1,69 @@
+{
+    "course": {
+        "id": 204661,
+        "url": "",
+        "ident": "22F201",
+        "title": "Zahraniční rozvojová stáž / Development Internship Abroad",
+        "title_cs": "Zahraniční rozvojová stáž",
+        "title_en": "Development Internship Abroad",
+        "ects": 6,
+        "faculty_id": "FMV",
+        "mode_of_delivery": "prezenční; 0/4 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+        "mode_of_completion": "zkouška",
+        "languages": "čeština|angličtina",
+        "level": "bakalářský",
+        "year_of_study": 2,
+        "semester": "LS",
+        "year": 2025,
+        "lecturers": null,
+        "prerequisites": "žádné",
+        "recommended_programmes": "žádné",
+        "required_work_experience": "Stáž v délce 6-8 týdnu z nabídky Global Citizen program AIESEC.",
+        "aims_of_the_course": "Předmět má umožnit studentům bakalářského studia získat mezinárodní a multikulturní zkušenost absolvováním krátkodobé stáže v zahraničí a tím je zdokonalit v týmové práci, komunikaci v zahraničním prostředí a umožnit jim získat přehled o globálních i společenských problémech ve světě.",
+        "learning_outcomes": "Po úspěšném absolvování budou studenti:  \n\\- mít větší přehled o reáliích země, kde byla stáž realizována,  \n\\- budou schopni adekvátně přizpůsobovat svůj styl komunikace s ohledem na národnost,  \n\\- budou schopni prezentovat své zkušenosti, zemi či stáž zahrnující subjektivní i objektivní úhel pohledu,  \n\\- budou schopni zkombinovat teoretické poznatky s konkrétní zkušeností získanou na stáži.",
+        "course_contents": "**1.**\n\n**Organizační pokyny** (dotace 0/0)\n\na.\n\nPo úspěšném absolvování výběrového řízení AIESEC a výběru stáže informuje student proděkana pro pedagogickou činnost o svém úmyslu nechat si uznat stáž v rámci předmětu 22F201;\n\nb.\n\nProděkan pro pedagogickou činnost určí garanta stáže, se kterým by se měl student ještě před odjezdem na stáž sejít a prodiskutovat vhodné zaměření svého semestrálního projektu;\n\n**2.**\n\n**Průběh stáže** (dotace 0/0)\n\na.\n\nÚčast na zahraniční stáži dle nabídky v celosvětové AIESEC databázi stáží. Aktivní zapojení a účast na přidělené zodpovědnosti v rámci projektu praxe. Komunikace po celou dobu v angličtině nebo dodatečném jazyce (podle výběru praxe).\n\nb.\n\nV průběhu stáže komunikuje student se svým garantem ohledně semestrálního projektu;\n\nc.\n\nStudent sbírá podklady pro semestrální projekt a průběžně pracuje na jeho konceptu;\n\n**3.**\n\n**Zápis předmětu** (dotace 0/0)\n\na.\n\nStáž probíhá mimo období semestru, zpravidla v lednu-únoru a květnu-září;\n\nb.\n\nPo návratu ze stáže resp. před začátkem následujícího semestru odevzdá student proděkanovi pro pedagogickou činnost potvrzení o absolvování stáže a její popis;\n\nc.\n\nStudentovi je proděkanem pro pedagogickou činnost zapsán předmět 22F201 s určeným garantem;\n\n**4.**\n\n**Projekt stáže** (dotace 0/0)\n\na.\n\nRozsah minimálně 20 stran stati;\n\nb.\n\nShrnuje a rozvíjí zejména praktické poznatky získané v průběhu stáže;\n\nc.\n\nFormální požadavky (formát, citace aj.) odpovídají požadavkům kladeným na bakalářské práce;\n\n**5.**\n\n**Závěrečné hodnocení a obhajoba** (dotace 0/0)\n\na.\n\nGarant stanoví termín pro odevzdání semestrálního projektu a otevře odevzdávárnu v předmětu 22F201;\n\nb.\n\nObhajoba semestrálního projektu za účasti garanta a dalšího akademického pracovníka;\n\nc.\n\nDo zkušební zprávy je udělena známka za předmět 22F201.",
+        "special_requirements": "žádné",
+        "guarantors": "Ing. Ondřej Sankot, Ph.D.",
+        "last_modified_date": "5. 1. 2026",
+        "last_modified_by": "Ing. Dominik Proch, Ph.D.",
+        "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Příprava semestrální práce\",\"hours\":\"56 h\"},{\"activity\":\"Zapojení do projektu\",\"hours\":\"100 h\"}]",
+        "literature_required": null,
+        "literature_recommended": "AIESEC international: XPP- Exchange Program Policies, Rotterdam 2011",
+        "aims_of_the_course_en": null,
+        "learning_outcomes_en": null,
+        "course_contents_en": null,
+        "special_requirements_en": null,
+        "literature_required_en": null,
+        "literature_recommended_en": null,
+        "prerequisites_en": null,
+        "recommended_programmes_en": null,
+        "required_work_experience_en": null,
+        "content_hash_cs": null,
+        "content_hash_en": null
+    },
+    "assessments": [
+        {
+            "method": "Obhajoba semestrální práce",
+            "method_en": null,
+            "weight": 100
+        }
+    ],
+    "timetable": [
+        {
+            "lecturer": "-",
+            "capacity": 0,
+            "note": null,
+            "slots": [
+                {
+                    "type": "Cvičení",
+                    "frequency": "weekly",
+                    "date": null,
+                    "day": "Pondělí",
+                    "time_from": 450,
+                    "time_to": 540,
+                    "location": "??"
+                }
+            ]
+        }
+    ]
+}

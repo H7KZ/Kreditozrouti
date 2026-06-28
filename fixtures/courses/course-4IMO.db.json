@@ -1,0 +1,52 @@
+{
+    "course": {
+        "id": 187124,
+        "url": "",
+        "ident": "4IMO",
+        "title": "Informační management",
+        "title_cs": "Informační management",
+        "title_en": "Information Management",
+        "ects": 12,
+        "faculty_id": "FIS",
+        "mode_of_delivery": "žádná",
+        "mode_of_completion": "zkouška",
+        "languages": "čeština",
+        "level": null,
+        "year_of_study": null,
+        "semester": "ZS",
+        "year": 2023,
+        "lecturers": "prof. Ing. Petr Doucek, CSc.|Mgr. Ing. Tomáš Sigmund, Ph.D.|doc. Ing. Vlasta Svatá, CSc.",
+        "prerequisites": "nelze studovat po absolvování IM2_2 nebo nelze studovat po absolvování 4ODP",
+        "recommended_programmes": "žádné",
+        "required_work_experience": "žádná",
+        "aims_of_the_course": "Státní závěrečná zkouška je komplexním ověřením schopnosti samostatně vypracovat v písemné podobě odbornou práci na dané téma systematickým a nezávislým způsobem a současně komplexním ověřením získaných znalostí v daném studijním oboru.",
+        "learning_outcomes": "Úspěšným absolvováním studenti prokáží schopnost samostatně zpracovat předložené téma z daného oboru a vyjadřovat své myšlenky písemně a ústně, předepsanou formou a v jasné struktuře. Současně prokáží, že jsou schopni identifikovat klíčové poznatky, klást je do vzájemné souvislosti a aplikovat je na řešení reálných problémů.",
+        "course_contents": "Státní závěrečná zkouška začíná obhajobou diplomové práce, v jejímž rámci student prezentuje předmět a výsledky své diplomové práce, následuje hodnocení diplomové práce vedoucím a oponenty práce a student má následně možnost se k hodnocení vyjádřit a také zodpovídá doplňující otázky. Na obhajobu diplomové práce navazuje ověřování znalostí ze studijního oboru formou odborné rozpravy. V rámci odborné rozpravy je ověřováno, zda znalosti studenta odpovídají profilu absolventa studijního oboru a současně zda je student schopen propojovat získané znalosti (zejména z okruhů uvedených níže) s tématem své diplomové práce nebo mezi sebou navzájem a aplikovat je na řešení praktických problémů v oblastech jeho budoucího uplatnění.  \n  \nStátní závěrečná zkouška bude v rámci odborné rozpravy ověřovat znalosti a jejich vztahy zejména z následujících okruhů:  \n\\- Informační management (koncept, komponenty, vazby na cíle organizace, organizační zabezpečení)  \n  \n\\- Informační společnost (vymezení, instituce, klasifikace informací, informační společnosti - koncepce rozvoje elektronizace české společnosti, způsoby jejího měření, legislativa české republiky a EU, příklady jiných mezinárodních právních regulací s dopadem na řízení podnikové informatiky)  \n  \n\\- Analýza podnikových procesů a jejich optimalizace (způsoby a důvody procesní analýza, nástroje, notace, úrovně zralosti procesů)  \n  \n\\- Referenční modely řízení IS/IT (COBIT, ITIL, EGIT, ITSM, principy, rozdíly, způsoby využívání)  \nMěření podnikové informatiky (druhy cílů a druhy ukazatelů /metrik, postavení metrik v referenčních modelech řízení IS/IT, SLA – náležitosti, příklad SLA pro řízení podnikové informatiky, paradox produktivity a zavedení ICT v organizacích)  \n  \n\\- Etika a motivace v organizaci (zájmové skupiny, etický problém a rozhodování, organizační faktory ovlivňující etické chování, předměty společenské odpovědnosti organizace)  \n  \n\\- ICT inovace a sociální konstruktivismus (vymezení sociálního konstruktivismu; souvislost sociálního konstruktivismu s akceptací a adopcí ICT na organizační či společenské úrovni v čase; uplatnění pohledu sociálního konstruktivismu v teorii Social construction of technology \\[SCOT\\] v souvislosti s technickou inovací)  \n  \n\\- Sociální aspekty ovlivňující zavádění ICT v organizaci (potřeby, zájmy, hodnoty, postoje, normy a jejich akcelerační či inhibiční vliv na zavádění ICT, respektive fungování informačního systému v organizaci; kolektivní akce sociálních skupin; rezistence sociálních skupin při zavádění ICT)  \n  \n\\- Sociální a technický determinismus, sociotechnický přístup (rozdíly v chápání role ICT v organizaci u sociálního a technického determinismu; sociotechnický přístup a jeho přínos pro management organizace; tradice a rozvoj sociotechnického výzkumu v západní Evropě)  \n  \n\\- Paradox produktivity a zavádění ICT v organizacích (vysvětlete tzv. Solow Computer Paradox, jak zavádění ICT souvisí s produktivitou práce v organizacích; souvislost paradoxu produktivity s nástupem nových generací lidí)  \n  \n\\- Návrh a výzkum artefaktů založených na ICT (metody pro návrh řešení problémového kontextu; role kvantitativního a kvalitativního výzkumu v návrhově orientovaném výzkumu informačních systémů; obecné důvody realizace vědeckého a profesního výzkumu sociotechnických systémů)  \n  \n\\- Základní principy ujištění/auditu informačního systému (vývoj auditu, komponenty, profesní regulace, druhy ujištění)  \n  \n\\- COBIT jako metodický rámec pro Enterprise Governance of IT-EGIT (principy, koncepce sady, vysvětlení základních pojmů, způsob popisu „governance“ and „management“ procesů)  \n  \n\\- Obecný postup ujištění/auditu informačního systému (etapy, vstupy, výstupy, náležitosti auditorské zprávy)  \n  \n\\- Nástroje a metody používané při ujištění/auditu (hodnocení způsobilosti a zralosti IT procesů, řízení rizik)  \n  \n\\- Kontrolní systémy organizací (druhy IT kontrol a příklady, audit IT jako součást finančního auditu)  \n  \n\\- Rizika spojená s projektovým řízením a vysvětlení jeho trendů (IT Project Governance, rozvoj metodik z různých hledisek – předmět metodiky, míra účasti zákazníků, škálování metodik, cloud computing)  \n  \n\\- Architektury podnikových informačních systémů (klasické rámce pro podnikovou architekturu, vývoj architektur, C/S architektura, SOA, API management)  \n  \n\\- Trendy ve vývoji ERP systémů (technická integrace aplikací, inteligentní ERP, RPA jako součást ERP, block chain, Enterprise Digital Assistent)  \n  \n\\- Modely, smlouvy a regulace jako součást projektů implementace/upgradů ERP systémů (nabídkové a poptávkové řízení, druhy modelů a jejich cíle, druhy smluv a jejich náležitosti)  \nPrimární cíle při zajištění digitálních stop (způsoby a nástroje jak získat čitelná a použitelná data)  \n  \n\\- Priority při zajišťování stop (volatilita paměťového média, pořadí a specifika zajištění: operační paměť, síťový provoz, aplikační provozní data, cloudové služby, paměťová média)  \n  \n\\- Základní metody používané pro obnovu a získání dat a jejich rozdíly (Obnova dat pomocí alokační tabulky, Data Carving)  \n  \n\\- Kryptografie (symetrická a asymetrická šifra, elektronický podpis, hash, fuzzy hash)  \nChain of custody a jeho význam (důvody jeho vzniku, účel,  \n  \n\\- ISMS – vymezení, historie, komponenty, nasazení v současné podnikové praxi, analýza riziki, BIA, legislativní rámec.",
+        "special_requirements": "Informační management",
+        "guarantors": null,
+        "last_modified_date": "13. 3. 2023",
+        "last_modified_by": "Ing. Tomáš Löster, Ph.D.",
+        "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Příprava na závěrečnou ústní zkoušku\",\"hours\":\"312 h\"}]",
+        "literature_required": null,
+        "literature_recommended": "PADRTA Aleš. Forenzní analýza digitálních dat. On-line dokument - https://docplayer.cz/194786379-Forenzni-analyza-digitalnich-dat.html",
+        "aims_of_the_course_en": null,
+        "learning_outcomes_en": null,
+        "course_contents_en": null,
+        "special_requirements_en": null,
+        "literature_required_en": null,
+        "literature_recommended_en": null,
+        "prerequisites_en": null,
+        "recommended_programmes_en": null,
+        "required_work_experience_en": null,
+        "content_hash_cs": null,
+        "content_hash_en": null
+    },
+    "assessments": [
+        {
+            "method": "Absolvování závěrečné ústní zkoušky",
+            "method_en": null,
+            "weight": 100
+        }
+    ],
+    "timetable": []
+}
