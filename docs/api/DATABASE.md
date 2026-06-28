@@ -39,7 +39,11 @@ auto-migrations, and no relationship tracking. You write SQL via a typed builder
 | `semester`           | `enum('ZS','LS')` nullable          |                                                 |
 | `year`               | `int` nullable                      | Starting year of academic year                  |
 | `lecturers`          | `text` nullable                     | **Pipe-delimited**                              |
-| Long-text fields     | `text` nullable                     | `prerequisites`, `aims_of_the_course`, etc.     |
+| Long-text fields                    | `text` nullable  | `prerequisites`, `aims_of_the_course`, etc.                                       |
+| `blocked_by_course_idents`          | `json` nullable  | Parsed from `prerequisites` — courses that must be passed first (`string[]`)      |
+| `excluded_after_course_idents`      | `json` nullable  | Parsed from `prerequisites` — courses after which this one cannot be taken        |
+| `concurrent_exclusion_idents`       | `json` nullable  | Parsed from `prerequisites` — courses that cannot be taken alongside this one     |
+| `recommended_before_course_idents`  | `json` nullable  | Parsed from `recommended_programmes` — courses recommended as prior study         |
 
 **Pipe-delimited fields:** `languages` and `lecturers` are stored as `|`-separated strings and parsed in the service
 layer. This avoids a separate join table for what are effectively display strings.
