@@ -1,14 +1,13 @@
-import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis.js'
+import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis.js'
 
 export interface ScraperInSISFaculty {
 	ident: string | null
 	title: string | null
-	is_schedule_publicly_visible: boolean
 }
 
 export interface ScraperInSISCourseStudyLoad {
 	activity: string
-	hours: number
+	hours: string | null
 }
 
 export interface ScraperInSISCatalog {
@@ -23,17 +22,16 @@ export interface ScraperInSISCourse {
 	title: string | null
 	title_cs: string | null
 	title_en: string | null
-	ects: number | null
+	ects: string | null
 	faculty: ScraperInSISFaculty | null
 	mode_of_delivery: string | null
 	mode_of_completion: string | null
-	languages: string[] | null
+	languages: string | null
 	level: string | null
-	year_of_study: number | null
-	semester: InSISSemester | null
-	year: number | null
-	lecturers: string[] | null
-	guarantors: string[] | null
+	year_of_study: string | null
+	period: string | null
+	lecturers: string | null
+	guarantors: string | null
 	prerequisites: string | null
 	recommended_programmes: string | null
 	required_work_experience: string | null
@@ -65,7 +63,7 @@ export interface ScraperInSISCourse {
 export interface ScraperInSISCourseAssessmentMethod {
 	method: string | null
 	method_en: string | null
-	weight: number | null
+	weight: string | null
 }
 
 export interface ScraperInSISCourseTimetableUnit {
@@ -77,9 +75,9 @@ export interface ScraperInSISCourseTimetableUnit {
 
 export interface ScraperInSISCourseTimetableSlot {
 	type: string | null
-	frequency: 'weekly' | 'single' | null
+	frequency: string | null
 	date: string | null
-	day: InSISDay | null
+	day: string | null
 	time_from: string | null
 	time_to: string | null
 	location: string | null
@@ -88,11 +86,9 @@ export interface ScraperInSISCourseTimetableSlot {
 export interface ScraperInSISCourseStudyPlan {
 	ident: string | null
 	facultyIdent: string | null
-	semester: InSISSemester | null
-	year: number | null
+	period: string | null
 	mode_of_study: string | null
-	group: InSISStudyPlanCourseGroup
-	category: InSISStudyPlanCourseCategory
+	group_code: string | null
 }
 
 export interface ScraperInSISStudyPlan {
