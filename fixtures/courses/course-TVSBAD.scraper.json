@@ -1,63 +1,63 @@
 {
-	"id": 216142,
-	"url": "",
-	"url_id": null,
-	"ident": "TVSBAD",
-	"title": "Badminton",
-	"title_cs": "Badminton",
-	"title_en": "Badminton",
-	"ects": "0 (1 ECTS kredit = 26 hodin studijní zátěže)",
-	"mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
-	"mode_of_completion": "zápočet",
-	"languages": "čeština",
-	"period": "LS 2025/2026",
-	"faculty": {
-		"ident": "CTVS",
-		"title": null
-	},
-	"level": "bakalářský (první cyklus): 1",
-	"year_of_study": "bakalářský (první cyklus): 1",
-	"lecturers": null,
-	"guarantors": "Mgr. Jan Kodejška, Ph.D.",
-	"prerequisites": "žádné",
-	"recommended_programmes": "žádné",
-	"required_work_experience": "žádná",
-	"aims_of_the_course": "Výuka předmětu badminton je zaměřena u začínajících hráčů na získání základních teoretických  \nznalostí včetně pravidel a taktiky hry a základů technických dovedností, u pokročilých hráčů pak na upevnění a rozvoj technicko - taktických prvků této výrazně individuální hry.",
-	"learning_outcomes": "Po úspěšném absolvování předmětu budou studenti schopni samostatné rekreační hry se znalostí  \nzákladů techniky, taktiky a pravidel badmintonu stejně jako pravidel údržby a péče o sportovní  \nvybavení a zařízení.",
-	"course_contents": "1\\. základy pravidel hry  \n2\\. technicko - taktického pojetí hry  \n3\\. péče o sportovní zařízení - údržba kurtů  \n4\\. sportovní vybavení - obuv, rakety, míče, výplet",
-	"special_requirements": "žádné",
-	"literature_required": null,
-	"literature_recommended": null,
-	"assessment_methods": [
-		{
-			"method": "Aktivita na přednáškách/cvičeních/seminářích",
-			"method_en": null,
-			"weight": "100 %"
-		}
-	],
-	"timetable": [],
-	"study_plans": [],
-	"study_load": [
-		{
-			"activity": "Druh",
-			"hours": "Prezenční studium"
-		},
-		{
-			"activity": "Účast na cvičeních/seminářích/tutoriálech",
-			"hours": "26 h"
-		}
-	],
-	"last_modified_date": "6. 2. 2026",
-	"last_modified_by": "Mgr. Jan Kodejška, Ph.D.",
-	"aims_of_the_course_en": null,
-	"learning_outcomes_en": null,
-	"course_contents_en": null,
-	"special_requirements_en": null,
-	"literature_required_en": null,
-	"literature_recommended_en": null,
-	"prerequisites_en": null,
-	"recommended_programmes_en": null,
-	"required_work_experience_en": null,
-	"content_hash_cs": null,
-	"content_hash_en": null
+    "id": 216142,
+    "url": "",
+    "url_id": null,
+    "ident": "TVSBAD",
+    "title": "Badminton",
+    "title_cs": "Badminton",
+    "title_en": "Badminton",
+    "ects": "0 (1 ECTS kredit = 26 hodin studijní zátěže)",
+    "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+    "mode_of_completion": "zápočet",
+    "languages": "čeština",
+    "period": "LS 2025/2026",
+    "faculty": {
+        "ident": "CTVS",
+        "title": null
+    },
+    "level": "bakalářský (první cyklus): 1",
+    "year_of_study": "bakalářský (první cyklus): 1",
+    "lecturers": null,
+    "guarantors": "Mgr. Jan Kodejška, Ph.D.",
+    "prerequisites": "žádné",
+    "recommended_programmes": "žádné",
+    "required_work_experience": "žádná",
+    "aims_of_the_course": "Výuka předmětu badminton je zaměřena u začínajících hráčů na získání základních teoretických  \nznalostí včetně pravidel a taktiky hry a základů technických dovedností, u pokročilých hráčů pak na upevnění a rozvoj technicko - taktických prvků této výrazně individuální hry.",
+    "learning_outcomes": "Po úspěšném absolvování předmětu budou studenti schopni samostatné rekreační hry se znalostí  \nzákladů techniky, taktiky a pravidel badmintonu stejně jako pravidel údržby a péče o sportovní  \nvybavení a zařízení.",
+    "course_contents": "1\\. základy pravidel hry  \n2\\. technicko - taktického pojetí hry  \n3\\. péče o sportovní zařízení - údržba kurtů  \n4\\. sportovní vybavení - obuv, rakety, míče, výplet",
+    "special_requirements": "žádné",
+    "literature_required": null,
+    "literature_recommended": null,
+    "assessment_methods": [
+        {
+            "method": "Aktivita na přednáškách/cvičeních/seminářích",
+            "method_en": null,
+            "weight": "100 %"
+        }
+    ],
+    "timetable": [],
+    "study_plans": [],
+    "study_load": [
+        {
+            "activity": "Druh",
+            "hours": "Prezenční studium"
+        },
+        {
+            "activity": "Účast na cvičeních/seminářích/tutoriálech",
+            "hours": "26 h"
+        }
+    ],
+    "last_modified_date": "6. 2. 2026",
+    "last_modified_by": "Mgr. Jan Kodejška, Ph.D.",
+    "aims_of_the_course_en": null,
+    "learning_outcomes_en": null,
+    "course_contents_en": null,
+    "special_requirements_en": null,
+    "literature_required_en": null,
+    "literature_recommended_en": null,
+    "prerequisites_en": null,
+    "recommended_programmes_en": null,
+    "required_work_experience_en": null,
+    "content_hash_cs": null,
+    "content_hash_en": null
 }

@@ -1,129 +1,129 @@
 {
-	"id": -1,
-	"url": "",
-	"ident": "D-MME",
-	"title": "Management a manažerská ekonomie",
-	"faculty": {
-		"ident": "FPH",
-		"title": "Fakulta podnikohospodářská"
-	},
-	"semester": "LS",
-	"year": 2025,
-	"level": "doktorský",
-	"mode_of_study": "prezenční",
-	"study_length": "4 roky",
-	"courses": [
-		{
-			"id": 171890,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=171890;aktualni=1;poc_obdobi=1158",
-			"ident": "3MOCZ",
-			"group": "faculty_specific",
-			"category": "state_exam"
-		},
-		{
-			"id": 156107,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=156107;aktualni=1;poc_obdobi=1158",
-			"ident": "3ODPCZ",
-			"group": "faculty_specific",
-			"category": "state_exam"
-		},
-		{
-			"id": 155953,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155953;aktualni=1;poc_obdobi=1158",
-			"ident": "3CV901",
-			"group": "field_specific_bachelor",
-			"category": "compulsory"
-		},
-		{
-			"id": 155959,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155959;aktualni=1;poc_obdobi=1158",
-			"ident": "3CV903",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155958,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155958;aktualni=1;poc_obdobi=1158",
-			"ident": "3CV902",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155964,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155964;aktualni=1;poc_obdobi=1158",
-			"ident": "3HR911",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155969,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155969;aktualni=1;poc_obdobi=1158",
-			"ident": "3MA911",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155963,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155963;aktualni=1;poc_obdobi=1158",
-			"ident": "3AM911",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155967,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155967;aktualni=1;poc_obdobi=1158",
-			"ident": "3PS911",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155962,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155962;aktualni=1;poc_obdobi=1158",
-			"ident": "3MG911",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155960,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155960;aktualni=1;poc_obdobi=1158",
-			"ident": "3PO911",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155961,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155961;aktualni=1;poc_obdobi=1158",
-			"ident": "3SG911",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155968,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155968;aktualni=1;poc_obdobi=1158",
-			"ident": "3MI912",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155966,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155966;aktualni=1;poc_obdobi=1158",
-			"ident": "3LG911",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155957,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155957;aktualni=1;poc_obdobi=1158",
-			"ident": "3MI910",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		},
-		{
-			"id": 155956,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155956;aktualni=1;poc_obdobi=1158",
-			"ident": "3MA901",
-			"group": "field_specific_bachelor",
-			"category": "elective"
-		}
-	]
+    "id": -1,
+    "url": "",
+    "ident": "D-MME",
+    "title": "Management a manažerská ekonomie",
+    "faculty": {
+        "ident": "FPH",
+        "title": "Fakulta podnikohospodářská"
+    },
+    "semester": "LS",
+    "year": 2025,
+    "level": "doktorský",
+    "mode_of_study": "prezenční",
+    "study_length": "4 roky",
+    "courses": [
+        {
+            "id": 171890,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=171890;aktualni=1;poc_obdobi=1158",
+            "ident": "3MOCZ",
+            "group": "faculty_specific",
+            "category": "state_exam"
+        },
+        {
+            "id": 156107,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=156107;aktualni=1;poc_obdobi=1158",
+            "ident": "3ODPCZ",
+            "group": "faculty_specific",
+            "category": "state_exam"
+        },
+        {
+            "id": 155953,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155953;aktualni=1;poc_obdobi=1158",
+            "ident": "3CV901",
+            "group": "field_specific_bachelor",
+            "category": "compulsory"
+        },
+        {
+            "id": 155959,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155959;aktualni=1;poc_obdobi=1158",
+            "ident": "3CV903",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155958,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155958;aktualni=1;poc_obdobi=1158",
+            "ident": "3CV902",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155964,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155964;aktualni=1;poc_obdobi=1158",
+            "ident": "3HR911",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155969,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155969;aktualni=1;poc_obdobi=1158",
+            "ident": "3MA911",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155963,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155963;aktualni=1;poc_obdobi=1158",
+            "ident": "3AM911",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155967,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155967;aktualni=1;poc_obdobi=1158",
+            "ident": "3PS911",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155962,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155962;aktualni=1;poc_obdobi=1158",
+            "ident": "3MG911",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155960,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155960;aktualni=1;poc_obdobi=1158",
+            "ident": "3PO911",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155961,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155961;aktualni=1;poc_obdobi=1158",
+            "ident": "3SG911",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155968,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155968;aktualni=1;poc_obdobi=1158",
+            "ident": "3MI912",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155966,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155966;aktualni=1;poc_obdobi=1158",
+            "ident": "3LG911",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155957,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155957;aktualni=1;poc_obdobi=1158",
+            "ident": "3MI910",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        },
+        {
+            "id": 155956,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=155956;aktualni=1;poc_obdobi=1158",
+            "ident": "3MA901",
+            "group": "field_specific_bachelor",
+            "category": "elective"
+        }
+    ]
 }

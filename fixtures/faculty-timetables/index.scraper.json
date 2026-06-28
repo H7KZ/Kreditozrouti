@@ -1,46 +1,46 @@
 [
-	{
-		"f_id": 96,
-		"name": "Centrum tělesné výchovy a sportu"
-	},
-	{
-		"f_id": 10,
-		"name": "Fakulta financí a účetnictví"
-	},
-	{
-		"f_id": 40,
-		"name": "Fakulta informatiky a statistiky"
-	},
-	{
-		"f_id": 20,
-		"name": "Fakulta mezinárodních vztahů"
-	},
-	{
-		"f_id": 30,
-		"name": "Fakulta podnikohospodářská"
-	},
-	{
-		"f_id": 143,
-		"name": "Institut oceňování majetku"
-	},
-	{
-		"f_id": 50,
-		"name": "Národohospodářská fakulta"
-	},
-	{
-		"f_id": 114,
-		"name": "Oddělení zahraničních styků"
-	},
-	{
-		"f_id": 142,
-		"name": "Program studií střední a východní Evropy"
-	},
-	{
-		"f_id": 230,
-		"name": "Univerzita třetího věku"
-	},
-	{
-		"f_id": 248,
-		"name": "Univerzita třetího věku - Jindřichův Hradec"
-	}
+    {
+        "f_id": 96,
+        "name": "Centrum tělesné výchovy a sportu"
+    },
+    {
+        "f_id": 10,
+        "name": "Fakulta financí a účetnictví"
+    },
+    {
+        "f_id": 40,
+        "name": "Fakulta informatiky a statistiky"
+    },
+    {
+        "f_id": 20,
+        "name": "Fakulta mezinárodních vztahů"
+    },
+    {
+        "f_id": 30,
+        "name": "Fakulta podnikohospodářská"
+    },
+    {
+        "f_id": 143,
+        "name": "Institut oceňování majetku"
+    },
+    {
+        "f_id": 50,
+        "name": "Národohospodářská fakulta"
+    },
+    {
+        "f_id": 114,
+        "name": "Oddělení zahraničních styků"
+    },
+    {
+        "f_id": 142,
+        "name": "Program studií střední a východní Evropy"
+    },
+    {
+        "f_id": 230,
+        "name": "Univerzita třetího věku"
+    },
+    {
+        "f_id": 248,
+        "name": "Univerzita třetího věku - Jindřichův Hradec"
+    }
 ]

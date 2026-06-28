@@ -21,29 +21,29 @@ auto-migrations, and no relationship tracking. You write SQL via a typed builder
 
 ### `insis_courses`
 
-| Column               | Type                                | Notes                                           |
-|----------------------|-------------------------------------|-------------------------------------------------|
-| `id`                 | `int` auto PK                       |                                                 |
-| `faculty_id`         | `varchar` FK → `insis_faculties.id` |                                                 |
-| `url`                | `varchar`                           | Full InSIS syllabus URL                         |
-| `ident`              | `varchar` unique                    | Course code, e.g. `"4IT101"`                    |
-| `title`              | `varchar` nullable                  | Title in language of instruction                |
-| `title_cs`           | `varchar` nullable                  | Czech title                                     |
-| `title_en`           | `varchar` nullable                  | English title                                   |
-| `ects`               | `int` nullable                      | Credit value                                    |
-| `mode_of_delivery`   | `varchar` nullable                  | e.g. `"prezenční"`                              |
-| `mode_of_completion` | `varchar` nullable                  | e.g. `"zkouška"`                                |
-| `languages`          | `text` nullable                     | **Pipe-delimited** e.g. `"čeština\|angličtina"` |
-| `level`              | `varchar` nullable                  | e.g. `"bakalářský"`                             |
-| `year_of_study`      | `int` nullable                      | Recommended year (1–5)                          |
-| `semester`           | `enum('ZS','LS')` nullable          |                                                 |
-| `year`               | `int` nullable                      | Starting year of academic year                  |
-| `lecturers`          | `text` nullable                     | **Pipe-delimited**                              |
-| Long-text fields                    | `text` nullable  | `prerequisites`, `aims_of_the_course`, etc.                                       |
-| `blocked_by_course_idents`          | `json` nullable  | Parsed from `prerequisites` — courses that must be passed first (`string[]`)      |
-| `excluded_after_course_idents`      | `json` nullable  | Parsed from `prerequisites` — courses after which this one cannot be taken        |
-| `concurrent_exclusion_idents`       | `json` nullable  | Parsed from `prerequisites` — courses that cannot be taken alongside this one     |
-| `recommended_before_course_idents`  | `json` nullable  | Parsed from `recommended_programmes` — courses recommended as prior study         |
+| Column                             | Type                                | Notes                                                                         |
+|------------------------------------|-------------------------------------|-------------------------------------------------------------------------------|
+| `id`                               | `int` auto PK                       |                                                                               |
+| `faculty_id`                       | `varchar` FK → `insis_faculties.id` |                                                                               |
+| `url`                              | `varchar`                           | Full InSIS syllabus URL                                                       |
+| `ident`                            | `varchar` unique                    | Course code, e.g. `"4IT101"`                                                  |
+| `title`                            | `varchar` nullable                  | Title in language of instruction                                              |
+| `title_cs`                         | `varchar` nullable                  | Czech title                                                                   |
+| `title_en`                         | `varchar` nullable                  | English title                                                                 |
+| `ects`                             | `int` nullable                      | Credit value                                                                  |
+| `mode_of_delivery`                 | `varchar` nullable                  | e.g. `"prezenční"`                                                            |
+| `mode_of_completion`               | `varchar` nullable                  | e.g. `"zkouška"`                                                              |
+| `languages`                        | `text` nullable                     | **Pipe-delimited** e.g. `"čeština\|angličtina"`                               |
+| `level`                            | `varchar` nullable                  | e.g. `"bakalářský"`                                                           |
+| `year_of_study`                    | `int` nullable                      | Recommended year (1–5)                                                        |
+| `semester`                         | `enum('ZS','LS')` nullable          |                                                                               |
+| `year`                             | `int` nullable                      | Starting year of academic year                                                |
+| `lecturers`                        | `text` nullable                     | **Pipe-delimited**                                                            |
+| Long-text fields                   | `text` nullable                     | `prerequisites`, `aims_of_the_course`, etc.                                   |
+| `blocked_by_course_idents`         | `json` nullable                     | Parsed from `prerequisites` — courses that must be passed first (`string[]`)  |
+| `excluded_after_course_idents`     | `json` nullable                     | Parsed from `prerequisites` — courses after which this one cannot be taken    |
+| `concurrent_exclusion_idents`      | `json` nullable                     | Parsed from `prerequisites` — courses that cannot be taken alongside this one |
+| `recommended_before_course_idents` | `json` nullable                     | Parsed from `recommended_programmes` — courses recommended as prior study     |
 
 **Pipe-delimited fields:** `languages` and `lecturers` are stored as `|`-separated strings and parsed in the service
 layer. This avoids a separate join table for what are effectively display strings.

@@ -1,83 +1,83 @@
 {
-	"course": {
-		"id": 216072,
-		"url": "",
-		"ident": "U062",
-		"title": "Digitální fotografování - Master Class",
-		"title_cs": "Digitální fotografování - Master Class",
-		"title_en": "-- obsah této položky nebyl definován --",
-		"ects": null,
-		"faculty_id": "U3V",
-		"mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
-		"mode_of_completion": "zápočet",
-		"languages": "čeština",
-		"level": null,
-		"year_of_study": null,
-		"semester": "LS",
-		"year": 2025,
-		"lecturers": "MgA. Ladislav Hovorka",
-		"prerequisites": "žádné",
-		"recommended_programmes": "žádné",
-		"required_work_experience": "žádná",
-		"aims_of_the_course": "Kurz navazuje na předchozí výuku Digitálního fotografování se zaměřením na výtvarnou fotografii za použití dostupných technických prostředků (digitální zrcadlovky, digitální bezzrcadlovky, externí blesky). Kromě fotografické části (samostatné práce i společná cvičení) se také věnuje teoretické přípravě.  \nPodle aktuálních možností společně připravujeme výstavu závěrečných prací. Speciální pozornost je věnována UNFOCUSED fotografii (využití neostrosti pro výtvarné účely).",
-		"learning_outcomes": "Studenti na konci kurzu formou společné výstavy nebo elektronické prezentace za účasti veřejnosti předvedou jak zvládli nejmodernější výtvarné postupy a techniky, primární je osobitost vyjádření každého jednotlivce ve vztahu ke zvolenému tématu, témata závěrečných prací budou vybírána individuálně.",
-		"course_contents": "**1.**\n\n**\\- Rozdělení témat výuky pro jednotlivé studenty – zohlednění dlouhodobého výběru podle osobnosti autora. Změna termínu dodání hotových fotografií.  \n\\- Opakování základních postupů na digitálním fotopřístroji, přehled použití počítačové techniky a dostupných programů pro zpracování fotografií, nejčastější chyby a problémy při snímání a zpracování fotografií. Přehled a hodnocení nové fotografické techniky (konzultace nákupu nové techniky).  \n\\- Fotografie z prázdnin - co dělá z běžné fotografie výtvarný objekt.** (dotace 0/2)\n\n**2.**\n\n**Kompozice a tvorba výtvarné fotografie - základní úvod do tématiky. Fotografování v domácím prostředí versus vybavený atelier.** (dotace 0/2)\n\n**3.**\n\n**Svícení v domácích podmínkách, světelné zdroje, jejich modulace. Vybavení domácího atelieru. Práce ve vypůjčeném atelieru (profi výbava)** (dotace 0/2)\n\n**4.**\n\n**Zátiší. Inspirace klasiky fotografie a malířství (Sudek, Cézanne, Morandi). Zátiší doma i v exterieru. Kompozice, světlo. Vyhledání a návštěva aktuálních výstav v Praze i okolí.** (dotace 0/2)\n\n**5.**\n\n**Autoportrét. Volba prostředí, vhodné světlo. Zrcadla, odrazy, odlesky.** (dotace 0/2)\n\n**6.**\n\n**UNFOCUSED fotografie. Úvod do problematiky. Praktické ukázky.** (dotace 0/2)\n\n**7.**\n\n**Postprodukce v programu Adobe Photoshop Elements. Odkaz na samostatný předmět U3V. Kreativní a technická úprava fotografií. Další programy pro úpravu fotografií (zdarma X placené), srovnání.** (dotace 0/2)\n\n**8.**\n\n**Použití externího blesku, stroboskopu a dalších světelných prostředků (LED svítidla v atelieru a noční krajině).** (dotace 0/2)\n\n**9.**\n\n**Makrofotografie a mikrofotografie - teorie a praxe. Technické a výtvarné možnosti. Fotoaparát, speciální objektivy, mikroskop, použití počítače a výpočetních funkcí fotoaparátu pro nastavení hloubky ostrosti, focus stacking.** (dotace 0/2)\n\n**10.**\n\n**Triky a neobvyklé postupy ve výtvarné fotografii (triky scénické, kamerové, použití Photoshopu, postprodukce, AI umělá inteligence).** (dotace 0/2)\n\n**11.**\n\n**Použití filtrů pro moderní fotografii (polarizační filtr, barevné filtry, infrafotografie, použití ND filtrů pro UNFOCUSED fotografii).** (dotace 0/2)\n\n**12.**\n\n**Tisk fotografií - velkoformátové tiskárny, domácí tiskárny, teorie a praxe. Příprava fotografií pro tisk. Paspartování, rámování.** (dotace 0/2)\n\n**13.**\n\n**Moderní výtvarná fotografie - návštěva výstav, diskuse o výstavách, příprava vlastní výstavy, výběr fotografií (cykly), tisk, rámování.** (dotace 0/2)",
-		"special_requirements": "Poplatek za semestrální studium předmětu: 1 000 Kč.",
-		"guarantors": null,
-		"last_modified_date": "5. 12. 2025",
-		"last_modified_by": "doc. Ing. Tomáš Kubálek, CSc.",
-		"study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"}]",
-		"literature_required": null,
-		"literature_recommended": null,
-		"aims_of_the_course_en": null,
-		"learning_outcomes_en": null,
-		"course_contents_en": null,
-		"special_requirements_en": null,
-		"literature_required_en": null,
-		"literature_recommended_en": null,
-		"prerequisites_en": null,
-		"recommended_programmes_en": null,
-		"required_work_experience_en": null,
-		"blocked_by_course_idents": null,
-		"excluded_after_course_idents": null,
-		"concurrent_exclusion_idents": null,
-		"recommended_before_course_idents": null,
-		"content_hash_cs": null,
-		"content_hash_en": null
-	},
-	"assessments": [],
-	"timetable": [
-		{
-			"lecturer": "MgA. Ladislav Hovorka",
-			"capacity": 100,
-			"note": "Účast na výuce prostřednictvím Microsoft Teams.",
-			"slots": [
-				{
-					"type": "Cvičení",
-					"frequency": "weekly",
-					"date": null,
-					"day": "Středa",
-					"time_from": 975,
-					"time_to": 1065,
-					"location": "ONLINE (FO)"
-				}
-			]
-		},
-		{
-			"lecturer": "MgA. Ladislav Hovorka",
-			"capacity": 24,
-			"note": null,
-			"slots": [
-				{
-					"type": "Cvičení",
-					"frequency": "weekly",
-					"date": null,
-					"day": "Středa",
-					"time_from": 975,
-					"time_to": 1065,
-					"location": "SB 307"
-				}
-			]
-		}
-	]
+    "course": {
+        "id": 216072,
+        "url": "",
+        "ident": "U062",
+        "title": "Digitální fotografování - Master Class",
+        "title_cs": "Digitální fotografování - Master Class",
+        "title_en": "-- obsah této položky nebyl definován --",
+        "ects": null,
+        "faculty_id": "U3V",
+        "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+        "mode_of_completion": "zápočet",
+        "languages": "čeština",
+        "level": null,
+        "year_of_study": null,
+        "semester": "LS",
+        "year": 2025,
+        "lecturers": "MgA. Ladislav Hovorka",
+        "prerequisites": "žádné",
+        "recommended_programmes": "žádné",
+        "required_work_experience": "žádná",
+        "aims_of_the_course": "Kurz navazuje na předchozí výuku Digitálního fotografování se zaměřením na výtvarnou fotografii za použití dostupných technických prostředků (digitální zrcadlovky, digitální bezzrcadlovky, externí blesky). Kromě fotografické části (samostatné práce i společná cvičení) se také věnuje teoretické přípravě.  \nPodle aktuálních možností společně připravujeme výstavu závěrečných prací. Speciální pozornost je věnována UNFOCUSED fotografii (využití neostrosti pro výtvarné účely).",
+        "learning_outcomes": "Studenti na konci kurzu formou společné výstavy nebo elektronické prezentace za účasti veřejnosti předvedou jak zvládli nejmodernější výtvarné postupy a techniky, primární je osobitost vyjádření každého jednotlivce ve vztahu ke zvolenému tématu, témata závěrečných prací budou vybírána individuálně.",
+        "course_contents": "**1.**\n\n**\\- Rozdělení témat výuky pro jednotlivé studenty – zohlednění dlouhodobého výběru podle osobnosti autora. Změna termínu dodání hotových fotografií.  \n\\- Opakování základních postupů na digitálním fotopřístroji, přehled použití počítačové techniky a dostupných programů pro zpracování fotografií, nejčastější chyby a problémy při snímání a zpracování fotografií. Přehled a hodnocení nové fotografické techniky (konzultace nákupu nové techniky).  \n\\- Fotografie z prázdnin - co dělá z běžné fotografie výtvarný objekt.** (dotace 0/2)\n\n**2.**\n\n**Kompozice a tvorba výtvarné fotografie - základní úvod do tématiky. Fotografování v domácím prostředí versus vybavený atelier.** (dotace 0/2)\n\n**3.**\n\n**Svícení v domácích podmínkách, světelné zdroje, jejich modulace. Vybavení domácího atelieru. Práce ve vypůjčeném atelieru (profi výbava)** (dotace 0/2)\n\n**4.**\n\n**Zátiší. Inspirace klasiky fotografie a malířství (Sudek, Cézanne, Morandi). Zátiší doma i v exterieru. Kompozice, světlo. Vyhledání a návštěva aktuálních výstav v Praze i okolí.** (dotace 0/2)\n\n**5.**\n\n**Autoportrét. Volba prostředí, vhodné světlo. Zrcadla, odrazy, odlesky.** (dotace 0/2)\n\n**6.**\n\n**UNFOCUSED fotografie. Úvod do problematiky. Praktické ukázky.** (dotace 0/2)\n\n**7.**\n\n**Postprodukce v programu Adobe Photoshop Elements. Odkaz na samostatný předmět U3V. Kreativní a technická úprava fotografií. Další programy pro úpravu fotografií (zdarma X placené), srovnání.** (dotace 0/2)\n\n**8.**\n\n**Použití externího blesku, stroboskopu a dalších světelných prostředků (LED svítidla v atelieru a noční krajině).** (dotace 0/2)\n\n**9.**\n\n**Makrofotografie a mikrofotografie - teorie a praxe. Technické a výtvarné možnosti. Fotoaparát, speciální objektivy, mikroskop, použití počítače a výpočetních funkcí fotoaparátu pro nastavení hloubky ostrosti, focus stacking.** (dotace 0/2)\n\n**10.**\n\n**Triky a neobvyklé postupy ve výtvarné fotografii (triky scénické, kamerové, použití Photoshopu, postprodukce, AI umělá inteligence).** (dotace 0/2)\n\n**11.**\n\n**Použití filtrů pro moderní fotografii (polarizační filtr, barevné filtry, infrafotografie, použití ND filtrů pro UNFOCUSED fotografii).** (dotace 0/2)\n\n**12.**\n\n**Tisk fotografií - velkoformátové tiskárny, domácí tiskárny, teorie a praxe. Příprava fotografií pro tisk. Paspartování, rámování.** (dotace 0/2)\n\n**13.**\n\n**Moderní výtvarná fotografie - návštěva výstav, diskuse o výstavách, příprava vlastní výstavy, výběr fotografií (cykly), tisk, rámování.** (dotace 0/2)",
+        "special_requirements": "Poplatek za semestrální studium předmětu: 1 000 Kč.",
+        "guarantors": null,
+        "last_modified_date": "5. 12. 2025",
+        "last_modified_by": "doc. Ing. Tomáš Kubálek, CSc.",
+        "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"}]",
+        "literature_required": null,
+        "literature_recommended": null,
+        "aims_of_the_course_en": null,
+        "learning_outcomes_en": null,
+        "course_contents_en": null,
+        "special_requirements_en": null,
+        "literature_required_en": null,
+        "literature_recommended_en": null,
+        "prerequisites_en": null,
+        "recommended_programmes_en": null,
+        "required_work_experience_en": null,
+        "blocked_by_course_idents": null,
+        "excluded_after_course_idents": null,
+        "concurrent_exclusion_idents": null,
+        "recommended_before_course_idents": null,
+        "content_hash_cs": null,
+        "content_hash_en": null
+    },
+    "assessments": [],
+    "timetable": [
+        {
+            "lecturer": "MgA. Ladislav Hovorka",
+            "capacity": 100,
+            "note": "Účast na výuce prostřednictvím Microsoft Teams.",
+            "slots": [
+                {
+                    "type": "Cvičení",
+                    "frequency": "weekly",
+                    "date": null,
+                    "day": "Středa",
+                    "time_from": 975,
+                    "time_to": 1065,
+                    "location": "ONLINE (FO)"
+                }
+            ]
+        },
+        {
+            "lecturer": "MgA. Ladislav Hovorka",
+            "capacity": 24,
+            "note": null,
+            "slots": [
+                {
+                    "type": "Cvičení",
+                    "frequency": "weekly",
+                    "date": null,
+                    "day": "Středa",
+                    "time_from": 975,
+                    "time_to": 1065,
+                    "location": "SB 307"
+                }
+            ]
+        }
+    ]
 }

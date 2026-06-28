@@ -1,241 +1,241 @@
 {
-	"id": -1,
-	"url": "",
-	"ident": "EO",
-	"title": "Ekonometrie a operační výzkum",
-	"faculty": {
-		"ident": "FIS",
-		"title": "Fakulta informatiky a statistiky"
-	},
-	"semester": "ZS",
-	"year": 2024,
-	"level": "bakalářský",
-	"mode_of_study": "prezenční",
-	"study_length": null,
-	"courses": [
-		{
-			"id": 101727,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=101727;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK326",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 150405,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=150405;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK333",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 150406,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=150406;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK334",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2931,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2931;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK213",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2512,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2512;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK313",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2516,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2516;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK411",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2933,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2933;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK412",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 2517,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2517;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK421",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"id": 188246,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188246;aktualni=1;poc_obdobi=1140",
-			"ident": "MM_EO",
-			"group": "field_specific_master",
-			"category": "state_exam"
-		},
-		{
-			"id": 3331,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3331;aktualni=1;poc_obdobi=1140",
-			"ident": "4ST303",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 185132,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=185132;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK420",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 2950,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2950;aktualni=1;poc_obdobi=1140",
-			"ident": "4ST412",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 150413,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=150413;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK316",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 153619,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153619;aktualni=1;poc_obdobi=1140",
-			"ident": "4IT337",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 2974,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2974;aktualni=1;poc_obdobi=1140",
-			"ident": "4DM415",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 3363,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3363;aktualni=1;poc_obdobi=1140",
-			"ident": "1BP426",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 3140,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3140;aktualni=1;poc_obdobi=1140",
-			"ident": "4ES407",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 109932,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109932;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK611",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 134805,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134805;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK613",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 164579,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=164579;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK418",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 71262,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=71262;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK202",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 165047,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=165047;aktualni=1;poc_obdobi=1140",
-			"ident": "44F401",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 179048,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=179048;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK419",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 201675,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=201675;aktualni=1;poc_obdobi=1140",
-			"ident": "4EK617",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 70658,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70658;aktualni=1;poc_obdobi=1140",
-			"ident": "2AJ305",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 70801,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70801;aktualni=1;poc_obdobi=1140",
-			"ident": "2AJ306",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 205653,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205653;aktualni=1;poc_obdobi=1140",
-			"ident": "44F102",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 185162,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=185162;aktualni=1;poc_obdobi=1140",
-			"ident": "4IZ232",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 41060,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=41060;aktualni=1;poc_obdobi=1140",
-			"ident": "4ST111",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 144277,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=144277;aktualni=1;poc_obdobi=1140",
-			"ident": "4SA111",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 82377,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=82377;aktualni=1;poc_obdobi=1140",
-			"ident": "4DM206",
-			"group": "field_specific_master",
-			"category": "elective"
-		},
-		{
-			"id": 2663,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2663;aktualni=1;poc_obdobi=1140",
-			"ident": "4IZ210",
-			"group": "field_specific_master",
-			"category": "elective"
-		}
-	]
+    "id": -1,
+    "url": "",
+    "ident": "EO",
+    "title": "Ekonometrie a operační výzkum",
+    "faculty": {
+        "ident": "FIS",
+        "title": "Fakulta informatiky a statistiky"
+    },
+    "semester": "ZS",
+    "year": 2024,
+    "level": "bakalářský",
+    "mode_of_study": "prezenční",
+    "study_length": null,
+    "courses": [
+        {
+            "id": 101727,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=101727;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK326",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 150405,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=150405;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK333",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 150406,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=150406;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK334",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2931,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2931;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK213",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2512,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2512;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK313",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2516,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2516;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK411",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2933,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2933;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK412",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 2517,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2517;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK421",
+            "group": "field_specific_master",
+            "category": "compulsory"
+        },
+        {
+            "id": 188246,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188246;aktualni=1;poc_obdobi=1140",
+            "ident": "MM_EO",
+            "group": "field_specific_master",
+            "category": "state_exam"
+        },
+        {
+            "id": 3331,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3331;aktualni=1;poc_obdobi=1140",
+            "ident": "4ST303",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 185132,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=185132;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK420",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 2950,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2950;aktualni=1;poc_obdobi=1140",
+            "ident": "4ST412",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 150413,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=150413;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK316",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 153619,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=153619;aktualni=1;poc_obdobi=1140",
+            "ident": "4IT337",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 2974,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2974;aktualni=1;poc_obdobi=1140",
+            "ident": "4DM415",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 3363,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3363;aktualni=1;poc_obdobi=1140",
+            "ident": "1BP426",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 3140,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=3140;aktualni=1;poc_obdobi=1140",
+            "ident": "4ES407",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 109932,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=109932;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK611",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 134805,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=134805;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK613",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 164579,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=164579;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK418",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 71262,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=71262;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK202",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 165047,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=165047;aktualni=1;poc_obdobi=1140",
+            "ident": "44F401",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 179048,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=179048;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK419",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 201675,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=201675;aktualni=1;poc_obdobi=1140",
+            "ident": "4EK617",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 70658,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70658;aktualni=1;poc_obdobi=1140",
+            "ident": "2AJ305",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 70801,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=70801;aktualni=1;poc_obdobi=1140",
+            "ident": "2AJ306",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 205653,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=205653;aktualni=1;poc_obdobi=1140",
+            "ident": "44F102",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 185162,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=185162;aktualni=1;poc_obdobi=1140",
+            "ident": "4IZ232",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 41060,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=41060;aktualni=1;poc_obdobi=1140",
+            "ident": "4ST111",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 144277,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=144277;aktualni=1;poc_obdobi=1140",
+            "ident": "4SA111",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 82377,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=82377;aktualni=1;poc_obdobi=1140",
+            "ident": "4DM206",
+            "group": "field_specific_master",
+            "category": "elective"
+        },
+        {
+            "id": 2663,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=2663;aktualni=1;poc_obdobi=1140",
+            "ident": "4IZ210",
+            "group": "field_specific_master",
+            "category": "elective"
+        }
+    ]
 }

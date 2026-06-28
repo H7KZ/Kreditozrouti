@@ -154,18 +154,21 @@ Use this to build "Plan A: all mornings" and "Plan B: Tuesday/Thursday only" sid
 
 ## Prerequisite information
 
-When a course's InSIS syllabus lists prerequisites, the expanded course row shows them as clickable chips grouped by type:
+When a course's InSIS syllabus lists prerequisites, the expanded course row shows them as clickable chips grouped by
+type:
 
-| Label                   | Meaning                                                            | Clickable? |
-|-------------------------|--------------------------------------------------------------------|------------|
-| **Required prerequisites** | Courses you must have passed before enrolling                    | Yes        |
-| **Cannot study after**  | Courses after which you may no longer enrol in this course         | Yes        |
-| **Cannot study alongside** | Courses that cannot be taken in the same semester as this one   | No         |
-| **Recommended before**  | Courses suggested as prior study (from recommended programmes)     | Yes        |
+| Label                      | Meaning                                                        | Clickable? |
+|----------------------------|----------------------------------------------------------------|------------|
+| **Required prerequisites** | Courses you must have passed before enrolling                  | Yes        |
+| **Cannot study after**     | Courses after which you may no longer enrol in this course     | Yes        |
+| **Cannot study alongside** | Courses that cannot be taken in the same semester as this one  | No         |
+| **Recommended before**     | Courses suggested as prior study (from recommended programmes) | Yes        |
 
-Clicking a chip sets the course code as the active **Search** filter — useful for quickly checking whether a prerequisite is offered this semester.
+Clicking a chip sets the course code as the active **Search** filter — useful for quickly checking whether a
+prerequisite is offered this semester.
 
 **Filter effect:** when you activate **Completed courses** filtering (wizard Step 4 or the filter sidebar toggle):
+
 - Courses where you haven't yet completed all **Required prerequisites** are hidden automatically.
 - Courses that fall under **Cannot study after** for any of your completed courses are also hidden.
 

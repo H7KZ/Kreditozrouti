@@ -27,7 +27,8 @@ search — all while avoiding N+1 queries.
 
 **File:** `src/Services/PrerequisiteParser.ts`
 
-Pure function that parses InSIS free-text `prerequisites` and `recommended_programmes` fields into four structured arrays. Called from `buildCoursePayload` in `ScraperResponseInSISCourseJob`.
+Pure function that parses InSIS free-text `prerequisites` and `recommended_programmes` fields into four structured
+arrays. Called from `buildCoursePayload` in `ScraperResponseInSISCourseJob`.
 
 ```typescript
 parsePrerequisites(prerequisites: string | null, recommendedProgrammes: string | null): ParsedPrerequisites
@@ -35,13 +36,14 @@ parsePrerequisites(prerequisites: string | null, recommendedProgrammes: string |
 
 Course codes are extracted with `/\b\d[A-Za-z]{2,4}\s?\d{3}\b/g`. Spaces inside codes (e.g. `2AJ 342`) are stripped.
 
-Clause detection uses a single combined regex applied left-to-right so `"nelze studovat po absolvování"` is always matched as `excluded_after` before the overlapping `"studovat po absolvování"` can match as `blocked_by`.
+Clause detection uses a single combined regex applied left-to-right so `"nelze studovat po absolvování"` is always
+matched as `excluded_after` before the overlapping `"studovat po absolvování"` can match as `blocked_by`.
 
-| Clause text                         | Bucket                           |
-|-------------------------------------|----------------------------------|
-| `studovat po absolvování`           | `blocked_by_course_idents`       |
-| `nelze studovat po absolvování`     | `excluded_after_course_idents`   |
-| `nelze studovat současně s`         | `concurrent_exclusion_idents`    |
+| Clause text                           | Bucket                             |
+|---------------------------------------|------------------------------------|
+| `studovat po absolvování`             | `blocked_by_course_idents`         |
+| `nelze studovat po absolvování`       | `excluded_after_course_idents`     |
+| `nelze studovat současně s`           | `concurrent_exclusion_idents`      |
 | _(codes in `recommended_programmes`)_ | `recommended_before_course_idents` |
 
 Returns `null` (not `[]`) for each empty bucket — JSON columns stay `NULL` when unused.
@@ -50,8 +52,10 @@ Returns `null` (not `[]`) for each empty bucket — JSON columns stay `NULL` whe
 
 When `completed_course_idents` is active, `CourseFilterBuilder` adds two additional MySQL predicates:
 
-- **`blocked_by`** (strict): `JSON_CONTAINS(completedJson, c1.blocked_by_course_idents)` — the course is only shown if every required prerequisite appears in the completed list.
-- **`excluded_after`** (exclusion): `NOT JSON_OVERLAPS(c1.excluded_after_course_idents, completedJson)` — the course is hidden if the student has completed any course it must not follow.
+- **`blocked_by`** (strict): `JSON_CONTAINS(completedJson, c1.blocked_by_course_idents)` — the course is only shown if
+  every required prerequisite appears in the completed list.
+- **`excluded_after`** (exclusion): `NOT JSON_OVERLAPS(c1.excluded_after_course_idents, completedJson)` — the course is
+  hidden if the student has completed any course it must not follow.
 - **`concurrent`**: display-only — no filter applied.
 
 ### Study Plan Filter Guard

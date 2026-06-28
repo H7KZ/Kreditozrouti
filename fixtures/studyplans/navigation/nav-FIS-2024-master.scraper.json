@@ -1,21 +1,41 @@
 {
-	"navigationUrls": [
-		{
-			"texts": ["4AD", "4AD Analýzy sociálně ekonomických dat", "Vedlejší specializace", ""],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=117;misto_vyuky="
-		},
-		{
-			"texts": ["4DS", "4DS Demografie a sociální analýza", "Vedlejší specializace", ""],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=212;misto_vyuky="
-		},
-		{
-			"texts": ["4KA", "4KA Kvantitativní analýza", "Vedlejší specializace", ""],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=703;misto_vyuky="
-		},
-		{
-			"texts": ["4PI", "4PI Pojistné inženýrství", "Vedlejší specializace", ""],
-			"url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=63;misto_vyuky="
-		}
-	],
-	"planUrls": []
+    "navigationUrls": [
+        {
+            "texts": [
+                "4AD",
+                "4AD Analýzy sociálně ekonomických dat",
+                "Vedlejší specializace",
+                ""
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=117;misto_vyuky="
+        },
+        {
+            "texts": [
+                "4DS",
+                "4DS Demografie a sociální analýza",
+                "Vedlejší specializace",
+                ""
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=212;misto_vyuky="
+        },
+        {
+            "texts": [
+                "4KA",
+                "4KA Kvantitativní analýza",
+                "Vedlejší specializace",
+                ""
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=703;misto_vyuky="
+        },
+        {
+            "texts": [
+                "4PI",
+                "4PI Pojistné inženýrství",
+                "Vedlejší specializace",
+                ""
+            ],
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=63;misto_vyuky="
+        }
+    ],
+    "planUrls": []
 }

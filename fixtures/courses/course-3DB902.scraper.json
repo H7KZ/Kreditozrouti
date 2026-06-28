@@ -1,76 +1,76 @@
 {
-	"id": 213830,
-	"url": "",
-	"url_id": null,
-	"ident": "3DB902",
-	"title": "Statistical methods for quantitative DBA research",
-	"title_cs": "Statistical methods for quantitative DBA research",
-	"title_en": "Statistical methods for quantitative DBA research",
-	"ects": "žádné",
-	"mode_of_delivery": "kombinovaná; 32/0 (počet hodin přednášek za období / počet hodin cvičení za období) pro distanční (kombinované) programy",
-	"mode_of_completion": "zkouška",
-	"languages": "angličtina",
-	"period": "LS 2025/2026",
-	"faculty": {
-		"ident": "FPH",
-		"title": null
-	},
-	"level": "doktorský (třetí cyklus): 1",
-	"year_of_study": "doktorský (třetí cyklus): 1",
-	"lecturers": null,
-	"guarantors": "doc. Mgr. et Mgr. Ing. Štěpán Bahník, Ph.D.",
-	"prerequisites": "žádné",
-	"recommended_programmes": "žádné",
-	"required_work_experience": "žádná",
-	"aims_of_the_course": "_\\-- obsah této položky nebyl definován --_",
-	"learning_outcomes": "_\\-- obsah této položky nebyl definován --_",
-	"course_contents": "_\\-- obsah této položky nebyl definován --_",
-	"special_requirements": "žádné",
-	"literature_required": null,
-	"literature_recommended": "BRYMAN, Alan a BELL, Emma. _Business research methods._ Oxford: Oxford University Press, 2015. ISBN 978-0-19-966864-9.",
-	"assessment_methods": [
-		{
-			"method": "Aktivita na přednáškách/cvičeních/seminářích",
-			"method_en": null,
-			"weight": "30 %"
-		},
-		{
-			"method": "Vypracování semestrální práce",
-			"method_en": null,
-			"weight": "70 %"
-		}
-	],
-	"timetable": [],
-	"study_plans": [],
-	"study_load": [
-		{
-			"activity": "Druh",
-			"hours": "Kombinované studium"
-		},
-		{
-			"activity": "Účast na přednáškách",
-			"hours": "32 h"
-		},
-		{
-			"activity": "Příprava na přednášky a cvičení samostudiem",
-			"hours": "16 h"
-		},
-		{
-			"activity": "Příprava semestrální práce",
-			"hours": "60 h"
-		}
-	],
-	"last_modified_date": "22. 9. 2025",
-	"last_modified_by": "Mgr. Sabina Zukalová",
-	"aims_of_the_course_en": null,
-	"learning_outcomes_en": null,
-	"course_contents_en": null,
-	"special_requirements_en": null,
-	"literature_required_en": null,
-	"literature_recommended_en": null,
-	"prerequisites_en": null,
-	"recommended_programmes_en": null,
-	"required_work_experience_en": null,
-	"content_hash_cs": null,
-	"content_hash_en": null
+    "id": 213830,
+    "url": "",
+    "url_id": null,
+    "ident": "3DB902",
+    "title": "Statistical methods for quantitative DBA research",
+    "title_cs": "Statistical methods for quantitative DBA research",
+    "title_en": "Statistical methods for quantitative DBA research",
+    "ects": "žádné",
+    "mode_of_delivery": "kombinovaná; 32/0 (počet hodin přednášek za období / počet hodin cvičení za období) pro distanční (kombinované) programy",
+    "mode_of_completion": "zkouška",
+    "languages": "angličtina",
+    "period": "LS 2025/2026",
+    "faculty": {
+        "ident": "FPH",
+        "title": null
+    },
+    "level": "doktorský (třetí cyklus): 1",
+    "year_of_study": "doktorský (třetí cyklus): 1",
+    "lecturers": null,
+    "guarantors": "doc. Mgr. et Mgr. Ing. Štěpán Bahník, Ph.D.",
+    "prerequisites": "žádné",
+    "recommended_programmes": "žádné",
+    "required_work_experience": "žádná",
+    "aims_of_the_course": "_\\-- obsah této položky nebyl definován --_",
+    "learning_outcomes": "_\\-- obsah této položky nebyl definován --_",
+    "course_contents": "_\\-- obsah této položky nebyl definován --_",
+    "special_requirements": "žádné",
+    "literature_required": null,
+    "literature_recommended": "BRYMAN, Alan a BELL, Emma. _Business research methods._ Oxford: Oxford University Press, 2015. ISBN 978-0-19-966864-9.",
+    "assessment_methods": [
+        {
+            "method": "Aktivita na přednáškách/cvičeních/seminářích",
+            "method_en": null,
+            "weight": "30 %"
+        },
+        {
+            "method": "Vypracování semestrální práce",
+            "method_en": null,
+            "weight": "70 %"
+        }
+    ],
+    "timetable": [],
+    "study_plans": [],
+    "study_load": [
+        {
+            "activity": "Druh",
+            "hours": "Kombinované studium"
+        },
+        {
+            "activity": "Účast na přednáškách",
+            "hours": "32 h"
+        },
+        {
+            "activity": "Příprava na přednášky a cvičení samostudiem",
+            "hours": "16 h"
+        },
+        {
+            "activity": "Příprava semestrální práce",
+            "hours": "60 h"
+        }
+    ],
+    "last_modified_date": "22. 9. 2025",
+    "last_modified_by": "Mgr. Sabina Zukalová",
+    "aims_of_the_course_en": null,
+    "learning_outcomes_en": null,
+    "course_contents_en": null,
+    "special_requirements_en": null,
+    "literature_required_en": null,
+    "literature_recommended_en": null,
+    "prerequisites_en": null,
+    "recommended_programmes_en": null,
+    "required_work_experience_en": null,
+    "content_hash_cs": null,
+    "content_hash_en": null
 }

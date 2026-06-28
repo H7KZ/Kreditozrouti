@@ -1,32 +1,32 @@
 [
-	{
-		"title": "Registrace specializací",
-		"starts_at": "2026-11-25T08:00:00",
-		"ends_at": "2027-01-06T23:59:00"
-	},
-	{
-		"title": "Výběrové řízení specializací",
-		"starts_at": "2026-11-25T08:00:00",
-		"ends_at": "2027-01-07T23:59:00"
-	},
-	{
-		"title": "Registrace",
-		"starts_at": "2027-01-04T12:00:00",
-		"ends_at": "2027-01-26T23:59:00"
-	},
-	{
-		"title": "Zápis - 1. kolo",
-		"starts_at": "2027-02-02T08:00:00",
-		"ends_at": "2027-02-03T23:59:00"
-	},
-	{
-		"title": "Zápis - 2. kolo",
-		"starts_at": "2027-02-05T08:00:00",
-		"ends_at": "2027-02-06T23:59:00"
-	},
-	{
-		"title": "Zápis - 3. kolo",
-		"starts_at": "2027-02-09T08:00:00",
-		"ends_at": "2027-02-10T23:59:00"
-	}
+    {
+        "title": "Registrace specializací",
+        "starts_at": "2026-11-25T08:00:00",
+        "ends_at": "2027-01-06T23:59:00"
+    },
+    {
+        "title": "Výběrové řízení specializací",
+        "starts_at": "2026-11-25T08:00:00",
+        "ends_at": "2027-01-07T23:59:00"
+    },
+    {
+        "title": "Registrace",
+        "starts_at": "2027-01-04T12:00:00",
+        "ends_at": "2027-01-26T23:59:00"
+    },
+    {
+        "title": "Zápis - 1. kolo",
+        "starts_at": "2027-02-02T08:00:00",
+        "ends_at": "2027-02-03T23:59:00"
+    },
+    {
+        "title": "Zápis - 2. kolo",
+        "starts_at": "2027-02-05T08:00:00",
+        "ends_at": "2027-02-06T23:59:00"
+    },
+    {
+        "title": "Zápis - 3. kolo",
+        "starts_at": "2027-02-09T08:00:00",
+        "ends_at": "2027-02-10T23:59:00"
+    }
 ]
