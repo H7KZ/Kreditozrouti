@@ -1,83 +1,83 @@
 {
-    "course": {
-        "id": 210594,
-        "url": "",
-        "ident": "U064",
-        "title": "Adobe Photoshop Elements a další počítačové zpracování obrazu",
-        "title_cs": "Adobe Photoshop Elements a další počítačové zpracování obrazu",
-        "title_en": "-- obsah této položky nebyl definován --",
-        "ects": null,
-        "faculty_id": "U3V",
-        "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
-        "mode_of_completion": "zápočet",
-        "languages": "čeština",
-        "level": null,
-        "year_of_study": null,
-        "semester": "ZS",
-        "year": 2025,
-        "lecturers": "MgA. Ladislav Hovorka",
-        "prerequisites": "žádné",
-        "recommended_programmes": "žádné",
-        "required_work_experience": "žádná",
-        "aims_of_the_course": "Během semestru jsou absolventi seznámeni se základy práce v programu Adobe Photoshop Elements a dalších programech (např. Adobe Photoshop, Photopea). Mohou pak sami pracovat s nejlepším grafickým programem pro bitmapovou grafiku a dále tak rozvíjet předchozí získané zkušenosti při zpracování bitmapové grafiky. Kurz je určen hlavně fotografům (výhradně práce v RGB), ale i dalším výtvarníkům, pracujícím s počítačovou grafikou. Preferujeme prezenční formu výuky v učebně SB307, vybavené počítači s programy ADOBE, pro hybridní formu výuky je stále používán program TEAMS a všechny hodiny jsou přenášeny přes internet a nahrávány.",
-        "learning_outcomes": "Na příkladech a ukázkách jsou studenti seznámeni s filozofií programů Adobe pro grafickou a fotografickou práci, s neztrátovými úpravami obrazu, systémem vrstev, masek, úpravou barev. Značný čas je věnován samostatné práci studentů s vlastními obrazovými daty, především se soustředíme na dosažení požadovaných barev i neobvyklých výsledků a dále efektivitu práce. Interaktivní přístup uplatňuji i při dálkové výuce přes Microsoft Teams.",
-        "course_contents": "**1.**\n\n**Seznámení s filosofií grafických programů firmy ADOBE, jednak Adobe Photoshop, jednak Adobe Photoshop Elements, spolupráce mezi dalšími grafickými programy Adobe (automatické předávání dat, barevné nastavení, režim 8 bitové hloubky obrazu, režim 16-ti bitové hloubky obrazu, atd.), přehled dalších programů od jiných firem** (dotace 0/0)\n\n**2.**\n\n**\\- Vrstvy I. Teorie a praxe. Základní postupy při práci s vrstvami (rozdíly a shody s dalšími programy dalších firem, výhody Adobe).  \n\\- Vrstvy II. Viditelnost vrstev, interakce mezi vrstvami, bezztrátové úpravy. Strategie ukládání obrazů. Návaznost volby ve fotoaparátu a následném zpracování v počítači - výhody a nevýhody.** (dotace 0/0)\n\n**3.**\n\n**Základní kroky práce v Adobe Photoshopu: Maskování obrazu – speciální postupy retuše a výměny částí obrazu. Koláže, výstavba nového obrazu.** (dotace 0/0)\n\n**4.**\n\n**Výběr základních postupů pro fotografy, otevření souboru JPG, otevření souboru RAW, výhody a nevýhody velkých souborů.** (dotace 0/0)\n\n**5.**\n\n**Oříznutí, otáčení, zrcadlení obrazu.** (dotace 0/0)\n\n**6.**\n\n**Základy exponometrie, nastavení jasu, kontrastu, prvků barevnosti (systém sRGB, Adobe RGB, lab).** (dotace 0/0)\n\n**7.**\n\n**Rozlišení obrazu, jeho změna, možnosti. Nastavení rozlišení pro tisk, pro obrazovku.** (dotace 0/0)\n\n**8.**\n\n**Výběr části obrazu – možnosti a jejich využití.  \nRetušování fotografií – základní postupy (ztrátové a bezztrátové řešení).** (dotace 0/0)\n\n**9.**\n\n**Záměrná deformace obrazu.** (dotace 0/0)\n\n**10.**\n\n**Opravy nechtěné deformace obrazu (kipování, korekce zkreslení objektivu, perspektiva).** (dotace 0/0)\n\n**11.**\n\n**Práce s ostrostí a neostrostí obrazu ve Photoshop Elements. Použití filtrů, použití vrstev.** (dotace 0/0)\n\n**12.**\n\n**Využití filtrů v počítači I. – barevnost - ztrátové a bezztrátové řešení.  \nVyužití filtrů v počítači II. – šum (přidání, odstranění).** (dotace 0/0)\n\n**13.**\n\n**Přehled prohlížečů fotografických obrazů, srovnání nejpoužívanějších programů, výběr pro začátečníky, doplnění pro pokročilé. Další ukázky úpravy obrazových dat (odebrání šumu, aplikace barevných tabulek LUT)** (dotace 0/0)",
-        "special_requirements": "Poplatek za semestrální studium předmětu: 1 000 Kč.",
-        "guarantors": null,
-        "last_modified_date": "13. 5. 2025",
-        "last_modified_by": "doc. Ing. Tomáš Kubálek, CSc.",
-        "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"}]",
-        "literature_required": null,
-        "literature_recommended": null,
-        "aims_of_the_course_en": null,
-        "learning_outcomes_en": null,
-        "course_contents_en": null,
-        "special_requirements_en": null,
-        "literature_required_en": null,
-        "literature_recommended_en": null,
-        "prerequisites_en": null,
-        "recommended_programmes_en": null,
-        "required_work_experience_en": null,
-        "blocked_by_course_idents": null,
-        "excluded_after_course_idents": null,
-        "concurrent_exclusion_idents": null,
-        "recommended_before_course_idents": null,
-        "content_hash_cs": null,
-        "content_hash_en": null
-    },
-    "assessments": [],
-    "timetable": [
-        {
-            "lecturer": "MgA. Ladislav Hovorka",
-            "capacity": 100,
-            "note": "Účast na výuce prostřednictvím Microsoft Teams.",
-            "slots": [
-                {
-                    "type": "Cvičení",
-                    "frequency": "weekly",
-                    "date": null,
-                    "day": "Středa",
-                    "time_from": 1080,
-                    "time_to": 1170,
-                    "location": "ONLINE (FO)"
-                }
-            ]
-        },
-        {
-            "lecturer": "MgA. Ladislav Hovorka",
-            "capacity": 24,
-            "note": null,
-            "slots": [
-                {
-                    "type": "Cvičení",
-                    "frequency": "weekly",
-                    "date": null,
-                    "day": "Středa",
-                    "time_from": 1080,
-                    "time_to": 1170,
-                    "location": "SB 307"
-                }
-            ]
-        }
-    ]
+	"course": {
+		"id": 210594,
+		"url": "",
+		"ident": "U064",
+		"title": "Adobe Photoshop Elements a další počítačové zpracování obrazu",
+		"title_cs": "Adobe Photoshop Elements a další počítačové zpracování obrazu",
+		"title_en": "-- obsah této položky nebyl definován --",
+		"ects": null,
+		"faculty_id": "U3V",
+		"mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+		"mode_of_completion": "zápočet",
+		"languages": "čeština",
+		"level": null,
+		"year_of_study": null,
+		"semester": "ZS",
+		"year": 2025,
+		"lecturers": "MgA. Ladislav Hovorka",
+		"prerequisites": "žádné",
+		"recommended_programmes": "žádné",
+		"required_work_experience": "žádná",
+		"aims_of_the_course": "Během semestru jsou absolventi seznámeni se základy práce v programu Adobe Photoshop Elements a dalších programech (např. Adobe Photoshop, Photopea). Mohou pak sami pracovat s nejlepším grafickým programem pro bitmapovou grafiku a dále tak rozvíjet předchozí získané zkušenosti při zpracování bitmapové grafiky. Kurz je určen hlavně fotografům (výhradně práce v RGB), ale i dalším výtvarníkům, pracujícím s počítačovou grafikou. Preferujeme prezenční formu výuky v učebně SB307, vybavené počítači s programy ADOBE, pro hybridní formu výuky je stále používán program TEAMS a všechny hodiny jsou přenášeny přes internet a nahrávány.",
+		"learning_outcomes": "Na příkladech a ukázkách jsou studenti seznámeni s filozofií programů Adobe pro grafickou a fotografickou práci, s neztrátovými úpravami obrazu, systémem vrstev, masek, úpravou barev. Značný čas je věnován samostatné práci studentů s vlastními obrazovými daty, především se soustředíme na dosažení požadovaných barev i neobvyklých výsledků a dále efektivitu práce. Interaktivní přístup uplatňuji i při dálkové výuce přes Microsoft Teams.",
+		"course_contents": "**1.**\n\n**Seznámení s filosofií grafických programů firmy ADOBE, jednak Adobe Photoshop, jednak Adobe Photoshop Elements, spolupráce mezi dalšími grafickými programy Adobe (automatické předávání dat, barevné nastavení, režim 8 bitové hloubky obrazu, režim 16-ti bitové hloubky obrazu, atd.), přehled dalších programů od jiných firem** (dotace 0/0)\n\n**2.**\n\n**\\- Vrstvy I. Teorie a praxe. Základní postupy při práci s vrstvami (rozdíly a shody s dalšími programy dalších firem, výhody Adobe).  \n\\- Vrstvy II. Viditelnost vrstev, interakce mezi vrstvami, bezztrátové úpravy. Strategie ukládání obrazů. Návaznost volby ve fotoaparátu a následném zpracování v počítači - výhody a nevýhody.** (dotace 0/0)\n\n**3.**\n\n**Základní kroky práce v Adobe Photoshopu: Maskování obrazu – speciální postupy retuše a výměny částí obrazu. Koláže, výstavba nového obrazu.** (dotace 0/0)\n\n**4.**\n\n**Výběr základních postupů pro fotografy, otevření souboru JPG, otevření souboru RAW, výhody a nevýhody velkých souborů.** (dotace 0/0)\n\n**5.**\n\n**Oříznutí, otáčení, zrcadlení obrazu.** (dotace 0/0)\n\n**6.**\n\n**Základy exponometrie, nastavení jasu, kontrastu, prvků barevnosti (systém sRGB, Adobe RGB, lab).** (dotace 0/0)\n\n**7.**\n\n**Rozlišení obrazu, jeho změna, možnosti. Nastavení rozlišení pro tisk, pro obrazovku.** (dotace 0/0)\n\n**8.**\n\n**Výběr části obrazu – možnosti a jejich využití.  \nRetušování fotografií – základní postupy (ztrátové a bezztrátové řešení).** (dotace 0/0)\n\n**9.**\n\n**Záměrná deformace obrazu.** (dotace 0/0)\n\n**10.**\n\n**Opravy nechtěné deformace obrazu (kipování, korekce zkreslení objektivu, perspektiva).** (dotace 0/0)\n\n**11.**\n\n**Práce s ostrostí a neostrostí obrazu ve Photoshop Elements. Použití filtrů, použití vrstev.** (dotace 0/0)\n\n**12.**\n\n**Využití filtrů v počítači I. – barevnost - ztrátové a bezztrátové řešení.  \nVyužití filtrů v počítači II. – šum (přidání, odstranění).** (dotace 0/0)\n\n**13.**\n\n**Přehled prohlížečů fotografických obrazů, srovnání nejpoužívanějších programů, výběr pro začátečníky, doplnění pro pokročilé. Další ukázky úpravy obrazových dat (odebrání šumu, aplikace barevných tabulek LUT)** (dotace 0/0)",
+		"special_requirements": "Poplatek za semestrální studium předmětu: 1 000 Kč.",
+		"guarantors": null,
+		"last_modified_date": "13. 5. 2025",
+		"last_modified_by": "doc. Ing. Tomáš Kubálek, CSc.",
+		"study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"}]",
+		"literature_required": null,
+		"literature_recommended": null,
+		"aims_of_the_course_en": null,
+		"learning_outcomes_en": null,
+		"course_contents_en": null,
+		"special_requirements_en": null,
+		"literature_required_en": null,
+		"literature_recommended_en": null,
+		"prerequisites_en": null,
+		"recommended_programmes_en": null,
+		"required_work_experience_en": null,
+		"blocked_by_course_idents": null,
+		"excluded_after_course_idents": null,
+		"concurrent_exclusion_idents": null,
+		"recommended_before_course_idents": null,
+		"content_hash_cs": null,
+		"content_hash_en": null
+	},
+	"assessments": [],
+	"timetable": [
+		{
+			"lecturer": "MgA. Ladislav Hovorka",
+			"capacity": 100,
+			"note": "Účast na výuce prostřednictvím Microsoft Teams.",
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Středa",
+					"time_from": 1080,
+					"time_to": 1170,
+					"location": "ONLINE (FO)"
+				}
+			]
+		},
+		{
+			"lecturer": "MgA. Ladislav Hovorka",
+			"capacity": 24,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Středa",
+					"time_from": 1080,
+					"time_to": 1170,
+					"location": "SB 307"
+				}
+			]
+		}
+	]
 }

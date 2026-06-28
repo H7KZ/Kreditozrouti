@@ -1,102 +1,99 @@
 {
-    "course": {
-        "id": 214725,
-        "url": "",
-        "ident": "3MI807",
-        "title": "Managerial Economics",
-        "title_cs": "Manažerská ekonomie",
-        "title_en": "Managerial Economics",
-        "ects": 5,
-        "faculty_id": "FPH",
-        "mode_of_delivery": "prezenční; 2/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
-        "mode_of_completion": "zkouška",
-        "languages": "angličtina",
-        "level": "magisterský navazující",
-        "year_of_study": 2,
-        "semester": "LS",
-        "year": 2025,
-        "lecturers": "doc. PhDr. Lubomír Cingl, Ph.D.|Ing. Tomáš Miklánek, M.A., Ph.D.",
-        "prerequisites": "nelze (studovat po absolvování 3MI407 nebo studovat současně s 3MI407 nebo studovat po absolvování 3MI707 nebo studovat současně s 3MI707)",
-        "recommended_programmes": "žádné",
-        "required_work_experience": "žádná",
-        "aims_of_the_course": "Manažerská ekonomie rozvíjí schopnosti kritického myšlení a poskytuje studentům logický způsob analýzy jak rutinních rozhodnutí o řízení každodenních operací podniku, tak dlouhodobějších strategických plánů, které se snaží ovlivňovat akce a reakce konkurenčních firem.",
-        "learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n\\- přijímat strategická rozhodnutí na základě analýzy a vyhodnocení chování spotřebitelů a trhů obecně;  \n\\- analyzovat manažerská rozhodnutí týkající se cen a konkurence;  \n\\- definovat a aplikovat klíčové pojmy v analýze rozhodování a v teorii her;  \n\\- analyzovat různé tržní struktury a jejich důsledky pro rozhodování v firmě;  \n\\- přijímat strategická rozhodnutí na základě analýzy a vyhodnocení vládních regulací.",
-        "course_contents": "1\\. Úvod do manažerské ekonomie  \n2\\. Rozhodování jedince  \n3\\. Analýza poptávky  \n4\\. Analýza produkce a nákladů  \n5\\. Organizace firmy a odvětvové struktury  \n6\\. Strategie firmy na konkurenčních trzích  \n7\\. Cenové strategie firem s tržní silou  \n8\\. Diferenciace produkce a reklama, monopolistická konkurence  \n9\\. Oligopol  \n10\\. Teorie her  \n11\\. Rozhodování v podmínkách rizika  \n12\\. Ekonomie informací  \n13\\. Externality a veřejné statky",
-        "special_requirements": "Student postoupí na zkoušku, pokud dosáhne minimálně 20 bodů celkem za průběžné testy. Pokud tomu tak není, je hodnocen stupněm 4. Pokud je student při ústní zkoušce hodnocen stupněm 4+, opakuje ústní zkoušku. Na přednáškách je vyžadována nejméně 50% účast, při nižší účasti je student hodnocen známkou nevyhověl. Pokud student z vážných důvodů nemohl splnit tuto studijní povinnost, postupuje se dle článku 11 Studijního a zkušebního řád",
-        "guarantors": "doc. Ing. Marek Hudík, Ph.D.",
-        "last_modified_date": "7. 10. 2025",
-        "last_modified_by": "Ing. Pavel Mikan",
-        "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na přednáškách\",\"hours\":\"26 h\"},{\"activity\":\"Účast na cvičeních/seminářích/tutoriálech\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"13 h\"},{\"activity\":\"Příprava na průběžný test (testy)\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na závěrečnou ústní zkoušku\",\"hours\":\"39 h\"}]",
-        "literature_required": "**Základní:**\n\nBAYE, Michael R. a PRINCE, Jeff. _Managerial economics and business strategy._ New York: McGraw-Hill Education, 2017. ISBN 978-1-259-29061-9.[](https://library.vse.cz/sysno?000547154)",
-        "literature_recommended": null,
-        "aims_of_the_course_en": null,
-        "learning_outcomes_en": null,
-        "course_contents_en": null,
-        "special_requirements_en": null,
-        "literature_required_en": null,
-        "literature_recommended_en": null,
-        "prerequisites_en": null,
-        "recommended_programmes_en": null,
-        "required_work_experience_en": null,
-        "blocked_by_course_idents": [
-            "3MI407",
-            "3MI707"
-        ],
-        "excluded_after_course_idents": null,
-        "concurrent_exclusion_idents": null,
-        "recommended_before_course_idents": null,
-        "content_hash_cs": null,
-        "content_hash_en": null
-    },
-    "assessments": [
-        {
-            "method": "Aktivita na přednáškách/cvičeních/seminářích",
-            "method_en": null,
-            "weight": 10
-        },
-        {
-            "method": "Absolvování průběžného testu (testů)",
-            "method_en": null,
-            "weight": 40
-        },
-        {
-            "method": "Absolvování závěrečné ústní zkoušky",
-            "method_en": null,
-            "weight": 50
-        }
-    ],
-    "timetable": [
-        {
-            "lecturer": "doc. PhDr. Lubomír Cingl, Ph.D.",
-            "capacity": 40,
-            "note": null,
-            "slots": [
-                {
-                    "type": "Přednáška",
-                    "frequency": "weekly",
-                    "date": null,
-                    "day": "Středa",
-                    "time_from": 765,
-                    "time_to": 855,
-                    "location": "SB 305"
-                }
-            ]
-        },
-        {
-            "lecturer": "Ing. Tomáš Miklánek, M.A., Ph.D.",
-            "capacity": 40,
-            "note": null,
-            "slots": [
-                {
-                    "type": "Cvičení",
-                    "frequency": "weekly",
-                    "date": null,
-                    "day": "Středa",
-                    "time_from": 870,
-                    "time_to": 960,
-                    "location": "SB 305"
-                }
-            ]
-        }
-    ]
+	"course": {
+		"id": 214725,
+		"url": "",
+		"ident": "3MI807",
+		"title": "Managerial Economics",
+		"title_cs": "Manažerská ekonomie",
+		"title_en": "Managerial Economics",
+		"ects": 5,
+		"faculty_id": "FPH",
+		"mode_of_delivery": "prezenční; 2/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+		"mode_of_completion": "zkouška",
+		"languages": "angličtina",
+		"level": "magisterský navazující",
+		"year_of_study": 2,
+		"semester": "LS",
+		"year": 2025,
+		"lecturers": "doc. PhDr. Lubomír Cingl, Ph.D.|Ing. Tomáš Miklánek, M.A., Ph.D.",
+		"prerequisites": "nelze (studovat po absolvování 3MI407 nebo studovat současně s 3MI407 nebo studovat po absolvování 3MI707 nebo studovat současně s 3MI707)",
+		"recommended_programmes": "žádné",
+		"required_work_experience": "žádná",
+		"aims_of_the_course": "Manažerská ekonomie rozvíjí schopnosti kritického myšlení a poskytuje studentům logický způsob analýzy jak rutinních rozhodnutí o řízení každodenních operací podniku, tak dlouhodobějších strategických plánů, které se snaží ovlivňovat akce a reakce konkurenčních firem.",
+		"learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n\\- přijímat strategická rozhodnutí na základě analýzy a vyhodnocení chování spotřebitelů a trhů obecně;  \n\\- analyzovat manažerská rozhodnutí týkající se cen a konkurence;  \n\\- definovat a aplikovat klíčové pojmy v analýze rozhodování a v teorii her;  \n\\- analyzovat různé tržní struktury a jejich důsledky pro rozhodování v firmě;  \n\\- přijímat strategická rozhodnutí na základě analýzy a vyhodnocení vládních regulací.",
+		"course_contents": "1\\. Úvod do manažerské ekonomie  \n2\\. Rozhodování jedince  \n3\\. Analýza poptávky  \n4\\. Analýza produkce a nákladů  \n5\\. Organizace firmy a odvětvové struktury  \n6\\. Strategie firmy na konkurenčních trzích  \n7\\. Cenové strategie firem s tržní silou  \n8\\. Diferenciace produkce a reklama, monopolistická konkurence  \n9\\. Oligopol  \n10\\. Teorie her  \n11\\. Rozhodování v podmínkách rizika  \n12\\. Ekonomie informací  \n13\\. Externality a veřejné statky",
+		"special_requirements": "Student postoupí na zkoušku, pokud dosáhne minimálně 20 bodů celkem za průběžné testy. Pokud tomu tak není, je hodnocen stupněm 4. Pokud je student při ústní zkoušce hodnocen stupněm 4+, opakuje ústní zkoušku. Na přednáškách je vyžadována nejméně 50% účast, při nižší účasti je student hodnocen známkou nevyhověl. Pokud student z vážných důvodů nemohl splnit tuto studijní povinnost, postupuje se dle článku 11 Studijního a zkušebního řád",
+		"guarantors": "doc. Ing. Marek Hudík, Ph.D.",
+		"last_modified_date": "7. 10. 2025",
+		"last_modified_by": "Ing. Pavel Mikan",
+		"study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na přednáškách\",\"hours\":\"26 h\"},{\"activity\":\"Účast na cvičeních/seminářích/tutoriálech\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"13 h\"},{\"activity\":\"Příprava na průběžný test (testy)\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na závěrečnou ústní zkoušku\",\"hours\":\"39 h\"}]",
+		"literature_required": "**Základní:**\n\nBAYE, Michael R. a PRINCE, Jeff. _Managerial economics and business strategy._ New York: McGraw-Hill Education, 2017. ISBN 978-1-259-29061-9.[](https://library.vse.cz/sysno?000547154)",
+		"literature_recommended": null,
+		"aims_of_the_course_en": null,
+		"learning_outcomes_en": null,
+		"course_contents_en": null,
+		"special_requirements_en": null,
+		"literature_required_en": null,
+		"literature_recommended_en": null,
+		"prerequisites_en": null,
+		"recommended_programmes_en": null,
+		"required_work_experience_en": null,
+		"blocked_by_course_idents": ["3MI407", "3MI707"],
+		"excluded_after_course_idents": null,
+		"concurrent_exclusion_idents": null,
+		"recommended_before_course_idents": null,
+		"content_hash_cs": null,
+		"content_hash_en": null
+	},
+	"assessments": [
+		{
+			"method": "Aktivita na přednáškách/cvičeních/seminářích",
+			"method_en": null,
+			"weight": 10
+		},
+		{
+			"method": "Absolvování průběžného testu (testů)",
+			"method_en": null,
+			"weight": 40
+		},
+		{
+			"method": "Absolvování závěrečné ústní zkoušky",
+			"method_en": null,
+			"weight": 50
+		}
+	],
+	"timetable": [
+		{
+			"lecturer": "doc. PhDr. Lubomír Cingl, Ph.D.",
+			"capacity": 40,
+			"note": null,
+			"slots": [
+				{
+					"type": "Přednáška",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Středa",
+					"time_from": 765,
+					"time_to": 855,
+					"location": "SB 305"
+				}
+			]
+		},
+		{
+			"lecturer": "Ing. Tomáš Miklánek, M.A., Ph.D.",
+			"capacity": 40,
+			"note": null,
+			"slots": [
+				{
+					"type": "Cvičení",
+					"frequency": "weekly",
+					"date": null,
+					"day": "Středa",
+					"time_from": 870,
+					"time_to": 960,
+					"location": "SB 305"
+				}
+			]
+		}
+	]
 }
