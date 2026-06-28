@@ -82,10 +82,10 @@ export class CourseTable {
 	prerequisites!: string | null
 	recommended_programmes!: string | null
 	required_work_experience!: string | null
-	blocked_by_course_idents!: string[] | null
-	excluded_after_course_idents!: string[] | null
-	concurrent_exclusion_idents!: string[] | null
-	recommended_before_course_idents!: string[] | null
+	blocked_by_course_idents!: ColumnType<string[] | null, string | null, string | null>
+	excluded_after_course_idents!: ColumnType<string[] | null, string | null, string | null>
+	concurrent_exclusion_idents!: ColumnType<string[] | null, string | null, string | null>
+	recommended_before_course_idents!: ColumnType<string[] | null, string | null, string | null>
 
 	/** Educational goals. */
 	aims_of_the_course!: string | null

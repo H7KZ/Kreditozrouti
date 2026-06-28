@@ -65,8 +65,7 @@ describe('parsePrerequisites', () => {
 	})
 
 	it('handles all three clause types in one text', () => {
-		const text =
-			'studovat po absolvování 4EK201 a nelze studovat po absolvování 4EK300 a nelze studovat současně s 4ST301'
+		const text = 'studovat po absolvování 4EK201 a nelze studovat po absolvování 4EK300 a nelze studovat současně s 4ST301'
 		const result = parsePrerequisites(text, null)
 		expect(result.blocked_by_course_idents).toEqual(['4EK201'])
 		expect(result.excluded_after_course_idents).toEqual(['4EK300'])

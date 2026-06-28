@@ -270,7 +270,9 @@ export class CourseFilterBuilder {
 			query = query.where('c1.ident', 'not in', filters.completed_course_idents)
 			const completedJson = JSON.stringify(filters.completed_course_idents)
 			query = query.where(sql<boolean>`(c1.blocked_by_course_idents IS NULL OR JSON_CONTAINS(${sql.val(completedJson)}, c1.blocked_by_course_idents))`)
-			query = query.where(sql<boolean>`(c1.excluded_after_course_idents IS NULL OR NOT JSON_OVERLAPS(c1.excluded_after_course_idents, ${sql.val(completedJson)}))`)
+			query = query.where(
+				sql<boolean>`(c1.excluded_after_course_idents IS NULL OR NOT JSON_OVERLAPS(c1.excluded_after_course_idents, ${sql.val(completedJson)}))`
+			)
 		}
 
 		// Full-text search filter

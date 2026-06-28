@@ -202,6 +202,13 @@ function handleSyllabusSearchInput(event: Event) {
 	debouncedFetchSyllabusSearch()
 }
 
+const activeIdentFilter = computed(() => (filtersStore.filters.idents?.length === 1 ? filtersStore.filters.idents[0] : null))
+
+function clearIdentFilter() {
+	filtersStore.filters.idents = []
+	coursesStore.fetchCourses()
+}
+
 function handleResetFilters() {
 	coursesStore.resetFilters()
 	localTitleSearch.value = ''
@@ -253,7 +260,18 @@ function handleCloseMobileFilter() {
 		</div>
 
 		<!-- Compact quick-toggle pill row -->
-		<div v-if="hasCompletedCourses || hasSelectedCourses" class="mb-3 flex flex-wrap gap-1.5">
+		<div v-if="activeIdentFilter || hasCompletedCourses || hasSelectedCourses" class="mb-3 flex flex-wrap gap-1.5">
+			<!-- Active ident filter chip -->
+			<button
+				v-if="activeIdentFilter"
+				type="button"
+				class="flex cursor-pointer items-center gap-1 rounded-full border border-(--insis-blue) bg-(--insis-blue-subtle) px-2.5 py-1 text-xs font-medium text-(--insis-blue)"
+				@click="clearIdentFilter"
+			>
+				{{ activeIdentFilter }}
+				<IconX class="h-3 w-3 shrink-0" aria-hidden="true" />
+			</button>
+
 			<!-- Hide completed courses -->
 			<button
 				v-if="hasCompletedCourses"

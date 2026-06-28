@@ -5,7 +5,7 @@ export interface ParsedPrerequisites {
 	recommended_before_course_idents: string[] | null
 }
 
-const COURSE_CODE_RE = /\b\d[A-Za-z]{2,4}\s?\d{3}\b/g
+const COURSE_CODE_RE = /\b\d[A-Z]{2,4}\s?\d{3}\b/gi
 
 // Alternatives are tried left-to-right in one pass so "nelze...po" wins before the "po"
 // alternative can match the same text — prevents double-assignment.
@@ -26,10 +26,7 @@ function extractCodes(text: string): string[] {
 	return [...seen]
 }
 
-export function parsePrerequisites(
-	prerequisites: string | null,
-	recommendedProgrammes: string | null
-): ParsedPrerequisites {
+export function parsePrerequisites(prerequisites: string | null, recommendedProgrammes: string | null): ParsedPrerequisites {
 	const buckets: Record<keyof ParsedPrerequisites, Set<string>> = {
 		blocked_by_course_idents: new Set(),
 		excluded_after_course_idents: new Set(),
@@ -38,7 +35,11 @@ export function parsePrerequisites(
 	}
 
 	if (prerequisites) {
-		type Clause = { clauseEnd: number; nextClauseStart: number; key: keyof ParsedPrerequisites }
+		interface Clause {
+			clauseEnd: number
+			nextClauseStart: number
+			key: keyof ParsedPrerequisites
+		}
 		const clauses: Clause[] = []
 
 		CLAUSE_RE.lastIndex = 0

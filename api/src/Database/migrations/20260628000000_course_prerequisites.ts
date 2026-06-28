@@ -9,12 +9,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-	for (const col of [
-		'blocked_by_course_idents',
-		'excluded_after_course_idents',
-		'concurrent_exclusion_idents',
-		'recommended_before_course_idents'
-	]) {
+	for (const col of ['blocked_by_course_idents', 'excluded_after_course_idents', 'concurrent_exclusion_idents', 'recommended_before_course_idents']) {
 		await db.schema
 			.alterTable('insis_courses')
 			.dropColumn(col)
