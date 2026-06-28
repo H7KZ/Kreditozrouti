@@ -39,6 +39,16 @@ function semesterRank(semester: string | null | undefined): number {
 	return SEMESTER_RANK[semester ?? ''] ?? 0
 }
 
+// Splits raw InSIS level strings like "magisterský navazující (druhý cyklus): 2"
+// into { level: "magisterský navazující", year_of_study: 2 }
+// Strips parenthetical qualifiers so values match LEVEL_NORM keys.
+function parseLevelAndYear(raw: string | null): { level: string | null; year_of_study: number | null } {
+	if (!raw) return { level: null, year_of_study: null }
+	const m = /^(.*?):\s*(\d+)\s*$/.exec(raw)
+	const levelText = (m ? m[1] : raw).replace(/\s*\([^)]+\)/g, '').trim()
+	return { level: levelText || null, year_of_study: m ? parseInt(m[2], 10) : null }
+}
+
 /**
  * Syncs a scraped InSIS course into the database.
  */
@@ -94,6 +104,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	}
 
 	await mysql.transaction().execute(async trx => {
+		const { level, year_of_study } = parseLevelAndYear(course.level)
 		const coursePayload: NewCourse = {
 			id: course.id,
 			url: course.url,
@@ -105,9 +116,9 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			faculty_id: facultyId,
 			mode_of_delivery: course.mode_of_delivery,
 			mode_of_completion: course.mode_of_completion,
-			languages: course.languages,
-			level: course.level,
-			year_of_study: course.year_of_study != null ? parseInt(course.year_of_study, 10) || null : null,
+			languages: course.languages?.split(/[,;]\s*/).filter(Boolean).join('|') ?? null,
+			level,
+			year_of_study,
 			semester: extractSemester(course.period),
 			year: extractYear(course.period),
 			lecturers: course.lecturers,
