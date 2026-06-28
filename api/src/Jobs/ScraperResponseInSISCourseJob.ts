@@ -1,7 +1,10 @@
 import type { ScraperInSISCourseAssessmentMethod, ScraperInSISCourseTimetableSlot, ScraperInSISCourseTimetableUnit } from '@shared/queue/insis'
 import type { ScraperInSISCourseResponseJob } from '@shared/queue/jobs'
+import type { InSISDay } from '@shared/domain/insis'
+import { InSISDayValues } from '@shared/domain/insis'
 import { Transaction } from 'kysely'
 import { timeToMinutes } from '@shared/domain/time'
+import { extractSemester, extractYear } from '@shared/utils/insis'
 import { mysql, redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import {
@@ -19,6 +22,18 @@ import {
 import { insertFacultiesBatch } from '@api/Jobs/helpers'
 
 const SEMESTER_RANK: Partial<Record<string, number>> = { LS: 0, ZS: 1 }
+
+function parseDay(raw: string | null): InSISDay | null {
+	if (!raw) return null
+	return (InSISDayValues as readonly string[]).includes(raw) ? (raw as InSISDay) : null
+}
+
+function parseFrequency(raw: string | null): 'weekly' | 'single' | null {
+	if (!raw) return null
+	if (raw === 'single') return 'single'
+	// ponytail: any non-null, non-single frequency from InSIS means weekly
+	return 'weekly'
+}
 
 function semesterRank(semester: string | null | undefined): number {
 	return SEMESTER_RANK[semester ?? ''] ?? 0
@@ -86,16 +101,16 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			title: course.title,
 			title_cs: course.title_cs,
 			title_en: course.title_en,
-			ects: course.ects,
+			ects: course.ects != null ? parseFloat(course.ects) : null,
 			faculty_id: facultyId,
 			mode_of_delivery: course.mode_of_delivery,
 			mode_of_completion: course.mode_of_completion,
-			languages: course.languages?.join('|') ?? null,
+			languages: course.languages,
 			level: course.level,
-			year_of_study: course.year_of_study,
-			semester: course.semester,
-			year: course.year,
-			lecturers: course.lecturers?.join('|') ?? null,
+			year_of_study: course.year_of_study != null ? parseInt(course.year_of_study, 10) || null : null,
+			semester: extractSemester(course.period),
+			year: extractYear(course.period),
+			lecturers: course.lecturers,
 			prerequisites: course.prerequisites,
 			recommended_programmes: course.recommended_programmes,
 			required_work_experience: course.required_work_experience,
@@ -103,7 +118,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 			learning_outcomes: course.learning_outcomes,
 			course_contents: course.course_contents,
 			special_requirements: course.special_requirements,
-			guarantors: course.guarantors?.join('|') ?? null,
+			guarantors: course.guarantors,
 			last_modified_date: course.last_modified_date,
 			last_modified_by: course.last_modified_by,
 			study_load: course.study_load ? JSON.stringify(course.study_load) : null,
@@ -137,7 +152,7 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 	// The unique index (idx_plan_courses_unique_lookup) reduces this to a single-row lock,
 	// but keeping the step outside also ensures a missing study plan row (race with the study
 	// plan scraper) never rolls back the entire course upsert.
-	const planEntryCount = await syncStudyPlansFromCourse(course.id, course.ident ?? '', course.year, course.semester ?? null)
+	const planEntryCount = await syncStudyPlansFromCourse(course.id, course.ident ?? '', extractYear(course.period), extractSemester(course.period))
 
 	await redis.publish(
 		`course:updated:${course.id}`,
@@ -167,7 +182,7 @@ async function syncAssessmentMethods(trx: Transaction<Database>, courseId: numbe
 		course_id: courseId,
 		method: m.method,
 		method_en: m.method_en ?? null,
-		weight: m.weight
+		weight: m.weight != null ? parseFloat(m.weight) : null
 	}))
 
 	if (unique.length > 0) {
@@ -217,9 +232,9 @@ async function syncSlotsForUnit(trx: Transaction<Database>, unitId: number, inco
 		const slotRows: NewCourseUnitSlot[] = incomingSlots.map(slot => ({
 			unit_id: unitId,
 			type: slot.type,
-			frequency: slot.frequency,
+			frequency: parseFrequency(slot.frequency),
 			date: slot.date,
-			day: slot.day,
+			day: parseDay(slot.day),
 			time_from: timeToMinutes(slot.time_from),
 			time_to: timeToMinutes(slot.time_to),
 			location: slot.location
