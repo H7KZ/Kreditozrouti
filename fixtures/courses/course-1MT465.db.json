@@ -1,79 +1,83 @@
 {
-	"course": {
-		"id": 209086,
-		"url": "",
-		"ident": "1MT465",
-		"title": "Aplikovaná datová analýza a makroekonomické modelování",
-		"title_cs": "Aplikovaná datová analýza a makroekonomické modelování",
-		"title_en": "Applied data analysis and macroeconomic modelling",
-		"ects": 3,
-		"faculty_id": "FFU",
-		"mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
-		"mode_of_completion": "zkouška",
-		"languages": "čeština",
-		"level": "magisterský navazující",
-		"year_of_study": 2,
-		"semester": "ZS",
-		"year": 2025,
-		"lecturers": "RNDr. Ing. Karel Musil, Ph.D., M.A., MSc",
-		"prerequisites": "žádné",
-		"recommended_programmes": "žádné",
-		"required_work_experience": "žádná",
-		"aims_of_the_course": "Předmět se zaměřuj na aplikovanou a praktickou datovou analýzu, prognózování a makroekonomické modelování za využití dat především z české ekonomiky. V rámci jednotlivých důležitých sektorů domácí ekonomiky, které pokrývají oblasti ekonomické aktivity, trhu práce a inflace, se studenti nejdříve seznámí s možnými technickými přístupy k datové analýze a případně i nástroji krátkodobé prognózy. Tyto metody a postupy aplikují na české časové řady, jež jsou dostupné na (vysokofrekvenční) mikroekonomické či makroekonomické úrovni. Použití těchto dat vyžaduje řešení praktických problému, které s nimi souvisí (chybějící či odlehlá pozorování, metodologické změny v kompilaci dat, identifikace trendu, …). Vedle praktické aplikace ekonometrických přístupů se studenti v tomto předmětu seznámí také se (semi-) strukturálním modelováním, které je prakticky využíváno ve vládních institucích, centrálních bankách či mezinárodních organizacích pro analýzu aktuálního vývoje v ekonomikách. Jde o přístup všeobecné rovnováhy identifikující hospodářskou pozici ekonomiky s vpředhledící hospodářskou politikou. Pro něj je použita metoda vícerozměrného filtrování. Tyto modely jsou využívány také pro tvorbu makroekonomických výhledů a zachycení možných nejistot okolo budoucího vývoje pomocí škály různých simulací. Jako jeden ze vstupů v rámci tohoto modelovacího přístupu se využívají také ekonometrické výstupy za jednotlivé sektory domácí ekonomiky, které jsou pokryty v první části předmětu. Tento předmět tak svým obsahem nabízí komplexní přístup pro makroekonomické analýzy a prognózy, praktické využití teoretických poznatků k různým technickým přístupům získaných během dřívějšího studia a jejich aplikaci na pozorovaná data převážně z české ekonomiky. Pro práci s daty se studenti seznámí a zdokonalí v používání software EViews a Matlab.",
-		"learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n• Najít vhodné datové zdroje pro různé makroekonomické analýzy a jednoduché prognózy,  \n• Vhodně zpracovat data pro jejich další analytické využití a to jednak rutinními způsoby a také v případě různých nestandardností,  \n• Hledat vhodné řešení, náhrady a aproximace v případě datových problémů,  \n• Úspěšně aplikovat technické nástroje na pozorovaná data z české ekonomiky,  \n• Porovnat různé možnosti technických přístupů k praktické datové analýze,  \n• Pochopit možná datová omezení v rámci kvantitativních metod,  \n• Porozumět různým možným přístupům k analýze dat, jejich omezením a silným stránkám,  \n• Samostatně rozhodnout o použití vhodné techniky, zvážit výhody a omezení složitějších přístupů a modelů,  \n• Vyhodnotit použitelnost výstupů a možnosti zlepšení výsledků,  \n• Vhodně využít různé filtrační techniky pro identifikaci nepozorovaných veličin,  \n• Posoudit výhody (semi-) strukturálního modelování a parsimounious přístupu,  \n• Analyzovat aktuální situaci v české ekonomice a jejich hlavních sektorech,  \n• Vytvořit jednoduchou prognózu pro českou ekonomiku,  \n• Kvantifikovat rizika související s provedenými analýzami a predikcemi,  \n• Diskutovat, obhájit a intuitivně (netechnicky) vysvětlit modelové výstupy,  \n• Zlepšit se v používání ekonometrických software,  \n• Využít získané poznatky pro náhledový makroekonomický přístup chování české ekonomiky.",
-		"course_contents": "1\\. Používaný software (Eviews, Matlab, základy a příkazy)  \n2\\. Praktické problémy analýzy časových řad (nepozorované komponenty a šum v datech, chybějící a odlehlá pozorování)  \n3\\. Transformace dat a filtrování (jednorozměrné a vícerozměrné filtry)  \n4\\. Ekonomická aktivita (odhad ekonomické aktivity na základě vysokofrekvenčních dat, nowcasting, historické revize dat)  \n5\\. Trh práce (redukce datové dimenze pomocí metody hlavních komponent, aplikace na souhrnný indikátor situace na trhu práce)  \n6\\. Inflace (složky spotřebního koše, odhad transmise měnové politiky, krátkodobá prognóza inflace)  \n7\\. Kalmanův filtr (teorie a aplikace na data, jednoduchý model identifikace mezery výstupu)  \n8\\. Jednoduchý semi-strukturální model pro českou ekonomiku (motivace, odvození, vlastnosti)  \n9\\. Očekávání a vpřed-hledícnost v makroekonomických modelech (intuice, řešení, implikace a nedostatky)  \n10\\. Odhad aktuální situace v české ekonomice (data, model, kalibrace/odhad, filtrace)  \n11\\. Propojení sektorálních přístupů a (semi-) strukturálního modelování  \n12\\. Prognóza makro vývoje v české ekonomice (podmíněná a nepodmíněná prognóza, endogenita veličin v modelovém rámci)  \n13\\. Nakládání s nejistotami obklopující predikce (kvantifikace nejistot, scénáře)",
-		"special_requirements": "žádné",
-		"guarantors": "doc. Ing. Karel Brůna, Ph.D.",
-		"last_modified_date": "3. 3. 2025",
-		"last_modified_by": "Ing. Anna Štolcová",
-		"study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na cvičeních/seminářích/tutoriálech\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"13 h\"},{\"activity\":\"Příprava na průběžný test (testy)\",\"hours\":\"13 h\"},{\"activity\":\"Příprava na závěrečný test\",\"hours\":\"20 h\"},{\"activity\":\"Vypracování domácích úkolů\",\"hours\":\"6 h\"}]",
-		"literature_required": null,
-		"literature_recommended": "ČNB, MMF, ECB, … Vybrané články a relevantní WP vztahující se k dané oblasti od různých centrálních bank a mezinárodních institucí, např. Brůha, J., Šolc J.: Rozšíření indikátoru LUCI, příloha Zprávy o inflaci IV/19, Česká národní banka, 2019. Adam, T., Michálek, O., Michl, A., Slezáková, E.: The Rushin Index: A Weekly Indicator of Czech Economic Activity, CNB WP 4/2021, 2021 Berg, A., Karam, P., Laxton, D.: Practical Model-Based Monetary Policy Analysis - A How-To Guide, IMF Working Paper 06/81, 2006",
-		"aims_of_the_course_en": null,
-		"learning_outcomes_en": null,
-		"course_contents_en": null,
-		"special_requirements_en": null,
-		"literature_required_en": null,
-		"literature_recommended_en": null,
-		"prerequisites_en": null,
-		"recommended_programmes_en": null,
-		"required_work_experience_en": null,
-		"content_hash_cs": null,
-		"content_hash_en": null
-	},
-	"assessments": [
-		{
-			"method": "Absolvování průběžného testu (testů)",
-			"method_en": null,
-			"weight": 30
-		},
-		{
-			"method": "Absolvování závěrečného testu",
-			"method_en": null,
-			"weight": 40
-		},
-		{
-			"method": "Průběžné domácí úkoly (úpravy kódů, rozšíření modelů, nové datové vstupy, interpretace a prezentace výsledků, …)",
-			"method_en": null,
-			"weight": 30
-		}
-	],
-	"timetable": [
-		{
-			"lecturer": "RNDr. Ing. Karel Musil, Ph.D., M.A., MSc",
-			"capacity": 15,
-			"note": null,
-			"slots": [
-				{
-					"type": "Cvičení",
-					"frequency": "weekly",
-					"date": null,
-					"day": "Středa",
-					"time_from": 555,
-					"time_to": 750,
-					"location": "RB 336 Fintech"
-				}
-			]
-		}
-	]
+    "course": {
+        "id": 209086,
+        "url": "",
+        "ident": "1MT465",
+        "title": "Aplikovaná datová analýza a makroekonomické modelování",
+        "title_cs": "Aplikovaná datová analýza a makroekonomické modelování",
+        "title_en": "Applied data analysis and macroeconomic modelling",
+        "ects": 3,
+        "faculty_id": "FFU",
+        "mode_of_delivery": "prezenční; 0/2 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+        "mode_of_completion": "zkouška",
+        "languages": "čeština",
+        "level": "magisterský navazující",
+        "year_of_study": 2,
+        "semester": "ZS",
+        "year": 2025,
+        "lecturers": "RNDr. Ing. Karel Musil, Ph.D., M.A., MSc",
+        "prerequisites": "žádné",
+        "recommended_programmes": "žádné",
+        "required_work_experience": "žádná",
+        "aims_of_the_course": "Předmět se zaměřuj na aplikovanou a praktickou datovou analýzu, prognózování a makroekonomické modelování za využití dat především z české ekonomiky. V rámci jednotlivých důležitých sektorů domácí ekonomiky, které pokrývají oblasti ekonomické aktivity, trhu práce a inflace, se studenti nejdříve seznámí s možnými technickými přístupy k datové analýze a případně i nástroji krátkodobé prognózy. Tyto metody a postupy aplikují na české časové řady, jež jsou dostupné na (vysokofrekvenční) mikroekonomické či makroekonomické úrovni. Použití těchto dat vyžaduje řešení praktických problému, které s nimi souvisí (chybějící či odlehlá pozorování, metodologické změny v kompilaci dat, identifikace trendu, …). Vedle praktické aplikace ekonometrických přístupů se studenti v tomto předmětu seznámí také se (semi-) strukturálním modelováním, které je prakticky využíváno ve vládních institucích, centrálních bankách či mezinárodních organizacích pro analýzu aktuálního vývoje v ekonomikách. Jde o přístup všeobecné rovnováhy identifikující hospodářskou pozici ekonomiky s vpředhledící hospodářskou politikou. Pro něj je použita metoda vícerozměrného filtrování. Tyto modely jsou využívány také pro tvorbu makroekonomických výhledů a zachycení možných nejistot okolo budoucího vývoje pomocí škály různých simulací. Jako jeden ze vstupů v rámci tohoto modelovacího přístupu se využívají také ekonometrické výstupy za jednotlivé sektory domácí ekonomiky, které jsou pokryty v první části předmětu. Tento předmět tak svým obsahem nabízí komplexní přístup pro makroekonomické analýzy a prognózy, praktické využití teoretických poznatků k různým technickým přístupům získaných během dřívějšího studia a jejich aplikaci na pozorovaná data převážně z české ekonomiky. Pro práci s daty se studenti seznámí a zdokonalí v používání software EViews a Matlab.",
+        "learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n• Najít vhodné datové zdroje pro různé makroekonomické analýzy a jednoduché prognózy,  \n• Vhodně zpracovat data pro jejich další analytické využití a to jednak rutinními způsoby a také v případě různých nestandardností,  \n• Hledat vhodné řešení, náhrady a aproximace v případě datových problémů,  \n• Úspěšně aplikovat technické nástroje na pozorovaná data z české ekonomiky,  \n• Porovnat různé možnosti technických přístupů k praktické datové analýze,  \n• Pochopit možná datová omezení v rámci kvantitativních metod,  \n• Porozumět různým možným přístupům k analýze dat, jejich omezením a silným stránkám,  \n• Samostatně rozhodnout o použití vhodné techniky, zvážit výhody a omezení složitějších přístupů a modelů,  \n• Vyhodnotit použitelnost výstupů a možnosti zlepšení výsledků,  \n• Vhodně využít různé filtrační techniky pro identifikaci nepozorovaných veličin,  \n• Posoudit výhody (semi-) strukturálního modelování a parsimounious přístupu,  \n• Analyzovat aktuální situaci v české ekonomice a jejich hlavních sektorech,  \n• Vytvořit jednoduchou prognózu pro českou ekonomiku,  \n• Kvantifikovat rizika související s provedenými analýzami a predikcemi,  \n• Diskutovat, obhájit a intuitivně (netechnicky) vysvětlit modelové výstupy,  \n• Zlepšit se v používání ekonometrických software,  \n• Využít získané poznatky pro náhledový makroekonomický přístup chování české ekonomiky.",
+        "course_contents": "1\\. Používaný software (Eviews, Matlab, základy a příkazy)  \n2\\. Praktické problémy analýzy časových řad (nepozorované komponenty a šum v datech, chybějící a odlehlá pozorování)  \n3\\. Transformace dat a filtrování (jednorozměrné a vícerozměrné filtry)  \n4\\. Ekonomická aktivita (odhad ekonomické aktivity na základě vysokofrekvenčních dat, nowcasting, historické revize dat)  \n5\\. Trh práce (redukce datové dimenze pomocí metody hlavních komponent, aplikace na souhrnný indikátor situace na trhu práce)  \n6\\. Inflace (složky spotřebního koše, odhad transmise měnové politiky, krátkodobá prognóza inflace)  \n7\\. Kalmanův filtr (teorie a aplikace na data, jednoduchý model identifikace mezery výstupu)  \n8\\. Jednoduchý semi-strukturální model pro českou ekonomiku (motivace, odvození, vlastnosti)  \n9\\. Očekávání a vpřed-hledícnost v makroekonomických modelech (intuice, řešení, implikace a nedostatky)  \n10\\. Odhad aktuální situace v české ekonomice (data, model, kalibrace/odhad, filtrace)  \n11\\. Propojení sektorálních přístupů a (semi-) strukturálního modelování  \n12\\. Prognóza makro vývoje v české ekonomice (podmíněná a nepodmíněná prognóza, endogenita veličin v modelovém rámci)  \n13\\. Nakládání s nejistotami obklopující predikce (kvantifikace nejistot, scénáře)",
+        "special_requirements": "žádné",
+        "guarantors": "doc. Ing. Karel Brůna, Ph.D.",
+        "last_modified_date": "3. 3. 2025",
+        "last_modified_by": "Ing. Anna Štolcová",
+        "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na cvičeních/seminářích/tutoriálech\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"13 h\"},{\"activity\":\"Příprava na průběžný test (testy)\",\"hours\":\"13 h\"},{\"activity\":\"Příprava na závěrečný test\",\"hours\":\"20 h\"},{\"activity\":\"Vypracování domácích úkolů\",\"hours\":\"6 h\"}]",
+        "literature_required": null,
+        "literature_recommended": "ČNB, MMF, ECB, … Vybrané články a relevantní WP vztahující se k dané oblasti od různých centrálních bank a mezinárodních institucí, např. Brůha, J., Šolc J.: Rozšíření indikátoru LUCI, příloha Zprávy o inflaci IV/19, Česká národní banka, 2019. Adam, T., Michálek, O., Michl, A., Slezáková, E.: The Rushin Index: A Weekly Indicator of Czech Economic Activity, CNB WP 4/2021, 2021 Berg, A., Karam, P., Laxton, D.: Practical Model-Based Monetary Policy Analysis - A How-To Guide, IMF Working Paper 06/81, 2006",
+        "aims_of_the_course_en": null,
+        "learning_outcomes_en": null,
+        "course_contents_en": null,
+        "special_requirements_en": null,
+        "literature_required_en": null,
+        "literature_recommended_en": null,
+        "prerequisites_en": null,
+        "recommended_programmes_en": null,
+        "required_work_experience_en": null,
+        "blocked_by_course_idents": null,
+        "excluded_after_course_idents": null,
+        "concurrent_exclusion_idents": null,
+        "recommended_before_course_idents": null,
+        "content_hash_cs": null,
+        "content_hash_en": null
+    },
+    "assessments": [
+        {
+            "method": "Absolvování průběžného testu (testů)",
+            "method_en": null,
+            "weight": 30
+        },
+        {
+            "method": "Absolvování závěrečného testu",
+            "method_en": null,
+            "weight": 40
+        },
+        {
+            "method": "Průběžné domácí úkoly (úpravy kódů, rozšíření modelů, nové datové vstupy, interpretace a prezentace výsledků, …)",
+            "method_en": null,
+            "weight": 30
+        }
+    ],
+    "timetable": [
+        {
+            "lecturer": "RNDr. Ing. Karel Musil, Ph.D., M.A., MSc",
+            "capacity": 15,
+            "note": null,
+            "slots": [
+                {
+                    "type": "Cvičení",
+                    "frequency": "weekly",
+                    "date": null,
+                    "day": "Středa",
+                    "time_from": 555,
+                    "time_to": 750,
+                    "location": "RB 336 Fintech"
+                }
+            ]
+        }
+    ]
 }
