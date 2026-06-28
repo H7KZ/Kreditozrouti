@@ -1,195 +1,189 @@
 {
-	"id": 209090,
-	"url": "",
-	"url_id": null,
-	"ident": "1MT494",
-	"title": "Current Issues in Applied Economics",
-	"title_cs": "Aktuální problémy v aplikované ekonomii (v angličtině)",
-	"title_en": "Current Issues in Applied Economics",
-	"ects": 3,
-	"mode_of_delivery": "prezenční; 2/0 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
-	"mode_of_completion": "zkouška",
-	"languages": ["angličtina"],
-	"semester": "ZS",
-	"year": 2025,
-	"faculty": {
-		"ident": "FFU",
-		"title": null,
-		"is_schedule_publicly_visible": true
-	},
-	"level": "magisterský navazující",
-	"year_of_study": 1,
-	"lecturers": ["doc. Ing. Helena Chytilová, Ph.D., M.A.", "Ing. Ondřej Šíma, Ph.D."],
-	"guarantors": ["doc. Ing. Karel Brůna, Ph.D."],
-	"prerequisites": "žádné",
-	"recommended_programmes": "žádné",
-	"required_work_experience": "žádná",
-	"aims_of_the_course": "Cílem tohoto předmětu je seznámit studenty s relevantními koncepty, metodami a praktickými implikacemi moderní makroekonomie. Předmět je zaměřen na propojení mezi různorodými makroekonomickými veličinami, jejich aplikovatelnost v empirické makroekonomické analýze, a aktuální trendy světového makroekonomického vývoje. Zvláštní pozornost je věnována nejnovějším přístupům k pochopení a analytickému využití makroekonomických proměnných a procesů, jako jsou ekonomický růst, inflace, monetární a fiskální politika, ekonomické a finanční krize s řadou dopadů do rozhodovacích problémů při řízení podniku. Tyto jevy a veličiny jsou vysvětlovány s důrazem na jejich praktické využití ekonomy a tvůrci politik. Kromě toho, předmět prezentuje a vysvětluje aktuální problémy světového hospodářství, mezi nimiž je růst veřejného a soukromého zadlužení, zvýšení příjmových a majetkových nerovností, rigidity na trhu práce a propojení mezi makroekonomickým a sociopolitickým vývojem zemí.",
-	"learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n\\- vysvětlit a zanalyzovat ekonomický vývoj země pomocí základních makroekonomických indikátorů  \n\\- rozlišovat mezi ekonomickým růstem a ekonomickým rozvojem  \n\\- pochopit makroekonomické implikace monetární a fiskální politiky  \n\\- kategorizovat a vyhodnocovat dopady finančních a ekonomických krizí  \n\\- porozumět významu sociálních, politických a institucionálních faktorů v moderní ekonomice  \n\\- identifikovat a zhodnotit vzájemné vztahy mezi děním na trhu práce a vývojem základních makroekonomických veličin  \n\\- umět vyhodnocovat výstupy makroekonomické analýzy prováděné národními a mezinárodními organizacemi",
-	"course_contents": "1\\. Úvod do aplikované ekonomie: Praktický pohled skrze data a makroekonomické ukazatele  \n2\\. Teorie ekonomického růstu ve světle reálných dat  \n3\\. Inflace a inflační očekávání: percepce, přizpůsobení a makroekonomické implikace  \n4\\. Monetární politika: typy, cíle a makroekonomické implikace  \n5\\. Behaviorální monetární makroekonomie I.: neoklasická kritika, psychologické faktory a makroekonomické frikce  \n6\\. Behaviorální monetární makroekonomie II.: implikace koordinačního selhání na agregátní úrovni, ekonomické a finanční krize  \n7\\. Fiskální politika: typy, cíle a makroekonomické implikace  \n8\\. Role a význam institucí pro ekonomický rozvoj. Vliv sociopolitických faktorů na ekonomický růst, strukturu a chování veřejných a soukromých ekonomických agentů  \n9\\. Ekonomické dopady veřejného a soukromého zadlužení na různé sektory národního hospodářství  \n10\\. Vztahy mezi trhem práce a důchodem, inflací a ekonomickým růstem  \n11\\. Dopady ekonomických a finančních cyklů na nezaměstnanost za podmínky mzdové rigidity  \n12\\. Ekonomická analýza v praxi: využití ekonomických a finančních indikátorů pro zhodnocení ekonomiky",
-	"special_requirements": "žádné",
-	"literature_required": null,
-	"literature_recommended": "BLANCHARD, Olivier. _Macroeconomics._ Harlow: Pearson, 2021. ISBN 978-1-292-35147-6.[](https://library.vse.cz/sysno?000684001)",
-	"assessment_methods": [
-		{
-			"method": "Vypracování semestrální práce",
-			"method_en": null,
-			"weight": 20
-		},
-		{
-			"method": "Absolvování průběžného testu (testů)",
-			"method_en": null,
-			"weight": 30
-		},
-		{
-			"method": "Absolvování závěrečného testu",
-			"method_en": null,
-			"weight": 50
-		}
-	],
-	"timetable": [
-		{
-			"lecturer": "doc. Ing. Helena Chytilová, Ph.D., M.A.",
-			"capacity": 25,
-			"note": null,
-			"slots": [
-				{
-					"type": "Přednáška",
-					"frequency": "single",
-					"date": "10.09.2025",
-					"day": null,
-					"time_from": "12:45",
-					"time_to": "16:00",
-					"location": "NB 177A"
-				},
-				{
-					"type": "Přednáška",
-					"frequency": "single",
-					"date": "17.09.2025",
-					"day": null,
-					"time_from": "12:45",
-					"time_to": "16:00",
-					"location": "NB 177A"
-				},
-				{
-					"type": "Přednáška",
-					"frequency": "single",
-					"date": "24.09.2025",
-					"day": null,
-					"time_from": "12:45",
-					"time_to": "16:00",
-					"location": "NB 177A"
-				},
-				{
-					"type": "Přednáška",
-					"frequency": "single",
-					"date": "01.10.2025",
-					"day": null,
-					"time_from": "12:45",
-					"time_to": "16:00",
-					"location": "NB 177A"
-				},
-				{
-					"type": "Přednáška",
-					"frequency": "single",
-					"date": "08.10.2025",
-					"day": null,
-					"time_from": "12:45",
-					"time_to": "16:00",
-					"location": "NB 177A"
-				},
-				{
-					"type": "Přednáška",
-					"frequency": "single",
-					"date": "15.10.2025",
-					"day": null,
-					"time_from": "12:45",
-					"time_to": "16:00",
-					"location": "NB 177A"
-				},
-				{
-					"type": "Přednáška",
-					"frequency": "single",
-					"date": "20.10.2025",
-					"day": null,
-					"time_from": "07:30",
-					"time_to": "10:45",
-					"location": "NB 177B"
-				}
-			]
-		}
-	],
-	"study_plans": [
-		{
-			"ident": "N-MIFA",
-			"facultyIdent": "FFU",
-			"semester": "ZS",
-			"year": 2023,
-			"mode_of_study": "prezenční",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"ident": "N-MIFA",
-			"facultyIdent": "FFU",
-			"semester": "ZS",
-			"year": 2024,
-			"mode_of_study": "prezenční",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"ident": "N-MIFA",
-			"facultyIdent": "FFU",
-			"semester": "ZS",
-			"year": 2025,
-			"mode_of_study": "prezenční",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		},
-		{
-			"ident": "N-MIFA",
-			"facultyIdent": "FFU",
-			"semester": "ZS",
-			"year": 2026,
-			"mode_of_study": "prezenční",
-			"group": "field_specific_master",
-			"category": "compulsory"
-		}
-	],
-	"study_load": [
-		{
-			"activity": "Účast na přednáškách",
-			"hours": 26
-		},
-		{
-			"activity": "Příprava na přednášky a cvičení samostudiem",
-			"hours": 13
-		},
-		{
-			"activity": "Příprava semestrální práce",
-			"hours": 13
-		},
-		{
-			"activity": "Příprava na průběžný test (testy)",
-			"hours": 10
-		},
-		{
-			"activity": "Příprava na závěrečný test",
-			"hours": 16
-		}
-	],
-	"last_modified_date": "2025-08-26",
-	"last_modified_by": "Ing. Jana Víchová",
-	"aims_of_the_course_en": null,
-	"learning_outcomes_en": null,
-	"course_contents_en": null,
-	"special_requirements_en": null,
-	"literature_required_en": null,
-	"literature_recommended_en": null,
-	"prerequisites_en": null,
-	"recommended_programmes_en": null,
-	"required_work_experience_en": null,
-	"content_hash_cs": null,
-	"content_hash_en": null
+    "id": 209090,
+    "url": "",
+    "url_id": null,
+    "ident": "1MT494",
+    "title": "Current Issues in Applied Economics",
+    "title_cs": "Aktuální problémy v aplikované ekonomii (v angličtině)",
+    "title_en": "Current Issues in Applied Economics",
+    "ects": "3 (1 ECTS kredit = 26 hodin studijní zátěže)",
+    "mode_of_delivery": "prezenční; 2/0 (počet hodin přednášek týdně / počet hodin cvičení týdně) při semestrální výuce",
+    "mode_of_completion": "zkouška",
+    "languages": "angličtina",
+    "period": "ZS 2025/2026",
+    "faculty": {
+        "ident": "FFU",
+        "title": null
+    },
+    "level": "magisterský navazující (druhý cyklus): 1",
+    "year_of_study": "magisterský navazující (druhý cyklus): 1",
+    "lecturers": "doc. Ing. Helena Chytilová, Ph.D., M.A.|Ing. Ondřej Šíma, Ph.D.",
+    "guarantors": "doc. Ing. Karel Brůna, Ph.D.",
+    "prerequisites": "žádné",
+    "recommended_programmes": "žádné",
+    "required_work_experience": "žádná",
+    "aims_of_the_course": "Cílem tohoto předmětu je seznámit studenty s relevantními koncepty, metodami a praktickými implikacemi moderní makroekonomie. Předmět je zaměřen na propojení mezi různorodými makroekonomickými veličinami, jejich aplikovatelnost v empirické makroekonomické analýze, a aktuální trendy světového makroekonomického vývoje. Zvláštní pozornost je věnována nejnovějším přístupům k pochopení a analytickému využití makroekonomických proměnných a procesů, jako jsou ekonomický růst, inflace, monetární a fiskální politika, ekonomické a finanční krize s řadou dopadů do rozhodovacích problémů při řízení podniku. Tyto jevy a veličiny jsou vysvětlovány s důrazem na jejich praktické využití ekonomy a tvůrci politik. Kromě toho, předmět prezentuje a vysvětluje aktuální problémy světového hospodářství, mezi nimiž je růst veřejného a soukromého zadlužení, zvýšení příjmových a majetkových nerovností, rigidity na trhu práce a propojení mezi makroekonomickým a sociopolitickým vývojem zemí.",
+    "learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n\\- vysvětlit a zanalyzovat ekonomický vývoj země pomocí základních makroekonomických indikátorů  \n\\- rozlišovat mezi ekonomickým růstem a ekonomickým rozvojem  \n\\- pochopit makroekonomické implikace monetární a fiskální politiky  \n\\- kategorizovat a vyhodnocovat dopady finančních a ekonomických krizí  \n\\- porozumět významu sociálních, politických a institucionálních faktorů v moderní ekonomice  \n\\- identifikovat a zhodnotit vzájemné vztahy mezi děním na trhu práce a vývojem základních makroekonomických veličin  \n\\- umět vyhodnocovat výstupy makroekonomické analýzy prováděné národními a mezinárodními organizacemi",
+    "course_contents": "1\\. Úvod do aplikované ekonomie: Praktický pohled skrze data a makroekonomické ukazatele  \n2\\. Teorie ekonomického růstu ve světle reálných dat  \n3\\. Inflace a inflační očekávání: percepce, přizpůsobení a makroekonomické implikace  \n4\\. Monetární politika: typy, cíle a makroekonomické implikace  \n5\\. Behaviorální monetární makroekonomie I.: neoklasická kritika, psychologické faktory a makroekonomické frikce  \n6\\. Behaviorální monetární makroekonomie II.: implikace koordinačního selhání na agregátní úrovni, ekonomické a finanční krize  \n7\\. Fiskální politika: typy, cíle a makroekonomické implikace  \n8\\. Role a význam institucí pro ekonomický rozvoj. Vliv sociopolitických faktorů na ekonomický růst, strukturu a chování veřejných a soukromých ekonomických agentů  \n9\\. Ekonomické dopady veřejného a soukromého zadlužení na různé sektory národního hospodářství  \n10\\. Vztahy mezi trhem práce a důchodem, inflací a ekonomickým růstem  \n11\\. Dopady ekonomických a finančních cyklů na nezaměstnanost za podmínky mzdové rigidity  \n12\\. Ekonomická analýza v praxi: využití ekonomických a finančních indikátorů pro zhodnocení ekonomiky",
+    "special_requirements": "žádné",
+    "literature_required": null,
+    "literature_recommended": "BLANCHARD, Olivier. _Macroeconomics._ Harlow: Pearson, 2021. ISBN 978-1-292-35147-6.[](https://library.vse.cz/sysno?000684001)",
+    "assessment_methods": [
+        {
+            "method": "Vypracování semestrální práce",
+            "method_en": null,
+            "weight": "20 %"
+        },
+        {
+            "method": "Absolvování průběžného testu (testů)",
+            "method_en": null,
+            "weight": "30 %"
+        },
+        {
+            "method": "Absolvování závěrečného testu",
+            "method_en": null,
+            "weight": "50 %"
+        }
+    ],
+    "timetable": [
+        {
+            "lecturer": "doc. Ing. Helena Chytilová, Ph.D., M.A.",
+            "capacity": 25,
+            "note": null,
+            "slots": [
+                {
+                    "type": "Přednáška",
+                    "frequency": "-",
+                    "date": "10.09.2025",
+                    "day": null,
+                    "time_from": "12:45",
+                    "time_to": "16:00",
+                    "location": "NB 177A"
+                },
+                {
+                    "type": "Přednáška",
+                    "frequency": "-",
+                    "date": "17.09.2025",
+                    "day": null,
+                    "time_from": "12:45",
+                    "time_to": "16:00",
+                    "location": "NB 177A"
+                },
+                {
+                    "type": "Přednáška",
+                    "frequency": "-",
+                    "date": "24.09.2025",
+                    "day": null,
+                    "time_from": "12:45",
+                    "time_to": "16:00",
+                    "location": "NB 177A"
+                },
+                {
+                    "type": "Přednáška",
+                    "frequency": "-",
+                    "date": "01.10.2025",
+                    "day": null,
+                    "time_from": "12:45",
+                    "time_to": "16:00",
+                    "location": "NB 177A"
+                },
+                {
+                    "type": "Přednáška",
+                    "frequency": "-",
+                    "date": "08.10.2025",
+                    "day": null,
+                    "time_from": "12:45",
+                    "time_to": "16:00",
+                    "location": "NB 177A"
+                },
+                {
+                    "type": "Přednáška",
+                    "frequency": "-",
+                    "date": "15.10.2025",
+                    "day": null,
+                    "time_from": "12:45",
+                    "time_to": "16:00",
+                    "location": "NB 177A"
+                },
+                {
+                    "type": "Přednáška",
+                    "frequency": "-",
+                    "date": "20.10.2025",
+                    "day": null,
+                    "time_from": "07:30",
+                    "time_to": "10:45",
+                    "location": "NB 177B"
+                }
+            ]
+        }
+    ],
+    "study_plans": [
+        {
+            "ident": "N-MIFA",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-MIFA",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-MIFA",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-MIFA",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        }
+    ],
+    "study_load": [
+        {
+            "activity": "Druh",
+            "hours": "Prezenční studium"
+        },
+        {
+            "activity": "Účast na přednáškách",
+            "hours": "26 h"
+        },
+        {
+            "activity": "Příprava na přednášky a cvičení samostudiem",
+            "hours": "13 h"
+        },
+        {
+            "activity": "Příprava semestrální práce",
+            "hours": "13 h"
+        },
+        {
+            "activity": "Příprava na průběžný test (testy)",
+            "hours": "10 h"
+        },
+        {
+            "activity": "Příprava na závěrečný test",
+            "hours": "16 h"
+        }
+    ],
+    "last_modified_date": "26. 8. 2025",
+    "last_modified_by": "Ing. Jana Víchová",
+    "aims_of_the_course_en": null,
+    "learning_outcomes_en": null,
+    "course_contents_en": null,
+    "special_requirements_en": null,
+    "literature_required_en": null,
+    "literature_recommended_en": null,
+    "prerequisites_en": null,
+    "recommended_programmes_en": null,
+    "required_work_experience_en": null,
+    "content_hash_cs": null,
+    "content_hash_en": null
 }

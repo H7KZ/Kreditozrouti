@@ -1,655 +1,654 @@
 {
-	"id": -1,
-	"url": "",
-	"ident": "D-UCE",
-	"title": "Accountancy and Financial Management",
-	"faculty": {
-		"ident": "FFU",
-		"title": "Fakulta financí a účetnictví",
-		"is_schedule_publicly_visible": false
-	},
-	"semester": "ZS",
-	"year": 2024,
-	"level": "doktorský",
-	"mode_of_study": "prezenční",
-	"study_length": "4 roky",
-	"courses": [
-		{
-			"id": 44994,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=44994;aktualni=1;poc_obdobi=1093",
-			"ident": "MIE911",
-			"group": "field_specific_bachelor",
-			"category": "compulsory"
-		},
-		{
-			"id": 45173,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45173;aktualni=1;poc_obdobi=1093",
-			"ident": "FP_901",
-			"group": "field_specific_bachelor",
-			"category": "compulsory"
-		},
-		{
-			"id": 45175,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45175;aktualni=1;poc_obdobi=1093",
-			"ident": "MU_901",
-			"group": "field_specific_bachelor",
-			"category": "compulsory"
-		},
-		{
-			"id": 45174,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45174;aktualni=1;poc_obdobi=1093",
-			"ident": "FU_902",
-			"group": "field_specific_bachelor",
-			"category": "compulsory"
-		},
-		{
-			"id": 147315,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147315;aktualni=1;poc_obdobi=1093",
-			"ident": "1ODIS",
-			"group": "field_specific_bachelor",
-			"category": "state_exam"
-		},
-		{
-			"id": 147317,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147317;aktualni=1;poc_obdobi=1093",
-			"ident": "1UCSDZ",
-			"group": "field_specific_bachelor",
-			"category": "state_exam"
-		},
-		{
-			"id": 106814,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106814;aktualni=1;poc_obdobi=1093",
-			"ident": "STP916",
-			"group": "faculty_specific",
-			"category": "compulsory"
-		},
-		{
-			"id": 45163,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45163;aktualni=1;poc_obdobi=1093",
-			"ident": "FIL901",
-			"group": "faculty_specific",
-			"category": "compulsory"
-		},
-		{
-			"id": 45149,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45149;aktualni=1;poc_obdobi=1093",
-			"ident": "EKO902",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 106814,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106814;aktualni=1;poc_obdobi=1093",
-			"ident": "STP916",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45083,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45083;aktualni=1;poc_obdobi=1093",
-			"ident": "IT_902",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45158,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45158;aktualni=1;poc_obdobi=1093",
-			"ident": "FU_905",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45128,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45128;aktualni=1;poc_obdobi=1093",
-			"ident": "BP_901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45045,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45045;aktualni=1;poc_obdobi=1093",
-			"ident": "STP906",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 122494,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122494;aktualni=1;poc_obdobi=1093",
-			"ident": "STP921",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 44997,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=44997;aktualni=1;poc_obdobi=1093",
-			"ident": "DEM901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 61012,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61012;aktualni=1;poc_obdobi=1093",
-			"ident": "ROJ902",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 80356,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=80356;aktualni=1;poc_obdobi=1093",
-			"ident": "5HD902",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 61401,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61401;aktualni=1;poc_obdobi=1093",
-			"ident": "MIE905",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45164,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45164;aktualni=1;poc_obdobi=1093",
-			"ident": "MAE911",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 44994,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=44994;aktualni=1;poc_obdobi=1093",
-			"ident": "MIE911",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 119851,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=119851;aktualni=1;poc_obdobi=1093",
-			"ident": "5IE951",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 119852,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=119852;aktualni=1;poc_obdobi=1093",
-			"ident": "5IE951",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45038,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45038;aktualni=1;poc_obdobi=1093",
-			"ident": "SE_904",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 80031,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=80031;aktualni=1;poc_obdobi=1093",
-			"ident": "5HP921",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45115,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45115;aktualni=1;poc_obdobi=1093",
-			"ident": "FIL902",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45173,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45173;aktualni=1;poc_obdobi=1093",
-			"ident": "FP_901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45037,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45037;aktualni=1;poc_obdobi=1093",
-			"ident": "BP_903",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45144,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45144;aktualni=1;poc_obdobi=1093",
-			"ident": "SMS963",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45132,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45132;aktualni=1;poc_obdobi=1093",
-			"ident": "PRA913",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45067,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45067;aktualni=1;poc_obdobi=1093",
-			"ident": "SMS951",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45064,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45064;aktualni=1;poc_obdobi=1093",
-			"ident": "EKO901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 61009,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61009;aktualni=1;poc_obdobi=1093",
-			"ident": "EKO905",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45151,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45151;aktualni=1;poc_obdobi=1093",
-			"ident": "LOG931",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45101,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45101;aktualni=1;poc_obdobi=1093",
-			"ident": "MAE901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45169,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45169;aktualni=1;poc_obdobi=1093",
-			"ident": "PM_912",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45011,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45011;aktualni=1;poc_obdobi=1093",
-			"ident": "PSP932",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45175,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45175;aktualni=1;poc_obdobi=1093",
-			"ident": "MU_901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45016,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45016;aktualni=1;poc_obdobi=1093",
-			"ident": "MG_922",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45086,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45086;aktualni=1;poc_obdobi=1093",
-			"ident": "MG_921",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45163,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45163;aktualni=1;poc_obdobi=1093",
-			"ident": "FIL901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 54786,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=54786;aktualni=1;poc_obdobi=1093",
-			"ident": "MO_922",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45031,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45031;aktualni=1;poc_obdobi=1093",
-			"ident": "STP910",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45077,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45077;aktualni=1;poc_obdobi=1093",
-			"ident": "IZI904",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45162,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45162;aktualni=1;poc_obdobi=1093",
-			"ident": "SMS965",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45148,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45148;aktualni=1;poc_obdobi=1093",
-			"ident": "PRA912",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45005,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45005;aktualni=1;poc_obdobi=1093",
-			"ident": "OP_904",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 54784,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=54784;aktualni=1;poc_obdobi=1093",
-			"ident": "MO_911",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45049,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45049;aktualni=1;poc_obdobi=1093",
-			"ident": "SMS967",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45008,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45008;aktualni=1;poc_obdobi=1093",
-			"ident": "MIE901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 79506,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79506;aktualni=1;poc_obdobi=1093",
-			"ident": "5HD922",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45090,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45090;aktualni=1;poc_obdobi=1093",
-			"ident": "MTP903",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45147,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45147;aktualni=1;poc_obdobi=1093",
-			"ident": "STP909",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 61326,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61326;aktualni=1;poc_obdobi=1093",
-			"ident": "MO_912",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 44992,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=44992;aktualni=1;poc_obdobi=1093",
-			"ident": "PRA910",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 52374,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=52374;aktualni=1;poc_obdobi=1093",
-			"ident": "BP_904",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 44993,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=44993;aktualni=1;poc_obdobi=1093",
-			"ident": "PE_931",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 114848,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114848;aktualni=1;poc_obdobi=1093",
-			"ident": "DEP911",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45150,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45150;aktualni=1;poc_obdobi=1093",
-			"ident": "EKO903",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45091,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45091;aktualni=1;poc_obdobi=1093",
-			"ident": "PE_932",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45017,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45017;aktualni=1;poc_obdobi=1093",
-			"ident": "BP_902",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 51524,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=51524;aktualni=1;poc_obdobi=1093",
-			"ident": "STP912",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45136,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45136;aktualni=1;poc_obdobi=1093",
-			"ident": "PRA922",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45012,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45012;aktualni=1;poc_obdobi=1093",
-			"ident": "PRA924",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45013,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45013;aktualni=1;poc_obdobi=1093",
-			"ident": "PRA911",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45100,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45100;aktualni=1;poc_obdobi=1093",
-			"ident": "SA_903",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45170,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45170;aktualni=1;poc_obdobi=1093",
-			"ident": "P__901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 157423,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=157423;aktualni=1;poc_obdobi=1093",
-			"ident": "1BP905",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45141,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45141;aktualni=1;poc_obdobi=1093",
-			"ident": "EST901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45122,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45122;aktualni=1;poc_obdobi=1093",
-			"ident": "PRA923",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45174,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45174;aktualni=1;poc_obdobi=1093",
-			"ident": "FU_902",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45160,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45160;aktualni=1;poc_obdobi=1093",
-			"ident": "STP908",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 56420,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=56420;aktualni=1;poc_obdobi=1093",
-			"ident": "STP915",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45007,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45007;aktualni=1;poc_obdobi=1093",
-			"ident": "IT_904",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45003,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45003;aktualni=1;poc_obdobi=1093",
-			"ident": "SMS901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45168,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45168;aktualni=1;poc_obdobi=1093",
-			"ident": "MIE921",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45000,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45000;aktualni=1;poc_obdobi=1093",
-			"ident": "IZI901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45095,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45095;aktualni=1;poc_obdobi=1093",
-			"ident": "EKO904",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45171,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45171;aktualni=1;poc_obdobi=1093",
-			"ident": "VF_901",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45142,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45142;aktualni=1;poc_obdobi=1093",
-			"ident": "STP904",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45039,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45039;aktualni=1;poc_obdobi=1093",
-			"ident": "SE_905",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45054,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45054;aktualni=1;poc_obdobi=1093",
-			"ident": "STP903",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 79507,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79507;aktualni=1;poc_obdobi=1093",
-			"ident": "5HD921",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 108393,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=108393;aktualni=1;poc_obdobi=1093",
-			"ident": "55F912",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 55046,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=55046;aktualni=1;poc_obdobi=1093",
-			"ident": "IT_910",
-			"group": "university_wide",
-			"category": "elective"
-		},
-		{
-			"id": 45001,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45001;aktualni=1;poc_obdobi=1093",
-			"ident": "AJ_901",
-			"group": "faculty_specific",
-			"category": "language"
-		},
-		{
-			"id": 45041,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45041;aktualni=1;poc_obdobi=1093",
-			"ident": "ROJ901",
-			"group": "faculty_specific",
-			"category": "language"
-		},
-		{
-			"id": 45154,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45154;aktualni=1;poc_obdobi=1093",
-			"ident": "ROJ931",
-			"group": "faculty_specific",
-			"category": "language"
-		},
-		{
-			"id": 45072,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45072;aktualni=1;poc_obdobi=1093",
-			"ident": "NJ_901",
-			"group": "faculty_specific",
-			"category": "language"
-		},
-		{
-			"id": 45061,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45061;aktualni=1;poc_obdobi=1093",
-			"ident": "RUJ901",
-			"group": "faculty_specific",
-			"category": "language"
-		},
-		{
-			"id": 45076,
-			"url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45076;aktualni=1;poc_obdobi=1093",
-			"ident": "ROJ961",
-			"group": "faculty_specific",
-			"category": "language"
-		}
-	]
+    "id": -1,
+    "url": "",
+    "ident": "D-UCE",
+    "title": "Accountancy and Financial Management",
+    "faculty": {
+        "ident": "FFU",
+        "title": "Fakulta financí a účetnictví"
+    },
+    "semester": "ZS",
+    "year": 2024,
+    "level": "doktorský",
+    "mode_of_study": "prezenční",
+    "study_length": "4 roky",
+    "courses": [
+        {
+            "id": 44994,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=44994;aktualni=1;poc_obdobi=1093",
+            "ident": "MIE911",
+            "group": "field_specific_bachelor",
+            "category": "compulsory"
+        },
+        {
+            "id": 45173,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45173;aktualni=1;poc_obdobi=1093",
+            "ident": "FP_901",
+            "group": "field_specific_bachelor",
+            "category": "compulsory"
+        },
+        {
+            "id": 45175,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45175;aktualni=1;poc_obdobi=1093",
+            "ident": "MU_901",
+            "group": "field_specific_bachelor",
+            "category": "compulsory"
+        },
+        {
+            "id": 45174,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45174;aktualni=1;poc_obdobi=1093",
+            "ident": "FU_902",
+            "group": "field_specific_bachelor",
+            "category": "compulsory"
+        },
+        {
+            "id": 147315,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147315;aktualni=1;poc_obdobi=1093",
+            "ident": "1ODIS",
+            "group": "field_specific_bachelor",
+            "category": "state_exam"
+        },
+        {
+            "id": 147317,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=147317;aktualni=1;poc_obdobi=1093",
+            "ident": "1UCSDZ",
+            "group": "field_specific_bachelor",
+            "category": "state_exam"
+        },
+        {
+            "id": 106814,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106814;aktualni=1;poc_obdobi=1093",
+            "ident": "STP916",
+            "group": "faculty_specific",
+            "category": "compulsory"
+        },
+        {
+            "id": 45163,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45163;aktualni=1;poc_obdobi=1093",
+            "ident": "FIL901",
+            "group": "faculty_specific",
+            "category": "compulsory"
+        },
+        {
+            "id": 45149,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45149;aktualni=1;poc_obdobi=1093",
+            "ident": "EKO902",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 106814,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=106814;aktualni=1;poc_obdobi=1093",
+            "ident": "STP916",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45083,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45083;aktualni=1;poc_obdobi=1093",
+            "ident": "IT_902",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45158,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45158;aktualni=1;poc_obdobi=1093",
+            "ident": "FU_905",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45128,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45128;aktualni=1;poc_obdobi=1093",
+            "ident": "BP_901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45045,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45045;aktualni=1;poc_obdobi=1093",
+            "ident": "STP906",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 122494,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=122494;aktualni=1;poc_obdobi=1093",
+            "ident": "STP921",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 44997,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=44997;aktualni=1;poc_obdobi=1093",
+            "ident": "DEM901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 61012,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61012;aktualni=1;poc_obdobi=1093",
+            "ident": "ROJ902",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 80356,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=80356;aktualni=1;poc_obdobi=1093",
+            "ident": "5HD902",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 61401,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61401;aktualni=1;poc_obdobi=1093",
+            "ident": "MIE905",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45164,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45164;aktualni=1;poc_obdobi=1093",
+            "ident": "MAE911",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 44994,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=44994;aktualni=1;poc_obdobi=1093",
+            "ident": "MIE911",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 119851,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=119851;aktualni=1;poc_obdobi=1093",
+            "ident": "5IE951",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 119852,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=119852;aktualni=1;poc_obdobi=1093",
+            "ident": "5IE951",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45038,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45038;aktualni=1;poc_obdobi=1093",
+            "ident": "SE_904",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 80031,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=80031;aktualni=1;poc_obdobi=1093",
+            "ident": "5HP921",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45115,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45115;aktualni=1;poc_obdobi=1093",
+            "ident": "FIL902",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45173,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45173;aktualni=1;poc_obdobi=1093",
+            "ident": "FP_901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45037,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45037;aktualni=1;poc_obdobi=1093",
+            "ident": "BP_903",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45144,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45144;aktualni=1;poc_obdobi=1093",
+            "ident": "SMS963",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45132,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45132;aktualni=1;poc_obdobi=1093",
+            "ident": "PRA913",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45067,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45067;aktualni=1;poc_obdobi=1093",
+            "ident": "SMS951",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45064,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45064;aktualni=1;poc_obdobi=1093",
+            "ident": "EKO901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 61009,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61009;aktualni=1;poc_obdobi=1093",
+            "ident": "EKO905",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45151,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45151;aktualni=1;poc_obdobi=1093",
+            "ident": "LOG931",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45101,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45101;aktualni=1;poc_obdobi=1093",
+            "ident": "MAE901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45169,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45169;aktualni=1;poc_obdobi=1093",
+            "ident": "PM_912",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45011,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45011;aktualni=1;poc_obdobi=1093",
+            "ident": "PSP932",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45175,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45175;aktualni=1;poc_obdobi=1093",
+            "ident": "MU_901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45016,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45016;aktualni=1;poc_obdobi=1093",
+            "ident": "MG_922",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45086,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45086;aktualni=1;poc_obdobi=1093",
+            "ident": "MG_921",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45163,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45163;aktualni=1;poc_obdobi=1093",
+            "ident": "FIL901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 54786,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=54786;aktualni=1;poc_obdobi=1093",
+            "ident": "MO_922",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45031,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45031;aktualni=1;poc_obdobi=1093",
+            "ident": "STP910",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45077,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45077;aktualni=1;poc_obdobi=1093",
+            "ident": "IZI904",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45162,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45162;aktualni=1;poc_obdobi=1093",
+            "ident": "SMS965",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45148,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45148;aktualni=1;poc_obdobi=1093",
+            "ident": "PRA912",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45005,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45005;aktualni=1;poc_obdobi=1093",
+            "ident": "OP_904",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 54784,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=54784;aktualni=1;poc_obdobi=1093",
+            "ident": "MO_911",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45049,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45049;aktualni=1;poc_obdobi=1093",
+            "ident": "SMS967",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45008,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45008;aktualni=1;poc_obdobi=1093",
+            "ident": "MIE901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 79506,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79506;aktualni=1;poc_obdobi=1093",
+            "ident": "5HD922",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45090,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45090;aktualni=1;poc_obdobi=1093",
+            "ident": "MTP903",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45147,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45147;aktualni=1;poc_obdobi=1093",
+            "ident": "STP909",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 61326,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=61326;aktualni=1;poc_obdobi=1093",
+            "ident": "MO_912",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 44992,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=44992;aktualni=1;poc_obdobi=1093",
+            "ident": "PRA910",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 52374,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=52374;aktualni=1;poc_obdobi=1093",
+            "ident": "BP_904",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 44993,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=44993;aktualni=1;poc_obdobi=1093",
+            "ident": "PE_931",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 114848,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=114848;aktualni=1;poc_obdobi=1093",
+            "ident": "DEP911",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45150,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45150;aktualni=1;poc_obdobi=1093",
+            "ident": "EKO903",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45091,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45091;aktualni=1;poc_obdobi=1093",
+            "ident": "PE_932",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45017,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45017;aktualni=1;poc_obdobi=1093",
+            "ident": "BP_902",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 51524,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=51524;aktualni=1;poc_obdobi=1093",
+            "ident": "STP912",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45136,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45136;aktualni=1;poc_obdobi=1093",
+            "ident": "PRA922",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45012,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45012;aktualni=1;poc_obdobi=1093",
+            "ident": "PRA924",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45013,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45013;aktualni=1;poc_obdobi=1093",
+            "ident": "PRA911",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45100,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45100;aktualni=1;poc_obdobi=1093",
+            "ident": "SA_903",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45170,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45170;aktualni=1;poc_obdobi=1093",
+            "ident": "P__901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 157423,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=157423;aktualni=1;poc_obdobi=1093",
+            "ident": "1BP905",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45141,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45141;aktualni=1;poc_obdobi=1093",
+            "ident": "EST901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45122,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45122;aktualni=1;poc_obdobi=1093",
+            "ident": "PRA923",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45174,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45174;aktualni=1;poc_obdobi=1093",
+            "ident": "FU_902",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45160,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45160;aktualni=1;poc_obdobi=1093",
+            "ident": "STP908",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 56420,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=56420;aktualni=1;poc_obdobi=1093",
+            "ident": "STP915",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45007,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45007;aktualni=1;poc_obdobi=1093",
+            "ident": "IT_904",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45003,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45003;aktualni=1;poc_obdobi=1093",
+            "ident": "SMS901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45168,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45168;aktualni=1;poc_obdobi=1093",
+            "ident": "MIE921",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45000,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45000;aktualni=1;poc_obdobi=1093",
+            "ident": "IZI901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45095,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45095;aktualni=1;poc_obdobi=1093",
+            "ident": "EKO904",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45171,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45171;aktualni=1;poc_obdobi=1093",
+            "ident": "VF_901",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45142,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45142;aktualni=1;poc_obdobi=1093",
+            "ident": "STP904",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45039,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45039;aktualni=1;poc_obdobi=1093",
+            "ident": "SE_905",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45054,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45054;aktualni=1;poc_obdobi=1093",
+            "ident": "STP903",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 79507,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=79507;aktualni=1;poc_obdobi=1093",
+            "ident": "5HD921",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 108393,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=108393;aktualni=1;poc_obdobi=1093",
+            "ident": "55F912",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 55046,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=55046;aktualni=1;poc_obdobi=1093",
+            "ident": "IT_910",
+            "group": "university_wide",
+            "category": "elective"
+        },
+        {
+            "id": 45001,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45001;aktualni=1;poc_obdobi=1093",
+            "ident": "AJ_901",
+            "group": "faculty_specific",
+            "category": "language"
+        },
+        {
+            "id": 45041,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45041;aktualni=1;poc_obdobi=1093",
+            "ident": "ROJ901",
+            "group": "faculty_specific",
+            "category": "language"
+        },
+        {
+            "id": 45154,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45154;aktualni=1;poc_obdobi=1093",
+            "ident": "ROJ931",
+            "group": "faculty_specific",
+            "category": "language"
+        },
+        {
+            "id": 45072,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45072;aktualni=1;poc_obdobi=1093",
+            "ident": "NJ_901",
+            "group": "faculty_specific",
+            "category": "language"
+        },
+        {
+            "id": 45061,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45061;aktualni=1;poc_obdobi=1093",
+            "ident": "RUJ901",
+            "group": "faculty_specific",
+            "category": "language"
+        },
+        {
+            "id": 45076,
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=45076;aktualni=1;poc_obdobi=1093",
+            "ident": "ROJ961",
+            "group": "faculty_specific",
+            "category": "language"
+        }
+    ]
 }
