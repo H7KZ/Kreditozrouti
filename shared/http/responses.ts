@@ -105,6 +105,10 @@ export interface CourseDTO {
 	prerequisites_en: string | null
 	recommended_programmes_en: string | null
 	required_work_experience_en: string | null
+	blocked_by_course_idents: string[] | null
+	excluded_after_course_idents: string[] | null
+	concurrent_exclusion_idents: string[] | null
+	recommended_before_course_idents: string[] | null
 }
 
 export interface CourseWithRelationsDTO extends CourseDTO {
