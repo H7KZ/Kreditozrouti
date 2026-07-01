@@ -1,19 +1,9 @@
-import { describe, expect, it } from 'vitest'
-import {
-	DEFAULT_WEIGHTS,
-	diversityFilter,
-	scoreCandidate,
-	solveWithDeadline
-} from '@shared/domain/optimizer'
-import type {
-	ScoreBreakdown,
-	SolverAssignment,
-	SolverSlotCandidate,
-	SolverVariable
-} from '@shared/domain/optimizer'
 import type { Day } from '@shared/domain/constants'
 import type { CourseUnitType } from '@shared/domain/insis'
+import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '@shared/domain/optimizer'
 import type { SolverConstraints } from '@shared/http/optimize'
+import { describe, expect, it } from 'vitest'
+import { DEFAULT_WEIGHTS, diversityFilter, scoreCandidate, solveWithDeadline } from '@shared/domain/optimizer'
 
 function slot(overrides: Partial<SolverSlotCandidate> = {}): SolverSlotCandidate {
 	return {
@@ -163,7 +153,7 @@ describe('scoreCandidate', () => {
 		})
 	})
 
-	it("campus term equals campusConflicts * DEFAULT_WEIGHTS.campusConflict for a known 1-campus-conflict schedule", () => {
+	it('campus term equals campusConflicts * DEFAULT_WEIGHTS.campusConflict for a known 1-campus-conflict schedule', () => {
 		const assignment: SolverAssignment = {
 			'1:lecture': slot({ courseId: 1, unitId: 1, slotId: 1, day: 'monday', timeFrom: 480, timeTo: 540, location: 'JM.101' }),
 			'2:lecture': slot({ courseId: 2, unitId: 2, slotId: 2, day: 'monday', timeFrom: 550, timeTo: 620, location: 'RB.101' })

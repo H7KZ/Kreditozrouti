@@ -2,8 +2,8 @@ import type { SolverConstraints } from '../http/optimize.js'
 import type { Day } from './constants.js'
 import { getDayFromDate } from './day.js'
 import type { CourseUnitType } from './insis.js'
-import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from './timetable.js'
 import type { ScheduledUnit } from './timetable.js'
+import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from './timetable.js'
 
 // Variable/domain modeling
 
@@ -162,7 +162,11 @@ function groupByDay<T extends DayGroupable>(units: T[]): Map<Day, T[]> {
  * and over-long consecutive study blocks are all SOFT constraints — none of
  * them prune the search (see isConsistent); they only affect ranking here.
  */
-export function scoreCandidate(assignment: SolverAssignment, constraints: SolverConstraints, weights: typeof DEFAULT_WEIGHTS = DEFAULT_WEIGHTS): ScoreBreakdown {
+export function scoreCandidate(
+	assignment: SolverAssignment,
+	constraints: SolverConstraints,
+	weights: typeof DEFAULT_WEIGHTS = DEFAULT_WEIGHTS
+): ScoreBreakdown {
 	const units = Object.values(assignment)
 
 	let campusConflicts = 0

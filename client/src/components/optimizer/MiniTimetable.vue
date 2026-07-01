@@ -26,9 +26,9 @@ function blockStyle(unit: SelectedCourseUnitDTO): Record<string, string> {
 </script>
 
 <template>
-	<div class="flex select-none flex-col gap-0.5 py-1">
+	<div class="flex flex-col gap-0.5 py-1 select-none">
 		<div v-for="day in WEEKDAYS" :key="day" class="flex items-center gap-1.5">
-			<span class="w-4 shrink-0 text-[9px] font-medium uppercase text-(--insis-text-3)">
+			<span class="w-4 shrink-0 text-[9px] font-medium text-(--insis-text-3) uppercase">
 				{{ day.slice(0, 2) }}
 			</span>
 			<div class="relative h-2.5 flex-1 overflow-hidden rounded-sm bg-(--insis-surface-2)">

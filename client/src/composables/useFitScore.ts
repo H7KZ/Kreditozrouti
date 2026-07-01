@@ -1,6 +1,6 @@
 import type { SelectedCourseUnit } from '@client/types'
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import type { Day } from '@shared/domain/constants'
+import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { unitsConflict } from '@shared/domain/timetable'
 
 const GAP_THRESHOLD = 15 // minutes
@@ -29,9 +29,7 @@ export function computeFitScore(course: CourseWithRelationsDTO, timetableUnits: 
 				timeTo: slot.time_to
 			}
 
-			const conflicts = timetableUnits.some(tu =>
-				unitsConflict(candidate, { day: tu.day, date: tu.date, timeFrom: tu.timeFrom, timeTo: tu.timeTo })
-			)
+			const conflicts = timetableUnits.some(tu => unitsConflict(candidate, { day: tu.day, date: tu.date, timeFrom: tu.timeFrom, timeTo: tu.timeTo }))
 			if (conflicts) continue
 
 			const slotDay = slot.day as Day | undefined
@@ -43,9 +41,7 @@ export function computeFitScore(course: CourseWithRelationsDTO, timetableUnits: 
 				reason = 'same_day'
 				const fillsGap = timetableUnits.some(
 					tu =>
-						tu.day === slotDay &&
-						(Math.abs(slot.time_from! - tu.timeTo) <= GAP_THRESHOLD ||
-							Math.abs(tu.timeFrom - slot.time_to!) <= GAP_THRESHOLD)
+						tu.day === slotDay && (Math.abs(slot.time_from! - tu.timeTo) <= GAP_THRESHOLD || Math.abs(tu.timeFrom - slot.time_to!) <= GAP_THRESHOLD)
 				)
 				if (fillsGap) {
 					score = 50
@@ -66,10 +62,7 @@ export function computeFitScore(course: CourseWithRelationsDTO, timetableUnits: 
 	return { courseId: course.id, score: best, fitReason: bestReason }
 }
 
-export function computeFitScores(
-	courses: CourseWithRelationsDTO[],
-	timetableUnits: SelectedCourseUnit[]
-): Map<number, FitResult> {
+export function computeFitScores(courses: CourseWithRelationsDTO[], timetableUnits: SelectedCourseUnit[]): Map<number, FitResult> {
 	const map = new Map<number, FitResult>()
 	for (const course of courses) map.set(course.id, computeFitScore(course, timetableUnits))
 	return map

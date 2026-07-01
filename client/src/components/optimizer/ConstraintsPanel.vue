@@ -19,9 +19,7 @@ const { t } = useI18n()
 const creditMin = ref<number | null>(props.modelValue.credit_min ?? null)
 const creditMax = ref<number | null>(props.modelValue.credit_max ?? null)
 const preferredDays = ref<Day[]>([...(props.modelValue.preferred_days ?? [])])
-const maxConsecutiveHours = ref<number | null>(
-	props.modelValue.max_consecutive_minutes != null ? props.modelValue.max_consecutive_minutes / 60 : null
-)
+const maxConsecutiveHours = ref<number | null>(props.modelValue.max_consecutive_minutes != null ? props.modelValue.max_consecutive_minutes / 60 : null)
 
 interface BlackoutRow {
 	day: Day
@@ -51,8 +49,7 @@ function emitValue() {
 	if (creditMin.value != null && !isNaN(creditMin.value)) constraints.credit_min = creditMin.value
 	if (creditMax.value != null && !isNaN(creditMax.value)) constraints.credit_max = creditMax.value
 	if (preferredDays.value.length > 0) constraints.preferred_days = [...preferredDays.value]
-	if (maxConsecutiveHours.value != null && !isNaN(maxConsecutiveHours.value))
-		constraints.max_consecutive_minutes = maxConsecutiveHours.value * 60
+	if (maxConsecutiveHours.value != null && !isNaN(maxConsecutiveHours.value)) constraints.max_consecutive_minutes = maxConsecutiveHours.value * 60
 	if (blackoutWindows.value.length > 0)
 		constraints.blackout_windows = blackoutWindows.value.map(w => ({
 			day: w.day,

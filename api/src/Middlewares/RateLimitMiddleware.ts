@@ -19,7 +19,7 @@ const courseLimiter = new RateLimiterRedis({
 const optimizeLimiter = new RateLimiterRedis({
 	storeClient: redis,
 	keyPrefix: 'optimize:ip',
-	points: 10,
+	points: 50,
 	duration: 600
 })
 

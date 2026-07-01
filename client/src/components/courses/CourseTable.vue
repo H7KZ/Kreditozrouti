@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { CourseSortBy } from '@client/types'
-import type { FitResult } from '@client/composables/useFitScore'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CourseRow from '@client/components/courses/CourseRow.vue'
@@ -11,30 +10,18 @@ import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconChevronUp from '~icons/lucide/chevron-up'
+import IconSparkles from '~icons/lucide/sparkles'
 
-interface Props {
-	fitScores?: Map<number, FitResult>
+interface Emits {
+	(e: 'fit', courseId: number): void
 }
 
-const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
 
 const { t } = useI18n()
 const coursesStore = useCoursesStore()
 const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
-
-const displayCourses = computed(() => {
-	let courses = coursesStore.courses
-	if (props.fitScores) {
-		courses = courses.filter(c => (props.fitScores!.get(c.id)?.score ?? -Infinity) > -Infinity)
-		return [...courses].sort((a, b) => {
-			const sa = props.fitScores!.get(a.id)?.score ?? -Infinity
-			const sb = props.fitScores!.get(b.id)?.score ?? -Infinity
-			return sb - sa
-		})
-	}
-	return courses
-})
 
 const { getCompletionLabel, getFacultyLabel, getCourseTitle } = useCourseLabels()
 const { getScheduleSummary } = useScheduleSummary()
@@ -144,7 +131,7 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 				</template>
 
 				<template v-else>
-					<CourseRow v-for="course in displayCourses" :key="course.id" :course="course" :colspan="columns.length" :fit-score="props.fitScores?.get(course.id)" />
+					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length" @fit="emit('fit', $event)" />
 				</template>
 			</tbody>
 		</table>
@@ -166,7 +153,7 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 
 		<!-- Course cards -->
 		<template v-else>
-			<template v-for="course in displayCourses" :key="course.id">
+			<template v-for="course in coursesStore.courses" :key="course.id">
 				<!-- Card header -->
 				<div
 					:class="[
@@ -204,6 +191,15 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 						<!-- Status badges + chevron -->
 						<div class="flex shrink-0 flex-col items-center gap-1">
 							<CourseStatusIndicator :course="course" />
+							<button
+								v-if="!isCourseSelected(course.id) && timetableStore.selectedUnits.length > 0"
+								type="button"
+								class="insis-btn insis-btn-secondary h-6 px-1.5"
+								:aria-label="$t('pages.courses.fitIntoTimetable')"
+								@click.stop="emit('fit', course.id)"
+							>
+								<IconSparkles class="h-3 w-3" aria-hidden="true" />
+							</button>
 							<IconChevronDown
 								:class="['mt-auto h-3.5 w-3.5 text-(--insis-text-3) transition-transform duration-200', isExpanded(course.id) && 'rotate-180']"
 								aria-hidden="true"

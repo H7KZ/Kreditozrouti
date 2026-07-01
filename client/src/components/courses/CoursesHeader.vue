@@ -80,12 +80,7 @@ function handleClearTimetable() {
 
 		<!-- Right: actions -->
 		<div class="flex items-center gap-2">
-			<button
-				type="button"
-				class="insis-btn insis-btn-secondary h-7"
-				:aria-label="$t('pages.courses.optimizeTimetable')"
-				@click="emit('optimize')"
-			>
+			<button type="button" class="insis-btn insis-btn-secondary h-7" :aria-label="$t('pages.courses.optimizeTimetable')" @click="emit('optimize')">
 				<IconSparkles class="h-3 w-3" aria-hidden="true" />
 				<span class="hidden sm:inline">{{ $t('pages.courses.optimizeTimetable') }}</span>
 			</button>

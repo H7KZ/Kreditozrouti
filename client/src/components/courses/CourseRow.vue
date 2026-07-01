@@ -1,23 +1,26 @@
 <script setup lang="ts">
 import type { CourseStatus } from '@client/types'
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
-import type { FitResult } from '@client/composables/useFitScore'
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import CourseStatusIndicator from '@client/components/courses/CourseStatusIndicator.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
+import IconSparkles from '~icons/lucide/sparkles'
+
 interface Props {
 	course: CourseWithRelationsDTO
 	colspan: number
-	fitScore?: FitResult
+}
+
+interface Emits {
+	(e: 'fit', courseId: number): void
 }
 
 const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
 
-const { t } = useI18n()
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
 
@@ -71,17 +74,6 @@ function handleRowClick() {
 			<div class="flex min-w-0 items-center gap-2">
 				<span :title="getCourseTitle(course)" class="truncate">{{ getCourseTitle(course) }}</span>
 				<CourseStatusIndicator :course="course" />
-				<span
-					v-if="fitScore"
-					class="inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium"
-					:class="{
-						'bg-green-100 text-green-700': fitScore.fitReason === 'fills_gap',
-						'bg-blue-100 text-blue-700': fitScore.fitReason === 'same_day',
-						'bg-(--insis-surface-2) text-(--insis-text-3)': fitScore.fitReason === 'new_day' || fitScore.fitReason === 'neutral'
-					}"
-				>
-					{{ t(`fitReason.${fitScore.fitReason}`) }}
-				</span>
 			</div>
 		</td>
 
@@ -101,12 +93,23 @@ function handleRowClick() {
 		<!-- Schedule -->
 		<td class="text-[11.5px] text-(--insis-text-3)">{{ scheduleSummary }}</td>
 
-		<!-- Expand chevron -->
+		<!-- Actions: fit-into-timetable + expand chevron -->
 		<td class="text-right">
-			<IconChevronDown
-				:class="['inline h-3.5 w-3.5 shrink-0 text-(--insis-text-3) transition-transform duration-200', isExpanded && 'rotate-180']"
-				aria-hidden="true"
-			/>
+			<div class="flex items-center justify-end gap-1">
+				<button
+					v-if="!isSelected && timetableStore.selectedUnits.length > 0"
+					type="button"
+					class="insis-btn insis-btn-secondary h-6 px-1.5"
+					:aria-label="$t('pages.courses.fitIntoTimetable')"
+					@click.stop="emit('fit', course.id)"
+				>
+					<IconSparkles class="h-3 w-3" aria-hidden="true" />
+				</button>
+				<IconChevronDown
+					:class="['inline h-3.5 w-3.5 shrink-0 text-(--insis-text-3) transition-transform duration-200', isExpanded && 'rotate-180']"
+					aria-hidden="true"
+				/>
+			</div>
 		</td>
 	</tr>
 

@@ -90,6 +90,23 @@ getSlotDay(slot)
 InSISDay | null        // slot.day ?? getDayFromDate(slot.date)
 ```
 
+### `computeFitScore(course, timetableUnits)` / `computeFitScores(courses, timetableUnits)`
+
+Exported from `useFitScore.ts`. Pure functions (no Vue hooks) — safe to call in computed properties.
+
+```typescript
+interface FitResult {
+  courseId: number
+  score: number          // -Infinity = all slots conflict; 50 fills_gap; 20 same_day; 0 neutral; -15 new_day
+  fitReason: 'fills_gap' | 'same_day' | 'new_day' | 'neutral'
+}
+
+computeFitScore(course: CourseWithRelationsDTO, timetableUnits: SelectedCourseUnit[]): FitResult
+computeFitScores(courses: CourseWithRelationsDTO[], timetableUnits: SelectedCourseUnit[]): Map<number, FitResult>
+```
+
+Used by `courses.vue` when `filtersStore.fitScoreActive` is true to rank and filter the course list.
+
 ### `useDebounce(initialValue, opts)`
 
 Debounced reactive ref pair:

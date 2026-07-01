@@ -155,8 +155,8 @@ const showEmptyTimetable = computed(() => uiStore.viewMode === 'timetable' && ti
 const selectedCoursesCount = computed(() => timetableStore.selectedCourseIds.length)
 
 const fitScores = computed(() => {
-	if (!filtersStore.fitScoreActive) return undefined
-	if (timetableStore.selectedUnits.length === 0) return undefined
+	if (!filtersStore.fitScoreActive) return
+	if (timetableStore.selectedUnits.length === 0) return
 	return computeFitScores(coursesStore.courses, timetableStore.selectedUnits)
 })
 

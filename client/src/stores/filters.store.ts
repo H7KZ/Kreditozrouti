@@ -36,8 +36,9 @@ function createDefaultFilters(): CoursesFilter {
 export const useFiltersStore = defineStore('filters', () => {
 	const filters = ref<CoursesFilter>(createDefaultFilters())
 	const hideConflictingCourses = ref(false)
-	const fitScoreActive = ref(false)
 	const timetableExcludeTimes = ref<TimeSelection[]>([])
+	// ponytail: not persisted — intentionally resets on page reload
+	const fitScoreActive = ref(false)
 
 	const mergedExcludeTimes = computed<TimeSelection[]>(() => {
 		const manual = filters.value.exclude_times ?? []
@@ -150,8 +151,8 @@ export const useFiltersStore = defineStore('filters', () => {
 	return {
 		filters,
 		hideConflictingCourses,
-		fitScoreActive,
 		timetableExcludeTimes,
+		fitScoreActive,
 		mergedExcludeTimes,
 		activeFilterCount,
 		hasActiveFilters,

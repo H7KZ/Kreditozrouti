@@ -21,14 +21,15 @@ A complete reference for every Kreditožrouti feature. Jump to the section you n
 
 ## Views
 
-Toggle between two ways to see your courses:
+Toggle between three ways to see your courses:
 
 | View             | What you see                                                                          |
 |------------------|---------------------------------------------------------------------------------------|
 | **Course List**  | Sortable table — course code, title, faculty, ECTS, completion mode, schedule summary |
 | **My Timetable** | Weekly grid Monday–Friday, 07:30–20:00 — selected courses shown as coloured blocks    |
+| **Optimizer**    | Basket-based timetable generator — pick courses, set constraints, get ranked schedules |
 
-Switch using the **Course List / My Timetable** buttons in the top bar. Your preference is saved.
+Switch using the tabs in the header bar. Course List and My Timetable preferences are saved; the Optimizer tab always starts fresh.
 
 ---
 
@@ -52,6 +53,7 @@ The left sidebar contains all filters. Active filters are counted in the sidebar
 | **Time restriction**         | Include only courses that have a slot in a specific day + time range (see also [Drag-to-filter](#drag-to-filter))                                            |
 | **Completed courses**        | Toggle to show or hide courses you've marked as already passed                                                                                               |
 | **Hide conflicting courses** | Hides courses where _all_ available time slots overlap with your current timetable selection. Courses with at least one non-conflicting slot remain visible. |
+| **Fits my timetable**        | Sorts the course list by how well each course fits into your current timetable (fills a gap → same day → new day) and hides courses that conflict with every available slot. Disabled when your timetable is empty. Each row shows a reason badge (e.g. "Fills gap"). |
 
 Filters are combined — all active filters apply at once. Use **Clear all** in the sidebar header to reset everything.
 
@@ -85,29 +87,34 @@ assessments, syllabus). From the panel you can:
 
 ## Timetable optimizer
 
-Click the sparkles **Optimize timetable** button in the top toolbar (always visible, even with an empty timetable) to
-auto-generate conflict-free timetable candidates instead of building one course-by-course.
+Open the **Optimizer** tab (sparkles icon in the header) to auto-generate conflict-free timetable candidates
+instead of building your schedule course-by-course.
 
-1. The **constraint drawer** opens first — configure required courses, excluded courses, min/max ECTS credits,
-   preferred days, blackout time windows, and a max-consecutive-hours limit. All fields are optional; leave them
-   blank to let the solver choose freely.
-2. Click **Generate timetables**. The solver searches the current course pool (the courses matching your active
-   filters) and returns up to 5 ranked candidates in the **results drawer**.
-3. Each candidate shows a mini timetable grid alongside a **score breakdown** (campus conflicts, schedule gaps,
-   off-preferred-day classes, and long study blocks — lower is better) and a summary of what changed versus your
-   current selections.
-4. Click **Use this timetable** to apply a candidate via the same mechanism as manual selection. If your current
-   timetable has different courses selected, you'll be asked to confirm the replacement first.
+### Setup
 
-If the search takes too long or your filtered course pool is very large, the results drawer shows a non-blocking
-notice — the best candidates found so far are still usable, they just aren't guaranteed to be globally optimal.
+1. **Add courses to your basket** — type a course code or name in the search box and click to add. Remove courses
+   with the × button. The basket holds the courses you want the solver to schedule.
+2. **Set constraints** (all optional):
+   - **Min / max ECTS** — total credit range for the generated schedule
+   - **Preferred days** — toggle the days you'd like classes on; the solver deprioritises other days but doesn't
+     block them if no alternative exists
+   - **Blackout windows** — mark time ranges when you're unavailable (e.g. a part-time job)
+   - **Max consecutive hours** — cap how many hours can be scheduled back-to-back
+3. Click **Generate timetables**. Constraints are saved automatically and reused next time you open the tab.
 
-**Fit into timetable:** once you have at least one course selected, an additional sparkles **Fit into timetable**
-button appears next to any unselected course row. Clicking it skips the constraint drawer (it reuses your last-used
-constraints) and tries to slot that one course into your existing timetable without disturbing your other
-selections. If no clean slot exists, the solver retries once by allowing exactly one existing class to move — if
-that succeeds, the results drawer tells you which class would move before you apply it; if nothing works even then,
-you're told the course doesn't fit.
+### Results
+
+The solver runs two passes:
+
+- **All courses scheduled** — up to 5 ranked candidates where every basket course fits without conflicts
+- **If you drop one course…** — one best candidate per basket course, showing what the schedule looks like if that
+  course is removed. Only shown when no full schedule exists.
+
+Each result card shows a **mini timetable grid**. Click a card to open a full timetable preview with the weekly
+grid — newly added units are highlighted in amber so you can see what would change versus your current schedule.
+The preview also shows a score breakdown (campus conflicts, schedule gaps, off-preferred days, long study blocks).
+
+Click **Use this timetable** in the preview to apply the candidate. Your current timetable is replaced.
 
 ---
 

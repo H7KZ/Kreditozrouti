@@ -41,11 +41,16 @@ function add(id: number) {
 }
 
 function remove(id: number) {
-	emit('update:modelValue', props.modelValue.filter(x => x !== id))
+	emit(
+		'update:modelValue',
+		props.modelValue.filter(x => x !== id)
+	)
 }
 
 function onBlur() {
-	setTimeout(() => { open.value = false }, 150)
+	setTimeout(() => {
+		open.value = false
+	}, 150)
 }
 </script>
 
@@ -57,11 +62,7 @@ function onBlur() {
 
 		<!-- Basket items -->
 		<ul v-if="basketCourses.length > 0" class="flex flex-col gap-1">
-			<li
-				v-for="c in basketCourses"
-				:key="c.id"
-				class="flex items-center justify-between gap-2 rounded bg-(--insis-surface-2) px-2 py-1 text-sm"
-			>
+			<li v-for="c in basketCourses" :key="c.id" class="flex items-center justify-between gap-2 rounded bg-(--insis-surface-2) px-2 py-1 text-sm">
 				<span class="min-w-0">
 					<span class="font-medium text-(--insis-text)">{{ c.ident }}</span>
 					<span class="ml-1.5 truncate text-xs text-(--insis-text-3)">{{ courseTitle(c) }}</span>

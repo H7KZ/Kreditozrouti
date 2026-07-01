@@ -20,9 +20,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 // Units in this candidate not already in the current timetable → amber ring
-const highlightUnitIds = computed(() =>
-	props.candidate.units.filter(u => !props.currentUnitIds.has(u.unitId)).map(u => u.unitId)
-)
+const highlightUnitIds = computed(() => props.candidate.units.filter(u => !props.currentUnitIds.has(u.unitId)).map(u => u.unitId))
 
 // Cast SelectedCourseUnitDTO → SelectedCourseUnit (same shape, compatible)
 const units = computed(() => props.candidate.units as unknown as SelectedCourseUnit[])
@@ -39,14 +37,26 @@ const score = computed(() => props.candidate.score)
 					<h2 class="text-sm font-semibold text-(--insis-text)">
 						{{ title ?? t('components.optimizer.TimetablePreviewModal.title') }}
 					</h2>
-					<button type="button" class="cursor-pointer text-(--insis-text-3) hover:text-(--insis-text)" :aria-label="t('common.close')" @click="emit('close')">
+					<button
+						type="button"
+						class="cursor-pointer text-(--insis-text-3) hover:text-(--insis-text)"
+						:aria-label="t('common.close')"
+						@click="emit('close')"
+					>
 						<IconX class="h-4 w-4" />
 					</button>
 				</div>
 
 				<!-- Timetable -->
 				<div class="min-h-0 flex-1 overflow-auto p-4">
-					<TimetableGrid :units="units" :highlight-unit-ids="highlightUnitIds" :show-share="false" :show-export="false" :enable-drag="false" :enable-course-modal="false" />
+					<TimetableGrid
+						:units="units"
+						:highlight-unit-ids="highlightUnitIds"
+						:show-share="false"
+						:show-export="false"
+						:enable-drag="false"
+						:enable-course-modal="false"
+					/>
 				</div>
 
 				<!-- Score breakdown + actions -->

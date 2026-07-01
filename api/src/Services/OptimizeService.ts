@@ -80,16 +80,11 @@ export default class OptimizeService {
 	 * Called before solveWithDeadline so the constraint is enforced without threading it into
 	 * the recursive solver.
 	 */
-	private static filterCandidatesByBlackout(
-		variables: SolverVariable[],
-		blackoutWindows: SolverConstraints['blackout_windows']
-	): SolverVariable[] {
+	private static filterCandidatesByBlackout(variables: SolverVariable[], blackoutWindows: SolverConstraints['blackout_windows']): SolverVariable[] {
 		if (!blackoutWindows?.length) return variables
 		return variables.map(v => ({
 			...v,
-			domain: v.domain.filter(
-				c => !blackoutWindows.some(w => w.day && c.day === w.day && c.timeFrom < w.time_to && c.timeTo > w.time_from)
-			)
+			domain: v.domain.filter(c => !blackoutWindows.some(w => w.day && c.day === w.day && c.timeFrom < w.time_to && c.timeTo > w.time_from))
 		}))
 	}
 
@@ -134,10 +129,7 @@ export default class OptimizeService {
 	 * Rebuilds a SolverSlotCandidate into the wire-format SelectedCourseUnitDTO,
 	 * using the SAME field mapping as timetable.store's addUnit.
 	 */
-	private static toSelectedCourseUnitDTO(
-		candidate: SolverSlotCandidate,
-		courseById: Map<number, CourseWithRelationsDTO>
-	): SelectedCourseUnitDTO {
+	private static toSelectedCourseUnitDTO(candidate: SolverSlotCandidate, courseById: Map<number, CourseWithRelationsDTO>): SelectedCourseUnitDTO {
 		const course = courseById.get(candidate.courseId)
 		const unit = course?.units.find(u => u.id === candidate.unitId)
 
@@ -183,18 +175,18 @@ export default class OptimizeService {
 		if (assignments.length === 0) return []
 		const scored = assignments.map(assignment => ({ assignment, score: scoreCandidate(assignment, constraints, DEFAULT_WEIGHTS) }))
 		scored.sort((a, b) => a.score.total - b.score.total)
-		const kept = diversityFilter(scored.map(s => s.assignment), MAX_CANDIDATES)
+		const kept = diversityFilter(
+			scored.map(s => s.assignment),
+			MAX_CANDIDATES
+		)
 		return kept.map(assignment => ({
 			units: Object.values(assignment).map(c => OptimizeService.toSelectedCourseUnitDTO(c, courseById)),
-			score: OptimizeService.toScoreBreakdownDTO(scoreCandidate(assignment, constraints, DEFAULT_WEIGHTS))
+			score: OptimizeService.toScoreBreakdownDTO(scoreCandidate(assignment, constraints, DEFAULT_WEIGHTS)),
+			changed_unit_ids: [] as number[]
 		}))
 	}
 
-	private static optimizeBuild(
-		courses: CourseWithRelationsDTO[],
-		request: OptimizeRequest,
-		poolTruncated: boolean
-	): OptimizeResponseDTO {
+	private static optimizeBuild(courses: CourseWithRelationsDTO[], request: OptimizeRequest, poolTruncated: boolean): OptimizeResponseDTO {
 		try {
 			const courseById = new Map(courses.map(c => [c.id, c]))
 			const allVariables = OptimizeService.buildVariables(courses)
@@ -209,7 +201,7 @@ export default class OptimizeService {
 			)
 
 			// Pass 2: drop one course at a time, keep best per dropped course
-			const removalResults: Array<{ course: CourseWithRelationsDTO; candidate: OptimizerCandidateDTO }> = []
+			const removalResults: { course: CourseWithRelationsDTO; candidate: OptimizerCandidateDTO }[] = []
 			const pass2Deadline = Date.now() + SOLVER_BUDGET_MS
 			let anyPartial2 = false
 

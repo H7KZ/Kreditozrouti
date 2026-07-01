@@ -31,7 +31,7 @@ const { t } = useI18n()
 
 		<!-- Full candidates -->
 		<section v-if="fullCandidates.length > 0">
-			<h4 class="mb-2 text-xs font-semibold uppercase tracking-wide text-(--insis-text-3)">
+			<h4 class="mb-2 text-xs font-semibold tracking-wide text-(--insis-text-3) uppercase">
 				{{ t('components.optimizer.ResultsGrid.fullCandidatesTitle') }}
 			</h4>
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -59,7 +59,7 @@ const { t } = useI18n()
 
 		<!-- Removal candidates -->
 		<section v-if="removalCandidates.length > 0">
-			<h4 class="mb-2 text-xs font-semibold uppercase tracking-wide text-(--insis-text-3)">
+			<h4 class="mb-2 text-xs font-semibold tracking-wide text-(--insis-text-3) uppercase">
 				{{ t('components.optimizer.ResultsGrid.removalCandidatesTitle') }}
 			</h4>
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">

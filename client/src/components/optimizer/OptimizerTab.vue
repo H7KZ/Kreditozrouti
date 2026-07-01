@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import type { OptimizerCandidateDTO } from '@shared/http/optimize'
-import type { SelectedCourseUnit } from '@client/types'
-import type { OptimizerState, OptimizerResults } from '@client/types/optimizer'
+import type { OptimizerResults, OptimizerState, SelectedCourseUnit } from '@client/types'
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useOptimizer } from '@client/composables'
@@ -28,7 +27,6 @@ const constraints = ref(loadConstraints())
 const results = ref<OptimizerResults | null>(null)
 const previewCandidate = ref<OptimizerCandidateDTO | null>(null)
 const previewTitle = ref<string | undefined>(undefined)
-const applyConfirmPending = ref(false)
 
 const currentUnitIdSet = computed(() => new Set(timetableStore.selectedUnits.map(u => u.unitId)))
 
@@ -41,7 +39,7 @@ async function runOptimize() {
 	optimizerState.value = 'generating'
 	try {
 		saveConstraints(constraints.value)
-		const response = await optimize({ course_ids: basketIds.value, constraints: constraints.value })
+		const response = await optimize({ course_ids: basketIds.value, constraints: constraints.value, mode: 'build' })
 		results.value = {
 			fullCandidates: response.full_candidates,
 			removalCandidates: response.removal_candidates,
@@ -68,7 +66,12 @@ function applyCandidate() {
 function handleGridPreview(candidate: OptimizerCandidateDTO) {
 	// Check if it's a removal candidate by duck-typing
 	const isRemoval = 'dropped_course_title' in candidate
-	openPreview(candidate, isRemoval ? t('components.optimizer.OptimizerTab.dropsTitle', { course: (candidate as { dropped_course_title: string }).dropped_course_title }) : undefined)
+	openPreview(
+		candidate,
+		isRemoval
+			? t('components.optimizer.OptimizerTab.dropsTitle', { course: (candidate as { dropped_course_title: string }).dropped_course_title })
+			: undefined
+	)
 }
 </script>
 
@@ -95,12 +98,7 @@ function handleGridPreview(candidate: OptimizerCandidateDTO) {
 			</div>
 			<div class="border-t border-(--insis-border) p-4">
 				<p v-if="error" class="mb-2 text-xs text-(--insis-danger)">{{ error }}</p>
-				<button
-					type="button"
-					class="insis-btn insis-btn-primary w-full"
-					:disabled="basketIds.length === 0 || loading"
-					@click="runOptimize"
-				>
+				<button type="button" class="insis-btn insis-btn-primary w-full" :disabled="basketIds.length === 0 || loading" @click="runOptimize">
 					<IconLoaderCircle v-if="loading" class="mr-1.5 h-4 w-4 animate-spin" />
 					{{ loading ? t('components.optimizer.OptimizerTab.generating') : t('components.optimizer.OptimizerTab.generate') }}
 				</button>
