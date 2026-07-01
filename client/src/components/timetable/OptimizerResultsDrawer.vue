@@ -15,6 +15,8 @@ interface Props {
 	modelValue: boolean
 	response: OptimizeResponseDTO | null
 	mode: OptimizerMode
+	fitCourseTitle?: string
+	unlockedCourseTitle?: string
 }
 
 interface Emits {
@@ -106,7 +108,9 @@ function handleApply() {
 	const isAdditive = props.mode === 'add'
 	const isIdenticalOrEmpty = timetableStore.selectedSlotIds.length === 0 || candidateMatchesCurrentSelection(candidate)
 
-	if (!isAdditive && !isIdenticalOrEmpty) {
+	const needsReplaceConfirm = !isAdditive && !isIdenticalOrEmpty
+	const needsUnlockConfirm = isAdditive && props.response?.unlocked_course_id !== undefined
+	if (needsReplaceConfirm || needsUnlockConfirm) {
 		if (!window.confirm(t('components.timetable.OptimizerResultsDrawer.replaceConfirm'))) return
 	}
 
@@ -152,7 +156,7 @@ function handleApply() {
 						v-if="mode === 'add' && response?.unlocked_course_id"
 						class="rounded border border-(--insis-warning-border) bg-(--insis-warning-light) px-3 py-2 text-xs text-(--insis-warning)"
 					>
-						{{ t('components.timetable.OptimizerResultsDrawer.unlockedCourseNotice') }}
+						{{ t('components.timetable.OptimizerResultsDrawer.unlockedCourseNotice', { course: props.unlockedCourseTitle ?? '' }) }}
 					</div>
 
 					<!-- Empty state -->
@@ -163,14 +167,14 @@ function handleApply() {
 						<p class="mb-1 text-[15px] font-medium text-(--insis-text)">
 							{{
 								mode === 'add' && response?.unlocked_course_id === undefined
-									? t('components.timetable.OptimizerResultsDrawer.addModeUnsolvableTitle')
+									? t('components.timetable.OptimizerResultsDrawer.addModeUnsolvableTitle', { course: props.fitCourseTitle ?? '' })
 									: t('components.timetable.OptimizerResultsDrawer.emptyTitle')
 							}}
 						</p>
 						<p class="text-sm text-(--insis-text-3)">
 							{{
 								mode === 'add' && response?.unlocked_course_id === undefined
-									? t('components.timetable.OptimizerResultsDrawer.addModeUnsolvableBody')
+									? t('components.timetable.OptimizerResultsDrawer.addModeUnsolvableBody', { course: props.fitCourseTitle ?? '' })
 									: t('components.timetable.OptimizerResultsDrawer.emptyBody')
 							}}
 						</p>

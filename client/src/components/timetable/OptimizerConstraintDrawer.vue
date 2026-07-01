@@ -46,8 +46,11 @@ const newBlackoutFrom = ref('09:15')
 const newBlackoutTo = ref('14:15')
 
 function timeToMinutes(time: string): number {
-	const [h, m] = time.split(':').map(Number)
-	return h * 60 + m
+	const parts = time.split(':')
+	if (parts.length < 2) return NaN
+	const h = Number(parts[0])
+	const m = Number(parts[1])
+	return Number.isNaN(h) || Number.isNaN(m) ? NaN : h * 60 + m
 }
 
 function minutesToTime(minutes: number): string {
@@ -61,7 +64,7 @@ function initFromConstraints() {
 	creditMin.value = initial?.credit_min ?? null
 	creditMax.value = initial?.credit_max ?? null
 	preferredDays.value = initial?.preferred_days ? [...initial.preferred_days] : []
-	maxConsecutiveHours.value = initial?.max_consecutive_minutes ? Math.round(initial.max_consecutive_minutes / 60) : null
+	maxConsecutiveHours.value = initial?.max_consecutive_minutes != null ? initial.max_consecutive_minutes / 60 : null
 	blackoutWindows.value = (initial?.blackout_windows ?? []).map(w => ({
 		day: w.day,
 		timeFrom: minutesToTime(w.time_from),
@@ -96,6 +99,7 @@ function addBlackoutWindow() {
 	if (!newBlackoutDay.value) return
 	const fromMins = timeToMinutes(newBlackoutFrom.value)
 	const toMins = timeToMinutes(newBlackoutTo.value)
+	if (Number.isNaN(fromMins) || Number.isNaN(toMins)) return
 	if (fromMins >= toMins) return
 
 	blackoutWindows.value.push({
@@ -124,10 +128,10 @@ function handleGenerate() {
 
 	if (requiredCourseIds.value.length > 0) constraints.required_course_ids = [...requiredCourseIds.value]
 	if (excludedCourseIds.value.length > 0) constraints.excluded_course_ids = [...excludedCourseIds.value]
-	if (creditMin.value != null) constraints.credit_min = creditMin.value
-	if (creditMax.value != null) constraints.credit_max = creditMax.value
+	if (creditMin.value != null && !Number.isNaN(creditMin.value)) constraints.credit_min = creditMin.value
+	if (creditMax.value != null && !Number.isNaN(creditMax.value)) constraints.credit_max = creditMax.value
 	if (preferredDays.value.length > 0) constraints.preferred_days = [...preferredDays.value]
-	if (maxConsecutiveHours.value != null) constraints.max_consecutive_minutes = maxConsecutiveHours.value * 60
+	if (maxConsecutiveHours.value != null && !Number.isNaN(maxConsecutiveHours.value)) constraints.max_consecutive_minutes = maxConsecutiveHours.value * 60
 	if (blackoutWindows.value.length > 0) {
 		constraints.blackout_windows = blackoutWindows.value.map(w => ({
 			day: w.day,
