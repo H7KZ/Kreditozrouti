@@ -52,7 +52,7 @@ export interface OptimizeRequest {
 	course_ids: number[]
 	constraints: SolverConstraints
 	mode: 'build' | 'add'
-	/** Required when mode === 'add': slot/unit IDs from the student's current selections that must stay fixed. */
+	/** Required when mode === 'add': unit IDs (CourseUnit PKs, not slot IDs) from the student's current selections that must stay fixed. */
 	locked_unit_ids?: number[]
 }
 

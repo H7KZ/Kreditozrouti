@@ -211,7 +211,7 @@ scraper's `scraperRateLimit()`).
 		max_consecutive_minutes ? : number
 	}
 	mode ? : 'build' | 'add'        // default 'build'
-	locked_unit_ids ? : number[]     // required in practice for mode 'add' — units that must stay fixed
+	locked_unit_ids ? : number[]     // required in practice for mode 'add' — CourseUnit PKs (unitId, not slotId) that must stay fixed
 }
 ```
 
