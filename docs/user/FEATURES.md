@@ -5,6 +5,7 @@ A complete reference for every Kreditožrouti feature. Jump to the section you n
 - [Views](#views)
 - [Filters](#filters)
 - [Building your timetable](#building-your-timetable)
+- [Timetable optimizer](#timetable-optimizer)
 - [Conflict detection](#conflict-detection)
 - [Drag-to-filter](#drag-to-filter)
 - [Refresh from InSIS](#refresh-from-insis)
@@ -79,6 +80,34 @@ assessments, syllabus). From the panel you can:
 - **Search in timeslot** — switches to the Course List view pre-filtered to courses available in that exact time window
 - **Remove from timetable** — removes all slots of that course at once
 - **Open in InSIS** — external link in the course title
+
+---
+
+## Timetable optimizer
+
+Click the sparkles **Optimize timetable** button in the top toolbar (always visible, even with an empty timetable) to
+auto-generate conflict-free timetable candidates instead of building one course-by-course.
+
+1. The **constraint drawer** opens first — configure required courses, excluded courses, min/max ECTS credits,
+   preferred days, blackout time windows, and a max-consecutive-hours limit. All fields are optional; leave them
+   blank to let the solver choose freely.
+2. Click **Generate timetables**. The solver searches the current course pool (the courses matching your active
+   filters) and returns up to 5 ranked candidates in the **results drawer**.
+3. Each candidate shows a mini timetable grid alongside a **score breakdown** (campus conflicts, schedule gaps,
+   off-preferred-day classes, and long study blocks — lower is better) and a summary of what changed versus your
+   current selections.
+4. Click **Use this timetable** to apply a candidate via the same mechanism as manual selection. If your current
+   timetable has different courses selected, you'll be asked to confirm the replacement first.
+
+If the search takes too long or your filtered course pool is very large, the results drawer shows a non-blocking
+notice — the best candidates found so far are still usable, they just aren't guaranteed to be globally optimal.
+
+**Fit into timetable:** once you have at least one course selected, an additional sparkles **Fit into timetable**
+button appears next to any unselected course row. Clicking it skips the constraint drawer (it reuses your last-used
+constraints) and tries to slot that one course into your existing timetable without disturbing your other
+selections. If no clean slot exists, the solver retries once by allowing exactly one existing class to move — if
+that succeeds, the results drawer tells you which class would move before you apply it; if nothing works even then,
+you're told the course doesn't fit.
 
 ---
 

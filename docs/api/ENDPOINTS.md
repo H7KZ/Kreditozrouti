@@ -186,6 +186,64 @@ Returns courses belonging to a specific study plan.
 
 ---
 
+### `POST /optimize`
+
+Runs the timetable solver against a candidate course pool and returns up to 5 ranked,
+diversity-filtered conflict-free timetable candidates.
+
+**Controller:** `OptimizeController` · **Service:** `OptimizeService.optimize` · **Router:** `OptimizeRoutes`
+
+**Rate limit:** 10 requests/10 minutes per IP (`optimizeRateLimit()`, separate Redis-backed limiter from the
+scraper's `scraperRateLimit()`).
+
+**Request body** (validated by a Zod schema co-located in `OptimizeController.ts`):
+
+```typescript
+{
+	course_ids: number[]           // required, min 1 — candidate pool to solve over
+	constraints: {
+		required_course_ids ? : number[]
+		excluded_course_ids ? : number[]
+		credit_min ? : number
+		credit_max ? : number
+		blackout_windows ? : TimeSelection[]
+		preferred_days ? : Day[]
+		max_consecutive_minutes ? : number
+	}
+	mode ? : 'build' | 'add'        // default 'build'
+	locked_unit_ids ? : number[]     // required in practice for mode 'add' — units that must stay fixed
+}
+```
+
+**200 response:**
+
+```typescript
+{
+	candidates: Array<{
+		units: SelectedCourseUnitDTO[]
+		score: { campus_conflicts: number, gap_minutes: number, off_preferred_days: number, long_study_blocks: number, total: number }
+		changed_unit_ids: number[]   // unit IDs differing from the student's current selection
+	}>
+	partial: boolean                 // true if the solver's deadline fired before the search space was exhausted
+	unlocked_course_id ? : number     // only in 'add' mode, when a clean slot required unlocking one existing course
+	pool_truncated: boolean          // true if course_ids exceeded MAX_POOL_SIZE (30) and the excess was dropped
+}
+```
+
+**Pool truncation:** `course_ids` longer than `MAX_POOL_SIZE` (30, defined in `shared/http/optimize.ts`) are capped
+before solving — `required_course_ids` are always kept, the remainder is truncated — and `pool_truncated: true` is
+returned so the client can show a narrowing notice.
+
+**Partial-result-on-timeout behavior:** the solver runs under a `SOLVER_BUDGET_MS` (4500 ms) deadline
+(`solveWithDeadline`). If the deadline fires before exhausting the search space, the best candidates found so far are
+still returned with `partial: true` — this is not an error path. In `add` mode, if no candidate is found with all
+existing selections locked, the service retries once with a single unit unlocked and reports `unlocked_course_id`
+on success.
+
+**Errors:** `403` (`Errors.validation`) if the request body fails Zod validation, `429` if rate limited.
+
+---
+
 ### `GET /health`
 
 Returns `200 OK` immediately — no logic, used by load balancers.

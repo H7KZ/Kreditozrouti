@@ -258,6 +258,8 @@
 			"showingResults": "Zobrazeno {from} – {to} z {total} předmětů",
 			"pageInfo": "Stránka {current} z {total}",
 			"completedCoursesHidden": "{count} dokončených kurzů (skryto) | {count} dokončený kurz (skrytý) | {count} dokončené kurzy (skryty)",
+			"optimizeTimetable": "Optimalizovat rozvrh",
+			"fitIntoTimetable": "Vměstnat do rozvrhu",
 			"emptyTimetable": {
 				"title": "Váš rozvrh je prázdný",
 				"description": "Přidejte předměty ze seznamu nebo táhněte přes prázdné sloty pro vyhledání předmětů v daném čase.",
@@ -534,6 +536,43 @@
 				"newSchedule": "Nový rozvrh",
 				"saveToTabs": "Uložit aktuální do záložek",
 				"newFromCurrent": "Vytvořit kopii tohoto"
+			},
+			"OptimizerConstraintDrawer": {
+				"title": "Optimalizujte svůj rozvrh",
+				"requiredCourses": "Povinné předměty",
+				"excludedCourses": "Vyloučené předměty",
+				"creditMin": "Min. počet kreditů",
+				"creditMax": "Max. počet kreditů",
+				"preferredDays": "Preferované dny",
+				"blackoutWindows": "Zakázaná časová okna",
+				"maxConsecutiveHours": "Max. hodin po sobě",
+				"generate": "Vygenerovat rozvrhy",
+				"cancel": "Zrušit"
+			},
+			"OptimizerResultsDrawer": {
+				"title": "Navržené rozvrhy",
+				"cancel": "Zrušit",
+				"loading": "Hledám pro vás nejlepší rozvrhy…",
+				"emptyTitle": "Nebyl nalezen žádný bezkolizní rozvrh",
+				"emptyBody": "Zkuste rozšířit svá omezení — například uvolněte zakázaná okna nebo snižte počet povinných předmětů — a vygenerujte znovu.",
+				"addModeUnsolvableTitle": "{course} se do rozvrhu nevejde",
+				"addModeUnsolvableBody": "{course} se do vašeho rozvrhu nevejde, ani po pokusu přesunout jinou hodinu.",
+				"candidateTab": "Varianta {n}",
+				"scoreBreakdown": "Rozpis skóre",
+				"campusConflicts": "Kolize kampusů",
+				"scheduleGaps": "Mezery v rozvrhu",
+				"offPreferredDays": "Mimo preferované dny",
+				"longStudyBlocks": "Dlouhé bloky výuky",
+				"diffSummary": "Změny oproti aktuálnímu rozvrhu",
+				"useThisTimetable": "Použít tento rozvrh",
+				"replaceConfirm": "Použití tohoto rozvrhu nahradí váš aktuální výběr předmětů. Pokračovat?",
+				"partialResultsNotice": "Hledání trvalo déle — zobrazeny nejlepší dosud nalezené výsledky.",
+				"poolTruncatedNotice": "Zohledněno bylo pouze prvních {count} filtrovaných předmětů — pro zahrnutí zbytku zúžete filtry.",
+				"unlockedCourseNotice": "Tento předmět vyžaduje přesun 1 jiné hodiny: {course}",
+				"errorTimeout": "Požadavek trval příliš dlouho",
+				"errorRateLimit": "Příliš mnoho požadavků",
+				"errorValidation": "Zkontrolujte svá omezení",
+				"errorGeneric": "Rozvrhy se teď nepodařilo vygenerovat. {reason}. Zkuste to za chvíli znovu."
 			}
 		}
 	},

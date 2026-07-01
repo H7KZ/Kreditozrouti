@@ -258,6 +258,8 @@
 			"showingResults": "Showing {from}–{to} of {total} courses",
 			"pageInfo": "Page {current} of {total}",
 			"completedCoursesHidden": "{count} completed course (hidden) | {count} completed courses (hidden)",
+			"optimizeTimetable": "Optimize timetable",
+			"fitIntoTimetable": "Fit into timetable",
 			"emptyTimetable": {
 				"title": "Your timetable is empty",
 				"description": "Add courses from the list or drag across empty slots to search for courses at that time.",
@@ -534,6 +536,43 @@
 				"newSchedule": "New Schedule",
 				"saveToTabs": "Save current to Tabs",
 				"newFromCurrent": "New from this"
+			},
+			"OptimizerConstraintDrawer": {
+				"title": "Optimize your timetable",
+				"requiredCourses": "Required courses",
+				"excludedCourses": "Excluded courses",
+				"creditMin": "Min. credits",
+				"creditMax": "Max. credits",
+				"preferredDays": "Preferred days",
+				"blackoutWindows": "Blackout windows",
+				"maxConsecutiveHours": "Max. consecutive hours",
+				"generate": "Generate timetables",
+				"cancel": "Cancel"
+			},
+			"OptimizerResultsDrawer": {
+				"title": "Suggested timetables",
+				"cancel": "Cancel",
+				"loading": "Finding the best timetables for you…",
+				"emptyTitle": "No conflict-free timetable found",
+				"emptyBody": "Try widening your constraints — for example, relax blackout windows or reduce required courses — and generate again.",
+				"addModeUnsolvableTitle": "{course} doesn't fit your timetable",
+				"addModeUnsolvableBody": "{course} doesn't fit your timetable, even after trying to move one other class.",
+				"candidateTab": "Option {n}",
+				"scoreBreakdown": "Score breakdown",
+				"campusConflicts": "Campus conflicts",
+				"scheduleGaps": "Schedule gaps",
+				"offPreferredDays": "Off-preferred days",
+				"longStudyBlocks": "Long study blocks",
+				"diffSummary": "Changes vs. current timetable",
+				"useThisTimetable": "Use this timetable",
+				"replaceConfirm": "Applying this timetable will replace your current course selections. Continue?",
+				"partialResultsNotice": "Search took a while — showing the best results found so far.",
+				"poolTruncatedNotice": "Only your first {count} filtered courses were considered — narrow your filters to include the rest.",
+				"unlockedCourseNotice": "This course requires moving 1 other class: {course}",
+				"errorTimeout": "Request took too long",
+				"errorRateLimit": "Too many requests",
+				"errorValidation": "Check your constraints",
+				"errorGeneric": "Couldn't generate timetables right now. {reason}. Try again in a moment."
 			}
 		}
 	},
