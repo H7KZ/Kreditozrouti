@@ -79,6 +79,19 @@ function isConsistent(candidate: SolverSlotCandidate, assignment: SolverAssignme
 }
 
 /**
+ * Upper bound on the number of complete assignments accumulated by
+ * solveWithDeadline before the search stops branching into new candidates.
+ * Downstream callers only ever need the top 5 diverse candidates (see
+ * diversityFilter), and enumerating literally every complete conflict-free
+ * assignment is a combinatorially harder problem than "find enough good
+ * candidates to rank" — without this cap, realistic-scale pools (e.g. 20
+ * courses x 3 slots) can have far more complete assignments than fit in the
+ * <5s budget, even though a suitable subset is found almost immediately.
+ * Reaching this cap is NOT a deadline trip: it does not set `partial`.
+ */
+const MAX_SOLUTIONS = 200
+
+/**
  * Exact backtracking search over (course, unitType) variables using a
  * most-constrained-variable (fail-first) ordering heuristic and hard-overlap
  * pruning. The deadline is polled INSIDE the recursion (`Date.now() >
@@ -93,6 +106,7 @@ export function solveWithDeadline(variables: SolverVariable[], locked: SolverSlo
 	let hitDeadline = false
 
 	function recurse(vars: SolverVariable[], assignment: SolverAssignment): void {
+		if (found.length >= MAX_SOLUTIONS) return
 		if (Date.now() > deadline) {
 			hitDeadline = true
 			return
@@ -108,7 +122,7 @@ export function solveWithDeadline(variables: SolverVariable[], locked: SolverSlo
 		if (!variable) return
 
 		for (const candidate of variable.domain) {
-			if (hitDeadline) return
+			if (hitDeadline || found.length >= MAX_SOLUTIONS) return
 			if (!isConsistent(candidate, assignment, locked)) continue
 			const key = `${variable.courseId}:${variable.unitType}`
 			recurse(rest, { ...assignment, [key]: candidate })

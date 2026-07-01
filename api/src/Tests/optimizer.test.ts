@@ -11,6 +11,8 @@ import type {
 	SolverSlotCandidate,
 	SolverVariable
 } from '@shared/domain/optimizer'
+import type { Day } from '@shared/domain/constants'
+import type { CourseUnitType } from '@shared/domain/insis'
 import type { SolverConstraints } from '@shared/http/optimize'
 
 function slot(overrides: Partial<SolverSlotCandidate> = {}): SolverSlotCandidate {
@@ -209,5 +211,72 @@ describe('diversityFilter', () => {
 		const result = diversityFilter(candidates, 5)
 
 		expect(result.length).toBeLessThanOrEqual(5)
+	})
+})
+
+describe('performance at realistic scale', () => {
+	const DAYS: Day[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+	// Six 90-minute slots per day, back-to-back, 08:00-17:00 -> 30 day/time buckets total.
+	const HOUR_SLOTS = [480, 570, 660, 750, 840, 930]
+	const BUCKET_COUNT = DAYS.length * HOUR_SLOTS.length
+
+	let nextUnitId = 1
+
+	/**
+	 * Builds one variable's 3-slot domain starting at `homeBucket` and spanning
+	 * `homeBucket, homeBucket+1, homeBucket+2` (mod BUCKET_COUNT). Consecutive
+	 * courses' home buckets are only 2 apart (see buildSyntheticVariables), so
+	 * each course's domain window overlaps its neighbors' by one bucket -- real
+	 * hard-overlap pruning work -- while still leaving enough of the 30-bucket
+	 * space for complete, conflict-free assignments to exist and be found well
+	 * within budget (this is NOT a trivial all-conflict-free fixture).
+	 */
+	function buildSyntheticVariable(courseId: number, unitType: CourseUnitType, homeBucket: number): SolverVariable {
+		const domain: SolverSlotCandidate[] = [0, 1, 2].map(offset => {
+			const bucket = (homeBucket + offset) % BUCKET_COUNT
+			const day = DAYS[Math.floor(bucket / HOUR_SLOTS.length)]
+			const timeFrom = HOUR_SLOTS[bucket % HOUR_SLOTS.length]
+			// Alternate campuses so some domain choices carry a soft campus conflict, exercising
+			// scoring without making the whole pool trivially single-campus.
+			const location = (courseId + offset) % 2 === 0 ? 'JM.101' : 'RB.101'
+			return {
+				day,
+				timeFrom,
+				timeTo: timeFrom + 90,
+				location,
+				unitId: nextUnitId++,
+				slotId: courseId * 1000 + (unitType === 'lecture' ? 0 : 500) + offset,
+				courseId,
+				unitType
+			}
+		})
+		return { courseId, unitType, domain }
+	}
+
+	function buildSyntheticVariables(): SolverVariable[] {
+		const variables: SolverVariable[] = []
+		let bucketCursor = 0
+		for (let courseId = 1; courseId <= 20; courseId++) {
+			variables.push(buildSyntheticVariable(courseId, 'lecture', bucketCursor))
+			bucketCursor = (bucketCursor + 2) % BUCKET_COUNT
+			// Half the courses also require a seminar unit, giving a realistic 1-2 unit-types-per-course mix.
+			if (courseId % 2 === 0) {
+				variables.push(buildSyntheticVariable(courseId, 'seminar', bucketCursor))
+				bucketCursor = (bucketCursor + 2) % BUCKET_COUNT
+			}
+		}
+		return variables
+	}
+
+	it('solves a 20-course x up to 2-unit-type x 3-slot pool in under 5s, completing (not truncated by the deadline)', () => {
+		const variables = buildSyntheticVariables()
+
+		const start = Date.now()
+		const result = solveWithDeadline(variables, [], 4500)
+		const elapsedMs = Date.now() - start
+
+		expect(elapsedMs).toBeLessThan(5000)
+		expect(result.partial).toBe(false)
+		expect(result.candidates.length).toBeGreaterThan(0)
 	})
 })
