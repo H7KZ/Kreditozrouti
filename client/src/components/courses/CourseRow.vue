@@ -7,13 +7,19 @@ import CourseStatusIndicator from '@client/components/courses/CourseStatusIndica
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
+import IconSparkles from '~icons/lucide/sparkles'
 
 interface Props {
 	course: CourseWithRelationsDTO
 	colspan: number
 }
 
+interface Emits {
+	(e: 'fit', courseId: number): void
+}
+
 const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
 
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
@@ -87,9 +93,18 @@ function handleRowClick() {
 		<!-- Schedule -->
 		<td class="text-[11.5px] text-(--insis-text-3)">{{ scheduleSummary }}</td>
 
-		<!-- Actions: expand chevron -->
+		<!-- Actions: fit-into-timetable + expand chevron -->
 		<td class="text-right">
 			<div class="flex items-center justify-end gap-1">
+				<button
+					v-if="!isSelected && timetableStore.selectedUnits.length > 0"
+					type="button"
+					class="insis-btn insis-btn-secondary h-6 px-1.5"
+					:aria-label="$t('pages.courses.fitIntoTimetable')"
+					@click.stop="emit('fit', course.id)"
+				>
+					<IconSparkles class="h-3 w-3" aria-hidden="true" />
+				</button>
 				<IconChevronDown
 					:class="['inline h-3.5 w-3.5 shrink-0 text-(--insis-text-3) transition-transform duration-200', isExpanded && 'rotate-180']"
 					aria-hidden="true"

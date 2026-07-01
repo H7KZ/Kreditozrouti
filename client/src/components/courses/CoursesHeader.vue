@@ -8,7 +8,14 @@ import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import { useCourseLabels } from '@client/composables'
 import { useFiltersStore, useTimetableStore, useWizardStore } from '@client/stores'
 import IconArrowLeft from '~icons/lucide/arrow-left'
+import IconSparkles from '~icons/lucide/sparkles'
 import IconTrash from '~icons/lucide/trash-2'
+
+interface Emits {
+	(e: 'optimize'): void
+}
+
+const emit = defineEmits<Emits>()
 
 const { t } = useI18n()
 const router = useRouter()
@@ -73,6 +80,16 @@ function handleClearTimetable() {
 
 		<!-- Right: actions -->
 		<div class="flex items-center gap-2">
+			<button
+				type="button"
+				class="insis-btn insis-btn-secondary h-7"
+				:aria-label="$t('pages.courses.optimizeTimetable')"
+				@click="emit('optimize')"
+			>
+				<IconSparkles class="h-3 w-3" aria-hidden="true" />
+				<span class="hidden sm:inline">{{ $t('pages.courses.optimizeTimetable') }}</span>
+			</button>
+
 			<button
 				v-if="selectedCoursesCount > 0"
 				type="button"
