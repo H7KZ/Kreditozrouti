@@ -32,7 +32,12 @@ const timetableStore = useTimetableStore()
 const uiStore = useUIStore()
 const wizardStore = useWizardStore()
 
-const { optimize, saveConstraints, loadConstraints } = useOptimizer()
+const { optimize, saveConstraints, loadConstraints, loading } = useOptimizer()
+
+const optimizing = ref(false)
+const fitCourseTitleRef = ref('')
+const unlockedCourseTitleRef = ref('')
+const initialConstraints = ref<SolverConstraints>(loadConstraints())
 
 useSeoMeta({
 	title: () => {
@@ -170,12 +175,20 @@ const optimizeResultsOpen = ref(false)
 const optimizeMode = ref<OptimizerMode>('build')
 const optimizeResponse = ref<OptimizeResponseDTO | null>(null)
 
+watch(optimizeConfigOpen, open => {
+	if (open) initialConstraints.value = loadConstraints()
+})
+
 function openOptimizer() {
 	optimizeMode.value = 'build'
 	optimizeConfigOpen.value = true
 }
 
 async function handleGenerate(constraints: SolverConstraints) {
+	if (optimizing.value) return
+	optimizing.value = true
+	fitCourseTitleRef.value = ''
+	unlockedCourseTitleRef.value = ''
 	saveConstraints(constraints)
 
 	const request: OptimizeRequest = {
@@ -191,24 +204,36 @@ async function handleGenerate(constraints: SolverConstraints) {
 	} catch {
 		// The global api.ts response interceptor already surfaces this failure via alertsStore
 		// (title/description derived from errors.types/errors.codes) — nothing further to do here.
+	} finally {
+		optimizing.value = false
 	}
 }
 
 async function handleFit(courseId: number) {
+	if (optimizing.value) return
+	optimizing.value = true
 	optimizeMode.value = 'add'
+	fitCourseTitleRef.value = coursesStore.courses.find(c => c.id === courseId)?.title ?? ''
+	unlockedCourseTitleRef.value = ''
 
 	const request: OptimizeRequest = {
 		course_ids: [...timetableStore.selectedCourseIds, courseId],
 		constraints: loadConstraints(),
 		mode: 'add',
-		locked_unit_ids: timetableStore.selectedUnits.map(u => u.slotId)
+		locked_unit_ids: timetableStore.selectedUnits.map(u => u.unitId)
 	}
 
 	try {
-		optimizeResponse.value = await optimize(request)
+		const response = await optimize(request)
+		optimizeResponse.value = response
+		unlockedCourseTitleRef.value = response?.unlocked_course_id
+			? (coursesStore.courses.find(c => c.id === response.unlocked_course_id)?.title ?? '')
+			: ''
 		optimizeResultsOpen.value = true
 	} catch {
 		// Same global interceptor pattern as handleGenerate — no local alert needed.
+	} finally {
+		optimizing.value = false
 	}
 }
 </script>
@@ -408,9 +433,16 @@ async function handleFit(courseId: number) {
 		<OptimizerConstraintDrawer
 			v-model="optimizeConfigOpen"
 			:courses="coursesStore.courses"
-			:initial-constraints="loadConstraints()"
+			:initial-constraints="initialConstraints"
+			:disabled="optimizing || loading"
 			@generate="handleGenerate"
 		/>
-		<OptimizerResultsDrawer v-model="optimizeResultsOpen" :response="optimizeResponse" :mode="optimizeMode" />
+		<OptimizerResultsDrawer
+			v-model="optimizeResultsOpen"
+			:response="optimizeResponse"
+			:mode="optimizeMode"
+			:fit-course-title="fitCourseTitleRef"
+			:unlocked-course-title="unlockedCourseTitleRef"
+		/>
 	</div>
 </template>
