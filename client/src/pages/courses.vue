@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { OptimizeRequest, OptimizeResponseDTO, SolverConstraints } from '@shared/http/optimize'
+import type { OptimizerMode } from '@client/types/optimizer'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -11,8 +13,11 @@ import CourseTable from '@client/components/courses/CourseTable.vue'
 import MobileBottomNav from '@client/components/common/MobileBottomNav.vue'
 import FilterFullScreen from '@client/components/filters/FilterFullScreen.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
+import OptimizerConstraintDrawer from '@client/components/timetable/OptimizerConstraintDrawer.vue'
+import OptimizerResultsDrawer from '@client/components/timetable/OptimizerResultsDrawer.vue'
 import ScheduleSlotsPanel from '@client/components/timetable/ScheduleSlotsPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
+import { useOptimizer } from '@client/composables'
 import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import IconCalendar from '~icons/lucide/calendar'
@@ -26,6 +31,8 @@ const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
 const uiStore = useUIStore()
 const wizardStore = useWizardStore()
+
+const { optimize, saveConstraints, loadConstraints } = useOptimizer()
 
 useSeoMeta({
 	title: () => {
@@ -155,12 +162,61 @@ async function fetchNextCoursesPage(page: () => void) {
 	page()
 	await coursesStore.fetchCourses()
 }
+
+// Optimizer orchestration
+
+const optimizeConfigOpen = ref(false)
+const optimizeResultsOpen = ref(false)
+const optimizeMode = ref<OptimizerMode>('build')
+const optimizeResponse = ref<OptimizeResponseDTO | null>(null)
+
+function openOptimizer() {
+	optimizeMode.value = 'build'
+	optimizeConfigOpen.value = true
+}
+
+async function handleGenerate(constraints: SolverConstraints) {
+	saveConstraints(constraints)
+
+	const request: OptimizeRequest = {
+		course_ids: coursesStore.courses.map(c => c.id),
+		constraints,
+		mode: 'build'
+	}
+
+	try {
+		optimizeResponse.value = await optimize(request)
+		optimizeConfigOpen.value = false
+		optimizeResultsOpen.value = true
+	} catch {
+		// The global api.ts response interceptor already surfaces this failure via alertsStore
+		// (title/description derived from errors.types/errors.codes) — nothing further to do here.
+	}
+}
+
+async function handleFit(courseId: number) {
+	optimizeMode.value = 'add'
+
+	const request: OptimizeRequest = {
+		course_ids: [...timetableStore.selectedCourseIds, courseId],
+		constraints: loadConstraints(),
+		mode: 'add',
+		locked_unit_ids: timetableStore.selectedUnits.map(u => u.slotId)
+	}
+
+	try {
+		optimizeResponse.value = await optimize(request)
+		optimizeResultsOpen.value = true
+	} catch {
+		// Same global interceptor pattern as handleGenerate — no local alert needed.
+	}
+}
 </script>
 
 <template>
 	<div v-if="wizardStore.completed" class="flex h-screen flex-col overflow-hidden">
 		<!-- Header -->
-		<CoursesHeader />
+		<CoursesHeader @optimize="openOptimizer" />
 
 		<!-- Body -->
 		<div class="flex flex-1 overflow-hidden">
@@ -236,7 +292,7 @@ async function fetchNextCoursesPage(page: () => void) {
 							</button>
 						</div>
 
-						<CourseTable v-else />
+						<CourseTable v-else @fit="handleFit" />
 
 						<!-- Pagination -->
 						<div
@@ -348,5 +404,13 @@ async function fetchNextCoursesPage(page: () => void) {
 
 		<FilterFullScreen v-if="uiStore.mobileFilterOpen" class="lg:hidden" />
 		<MobileBottomNav class="lg:hidden" />
+
+		<OptimizerConstraintDrawer
+			v-model="optimizeConfigOpen"
+			:courses="coursesStore.courses"
+			:initial-constraints="loadConstraints()"
+			@generate="handleGenerate"
+		/>
+		<OptimizerResultsDrawer v-model="optimizeResultsOpen" :response="optimizeResponse" :mode="optimizeMode" />
 	</div>
 </template>
