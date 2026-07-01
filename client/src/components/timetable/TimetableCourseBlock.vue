@@ -34,6 +34,8 @@ interface Props {
 	dateRange?: string
 	/** Disables remove button and click interaction (used on share page) */
 	readOnly?: boolean
+	/** Amber ring highlight — used in optimizer preview modal to mark changed units */
+	highlighted?: boolean
 }
 
 interface Emits {
@@ -135,6 +137,7 @@ function handleClick() {
 			{
 				'ring-2 ring-(--insis-danger)': hasConflict,
 				'ring-2 ring-(--insis-warning)': hasCampusConflict && !hasConflict,
+				'ring-2 ring-amber-400': highlighted && !hasConflict && !hasCampusConflict,
 				'merged-block': isMerged
 			}
 		]"

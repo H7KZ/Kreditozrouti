@@ -29,8 +29,10 @@ const props = withDefaults(
 		enableDrag?: boolean
 		/** Open the course detail modal when a block is clicked. */
 		enableCourseModal?: boolean
+		/** Unit IDs to highlight in amber — used in optimizer preview modal to mark changed units. */
+		highlightUnitIds?: number[]
 	}>(),
-	{ units: undefined, showShare: true, showExport: true, enableDrag: true, enableCourseModal: true }
+	{ units: undefined, showShare: true, showExport: true, enableDrag: true, enableCourseModal: true, highlightUnitIds: undefined }
 )
 
 /*
@@ -259,6 +261,7 @@ function getDragSelectionStyleForDay(day: Day) {
 									:merged-count="isMergedUnit(unit) ? unit.mergedCount : undefined"
 									:date-range="isMergedUnit(unit) ? unit.dateRange : undefined"
 									:read-only="!enableCourseModal"
+									:highlighted="props.highlightUnitIds?.includes(unit.unitId)"
 									@click="enableCourseModal && handleCourseBlockClick(unit)"
 									@remove="handleRemoveUnit(unit)"
 								/>
