@@ -1,4 +1,4 @@
-import type { OptimizeRequest, OptimizeResponseDTO, OptimizerCandidateDTO, ScoreBreakdownDTO, SelectedCourseUnitDTO } from '@shared/http/optimize'
+import type { OptimizeRequest, OptimizeResponseDTO, OptimizerCandidateDTO, ScoreBreakdownDTO, SelectedCourseUnitDTO, SolverConstraints } from '@shared/http/optimize'
 import { MAX_POOL_SIZE } from '@shared/http/optimize'
 import { getSlotType } from '@shared/domain/insis'
 import { diversityFilter, DEFAULT_WEIGHTS, scoreCandidate, solveWithDeadline } from '@shared/domain/optimizer'
@@ -66,8 +66,9 @@ export default class OptimizeService {
 	/** Drops excluded_course_ids from the fetched pool; required_course_ids are never dropped. */
 	private static filterExcluded(courses: CourseWithRelationsDTO[], request: OptimizeRequest): CourseWithRelationsDTO[] {
 		const excluded = new Set(request.constraints.excluded_course_ids ?? [])
-		if (excluded.size === 0) return courses
-		return courses.filter(course => !excluded.has(course.id))
+		if (!excluded.size) return courses
+		const required = new Set(request.constraints.required_course_ids ?? [])
+		return courses.filter(c => !excluded.has(c.id) || required.has(c.id))
 	}
 
 	/**
@@ -110,6 +111,48 @@ export default class OptimizeService {
 			variables.push({ courseId: Number(courseIdStr), unitType, domain })
 		}
 		return variables
+	}
+
+	/**
+	 * Pre-filters solver variables by removing any domain slot that overlaps a blackout window.
+	 * Called before passing variables to solveWithDeadline so the constraint is enforced without
+	 * threading it into the recursive solver.
+	 */
+	private static filterCandidatesByBlackout(
+		variables: SolverVariable[],
+		blackoutWindows: SolverConstraints['blackout_windows']
+	): SolverVariable[] {
+		if (!blackoutWindows?.length) return variables
+		return variables.map(v => ({
+			...v,
+			domain: v.domain.filter(c =>
+				!blackoutWindows.some(w =>
+					w.day && c.day === w.day && c.timeFrom < w.time_to && c.timeTo > w.time_from
+				)
+			)
+		}))
+	}
+
+	/**
+	 * Drops solver assignments whose total ECTS falls outside [credit_min, credit_max].
+	 * Applied after solving, before ranking/mapping.
+	 */
+	private static filterByCredit(
+		assignments: SolverAssignment[],
+		constraints: SolverConstraints,
+		courseById: Map<number, CourseWithRelationsDTO>
+	): SolverAssignment[] {
+		const { credit_min, credit_max } = constraints
+		if (credit_min == null && credit_max == null) return assignments
+		return assignments.filter(assignment => {
+			const totalEcts = [...Object.keys(assignment)].reduce((sum, id) => {
+				const course = courseById.get(Number(id))
+				return sum + (course?.ects ?? 0)
+			}, 0)
+			if (credit_min != null && totalEcts < credit_min) return false
+			if (credit_max != null && totalEcts > credit_max) return false
+			return true
+		})
 	}
 
 	/** Derives the snapshot of unit types available for a course, mirroring client/src/stores/timetable.store.ts's addUnit. */
@@ -198,9 +241,11 @@ export default class OptimizeService {
 	private static optimizeBuildMode(courses: CourseWithRelationsDTO[], request: OptimizeRequest, poolTruncated: boolean): OptimizeResponseDTO {
 		try {
 			const courseById = new Map(courses.map(c => [c.id, c]))
-			const variables = OptimizeService.buildVariables(courses)
+			const allVariables = OptimizeService.buildVariables(courses)
+			const effectiveVariables = OptimizeService.filterCandidatesByBlackout(allVariables, request.constraints.blackout_windows)
 
-			const { candidates: assignments, partial } = solveWithDeadline(variables, [], SOLVER_BUDGET_MS)
+			const { candidates: rawAssignments, partial } = solveWithDeadline(effectiveVariables, [], SOLVER_BUDGET_MS)
+			const assignments = OptimizeService.filterByCredit(rawAssignments, request.constraints, courseById)
 			const candidates = OptimizeService.rankAndMapCandidates(assignments, request, courseById, new Set())
 
 			return { candidates, partial, unlocked_course_id: undefined, pool_truncated: poolTruncated }
@@ -224,13 +269,14 @@ export default class OptimizeService {
 			const lockedUnitIds = new Set(request.locked_unit_ids ?? [])
 
 			const allVariables = OptimizeService.buildVariables(courses)
+			const effectiveVariables = OptimizeService.filterCandidatesByBlackout(allVariables, request.constraints.blackout_windows)
 
 			// Locked candidates: the concrete slot in each variable's domain matching a locked unit ID.
 			const locked: SolverSlotCandidate[] = []
 			const lockedCourseIds = new Set<number>()
 			const freeVariables: SolverVariable[] = []
 
-			for (const variable of allVariables) {
+			for (const variable of effectiveVariables) {
 				const lockedCandidate = variable.domain.find(c => lockedUnitIds.has(c.unitId))
 				if (lockedCandidate) {
 					locked.push(lockedCandidate)
@@ -241,10 +287,11 @@ export default class OptimizeService {
 			}
 
 			// First attempt: solve with all existing locked, only the new course's variables free.
-			let { candidates: assignments, partial } = solveWithDeadline(freeVariables, locked, SOLVER_BUDGET_MS)
+			let { candidates: rawAssignments, partial } = solveWithDeadline(freeVariables, locked, SOLVER_BUDGET_MS)
+			rawAssignments = OptimizeService.filterByCredit(rawAssignments, request.constraints, courseById)
 
-			if (assignments.length > 0) {
-				const candidates = OptimizeService.rankAndMapCandidates(assignments, request, courseById, lockedUnitIds)
+			if (rawAssignments.length > 0) {
+				const candidates = OptimizeService.rankAndMapCandidates(rawAssignments, request, courseById, lockedUnitIds)
 				return { candidates, partial, unlocked_course_id: undefined, pool_truncated: poolTruncated }
 			}
 
@@ -253,29 +300,38 @@ export default class OptimizeService {
 			let bestAssignments: SolverAssignment[] = []
 			let bestPartial = partial
 			let bestScoreTotal = Number.POSITIVE_INFINITY
+			let anyUnlockPartial = false
 
+			const unlockDeadline = Date.now() + SOLVER_BUDGET_MS
 			for (const courseIdToUnlock of lockedCourseIds) {
+				const remaining = unlockDeadline - Date.now()
+				if (remaining <= 0) break
+				const budget = Math.min(remaining, SOLVER_BUDGET_MS)
+
 				const stillLocked = locked.filter(c => c.courseId !== courseIdToUnlock)
-				const unlockedVariables = allVariables.filter(v => v.courseId === courseIdToUnlock || !lockedCourseIds.has(v.courseId))
+				const unlockedVariables = effectiveVariables.filter(v => v.courseId === courseIdToUnlock || !lockedCourseIds.has(v.courseId))
 
-				const result = solveWithDeadline(unlockedVariables, stillLocked, SOLVER_BUDGET_MS)
-				if (result.candidates.length === 0) continue
+				const result = solveWithDeadline(unlockedVariables, stillLocked, budget)
+				if (result.partial) anyUnlockPartial = true
 
-				const bestOfThisAttempt = result.candidates.reduce((best, candidate) => {
+				const filteredCandidates = OptimizeService.filterByCredit(result.candidates, request.constraints, courseById)
+				if (filteredCandidates.length === 0) continue
+
+				const bestOfThisAttempt = filteredCandidates.reduce((best, candidate) => {
 					const total = scoreCandidate(candidate, request.constraints, DEFAULT_WEIGHTS).total
 					return total < best.total ? { assignment: candidate, total } : best
-				}, { assignment: result.candidates[0]!, total: scoreCandidate(result.candidates[0]!, request.constraints, DEFAULT_WEIGHTS).total })
+				}, { assignment: filteredCandidates[0]!, total: scoreCandidate(filteredCandidates[0]!, request.constraints, DEFAULT_WEIGHTS).total })
 
 				if (bestOfThisAttempt.total < bestScoreTotal) {
 					bestScoreTotal = bestOfThisAttempt.total
 					bestUnlockedCourseId = courseIdToUnlock
-					bestAssignments = result.candidates
+					bestAssignments = filteredCandidates
 					bestPartial = result.partial
 				}
 			}
 
 			if (bestUnlockedCourseId === undefined) {
-				return { candidates: [], partial, unlocked_course_id: undefined, pool_truncated: poolTruncated }
+				return { candidates: [], partial: partial || anyUnlockPartial, unlocked_course_id: undefined, pool_truncated: poolTruncated }
 			}
 
 			const unlockedLockedUnitIds = new Set(lockedUnitIds)
@@ -284,7 +340,7 @@ export default class OptimizeService {
 			}
 
 			const candidates = OptimizeService.rankAndMapCandidates(bestAssignments, request, courseById, unlockedLockedUnitIds)
-			return { candidates, partial: bestPartial, unlocked_course_id: bestUnlockedCourseId, pool_truncated: poolTruncated }
+			return { candidates, partial: bestPartial || anyUnlockPartial, unlocked_course_id: bestUnlockedCourseId, pool_truncated: poolTruncated }
 		} catch (error) {
 			throw Errors.internal(error instanceof Error ? error.message : 'Failed to optimize timetable')
 		}

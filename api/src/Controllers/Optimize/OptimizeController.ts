@@ -11,7 +11,7 @@ const SolverConstraintsSchema = z.object({
 	excluded_course_ids: z.array(z.coerce.number()).optional(),
 	credit_min: z.coerce.number().min(0).optional(),
 	credit_max: z.coerce.number().min(0).optional(),
-	blackout_windows: z.array(TimeSelectionSchema).optional(),
+	blackout_windows: z.array(TimeSelectionSchema.refine(data => data.day != null, { message: 'blackout_windows require a day' })).optional(),
 	preferred_days: z.array(DaySchema).optional(),
 	max_consecutive_minutes: z.coerce.number().min(0).optional()
 })
