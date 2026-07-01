@@ -16,6 +16,7 @@ export const useUIStore = defineStore('ui', () => {
 
 	const isListView = computed(() => viewMode.value === 'list')
 	const isTimetableView = computed(() => viewMode.value === 'timetable')
+	const isOptimizerView = computed(() => viewMode.value === 'optimizer')
 
 	const effectiveColorScheme = computed<'light' | 'dark'>(() => {
 		if (colorScheme.value === 'system') return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
@@ -60,7 +61,8 @@ export const useUIStore = defineStore('ui', () => {
 	function hydrate() {
 		const state = loadFromStorage<PersistedUIState>(STORAGE_KEYS.UI)
 		if (!state) return
-		viewMode.value = state.viewMode || 'list'
+		// Guard: optimizer tab is session-only — never restore it on page load
+		viewMode.value = state.viewMode === 'optimizer' ? 'list' : (state.viewMode || 'list')
 		sidebarCollapsed.value = state.sidebarCollapsed || false
 		showLegend.value = state.showLegend || false
 		colorScheme.value = state.colorScheme ?? 'system'
@@ -129,8 +131,14 @@ export const useUIStore = defineStore('ui', () => {
 		applyColorScheme,
 		setColorScheme,
 		setViewMode,
+		isOptimizerView,
 		switchToListView: () => setViewMode('list'),
 		switchToTimetableView: () => setViewMode('timetable'),
+		switchToOptimizerView: () => {
+			viewMode.value = 'optimizer'
+			analytics.track('optimizer_tab_opened')
+			persist()
+		},
 		toggleViewMode,
 		toggleLegend,
 		setShowLegend,

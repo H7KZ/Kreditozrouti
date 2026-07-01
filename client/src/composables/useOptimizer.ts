@@ -14,7 +14,10 @@ export function useOptimizer() {
 		error.value = null
 		try {
 			const response = await postOptimize(request)
-			analytics.track('timetable_optimized', { mode: request.mode, candidate_count: response.candidates.length })
+			analytics.track('timetable_optimized', {
+				full_count: response.full_candidates.length,
+				removal_count: response.removal_candidates.length
+			})
 			return response
 		} catch (e) {
 			error.value = e instanceof Error ? e.message : 'Failed to optimize timetable'
