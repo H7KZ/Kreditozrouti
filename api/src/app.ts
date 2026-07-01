@@ -18,6 +18,7 @@ import AdminRoutes from '@api/Routes/AdminRoutes'
 import CommandsRoutes from '@api/Routes/CommandsRoutes'
 import CoursesRoutes from '@api/Routes/CoursesRoutes'
 import ICalRoutes from '@api/Routes/ICalRoutes'
+import OptimizeRoutes from '@api/Routes/OptimizeRoutes'
 import ShareRoutes from '@api/Routes/ShareRoutes'
 import StudyPlansRoutes from '@api/Routes/StudyPlansRoutes'
 
@@ -90,6 +91,7 @@ app.get('/metrics', (req, res) => {
 
 // Routes
 app.use('/courses', CoursesRoutes)
+app.use('/optimize', OptimizeRoutes)
 app.use('/study_plans', StudyPlansRoutes)
 app.use('/share', ShareRoutes)
 app.use('/ical', ICalRoutes)
