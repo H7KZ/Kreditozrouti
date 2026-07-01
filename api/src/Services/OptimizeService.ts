@@ -1,74 +1,36 @@
-import type { OptimizeRequest, OptimizeResponseDTO, OptimizerCandidateDTO, ScoreBreakdownDTO, SelectedCourseUnitDTO, SolverConstraints } from '@shared/http/optimize'
-import { MAX_POOL_SIZE } from '@shared/http/optimize'
-import { getSlotType } from '@shared/domain/insis'
-import { diversityFilter, DEFAULT_WEIGHTS, scoreCandidate, solveWithDeadline } from '@shared/domain/optimizer'
 import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '@shared/domain/optimizer'
-import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
+import type {
+	OptimizerCandidateDTO,
+	OptimizeRequest,
+	OptimizeResponseDTO,
+	RemovalCandidateDTO,
+	ScoreBreakdownDTO,
+	SelectedCourseUnitDTO,
+	SolverConstraints
+} from '@shared/http/optimize'
+import type { CourseUnitDTO, CourseWithRelationsDTO } from '@shared/http/responses'
+import { getSlotType } from '@shared/domain/insis'
+import { DEFAULT_WEIGHTS, diversityFilter, scoreCandidate, solveWithDeadline } from '@shared/domain/optimizer'
+import { MAX_POOL_SIZE } from '@shared/http/optimize'
 import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
 
 /**
  * Upper bound (in ms) on how long solveWithDeadline is allowed to search before
  * returning best-so-far partial results. The deadline is polled INSIDE the
- * solver's recursion (shared/domain/optimizer.ts) — this constant is only the
- * budget handed to that recursion, never a setTimeout/Promise.race wrapper.
+ * solver's recursion — this is only the budget handed to that recursion.
  */
 const SOLVER_BUDGET_MS = 4500
 
-/** Number of diverse candidates returned to the client per request. */
+/** Number of diverse candidates returned to the client per section. */
 const MAX_CANDIDATES = 5
 
 export default class OptimizeService {
 	static async optimize(request: OptimizeRequest): Promise<OptimizeResponseDTO> {
-		const { cappedCourseIds, poolTruncated } = OptimizeService.capPool(request)
-
-		const { courses } = await CourseService.getCoursesWithRelations({ ids: cappedCourseIds }, cappedCourseIds.length, 0)
-
-		const filteredCourses = OptimizeService.filterExcluded(courses as unknown as CourseWithRelationsDTO[], request)
-
-		if (request.mode === 'add') {
-			return OptimizeService.optimizeAddMode(filteredCourses, request, poolTruncated)
-		}
-
-		return OptimizeService.optimizeBuildMode(filteredCourses, request, poolTruncated)
-	}
-
-	/**
-	 * Caps course_ids to MAX_POOL_SIZE before fetching, always keeping
-	 * required_course_ids (hard constraint — never dropped by the cap).
-	 */
-	private static capPool(request: OptimizeRequest): { cappedCourseIds: number[]; poolTruncated: boolean } {
-		if (request.course_ids.length <= MAX_POOL_SIZE) {
-			return { cappedCourseIds: request.course_ids, poolTruncated: false }
-		}
-
-		const mustKeep = new Set(request.constraints.required_course_ids ?? [])
-		const kept: number[] = []
-		const keptSet = new Set<number>()
-
-		for (const id of request.course_ids) {
-			if (mustKeep.has(id)) {
-				kept.push(id)
-				keptSet.add(id)
-			}
-		}
-
-		for (const id of request.course_ids) {
-			if (kept.length >= MAX_POOL_SIZE) break
-			if (keptSet.has(id)) continue
-			kept.push(id)
-			keptSet.add(id)
-		}
-
-		return { cappedCourseIds: kept.slice(0, MAX_POOL_SIZE), poolTruncated: true }
-	}
-
-	/** Drops excluded_course_ids from the fetched pool; required_course_ids are never dropped. */
-	private static filterExcluded(courses: CourseWithRelationsDTO[], request: OptimizeRequest): CourseWithRelationsDTO[] {
-		const excluded = new Set(request.constraints.excluded_course_ids ?? [])
-		if (!excluded.size) return courses
-		const required = new Set(request.constraints.required_course_ids ?? [])
-		return courses.filter(c => !excluded.has(c.id) || required.has(c.id))
+		const courseIds = request.course_ids.slice(0, MAX_POOL_SIZE)
+		const poolTruncated = request.course_ids.length > MAX_POOL_SIZE
+		const { courses } = await CourseService.getCoursesWithRelations({ ids: courseIds }, courseIds.length, 0)
+		return OptimizeService.optimizeBuild(courses as unknown as CourseWithRelationsDTO[], request, poolTruncated)
 	}
 
 	/**
@@ -115,8 +77,8 @@ export default class OptimizeService {
 
 	/**
 	 * Pre-filters solver variables by removing any domain slot that overlaps a blackout window.
-	 * Called before passing variables to solveWithDeadline so the constraint is enforced without
-	 * threading it into the recursive solver.
+	 * Called before solveWithDeadline so the constraint is enforced without threading it into
+	 * the recursive solver.
 	 */
 	private static filterCandidatesByBlackout(
 		variables: SolverVariable[],
@@ -125,10 +87,8 @@ export default class OptimizeService {
 		if (!blackoutWindows?.length) return variables
 		return variables.map(v => ({
 			...v,
-			domain: v.domain.filter(c =>
-				!blackoutWindows.some(w =>
-					w.day && c.day === w.day && c.timeFrom < w.time_to && c.timeTo > w.time_from
-				)
+			domain: v.domain.filter(
+				c => !blackoutWindows.some(w => w.day && c.day === w.day && c.timeFrom < w.time_to && c.timeTo > w.time_from)
 			)
 		}))
 	}
@@ -146,8 +106,7 @@ export default class OptimizeService {
 		if (credit_min == null && credit_max == null) return assignments
 		return assignments.filter(assignment => {
 			const totalEcts = [...Object.keys(assignment)].reduce((sum, id) => {
-				const course = courseById.get(Number(id))
-				return sum + (course?.ects ?? 0)
+				return sum + (courseById.get(Number(id))?.ects ?? 0)
 			}, 0)
 			if (credit_min != null && totalEcts < credit_min) return false
 			if (credit_max != null && totalEcts > credit_max) return false
@@ -155,13 +114,13 @@ export default class OptimizeService {
 		})
 	}
 
-	/** Derives the snapshot of unit types available for a course, mirroring client/src/stores/timetable.store.ts's addUnit. */
+	/** Derives the snapshot of unit types available for a course, mirroring timetable.store's addUnit. */
 	private static snapshotAvailableTypes(course: CourseWithRelationsDTO): SelectedCourseUnitDTO['snapshotAvailableTypes'] {
 		const types: CourseUnitDTO['slots'][number]['type'][] = []
 		const seen = new Set<string>()
 		for (const unit of course.units ?? []) {
 			for (const slot of unit.slots ?? []) {
-				const type = getSlotType(slot as CourseUnitSlotDTO)
+				const type = getSlotType(slot)
 				if (!seen.has(type)) {
 					seen.add(type)
 					types.push(type)
@@ -173,9 +132,12 @@ export default class OptimizeService {
 
 	/**
 	 * Rebuilds a SolverSlotCandidate into the wire-format SelectedCourseUnitDTO,
-	 * using the SAME field mapping as client/src/stores/timetable.store.ts's addUnit.
+	 * using the SAME field mapping as timetable.store's addUnit.
 	 */
-	private static toSelectedCourseUnitDTO(candidate: SolverSlotCandidate, courseById: Map<number, CourseWithRelationsDTO>): SelectedCourseUnitDTO {
+	private static toSelectedCourseUnitDTO(
+		candidate: SolverSlotCandidate,
+		courseById: Map<number, CourseWithRelationsDTO>
+	): SelectedCourseUnitDTO {
 		const course = courseById.get(candidate.courseId)
 		const unit = course?.units.find(u => u.id === candidate.unitId)
 
@@ -215,132 +177,70 @@ export default class OptimizeService {
 	 */
 	private static rankAndMapCandidates(
 		assignments: SolverAssignment[],
-		request: OptimizeRequest,
-		courseById: Map<number, CourseWithRelationsDTO>,
-		lockedUnitIds: Set<number>
+		constraints: SolverConstraints,
+		courseById: Map<number, CourseWithRelationsDTO>
 	): OptimizerCandidateDTO[] {
-		const scored = assignments.map(assignment => ({ assignment, score: scoreCandidate(assignment, request.constraints, DEFAULT_WEIGHTS) }))
+		if (assignments.length === 0) return []
+		const scored = assignments.map(assignment => ({ assignment, score: scoreCandidate(assignment, constraints, DEFAULT_WEIGHTS) }))
 		scored.sort((a, b) => a.score.total - b.score.total)
+		const kept = diversityFilter(scored.map(s => s.assignment), MAX_CANDIDATES)
+		return kept.map(assignment => ({
+			units: Object.values(assignment).map(c => OptimizeService.toSelectedCourseUnitDTO(c, courseById)),
+			score: OptimizeService.toScoreBreakdownDTO(scoreCandidate(assignment, constraints, DEFAULT_WEIGHTS))
+		}))
+	}
 
-		const sortedAssignments = scored.map(s => s.assignment)
-		const kept = diversityFilter(sortedAssignments, MAX_CANDIDATES)
+	private static optimizeBuild(
+		courses: CourseWithRelationsDTO[],
+		request: OptimizeRequest,
+		poolTruncated: boolean
+	): OptimizeResponseDTO {
+		try {
+			const courseById = new Map(courses.map(c => [c.id, c]))
+			const allVariables = OptimizeService.buildVariables(courses)
+			const effectiveVariables = OptimizeService.filterCandidatesByBlackout(allVariables, request.constraints.blackout_windows)
 
-		return kept.map(assignment => {
-			const score = scoreCandidate(assignment, request.constraints, DEFAULT_WEIGHTS)
-			const units = Object.values(assignment).map(candidate => OptimizeService.toSelectedCourseUnitDTO(candidate, courseById))
-			const changedUnitIds = units.filter(u => !lockedUnitIds.has(u.unitId)).map(u => u.unitId)
+			// Pass 1: solve with all basket courses free
+			const { candidates: raw1, partial: partial1 } = solveWithDeadline(effectiveVariables, [], SOLVER_BUDGET_MS)
+			const fullCandidates = OptimizeService.rankAndMapCandidates(
+				OptimizeService.filterByCredit(raw1, request.constraints, courseById),
+				request.constraints,
+				courseById
+			)
+
+			// Pass 2: drop one course at a time, keep best per dropped course
+			const removalResults: Array<{ course: CourseWithRelationsDTO; candidate: OptimizerCandidateDTO }> = []
+			const pass2Deadline = Date.now() + SOLVER_BUDGET_MS
+			let anyPartial2 = false
+
+			for (const course of courses) {
+				const remaining = pass2Deadline - Date.now()
+				if (remaining <= 0) break
+				const varsWithout = effectiveVariables.filter(v => v.courseId !== course.id)
+				const { candidates: raw2, partial: p2 } = solveWithDeadline(varsWithout, [], Math.min(remaining, SOLVER_BUDGET_MS))
+				if (p2) anyPartial2 = true
+				const ranked2 = OptimizeService.rankAndMapCandidates(
+					OptimizeService.filterByCredit(raw2, request.constraints, courseById),
+					request.constraints,
+					courseById
+				)
+				if (ranked2[0]) removalResults.push({ course, candidate: ranked2[0] })
+			}
+
+			// Sort ascending by score.total, keep top MAX_CANDIDATES
+			removalResults.sort((a, b) => a.candidate.score.total - b.candidate.score.total)
+			const removalCandidates: RemovalCandidateDTO[] = removalResults.slice(0, MAX_CANDIDATES).map(r => ({
+				...r.candidate,
+				dropped_course_id: r.course.id,
+				dropped_course_title: r.course.title ?? r.course.title_en ?? r.course.title_cs ?? r.course.ident
+			}))
 
 			return {
-				units,
-				score: OptimizeService.toScoreBreakdownDTO(score),
-				changed_unit_ids: changedUnitIds
+				full_candidates: fullCandidates,
+				removal_candidates: removalCandidates,
+				partial: partial1 || anyPartial2,
+				pool_truncated: poolTruncated
 			}
-		})
-	}
-
-	private static optimizeBuildMode(courses: CourseWithRelationsDTO[], request: OptimizeRequest, poolTruncated: boolean): OptimizeResponseDTO {
-		try {
-			const courseById = new Map(courses.map(c => [c.id, c]))
-			const allVariables = OptimizeService.buildVariables(courses)
-			const effectiveVariables = OptimizeService.filterCandidatesByBlackout(allVariables, request.constraints.blackout_windows)
-
-			const { candidates: rawAssignments, partial } = solveWithDeadline(effectiveVariables, [], SOLVER_BUDGET_MS)
-			const assignments = OptimizeService.filterByCredit(rawAssignments, request.constraints, courseById)
-			const candidates = OptimizeService.rankAndMapCandidates(assignments, request, courseById, new Set())
-
-			return { candidates, partial, unlocked_course_id: undefined, pool_truncated: poolTruncated }
-		} catch (error) {
-			throw Errors.internal(error instanceof Error ? error.message : 'Failed to optimize timetable')
-		}
-	}
-
-	/**
-	 * Add-course mode: locked_unit_ids pins the student's existing selections as
-	 * fixed SolverSlotCandidates, leaving only the new course's variables free.
-	 * If the first attempt yields zero candidates, unlocks exactly ONE locked
-	 * course at a time (never pairs — RESEARCH Pitfall 5 / CONTEXT.md bound),
-	 * re-solving with that course's units moved back into the free variable set.
-	 * Uses the first success, or — if multiple single-unlock solves succeed —
-	 * the one whose best candidate has the lowest score.total.
-	 */
-	private static optimizeAddMode(courses: CourseWithRelationsDTO[], request: OptimizeRequest, poolTruncated: boolean): OptimizeResponseDTO {
-		try {
-			const courseById = new Map(courses.map(c => [c.id, c]))
-			const lockedUnitIds = new Set(request.locked_unit_ids ?? [])
-
-			const allVariables = OptimizeService.buildVariables(courses)
-			const effectiveVariables = OptimizeService.filterCandidatesByBlackout(allVariables, request.constraints.blackout_windows)
-
-			// Locked candidates: the concrete slot in each variable's domain matching a locked unit ID.
-			const locked: SolverSlotCandidate[] = []
-			const lockedCourseIds = new Set<number>()
-			const freeVariables: SolverVariable[] = []
-
-			for (const variable of effectiveVariables) {
-				const lockedCandidate = variable.domain.find(c => lockedUnitIds.has(c.unitId))
-				if (lockedCandidate) {
-					locked.push(lockedCandidate)
-					lockedCourseIds.add(variable.courseId)
-				} else {
-					freeVariables.push(variable)
-				}
-			}
-
-			// First attempt: solve with all existing locked, only the new course's variables free.
-			let { candidates: rawAssignments, partial } = solveWithDeadline(freeVariables, locked, SOLVER_BUDGET_MS)
-			rawAssignments = OptimizeService.filterByCredit(rawAssignments, request.constraints, courseById)
-
-			if (rawAssignments.length > 0) {
-				const candidates = OptimizeService.rankAndMapCandidates(rawAssignments, request, courseById, lockedUnitIds)
-				return { candidates, partial, unlocked_course_id: undefined, pool_truncated: poolTruncated }
-			}
-
-			// No clean slot with everything locked — unlock exactly one locked course at a time.
-			let bestUnlockedCourseId: number | undefined
-			let bestAssignments: SolverAssignment[] = []
-			let bestPartial = partial
-			let bestScoreTotal = Number.POSITIVE_INFINITY
-			let anyUnlockPartial = false
-
-			const unlockDeadline = Date.now() + SOLVER_BUDGET_MS
-			for (const courseIdToUnlock of lockedCourseIds) {
-				const remaining = unlockDeadline - Date.now()
-				if (remaining <= 0) break
-				const budget = Math.min(remaining, SOLVER_BUDGET_MS)
-
-				const stillLocked = locked.filter(c => c.courseId !== courseIdToUnlock)
-				const unlockedVariables = effectiveVariables.filter(v => v.courseId === courseIdToUnlock || !lockedCourseIds.has(v.courseId))
-
-				const result = solveWithDeadline(unlockedVariables, stillLocked, budget)
-				if (result.partial) anyUnlockPartial = true
-
-				const filteredCandidates = OptimizeService.filterByCredit(result.candidates, request.constraints, courseById)
-				if (filteredCandidates.length === 0) continue
-
-				const bestOfThisAttempt = filteredCandidates.reduce((best, candidate) => {
-					const total = scoreCandidate(candidate, request.constraints, DEFAULT_WEIGHTS).total
-					return total < best.total ? { assignment: candidate, total } : best
-				}, { assignment: filteredCandidates[0]!, total: scoreCandidate(filteredCandidates[0]!, request.constraints, DEFAULT_WEIGHTS).total })
-
-				if (bestOfThisAttempt.total < bestScoreTotal) {
-					bestScoreTotal = bestOfThisAttempt.total
-					bestUnlockedCourseId = courseIdToUnlock
-					bestAssignments = filteredCandidates
-					bestPartial = result.partial
-				}
-			}
-
-			if (bestUnlockedCourseId === undefined) {
-				return { candidates: [], partial: partial || anyUnlockPartial, unlocked_course_id: undefined, pool_truncated: poolTruncated }
-			}
-
-			const unlockedLockedUnitIds = new Set(lockedUnitIds)
-			for (const c of locked) {
-				if (c.courseId === bestUnlockedCourseId) unlockedLockedUnitIds.delete(c.unitId)
-			}
-
-			const candidates = OptimizeService.rankAndMapCandidates(bestAssignments, request, courseById, unlockedLockedUnitIds)
-			return { candidates, partial: bestPartial || anyUnlockPartial, unlocked_course_id: bestUnlockedCourseId, pool_truncated: poolTruncated }
 		} catch (error) {
 			throw Errors.internal(error instanceof Error ? error.message : 'Failed to optimize timetable')
 		}
