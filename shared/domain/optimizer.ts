@@ -1,5 +1,6 @@
 import type { SolverConstraints } from '../http/optimize.js'
 import type { Day } from './constants.js'
+import { getDayFromDate } from './day.js'
 import type { CourseUnitType } from './insis.js'
 import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from './timetable.js'
 import type { ScheduledUnit } from './timetable.js'
@@ -137,6 +138,7 @@ export function solveWithDeadline(variables: SolverVariable[], locked: SolverSlo
 
 interface DayGroupable {
 	day?: Day
+	date?: string | null
 	timeFrom: number
 	timeTo: number
 }
@@ -145,10 +147,11 @@ interface DayGroupable {
 function groupByDay<T extends DayGroupable>(units: T[]): Map<Day, T[]> {
 	const map = new Map<Day, T[]>()
 	for (const unit of units) {
-		if (!unit.day) continue
-		const bucket = map.get(unit.day)
+		const day = unit.day ?? (unit.date ? (getDayFromDate(unit.date) ?? undefined) : undefined)
+		if (!day) continue
+		const bucket = map.get(day)
 		if (bucket) bucket.push(unit)
-		else map.set(unit.day, [unit])
+		else map.set(day, [unit])
 	}
 	return map
 }
@@ -241,16 +244,21 @@ function slotPickDistance(a: SolverAssignment, b: SolverAssignment): number {
 }
 
 /**
- * Skips candidates within 2 slot-picks of an already-kept candidate and
- * returns at most `maxResults`. Callers MUST pre-sort `candidates` by
+ * Skips candidates too similar to an already-kept candidate and returns at
+ * most `maxResults`. The similarity threshold adapts to variable count:
+ * ceil(variableCount / 2), floored at 1. This prevents the fixed threshold of
+ * 2 from collapsing results to a single candidate when there is only one
+ * variable (max possible distance = 1). Callers MUST pre-sort `candidates` by
  * ascending score before calling this — scanning in that order naturally
  * prefers better-scored candidates when near-duplicates are discarded.
  */
 export function diversityFilter(candidates: SolverAssignment[], maxResults = 5): SolverAssignment[] {
 	const kept: SolverAssignment[] = []
+	const variableCount = candidates.length > 0 ? Object.keys(candidates[0]!).length : 0
+	const minDistance = Math.max(1, Math.ceil(variableCount / 2))
 	for (const candidate of candidates) {
 		if (kept.length >= maxResults) break
-		const tooSimilar = kept.some(k => slotPickDistance(k, candidate) < 2)
+		const tooSimilar = kept.some(k => slotPickDistance(k, candidate) < minDistance)
 		if (!tooSimilar) kept.push(candidate)
 	}
 	return kept
