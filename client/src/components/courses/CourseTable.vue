@@ -10,13 +10,6 @@ import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconChevronUp from '~icons/lucide/chevron-up'
-import IconSparkles from '~icons/lucide/sparkles'
-
-interface Emits {
-	(e: 'fit', courseId: number): void
-}
-
-const emit = defineEmits<Emits>()
 
 const { t } = useI18n()
 const coursesStore = useCoursesStore()
@@ -131,13 +124,7 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 				</template>
 
 				<template v-else>
-					<CourseRow
-						v-for="course in coursesStore.courses"
-						:key="course.id"
-						:course="course"
-						:colspan="columns.length"
-						@fit="emit('fit', $event)"
-					/>
+					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length" />
 				</template>
 			</tbody>
 		</table>
@@ -197,15 +184,6 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 						<!-- Status badges + chevron -->
 						<div class="flex shrink-0 flex-col items-center gap-1">
 							<CourseStatusIndicator :course="course" />
-							<button
-								v-if="!isCourseSelected(course.id) && timetableStore.selectedUnits.length > 0"
-								type="button"
-								class="insis-btn insis-btn-secondary h-6 px-1.5"
-								:aria-label="$t('pages.courses.fitIntoTimetable')"
-								@click.stop="emit('fit', course.id)"
-							>
-								<IconSparkles class="h-3 w-3" aria-hidden="true" />
-							</button>
 							<IconChevronDown
 								:class="['mt-auto h-3.5 w-3.5 text-(--insis-text-3) transition-transform duration-200', isExpanded(course.id) && 'rotate-180']"
 								aria-hidden="true"

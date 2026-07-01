@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { OptimizeRequest, OptimizeResponseDTO, SolverConstraints } from '@shared/http/optimize'
-import type { OptimizerMode } from '@client/types/optimizer'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -13,16 +11,15 @@ import CourseTable from '@client/components/courses/CourseTable.vue'
 import MobileBottomNav from '@client/components/common/MobileBottomNav.vue'
 import FilterFullScreen from '@client/components/filters/FilterFullScreen.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
-import OptimizerConstraintDrawer from '@client/components/timetable/OptimizerConstraintDrawer.vue'
-import OptimizerResultsDrawer from '@client/components/timetable/OptimizerResultsDrawer.vue'
+import OptimizerTab from '@client/components/optimizer/OptimizerTab.vue'
 import ScheduleSlotsPanel from '@client/components/timetable/ScheduleSlotsPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
-import { useOptimizer } from '@client/composables'
 import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import IconCalendar from '~icons/lucide/calendar'
 import IconCalendarMinus2 from '~icons/lucide/calendar-minus-2'
 import IconTable from '~icons/lucide/table'
+import IconSparkles from '~icons/lucide/sparkles'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -31,13 +28,6 @@ const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
 const uiStore = useUIStore()
 const wizardStore = useWizardStore()
-
-const { optimize, saveConstraints, loadConstraints, loading } = useOptimizer()
-
-const optimizing = ref(false)
-const fitCourseTitleRef = ref('')
-const unlockedCourseTitleRef = ref('')
-const initialConstraints = ref<SolverConstraints>(loadConstraints())
 
 useSeoMeta({
 	title: () => {
@@ -167,81 +157,12 @@ async function fetchNextCoursesPage(page: () => void) {
 	page()
 	await coursesStore.fetchCourses()
 }
-
-// Optimizer orchestration
-
-const optimizeConfigOpen = ref(false)
-const optimizeResultsOpen = ref(false)
-const optimizeMode = ref<OptimizerMode>('build')
-const optimizeResponse = ref<OptimizeResponseDTO | null>(null)
-
-watch(optimizeConfigOpen, open => {
-	if (open) initialConstraints.value = loadConstraints()
-})
-
-function openOptimizer() {
-	optimizeMode.value = 'build'
-	optimizeConfigOpen.value = true
-}
-
-async function handleGenerate(constraints: SolverConstraints) {
-	if (optimizing.value) return
-	optimizing.value = true
-	fitCourseTitleRef.value = ''
-	unlockedCourseTitleRef.value = ''
-	saveConstraints(constraints)
-
-	const request: OptimizeRequest = {
-		course_ids: coursesStore.courses.map(c => c.id),
-		constraints,
-		mode: 'build'
-	}
-
-	try {
-		optimizeResponse.value = await optimize(request)
-		optimizeConfigOpen.value = false
-		optimizeResultsOpen.value = true
-	} catch {
-		// The global api.ts response interceptor already surfaces this failure via alertsStore
-		// (title/description derived from errors.types/errors.codes) — nothing further to do here.
-	} finally {
-		optimizing.value = false
-	}
-}
-
-async function handleFit(courseId: number) {
-	if (optimizing.value) return
-	optimizing.value = true
-	optimizeMode.value = 'add'
-	fitCourseTitleRef.value = coursesStore.courses.find(c => c.id === courseId)?.title ?? ''
-	unlockedCourseTitleRef.value = ''
-
-	const request: OptimizeRequest = {
-		course_ids: [...timetableStore.selectedCourseIds, courseId],
-		constraints: loadConstraints(),
-		mode: 'add',
-		locked_unit_ids: timetableStore.selectedUnits.map(u => u.unitId)
-	}
-
-	try {
-		const response = await optimize(request)
-		optimizeResponse.value = response
-		unlockedCourseTitleRef.value = response?.unlocked_course_id
-			? (coursesStore.courses.find(c => c.id === response.unlocked_course_id)?.title ?? '')
-			: ''
-		optimizeResultsOpen.value = true
-	} catch {
-		// Same global interceptor pattern as handleGenerate — no local alert needed.
-	} finally {
-		optimizing.value = false
-	}
-}
 </script>
 
 <template>
 	<div v-if="wizardStore.completed" class="flex h-screen flex-col overflow-hidden">
 		<!-- Header -->
-		<CoursesHeader @optimize="openOptimizer" />
+		<CoursesHeader @optimize="uiStore.switchToOptimizerView" />
 
 		<!-- Body -->
 		<div class="flex flex-1 overflow-hidden">
@@ -280,11 +201,25 @@ async function handleFit(courseId: number) {
 							{{ $t('pages.courses.myTimetable') }}
 							<span v-if="selectedCoursesCount > 0" class="ml-0.5 text-[11px] text-(--insis-text-3)">({{ selectedCoursesCount }})</span>
 						</button>
+						<button
+							type="button"
+							class="insis-tab"
+							:class="{ 'insis-tab-active': uiStore.viewMode === 'optimizer' }"
+							@click="uiStore.switchToOptimizerView"
+						>
+							<IconSparkles class="h-3.5 w-3.5" />
+							{{ $t('pages.courses.optimizer') }}
+						</button>
 					</nav>
 				</div>
 
 				<!-- Content -->
+
+				<!-- Optimizer tab fills full height with its own internal scroll -->
+				<OptimizerTab v-if="uiStore.viewMode === 'optimizer'" :courses="coursesStore.courses" class="flex-1 overflow-hidden" />
+
 				<div
+					v-else
 					id="main-content"
 					class="flex-1 overflow-y-auto p-4 pb-[calc(3.5rem+max(0.5rem,env(safe-area-inset-bottom)))] lg:pb-[max(1rem,env(safe-area-inset-bottom))]"
 					:aria-busy="coursesStore.loading"
@@ -317,7 +252,7 @@ async function handleFit(courseId: number) {
 							</button>
 						</div>
 
-						<CourseTable v-else @fit="handleFit" />
+						<CourseTable v-else />
 
 						<!-- Pagination -->
 						<div
@@ -429,20 +364,5 @@ async function handleFit(courseId: number) {
 
 		<FilterFullScreen v-if="uiStore.mobileFilterOpen" class="lg:hidden" />
 		<MobileBottomNav class="lg:hidden" />
-
-		<OptimizerConstraintDrawer
-			v-model="optimizeConfigOpen"
-			:courses="coursesStore.courses"
-			:initial-constraints="initialConstraints"
-			:disabled="optimizing || loading"
-			@generate="handleGenerate"
-		/>
-		<OptimizerResultsDrawer
-			v-model="optimizeResultsOpen"
-			:response="optimizeResponse"
-			:mode="optimizeMode"
-			:fit-course-title="fitCourseTitleRef"
-			:unlocked-course-title="unlockedCourseTitleRef"
-		/>
 	</div>
 </template>

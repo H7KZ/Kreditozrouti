@@ -251,6 +251,7 @@
 			"changePlanConfirm": "Changing the study plan will clear your current timetable. Do you want to proceed?",
 			"courseList": "Course List",
 			"myTimetable": "My Timetable",
+			"optimizer": "Optimizer",
 			"loadingCourses": "Loading courses...",
 			"loadingError": "Loading error",
 			"noCoursesFound": "No courses found matching the filters.",
@@ -472,6 +473,45 @@
 				}
 			}
 		},
+		"optimizer": {
+			"ConstraintsPanel": {
+				"title": "Constraints",
+				"creditMin": "Min. credits",
+				"creditMax": "Max. credits",
+				"preferredDays": "Preferred days",
+				"blackoutWindows": "Blackout windows",
+				"maxConsecutiveHours": "Max. consecutive hours"
+			},
+			"CourseBasket": {
+				"title": "Courses to schedule",
+				"empty": "No courses added yet — search below to add courses.",
+				"searchPlaceholder": "Search by code or name…"
+			},
+			"ResultsGrid": {
+				"fullCandidatesTitle": "All courses scheduled",
+				"removalCandidatesTitle": "If you drop one course…",
+				"option": "Option {n}",
+				"score": "Score: {score}",
+				"drops": "Drops: {course}",
+				"noFullCandidates": "No conflict-free timetable found with all courses. See options below.",
+				"partialNotice": "Search took a while — showing the best results found so far.",
+				"poolTruncatedNotice": "Only your first {count} courses were considered."
+			},
+			"TimetablePreviewModal": {
+				"title": "Preview timetable",
+				"apply": "Use this timetable",
+				"campusConflicts": "Campus conflicts",
+				"gapMinutes": "Schedule gaps",
+				"offPreferredDays": "Off-preferred days",
+				"longStudyBlocks": "Long study blocks"
+			},
+			"OptimizerTab": {
+				"generate": "Generate timetables",
+				"generating": "Generating…",
+				"resultsTitle": "Suggested timetables",
+				"dropsTitle": "Drops: {course}"
+			}
+		},
 		"timetable": {
 			"TimetableAgenda": {
 				"free": "free",
@@ -536,43 +576,6 @@
 				"newSchedule": "New Schedule",
 				"saveToTabs": "Save current to Tabs",
 				"newFromCurrent": "New from this"
-			},
-			"OptimizerConstraintDrawer": {
-				"title": "Optimize your timetable",
-				"requiredCourses": "Required courses",
-				"excludedCourses": "Excluded courses",
-				"creditMin": "Min. credits",
-				"creditMax": "Max. credits",
-				"preferredDays": "Preferred days",
-				"blackoutWindows": "Blackout windows",
-				"maxConsecutiveHours": "Max. consecutive hours",
-				"generate": "Generate timetables",
-				"cancel": "Cancel"
-			},
-			"OptimizerResultsDrawer": {
-				"title": "Suggested timetables",
-				"cancel": "Cancel",
-				"loading": "Finding the best timetables for you…",
-				"emptyTitle": "No conflict-free timetable found",
-				"emptyBody": "Try widening your constraints — for example, relax blackout windows or reduce required courses — and generate again.",
-				"addModeUnsolvableTitle": "{course} doesn't fit your timetable",
-				"addModeUnsolvableBody": "{course} doesn't fit your timetable, even after trying to move one other class.",
-				"candidateTab": "Option {n}",
-				"scoreBreakdown": "Score breakdown",
-				"campusConflicts": "Campus conflicts",
-				"scheduleGaps": "Schedule gaps",
-				"offPreferredDays": "Off-preferred days",
-				"longStudyBlocks": "Long study blocks",
-				"diffSummary": "Changes vs. current timetable",
-				"useThisTimetable": "Use this timetable",
-				"replaceConfirm": "Applying this timetable will replace your current course selections. Continue?",
-				"partialResultsNotice": "Search took a while — showing the best results found so far.",
-				"poolTruncatedNotice": "Only your first {count} filtered courses were considered — narrow your filters to include the rest.",
-				"unlockedCourseNotice": "This course requires moving 1 other class: {course}",
-				"errorTimeout": "Request took too long",
-				"errorRateLimit": "Too many requests",
-				"errorValidation": "Check your constraints",
-				"errorGeneric": "Couldn't generate timetables right now. {reason}. Try again in a moment."
 			}
 		}
 	},

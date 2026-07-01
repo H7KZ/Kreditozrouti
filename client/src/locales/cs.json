@@ -251,6 +251,7 @@
 			"changePlanConfirm": "Opravdu chcete změnit studijní plán? Váš aktuální rozvrh bude vymazán.",
 			"courseList": "Seznam předmětů",
 			"myTimetable": "Můj rozvrh",
+			"optimizer": "Optimalizátor",
 			"loadingCourses": "Načítám předměty...",
 			"loadingError": "Chyba při načítání",
 			"noCoursesFound": "Nebyly nalezeny žádné předměty odpovídající filtrům.",
@@ -472,6 +473,45 @@
 				}
 			}
 		},
+		"optimizer": {
+			"ConstraintsPanel": {
+				"title": "Omezení",
+				"creditMin": "Min. kreditů",
+				"creditMax": "Max. kreditů",
+				"preferredDays": "Preferované dny",
+				"blackoutWindows": "Zakázané časy",
+				"maxConsecutiveHours": "Max. hodin za sebou"
+			},
+			"CourseBasket": {
+				"title": "Předměty k rozplánování",
+				"empty": "Zatím žádné předměty — vyhledejte je níže.",
+				"searchPlaceholder": "Hledat podle kódu nebo názvu…"
+			},
+			"ResultsGrid": {
+				"fullCandidatesTitle": "Všechny předměty zahrnuty",
+				"removalCandidatesTitle": "Pokud jeden předmět vypustíte…",
+				"option": "Varianta {n}",
+				"score": "Skóre: {score}",
+				"drops": "Vypouští: {course}",
+				"noFullCandidates": "Nenalezen rozvrh bez kolizí se všemi předměty. Podívejte se na varianty níže.",
+				"partialNotice": "Hledání trvalo déle — zobrazeny nejlepší dosud nalezené výsledky.",
+				"poolTruncatedNotice": "Uvažováno bylo pouze prvních {count} předmětů."
+			},
+			"TimetablePreviewModal": {
+				"title": "Náhled rozvrhu",
+				"apply": "Použít tento rozvrh",
+				"campusConflicts": "Kampusové kolize",
+				"gapMinutes": "Mezery v rozvrhu",
+				"offPreferredDays": "Mimo preferované dny",
+				"longStudyBlocks": "Dlouhé studijní bloky"
+			},
+			"OptimizerTab": {
+				"generate": "Vygenerovat rozvrhy",
+				"generating": "Generuji…",
+				"resultsTitle": "Navrhované rozvrhy",
+				"dropsTitle": "Vypouští: {course}"
+			}
+		},
 		"timetable": {
 			"TimetableAgenda": {
 				"free": "volno",
@@ -536,43 +576,6 @@
 				"newSchedule": "Nový rozvrh",
 				"saveToTabs": "Uložit aktuální do záložek",
 				"newFromCurrent": "Vytvořit kopii tohoto"
-			},
-			"OptimizerConstraintDrawer": {
-				"title": "Optimalizujte svůj rozvrh",
-				"requiredCourses": "Povinné předměty",
-				"excludedCourses": "Vyloučené předměty",
-				"creditMin": "Min. počet kreditů",
-				"creditMax": "Max. počet kreditů",
-				"preferredDays": "Preferované dny",
-				"blackoutWindows": "Zakázaná časová okna",
-				"maxConsecutiveHours": "Max. hodin po sobě",
-				"generate": "Vygenerovat rozvrhy",
-				"cancel": "Zrušit"
-			},
-			"OptimizerResultsDrawer": {
-				"title": "Navržené rozvrhy",
-				"cancel": "Zrušit",
-				"loading": "Hledám pro vás nejlepší rozvrhy…",
-				"emptyTitle": "Nebyl nalezen žádný bezkolizní rozvrh",
-				"emptyBody": "Zkuste rozšířit svá omezení — například uvolněte zakázaná okna nebo snižte počet povinných předmětů — a vygenerujte znovu.",
-				"addModeUnsolvableTitle": "{course} se do rozvrhu nevejde",
-				"addModeUnsolvableBody": "{course} se do vašeho rozvrhu nevejde, ani po pokusu přesunout jinou hodinu.",
-				"candidateTab": "Varianta {n}",
-				"scoreBreakdown": "Rozpis skóre",
-				"campusConflicts": "Kolize kampusů",
-				"scheduleGaps": "Mezery v rozvrhu",
-				"offPreferredDays": "Mimo preferované dny",
-				"longStudyBlocks": "Dlouhé bloky výuky",
-				"diffSummary": "Změny oproti aktuálnímu rozvrhu",
-				"useThisTimetable": "Použít tento rozvrh",
-				"replaceConfirm": "Použití tohoto rozvrhu nahradí váš aktuální výběr předmětů. Pokračovat?",
-				"partialResultsNotice": "Hledání trvalo déle — zobrazeny nejlepší dosud nalezené výsledky.",
-				"poolTruncatedNotice": "Zohledněno bylo pouze prvních {count} filtrovaných předmětů — pro zahrnutí zbytku zúžete filtry.",
-				"unlockedCourseNotice": "Tento předmět vyžaduje přesun 1 jiné hodiny: {course}",
-				"errorTimeout": "Požadavek trval příliš dlouho",
-				"errorRateLimit": "Příliš mnoho požadavků",
-				"errorValidation": "Zkontrolujte svá omezení",
-				"errorGeneric": "Rozvrhy se teď nepodařilo vygenerovat. {reason}. Zkuste to za chvíli znovu."
 			}
 		}
 	},
