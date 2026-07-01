@@ -36,6 +36,7 @@ function createDefaultFilters(): CoursesFilter {
 export const useFiltersStore = defineStore('filters', () => {
 	const filters = ref<CoursesFilter>(createDefaultFilters())
 	const hideConflictingCourses = ref(false)
+	const fitScoreActive = ref(false)
 	const timetableExcludeTimes = ref<TimeSelection[]>([])
 
 	const mergedExcludeTimes = computed<TimeSelection[]>(() => {
@@ -149,6 +150,7 @@ export const useFiltersStore = defineStore('filters', () => {
 	return {
 		filters,
 		hideConflictingCourses,
+		fitScoreActive,
 		timetableExcludeTimes,
 		mergedExcludeTimes,
 		activeFilterCount,

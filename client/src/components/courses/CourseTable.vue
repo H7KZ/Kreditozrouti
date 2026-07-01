@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CourseSortBy } from '@client/types'
+import type { FitResult } from '@client/composables/useFitScore'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CourseRow from '@client/components/courses/CourseRow.vue'
@@ -11,10 +12,29 @@ import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/sto
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconChevronUp from '~icons/lucide/chevron-up'
 
+interface Props {
+	fitScores?: Map<number, FitResult>
+}
+
+const props = defineProps<Props>()
+
 const { t } = useI18n()
 const coursesStore = useCoursesStore()
 const filtersStore = useFiltersStore()
 const timetableStore = useTimetableStore()
+
+const displayCourses = computed(() => {
+	let courses = coursesStore.courses
+	if (props.fitScores) {
+		courses = courses.filter(c => (props.fitScores!.get(c.id)?.score ?? -Infinity) > -Infinity)
+		return [...courses].sort((a, b) => {
+			const sa = props.fitScores!.get(a.id)?.score ?? -Infinity
+			const sb = props.fitScores!.get(b.id)?.score ?? -Infinity
+			return sb - sa
+		})
+	}
+	return courses
+})
 
 const { getCompletionLabel, getFacultyLabel, getCourseTitle } = useCourseLabels()
 const { getScheduleSummary } = useScheduleSummary()
@@ -124,7 +144,7 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 				</template>
 
 				<template v-else>
-					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length" />
+					<CourseRow v-for="course in displayCourses" :key="course.id" :course="course" :colspan="columns.length" :fit-score="props.fitScores?.get(course.id)" />
 				</template>
 			</tbody>
 		</table>
@@ -146,7 +166,7 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 
 		<!-- Course cards -->
 		<template v-else>
-			<template v-for="course in coursesStore.courses" :key="course.id">
+			<template v-for="course in displayCourses" :key="course.id">
 				<!-- Card header -->
 				<div
 					:class="[

@@ -1,4 +1,10 @@
 {
+	"fitReason": {
+		"fills_gap": "Zaplní mezeru",
+		"same_day": "Stejný den",
+		"new_day": "Nový den",
+		"neutral": "Hodí se"
+	},
 	"filters": {
 		"syllabusSearch": "Hledat v obsahu předmětu",
 		"syllabusSearchPlaceholder": "např. machine learning, účetnictví...",
@@ -438,7 +444,9 @@
 				"timetableConflicts": "Konflikty rozvrhu",
 				"timetableSlotsCount": "{count} vybraných časových slotů | {count} vybraný časový slot | {count} vybrané časové sloty",
 				"hideConflictingCourses": "Skrýt kurzy, které jsou v rozporu s mým rozvrhem",
-				"hideConflictingCoursesHelp": "Skrývá kurzy, u nichž se všechny dostupné jednotky překrývají s vámi vybranými časovými sloty v rozvrhu. Kurzy s alespoň jednou nekonfliktní možností jsou zachovány."
+				"hideConflictingCoursesHelp": "Skrývá kurzy, u nichž se všechny dostupné jednotky překrývají s vámi vybranými časovými sloty v rozvrhu. Kurzy s alespoň jednou nekonfliktní možností jsou zachovány.",
+				"fitsTimetable": "Pasuje do rozvrhu",
+				"fitsTimetableDisabledHint": "Nejprve přidejte kurzy do rozvrhu"
 			},
 			"FilterCheckboxGroup": {
 				"searchPlaceholder": "Hledat..."

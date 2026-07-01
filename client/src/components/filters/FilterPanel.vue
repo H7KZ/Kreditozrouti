@@ -387,5 +387,31 @@ function handleCloseMobileFilter() {
 				@update:selected="(values: string[]) => handleFilterChange(facet.setter, values)"
 			/>
 		</div>
+
+		<!-- Fits my timetable toggle -->
+		<div class="border-t border-(--insis-border) pt-3">
+			<div class="flex items-center justify-between gap-3">
+				<div class="flex min-w-0 flex-col gap-0.5">
+					<span class="text-sm font-medium text-(--insis-text)">{{ t('components.filters.FilterPanel.fitsTimetable') }}</span>
+					<span v-if="timetableStore.selectedUnits.length === 0" class="text-xs text-(--insis-text-3)">
+						{{ t('components.filters.FilterPanel.fitsTimetableDisabledHint') }}
+					</span>
+				</div>
+				<button
+					type="button"
+					role="switch"
+					:aria-checked="filtersStore.fitScoreActive"
+					:disabled="timetableStore.selectedUnits.length === 0"
+					class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--insis-blue) disabled:cursor-not-allowed disabled:opacity-40"
+					:class="filtersStore.fitScoreActive ? 'bg-(--insis-blue)' : 'bg-(--insis-border)'"
+					@click="filtersStore.fitScoreActive = !filtersStore.fitScoreActive"
+				>
+					<span
+						class="pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow ring-0 transition-transform"
+						:class="filtersStore.fitScoreActive ? 'translate-x-4' : 'translate-x-0'"
+					/>
+				</button>
+			</div>
+		</div>
 	</aside>
 </template>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { CourseStatus } from '@client/types'
 import type { CourseWithRelationsDTO } from '@shared/http/responses'
+import type { FitResult } from '@client/composables/useFitScore'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import CourseStatusIndicator from '@client/components/courses/CourseStatusIndicator.vue'
 import { useCourseLabels, useScheduleSummary } from '@client/composables'
@@ -10,10 +12,12 @@ import IconChevronDown from '~icons/lucide/chevron-down'
 interface Props {
 	course: CourseWithRelationsDTO
 	colspan: number
+	fitScore?: FitResult
 }
 
 const props = defineProps<Props>()
 
+const { t } = useI18n()
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
 
@@ -67,6 +71,17 @@ function handleRowClick() {
 			<div class="flex min-w-0 items-center gap-2">
 				<span :title="getCourseTitle(course)" class="truncate">{{ getCourseTitle(course) }}</span>
 				<CourseStatusIndicator :course="course" />
+				<span
+					v-if="fitScore"
+					class="inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium"
+					:class="{
+						'bg-green-100 text-green-700': fitScore.fitReason === 'fills_gap',
+						'bg-blue-100 text-blue-700': fitScore.fitReason === 'same_day',
+						'bg-(--insis-surface-2) text-(--insis-text-3)': fitScore.fitReason === 'new_day' || fitScore.fitReason === 'neutral'
+					}"
+				>
+					{{ t(`fitReason.${fitScore.fitReason}`) }}
+				</span>
 			</div>
 		</td>
 

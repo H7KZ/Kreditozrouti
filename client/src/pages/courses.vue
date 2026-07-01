@@ -15,6 +15,7 @@ import OptimizerTab from '@client/components/optimizer/OptimizerTab.vue'
 import ScheduleSlotsPanel from '@client/components/timetable/ScheduleSlotsPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
+import { computeFitScores } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import IconCalendar from '~icons/lucide/calendar'
 import IconCalendarMinus2 from '~icons/lucide/calendar-minus-2'
@@ -153,6 +154,12 @@ const showEmptyTimetable = computed(() => uiStore.viewMode === 'timetable' && ti
 
 const selectedCoursesCount = computed(() => timetableStore.selectedCourseIds.length)
 
+const fitScores = computed(() => {
+	if (!filtersStore.fitScoreActive) return undefined
+	if (timetableStore.selectedUnits.length === 0) return undefined
+	return computeFitScores(coursesStore.courses, timetableStore.selectedUnits)
+})
+
 async function fetchNextCoursesPage(page: () => void) {
 	page()
 	await coursesStore.fetchCourses()
@@ -252,7 +259,7 @@ async function fetchNextCoursesPage(page: () => void) {
 							</button>
 						</div>
 
-						<CourseTable v-else />
+						<CourseTable v-else :fit-scores="fitScores" />
 
 						<!-- Pagination -->
 						<div

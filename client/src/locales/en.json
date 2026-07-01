@@ -1,4 +1,10 @@
 {
+	"fitReason": {
+		"fills_gap": "Fills gap",
+		"same_day": "Same day",
+		"new_day": "New day",
+		"neutral": "Fits"
+	},
 	"filters": {
 		"syllabusSearch": "Search in course content",
 		"syllabusSearchPlaceholder": "e.g. machine learning, účetnictví...",
@@ -438,7 +444,9 @@
 				"timetableConflicts": "Timetable Conflicts",
 				"timetableSlotsCount": "{count} slots selected",
 				"hideConflictingCourses": "Hide courses that conflict with my timetable",
-				"hideConflictingCoursesHelp": "Hides courses where all available units overlap with your selected timetable slots. Courses with at least one non-conflicting option are kept."
+				"hideConflictingCoursesHelp": "Hides courses where all available units overlap with your selected timetable slots. Courses with at least one non-conflicting option are kept.",
+				"fitsTimetable": "Fits my timetable",
+				"fitsTimetableDisabledHint": "Add courses to your timetable first"
 			},
 			"FilterCheckboxGroup": {
 				"searchPlaceholder": "Search..."
