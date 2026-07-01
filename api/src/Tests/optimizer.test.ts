@@ -18,7 +18,7 @@ function slot(overrides: Partial<SolverSlotCandidate> = {}): SolverSlotCandidate
 		day: 'monday',
 		timeFrom: 480,
 		timeTo: 560,
-		location: 'RB101',
+		location: 'RB.101',
 		unitId: 1,
 		slotId: 1,
 		courseId: 1,
@@ -46,7 +46,7 @@ describe('solveWithDeadline', () => {
 
 		expect(result.candidates.length).toBeGreaterThanOrEqual(1)
 		expect(result.partial).toBe(false)
-		const candidate = result.candidates[0]!
+		const candidate = result.candidates[0]
 		expect(candidate['1:lecture']).toBeDefined()
 		expect(candidate['2:lecture']).toBeDefined()
 	})
@@ -56,12 +56,12 @@ describe('solveWithDeadline', () => {
 			{
 				courseId: 1,
 				unitType: 'lecture',
-				domain: [slot({ courseId: 1, unitId: 1, slotId: 1, day: 'monday', timeFrom: 480, timeTo: 560, location: 'RB101' })]
+				domain: [slot({ courseId: 1, unitId: 1, slotId: 1, day: 'monday', timeFrom: 480, timeTo: 560, location: 'RB.101' })]
 			},
 			{
 				courseId: 2,
 				unitType: 'lecture',
-				domain: [slot({ courseId: 2, unitId: 2, slotId: 2, day: 'monday', timeFrom: 500, timeTo: 580, location: 'RB102' })]
+				domain: [slot({ courseId: 2, unitId: 2, slotId: 2, day: 'monday', timeFrom: 500, timeTo: 580, location: 'RB.102' })]
 			}
 		]
 
@@ -76,12 +76,12 @@ describe('solveWithDeadline', () => {
 			{
 				courseId: 1,
 				unitType: 'lecture',
-				domain: [slot({ courseId: 1, unitId: 1, slotId: 1, day: 'monday', timeFrom: 480, timeTo: 540, location: 'JM101' })]
+				domain: [slot({ courseId: 1, unitId: 1, slotId: 1, day: 'monday', timeFrom: 480, timeTo: 540, location: 'JM.101' })]
 			},
 			{
 				courseId: 2,
 				unitType: 'lecture',
-				domain: [slot({ courseId: 2, unitId: 2, slotId: 2, day: 'monday', timeFrom: 550, timeTo: 620, location: 'RB101' })]
+				domain: [slot({ courseId: 2, unitId: 2, slotId: 2, day: 'monday', timeFrom: 550, timeTo: 620, location: 'RB.101' })]
 			}
 		]
 
@@ -89,11 +89,16 @@ describe('solveWithDeadline', () => {
 
 		expect(result.candidates.length).toBe(1)
 		const constraints: SolverConstraints = {}
-		const breakdown = scoreCandidate(result.candidates[0]!, constraints)
+		const breakdown = scoreCandidate(result.candidates[0], constraints)
 		expect(breakdown.campusConflicts).toBeGreaterThanOrEqual(1)
 	})
 
-	it('sets partial:true and returns promptly when given a budget of 0ms (does not hang)', () => {
+	it('sets partial:true and returns promptly given an already-past deadline, even with domain options available (does not hang)', () => {
+		// Budget is deliberately negative so `deadline = Date.now() + budgetMs` is already in the
+		// past before recursion starts — this is the "deadline already in the past" branch of the
+		// in-recursion guard. (A literal `budgetMs: 0` is not a reliable trigger here: a trivial
+		// 2-variable/2-option search can complete in under 1ms, i.e. before Date.now() ticks past
+		// `deadline = Date.now() + 0`, which would make the assertion flaky rather than deterministic.)
 		const variables: SolverVariable[] = [
 			{
 				courseId: 1,
@@ -114,7 +119,7 @@ describe('solveWithDeadline', () => {
 		]
 
 		const start = Date.now()
-		const result = solveWithDeadline(variables, [], 0)
+		const result = solveWithDeadline(variables, [], -1)
 		const elapsedMs = Date.now() - start
 
 		expect(result.partial).toBe(true)
@@ -140,8 +145,8 @@ describe('solveWithDeadline', () => {
 describe('scoreCandidate', () => {
 	it('returns total === 0 and all-zero breakdown for a schedule with no soft-constraint violations', () => {
 		const assignment: SolverAssignment = {
-			'1:lecture': slot({ courseId: 1, unitId: 1, slotId: 1, day: 'monday', timeFrom: 480, timeTo: 560, location: 'RB101' }),
-			'2:lecture': slot({ courseId: 2, unitId: 2, slotId: 2, day: 'monday', timeFrom: 560, timeTo: 640, location: 'RB102' })
+			'1:lecture': slot({ courseId: 1, unitId: 1, slotId: 1, day: 'monday', timeFrom: 480, timeTo: 560, location: 'RB.101' }),
+			'2:lecture': slot({ courseId: 2, unitId: 2, slotId: 2, day: 'monday', timeFrom: 560, timeTo: 640, location: 'RB.102' })
 		}
 		const constraints: SolverConstraints = {}
 
@@ -158,8 +163,8 @@ describe('scoreCandidate', () => {
 
 	it("campus term equals campusConflicts * DEFAULT_WEIGHTS.campusConflict for a known 1-campus-conflict schedule", () => {
 		const assignment: SolverAssignment = {
-			'1:lecture': slot({ courseId: 1, unitId: 1, slotId: 1, day: 'monday', timeFrom: 480, timeTo: 540, location: 'JM101' }),
-			'2:lecture': slot({ courseId: 2, unitId: 2, slotId: 2, day: 'monday', timeFrom: 550, timeTo: 620, location: 'RB101' })
+			'1:lecture': slot({ courseId: 1, unitId: 1, slotId: 1, day: 'monday', timeFrom: 480, timeTo: 540, location: 'JM.101' }),
+			'2:lecture': slot({ courseId: 2, unitId: 2, slotId: 2, day: 'monday', timeFrom: 550, timeTo: 620, location: 'RB.101' })
 		}
 		const constraints: SolverConstraints = {}
 
