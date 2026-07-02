@@ -60,7 +60,7 @@ export interface SolveResult {
 /** Weighted-sum scoring weights for scoreCandidate. Tunable starting values. */
 export const DEFAULT_WEIGHTS = {
 	campusConflict: 50,
-	gapMinutePenalty: 0.1,
+	gapMinutePenalty: 0.5,
 	offPreferredDay: 10,
 	consecutiveBlockOverage: 5
 } as const
@@ -107,7 +107,10 @@ export function solveWithDeadline(variables: SolverVariable[], locked: SolverSlo
 	let hitDeadline = false
 
 	function recurse(vars: SolverVariable[], assignment: SolverAssignment): void {
-		if (found.length >= MAX_SOLUTIONS) return
+		if (found.length >= MAX_SOLUTIONS) {
+			hitDeadline = true
+			return
+		}
 		if (Date.now() > deadline) {
 			hitDeadline = true
 			return
@@ -183,7 +186,7 @@ export function scoreCandidate(
 		const sorted = [...dayUnits].sort((a, b) => a.timeFrom - b.timeFrom)
 		for (let i = 1; i < sorted.length; i++) {
 			const gap = sorted[i]!.timeFrom - sorted[i - 1]!.timeTo
-			if (gap > 0) gapMinutes += gap
+			if (gap > 15) gapMinutes += gap
 		}
 	}
 
@@ -210,8 +213,8 @@ export function scoreCandidate(
 			}
 			for (let i = 1; i < sorted.length; i++) {
 				const unit = sorted[i]!
-				if (unit.timeFrom <= blockEnd) {
-					// back-to-back (or overlapping) — extend the current consecutive block
+				if (unit.timeFrom - blockEnd <= 15) {
+					// ponytail: ≤15 min gap is a short break, still consecutive
 					blockEnd = Math.max(blockEnd, unit.timeTo)
 				} else {
 					flushBlock()
@@ -259,7 +262,7 @@ function slotPickDistance(a: SolverAssignment, b: SolverAssignment): number {
 export function diversityFilter(candidates: SolverAssignment[], maxResults = 5): SolverAssignment[] {
 	const kept: SolverAssignment[] = []
 	const variableCount = candidates.length > 0 ? Object.keys(candidates[0]!).length : 0
-	const minDistance = Math.max(1, Math.ceil(variableCount / 2))
+	const minDistance = Math.max(2, Math.ceil(variableCount / 6))
 	for (const candidate of candidates) {
 		if (kept.length >= maxResults) break
 		const tooSimilar = kept.some(k => slotPickDistance(k, candidate) < minDistance)
