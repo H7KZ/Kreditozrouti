@@ -5,8 +5,8 @@ import { useScheduleSlotsStore } from '@client/stores/schedule-slots.store'
 import { useTimetableStore } from '@client/stores/timetable.store'
 import IconInfo from '~icons/lucide/info'
 import IconPencil from '~icons/lucide/pencil'
-import IconPlus from '~icons/lucide/plus'
-import IconSparkles from '~icons/lucide/sparkles'
+import Layers2 from '~icons/lucide/layers-2'
+import CalendarPlus from '~icons/lucide/calendar-plus'
 import IconX from '~icons/lucide/x'
 
 const { t } = useI18n()
@@ -218,7 +218,7 @@ function iconsVisible(slotId: string): boolean {
 						class="insis-btn insis-btn-secondary flex items-center gap-1.5 px-2.5 py-1 text-[11px]"
 						@click="handleNewSchedule"
 					>
-						<IconSparkles class="h-3 w-3 text-amber-500" />
+						<CalendarPlus class="h-3 w-3" />
 						{{ t('components.timetable.SchedulePicker.newSchedule') }}
 					</button>
 					<button
@@ -227,7 +227,7 @@ function iconsVisible(slotId: string): boolean {
 						class="insis-btn insis-btn-secondary flex items-center gap-1.5 px-2.5 py-1 text-[11px]"
 						@click="startAdding"
 					>
-						<IconPlus class="h-3 w-3" />
+						<Layers2 class="h-3 w-3" />
 						{{
 							slotsStore.activeSlotId
 								? t('components.timetable.SchedulePicker.newFromCurrent')

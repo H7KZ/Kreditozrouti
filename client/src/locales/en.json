@@ -351,7 +351,8 @@
 				"campusConflictTag": "Campus conflict",
 				"completed": "Done",
 				"sortLabel": "Sort by {column}",
-				"rowLabel": "Course {code}: {title}. Click to view details."
+				"rowLabel": "Course {code}: {title}. Click to view details.",
+				"optimizerToggle": "Toggle in optimizer basket"
 			},
 			"CourseRowExpanded": {
 				"faculty": "Faculty",
@@ -484,10 +485,14 @@
 		"optimizer": {
 			"ConstraintsPanel": {
 				"title": "Constraints",
+				"creditLimits": "Credit limits",
 				"creditMin": "Min. credits",
 				"creditMax": "Max. credits",
+				"basketTotal": "= {n} ECTS (basket total)",
+				"creditMaxWarning": "Max credits is below the basket total — no full solutions will be generated.",
 				"preferredDays": "Preferred days",
-				"blackoutWindows": "Blackout windows",
+				"blackoutWindows": "Blocked time windows",
+				"blackoutDays": "Days (select multiple)",
 				"maxConsecutiveHours": "Max. consecutive hours"
 			},
 			"CourseBasket": {
@@ -518,6 +523,38 @@
 				"generating": "Generating…",
 				"resultsTitle": "Suggested timetables",
 				"dropsTitle": "Drops: {course}"
+			},
+			"CourseExplorer": {
+				"title": "What else fits?",
+				"noStudyPlan": "Complete the study plan wizard to explore courses by category.",
+				"pickCategory": "Pick a category from your study plan:",
+				"selectFirst": "Select a category above to continue.",
+				"findFits": "Find fits",
+				"searching": "Searching…",
+				"error": "Something went wrong — please try again.",
+				"resultsTitle": "{n} courses checked",
+				"noCourses": "No courses found in this category.",
+				"fitPerfect": "Perfect fit",
+				"fitScore": "Fit score: {score}",
+				"noFit": "No conflict-free schedule found with this course.",
+				"apply": "Add & preview",
+				"categories": {
+					"compulsory": "Compulsory",
+					"elective": "Elective",
+					"language": "Language",
+					"state_exam": "State exam",
+					"physical_education": "Physical ed."
+				},
+				"pickGroup": "Filter by group (optional):",
+				"selectCategoryFirst": "Select a category above to continue.",
+				"groups": {
+					"faculty_specific": "Field specific",
+					"university_wide": "University wide",
+					"field_specific_bachelor": "Bachelor",
+					"field_specific_master": "Master",
+					"minor_specialization": "Minor spec."
+				},
+				"preview": "Preview"
 			}
 		},
 		"timetable": {

@@ -351,7 +351,8 @@
 				"campusConflictTag": "Kampusová kolize",
 				"completed": "Dokončeno",
 				"sortLabel": "Seřadit podle {column}",
-				"rowLabel": "Předmět {code}: {title}. Klikněte pro zobrazení detailů."
+				"rowLabel": "Předmět {code}: {title}. Klikněte pro zobrazení detailů.",
+				"optimizerToggle": "Přidat/odebrat z optimalizátoru"
 			},
 			"CourseRowExpanded": {
 				"faculty": "Fakulta",
@@ -484,10 +485,14 @@
 		"optimizer": {
 			"ConstraintsPanel": {
 				"title": "Omezení",
+				"creditLimits": "Limity kreditů",
 				"creditMin": "Min. kreditů",
 				"creditMax": "Max. kreditů",
+				"basketTotal": "= {n} ECTS (celkem v košíku)",
+				"creditMaxWarning": "Max. kredity jsou nižší než součet košíku — žádná úplná řešení nebudou vygenerována.",
 				"preferredDays": "Preferované dny",
 				"blackoutWindows": "Zakázané časy",
+				"blackoutDays": "Dny (lze vybrat více)",
 				"maxConsecutiveHours": "Max. hodin za sebou"
 			},
 			"CourseBasket": {
@@ -518,6 +523,38 @@
 				"generating": "Generuji…",
 				"resultsTitle": "Navrhované rozvrhy",
 				"dropsTitle": "Vypouští: {course}"
+			},
+			"CourseExplorer": {
+				"title": "Co dalšího se vejde?",
+				"noStudyPlan": "Dokončete průvodce studijním plánem a prozkoumejte předměty podle kategorie.",
+				"pickCategory": "Vyberte kategorii ze svého studijního plánu:",
+				"selectFirst": "Nejprve vyberte kategorii výše.",
+				"findFits": "Najít vhodné",
+				"searching": "Hledám…",
+				"error": "Něco se pokazilo — zkuste to prosím znovu.",
+				"resultsTitle": "Zkontrolováno {n} předmětů",
+				"noCourses": "V této kategorii nebyly nalezeny žádné předměty.",
+				"fitPerfect": "Perfektní shoda",
+				"fitScore": "Hodnocení: {score}",
+				"noFit": "Pro tento předmět nebyl nalezen rozvrh bez konfliktů.",
+				"apply": "Přidat a zobrazit",
+				"categories": {
+					"compulsory": "Povinné",
+					"elective": "Volitelné",
+					"language": "Jazykové",
+					"state_exam": "Státní zkouška",
+					"physical_education": "Tělesná výchova"
+				},
+				"pickGroup": "Vyberte skupinu (volitelné):",
+				"selectCategoryFirst": "Nejprve vyberte kategorii výše.",
+				"groups": {
+					"faculty_specific": "Oborové",
+					"university_wide": "Celoškolní",
+					"field_specific_bachelor": "Bc. specifické",
+					"field_specific_master": "Mgr. specifické",
+					"minor_specialization": "Vedlejší spec."
+				},
+				"preview": "Zobrazit"
 			}
 		},
 		"timetable": {

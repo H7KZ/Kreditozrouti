@@ -4,7 +4,7 @@ import type { CourseWithRelationsDTO } from '@shared/http/responses'
 import { computed } from 'vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import CourseStatusIndicator from '@client/components/courses/CourseStatusIndicator.vue'
-import { useCourseLabels, useScheduleSummary } from '@client/composables'
+import { useCourseLabels, useOptimizerBasket, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconSparkles from '~icons/lucide/sparkles'
@@ -14,15 +14,11 @@ interface Props {
 	colspan: number
 }
 
-interface Emits {
-	(e: 'fit', courseId: number): void
-}
-
 const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
 
 const coursesStore = useCoursesStore()
 const timetableStore = useTimetableStore()
+const { has: inBasket, add: addToBasket, remove: removeFromBasket } = useOptimizerBasket()
 
 const { getCourseTitle, getFacultyLabel, getCompletionLabel } = useCourseLabels()
 const { getScheduleSummary } = useScheduleSummary()
@@ -93,15 +89,20 @@ function handleRowClick() {
 		<!-- Schedule -->
 		<td class="text-[11.5px] text-(--insis-text-3)">{{ scheduleSummary }}</td>
 
-		<!-- Actions: fit-into-timetable + expand chevron -->
+		<!-- Actions: optimizer toggle + expand chevron -->
 		<td class="text-right">
 			<div class="flex items-center justify-end gap-1">
 				<button
-					v-if="!isSelected && timetableStore.selectedUnits.length > 0"
 					type="button"
-					class="insis-btn insis-btn-secondary h-6 px-1.5"
-					:aria-label="$t('pages.courses.fitIntoTimetable')"
-					@click.stop="emit('fit', course.id)"
+					:class="[
+						'inline-flex cursor-pointer items-center gap-1 rounded border px-1.5 py-0.5 text-[11px] transition-colors',
+						inBasket(course.id)
+							? 'border-(--insis-blue) text-(--insis-blue)'
+							: 'border-transparent text-(--insis-text-3) hover:border-(--insis-border) hover:text-(--insis-text-2)'
+					]"
+					:aria-label="$t('components.courses.CourseRow.optimizerToggle')"
+					:aria-pressed="inBasket(course.id)"
+					@click.stop="inBasket(course.id) ? removeFromBasket(course.id) : addToBasket(course.id)"
 				>
 					<IconSparkles class="h-3 w-3" aria-hidden="true" />
 				</button>

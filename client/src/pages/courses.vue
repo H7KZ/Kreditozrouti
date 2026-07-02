@@ -169,7 +169,7 @@ async function fetchNextCoursesPage(page: () => void) {
 <template>
 	<div v-if="wizardStore.completed" class="flex h-screen flex-col overflow-hidden">
 		<!-- Header -->
-		<CoursesHeader @optimize="uiStore.switchToOptimizerView" />
+		<CoursesHeader />
 
 		<!-- Body -->
 		<div class="flex flex-1 overflow-hidden">
@@ -183,7 +183,7 @@ async function fetchNextCoursesPage(page: () => void) {
 			<!-- Main Content -->
 			<div class="flex flex-1 flex-col overflow-hidden">
 				<!-- Status bar (only when courses selected) -->
-				<div v-if="selectedCoursesCount > 0" class="flex shrink-0 items-center gap-2 border-b border-(--insis-border) bg-(--insis-surface) px-4 py-1.5">
+				<div v-if="selectedCoursesCount > 0" class="flex shrink-0 items-center gap-2 bg-(--insis-surface) px-4 py-1.5">
 					<CourseStatusSummary />
 					<div class="flex-1" />
 				</div>
@@ -223,7 +223,7 @@ async function fetchNextCoursesPage(page: () => void) {
 				<!-- Content -->
 
 				<!-- Optimizer tab fills full height with its own internal scroll -->
-				<OptimizerTab v-if="uiStore.viewMode === 'optimizer'" :courses="coursesStore.courses" class="flex-1 overflow-hidden" />
+				<OptimizerTab v-if="uiStore.viewMode === 'optimizer'" class="flex-1 overflow-hidden" />
 
 				<div
 					v-else
