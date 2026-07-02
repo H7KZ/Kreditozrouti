@@ -17,10 +17,11 @@ const SolverConstraintsSchema = z.object({
 })
 
 const OptimizeRequestSchema = z.object({
-	course_ids: z.array(z.coerce.number()).min(1),
+	course_ids: z.array(z.coerce.number()).min(0),
 	constraints: SolverConstraintsSchema,
-	mode: z.enum(['build', 'add']).default('build'),
-	locked_unit_ids: z.array(z.coerce.number()).optional()
+	mode: z.enum(['build', 'explore']).default('build'),
+	locked_unit_ids: z.array(z.coerce.number()).optional(),
+	explore_course_ids: z.array(z.coerce.number()).optional()
 }) satisfies z.ZodType<OptimizeRequest>
 
 /**

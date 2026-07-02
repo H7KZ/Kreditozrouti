@@ -1,5 +1,6 @@
 import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '@shared/domain/optimizer'
 import type {
+	ExploreResultDTO,
 	OptimizerCandidateDTO,
 	OptimizeRequest,
 	OptimizeResponseDTO,
@@ -11,7 +12,7 @@ import type {
 import type { CourseUnitDTO, CourseWithRelationsDTO } from '@shared/http/responses'
 import { getSlotType } from '@shared/domain/insis'
 import { DEFAULT_WEIGHTS, diversityFilter, scoreCandidate, solveWithDeadline } from '@shared/domain/optimizer'
-import { MAX_POOL_SIZE } from '@shared/http/optimize'
+import { MAX_EXPLORE_POOL_SIZE, MAX_POOL_SIZE } from '@shared/http/optimize'
 import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
 
@@ -29,6 +30,14 @@ export default class OptimizeService {
 	static async optimize(request: OptimizeRequest): Promise<OptimizeResponseDTO> {
 		const courseIds = request.course_ids.slice(0, MAX_POOL_SIZE)
 		const poolTruncated = request.course_ids.length > MAX_POOL_SIZE
+
+		if (request.mode === 'explore') {
+			const exploreIds = (request.explore_course_ids ?? []).slice(0, MAX_EXPLORE_POOL_SIZE)
+			const allIds = [...new Set([...courseIds, ...exploreIds])]
+			const { courses } = await CourseService.getCoursesWithRelations({ ids: allIds }, allIds.length, 0)
+			return OptimizeService.optimizeExplore(courses as unknown as CourseWithRelationsDTO[], courseIds, exploreIds, request, poolTruncated)
+		}
+
 		const { courses } = await CourseService.getCoursesWithRelations({ ids: courseIds }, courseIds.length, 0)
 		return OptimizeService.optimizeBuild(courses as unknown as CourseWithRelationsDTO[], request, poolTruncated)
 	}
@@ -100,9 +109,8 @@ export default class OptimizeService {
 		const { credit_min, credit_max } = constraints
 		if (credit_min == null && credit_max == null) return assignments
 		return assignments.filter(assignment => {
-			const totalEcts = [...Object.keys(assignment)].reduce((sum, id) => {
-				return sum + (courseById.get(Number(id))?.ects ?? 0)
-			}, 0)
+			const uniqueCourseIds = new Set([...Object.keys(assignment)].map(key => Number(key.split(':')[0])))
+			const totalEcts = [...uniqueCourseIds].reduce((sum, id) => sum + (courseById.get(id)?.ects ?? 0), 0)
 			if (credit_min != null && totalEcts < credit_min) return false
 			if (credit_max != null && totalEcts > credit_max) return false
 			return true
@@ -235,6 +243,67 @@ export default class OptimizeService {
 			}
 		} catch (error) {
 			throw Errors.internal(error instanceof Error ? error.message : 'Failed to optimize timetable')
+		}
+	}
+
+	/**
+	 * Explore mode: for each course in exploreIds, solve (basket + that course) and
+	 * return the best-fit schedule per course, sorted by score ascending (nulls last).
+	 */
+	private static optimizeExplore(
+		allCourses: CourseWithRelationsDTO[],
+		basketIds: number[],
+		exploreIds: number[],
+		request: OptimizeRequest,
+		poolTruncated: boolean
+	): OptimizeResponseDTO {
+		try {
+			const courseById = new Map(allCourses.map(c => [c.id, c]))
+			const basketCourses = allCourses.filter(c => basketIds.includes(c.id))
+			const exploreCourses = allCourses.filter(c => exploreIds.includes(c.id))
+
+			const basketVariables = OptimizeService.filterCandidatesByBlackout(
+				OptimizeService.buildVariables(basketCourses),
+				request.constraints.blackout_windows
+			)
+
+			// Give each explore course a fair share of the total budget, capped at 800ms.
+			const perCourseBudget = Math.min(800, Math.floor(SOLVER_BUDGET_MS / Math.max(1, exploreCourses.length)))
+			const exploreResults: ExploreResultDTO[] = []
+
+			for (const course of exploreCourses) {
+				const exploreVars = OptimizeService.filterCandidatesByBlackout(OptimizeService.buildVariables([course]), request.constraints.blackout_windows)
+				const { candidates } = solveWithDeadline([...basketVariables, ...exploreVars], [], perCourseBudget)
+				const creditFiltered = OptimizeService.filterByCredit(candidates, request.constraints, courseById)
+				const ranked = OptimizeService.rankAndMapCandidates(creditFiltered, request.constraints, courseById)
+
+				exploreResults.push({
+					course_id: course.id,
+					course_ident: course.ident,
+					course_title: course.title ?? course.title_en ?? course.title_cs ?? course.ident,
+					course_title_cs: course.title_cs ?? course.title ?? '',
+					course_title_en: course.title_en ?? course.title ?? '',
+					ects: course.ects ?? null,
+					best_candidate: ranked[0] ?? null
+				})
+			}
+
+			exploreResults.sort((a, b) => {
+				if (!a.best_candidate && !b.best_candidate) return 0
+				if (!a.best_candidate) return 1
+				if (!b.best_candidate) return -1
+				return a.best_candidate.score.total - b.best_candidate.score.total
+			})
+
+			return {
+				full_candidates: [],
+				removal_candidates: [],
+				partial: false,
+				pool_truncated: poolTruncated,
+				explore_results: exploreResults
+			}
+		} catch (error) {
+			throw Errors.internal(error instanceof Error ? error.message : 'Failed to explore courses')
 		}
 	}
 }

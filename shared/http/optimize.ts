@@ -7,6 +7,9 @@ import type { TimeSelection } from '../domain/time.js'
 // results drawer (references the number in the truncation notice copy) read the same constant.
 export const MAX_POOL_SIZE = 30
 
+// Cap on explore_course_ids in explore mode — more than this makes per-course budgets too tight.
+export const MAX_EXPLORE_POOL_SIZE = 20
+
 export interface SolverConstraints {
 	// Inclusion / exclusion
 	required_course_ids?: number[]
@@ -51,9 +54,10 @@ export interface SelectedCourseUnitDTO {
 export interface OptimizeRequest {
 	course_ids: number[]
 	constraints: SolverConstraints
-	mode: 'build' | 'add'
-	/** Required when mode === 'add': unit IDs (CourseUnit PKs, not slot IDs) from the student's current selections that must stay fixed. */
+	mode: 'build' | 'explore'
 	locked_unit_ids?: number[]
+	/** Required when mode === 'explore': courses to try adding to course_ids one at a time. */
+	explore_course_ids?: number[]
 }
 
 export interface ScoreBreakdownDTO {
@@ -76,6 +80,18 @@ export interface RemovalCandidateDTO extends OptimizerCandidateDTO {
 	dropped_course_title: string
 }
 
+/** One entry per explore_course_id, sorted by best_candidate.score.total ascending (nulls last). */
+export interface ExploreResultDTO {
+	course_id: number
+	course_ident: string
+	course_title: string
+	course_title_cs: string
+	course_title_en: string
+	ects: number | null
+	/** Best conflict-free timetable found for basket + this course; null if no schedule exists. */
+	best_candidate: OptimizerCandidateDTO | null
+}
+
 export interface OptimizeResponseDTO {
 	full_candidates: OptimizerCandidateDTO[]
 	removal_candidates: RemovalCandidateDTO[]
@@ -85,4 +101,6 @@ export interface OptimizeResponseDTO {
 	unlocked_course_id?: number
 	/** True when more course_ids were supplied than MAX_POOL_SIZE and the excess was dropped before solving. */
 	pool_truncated: boolean
+	/** Only present in 'explore' mode: one entry per explored course, best-fit first. */
+	explore_results?: ExploreResultDTO[]
 }
