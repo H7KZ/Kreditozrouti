@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { SolverConstraints } from '@shared/http/optimize'
 import type { Day } from '@shared/domain/constants'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { WEEKDAYS } from '@client/constants/timetable'
 import IconX from '~icons/lucide/x'
 
 const props = defineProps<{
 	modelValue: SolverConstraints
+	basketEcts?: number
 }>()
 
 const emit = defineEmits<{
@@ -40,9 +41,25 @@ const blackoutWindows = ref<BlackoutRow[]>(
 		.filter(w => w.day != null)
 		.map(w => ({ day: w.day as Day, timeFrom: minutesToTime(w.time_from), timeTo: minutesToTime(w.time_to) }))
 )
-const newBlackoutDay = ref<Day | ''>('')
+const newBlackoutDays = ref<Day[]>([])
 const newBlackoutFrom = ref('09:15')
 const newBlackoutTo = ref('14:15')
+
+// Auto-fill credits from basket when user hasn't set them
+watch(
+	() => props.basketEcts,
+	ects => {
+		if (ects == null) return
+		if (creditMin.value == null) creditMin.value = ects
+		if (creditMax.value == null) creditMax.value = ects
+	},
+	{ immediate: true }
+)
+
+const creditWarning = computed(() => {
+	if (props.basketEcts == null) return false
+	return creditMax.value != null && creditMax.value < props.basketEcts
+})
 
 function emitValue() {
 	const constraints: SolverConstraints = {}
@@ -67,42 +84,62 @@ function togglePreferredDay(day: Day) {
 	else preferredDays.value.splice(i, 1)
 }
 
+function toggleBlackoutDay(day: Day) {
+	const i = newBlackoutDays.value.indexOf(day)
+	if (i === -1) newBlackoutDays.value.push(day)
+	else newBlackoutDays.value.splice(i, 1)
+}
+
 function addBlackout() {
-	if (!newBlackoutDay.value) return
+	if (newBlackoutDays.value.length === 0) return
 	const from = timeToMinutes(newBlackoutFrom.value)
 	const to = timeToMinutes(newBlackoutTo.value)
 	if (isNaN(from) || isNaN(to) || from >= to) return
-	blackoutWindows.value.push({ day: newBlackoutDay.value, timeFrom: newBlackoutFrom.value, timeTo: newBlackoutTo.value })
-	newBlackoutDay.value = ''
+	for (const day of newBlackoutDays.value) {
+		blackoutWindows.value.push({ day, timeFrom: newBlackoutFrom.value, timeTo: newBlackoutTo.value })
+	}
+	newBlackoutDays.value = []
 	newBlackoutFrom.value = '09:15'
 	newBlackoutTo.value = '14:15'
 }
 </script>
 
 <template>
-	<div class="flex flex-col gap-4 p-4">
+	<div class="flex flex-col gap-6 p-4">
 		<h3 class="text-sm font-semibold text-(--insis-text)">
 			{{ t('components.optimizer.ConstraintsPanel.title') }}
 		</h3>
 
 		<!-- Credit range -->
-		<div class="grid grid-cols-2 gap-2">
-			<label class="flex flex-col gap-1">
-				<span class="text-xs text-(--insis-text-3)">{{ t('components.optimizer.ConstraintsPanel.creditMin') }}</span>
-				<input v-model.number="creditMin" type="number" min="0" class="insis-input" />
-			</label>
-			<label class="flex flex-col gap-1">
-				<span class="text-xs text-(--insis-text-3)">{{ t('components.optimizer.ConstraintsPanel.creditMax') }}</span>
-				<input v-model.number="creditMax" type="number" min="0" class="insis-input" />
-			</label>
-		</div>
+		<fieldset>
+			<legend class="mb-2 text-xs font-medium text-(--insis-text)">
+				{{ t('components.optimizer.ConstraintsPanel.creditLimits') }}
+			</legend>
+			<div class="flex items-end gap-3">
+				<label class="flex flex-col gap-1">
+					<span class="text-xs text-(--insis-text-3)">{{ t('components.optimizer.ConstraintsPanel.creditMin') }}</span>
+					<input v-model.number="creditMin" type="number" min="0" class="insis-input w-24" />
+				</label>
+				<span class="mb-2 text-sm text-(--insis-text-3)">–</span>
+				<label class="flex flex-col gap-1">
+					<span class="text-xs text-(--insis-text-3)">{{ t('components.optimizer.ConstraintsPanel.creditMax') }}</span>
+					<input v-model.number="creditMax" type="number" min="0" class="insis-input w-24" />
+				</label>
+				<span v-if="basketEcts != null" class="mb-2 text-xs text-(--insis-text-3)">
+					{{ t('components.optimizer.ConstraintsPanel.basketTotal', { n: basketEcts }) }}
+				</span>
+			</div>
+			<p v-if="creditWarning" class="mt-1 text-xs text-(--insis-warning)">
+				{{ t('components.optimizer.ConstraintsPanel.creditMaxWarning') }}
+			</p>
+		</fieldset>
 
 		<!-- Preferred days -->
 		<fieldset>
-			<legend class="mb-1 text-xs font-medium text-(--insis-text)">
+			<legend class="mb-2 text-xs font-medium text-(--insis-text)">
 				{{ t('components.optimizer.ConstraintsPanel.preferredDays') }}
 			</legend>
-			<div class="flex flex-wrap gap-1">
+			<div class="flex gap-1">
 				<button
 					v-for="day in WEEKDAYS"
 					:key="day"
@@ -119,11 +156,11 @@ function addBlackout() {
 
 		<!-- Blackout windows -->
 		<fieldset class="flex flex-col gap-2">
-			<legend class="mb-1 text-xs font-medium text-(--insis-text)">
+			<legend class="mb-2 text-xs font-medium text-(--insis-text)">
 				{{ t('components.optimizer.ConstraintsPanel.blackoutWindows') }}
 			</legend>
 
-			<div v-if="blackoutWindows.length > 0" class="flex flex-col gap-1">
+			<div v-if="blackoutWindows.length > 0" class="mb-1 flex flex-col gap-1">
 				<div
 					v-for="(w, i) in blackoutWindows"
 					:key="`${w.day}-${w.timeFrom}`"
@@ -142,18 +179,21 @@ function addBlackout() {
 			</div>
 
 			<div class="flex flex-wrap items-end gap-2">
-				<div class="flex">
-					<button
-						v-for="day in WEEKDAYS"
-						:key="day"
-						type="button"
-						:class="['insis-day-toggle', newBlackoutDay === day && 'active']"
-						:aria-pressed="newBlackoutDay === day"
-						:aria-label="t(`days.${day}`)"
-						@click="newBlackoutDay = newBlackoutDay === day ? '' : day"
-					>
-						{{ t(`daysShort.${day}`) }}
-					</button>
+				<div class="flex flex-col gap-1">
+					<span class="text-xs text-(--insis-text-3)">{{ t('components.optimizer.ConstraintsPanel.blackoutDays') }}</span>
+					<div class="flex gap-1">
+						<button
+							v-for="day in WEEKDAYS"
+							:key="day"
+							type="button"
+							:class="['insis-day-toggle', newBlackoutDays.includes(day) && 'active']"
+							:aria-pressed="newBlackoutDays.includes(day)"
+							:aria-label="t(`days.${day}`)"
+							@click="toggleBlackoutDay(day)"
+						>
+							{{ t(`daysShort.${day}`) }}
+						</button>
+					</div>
 				</div>
 				<label class="flex flex-col gap-1">
 					<span class="text-xs text-(--insis-text-3)">{{ t('common.from') }}</span>
@@ -163,7 +203,7 @@ function addBlackout() {
 					<span class="text-xs text-(--insis-text-3)">{{ t('common.to') }}</span>
 					<input v-model="newBlackoutTo" type="time" class="insis-input" />
 				</label>
-				<button type="button" class="insis-btn insis-btn-secondary" :disabled="!newBlackoutDay" @click="addBlackout">
+				<button type="button" class="insis-btn insis-btn-secondary self-end" :disabled="newBlackoutDays.length === 0" @click="addBlackout">
 					{{ t('common.add') }}
 				</button>
 			</div>
@@ -174,7 +214,7 @@ function addBlackout() {
 			<span class="text-xs font-medium text-(--insis-text)">
 				{{ t('components.optimizer.ConstraintsPanel.maxConsecutiveHours') }}
 			</span>
-			<input v-model.number="maxConsecutiveHours" type="number" min="0" step="0.5" class="insis-input" />
+			<input v-model.number="maxConsecutiveHours" type="number" min="0" step="0.5" class="insis-input w-24" />
 		</label>
 	</div>
 </template>
