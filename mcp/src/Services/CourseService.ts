@@ -1,6 +1,6 @@
 import { sql } from 'kysely'
-import { db } from '@mcp/DB/client.js'
-import type { CourseUnitSlot, Faculty } from '@mcp/DB/types.js'
+import { db } from '@mcp/Db/client.js'
+import type { CourseUnitSlot, Faculty } from '@mcp/Db/types.js'
 import type { CourseUnitType, InSISSemester } from '@mcp/Domain/insis.js'
 import { getSlotType } from '@mcp/Domain/insis.js'
 import type { Day } from '@mcp/Domain/constants.js'
@@ -66,7 +66,7 @@ export interface MCPCourse {
 	faculty: { id: string; title: string | null } | null
 	units: MCPCourseUnit[]
 	assessments: MCPCourseAssessment[]
-	study_plans: Array<{ id: number; study_plan_id: number; course_ident: string; group: string | null; category: string | null }>
+	study_plans: { id: number; study_plan_id: number; course_ident: string; group: string | null; category: string | null }[]
 }
 
 // ── Filter shape ─────────────────────────────────────────────────────────────
@@ -101,7 +101,7 @@ function buildSlot(row: CourseUnitSlot): MCPCourseUnitSlot {
 	return {
 		id: row.id,
 		unit_id: row.unit_id,
-		type: getSlotType(row as { type: string | null }),
+		type: getSlotType(row),
 		frequency: (row.frequency as MCPCourseUnitSlot['frequency']) ?? null,
 		date: row.date ?? null,
 		day: normalizeDay(row.day),
@@ -213,7 +213,7 @@ async function fetchAssessments(courseIds: number[]): Promise<Map<number, MCPCou
 	const map = new Map<number, MCPCourseAssessment[]>()
 	for (const row of rows) {
 		const arr = map.get(row.course_id) ?? []
-		arr.push(row as MCPCourseAssessment)
+		arr.push(row)
 		map.set(row.course_id, arr)
 	}
 	return map

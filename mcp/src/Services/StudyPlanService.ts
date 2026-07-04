@@ -1,4 +1,4 @@
-import { db } from '@mcp/DB/client.js'
+import { db } from '@mcp/Db/client.js'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 

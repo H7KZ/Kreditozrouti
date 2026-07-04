@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { getCoursesWithRelations } from '@mcp/Services/CourseService.js'
-import type { MCPCourse, MCPCourseUnitSlot } from '@mcp/Services/CourseService.js'
+import type { MCPCourseUnitSlot } from '@mcp/Services/CourseService.js'
 import { unitsConflict } from '@mcp/Domain/timetable.js'
 
 const CheckTimetableConflictsSchema = {

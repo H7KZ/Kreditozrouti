@@ -105,7 +105,7 @@ function snapshotAvailableTypes(course: MCPCourse): SelectedCourseUnitDTO['snaps
 			const type = getSlotType(slot)
 			if (!seen.has(type)) {
 				seen.add(type)
-				types!.push(type)
+				types.push(type)
 			}
 		}
 	}

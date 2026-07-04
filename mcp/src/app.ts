@@ -2,7 +2,6 @@ import express from 'express'
 import { rateLimit } from 'express-rate-limit'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
 import { createServer } from '@mcp/server.js'
-import { logger } from '@mcp/Logger/logger.js'
 
 const app = express()
 app.use(express.json())
@@ -19,7 +18,7 @@ app.post('/mcp', generalLimiter, async (req, res) => {
   if (toolName === 'vse_optimize_timetable') {
     // Run optimizer limiter manually
     await new Promise<void>((resolve, reject) => {
-      optimizerLimiter(req, res, (err?: unknown) => (err ? reject(err) : resolve()))
+      optimizerLimiter(req, res, (err?: unknown) => (err ? reject(err instanceof Error ? err : new Error('Rate limit middleware error')) : resolve()))
     })
     if (res.headersSent) return  // rate limit already responded
   }
