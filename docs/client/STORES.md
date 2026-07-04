@@ -57,6 +57,7 @@ filters: CoursesFilter = {
 	sort_by: 'ident', sort_dir: 'asc', limit: 50, offset: 0
 }
 hideConflictingCourses: boolean
+fitScoreActive: boolean           // not persisted; resets on page reload
 timetableExcludeTimes: TimeSelection[]
 ```
 

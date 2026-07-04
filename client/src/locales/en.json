@@ -1,4 +1,10 @@
 {
+	"fitReason": {
+		"fills_gap": "Fills gap",
+		"same_day": "Same day",
+		"new_day": "New day",
+		"neutral": "Fits"
+	},
 	"filters": {
 		"syllabusSearch": "Search in course content",
 		"syllabusSearchPlaceholder": "e.g. machine learning, účetnictví...",
@@ -251,6 +257,7 @@
 			"changePlanConfirm": "Changing the study plan will clear your current timetable. Do you want to proceed?",
 			"courseList": "Course List",
 			"myTimetable": "My Timetable",
+			"optimizer": "Optimizer",
 			"loadingCourses": "Loading courses...",
 			"loadingError": "Loading error",
 			"noCoursesFound": "No courses found matching the filters.",
@@ -258,6 +265,8 @@
 			"showingResults": "Showing {from}–{to} of {total} courses",
 			"pageInfo": "Page {current} of {total}",
 			"completedCoursesHidden": "{count} completed course (hidden) | {count} completed courses (hidden)",
+			"optimizeTimetable": "Optimize timetable",
+			"fitIntoTimetable": "Fit into timetable",
 			"emptyTimetable": {
 				"title": "Your timetable is empty",
 				"description": "Add courses from the list or drag across empty slots to search for courses at that time.",
@@ -342,7 +351,8 @@
 				"campusConflictTag": "Campus conflict",
 				"completed": "Done",
 				"sortLabel": "Sort by {column}",
-				"rowLabel": "Course {code}: {title}. Click to view details."
+				"rowLabel": "Course {code}: {title}. Click to view details.",
+				"optimizerToggle": "Toggle in optimizer basket"
 			},
 			"CourseRowExpanded": {
 				"faculty": "Faculty",
@@ -435,7 +445,9 @@
 				"timetableConflicts": "Timetable Conflicts",
 				"timetableSlotsCount": "{count} slots selected",
 				"hideConflictingCourses": "Hide courses that conflict with my timetable",
-				"hideConflictingCoursesHelp": "Hides courses where all available units overlap with your selected timetable slots. Courses with at least one non-conflicting option are kept."
+				"hideConflictingCoursesHelp": "Hides courses where all available units overlap with your selected timetable slots. Courses with at least one non-conflicting option are kept.",
+				"fitsTimetable": "Fits my timetable",
+				"fitsTimetableDisabledHint": "Add courses to your timetable first"
 			},
 			"FilterCheckboxGroup": {
 				"searchPlaceholder": "Search..."
@@ -468,6 +480,81 @@
 					"jizni-mesto": "Jižní Město",
 					"zizkov": "Žižkov"
 				}
+			}
+		},
+		"optimizer": {
+			"ConstraintsPanel": {
+				"title": "Constraints",
+				"creditLimits": "Credit limits",
+				"creditMin": "Min. credits",
+				"creditMax": "Max. credits",
+				"basketTotal": "= {n} ECTS (basket total)",
+				"creditMaxWarning": "Max credits is below the basket total — no full solutions will be generated.",
+				"preferredDays": "Preferred days",
+				"blackoutWindows": "Blocked time windows",
+				"blackoutDays": "Days (select multiple)",
+				"maxConsecutiveHours": "Max. consecutive hours"
+			},
+			"CourseBasket": {
+				"title": "Courses to schedule",
+				"empty": "No courses added yet — search below to add courses.",
+				"searchPlaceholder": "Search by code or name…"
+			},
+			"ResultsGrid": {
+				"fullCandidatesTitle": "All courses scheduled",
+				"removalCandidatesTitle": "If you drop one course…",
+				"option": "Option {n}",
+				"score": "Score: {score}",
+				"drops": "Drops: {course}",
+				"noFullCandidates": "No conflict-free timetable found with all courses. See options below.",
+				"partialNotice": "Search took a while — showing the best results found so far.",
+				"poolTruncatedNotice": "Only your first {count} courses were considered."
+			},
+			"TimetablePreviewModal": {
+				"title": "Preview timetable",
+				"apply": "Use this timetable",
+				"campusConflicts": "Campus conflicts",
+				"gapMinutes": "Schedule gaps",
+				"offPreferredDays": "Off-preferred days",
+				"longStudyBlocks": "Long study blocks"
+			},
+			"OptimizerTab": {
+				"generate": "Generate timetables",
+				"generating": "Generating…",
+				"resultsTitle": "Suggested timetables",
+				"dropsTitle": "Drops: {course}"
+			},
+			"CourseExplorer": {
+				"title": "What else fits?",
+				"noStudyPlan": "Complete the study plan wizard to explore courses by category.",
+				"pickCategory": "Pick a category from your study plan:",
+				"selectFirst": "Select a category above to continue.",
+				"findFits": "Find fits",
+				"searching": "Searching…",
+				"error": "Something went wrong — please try again.",
+				"resultsTitle": "{n} courses checked",
+				"noCourses": "No courses found in this category.",
+				"fitPerfect": "Perfect fit",
+				"fitScore": "Fit score: {score}",
+				"noFit": "No conflict-free schedule found with this course.",
+				"apply": "Add & preview",
+				"categories": {
+					"compulsory": "Compulsory",
+					"elective": "Elective",
+					"language": "Language",
+					"state_exam": "State exam",
+					"physical_education": "Physical ed."
+				},
+				"pickGroup": "Filter by group (optional):",
+				"selectCategoryFirst": "Select a category above to continue.",
+				"groups": {
+					"faculty_specific": "Field specific",
+					"university_wide": "University wide",
+					"field_specific_bachelor": "Bachelor",
+					"field_specific_master": "Master",
+					"minor_specialization": "Minor spec."
+				},
+				"preview": "Preview"
 			}
 		},
 		"timetable": {

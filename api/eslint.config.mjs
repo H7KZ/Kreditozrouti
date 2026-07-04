@@ -60,6 +60,14 @@ export default tseslint.config(
 			'promise/always-return': 'off',
 			'promise/catch-or-return': 'off',
 
+			// Prefer const
+			'prefer-const': [
+				'error',
+				{
+					destructuring: 'all'
+				}
+			],
+
 			// unicorn — high-signal only
 			'unicorn/filename-case': [
 				'error',

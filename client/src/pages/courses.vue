@@ -11,13 +11,16 @@ import CourseTable from '@client/components/courses/CourseTable.vue'
 import MobileBottomNav from '@client/components/common/MobileBottomNav.vue'
 import FilterFullScreen from '@client/components/filters/FilterFullScreen.vue'
 import FilterPanel from '@client/components/filters/FilterPanel.vue'
+import OptimizerTab from '@client/components/optimizer/OptimizerTab.vue'
 import ScheduleSlotsPanel from '@client/components/timetable/ScheduleSlotsPanel.vue'
 import TimetableGrid from '@client/components/timetable/TimetableGrid.vue'
 import { resetCourseStatusFilter } from '@client/composables/useCourseStatusFilter'
+import { computeFitScores } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 import IconCalendar from '~icons/lucide/calendar'
 import IconCalendarMinus2 from '~icons/lucide/calendar-minus-2'
 import IconTable from '~icons/lucide/table'
+import IconSparkles from '~icons/lucide/sparkles'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -151,6 +154,12 @@ const showEmptyTimetable = computed(() => uiStore.viewMode === 'timetable' && ti
 
 const selectedCoursesCount = computed(() => timetableStore.selectedCourseIds.length)
 
+const fitScores = computed(() => {
+	if (!filtersStore.fitScoreActive) return
+	if (timetableStore.selectedUnits.length === 0) return
+	return computeFitScores(coursesStore.courses, timetableStore.selectedUnits)
+})
+
 async function fetchNextCoursesPage(page: () => void) {
 	page()
 	await coursesStore.fetchCourses()
@@ -174,7 +183,7 @@ async function fetchNextCoursesPage(page: () => void) {
 			<!-- Main Content -->
 			<div class="flex flex-1 flex-col overflow-hidden">
 				<!-- Status bar (only when courses selected) -->
-				<div v-if="selectedCoursesCount > 0" class="flex shrink-0 items-center gap-2 border-b border-(--insis-border) bg-(--insis-surface) px-4 py-1.5">
+				<div v-if="selectedCoursesCount > 0" class="flex shrink-0 items-center gap-2 bg-(--insis-surface) px-4 py-1.5">
 					<CourseStatusSummary />
 					<div class="flex-1" />
 				</div>
@@ -199,11 +208,25 @@ async function fetchNextCoursesPage(page: () => void) {
 							{{ $t('pages.courses.myTimetable') }}
 							<span v-if="selectedCoursesCount > 0" class="ml-0.5 text-[11px] text-(--insis-text-3)">({{ selectedCoursesCount }})</span>
 						</button>
+						<button
+							type="button"
+							class="insis-tab"
+							:class="{ 'insis-tab-active': uiStore.viewMode === 'optimizer' }"
+							@click="uiStore.switchToOptimizerView"
+						>
+							<IconSparkles class="h-3.5 w-3.5" />
+							{{ $t('pages.courses.optimizer') }}
+						</button>
 					</nav>
 				</div>
 
 				<!-- Content -->
+
+				<!-- Optimizer tab fills full height with its own internal scroll -->
+				<OptimizerTab v-if="uiStore.viewMode === 'optimizer'" class="flex-1 overflow-hidden" />
+
 				<div
+					v-else
 					id="main-content"
 					class="flex-1 overflow-y-auto p-4 pb-[calc(3.5rem+max(0.5rem,env(safe-area-inset-bottom)))] lg:pb-[max(1rem,env(safe-area-inset-bottom))]"
 					:aria-busy="coursesStore.loading"
@@ -236,7 +259,7 @@ async function fetchNextCoursesPage(page: () => void) {
 							</button>
 						</div>
 
-						<CourseTable v-else />
+						<CourseTable v-else :fit-scores="fitScores" />
 
 						<!-- Pagination -->
 						<div

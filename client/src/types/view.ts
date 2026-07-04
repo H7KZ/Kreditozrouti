@@ -1,2 +1,2 @@
 /** View mode for course browser */
-export type ViewMode = 'list' | 'timetable'
+export type ViewMode = 'list' | 'timetable' | 'optimizer'

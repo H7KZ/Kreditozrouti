@@ -149,3 +149,74 @@ interface PaginationMeta {
 
 Types for admin-only endpoints (`/admin/*`, `/commands/*`). Covers queue stats, scheduler status, and error metric
 shapes consumed by the admin panel.
+
+---
+
+## `shared/http/optimize.ts`
+
+Wire-format contract for `POST /optimize` (timetable optimizer). Shared by the client's constraint-config/results
+drawers and the API's `OptimizeService`/`OptimizeController`.
+
+```typescript
+interface SolverConstraints {
+	required_course_ids?: number[]
+	excluded_course_ids?: number[]
+	credit_min?: number
+	credit_max?: number
+	blackout_windows?: TimeSelection[] // reuses shared/domain/time.ts TimeSelection
+	preferred_days?: Day[]
+	max_consecutive_minutes?: number
+}
+
+interface OptimizeRequest {
+	course_ids: number[]
+	constraints: SolverConstraints
+	mode: 'build' | 'add'
+	locked_unit_ids?: number[] // required when mode === 'add'
+}
+
+interface SelectedCourseUnitDTO {
+	// mirrors client/src/types/course.ts SelectedCourseUnit field-for-field so
+	// OptimizerCandidateDTO.units is directly loadable via timetable.store.loadUnits()
+	courseId: number
+	courseIdent: string
+	courseTitle: string
+	courseTitleCs: string
+	courseTitleEn: string
+	unitId: number
+	unitType: CourseUnitType
+	slotId: number
+	day?: Day
+	date?: string
+	timeFrom: number
+	timeTo: number
+	location?: string
+	lecturer?: string
+	ects?: number
+	snapshotAvailableTypes?: CourseUnitType[]
+}
+
+interface ScoreBreakdownDTO {
+	campus_conflicts: number
+	gap_minutes: number
+	off_preferred_days: number
+	long_study_blocks: number
+	total: number
+}
+
+interface OptimizerCandidateDTO {
+	units: SelectedCourseUnitDTO[]
+	score: ScoreBreakdownDTO
+	changed_unit_ids: number[] // for diff highlighting against the student's current selection
+}
+
+interface OptimizeResponseDTO {
+	candidates: OptimizerCandidateDTO[]
+	partial: boolean // true if the solver's timeout guard fired before exhausting the search
+	unlocked_course_id?: number // only in 'add' mode, when one existing course had to be unlocked
+	pool_truncated: boolean // true when course_ids exceeded MAX_POOL_SIZE and was truncated
+}
+
+const MAX_POOL_SIZE = 30 // server-side course-pool cap; shared so API enforcement and client
+// truncation-notice copy read the same number instead of duplicating it
+```
