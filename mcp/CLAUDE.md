@@ -10,7 +10,7 @@ mcp/src/
 ├── Config/         # Config.ts — env vars (MYSQL_URI, MCP_PORT, NODE_ENV, LOG_LEVEL)
 ├── Logger/         # logger.ts — pino instance
 ├── Domain/         # Copied + self-contained domain types — NO @shared imports
-├── DB/             # types.ts (Kysely DB interface) + client.ts (db singleton)
+├── Db/             # types.ts (Kysely DB interface) + client.ts (db singleton)
 ├── Services/       # CourseService, StudyPlanService, FacultyService, OptimizerService
 └── Tools/          # FacultyTools, CourseTools, StudyPlanTools, TimetableTools, OptimizerTools
 ```

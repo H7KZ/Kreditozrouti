@@ -229,6 +229,66 @@ services:
         order: start-first
 
   # ============================================================================
+  # MCP Service
+  # ============================================================================
+  mcp:
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/mcp:${MCP_IMAGE_TAG:-latest}
+    restart: unless-stopped
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    environment:
+      - NODE_ENV=production
+      - MYSQL_URI=${MYSQL_URI}
+      - MCP_PORT=3000
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+
+    networks:
+      - traefik-network
+      - mysql-network
+
+    labels:
+      # Traefik Configuration
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.${PROJECT}-mcp.priority=50'
+      - 'traefik.http.routers.${PROJECT}-mcp.rule=Host(`${DOMAIN}`) && PathPrefix(`/mcp`)'
+      - 'traefik.http.routers.${PROJECT}-mcp.entrypoints=websecure'
+      - 'traefik.http.routers.${PROJECT}-mcp.tls=true'
+      - 'traefik.http.routers.${PROJECT}-mcp.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.${PROJECT}-mcp.loadbalancer.server.port=3000'
+
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:3000/health' ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+        failure_action: rollback
+
+  # ============================================================================
   # Database (MySQL)
   # ============================================================================
   mysql:
