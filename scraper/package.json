@@ -15,6 +15,7 @@
 		"generate-fixtures": "tsx --tsconfig tsconfig.json scripts/generate-fixtures.ts"
 	},
 	"dependencies": {
+		"@kreditozrouti/core": "*",
 		"@opentelemetry/auto-instrumentations-node": "^0.77.0",
 		"@opentelemetry/exporter-trace-otlp-proto": "^0.219.0",
 		"@opentelemetry/sdk-node": "^0.219.0",

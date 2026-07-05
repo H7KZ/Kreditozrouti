@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio'
-import { extractSemester, extractYear } from '@shared/utils/insis'
+import { extractSemester, extractYear } from '@kreditozrouti/core/utils'
 import Config from '@scraper/Config/Config'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
 
