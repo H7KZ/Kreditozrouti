@@ -1,5 +1,5 @@
-import type { SelectedCourseUnit } from '@client/types'
-import type { Day } from '@shared/domain/constants'
+﻿import type { SelectedCourseUnit } from '@client/types'
+import type { Day } from '@kreditozrouti/core/domain/constants'
 
 export interface DragSelection {
 	active: boolean

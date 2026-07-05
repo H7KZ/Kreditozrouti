@@ -1,8 +1,8 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { getUpcomingPeriod } from '@shared/domain/period'
+import { getUpcomingPeriod } from '@kreditozrouti/core/domain/period'
 import LanguageSwitcher from '@client/components/common/LanguageSwitcher.vue'
 import ThemeToggle from '@client/components/common/ThemeToggle.vue'
 import { useCourseLabels } from '@client/composables'

@@ -1,5 +1,5 @@
 ﻿import type { SelectedCourseUnit } from '@client/types'
-import type { Day } from '@shared/domain/constants'
+import type { Day } from '@kreditozrouti/core/domain/constants'
 import type { Ref } from 'vue'
 import { computed } from 'vue'
 import { WEEKDAYS } from '@client/constants/timetable'

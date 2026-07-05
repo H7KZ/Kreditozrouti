@@ -1,6 +1,6 @@
-import type { CourseUnitType } from '@shared/domain/insis'
+﻿import type { CourseUnitType } from '@kreditozrouti/core/domain/insis'
 
-export { getSlotType } from '@shared/domain/insis'
+export { getSlotType } from '@kreditozrouti/core/domain/insis'
 
 /**
  * Get Tailwind/CSS color class for a unit type.

@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
+﻿<script setup lang="ts">
+import type { CourseWithRelationsDTO } from '@kreditozrouti/core/http/responses'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { fetchCourses } from '@client/services/courseService'

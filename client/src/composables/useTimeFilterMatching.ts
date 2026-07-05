@@ -1,5 +1,5 @@
-import type { TimeSelection } from '@shared/domain/time'
-import type { CourseUnitSlotDTO } from '@shared/http/responses'
+﻿import type { TimeSelection } from '@kreditozrouti/core/domain/time'
+import type { CourseUnitSlotDTO } from '@kreditozrouti/core/http/responses'
 import { computed } from 'vue'
 import { useTimeUtils } from '@client/composables'
 import { useFiltersStore } from '@client/stores'

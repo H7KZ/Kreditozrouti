@@ -1,5 +1,5 @@
 ﻿import type { SelectedCourseUnit } from '@client/types'
-import type { Day } from '@shared/domain/constants'
+import type { Day } from '@kreditozrouti/core/domain/constants'
 import type { ComputedRef, Ref } from 'vue'
 import { computed } from 'vue'
 import { useTimeUtils } from '@client/composables'

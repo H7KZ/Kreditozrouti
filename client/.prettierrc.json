@@ -20,7 +20,7 @@
 		"^pinia$",
 		"^@unhead/(.*)$",
 		"<THIRD_PARTY_MODULES>",
-		"^@shared/(.*)$",
+		"^@kreditozrouti/(.*)$",
 		"^@api/(.*)$",
 		"^@client/(.*)$",
 		"^~icons/(.*)$",

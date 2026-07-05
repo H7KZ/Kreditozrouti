@@ -1,8 +1,8 @@
-import type { TimeSelection } from '@shared/domain/time'
-import type { CoursesFilter } from '@shared/http/courses'
+﻿import type { TimeSelection } from '@kreditozrouti/core/domain/time'
+import type { CoursesFilter } from '@kreditozrouti/core/http/courses'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { getUpcomingPeriod } from '@shared/domain/period'
+import { getUpcomingPeriod } from '@kreditozrouti/core/domain/period'
 
 function createDefaultFilters(): CoursesFilter {
 	return {

@@ -1,5 +1,5 @@
-import type { FacetItem } from '@shared/http/facets'
-import type { CourseDTO, StudyPlanWithRelationsDTO } from '@shared/http/responses'
+﻿import type { FacetItem } from '@kreditozrouti/core/http/facets'
+import type { CourseDTO, StudyPlanWithRelationsDTO } from '@kreditozrouti/core/http/responses'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { i18n } from '@client/i18n'

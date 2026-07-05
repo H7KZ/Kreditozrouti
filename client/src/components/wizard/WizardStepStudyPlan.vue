@@ -1,6 +1,6 @@
-<script setup lang="ts">
-import type { FacetItem } from '@shared/http/facets'
-import type { StudyPlanWithRelationsDTO } from '@shared/http/responses'
+﻿<script setup lang="ts">
+import type { FacetItem } from '@kreditozrouti/core/http/facets'
+import type { StudyPlanWithRelationsDTO } from '@kreditozrouti/core/http/responses'
 import { computed, ref } from 'vue'
 import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import IconCheck from '~icons/lucide/check'

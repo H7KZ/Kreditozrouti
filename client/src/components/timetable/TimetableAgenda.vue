@@ -1,8 +1,8 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import type { MergedUnit } from '@client/composables'
 import { isMergedUnit, useCourseLabels, useScheduleExport, useShareTimetable, useSlotMerging } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
-import type { Day } from '@shared/domain/constants'
+import type { Day } from '@kreditozrouti/core/domain/constants'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TimetableCoursePanel from '@client/components/timetable/TimetableCoursePanel.vue'

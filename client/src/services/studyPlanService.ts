@@ -1,5 +1,5 @@
-import type { StudyPlanCoursesResponseDTO, StudyPlansResponseDTO } from '@shared/http/responses'
-import type { StudyPlanCoursesFilter, StudyPlansFilter } from '@shared/http/study-plans'
+﻿import type { StudyPlanCoursesResponseDTO, StudyPlansResponseDTO } from '@kreditozrouti/core/http/responses'
+import type { StudyPlanCoursesFilter, StudyPlansFilter } from '@kreditozrouti/core/http/study-plans'
 import api from '@client/api'
 
 export async function fetchStudyPlans(filters: Partial<StudyPlansFilter>): Promise<StudyPlansResponseDTO> {

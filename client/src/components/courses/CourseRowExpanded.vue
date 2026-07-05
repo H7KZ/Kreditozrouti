@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
+﻿<script setup lang="ts">
+import type { CourseWithRelationsDTO } from '@kreditozrouti/core/http/responses'
 import CourseInfo from '@client/components/courses/CourseInfo.vue'
 import UnitSelector from '@client/components/courses/UnitSelector.vue'
 

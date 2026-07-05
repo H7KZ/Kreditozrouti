@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type { CoursesFilter } from '@shared/http/courses'
+﻿<script setup lang="ts">
+import type { CoursesFilter } from '@kreditozrouti/core/http/courses'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'

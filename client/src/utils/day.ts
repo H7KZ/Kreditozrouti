@@ -1,7 +1,7 @@
-import type { Day } from '@shared/domain/constants'
-import type { CourseUnitSlotDTO } from '@shared/http/responses'
-import { INSIS_DAY_NORM } from '@shared/domain/constants'
-import { compareDateStrings, getDayFromDate, parseDateString } from '@shared/domain/day'
+﻿import type { Day } from '@kreditozrouti/core/domain/constants'
+import type { CourseUnitSlotDTO } from '@kreditozrouti/core/http/responses'
+import { INSIS_DAY_NORM } from '@kreditozrouti/core/domain/constants'
+import { compareDateStrings, getDayFromDate, parseDateString } from '@kreditozrouti/core/domain/day'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 
 export { compareDateStrings, getDayFromDate, parseDateString }

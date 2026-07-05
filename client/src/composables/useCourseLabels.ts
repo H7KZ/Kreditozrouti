@@ -1,5 +1,5 @@
-﻿import type { Day } from '@shared/domain/constants'
-import type { CourseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
+﻿import type { Day } from '@kreditozrouti/core/domain/constants'
+import type { CourseDTO, CourseWithRelationsDTO } from '@kreditozrouti/core/http/responses'
 import { i18n } from '@client/index.ts'
 import { CourseUnitType, SelectedCourseUnit } from '@client/types'
 import { getCategoryBadgeClass, getSlotType, getUnitTypeColorClass } from '@client/utils/course'

@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type { OptimizerCandidateDTO } from '@shared/http/optimize'
+﻿<script setup lang="ts">
+import type { OptimizerCandidateDTO } from '@kreditozrouti/core/http/optimize'
 import type { SelectedCourseUnit } from '@client/types'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
