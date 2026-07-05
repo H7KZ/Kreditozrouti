@@ -7,8 +7,7 @@
 		"client",
 		"mcp",
 		"packages/core",
-		"scraper",
-		"shared"
+		"scraper"
 	],
 	"allowScripts": {
 		"vue-demi@0.14.10": true,

@@ -1,7 +1,0 @@
-export * from './insis.js'
-export * from './constants.js'
-export * from './time.js'
-export * from './day.js'
-export * from './period.js'
-export * from './timetable.js'
-export * from './studyPlan.js'
