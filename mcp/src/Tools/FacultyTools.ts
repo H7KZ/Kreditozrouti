@@ -1,13 +1,14 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { Kysely } from 'kysely'
+import type { Database } from '@kreditozrouti/core/db'
 import { listFaculties } from '@kreditozrouti/core/services'
-import { db } from '@mcp/Db/client.js'
 import { defineTool, registerTool } from '../tools.js'
 
 const listFacultiesTool = defineTool({
 	name: 'vse_list_faculties',
 	description: 'List all VŠE faculties',
 	schema: {},
-	handler: async () => {
+	handler: async (_args, db) => {
 		const faculties = await listFaculties(db)
 		return {
 			content: [{
@@ -18,6 +19,6 @@ const listFacultiesTool = defineTool({
 	},
 })
 
-export function registerFacultyTools(server: McpServer): void {
+export function registerFacultyTools(server: McpServer, db: Kysely<Database>): void {
 	registerTool(server, db, listFacultiesTool)
 }

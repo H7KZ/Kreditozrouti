@@ -1,8 +1,9 @@
 import { z } from 'zod'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { Kysely } from 'kysely'
+import type { Database } from '@kreditozrouti/core/db'
 import { searchCourses, getCourseById } from '@kreditozrouti/core/services'
 import type { CourseFilter } from '@kreditozrouti/core/services'
-import { db } from '@mcp/Db/client.js'
 import { defineTool, registerTool } from '../tools.js'
 
 const SearchCoursesSchema = {
@@ -22,7 +23,7 @@ const searchCoursesTool = defineTool({
 	name: 'vse_search_courses',
 	description: 'Search VŠE courses by text, faculty, semester, or language. Times in results are minutes from midnight (0–1439).',
 	schema: SearchCoursesSchema,
-	handler: async (input) => {
+	handler: async (input, db) => {
 		const filter: CourseFilter = {}
 		if (input.query) filter.search = input.query
 		if (input.faculty_id) filter.faculty_ids = [input.faculty_id]
@@ -43,7 +44,7 @@ const getCourseTool = defineTool({
 	name: 'vse_get_course',
 	description: 'Get a VŠE course by its numeric ID. Times in results are minutes from midnight (0–1439).',
 	schema: GetCourseSchema,
-	handler: async (input) => {
+	handler: async (input, db) => {
 		const course = await getCourseById(db, input.id)
 		if (!course) {
 			return {
@@ -60,7 +61,7 @@ const getCourseTool = defineTool({
 	},
 })
 
-export function registerCourseTools(server: McpServer): void {
+export function registerCourseTools(server: McpServer, db: Kysely<Database>): void {
 	registerTool(server, db, searchCoursesTool)
 	registerTool(server, db, getCourseTool)
 }

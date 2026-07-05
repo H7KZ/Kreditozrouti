@@ -1,8 +1,9 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { Kysely } from 'kysely'
+import type { Database } from '@kreditozrouti/core/db'
 import { z } from 'zod'
 import { optimize } from '@kreditozrouti/core/services'
 import type { OptimizeRequest } from '@kreditozrouti/core/domain'
-import { db } from '@mcp/Db/client.js'
 import { defineTool, registerTool } from '../tools.js'
 
 const DaySchema = z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
@@ -35,7 +36,7 @@ const optimizeTimetableTool = defineTool({
 	name: 'vse_optimize_timetable',
 	description: 'Find optimal non-conflicting timetable for a set of courses',
 	schema: OptimizerInputSchema,
-	handler: async (input) => {
+	handler: async (input, db) => {
 		const request: OptimizeRequest = {
 			course_ids: input.course_ids,
 			constraints: input.constraints ?? {},
@@ -53,6 +54,6 @@ const optimizeTimetableTool = defineTool({
 	},
 })
 
-export function registerOptimizerTools(server: McpServer): void {
+export function registerOptimizerTools(server: McpServer, db: Kysely<Database>): void {
 	registerTool(server, db, optimizeTimetableTool)
 }

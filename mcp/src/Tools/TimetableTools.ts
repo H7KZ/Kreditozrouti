@@ -1,9 +1,10 @@
 import { z } from 'zod'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { Kysely } from 'kysely'
+import type { Database } from '@kreditozrouti/core/db'
 import { getCoursesWithRelations } from '@kreditozrouti/core/services'
 import type { MCPCourseUnitSlot } from '@kreditozrouti/core/services'
 import { unitsConflict } from '@kreditozrouti/core/domain'
-import { db } from '@mcp/Db/client.js'
 import { defineTool, registerTool } from '../tools.js'
 
 const CheckTimetableConflictsSchema = {
@@ -30,7 +31,7 @@ const checkTimetableConflictsTool = defineTool({
 	name: 'vse_check_timetable_conflicts',
 	description: 'Check a set of VŠE courses for timetable conflicts. Times are minutes from midnight (0–1439).',
 	schema: CheckTimetableConflictsSchema,
-	handler: async (input) => {
+	handler: async (input, db) => {
 		const { course_ids } = input
 		const { courses } = await getCoursesWithRelations(db, { ids: course_ids }, course_ids.length, 0)
 
@@ -91,6 +92,6 @@ const checkTimetableConflictsTool = defineTool({
 	},
 })
 
-export function registerTimetableTools(server: McpServer): void {
+export function registerTimetableTools(server: McpServer, db: Kysely<Database>): void {
 	registerTool(server, db, checkTimetableConflictsTool)
 }
