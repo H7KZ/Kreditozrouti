@@ -1,9 +1,13 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { listFaculties } from '@kreditozrouti/core/services'
 import { db } from '@mcp/Db/client.js'
+import { defineTool, registerTool } from '../tools.js'
 
-export function registerFacultyTools(server: McpServer): void {
-	server.tool('vse_list_faculties', 'List all VŠE faculties', {}, async () => {
+const listFacultiesTool = defineTool({
+	name: 'vse_list_faculties',
+	description: 'List all VŠE faculties',
+	schema: {},
+	handler: async () => {
 		const faculties = await listFaculties(db)
 		return {
 			content: [{
@@ -11,5 +15,9 @@ export function registerFacultyTools(server: McpServer): void {
 				text: JSON.stringify(faculties, null, 2)
 			}]
 		}
-	})
+	},
+})
+
+export function registerFacultyTools(server: McpServer): void {
+	registerTool(server, db, listFacultiesTool)
 }

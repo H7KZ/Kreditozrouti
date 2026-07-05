@@ -1,8 +1,9 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 import { optimize } from '@kreditozrouti/core/services'
 import type { OptimizeRequest } from '@kreditozrouti/core/domain'
 import { db } from '@mcp/Db/client.js'
+import { defineTool, registerTool } from '../tools.js'
 
 const DaySchema = z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
 
@@ -30,8 +31,11 @@ const OptimizerInputSchema = {
 	explore_course_ids: z.array(z.number().int()).optional().describe('Courses to try adding (explore mode only, max 20)')
 }
 
-export function registerOptimizerTools(server: McpServer): void {
-	server.tool('vse_optimize_timetable', 'Find optimal non-conflicting timetable for a set of courses', OptimizerInputSchema, async (input) => {
+const optimizeTimetableTool = defineTool({
+	name: 'vse_optimize_timetable',
+	description: 'Find optimal non-conflicting timetable for a set of courses',
+	schema: OptimizerInputSchema,
+	handler: async (input) => {
 		const request: OptimizeRequest = {
 			course_ids: input.course_ids,
 			constraints: input.constraints ?? {},
@@ -46,5 +50,9 @@ export function registerOptimizerTools(server: McpServer): void {
 				text: JSON.stringify(result, null, 2)
 			}]
 		}
-	})
+	},
+})
+
+export function registerOptimizerTools(server: McpServer): void {
+	registerTool(server, db, optimizeTimetableTool)
 }
