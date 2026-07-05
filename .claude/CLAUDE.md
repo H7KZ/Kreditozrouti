@@ -39,6 +39,7 @@ that directory.
 |------------|------------------------|
 | Client     | http://localhost:45173 |
 | API        | http://localhost:40080 |
+| MCP        | http://localhost:3000  |
 | phpMyAdmin | http://localhost:48080 |
 
 ---
@@ -58,14 +59,15 @@ make test-regen        # Regenerate scraper + API fixture snapshots
 ## Monorepo Structure
 
 ```
-api/          Express API — HTTP, DB writes, job orchestration
-client/       Vue 3 SPA — user interface
-fixtures/     Shared test fixtures — HTML, *.scraper.json (scraper output), *.db.json (API parsing output)
-scraper/      BullMQ worker — InSIS HTTP scraping
-shared/       Types only — imported by all packages, imports nothing
-scripts/      Bash — server setup & maintenance
-deployment/   Docker Compose stacks + deploy.sh
-docs/         Full reference docs — architecture, API, client, scraper, deployment
+api/           Express API — HTTP, DB writes, job orchestration
+client/        Vue 3 SPA — user interface
+fixtures/      Shared test fixtures — HTML, *.scraper.json (scraper output), *.db.json (API parsing output)
+mcp/           MCP server — LLM tool access to VŠE data
+packages/core/ @kreditozrouti/core — domain types, DB schema, pure services
+scraper/       BullMQ worker — InSIS HTTP scraping
+scripts/       Bash — server setup & maintenance
+deployment/    Docker Compose stacks + deploy.sh
+docs/          Full reference docs — architecture, API, client, scraper, deployment
 ```
 
 ---
@@ -74,9 +76,11 @@ docs/         Full reference docs — architecture, API, client, scraper, deploy
 
 **Cross-package imports:**
 
-- `shared/` must never import from `api/`, `client/`, or `scraper/`
-- `client/` never imports from `api/` — all shared types come from `@shared/`
+- `packages/core/` must never import `express`, `bullmq`, `ioredis`, or any HTTP/queue runtime
+- `client/` never imports from `api/` — all shared types come from `@kreditozrouti/core`
+- `client/` never imports `@kreditozrouti/core/db` or `@kreditozrouti/core/services` (browser bundle)
 - `client/` never imports API runtime code
+- `mcp/` imports only from `@kreditozrouti/core` — no imports from `api/`, `scraper/`, or `client/`
 
 **Time encoding:** all times are **minutes from midnight** (0–1439). `08:00` = 480.
 
@@ -104,6 +108,7 @@ table. Cross-cutting docs:
 | Architecture | [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) · [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md) |
 | Engineering  | [docs/ENGINEERING.md](../docs/ENGINEERING.md) · [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md)                                                                                                       |
 | Shared       | [docs/shared/README.md](../docs/shared/README.md) · [domain](../docs/shared/DOMAIN.md) · [http](../docs/shared/HTTP.md) · [queue](../docs/shared/QUEUE.md)                                                                                        |
+| MCP          | [docs/mcp/README.md](../docs/mcp/README.md) — tools, transport modes, env vars, Docker                                                                                                                                                            |
 
 ---
 

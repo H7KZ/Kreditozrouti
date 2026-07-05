@@ -45,10 +45,13 @@ docker-compose.production.yml
 ├── api         ×2 replicas    traefik-network + mysql-network + redis-network
 ├── scraper     ×5 replicas    redis-network only
 ├── client      ×3 replicas    traefik-network only
+├── mcp          ×1            traefik-network + mysql-network  (MCP_PORT default 3000; GET /health)
 ├── mysql        ×1            mysql-network, volume: mysql-data-volume
 ├── redis        ×1            redis-network (no named volume — ephemeral)
 └── phpmyadmin   ×1            traefik-network + mysql-network
 ```
+
+**`mcp` container env vars:** `MYSQL_URI`, `MCP_PORT`, `NODE_ENV`, `LOG_LEVEL`
 
 Development uses lower replica counts and `dev-*` image tags; network names include `-dev-` suffix.
 
@@ -62,9 +65,9 @@ Self-hosted GitHub Actions runners registered to the repo.
 
 | Network           | Purpose                         | Who joins                        |
 |-------------------|---------------------------------|----------------------------------|
-| `traefik-network` | Public ingress, Traefik routing | traefik, api, client, phpmyadmin |
-| `mysql-network`   | DB access                       | api, mysql, phpmyadmin           |
-| `redis-network`   | Queue + sessions                | api, scraper, redis              |
+| `traefik-network` | Public ingress, Traefik routing | traefik, api, client, mcp, phpmyadmin |
+| `mysql-network`   | DB access                       | api, mcp, mysql, phpmyadmin           |
+| `redis-network`   | Queue + sessions                | api, scraper, redis                   |
 
 Networks are **isolated** — the scraper cannot reach MySQL directly; it can only talk to Redis. The client container (
 Nginx) cannot reach MySQL or Redis.

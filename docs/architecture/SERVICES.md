@@ -84,6 +84,33 @@ the next scheduled run re-enqueues them. No automatic retry.
 
 ---
 
+## MCP Server (`mcp/`)
+
+**Runtime:** Node.js (MCP SDK)
+**Transport:** stdio (Claude Desktop) or Streamable HTTP (`POST /mcp`)
+**Port:** `MCP_PORT` (default 3000)
+
+### Responsibilities
+
+- Exposes Kreditožrouti data to LLM clients via the Model Context Protocol
+- Provides 7 tools: `vse_list_faculties`, `vse_search_courses`, `vse_get_course`, `vse_list_study_plans`, `vse_get_study_plan`, `vse_check_timetable_conflicts`, `vse_optimize_timetable`
+- Connects directly to MySQL via its own Kysely client (`mcp/src/Db/client.ts`)
+- Enforces rate limiting for the optimizer tool in production
+
+### What it does NOT do
+
+- Does **not** call `api/` HTTP routes — it queries MySQL directly
+- Does **not** run scheduled work or enqueue BullMQ jobs
+
+### Key internals
+
+- Imports domain types, DB schema, and query services from `@kreditozrouti/core`
+- `createServer()` factory is called fresh per HTTP request (stateless HA)
+- `--stdio` flag switches from Streamable HTTP to StdioServerTransport
+- Health check available at `GET /health`
+
+---
+
 ## Infrastructure Services
 
 These run as Docker containers but are not part of the application codebase.
