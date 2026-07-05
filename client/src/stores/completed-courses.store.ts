@@ -1,4 +1,4 @@
-﻿import type { InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@kreditozrouti/core/domain/insis'
+import type { InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@kreditozrouti/core/domain/insis'
 import type { CourseDTO, StudyPlanWithRelationsDTO } from '@kreditozrouti/core/http/responses'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'

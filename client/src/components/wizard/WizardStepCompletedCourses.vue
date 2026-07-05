@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { CourseDTO } from '@kreditozrouti/core/http/responses'
 import { computed, ref } from 'vue'
 import { useCourseLabels, useDebouncedFn } from '@client/composables'

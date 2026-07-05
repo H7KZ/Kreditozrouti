@@ -1,4 +1,4 @@
-﻿import type { DragSelection } from '@client/types'
+import type { DragSelection } from '@client/types'
 import type { Day } from '@kreditozrouti/core/domain/constants'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'

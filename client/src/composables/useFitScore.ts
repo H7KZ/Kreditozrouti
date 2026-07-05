@@ -1,4 +1,4 @@
-﻿import type { SelectedCourseUnit } from '@client/types'
+import type { SelectedCourseUnit } from '@client/types'
 import type { Day } from '@kreditozrouti/core/domain/constants'
 import type { CourseWithRelationsDTO } from '@kreditozrouti/core/http/responses'
 import { unitsConflict } from '@kreditozrouti/core/domain/timetable'

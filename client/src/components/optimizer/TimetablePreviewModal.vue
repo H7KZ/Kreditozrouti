@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { OptimizerCandidateDTO } from '@kreditozrouti/core/http/optimize'
 import type { SelectedCourseUnit } from '@client/types'
 import { computed } from 'vue'

@@ -1,4 +1,4 @@
-﻿import type { ICalCreateRequest, ICalCreateResponse } from '@kreditozrouti/core/http/ical'
+import type { ICalCreateRequest, ICalCreateResponse } from '@kreditozrouti/core/http/ical'
 import api from '@client/api'
 
 export async function createICalLink(payload: ICalCreateRequest): Promise<ICalCreateResponse> {

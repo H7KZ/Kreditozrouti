@@ -1,4 +1,4 @@
-﻿import type { FacetItem } from '@kreditozrouti/core/http/facets'
+import type { FacetItem } from '@kreditozrouti/core/http/facets'
 import type { CourseDTO, StudyPlanWithRelationsDTO } from '@kreditozrouti/core/http/responses'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'

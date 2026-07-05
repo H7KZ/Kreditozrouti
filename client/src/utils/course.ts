@@ -1,4 +1,4 @@
-﻿import type { CourseUnitType } from '@kreditozrouti/core/domain/insis'
+import type { CourseUnitType } from '@kreditozrouti/core/domain/insis'
 
 export { getSlotType } from '@kreditozrouti/core/domain/insis'
 

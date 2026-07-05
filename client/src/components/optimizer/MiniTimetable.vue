@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { SelectedCourseUnitDTO } from '@kreditozrouti/core/http/optimize'
 import type { Day } from '@kreditozrouti/core/domain/constants'
 import { WEEKDAYS } from '@client/constants/timetable'

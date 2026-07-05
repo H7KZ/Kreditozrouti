@@ -1,4 +1,4 @@
-﻿import type { Day } from '@kreditozrouti/core/domain/constants'
+import type { Day } from '@kreditozrouti/core/domain/constants'
 import { DayValues } from '@kreditozrouti/core/domain/constants'
 
 /**

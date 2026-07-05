@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { SolverConstraints } from '@kreditozrouti/core/http/optimize'
 import type { Day } from '@kreditozrouti/core/domain/constants'
 import { computed, ref, watch } from 'vue'

@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { Day } from '@kreditozrouti/core/domain/constants'
 import type { TimeSelection } from '@kreditozrouti/core/domain/time'
 import { computed, ref, watch } from 'vue'

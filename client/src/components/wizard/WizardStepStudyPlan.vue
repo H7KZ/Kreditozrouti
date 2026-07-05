@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { FacetItem } from '@kreditozrouti/core/http/facets'
 import type { StudyPlanWithRelationsDTO } from '@kreditozrouti/core/http/responses'
 import { computed, ref } from 'vue'

@@ -1,4 +1,4 @@
-﻿import type { SelectedCourseUnit } from '@client/types'
+import type { SelectedCourseUnit } from '@client/types'
 import type { Day } from '@kreditozrouti/core/domain/constants'
 import type { ComputedRef, Ref } from 'vue'
 import { computed } from 'vue'

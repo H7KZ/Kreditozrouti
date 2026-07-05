@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { CourseUnitWithSlots, SelectedCourseUnit } from '@client/types'
 import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@kreditozrouti/core/http/responses'
 import { computed, ref, toRef } from 'vue'

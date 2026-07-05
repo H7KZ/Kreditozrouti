@@ -1,4 +1,4 @@
-﻿import type { CoursesFilter } from '@kreditozrouti/core/http/courses'
+import type { CoursesFilter } from '@kreditozrouti/core/http/courses'
 import type { CoursesResponseDTO } from '@kreditozrouti/core/http/responses'
 import api from '@client/api'
 

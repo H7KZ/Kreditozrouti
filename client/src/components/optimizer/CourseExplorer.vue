@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@kreditozrouti/core/domain/insis'
 import type { ExploreResultDTO, SolverConstraints } from '@kreditozrouti/core/http/optimize'
 import { computed, onMounted, ref, watch } from 'vue'

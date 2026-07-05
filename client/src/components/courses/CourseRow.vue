@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { CourseStatus } from '@client/types'
 import type { CourseWithRelationsDTO } from '@kreditozrouti/core/http/responses'
 import { computed } from 'vue'

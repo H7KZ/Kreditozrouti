@@ -1,4 +1,4 @@
-﻿import type { CoursesFilter } from '@kreditozrouti/core/http/courses'
+import type { CoursesFilter } from '@kreditozrouti/core/http/courses'
 import type { StudyPlansFilter } from '@kreditozrouti/core/http/study-plans'
 
 export type { PaginationMeta } from '@kreditozrouti/core/http/pagination'

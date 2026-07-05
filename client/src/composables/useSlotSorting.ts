@@ -1,4 +1,4 @@
-﻿import type { Day } from '@kreditozrouti/core/domain/constants'
+import type { Day } from '@kreditozrouti/core/domain/constants'
 import type { CourseUnitSlotDTO } from '@kreditozrouti/core/http/responses'
 import { CourseUnitWithSlots } from '@client/types'
 import { getSlotType } from '@client/utils/course'

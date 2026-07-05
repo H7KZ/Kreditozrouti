@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { Day } from '@kreditozrouti/core/domain/constants'
 import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'

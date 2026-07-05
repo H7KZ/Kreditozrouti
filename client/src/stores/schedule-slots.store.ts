@@ -1,4 +1,4 @@
-﻿import type { PersistedScheduleSlotsState, SavedScheduleSlot, SelectedCourseUnit } from '@client/types'
+import type { PersistedScheduleSlotsState, SavedScheduleSlot, SelectedCourseUnit } from '@client/types'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import analytics from '@client/analytics'

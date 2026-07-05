@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { FacetItem } from '@kreditozrouti/core/http/facets'
 import { computed } from 'vue'
 import { getPeriodsForLastYears } from '@kreditozrouti/core/domain/period'

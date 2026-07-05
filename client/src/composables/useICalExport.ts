@@ -1,4 +1,4 @@
-﻿import type { SelectedCourseUnit } from '@client/types'
+import type { SelectedCourseUnit } from '@client/types'
 import type { ICalCourseConfig } from '@client/utils/ical'
 import type { InSISSemester } from '@kreditozrouti/core/domain/insis'
 import analytics from '@client/analytics'

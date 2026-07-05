@@ -1,4 +1,4 @@
-﻿import type { PersistedWizardState, SelectedStudyPlan } from '@client/types'
+import type { PersistedWizardState, SelectedStudyPlan } from '@client/types'
 import type { InSISSemester } from '@kreditozrouti/core/domain/insis'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'

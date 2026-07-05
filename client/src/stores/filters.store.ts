@@ -1,4 +1,4 @@
-﻿import type { TimeSelection } from '@kreditozrouti/core/domain/time'
+import type { TimeSelection } from '@kreditozrouti/core/domain/time'
 import type { CoursesFilter } from '@kreditozrouti/core/http/courses'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'

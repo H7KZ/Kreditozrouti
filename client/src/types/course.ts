@@ -1,4 +1,4 @@
-﻿import type { Day } from '@kreditozrouti/core/domain/constants'
+import type { Day } from '@kreditozrouti/core/domain/constants'
 import type { CourseUnitType } from '@kreditozrouti/core/domain/insis'
 import type { TimeSelection } from '@kreditozrouti/core/domain/time'
 import type { CoursesFilter } from '@kreditozrouti/core/http/courses'

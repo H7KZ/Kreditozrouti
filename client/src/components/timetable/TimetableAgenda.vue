@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { MergedUnit } from '@client/composables'
 import { isMergedUnit, useCourseLabels, useScheduleExport, useShareTimetable, useSlotMerging } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
