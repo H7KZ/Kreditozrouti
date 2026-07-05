@@ -1,4 +1,4 @@
-﻿import { readdirSync } from 'node:fs'
+import { readdirSync } from 'node:fs'
 import path from 'node:path'
 import type { ScraperInSISCourse } from '@kreditozrouti/core/queue.js'
 import { describe, expect, it } from 'vitest'

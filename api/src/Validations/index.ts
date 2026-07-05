@@ -1,4 +1,4 @@
-﻿import * as z from 'zod'
+import * as z from 'zod'
 import { DayValues } from '@kreditozrouti/core/domain'
 import { InSISSemesterValues } from '@kreditozrouti/core/domain'
 

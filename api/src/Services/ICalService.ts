@@ -1,4 +1,4 @@
-﻿import type { ICalConfig, ICalUnit } from '@kreditozrouti/core/http'
+import type { ICalConfig, ICalUnit } from '@kreditozrouti/core/http'
 import { DAY_ICAL_MAP } from '@kreditozrouti/core/domain'
 
 function pad(n: number): string {

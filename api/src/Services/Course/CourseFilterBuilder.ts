@@ -1,4 +1,4 @@
-﻿import type { InSISDay } from '@kreditozrouti/core/domain'
+import type { InSISDay } from '@kreditozrouti/core/domain'
 import { AliasedExpression, Nullable, SelectQueryBuilder, sql } from 'kysely'
 import { ASSESSMENT_BUCKETS } from '@kreditozrouti/core/domain'
 import { INSIS_DAY_DENORM, LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from '@kreditozrouti/core/domain'

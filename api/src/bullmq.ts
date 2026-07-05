@@ -1,4 +1,4 @@
-﻿import type { ScraperRequestJob, ScraperResponseJob } from '@kreditozrouti/core/queue'
+import type { ScraperRequestJob, ScraperResponseJob } from '@kreditozrouti/core/queue'
 import { Queue, Worker } from 'bullmq'
 import { BullMQOtel } from 'bullmq-otel'
 import {

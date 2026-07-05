@@ -1,4 +1,4 @@
-﻿import type { InSISDay } from '@kreditozrouti/core/domain'
+import type { InSISDay } from '@kreditozrouti/core/domain'
 import type {
 	ScraperInSISCourse,
 	ScraperInSISCourseAssessmentMethod,

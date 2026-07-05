@@ -1,4 +1,4 @@
-﻿import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '@kreditozrouti/core/domain'
+import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '@kreditozrouti/core/domain'
 import type {
 	ExploreResultDTO,
 	OptimizerCandidateDTO,

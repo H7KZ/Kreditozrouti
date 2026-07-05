@@ -1,4 +1,4 @@
-﻿import { getPeriodsForLastYears, getUpcomingPeriod } from '@kreditozrouti/core/domain'
+import { getPeriodsForLastYears, getUpcomingPeriod } from '@kreditozrouti/core/domain'
 
 export { getUpcomingPeriod, getPeriodsForLastYears }
 

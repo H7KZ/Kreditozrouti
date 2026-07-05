@@ -1,4 +1,4 @@
-﻿import type { Day } from '@kreditozrouti/core/domain'
+import type { Day } from '@kreditozrouti/core/domain'
 import type { CourseUnitType } from '@kreditozrouti/core/domain'
 import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '@kreditozrouti/core/domain'
 import type { SolverConstraints } from '@kreditozrouti/core/http'

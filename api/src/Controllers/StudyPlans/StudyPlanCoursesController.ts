@@ -1,4 +1,4 @@
-﻿import type { StudyPlanCoursesFilter } from '@kreditozrouti/core/http'
+import type { StudyPlanCoursesFilter } from '@kreditozrouti/core/http'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'

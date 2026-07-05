@@ -1,4 +1,4 @@
-﻿import type { ScraperInSISStudyPlanResponseJob } from '@kreditozrouti/core/queue'
+import type { ScraperInSISStudyPlanResponseJob } from '@kreditozrouti/core/queue'
 import { sql } from 'kysely'
 import { priorityOf } from '@kreditozrouti/core/domain'
 import { mysql } from '@api/clients'

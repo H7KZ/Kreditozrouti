@@ -1,4 +1,4 @@
-﻿import type { FacetItem } from '@kreditozrouti/core/http'
+import type { FacetItem } from '@kreditozrouti/core/http'
 import { sql } from 'kysely'
 import { ASSESSMENT_BUCKETS } from '@kreditozrouti/core/domain'
 import {

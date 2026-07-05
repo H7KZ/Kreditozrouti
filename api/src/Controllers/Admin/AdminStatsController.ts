@@ -1,4 +1,4 @@
-﻿import type { AdminStatsResponse, DbTotals, ErrorMetrics, FacultyStats, QueueStats, RecentError, StaleCourseCount } from '@kreditozrouti/core/http'
+import type { AdminStatsResponse, DbTotals, ErrorMetrics, FacultyStats, QueueStats, RecentError, StaleCourseCount } from '@kreditozrouti/core/http'
 import { Request, Response } from 'express'
 import { sql, SqlBool } from 'kysely'
 import { scraper } from '@api/bullmq'

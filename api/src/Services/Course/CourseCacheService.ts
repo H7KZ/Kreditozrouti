@@ -1,4 +1,4 @@
-﻿import type { CoursesFilter } from '@kreditozrouti/core/http'
+import type { CoursesFilter } from '@kreditozrouti/core/http'
 import type { CoursesResponseDTO } from '@kreditozrouti/core/http'
 import { redis } from '@api/clients'
 import { compareTimeSelections } from '@api/Utils/TimeConflict'

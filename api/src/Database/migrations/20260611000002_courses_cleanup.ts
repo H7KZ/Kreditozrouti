@@ -1,4 +1,4 @@
-﻿import { Kysely, sql } from 'kysely'
+import { Kysely, sql } from 'kysely'
 import { getUpcomingPeriod } from '@kreditozrouti/core/domain'
 import { CourseTable } from '@api/Database/types'
 

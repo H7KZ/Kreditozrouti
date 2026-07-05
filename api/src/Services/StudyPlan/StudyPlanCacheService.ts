@@ -1,4 +1,4 @@
-﻿import type { StudyPlansResponseDTO } from '@kreditozrouti/core/http'
+import type { StudyPlansResponseDTO } from '@kreditozrouti/core/http'
 import type { StudyPlansFilter } from '@kreditozrouti/core/http'
 import { redis } from '@api/clients'
 

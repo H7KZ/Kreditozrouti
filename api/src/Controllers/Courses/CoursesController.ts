@@ -1,4 +1,4 @@
-﻿import type { CoursesFilter } from '@kreditozrouti/core/http'
+import type { CoursesFilter } from '@kreditozrouti/core/http'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 import { InSISStudyPlanCourseCategoryValues, InSISStudyPlanCourseGroupValues } from '@kreditozrouti/core/domain'

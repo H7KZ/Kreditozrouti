@@ -1,4 +1,4 @@
-﻿import type { InSISDay } from '@kreditozrouti/core/domain'
+import type { InSISDay } from '@kreditozrouti/core/domain'
 import { ExpressionBuilder } from 'kysely'
 import { INSIS_DAY_DENORM } from '@kreditozrouti/core/domain'
 import DateService from '@api/Services/DateService'

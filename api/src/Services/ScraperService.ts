@@ -1,4 +1,4 @@
-﻿import type { InSISSemester } from '@kreditozrouti/core/domain'
+import type { InSISSemester } from '@kreditozrouti/core/domain'
 import { getPeriodsForLastYears, getUpcomingPeriod } from '@kreditozrouti/core/domain'
 import { scraper } from '@api/bullmq'
 import { mysql } from '@api/clients'

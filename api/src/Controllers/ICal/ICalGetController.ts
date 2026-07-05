@@ -1,4 +1,4 @@
-﻿import type { ICalCreateRequest } from '@kreditozrouti/core/http'
+import type { ICalCreateRequest } from '@kreditozrouti/core/http'
 import { Request, Response } from 'express'
 import { redis } from '@api/clients'
 import { Errors } from '@api/Errors'
