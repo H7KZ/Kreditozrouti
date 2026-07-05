@@ -1,6 +1,5 @@
 import { createHash } from 'crypto'
-import type { ScraperInSISCourse } from '@kreditozrouti/core/queue'
-import type { ScraperInSISCourseRequestJob } from '@kreditozrouti/core/queue'
+import type { ScraperInSISCourse, ScraperInSISCourseRequestJob } from '@kreditozrouti/types'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { InSISNetworkError, InSISParseError, InSISRateLimitError } from '@scraper/Errors/InSISErrors'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'

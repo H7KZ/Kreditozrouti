@@ -1,6 +1,6 @@
-import type { InSISDay } from '@kreditozrouti/core/domain'
-import { ExpressionBuilder } from 'kysely'
+import type { InSISDay } from '@kreditozrouti/types'
 import { INSIS_DAY_DENORM } from '@kreditozrouti/core/domain'
+import { ExpressionBuilder } from 'kysely'
 import DateService from '@api/Services/DateService'
 import { TimeSelection } from '@api/Validations'
 

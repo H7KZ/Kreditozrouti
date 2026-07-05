@@ -1,4 +1,4 @@
-﻿import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+﻿import { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
 import { db } from '@mcp/Database/client'
 import CourseTools from '@mcp/Tools/CourseTools'
 import FacultyTools from '@mcp/Tools/FacultyTools'

@@ -1,5 +1,4 @@
-import type { ScraperInSISFacultyTimetables } from '@kreditozrouti/core/queue'
-import type { ScraperInSISFacultyTimetablesRequestJob } from '@kreditozrouti/core/queue'
+import type { ScraperInSISFacultyTimetables, ScraperInSISFacultyTimetablesRequestJob } from '@kreditozrouti/types'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'

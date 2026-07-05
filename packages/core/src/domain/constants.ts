@@ -1,8 +1,7 @@
+;
 // packages/core/src/domain/constants.ts
-import type { Day } from '@kreditozrouti/types'
+import type { Day } from '@kreditozrouti/types';
 
-export { DayValues } from '@kreditozrouti/types'
-export type { Day } from '@kreditozrouti/types'
 
 export const INSIS_DAY_NORM: Record<string, Day> = {
 	Pondělí: 'monday',

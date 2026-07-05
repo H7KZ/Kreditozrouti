@@ -1,4 +1,4 @@
-import type { CourseUnitType, Day, TimeSelection } from './domain'
+﻿import type { CourseUnitType, Day, TimeSelection } from './domain.js'
 
 export interface SolverConstraints {
 	required_course_ids?: number[]
@@ -14,7 +14,7 @@ export interface SolverConstraints {
 /**
  * Optimizer-side mirror of client/src/types/course.ts's SelectedCourseUnit, field-for-field.
  * Defined here rather than imported from client/ because shared/ must never import from
- * client/ per root CLAUDE.md — OptimizerCandidateDTO.units is directly loadable via
+ * client/ per root CLAUDE.md â€” OptimizerCandidateDTO.units is directly loadable via
  * timetable.store.loadUnits() without client-side remapping.
  */
 export interface SelectedCourseUnitDTO {

@@ -1,6 +1,6 @@
-﻿import type { InSISSemester } from '@kreditozrouti/core/domain'
-import * as cheerio from 'cheerio'
+﻿import type { InSISSemester } from '@kreditozrouti/types'
 import { extractSemester, extractYear } from '@kreditozrouti/core/utils'
+import * as cheerio from 'cheerio'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
 
 export interface HarmonogramFaculty {

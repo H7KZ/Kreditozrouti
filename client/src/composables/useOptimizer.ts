@@ -1,4 +1,4 @@
-import type { OptimizeRequest, OptimizeResponseDTO, SolverConstraints } from '@kreditozrouti/core/http/optimize'
+import type { OptimizeRequest, OptimizeResponseDTO, SolverConstraints } from '@kreditozrouti/types'
 import { ref } from 'vue'
 import analytics from '@client/analytics'
 import { STORAGE_KEYS } from '@client/constants/storage'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { OptimizerCandidateDTO, RemovalCandidateDTO } from '@kreditozrouti/core/http/optimize'
+import type { OptimizerCandidateDTO, RemovalCandidateDTO } from '@kreditozrouti/types'
 import { useI18n } from 'vue-i18n'
 import MiniTimetable from './MiniTimetable.vue'
 

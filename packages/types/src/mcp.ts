@@ -1,4 +1,4 @@
-import type { CourseUnitType, Day, InSISSemester } from './domain'
+﻿import type { CourseUnitType, Day, InSISSemester } from './domain.js'
 
 export interface MCPFaculty {
 	id: string

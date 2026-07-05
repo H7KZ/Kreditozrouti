@@ -1,5 +1,4 @@
-import type { TimeSelection } from '@kreditozrouti/core/domain/time'
-import type { CoursesFilter } from '@kreditozrouti/core/http/courses'
+import type { CoursesFilter, TimeSelection } from '@kreditozrouti/types'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { getUpcomingPeriod } from '@kreditozrouti/core/domain/period'

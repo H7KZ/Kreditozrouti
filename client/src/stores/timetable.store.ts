@@ -1,7 +1,5 @@
 import type { CourseStatus, CourseUnitType, PersistedTimetableState, SelectedCourseUnit, SlotConflictInfo } from '@client/types'
-import type { Day } from '@kreditozrouti/core/domain/constants'
-import type { TimeSelection } from '@kreditozrouti/core/domain/time'
-import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@kreditozrouti/core/http/responses'
+import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO, Day, TimeSelection } from '@kreditozrouti/types'
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import analytics from '@client/analytics'

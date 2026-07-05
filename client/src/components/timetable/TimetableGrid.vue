@@ -2,7 +2,7 @@
 import type { MergedUnit } from '@client/composables'
 import { isMergedUnit, useCourseLabels, useScheduleExport, useShareTimetable, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
-import type { Day } from '@kreditozrouti/core/domain/constants'
+import type { Day } from '@kreditozrouti/types'
 import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TimetableAgenda from '@client/components/timetable/TimetableAgenda.vue'

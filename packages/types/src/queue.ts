@@ -1,6 +1,6 @@
-import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup, ScraperJob } from './domain'
+﻿import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup, ScraperJob } from './domain.js'
 
-// ── InSIS scraper payloads ────────────────────────────────────────────────────
+// InSIS scraper payloads
 
 export interface ScraperInSISFaculty {
 	ident: string | null
@@ -150,7 +150,7 @@ export interface ScraperInSISFacultyTimetable {
 	is_schedule_publicly_visible: boolean
 }
 
-// ── Job types ─────────────────────────────────────────────────────────────────
+// Job types
 
 interface ScraperRequestJobBase {
 	type: ScraperJob

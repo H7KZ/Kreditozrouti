@@ -1,6 +1,6 @@
-import type { ScraperInSISStudyPlanResponseJob } from '@kreditozrouti/core/queue'
-import { sql } from 'kysely'
+import type { ScraperInSISStudyPlanResponseJob } from '@kreditozrouti/types'
 import { priorityOf } from '@kreditozrouti/core/domain'
+import { sql } from 'kysely'
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { NewStudyPlanCourseIdent, StudyPlanCourseIdentTable, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'

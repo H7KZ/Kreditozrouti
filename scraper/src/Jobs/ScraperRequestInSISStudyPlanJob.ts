@@ -1,4 +1,4 @@
-import type { ScraperInSISStudyPlanRequestJob } from '@kreditozrouti/core/queue'
+import type { ScraperInSISStudyPlanRequestJob } from '@kreditozrouti/types'
 import { redis } from '@scraper/clients'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'

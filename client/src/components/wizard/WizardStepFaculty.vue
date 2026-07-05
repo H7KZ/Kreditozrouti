@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FacetItem } from '@kreditozrouti/core/http/facets'
+import type { FacetItem } from '@kreditozrouti/types'
 import { useCourseLabels } from '@client/composables'
 
 /*

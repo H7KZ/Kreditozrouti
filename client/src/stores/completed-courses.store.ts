@@ -1,5 +1,4 @@
-import type { InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@kreditozrouti/core/domain/insis'
-import type { CourseDTO, StudyPlanWithRelationsDTO } from '@kreditozrouti/core/http/responses'
+import type { CourseDTO, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup, StudyPlanWithRelationsDTO } from '@kreditozrouti/types'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { priorityOf } from '@kreditozrouti/core/domain/studyPlan'

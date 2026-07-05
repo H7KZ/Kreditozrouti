@@ -46,7 +46,7 @@ fetchCourses(filters) → POST / courses → CoursesResponseDTO
 triggerCourseScrape(id) → POST / courses /
 :
 id / scrape → {
-    jobId
+	jobId
 }
 
 // studyPlanService.ts
@@ -189,11 +189,11 @@ interface PaginationMeta {
 Types imported from `@shared/*` are used directly — no re-export wrappers:
 
 ```typescript
-import type { InSISDay, InSISSemester } from '@shared/domain/insis'
-import type { TimeSelection } from '@shared/domain/time'
-import type { CourseWithRelationsDTO, CourseUnitDTO, CourseUnitSlotDTO } from '@shared/http/responses'
-import type { CoursesFilter } from '@shared/http/courses'
-import type { FacetItem } from '@shared/http/facets'
+import type {InSISDay, InSISSemester} from '@shared/domain/insis'
+import type {TimeSelection} from '@shared/domain/time'
+import type {CourseWithRelationsDTO, CourseUnitDTO, CourseUnitSlotDTO} from '@shared/http/responses'
+import type {CoursesFilter} from '@shared/http/courses'
+import type {FacetItem} from '@shared/http/facets'
 ```
 
 API types consumed by the client come from `@api/Contracts`, not from `@api/Database/types` directly.

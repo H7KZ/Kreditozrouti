@@ -1,11 +1,15 @@
-import type { Day } from '@kreditozrouti/core/domain/constants'
-import type { CourseUnitType } from '@kreditozrouti/core/domain/insis'
-import type { TimeSelection } from '@kreditozrouti/core/domain/time'
-import type { CoursesFilter } from '@kreditozrouti/core/http/courses'
-import type { PaginationMeta } from '@kreditozrouti/core/http/pagination'
-import type { CoursesResponseDTO, CourseUnitDTO, CourseWithRelationsDTO } from '@kreditozrouti/core/http/responses'
+import type {
+	CoursesFilter,
+	CoursesResponseDTO,
+	CourseUnitDTO,
+	CourseUnitType,
+	CourseWithRelationsDTO,
+	Day,
+	PaginationMeta,
+	TimeSelection
+} from '@kreditozrouti/types'
 
-export type { CourseUnitType } from '@kreditozrouti/core/domain/insis'
+export type { CourseUnitType } from '@kreditozrouti/types'
 
 export interface CoursesState {
 	filters: CoursesFilter

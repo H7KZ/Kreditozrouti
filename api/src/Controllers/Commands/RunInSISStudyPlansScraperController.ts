@@ -1,4 +1,4 @@
-import type { InSISSemester } from '@kreditozrouti/core/domain'
+import type { InSISSemester } from '@kreditozrouti/types'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 import ScraperService from '@api/Services/ScraperService'

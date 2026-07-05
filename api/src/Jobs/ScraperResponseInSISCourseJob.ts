@@ -1,15 +1,15 @@
-import type { InSISDay } from '@kreditozrouti/core/domain'
 import type {
+	InSISDay,
 	ScraperInSISCourse,
 	ScraperInSISCourseAssessmentMethod,
+	ScraperInSISCourseResponseJob,
 	ScraperInSISCourseTimetableSlot,
 	ScraperInSISCourseTimetableUnit
-} from '@kreditozrouti/core/queue'
-import type { ScraperInSISCourseResponseJob } from '@kreditozrouti/core/queue'
-import { Transaction } from 'kysely'
-import { InSISDayValues } from '@kreditozrouti/core/domain'
+} from '@kreditozrouti/types'
 import { timeToMinutes } from '@kreditozrouti/core/domain'
 import { extractSemester, extractYear } from '@kreditozrouti/core/utils'
+import { InSISDayValues } from '@kreditozrouti/types'
+import { Transaction } from 'kysely'
 import { mysql, redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import {

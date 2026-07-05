@@ -46,7 +46,7 @@ which side creates a `Queue` (producer) vs a `Worker` (consumer).
 ```typescript
 new Worker(ScraperRequestQueue, handler, {
 	concurrency: 1,
-	limiter: { max: 10, duration: 1000 }
+	limiter: {max: 10, duration: 1000}
 })
 ```
 
@@ -110,16 +110,16 @@ const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9'
 
 // Catalog: 3 AM during registration months
 await scraperRequestQueue.upsertJobScheduler(
-  ScraperInSISCatalogRequestScheduler,
-  { pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *` },
-  { name: 'InSIS:Catalog', data: { type: 'InSIS:Catalog', auto_queue_courses: true, periods: [...] } }
+	ScraperInSISCatalogRequestScheduler,
+	{pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *`},
+	{name: 'InSIS:Catalog', data: {type: 'InSIS:Catalog', auto_queue_courses: true, periods: [...]}}
 )
 
 // Study Plans: 2 AM during registration months
 await scraperRequestQueue.upsertJobScheduler(
-  ScraperInSISStudyPlansRequestScheduler,
-  { pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *` },
-  { name: 'InSIS:StudyPlans', data: { type: 'InSIS:StudyPlans', auto_queue_study_plans: true, periods: [...] } }
+	ScraperInSISStudyPlansRequestScheduler,
+	{pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *`},
+	{name: 'InSIS:StudyPlans', data: {type: 'InSIS:StudyPlans', auto_queue_study_plans: true, periods: [...]}}
 )
 ```
 
@@ -200,9 +200,9 @@ Every job handler is wrapped in `withJobLogger` (from `api/src/logger.ts`):
 
 ```typescript
 const requestWorker = new Worker(
-  ScraperRequestQueue,
-  withJobLogger(ScraperRequestQueue, ScraperRequestHandler),
-  { ... }
+	ScraperRequestQueue,
+	withJobLogger(ScraperRequestQueue, ScraperRequestHandler),
+	{...}
 )
 ```
 

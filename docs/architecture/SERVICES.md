@@ -93,7 +93,8 @@ the next scheduled run re-enqueues them. No automatic retry.
 ### Responsibilities
 
 - Exposes Kreditožrouti data to LLM clients via the Model Context Protocol
-- Provides 7 tools: `vse_list_faculties`, `vse_search_courses`, `vse_get_course`, `vse_list_study_plans`, `vse_get_study_plan`, `vse_check_timetable_conflicts`, `vse_optimize_timetable`
+- Provides 7 tools: `vse_list_faculties`, `vse_search_courses`, `vse_get_course`, `vse_list_study_plans`,
+  `vse_get_study_plan`, `vse_check_timetable_conflicts`, `vse_optimize_timetable`
 - Connects directly to MySQL via its own Kysely client (`mcp/src/Db/client.ts`)
 - Enforces rate limiting for the optimizer tool in production
 

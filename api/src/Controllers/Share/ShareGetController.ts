@@ -1,4 +1,4 @@
-import type { ShareableUnit, ShareGetResponse } from '@kreditozrouti/core/http'
+import type { ShareableUnit, ShareGetResponse } from '@kreditozrouti/types'
 import { Request, Response } from 'express'
 import { redis } from '@api/clients'
 import { Errors } from '@api/Errors'

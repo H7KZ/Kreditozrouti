@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FacetItem } from '@kreditozrouti/core/http/facets'
+import type { FacetItem } from '@kreditozrouti/types'
 import { computed, ref, toRef } from 'vue'
 import { useCourseLabels, useFacetFiltering } from '@client/composables'
 import IconChevronDown from '~icons/lucide/chevron-down'

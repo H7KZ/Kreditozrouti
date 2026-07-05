@@ -1,5 +1,4 @@
-import type { Day } from '@kreditozrouti/core/domain/constants'
-import type { CourseUnitSlotDTO } from '@kreditozrouti/core/http/responses'
+import type { CourseUnitSlotDTO, Day } from '@kreditozrouti/types'
 import { INSIS_DAY_NORM } from '@kreditozrouti/core/domain/constants'
 import { compareDateStrings, getDayFromDate, parseDateString } from '@kreditozrouti/core/domain/day'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'

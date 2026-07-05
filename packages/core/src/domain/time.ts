@@ -1,5 +1,3 @@
-export type { TimeSelection } from '@kreditozrouti/types'
-
 export function timeToMinutes(time: string | null): number | null {
 	if (!time?.includes(':')) return null
 	const [hours, minutes] = time.split(':').map(Number)

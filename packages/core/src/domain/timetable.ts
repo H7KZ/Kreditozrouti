@@ -1,16 +1,12 @@
-import type { CourseUnitType } from './insis'
-import type { TimeSelection } from './time'
-import type { Campus, ScheduledUnit, ScheduledCourseUnit } from '@kreditozrouti/types'
-import { DayValues } from './constants'
-import { getDayFromDate } from './day'
+﻿import type { Campus, CourseUnitType, ScheduledCourseUnit, ScheduledUnit, TimeSelection } from '@kreditozrouti/types'
+import { DayValues } from '@kreditozrouti/types'
+import { getDayFromDate } from './day.js'
 
-export type { Campus, ScheduledUnit, ScheduledCourseUnit } from '@kreditozrouti/types'
-
-/** Minimum travel time in minutes required between the two VŠE campuses. */
+/** Minimum travel time in minutes required between the two VÅ E campuses. */
 export const CAMPUS_TRAVEL_MINUTES = 40
 
 /**
- * Determine which VŠE campus a room location string belongs to.
+ * Determine which VÅ E campus a room location string belongs to.
  */
 export function getCampus(location: string | null | undefined): Campus {
 	if (!location) return 'unknown'

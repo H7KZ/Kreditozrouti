@@ -5,11 +5,13 @@ WORKDIR /usr/src
 # Install all workspace deps
 COPY package*.json ./
 COPY packages/core/package*.json ./packages/core/
+COPY packages/types/package*.json ./packages/types/
 COPY mcp/package*.json ./mcp/
 
 RUN npm ci
 
 # Build packages/core first
+COPY packages/types/ ./packages/types/
 COPY packages/core/ ./packages/core/
 RUN npm run build -w packages/core
 
@@ -25,7 +27,7 @@ RUN apk add --no-cache curl && \
 WORKDIR /usr/src/mcp
 
 COPY --from=builder --chown=mcp:mcp /usr/src/mcp/dist ./dist
-COPY --from=builder --chown=mcp:mcp /usr/src/mcp/node_modules ./node_modules
+COPY --from=builder --chown=mcp:mcp /usr/src/node_modules ./node_modules
 COPY --from=builder --chown=mcp:mcp /usr/src/mcp/package.json ./package.json
 
 USER mcp

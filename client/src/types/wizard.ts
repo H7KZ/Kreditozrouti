@@ -1,4 +1,4 @@
-import type { InSISSemester } from '@kreditozrouti/core/domain/insis'
+import type { InSISSemester } from '@kreditozrouti/types'
 
 export interface SelectedStudyPlan {
 	id: number

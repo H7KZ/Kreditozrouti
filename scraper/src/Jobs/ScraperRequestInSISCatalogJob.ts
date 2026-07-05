@@ -1,4 +1,4 @@
-import type { ScraperInSISCatalogRequestJob } from '@kreditozrouti/core/queue'
+import type { ScraperInSISCatalogRequestJob } from '@kreditozrouti/types'
 import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'

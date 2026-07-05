@@ -1,22 +1,19 @@
-﻿import type { Database } from '../db/index'
+﻿import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '../domain/optimizer.js'
 import type {
+	Database,
 	ExploreResultDTO,
+	MCPCourse,
 	OptimizerCandidateDTO,
 	OptimizeRequest,
 	OptimizeResponseDTO,
 	RemovalCandidateDTO,
-	ScoreBreakdown,
 	ScoreBreakdownDTO,
 	SelectedCourseUnitDTO,
-	SolverAssignment,
-	SolverConstraints,
-	SolverSlotCandidate,
-	SolverVariable
-} from '../domain/optimizer'
-import type { MCPCourse } from '@kreditozrouti/types'
+	SolverConstraints
+} from '@kreditozrouti/types'
 import type { Kysely } from 'kysely'
-import { getSlotType } from '../domain/insis'
-import { DEFAULT_WEIGHTS, diversityFilter, MAX_EXPLORE_POOL_SIZE, MAX_POOL_SIZE, scoreCandidate, solveWithDeadline } from '../domain/optimizer'
+import { getSlotType } from '../domain/insis.js'
+import { DEFAULT_WEIGHTS, diversityFilter, MAX_EXPLORE_POOL_SIZE, MAX_POOL_SIZE, scoreCandidate, solveWithDeadline } from '../domain/optimizer.js'
 import CourseService from './CourseService'
 
 const SOLVER_BUDGET_MS = 4500

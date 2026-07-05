@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { InSISSemester } from '@kreditozrouti/core/domain/insis'
+import type { InSISSemester } from '@kreditozrouti/types'
 import { computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'

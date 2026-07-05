@@ -1,9 +1,9 @@
-﻿import type { Database } from '@kreditozrouti/core/db'
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+﻿import type { Database } from '@kreditozrouti/types'
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
 import type { Kysely } from 'kysely'
 import { z } from 'zod'
 import StudyPlanService from '@kreditozrouti/core/services/StudyPlanService'
-import { defineTool, registerTool } from '../tools'
+import { defineTool, registerTool } from '@mcp/tools'
 
 export default class StudyPlanTools {
 	private static readonly listTool = defineTool({

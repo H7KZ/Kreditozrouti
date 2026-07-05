@@ -1,9 +1,7 @@
-import type { Day } from '@kreditozrouti/core/domain'
-import type { CourseUnitType } from '@kreditozrouti/core/domain'
 import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '@kreditozrouti/core/domain'
-import type { SolverConstraints } from '@kreditozrouti/core/http'
-import { describe, expect, it } from 'vitest'
+import type { CourseUnitType, Day, SolverConstraints } from '@kreditozrouti/types'
 import { DEFAULT_WEIGHTS, diversityFilter, scoreCandidate, solveWithDeadline } from '@kreditozrouti/core/domain'
+import { describe, expect, it } from 'vitest'
 
 function slot(overrides: Partial<SolverSlotCandidate> = {}): SolverSlotCandidate {
 	return {

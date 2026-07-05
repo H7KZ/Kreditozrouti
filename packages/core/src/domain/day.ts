@@ -1,5 +1,5 @@
-﻿import type { Day } from './constants'
-import { DayValues } from './constants'
+﻿import type { Day } from '@kreditozrouti/types'
+import { DayValues } from '@kreditozrouti/types'
 
 export function getDayFromDate(dateStr: string | null | undefined): Day | null {
 	if (!dateStr) return null

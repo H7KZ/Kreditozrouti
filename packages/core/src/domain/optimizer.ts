@@ -1,30 +1,9 @@
-﻿// Section 1: imports
-import type { Day } from './constants'
-import type { CourseUnitType } from './insis'
-import type { ScheduledUnit } from './timetable'
-import type {
-	ExploreResultDTO,
-	OptimizerCandidateDTO,
-	OptimizeRequest,
-	OptimizeResponseDTO,
-	RemovalCandidateDTO,
-	ScoreBreakdownDTO,
-	SelectedCourseUnitDTO,
-	SolverConstraints
-} from '@kreditozrouti/types'
-import { getDayFromDate } from './day'
-import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from './timetable'
+﻿;
+// Section 1: imports
+import type { CourseUnitType, Day, ScheduledUnit, SolverConstraints } from '@kreditozrouti/types';
+import { getDayFromDate } from './day.js';
+import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from './timetable.js';
 
-export type {
-	ExploreResultDTO,
-	OptimizerCandidateDTO,
-	OptimizeRequest,
-	OptimizeResponseDTO,
-	RemovalCandidateDTO,
-	ScoreBreakdownDTO,
-	SelectedCourseUnitDTO,
-	SolverConstraints
-} from '@kreditozrouti/types'
 
 // Section 2: Constants
 

@@ -1,4 +1,4 @@
-import type { ScraperRequestJob } from '@kreditozrouti/core/queue'
+import type { ScraperRequestJob } from '@kreditozrouti/types'
 import { DelayedError, Job } from 'bullmq'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'

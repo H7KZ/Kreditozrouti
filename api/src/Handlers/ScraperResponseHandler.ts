@@ -1,4 +1,4 @@
-import type { ScraperResponseJob } from '@kreditozrouti/core/queue'
+import type { ScraperResponseJob } from '@kreditozrouti/types'
 import { Job } from 'bullmq'
 import { redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'

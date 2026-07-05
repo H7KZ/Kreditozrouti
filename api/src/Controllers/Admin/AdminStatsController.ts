@@ -1,4 +1,4 @@
-import type { AdminStatsResponse, DbTotals, ErrorMetrics, FacultyStats, QueueStats, RecentError, StaleCourseCount } from '@kreditozrouti/core/http'
+import type { AdminStatsResponse, DbTotals, ErrorMetrics, FacultyStats, QueueStats, RecentError, StaleCourseCount } from '@kreditozrouti/types'
 import { Request, Response } from 'express'
 import { sql, SqlBool } from 'kysely'
 import { scraper } from '@api/bullmq'
@@ -16,7 +16,7 @@ export type {
 	RecentError,
 	SchedulerInfo,
 	StaleCourseCount
-} from '@kreditozrouti/core/http'
+} from '@kreditozrouti/types'
 
 // Controller
 

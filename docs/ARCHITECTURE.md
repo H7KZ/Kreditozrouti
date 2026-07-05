@@ -11,10 +11,10 @@
 
 ## Packages & Services
 
-| Package / Service | Role |
-|-------------------|------|
-| `api/`            | Express API — HTTP endpoints, DB writes, job orchestration |
-| `client/`         | Vue 3 SPA — user interface |
-| `scraper/`        | BullMQ worker — InSIS HTTP scraping |
+| Package / Service | Role                                                                           |
+|-------------------|--------------------------------------------------------------------------------|
+| `api/`            | Express API — HTTP endpoints, DB writes, job orchestration                     |
+| `client/`         | Vue 3 SPA — user interface                                                     |
+| `scraper/`        | BullMQ worker — InSIS HTTP scraping                                            |
 | `packages/core/`  | `@kreditozrouti/core` — domain types, Kysely DB schema, pure DB-query services |
-| `mcp/`            | MCP server — exposes 7 tools over stdio or Streamable HTTP |
+| `mcp/`            | MCP server — exposes 7 tools over stdio or Streamable HTTP                     |

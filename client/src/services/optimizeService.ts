@@ -1,4 +1,4 @@
-import type { OptimizeRequest, OptimizeResponseDTO } from '@kreditozrouti/core/http/optimize'
+import type { OptimizeRequest, OptimizeResponseDTO } from '@kreditozrouti/types'
 import api from '@client/api'
 
 export async function postOptimize(payload: OptimizeRequest): Promise<OptimizeResponseDTO> {

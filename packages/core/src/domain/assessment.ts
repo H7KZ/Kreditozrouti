@@ -273,5 +273,3 @@ export const ASSESSMENT_BUCKETS = [
 		]
 	}
 ] as const
-
-export type { AssessmentBucketKey } from '@kreditozrouti/types'

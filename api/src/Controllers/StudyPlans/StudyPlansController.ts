@@ -1,4 +1,4 @@
-import type { StudyPlansFilter } from '@kreditozrouti/core/http'
+import type { StudyPlansFilter } from '@kreditozrouti/types'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
@@ -36,7 +36,7 @@ const StudyPlansFilterSchema = z.object({
 	offset: z.coerce.number().min(0).optional().default(0)
 }) satisfies z.ZodType<StudyPlansFilter>
 
-export type { StudyPlansFilter } from '@kreditozrouti/core/http'
+export type { StudyPlansFilter } from '@kreditozrouti/types'
 
 /**
  * Retrieves a paginated list of study plans with full relations based on filtering criteria.

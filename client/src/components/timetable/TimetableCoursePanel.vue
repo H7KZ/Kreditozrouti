@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CourseWithRelationsDTO } from '@kreditozrouti/core/http/responses'
+import type { CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CourseInfo from '@client/components/courses/CourseInfo.vue'

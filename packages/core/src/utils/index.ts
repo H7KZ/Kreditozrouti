@@ -1,1 +1,1 @@
-﻿export * from './insis'
+﻿export * from './insis.js'

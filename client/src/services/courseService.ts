@@ -1,5 +1,4 @@
-import type { CoursesFilter } from '@kreditozrouti/core/http/courses'
-import type { CoursesResponseDTO } from '@kreditozrouti/core/http/responses'
+import type { CoursesFilter, CoursesResponseDTO } from '@kreditozrouti/types'
 import api from '@client/api'
 
 export async function fetchCourses(filters: Partial<CoursesFilter>): Promise<CoursesResponseDTO> {

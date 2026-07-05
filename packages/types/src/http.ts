@@ -1,6 +1,6 @@
-import type { CourseUnitType, Day, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup, TimeSelection } from './domain'
+﻿import type { CourseUnitType, Day, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup, TimeSelection } from './domain.js'
 
-// ── Filters ───────────────────────────────────────────────────────────────────
+// Filters
 
 export interface CoursesFilter {
 	ids?: number[]
@@ -63,7 +63,7 @@ export interface PaginationMeta {
 	total: number
 }
 
-// ── Response DTOs ─────────────────────────────────────────────────────────────
+// Response DTOs
 
 export interface FacultyDTO {
 	id: string
@@ -234,7 +234,7 @@ export interface StudyPlanCoursesResponseDTO {
 	}
 }
 
-// ── Share DTOs ────────────────────────────────────────────────────────────────
+// Share DTOs
 
 export interface ShareableUnit {
 	courseId: number
@@ -267,7 +267,7 @@ export interface ShareGetResponse {
 	units: ShareableUnit[]
 }
 
-// ── iCal DTOs ─────────────────────────────────────────────────────────────────
+// iCal DTOs
 
 export interface ICalUnit {
 	courseId: number
@@ -304,7 +304,7 @@ export interface ICalCreateResponse {
 	id: string
 }
 
-// ── Admin DTOs ────────────────────────────────────────────────────────────────
+// Admin DTOs
 
 export interface QueueStats {
 	active: number

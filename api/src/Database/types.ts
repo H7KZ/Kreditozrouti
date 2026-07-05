@@ -1,4 +1,4 @@
-// ponytail: thin re-export — canonical schema lives in @kreditozrouti/core/db
+// ponytail: thin re-export — canonical schema lives in @kreditozrouti/types
 export {
 	FacultyTable,
 	CourseTable,
@@ -9,8 +9,8 @@ export {
 	StudyPlanCourseTable,
 	StudyPlanCourseIdentTable,
 	AcademicPeriodTable,
-	AcademicScheduleEventTable,
-} from '@kreditozrouti/core/db'
+	AcademicScheduleEventTable
+} from '@kreditozrouti/types'
 
 export type {
 	Database,
@@ -41,5 +41,5 @@ export type {
 	AcademicPeriod,
 	NewAcademicPeriod,
 	AcademicScheduleEvent,
-	NewAcademicScheduleEvent,
-} from '@kreditozrouti/core/db'
+	NewAcademicScheduleEvent
+} from '@kreditozrouti/types'

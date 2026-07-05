@@ -1,4 +1,4 @@
-import type { TimeSelection } from '@kreditozrouti/core/domain/time'
+import type { TimeSelection } from '@kreditozrouti/types'
 import { TIME_CONFIG } from '@client/constants/timetable.ts'
 import { i18n } from '@client/index.ts'
 

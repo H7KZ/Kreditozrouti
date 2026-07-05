@@ -1,5 +1,4 @@
-import type { ScraperInSISStudyPlans } from '@kreditozrouti/core/queue'
-import type { ScraperInSISStudyPlansRequestJob } from '@kreditozrouti/core/queue'
+import type { ScraperInSISStudyPlans, ScraperInSISStudyPlansRequestJob } from '@kreditozrouti/types'
 import { extractSemester, extractYear } from '@kreditozrouti/core/utils'
 import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'

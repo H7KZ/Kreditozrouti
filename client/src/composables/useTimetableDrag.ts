@@ -1,4 +1,4 @@
-import type { Day } from '@kreditozrouti/core/domain/constants'
+import type { Day } from '@kreditozrouti/types'
 import type { Ref } from 'vue'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useCoursesStore, useDragStore, useFiltersStore, useUIStore } from '@client/stores'

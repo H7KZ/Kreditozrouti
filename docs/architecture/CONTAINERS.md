@@ -63,8 +63,8 @@ Self-hosted GitHub Actions runners registered to the repo.
 
 ## Networks
 
-| Network           | Purpose                         | Who joins                        |
-|-------------------|---------------------------------|----------------------------------|
+| Network           | Purpose                         | Who joins                             |
+|-------------------|---------------------------------|---------------------------------------|
 | `traefik-network` | Public ingress, Traefik routing | traefik, api, client, mcp, phpmyadmin |
 | `mysql-network`   | DB access                       | api, mcp, mysql, phpmyadmin           |
 | `redis-network`   | Queue + sessions                | api, scraper, redis                   |

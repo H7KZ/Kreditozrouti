@@ -1,4 +1,4 @@
-﻿import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis'
+﻿import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@kreditozrouti/types'
 
 export const GroupPrefixes: Record<string, InSISStudyPlanCourseGroup> = {
 	f: 'faculty_specific',

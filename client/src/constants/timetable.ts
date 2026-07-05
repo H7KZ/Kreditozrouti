@@ -1,5 +1,5 @@
-import type { Day } from '@kreditozrouti/core/domain/constants'
-import { DayValues } from '@kreditozrouti/core/domain/constants'
+import type { Day } from '@kreditozrouti/types'
+import { DayValues } from '@kreditozrouti/types'
 
 /**
  * Weekdays for the timetable grid (Monday to Friday).

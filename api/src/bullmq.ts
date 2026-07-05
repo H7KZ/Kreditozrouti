@@ -1,6 +1,4 @@
-import type { ScraperRequestJob, ScraperResponseJob } from '@kreditozrouti/core/queue'
-import { Queue, Worker } from 'bullmq'
-import { BullMQOtel } from 'bullmq-otel'
+import type { ScraperRequestJob, ScraperResponseJob } from '@kreditozrouti/types'
 import {
 	ScraperInSISAcademicSchedulesRequestScheduler,
 	ScraperInSISCatalogRequestScheduler,
@@ -10,6 +8,8 @@ import {
 	ScraperRequestQueue,
 	ScraperResponseQueue
 } from '@kreditozrouti/core/queue'
+import { Queue, Worker } from 'bullmq'
+import { BullMQOtel } from 'bullmq-otel'
 import { mysql, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import { StudyPlanCourseIdentTable } from '@api/Database/types'

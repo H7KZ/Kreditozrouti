@@ -1,7 +1,14 @@
-﻿import type { Database } from '../db/index'
-import type { Day } from '../domain/constants'
-import type { CourseUnitType, InSISSemester } from '../domain/insis'
-import type { CourseFilter, MCPCourse, MCPCourseAssessment, MCPCourseUnit, MCPCourseUnitSlot } from '@kreditozrouti/types'
+﻿import type {
+	CourseFilter,
+	CourseUnitType,
+	Database,
+	Day,
+	InSISSemester,
+	MCPCourse,
+	MCPCourseAssessment,
+	MCPCourseUnit,
+	MCPCourseUnitSlot
+} from '@kreditozrouti/types'
 import type { Kysely } from 'kysely'
 import { sql } from 'kysely'
 import { getSlotType } from '../domain/insis'

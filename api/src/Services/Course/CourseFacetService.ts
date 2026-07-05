@@ -1,7 +1,6 @@
-import type { FacetItem } from '@kreditozrouti/core/http'
-import { sql } from 'kysely'
-import { ASSESSMENT_BUCKETS } from '@kreditozrouti/core/domain'
+import type { FacetItem } from '@kreditozrouti/types'
 import {
+	ASSESSMENT_BUCKETS,
 	INSIS_DAY_NORM,
 	LANGUAGE_DENORM,
 	LANGUAGE_NORM,
@@ -10,6 +9,7 @@ import {
 	MODE_OF_COMPLETION_DENORM,
 	MODE_OF_COMPLETION_NORM
 } from '@kreditozrouti/core/domain'
+import { sql } from 'kysely'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'

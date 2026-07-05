@@ -1,5 +1,4 @@
-﻿import type { Database } from '../db/index'
-import type { MCPStudyPlan, MCPStudyPlanCourse } from '@kreditozrouti/types'
+﻿import type {Database, MCPStudyPlan, MCPStudyPlanCourse} from '@kreditozrouti/types'
 import type { Kysely } from 'kysely'
 
 export default class StudyPlanService {

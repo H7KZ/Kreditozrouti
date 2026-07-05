@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { OptimizerCandidateDTO } from '@kreditozrouti/core/http/optimize'
+import type { OptimizerCandidateDTO } from '@kreditozrouti/types'
 import type { OptimizerResults, OptimizerState, SelectedCourseUnit } from '@client/types'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -106,7 +106,7 @@ function handleGridPreview(candidate: OptimizerCandidateDTO) {
 	)
 }
 
-function handleExploreApply(result: import('@kreditozrouti/core/http/optimize').ExploreResultDTO) {
+function handleExploreApply(result: import('@kreditozrouti/types').ExploreResultDTO) {
 	if (!result.best_candidate) return
 	openPreview(result.best_candidate, result.course_title, result.course_id)
 }

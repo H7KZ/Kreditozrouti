@@ -1,5 +1,4 @@
-import type { StudyPlansResponseDTO } from '@kreditozrouti/core/http'
-import type { StudyPlansFilter } from '@kreditozrouti/core/http'
+import type { StudyPlansFilter, StudyPlansResponseDTO } from '@kreditozrouti/types'
 import { redis } from '@api/clients'
 
 const FACET_CACHE_TTL = 300

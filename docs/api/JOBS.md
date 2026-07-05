@@ -262,23 +262,23 @@ const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9,11,12'
 
 // Catalog scrape: 3 AM during registration months — turbo (no delays, InSIS is quiet at night)
 upsertJobScheduler(ScraperInSISCatalogRequestScheduler, {
-    pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *`
+	pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *`
 }, {
-    data: {type: 'InSIS:Catalog', mode: 'turbo', auto_queue_courses: true, periods: [...last 4 years]}
+	data: {type: 'InSIS:Catalog', mode: 'turbo', auto_queue_courses: true, periods: [...last 4 years]}
 })
 
 // Study plans scrape: 2 AM during registration months — turbo
 upsertJobScheduler(ScraperInSISStudyPlansRequestScheduler, {
-    pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *`
+	pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *`
 }, {
-    data: {type: 'InSIS:StudyPlans', mode: 'turbo', auto_queue_study_plans: true, periods: [...last 4 years]}
+	data: {type: 'InSIS:StudyPlans', mode: 'turbo', auto_queue_study_plans: true, periods: [...last 4 years]}
 })
 
 // Academic schedules: 1 AM daily (year-round — schedule changes affect all students)
 upsertJobScheduler(ScraperInSISAcademicSchedulesRequestScheduler, {
-    pattern: '0 1 * * *'
+	pattern: '0 1 * * *'
 }, {
-    data: { type: 'InSIS:AcademicSchedules' }
+	data: {type: 'InSIS:AcademicSchedules'}
 })
 ```
 

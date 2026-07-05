@@ -1,5 +1,7 @@
 import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '@kreditozrouti/core/domain'
 import type {
+	CourseUnitDTO,
+	CourseWithRelationsDTO,
 	ExploreResultDTO,
 	OptimizerCandidateDTO,
 	OptimizeRequest,
@@ -8,11 +10,16 @@ import type {
 	ScoreBreakdownDTO,
 	SelectedCourseUnitDTO,
 	SolverConstraints
-} from '@kreditozrouti/core/http'
-import type { CourseUnitDTO, CourseWithRelationsDTO } from '@kreditozrouti/core/http'
-import { getSlotType } from '@kreditozrouti/core/domain'
-import { DEFAULT_WEIGHTS, diversityFilter, scoreCandidate, solveWithDeadline } from '@kreditozrouti/core/domain'
-import { MAX_EXPLORE_POOL_SIZE, MAX_POOL_SIZE } from '@kreditozrouti/core/http'
+} from '@kreditozrouti/types'
+import {
+	DEFAULT_WEIGHTS,
+	diversityFilter,
+	getSlotType,
+	MAX_EXPLORE_POOL_SIZE,
+	MAX_POOL_SIZE,
+	scoreCandidate,
+	solveWithDeadline
+} from '@kreditozrouti/core/domain'
 import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
 

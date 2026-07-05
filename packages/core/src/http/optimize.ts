@@ -5,14 +5,3 @@ export const MAX_POOL_SIZE = 30
 
 // Cap on explore_course_ids in explore mode — more than this makes per-course budgets too tight.
 export const MAX_EXPLORE_POOL_SIZE = 20
-
-export type {
-	SolverConstraints,
-	OptimizeRequest,
-	OptimizeResponseDTO,
-	OptimizerCandidateDTO,
-	RemovalCandidateDTO,
-	ExploreResultDTO,
-	ScoreBreakdownDTO,
-	SelectedCourseUnitDTO
-} from '@kreditozrouti/types'

@@ -1,11 +1,10 @@
-﻿import type { Database } from '@kreditozrouti/core/db'
-import type { MCPCourseUnitSlot } from '@kreditozrouti/types'
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+﻿import type { Database, MCPCourseUnitSlot } from '@kreditozrouti/types'
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
 import type { Kysely } from 'kysely'
 import { z } from 'zod'
 import { unitsConflict } from '@kreditozrouti/core/domain'
 import CourseService from '@kreditozrouti/core/services/CourseService'
-import { defineTool, registerTool } from '../tools'
+import { defineTool, registerTool } from '@mcp/tools'
 
 interface SlotWithCourse {
 	course_id: number

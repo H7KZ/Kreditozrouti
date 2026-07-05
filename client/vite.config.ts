@@ -35,7 +35,8 @@ export default ({ mode }: { mode: string }) => {
 				'@client': fileURLToPath(new URL('./src', import.meta.url)),
 				'@api': fileURLToPath(new URL('../api/src', import.meta.url)),
 				'@scraper': fileURLToPath(new URL('../scraper/src', import.meta.url)),
-				'@kreditozrouti/core': fileURLToPath(new URL('../packages/core/src', import.meta.url))
+				'@kreditozrouti/core': fileURLToPath(new URL('../packages/core/src', import.meta.url)),
+				'@kreditozrouti/types': fileURLToPath(new URL('../packages/types/src', import.meta.url))
 			}
 		}
 	})

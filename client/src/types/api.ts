@@ -1,7 +1,6 @@
-import type { CoursesFilter } from '@kreditozrouti/core/http/courses'
-import type { StudyPlansFilter } from '@kreditozrouti/core/http/study-plans'
+import type { CoursesFilter, PaginationMeta, StudyPlansFilter } from '@kreditozrouti/types'
 
-export type { PaginationMeta } from '@kreditozrouti/core/http/pagination'
+export type { PaginationMeta }
 
 export type SortDirection = CoursesFilter['sort_dir'] | StudyPlansFilter['sort_dir']
 

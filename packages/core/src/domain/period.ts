@@ -1,4 +1,4 @@
-﻿import type { InSISSemester } from './insis'
+﻿import type { InSISSemester } from '@kreditozrouti/types'
 
 export function getUpcomingPeriod(date: Date = new Date()): { semester: InSISSemester; year: number } {
 	const month = date.getMonth() + 1

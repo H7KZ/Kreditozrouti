@@ -11,7 +11,15 @@
 	"bracketSameLine": false,
 	"jsxBracketSameLine": false,
 	"arrowParens": "avoid",
-	"plugins": ["@ianvs/prettier-plugin-sort-imports"],
-	"importOrder": ["<TYPES>", "<BUILT_IN_MODULES>", "<THIRD_PARTY_MODULES>", "^@kreditozrouti/(.*)$", "^[./]"],
+	"plugins": [
+		"@ianvs/prettier-plugin-sort-imports"
+	],
+	"importOrder": [
+		"<TYPES>",
+		"<BUILT_IN_MODULES>",
+		"<THIRD_PARTY_MODULES>",
+		"^@kreditozrouti/(.*)$",
+		"^[./]"
+	],
 	"importOrderTypeScriptVersion": "5.0.0"
 }

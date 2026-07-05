@@ -1,12 +1,14 @@
+;
 // @ts-check
 
-import eslint from '@eslint/js'
-import prettierConfig from 'eslint-config-prettier'
-import pluginPromise from 'eslint-plugin-promise'
-import pluginRegexp from 'eslint-plugin-regexp'
-import pluginUnicorn from 'eslint-plugin-unicorn'
-import globals from 'globals'
-import tseslint from 'typescript-eslint'
+import eslint from '@eslint/js';
+import prettierConfig from 'eslint-config-prettier';
+import pluginPromise from 'eslint-plugin-promise';
+import pluginRegexp from 'eslint-plugin-regexp';
+import pluginUnicorn from 'eslint-plugin-unicorn';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+
 
 export default tseslint.config(
 	{
@@ -37,9 +39,12 @@ export default tseslint.config(
 		},
 		rules: {
 			// dependency boundary — core must never import runtime deps
-			'no-restricted-imports': ['error', {
-				patterns: ['express', 'bullmq', 'ioredis'],
-			}],
+			'no-restricted-imports': [
+				'error',
+				{
+					patterns: ['express', 'bullmq', 'ioredis']
+				}
+			],
 
 			// typescript-eslint — turn off rules that don't fit this codebase
 			'@typescript-eslint/naming-convention': 'off',

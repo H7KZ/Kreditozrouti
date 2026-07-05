@@ -1,4 +1,4 @@
-﻿import type { InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from './insis'
+﻿import type { InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '@kreditozrouti/types'
 
 export const GROUP_RANK: Record<InSISStudyPlanCourseGroup, number> = {
 	field_specific_bachelor: 0,

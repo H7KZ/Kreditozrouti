@@ -1,5 +1,4 @@
-import type { ScraperInSISAcademicSchedule } from '@kreditozrouti/core/queue'
-import type { ScraperInSISAcademicScheduleRequestJob } from '@kreditozrouti/core/queue'
+import type { ScraperInSISAcademicSchedule, ScraperInSISAcademicScheduleRequestJob } from '@kreditozrouti/types'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'
