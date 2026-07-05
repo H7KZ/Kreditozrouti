@@ -7,5 +7,5 @@
   "singleQuote": true,
   "arrowParens": "avoid",
   "plugins": ["@ianvs/prettier-plugin-sort-imports"],
-  "importOrder": ["<TYPES>", "<BUILT_IN_MODULES>", "<THIRD_PARTY_MODULES>", "^@mcp/(.*)$", "^[./]"]
+  "importOrder": ["<TYPES>", "<BUILT_IN_MODULES>", "<THIRD_PARTY_MODULES>", "^@kreditozrouti/(.*)$", "^[./]"]
 }
