@@ -1,6 +1,6 @@
-import { readdirSync } from 'node:fs'
+﻿import { readdirSync } from 'node:fs'
 import path from 'node:path'
-import type { ScraperInSISCourse } from '@shared/queue/insis.js'
+import type { ScraperInSISCourse } from '@kreditozrouti/core/queue.js'
 import { describe, expect, it } from 'vitest'
 import { buildAssessmentRows, buildCoursePayload, buildSlotShape } from '@api/Jobs/ScraperResponseInSISCourseJob.js'
 import { makeFixtureLoaders } from './helpers.js'

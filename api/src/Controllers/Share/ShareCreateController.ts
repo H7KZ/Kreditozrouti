@@ -1,9 +1,9 @@
-import { randomBytes } from 'crypto'
-import type { ShareCreateResponse } from '@shared/http/share'
+﻿import { randomBytes } from 'crypto'
+import type { ShareCreateResponse } from '@kreditozrouti/core/http'
 import { Request, Response } from 'express'
 import * as z from 'zod'
-import { DayValues } from '@shared/domain/constants'
-import { CourseUnitTypeValues } from '@shared/domain/insis'
+import { DayValues } from '@kreditozrouti/core/domain'
+import { CourseUnitTypeValues } from '@kreditozrouti/core/domain'
 import { redis } from '@api/clients'
 import { Errors } from '@api/Errors'
 

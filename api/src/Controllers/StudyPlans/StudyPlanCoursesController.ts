@@ -1,4 +1,4 @@
-import type { StudyPlanCoursesFilter } from '@shared/http/study-plans'
+﻿import type { StudyPlanCoursesFilter } from '@kreditozrouti/core/http'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
@@ -9,7 +9,7 @@ const StudyPlanCoursesFilterSchema = z.object({
 	study_plan_ids: z.array(z.coerce.number())
 }) satisfies z.ZodType<StudyPlanCoursesFilter>
 
-export type { StudyPlanCoursesFilter } from '@shared/http/study-plans'
+export type { StudyPlanCoursesFilter } from '@kreditozrouti/core/http'
 
 /**
  * Retrieves a list of courses associated with a specific study plan, including full relations.

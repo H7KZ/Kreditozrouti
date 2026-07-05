@@ -1,8 +1,8 @@
-import { sql } from 'kysely'
+﻿import { sql } from 'kysely'
 import { jsonArrayFrom } from 'kysely/helpers/mysql'
-import { INSIS_DAY_NORM, LANGUAGE_NORM, LEVEL_NORM, MODE_OF_COMPLETION_NORM, MODE_OF_DELIVERY_NORM } from '@shared/domain/constants'
-import { getSlotType } from '@shared/domain/insis'
-import { priorityOf } from '@shared/domain/studyPlan'
+import { INSIS_DAY_NORM, LANGUAGE_NORM, LEVEL_NORM, MODE_OF_COMPLETION_NORM, MODE_OF_DELIVERY_NORM } from '@kreditozrouti/core/domain'
+import { getSlotType } from '@kreditozrouti/core/domain'
+import { priorityOf } from '@kreditozrouti/core/domain'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import {

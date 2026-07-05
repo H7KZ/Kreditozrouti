@@ -1,7 +1,7 @@
-import type { CoursesFilter } from '@shared/http/courses'
+﻿import type { CoursesFilter } from '@kreditozrouti/core/http'
 import { Request, Response } from 'express'
 import * as z from 'zod'
-import { InSISStudyPlanCourseCategoryValues, InSISStudyPlanCourseGroupValues } from '@shared/domain/insis'
+import { InSISStudyPlanCourseCategoryValues, InSISStudyPlanCourseGroupValues } from '@kreditozrouti/core/domain'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import { Errors } from '@api/Errors'
 import CourseService from '@api/Services/CourseService'
@@ -53,7 +53,7 @@ const CoursesFilterSchema = z.object({
 	offset: z.coerce.number().min(0).optional().default(0)
 }) satisfies z.ZodType<CoursesFilter>
 
-export type { CoursesFilter } from '@shared/http/courses'
+export type { CoursesFilter } from '@kreditozrouti/core/http'
 
 /**
  * Retrieves a paginated list of courses with full relations based on complex filtering criteria.
