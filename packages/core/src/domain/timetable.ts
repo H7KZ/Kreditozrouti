@@ -1,19 +1,13 @@
-﻿import type { Day } from './constants'
 import type { CourseUnitType } from './insis'
 import type { TimeSelection } from './time'
+import type { Campus, ScheduledUnit, ScheduledCourseUnit } from '@kreditozrouti/types'
 import { DayValues } from './constants'
 import { getDayFromDate } from './day'
 
-// Campus detection
-
-const JM_PREFIXES = ['JM']
-const ZIZKOV_PREFIXES = ['RB', 'NB', 'IB', 'SB']
+export type { Campus, ScheduledUnit, ScheduledCourseUnit } from '@kreditozrouti/types'
 
 /** Minimum travel time in minutes required between the two VŠE campuses. */
 export const CAMPUS_TRAVEL_MINUTES = 40
-
-/** VŠE campus identifier. */
-export type Campus = 'jizni-mesto' | 'zizkov' | 'unknown'
 
 /**
  * Determine which VŠE campus a room location string belongs to.
@@ -21,20 +15,9 @@ export type Campus = 'jizni-mesto' | 'zizkov' | 'unknown'
 export function getCampus(location: string | null | undefined): Campus {
 	if (!location) return 'unknown'
 	const prefix = (location.trim().split(/[.\-\s]/)[0] ?? '').toUpperCase()
-	if (JM_PREFIXES.includes(prefix)) return 'jizni-mesto'
-	if (ZIZKOV_PREFIXES.includes(prefix)) return 'zizkov'
+	if (['JM'].includes(prefix)) return 'jizni-mesto'
+	if (['RB', 'NB', 'IB', 'SB'].includes(prefix)) return 'zizkov'
 	return 'unknown'
-}
-
-// Scheduled unit — minimal structural interface for conflict checks
-
-/** Minimal shape required by conflict detection functions. */
-export interface ScheduledUnit {
-	day?: Day
-	date?: string
-	timeFrom: number
-	timeTo: number
-	location?: string
 }
 
 /**
@@ -67,14 +50,6 @@ export function unitsCampusConflict(a: ScheduledUnit, b: ScheduledUnit): boolean
 	return gap >= 0 && gap < CAMPUS_TRAVEL_MINUTES
 }
 
-// Course completeness
-
-/** Minimal shape required by checkCourseCompleteness. */
-export interface ScheduledCourseUnit {
-	unitType: CourseUnitType
-	snapshotAvailableTypes?: CourseUnitType[]
-}
-
 /**
  * Checks whether all required unit types for a course are covered by the
  * selected units, using the snapshotted available types stored in each unit.
@@ -95,8 +70,6 @@ export function checkCourseCompleteness(units: ScheduledCourseUnit[]): {
 	}
 	return { isIncomplete: missingTypes.length > 0 && selectedTypes.size > 0, missingTypes }
 }
-
-// Time selection sorting
 
 /**
  * Comparator for sorting TimeSelection objects by day index, then start time,

@@ -9,5 +9,7 @@
       "import": "./src/index.ts"
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "kysely": "^0.29.2"
+  }
 }

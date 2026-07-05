@@ -1,12 +1,4 @@
-﻿import type { Day } from './constants'
-
-export interface TimeSelection {
-	slot_id?: number
-	day?: Day | null
-	date?: Date | null
-	time_from: number
-	time_to: number
-}
+export type { TimeSelection } from '@kreditozrouti/types'
 
 export function timeToMinutes(time: string | null): number | null {
 	if (!time?.includes(':')) return null

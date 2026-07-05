@@ -274,4 +274,4 @@ export const ASSESSMENT_BUCKETS = [
 	}
 ] as const
 
-export type AssessmentBucketKey = (typeof ASSESSMENT_BUCKETS)[number]['key']
+export type { AssessmentBucketKey } from '@kreditozrouti/types'

@@ -1,6 +1,1 @@
-export interface PaginationMeta {
-	limit: number
-	offset: number
-	count: number
-	total: number
-}
+export type { PaginationMeta } from '@kreditozrouti/types'
