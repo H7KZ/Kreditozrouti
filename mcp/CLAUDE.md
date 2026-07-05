@@ -9,7 +9,7 @@ mcp/src/
 ├── index.ts / server.ts / app.ts
 ├── Config/         # Config.ts — env vars (MYSQL_URI, MCP_PORT, NODE_ENV, LOG_LEVEL)
 ├── Logger/         # logger.ts — pino instance
-├── Db/             # client.ts (Kysely db singleton) — types come from @kreditozrouti/core/db
+├── Database/       # client.ts (Kysely db singleton) — types come from @kreditozrouti/core/db
 └── Tools/          # FacultyTools, CourseTools, StudyPlanTools, TimetableTools, OptimizerTools
                     #   tools.ts — defineTool helper
 ```
