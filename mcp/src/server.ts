@@ -1,10 +1,10 @@
 ﻿import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { db } from '@mcp/Db/client'
-import FacultyTools from '@mcp/Tools/FacultyTools'
+import { db } from '@mcp/Database/client'
 import CourseTools from '@mcp/Tools/CourseTools'
+import FacultyTools from '@mcp/Tools/FacultyTools'
+import OptimizerTools from '@mcp/Tools/OptimizerTools'
 import StudyPlanTools from '@mcp/Tools/StudyPlanTools'
 import TimetableTools from '@mcp/Tools/TimetableTools'
-import OptimizerTools from '@mcp/Tools/OptimizerTools'
 
 export function createServer(): McpServer {
 	const server = new McpServer({

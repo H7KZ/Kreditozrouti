@@ -1,10 +1,10 @@
-﻿import { z } from 'zod'
+﻿import type { Database } from '@kreditozrouti/core/db'
+import type { MCPCourseUnitSlot } from '@kreditozrouti/types'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
-import type { Database } from '@kreditozrouti/core/db'
-import CourseService from '@kreditozrouti/core/services/CourseService'
-import type { MCPCourseUnitSlot } from '@kreditozrouti/types'
+import { z } from 'zod'
 import { unitsConflict } from '@kreditozrouti/core/domain'
+import CourseService from '@kreditozrouti/core/services/CourseService'
 import { defineTool, registerTool } from '../tools'
 
 interface SlotWithCourse {
@@ -66,9 +66,13 @@ export default class TimetableTools {
 
 					if (conflict) {
 						conflicts.push({
-							course_a_id: a.course_id, course_a_ident: a.course_ident,
-							course_b_id: b.course_id, course_b_ident: b.course_ident,
-							day: aSlot.day ?? null, time_from: aSlot.time_from!, time_to: aSlot.time_to!
+							course_a_id: a.course_id,
+							course_a_ident: a.course_ident,
+							course_b_id: b.course_id,
+							course_b_ident: b.course_ident,
+							day: aSlot.day ?? null,
+							time_from: aSlot.time_from!,
+							time_to: aSlot.time_to!
 						})
 					}
 				}

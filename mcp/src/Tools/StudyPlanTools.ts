@@ -1,7 +1,7 @@
-﻿import { z } from 'zod'
+﻿import type { Database } from '@kreditozrouti/core/db'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
-import type { Database } from '@kreditozrouti/core/db'
+import { z } from 'zod'
 import StudyPlanService from '@kreditozrouti/core/services/StudyPlanService'
 import { defineTool, registerTool } from '../tools'
 

@@ -1,6 +1,6 @@
-﻿import express from 'express'
+﻿import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
+import express from 'express'
 import { rateLimit } from 'express-rate-limit'
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
 import { createServer } from '@mcp/server'
 
 const app = express()
@@ -13,26 +13,26 @@ const generalLimiter = rateLimit({ windowMs: 60_000, max: 100, standardHeaders: 
 const optimizerLimiter = rateLimit({ windowMs: 60_000, max: 10, standardHeaders: true, legacyHeaders: false })
 
 app.post('/mcp', generalLimiter, async (req, res) => {
-  // Apply optimizer limiter if this is an optimize call
-  const toolName = (req.body as { params?: { name?: string } }).params?.name
-  if (toolName === 'vse_optimize_timetable') {
-    // Run optimizer limiter manually
-    await new Promise<void>((resolve, reject) => {
-      optimizerLimiter(req, res, (err?: unknown) => (err ? reject(err instanceof Error ? err : new Error('Rate limit middleware error')) : resolve()))
-    })
-    if (res.headersSent) return  // rate limit already responded
-  }
+	// Apply optimizer limiter if this is an optimize call
+	const toolName = (req.body as { params?: { name?: string } }).params?.name
+	if (toolName === 'vse_optimize_timetable') {
+		// Run optimizer limiter manually
+		await new Promise<void>((resolve, reject) => {
+			optimizerLimiter(req, res, (err?: unknown) => (err ? reject(err instanceof Error ? err : new Error('Rate limit middleware error')) : resolve()))
+		})
+		if (res.headersSent) return // rate limit already responded
+	}
 
-  const server = createServer()
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: undefined  // stateless — no session IDs
-  })
-  await server.connect(transport)
-  await transport.handleRequest(req, res, req.body)
+	const server = createServer()
+	const transport = new StreamableHTTPServerTransport({
+		sessionIdGenerator: undefined // stateless — no session IDs
+	})
+	await server.connect(transport)
+	await transport.handleRequest(req, res, req.body)
 })
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok' })
+	res.json({ status: 'ok' })
 })
 
 export { app }

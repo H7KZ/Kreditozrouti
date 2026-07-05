@@ -1,9 +1,9 @@
-﻿import { z } from 'zod'
+﻿import type { Database } from '@kreditozrouti/core/db'
+import type { OptimizeRequest } from '@kreditozrouti/core/domain'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
-import type { Database } from '@kreditozrouti/core/db'
+import { z } from 'zod'
 import OptimizerService from '@kreditozrouti/core/services/OptimizerService'
-import type { OptimizeRequest } from '@kreditozrouti/core/domain'
 import { defineTool, registerTool } from '../tools'
 
 const DaySchema = z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
@@ -12,15 +12,17 @@ const TimeSelectionSchema = z.object({
 	time_from: z.number().int().min(0).max(1439),
 	time_to: z.number().int().min(0).max(1439)
 })
-const SolverConstraintsSchema = z.object({
-	required_course_ids: z.array(z.number().int()).optional(),
-	excluded_course_ids: z.array(z.number().int()).optional(),
-	credit_min: z.number().optional(),
-	credit_max: z.number().optional(),
-	blackout_windows: z.array(TimeSelectionSchema).optional(),
-	preferred_days: z.array(DaySchema).optional(),
-	max_consecutive_minutes: z.number().optional()
-}).optional()
+const SolverConstraintsSchema = z
+	.object({
+		required_course_ids: z.array(z.number().int()).optional(),
+		excluded_course_ids: z.array(z.number().int()).optional(),
+		credit_min: z.number().optional(),
+		credit_max: z.number().optional(),
+		blackout_windows: z.array(TimeSelectionSchema).optional(),
+		preferred_days: z.array(DaySchema).optional(),
+		max_consecutive_minutes: z.number().optional()
+	})
+	.optional()
 
 export default class OptimizerTools {
 	private static readonly optimizeTool = defineTool({
