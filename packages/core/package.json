@@ -38,6 +38,7 @@
     "format": "prettier --write src"
   },
   "dependencies": {
+    "@kreditozrouti/types": "*",
     "kysely": "^0.29.2"
   },
   "devDependencies": {
