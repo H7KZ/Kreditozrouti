@@ -2,8 +2,8 @@ import { z } from 'zod'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
 import type { Database } from '@kreditozrouti/core/db'
-import { CourseService } from '@kreditozrouti/core/services'
-import type { CourseFilter } from '@kreditozrouti/core/services'
+import CourseService from '@kreditozrouti/core/services/CourseService.js'
+import type { CourseFilter } from '@kreditozrouti/types'
 import { defineTool, registerTool } from '../tools.js'
 
 export default class CourseTools {

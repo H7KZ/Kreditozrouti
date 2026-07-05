@@ -2,7 +2,7 @@ import { z } from 'zod'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
 import type { Database } from '@kreditozrouti/core/db'
-import { OptimizerService } from '@kreditozrouti/core/services'
+import OptimizerService from '@kreditozrouti/core/services/OptimizerService.js'
 import type { OptimizeRequest } from '@kreditozrouti/core/domain'
 import { defineTool, registerTool } from '../tools.js'
 

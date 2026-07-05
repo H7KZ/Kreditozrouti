@@ -1,7 +1,7 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
 import type { Database } from '@kreditozrouti/core/db'
-import { FacultyService } from '@kreditozrouti/core/services'
+import FacultyService from '@kreditozrouti/core/services/FacultyService.js'
 import { defineTool, registerTool } from '../tools.js'
 
 export default class FacultyTools {

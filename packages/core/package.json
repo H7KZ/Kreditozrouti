@@ -12,9 +12,21 @@
       "import": "./dist/db/index.js",
       "types": "./dist/db/index.d.ts"
     },
-    "./services": {
-      "import": "./dist/services/index.js",
-      "types": "./dist/services/index.d.ts"
+    "./services/CourseService": {
+      "import": "./dist/services/CourseService.js",
+      "types": "./dist/services/CourseService.d.ts"
+    },
+    "./services/FacultyService": {
+      "import": "./dist/services/FacultyService.js",
+      "types": "./dist/services/FacultyService.d.ts"
+    },
+    "./services/StudyPlanService": {
+      "import": "./dist/services/StudyPlanService.js",
+      "types": "./dist/services/StudyPlanService.d.ts"
+    },
+    "./services/OptimizerService": {
+      "import": "./dist/services/OptimizerService.js",
+      "types": "./dist/services/OptimizerService.d.ts"
     },
     "./http": {
       "import": "./dist/http/index.js",

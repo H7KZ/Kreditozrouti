@@ -18,6 +18,10 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@mcp/*": ["./src/*"],
+      "@kreditozrouti/core/services/CourseService.js": ["../packages/core/dist/services/CourseService.d.ts"],
+      "@kreditozrouti/core/services/FacultyService.js": ["../packages/core/dist/services/FacultyService.d.ts"],
+      "@kreditozrouti/core/services/StudyPlanService.js": ["../packages/core/dist/services/StudyPlanService.d.ts"],
+      "@kreditozrouti/core/services/OptimizerService.js": ["../packages/core/dist/services/OptimizerService.d.ts"],
       "@kreditozrouti/core/*": ["../packages/core/src/*"]
     }
   },
