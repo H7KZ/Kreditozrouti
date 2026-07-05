@@ -18,6 +18,7 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@kreditozrouti/core": "*",
     "@modelcontextprotocol/sdk": "^1.12.3",
     "express": "^5.2.1",
     "express-rate-limit": "^7.4.1",

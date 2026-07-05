@@ -1,7 +1,8 @@
 import { z } from 'zod'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { searchCourses, getCourseById } from '@mcp/Services/CourseService.js'
-import type { CourseFilter } from '@mcp/Services/CourseService.js'
+import { searchCourses, getCourseById } from '@kreditozrouti/core/services'
+import type { CourseFilter } from '@kreditozrouti/core/services'
+import { db } from '@mcp/Db/client.js'
 
 const SearchCoursesSchema = {
 	query: z.string().optional().describe('Free-text search across ident, title, lecturer'),
@@ -28,7 +29,7 @@ export function registerCourseTools(server: McpServer): void {
 			if (input.semester) filter.semesters = [input.semester]
 			if (input.language) filter.languages = [input.language]
 
-			const { courses, total } = await searchCourses(filter, input.limit, input.offset)
+			const { courses, total } = await searchCourses(db, filter, input.limit, input.offset)
 			return {
 				content: [{
 					type: 'text',
@@ -43,7 +44,7 @@ export function registerCourseTools(server: McpServer): void {
 		'Get a VŠE course by its numeric ID. Times in results are minutes from midnight (0–1439).',
 		GetCourseSchema,
 		async (input) => {
-			const course = await getCourseById(input.id)
+			const course = await getCourseById(db, input.id)
 			if (!course) {
 				return {
 					content: [{ type: 'text', text: 'Course not found' }],

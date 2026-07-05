@@ -1,8 +1,9 @@
 import { z } from 'zod'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { getCoursesWithRelations } from '@mcp/Services/CourseService.js'
-import type { MCPCourseUnitSlot } from '@mcp/Services/CourseService.js'
-import { unitsConflict } from '@mcp/Domain/timetable.js'
+import { getCoursesWithRelations } from '@kreditozrouti/core/services'
+import type { MCPCourseUnitSlot } from '@kreditozrouti/core/services'
+import { unitsConflict } from '@kreditozrouti/core/domain'
+import { db } from '@mcp/Db/client.js'
 
 const CheckTimetableConflictsSchema = {
 	course_ids: z.array(z.number().int()).min(1).max(30).describe('List of course IDs to check for conflicts')
@@ -31,7 +32,7 @@ export function registerTimetableTools(server: McpServer): void {
 		CheckTimetableConflictsSchema,
 		async (input) => {
 			const { course_ids } = input
-			const { courses } = await getCoursesWithRelations({ ids: course_ids }, course_ids.length, 0)
+			const { courses } = await getCoursesWithRelations(db, { ids: course_ids }, course_ids.length, 0)
 
 			// Collect all slots that have valid time ranges
 			const slotsWithCourse: SlotWithCourse[] = []

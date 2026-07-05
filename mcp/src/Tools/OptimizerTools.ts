@@ -1,7 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
-import { optimize } from '@mcp/Services/OptimizerService.js'
-import type { OptimizeRequest } from '@mcp/Domain/optimizer.js'
+import { optimize } from '@kreditozrouti/core/services'
+import type { OptimizeRequest } from '@kreditozrouti/core/domain'
+import { db } from '@mcp/Db/client.js'
 
 const DaySchema = z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
 
@@ -38,7 +39,7 @@ export function registerOptimizerTools(server: McpServer): void {
 			locked_unit_ids: input.locked_unit_ids,
 			explore_course_ids: input.explore_course_ids
 		}
-		const result = await optimize(request)
+		const result = await optimize(db, request)
 		return {
 			content: [{
 				type: 'text',
