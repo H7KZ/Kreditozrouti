@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "lib": ["ES2022"],
     "outDir": "./dist",
     "rootDir": "./src",
@@ -18,11 +18,12 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@mcp/*": ["./src/*"],
-      "@kreditozrouti/core/services/CourseService.js": ["../packages/core/dist/services/CourseService.d.ts"],
-      "@kreditozrouti/core/services/FacultyService.js": ["../packages/core/dist/services/FacultyService.d.ts"],
-      "@kreditozrouti/core/services/StudyPlanService.js": ["../packages/core/dist/services/StudyPlanService.d.ts"],
-      "@kreditozrouti/core/services/OptimizerService.js": ["../packages/core/dist/services/OptimizerService.d.ts"],
-      "@kreditozrouti/core/*": ["../packages/core/src/*"]
+      "@kreditozrouti/core/services/CourseService": ["../packages/core/dist/services/CourseService.d.ts"],
+      "@kreditozrouti/core/services/FacultyService": ["../packages/core/dist/services/FacultyService.d.ts"],
+      "@kreditozrouti/core/services/StudyPlanService": ["../packages/core/dist/services/StudyPlanService.d.ts"],
+      "@kreditozrouti/core/services/OptimizerService": ["../packages/core/dist/services/OptimizerService.d.ts"],
+      "@kreditozrouti/core/*": ["../packages/core/dist/*"],
+      "@kreditozrouti/types": ["../packages/types/src/index.ts"]
     }
   },
   "include": ["src/**/*"],

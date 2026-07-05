@@ -1,4 +1,4 @@
-import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis.js'
+﻿import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis'
 import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type

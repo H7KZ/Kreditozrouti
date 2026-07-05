@@ -1,5 +1,5 @@
-import type { Kysely } from 'kysely'
-import type { Database } from '../db/index.js'
+﻿import type { Kysely } from 'kysely'
+import type { Database } from '../db/index'
 import type { MCPFaculty } from '@kreditozrouti/types'
 
 export default class FacultyService {

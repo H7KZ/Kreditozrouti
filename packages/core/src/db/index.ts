@@ -1,4 +1,4 @@
-export {
+﻿export {
 	FacultyTable,
 	CourseTable,
 	CourseAssessmentTable,
@@ -8,8 +8,8 @@ export {
 	StudyPlanCourseTable,
 	StudyPlanCourseIdentTable,
 	AcademicPeriodTable,
-	AcademicScheduleEventTable,
-} from './types.js'
+	AcademicScheduleEventTable
+} from './types'
 
 export type {
 	Database,
@@ -40,5 +40,5 @@ export type {
 	AcademicPeriod,
 	NewAcademicPeriod,
 	AcademicScheduleEvent,
-	NewAcademicScheduleEvent,
-} from './types.js'
+	NewAcademicScheduleEvent
+} from './types'

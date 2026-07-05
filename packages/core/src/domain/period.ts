@@ -1,4 +1,4 @@
-import type { InSISSemester } from './insis.js'
+﻿import type { InSISSemester } from './insis'
 
 export function getUpcomingPeriod(date: Date = new Date()): { semester: InSISSemester; year: number } {
 	const month = date.getMonth() + 1

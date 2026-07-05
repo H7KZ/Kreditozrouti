@@ -1,4 +1,4 @@
-import type { InSISSemester } from '../domain/insis.js'
+﻿import type { InSISSemester } from '../domain/insis'
 
 export interface StudyPlansFilter {
 	ids?: number[]

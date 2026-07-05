@@ -1,7 +1,7 @@
-import express from 'express'
+﻿import express from 'express'
 import { rateLimit } from 'express-rate-limit'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
-import { createServer } from '@mcp/server.js'
+import { createServer } from '@mcp/server'
 
 const app = express()
 app.use(express.json())

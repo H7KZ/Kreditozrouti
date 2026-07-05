@@ -1,5 +1,5 @@
-import type { Day } from './constants.js'
-import { DayValues } from './constants.js'
+﻿import type { Day } from './constants'
+import { DayValues } from './constants'
 
 export function getDayFromDate(dateStr: string | null | undefined): Day | null {
 	if (!dateStr) return null

@@ -1,4 +1,4 @@
-import type { InSISSemester, ScraperJob } from '../domain/insis.js'
+﻿import type { InSISSemester, ScraperJob } from '../domain/insis'
 import type {
 	ScraperInSISAcademicSchedule,
 	ScraperInSISAcademicSchedules,
@@ -8,7 +8,7 @@ import type {
 	ScraperInSISFacultyTimetables,
 	ScraperInSISStudyPlan,
 	ScraperInSISStudyPlans
-} from './insis.js'
+} from './insis'
 
 interface ScraperRequestJobBase {
 	type: ScraperJob

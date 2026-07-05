@@ -1,5 +1,5 @@
-import type { Day } from '../domain/constants.js'
-import type { CourseUnitType } from '../domain/insis.js'
+﻿import type { Day } from '../domain/constants'
+import type { CourseUnitType } from '../domain/insis'
 
 // Minimal unit shape stored in Redis for iCal generation.
 export interface ICalUnit {

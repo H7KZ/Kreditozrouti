@@ -1,5 +1,5 @@
-import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis.js'
-import type { TimeSelection } from '../domain/time.js'
+﻿import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis'
+import type { TimeSelection } from '../domain/time'
 
 export interface CoursesFilter {
 	ids?: number[]

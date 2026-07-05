@@ -1,4 +1,4 @@
-import type { Day } from './constants.js'
+﻿import type { Day } from './constants'
 
 export interface TimeSelection {
 	slot_id?: number

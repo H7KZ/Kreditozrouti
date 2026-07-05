@@ -1,6 +1,6 @@
-import type { Day } from '../domain/constants.js'
-import type { CourseUnitType } from '../domain/insis.js'
-import type { TimeSelection } from '../domain/time.js'
+﻿import type { Day } from '../domain/constants'
+import type { CourseUnitType } from '../domain/insis'
+import type { TimeSelection } from '../domain/time'
 
 // Server-side cap on the number of course_ids considered per /optimize request.
 // Defined here (not in api/ or client/) so OptimizeService (enforces the cap) and the

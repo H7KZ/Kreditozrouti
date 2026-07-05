@@ -1,8 +1,8 @@
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
-import { createServer } from '@mcp/server.js'
-import { Config } from '@mcp/Config/Config.js'
-import { logger } from '@mcp/Logger/logger.js'
-import { app } from '@mcp/app.js'
+﻿import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
+import { createServer } from '@mcp/server'
+import { Config } from '@mcp/Config/Config'
+import { logger } from '@mcp/Logger/logger'
+import { app } from '@mcp/app'
 
 const isStdio = process.argv.includes('--stdio')
 

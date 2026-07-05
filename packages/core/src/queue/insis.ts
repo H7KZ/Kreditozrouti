@@ -1,4 +1,4 @@
-import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis.js'
+﻿import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis'
 
 export interface ScraperInSISFaculty {
 	ident: string | null

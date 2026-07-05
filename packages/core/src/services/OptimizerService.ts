@@ -1,5 +1,5 @@
-import type { Kysely } from 'kysely'
-import type { Database } from '../db/index.js'
+﻿import type { Kysely } from 'kysely'
+import type { Database } from '../db/index'
 import type {
   ExploreResultDTO,
   OptimizerCandidateDTO,
@@ -13,11 +13,11 @@ import type {
   SolverConstraints,
   SolverSlotCandidate,
   SolverVariable
-} from '../domain/optimizer.js'
+} from '../domain/optimizer'
 import type { MCPCourse } from '@kreditozrouti/types'
-import { getSlotType } from '../domain/insis.js'
-import { DEFAULT_WEIGHTS, diversityFilter, MAX_EXPLORE_POOL_SIZE, MAX_POOL_SIZE, scoreCandidate, solveWithDeadline } from '../domain/optimizer.js'
-import CourseService from './CourseService.js'
+import { getSlotType } from '../domain/insis'
+import { DEFAULT_WEIGHTS, diversityFilter, MAX_EXPLORE_POOL_SIZE, MAX_POOL_SIZE, scoreCandidate, solveWithDeadline } from '../domain/optimizer'
+import CourseService from './CourseService'
 
 const SOLVER_BUDGET_MS = 4500
 const MAX_CANDIDATES = 5

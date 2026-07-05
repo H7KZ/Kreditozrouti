@@ -1,10 +1,10 @@
-import type { Kysely } from 'kysely'
-import type { Database } from '../db/index.js'
+﻿import type { Kysely } from 'kysely'
+import type { Database } from '../db/index'
 import type { CourseFilter, MCPCourse, MCPCourseAssessment, MCPCourseUnit, MCPCourseUnitSlot } from '@kreditozrouti/types'
-import type { Day } from '../domain/constants.js'
-import type { CourseUnitType, InSISSemester } from '../domain/insis.js'
+import type { Day } from '../domain/constants'
+import type { CourseUnitType, InSISSemester } from '../domain/insis'
 import { sql } from 'kysely'
-import { getSlotType } from '../domain/insis.js'
+import { getSlotType } from '../domain/insis'
 
 const INSIS_DAY_NORM: Record<string, Day> = {
   Po: 'monday', Ut: 'tuesday', St: 'wednesday', Ct: 'thursday', Pa: 'friday',

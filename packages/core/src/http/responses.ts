@@ -1,7 +1,7 @@
-import type { Day } from '../domain/constants.js'
-import type { CourseUnitType, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis.js'
-import type { FacetItem } from './facets.js'
-import type { PaginationMeta } from './pagination.js'
+﻿import type { Day } from '../domain/constants'
+import type { CourseUnitType, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from '../domain/insis'
+import type { FacetItem } from './facets'
+import type { PaginationMeta } from './pagination'
 
 // Entity DTOs — mirror the JSON wire format exactly
 //

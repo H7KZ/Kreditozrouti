@@ -1,10 +1,10 @@
-import { z } from 'zod'
+﻿import { z } from 'zod'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
 import type { Database } from '@kreditozrouti/core/db'
-import OptimizerService from '@kreditozrouti/core/services/OptimizerService.js'
+import OptimizerService from '@kreditozrouti/core/services/OptimizerService'
 import type { OptimizeRequest } from '@kreditozrouti/core/domain'
-import { defineTool, registerTool } from '../tools.js'
+import { defineTool, registerTool } from '../tools'
 
 const DaySchema = z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
 const TimeSelectionSchema = z.object({

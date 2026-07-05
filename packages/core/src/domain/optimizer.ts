@@ -1,10 +1,10 @@
-// Section 1: imports
-import type { Day } from './constants.js'
-import { getDayFromDate } from './day.js'
-import type { CourseUnitType } from './insis.js'
-import type { TimeSelection } from './time.js'
-import type { ScheduledUnit } from './timetable.js'
-import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from './timetable.js'
+﻿// Section 1: imports
+import type { Day } from './constants'
+import type { CourseUnitType } from './insis'
+import type { TimeSelection } from './time'
+import type { ScheduledUnit } from './timetable'
+import { getDayFromDate } from './day'
+import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from './timetable'
 
 // Section 2: Inlined from shared/http/optimize.ts
 

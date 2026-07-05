@@ -1,3 +1,3 @@
-export * from './names.js'
-export * from './insis.js'
-export * from './jobs.js'
+﻿export * from './names'
+export * from './insis'
+export * from './jobs'

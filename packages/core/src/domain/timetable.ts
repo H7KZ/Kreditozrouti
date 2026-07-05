@@ -1,8 +1,8 @@
-import type { Day } from './constants.js'
-import { DayValues } from './constants.js'
-import { getDayFromDate } from './day.js'
-import type { CourseUnitType } from './insis.js'
-import type { TimeSelection } from './time.js'
+﻿import type { Day } from './constants'
+import type { CourseUnitType } from './insis'
+import type { TimeSelection } from './time'
+import { DayValues } from './constants'
+import { getDayFromDate } from './day'
 
 // Campus detection
 
