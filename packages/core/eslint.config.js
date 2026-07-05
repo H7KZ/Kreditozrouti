@@ -36,9 +36,13 @@ export default tseslint.config(
 			}
 		},
 		rules: {
+			// dependency boundary — core must never import runtime deps
+			'no-restricted-imports': ['error', {
+				patterns: ['express', 'bullmq', 'ioredis'],
+			}],
+
 			// typescript-eslint — turn off rules that don't fit this codebase
 			'@typescript-eslint/naming-convention': 'off',
-			'@typescript-eslint/no-explicit-any': 'off',
 			'@typescript-eslint/restrict-template-expressions': 'off',
 			'@typescript-eslint/restrict-plus-operands': 'off',
 			'@typescript-eslint/strict-boolean-expressions': 'off',

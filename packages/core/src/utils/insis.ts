@@ -53,6 +53,6 @@ export function extractSemester(value: string | null): InSISSemester | null {
 export function extractYear(value: string | null): number | null {
 	if (!value) return null
 	const yearMatch = /(\d{4}\/\d{4})/.exec(value)
-	if (!yearMatch || !yearMatch[1]) return null
+	if (!yearMatch?.[1]) return null
 	return parseInt(yearMatch[1].split('/')[0] ?? '0', 10)
 }
