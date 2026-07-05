@@ -9,7 +9,5 @@
       "import": "./src/index.ts"
     }
   },
-  "dependencies": {
-    "@kreditozrouti/core": "*"
-  }
+  "dependencies": {}
 }
