@@ -109,6 +109,7 @@ export default defineConfig({
             },
           ],
           // Dev docs are English-only by design — engineers reading source docs don't need Czech
+          // Sidebar entries kept ready — remove srcExclude 'dev/**' to activate
           '/dev/': [
             { text: '← User docs', link: '/en/' },
             { text: 'Overview', link: '/dev/' },

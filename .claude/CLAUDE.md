@@ -67,7 +67,7 @@ packages/core/ @kreditozrouti/core — domain types, DB schema, pure services
 scraper/       BullMQ worker — InSIS HTTP scraping
 scripts/       Bash — server setup & maintenance
 deployment/    Docker Compose stacks + deploy.sh
-docs/          Full reference docs — architecture, API, client, scraper, deployment
+docs/          VitePress docs site — user docs (en/cs) + dev docs at docs/dev/
 ```
 
 ---
