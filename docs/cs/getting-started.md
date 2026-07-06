@@ -175,7 +175,7 @@ InSIS zobrazuje rozvrh jako týdenní mřížku. JM v místnosti = Jižní Měst
 | Odkaz | Popis |
 |---|---|
 | [InSIS](https://insis.vse.cz) | Studijní informační systém VŠE |
-| [Průvodce prváka po InSISu](https://insis.vse.cz/help.pl?page=14728) | Officiální nápověda k prvnímu přihlášení |
+| [Průvodce prváka po InSISu](https://insis.vse.cz/help.pl?page=14728) | Oficiální nápověda k prvnímu přihlášení |
 | [Jak na registrace předmětů](https://ci.vse.cz/sluzby/dalsi/insis/jak-na-registrace-predmetu/) | VŠE IT centrum – detailní průvodce zápisem |
 | [FMV: Kredity, registrace a zápisy](https://fmv.vse.cz/studenti/informace-pro-studenty/studijni-situace-a-jejich-reseni/kredity-registrace-a-zapis-predmetu/) | Průvodce pro studenty Fakulty mezinárodních vztahů |
 | [ESN Buddy Programme](https://esnvseprague.cz/buddy-programme/) | Propojení s českými studenty pro zahraniční studenty |
