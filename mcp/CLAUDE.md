@@ -11,8 +11,11 @@ mcp/src/
 ├── Config/         # Config.ts — env vars (MYSQL_URI, MCP_PORT, NODE_ENV, LOG_LEVEL)
 ├── Logger/         # logger.ts — pino instance
 ├── Database/       # client.ts (Kysely db singleton) — types come from @kreditozrouti/core/db
-└── Tools/          # FacultyTools, CourseTools, StudyPlanTools, TimetableTools, OptimizerTools
-                    #   tools.ts — defineTool helper
+├── Tools/          # CourseTools, TimetableTools, OptimizerTools
+│                   #   tools.ts — defineTool/registerTool, defineResource/registerResource,
+│                   #              definePrompt/registerPrompt helpers
+├── Resources/      # FacultyResources, StudyPlanResources, CourseResources
+└── Prompts/        # BuildSchedulePrompt, ExplorePlanPrompt
 ```
 
 ## Path Aliases
@@ -30,8 +33,17 @@ mcp/src/
   to `HH:MM` in responses
 - **Optimizer rate-limit** enforced in `app.ts` before dispatch (body inspection:
   `req.body.params?.name === 'vse_optimize_timetable'`), not inside tool handlers
+- **Three-primitive architecture**: Tools = model-driven actions; Resources = app-controlled read-only data;
+  Prompts = user-invocable workflow templates. Use `server.registerTool/registerResource/registerPrompt` — the
+  deprecated `server.tool/resource/prompt` overloads must not be used.
 
-## Tool Names
+## MCP Primitives
 
-`vse_list_faculties`, `vse_search_courses`, `vse_get_course`, `vse_list_study_plans`, `vse_get_study_plan`,
-`vse_check_timetable_conflicts`, `vse_optimize_timetable`
+### Tools (model-controlled)
+`vse_search_courses`, `vse_get_course`, `vse_check_timetable_conflicts`, `vse_optimize_timetable`
+
+### Resources (application-controlled)
+`vse://faculties`, `vse://study-plans`, `vse://study-plans/{faculty_id}`, `vse://course/{id}`
+
+### Prompts (user-controlled)
+`build_schedule` (args: semester, faculty_id?), `explore_plan` (args: faculty_id)
