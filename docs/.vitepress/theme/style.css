@@ -35,7 +35,7 @@
 	--vp-font-family-mono: var(--insis-font-mono);
 
 	/* Reserve 40px for the custom topbar so VitePress scroll offsets stay correct */
-	--vp-layout-top-height: 40px;
+	--vp-layout-top-height: 0px;
 
 	/* Hero brand button */
 	--vp-button-brand-border: transparent;
@@ -60,34 +60,18 @@
 	--vp-button-alt-active-bg: var(--insis-surface-2);
 }
 
-/* Topbar */
-.docs-topbar {
-	position: sticky;
-	top: 0;
-	z-index: 100;
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-	padding: 0 1.5rem;
-	height: 40px;
-	background-color: var(--insis-blue);
-	color: #ffffff;
-	font-size: 0.875rem;
-}
-
-.docs-back-link {
-	color: #ffffff;
-	text-decoration: none;
-	opacity: 0.9;
-	transition: opacity 0.15s;
-}
-
-.docs-back-link:hover {
-	opacity: 1;
-	text-decoration: underline;
-}
-
-.docs-topbar-name {
+/* Navbar CTA — "Open app" / "Spustit aplikaci" pill button */
+.VPNavBar .VPNavBarMenu a[href^="https://kreditozrouti.cz"] {
+	background: var(--insis-blue);
+	color: #fff !important;
+	padding: 4px 12px;
+	border-radius: 99px;
 	font-weight: 500;
-	opacity: 0.75;
+	transition: background 0.15s;
+	text-decoration: none !important;
 }
+
+.VPNavBar .VPNavBarMenu a[href^="https://kreditozrouti.cz"]:hover {
+	background: var(--insis-blue-hover);
+}
+
