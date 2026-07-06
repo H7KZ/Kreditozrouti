@@ -5,7 +5,8 @@
 		scrape-catalog scrape-catalog-turbo scrape-catalog-normal \
 		scrape-studyplans scrape-studyplans-turbo scrape-studyplans-normal \
 		scrape-academic-schedules \
-		test test-regen
+		test test-regen \
+		dev-docs build-docs install-docs
 
 run-local-docker:
 	docker compose -f docker-compose.local.yml up -d
@@ -19,7 +20,17 @@ clear-redis:
 install:
 	npm install && \
 	npm install -g concurrently && \
-	npm install -g dotenv-cli
+	npm install -g dotenv-cli && \
+	cd docs && npm install
+
+install-docs:
+	cd docs && npm install
+
+dev-docs:
+	cd docs && npm run dev
+
+build-docs:
+	cd docs && npm run build
 
 dev:
 	concurrently \
