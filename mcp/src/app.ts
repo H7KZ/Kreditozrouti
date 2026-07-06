@@ -6,26 +6,22 @@ import { createServer } from '@mcp/server'
 const app = express()
 app.use(express.json())
 
+// Stricter limit for the CPU-intensive optimizer tool
+const optimizerLimiter = rateLimit({
+	windowMs: 60_000,
+	max: 10,
+	standardHeaders: true,
+	legacyHeaders: false,
+	skip: (req) => (req.body as { params?: { name?: string } } | undefined)?.params?.name !== 'vse_optimize_timetable',
+})
+
 // General rate limit: 100 req/min
 const generalLimiter = rateLimit({ windowMs: 60_000, max: 100, standardHeaders: true, legacyHeaders: false })
 
-// Optimizer rate limit: 10 req/min (applied before general for optimizer calls)
-const optimizerLimiter = rateLimit({ windowMs: 60_000, max: 10, standardHeaders: true, legacyHeaders: false })
-
-app.post('/mcp', generalLimiter, async (req, res) => {
-	// Apply optimizer limiter if this is an optimize call
-	const toolName = (req.body as { params?: { name?: string } }).params?.name
-	if (toolName === 'vse_optimize_timetable') {
-		// Run optimizer limiter manually
-		await new Promise<void>((resolve, reject) => {
-			optimizerLimiter(req, res, (err?: unknown) => (err ? reject(err instanceof Error ? err : new Error('Rate limit middleware error')) : resolve()))
-		})
-		if (res.headersSent) return // rate limit already responded
-	}
-
+app.post('/mcp', optimizerLimiter, generalLimiter, async (req, res) => {
 	const server = createServer()
 	const transport = new StreamableHTTPServerTransport({
-		sessionIdGenerator: undefined // stateless — no session IDs
+		sessionIdGenerator: undefined, // stateless — no session IDs
 	})
 	await server.connect(transport)
 	await transport.handleRequest(req, res, req.body)
