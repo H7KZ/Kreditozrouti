@@ -4,10 +4,6 @@ export default defineConfig({
 	title: 'Kreditožrouti docs',
 	base: '/docs/',
 
-	redirects: {
-		'/': '/en/',
-	},
-
 	srcExclude: [
 		// dev docs are excluded from VitePress page building to avoid Vue parser errors in raw markdown
 		'dev/**',
