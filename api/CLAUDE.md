@@ -1,6 +1,6 @@
 # API — CLAUDE.md
 
-> Full reference: [docs/api/](../docs/api/README.md)
+> Full reference: [docs/dev/api/](../docs/dev/api/README.md)
 
 ---
 
@@ -71,8 +71,8 @@ delete+recreate units+slots → link study plans → `redis.publish('course:upda
 
 | Topic                                                      | Doc                                      |
 | ---------------------------------------------------------- | ---------------------------------------- |
-| All routes + request/response shapes                       | [ENDPOINTS.md](../docs/api/ENDPOINTS.md) |
-| CourseService N+1 pattern, facets, time-conflict filtering | [SERVICES.md](../docs/api/SERVICES.md)   |
-| BullMQ jobs, schedulers, dedup windows                     | [JOBS.md](../docs/api/JOBS.md)           |
-| DB schema, Kysely patterns, migration template             | [DATABASE.md](../docs/api/DATABASE.md)   |
-| Config, cache, rate-limit, SSE, wide-event logging         | [INTERNALS.md](../docs/api/INTERNALS.md) |
+| All routes + request/response shapes                       | [ENDPOINTS.md](../docs/dev/api/ENDPOINTS.md) |
+| CourseService N+1 pattern, facets, time-conflict filtering | [SERVICES.md](../docs/dev/api/SERVICES.md)   |
+| BullMQ jobs, schedulers, dedup windows                     | [JOBS.md](../docs/dev/api/JOBS.md)           |
+| DB schema, Kysely patterns, migration template             | [DATABASE.md](../docs/dev/api/DATABASE.md)   |
+| Config, cache, rate-limit, SSE, wide-event logging         | [INTERNALS.md](../docs/dev/api/INTERNALS.md) |

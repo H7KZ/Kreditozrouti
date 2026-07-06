@@ -5,29 +5,10 @@ export default defineConfig({
   base: '/docs/',
 
   srcExclude: [
-    // Existing developer markdown files — not yet wired into VitePress
-    'API.md',
-    'ARCHITECTURE.md',
-    'CLIENT.md',
-    'DEPLOYMENT.md',
-    'DOMAIN.md',
-    'ENGINEERING.md',
-    'MARKETING.md',
-    'PROJECT_CONTEXT.md',
-    'SCRAPER.md',
-    'SCRIPTS.md',
-    'SHARED.md',
-    'api/**',
-    'architecture/**',
-    'client/**',
-    'deployment/**',
-    'engineering/**',
-    'mcp/**',
-    'scraper/**',
-    'scripts/**',
-    'shared/**',
+    // dev docs are excluded from VitePress page building to avoid Vue parser errors in raw markdown
+    'dev/**',
+    // superpowers are gitignored planning docs, never built
     'superpowers/**',
-    'user/**',
   ],
 
   locales: {

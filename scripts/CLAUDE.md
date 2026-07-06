@@ -1,6 +1,6 @@
 # Scripts — CLAUDE.md
 
-> Full reference: [docs/scripts/](../docs/scripts/README.md)
+> Full reference: [docs/dev/scripts/](../docs/dev/scripts/README.md)
 
 ---
 
@@ -37,5 +37,5 @@ unexpected reboots.
 
 | Topic                                                             | Doc                                                    |
 |-------------------------------------------------------------------|--------------------------------------------------------|
-| install-docker — all flags                                        | [INFRASTRUCTURE.md](../docs/scripts/INFRASTRUCTURE.md) |
-| maintenance, docker-cleanup, clone-db — all flags + cron examples | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md)       |
+| install-docker — all flags                                        | [INFRASTRUCTURE.md](../docs/dev/scripts/INFRASTRUCTURE.md) |
+| maintenance, docker-cleanup, clone-db — all flags + cron examples | [MAINTENANCE.md](../docs/dev/scripts/MAINTENANCE.md)       |

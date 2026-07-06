@@ -1,6 +1,6 @@
 # Client — CLAUDE.md
 
-> Full reference: [docs/client/](../docs/client/README.md)
+> Full reference: [docs/dev/client/](../docs/dev/client/README.md)
 
 ---
 
@@ -90,7 +90,7 @@ filters.store / ui.store / drag.store / alerts.store — no circular deps
 
 | Topic                                             | Doc                                             |
 | ------------------------------------------------- | ----------------------------------------------- |
-| All 9 stores in full detail                       | [STORES.md](../docs/client/STORES.md)           |
-| All composables                                   | [COMPOSABLES.md](../docs/client/COMPOSABLES.md) |
-| Conflict detection, status system, timetable grid | [TIMETABLE.md](../docs/client/TIMETABLE.md)     |
-| API client, i18n, utils, types, constants         | [INTERNALS.md](../docs/client/INTERNALS.md)     |
+| All 9 stores in full detail                       | [STORES.md](../docs/dev/client/STORES.md)           |
+| All composables                                   | [COMPOSABLES.md](../docs/dev/client/COMPOSABLES.md) |
+| Conflict detection, status system, timetable grid | [TIMETABLE.md](../docs/dev/client/TIMETABLE.md)     |
+| API client, i18n, utils, types, constants         | [INTERNALS.md](../docs/dev/client/INTERNALS.md)     |

@@ -1,6 +1,6 @@
 # Scraper — CLAUDE.md
 
-> Full reference: [docs/scraper/](../docs/scraper/README.md)
+> Full reference: [docs/dev/scraper/](../docs/dev/scraper/README.md)
 
 ---
 
@@ -78,8 +78,8 @@ Fixtures live at repo root `fixtures/` — named `*.scraper.json` (scraper outpu
 
 | Topic                                | Doc                                            |
 | ------------------------------------ | ---------------------------------------------- |
-| Every job type: input, output, flow  | [JOBS.md](../docs/scraper/JOBS.md)             |
-| How each service parses InSIS HTML   | [EXTRACTION.md](../docs/scraper/EXTRACTION.md) |
-| Queue topology, dedup, retry policy  | [QUEUE.md](../docs/scraper/QUEUE.md)           |
-| All scraped data + job payload types | [TYPES.md](../docs/scraper/TYPES.md)           |
-| Utils, logger context, concurrency   | [INTERNALS.md](../docs/scraper/INTERNALS.md)   |
+| Every job type: input, output, flow  | [JOBS.md](../docs/dev/scraper/JOBS.md)             |
+| How each service parses InSIS HTML   | [EXTRACTION.md](../docs/dev/scraper/EXTRACTION.md) |
+| Queue topology, dedup, retry policy  | [QUEUE.md](../docs/dev/scraper/QUEUE.md)           |
+| All scraped data + job payload types | [TYPES.md](../docs/dev/scraper/TYPES.md)           |
+| Utils, logger context, concurrency   | [INTERNALS.md](../docs/dev/scraper/INTERNALS.md)   |
