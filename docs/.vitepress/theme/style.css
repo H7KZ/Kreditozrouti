@@ -75,3 +75,25 @@
 	background: var(--insis-blue-hover);
 }
 
+/* Typography scale — docs reading comfort */
+:root {
+	--vp-font-size-base: 1rem;
+	--vp-font-size-sm: 0.875rem;
+	--vp-line-height-base: 1.7;
+}
+
+.vp-doc h1 { font-size: 1.875rem; }
+.vp-doc h2 {
+	font-size: 1.375rem;
+	border-top: 1px solid var(--insis-border);
+	padding-top: 1.5rem;
+}
+.vp-doc h3 { font-size: 1.125rem; }
+
+/* In-content links — never fall back to VitePress defaults */
+.vp-doc a { color: var(--insis-link); }
+.vp-doc a:hover { color: var(--insis-link-hover); }
+.vp-doc a:visited { color: var(--insis-link-visited); }
+
+/* Code block background — light mode coherence */
+.vp-doc div[class*="language-"] { background: var(--insis-surface) !important; }
