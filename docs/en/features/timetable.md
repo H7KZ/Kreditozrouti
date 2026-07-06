@@ -15,7 +15,7 @@ Switch between three ways to see your courses using the tabs in the header bar:
 | **My Timetable** | Weekly grid Monday–Friday, 07:30–20:00 — selected courses shown as coloured blocks      |
 | **Optimizer**    | Basket-based timetable generator — pick courses, set constraints, get ranked schedules  |
 
-Course List and My Timetable preferences are saved between sessions. The Optimizer tab always starts fresh.
+Course List and My Timetable preferences are saved between sessions. Optimizer constraints are also saved and reused the next time you open the tab.
 
 ---
 
@@ -107,6 +107,12 @@ Share your current timetable with anyone via a short link.
 - A **Save to my timetable** button to fork the snapshot into one of their own schedule slots for editing
 
 Links expire after **180 days of inactivity** (the expiry resets on each view). The snapshot is self-contained, so links survive database resets.
+
+---
+
+## Export to Calendar (iCal)
+
+Use the calendar export button in the timetable toolbar to download an `.ics` file of your selected schedule. Import it into Google Calendar, Apple Calendar, or Outlook — each course slot becomes a recurring weekly event for the semester.
 
 ---
 
