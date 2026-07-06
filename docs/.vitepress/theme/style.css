@@ -27,6 +27,9 @@
 
   --vp-font-family-base: var(--insis-font-sans);
   --vp-font-family-mono: var(--insis-font-mono);
+
+  /* Reserve 40px for the custom topbar so VitePress scroll offsets stay correct */
+  --vp-layout-top-height: 40px;
 }
 
 /* Topbar */
