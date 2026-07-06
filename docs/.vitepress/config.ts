@@ -127,6 +127,7 @@ export default defineConfig({
               ],
             },
           ],
+          // Dev docs are English-only by design — engineers reading source docs don't need Czech
           '/dev/': [
             { text: '← User docs', link: '/en/' },
             { text: 'Overview', link: '/dev/' },
