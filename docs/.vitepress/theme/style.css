@@ -34,7 +34,6 @@
 	--vp-font-family-base: var(--insis-font-sans);
 	--vp-font-family-mono: var(--insis-font-mono);
 
-	/* Reserve 40px for the custom topbar so VitePress scroll offsets stay correct */
 	--vp-layout-top-height: 0px;
 
 	/* Hero brand button */
@@ -61,6 +60,7 @@
 }
 
 /* Navbar CTA — "Open app" / "Spustit aplikaci" pill button */
+/* ponytail: selector uses VitePress internal class names; recheck on VitePress major upgrades */
 .VPNavBar .VPNavBarMenu a[href^="https://kreditozrouti.cz"] {
 	background: var(--insis-blue);
 	color: #fff !important;
