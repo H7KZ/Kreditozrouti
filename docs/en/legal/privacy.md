@@ -26,7 +26,6 @@ None of this constitutes personal data under GDPR in the context of this applica
 - Student names, email addresses, or ID numbers
 - Grades, enrollment status, or academic records
 - Authentication credentials (there is no login)
-- IP addresses in readable form
 - Cookies
 
 ## Analytics
@@ -36,7 +35,7 @@ Kreditožrouti uses **Umami Analytics**, a self-hosted open-source analytics too
 | Property | Detail |
 |---|---|
 | Cookies | Not used |
-| IP addresses | Hashed before storage — never stored in readable form |
+| IP addresses | Collected by Umami but hashed before storage — never stored in readable form |
 | Personal identifiers | Not collected |
 | Third-party sharing | None — data stays on our own server |
 | Legal basis (GDPR) | Legitimate interest (Art. 6(1)(f)) — anonymised usage measurement |
