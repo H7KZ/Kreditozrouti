@@ -1,0 +1,62 @@
+@import '../../../packages/docs-theme/vars.css';
+
+/* Map VitePress CSS variables to --insis-* tokens */
+:root {
+  --vp-c-brand-1: var(--insis-blue);
+  --vp-c-brand-2: var(--insis-blue-hover);
+  --vp-c-brand-3: var(--insis-blue-active);
+  --vp-c-brand-soft: color-mix(in srgb, var(--insis-blue) 14%, transparent);
+
+  --vp-c-bg: var(--insis-bg);
+  --vp-c-bg-alt: var(--insis-bg-secondary);
+  --vp-c-bg-elv: var(--insis-bg-tertiary);
+  --vp-c-bg-soft: var(--insis-bg-secondary);
+
+  --vp-c-text-1: var(--insis-text);
+  --vp-c-text-2: var(--insis-text-secondary);
+  --vp-c-text-3: var(--insis-text-tertiary);
+
+  --vp-c-divider: var(--insis-border);
+  --vp-c-border: var(--insis-border);
+  --vp-c-gutter: var(--insis-border);
+
+  --vp-c-green-1: var(--insis-success);
+  --vp-c-yellow-1: var(--insis-warning);
+  --vp-c-red-1: var(--insis-danger);
+  --vp-c-indigo-1: var(--insis-info);
+
+  --vp-font-family-base: var(--insis-font-sans);
+  --vp-font-family-mono: var(--insis-font-mono);
+}
+
+/* Topbar */
+.docs-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  height: 40px;
+  background-color: var(--insis-blue);
+  color: #ffffff;
+  font-size: 0.875rem;
+}
+
+.docs-back-link {
+  color: #ffffff;
+  text-decoration: none;
+  opacity: 0.9;
+  transition: opacity 0.15s;
+}
+
+.docs-back-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.docs-topbar-name {
+  font-weight: 500;
+  opacity: 0.75;
+}
