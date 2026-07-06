@@ -93,8 +93,8 @@ working directory doesn't matter; only the script's own location does.
 
 ## Key Docs
 
-| Topic                                          | Doc                                                       |
-|------------------------------------------------|-----------------------------------------------------------|
+| Topic                                          | Doc                                                           |
+|------------------------------------------------|---------------------------------------------------------------|
 | Docker multi-stage builds, GHCR registry       | [DOCKER.md](../docs/dev/deployment/DOCKER.md)                 |
 | GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/dev/deployment/CICD.md)                     |
 | Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/dev/deployment/INFRASTRUCTURE.md) |

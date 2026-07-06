@@ -19,13 +19,13 @@ https://kreditozrouti.cz/mcp
 
 Once connected, your AI assistant has access to the following tools:
 
-| Tool                            | What it does                                                             |
-|---------------------------------|--------------------------------------------------------------------------|
+| Tool                            | What it does                                                                                                                                                             |
+|---------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `vse_search_courses`            | Search courses by keyword, faculty, semester, or language of instruction. Returns summary data — call `vse_get_course` or read `vse://course/{id}` for full slot detail. |
-| `vse_get_course`                | Fetch a single course with all its timetable slots                       |
-| `vse_get_study_plan`            | Fetch a study plan with its full course list                             |
-| `vse_check_timetable_conflicts` | Check whether a set of courses has any time overlaps                     |
-| `vse_optimize_timetable`        | Find a conflict-free schedule for a given set of courses                 |
+| `vse_get_course`                | Fetch a single course with all its timetable slots                                                                                                                       |
+| `vse_get_study_plan`            | Fetch a study plan with its full course list                                                                                                                             |
+| `vse_check_timetable_conflicts` | Check whether a set of courses has any time overlaps                                                                                                                     |
+| `vse_optimize_timetable`        | Find a conflict-free schedule for a given set of courses                                                                                                                 |
 
 **Example prompts you can give Claude after connecting:**
 
@@ -36,23 +36,25 @@ Once connected, your AI assistant has access to the following tools:
 
 ## Resources
 
-Resources are read-only data endpoints the host (Claude Desktop, Cursor, VS Code) can inject directly into context. Unlike Tools, you do not need to invoke them as actions — the client can prefetch and display them.
+Resources are read-only data endpoints the host (Claude Desktop, Cursor, VS Code) can inject directly into context.
+Unlike Tools, you do not need to invoke them as actions — the client can prefetch and display them.
 
-| URI | Description |
-|-----|-------------|
-| `vse://faculties` | All VŠE faculties with their IDs. Read this first to get valid faculty IDs. |
-| `vse://study-plans` | All study plans across all faculties. |
-| `vse://study-plans/{faculty_id}` | Study plans for one faculty — replace `{faculty_id}` with e.g. `FIS`. |
-| `vse://course/{id}` | Full course detail including time slots — replace `{id}` with the numeric course ID. |
+| URI                              | Description                                                                          |
+|----------------------------------|--------------------------------------------------------------------------------------|
+| `vse://faculties`                | All VŠE faculties with their IDs. Read this first to get valid faculty IDs.          |
+| `vse://study-plans`              | All study plans across all faculties.                                                |
+| `vse://study-plans/{faculty_id}` | Study plans for one faculty — replace `{faculty_id}` with e.g. `FIS`.                |
+| `vse://course/{id}`              | Full course detail including time slots — replace `{id}` with the numeric course ID. |
 
 ## Prompts
 
-Prompts are workflow templates you can invoke directly from your AI client (they appear as slash-commands in Claude Desktop and Cursor).
+Prompts are workflow templates you can invoke directly from your AI client (they appear as slash-commands in Claude
+Desktop and Cursor).
 
-| Name | Arguments | What it does |
-|------|-----------|-------------|
+| Name             | Arguments                                      | What it does                                                                                      |
+|------------------|------------------------------------------------|---------------------------------------------------------------------------------------------------|
 | `build_schedule` | `semester` (ZS or LS), `faculty_id` (optional) | Guides you through picking courses, checking conflicts, and optimising a schedule for a semester. |
-| `explore_plan` | `faculty_id` | Walks through the study plans for a faculty and summarises their courses. |
+| `explore_plan`   | `faculty_id`                                   | Walks through the study plans for a faculty and summarises their courses.                         |
 
 ## Connect Claude Desktop
 

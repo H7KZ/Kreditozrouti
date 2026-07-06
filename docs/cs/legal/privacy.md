@@ -9,9 +9,11 @@ _Poslední aktualizace: 31. ledna 2026_
 
 ## Jaká data Kreditožrouti shromažďuje
 
-Kreditožrouti nevyžaduje registraci ani přihlášení. Neshromažďuje, neukládá ani nezpracovává žádné osobní údaje o studentech.
+Kreditožrouti nevyžaduje registraci ani přihlášení. Neshromažďuje, neukládá ani nezpracovává žádné osobní údaje o
+studentech.
 
-Aplikace získává data výhradně z veřejně přístupného katalogu předmětů InSIS — stejných stránek, které může kdykoli procházet libovolný student bez přihlášení. Tato data tvoří:
+Aplikace získává data výhradně z veřejně přístupného katalogu předmětů InSIS — stejných stránek, které může kdykoli
+procházet libovolný student bez přihlášení. Tato data tvoří:
 
 - Metadata předmětů (název, identifikátor, kredity, sylabus)
 - Rozvrhové sloty (den, čas, místnost)
@@ -30,25 +32,30 @@ Aplikace získává data výhradně z veřejně přístupného katalogu předmě
 
 ## Analytika
 
-Kreditožrouti používá **Umami Analytics** — vlastní open-source analytický nástroj. Je navržen tak, aby respektoval soukromí:
+Kreditožrouti používá **Umami Analytics** — vlastní open-source analytický nástroj. Je navržen tak, aby respektoval
+soukromí:
 
-| Vlastnost | Detail |
-|---|---|
-| Cookies | Nepoužívají se |
-| IP adresy | Umami je sbírá, ale před uložením hashuje — nikdy se neukládají v čitelné podobě |
-| Osobní identifikátory | Neshromažďovány |
-| Sdílení s třetími stranami | Žádné — data zůstávají na vlastním serveru |
-| Právní základ (GDPR) | Oprávněný zájem (čl. 6 odst. 1 písm. f) — anonymizovaná měření návštěvnosti |
+| Vlastnost                  | Detail                                                                           |
+|----------------------------|----------------------------------------------------------------------------------|
+| Cookies                    | Nepoužívají se                                                                   |
+| IP adresy                  | Umami je sbírá, ale před uložením hashuje — nikdy se neukládají v čitelné podobě |
+| Osobní identifikátory      | Neshromažďovány                                                                  |
+| Sdílení s třetími stranami | Žádné — data zůstávají na vlastním serveru                                       |
+| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) — anonymizovaná měření návštěvnosti      |
 
-Data sbíraná Umami: zobrazení stránek, délka sezení, odkaz příchodu a souhrnné interakce s funkcemi (např. „předmět byl přidán do rozvrhu"). Tato data nemohou identifikovat žádného konkrétního uživatele.
+Data sbíraná Umami: zobrazení stránek, délka sezení, odkaz příchodu a souhrnné interakce s funkcemi (např. „předmět byl
+přidán do rozvrhu"). Tato data nemohou identifikovat žádného konkrétního uživatele.
 
 ## Tvá data rozvrhu
 
-Jakýkoli rozvrh, který sestavíš, je uložen výhradně v `localStorage` tvého prohlížeče. Nikdy se neposílá na naše servery. Vymazáním dat prohlížeče jej trvale odstraníš.
+Jakýkoli rozvrh, který sestavíš, je uložen výhradně v `localStorage` tvého prohlížeče. Nikdy se neposílá na naše
+servery. Vymazáním dat prohlížeče jej trvale odstraníš.
 
 ## Jména vyučujících
 
-Jména vyučujících se zobrazují výhradně jako atributy záznamů předmětů, v rozsahu výslovně povoleném VŠE Směrnicí rektora 05/2018 čl. 19 odst. 2 písm. n (výuková činnost na VŠE). Žádné další osobní informace o vyučujících se neshromažďují ani nezobrazují.
+Jména vyučujících se zobrazují výhradně jako atributy záznamů předmětů, v rozsahu výslovně povoleném VŠE Směrnicí
+rektora 05/2018 čl. 19 odst. 2 písm. n (výuková činnost na VŠE). Žádné další osobní informace o vyučujících se
+neshromažďují ani nezobrazují.
 
 ## Bezpečnost
 
@@ -58,4 +65,5 @@ Jména vyučujících se zobrazují výhradně jako atributy záznamů předmět
 
 ## Kontakt
 
-Kreditožrouti je studentský projekt, nikoli oficiální aplikace VŠE. Pro dotazy k těmto zásadám otevři issue v repozitáři projektu nebo použij formulář zpětné vazby v aplikaci.
+Kreditožrouti je studentský projekt, nikoli oficiální aplikace VŠE. Pro dotazy k těmto zásadám otevři issue v repozitáři
+projektu nebo použij formulář zpětné vazby v aplikaci.

@@ -4,7 +4,7 @@ import { registerPrompt } from '@mcp/tools'
 
 const schema = {
 	semester: z.enum(['ZS', 'LS']).describe('ZS = winter semester (září–únor), LS = summer semester (únor–červen)'),
-	faculty_id: z.string().optional().describe('Limit to a specific faculty (e.g. "FIS", "FPH"). Omit to search all faculties.'),
+	faculty_id: z.string().optional().describe('Limit to a specific faculty (e.g. "FIS", "FPH"). Omit to search all faculties.')
 }
 
 export default class BuildSchedulePrompt {
@@ -31,12 +31,12 @@ Follow this workflow step by step:
 3. Ask the student which courses they want to take. Use the vse_search_courses tool to help them find courses — filter by faculty_id and semester="${semester}". Remind them that vse_search_courses returns summaries only; you will fetch full detail later.
 4. Once the student has chosen a set of courses, call vse_check_timetable_conflicts with their course IDs.
 5. If there are conflicts, call vse_optimize_timetable with mode "build" and the same course IDs to find the best conflict-free combination.
-6. Present the final schedule clearly. For each selected course unit, show the day and time — times are stored as minutes from midnight, so convert: hours = Math.floor(minutes / 60), mins = minutes % 60, formatted as HH:MM.`,
-							},
-						},
-					],
+6. Present the final schedule clearly. For each selected course unit, show the day and time — times are stored as minutes from midnight, so convert: hours = Math.floor(minutes / 60), mins = minutes % 60, formatted as HH:MM.`
+							}
+						}
+					]
 				}
-			},
+			}
 		})
 	}
 }

@@ -13,9 +13,9 @@ export default class FacultyResources {
 		handler: async (_uri, db) => {
 			const faculties = await FacultyService.list(db)
 			return {
-				contents: [{ uri: 'vse://faculties', mimeType: 'application/json', text: JSON.stringify(faculties, null, 2) }],
+				contents: [{ uri: 'vse://faculties', mimeType: 'application/json', text: JSON.stringify(faculties, null, 2) }]
 			}
-		},
+		}
 	})
 
 	static register(server: McpServer, db: Kysely<Database>): void {

@@ -70,15 +70,15 @@ Full engineering docs are also available at **https://kreditozrouti.cz/docs/dev/
 
 Source files are in `docs/dev/`:
 
-| Area         | Overview                                             | Details                                                                                                                                                                                     |
-|--------------|------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Engineering  | [docs/dev/ENGINEERING.md](docs/dev/ENGINEERING.md)   | [setup](docs/dev/engineering/SETUP.md) · [contributing](docs/dev/engineering/CONTRIBUTING.md)                                                                                               |
-| Architecture | [docs/dev/ARCHITECTURE.md](docs/dev/ARCHITECTURE.md) | [monorepo](docs/dev/architecture/MONOREPO.md) · [services](docs/dev/architecture/SERVICES.md) · [data flow](docs/dev/architecture/DATA_FLOW.md) · [containers](docs/dev/architecture/CONTAINERS.md) |
-| API          | [docs/dev/api/README.md](docs/dev/api/README.md)     | [endpoints](docs/dev/api/ENDPOINTS.md) · [services](docs/dev/api/SERVICES.md) · [jobs](docs/dev/api/JOBS.md) · [database](docs/dev/api/DATABASE.md)                                         |
-| Client       | [docs/dev/client/README.md](docs/dev/client/README.md) | [stores](docs/dev/client/STORES.md) · [composables](docs/dev/client/COMPOSABLES.md) · [timetable](docs/dev/client/TIMETABLE.md)                                                           |
-| Scraper      | [docs/dev/scraper/README.md](docs/dev/scraper/README.md) | [jobs](docs/dev/scraper/JOBS.md) · [extraction](docs/dev/scraper/EXTRACTION.md) · [queue](docs/dev/scraper/QUEUE.md)                                                                    |
-| Shared       | [docs/dev/shared/README.md](docs/dev/shared/README.md) | [domain](docs/dev/shared/DOMAIN.md) · [http](docs/dev/shared/HTTP.md) · [queue](docs/dev/shared/QUEUE.md)                                                                                 |
-| Deployment   | [docs/dev/DEPLOYMENT.md](docs/dev/DEPLOYMENT.md)     | [docker](docs/dev/deployment/DOCKER.md) · [ci/cd](docs/dev/deployment/CICD.md) · [infrastructure](docs/dev/deployment/INFRASTRUCTURE.md) · [operations](docs/dev/deployment/OPERATIONS.md) |
+| Area         | Overview                                                 | Details                                                                                                                                                                                             |
+|--------------|----------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Engineering  | [docs/dev/ENGINEERING.md](docs/dev/ENGINEERING.md)       | [setup](docs/dev/engineering/SETUP.md) · [contributing](docs/dev/engineering/CONTRIBUTING.md)                                                                                                       |
+| Architecture | [docs/dev/ARCHITECTURE.md](docs/dev/ARCHITECTURE.md)     | [monorepo](docs/dev/architecture/MONOREPO.md) · [services](docs/dev/architecture/SERVICES.md) · [data flow](docs/dev/architecture/DATA_FLOW.md) · [containers](docs/dev/architecture/CONTAINERS.md) |
+| API          | [docs/dev/api/README.md](docs/dev/api/README.md)         | [endpoints](docs/dev/api/ENDPOINTS.md) · [services](docs/dev/api/SERVICES.md) · [jobs](docs/dev/api/JOBS.md) · [database](docs/dev/api/DATABASE.md)                                                 |
+| Client       | [docs/dev/client/README.md](docs/dev/client/README.md)   | [stores](docs/dev/client/STORES.md) · [composables](docs/dev/client/COMPOSABLES.md) · [timetable](docs/dev/client/TIMETABLE.md)                                                                     |
+| Scraper      | [docs/dev/scraper/README.md](docs/dev/scraper/README.md) | [jobs](docs/dev/scraper/JOBS.md) · [extraction](docs/dev/scraper/EXTRACTION.md) · [queue](docs/dev/scraper/QUEUE.md)                                                                                |
+| Shared       | [docs/dev/shared/README.md](docs/dev/shared/README.md)   | [domain](docs/dev/shared/DOMAIN.md) · [http](docs/dev/shared/HTTP.md) · [queue](docs/dev/shared/QUEUE.md)                                                                                           |
+| Deployment   | [docs/dev/DEPLOYMENT.md](docs/dev/DEPLOYMENT.md)         | [docker](docs/dev/deployment/DOCKER.md) · [ci/cd](docs/dev/deployment/CICD.md) · [infrastructure](docs/dev/deployment/INFRASTRUCTURE.md) · [operations](docs/dev/deployment/OPERATIONS.md)          |
 
 ---
 

@@ -1,18 +1,18 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
 import { db } from '@mcp/Database/client'
-import CourseTools from '@mcp/Tools/CourseTools'
-import TimetableTools from '@mcp/Tools/TimetableTools'
-import OptimizerTools from '@mcp/Tools/OptimizerTools'
-import FacultyResources from '@mcp/Resources/FacultyResources'
-import StudyPlanResources from '@mcp/Resources/StudyPlanResources'
-import CourseResources from '@mcp/Resources/CourseResources'
 import BuildSchedulePrompt from '@mcp/Prompts/BuildSchedulePrompt'
 import ExplorePlanPrompt from '@mcp/Prompts/ExplorePlanPrompt'
+import CourseResources from '@mcp/Resources/CourseResources'
+import FacultyResources from '@mcp/Resources/FacultyResources'
+import StudyPlanResources from '@mcp/Resources/StudyPlanResources'
+import CourseTools from '@mcp/Tools/CourseTools'
+import OptimizerTools from '@mcp/Tools/OptimizerTools'
+import TimetableTools from '@mcp/Tools/TimetableTools'
 
 export function createServer(): McpServer {
 	const server = new McpServer({
 		name: 'kreditozrouti-mcp',
-		version: '1.0.0',
+		version: '1.0.0'
 	})
 
 	// Tools — model-driven actions

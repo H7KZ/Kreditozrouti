@@ -40,10 +40,13 @@ mcp/src/
 ## MCP Primitives
 
 ### Tools (model-controlled)
+
 `vse_search_courses`, `vse_get_course`, `vse_check_timetable_conflicts`, `vse_optimize_timetable`
 
 ### Resources (application-controlled)
+
 `vse://faculties`, `vse://study-plans`, `vse://study-plans/{faculty_id}`, `vse://course/{id}`
 
 ### Prompts (user-controlled)
+
 `build_schedule` (args: semester, faculty_id?), `explore_plan` (args: faculty_id)

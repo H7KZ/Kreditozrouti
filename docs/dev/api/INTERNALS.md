@@ -143,16 +143,16 @@ context so that async code can access the `request_id` and other fields via `Req
 
 ```typescript
 res.locals.wideEvent = {
-    request_id: '...',  // UUID
-    method: req.method,
-    path: req.path,
-    timestamp: new Date().toISOString(),
-    environment: config.env,
-    service: 'kreditozrouti-api',
-    duration_ms? : number,     // set on finish
-    status_code? : number,     // set on finish
-    user_id? : number,         // set by controllers via LoggerAPIContext.add()
-    // ... other fields controllers add
+	request_id: '...',  // UUID
+	method: req.method,
+	path: req.path,
+	timestamp: new Date().toISOString(),
+	environment: config.env,
+	service: 'kreditozrouti-api',
+	duration_ms? : number,     // set on finish
+	status_code? : number,     // set on finish
+	user_id? : number,         // set by controllers via LoggerAPIContext.add()
+	// ... other fields controllers add
 }
 ```
 

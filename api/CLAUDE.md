@@ -69,8 +69,8 @@ delete+recreate units+slots → link study plans → `redis.publish('course:upda
 
 ## Key Docs
 
-| Topic                                                      | Doc                                      |
-| ---------------------------------------------------------- | ---------------------------------------- |
+| Topic                                                      | Doc                                          |
+| ---------------------------------------------------------- | -------------------------------------------- |
 | All routes + request/response shapes                       | [ENDPOINTS.md](../docs/dev/api/ENDPOINTS.md) |
 | CourseService N+1 pattern, facets, time-conflict filtering | [SERVICES.md](../docs/dev/api/SERVICES.md)   |
 | BullMQ jobs, schedulers, dedup windows                     | [JOBS.md](../docs/dev/api/JOBS.md)           |

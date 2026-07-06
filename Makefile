@@ -36,10 +36,11 @@ dev:
 	concurrently \
 	'cd api && npm run dev' \
 	'cd client && npm run dev' \
+	'cd docs && npm run dev' \
 	'cd scraper && npm run dev' \
 	'cd mcp && npm run dev' \
-	--names "API,CLIENT,SCRAPER,MCP" \
-	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold,bgCyan.bold"
+	--names "API,CLIENT,DOCS,SCRAPER,MCP" \
+	--prefix-colors "bgBlue.bold,bgGreen.bold,bgWhite.bold,bgMagenta.bold,bgCyan.bold"
 
 format:
 	concurrently \
@@ -80,18 +81,20 @@ build:
 	concurrently \
 	'cd api && npm run build' \
 	'cd client && npm run build' \
+	'cd docs && npm run build' \
 	'cd scraper && npm run build' \
 	'cd mcp && npm run build' \
-	--names "API,CLIENT,SCRAPER,MCP" \
-	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold,bgCyan.bold"
+	--names "API,CLIENT,DOCS,SCRAPER,MCP" \
+	--prefix-colors "bgBlue.bold,bgGreen.bold,bgWhite.bold,bgMagenta.bold,bgCyan.bold"
 
 preview:
 	concurrently \
 	'cd api && npm run preview' \
 	'cd client && npm run preview' \
+	'cd docs && npm run preview' \
 	'cd scraper && npm run preview' \
-	--names "API,CLIENT,SCRAPER" \
-	--prefix-colors "bgBlue.bold,bgGreen.bold,bgMagenta.bold"
+	--names "API,CLIENT,DOCS,SCRAPER" \
+	--prefix-colors "bgBlue.bold,bgGreen.bold,bgWhite.bold,bgMagenta.bold"
 
 build-docker-images:
 	docker buildx build -t kreditozrouti-api -f ./api/Dockerfile . && \

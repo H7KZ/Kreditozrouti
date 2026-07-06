@@ -17,10 +17,10 @@ Pages (src/pages/ — file-based routing via unplugin-vue-router)
 
 ## Path Aliases
 
-| Alias       | Resolves to    | Rule                                            |
-| ----------- | -------------- | ----------------------------------------------- |
-| `@client/*`           | `./src/*`                    | —                                                          |
-| `@kreditozrouti/core` | `../packages/core/src`       | Runtime values (functions, consts) — no DB/HTTP internals  |
+| Alias                 | Resolves to            | Rule                                                      |
+| --------------------- | ---------------------- | --------------------------------------------------------- |
+| `@client/*`           | `./src/*`              | —                                                         |
+| `@kreditozrouti/core` | `../packages/core/src` | Runtime values (functions, consts) — no DB/HTTP internals |
 
 ---
 
@@ -88,8 +88,8 @@ filters.store / ui.store / drag.store / alerts.store — no circular deps
 
 ## Key Docs
 
-| Topic                                             | Doc                                             |
-| ------------------------------------------------- | ----------------------------------------------- |
+| Topic                                             | Doc                                                 |
+| ------------------------------------------------- | --------------------------------------------------- |
 | All 9 stores in full detail                       | [STORES.md](../docs/dev/client/STORES.md)           |
 | All composables                                   | [COMPOSABLES.md](../docs/dev/client/COMPOSABLES.md) |
 | Conflict detection, status system, timetable grid | [TIMETABLE.md](../docs/dev/client/TIMETABLE.md)     |

@@ -144,21 +144,23 @@ Job logs carry (via `LoggerJobContext`):
 ### How to add logging in new code
 
 ```typescript
-import { logger } from '@api/logger'         // or @scraper/logger
+import {logger} from '@api/logger'         // or @scraper/logger
 
 // Root logger — for startup / module-level events
-logger.info({ port: Config.port }, 'server.started')
+logger.info({port: Config.port}, 'server.started')
 
 // HTTP child logger (adds context: 'http' stream label)
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
-LoggerAPIContext.log.warn({ user_id }, 'auth.forbidden')
+
+LoggerAPIContext.log.warn({user_id}, 'auth.forbidden')
 
 // Job child logger (adds context: 'job' stream label)
 import LoggerJobContext from '@api/Context/LoggerJobContext'
-LoggerJobContext.log.error({ err, duration_ms }, 'job.failed')
+
+LoggerJobContext.log.error({err, duration_ms}, 'job.failed')
 
 // Add fields to the current request's wide event
-LoggerAPIContext.add({ user_id: session.userId })
+LoggerAPIContext.add({user_id: session.userId})
 // ... they are merged and emitted once on res.finish
 ```
 

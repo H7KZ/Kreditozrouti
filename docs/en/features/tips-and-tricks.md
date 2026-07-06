@@ -26,13 +26,15 @@ Send your planned schedule to a classmate or your study group — no account req
 2. Click the **Share** button (share icon) in the timetable toolbar.
 3. The link is copied to your clipboard automatically.
 
-Recipients see a read-only timetable and can fork it into their own schedule with one click. Links stay alive for 180 days after the last view.
+Recipients see a read-only timetable and can fork it into their own schedule with one click. Links stay alive for 180
+days after the last view.
 
 ---
 
 ## Export to Calendar (iCal)
 
-Want your schedule in Google Calendar, Apple Calendar, or Outlook? Export your timetable as an `.ics` file from the **My Timetable** toolbar. Import it into any calendar app that supports iCal format.
+Want your schedule in Google Calendar, Apple Calendar, or Outlook? Export your timetable as an `.ics` file from the **My
+Timetable** toolbar. Import it into any calendar app that supports iCal format.
 
 ---
 
@@ -43,13 +45,16 @@ Once you've passed a course, mark it so it disappears from your list:
 1. Expand the course row.
 2. Click **Mark as completed** at the bottom.
 
-You can do this in bulk during the setup wizard (Step 4). Once marked, courses are hidden unless you toggle "Show completed courses" in the filter sidebar. Prerequisite filtering also uses your completed list — courses you can't take yet (missing prerequisites) are automatically hidden.
+You can do this in bulk during the setup wizard (Step 4). Once marked, courses are hidden unless you toggle "Show
+completed courses" in the filter sidebar. Prerequisite filtering also uses your completed list — courses you can't take
+yet (missing prerequisites) are automatically hidden.
 
 ---
 
 ## Check Prerequisites Before Registering
 
-Course rows show prerequisite chips when InSIS lists them. Click any chip to instantly search for that prerequisite course — useful for checking whether it's offered this semester and on a day that fits your schedule.
+Course rows show prerequisite chips when InSIS lists them. Click any chip to instantly search for that prerequisite
+course — useful for checking whether it's offered this semester and on a day that fits your schedule.
 
 The four chip types to know:
 
@@ -65,6 +70,8 @@ The four chip types to know:
 The setup wizard (re-accessible any time via the settings menu) lets you specify your faculty and entry year. Once set:
 
 - Your study plan's mandatory and elective courses are highlighted in the course list.
-- The wizard's completed-course step hides courses you've already passed and enforces prerequisite filters automatically.
+- The wizard's completed-course step hides courses you've already passed and enforces prerequisite filters
+  automatically.
 
-If you're exploring courses from another faculty or a different study level, you can change your faculty and year at any time — your timetable selection is preserved.
+If you're exploring courses from another faculty or a different study level, you can change your faculty and year at any
+time — your timetable selection is preserved.

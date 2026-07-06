@@ -19,13 +19,13 @@ https://kreditozrouti.cz/mcp
 
 Po připojení má tvůj AI asistent přístup k následujícím nástrojům:
 
-| Nástroj                         | Co dělá                                                                     |
-|---------------------------------|-----------------------------------------------------------------------------|
+| Nástroj                         | Co dělá                                                                                                                                                                             |
+|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `vse_search_courses`            | Vyhledá předměty podle klíčového slova, fakulty, semestru nebo jazyka výuky. Vrací souhrnná data — pro úplné detaily slotů použij `vse_get_course` nebo přečti `vse://course/{id}`. |
-| `vse_get_course`                | Načte jeden předmět se všemi jeho rozvrhový sloty                           |
-| `vse_get_study_plan`            | Načte studijní plán s úplným seznamem předmětů                              |
-| `vse_check_timetable_conflicts` | Zkontroluje, zda má sada předmětů nějaké časové překryvy                    |
-| `vse_optimize_timetable`        | Najde bezkonfliktní rozvrh pro danou sadu předmětů                          |
+| `vse_get_course`                | Načte jeden předmět se všemi jeho rozvrhový sloty                                                                                                                                   |
+| `vse_get_study_plan`            | Načte studijní plán s úplným seznamem předmětů                                                                                                                                      |
+| `vse_check_timetable_conflicts` | Zkontroluje, zda má sada předmětů nějaké časové překryvy                                                                                                                            |
+| `vse_optimize_timetable`        | Najde bezkonfliktní rozvrh pro danou sadu předmětů                                                                                                                                  |
 
 **Příklady dotazů, které můžeš Claude zadat po připojení:**
 
@@ -36,23 +36,25 @@ Po připojení má tvůj AI asistent přístup k následujícím nástrojům:
 
 ## Zdroje (Resources)
 
-Zdroje jsou datové endpointy pouze pro čtení, které může hostitel (Claude Desktop, Cursor, VS Code) vložit přímo do kontextu. Na rozdíl od nástrojů je nemusíte volat jako akce — klient je může načíst předem.
+Zdroje jsou datové endpointy pouze pro čtení, které může hostitel (Claude Desktop, Cursor, VS Code) vložit přímo do
+kontextu. Na rozdíl od nástrojů je nemusíte volat jako akce — klient je může načíst předem.
 
-| URI | Popis |
-|-----|-------|
-| `vse://faculties` | Všechny fakulty VŠE s jejich ID. Přečtěte jako první, abyste získali platná ID fakult. |
-| `vse://study-plans` | Všechny studijní plány napříč všemi fakultami. |
-| `vse://study-plans/{faculty_id}` | Studijní plány jedné fakulty — nahraďte `{faculty_id}` např. `FIS`. |
-| `vse://course/{id}` | Kompletní detail kurzu včetně časových slotů — nahraďte `{id}` číselným ID kurzu. |
+| URI                              | Popis                                                                                  |
+|----------------------------------|----------------------------------------------------------------------------------------|
+| `vse://faculties`                | Všechny fakulty VŠE s jejich ID. Přečtěte jako první, abyste získali platná ID fakult. |
+| `vse://study-plans`              | Všechny studijní plány napříč všemi fakultami.                                         |
+| `vse://study-plans/{faculty_id}` | Studijní plány jedné fakulty — nahraďte `{faculty_id}` např. `FIS`.                    |
+| `vse://course/{id}`              | Kompletní detail kurzu včetně časových slotů — nahraďte `{id}` číselným ID kurzu.      |
 
 ## Šablony (Prompts)
 
-Šablony jsou pracovní postupy, které můžete spustit přímo ze svého AI klienta (v Claude Desktop a Cursor se zobrazují jako lomítkové příkazy).
+Šablony jsou pracovní postupy, které můžete spustit přímo ze svého AI klienta (v Claude Desktop a Cursor se zobrazují
+jako lomítkové příkazy).
 
-| Název | Argumenty | Co dělá |
-|-------|-----------|---------|
+| Název            | Argumenty                                         | Co dělá                                                                                 |
+|------------------|---------------------------------------------------|-----------------------------------------------------------------------------------------|
 | `build_schedule` | `semester` (ZS nebo LS), `faculty_id` (volitelné) | Provede vás výběrem předmětů, kontrolou kolizí a optimalizací rozvrhu pro daný semestr. |
-| `explore_plan` | `faculty_id` | Projde studijní plány fakulty a shrne jejich předměty. |
+| `explore_plan`   | `faculty_id`                                      | Projde studijní plány fakulty a shrne jejich předměty.                                  |
 
 ## Připojení Claude Desktop
 

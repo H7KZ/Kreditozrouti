@@ -76,8 +76,8 @@ Fixtures live at repo root `fixtures/` — named `*.scraper.json` (scraper outpu
 
 ## Key Docs
 
-| Topic                                | Doc                                            |
-| ------------------------------------ | ---------------------------------------------- |
+| Topic                                | Doc                                                |
+| ------------------------------------ | -------------------------------------------------- |
 | Every job type: input, output, flow  | [JOBS.md](../docs/dev/scraper/JOBS.md)             |
 | How each service parses InSIS HTML   | [EXTRACTION.md](../docs/dev/scraper/EXTRACTION.md) |
 | Queue topology, dedup, retry policy  | [QUEUE.md](../docs/dev/scraper/QUEUE.md)           |

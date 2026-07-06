@@ -82,21 +82,37 @@
 	--vp-line-height-base: 1.7;
 }
 
-.vp-doc h1 { font-size: 1.875rem; }
+.vp-doc h1 {
+	font-size: 1.875rem;
+}
+
 .vp-doc h2 {
 	font-size: 1.375rem;
 	border-top: 1px solid var(--insis-border);
 	padding-top: 1.5rem;
 }
-.vp-doc h3 { font-size: 1.125rem; }
+
+.vp-doc h3 {
+	font-size: 1.125rem;
+}
 
 /* In-content links — never fall back to VitePress defaults */
-.vp-doc a { color: var(--insis-link); }
-.vp-doc a:hover { color: var(--insis-link-hover); }
-.vp-doc a:visited { color: var(--insis-link-visited); }
+.vp-doc a {
+	color: var(--insis-link);
+}
+
+.vp-doc a:hover {
+	color: var(--insis-link-hover);
+}
+
+.vp-doc a:visited {
+	color: var(--insis-link-visited);
+}
 
 /* Code block background — light mode coherence */
-.vp-doc div[class*="language-"] { background: var(--insis-surface) !important; }
+.vp-doc div[class*="language-"] {
+	background: var(--insis-surface) !important;
+}
 
 /* Feature card hover — subtle brand border */
 .VPFeature:hover {

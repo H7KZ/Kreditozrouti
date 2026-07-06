@@ -101,14 +101,14 @@ docs/          VitePress docs site — user docs (en/cs) + dev docs at docs/dev/
 Package-specific docs (API, client, scraper, deployment, scripts) are listed in each package's `CLAUDE.md` Key Docs
 table. Cross-cutting docs:
 
-| Area         | Doc                                                                                                                                                                                                                                               |
-|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| User Guide   | [docs/dev/user/README.md](../docs/dev/user/README.md) · [features](../docs/dev/user/FEATURES.md) · [getting started](../docs/dev/user/GETTING_STARTED.md)                                                                                                         |
-| Domain       | [docs/dev/DOMAIN.md](../docs/dev/DOMAIN.md) — glossary, architecture seams                                                                                                                                                                                |
+| Area         | Doc                                                                                                                                                                                                                                                                       |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| User Guide   | [docs/dev/user/README.md](../docs/dev/user/README.md) · [features](../docs/dev/user/FEATURES.md) · [getting started](../docs/dev/user/GETTING_STARTED.md)                                                                                                                 |
+| Domain       | [docs/dev/DOMAIN.md](../docs/dev/DOMAIN.md) — glossary, architecture seams                                                                                                                                                                                                |
 | Architecture | [docs/dev/ARCHITECTURE.md](../docs/dev/ARCHITECTURE.md) · [monorepo](../docs/dev/architecture/MONOREPO.md) · [services](../docs/dev/architecture/SERVICES.md) · [data flow](../docs/dev/architecture/DATA_FLOW.md) · [containers](../docs/dev/architecture/CONTAINERS.md) |
-| Engineering  | [docs/dev/ENGINEERING.md](../docs/dev/ENGINEERING.md) · [setup](../docs/dev/engineering/SETUP.md) · [contributing](../docs/dev/engineering/CONTRIBUTING.md)                                                                                                       |
-| Shared       | [docs/dev/shared/README.md](../docs/dev/shared/README.md) · [domain](../docs/dev/shared/DOMAIN.md) · [http](../docs/dev/shared/HTTP.md) · [queue](../docs/dev/shared/QUEUE.md)                                                                                        |
-| MCP          | [docs/dev/mcp/README.md](../docs/dev/mcp/README.md) — tools, transport modes, env vars, Docker                                                                                                                                                            |
+| Engineering  | [docs/dev/ENGINEERING.md](../docs/dev/ENGINEERING.md) · [setup](../docs/dev/engineering/SETUP.md) · [contributing](../docs/dev/engineering/CONTRIBUTING.md)                                                                                                               |
+| Shared       | [docs/dev/shared/README.md](../docs/dev/shared/README.md) · [domain](../docs/dev/shared/DOMAIN.md) · [http](../docs/dev/shared/HTTP.md) · [queue](../docs/dev/shared/QUEUE.md)                                                                                            |
+| MCP          | [docs/dev/mcp/README.md](../docs/dev/mcp/README.md) — tools, transport modes, env vars, Docker                                                                                                                                                                            |
 
 ---
 
@@ -117,7 +117,8 @@ table. Cross-cutting docs:
 After completing any task that changes code, configuration, or behavior:
 
 1. **Identify** which `docs/` file(s) describe the changed area
-2. **Also check `docs/dev/user/FEATURES.md`** — if the change affects a user-visible feature (filters, timetable, conflict
+2. **Also check `docs/dev/user/FEATURES.md`** — if the change affects a user-visible feature (filters, timetable,
+   conflict
    detection, wizard, course refresh, saved schedules, language, theme, etc.), update the relevant section
 3. **Update** any doc that describes what changed — keep it accurate
 4. **New behavior with no doc entry?** Ask: _"This change isn't mentioned in the docs — should I document it?"_

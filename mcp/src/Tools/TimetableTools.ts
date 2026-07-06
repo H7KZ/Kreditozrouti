@@ -30,7 +30,7 @@ export default class TimetableTools {
 			'Check a set of VŠE courses for timetable conflicts. Checks across courses only — does not flag units within the same course. Returns every conflicting pair with day and time range. Times are minutes from midnight (0–1439).',
 		annotations: { readOnlyHint: true },
 		schema: {
-			course_ids: z.array(z.number().int()).min(1).max(30).describe('List of course IDs to check for conflicts'),
+			course_ids: z.array(z.number().int()).min(1).max(30).describe('List of course IDs to check for conflicts')
 		},
 		handler: async (input, db) => {
 			try {
@@ -58,7 +58,7 @@ export default class TimetableTools {
 						const bSlot = b.slot
 						const conflict = unitsConflict(
 							{ day: aSlot.day ?? undefined, date: aSlot.date ?? undefined, timeFrom: aSlot.time_from!, timeTo: aSlot.time_to! },
-							{ day: bSlot.day ?? undefined, date: bSlot.date ?? undefined, timeFrom: bSlot.time_from!, timeTo: bSlot.time_to! },
+							{ day: bSlot.day ?? undefined, date: bSlot.date ?? undefined, timeFrom: bSlot.time_from!, timeTo: bSlot.time_to! }
 						)
 						if (conflict) {
 							conflicts.push({
@@ -68,7 +68,7 @@ export default class TimetableTools {
 								course_b_ident: b.course_ident,
 								day: aSlot.day ?? null,
 								time_from: aSlot.time_from!,
-								time_to: aSlot.time_to!,
+								time_to: aSlot.time_to!
 							})
 						}
 					}
@@ -78,10 +78,10 @@ export default class TimetableTools {
 			} catch (err) {
 				return {
 					content: [{ type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` }],
-					isError: true,
+					isError: true
 				}
 			}
-		},
+		}
 	})
 
 	static register(server: McpServer, db: Kysely<Database>): void {

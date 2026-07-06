@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { registerPrompt } from '@mcp/tools'
 
 const schema = {
-	faculty_id: z.string().describe('Faculty ID to explore (e.g. "FIS", "FPH"). Get valid IDs from the vse://faculties resource.'),
+	faculty_id: z.string().describe('Faculty ID to explore (e.g. "FIS", "FPH"). Get valid IDs from the vse://faculties resource.')
 }
 
 export default class ExplorePlanPrompt {
@@ -27,11 +27,11 @@ Follow this workflow:
 2. Ask the student which study plan they want to explore.
 3. Call vse_get_study_plan with the plan's numeric ID to get the full plan including its course list.
 4. Summarize the courses grouped by semester (ZS/LS) and category (required/elective/optional). Include credit counts per group.
-5. Ask if the student wants to check for scheduling conflicts or optimize a selection of these courses. If yes, continue with the build_schedule workflow.`,
-						},
-					},
-				],
-			}),
+5. Ask if the student wants to check for scheduling conflicts or optimize a selection of these courses. If yes, continue with the build_schedule workflow.`
+						}
+					}
+				]
+			})
 		})
 	}
 }

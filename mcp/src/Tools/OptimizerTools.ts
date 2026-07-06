@@ -9,7 +9,7 @@ const DaySchema = z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday'
 const TimeSelectionSchema = z.object({
 	day: DaySchema.optional(),
 	time_from: z.number().int().min(0).max(1439),
-	time_to: z.number().int().min(0).max(1439),
+	time_to: z.number().int().min(0).max(1439)
 })
 const SolverConstraintsSchema = z
 	.object({
@@ -19,7 +19,7 @@ const SolverConstraintsSchema = z
 		credit_max: z.number().optional(),
 		blackout_windows: z.array(TimeSelectionSchema).optional(),
 		preferred_days: z.array(DaySchema).optional(),
-		max_consecutive_minutes: z.number().optional(),
+		max_consecutive_minutes: z.number().optional()
 	})
 	.optional()
 
@@ -35,7 +35,7 @@ export default class OptimizerTools {
 			constraints: SolverConstraintsSchema.describe('Optional scheduling constraints'),
 			mode: z.enum(['build', 'explore']).default('build').describe('build: find best schedule; explore: try adding courses one by one'),
 			locked_unit_ids: z.array(z.number().int()).optional().describe('Unit IDs to keep fixed'),
-			explore_course_ids: z.array(z.number().int()).optional().describe('Courses to try adding (explore mode only, max 20)'),
+			explore_course_ids: z.array(z.number().int()).optional().describe('Courses to try adding (explore mode only, max 20)')
 		},
 		handler: async (input, db) => {
 			try {
@@ -44,17 +44,17 @@ export default class OptimizerTools {
 					constraints: input.constraints ?? {},
 					mode: input.mode,
 					locked_unit_ids: input.locked_unit_ids,
-					explore_course_ids: input.explore_course_ids,
+					explore_course_ids: input.explore_course_ids
 				}
 				const result = await OptimizerService.optimize(db, request)
 				return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] }
 			} catch (err) {
 				return {
 					content: [{ type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` }],
-					isError: true,
+					isError: true
 				}
 			}
-		},
+		}
 	})
 
 	static register(server: McpServer, db: Kysely<Database>): void {

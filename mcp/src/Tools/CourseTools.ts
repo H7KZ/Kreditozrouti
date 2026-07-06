@@ -18,7 +18,7 @@ export default class CourseTools {
 			semester: z.enum(['ZS', 'LS', 'Both']).optional().describe('Filter by semester'),
 			language: z.string().optional().describe('Filter by language code (e.g. "CS", "EN")'),
 			limit: z.number().int().min(1).max(100).default(20).describe('Max results (1–100, default 20)'),
-			offset: z.number().int().min(0).default(0).describe('Pagination offset'),
+			offset: z.number().int().min(0).default(0).describe('Pagination offset')
 		},
 		handler: async (input, db) => {
 			try {
@@ -32,10 +32,10 @@ export default class CourseTools {
 			} catch (err) {
 				return {
 					content: [{ type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` }],
-					isError: true,
+					isError: true
 				}
 			}
-		},
+		}
 	})
 
 	private static readonly getTool = defineTool({
@@ -45,7 +45,7 @@ export default class CourseTools {
 			'Get a VŠE course by its numeric ID. Returns the full course including units and time slots. Use this before calling vse_check_timetable_conflicts. Times are minutes from midnight (0–1439).',
 		annotations: { readOnlyHint: true },
 		schema: {
-			id: z.number().int().describe('Course ID'),
+			id: z.number().int().describe('Course ID')
 		},
 		handler: async (input, db) => {
 			try {
@@ -55,10 +55,10 @@ export default class CourseTools {
 			} catch (err) {
 				return {
 					content: [{ type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` }],
-					isError: true,
+					isError: true
 				}
 			}
-		},
+		}
 	})
 
 	static register(server: McpServer, db: Kysely<Database>): void {

@@ -32,7 +32,7 @@ export default defineConfig({
 					},
 					{ text: 'MCP', link: '/cs/mcp' },
 					{ text: 'FAQ', link: '/cs/faq' },
-					{ text: '← Spustit aplikaci', link: 'https://kreditozrouti.cz' }
+					{ text: 'Spustit aplikaci', link: 'https://kreditozrouti.cz' }
 				],
 				sidebar: {
 					'/cs/': [
@@ -82,7 +82,7 @@ export default defineConfig({
 					},
 					{ text: 'MCP', link: '/en/mcp' },
 					{ text: 'FAQ', link: '/en/faq' },
-					{ text: '← Open app', link: 'https://kreditozrouti.cz' }
+					{ text: 'Open app', link: 'https://kreditozrouti.cz' }
 				],
 				sidebar: {
 					'/en/': [
