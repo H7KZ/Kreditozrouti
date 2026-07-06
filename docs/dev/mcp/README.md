@@ -214,6 +214,26 @@ Health check endpoint (`GET /health`) is only available in HTTP mode.
 | `vse_check_timetable_conflicts` | Check a set of courses for scheduling conflicts           | `course_ids` (array of ints, 1–30)                                                                                                                     | `{ has_conflicts: boolean, conflicts: [...] }` |
 | `vse_optimize_timetable`        | Find an optimal conflict-free schedule                    | `course_ids` (1–30), `mode` (`"build"` or `"explore"`), `constraints?`, `locked_unit_ids?`, `explore_course_ids?` (explore mode, max 20)               | Optimized schedule result                      |
 
+## Resources
+
+Resources are read-only, URI-addressed data the host injects into context. Read them to get catalog data without calling Tools.
+
+| URI | Name | Description |
+|-----|------|-------------|
+| `vse://faculties` | VŠE Faculties | All faculties with their IDs. Read before filtering by faculty. |
+| `vse://study-plans` | VŠE Study Plans | All study plans across all faculties. |
+| `vse://study-plans/{faculty_id}` | VŠE Study Plans by Faculty | Study plans for a specific faculty (e.g. `vse://study-plans/FIS`). |
+| `vse://course/{id}` | VŠE Course | Full course detail including units and time slots (e.g. `vse://course/1234`). |
+
+## Prompts
+
+Prompts are user-invocable workflow templates that scaffold common tasks. In Claude Desktop and Cursor they appear as slash-commands.
+
+| Name | Args | Description |
+|------|------|-------------|
+| `build_schedule` | `semester` (ZS/LS, required), `faculty_id` (optional) | Scaffolds the full schedule-building workflow: read faculties → browse study plans → pick courses → check conflicts → optimize. |
+| `explore_plan` | `faculty_id` (required) | Scaffolds browsing a faculty's study plans and summarising their courses. |
+
 ### `vse_optimize_timetable` constraints object
 
 ```json
@@ -267,26 +287,19 @@ When you pass blackout windows to the optimizer or interpret conflict entries, c
 
 ## Best Practices for AI Agents
 
-1. **Start with faculties.** Call `vse_list_faculties` first to obtain valid faculty IDs before filtering courses or
-   study plans. Faculty IDs are stable strings (e.g. `"FIS"`, `"FPH"`).
+1. **Read resources before calling tools.** The `vse://faculties` resource provides all valid faculty IDs. Read it first rather than guessing IDs. Similarly, `vse://study-plans/{faculty_id}` gives the full plan catalog for a faculty.
 
-2. **Search with filters, paginate large result sets.** `vse_search_courses` defaults to 20 results. Use `limit` (up to
-   100) and `offset` to page through. Combine `query`, `faculty_id`, `semester`, and `language` to narrow results before
-   fetching full course objects.
+2. **Use Prompts for standard workflows.** The `build_schedule` and `explore_plan` prompts encode the correct call sequence. Invoke them at the start of a session rather than rediscovering the order from tool descriptions.
 
-3. **Fetch a full course when you need slots.** `vse_search_courses` returns summary data. Call `vse_get_course` with a
-   specific `id` to get the complete unit/slot breakdown needed for conflict checks.
+3. **Search with filters, paginate large result sets.** `vse_search_courses` defaults to 20 results. Use `limit` (up to 100) and `offset` to page through. Combine `query`, `faculty_id`, `semester`, and `language` to narrow results before fetching full course objects.
 
-4. **Check conflicts before presenting a selection to the user.** Once the user has a set of course IDs in mind, run
-   `vse_check_timetable_conflicts`. The response lists every overlapping pair with the day and time range of the clash.
+4. **Fetch a full course when you need slots.** `vse_search_courses` returns summary data. Call `vse_get_course` (or read `vse://course/{id}`) to get the complete unit/slot breakdown needed for conflict checks.
 
-5. **Use the optimizer for scheduling assistance.** Two modes:
-	- `mode: "build"` — given a fixed set of `course_ids`, find the best non-conflicting combination of units across all
-	  courses. Use when the user has already decided which courses they want.
-	- `mode: "explore"` — start from `course_ids` and try adding each course in `explore_course_ids` one by one. Use
-	  when the user wants to know which additional courses can still fit in their schedule.
-	  Lock specific units with `locked_unit_ids` to keep the user's existing choices fixed while the solver adjusts the
-	  rest.
+5. **Check conflicts before presenting a selection to the user.** Once the user has a set of course IDs in mind, run `vse_check_timetable_conflicts`. The response lists every overlapping pair with the day and time range of the clash.
 
-6. **Respect the optimizer rate limit.** `vse_optimize_timetable` is CPU-intensive and rate-limited in production (
-   `NODE_ENV=production`). Avoid calling it in a loop; cache results where possible.
+6. **Use the optimizer for scheduling assistance.** Two modes:
+   - `mode: "build"` — given a fixed set of `course_ids`, find the best non-conflicting combination of units. Use when the user has decided which courses they want.
+   - `mode: "explore"` — start from `course_ids` and try adding each course in `explore_course_ids` one by one. Use when the user wants to know which additional courses can still fit.
+   Lock specific units with `locked_unit_ids` to keep the user's existing choices fixed while the solver adjusts the rest.
+
+7. **Respect the optimizer rate limit.** `vse_optimize_timetable` is CPU-intensive and rate-limited to 10 req/min in production. Avoid calling it in a loop; cache results where possible.
