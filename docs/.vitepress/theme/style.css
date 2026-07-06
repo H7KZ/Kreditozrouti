@@ -103,3 +103,25 @@
 	border-color: var(--insis-blue-light) !important;
 	box-shadow: var(--insis-shadow-sm);
 }
+
+/* Sidebar — active item brand indicator */
+.VPSidebarItem.is-active > .item .link {
+	color: var(--insis-blue);
+	font-weight: 500;
+}
+
+.VPSidebarItem.is-active > .item {
+	border-left: 2px solid var(--insis-blue);
+	padding-left: calc(var(--vp-sidebar-item-padding-left, 16px) - 2px);
+	background: var(--insis-blue-subtle);
+	border-radius: 0 var(--insis-radius-md) var(--insis-radius-md) 0;
+}
+
+/* Sidebar — section headers */
+.VPSidebarItem.level-0 > .item .text {
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--insis-text-3);
+}
