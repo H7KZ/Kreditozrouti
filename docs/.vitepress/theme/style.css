@@ -97,3 +97,9 @@
 
 /* Code block background — light mode coherence */
 .vp-doc div[class*="language-"] { background: var(--insis-surface) !important; }
+
+/* Feature card hover — subtle brand border */
+.VPFeature:hover {
+	border-color: var(--insis-blue-light) !important;
+	box-shadow: var(--insis-shadow-sm);
+}
