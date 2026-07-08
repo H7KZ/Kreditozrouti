@@ -12,7 +12,7 @@ Business logic lives in `api/src/Services/`. Controllers are thin: they validate
 `src/Services/Course/`:
 
 | Sub-module            | Responsibility                                                 |
-|-----------------------|----------------------------------------------------------------|
+| --------------------- | -------------------------------------------------------------- |
 | `CourseFilterBuilder` | `buildFilterQuery`, `applyAllFilters`, join-requirement checks |
 | `CourseCacheService`  | `buildFacetCacheKey`, Redis facet cache read/write             |
 | `CourseQueryService`  | Pagination, relation loading, `getCoursesByStudyPlan`          |
@@ -40,7 +40,7 @@ Clause detection uses a single combined regex applied left-to-right so `"nelze s
 matched as `excluded_after` before the overlapping `"studovat po absolvování"` can match as `blocked_by`.
 
 | Clause text                           | Bucket                             |
-|---------------------------------------|------------------------------------|
+| ------------------------------------- | ---------------------------------- |
 | `studovat po absolvování`             | `blocked_by_course_idents`         |
 | `nelze studovat po absolvování`       | `excluded_after_course_idents`     |
 | `nelze studovat současně s`           | `concurrent_exclusion_idents`      |
@@ -86,7 +86,7 @@ The paginated ID query uses `ORDER BY FIELD(id, ...)` when restoring result orde
 The core of all course filtering. Conditionally applies joins only when needed:
 
 | Filter                                                            | Join required                                       |
-|-------------------------------------------------------------------|-----------------------------------------------------|
+| ----------------------------------------------------------------- | --------------------------------------------------- |
 | `lecturers`                                                       | `insis_courses_units`                               |
 | `exclude_times`, time-slot filters                                | `insis_courses_units` + `insis_courses_units_slots` |
 | `study_plan_idents`, `study_plan_groups`, `study_plan_categories` | `insis_study_plans_courses` + `insis_study_plans`   |
@@ -151,7 +151,7 @@ remove MySQL boolean operators before transformation.
 `src/Services/StudyPlan/`:
 
 | Sub-module               | Responsibility                                                       |
-|--------------------------|----------------------------------------------------------------------|
+| ------------------------ | -------------------------------------------------------------------- |
 | `StudyPlanFilterBuilder` | `buildFilterQuery`, `needsCoursesJoin`, `applyFilters`               |
 | `StudyPlanCacheService`  | `buildFacetCacheKey`, Redis facet cache read/write                   |
 | `StudyPlanQueryService`  | Pagination, relation loading (`getStudyPlansWithRelations`)          |
@@ -202,7 +202,7 @@ ScraperService.enqueueCourseScrapeById(id)
 **Dedup windows:**
 
 | Job                 | Dedup key                    | TTL            |
-|---------------------|------------------------------|----------------|
+| ------------------- | ---------------------------- | -------------- |
 | Catalog (manual)    | `InSIS:Catalog:ManualRun`    | 30 seconds     |
 | StudyPlans (manual) | `InSIS:StudyPlans:ManualRun` | 30 seconds     |
 | Single course       | `InSIS:Course:{courseId}`    | until consumed |

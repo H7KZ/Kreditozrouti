@@ -43,7 +43,7 @@ interface ScraperRequestJob {
 Each `type` variant carries a different payload:
 
 | `type`             | Key payload fields                            |
-|--------------------|-----------------------------------------------|
+| ------------------ | --------------------------------------------- |
 | `InSIS:Catalog`    | `semester`, `year`, `auto_queue_courses`      |
 | `InSIS:Course`     | `url`, `course_ident`, `semester`, `year`     |
 | `InSIS:StudyPlans` | `semester`, `year`                            |

@@ -1,4 +1,4 @@
-@import '../../../packages/docs-theme/vars.css';
+@import '../../../packages/style/vars.css';
 
 /* Map VitePress CSS variables to --insis-* tokens */
 :root {
@@ -61,7 +61,7 @@
 
 /* Navbar CTA — "Open app" / "Spustit aplikaci" pill button */
 /* ponytail: selector uses VitePress internal class names; recheck on VitePress major upgrades */
-.VPNavBar .VPNavBarMenu a[href^="https://kreditozrouti.cz"] {
+.VPNavBar .VPNavBarMenu a[href^='https://kreditozrouti.cz'] {
 	background: var(--insis-blue);
 	color: #fff !important;
 	padding: 4px 12px;
@@ -71,7 +71,7 @@
 	text-decoration: none !important;
 }
 
-.VPNavBar .VPNavBarMenu a[href^="https://kreditozrouti.cz"]:hover {
+.VPNavBar .VPNavBarMenu a[href^='https://kreditozrouti.cz']:hover {
 	background: var(--insis-blue-hover);
 }
 
@@ -110,7 +110,7 @@
 }
 
 /* Code block background — light mode coherence */
-.vp-doc div[class*="language-"] {
+.vp-doc div[class*='language-'] {
 	background: var(--insis-surface) !important;
 }
 

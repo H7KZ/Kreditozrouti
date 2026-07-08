@@ -117,7 +117,7 @@ the next scheduled run re-enqueues them. No automatic retry.
 These run as Docker containers but are not part of the application codebase.
 
 | Service       | Image                    | Purpose                                   |
-|---------------|--------------------------|-------------------------------------------|
+| ------------- | ------------------------ | ----------------------------------------- |
 | MySQL 8       | `mysql:8`                | Primary data store (courses, study plans) |
 | Redis         | `redis:alpine`           | BullMQ queues + session store (ephemeral) |
 | phpMyAdmin    | `phpmyadmin`             | DB admin UI (dev/prod, port 48080 dev)    |
@@ -127,7 +127,7 @@ These run as Docker containers but are not part of the application codebase.
 ### Observability Services (monitoring stack)
 
 | Service    | Image             | Purpose                                                                                                                                                  |
-|------------|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Prometheus | `prom/prometheus` | Metrics collection. Scrapes `/metrics` on API. 15-day retention.                                                                                         |
 | Grafana    | `grafana/grafana` | Dashboards and alerting. Queries Prometheus and Loki.                                                                                                    |
 | Loki       | `grafana/loki`    | Log aggregation. Receives structured JSON from Alloy. 30-day retention. Internal: `http://loki:3100`.                                                    |

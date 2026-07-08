@@ -6,11 +6,13 @@ import OptimizerService from '@kreditozrouti/core/services/OptimizerService'
 import { defineTool, registerTool } from '@mcp/tools'
 
 const DaySchema = z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
+
 const TimeSelectionSchema = z.object({
 	day: DaySchema.optional(),
 	time_from: z.number().int().min(0).max(1439),
 	time_to: z.number().int().min(0).max(1439)
 })
+
 const SolverConstraintsSchema = z
 	.object({
 		required_course_ids: z.array(z.number().int()).optional(),

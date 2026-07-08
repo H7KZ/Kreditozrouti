@@ -20,7 +20,7 @@ https://kreditozrouti.cz/mcp
 Po připojení má tvůj AI asistent přístup k následujícím nástrojům:
 
 | Nástroj                         | Co dělá                                                                                                                                                                             |
-|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `vse_search_courses`            | Vyhledá předměty podle klíčového slova, fakulty, semestru nebo jazyka výuky. Vrací souhrnná data — pro úplné detaily slotů použij `vse_get_course` nebo přečti `vse://course/{id}`. |
 | `vse_get_course`                | Načte jeden předmět se všemi jeho rozvrhový sloty                                                                                                                                   |
 | `vse_get_study_plan`            | Načte studijní plán s úplným seznamem předmětů                                                                                                                                      |
@@ -40,7 +40,7 @@ Zdroje jsou datové endpointy pouze pro čtení, které může hostitel (Claude 
 kontextu. Na rozdíl od nástrojů je nemusíte volat jako akce — klient je může načíst předem.
 
 | URI                              | Popis                                                                                  |
-|----------------------------------|----------------------------------------------------------------------------------------|
+| -------------------------------- | -------------------------------------------------------------------------------------- |
 | `vse://faculties`                | Všechny fakulty VŠE s jejich ID. Přečtěte jako první, abyste získali platná ID fakult. |
 | `vse://study-plans`              | Všechny studijní plány napříč všemi fakultami.                                         |
 | `vse://study-plans/{faculty_id}` | Studijní plány jedné fakulty — nahraďte `{faculty_id}` např. `FIS`.                    |
@@ -52,7 +52,7 @@ kontextu. Na rozdíl od nástrojů je nemusíte volat jako akce — klient je m�
 jako lomítkové příkazy).
 
 | Název            | Argumenty                                         | Co dělá                                                                                 |
-|------------------|---------------------------------------------------|-----------------------------------------------------------------------------------------|
+| ---------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | `build_schedule` | `semester` (ZS nebo LS), `faculty_id` (volitelné) | Provede vás výběrem předmětů, kontrolou kolizí a optimalizací rozvrhu pro daný semestr. |
 | `explore_plan`   | `faculty_id`                                      | Projde studijní plány fakulty a shrne jejich předměty.                                  |
 
@@ -67,11 +67,11 @@ Desktop:
 
 ```json
 {
-  "mcpServers": {
-    "kreditozrouti": {
-      "url": "https://kreditozrouti.cz/mcp"
-    }
-  }
+	"mcpServers": {
+		"kreditozrouti": {
+			"url": "https://kreditozrouti.cz/mcp"
+		}
+	}
 }
 ```
 
@@ -83,11 +83,11 @@ Přidej do `.cursor/mcp.json` v kořenovém adresáři projektu (nebo globálně
 
 ```json
 {
-  "mcpServers": {
-    "kreditozrouti": {
-      "url": "https://kreditozrouti.cz/mcp"
-    }
-  }
+	"mcpServers": {
+		"kreditozrouti": {
+			"url": "https://kreditozrouti.cz/mcp"
+		}
+	}
 }
 ```
 
@@ -97,12 +97,12 @@ Přidej do `.vscode/mcp.json` ve svém pracovním prostoru:
 
 ```json
 {
-  "servers": {
-    "kreditozrouti": {
-      "type": "http",
-      "url": "https://kreditozrouti.cz/mcp"
-    }
-  }
+	"servers": {
+		"kreditozrouti": {
+			"type": "http",
+			"url": "https://kreditozrouti.cz/mcp"
+		}
+	}
 }
 ```
 
@@ -113,7 +113,7 @@ Přidej do `.vscode/mcp.json` ve svém pracovním prostoru:
 Vyhledávání předmětů pomocí libovolné kombinace filtrů:
 
 | Parametr     | Typ                | Popis                                                     |
-|--------------|--------------------|-----------------------------------------------------------|
+| ------------ | ------------------ | --------------------------------------------------------- |
 | `query`      | string (volitelné) | Fulltextové vyhledávání v názvu předmětu a identifikátoru |
 | `faculty_id` | string (volitelné) | Kód fakulty, např. `"FIS"`, `"FPH"`, `"FMV"`              |
 | `semester`   | string (volitelné) | `"ZS"` (zimní), `"LS"` (letní), nebo `"Both"`             |
@@ -141,13 +141,11 @@ Volitelná omezení:
 
 ```json
 {
-  "blackout_windows": [
-    { "day": "friday", "time_from": 0, "time_to": 1439 }
-  ],
-  "preferred_days": ["monday", "tuesday", "wednesday"],
-  "credit_min": 18,
-  "credit_max": 30,
-  "max_consecutive_minutes": 180
+	"blackout_windows": [{ "day": "friday", "time_from": 0, "time_to": 1439 }],
+	"preferred_days": ["monday", "tuesday", "wednesday"],
+	"credit_min": 18,
+	"credit_max": 30,
+	"max_consecutive_minutes": 180
 }
 ```
 

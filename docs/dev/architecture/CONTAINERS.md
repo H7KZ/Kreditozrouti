@@ -64,7 +64,7 @@ Self-hosted GitHub Actions runners registered to the repo.
 ## Networks
 
 | Network           | Purpose                         | Who joins                             |
-|-------------------|---------------------------------|---------------------------------------|
+| ----------------- | ------------------------------- | ------------------------------------- |
 | `traefik-network` | Public ingress, Traefik routing | traefik, api, client, mcp, phpmyadmin |
 | `mysql-network`   | DB access                       | api, mcp, mysql, phpmyadmin           |
 | `redis-network`   | Queue + sessions                | api, scraper, redis                   |
@@ -77,7 +77,7 @@ Nginx) cannot reach MySQL or Redis.
 ## Volumes
 
 | Volume                       | Mounted by | Data                       | Ephemeral?            |
-|------------------------------|------------|----------------------------|-----------------------|
+| ---------------------------- | ---------- | -------------------------- | --------------------- |
 | `mysql-data-volume`          | mysql      | All course/study-plan data | No — persisted        |
 | `traefik-letsencrypt-volume` | traefik    | TLS certificates           | No — persisted        |
 | Redis (no volume)            | redis      | BullMQ queues, sessions    | Yes — lost on restart |
@@ -89,7 +89,7 @@ Nginx) cannot reach MySQL or Redis.
 All production traffic enters through Traefik on port 443 (TLS via Let's Encrypt DNS-01 + Cloudflare).
 
 | Service    | Rule               | Priority | Notes                                  |
-|------------|--------------------|----------|----------------------------------------|
+| ---------- | ------------------ | -------- | -------------------------------------- |
 | API        | `PathPrefix(/api)` | 100      | Strips `/api` prefix before forwarding |
 | phpMyAdmin | `PathPrefix(/pma)` | 80       | Strips `/pma` prefix                   |
 | Client     | `PathPrefix(/)`    | 10       | Catch-all, lowest priority             |

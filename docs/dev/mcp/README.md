@@ -7,7 +7,7 @@ and is an independent process — it does not call the `api/` HTTP routes.
 ## Tools
 
 | Tool                            | Description                                                    |
-|---------------------------------|----------------------------------------------------------------|
+| ------------------------------- | -------------------------------------------------------------- |
 | `vse_list_faculties`            | List all VŠE faculties with publicly visible timetables        |
 | `vse_search_courses`            | Search courses by text, faculty, semester, or language         |
 | `vse_get_course`                | Get a course by numeric ID                                     |
@@ -33,10 +33,7 @@ Configure in `~/Library/Application Support/Claude/claude_desktop_config.json`:
 	"mcpServers": {
 		"kreditozrouti": {
 			"command": "node",
-			"args": [
-				"/path/to/mcp/dist/index.js",
-				"--stdio"
-			],
+			"args": ["/path/to/mcp/dist/index.js", "--stdio"],
 			"env": {
 				"MYSQL_URI": "mysql://..."
 			}
@@ -57,7 +54,7 @@ node dist/index.js
 ## Environment Variables
 
 | Variable    | Required | Default       | Description                    |
-|-------------|----------|---------------|--------------------------------|
+| ----------- | -------- | ------------- | ------------------------------ |
 | `MYSQL_URI` | yes      | —             | mysql2 connection string       |
 | `MCP_PORT`  | no       | `3000`        | HTTP listen port               |
 | `NODE_ENV`  | no       | `development` | Enables production rate limits |
@@ -96,10 +93,7 @@ the `Kysely<Database>` instance into each service call.
 	"mcpServers": {
 		"kreditozrouti": {
 			"command": "node",
-			"args": [
-				"/absolute/path/to/mcp/dist/index.js",
-				"--stdio"
-			],
+			"args": ["/absolute/path/to/mcp/dist/index.js", "--stdio"],
 			"env": {
 				"MYSQL_URI": "mysql://user:pass@localhost:3306/kreditozrouti"
 			}
@@ -129,10 +123,7 @@ the `Kysely<Database>` instance into each service call.
 	"mcpServers": {
 		"kreditozrouti": {
 			"command": "node",
-			"args": [
-				"/absolute/path/to/mcp/dist/index.js",
-				"--stdio"
-			],
+			"args": ["/absolute/path/to/mcp/dist/index.js", "--stdio"],
 			"env": {
 				"MYSQL_URI": "mysql://user:pass@localhost:3306/kreditozrouti"
 			}
@@ -163,10 +154,7 @@ Or HTTP mode (when the Docker service is running):
 		"kreditozrouti": {
 			"type": "stdio",
 			"command": "node",
-			"args": [
-				"/absolute/path/to/mcp/dist/index.js",
-				"--stdio"
-			],
+			"args": ["/absolute/path/to/mcp/dist/index.js", "--stdio"],
 			"env": {
 				"MYSQL_URI": "mysql://user:pass@localhost:3306/kreditozrouti"
 			}
@@ -193,7 +181,7 @@ Or HTTP mode:
 ## Transport Modes (detail)
 
 | Flag      | Transport                      | Use case                                                                    |
-|-----------|--------------------------------|-----------------------------------------------------------------------------|
+| --------- | ------------------------------ | --------------------------------------------------------------------------- |
 | `--stdio` | `StdioServerTransport`         | Local dev, Claude Desktop, Cursor, VS Code — process launched by the client |
 | _(none)_  | Streamable HTTP on `POST /mcp` | Docker / production — client connects over the network                      |
 
@@ -205,7 +193,7 @@ Health check endpoint (`GET /health`) is only available in HTTP mode.
 ## Tools Reference
 
 | Tool                            | Description                                               | Key Parameters                                                                                                                                         | Returns                                        |
-|---------------------------------|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------|
+| ------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
 | `vse_list_faculties`            | List all VŠE faculties                                    | _(none)_                                                                                                                                               | Array of faculty objects (id, name, etc.)      |
 | `vse_search_courses`            | Search courses by text, faculty, semester, or language    | `query?` (string), `faculty_id?`, `semester?` (`ZS`/`LS`/`Both`), `language?` (e.g. `"CS"`, `"EN"`), `limit` (1–100, default 20), `offset` (default 0) | `{ courses, total }`                           |
 | `vse_get_course`                | Get a single course by numeric ID                         | `id` (number, required)                                                                                                                                | Course object with units and slots, or error   |
@@ -220,7 +208,7 @@ Resources are read-only, URI-addressed data the host injects into context. Read 
 Tools.
 
 | URI                              | Name                       | Description                                                                   |
-|----------------------------------|----------------------------|-------------------------------------------------------------------------------|
+| -------------------------------- | -------------------------- | ----------------------------------------------------------------------------- |
 | `vse://faculties`                | VŠE Faculties              | All faculties with their IDs. Read before filtering by faculty.               |
 | `vse://study-plans`              | VŠE Study Plans            | All study plans across all faculties.                                         |
 | `vse://study-plans/{faculty_id}` | VŠE Study Plans by Faculty | Study plans for a specific faculty (e.g. `vse://study-plans/FIS`).            |
@@ -232,7 +220,7 @@ Prompts are user-invocable workflow templates that scaffold common tasks. In Cla
 slash-commands.
 
 | Name             | Args                                                  | Description                                                                                                                     |
-|------------------|-------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| ---------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `build_schedule` | `semester` (ZS/LS, required), `faculty_id` (optional) | Scaffolds the full schedule-building workflow: read faculties → browse study plans → pick courses → check conflicts → optimize. |
 | `explore_plan`   | `faculty_id` (required)                               | Scaffolds browsing a faculty's study plans and summarising their courses.                                                       |
 
@@ -240,13 +228,8 @@ slash-commands.
 
 ```json
 {
-	"required_course_ids": [
-		1,
-		2
-	],
-	"excluded_course_ids": [
-		99
-	],
+	"required_course_ids": [1, 2],
+	"excluded_course_ids": [99],
 	"credit_min": 18,
 	"credit_max": 30,
 	"blackout_windows": [
@@ -256,11 +239,7 @@ slash-commands.
 			"time_to": 1439
 		}
 	],
-	"preferred_days": [
-		"monday",
-		"tuesday",
-		"wednesday"
-	],
+	"preferred_days": ["monday", "tuesday", "wednesday"],
 	"max_consecutive_minutes": 180
 }
 ```
@@ -275,7 +254,7 @@ All times throughout the MCP server — in parameters, responses, and conflict r
 midnight** (integers, 0–1439).
 
 | Clock time | Minutes |
-|------------|---------|
+| ---------- | ------- |
 | `08:00`    | `480`   |
 | `09:30`    | `570`   |
 | `12:00`    | `720`   |
@@ -295,8 +274,8 @@ When you pass blackout windows to the optimizer or interpret conflict entries, c
 2. **Use Prompts for standard workflows.** The `build_schedule` and `explore_plan` prompts encode the correct call
    sequence. Invoke them at the start of a session rather than rediscovering the order from tool descriptions.
 
-3. **Search with filters, paginate large result sets.** `vse_search_courses` defaults to 20 results. Use `limit` (up to
-   100) and `offset` to page through. Combine `query`, `faculty_id`, `semester`, and `language` to narrow results before
+3. **Search with filters, paginate large result sets.** `vse_search_courses` defaults to 20 results. Use `limit` (up to 100) and `offset` to page through. Combine `query`, `faculty_id`, `semester`, and `language` to narrow results
+   before
    fetching full course objects.
 
 4. **Fetch a full course when you need slots.** `vse_search_courses` returns summary data. Call `vse_get_course` (or
@@ -306,12 +285,12 @@ When you pass blackout windows to the optimizer or interpret conflict entries, c
    `vse_check_timetable_conflicts`. The response lists every overlapping pair with the day and time range of the clash.
 
 6. **Use the optimizer for scheduling assistance.** Two modes:
-	- `mode: "build"` — given a fixed set of `course_ids`, find the best non-conflicting combination of units. Use when
-	  the user has decided which courses they want.
-	- `mode: "explore"` — start from `course_ids` and try adding each course in `explore_course_ids` one by one. Use
-	  when the user wants to know which additional courses can still fit.
-	  Lock specific units with `locked_unit_ids` to keep the user's existing choices fixed while the solver adjusts the
-	  rest.
+    - `mode: "build"` — given a fixed set of `course_ids`, find the best non-conflicting combination of units. Use when
+      the user has decided which courses they want.
+    - `mode: "explore"` — start from `course_ids` and try adding each course in `explore_course_ids` one by one. Use
+      when the user wants to know which additional courses can still fit.
+      Lock specific units with `locked_unit_ids` to keep the user's existing choices fixed while the solver adjusts the
+      rest.
 
 7. **Respect the optimizer rate limit.** `vse_optimize_timetable` is CPU-intensive and rate-limited to 10 req/min in
    production. Avoid calling it in a loop; cache results where possible.

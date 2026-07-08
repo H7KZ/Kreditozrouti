@@ -19,7 +19,7 @@ courses you want the solver to schedule.
 ### 2. Set constraints (all optional)
 
 | Constraint                | What it does                                                                                                               |
-|---------------------------|----------------------------------------------------------------------------------------------------------------------------|
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | **Min / max ECTS**        | Total credit range for the generated schedule                                                                              |
 | **Preferred days**        | Toggle the days you'd like classes on — the solver deprioritises other days but won't block them if there's no alternative |
 | **Blackout windows**      | Mark time ranges when you're unavailable (e.g. a part-time job or standing commitment)                                     |

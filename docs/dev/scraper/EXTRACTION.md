@@ -80,7 +80,7 @@ Priority order:
 Uses `getRowValueCaseInsensitive($, label)` to find the sibling `<td>` after a label cell:
 
 | Field                | Czech label                       |
-|----------------------|-----------------------------------|
+| -------------------- | --------------------------------- |
 | `ident`              | `Kód předmětu:`                   |
 | `title_cs`           | `Název česky:`                    |
 | `title_en`           | `Název anglicky:`                 |
@@ -133,7 +133,7 @@ Two strategies, tried in order:
 Nine text fields extracted from table rows (Czech source):
 
 | Field                      | Strategy                          | Czech label                 |
-|----------------------------|-----------------------------------|-----------------------------|
+| -------------------------- | --------------------------------- | --------------------------- |
 | `prerequisites`            | `getRowValueCaseInsensitive`      | `Omezení pro zápis:`        |
 | `recommended_programmes`   | `getRowValueCaseInsensitive`      | `Doporučené doplňky kurzu:` |
 | `required_work_experience` | `getRowValueCaseInsensitive`      | `Vyžadovaná praxe:`         |
@@ -347,7 +347,7 @@ MarkdownService.formatCheerioElementToMarkdown(element)
 **File:** `scraper/src/Utils/HTMLUtils.ts`
 
 | Function                               | Description                                                                                  |
-|----------------------------------------|----------------------------------------------------------------------------------------------|
+| -------------------------------------- | -------------------------------------------------------------------------------------------- |
 | `cleanText(text)`                      | Normalizes whitespace, replaces ` `/`&nbsp;` with spaces, trims                              |
 | `serializeValue(value)`                | Removes `\n\r\t`, collapses whitespace, trims; returns `null` for empty/null                 |
 | `normalizeUrl(href)`                   | Prefixes relative URLs with `baseDomain` or `catalogUrl` as appropriate                      |

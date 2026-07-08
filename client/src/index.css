@@ -1,4 +1,4 @@
-@import '../../packages/docs-theme/vars.css';
+@import '../../packages/style/vars.css';
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import './styles/insis.css';

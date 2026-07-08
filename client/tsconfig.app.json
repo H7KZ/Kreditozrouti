@@ -13,7 +13,6 @@
 			"@scraper/*": ["../scraper/src/*"],
 			"@kreditozrouti/core/*": ["../packages/core/src/*"],
 			"@kreditozrouti/types": ["../packages/types/src/index.ts"],
-			"@kreditozrouti/types/*": ["../packages/types/src/*"],
 			"kysely": ["./node_modules/kysely"]
 		}
 	}

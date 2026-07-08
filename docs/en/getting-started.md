@@ -16,12 +16,12 @@ course and the same number of credits is added to your account. You need **180 e
 required categories to graduate.
 
 > **20-credit-per-semester rule:** by the end of each semester your cumulative earned credits must equal at least
-`semester number × 20`. Fall behind and the shortfall is deducted from your remaining vouchers as a penalty.
+> `semester number × 20`. Fall behind and the shortfall is deducted from your remaining vouchers as a penalty.
 
 ### Course categories
 
 | Code    | Type                    | What it means                                                                      |
-|---------|-------------------------|------------------------------------------------------------------------------------|
+| ------- | ----------------------- | ---------------------------------------------------------------------------------- |
 | **oP**  | Mandatory               | You must complete every course on the list.                                        |
 | **oV**  | Programme elective      | Pick from a pool until you reach the required number of credits for this group.    |
 | **oJ1** | Language — 1st language | At FIS this is English — 12 credits total (4 courses × 3 cr). Varies by faculty.   |
@@ -31,7 +31,7 @@ required categories to graduate.
 ### Grading
 
 | Points | Grade   | Note                                      |
-|--------|---------|-------------------------------------------|
+| ------ | ------- | ----------------------------------------- |
 | 90–100 | 1 (A)   | —                                         |
 | 75–89  | 2 (B/C) | —                                         |
 | 60–74  | 3 (D/E) | —                                         |
@@ -59,7 +59,7 @@ required categories to graduate.
 VŠE teaching takes place on two separate campuses in Prague:
 
 | Campus                       | Address                         | Room codes     |
-|------------------------------|---------------------------------|----------------|
+| ---------------------------- | ------------------------------- | -------------- |
 | **Žižkov** (main campus)     | Náměstí W. Churchilla, Prague 3 | RB, NB, SB, IB |
 | **Jižní Město** (South City) | Jižní Město, Prague 4           | JM             |
 
@@ -106,7 +106,7 @@ available. First-come, first-served. In **round 3** you can also add courses you
 
 ## 4. Kreditožrouti Walkthrough
 
-Kreditožrouti helps you plan your timetable *before* enrollment opens in InSIS. It is a planning tool only — it does not
+Kreditožrouti helps you plan your timetable _before_ enrollment opens in InSIS. It is a planning tool only — it does not
 register you for courses. Actual enrollment happens in InSIS.
 
 ### Step 1: Select your faculty
@@ -166,7 +166,7 @@ Registration & Enrollment).
 ### Step 3: Add courses from course groups
 
 Scroll down to the course groups (oP, oV, etc.), expand a group with the arrow, tick the courses you want, then click *
-*Přidat označené předměty** (= Add selected courses).
+_Přidat označené předměty_* (= Add selected courses).
 
 - Green dot = registered correctly
 - Red dot = you still need to pick a time slot
@@ -198,7 +198,7 @@ different campuses.
 ## 6. Useful Links
 
 | Resource                                                                                               | Description                                                          |
-|--------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
 | [VŠE Exchange Office — For Students](https://exchange.vse.cz/for-students/)                            | Application, visa, dorms, orientation for incoming exchange students |
 | [ESN VSE Prague – Buddy Programme](https://esnvseprague.cz/buddy-programme/)                           | Get matched with a Czech student who can help you settle in          |
 | [InSIS](https://insis.vse.cz)                                                                          | VŠE student information system                                       |

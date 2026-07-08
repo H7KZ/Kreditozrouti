@@ -86,7 +86,7 @@ See [Mark as completed](/en/features/timetable#mark-as-completed) for how to mar
 
 ## Hide Conflicting Courses
 
-When enabled, hides courses where *all* available time slots overlap with your current timetable. Courses that still
+When enabled, hides courses where _all_ available time slots overlap with your current timetable. Courses that still
 have at least one non-conflicting slot remain visible so you can swap to a different time.
 
 ## Fits My Timetable

@@ -13,6 +13,7 @@ COPY ./client/ ./
 
 # Workspaces: make packages/core and packages/types source visible for cross-package type imports
 COPY ./packages/core/ /usr/src/packages/core/
+COPY ./packages/style/ /usr/src/packages/style/
 COPY ./packages/types/ /usr/src/packages/types/
 
 # Build with placeholder values replaced at container start via docker-entrypoint.sh

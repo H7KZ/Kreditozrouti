@@ -19,7 +19,7 @@ předměty, které chceš, aby solver naplánoval.
 ### 2. Nastav omezení (vše volitelné)
 
 | Omezení                         | Co dělá                                                                                                                     |
-|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | **Min / max ECTS**              | Celkový kreditový rozsah vygenerovaného rozvrhu                                                                             |
 | **Preferované dny**             | Přepni dny, ve které chceš mít výuku — solver upřednostňuje tyto dny, ale nezablokuje ostatní, pokud neexistuje alternativa |
 | **Blokovaná okna**              | Označ časové rozsahy, kdy nejsi k dispozici (např. brigáda nebo pravidelný závazek)                                         |

@@ -30,7 +30,7 @@ na konto. Pro získání bakalářského titulu potřebuješ nasbírat **180 kre
 ### Typy předmětů
 
 | Zkratka | Typ                         | Co to znamená                                                                                        |
-|---------|-----------------------------|------------------------------------------------------------------------------------------------------|
+| ------- | --------------------------- | ---------------------------------------------------------------------------------------------------- |
 | **oP**  | Povinný                     | Musíš splnit všechny předměty ze seznamu.                                                            |
 | **oV**  | Povinně volitelný           | Vyber si libovolné předměty z nabídky, dokud nedosáhneš požadovaného počtu kreditů.                  |
 | **oJ1** | Jazykový – 1. jazyk         | Na FIS je to angličtina — celkem 12 kreditů (4 předměty × 3 kr). Na jiných fakultách může být jinak. |
@@ -40,7 +40,7 @@ na konto. Pro získání bakalářského titulu potřebuješ nasbírat **180 kre
 ### Hodnocení
 
 | Body   | Známka | Poznámka                                           |
-|--------|--------|----------------------------------------------------|
+| ------ | ------ | -------------------------------------------------- |
 | 90–100 | **1**  | —                                                  |
 | 75–89  | **2**  | —                                                  |
 | 60–74  | **3**  | —                                                  |
@@ -67,7 +67,7 @@ na konto. Pro získání bakalářského titulu potřebuješ nasbírat **180 kre
 VŠE má výuku ve dvou oddělených areálech v Praze:
 
 | Areál                      | Adresa                         | Místnosti              |
-|----------------------------|--------------------------------|------------------------|
+| -------------------------- | ------------------------------ | ---------------------- |
 | **Žižkov** (hlavní kampus) | Náměstí W. Churchilla, Praha 3 | `RB`, `NB`, `SB`, `IB` |
 | **Jižní Město**            | Jižní Město, Praha 4           | `JM`                   |
 
@@ -201,7 +201,7 @@ InSIS zobrazuje rozvrh jako týdenní mřížku. JM v místnosti = Jižní Měst
 ## 6. Užitečné odkazy
 
 | Odkaz                                                                                                                                                         | Popis                                                |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | [InSIS](https://insis.vse.cz)                                                                                                                                 | Studijní informační systém VŠE                       |
 | [Průvodce prváka po InSISu](https://insis.vse.cz/help.pl?page=14728)                                                                                          | Oficiální nápověda k prvnímu přihlášení              |
 | [Jak na registrace předmětů](https://ci.vse.cz/sluzby/dalsi/insis/jak-na-registrace-predmetu/)                                                                | VŠE IT centrum – detailní průvodce zápisem           |

@@ -189,11 +189,11 @@ interface PaginationMeta {
 Types imported from `@shared/*` are used directly — no re-export wrappers:
 
 ```typescript
-import type {InSISDay, InSISSemester} from '@shared/domain/insis'
-import type {TimeSelection} from '@shared/domain/time'
-import type {CourseWithRelationsDTO, CourseUnitDTO, CourseUnitSlotDTO} from '@shared/http/responses'
-import type {CoursesFilter} from '@shared/http/courses'
-import type {FacetItem} from '@shared/http/facets'
+import type { InSISDay, InSISSemester } from '@shared/domain/insis'
+import type { TimeSelection } from '@shared/domain/time'
+import type { CourseWithRelationsDTO, CourseUnitDTO, CourseUnitSlotDTO } from '@shared/http/responses'
+import type { CoursesFilter } from '@shared/http/courses'
+import type { FacetItem } from '@shared/http/facets'
 ```
 
 API types consumed by the client come from `@api/Contracts`, not from `@api/Database/types` directly.
@@ -445,7 +445,7 @@ useSeoMeta({
 All Vite env vars must be prefixed with `VITE_`:
 
 | Variable                  | Default | Purpose                             |
-|---------------------------|---------|-------------------------------------|
+| ------------------------- | ------- | ----------------------------------- |
 | `VITE_API_URL`            | `/api`  | Axios baseURL                       |
 | `VITE_FARO_COLLECTOR_URL` | —       | Grafana Faro collector URL (opt-in) |
 
@@ -473,7 +473,7 @@ app.mount('#app')
 ### What is captured
 
 | Signal                       | Mechanism                                        |
-|------------------------------|--------------------------------------------------|
+| ---------------------------- | ------------------------------------------------ |
 | JS errors                    | `app.config.errorHandler`                        |
 | Unhandled promise rejections | `window.unhandledrejection` listener             |
 | Vue component errors         | forwarded through `app.config.errorHandler`      |

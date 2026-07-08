@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+## Style
+
+Do not use em dashes (--) in any file — use a plain hyphen (-) instead.
+
 ## Token Discipline
 
 **Planning sessions** — When asked to plan, design, or explore architecture:

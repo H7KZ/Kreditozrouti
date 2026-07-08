@@ -1,14 +1,4 @@
-﻿import type {
-	CourseFilter,
-	CourseUnitType,
-	Database,
-	Day,
-	InSISSemester,
-	MCPCourse,
-	MCPCourseAssessment,
-	MCPCourseUnit,
-	MCPCourseUnitSlot
-} from '@kreditozrouti/types'
+﻿import type { CourseFilter, Database, Day, InSISSemester, MCPCourse, MCPCourseAssessment, MCPCourseUnit, MCPCourseUnitSlot } from '@kreditozrouti/types'
 import type { Kysely } from 'kysely'
 import { sql } from 'kysely'
 import { getSlotType } from '../domain/insis'
@@ -102,7 +92,7 @@ export default class CourseService {
 		return {
 			id: row.id,
 			unit_id: row.unit_id,
-			type: getSlotType(row) as CourseUnitType | null,
+			type: getSlotType(row),
 			frequency: (row.frequency as MCPCourseUnitSlot['frequency']) ?? null,
 			date: row.date ?? null,
 			day: CourseService.normalizeDay(row.day),

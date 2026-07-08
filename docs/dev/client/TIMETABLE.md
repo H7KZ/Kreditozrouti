@@ -30,7 +30,7 @@ CourseStatus computed re-runs → all status-dependent UI updates
 All times are **minutes from midnight** (integers, 0–1439):
 
 | Time  | Minutes |
-|-------|---------|
+| ----- | ------- |
 | 07:30 | 450     |
 | 09:00 | 540     |
 | 10:30 | 630     |
@@ -199,9 +199,9 @@ column assignments. Each overlapping block gets a fractional width (e.g. 50% of 
 2. `mousemove` → `dragStore.updateDrag(day, time)` (snaps to 15-min intervals)
 3. `mouseup` → `dragStore.endDrag(x, y)` → shows `TimetableDragPopover`
 4. User confirms → `handleDragFilter()`:
-	- Adds time selection to `filtersStore.include_times`
-	- Calls `uiStore.switchToListView()`
-	- Calls `coursesStore.fetchCourses()`
+    - Adds time selection to `filtersStore.include_times`
+    - Calls `uiStore.switchToListView()`
+    - Calls `coursesStore.fetchCourses()`
 5. User cancels → `handleDragCancel()` → `dragStore.cancelDrag()`
 
 `DRAG_THRESHOLD = 20px` prevents accidental drags on click.
@@ -211,7 +211,7 @@ column assignments. Each overlapping block gets a fractional width (e.g. 50% of 
 ## Visual Treatment
 
 | Status            | Color                            | Location                                              |
-|-------------------|----------------------------------|-------------------------------------------------------|
+| ----------------- | -------------------------------- | ----------------------------------------------------- |
 | `conflict`        | Red ring / red badge             | `TimetableCourseBlock`, `UnitSelector`, `CourseTable` |
 | `campus-conflict` | Orange/amber ring / orange badge | Same                                                  |
 | `incomplete`      | Amber/yellow                     | Same                                                  |

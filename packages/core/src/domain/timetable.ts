@@ -2,11 +2,11 @@
 import { DayValues } from '@kreditozrouti/types'
 import { getDayFromDate } from './day.js'
 
-/** Minimum travel time in minutes required between the two VÅ E campuses. */
+/** Minimum travel time in minutes required between the two VŠE campuses. */
 export const CAMPUS_TRAVEL_MINUTES = 40
 
 /**
- * Determine which VÅ E campus a room location string belongs to.
+ * Determine which VŠE campus a room location string belongs to.
  */
 export function getCampus(location: string | null | undefined): Campus {
 	if (!location) return 'unknown'

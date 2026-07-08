@@ -5,11 +5,10 @@ import app from '@api/app'
 import { scraper } from '@api/bullmq'
 import { mysql, nodemailer, redis } from '@api/clients'
 import { closeCacheInvalidationSubscriber, initCacheInvalidationSubscriber } from '@api/clients/redisSubscriber'
-import Config, { CheckRequiredEnvironmentVariables, LoadConfig } from '@api/Config/Config'
+import Config from '@api/Config/Config'
 import { logger } from '@api/logger'
 import { SQLService } from '@api/Services/SQLService'
 
-LoadConfig()
 
 const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
@@ -33,7 +32,6 @@ if (cluster.isPrimary && numWorkers > 1) {
 
 async function startWorker(): Promise<void> {
 	try {
-		CheckRequiredEnvironmentVariables(Config)
 
 		await mysql.connection().execute(db => Promise.resolve(db))
 		logger.info('mysql.connected')

@@ -20,8 +20,7 @@
 			"@api/*": ["../api/src/*"],
 			"@scraper/*": ["../scraper/src/*"],
 			"@kreditozrouti/core/*": ["../packages/core/src/*"],
-			"@kreditozrouti/types": ["../packages/types/src/index.ts"],
-			"@kreditozrouti/types/*": ["../packages/types/src/*"]
+			"@kreditozrouti/types": ["../packages/types/src/index.ts"]
 		}
 	}
 }

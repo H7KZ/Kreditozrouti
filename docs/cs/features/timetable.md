@@ -10,7 +10,7 @@ description: Sestavení a správa týdenního rozvrhu.
 Přepínání mezi třemi způsoby zobrazení předmětů pomocí záložek v záhlaví:
 
 | Pohled              | Co vidíš                                                                                    |
-|---------------------|---------------------------------------------------------------------------------------------|
+| ------------------- | ------------------------------------------------------------------------------------------- |
 | **Seznam předmětů** | Seřaditelná tabulka — kód, název, fakulta, ECTS, způsob zakončení, přehled rozvrhu          |
 | **Můj rozvrh**      | Týdenní mřížka pondělí–pátek, 07:30–20:00 — vybrané předměty jako barevné bloky             |
 | **Optimalizátor**   | Generátor rozvrhů na základě koše — vyber předměty, nastav omezení, získej seřazené rozvrhy |
@@ -24,7 +24,7 @@ se příště, když záložku otevřeš.
 
 1. Kliknutím na libovolný řádek předmětu jej rozbal.
 2. Rozbalený řádek zobrazuje metadata předmětu (fakulta, ECTS, jazyk, kategorie), čipy předpokladů a sbalitelnou sekci *
-   *Sylabus** s cíli, výsledky učení, obsahem kurzu a literaturou. Pokud je jazyk rozhraní nastaven na angličtinu a
+   _Sylabus_* s cíli, výsledky učení, obsahem kurzu a literaturou. Pokud je jazyk rozhraní nastaven na angličtinu a
    anglický obsah je dostupný, zobrazí se anglická verze.
 3. Pod sylabem: všechny dostupné **typy výukových jednotek** (přednáška, cvičení, seminář) a jejich časové sloty.
 4. Kliknutím na slot jej přidáš do svého rozvrhu. Pokud už máš vybranou jednotku stejného typu pro tento předmět,
@@ -53,7 +53,7 @@ Každý předmět, který přidáš do rozvrhu, dostane stav. Stavový řádek v
 kliknutím na kategorii filtruj seznam předmětů pouze na tyto předměty.
 
 | Stav                  | Barva    | Význam                                                                                                                                              |
-|-----------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Vybrán**            | Modrá    | Všechny požadované typy jednotek zvoleny, žádné časové ani areálové konflikty                                                                       |
 | **Neúplný**           | Oranžová | Vybral/a jsi alespoň jeden typ jednotky, ale ne všechny požadované — např. přidal/a přednášku, ale ještě ne cvičení                                 |
 | **Areálový konflikt** | Oranžová | Žádné časové překrytí, ale přestávka mezi výukou na různých kampusech VŠE je kratší než 40 minut — nestačí na přejezd mezi Žižkovem a Jižním Městem |
@@ -92,7 +92,7 @@ Odstranění časového filtru: otevři sekci **Časové omezení** v postranní
 Porovnej až 5 různých alternativ rozvrhu bez ztráty práce. K výběru rozvrhu se dostaneš z pohledu **Můj rozvrh**.
 
 | Akce                | Co dělá                                                       |
-|---------------------|---------------------------------------------------------------|
+| ------------------- | ------------------------------------------------------------- |
 | **Uložit aktuální** | Uloží snímek tvého aktuálního rozvrhu s názvem, který zvolíš  |
 | **Duplikovat**      | Zkopíruje existující snímek, abys z něj mohl/a experimentovat |
 | **Přepnout**        | Načte uložený snímek jako pracovní rozvrh                     |
@@ -149,7 +149,7 @@ Pokud sylabus předmětu v InSISu uvádí předpoklady, rozbalený řádek před
 podle typu:
 
 | Označení                   | Význam                                                                | Klikatelné? |
-|----------------------------|-----------------------------------------------------------------------|-------------|
+| -------------------------- | --------------------------------------------------------------------- | ----------- |
 | **Požadované předpoklady** | Předměty, které musíš mít splněné před zápisem                        | Ano         |
 | **Nelze studovat po**      | Předměty, po jejichž splnění se již nemůžeš zapsat do tohoto předmětu | Ano         |
 | **Nelze studovat spolu**   | Předměty, které nelze absolvovat ve stejném semestru                  | Ne          |

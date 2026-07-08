@@ -58,8 +58,8 @@ await LoggerJobContext.run(
 )
 
 // In any job or service — accumulates fields without knowing the caller
-LoggerJobContext.add({course_id: 42, url: 'https://...'})
-LoggerJobContext.add({status: 'success', duration_ms: 1234})
+LoggerJobContext.add({ course_id: 42, url: 'https://...' })
+LoggerJobContext.add({ status: 'success', duration_ms: 1234 })
 
 // At the end of ScraperRequestHandler — emits one JSON line
 LoggerJobContext.log.info(LoggerJobContext.get())
@@ -172,7 +172,7 @@ This forces callers to handle both cases explicitly rather than wrapping every c
 **Three methods:**
 
 | Method               | Returns                    | Use case                                         |
-|----------------------|----------------------------|--------------------------------------------------|
+| -------------------- | -------------------------- | ------------------------------------------------ |
 | `get<T>(url)`        | `HttpResponse<T>`          | Single, important fetch (check `result.success`) |
 | `post<T>(url, data)` | `HttpResponse<T>`          | Search form submission                           |
 | `getSilent<T>(url)`  | `AxiosResponse<T> \| null` | Bulk fetch where failures are silently skipped   |

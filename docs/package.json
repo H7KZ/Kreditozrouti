@@ -6,9 +6,16 @@
 	"scripts": {
 		"dev": "vitepress dev",
 		"build": "vitepress build",
-		"preview": "vitepress preview"
+		"preview": "vitepress preview",
+		"lint": "eslint . --fix",
+		"format": "prettier --write ./"
 	},
 	"devDependencies": {
-		"vitepress": "^1.6.3"
+		"@vue/eslint-config-prettier": "^10.2.0",
+		"@vue/eslint-config-typescript": "^14.9.0",
+		"eslint": "^10.6.0",
+		"eslint-plugin-vue": "~10.9.2",
+		"prettier": "^3.9.4",
+		"vitepress": "^1.6.4"
 	}
 }

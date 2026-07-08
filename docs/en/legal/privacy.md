@@ -35,7 +35,7 @@ None of this constitutes personal data under GDPR in the context of this applica
 Kreditožrouti uses **Umami Analytics**, a self-hosted open-source analytics tool. It is privacy-preserving by design:
 
 | Property             | Detail                                                                       |
-|----------------------|------------------------------------------------------------------------------|
+| -------------------- | ---------------------------------------------------------------------------- |
 | Cookies              | Not used                                                                     |
 | IP addresses         | Collected by Umami but hashed before storage — never stored in readable form |
 | Personal identifiers | Not collected                                                                |

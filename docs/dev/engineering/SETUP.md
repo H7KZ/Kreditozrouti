@@ -3,7 +3,7 @@
 ## Prerequisites
 
 | Tool                    | Version       | Notes                                             |
-|-------------------------|---------------|---------------------------------------------------|
+| ----------------------- | ------------- | ------------------------------------------------- |
 | Node.js                 | 22.x+         | Use nvm or fnm for version management             |
 | Docker + Docker Compose | Latest stable | Required for MySQL, Redis, phpMyAdmin             |
 | Make                    | Any           | Optional — convenience wrapper around npm scripts |
@@ -90,7 +90,7 @@ make dev-scraper  # BullMQ worker (no port)
 ### 6. Access
 
 | Service    | URL                                            |
-|------------|------------------------------------------------|
+| ---------- | ---------------------------------------------- |
 | Client     | http://localhost:45173                         |
 | API        | http://localhost:40080                         |
 | phpMyAdmin | http://localhost:48080 (user: `kreditozrouti`) |

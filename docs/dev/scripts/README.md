@@ -8,7 +8,7 @@ Automated deployment scripts live in `deployment/` instead.
 ## Scripts
 
 | Script              | Purpose                                                                           | Requires Root |
-|---------------------|-----------------------------------------------------------------------------------|---------------|
+| ------------------- | --------------------------------------------------------------------------------- | ------------- |
 | `lib.sh`            | Shared utilities (logging, `validate_files`, `create_networks`, `create_volumes`) | No            |
 | `install-docker.sh` | Install Docker Engine on Ubuntu/Debian — run once on a fresh server               | Yes (`sudo`)  |
 | `backup.sh`         | MySQL dump via docker exec — run manually or via cron                             | No            |

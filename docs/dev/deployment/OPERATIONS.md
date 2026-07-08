@@ -32,7 +32,7 @@ Grafana alerting is provisioned from `deployment/monitoring/grafana/provisioning
 to the Discord contact point via the default notification policy.
 
 | Rule                    | Group          | Condition                                                   | Severity |
-|-------------------------|----------------|-------------------------------------------------------------|----------|
+| ----------------------- | -------------- | ----------------------------------------------------------- | -------- |
 | `container-down`        | infrastructure | Any scraped target unreachable for 1 min                    | critical |
 | `disk-usage-high`       | infrastructure | Disk usage above 80% for 5 min                              | warning  |
 | `memory-usage-high`     | infrastructure | Less than 10% memory available for 5 min                    | warning  |
@@ -189,7 +189,7 @@ Estimated RTO: 2–4 hours. RPO: 24 hours (daily backups).
 ### Routine schedule
 
 | Cadence   | Task                                                            |
-|-----------|-----------------------------------------------------------------|
+| --------- | --------------------------------------------------------------- |
 | Monthly   | Run `maintenance.sh`; verify backups; Docker cleanup            |
 | Quarterly | Rotate secrets; review Traefik access logs; update dependencies |
 

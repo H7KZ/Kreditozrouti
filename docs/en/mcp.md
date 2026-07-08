@@ -20,7 +20,7 @@ https://kreditozrouti.cz/mcp
 Once connected, your AI assistant has access to the following tools:
 
 | Tool                            | What it does                                                                                                                                                             |
-|---------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `vse_search_courses`            | Search courses by keyword, faculty, semester, or language of instruction. Returns summary data — call `vse_get_course` or read `vse://course/{id}` for full slot detail. |
 | `vse_get_course`                | Fetch a single course with all its timetable slots                                                                                                                       |
 | `vse_get_study_plan`            | Fetch a study plan with its full course list                                                                                                                             |
@@ -40,7 +40,7 @@ Resources are read-only data endpoints the host (Claude Desktop, Cursor, VS Code
 Unlike Tools, you do not need to invoke them as actions — the client can prefetch and display them.
 
 | URI                              | Description                                                                          |
-|----------------------------------|--------------------------------------------------------------------------------------|
+| -------------------------------- | ------------------------------------------------------------------------------------ |
 | `vse://faculties`                | All VŠE faculties with their IDs. Read this first to get valid faculty IDs.          |
 | `vse://study-plans`              | All study plans across all faculties.                                                |
 | `vse://study-plans/{faculty_id}` | Study plans for one faculty — replace `{faculty_id}` with e.g. `FIS`.                |
@@ -52,7 +52,7 @@ Prompts are workflow templates you can invoke directly from your AI client (they
 Desktop and Cursor).
 
 | Name             | Arguments                                      | What it does                                                                                      |
-|------------------|------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| ---------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `build_schedule` | `semester` (ZS or LS), `faculty_id` (optional) | Guides you through picking courses, checking conflicts, and optimising a schedule for a semester. |
 | `explore_plan`   | `faculty_id`                                   | Walks through the study plans for a faculty and summarises their courses.                         |
 
@@ -66,11 +66,11 @@ Claude Desktop supports remote MCP servers over SSE. Add the following entry to 
 
 ```json
 {
-  "mcpServers": {
-    "kreditozrouti": {
-      "url": "https://kreditozrouti.cz/mcp"
-    }
-  }
+	"mcpServers": {
+		"kreditozrouti": {
+			"url": "https://kreditozrouti.cz/mcp"
+		}
+	}
 }
 ```
 
@@ -82,11 +82,11 @@ Add to `.cursor/mcp.json` in your project root (or `~/.cursor/mcp.json` globally
 
 ```json
 {
-  "mcpServers": {
-    "kreditozrouti": {
-      "url": "https://kreditozrouti.cz/mcp"
-    }
-  }
+	"mcpServers": {
+		"kreditozrouti": {
+			"url": "https://kreditozrouti.cz/mcp"
+		}
+	}
 }
 ```
 
@@ -96,12 +96,12 @@ Add to `.vscode/mcp.json` in your workspace:
 
 ```json
 {
-  "servers": {
-    "kreditozrouti": {
-      "type": "http",
-      "url": "https://kreditozrouti.cz/mcp"
-    }
-  }
+	"servers": {
+		"kreditozrouti": {
+			"type": "http",
+			"url": "https://kreditozrouti.cz/mcp"
+		}
+	}
 }
 ```
 
@@ -112,7 +112,7 @@ Add to `.vscode/mcp.json` in your workspace:
 Search for courses using any combination of filters:
 
 | Parameter    | Type              | Description                                   |
-|--------------|-------------------|-----------------------------------------------|
+| ------------ | ----------------- | --------------------------------------------- |
 | `query`      | string (optional) | Free-text search across course name and ident |
 | `faculty_id` | string (optional) | Faculty code, e.g. `"FIS"`, `"FPH"`, `"FMV"`  |
 | `semester`   | string (optional) | `"ZS"` (winter), `"LS"` (summer), or `"Both"` |
@@ -140,13 +140,11 @@ Optional constraints:
 
 ```json
 {
-  "blackout_windows": [
-    { "day": "friday", "time_from": 0, "time_to": 1439 }
-  ],
-  "preferred_days": ["monday", "tuesday", "wednesday"],
-  "credit_min": 18,
-  "credit_max": 30,
-  "max_consecutive_minutes": 180
+	"blackout_windows": [{ "day": "friday", "time_from": 0, "time_to": 1439 }],
+	"preferred_days": ["monday", "tuesday", "wednesday"],
+	"credit_min": 18,
+	"credit_max": 30,
+	"max_consecutive_minutes": 180
 }
 ```
 

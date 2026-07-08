@@ -1,0 +1,89 @@
+# ==============================================================================
+# Workflow: Deploy MCP
+# Description: Builds and deploys the MCP server when mcp/ or packages/ changes.
+#              main → production | develop → development
+#
+# Trigger: push to main/develop with path filter, or manual dispatch
+# ==============================================================================
+
+name: Deploy MCP
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'mcp/**'
+      - 'packages/**'
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Image tag to deploy (skips build if set)'
+        required: false
+        type: string
+        default: ''
+      skip_build:
+        description: 'Skip build (image must already exist in registry)'
+        required: false
+        type: boolean
+        default: false
+      environment:
+        description: 'Target environment'
+        required: false
+        type: choice
+        options: [ production, development ]
+        default: production
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: deploy-mcp-${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build MCP Image
+    if: ${{ !inputs.skip_build && inputs.image_tag == '' }}
+    uses: ./.github/workflows/_build-service.yml
+    with:
+      service: mcp
+      float_tag: ${{ github.ref == 'refs/heads/main' && 'latest' || 'dev-latest' }}
+      cache_scope: mcp-${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+    secrets: inherit
+
+  resolve:
+    name: Resolve Image Prefix
+    runs-on: self-hosted
+    needs: [ build ]
+    if: ${{ always() && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
+    outputs:
+      image_prefix: ${{ steps.prefix.outputs.value }}
+    steps:
+      - name: Compute lowercase prefix
+        id: prefix
+        run: |
+          RAW="${{ needs.build.outputs.image_prefix || github.repository }}"
+          echo "value=${RAW,,}" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy MCP
+    needs: [ build, resolve ]
+    if: ${{ always() && (needs.build.result == 'success' || needs.build.result == 'skipped') && needs.resolve.result == 'success' }}
+    uses: ./.github/workflows/_deploy-service.yml
+    with:
+      service: mcp
+      environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'development') }}
+      project_name: ${{ (github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'prod') || github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+      image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build.outputs.image_tag }}
+      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+    secrets: inherit
+
+  cleanup:
+    name: Cleanup MCP package versions
+    needs: [ deploy ]
+    if: ${{ needs.deploy.result == 'success' }}
+    uses: ./.github/workflows/_cleanup-package.yml
+    with:
+      package-name: kreditozrouti/mcp
+    secrets: inherit

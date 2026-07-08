@@ -116,7 +116,7 @@ api/src/
 ## Path Aliases
 
 | Alias       | Resolves to   |
-|-------------|---------------|
+| ----------- | ------------- |
 | `@api/*`    | `./src/*`     |
 | `@shared/*` | `../shared/*` |
 

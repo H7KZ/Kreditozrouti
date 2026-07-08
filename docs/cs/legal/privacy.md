@@ -36,7 +36,7 @@ Kreditožrouti používá **Umami Analytics** — vlastní open-source analytick
 soukromí:
 
 | Vlastnost                  | Detail                                                                           |
-|----------------------------|----------------------------------------------------------------------------------|
+| -------------------------- | -------------------------------------------------------------------------------- |
 | Cookies                    | Nepoužívají se                                                                   |
 | IP adresy                  | Umami je sbírá, ale před uložením hashuje — nikdy se neukládají v čitelné podobě |
 | Osobní identifikátory      | Neshromažďovány                                                                  |

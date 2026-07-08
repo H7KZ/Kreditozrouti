@@ -5,7 +5,7 @@ The client documentation is split into focused files for easier navigation.
 ## Documents
 
 | File                                           | Contents                                                                                                                           |
-|------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | [client/README.md](client/README.md)           | Architecture overview, layers, pages, bootstrap sequence, filter flow, directory structure                                         |
 | [client/STORES.md](client/STORES.md)           | All Pinia stores: state shape, computed, actions, persistence, dependency graph                                                    |
 | [client/COMPOSABLES.md](client/COMPOSABLES.md) | All composables: pure transforms, store-reading, special (drag, refresh, status filter)                                            |

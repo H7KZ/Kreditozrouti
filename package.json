@@ -5,16 +5,23 @@
 	"workspaces": [
 		"api",
 		"client",
+		"docs",
 		"mcp",
 		"packages/core",
 		"packages/types",
 		"scraper"
 	],
+	"devDependencies": {
+		"concurrently": "^10.0.3",
+		"dotenv-cli": "^11.0.0"
+	},
 	"allowScripts": {
 		"vue-demi@0.14.10": true,
+		"msgpackr-extract@3.0.4": true,
+		"protobufjs@7.6.5": true,
 		"esbuild@0.25.12": true,
 		"esbuild@0.28.1": true,
-		"msgpackr-extract@3.0.4": true,
-		"protobufjs@7.6.4": true
+		"esbuild@0.27.7": true,
+		"esbuild@0.21.5": true
 	}
 }

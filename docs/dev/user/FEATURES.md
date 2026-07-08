@@ -24,7 +24,7 @@ A complete reference for every Kreditožrouti feature. Jump to the section you n
 Toggle between three ways to see your courses:
 
 | View             | What you see                                                                           |
-|------------------|----------------------------------------------------------------------------------------|
+| ---------------- | -------------------------------------------------------------------------------------- |
 | **Course List**  | Sortable table — course code, title, faculty, ECTS, completion mode, schedule summary  |
 | **My Timetable** | Weekly grid Monday–Friday, 07:30–20:00 — selected courses shown as coloured blocks     |
 | **Optimizer**    | Basket-based timetable generator — pick courses, set constraints, get ranked schedules |
@@ -39,7 +39,7 @@ starts fresh.
 The left sidebar contains all filters. Active filters are counted in the sidebar header. Each filter is collapsible.
 
 | Filter                       | What it does                                                                                                                                                                                                                                                          |
-|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Search**                   | Course name or code (e.g. `4IT101`)                                                                                                                                                                                                                                   |
 | **Syllabus search**          | Full-text search in course aims, learning outcomes, and syllabus text                                                                                                                                                                                                 |
 | **Faculties**                | Checkbox list; each faculty shows how many matching courses it has                                                                                                                                                                                                    |
@@ -69,7 +69,7 @@ Filters are combined — all active filters apply at once. Use **Clear all** in 
    English and English content is available for that course, the English version is shown.
 3. Below the syllabus: all available **unit types** (lecture, exercise, seminar) and their time slots
 4. Click a slot to add it to your timetable
-	- If you already have a unit of the same type selected for this course, it is swapped out automatically
+    - If you already have a unit of the same type selected for this course, it is swapped out automatically
 5. Repeat for each unit type the course requires (some courses have only lectures; others require both a lecture and an
    exercise)
 
@@ -96,11 +96,11 @@ instead of building your schedule course-by-course.
 1. **Add courses to your basket** — type a course code or name in the search box and click to add. Remove courses
    with the × button. The basket holds the courses you want the solver to schedule.
 2. **Set constraints** (all optional):
-	- **Min / max ECTS** — total credit range for the generated schedule
-	- **Preferred days** — toggle the days you'd like classes on; the solver deprioritises other days but doesn't
-	  block them if no alternative exists
-	- **Blackout windows** — mark time ranges when you're unavailable (e.g. a part-time job)
-	- **Max consecutive hours** — cap how many hours can be scheduled back-to-back
+    - **Min / max ECTS** — total credit range for the generated schedule
+    - **Preferred days** — toggle the days you'd like classes on; the solver deprioritises other days but doesn't
+      block them if no alternative exists
+    - **Blackout windows** — mark time ranges when you're unavailable (e.g. a part-time job)
+    - **Max consecutive hours** — cap how many hours can be scheduled back-to-back
 3. Click **Generate timetables**. Constraints are saved automatically and reused next time you open the tab.
 
 ### Results
@@ -125,7 +125,7 @@ Every course you add to the timetable gets a status. The status bar at the top o
 a category to filter the course list to just those courses.
 
 | Status              | Colour | Meaning                                                                                                                                            |
-|---------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Selected**        | Blue   | All required unit types chosen, no time or campus conflicts                                                                                        |
 | **Incomplete**      | Amber  | You've selected at least one unit type but not all required ones — e.g. added the lecture but not the exercise yet                                 |
 | **Campus conflict** | Orange | No time overlap, but the gap between classes on different VŠE campuses is under 40 minutes — not enough travel time between Žižkov and Jižní Město |
@@ -179,7 +179,7 @@ Compare up to 5 different timetable alternatives without losing your work.
 Access the schedule picker from the **My Timetable** view.
 
 | Action           | What it does                                                      |
-|------------------|-------------------------------------------------------------------|
+| ---------------- | ----------------------------------------------------------------- |
 | **Save current** | Saves a snapshot of your current timetable with a name you choose |
 | **Duplicate**    | Copies an existing snapshot so you can experiment from it         |
 | **Switch**       | Loads a saved snapshot as your working timetable                  |
@@ -195,7 +195,7 @@ When a course's InSIS syllabus lists prerequisites, the expanded course row show
 type:
 
 | Label                      | Meaning                                                        | Clickable? |
-|----------------------------|----------------------------------------------------------------|------------|
+| -------------------------- | -------------------------------------------------------------- | ---------- |
 | **Required prerequisites** | Courses you must have passed before enrolling                  | Yes        |
 | **Cannot study after**     | Courses after which you may no longer enrol in this course     | Yes        |
 | **Cannot study alongside** | Courses that cannot be taken in the same semester as this one  | No         |
@@ -233,7 +233,7 @@ again to toggle it off.
 Both settings are in the top bar and are saved in your browser.
 
 | Setting      | Options                                         |
-|--------------|-------------------------------------------------|
+| ------------ | ----------------------------------------------- |
 | **Language** | Czech (čeština) · English                       |
 | **Theme**    | Light · Dark · System (follows your OS setting) |
 

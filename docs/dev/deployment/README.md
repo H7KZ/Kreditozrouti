@@ -62,7 +62,7 @@ MySQL and Redis are never directly reachable from outside the host.
 ## Environments
 
 | Environment | Purpose           | Branch    | Domain            |
-|-------------|-------------------|-----------|-------------------|
+| ----------- | ----------------- | --------- | ----------------- |
 | Local       | Developer machine | —         | `localhost`       |
 | Development | VPS staging       | `develop` | `dev.example.com` |
 | Production  | VPS live          | `main`    | `example.com`     |

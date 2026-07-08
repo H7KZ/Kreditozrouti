@@ -10,7 +10,7 @@ auto-migrations, and no relationship tracking. You write SQL via a typed builder
 ### `insis_faculties`
 
 | Column                         | Type               | Notes                                                                                                                     |
-|--------------------------------|--------------------|---------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
 | `id`                           | `varchar` PK       | Faculty ident, e.g. `"FIS"`, `"NF"`                                                                                       |
 | `title`                        | `varchar` nullable | Full faculty name                                                                                                         |
 | `is_schedule_publicly_visible` | `boolean`          | Set by the faculty timetable scraper (`InSIS:FacultyTimetable` response job). Defaults to `false` until the scraper runs. |
@@ -22,7 +22,7 @@ auto-migrations, and no relationship tracking. You write SQL via a typed builder
 ### `insis_courses`
 
 | Column                             | Type                                | Notes                                                                         |
-|------------------------------------|-------------------------------------|-------------------------------------------------------------------------------|
+| ---------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------- |
 | `id`                               | `int` auto PK                       |                                                                               |
 | `faculty_id`                       | `varchar` FK → `insis_faculties.id` |                                                                               |
 | `url`                              | `varchar`                           | Full InSIS syllabus URL                                                       |
@@ -53,7 +53,7 @@ layer. This avoids a separate join table for what are effectively display string
 ### `insis_courses_assessments`
 
 | Column      | Type                    | Notes                    |
-|-------------|-------------------------|--------------------------|
+| ----------- | ----------------------- | ------------------------ |
 | `id`        | `int` auto PK           |                          |
 | `course_id` | `int` FK CASCADE DELETE |                          |
 | `method`    | `varchar` nullable      | e.g. `"Zkouška písemná"` |
@@ -66,7 +66,7 @@ layer. This avoids a separate join table for what are effectively display string
 One row per timetable unit (lecture group / seminar group).
 
 | Column      | Type                    | Notes                                  |
-|-------------|-------------------------|----------------------------------------|
+| ----------- | ----------------------- | -------------------------------------- |
 | `id`        | `int` auto PK           |                                        |
 | `course_id` | `int` FK CASCADE DELETE |                                        |
 | `type`      | `varchar` nullable      | `"lecture"`, `"exercise"`, `"seminar"` |
@@ -81,7 +81,7 @@ One row per timetable unit (lecture group / seminar group).
 One row per time slot within a unit.
 
 | Column      | Type                                     | Notes                              |
-|-------------|------------------------------------------|------------------------------------|
+| ----------- | ---------------------------------------- | ---------------------------------- |
 | `id`        | `int` auto PK                            |                                    |
 | `unit_id`   | `int` FK CASCADE DELETE                  |                                    |
 | `type`      | `enum('regular','irregular','one_time')` |                                    |
@@ -97,7 +97,7 @@ One row per time slot within a unit.
 ### `insis_study_plans`
 
 | Column          | Type                       | Notes                      |
-|-----------------|----------------------------|----------------------------|
+| --------------- | -------------------------- | -------------------------- |
 | `id`            | `int` auto PK              |                            |
 | `faculty_id`    | `varchar` FK               |                            |
 | `ident`         | `varchar`                  | Plan code, e.g. `"B-AIN1"` |
@@ -115,7 +115,7 @@ One row per time slot within a unit.
 Many-to-many junction: which courses appear in which study plans.
 
 | Column          | Type                    | Notes                             |
-|-----------------|-------------------------|-----------------------------------|
+| --------------- | ----------------------- | --------------------------------- |
 | `id`            | `int` auto PK           |                                   |
 | `study_plan_id` | `int` FK CASCADE DELETE |                                   |
 | `course_id`     | `int` FK nullable       | Null if course not yet scraped    |

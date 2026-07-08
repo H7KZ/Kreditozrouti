@@ -109,7 +109,7 @@ RequestHandler[]
 Returns two middleware functions (applied together on scrape routes):
 
 | Limiter        | Key           | Limit    | Window     |
-|----------------|---------------|----------|------------|
+| -------------- | ------------- | -------- | ---------- |
 | IP limiter     | `req.ip`      | 3 points | 10 minutes |
 | Course limiter | `course:{id}` | 1 point  | 10 minutes |
 
@@ -137,9 +137,9 @@ context so that async code can access the `request_id` and other fields via `Req
 4. Wrap the entire request handler (`next()`) in `RequestContext.run()` so async code in controllers/services can access
    the context
 5. On response `finish`:
-	- Merge any fields controllers added via `LoggerAPIContext.add()` (which delegates to `RequestContext.add()`)
-	- Emit the accumulated event as a Pino log line via `LoggerAPIContext.log`
-	- Track error metrics in Redis (hourly bucket + recent error list)
+    - Merge any fields controllers added via `LoggerAPIContext.add()` (which delegates to `RequestContext.add()`)
+    - Emit the accumulated event as a Pino log line via `LoggerAPIContext.log`
+    - Track error metrics in Redis (hourly bucket + recent error list)
 
 ```typescript
 res.locals.wideEvent = {
@@ -159,7 +159,7 @@ res.locals.wideEvent = {
 Log emission uses **level-based routing** (replaces the old `shouldLog` probability sampling):
 
 | Condition         | Level   | Rationale                       |
-|-------------------|---------|---------------------------------|
+| ----------------- | ------- | ------------------------------- |
 | status ≥ 500      | `error` | Server error — always emitted   |
 | status 4xx        | `warn`  | Client error — always emitted   |
 | duration > 1000ms | `info`  | Slow request — always emitted   |

@@ -10,7 +10,7 @@ description: Building and managing your weekly timetable.
 Switch between three ways to see your courses using the tabs in the header bar:
 
 | View             | What you see                                                                           |
-|------------------|----------------------------------------------------------------------------------------|
+| ---------------- | -------------------------------------------------------------------------------------- |
 | **Course List**  | Sortable table — course code, title, faculty, ECTS, completion mode, schedule summary  |
 | **My Timetable** | Weekly grid Monday–Friday, 07:30–20:00 — selected courses shown as coloured blocks     |
 | **Optimizer**    | Basket-based timetable generator — pick courses, set constraints, get ranked schedules |
@@ -24,7 +24,7 @@ next time you open the tab.
 
 1. Click any course row to expand it.
 2. The expanded row shows course metadata (faculty, ECTS, language, category), prerequisite chips, and a collapsible *
-   *Syllabus** section with aims, learning outcomes, course contents, and literature. When the UI language is set to
+   _Syllabus_* section with aims, learning outcomes, course contents, and literature. When the UI language is set to
    English and English content is available, the English version is shown.
 3. Below the syllabus: all available **unit types** (lecture, exercise, seminar) and their time slots.
 4. Click a slot to add it to your timetable. If you already have a unit of the same type selected for this course, it is
@@ -52,7 +52,7 @@ Every course you add to the timetable gets a status. The status bar at the top o
 a category to filter the course list to just those courses.
 
 | Status              | Colour | Meaning                                                                                                                                            |
-|---------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Selected**        | Blue   | All required unit types chosen, no time or campus conflicts                                                                                        |
 | **Incomplete**      | Amber  | You've selected at least one unit type but not all required ones — e.g. added the lecture but not the exercise yet                                 |
 | **Campus conflict** | Orange | No time overlap, but the gap between classes on different VŠE campuses is under 40 minutes — not enough travel time between Žižkov and Jižní Město |
@@ -82,7 +82,7 @@ Available in **My Timetable** view.
 This is the fastest way to answer "what's available Tuesday morning between 9 and 11?"
 
 To remove the time filter: open the **Time restriction** section in the filter sidebar and remove the entry, or click *
-*Clear all**.
+_Clear all_*.
 
 ---
 
@@ -92,7 +92,7 @@ Compare up to 5 different timetable alternatives without losing your work. Acces
 Timetable** view.
 
 | Action           | What it does                                                      |
-|------------------|-------------------------------------------------------------------|
+| ---------------- | ----------------------------------------------------------------- |
 | **Save current** | Saves a snapshot of your current timetable with a name you choose |
 | **Duplicate**    | Copies an existing snapshot so you can experiment from it         |
 | **Switch**       | Loads a saved snapshot as your working timetable                  |
@@ -148,7 +148,7 @@ When a course's InSIS syllabus lists prerequisites, the expanded course row show
 type:
 
 | Label                      | Meaning                                                        | Clickable? |
-|----------------------------|----------------------------------------------------------------|------------|
+| -------------------------- | -------------------------------------------------------------- | ---------- |
 | **Required prerequisites** | Courses you must have passed before enrolling                  | Yes        |
 | **Cannot study after**     | Courses after which you may no longer enrol in this course     | Yes        |
 | **Cannot study alongside** | Courses that cannot be taken in the same semester as this one  | No         |

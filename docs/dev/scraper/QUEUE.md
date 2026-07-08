@@ -35,7 +35,7 @@ which side creates a `Queue` (producer) vs a `Worker` (consumer).
 ## Queue Names
 
 | Constant               | Queue name         | Direction     |
-|------------------------|--------------------|---------------|
+| ---------------------- | ------------------ | ------------- |
 | `ScraperRequestQueue`  | `scraper:request`  | API → Scraper |
 | `ScraperResponseQueue` | `scraper:response` | Scraper → API |
 
@@ -46,7 +46,7 @@ which side creates a `Queue` (producer) vs a `Worker` (consumer).
 ```typescript
 new Worker(ScraperRequestQueue, handler, {
 	concurrency: 1,
-	limiter: {max: 10, duration: 1000}
+	limiter: { max: 10, duration: 1000 }
 })
 ```
 
@@ -137,7 +137,7 @@ BullMQ's built-in deduplication prevents the same logical job from being queued 
 scraper uses it to avoid re-scraping courses that are already queued.
 
 | Job                                  | Dedup key                                   | TTL        |
-|--------------------------------------|---------------------------------------------|------------|
+| ------------------------------------ | ------------------------------------------- | ---------- |
 | `InSIS:Catalog` (manual run)         | `InSIS:Catalog:ManualRun`                   | 30 seconds |
 | `InSIS:StudyPlans` (manual run)      | `InSIS:StudyPlans:ManualRun`                | 30 seconds |
 | `InSIS:Course` (from catalog)        | `InSIS:Course:{courseId}`                   | 5 minutes  |
@@ -219,7 +219,7 @@ this class.
 ### Response queue (Scraper → API)
 
 | Method                         | Queue                | Job name                     | Payload                                        |
-|--------------------------------|----------------------|------------------------------|------------------------------------------------|
+| ------------------------------ | -------------------- | ---------------------------- | ---------------------------------------------- |
 | `addCatalogResponse(urls)`     | ScraperResponseQueue | `InSIS Catalog Response`     | `{ type: 'InSIS:Catalog', catalog: { urls } }` |
 | `addCourseResponse(course)`    | ScraperResponseQueue | `InSIS Course Response`      | `{ type: 'InSIS:Course', course }`             |
 | `addStudyPlanResponse(plan)`   | ScraperResponseQueue | `InSIS Study Plan Response`  | `{ type: 'InSIS:StudyPlan', plan }`            |
@@ -228,7 +228,7 @@ this class.
 ### Request queue (enqueue more work)
 
 | Method                                      | Queue               | Dedup key                  | Notes                         |
-|---------------------------------------------|---------------------|----------------------------|-------------------------------|
+| ------------------------------------------- | ------------------- | -------------------------- | ----------------------------- |
 | `queueCourseRequests(courses)`              | ScraperRequestQueue | `InSIS:Course:{courseId}`  | Uses `addBulk` for efficiency |
 | `queueStudyPlanRequests(urls, extractIdFn)` | ScraperRequestQueue | `InSIS:StudyPlan:{planId}` | Uses `runWithConcurrency(20)` |
 
