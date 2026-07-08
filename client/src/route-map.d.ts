@@ -8,13 +8,15 @@
 // Make sure to add this file to your tsconfig.json file as an "includes" or "files" entry.
 
 import type {
-	ParamValue,
-	ParamValueOneOrMore,
-	ParamValueZeroOrMore,
-	ParamValueZeroOrOne,
-	RouteRecordInfo
+  RouteRecordInfo,
+  ParamValue,
+  ParamValueOneOrMore,
+  ParamValueZeroOrMore,
+  ParamValueZeroOrOne,
 } from 'vue-router'
-import type { _ExtractParamParserType } from 'vue-router/experimental'
+import type {
+  _ExtractParamParserType,
+} from 'vue-router/experimental'
 
 declare module 'vue-router' {
   interface TypesConfig {
@@ -62,41 +64,6 @@ declare module 'vue-router/auto-routes' {
       '/courses',
       Record<never, never>,
       Record<never, never>,
-      | never
-    >,
-    '/guide/': RouteRecordInfo<
-      '/guide/',
-      '/guide',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/guide/cs': RouteRecordInfo<
-      '/guide/cs',
-      '/guide/cs',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/guide/en': RouteRecordInfo<
-      '/guide/en',
-      '/guide/en',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/legal/[locale]/[slug]': RouteRecordInfo<
-      '/legal/[locale]/[slug]',
-      '/legal/:locale/:slug',
-      { locale: ParamValue<true>, slug: ParamValue<true> },
-      { locale: ParamValue<false>, slug: ParamValue<false> },
-      | never
-    >,
-    '/legal/[slug]': RouteRecordInfo<
-      '/legal/[slug]',
-      '/legal/:slug',
-      { slug: ParamValue<true> },
-      { slug: ParamValue<false> },
       | never
     >,
     '/s/[id]': RouteRecordInfo<
@@ -158,46 +125,6 @@ declare module 'vue-router/auto-routes' {
         | never
       pathParamNames:
         | never
-    }
-    'src/pages/guide/index.vue': {
-      routes:
-        | '/guide/'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
-    'src/pages/guide/cs.vue': {
-      routes:
-        | '/guide/cs'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
-    'src/pages/guide/en.vue': {
-      routes:
-        | '/guide/en'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
-    'src/pages/legal/[locale]/[slug].vue': {
-      routes:
-        | '/legal/[locale]/[slug]'
-      views:
-        | never
-      pathParamNames:
-        | 'slug'
-    }
-    'src/pages/legal/[slug].vue': {
-      routes:
-        | '/legal/[slug]'
-      views:
-        | never
-      pathParamNames:
-        | 'slug'
     }
     'src/pages/s/[id].vue': {
       routes:

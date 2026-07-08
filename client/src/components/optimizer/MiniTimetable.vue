@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { SelectedCourseUnitDTO } from '@shared/http/optimize'
-import type { Day } from '@shared/domain/constants'
+import type { Day, SelectedCourseUnitDTO } from '@kreditozrouti/types'
 import { WEEKDAYS } from '@client/constants/timetable'
 
 const props = defineProps<{

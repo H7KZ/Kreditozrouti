@@ -11,9 +11,10 @@ WORKDIR /usr/src/api
 
 COPY ./api/ ./
 
-# Workspaces: make scraper and shared source visible for cross-package type imports
+# Workspaces: make scraper and core source visible for cross-package type imports
 COPY ./scraper/src/ /usr/src/scraper/src/
-COPY ./shared/ /usr/src/shared/
+COPY ./packages/core/ /usr/src/packages/core/
+COPY ./packages/types/ /usr/src/packages/types/
 RUN mkdir -p /usr/src/scraper/node_modules && \
     ln -s /usr/src/node_modules/* /usr/src/scraper/node_modules/ || true
 

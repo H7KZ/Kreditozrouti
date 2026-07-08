@@ -11,13 +11,10 @@ WORKDIR /usr/src/client
 
 COPY ./client/ ./
 
-# Workspaces: make api/scraper/shared source visible for cross-package type imports
-COPY ./api/src/ /usr/src/api/src/
-COPY ./scraper/src/ /usr/src/scraper/src/
-COPY ./shared/ /usr/src/shared/
-RUN mkdir -p /usr/src/api/node_modules /usr/src/scraper/node_modules && \
-    ln -s /usr/src/node_modules/* /usr/src/api/node_modules/ || true && \
-    ln -s /usr/src/node_modules/* /usr/src/scraper/node_modules/ || true
+# Workspaces: make packages/core and packages/types source visible for cross-package type imports
+COPY ./packages/core/ /usr/src/packages/core/
+COPY ./packages/style/ /usr/src/packages/style/
+COPY ./packages/types/ /usr/src/packages/types/
 
 # Build with placeholder values replaced at container start via docker-entrypoint.sh
 ENV VITE_API_URL="__VITE_API_URL_PLACEHOLDER__"

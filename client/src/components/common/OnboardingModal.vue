@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import IconX from '~icons/lucide/x'
 
@@ -34,9 +33,9 @@ function dismiss() {
 					{{ t('guide.onboardingModal.body') }}
 				</p>
 				<div class="flex flex-col gap-2 sm:flex-row-reverse">
-					<RouterLink to="/guide/en" class="insis-btn-primary text-center text-sm" @click="dismiss">
+					<a href="https://kreditozrouti.cz/docs/en/getting-started" class="insis-btn-primary text-center text-sm" @click="dismiss">
 						{{ t('guide.onboardingModal.readGuide') }}
-					</RouterLink>
+					</a>
 					<button type="button" class="insis-btn-secondary text-sm" @click="dismiss">
 						{{ t('guide.onboardingModal.dismiss') }}
 					</button>

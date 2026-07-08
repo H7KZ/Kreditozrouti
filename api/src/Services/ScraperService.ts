@@ -1,5 +1,5 @@
-import type { InSISSemester } from '@shared/domain/insis'
-import { getPeriodsForLastYears, getUpcomingPeriod } from '@shared/domain/period'
+import type { InSISSemester } from '@kreditozrouti/types'
+import { getPeriodsForLastYears, getUpcomingPeriod } from '@kreditozrouti/core/domain'
 import { scraper } from '@api/bullmq'
 import { mysql } from '@api/clients'
 import { CourseTable, StudyPlanCourseIdentTable } from '@api/Database/types'

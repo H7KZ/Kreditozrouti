@@ -6,7 +6,7 @@ import type {
 	ScraperInSISCourseTimetableSlot,
 	ScraperInSISCourseTimetableUnit,
 	ScraperInSISFaculty
-} from '@shared/queue/insis'
+} from '@kreditozrouti/types'
 import type { CheerioAPI } from 'cheerio'
 import * as cheerio from 'cheerio'
 import MarkdownService from '@scraper/Services/MarkdownService'

@@ -11,8 +11,9 @@ WORKDIR /usr/src/scraper
 
 COPY ./scraper/ ./
 
-# Workspaces: make shared source visible for cross-package type imports
-COPY ./shared/ /usr/src/shared/
+# Workspaces: make packages/core and packages/types source visible for cross-package type imports
+COPY ./packages/core/ /usr/src/packages/core/
+COPY ./packages/types/ /usr/src/packages/types/
 
 RUN npm run build && cd /usr/src && npm prune --omit=dev -w scraper
 

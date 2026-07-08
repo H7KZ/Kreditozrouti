@@ -1,5 +1,4 @@
-﻿import type { Day } from '@shared/domain/constants'
-import type { CourseUnitSlotDTO } from '@shared/http/responses'
+import type { CourseUnitSlotDTO, Day } from '@kreditozrouti/types'
 import { CourseUnitWithSlots } from '@client/types'
 import { getSlotType } from '@client/utils/course'
 import { compareDateStrings, getDayIndex, getSlotDay } from '@client/utils/day.ts'

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CourseUnitType, SelectedCourseUnit } from '@client/types'
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
+import type { CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCourseLabels, useTimeUtils } from '@client/composables'

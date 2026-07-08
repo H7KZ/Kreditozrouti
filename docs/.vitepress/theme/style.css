@@ -1,0 +1,143 @@
+@import '../../../packages/style/vars.css';
+
+/* Map VitePress CSS variables to --insis-* tokens */
+:root {
+	/* Brand */
+	--vp-c-brand-1: var(--insis-blue);
+	--vp-c-brand-2: var(--insis-blue-hover);
+	--vp-c-brand-3: var(--insis-blue-dark);
+	--vp-c-brand-soft: color-mix(in srgb, var(--insis-blue) 14%, transparent);
+
+	/* Backgrounds */
+	--vp-c-bg: var(--insis-bg);
+	--vp-c-bg-alt: var(--insis-surface);
+	--vp-c-bg-elv: var(--insis-surface-2);
+	--vp-c-bg-soft: var(--insis-surface);
+
+	/* Text */
+	--vp-c-text-1: var(--insis-text);
+	--vp-c-text-2: var(--insis-text-2);
+	--vp-c-text-3: var(--insis-text-3);
+
+	/* Borders */
+	--vp-c-divider: var(--insis-border);
+	--vp-c-border: var(--insis-border);
+	--vp-c-gutter: var(--insis-border);
+
+	/* Semantic colors */
+	--vp-c-green-1: var(--insis-success);
+	--vp-c-yellow-1: var(--insis-warning);
+	--vp-c-red-1: var(--insis-danger);
+	--vp-c-indigo-1: var(--insis-info);
+
+	/* Fonts */
+	--vp-font-family-base: var(--insis-font-sans);
+	--vp-font-family-mono: var(--insis-font-mono);
+
+	--vp-layout-top-height: 0px;
+
+	/* Hero brand button */
+	--vp-button-brand-border: transparent;
+	--vp-button-brand-text: #ffffff;
+	--vp-button-brand-bg: var(--insis-blue);
+	--vp-button-brand-hover-border: transparent;
+	--vp-button-brand-hover-text: #ffffff;
+	--vp-button-brand-hover-bg: var(--insis-blue-hover);
+	--vp-button-brand-active-border: transparent;
+	--vp-button-brand-active-text: #ffffff;
+	--vp-button-brand-active-bg: var(--insis-blue-dark);
+
+	/* Hero alt button */
+	--vp-button-alt-border: var(--insis-border);
+	--vp-button-alt-text: var(--insis-text);
+	--vp-button-alt-bg: var(--insis-surface);
+	--vp-button-alt-hover-border: var(--insis-border-mid);
+	--vp-button-alt-hover-text: var(--insis-text);
+	--vp-button-alt-hover-bg: var(--insis-surface-2);
+	--vp-button-alt-active-border: var(--insis-border-mid);
+	--vp-button-alt-active-text: var(--insis-text);
+	--vp-button-alt-active-bg: var(--insis-surface-2);
+}
+
+/* Navbar CTA — "Open app" / "Spustit aplikaci" pill button */
+/* ponytail: selector uses VitePress internal class names; recheck on VitePress major upgrades */
+.VPNavBar .VPNavBarMenu a[href^='https://kreditozrouti.cz'] {
+	background: var(--insis-blue);
+	color: #fff !important;
+	padding: 4px 12px;
+	border-radius: 99px;
+	font-weight: 500;
+	transition: background 0.15s;
+	text-decoration: none !important;
+}
+
+.VPNavBar .VPNavBarMenu a[href^='https://kreditozrouti.cz']:hover {
+	background: var(--insis-blue-hover);
+}
+
+/* Typography scale — docs reading comfort */
+:root {
+	--vp-font-size-base: 1rem;
+	--vp-font-size-sm: 0.875rem;
+	--vp-line-height-base: 1.7;
+}
+
+.vp-doc h1 {
+	font-size: 1.875rem;
+}
+
+.vp-doc h2 {
+	font-size: 1.375rem;
+	border-top: 1px solid var(--insis-border);
+	padding-top: 1.5rem;
+}
+
+.vp-doc h3 {
+	font-size: 1.125rem;
+}
+
+/* In-content links — never fall back to VitePress defaults */
+.vp-doc a {
+	color: var(--insis-link);
+}
+
+.vp-doc a:hover {
+	color: var(--insis-link-hover);
+}
+
+.vp-doc a:visited {
+	color: var(--insis-link-visited);
+}
+
+/* Code block background — light mode coherence */
+.vp-doc div[class*='language-'] {
+	background: var(--insis-surface) !important;
+}
+
+/* Feature card hover — subtle brand border */
+.VPFeature:hover {
+	border-color: var(--insis-blue-light) !important;
+	box-shadow: var(--insis-shadow-sm);
+}
+
+/* Sidebar — active item brand indicator */
+.VPSidebarItem.is-active > .item .link {
+	color: var(--insis-blue);
+	font-weight: 500;
+}
+
+.VPSidebarItem.is-active > .item {
+	border-left: 2px solid var(--insis-blue);
+	padding-left: calc(var(--vp-sidebar-item-padding-left, 16px) - 2px);
+	background: var(--insis-blue-subtle);
+	border-radius: 0 var(--insis-radius-md) var(--insis-radius-md) 0;
+}
+
+/* Sidebar — section headers */
+.VPSidebarItem.level-0 > .item .text {
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--insis-text-3);
+}

@@ -1,28 +1,14 @@
 import path from 'path'
 import dotenv from 'dotenv'
 
-// Attempt to load .env files from distribution, root, or package levels
-export function LoadConfig() {
-	try {
-		dotenv.config({
-			path: [path.resolve(process.cwd(), '../../../../.env'), path.resolve(process.cwd(), '../.env'), path.resolve(process.cwd(), '.env')]
-		})
-	} catch {
-		console.warn('No .env file found')
-	}
+try {
+	dotenv.config({
+		path: [path.resolve(process.cwd(), '../../../../.env'), path.resolve(process.cwd(), '../.env'), path.resolve(process.cwd(), '.env')]
+	})
+} catch {
+	console.warn('No .env file found')
 }
 
-export function CheckRequiredEnvironmentVariables(config: Config) {
-	const required = [config.redis.uri, config.mysql.uri]
-
-	if (required.some(variable => !variable || variable.length === 0)) {
-		throw new Error('One or more required environment variables are missing or empty.')
-	}
-}
-
-/**
- * Application configuration interface.
- */
 interface Config {
 	/** Current runtime environment (e.g., 'development', 'production'). */
 	env: string

@@ -1,6 +1,5 @@
-import type { ScraperInSISStudyPlans } from '@shared/queue/insis'
-import type { ScraperInSISStudyPlansRequestJob } from '@shared/queue/jobs'
-import { extractSemester, extractYear } from '@shared/utils/insis'
+import type { ScraperInSISStudyPlans, ScraperInSISStudyPlansRequestJob } from '@kreditozrouti/types'
+import { extractSemester, extractYear } from '@kreditozrouti/core/utils'
 import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'

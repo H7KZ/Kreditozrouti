@@ -1,4 +1,4 @@
-import type { OptimizeRequest } from '@shared/http/optimize'
+import type { OptimizeRequest } from '@kreditozrouti/types'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'

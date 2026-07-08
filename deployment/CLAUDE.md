@@ -1,6 +1,6 @@
 # Deployment — CLAUDE.md
 
-> Full reference: [docs/deployment/](../docs/deployment/README.md)
+> Full reference: [docs/dev/deployment/](../docs/dev/deployment/README.md)
 
 ---
 
@@ -93,10 +93,10 @@ working directory doesn't matter; only the script's own location does.
 
 ## Key Docs
 
-| Topic                                          | Doc                                                       |
-|------------------------------------------------|-----------------------------------------------------------|
-| Docker multi-stage builds, GHCR registry       | [DOCKER.md](../docs/deployment/DOCKER.md)                 |
-| GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                     |
-| Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md) |
-| Monitoring, backups, security, troubleshooting | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)         |
-| Observability stack — full pipeline reference  | [MONITORING.md](../docs/deployment/MONITORING.md)         |
+| Topic                                          | Doc                                                           |
+|------------------------------------------------|---------------------------------------------------------------|
+| Docker multi-stage builds, GHCR registry       | [DOCKER.md](../docs/dev/deployment/DOCKER.md)                 |
+| GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/dev/deployment/CICD.md)                     |
+| Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/dev/deployment/INFRASTRUCTURE.md) |
+| Monitoring, backups, security, troubleshooting | [OPERATIONS.md](../docs/dev/deployment/OPERATIONS.md)         |
+| Observability stack — full pipeline reference  | [MONITORING.md](../docs/dev/deployment/MONITORING.md)         |

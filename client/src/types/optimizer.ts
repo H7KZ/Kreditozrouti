@@ -1,4 +1,4 @@
-import type { OptimizerCandidateDTO, RemovalCandidateDTO, SolverConstraints } from '@shared/http/optimize'
+import type { OptimizerCandidateDTO, RemovalCandidateDTO, SolverConstraints } from '@kreditozrouti/types'
 
 export type OptimizerState = 'setup' | 'generating' | 'results'
 

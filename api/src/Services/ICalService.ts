@@ -1,5 +1,5 @@
-import type { ICalConfig, ICalUnit } from '@shared/http/ical'
-import { DAY_ICAL_MAP } from '@shared/domain/constants'
+import type { ICalConfig, ICalUnit } from '@kreditozrouti/types'
+import { DAY_ICAL_MAP } from '@kreditozrouti/core/domain'
 
 function pad(n: number): string {
 	return String(n).padStart(2, '0')

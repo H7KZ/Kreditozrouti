@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import IconExternalLink from '~icons/lucide/external-link'
@@ -40,13 +40,13 @@ const appVersion = APP_VERSION
 					</h3>
 					<ul class="space-y-2 text-sm">
 						<li>
-							<RouterLink
-								to="/guide"
+							<a
+								href="https://kreditozrouti.cz/docs/en/getting-started"
 								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 							>
 								<IconBookOpen class="h-4 w-4 shrink-0" aria-hidden="true" />
 								{{ t('footer.links.guide') }}
-							</RouterLink>
+							</a>
 						</li>
 						<li>
 							<RouterLink
@@ -58,13 +58,13 @@ const appVersion = APP_VERSION
 							</RouterLink>
 						</li>
 						<li>
-							<RouterLink
-								to="/legal/compliance"
+							<a
+								href="https://kreditozrouti.cz/docs/en/legal/privacy"
 								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 							>
 								<IconFileText class="h-4 w-4 shrink-0" aria-hidden="true" />
 								{{ t('footer.links.compliance') }}
-							</RouterLink>
+							</a>
 						</li>
 						<li>
 							<a

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { SolverConstraints } from '@shared/http/optimize'
-import type { Day } from '@shared/domain/constants'
+import type { Day, SolverConstraints } from '@kreditozrouti/types'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { WEEKDAYS } from '@client/constants/timetable'

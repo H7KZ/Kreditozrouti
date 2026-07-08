@@ -1,6 +1,5 @@
-﻿<script setup lang="ts">
-import type { Day } from '@shared/domain/constants'
-import type { TimeSelection } from '@shared/domain/time'
+<script setup lang="ts">
+import type { Day, TimeSelection } from '@kreditozrouti/types'
 import { computed, ref, watch } from 'vue'
 import { useTimeUtils } from '@client/composables'
 import { WEEKDAYS } from '@client/constants/timetable'

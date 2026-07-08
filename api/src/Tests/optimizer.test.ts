@@ -1,9 +1,7 @@
-import type { Day } from '@shared/domain/constants'
-import type { CourseUnitType } from '@shared/domain/insis'
-import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '@shared/domain/optimizer'
-import type { SolverConstraints } from '@shared/http/optimize'
+import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '@kreditozrouti/core/domain'
+import type { CourseUnitType, Day, SolverConstraints } from '@kreditozrouti/types'
+import { DEFAULT_WEIGHTS, diversityFilter, scoreCandidate, solveWithDeadline } from '@kreditozrouti/core/domain'
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_WEIGHTS, diversityFilter, scoreCandidate, solveWithDeadline } from '@shared/domain/optimizer'
 
 function slot(overrides: Partial<SolverSlotCandidate> = {}): SolverSlotCandidate {
 	return {

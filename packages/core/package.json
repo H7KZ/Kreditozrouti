@@ -1,0 +1,67 @@
+{
+	"name": "@kreditozrouti/core",
+	"private": true,
+	"version": "1.0.0",
+	"type": "module",
+	"exports": {
+		"./domain": {
+			"import": "./dist/domain/index.js",
+			"types": "./dist/domain/index.d.ts"
+		},
+		"./services/CourseService": {
+			"import": "./dist/services/CourseService.js",
+			"types": "./dist/services/CourseService.d.ts"
+		},
+		"./services/FacultyService": {
+			"import": "./dist/services/FacultyService.js",
+			"types": "./dist/services/FacultyService.d.ts"
+		},
+		"./services/StudyPlanService": {
+			"import": "./dist/services/StudyPlanService.js",
+			"types": "./dist/services/StudyPlanService.d.ts"
+		},
+		"./services/OptimizerService": {
+			"import": "./dist/services/OptimizerService.js",
+			"types": "./dist/services/OptimizerService.d.ts"
+		},
+		"./http": {
+			"import": "./dist/http/index.js",
+			"types": "./dist/http/index.d.ts"
+		},
+		"./queue": {
+			"import": "./dist/queue/index.js",
+			"types": "./dist/queue/index.d.ts"
+		},
+		"./utils": {
+			"import": "./dist/utils/index.js",
+			"types": "./dist/utils/index.d.ts"
+		}
+	},
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"type-check": "tsc --noEmit",
+		"lint": "eslint src",
+		"lint:fix": "eslint src --fix",
+		"format": "prettier --write src"
+	},
+	"dependencies": {
+		"@kreditozrouti/types": "*",
+		"kysely": "^0.29.2"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@ianvs/prettier-plugin-sort-imports": "^4.7.1",
+		"@types/node": "^26.1.0",
+		"eslint": "^10.6.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-promise": "^7.3.0",
+		"eslint-plugin-regexp": "^3.1.1",
+		"eslint-plugin-unicorn": "^70.0.0",
+		"globals": "^17.7.0",
+		"prettier": "^3.9.4",
+		"tsup": "^8.5.1",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.62.1"
+	}
+}

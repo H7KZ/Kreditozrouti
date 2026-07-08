@@ -1,4 +1,4 @@
-import type { FacetItem } from '@shared/http/facets'
+import type { FacetItem } from '@kreditozrouti/types'
 import { mysql } from '@api/clients'
 import { StudyPlansFilter } from '@api/Controllers/StudyPlans/StudyPlansController'
 import { ExcludeMethods, StudyPlan, StudyPlanTable } from '@api/Database/types'

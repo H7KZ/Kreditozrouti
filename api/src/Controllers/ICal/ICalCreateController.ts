@@ -1,9 +1,8 @@
 import { randomBytes } from 'crypto'
-import type { ICalCreateResponse } from '@shared/http/ical'
+import type { ICalCreateResponse } from '@kreditozrouti/types'
+import { CourseUnitTypeValues, DayValues } from '@kreditozrouti/types'
 import { Request, Response } from 'express'
 import * as z from 'zod'
-import { DayValues } from '@shared/domain/constants'
-import { CourseUnitTypeValues } from '@shared/domain/insis'
 import { redis } from '@api/clients'
 import { Errors } from '@api/Errors'
 

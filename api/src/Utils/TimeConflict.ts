@@ -1,10 +1,10 @@
-import type { InSISDay } from '@shared/domain/insis'
+import type { InSISDay } from '@kreditozrouti/types'
+import { INSIS_DAY_DENORM } from '@kreditozrouti/core/domain'
 import { ExpressionBuilder } from 'kysely'
-import { INSIS_DAY_DENORM } from '@shared/domain/constants'
 import DateService from '@api/Services/DateService'
 import { TimeSelection } from '@api/Validations'
 
-export { compareTimeSelections } from '@shared/domain/timetable'
+export { compareTimeSelections } from '@kreditozrouti/core/domain'
 
 /**
  * Builds Kysely filter conditions that determine whether a slot conflicts with

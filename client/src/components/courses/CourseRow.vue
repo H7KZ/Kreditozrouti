@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CourseStatus } from '@client/types'
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
+import type { CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed } from 'vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import CourseStatusIndicator from '@client/components/courses/CourseStatusIndicator.vue'

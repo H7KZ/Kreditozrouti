@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ShareableUnit } from '@shared/http/share'
+import type { ShareableUnit } from '@kreditozrouti/types'
 import type { SelectedCourseUnit } from '@client/types'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

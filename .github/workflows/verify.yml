@@ -41,6 +41,9 @@ jobs:
       - name: Lint
         run: make lint
 
+      - name: Build Core
+        run: npm run build -w packages/core
+
       - name: Test
         run: make test
 

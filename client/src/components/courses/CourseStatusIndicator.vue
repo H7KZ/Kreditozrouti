@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
+import type { CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useTimetableStore } from '@client/stores'

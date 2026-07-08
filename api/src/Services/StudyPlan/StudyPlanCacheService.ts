@@ -1,5 +1,4 @@
-import type { StudyPlansResponseDTO } from '@shared/http/responses'
-import type { StudyPlansFilter } from '@shared/http/study-plans'
+import type { StudyPlansFilter, StudyPlansResponseDTO } from '@kreditozrouti/types'
 import { redis } from '@api/clients'
 
 const FACET_CACHE_TTL = 300

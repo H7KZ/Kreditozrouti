@@ -11,7 +11,8 @@
 			"@client/*": ["./src/*"],
 			"@api/*": ["../api/src/*"],
 			"@scraper/*": ["../scraper/src/*"],
-			"@shared/*": ["../shared/*"],
+			"@kreditozrouti/core/*": ["../packages/core/src/*"],
+			"@kreditozrouti/types": ["../packages/types/src/index.ts"],
 			"kysely": ["./node_modules/kysely"]
 		}
 	}

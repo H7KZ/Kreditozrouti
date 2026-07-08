@@ -1,8 +1,7 @@
-import type { InSISSemester } from '@shared/domain/insis'
-import type { ScraperInSISFaculty, ScraperInSISStudyPlan, ScraperInSISStudyPlanCourse } from '@shared/queue/insis'
+import type { InSISSemester, ScraperInSISFaculty, ScraperInSISStudyPlan, ScraperInSISStudyPlanCourse } from '@kreditozrouti/types'
 import type { CheerioAPI } from 'cheerio'
+import { extractSemester, extractYear, parseGroupCode } from '@kreditozrouti/core/utils'
 import * as cheerio from 'cheerio'
-import { extractSemester, extractYear, parseGroupCode } from '@shared/utils/insis'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { cleanText, getRowValueCaseInsensitive, normalizeUrl, serializeValue } from '@scraper/Utils/HTMLUtils'
 

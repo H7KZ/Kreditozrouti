@@ -1,4 +1,4 @@
-import type { FacetItem } from '@shared/http/facets'
+import type { FacetItem } from '@kreditozrouti/types'
 import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 

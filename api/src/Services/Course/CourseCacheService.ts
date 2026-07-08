@@ -1,5 +1,4 @@
-import type { CoursesFilter } from '@shared/http/courses'
-import type { CoursesResponseDTO } from '@shared/http/responses'
+import type { CoursesFilter, CoursesResponseDTO } from '@kreditozrouti/types'
 import { redis } from '@api/clients'
 import { compareTimeSelections } from '@api/Utils/TimeConflict'
 

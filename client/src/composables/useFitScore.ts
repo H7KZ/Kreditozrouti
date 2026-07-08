@@ -1,7 +1,6 @@
 import type { SelectedCourseUnit } from '@client/types'
-import type { Day } from '@shared/domain/constants'
-import type { CourseWithRelationsDTO } from '@shared/http/responses'
-import { unitsConflict } from '@shared/domain/timetable'
+import type { CourseWithRelationsDTO, Day } from '@kreditozrouti/types'
+import { unitsConflict } from '@kreditozrouti/core/domain/timetable'
 
 const GAP_THRESHOLD = 15 // minutes
 
