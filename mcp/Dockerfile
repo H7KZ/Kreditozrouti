@@ -10,10 +10,10 @@ COPY mcp/package*.json ./mcp/
 
 RUN npm ci
 
-# Build packages/core first
+# Build packages/types first, then packages/core
 COPY packages/types/ ./packages/types/
 COPY packages/core/ ./packages/core/
-RUN npm run build -w packages/core
+RUN npm run build -w packages/types && npm run build -w packages/core
 
 # Build mcp
 COPY mcp/ ./mcp/

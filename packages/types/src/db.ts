@@ -1,5 +1,5 @@
-﻿import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
-import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from './domain.js'
+﻿import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from './domain.js'
+import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export type ExcludeMethods<T> = { [K in keyof T as T[K] extends Function ? never : K]: T[K] }

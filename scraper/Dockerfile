@@ -15,7 +15,7 @@ COPY ./scraper/ ./
 COPY ./packages/core/ /usr/src/packages/core/
 COPY ./packages/types/ /usr/src/packages/types/
 
-RUN npm run build && cd /usr/src && npm prune --omit=dev -w scraper
+RUN cd /usr/src && npm run build -w @kreditozrouti/types && cd /usr/src/scraper && npm run build && cd /usr/src && npm prune --omit=dev -w scraper
 
 # --------------------------------------------------------------------
 # Production Stage

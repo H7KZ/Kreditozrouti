@@ -4,10 +4,10 @@ SHELL := bash
         run-local-docker stop-local-docker clear-redis build-docker-images
 
 # Concurrently label/color sets
-NAMES_ALL     := CORE,API,CLIENT,DOCS,SCRAPER,MCP
-COLORS_ALL    := bgYellow.bold,bgBlue.bold,bgGreen.bold,bgWhite.bold,bgMagenta.bold,bgCyan.bold
-NAMES_NO_DOCS := CORE,API,CLIENT,SCRAPER,MCP
-COLORS_NO_DOCS := bgYellow.bold,bgBlue.bold,bgGreen.bold,bgMagenta.bold,bgCyan.bold
+NAMES_ALL     := TYPES,CORE,API,CLIENT,DOCS,SCRAPER,MCP
+COLORS_ALL    := bgRed.bold,bgYellow.bold,bgBlue.bold,bgGreen.bold,bgWhite.bold,bgMagenta.bold,bgCyan.bold
+NAMES_NO_DOCS := TYPES,CORE,API,CLIENT,SCRAPER,MCP
+COLORS_NO_DOCS := bgRed.bold,bgYellow.bold,bgBlue.bold,bgGreen.bold,bgMagenta.bold,bgCyan.bold
 NAMES_PREVIEW := API,CLIENT,DOCS
 COLORS_PREVIEW := bgBlue.bold,bgGreen.bold,bgWhite.bold
 
@@ -36,9 +36,10 @@ install:
 
 # Development
 
-# packages/core watches and rebuilds so downstream services pick up changes
+# packages/types and packages/core watch and rebuild so downstream services pick up changes
 dev:
 	npx concurrently \
+	  "npm run dev -w packages/types" \
 	  "npm run dev -w packages/core" \
 	  "npm run dev -w api" \
 	  "npm run dev -w client" \
@@ -52,6 +53,7 @@ dev:
 
 format:
 	npx concurrently \
+	  "npm run format -w packages/types" \
 	  "npm run format -w packages/core" \
 	  "npm run format -w api" \
 	  "npm run format -w client" \
@@ -63,6 +65,7 @@ format:
 
 lint:
 	npx concurrently \
+	  "npm run lint -w packages/types" \
 	  "npm run lint -w packages/core" \
 	  "npm run lint -w api" \
 	  "npm run lint -w client" \
@@ -75,6 +78,7 @@ lint:
 # docs has no type-check script
 type-check:
 	npx concurrently \
+	  "npm run type-check -w packages/types" \
 	  "npm run type-check -w packages/core" \
 	  "npm run type-check -w api" \
 	  "npm run type-check -w client" \
@@ -86,6 +90,7 @@ type-check:
 # scraper and api only - they are the only packages with test suites
 # scraper must run first: its output feeds the api fixture snapshots
 test:
+	npm run build -w packages/types
 	npm run build -w packages/core
 	npm run test -w scraper
 	npm run test -w api
@@ -98,6 +103,7 @@ test-regen:
 
 build:
 	npx concurrently \
+	  "npm run build -w packages/types" \
 	  "npm run build -w packages/core" \
 	  "npm run build -w api" \
 	  "npm run build -w client" \

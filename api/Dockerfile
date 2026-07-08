@@ -15,10 +15,11 @@ COPY ./api/ ./
 COPY ./scraper/src/ /usr/src/scraper/src/
 COPY ./packages/core/ /usr/src/packages/core/
 COPY ./packages/types/ /usr/src/packages/types/
+
 RUN mkdir -p /usr/src/scraper/node_modules && \
     ln -s /usr/src/node_modules/* /usr/src/scraper/node_modules/ || true
 
-RUN npm run build && cd /usr/src && npm prune --omit=dev -w api
+RUN cd /usr/src && npm run build -w @kreditozrouti/types && cd /usr/src/api && npm run build && cd /usr/src && npm prune --omit=dev -w api
 
 # --------------------------------------------------------------------
 # Production Stage
