@@ -9,7 +9,6 @@ import Config from '@api/Config/Config'
 import { logger } from '@api/logger'
 import { SQLService } from '@api/Services/SQLService'
 
-
 const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
 const numWorkers = specifiedInstances ? parseInt(specifiedInstances) : 1
@@ -32,7 +31,6 @@ if (cluster.isPrimary && numWorkers > 1) {
 
 async function startWorker(): Promise<void> {
 	try {
-
 		await mysql.connection().execute(db => Promise.resolve(db))
 		logger.info('mysql.connected')
 

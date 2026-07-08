@@ -86,6 +86,7 @@ type-check:
 # scraper and api only - they are the only packages with test suites
 # scraper must run first: its output feeds the api fixture snapshots
 test:
+	npm run build -w packages/core
 	npm run test -w scraper
 	npm run test -w api
 
