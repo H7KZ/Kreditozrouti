@@ -1,0 +1,13 @@
+packages:
+  - "api"
+  - "client"
+  - "docs"
+  - "mcp"
+  - "scraper"
+  - "packages/*"
+
+onlyBuiltDependencies:
+  - esbuild
+  - msgpackr-extract
+  - protobufjs
+  - vue-demi

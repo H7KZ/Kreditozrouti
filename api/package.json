@@ -14,7 +14,7 @@
 		"test:regen": "dotenv -v FORCE_FIXTURES=1 -- vitest run"
 	},
 	"dependencies": {
-		"@kreditozrouti/core": "*",
+		"@kreditozrouti/core": "workspace:*",
 		"@bull-board/api": "^8.1.2",
 		"@bull-board/express": "^8.1.2",
 		"@opentelemetry/auto-instrumentations-node": "^0.78.0",
