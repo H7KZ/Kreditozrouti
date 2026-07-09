@@ -10,6 +10,7 @@ FROM base AS installer
 WORKDIR /app
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/.pnpmfile.cjs ./.pnpmfile.cjs
 COPY --from=pruner /app/out/json/ .
 RUN pnpm install --frozen-lockfile
 
@@ -19,6 +20,10 @@ COPY --from=installer /app/node_modules ./node_modules
 COPY --from=pruner /app/out/full/ .
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/.pnpmfile.cjs ./.pnpmfile.cjs
+COPY --from=pruner /app/packages/style/ ./packages/style/
+COPY --from=pruner /app/packages/core/src/ ./packages/core/src/
+COPY --from=pruner /app/packages/types/src/ ./packages/types/src/
 RUN pnpm install --frozen-lockfile
 # Build with placeholder values replaced at container start via docker-entrypoint.sh
 ENV VITE_API_URL="__VITE_API_URL_PLACEHOLDER__"

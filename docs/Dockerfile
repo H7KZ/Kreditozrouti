@@ -10,6 +10,7 @@ FROM base AS installer
 WORKDIR /app
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/.pnpmfile.cjs ./.pnpmfile.cjs
 COPY --from=pruner /app/out/json/ .
 RUN pnpm install --frozen-lockfile
 
@@ -19,6 +20,8 @@ COPY --from=installer /app/node_modules ./node_modules
 COPY --from=pruner /app/out/full/ .
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/.pnpmfile.cjs ./.pnpmfile.cjs
+COPY --from=pruner /app/packages/style/ ./packages/style/
 RUN pnpm install --frozen-lockfile
 RUN pnpm turbo run build --filter=@kreditozrouti/docs
 

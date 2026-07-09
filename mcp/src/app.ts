@@ -1,9 +1,10 @@
-﻿import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp'
+﻿import type { Express } from 'express'
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp'
 import express from 'express'
 import { rateLimit } from 'express-rate-limit'
 import { createServer } from '@mcp/server'
 
-const app = express()
+const app: Express = express()
 app.use(express.json())
 
 // Stricter limit for the CPU-intensive optimizer tool
