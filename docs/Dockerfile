@@ -17,6 +17,8 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=installer /app/node_modules ./node_modules
 COPY --from=pruner /app/out/full/ .
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 RUN pnpm install --frozen-lockfile
 RUN pnpm turbo run build --filter=@kreditozrouti/docs
 
