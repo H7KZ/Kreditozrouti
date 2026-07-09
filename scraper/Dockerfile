@@ -1,5 +1,5 @@
 # Build Stage
-FROM node:26-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /usr/src
 
@@ -19,7 +19,7 @@ RUN cd /usr/src && npm run build -w @kreditozrouti/types && cd /usr/src/scraper 
 
 # --------------------------------------------------------------------
 # Production Stage
-FROM node:26-alpine
+FROM node:22-alpine
 
 # Alpine system Chromium — avoids downloading a second browser binary at build time
 # and works on musl/Alpine without glibc compatibility shims
@@ -35,5 +35,7 @@ WORKDIR /usr/src/scraper
 
 COPY --from=builder /usr/src/scraper/dist ./dist
 COPY --from=builder /usr/src/node_modules ./node_modules
+COPY --from=builder /usr/src/packages/types/dist /usr/src/packages/types/dist
+COPY --from=builder /usr/src/packages/types/package.json /usr/src/packages/types/package.json
 
 CMD ["node", "--require", "./dist/scraper/src/telemetry.js", "dist/scraper/src/index.js"]

@@ -1,5 +1,5 @@
 # Build Stage
-FROM node:26-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /usr/src
 
@@ -23,7 +23,7 @@ RUN cd /usr/src && npm run build -w @kreditozrouti/types && cd /usr/src/api && n
 
 # --------------------------------------------------------------------
 # Production Stage
-FROM node:26-alpine
+FROM node:22-alpine
 
 RUN apk add --no-cache curl && \
     addgroup -S api && adduser -S api -G api
@@ -32,6 +32,8 @@ WORKDIR /usr/src/api
 
 COPY --from=builder --chown=api:api /usr/src/api/dist ./dist
 COPY --from=builder --chown=api:api /usr/src/node_modules ./node_modules
+COPY --from=builder --chown=api:api /usr/src/packages/types/dist /usr/src/packages/types/dist
+COPY --from=builder --chown=api:api /usr/src/packages/types/package.json /usr/src/packages/types/package.json
 
 RUN mkdir -p /usr/src/uploads && chown api:api /usr/src/uploads
 

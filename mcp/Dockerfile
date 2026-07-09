@@ -29,6 +29,10 @@ WORKDIR /usr/src/mcp
 COPY --from=builder --chown=mcp:mcp /usr/src/mcp/dist ./dist
 COPY --from=builder --chown=mcp:mcp /usr/src/node_modules ./node_modules
 COPY --from=builder --chown=mcp:mcp /usr/src/mcp/package.json ./package.json
+COPY --from=builder --chown=mcp:mcp /usr/src/packages/core/dist /usr/src/packages/core/dist
+COPY --from=builder --chown=mcp:mcp /usr/src/packages/core/package.json /usr/src/packages/core/package.json
+COPY --from=builder --chown=mcp:mcp /usr/src/packages/types/dist /usr/src/packages/types/dist
+COPY --from=builder --chown=mcp:mcp /usr/src/packages/types/package.json /usr/src/packages/types/package.json
 
 USER mcp
 
