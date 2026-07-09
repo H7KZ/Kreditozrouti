@@ -1,40 +1,34 @@
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS base
+RUN apk add --no-cache curl
+RUN npm install -g pnpm@11.8.0 turbo
 
-WORKDIR /usr/src
+FROM base AS pruner
+WORKDIR /app
+COPY . .
+RUN turbo prune @kreditozrouti/mcp --docker
 
-# Install all workspace deps
-COPY package*.json ./
-COPY packages/core/package*.json ./packages/core/
-COPY packages/types/package*.json ./packages/types/
-COPY mcp/package*.json ./mcp/
+FROM base AS installer
+WORKDIR /app
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/out/json/ .
+RUN pnpm install --frozen-lockfile
 
-RUN npm ci
+FROM base AS builder
+WORKDIR /app
+COPY --from=installer /app/node_modules ./node_modules
+COPY --from=pruner /app/out/full/ .
+RUN pnpm install --frozen-lockfile
+RUN pnpm turbo run build --filter=@kreditozrouti/mcp
+RUN pnpm prune --prod --no-optional
 
-# Build packages/types first, then packages/core
-COPY packages/types/ ./packages/types/
-COPY packages/core/ ./packages/core/
-RUN npm run build -w packages/types && npm run build -w packages/core
-
-# Build mcp
-COPY mcp/ ./mcp/
-RUN npm run build -w mcp
-
-FROM node:22-alpine
-
+FROM node:22-alpine AS runner
 RUN apk add --no-cache curl && \
-    addgroup -S mcp && adduser -S mcp -G mcp
-
-WORKDIR /usr/src/mcp
-
-COPY --from=builder --chown=mcp:mcp /usr/src/mcp/dist ./dist
-COPY --from=builder --chown=mcp:mcp /usr/src/node_modules ./node_modules
-COPY --from=builder --chown=mcp:mcp /usr/src/mcp/package.json ./package.json
-COPY --from=builder --chown=mcp:mcp /usr/src/packages/core/dist /usr/src/packages/core/dist
-COPY --from=builder --chown=mcp:mcp /usr/src/packages/core/package.json /usr/src/packages/core/package.json
-COPY --from=builder --chown=mcp:mcp /usr/src/packages/types/dist /usr/src/packages/types/dist
-COPY --from=builder --chown=mcp:mcp /usr/src/packages/types/package.json /usr/src/packages/types/package.json
-
+    addgroup -S mcp && \
+    adduser -S mcp -G mcp
+WORKDIR /app
+COPY --from=builder --chown=mcp:mcp /app .
 USER mcp
-
+WORKDIR /app/mcp
 EXPOSE 3000
 CMD ["node", "dist/index.js"]

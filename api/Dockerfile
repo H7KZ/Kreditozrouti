@@ -1,43 +1,35 @@
-# Build Stage
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS base
+RUN apk add --no-cache curl
+RUN npm install -g pnpm@11.8.0 turbo
 
-WORKDIR /usr/src
+FROM base AS pruner
+WORKDIR /app
+COPY . .
+RUN turbo prune @kreditozrouti/api --docker
 
-COPY ./package.json ./package-lock.json ./
-COPY ./api/package.json ./api/
-RUN npm ci -w api
+FROM base AS installer
+WORKDIR /app
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/out/json/ .
+RUN pnpm install --frozen-lockfile
 
-WORKDIR /usr/src/api
+FROM base AS builder
+WORKDIR /app
+COPY --from=installer /app/node_modules ./node_modules
+COPY --from=pruner /app/out/full/ .
+RUN pnpm install --frozen-lockfile
+RUN pnpm turbo run build --filter=@kreditozrouti/api
+RUN pnpm prune --prod --no-optional
 
-COPY ./api/ ./
-
-# Workspaces: make scraper and core source visible for cross-package type imports
-COPY ./scraper/src/ /usr/src/scraper/src/
-COPY ./packages/core/ /usr/src/packages/core/
-COPY ./packages/types/ /usr/src/packages/types/
-
-RUN mkdir -p /usr/src/scraper/node_modules && \
-    ln -s /usr/src/node_modules/* /usr/src/scraper/node_modules/ || true
-
-RUN cd /usr/src && npm run build -w @kreditozrouti/types && cd /usr/src/api && npm run build && cd /usr/src && npm prune --omit=dev -w api
-
-# --------------------------------------------------------------------
-# Production Stage
-FROM node:22-alpine
-
+FROM node:22-alpine AS runner
 RUN apk add --no-cache curl && \
-    addgroup -S api && adduser -S api -G api
-
-WORKDIR /usr/src/api
-
-COPY --from=builder --chown=api:api /usr/src/api/dist ./dist
-COPY --from=builder --chown=api:api /usr/src/node_modules ./node_modules
-COPY --from=builder --chown=api:api /usr/src/packages/types/dist /usr/src/packages/types/dist
-COPY --from=builder --chown=api:api /usr/src/packages/types/package.json /usr/src/packages/types/package.json
-
-RUN mkdir -p /usr/src/uploads && chown api:api /usr/src/uploads
-
+    addgroup -S api && \
+    adduser -S api -G api
+WORKDIR /app
+COPY --from=builder --chown=api:api /app .
+RUN mkdir -p /app/uploads && chown api:api /app/uploads
 USER api
-
+WORKDIR /app/api
 EXPOSE 80
 CMD ["node", "--require", "./dist/api/src/telemetry.js", "dist/api/src/index.js"]

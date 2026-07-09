@@ -1,21 +1,23 @@
-# Build Stage
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS base
+RUN npm install -g pnpm@11.8.0 turbo
 
-WORKDIR /usr/src
+FROM base AS pruner
+WORKDIR /app
+COPY . .
+RUN turbo prune @kreditozrouti/client --docker
 
-COPY ./package.json ./package-lock.json ./
-COPY ./client/package.json ./client/
-RUN npm ci -w client
+FROM base AS installer
+WORKDIR /app
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/out/json/ .
+RUN pnpm install --frozen-lockfile
 
-WORKDIR /usr/src/client
-
-COPY ./client/ ./
-
-# Workspaces: make packages/core and packages/types source visible for cross-package type imports
-COPY ./packages/core/ /usr/src/packages/core/
-COPY ./packages/style/ /usr/src/packages/style/
-COPY ./packages/types/ /usr/src/packages/types/
-
+FROM base AS builder
+WORKDIR /app
+COPY --from=installer /app/node_modules ./node_modules
+COPY --from=pruner /app/out/full/ .
+RUN pnpm install --frozen-lockfile
 # Build with placeholder values replaced at container start via docker-entrypoint.sh
 ENV VITE_API_URL="__VITE_API_URL_PLACEHOLDER__"
 ENV VITE_FARO_COLLECTOR_URL="__VITE_FARO_COLLECTOR_URL_PLACEHOLDER__"
@@ -23,13 +25,9 @@ ENV VITE_APP_VERSION="__VITE_APP_VERSION_PLACEHOLDER__"
 ENV VITE_APP_ENV="__VITE_APP_ENV_PLACEHOLDER__"
 ENV VITE_UMAMI_WEBSITE_ID="__VITE_UMAMI_WEBSITE_ID_PLACEHOLDER__"
 ENV VITE_UMAMI_SRC="__VITE_UMAMI_SRC_PLACEHOLDER__"
+RUN pnpm turbo run build --filter=@kreditozrouti/client
 
-RUN npm run build
-
-# --------------------------------------------------------------------
-# Production Stage
-FROM nginx:stable-alpine
-
+FROM nginx:stable-alpine AS runner
 ENV PORT=80
 ENV VITE_API_URL="/api"
 ENV VITE_FARO_COLLECTOR_URL=""
@@ -40,7 +38,7 @@ ENV VITE_UMAMI_SRC=""
 
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY --from=builder /usr/src/client/dist /usr/share/nginx/html
+COPY --from=builder /app/client/dist /usr/share/nginx/html
 COPY ./client/nginx.conf /etc/nginx/templates/default.conf.template
 COPY ./client/docker-entrypoint.sh /docker-entrypoint.d/40-inject-env.sh
 RUN chmod +x /docker-entrypoint.d/40-inject-env.sh

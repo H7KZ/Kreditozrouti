@@ -1,27 +1,29 @@
-# Build Stage
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS base
+RUN apk add --no-cache curl
+RUN npm install -g pnpm@11.8.0 turbo
 
-WORKDIR /usr/src
+FROM base AS pruner
+WORKDIR /app
+COPY . .
+RUN turbo prune @kreditozrouti/scraper --docker
 
-COPY ./package.json ./package-lock.json ./
-COPY ./scraper/package.json ./scraper/
-RUN npm ci -w scraper
+FROM base AS installer
+WORKDIR /app
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/out/json/ .
+RUN pnpm install --frozen-lockfile
 
-WORKDIR /usr/src/scraper
+FROM base AS builder
+WORKDIR /app
+COPY --from=installer /app/node_modules ./node_modules
+COPY --from=pruner /app/out/full/ .
+RUN pnpm install --frozen-lockfile
+RUN pnpm turbo run build --filter=@kreditozrouti/scraper
+RUN pnpm prune --prod --no-optional
 
-COPY ./scraper/ ./
-
-# Workspaces: make packages/core and packages/types source visible for cross-package type imports
-COPY ./packages/core/ /usr/src/packages/core/
-COPY ./packages/types/ /usr/src/packages/types/
-
-RUN cd /usr/src && npm run build -w @kreditozrouti/types && cd /usr/src/scraper && npm run build && cd /usr/src && npm prune --omit=dev -w scraper
-
-# --------------------------------------------------------------------
-# Production Stage
-FROM node:22-alpine
-
-# Alpine system Chromium — avoids downloading a second browser binary at build time
+FROM node:22-alpine AS runner
+# Alpine system Chromium - avoids downloading a second browser binary at build time
 # and works on musl/Alpine without glibc compatibility shims
 RUN apk add --no-cache \
     chromium \
@@ -29,13 +31,11 @@ RUN apk add --no-cache \
     freetype \
     harfbuzz \
     ca-certificates \
-    ttf-freefont
-
-WORKDIR /usr/src/scraper
-
-COPY --from=builder /usr/src/scraper/dist ./dist
-COPY --from=builder /usr/src/node_modules ./node_modules
-COPY --from=builder /usr/src/packages/types/dist /usr/src/packages/types/dist
-COPY --from=builder /usr/src/packages/types/package.json /usr/src/packages/types/package.json
-
+    ttf-freefont && \
+    addgroup -S scraper && \
+    adduser -S scraper -G scraper
+WORKDIR /app
+COPY --from=builder --chown=scraper:scraper /app .
+USER scraper
+WORKDIR /app/scraper
 CMD ["node", "--require", "./dist/scraper/src/telemetry.js", "dist/scraper/src/index.js"]

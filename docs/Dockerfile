@@ -1,28 +1,29 @@
-# Build Stage
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS base
+RUN npm install -g pnpm@11.8.0 turbo
 
-WORKDIR /usr/src
+FROM base AS pruner
+WORKDIR /app
+COPY . .
+RUN turbo prune @kreditozrouti/docs --docker
 
-COPY ./package.json ./package-lock.json ./
-COPY ./docs/package.json ./docs/
-RUN npm ci -w docs
+FROM base AS installer
+WORKDIR /app
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/out/json/ .
+RUN pnpm install --frozen-lockfile
 
-WORKDIR /usr/src/docs
+FROM base AS builder
+WORKDIR /app
+COPY --from=installer /app/node_modules ./node_modules
+COPY --from=pruner /app/out/full/ .
+RUN pnpm install --frozen-lockfile
+RUN pnpm turbo run build --filter=@kreditozrouti/docs
 
-COPY ./docs/ ./
-
-# Workspaces: make packages/style source visible for cross-package imports
-COPY ./packages/style/ /usr/src/packages/style/
-
-RUN npm run build
-
-# --------------------------------------------------------------------
-# Production Stage
-FROM nginx:stable-alpine
-
+FROM nginx:stable-alpine AS runner
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY --from=builder /usr/src/docs/.vitepress/dist /usr/share/nginx/html
+COPY --from=builder /app/docs/.vitepress/dist /usr/share/nginx/html
 COPY ./docs/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
