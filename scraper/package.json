@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@kreditozrouti/core": "workspace:*",
+		"@kreditozrouti/types": "workspace:*",
 		"@opentelemetry/auto-instrumentations-node": "^0.78.0",
 		"@opentelemetry/exporter-trace-otlp-proto": "^0.220.0",
 		"@opentelemetry/sdk-node": "^0.220.0",

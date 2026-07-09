@@ -13,7 +13,7 @@ export default defineConfig({
 		'utils/index': 'src/utils/index.ts'
 	},
 	format: ['esm'],
-	dts: true,
+	dts: false,
 	clean: true,
 	sourcemap: true,
 	target: 'node22',

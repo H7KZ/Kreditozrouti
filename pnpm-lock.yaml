@@ -29,6 +29,9 @@ importers:
       '@kreditozrouti/core':
         specifier: workspace:*
         version: link:../packages/core
+      '@kreditozrouti/types':
+        specifier: workspace:*
+        version: link:../packages/types
       '@opentelemetry/auto-instrumentations-node':
         specifier: ^0.78.0
         version: 0.78.0(@opentelemetry/api@1.9.1)(@opentelemetry/core@2.9.0(@opentelemetry/api@1.9.1))
@@ -537,6 +540,9 @@ importers:
       '@kreditozrouti/core':
         specifier: workspace:*
         version: link:../packages/core
+      '@kreditozrouti/types':
+        specifier: workspace:*
+        version: link:../packages/types
       '@opentelemetry/auto-instrumentations-node':
         specifier: ^0.78.0
         version: 0.78.0(@opentelemetry/api@1.9.1)(@opentelemetry/core@2.9.0(@opentelemetry/api@1.9.1))
