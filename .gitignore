@@ -9,6 +9,7 @@ scripts/server.conf
 **/dist
 **/build
 **/cache
+**/.turbo
 
 docs/superpowers/
 .superpowers/
