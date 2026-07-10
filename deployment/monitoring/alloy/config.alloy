@@ -14,7 +14,7 @@ discovery.relabel "container_labels" {
   // Placed first so dropped containers never enter any downstream pipeline stage.
   rule {
     source_labels = ["__meta_docker_container_name"]
-    regex         = "/(grafana|prometheus|loki|alloy|node-exporter|umami|postgres).*"
+    regex         = "/(grafana|prometheus|loki|alloy|umami|postgres).*"
     action        = "drop"
   }
 
