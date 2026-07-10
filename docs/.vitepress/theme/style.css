@@ -60,7 +60,6 @@
 }
 
 /* Navbar CTA — "Open app" / "Spustit aplikaci" pill button */
-/* ponytail: selector uses VitePress internal class names; recheck on VitePress major upgrades */
 .VPNavBar .VPNavBarMenu a[href^='https://kreditozrouti.cz'] {
 	background: var(--insis-blue);
 	color: #fff !important;

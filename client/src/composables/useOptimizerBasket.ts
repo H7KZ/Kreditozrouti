@@ -2,7 +2,6 @@ import { ref, watch } from 'vue'
 
 const BASKET_KEY = 'kreditozrouti:optimizer:basket'
 
-// ponytail: module-level singleton so OptimizerTab and CourseRow share the same reactive state
 function loadFromStorage(): number[] {
 	try {
 		const saved = JSON.parse(localStorage.getItem(BASKET_KEY) ?? 'null')

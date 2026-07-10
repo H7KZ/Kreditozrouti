@@ -1,4 +1,4 @@
-import { AsyncLocalStorage } from 'node:async_hooks'
+import {AsyncLocalStorage} from 'node:async_hooks'
 import type pino from 'pino'
 
 export interface JobWideEvent {
@@ -13,7 +13,6 @@ export interface JobWideEvent {
   [key: string]: unknown
 }
 
-// ponytail: call once per consuming package; export the result as a singleton so all modules share the same ALS instance
 export function createJobContext(parentLogger: pino.Logger): {
   run(fn: () => Promise<void>, initialContext: Partial<JobWideEvent>): Promise<void>
   add(context: Partial<JobWideEvent>): void

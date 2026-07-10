@@ -13,7 +13,9 @@ export function createLogger(options: { service: string; env: string }): pino.Lo
   })
 }
 
-export function withJobLogger<T extends { id?: string; name?: string; attemptsMade?: number }>(
+export type JobShape = { id?: string; name?: string; attemptsMade?: number }
+
+export function withJobLogger<T extends JobShape>(
   queueName: string,
   handler: (job: T) => Promise<void>,
   parentLogger: pino.Logger

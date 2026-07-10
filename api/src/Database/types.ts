@@ -1,4 +1,3 @@
-// ponytail: thin re-export — canonical schema lives in @kreditozrouti/types
 export {
 	FacultyTable,
 	CourseTable,

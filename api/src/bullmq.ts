@@ -14,7 +14,7 @@ import { mysql, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import { StudyPlanCourseIdentTable } from '@api/Database/types'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
-import { logger, withJobLogger } from '@api/logger'
+import { logger } from '@api/logger'
 import InSISService from '@api/Services/InSISService'
 
 // Queue & Worker Setup

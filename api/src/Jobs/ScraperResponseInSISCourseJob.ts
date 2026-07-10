@@ -37,7 +37,6 @@ function parseDay(raw: string | null): InSISDay | null {
 function parseFrequency(raw: string | null): 'weekly' | 'single' | null {
 	if (!raw) return null
 	if (raw === 'single') return 'single'
-	// ponytail: any non-null, non-single frequency from InSIS means weekly
 	return 'weekly'
 }
 

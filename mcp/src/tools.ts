@@ -6,7 +6,6 @@ import type { Kysely } from 'kysely'
 import type { ZodRawShape } from 'zod'
 import { z } from 'zod'
 
-// ponytail: colocates schema + handler, flows z.infer<T> into handler args
 export function defineTool<S extends ZodRawShape>(def: {
 	name: string
 	title: string

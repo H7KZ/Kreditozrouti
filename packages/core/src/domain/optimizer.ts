@@ -222,7 +222,6 @@ export function scoreCandidate(
 			for (let i = 1; i < sorted.length; i++) {
 				const unit = sorted[i]!
 				if (unit.timeFrom - blockEnd <= 15) {
-					// ponytail: ≤15 min gap is a short break, still consecutive
 					blockEnd = Math.max(blockEnd, unit.timeTo)
 				} else {
 					flushBlock()
