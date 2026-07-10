@@ -15,6 +15,7 @@
 	},
 	"dependencies": {
 		"@kreditozrouti/core": "workspace:*",
+		"@kreditozrouti/logger": "workspace:*",
 		"@kreditozrouti/types": "workspace:*",
 		"@bull-board/api": "^8.1.2",
 		"@bull-board/express": "^8.1.2",
