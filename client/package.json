@@ -14,7 +14,6 @@
 	},
 	"devDependencies": {
 		"@grafana/faro-web-sdk": "^2.8.2",
-		"@grafana/faro-web-tracing": "^2.8.2",
 		"@ianvs/prettier-plugin-sort-imports": "^4.7.1",
 		"@iconify-json/lucide": "^1.2.116",
 		"@intlify/unplugin-vue-i18n": "^11.2.4",

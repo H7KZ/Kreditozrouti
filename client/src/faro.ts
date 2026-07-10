@@ -1,7 +1,6 @@
 import type { Faro } from '@grafana/faro-web-sdk'
 import type { App } from 'vue'
 import { createSession, getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk'
-import { TracingInstrumentation } from '@grafana/faro-web-tracing'
 
 let _faro: Faro | null = null
 
@@ -30,8 +29,7 @@ const faroModule = {
 			instrumentations: [
 				...getWebInstrumentations({
 					captureConsole: true
-				}),
-				new TracingInstrumentation()
+				})
 			]
 		})
 
