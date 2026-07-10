@@ -5,6 +5,7 @@ export function createLogger(options: { service: string; env: string }): pino.Lo
   return pino({
     level: isProduction ? 'info' : 'debug',
     base: { service: options.service, env: options.env },
+    serializers: { err: pino.stdSerializers.err },
     formatters: {
       level: label => ({ level: label.toUpperCase() })
     },
