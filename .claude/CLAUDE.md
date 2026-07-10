@@ -85,6 +85,8 @@ docs/          VitePress docs site — user docs (en/cs) + dev docs at docs/dev/
 - `client/` never imports `@kreditozrouti/core/db` or `@kreditozrouti/core/services` (browser bundle)
 - `client/` never imports API runtime code
 - `mcp/` imports only from `@kreditozrouti/core` — no imports from `api/`, `scraper/`, or `client/`
+- `client/` never imports `@kreditozrouti/logger` (node-only package)
+- `packages/core/` never imports `@kreditozrouti/logger` (keeps core pure - no pino dep)
 
 **Time encoding:** all times are **minutes from midnight** (0–1439). `08:00` = 480.
 
