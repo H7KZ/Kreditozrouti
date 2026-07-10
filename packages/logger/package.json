@@ -14,11 +14,12 @@
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit"
   },
-  "dependencies": {
-    "pino": "^10.3.1"
+  "peerDependencies": {
+    "pino": ">=10"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
+    "pino": "^10.3.1",
     "tsup": "^8.5.1",
     "typescript": "^7.0.2"
   }

@@ -35,7 +35,7 @@ const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue,
 	telemetry: bullmqTelemetry
 })
 
-const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, withJobLogger(ScraperResponseQueue, ScraperResponseHandler), {
+const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, ScraperResponseHandler, {
 	connection: redis.options,
 	telemetry: bullmqTelemetry,
 	concurrency: 2,
