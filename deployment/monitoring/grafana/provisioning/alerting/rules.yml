@@ -30,7 +30,7 @@ groups:
               to: 0
             datasourceUid: Prometheus
             model:
-              # up==0 catches static targets (node-exporter) where the target stays in the list but scrape fails.
+              # up==0 catches static targets where the target stays in the list but scrape fails.
               # absent() catches Docker SD targets (api) that disappear from discovery when the container stops.
               expr: up == 0 or absent(up{job="kreditozrouti-api"})
               instant: true
