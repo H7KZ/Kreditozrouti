@@ -24,15 +24,14 @@ COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=pruner /app/.pnpmfile.cjs ./.pnpmfile.cjs
 RUN pnpm install --frozen-lockfile
 RUN pnpm turbo run build --filter=@kreditozrouti/mcp
-RUN CI=true pnpm prune --prod --no-optional
+RUN pnpm --filter=@kreditozrouti/mcp --prod deploy --legacy /app/deploy
 
 FROM node:22-alpine AS runner
 RUN apk add --no-cache curl && \
     addgroup -S mcp && \
     adduser -S mcp -G mcp
 WORKDIR /app
-COPY --from=builder --chown=mcp:mcp /app .
+COPY --from=builder --chown=mcp:mcp /app/deploy .
 USER mcp
-WORKDIR /app/mcp
 EXPOSE 3000
 CMD ["node", "dist/index.js"]

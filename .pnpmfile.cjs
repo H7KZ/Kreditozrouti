@@ -25,7 +25,7 @@ function readPackage(pkg) {
 		// Add TypeScript 5 as a direct dependency so require("typescript")
 		// resolves to the TS5 compiler API, not the TS7 stub.
 		pkg.dependencies = pkg.dependencies || {};
-		pkg.dependencies["typescript"] = "~5.9.3";
+		pkg.dependencies["typescript"] = "~7.0.2";
 		// Remove from peerDependencies to avoid version conflict warnings
 		if (pkg.peerDependencies) {
 			delete pkg.peerDependencies["typescript"];

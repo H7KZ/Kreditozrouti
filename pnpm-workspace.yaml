@@ -12,6 +12,10 @@ allowBuilds:
   protobufjs: true
   vue-demi: true
 
+minimumReleaseAgeExclude:
+  - bullmq@5.80.2
+  - eslint@10.7.0
+
 onlyBuiltDependencies:
   - esbuild
   - msgpackr-extract

@@ -24,7 +24,7 @@ COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=pruner /app/.pnpmfile.cjs ./.pnpmfile.cjs
 RUN pnpm install --frozen-lockfile
 RUN pnpm turbo run build --filter=@kreditozrouti/scraper
-RUN CI=true pnpm prune --prod --no-optional
+RUN pnpm --filter=@kreditozrouti/scraper --prod deploy --legacy /app/deploy
 
 FROM node:22-alpine AS runner
 # Alpine system Chromium - avoids downloading a second browser binary at build time
@@ -39,7 +39,6 @@ RUN apk add --no-cache \
     addgroup -S scraper && \
     adduser -S scraper -G scraper
 WORKDIR /app
-COPY --from=builder --chown=scraper:scraper /app .
+COPY --from=builder --chown=scraper:scraper /app/deploy .
 USER scraper
-WORKDIR /app/scraper
 CMD ["node", "--require", "./dist/scraper/src/telemetry.js", "dist/scraper/src/index.js"]
