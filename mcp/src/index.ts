@@ -1,4 +1,4 @@
-﻿import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio'
+﻿import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { app } from '@mcp/app'
 import Config from '@mcp/Config/Config'
 import { logger } from '@mcp/Logger/logger'
