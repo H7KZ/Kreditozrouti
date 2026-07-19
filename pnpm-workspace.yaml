@@ -1,3 +1,6 @@
+overrides:
+  typescript: "~5.8.3"
+
 packages:
   - "api"
   - "client"

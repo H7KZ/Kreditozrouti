@@ -3,13 +3,16 @@ import type { OptimizerCandidateDTO, RemovalCandidateDTO } from '@kreditozrouti/
 import { useI18n } from 'vue-i18n'
 import MiniTimetable from './MiniTimetable.vue'
 
-defineProps<{
-	fullCandidates: OptimizerCandidateDTO[]
-	removalCandidates: RemovalCandidateDTO[]
-	partial: boolean
-	poolTruncated: boolean
-	poolTruncatedCount?: number
-}>()
+withDefaults(
+	defineProps<{
+		fullCandidates: OptimizerCandidateDTO[]
+		removalCandidates: RemovalCandidateDTO[]
+		partial: boolean
+		poolTruncated: boolean
+		poolTruncatedCount?: number
+	}>(),
+	{ poolTruncatedCount: 0 }
+)
 
 const emit = defineEmits<{
 	(e: 'preview', candidate: OptimizerCandidateDTO): void

@@ -10,8 +10,8 @@ export const TimeSelectionSchema = z
 		slot_id: z.number().optional(),
 		day: DaySchema.nullable().optional(),
 		date: z.coerce.date().nullable().optional(),
-		time_from: z.coerce.number(),
-		time_to: z.coerce.number()
+		time_from: z.coerce.number().min(0).max(1439),
+		time_to: z.coerce.number().min(0).max(1439)
 	})
 	.refine(data => (data.day ?? data.date) !== undefined, {
 		message: 'Either day or date must be provided',

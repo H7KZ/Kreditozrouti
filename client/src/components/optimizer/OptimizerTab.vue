@@ -84,8 +84,7 @@ function applyCandidate() {
 	if (previewExploreCourseId.value != null) addToBasket(previewExploreCourseId.value)
 	const currentUnits = [...timetableStore.selectedUnits]
 	if (currentUnits.length > 0) {
-		const slotsNeeded = slotsStore.slots.length + 1
-		if (slotsNeeded > 5) {
+		if (slotsStore.slots.length >= 5) {
 			alertsStore.addAlert({ type: 'error', title: t('pages.share.slotsFull'), timeout: 6000 })
 			return
 		}

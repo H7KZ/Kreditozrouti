@@ -17,6 +17,7 @@ import IconFilter from '~icons/lucide/filter'
 import IconMapPin from '~icons/lucide/map-pin'
 import IconRotateCcw from '~icons/lucide/rotate-ccw'
 import Search from '~icons/lucide/search'
+import IconSparkles from '~icons/lucide/sparkles'
 import IconX from '~icons/lucide/x'
 
 /**
@@ -260,7 +261,27 @@ function handleCloseMobileFilter() {
 		</div>
 
 		<!-- Compact quick-toggle pill row -->
-		<div v-if="activeIdentFilter || hasCompletedCourses || hasSelectedCourses" class="mb-3 flex flex-wrap gap-1.5">
+		<div v-if="activeIdentFilter || hasCompletedCourses || hasSelectedCourses || true" class="mb-3 flex flex-wrap gap-1.5">
+			<!-- Fits my timetable toggle -->
+			<button
+				type="button"
+				:aria-pressed="filtersStore.fitScoreActive"
+				:disabled="!hasSelectedCourses"
+				:title="!hasSelectedCourses ? $t('components.filters.FilterPanel.fitsTimetableDisabledHint') : undefined"
+				:class="[
+					'flex cursor-pointer items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors',
+					!hasSelectedCourses
+						? 'cursor-default border-(--insis-border) text-(--insis-gray-400)'
+						: filtersStore.fitScoreActive
+							? 'border-(--insis-blue) bg-(--insis-blue-subtle) text-(--insis-blue)'
+							: 'border-(--insis-border) text-(--insis-gray-600) hover:border-(--insis-blue) hover:bg-(--insis-blue-subtle)'
+				]"
+				@click="hasSelectedCourses && (filtersStore.fitScoreActive = !filtersStore.fitScoreActive)"
+			>
+				<IconSparkles class="h-3 w-3 shrink-0" aria-hidden="true" />
+				{{ $t('components.filters.FilterPanel.fitsTimetable') }}
+			</button>
+
 			<!-- Active ident filter chip -->
 			<button
 				v-if="activeIdentFilter"

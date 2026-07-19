@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CourseStatus } from '@client/types'
+import type { FitResult } from '@client/composables/useFitScore'
 import type { CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed } from 'vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
@@ -12,6 +13,7 @@ import IconSparkles from '~icons/lucide/sparkles'
 interface Props {
 	course: CourseWithRelationsDTO
 	colspan: number
+	fitScores?: Map<number, FitResult>
 }
 
 const props = defineProps<Props>()
@@ -22,6 +24,10 @@ const { has: inBasket, add: addToBasket, remove: removeFromBasket } = useOptimiz
 
 const { getCourseTitle, getFacultyLabel, getCompletionLabel } = useCourseLabels()
 const { getScheduleSummary } = useScheduleSummary()
+
+// Fit score
+
+const fitResult = computed(() => props.fitScores?.get(props.course.id))
 
 // Status
 
@@ -70,6 +76,21 @@ function handleRowClick() {
 			<div class="flex min-w-0 items-center gap-2">
 				<span :title="getCourseTitle(course)" class="truncate">{{ getCourseTitle(course) }}</span>
 				<CourseStatusIndicator :course="course" />
+				<span
+					v-if="fitResult && fitResult.score > -Infinity"
+					:class="[
+						'shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium',
+						fitResult.fitReason === 'fills_gap'
+							? 'bg-green-100 text-green-700'
+							: fitResult.fitReason === 'same_day'
+								? 'bg-blue-100 text-blue-700'
+								: 'bg-(--insis-gray-100) text-(--insis-text-3)'
+					]"
+					:title="$t('components.courses.CourseTable.fitsTimetable')"
+					aria-hidden="true"
+				>
+					{{ fitResult.fitReason === 'fills_gap' ? '★★' : fitResult.fitReason === 'same_day' ? '★' : '~' }}
+				</span>
 			</div>
 		</td>
 
@@ -100,7 +121,7 @@ function handleRowClick() {
 							? 'border-(--insis-blue) text-(--insis-blue)'
 							: 'border-transparent text-(--insis-text-3) hover:border-(--insis-border) hover:text-(--insis-text-2)'
 					]"
-					:aria-label="$t('components.courses.CourseRow.optimizerToggle')"
+					:aria-label="$t('components.courses.CourseTable.optimizerToggle')"
 					:aria-pressed="inBasket(course.id)"
 					@click.stop="inBasket(course.id) ? removeFromBasket(course.id) : addToBasket(course.id)"
 				>

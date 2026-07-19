@@ -60,6 +60,8 @@ const creditWarning = computed(() => {
 	return creditMax.value != null && creditMax.value < props.basketEcts
 })
 
+const creditRangeInvalid = computed(() => creditMin.value != null && creditMax.value != null && creditMin.value > creditMax.value)
+
 function emitValue() {
 	const constraints: SolverConstraints = {}
 	if (creditMin.value != null && !isNaN(creditMin.value)) constraints.credit_min = creditMin.value
@@ -131,6 +133,9 @@ function addBlackout() {
 			<p v-if="creditWarning" class="mt-1 text-xs text-(--insis-warning)">
 				{{ t('components.optimizer.ConstraintsPanel.creditMaxWarning') }}
 			</p>
+			<p v-if="creditRangeInvalid" class="mt-1 text-xs text-(--insis-warning)">
+				{{ t('components.optimizer.ConstraintsPanel.creditRangeInvalid') }}
+			</p>
 		</fieldset>
 
 		<!-- Preferred days -->
@@ -162,7 +167,7 @@ function addBlackout() {
 			<div v-if="blackoutWindows.length > 0" class="mb-1 flex flex-col gap-1">
 				<div
 					v-for="(w, i) in blackoutWindows"
-					:key="`${w.day}-${w.timeFrom}`"
+					:key="`${w.day}-${w.timeFrom}-${w.timeTo}`"
 					class="flex items-center justify-between rounded bg-(--insis-danger-light) px-2 py-1 text-xs"
 				>
 					<span>{{ t(`days.${w.day}`) }} {{ w.timeFrom }}–{{ w.timeTo }}</span>

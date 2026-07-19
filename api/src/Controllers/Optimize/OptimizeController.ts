@@ -1,4 +1,5 @@
 import type { OptimizeRequest } from '@kreditozrouti/types'
+import { MAX_EXPLORE_POOL_SIZE, MAX_POOL_SIZE } from '@kreditozrouti/core/domain'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
@@ -17,11 +18,11 @@ const SolverConstraintsSchema = z.object({
 })
 
 const OptimizeRequestSchema = z.object({
-	course_ids: z.array(z.coerce.number()).min(0),
+	course_ids: z.array(z.coerce.number()).min(0).max(MAX_POOL_SIZE),
 	constraints: SolverConstraintsSchema,
 	mode: z.enum(['build', 'explore']).default('build'),
 	locked_unit_ids: z.array(z.coerce.number()).optional(),
-	explore_course_ids: z.array(z.coerce.number()).optional()
+	explore_course_ids: z.array(z.coerce.number()).max(MAX_EXPLORE_POOL_SIZE).optional()
 }) satisfies z.ZodType<OptimizeRequest>
 
 /**

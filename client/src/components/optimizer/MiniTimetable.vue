@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Day, SelectedCourseUnitDTO } from '@kreditozrouti/types'
+import { computed } from 'vue'
 import { WEEKDAYS } from '@client/constants/timetable'
 
 const props = defineProps<{
@@ -14,6 +15,8 @@ function unitsByDay(day: Day): SelectedCourseUnitDTO[] {
 	return props.units.filter(u => u.day === day)
 }
 
+const activeWeekdays = computed(() => WEEKDAYS.filter(day => props.units.some(u => u.day === day)))
+
 function blockStyle(unit: SelectedCourseUnitDTO): Record<string, string> {
 	const left = ((unit.timeFrom - TIME_START) / TIME_RANGE) * 100
 	const width = ((unit.timeTo - unit.timeFrom) / TIME_RANGE) * 100
@@ -26,7 +29,7 @@ function blockStyle(unit: SelectedCourseUnitDTO): Record<string, string> {
 
 <template>
 	<div class="flex flex-col gap-0.5 py-1 select-none">
-		<div v-for="day in WEEKDAYS" :key="day" class="flex items-center gap-1.5">
+		<div v-for="day in activeWeekdays" :key="day" class="flex items-center gap-1.5">
 			<span class="w-4 shrink-0 text-[9px] font-medium text-(--insis-text-3) uppercase">
 				{{ day.slice(0, 2) }}
 			</span>

@@ -113,10 +113,11 @@ export function solveWithDeadline(variables: SolverVariable[], locked: SolverSlo
 	const deadline = Date.now() + budgetMs
 	const found: SolverAssignment[] = []
 	let hitDeadline = false
+	let hitCap = false
 
 	function recurse(vars: SolverVariable[], assignment: SolverAssignment): void {
 		if (found.length >= MAX_SOLUTIONS) {
-			hitDeadline = true
+			hitCap = true
 			return
 		}
 		if (Date.now() > deadline) {
@@ -134,7 +135,7 @@ export function solveWithDeadline(variables: SolverVariable[], locked: SolverSlo
 		if (!variable) return
 
 		for (const candidate of variable.domain) {
-			if (hitDeadline || found.length >= MAX_SOLUTIONS) return
+			if (hitDeadline || hitCap || found.length >= MAX_SOLUTIONS) return
 			if (!isConsistent(candidate, assignment, locked)) continue
 			const key = `${variable.courseId}:${variable.unitType}`
 			recurse(rest, { ...assignment, [key]: candidate })
@@ -260,7 +261,7 @@ function slotPickDistance(a: SolverAssignment, b: SolverAssignment): number {
 /**
  * Skips candidates too similar to an already-kept candidate and returns at
  * most `maxResults`. The similarity threshold adapts to variable count:
- * ceil(variableCount / 2), floored at 1. This prevents the fixed threshold of
+ * ceil(variableCount / 6), floored at 2. This prevents the fixed threshold of
  * 2 from collapsing results to a single candidate when there is only one
  * variable (max possible distance = 1). Callers MUST pre-sort `candidates` by
  * ascending score before calling this — scanning in that order naturally

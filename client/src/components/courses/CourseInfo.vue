@@ -61,7 +61,6 @@ const hasPrerequisiteChips = computed(
 
 function filterByIdent(ident: string) {
 	filtersStore.filters.idents = [ident]
-	coursesStore.fetchCourses()
 }
 
 function handleToggleCompleted() {
@@ -190,15 +189,13 @@ function handleToggleCompleted() {
 			<template v-if="course.concurrent_exclusion_idents?.length">
 				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.prereqConcurrent') }}</p>
 				<div class="flex flex-wrap gap-1.5">
-					<button
+					<span
 						v-for="ident in course.concurrent_exclusion_idents"
 						:key="ident"
-						type="button"
-						class="inline-flex cursor-pointer items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700) hover:bg-(--insis-blue)/10 hover:text-(--insis-blue)"
-						@click="filterByIdent(ident)"
+						class="inline-flex items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700)"
 					>
 						{{ ident }}
-					</button>
+					</span>
 				</div>
 			</template>
 			<template v-if="course.recommended_before_course_idents?.length">

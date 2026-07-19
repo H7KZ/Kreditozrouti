@@ -12,7 +12,7 @@
 	},
 	"scripts": {
 		"build": "tsup && tsc --emitDeclarationOnly",
-		"dev": "tsup --watch",
+		"dev": "tsup --watch --no-clean",
 		"type-check": "tsc --noEmit",
 		"lint": "eslint src",
 		"lint:fix": "eslint src --fix",
@@ -33,7 +33,7 @@
 		"globals": "^17.7.0",
 		"prettier": "^3.9.5",
 		"tsup": "^8.5.1",
-		"typescript": "^7.0.2",
+		"typescript": "~5.8.3",
 		"typescript-eslint": "^8.63.0"
 	}
 }
