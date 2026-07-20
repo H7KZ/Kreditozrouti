@@ -24,7 +24,7 @@ Choose the year you **started** studying — not the current academic year.
 
 The app automatically selects the winter semester (ZS) for the chosen year as your starting point.
 
-### Step 3 — Select your study plan(s)
+### Step 3 — Select your study plan (s)
 
 Pick your field of study from the list. You can search by name or field code.
 
@@ -38,8 +38,8 @@ merges them and shows all relevant courses.
 This step shows every course in your study plan. Tick the ones you've already passed — they'll be hidden from the course
 list so you can focus on what's left.
 
-This step is optional. You can skip it now and mark courses as completed later from inside the app (
-see [Features Reference → Mark as completed](FEATURES.md#mark-as-completed)).
+This step is optional. You can skip it now and mark courses as completed later from inside the app
+(see [Features Reference → Mark as completed](FEATURES.md#mark-as-completed)).
 
 ---
 

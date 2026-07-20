@@ -69,8 +69,8 @@ Self-hosted GitHub Actions runners registered to the repo.
 | `mysql-network`   | DB access                       | api, mcp, mysql, phpmyadmin           |
 | `redis-network`   | Queue + sessions                | api, scraper, redis                   |
 
-Networks are **isolated** — the scraper cannot reach MySQL directly; it can only talk to Redis. The client container (
-Nginx) cannot reach MySQL or Redis.
+Networks are **isolated** — the scraper cannot reach MySQL directly; it can only talk to Redis. The client container
+(Nginx) cannot reach MySQL or Redis.
 
 ---
 

@@ -216,8 +216,8 @@ Non-`ApiError` exceptions produce a generic `500 INTERNAL` response and are `con
 ## Wide-Event Logging
 
 `LoggerAPIContext` delegates to `RequestContext`, which is AsyncLocalStorage-based. The request handler is wrapped in
-`RequestContext.run()` so that all async code (controllers, services, etc.) can access the context. Fields are added
-via `LoggerAPIContext.add()`, which delegates to `RequestContext.add()`.
+`RequestContext.run()` so that all async code (controllers, services, etc.) can access the context. Fields are added via
+`LoggerAPIContext.add()`, which delegates to `RequestContext.add()`.
 
 ```typescript
 // In any controller/service/middleware:
@@ -256,8 +256,8 @@ logger.info({ msg: 'startup' })
 ```
 
 `withJobLogger` (exported from `api/src/logger.ts`) wraps BullMQ worker processors — it creates the job-scoped
-AsyncLocalStorage context and emits the wide-event on completion, equivalent to what `ScraperRequestHandler` does in
-the scraper.
+AsyncLocalStorage context and emits the wide-event on completion, equivalent to what `ScraperRequestHandler` does in the
+scraper.
 
 ---
 

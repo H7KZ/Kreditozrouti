@@ -106,8 +106,8 @@ Each build produces a **short-SHA versioned tag** plus a **floating tag**:
 | Production  | `${GITHUB_SHA::8}` | `latest`     | `a1b2c3d4`        |
 | Development | `${GITHUB_SHA::8}` | `dev-latest` | `a1b2c3d4`        |
 
-The versioned tag (`API_IMAGE_TAG`, `CLIENT_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`) is what `deploy.sh` uses. Each service
-gets its own tag variable so services can be deployed independently at different SHAs. For full-stack deploys via
+The versioned tag (`API_IMAGE_TAG`, `CLIENT_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`) is what `deploy.sh` uses. Each service gets
+its own tag variable so services can be deployed independently at different SHAs. For full-stack deploys via
 `deploy-all.yml`, all three variables are set to the same SHA.
 
 **Login:**

@@ -191,7 +191,7 @@ all good → 'selected'
 
 **File:** `src/stores/wizard.store.ts`
 
-4-step wizard: Faculty → Year → Study Plan(s) → Completed Courses.
+4-step wizard: Faculty → Year → Study Plan (s) → Completed Courses.
 
 **Persisted:** Yes → `STORAGE_KEYS.WIZARD`.
 

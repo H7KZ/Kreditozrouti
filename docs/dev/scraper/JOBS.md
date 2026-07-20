@@ -289,8 +289,8 @@ faculties, and enqueues one `InSIS:FacultyTimetable` job per faculty. Triggered 
    → sends discovery response to API
 ```
 
-**Output:** One `InSIS:FacultyTimetables` response job with `faculties_count`. One `InSIS:FacultyTimetable` request
-job per discovered faculty.
+**Output:** One `InSIS:FacultyTimetables` response job with `faculties_count`. One `InSIS:FacultyTimetable` request job
+per discovered faculty.
 
 **Error handling:** Returns `null` if the initial page fetch fails.
 

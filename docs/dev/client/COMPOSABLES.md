@@ -227,8 +227,8 @@ Groups a course's units by type composition and manages add/remove/swap in `time
 **`unitsByGroup`** (computed): Groups units that have the same set of slot types (e.g. all "lecture only" units in one
 group, all "exercise only" in another). Each group shows a selector so the user can pick one per type.
 
-**`handleAddUnit(unit, slot)`**: Before adding, removes existing units of the same `unitType` from `timetableStore` (
-swap behaviour). Then calls `timetableStore.addUnit()`.
+**`handleAddUnit(unit, slot)`**: Before adding, removes existing units of the same `unitType` from `timetableStore`
+(swap behaviour). Then calls `timetableStore.addUnit()`.
 
 ```typescript
 const { unitsByGroup, missingUnitTypes, isSelectionComplete, hasIncompleteSelection, handleAddUnit, handleRemoveUnit } = useCourseUnitSelection({ course })
@@ -258,8 +258,8 @@ string     // CSS class for highlight
 
 ### `useFacetFiltering(facets, selected, opts)`
 
-Handles the display of checkbox facets in `FilterCheckboxGroup`. Re-injects selected items that have dropped to 0
-count (so selected filters stay visible even when the API would remove them from the facet list).
+Handles the display of checkbox facets in `FilterCheckboxGroup`. Re-injects selected items that have dropped to 0 count
+(so selected filters stay visible even when the API would remove them from the facet list).
 
 ```typescript
 const { combinedFacets, sortedFacets, filterBySearch, getVisibleFacets, toggleListExpanded, toggleSelection } = useFacetFiltering(facets, selected, opts)

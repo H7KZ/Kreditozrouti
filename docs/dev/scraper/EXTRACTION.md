@@ -150,10 +150,10 @@ Everything before is required; everything after is recommended. Each half is con
 
 ### English Syllabus Fields (`extractEnglishFields`)
 
-Parses the same page fetched with `jazyk=3` (English content). Extracts the same nine field types using
-English labels. Literature split marker: `Recommended:` (stripping `Basic:` from the required half).
-Results are stored in `*_en` columns (`aims_of_the_course_en`, etc.). Best-effort: if the EN fetch fails,
-all `*_en` fields remain `null`; the CS result is never blocked.
+Parses the same page fetched with `jazyk=3` (English content). Extracts the same nine field types using English labels.
+Literature split marker: `Recommended:` (stripping `Basic:` from the required half). Results are stored in `*_en`
+columns (`aims_of_the_course_en`, etc.). Best-effort: if the EN fetch fails, all `*_en` fields remain `null`; the CS
+result is never blocked.
 
 ### Assessment Methods (`extractAssessmentMethods`)
 
@@ -323,8 +323,8 @@ currentAcademicYear = referenceDate.month >= 8
 return maxYear !== null && maxYear >= currentAcademicYear
 ```
 
-The September boundary (`month >= 8`) reflects the InSIS academic calendar: the new academic year starts in September.
-A faculty that has not published any timetable rows for the current or upcoming year is treated as non-public.
+The September boundary (`month >= 8`) reflects the InSIS academic calendar: the new academic year starts in September. A
+faculty that has not published any timetable rows for the current or upcoming year is treated as non-public.
 
 ---
 

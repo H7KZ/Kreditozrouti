@@ -12,8 +12,8 @@ Monitoring, security, backup, maintenance, and troubleshooting for running envir
 
 The monitoring stack (`deployment/monitoring/`) provides metrics collection, log aggregation, and dashboards.
 
-- **Prometheus** scrapes `GET /metrics` from each API container every 15 s. Metrics include HTTP request counts,
-  latency histograms, and default Node.js runtime metrics (event loop lag, GC, memory) via `prom-client`.
+- **Prometheus** scrapes `GET /metrics` from each API container every 15 s. Metrics include HTTP request counts, latency
+  histograms, and default Node.js runtime metrics (event loop lag, GC, memory) via `prom-client`.
 - **Loki** receives structured logs from all app containers via Alloy (reads Docker stdout over the Docker socket).
 - **Alloy** collects container logs and browser Faro telemetry; forwards OTLP traces to Tempo.
 - **Grafana** is available at `/grafana` (internal) and is pre-provisioned with Loki as the default datasource.
@@ -28,8 +28,8 @@ docker compose -p monitoring -f deployment/monitoring/docker-compose.monitoring.
 
 ### Alert Rules
 
-Grafana alerting is provisioned from `deployment/monitoring/grafana/provisioning/alerting/rules.yml`. All rules route
-to the Discord contact point via the default notification policy.
+Grafana alerting is provisioned from `deployment/monitoring/grafana/provisioning/alerting/rules.yml`. All rules route to
+the Discord contact point via the default notification policy.
 
 | Rule                    | Group          | Condition                                                   | Severity |
 | ----------------------- | -------------- | ----------------------------------------------------------- | -------- |

@@ -1,8 +1,8 @@
 # MCP Server
 
 The MCP server (`mcp/`) exposes Kreditožrouti data to LLM clients via the
-[Model Context Protocol](https://modelcontextprotocol.io). It connects directly to MySQL
-and is an independent process — it does not call the `api/` HTTP routes.
+[Model Context Protocol](https://modelcontextprotocol.io). It connects directly to MySQL and is an independent process —
+it does not call the `api/` HTTP routes.
 
 ## Tools
 
@@ -76,8 +76,8 @@ The `mcp` service in `deployment/docker-compose.yml` mounts the root `.env` file
 - **`@kreditozrouti/core/db`** — Kysely `Database` type (table interfaces)
 - **`@kreditozrouti/core/services`** — pure DB-query services (CourseService, etc.)
 
-The `mcp/` package owns its own MySQL connection (`mcp/src/Db/client.ts`) and passes
-the `Kysely<Database>` instance into each service call.
+The `mcp/` package owns its own MySQL connection (`mcp/src/Db/client.ts`) and passes the `Kysely<Database>` instance
+into each service call.
 
 ---
 
@@ -185,8 +185,8 @@ Or HTTP mode:
 | `--stdio` | `StdioServerTransport`         | Local dev, Claude Desktop, Cursor, VS Code — process launched by the client |
 | _(none)_  | Streamable HTTP on `POST /mcp` | Docker / production — client connects over the network                      |
 
-The server auto-detects the mode from the presence of `--stdio` in `process.argv`.
-Health check endpoint (`GET /health`) is only available in HTTP mode.
+The server auto-detects the mode from the presence of `--stdio` in `process.argv`. Health check endpoint (`GET /health`)
+is only available in HTTP mode.
 
 ---
 
@@ -274,8 +274,7 @@ When you pass blackout windows to the optimizer or interpret conflict entries, c
 2. **Use Prompts for standard workflows.** The `build_schedule` and `explore_plan` prompts encode the correct call
    sequence. Invoke them at the start of a session rather than rediscovering the order from tool descriptions.
 
-3. **Search with filters, paginate large result sets.** `vse_search_courses` defaults to 20 results. Use `limit` (up to 100) and `offset` to page through. Combine `query`, `faculty_id`, `semester`, and `language` to narrow results
-   before
+3. **Search with filters, paginate large result sets.** `vse_search_courses` defaults to 20 results. Use `limit` (up to 100) and `offset` to page through. Combine `query`, `faculty_id`, `semester`, and `language` to narrow results before
    fetching full course objects.
 
 4. **Fetch a full course when you need slots.** `vse_search_courses` returns summary data. Call `vse_get_course` (or
@@ -288,9 +287,8 @@ When you pass blackout windows to the optimizer or interpret conflict entries, c
     - `mode: "build"` — given a fixed set of `course_ids`, find the best non-conflicting combination of units. Use when
       the user has decided which courses they want.
     - `mode: "explore"` — start from `course_ids` and try adding each course in `explore_course_ids` one by one. Use
-      when the user wants to know which additional courses can still fit.
-      Lock specific units with `locked_unit_ids` to keep the user's existing choices fixed while the solver adjusts the
-      rest.
+      when the user wants to know which additional courses can still fit. Lock specific units with `locked_unit_ids` to
+      keep the user's existing choices fixed while the solver adjusts the rest.
 
 7. **Respect the optimizer rate limit.** `vse_optimize_timetable` is CPU-intensive and rate-limited to 10 req/min in
    production. Avoid calling it in a loop; cache results where possible.

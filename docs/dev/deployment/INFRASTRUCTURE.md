@@ -7,8 +7,8 @@ Traefik reverse proxy, Docker networking, volumes, and environment variable conf
 ## Traefik
 
 Traefik is the single external entry point. It handles TLS termination (via Let's Encrypt + Cloudflare DNS-01),
-HTTP→HTTPS redirect, routes traffic to the right container by host/path, and enforces global security policies
-for all traffic via entrypoint-level middlewares.
+HTTP→HTTPS redirect, routes traffic to the right container by host/path, and enforces global security policies for all
+traffic via entrypoint-level middlewares.
 
 ### Architecture
 
@@ -33,21 +33,21 @@ Internet → Cloudflare (orange cloud) → Traefik :443
 
 Key configuration highlights:
 
-- **Real IP extraction** — `forwardedHeaders.trustedIPs` on the `websecure` entrypoint is set to all Cloudflare
-  IPv4 ranges. Traefik reads the real client IP from `X-Forwarded-For` when the request arrives from a trusted
-  Cloudflare edge IP. Without this, rate limiting and CrowdSec would ban Cloudflare's IPs instead of attackers'.
-- **File provider** — `providers.file` points to `/dynamic.yml` (watched). Global middlewares are defined there
-  rather than as Docker labels, keeping per-service labels clean.
-- **Entrypoint-level middlewares** — all three global middlewares are applied on `websecure` so every router
-  inherits them without per-service configuration.
-- **TLS enforcement** — TLS options are defined in `dynamic.yml` with `name: default` (auto-applies to all
-  routers): minimum TLS 1.2, ECDHE+AES-GCM/ChaCha20 cipher suites only.
+- **Real IP extraction** — `forwardedHeaders.trustedIPs` on the `websecure` entrypoint is set to all Cloudflare IPv4
+  ranges. Traefik reads the real client IP from `X-Forwarded-For` when the request arrives from a trusted Cloudflare
+  edge IP. Without this, rate limiting and CrowdSec would ban Cloudflare's IPs instead of attackers'.
+- **File provider** — `providers.file` points to `/dynamic.yml` (watched). Global middlewares are defined there rather
+  than as Docker labels, keeping per-service labels clean.
+- **Entrypoint-level middlewares** — all three global middlewares are applied on `websecure` so every router inherits
+  them without per-service configuration.
+- **TLS enforcement** — TLS options are defined in `dynamic.yml` with `name: default` (auto-applies to all routers):
+  minimum TLS 1.2, ECDHE+AES-GCM/ChaCha20 cipher suites only.
 - **Prometheus metrics** — enabled via `metrics.prometheus`. Served on the `traefik` entrypoint (port 8080) at
   `/metrics`. Prometheus scrapes it via a static job (Traefik joins `alloy-network` for this).
 - **CrowdSec bouncer plugin** — declared under `experimental.plugins`. The LAPI key is passed as an env var
   (`CROWDSEC_BOUNCER_API_KEY`) and read in `dynamic.yml` via Go template: `{{ env "CROWDSEC_BOUNCER_API_KEY" }}`.
-- **Staging cert resolver** — `letsencrypt-staging` resolver available for testing cert issuance without
-  burning Let's Encrypt rate limits. Uses `storage: /certs/acme-staging.json`.
+- **Staging cert resolver** — `letsencrypt-staging` resolver available for testing cert issuance without burning Let's
+  Encrypt rate limits. Uses `storage: /certs/acme-staging.json`.
 - **Access log** — full JSON format (all requests, no error-only filter) written to
   `/var/log/traefik/access.log` on `traefik-logs-volume`. Tailed by Alloy → Loki.
 
@@ -68,10 +68,10 @@ API key injection: Traefik's file provider processes Go templates in `dynamic.ym
 
 CrowdSec runs as a sidecar container in the Traefik compose stack. It provides two threat-detection layers:
 
-1. **Log-based detection** — reads Traefik's JSON access log, applies behavioral scenarios
-   (brute force, scanning, credential stuffing) from the `crowdsecurity/traefik` collection.
-2. **AppSec engine** — per-request OWASP CRS inspection on port 7422. The Traefik bouncer plugin forwards
-   each request to AppSec before it reaches the backend. Blocks SQLi, XSS, LFI, RCE attempts.
+1. **Log-based detection** — reads Traefik's JSON access log, applies behavioral scenarios (brute force, scanning,
+   credential stuffing) from the `crowdsecurity/traefik` collection.
+2. **AppSec engine** — per-request OWASP CRS inspection on port 7422. The Traefik bouncer plugin forwards each request
+   to AppSec before it reaches the backend. Blocks SQLi, XSS, LFI, RCE attempts.
 
 **Bootstrap (one-time on VPS):**
 

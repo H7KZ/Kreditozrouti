@@ -7,7 +7,7 @@ GitHub Actions automates building, pushing, and deploying all three services.
 ## Overview
 
 Deployments are **path-triggered and per-service**. When code changes are pushed to `main` or `develop`, only the
-service(s) whose source files changed are rebuilt and redeployed.
+service (s) whose source files changed are rebuilt and redeployed.
 
 | Branch    | Environment |
 | --------- | ----------- |
@@ -87,8 +87,8 @@ short SHA.
 
 **Trigger:** `workflow_call` (called by per-service workflows).
 
-Builds and pushes a single service image to GHCR with two tags: `${GITHUB_SHA::8}` and the floating tag. Uses GHA
-layer cache scoped per service and environment.
+Builds and pushes a single service image to GHCR with two tags: `${GITHUB_SHA::8}` and the floating tag. Uses GHA layer
+cache scoped per service and environment.
 
 **Outputs:** `image_tag` (short SHA), `image_prefix` (GHCR path prefix).
 
@@ -193,7 +193,7 @@ After a successful deploy, `deploy.sh` automatically removes version directories
 
 ## Routine Deploys
 
-Push to `main` or `develop` — the path filters determine which workflow(s) run:
+Push to `main` or `develop` — the path filters determine which workflow (s) run:
 
 | Changed path               | Workflow triggered      |
 | -------------------------- | ----------------------- |

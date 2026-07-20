@@ -229,53 +229,6 @@ services:
         order: start-first
 
   # ============================================================================
-  # Docs Service
-  # ============================================================================
-  docs:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/docs:${DOCS_IMAGE_TAG:-latest}
-    restart: unless-stopped
-
-    networks:
-      - traefik-network
-
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-docs.priority=20'
-      - 'traefik.http.routers.${PROJECT}-docs.rule=Host(`${DOMAIN}`) && PathPrefix(`/docs`)'
-      - 'traefik.http.routers.${PROJECT}-docs.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-docs.tls=true'
-      - 'traefik.http.routers.${PROJECT}-docs.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.${PROJECT}-docs.loadbalancer.server.port=80'
-
-    healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:80/health' ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '5m'
-        max-file: '2'
-
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 128M
-        reservations:
-          cpus: '0.05'
-          memory: 32M
-      update_config:
-        parallelism: 1
-        delay: 5s
-        order: start-first
-
-  # ============================================================================
   # MCP Service
   # ============================================================================
   mcp:

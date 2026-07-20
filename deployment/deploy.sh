@@ -114,8 +114,7 @@ validate_environment_vars() {
             client)  [[ -z "${CLIENT_IMAGE_TAG:-}" ]]  && missing+=("CLIENT_IMAGE_TAG") ;;
             scraper) [[ -z "${SCRAPER_IMAGE_TAG:-}" ]] && missing+=("SCRAPER_IMAGE_TAG") ;;
             mcp)     [[ -z "${MCP_IMAGE_TAG:-}" ]]     && missing+=("MCP_IMAGE_TAG") ;;
-            docs)    [[ -z "${DOCS_IMAGE_TAG:-}" ]]    && missing+=("DOCS_IMAGE_TAG") ;;
-            *) log_error "Unknown service: '$service'. Valid values: api, client, scraper, mcp, docs"; exit 1 ;;
+            *) log_error "Unknown service: '$service'. Valid values: api, client, scraper, mcp"; exit 1 ;;
         esac
     fi
 
@@ -228,7 +227,6 @@ main() {
             client)  log "Tag:         ${CLIENT_IMAGE_TAG}" ;;
             scraper) log "Tag:         ${SCRAPER_IMAGE_TAG}" ;;
             mcp)     log "Tag:         ${MCP_IMAGE_TAG}" ;;
-            docs)    log "Tag:         ${DOCS_IMAGE_TAG}" ;;
         esac
     else
         log "Tags:        api=${API_IMAGE_TAG:-} client=${CLIENT_IMAGE_TAG:-} scraper=${SCRAPER_IMAGE_TAG:-}"

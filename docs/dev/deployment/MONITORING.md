@@ -84,12 +84,11 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 | node-exporter | `prom/node-exporter:latest` | Host CPU / memory / disk metrics                        |
 
 All components run in the `monitoring-network` Docker network. Grafana and Alloy also join `traefik-network`
-(for public routing). Prometheus and Alloy also join `alloy-network` — Prometheus to reach container IPs
-discovered via Docker SD and to scrape Traefik metrics (`traefik:8080/metrics`), Alloy to receive OTLP pushes
-from api/scraper.
+(for public routing). Prometheus and Alloy also join `alloy-network` — Prometheus to reach container IPs discovered via
+Docker SD and to scrape Traefik metrics (`traefik:8080/metrics`), Alloy to receive OTLP pushes from api/scraper.
 
-Alloy mounts `traefik-logs-volume` (read-only) to tail `/var/log/traefik/access.log` — see the Traefik access
-log pipeline below.
+Alloy mounts `traefik-logs-volume` (read-only) to tail `/var/log/traefik/access.log` — see the Traefik access log
+pipeline below.
 
 ---
 
@@ -276,19 +275,18 @@ Provisioned from `deployment/monitoring/grafana/provisioning/dashboards/`.
 
 ### Trace correlation
 
-When a log line contains a `trace_id` field (present when OTel has an active span), Grafana shows an
-**Open in Tempo** link that jumps to the matching trace. The Loki datasource derivedField
+When a log line contains a `trace_id` field (present when OTel has an active span), Grafana shows an **Open in Tempo**
+link that jumps to the matching trace. The Loki datasource derivedField
 `matcherRegex: '"trace_id":"(\w+)"'` drives this.
 
 ---
 
 ## Prometheus Metrics
 
-API containers are discovered and scraped via Docker Socket SD (`docker_sd_configs` in `prometheus.yml`).
-Containers must have the `prometheus.io/scrape=true` Docker label to be included; Prometheus filters to the
-`alloy-network` interface only (one target per container, not one per network). The `/metrics` endpoint returns
-404 for requests with an `x-forwarded-for` header (i.e. via Traefik), so it is only reachable from within
-the Docker network.
+API containers are discovered and scraped via Docker Socket SD (`docker_sd_configs` in `prometheus.yml`). Containers
+must have the `prometheus.io/scrape=true` Docker label to be included; Prometheus filters to the
+`alloy-network` interface only (one target per container, not one per network). The `/metrics` endpoint returns 404 for
+requests with an `x-forwarded-for` header (i.e. via Traefik), so it is only reachable from within the Docker network.
 
 | Metric                          | Type      | Labels                                  | Notes                                              |
 | ------------------------------- | --------- | --------------------------------------- | -------------------------------------------------- |
@@ -301,8 +299,8 @@ the Docker network.
 | Host metrics                    | various   | —                                       | node-exporter: CPU, disk, network                  |
 
 The `env` label on API metrics comes from the `prometheus.io/env` Docker container label (`production` or
-`development`), copied via `relabel_configs`. Both prod and dev API containers are scraped automatically
-with correct per-container env metadata — no static target list required. Node-exporter gets `env=production`
+`development`), copied via `relabel_configs`. Both prod and dev API containers are scraped automatically with correct
+per-container env metadata — no static target list required. Node-exporter gets `env=production`
 via a static relabel.
 
 ---
@@ -331,8 +329,8 @@ All alert rules use raw PromQL (`histogram_quantile`, `rate`) — there are no r
 
 ### Discord notification format
 
-Title template: `🔴 Alert Name` / `✅ Alert Name` on resolve.
-Message template: status line with env + severity, followed by the alert `summary` and `description`
+Title template: `🔴 Alert Name` / `✅ Alert Name` on resolve. Message template: status line with env + severity, followed
+by the alert `summary` and `description`
 annotations. `disableResolveMessage: true` suppresses the automatic "resolved" message.
 
 ---
@@ -404,10 +402,10 @@ If all your test requests hit `/health`, no logs will appear in Loki.
 
 ### Trace links don't appear in Grafana
 
-Trace context is only injected into pino when there is an active OpenTelemetry span. Spans are created
-automatically for HTTP requests via `@opentelemetry/instrumentation-http` (included in
-`getNodeAutoInstrumentations`). If `OTEL_EXPORTER_OTLP_ENDPOINT` is not set or the endpoint is unreachable,
-the SDK will fail silently but spans will still be created locally — trace IDs will appear in logs.
+Trace context is only injected into pino when there is an active OpenTelemetry span. Spans are created automatically for
+HTTP requests via `@opentelemetry/instrumentation-http` (included in
+`getNodeAutoInstrumentations`). If `OTEL_EXPORTER_OTLP_ENDPOINT` is not set or the endpoint is unreachable, the SDK will
+fail silently but spans will still be created locally — trace IDs will appear in logs.
 
 Check that `alloy-network` is attached to both `api` and `scraper` containers.
 

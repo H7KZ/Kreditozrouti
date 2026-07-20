@@ -188,13 +188,13 @@ Returns courses belonging to a specific study plan.
 
 ### `POST /optimize`
 
-Runs the timetable solver against a candidate course pool and returns up to 5 ranked,
-diversity-filtered conflict-free timetable candidates.
+Runs the timetable solver against a candidate course pool and returns up to 5 ranked, diversity-filtered conflict-free
+timetable candidates.
 
 **Controller:** `OptimizeController` · **Service:** `OptimizeService.optimize` · **Router:** `OptimizeRoutes`
 
-**Rate limit:** 10 requests/10 minutes per IP (`optimizeRateLimit()`, separate Redis-backed limiter from the
-scraper's `scraperRateLimit()`).
+**Rate limit:** 10 requests/10 minutes per IP (`optimizeRateLimit()`, separate Redis-backed limiter from the scraper's
+`scraperRateLimit()`).
 
 **Request body** (validated by a Zod schema co-located in `OptimizeController.ts`):
 
@@ -276,8 +276,8 @@ BullMQ queue inspection UI. Routes to the Bull Board Express adapter mounted at 
 
 **Internal only** — not routed through Traefik in production. Access via SSH tunnel or internal network.
 
-Path was previously `/admin/queues`; moved to `/bullboard` to align with the Traefik label and avoid
-collision with the `/admin` prefix.
+Path was previously `/admin/queues`; moved to `/bullboard` to align with the Traefik label and avoid collision with the
+`/admin` prefix.
 
 ---
 
@@ -402,9 +402,8 @@ Triggers scraping of a single study plan by URL.
 
 ### `POST /commands/insis/retry-failed`
 
-Re-enqueues all currently-failed `InSIS:Course` and/or `InSIS:StudyPlan` scrape jobs from the
-request queue's failed set. Eases recovery after a burst of failures (e.g. faculty-upsert
-deadlocks under concurrent load).
+Re-enqueues all currently-failed `InSIS:Course` and/or `InSIS:StudyPlan` scrape jobs from the request queue's failed
+set. Eases recovery after a burst of failures (e.g. faculty-upsert deadlocks under concurrent load).
 
 **Controller:** `RetryFailedInSISScrapesController`
 
@@ -422,8 +421,8 @@ deadlocks under concurrent load).
 
 ### `POST /commands/insis/academic-schedules`
 
-Triggers a full InSIS academic schedule scrape (harmonogram akademického roku).
-Scrapes all faculties, discovers all academic periods, and enqueues per-period event scraping.
+Triggers a full InSIS academic schedule scrape (harmonogram akademického roku). Scrapes all faculties, discovers all
+academic periods, and enqueues per-period event scraping.
 
 **Controller:** `RunInSISAcademicSchedulesScraperController`
 
@@ -435,9 +434,9 @@ No request body — triggers a full scrape covering all InSIS faculties.
 
 ### `POST /commands/insis/faculty-timetables`
 
-Triggers a faculty timetable scrape to refresh `is_schedule_publicly_visible` flags for all InSIS faculties.
-Enqueues `InSIS:FacultyTimetables`, which discovers all faculties and queues one `InSIS:FacultyTimetable` job per
-faculty. Also runs automatically on a weekly Sunday midnight cron in production.
+Triggers a faculty timetable scrape to refresh `is_schedule_publicly_visible` flags for all InSIS faculties. Enqueues
+`InSIS:FacultyTimetables`, which discovers all faculties and queues one `InSIS:FacultyTimetable` job per faculty. Also
+runs automatically on a weekly Sunday midnight cron in production.
 
 **Controller:** `RunInSISFacultyTimetablesScraperController`
 

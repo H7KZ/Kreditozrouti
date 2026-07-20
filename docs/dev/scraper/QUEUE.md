@@ -50,8 +50,8 @@ new Worker(ScraperRequestQueue, handler, {
 })
 ```
 
-- **Concurrency 1:** up to 1 job runs at a time per worker process. Combined with the cluster (default 1 process),
-  this means 1 concurrent scrape per node.
+- **Concurrency 1:** up to 1 job runs at a time per worker process. Combined with the cluster (default 1 process), this
+  means 1 concurrent scrape per node.
 - **Limiter 10/sec:** hard cap of 10 job starts per second, regardless of concurrency. This is the primary InSIS
   rate-limit guard.
 

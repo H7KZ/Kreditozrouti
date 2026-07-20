@@ -66,8 +66,8 @@ LoggerJobContext.log.info(LoggerJobContext.get())
 // → {"level":"INFO","time":"...","job_id":"...","course_id":42,"status":"success","duration_ms":1234,...}
 ```
 
-**Why wide events?** A single JSON object is far easier to query in log aggregators (Grafana, Loki, etc.) than
-scattered multi-line logs. You can filter `status=failed AND attempt>2` with a single index scan.
+**Why wide events?** A single JSON object is far easier to query in log aggregators (Grafana, Loki, etc.) than scattered
+multi-line logs. You can filter `status=failed AND attempt>2` with a single index scan.
 
 ### Root logger (`scraper/src/logger.ts`)
 
@@ -79,8 +79,8 @@ logger derived from this root — no separate logger instantiation is needed in 
 // LoggerJobContext.log = logger.child({ context: 'job' })
 ```
 
-No wrapper function is needed: `ScraperRequestHandler` owns the full job lifecycle (AsyncLocalStorage setup,
-field accumulation, final emit) directly.
+No wrapper function is needed: `ScraperRequestHandler` owns the full job lifecycle (AsyncLocalStorage setup, field
+accumulation, final emit) directly.
 
 ### `JobWideEvent` interface
 

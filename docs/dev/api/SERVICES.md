@@ -20,8 +20,8 @@ Business logic lives in `api/src/Services/`. Controllers are thin: they validate
 
 All existing consumers import from `@api/Services/CourseService` without change.
 
-The combined logic handles paginated course queries, facet calculation, time-conflict filtering, and full-text
-search — all while avoiding N+1 queries.
+The combined logic handles paginated course queries, facet calculation, time-conflict filtering, and full-text search —
+all while avoiding N+1 queries.
 
 ### PrerequisiteParser
 
@@ -61,8 +61,8 @@ When `completed_course_idents` is active, `CourseFilterBuilder` adds two additio
 ### Study Plan Filter Guard
 
 When `study_plan_ids` is active, `CourseFilterBuilder.applyAllFilters` skips the `years` and `semesters`
-WHERE clauses. The `course_id` join already scopes results to exactly the plan's courses; applying a
-year/semester filter on `insis_courses` would incorrectly exclude linked courses scraped in a prior year.
+WHERE clauses. The `course_id` join already scopes results to exactly the plan's courses; applying a year/semester
+filter on `insis_courses` would incorrectly exclude linked courses scraped in a prior year.
 
 ### N+1 Avoidance Pattern
 
