@@ -4,6 +4,7 @@ import vueI18n from '@intlify/unplugin-vue-i18n/vite'
 import vueTailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import vueIcons from 'unplugin-icons/vite'
+import Markdown from 'unplugin-vue-markdown/vite'
 import { defineConfig, loadEnv } from 'vite'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
@@ -19,8 +20,9 @@ export default ({ mode }: { mode: string }) => {
 			APP_VERSION: JSON.stringify(process.env.npm_package_version)
 		},
 		plugins: [
-			vueRouter({ dts: 'src/route-map.d.ts' }), // vueRouter must be before vue !!!
-			vue(),
+			vueRouter({ dts: 'src/route-map.d.ts', extensions: ['.vue', '.md'] }), // vueRouter must be before vue !!!
+			Markdown({ frontmatter: true, exportFrontmatter: true }),
+			vue({ include: [/\.vue$/, /\.md$/] }),
 			vueDevTools(),
 			vueTailwindcss(),
 			vueI18n({
