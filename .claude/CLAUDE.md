@@ -18,7 +18,7 @@ Do not use em dashes (--) in any file — use a plain hyphen (-) instead.
 
 **Small fix sessions** — When asked to fix something specific:
 
-- Read only the file(s) explicitly named.
+- Read only the file (s) explicitly named.
 - Do not explore related files "just in case".
 - One file in, one fix out.
 
@@ -109,12 +109,12 @@ table. Cross-cutting docs:
 
 | Area         | Doc                                                                                                                                                                                                                                                                       |
 |--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| User Guide   | [docs/dev/user/README.md](../docs/dev/user/README.md) · [features](../docs/dev/user/FEATURES.md) · [getting started](../docs/dev/user/GETTING_STARTED.md)                                                                                                                 |
-| Domain       | [docs/dev/DOMAIN.md](../docs/dev/DOMAIN.md) — glossary, architecture seams                                                                                                                                                                                                |
-| Architecture | [docs/dev/ARCHITECTURE.md](../docs/dev/ARCHITECTURE.md) · [monorepo](../docs/dev/architecture/MONOREPO.md) · [services](../docs/dev/architecture/SERVICES.md) · [data flow](../docs/dev/architecture/DATA_FLOW.md) · [containers](../docs/dev/architecture/CONTAINERS.md) |
-| Engineering  | [docs/dev/ENGINEERING.md](../docs/dev/ENGINEERING.md) · [setup](../docs/dev/engineering/SETUP.md) · [contributing](../docs/dev/engineering/CONTRIBUTING.md)                                                                                                               |
-| Shared       | [docs/dev/shared/README.md](../docs/dev/shared/README.md) · [domain](../docs/dev/shared/DOMAIN.md) · [http](../docs/dev/shared/HTTP.md) · [queue](../docs/dev/shared/QUEUE.md)                                                                                            |
-| MCP          | [docs/dev/mcp/README.md](../docs/dev/mcp/README.md) — tools, transport modes, env vars, Docker                                                                                                                                                                            |
+| User Guide   | [docs/dev/user/README.md](../docs/user/README.md) · [features](../docs/user/FEATURES.md) · [getting started](../docs/user/GETTING_STARTED.md)                                                                                                                 |
+| Domain       | [docs/dev/DOMAIN.md](../docs/DOMAIN.md) — glossary, architecture seams                                                                                                                                                                                                |
+| Architecture | [docs/dev/ARCHITECTURE.md](../docs/ARCHITECTURE.md) · [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md) |
+| Engineering  | [docs/dev/ENGINEERING.md](../docs/ENGINEERING.md) · [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md)                                                                                                               |
+| Shared       | [docs/dev/shared/README.md](../docs/shared/README.md) · [domain](../docs/shared/DOMAIN.md) · [http](../docs/shared/HTTP.md) · [queue](../docs/shared/QUEUE.md)                                                                                            |
+| MCP          | [docs/dev/mcp/README.md](../docs/mcp/README.md) — tools, transport modes, env vars, Docker                                                                                                                                                                            |
 
 ---
 
@@ -122,10 +122,9 @@ table. Cross-cutting docs:
 
 After completing any task that changes code, configuration, or behavior:
 
-1. **Identify** which `docs/` file(s) describe the changed area
-2. **Also check `docs/dev/user/FEATURES.md`** — if the change affects a user-visible feature (filters, timetable,
-   conflict
-   detection, wizard, course refresh, saved schedules, language, theme, etc.), update the relevant section
+1. **Identify** which `docs/` file (s) describe the changed area
+2. **Also check `../docs/user/FEATURES.md`** — if the change affects a user-visible feature (filters, timetable,
+   conflict detection, wizard, course refresh, saved schedules, language, theme, etc.), update the relevant section
 3. **Update** any doc that describes what changed — keep it accurate
 4. **New behavior with no doc entry?** Ask: _"This change isn't mentioned in the docs — should I document it?"_
 
@@ -145,8 +144,8 @@ After completing any task that changes code, config, or behavior in a package:
 
 ## Encoding
 
-Strict UTF-8 — zero tolerance for mojibake. Fix garbled characters at the byte level.
-For new Vue/TS code, paste raw Unicode literals directly — no HTML entities or escape sequences.
+Strict UTF-8 — zero tolerance for mojibake. Fix garbled characters at the byte level. For new Vue/TS code, paste raw
+Unicode literals directly — no HTML entities or escape sequences.
 
 ---
 

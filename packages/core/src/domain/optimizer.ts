@@ -1,7 +1,8 @@
 ﻿// Section 1: imports
+// Section 1: imports
 import type { CourseUnitType, Day, ScheduledUnit, SolverConstraints } from '@kreditozrouti/types'
 import { getDayFromDate } from './day.js'
-import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from './timetable.js'
+import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from './timetable.js' // Section 2: Constants
 
 // Section 2: Constants
 

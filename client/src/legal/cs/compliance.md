@@ -116,8 +116,8 @@ budoucnu migroval na infrastrukturu VŠE, platila by následující ustanovení:
 
 ## 6. Kontext studijního a zkušebního řádu
 
-Studijní a zkušební řád VŠE stanovuje rámec pro registraci předmětů, studijní plány a rozvrhy. Kreditožrouti podporuje (
-ale nenahrazuje) oficiální procesy definované těmito pravidly.
+Studijní a zkušební řád VŠE stanovuje rámec pro registraci předmětů, studijní plány a rozvrhy. Kreditožrouti podporuje
+(ale nenahrazuje) oficiální procesy definované těmito pravidly.
 
 | Článek | Studijní pravidlo                                              | Podpora Kreditožrouti                                                                                                                                     |
 | ------ | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -129,8 +129,8 @@ ale nenahrazuje) oficiální procesy definované těmito pravidly.
 
 ## 7. Analytika a soukromí
 
-Kreditožrouti používá **Umami Analytics** — vlastní instanci. Umami je
-open-source analytický nástroj navržený tak, aby respektoval soukromí:
+Kreditožrouti používá **Umami Analytics** — vlastní instanci. Umami je open-source analytický nástroj navržený tak, aby
+respektoval soukromí:
 
 | Vlastnost                  | Detail                                                                                            |
 | -------------------------- | ------------------------------------------------------------------------------------------------- |

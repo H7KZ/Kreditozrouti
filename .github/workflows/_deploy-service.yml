@@ -148,8 +148,7 @@ jobs:
               client)  SERVICE_TAG_VAR="CLIENT_IMAGE_TAG" ;;
               scraper) SERVICE_TAG_VAR="SCRAPER_IMAGE_TAG" ;;
               mcp)     SERVICE_TAG_VAR="MCP_IMAGE_TAG" ;;
-              docs)    SERVICE_TAG_VAR="DOCS_IMAGE_TAG" ;;
-              *)       echo "Unknown service: '$APP_SERVICE'. Valid: api, client, scraper, mcp, docs"; exit 1 ;;
+              *)       echo "Unknown service: '$APP_SERVICE'. Valid: api, client, scraper, mcp"; exit 1 ;;
             esac
 
             cd "$VERSION_DIR"

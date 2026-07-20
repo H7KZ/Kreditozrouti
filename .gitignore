@@ -14,6 +14,7 @@ scripts/server.conf
 docs/superpowers/
 .superpowers/
 .planning/
+.scratch/
 
 /data
 /di-fis-ka.wiki

@@ -78,26 +78,15 @@ jobs:
       cache_scope: mcp-${{ inputs.environment == 'production' && 'prod' || 'dev' }}
     secrets: inherit
 
-  build-docs:
-    name: Build Docs
-    if: ${{ !inputs.skip_build && inputs.image_tag == '' }}
-    uses: ./.github/workflows/_build-service.yml
-    with:
-      service: docs
-      float_tag: ${{ inputs.environment == 'production' && 'latest' || 'dev-latest' }}
-      cache_scope: docs-${{ inputs.environment == 'production' && 'prod' || 'dev' }}
-    secrets: inherit
-
   deploy:
     name: Deploy All to ${{ inputs.environment }}
-    needs: [ build-api, build-client, build-scraper, build-mcp, build-docs ]
+    needs: [ build-api, build-client, build-scraper, build-mcp ]
     if: >-
       ${{ always() &&
       (needs.build-api.result == 'success' || needs.build-api.result == 'skipped') &&
       (needs.build-client.result == 'success' || needs.build-client.result == 'skipped') &&
       (needs.build-scraper.result == 'success' || needs.build-scraper.result == 'skipped') &&
-      (needs.build-mcp.result == 'success' || needs.build-mcp.result == 'skipped') &&
-      (needs.build-docs.result == 'success' || needs.build-docs.result == 'skipped') }}
+      (needs.build-mcp.result == 'success' || needs.build-mcp.result == 'skipped') }}
     runs-on: self-hosted
     timeout-minutes: 20
     environment: ${{ inputs.environment }}
@@ -216,7 +205,6 @@ jobs:
               CLIENT_IMAGE_TAG="$IMG_TAG" \
               SCRAPER_IMAGE_TAG="$IMG_TAG" \
               MCP_IMAGE_TAG="$IMG_TAG" \
-              DOCS_IMAGE_TAG="$IMG_TAG" \
               bash ./deploy.sh "$PROJECT_NAME" "${{ inputs.environment }}"
 
             ln -sfn "$VERSION_DIR" "$CURRENT_LINK"

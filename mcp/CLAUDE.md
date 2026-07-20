@@ -33,9 +33,9 @@ mcp/src/
   to `HH:MM` in responses
 - **Optimizer rate-limit** enforced in `app.ts` before dispatch (body inspection:
   `req.body.params?.name === 'vse_optimize_timetable'`), not inside tool handlers
-- **Three-primitive architecture**: Tools = model-driven actions; Resources = app-controlled read-only data;
-  Prompts = user-invocable workflow templates. Use `server.registerTool/registerResource/registerPrompt` — the
-  deprecated `server.tool/resource/prompt` overloads must not be used.
+- **Three-primitive architecture**: Tools = model-driven actions; Resources = app-controlled read-only data; Prompts =
+  user-invocable workflow templates. Use `server.registerTool/registerResource/registerPrompt` — the deprecated
+  `server.tool/resource/prompt` overloads must not be used.
 
 ## MCP Primitives
 

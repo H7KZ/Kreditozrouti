@@ -106,7 +106,6 @@ validate_environment_vars() {
         [[ -z "${CLIENT_IMAGE_TAG:-}" ]] && missing+=("CLIENT_IMAGE_TAG")
         [[ -z "${SCRAPER_IMAGE_TAG:-}" ]] && missing+=("SCRAPER_IMAGE_TAG")
         [[ -z "${MCP_IMAGE_TAG:-}" ]] && missing+=("MCP_IMAGE_TAG")
-        [[ -z "${DOCS_IMAGE_TAG:-}" ]] && missing+=("DOCS_IMAGE_TAG")
     else
         # Single-service: only the relevant tag required
         case "$service" in

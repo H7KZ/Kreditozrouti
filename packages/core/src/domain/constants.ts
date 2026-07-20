@@ -1,5 +1,6 @@
 // packages/core/src/domain/constants.ts
 // packages/core/src/domain/constants.ts
+// packages/core/src/domain/constants.ts
 import type { Day } from '@kreditozrouti/types'
 
 export const INSIS_DAY_NORM: Record<string, Day> = {
