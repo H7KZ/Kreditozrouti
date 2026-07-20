@@ -1,4 +1,4 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { db } from '@mcp/Database/client'
 import BuildSchedulePrompt from '@mcp/Prompts/BuildSchedulePrompt'
 import ExplorePlanPrompt from '@mcp/Prompts/ExplorePlanPrompt'

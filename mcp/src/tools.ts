@@ -1,7 +1,7 @@
 // mcp/src/tools.ts
 import type { Database } from '@kreditozrouti/types'
-import type { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp'
-import type { CallToolResult, GetPromptResult, ListResourcesResult, ReadResourceResult } from '@modelcontextprotocol/sdk/types'
+import type { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { CallToolResult, GetPromptResult, ListResourcesResult, ReadResourceResult } from '@modelcontextprotocol/sdk/types.js'
 import type { Kysely } from 'kysely'
 import type { ZodRawShape } from 'zod'
 import { z } from 'zod'

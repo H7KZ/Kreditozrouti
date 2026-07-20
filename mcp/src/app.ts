@@ -1,5 +1,5 @@
 ﻿import type { Express } from 'express'
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp'
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
 import express from 'express'
 import { rateLimit } from 'express-rate-limit'
 import { createServer } from '@mcp/server'

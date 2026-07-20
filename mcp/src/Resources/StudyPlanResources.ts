@@ -1,7 +1,7 @@
 import type { Database } from '@kreditozrouti/types'
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
-import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp'
+import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
 import StudyPlanService from '@kreditozrouti/core/services/StudyPlanService'
 import { defineResource, registerResource, registerResourceTemplate } from '@mcp/tools'
 

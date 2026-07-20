@@ -1,5 +1,5 @@
 import type { CourseFilter, Database } from '@kreditozrouti/types'
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
 import { z } from 'zod'
 import CourseService from '@kreditozrouti/core/services/CourseService'
