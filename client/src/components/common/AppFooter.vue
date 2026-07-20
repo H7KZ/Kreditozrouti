@@ -9,7 +9,7 @@ import IconBookOpen from '~icons/lucide/book-open'
 import IconInfo from '~icons/lucide/info'
 import IconMail from '~icons/lucide/mail'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const currentYear = new Date().getFullYear()
 const appVersion = APP_VERSION
@@ -40,13 +40,13 @@ const appVersion = APP_VERSION
 					</h3>
 					<ul class="space-y-2 text-sm">
 						<li>
-							<a
-								href="https://kreditozrouti.cz/docs/en/getting-started"
+							<RouterLink
+								:to="`/docs/${locale}/getting-started`"
 								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 							>
 								<IconBookOpen class="h-4 w-4 shrink-0" aria-hidden="true" />
 								{{ t('footer.links.guide') }}
-							</a>
+							</RouterLink>
 						</li>
 						<li>
 							<RouterLink
@@ -58,13 +58,13 @@ const appVersion = APP_VERSION
 							</RouterLink>
 						</li>
 						<li>
-							<a
-								href="https://kreditozrouti.cz/docs/en/legal/privacy"
+							<RouterLink
+								:to="`/docs/${locale}/legal/privacy`"
 								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 							>
 								<IconFileText class="h-4 w-4 shrink-0" aria-hidden="true" />
 								{{ t('footer.links.compliance') }}
-							</a>
+							</RouterLink>
 						</li>
 						<li>
 							<a
