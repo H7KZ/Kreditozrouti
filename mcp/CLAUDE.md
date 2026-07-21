@@ -36,6 +36,12 @@ mcp/src/
 - **Three-primitive architecture**: Tools = model-driven actions; Resources = app-controlled read-only data; Prompts =
   user-invocable workflow templates. Use `server.registerTool/registerResource/registerPrompt` — the deprecated
   `server.tool/resource/prompt` overloads must not be used.
+- **OAuth 2.1 required for HTTP transport**: `POST /mcp` requires a valid `Authorization: Bearer <token>`. OAuth is
+  auto-approve (public data) — no login screen, DCR auto-registers any client. OAuth store is in-memory; tokens expire
+  after 1 hour. `MCP_JWT_SECRET` must be set in production or tokens are ephemeral. `MCP_BASE_URL` must match the
+  public URL (used in well-known discovery). The well-known routes (`/.well-known/oauth-*`) are served by this process
+  but routed via a separate Traefik rule (`${PROJECT}-mcp-wellknown`).
+- **stdio transport bypasses OAuth**: `--stdio` mode never touches OAuth routes
 
 ## MCP Primitives
 

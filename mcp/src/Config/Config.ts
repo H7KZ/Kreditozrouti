@@ -3,6 +3,8 @@ interface Config {
 	port: number
 	nodeEnv: string
 	logLevel: string
+	baseUrl: string
+	jwtSecret: string
 }
 
 function required(name: string): string {
@@ -15,7 +17,9 @@ const config: Config = {
 	mysqlUri: required('MYSQL_URI'),
 	port: Number(process.env.MCP_PORT ?? 3000),
 	nodeEnv: process.env.NODE_ENV ?? 'development',
-	logLevel: process.env.LOG_LEVEL ?? 'info'
+	logLevel: process.env.LOG_LEVEL ?? 'info',
+	baseUrl: process.env.MCP_BASE_URL ?? 'http://localhost:3000',
+	jwtSecret: process.env.MCP_JWT_SECRET ?? ''
 }
 
 export default config

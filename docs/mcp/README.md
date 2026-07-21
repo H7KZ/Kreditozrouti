@@ -47,18 +47,27 @@ Configure in `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```bash
 node dist/index.js
 # Listens on MCP_PORT (default 3000)
-# POST /mcp   — MCP protocol
-# GET  /health — health check
+# POST /mcp                                   — MCP protocol (requires Bearer token)
+# GET  /health                                — health check
+# GET  /.well-known/oauth-authorization-server — OAuth 2.1 metadata (RFC 8414)
+# GET  /.well-known/oauth-protected-resource  — protected resource metadata (RFC 9728)
+# POST /mcp/oauth/register                    — Dynamic Client Registration (RFC 7591)
+# GET  /mcp/oauth/authorize                   — Authorization Code endpoint (PKCE)
+# POST /mcp/oauth/token                       — Token endpoint
 ```
+
+HTTP mode requires OAuth 2.1 authentication. Clients that support Dynamic Client Registration (Claude Desktop, ChatGPT, Cursor) handle this automatically - no manual setup needed.
 
 ## Environment Variables
 
-| Variable    | Required | Default       | Description                    |
-| ----------- | -------- | ------------- | ------------------------------ |
-| `MYSQL_URI` | yes      | —             | mysql2 connection string       |
-| `MCP_PORT`  | no       | `3000`        | HTTP listen port               |
-| `NODE_ENV`  | no       | `development` | Enables production rate limits |
-| `LOG_LEVEL` | no       | `info`        | Pino log level                 |
+| Variable          | Required | Default                    | Description                                              |
+| ----------------- | -------- | -------------------------- | -------------------------------------------------------- |
+| `MYSQL_URI`       | yes      | —                          | mysql2 connection string                                 |
+| `MCP_PORT`        | no       | `3000`                     | HTTP listen port                                         |
+| `NODE_ENV`        | no       | `development`              | Enables production rate limits                           |
+| `LOG_LEVEL`       | no       | `info`                     | Pino log level                                           |
+| `MCP_BASE_URL`    | no       | `http://localhost:3000`    | Public base URL of the server (used in OAuth metadata)   |
+| `MCP_JWT_SECRET`  | no*      | auto-generated (ephemeral) | HMAC-SHA256 secret for signing access tokens. *Required in production - tokens won't survive restarts if unset |
 
 ## Docker
 
@@ -102,7 +111,19 @@ into each service call.
 }
 ```
 
-**Docker/HTTP** — connect via the running HTTP server:
+**Remote (production)** — connect to `https://kreditozrouti.cz/mcp`. Claude Desktop handles OAuth automatically:
+
+```json
+{
+	"mcpServers": {
+		"kreditozrouti": {
+			"url": "https://kreditozrouti.cz/mcp"
+		}
+	}
+}
+```
+
+**Docker/HTTP (local)** — connect via the running HTTP server. OAuth is still required; clients negotiate it automatically:
 
 ```json
 {

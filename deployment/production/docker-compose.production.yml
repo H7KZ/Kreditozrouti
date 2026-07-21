@@ -244,6 +244,8 @@ services:
       - MYSQL_URI=${MYSQL_URI}
       - MCP_PORT=3000
       - LOG_LEVEL=${LOG_LEVEL:-info}
+      - MCP_BASE_URL=https://${DOMAIN}
+      - MCP_JWT_SECRET=${MCP_JWT_SECRET}
 
     networks:
       - traefik-network
@@ -258,6 +260,13 @@ services:
       - 'traefik.http.routers.${PROJECT}-mcp.tls=true'
       - 'traefik.http.routers.${PROJECT}-mcp.tls.certresolver=letsencrypt'
       - 'traefik.http.services.${PROJECT}-mcp.loadbalancer.server.port=3000'
+      # OAuth well-known discovery endpoints (must be served from root domain)
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.priority=60'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/oauth`)'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.entrypoints=websecure'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls=true'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.service=${PROJECT}-mcp'
 
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:3000/health' ]
