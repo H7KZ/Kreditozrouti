@@ -81,6 +81,7 @@ jobs:
           IMG_TAG: ${{ inputs.image_tag }}
           # Service
           APP_SERVICE: ${{ inputs.service }}
+          APP_ENV: ${{ inputs.environment }}
           # Non-sensitive (GitHub Variables)
           APP_PROJECT: ${{ vars.PROJECT }}
           APP_DOMAIN: ${{ vars.DOMAIN }}
@@ -104,7 +105,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_BULL_BOARD_USER,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC
+          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_ENV,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_BULL_BOARD_USER,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC
           script: |
             set -euo pipefail
 
@@ -118,26 +119,26 @@ jobs:
             # Login to GHCR
             echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
 
-            # Write .env
+            # Write .env — printf prevents $ or $() in secret values from being shell-expanded
             {
-              echo "ENV=${{ inputs.environment }}"
-              echo "PROJECT=$APP_PROJECT"
-              echo "DOMAIN=$APP_DOMAIN"
-              echo "API_SESSION_SECRET=$APP_API_SESSION_SECRET"
-              echo "API_COMMAND_TOKEN=$APP_API_COMMAND_TOKEN"
-              echo "VITE_APP_VERSION=$IMG_TAG"
-              echo "MYSQL_USER=$APP_MYSQL_USER"
-              echo "MYSQL_DATABASE=$APP_MYSQL_DATABASE"
-              echo "MYSQL_PASSWORD=$APP_MYSQL_PASSWORD"
-              echo "MYSQL_ROOT_PASSWORD=$APP_MYSQL_ROOT_PASSWORD"
-              echo "MYSQL_URI=$APP_MYSQL_URI"
-              echo "REDIS_URI=$APP_REDIS_URI"
-              echo "REDIS_PASSWORD=$APP_REDIS_PASSWORD"
-              echo "GOOGLE_USER=$APP_GOOGLE_USER"
-              echo "GOOGLE_APP_PASSWORD=$APP_GOOGLE_APP_PASSWORD"
+              printf 'ENV=%s\n' "$APP_ENV"
+              printf 'PROJECT=%s\n' "$APP_PROJECT"
+              printf 'DOMAIN=%s\n' "$APP_DOMAIN"
+              printf 'API_SESSION_SECRET=%s\n' "$APP_API_SESSION_SECRET"
+              printf 'API_COMMAND_TOKEN=%s\n' "$APP_API_COMMAND_TOKEN"
+              printf 'VITE_APP_VERSION=%s\n' "$IMG_TAG"
+              printf 'MYSQL_USER=%s\n' "$APP_MYSQL_USER"
+              printf 'MYSQL_DATABASE=%s\n' "$APP_MYSQL_DATABASE"
+              printf 'MYSQL_PASSWORD=%s\n' "$APP_MYSQL_PASSWORD"
+              printf 'MYSQL_ROOT_PASSWORD=%s\n' "$APP_MYSQL_ROOT_PASSWORD"
+              printf 'MYSQL_URI=%s\n' "$APP_MYSQL_URI"
+              printf 'REDIS_URI=%s\n' "$APP_REDIS_URI"
+              printf 'REDIS_PASSWORD=%s\n' "$APP_REDIS_PASSWORD"
+              printf 'GOOGLE_USER=%s\n' "$APP_GOOGLE_USER"
+              printf 'GOOGLE_APP_PASSWORD=%s\n' "$APP_GOOGLE_APP_PASSWORD"
               printf 'BULL_BOARD_USER=%s\n' "$APP_BULL_BOARD_USER"
-              echo "VITE_UMAMI_WEBSITE_ID=$APP_UMAMI_WEBSITE_ID"
-              echo "VITE_UMAMI_SRC=$APP_UMAMI_SRC"
+              printf 'VITE_UMAMI_WEBSITE_ID=%s\n' "$APP_UMAMI_WEBSITE_ID"
+              printf 'VITE_UMAMI_SRC=%s\n' "$APP_UMAMI_SRC"
             } > "$VERSION_DIR/.env"
             chmod 600 "$VERSION_DIR/.env"
 
