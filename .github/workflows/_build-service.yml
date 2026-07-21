@@ -2,7 +2,7 @@
 # Description: Builds and pushes a single service Docker image to GHCR.
 #              Called by per-service deploy workflows (deploy-api.yml, etc.)
 #
-# Inputs:  service, float_tag, cache_scope
+# Inputs:  service (api | client | scraper | mcp), float_tag, cache_scope
 # Outputs: image_tag (short SHA), image_prefix
 
 name: Build Service Image (reusable)
@@ -11,7 +11,7 @@ on:
   workflow_call:
     inputs:
       service:
-        description: 'Service to build: api | client | scraper'
+        description: 'Service to build: api | client | scraper | mcp'
         required: true
         type: string
       float_tag:
