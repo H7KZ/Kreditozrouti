@@ -1,8 +1,8 @@
 # ==============================================================================
 # Workflow: Rollback Deployment
-# Description: Redeploys a previously deployed SHA for one service or all three.
-#              Guard check ensures the target version directory exists on the server
-#              before any deploy job runs.
+# Description: Redeploys a previously deployed SHA for one or all services.
+#              Guard check ensures the target version directory exists on the
+#              server before any deploy job runs.
 #
 # Trigger: manual (workflow_dispatch) only
 # ==============================================================================
@@ -13,17 +13,18 @@ on:
   workflow_dispatch:
     inputs:
       sha:
-        description: 'Short SHA to roll back to (8 chars, e.g. a1b2c3d4)'
+        description: 'Short SHA to roll back to (8 hex chars, e.g. a1b2c3d4)'
         required: true
         type: string
       service:
-        description: 'Service to roll back (api | client | scraper | all)'
+        description: 'Service to roll back'
         required: true
         type: choice
         options:
           - api
           - client
           - scraper
+          - mcp
           - all
       environment:
         description: 'Target environment'
@@ -38,14 +39,17 @@ permissions:
   contents: read
   packages: read
 
+# Same concurrency group as Deploy so a rollback and a push-triggered deploy
+# cannot run at the same time and stomp on each other.
 concurrency:
-  group: rollback-${{ inputs.environment }}
+  group: deploy-${{ inputs.environment }}
   cancel-in-progress: false
 
 jobs:
   validate:
     name: Validate — version ${{ inputs.sha }} exists on server
     runs-on: self-hosted
+    timeout-minutes: 5
     environment: ${{ inputs.environment }}
     steps:
       - name: Check version directory exists
@@ -77,6 +81,7 @@ jobs:
   resolve:
     name: Resolve Deploy Variables
     runs-on: self-hosted
+    timeout-minutes: 5
     needs: [ validate ]
     outputs:
       image_prefix: ${{ steps.vars.outputs.image_prefix }}
@@ -93,10 +98,14 @@ jobs:
             echo "project_name=dev" >> "$GITHUB_OUTPUT"
           fi
 
+  # Deploy jobs run in parallel — each only fires for the selected service.
   deploy-api:
     name: Rollback API to ${{ inputs.sha }}
     needs: [ resolve ]
-    if: ${{ inputs.service == 'api' || inputs.service == 'all' }}
+    if: >-
+      always() &&
+      needs.resolve.result == 'success' &&
+      (inputs.service == 'api' || inputs.service == 'all')
     uses: ./.github/workflows/_deploy-service.yml
     with:
       service: api
@@ -108,12 +117,11 @@ jobs:
 
   deploy-client:
     name: Rollback Client to ${{ inputs.sha }}
-    needs: [ resolve, deploy-api ]
+    needs: [ resolve ]
     if: >-
-      ${{ always() &&
-          needs.resolve.result == 'success' &&
-          (needs.deploy-api.result == 'success' || needs.deploy-api.result == 'skipped') &&
-          (inputs.service == 'client' || inputs.service == 'all') }}
+      always() &&
+      needs.resolve.result == 'success' &&
+      (inputs.service == 'client' || inputs.service == 'all')
     uses: ./.github/workflows/_deploy-service.yml
     with:
       service: client
@@ -125,15 +133,30 @@ jobs:
 
   deploy-scraper:
     name: Rollback Scraper to ${{ inputs.sha }}
-    needs: [ resolve, deploy-client ]
+    needs: [ resolve ]
     if: >-
-      ${{ always() &&
-          needs.resolve.result == 'success' &&
-          (needs.deploy-client.result == 'success' || needs.deploy-client.result == 'skipped') &&
-          (inputs.service == 'scraper' || inputs.service == 'all') }}
+      always() &&
+      needs.resolve.result == 'success' &&
+      (inputs.service == 'scraper' || inputs.service == 'all')
     uses: ./.github/workflows/_deploy-service.yml
     with:
       service: scraper
+      environment: ${{ inputs.environment }}
+      project_name: ${{ needs.resolve.outputs.project_name }}
+      image_tag: ${{ inputs.sha }}
+      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+    secrets: inherit
+
+  deploy-mcp:
+    name: Rollback MCP to ${{ inputs.sha }}
+    needs: [ resolve ]
+    if: >-
+      always() &&
+      needs.resolve.result == 'success' &&
+      (inputs.service == 'mcp' || inputs.service == 'all')
+    uses: ./.github/workflows/_deploy-service.yml
+    with:
+      service: mcp
       environment: ${{ inputs.environment }}
       project_name: ${{ needs.resolve.outputs.project_name }}
       image_tag: ${{ inputs.sha }}
