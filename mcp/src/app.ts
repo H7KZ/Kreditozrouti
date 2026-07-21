@@ -10,6 +10,9 @@ import { createServer } from '@mcp/server'
 const app: Express = express()
 app.use(express.json())
 
+// Token endpoint receives application/x-www-form-urlencoded (RFC 6749)
+app.use(express.urlencoded({ extended: false }))
+
 // OAuth endpoints
 app.use(oauthRouter)
 
