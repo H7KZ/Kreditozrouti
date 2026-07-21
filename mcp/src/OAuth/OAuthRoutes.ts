@@ -47,6 +47,7 @@ router.post('/mcp/oauth/register', (req: Request, res: Response) => {
 
 	res.status(201).json({
 		client_id: client.clientId,
+		client_id_issued_at: Math.floor(client.registeredAt / 1000),
 		client_name: client.clientName,
 		redirect_uris: client.redirectUris,
 		grant_types: ['authorization_code'],
@@ -57,7 +58,12 @@ router.post('/mcp/oauth/register', (req: Request, res: Response) => {
 
 // OAuth 2.1 authorization endpoint — auto-approves (public server, no user login needed)
 router.get('/mcp/oauth/authorize', (req: Request, res: Response) => {
-	const { client_id, redirect_uri, code_challenge, code_challenge_method, state } = req.query as Record<string, string>
+	const { client_id, redirect_uri, code_challenge, code_challenge_method, response_type, state } = req.query as Record<string, string>
+
+	if (response_type !== 'code') {
+		res.status(400).json({ error: 'unsupported_response_type', error_description: 'Only response_type=code is supported' })
+		return
+	}
 
 	if (!client_id || !redirect_uri || !code_challenge || code_challenge_method !== 'S256') {
 		res.status(400).json({ error: 'invalid_request', error_description: 'Missing required parameters or unsupported code_challenge_method' })

@@ -29,7 +29,9 @@ const generalLimiter = rateLimit({ windowMs: 60_000, max: 100, standardHeaders: 
 function requireBearer(req: Request, res: Response, next: NextFunction): void {
 	const auth = req.headers.authorization
 	if (!auth?.startsWith('Bearer ')) {
-		res.status(401).set('WWW-Authenticate', `Bearer realm="${Config.baseUrl}"`).json({ error: 'unauthorized', error_description: 'Bearer token required' })
+		res.status(401)
+			.set('WWW-Authenticate', `Bearer resource_metadata="${Config.baseUrl}/.well-known/oauth-protected-resource"`)
+			.json({ error: 'unauthorized', error_description: 'Bearer token required' })
 		return
 	}
 	const token = auth.slice(7)

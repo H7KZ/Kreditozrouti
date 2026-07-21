@@ -19,7 +19,7 @@ const config: Config = {
 	nodeEnv: process.env.NODE_ENV ?? 'development',
 	logLevel: process.env.LOG_LEVEL ?? 'info',
 	baseUrl: process.env.MCP_BASE_URL ?? 'http://localhost:3000',
-	jwtSecret: process.env.MCP_JWT_SECRET ?? ''
+	jwtSecret: required('MCP_JWT_SECRET')
 }
 
 export default config

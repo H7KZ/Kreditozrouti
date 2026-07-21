@@ -41,5 +41,7 @@ export function verifyAccessToken(token: string, secret: string): { sub: string 
 
 export function verifyPkce(codeVerifier: string, codeChallenge: string): boolean {
 	const computed = createHash('sha256').update(codeVerifier).digest('base64url')
-	return computed === codeChallenge
+	const a = Buffer.from(computed)
+	const b = Buffer.from(codeChallenge)
+	return a.length === b.length && timingSafeEqual(a, b)
 }
