@@ -7,7 +7,7 @@ receives strongly-typed data from `@shared/queue/jobs` and writes results back t
 ## Job Routing Map
 
 | `job.data.type`           | Handler function                          | Source file                                       |
-|---------------------------|-------------------------------------------|---------------------------------------------------|
+| ------------------------- | ----------------------------------------- | ------------------------------------------------- |
 | `InSIS:Catalog`           | `ScraperRequestInSISCatalogJob`           | `Jobs/ScraperRequestInSISCatalogJob.ts`           |
 | `InSIS:Course`            | `ScraperRequestInSISCourseJob`            | `Jobs/ScraperRequestInSISCourseJob.ts`            |
 | `InSIS:StudyPlans`        | `ScraperRequestInSISStudyPlansJob`        | `Jobs/ScraperRequestInSISStudyPlansJob.ts`        |
@@ -75,7 +75,7 @@ Run runWithConcurrency(combos, catalogConcurrencyForMode(mode), scrapeCatalogPag
 **Concurrency by mode (Phase 2):**
 
 | Mode     | Catalog concurrency | Leaf job delay |
-|----------|--------------------:|---------------:|
+| -------- | ------------------: | -------------: |
 | `turbo`  |                   6 |           0 ms |
 | `normal` |                   3 |       1 000 ms |
 | `polite` |      1 (sequential) |       3 000 ms |
@@ -143,7 +143,7 @@ content, assessment methods, timetable, and study plan references.
 **Error handling:**
 
 | Error type                     | Class                                          | Retry?                                             |
-|--------------------------------|------------------------------------------------|----------------------------------------------------|
+| ------------------------------ | ---------------------------------------------- | -------------------------------------------------- |
 | HTTP failure (4xx/5xx/timeout) | `InSISNetworkError`                            | Yes — up to 3× with exponential backoff (10s base) |
 | HTML parse failure             | `InSISParseError` extends `UnrecoverableError` | No — BullMQ bypasses retry queue                   |
 
@@ -205,7 +205,7 @@ search, collecting all leaf plan URLs. Optionally enqueues individual `InSIS:Stu
 **Limits:**
 
 | Parameter                      | turbo |   normal |   polite | Reason                                             |
-|--------------------------------|------:|---------:|---------:|----------------------------------------------------|
+| ------------------------------ | ----: | -------: | -------: | -------------------------------------------------- |
 | `MaxDrillDepth`                |     8 |        8 |        8 | Guards against unexpected circular nav structures  |
 | BFS concurrency                |    10 |        4 |        2 | Mode-driven — see `bfsConcurrencyForMode()`        |
 | Leaf job delay                 |  0 ms | 1 000 ms | 3 000 ms | Per-job delay stored in BullMQ (Redis), crash-safe |
@@ -289,8 +289,8 @@ faculties, and enqueues one `InSIS:FacultyTimetable` job per faculty. Triggered 
    → sends discovery response to API
 ```
 
-**Output:** One `InSIS:FacultyTimetables` response job with `faculties_count`. One `InSIS:FacultyTimetable` request
-job per discovered faculty.
+**Output:** One `InSIS:FacultyTimetables` response job with `faculties_count`. One `InSIS:FacultyTimetable` request job
+per discovered faculty.
 
 **Error handling:** Returns `null` if the initial page fetch fails.
 
@@ -353,7 +353,7 @@ A faculty that has not published timetables for the current or upcoming academic
 hits InSIS. This protects InSIS during peak daytime usage when students are actively browsing.
 
 | Mode     | When to use                      | Catalog concurrency | BFS concurrency | Leaf job delay |
-|----------|----------------------------------|--------------------:|----------------:|---------------:|
+| -------- | -------------------------------- | ------------------: | --------------: | -------------: |
 | `turbo`  | Scheduled 2 AM / 3 AM night runs |                   6 |              10 |           0 ms |
 | `normal` | Manual off-hours trigger         |                   3 |               4 |   1 000 ms/job |
 | `polite` | Manual daytime trigger (default) |      1 (sequential) |               2 |   3 000 ms/job |
@@ -362,7 +362,7 @@ hits InSIS. This protects InSIS during peak daytime usage when students are acti
 BullMQ `delay` option at enqueue time (stored in Redis) — it survives scraper crashes and restarts. At `polite` + 1000
 courses, the spread is ~50 minutes.
 
-**Scheduled jobs** always use `turbo` (set in `api/src/bullmq.ts`). Manual triggers via `/commands/insis/*` default to
+**Scheduled jobs** always use `turbo` (set in `../../api/src/bullmq.ts`). Manual triggers via `/commands/insis/*` default to
 `polite` if no `mode` is provided in the request body.
 
 See `scraper/src/Utils/ThrottleUtils.ts` for the exact values.

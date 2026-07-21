@@ -1,6 +1,6 @@
 # Services
 
-## API (`api/`)
+## API (`../../api`)
 
 **Runtime:** Node.js (Express 5)  
 **Port:** 40080 (dev) / 443 via Traefik (prod)
@@ -31,7 +31,7 @@
 
 ---
 
-## Client (`client/`)
+## Client (`../../client`)
 
 **Runtime:** Browser (Vue 3 SPA)  
 **Dev port:** 45173 (Vite)  
@@ -60,7 +60,7 @@
 
 ---
 
-## Scraper (`scraper/`)
+## Scraper (`../../scraper`)
 
 **Runtime:** Node.js (BullMQ Worker)  
 **Concurrency:** 1 (serial per process; InSIS rate limits are the real constraint)
@@ -84,12 +84,40 @@ the next scheduled run re-enqueues them. No automatic retry.
 
 ---
 
+## MCP Server (`../../mcp`)
+
+**Runtime:** Node.js (MCP SDK)
+**Transport:** stdio (Claude Desktop) or Streamable HTTP (`POST /mcp`)
+**Port:** `MCP_PORT` (default 3000)
+
+### Responsibilities
+
+- Exposes Kreditožrouti data to LLM clients via the Model Context Protocol
+- Provides 7 tools: `vse_list_faculties`, `vse_search_courses`, `vse_get_course`, `vse_list_study_plans`,
+  `vse_get_study_plan`, `vse_check_timetable_conflicts`, `vse_optimize_timetable`
+- Connects directly to MySQL via its own Kysely client (`mcp/src/Db/client.ts`)
+- Enforces rate limiting for the optimizer tool in production
+
+### What it does NOT do
+
+- Does **not** call `../../api` HTTP routes — it queries MySQL directly
+- Does **not** run scheduled work or enqueue BullMQ jobs
+
+### Key internals
+
+- Imports domain types, DB schema, and query services from `@kreditozrouti/core`
+- `createServer()` factory is called fresh per HTTP request (stateless HA)
+- `--stdio` flag switches from Streamable HTTP to StdioServerTransport
+- Health check available at `GET /health`
+
+---
+
 ## Infrastructure Services
 
 These run as Docker containers but are not part of the application codebase.
 
 | Service       | Image                    | Purpose                                   |
-|---------------|--------------------------|-------------------------------------------|
+| ------------- | ------------------------ | ----------------------------------------- |
 | MySQL 8       | `mysql:8`                | Primary data store (courses, study plans) |
 | Redis         | `redis:alpine`           | BullMQ queues + session store (ephemeral) |
 | phpMyAdmin    | `phpmyadmin`             | DB admin UI (dev/prod, port 48080 dev)    |
@@ -99,7 +127,7 @@ These run as Docker containers but are not part of the application codebase.
 ### Observability Services (monitoring stack)
 
 | Service    | Image             | Purpose                                                                                                                                                  |
-|------------|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Prometheus | `prom/prometheus` | Metrics collection. Scrapes `/metrics` on API. 15-day retention.                                                                                         |
 | Grafana    | `grafana/grafana` | Dashboards and alerting. Queries Prometheus and Loki.                                                                                                    |
 | Loki       | `grafana/loki`    | Log aggregation. Receives structured JSON from Alloy. 30-day retention. Internal: `http://loki:3100`.                                                    |

@@ -1,5 +1,4 @@
-﻿import type { Day } from '@shared/domain/constants'
-import type { CourseUnitDTO, CourseUnitSlotDTO } from '@shared/http/responses'
+import type { CourseUnitDTO, CourseUnitSlotDTO, Day } from '@kreditozrouti/types'
 import { useTimeUtils } from '@client/composables/useTimeUtils'
 import { DAYS_ORDER } from '@client/constants/timetable.ts'
 import { i18n } from '@client/index.ts'

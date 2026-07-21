@@ -1,4 +1,4 @@
-import type { InSISSemester } from '@shared/domain/insis'
+import type { InSISSemester } from '@kreditozrouti/types'
 
 export interface SelectedStudyPlan {
 	id: number

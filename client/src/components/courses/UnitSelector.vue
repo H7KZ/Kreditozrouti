@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CourseUnitWithSlots, SelectedCourseUnit } from '@client/types'
-import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@shared/http/responses'
+import type { CourseUnitDTO, CourseUnitSlotDTO, CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCourseLabels, useCourseUnitSelection, useSlotFormatting, useSlotSorting, useTimeFilterMatching } from '@client/composables'

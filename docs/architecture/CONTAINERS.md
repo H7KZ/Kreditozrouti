@@ -2,7 +2,7 @@
 
 ## Local Development
 
-Defined in `docker-compose.local.yml`. Starts only infrastructure — app services run as native Node.js processes (
+Defined in `../../docker-compose.local.yml`. Starts only infrastructure — app services run as native Node.js processes (
 `make dev`).
 
 ```
@@ -24,10 +24,10 @@ make dev-scraper  → node worker (no port)
 
 ## Production / Staging Stacks
 
-Defined under `deployment/`. Each stack is a separate Compose file with explicit network and volume declarations split
+Defined under `../../deployment`. Each stack is a separate Compose file with explicit network and volume declarations split
 into companion files.
 
-### Traefik Stack (`deployment/traefik/`)
+### Traefik Stack (`../../deployment/traefik`)
 
 Must be deployed first on a fresh server — creates `traefik-network`.
 
@@ -38,21 +38,24 @@ traefik
 └── volumes: traefik-letsencrypt-volume
 ```
 
-### App Stack (`deployment/production/` or `development/`)
+### App Stack (`../../deployment/production` or `development/`)
 
 ```
 docker-compose.production.yml
 ├── api         ×2 replicas    traefik-network + mysql-network + redis-network
 ├── scraper     ×5 replicas    redis-network only
 ├── client      ×3 replicas    traefik-network only
+├── mcp          ×1            traefik-network + mysql-network  (MCP_PORT default 3000; GET /health)
 ├── mysql        ×1            mysql-network, volume: mysql-data-volume
 ├── redis        ×1            redis-network (no named volume — ephemeral)
 └── phpmyadmin   ×1            traefik-network + mysql-network
 ```
 
+**`mcp` container env vars:** `MYSQL_URI`, `MCP_PORT`, `NODE_ENV`, `LOG_LEVEL`
+
 Development uses lower replica counts and `dev-*` image tags; network names include `-dev-` suffix.
 
-### GitHub Runner Stack (optional, `deployment/github-runner/`)
+### GitHub Runner Stack (optional, `../../deployment/github-runner`)
 
 Self-hosted GitHub Actions runners registered to the repo.
 
@@ -60,21 +63,21 @@ Self-hosted GitHub Actions runners registered to the repo.
 
 ## Networks
 
-| Network           | Purpose                         | Who joins                        |
-|-------------------|---------------------------------|----------------------------------|
-| `traefik-network` | Public ingress, Traefik routing | traefik, api, client, phpmyadmin |
-| `mysql-network`   | DB access                       | api, mysql, phpmyadmin           |
-| `redis-network`   | Queue + sessions                | api, scraper, redis              |
+| Network           | Purpose                         | Who joins                             |
+| ----------------- | ------------------------------- | ------------------------------------- |
+| `traefik-network` | Public ingress, Traefik routing | traefik, api, client, mcp, phpmyadmin |
+| `mysql-network`   | DB access                       | api, mcp, mysql, phpmyadmin           |
+| `redis-network`   | Queue + sessions                | api, scraper, redis                   |
 
-Networks are **isolated** — the scraper cannot reach MySQL directly; it can only talk to Redis. The client container (
-Nginx) cannot reach MySQL or Redis.
+Networks are **isolated** — the scraper cannot reach MySQL directly; it can only talk to Redis. The client container
+(Nginx) cannot reach MySQL or Redis.
 
 ---
 
 ## Volumes
 
 | Volume                       | Mounted by | Data                       | Ephemeral?            |
-|------------------------------|------------|----------------------------|-----------------------|
+| ---------------------------- | ---------- | -------------------------- | --------------------- |
 | `mysql-data-volume`          | mysql      | All course/study-plan data | No — persisted        |
 | `traefik-letsencrypt-volume` | traefik    | TLS certificates           | No — persisted        |
 | Redis (no volume)            | redis      | BullMQ queues, sessions    | Yes — lost on restart |
@@ -86,7 +89,7 @@ Nginx) cannot reach MySQL or Redis.
 All production traffic enters through Traefik on port 443 (TLS via Let's Encrypt DNS-01 + Cloudflare).
 
 | Service    | Rule               | Priority | Notes                                  |
-|------------|--------------------|----------|----------------------------------------|
+| ---------- | ------------------ | -------- | -------------------------------------- |
 | API        | `PathPrefix(/api)` | 100      | Strips `/api` prefix before forwarding |
 | phpMyAdmin | `PathPrefix(/pma)` | 80       | Strips `/pma` prefix                   |
 | Client     | `PathPrefix(/)`    | 10       | Catch-all, lowest priority             |

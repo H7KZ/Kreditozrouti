@@ -68,7 +68,7 @@ services:
       - UPLOAD_LIMIT=2G
 
     ports:
-      - '43307:80'
+      - '48080:80'
 
     deploy:
       mode: global
@@ -154,7 +154,8 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=7d'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.enable-lifecycle'
 
     volumes:
       - ./deployment/monitoring/prometheus/prometheus.local.yml:/etc/prometheus/prometheus.yml:ro
@@ -239,34 +240,6 @@ services:
 
   # ================================================================ #
 
-  tempo:
-    image: grafana/tempo:latest
-    container_name: kreditozrouti-tempo
-
-    command: -config.file=/etc/tempo/tempo.yml
-
-    volumes:
-      - ./deployment/monitoring/tempo/tempo.yml:/etc/tempo/tempo.yml:ro
-
-    ports:
-      - '43200:3200'
-
-    deploy:
-      mode: global
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
-      resources:
-        limits:
-          cpus: 0.5
-          memory: 512M
-
-    restart: unless-stopped
-
-  # ================================================================ #
-
   alloy:
     image: grafana/alloy:latest
     container_name: kreditozrouti-alloy
@@ -285,8 +258,6 @@ services:
 
     ports:
       - '41247:12347'
-      - '44317:4317'
-      - '44318:4318'
 
     deploy:
       mode: global

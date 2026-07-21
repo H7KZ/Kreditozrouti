@@ -1,7 +1,6 @@
-import type { FacetItem } from '@shared/http/facets'
-import { sql } from 'kysely'
-import { ASSESSMENT_BUCKETS } from '@shared/domain/assessment'
+import type { FacetItem } from '@kreditozrouti/types'
 import {
+	ASSESSMENT_BUCKETS,
 	INSIS_DAY_NORM,
 	LANGUAGE_DENORM,
 	LANGUAGE_NORM,
@@ -9,7 +8,8 @@ import {
 	LEVEL_NORM,
 	MODE_OF_COMPLETION_DENORM,
 	MODE_OF_COMPLETION_NORM
-} from '@shared/domain/constants'
+} from '@kreditozrouti/core/domain'
+import { sql } from 'kysely'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
@@ -171,7 +171,7 @@ export class CourseFacetService {
 				.$if(!!filters.completed_course_idents?.length, q => q.where('c1.ident', 'not in', filters.completed_course_idents!))
 				.groupBy(`c1.${column}`)
 				.orderBy('count', 'desc')
-				.execute()
+				.execute() as unknown as Promise<FacetItem[]>
 		}
 
 		// SLOW PATH: Filters require joins — use the full filter query
@@ -181,7 +181,7 @@ export class CourseFacetService {
 			.where(`c1.${column}`, 'is not', null)
 			.groupBy(`c1.${column}`)
 			.orderBy('count', 'desc')
-			.execute()
+			.execute() as unknown as Promise<FacetItem[]>
 	}
 
 	/**

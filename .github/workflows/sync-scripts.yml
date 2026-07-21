@@ -22,9 +22,13 @@ on:
       - 'scripts/**'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: sync-scripts
-  cancel-in-progress: true
+  # false: canceling mid-SCP leaves VPS with partially-updated scripts
+  cancel-in-progress: false
 
 jobs:
   sync:

@@ -35,11 +35,11 @@ which side creates a `Queue` (producer) vs a `Worker` (consumer).
 ## Queue Names
 
 | Constant               | Queue name         | Direction     |
-|------------------------|--------------------|---------------|
+| ---------------------- | ------------------ | ------------- |
 | `ScraperRequestQueue`  | `scraper:request`  | API → Scraper |
 | `ScraperResponseQueue` | `scraper:response` | Scraper → API |
 
-## Scraper-side Configuration (`scraper/src/bullmq.ts`)
+## Scraper-side Configuration (`../../scraper/src/bullmq.ts`)
 
 ### Request Worker
 
@@ -50,8 +50,8 @@ new Worker(ScraperRequestQueue, handler, {
 })
 ```
 
-- **Concurrency 1:** up to 1 job runs at a time per worker process. Combined with the cluster (default 1 process),
-  this means 1 concurrent scrape per node.
+- **Concurrency 1:** up to 1 job runs at a time per worker process. Combined with the cluster (default 1 process), this
+  means 1 concurrent scrape per node.
 - **Limiter 10/sec:** hard cap of 10 job starts per second, regardless of concurrency. This is the primary InSIS
   rate-limit guard.
 
@@ -84,7 +84,7 @@ defaultJobOptions: {
 }
 ```
 
-## API-side Configuration (`api/src/bullmq.ts`)
+## API-side Configuration (`../../api/src/bullmq.ts`)
 
 ### Response Worker
 
@@ -110,16 +110,16 @@ const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9'
 
 // Catalog: 3 AM during registration months
 await scraperRequestQueue.upsertJobScheduler(
-  ScraperInSISCatalogRequestScheduler,
-  { pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *` },
-  { name: 'InSIS:Catalog', data: { type: 'InSIS:Catalog', auto_queue_courses: true, periods: [...] } }
+	ScraperInSISCatalogRequestScheduler,
+	{pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *`},
+	{name: 'InSIS:Catalog', data: {type: 'InSIS:Catalog', auto_queue_courses: true, periods: [...]}}
 )
 
 // Study Plans: 2 AM during registration months
 await scraperRequestQueue.upsertJobScheduler(
-  ScraperInSISStudyPlansRequestScheduler,
-  { pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *` },
-  { name: 'InSIS:StudyPlans', data: { type: 'InSIS:StudyPlans', auto_queue_study_plans: true, periods: [...] } }
+	ScraperInSISStudyPlansRequestScheduler,
+	{pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *`},
+	{name: 'InSIS:StudyPlans', data: {type: 'InSIS:StudyPlans', auto_queue_study_plans: true, periods: [...]}}
 )
 ```
 
@@ -137,7 +137,7 @@ BullMQ's built-in deduplication prevents the same logical job from being queued 
 scraper uses it to avoid re-scraping courses that are already queued.
 
 | Job                                  | Dedup key                                   | TTL        |
-|--------------------------------------|---------------------------------------------|------------|
+| ------------------------------------ | ------------------------------------------- | ---------- |
 | `InSIS:Catalog` (manual run)         | `InSIS:Catalog:ManualRun`                   | 30 seconds |
 | `InSIS:StudyPlans` (manual run)      | `InSIS:StudyPlans:ManualRun`                | 30 seconds |
 | `InSIS:Course` (from catalog)        | `InSIS:Course:{courseId}`                   | 5 minutes  |
@@ -196,13 +196,13 @@ retry.
 
 ## Job Logging
 
-Every job handler is wrapped in `withJobLogger` (from `api/src/logger.ts`):
+Every job handler is wrapped in `withJobLogger` (from `../../api/src/logger.ts`):
 
 ```typescript
 const requestWorker = new Worker(
-  ScraperRequestQueue,
-  withJobLogger(ScraperRequestQueue, ScraperRequestHandler),
-  { ... }
+	ScraperRequestQueue,
+	withJobLogger(ScraperRequestQueue, ScraperRequestHandler),
+	{...}
 )
 ```
 
@@ -211,7 +211,7 @@ This emits a structured `job.completed` or `job.failed` log line with `duration_
 
 ## QueueService
 
-**File:** `scraper/src/Services/QueueService.ts`
+**File:** `../../scraper/src/Services/QueueService.ts`
 
 Centralized, type-safe wrappers around BullMQ operations. All queue writes from within job implementations go through
 this class.
@@ -219,7 +219,7 @@ this class.
 ### Response queue (Scraper → API)
 
 | Method                         | Queue                | Job name                     | Payload                                        |
-|--------------------------------|----------------------|------------------------------|------------------------------------------------|
+| ------------------------------ | -------------------- | ---------------------------- | ---------------------------------------------- |
 | `addCatalogResponse(urls)`     | ScraperResponseQueue | `InSIS Catalog Response`     | `{ type: 'InSIS:Catalog', catalog: { urls } }` |
 | `addCourseResponse(course)`    | ScraperResponseQueue | `InSIS Course Response`      | `{ type: 'InSIS:Course', course }`             |
 | `addStudyPlanResponse(plan)`   | ScraperResponseQueue | `InSIS Study Plan Response`  | `{ type: 'InSIS:StudyPlan', plan }`            |
@@ -228,7 +228,7 @@ this class.
 ### Request queue (enqueue more work)
 
 | Method                                      | Queue               | Dedup key                  | Notes                         |
-|---------------------------------------------|---------------------|----------------------------|-------------------------------|
+| ------------------------------------------- | ------------------- | -------------------------- | ----------------------------- |
 | `queueCourseRequests(courses)`              | ScraperRequestQueue | `InSIS:Course:{courseId}`  | Uses `addBulk` for efficiency |
 | `queueStudyPlanRequests(urls, extractIdFn)` | ScraperRequestQueue | `InSIS:StudyPlan:{planId}` | Uses `runWithConcurrency(20)` |
 

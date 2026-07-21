@@ -1,5 +1,4 @@
-import type { CoursesFilter } from '@shared/http/courses'
-import type { CoursesResponseDTO, CourseWithRelationsDTO } from '@shared/http/responses'
+import type { CoursesFilter, CoursesResponseDTO, CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { i18n } from '@client/i18n'

@@ -1,0 +1,39 @@
+{
+	"name": "@kreditozrouti/types",
+	"private": true,
+	"version": "1.0.0",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"default": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "tsup && tsc --emitDeclarationOnly",
+		"dev": "tsup --watch --no-clean",
+		"type-check": "tsc --noEmit",
+		"lint": "eslint src",
+		"lint:fix": "eslint src --fix",
+		"format": "prettier --write src"
+	},
+	"dependencies": {
+		"kysely": "^0.29.4"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@ianvs/prettier-plugin-sort-imports": "^4.7.1",
+		"@types/node": "^26.1.1",
+		"eslint": "^10.7.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-promise": "^7.3.0",
+		"eslint-plugin-regexp": "^3.1.1",
+		"eslint-plugin-unicorn": "^72.0.0",
+		"globals": "^17.7.0",
+		"prettier": "^3.9.5",
+		"tsup": "^8.5.1",
+		"typescript": "~5.8.3",
+		"typescript-eslint": "^8.64.0"
+	}
+}

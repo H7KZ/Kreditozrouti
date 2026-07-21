@@ -1,5 +1,5 @@
-﻿import type { DragSelection } from '@client/types'
-import type { Day } from '@shared/domain/constants'
+import type { DragSelection } from '@client/types'
+import type { Day } from '@kreditozrouti/types'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 

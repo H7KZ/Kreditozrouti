@@ -1,5 +1,5 @@
+import { getUpcomingPeriod } from '@kreditozrouti/core/domain'
 import { Kysely, sql } from 'kysely'
-import { getUpcomingPeriod } from '@shared/domain/period'
 import { CourseTable } from '@api/Database/types'
 
 // The upcoming academic year stored in insis_courses.year is one less than the

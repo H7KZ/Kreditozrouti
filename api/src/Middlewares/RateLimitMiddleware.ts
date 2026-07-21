@@ -16,6 +16,13 @@ const courseLimiter = new RateLimiterRedis({
 	duration: 600
 })
 
+const optimizeLimiter = new RateLimiterRedis({
+	storeClient: redis,
+	keyPrefix: 'optimize:ip',
+	points: 50,
+	duration: 600
+})
+
 export function scraperRateLimit() {
 	return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 		const courseId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
@@ -26,6 +33,19 @@ export function scraperRateLimit() {
 			next()
 		} catch {
 			res.status(429).json({ type: 'RATE_LIMITED', message: 'Too many scrape requests. Please wait before trying again.' })
+		}
+	}
+}
+
+export function optimizeRateLimit() {
+	return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+		const ip = req.ip ?? 'unknown'
+
+		try {
+			await optimizeLimiter.consume(ip)
+			next()
+		} catch {
+			res.status(429).json({ type: 'RATE_LIMITED', message: 'Too many optimize requests. Please wait before trying again.' })
 		}
 	}
 }

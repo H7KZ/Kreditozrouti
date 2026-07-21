@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 import analytics from '@client/analytics'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconGlobe from '~icons/lucide/globe'
 
 const { locale, availableLocales } = useI18n()
+const route = useRoute()
+const router = useRouter()
 
 const isOpen = ref(false)
 const containerRef = ref<HTMLElement | null>(null)
@@ -16,10 +19,18 @@ onClickOutside(containerRef, () => {
 })
 
 function setLocale(newLocale: string) {
+	const oldLocale = locale.value as string
 	locale.value = newLocale
-	localStorage.setItem('locale', newLocale) // Persist selection
+	localStorage.setItem('locale', newLocale)
 	analytics.track('language_changed', { language: newLocale })
 	isOpen.value = false
+
+	// On docs pages swap /docs/<old>/ -> /docs/<new>/
+	const path = route.path
+	const docsPrefix = `/docs/${oldLocale}/`
+	if (path.startsWith(docsPrefix)) {
+		void router.push(`/docs/${newLocale}/${path.slice(docsPrefix.length)}`)
+	}
 }
 
 function toggle() {

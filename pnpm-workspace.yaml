@@ -1,0 +1,29 @@
+overrides:
+  typescript: "~5.8.3"
+
+packages:
+  - "api"
+  - "client"
+  - "mcp"
+  - "scraper"
+  - "packages/*"
+
+allowBuilds:
+  esbuild: true
+  msgpackr-extract: true
+  protobufjs: true
+  vue-demi: true
+
+minimumReleaseAgeExclude:
+  - bullmq@5.80.2 || 5.80.9
+  - eslint@10.7.0
+  - '@unhead/bundler@3.2.1'
+  - '@unhead/vue@3.2.1'
+  - mysql2@3.23.1
+  - unhead@3.2.1
+
+onlyBuiltDependencies:
+  - esbuild
+  - msgpackr-extract
+  - protobufjs
+  - vue-demi

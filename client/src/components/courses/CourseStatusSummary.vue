@@ -88,11 +88,14 @@ function getBadgeClasses(status: CourseStatusType, baseClass: string): string {
 				</span>
 			</button>
 
+			<!-- Divider when there are issues -->
+			<span v-if="hasIssues" class="text-base font-medium text-(--insis-gray-300)">|</span>
+
 			<!-- ECTS total (non-interactive) -->
-			<span v-if="totalEcts > 0" class="border-l border-(--insis-border) px-2 text-xs text-(--insis-gray-500)"> {{ totalEcts }} ECTS </span>
+			<span v-if="totalEcts > 0" class="text-xs text-(--insis-gray-500)"> {{ totalEcts }} ECTS </span>
 
 			<!-- Divider when there are issues -->
-			<span v-if="hasIssues" class="text-(--insis-gray-300)">|</span>
+			<span v-if="hasIssues" class="text-base font-medium text-(--insis-gray-300)">|</span>
 
 			<!-- Conflict warning badge -->
 			<button

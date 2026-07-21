@@ -384,10 +384,10 @@ response jobs but have no corresponding response type for the scheduler trigger 
 ## Group Code Reference
 
 Group codes are two-character (or longer) codes in InSIS that describe how a course fits into a study plan. See
-`scraper/src/Utils/InSISUtils.ts` for the full parsing logic.
+`shared/utils/insis.ts` for the full parsing logic.
 
 | First char | Group                                                |
-|------------|------------------------------------------------------|
+| ---------- | ---------------------------------------------------- |
 | `f`        | `faculty_specific`                                   |
 | `c`        | `university_wide`                                    |
 | `o`        | `field_specific_bachelor`                            |
@@ -396,7 +396,7 @@ Group codes are two-character (or longer) codes in InSIS that describe how a cou
 | `e`        | `field_specific_master` (extended/doctoral fallback) |
 
 | Suffix pattern                     | Category                                  |
-|------------------------------------|-------------------------------------------|
+| ---------------------------------- | ----------------------------------------- |
 | includes `TVS`                     | `physical_education`                      |
 | includes `SZ`                      | `state_exam`                              |
 | includes `ZEXCN`                   | `exchange_program` (checked before `EXC`) |

@@ -6,7 +6,6 @@
 #   - prometheus: Scrapes /metrics from the API; stores time series data
 #   - grafana:    Visualization dashboard, exposed at domain/grafana via Traefik
 #   - loki:       Log aggregation storage (30-day retention)
-#   - tempo:      Distributed trace storage — OTLP ingress on 4317/4318, query on 3200
 #   - alloy:      Log shipping agent — reads Docker stdout, receives Faro browser telemetry
 #
 # Required Environment Variables (in .env):
@@ -31,6 +30,8 @@ services:
   prometheus:
     image: prom/prometheus:latest
     restart: unless-stopped
+    group_add:
+      - "999"
 
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -114,39 +115,6 @@ services:
           cpus: '0.1'
           memory: 128M
 
-  # ============================================================================
-  # Distributed Trace Storage (Tempo)
-  # Internal only. Alloy pushes traces via OTLP gRPC (4317).
-  # Grafana reads at http://tempo:3200.
-  # ============================================================================
-  tempo:
-    image: grafana/tempo:latest
-    restart: unless-stopped
-
-    command: -config.file=/etc/tempo/tempo.yml
-
-    volumes:
-      - tempo-data:/var/tempo
-      - ./tempo/tempo.yml:/etc/tempo/tempo.yml:ro
-
-    networks:
-      - monitoring-network
-
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
-
-    deploy:
-      mode: global
-      resources:
-        limits:
-          cpus: '0.3'
-          memory: 256M
-        reservations:
-          cpus: '0.05'
-          memory: 128M
 
   # ============================================================================
   # Log Storage (Loki)
@@ -236,44 +204,6 @@ services:
           cpus: '0.05'
           memory: 64M
 
-  # ============================================================================
-  # Host Metrics (node-exporter)
-  # Exposes CPU, memory, disk, and network metrics for the host.
-  # Internal only — Prometheus scrapes it at node-exporter:9100.
-  # ============================================================================
-  node-exporter:
-    image: prom/node-exporter:latest
-    restart: unless-stopped
-
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/host'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/host:ro,rslave
-
-    networks:
-      - monitoring-network
-
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
-
-    deploy:
-      mode: global
-      resources:
-        limits:
-          cpus: '0.1'
-          memory: 64M
-        reservations:
-          cpus: '0.05'
-          memory: 32M
 
   # ============================================================================
   # Umami Analytics Database (PostgreSQL 16-alpine)

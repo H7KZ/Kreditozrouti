@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+## Style
+
+Do not use em dashes (--) in any file — use a plain hyphen (-) instead.
+
 ## Token Discipline
 
 **Planning sessions** — When asked to plan, design, or explore architecture:
@@ -14,7 +18,7 @@
 
 **Small fix sessions** — When asked to fix something specific:
 
-- Read only the file(s) explicitly named.
+- Read only the file (s) explicitly named.
 - Do not explore related files "just in case".
 - One file in, one fix out.
 
@@ -39,6 +43,7 @@ that directory.
 |------------|------------------------|
 | Client     | http://localhost:45173 |
 | API        | http://localhost:40080 |
+| MCP        | http://localhost:3000  |
 | phpMyAdmin | http://localhost:48080 |
 
 ---
@@ -49,6 +54,8 @@ that directory.
 make install           # Install all dependencies
 make dev               # Run api + client + scraper in parallel
 make run-local-docker  # Start MySQL, Redis, phpMyAdmin
+make test              # Run scraper then API tests sequentially
+make test-regen        # Regenerate scraper + API fixture snapshots
 ```
 
 ---
@@ -56,13 +63,15 @@ make run-local-docker  # Start MySQL, Redis, phpMyAdmin
 ## Monorepo Structure
 
 ```
-api/          Express API — HTTP, DB writes, job orchestration
-client/       Vue 3 SPA — user interface
-scraper/      BullMQ worker — InSIS HTTP scraping
-shared/       Types only — imported by all packages, imports nothing
-scripts/      Bash — server setup & maintenance
-deployment/   Docker Compose stacks + deploy.sh
-docs/         Full reference docs — architecture, API, client, scraper, deployment
+api/           Express API — HTTP, DB writes, job orchestration
+client/        Vue 3 SPA — user interface
+fixtures/      Shared test fixtures — HTML, *.scraper.json (scraper output), *.db.json (API parsing output)
+mcp/           MCP server — LLM tool access to VŠE data
+packages/core/ @kreditozrouti/core — domain types, DB schema, pure services
+scraper/       BullMQ worker — InSIS HTTP scraping
+scripts/       Bash — server setup & maintenance
+deployment/    Docker Compose stacks + deploy.sh
+docs/          VitePress docs site — user docs (en/cs) + dev docs at docs/dev/
 ```
 
 ---
@@ -71,9 +80,13 @@ docs/         Full reference docs — architecture, API, client, scraper, deploy
 
 **Cross-package imports:**
 
-- `shared/` must never import from `api/`, `client/`, or `scraper/`
-- `client/` never imports from `api/` — all shared types come from `@shared/`
+- `packages/core/` must never import `express`, `bullmq`, `ioredis`, or any HTTP/queue runtime
+- `client/` never imports from `api/` — all shared types come from `@kreditozrouti/core`
+- `client/` never imports `@kreditozrouti/core/db` or `@kreditozrouti/core/services` (browser bundle)
 - `client/` never imports API runtime code
+- `mcp/` imports only from `@kreditozrouti/core` — no imports from `api/`, `scraper/`, or `client/`
+- `client/` never imports `@kreditozrouti/logger` (node-only package)
+- `packages/core/` never imports `@kreditozrouti/logger` (keeps core pure - no pino dep)
 
 **Time encoding:** all times are **minutes from midnight** (0–1439). `08:00` = 480.
 
@@ -94,13 +107,14 @@ docs/         Full reference docs — architecture, API, client, scraper, deploy
 Package-specific docs (API, client, scraper, deployment, scripts) are listed in each package's `CLAUDE.md` Key Docs
 table. Cross-cutting docs:
 
-| Area         | Doc                                                                                                                                                                                                                                               |
-|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| User Guide   | [docs/user/README.md](../docs/user/README.md) · [features](../docs/user/FEATURES.md) · [getting started](../docs/user/GETTING_STARTED.md)                                                                                                         |
-| Domain       | [docs/DOMAIN.md](../docs/DOMAIN.md) — glossary, architecture seams                                                                                                                                                                                |
-| Architecture | [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) · [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md) |
-| Engineering  | [docs/ENGINEERING.md](../docs/ENGINEERING.md) · [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md)                                                                                                       |
-| Shared       | [docs/shared/README.md](../docs/shared/README.md) · [domain](../docs/shared/DOMAIN.md) · [http](../docs/shared/HTTP.md) · [queue](../docs/shared/QUEUE.md)                                                                                        |
+| Area         | Doc                                                                                                                                                                                                                                                                       |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| User Guide   | [docs/dev/user/README.md](../docs/user/README.md) · [features](../docs/user/FEATURES.md) · [getting started](../docs/user/GETTING_STARTED.md)                                                                                                                 |
+| Domain       | [docs/dev/DOMAIN.md](../docs/DOMAIN.md) — glossary, architecture seams                                                                                                                                                                                                |
+| Architecture | [docs/dev/ARCHITECTURE.md](../docs/ARCHITECTURE.md) · [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md) |
+| Engineering  | [docs/dev/ENGINEERING.md](../docs/ENGINEERING.md) · [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md)                                                                                                               |
+| Shared       | [docs/dev/shared/README.md](../docs/shared/README.md) · [domain](../docs/shared/DOMAIN.md) · [http](../docs/shared/HTTP.md) · [queue](../docs/shared/QUEUE.md)                                                                                            |
+| MCP          | [docs/dev/mcp/README.md](../docs/mcp/README.md) — tools, transport modes, env vars, Docker                                                                                                                                                                            |
 
 ---
 
@@ -108,9 +122,9 @@ table. Cross-cutting docs:
 
 After completing any task that changes code, configuration, or behavior:
 
-1. **Identify** which `docs/` file(s) describe the changed area
-2. **Also check `docs/user/FEATURES.md`** — if the change affects a user-visible feature (filters, timetable, conflict
-   detection, wizard, course refresh, saved schedules, language, theme, etc.), update the relevant section
+1. **Identify** which `docs/` file (s) describe the changed area
+2. **Also check `../docs/user/FEATURES.md`** — if the change affects a user-visible feature (filters, timetable,
+   conflict detection, wizard, course refresh, saved schedules, language, theme, etc.), update the relevant section
 3. **Update** any doc that describes what changed — keep it accurate
 4. **New behavior with no doc entry?** Ask: _"This change isn't mentioned in the docs — should I document it?"_
 
@@ -130,8 +144,8 @@ After completing any task that changes code, config, or behavior in a package:
 
 ## Encoding
 
-Strict UTF-8 — zero tolerance for mojibake. Fix garbled characters at the byte level.
-For new Vue/TS code, paste raw Unicode literals directly — no HTML entities or escape sequences.
+Strict UTF-8 — zero tolerance for mojibake. Fix garbled characters at the byte level. For new Vue/TS code, paste raw
+Unicode literals directly — no HTML entities or escape sequences.
 
 ---
 

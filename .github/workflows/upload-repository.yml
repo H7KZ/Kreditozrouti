@@ -27,7 +27,7 @@ on:
         default: 'main'
         type: string
       target_folder:
-        description: 'Target folder on VPS (relative to home)'
+        description: 'Target folder on VPS (relative to home, no .. allowed)'
         required: true
         default: 'repository'
         type: string
@@ -37,6 +37,9 @@ on:
         default: true
         type: boolean
 
+permissions:
+  contents: read
+
 jobs:
   upload:
     name: Upload to VPS
@@ -44,32 +47,48 @@ jobs:
     timeout-minutes: 30
 
     steps:
+      - name: Validate Inputs
+        id: validated
+        env:
+          INPUT_FOLDER: ${{ inputs.target_folder }}
+        run: |
+          if [[ "$INPUT_FOLDER" =~ \.\. ]] || [[ "$INPUT_FOLDER" =~ ^/ ]] || [[ -z "$INPUT_FOLDER" ]]; then
+            echo "ERROR: target_folder must be a non-empty relative path without '..'"
+            exit 1
+          fi
+          echo "folder=$INPUT_FOLDER" >> "$GITHUB_OUTPUT"
+
       - name: Checkout Code
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
 
       - name: Display Configuration
+        env:
+          TARGET_FOLDER: ${{ steps.validated.outputs.folder }}
         run: |
           echo "=========================================="
           echo "Upload Configuration"
           echo "=========================================="
           echo "Branch: ${{ inputs.branch }}"
-          echo "Target: ~/${{ inputs.target_folder }}"
+          echo "Target: ~/$TARGET_FOLDER"
           echo "Clean:  ${{ inputs.clean_target }}"
           echo "=========================================="
 
       - name: Prepare Target Directory
         if: ${{ inputs.clean_target }}
         uses: appleboy/ssh-action@v1
+        env:
+          TARGET_FOLDER: ${{ steps.validated.outputs.folder }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          envs: TARGET_FOLDER
           script: |
             set -euo pipefail
-            TARGET_DIR="$HOME/${{ inputs.target_folder }}"
+            TARGET_DIR="$HOME/$TARGET_FOLDER"
             if [[ -d "$TARGET_DIR" ]]; then
                 echo "Cleaning target directory: $TARGET_DIR"
                 rm -rf "$TARGET_DIR"
@@ -84,21 +103,24 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: '.'
-          target: '~/${{ inputs.target_folder }}'
+          target: '~/${{ steps.validated.outputs.folder }}'
           rm: false
 
       - name: Verify Upload
         uses: appleboy/ssh-action@v1
+        env:
+          TARGET_FOLDER: ${{ steps.validated.outputs.folder }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          envs: TARGET_FOLDER
           script: |
             set -euo pipefail
             echo "=========================================="
             echo "Upload Verification"
             echo "=========================================="
-            echo "Size: $(du -sh ~/${{ inputs.target_folder }} | cut -f1)"
-            echo "Files: $(find ~/${{ inputs.target_folder }} -type f | wc -l)"
+            echo "Size: $(du -sh "$HOME/$TARGET_FOLDER" | cut -f1)"
+            echo "Files: $(find "$HOME/$TARGET_FOLDER" -type f | wc -l)"
             echo "=========================================="

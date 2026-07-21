@@ -7,10 +7,10 @@ GitHub Actions automates building, pushing, and deploying all three services.
 ## Overview
 
 Deployments are **path-triggered and per-service**. When code changes are pushed to `main` or `develop`, only the
-service(s) whose source files changed are rebuilt and redeployed.
+service (s) whose source files changed are rebuilt and redeployed.
 
 | Branch    | Environment |
-|-----------|-------------|
+| --------- | ----------- |
 | `main`    | production  |
 | `develop` | development |
 
@@ -21,7 +21,7 @@ service(s) whose source files changed are rebuilt and redeployed.
 
 ## Workflows
 
-All workflow files live in `.github/workflows/`.
+All workflow files live in `../../.github/workflows`.
 
 ### `verify.yml` — Pull Request checks
 
@@ -87,8 +87,8 @@ short SHA.
 
 **Trigger:** `workflow_call` (called by per-service workflows).
 
-Builds and pushes a single service image to GHCR with two tags: `${GITHUB_SHA::8}` and the floating tag. Uses GHA
-layer cache scoped per service and environment.
+Builds and pushes a single service image to GHCR with two tags: `${GITHUB_SHA::8}` and the floating tag. Uses GHA layer
+cache scoped per service and environment.
 
 **Outputs:** `image_tag` (short SHA), `image_prefix` (GHCR path prefix).
 
@@ -107,7 +107,7 @@ single-service update.
 
 **Trigger:** Push to `main` touching `deployment/traefik/**`, or `workflow_dispatch`.
 
-1. Upload `deployment/traefik/` to `~/deployment/traefik/` on the VPS
+1. Upload `../../deployment/traefik` to `~/deployment/traefik/` on the VPS
 2. Write `TRAEFIK_HTPASSWD` secret to `~/.htpasswd` (600 perms)
 3. SSH → run `~/deployment/traefik/deploy.sh` with secrets passed as env vars
 
@@ -121,7 +121,7 @@ Generate `TRAEFIK_HTPASSWD` with: `htpasswd -nb admin yourpassword`
 
 **Trigger:** Push to `main` touching `deployment/monitoring/**`, or `workflow_dispatch`.
 
-1. Upload `deployment/monitoring/` to `~/deployment/monitoring/` on the VPS
+1. Upload `../../deployment/monitoring` to `~/deployment/monitoring/` on the VPS
 2. SSH → run `~/deployment/monitoring/deploy.sh` with secrets passed as env vars
 
 **Required repository secrets:** `MONITORING_DOMAIN`, `GRAFANA_ADMIN_PASSWORD`, `DISCORD_WEBHOOK_URL`
@@ -143,7 +143,7 @@ secret → next deploy picks it up.
 Configure in **Settings → Secrets and variables → Actions**:
 
 | Secret            | Example                 | Purpose                         |
-|-------------------|-------------------------|---------------------------------|
+| ----------------- | ----------------------- | ------------------------------- |
 | `SSH_HOST`        | `vps.example.com`       | VPS hostname or IP              |
 | `SSH_USER`        | `deploy`                | SSH username                    |
 | `SSH_PORT`        | `22`                    | SSH port                        |
@@ -193,10 +193,10 @@ After a successful deploy, `deploy.sh` automatically removes version directories
 
 ## Routine Deploys
 
-Push to `main` or `develop` — the path filters determine which workflow(s) run:
+Push to `main` or `develop` — the path filters determine which workflow (s) run:
 
 | Changed path               | Workflow triggered      |
-|----------------------------|-------------------------|
+| -------------------------- | ----------------------- |
 | `api/**`                   | `deploy-api.yml`        |
 | `client/**`                | `deploy-client.yml`     |
 | `scraper/**`               | `deploy-scraper.yml`    |
@@ -223,7 +223,7 @@ The workflow will skip the build step and deploy the specified image directly.
 
 ## Scaling Replicas
 
-Edit `deployment/production/docker-compose.production.yml`:
+Edit `../../deployment/production/docker-compose.production.yml`:
 
 ```yaml
 services:

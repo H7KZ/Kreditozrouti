@@ -24,7 +24,7 @@
 We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 | Prefix      | When to use                              |
-|-------------|------------------------------------------|
+| ----------- | ---------------------------------------- |
 | `feat:`     | New feature                              |
 | `fix:`      | Bug fix                                  |
 | `docs:`     | Documentation only                       |
@@ -43,9 +43,9 @@ Example: `feat: add campus conflict detection to timetable store`
 - **API controllers** are plain namespace objects, not classes:
   `export const FooController = { async handleRequest(...) {} }`
 - **Zod schemas** co-located with their controller file, not in a central `Validations/` folder.
-- **Imports** in the client: use `@shared/` for all shared types — never import from `api/`.
+- **Imports** in the client: use `@shared/` for all shared types — never import from `../../api`.
 - **Store deps**: `timetable.store` must never import `courses.store` —
-  see [docs/architecture/MONOREPO.md](../architecture/MONOREPO.md) and `client/CLAUDE.md` for the reason.
+  see [docs/architecture/MONOREPO.md](../architecture/MONOREPO.md) and `../../client/CLAUDE.md` for the reason.
 
 ---
 
@@ -53,7 +53,7 @@ Example: `feat: add campus conflict detection to timetable store`
 
 When your change affects documented behavior:
 
-- Find the relevant doc in `docs/` (see the table in `CLAUDE.md` or `GEMINI.md`)
+- Find the relevant doc in `..` (see the table in `CLAUDE.md` or `GEMINI.md`)
 - Update it in the same PR as your code change
 - If it's new behavior with no existing doc entry, add a section or create a new file
 
@@ -62,7 +62,7 @@ When your change affects documented behavior:
 ## Branch Strategy
 
 | Branch    | Purpose                                          |
-|-----------|--------------------------------------------------|
+| --------- | ------------------------------------------------ |
 | `main`    | Production — tagged releases only                |
 | `develop` | Integration branch — all feature PRs target this |
 | `feat/*`  | Feature development                              |

@@ -1,7 +1,7 @@
+import { extractSemester, extractYear } from '@kreditozrouti/core/utils'
 import * as cheerio from 'cheerio'
 import Config from '@scraper/Config/Config'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
-import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
 
 export interface CatalogSearchOptions {
 	faculties: {

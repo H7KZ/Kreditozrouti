@@ -15,7 +15,7 @@ Canonical vocabulary and architectural seam definitions for Kreditožrouti.
 - **Slot** — a single occurrence of a Unit (specific day + time + location). Recurring slots repeat weekly; one-time
   slots have a date. Stored in `insis_course_unit_slots`. Times are **minutes from midnight** (0–1439).
 - **Selected Unit** — a Slot that a student has added to their timetable. Represented as `SelectedCourseUnit` in
-  `client/src/types/course.ts`.
+  `../client/src/types/course.ts`.
 - **Timetable** — the student's personal schedule of Selected Units, managed by `timetableStore`, persisted to
   `localStorage` under `kreditozrouti:timetable`.
 - **Study Plan** — a VŠE curriculum template specifying which Courses a student should take. Stored in
@@ -46,9 +46,9 @@ Canonical vocabulary and architectural seam definitions for Kreditožrouti.
 
 Where behavior can be swapped without touching the rest of the codebase:
 
-- **Service layer** (`client/src/services/`) — all HTTP calls go through here. Swap HTTP for GraphQL or a mock here
+- **Service layer** (`../client/src/services`) — all HTTP calls go through here. Swap HTTP for GraphQL or a mock here
   without changing stores.
-- **`filtersStore`** (`client/src/stores/filters.store.ts`) — owns all filter state and persistence. Swap localStorage
+- **`filtersStore`** (`../client/src/stores/filters.store.ts`) — owns all filter state and persistence. Swap localStorage
   for URL-based strategy here without touching other stores.
 - **`shared/domain/timetable.ts`** — pure conflict detection (`unitsConflict`, `unitsCampusConflict`,
   `checkCourseCompleteness`). No Vue dependency. Extend or swap conflict logic here without touching stores.

@@ -1,7 +1,7 @@
 # Shared — Domain Logic
 
-Pure TypeScript domain utilities. No runtime service dependencies — safe to import from `api/`, `client/`, and
-`scraper/`.
+Pure TypeScript domain utilities. No runtime service dependencies — safe to import from `../../api`, `../../client`, and
+`../../scraper`.
 
 ---
 
@@ -21,14 +21,7 @@ type InSISSemester = 'LS' | 'ZS'
 
 // Study plan course category
 type InSISStudyPlanCourseCategory =
-	| 'compulsory'
-	| 'elective'
-	| 'language'
-	| 'state_exam'
-	| 'prohibited'
-	| 'beyond_scope'
-	| 'exchange_program'
-	| 'physical_education'
+	'compulsory' | 'elective' | 'language' | 'state_exam' | 'prohibited' | 'beyond_scope' | 'exchange_program' | 'physical_education'
 
 // Study plan course group
 type InSISStudyPlanCourseGroup = 'faculty_specific' | 'university_wide' | 'field_specific_bachelor' | 'field_specific_master' | 'minor_specialization'
@@ -145,7 +138,7 @@ getUpcomingPeriod(date ? : Date)
 Determines which registration period is next:
 
 | Month   | Returns                                        |
-|---------|------------------------------------------------|
+| ------- | ---------------------------------------------- |
 | Jun–Nov | `ZS`, current year                             |
 | Dec     | `LS`, current year (next LS starts in Jan/Feb) |
 | Jan–May | `LS`, previous year                            |

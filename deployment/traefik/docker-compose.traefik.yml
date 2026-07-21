@@ -116,8 +116,10 @@ services:
       - crowdsec-config-volume:/etc/crowdsec
       - traefik-logs-volume:/var/log/traefik:ro
       - ./crowdsec/acquis.yml:/etc/crowdsec/acquis.d/traefik.yml:ro
+      - ./crowdsec/profiles.yaml:/etc/crowdsec/profiles.yaml:ro
     networks:
       - traefik-network
+      - alloy-network
     healthcheck:
       test: [ 'CMD', 'cscli', 'version' ]
       interval: 30s

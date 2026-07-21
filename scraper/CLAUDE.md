@@ -1,6 +1,6 @@
 # Scraper — CLAUDE.md
 
-> Full reference: [docs/scraper/](../docs/scraper/README.md)
+> Full reference: [docs/dev/scraper/](../docs/scraper/README.md)
 
 ---
 
@@ -65,9 +65,12 @@ both the scraper (producer) and the API (consumer).
 After any change to extraction logic:
 
 1. **Check** fixture coverage in `src/Tests/`
-2. **Add or update** HTML fixtures + expected JSON for changed extraction behaviour
-3. **Run** `npm run test` to confirm all tests pass
-4. **New extraction with no test?** Use `npm run test:regen` to bootstrap from real HTML
+2. **Add or update** HTML fixtures in `fixtures/<service>/` (repo root) + `.scraper.json` snapshots for changed
+   extraction behaviour
+3. **Run** `pnpm run test` to confirm all tests pass
+4. **New extraction with no test?** Use `pnpm run test:regen` to bootstrap from real HTML
+
+Fixtures live at repo root `fixtures/` — named `*.scraper.json` (scraper output) and `*.db.json` (API parsing output).
 
 ---
 

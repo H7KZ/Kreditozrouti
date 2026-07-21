@@ -5,11 +5,13 @@ A complete reference for every Kreditožrouti feature. Jump to the section you n
 - [Views](#views)
 - [Filters](#filters)
 - [Building your timetable](#building-your-timetable)
+- [Timetable optimizer](#timetable-optimizer)
 - [Conflict detection](#conflict-detection)
 - [Drag-to-filter](#drag-to-filter)
 - [Refresh from InSIS](#refresh-from-insis)
 - [Saved Schedules](#saved-schedules)
 - [Share timetable](#share-timetable)
+- [Prerequisite information](#prerequisite-information)
 - [Mark as completed](#mark-as-completed)
 - [Language and theme](#language-and-theme)
 - [International Student Guide](#international-student-guide)
@@ -19,14 +21,16 @@ A complete reference for every Kreditožrouti feature. Jump to the section you n
 
 ## Views
 
-Toggle between two ways to see your courses:
+Toggle between three ways to see your courses:
 
-| View             | What you see                                                                          |
-|------------------|---------------------------------------------------------------------------------------|
-| **Course List**  | Sortable table — course code, title, faculty, ECTS, completion mode, schedule summary |
-| **My Timetable** | Weekly grid Monday–Friday, 07:30–20:00 — selected courses shown as coloured blocks    |
+| View             | What you see                                                                           |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| **Course List**  | Sortable table — course code, title, faculty, ECTS, completion mode, schedule summary  |
+| **My Timetable** | Weekly grid Monday–Friday, 07:30–20:00 — selected courses shown as coloured blocks     |
+| **Optimizer**    | Basket-based timetable generator — pick courses, set constraints, get ranked schedules |
 
-Switch using the **Course List / My Timetable** buttons in the top bar. Your preference is saved.
+Switch using the tabs in the header bar. Course List and My Timetable preferences are saved; the Optimizer tab always
+starts fresh.
 
 ---
 
@@ -34,22 +38,23 @@ Switch using the **Course List / My Timetable** buttons in the top bar. Your pre
 
 The left sidebar contains all filters. Active filters are counted in the sidebar header. Each filter is collapsible.
 
-| Filter                       | What it does                                                                                                                                                 |
-|------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Search**                   | Course name or code (e.g. `4IT101`)                                                                                                                          |
-| **Syllabus search**          | Full-text search in course aims, learning outcomes, and syllabus text                                                                                        |
-| **Faculties**                | Checkbox list; each faculty shows how many matching courses it has                                                                                           |
-| **Study level**              | Bachelor's, Master's (follow-up), Doctoral, MBA, etc.                                                                                                        |
-| **Language of instruction**  | Czech, English, German, Spanish, French, and others                                                                                                          |
-| **Course groups**            | Faculty-specific, university-wide, field-specific (bachelor's / master's), minor specialization                                                              |
-| **Category**                 | Compulsory, elective, language courses, state exams, physical education, etc.                                                                                |
-| **ECTS credits**             | Filter to specific credit values                                                                                                                             |
-| **Completion mode**          | Exam (zkouška), credit (zápočet), or defense (obhajoba)                                                                                                      |
-| **Assessment methods**       | Filter by how the course is assessed — written exam, oral exam, project, seminar paper, test, presentation, and more                                         |
-| **Lecturers**                | Filter to courses taught by a specific lecturer                                                                                                              |
-| **Time restriction**         | Include only courses that have a slot in a specific day + time range (see also [Drag-to-filter](#drag-to-filter))                                            |
-| **Completed courses**        | Toggle to show or hide courses you've marked as already passed                                                                                               |
-| **Hide conflicting courses** | Hides courses where _all_ available time slots overlap with your current timetable selection. Courses with at least one non-conflicting slot remain visible. |
+| Filter                       | What it does                                                                                                                                                                                                                                                          |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Search**                   | Course name or code (e.g. `4IT101`)                                                                                                                                                                                                                                   |
+| **Syllabus search**          | Full-text search in course aims, learning outcomes, and syllabus text                                                                                                                                                                                                 |
+| **Faculties**                | Checkbox list; each faculty shows how many matching courses it has                                                                                                                                                                                                    |
+| **Study level**              | Bachelor's, Master's (follow-up), Doctoral, MBA, etc.                                                                                                                                                                                                                 |
+| **Language of instruction**  | Czech, English, German, Spanish, French, and others                                                                                                                                                                                                                   |
+| **Course groups**            | Faculty-specific, university-wide, field-specific (bachelor's / master's), minor specialization                                                                                                                                                                       |
+| **Category**                 | Compulsory, elective, language courses, state exams, physical education, etc.                                                                                                                                                                                         |
+| **ECTS credits**             | Filter to specific credit values                                                                                                                                                                                                                                      |
+| **Completion mode**          | Exam (zkouška), credit (zápočet), or defense (obhajoba)                                                                                                                                                                                                               |
+| **Assessment methods**       | Filter by how the course is assessed — written exam, oral exam, project, seminar paper, test, presentation, and more                                                                                                                                                  |
+| **Lecturers**                | Filter to courses taught by a specific lecturer                                                                                                                                                                                                                       |
+| **Time restriction**         | Include only courses that have a slot in a specific day + time range (see also [Drag-to-filter](#drag-to-filter))                                                                                                                                                     |
+| **Completed courses**        | Toggle to show or hide courses you've marked as already passed                                                                                                                                                                                                        |
+| **Hide conflicting courses** | Hides courses where _all_ available time slots overlap with your current timetable selection. Courses with at least one non-conflicting slot remain visible.                                                                                                          |
+| **Fits my timetable**        | Sorts the course list by how well each course fits into your current timetable (fills a gap → same day → new day) and hides courses that conflict with every available slot. Disabled when your timetable is empty. Each row shows a reason badge (e.g. "Fills gap"). |
 
 Filters are combined — all active filters apply at once. Use **Clear all** in the sidebar header to reset everything.
 
@@ -58,12 +63,13 @@ Filters are combined — all active filters apply at once. Use **Clear all** in 
 ## Building your timetable
 
 1. Click any course row to expand it
-2. The expanded row shows course metadata (faculty, ECTS, language, category) and a collapsible **Syllabus**
-   section with aims, learning outcomes, course contents, literature, and other fields. When the UI language
-   is set to English and English content is available for that course, the English version is shown.
+2. The expanded row shows course metadata (faculty, ECTS, language, category), **prerequisite chips** (see
+   [Prerequisite information](#prerequisite-information) below), and a collapsible **Syllabus** section with aims,
+   learning outcomes, course contents, literature, and other fields. When the UI language is set to English and English
+   content is available for that course, the English version is shown.
 3. Below the syllabus: all available **unit types** (lecture, exercise, seminar) and their time slots
 4. Click a slot to add it to your timetable
-	- If you already have a unit of the same type selected for this course, it is swapped out automatically
+    - If you already have a unit of the same type selected for this course, it is swapped out automatically
 5. Repeat for each unit type the course requires (some courses have only lectures; others require both a lecture and an
    exercise)
 
@@ -80,13 +86,46 @@ assessments, syllabus). From the panel you can:
 
 ---
 
+## Timetable optimizer
+
+Open the **Optimizer** tab (sparkles icon in the header) to auto-generate conflict-free timetable candidates instead of
+building your schedule course-by-course.
+
+### Setup
+
+1. **Add courses to your basket** — type a course code or name in the search box and click to add. Remove courses with
+   the × button. The basket holds the courses you want the solver to schedule.
+2. **Set constraints** (all optional):
+    - **Min / max ECTS** — total credit range for the generated schedule
+    - **Preferred days** — toggle the days you'd like classes on; the solver deprioritises other days but doesn't block
+      them if no alternative exists
+    - **Blackout windows** — mark time ranges when you're unavailable (e.g. a part-time job)
+    - **Max consecutive hours** — cap how many hours can be scheduled back-to-back
+3. Click **Generate timetables**. Constraints are saved automatically and reused next time you open the tab.
+
+### Results
+
+The solver runs two passes:
+
+- **All courses scheduled** — up to 5 ranked candidates where every basket course fits without conflicts
+- **If you drop one course…** — one best candidate per basket course, showing what the schedule looks like if that
+  course is removed. Only shown when no full schedule exists.
+
+Each result card shows a **mini timetable grid**. Click a card to open a full timetable preview with the weekly grid —
+newly added units are highlighted in amber so you can see what would change versus your current schedule. The preview
+also shows a score breakdown (campus conflicts, schedule gaps, off-preferred days, long study blocks).
+
+Click **Use this timetable** in the preview to apply the candidate. Your current timetable is replaced.
+
+---
+
 ## Conflict detection
 
 Every course you add to the timetable gets a status. The status bar at the top of the page counts each category — click
 a category to filter the course list to just those courses.
 
 | Status              | Colour | Meaning                                                                                                                                            |
-|---------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Selected**        | Blue   | All required unit types chosen, no time or campus conflicts                                                                                        |
 | **Incomplete**      | Amber  | You've selected at least one unit type but not all required ones — e.g. added the lecture but not the exercise yet                                 |
 | **Campus conflict** | Orange | No time overlap, but the gap between classes on different VŠE campuses is under 40 minutes — not enough travel time between Žižkov and Jižní Město |
@@ -140,13 +179,35 @@ Compare up to 5 different timetable alternatives without losing your work.
 Access the schedule picker from the **My Timetable** view.
 
 | Action           | What it does                                                      |
-|------------------|-------------------------------------------------------------------|
+| ---------------- | ----------------------------------------------------------------- |
 | **Save current** | Saves a snapshot of your current timetable with a name you choose |
 | **Duplicate**    | Copies an existing snapshot so you can experiment from it         |
 | **Switch**       | Loads a saved snapshot as your working timetable                  |
 | **Delete**       | Removes a saved snapshot                                          |
 
 Use this to build "Plan A: all mornings" and "Plan B: Tuesday/Thursday only" side by side, then compare.
+
+---
+
+## Prerequisite information
+
+When a course's InSIS syllabus lists prerequisites, the expanded course row shows them as clickable chips grouped by
+type:
+
+| Label                      | Meaning                                                        | Clickable? |
+| -------------------------- | -------------------------------------------------------------- | ---------- |
+| **Required prerequisites** | Courses you must have passed before enrolling                  | Yes        |
+| **Cannot study after**     | Courses after which you may no longer enrol in this course     | Yes        |
+| **Cannot study alongside** | Courses that cannot be taken in the same semester as this one  | No         |
+| **Recommended before**     | Courses suggested as prior study (from recommended programmes) | Yes        |
+
+Clicking a chip sets the course code as the active **Search** filter — useful for quickly checking whether a
+prerequisite is offered this semester.
+
+**Filter effect:** when you activate **Completed courses** filtering (wizard Step 4 or the filter sidebar toggle):
+
+- Courses where you haven't yet completed all **Required prerequisites** are hidden automatically.
+- Courses that fall under **Cannot study after** for any of your completed courses are also hidden.
 
 ---
 
@@ -172,7 +233,7 @@ again to toggle it off.
 Both settings are in the top bar and are saved in your browser.
 
 | Setting      | Options                                         |
-|--------------|-------------------------------------------------|
+| ------------ | ----------------------------------------------- |
 | **Language** | Czech (čeština) · English                       |
 | **Theme**    | Light · Dark · System (follows your OS setting) |
 

@@ -15,7 +15,7 @@ sudo ./maintenance.sh [OPTIONS]
 **Options:**
 
 | Flag                   | Description                                 |
-|------------------------|---------------------------------------------|
+| ---------------------- | ------------------------------------------- |
 | `-r, --auto-reboot`    | Reboot if required (60 s warning countdown) |
 | `-s, --skip-security`  | Skip Lynis security audit                   |
 | `-d, --docker-cleanup` | Also prune Docker resources                 |
@@ -29,11 +29,11 @@ sudo ./maintenance.sh [OPTIONS]
 4. Docker prune (if `--docker-cleanup`)
 5. `unattended-upgrades --dry-run` + Lynis security audit (unless `--skip-security`)
 6. Health check — reports on:
-	- Failed systemd services
-	- Disk usage > 80 %
-	- Memory usage > 90 %
-	- Load average > CPU count
-	- Zombie processes
+    - Failed systemd services
+    - Disk usage > 80 %
+    - Memory usage > 90 %
+    - Load average > CPU count
+    - Zombie processes
 7. Reboot handling (warns, then reboots with `--auto-reboot`)
 
 ### Recommended cron
@@ -61,7 +61,7 @@ Selective Docker resource cleanup. Always run `--dry-run` first.
 **Key flags:**
 
 | Flag                      | Purpose                                                           |
-|---------------------------|-------------------------------------------------------------------|
+| ------------------------- | ----------------------------------------------------------------- |
 | `-a, --all`               | Remove ALL unused images (not just dangling)                      |
 | `-n, --dry-run`           | Preview without removing                                          |
 | `-f, --force`             | Skip confirmation prompt                                          |
@@ -103,7 +103,7 @@ sudo ./scripts/clone-db.sh <dev-to-prod|prod-to-dev>
 ```
 
 | Argument      | Description                                  |
-|---------------|----------------------------------------------|
+| ------------- | -------------------------------------------- |
 | `dev-to-prod` | Copy the dev database into the prod database |
 | `prod-to-dev` | Copy the prod database into the dev database |
 

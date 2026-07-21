@@ -131,6 +131,7 @@ export const useUIStore = defineStore('ui', () => {
 		setViewMode,
 		switchToListView: () => setViewMode('list'),
 		switchToTimetableView: () => setViewMode('timetable'),
+		switchToOptimizerView: () => setViewMode('optimizer'),
 		toggleViewMode,
 		toggleLegend,
 		setShowLegend,

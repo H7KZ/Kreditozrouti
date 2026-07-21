@@ -1,17 +1,17 @@
 {
 	"extends": "@vue/tsconfig/tsconfig.dom.json",
-	"include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+	"include": ["env.d.ts", "src/**/*", "src/**/*.vue", "src/**/*.md"],
 	"compilerOptions": {
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
 		"verbatimModuleSyntax": false,
-		"ignoreDeprecations": "6.0",
 
 		"baseUrl": ".",
 		"paths": {
 			"@client/*": ["./src/*"],
 			"@api/*": ["../api/src/*"],
 			"@scraper/*": ["../scraper/src/*"],
-			"@shared/*": ["../shared/*"],
+			"@kreditozrouti/core/*": ["../packages/core/src/*"],
+			"@kreditozrouti/types": ["../packages/types/src/index.ts"],
 			"kysely": ["./node_modules/kysely"]
 		}
 	}

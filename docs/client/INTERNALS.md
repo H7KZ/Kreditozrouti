@@ -46,7 +46,7 @@ fetchCourses(filters) → POST / courses → CoursesResponseDTO
 triggerCourseScrape(id) → POST / courses /
 :
 id / scrape → {
-    jobId
+	jobId
 }
 
 // studyPlanService.ts
@@ -445,7 +445,7 @@ useSeoMeta({
 All Vite env vars must be prefixed with `VITE_`:
 
 | Variable                  | Default | Purpose                             |
-|---------------------------|---------|-------------------------------------|
+| ------------------------- | ------- | ----------------------------------- |
 | `VITE_API_URL`            | `/api`  | Axios baseURL                       |
 | `VITE_FARO_COLLECTOR_URL` | —       | Grafana Faro collector URL (opt-in) |
 
@@ -462,7 +462,7 @@ Faro is **opt-in**: it only initialises when `VITE_FARO_COLLECTOR_URL` is set. I
 
 ### Initialisation
 
-`faroModule.init(app, router)` is called from `client/src/index.ts` after the Vue app is created:
+`faroModule.init(app, router)` is called from `../../client/src/index.ts` after the Vue app is created:
 
 ```typescript
 // index.ts
@@ -473,7 +473,7 @@ app.mount('#app')
 ### What is captured
 
 | Signal                       | Mechanism                                        |
-|------------------------------|--------------------------------------------------|
+| ---------------------------- | ------------------------------------------------ |
 | JS errors                    | `app.config.errorHandler`                        |
 | Unhandled promise rejections | `window.unhandledrejection` listener             |
 | Vue component errors         | forwarded through `app.config.errorHandler`      |

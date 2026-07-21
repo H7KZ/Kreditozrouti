@@ -1,9 +1,9 @@
 # Shared — Overview
 
 The `shared/` package contains pure TypeScript modules with no runtime dependencies on any specific service. It is
-imported by `api/`, `client/`, and `scraper/` for common types, domain logic, and HTTP contracts.
+imported by `../../api`, `../../client`, and `../../scraper` for common types, domain logic, and HTTP contracts.
 
-**Rule:** `shared/` must never import from `api/`, `client/`, or `scraper/`. Its only external dependency is itself.
+**Rule:** `shared/` must never import from `../../api`, `../../client`, or `../../scraper`. Its only external dependency is itself.
 
 ---
 
@@ -26,6 +26,7 @@ shared/
 │   ├── pagination.ts  # PaginationMeta interface
 │   ├── study-plans.ts # StudyPlansFilter
 │   ├── admin.ts       # Admin endpoint types
+│   ├── optimize.ts    # SolverConstraints, OptimizeRequest/ResponseDTO — POST /optimize contract
 │   └── index.ts       # Re-exports
 │
 └── queue/
@@ -53,6 +54,7 @@ import type { CoursesFilter } from '@shared/http/courses'
 import type { CoursesResponseDTO, CourseWithRelationsDTO, CourseUnitSlotDTO } from '@shared/http/responses'
 import type { FacetItem } from '@shared/http/facets'
 import type { PaginationMeta } from '@shared/http/pagination'
+import type { SolverConstraints, OptimizeRequest, OptimizeResponseDTO } from '@shared/http/optimize'
 
 // Queue contracts
 import { ScraperRequestQueue, ScraperResponseQueue } from '@shared/queue/names'

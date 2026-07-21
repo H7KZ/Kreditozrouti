@@ -1,4 +1,10 @@
 {
+	"fitReason": {
+		"fills_gap": "Zaplní mezeru",
+		"same_day": "Stejný den",
+		"new_day": "Nový den",
+		"neutral": "Hodí se"
+	},
 	"filters": {
 		"syllabusSearch": "Hledat v obsahu předmětu",
 		"syllabusSearchPlaceholder": "např. machine learning, účetnictví...",
@@ -251,6 +257,7 @@
 			"changePlanConfirm": "Opravdu chcete změnit studijní plán? Váš aktuální rozvrh bude vymazán.",
 			"courseList": "Seznam předmětů",
 			"myTimetable": "Můj rozvrh",
+			"optimizer": "Optimalizátor",
 			"loadingCourses": "Načítám předměty...",
 			"loadingError": "Chyba při načítání",
 			"noCoursesFound": "Nebyly nalezeny žádné předměty odpovídající filtrům.",
@@ -258,6 +265,8 @@
 			"showingResults": "Zobrazeno {from} – {to} z {total} předmětů",
 			"pageInfo": "Stránka {current} z {total}",
 			"completedCoursesHidden": "{count} dokončených kurzů (skryto) | {count} dokončený kurz (skrytý) | {count} dokončené kurzy (skryty)",
+			"optimizeTimetable": "Optimalizovat rozvrh",
+			"fitIntoTimetable": "Vměstnat do rozvrhu",
 			"emptyTimetable": {
 				"title": "Váš rozvrh je prázdný",
 				"description": "Přidejte předměty ze seznamu nebo táhněte přes prázdné sloty pro vyhledání předmětů v daném čase.",
@@ -342,7 +351,8 @@
 				"campusConflictTag": "Kampusová kolize",
 				"completed": "Dokončeno",
 				"sortLabel": "Seřadit podle {column}",
-				"rowLabel": "Předmět {code}: {title}. Klikněte pro zobrazení detailů."
+				"rowLabel": "Předmět {code}: {title}. Klikněte pro zobrazení detailů.",
+				"optimizerToggle": "Přidat/odebrat z optimalizátoru"
 			},
 			"CourseRowExpanded": {
 				"faculty": "Fakulta",
@@ -373,6 +383,10 @@
 				"syllabusRecommendedProgrammes": "Doporučené doplňky",
 				"syllabusRequiredWorkExperience": "Vyžadovaná praxe",
 				"lastFetched": "Data z InSIS · Načteno {age}",
+				"prereqBlockedBy": "Nutné prerekvizity",
+				"prereqExcludedAfter": "Nelze studovat po",
+				"prereqConcurrent": "Nelze studovat současně s",
+				"prereqRecommendedBefore": "Doporučeno před",
 				"markAsCompleted": "Označit jako dokončené",
 				"markedCompleted": "Označeno jako dokončené",
 				"conflictsWithCourses": "Konflikt s: {courses}",
@@ -431,7 +445,9 @@
 				"timetableConflicts": "Konflikty rozvrhu",
 				"timetableSlotsCount": "{count} vybraných časových slotů | {count} vybraný časový slot | {count} vybrané časové sloty",
 				"hideConflictingCourses": "Skrýt kurzy, které jsou v rozporu s mým rozvrhem",
-				"hideConflictingCoursesHelp": "Skrývá kurzy, u nichž se všechny dostupné jednotky překrývají s vámi vybranými časovými sloty v rozvrhu. Kurzy s alespoň jednou nekonfliktní možností jsou zachovány."
+				"hideConflictingCoursesHelp": "Skrývá kurzy, u nichž se všechny dostupné jednotky překrývají s vámi vybranými časovými sloty v rozvrhu. Kurzy s alespoň jednou nekonfliktní možností jsou zachovány.",
+				"fitsTimetable": "Pasuje do rozvrhu",
+				"fitsTimetableDisabledHint": "Nejprve přidejte kurzy do rozvrhu"
 			},
 			"FilterCheckboxGroup": {
 				"searchPlaceholder": "Hledat..."
@@ -464,6 +480,81 @@
 					"jizni-mesto": "Jižní Město",
 					"zizkov": "Žižkov"
 				}
+			}
+		},
+		"optimizer": {
+			"ConstraintsPanel": {
+				"title": "Omezení",
+				"creditLimits": "Limity kreditů",
+				"creditMin": "Min. kreditů",
+				"creditMax": "Max. kreditů",
+				"basketTotal": "= {n} ECTS (celkem v košíku)",
+				"creditMaxWarning": "Max. kredity jsou nižší než součet košíku — žádná úplná řešení nebudou vygenerována.",
+				"creditRangeInvalid": "Min. kredity nesmí být vyšší než max. kredity.",
+				"preferredDays": "Preferované dny",
+				"blackoutWindows": "Zakázané časy",
+				"blackoutDays": "Dny (lze vybrat více)",
+				"maxConsecutiveHours": "Max. hodin za sebou"
+			},
+			"CourseBasket": {
+				"title": "Předměty k rozplánování",
+				"empty": "Zatím žádné předměty — vyhledejte je níže.",
+				"searchPlaceholder": "Hledat podle kódu nebo názvu…"
+			},
+			"ResultsGrid": {
+				"fullCandidatesTitle": "Všechny předměty zahrnuty",
+				"removalCandidatesTitle": "Pokud jeden předmět vypustíte…",
+				"option": "Varianta {n}",
+				"score": "Skóre: {score}",
+				"drops": "Vypouští: {course}",
+				"noFullCandidates": "Nenalezen rozvrh bez kolizí se všemi předměty. Podívejte se na varianty níže.",
+				"partialNotice": "Hledání trvalo déle — zobrazeny nejlepší dosud nalezené výsledky.",
+				"poolTruncatedNotice": "Uvažováno bylo pouze prvních {count} předmětů."
+			},
+			"TimetablePreviewModal": {
+				"title": "Náhled rozvrhu",
+				"apply": "Použít tento rozvrh",
+				"campusConflicts": "Kampusové kolize",
+				"gapMinutes": "Mezery v rozvrhu",
+				"offPreferredDays": "Mimo preferované dny",
+				"longStudyBlocks": "Dlouhé studijní bloky"
+			},
+			"OptimizerTab": {
+				"generate": "Vygenerovat rozvrhy",
+				"generating": "Generuji…",
+				"resultsTitle": "Navrhované rozvrhy",
+				"dropsTitle": "Vypouští: {course}"
+			},
+			"CourseExplorer": {
+				"title": "Co dalšího se vejde?",
+				"noStudyPlan": "Dokončete průvodce studijním plánem a prozkoumejte předměty podle kategorie.",
+				"pickCategory": "Vyberte kategorii ze svého studijního plánu:",
+				"findFits": "Najít vhodné",
+				"searching": "Hledám…",
+				"error": "Něco se pokazilo — zkuste to prosím znovu.",
+				"resultsTitle": "Zkontrolováno {n} předmětů",
+				"noCourses": "V této kategorii nebyly nalezeny žádné předměty.",
+				"fitPerfect": "Perfektní shoda",
+				"fitScore": "Hodnocení: {score}",
+				"noFit": "Pro tento předmět nebyl nalezen rozvrh bez konfliktů.",
+				"apply": "Přidat a zobrazit",
+				"categories": {
+					"compulsory": "Povinné",
+					"elective": "Volitelné",
+					"language": "Jazykové",
+					"state_exam": "Státní zkouška",
+					"physical_education": "Tělesná výchova"
+				},
+				"pickGroup": "Vyberte skupinu (volitelné):",
+				"selectCategoryFirst": "Nejprve vyberte kategorii výše.",
+				"groups": {
+					"faculty_specific": "Oborové",
+					"university_wide": "Celoškolní",
+					"field_specific_bachelor": "Bc. specifické",
+					"field_specific_master": "Mgr. specifické",
+					"minor_specialization": "Vedlejší spec."
+				},
+				"preview": "Zobrazit"
 			}
 		},
 		"timetable": {

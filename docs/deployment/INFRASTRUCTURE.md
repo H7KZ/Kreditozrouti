@@ -7,8 +7,8 @@ Traefik reverse proxy, Docker networking, volumes, and environment variable conf
 ## Traefik
 
 Traefik is the single external entry point. It handles TLS termination (via Let's Encrypt + Cloudflare DNS-01),
-HTTP→HTTPS redirect, routes traffic to the right container by host/path, and enforces global security policies
-for all traffic via entrypoint-level middlewares.
+HTTP→HTTPS redirect, routes traffic to the right container by host/path, and enforces global security policies for all
+traffic via entrypoint-level middlewares.
 
 ### Architecture
 
@@ -29,34 +29,34 @@ Internet → Cloudflare (orange cloud) → Traefik :443
                               └──────────────────────────────┘
 ```
 
-### Static config (`deployment/traefik/traefik.yml`)
+### Static config (`../../deployment/traefik/traefik.yml`)
 
 Key configuration highlights:
 
-- **Real IP extraction** — `forwardedHeaders.trustedIPs` on the `websecure` entrypoint is set to all Cloudflare
-  IPv4 ranges. Traefik reads the real client IP from `X-Forwarded-For` when the request arrives from a trusted
-  Cloudflare edge IP. Without this, rate limiting and CrowdSec would ban Cloudflare's IPs instead of attackers'.
-- **File provider** — `providers.file` points to `/dynamic.yml` (watched). Global middlewares are defined there
-  rather than as Docker labels, keeping per-service labels clean.
-- **Entrypoint-level middlewares** — all three global middlewares are applied on `websecure` so every router
-  inherits them without per-service configuration.
-- **TLS enforcement** — TLS options are defined in `dynamic.yml` with `name: default` (auto-applies to all
-  routers): minimum TLS 1.2, ECDHE+AES-GCM/ChaCha20 cipher suites only.
+- **Real IP extraction** — `forwardedHeaders.trustedIPs` on the `websecure` entrypoint is set to all Cloudflare IPv4
+  ranges. Traefik reads the real client IP from `X-Forwarded-For` when the request arrives from a trusted Cloudflare
+  edge IP. Without this, rate limiting and CrowdSec would ban Cloudflare's IPs instead of attackers'.
+- **File provider** — `providers.file` points to `/dynamic.yml` (watched). Global middlewares are defined there rather
+  than as Docker labels, keeping per-service labels clean.
+- **Entrypoint-level middlewares** — all three global middlewares are applied on `websecure` so every router inherits
+  them without per-service configuration.
+- **TLS enforcement** — TLS options are defined in `dynamic.yml` with `name: default` (auto-applies to all routers):
+  minimum TLS 1.2, ECDHE+AES-GCM/ChaCha20 cipher suites only.
 - **Prometheus metrics** — enabled via `metrics.prometheus`. Served on the `traefik` entrypoint (port 8080) at
   `/metrics`. Prometheus scrapes it via a static job (Traefik joins `alloy-network` for this).
 - **CrowdSec bouncer plugin** — declared under `experimental.plugins`. The LAPI key is passed as an env var
   (`CROWDSEC_BOUNCER_API_KEY`) and read in `dynamic.yml` via Go template: `{{ env "CROWDSEC_BOUNCER_API_KEY" }}`.
-- **Staging cert resolver** — `letsencrypt-staging` resolver available for testing cert issuance without
-  burning Let's Encrypt rate limits. Uses `storage: /certs/acme-staging.json`.
+- **Staging cert resolver** — `letsencrypt-staging` resolver available for testing cert issuance without burning Let's
+  Encrypt rate limits. Uses `storage: /certs/acme-staging.json`.
 - **Access log** — full JSON format (all requests, no error-only filter) written to
   `/var/log/traefik/access.log` on `traefik-logs-volume`. Tailed by Alloy → Loki.
 
-### Dynamic config (`deployment/traefik/dynamic.yml`)
+### Dynamic config (`../../deployment/traefik/dynamic.yml`)
 
 Defines three global middlewares and TLS options:
 
 | Middleware         | What it does                                                                                                                          |
-|--------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `security-headers` | HSTS (1y + preload), X-Frame-Options: DENY, X-Content-Type-Options: nosniff, Referrer-Policy, Permissions-Policy, X-XSS-Protection: 0 |
 | `rate-limit`       | 100 avg / 200 burst per real IP per second; source depth 1 (reads real IP from X-Forwarded-For)                                       |
 | `crowdsec-bouncer` | IP reputation via CrowdSec LAPI; OWASP AppSec CRS request inspection (SQLi, XSS, LFI, etc.)                                           |
@@ -64,14 +64,14 @@ Defines three global middlewares and TLS options:
 API key injection: Traefik's file provider processes Go templates in `dynamic.yml`, so
 `crowdsecLapiKey: '{{ env "CROWDSEC_BOUNCER_API_KEY" }}'` is resolved at runtime from the container env var.
 
-### CrowdSec (`deployment/traefik/crowdsec/`)
+### CrowdSec (`../../deployment/traefik/crowdsec`)
 
 CrowdSec runs as a sidecar container in the Traefik compose stack. It provides two threat-detection layers:
 
-1. **Log-based detection** — reads Traefik's JSON access log, applies behavioral scenarios
-   (brute force, scanning, credential stuffing) from the `crowdsecurity/traefik` collection.
-2. **AppSec engine** — per-request OWASP CRS inspection on port 7422. The Traefik bouncer plugin forwards
-   each request to AppSec before it reaches the backend. Blocks SQLi, XSS, LFI, RCE attempts.
+1. **Log-based detection** — reads Traefik's JSON access log, applies behavioral scenarios (brute force, scanning,
+   credential stuffing) from the `crowdsecurity/traefik` collection.
+2. **AppSec engine** — per-request OWASP CRS inspection on port 7422. The Traefik bouncer plugin forwards each request
+   to AppSec before it reaches the backend. Blocks SQLi, XSS, LFI, RCE attempts.
 
 **Bootstrap (one-time on VPS):**
 
@@ -184,7 +184,7 @@ See [scripts/INFRASTRUCTURE.md](../scripts/INFRASTRUCTURE.md) for the deploy scr
 
 ### Deploy Monitoring Stack
 
-The monitoring stack (`deployment/monitoring/`) runs Prometheus and Grafana as a separate compose project.
+The monitoring stack (`../../deployment/monitoring`) runs Prometheus and Grafana as a separate compose project.
 
 ```bash
 cd deployment/monitoring
@@ -202,7 +202,7 @@ auto-provisioned with Prometheus as the default datasource via `grafana/provisio
 ### Services
 
 | Container  | Image                    | Purpose                |
-|------------|--------------------------|------------------------|
+| ---------- | ------------------------ | ---------------------- |
 | `postgres` | `postgres:16-alpine`     | Database               |
 | `valkey`   | `valkey/valkey:8-alpine` | Redis-compatible cache |
 
@@ -240,10 +240,10 @@ docker network create redis-network
 
 ## Volumes
 
-### Production volumes (`deployment/production/volumes.yml`)
+### Production volumes (`../../deployment/production/volumes.yml`)
 
 | Volume                        | Service  | Contents                        |
-|-------------------------------|----------|---------------------------------|
+| ----------------------------- | -------- | ------------------------------- |
 | `mysql-data-volume`           | MySQL    | Database files                  |
 | `traefik-certificates-volume` | Traefik  | TLS certs (`acme.json`)         |
 | `traefik-logs-volume`         | Traefik  | Access logs (shared with Alloy) |
@@ -273,7 +273,7 @@ docker run --rm \
 Environment files live in `~/variables/` on the VPS, never in the repository.
 
 | File                    | Environment |
-|-------------------------|-------------|
+| ----------------------- | ----------- |
 | `~/variables/.env.prod` | Production  |
 | `~/variables/.env.dev`  | Development |
 

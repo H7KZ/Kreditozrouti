@@ -45,7 +45,7 @@ and presents it through a modern search interface with advanced filtering capabi
 ### 2.2 Lecturer Names — Classification
 
 Lecturer names appear as attributes of course records in the publicly accessible InSIS catalog. Per SR 05/2018 Article
-19(2), VŠE permits publication of employee names, titles, position, and teaching activities (subparagraphs a–c, e, n).
+19 (2), VŠE permits publication of employee names, titles, position, and teaching activities (subparagraphs a–c, e, n).
 Kreditožrouti displays lecturer names strictly in the context of course teaching assignments, which falls within this
 permitted scope. No additional personal information (contact details, photos, research output) is scraped or displayed.
 
@@ -129,8 +129,8 @@ scheduling operate. Kreditožrouti supports (but does not replace) the official 
 
 ## 7. Analytics and Privacy
 
-Kreditožrouti uses **Umami Analytics** — a self-hosted instance. Umami is an
-open-source analytics tool designed with privacy as a default:
+Kreditožrouti uses **Umami Analytics** — a self-hosted instance. Umami is an open-source analytics tool designed with
+privacy as a default:
 
 | Property             | Detail                                                                                              |
 | -------------------- | --------------------------------------------------------------------------------------------------- |

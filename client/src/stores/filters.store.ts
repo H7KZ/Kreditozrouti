@@ -1,8 +1,7 @@
-import type { TimeSelection } from '@shared/domain/time'
-import type { CoursesFilter } from '@shared/http/courses'
+import type { CoursesFilter, TimeSelection } from '@kreditozrouti/types'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { getUpcomingPeriod } from '@shared/domain/period'
+import { getUpcomingPeriod } from '@kreditozrouti/core/domain/period'
 
 function createDefaultFilters(): CoursesFilter {
 	return {
@@ -37,6 +36,7 @@ export const useFiltersStore = defineStore('filters', () => {
 	const filters = ref<CoursesFilter>(createDefaultFilters())
 	const hideConflictingCourses = ref(false)
 	const timetableExcludeTimes = ref<TimeSelection[]>([])
+	const fitScoreActive = ref(false)
 
 	const mergedExcludeTimes = computed<TimeSelection[]>(() => {
 		const manual = filters.value.exclude_times ?? []
@@ -150,6 +150,7 @@ export const useFiltersStore = defineStore('filters', () => {
 		filters,
 		hideConflictingCourses,
 		timetableExcludeTimes,
+		fitScoreActive,
 		mergedExcludeTimes,
 		activeFilterCount,
 		hasActiveFilters,

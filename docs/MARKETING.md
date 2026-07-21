@@ -93,7 +93,7 @@ so it doesn't look like a mass paste.
 **Groups:**
 
 | Group                      | URL                                   | Template            |
-|----------------------------|---------------------------------------|---------------------|
+| -------------------------- | ------------------------------------- | ------------------- |
 | Prváci VŠE                 | facebook.com/groups/PrvaciVSE         | A                   |
 | VŠE main                   | facebook.com/groups/2233410301        | D                   |
 | FIS VŠE                    | facebook.com/groups/fis.vse           | B (utm_content=fis) |
@@ -399,7 +399,7 @@ Set up the campaign at sklik.cz before September 4.
 **Ad variants — run all three, pause the weakest after 48 hours:**
 
 | Variant | Headline                                           |
-|---------|----------------------------------------------------|
+| ------- | -------------------------------------------------- |
 | A       | Bezkonfliktní rozvrh VŠE během minut — zdarma      |
 | B       | Plánuj si rozvrh mimo InSIS — bez registrace       |
 | C       | Vizuální rozvrhovač pro studenty VŠE — zkus zdarma |
@@ -415,7 +415,7 @@ Pause September 8 unless budget remains and clicks are still converting.
 Check Grafana Faro after each phase. The number that matters is **wizard completions** (step 4), not raw visits.
 
 | Checkpoint           | Date   | Target                           |
-|----------------------|--------|----------------------------------|
+| -------------------- | ------ | -------------------------------- |
 | After Phase 0 posts  | Jun 30 | Any completions = tracking works |
 | Before deadline push | Sep 1  | 50+ completions                  |
 | End of zápisy        | Sep 16 | **250 completions**              |
@@ -425,7 +425,7 @@ Check Grafana Faro after each phase. The number that matters is **wizard complet
 ## Attribution Table
 
 | Channel                  | utm_source     | utm_medium | utm_content                |
-|--------------------------|----------------|------------|----------------------------|
+| ------------------------ | -------------- | ---------- | -------------------------- |
 | Facebook – Prváci VŠE    | facebook       | group      | prvaci                     |
 | Facebook – FIS           | facebook       | group      | fis                        |
 | Facebook – FM            | facebook       | group      | fm                         |

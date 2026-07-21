@@ -1,8 +1,8 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { MergedUnit } from '@client/composables'
 import { isMergedUnit, useCourseLabels, useScheduleExport, useShareTimetable, useSlotMerging, useTimetableDrag, useTimetableGrid } from '@client/composables'
 import type { SelectedCourseUnit } from '@client/types'
-import type { Day } from '@shared/domain/constants'
+import type { Day } from '@kreditozrouti/types'
 import { computed, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TimetableAgenda from '@client/components/timetable/TimetableAgenda.vue'
@@ -29,8 +29,10 @@ const props = withDefaults(
 		enableDrag?: boolean
 		/** Open the course detail modal when a block is clicked. */
 		enableCourseModal?: boolean
+		/** Unit IDs to highlight with an amber ring (used in preview modal). */
+		highlightUnitIds?: number[]
 	}>(),
-	{ units: undefined, showShare: true, showExport: true, enableDrag: true, enableCourseModal: true }
+	{ units: undefined, showShare: true, showExport: true, enableDrag: true, enableCourseModal: true, highlightUnitIds: undefined }
 )
 
 /*
@@ -143,6 +145,15 @@ function handleRemoveUnit(unit: SelectedCourseUnit | MergedUnit) {
 function getDragSelectionStyleForDay(day: Day) {
 	return getDragSelectionStyle(day, dragStore.normalizedDragSelection, dragStore.dragSelection.active)
 }
+
+// Returns true when a unit (or any original unit in a merged block) is in highlightUnitIds
+function isHighlighted(unit: SelectedCourseUnit | MergedUnit): boolean {
+	if (!props.highlightUnitIds?.length) return false
+	if (isMergedUnit(unit)) {
+		return unit.originalUnits.some(u => props.highlightUnitIds!.includes(u.unitId))
+	}
+	return props.highlightUnitIds.includes(unit.unitId)
+}
 </script>
 
 <template>
@@ -253,6 +264,7 @@ function getDragSelectionStyleForDay(day: Day) {
 									:key="isMergedUnit(unit) ? `merged-${unit.slotId}` : unit.slotId"
 									:unit="unit"
 									:style="getBlockStyle(unit, day)"
+									:class="{ 'ring-2 ring-amber-400': isHighlighted(unit) }"
 									:has-conflict="hasConflict(unit)"
 									:has-campus-conflict="hasCampusConflict(unit)"
 									:is-merged="isMergedUnit(unit)"

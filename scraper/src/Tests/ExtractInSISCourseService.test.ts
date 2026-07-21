@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { makeFixtureLoaders } from './helpers'
 
-const dir = path.join(import.meta.dirname, 'fixtures/courses')
+const dir = path.join(import.meta.dirname, '../../../fixtures/courses')
 const { load, expected } = makeFixtureLoaders(dir)
 
 describe('ExtractInSISCourseService', () => {
@@ -18,7 +18,7 @@ describe('ExtractInSISCourseService', () => {
 		} else {
 			it.each(fixtures)('%s', file => {
 				const actual = ExtractInSISCourseService.extract(load(file), '')
-				expect(actual).toEqual(expected(file.replace('.html', '.expected.json'), actual))
+				expect(actual).toEqual(expected(file.replace('.html', '.scraper.json'), actual))
 			})
 		}
 	})

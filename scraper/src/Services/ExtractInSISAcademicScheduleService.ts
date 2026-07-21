@@ -1,7 +1,7 @@
-﻿import type { InSISSemester } from '@shared/domain/insis'
+﻿import type { InSISSemester } from '@kreditozrouti/types'
+import { extractSemester, extractYear } from '@kreditozrouti/core/utils'
 import * as cheerio from 'cheerio'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
-import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
 
 export interface HarmonogramFaculty {
 	insis_faculty_id: number

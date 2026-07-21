@@ -5,7 +5,7 @@ The client documentation is split into focused files for easier navigation.
 ## Documents
 
 | File                                           | Contents                                                                                                                           |
-|------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | [client/README.md](client/README.md)           | Architecture overview, layers, pages, bootstrap sequence, filter flow, directory structure                                         |
 | [client/STORES.md](client/STORES.md)           | All Pinia stores: state shape, computed, actions, persistence, dependency graph                                                    |
 | [client/COMPOSABLES.md](client/COMPOSABLES.md) | All composables: pure transforms, store-reading, special (drag, refresh, status filter)                                            |
@@ -33,7 +33,7 @@ The client documentation is split into focused files for easier navigation.
 → [client/STORES.md — wizard.store](client/STORES.md#wizardstore-usewizardstore)
 
 **"How do I add a new filter?"**
-→ [client/README.md — client/CLAUDE.md reference](client/README.md) (see `client/CLAUDE.md` § How to Add Common Things)
+→ [client/README.md — client/CLAUDE.md reference](client/README.md) (see `../client/CLAUDE.md` § How to Add Common Things)
 
 **"How does the drag-to-filter on the timetable work?"**
 → [client/TIMETABLE.md — TimetableGrid](client/TIMETABLE.md#timetablegrid) + [client/COMPOSABLES.md — useTimetableDrag](client/COMPOSABLES.md#usetimetabledraggridref-gettimefromx)

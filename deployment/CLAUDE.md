@@ -1,6 +1,6 @@
 # Deployment — CLAUDE.md
 
-> Full reference: [docs/deployment/](../docs/deployment/README.md)
+> Full reference: [docs/dev/deployment/](../docs/deployment/README.md)
 
 ---
 
@@ -63,8 +63,7 @@ kept).
 ## Critical Invariants
 
 **Deploy order on a fresh server:** Traefik → monitoring stack (optional) → GitHub Runner (optional) → app stack.
-Traefik must
-exist before any app stack because it creates `traefik-network`.
+Traefik must exist before any app stack because it creates `traefik-network`.
 
 **`.env` is written by CI, never committed.** `_deploy-service.yml` and `deploy-all.yml` construct it from GitHub
 Environment secrets/variables and write it into the version directory (`~/versions/<env>/<sha>/.env`) before calling
@@ -93,8 +92,8 @@ working directory doesn't matter; only the script's own location does.
 
 ## Key Docs
 
-| Topic                                          | Doc                                                       |
-|------------------------------------------------|-----------------------------------------------------------|
+| Topic                                          | Doc                                                           |
+|------------------------------------------------|---------------------------------------------------------------|
 | Docker multi-stage builds, GHCR registry       | [DOCKER.md](../docs/deployment/DOCKER.md)                 |
 | GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                     |
 | Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md) |

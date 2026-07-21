@@ -1,6 +1,4 @@
-import type { ScraperRequestJob, ScraperResponseJob } from '@shared/queue/jobs'
-import { Queue, Worker } from 'bullmq'
-import { BullMQOtel } from 'bullmq-otel'
+import type { ScraperRequestJob, ScraperResponseJob } from '@kreditozrouti/types'
 import {
 	ScraperInSISAcademicSchedulesRequestScheduler,
 	ScraperInSISCatalogRequestScheduler,
@@ -9,12 +7,14 @@ import {
 	ScraperInSISStudyPlansRequestScheduler,
 	ScraperRequestQueue,
 	ScraperResponseQueue
-} from '@shared/queue/names'
+} from '@kreditozrouti/core/queue'
+import { Queue, Worker } from 'bullmq'
+import { BullMQOtel } from 'bullmq-otel'
 import { mysql, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import { StudyPlanCourseIdentTable } from '@api/Database/types'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
-import { logger, withJobLogger } from '@api/logger'
+import { logger } from '@api/logger'
 import InSISService from '@api/Services/InSISService'
 
 // Queue & Worker Setup
@@ -35,7 +35,7 @@ const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue,
 	telemetry: bullmqTelemetry
 })
 
-const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, withJobLogger(ScraperResponseQueue, ScraperResponseHandler), {
+const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, ScraperResponseHandler, {
 	connection: redis.options,
 	telemetry: bullmqTelemetry,
 	concurrency: 2,

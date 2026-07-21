@@ -66,10 +66,10 @@ LoggerJobContext.log.info(LoggerJobContext.get())
 // → {"level":"INFO","time":"...","job_id":"...","course_id":42,"status":"success","duration_ms":1234,...}
 ```
 
-**Why wide events?** A single JSON object is far easier to query in log aggregators (Grafana, Loki, etc.) than
-scattered multi-line logs. You can filter `status=failed AND attempt>2` with a single index scan.
+**Why wide events?** A single JSON object is far easier to query in log aggregators (Grafana, Loki, etc.) than scattered
+multi-line logs. You can filter `status=failed AND attempt>2` with a single index scan.
 
-### Root logger (`scraper/src/logger.ts`)
+### Root logger (`../../scraper/src/logger.ts`)
 
 A Pino root logger is created once and binds `service: 'scraper'` on every line. `LoggerJobContext.log` is a child
 logger derived from this root — no separate logger instantiation is needed in individual jobs.
@@ -79,8 +79,8 @@ logger derived from this root — no separate logger instantiation is needed in 
 // LoggerJobContext.log = logger.child({ context: 'job' })
 ```
 
-No wrapper function is needed: `ScraperRequestHandler` owns the full job lifecycle (AsyncLocalStorage setup,
-field accumulation, final emit) directly.
+No wrapper function is needed: `ScraperRequestHandler` owns the full job lifecycle (AsyncLocalStorage setup, field
+accumulation, final emit) directly.
 
 ### `JobWideEvent` interface
 
@@ -172,7 +172,7 @@ This forces callers to handle both cases explicitly rather than wrapping every c
 **Three methods:**
 
 | Method               | Returns                    | Use case                                         |
-|----------------------|----------------------------|--------------------------------------------------|
+| -------------------- | -------------------------- | ------------------------------------------------ |
 | `get<T>(url)`        | `HttpResponse<T>`          | Single, important fetch (check `result.success`) |
 | `post<T>(url, data)` | `HttpResponse<T>`          | Search form submission                           |
 | `getSilent<T>(url)`  | `AxiosResponse<T> \| null` | Bulk fetch where failures are silently skipped   |
@@ -245,7 +245,7 @@ slot in `results` for a failed item is `undefined` — callers should guard agai
 
 ---
 
-## InSIS Domain Utilities (`Utils/InSISUtils.ts`)
+## InSIS Domain Utilities (`shared/utils/insis.ts`)
 
 ### `extractSemester(value)` → `InSISSemester | null`
 

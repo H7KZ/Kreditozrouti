@@ -32,7 +32,7 @@ api.interceptors.response.use(
 			const status = error.response?.status
 			const data = error.response?.data
 
-			title = `${status}. ${t(`errors.types.${data?.type ?? 'Unknown'}`)}`
+			title = `${status}. ${t(`errors.types.${data?.type ?? 'UNKNOWN'}`)}`
 			description = t(`errors.codes.${data?.code ?? '0'}`)
 		}
 

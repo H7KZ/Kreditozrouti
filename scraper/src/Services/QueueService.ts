@@ -1,12 +1,12 @@
 import type {
 	ScraperInSISAcademicSchedule,
+	ScraperInSISAcademicScheduleRequestJob,
 	ScraperInSISAcademicSchedules,
 	ScraperInSISCourse,
 	ScraperInSISFacultyTimetable,
 	ScraperInSISFacultyTimetables,
 	ScraperInSISStudyPlan
-} from '@shared/queue/insis'
-import type { ScraperInSISAcademicScheduleRequestJob } from '@shared/queue/jobs'
+} from '@kreditozrouti/types'
 import scraper from '@scraper/bullmq'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 

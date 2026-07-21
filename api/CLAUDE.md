@@ -1,6 +1,6 @@
 # API — CLAUDE.md
 
-> Full reference: [docs/api/](../docs/api/README.md)
+> Full reference: [docs/dev/api/](../docs/api/README.md)
 
 ---
 
@@ -14,13 +14,14 @@ api/src/
 ├── Controllers/    # thin: validate (Zod) → service → respond
 │   ├── Kreditozrouti/   # CoursesController, StudyPlansController, StudyPlanCoursesController
 │   ├── Scraper/         # CourseScraperController (trigger + SSE)
-│   └── Commands/        # Admin scrape triggers (Bearer token)
-├── Services/       # CourseService, StudyPlanService, ScraperService, SQLService, ...
+│   ├── Commands/        # Admin scrape triggers (Bearer token)
+│   └── Optimize/        # OptimizeController — timetable solver endpoint (Controllers/Optimize/OptimizeController.ts)
+├── Services/       # CourseService, StudyPlanService, ScraperService, SQLService, OptimizeService (Services/OptimizeService.ts), ...
 ├── Database/       # types.ts + migrations/
 ├── Jobs/           # ScraperResponseInSISCourseJob, ScraperResponseInSISStudyPlanJob
 ├── Handlers/       # ScraperResponseHandler, ErrorHandler
 ├── Schedulers/     # Cron jobs (production only)
-├── Routes/         # KreditozroutiRoutes, ScraperPublicRoutes, CommandsRoutes
+├── Routes/         # KreditozroutiRoutes, ScraperPublicRoutes, CommandsRoutes, OptimizeRoutes (Routes/OptimizeRoutes.ts)
 ├── Middlewares/    # CacheMiddleware, RateLimitMiddleware, CommandMiddleware, LoggerMiddleware
 ├── Errors/         # ApiError + Errors factory
 └── Utils/          # sse.ts, timeConflict.ts

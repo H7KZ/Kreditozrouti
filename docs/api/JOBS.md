@@ -27,9 +27,9 @@ The API consumes results from the scraper via `ScraperResponseQueue`. Each incom
 
 **File:** `src/Jobs/ScraperResponseInSISCourseJob.ts`
 
-Syncs a fully scraped `ScraperInSISCourse` into MySQL and notifies waiting SSE clients via Redis.
-When the scraper signals that a course no longer exists (`course: null, course_id: <id>`), the job
-deletes the ghost course and all its child rows instead of upserting.
+Syncs a fully scraped `ScraperInSISCourse` into MySQL and notifies waiting SSE clients via Redis. When the scraper
+signals that a course no longer exists (`course: null, course_id: <id>`), the job deletes the ghost course and all its
+child rows instead of upserting.
 
 ### Not-Found / Ghost Course Deletion
 
@@ -55,15 +55,15 @@ prevents unnecessary DB churn when a catalog run re-scrapes unchanged courses.
 
 ### Faculty upsert (outside the transaction, read-first)
 
-`upsertFaculty` and the study-plan faculty-ident pre-creation loop run **before** the
-transaction below and outside it — faculty rows are shared across hundreds of concurrent
-course jobs (5 scraper replicas), and an unconditional `INSERT ... ON DUPLICATE KEY UPDATE`
-acquires an exclusive lock on every call, which is a classic MySQL deadlock generator
-("Deadlock found when trying to get lock; try restarting transaction") under concurrency.
+`upsertFaculty` and the study-plan faculty-ident pre-creation loop run **before** the transaction below and outside it —
+faculty rows are shared across hundreds of concurrent course jobs (5 scraper replicas), and an unconditional
+`INSERT ... ON DUPLICATE KEY UPDATE`
+acquires an exclusive lock on every call, which is a classic MySQL deadlock generator ("Deadlock found when trying to
+get lock; try restarting transaction") under concurrency.
 
-Both now **SELECT first** and only write when the data actually differs (or the row is
-missing): faculty title/visibility changes are extremely rare, so this turns the vast
-majority of calls into lock-free reads and removes the contention entirely.
+Both now **SELECT first** and only write when the data actually differs (or the row is missing): faculty
+title/visibility changes are extremely rare, so this turns the vast majority of calls into lock-free reads and removes
+the contention entirely.
 
 ### Transaction
 
@@ -153,8 +153,8 @@ Syncs a fully scraped `ScraperInSISStudyPlan` into MySQL.
 The `course_ident` field allows courses to be linked to study plans even when the course record doesn't exist yet —
 `ScraperResponseInSISCourseJob.syncStudyPlansFromCourse` handles the reverse link.
 
-The `ON DUPLICATE KEY UPDATE course_id` ensures that when a course is re-scraped for a new year, the link
-always points to the most recently scraped `insis_courses` row rather than accumulating stale ZS-YYYY pointers.
+The `ON DUPLICATE KEY UPDATE course_id` ensures that when a course is re-scraped for a new year, the link always points
+to the most recently scraped `insis_courses` row rather than accumulating stale ZS-YYYY pointers.
 
 ### No Cache Flush
 
@@ -172,8 +172,8 @@ Syncs a scraped academic period and its events into MySQL.
 ### Faculty Upsert (read-first)
 
 Checks if the faculty row (by `faculty_ident`) exists. If not, inserts a stub
-(`title: null, is_schedule_publicly_visible: false`) to satisfy the FK constraint.
-The faculty title is populated when the catalog scrape runs.
+(`title: null, is_schedule_publicly_visible: false`) to satisfy the FK constraint. The faculty title is populated when
+the catalog scrape runs.
 
 ### Period Upsert
 
@@ -202,8 +202,8 @@ Each event row: `period_id`, `title`, `starts_at` (datetime | null), `ends_at` (
 
 **File:** `src/Jobs/ScraperResponseInSISFacultyTimetablesJob.ts`
 
-Discovery response for the faculty timetables pipeline. No DB writes — logs `faculties_count` from the response
-payload so operators can confirm that discovery completed and how many faculties were queued.
+Discovery response for the faculty timetables pipeline. No DB writes — logs `faculties_count` from the response payload
+so operators can confirm that discovery completed and how many faculties were queued.
 
 ---
 
@@ -225,8 +225,8 @@ Updates the `is_schedule_publicly_visible` flag for a single faculty.
    WHERE id = ident
 ```
 
-The INSERT IGNORE step satisfies the FK constraint if the faculty has never been seen before. Title and other
-faculty fields are populated by subsequent course or study plan scrapes.
+The INSERT IGNORE step satisfies the FK constraint if the faculty has never been seen before. Title and other faculty
+fields are populated by subsequent course or study plan scrapes.
 
 ---
 
@@ -262,23 +262,23 @@ const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9,11,12'
 
 // Catalog scrape: 3 AM during registration months — turbo (no delays, InSIS is quiet at night)
 upsertJobScheduler(ScraperInSISCatalogRequestScheduler, {
-    pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *`
+	pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *`
 }, {
-    data: {type: 'InSIS:Catalog', mode: 'turbo', auto_queue_courses: true, periods: [...last 4 years]}
+	data: {type: 'InSIS:Catalog', mode: 'turbo', auto_queue_courses: true, periods: [...last 4 years]}
 })
 
 // Study plans scrape: 2 AM during registration months — turbo
 upsertJobScheduler(ScraperInSISStudyPlansRequestScheduler, {
-    pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *`
+	pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *`
 }, {
-    data: {type: 'InSIS:StudyPlans', mode: 'turbo', auto_queue_study_plans: true, periods: [...last 4 years]}
+	data: {type: 'InSIS:StudyPlans', mode: 'turbo', auto_queue_study_plans: true, periods: [...last 4 years]}
 })
 
 // Academic schedules: 1 AM daily (year-round — schedule changes affect all students)
 upsertJobScheduler(ScraperInSISAcademicSchedulesRequestScheduler, {
-    pattern: '0 1 * * *'
+	pattern: '0 1 * * *'
 }, {
-    data: { type: 'InSIS:AcademicSchedules' }
+	data: {type: 'InSIS:AcademicSchedules'}
 })
 ```
 
@@ -288,5 +288,5 @@ On startup the API also removes the legacy `SupervisorScheduler` entry from Redi
 scrapes manually. See [Scripts](../SCRIPTS.md) for pre-built curl helpers and Makefile targets.
 
 **Scraping modes:** scheduled jobs always use `turbo`. Manual triggers default to `polite`. Pass `"mode": "normal"` or
-`"mode": "turbo"` in the request body to override. See [Scraper JOBS.md](../scraper/JOBS.md#scraping-modes) for the
-full mode reference.
+`"mode": "turbo"` in the request body to override. See [Scraper JOBS.md](../scraper/JOBS.md#scraping-modes) for the full
+mode reference.

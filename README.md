@@ -40,8 +40,7 @@ timetable preview, and no conflict detection. Kreditožrouti fixes that.
 
 New to Kreditožrouti? The user guide walks you through every feature:
 
-- [Getting Started](docs/user/GETTING_STARTED.md) — wizard setup, first use
-- [Features Reference](docs/user/FEATURES.md) — filters, timetable, conflicts, saved schedules
+**https://kreditozrouti.cz/docs/en/getting-started**
 
 > The app runs at **[kreditozrouti.cz](https://kreditozrouti.cz)** — no sign-up needed.
 
@@ -55,28 +54,31 @@ For **local development and deployment**, see the engineering docs:
 - [**Contributing**](docs/engineering/CONTRIBUTING.md) — branch strategy, commit conventions, PR process
 - [**Deployment**](docs/DEPLOYMENT.md) — Docker Compose stacks, CI/CD, production ops
 
+Full engineering docs are also available at **https://kreditozrouti.cz/docs/dev/**
+
 ---
 
 ## Documentation
 
 ### For users
 
-| Area       | Doc                                        |
-|------------|--------------------------------------------|
-| User Guide | [docs/user/README.md](docs/user/README.md) |
+**https://kreditozrouti.cz/docs/en/**
 
 ### For engineers
 
-| Area         | Overview                                         | Details                                                                                                                                                                             |
-|--------------|--------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Engineering  | [docs/ENGINEERING.md](docs/ENGINEERING.md)       | [setup](docs/engineering/SETUP.md) · [contributing](docs/engineering/CONTRIBUTING.md)                                                                                               |
-| Architecture | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)     | [monorepo](docs/architecture/MONOREPO.md) · [services](docs/architecture/SERVICES.md) · [data flow](docs/architecture/DATA_FLOW.md) · [containers](docs/architecture/CONTAINERS.md) |
-| API          | [docs/api/README.md](docs/api/README.md)         | [endpoints](docs/api/ENDPOINTS.md) · [services](docs/api/SERVICES.md) · [jobs](docs/api/JOBS.md) · [database](docs/api/DATABASE.md) · [internals](docs/api/INTERNALS.md)            |
-| Client       | [docs/client/README.md](docs/client/README.md)   | [stores](docs/client/STORES.md) · [composables](docs/client/COMPOSABLES.md) · [timetable](docs/client/TIMETABLE.md) · [internals](docs/client/INTERNALS.md)                         |
-| Scraper      | [docs/scraper/README.md](docs/scraper/README.md) | [jobs](docs/scraper/JOBS.md) · [extraction](docs/scraper/EXTRACTION.md) · [queue](docs/scraper/QUEUE.md) · [types](docs/scraper/TYPES.md) · [internals](docs/scraper/INTERNALS.md)  |
-| Shared       | [docs/shared/README.md](docs/shared/README.md)   | [domain](docs/shared/DOMAIN.md) · [http](docs/shared/HTTP.md) · [queue](docs/shared/QUEUE.md)                                                                                       |
-| Deployment   | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)         | [docker](docs/deployment/DOCKER.md) · [ci/cd](docs/deployment/CICD.md) · [infrastructure](docs/deployment/INFRASTRUCTURE.md) · [operations](docs/deployment/OPERATIONS.md)          |
-| Scripts      | [docs/SCRIPTS.md](docs/SCRIPTS.md)               | [infrastructure](docs/scripts/INFRASTRUCTURE.md) · [maintenance](docs/scripts/MAINTENANCE.md)                                                                                       |
+**https://kreditozrouti.cz/docs/dev/** — architecture, API, client, scraper, deployment, contributing
+
+Source files are in `docs/dev/`:
+
+| Area         | Overview                                                 | Details                                                                                                                                                                                             |
+|--------------|----------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Engineering  | [docs/dev/ENGINEERING.md](docs/ENGINEERING.md)       | [setup](docs/engineering/SETUP.md) · [contributing](docs/engineering/CONTRIBUTING.md)                                                                                                       |
+| Architecture | [docs/dev/ARCHITECTURE.md](docs/ARCHITECTURE.md)     | [monorepo](docs/architecture/MONOREPO.md) · [services](docs/architecture/SERVICES.md) · [data flow](docs/architecture/DATA_FLOW.md) · [containers](docs/architecture/CONTAINERS.md) |
+| API          | [docs/dev/api/README.md](docs/api/README.md)         | [endpoints](docs/api/ENDPOINTS.md) · [services](docs/api/SERVICES.md) · [jobs](docs/api/JOBS.md) · [database](docs/api/DATABASE.md)                                                 |
+| Client       | [docs/dev/client/README.md](docs/client/README.md)   | [stores](docs/client/STORES.md) · [composables](docs/client/COMPOSABLES.md) · [timetable](docs/client/TIMETABLE.md)                                                                     |
+| Scraper      | [docs/dev/scraper/README.md](docs/scraper/README.md) | [jobs](docs/scraper/JOBS.md) · [extraction](docs/scraper/EXTRACTION.md) · [queue](docs/scraper/QUEUE.md)                                                                                |
+| Shared       | [docs/dev/shared/README.md](docs/shared/README.md)   | [domain](docs/shared/DOMAIN.md) · [http](docs/shared/HTTP.md) · [queue](docs/shared/QUEUE.md)                                                                                           |
+| Deployment   | [docs/dev/DEPLOYMENT.md](docs/DEPLOYMENT.md)         | [docker](docs/deployment/DOCKER.md) · [ci/cd](docs/deployment/CICD.md) · [infrastructure](docs/deployment/INFRASTRUCTURE.md) · [operations](docs/deployment/OPERATIONS.md)          |
 
 ---
 
@@ -110,8 +112,8 @@ Short version:
 
 This project is provided for educational and personal use. Not officially affiliated with VŠE.
 
-- [Compliance Policy (Czech)](client/src/legal/cs/compliance.md)
-- [Compliance Policy (English)](client/src/legal/en/compliance.md)
+- [Privacy Policy](https://kreditozrouti.cz/docs/en/legal/privacy)
+- [Terms of Use](https://kreditozrouti.cz/docs/en/legal/terms)
 
 Data is scraped from InSIS. Use at your own risk. Respect InSIS rate limits and terms of service.
 

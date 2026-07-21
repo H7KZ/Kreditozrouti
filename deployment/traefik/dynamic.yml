@@ -28,8 +28,8 @@ http:
     # --------------------------------------------------------------------------
     rate-limit:
       rateLimit:
-        average: 100
-        burst: 200
+        average: 2000
+        burst: 4000
         period: 1s
         sourceCriterion:
           ipStrategy:
@@ -42,7 +42,7 @@ http:
     crowdsec-bouncer:
       plugin:
         crowdsec-bouncer:
-          enabled: true
+          enabled: false
           logLevel: INFO
           crowdsecMode: live
           crowdsecLapiScheme: http
@@ -50,8 +50,9 @@ http:
           crowdsecLapiKey: '{{ env "CROWDSEC_BOUNCER_API_KEY" }}'
           crowdsecAppsecEnabled: true
           crowdsecAppsecHost: crowdsec:7422
-          crowdsecAppsecFailureBlock: true
+          crowdsecAppsecFailureBlock: false
           crowdsecAppsecUnreachableBlock: false
+          crowdsecLapiUnreachableBlock: false
 
 # ------------------------------------------------------------------------------
 # TLS options — 'default' is applied automatically to all routers

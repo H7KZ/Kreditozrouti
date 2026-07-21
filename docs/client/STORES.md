@@ -57,13 +57,14 @@ filters: CoursesFilter = {
 	sort_by: 'ident', sort_dir: 'asc', limit: 50, offset: 0
 }
 hideConflictingCourses: boolean
+fitScoreActive: boolean           // not persisted; resets on page reload
 timetableExcludeTimes: TimeSelection[]
 ```
 
 ### Key Computed
 
 | Computed             | Returns                                                                            |
-|----------------------|------------------------------------------------------------------------------------|
+| -------------------- | ---------------------------------------------------------------------------------- |
 | `mergedExcludeTimes` | `exclude_times` (manual) + `timetableExcludeTimes` (when `hideConflictingCourses`) |
 | `activeFilterCount`  | Number of active non-pagination filters                                            |
 | `hasActiveFilters`   | Boolean shortcut                                                                   |
@@ -71,7 +72,7 @@ timetableExcludeTimes: TimeSelection[]
 ### Key Actions
 
 | Action                                                                | Effect                                                                                         |
-|-----------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | `setFilter(key, value)`                                               | Sets any filter field, resets `offset` to 0                                                    |
 | `addIncludeTime(ts)` / `removeIncludeTime(i)` / `clearIncludeTimes()` | Manage `include_times` array                                                                   |
 | `addExcludeTime(ts)` / `removeExcludeTime(i)` / `clearExcludeTimes()` | Manage manual `exclude_times`                                                                  |
@@ -111,7 +112,7 @@ expandedCourseIds: Set<number>
 ### Key Actions
 
 | Action                                                         | Effect                                                                                                                                                                     |
-|----------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `fetchCourses()`                                               | Reads `filtersStore.filters` + `filtersStore.mergedExcludeTimes`, calls `POST /courses`, updates `courses`/`facets`/`pagination`, announces result count to screen readers |
 | `initializeFromWizard()`                                       | Calls `filtersStore.initializeFromWizard(studyPlanIds, completedIdents)`                                                                                                   |
 | `toggleHideConflictingCourses()`                               | Calls `filtersStore.toggleHideConflicting(timetableStore.selectedTimesForExclusion)`, then `fetchCourses()`                                                                |
@@ -141,7 +142,7 @@ selectedUnits: SelectedCourseUnit[]
 ### Key Computed
 
 | Computed                              | Returns                                                                      |
-|---------------------------------------|------------------------------------------------------------------------------|
+| ------------------------------------- | ---------------------------------------------------------------------------- |
 | `selectedCourseIds`                   | `number[]` — unique course IDs                                               |
 | `unitsByCourse`                       | `Map<courseId, SelectedCourseUnit[]>`                                        |
 | `unitsByDay`                          | `Map<InSISDay, SelectedCourseUnit[]>`                                        |
@@ -167,7 +168,7 @@ all good → 'selected'
 ### Key Actions
 
 | Action                                                    | Effect                                                                                                       |
-|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | `addUnit(course, unit, slot)`                             | Snapshots `snapshotAvailableTypes` from `course.units`, pushes to `selectedUnits`, persists, syncs exclusion |
 | `removeUnit(unitId)`                                      | Removes by unitId, persists, syncs                                                                           |
 | `removeCourse(courseId)`                                  | Removes all units for course, persists, syncs                                                                |
@@ -190,7 +191,7 @@ all good → 'selected'
 
 **File:** `src/stores/wizard.store.ts`
 
-4-step wizard: Faculty → Year → Study Plan(s) → Completed Courses.
+4-step wizard: Faculty → Year → Study Plan (s) → Completed Courses.
 
 **Persisted:** Yes → `STORAGE_KEYS.WIZARD`.
 
@@ -208,7 +209,7 @@ completed: boolean
 ### Key Actions
 
 | Action                              | Effect                                                                                             |
-|-------------------------------------|----------------------------------------------------------------------------------------------------|
+| ----------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `selectFaculty(id)`                 | Sets facultyId, clears downstream, triggers `wizardDataStore.loadYearFacets()`, advances to step 2 |
 | `selectYear(year)`                  | Sets year, triggers `loadStudyPlans()`, advances to step 3                                         |
 | `toggleStudyPlan(id, ident, title)` | Adds/removes from `selectedStudyPlans`                                                             |
@@ -249,7 +250,7 @@ error: string | null
 ### Key Actions
 
 | Action                   | Reads from                                | Fetches                                                               |
-|--------------------------|-------------------------------------------|-----------------------------------------------------------------------|
+| ------------------------ | ----------------------------------------- | --------------------------------------------------------------------- |
 | `loadInitialFacets()`    | —                                         | `POST /study_plans` (semesters: ZS, limit: 0) → faculty + year facets |
 | `loadYearFacets()`       | `wizardStore.facultyId`                   | `POST /study_plans` filtered by faculty → yearFacets                  |
 | `loadStudyPlans()`       | `wizardStore.{facultyId, year, semester}` | `POST /study_plans` → studyPlans, levelFacets                         |
@@ -279,7 +280,7 @@ titleSearch: string               // wizard step 3 plan picker
 ### Key Actions
 
 | Action                                                        | Notes                                               |
-|---------------------------------------------------------------|-----------------------------------------------------|
+| ------------------------------------------------------------- | --------------------------------------------------- |
 | `toggleCompletedCourse(ident)`                                | Adds/removes from `completedCourseIdents`, persists |
 | `markCourseCompleted(ident)` / `unmarkCourseCompleted(ident)` | Non-toggle variants                                 |
 | `clearCompletedCourses()`                                     | Called when faculty/year/plan changes               |
@@ -371,7 +372,7 @@ void
 ## LocalStorage Keys
 
 | Key constant             | Value                       | Contents                                          |
-|--------------------------|-----------------------------|---------------------------------------------------|
+| ------------------------ | --------------------------- | ------------------------------------------------- |
 | `STORAGE_KEYS.TIMETABLE` | `'kreditozrouti:timetable'` | `{ selectedUnits: SelectedCourseUnit[] }`         |
 | `STORAGE_KEYS.WIZARD`    | `'kreditozrouti:wizard'`    | `{ facultyId, year, ..., completedCourseIdents }` |
 | `STORAGE_KEYS.UI`        | `'kreditozrouti:ui'`        | `{ viewMode, sidebarCollapsed, showLegend }`      |

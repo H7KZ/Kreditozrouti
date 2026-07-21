@@ -15,8 +15,8 @@ on:
       min_versions_to_keep:
         description: 'Number of recent SHA-tagged versions to keep per package'
         required: false
-        type: string
-        default: '10'
+        type: number
+        default: 10
       dry_run:
         description: 'Dry run — print what would be deleted without deleting'
         required: false
@@ -71,7 +71,14 @@ jobs:
           OWNER="$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
           REPO="$(echo "${{ github.event.repository.name }}" | tr '[:upper:]' '[:lower:]')"
 
-          for SERVICE in api client scraper; do
+          # Determine whether owner is a user or org so we use the right API endpoint.
+          if gh api "/orgs/$OWNER" --silent 2>/dev/null; then
+            OWNER_TYPE="orgs"
+          else
+            OWNER_TYPE="users"
+          fi
+
+          for SERVICE in api client scraper mcp; do
             PACKAGE="${REPO}/${SERVICE}"
             echo "========================================"
             echo "Package: ghcr.io/${OWNER}/${PACKAGE}"
@@ -80,7 +87,7 @@ jobs:
 
             VERSIONS=$(gh api \
               -H "Accept: application/vnd.github+json" \
-              "/user/packages/container/$(python3 -c "import urllib.parse; print(urllib.parse.quote('${PACKAGE}', safe=''))")/versions" \
+              "/${OWNER_TYPE}/${OWNER}/packages/container/$(python3 -c "import urllib.parse; print(urllib.parse.quote('${PACKAGE}', safe=''))")/versions" \
               --paginate \
               --jq '[.[] | select(.metadata.container.tags | map(test("^(latest|dev-latest)$")) | any | not)] | sort_by(.created_at) | reverse')
 

@@ -14,7 +14,7 @@ discovery.relabel "container_labels" {
   // Placed first so dropped containers never enter any downstream pipeline stage.
   rule {
     source_labels = ["__meta_docker_container_name"]
-    regex         = "/(grafana|prometheus|loki|alloy|node-exporter|umami|postgres).*"
+    regex         = "/(grafana|prometheus|loki|alloy|umami|postgres).*"
     action        = "drop"
   }
 
@@ -112,7 +112,6 @@ faro.receiver "browser" {
 
   output {
     logs   = [loki.process.faro_labels.receiver]
-    traces = [otelcol.processor.batch.default.input]
   }
 }
 
@@ -142,37 +141,6 @@ loki.process "faro_labels" {
   }
 
   forward_to = [loki.write.default.receiver]
-}
-
-// OTLP receiver — API and Scraper push traces here.
-// Accessible from app containers via traefik-network.
-
-otelcol.receiver.otlp "default" {
-  grpc {
-    endpoint = "0.0.0.0:4317"
-  }
-  http {
-    endpoint = "0.0.0.0:4318"
-  }
-
-  output {
-    traces = [otelcol.processor.batch.default.input]
-  }
-}
-
-otelcol.processor.batch "default" {
-  output {
-    traces = [otelcol.exporter.otlp.tempo.input]
-  }
-}
-
-otelcol.exporter.otlp "tempo" {
-  client {
-    endpoint = "tempo:4317"
-    tls {
-      insecure = true
-    }
-  }
 }
 
 // ---------------------------------------------------------------------------

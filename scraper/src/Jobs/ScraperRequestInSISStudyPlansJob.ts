@@ -1,5 +1,5 @@
-import type { ScraperInSISStudyPlans } from '@shared/queue/insis'
-import type { ScraperInSISStudyPlansRequestJob } from '@shared/queue/jobs'
+import type { ScraperInSISStudyPlans, ScraperInSISStudyPlansRequestJob } from '@kreditozrouti/types'
+import { extractSemester, extractYear } from '@kreditozrouti/core/utils'
 import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
@@ -8,7 +8,6 @@ import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPla
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
-import { extractSemester, extractYear } from '@scraper/Utils/InSISUtils'
 
 const MaxDrillDepth = 8
 const BFS_CONCURRENCY = 6

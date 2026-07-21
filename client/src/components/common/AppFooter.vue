@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import IconExternalLink from '~icons/lucide/external-link'
@@ -9,7 +9,7 @@ import IconBookOpen from '~icons/lucide/book-open'
 import IconInfo from '~icons/lucide/info'
 import IconMail from '~icons/lucide/mail'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const currentYear = new Date().getFullYear()
 const appVersion = APP_VERSION
@@ -41,7 +41,7 @@ const appVersion = APP_VERSION
 					<ul class="space-y-2 text-sm">
 						<li>
 							<RouterLink
-								to="/guide"
+								:to="`/docs/${locale}/getting-started`"
 								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 							>
 								<IconBookOpen class="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -59,7 +59,7 @@ const appVersion = APP_VERSION
 						</li>
 						<li>
 							<RouterLink
-								to="/legal/compliance"
+								:to="`/docs/${locale}/legal/privacy`"
 								class="flex items-center gap-2 text-left text-(--insis-gray-700) transition-colors hover:text-(--insis-blue)"
 							>
 								<IconFileText class="h-4 w-4 shrink-0" aria-hidden="true" />

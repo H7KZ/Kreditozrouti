@@ -5,8 +5,8 @@
 #
 # Required Secrets (repository-level):
 #   SSH_HOST, SSH_USER, SSH_PORT, SSH_PRIVATE_KEY
-#   MONITORING_DOMAIN, GRAFANA_ADMIN_PASSWORD, DISCORD_WEBHOOK_URL
-#   FARO_ALLOWED_ORIGIN
+#   MONITORING_DOMAIN, GRAFANA_ADMIN_USER, GRAFANA_ADMIN_PASSWORD,
+#   DISCORD_WEBHOOK_URL, FARO_ALLOWED_ORIGIN
 # ==============================================================================
 
 name: Deploy Monitoring

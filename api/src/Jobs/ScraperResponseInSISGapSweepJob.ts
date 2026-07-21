@@ -1,4 +1,4 @@
-import type { ScraperInSISGapSweepResponseJob } from '@shared/queue/jobs'
+import type { ScraperInSISGapSweepResponseJob } from '@kreditozrouti/types'
 import { scraper } from '@api/bullmq'
 import { logger } from '@api/logger'
 import InSISService from '@api/Services/InSISService'

@@ -66,39 +66,154 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/guide/': RouteRecordInfo<
-      '/guide/',
-      '/guide',
+    '/docs': RouteRecordInfo<
+      '/docs',
+      '/docs',
+      Record<never, never>,
+      Record<never, never>,
+      | '/docs/cs/faq'
+      | '/docs/cs/features/filters'
+      | '/docs/cs/features/optimizer'
+      | '/docs/cs/features/timetable'
+      | '/docs/cs/features/tips-and-tricks'
+      | '/docs/cs/getting-started'
+      | '/docs/cs/legal/privacy'
+      | '/docs/cs/legal/terms'
+      | '/docs/cs/mcp'
+      | '/docs/en/faq'
+      | '/docs/en/features/filters'
+      | '/docs/en/features/optimizer'
+      | '/docs/en/features/timetable'
+      | '/docs/en/features/tips-and-tricks'
+      | '/docs/en/getting-started'
+      | '/docs/en/legal/privacy'
+      | '/docs/en/legal/terms'
+      | '/docs/en/mcp'
+    >,
+    '/docs/cs/faq': RouteRecordInfo<
+      '/docs/cs/faq',
+      '/docs/cs/faq',
       Record<never, never>,
       Record<never, never>,
       | never
     >,
-    '/guide/cs': RouteRecordInfo<
-      '/guide/cs',
-      '/guide/cs',
+    '/docs/cs/features/filters': RouteRecordInfo<
+      '/docs/cs/features/filters',
+      '/docs/cs/features/filters',
       Record<never, never>,
       Record<never, never>,
       | never
     >,
-    '/guide/en': RouteRecordInfo<
-      '/guide/en',
-      '/guide/en',
+    '/docs/cs/features/optimizer': RouteRecordInfo<
+      '/docs/cs/features/optimizer',
+      '/docs/cs/features/optimizer',
       Record<never, never>,
       Record<never, never>,
       | never
     >,
-    '/legal/[locale]/[slug]': RouteRecordInfo<
-      '/legal/[locale]/[slug]',
-      '/legal/:locale/:slug',
-      { locale: ParamValue<true>, slug: ParamValue<true> },
-      { locale: ParamValue<false>, slug: ParamValue<false> },
+    '/docs/cs/features/timetable': RouteRecordInfo<
+      '/docs/cs/features/timetable',
+      '/docs/cs/features/timetable',
+      Record<never, never>,
+      Record<never, never>,
       | never
     >,
-    '/legal/[slug]': RouteRecordInfo<
-      '/legal/[slug]',
-      '/legal/:slug',
-      { slug: ParamValue<true> },
-      { slug: ParamValue<false> },
+    '/docs/cs/features/tips-and-tricks': RouteRecordInfo<
+      '/docs/cs/features/tips-and-tricks',
+      '/docs/cs/features/tips-and-tricks',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/cs/getting-started': RouteRecordInfo<
+      '/docs/cs/getting-started',
+      '/docs/cs/getting-started',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/cs/legal/privacy': RouteRecordInfo<
+      '/docs/cs/legal/privacy',
+      '/docs/cs/legal/privacy',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/cs/legal/terms': RouteRecordInfo<
+      '/docs/cs/legal/terms',
+      '/docs/cs/legal/terms',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/cs/mcp': RouteRecordInfo<
+      '/docs/cs/mcp',
+      '/docs/cs/mcp',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/en/faq': RouteRecordInfo<
+      '/docs/en/faq',
+      '/docs/en/faq',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/en/features/filters': RouteRecordInfo<
+      '/docs/en/features/filters',
+      '/docs/en/features/filters',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/en/features/optimizer': RouteRecordInfo<
+      '/docs/en/features/optimizer',
+      '/docs/en/features/optimizer',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/en/features/timetable': RouteRecordInfo<
+      '/docs/en/features/timetable',
+      '/docs/en/features/timetable',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/en/features/tips-and-tricks': RouteRecordInfo<
+      '/docs/en/features/tips-and-tricks',
+      '/docs/en/features/tips-and-tricks',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/en/getting-started': RouteRecordInfo<
+      '/docs/en/getting-started',
+      '/docs/en/getting-started',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/en/legal/privacy': RouteRecordInfo<
+      '/docs/en/legal/privacy',
+      '/docs/en/legal/privacy',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/en/legal/terms': RouteRecordInfo<
+      '/docs/en/legal/terms',
+      '/docs/en/legal/terms',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/en/mcp': RouteRecordInfo<
+      '/docs/en/mcp',
+      '/docs/en/mcp',
+      Record<never, never>,
+      Record<never, never>,
       | never
     >,
     '/s/[id]': RouteRecordInfo<
@@ -161,45 +276,175 @@ declare module 'vue-router/auto-routes' {
       pathParamNames:
         | never
     }
-    'src/pages/guide/index.vue': {
+    'src/pages/docs.vue': {
       routes:
-        | '/guide/'
+        | '/docs'
+        | '/docs/cs/faq'
+        | '/docs/cs/features/filters'
+        | '/docs/cs/features/optimizer'
+        | '/docs/cs/features/timetable'
+        | '/docs/cs/features/tips-and-tricks'
+        | '/docs/cs/getting-started'
+        | '/docs/cs/legal/privacy'
+        | '/docs/cs/legal/terms'
+        | '/docs/cs/mcp'
+        | '/docs/en/faq'
+        | '/docs/en/features/filters'
+        | '/docs/en/features/optimizer'
+        | '/docs/en/features/timetable'
+        | '/docs/en/features/tips-and-tricks'
+        | '/docs/en/getting-started'
+        | '/docs/en/legal/privacy'
+        | '/docs/en/legal/terms'
+        | '/docs/en/mcp'
+      views:
+        | 'default'
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/cs/faq.md': {
+      routes:
+        | '/docs/cs/faq'
       views:
         | never
       pathParamNames:
         | never
     }
-    'src/pages/guide/cs.vue': {
+    'src/pages/docs/cs/features/filters.md': {
       routes:
-        | '/guide/cs'
+        | '/docs/cs/features/filters'
       views:
         | never
       pathParamNames:
         | never
     }
-    'src/pages/guide/en.vue': {
+    'src/pages/docs/cs/features/optimizer.md': {
       routes:
-        | '/guide/en'
+        | '/docs/cs/features/optimizer'
       views:
         | never
       pathParamNames:
         | never
     }
-    'src/pages/legal/[locale]/[slug].vue': {
+    'src/pages/docs/cs/features/timetable.md': {
       routes:
-        | '/legal/[locale]/[slug]'
+        | '/docs/cs/features/timetable'
       views:
         | never
       pathParamNames:
-        | 'slug'
+        | never
     }
-    'src/pages/legal/[slug].vue': {
+    'src/pages/docs/cs/features/tips-and-tricks.md': {
       routes:
-        | '/legal/[slug]'
+        | '/docs/cs/features/tips-and-tricks'
       views:
         | never
       pathParamNames:
-        | 'slug'
+        | never
+    }
+    'src/pages/docs/cs/getting-started.md': {
+      routes:
+        | '/docs/cs/getting-started'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/cs/legal/privacy.md': {
+      routes:
+        | '/docs/cs/legal/privacy'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/cs/legal/terms.md': {
+      routes:
+        | '/docs/cs/legal/terms'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/cs/mcp.md': {
+      routes:
+        | '/docs/cs/mcp'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/en/faq.md': {
+      routes:
+        | '/docs/en/faq'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/en/features/filters.md': {
+      routes:
+        | '/docs/en/features/filters'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/en/features/optimizer.md': {
+      routes:
+        | '/docs/en/features/optimizer'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/en/features/timetable.md': {
+      routes:
+        | '/docs/en/features/timetable'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/en/features/tips-and-tricks.md': {
+      routes:
+        | '/docs/en/features/tips-and-tricks'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/en/getting-started.md': {
+      routes:
+        | '/docs/en/getting-started'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/en/legal/privacy.md': {
+      routes:
+        | '/docs/en/legal/privacy'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/en/legal/terms.md': {
+      routes:
+        | '/docs/en/legal/terms'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/docs/en/mcp.md': {
+      routes:
+        | '/docs/en/mcp'
+      views:
+        | never
+      pathParamNames:
+        | never
     }
     'src/pages/s/[id].vue': {
       routes:

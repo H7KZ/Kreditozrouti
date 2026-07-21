@@ -90,6 +90,23 @@ getSlotDay(slot)
 InSISDay | null        // slot.day ?? getDayFromDate(slot.date)
 ```
 
+### `computeFitScore(course, timetableUnits)` / `computeFitScores(courses, timetableUnits)`
+
+Exported from `useFitScore.ts`. Pure functions (no Vue hooks) — safe to call in computed properties.
+
+```typescript
+interface FitResult {
+  courseId: number
+  score: number          // -Infinity = all slots conflict; 50 fills_gap; 20 same_day; 0 neutral; -15 new_day
+  fitReason: 'fills_gap' | 'same_day' | 'new_day' | 'neutral'
+}
+
+computeFitScore(course: CourseWithRelationsDTO, timetableUnits: SelectedCourseUnit[]): FitResult
+computeFitScores(courses: CourseWithRelationsDTO[], timetableUnits: SelectedCourseUnit[]): Map<number, FitResult>
+```
+
+Used by `courses.vue` when `filtersStore.fitScoreActive` is true to rank and filter the course list.
+
 ### `useDebounce(initialValue, opts)`
 
 Debounced reactive ref pair:
@@ -210,8 +227,8 @@ Groups a course's units by type composition and manages add/remove/swap in `time
 **`unitsByGroup`** (computed): Groups units that have the same set of slot types (e.g. all "lecture only" units in one
 group, all "exercise only" in another). Each group shows a selector so the user can pick one per type.
 
-**`handleAddUnit(unit, slot)`**: Before adding, removes existing units of the same `unitType` from `timetableStore` (
-swap behaviour). Then calls `timetableStore.addUnit()`.
+**`handleAddUnit(unit, slot)`**: Before adding, removes existing units of the same `unitType` from `timetableStore`
+(swap behaviour). Then calls `timetableStore.addUnit()`.
 
 ```typescript
 const { unitsByGroup, missingUnitTypes, isSelectionComplete, hasIncompleteSelection, handleAddUnit, handleRemoveUnit } = useCourseUnitSelection({ course })
@@ -241,8 +258,8 @@ string     // CSS class for highlight
 
 ### `useFacetFiltering(facets, selected, opts)`
 
-Handles the display of checkbox facets in `FilterCheckboxGroup`. Re-injects selected items that have dropped to 0
-count (so selected filters stay visible even when the API would remove them from the facet list).
+Handles the display of checkbox facets in `FilterCheckboxGroup`. Re-injects selected items that have dropped to 0 count
+(so selected filters stay visible even when the API would remove them from the facet list).
 
 ```typescript
 const { combinedFacets, sortedFacets, filterBySearch, getVisibleFacets, toggleListExpanded, toggleSelection } = useFacetFiltering(facets, selected, opts)

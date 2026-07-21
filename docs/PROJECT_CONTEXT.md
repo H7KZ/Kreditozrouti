@@ -16,13 +16,13 @@ deployment/   Docker Compose stacks + deploy.sh
 ## Critical Global Invariants
 
 - **Cross-package imports:**
-	- `shared/` must never import from `api/`, `client/`, or `scraper/`
-	- `client/` never imports from `api/` — all shared types come from `@shared/`
-	- `client/` never imports API runtime code
+    - `shared` must never import from `../api`, `../client`, or `../scraper`
+    - `../client` never imports from `../api` — all shared types come from `@shared/`
+    - `../client` never imports API runtime code
 - **Time encoding:** all times are **minutes from midnight** (0–1439). e.g., `08:00` = 480.
 - **Env var prefixes:**
-	- API: `API_*` | Client: `VITE_*` (baked at build) | Scraper: no prefix | Infra: `MYSQL_*`, `REDIS_*`
-- **Doc-Review Rule**: After modifying code/config, you MUST update relevant docs in the `docs/` folder.
+    - API: `API_*` | Client: `VITE_*` (baked at build) | Scraper: no prefix | Infra: `MYSQL_*`, `REDIS_*`
+- **Doc-Review Rule**: After modifying code/config, you MUST update relevant docs in the `` folder.
 
 ---
 
@@ -65,6 +65,6 @@ deployment/   Docker Compose stacks + deploy.sh
 - **`deployment/.env` is gitignored.** Secrets never go in compose files. Lives in `~/variables/.env.prod` on VPS.
 - **`VITE_*` env vars** are baked into the client image at build time by Vite.
 - **Redis data is ephemeral**. No named volume for Redis. Only MySQL data is persisted.
-- **`deploy.sh`** must be called by path (`./deployment/deploy.sh`) or from within `deployment/`.
+- **`deploy.sh`** must be called by path (`deployment/deploy.sh`) or from within `../deployment`.
 - **Scripts:** Always source `lib.sh` first in any new script. `docker-cleanup.sh` — always run `--dry-run` before
   `--force`.

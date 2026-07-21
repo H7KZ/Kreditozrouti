@@ -1,6 +1,6 @@
 # Client — CLAUDE.md
 
-> Full reference: [docs/client/](../docs/client/README.md)
+> Full reference: [docs/dev/client/](../docs/client/README.md)
 
 ---
 
@@ -17,11 +17,10 @@ Pages (src/pages/ — file-based routing via unplugin-vue-router)
 
 ## Path Aliases
 
-| Alias       | Resolves to    | Rule                                            |
-| ----------- | -------------- | ----------------------------------------------- |
-| `@client/*` | `./src/*`      | —                                               |
-| `@api/*`    | `../api/src/*` | Do not use — all shared types are in `@shared/` |
-| `@shared/*` | `../shared/*`  | —                                               |
+| Alias                 | Resolves to            | Rule                                                      |
+| --------------------- | ---------------------- | --------------------------------------------------------- |
+| `@client/*`           | `./src/*`              | —                                                         |
+| `@kreditozrouti/core` | `../packages/core/src` | Runtime values (functions, consts) — no DB/HTTP internals |
 
 ---
 

@@ -109,7 +109,7 @@ RequestHandler[]
 Returns two middleware functions (applied together on scrape routes):
 
 | Limiter        | Key           | Limit    | Window     |
-|----------------|---------------|----------|------------|
+| -------------- | ------------- | -------- | ---------- |
 | IP limiter     | `req.ip`      | 3 points | 10 minutes |
 | Course limiter | `course:{id}` | 1 point  | 10 minutes |
 
@@ -137,36 +137,36 @@ context so that async code can access the `request_id` and other fields via `Req
 4. Wrap the entire request handler (`next()`) in `RequestContext.run()` so async code in controllers/services can access
    the context
 5. On response `finish`:
-	- Merge any fields controllers added via `LoggerAPIContext.add()` (which delegates to `RequestContext.add()`)
-	- Emit the accumulated event as a Pino log line via `LoggerAPIContext.log`
-	- Track error metrics in Redis (hourly bucket + recent error list)
+    - Merge any fields controllers added via `LoggerAPIContext.add()` (which delegates to `RequestContext.add()`)
+    - Emit the accumulated event as a Pino log line via `LoggerAPIContext.log`
+    - Track error metrics in Redis (hourly bucket + recent error list)
 
 ```typescript
 res.locals.wideEvent = {
-    request_id: '...',  // UUID
-    method: req.method,
-    path: req.path,
-    timestamp: new Date().toISOString(),
-    environment: config.env,
-    service: 'kreditozrouti-api',
-    duration_ms? : number,     // set on finish
-    status_code? : number,     // set on finish
-    user_id? : number,         // set by controllers via LoggerAPIContext.add()
-    // ... other fields controllers add
+	request_id: '...',  // UUID
+	method: req.method,
+	path: req.path,
+	timestamp: new Date().toISOString(),
+	environment: config.env,
+	service: 'kreditozrouti-api',
+	duration_ms? : number,     // set on finish
+	status_code? : number,     // set on finish
+	user_id? : number,         // set by controllers via LoggerAPIContext.add()
+	// ... other fields controllers add
 }
 ```
 
 Log emission uses **level-based routing** (replaces the old `shouldLog` probability sampling):
 
 | Condition         | Level   | Rationale                       |
-|-------------------|---------|---------------------------------|
+| ----------------- | ------- | ------------------------------- |
 | status ≥ 500      | `error` | Server error — always emitted   |
 | status 4xx        | `warn`  | Client error — always emitted   |
 | duration > 1000ms | `info`  | Slow request — always emitted   |
 | otherwise         | `debug` | Routine — dropped in production |
 
 `LoggerAPIContext.log` is a Pino child logger (`logger.child({ context: 'http' })`) derived from the root logger in
-`api/src/logger.ts` (which binds `service: 'api'` and `env`).
+`../../api/src/logger.ts` (which binds `service: 'api'` and `env`).
 
 ### ParserMiddleware (`Middlewares/ParserMiddleware.ts`)
 
@@ -216,8 +216,8 @@ Non-`ApiError` exceptions produce a generic `500 INTERNAL` response and are `con
 ## Wide-Event Logging
 
 `LoggerAPIContext` delegates to `RequestContext`, which is AsyncLocalStorage-based. The request handler is wrapped in
-`RequestContext.run()` so that all async code (controllers, services, etc.) can access the context. Fields are added
-via `LoggerAPIContext.add()`, which delegates to `RequestContext.add()`.
+`RequestContext.run()` so that all async code (controllers, services, etc.) can access the context. Fields are added via
+`LoggerAPIContext.add()`, which delegates to `RequestContext.add()`.
 
 ```typescript
 // In any controller/service/middleware:
@@ -240,7 +240,7 @@ LoggerAPIContext.log.debug(wideEvent) // routine (dropped in prod)
 Fields added via `LoggerAPIContext.add()` are stored in the `AsyncLocalStorage` and merged into the event on finish
 (last write wins for duplicate keys).
 
-### Root logger (`api/src/logger.ts`)
+### Root logger (`../../api/src/logger.ts`)
 
 The root pino logger is created once and shared across the process:
 
@@ -255,9 +255,9 @@ logger.info({ msg: 'startup' })
 // LoggerJobContext.log  = logger.child({ context: 'job' })
 ```
 
-`withJobLogger` (exported from `api/src/logger.ts`) wraps BullMQ worker processors — it creates the job-scoped
-AsyncLocalStorage context and emits the wide-event on completion, equivalent to what `ScraperRequestHandler` does in
-the scraper.
+`withJobLogger` (exported from `../../api/src/logger.ts`) wraps BullMQ worker processors — it creates the job-scoped
+AsyncLocalStorage context and emits the wide-event on completion, equivalent to what `ScraperRequestHandler` does in the
+scraper.
 
 ---
 
@@ -310,7 +310,7 @@ Re-exported from `@shared/domain/timetable`. Used by the client to sort or compa
 
 ## Logging Infrastructure
 
-All logging is handled by **Pino** via the root logger at `api/src/logger.ts`.
+All logging is handled by **Pino** via the root logger at `../../api/src/logger.ts`.
 
 - **Root logger** — binds `service: 'api'` and `env` on every line; level defaults to `debug` locally, `info` in
   production.

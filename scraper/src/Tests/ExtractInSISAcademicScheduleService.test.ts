@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest'
 import ExtractInSISAcademicScheduleService, { parseDateDMY, parseDateTimeRange, parsePeriodLabel } from '@scraper/Services/ExtractInSISAcademicScheduleService'
 import { makeFixtureLoaders } from './helpers'
 
-const dir = path.join(import.meta.dirname, 'fixtures/academic-schedules')
+const dir = path.join(import.meta.dirname, '../../../fixtures/academic-schedules')
 const { load, expected, exists } = makeFixtureLoaders(dir)
 
 describe('ExtractInSISAcademicScheduleService', () => {
@@ -13,7 +13,7 @@ describe('ExtractInSISAcademicScheduleService', () => {
 		if (exists('index.html')) {
 			it('index.html', () => {
 				const actual = ExtractInSISAcademicScheduleService.extractFaculties(load('index.html'))
-				expect(actual).toEqual(expected('index.expected.json', actual))
+				expect(actual).toEqual(expected('index.scraper.json', actual))
 			})
 		} else {
 			it('no fixtures yet', () => {
@@ -37,7 +37,7 @@ describe('ExtractInSISAcademicScheduleService', () => {
 				// in the expected JSON so it can be passed back to extractPeriods.
 				const match = facultyIdentPattern.exec(file)
 				const facultyIdent = match![1]
-				const expFile = file.replace('.html', '.expected.json')
+				const expFile = file.replace('.html', '.scraper.json')
 				const stub = { _facultyIdent: facultyIdent, _facultyId: 0, periods: [] as HarmonogramPeriod[] }
 				const exp = expected(expFile, stub)
 				const periods = ExtractInSISAcademicScheduleService.extractPeriods(load(file), exp._facultyId)
@@ -57,7 +57,7 @@ describe('ExtractInSISAcademicScheduleService', () => {
 		} else {
 			it.each(fixtures)('%s', file => {
 				const actual = ExtractInSISAcademicScheduleService.extractEvents(load(file))
-				expect(actual).toEqual(expected(file.replace('.html', '.expected.json'), actual))
+				expect(actual).toEqual(expected(file.replace('.html', '.scraper.json'), actual))
 			})
 		}
 	})

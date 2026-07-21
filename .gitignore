@@ -8,10 +8,13 @@ scripts/server.conf
 **/node_modules
 **/dist
 **/build
+**/cache
+**/.turbo
 
 docs/superpowers/
 .superpowers/
 .planning/
+.scratch/
 
 /data
 /di-fis-ka.wiki

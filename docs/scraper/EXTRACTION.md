@@ -8,7 +8,7 @@ edge cases it handles.
 
 ## ExtractInSISCatalogService
 
-**File:** `scraper/src/Services/ExtractInSISCatalogService.ts`
+**File:** `../../scraper/src/Services/ExtractInSISCatalogService.ts`
 
 Handles two distinct InSIS pages.
 
@@ -54,7 +54,7 @@ selector: a[href*="syllabus.pl?predmet="]
 
 ## ExtractInSISCourseService
 
-**File:** `scraper/src/Services/ExtractInSISCourseService.ts`
+**File:** `../../scraper/src/Services/ExtractInSISCourseService.ts`
 
 The most complex extractor. Parses a full course **syllabus page** into a `ScraperInSISCourse` object. All private
 methods are called from `extract(html, url)`.
@@ -80,7 +80,7 @@ Priority order:
 Uses `getRowValueCaseInsensitive($, label)` to find the sibling `<td>` after a label cell:
 
 | Field                | Czech label                       |
-|----------------------|-----------------------------------|
+| -------------------- | --------------------------------- |
 | `ident`              | `Kód předmětu:`                   |
 | `title_cs`           | `Název česky:`                    |
 | `title_en`           | `Název anglicky:`                 |
@@ -133,7 +133,7 @@ Two strategies, tried in order:
 Nine text fields extracted from table rows (Czech source):
 
 | Field                      | Strategy                          | Czech label                 |
-|----------------------------|-----------------------------------|-----------------------------|
+| -------------------------- | --------------------------------- | --------------------------- |
 | `prerequisites`            | `getRowValueCaseInsensitive`      | `Omezení pro zápis:`        |
 | `recommended_programmes`   | `getRowValueCaseInsensitive`      | `Doporučené doplňky kurzu:` |
 | `required_work_experience` | `getRowValueCaseInsensitive`      | `Vyžadovaná praxe:`         |
@@ -150,10 +150,10 @@ Everything before is required; everything after is recommended. Each half is con
 
 ### English Syllabus Fields (`extractEnglishFields`)
 
-Parses the same page fetched with `jazyk=3` (English content). Extracts the same nine field types using
-English labels. Literature split marker: `Recommended:` (stripping `Basic:` from the required half).
-Results are stored in `*_en` columns (`aims_of_the_course_en`, etc.). Best-effort: if the EN fetch fails,
-all `*_en` fields remain `null`; the CS result is never blocked.
+Parses the same page fetched with `jazyk=3` (English content). Extracts the same nine field types using English labels.
+Literature split marker: `Recommended:` (stripping `Basic:` from the required half). Results are stored in `*_en`
+columns (`aims_of_the_course_en`, etc.). Best-effort: if the EN fetch fails, all `*_en` fields remain `null`; the CS
+result is never blocked.
 
 ### Assessment Methods (`extractAssessmentMethods`)
 
@@ -216,7 +216,7 @@ Returns `last_modified_by` (name string) and `last_modified_date` (ISO format `Y
 
 ## ExtractInSISStudyPlanService
 
-**File:** `scraper/src/Services/ExtractInSISStudyPlanService.ts`
+**File:** `../../scraper/src/Services/ExtractInSISStudyPlanService.ts`
 
 ### `extractFaculties(html)` → `{title, url}[]`
 
@@ -280,7 +280,7 @@ Group code → `{group, category}` via `parseGroupCode()`.
 
 ## ExtractInSISFacultyTimetableService
 
-**File:** `scraper/src/Services/ExtractInSISFacultyTimetableService.ts`
+**File:** `../../scraper/src/Services/ExtractInSISFacultyTimetableService.ts`
 
 Handles the InSIS faculty timetable index page (`rozvrhy_view.pl`) and individual faculty timetable pages
 (`rozvrhy_view.pl?konf=1;f=<f_id>`).
@@ -323,14 +323,14 @@ currentAcademicYear = referenceDate.month >= 8
 return maxYear !== null && maxYear >= currentAcademicYear
 ```
 
-The September boundary (`month >= 8`) reflects the InSIS academic calendar: the new academic year starts in September.
-A faculty that has not published any timetable rows for the current or upcoming year is treated as non-public.
+The September boundary (`month >= 8`) reflects the InSIS academic calendar: the new academic year starts in September. A
+faculty that has not published any timetable rows for the current or upcoming year is treated as non-public.
 
 ---
 
 ## MarkdownService
 
-**File:** `scraper/src/Services/MarkdownService.ts`
+**File:** `../../scraper/src/Services/MarkdownService.ts`
 
 Thin wrapper around the `turndown` library. Converts the inner HTML of any Cheerio element to Markdown. Used for
 rich-text syllabus fields (aims, outcomes, contents, literature).
@@ -344,10 +344,10 @@ MarkdownService.formatCheerioElementToMarkdown(element)
 
 ## HTMLUtils — Shared Helpers
 
-**File:** `scraper/src/Utils/HTMLUtils.ts`
+**File:** `../../scraper/src/Utils/HTMLUtils.ts`
 
 | Function                               | Description                                                                                  |
-|----------------------------------------|----------------------------------------------------------------------------------------------|
+| -------------------------------------- | -------------------------------------------------------------------------------------------- |
 | `cleanText(text)`                      | Normalizes whitespace, replaces ` `/`&nbsp;` with spaces, trims                              |
 | `serializeValue(value)`                | Removes `\n\r\t`, collapses whitespace, trims; returns `null` for empty/null                 |
 | `normalizeUrl(href)`                   | Prefixes relative URLs with `baseDomain` or `catalogUrl` as appropriate                      |

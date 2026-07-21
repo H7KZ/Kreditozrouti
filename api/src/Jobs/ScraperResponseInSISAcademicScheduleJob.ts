@@ -1,4 +1,4 @@
-import type { ScraperInSISAcademicScheduleResponseJob } from '@shared/queue/jobs'
+import type { ScraperInSISAcademicScheduleResponseJob } from '@kreditozrouti/types'
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { AcademicPeriodTable, AcademicScheduleEventTable, NewAcademicPeriod, NewAcademicScheduleEvent } from '@api/Database/types'

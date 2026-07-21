@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { RouterLink } from 'vue-router'
 import IconX from '~icons/lucide/x'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const DISMISSED_KEY = 'kreditozrouti:guide-seen'
 const isCzechBrowser = navigator.language.toLowerCase().startsWith('cs')
@@ -34,7 +34,7 @@ function dismiss() {
 					{{ t('guide.onboardingModal.body') }}
 				</p>
 				<div class="flex flex-col gap-2 sm:flex-row-reverse">
-					<RouterLink to="/guide/en" class="insis-btn-primary text-center text-sm" @click="dismiss">
+					<RouterLink :to="`/docs/${locale}/getting-started`" class="insis-btn-primary text-center text-sm" @click="dismiss">
 						{{ t('guide.onboardingModal.readGuide') }}
 					</RouterLink>
 					<button type="button" class="insis-btn-secondary text-sm" @click="dismiss">

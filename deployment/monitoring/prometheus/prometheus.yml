@@ -51,9 +51,9 @@ scrape_configs:
           env: production
     metrics_path: /metrics
 
-  - job_name: node
+  - job_name: crowdsec
     static_configs:
-      - targets: [ node-exporter:9100 ]
-    relabel_configs:
-      - target_label: env
-        replacement: production
+      - targets: [ 'crowdsec:6060' ]
+        labels:
+          env: production
+    metrics_path: /metrics

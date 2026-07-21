@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CourseDTO } from '@shared/http/responses'
+import type { CourseDTO } from '@kreditozrouti/types'
 import { computed, ref } from 'vue'
 import { useCourseLabels, useDebouncedFn } from '@client/composables'
 import IconArrowLeft from '~icons/lucide/arrow-left'

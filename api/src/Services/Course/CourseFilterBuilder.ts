@@ -1,7 +1,6 @@
-import type { InSISDay } from '@shared/domain/insis'
+import type { InSISDay } from '@kreditozrouti/types'
+import { ASSESSMENT_BUCKETS, INSIS_DAY_DENORM, LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from '@kreditozrouti/core/domain'
 import { AliasedExpression, Nullable, SelectQueryBuilder, sql } from 'kysely'
-import { ASSESSMENT_BUCKETS } from '@shared/domain/assessment'
-import { INSIS_DAY_DENORM, LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from '@shared/domain/constants'
 import { mysql } from '@api/clients'
 import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
 import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, Database, StudyPlanCourseTable } from '@api/Database/types'
@@ -268,6 +267,11 @@ export class CourseFilterBuilder {
 		// Availability filters
 		if (filters.completed_course_idents?.length && !['completed_course_idents'].includes(ignore!)) {
 			query = query.where('c1.ident', 'not in', filters.completed_course_idents)
+			const completedJson = JSON.stringify(filters.completed_course_idents)
+			query = query.where(sql<boolean>`(c1.blocked_by_course_idents IS NULL OR JSON_CONTAINS(${sql.val(completedJson)}, c1.blocked_by_course_idents))`)
+			query = query.where(
+				sql<boolean>`(c1.excluded_after_course_idents IS NULL OR NOT JSON_OVERLAPS(c1.excluded_after_course_idents, ${sql.val(completedJson)}))`
+			)
 		}
 
 		// Full-text search filter

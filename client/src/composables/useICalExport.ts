@@ -1,6 +1,6 @@
 import type { SelectedCourseUnit } from '@client/types'
 import type { ICalCourseConfig } from '@client/utils/ical'
-import type { InSISSemester } from '@shared/domain/insis'
+import type { InSISSemester } from '@kreditozrouti/types'
 import analytics from '@client/analytics'
 import { createICalLink } from '@client/services'
 import { generateIcal } from '@client/utils/ical'

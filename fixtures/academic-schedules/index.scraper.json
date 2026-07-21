@@ -1,0 +1,62 @@
+[
+    {
+        "insis_faculty_id": 10,
+        "title": "Fakulta financí a účetnictví"
+    },
+    {
+        "insis_faculty_id": 20,
+        "title": "Fakulta mezinárodních vztahů"
+    },
+    {
+        "insis_faculty_id": 30,
+        "title": "Fakulta podnikohospodářská"
+    },
+    {
+        "insis_faculty_id": 40,
+        "title": "Fakulta informatiky a statistiky"
+    },
+    {
+        "insis_faculty_id": 50,
+        "title": "Národohospodářská fakulta"
+    },
+    {
+        "insis_faculty_id": 60,
+        "title": "Fakulta managementu"
+    },
+    {
+        "insis_faculty_id": 96,
+        "title": "Centrum tělesné výchovy a sportu"
+    },
+    {
+        "insis_faculty_id": 105,
+        "title": "Pedagogické oddělení"
+    },
+    {
+        "insis_faculty_id": 114,
+        "title": "Oddělení zahraničních styků"
+    },
+    {
+        "insis_faculty_id": 115,
+        "title": "Oddělení vědy a výzkumu"
+    },
+    {
+        "insis_faculty_id": 141,
+        "title": "Francouzsko-český institut řízení"
+    },
+    {
+        "insis_faculty_id": 142,
+        "title": "Program studií střední a východní Evropy"
+    },
+    {
+        "insis_faculty_id": 143,
+        "title": "Institut oceňování majetku"
+    },
+    {
+        "insis_faculty_id": 230,
+        "title": "Univerzita třetího věku"
+    },
+    {
+        "insis_faculty_id": 248,
+        "title": "Univerzita třetího věku - Jindřichův Hradec"
+    }
+]

@@ -50,14 +50,14 @@ After install, log out and back in for group membership to take effect.
 
 ---
 
-## `deployment/traefik/deploy.sh`
+## `../../deployment/traefik/deploy.sh`
 
-Deploys the global Traefik reverse proxy. Reads its compose config from `deployment/traefik/`.
+Deploys the global Traefik reverse proxy. Reads its compose config from `../../deployment/traefik`.
 
 **Required environment variables:**
 
 | Variable                   | Description                                |
-|----------------------------|--------------------------------------------|
+| -------------------------- | ------------------------------------------ |
 | `DEPLOYMENT_PATH`          | Path to the deployment directory           |
 | `TRAEFIK_DOMAIN`           | Domain for the Traefik dashboard           |
 | `TRAEFIK_CREDENTIALS_PATH` | Path to htpasswd file for basic auth       |
@@ -81,14 +81,14 @@ htpasswd -nb admin yourpassword
 
 ---
 
-## `deployment/monitoring/deploy.sh`
+## `../../deployment/monitoring/deploy.sh`
 
 Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy). Traefik must already be running.
 
 **Required environment variables:**
 
 | Variable                 | Description                                     |
-|--------------------------|-------------------------------------------------|
+| ------------------------ | ----------------------------------------------- |
 | `DEPLOYMENT_PATH`        | Path to the deployment directory                |
 | `DOMAIN`                 | Public domain (used for Grafana + Faro routing) |
 | `GRAFANA_ADMIN_PASSWORD` | Grafana admin password                          |
@@ -112,14 +112,14 @@ docker compose -p global logs grafana -f
 
 ---
 
-## `deployment/github-runner/deploy.sh`
+## `../../deployment/github-runner/deploy.sh`
 
 Deploys self-hosted GitHub Actions runners. Runners auto-register to the repository on container startup.
 
 **Required environment variables:**
 
 | Variable              | Description                               |
-|-----------------------|-------------------------------------------|
+| --------------------- | ----------------------------------------- |
 | `GITHUB_REPO_URL`     | Full GitHub repository URL                |
 | `GITHUB_ACCESS_TOKEN` | GitHub personal access token (repo scope) |
 

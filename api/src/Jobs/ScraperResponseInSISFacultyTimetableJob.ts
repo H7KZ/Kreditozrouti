@@ -1,4 +1,4 @@
-import type { ScraperInSISFacultyTimetableResponseJob } from '@shared/queue/jobs'
+import type { ScraperInSISFacultyTimetableResponseJob } from '@kreditozrouti/types'
 import { mysql } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { FacultyTable } from '@api/Database/types'

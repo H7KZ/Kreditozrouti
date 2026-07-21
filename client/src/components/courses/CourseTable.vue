@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CourseSortBy } from '@client/types'
+import type { FitResult } from '@client/composables/useFitScore'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CourseRow from '@client/components/courses/CourseRow.vue'
@@ -10,6 +11,12 @@ import { useCourseLabels, useScheduleSummary } from '@client/composables'
 import { useCoursesStore, useFiltersStore, useTimetableStore } from '@client/stores'
 import IconChevronDown from '~icons/lucide/chevron-down'
 import IconChevronUp from '~icons/lucide/chevron-up'
+
+interface Props {
+	fitScores?: Map<number, FitResult>
+}
+
+defineProps<Props>()
 
 const { t } = useI18n()
 const coursesStore = useCoursesStore()
@@ -120,7 +127,7 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 				</template>
 
 				<template v-else>
-					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length" />
+					<CourseRow v-for="course in coursesStore.courses" :key="course.id" :course="course" :colspan="columns.length" :fit-scores="fitScores" />
 				</template>
 			</tbody>
 		</table>

@@ -186,6 +186,64 @@ Returns courses belonging to a specific study plan.
 
 ---
 
+### `POST /optimize`
+
+Runs the timetable solver against a candidate course pool and returns up to 5 ranked, diversity-filtered conflict-free
+timetable candidates.
+
+**Controller:** `OptimizeController` · **Service:** `OptimizeService.optimize` · **Router:** `OptimizeRoutes`
+
+**Rate limit:** 10 requests/10 minutes per IP (`optimizeRateLimit()`, separate Redis-backed limiter from the scraper's
+`scraperRateLimit()`).
+
+**Request body** (validated by a Zod schema co-located in `OptimizeController.ts`):
+
+```typescript
+{
+	course_ids: number[]           // required, min 1 — candidate pool to solve over
+	constraints: {
+		required_course_ids ? : number[]
+		excluded_course_ids ? : number[]
+		credit_min ? : number
+		credit_max ? : number
+		blackout_windows ? : TimeSelection[]
+		preferred_days ? : Day[]
+		max_consecutive_minutes ? : number
+	}
+	mode ? : 'build' | 'add'        // default 'build'
+	locked_unit_ids ? : number[]     // required in practice for mode 'add' — CourseUnit PKs (unitId, not slotId) that must stay fixed
+}
+```
+
+**200 response:**
+
+```typescript
+{
+	candidates: Array<{
+		units: SelectedCourseUnitDTO[]
+		score: { campus_conflicts: number, gap_minutes: number, off_preferred_days: number, long_study_blocks: number, total: number }
+		changed_unit_ids: number[]   // unit IDs differing from the student's current selection
+	}>
+	partial: boolean                 // true if the solver's deadline fired before the search space was exhausted
+	unlocked_course_id ? : number     // only in 'add' mode, when a clean slot required unlocking one existing course
+	pool_truncated: boolean          // true if course_ids exceeded MAX_POOL_SIZE (30) and the excess was dropped
+}
+```
+
+**Pool truncation:** `course_ids` longer than `MAX_POOL_SIZE` (30, defined in `shared/http/optimize.ts`) are capped
+before solving — `required_course_ids` are always kept, the remainder is truncated — and `pool_truncated: true` is
+returned so the client can show a narrowing notice.
+
+**Partial-result-on-timeout behavior:** the solver runs under a `SOLVER_BUDGET_MS` (4500 ms) deadline
+(`solveWithDeadline`). If the deadline fires before exhausting the search space, the best candidates found so far are
+still returned with `partial: true` — this is not an error path. In `add` mode, if no candidate is found with all
+existing selections locked, the service retries once with a single unit unlocked and reports `unlocked_course_id`
+on success.
+
+**Errors:** `403` (`Errors.validation`) if the request body fails Zod validation, `429` if rate limited.
+
+---
+
 ### `GET /health`
 
 Returns `200 OK` immediately — no logic, used by load balancers.
@@ -202,12 +260,12 @@ Docker network port.
 Metrics exposed:
 
 | Metric                          | Type      | Description                                           |
-|---------------------------------|-----------|-------------------------------------------------------|
+| ------------------------------- | --------- | ----------------------------------------------------- |
 | `http_requests_total`           | Counter   | Total HTTP requests, labelled by method/route/status  |
 | `http_request_duration_seconds` | Histogram | Request latency in seconds                            |
 | Default Node.js metrics         | Various   | Event loop lag, GC, memory, etc. (from `prom-client`) |
 
-**Implementation:** `api/src/metrics.ts` — uses `prom-client`. `metricsMiddleware` is applied globally; `metricsHandler`
+**Implementation:** `../../api/src/metrics.ts` — uses `prom-client`. `metricsMiddleware` is applied globally; `metricsHandler`
 is the `GET /metrics` route handler.
 
 ---
@@ -218,8 +276,8 @@ BullMQ queue inspection UI. Routes to the Bull Board Express adapter mounted at 
 
 **Internal only** — not routed through Traefik in production. Access via SSH tunnel or internal network.
 
-Path was previously `/admin/queues`; moved to `/bullboard` to align with the Traefik label and avoid
-collision with the `/admin` prefix.
+Path was previously `/admin/queues`; moved to `/bullboard` to align with the Traefik label and avoid collision with the
+`/admin` prefix.
 
 ---
 
@@ -252,7 +310,7 @@ Opens an SSE stream that emits events as the scrape progresses.
 **SSE events:**
 
 | Event      | Payload                                   | When                      |
-|------------|-------------------------------------------|---------------------------|
+| ---------- | ----------------------------------------- | ------------------------- |
 | `progress` | `{ status: 'waiting' }`                   | Immediately on connection |
 | `complete` | `{ status: 'done', courseId, updatedAt }` | After DB sync completes   |
 | `error`    | `{ status: 'error', message }`            | On scrape failure         |
@@ -344,9 +402,8 @@ Triggers scraping of a single study plan by URL.
 
 ### `POST /commands/insis/retry-failed`
 
-Re-enqueues all currently-failed `InSIS:Course` and/or `InSIS:StudyPlan` scrape jobs from the
-request queue's failed set. Eases recovery after a burst of failures (e.g. faculty-upsert
-deadlocks under concurrent load).
+Re-enqueues all currently-failed `InSIS:Course` and/or `InSIS:StudyPlan` scrape jobs from the request queue's failed
+set. Eases recovery after a burst of failures (e.g. faculty-upsert deadlocks under concurrent load).
 
 **Controller:** `RetryFailedInSISScrapesController`
 
@@ -364,8 +421,8 @@ deadlocks under concurrent load).
 
 ### `POST /commands/insis/academic-schedules`
 
-Triggers a full InSIS academic schedule scrape (harmonogram akademického roku).
-Scrapes all faculties, discovers all academic periods, and enqueues per-period event scraping.
+Triggers a full InSIS academic schedule scrape (harmonogram akademického roku). Scrapes all faculties, discovers all
+academic periods, and enqueues per-period event scraping.
 
 **Controller:** `RunInSISAcademicSchedulesScraperController`
 
@@ -377,9 +434,9 @@ No request body — triggers a full scrape covering all InSIS faculties.
 
 ### `POST /commands/insis/faculty-timetables`
 
-Triggers a faculty timetable scrape to refresh `is_schedule_publicly_visible` flags for all InSIS faculties.
-Enqueues `InSIS:FacultyTimetables`, which discovers all faculties and queues one `InSIS:FacultyTimetable` job per
-faculty. Also runs automatically on a weekly Sunday midnight cron in production.
+Triggers a faculty timetable scrape to refresh `is_schedule_publicly_visible` flags for all InSIS faculties. Enqueues
+`InSIS:FacultyTimetables`, which discovers all faculties and queues one `InSIS:FacultyTimetable` job per faculty. Also
+runs automatically on a weekly Sunday midnight cron in production.
 
 **Controller:** `RunInSISFacultyTimetablesScraperController`
 

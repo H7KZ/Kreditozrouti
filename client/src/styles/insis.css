@@ -170,7 +170,7 @@
 
 	/* TABS */
 	.insis-tabs {
-		@apply flex gap-[2px] border-b border-(--insis-border);
+		@apply flex gap-[2px];
 	}
 
 	.insis-tab {
@@ -429,7 +429,7 @@
 
 	/* DAY TOGGLE BUTTONS */
 	.insis-day-toggle {
-		@apply cursor-pointer rounded-[3px] border border-solid border-(--insis-border) bg-(--insis-surface) px-[7px] py-[3px] text-[11.5px] text-(--insis-text-2);
+		@apply cursor-pointer rounded-[3px] border border-solid border-(--insis-border) bg-(--insis-surface) px-[9px] py-[5.5px] text-[11.5px] text-(--insis-text-2);
 		font-family: var(--insis-font-sans), sans-serif;
 		transition: all 0.12s;
 	}

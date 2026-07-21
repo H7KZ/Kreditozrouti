@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CoursesFilter } from '@shared/http/courses'
+import type { CoursesFilter } from '@kreditozrouti/types'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CollapsibleSection from '@client/components/common/CollapsibleSection.vue'
@@ -17,6 +17,7 @@ import IconFilter from '~icons/lucide/filter'
 import IconMapPin from '~icons/lucide/map-pin'
 import IconRotateCcw from '~icons/lucide/rotate-ccw'
 import Search from '~icons/lucide/search'
+import IconSparkles from '~icons/lucide/sparkles'
 import IconX from '~icons/lucide/x'
 
 /**
@@ -202,6 +203,13 @@ function handleSyllabusSearchInput(event: Event) {
 	debouncedFetchSyllabusSearch()
 }
 
+const activeIdentFilter = computed(() => (filtersStore.filters.idents?.length === 1 ? filtersStore.filters.idents[0] : null))
+
+function clearIdentFilter() {
+	filtersStore.filters.idents = []
+	coursesStore.fetchCourses()
+}
+
 function handleResetFilters() {
 	coursesStore.resetFilters()
 	localTitleSearch.value = ''
@@ -253,7 +261,38 @@ function handleCloseMobileFilter() {
 		</div>
 
 		<!-- Compact quick-toggle pill row -->
-		<div v-if="hasCompletedCourses || hasSelectedCourses" class="mb-3 flex flex-wrap gap-1.5">
+		<div v-if="activeIdentFilter || hasCompletedCourses || hasSelectedCourses || true" class="mb-3 flex flex-wrap gap-1.5">
+			<!-- Fits my timetable toggle -->
+			<button
+				type="button"
+				:aria-pressed="filtersStore.fitScoreActive"
+				:disabled="!hasSelectedCourses"
+				:title="!hasSelectedCourses ? $t('components.filters.FilterPanel.fitsTimetableDisabledHint') : undefined"
+				:class="[
+					'flex cursor-pointer items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors',
+					!hasSelectedCourses
+						? 'cursor-default border-(--insis-border) text-(--insis-gray-400)'
+						: filtersStore.fitScoreActive
+							? 'border-(--insis-blue) bg-(--insis-blue-subtle) text-(--insis-blue)'
+							: 'border-(--insis-border) text-(--insis-gray-600) hover:border-(--insis-blue) hover:bg-(--insis-blue-subtle)'
+				]"
+				@click="hasSelectedCourses && (filtersStore.fitScoreActive = !filtersStore.fitScoreActive)"
+			>
+				<IconSparkles class="h-3 w-3 shrink-0" aria-hidden="true" />
+				{{ $t('components.filters.FilterPanel.fitsTimetable') }}
+			</button>
+
+			<!-- Active ident filter chip -->
+			<button
+				v-if="activeIdentFilter"
+				type="button"
+				class="flex cursor-pointer items-center gap-1 rounded-full border border-(--insis-blue) bg-(--insis-blue-subtle) px-2.5 py-1 text-xs font-medium text-(--insis-blue)"
+				@click="clearIdentFilter"
+			>
+				{{ activeIdentFilter }}
+				<IconX class="h-3 w-3 shrink-0" aria-hidden="true" />
+			</button>
+
 			<!-- Hide completed courses -->
 			<button
 				v-if="hasCompletedCourses"
