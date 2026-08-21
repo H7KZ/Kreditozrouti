@@ -111,9 +111,13 @@ The solver runs two passes:
 - **If you drop one course…** — one best candidate per basket course, showing what the schedule looks like if that
   course is removed. Only shown when no full schedule exists.
 
-Each result card shows a **mini timetable grid**. Click a card to open a full timetable preview with the weekly grid —
-newly added units are highlighted in amber so you can see what would change versus your current schedule. The preview
-also shows a score breakdown (campus conflicts, schedule gaps, off-preferred days, long study blocks).
+Each result card shows a **mini timetable grid**, a **quality tier** (Perfect, Good, Okay, or Rough, shown as a
+green-to-red badge), and a short plain-language summary of what makes it imperfect (for example "1h 20min gaps" or "1
+class on a non-preferred day"). Campus switches are named explicitly, and any candidate with a campus switch is capped at
+Okay; a flawless candidate reads "Perfect - No gaps, no conflicts". The same tier and reasons appear on the "drop one
+course" cards. Click a card to open a full timetable preview with the weekly grid - newly added units are highlighted in
+amber so you can see what would change versus your current schedule. The preview also shows a detailed score breakdown
+(campus conflicts, schedule gaps, off-preferred days, long study blocks).
 
 Click **Use this timetable** in the preview to apply the candidate. Your current timetable is replaced.
 

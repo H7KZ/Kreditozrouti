@@ -45,7 +45,11 @@ kdyby byl tento předmět odebrán. Zobrazí se pouze tehdy, když neexistuje ú
 
 ## Čtení karty výsledků
 
-Každá karta výsledku zobrazuje **mini mřížku rozvrhu**. Kliknutím na kartu otevřeš úplný náhled rozvrhu s týdenní
+Každá karta výsledku zobrazuje **mini mřížku rozvrhu**, dále **úroveň kvality** - Perfektní, Dobrý, Ujde nebo Slabý
+(odznak od zelené po červenou) - a krátké shrnutí toho, co rozvrh sráží, například „20 min mezer" nebo „1 hodina
+v nepreferovaný den". Přesuny mezi kampusy jsou uvedeny výslovně a každý kandidát s přesunem mezi kampusy je omezen
+nejvýše na úroveň Ujde. Bezchybný kandidát ukazuje „Perfektní - Žádné mezery, žádné konflikty". Stejná úroveň a důvody
+se zobrazují i na kartách „když jeden předmět vypustíte". Kliknutím na kartu otevřeš úplný náhled rozvrhu s týdenní
 mřížkou.
 
 V náhledu:

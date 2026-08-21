@@ -45,7 +45,11 @@ is removed. Only shown when no full schedule exists.
 
 ## Reading a Result Card
 
-Each result card shows a **mini timetable grid**. Click a card to open a full timetable preview with the weekly grid.
+Each result card shows a **mini timetable grid** plus a **quality tier** - Perfect, Good, Okay, or Rough (a
+green-to-red badge) - and a short plain-language summary of what makes it imperfect, such as "1h 20min gaps" or "1 class
+on a non-preferred day". Campus switches are called out explicitly, and any candidate with a campus switch is capped at
+Okay. A flawless candidate reads "Perfect - No gaps, no conflicts". The same tier and reasons appear on the "drop one
+course" cards. Click a card to open a full timetable preview with the weekly grid.
 
 In the preview:
 

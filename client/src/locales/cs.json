@@ -483,6 +483,19 @@
 			}
 		},
 		"optimizer": {
+			"tier": {
+				"perfect": "Perfektní",
+				"good": "Dobrý",
+				"okay": "Ujde",
+				"rough": "Slabý"
+			},
+			"reasons": {
+				"perfect": "Žádné mezery, žádné konflikty",
+				"gaps": "{duration} mezer",
+				"offPreferredDays": "{count} hodina v nepreferovaný den | {count} hodiny v nepreferované dny | {count} hodin v nepreferované dny",
+				"campusConflict": "{count} přesun mezi kampusy | {count} přesuny mezi kampusy | {count} přesunů mezi kampusy",
+				"longStudyBlocks": "{count} dlouhý blok výuky | {count} dlouhé bloky výuky | {count} dlouhých bloků výuky"
+			},
 			"ConstraintsPanel": {
 				"title": "Omezení",
 				"creditLimits": "Limity kreditů",
@@ -505,7 +518,6 @@
 				"fullCandidatesTitle": "Všechny předměty zahrnuty",
 				"removalCandidatesTitle": "Pokud jeden předmět vypustíte…",
 				"option": "Varianta {n}",
-				"score": "Skóre: {score}",
 				"drops": "Vypouští: {course}",
 				"noFullCandidates": "Nenalezen rozvrh bez kolizí se všemi předměty. Podívejte se na varianty níže.",
 				"partialNotice": "Hledání trvalo déle — zobrazeny nejlepší dosud nalezené výsledky.",

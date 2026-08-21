@@ -483,6 +483,19 @@
 			}
 		},
 		"optimizer": {
+			"tier": {
+				"perfect": "Perfect",
+				"good": "Good",
+				"okay": "Okay",
+				"rough": "Rough"
+			},
+			"reasons": {
+				"perfect": "No gaps, no conflicts",
+				"gaps": "{duration} gaps",
+				"offPreferredDays": "{count} class on a non-preferred day | {count} classes on non-preferred days",
+				"campusConflict": "{count} campus switch | {count} campus switches",
+				"longStudyBlocks": "{count} long study block | {count} long study blocks"
+			},
 			"ConstraintsPanel": {
 				"title": "Constraints",
 				"creditLimits": "Credit limits",
@@ -505,7 +518,6 @@
 				"fullCandidatesTitle": "All courses scheduled",
 				"removalCandidatesTitle": "If you drop one course…",
 				"option": "Option {n}",
-				"score": "Score: {score}",
 				"drops": "Drops: {course}",
 				"noFullCandidates": "No conflict-free timetable found with all courses. See options below.",
 				"partialNotice": "Search took a while — showing the best results found so far.",
