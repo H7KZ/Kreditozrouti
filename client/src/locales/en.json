@@ -677,5 +677,11 @@
 			"readGuide": "Read the international student guide",
 			"dismiss": "Got it"
 		}
+	},
+	"feedback": {
+		"title": "Do you like Kreditožrouti?",
+		"thumbsUp": "I like the app",
+		"thumbsDown": "I don't like the app",
+		"submit": "Send feedback"
 	}
 }

@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import analytics from '@client/analytics'
 import Alerts from '@client/components/alert/Alerts.vue'
 import AppFooter from '@client/components/common/AppFooter.vue'
+import FeedbackPrompt from '@client/components/common/FeedbackPrompt.vue'
 import OnboardingModal from '@client/components/common/OnboardingModal.vue'
 import ScreenReaderAnnouncer from '@client/components/common/ScreenReaderAnnouncer.vue'
 
@@ -24,6 +25,7 @@ onMounted(() => {
 			{{ t('common.skipToContent') }}
 		</a>
 		<OnboardingModal />
+		<FeedbackPrompt />
 		<RouterView class="flex-1" />
 		<AppFooter />
 		<Alerts />

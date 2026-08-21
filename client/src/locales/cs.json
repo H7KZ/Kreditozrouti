@@ -677,5 +677,11 @@
 			"readGuide": "Přečíst průvodce pro studenty",
 			"dismiss": "Rozumím"
 		}
+	},
+	"feedback": {
+		"title": "Líbí se ti Kreditožrouti?",
+		"thumbsUp": "Aplikace se mi líbí",
+		"thumbsDown": "Aplikace se mi nelíbí",
+		"submit": "Odeslat zpětnou vazbu"
 	}
 }
