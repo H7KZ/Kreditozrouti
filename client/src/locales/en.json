@@ -682,6 +682,11 @@
 		"title": "Do you like Kreditožrouti?",
 		"thumbsUp": "I like the app",
 		"thumbsDown": "I don't like the app",
+		"ratingScaleLabel": "How many cookies would you give us?",
+		"cookieLabel": "Rate {n} out of 5 cookies",
+		"commentLabel": "Anything to add? (optional)",
+		"commentPlaceholder": "Tell us what worked or what didn't",
+		"piiHint": "Please don't include personal information.",
 		"submit": "Send feedback"
 	}
 }

@@ -47,6 +47,10 @@ soukromí:
 Data sbíraná Umami: zobrazení stránek, délka sezení, odkaz příchodu a souhrnné interakce s funkcemi (např. „předmět byl
 přidán do rozvrhu"). Tato data nemohou identifikovat žádného konkrétního uživatele.
 
+Pokud se rozhodneš odpovědět na nepovinnou výzvu ke zpětné vazbě v aplikaci, palec nahoru/dolů, nepovinné hodnocení
+sušenkami a jakýkoli nepovinný komentář, který napíšeš, se odešlou do téže vlastní instance Umami jako jedna událost
+zpětné vazby. Pole komentáře je nepovinné a volné - prosím neuváděj do něj žádné osobní údaje.
+
 ## Tvá data rozvrhu
 
 Jakýkoli rozvrh, který sestavíš, je uložen výhradně v `localStorage` tvého prohlížeče. Nikdy se neposílá na naše

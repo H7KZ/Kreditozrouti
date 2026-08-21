@@ -682,6 +682,11 @@
 		"title": "Líbí se ti Kreditožrouti?",
 		"thumbsUp": "Aplikace se mi líbí",
 		"thumbsDown": "Aplikace se mi nelíbí",
+		"ratingScaleLabel": "Kolik sušenek nám dáš?",
+		"cookieLabel": "Hodnotit {n} z 5 sušenek",
+		"commentLabel": "Chceš něco dodat? (nepovinné)",
+		"commentPlaceholder": "Napiš nám, co ti vyhovovalo nebo co ne",
+		"piiHint": "Prosím neuváděj žádné osobní údaje.",
 		"submit": "Odeslat zpětnou vazbu"
 	}
 }

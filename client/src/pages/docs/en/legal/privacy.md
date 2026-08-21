@@ -46,6 +46,10 @@ Kreditožrouti uses **Umami Analytics**, a self-hosted open-source analytics too
 Data collected by Umami: page views, session duration, referrer, and aggregate feature interactions (e.g. "a course was
 added to a timetable"). This data cannot identify any individual user.
 
+If you choose to answer the optional in-app feedback prompt, the thumbs-up/down, the optional cookie rating, and any
+optional comment text you write are sent to the same self-hosted Umami instance as a single feedback event. The comment
+field is optional and free-text - please do not include personal information in it.
+
 ## Your timetable data
 
 Any timetable you build is stored exclusively in your browser's `localStorage`. It is never sent to our servers.

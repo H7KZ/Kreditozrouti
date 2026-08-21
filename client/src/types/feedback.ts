@@ -6,9 +6,12 @@ export type FeedbackThumbs = 'up' | 'down'
 /**
  * Payload for the single `feedback` analytics event.
  *
- * The walking skeleton (#156) only carries the thumb sentiment; the optional
- * 1-5 rating and comment fields arrive in a later ticket.
+ * `thumbs` is always present. `rating` (1-5) and `message` are optional
+ * enrichment - a thumb alone is a complete answer. `message` is the raw
+ * textarea value; the store trims and guards it before sending.
  */
 export interface FeedbackPayload {
 	thumbs: FeedbackThumbs
+	rating?: number
+	message?: string
 }

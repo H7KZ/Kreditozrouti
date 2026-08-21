@@ -2,6 +2,7 @@ import type { FeedbackPayload } from '@client/types'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import analytics from '@client/analytics'
+import { sanitizeFeedbackMessage } from '@client/utils/feedback'
 
 /**
  * Leaf store for the in-app feedback card.
@@ -24,6 +25,9 @@ export const useFeedbackStore = defineStore('feedback', () => {
 	/**
 	 * Report the chosen sentiment as a single `feedback` analytics event and
 	 * close the card. No-op if an event has already been reported.
+	 *
+	 * `rating` is sent as a JS number (stored numerically by Umami) and omitted
+	 * when not chosen; `message` is trimmed/guarded and omitted when empty.
 	 */
 	function submit(payload: FeedbackPayload) {
 		if (reported.value) {
@@ -31,7 +35,13 @@ export const useFeedbackStore = defineStore('feedback', () => {
 			return
 		}
 		reported.value = true
-		analytics.track('feedback', { thumbs: payload.thumbs })
+
+		const data: Record<string, string | number> = { thumbs: payload.thumbs }
+		if (payload.rating != null) data.rating = payload.rating
+		const message = payload.message != null ? sanitizeFeedbackMessage(payload.message) : undefined
+		if (message) data.message = message
+
+		analytics.track('feedback', data)
 		visible.value = false
 	}
 
