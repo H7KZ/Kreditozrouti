@@ -61,6 +61,7 @@ const { t } = i18n.global
 kreditozrouti:timetable  → { selectedUnits }
 kreditozrouti:wizard     → { facultyId, year, ..., completedCourseIdents }
 kreditozrouti:ui         → { viewMode, sidebarCollapsed, showLegend }
+kreditozrouti:feedback   → { submitted, dismissedAt, visitDays }
 ```
 
 ---
@@ -81,8 +82,15 @@ timetable.store
   └── filters.store     (syncTimetableExcludeTimes only)
   ✗   courses.store     (FORBIDDEN — circular dep)
 
-filters.store / ui.store / drag.store / alerts.store — no circular deps
+schedule-slots.store
+  ├── timetable.store   (loadUnits on slot load)
+  └── feedback.store    (registerKeyAction after successful save - one-directional)
+
+filters.store / ui.store / drag.store / alerts.store / feedback.store — no circular deps
 ```
+
+**Feedback store is a leaf:** `feedback.store` imports no other store (so it cannot create a cycle). The
+schedule-slots → feedback edge is one-directional, the same shape as stores that already call `analytics`.
 
 ---
 

@@ -30,6 +30,11 @@ timetable.store
   └── → filters.store            (syncTimetableExcludeTimes after unit add/remove)
   NOTE: timetable.store does NOT import courses.store (avoids circular dep)
 
+schedule-slots.store
+  ├── → timetable.store          (loadUnits on slot load)
+  └── → feedback.store           (registerKeyAction after a successful save)
+
+feedback.store  - no store imports (leaf; cannot create a cycle)
 ui.store        — no store imports
 drag.store      — no store imports
 alerts.store    — no store imports
@@ -369,6 +374,37 @@ void
 
 ---
 
+## `feedback.store` (`useFeedbackStore`)
+
+**File:** `src/stores/feedback.store.ts`
+
+**Persisted:** Yes → `STORAGE_KEYS.FEEDBACK`.
+
+Leaf store for the non-blocking feedback card. Imports no other store, so it can never create a dependency cycle. Owns
+the eligibility gate, persisted state, card visibility, and the single-event reporting to Umami.
+
+```typescript
+visible: boolean // whether the card is currently shown
+```
+
+Persisted state (`PersistedFeedbackState`): `{ submitted, dismissedAt, visitDays }`.
+
+**Key actions:**
+
+- `recordVisit()` - called once from the app root (`index.ts`). Records today's calendar day into the distinct
+  `visitDays` set and arms the ~90s fallback trigger.
+- `registerKeyAction()` - the primary trigger entry point. `schedule-slots.store` calls it after a successful save
+  (one-directional edge; feedback imports nothing back).
+- `submit(payload)` - fires exactly one `feedback` event (`{ thumbs, rating?, message? }`), sets the permanent
+  `submitted` flag, and closes the card.
+- `dismiss()` - closes the card and starts a 90-day cooldown (`dismissedAt`).
+
+**Eligibility** is a pure decision (`decideFeedbackPrompt(state, now)` in `utils/feedback.ts`): visited on >= 2 distinct
+days AND not submitted AND not within the 90-day cooldown. The store layers "shown at most once per session" on top.
+Showing the card persists nothing - ignoring it consumes no cooldown.
+
+---
+
 ## LocalStorage Keys
 
 | Key constant             | Value                       | Contents                                          |
@@ -376,6 +412,7 @@ void
 | `STORAGE_KEYS.TIMETABLE` | `'kreditozrouti:timetable'` | `{ selectedUnits: SelectedCourseUnit[] }`         |
 | `STORAGE_KEYS.WIZARD`    | `'kreditozrouti:wizard'`    | `{ facultyId, year, ..., completedCourseIdents }` |
 | `STORAGE_KEYS.UI`        | `'kreditozrouti:ui'`        | `{ viewMode, sidebarCollapsed, showLegend }`      |
+| `STORAGE_KEYS.FEEDBACK`  | `'kreditozrouti:feedback'`  | `{ submitted, dismissedAt, visitDays }`           |
 | `'locale'`               | _(plain key)_               | `'cs'` or `'en'`                                  |
 
 `loadFromStorage()` returns `null` on JSON parse errors and automatically removes the corrupt key.

@@ -294,3 +294,41 @@ Share your current timetable with anyone via a short link.
 - Links are backed by Redis; they expire after **180 days of inactivity** (TTL resets on each view).
 - The snapshot is self-contained — it stores full course unit data, so links survive periodic database resets.
 - Rate-limited to 10 new share links per IP per minute.
+
+---
+
+## Feedback prompt
+
+A small, non-blocking card that asks returning students whether they like Kreditožrouti, in one tap. It appears at a
+well-chosen moment and never nags.
+
+**What it looks like:**
+
+- Desktop: a small card in the bottom-right corner. It does not block the page - you can keep working and answer only if
+  you feel like it.
+- Mobile: a bottom sheet, matching the app's other mobile surfaces.
+
+**How to answer:**
+
+1. Pick a thumbs-up or thumbs-down - that alone is a complete answer.
+2. Optionally refine it into a 1-5 rating drawn as **cookies** (a nod to "Kreditožrouti").
+3. Optionally add a short comment (max 500 characters). Please don't include personal information; a hint reminds you.
+4. Click **Send feedback**, or just close the card - if you already picked a thumb, that sentiment is still sent.
+
+**When it appears:**
+
+- Only for returning students: you must have visited on at least **2 distinct calendar days**.
+- The primary moment is the first time you save a schedule in a session; if you never save, it appears after about **90
+  seconds** of browsing instead.
+- Shown at most once per session. Ignoring it (neither answering nor dismissing) costs nothing and does not count as a
+  "no".
+
+**Respecting your choice:**
+
+- Once you submit feedback, you are never asked again.
+- If you dismiss the card, it stays away for a **90-day** cooldown, after which you may be asked once more.
+
+**Privacy:**
+
+- Feedback is sent as a single event to our self-hosted Umami analytics - the thumb, the optional rating, and any
+  optional comment. No user identifier is attached. This is disclosed in the privacy policy.

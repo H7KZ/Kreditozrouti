@@ -15,3 +15,19 @@ export interface FeedbackPayload {
 	rating?: number
 	message?: string
 }
+
+/**
+ * Persisted state backing the feedback prompt's eligibility gate.
+ *
+ * - `submitted` - once true, the user has answered and is never prompted again.
+ * - `dismissedAt` - epoch ms of the last dismissal; suppresses the prompt for a
+ *   90-day cooldown, then the user becomes eligible again. `null` when never
+ *   dismissed.
+ * - `visitDays` - distinct `YYYY-MM-DD` day strings, appended once per calendar
+ *   day on app init, used for the returning-user gate.
+ */
+export interface PersistedFeedbackState {
+	submitted: boolean
+	dismissedAt: number | null
+	visitDays: string[]
+}
