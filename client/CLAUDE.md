@@ -86,7 +86,7 @@ schedule-slots.store
   ├── timetable.store   (loadUnits on slot load)
   └── feedback.store    (registerKeyAction after successful save - one-directional)
 
-filters.store / ui.store / drag.store / alerts.store / feedback.store — no circular deps
+filters.store / ui.store / drag.store / alerts.store / feedback.store - no circular deps
 ```
 
 **Feedback store is a leaf:** `feedback.store` imports no other store (so it cannot create a cycle). The
