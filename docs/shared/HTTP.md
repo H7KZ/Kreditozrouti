@@ -204,6 +204,15 @@ interface ScoreBreakdownDTO {
 	total: number
 }
 
+// Interpreting a ScoreBreakdownDTO into a quality tier or a set of reasons is
+// centralized in @kreditozrouti/core/domain - do not re-implement the rules per
+// consumer. scoreTier(breakdown) -> 'perfect' | 'good' | 'okay' | 'rough'
+// (perfect = total 0; then the SCORE_TIER_THRESHOLDS constants split good/okay,
+// rough is above okay; any campus conflict caps the result at
+// CAMPUS_CONFLICT_TIER_FLOOR). scoreReasons(breakdown) -> structured, i18n-free
+// ScoreReason[] (counts/minutes only) so each client owns the wording. The
+// thresholds and floor are the source of truth - see optimizer.ts for values.
+
 interface OptimizerCandidateDTO {
 	units: SelectedCourseUnitDTO[]
 	score: ScoreBreakdownDTO

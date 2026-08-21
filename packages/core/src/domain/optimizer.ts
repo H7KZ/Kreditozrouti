@@ -1,6 +1,6 @@
 ﻿// Section 1: imports
 // Section 1: imports
-import type { CourseUnitType, Day, ScheduledUnit, SolverConstraints } from '@kreditozrouti/types'
+import type { CourseUnitType, Day, ScheduledUnit, ScoreBreakdownDTO, SolverConstraints } from '@kreditozrouti/types'
 import { getDayFromDate } from './day.js'
 import { checkCourseCompleteness, unitsCampusConflict, unitsConflict } from './timetable.js' // Section 2: Constants
 
@@ -242,6 +242,82 @@ export function scoreCandidate(
 		longStudyBlocks * weights.consecutiveBlockOverage
 
 	return { campusConflicts, gapMinutes, offPreferredDays, longStudyBlocks, total }
+}
+
+// Tier + reasons presentation
+
+/**
+ * Quality tier for a scored candidate, best to worst. Consumed by the client
+ * (and later API/MCP) to present timetable quality consistently. Purely derived
+ * from a ScoreBreakdownDTO - this layer owns the rules, callers own the wording.
+ */
+export type ScoreTier = 'perfect' | 'good' | 'okay' | 'rough'
+
+/**
+ * Upper-bound totals (inclusive) for each non-perfect, non-rough tier. `perfect`
+ * is total === 0 exactly; `rough` is anything above `okay`. Tunable in one place.
+ */
+export const SCORE_TIER_THRESHOLDS = {
+	good: 45,
+	okay: 100
+} as const
+
+/**
+ * Best tier a candidate carrying >= 1 campus conflict may reach: a campus
+ * conflict is disruptive enough that no low total can lift such a candidate
+ * above this floor. Named here so it is tunable alongside the thresholds.
+ */
+export const CAMPUS_CONFLICT_TIER_FLOOR: ScoreTier = 'okay'
+
+/** Tier ordering, best (index 0) to worst, for floor comparisons. */
+const TIER_ORDER: readonly ScoreTier[] = ['perfect', 'good', 'okay', 'rough']
+
+function baseTier(total: number): ScoreTier {
+	if (total === 0) return 'perfect'
+	if (total <= SCORE_TIER_THRESHOLDS.good) return 'good'
+	if (total <= SCORE_TIER_THRESHOLDS.okay) return 'okay'
+	return 'rough'
+}
+
+/**
+ * Maps a ScoreBreakdownDTO to a quality tier. The campus-conflict floor caps any
+ * candidate with >= 1 campus conflict at CAMPUS_CONFLICT_TIER_FLOOR: it can only
+ * demote a better tier, never promote a worse one.
+ */
+export function scoreTier(breakdown: ScoreBreakdownDTO): ScoreTier {
+	const tier = baseTier(breakdown.total)
+	if (breakdown.campus_conflicts >= 1 && TIER_ORDER.indexOf(tier) < TIER_ORDER.indexOf(CAMPUS_CONFLICT_TIER_FLOOR)) {
+		return CAMPUS_CONFLICT_TIER_FLOOR
+	}
+	return tier
+}
+
+/**
+ * Structured, i18n-free descriptor of one thing about a candidate worth
+ * surfacing. Carries counts/minutes only - no localized strings, no formatting.
+ * The client owns all wording.
+ */
+export type ScoreReason =
+	| { kind: 'perfect' }
+	| { kind: 'gaps'; minutes: number }
+	| { kind: 'offPreferredDays'; count: number }
+	| { kind: 'campusConflict'; count: number }
+	| { kind: 'longStudyBlocks'; count: number }
+
+/**
+ * Maps a ScoreBreakdownDTO to structured reason descriptors. A zero-total
+ * breakdown yields exactly `[{ kind: 'perfect' }]`; otherwise one reason is
+ * emitted per non-zero component, in the order declared by ScoreReason.
+ */
+export function scoreReasons(breakdown: ScoreBreakdownDTO): ScoreReason[] {
+	if (breakdown.total === 0) return [{ kind: 'perfect' }]
+
+	const reasons: ScoreReason[] = []
+	if (breakdown.gap_minutes > 0) reasons.push({ kind: 'gaps', minutes: breakdown.gap_minutes })
+	if (breakdown.off_preferred_days > 0) reasons.push({ kind: 'offPreferredDays', count: breakdown.off_preferred_days })
+	if (breakdown.campus_conflicts > 0) reasons.push({ kind: 'campusConflict', count: breakdown.campus_conflicts })
+	if (breakdown.long_study_blocks > 0) reasons.push({ kind: 'longStudyBlocks', count: breakdown.long_study_blocks })
+	return reasons
 }
 
 // Diversity filter
