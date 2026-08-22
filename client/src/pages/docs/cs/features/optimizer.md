@@ -60,3 +60,14 @@ V náhledu:
   bloky výuky za sebou. Nižší skóre = lepší rozvrh.
 
 Klikni na **Použít tento rozvrh** v náhledu pro aplikaci kandidáta. Tvůj aktuální rozvrh bude nahrazen.
+
+---
+
+## Co dalšího se vejde?
+
+Pod výsledky ti průzkumník **„Co dalšího se vejde?"** navrhne předměty z tvého studijního plánu, které by šlo přidat do
+koše. Vyber kategorii (a volitelně skupinu) a klikni na **Najít shody**. Nejlepší rozvrh každého navrženého předmětu
+ukazuje **stejnou úroveň kvality a důvody v běžném jazyce** jako karty výsledků výše - odznak Perfektní / Dobrý / Ujde /
+Slabý ti na první pohled řekne, jak dobře předmět zapadá, se stejnými důvody (mezery, dny mimo preferované, přesuny mezi
+kampusy, dlouhé bloky výuky). Předměty bez bezkolizního rozvrhu jsou odpovídajícím způsobem označeny. Kliknutím na
+**Náhled** zobrazíš rozvrh s přidaným předmětem a použiješ jej.

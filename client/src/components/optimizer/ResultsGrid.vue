@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { OptimizerCandidateDTO, RemovalCandidateDTO } from '@kreditozrouti/types'
-import { formatScoreReasons } from '@client/utils/scoreReasons'
-import { scoreReasons, scoreTier } from '@kreditozrouti/core/domain/optimizer'
+import { formatReasonsInline } from '@client/utils/scoreReasons'
+import { scoreTier } from '@kreditozrouti/core/domain/optimizer'
 import { useI18n } from 'vue-i18n'
 import MiniTimetable from './MiniTimetable.vue'
 import TierBadge from './TierBadge.vue'
@@ -23,11 +23,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-
-/** Localized reason strings for a candidate, joined for inline display. */
-function reasonsFor(candidate: OptimizerCandidateDTO): string {
-	return formatScoreReasons(scoreReasons(candidate.score), t).join(' · ')
-}
 </script>
 
 <template>
@@ -59,7 +54,7 @@ function reasonsFor(candidate: OptimizerCandidateDTO): string {
 					<MiniTimetable :units="c.units" class="w-full" />
 					<div class="mt-1.5 flex flex-col gap-1">
 						<TierBadge :tier="scoreTier(c.score)" class="self-start" />
-						<span class="text-[10px] text-(--insis-text-3)">{{ reasonsFor(c) }}</span>
+						<span class="text-[10px] text-(--insis-text-3)">{{ formatReasonsInline(c, t) }}</span>
 					</div>
 				</button>
 			</div>
@@ -88,7 +83,7 @@ function reasonsFor(candidate: OptimizerCandidateDTO): string {
 					<MiniTimetable :units="c.units" class="w-full" />
 					<div class="mt-1.5 flex flex-col gap-1">
 						<TierBadge :tier="scoreTier(c.score)" class="self-start" />
-						<span class="text-[10px] text-(--insis-text-3)">{{ reasonsFor(c) }}</span>
+						<span class="text-[10px] text-(--insis-text-3)">{{ formatReasonsInline(c, t) }}</span>
 					</div>
 				</button>
 			</div>

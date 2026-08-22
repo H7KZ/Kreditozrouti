@@ -546,8 +546,6 @@
 				"error": "Něco se pokazilo — zkuste to prosím znovu.",
 				"resultsTitle": "Zkontrolováno {n} předmětů",
 				"noCourses": "V této kategorii nebyly nalezeny žádné předměty.",
-				"fitPerfect": "Perfektní shoda",
-				"fitScore": "Hodnocení: {score}",
 				"noFit": "Pro tento předmět nebyl nalezen rozvrh bez konfliktů.",
 				"apply": "Přidat a zobrazit",
 				"categories": {

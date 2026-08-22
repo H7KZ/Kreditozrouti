@@ -1,4 +1,9 @@
 import type { ScoreReason } from '@kreditozrouti/core/domain/optimizer'
+import type { OptimizerCandidateDTO } from '@kreditozrouti/types'
+import { scoreReasons } from '@kreditozrouti/core/domain/optimizer'
+
+/** Separator between inline reason strings on a candidate card. */
+const REASON_SEPARATOR = ' · '
 
 /**
  * Minimal translator signature - matches vue-i18n's `t(key, named, plural)`. The
@@ -41,4 +46,12 @@ export function formatScoreReasons(reasons: ScoreReason[], t: Translate): string
 				return t(`${REASONS}.longStudyBlocks`, { count: reason.count }, reason.count)
 		}
 	})
+}
+
+/**
+ * A candidate's localized reasons joined into one inline string. Shared by the
+ * results grid and the explorer so both render candidate reasons identically.
+ */
+export function formatReasonsInline(candidate: OptimizerCandidateDTO, t: Translate): string {
+	return formatScoreReasons(scoreReasons(candidate.score), t).join(REASON_SEPARATOR)
 }

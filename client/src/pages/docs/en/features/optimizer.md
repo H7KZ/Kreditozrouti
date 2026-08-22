@@ -58,3 +58,14 @@ In the preview:
   back-to-back study blocks. Lower score = better schedule.
 
 Click **Use this timetable** in the preview to apply the candidate. Your current timetable is replaced.
+
+---
+
+## What Else Fits?
+
+Below the results, the **"What else fits?"** explorer suggests courses from your study plan that could still be added to
+your basket. Pick a category (and optionally a group), then **Find fits**. Each suggested course's best timetable shows
+the **same quality tier and plain-language reasons** as the result cards above - a Perfect / Good / Okay / Rough badge
+tells you at a glance how well it slots in, with the same reasons (gaps, off-preferred days, campus switches, long study
+blocks). Courses with no conflict-free schedule are marked as such. Click **Preview** to see the timetable with that
+course added and apply it.

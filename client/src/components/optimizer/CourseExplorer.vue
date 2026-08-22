@@ -4,7 +4,10 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { postOptimize } from '@client/services/optimizeService'
 import { useWizardDataStore, useWizardStore } from '@client/stores'
+import { scoreTier } from '@kreditozrouti/core/domain/optimizer'
+import { formatReasonsInline } from '@client/utils/scoreReasons'
 import MiniTimetable from './MiniTimetable.vue'
+import TierBadge from './TierBadge.vue'
 import IconSparkles from '~icons/lucide/sparkles'
 import IconLoaderCircle from '~icons/lucide/loader-circle'
 import IconChevronDown from '~icons/lucide/chevron-down'
@@ -115,12 +118,6 @@ function selectCategory(cat: InSISStudyPlanCourseCategory) {
 	results.value = []
 	hasRun.value = false
 	error.value = null
-}
-
-function fitLevel(score: number): 'perfect' | 'good' | 'moderate' {
-	if (score === 0) return 'perfect'
-	if (score <= 50) return 'good'
-	return 'moderate'
 }
 
 const exploreIds = computed(() => {
@@ -262,17 +259,7 @@ async function findFits() {
 							<!-- Course header row -->
 							<div class="mb-2 flex items-start justify-between gap-2">
 								<div class="flex min-w-0 items-center gap-2">
-									<span
-										class="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold tabular-nums"
-										:class="{
-											'bg-(--insis-success-light) text-(--insis-success)':
-												r.best_candidate && fitLevel(r.best_candidate.score.total) === 'perfect',
-											'bg-(--insis-blue-subtle) text-(--insis-blue)':
-												r.best_candidate && fitLevel(r.best_candidate.score.total) === 'good',
-											'bg-(--insis-warning-light) text-(--insis-warning)':
-												!r.best_candidate || fitLevel(r.best_candidate.score.total) === 'moderate'
-										}"
-									>
+									<span class="shrink-0 rounded bg-(--insis-surface-2) px-1.5 py-0.5 text-[10px] font-bold text-(--insis-text-2) tabular-nums">
 										#{{ i + 1 }}
 									</span>
 									<span class="shrink-0 text-xs font-medium text-(--insis-text)">{{ r.course_ident }}</span>
@@ -284,22 +271,12 @@ async function findFits() {
 							<!-- Has a fit -->
 							<template v-if="r.best_candidate">
 								<MiniTimetable :units="r.best_candidate.units" class="w-full" />
-								<div class="mt-2 flex items-center justify-between">
-									<span
-										class="text-[10px]"
-										:class="{
-											'text-(--insis-success)': fitLevel(r.best_candidate.score.total) === 'perfect',
-											'text-(--insis-text-3)': fitLevel(r.best_candidate.score.total) === 'good',
-											'text-(--insis-warning)': fitLevel(r.best_candidate.score.total) === 'moderate'
-										}"
-									>
-										{{
-											fitLevel(r.best_candidate.score.total) === 'perfect'
-												? t('components.optimizer.CourseExplorer.fitPerfect')
-												: t('components.optimizer.CourseExplorer.fitScore', { score: r.best_candidate.score.total })
-										}}
-									</span>
-									<button type="button" class="insis-btn insis-btn-primary py-0.5 text-[11px]" @click="emit('apply', r)">
+								<div class="mt-2 flex items-end justify-between gap-2">
+									<div class="flex min-w-0 flex-col gap-1">
+										<TierBadge :tier="scoreTier(r.best_candidate.score)" class="self-start" />
+										<span class="text-[10px] text-(--insis-text-3)">{{ formatReasonsInline(r.best_candidate, t) }}</span>
+									</div>
+									<button type="button" class="insis-btn insis-btn-primary shrink-0 py-0.5 text-[11px]" @click="emit('apply', r)">
 										{{ t('components.optimizer.CourseExplorer.preview') }}
 									</button>
 								</div>

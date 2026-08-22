@@ -1,6 +1,7 @@
 import type { ScoreReason } from '@kreditozrouti/core/domain/optimizer'
+import type { OptimizerCandidateDTO, ScoreBreakdownDTO } from '@kreditozrouti/types'
 import { describe, expect, it } from 'vitest'
-import { formatScoreReasons } from './scoreReasons'
+import { formatReasonsInline, formatScoreReasons } from './scoreReasons'
 
 // Deterministic fake translator: echoes the key and any interpolation params so
 // the test can assert which locale keys and values the formatter reaches for,
@@ -50,5 +51,26 @@ describe('formatScoreReasons', () => {
 
 	it('returns an empty array for no reasons', () => {
 		expect(formatScoreReasons([], t)).toEqual([])
+	})
+})
+
+describe('formatReasonsInline', () => {
+	function candidate(score: Partial<ScoreBreakdownDTO>): OptimizerCandidateDTO {
+		return {
+			units: [],
+			changed_unit_ids: [],
+			score: { campus_conflicts: 0, gap_minutes: 0, off_preferred_days: 0, long_study_blocks: 0, total: 0, ...score }
+		}
+	}
+
+	it('derives reasons from the candidate score and joins them with " · "', () => {
+		const out = formatReasonsInline(candidate({ gap_minutes: 40, campus_conflicts: 1, total: 70 }), t)
+		expect(out).toBe(
+			'components.optimizer.reasons.gaps|{"duration":"40 time.minutes"} · components.optimizer.reasons.campusConflict|{"count":1}'
+		)
+	})
+
+	it('renders a single perfect reason with no separator for a perfect candidate', () => {
+		expect(formatReasonsInline(candidate({ total: 0 }), t)).toBe('components.optimizer.reasons.perfect')
 	})
 })

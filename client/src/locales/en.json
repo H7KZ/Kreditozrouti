@@ -546,8 +546,6 @@
 				"error": "Something went wrong — please try again.",
 				"resultsTitle": "{n} courses checked",
 				"noCourses": "No courses found in this category.",
-				"fitPerfect": "Perfect fit",
-				"fitScore": "Fit score: {score}",
 				"noFit": "No conflict-free schedule found with this course.",
 				"apply": "Add & preview",
 				"categories": {
