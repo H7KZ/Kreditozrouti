@@ -4,10 +4,8 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { postOptimize } from '@client/services/optimizeService'
 import { useWizardDataStore, useWizardStore } from '@client/stores'
-import { scoreTier } from '@kreditozrouti/core/domain/optimizer'
-import { formatReasonsInline } from '@client/utils/scoreReasons'
+import CandidateFit from './CandidateFit.vue'
 import MiniTimetable from './MiniTimetable.vue'
-import TierBadge from './TierBadge.vue'
 import IconSparkles from '~icons/lucide/sparkles'
 import IconLoaderCircle from '~icons/lucide/loader-circle'
 import IconChevronDown from '~icons/lucide/chevron-down'
@@ -272,10 +270,7 @@ async function findFits() {
 							<template v-if="r.best_candidate">
 								<MiniTimetable :units="r.best_candidate.units" class="w-full" />
 								<div class="mt-2 flex items-end justify-between gap-2">
-									<div class="flex min-w-0 flex-col gap-1">
-										<TierBadge :tier="scoreTier(r.best_candidate.score)" class="self-start" />
-										<span class="text-[10px] text-(--insis-text-3)">{{ formatReasonsInline(r.best_candidate, t) }}</span>
-									</div>
+									<CandidateFit :candidate="r.best_candidate" />
 									<button type="button" class="insis-btn insis-btn-primary shrink-0 py-0.5 text-[11px]" @click="emit('apply', r)">
 										{{ t('components.optimizer.CourseExplorer.preview') }}
 									</button>

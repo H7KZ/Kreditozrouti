@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import type { OptimizerCandidateDTO, RemovalCandidateDTO } from '@kreditozrouti/types'
-import { formatReasonsInline } from '@client/utils/scoreReasons'
-import { scoreTier } from '@kreditozrouti/core/domain/optimizer'
 import { useI18n } from 'vue-i18n'
+import CandidateFit from './CandidateFit.vue'
 import MiniTimetable from './MiniTimetable.vue'
-import TierBadge from './TierBadge.vue'
 
 withDefaults(
 	defineProps<{
@@ -52,10 +50,7 @@ const { t } = useI18n()
 						{{ t('components.optimizer.ResultsGrid.option', { n: i + 1 }) }}
 					</span>
 					<MiniTimetable :units="c.units" class="w-full" />
-					<div class="mt-1.5 flex flex-col gap-1">
-						<TierBadge :tier="scoreTier(c.score)" class="self-start" />
-						<span class="text-[10px] text-(--insis-text-3)">{{ formatReasonsInline(c, t) }}</span>
-					</div>
+					<CandidateFit :candidate="c" class="mt-1.5" />
 				</button>
 			</div>
 		</section>
@@ -81,10 +76,7 @@ const { t } = useI18n()
 						{{ t('components.optimizer.ResultsGrid.drops', { course: c.dropped_course_title }) }}
 					</span>
 					<MiniTimetable :units="c.units" class="w-full" />
-					<div class="mt-1.5 flex flex-col gap-1">
-						<TierBadge :tier="scoreTier(c.score)" class="self-start" />
-						<span class="text-[10px] text-(--insis-text-3)">{{ formatReasonsInline(c, t) }}</span>
-					</div>
+					<CandidateFit :candidate="c" class="mt-1.5" />
 				</button>
 			</div>
 		</section>
