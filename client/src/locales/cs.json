@@ -352,7 +352,11 @@
 				"completed": "Dokončeno",
 				"sortLabel": "Seřadit podle {column}",
 				"rowLabel": "Předmět {code}: {title}. Klikněte pro zobrazení detailů.",
-				"optimizerToggle": "Přidat/odebrat z optimalizátoru"
+				"optimizerToggle": "Přidat/odebrat z optimalizátoru",
+				"fitChip": {
+					"fills_gap": "Vyplní mezeru",
+					"same_day": "Stejný den"
+				}
 			},
 			"CourseRowExpanded": {
 				"faculty": "Fakulta",

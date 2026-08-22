@@ -93,11 +93,10 @@ have at least one non-conflicting slot remain visible so you can swap to a diffe
 ## Fits My Timetable
 
 Sorts the course list by how well each course fits into your current schedule and hides courses that conflict with every
-available slot. Courses are ranked by fit quality:
+available slot. Courses that fit especially well show a labelled chip:
 
-- **Fills gap** — the course slots into an existing gap in your week
-- **Same day** — the course is on a day you already have classes
-- **New day** — the course adds a new day to your schedule
+- **Fills a gap** - the course slots into an existing gap between your classes (the best fit)
+- **Same day** - the course lands on a day you already attend
 
-The reason badge appears on each row so you can see at a glance why a course ranked where it did. This filter is
-disabled when your timetable is empty.
+Only these two positive cases show a chip, so a chip on a row reliably means the course is worth a look; neutral fits and
+courses that only add a new day show no chip. This filter is disabled when your timetable is empty.

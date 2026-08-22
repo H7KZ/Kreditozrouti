@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import type { CourseStatus } from '@client/types'
-import type { FitResult } from '@client/composables/useFitScore'
+import type { FitChip, FitResult } from '@client/composables/useFitScore'
 import type { CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed } from 'vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import CourseStatusIndicator from '@client/components/courses/CourseStatusIndicator.vue'
 import { useCourseLabels, useOptimizerBasket, useScheduleSummary } from '@client/composables'
+import { fitChipFor } from '@client/composables/useFitScore'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
+import IconCalendarCheck from '~icons/lucide/calendar-check'
 import IconChevronDown from '~icons/lucide/chevron-down'
+import IconPuzzle from '~icons/lucide/puzzle'
 import IconSparkles from '~icons/lucide/sparkles'
 
 interface Props {
@@ -28,6 +31,17 @@ const { getScheduleSummary } = useScheduleSummary()
 // Fit score
 
 const fitResult = computed(() => props.fitScores?.get(props.course.id))
+
+/** Which fit chip to show (if any) for this row. Null = no chip. */
+const fitChip = computed<FitChip | null>(() => (fitResult.value ? fitChipFor(fitResult.value.fitReason) : null))
+
+// Icon + style per chip in one place. Both chips are positive (green family,
+// no good/bad ramp) and differentiated by fill weight + icon + label, kept
+// deliberately distinct from the optimizer's bordered uppercase tier pills.
+const FIT_CHIP: Record<FitChip, { icon: typeof IconPuzzle; class: string }> = {
+	fills_gap: { icon: IconPuzzle, class: 'bg-(--insis-success) text-white' },
+	same_day: { icon: IconCalendarCheck, class: 'bg-(--insis-success-light) text-(--insis-success)' }
+}
 
 // Status
 
@@ -77,19 +91,11 @@ function handleRowClick() {
 				<span :title="getCourseTitle(course)" class="truncate">{{ getCourseTitle(course) }}</span>
 				<CourseStatusIndicator :course="course" />
 				<span
-					v-if="fitResult && fitResult.score > -Infinity"
-					:class="[
-						'shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium',
-						fitResult.fitReason === 'fills_gap'
-							? 'bg-green-100 text-green-700'
-							: fitResult.fitReason === 'same_day'
-								? 'bg-blue-100 text-blue-700'
-								: 'bg-(--insis-gray-100) text-(--insis-text-3)'
-					]"
-					:title="$t('components.courses.CourseTable.fitsTimetable')"
-					aria-hidden="true"
+					v-if="fitChip"
+					:class="['inline-flex shrink-0 items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-medium', FIT_CHIP[fitChip].class]"
 				>
-					{{ fitResult.fitReason === 'fills_gap' ? '★★' : fitResult.fitReason === 'same_day' ? '★' : '~' }}
+					<component :is="FIT_CHIP[fitChip].icon" class="h-2.5 w-2.5" aria-hidden="true" />
+					{{ $t(`components.courses.CourseTable.fitChip.${fitChip}`) }}
 				</span>
 			</div>
 		</td>

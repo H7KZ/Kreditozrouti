@@ -352,7 +352,11 @@
 				"completed": "Done",
 				"sortLabel": "Sort by {column}",
 				"rowLabel": "Course {code}: {title}. Click to view details.",
-				"optimizerToggle": "Toggle in optimizer basket"
+				"optimizerToggle": "Toggle in optimizer basket",
+				"fitChip": {
+					"fills_gap": "Fills a gap",
+					"same_day": "Same day"
+				}
 			},
 			"CourseRowExpanded": {
 				"faculty": "Faculty",

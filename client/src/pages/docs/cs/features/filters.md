@@ -93,11 +93,11 @@ rozvrhem. Předměty, které mají alespoň jeden nekonfliktní slot, zůstanou 
 ## Pasuje do mého rozvrhu
 
 Seřadí seznam předmětů podle toho, jak dobře každý předmět pasuje do tvého aktuálního rozvrhu, a skryje předměty, které
-kolidují s každým dostupným slotem. Předměty jsou řazeny podle kvality shody:
+kolidují s každým dostupným slotem. Předměty, které pasují obzvlášť dobře, ukazují označený odznak:
 
-- **Vyplní mezeru** — předmět se hodí do existující mezery v tvém týdnu
-- **Stejný den** — předmět je v den, kdy už máš výuku
-- **Nový den** — předmět přidá nový den do tvého rozvrhu
+- **Vyplní mezeru** - předmět se hodí do existující mezery mezi tvými hodinami (nejlepší shoda)
+- **Stejný den** - předmět je v den, kdy už máš výuku
 
-Na každém řádku se zobrazí odznak důvodu, takže na první pohled uvidíš, proč se předmět umístil tam, kde je. Tento filtr
-je vypnutý, když je tvůj rozvrh prázdný.
+Odznak se zobrazí pouze u těchto dvou pozitivních případů, takže odznak na řádku spolehlivě znamená, že předmět stojí za
+pozornost; neutrální shody a předměty, které jen přidají nový den, žádný odznak nemají. Tento filtr je vypnutý, když je
+tvůj rozvrh prázdný.
