@@ -72,13 +72,7 @@ function handleRowClick() {
 			isExpanded && 'row-expanded',
 			isSelected && 'row-in-timetable'
 		]"
-		role="button"
-		:tabindex="0"
-		:aria-expanded="isExpanded"
-		:aria-label="$t('components.courses.CourseTable.rowLabel', { code: course.ident, title: getCourseTitle(course) })"
 		@click="handleRowClick"
-		@keydown.enter="handleRowClick"
-		@keydown.space.prevent="handleRowClick"
 	>
 		<!-- Ident -->
 		<td>
@@ -133,10 +127,18 @@ function handleRowClick() {
 				>
 					<IconSparkles class="h-3 w-3" aria-hidden="true" />
 				</button>
-				<IconChevronDown
-					:class="['inline h-3.5 w-3.5 shrink-0 text-(--insis-text-3) transition-transform duration-200', isExpanded && 'rotate-180']"
-					aria-hidden="true"
-				/>
+				<button
+					type="button"
+					class="inline-flex cursor-pointer items-center rounded border border-transparent p-0.5 text-(--insis-text-3) transition-colors hover:text-(--insis-text-2)"
+					:aria-expanded="isExpanded"
+					:aria-label="$t('components.courses.CourseTable.rowLabel', { code: course.ident, title: getCourseTitle(course) })"
+					@click.stop="handleRowClick"
+				>
+					<IconChevronDown
+						:class="['h-3.5 w-3.5 shrink-0 transition-transform duration-200', isExpanded && 'rotate-180']"
+						aria-hidden="true"
+					/>
+				</button>
 			</div>
 		</td>
 	</tr>

@@ -162,6 +162,8 @@ async function findFits() {
 		<button
 			type="button"
 			class="flex w-full cursor-pointer items-center justify-between px-4 py-3 text-sm font-medium text-(--insis-text) hover:bg-(--insis-surface-2)"
+			:aria-expanded="expanded"
+			aria-controls="course-explorer-panel"
 			@click="expanded = !expanded"
 		>
 			<span class="flex items-center gap-2">
@@ -171,7 +173,7 @@ async function findFits() {
 			<IconChevronDown :class="['h-4 w-4 text-(--insis-text-3) transition-transform duration-200', expanded && 'rotate-180']" aria-hidden="true" />
 		</button>
 
-		<div v-if="expanded" class="px-4 pt-1 pb-5">
+		<div v-if="expanded" id="course-explorer-panel" class="px-4 pt-1 pb-5">
 			<!-- No study plan set up -->
 			<p v-if="!hasStudyPlan" class="text-sm text-(--insis-text-3)">
 				{{ t('components.optimizer.CourseExplorer.noStudyPlan') }}
