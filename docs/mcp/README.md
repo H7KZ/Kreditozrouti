@@ -58,6 +58,8 @@ node dist/index.js
 
 HTTP mode requires OAuth 2.1 authentication. Clients that support Dynamic Client Registration (Claude Desktop, ChatGPT, Cursor) handle this automatically - no manual setup needed.
 
+The OAuth store is in-memory but bounded: registered clients and authorization codes are capped per map and expire on a TTL, a periodic sweep drops abandoned entries, and the `register`/`authorize`/`token` endpoints are rate-limited (30 req/min). A registration or authorize flood cannot grow the heap without bound.
+
 ## Environment Variables
 
 | Variable          | Required | Default                    | Description                                              |

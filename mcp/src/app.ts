@@ -13,7 +13,12 @@ app.use(express.json())
 // Token endpoint receives application/x-www-form-urlencoded (RFC 6749)
 app.use(express.urlencoded({ extended: false }))
 
-// OAuth endpoints
+// Rate limit the OAuth endpoints (register/authorize/token) so a registration or
+// authorize flood cannot grow the in-memory store without bound.
+const oauthLimiter = rateLimit({ windowMs: 60_000, max: 30, standardHeaders: true, legacyHeaders: false })
+
+// OAuth endpoints - well-known discovery routes are cheap/read-only, so only throttle the mutating flow.
+app.use(['/mcp/oauth/register', '/mcp/oauth/authorize', '/mcp/oauth/token'], oauthLimiter)
 app.use(oauthRouter)
 
 // Stricter limit for the CPU-intensive optimizer tool
