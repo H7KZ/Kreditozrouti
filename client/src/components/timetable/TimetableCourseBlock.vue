@@ -38,6 +38,7 @@ interface Props {
 
 interface Emits {
 	(e: 'remove'): void
+
 	(e: 'click'): void
 }
 

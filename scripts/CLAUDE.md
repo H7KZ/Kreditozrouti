@@ -35,7 +35,7 @@ unexpected reboots.
 
 ## Key Docs
 
-| Topic                                                             | Doc                                                        |
-|-------------------------------------------------------------------|------------------------------------------------------------|
+| Topic                                                             | Doc                                                    |
+|-------------------------------------------------------------------|--------------------------------------------------------|
 | install-docker — all flags                                        | [INFRASTRUCTURE.md](../docs/scripts/INFRASTRUCTURE.md) |
 | maintenance, docker-cleanup, clone-db — all flags + cron examples | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md)       |

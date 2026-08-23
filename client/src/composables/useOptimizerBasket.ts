@@ -26,11 +26,14 @@ export function useOptimizerBasket() {
 	function add(id: number) {
 		if (!basketIds.value.includes(id)) basketIds.value.push(id)
 	}
+
 	function remove(id: number) {
 		basketIds.value = basketIds.value.filter(x => x !== id)
 	}
+
 	function has(id: number): boolean {
 		return basketIds.value.includes(id)
 	}
+
 	return { basketIds, add, remove, has }
 }

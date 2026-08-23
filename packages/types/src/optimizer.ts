@@ -1,4 +1,4 @@
-﻿import type { CourseUnitType, Day, TimeSelection } from './domain.js'
+import type { CourseUnitType, Day, TimeSelection } from './domain.js'
 
 export interface SolverConstraints {
 	required_course_ids?: number[]

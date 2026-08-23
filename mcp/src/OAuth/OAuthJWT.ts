@@ -13,14 +13,28 @@ const HEADER = base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
 export function signAccessToken(clientId: string, issuer: string, audience: string, secret: string): string {
 	const now = Math.floor(Date.now() / 1000)
 
-	const payload = base64url(JSON.stringify({ iss: issuer, aud: audience, sub: clientId, iat: now, exp: now + ACCESS_TOKEN_TTL_S }))
+	const payload = base64url(
+		JSON.stringify({
+			iss: issuer,
+			aud: audience,
+			sub: clientId,
+			iat: now,
+			exp: now + ACCESS_TOKEN_TTL_S
+		})
+	)
 
 	const sig = createHmac('sha256', secret).update(`${HEADER}.${payload}`).digest('base64url')
 
 	return `${HEADER}.${payload}.${sig}`
 }
 
-export function verifyAccessToken(token: string, secret: string, expected: { issuer: string; audience: string }): { sub: string } | null {
+export function verifyAccessToken(
+	token: string,
+	secret: string,
+	expected: { issuer: string; audience: string }
+): {
+	sub: string
+} | null {
 	const parts = token.split('.')
 	if (parts.length !== 3) return null
 
@@ -46,7 +60,7 @@ export function verifyAccessToken(token: string, secret: string, expected: { iss
 
 export function verifyPkce(codeVerifier: string, codeChallenge: string): boolean {
 	// RFC 7636 §4.1 - code_verifier must be 43-128 chars from the unreserved set.
-	if (!/^[A-Za-z0-9\-._~]{43,128}$/.test(codeVerifier)) return false
+	if (!/^[\w\-.~]{43,128}$/.test(codeVerifier)) return false
 
 	const computed = createHash('sha256').update(codeVerifier).digest('base64url')
 	const a = Buffer.from(computed)

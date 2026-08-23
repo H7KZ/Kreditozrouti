@@ -46,11 +46,11 @@ kdyby byl tento předmět odebrán. Zobrazí se pouze tehdy, když neexistuje ú
 ## Čtení karty výsledků
 
 Každá karta výsledku zobrazuje **mini mřížku rozvrhu**, dále **úroveň kvality** - Perfektní, Dobrý, Průměrný nebo Slabý
-(odznak od zelené po červenou) - a krátké shrnutí toho, co rozvrh sráží, například „20 min mezer" nebo „1 hodina
-v nepreferovaný den". Přesuny mezi kampusy jsou uvedeny výslovně a každý kandidát s přesunem mezi kampusy je omezen
-nejvýše na úroveň Průměrný. Bezchybný kandidát ukazuje „Perfektní - Žádné mezery, žádné konflikty". Stejná úroveň a důvody
-se zobrazují i na kartách „když jeden předmět vypustíte". Kliknutím na kartu otevřeš úplný náhled rozvrhu s týdenní
-mřížkou.
+(odznak od zelené po červenou) - a krátké shrnutí toho, co rozvrh sráží, například „20 min mezer" nebo „1 hodina v
+nepreferovaný den". Přesuny mezi kampusy jsou uvedeny výslovně a každý kandidát s přesunem mezi kampusy je omezen
+nejvýše na úroveň Průměrný. Bezchybný kandidát ukazuje „Perfektní - Žádné mezery, žádné konflikty". Stejná úroveň a
+důvody se zobrazují i na kartách „když jeden předmět vypustíte". Kliknutím na kartu otevřeš úplný náhled rozvrhu s
+týdenní mřížkou.
 
 V náhledu:
 
@@ -67,7 +67,7 @@ Klikni na **Použít tento rozvrh** v náhledu pro aplikaci kandidáta. Tvůj ak
 
 Pod výsledky ti průzkumník **„Co dalšího se vejde?"** navrhne předměty z tvého studijního plánu, které by šlo přidat do
 koše. Vyber kategorii (a volitelně skupinu) a klikni na **Najít shody**. Nejlepší rozvrh každého navrženého předmětu
-ukazuje **stejnou úroveň kvality a důvody v běžném jazyce** jako karty výsledků výše - odznak Perfektní / Dobrý / Průměrný /
-Slabý ti na první pohled řekne, jak dobře předmět zapadá, se stejnými důvody (mezery, dny mimo preferované, přesuny mezi
-kampusy, dlouhé bloky výuky). Předměty bez bezkolizního rozvrhu jsou odpovídajícím způsobem označeny. Kliknutím na
-**Náhled** zobrazíš rozvrh s přidaným předmětem a použiješ jej.
+ukazuje **stejnou úroveň kvality a důvody v běžném jazyce** jako karty výsledků výše - odznak Perfektní / Dobrý /
+Průměrný / Slabý ti na první pohled řekne, jak dobře předmět zapadá, se stejnými důvody (mezery, dny mimo preferované,
+přesuny mezi kampusy, dlouhé bloky výuky). Předměty bez bezkolizního rozvrhu jsou odpovídajícím způsobem označeny.
+Kliknutím na **Náhled** zobrazíš rozvrh s přidaným předmětem a použiješ jej.

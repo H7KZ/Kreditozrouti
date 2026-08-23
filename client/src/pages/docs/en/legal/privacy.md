@@ -50,25 +50,25 @@ If you choose to answer the optional in-app feedback prompt, the thumbs-up/down,
 optional comment text you write are sent to the same self-hosted Umami instance as a single feedback event. The comment
 field is optional and free-text - please do not include personal information in it.
 
-| Property           | Detail                                                                                          |
-| ------------------ | ----------------------------------------------------------------------------------------------- |
-| Legal basis (GDPR) | Consent (Art. 6(1)(a)) - the event is sent only when you actively submit the prompt             |
-| Retention          | Free-text comments are retained for a maximum of 12 months, then deleted                         |
+| Property           | Detail                                                                                                                                                                                                                            |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Legal basis (GDPR) | Consent (Art. 6(1)(a)) - the event is sent only when you actively submit the prompt                                                                                                                                               |
+| Retention          | Free-text comments are retained for a maximum of 12 months, then deleted                                                                                                                                                          |
 | Erasure            | Because no identifier is stored with the event, to request erasure of a specific comment (GDPR Art. 17) contact us via the project repository with enough context to locate it; we can also purge the feedback dataset on request |
 
 ## Error reporting
 
 Kreditožrouti uses **Grafana Faro** to report application crashes so we can fix them. It is configured to capture only:
 
-| Property             | Detail                                                                                 |
-| -------------------- | -------------------------------------------------------------------------------------- |
+| Property             | Detail                                                                                  |
+| -------------------- | --------------------------------------------------------------------------------------- |
 | What is captured     | JavaScript errors (message + stack trace) and Web Vitals performance metrics            |
 | Session tracking     | Disabled - no persistent or pseudonymous identifier is stored in your browser           |
-| Console capture      | Disabled - your console output is never sent                                             |
-| Behavioural tracking | None - no page views, clicks, or navigation are tracked by Faro (that is Umami's scope)  |
-| Cookies              | Not used                                                                                 |
-| Third-party sharing  | None - reports are sent to our own self-hosted collector, not to Grafana Cloud           |
-| Legal basis (GDPR)   | Legitimate interest (Art. 6(1)(f)) - application stability and security                  |
+| Console capture      | Disabled - your console output is never sent                                            |
+| Behavioural tracking | None - no page views, clicks, or navigation are tracked by Faro (that is Umami's scope) |
+| Cookies              | Not used                                                                                |
+| Third-party sharing  | None - reports are sent to our own self-hosted collector, not to Grafana Cloud          |
+| Legal basis (GDPR)   | Legitimate interest (Art. 6(1)(f)) - application stability and security                 |
 
 Because Faro stores no identifier and tracks no behaviour, it does not require consent. If you never hit an error, no
 data is sent at all.

@@ -21,9 +21,9 @@ function onRefreshClick() {
 
 <template>
 	<!--
-		Stop click AND keyboard events from bubbling to the parent <tr role="button">,
-		which would otherwise toggle row expansion on every interaction here.
-	-->
+    Stop click AND keyboard events from bubbling to the parent <tr role="button">,
+    which would otherwise toggle row expansion on every interaction here.
+  -->
 	<div class="flex items-center justify-end gap-0.5" @click.stop @keydown.enter.stop @keydown.space.stop>
 		<!-- Triggering / Streaming: spinner -->
 		<template v-if="state === 'triggering' || state === 'streaming'">

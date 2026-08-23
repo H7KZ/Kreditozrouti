@@ -1,4 +1,5 @@
 import type { ScraperRequestJob, ScraperResponseJob } from '@kreditozrouti/types'
+import type { ConnectionOptions } from 'bullmq'
 import { ScraperRequestQueue, ScraperResponseQueue } from '@kreditozrouti/core/queue'
 import { Queue, Worker } from 'bullmq'
 import { BullMQOtel } from 'bullmq-otel'
@@ -10,8 +11,13 @@ const bullmqTelemetry = new BullMQOtel({ tracerName: 'kreditozrouti-scraper' })
 
 // Queues
 
+// bullmq@6's Queue leaks its defaulted DefaultNameType generic across the module
+// boundary, which makes Queue.add(name, ...) reject a plain string name at every
+// call site. Pin the generics via a cast so the exported queue type is fully
+// resolved. The connection cast bridges ioredis's RedisOptions and bullmq's own
+// vendored RedisOptions, which are structurally incompatible in v6.
 const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
-	connection: redis.options,
+	connection: redis.options as ConnectionOptions,
 	telemetry: bullmqTelemetry,
 	defaultJobOptions: {
 		attempts: 3,
@@ -19,12 +25,12 @@ const requestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
 		removeOnComplete: { count: 200 },
 		removeOnFail: { age: 86_400 }
 	}
-})
+}) as Queue<ScraperRequestJob, unknown, string, ScraperRequestJob, unknown, string>
 
 // attempts: 3 adds a BullMQ-level retry layer on top of withDeadlockRetry in the API handler.
 // Both are safe together because response jobs use upsert semantics — re-running them is idempotent.
 const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
-	connection: redis.options,
+	connection: redis.options as ConnectionOptions,
 	telemetry: bullmqTelemetry,
 	defaultJobOptions: {
 		attempts: 3,
@@ -32,12 +38,12 @@ const responseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
 		removeOnComplete: { count: 200 },
 		removeOnFail: { age: 86_400 }
 	}
-})
+}) as Queue<ScraperResponseJob, unknown, string, ScraperResponseJob, unknown, string>
 
 // Workers
 
 const requestWorker = new Worker<ScraperRequestJob>(ScraperRequestQueue, ScraperRequestHandler, {
-	connection: redis.options,
+	connection: redis.options as ConnectionOptions,
 	telemetry: bullmqTelemetry,
 	concurrency: 1,
 	lockDuration: 900_000, // 15 min; covers the longest expected job; auto-renewed while worker is alive

@@ -138,7 +138,7 @@ getUpcomingPeriod(date ? : Date)
 Determines which registration period is next:
 
 | Month   | Returns                                        |
-| ------- | ---------------------------------------------- |
+|---------|------------------------------------------------|
 | Jun–Nov | `ZS`, current year                             |
 | Dec     | `LS`, current year (next LS starts in Jan/Feb) |
 | Jan–May | `LS`, previous year                            |

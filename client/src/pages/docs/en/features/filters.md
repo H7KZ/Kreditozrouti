@@ -98,5 +98,5 @@ available slot. Courses that fit especially well show a labelled chip:
 - **Fills a gap** - the course slots into an existing gap between your classes (the best fit)
 - **Same day** - the course lands on a day you already attend
 
-Only these two positive cases show a chip, so a chip on a row reliably means the course is worth a look; neutral fits and
-courses that only add a new day show no chip. This filter is disabled when your timetable is empty.
+Only these two positive cases show a chip, so a chip on a row reliably means the course is worth a look; neutral fits
+and courses that only add a new day show no chip. This filter is disabled when your timetable is empty.

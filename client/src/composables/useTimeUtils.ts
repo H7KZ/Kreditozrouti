@@ -107,7 +107,14 @@ export function useTimeUtils() {
 	 * @param end - End time in minutes (default: TIME_CONFIG.END)
 	 * @returns Array of time options
 	 */
-	function generateTimeOptions(interval = 15, start = TIME_CONFIG.START, end = TIME_CONFIG.END): Array<{ value: string; label: string }> {
+	function generateTimeOptions(
+		interval = 15,
+		start = TIME_CONFIG.START,
+		end = TIME_CONFIG.END
+	): Array<{
+		value: string
+		label: string
+	}> {
 		const options: Array<{ value: string; label: string }> = []
 
 		for (let mins = start; mins <= end; mins += interval) {

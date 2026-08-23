@@ -32,10 +32,22 @@ export class CourseCacheService {
 			groups: filters.groups?.sort(),
 			categories: filters.categories?.sort(),
 			include_times: filters.include_times
-				? filters.include_times.map(t => ({ day: t.day, time_from: t.time_from, time_to: t.time_to })).sort(compareTimeSelections)
+				? filters.include_times
+						.map(t => ({
+							day: t.day,
+							time_from: t.time_from,
+							time_to: t.time_to
+						}))
+						.sort(compareTimeSelections)
 				: undefined,
 			exclude_times: filters.exclude_times
-				? filters.exclude_times.map(t => ({ day: t.day, time_from: t.time_from, time_to: t.time_to })).sort(compareTimeSelections)
+				? filters.exclude_times
+						.map(t => ({
+							day: t.day,
+							time_from: t.time_from,
+							time_to: t.time_to
+						}))
+						.sort(compareTimeSelections)
 				: undefined,
 			completed_course_idents: filters.completed_course_idents?.sort()
 		}

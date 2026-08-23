@@ -1,10 +1,10 @@
-import type { ScoreReason } from '@kreditozrouti/core/domain/optimizer'
 import type { Translate } from './scoreReasons'
+import type { ScoreReason } from '@kreditozrouti/core/domain/optimizer'
+import { createI18n } from 'vue-i18n'
+import { describe, expect, it } from 'vitest'
 import cs from '@client/locales/cs.json'
 import en from '@client/locales/en.json'
 import { czechPluralRule } from '@client/utils/pluralization'
-import { createI18n } from 'vue-i18n'
-import { describe, expect, it } from 'vitest'
 import { formatScoreReasons } from './scoreReasons'
 
 // Boots the real vue-i18n with the shipped locale messages and the Czech plural
@@ -37,8 +37,28 @@ describe('formatScoreReasons with real i18n', () => {
 	})
 
 	it('uses English 2-way plurals for counts', () => {
-		expect(formatScoreReasons([{ kind: 'offPreferredDays', count: 1 }], en_)).toEqual(['1 class on a non-preferred day'])
-		expect(formatScoreReasons([{ kind: 'offPreferredDays', count: 3 }], en_)).toEqual(['3 classes on non-preferred days'])
+		expect(
+			formatScoreReasons(
+				[
+					{
+						kind: 'offPreferredDays',
+						count: 1
+					}
+				],
+				en_
+			)
+		).toEqual(['1 class on a non-preferred day'])
+		expect(
+			formatScoreReasons(
+				[
+					{
+						kind: 'offPreferredDays',
+						count: 3
+					}
+				],
+				en_
+			)
+		).toEqual(['3 classes on non-preferred days'])
 		expect(formatScoreReasons([{ kind: 'campusConflict', count: 1 }], en_)).toEqual(['1 campus switch'])
 		expect(formatScoreReasons([{ kind: 'campusConflict', count: 2 }], en_)).toEqual(['2 campus switches'])
 	})

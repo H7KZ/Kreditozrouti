@@ -75,7 +75,7 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 ## Components
 
 | Component     | Image                       | Role                                                    |
-| ------------- | --------------------------- | ------------------------------------------------------- |
+|---------------|-----------------------------|---------------------------------------------------------|
 | Alloy         | `grafana/alloy:latest`      | Log shipping (Docker socket), Faro receiver, OTLP relay |
 | Loki          | `grafana/loki:3`            | Log storage (30-day retention, filesystem backend)      |
 | Tempo         | `grafana/tempo:latest`      | Distributed trace storage (7-day retention)             |
@@ -99,7 +99,7 @@ pipeline below.
 Every log line carries these base fields (set in `../../api/src/logger.ts` and `../../scraper/src/logger.ts`):
 
 | Field     | Type   | Example                      | Notes                                        |
-| --------- | ------ | ---------------------------- | -------------------------------------------- |
+|-----------|--------|------------------------------|----------------------------------------------|
 | `level`   | string | `"INFO"`                     | Uppercase via `formatters.level`             |
 | `service` | string | `"api"` / `"scraper"`        | Set as pino `base`                           |
 | `env`     | string | `"production"`               | Set as pino `base` from `Config.env`         |
@@ -109,7 +109,7 @@ Every log line carries these base fields (set in `../../api/src/logger.ts` and `
 HTTP request logs also carry (via `LoggerAPIContext`):
 
 | Field         | Type   | Notes                                             |
-| ------------- | ------ | ------------------------------------------------- |
+|---------------|--------|---------------------------------------------------|
 | `context`     | string | `"http"` (stream label in Loki)                   |
 | `request_id`  | string | UUID per request (structured metadata in Loki)    |
 | `method`      | string | HTTP method                                       |
@@ -122,7 +122,7 @@ HTTP request logs also carry (via `LoggerAPIContext`):
 Job logs carry (via `LoggerJobContext`):
 
 | Field         | Type   | Notes                                                           |
-| ------------- | ------ | --------------------------------------------------------------- |
+|---------------|--------|-----------------------------------------------------------------|
 | `context`     | string | `"job"` (stream label in Loki)                                  |
 | `queue_name`  | string | BullMQ queue name (scraper); API `withJobLogger` emits `queue`) |
 | `job_id`      | string |                                                                 |
@@ -133,7 +133,7 @@ Job logs carry (via `LoggerJobContext`):
 ### Log levels
 
 | Level   | When to use                                           |
-| ------- | ----------------------------------------------------- |
+|---------|-------------------------------------------------------|
 | `debug` | Routine details (dropped in production, level=`info`) |
 | `info`  | Normal lifecycle events                               |
 | `warn`  | 4xx responses, unexpected-but-recoverable situations  |
@@ -224,7 +224,7 @@ Query in Grafana: `{job="traefik"}` → parse with `| json` to filter by `Reques
 These labels are indexed and should be used in LogQL `{}` selectors:
 
 | Label             | Values                                         | Source                                           |
-| ----------------- | ---------------------------------------------- | ------------------------------------------------ |
+|-------------------|------------------------------------------------|--------------------------------------------------|
 | `level`           | `INFO`, `WARN`, `ERROR`, `DEBUG`               | pino `level` field                               |
 | `service`         | `api`, `scraper`                               | pino `base.service`                              |
 | `env`             | `production`, `development`                    | pino `base.env`                                  |
@@ -236,7 +236,7 @@ These labels are indexed and should be used in LogQL `{}` selectors:
 Structured metadata (not indexed, use `| json` or `| logfmt` to filter):
 
 | Key          | Source                              |
-| ------------ | ----------------------------------- |
+|--------------|-------------------------------------|
 | `request_id` | per-HTTP-request UUID               |
 | `trace_id`   | OTel span trace ID (if active span) |
 | `span_id`    | OTel span ID (if active span)       |
@@ -248,7 +248,7 @@ Structured metadata (not indexed, use `| json` or `| logfmt` to filter):
 Provisioned from `../../deployment/monitoring/grafana/provisioning/dashboards`.
 
 | Dashboard        | UID                     | Datasource | Covers                                                                     |
-| ---------------- | ----------------------- | ---------- | -------------------------------------------------------------------------- |
+|------------------|-------------------------|------------|----------------------------------------------------------------------------|
 | API              | `kreditozrouti-api`     | Prometheus | Request rate, error rate, latency histograms, BullMQ queue depth           |
 | Scraper          | `kreditozrouti-scraper` | Prometheus | Queue depth, silent failures, items processed, last-run timestamp          |
 | Log Explorer     | `kreditozrouti-logs`    | Loki       | Searchable log view for api + scraper, filterable by level / context / job |
@@ -289,7 +289,7 @@ must have the `prometheus.io/scrape=true` Docker label to be included; Prometheu
 requests with an `x-forwarded-for` header (i.e. via Traefik), so it is only reachable from within the Docker network.
 
 | Metric                          | Type      | Labels                                  | Notes                                              |
-| ------------------------------- | --------- | --------------------------------------- | -------------------------------------------------- |
+|---------------------------------|-----------|-----------------------------------------|----------------------------------------------------|
 | `http_request_duration_seconds` | Histogram | `method`, `route`, `status_code`, `env` | HTTP latency + rate                                |
 | `bullmq_queue_depth`            | Gauge     | `queue`, `status`, `env`                | Collected at scrape time                           |
 | `scraper_silent_failures_total` | Gauge     | `job_type`, `env`                       | From Redis counters                                |
@@ -310,7 +310,7 @@ via a static relabel.
 Provisioned from `../../deployment/monitoring/grafana/provisioning/alerting`.
 
 | File                        | Purpose                                                              |
-| --------------------------- | -------------------------------------------------------------------- |
+|-----------------------------|----------------------------------------------------------------------|
 | `rules.yml`                 | Alert rules — 3 groups: `infrastructure`, `scraper`, `application`   |
 | `notification-policies.yml` | Routes alerts to the `discord` contact point; `repeat_interval: 24h` |
 | `contact-points.yml`        | Discord webhook receiver; `disableResolveMessage: true`              |
@@ -319,7 +319,7 @@ Provisioned from `../../deployment/monitoring/grafana/provisioning/alerting`.
 ### Alert rule groups
 
 | Group            | Folder         | Rules                                                                |
-| ---------------- | -------------- | -------------------------------------------------------------------- |
+|------------------|----------------|----------------------------------------------------------------------|
 | `infrastructure` | Infrastructure | `container-down`, `disk-usage-high`, `memory-usage-high`             |
 | `scraper`        | Infrastructure | `scraper-jobs-failed` — `bullmq_queue_depth{queue=~"Scraper.*"} > 0` |
 | `application`    | Application    | `api-error-rate-high` (5xx > 5%), `api-p99-latency-high` (p99 > 2 s) |
@@ -353,7 +353,7 @@ annotations. `disableResolveMessage: true` suppresses the automatic "resolved" m
     curl -s 'http://localhost:3100/loki/api/v1/labels' | jq
     ```
 
-    If `data` is empty, no logs have been ingested.
+   If `data` is empty, no logs have been ingested.
 
 3. Check Alloy can reach Loki:
 
@@ -368,7 +368,7 @@ annotations. `disableResolveMessage: true` suppresses the automatic "resolved" m
       wget -O- 'http://localhost:12345/api/v0/component/discovery.docker.containers/info'
     ```
 
-    Alloy's HTTP UI is also available at `alloy:12345` from within `monitoring-network`.
+   Alloy's HTTP UI is also available at `alloy:12345` from within `monitoring-network`.
 
 5. Check Prometheus Docker SD targets:
 
@@ -378,7 +378,7 @@ annotations. `disableResolveMessage: true` suppresses the automatic "resolved" m
     # Or check the Prometheus UI → Status → Targets
     ```
 
-    To test reachability from inside Prometheus, exec into the container and curl a discovered IP:
+   To test reachability from inside Prometheus, exec into the container and curl a discovered IP:
 
     ```bash
     docker compose -p global exec prometheus \

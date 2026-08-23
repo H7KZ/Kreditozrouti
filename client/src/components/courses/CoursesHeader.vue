@@ -64,7 +64,12 @@ function handleClearTimetable() {
 					{{ studyPlanInfo.titles.length > 0 ? studyPlanInfo.titles.join(' / ') : $t('pages.courses.studyPlanFallback') }}
 				</div>
 				<div class="text-[11px] text-(--insis-text-3)">
-					{{ $t('pages.courses.searchingForCourses', { semester: coursesInfo.semester, year: coursesInfo.years?.join('/') }) }}
+					{{
+						$t('pages.courses.searchingForCourses', {
+							semester: coursesInfo.semester,
+							year: coursesInfo.years?.join('/')
+						})
+					}}
 				</div>
 			</div>
 		</div>

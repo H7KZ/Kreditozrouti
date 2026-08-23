@@ -12,7 +12,8 @@ Kreditozrouti/
 └── deployment/   # Docker Compose files + deploy.sh
 ```
 
-Each of `../../api`, `../../client`, `../../scraper`, and `shared/` is an independent npm package with its own `../../package.json` and
+Each of `../../api`, `../../client`, `../../scraper`, and `shared/` is an independent npm package with its own
+`../../package.json` and
 `tsconfig.json`. There is no npm workspace hoisting of runtime code — each package installs its own dependencies.
 
 ---
@@ -20,7 +21,7 @@ Each of `../../api`, `../../client`, `../../scraper`, and `shared/` is an indepe
 ## Package Roles
 
 | Package      | Language         | Runtime          | Purpose                                   |
-| ------------ | ---------------- | ---------------- | ----------------------------------------- |
+|--------------|------------------|------------------|-------------------------------------------|
 | `api`        | TypeScript       | Node.js          | HTTP server, DB writes, job orchestration |
 | `client`     | TypeScript + Vue | Browser / Nginx  | User interface                            |
 | `scraper`    | TypeScript       | Node.js          | BullMQ worker, InSIS HTTP scraping        |
@@ -65,14 +66,14 @@ Each package configures `tsconfig.json` `paths` so imports are clean:
 ### api/
 
 | Alias       | Resolves to   |
-| ----------- | ------------- |
+|-------------|---------------|
 | `@api/*`    | `./src/*`     |
 | `@shared/*` | `../shared/*` |
 
 ### client/
 
 | Alias       | Resolves to    | Note                                   |
-| ----------- | -------------- | -------------------------------------- |
+|-------------|----------------|----------------------------------------|
 | `@client/*` | `./src/*`      | —                                      |
 | `@api/*`    | `../api/src/*` | Types only — never import runtime code |
 | `@shared/*` | `../shared/*`  | —                                      |
@@ -80,7 +81,7 @@ Each package configures `tsconfig.json` `paths` so imports are clean:
 ### scraper/
 
 | Alias        | Resolves to   |
-| ------------ | ------------- |
+|--------------|---------------|
 | `@scraper/*` | `./src/*`     |
 | `@shared/*`  | `../shared/*` |
 

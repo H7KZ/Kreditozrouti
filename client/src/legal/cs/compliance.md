@@ -19,7 +19,8 @@ odpověď: ano, je plně v souladu. Níže najdete podrobný rozbor.
 **Přehled souladu**
 
 - SR 05/2018 (Ochrana osobních údajů): **V SOULADU** - Osobní údaje nejsou zpracovávány
-- PR 02/2023 (Pravidla IS): **V SOULADU** - Přístup pouze pro čtení k veřejným datům s opatřeními pro omezení zátěže (viz §4.3)
+- PR 02/2023 (Pravidla IS): **V SOULADU** - Přístup pouze pro čtení k veřejným datům s opatřeními pro omezení zátěže
+  (viz §4.3)
 - PR 04/2019 (Pravidla webhostingu): **NEAPLIKOVATELNÉ** - Vlastní infrastruktura
 - Studijní a zkušební řád: **V SOULADU** - Podporuje vyhledávání předmětů studenty
 
@@ -54,16 +55,16 @@ Kreditožrouti zobrazuje jména vyučujících výhradně v kontextu výukové �
 Směrnice rektora 05/2018 (Ochrana a zpracování osobních údajů) implementuje požadavky GDPR v rámci VŠE. Tato sekce
 mapuje každý relevantní článek na implementaci Kreditožrouti.
 
-| Článek    | Požadavek                                                            | Stav | Implementace                                                                                                                                                              |
-| --------- | -------------------------------------------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Čl. 1(2)  | Působnost: zpracování zaměstnanci/studenty při plnění úkolů          | ✅   | Kreditožrouti zpracovává pouze veřejně dostupná data katalogu předmětů. Osobní údaje studentů ani zaměstnanců nejsou sbírány, ukládány ani zpracovávány.                  |
-| Čl. 13    | Registrace zpracování u Pověřence (DPO)                              | N/A  | Žádná činnost zpracování osobních údajů neexistuje. Aplikace zpracovává veřejně dostupná institucionální data (metadata předmětů), nikoli osobní údaje dle GDPR čl. 4(1). |
-| Čl. 14(1) | Vyžadován právní základ zpracování                                   | ✅   | Primární data (předměty, rozvrhy, plány) jsou institucionální, nikoli osobní. Jména vyučujících jsou zveřejněna dle čl. 19(2)(n).                                         |
-| Čl. 16    | Zvláštní kategorie (biometrie, zdraví) vyžadují výslovný souhlas     | N/A  | Žádná data zvláštní kategorie nejsou sbírána. Aplikace nemá uživatelské účty ani biometrická či zdravotní data.                                                           |
-| Čl. 17    | Transparentní informování subjektů údajů                             | ✅   | Vyučující jsou zobrazeni pouze v kontextu svých veřejně uvedených výukových činností. Na aplikaci je zobrazeno prohlášení.                                                |
-| Čl. 19(2) | Zveřejnitelné údaje: jméno, tituly, pozice, výuka                    | ✅   | Zobrazeno je pouze jméno vyučujícího jako atribut předmětu, což je výslovně v povoleném rozsahu (písm. n: výuková činnost na VŠE).                                        |
-| Čl. 20    | Sdílení dat třetím stranám vyžaduje oznámení DPO                     | N/A  | Kreditožrouti nesdílí žádná data s třetími stranami. Analytická instance (Umami) i collector pro hlášení chyb (Grafana Faro) běží self-hosted na stejném serveru - žádná data se nepřenáší externím zpracovatelům. Viz oddíl 7.          |
-| Čl. 21    | Bezpečnostní opatření: šifrování, řízení přístupu, hlášení incidentů | ✅   | HTTPS přes Traefik/Let's Encrypt. Tajemství v env proměnných. Parametrizované dotazy. Bearer token autentizace pro admin endpointy. Grafana Faro hlášení chyb (pouze chyby + Web Vitals, sledování sezení vypnuto, self-hosted collector). Viz oddíl 7.              |
+| Článek    | Požadavek                                                            | Stav | Implementace                                                                                                                                                                                                                                            |
+| --------- | -------------------------------------------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Čl. 1(2)  | Působnost: zpracování zaměstnanci/studenty při plnění úkolů          | ✅   | Kreditožrouti zpracovává pouze veřejně dostupná data katalogu předmětů. Osobní údaje studentů ani zaměstnanců nejsou sbírány, ukládány ani zpracovávány.                                                                                                |
+| Čl. 13    | Registrace zpracování u Pověřence (DPO)                              | N/A  | Žádná činnost zpracování osobních údajů neexistuje. Aplikace zpracovává veřejně dostupná institucionální data (metadata předmětů), nikoli osobní údaje dle GDPR čl. 4(1).                                                                               |
+| Čl. 14(1) | Vyžadován právní základ zpracování                                   | ✅   | Primární data (předměty, rozvrhy, plány) jsou institucionální, nikoli osobní. Jména vyučujících jsou zveřejněna dle čl. 19(2)(n).                                                                                                                       |
+| Čl. 16    | Zvláštní kategorie (biometrie, zdraví) vyžadují výslovný souhlas     | N/A  | Žádná data zvláštní kategorie nejsou sbírána. Aplikace nemá uživatelské účty ani biometrická či zdravotní data.                                                                                                                                         |
+| Čl. 17    | Transparentní informování subjektů údajů                             | ✅   | Vyučující jsou zobrazeni pouze v kontextu svých veřejně uvedených výukových činností. Na aplikaci je zobrazeno prohlášení.                                                                                                                              |
+| Čl. 19(2) | Zveřejnitelné údaje: jméno, tituly, pozice, výuka                    | ✅   | Zobrazeno je pouze jméno vyučujícího jako atribut předmětu, což je výslovně v povoleném rozsahu (písm. n: výuková činnost na VŠE).                                                                                                                      |
+| Čl. 20    | Sdílení dat třetím stranám vyžaduje oznámení DPO                     | N/A  | Kreditožrouti nesdílí žádná data s třetími stranami. Analytická instance (Umami) i collector pro hlášení chyb (Grafana Faro) běží self-hosted na stejném serveru - žádná data se nepřenáší externím zpracovatelům. Viz oddíl 7.                         |
+| Čl. 21    | Bezpečnostní opatření: šifrování, řízení přístupu, hlášení incidentů | ✅   | HTTPS přes Traefik/Let's Encrypt. Tajemství v env proměnných. Parametrizované dotazy. Bearer token autentizace pro admin endpointy. Grafana Faro hlášení chyb (pouze chyby + Web Vitals, sledování sezení vypnuto, self-hosted collector). Viz oddíl 7. |
 
 ## 4. PR 02/2023 - Pravidla IS
 
@@ -79,16 +80,16 @@ relevantní, protože aplikace pracuje s daty InSIS. Ta jsou analyzována níže
 
 ### 4.2 Relevantní ustanovení
 
-| Článek      | Požadavek                                                     | Stav         | Pozice Kreditožrouti                                                                                                                                                 |
-| ----------- | ------------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Čl. 3(5)    | VŠE vede registr svých IS, spravovaný Manažerem KB            | N/A          | Kreditožrouti není IS VŠE a nepodléhá proto registraci. Jedná se o studentský projekt na externí infrastruktuře.                                                     |
-| Čl. 8(2)    | Uživatelé musí nakládat s daty IS v souladu s jejich účelem   | ✅           | Veškerá data z InSIS se používají výhradně pro vyhledávání předmětů a plánování rozvrhů - tedy pro tentýž účel, pro který jsou veřejně dostupná v InSIS.             |
-| Čl. 9A.8(1) | Uživatelé nesmí svévolně měnit, vkládat či mazat data v InSIS | ✅           | Kreditožrouti provádí operace POUZE PRO ČTENÍ na veřejně přístupných stránkách InSIS. Do InSIS se nic nezapisuje.                                                    |
+| Článek      | Požadavek                                                     | Stav        | Pozice Kreditožrouti                                                                                                                                                                                                               |
+| ----------- | ------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Čl. 3(5)    | VŠE vede registr svých IS, spravovaný Manažerem KB            | N/A         | Kreditožrouti není IS VŠE a nepodléhá proto registraci. Jedná se o studentský projekt na externí infrastruktuře.                                                                                                                   |
+| Čl. 8(2)    | Uživatelé musí nakládat s daty IS v souladu s jejich účelem   | ✅          | Veškerá data z InSIS se používají výhradně pro vyhledávání předmětů a plánování rozvrhů - tedy pro tentýž účel, pro který jsou veřejně dostupná v InSIS.                                                                           |
+| Čl. 9A.8(1) | Uživatelé nesmí svévolně měnit, vkládat či mazat data v InSIS | ✅          | Kreditožrouti provádí operace POUZE PRO ČTENÍ na veřejně přístupných stránkách InSIS. Do InSIS se nic nezapisuje.                                                                                                                  |
 | Čl. 9A.8(2) | Automatizované provádění funkcí InSIS vyžaduje schválení      | ⚠️ Viz §4.3 | Scraper pracuje jen pro čtení nad veřejně přístupným katalogem s rate limitingem, deduplikací a plánovanými běhy mimo špičku (1–2 hod.). Pro tento projekt není doloženo žádné formální schválení řídicího výboru InSIS; viz §4.3. |
 
 ### 4.3 Schválení řídicím výborem InSIS - stav
 
-Čl. 9A.8(2) stanoví, že automatizované provádění funkcí InSIS vyžaduje schválení. Kreditožrouti **nezískal** doložené
+Čl. 9A.8 (2) stanoví, že automatizované provádění funkcí InSIS vyžaduje schválení. Kreditožrouti **nezískal** doložené
 schválení řídicího výboru InSIS pro tento projekt. Netvrdíme, že takové schválení existuje.
 
 Naším stanoviskem je, že provoz je omezen na přístup pouze pro čtení k veřejně přístupnému katalogu předmětů (bez
@@ -152,15 +153,15 @@ konfliktu, dokončení průvodce). Žádné z těchto dat neumožňuje identifik
 Kromě Umami provozuje Kreditožrouti **Grafana Faro** výhradně pro hlášení chyb aplikace. Je záměrně nastaven tak, aby se
 vyhnul sledování chování a identifikátorům, které by sbíral plnohodnotný Real User Monitoring:
 
-| Vlastnost                  | Detail                                                                        |
-| -------------------------- | ----------------------------------------------------------------------------- |
-| Co se zachytává            | Chyby JavaScriptu (zpráva + stack trace) a metriky výkonu Web Vitals           |
-| Sledování sezení           | Vypnuto - v prohlížeči se neukládá žádný trvalý ani pseudonymní identifikátor   |
-| Zachytávání konzole        | Vypnuto - žádný výstup konzole se nepřenáší                                     |
-| Sledování chování          | Žádné - žádná instrumentace zobrazení stránek, kliknutí ani navigace           |
-| Cookies                    | Nepoužívají se                                                                 |
-| Collector                  | Self-hosted na stejné infrastruktuře - nikoli Grafana Cloud, žádný externí zpracovatel |
-| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) - stabilita a bezpečnost aplikace       |
+| Vlastnost            | Detail                                                                                 |
+| -------------------- | -------------------------------------------------------------------------------------- |
+| Co se zachytává      | Chyby JavaScriptu (zpráva + stack trace) a metriky výkonu Web Vitals                   |
+| Sledování sezení     | Vypnuto - v prohlížeči se neukládá žádný trvalý ani pseudonymní identifikátor          |
+| Zachytávání konzole  | Vypnuto - žádný výstup konzole se nepřenáší                                            |
+| Sledování chování    | Žádné - žádná instrumentace zobrazení stránek, kliknutí ani navigace                   |
+| Cookies              | Nepoužívají se                                                                         |
+| Collector            | Self-hosted na stejné infrastruktuře - nikoli Grafana Cloud, žádný externí zpracovatel |
+| Právní základ (GDPR) | Oprávněný zájem (čl. 6 odst. 1 písm. f) - stabilita a bezpečnost aplikace              |
 
 Protože Faro neukládá žádný identifikátor a neprovádí sledování chování, nepodléhá požadavku na souhlas dle ePrivacy čl.
 5 odst. 3 a nevyžaduje souhlasovou lištu. To je v souladu s oddílem 3 (čl. 20): žádná data se nepřenáší externím třetím

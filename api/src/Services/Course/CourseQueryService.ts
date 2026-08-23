@@ -27,7 +27,14 @@ export class CourseQueryService {
 	 * @returns {Promise<{ courses: CourseWithRelations[]; total: number }>} Courses enriched with
 	 *   faculty, units (with slots), assessments, and study plan membership, plus total match count.
 	 */
-	static async getCoursesWithRelations(filters: Partial<CoursesFilter>, limit = 20, offset = 0): Promise<{ courses: CourseWithRelations[]; total: number }> {
+	static async getCoursesWithRelations(
+		filters: Partial<CoursesFilter>,
+		limit = 20,
+		offset = 0
+	): Promise<{
+		courses: CourseWithRelations[]
+		total: number
+	}> {
 		if (limit <= 0) return { courses: [], total: 0 }
 
 		// 1. Count total matching courses

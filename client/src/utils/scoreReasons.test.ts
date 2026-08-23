@@ -21,9 +21,7 @@ describe('formatScoreReasons', () => {
 
 	it('formats gap minutes of an hour or more as "Xh Ym" via time.hoursMinutes', () => {
 		const reasons: ScoreReason[] = [{ kind: 'gaps', minutes: 90 }]
-		expect(formatScoreReasons(reasons, t)).toEqual([
-			'components.optimizer.reasons.gaps|{"duration":"time.hoursMinutes|{\\"hours\\":1,\\"minutes\\":30}"}'
-		])
+		expect(formatScoreReasons(reasons, t)).toEqual(['components.optimizer.reasons.gaps|{"duration":"time.hoursMinutes|{\\"hours\\":1,\\"minutes\\":30}"}'])
 	})
 
 	it('passes counts through for off-preferred-days, campus conflicts and long blocks', () => {
@@ -59,15 +57,20 @@ describe('formatReasonsInline', () => {
 		return {
 			units: [],
 			changed_unit_ids: [],
-			score: { campus_conflicts: 0, gap_minutes: 0, off_preferred_days: 0, long_study_blocks: 0, total: 0, ...score }
+			score: {
+				campus_conflicts: 0,
+				gap_minutes: 0,
+				off_preferred_days: 0,
+				long_study_blocks: 0,
+				total: 0,
+				...score
+			}
 		}
 	}
 
 	it('derives reasons from the candidate score and joins them with " · "', () => {
 		const out = formatReasonsInline(candidate({ gap_minutes: 40, campus_conflicts: 1, total: 70 }), t)
-		expect(out).toBe(
-			'components.optimizer.reasons.gaps|{"duration":"40 time.minutes"} · components.optimizer.reasons.campusConflict|{"count":1}'
-		)
+		expect(out).toBe('components.optimizer.reasons.gaps|{"duration":"40 time.minutes"} · components.optimizer.reasons.campusConflict|{"count":1}')
 	})
 
 	it('renders a single perfect reason with no separator for a perfect candidate', () => {

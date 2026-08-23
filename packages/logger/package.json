@@ -19,7 +19,7 @@
     "pino": ">=10"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.2.0",
     "pino": "^10.3.1",
     "tsup": "^8.5.1",
     "typescript": "~5.8.3"

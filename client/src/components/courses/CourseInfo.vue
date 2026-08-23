@@ -40,13 +40,39 @@ const syllabusFields = computed((): SyllabusField[] => {
 		{ key: 'outcomes', labelKey: 'syllabusLearningOutcomes', value: pick(c.learning_outcomes, c.learning_outcomes_en) },
 		{ key: 'contents', labelKey: 'syllabusCourseContents', value: pick(c.course_contents, c.course_contents_en) },
 		{ key: 'prereqs', labelKey: 'syllabusPrerequisites', value: pick(c.prerequisites, c.prerequisites_en) },
-		{ key: 'litReq', labelKey: 'syllabusLiteratureRequired', value: pick(c.literature_required, c.literature_required_en) },
-		{ key: 'litRec', labelKey: 'syllabusLiteratureRecommended', value: pick(c.literature_recommended, c.literature_recommended_en) },
-		{ key: 'special', labelKey: 'syllabusSpecialRequirements', value: pick(c.special_requirements, c.special_requirements_en) },
-		{ key: 'recProg', labelKey: 'syllabusRecommendedProgrammes', value: pick(c.recommended_programmes, c.recommended_programmes_en) },
-		{ key: 'workExp', labelKey: 'syllabusRequiredWorkExperience', value: pick(c.required_work_experience, c.required_work_experience_en) }
+		{
+			key: 'litReq',
+			labelKey: 'syllabusLiteratureRequired',
+			value: pick(c.literature_required, c.literature_required_en)
+		},
+		{
+			key: 'litRec',
+			labelKey: 'syllabusLiteratureRecommended',
+			value: pick(c.literature_recommended, c.literature_recommended_en)
+		},
+		{
+			key: 'special',
+			labelKey: 'syllabusSpecialRequirements',
+			value: pick(c.special_requirements, c.special_requirements_en)
+		},
+		{
+			key: 'recProg',
+			labelKey: 'syllabusRecommendedProgrammes',
+			value: pick(c.recommended_programmes, c.recommended_programmes_en)
+		},
+		{
+			key: 'workExp',
+			labelKey: 'syllabusRequiredWorkExperience',
+			value: pick(c.required_work_experience, c.required_work_experience_en)
+		}
 	]
-	return rows.filter(r => r.value).map(r => ({ key: r.key, label: t(`components.courses.CourseRowExpanded.${r.labelKey}`), html: renderMarkdown(r.value!) }))
+	return rows
+		.filter(r => r.value)
+		.map(r => ({
+			key: r.key,
+			label: t(`components.courses.CourseRowExpanded.${r.labelKey}`),
+			html: renderMarkdown(r.value!)
+		}))
 })
 
 const hasPrerequisiteChips = computed(
@@ -147,7 +173,9 @@ function handleToggleCompleted() {
 
 		<!-- Assessments — grading breakdown -->
 		<template v-if="course.assessments?.length">
-			<p class="mb-1.5 text-xs font-medium text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.assessments') }}</p>
+			<p class="mb-1.5 text-xs font-medium text-(--insis-gray-500)">
+				{{ $t('components.courses.CourseRowExpanded.assessments') }}
+			</p>
 			<ul class="mb-4 space-y-1 text-sm">
 				<li v-for="assessment in sortedAssessments" :key="assessment.id" class="flex items-center gap-2">
 					<span class="w-9 shrink-0 text-right font-medium text-(--insis-gray-800)">{{ assessment.weight }}%</span>
@@ -159,7 +187,9 @@ function handleToggleCompleted() {
 		<!-- Prerequisite chips -->
 		<div v-if="hasPrerequisiteChips" class="mb-4 space-y-2">
 			<template v-if="course.blocked_by_course_idents?.length">
-				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.prereqBlockedBy') }}</p>
+				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">
+					{{ $t('components.courses.CourseRowExpanded.prereqBlockedBy') }}
+				</p>
 				<div class="flex flex-wrap gap-1.5">
 					<button
 						v-for="ident in course.blocked_by_course_idents"
@@ -173,7 +203,9 @@ function handleToggleCompleted() {
 				</div>
 			</template>
 			<template v-if="course.excluded_after_course_idents?.length">
-				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.prereqExcludedAfter') }}</p>
+				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">
+					{{ $t('components.courses.CourseRowExpanded.prereqExcludedAfter') }}
+				</p>
 				<div class="flex flex-wrap gap-1.5">
 					<button
 						v-for="ident in course.excluded_after_course_idents"
@@ -187,7 +219,9 @@ function handleToggleCompleted() {
 				</div>
 			</template>
 			<template v-if="course.concurrent_exclusion_idents?.length">
-				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.prereqConcurrent') }}</p>
+				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">
+					{{ $t('components.courses.CourseRowExpanded.prereqConcurrent') }}
+				</p>
 				<div class="flex flex-wrap gap-1.5">
 					<span
 						v-for="ident in course.concurrent_exclusion_idents"
@@ -199,7 +233,9 @@ function handleToggleCompleted() {
 				</div>
 			</template>
 			<template v-if="course.recommended_before_course_idents?.length">
-				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ $t('components.courses.CourseRowExpanded.prereqRecommendedBefore') }}</p>
+				<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">
+					{{ $t('components.courses.CourseRowExpanded.prereqRecommendedBefore') }}
+				</p>
 				<div class="flex flex-wrap gap-1.5">
 					<button
 						v-for="ident in course.recommended_before_course_idents"

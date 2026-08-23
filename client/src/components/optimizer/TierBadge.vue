@@ -18,12 +18,7 @@ const TIER_CLASS: Record<ScoreTier, string> = {
 </script>
 
 <template>
-	<span
-		:class="[
-			'inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase',
-			TIER_CLASS[tier]
-		]"
-	>
+	<span :class="['inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase', TIER_CLASS[tier]]">
 		{{ t(`components.optimizer.tier.${tier}`) }}
 	</span>
 </template>

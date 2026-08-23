@@ -40,6 +40,7 @@ export function parsePrerequisites(prerequisites: string | null, recommendedProg
 			nextClauseStart: number
 			key: keyof ParsedPrerequisites
 		}
+
 		const clauses: Clause[] = []
 
 		CLAUSE_RE.lastIndex = 0

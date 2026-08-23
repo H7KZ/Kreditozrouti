@@ -97,7 +97,7 @@ When the client triggers a course scrape (e.g., course page first load):
 ## Data Encoding Rules
 
 | Concept            | Encoding                         | Example                              |
-| ------------------ | -------------------------------- | ------------------------------------ |
+|--------------------|----------------------------------|--------------------------------------|
 | Times              | Minutes from midnight (0–1439)   | `08:00` → `480`                      |
 | Languages          | Pipe-delimited string in DB      | `"CS\|EN"` → parsed in service layer |
 | Lecturers          | Pipe-delimited string in DB      | `"Novák J.\|Malá K."`                |

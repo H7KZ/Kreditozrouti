@@ -36,11 +36,16 @@ interface Props {
 interface Emits {
 	/** Toggle selection of a study plan */
 	(e: 'toggle', id: number, ident: string, title: string, year: number | null, semester: string | null): void
+
 	/** Select single study plan (for quick selection) */
 	(e: 'select', id: number, ident: string, title: string, year: number | null, semester: string | null): void
+
 	(e: 'setLevelFilter', levels: string[]): void
+
 	(e: 'setTitleSearch', search: string): void
+
 	(e: 'back'): void
+
 	(e: 'complete'): void
 }
 

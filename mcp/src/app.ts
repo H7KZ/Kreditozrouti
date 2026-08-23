@@ -1,4 +1,4 @@
-﻿import type { Express, NextFunction, Request, Response } from 'express'
+import type { Express, NextFunction, Request, Response } from 'express'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
 import express from 'express'
 import { rateLimit } from 'express-rate-limit'
@@ -36,7 +36,14 @@ const optimizerLimiter = rateLimit({
 	// Apply the cap whenever an optimizer call is present - including inside a JSON-RPC batch
 	// (array body), which would otherwise leave params undefined and bypass the limit.
 	skip: req => {
-		const isOptimizer = (msg: unknown): boolean => (msg as { params?: { name?: string } } | undefined)?.params?.name === 'vse_optimize_timetable'
+		const isOptimizer = (msg: unknown): boolean =>
+			(
+				msg as
+					| {
+							params?: { name?: string }
+					  }
+					| undefined
+			)?.params?.name === 'vse_optimize_timetable'
 		const body: unknown = req.body
 		return Array.isArray(body) ? !body.some(isOptimizer) : !isOptimizer(body)
 	}
@@ -55,7 +62,10 @@ function requireBearer(req: Request, res: Response, next: NextFunction): void {
 		return
 	}
 	const token = auth.slice(7)
-	const payload = verifyAccessToken(token, Config.jwtSecret, { issuer: Config.baseUrl, audience: `${Config.baseUrl}/mcp` })
+	const payload = verifyAccessToken(token, Config.jwtSecret, {
+		issuer: Config.baseUrl,
+		audience: `${Config.baseUrl}/mcp`
+	})
 	if (!payload) {
 		res.status(401)
 			.set('WWW-Authenticate', `Bearer realm="${Config.baseUrl}", error="invalid_token"`)

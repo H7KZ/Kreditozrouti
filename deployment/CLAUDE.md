@@ -92,8 +92,8 @@ working directory doesn't matter; only the script's own location does.
 
 ## Key Docs
 
-| Topic                                          | Doc                                                           |
-|------------------------------------------------|---------------------------------------------------------------|
+| Topic                                          | Doc                                                       |
+|------------------------------------------------|-----------------------------------------------------------|
 | Docker multi-stage builds, GHCR registry       | [DOCKER.md](../docs/deployment/DOCKER.md)                 |
 | GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                     |
 | Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md) |

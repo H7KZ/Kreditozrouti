@@ -41,7 +41,14 @@ export function computeFitScore(course: CourseWithRelationsDTO, timetableUnits: 
 				timeTo: slot.time_to
 			}
 
-			const conflicts = timetableUnits.some(tu => unitsConflict(candidate, { day: tu.day, date: tu.date, timeFrom: tu.timeFrom, timeTo: tu.timeTo }))
+			const conflicts = timetableUnits.some(tu =>
+				unitsConflict(candidate, {
+					day: tu.day,
+					date: tu.date,
+					timeFrom: tu.timeFrom,
+					timeTo: tu.timeTo
+				})
+			)
 			if (conflicts) continue
 
 			const slotDay = slot.day as Day | undefined

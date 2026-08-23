@@ -32,7 +32,10 @@ export function scraperRateLimit() {
 			await Promise.all([ipLimiter.consume(ip), courseLimiter.consume(courseId)])
 			next()
 		} catch {
-			res.status(429).json({ type: 'RATE_LIMITED', message: 'Too many scrape requests. Please wait before trying again.' })
+			res.status(429).json({
+				type: 'RATE_LIMITED',
+				message: 'Too many scrape requests. Please wait before trying again.'
+			})
 		}
 	}
 }
@@ -45,7 +48,10 @@ export function optimizeRateLimit() {
 			await optimizeLimiter.consume(ip)
 			next()
 		} catch {
-			res.status(429).json({ type: 'RATE_LIMITED', message: 'Too many optimize requests. Please wait before trying again.' })
+			res.status(429).json({
+				type: 'RATE_LIMITED',
+				message: 'Too many optimize requests. Please wait before trying again.'
+			})
 		}
 	}
 }

@@ -78,18 +78,33 @@ export const useTimetableStore = defineStore('timetable', () => {
 				const key = `d:${u.day}:${u.timeFrom}:${u.timeTo}`
 				if (!seenDayTimes.has(key)) {
 					seenDayTimes.add(key)
-					entries.push({ slot_id: u.slotId, day: u.day, time_from: u.timeFrom, time_to: u.timeTo } as TimeSelection)
+					entries.push({
+						slot_id: u.slotId,
+						day: u.day,
+						time_from: u.timeFrom,
+						time_to: u.timeTo
+					} as TimeSelection)
 				}
 			}
 
 			if (u.date) {
-				entries.push({ slot_id: u.slotId, date: new Date(u.date), time_from: u.timeFrom, time_to: u.timeTo } as TimeSelection)
+				entries.push({
+					slot_id: u.slotId,
+					date: new Date(u.date),
+					time_from: u.timeFrom,
+					time_to: u.timeTo
+				} as TimeSelection)
 				const dayFromDate = getDayFromDate(u.date)
 				if (dayFromDate) {
 					const key = `d:${dayFromDate}:${u.timeFrom}:${u.timeTo}`
 					if (!seenDayTimes.has(key)) {
 						seenDayTimes.add(key)
-						entries.push({ slot_id: u.slotId, day: dayFromDate, time_from: u.timeFrom, time_to: u.timeTo } as TimeSelection)
+						entries.push({
+							slot_id: u.slotId,
+							day: dayFromDate,
+							time_from: u.timeFrom,
+							time_to: u.timeTo
+						} as TimeSelection)
 					}
 				}
 			}
@@ -272,7 +287,12 @@ export const useTimetableStore = defineStore('timetable', () => {
 		const result: SlotConflictInfo[] = []
 		for (const slot of unit.slots ?? []) {
 			const slotConflicts = getSlotConflicts(slot as CourseUnitSlotDTO)
-			if (slotConflicts.length > 0) result.push({ slotId: (slot as CourseUnitSlotDTO).id, conflictingUnits: slotConflicts, conflictType: 'hard' })
+			if (slotConflicts.length > 0)
+				result.push({
+					slotId: (slot as CourseUnitSlotDTO).id,
+					conflictingUnits: slotConflicts,
+					conflictType: 'hard'
+				})
 		}
 		return result
 	}
@@ -281,7 +301,12 @@ export const useTimetableStore = defineStore('timetable', () => {
 		const result: SlotConflictInfo[] = []
 		for (const slot of unit.slots ?? []) {
 			const slotConflicts = getSlotCampusConflicts(slot as CourseUnitSlotDTO)
-			if (slotConflicts.length > 0) result.push({ slotId: (slot as CourseUnitSlotDTO).id, conflictingUnits: slotConflicts, conflictType: 'campus' })
+			if (slotConflicts.length > 0)
+				result.push({
+					slotId: (slot as CourseUnitSlotDTO).id,
+					conflictingUnits: slotConflicts,
+					conflictType: 'campus'
+				})
 		}
 		return result
 	}

@@ -15,7 +15,14 @@ export async function withDeadlockRetry<T>(fn: () => Promise<T>, maxAttempts = 3
 		try {
 			return await fn()
 		} catch (error) {
-			const isDeadlock = typeof error === 'object' && error !== null && (error as { errno?: number }).errno === DEADLOCK_ERRNO
+			const isDeadlock =
+				typeof error === 'object' &&
+				error !== null &&
+				(
+					error as {
+						errno?: number
+					}
+				).errno === DEADLOCK_ERRNO
 			if (!isDeadlock || attempt === maxAttempts - 1) throw error
 			await new Promise<void>(resolve => setTimeout(resolve, 100 * 2 ** attempt))
 		}

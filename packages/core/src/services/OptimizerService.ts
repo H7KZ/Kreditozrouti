@@ -1,4 +1,4 @@
-﻿import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '../domain/optimizer.js'
+import type { ScoreBreakdown, SolverAssignment, SolverSlotCandidate, SolverVariable } from '../domain/optimizer.js'
 import type {
 	Database,
 	ExploreResultDTO,
@@ -142,7 +142,10 @@ export default class OptimizerService {
 		courseById: Map<number, MCPCourse>
 	): OptimizerCandidateDTO[] {
 		if (assignments.length === 0) return []
-		const scored = assignments.map(assignment => ({ assignment, score: scoreCandidate(assignment, constraints, DEFAULT_WEIGHTS) }))
+		const scored = assignments.map(assignment => ({
+			assignment,
+			score: scoreCandidate(assignment, constraints, DEFAULT_WEIGHTS)
+		}))
 		scored.sort((a, b) => a.score.total - b.score.total)
 		const kept = diversityFilter(
 			scored.map(s => s.assignment),
@@ -192,7 +195,12 @@ export default class OptimizerService {
 			dropped_course_title: r.course.title ?? r.course.title_en ?? r.course.title_cs ?? r.course.ident
 		}))
 
-		return { full_candidates: fullCandidates, removal_candidates: removalCandidates, partial: partial1 || anyPartial2, pool_truncated: poolTruncated }
+		return {
+			full_candidates: fullCandidates,
+			removal_candidates: removalCandidates,
+			partial: partial1 || anyPartial2,
+			pool_truncated: poolTruncated
+		}
 	}
 
 	private static runExplore(
@@ -232,6 +240,12 @@ export default class OptimizerService {
 			return a.best_candidate.score.total - b.best_candidate.score.total
 		})
 
-		return { full_candidates: [], removal_candidates: [], partial: false, pool_truncated: poolTruncated, explore_results: exploreResults }
+		return {
+			full_candidates: [],
+			removal_candidates: [],
+			partial: false,
+			pool_truncated: poolTruncated,
+			explore_results: exploreResults
+		}
 	}
 }

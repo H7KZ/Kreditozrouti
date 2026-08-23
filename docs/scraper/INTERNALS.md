@@ -172,7 +172,7 @@ This forces callers to handle both cases explicitly rather than wrapping every c
 **Three methods:**
 
 | Method               | Returns                    | Use case                                         |
-| -------------------- | -------------------------- | ------------------------------------------------ |
+|----------------------|----------------------------|--------------------------------------------------|
 | `get<T>(url)`        | `HttpResponse<T>`          | Single, important fetch (check `result.success`) |
 | `post<T>(url, data)` | `HttpResponse<T>`          | Search form submission                           |
 | `getSilent<T>(url)`  | `AxiosResponse<T> \| null` | Bulk fetch where failures are silently skipped   |

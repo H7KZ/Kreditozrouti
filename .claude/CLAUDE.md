@@ -6,7 +6,8 @@ Do not use em dashes (--) in any file — use a plain hyphen (-) instead.
 
 ## Tests
 
-Do not write tests - not even when a spec, review, or acceptance criterion recommends them. If you think tests are warranted, ask first and I will decide whether and what to add. I write tests manually.
+Do not write tests - not even when a spec, review, or acceptance criterion recommends them. If you think tests are
+warranted, ask first and I will decide whether and what to add. I write tests manually.
 
 ## Token Discipline
 
@@ -111,14 +112,14 @@ docs/          VitePress docs site — user docs (en/cs) + dev docs at docs/dev/
 Package-specific docs (API, client, scraper, deployment, scripts) are listed in each package's `CLAUDE.md` Key Docs
 table. Cross-cutting docs:
 
-| Area         | Doc                                                                                                                                                                                                                                                                       |
-|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| User Guide   | [docs/dev/user/README.md](../docs/user/README.md) · [features](../docs/user/FEATURES.md) · [getting started](../docs/user/GETTING_STARTED.md)                                                                                                                 |
-| Domain       | [docs/dev/DOMAIN.md](../docs/DOMAIN.md) — glossary, architecture seams                                                                                                                                                                                                |
+| Area         | Doc                                                                                                                                                                                                                                                   |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| User Guide   | [docs/dev/user/README.md](../docs/user/README.md) · [features](../docs/user/FEATURES.md) · [getting started](../docs/user/GETTING_STARTED.md)                                                                                                         |
+| Domain       | [docs/dev/DOMAIN.md](../docs/DOMAIN.md) — glossary, architecture seams                                                                                                                                                                                |
 | Architecture | [docs/dev/ARCHITECTURE.md](../docs/ARCHITECTURE.md) · [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md) |
-| Engineering  | [docs/dev/ENGINEERING.md](../docs/ENGINEERING.md) · [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md)                                                                                                               |
-| Shared       | [docs/dev/shared/README.md](../docs/shared/README.md) · [domain](../docs/shared/DOMAIN.md) · [http](../docs/shared/HTTP.md) · [queue](../docs/shared/QUEUE.md)                                                                                            |
-| MCP          | [docs/dev/mcp/README.md](../docs/mcp/README.md) — tools, transport modes, env vars, Docker                                                                                                                                                                            |
+| Engineering  | [docs/dev/ENGINEERING.md](../docs/ENGINEERING.md) · [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md)                                                                                                       |
+| Shared       | [docs/dev/shared/README.md](../docs/shared/README.md) · [domain](../docs/shared/DOMAIN.md) · [http](../docs/shared/HTTP.md) · [queue](../docs/shared/QUEUE.md)                                                                                        |
+| MCP          | [docs/dev/mcp/README.md](../docs/mcp/README.md) — tools, transport modes, env vars, Docker                                                                                                                                                            |
 
 ---
 

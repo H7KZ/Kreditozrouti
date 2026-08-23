@@ -459,7 +459,7 @@ useSeoMeta({
 All Vite env vars must be prefixed with `VITE_`:
 
 | Variable                  | Default | Purpose                             |
-| ------------------------- | ------- | ----------------------------------- |
+|---------------------------|---------|-------------------------------------|
 | `VITE_API_URL`            | `/api`  | Axios baseURL                       |
 | `VITE_FARO_COLLECTOR_URL` | —       | Grafana Faro collector URL (opt-in) |
 
@@ -487,7 +487,7 @@ app.mount('#app')
 ### What is captured
 
 | Signal                       | Mechanism                                        |
-| ---------------------------- | ------------------------------------------------ |
+|------------------------------|--------------------------------------------------|
 | JS errors                    | `app.config.errorHandler`                        |
 | Unhandled promise rejections | `window.unhandledrejection` listener             |
 | Vue component errors         | forwarded through `app.config.errorHandler`      |

@@ -7,7 +7,9 @@ import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTabl
 import { buildSlotConflictConditions } from '@api/Utils/TimeConflict'
 
 type QueryBuilder = SelectQueryBuilder<
-	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & { spc1: Nullable<StudyPlanCourseTable> } & {
+	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & {
+		spc1: Nullable<StudyPlanCourseTable>
+	} & {
 		ca1: Nullable<CourseAssessmentTable>
 	} & {
 		fts: Nullable<{ fts_id: number; relevance_score: number }>
@@ -38,7 +40,7 @@ export class CourseFilterBuilder {
 		const needsStudyPlanJoin = this.requiresStudyPlanJoin(filters, ignore) || forceJoin.studyPlan
 		const needsAssessmentsJoin = (!!filters.assessment_methods?.length && ignore !== 'assessment_methods') || forceJoin.assessments
 
-		let query: QueryBuilder = mysql.selectFrom(`${CourseTable._table} as c1`) as QueryBuilder
+		let query: QueryBuilder = mysql.selectFrom(`${CourseTable._table} as c1`)
 
 		if (needsUnitsJoin || needsSlotsJoin) {
 			query = query.leftJoin(`${CourseUnitTable._table} as cu1`, 'c1.id', 'cu1.course_id')

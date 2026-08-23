@@ -57,7 +57,7 @@ Deploys the global Traefik reverse proxy. Reads its compose config from `../../d
 **Required environment variables:**
 
 | Variable                   | Description                                |
-| -------------------------- | ------------------------------------------ |
+|----------------------------|--------------------------------------------|
 | `DEPLOYMENT_PATH`          | Path to the deployment directory           |
 | `TRAEFIK_DOMAIN`           | Domain for the Traefik dashboard           |
 | `TRAEFIK_CREDENTIALS_PATH` | Path to htpasswd file for basic auth       |
@@ -88,7 +88,7 @@ Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy). Traefik must al
 **Required environment variables:**
 
 | Variable                 | Description                                     |
-| ------------------------ | ----------------------------------------------- |
+|--------------------------|-------------------------------------------------|
 | `DEPLOYMENT_PATH`        | Path to the deployment directory                |
 | `DOMAIN`                 | Public domain (used for Grafana + Faro routing) |
 | `GRAFANA_ADMIN_PASSWORD` | Grafana admin password                          |
@@ -119,7 +119,7 @@ Deploys self-hosted GitHub Actions runners. Runners auto-register to the reposit
 **Required environment variables:**
 
 | Variable              | Description                               |
-| --------------------- | ----------------------------------------- |
+|-----------------------|-------------------------------------------|
 | `GITHUB_REPO_URL`     | Full GitHub repository URL                |
 | `GITHUB_ACCESS_TOKEN` | GitHub personal access token (repo scope) |
 

@@ -36,7 +36,13 @@ export const mysql = new Kysely<Database>({
 	log(event) {
 		if (event.level === 'query') {
 			if (event.queryDurationMillis > 500) {
-				logger.warn({ duration_ms: event.queryDurationMillis, sql: event.query.sql.slice(0, 200) }, 'db.slow_query')
+				logger.warn(
+					{
+						duration_ms: event.queryDurationMillis,
+						sql: event.query.sql.slice(0, 200)
+					},
+					'db.slow_query'
+				)
 			}
 		} else if (event.level === 'error') {
 			if ((event.error as { sql: string }).sql.includes('idx_')) return

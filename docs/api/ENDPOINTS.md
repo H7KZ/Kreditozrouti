@@ -260,12 +260,13 @@ Docker network port.
 Metrics exposed:
 
 | Metric                          | Type      | Description                                           |
-| ------------------------------- | --------- | ----------------------------------------------------- |
+|---------------------------------|-----------|-------------------------------------------------------|
 | `http_requests_total`           | Counter   | Total HTTP requests, labelled by method/route/status  |
 | `http_request_duration_seconds` | Histogram | Request latency in seconds                            |
 | Default Node.js metrics         | Various   | Event loop lag, GC, memory, etc. (from `prom-client`) |
 
-**Implementation:** `../../api/src/metrics.ts` — uses `prom-client`. `metricsMiddleware` is applied globally; `metricsHandler`
+**Implementation:** `../../api/src/metrics.ts` — uses `prom-client`. `metricsMiddleware` is applied globally;
+`metricsHandler`
 is the `GET /metrics` route handler.
 
 ---
@@ -310,7 +311,7 @@ Opens an SSE stream that emits events as the scrape progresses.
 **SSE events:**
 
 | Event      | Payload                                   | When                      |
-| ---------- | ----------------------------------------- | ------------------------- |
+|------------|-------------------------------------------|---------------------------|
 | `progress` | `{ status: 'waiting' }`                   | Immediately on connection |
 | `complete` | `{ status: 'done', courseId, updatedAt }` | After DB sync completes   |
 | `error`    | `{ status: 'error', message }`            | On scrape failure         |

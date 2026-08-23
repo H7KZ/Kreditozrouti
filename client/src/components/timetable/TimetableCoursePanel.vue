@@ -76,7 +76,13 @@ watch(() => props.unit.courseId, fetchCourse, { immediate: true })
 
 function handleSearchInTimeslot() {
 	if (!props.unit.day) return
-	filtersStore.filters.include_times = [{ day: props.unit.day, time_from: props.unit.timeFrom, time_to: props.unit.timeTo }]
+	filtersStore.filters.include_times = [
+		{
+			day: props.unit.day,
+			time_from: props.unit.timeFrom,
+			time_to: props.unit.timeTo
+		}
+	]
 	filtersStore.filters.offset = 0
 	uiStore.switchToListView()
 	coursesStore.fetchCourses()

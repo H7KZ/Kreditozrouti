@@ -162,7 +162,7 @@ client/src/
 ## Path Aliases
 
 | Alias       | Resolves to    | Notes                        |
-| ----------- | -------------- | ---------------------------- |
+|-------------|----------------|------------------------------|
 | `@client/*` | `./src/*`      | Client source root           |
 | `@api/*`    | `../api/src/*` | Type-only imports from API   |
 | `@shared/*` | `../shared/*`  | Cross-package pure utilities |
@@ -175,7 +175,7 @@ runtime API code.
 ## Tech Stack
 
 | Library                              | Purpose                       |
-| ------------------------------------ | ----------------------------- |
+|--------------------------------------|-------------------------------|
 | Vue 3 + Composition API              | UI framework                  |
 | Pinia                                | State management              |
 | Vue Router 4 + `unplugin-vue-router` | File-based routing            |

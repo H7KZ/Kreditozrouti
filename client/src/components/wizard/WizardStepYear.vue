@@ -16,6 +16,7 @@ interface Props {
 
 interface Emits {
 	(e: 'select', year: number): void
+
 	(e: 'back'): void
 }
 

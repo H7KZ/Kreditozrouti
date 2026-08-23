@@ -1,4 +1,4 @@
-﻿import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup, ScraperJob } from './domain.js'
+import type { InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup, ScraperJob } from './domain.js'
 
 // InSIS scraper payloads
 

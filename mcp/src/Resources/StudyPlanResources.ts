@@ -14,7 +14,13 @@ export default class StudyPlanResources {
 		handler: async (_uri, db) => {
 			const plans = await StudyPlanService.list(db)
 			return {
-				contents: [{ uri: 'vse://study-plans', mimeType: 'application/json', text: JSON.stringify(plans, null, 2) }]
+				contents: [
+					{
+						uri: 'vse://study-plans',
+						mimeType: 'application/json',
+						text: JSON.stringify(plans, null, 2)
+					}
+				]
 			}
 		}
 	})
@@ -32,7 +38,13 @@ export default class StudyPlanResources {
 				const faculty_id = variables.faculty_id ?? ''
 				const plans = await StudyPlanService.list(db, faculty_id)
 				return {
-					contents: [{ uri: uri.toString(), mimeType: 'application/json', text: JSON.stringify(plans, null, 2) }]
+					contents: [
+						{
+							uri: uri.toString(),
+							mimeType: 'application/json',
+							text: JSON.stringify(plans, null, 2)
+						}
+					]
 				}
 			}
 		})

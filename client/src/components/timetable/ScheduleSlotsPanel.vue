@@ -175,10 +175,10 @@ function iconsVisible(slotId: string): boolean {
 						<span class="min-w-0 flex-1 truncate">{{ slot.name }}</span>
 
 						<!--
-							Icons: always in DOM (keeps tab width stable), shown via invisible/visible.
-							Ternary ensures only one class is applied at a time — no CSS specificity conflict.
-							mousedown.prevent fires before blur so rename/delete takes priority over focus loss.
-						-->
+              Icons: always in DOM (keeps tab width stable), shown via invisible/visible.
+              Ternary ensures only one class is applied at a time — no CSS specificity conflict.
+              mousedown.prevent fires before blur so rename/delete takes priority over focus loss.
+            -->
 						<span :class="iconsVisible(slot.id) ? 'visible' : 'invisible'" class="ml-0.5 flex shrink-0 items-center gap-0.5">
 							<span
 								class="cursor-pointer rounded p-0.5 text-slate-400 transition-colors hover:text-(--insis-blue)"

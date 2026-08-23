@@ -1,9 +1,10 @@
+import type { RedirectUriPolicy } from '@mcp/OAuth/RedirectUri'
 import type { Request, Response, Router as RouterType } from 'express'
 import { Router } from 'express'
 import Config from '@mcp/Config/Config'
 import { signAccessToken, verifyPkce } from '@mcp/OAuth/OAuthJWT'
 import { OAuthStore } from '@mcp/OAuth/OAuthStore'
-import { isAllowedRedirectUri, type RedirectUriPolicy } from '@mcp/OAuth/RedirectUri'
+import { isAllowedRedirectUri } from '@mcp/OAuth/RedirectUri'
 
 const router: RouterType = Router()
 
@@ -49,7 +50,10 @@ router.post('/mcp/oauth/register', (req: Request, res: Response) => {
 	}
 
 	if (!redirectUris.every(uri => typeof uri === 'string' && isAllowedRedirectUri(uri, redirectUriPolicy))) {
-		res.status(400).json({ error: 'invalid_redirect_uri', error_description: 'One or more redirect_uris are not permitted' })
+		res.status(400).json({
+			error: 'invalid_redirect_uri',
+			error_description: 'One or more redirect_uris are not permitted'
+		})
 		return
 	}
 
@@ -74,12 +78,18 @@ router.get('/mcp/oauth/authorize', (req: Request, res: Response) => {
 	const { client_id, redirect_uri, code_challenge, code_challenge_method, response_type, state } = req.query as Record<string, string>
 
 	if (response_type !== 'code') {
-		res.status(400).json({ error: 'unsupported_response_type', error_description: 'Only response_type=code is supported' })
+		res.status(400).json({
+			error: 'unsupported_response_type',
+			error_description: 'Only response_type=code is supported'
+		})
 		return
 	}
 
 	if (!client_id || !redirect_uri || !code_challenge || code_challenge_method !== 'S256') {
-		res.status(400).json({ error: 'invalid_request', error_description: 'Missing required parameters or unsupported code_challenge_method' })
+		res.status(400).json({
+			error: 'invalid_request',
+			error_description: 'Missing required parameters or unsupported code_challenge_method'
+		})
 		return
 	}
 

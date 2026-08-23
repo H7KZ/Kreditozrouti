@@ -1,4 +1,4 @@
-﻿import type { CourseFilter, Database, Day, InSISSemester, MCPCourse, MCPCourseAssessment, MCPCourseUnit, MCPCourseUnitSlot } from '@kreditozrouti/types'
+import type { CourseFilter, Database, Day, InSISSemester, MCPCourse, MCPCourseAssessment, MCPCourseUnit, MCPCourseUnitSlot } from '@kreditozrouti/types'
 import type { Kysely } from 'kysely'
 import { sql } from 'kysely'
 import { getSlotType } from '../domain/insis'
@@ -17,7 +17,15 @@ const INSIS_DAY_NORM: Record<string, Day> = {
 }
 
 export default class CourseService {
-	static async search(db: Kysely<Database>, filter: CourseFilter, limit = 20, offset = 0): Promise<{ courses: MCPCourse[]; total: number }> {
+	static async search(
+		db: Kysely<Database>,
+		filter: CourseFilter,
+		limit = 20,
+		offset = 0
+	): Promise<{
+		courses: MCPCourse[]
+		total: number
+	}> {
 		const { ids, total } = await CourseService.fetchCourseIds(db, filter, limit, offset)
 		if (!ids.length) return { courses: [], total }
 
@@ -69,7 +77,15 @@ export default class CourseService {
 		return courses[0] ?? null
 	}
 
-	static async getWithRelations(db: Kysely<Database>, filter: CourseFilter, limit: number, offset: number): Promise<{ courses: MCPCourse[]; total: number }> {
+	static async getWithRelations(
+		db: Kysely<Database>,
+		filter: CourseFilter,
+		limit: number,
+		offset: number
+	): Promise<{
+		courses: MCPCourse[]
+		total: number
+	}> {
 		return CourseService.search(db, filter, limit, offset)
 	}
 
@@ -102,7 +118,15 @@ export default class CourseService {
 		}
 	}
 
-	private static async fetchCourseIds(db: Kysely<Database>, filter: CourseFilter, limit: number, offset: number): Promise<{ ids: number[]; total: number }> {
+	private static async fetchCourseIds(
+		db: Kysely<Database>,
+		filter: CourseFilter,
+		limit: number,
+		offset: number
+	): Promise<{
+		ids: number[]
+		total: number
+	}> {
 		let baseQuery = db.selectFrom('insis_courses')
 		if (filter.ids?.length) baseQuery = baseQuery.where('id', 'in', filter.ids)
 		if (filter.idents?.length) baseQuery = baseQuery.where('ident', 'in', filter.idents)
@@ -147,7 +171,18 @@ export default class CourseService {
 		return db.selectFrom('insis_courses').selectAll().where('id', 'in', ids).execute()
 	}
 
-	private static async fetchFacultiesByIds(db: Kysely<Database>, ids: string[]): Promise<Map<string, { id: string; title: string | null }>> {
+	private static async fetchFacultiesByIds(
+		db: Kysely<Database>,
+		ids: string[]
+	): Promise<
+		Map<
+			string,
+			{
+				id: string
+				title: string | null
+			}
+		>
+	> {
 		if (!ids.length) return new Map()
 		const rows = await db.selectFrom('insis_faculties').select(['id', 'title']).where('id', 'in', ids).execute()
 		return new Map(rows.map(r => [r.id, r]))
@@ -192,7 +227,13 @@ export default class CourseService {
 		const map = new Map<number, MCPCourseAssessment[]>()
 		for (const row of rows) {
 			const arr = map.get(row.course_id) ?? []
-			arr.push({ id: row.id, course_id: row.course_id, method: row.method ?? null, method_en: row.method_en ?? null, weight: row.weight ?? null })
+			arr.push({
+				id: row.id,
+				course_id: row.course_id,
+				method: row.method ?? null,
+				method_en: row.method_en ?? null,
+				weight: row.weight ?? null
+			})
 			map.set(row.course_id, arr)
 		}
 		return map
@@ -209,7 +250,13 @@ export default class CourseService {
 		const map = new Map<number, MCPCourse['study_plans']>()
 		for (const row of rows) {
 			const arr = map.get(row.course_id) ?? []
-			arr.push({ id: row.id, study_plan_id: row.study_plan_id, course_ident: row.course_ident, group: row.group ?? null, category: row.category ?? null })
+			arr.push({
+				id: row.id,
+				study_plan_id: row.study_plan_id,
+				course_ident: row.course_ident,
+				group: row.group ?? null,
+				category: row.category ?? null
+			})
 			map.set(row.course_id, arr)
 		}
 		return map

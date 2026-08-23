@@ -21,6 +21,11 @@ minimumReleaseAgeExclude:
   - '@unhead/vue@3.2.1'
   - mysql2@3.23.1
   - unhead@3.2.1
+  - '@intlify/core-base@11.4.9'
+  - '@intlify/devtools-types@11.4.9'
+  - '@intlify/message-compiler@11.4.9'
+  - '@intlify/shared@11.4.9'
+  - vue-i18n@11.4.9
 
 onlyBuiltDependencies:
   - esbuild

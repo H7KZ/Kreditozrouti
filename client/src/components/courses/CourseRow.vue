@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { CourseStatus } from '@client/types'
 import type { FitChip, FitResult } from '@client/composables/useFitScore'
+import { fitChipFor } from '@client/composables/useFitScore'
 import type { CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed } from 'vue'
 import CourseRowExpanded from '@client/components/courses/CourseRowExpanded.vue'
 import CourseStatusIndicator from '@client/components/courses/CourseStatusIndicator.vue'
 import { useCourseLabels, useOptimizerBasket, useScheduleSummary } from '@client/composables'
-import { fitChipFor } from '@client/composables/useFitScore'
 import { useCoursesStore, useTimetableStore } from '@client/stores'
 import IconCalendarCheck from '~icons/lucide/calendar-check'
 import IconChevronDown from '~icons/lucide/chevron-down'
@@ -134,10 +134,7 @@ function handleRowClick() {
 					:aria-label="$t('components.courses.CourseTable.rowLabel', { code: course.ident, title: getCourseTitle(course) })"
 					@click.stop="handleRowClick"
 				>
-					<IconChevronDown
-						:class="['h-3.5 w-3.5 shrink-0 transition-transform duration-200', isExpanded && 'rotate-180']"
-						aria-hidden="true"
-					/>
+					<IconChevronDown :class="['h-3.5 w-3.5 shrink-0 transition-transform duration-200', isExpanded && 'rotate-180']" aria-hidden="true" />
 				</button>
 			</div>
 		</td>

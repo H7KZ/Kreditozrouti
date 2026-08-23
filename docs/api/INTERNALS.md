@@ -109,7 +109,7 @@ RequestHandler[]
 Returns two middleware functions (applied together on scrape routes):
 
 | Limiter        | Key           | Limit    | Window     |
-| -------------- | ------------- | -------- | ---------- |
+|----------------|---------------|----------|------------|
 | IP limiter     | `req.ip`      | 3 points | 10 minutes |
 | Course limiter | `course:{id}` | 1 point  | 10 minutes |
 
@@ -159,7 +159,7 @@ res.locals.wideEvent = {
 Log emission uses **level-based routing** (replaces the old `shouldLog` probability sampling):
 
 | Condition         | Level   | Rationale                       |
-| ----------------- | ------- | ------------------------------- |
+|-------------------|---------|---------------------------------|
 | status ≥ 500      | `error` | Server error — always emitted   |
 | status 4xx        | `warn`  | Client error — always emitted   |
 | duration > 1000ms | `info`  | Slow request — always emitted   |

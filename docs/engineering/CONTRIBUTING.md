@@ -24,7 +24,7 @@
 We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 | Prefix      | When to use                              |
-| ----------- | ---------------------------------------- |
+|-------------|------------------------------------------|
 | `feat:`     | New feature                              |
 | `fix:`      | Bug fix                                  |
 | `docs:`     | Documentation only                       |
@@ -62,7 +62,7 @@ When your change affects documented behavior:
 ## Branch Strategy
 
 | Branch    | Purpose                                          |
-| --------- | ------------------------------------------------ |
+|-----------|--------------------------------------------------|
 | `main`    | Production — tagged releases only                |
 | `develop` | Integration branch — all feature PRs target this |
 | `feat/*`  | Feature development                              |

@@ -8,6 +8,7 @@ export async function fetchCourses(filters: Partial<CoursesFilter>): Promise<Cou
 
 export class RateLimitedError extends Error {
 	readonly type = 'RATE_LIMITED' as const
+
 	constructor() {
 		super('Rate limited')
 		this.name = 'RateLimitedError'

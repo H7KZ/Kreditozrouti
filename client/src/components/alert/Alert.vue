@@ -16,6 +16,7 @@ interface Props {
 	timeout?: number
 	index: number
 }
+
 const props = withDefaults(defineProps<AlertProps>(), {
 	type: 'info'
 })
@@ -23,6 +24,7 @@ const props = withDefaults(defineProps<AlertProps>(), {
 interface Emits {
 	(e: 'close', index: number): void
 }
+
 const emit = defineEmits<Emits>()
 
 onMounted(() => {

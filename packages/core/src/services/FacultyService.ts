@@ -1,4 +1,4 @@
-﻿import type { Database, MCPFaculty } from '@kreditozrouti/types'
+import type { Database, MCPFaculty } from '@kreditozrouti/types'
 import type { Kysely } from 'kysely'
 
 export default class FacultyService {

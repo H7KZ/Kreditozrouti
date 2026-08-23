@@ -1,4 +1,4 @@
-﻿// Section 1: imports
+// Section 1: imports
 // Section 1: imports
 import type { CourseUnitType, Day, ScheduledUnit, ScoreBreakdownDTO, SolverConstraints } from '@kreditozrouti/types'
 import { getDayFromDate } from './day.js'

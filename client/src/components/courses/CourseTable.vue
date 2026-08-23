@@ -174,9 +174,9 @@ function getMobileBorderClass(course: (typeof coursesStore.courses)[number]): st
 							<!-- Faculty · ECTS · Completion -->
 							<div class="text-xs text-(--insis-text-3)">
 								<span v-if="course.faculty_id">{{ getFacultyLabel(course.faculty_id) }}</span>
-								<template v-if="course.faculty_id && course.ects"> · </template>
+								<template v-if="course.faculty_id && course.ects"> ·</template>
 								<span v-if="course.ects">{{ course.ects }} ECTS</span>
-								<template v-if="course.mode_of_completion && (course.faculty_id || course.ects)"> · </template>
+								<template v-if="course.mode_of_completion && (course.faculty_id || course.ects)"> ·</template>
 								<span v-if="course.mode_of_completion">{{ getCompletionLabel(course.mode_of_completion) }}</span>
 							</div>
 							<!-- Schedule -->

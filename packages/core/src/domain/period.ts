@@ -1,4 +1,4 @@
-﻿import type { InSISSemester } from '@kreditozrouti/types'
+import type { InSISSemester } from '@kreditozrouti/types'
 
 export function getUpcomingPeriod(date: Date = new Date()): { semester: InSISSemester; year: number } {
 	const month = date.getMonth() + 1
@@ -9,7 +9,13 @@ export function getUpcomingPeriod(date: Date = new Date()): { semester: InSISSem
 	return { semester: 'LS', year: year - 1 }
 }
 
-export function getPeriodsForLastYears(yearsBack = 4, date: Date = new Date()): { semester: InSISSemester; year: number }[] {
+export function getPeriodsForLastYears(
+	yearsBack = 4,
+	date: Date = new Date()
+): {
+	semester: InSISSemester
+	year: number
+}[] {
 	const upcomingPeriod = getUpcomingPeriod(date)
 	const periods: { semester: InSISSemester; year: number }[] = []
 	let currentYear = upcomingPeriod.year

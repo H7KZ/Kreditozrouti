@@ -188,7 +188,10 @@ export default class OptimizeService {
 		courseById: Map<number, CourseWithRelationsDTO>
 	): OptimizerCandidateDTO[] {
 		if (assignments.length === 0) return []
-		const scored = assignments.map(assignment => ({ assignment, score: scoreCandidate(assignment, constraints, DEFAULT_WEIGHTS) }))
+		const scored = assignments.map(assignment => ({
+			assignment,
+			score: scoreCandidate(assignment, constraints, DEFAULT_WEIGHTS)
+		}))
 		scored.sort((a, b) => a.score.total - b.score.total)
 		const kept = diversityFilter(
 			scored.map(s => s.assignment),

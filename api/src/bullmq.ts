@@ -1,4 +1,5 @@
 import type { ScraperRequestJob, ScraperResponseJob } from '@kreditozrouti/types'
+import type { ConnectionOptions } from 'bullmq'
 import {
 	ScraperInSISAcademicSchedulesRequestScheduler,
 	ScraperInSISCatalogRequestScheduler,
@@ -21,22 +22,27 @@ import InSISService from '@api/Services/InSISService'
 
 const bullmqTelemetry = new BullMQOtel({ tracerName: 'kreditozrouti-api' })
 
+// bullmq@6's Queue leaks its defaulted DefaultNameType generic across the module
+// boundary, which makes Queue.add(name, ...) reject a plain string name at every
+// call site. Pin the generics via a cast so the exported queue type is fully
+// resolved. The connection cast bridges ioredis's RedisOptions and bullmq's own
+// vendored RedisOptions, which are structurally incompatible in v6.
 const scraperRequestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
-	connection: redis.options,
+	connection: redis.options as ConnectionOptions,
 	telemetry: bullmqTelemetry,
 	defaultJobOptions: {
 		removeOnComplete: { count: 100 },
 		removeOnFail: { age: 86_400 }
 	}
-})
+}) as Queue<ScraperRequestJob, unknown, string, ScraperRequestJob, unknown, string>
 
 const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
-	connection: redis.options,
+	connection: redis.options as ConnectionOptions,
 	telemetry: bullmqTelemetry
-})
+}) as Queue<ScraperResponseJob, unknown, string, ScraperResponseJob, unknown, string>
 
 const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, ScraperResponseHandler, {
-	connection: redis.options,
+	connection: redis.options as ConnectionOptions,
 	telemetry: bullmqTelemetry,
 	concurrency: 2,
 	maxStalledCount: 2 // allow 2 stall recoveries before permanent failure
