@@ -50,6 +50,12 @@ If you choose to answer the optional in-app feedback prompt, the thumbs-up/down,
 optional comment text you write are sent to the same self-hosted Umami instance as a single feedback event. The comment
 field is optional and free-text - please do not include personal information in it.
 
+| Property           | Detail                                                                                          |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| Legal basis (GDPR) | Consent (Art. 6(1)(a)) — the event is sent only when you actively submit the prompt             |
+| Retention          | Free-text comments are retained for a maximum of 12 months, then deleted                         |
+| Erasure            | Because no identifier is stored with the event, to request erasure of a specific comment (GDPR Art. 17) contact us via the project repository with enough context to locate it; we can also purge the feedback dataset on request |
+
 ## Error reporting
 
 Kreditožrouti uses **Grafana Faro** to report application crashes so we can fix them. It is configured to capture only:
@@ -67,10 +73,16 @@ Kreditožrouti uses **Grafana Faro** to report application crashes so we can fix
 Because Faro stores no identifier and tracks no behaviour, it does not require consent. If you never hit an error, no
 data is sent at all.
 
-## Your timetable data
+## Data stored in your browser
 
-Any timetable you build is stored exclusively in your browser's `localStorage`. It is never sent to our servers.
-Clearing your browser data removes it permanently.
+Everything Kreditožrouti keeps between visits is stored exclusively in your browser's `localStorage`. It is never sent
+to our servers, and clearing your browser data removes it permanently. This includes:
+
+- Any timetable you build, plus your saved schedules and wizard selections
+- UI preferences (view mode, sidebar, legend)
+- Feedback-prompt state, which includes a list of the distinct calendar days on which you have visited. This day-list
+  never leaves your browser; it is used only locally to decide whether to show the optional feedback prompt to returning
+  users, and it is removed when you clear your browser data.
 
 ## Lecturer names
 
