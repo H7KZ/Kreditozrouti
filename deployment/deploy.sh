@@ -16,7 +16,11 @@ set -euo pipefail
 # Arguments:
 #   project_name    Docker Compose project name (e.g., prod, dev)
 #   environment     Environment name matching directory (production, development)
-#   service         (optional) Single service to deploy (api, client, scraper)
+#   service         (optional) Single service to deploy (api, client, scraper, mcp).
+#                   api/scraper/mcp are deployed together with their infrastructure
+#                   dependencies (mysql/redis) - deploying api also ensures redis +
+#                   mysql are up/updated. client keeps --no-deps (its dep is api, an
+#                   app service whose tag is not set in a client-only deploy).
 #
 # Required Environment Variables:
 #   IMAGE_REGISTRY      Container registry (e.g., ghcr.io)
@@ -244,6 +248,23 @@ main() {
 
         create_volumes "$volumes_config"
 
+        # Dependency handling for single-service deploys.
+        #
+        # api/scraper/mcp depend only on INFRASTRUCTURE (mysql, redis) - pinned
+        # images with no per-deploy tag. Deploying them WITH deps (no --no-deps)
+        # brings those dependencies up (or updates them if their config changed)
+        # honouring depends_on health ordering, so e.g. `deploy.sh ... api` also
+        # ensures redis + mysql are running. Compose is declarative: an already
+        # healthy, unchanged dependency is left untouched (no needless restart).
+        #
+        # client depends_on `api` - an APP service whose image tag is NOT set in
+        # a client-only deploy (it would resolve to the :latest float and could
+        # bounce/recreate the running api). So client keeps --no-deps.
+        local deps_flag="--no-deps"
+        case "$service" in
+            api|scraper|mcp) deps_flag="" ;;
+        esac
+
         log "Pulling image for $service..."
         docker compose \
             -p "$project_name" \
@@ -254,7 +275,11 @@ main() {
             -f "$app_compose_file" \
             pull "$service"
 
-        log "Deploying $service..."
+        if [[ -n "$deps_flag" ]]; then
+            log "Deploying $service (with --no-deps: dependencies not included)..."
+        else
+            log "Deploying $service together with its infrastructure dependencies..."
+        fi
         docker compose \
             -p "$project_name" \
             --env-file "$env_file" \
@@ -262,7 +287,7 @@ main() {
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \
-            up --no-deps -d "$service"
+            up $deps_flag -d "$service"
     else
         # ---- Full-stack deploy ----
         create_networks "$networks_config"

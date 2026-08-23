@@ -10,7 +10,7 @@
 deployment/
 ├── deploy.sh                              # App stack deployment (run from CI)
 ├── production/
-│   ├── docker-compose.production.yml      # api×2, scraper×5, client×3, mysql, redis, phpmyadmin
+│   ├── docker-compose.production.yml      # api×1, scraper×2, client×1, mysql, redis, phpmyadmin (sized for a 4GB host)
 │   ├── networks.yml
 │   └── volumes.yml
 ├── development/
@@ -54,9 +54,10 @@ deployment/
 
 Requires `.env` (written by CI from GitHub Secrets — never placed manually) and image tag env vars passed inline.
 
-For single-service deploys, only the relevant tag env var is required (e.g. `API_IMAGE_TAG` for `service=api`). Old
-version directories under `$HOME/versions/<environment>/` older than 7 days are cleaned up after each deploy (minimum 3
-kept).
+For single-service deploys, only the relevant tag env var is required (e.g. `API_IMAGE_TAG` for `service=api`).
+`api`/`scraper`/`mcp` single-service deploys also bring up their infrastructure dependencies (`mysql`/`redis`) so the
+service never starts without them; `client` uses `--no-deps` (its dependency is the app-level `api`). Old version
+directories under `$HOME/versions/<environment>/` older than 7 days are cleaned up after each deploy (minimum 3 kept).
 
 ---
 
@@ -92,10 +93,11 @@ working directory doesn't matter; only the script's own location does.
 
 ## Key Docs
 
-| Topic                                          | Doc                                                       |
-|------------------------------------------------|-----------------------------------------------------------|
-| Docker multi-stage builds, GHCR registry       | [DOCKER.md](../docs/deployment/DOCKER.md)                 |
-| GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                     |
-| Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md) |
-| Monitoring, backups, security, troubleshooting | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)         |
-| Observability stack — full pipeline reference  | [MONITORING.md](../docs/deployment/MONITORING.md)         |
+| Topic                                          | Doc                                                           |
+|------------------------------------------------|---------------------------------------------------------------|
+| Docker multi-stage builds, GHCR registry       | [DOCKER.md](../docs/deployment/DOCKER.md)                     |
+| GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                         |
+| Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md)     |
+| Monitoring, backups, security, troubleshooting | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)             |
+| Observability stack — full pipeline reference  | [MONITORING.md](../docs/deployment/MONITORING.md)             |
+| Moving monitoring to its own host (draft)      | [MONITORING_SPLIT.md](../docs/deployment/MONITORING_SPLIT.md) |

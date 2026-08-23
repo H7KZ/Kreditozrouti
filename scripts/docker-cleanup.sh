@@ -19,6 +19,7 @@ set -euo pipefail
 #   --skip-volumes          Skip volume cleanup
 #   --skip-networks         Skip network cleanup
 #   --skip-cache            Skip build cache cleanup
+#   --skip-logs             Skip container log truncation
 #   -v, --verbose           Show detailed output
 #   -h, --help              Show help message
 #
@@ -48,12 +49,15 @@ SKIP_IMAGES=false
 SKIP_VOLUMES=false
 SKIP_NETWORKS=false
 SKIP_CACHE=false
+SKIP_LOGS=false
 
 # Counters
 CONTAINERS_REMOVED=0
 IMAGES_REMOVED=0
 VOLUMES_REMOVED=0
 NETWORKS_REMOVED=0
+LOGS_TRUNCATED=0
+LOGS_RECLAIMED=""
 SPACE_RECLAIMED=""
 
 source "$SCRIPT_DIR/lib.sh"
@@ -90,6 +94,7 @@ Options:
     --skip-volumes          Skip volume cleanup
     --skip-networks         Skip network cleanup
     --skip-cache            Skip build cache cleanup
+    --skip-logs             Skip container log truncation
     -v, --verbose           Show detailed output
     -h, --help              Show this help message
 
@@ -107,6 +112,7 @@ What gets cleaned:
     - Unused volumes (anonymous/dangling)
     - Unused networks (not used by any container)
     - Build cache
+    - Container log files (truncated, not deleted - running containers keep logging)
 
 Protected resources:
     - Running containers
@@ -387,6 +393,66 @@ cleanup_build_cache() {
     log_success "Build cache cleaned"
 }
 
+cleanup_logs() {
+    if [[ "$SKIP_LOGS" == true ]]; then
+        log "Skipping container log truncation (--skip-logs)"
+        return
+    fi
+
+    log "Truncating container logs..."
+
+    # Docker's json-file logs live outside `docker system df` accounting, in
+    # /var/lib/docker/containers/<id>/<id>-json.log. Compose max-size caps bound
+    # them going forward, but pre-existing logs (and any container without a cap)
+    # can still be large. Truncate in place so running containers keep logging.
+    local docker_root log_glob
+    docker_root=$(docker info --format '{{.DockerRootDir}}' 2>/dev/null || echo "/var/lib/docker")
+    log_glob="$docker_root/containers/*/*-json.log"
+
+    local logs=()
+    while IFS= read -r f; do
+        [[ -n "$f" ]] && logs+=("$f")
+    done < <(find "$docker_root/containers" -maxdepth 2 -name '*-json.log' -type f 2>/dev/null || true)
+
+    if [[ ${#logs[@]} -eq 0 ]]; then
+        log_verbose "No container log files found (need root to read $docker_root)."
+        return
+    fi
+
+    local total_bytes=0
+    for f in "${logs[@]}"; do
+        local sz
+        sz=$(stat -c '%s' "$f" 2>/dev/null || echo 0)
+        total_bytes=$((total_bytes + sz))
+    done
+
+    local human
+    human=$(numfmt --to=iec "$total_bytes" 2>/dev/null || echo "${total_bytes}B")
+
+    if [[ "$DRY_RUN" == true ]]; then
+        log_dry_run "Would truncate ${#logs[@]} container log file(s), reclaiming ~${human}"
+        if [[ "$VERBOSE" == true ]]; then
+            for f in "${logs[@]}"; do echo "  - $f"; done
+        fi
+        return
+    fi
+
+    log "Truncating ${#logs[@]} container log file(s) (~${human})..."
+    local ok=0
+    for f in "${logs[@]}"; do
+        if truncate -s 0 "$f" 2>>"$LOG_FILE"; then
+            ((ok++)) || true
+            log_verbose "  Truncated: $f"
+        else
+            log_warning "Failed to truncate: $f (need root?)"
+        fi
+    done
+
+    LOGS_TRUNCATED=$ok
+    LOGS_RECLAIMED=$human
+    log_success "Truncated $ok container log file(s). Space reclaimed: ${human}"
+}
+
 print_summary() {
     echo ""
     log "=========================================="
@@ -404,6 +470,7 @@ print_summary() {
     echo -e "  Images removed:     ${GREEN}$IMAGES_REMOVED${NC}"
     echo -e "  Volumes removed:    ${GREEN}$VOLUMES_REMOVED${NC}"
     echo -e "  Networks removed:   ${GREEN}$NETWORKS_REMOVED${NC}"
+    echo -e "  Logs truncated:     ${GREEN}$LOGS_TRUNCATED${NC}${LOGS_RECLAIMED:+ (${LOGS_RECLAIMED})}"
 
     if [[ -n "$SPACE_RECLAIMED" ]]; then
         echo -e "  Space reclaimed:    ${GREEN}$SPACE_RECLAIMED${NC}"
@@ -461,6 +528,10 @@ main() {
                 SKIP_CACHE=true
                 shift
                 ;;
+            --skip-logs)
+                SKIP_LOGS=true
+                shift
+                ;;
             -v|--verbose)
                 VERBOSE=true
                 shift
@@ -515,6 +586,7 @@ main() {
     cleanup_volumes
     cleanup_networks
     cleanup_build_cache
+    cleanup_logs
 
     # Print summary
     print_summary

@@ -23,7 +23,7 @@ proxy, GitHub Actions for CI/CD, and GitHub Container Registry (GHCR) for image 
              ▼             ▼             ▼
          ┌───────┐    ┌────────┐   ┌──────────┐
          │Client │    │  API   │   │phpMyAdmin│
-         │ (×3)  │    │  (×2)  │   │   (×1)   │
+         │ (×1)  │    │  (×1)  │   │   (×1)   │
          │ Nginx │    │Express │   │          │
          └───────┘    └───┬────┘   └──────────┘
                           │
@@ -38,7 +38,7 @@ proxy, GitHub Actions for CI/CD, and GitHub Container Registry (GHCR) for image 
                           ▼
                     ┌──────────┐
                     │ Scraper  │
-                    │   (×5)   │
+                    │   (×2)   │
                     └──────────┘
 ```
 

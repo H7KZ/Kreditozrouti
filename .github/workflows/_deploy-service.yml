@@ -1,5 +1,7 @@
 # Reusable Workflow: Deploy Service
-# Description: Deploys a single service to the VPS using deploy.sh with --no-deps.
+# Description: Deploys a single service to the VPS via deploy.sh. api/scraper/mcp
+#              are deployed together with their infrastructure dependencies
+#              (mysql/redis); client keeps --no-deps. See deploy.sh for details.
 #              Called by per-service deploy workflows (deploy-api.yml, etc.)
 #
 # Inputs:  service, environment, project_name, image_tag, image_prefix

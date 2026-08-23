@@ -77,9 +77,9 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 | Component     | Image                       | Role                                                    |
 |---------------|-----------------------------|---------------------------------------------------------|
 | Alloy         | `grafana/alloy:latest`      | Log shipping (Docker socket), Faro receiver, OTLP relay |
-| Loki          | `grafana/loki:3`            | Log storage (30-day retention, filesystem backend)      |
+| Loki          | `grafana/loki:3`            | Log storage (7-day retention, filesystem backend)       |
 | Tempo         | `grafana/tempo:latest`      | Distributed trace storage (7-day retention)             |
-| Prometheus    | `prom/prometheus:latest`    | Metrics scraping and storage (15-day retention)         |
+| Prometheus    | `prom/prometheus:latest`    | Metrics scraping and storage (7-day retention, 2GB cap) |
 | Grafana       | `grafana/grafana:latest`    | Dashboards and alerting (served at `/grafana`)          |
 | node-exporter | `prom/node-exporter:latest` | Host CPU / memory / disk metrics                        |
 
@@ -326,6 +326,14 @@ Provisioned from `../../deployment/monitoring/grafana/provisioning/alerting`.
 
 All alert rules use raw PromQL (`histogram_quantile`, `rate`) — there are no recording rules. The
 `kreditozrouti_application` group that referenced non-existent recording rules has been removed.
+
+### No-data / error handling
+
+Every rule sets `noDataState: KeepLast` and `execErrState: KeepLast`. Grafana's default is `NoData` / `Alerting`, which
+turned a single Prometheus scrape gap (host OOM or container restart) into a storm of phantom `DatasourceNoData` alerts
+across every rule at once. `KeepLast` keeps a genuinely firing alert alive across the gap but reports Normal when the
+prior state was Normal, so a transient scrape gap no longer pages. Valid values: `NoData`, `Alerting`, `OK`, `KeepLast`
+(`noDataState`); `Error`, `Alerting`, `OK`, `KeepLast` (`execErrState`).
 
 ### Discord notification format
 

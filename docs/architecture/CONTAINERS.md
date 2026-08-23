@@ -42,9 +42,9 @@ traefik
 
 ```
 docker-compose.production.yml
-├── api         ×2 replicas    traefik-network + mysql-network + redis-network
-├── scraper     ×5 replicas    redis-network only
-├── client      ×3 replicas    traefik-network only
+├── api         ×1 replica     traefik-network + mysql-network + redis-network
+├── scraper     ×2 replicas    redis-network only
+├── client      ×1 replica     traefik-network only
 ├── mcp          ×1            traefik-network + mysql-network  (MCP_PORT default 3000; GET /health)
 ├── mysql        ×1            mysql-network, volume: mysql-data-volume
 ├── redis        ×1            redis-network (no named volume — ephemeral)
