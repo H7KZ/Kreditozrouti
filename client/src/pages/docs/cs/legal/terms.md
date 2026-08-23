@@ -46,8 +46,8 @@ výslovnou ani implicitní — ohledně úplnosti, přesnosti nebo vhodnosti pre
 Kreditožrouti funguje v souladu s platnými předpisy VŠE:
 
 - **SR 05/2018 (Ochrana údajů):** Žádné osobní údaje studentů se nezpracovávají
-- **PR 02/2023 (Pravidla IS):** Přístup pouze pro čtení k veřejně dostupným datům InSIS; automatické scrapování
-  schváleno řídicím výborem InSIS
+- **PR 02/2023 (Pravidla IS):** Přístup pouze pro čtení k veřejně dostupným datům InSIS s opatřeními pro omezení zátěže.
+  Pro tento projekt není doloženo žádné formální schválení řídicího výboru InSIS — viz dokument Compliance, oddíl 4.3
 - **PR 04/2019 (Webhosting):** Nevztahuje se — Kreditožrouti je hostován nezávisle
 
 ## Duševní vlastnictví

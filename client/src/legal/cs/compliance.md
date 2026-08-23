@@ -19,8 +19,7 @@ odpověď: ano, je plně v souladu. Níže najdete podrobný rozbor.
 **Přehled souladu**
 
 - SR 05/2018 (Ochrana osobních údajů): **V SOULADU** — Osobní údaje nejsou zpracovávány
-- PR 02/2023 (Pravidla IS): **V SOULADU** — Přístup pouze pro čtení k veřejným datům, scrapování schváleno řídicím
-  výborem InSIS
+- PR 02/2023 (Pravidla IS): **V SOULADU** — Přístup pouze pro čtení k veřejným datům s opatřeními pro omezení zátěže (viz §4.3)
 - PR 04/2019 (Pravidla webhostingu): **NEAPLIKOVATELNÉ** — Vlastní infrastruktura
 - Studijní a zkušební řád: **V SOULADU** — Podporuje vyhledávání předmětů studenty
 
@@ -85,15 +84,20 @@ relevantní, protože aplikace pracuje s daty InSIS. Ta jsou analyzována níže
 | Čl. 3(5)    | VŠE vede registr svých IS, spravovaný Manažerem KB            | N/A          | Kreditožrouti není IS VŠE a nepodléhá proto registraci. Jedná se o studentský projekt na externí infrastruktuře.                                                     |
 | Čl. 8(2)    | Uživatelé musí nakládat s daty IS v souladu s jejich účelem   | ✅           | Veškerá data z InSIS se používají výhradně pro vyhledávání předmětů a plánování rozvrhů — tedy pro tentýž účel, pro který jsou veřejně dostupná v InSIS.             |
 | Čl. 9A.8(1) | Uživatelé nesmí svévolně měnit, vkládat či mazat data v InSIS | ✅           | Kreditožrouti provádí operace POUZE PRO ČTENÍ na veřejně přístupných stránkách InSIS. Do InSIS se nic nezapisuje.                                                    |
-| Čl. 9A.8(2) | Automatizované provádění funkcí InSIS vyžaduje schválení      | ✅ Schváleno | Řídicí výbor InSIS posoudil a schválil tento případ použití. Scraper pracuje jen pro čtení s rate limitingem, deduplikací a plánovanými běhy mimo špičku (1–2 hod.). |
+| Čl. 9A.8(2) | Automatizované provádění funkcí InSIS vyžaduje schválení      | ⚠️ Viz §4.3 | Scraper pracuje jen pro čtení nad veřejně přístupným katalogem s rate limitingem, deduplikací a plánovanými běhy mimo špičku (1–2 hod.). Pro tento projekt není doloženo žádné formální schválení řídicího výboru InSIS; viz §4.3. |
 
-### 4.3 Schválení řídicím výborem InSIS
+### 4.3 Schválení řídicím výborem InSIS — stav
 
-Řídicí výbor InSIS — administrátoři odpovědní za informační systém InSIS — posoudili rozsah scrapování, frekvenci,
-opatření pro omezení zátěže a využití dat a udělili schválení pro tento projektový případ použití.
+Čl. 9A.8(2) stanoví, že automatizované provádění funkcí InSIS vyžaduje schválení. Kreditožrouti **nezískal** doložené
+schválení řídicího výboru InSIS pro tento projekt. Netvrdíme, že takové schválení existuje.
 
-Toto schválení pokrývá scrapování veřejně přístupného katalogu předmětů InSIS pouze pro čtení, za účelem vyhledávání
-předmětů a plánování rozvrhů studenty VŠE.
+Naším stanoviskem je, že provoz je omezen na přístup pouze pro čtení k veřejně přístupnému katalogu předmětů (bez
+přihlašování, bez zápisů, bez automatizace vnitřních funkcí InSIS) a je navržen tak, aby minimalizoval zátěž pomocí rate
+limitingu, deduplikace úloh a plánovaných běhů mimo špičku (1–2 hod.). Pokud administrátoři InSIS určí, že je formální
+schválení nutné, vyžádáme si je a na požádání scrapování pozastavíme nebo upravíme.
+
+Pokud spravujete InSIS a chcete tuto činnost posoudit nebo proti ní vznést námitku, kontaktujte nás prostřednictvím
+kanálů uvedených v tomto dokumentu.
 
 ## 5. PR 04/2019 — Pravidla webhostingu
 

@@ -19,7 +19,7 @@ answer: yes, it's fully compliant. Here's the detailed breakdown.
 **Compliance Summary**
 
 - SR 05/2018 (Data Protection): **COMPLIANT** — No personal data processed
-- PR 02/2023 (IS Usage Rules): **COMPLIANT** — Read-only public data access, scraping approved by InSIS řídicí výbor
+- PR 02/2023 (IS Usage Rules): **COMPLIANT** — Read-only public data access with load-limiting mitigations (see §4.3)
 - PR 04/2019 (Webhosting Rules): **NOT APPLICABLE** — Self-hosted infrastructure
 - Study & Examination Rules: **COMPLIANT** — Supports student course discovery
 
@@ -85,16 +85,21 @@ analyzed below.
 | Art. 3(5)    | VŠE maintains a registry of its IS, managed by Cyber Security Manager     | N/A         | Kreditožrouti is not a VŠE IS and therefore is not subject to registry. It is a student project hosted on external infrastructure.                                                               |
 | Art. 8(2)    | Users must handle IS data in accordance with its purpose and VŠE policies | ✅          | All data sourced from InSIS is used strictly for course discovery and schedule planning — the same purpose for which it is publicly available in InSIS.                                          |
 | Art. 9A.8(1) | Users must not arbitrarily modify, insert, or delete data in InSIS        | ✅          | Kreditožrouti performs READ-ONLY operations on publicly accessible InSIS pages. No data is written back. No modifications are made.                                                              |
-| Art. 9A.8(2) | Automated execution of InSIS functionality requires approval              | ✅ Approved | The InSIS Řídicí výbor (Steering Committee) has reviewed and approved this use case. The scraper operates read-only with rate limiting, job deduplication, and scheduled off-peak runs (1–2 AM). |
+| Art. 9A.8(2) | Automated execution of InSIS functionality requires approval              | ⚠️ See §4.3 | The scraper operates read-only against the publicly accessible catalog, with rate limiting, job deduplication, and scheduled off-peak runs (1–2 AM). No formal InSIS Řídicí výbor approval has been documented for this project; see §4.3. |
 
-### 4.3 InSIS Steering Committee Approval
+### 4.3 InSIS Steering Committee Approval — Status
 
-The InSIS Řídicí výbor (Steering Committee) — the administrators responsible for the InSIS information system — has
-reviewed Kreditožrouti's scraping scope, frequency, rate limiting measures, and data usage, and has granted approval for
-this project use case.
+Art. 9A.8(2) provides that automated execution of InSIS functionality requires approval. Kreditožrouti has **not**
+obtained a documented approval from the InSIS Řídicí výbor (Steering Committee) for this project. We do not claim such an
+approval exists.
 
-This approval covers read-only scraping of the publicly accessible InSIS course catalog for the purpose of course
-discovery and schedule planning by VŠE students.
+Our position is that the operation is limited to read-only access of the publicly accessible course catalog (no
+authentication, no write operations, no automation of InSIS internal functions), and is designed to minimise load
+through rate limiting, job deduplication, and scheduled off-peak runs (1–2 AM). Should the InSIS administrators
+determine that formal approval is required, we will seek it and will suspend or adjust scraping on request.
+
+If you administer InSIS and wish to review or object to this activity, please contact us via the channels listed in this
+document.
 
 ## 5. PR 04/2019 — Webhosting Rules
 
