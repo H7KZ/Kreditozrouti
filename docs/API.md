@@ -5,7 +5,7 @@ The API documentation is split into focused files for easier navigation.
 ## Documents
 
 | File                                 | Contents                                                                                                   |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+|--------------------------------------|------------------------------------------------------------------------------------------------------------|
 | [api/README.md](api/README.md)       | Architecture overview, startup sequence, directory structure, path aliases                                 |
 | [api/ENDPOINTS.md](api/ENDPOINTS.md) | All routes and controllers: request/response shapes, rate limits, SSE flow, error format                   |
 | [api/SERVICES.md](api/SERVICES.md)   | CourseService (N+1 avoidance, facets, cross-filtering, full-text search), StudyPlanService, ScraperService |

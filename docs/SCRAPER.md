@@ -5,7 +5,7 @@ The scraper documentation is split into focused files for easier navigation.
 ## Documents
 
 | File                                           | Contents                                                                                  |
-| ---------------------------------------------- | ----------------------------------------------------------------------------------------- |
+|------------------------------------------------|-------------------------------------------------------------------------------------------|
 | [scraper/README.md](scraper/README.md)         | Architecture overview, data flow diagram, directory structure, technology choices         |
 | [scraper/JOBS.md](scraper/JOBS.md)             | Every job type: input payload, step-by-step flow, output, error handling                  |
 | [scraper/EXTRACTION.md](scraper/EXTRACTION.md) | How each extraction service parses InSIS HTML — selectors, edge cases, parsing strategies |

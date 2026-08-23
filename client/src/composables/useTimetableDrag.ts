@@ -74,7 +74,13 @@ export function useTimetableDrag(gridRef: Ref<HTMLElement | null>, getTimeFromX:
 		const selection = dragStore.normalizedDragSelection
 		if (!selection) return
 
-		filtersStore.filters.include_times = [{ day: selection.day, time_from: selection.timeFrom, time_to: selection.timeTo }]
+		filtersStore.filters.include_times = [
+			{
+				day: selection.day,
+				time_from: selection.timeFrom,
+				time_to: selection.timeTo
+			}
+		]
 		filtersStore.filters.offset = 0
 		uiStore.switchToListView()
 		await coursesStore.fetchCourses()

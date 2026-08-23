@@ -7,7 +7,7 @@ import { routes } from 'vue-router/auto-routes'
 import { createPinia } from 'pinia'
 import { createHead } from '@unhead/vue/client'
 import faro from '@client/faro'
-import { useAlertsStore, useCoursesStore, useScheduleSlotsStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
+import { useAlertsStore, useCoursesStore, useFeedbackStore, useScheduleSlotsStore, useTimetableStore, useUIStore, useWizardStore } from '@client/stores'
 
 const app = createApp(App)
 const head = createHead()
@@ -37,6 +37,7 @@ useScheduleSlotsStore().hydrate()
 useTimetableStore().hydrate()
 useUIStore().hydrate()
 useWizardStore().hydrate()
+useFeedbackStore().recordVisit()
 
 app.mount('#app')
 

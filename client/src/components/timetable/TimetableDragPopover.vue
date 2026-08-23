@@ -36,6 +36,7 @@ interface Props {
 
 interface Emits {
 	(e: 'filter'): void
+
 	(e: 'cancel'): void
 }
 
@@ -116,7 +117,9 @@ const durationFormatted = computed(() => {
 
 			<!-- Actions -->
 			<div class="flex items-center justify-end gap-2">
-				<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="emit('cancel')">{{ $t('common.cancel') }}</button>
+				<button type="button" class="insis-btn insis-btn-secondary text-sm" @click="emit('cancel')">
+					{{ $t('common.cancel') }}
+				</button>
 				<button type="button" class="insis-btn insis-btn-primary flex items-center text-sm" @click="emit('filter')">
 					<IconSearch class="mr-1.5 h-4 w-4" />
 					{{ $t('components.timetable.TimetableDragPopover.searchCourses') }}

@@ -1,5 +1,7 @@
 # Reusable Workflow: Deploy Service
-# Description: Deploys a single service to the VPS using deploy.sh with --no-deps.
+# Description: Deploys a single service to the VPS via deploy.sh. api/scraper/mcp
+#              are deployed together with their infrastructure dependencies
+#              (mysql/redis); client keeps --no-deps. See deploy.sh for details.
 #              Called by per-service deploy workflows (deploy-api.yml, etc.)
 #
 # Inputs:  service, environment, project_name, image_tag, image_prefix
@@ -100,12 +102,13 @@ jobs:
           APP_GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
           APP_UMAMI_WEBSITE_ID: ${{ secrets.UMAMI_WEBSITE_ID }}
           APP_UMAMI_SRC: ${{ vars.UMAMI_SRC }}
+          APP_MCP_JWT_SECRET: ${{ secrets.MCP_JWT_SECRET }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_ENV,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_BULL_BOARD_USER,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC
+          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_ENV,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_BULL_BOARD_USER,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET
           script: |
             set -euo pipefail
 
@@ -139,6 +142,7 @@ jobs:
               printf 'BULL_BOARD_USER=%s\n' "$APP_BULL_BOARD_USER"
               printf 'VITE_UMAMI_WEBSITE_ID=%s\n' "$APP_UMAMI_WEBSITE_ID"
               printf 'VITE_UMAMI_SRC=%s\n' "$APP_UMAMI_SRC"
+              printf 'MCP_JWT_SECRET=%s\n' "$APP_MCP_JWT_SECRET"
             } > "$VERSION_DIR/.env"
             chmod 600 "$VERSION_DIR/.env"
 

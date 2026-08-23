@@ -104,11 +104,11 @@ services:
 
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 1
       resources:
         limits:
           cpus: '1'
-          memory: 1024M
+          memory: 768M
         reservations:
           cpus: '0.25'
           memory: 256M
@@ -151,16 +151,16 @@ services:
 
     deploy:
       mode: replicated
-      replicas: 5
+      replicas: 2
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 384M
         reservations:
           cpus: '0.1'
           memory: 128M
       update_config:
-        parallelism: 2
+        parallelism: 1
         delay: 5s
         order: start-first
 
@@ -215,14 +215,14 @@ services:
 
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 1
       resources:
         limits:
           cpus: '1'
-          memory: 512M
+          memory: 256M
         reservations:
           cpus: '0.1'
-          memory: 128M
+          memory: 64M
       update_config:
         parallelism: 1
         delay: 10s
@@ -244,6 +244,8 @@ services:
       - MYSQL_URI=${MYSQL_URI}
       - MCP_PORT=3000
       - LOG_LEVEL=${LOG_LEVEL:-info}
+      - MCP_BASE_URL=https://${DOMAIN}
+      - MCP_JWT_SECRET=${MCP_JWT_SECRET}
 
     networks:
       - traefik-network
@@ -258,6 +260,13 @@ services:
       - 'traefik.http.routers.${PROJECT}-mcp.tls=true'
       - 'traefik.http.routers.${PROJECT}-mcp.tls.certresolver=letsencrypt'
       - 'traefik.http.services.${PROJECT}-mcp.loadbalancer.server.port=3000'
+      # OAuth well-known discovery endpoints (must be served from root domain)
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.priority=60'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/oauth`)'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.entrypoints=websecure'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls=true'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.service=${PROJECT}-mcp'
 
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:3000/health' ]
@@ -336,10 +345,10 @@ services:
       resources:
         limits:
           cpus: '1.5'
-          memory: 4096M
+          memory: 1536M
         reservations:
           cpus: '0.5'
-          memory: 1024M
+          memory: 512M
 
   # ============================================================================
   # Database Interface (phpMyAdmin)
@@ -390,7 +399,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 256M
 
   # ============================================================================
   # Cache (Redis)

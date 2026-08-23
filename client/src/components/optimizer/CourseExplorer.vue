@@ -4,6 +4,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { postOptimize } from '@client/services/optimizeService'
 import { useWizardDataStore, useWizardStore } from '@client/stores'
+import CandidateFit from './CandidateFit.vue'
 import MiniTimetable from './MiniTimetable.vue'
 import IconSparkles from '~icons/lucide/sparkles'
 import IconLoaderCircle from '~icons/lucide/loader-circle'
@@ -117,12 +118,6 @@ function selectCategory(cat: InSISStudyPlanCourseCategory) {
 	error.value = null
 }
 
-function fitLevel(score: number): 'perfect' | 'good' | 'moderate' {
-	if (score === 0) return 'perfect'
-	if (score <= 50) return 'good'
-	return 'moderate'
-}
-
 const exploreIds = computed(() => {
 	if (!selectedCategory.value) return []
 	const source = selectedGroup.value
@@ -167,6 +162,8 @@ async function findFits() {
 		<button
 			type="button"
 			class="flex w-full cursor-pointer items-center justify-between px-4 py-3 text-sm font-medium text-(--insis-text) hover:bg-(--insis-surface-2)"
+			:aria-expanded="expanded"
+			aria-controls="course-explorer-panel"
 			@click="expanded = !expanded"
 		>
 			<span class="flex items-center gap-2">
@@ -176,7 +173,7 @@ async function findFits() {
 			<IconChevronDown :class="['h-4 w-4 text-(--insis-text-3) transition-transform duration-200', expanded && 'rotate-180']" aria-hidden="true" />
 		</button>
 
-		<div v-if="expanded" class="px-4 pt-1 pb-5">
+		<div v-if="expanded" id="course-explorer-panel" class="px-4 pt-1 pb-5">
 			<!-- No study plan set up -->
 			<p v-if="!hasStudyPlan" class="text-sm text-(--insis-text-3)">
 				{{ t('components.optimizer.CourseExplorer.noStudyPlan') }}
@@ -263,15 +260,7 @@ async function findFits() {
 							<div class="mb-2 flex items-start justify-between gap-2">
 								<div class="flex min-w-0 items-center gap-2">
 									<span
-										class="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold tabular-nums"
-										:class="{
-											'bg-(--insis-success-light) text-(--insis-success)':
-												r.best_candidate && fitLevel(r.best_candidate.score.total) === 'perfect',
-											'bg-(--insis-blue-subtle) text-(--insis-blue)':
-												r.best_candidate && fitLevel(r.best_candidate.score.total) === 'good',
-											'bg-(--insis-warning-light) text-(--insis-warning)':
-												!r.best_candidate || fitLevel(r.best_candidate.score.total) === 'moderate'
-										}"
+										class="shrink-0 rounded bg-(--insis-surface-2) px-1.5 py-0.5 text-[10px] font-bold text-(--insis-text-2) tabular-nums"
 									>
 										#{{ i + 1 }}
 									</span>
@@ -284,22 +273,9 @@ async function findFits() {
 							<!-- Has a fit -->
 							<template v-if="r.best_candidate">
 								<MiniTimetable :units="r.best_candidate.units" class="w-full" />
-								<div class="mt-2 flex items-center justify-between">
-									<span
-										class="text-[10px]"
-										:class="{
-											'text-(--insis-success)': fitLevel(r.best_candidate.score.total) === 'perfect',
-											'text-(--insis-text-3)': fitLevel(r.best_candidate.score.total) === 'good',
-											'text-(--insis-warning)': fitLevel(r.best_candidate.score.total) === 'moderate'
-										}"
-									>
-										{{
-											fitLevel(r.best_candidate.score.total) === 'perfect'
-												? t('components.optimizer.CourseExplorer.fitPerfect')
-												: t('components.optimizer.CourseExplorer.fitScore', { score: r.best_candidate.score.total })
-										}}
-									</span>
-									<button type="button" class="insis-btn insis-btn-primary py-0.5 text-[11px]" @click="emit('apply', r)">
+								<div class="mt-2 flex items-end justify-between gap-2">
+									<CandidateFit :candidate="r.best_candidate" />
+									<button type="button" class="insis-btn insis-btn-primary shrink-0 py-0.5 text-[11px]" @click="emit('apply', r)">
 										{{ t('components.optimizer.CourseExplorer.preview') }}
 									</button>
 								</div>

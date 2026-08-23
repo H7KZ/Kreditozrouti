@@ -3,7 +3,13 @@ import { mysql } from '@api/clients'
 import { StudyPlansFilter } from '@api/Controllers/StudyPlans/StudyPlansController'
 import { Database, StudyPlanCourseTable, StudyPlanTable } from '@api/Database/types'
 
-type QueryBuilder = SelectQueryBuilder<Database & { sp: StudyPlanTable } & { spc: Nullable<StudyPlanCourseTable> }, 'sp' | 'spc', object>
+type QueryBuilder = SelectQueryBuilder<
+	Database & { sp: StudyPlanTable } & {
+		spc: Nullable<StudyPlanCourseTable>
+	},
+	'sp' | 'spc',
+	object
+>
 
 export class StudyPlanFilterBuilder {
 	/**
@@ -17,7 +23,7 @@ export class StudyPlanFilterBuilder {
 	public static buildFilterQuery(filters: Partial<StudyPlansFilter>, ignoreFacet?: string): QueryBuilder {
 		const needsJoin = this.needsCoursesJoin(filters, ignoreFacet)
 
-		let query: QueryBuilder = mysql.selectFrom(`${StudyPlanTable._table} as sp`) as QueryBuilder
+		let query: QueryBuilder = mysql.selectFrom(`${StudyPlanTable._table} as sp`)
 
 		if (needsJoin) {
 			query = query.leftJoin(`${StudyPlanCourseTable._table} as spc`, 'sp.id', 'spc.study_plan_id')

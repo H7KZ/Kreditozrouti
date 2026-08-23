@@ -100,7 +100,13 @@ function handleGridPreview(candidate: OptimizerCandidateDTO) {
 	openPreview(
 		candidate,
 		isRemoval
-			? t('components.optimizer.OptimizerTab.dropsTitle', { course: (candidate as { dropped_course_title: string }).dropped_course_title })
+			? t('components.optimizer.OptimizerTab.dropsTitle', {
+					course: (
+						candidate as {
+							dropped_course_title: string
+						}
+					).dropped_course_title
+				})
 			: undefined
 	)
 }

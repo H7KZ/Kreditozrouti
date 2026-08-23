@@ -109,7 +109,7 @@ scraper/src/
 ## Technology Choices
 
 | Concern             | Library              | Why                                                                                 |
-| ------------------- | -------------------- | ----------------------------------------------------------------------------------- |
+|---------------------|----------------------|-------------------------------------------------------------------------------------|
 | HTTP requests       | Axios                | InSIS pages are server-rendered — no JavaScript execution needed.                   |
 | HTML parsing        | Cheerio              | Lightweight jQuery-like API; no browser overhead.                                   |
 | Markdown conversion | Turndown             | Converts rich text sections (literature, course contents) to portable Markdown.     |

@@ -6,7 +6,8 @@ export const STORAGE_KEYS = {
 	SCHEDULE_SLOTS: 'kreditozrouti:schedule-slots',
 	WIZARD: 'kreditozrouti:wizard',
 	UI: 'kreditozrouti:ui',
-	OPTIMIZER_CONSTRAINTS: 'kreditozrouti:optimizer-constraints'
+	OPTIMIZER_CONSTRAINTS: 'kreditozrouti:optimizer-constraints',
+	FEEDBACK: 'kreditozrouti:feedback'
 } as const
 
 export type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS]

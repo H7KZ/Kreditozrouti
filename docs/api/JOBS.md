@@ -56,7 +56,7 @@ prevents unnecessary DB churn when a catalog run re-scrapes unchanged courses.
 ### Faculty upsert (outside the transaction, read-first)
 
 `upsertFaculty` and the study-plan faculty-ident pre-creation loop run **before** the transaction below and outside it —
-faculty rows are shared across hundreds of concurrent course jobs (5 scraper replicas), and an unconditional
+faculty rows are shared across hundreds of concurrent course jobs (multiple scraper replicas), and an unconditional
 `INSERT ... ON DUPLICATE KEY UPDATE`
 acquires an exclusive lock on every call, which is a classic MySQL deadlock generator ("Deadlock found when trying to
 get lock; try restarting transaction") under concurrency.

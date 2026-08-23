@@ -15,7 +15,7 @@ sudo ./maintenance.sh [OPTIONS]
 **Options:**
 
 | Flag                   | Description                                 |
-| ---------------------- | ------------------------------------------- |
+|------------------------|---------------------------------------------|
 | `-r, --auto-reboot`    | Reboot if required (60 s warning countdown) |
 | `-s, --skip-security`  | Skip Lynis security audit                   |
 | `-d, --docker-cleanup` | Also prune Docker resources                 |
@@ -36,13 +36,51 @@ sudo ./maintenance.sh [OPTIONS]
     - Zombie processes
 7. Reboot handling (warns, then reboots with `--auto-reboot`)
 
-### Recommended cron
+### Scheduling
 
-Weekly, Sunday at 3 AM:
+Prefer `setup-automation.sh` (systemd timers) over hand-written cron - see below.
+If you must use cron, weekly, Sunday at 3 AM:
 
 ```
 0 3 * * 0 sudo /opt/scripts/maintenance.sh --auto-reboot --docker-cleanup >> /var/log/cron-maintenance.log 2>&1
 ```
+
+---
+
+## `setup-automation.sh`
+
+Installs systemd services + timers so cleanup and maintenance run unattended. Requires root.
+This is the recommended way to keep the host from filling up on disk/logs (the usual trigger for the
+Prometheus `DatasourceNoData` and container-down alert cascade). Idempotent - re-run to change schedules.
+
+```bash
+sudo ./setup-automation.sh [OPTIONS]
+```
+
+**Installs two timers:**
+
+| Timer                            | Schedule (default) | Runs                                                  |
+|----------------------------------|--------------------|-------------------------------------------------------|
+| `kreditozrouti-docker-cleanup`   | daily 03:30        | `docker-cleanup.sh --all --force --keep-recent 48`    |
+| `kreditozrouti-maintenance`      | weekly Sun 04:00   | `maintenance.sh --docker-cleanup [--auto-reboot]`     |
+
+**Options:**
+
+| Flag                        | Description                                               |
+|-----------------------------|-----------------------------------------------------------|
+| `-r, --auto-reboot`         | Weekly maintenance may reboot when packages require it     |
+| `--swap-size <GB>`          | Swap file size to ensure exists (default: 4)               |
+| `--skip-swap`               | Do not ensure a swap file exists                          |
+| `--cleanup-time <HH:MM>`    | Daily cleanup time (default: 03:30)                        |
+| `--maintenance-time <spec>` | Weekly `OnCalendar` spec (default: `Sun *-*-* 04:00:00`)   |
+| `--keep-recent <hrs>`       | Keep images newer than N hours in daily cleanup (def: 48)  |
+| `-s, --status`              | Show installed timer status and exit                      |
+| `-u, --uninstall`           | Remove installed timers and unit files                    |
+
+On install it also ensures a swap file exists (runs `setup-swap.sh` if no swap is active) - the memory cushion that
+prevents the OOM cascade on a low-RAM host. Units are written to `/etc/systemd/system/` and point at the scripts'
+absolute paths, so the repo must stay checked out where it was when you ran the installer. Inspect with `sudo ./setup-automation.sh --status` or
+`journalctl -u kreditozrouti-docker-cleanup.service`.
 
 ---
 
@@ -61,7 +99,7 @@ Selective Docker resource cleanup. Always run `--dry-run` first.
 **Key flags:**
 
 | Flag                      | Purpose                                                           |
-| ------------------------- | ----------------------------------------------------------------- |
+|---------------------------|-------------------------------------------------------------------|
 | `-a, --all`               | Remove ALL unused images (not just dangling)                      |
 | `-n, --dry-run`           | Preview without removing                                          |
 | `-f, --force`             | Skip confirmation prompt                                          |
@@ -71,7 +109,12 @@ Selective Docker resource cleanup. Always run `--dry-run` first.
 | `--skip-volumes`          | Skip volume cleanup                                               |
 | `--skip-networks`         | Skip network cleanup                                              |
 | `--skip-cache`            | Skip build cache cleanup                                          |
+| `--skip-logs`             | Skip container log truncation                                     |
 | `-v, --verbose`           | Show individual item names                                        |
+
+Container json-file logs (`/var/lib/docker/containers/*/*-json.log`) live outside `docker system df` accounting, so
+`docker system prune` never reclaims them. The log-truncation step zeroes them in place - running containers keep
+logging. Requires root to reach the Docker root dir.
 
 `--keep-recent` uses `docker image prune --filter "until=<N>h"` — useful for preserving recently deployed images during
 CI cleanup cycles.
@@ -103,7 +146,7 @@ sudo ./scripts/clone-db.sh <dev-to-prod|prod-to-dev>
 ```
 
 | Argument      | Description                                  |
-| ------------- | -------------------------------------------- |
+|---------------|----------------------------------------------|
 | `dev-to-prod` | Copy the dev database into the prod database |
 | `prod-to-dev` | Copy the prod database into the dev database |
 

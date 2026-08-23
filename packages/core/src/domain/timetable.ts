@@ -1,4 +1,4 @@
-﻿import type { Campus, CourseUnitType, ScheduledCourseUnit, ScheduledUnit, TimeSelection } from '@kreditozrouti/types'
+import type { Campus, CourseUnitType, ScheduledCourseUnit, ScheduledUnit, TimeSelection } from '@kreditozrouti/types'
 import { DayValues } from '@kreditozrouti/types'
 import { getDayFromDate } from './day.js'
 

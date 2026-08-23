@@ -30,7 +30,7 @@ CourseStatus computed re-runs → all status-dependent UI updates
 All times are **minutes from midnight** (integers, 0–1439):
 
 | Time  | Minutes |
-| ----- | ------- |
+|-------|---------|
 | 07:30 | 450     |
 | 09:00 | 540     |
 | 10:30 | 630     |
@@ -211,7 +211,7 @@ column assignments. Each overlapping block gets a fractional width (e.g. 50% of 
 ## Visual Treatment
 
 | Status            | Color                            | Location                                              |
-| ----------------- | -------------------------------- | ----------------------------------------------------- |
+|-------------------|----------------------------------|-------------------------------------------------------|
 | `conflict`        | Red ring / red badge             | `TimetableCourseBlock`, `UnitSelector`, `CourseTable` |
 | `campus-conflict` | Orange/amber ring / orange badge | Same                                                  |
 | `incomplete`      | Amber/yellow                     | Same                                                  |

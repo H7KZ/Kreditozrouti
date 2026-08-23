@@ -1,19 +1,21 @@
 # Scripts — Overview
 
-Manual server management scripts. All scripts in `../../scripts` source `lib.sh` for shared logging and Docker utilities.
-Automated deployment scripts live in `../../deployment` instead.
+Manual server management scripts. All scripts in `../../scripts` source `lib.sh` for shared logging and Docker
+utilities. Automated deployment scripts live in `../../deployment` instead.
 
 ---
 
 ## Scripts
 
 | Script              | Purpose                                                                           | Requires Root |
-| ------------------- | --------------------------------------------------------------------------------- | ------------- |
+|---------------------|-----------------------------------------------------------------------------------|---------------|
 | `lib.sh`            | Shared utilities (logging, `validate_files`, `create_networks`, `create_volumes`) | No            |
 | `install-docker.sh` | Install Docker Engine on Ubuntu/Debian — run once on a fresh server               | Yes (`sudo`)  |
 | `backup.sh`         | MySQL dump via docker exec — run manually or via cron                             | No            |
 | `maintenance.sh`    | System maintenance (apt, cleanup, security, health)                               | Yes (`sudo`)  |
 | `docker-cleanup.sh` | Clean unused Docker resources                                                     | No            |
+| `setup-automation.sh`| Install systemd timers for daily cleanup + weekly maintenance                    | Yes (`sudo`)  |
+| `setup-swap.sh`     | Create/resize a swapfile — mitigates OOM on low-RAM hosts                         | Yes (`sudo`)  |
 | `clone-db.sh`       | Clone MySQL DB between dev and prod stacks on the same VPS                        | Yes (`sudo`)  |
 
 ---

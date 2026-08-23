@@ -10,7 +10,7 @@ Deployments are **path-triggered and per-service**. When code changes are pushed
 service (s) whose source files changed are rebuilt and redeployed.
 
 | Branch    | Environment |
-| --------- | ----------- |
+|-----------|-------------|
 | `main`    | production  |
 | `develop` | development |
 
@@ -101,6 +101,12 @@ cache scoped per service and environment.
 Uploads deployment files to the VPS, writes `.env`, and calls `deploy.sh <project> <environment> <service>` for a
 single-service update.
 
+**Dependency inclusion:** `api`, `scraper`, and `mcp` are deployed together with their infrastructure dependencies -
+deploying `api` also brings up (or updates, if their config changed) `mysql` and `redis`, honouring `depends_on` health
+ordering. Already-healthy, unchanged dependencies are left untouched. `client` keeps `--no-deps` because its only
+dependency is `api` (an app service whose image tag is not set in a client-only deploy, so including it could bounce the
+running api to the `:latest` float).
+
 ---
 
 ### `deploy-traefik.yml` — Traefik reverse proxy
@@ -143,7 +149,7 @@ secret → next deploy picks it up.
 Configure in **Settings → Secrets and variables → Actions**:
 
 | Secret            | Example                 | Purpose                         |
-| ----------------- | ----------------------- | ------------------------------- |
+|-------------------|-------------------------|---------------------------------|
 | `SSH_HOST`        | `vps.example.com`       | VPS hostname or IP              |
 | `SSH_USER`        | `deploy`                | SSH username                    |
 | `SSH_PORT`        | `22`                    | SSH port                        |
@@ -196,7 +202,7 @@ After a successful deploy, `deploy.sh` automatically removes version directories
 Push to `main` or `develop` — the path filters determine which workflow (s) run:
 
 | Changed path               | Workflow triggered      |
-| -------------------------- | ----------------------- |
+|----------------------------|-------------------------|
 | `api/**`                   | `deploy-api.yml`        |
 | `client/**`                | `deploy-client.yml`     |
 | `scraper/**`               | `deploy-scraper.yml`    |

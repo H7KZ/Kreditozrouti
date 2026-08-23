@@ -5,7 +5,7 @@ order: 1
 
 # Průvodce pro studenty
 
-Vše, co potřebuješ vědět pro úspěšný start na VŠE — od kreditů přes Kreditožrouti až po zápis v InSISu.
+Vše, co potřebuješ vědět pro úspěšný start na VŠE - od kreditů přes Kreditožrouti až po zápis v InSISu.
 
 ## Obsah průvodce
 
@@ -20,12 +20,12 @@ Vše, co potřebuješ vědět pro úspěšný start na VŠE — od kreditů pře
 
 ## 1. Kreditový systém VŠE
 
-Na začátku bakalářského studia dostaneš **216 kreditových poukázek**. Ty fungují jako „vysokoškolská měna" — za každý
+Na začátku bakalářského studia dostaneš **216 kreditových poukázek**. Ty fungují jako „vysokoškolská měna" - za každý
 zapsaný předmět zaplatíš poukázky odpovídající počtu jeho kreditů. Pokud předmět úspěšně splníš, přičtou se ti kredity
 na konto. Pro získání bakalářského titulu potřebuješ nasbírat **180 kreditů** rozdělených do předepsaných kategorií.
 
 > **Pravidlo 20 kreditů za semestr:** ke konci každého semestru musíš mít v součtu odstudováno alespoň `semestr × 20`
-> kreditů. Pokud za tuto hranici spadneš, jsou ti z poukázek odečteny kredity za chybějící počet — tzv. penalizace.
+> kreditů. Pokud za tuto hranici spadneš, jsou ti z poukázek odečteny kredity za chybějící počet - tzv. penalizace.
 
 ### Typy předmětů
 
@@ -33,17 +33,17 @@ na konto. Pro získání bakalářského titulu potřebuješ nasbírat **180 kre
 | ------- | --------------------------- | ---------------------------------------------------------------------------------------------------- |
 | **oP**  | Povinný                     | Musíš splnit všechny předměty ze seznamu.                                                            |
 | **oV**  | Povinně volitelný           | Vyber si libovolné předměty z nabídky, dokud nedosáhneš požadovaného počtu kreditů.                  |
-| **oJ1** | Jazykový – 1. jazyk         | Na FIS je to angličtina — celkem 12 kreditů (4 předměty × 3 kr). Na jiných fakultách může být jinak. |
+| **oJ1** | Jazykový – 1. jazyk         | Na FIS je to angličtina - celkem 12 kreditů (4 předměty × 3 kr). Na jiných fakultách může být jinak. |
 | **TV**  | Tělesná výchova             | 0 kreditů, nestojí žádné poukázky. Za celé bakalářské studium musíš splnit 2 semestry.               |
-| **cVB** | Celoškolsky volně volitelný | Nezapočítává se do titulu — studuješ nad rámec povinností.                                           |
+| **cVB** | Celoškolsky volně volitelný | Nezapočítává se do titulu - studuješ nad rámec povinností.                                           |
 
 ### Hodnocení
 
 | Body   | Známka | Poznámka                                           |
 | ------ | ------ | -------------------------------------------------- |
-| 90–100 | **1**  | —                                                  |
-| 75–89  | **2**  | —                                                  |
-| 60–74  | **3**  | —                                                  |
+| 90–100 | **1**  | -                                                  |
+| 75–89  | **2**  | -                                                  |
+| 60–74  | **3**  | -                                                  |
 | 50–59  | **4+** | Jedna opravná zkouška ve stejném zkouškovém období |
 | 0–49   | **4**  | Nesplněno                                          |
 
@@ -53,11 +53,11 @@ na konto. Pro získání bakalářského titulu potřebuješ nasbírat **180 kre
 
 ### Videa k tématu
 
-- [Kreditový systém na VŠE](https://www.youtube.com/watch?v=7AZ9Txwfgb8) — Videopříručky FIS: kreditové poukázky, 180
+- [Kreditový systém na VŠE](https://www.youtube.com/watch?v=7AZ9Txwfgb8) - Videopříručky FIS: kreditové poukázky, 180
   kreditů a cesta k titulu
-- [Předměty a studijní plány](https://www.youtube.com/watch?v=ep-SdjuNHE4) — Videopříručky FIS: povinné, volitelné,
+- [Předměty a studijní plány](https://www.youtube.com/watch?v=ep-SdjuNHE4) - Videopříručky FIS: povinné, volitelné,
   jazyky, tělocvik a studijní plán
-- [Hodnocení z předmětů](https://www.youtube.com/watch?v=U7IocauH3cY) — Videopříručky FIS: bodový systém, grading, 4+ a
+- [Hodnocení z předmětů](https://www.youtube.com/watch?v=U7IocauH3cY) - Videopříručky FIS: bodový systém, grading, 4+ a
   jak předmět splnit
 
 ---
@@ -72,20 +72,20 @@ VŠE má výuku ve dvou oddělených areálech v Praze:
 | **Jižní Město**            | Jižní Město, Praha 4           | `JM`                   |
 
 > **Pozor na přejezdy!** Cesta mezi Žižkovem a Jižním Městem trvá přibližně **45 minut** MHD. Nikdy si nezapisuj
-> předměty v různých areálech s méně než jedním volným blokem mezi sebou — stihnout přejezd za 15 minut je prakticky
+> předměty v různých areálech s méně než jedním volným blokem mezi sebou - stihnout přejezd za 15 minut je prakticky
 > nemožné.
 
 ---
 
 ## 3. Registrace a zápisy
 
-Předměty se nezapisují najednou — probíhají dvě oddělené fáze před začátkem každého semestru. Termíny najdeš v
+Předměty se nezapisují najednou - probíhají dvě oddělené fáze před začátkem každého semestru. Termíny najdeš v
 harmonogramu akademického roku na stránkách VŠE.
 
 ### Krok 1: Registrace
 
 Vyjádříš zájem o předměty a vybereš preferované časy přednášek a cvičení. V registracích lze zvolit i přeplněná
-cvičení — systém to zatím neřeší.
+cvičení - systém to zatím neřeší.
 
 ### Krok 2: Automatický zápis (3 kola)
 
@@ -98,21 +98,21 @@ Systém automaticky přidělí místa na základě priorit. Pokud je o cvičení
 
 ### Krok 3: Ruční zápis
 
-Po automatickém zápisu si můžeš ručně upravit rozvrh — měnit časy nebo vyučující, dokud jsou volná místa. Platí pravidlo
+Po automatickém zápisu si můžeš ručně upravit rozvrh - měnit časy nebo vyučující, dokud jsou volná místa. Platí pravidlo
 „kdo dřív přijde". Ve **3. kole** si lze zapsat i předměty, které jsi nezaregistroval/a.
 
-> **Pro prváky:** Předměty prvního semestru ti přidělí fakulta automaticky — máš garantované místo. Pokud si ale v
+> **Pro prváky:** Předměty prvního semestru ti přidělí fakulta automaticky - máš garantované místo. Pokud si ale v
 > registracích změníš čas cvičení nebo předmět odhlásíš, tuto prioritu ztratíš a místo ti nikdo nezaručí. Změny rozvrhu
 > nech raději až na fázi ručního zápisu.
 
-**Video:** [Registrace a zápisy předmětů](https://www.youtube.com/watch?v=lDpNfHLHCPA) — Videopříručky FIS: jak
+**Video:** [Registrace a zápisy předmětů](https://www.youtube.com/watch?v=lDpNfHLHCPA) - Videopříručky FIS: jak
 registrace probíhají, priority, ruční zápis
 
 ---
 
 ## 4. Kreditožrouti – průvodce nástrojem
 
-Kreditožrouti ti pomůže naplánovat rozvrh _před tím_, než se otevřou zápisy v InSISu. Nejde o přihlašovací systém —
+Kreditožrouti ti pomůže naplánovat rozvrh _před tím_, než se otevřou zápisy v InSISu. Nejde o přihlašovací systém -
 skutečný zápis vždy probíhá v InSISu.
 
 ### Krok 1: Vyber svoji fakultu
@@ -131,7 +131,7 @@ vyber ji.
 
 ### Krok 4: Označ splněné předměty
 
-Odškrtni předměty, které jsi již úspěšně splnil/a — přestanou se ti zobrazovat v hlavním seznamu. Tento krok je
+Odškrtni předměty, které jsi již úspěšně splnil/a - přestanou se ti zobrazovat v hlavním seznamu. Tento krok je
 volitelný, ale výrazně zpřehlední výběr.
 
 ### Krok 5: Prohlédni si seznam předmětů
@@ -162,7 +162,7 @@ Přejdi na [insis.vse.cz](https://insis.vse.cz), přihlas se a klikni na **Port�
 
 ### Krok 2: Otevři Registrace a zápisy
 
-V sekci „Aplikace zvoleného studia" klikni na ikonu se třemi tlapkami — **Registrace a zápisy**.
+V sekci „Aplikace zvoleného studia" klikni na ikonu se třemi tlapkami - **Registrace a zápisy**.
 
 ### Krok 3: Přidej předměty ze skupin
 
@@ -191,9 +191,9 @@ InSIS zobrazuje rozvrh jako týdenní mřížku. JM v místnosti = Jižní Měst
 
 **Užitečné zdroje:**
 
-- [InSIS nápověda: Registrace a zápis](https://insis.vse.cz/help.pl?page=8968) — Podrobný popis všech funkcí aplikace
+- [InSIS nápověda: Registrace a zápis](https://insis.vse.cz/help.pl?page=8968) - Podrobný popis všech funkcí aplikace
   Registrace a zápisy
-- [VŠE CI: Jak na registrace předmětů](https://ci.vse.cz/sluzby/dalsi/insis/jak-na-registrace-predmetu/) — Praktický
+- [VŠE CI: Jak na registrace předmětů](https://ci.vse.cz/sluzby/dalsi/insis/jak-na-registrace-predmetu/) - Praktický
   průvodce od VŠE IT centra: priority, penalizace, ruční zápis
 
 ---

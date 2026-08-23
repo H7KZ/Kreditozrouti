@@ -1,6 +1,6 @@
 import type { Faro } from '@grafana/faro-web-sdk'
 import type { App } from 'vue'
-import { createSession, getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk'
+import { ErrorsInstrumentation, initializeFaro, WebVitalsInstrumentation } from '@grafana/faro-web-sdk'
 
 let _faro: Faro | null = null
 
@@ -19,18 +19,21 @@ const faroModule = {
 				version: (import.meta.env.VITE_APP_VERSION as string | undefined) ?? 'unknown',
 				environment: (import.meta.env.VITE_APP_ENV as string | undefined) ?? import.meta.env.MODE
 			},
+			// Session tracking is intentionally disabled: no persistent pseudonymous
+			// identifier is stored in web storage. This keeps Faro out of ePrivacy
+			// Art 5(3) scope and consistent with the privacy policy (no identifiers,
+			// no behavioural tracking). See client/src/pages/docs/*/legal/privacy.md.
 			sessionTracking: {
-				enabled: true,
-				session: createSession()
+				enabled: false
 			},
 			// Filter Safari's internal JSON-LD parser false-positive.
 			// The parser fires this when a page has no @context object.
 			ignoreErrors: [/undefined is not an object \(evaluating '.*\["@context"\]/],
-			instrumentations: [
-				...getWebInstrumentations({
-					captureConsole: true
-				})
-			]
+			// Errors + Web Vitals only. Deliberately NOT using getWebInstrumentations()
+			// which would also add Session/View/Navigation/UserAction/Performance
+			// instrumentations (behavioural RUM that duplicates Umami and would need
+			// consent). captureConsole is off, so no console output is shipped.
+			instrumentations: [new ErrorsInstrumentation(), new WebVitalsInstrumentation()]
 		})
 
 		// Vue component error handler — captures errors thrown inside Vue components

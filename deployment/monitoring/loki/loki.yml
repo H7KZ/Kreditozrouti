@@ -32,8 +32,16 @@ storage_config:
     directory: /loki/chunks
 
 limits_config:
-  retention_period: 720h
+  retention_period: 168h
   allow_structured_metadata: true
+  # Bound ingestion so a chatty service cannot fill the disk.
+  ingestion_rate_mb: 8
+  ingestion_burst_size_mb: 16
+  per_stream_rate_limit: 4MB
+  per_stream_rate_limit_burst: 8MB
+  max_streams_per_user: 10000
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
 
 compactor:
   working_directory: /loki/compactor

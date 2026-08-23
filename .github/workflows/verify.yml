@@ -50,6 +50,9 @@ jobs:
       - name: Lint
         run: make lint
 
+      - name: Check em dashes
+        run: bash scripts/check-em-dashes.sh
+
       - name: Build Core
         run: pnpm --filter=@kreditozrouti/core run build
 

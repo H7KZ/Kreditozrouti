@@ -11,6 +11,19 @@ export interface FitResult {
 	fitReason: 'fills_gap' | 'same_day' | 'new_day' | 'neutral'
 }
 
+/** The two positive fit cases worth a labelled chip in the course list. */
+export type FitChip = 'fills_gap' | 'same_day'
+
+/**
+ * Maps a fit reason to the chip to show, or null for no chip. Only the two
+ * positive cases (gap-filler, same-day) get a chip; neutral, new-day, and
+ * no-fit (whose reason is 'neutral') show nothing, so a chip reliably means
+ * "worth a look". Pure and side-effect free; the row component is thin glue.
+ */
+export function fitChipFor(reason: FitResult['fitReason']): FitChip | null {
+	return reason === 'fills_gap' || reason === 'same_day' ? reason : null
+}
+
 export function computeFitScore(course: CourseWithRelationsDTO, timetableUnits: SelectedCourseUnit[]): FitResult {
 	const timetableDays = new Set<Day>(timetableUnits.map(u => u.day).filter((d): d is Day => d != null))
 
@@ -28,7 +41,14 @@ export function computeFitScore(course: CourseWithRelationsDTO, timetableUnits: 
 				timeTo: slot.time_to
 			}
 
-			const conflicts = timetableUnits.some(tu => unitsConflict(candidate, { day: tu.day, date: tu.date, timeFrom: tu.timeFrom, timeTo: tu.timeTo }))
+			const conflicts = timetableUnits.some(tu =>
+				unitsConflict(candidate, {
+					day: tu.day,
+					date: tu.date,
+					timeFrom: tu.timeFrom,
+					timeTo: tu.timeTo
+				})
+			)
 			if (conflicts) continue
 
 			const slotDay = slot.day as Day | undefined

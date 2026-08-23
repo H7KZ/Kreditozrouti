@@ -1,4 +1,4 @@
-﻿import type { Database as DB } from '@kreditozrouti/types'
+import type { Database as DB } from '@kreditozrouti/types'
 import { Kysely, MysqlDialect } from 'kysely'
 import { createPool } from 'mysql2'
 import Config from '@mcp/Config/Config'

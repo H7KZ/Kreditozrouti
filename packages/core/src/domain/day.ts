@@ -1,4 +1,4 @@
-﻿import type { Day } from '@kreditozrouti/types'
+import type { Day } from '@kreditozrouti/types'
 import { DayValues } from '@kreditozrouti/types'
 
 export function getDayFromDate(dateStr: string | null | undefined): Day | null {

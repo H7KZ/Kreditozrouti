@@ -7,7 +7,7 @@ order: 2
 
 ## How do I build a conflict-free timetable at VŠE?
 
-Kreditožrouti shows all courses from your study plan in one place. Click a time slot to add it to your timetable — the
+Kreditožrouti shows all courses from your study plan in one place. Click a time slot to add it to your timetable - the
 app instantly highlights any conflicts. Simply choose a different exercise or lecture session to resolve them.
 
 ## How does VŠE course enrollment (zápisy) work?
@@ -19,7 +19,7 @@ enter it into InSIS the moment enrollment opens.
 ## What are "kreditožrouti" (credit eaters)?
 
 "Kreditožrouti" (literally "credit eaters") are notoriously difficult courses at VŠE that tend to consume students'
-reserve credits — either through failed exams or general workload. The app is named after them as a nod to this shared
+reserve credits - either through failed exams or general workload. The app is named after them as a nod to this shared
 student experience.
 
 ## Does Kreditožrouti work for Erasmus and exchange students?

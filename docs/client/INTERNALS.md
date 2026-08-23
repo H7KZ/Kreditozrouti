@@ -309,6 +309,20 @@ string  // clsx + tailwind-merge
 
 Used throughout components for conditional class merging.
 
+### `utils/markdown.ts`
+
+```typescript
+renderMarkdown(value
+:
+string
+):
+string  // marked.parse -> DOMPurify.sanitize
+```
+
+The single sanctioned markdown-to-HTML sink for `v-html`. Scraped InSIS syllabus text is untrusted and `marked` passes
+raw HTML through untouched, so every value bound to `v-html` must go through `renderMarkdown` (DOMPurify strips
+`<script>`, `onerror`/`onclick` handlers, `javascript:` URLs, etc.). Used by `CourseInfo.vue` for syllabus fields.
+
 ---
 
 ## Constants (`src/constants/`)
@@ -445,7 +459,7 @@ useSeoMeta({
 All Vite env vars must be prefixed with `VITE_`:
 
 | Variable                  | Default | Purpose                             |
-| ------------------------- | ------- | ----------------------------------- |
+|---------------------------|---------|-------------------------------------|
 | `VITE_API_URL`            | `/api`  | Axios baseURL                       |
 | `VITE_FARO_COLLECTOR_URL` | —       | Grafana Faro collector URL (opt-in) |
 
@@ -473,7 +487,7 @@ app.mount('#app')
 ### What is captured
 
 | Signal                       | Mechanism                                        |
-| ---------------------------- | ------------------------------------------------ |
+|------------------------------|--------------------------------------------------|
 | JS errors                    | `app.config.errorHandler`                        |
 | Unhandled promise rejections | `window.unhandledrejection` listener             |
 | Vue component errors         | forwarded through `app.config.errorHandler`      |

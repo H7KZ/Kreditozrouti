@@ -1,4 +1,4 @@
-# Kreditožrouti — Regulatory Compliance & Terms of Usage
+# Kreditožrouti - Regulatory Compliance & Terms of Usage
 
 _Verification of Compliance with VŠE Internal Regulations_
 
@@ -18,10 +18,10 @@ answer: yes, it's fully compliant. Here's the detailed breakdown.
 
 **Compliance Summary**
 
-- SR 05/2018 (Data Protection): **COMPLIANT** — No personal data processed
-- PR 02/2023 (IS Usage Rules): **COMPLIANT** — Read-only public data access, scraping approved by InSIS řídicí výbor
-- PR 04/2019 (Webhosting Rules): **NOT APPLICABLE** — Self-hosted infrastructure
-- Study & Examination Rules: **COMPLIANT** — Supports student course discovery
+- SR 05/2018 (Data Protection): **COMPLIANT** - No personal data processed
+- PR 02/2023 (IS Usage Rules): **COMPLIANT** - Read-only public data access with load-limiting mitigations (see §4.3)
+- PR 04/2019 (Webhosting Rules): **NOT APPLICABLE** - Self-hosted infrastructure
+- Study & Examination Rules: **COMPLIANT** - Supports student course discovery
 
 ## 2. Application Overview
 
@@ -35,37 +35,37 @@ and presents it through a modern search interface with advanced filtering capabi
 | ------------------------------------------------- | -------------------- | --------------------- |
 | Course metadata (title, ident, credits, syllabus) | InSIS public catalog | No                    |
 | Timetable slots (day, time, room)                 | InSIS public catalog | No                    |
-| Lecturer names (as course attribute)              | InSIS public catalog | Limited — see §2.2    |
+| Lecturer names (as course attribute)              | InSIS public catalog | Limited - see §2.2    |
 | Study plans (structure, categories)               | InSIS public catalog | No                    |
 | Faculty information                               | InSIS public catalog | No                    |
-| Student personal data                             | NOT COLLECTED        | N/A — Never accessed  |
-| Student grades / enrollment                       | NOT COLLECTED        | N/A — Never accessed  |
-| Authentication credentials                        | NOT COLLECTED        | N/A — No login system |
+| Student personal data                             | NOT COLLECTED        | N/A - Never accessed  |
+| Student grades / enrollment                       | NOT COLLECTED        | N/A - Never accessed  |
+| Authentication credentials                        | NOT COLLECTED        | N/A - No login system |
 
-### 2.2 Lecturer Names — Classification
+### 2.2 Lecturer Names - Classification
 
 Lecturer names appear as attributes of course records in the publicly accessible InSIS catalog. Per SR 05/2018 Article
 19 (2), VŠE permits publication of employee names, titles, position, and teaching activities (subparagraphs a–c, e, n).
 Kreditožrouti displays lecturer names strictly in the context of course teaching assignments, which falls within this
 permitted scope. No additional personal information (contact details, photos, research output) is scraped or displayed.
 
-## 3. SR 05/2018 — Data Protection
+## 3. SR 05/2018 - Data Protection
 
 Směrnice rektora 05/2018 (Ochrana a zpracování osobních údajů) implements GDPR requirements within VŠE. This section
 maps each applicable article to Kreditožrouti's implementation.
 
-| Article    | Requirement                                                        | Status | Implementation                                                                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Art. 1(2)  | Scope: processing by employees/students in course of duties        | ✅     | Kreditožrouti processes only publicly available course catalog data. No student or employee personal data is collected, stored, or processed beyond what is already public in InSIS.             |
-| Art. 13    | Register processing activities with Representative (DPO)           | N/A    | No personal data processing activity exists that requires registration. The application processes publicly available institutional data (course metadata), not personal data per GDPR Art. 4(1). |
-| Art. 14(1) | Lawful basis for processing required                               | ✅     | Primary data (courses, timetables, plans) is institutional, not personal. Lecturer names are published per Art. 19(2)(n). No additional lawful basis is required.                                |
-| Art. 16    | Special categories (biometric, health) require explicit consent    | N/A    | No special category data is collected or processed. The application has no user accounts, no biometric data, no health data.                                                                     |
-| Art. 17    | Inform data subjects transparently                                 | ✅     | Lecturers are displayed only within the context of their publicly listed teaching assignments. A disclaimer is shown on the application.                                                         |
-| Art. 19(2) | Publishable data limited to: name, titles, position, teaching      | ✅     | Only lecturer name as a course attribute is displayed, which is explicitly within the permitted scope (subparagraph n: teaching carried out at VŠE).                                             |
-| Art. 20    | Third-party data sharing requires DPO notification                 | N/A    | Kreditožrouti does not share any data with third parties. A self-hosted analytics instance (Umami) runs on the same server — no data is transmitted externally. See section 7.                   |
-| Art. 21    | Security measures: encryption, access controls, incident reporting | ✅     | HTTPS via Traefik/Let's Encrypt. Environment-based secrets. Parameterized queries. Bearer token authentication for admin endpoints. Grafana Faro error tracking.                                 |
+| Article    | Requirement                                                        | Status | Implementation                                                                                                                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Art. 1(2)  | Scope: processing by employees/students in course of duties        | ✅     | Kreditožrouti processes only publicly available course catalog data. No student or employee personal data is collected, stored, or processed beyond what is already public in InSIS.                                                                          |
+| Art. 13    | Register processing activities with Representative (DPO)           | N/A    | No personal data processing activity exists that requires registration. The application processes publicly available institutional data (course metadata), not personal data per GDPR Art. 4(1).                                                              |
+| Art. 14(1) | Lawful basis for processing required                               | ✅     | Primary data (courses, timetables, plans) is institutional, not personal. Lecturer names are published per Art. 19(2)(n). No additional lawful basis is required.                                                                                             |
+| Art. 16    | Special categories (biometric, health) require explicit consent    | N/A    | No special category data is collected or processed. The application has no user accounts, no biometric data, no health data.                                                                                                                                  |
+| Art. 17    | Inform data subjects transparently                                 | ✅     | Lecturers are displayed only within the context of their publicly listed teaching assignments. A disclaimer is shown on the application.                                                                                                                      |
+| Art. 19(2) | Publishable data limited to: name, titles, position, teaching      | ✅     | Only lecturer name as a course attribute is displayed, which is explicitly within the permitted scope (subparagraph n: teaching carried out at VŠE).                                                                                                          |
+| Art. 20    | Third-party data sharing requires DPO notification                 | N/A    | Kreditožrouti does not share any data with third parties. Both the analytics instance (Umami) and the error-reporting collector (Grafana Faro) are self-hosted on the same server - no data is transmitted to external processors. See section 7.             |
+| Art. 21    | Security measures: encryption, access controls, incident reporting | ✅     | HTTPS via Traefik/Let's Encrypt. Environment-based secrets. Parameterized queries. Bearer token authentication for admin endpoints. Grafana Faro error reporting (errors + Web Vitals only, session tracking disabled, self-hosted collector). See section 7. |
 
-## 4. PR 02/2023 — IS Usage Rules
+## 4. PR 02/2023 - IS Usage Rules
 
 Pravidla provozování a využívání informačních systémů (PR 02/2023) governs the creation, operation, and usage of
 information systems at VŠE.
@@ -80,23 +80,28 @@ analyzed below.
 
 ### 4.2 Relevant Provisions
 
-| Article      | Requirement                                                               | Status      | Kreditožrouti Position                                                                                                                                                                           |
-| ------------ | ------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Art. 3(5)    | VŠE maintains a registry of its IS, managed by Cyber Security Manager     | N/A         | Kreditožrouti is not a VŠE IS and therefore is not subject to registry. It is a student project hosted on external infrastructure.                                                               |
-| Art. 8(2)    | Users must handle IS data in accordance with its purpose and VŠE policies | ✅          | All data sourced from InSIS is used strictly for course discovery and schedule planning — the same purpose for which it is publicly available in InSIS.                                          |
-| Art. 9A.8(1) | Users must not arbitrarily modify, insert, or delete data in InSIS        | ✅          | Kreditožrouti performs READ-ONLY operations on publicly accessible InSIS pages. No data is written back. No modifications are made.                                                              |
-| Art. 9A.8(2) | Automated execution of InSIS functionality requires approval              | ✅ Approved | The InSIS Řídicí výbor (Steering Committee) has reviewed and approved this use case. The scraper operates read-only with rate limiting, job deduplication, and scheduled off-peak runs (1–2 AM). |
+| Article      | Requirement                                                               | Status      | Kreditožrouti Position                                                                                                                                                                                                                     |
+| ------------ | ------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Art. 3(5)    | VŠE maintains a registry of its IS, managed by Cyber Security Manager     | N/A         | Kreditožrouti is not a VŠE IS and therefore is not subject to registry. It is a student project hosted on external infrastructure.                                                                                                         |
+| Art. 8(2)    | Users must handle IS data in accordance with its purpose and VŠE policies | ✅          | All data sourced from InSIS is used strictly for course discovery and schedule planning - the same purpose for which it is publicly available in InSIS.                                                                                    |
+| Art. 9A.8(1) | Users must not arbitrarily modify, insert, or delete data in InSIS        | ✅          | Kreditožrouti performs READ-ONLY operations on publicly accessible InSIS pages. No data is written back. No modifications are made.                                                                                                        |
+| Art. 9A.8(2) | Automated execution of InSIS functionality requires approval              | ⚠️ See §4.3 | The scraper operates read-only against the publicly accessible catalog, with rate limiting, job deduplication, and scheduled off-peak runs (1–2 AM). No formal InSIS Řídicí výbor approval has been documented for this project; see §4.3. |
 
-### 4.3 InSIS Steering Committee Approval
+### 4.3 InSIS Steering Committee Approval - Status
 
-The InSIS Řídicí výbor (Steering Committee) — the administrators responsible for the InSIS information system — has
-reviewed Kreditožrouti's scraping scope, frequency, rate limiting measures, and data usage, and has granted approval for
-this project use case.
+Art. 9A.8 (2) provides that automated execution of InSIS functionality requires approval. Kreditožrouti has **not**
+obtained a documented approval from the InSIS Řídicí výbor (Steering Committee) for this project. We do not claim such
+an approval exists.
 
-This approval covers read-only scraping of the publicly accessible InSIS course catalog for the purpose of course
-discovery and schedule planning by VŠE students.
+Our position is that the operation is limited to read-only access of the publicly accessible course catalog (no
+authentication, no write operations, no automation of InSIS internal functions), and is designed to minimise load
+through rate limiting, job deduplication, and scheduled off-peak runs (1–2 AM). Should the InSIS administrators
+determine that formal approval is required, we will seek it and will suspend or adjust scraping on request.
 
-## 5. PR 04/2019 — Webhosting Rules
+If you administer InSIS and wish to review or object to this activity, please contact us via the channels listed in this
+document.
+
+## 5. PR 04/2019 - Webhosting Rules
 
 Pravidla používání serveru webhosting.vse.cz (PR 04/2019) governs websites hosted on VŠE's webhosting.vse.cz server.
 
@@ -129,7 +134,7 @@ scheduling operate. Kreditožrouti supports (but does not replace) the official 
 
 ## 7. Analytics and Privacy
 
-Kreditožrouti uses **Umami Analytics** — a self-hosted instance. Umami is an open-source analytics tool designed with
+Kreditožrouti uses **Umami Analytics** - a self-hosted instance. Umami is an open-source analytics tool designed with
 privacy as a default:
 
 | Property             | Detail                                                                                              |
@@ -137,8 +142,27 @@ privacy as a default:
 | Cookies              | Not used                                                                                            |
 | IP addresses         | Hashed before storage, never stored in readable form                                                |
 | Personal identifiers | Not collected                                                                                       |
-| Third-party sharing  | None — data stays on our own server                                                                 |
-| Legal basis (GDPR)   | Legitimate interest (Art. 6(1)(f)) — anonymised usage measurement without individual identification |
+| Third-party sharing  | None - data stays on our own server                                                                 |
+| Legal basis (GDPR)   | Legitimate interest (Art. 6(1)(f)) - anonymised usage measurement without individual identification |
 
 Data collected: page views, session duration, referrer, feature interactions (course added, conflict detected, wizard
 completed). None of this data can identify a specific user.
+
+### 7.1 Error reporting (Grafana Faro)
+
+In addition to Umami, Kreditožrouti runs **Grafana Faro** solely for application error reporting. It is deliberately
+configured to avoid the behavioural tracking and identifiers that a full Real User Monitoring setup would collect:
+
+| Property             | Detail                                                                            |
+| -------------------- | --------------------------------------------------------------------------------- |
+| What is captured     | JavaScript errors (message + stack trace) and Web Vitals performance metrics      |
+| Session tracking     | Disabled - no persistent or pseudonymous identifier stored in the browser         |
+| Console capture      | Disabled - no console output is transmitted                                       |
+| Behavioural tracking | None - no page-view, click, or navigation instrumentation is enabled              |
+| Cookies              | Not used                                                                          |
+| Collector            | Self-hosted on the same infrastructure - not Grafana Cloud, no external processor |
+| Legal basis (GDPR)   | Legitimate interest (Art. 6(1)(f)) - application stability and security           |
+
+Because Faro stores no identifier and performs no behavioural tracking, it is not subject to ePrivacy Art 5 (3) consent
+requirements and requires no consent banner. This is consistent with section 3 (Art. 20): no data is transmitted to
+external third parties.

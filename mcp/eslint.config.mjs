@@ -1,7 +1,3 @@
-;
-// @ts-check
-
-// @ts-check
 // @ts-check
 import eslint from '@eslint/js';
 import prettierConfig from 'eslint-config-prettier';
@@ -10,7 +6,6 @@ import pluginRegexp from 'eslint-plugin-regexp';
 import pluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-
 
 export default tseslint.config(
 	{
@@ -75,7 +70,7 @@ export default tseslint.config(
 			// unicorn — high-signal only
 			'unicorn/filename-case': [
 				'error',
-				{ cases: { kebabCase: true, camelCase: true, pascalCase: true }, ignore: [/InSIS/u, /HTML/u, /HTTP/u, /SQL/u, /API/u, /MCP/u, /_/u] }
+				{ cases: { kebabCase: true, camelCase: true, pascalCase: true }, ignore: [/InSIS/u, /HTML/u, /HTTP/u, /SQL/u, /API/u, /MCP/u, /JWT/u, /_/u] }
 			],
 
 			'unicorn/no-useless-undefined': 'error',

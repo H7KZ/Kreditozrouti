@@ -7,7 +7,7 @@ it does not call the `../../api` HTTP routes.
 ## Tools
 
 | Tool                            | Description                                                    |
-| ------------------------------- | -------------------------------------------------------------- |
+|---------------------------------|----------------------------------------------------------------|
 | `vse_list_faculties`            | List all VŠE faculties with publicly visible timetables        |
 | `vse_search_courses`            | Search courses by text, faculty, semester, or language         |
 | `vse_get_course`                | Get a course by numeric ID                                     |
@@ -47,18 +47,33 @@ Configure in `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```bash
 node dist/index.js
 # Listens on MCP_PORT (default 3000)
-# POST /mcp   — MCP protocol
-# GET  /health — health check
+# POST /mcp                                   — MCP protocol (requires Bearer token)
+# GET  /health                                — health check
+# GET  /.well-known/oauth-authorization-server — OAuth 2.1 metadata (RFC 8414)
+# GET  /.well-known/oauth-protected-resource  — protected resource metadata (RFC 9728)
+# POST /mcp/oauth/register                    — Dynamic Client Registration (RFC 7591)
+# GET  /mcp/oauth/authorize                   — Authorization Code endpoint (PKCE)
+# POST /mcp/oauth/token                       — Token endpoint
 ```
+
+HTTP mode requires OAuth 2.1 authentication. Clients that support Dynamic Client Registration (Claude Desktop, ChatGPT,
+Cursor) handle this automatically - no manual setup needed.
+
+The OAuth store is in-memory but bounded: registered clients and authorization codes are capped per map and expire on a
+TTL, a periodic sweep drops abandoned entries, and the `register`/`authorize`/`token` endpoints are rate-limited (30
+req/min). A registration or authorize flood cannot grow the heap without bound.
 
 ## Environment Variables
 
-| Variable    | Required | Default       | Description                    |
-| ----------- | -------- | ------------- | ------------------------------ |
-| `MYSQL_URI` | yes      | —             | mysql2 connection string       |
-| `MCP_PORT`  | no       | `3000`        | HTTP listen port               |
-| `NODE_ENV`  | no       | `development` | Enables production rate limits |
-| `LOG_LEVEL` | no       | `info`        | Pino log level                 |
+| Variable                     | Required | Default                    | Description                                                                                                                                                                                                                                             |
+|------------------------------|----------|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `MYSQL_URI`                  | yes      | —                          | mysql2 connection string                                                                                                                                                                                                                                |
+| `MCP_PORT`                   | no       | `3000`                     | HTTP listen port                                                                                                                                                                                                                                        |
+| `NODE_ENV`                   | no       | `development`              | Enables production rate limits                                                                                                                                                                                                                          |
+| `LOG_LEVEL`                  | no       | `info`                     | Pino log level                                                                                                                                                                                                                                          |
+| `MCP_BASE_URL`               | no       | `http://localhost:3000`    | Public base URL of the server (used in OAuth metadata)                                                                                                                                                                                                  |
+| `MCP_JWT_SECRET`             | no*      | auto-generated (ephemeral) | HMAC-SHA256 secret for signing access tokens. *Required in production - tokens won't survive restarts if unset                                                                                                                                          |
+| `MCP_ALLOWED_REDIRECT_HOSTS` | no       | `claude.ai,claude.com`     | Comma-separated https hosts (subdomains included) permitted as OAuth `redirect_uri`. Outside production, `http://localhost` and `http://127.0.0.1` (any port) are also permitted. Any other `redirect_uri` is rejected at registration and at authorize |
 
 ## Docker
 
@@ -76,8 +91,8 @@ The `mcp` service in `deployment/docker-compose.yml` mounts the root `.env` file
 - **`@kreditozrouti/core/db`** — Kysely `Database` type (table interfaces)
 - **`@kreditozrouti/core/services`** — pure DB-query services (CourseService, etc.)
 
-The `../../mcp` package owns its own MySQL connection (`mcp/src/Db/client.ts`) and passes the `Kysely<Database>` instance
-into each service call.
+The `../../mcp` package owns its own MySQL connection (`mcp/src/Db/client.ts`) and passes the `Kysely<Database>`
+instance into each service call.
 
 ---
 
@@ -102,7 +117,20 @@ into each service call.
 }
 ```
 
-**Docker/HTTP** — connect via the running HTTP server:
+**Remote (production)** — connect to `https://kreditozrouti.cz/mcp`. Claude Desktop handles OAuth automatically:
+
+```json
+{
+	"mcpServers": {
+		"kreditozrouti": {
+			"url": "https://kreditozrouti.cz/mcp"
+		}
+	}
+}
+```
+
+**Docker/HTTP (local)** — connect via the running HTTP server. OAuth is still required; clients negotiate it
+automatically:
 
 ```json
 {
@@ -181,7 +209,7 @@ Or HTTP mode:
 ## Transport Modes (detail)
 
 | Flag      | Transport                      | Use case                                                                    |
-| --------- | ------------------------------ | --------------------------------------------------------------------------- |
+|-----------|--------------------------------|-----------------------------------------------------------------------------|
 | `--stdio` | `StdioServerTransport`         | Local dev, Claude Desktop, Cursor, VS Code — process launched by the client |
 | _(none)_  | Streamable HTTP on `POST /mcp` | Docker / production — client connects over the network                      |
 
@@ -193,7 +221,7 @@ is only available in HTTP mode.
 ## Tools Reference
 
 | Tool                            | Description                                               | Key Parameters                                                                                                                                         | Returns                                        |
-| ------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
+|---------------------------------|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------|
 | `vse_list_faculties`            | List all VŠE faculties                                    | _(none)_                                                                                                                                               | Array of faculty objects (id, name, etc.)      |
 | `vse_search_courses`            | Search courses by text, faculty, semester, or language    | `query?` (string), `faculty_id?`, `semester?` (`ZS`/`LS`/`Both`), `language?` (e.g. `"CS"`, `"EN"`), `limit` (1–100, default 20), `offset` (default 0) | `{ courses, total }`                           |
 | `vse_get_course`                | Get a single course by numeric ID                         | `id` (number, required)                                                                                                                                | Course object with units and slots, or error   |
@@ -208,7 +236,7 @@ Resources are read-only, URI-addressed data the host injects into context. Read 
 Tools.
 
 | URI                              | Name                       | Description                                                                   |
-| -------------------------------- | -------------------------- | ----------------------------------------------------------------------------- |
+|----------------------------------|----------------------------|-------------------------------------------------------------------------------|
 | `vse://faculties`                | VŠE Faculties              | All faculties with their IDs. Read before filtering by faculty.               |
 | `vse://study-plans`              | VŠE Study Plans            | All study plans across all faculties.                                         |
 | `vse://study-plans/{faculty_id}` | VŠE Study Plans by Faculty | Study plans for a specific faculty (e.g. `vse://study-plans/FIS`).            |
@@ -220,7 +248,7 @@ Prompts are user-invocable workflow templates that scaffold common tasks. In Cla
 slash-commands.
 
 | Name             | Args                                                  | Description                                                                                                                     |
-| ---------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+|------------------|-------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | `build_schedule` | `semester` (ZS/LS, required), `faculty_id` (optional) | Scaffolds the full schedule-building workflow: read faculties → browse study plans → pick courses → check conflicts → optimize. |
 | `explore_plan`   | `faculty_id` (required)                               | Scaffolds browsing a faculty's study plans and summarising their courses.                                                       |
 
@@ -254,7 +282,7 @@ All times throughout the MCP server — in parameters, responses, and conflict r
 midnight** (integers, 0–1439).
 
 | Clock time | Minutes |
-| ---------- | ------- |
+|------------|---------|
 | `08:00`    | `480`   |
 | `09:30`    | `570`   |
 | `12:00`    | `720`   |
@@ -274,7 +302,8 @@ When you pass blackout windows to the optimizer or interpret conflict entries, c
 2. **Use Prompts for standard workflows.** The `build_schedule` and `explore_plan` prompts encode the correct call
    sequence. Invoke them at the start of a session rather than rediscovering the order from tool descriptions.
 
-3. **Search with filters, paginate large result sets.** `vse_search_courses` defaults to 20 results. Use `limit` (up to 100) and `offset` to page through. Combine `query`, `faculty_id`, `semester`, and `language` to narrow results before
+3. **Search with filters, paginate large result sets.** `vse_search_courses` defaults to 20 results. Use `limit` (up to
+   100) and `offset` to page through. Combine `query`, `faculty_id`, `semester`, and `language` to narrow results before
    fetching full course objects.
 
 4. **Fetch a full course when you need slots.** `vse_search_courses` returns summary data. Call `vse_get_course` (or

@@ -30,6 +30,7 @@ interface BlackoutRow {
 function minutesToTime(m: number) {
 	return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
 }
+
 function timeToMinutes(t: string): number {
 	const [h, m] = t.split(':').map(Number)
 	return isNaN(h) || isNaN(m) ? NaN : h * 60 + m

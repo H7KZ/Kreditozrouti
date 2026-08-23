@@ -7,7 +7,7 @@ order: 1
 # Filters
 
 The left sidebar contains all filters. Active filters are counted in the sidebar header badge. Each filter section is
-collapsible — click the section header to expand or hide it.
+collapsible - click the section header to expand or hide it.
 
 Filters combine: all active filters apply at once. To start fresh, use **Clear all** in the sidebar header.
 
@@ -55,13 +55,13 @@ Filter to courses worth a specific number of ECTS credits. Useful when you need 
 
 Filter by how the course is completed:
 
-- **Exam** (zkouška) — written or oral final exam
-- **Credit** (zápočet) — continuous assessment, no final exam
-- **Defense** (obhajoba) — thesis or project defense
+- **Exam** (zkouška) - written or oral final exam
+- **Credit** (zápočet) - continuous assessment, no final exam
+- **Defense** (obhajoba) - thesis or project defense
 
 ## Assessment Methods
 
-Filter by how the course is assessed — written exam, oral exam, project, seminar paper, test, presentation, and more.
+Filter by how the course is assessed - written exam, oral exam, project, seminar paper, test, presentation, and more.
 Multiple methods can be selected.
 
 ## Lecturers
@@ -81,7 +81,7 @@ To remove a time restriction: expand the Time Restriction section and delete the
 ## Completed Courses
 
 Toggle to show or hide courses you've marked as already passed. When hidden, completed courses disappear from the list
-entirely — useful for keeping your view focused on what you still need.
+entirely - useful for keeping your view focused on what you still need.
 
 See [Mark as completed](/docs/en/features/timetable#mark-as-completed) for how to mark courses.
 
@@ -93,11 +93,10 @@ have at least one non-conflicting slot remain visible so you can swap to a diffe
 ## Fits My Timetable
 
 Sorts the course list by how well each course fits into your current schedule and hides courses that conflict with every
-available slot. Courses are ranked by fit quality:
+available slot. Courses that fit especially well show a labelled chip:
 
-- **Fills gap** — the course slots into an existing gap in your week
-- **Same day** — the course is on a day you already have classes
-- **New day** — the course adds a new day to your schedule
+- **Fills a gap** - the course slots into an existing gap between your classes (the best fit)
+- **Same day** - the course lands on a day you already attend
 
-The reason badge appears on each row so you can see at a glance why a course ranked where it did. This filter is
-disabled when your timetable is empty.
+Only these two positive cases show a chip, so a chip on a row reliably means the course is worth a look; neutral fits
+and courses that only add a new day show no chip. This filter is disabled when your timetable is empty.

@@ -48,8 +48,8 @@ Where behavior can be swapped without touching the rest of the codebase:
 
 - **Service layer** (`../client/src/services`) — all HTTP calls go through here. Swap HTTP for GraphQL or a mock here
   without changing stores.
-- **`filtersStore`** (`../client/src/stores/filters.store.ts`) — owns all filter state and persistence. Swap localStorage
-  for URL-based strategy here without touching other stores.
+- **`filtersStore`** (`../client/src/stores/filters.store.ts`) — owns all filter state and persistence. Swap
+  localStorage for URL-based strategy here without touching other stores.
 - **`shared/domain/timetable.ts`** — pure conflict detection (`unitsConflict`, `unitsCampusConflict`,
   `checkCourseCompleteness`). No Vue dependency. Extend or swap conflict logic here without touching stores.
 - **`shared/domain/insis.ts`** — pure slot-type detection (`getSlotType`) and InSIS enums. No i18n dependency.

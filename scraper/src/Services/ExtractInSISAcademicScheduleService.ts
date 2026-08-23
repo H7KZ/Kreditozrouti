@@ -1,4 +1,4 @@
-﻿import type { InSISSemester } from '@kreditozrouti/types'
+import type { InSISSemester } from '@kreditozrouti/types'
 import { extractSemester, extractYear } from '@kreditozrouti/core/utils'
 import * as cheerio from 'cheerio'
 import { cleanText } from '@scraper/Utils/HTMLUtils'
@@ -94,7 +94,12 @@ export default class ExtractInSISAcademicScheduleService {
 	}
 }
 
-export function parsePeriodLabel(label: string): { semester: InSISSemester | null; year: number; level: string | null; facultyIdent: string } | null {
+export function parsePeriodLabel(label: string): {
+	semester: InSISSemester | null
+	year: number
+	level: string | null
+	facultyIdent: string
+} | null {
 	const parts = label
 		.split(' - ')
 		.map(p => p.trim())

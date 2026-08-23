@@ -49,7 +49,12 @@ export const useWizardDataStore = defineStore('wizardData', () => {
 		loading.value = true
 		error.value = null
 		try {
-			const data = await fetchStudyPlans({ faculty_ids: [wizardStore.facultyId], semesters: ['ZS'], limit: 0, offset: 0 })
+			const data = await fetchStudyPlans({
+				faculty_ids: [wizardStore.facultyId],
+				semesters: ['ZS'],
+				limit: 0,
+				offset: 0
+			})
 			yearFacets.value = data.facets.years
 		} catch (e) {
 			error.value = t('stores.wizardData.errors.loadYears')

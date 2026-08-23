@@ -57,8 +57,18 @@ export default class TimetableTools {
 						const aSlot = a.slot
 						const bSlot = b.slot
 						const conflict = unitsConflict(
-							{ day: aSlot.day ?? undefined, date: aSlot.date ?? undefined, timeFrom: aSlot.time_from!, timeTo: aSlot.time_to! },
-							{ day: bSlot.day ?? undefined, date: bSlot.date ?? undefined, timeFrom: bSlot.time_from!, timeTo: bSlot.time_to! }
+							{
+								day: aSlot.day ?? undefined,
+								date: aSlot.date ?? undefined,
+								timeFrom: aSlot.time_from!,
+								timeTo: aSlot.time_to!
+							},
+							{
+								day: bSlot.day ?? undefined,
+								date: bSlot.date ?? undefined,
+								timeFrom: bSlot.time_from!,
+								timeTo: bSlot.time_to!
+							}
 						)
 						if (conflict) {
 							conflicts.push({
@@ -74,7 +84,14 @@ export default class TimetableTools {
 					}
 				}
 
-				return { content: [{ type: 'text', text: JSON.stringify({ has_conflicts: conflicts.length > 0, conflicts }, null, 2) }] }
+				return {
+					content: [
+						{
+							type: 'text',
+							text: JSON.stringify({ has_conflicts: conflicts.length > 0, conflicts }, null, 2)
+						}
+					]
+				}
 			} catch (err) {
 				return {
 					content: [{ type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` }],

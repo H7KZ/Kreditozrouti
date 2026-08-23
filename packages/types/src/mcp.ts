@@ -1,4 +1,4 @@
-﻿import type { CourseUnitType, Day, InSISSemester } from './domain.js'
+import type { CourseUnitType, Day, InSISSemester } from './domain.js'
 
 export interface MCPFaculty {
 	id: string
@@ -61,7 +61,13 @@ export interface MCPCourse {
 	faculty: { id: string; title: string | null } | null
 	units: MCPCourseUnit[]
 	assessments: MCPCourseAssessment[]
-	study_plans: { id: number; study_plan_id: number; course_ident: string; group: string | null; category: string | null }[]
+	study_plans: {
+		id: number
+		study_plan_id: number
+		course_ident: string
+		group: string | null
+		category: string | null
+	}[]
 }
 
 export interface CourseFilter {

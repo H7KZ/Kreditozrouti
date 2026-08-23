@@ -16,7 +16,7 @@ config.port // default 40080
 config.uri // full API public URI
 config.domain // top-level domain for cookie scoping
 config.allowedOrigins // string[] from API_ALLOWED_ORIGINS (comma-split)
-config.sessionSecret // API_SESSION_SECRET
+config.sessionSecret // API_SESSION_SECRET (required in production; ephemeral random in dev/local if unset)
 config.commandToken // API_COMMAND_TOKEN (Bearer token for /commands)
 config.redis.uri // REDIS_URI
 config.mysql.uri // MYSQL_URI
@@ -109,7 +109,7 @@ RequestHandler[]
 Returns two middleware functions (applied together on scrape routes):
 
 | Limiter        | Key           | Limit    | Window     |
-| -------------- | ------------- | -------- | ---------- |
+|----------------|---------------|----------|------------|
 | IP limiter     | `req.ip`      | 3 points | 10 minutes |
 | Course limiter | `course:{id}` | 1 point  | 10 minutes |
 
@@ -159,7 +159,7 @@ res.locals.wideEvent = {
 Log emission uses **level-based routing** (replaces the old `shouldLog` probability sampling):
 
 | Condition         | Level   | Rationale                       |
-| ----------------- | ------- | ------------------------------- |
+|-------------------|---------|---------------------------------|
 | status ≥ 500      | `error` | Server error — always emitted   |
 | status 4xx        | `warn`  | Client error — always emitted   |
 | duration > 1000ms | `info`  | Slow request — always emitted   |

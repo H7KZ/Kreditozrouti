@@ -56,7 +56,7 @@ Key configuration highlights:
 Defines three global middlewares and TLS options:
 
 | Middleware         | What it does                                                                                                                          |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------|---------------------------------------------------------------------------------------------------------------------------------------|
 | `security-headers` | HSTS (1y + preload), X-Frame-Options: DENY, X-Content-Type-Options: nosniff, Referrer-Policy, Permissions-Policy, X-XSS-Protection: 0 |
 | `rate-limit`       | 100 avg / 200 burst per real IP per second; source depth 1 (reads real IP from X-Forwarded-For)                                       |
 | `crowdsec-bouncer` | IP reputation via CrowdSec LAPI; OWASP AppSec CRS request inspection (SQLi, XSS, LFI, etc.)                                           |
@@ -202,7 +202,7 @@ auto-provisioned with Prometheus as the default datasource via `grafana/provisio
 ### Services
 
 | Container  | Image                    | Purpose                |
-| ---------- | ------------------------ | ---------------------- |
+|------------|--------------------------|------------------------|
 | `postgres` | `postgres:16-alpine`     | Database               |
 | `valkey`   | `valkey/valkey:8-alpine` | Redis-compatible cache |
 
@@ -243,7 +243,7 @@ docker network create redis-network
 ### Production volumes (`../../deployment/production/volumes.yml`)
 
 | Volume                        | Service  | Contents                        |
-| ----------------------------- | -------- | ------------------------------- |
+|-------------------------------|----------|---------------------------------|
 | `mysql-data-volume`           | MySQL    | Database files                  |
 | `traefik-certificates-volume` | Traefik  | TLS certs (`acme.json`)         |
 | `traefik-logs-volume`         | Traefik  | Access logs (shared with Alloy) |
@@ -273,7 +273,7 @@ docker run --rm \
 Environment files live in `~/variables/` on the VPS, never in the repository.
 
 | File                    | Environment |
-| ----------------------- | ----------- |
+|-------------------------|-------------|
 | `~/variables/.env.prod` | Production  |
 | `~/variables/.env.dev`  | Development |
 

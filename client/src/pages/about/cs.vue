@@ -47,7 +47,7 @@ useHead({
 						name: 'Jak sestavit bezkonfliktní rozvrh na VŠE?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Kreditožrouti zobrazí všechny předměty z tvého studijního plánu na jednom místě. Vybereš si rozvrhové akce kliknutím — aplikace okamžitě ukáže, které se překrývají. Stačí zvolit jiné cvičení nebo přednášku a konflikt zmizí.'
+							text: 'Kreditožrouti zobrazí všechny předměty z tvého studijního plánu na jednom místě. Vybereš si rozvrhové akce kliknutím - aplikace okamžitě ukáže, které se překrývají. Stačí zvolit jiné cvičení nebo přednášku a konflikt zmizí.'
 						}
 					},
 					{
@@ -63,7 +63,7 @@ useHead({
 						name: 'Co jsou kreditožrouti a proč jsou problém?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Kreditožrouti jsou předměty, které studentům spotřebují rezervní kredity — buď kvůli neúspěchu u zkoušky, nebo kvůli náročnosti celého semestru. Kreditožrouti (aplikace) ti pomůže sestavit rozvrh tak, abys věděl, do čeho jdeš.'
+							text: 'Kreditožrouti jsou předměty, které studentům spotřebují rezervní kredity - buď kvůli neúspěchu u zkoušky, nebo kvůli náročnosti celého semestru. Kreditožrouti (aplikace) ti pomůže sestavit rozvrh tak, abys věděl, do čeho jdeš.'
 						}
 					},
 					{
@@ -71,7 +71,7 @@ useHead({
 						name: 'Čím se Kreditožrouti liší od InSISu?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'InSIS je oficiální systém VŠE — nutný pro finální zápis. Kreditožrouti je pomocný nástroj, který ti umožňuje prohlédnout si všechny dostupné předměty najednou, filtrovat je a sestavit si rozvrh ještě před tím, než InSIS otevřeš. Šetří hodiny přepínání mezi záložkami.'
+							text: 'InSIS je oficiální systém VŠE - nutný pro finální zápis. Kreditožrouti je pomocný nástroj, který ti umožňuje prohlédnout si všechny dostupné předměty najednou, filtrovat je a sestavit si rozvrh ještě před tím, než InSIS otevřeš. Šetří hodiny přepínání mezi záložkami.'
 						}
 					},
 					{
@@ -142,7 +142,7 @@ useHead({
 						<div>
 							<p class="font-medium text-(--insis-text)">Zkontroluj konflikty</p>
 							<p class="mt-1 text-sm text-(--insis-text-2)">
-								Kolize se zobrazí okamžitě. Vyřeš je před zápisem — ne až při samotném klikání v InSISu.
+								Kolize se zobrazí okamžitě. Vyřeš je před zápisem - ne až při samotném klikání v InSISu.
 							</p>
 						</div>
 					</li>
@@ -171,7 +171,7 @@ useHead({
 					<div class="rounded-lg border border-(--insis-border) bg-(--insis-surface) p-5">
 						<IconGlobe class="mb-3 h-5 w-5 text-(--insis-blue)" />
 						<h3 class="mb-1 font-medium text-(--insis-text)">Čeština i angličtina</h3>
-						<p class="text-sm text-(--insis-text-2)">Rozhraní funguje v češtině i angličtině — ideální pro zahraniční studenty.</p>
+						<p class="text-sm text-(--insis-text-2)">Rozhraní funguje v češtině i angličtině - ideální pro zahraniční studenty.</p>
 					</div>
 					<div class="rounded-lg border border-(--insis-border) bg-(--insis-surface) p-5">
 						<IconBuilding2 class="mb-3 h-5 w-5 text-(--insis-blue)" />
@@ -193,7 +193,7 @@ useHead({
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Jak sestavit bezkonfliktní rozvrh na VŠE?</h3>
 						<p class="text-sm text-(--insis-text-2)">
-							Kreditožrouti zobrazí všechny předměty z tvého studijního plánu na jednom místě. Vybereš si rozvrhové akce kliknutím — aplikace
+							Kreditožrouti zobrazí všechny předměty z tvého studijního plánu na jednom místě. Vybereš si rozvrhové akce kliknutím - aplikace
 							okamžitě ukáže, které se překrývají. Stačí zvolit jiné cvičení nebo přednášku a konflikt zmizí.
 						</p>
 					</div>
@@ -208,14 +208,14 @@ useHead({
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Co jsou kreditožrouti a proč jsou problém?</h3>
 						<p class="text-sm text-(--insis-text-2)">
-							Kreditožrouti jsou předměty, které studentům spotřebují rezervní kredity — buď kvůli neúspěchu u zkoušky, nebo kvůli náročnosti
+							Kreditožrouti jsou předměty, které studentům spotřebují rezervní kredity - buď kvůli neúspěchu u zkoušky, nebo kvůli náročnosti
 							celého semestru. Kreditožrouti (aplikace) ti pomůže sestavit rozvrh tak, abys věděl, do čeho jdeš.
 						</p>
 					</div>
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">Čím se Kreditožrouti liší od InSISu?</h3>
 						<p class="text-sm text-(--insis-text-2)">
-							InSIS je oficiální systém VŠE — nutný pro finální zápis. Kreditožrouti je pomocný nástroj, který ti umožňuje prohlédnout si všechny
+							InSIS je oficiální systém VŠE - nutný pro finální zápis. Kreditožrouti je pomocný nástroj, který ti umožňuje prohlédnout si všechny
 							dostupné předměty najednou, filtrovat je a sestavit si rozvrh ještě před tím, než InSIS otevřeš. Šetří hodiny přepínání mezi
 							záložkami.
 						</p>

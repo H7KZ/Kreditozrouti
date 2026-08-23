@@ -93,6 +93,12 @@ function handleStepClick(stepNumber: number) {
 	</div>
 	<!-- Active step name shown only on mobile (labels hidden above) -->
 	<p class="mb-6 text-center text-xs font-medium text-(--insis-blue) sm:hidden">
-		{{ t('components.wizard.WizardSteps.stepLabel', { current: currentStep, total: steps.length, label: steps[currentStep - 1]?.label }) }}
+		{{
+			t('components.wizard.WizardSteps.stepLabel', {
+				current: currentStep,
+				total: steps.length,
+				label: steps[currentStep - 1]?.label
+			})
+		}}
 	</p>
 </template>

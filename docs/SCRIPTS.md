@@ -3,7 +3,7 @@
 > **Split documentation lives in [`docs/scripts/`](scripts/README.md).** This file is a navigation index.
 
 | Document                                                   | Contents                               |
-| ---------------------------------------------------------- | -------------------------------------- |
+|------------------------------------------------------------|----------------------------------------|
 | [**scripts/README.md**](scripts/README.md)                 | Overview table, `lib.sh` utilities     |
 | [**scripts/INFRASTRUCTURE.md**](scripts/INFRASTRUCTURE.md) | install-docker, traefik, github-runner |
 | [**scripts/MAINTENANCE.md**](scripts/MAINTENANCE.md)       | maintenance, docker-cleanup, clone-db  |
@@ -17,7 +17,7 @@ Fires an InSIS scrape job via the API command endpoint.
 ```
 
 | Argument  | Values                               |
-| --------- | ------------------------------------ |
+|-----------|--------------------------------------|
 | `API_URL` | `http://localhost:40080` or prod URL |
 | `MODE`    | `turbo` \| `normal` \| `polite`      |
 | `JOB`     | `catalog` \| `studyplans`            |
@@ -26,7 +26,7 @@ Fires an InSIS scrape job via the API command endpoint.
 **Modes:**
 
 | Mode     | Use case                                    |
-| -------- | ------------------------------------------- |
+|----------|---------------------------------------------|
 | `turbo`  | Night runs only — no delays, max speed      |
 | `normal` | Off-hours manual trigger                    |
 | `polite` | Daytime — human-like pacing, safe for InSIS |

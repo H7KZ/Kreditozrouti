@@ -32,7 +32,14 @@ const props = withDefaults(
 		/** Unit IDs to highlight with an amber ring (used in preview modal). */
 		highlightUnitIds?: number[]
 	}>(),
-	{ units: undefined, showShare: true, showExport: true, enableDrag: true, enableCourseModal: true, highlightUnitIds: undefined }
+	{
+		units: undefined,
+		showShare: true,
+		showExport: true,
+		enableDrag: true,
+		enableCourseModal: true,
+		highlightUnitIds: undefined
+	}
 )
 
 /*

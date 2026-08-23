@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import analytics from '@client/analytics'
 import { STORAGE_KEYS } from '@client/constants/storage.ts'
+import { useFeedbackStore } from '@client/stores/feedback.store'
 import { useTimetableStore } from '@client/stores/timetable.store'
 import { migrateLegacyDay } from '@client/utils/day'
 import { loadFromStorage, saveToStorage } from '@client/utils/localstorage.ts'
@@ -29,6 +30,9 @@ export const useScheduleSlotsStore = defineStore('schedule-slots', () => {
 		activeSlotId.value = newSlot.id
 		persist()
 		analytics.track('schedule_saved', { slot_count: units.length })
+		// One-directional edge: a successful save is the primary feedback trigger.
+		// The feedback store is a leaf and imports nothing back, so no cycle.
+		useFeedbackStore().registerKeyAction()
 		return newSlot
 	}
 

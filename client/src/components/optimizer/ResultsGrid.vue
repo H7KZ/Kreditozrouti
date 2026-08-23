@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { OptimizerCandidateDTO, RemovalCandidateDTO } from '@kreditozrouti/types'
 import { useI18n } from 'vue-i18n'
+import CandidateFit from './CandidateFit.vue'
 import MiniTimetable from './MiniTimetable.vue'
 
 withDefaults(
@@ -49,9 +50,7 @@ const { t } = useI18n()
 						{{ t('components.optimizer.ResultsGrid.option', { n: i + 1 }) }}
 					</span>
 					<MiniTimetable :units="c.units" class="w-full" />
-					<span class="mt-1.5 text-[10px] text-(--insis-text-3)">
-						{{ t('components.optimizer.ResultsGrid.score', { score: c.score.total }) }}
-					</span>
+					<CandidateFit :candidate="c" class="mt-1.5" />
 				</button>
 			</div>
 		</section>
@@ -77,9 +76,7 @@ const { t } = useI18n()
 						{{ t('components.optimizer.ResultsGrid.drops', { course: c.dropped_course_title }) }}
 					</span>
 					<MiniTimetable :units="c.units" class="w-full" />
-					<span class="mt-1.5 text-[10px] text-(--insis-text-3)">
-						{{ t('components.optimizer.ResultsGrid.score', { score: c.score.total }) }}
-					</span>
+					<CandidateFit :candidate="c" class="mt-1.5" />
 				</button>
 			</div>
 		</section>

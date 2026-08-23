@@ -1,4 +1,4 @@
-﻿import type { CourseUnitType, Day, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup, TimeSelection } from './domain.js'
+import type { CourseUnitType, Day, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup, TimeSelection } from './domain.js'
 
 // Filters
 

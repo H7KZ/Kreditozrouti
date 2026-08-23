@@ -5,7 +5,7 @@
 # Services:
 #   - prometheus: Scrapes /metrics from the API; stores time series data
 #   - grafana:    Visualization dashboard, exposed at domain/grafana via Traefik
-#   - loki:       Log aggregation storage (30-day retention)
+#   - loki:       Log aggregation storage (7-day retention)
 #   - alloy:      Log shipping agent — reads Docker stdout, receives Faro browser telemetry
 #
 # Required Environment Variables (in .env):
@@ -36,7 +36,8 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=15d'
+      - '--storage.tsdb.retention.time=7d'
+      - '--storage.tsdb.retention.size=2GB'
       - '--web.enable-lifecycle'
 
     volumes:
@@ -75,6 +76,8 @@ services:
       - prometheus
 
     environment:
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
       - GF_SERVER_ROOT_URL=https://${DOMAIN}/grafana/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
@@ -110,7 +113,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 384M
         reservations:
           cpus: '0.1'
           memory: 128M
@@ -242,7 +245,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 256M
         reservations:
           cpus: '0.1'
           memory: 128M

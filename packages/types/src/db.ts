@@ -1,4 +1,4 @@
-﻿import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from './domain.js'
+import type { InSISDay, InSISSemester, InSISStudyPlanCourseCategory, InSISStudyPlanCourseGroup } from './domain.js'
 import { ColumnType, Generated, Insertable, Selectable } from 'kysely'
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
@@ -113,7 +113,12 @@ export class CourseAssessmentTable {
 	weight!: number | null
 }
 
-export type CourseAssessment<C = void> = Selectable<CourseAssessmentTable> & (C extends void ? unknown : { course: C | null })
+export type CourseAssessment<C = void> = Selectable<CourseAssessmentTable> &
+	(C extends void
+		? unknown
+		: {
+				course: C | null
+			})
 export type NewCourseAssessment = Insertable<Omit<ExcludeMethods<CourseAssessmentTable>, 'id' | 'created_at' | 'updated_at'>>
 
 export type CourseAssessmentWithRelations = CourseAssessment<Course>
@@ -246,7 +251,12 @@ export class StudyPlanCourseIdentTable {
 	category!: InSISStudyPlanCourseCategory
 }
 
-export type StudyPlanCourseIdent<SP = void> = Selectable<StudyPlanCourseIdentTable> & (SP extends void ? unknown : { study_plan: SP | null })
+export type StudyPlanCourseIdent<SP = void> = Selectable<StudyPlanCourseIdentTable> &
+	(SP extends void
+		? unknown
+		: {
+				study_plan: SP | null
+			})
 export type NewStudyPlanCourseIdent = Insertable<Omit<ExcludeMethods<StudyPlanCourseIdentTable>, 'id' | 'created_at' | 'updated_at'>>
 
 // ---------------------------------------------------------------------------

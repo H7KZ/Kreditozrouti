@@ -21,17 +21,35 @@ export default class CourseResources {
 				const id = Number(variables.id)
 				if (Number.isNaN(id)) {
 					return {
-						contents: [{ uri: uri.toString(), mimeType: 'application/json', text: JSON.stringify({ error: 'Invalid course ID' }) }]
+						contents: [
+							{
+								uri: uri.toString(),
+								mimeType: 'application/json',
+								text: JSON.stringify({ error: 'Invalid course ID' })
+							}
+						]
 					}
 				}
 				const course = await CourseService.getById(db, id)
 				if (!course) {
 					return {
-						contents: [{ uri: uri.toString(), mimeType: 'application/json', text: JSON.stringify({ error: 'Course not found' }) }]
+						contents: [
+							{
+								uri: uri.toString(),
+								mimeType: 'application/json',
+								text: JSON.stringify({ error: 'Course not found' })
+							}
+						]
 					}
 				}
 				return {
-					contents: [{ uri: uri.toString(), mimeType: 'application/json', text: JSON.stringify(course, null, 2) }]
+					contents: [
+						{
+							uri: uri.toString(),
+							mimeType: 'application/json',
+							text: JSON.stringify(course, null, 2)
+						}
+					]
 				}
 			}
 		})

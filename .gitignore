@@ -1,27 +1,28 @@
-.vscode
+.vscode/
 
 .env
 scripts/server.conf
 
-/.idea
+/.idea/
 
-**/node_modules
-**/dist
-**/build
-**/cache
-**/.turbo
+**/node_modules/
+**/dist/
+**/build/
+**/cache/
+**/.turbo/
+**/typed-router.d.ts
+**/route-map.d.ts
 
 docs/superpowers/
 .superpowers/
 .planning/
 .scratch/
 
-/data
-/di-fis-ka.wiki
+/data/
 
 .gitlab-ci-local
 
-.claude/**/worktrees
-.claude/files
-.claude/sessions
-.gemini/files
+.claude/**/worktrees/
+.claude/files/
+.claude/sessions/
+.gemini/files/

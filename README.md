@@ -70,14 +70,14 @@ Full engineering docs are also available at **https://kreditozrouti.cz/docs/dev/
 
 Source files are in `docs/dev/`:
 
-| Area         | Overview                                                 | Details                                                                                                                                                                                             |
-|--------------|----------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Engineering  | [docs/dev/ENGINEERING.md](docs/ENGINEERING.md)       | [setup](docs/engineering/SETUP.md) · [contributing](docs/engineering/CONTRIBUTING.md)                                                                                                       |
+| Area         | Overview                                             | Details                                                                                                                                                                             |
+|--------------|------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Engineering  | [docs/dev/ENGINEERING.md](docs/ENGINEERING.md)       | [setup](docs/engineering/SETUP.md) · [contributing](docs/engineering/CONTRIBUTING.md)                                                                                               |
 | Architecture | [docs/dev/ARCHITECTURE.md](docs/ARCHITECTURE.md)     | [monorepo](docs/architecture/MONOREPO.md) · [services](docs/architecture/SERVICES.md) · [data flow](docs/architecture/DATA_FLOW.md) · [containers](docs/architecture/CONTAINERS.md) |
 | API          | [docs/dev/api/README.md](docs/api/README.md)         | [endpoints](docs/api/ENDPOINTS.md) · [services](docs/api/SERVICES.md) · [jobs](docs/api/JOBS.md) · [database](docs/api/DATABASE.md)                                                 |
-| Client       | [docs/dev/client/README.md](docs/client/README.md)   | [stores](docs/client/STORES.md) · [composables](docs/client/COMPOSABLES.md) · [timetable](docs/client/TIMETABLE.md)                                                                     |
-| Scraper      | [docs/dev/scraper/README.md](docs/scraper/README.md) | [jobs](docs/scraper/JOBS.md) · [extraction](docs/scraper/EXTRACTION.md) · [queue](docs/scraper/QUEUE.md)                                                                                |
-| Shared       | [docs/dev/shared/README.md](docs/shared/README.md)   | [domain](docs/shared/DOMAIN.md) · [http](docs/shared/HTTP.md) · [queue](docs/shared/QUEUE.md)                                                                                           |
+| Client       | [docs/dev/client/README.md](docs/client/README.md)   | [stores](docs/client/STORES.md) · [composables](docs/client/COMPOSABLES.md) · [timetable](docs/client/TIMETABLE.md)                                                                 |
+| Scraper      | [docs/dev/scraper/README.md](docs/scraper/README.md) | [jobs](docs/scraper/JOBS.md) · [extraction](docs/scraper/EXTRACTION.md) · [queue](docs/scraper/QUEUE.md)                                                                            |
+| Shared       | [docs/dev/shared/README.md](docs/shared/README.md)   | [domain](docs/shared/DOMAIN.md) · [http](docs/shared/HTTP.md) · [queue](docs/shared/QUEUE.md)                                                                                       |
 | Deployment   | [docs/dev/DEPLOYMENT.md](docs/DEPLOYMENT.md)         | [docker](docs/deployment/DOCKER.md) · [ci/cd](docs/deployment/CICD.md) · [infrastructure](docs/deployment/INFRASTRUCTURE.md) · [operations](docs/deployment/OPERATIONS.md)          |
 
 ---

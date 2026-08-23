@@ -31,8 +31,8 @@ be registered manually through the official InSIS enrollment system during the d
 between changes in InSIS and their appearance in Kreditožrouti. Always verify course details and availability in the
 official InSIS system before enrolling.
 
-**No guarantee of accuracy.** While we make every effort to keep data accurate, Kreditožrouti makes no warranty —
-express or implied — as to the completeness, accuracy, or fitness for any particular purpose of the information
+**No guarantee of accuracy.** While we make every effort to keep data accurate, Kreditožrouti makes no warranty -
+express or implied - as to the completeness, accuracy, or fitness for any particular purpose of the information
 presented.
 
 ## Your responsibilities
@@ -46,9 +46,10 @@ presented.
 Kreditožrouti operates in compliance with applicable VŠE regulations:
 
 - **SR 05/2018 (Data Protection):** No student personal data is processed
-- **PR 02/2023 (IS Usage Rules):** Read-only access to publicly available InSIS data; automated scraping approved by the
-  InSIS Řídicí výbor (Steering Committee)
-- **PR 04/2019 (Webhosting):** Not applicable — Kreditožrouti is independently hosted
+- **PR 02/2023 (IS Usage Rules):** Read-only access to publicly available InSIS data, with load-limiting mitigations. No
+  formal InSIS Řídicí výbor (Steering Committee) approval has been documented for this project - see the Compliance
+  document, section 4.3
+- **PR 04/2019 (Webhosting):** Not applicable - Kreditožrouti is independently hosted
 
 ## Intellectual property
 

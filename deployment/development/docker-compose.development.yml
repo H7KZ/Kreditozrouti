@@ -104,14 +104,14 @@ services:
 
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 1
       resources:
         limits:
           cpus: '1'
-          memory: 1024M
+          memory: 512M
         reservations:
           cpus: '0.25'
-          memory: 256M
+          memory: 128M
       update_config:
         parallelism: 1
         delay: 10s
@@ -147,11 +147,11 @@ services:
 
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 1
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 384M
         reservations:
           cpus: '0.1'
           memory: 128M
@@ -207,14 +207,14 @@ services:
 
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 1
       resources:
         limits:
           cpus: '1'
-          memory: 512M
+          memory: 256M
         reservations:
           cpus: '0.1'
-          memory: 128M
+          memory: 64M
 
   # ============================================================================
   # MCP Service
@@ -232,6 +232,8 @@ services:
       - MYSQL_URI=${MYSQL_URI}
       - MCP_PORT=3000
       - LOG_LEVEL=${LOG_LEVEL:-info}
+      - MCP_BASE_URL=https://${DOMAIN}
+      - MCP_JWT_SECRET=${MCP_JWT_SECRET}
 
     networks:
       - traefik-network
@@ -246,6 +248,13 @@ services:
       - 'traefik.http.routers.${PROJECT}-mcp.tls=true'
       - 'traefik.http.routers.${PROJECT}-mcp.tls.certresolver=letsencrypt'
       - 'traefik.http.services.${PROJECT}-mcp.loadbalancer.server.port=3000'
+      # OAuth well-known discovery endpoints (must be served from root domain)
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.priority=60'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/oauth`)'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.entrypoints=websecure'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls=true'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.service=${PROJECT}-mcp'
 
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:3000/health' ]
@@ -288,14 +297,15 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
 
     command:
-      - --sort_buffer_size=128M
-      - --read_buffer_size=64M
-      - --read_rnd_buffer_size=64M
-      - --join_buffer_size=64M
+      - --sort_buffer_size=32M
+      - --read_buffer_size=16M
+      - --read_rnd_buffer_size=16M
+      - --join_buffer_size=16M
       - --max_sort_length=8192
-      - --innodb_sort_buffer_size=64M
-      - --tmp_table_size=128M
-      - --max_heap_table_size=128M
+      - --innodb_sort_buffer_size=32M
+      - --tmp_table_size=32M
+      - --max_heap_table_size=32M
+      - --innodb_buffer_pool_size=256M
 
     networks:
       - mysql-dev-network
@@ -318,10 +328,10 @@ services:
       resources:
         limits:
           cpus: '1.5'
-          memory: 3072M
+          memory: 1024M
         reservations:
           cpus: '0.5'
-          memory: 768M
+          memory: 384M
 
   # ============================================================================
   # Database Interface (phpMyAdmin)
@@ -372,7 +382,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 256M
 
   # ============================================================================
   # Cache (Redis)
@@ -393,7 +403,7 @@ services:
       - --requirepass
       - ${REDIS_PASSWORD}
       - --maxmemory
-      - 512mb
+      - 256mb
       - --maxmemory-policy
       - noeviction
 
@@ -421,7 +431,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 1024M
+          memory: 384M
         reservations:
           cpus: '0.1'
           memory: 128M

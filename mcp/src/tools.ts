@@ -43,8 +43,16 @@ export function defineResource(def: {
 }
 
 export function registerResource(server: McpServer, db: Kysely<Database>, def: ReturnType<typeof defineResource>): void {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	server.registerResource(def.name, def.uri, { description: def.description, mimeType: def.mimeType }, (uri, _extra) => def.handler(uri, db))
+	server.registerResource(
+		def.name,
+		def.uri,
+		{
+			description: def.description,
+			mimeType: def.mimeType
+		},
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		(uri, _extra) => def.handler(uri, db)
+	)
 }
 
 export function defineResourceTemplate(def: {
@@ -58,9 +66,15 @@ export function defineResourceTemplate(def: {
 }
 
 export function registerResourceTemplate(server: McpServer, db: Kysely<Database>, def: ReturnType<typeof defineResourceTemplate>): void {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	server.registerResource(def.name, def.template, { description: def.description, mimeType: def.mimeType }, (uri, variables, _extra) =>
-		def.handler(uri, variables as Record<string, string>, db)
+	server.registerResource(
+		def.name,
+		def.template,
+		{
+			description: def.description,
+			mimeType: def.mimeType
+		},
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		(uri, variables, _extra) => def.handler(uri, variables as Record<string, string>, db)
 	)
 }
 

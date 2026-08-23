@@ -35,10 +35,15 @@ interface Props {
 
 interface Emits {
 	(e: 'toggle', courseIdent: string): void
+
 	(e: 'setCategoryFilter', categories: string[]): void
+
 	(e: 'setSearch', search: string): void
+
 	(e: 'back'): void
+
 	(e: 'complete'): void
+
 	(e: 'skip'): void
 }
 
@@ -122,7 +127,9 @@ function clearSearch() {
 				<IconArrowLeft class="h-4 w-4" />
 				{{ $t('common.back') }}
 			</button>
-			<h2 class="text-lg font-medium text-(--insis-gray-900)">{{ $t('components.wizard.WizardStepCompletedCourses.title') }}</h2>
+			<h2 class="text-lg font-medium text-(--insis-gray-900)">
+				{{ $t('components.wizard.WizardStepCompletedCourses.title') }}
+			</h2>
 		</div>
 
 		<p class="mb-4 text-sm text-(--insis-gray-600)">

@@ -35,7 +35,10 @@ export default async function ScraperRequestInSISAcademicSchedulesJob(
 				if (!result.success) {
 					if (result.status === 429) throw new InSISRateLimitError(result.retryAfter ?? 60)
 					failedFacultiesCount++
-					LoggerJobContext.add({ warning: 'Failed to fetch faculty periods', insis_faculty_id: faculty.insis_faculty_id })
+					LoggerJobContext.add({
+						warning: 'Failed to fetch faculty periods',
+						insis_faculty_id: faculty.insis_faculty_id
+					})
 					return []
 				}
 				return ExtractInSISAcademicScheduleService.extractPeriods(result.data, faculty.insis_faculty_id)
@@ -44,7 +47,10 @@ export default async function ScraperRequestInSISAcademicSchedulesJob(
 
 		LoggerJobContext.add({
 			periods_count: allPeriods.length,
-			...(failedFacultiesCount > 0 && { failed_faculties_count: failedFacultiesCount, periods_may_be_incomplete: true })
+			...(failedFacultiesCount > 0 && {
+				failed_faculties_count: failedFacultiesCount,
+				periods_may_be_incomplete: true
+			})
 		})
 
 		const schedules: ScraperInSISAcademicSchedules = {

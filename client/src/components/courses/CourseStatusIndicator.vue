@@ -3,6 +3,9 @@ import type { CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useTimetableStore } from '@client/stores'
+import IconTriangleAlert from '~icons/lucide/triangle-alert'
+import IconMapPin from '~icons/lucide/map-pin'
+import IconCircleDashed from '~icons/lucide/circle-dashed'
 
 interface Props {
 	course: CourseWithRelationsDTO
@@ -52,42 +55,53 @@ const hasPotentialCampusConflict = computed(() => !hasPotentialConflict.value &&
 		{{ t('components.courses.CourseTable.inTimetable') }}
 	</span>
 
-	<!-- Hard conflict: X/Y count badge (selected) -->
+	<!-- Hard conflict: X/Y count badge (selected). Icon + text (not color alone). -->
 	<span
 		v-if="hasConflict"
-		class="inline-flex shrink-0 items-center rounded-full bg-(--insis-danger-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-danger)"
+		class="inline-flex shrink-0 items-center gap-1 rounded-full bg-(--insis-danger-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-danger)"
+		:aria-label="t('components.courses.CourseTable.conflictBadgeLabel', { count: hardConflictCount, total: totalSelected })"
 	>
-		{{ hardConflictCount }}/{{ totalSelected }}
+		<IconTriangleAlert class="h-2.5 w-2.5" aria-hidden="true" />
+		<span aria-hidden="true">{{ hardConflictCount }}/{{ totalSelected }}</span>
 	</span>
 
-	<!-- Campus conflict: X/Y count badge (selected) -->
+	<!-- Campus conflict: X/Y count badge (selected). Icon + text (not color alone). -->
 	<span
 		v-else-if="hasCampusConflict"
-		class="inline-flex shrink-0 items-center rounded-full bg-(--insis-warning-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-warning)"
+		class="inline-flex shrink-0 items-center gap-1 rounded-full bg-(--insis-warning-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-warning)"
+		:aria-label="t('components.courses.CourseTable.campusConflictBadgeLabel', { count: campusConflictCount, total: totalSelected })"
 	>
-		{{ campusConflictCount }}/{{ totalSelected }}
+		<IconMapPin class="h-2.5 w-2.5" aria-hidden="true" />
+		<span aria-hidden="true">{{ campusConflictCount }}/{{ totalSelected }}</span>
 	</span>
 
-	<!-- Incomplete selection: pulsing dot -->
+	<!-- Incomplete selection: icon badge with an accessible name (not color/title alone). -->
 	<span
 		v-else-if="isIncomplete"
-		class="inline-block h-2 w-2 shrink-0 animate-pulse rounded-full bg-amber-400"
-		:title="t('components.courses.CourseTable.missingUnitTypes')"
-	/>
-
-	<!-- Potential hard conflict: X/Y count badge (unselected) -->
-	<span
-		v-if="hasPotentialConflict"
-		class="inline-flex shrink-0 items-center rounded-full bg-(--insis-danger-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-danger)"
+		role="img"
+		class="inline-flex shrink-0 items-center text-(--insis-warning)"
+		:aria-label="t('components.courses.CourseTable.missingUnitTypes')"
 	>
-		{{ potentialConflictCount }}/{{ totalUnits }}
+		<IconCircleDashed class="h-3 w-3 animate-pulse" aria-hidden="true" />
 	</span>
 
-	<!-- Potential campus conflict: X/Y count badge (unselected) -->
+	<!-- Potential hard conflict: X/Y count badge (unselected). Icon + text. -->
+	<span
+		v-if="hasPotentialConflict"
+		class="inline-flex shrink-0 items-center gap-1 rounded-full bg-(--insis-danger-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-danger)"
+		:aria-label="t('components.courses.CourseTable.potentialConflictBadgeLabel', { count: potentialConflictCount, total: totalUnits })"
+	>
+		<IconTriangleAlert class="h-2.5 w-2.5" aria-hidden="true" />
+		<span aria-hidden="true">{{ potentialConflictCount }}/{{ totalUnits }}</span>
+	</span>
+
+	<!-- Potential campus conflict: X/Y count badge (unselected). Icon + text. -->
 	<span
 		v-else-if="hasPotentialCampusConflict"
-		class="inline-flex shrink-0 items-center rounded-full bg-(--insis-warning-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-warning)"
+		class="inline-flex shrink-0 items-center gap-1 rounded-full bg-(--insis-warning-light) px-2 py-1 text-[10px] leading-none font-medium text-(--insis-warning)"
+		:aria-label="t('components.courses.CourseTable.potentialCampusConflictBadgeLabel', { count: potentialCampusConflictCount, total: totalUnits })"
 	>
-		{{ potentialCampusConflictCount }}/{{ totalUnits }}
+		<IconMapPin class="h-2.5 w-2.5" aria-hidden="true" />
+		<span aria-hidden="true">{{ potentialCampusConflictCount }}/{{ totalUnits }}</span>
 	</span>
 </template>
