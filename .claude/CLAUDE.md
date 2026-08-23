@@ -4,6 +4,10 @@
 
 Do not use em dashes (--) in any file — use a plain hyphen (-) instead.
 
+## Tests
+
+Do not write tests - not even when a spec, review, or acceptance criterion recommends them. If you think tests are warranted, ask first and I will decide whether and what to add. I write tests manually.
+
 ## Token Discipline
 
 **Planning sessions** — When asked to plan, design, or explore architecture:
