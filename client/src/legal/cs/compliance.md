@@ -63,8 +63,8 @@ mapuje každý relevantní článek na implementaci Kreditožrouti.
 | Čl. 16    | Zvláštní kategorie (biometrie, zdraví) vyžadují výslovný souhlas     | N/A  | Žádná data zvláštní kategorie nejsou sbírána. Aplikace nemá uživatelské účty ani biometrická či zdravotní data.                                                           |
 | Čl. 17    | Transparentní informování subjektů údajů                             | ✅   | Vyučující jsou zobrazeni pouze v kontextu svých veřejně uvedených výukových činností. Na aplikaci je zobrazeno prohlášení.                                                |
 | Čl. 19(2) | Zveřejnitelné údaje: jméno, tituly, pozice, výuka                    | ✅   | Zobrazeno je pouze jméno vyučujícího jako atribut předmětu, což je výslovně v povoleném rozsahu (písm. n: výuková činnost na VŠE).                                        |
-| Čl. 20    | Sdílení dat třetím stranám vyžaduje oznámení DPO                     | N/A  | Kreditožrouti nesdílí žádná data s třetími stranami. Vlastní analytická instance (Umami) běží na stejném serveru — žádná data se nepřenáší externě. Viz oddíl 7.          |
-| Čl. 21    | Bezpečnostní opatření: šifrování, řízení přístupu, hlášení incidentů | ✅   | HTTPS přes Traefik/Let's Encrypt. Tajemství v env proměnných. Parametrizované dotazy. Bearer token autentizace pro admin endpointy. Grafana Faro monitoring.              |
+| Čl. 20    | Sdílení dat třetím stranám vyžaduje oznámení DPO                     | N/A  | Kreditožrouti nesdílí žádná data s třetími stranami. Analytická instance (Umami) i collector pro hlášení chyb (Grafana Faro) běží self-hosted na stejném serveru — žádná data se nepřenáší externím zpracovatelům. Viz oddíl 7.          |
+| Čl. 21    | Bezpečnostní opatření: šifrování, řízení přístupu, hlášení incidentů | ✅   | HTTPS přes Traefik/Let's Encrypt. Tajemství v env proměnných. Parametrizované dotazy. Bearer token autentizace pro admin endpointy. Grafana Faro hlášení chyb (pouze chyby + Web Vitals, sledování sezení vypnuto, self-hosted collector). Viz oddíl 7.              |
 
 ## 4. PR 02/2023 — Pravidla IS
 
@@ -142,3 +142,22 @@ respektoval soukromí:
 
 Shromažďovaná data: zobrazení stránek, délka sezení, odkaz příchodu, použité funkce (přidání předmětu, detekce
 konfliktu, dokončení průvodce). Žádné z těchto dat neumožňuje identifikaci konkrétního uživatele.
+
+### 7.1 Hlášení chyb (Grafana Faro)
+
+Kromě Umami provozuje Kreditožrouti **Grafana Faro** výhradně pro hlášení chyb aplikace. Je záměrně nastaven tak, aby se
+vyhnul sledování chování a identifikátorům, které by sbíral plnohodnotný Real User Monitoring:
+
+| Vlastnost                  | Detail                                                                        |
+| -------------------------- | ----------------------------------------------------------------------------- |
+| Co se zachytává            | Chyby JavaScriptu (zpráva + stack trace) a metriky výkonu Web Vitals           |
+| Sledování sezení           | Vypnuto — v prohlížeči se neukládá žádný trvalý ani pseudonymní identifikátor   |
+| Zachytávání konzole        | Vypnuto — žádný výstup konzole se nepřenáší                                     |
+| Sledování chování          | Žádné — žádná instrumentace zobrazení stránek, kliknutí ani navigace           |
+| Cookies                    | Nepoužívají se                                                                 |
+| Collector                  | Self-hosted na stejné infrastruktuře — nikoli Grafana Cloud, žádný externí zpracovatel |
+| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) — stabilita a bezpečnost aplikace       |
+
+Protože Faro neukládá žádný identifikátor a neprovádí sledování chování, nepodléhá požadavku na souhlas dle ePrivacy čl.
+5 odst. 3 a nevyžaduje souhlasovou lištu. To je v souladu s oddílem 3 (čl. 20): žádná data se nepřenáší externím třetím
+stranám.

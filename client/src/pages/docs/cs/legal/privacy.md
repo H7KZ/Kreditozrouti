@@ -51,6 +51,24 @@ Pokud se rozhodneš odpovědět na nepovinnou výzvu ke zpětné vazbě v aplika
 sušenkami a jakýkoli nepovinný komentář, který napíšeš, se odešlou do téže vlastní instance Umami jako jedna událost
 zpětné vazby. Pole komentáře je nepovinné a volné - prosím neuváděj do něj žádné osobní údaje.
 
+## Hlášení chyb
+
+Kreditožrouti používá **Grafana Faro** k hlášení pádů aplikace, abychom je mohli opravit. Je nastaven tak, aby
+zachytával pouze:
+
+| Vlastnost                  | Detail                                                                                       |
+| -------------------------- | -------------------------------------------------------------------------------------------- |
+| Co se zachytává            | Chyby JavaScriptu (zpráva + stack trace) a metriky výkonu Web Vitals                          |
+| Sledování sezení           | Vypnuto — v prohlížeči se neukládá žádný trvalý ani pseudonymní identifikátor                 |
+| Zachytávání konzole        | Vypnuto — výstup tvé konzole se nikdy neodesílá                                               |
+| Sledování chování          | Žádné — Faro nesleduje zobrazení stránek, kliknutí ani navigaci (to je doména Umami)          |
+| Cookies                    | Nepoužívají se                                                                                |
+| Sdílení s třetími stranami | Žádné — hlášení se odesílají na náš vlastní self-hosted collector, nikoli do Grafana Cloud    |
+| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) — stabilita a bezpečnost aplikace                     |
+
+Protože Faro neukládá žádný identifikátor ani nesleduje chování, nevyžaduje souhlas. Pokud na žádnou chybu nenarazíš,
+neodešlou se žádná data.
+
 ## Tvá data rozvrhu
 
 Jakýkoli rozvrh, který sestavíš, je uložen výhradně v `localStorage` tvého prohlížeče. Nikdy se neposílá na naše

@@ -62,8 +62,8 @@ maps each applicable article to Kreditožrouti's implementation.
 | Art. 16    | Special categories (biometric, health) require explicit consent    | N/A    | No special category data is collected or processed. The application has no user accounts, no biometric data, no health data.                                                                     |
 | Art. 17    | Inform data subjects transparently                                 | ✅     | Lecturers are displayed only within the context of their publicly listed teaching assignments. A disclaimer is shown on the application.                                                         |
 | Art. 19(2) | Publishable data limited to: name, titles, position, teaching      | ✅     | Only lecturer name as a course attribute is displayed, which is explicitly within the permitted scope (subparagraph n: teaching carried out at VŠE).                                             |
-| Art. 20    | Third-party data sharing requires DPO notification                 | N/A    | Kreditožrouti does not share any data with third parties. A self-hosted analytics instance (Umami) runs on the same server — no data is transmitted externally. See section 7.                   |
-| Art. 21    | Security measures: encryption, access controls, incident reporting | ✅     | HTTPS via Traefik/Let's Encrypt. Environment-based secrets. Parameterized queries. Bearer token authentication for admin endpoints. Grafana Faro error tracking.                                 |
+| Art. 20    | Third-party data sharing requires DPO notification                 | N/A    | Kreditožrouti does not share any data with third parties. Both the analytics instance (Umami) and the error-reporting collector (Grafana Faro) are self-hosted on the same server — no data is transmitted to external processors. See section 7.                   |
+| Art. 21    | Security measures: encryption, access controls, incident reporting | ✅     | HTTPS via Traefik/Let's Encrypt. Environment-based secrets. Parameterized queries. Bearer token authentication for admin endpoints. Grafana Faro error reporting (errors + Web Vitals only, session tracking disabled, self-hosted collector). See section 7.       |
 
 ## 4. PR 02/2023 — IS Usage Rules
 
@@ -142,3 +142,22 @@ privacy as a default:
 
 Data collected: page views, session duration, referrer, feature interactions (course added, conflict detected, wizard
 completed). None of this data can identify a specific user.
+
+### 7.1 Error reporting (Grafana Faro)
+
+In addition to Umami, Kreditožrouti runs **Grafana Faro** solely for application error reporting. It is deliberately
+configured to avoid the behavioural tracking and identifiers that a full Real User Monitoring setup would collect:
+
+| Property             | Detail                                                                             |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| What is captured     | JavaScript errors (message + stack trace) and Web Vitals performance metrics        |
+| Session tracking     | Disabled — no persistent or pseudonymous identifier stored in the browser           |
+| Console capture      | Disabled — no console output is transmitted                                         |
+| Behavioural tracking | None — no page-view, click, or navigation instrumentation is enabled                |
+| Cookies              | Not used                                                                            |
+| Collector            | Self-hosted on the same infrastructure — not Grafana Cloud, no external processor    |
+| Legal basis (GDPR)   | Legitimate interest (Art. 6(1)(f)) — application stability and security             |
+
+Because Faro stores no identifier and performs no behavioural tracking, it is not subject to ePrivacy Art 5(3) consent
+requirements and requires no consent banner. This is consistent with section 3 (Art. 20): no data is transmitted to
+external third parties.
