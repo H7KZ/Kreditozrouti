@@ -156,6 +156,7 @@
 	"time": {
 		"minutes": "min",
 		"hours": "hod",
+		"hoursOnly": "{hours} hod",
 		"hoursMinutes": "{hours} hod {minutes} min"
 	},
 	"common": {
@@ -206,9 +207,9 @@
 			"message": "Kreditožrouti je optimalizován pro počítač. Pro nejlepší zážitek doporučujeme použít PC."
 		},
 		"announcements": {
-			"coursesFound": "Nalezen {count} kurz | Nalezeny {count} kurzy | Nalezeno {count} kurzů",
-			"noCoursesFound": "Nebyly nalezeny žádné kurzy",
-			"loadingError": "Chyba při načítání kurzů",
+			"coursesFound": "Nalezen {count} předmět | Nalezeny {count} předměty | Nalezeno {count} předmětů",
+			"noCoursesFound": "Nebyly nalezeny žádné předměty",
+			"loadingError": "Chyba při načítání předmětů",
 			"courseAdded": "{code} přidán do rozvrhu",
 			"courseRemoved": "{code} odebrán z rozvrhu"
 		}
@@ -223,7 +224,7 @@
 			"step1": "Vyberte svou fakultu",
 			"step2": "Zvolte rok nástupu ke studiu",
 			"step3": "Vyberte svůj studijní plán",
-			"step4": "Označte kurzy, které jste již absolvovali (volitelné)",
+			"step4": "Označte předměty, které jste již absolvovali (volitelné)",
 			"step5": "Procházejte předměty a sestavte si rozvrh",
 			"footer": "Kreditožrouti · Data z",
 			"insisLink": "InSIS VŠE"
@@ -235,17 +236,17 @@
 			"saveButton": "Uložit do mého rozvrhu",
 			"copyButton": "Kopírovat odkaz",
 			"copied": "Odkaz zkopírován!",
-			"savedAlert": "Rozvrh byl uložen do tvých slotů.",
+			"savedAlert": "Rozvrh byl uložen do vašich slotů.",
 			"slotsFull": "Máš plné sloty (max 5). Smaž jeden a zkus znovu.",
 			"slotName": "Sdílený rozvrh",
 			"backupSlotName": "Záloha mého rozvrhu",
-			"backupSavedAlert": "Tvůj předchozí rozvrh byl automaticky uložen jako záloha.",
+			"backupSavedAlert": "Váš předchozí rozvrh byl automaticky uložen jako záloha.",
 			"tabTitle": "Sdílený rozvrh ({n} předmět) | Sdílený rozvrh ({n} předměty) | Sdílený rozvrh ({n} předmětů)",
 			"courseCount": "{n} předmět | {n} předměty | {n} předmětů",
 			"ects": "{n} ECTS"
 		},
 		"courses": {
-			"metaDescription": "Procházej předměty VŠE, filtruj rozvrh a sestav bezkonfliktní studijní plán. Detekce kolizí v reálném čase.",
+			"metaDescription": "Procházejte předměty VŠE, filtrujte rozvrh a sestavte bezkonfliktní studijní plán. Detekce kolizí v reálném čase.",
 			"studyPlanFallback": "Studijní plán",
 			"coursesInTimetable": "{count} předmět v rozvrhu | {count} předměty v rozvrhu | {count} předmětů v rozvrhu",
 			"searchingForCourses": "Hledání předmětů pro {semester} {year}",
@@ -264,7 +265,7 @@
 			"clearFilters": "Zrušit filtry",
 			"showingResults": "Zobrazeno {from} – {to} z {total} předmětů",
 			"pageInfo": "Stránka {current} z {total}",
-			"completedCoursesHidden": "{count} dokončený kurz (skrytý) | {count} dokončené kurzy (skryty) | {count} dokončených kurzů (skryto)",
+			"completedCoursesHidden": "{count} dokončený předmět (skrytý) | {count} dokončené předměty (skryty) | {count} dokončených předmětů (skryto)",
 			"optimizeTimetable": "Optimalizovat rozvrh",
 			"fitIntoTimetable": "Vměstnat do rozvrhu",
 			"emptyTimetable": {
@@ -322,13 +323,13 @@
 				"doubleClickTip": "Tip: Poklepejte na plán, abyste jej vybrali a mohli okamžitě pokračovat."
 			},
 			"WizardStepCompletedCourses": {
-				"title": "Označit dokončené kurzy",
-				"description": "Vyberte kurzy, které jste již dokončili. Tyto kurzy budou skryty ze seznamu kurzů, abyste se mohli soustředit na ty, které vám zbývají.",
-				"infoText": "Tento krok je volitelný. Kurzy můžete označit jako dokončené také později v podrobném zobrazení kurzu. Zde se zobrazují pouze kurzy z vašeho studijního plánu – pro ostatní kurzy použijte seznam kurzů.",
+				"title": "Označit dokončené předměty",
+				"description": "Vyberte předměty, které jste již dokončili. Tyto předměty budou skryty ze seznamu předmětů, abyste se mohli soustředit na ty, které vám zbývají.",
+				"infoText": "Tento krok je volitelný. Předměty můžete označit jako dokončené také později v podrobném zobrazení předmětu. Zde se zobrazují pouze předměty z vašeho studijního plánu – pro ostatní předměty použijte seznam předmětů.",
 				"searchPlaceholder": "Hledat podle názvu nebo kódu...",
-				"noCoursesFound": "Žádné kurzy neodpovídají filtru.",
+				"noCoursesFound": "Žádné předměty neodpovídají filtru.",
 				"marked": "označeno",
-				"selectedCount": "{count} kurz označen jako dokončený | {count} kurzy označeny jako dokončené | {count} kurzů označeno jako dokončené",
+				"selectedCount": "{count} předmět označen jako dokončený | {count} předměty označeny jako dokončené | {count} předmětů označeno jako dokončené",
 				"completedCount": "{count} dokončen | {count} dokončeno | {count} dokončeno",
 				"skip": "Přeskočit",
 				"proceed": "Pokračovat"
@@ -375,11 +376,11 @@
 				"selected": "Vybrané",
 				"selectOne": "vybrat jednu z",
 				"selectAction": "vybrat akci",
-				"noUnitsAvailable": "Pro tento kurz nejsou k dispozici žádné jednotky rozvrhu.",
-				"incompleteSelectionTitle": "Neúplný výběr kurzu",
-				"incompleteSelectionDescription": "Chcete-li se zapsat do tohoto kurzu, musíte také vybrat: {types}. Vyberte všechny požadované typy jednotek.",
+				"noUnitsAvailable": "Pro tento předmět nejsou k dispozici žádné jednotky rozvrhu.",
+				"incompleteSelectionTitle": "Neúplný výběr předmětu",
+				"incompleteSelectionDescription": "Chcete-li se zapsat do tohoto předmětu, musíte také vybrat: {types}. Vyberte všechny požadované typy jednotek.",
 				"campusConflictTitle": "Kolize přesunu mezi kampusy",
-				"campusConflictDescription": "Tento kurz je na jiném kampusu. Mezi ním a kurzem: {courses} nemusí být dostatek času na přesun. Mezi výukou na kampusech Jižní Město a Žižkov ponechte alespoň 40 minut.",
+				"campusConflictDescription": "Tento předmět je na jiném kampusu. Mezi ním a předmětem: {courses} nemusí být dostatek času na přesun. Mezi výukou na kampusech Jižní Město a Žižkov ponechte alespoň 40 minut.",
 				"syllabus": "Sylabus",
 				"syllabusAims": "Zaměření předmětu",
 				"syllabusLearningOutcomes": "Výsledky učení",
@@ -446,16 +447,16 @@
 				"assessmentMethods": "Způsoby hodnocení",
 				"lecturers": "Vyučující",
 				"timeRestriction": "Časové omezení",
-				"completedCourses": "Dokončené kurzy",
-				"showCompletedCourses": "Zobrazit dokončené kurzy",
+				"completedCourses": "Dokončené předměty",
+				"showCompletedCourses": "Zobrazit dokončené předměty",
 				"completedCoursesCount": "{count} skrytý | {count} skryté | {count} skrytých",
 				"activeFilterCount": "{count} aktivní filtr | {count} aktivní filtry | {count} aktivních filtrů",
 				"timetableConflicts": "Konflikty rozvrhu",
 				"timetableSlotsCount": "{count} vybraný časový slot | {count} vybrané časové sloty | {count} vybraných časových slotů",
-				"hideConflictingCourses": "Skrýt kurzy, které jsou v rozporu s mým rozvrhem",
-				"hideConflictingCoursesHelp": "Skrývá kurzy, u nichž se všechny dostupné jednotky překrývají s vámi vybranými časovými sloty v rozvrhu. Kurzy s alespoň jednou nekonfliktní možností jsou zachovány.",
+				"hideConflictingCourses": "Skrýt předměty, které jsou v rozporu s mým rozvrhem",
+				"hideConflictingCoursesHelp": "Skrývá předměty, u nichž se všechny dostupné jednotky překrývají s vámi vybranými časovými sloty v rozvrhu. Předměty s alespoň jednou nekonfliktní možností jsou zachovány.",
 				"fitsTimetable": "Pasuje do rozvrhu",
-				"fitsTimetableDisabledHint": "Nejprve přidejte kurzy do rozvrhu"
+				"fitsTimetableDisabledHint": "Nejprve přidejte předměty do rozvrhu"
 			},
 			"FilterCheckboxGroup": {
 				"searchPlaceholder": "Hledat..."
@@ -494,7 +495,7 @@
 			"tier": {
 				"perfect": "Perfektní",
 				"good": "Dobrý",
-				"okay": "Ujde",
+				"okay": "Průměrný",
 				"rough": "Slabý"
 			},
 			"reasons": {
@@ -578,7 +579,7 @@
 		"timetable": {
 			"TimetableAgenda": {
 				"free": "volno",
-				"confirmRemove": "Odebrat kurz z rozvrhu?",
+				"confirmRemove": "Odebrat předmět z rozvrhu?",
 				"saveAsImage": "Uložit jako obrázek",
 				"exporting": "Exportuji...",
 				"exportToCalendar": "Exportovat do kalendáře"
@@ -697,13 +698,13 @@
 		}
 	},
 	"feedback": {
-		"title": "Líbí se ti Kreditožrouti?",
+		"title": "Líbí se vám Kreditožrouti?",
 		"thumbsUp": "Aplikace se mi líbí",
 		"thumbsDown": "Aplikace se mi nelíbí",
 		"ratingScaleLabel": "Kolik sušenek nám dáš?",
 		"cookieLabel": "Hodnotit {n} z 5 sušenek",
 		"commentLabel": "Chceš něco dodat? (nepovinné)",
-		"commentPlaceholder": "Napiš nám, co ti vyhovovalo nebo co ne",
+		"commentPlaceholder": "Napište nám, co vám vyhovovalo nebo co ne",
 		"piiHint": "Prosím neuváděj žádné osobní údaje.",
 		"submit": "Odeslat zpětnou vazbu"
 	}

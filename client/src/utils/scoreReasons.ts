@@ -16,12 +16,14 @@ const REASONS = 'components.optimizer.reasons'
 
 /**
  * Formats a gap duration (minutes) the same way the timetable drag popover does:
- * bare minutes below an hour, otherwise the "Xh Ym" time.hoursMinutes template.
+ * bare minutes below an hour, a clean "Xh" for whole hours, otherwise the "Xh Ym"
+ * time.hoursMinutes template.
  */
 function formatDuration(minutes: number, t: Translate): string {
 	const hours = Math.floor(minutes / 60)
 	const mins = minutes % 60
 	if (hours === 0) return `${mins} ${t('time.minutes')}`
+	if (mins === 0) return t('time.hoursOnly', { hours })
 	return t('time.hoursMinutes', { hours, minutes: mins })
 }
 
@@ -54,4 +56,22 @@ export function formatScoreReasons(reasons: ScoreReason[], t: Translate): string
  */
 export function formatReasonsInline(candidate: OptimizerCandidateDTO, t: Translate): string {
 	return formatScoreReasons(scoreReasons(candidate.score), t).join(REASON_SEPARATOR)
+}
+
+/** One localized reason plus whether it should carry warning emphasis. */
+export interface DisplayReason {
+	text: string
+	warning: boolean
+}
+
+/**
+ * A candidate's reasons for per-reason rendering: the campus-switch reason is
+ * pulled to the front and flagged `warning` so the UI can emphasize it (a campus
+ * switch is the costliest fit penalty). All other reasons keep their core order.
+ */
+export function formatCandidateReasons(candidate: OptimizerCandidateDTO, t: Translate): DisplayReason[] {
+	const rank = (reason: ScoreReason): number => (reason.kind === 'campusConflict' ? 0 : 1)
+	const ordered = [...scoreReasons(candidate.score)].sort((a, b) => rank(a) - rank(b))
+	const texts = formatScoreReasons(ordered, t)
+	return ordered.map((reason, i) => ({ text: texts[i]!, warning: reason.kind === 'campusConflict' }))
 }
