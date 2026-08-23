@@ -1,3 +1,4 @@
+import { randomBytes } from 'crypto'
 import path from 'path'
 import dotenv from 'dotenv'
 
@@ -50,14 +51,31 @@ interface Config {
 	isEnvLocal: () => boolean
 }
 
+const env = process.env.ENV ?? 'local'
+const isProduction = env === 'production' || env === 'prod'
+
+/**
+ * Resolve the session secret. In production it must be provided explicitly;
+ * a missing value is a fatal misconfiguration. In dev/local, fall back to an
+ * ephemeral random secret (regenerated each boot) so no weak default ships.
+ */
+function resolveSessionSecret(): string {
+	const secret = process.env.API_SESSION_SECRET
+	if (secret) return secret
+	if (isProduction) {
+		throw new Error('API_SESSION_SECRET is required in production')
+	}
+	return randomBytes(32).toString('hex')
+}
+
 const config: Config = {
-	env: process.env.ENV ?? 'local',
+	env,
 
 	port: Number(process.env.API_PORT ?? 40080),
 	uri: process.env.API_URI ?? `http://localhost:${Number(process.env.API_PORT ?? 40080)}`,
 	domain: process.env.API_DOMAIN ?? 'localhost',
 	allowedOrigins: (process.env.API_ALLOWED_ORIGINS ?? '').split(','),
-	sessionSecret: process.env.API_SESSION_SECRET ?? 'local',
+	sessionSecret: resolveSessionSecret(),
 	commandToken: process.env.API_COMMAND_TOKEN,
 
 	fileDestination: process.env.API_FILE_DESTINATION ?? 'uploads/',

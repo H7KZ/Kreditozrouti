@@ -16,7 +16,7 @@ config.port // default 40080
 config.uri // full API public URI
 config.domain // top-level domain for cookie scoping
 config.allowedOrigins // string[] from API_ALLOWED_ORIGINS (comma-split)
-config.sessionSecret // API_SESSION_SECRET
+config.sessionSecret // API_SESSION_SECRET (required in production; ephemeral random in dev/local if unset)
 config.commandToken // API_COMMAND_TOKEN (Bearer token for /commands)
 config.redis.uri // REDIS_URI
 config.mysql.uri // MYSQL_URI

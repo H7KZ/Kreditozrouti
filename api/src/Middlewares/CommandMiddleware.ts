@@ -1,6 +1,17 @@
+import { createHash, timingSafeEqual } from 'crypto'
 import { NextFunction, Request, Response } from 'express'
 import Config from '@api/Config/Config'
 import { Errors } from '@api/Errors'
+
+/**
+ * Constant-time string comparison. Hashes both inputs to equal-length digests
+ * so the comparison leaks neither content nor length via timing.
+ */
+function safeEqual(a: string, b: string): boolean {
+	const ha = createHash('sha256').update(a).digest()
+	const hb = createHash('sha256').update(b).digest()
+	return timingSafeEqual(ha, hb)
+}
 
 /**
  * Middleware to secure administrative and scraper command routes.
@@ -16,7 +27,7 @@ export default function CommandMiddleware(req: Request, res: Response, next: Nex
 
 	const token = req.headers.authorization?.split(' ')[1]
 
-	if (token !== Config.commandToken) {
+	if (!token || !safeEqual(token, Config.commandToken)) {
 		throw Errors.unauthorized('Unauthorized command access')
 	}
 
