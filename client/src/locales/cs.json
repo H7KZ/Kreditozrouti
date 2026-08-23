@@ -292,7 +292,7 @@
 				"enrollmentYear": "Rok nástupu",
 				"studyPlan": "Studijní plán",
 				"completedCourses": "Dokončené předměty",
-				"stepLabel": "Krok {current} z {total} — {label}"
+				"stepLabel": "Krok {current} z {total} - {label}"
 			},
 			"WizardStepFaculty": {
 				"title": "Vyberte fakultu",
@@ -428,7 +428,7 @@
 				"countdownMinutes": "{minutes}m {seconds}s",
 				"countdownSeconds": "{seconds}s",
 				"unknownError": "Nastala neznámá chyba",
-				"timeoutError": "Vypršel časový limit — InSIS může být pomalý, zkuste znovu.",
+				"timeoutError": "Vypršel časový limit - InSIS může být pomalý, zkuste znovu.",
 				"connectionError": "Ztraceno připojení"
 			}
 		},
@@ -510,7 +510,7 @@
 				"creditMin": "Min. kreditů",
 				"creditMax": "Max. kreditů",
 				"basketTotal": "= {n} ECTS (celkem v košíku)",
-				"creditMaxWarning": "Max. kredity jsou nižší než součet košíku — žádná úplná řešení nebudou vygenerována.",
+				"creditMaxWarning": "Max. kredity jsou nižší než součet košíku - žádná úplná řešení nebudou vygenerována.",
 				"creditRangeInvalid": "Min. kredity nesmí být vyšší než max. kredity.",
 				"preferredDays": "Preferované dny",
 				"blackoutWindows": "Zakázané časy",
@@ -519,7 +519,7 @@
 			},
 			"CourseBasket": {
 				"title": "Předměty k rozplánování",
-				"empty": "Zatím žádné předměty — vyhledejte je níže.",
+				"empty": "Zatím žádné předměty - vyhledejte je níže.",
 				"searchPlaceholder": "Hledat podle kódu nebo názvu…"
 			},
 			"ResultsGrid": {
@@ -528,7 +528,7 @@
 				"option": "Varianta {n}",
 				"drops": "Vypouští: {course}",
 				"noFullCandidates": "Nenalezen rozvrh bez kolizí se všemi předměty. Podívejte se na varianty níže.",
-				"partialNotice": "Hledání trvalo déle — zobrazeny nejlepší dosud nalezené výsledky.",
+				"partialNotice": "Hledání trvalo déle - zobrazeny nejlepší dosud nalezené výsledky.",
 				"poolTruncatedNotice": "Uvažováno bylo pouze prvních {count} předmětů."
 			},
 			"TimetablePreviewModal": {
@@ -551,7 +551,7 @@
 				"pickCategory": "Vyberte kategorii ze svého studijního plánu:",
 				"findFits": "Najít vhodné",
 				"searching": "Hledám…",
-				"error": "Něco se pokazilo — zkuste to prosím znovu.",
+				"error": "Něco se pokazilo - zkuste to prosím znovu.",
 				"resultsTitle": "Zkontrolováno {n} předmětů",
 				"noCourses": "V této kategorii nebyly nalezeny žádné předměty.",
 				"noFit": "Pro tento předmět nebyl nalezen rozvrh bez konfliktů.",
@@ -663,7 +663,7 @@
 	"footer": {
 		"about": {
 			"title": "O projektu Kreditožrouti",
-			"description": "Nástroj pro plánování rozvrhu, který měl být InSIS — dává studentům VŠE okamžitý, filtrovatelný přístup ke každému předmětu, rozvrhovému slotu a studijnímu plánu v jednom moderním rozhraní.",
+			"description": "Nástroj pro plánování rozvrhu, který měl být InSIS - dává studentům VŠE okamžitý, filtrovatelný přístup ke každému předmětu, rozvrhovému slotu a studijnímu plánu v jednom moderním rozhraní.",
 			"university": "Vysoká škola ekonomická v Praze"
 		},
 		"links": {
@@ -691,7 +691,7 @@
 	"guide": {
 		"onboardingModal": {
 			"title": "Vítejte v Kreditožroutech",
-			"body": "Kreditožrouti vám pomůže naplánovat rozvrh na VŠE před otevřením zápisů — filtrujte předměty, odhalte kolize a sestavte bezkolizní rozvrh.",
+			"body": "Kreditožrouti vám pomůže naplánovat rozvrh na VŠE před otevřením zápisů - filtrujte předměty, odhalte kolize a sestavte bezkolizní rozvrh.",
 			"readGuide": "Přečíst průvodce pro studenty",
 			"dismiss": "Rozumím"
 		}

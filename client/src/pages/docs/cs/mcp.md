@@ -6,7 +6,7 @@ order: 3
 # MCP integrace
 
 Kreditožrouti poskytuje server [MCP (Model Context Protocol)](https://modelcontextprotocol.io), který umožňuje AI
-asistentům — Claude Desktop, Cursor, VS Code Copilot a dalším — dotazovat se na živá data předmětů VŠE, kontrolovat
+asistentům - Claude Desktop, Cursor, VS Code Copilot a dalším - dotazovat se na živá data předmětů VŠE, kontrolovat
 konflikty v rozvrhu a optimalizovat rozvrhy za tebe.
 
 Veřejný endpoint je:
@@ -21,7 +21,7 @@ Po připojení má tvůj AI asistent přístup k následujícím nástrojům:
 
 | Nástroj                         | Co dělá                                                                                                                                                                             |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `vse_search_courses`            | Vyhledá předměty podle klíčového slova, fakulty, semestru nebo jazyka výuky. Vrací souhrnná data — pro úplné detaily slotů použij `vse_get_course` nebo přečti `vse://course/{id}`. |
+| `vse_search_courses`            | Vyhledá předměty podle klíčového slova, fakulty, semestru nebo jazyka výuky. Vrací souhrnná data - pro úplné detaily slotů použij `vse_get_course` nebo přečti `vse://course/{id}`. |
 | `vse_get_course`                | Načte jeden předmět se všemi jeho rozvrhový sloty                                                                                                                                   |
 | `vse_get_study_plan`            | Načte studijní plán s úplným seznamem předmětů                                                                                                                                      |
 | `vse_check_timetable_conflicts` | Zkontroluje, zda má sada předmětů nějaké časové překryvy                                                                                                                            |
@@ -37,14 +37,14 @@ Po připojení má tvůj AI asistent přístup k následujícím nástrojům:
 ## Zdroje (Resources)
 
 Zdroje jsou datové endpointy pouze pro čtení, které může hostitel (Claude Desktop, Cursor, VS Code) vložit přímo do
-kontextu. Na rozdíl od nástrojů je nemusíte volat jako akce — klient je může načíst předem.
+kontextu. Na rozdíl od nástrojů je nemusíte volat jako akce - klient je může načíst předem.
 
 | URI                              | Popis                                                                                  |
 | -------------------------------- | -------------------------------------------------------------------------------------- |
 | `vse://faculties`                | Všechny fakulty VŠE s jejich ID. Přečtěte jako první, abyste získali platná ID fakult. |
 | `vse://study-plans`              | Všechny studijní plány napříč všemi fakultami.                                         |
-| `vse://study-plans/{faculty_id}` | Studijní plány jedné fakulty — nahraďte `{faculty_id}` např. `FIS`.                    |
-| `vse://course/{id}`              | Kompletní detail kurzu včetně časových slotů — nahraďte `{id}` číselným ID kurzu.      |
+| `vse://study-plans/{faculty_id}` | Studijní plány jedné fakulty - nahraďte `{faculty_id}` např. `FIS`.                    |
+| `vse://course/{id}`              | Kompletní detail kurzu včetně časových slotů - nahraďte `{id}` číselným ID kurzu.      |
 
 ## Šablony (Prompts)
 
@@ -118,23 +118,23 @@ Vyhledávání předmětů pomocí libovolné kombinace filtrů:
 | `faculty_id` | string (volitelné) | Kód fakulty, např. `"FIS"`, `"FPH"`, `"FMV"`              |
 | `semester`   | string (volitelné) | `"ZS"` (zimní), `"LS"` (letní), nebo `"Both"`             |
 | `language`   | string (volitelné) | Jazyk výuky, např. `"EN"`, `"CS"`                         |
-| `limit`      | number (1–100)     | Výsledků na stránku — výchozí 20                          |
-| `offset`     | number             | Stránkovací posun — výchozí 0                             |
+| `limit`      | number (1–100)     | Výsledků na stránku - výchozí 20                          |
+| `offset`     | number             | Stránkovací posun - výchozí 0                             |
 
 Vrací `{ courses, total }`.
 
 ### `vse_check_timetable_conflicts`
 
-Předej pole ID předmětů (až 30). Vrátí `{ has_conflicts: boolean, conflicts: [...] }` — každý záznam konfliktu uvádí dva
+Předej pole ID předmětů (až 30). Vrátí `{ has_conflicts: boolean, conflicts: [...] }` - každý záznam konfliktu uvádí dva
 překrývající se předměty, den a časový rozsah.
 
 ### `vse_optimize_timetable`
 
 Dva režimy:
 
-- **`build`** — pro danou pevnou sadu předmětů najde nejlepší bezkonfliktní kombinaci sekcí přednášek/cvičení. Použij,
+- **`build`** - pro danou pevnou sadu předmětů najde nejlepší bezkonfliktní kombinaci sekcí přednášek/cvičení. Použij,
   když jsi již rozhodl/a, které předměty chceš.
-- **`explore`** — začne od základní sady předmětů a zkouší přidat každý předmět z dalšího seznamu. Použij, když chceš
+- **`explore`** - začne od základní sady předmětů a zkouší přidat každý předmět z dalšího seznamu. Použij, když chceš
   vědět, které další předměty se ještě vejdou.
 
 Volitelná omezení:
@@ -159,5 +159,5 @@ Všechny časy jsou v **minutách od půlnoci**: `08:00` = `480`, `14:30` = `870
    potřebuješ úplné detaily slotů.
 3. **Zkontroluj konflikty před zápisem.** Jakmile máš užší výběr, požádej AI, aby spustila
    `vse_check_timetable_conflicts` a odhalila překryvy dřív, než se zavážeš.
-4. **Použij optimalizátor pro pomoc s rozvrhováním.** Popiš svá omezení přirozeným jazykem — AI je přeloží do parametrů
+4. **Použij optimalizátor pro pomoc s rozvrhováním.** Popiš svá omezení přirozeným jazykem - AI je přeloží do parametrů
    optimalizátoru.

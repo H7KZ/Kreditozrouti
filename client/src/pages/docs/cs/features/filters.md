@@ -7,7 +7,7 @@ order: 1
 # Filtry
 
 Levý postranní panel obsahuje všechny filtry. Počet aktivních filtrů se zobrazuje v odznaku záhlaví panelu. Každá sekce
-filtrů je sbalitelná — kliknutím na záhlaví sekce ji rozbalíš nebo skryješ.
+filtrů je sbalitelná - kliknutím na záhlaví sekce ji rozbalíš nebo skryješ.
 
 Filtry se kombinují: všechny aktivní filtry platí najednou. Pro reset použij **Vymazat vše** v záhlaví panelu.
 
@@ -34,7 +34,7 @@ předmětů napříč fakultami, které vyučují na více úrovních.
 ## Jazyk výuky
 
 Filtruj na předměty vyučované v konkrétním jazyce. Dostupné možnosti zahrnují češtinu, angličtinu, němčinu, španělštinu,
-francouzštinu a další. Kombinuj s dalšími filtry — například anglicky vyučované volitelné předměty v konkrétní den.
+francouzštinu a další. Kombinuj s dalšími filtry - například anglicky vyučované volitelné předměty v konkrétní den.
 
 ## Skupiny předmětů
 
@@ -55,13 +55,13 @@ Filtruj na předměty za konkrétní počet ECTS kreditů. Užitečné, když po
 
 Filtruj podle způsobu zakončení předmětu:
 
-- **Zkouška** — písemná nebo ústní závěrečná zkouška
-- **Zápočet** — průběžné hodnocení bez závěrečné zkoušky
-- **Obhajoba** — obhajoba závěrečné práce nebo projektu
+- **Zkouška** - písemná nebo ústní závěrečná zkouška
+- **Zápočet** - průběžné hodnocení bez závěrečné zkoušky
+- **Obhajoba** - obhajoba závěrečné práce nebo projektu
 
 ## Metody hodnocení
 
-Filtruj podle způsobu hodnocení — písemná zkouška, ústní zkouška, projekt, seminární práce, test, prezentace a další.
+Filtruj podle způsobu hodnocení - písemná zkouška, ústní zkouška, projekt, seminární práce, test, prezentace a další.
 Lze vybrat více metod.
 
 ## Vyučující
@@ -80,7 +80,7 @@ Odstranění časového omezení: rozbal sekci Časové omezení a odstraň záz
 ## Splněné předměty
 
 Přepínej zobrazení nebo skrytí předmětů, které jsi označil/a jako již splněné. Při skrytí zmizí splněné předměty ze
-seznamu úplně — užitečné pro soustředění pohledu na to, co ještě potřebuješ.
+seznamu úplně - užitečné pro soustředění pohledu na to, co ještě potřebuješ.
 
 Jak předměty označit jako splněné najdeš v
 části [Označit jako splněný](/docs/cs/features/timetable#označit-jako-splněný).

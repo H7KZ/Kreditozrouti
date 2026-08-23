@@ -31,8 +31,8 @@ být ručně zaregistrován prostřednictvím oficiálního zápisového systém
 v InSISu a jejich zobrazením v Kreditožroutech může být prodleva. Vždy ověř detaily předmětů a dostupnost v oficiálním
 systému InSIS před zápisem.
 
-**Žádná záruka přesnosti.** Přestože se snažíme udržovat data přesná, Kreditožrouti neposkytuje žádnou záruku —
-výslovnou ani implicitní — ohledně úplnosti, přesnosti nebo vhodnosti prezentovaných informací pro jakýkoli konkrétní
+**Žádná záruka přesnosti.** Přestože se snažíme udržovat data přesná, Kreditožrouti neposkytuje žádnou záruku -
+výslovnou ani implicitní - ohledně úplnosti, přesnosti nebo vhodnosti prezentovaných informací pro jakýkoli konkrétní
 účel.
 
 ## Tvé povinnosti
@@ -47,8 +47,8 @@ Kreditožrouti funguje v souladu s platnými předpisy VŠE:
 
 - **SR 05/2018 (Ochrana údajů):** Žádné osobní údaje studentů se nezpracovávají
 - **PR 02/2023 (Pravidla IS):** Přístup pouze pro čtení k veřejně dostupným datům InSIS s opatřeními pro omezení zátěže.
-  Pro tento projekt není doloženo žádné formální schválení řídicího výboru InSIS — viz dokument Compliance, oddíl 4.3
-- **PR 04/2019 (Webhosting):** Nevztahuje se — Kreditožrouti je hostován nezávisle
+  Pro tento projekt není doloženo žádné formální schválení řídicího výboru InSIS - viz dokument Compliance, oddíl 4.3
+- **PR 04/2019 (Webhosting):** Nevztahuje se - Kreditožrouti je hostován nezávisle
 
 ## Duševní vlastnictví
 

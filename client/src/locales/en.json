@@ -292,7 +292,7 @@
 				"enrollmentYear": "Enrollment Year",
 				"studyPlan": "Study Plan",
 				"completedCourses": "Completed",
-				"stepLabel": "Step {current} of {total} — {label}"
+				"stepLabel": "Step {current} of {total} - {label}"
 			},
 			"WizardStepFaculty": {
 				"title": "Select Faculty",
@@ -324,7 +324,7 @@
 			"WizardStepCompletedCourses": {
 				"title": "Mark Completed Courses",
 				"description": "Select courses you have already completed. These will be hidden from the course list so you can focus on what's left.",
-				"infoText": "This step is optional. You can also mark courses as completed later from the course detail view. Only courses from your study plan are shown here — for other courses, use the course list.",
+				"infoText": "This step is optional. You can also mark courses as completed later from the course detail view. Only courses from your study plan are shown here - for other courses, use the course list.",
 				"searchPlaceholder": "Search by name or code...",
 				"noCoursesFound": "No courses match the filter.",
 				"marked": "marked",
@@ -428,7 +428,7 @@
 				"countdownMinutes": "{minutes}m {seconds}s",
 				"countdownSeconds": "{seconds}s",
 				"unknownError": "An unknown error occurred",
-				"timeoutError": "Timed out — InSIS may be slow, try again later.",
+				"timeoutError": "Timed out - InSIS may be slow, try again later.",
 				"connectionError": "Connection lost"
 			}
 		},
@@ -510,7 +510,7 @@
 				"creditMin": "Min. credits",
 				"creditMax": "Max. credits",
 				"basketTotal": "= {n} ECTS (basket total)",
-				"creditMaxWarning": "Max credits is below the basket total — no full solutions will be generated.",
+				"creditMaxWarning": "Max credits is below the basket total - no full solutions will be generated.",
 				"creditRangeInvalid": "Min credits cannot exceed max credits.",
 				"preferredDays": "Preferred days",
 				"blackoutWindows": "Blocked time windows",
@@ -519,7 +519,7 @@
 			},
 			"CourseBasket": {
 				"title": "Courses to schedule",
-				"empty": "No courses added yet — search below to add courses.",
+				"empty": "No courses added yet - search below to add courses.",
 				"searchPlaceholder": "Search by code or name…"
 			},
 			"ResultsGrid": {
@@ -528,7 +528,7 @@
 				"option": "Option {n}",
 				"drops": "Drops: {course}",
 				"noFullCandidates": "No conflict-free timetable found with all courses. See options below.",
-				"partialNotice": "Search took a while — showing the best results found so far.",
+				"partialNotice": "Search took a while - showing the best results found so far.",
 				"poolTruncatedNotice": "Only your first {count} courses were considered."
 			},
 			"TimetablePreviewModal": {
@@ -551,7 +551,7 @@
 				"pickCategory": "Pick a category from your study plan:",
 				"findFits": "Find fits",
 				"searching": "Searching…",
-				"error": "Something went wrong — please try again.",
+				"error": "Something went wrong - please try again.",
 				"resultsTitle": "{n} courses checked",
 				"noCourses": "No courses found in this category.",
 				"noFit": "No conflict-free schedule found with this course.",
@@ -691,7 +691,7 @@
 	"guide": {
 		"onboardingModal": {
 			"title": "Welcome to Kreditožrouti",
-			"body": "Kreditožrouti helps you plan your VŠE Prague timetable before enrollment opens — filter courses, detect conflicts, and build a conflict-free schedule.",
+			"body": "Kreditožrouti helps you plan your VŠE Prague timetable before enrollment opens - filter courses, detect conflicts, and build a conflict-free schedule.",
 			"readGuide": "Read the international student guide",
 			"dismiss": "Got it"
 		}

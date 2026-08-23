@@ -22,7 +22,7 @@ courses you want the solver to schedule.
 | Constraint                | What it does                                                                                                               |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | **Min / max ECTS**        | Total credit range for the generated schedule                                                                              |
-| **Preferred days**        | Toggle the days you'd like classes on — the solver deprioritises other days but won't block them if there's no alternative |
+| **Preferred days**        | Toggle the days you'd like classes on - the solver deprioritises other days but won't block them if there's no alternative |
 | **Blackout windows**      | Mark time ranges when you're unavailable (e.g. a part-time job or standing commitment)                                     |
 | **Max consecutive hours** | Cap how many hours can be scheduled back-to-back                                                                           |
 
@@ -36,9 +36,9 @@ Click **Generate timetables**. Constraints are saved automatically and reused th
 
 The solver runs two passes:
 
-**All courses scheduled** — up to 5 ranked candidates where every basket course fits without conflicts.
+**All courses scheduled** - up to 5 ranked candidates where every basket course fits without conflicts.
 
-**If you drop one course…** — one best candidate per basket course, showing what the schedule looks like if that course
+**If you drop one course…** - one best candidate per basket course, showing what the schedule looks like if that course
 is removed. Only shown when no full schedule exists.
 
 ---

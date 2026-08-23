@@ -12,9 +12,9 @@ Switch between three ways to see your courses using the tabs in the header bar:
 
 | View             | What you see                                                                           |
 | ---------------- | -------------------------------------------------------------------------------------- |
-| **Course List**  | Sortable table — course code, title, faculty, ECTS, completion mode, schedule summary  |
-| **My Timetable** | Weekly grid Monday–Friday, 07:30–20:00 — selected courses shown as coloured blocks     |
-| **Optimizer**    | Basket-based timetable generator — pick courses, set constraints, get ranked schedules |
+| **Course List**  | Sortable table - course code, title, faculty, ECTS, completion mode, schedule summary  |
+| **My Timetable** | Weekly grid Monday–Friday, 07:30–20:00 - selected courses shown as coloured blocks     |
+| **Optimizer**    | Basket-based timetable generator - pick courses, set constraints, get ranked schedules |
 
 Course List and My Timetable preferences are saved between sessions. Optimizer constraints are also saved and reused the
 next time you open the tab.
@@ -33,7 +33,7 @@ next time you open the tab.
 5. Repeat for each unit type the course requires. Some courses have only lectures; others require both a lecture and an
    exercise.
 
-Your timetable is saved in your browser's local storage — it survives page reloads, closing the tab, and restarting your
+Your timetable is saved in your browser's local storage - it survives page reloads, closing the tab, and restarting your
 browser. The right-side panel shows all selected units grouped by course, with your total ECTS count.
 
 ### Clicking a Block on the Timetable Grid
@@ -41,30 +41,30 @@ browser. The right-side panel shows all selected units grouped by course, with y
 Clicking a coloured block in the timetable grid opens a course detail panel from the right edge. The panel shows the
 day, time, room, and lecturer for that slot, then loads the full course detail below. From the panel you can:
 
-- **Search in timeslot** — switches to the Course List view pre-filtered to courses available in that exact time window
-- **Remove from timetable** — removes all slots of that course at once
-- **Open in InSIS** — external link in the course title
+- **Search in timeslot** - switches to the Course List view pre-filtered to courses available in that exact time window
+- **Remove from timetable** - removes all slots of that course at once
+- **Open in InSIS** - external link in the course title
 
 ---
 
 ## Conflict Detection
 
-Every course you add to the timetable gets a status. The status bar at the top of the page counts each category — click
+Every course you add to the timetable gets a status. The status bar at the top of the page counts each category - click
 a category to filter the course list to just those courses.
 
 | Status              | Colour | Meaning                                                                                                                                            |
 | ------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Selected**        | Blue   | All required unit types chosen, no time or campus conflicts                                                                                        |
-| **Incomplete**      | Amber  | You've selected at least one unit type but not all required ones — e.g. added the lecture but not the exercise yet                                 |
-| **Campus conflict** | Orange | No time overlap, but the gap between classes on different VŠE campuses is under 40 minutes — not enough travel time between Žižkov and Jižní Město |
+| **Incomplete**      | Amber  | You've selected at least one unit type but not all required ones - e.g. added the lecture but not the exercise yet                                 |
+| **Campus conflict** | Orange | No time overlap, but the gap between classes on different VŠE campuses is under 40 minutes - not enough travel time between Žižkov and Jižní Město |
 | **Conflict**        | Red    | Two selected courses overlap in time on the same day                                                                                               |
 
 ### Campus Conflict Detail
 
 VŠE has two main campuses:
 
-- **Žižkov** — rooms starting with RB, NB, IB, or SB
-- **Jižní Město** — rooms starting with JM
+- **Žižkov** - rooms starting with RB, NB, IB, or SB
+- **Jižní Město** - rooms starting with JM
 
 If you select a course on one campus and another course on the other campus with less than 40 minutes between them, the
 app flags a campus conflict. If a room's campus cannot be determined, no campus conflict is raised.
@@ -126,7 +126,7 @@ survive database resets.
 ## Export to Calendar (iCal)
 
 Use the calendar export button in the timetable toolbar to download an `.ics` file of your selected schedule. Import it
-into Google Calendar, Apple Calendar, or Outlook — each course slot becomes a recurring weekly event for the semester.
+into Google Calendar, Apple Calendar, or Outlook - each course slot becomes a recurring weekly event for the semester.
 
 ---
 
@@ -136,7 +136,7 @@ Course data is scraped from InSIS on a schedule. For the most current informatio
 
 1. Expand the course row.
 2. Click the **refresh icon** (circular arrow) next to the course name.
-3. The app fetches live data from InSIS and updates the course in place — slots, lecturers, room assignments, capacity,
+3. The app fetches live data from InSIS and updates the course in place - slots, lecturers, room assignments, capacity,
    and all other details.
 
 **Rate limit:** once per 10 minutes per course. A countdown is shown if you try to refresh again too soon.
@@ -155,7 +155,7 @@ type:
 | **Cannot study alongside** | Courses that cannot be taken in the same semester as this one  | No         |
 | **Recommended before**     | Courses suggested as prior study (from recommended programmes) | Yes        |
 
-Clicking a chip sets the course code as the active **Search** filter — useful for quickly checking whether a
+Clicking a chip sets the course code as the active **Search** filter - useful for quickly checking whether a
 prerequisite is offered this semester.
 
 **Filter effect:** when you activate **Completed courses** filtering (wizard Step 4 or the filter sidebar toggle):

@@ -6,7 +6,7 @@ order: 3
 # MCP Integration
 
 Kreditožrouti exposes an [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that lets AI
-assistants — Claude Desktop, Cursor, VS Code Copilot, and others — query live VŠE course data, check timetable
+assistants - Claude Desktop, Cursor, VS Code Copilot, and others - query live VŠE course data, check timetable
 conflicts, and optimise schedules on your behalf.
 
 The public endpoint is:
@@ -21,7 +21,7 @@ Once connected, your AI assistant has access to the following tools:
 
 | Tool                            | What it does                                                                                                                                                             |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `vse_search_courses`            | Search courses by keyword, faculty, semester, or language of instruction. Returns summary data — call `vse_get_course` or read `vse://course/{id}` for full slot detail. |
+| `vse_search_courses`            | Search courses by keyword, faculty, semester, or language of instruction. Returns summary data - call `vse_get_course` or read `vse://course/{id}` for full slot detail. |
 | `vse_get_course`                | Fetch a single course with all its timetable slots                                                                                                                       |
 | `vse_get_study_plan`            | Fetch a study plan with its full course list                                                                                                                             |
 | `vse_check_timetable_conflicts` | Check whether a set of courses has any time overlaps                                                                                                                     |
@@ -37,14 +37,14 @@ Once connected, your AI assistant has access to the following tools:
 ## Resources
 
 Resources are read-only data endpoints the host (Claude Desktop, Cursor, VS Code) can inject directly into context.
-Unlike Tools, you do not need to invoke them as actions — the client can prefetch and display them.
+Unlike Tools, you do not need to invoke them as actions - the client can prefetch and display them.
 
 | URI                              | Description                                                                          |
 | -------------------------------- | ------------------------------------------------------------------------------------ |
 | `vse://faculties`                | All VŠE faculties with their IDs. Read this first to get valid faculty IDs.          |
 | `vse://study-plans`              | All study plans across all faculties.                                                |
-| `vse://study-plans/{faculty_id}` | Study plans for one faculty — replace `{faculty_id}` with e.g. `FIS`.                |
-| `vse://course/{id}`              | Full course detail including time slots — replace `{id}` with the numeric course ID. |
+| `vse://study-plans/{faculty_id}` | Study plans for one faculty - replace `{faculty_id}` with e.g. `FIS`.                |
+| `vse://course/{id}`              | Full course detail including time slots - replace `{id}` with the numeric course ID. |
 
 ## Prompts
 
@@ -117,23 +117,23 @@ Search for courses using any combination of filters:
 | `faculty_id` | string (optional) | Faculty code, e.g. `"FIS"`, `"FPH"`, `"FMV"`  |
 | `semester`   | string (optional) | `"ZS"` (winter), `"LS"` (summer), or `"Both"` |
 | `language`   | string (optional) | Language of instruction, e.g. `"EN"`, `"CS"`  |
-| `limit`      | number (1–100)    | Results per page — default 20                 |
-| `offset`     | number            | Pagination offset — default 0                 |
+| `limit`      | number (1–100)    | Results per page - default 20                 |
+| `offset`     | number            | Pagination offset - default 0                 |
 
 Returns `{ courses, total }`.
 
 ### `vse_check_timetable_conflicts`
 
-Pass an array of course IDs (up to 30). Returns `{ has_conflicts: boolean, conflicts: [...] }` — each conflict entry
+Pass an array of course IDs (up to 30). Returns `{ has_conflicts: boolean, conflicts: [...] }` - each conflict entry
 lists the two overlapping courses, the day, and the time range.
 
 ### `vse_optimize_timetable`
 
 Two modes:
 
-- **`build`** — given a fixed set of courses, find the best non-conflicting combination of lecture/exercise sections.
+- **`build`** - given a fixed set of courses, find the best non-conflicting combination of lecture/exercise sections.
   Use when you have already decided which courses you want.
-- **`explore`** — start from a base set of courses and try adding each course from an additional list. Use when you want
+- **`explore`** - start from a base set of courses and try adding each course from an additional list. Use when you want
   to know which extra courses can still fit.
 
 Optional constraints:
@@ -157,5 +157,5 @@ All times are in **minutes from midnight**: `08:00` = `480`, `14:30` = `870`.
    full slot details.
 3. **Check conflicts before enrolling.** Once you have a shortlist, ask the AI to run `vse_check_timetable_conflicts` to
    catch overlaps before you commit.
-4. **Use the optimizer for scheduling help.** Describe your constraints in plain language — the AI will translate them
+4. **Use the optimizer for scheduling help.** Describe your constraints in plain language - the AI will translate them
    into optimizer parameters.

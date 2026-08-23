@@ -7,7 +7,7 @@ order: 2
 
 ## Jak sestavit bezkonfliktní rozvrh na VŠE?
 
-Kreditožrouti zobrazí všechny předměty z tvého studijního plánu na jednom místě. Vybereš si rozvrhové akce kliknutím —
+Kreditožrouti zobrazí všechny předměty z tvého studijního plánu na jednom místě. Vybereš si rozvrhové akce kliknutím -
 aplikace okamžitě ukáže, které se překrývají. Stačí zvolit jiné cvičení nebo přednášku a konflikt zmizí.
 
 ## Jak fungují zápisy na VŠE?
@@ -18,12 +18,12 @@ zápisů zadat vše rychle do InSISu.
 
 ## Co jsou kreditožrouti a proč jsou problém?
 
-Kreditožrouti jsou předměty, které studentům spotřebují rezervní kredity — buď kvůli neúspěchu u zkoušky, nebo kvůli
+Kreditožrouti jsou předměty, které studentům spotřebují rezervní kredity - buď kvůli neúspěchu u zkoušky, nebo kvůli
 náročnosti celého semestru. Kreditožrouti (aplikace) ti pomůže sestavit rozvrh tak, abys věděl/a, do čeho jdeš.
 
 ## Čím se Kreditožrouti liší od InSISu?
 
-InSIS je oficiální systém VŠE — nutný pro finální zápis. Kreditožrouti je pomocný nástroj, který ti umožňuje prohlédnout
+InSIS je oficiální systém VŠE - nutný pro finální zápis. Kreditožrouti je pomocný nástroj, který ti umožňuje prohlédnout
 si všechny dostupné předměty najednou, filtrovat je a sestavit si rozvrh ještě před tím, než InSIS otevřeš. Šetří hodiny
 přepínání mezi záložkami.
 

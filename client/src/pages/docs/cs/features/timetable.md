@@ -12,9 +12,9 @@ Přepínání mezi třemi způsoby zobrazení předmětů pomocí záložek v z�
 
 | Pohled              | Co vidíš                                                                                    |
 | ------------------- | ------------------------------------------------------------------------------------------- |
-| **Seznam předmětů** | Seřaditelná tabulka — kód, název, fakulta, ECTS, způsob zakončení, přehled rozvrhu          |
-| **Můj rozvrh**      | Týdenní mřížka pondělí–pátek, 07:30–20:00 — vybrané předměty jako barevné bloky             |
-| **Optimalizátor**   | Generátor rozvrhů na základě koše — vyber předměty, nastav omezení, získej seřazené rozvrhy |
+| **Seznam předmětů** | Seřaditelná tabulka - kód, název, fakulta, ECTS, způsob zakončení, přehled rozvrhu          |
+| **Můj rozvrh**      | Týdenní mřížka pondělí–pátek, 07:30–20:00 - vybrané předměty jako barevné bloky             |
+| **Optimalizátor**   | Generátor rozvrhů na základě koše - vyber předměty, nastav omezení, získej seřazené rozvrhy |
 
 Předvolby Seznamu předmětů a Mého rozvrhu se ukládají mezi relacemi. Omezení Optimalizátoru se také ukládají a použijí
 se příště, když záložku otevřeš.
@@ -33,7 +33,7 @@ se příště, když záložku otevřeš.
 5. Opakuj pro každý typ jednotky, který předmět vyžaduje. Některé předměty mají pouze přednášky, jiné vyžadují přednášku
    i cvičení.
 
-Tvůj rozvrh se ukládá v lokálním úložišti prohlížeče — přežije obnovení stránky, zavření záložky i restart prohlížeče.
+Tvůj rozvrh se ukládá v lokálním úložišti prohlížeče - přežije obnovení stránky, zavření záložky i restart prohlížeče.
 Panel na pravé straně zobrazuje všechny vybrané jednotky seskupené podle předmětu s celkovým počtem ECTS kreditů.
 
 ### Kliknutí na blok v mřížce rozvrhu
@@ -41,31 +41,31 @@ Panel na pravé straně zobrazuje všechny vybrané jednotky seskupené podle p�
 Kliknutí na barevný blok v mřížce rozvrhu otevře panel s detailem předmětu z pravého okraje. Panel zobrazuje den, čas,
 místnost a vyučujícího pro daný slot, pak načte úplný detail předmětu níže. Z panelu můžeš:
 
-- **Hledat v tomto časovém slotu** — přepne do pohledu Seznam předmětů předfiltrovaného na předměty dostupné v daném
+- **Hledat v tomto časovém slotu** - přepne do pohledu Seznam předmětů předfiltrovaného na předměty dostupné v daném
   časovém okně
-- **Odebrat z rozvrhu** — odstraní všechny sloty tohoto předmětu najednou
-- **Otevřít v InSISu** — externí odkaz v názvu předmětu
+- **Odebrat z rozvrhu** - odstraní všechny sloty tohoto předmětu najednou
+- **Otevřít v InSISu** - externí odkaz v názvu předmětu
 
 ---
 
 ## Detekce konfliktů
 
-Každý předmět, který přidáš do rozvrhu, dostane stav. Stavový řádek v horní části stránky počítá každou kategorii —
+Každý předmět, který přidáš do rozvrhu, dostane stav. Stavový řádek v horní části stránky počítá každou kategorii -
 kliknutím na kategorii filtruj seznam předmětů pouze na tyto předměty.
 
 | Stav                  | Barva    | Význam                                                                                                                                              |
 | --------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Vybrán**            | Modrá    | Všechny požadované typy jednotek zvoleny, žádné časové ani areálové konflikty                                                                       |
-| **Neúplný**           | Oranžová | Vybral/a jsi alespoň jeden typ jednotky, ale ne všechny požadované — např. přidal/a přednášku, ale ještě ne cvičení                                 |
-| **Areálový konflikt** | Oranžová | Žádné časové překrytí, ale přestávka mezi výukou na různých kampusech VŠE je kratší než 40 minut — nestačí na přejezd mezi Žižkovem a Jižním Městem |
+| **Neúplný**           | Oranžová | Vybral/a jsi alespoň jeden typ jednotky, ale ne všechny požadované - např. přidal/a přednášku, ale ještě ne cvičení                                 |
+| **Areálový konflikt** | Oranžová | Žádné časové překrytí, ale přestávka mezi výukou na různých kampusech VŠE je kratší než 40 minut - nestačí na přejezd mezi Žižkovem a Jižním Městem |
 | **Konflikt**          | Červená  | Dva vybrané předměty se překrývají časem ve stejný den                                                                                              |
 
 ### Detail areálového konfliktu
 
 VŠE má dva hlavní kampusy:
 
-- **Žižkov** — místnosti začínající na RB, NB, IB nebo SB
-- **Jižní Město** — místnosti začínající na JM
+- **Žižkov** - místnosti začínající na RB, NB, IB nebo SB
+- **Jižní Město** - místnosti začínající na JM
 
 Pokud vybereme předmět na jednom kampusu a další předmět na druhém kampusu s méně než 40 minutami mezi nimi, aplikace
 označí areálový konflikt. Pokud nelze určit kampus místnosti, areálový konflikt se nevyvolá.
@@ -126,7 +126,7 @@ takže odkazy přežijí reset databáze.
 ## Export do kalendáře (iCal)
 
 Použij tlačítko exportu kalendáře v panelu nástrojů rozvrhu ke stažení souboru `.ics` tvého vybraného rozvrhu. Importuj
-jej do Google Calendar, Apple Calendar nebo Outlooku — každý slot předmětu se stane týdenně se opakující událostí na
+jej do Google Calendar, Apple Calendar nebo Outlooku - každý slot předmětu se stane týdenně se opakující událostí na
 semestr.
 
 ---
@@ -137,7 +137,7 @@ Data předmětů jsou pravidelně scrapována z InSISu. Pro nejaktuálnější i
 
 1. Rozbal řádek předmětu.
 2. Klikni na **ikonu obnovení** (kruhová šipka) vedle názvu předmětu.
-3. Aplikace načte živá data z InSISu a aktualizuje předmět na místě — sloty, vyučující, přiřazení místností, kapacitu a
+3. Aplikace načte živá data z InSISu a aktualizuje předmět na místě - sloty, vyučující, přiřazení místností, kapacitu a
    všechny ostatní detaily.
 
 **Omezení frekvence:** jednou za 10 minut na předmět. Odpočítávání se zobrazí, pokud se pokusíš obnovit příliš brzy.
@@ -156,7 +156,7 @@ podle typu:
 | **Nelze studovat spolu**   | Předměty, které nelze absolvovat ve stejném semestru                  | Ne          |
 | **Doporučeno před**        | Předměty doporučené jako předchozí studium (z doporučených programů)  | Ano         |
 
-Kliknutím na čip se nastaví kód předmětu jako aktivní filtr **Vyhledávání** — užitečné pro rychlé ověření, zda je
+Kliknutím na čip se nastaví kód předmětu jako aktivní filtr **Vyhledávání** - užitečné pro rychlé ověření, zda je
 předpoklad v tomto semestru nabízen.
 
 **Efekt filtru:** když aktivuješ filtrování **Splněných předmětů** (krok 4 průvodce nebo přepínač v postranním panelu

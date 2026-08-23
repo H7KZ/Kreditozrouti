@@ -47,7 +47,7 @@ useHead({
 						name: 'How do I build a conflict-free timetable at VŠE?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Kreditožrouti shows all courses from your study plan in one place. Click a time slot to add it to your timetable — the app instantly highlights any conflicts. Simply choose a different exercise or lecture session to resolve them.'
+							text: 'Kreditožrouti shows all courses from your study plan in one place. Click a time slot to add it to your timetable - the app instantly highlights any conflicts. Simply choose a different exercise or lecture session to resolve them.'
 						}
 					},
 					{
@@ -63,7 +63,7 @@ useHead({
 						name: 'What are "kreditožrouti" (credit eaters)?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: '"Kreditožrouti" (literally "credit eaters") are notoriously difficult courses at VŠE that tend to consume students\' reserve credits — either through failed exams or general workload. The app is named after them as a nod to this shared student experience.'
+							text: '"Kreditožrouti" (literally "credit eaters") are notoriously difficult courses at VŠE that tend to consume students\' reserve credits - either through failed exams or general workload. The app is named after them as a nod to this shared student experience.'
 						}
 					},
 					{
@@ -136,7 +136,7 @@ useHead({
 						<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-(--insis-blue) text-sm font-semibold text-white">3</span>
 						<div>
 							<p class="font-medium text-(--insis-text)">Build your timetable</p>
-							<p class="mt-1 text-sm text-(--insis-text-2)">Click time slots to add them — your timetable grid updates in real time.</p>
+							<p class="mt-1 text-sm text-(--insis-text-2)">Click time slots to add them - your timetable grid updates in real time.</p>
 						</div>
 					</li>
 					<li class="flex gap-4 rounded-lg border border-(--insis-border) bg-(--insis-surface) p-5">
@@ -144,7 +144,7 @@ useHead({
 						<div>
 							<p class="font-medium text-(--insis-text)">Check for conflicts</p>
 							<p class="mt-1 text-sm text-(--insis-text-2)">
-								Overlaps are flagged instantly. Resolve them before enrollment — not while clicking through InSIS.
+								Overlaps are flagged instantly. Resolve them before enrollment - not while clicking through InSIS.
 							</p>
 						</div>
 					</li>
@@ -173,7 +173,7 @@ useHead({
 					<div class="rounded-lg border border-(--insis-border) bg-(--insis-surface) p-5">
 						<IconGlobe class="mb-3 h-5 w-5 text-(--insis-blue)" />
 						<h3 class="mb-1 font-medium text-(--insis-text)">Czech & English</h3>
-						<p class="text-sm text-(--insis-text-2)">Full interface in both languages — ideal for Erasmus and exchange students.</p>
+						<p class="text-sm text-(--insis-text-2)">Full interface in both languages - ideal for Erasmus and exchange students.</p>
 					</div>
 					<div class="rounded-lg border border-(--insis-border) bg-(--insis-surface) p-5">
 						<IconBuilding2 class="mb-3 h-5 w-5 text-(--insis-blue)" />
@@ -195,7 +195,7 @@ useHead({
 					<div>
 						<h3 class="mb-2 font-medium text-(--insis-text)">How do I build a conflict-free timetable at VŠE?</h3>
 						<p class="text-sm text-(--insis-text-2)">
-							Kreditožrouti shows all courses from your study plan in one place. Click a time slot to add it to your timetable — the app instantly
+							Kreditožrouti shows all courses from your study plan in one place. Click a time slot to add it to your timetable - the app instantly
 							highlights any conflicts. Simply choose a different exercise or lecture session to resolve them.
 						</p>
 					</div>
@@ -211,7 +211,7 @@ useHead({
 						<h3 class="mb-2 font-medium text-(--insis-text)">What are "kreditožrouti" (credit eaters)?</h3>
 						<p class="text-sm text-(--insis-text-2)">
 							"Kreditožrouti" (literally "credit eaters") are notoriously difficult courses at VŠE that tend to consume students' reserve credits
-							— either through failed exams or general workload. The app is named after them as a nod to this shared student experience.
+							- either through failed exams or general workload. The app is named after them as a nod to this shared student experience.
 						</p>
 					</div>
 					<div>

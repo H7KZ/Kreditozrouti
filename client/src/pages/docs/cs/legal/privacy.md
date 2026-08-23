@@ -13,7 +13,7 @@ _Poslední aktualizace: 31. ledna 2026_
 Kreditožrouti nevyžaduje registraci ani přihlášení. Neshromažďuje, neukládá ani nezpracovává žádné osobní údaje o
 studentech.
 
-Aplikace získává data výhradně z veřejně přístupného katalogu předmětů InSIS — stejných stránek, které může kdykoli
+Aplikace získává data výhradně z veřejně přístupného katalogu předmětů InSIS - stejných stránek, které může kdykoli
 procházet libovolný student bez přihlášení. Tato data tvoří:
 
 - Metadata předmětů (název, identifikátor, kredity, sylabus)
@@ -33,16 +33,16 @@ procházet libovolný student bez přihlášení. Tato data tvoří:
 
 ## Analytika
 
-Kreditožrouti používá **Umami Analytics** — vlastní open-source analytický nástroj. Je navržen tak, aby respektoval
+Kreditožrouti používá **Umami Analytics** - vlastní open-source analytický nástroj. Je navržen tak, aby respektoval
 soukromí:
 
 | Vlastnost                  | Detail                                                                           |
 | -------------------------- | -------------------------------------------------------------------------------- |
 | Cookies                    | Nepoužívají se                                                                   |
-| IP adresy                  | Umami je sbírá, ale před uložením hashuje — nikdy se neukládají v čitelné podobě |
+| IP adresy                  | Umami je sbírá, ale před uložením hashuje - nikdy se neukládají v čitelné podobě |
 | Osobní identifikátory      | Neshromažďovány                                                                  |
-| Sdílení s třetími stranami | Žádné — data zůstávají na vlastním serveru                                       |
-| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) — anonymizovaná měření návštěvnosti      |
+| Sdílení s třetími stranami | Žádné - data zůstávají na vlastním serveru                                       |
+| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) - anonymizovaná měření návštěvnosti      |
 
 Data sbíraná Umami: zobrazení stránek, délka sezení, odkaz příchodu a souhrnné interakce s funkcemi (např. „předmět byl
 přidán do rozvrhu"). Tato data nemohou identifikovat žádného konkrétního uživatele.
@@ -53,7 +53,7 @@ zpětné vazby. Pole komentáře je nepovinné a volné - prosím neuváděj do 
 
 | Vlastnost            | Detail                                                                                          |
 | -------------------- | ----------------------------------------------------------------------------------------------- |
-| Právní základ (GDPR) | Souhlas (čl. 6 odst. 1 písm. a) — událost se odešle pouze tehdy, když výzvu aktivně odešleš      |
+| Právní základ (GDPR) | Souhlas (čl. 6 odst. 1 písm. a) - událost se odešle pouze tehdy, když výzvu aktivně odešleš      |
 | Doba uchování        | Volné komentáře se uchovávají nejdéle 12 měsíců, poté se mažou                                    |
 | Výmaz                | Protože se s událostí neukládá žádný identifikátor, o výmaz konkrétního komentáře (GDPR čl. 17) požádej přes repozitář projektu s dostatkem kontextu, abychom jej dohledali; na požádání můžeme celý dataset zpětné vazby smazat |
 
@@ -65,12 +65,12 @@ zachytával pouze:
 | Vlastnost                  | Detail                                                                                       |
 | -------------------------- | -------------------------------------------------------------------------------------------- |
 | Co se zachytává            | Chyby JavaScriptu (zpráva + stack trace) a metriky výkonu Web Vitals                          |
-| Sledování sezení           | Vypnuto — v prohlížeči se neukládá žádný trvalý ani pseudonymní identifikátor                 |
-| Zachytávání konzole        | Vypnuto — výstup tvé konzole se nikdy neodesílá                                               |
-| Sledování chování          | Žádné — Faro nesleduje zobrazení stránek, kliknutí ani navigaci (to je doména Umami)          |
+| Sledování sezení           | Vypnuto - v prohlížeči se neukládá žádný trvalý ani pseudonymní identifikátor                 |
+| Zachytávání konzole        | Vypnuto - výstup tvé konzole se nikdy neodesílá                                               |
+| Sledování chování          | Žádné - Faro nesleduje zobrazení stránek, kliknutí ani navigaci (to je doména Umami)          |
 | Cookies                    | Nepoužívají se                                                                                |
-| Sdílení s třetími stranami | Žádné — hlášení se odesílají na náš vlastní self-hosted collector, nikoli do Grafana Cloud    |
-| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) — stabilita a bezpečnost aplikace                     |
+| Sdílení s třetími stranami | Žádné - hlášení se odesílají na náš vlastní self-hosted collector, nikoli do Grafana Cloud    |
+| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) - stabilita a bezpečnost aplikace                     |
 
 Protože Faro neukládá žádný identifikátor ani nesleduje chování, nevyžaduje souhlas. Pokud na žádnou chybu nenarazíš,
 neodešlou se žádná data.
