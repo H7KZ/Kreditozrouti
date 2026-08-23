@@ -264,7 +264,7 @@
 			"clearFilters": "Zrušit filtry",
 			"showingResults": "Zobrazeno {from} – {to} z {total} předmětů",
 			"pageInfo": "Stránka {current} z {total}",
-			"completedCoursesHidden": "{count} dokončených kurzů (skryto) | {count} dokončený kurz (skrytý) | {count} dokončené kurzy (skryty)",
+			"completedCoursesHidden": "{count} dokončený kurz (skrytý) | {count} dokončené kurzy (skryty) | {count} dokončených kurzů (skryto)",
 			"optimizeTimetable": "Optimalizovat rozvrh",
 			"fitIntoTimetable": "Vměstnat do rozvrhu",
 			"emptyTimetable": {
@@ -328,8 +328,8 @@
 				"searchPlaceholder": "Hledat podle názvu nebo kódu...",
 				"noCoursesFound": "Žádné kurzy neodpovídají filtru.",
 				"marked": "označeno",
-				"selectedCount": "{count} kurzů označeno jako dokončené | {count} kurz označen jako dokončený | {count} kurzy označeny jako dokončené",
-				"completedCount": "{count} dokončeno | {count} dokončen | {count} dokončeno",
+				"selectedCount": "{count} kurz označen jako dokončený | {count} kurzy označeny jako dokončené | {count} kurzů označeno jako dokončené",
+				"completedCount": "{count} dokončen | {count} dokončeno | {count} dokončeno",
 				"skip": "Přeskočit",
 				"proceed": "Pokračovat"
 			}
@@ -394,9 +394,9 @@
 				"markAsCompleted": "Označit jako dokončené",
 				"markedCompleted": "Označeno jako dokončené",
 				"conflictsWithCourses": "Konflikt s: {courses}",
-				"slotsWithConflicts": "{count} jednotek má časový konflikt s vaším rozvrhem | {count} jednotka má časový konflikt s vaším rozvrhem | {count} jednoteky mají časové konflikty s vaším rozvrhem",
+				"slotsWithConflicts": "{count} jednotka má časový konflikt s vaším rozvrhem | {count} jednotky mají časové konflikty s vaším rozvrhem | {count} jednotek má časový konflikt s vaším rozvrhem",
 				"hideConflicting": "Skrýt konflikty",
-				"hiddenConflicts": "{count} skrytých konfliktů | {count} skrytý konflikt | {count} skryté konflikty"
+				"hiddenConflicts": "{count} skrytý konflikt | {count} skryté konflikty | {count} skrytých konfliktů"
 			},
 			"CourseStatusSummary": {
 				"selectedCourses": "{count} předmět | {count} předměty | {count} předmětů",
@@ -444,10 +444,10 @@
 				"timeRestriction": "Časové omezení",
 				"completedCourses": "Dokončené kurzy",
 				"showCompletedCourses": "Zobrazit dokončené kurzy",
-				"completedCoursesCount": "{count} skrytých | {count} skrytý | {count} skryté",
+				"completedCoursesCount": "{count} skrytý | {count} skryté | {count} skrytých",
 				"activeFilterCount": "{count} aktivní filtr | {count} aktivní filtry | {count} aktivních filtrů",
 				"timetableConflicts": "Konflikty rozvrhu",
-				"timetableSlotsCount": "{count} vybraných časových slotů | {count} vybraný časový slot | {count} vybrané časové sloty",
+				"timetableSlotsCount": "{count} vybraný časový slot | {count} vybrané časové sloty | {count} vybraných časových slotů",
 				"hideConflictingCourses": "Skrýt kurzy, které jsou v rozporu s mým rozvrhem",
 				"hideConflictingCoursesHelp": "Skrývá kurzy, u nichž se všechny dostupné jednotky překrývají s vámi vybranými časovými sloty v rozvrhu. Kurzy s alespoň jednou nekonfliktní možností jsou zachovány.",
 				"fitsTimetable": "Pasuje do rozvrhu",
