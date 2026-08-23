@@ -8,7 +8,7 @@ or `client/`.
 ```
 mcp/src/
 ├── index.ts / server.ts / app.ts
-├── Config/         # Config.ts — env vars (MYSQL_URI, MCP_PORT, NODE_ENV, LOG_LEVEL)
+├── Config/         # Config.ts — env vars (MYSQL_URI, MCP_PORT, NODE_ENV, LOG_LEVEL, MCP_BASE_URL, MCP_JWT_SECRET, MCP_ALLOWED_REDIRECT_HOSTS)
 ├── Logger/         # logger.ts — pino instance
 ├── Database/       # client.ts (Kysely db singleton) — types come from @kreditozrouti/core/db
 ├── Tools/          # CourseTools, TimetableTools, OptimizerTools
