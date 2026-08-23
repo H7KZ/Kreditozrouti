@@ -8,6 +8,12 @@ import { oauthRouter } from '@mcp/OAuth/OAuthRoutes'
 import { createServer } from '@mcp/server'
 
 const app: Express = express()
+
+// Behind Traefik in deployed environments every request arrives from the proxy IP; trust the
+// first hop so express-rate-limit keys on the real client IP (X-Forwarded-For) instead of
+// bucketing all clients together (and so v7 doesn't throw on a forwarded header it distrusts).
+if (Config.nodeEnv !== 'development') app.set('trust proxy', 1)
+
 app.use(express.json())
 
 // Token endpoint receives application/x-www-form-urlencoded (RFC 6749)
@@ -27,7 +33,13 @@ const optimizerLimiter = rateLimit({
 	max: 10,
 	standardHeaders: true,
 	legacyHeaders: false,
-	skip: req => (req.body as { params?: { name?: string } } | undefined)?.params?.name !== 'vse_optimize_timetable'
+	// Apply the cap whenever an optimizer call is present - including inside a JSON-RPC batch
+	// (array body), which would otherwise leave params undefined and bypass the limit.
+	skip: req => {
+		const isOptimizer = (msg: unknown): boolean => (msg as { params?: { name?: string } } | undefined)?.params?.name === 'vse_optimize_timetable'
+		const body: unknown = req.body
+		return Array.isArray(body) ? !body.some(isOptimizer) : !isOptimizer(body)
+	}
 })
 
 // General rate limit: 100 req/min
@@ -43,7 +55,7 @@ function requireBearer(req: Request, res: Response, next: NextFunction): void {
 		return
 	}
 	const token = auth.slice(7)
-	const payload = verifyAccessToken(token, Config.jwtSecret)
+	const payload = verifyAccessToken(token, Config.jwtSecret, { issuer: Config.baseUrl, audience: `${Config.baseUrl}/mcp` })
 	if (!payload) {
 		res.status(401)
 			.set('WWW-Authenticate', `Bearer realm="${Config.baseUrl}", error="invalid_token"`)

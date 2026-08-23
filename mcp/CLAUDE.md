@@ -32,7 +32,9 @@ mcp/src/
 - **Times as minutes-from-midnight** (0–1439) stored in DB; `minutesToTime()` from `@kreditozrouti/core/domain` converts
   to `HH:MM` in responses
 - **Optimizer rate-limit** enforced in `app.ts` before dispatch (body inspection:
-  `req.body.params?.name === 'vse_optimize_timetable'`), not inside tool handlers
+  `req.body.params?.name === 'vse_optimize_timetable'`), not inside tool handlers. Applies to
+  JSON-RPC batches too - an array body is limited if any member is an optimizer call, so the cap
+  can't be bypassed by batching
 - **Three-primitive architecture**: Tools = model-driven actions; Resources = app-controlled read-only data; Prompts =
   user-invocable workflow templates. Use `server.registerTool/registerResource/registerPrompt` — the deprecated
   `server.tool/resource/prompt` overloads must not be used.

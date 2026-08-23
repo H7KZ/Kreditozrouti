@@ -114,7 +114,7 @@ router.get('/mcp/oauth/authorize', (req: Request, res: Response) => {
 // OAuth 2.1 token endpoint
 router.post('/mcp/oauth/token', (req: Request, res: Response) => {
 	const body = req.body as Record<string, unknown>
-	const { grant_type, code, redirect_uri, code_verifier } = body as Record<string, string>
+	const { grant_type, code, redirect_uri, code_verifier, client_id } = body as Record<string, string>
 
 	if (grant_type !== 'authorization_code') {
 		res.status(400).json({ error: 'unsupported_grant_type' })
@@ -132,6 +132,12 @@ router.post('/mcp/oauth/token', (req: Request, res: Response) => {
 		return
 	}
 
+	// A public client must present the client_id the code was issued to (RFC 6749 §4.1.3 / OAuth 2.1).
+	if (client_id !== undefined && client_id !== entry.clientId) {
+		res.status(400).json({ error: 'invalid_grant', error_description: 'client_id mismatch' })
+		return
+	}
+
 	if (entry.redirectUri !== redirect_uri) {
 		res.status(400).json({ error: 'invalid_grant', error_description: 'redirect_uri mismatch' })
 		return
@@ -142,7 +148,7 @@ router.post('/mcp/oauth/token', (req: Request, res: Response) => {
 		return
 	}
 
-	const accessToken = signAccessToken(entry.clientId, Config.baseUrl, Config.jwtSecret)
+	const accessToken = signAccessToken(entry.clientId, Config.baseUrl, `${Config.baseUrl}/mcp`, Config.jwtSecret)
 
 	res.json({
 		access_token: accessToken,
