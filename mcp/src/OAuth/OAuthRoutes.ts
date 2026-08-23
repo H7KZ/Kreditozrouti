@@ -3,8 +3,16 @@ import { Router } from 'express'
 import Config from '@mcp/Config/Config'
 import { signAccessToken, verifyPkce } from '@mcp/OAuth/OAuthJWT'
 import { OAuthStore } from '@mcp/OAuth/OAuthStore'
+import { isAllowedRedirectUri, type RedirectUriPolicy } from '@mcp/OAuth/RedirectUri'
 
 const router: RouterType = Router()
+
+// Only https callbacks to allowlisted hosts (plus http localhost outside production) may
+// receive an authorization code - stops the flow being used as an open-redirect primitive.
+const redirectUriPolicy: RedirectUriPolicy = {
+	allowedHosts: Config.allowedRedirectHosts,
+	allowLocalhost: Config.nodeEnv !== 'production'
+}
 
 // RFC 9728 — protected resource metadata
 router.get('/.well-known/oauth-protected-resource', (_req: Request, res: Response) => {
@@ -37,6 +45,11 @@ router.post('/mcp/oauth/register', (req: Request, res: Response) => {
 
 	if (redirectUris.length === 0) {
 		res.status(400).json({ error: 'invalid_client_metadata', error_description: 'redirect_uris required' })
+		return
+	}
+
+	if (!redirectUris.every(uri => typeof uri === 'string' && isAllowedRedirectUri(uri, redirectUriPolicy))) {
+		res.status(400).json({ error: 'invalid_redirect_uri', error_description: 'One or more redirect_uris are not permitted' })
 		return
 	}
 
@@ -78,6 +91,12 @@ router.get('/mcp/oauth/authorize', (req: Request, res: Response) => {
 
 	if (!client.redirectUris.includes(redirect_uri)) {
 		res.status(400).json({ error: 'invalid_request', error_description: 'redirect_uri not registered' })
+		return
+	}
+
+	// Defense in depth: re-validate at authorize even though registration already screened it.
+	if (!isAllowedRedirectUri(redirect_uri, redirectUriPolicy)) {
+		res.status(400).json({ error: 'invalid_request', error_description: 'redirect_uri not permitted' })
 		return
 	}
 

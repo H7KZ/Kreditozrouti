@@ -1,3 +1,5 @@
+import { parseAllowedRedirectHosts } from '@mcp/OAuth/RedirectUri'
+
 interface Config {
 	mysqlUri: string
 	port: number
@@ -5,6 +7,7 @@ interface Config {
 	logLevel: string
 	baseUrl: string
 	jwtSecret: string
+	allowedRedirectHosts: string[]
 }
 
 function required(name: string): string {
@@ -19,7 +22,8 @@ const config: Config = {
 	nodeEnv: process.env.NODE_ENV ?? 'development',
 	logLevel: process.env.LOG_LEVEL ?? 'info',
 	baseUrl: process.env.MCP_BASE_URL ?? 'http://localhost:3000',
-	jwtSecret: required('MCP_JWT_SECRET')
+	jwtSecret: required('MCP_JWT_SECRET'),
+	allowedRedirectHosts: parseAllowedRedirectHosts(process.env.MCP_ALLOWED_REDIRECT_HOSTS)
 }
 
 export default config

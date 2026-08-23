@@ -68,6 +68,7 @@ HTTP mode requires OAuth 2.1 authentication. Clients that support Dynamic Client
 | `LOG_LEVEL`       | no       | `info`                     | Pino log level                                           |
 | `MCP_BASE_URL`    | no       | `http://localhost:3000`    | Public base URL of the server (used in OAuth metadata)   |
 | `MCP_JWT_SECRET`  | no*      | auto-generated (ephemeral) | HMAC-SHA256 secret for signing access tokens. *Required in production - tokens won't survive restarts if unset |
+| `MCP_ALLOWED_REDIRECT_HOSTS` | no | `claude.ai,claude.com` | Comma-separated https hosts (subdomains included) permitted as OAuth `redirect_uri`. Outside production, `http://localhost` and `http://127.0.0.1` (any port) are also permitted. Any other `redirect_uri` is rejected at registration and at authorize |
 
 ## Docker
 
