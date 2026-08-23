@@ -45,6 +45,10 @@ The API receives the merged array; `courses.store` never builds it directly.
 **`useSharedCourseStatusFilter()`** is a module-level singleton. Always use it (not `useCourseStatusFilter()` directly)
 so `CourseStatusFilter.vue` and `CourseStatusSummary.vue` share state. Call `resetCourseStatusFilter()` on page unmount.
 
+**`v-html` sanitization:** any `v-html` bound to scraped/user content (e.g. InSIS syllabus) MUST go through
+`renderMarkdown()` from `@client/utils/markdown` (marked -> DOMPurify). Never bind `marked.parse(...)` or raw HTML to
+`v-html` directly - scraped HTML is untrusted (stored XSS).
+
 **i18n in stores:** use `i18n.global` (not `useI18n()` — composables are unavailable outside component setup):
 
 ```typescript

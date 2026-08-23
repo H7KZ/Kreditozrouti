@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed } from 'vue'
-import { marked } from 'marked'
 import { useI18n } from 'vue-i18n'
 import CourseRefreshButton from '@client/components/courses/CourseRefreshButton.vue'
 import { useCourseLabels } from '@client/composables'
 import { useCompletedCoursesStore, useCoursesStore, useFiltersStore } from '@client/stores'
 import { formatRelativeAge, isCourseStale } from '@client/utils/freshness'
+import { renderMarkdown } from '@client/utils/markdown'
 import IconCircleCheck from '~icons/lucide/circle-check'
 import IconClock from '~icons/lucide/clock'
 import IconExternalLink from '~icons/lucide/external-link'
@@ -27,7 +27,7 @@ const { getCompletionLabel, getFacultyLabel, getLanguagesLabel, getCategoryLabel
 const isMarkedCompleted = computed(() => completedCoursesStore.isCourseCompleted(props.course.ident))
 const formattedAge = computed(() => formatRelativeAge(props.course.updated_at, locale.value))
 
-type SyllabusField = { key: string; label: string; value: string }
+type SyllabusField = { key: string; label: string; html: string }
 
 const sortedAssessments = computed(() => [...(props.course.assessments ?? [])].sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0)))
 
@@ -46,7 +46,7 @@ const syllabusFields = computed((): SyllabusField[] => {
 		{ key: 'recProg', labelKey: 'syllabusRecommendedProgrammes', value: pick(c.recommended_programmes, c.recommended_programmes_en) },
 		{ key: 'workExp', labelKey: 'syllabusRequiredWorkExperience', value: pick(c.required_work_experience, c.required_work_experience_en) }
 	]
-	return rows.filter(r => r.value).map(r => ({ key: r.key, label: t(`components.courses.CourseRowExpanded.${r.labelKey}`), value: r.value! }))
+	return rows.filter(r => r.value).map(r => ({ key: r.key, label: t(`components.courses.CourseRowExpanded.${r.labelKey}`), html: renderMarkdown(r.value!) }))
 })
 
 const hasPrerequisiteChips = computed(
@@ -222,8 +222,9 @@ function handleToggleCompleted() {
 			<div class="mt-2 space-y-3">
 				<div v-for="field in syllabusFields" :key="field.key">
 					<p class="mb-1 text-xs font-medium text-(--insis-gray-500)">{{ field.label }}</p>
+					<!-- field.html is pre-sanitized in the syllabusFields computed via renderMarkdown (DOMPurify) -->
 					<!-- eslint-disable-next-line vue/no-v-html -->
-					<div class="prose prose-sm max-w-none text-(--insis-gray-700)" v-html="marked.parse(field.value)" />
+					<div class="prose prose-sm max-w-none text-(--insis-gray-700)" v-html="field.html" />
 				</div>
 			</div>
 		</details>

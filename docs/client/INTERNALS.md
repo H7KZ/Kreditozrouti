@@ -309,6 +309,20 @@ string  // clsx + tailwind-merge
 
 Used throughout components for conditional class merging.
 
+### `utils/markdown.ts`
+
+```typescript
+renderMarkdown(value
+:
+string
+):
+string  // marked.parse -> DOMPurify.sanitize
+```
+
+The single sanctioned markdown-to-HTML sink for `v-html`. Scraped InSIS syllabus text is untrusted and `marked` passes
+raw HTML through untouched, so every value bound to `v-html` must go through `renderMarkdown` (DOMPurify strips
+`<script>`, `onerror`/`onclick` handlers, `javascript:` URLs, etc.). Used by `CourseInfo.vue` for syllabus fields.
+
 ---
 
 ## Constants (`src/constants/`)
