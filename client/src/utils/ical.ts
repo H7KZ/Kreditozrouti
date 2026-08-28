@@ -55,6 +55,22 @@ function firstOccurrence(from: Date, targetJsDay: number): Date {
 	return d
 }
 
+/**
+ * Parse a slot date string. InSIS/DB stores block-action dates as DD.MM.YYYY
+ * (e.g. "10.09.2025"), which `new Date()` cannot parse (Invalid Date) - that is
+ * why block actions silently vanished from exports. Tolerate ISO YYYY-MM-DD too.
+ * Returns null if unparseable.
+ */
+function parseSlotDate(s: string): Date | null {
+	const dmy = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec(s.trim())
+	if (dmy) {
+		const [, d, m, y] = dmy
+		return new Date(Number(y), Number(m) - 1, Number(d))
+	}
+	const iso = new Date(s)
+	return isNaN(iso.getTime()) ? null : iso
+}
+
 /** Format a Date as RFC 5545 UTC datetime for UNTIL: YYYYMMDDTHHMMSSZ */
 function toIcalUtcDate(date: Date): string {
 	return (
@@ -105,8 +121,8 @@ export function generateIcal(units: SelectedCourseUnit[], configs: ICalCourseCon
 			lines.push(fold(`DESCRIPTION:${escapeText(description)}`))
 			lines.push('END:VEVENT')
 		} else if (unit.date) {
-			const eventDate = new Date(unit.date)
-			if (isNaN(eventDate.getTime())) continue
+			const eventDate = parseSlotDate(unit.date)
+			if (!eventDate) continue
 			eventDate.setHours(0, 0, 0, 0)
 
 			lines.push('BEGIN:VEVENT')

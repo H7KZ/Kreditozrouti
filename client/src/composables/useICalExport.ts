@@ -6,17 +6,27 @@ import { createICalLink } from '@client/services'
 import { generateIcal } from '@client/utils/ical'
 
 /**
- * Returns default semester start/end dates for the given VŠE academic year and semester.
- * year = the autumn year of the academic year (e.g. 2025 for "2025/2026").
- * ZS: late September → mid-January next year (13 weeks)
- * LS: mid-February next year → late May next year (13 weeks)
+ * Returns default semester start/end dates for the current/upcoming semester,
+ * derived from today's date. The wizard's study-plan year is a plan *version* (e.g.
+ * a 2023/2024 plan) and does NOT track the year the student actually attends, so it
+ * must never drive calendar dates - doing so exports stale years (bug: 2024 in 2026).
+ * The user can still adjust the dates manually in the export dialog.
+ *
+ * Each semester picks its own calendar year so the whole year is covered with no gaps:
+ * ZS (autumn, late September → mid-December): only January still belongs to the prior
+ *   autumn's ZS; February onward already points at this year's upcoming/current autumn.
+ * LS (spring, mid-February → late May): from June onward the upcoming LS is next year;
+ *   January through May is this year's current/imminent LS.
  */
-export function getDefaultSemesterDates(year: number | null, semester: InSISSemester): { start: string; end: string } {
-	const y = year ?? new Date().getFullYear()
+export function getDefaultSemesterDates(semester: InSISSemester, now: Date = new Date()): { start: string; end: string } {
+	const year = now.getFullYear()
+	const month = now.getMonth() // 0 = January
 	if (semester === 'ZS') {
-		return { start: `${y}-09-21`, end: `${y}-12-18` }
+		const ay = month === 0 ? year - 1 : year
+		return { start: `${ay}-09-21`, end: `${ay}-12-18` }
 	}
-	return { start: `${y + 1}-02-16`, end: `${y + 1}-05-17` }
+	const sy = month >= 5 ? year + 1 : year
+	return { start: `${sy}-02-16`, end: `${sy}-05-17` }
 }
 
 // webcal:// uses same host/path as the HTTP API, just a different scheme

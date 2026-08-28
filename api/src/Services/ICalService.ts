@@ -11,6 +11,22 @@ function toIcalLocal(date: Date, minutesFromMidnight: number): string {
 	return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}T${pad(h)}${pad(m)}00`
 }
 
+/**
+ * Parse a slot date string. InSIS/DB stores block-action dates as DD.MM.YYYY
+ * (e.g. "10.09.2025"), which `new Date()` cannot parse (Invalid Date) - that is
+ * why block actions silently vanished from exports. Tolerate ISO YYYY-MM-DD too.
+ * Returns null if unparseable.
+ */
+function parseSlotDate(s: string): Date | null {
+	const dmy = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec(s.trim())
+	if (dmy) {
+		const [, d, m, y] = dmy
+		return new Date(Number(y), Number(m) - 1, Number(d))
+	}
+	const iso = new Date(s)
+	return isNaN(iso.getTime()) ? null : iso
+}
+
 function toIcalUtcDate(date: Date): string {
 	return (
 		`${date.getUTCFullYear()}${pad(date.getUTCMonth() + 1)}${pad(date.getUTCDate())}` +
@@ -85,8 +101,8 @@ export function generateIcal(units: ICalUnit[], configs: ICalConfig[], semesterS
 			lines.push(fold(`DESCRIPTION:${escapeText(description)}`))
 			lines.push('END:VEVENT')
 		} else if (unit.date) {
-			const eventDate = new Date(unit.date)
-			if (isNaN(eventDate.getTime())) continue
+			const eventDate = parseSlotDate(unit.date)
+			if (!eventDate) continue
 			eventDate.setHours(0, 0, 0, 0)
 
 			lines.push('BEGIN:VEVENT')

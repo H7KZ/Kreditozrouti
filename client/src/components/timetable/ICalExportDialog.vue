@@ -32,7 +32,7 @@ const { exportIcal, generateWebcalLink } = useICalExport()
 
 // Semester date range state
 
-const defaults = computed(() => getDefaultSemesterDates(wizardStore.year, wizardStore.semester))
+const defaults = computed(() => getDefaultSemesterDates(wizardStore.semester))
 
 const semesterStart = ref(defaults.value.start)
 const semesterEnd = ref(defaults.value.end)
