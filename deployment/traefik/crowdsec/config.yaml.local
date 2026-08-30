@@ -1,0 +1,15 @@
+# ==============================================================================
+# CrowdSec local config overlay
+# Merged over the image's /etc/crowdsec/config.yaml (mappings merge, .local wins).
+#
+# Purpose: bind the Prometheus metrics endpoint to all interfaces. CrowdSec
+# defaults to 127.0.0.1:6060, which is only reachable from inside the container,
+# so the monitoring stack's Prometheus (on alloy-network) cannot scrape it and
+# up{job="crowdsec"} stays 0 forever. 0.0.0.0 makes crowdsec:6060 reachable
+# container-to-container. The port is NOT published to the host.
+# ==============================================================================
+prometheus:
+  enabled: true
+  level: full
+  listen_addr: 0.0.0.0
+  listen_port: 6060

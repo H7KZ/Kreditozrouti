@@ -21,14 +21,14 @@ groups:
     interval: 1m
     rules:
       - uid: container-down
-        title: Container Down
+        title: API Down
         condition: A
         noDataState: KeepLast
         execErrState: KeepLast
-        for: 1m
+        for: 5m
         annotations:
-          summary: 'A scraped target is down'
-          description: 'Job {{ $labels.job }} has been down for more than 1 minute.'
+          summary: 'The production API is down'
+          description: 'The production API has been failing to scrape (up==0) or absent from discovery for more than 5 minutes. Users are affected.'
         labels:
           severity: critical
         data:
@@ -39,9 +39,12 @@ groups:
               to: 0
             datasourceUid: Prometheus
             model:
-              # up==0 catches static targets where the target stays in the list but scrape fails.
-              # absent() catches Docker SD targets (api) that disappear from discovery when the container stops.
-              expr: up == 0 or absent(up{job="kreditozrouti-api"})
+              # Scoped to the user-facing PRODUCTION API only. The previous blanket `up == 0`
+              # paged on every infra target (crowdsec, traefik); crowdsec binds 127.0.0.1 by
+              # default so up{job="crowdsec"} was pinned to 0, producing a permanent, self-
+              # repeating page. Alert on the symptom users feel, not on every scrape target.
+              # up==0: target discovered but scrape failing. absent(): container gone from Docker SD.
+              expr: up{job="kreditozrouti-api", env="production"} == 0 or absent(up{job="kreditozrouti-api", env="production"})
               instant: true
               refId: A
 
@@ -102,7 +105,9 @@ groups:
         condition: A
         noDataState: KeepLast
         execErrState: KeepLast
-        for: 0m
+        # 15m dampening: increase() over a sliding 30m window crosses the threshold and
+        # resolves repeatedly as the window slides; for: 0m re-fired on every flap.
+        for: 15m
         annotations:
           summary: 'Scraper silent failures rising'
           description: '{{ $values.A }} silent failures in the last 30 minutes. These are caught exceptions that do not fail BullMQ jobs.'
@@ -153,7 +158,7 @@ groups:
         condition: A
         noDataState: KeepLast
         execErrState: KeepLast
-        for: 5m
+        for: 10m
         annotations:
           summary: 'API 5xx error rate above 5%'
           description: 'More than 5% of API requests are returning 5xx errors over the last 5 minutes.'
@@ -176,7 +181,7 @@ groups:
         condition: A
         noDataState: KeepLast
         execErrState: KeepLast
-        for: 5m
+        for: 10m
         annotations:
           summary: 'API p99 latency above 2 seconds'
           description: 'The 99th percentile API response time has exceeded 2 seconds over the last 5 minutes.'

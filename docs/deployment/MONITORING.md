@@ -8,46 +8,41 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│  App containers (api × 2, scraper × 5)                              │
+│  App containers (api × 1, scraper × 2)                              │
 │  pino → JSON to stdout                                              │
 └────────────────────┬────────────────────────────────────────────────┘
                      │ Docker stdout (json-file driver)
                      ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│  Alloy (log shipping + OTLP receiver)                               │
+│  Alloy (log shipping + Faro receiver)                               │
 │  - discovery.docker  reads container stdout via /var/run/docker.sock│
 │  - loki.process      parses JSON, extracts stream labels            │
 │  - faro.receiver     accepts browser telemetry on :12347            │
-│  - otelcol.receiver  accepts OTLP traces from api/scraper on :4317/8│
-└──────────┬──────────────────────────┬───────────────────────────────┘
-           │ Loki push API            │ OTLP traces
-           ▼                          ▼
-┌────────────────────┐     ┌────────────────────┐
-│  Loki              │     │  Tempo             │
-│  log storage       │     │  trace storage     │
-│  :3100             │     │  :3200             │
-└────────┬───────────┘     └────────┬───────────┘
-         │                          │
-         └──────────┬───────────────┘
-                    ▼
-         ┌────────────────────┐
-         │  Grafana           │
-         │  dashboards + query│
-         │  :3000 → /grafana  │
-         └────────────────────┘
+└──────────┬──────────────────────────────────────────────────────────┘
+           │ Loki push API
+           ▼
+┌────────────────────┐
+│  Loki              │
+│  log storage :3100 │
+└────────┬───────────┘
+         ▼
+┌────────────────────┐
+│  Grafana           │
+│  dashboards + query│
+│  :3000 → /grafana  │
+└────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│  API containers                                                     │
-│  prom-client → /metrics                                             │
+│  api container: prom-client → /metrics (also exposes bullmq_queue_* │
+│  and scraper_* gauges read from Redis, so the Scraper dashboard is  │
+│  fed by the API scrape - the scraper process itself is not scraped) │
 └────────────────────┬────────────────────────────────────────────────┘
-                     │ HTTP scrape every 15 s
+                     │ HTTP scrape every 15 s (Docker SD via alloy-network)
                      ▼
          ┌────────────────────┐
          │  Prometheus        │
          │  metrics storage   │
-         │  :9090             │
          └────────┬───────────┘
-                  │
                   ▼
          ┌────────────────────┐
          │  Grafana           │
@@ -61,14 +56,15 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
                      ▼
          ┌────────────────────┐
          │  Alloy :12347      │
-         │  faro.receiver     │
-         └────────┬───────────┘
-                  │ Loki push
-                  ▼
-         ┌────────────────────┐
-         │  Loki              │
+         │  faro.receiver → Loki
          └────────────────────┘
 ```
+
+> **Traces are not deployed.** The api and scraper embed an OpenTelemetry SDK, but
+> it is **opt-in and off by default** (`api/src/telemetry.ts` only starts the SDK when
+> `OTEL_EXPORTER_OTLP_ENDPOINT` is set). There is no `otelcol.receiver.otlp` in the Alloy
+> config and no Tempo service, so nothing receives spans. To enable tracing later: add an
+> OTLP receiver to `config.alloy`, add a Tempo service + datasource, then set the env var.
 
 ---
 
@@ -76,16 +72,23 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 
 | Component     | Image                       | Role                                                    |
 |---------------|-----------------------------|---------------------------------------------------------|
-| Alloy         | `grafana/alloy:latest`      | Log shipping (Docker socket), Faro receiver, OTLP relay |
-| Loki          | `grafana/loki:3`            | Log storage (7-day retention, filesystem backend)       |
-| Tempo         | `grafana/tempo:latest`      | Distributed trace storage (7-day retention)             |
+| Alloy         | `grafana/alloy:latest`      | Log shipping (Docker socket) + Faro browser receiver    |
+| Loki          | `grafana/loki:latest`       | Log storage (7-day retention, filesystem backend)       |
 | Prometheus    | `prom/prometheus:latest`    | Metrics scraping and storage (7-day retention, 2GB cap) |
 | Grafana       | `grafana/grafana:latest`    | Dashboards and alerting (served at `/grafana`)          |
-| node-exporter | `prom/node-exporter:latest` | Host CPU / memory / disk metrics                        |
+
+(Umami + its Postgres also run in this stack for product analytics; they are not part of the
+Grafana observability pipeline. Tempo and node-exporter are **not** deployed.)
 
 All components run in the `monitoring-network` Docker network. Grafana and Alloy also join `traefik-network`
 (for public routing). Prometheus and Alloy also join `alloy-network` — Prometheus to reach container IPs discovered via
-Docker SD and to scrape Traefik metrics (`traefik:8080/metrics`), Alloy to receive OTLP pushes from api/scraper.
+Docker SD and to scrape Traefik (`traefik:8080`) + CrowdSec (`crowdsec:6060`) metrics; Alloy tails app container stdout
+on the same host via the Docker socket.
+
+> **Docker socket access:** Prometheus and Alloy both read `/var/run/docker.sock`. They must run with the
+> host's `docker` group GID via `group_add` in `docker-compose.monitoring.yml` (defaults to `988`; override
+> with `DOCKER_GID` in `.env` if the host differs - check with `getent group docker`). A wrong GID silently
+> yields zero discovered targets and no container logs, which reads as empty dashboards.
 
 Alloy mounts `traefik-logs-volume` (read-only) to tail `/var/log/traefik/access.log` — see the Traefik access log
 pipeline below.
@@ -177,8 +180,7 @@ Config: `../../deployment/monitoring/alloy/config.alloy`
 ### Container log collection
 
 1. `discovery.docker` discovers all containers via Docker socket
-2. `discovery.relabel` drops monitoring infra containers (grafana, prometheus, loki, alloy, node-exporter, umami,
-   postgres)
+2. `discovery.relabel` drops monitoring infra containers (grafana, prometheus, loki, alloy, umami, postgres)
 3. `loki.source.docker` reads stdout from surviving containers
 4. `loki.process.parse_json`:
     - `stage.json` extracts `level`, `service`, `env`, `context`, `request_id`, `path`, `trace_id`, `span_id`
@@ -192,18 +194,21 @@ Config: `../../deployment/monitoring/alloy/config.alloy`
 
 ### Faro browser telemetry
 
-1. `faro.receiver` listens on `:12347` (Traefik routes `/faro/*` here)
+1. `faro.receiver` listens on `:12347` (Traefik routes `/faro/*` here), forwarding to `loki.process.faro_labels`
 2. `loki.process.faro_labels`:
     - `stage.static_labels` sets `app="kreditozrouti"`
-    - `stage.logfmt` extracts `kind`, `environment`
-    - `stage.labels` promotes `kind` and `env` (from `environment`) as stream labels
-3. Traces forwarded to Tempo via `otelcol.processor.batch` → `otelcol.exporter.otlp`
+    - `stage.logfmt` maps `kind` ← `kind` and `env` ← `app_environment`
+    - `stage.labels` promotes `kind` and `env` as stream labels
+
+> The Client dashboard filters every panel by `env="$env"`. That label only exists if the incoming Faro
+> line actually carries an `app_environment` key. If the field name differs (Faro/Alloy version drift),
+> `env` is empty and the whole Client dashboard reads blank even though Faro data is arriving. Verify with
+> `{app="kreditozrouti"}` (no env filter) in Explore and inspect the raw line's keys.
 
 ### OTLP traces
 
-1. `otelcol.receiver.otlp` listens on `:4317` (gRPC) and `:4318` (HTTP/protobuf)
-2. `otelcol.processor.batch` batches spans
-3. `otelcol.exporter.otlp` forwards to Tempo at `tempo:4317`
+Not configured. Alloy has no `otelcol.receiver.otlp` and there is no Tempo, so app spans go nowhere. Trace export
+is disabled at the source (`OTEL_EXPORTER_OTLP_ENDPOINT` unset). See the traces note under Pipeline Overview.
 
 ### Traefik access log
 
@@ -275,18 +280,20 @@ Provisioned from `../../deployment/monitoring/grafana/provisioning/dashboards`.
 
 ### Trace correlation
 
-When a log line contains a `trace_id` field (present when OTel has an active span), Grafana shows an **Open in Tempo**
-link that jumps to the matching trace. The Loki datasource derivedField
-`matcherRegex: '"trace_id":"(\w+)"'` drives this.
+Not active - this requires a Tempo datasource, which is not deployed. If a log line ever carries a `trace_id`
+(only when the opt-in OTel SDK is enabled and a receiver exists), the intended setup is a Loki datasource
+derivedField (`matcherRegex: '"trace_id":"(\w+)"'`) linking to Tempo. Deploy Tempo first.
 
 ---
 
 ## Prometheus Metrics
 
-API containers are discovered and scraped via Docker Socket SD (`docker_sd_configs` in `prometheus.yml`). Containers
-must have the `prometheus.io/scrape=true` Docker label to be included; Prometheus filters to the
-`alloy-network` interface only (one target per container, not one per network). The `/metrics` endpoint returns 404 for
-requests with an `x-forwarded-for` header (i.e. via Traefik), so it is only reachable from within the Docker network.
+The API container is discovered and scraped via Docker Socket SD (`docker_sd_configs` in `prometheus.yml`). Containers
+must carry the `prometheus.io/scrape=true` Docker label to be included; Prometheus keeps only the `alloy-network`
+interface (one target per container, not one per network) and builds the scrape address from the container's
+alloy-network IP **plus its `prometheus.io/port` label** (each service's metrics port comes from its own label - no
+hardcoded port). The `/metrics` endpoint returns 404 for requests carrying an `x-forwarded-for` header (i.e. via
+Traefik), so it is only reachable from within the Docker network.
 
 | Metric                          | Type      | Labels                                  | Notes                                              |
 |---------------------------------|-----------|-----------------------------------------|----------------------------------------------------|
@@ -296,12 +303,15 @@ requests with an `x-forwarded-for` header (i.e. via Traefik), so it is only reac
 | `scraper_items_processed_total` | Gauge     | `job_type`, `status`, `env`             | From Redis counters                                |
 | `scraper_last_run_timestamp`    | Gauge     | `job_type`, `env`                       | Unix seconds; 0 = never                            |
 | Node.js defaults                | various   | —                                       | GC, event loop, memory via `collectDefaultMetrics` |
-| Host metrics                    | various   | —                                       | node-exporter: CPU, disk, network                  |
 
 The `env` label on API metrics comes from the `prometheus.io/env` Docker container label (`production` or
 `development`), copied via `relabel_configs`. Both prod and dev API containers are scraped automatically with correct
-per-container env metadata — no static target list required. Node-exporter gets `env=production`
-via a static relabel.
+per-container env metadata — no static target list required.
+
+> **Coverage:** only the `api` container is scraped today. The scraper process is **not** scraped - its
+> queue depth and `scraper_*` counters are exposed through the API's Redis-backed gauges above (the Scraper
+> dashboard is fed by the API scrape), and the `mcp` service exposes no `/metrics` endpoint. Static jobs
+> also scrape Traefik (`traefik:8080`) and CrowdSec (`crowdsec:6060`).
 
 ---
 
@@ -309,23 +319,28 @@ via a static relabel.
 
 Provisioned from `../../deployment/monitoring/grafana/provisioning/alerting`.
 
-| File                        | Purpose                                                              |
-|-----------------------------|----------------------------------------------------------------------|
-| `rules.yml`                 | Alert rules — 3 groups: `infrastructure`, `scraper`, `application`   |
-| `notification-policies.yml` | Routes alerts to the `discord` contact point; `repeat_interval: 24h` |
-| `contact-points.yml`        | Discord webhook receiver; `disableResolveMessage: true`              |
-| `message-templates.yml`     | Go templates: `discord_alert_title` and `discord_alert_message`      |
+| File                        | Purpose                                                                                                                |
+|-----------------------------|------------------------------------------------------------------------------------------------------------------------|
+| `rules.yml`                 | Alert rules — 3 groups: `infrastructure`, `scraper`, `application`                                                     |
+| `notification-policies.yml` | Routes alerts to `discord`; `group_by: [alertname, job, env, severity]`, `group_interval: 15m`, `repeat_interval: 24h` |
+| `contact-points.yml`        | Discord webhook receiver; `disableResolveMessage: true`                                                                |
+| `message-templates.yml`     | Go templates: `discord_alert_title` and `discord_alert_message`                                                        |
 
 ### Alert rule groups
 
-| Group            | Folder         | Rules                                                                |
-|------------------|----------------|----------------------------------------------------------------------|
-| `infrastructure` | Infrastructure | `container-down`, `disk-usage-high`, `memory-usage-high`             |
-| `scraper`        | Infrastructure | `scraper-jobs-failed` — `bullmq_queue_depth{queue=~"Scraper.*"} > 0` |
-| `application`    | Application    | `api-error-rate-high` (5xx > 5%), `api-p99-latency-high` (p99 > 2 s) |
+| Group            | Folder         | Rules                                                                                                              |
+|------------------|----------------|-------------------------------------------------------------------------------------------------------------------|
+| `infrastructure` | Infrastructure | `container-down` (title **API Down**) — prod API only, `for: 5m`                                                   |
+| `scraper`        | Infrastructure | `scraper-jobs-failed`, `scraper-stale`, `scraper-silent-failures-rising` (`for: 15m`), `scraper-failure-rate-high` |
+| `application`    | Application    | `api-error-rate-high` (5xx > 5%, `for: 10m`), `api-p99-latency-high` (p99 > 2 s, `for: 10m`)                       |
 
-All alert rules use raw PromQL (`histogram_quantile`, `rate`) — there are no recording rules. The
-`kreditozrouti_application` group that referenced non-existent recording rules has been removed.
+**Symptom-based, not target-based.** `container-down` alerts on the user-facing production API only
+(`up{job="kreditozrouti-api", env="production"} == 0 or absent(...)`). It deliberately does **not** page when an
+individual infra scrape target (CrowdSec, Traefik) is down - CrowdSec in particular binds `127.0.0.1:6060` by default,
+so the old blanket `up == 0` produced a permanent, self-repeating page. Notifications group by `alertname, job, env,
+severity` so a flap in one service never re-notifies unrelated alerts.
+
+All alert rules use raw PromQL (`histogram_quantile`, `rate`) — there are no recording rules.
 
 ### No-data / error handling
 
@@ -346,6 +361,18 @@ annotations. `disableResolveMessage: true` suppresses the automatic "resolved" m
 ## Troubleshooting
 
 ### Grafana dashboards show no data
+
+**Check the Docker socket GID first - a mismatch makes *everything* empty at once.** Prometheus and Alloy read
+`/var/run/docker.sock`; if their `group_add` GID does not match the host's `docker` group, Docker SD returns zero
+targets and no logs are tailed:
+
+```bash
+getent group docker   # note the GID (e.g. 988); it must match DOCKER_GID / group_add in docker-compose.monitoring.yml
+docker compose -p global exec prometheus wget -qO- http://localhost:9090/api/v1/targets \
+  | jq '.data.activeTargets[] | {job:.labels.job, health:.health, err:.lastError}'
+```
+
+If jobs are `down` with a permission or connection error, fix the GID (or the CrowdSec bind address) and redeploy.
 
 1. Check Alloy is running and healthy:
 
@@ -395,27 +422,25 @@ annotations. `disableResolveMessage: true` suppresses the automatic "resolved" m
 
 6. Verify the monitoring networks are wired correctly:
     ```bash
-    docker network inspect alloy-network   # api, scraper, alloy, prometheus should appear
-    docker network inspect monitoring-network  # alloy, loki, prometheus, grafana, tempo
+    docker network inspect alloy-network   # api, scraper, alloy, prometheus, traefik, crowdsec should appear
+    docker network inspect monitoring-network  # alloy, loki, prometheus, grafana
     ```
 
 ### Alloy sees containers but Loki has no data
 
 The most common cause is that all log lines are being dropped. Alloy drops:
 
-- Containers whose name matches `/(grafana|prometheus|loki|alloy|node-exporter|umami|postgres).*`
+- Containers whose name matches `/(grafana|prometheus|loki|alloy|umami|postgres).*`
 - Log lines where `path` matches `^/(health|metrics)$`
 
 If all your test requests hit `/health`, no logs will appear in Loki.
 
 ### Trace links don't appear in Grafana
 
-Trace context is only injected into pino when there is an active OpenTelemetry span. Spans are created automatically for
-HTTP requests via `@opentelemetry/instrumentation-http` (included in
-`getNodeAutoInstrumentations`). If `OTEL_EXPORTER_OTLP_ENDPOINT` is not set or the endpoint is unreachable, the SDK will
-fail silently but spans will still be created locally — trace IDs will appear in logs.
-
-Check that `alloy-network` is attached to both `api` and `scraper` containers.
+Expected - tracing is disabled by default. The OpenTelemetry SDK only starts when `OTEL_EXPORTER_OTLP_ENDPOINT` is set
+(see `api/src/telemetry.ts`), and even then there is no OTLP receiver or Tempo to receive spans. To enable end-to-end
+tracing, add an `otelcol.receiver.otlp` to `config.alloy`, a Tempo service + datasource, and only then set the env var.
+Until that exists, `trace_id` / `span_id` do not appear in logs and there are no trace links.
 
 ### Faro data missing in Client dashboard
 

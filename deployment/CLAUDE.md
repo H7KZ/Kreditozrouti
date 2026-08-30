@@ -66,6 +66,12 @@ directories under `$HOME/versions/<environment>/` older than 7 days are cleaned 
 **Deploy order on a fresh server:** Traefik → monitoring stack (optional) → GitHub Runner (optional) → app stack.
 Traefik must exist before any app stack because it creates `traefik-network`.
 
+**Monitoring stack reads the Docker socket.** Prometheus and Alloy in `docker-compose.monitoring.yml` mount
+`/var/run/docker.sock` and must run with the host's `docker` group GID via `group_add` (default `988`; override with
+`DOCKER_GID` in `.env` if `getent group docker` differs). A wrong GID silently yields zero scrape targets and no logs
+(blank Grafana + a permanently firing alert). The monitoring, Traefik, and GitHub-runner stacks all deploy under
+Compose project name `global` (`STACK_NAME` in each `deploy.sh`); the app stack uses `prod` / `dev`.
+
 **`.env` is written by CI, never committed.** `_deploy-service.yml` and `deploy-all.yml` construct it from GitHub
 Environment secrets/variables and write it into the version directory (`~/versions/<env>/<sha>/.env`) before calling
 `deploy.sh`.

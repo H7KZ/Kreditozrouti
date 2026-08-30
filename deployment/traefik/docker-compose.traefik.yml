@@ -117,6 +117,9 @@ services:
       - traefik-logs-volume:/var/log/traefik:ro
       - ./crowdsec/acquis.yml:/etc/crowdsec/acquis.d/traefik.yml:ro
       - ./crowdsec/profiles.yaml:/etc/crowdsec/profiles.yaml:ro
+      # Overlay: expose the Prometheus metrics endpoint on 0.0.0.0:6060 so the
+      # monitoring stack can scrape crowdsec:6060 (default binds 127.0.0.1 only).
+      - ./crowdsec/config.yaml.local:/etc/crowdsec/config.yaml.local:ro
     networks:
       - traefik-network
       - alloy-network

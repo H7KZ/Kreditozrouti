@@ -10,9 +10,6 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
-rule_files:
-  - 'rules.yml'
-
 scrape_configs:
   # Discovers kreditozrouti-api containers (prod + dev) via Docker socket.
   # Containers must have label prometheus.io/scrape=true to be included.
@@ -30,12 +27,13 @@ scrape_configs:
       - source_labels: [ __meta_docker_network_name ]
         regex: alloy-network
         action: keep
-      # Build scrape address from the container's alloy-network IP.
-      # Port is hardcoded here — if you change the API metrics port, update this AND the compose labels.
-      - source_labels: [ __meta_docker_network_ip ]
-        regex: (.+)
+      # Build scrape address from the container's alloy-network IP + its prometheus.io/port label.
+      # Port comes from each container's own label (production.yml sets prometheus.io/port), so
+      # adding a new scrapable service needs no change here - just set the three prometheus.io labels.
+      - source_labels: [ __meta_docker_network_ip, __meta_docker_container_label_prometheus_io_port ]
+        regex: (.+);(.+)
         target_label: __address__
-        replacement: '$1:80'
+        replacement: '$1:$2'
       # Pull env from the container's prometheus.io/env label (production / development)
       - source_labels: [ __meta_docker_container_label_prometheus_io_env ]
         target_label: env

@@ -30,8 +30,12 @@ services:
   prometheus:
     image: prom/prometheus:latest
     restart: unless-stopped
+    # Grants the 'nobody' process read access to the mounted docker.sock so Docker-SD
+    # can list containers. Must equal the host's docker group GID (getent group docker).
+    # Default 988 matches the current host; override with DOCKER_GID in .env if it differs.
+    # A wrong GID silently yields zero scrape targets (blank dashboards + Container Down).
     group_add:
-      - "999"
+      - "${DOCKER_GID:-988}"
 
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -160,6 +164,11 @@ services:
   alloy:
     image: grafana/alloy:latest
     restart: unless-stopped
+
+    # Same docker.sock group access as Prometheus - Alloy's discovery.docker reads the
+    # socket to tail container stdout. Without the right GID, no container logs reach Loki.
+    group_add:
+      - "${DOCKER_GID:-988}"
 
     environment:
       - FARO_ALLOWED_ORIGIN=${FARO_ALLOWED_ORIGIN:-*}

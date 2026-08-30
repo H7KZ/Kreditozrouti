@@ -15,15 +15,20 @@ The monitoring stack (`../../deployment/monitoring`) provides metrics collection
 - **Prometheus** scrapes `GET /metrics` from each API container every 15 s. Metrics include HTTP request counts, latency
   histograms, and default Node.js runtime metrics (event loop lag, GC, memory) via `prom-client`.
 - **Loki** receives structured logs from all app containers via Alloy (reads Docker stdout over the Docker socket).
-- **Alloy** collects container logs and browser Faro telemetry; forwards OTLP traces to Tempo.
+- **Alloy** collects container logs (Docker stdout) and receives browser Faro telemetry. Trace export to Tempo is
+  not deployed (see [MONITORING.md](MONITORING.md)).
 - **Grafana** is available at `/grafana` (internal) and is pre-provisioned with Loki as the default datasource.
 
+> Prometheus and Alloy read the Docker socket for service discovery and log tailing. Their `group_add` GID in
+> `docker-compose.monitoring.yml` must match the host's `docker` group (default `988`, override with `DOCKER_GID`).
+> A wrong GID = zero targets + no logs = empty dashboards.
+
 ```bash
-# Check monitoring stack status
-docker compose -p monitoring ps
+# Check monitoring stack status (the monitoring + traefik stacks deploy under project name `global`)
+docker compose -p global ps
 
 # Restart after config changes (e.g. prometheus.yml edits)
-docker compose -p monitoring -f deployment/monitoring/docker-compose.monitoring.yml up -d --force-recreate
+docker compose -p global -f deployment/monitoring/docker-compose.monitoring.yml up -d --force-recreate
 ```
 
 ### Alert Rules
@@ -31,14 +36,15 @@ docker compose -p monitoring -f deployment/monitoring/docker-compose.monitoring.
 Grafana alerting is provisioned from `../../deployment/monitoring/grafana/provisioning/alerting/rules.yml`. All rules
 route to the Discord contact point via the default notification policy.
 
-| Rule                    | Group          | Condition                                                   | Severity |
-|-------------------------|----------------|-------------------------------------------------------------|----------|
-| `container-down`        | infrastructure | Any scraped target unreachable for 1 min                    | critical |
-| `disk-usage-high`       | infrastructure | Disk usage above 80% for 5 min                              | warning  |
-| `memory-usage-high`     | infrastructure | Less than 10% memory available for 5 min                    | warning  |
-| `api-error-rate-high`   | application    | 5xx responses exceed 5% of all requests over 5 min          | warning  |
-| `api-p99-latency-high`  | application    | API p99 latency exceeds 2 s over 5 min                      | warning  |
-| `scraper-queue-stalled` | application    | `ScraperResponseQueue` idle (waiting + active = 0) for 24 h | warning  |
+| Rule                             | Group          | Condition                                                          | Severity |
+|----------------------------------|----------------|-------------------------------------------------------------------|----------|
+| `container-down` (**API Down**)  | infrastructure | Prod API `up==0` or absent for 5 min (scoped to the API, not other targets) | critical |
+| `scraper-jobs-failed`            | scraper        | `bullmq_queue_depth{queue=~"Scraper.*", status="failed"} > 0` for 5 min | critical |
+| `scraper-stale`                  | scraper        | No scraper run in > 24 h                                          | warning  |
+| `scraper-silent-failures-rising` | scraper        | `> 5` silent failures in 30 min (dampened `for: 15m`)             | warning  |
+| `scraper-failure-rate-high`      | scraper        | Item failure rate > 10% over 5 min                                | warning  |
+| `api-error-rate-high`            | application    | 5xx > 5% of all requests over 5 min (`for: 10m`)                  | warning  |
+| `api-p99-latency-high`           | application    | API p99 latency > 2 s over 5 min (`for: 10m`)                     | warning  |
 
 ### Faro Browser Telemetry
 
