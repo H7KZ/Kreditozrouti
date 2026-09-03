@@ -54,7 +54,7 @@ services:
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     networks:
-      - traefik-network
+      - public-network
       - mysql-dev-network
       - redis-dev-network
       - alloy-network
@@ -172,7 +172,7 @@ services:
       - VITE_UMAMI_SRC=${VITE_UMAMI_SRC}
 
     networks:
-      - traefik-network
+      - public-network
 
     labels:
       # Traefik Configuration
@@ -232,7 +232,7 @@ services:
       - MCP_JWT_SECRET=${MCP_JWT_SECRET}
 
     networks:
-      - traefik-network
+      - public-network
       - mysql-dev-network
 
     labels:
@@ -351,7 +351,7 @@ services:
       - UPLOAD_LIMIT=2G
 
     networks:
-      - traefik-network
+      - public-network
       - mysql-dev-network
 
     labels:

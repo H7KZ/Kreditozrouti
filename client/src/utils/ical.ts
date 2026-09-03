@@ -1,5 +1,6 @@
 import type { SelectedCourseUnit } from '@client/types'
 import { DAY_ICAL_MAP } from '@kreditozrouti/core/domain/constants'
+import { parseSlotDate } from '@kreditozrouti/core/utils'
 
 export interface ICalCourseConfig {
 	slotId: number
@@ -53,22 +54,6 @@ function firstOccurrence(from: Date, targetJsDay: number): Date {
 	const delta = (targetJsDay - d.getDay() + 7) % 7
 	d.setDate(d.getDate() + delta)
 	return d
-}
-
-/**
- * Parse a slot date string. InSIS/DB stores block-action dates as DD.MM.YYYY
- * (e.g. "10.09.2025"), which `new Date()` cannot parse (Invalid Date) - that is
- * why block actions silently vanished from exports. Tolerate ISO YYYY-MM-DD too.
- * Returns null if unparseable.
- */
-function parseSlotDate(s: string): Date | null {
-	const dmy = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec(s.trim())
-	if (dmy) {
-		const [, d, m, y] = dmy
-		return new Date(Number(y), Number(m) - 1, Number(d))
-	}
-	const iso = new Date(s)
-	return isNaN(iso.getTime()) ? null : iso
 }
 
 /** Format a Date as RFC 5545 UTC datetime for UNTIL: YYYYMMDDTHHMMSSZ */

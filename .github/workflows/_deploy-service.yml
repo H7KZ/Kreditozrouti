@@ -57,7 +57,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            mkdir -p "$HOME/versions/${{ inputs.environment }}/${{ inputs.image_tag }}"
+            mkdir -p "$HOME/kreditozrouti/versions/${{ inputs.environment }}/${{ inputs.image_tag }}"
 
       - name: Upload Deployment Files
         uses: appleboy/scp-action@v1
@@ -67,7 +67,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: 'deployment/'
-          target: '~/versions/${{ inputs.environment }}/${{ inputs.image_tag }}'
+          target: '~/kreditozrouti/versions/${{ inputs.environment }}/${{ inputs.image_tag }}'
           strip_components: 1
           overwrite: true
 
@@ -112,8 +112,8 @@ jobs:
           script: |
             set -euo pipefail
 
-            VERSION_DIR="$HOME/versions/${{ inputs.environment }}/$IMG_TAG"
-            CURRENT_LINK="$HOME/versions/${{ inputs.environment }}/current"
+            VERSION_DIR="$HOME/kreditozrouti/versions/${{ inputs.environment }}/$IMG_TAG"
+            CURRENT_LINK="$HOME/kreditozrouti/versions/${{ inputs.environment }}/current"
 
             echo "=========================================="
             echo "Service Deploy: $APP_SERVICE @ $IMG_TAG → ${{ inputs.environment }}"

@@ -96,7 +96,7 @@ providers:
   docker:
     endpoint: 'unix:///var/run/docker.sock'
     exposedByDefault: false
-    network: traefik-network
+    network: public-network
     watch: true
   file:
     filename: /dynamic.yml

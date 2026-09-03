@@ -8,13 +8,13 @@ set -euo pipefail
 #              Supports full-stack and per-service deployments.
 #
 # Usage:       ./deploy.sh <project_name> <environment> [service]
-# Example:     ./deploy.sh prod production
+# Example:     ./deploy.sh kreditozrouti production
 #              ./deploy.sh dev development
-#              ./deploy.sh prod production api
-#              ./deploy.sh prod production client
+#              ./deploy.sh kreditozrouti production api
+#              ./deploy.sh kreditozrouti production client
 #
 # Arguments:
-#   project_name    Docker Compose project name (e.g., prod, dev)
+#   project_name    Docker Compose project name (e.g., kreditozrouti, dev)
 #   environment     Environment name matching directory (production, development)
 #   service         (optional) Single service to deploy (api, client, scraper, mcp).
 #                   api/scraper/mcp are deployed together with their infrastructure
@@ -38,7 +38,7 @@ set -euo pipefail
 #
 # Version Cleanup:
 #   After a successful deploy, old version directories under
-#   $HOME/versions/<environment>/ that are older than 7 days and not the
+#   $HOME/kreditozrouti/versions/<environment>/ that are older than 7 days and not the
 #   current symlink target are removed. A minimum of 3 versions is always kept.
 #
 # Directory Structure:
@@ -134,8 +134,8 @@ cleanup_on_error() {
 
 cleanup_old_versions() {
     local environment="$1"
-    local versions_dir="$HOME/versions/$environment"
-    local current_link="$HOME/versions/$environment/current"
+    local versions_dir="$HOME/kreditozrouti/versions/$environment"
+    local current_link="$HOME/kreditozrouti/versions/$environment/current"
 
     # Only proceed if the versions directory exists
     [[ -d "$versions_dir" ]] || return 0
@@ -196,8 +196,15 @@ main() {
     local app_compose_file="$SCRIPT_DIR/$environment/docker-compose.$environment.yml"
     local networks_config="$SCRIPT_DIR/$environment/networks.yml"
     local volumes_config="$SCRIPT_DIR/$environment/volumes.yml"
-    local traefik_networks="$SCRIPT_DIR/traefik/networks.yml"
     local env_file="$SCRIPT_DIR/.env"
+
+    # Public reverse-proxy network. Traefik publishes services on public-network -
+    # whether that is Infrastructure's shared Traefik on the consolidated VPS or a
+    # standalone Traefik in the future. Whoever owns Traefik creates it; each
+    # environment's networks.yml also declares it external, and deploy.sh creates it
+    # below if this stack deploys first. Same name in every environment, so services
+    # attach out of the box.
+    local shared_network="public-network"
 
     # Load persisted image configuration if available
     if [[ -f "$images_config" ]]; then
@@ -212,7 +219,7 @@ main() {
     validate_environment_vars "$service"
 
     # Validate required files
-    validate_files "$app_compose_file" "$networks_config" "$volumes_config" "$traefik_networks" "$env_file"
+    validate_files "$app_compose_file" "$networks_config" "$volumes_config" "$env_file"
 
     # Display deployment info
     log "=========================================="
@@ -240,10 +247,12 @@ main() {
         # ---- Per-service deploy ----
         create_networks "$networks_config"
 
-        # Ensure traefik network exists (external dependency)
-        if ! docker network inspect "traefik-network" &>/dev/null; then
-            log "Creating network: traefik-network"
-            docker network create "traefik-network"
+        # Ensure the shared reverse-proxy network exists (external dependency).
+        # In production Infrastructure's Traefik normally creates it; create it
+        # here too so a service-only deploy never fails on a missing network.
+        if ! docker network inspect "$shared_network" &>/dev/null; then
+            log "Creating network: $shared_network"
+            docker network create "$shared_network"
         fi
 
         create_volumes "$volumes_config"
@@ -269,7 +278,6 @@ main() {
         docker compose \
             -p "$project_name" \
             --env-file "$env_file" \
-            -f "$traefik_networks" \
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \
@@ -283,7 +291,6 @@ main() {
         docker compose \
             -p "$project_name" \
             --env-file "$env_file" \
-            -f "$traefik_networks" \
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \
@@ -292,10 +299,12 @@ main() {
         # ---- Full-stack deploy ----
         create_networks "$networks_config"
 
-        # Ensure traefik network exists (external dependency)
-        if ! docker network inspect "traefik-network" &>/dev/null; then
-            log "Creating network: traefik-network"
-            docker network create "traefik-network"
+        # Ensure the shared reverse-proxy network exists (external dependency).
+        # In production Infrastructure's Traefik normally creates it; create it
+        # here too so the stack never fails on a missing network.
+        if ! docker network inspect "$shared_network" &>/dev/null; then
+            log "Creating network: $shared_network"
+            docker network create "$shared_network"
         fi
 
         create_volumes "$volumes_config"
@@ -304,7 +313,6 @@ main() {
         docker compose \
             -p "$project_name" \
             --env-file "$env_file" \
-            -f "$traefik_networks" \
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \
@@ -314,7 +322,6 @@ main() {
         docker compose \
             -p "$project_name" \
             --env-file "$env_file" \
-            -f "$traefik_networks" \
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \

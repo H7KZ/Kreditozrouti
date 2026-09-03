@@ -46,10 +46,10 @@ deployment/
 ## deploy.sh
 
 ```bash
-./deploy.sh prod production              # full-stack production deploy
-./deploy.sh dev development              # full-stack development deploy
-./deploy.sh prod production api          # deploy api service only
-./deploy.sh prod production client       # deploy client service only
+./deploy.sh kreditozrouti production            # full-stack production deploy
+./deploy.sh dev development                     # full-stack development deploy
+./deploy.sh kreditozrouti production api        # deploy api service only
+./deploy.sh kreditozrouti production client     # deploy client service only
 ```
 
 Requires `.env` (written by CI from GitHub Secrets — never placed manually) and image tag env vars passed inline.
@@ -57,23 +57,28 @@ Requires `.env` (written by CI from GitHub Secrets — never placed manually) an
 For single-service deploys, only the relevant tag env var is required (e.g. `API_IMAGE_TAG` for `service=api`).
 `api`/`scraper`/`mcp` single-service deploys also bring up their infrastructure dependencies (`mysql`/`redis`) so the
 service never starts without them; `client` uses `--no-deps` (its dependency is the app-level `api`). Old version
-directories under `$HOME/versions/<environment>/` older than 7 days are cleaned up after each deploy (minimum 3 kept).
+directories under `$HOME/kreditozrouti/versions/<environment>/` older than 7 days are cleaned up after each deploy (minimum 3 kept).
 
 ---
 
 ## Critical Invariants
 
-**Deploy order on a fresh server:** Traefik → monitoring stack (optional) → GitHub Runner (optional) → app stack.
-Traefik must exist before any app stack because it creates `traefik-network`.
+**Deploy order on a fresh server:** shared Infrastructure Traefik → monitoring stack (optional) → GitHub Runner
+(optional) → app stack. Every environment's services attach to the external `public-network` that Traefik publishes
+on, and request certs via the `letsencrypt-dns` (DNS-01) resolver - HTTP-01 fails because the domain is
+Cloudflare-proxied. Traefik is not deployed by Kreditožrouti: Infrastructure's Traefik owns `public-network` on the
+shared VPS and creates it; each `deploy.sh` also creates it if this stack deploys first. The embedded `traefik/`
+stack is kept unchanged for a possible future standalone Traefik VPS - same `public-network` name, so it works out of
+the box.
 
 **Monitoring stack reads the Docker socket.** Prometheus and Alloy in `docker-compose.monitoring.yml` mount
 `/var/run/docker.sock` and must run with the host's `docker` group GID via `group_add` (default `988`; override with
 `DOCKER_GID` in `.env` if `getent group docker` differs). A wrong GID silently yields zero scrape targets and no logs
 (blank Grafana + a permanently firing alert). The monitoring, Traefik, and GitHub-runner stacks all deploy under
-Compose project name `global` (`STACK_NAME` in each `deploy.sh`); the app stack uses `prod` / `dev`.
+Compose project name `global` (`STACK_NAME` in each `deploy.sh`); the app stack uses `kreditozrouti` (production) / `dev` (development).
 
 **`.env` is written by CI, never committed.** `_deploy-service.yml` and `deploy-all.yml` construct it from GitHub
-Environment secrets/variables and write it into the version directory (`~/versions/<env>/<sha>/.env`) before calling
+Environment secrets/variables and write it into the version directory (`~/kreditozrouti/versions/<env>/<sha>/.env`) before calling
 `deploy.sh`.
 
 **`VITE_*` env vars** are baked into the client image at build time by Vite. Setting them at container runtime has no

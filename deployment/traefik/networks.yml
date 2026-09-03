@@ -4,8 +4,8 @@
 # ==============================================================================
 
 networks:
-  traefik-network:
-    name: traefik-network
+  public-network:
+    name: public-network
     external: true
     driver: bridge
 

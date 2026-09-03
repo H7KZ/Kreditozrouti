@@ -91,9 +91,9 @@ main() {
 
     validate_files "$compose_file" "$networks_config"
 
-    if ! docker network inspect "traefik-network" &>/dev/null; then
-        log "Creating network: traefik-network"
-        docker network create "traefik-network"
+    if ! docker network inspect "public-network" &>/dev/null; then
+        log "Creating network: public-network"
+        docker network create "public-network"
     fi
 
     log "Deploying GitHub runners..."

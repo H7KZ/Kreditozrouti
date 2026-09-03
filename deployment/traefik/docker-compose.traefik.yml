@@ -43,7 +43,7 @@ services:
       - ${TRAEFIK_CREDENTIALS_PATH}:/credentials.txt:ro
 
     networks:
-      - traefik-network
+      - public-network
       - alloy-network
 
     ports:
@@ -121,7 +121,7 @@ services:
       # monitoring stack can scrape crowdsec:6060 (default binds 127.0.0.1 only).
       - ./crowdsec/config.yaml.local:/etc/crowdsec/config.yaml.local:ro
     networks:
-      - traefik-network
+      - public-network
       - alloy-network
     healthcheck:
       test: [ 'CMD', 'cscli', 'version' ]

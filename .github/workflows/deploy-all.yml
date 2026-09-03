@@ -222,7 +222,7 @@ jobs:
     with:
       service: api
       environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'dev' }}
       image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-api.outputs.image_tag }}
       image_prefix: ${{ needs.resolve.outputs.image_prefix }}
     secrets: inherit
@@ -242,7 +242,7 @@ jobs:
     with:
       service: client
       environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'dev' }}
       image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-client.outputs.image_tag }}
       image_prefix: ${{ needs.resolve.outputs.image_prefix }}
     secrets: inherit
@@ -262,7 +262,7 @@ jobs:
     with:
       service: scraper
       environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'dev' }}
       image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-scraper.outputs.image_tag }}
       image_prefix: ${{ needs.resolve.outputs.image_prefix }}
     secrets: inherit
@@ -282,7 +282,7 @@ jobs:
     with:
       service: mcp
       environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'dev' }}
       image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-mcp.outputs.image_tag }}
       image_prefix: ${{ needs.resolve.outputs.image_prefix }}
     secrets: inherit

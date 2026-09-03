@@ -85,9 +85,11 @@ main() {
     create_networks "$networks_config"
     create_volumes "$volumes_config"
 
-    if ! docker network inspect "traefik-network" &>/dev/null; then
-        log "Creating network: traefik-network"
-        docker network create "traefik-network"
+    # Shared reverse-proxy network owned by Infrastructure's Traefik; create it
+    # only if this stack deploys first.
+    if ! docker network inspect "public-network" &>/dev/null; then
+        log "Creating network: public-network"
+        docker network create "public-network"
     fi
 
     log "Deploying monitoring stack..."

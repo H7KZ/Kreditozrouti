@@ -191,7 +191,7 @@ cd deployment/monitoring
 docker compose -p monitoring -f docker-compose.monitoring.yml up -d
 ```
 
-**Deploy order:** Traefik must be up first (monitoring containers attach to `traefik-network`). Deploy monitoring before
+**Deploy order:** Traefik must be up first (monitoring containers attach to `public-network`). Deploy monitoring before
 the app stack so Prometheus is ready to scrape from the moment API containers come up.
 
 Prometheus scrapes `GET /metrics` on each API container at a configurable interval (default: 15 s). Grafana is
@@ -213,7 +213,7 @@ auto-provisioned with Prometheus as the default datasource via `grafana/provisio
 ### Network topology
 
 ```
-traefik-network (external)    — Traefik-exposed services
+public-network (external)    — Traefik-exposed services
   traefik, api, client, phpmyadmin
 
 mysql-network (internal)      — database access only
@@ -231,7 +231,7 @@ Networks and volumes are created automatically by `deploy.sh` (reads from `netwo
 manually:
 
 ```bash
-docker network create traefik-network
+docker network create public-network
 docker network create mysql-network
 docker network create redis-network
 ```

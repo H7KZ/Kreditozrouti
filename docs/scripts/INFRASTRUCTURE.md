@@ -75,7 +75,7 @@ htpasswd -nb admin yourpassword
 **Steps:**
 
 1. Validates all parameters and file paths
-2. Creates `traefik-network` Docker network if it doesn't exist
+2. Creates `public-network` Docker network if it doesn't exist
 3. Creates persistent volumes for TLS certs and access logs
 4. Deploys Traefik via Docker Compose under project `global`
 

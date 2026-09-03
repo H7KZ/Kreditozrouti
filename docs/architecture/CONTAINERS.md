@@ -29,12 +29,12 @@ split into companion files.
 
 ### Traefik Stack (`../../deployment/traefik`)
 
-Must be deployed first on a fresh server — creates `traefik-network`.
+Must be deployed first on a fresh server — creates `public-network`.
 
 ```
 traefik
 ├── traefik container     :80 (redirect) + :443 (TLS)
-│   └── network: traefik-network (external)
+│   └── network: public-network (external)
 └── volumes: traefik-letsencrypt-volume
 ```
 
@@ -42,13 +42,13 @@ traefik
 
 ```
 docker-compose.production.yml
-├── api         ×1 replica     traefik-network + mysql-network + redis-network
+├── api         ×1 replica     public-network + mysql-network + redis-network
 ├── scraper     ×2 replicas    redis-network only
-├── client      ×1 replica     traefik-network only
-├── mcp          ×1            traefik-network + mysql-network  (MCP_PORT default 3000; GET /health)
+├── client      ×1 replica     public-network only
+├── mcp          ×1            public-network + mysql-network  (MCP_PORT default 3000; GET /health)
 ├── mysql        ×1            mysql-network, volume: mysql-data-volume
 ├── redis        ×1            redis-network (no named volume — ephemeral)
-└── phpmyadmin   ×1            traefik-network + mysql-network
+└── phpmyadmin   ×1            public-network + mysql-network
 ```
 
 **`mcp` container env vars:** `MYSQL_URI`, `MCP_PORT`, `NODE_ENV`, `LOG_LEVEL`
@@ -65,7 +65,7 @@ Self-hosted GitHub Actions runners registered to the repo.
 
 | Network           | Purpose                         | Who joins                             |
 |-------------------|---------------------------------|---------------------------------------|
-| `traefik-network` | Public ingress, Traefik routing | traefik, api, client, mcp, phpmyadmin |
+| `public-network` | Public ingress, Traefik routing | traefik, api, client, mcp, phpmyadmin |
 | `mysql-network`   | DB access                       | api, mcp, mysql, phpmyadmin           |
 | `redis-network`   | Queue + sessions                | api, scraper, redis                   |
 
@@ -101,11 +101,11 @@ Port 80 redirects to 443. The `traefik.yml` static config handles ACME, entrypoi
 ## Deploy Order (Fresh Server)
 
 ```
-1. Traefik stack      ← creates traefik-network, TLS
+1. Traefik stack      ← creates public-network, TLS
 2. GitHub Runner      ← (optional) CI runners
 3. App stack          ← api, scraper, client, mysql, redis
 ```
 
-App stack must come last because it depends on `traefik-network` already existing.
+App stack must come last because it depends on `public-network` already existing.
 
 Full deployment details: [docs/deployment/](../deployment/README.md)

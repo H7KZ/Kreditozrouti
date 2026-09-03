@@ -75,13 +75,13 @@ development. Requires the monitoring stack to be running locally.
 
 ```bash
 # All services
-docker compose -p prod logs -f
+docker compose -p kreditozrouti logs -f
 
 # Single service, last 100 lines
-docker compose -p prod logs --tail=100 -f api
+docker compose -p kreditozrouti logs --tail=100 -f api
 
 # Only errors/warnings
-docker compose -p prod logs -f api | grep -E "(ERROR|WARN)"
+docker compose -p kreditozrouti logs -f api | grep -E "(ERROR|WARN)"
 ```
 
 Log rotation is pre-configured in docker-compose (`max-size: 10m`, `max-file: 3`).
@@ -220,11 +220,11 @@ See [scripts/MAINTENANCE.md](../scripts/MAINTENANCE.md) for full reference.
 ### Containers not starting
 
 ```bash
-docker compose -p prod logs api        # check for startup errors
+docker compose -p kreditozrouti logs api        # check for startup errors
 
 # Common causes: missing env vars, port conflict, network misconfiguration
 sudo netstat -tulpn | grep -E ":(80|443|3306|6379)"
-docker compose -p prod up -d --force-recreate api
+docker compose -p kreditozrouti up -d --force-recreate api
 ```
 
 ### TLS certificate issues
@@ -248,14 +248,14 @@ docker compose -p traefik up -d
 ```bash
 docker exec -it prod-mysql-1 mysqladmin ping -u root -p
 docker network inspect mysql-network
-docker compose -p prod restart mysql
+docker compose -p kreditozrouti restart mysql
 ```
 
 ### Redis connection errors
 
 ```bash
 docker exec -it prod-redis-1 redis-cli ping
-docker compose -p prod restart redis
+docker compose -p kreditozrouti restart redis
 
 # Clear Redis if jobs are stuck (⚠️ drops all queued jobs)
 docker exec -it prod-redis-1 redis-cli FLUSHDB
@@ -279,7 +279,7 @@ docker builder prune -f
 docker stats
 # Reduce scraper replicas if memory is tight
 # Edit docker-compose.production.yml → scraper.deploy.replicas: 3
-docker compose -p prod up -d
+docker compose -p kreditozrouti up -d
 ```
 
 ### Rollback

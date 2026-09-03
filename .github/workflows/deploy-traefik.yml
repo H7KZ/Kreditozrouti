@@ -15,10 +15,10 @@
 name: Deploy Traefik
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'deployment/traefik/**'
+  # push:
+  #   branches: [ main ]
+  #   paths:
+  #     - 'deployment/traefik/**'
   workflow_dispatch:
 
 concurrency:

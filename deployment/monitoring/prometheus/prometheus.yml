@@ -42,16 +42,7 @@ scrape_configs:
         regex: /(.*)
         target_label: instance
 
-  - job_name: traefik
-    static_configs:
-      - targets: [ 'traefik:8080' ]
-        labels:
-          env: production
-    metrics_path: /metrics
-
-  - job_name: crowdsec
-    static_configs:
-      - targets: [ 'crowdsec:6060' ]
-        labels:
-          env: production
-    metrics_path: /metrics
+  # Traefik and CrowdSec are no longer part of this stack - Traefik now runs in the
+  # shared Infrastructure stack and CrowdSec/WAF coverage moved to Cloudflare. Their
+  # former static targets (traefik:8080, crowdsec:6060) were removed so they do not
+  # sit permanently DOWN and fire target-down alerts.

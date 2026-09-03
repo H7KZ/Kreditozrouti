@@ -171,7 +171,7 @@ ssh-copy-id -i ~/.ssh/github_actions.pub deploy@your-vps
 On the VPS, each deployment gets its own directory keyed by the short SHA:
 
 ```
-~/versions/
+~/kreditozrouti/versions/
 ├── production/
 │   ├── a1b2c3d4/        ← deployment files + .env
 │   ├── e5f6a7b8/
@@ -186,14 +186,14 @@ On the VPS, each deployment gets its own directory keyed by the short SHA:
 ```bash
 # Full-stack deploy (all services)
 API_IMAGE_TAG=a1b2c3d4 CLIENT_IMAGE_TAG=a1b2c3d4 SCRAPER_IMAGE_TAG=a1b2c3d4 \
-  bash ./deploy.sh prod production
+  bash ./deploy.sh kreditozrouti production
 
 # Single-service deploy (e.g. api only)
-API_IMAGE_TAG=a1b2c3d4 bash ./deploy.sh prod production api
+API_IMAGE_TAG=a1b2c3d4 bash ./deploy.sh kreditozrouti production api
 ```
 
 After a successful deploy, `deploy.sh` automatically removes version directories older than 7 days from
-`~/versions/<environment>/` (minimum 3 kept, active symlink target always preserved).
+`~/kreditozrouti/versions/<environment>/` (minimum 3 kept, active symlink target always preserved).
 
 ---
 
@@ -246,4 +246,4 @@ services:
 			replicas: 10 # default: 5
 ```
 
-Then redeploy: `docker compose -p prod up -d`
+Then redeploy: `docker compose -p kreditozrouti up -d`

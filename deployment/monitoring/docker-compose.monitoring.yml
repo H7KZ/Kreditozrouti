@@ -94,7 +94,7 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
 
     networks:
-      - traefik-network
+      - public-network
       - monitoring-network
 
     labels:
@@ -103,7 +103,7 @@ services:
       - 'traefik.http.routers.${PROJECT}-grafana.rule=Host(`${DOMAIN}`) && PathPrefix(`/grafana`)'
       - 'traefik.http.routers.${PROJECT}-grafana.entrypoints=websecure'
       - 'traefik.http.routers.${PROJECT}-grafana.tls=true'
-      - 'traefik.http.routers.${PROJECT}-grafana.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.${PROJECT}-grafana.tls.certresolver=letsencrypt-dns'
       - 'traefik.http.services.${PROJECT}-grafana.loadbalancer.server.port=3000'
 
     logging:
@@ -186,7 +186,7 @@ services:
 
     networks:
       - monitoring-network
-      - traefik-network
+      - public-network
       - alloy-network
 
     labels:
@@ -195,7 +195,7 @@ services:
       - 'traefik.http.routers.${PROJECT}-faro.rule=PathPrefix(`/faro`)'
       - 'traefik.http.routers.${PROJECT}-faro.entrypoints=websecure'
       - 'traefik.http.routers.${PROJECT}-faro.tls=true'
-      - 'traefik.http.routers.${PROJECT}-faro.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.${PROJECT}-faro.tls.certresolver=letsencrypt-dns'
       - 'traefik.http.middlewares.${PROJECT}-faro-strip.stripprefix.prefixes=/faro'
       - 'traefik.http.routers.${PROJECT}-faro.middlewares=${PROJECT}-faro-strip'
       - 'traefik.http.services.${PROJECT}-faro.loadbalancer.server.port=12347'
@@ -277,14 +277,14 @@ services:
 
     networks:
       - monitoring-network
-      - traefik-network
+      - public-network
 
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.${PROJECT}-umami.rule=Host(`umami.${DOMAIN}`)'
       - 'traefik.http.routers.${PROJECT}-umami.entrypoints=websecure'
       - 'traefik.http.routers.${PROJECT}-umami.tls=true'
-      - 'traefik.http.routers.${PROJECT}-umami.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.${PROJECT}-umami.tls.certresolver=letsencrypt-dns'
       - 'traefik.http.services.${PROJECT}-umami.loadbalancer.server.port=3000'
 
     logging:

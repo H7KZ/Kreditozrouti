@@ -80,7 +80,7 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 (Umami + its Postgres also run in this stack for product analytics; they are not part of the
 Grafana observability pipeline. Tempo and node-exporter are **not** deployed.)
 
-All components run in the `monitoring-network` Docker network. Grafana and Alloy also join `traefik-network`
+All components run in the `monitoring-network` Docker network. Grafana and Alloy also join `public-network`
 (for public routing). Prometheus and Alloy also join `alloy-network` — Prometheus to reach container IPs discovered via
 Docker SD and to scrape Traefik (`traefik:8080`) + CrowdSec (`crowdsec:6060`) metrics; Alloy tails app container stdout
 on the same host via the Docker socket.

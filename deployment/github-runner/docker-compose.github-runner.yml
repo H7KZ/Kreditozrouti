@@ -41,7 +41,7 @@ services:
       - DISABLE_AUTO_UPDATE=true
 
     networks:
-      - traefik-network
+      - public-network
 
     logging:
       driver: 'json-file'

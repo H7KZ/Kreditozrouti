@@ -1,11 +1,15 @@
 # ==============================================================================
 # Networks Configuration: Production
 # Description: External network definitions for production environment.
+#              Services attach to public-network, the shared reverse-proxy network
+#              Traefik publishes on. Infrastructure's Traefik owns it on the shared
+#              VPS (a standalone Traefik could own it in the future). Same network
+#              name in every environment, so services connect out of the box.
 # ==============================================================================
 
 networks:
-  traefik-network:
-    name: traefik-network
+  public-network:
+    name: public-network
     external: true
 
   mysql-network:

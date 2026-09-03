@@ -69,11 +69,11 @@ jobs:
               echo "ERROR: sha must be exactly 8 lowercase hex characters, got: '$INPUT_SHA'"
               exit 1
             fi
-            VERSION_DIR="$HOME/versions/$INPUT_ENV/$INPUT_SHA"
+            VERSION_DIR="$HOME/kreditozrouti/versions/$INPUT_ENV/$INPUT_SHA"
             if [[ ! -d "$VERSION_DIR" ]]; then
               echo "ERROR: Version $INPUT_SHA not found on server."
               echo "Available versions:"
-              ls "$HOME/versions/$INPUT_ENV/" 2>/dev/null | grep -v '^current$' || echo "  (none)"
+              ls "$HOME/kreditozrouti/versions/$INPUT_ENV/" 2>/dev/null | grep -v '^current$' || echo "  (none)"
               exit 1
             fi
             echo "OK: $VERSION_DIR exists — proceeding with rollback."
@@ -93,7 +93,7 @@ jobs:
           REPO="${{ github.repository }}"
           echo "image_prefix=ghcr.io/${REPO,,}" >> "$GITHUB_OUTPUT"
           if [[ "${{ inputs.environment }}" == "production" ]]; then
-            echo "project_name=prod" >> "$GITHUB_OUTPUT"
+            echo "project_name=kreditozrouti" >> "$GITHUB_OUTPUT"
           else
             echo "project_name=dev" >> "$GITHUB_OUTPUT"
           fi

@@ -45,7 +45,7 @@ proxy, GitHub Actions for CI/CD, and GitHub Container Registry (GHCR) for image 
 ### Network isolation
 
 ```
-traefik-network (external — Traefik-exposed services only)
+public-network (external — Traefik-exposed services only)
   ├── traefik, api, client, phpmyadmin
 
 mysql-network (internal)
