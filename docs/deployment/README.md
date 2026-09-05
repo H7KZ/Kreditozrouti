@@ -44,15 +44,20 @@ proxy, GitHub Actions for CI/CD, and GitHub Container Registry (GHCR) for image 
 
 ### Network isolation
 
+Names shown are the `-prod` forms; `-dev` equivalents exist for development.
+
 ```
-public-network (external — Traefik-exposed services only)
-  ├── traefik, api, client, phpmyadmin
+public-network (external — Infra Traefik + this repo's web-facing services)
+  ├── api, client, phpmyadmin
 
-mysql-network (internal)
-  ├── api, mysql
+kreditozrouti-mysql-network-prod (internal)
+  ├── api, mcp, mysql, phpmyadmin
 
-redis-network (internal)
+kreditozrouti-redis-network-prod (internal)
   ├── api, scraper, redis
+
+kreditozrouti-monitoring-network (per-repo scrape)
+  ├── api, scraper, prometheus, alloy
 ```
 
 MySQL and Redis are never directly reachable from outside the host.
@@ -76,7 +81,8 @@ MySQL and Redis are never directly reachable from outside the host.
 2. Install Docker               → scripts/install-docker.sh (or Docker-ready image)
 3. Set GitHub Secrets           → SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, SSH_PORT + env secrets
 4. Set up GitHub runner         → bash deployment/github-runner/deploy.sh (manual)
-5. Deploy Traefik + Monitoring  → push to deployment/traefik/** and deployment/monitoring/**
+5. Deploy shared Traefik        → from the Infrastructure repo (owns Traefik + public-network)
+5b. Deploy Monitoring            → push to deployment/monitoring/** (or deploy-monitoring.yml)
 6. Push to main branch          → path-triggered CI builds + deploys each changed service
 7. Verify                       → curl https://example.com/api/health
 ```

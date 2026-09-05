@@ -109,15 +109,11 @@ running api to the `:latest` float).
 
 ---
 
-### `deploy-traefik.yml` — Traefik reverse proxy
+### Traefik reverse proxy — moved to the Infrastructure repo
 
-**Trigger:** Push to `main` touching `deployment/traefik/**`, or `workflow_dispatch`.
-
-1. Upload `../../deployment/traefik` to `~/deployment/traefik/` on the VPS
-2. Write `TRAEFIK_HTPASSWD` secret to `~/.htpasswd` (600 perms)
-3. SSH → run `~/deployment/traefik/deploy.sh` with secrets passed as env vars
-
-**Required repository secrets:** `TRAEFIK_DOMAIN`, `TRAEFIK_HTPASSWD`, `CF_API_EMAIL`, `CF_DNS_API_TOKEN`, `ACME_EMAIL`
+This repo no longer deploys Traefik. The single shared Traefik (which owns `public-network`) lives in
+the **Infrastructure** repo and is deployed from there. The former `deploy-traefik.yml` workflow and
+`deployment/traefik/` stack were removed — see `docs/handoff-shared-vps-traefik.md`.
 
 Generate `TRAEFIK_HTPASSWD` with: `htpasswd -nb admin yourpassword`
 
@@ -207,7 +203,6 @@ Push to `main` or `develop` — the path filters determine which workflow (s) ru
 | `client/**`                | `deploy-client.yml`     |
 | `scraper/**`               | `deploy-scraper.yml`    |
 | `shared/**`                | all three               |
-| `deployment/traefik/**`    | `deploy-traefik.yml`    |
 | `deployment/monitoring/**` | `deploy-monitoring.yml` |
 
 Only changed services are rebuilt and redeployed — unchanged services keep their current image tag.

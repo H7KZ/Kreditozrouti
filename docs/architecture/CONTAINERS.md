@@ -27,33 +27,30 @@ make dev-scraper  → node worker (no port)
 Defined under `../../deployment`. Each stack is a separate Compose file with explicit network and volume declarations
 split into companion files.
 
-### Traefik Stack (`../../deployment/traefik`)
+### Traefik
 
-Must be deployed first on a fresh server — creates `public-network`.
-
-```
-traefik
-├── traefik container     :80 (redirect) + :443 (TLS)
-│   └── network: public-network (external)
-└── volumes: traefik-letsencrypt-volume
-```
+Owned by the **Infrastructure** repo (single shared Traefik on the VPS), not this repo. It creates
+`public-network`; this stack attaches to it as external. This repo no longer ships a Traefik stack.
 
 ### App Stack (`../../deployment/production` or `development/`)
 
+Network/volume names below are the production (`-prod`) forms; development uses the matching `-dev`
+forms. See NAMING.md in the Infrastructure repo.
+
 ```
 docker-compose.production.yml
-├── api         ×1 replica     public-network + mysql-network + redis-network
-├── scraper     ×2 replicas    redis-network only
+├── api         ×1 replica     public-network + kreditozrouti-mysql-network-prod + kreditozrouti-redis-network-prod + kreditozrouti-monitoring-network
+├── scraper     ×2 replicas    kreditozrouti-redis-network-prod + kreditozrouti-monitoring-network
 ├── client      ×1 replica     public-network only
-├── mcp          ×1            public-network + mysql-network  (MCP_PORT default 3000; GET /health)
-├── mysql        ×1            mysql-network, volume: mysql-data-volume
-├── redis        ×1            redis-network (no named volume — ephemeral)
-└── phpmyadmin   ×1            public-network + mysql-network
+├── mcp          ×1            public-network + kreditozrouti-mysql-network-prod  (MCP_PORT default 3000; GET /health)
+├── mysql        ×1            kreditozrouti-mysql-network-prod, volume: kreditozrouti-mysql-volume-prod
+├── redis        ×1            kreditozrouti-redis-network-prod, volume: kreditozrouti-redis-volume-prod
+└── phpmyadmin   ×1            public-network + kreditozrouti-mysql-network-prod
 ```
 
 **`mcp` container env vars:** `MYSQL_URI`, `MCP_PORT`, `NODE_ENV`, `LOG_LEVEL`
 
-Development uses lower replica counts and `dev-*` image tags; network names include `-dev-` suffix.
+Development uses lower replica counts and `dev-*` image tags; network/volume names use the `-dev` suffix.
 
 ### GitHub Runner Stack (optional, `../../deployment/github-runner`)
 
@@ -63,11 +60,14 @@ Self-hosted GitHub Actions runners registered to the repo.
 
 ## Networks
 
-| Network           | Purpose                         | Who joins                             |
-|-------------------|---------------------------------|---------------------------------------|
-| `public-network` | Public ingress, Traefik routing | traefik, api, client, mcp, phpmyadmin |
-| `mysql-network`   | DB access                       | api, mcp, mysql, phpmyadmin           |
-| `redis-network`   | Queue + sessions                | api, scraper, redis                   |
+Names shown are the `-prod` forms; `-dev` equivalents exist for development.
+
+| Network                              | Purpose                         | Who joins                             |
+|--------------------------------------|---------------------------------|---------------------------------------|
+| `public-network`                     | Public ingress, Traefik routing | api, client, mcp, phpmyadmin (+ Infra Traefik) |
+| `kreditozrouti-mysql-network-prod`   | DB access                       | api, mcp, mysql, phpmyadmin           |
+| `kreditozrouti-redis-network-prod`   | Queue + sessions                | api, scraper, redis                   |
+| `kreditozrouti-monitoring-network`   | Prometheus scrape (per-repo)    | api, scraper, prometheus, alloy       |
 
 Networks are **isolated** — the scraper cannot reach MySQL directly; it can only talk to Redis. The client container
 (Nginx) cannot reach MySQL or Redis.
@@ -76,11 +76,14 @@ Networks are **isolated** — the scraper cannot reach MySQL directly; it can on
 
 ## Volumes
 
-| Volume                       | Mounted by | Data                       | Ephemeral?            |
-|------------------------------|------------|----------------------------|-----------------------|
-| `mysql-data-volume`          | mysql      | All course/study-plan data | No — persisted        |
-| `traefik-letsencrypt-volume` | traefik    | TLS certificates           | No — persisted        |
-| Redis (no volume)            | redis      | BullMQ queues, sessions    | Yes — lost on restart |
+Names shown are the `-prod` forms; `-dev` equivalents exist for development.
+
+| Volume                              | Mounted by | Data                       | Ephemeral?     |
+|-------------------------------------|------------|----------------------------|----------------|
+| `kreditozrouti-mysql-volume-prod`   | mysql      | All course/study-plan data | No — persisted |
+| `kreditozrouti-redis-volume-prod`   | redis      | BullMQ queues, sessions (AOF) | No — persisted |
+
+TLS certificates live in the Infrastructure Traefik stack's `traefik-certificates-volume`, not here.
 
 ---
 

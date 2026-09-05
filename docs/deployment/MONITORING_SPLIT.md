@@ -1,8 +1,8 @@
 # Splitting the monitoring stack onto its own host
 
 The monitoring stack (Prometheus + Grafana + Loki + Alloy + Postgres + Umami) is the single heaviest
-tenant on the production VPS - roughly 2.5 GB of memory limits and a growing `prometheus-data` /
-`loki-data` footprint on the same 38 GB disk as the app. On the 4 GB production host it competes for
+tenant on the production VPS - roughly 2.5 GB of memory limits and a growing
+`kreditozrouti-prometheus-volume` / `kreditozrouti-loki-volume` footprint on the same 38 GB disk as the app. On the 4 GB production host it competes for
 RAM/disk with the very app it monitors, and when the host is starved it OOM-kills Prometheus + API
 together, producing the `DatasourceNoData` alert storms.
 

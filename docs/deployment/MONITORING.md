@@ -37,7 +37,7 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 │  and scraper_* gauges read from Redis, so the Scraper dashboard is  │
 │  fed by the API scrape - the scraper process itself is not scraped) │
 └────────────────────┬────────────────────────────────────────────────┘
-                     │ HTTP scrape every 15 s (Docker SD via alloy-network)
+                     │ HTTP scrape every 15 s (Docker SD via kreditozrouti-monitoring-network)
                      ▼
          ┌────────────────────┐
          │  Prometheus        │
@@ -80,8 +80,8 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 (Umami + its Postgres also run in this stack for product analytics; they are not part of the
 Grafana observability pipeline. Tempo and node-exporter are **not** deployed.)
 
-All components run in the `monitoring-network` Docker network. Grafana and Alloy also join `public-network`
-(for public routing). Prometheus and Alloy also join `alloy-network` — Prometheus to reach container IPs discovered via
+All components run in the `kreditozrouti-monitoring-internal-network` Docker network. Grafana and Alloy also join `public-network`
+(for public routing). Prometheus and Alloy also join `kreditozrouti-monitoring-network` — Prometheus to reach container IPs discovered via
 Docker SD and to scrape Traefik (`traefik:8080`) + CrowdSec (`crowdsec:6060`) metrics; Alloy tails app container stdout
 on the same host via the Docker socket.
 
@@ -289,9 +289,9 @@ derivedField (`matcherRegex: '"trace_id":"(\w+)"'`) linking to Tempo. Deploy Tem
 ## Prometheus Metrics
 
 The API container is discovered and scraped via Docker Socket SD (`docker_sd_configs` in `prometheus.yml`). Containers
-must carry the `prometheus.io/scrape=true` Docker label to be included; Prometheus keeps only the `alloy-network`
+must carry the `prometheus.io/scrape=true` Docker label to be included; Prometheus keeps only the `kreditozrouti-monitoring-network`
 interface (one target per container, not one per network) and builds the scrape address from the container's
-alloy-network IP **plus its `prometheus.io/port` label** (each service's metrics port comes from its own label - no
+kreditozrouti-monitoring-network IP **plus its `prometheus.io/port` label** (each service's metrics port comes from its own label - no
 hardcoded port). The `/metrics` endpoint returns 404 for requests carrying an `x-forwarded-for` header (i.e. via
 Traefik), so it is only reachable from within the Docker network.
 
@@ -368,7 +368,7 @@ targets and no logs are tailed:
 
 ```bash
 getent group docker   # note the GID (e.g. 988); it must match DOCKER_GID / group_add in docker-compose.monitoring.yml
-docker compose -p global exec prometheus wget -qO- http://localhost:9090/api/v1/targets \
+docker compose -p kreditozrouti-monitoring exec prometheus wget -qO- http://localhost:9090/api/v1/targets \
   | jq '.data.activeTargets[] | {job:.labels.job, health:.health, err:.lastError}'
 ```
 
@@ -377,8 +377,8 @@ If jobs are `down` with a permission or connection error, fix the GID (or the Cr
 1. Check Alloy is running and healthy:
 
     ```bash
-    docker compose -p global logs alloy
-    docker compose -p global ps alloy
+    docker compose -p kreditozrouti-monitoring logs alloy
+    docker compose -p kreditozrouti-monitoring ps alloy
     ```
 
 2. Check Loki received any logs:
@@ -393,17 +393,17 @@ If jobs are `down` with a permission or connection error, fix the GID (or the Cr
 3. Check Alloy can reach Loki:
 
     ```bash
-    docker compose -p global exec alloy wget -O- http://loki:3100/ready
+    docker compose -p kreditozrouti-monitoring exec alloy wget -O- http://loki:3100/ready
     ```
 
 4. Check app containers are discoverable:
 
     ```bash
-    docker compose -p global exec alloy \
+    docker compose -p kreditozrouti-monitoring exec alloy \
       wget -O- 'http://localhost:12345/api/v0/component/discovery.docker.containers/info'
     ```
 
-   Alloy's HTTP UI is also available at `alloy:12345` from within `monitoring-network`.
+   Alloy's HTTP UI is also available at `alloy:12345` from within `kreditozrouti-monitoring-internal-network`.
 
 5. Check Prometheus Docker SD targets:
 
@@ -416,14 +416,14 @@ If jobs are `down` with a permission or connection error, fix the GID (or the Cr
    To test reachability from inside Prometheus, exec into the container and curl a discovered IP:
 
     ```bash
-    docker compose -p global exec prometheus \
-      wget -O- http://<container-alloy-network-ip>:80/metrics | head
+    docker compose -p kreditozrouti-monitoring exec prometheus \
+      wget -O- http://<container-kreditozrouti-monitoring-network-ip>:80/metrics | head
     ```
 
 6. Verify the monitoring networks are wired correctly:
     ```bash
-    docker network inspect alloy-network   # api, scraper, alloy, prometheus, traefik, crowdsec should appear
-    docker network inspect monitoring-network  # alloy, loki, prometheus, grafana
+    docker network inspect kreditozrouti-monitoring-network   # api, scraper, alloy, prometheus, traefik, crowdsec should appear
+    docker network inspect kreditozrouti-monitoring-internal-network  # alloy, loki, prometheus, grafana
     ```
 
 ### Alloy sees containers but Loki has no data
@@ -447,4 +447,4 @@ Until that exists, `trace_id` / `span_id` do not appear in logs and there are no
 - Confirm `VITE_FARO_COLLECTOR_URL` is set on the client container
 - Check browser console for Faro errors
 - Query Loki for `{app="kreditozrouti"}` — data should appear within 30 s of a browser event
-- Check Alloy logs: `docker compose -p global logs alloy | grep faro`
+- Check Alloy logs: `docker compose -p kreditozrouti-monitoring logs alloy | grep faro`

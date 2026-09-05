@@ -10,7 +10,7 @@ Fresh server setup is done manually in order:
 
 1. **Install Docker** — `sudo bash scripts/install-docker.sh` then log out and back in
 2. **Set up GitHub runner** — `GITHUB_REPO_URL=... GITHUB_ACCESS_TOKEN=... bash deployment/github-runner/deploy.sh`
-3. **Deploy Traefik** — push to `deployment/traefik/**` or trigger `deploy-traefik.yml` via `workflow_dispatch`
+3. **Deploy shared Traefik** — from the **Infrastructure** repo (it owns Traefik + `public-network`; this repo no longer ships a Traefik stack)
 4. **Deploy Monitoring** — push to `deployment/monitoring/**` or trigger `deploy-monitoring.yml` via `workflow_dispatch`
 5. **Deploy app** — push to `main`/`develop` or trigger `deploy-all.yml` via `workflow_dispatch`
 
@@ -50,34 +50,10 @@ After install, log out and back in for group membership to take effect.
 
 ---
 
-## `../../deployment/traefik/deploy.sh`
+## Traefik
 
-Deploys the global Traefik reverse proxy. Reads its compose config from `../../deployment/traefik`.
-
-**Required environment variables:**
-
-| Variable                   | Description                                |
-|----------------------------|--------------------------------------------|
-| `DEPLOYMENT_PATH`          | Path to the deployment directory           |
-| `TRAEFIK_DOMAIN`           | Domain for the Traefik dashboard           |
-| `TRAEFIK_CREDENTIALS_PATH` | Path to htpasswd file for basic auth       |
-| `CF_API_EMAIL`             | Cloudflare account email                   |
-| `CF_DNS_API_TOKEN`         | Cloudflare API token (`Zone → DNS → Edit`) |
-
-**Optional:** `ACME_EMAIL` (defaults to `CF_API_EMAIL`)
-
-**Generate htpasswd** (run once, store result as `TRAEFIK_HTPASSWD` secret):
-
-```bash
-htpasswd -nb admin yourpassword
-```
-
-**Steps:**
-
-1. Validates all parameters and file paths
-2. Creates `public-network` Docker network if it doesn't exist
-3. Creates persistent volumes for TLS certs and access logs
-4. Deploys Traefik via Docker Compose under project `global`
+Traefik is owned by the **Infrastructure** repo (single shared reverse proxy on the VPS). This repo
+no longer ships `deployment/traefik/deploy.sh`. See `docs/handoff-shared-vps-traefik.md`.
 
 ---
 
@@ -95,7 +71,7 @@ Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy). Traefik must al
 
 **Optional:** `GRAFANA_ADMIN_USER` (default: `admin`), `DISCORD_WEBHOOK_URL`
 
-Deployed under Docker Compose project `global` (shared with Traefik and runners).
+Deployed under Docker Compose project `kreditozrouti-monitoring` (its own project).
 
 After deploy, services are exposed via Traefik at:
 
@@ -105,9 +81,9 @@ After deploy, services are exposed via Traefik at:
 **Operational commands:**
 
 ```bash
-docker compose -p global ps
-docker compose -p global logs -f
-docker compose -p global logs grafana -f
+docker compose -p kreditozrouti-monitoring ps
+docker compose -p kreditozrouti-monitoring logs -f
+docker compose -p kreditozrouti-monitoring logs grafana -f
 ```
 
 ---
@@ -125,5 +101,5 @@ Deploys self-hosted GitHub Actions runners. Runners auto-register to the reposit
 
 **Optional:** `RUNNER_REPLICAS` (default: `2`), `RUNNER_LABELS` (appended to `docker,self-hosted`)
 
-Deployed under Docker Compose project `global`. Runners share the Docker socket — required for container image builds in
+Deployed under Docker Compose project `kreditozrouti-runner`. Runners share the Docker socket — required for container image builds in
 CI workflows.

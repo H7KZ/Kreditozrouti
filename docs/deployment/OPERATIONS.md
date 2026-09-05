@@ -24,11 +24,11 @@ The monitoring stack (`../../deployment/monitoring`) provides metrics collection
 > A wrong GID = zero targets + no logs = empty dashboards.
 
 ```bash
-# Check monitoring stack status (the monitoring + traefik stacks deploy under project name `global`)
-docker compose -p global ps
+# Check monitoring stack status (deploys under project name `kreditozrouti-monitoring`)
+docker compose -p kreditozrouti-monitoring ps
 
 # Restart after config changes (e.g. prometheus.yml edits)
-docker compose -p global -f deployment/monitoring/docker-compose.monitoring.yml up -d --force-recreate
+docker compose -p kreditozrouti-monitoring -f deployment/monitoring/docker-compose.monitoring.yml up -d --force-recreate
 ```
 
 ### Alert Rules
@@ -105,10 +105,10 @@ curl https://example.com/api/health   # expect HTTP 200
 curl -I http://localhost:8080/ping    # expect HTTP 200
 
 # MySQL
-docker exec -it prod-mysql-1 mysqladmin ping -h localhost -u root -p
+docker exec -it kreditozrouti-mysql-1 mysqladmin ping -h localhost -u root -p
 
 # Redis
-docker exec -it prod-redis-1 redis-cli ping   # expect PONG
+docker exec -it kreditozrouti-redis-1 redis-cli ping   # expect PONG
 ```
 
 ### Resource usage
@@ -165,7 +165,7 @@ security_opt:
 ### Volume backup
 
 ```bash
-for volume in mysql-data-volume traefik-certificates-volume; do
+for volume in kreditozrouti-mysql-volume-prod kreditozrouti-redis-volume-prod; do
   docker run --rm \
     -v $volume:/data \
     -v /backups/volumes:/backup \
@@ -179,9 +179,9 @@ done
 2. Install Docker: `sudo bash scripts/install-docker.sh` (log out and back in after)
 3. Set up GitHub runner: `GITHUB_REPO_URL=... GITHUB_ACCESS_TOKEN=... bash deployment/github-runner/deploy.sh`
 4. Restore `~/variables/.env.prod`
-5. Push to `deployment/traefik/**` or trigger `deploy-traefik.yml` (`workflow_dispatch`) — Traefik up
+5. Deploy the shared Traefik from the **Infrastructure** repo (it owns Traefik + `public-network`)
 6. Push to `deployment/monitoring/**` or trigger `deploy-monitoring.yml` (`workflow_dispatch`) — Monitoring up
-7. Restore `mysql-data-volume` and `traefik-certificates-volume` from backup
+7. Restore `kreditozrouti-mysql-volume-prod` (and `kreditozrouti-redis-volume-prod`) from backup
 8. Run `deploy-all.yml` (`workflow_dispatch`) for the first app deployment — or push to `main`/`develop` and let the
    path-triggered workflows deploy each service
 9. `curl https://example.com/api/health`
@@ -246,19 +246,19 @@ docker compose -p traefik up -d
 ### Database connection errors
 
 ```bash
-docker exec -it prod-mysql-1 mysqladmin ping -u root -p
-docker network inspect mysql-network
+docker exec -it kreditozrouti-mysql-1 mysqladmin ping -u root -p
+docker network inspect kreditozrouti-mysql-network-prod
 docker compose -p kreditozrouti restart mysql
 ```
 
 ### Redis connection errors
 
 ```bash
-docker exec -it prod-redis-1 redis-cli ping
+docker exec -it kreditozrouti-redis-1 redis-cli ping
 docker compose -p kreditozrouti restart redis
 
 # Clear Redis if jobs are stuck (⚠️ drops all queued jobs)
-docker exec -it prod-redis-1 redis-cli FLUSHDB
+docker exec -it kreditozrouti-redis-1 redis-cli FLUSHDB
 ```
 
 ### Disk space

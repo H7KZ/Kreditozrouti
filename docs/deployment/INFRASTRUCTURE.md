@@ -1,10 +1,16 @@
 # Deployment — Infrastructure
 
-Traefik reverse proxy, Docker networking, volumes, and environment variable configuration.
+Docker networking, volumes, and environment variable configuration.
+
+> **Traefik is no longer part of this repo.** The single shared Traefik reverse proxy is owned by the
+> **Infrastructure** repo on the VPS (it creates `public-network`; this stack attaches to it). The
+> `deployment/traefik/` stack was removed — see `docs/handoff-shared-vps-traefik.md`. The Traefik
+> section below is retained for historical reference only; the authoritative config now lives in the
+> Infrastructure repo. Resource naming follows NAMING.md there.
 
 ---
 
-## Traefik
+## Traefik (historical — now in the Infrastructure repo)
 
 Traefik is the single external entry point. It handles TLS termination (via Let's Encrypt + Cloudflare DNS-01),
 HTTP→HTTPS redirect, routes traffic to the right container by host/path, and enforces global security policies for all
@@ -212,15 +218,20 @@ auto-provisioned with Prometheus as the default datasource via `grafana/provisio
 
 ### Network topology
 
+Names shown are the `-prod` forms; `-dev` equivalents exist for development. See NAMING.md (Infrastructure).
+
 ```
-public-network (external)    — Traefik-exposed services
-  traefik, api, client, phpmyadmin
+public-network (external)    — Infra Traefik + web-facing services
+  api, client, phpmyadmin
 
-mysql-network (internal)      — database access only
-  api, mysql
+kreditozrouti-mysql-network-prod (internal)   — database access only
+  api, mcp, mysql, phpmyadmin
 
-redis-network (internal)      — cache + queue access only
+kreditozrouti-redis-network-prod (internal)   — cache + queue access only
   api, scraper, redis
+
+kreditozrouti-monitoring-network (per-repo scrape)
+  api, scraper, prometheus, alloy
 ```
 
 MySQL and Redis have no direct external exposure.
@@ -232,8 +243,8 @@ manually:
 
 ```bash
 docker network create public-network
-docker network create mysql-network
-docker network create redis-network
+docker network create kreditozrouti-mysql-network-prod
+docker network create kreditozrouti-redis-network-prod
 ```
 
 ---
@@ -242,26 +253,26 @@ docker network create redis-network
 
 ### Production volumes (`../../deployment/production/volumes.yml`)
 
-| Volume                        | Service  | Contents                        |
-|-------------------------------|----------|---------------------------------|
-| `mysql-data-volume`           | MySQL    | Database files                  |
-| `traefik-certificates-volume` | Traefik  | TLS certs (`acme.json`)         |
-| `traefik-logs-volume`         | Traefik  | Access logs (shared with Alloy) |
-| `crowdsec-db-volume`          | CrowdSec | CrowdSec database + decisions   |
-| `crowdsec-config-volume`      | CrowdSec | CrowdSec configuration + rules  |
+Names shown are the `-prod` forms; `-dev` equivalents exist for development. Traefik/CrowdSec volumes
+are owned by the Infrastructure repo and are no longer defined here.
+
+| Volume                            | Service | Contents       |
+|-----------------------------------|---------|----------------|
+| `kreditozrouti-mysql-volume-prod` | MySQL   | Database files |
+| `kreditozrouti-redis-volume-prod` | Redis   | AOF + queues   |
 
 ### Volume management
 
 ```bash
 # Backup a volume
 docker run --rm \
-  -v mysql-data-volume:/data \
+  -v kreditozrouti-mysql-volume-prod:/data \
   -v $(pwd):/backup \
   alpine tar czf /backup/mysql-backup.tar.gz /data
 
 # Restore a volume
 docker run --rm \
-  -v mysql-data-volume:/data \
+  -v kreditozrouti-mysql-volume-prod:/data \
   -v $(pwd):/backup \
   alpine tar xzf /backup/mysql-backup.tar.gz -C /
 ```
