@@ -55,9 +55,9 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     networks:
       - public-network
-      - mysql-network
-      - redis-network
-      - alloy-network
+      - kreditozrouti-mysql-network-prod
+      - kreditozrouti-redis-network-prod
+      - kreditozrouti-monitoring-network
 
     labels:
       # Traefik Configuration
@@ -136,8 +136,8 @@ services:
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     networks:
-      - redis-network
-      - alloy-network
+      - kreditozrouti-redis-network-prod
+      - kreditozrouti-monitoring-network
 
     logging:
       driver: 'json-file'
@@ -245,7 +245,7 @@ services:
 
     networks:
       - public-network
-      - mysql-network
+      - kreditozrouti-mysql-network-prod
 
     labels:
       # Traefik Configuration
@@ -301,7 +301,7 @@ services:
     restart: unless-stopped
 
     volumes:
-      - mysql-data-volume:/var/lib/mysql
+      - kreditozrouti-mysql-volume-prod:/var/lib/mysql
 
     environment:
       - MYSQL_USER=${MYSQL_USER}
@@ -321,7 +321,7 @@ services:
       - --innodb_buffer_pool_size=512M
 
     networks:
-      - mysql-network
+      - kreditozrouti-mysql-network-prod
 
     healthcheck:
       test: [ 'CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p${MYSQL_ROOT_PASSWORD}' ]
@@ -369,7 +369,7 @@ services:
 
     networks:
       - public-network
-      - mysql-network
+      - kreditozrouti-mysql-network-prod
 
     labels:
       # Traefik Configuration
@@ -421,10 +421,10 @@ services:
       - noeviction
 
     volumes:
-      - redis-data-volume:/data
+      - kreditozrouti-redis-volume-prod:/data
 
     networks:
-      - redis-network
+      - kreditozrouti-redis-network-prod
 
     healthcheck:
       test: [ 'CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping' ]

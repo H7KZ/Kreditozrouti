@@ -1,14 +1,10 @@
 # ==============================================================================
-# Networks Configuration: Traefik
-# Description: Global network definitions for Traefik reverse proxy.
+# Networks Configuration: GitHub Runner
+# Description: The runner only needs the shared reverse-proxy network. Owned by
+#              Infrastructure's Traefik stack; created here if this deploys first.
 # ==============================================================================
 
 networks:
   public-network:
     name: public-network
-    external: true
-    driver: bridge
-
-  alloy-network:
-    name: alloy-network
     external: true

@@ -23,7 +23,7 @@ set -euo pipefail
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
-readonly STACK_NAME="global"
+readonly STACK_NAME="kreditozrouti-runner"
 
 source "$(cd "$SCRIPT_DIR/.." && pwd)/lib.sh"
 
@@ -78,7 +78,7 @@ main() {
     export RUNNER_LABELS="$labels"
 
     local compose_file="$SCRIPT_DIR/docker-compose.github-runner.yml"
-    local networks_config="$(cd "$SCRIPT_DIR/.." && pwd)/traefik/networks.yml"
+    local networks_config="$SCRIPT_DIR/networks.yml"
 
     log "=========================================="
     log "GitHub Actions Runner Deployment"

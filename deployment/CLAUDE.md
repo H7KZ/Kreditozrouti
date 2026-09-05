@@ -67,15 +67,17 @@ directories under `$HOME/kreditozrouti/versions/<environment>/` older than 7 day
 (optional) → app stack. Every environment's services attach to the external `public-network` that Traefik publishes
 on, and request certs via the `letsencrypt-dns` (DNS-01) resolver - HTTP-01 fails because the domain is
 Cloudflare-proxied. Traefik is not deployed by Kreditožrouti: Infrastructure's Traefik owns `public-network` on the
-shared VPS and creates it; each `deploy.sh` also creates it if this stack deploys first. The embedded `traefik/`
-stack is kept unchanged for a possible future standalone Traefik VPS - same `public-network` name, so it works out of
-the box.
+shared VPS and creates it; each `deploy.sh` also creates it if this stack deploys first. This repo no longer ships a
+Traefik stack (the former `deployment/traefik/` was removed — Infrastructure owns the single Traefik); services connect
+to Infrastructure's `public-network` by name, so they work out of the box.
 
 **Monitoring stack reads the Docker socket.** Prometheus and Alloy in `docker-compose.monitoring.yml` mount
 `/var/run/docker.sock` and must run with the host's `docker` group GID via `group_add` (default `988`; override with
 `DOCKER_GID` in `.env` if `getent group docker` differs). A wrong GID silently yields zero scrape targets and no logs
-(blank Grafana + a permanently firing alert). The monitoring, Traefik, and GitHub-runner stacks all deploy under
-Compose project name `global` (`STACK_NAME` in each `deploy.sh`); the app stack uses `kreditozrouti` (production) / `dev` (development).
+(blank Grafana + a permanently firing alert). Each stack deploys under its own Compose project name (`STACK_NAME` in
+each `deploy.sh`): monitoring → `kreditozrouti-monitoring`, runner → `kreditozrouti-runner`; the app stack uses
+`kreditozrouti` (production) / `kreditozrouti-dev` (development). No project name is shared with another repo — only
+the external `public-network` (owned by Infrastructure) is. See NAMING.md in the Infrastructure repo.
 
 **`.env` is written by CI, never committed.** `_deploy-service.yml` and `deploy-all.yml` construct it from GitHub
 Environment secrets/variables and write it into the version directory (`~/kreditozrouti/versions/<env>/<sha>/.env`) before calling
@@ -84,21 +86,22 @@ Environment secrets/variables and write it into the version directory (`~/kredit
 **`VITE_*` env vars** are baked into the client image at build time by Vite. Setting them at container runtime has no
 effect — the `docker-entrypoint.sh` placeholder-swap handles this at startup instead.
 
-**Redis data is persisted** via a named Docker volume (`redis-data-volume` in production, `redis-data-dev-volume` in
-development). Redis runs with AOF persistence (`--appendonly yes`) and `noeviction` policy so sessions and queue jobs
-are never silently dropped.
+**Redis data is persisted** via a named Docker volume (`kreditozrouti-redis-volume-prod` in production,
+`kreditozrouti-redis-volume-dev` in development). Redis runs with AOF persistence (`--appendonly yes`) and `noeviction`
+policy so sessions and queue jobs are never silently dropped.
 
 **Both MySQL and Redis require named volumes to be created on the host before first `docker compose up`.** Production:
-`docker volume create mysql-data-volume && docker volume create redis-data-volume`. Development:
-`docker volume create mysql-data-dev-volume && docker volume create redis-data-dev-volume`.
+`docker volume create kreditozrouti-mysql-volume-prod && docker volume create kreditozrouti-redis-volume-prod`.
+Development: `docker volume create kreditozrouti-mysql-volume-dev && docker volume create kreditozrouti-redis-volume-dev`.
 
 **`deploy.sh` uses `$SCRIPT_DIR`** — must be called by path (`./deployment/deploy.sh`) or from within `deployment/`. The
 working directory doesn't matter; only the script's own location does.
 
 **MySQL healthcheck** uses `MYSQL_ROOT_PASSWORD` — it must be present in `.env`.
 
-**Production vs development** differ in: float tag (`latest` vs `dev-latest`), replica counts, network names (
-`mysql-network` vs `mysql-dev-network`), volume names. Both use `${GITHUB_SHA::8}` as the versioned tag.
+**Production vs development** differ in: float tag (`latest` vs `dev-latest`), replica counts, network names
+(`kreditozrouti-mysql-network-prod` vs `-dev`), volume names, and compose project (`kreditozrouti` vs
+`kreditozrouti-dev`). Both use `${GITHUB_SHA::8}` as the versioned tag.
 
 ---
 

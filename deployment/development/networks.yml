@@ -1,6 +1,7 @@
 # ==============================================================================
 # Networks Configuration: Development
 # Description: External network definitions for development environment.
+#              See NAMING.md (Infrastructure) for the cross-repo convention.
 # ==============================================================================
 
 networks:
@@ -8,14 +9,15 @@ networks:
     name: public-network
     external: true
 
-  mysql-dev-network:
-    name: mysql-dev-network
+  kreditozrouti-mysql-network-dev:
+    name: kreditozrouti-mysql-network-dev
     external: true
 
-  redis-dev-network:
-    name: redis-dev-network
+  kreditozrouti-redis-network-dev:
+    name: kreditozrouti-redis-network-dev
     external: true
 
-  alloy-network:
-    name: alloy-network
+  # Per-repo scrape network (shared with prod + this repo's monitoring stack).
+  kreditozrouti-monitoring-network:
+    name: kreditozrouti-monitoring-network
     external: true

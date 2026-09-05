@@ -32,7 +32,7 @@ services:
       - ACCESS_TOKEN=${GITHUB_ACCESS_TOKEN}
 
       # Naming and Labels
-      - RUNNER_NAME_PREFIX=${PROJECT:-github}-runner
+      - RUNNER_NAME_PREFIX=${PROJECT:-kreditozrouti-runner}
       - RUNNER_SCOPE=repo
       - LABELS=${RUNNER_LABELS:-docker,self-hosted}
 

@@ -1,13 +1,14 @@
 # ==============================================================================
 # Volumes Configuration: Production
 # Description: Persistent volume definitions for production environment.
+#              Naming: <project>-<engine>-volume-<env>. See NAMING.md (Infrastructure).
 # ==============================================================================
 
 volumes:
-  mysql-data-volume:
-    name: mysql-data-volume
+  kreditozrouti-mysql-volume-prod:
+    name: kreditozrouti-mysql-volume-prod
     external: true
 
-  redis-data-volume:
-    name: redis-data-volume
+  kreditozrouti-redis-volume-prod:
+    name: kreditozrouti-redis-volume-prod
     external: true

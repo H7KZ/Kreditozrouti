@@ -45,13 +45,13 @@ services:
       - '--web.enable-lifecycle'
 
     volumes:
-      - prometheus-data:/prometheus
+      - kreditozrouti-prometheus-volume:/prometheus
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
     networks:
-      - monitoring-network
-      - alloy-network
+      - kreditozrouti-monitoring-internal-network
+      - kreditozrouti-monitoring-network
 
     logging:
       driver: 'json-file'
@@ -90,12 +90,12 @@ services:
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
 
     volumes:
-      - grafana-data:/var/lib/grafana
+      - kreditozrouti-grafana-volume:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
 
     networks:
       - public-network
-      - monitoring-network
+      - kreditozrouti-monitoring-internal-network
 
     labels:
       - 'traefik.enable=true'
@@ -134,11 +134,11 @@ services:
     command: -config.file=/etc/loki/loki.yml
 
     volumes:
-      - loki-data:/loki
+      - kreditozrouti-loki-volume:/loki
       - ./loki/loki.yml:/etc/loki/loki.yml:ro
 
     networks:
-      - monitoring-network
+      - kreditozrouti-monitoring-internal-network
 
     logging:
       driver: 'json-file'
@@ -180,14 +180,14 @@ services:
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - alloy-data:/var/lib/alloy/data
+      - kreditozrouti-alloy-volume:/var/lib/alloy/data
       - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
       - traefik-logs-volume:/var/log/traefik:ro
 
     networks:
-      - monitoring-network
+      - kreditozrouti-monitoring-internal-network
       - public-network
-      - alloy-network
+      - kreditozrouti-monitoring-network
 
     labels:
       - 'traefik.enable=true'
@@ -231,10 +231,10 @@ services:
       - POSTGRES_PASSWORD=${UMAMI_DB_PASSWORD}
 
     volumes:
-      - umami-postgres-data:/var/lib/postgresql/data
+      - kreditozrouti-umami-postgres-volume:/var/lib/postgresql/data
 
     networks:
-      - monitoring-network
+      - kreditozrouti-monitoring-internal-network
 
     healthcheck:
       test: [ 'CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB' ]
@@ -276,7 +276,7 @@ services:
       - APP_SECRET=${UMAMI_APP_SECRET}
 
     networks:
-      - monitoring-network
+      - kreditozrouti-monitoring-internal-network
       - public-network
 
     labels:

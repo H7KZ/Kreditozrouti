@@ -95,7 +95,7 @@ jobs:
           if [[ "${{ inputs.environment }}" == "production" ]]; then
             echo "project_name=kreditozrouti" >> "$GITHUB_OUTPUT"
           else
-            echo "project_name=dev" >> "$GITHUB_OUTPUT"
+            echo "project_name=kreditozrouti-dev" >> "$GITHUB_OUTPUT"
           fi
 
   # Deploy jobs run in parallel — each only fires for the selected service.

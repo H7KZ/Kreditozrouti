@@ -1,7 +1,7 @@
 # ==============================================================================
 # Prometheus Scrape Configuration
 # Description: Discovers API containers via Docker Socket SD.
-#              Prometheus reaches containers via alloy-network.
+#              Prometheus reaches containers via kreditozrouti-monitoring-network.
 #              Per-container env label comes from the prometheus.io/env Docker label,
 #              so both prod and dev APIs are scraped with correct env metadata.
 # ==============================================================================
@@ -13,7 +13,7 @@ global:
 scrape_configs:
   # Discovers kreditozrouti-api containers (prod + dev) via Docker socket.
   # Containers must have label prometheus.io/scrape=true to be included.
-  # Filters to alloy-network only — avoids duplicate targets from multi-network containers.
+  # Filters to kreditozrouti-monitoring-network only — avoids duplicate targets from multi-network containers.
   - job_name: kreditozrouti-api
     docker_sd_configs:
       - host: unix:///var/run/docker.sock
@@ -23,11 +23,11 @@ scrape_configs:
       - source_labels: [ __meta_docker_container_label_prometheus_io_scrape ]
         regex: "true"
         action: keep
-      # Keep only the alloy-network interface — one target per container, not 4
+      # Keep only the scrape-network interface — one target per container, not 4
       - source_labels: [ __meta_docker_network_name ]
-        regex: alloy-network
+        regex: kreditozrouti-monitoring-network
         action: keep
-      # Build scrape address from the container's alloy-network IP + its prometheus.io/port label.
+      # Build scrape address from the container's scrape-network IP + its prometheus.io/port label.
       # Port comes from each container's own label (production.yml sets prometheus.io/port), so
       # adding a new scrapable service needs no change here - just set the three prometheus.io labels.
       - source_labels: [ __meta_docker_network_ip, __meta_docker_container_label_prometheus_io_port ]
