@@ -100,6 +100,8 @@ main() {
         -f "$compose_file" \
         up -d
 
+    cleanup_old_versions "monitoring" || true
+
     log_success "=========================================="
     log_success "Monitoring Stack Deployed"
     log_success "=========================================="

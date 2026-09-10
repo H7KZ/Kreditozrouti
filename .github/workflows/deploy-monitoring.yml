@@ -36,6 +36,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v6
 
+      - name: Set Version Tag
+        id: version
+        run: echo "tag=${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
+
+      - name: Create Version Directory
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            mkdir -p "$HOME/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}"
+
       - name: Upload Monitoring Config
         uses: appleboy/scp-action@v1
         with:
@@ -44,7 +58,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: 'deployment/monitoring/,deployment/lib.sh'
-          target: '~/deployment/'
+          target: '~/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}'
           strip_components: 1
           overwrite: true
 
@@ -70,5 +84,11 @@ jobs:
           envs: GH_TOKEN,GH_ACTOR,MONITORING_DOMAIN,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL,UMAMI_DB_NAME,UMAMI_DB_USER,UMAMI_DB_PASSWORD,UMAMI_APP_SECRET,FARO_ALLOWED_ORIGIN
           script: |
             set -euo pipefail
+
+            VERSION_DIR="$HOME/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}"
+            CURRENT_LINK="$HOME/kreditozrouti/versions/monitoring/current"
+
             echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
-            bash ~/deployment/monitoring/deploy.sh
+            bash "$VERSION_DIR/monitoring/deploy.sh"
+
+            ln -sfn "$VERSION_DIR" "$CURRENT_LINK"

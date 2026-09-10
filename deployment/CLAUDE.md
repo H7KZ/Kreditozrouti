@@ -83,6 +83,13 @@ the external `public-network` (owned by Infrastructure) is. See NAMING.md in the
 Environment secrets/variables and write it into the version directory (`~/kreditozrouti/versions/<env>/<sha>/.env`) before calling
 `deploy.sh`.
 
+**Monitoring deploys the same versioned way as the app stack.** `deploy-monitoring.yml` uploads
+`deployment/monitoring/` + `deployment/lib.sh` into `~/kreditozrouti/versions/monitoring/<sha>/`, runs
+`monitoring/deploy.sh` from there, then updates the `~/kreditozrouti/versions/monitoring/current` symlink. Old
+version dirs are cleaned up the same way as app deploys (7 days, minimum 3 kept) via the shared
+`cleanup_old_versions` in `lib.sh`. No more writing directly into a flat `~/deployment/` — that was the old layout
+and diverged from every other prod deploy, which caused ownership/permission drift on the host.
+
 **`VITE_*` env vars** are baked into the client image at build time by Vite. Setting them at container runtime has no
 effect — the `docker-entrypoint.sh` placeholder-swap handles this at startup instead.
 

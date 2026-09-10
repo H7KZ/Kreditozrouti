@@ -132,47 +132,6 @@ cleanup_on_error() {
     exit 1
 }
 
-cleanup_old_versions() {
-    local environment="$1"
-    local versions_dir="$HOME/kreditozrouti/versions/$environment"
-    local current_link="$HOME/kreditozrouti/versions/$environment/current"
-
-    # Only proceed if the versions directory exists
-    [[ -d "$versions_dir" ]] || return 0
-
-    # Get the real path of the current symlink target
-    local current_target
-    current_target=$(readlink -f "$current_link" 2>/dev/null || echo "")
-
-    # List all version dirs sorted by modification time (oldest first)
-    local all_versions=()
-    while IFS= read -r -d '' dir; do
-        all_versions+=("$dir")
-    done < <(find "$versions_dir" -maxdepth 1 -mindepth 1 -type d -printf '%T@\t%p\0' | sort -z | cut -z -f2-)
-
-    local total=${#all_versions[@]}
-    local kept=0
-    local deleted=0
-
-    for dir in "${all_versions[@]}"; do
-        [[ "$dir" == "$current_target" ]] && { ((kept++)); continue; }
-
-        local age_days
-        age_days=$(( ($(date +%s) - $(stat -c %Y "$dir")) / 86400 ))
-
-        if [[ $age_days -gt 7 ]] && [[ $((total - deleted)) -gt 3 ]]; then
-            log "Removing old version: $(basename "$dir") (${age_days}d old)"
-            rm -rf "$dir"
-            ((deleted++))
-        else
-            ((kept++))
-        fi
-    done
-
-    [[ $deleted -gt 0 ]] && log_success "Cleaned up $deleted old version(s), kept $kept"
-    [[ $deleted -eq 0 ]] && log "Version cleanup: $kept version(s) kept, nothing removed"
-}
-
 # ------------------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------------------
