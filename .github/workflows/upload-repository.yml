@@ -59,7 +59,7 @@ jobs:
           echo "folder=$INPUT_FOLDER" >> "$GITHUB_OUTPUT"
 
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.branch }}
 

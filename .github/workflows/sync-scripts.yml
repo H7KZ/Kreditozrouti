@@ -1,23 +1,18 @@
 # ==============================================================================
-# Workflow: Sync Admin Scripts
-# Description: Automatically syncs admin scripts to VPS when changes are pushed.
-#              Can also be triggered manually.
-# Trigger: Push to scripts/** on 'main' & 'develop' branches or manual dispatch
-#
-# Required Secrets:
-#   - SSH_HOST: VPS hostname or IP
-#   - SSH_USER: SSH username
-#   - SSH_PORT: SSH port
-#   - SSH_PRIVATE_KEY: SSH private key for authentication
+# Workflow: Sync Scripts
+# Description: Syncs only scripts/ to the VPS, independent of the main deploy
+#              pipeline, so ops scripts can be updated without a full deploy.
+#              Target is namespaced under ~/kreditozrouti/ (not a bare ~/scripts)
+#              since Infrastructure/Kreditozrouti/Ohlidame all deploy as the same
+#              VPS user and would otherwise overwrite each other's scripts.
+# Trigger: push to main (path-filtered to scripts/**), or manual dispatch
 # ==============================================================================
 
 name: Sync Scripts
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [ main ]
     paths:
       - 'scripts/**'
   workflow_dispatch:
@@ -27,7 +22,6 @@ permissions:
 
 concurrency:
   group: sync-scripts
-  # false: canceling mid-SCP leaves VPS with partially-updated scripts
   cancel-in-progress: false
 
 jobs:
@@ -38,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Upload Scripts
         uses: appleboy/scp-action@v1
@@ -48,8 +42,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: 'scripts/*'
-          target: '~/scripts'
+          target: '~/kreditozrouti/scripts'
           strip_components: 1
+          overwrite: true
 
       - name: Set Permissions
         uses: appleboy/ssh-action@v1
@@ -60,5 +55,5 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             set -euo pipefail
-            chmod +x ~/scripts/*.sh 2>/dev/null || true
-            echo "Scripts synced: $(ls -1 ~/scripts/*.sh 2>/dev/null | wc -l) files"
+            chmod +x ~/kreditozrouti/scripts/*.sh 2>/dev/null || true
+            echo "Scripts synced: $(ls -1 ~/kreditozrouti/scripts/*.sh 2>/dev/null | wc -l) files"
