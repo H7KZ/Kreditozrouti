@@ -158,3 +158,48 @@ loki.source.file "traefik_access" {
   targets    = local.file_match.traefik_access.targets
   forward_to = [loki.write.default.receiver]
 }
+
+// ---------------------------------------------------------------------------
+// MySQL backup health metrics pipeline (Alloy's first prometheus.* pipeline)
+//
+// WHY THIS IS PUSH WHEN EVERYTHING ELSE IS PULL:
+// prometheus/prometheus.yml runs a single Docker-SD job that discovers containers
+// labelled prometheus.io/scrape=true. The MySQL backup is a host-level systemd
+// timer running scripts/backup-mysql.sh, not a container, so Docker-SD can never
+// see it. Alloy already runs here and already mounts host paths, so it reads the
+// *.prom file the backup script writes and pushes the result to Prometheus over
+// the remote-write receiver. Full rationale, and why Pushgateway was rejected:
+// docs/adr/0001-backup-health-via-alloy-textfile.md
+//
+// The directory below is the container-side path of the read-only bind mount
+// /var/lib/kreditozrouti/textfile-collector declared in docker-compose.monitoring.yml.
+// set_collectors replaces the node_exporter default set with textfile alone: we
+// want the backup gauges, not CPU/filesystem/netdev metrics for the container's
+// own namespace, which would be misleading host telemetry.
+prometheus.exporter.unix "textfile" {
+  set_collectors = ["textfile"]
+
+  textfile {
+    directory = "/var/lib/textfile-collector"
+  }
+}
+
+// 60s is deliberately slow. The source is a daily batch job writing a timestamp
+// gauge - the value changes at most once per day, so a faster interval would only
+// buy storage cost. The staleness alert's threshold is 36h; 60s is far inside it.
+// job_name is intentionally not set: the job label defaults to the component ID,
+// and the alert matches on the kreditozrouti_backup_* metric names, not on job.
+prometheus.scrape "backup_textfile" {
+  targets         = prometheus.exporter.unix.textfile.targets
+  forward_to      = [prometheus.remote_write.default.receiver]
+  scrape_interval = "60s"
+}
+
+// Requires --web.enable-remote-write-receiver on the Prometheus command args;
+// without it Prometheus returns 404 on /api/v1/write and the gauges never land,
+// which looks identical to a dead backup.
+prometheus.remote_write "default" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+  }
+}

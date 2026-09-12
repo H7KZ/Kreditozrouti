@@ -23,19 +23,25 @@ service (s) whose source files changed are rebuilt and redeployed.
 
 All workflow files live in `../../.github/workflows`.
 
+### `_verify.yml` — Reusable: verification
+
+**Trigger:** `workflow_call`.
+
+Holds the actual verification steps: checkout, pnpm + Node.js 24 setup, `make install`, `make lint`, the em-dash
+check, type-check, core build, and `make test`. Runs on a self-hosted runner.
+
+It exists as a reusable workflow so that the same definition gates **both** pull requests and deploys. Previously
+`verify.yml` ran only on `pull_request` while `deploy-all.yml` ran on push to `main`, and they were separate
+workflows with no `needs:` between them, so a commit that reached `main` any other way (a direct push, a force push,
+an admin merge) could deploy to production without CI ever having run on it.
+
+---
+
 ### `verify.yml` — Pull Request checks
 
 **Trigger:** PR opened, synchronised, or reopened
 
-**Steps:**
-
-1. Checkout code
-2. Setup Node.js 24
-3. `make install`
-4. `make lint`
-5. `make build`
-
-Runs on a self-hosted runner. A PR cannot be merged until this passes.
+A thin caller: `uses: ./.github/workflows/_verify.yml`. A PR cannot be merged until this passes.
 
 ---
 
@@ -67,19 +73,30 @@ Same structure as `deploy-api.yml` for the scraper service.
 
 ### `deploy-all.yml` — Full-stack deploy
 
-**Trigger:** `workflow_dispatch` only (manual).
+**Trigger:** push to `main` under `api/**`, `client/**`, `scraper/**`, `mcp/**` or `packages/**`, which auto-deploys
+only the services whose paths changed; or `workflow_dispatch` for manual control over any combination.
 
-Builds all three services in parallel and then deploys the full stack in one operation. Use for:
+Builds the four services in parallel and deploys them. Use the manual form for:
 
 - Initial deployment on a fresh environment
 - Emergency redeployments
 - Cases where all services must move together
 
-**Inputs:** `environment` (production/development, required), `image_tag` (optional SHA, skips build if set),
-`skip_build` (bool).
+**Inputs:** `environment` (production/development, required), per-service `deploy_*` checkboxes, `image_tag`
+(optional SHA, skips build if set), `skip_build` (bool).
 
-When all three are built at once, `API_IMAGE_TAG`, `CLIENT_IMAGE_TAG`, and `SCRAPER_IMAGE_TAG` are all set to the same
-short SHA.
+When several are built at once, `API_IMAGE_TAG`, `CLIENT_IMAGE_TAG`, `SCRAPER_IMAGE_TAG` and `MCP_IMAGE_TAG` are all
+set to the same short SHA.
+
+**CI gate.** A `verify` job calls `_verify.yml` and `validate` declares `needs: [verify]`. Every build job already
+requires `needs.validate.result == 'success'`, `resolve` requires the same, the deploy jobs require `resolve`, and
+cleanup requires deploy - so a failed verification skips the entire graph at one choke point. This applies to
+`workflow_dispatch` runs too, including `skip_build`, because a skip_build dispatch still writes a `.env` and runs
+`deploy.sh` on the VPS.
+
+One limit worth knowing rather than assuming away: for `skip_build` with an explicit `image_tag`, verification runs
+against the dispatched ref, which need not be the commit the pre-existing image was built from. The gate proves the
+ref is green; it does not prove the image matches the ref.
 
 ---
 
@@ -100,6 +117,28 @@ cache scoped per service and environment.
 
 Uploads deployment files to the VPS, writes `.env`, and calls `deploy.sh <project> <environment> <service>` for a
 single-service update.
+
+**Secret shape validation.** Before writing `.env` and before `docker login`, the workflow rejects any secret that
+cannot survive the trip. Two readers can eat a `$` on the way to the container: this shell, which is defeated by
+writing values with `printf` rather than interpolation, and Compose, which interpolates the `.env` file it is handed
+and which nothing defeats. So `MYSQL_PASSWORD=abc$def` would reach the container as `abc`, silently. For
+`MYSQL_ROOT_PASSWORD` that is unrecoverable: the database initialises with the truncated value on first boot and the
+real password then differs from the stored secret forever.
+
+Twelve credential-bearing secrets are checked for `$` and backtick and the deploy fails with a message pointing at
+`openssl rand -base64 32`, whose alphabet contains neither character.
+
+`BULL_BOARD_USER` is the deliberate exception, because an htpasswd line **must** contain dollars. It gets its own
+validator that strips every `$$` pair and then fails if any lone `$` survives - the same transform Compose performs,
+so it distinguishes a correctly doubled `user:$$apr1$$salt$$hash` from a raw `user:$apr1$salt$hash` paste that would
+be interpolated away. Both apr1 and bcrypt (`$$2y$$`, `$$2a$$`, `$$2b$$`) hashes are accepted. Generate one with:
+
+```bash
+docker run --rm httpd:alpine htpasswd -nb admin '<password>' | sed 's/[$]/$$/g'
+```
+
+The `[$]` character class matters: a bare `$` on sed's left-hand side means end-of-line and would append rather than
+double.
 
 **Dependency inclusion:** `api`, `scraper`, and `mcp` are deployed together with their infrastructure dependencies -
 deploying `api` also brings up (or updates, if their config changed) `mysql` and `redis`, honouring `depends_on` health

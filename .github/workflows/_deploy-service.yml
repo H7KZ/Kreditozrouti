@@ -119,10 +119,147 @@ jobs:
             echo "Service Deploy: $APP_SERVICE @ $IMG_TAG → ${{ inputs.environment }}"
             echo "=========================================="
 
+            # -----------------------------------------------------------------
+            # Secret shape validation. Runs BEFORE the .env is written and
+            # before docker login, so a bad secret fails fast without touching
+            # any server state.
+            #
+            # TWO READERS can eat a dollar sign on the way to the container:
+            #   1. this shell - defeated by the printf-with-quoted-value writer
+            #      below, which never lets the shell expand a secret;
+            #   2. Compose - it interpolates the .env file it is handed, so
+            #      MYSQL_PASSWORD=abc$def reaches the container as abc.
+            # Nothing defeats the second reader, so a value that cannot survive
+            # it is rejected here rather than deployed as a quietly different
+            # value. For MYSQL_ROOT_PASSWORD the damage is unrecoverable: the
+            # database initialises with the truncated value on first boot, and
+            # the real password then differs from the stored secret forever.
+            # -----------------------------------------------------------------
+            reject_uncarryable() {
+              case "$2" in
+                *'$'*|*'`'*)
+                  echo "ERROR: secret $1 contains a '\$' or a backtick, which this deploy cannot carry."
+                  echo "       The remote .env is interpolated by Compose, so the container would"
+                  echo "       receive a TRUNCATED value - silently, with no error anywhere."
+                  echo "       Fix: regenerate it with  openssl rand -base64 32"
+                  echo "       (base64's alphabet contains neither '\$' nor a backtick, so a"
+                  echo "        generated value always passes this check.)"
+                  exit 1
+                  ;;
+              esac
+            }
+
+            reject_uncarryable MYSQL_USER "$APP_MYSQL_USER"
+            reject_uncarryable MYSQL_DATABASE "$APP_MYSQL_DATABASE"
+            reject_uncarryable MYSQL_PASSWORD "$APP_MYSQL_PASSWORD"
+            reject_uncarryable MYSQL_ROOT_PASSWORD "$APP_MYSQL_ROOT_PASSWORD"
+            reject_uncarryable MYSQL_URI "$APP_MYSQL_URI"
+            reject_uncarryable REDIS_URI "$APP_REDIS_URI"
+            reject_uncarryable REDIS_PASSWORD "$APP_REDIS_PASSWORD"
+            reject_uncarryable API_SESSION_SECRET "$APP_API_SESSION_SECRET"
+            reject_uncarryable API_COMMAND_TOKEN "$APP_API_COMMAND_TOKEN"
+            reject_uncarryable MCP_JWT_SECRET "${APP_MCP_JWT_SECRET:-}"
+            reject_uncarryable GOOGLE_APP_PASSWORD "${APP_GOOGLE_APP_PASSWORD:-}"
+            reject_uncarryable UMAMI_WEBSITE_ID "${APP_UMAMI_WEBSITE_ID:-}"
+
+            # -----------------------------------------------------------------
+            # BULL_BOARD_USER is the one secret that MUST contain dollars, so
+            # reject_uncarryable deliberately does not apply to it. It is an
+            # htpasswd line whose apr1 hash is stored with EVERY dollar doubled
+            # (user:$$apr1$$salt$$hash), because Compose collapses each '$$'
+            # back into a single '$' before Traefik reads the BasicAuth label.
+            # See the BULL_BOARD_USER note in the compose file headers.
+            #
+            # The dangerous look-alike is the SINGLE-dollar form
+            # (user:$apr1$salt$hash) - raw htpasswd output pasted without
+            # doubling. Compose reads $apr1, $salt and $hash as variable
+            # references, expands them to nothing, and Traefik gets a mangled
+            # hash: /bullboard then rejects every password, with no error.
+            #
+            # Exactness (this is the subtle part): strip every '$$' PAIR first,
+            # then require that not one '$' survives.
+            #   $$apr1$$salt$$hash -> apr1salthash   -> passes (all paired)
+            #   $apr1$salt$hash    -> $apr1$salt$hash -> fails (no pairs at all)
+            #   $$$apr1$$salt$$h   -> $apr1salth      -> fails (one stray)
+            # Counting dollars cannot do this: an even count does not mean the
+            # dollars are paired, and pair-stripping is what Compose itself does.
+            # -----------------------------------------------------------------
+            bb_shape_error() {
+              echo "ERROR: secret BULL_BOARD_USER is not a doubled-dollar htpasswd line."
+              echo "       Expected: user:\$\$apr1\$\$salt\$\$hash  or  user:\$\$2y\$\$cost\$\$salthash"
+              echo "       Compose collapses each '\$\$' into one '\$'; a single-dollar value is"
+              echo "       interpolated away instead, and /bullboard BasicAuth silently breaks."
+              echo "       Fix: docker run --rm httpd:alpine htpasswd -nb admin '<password>' | sed 's/[\$]/\$\$/g'"
+              exit 1
+            }
+
+            validate_bull_board_user() {
+              bb_value="$1"
+
+              if [ -z "$bb_value" ]; then
+                echo "ERROR: secret BULL_BOARD_USER is empty."
+                echo "       Traefik's BasicAuth middleware for /bullboard needs an htpasswd line;"
+                echo "       an empty users list makes the router invalid."
+                bb_shape_error
+              fi
+
+              # A backtick can never be carried, doubled or not.
+              case "$bb_value" in
+                *'`'*)
+                  echo "ERROR: secret BULL_BOARD_USER contains a backtick, which this deploy cannot carry."
+                  echo "       Compose would interpolate it and Traefik would get a truncated hash."
+                  bb_shape_error
+                  ;;
+              esac
+
+              # Doubled-vs-single test: remove the pairs, then look for a survivor.
+              bb_stripped="${bb_value//\$\$/}"
+              case "$bb_stripped" in
+                *'$'*)
+                  echo "ERROR: secret BULL_BOARD_USER contains a single, undoubled '\$'."
+                  echo "       Every dollar in the hash must be written twice."
+                  bb_shape_error
+                  ;;
+              esac
+
+              # Shape: non-empty user, a colon, then the doubled hash.
+              #
+              # Both hash formats Traefik's BasicAuth accepts are allowed here, because
+              # the monitoring spec calls for "bcrypt or apr1" and rejecting a working
+              # bcrypt secret would fail the deploy over a format Traefik is happy with:
+              #   apr1   user:$$apr1$$<salt>$$<hash>   - 3 dollars, salt and hash separated
+              #   bcrypt user:$$2y$$<cost>$$<salt+hash> - 3 dollars, salt and hash concatenated
+              # 2a and 2b are accepted alongside 2y; they are the same algorithm with
+              # different prefix conventions and htpasswd emits whichever its build uses.
+              #
+              # The doubled-vs-single test above is the check that actually prevents the
+              # silent truncation. This one only catches a value that is not an htpasswd
+              # line at all, so it stays deliberately permissive about the hash body.
+              bb_user="${bb_value%%:*}"
+              bb_hash="${bb_value#*:}"
+              if [ "$bb_user" = "$bb_value" ] || [ -z "$bb_user" ]; then
+                bb_shape_error
+              fi
+              case "$bb_hash" in
+                '$$apr1$$'?*'$$'?*) : ;;
+                '$$2y$$'?*'$$'?*) : ;;
+                '$$2a$$'?*'$$'?*) : ;;
+                '$$2b$$'?*'$$'?*) : ;;
+                *) bb_shape_error ;;
+              esac
+            }
+
+            validate_bull_board_user "${APP_BULL_BOARD_USER:-}"
+
+            echo "Secret shape validation passed."
+
             # Login to GHCR
             echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
 
-            # Write .env — printf prevents $ or $() in secret values from being shell-expanded
+            # Write .env - printf with a quoted value keeps the SHELL from
+            # expanding a secret. That is only the first of the two readers
+            # described above; Compose is the second, and the validation block
+            # is what protects against it.
             {
               printf 'ENV=%s\n' "$APP_ENV"
               printf 'PROJECT=%s\n' "$APP_PROJECT"
@@ -138,15 +275,15 @@ jobs:
               printf 'REDIS_URI=%s\n' "$APP_REDIS_URI"
               printf 'REDIS_PASSWORD=%s\n' "$APP_REDIS_PASSWORD"
               printf 'GOOGLE_USER=%s\n' "$APP_GOOGLE_USER"
-              printf 'GOOGLE_APP_PASSWORD=%s\n' "$APP_GOOGLE_APP_PASSWORD"
-              printf 'BULL_BOARD_USER=%s\n' "$APP_BULL_BOARD_USER"
-              printf 'VITE_UMAMI_WEBSITE_ID=%s\n' "$APP_UMAMI_WEBSITE_ID"
+              printf 'GOOGLE_APP_PASSWORD=%s\n' "${APP_GOOGLE_APP_PASSWORD:-}"
+              printf 'BULL_BOARD_USER=%s\n' "${APP_BULL_BOARD_USER:-}"
+              printf 'VITE_UMAMI_WEBSITE_ID=%s\n' "${APP_UMAMI_WEBSITE_ID:-}"
               printf 'VITE_UMAMI_SRC=%s\n' "$APP_UMAMI_SRC"
-              printf 'MCP_JWT_SECRET=%s\n' "$APP_MCP_JWT_SECRET"
+              printf 'MCP_JWT_SECRET=%s\n' "${APP_MCP_JWT_SECRET:-}"
             } > "$VERSION_DIR/.env"
             chmod 600 "$VERSION_DIR/.env"
 
-            # Pass tag as env var (not via .images — avoids write race when all 3 services deploy simultaneously)
+            # Pass tag as env var (not via .images - avoids write race when all 3 services deploy simultaneously)
             # derive the correct SERVICE_IMAGE_TAG var name from $APP_SERVICE
             case "$APP_SERVICE" in
               api)     SERVICE_TAG_VAR="API_IMAGE_TAG" ;;

@@ -22,25 +22,32 @@ proxy, GitHub Actions for CI/CD, and GitHub Container Registry (GHCR) for image 
              │             │             │
              ▼             ▼             ▼
          ┌───────┐    ┌────────┐   ┌──────────┐
-         │Client │    │  API   │   │phpMyAdmin│
+         │Client │    │  API   │   │   MCP    │
          │ (×1)  │    │  (×1)  │   │   (×1)   │
-         │ Nginx │    │Express │   │          │
-         └───────┘    └───┬────┘   └──────────┘
-                          │
-              ┌───────────┤
-              │           │
-              ▼           ▼
-          ┌────────┐  ┌────────┐
-          │ MySQL  │  │ Redis  │
-          │  8.4   │  │   7    │
-          └────────┘  └───┬────┘
-                          │
-                          ▼
-                    ┌──────────┐
-                    │ Scraper  │
-                    │   (×2)   │
-                    └──────────┘
+         │ Nginx │    │Express │   │  :3000   │
+         └───────┘    └───┬────┘   └────┬─────┘
+                          │             │
+              ┌───────────┤             │
+              │           │             │
+              ▼           ▼             ▼
+          ┌────────┐  ┌────────────────────┐
+          │ Redis  │  │       MySQL        │
+          │   8    │  │         9          │
+          └───┬────┘  └──────────┬─────────┘
+              │                  │
+              ▼                  ▼
+        ┌──────────┐       ┌──────────┐
+        │ Scraper  │       │phpMyAdmin│
+        │   (×2)   │       │ (`admin` │
+        └──────────┘       │ profile) │
+                           └──────────┘
 ```
+
+phpMyAdmin does **not** sit behind Traefik. It is stopped by default (Compose profile `admin`) and published on
+`127.0.0.1:48080` in production / `127.0.0.1:48081` in development, so the only way in is an SSH tunnel. An
+internet-reachable database admin UI carrying the MySQL root credentials was the exposure being removed - and the
+old `PMA_ARBITRARY=1` additionally let any visitor point it at any host. See
+[Infrastructure → phpMyAdmin access](INFRASTRUCTURE.md#phpmyadmin-access).
 
 ### Network isolation
 
@@ -48,10 +55,10 @@ Names shown are the `-prod` forms; `-dev` equivalents exist for development.
 
 ```
 public-network (external — Infra Traefik + this repo's web-facing services)
-  ├── api, client, phpmyadmin
+  ├── api, client, mcp
 
 kreditozrouti-mysql-network-prod (internal)
-  ├── api, mcp, mysql, phpmyadmin
+  ├── api, mcp, mysql, phpmyadmin (loopback-published, `admin` profile)
 
 kreditozrouti-redis-network-prod (internal)
   ├── api, scraper, redis

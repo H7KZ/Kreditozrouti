@@ -10,9 +10,12 @@ set -euo pipefail
 #              filling up or running out of memory (the usual cause of the
 #              Prometheus "DatasourceNoData" / container-down alert cascade).
 #
-#              Two timers are installed:
+#              Three timers are installed:
 #                - docker-cleanup : daily, reclaims images/volumes/build cache
 #                                   and truncates container logs
+#                - mysql-backup   : daily, gzip'd mysqldump into
+#                                   ~/kreditozrouti/backups/<env>, optional
+#                                   off-site copy, Prometheus textfile metrics
 #                - maintenance    : weekly, apt updates + system cleanup +
 #                                   security audit + health check (+ docker
 #                                   cleanup), optional auto-reboot
@@ -28,9 +31,21 @@ set -euo pipefail
 #   --maintenance-time <spec>   Weekly maintenance OnCalendar (default: Sun 04:00)
 #   --keep-recent <hrs>         Keep images newer than N hours in daily cleanup
 #                               (default: 48)
+#   --backup-time <HH:MM>       Daily MySQL backup time (default: 02:00)
+#   --backup-env <name>         Environment to back up (default: production)
+#   --backup-user <name>        User the backup runs as (default: owner of this
+#                               script's directory)
 #   -u, --uninstall             Remove the installed timers and units
 #   -s, --status                Show status of the installed timers and exit
 #   -h, --help                  Show help message
+#
+# Backup configuration:
+#   The mysql-backup unit reads optional settings from
+#   /etc/default/kreditozrouti-backup (BACKUP_REMOTE, BACKUP_RETENTION_DAYS,
+#   BACKUP_MIN_KEEP, BACKUP_TEXTFILE_DIR). See backup-mysql.sh for the full list.
+#   The unit runs as the deploying user, not root, because the dumps and the
+#   deployed version directory live under that user's home; that user must be in
+#   the docker group.
 #
 # Requirements:
 #   - Must be run as root (sudo)
@@ -45,6 +60,11 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly PREFIX="kreditozrouti"
 readonly SYSTEMD_DIR="/etc/systemd/system"
 
+# Backup-specific paths. TEXTFILE_DIR must match backup-mysql.sh's default and
+# the directory the Alloy/Prometheus textfile collector scrapes.
+readonly BACKUP_DEFAULTS_FILE="/etc/default/${PREFIX}-backup"
+readonly TEXTFILE_DIR="/var/lib/${PREFIX}/textfile-collector"
+
 # Defaults
 AUTO_REBOOT=false
 SWAP_SIZE_GB=4
@@ -52,6 +72,10 @@ SKIP_SWAP=false
 CLEANUP_TIME="03:30"
 MAINTENANCE_TIME="Sun *-*-* 04:00:00"
 KEEP_RECENT_HOURS=48
+BACKUP_TIME="02:00"
+BACKUP_ENVIRONMENT="production"
+BACKUP_USER=""
+BACKUP_HOME=""
 UNINSTALL=false
 STATUS_ONLY=false
 
@@ -65,8 +89,9 @@ usage() {
     cat << EOF
 Usage: sudo $SCRIPT_NAME [OPTIONS]
 
-Installs systemd timers that run maintenance.sh and docker-cleanup.sh on a
-schedule (daily cleanup + weekly full maintenance).
+Installs systemd timers that run maintenance.sh, docker-cleanup.sh and
+backup-mysql.sh on a schedule (daily cleanup + daily MySQL backup + weekly full
+maintenance).
 
 Options:
     -r, --auto-reboot           Allow weekly maintenance to auto-reboot the host
@@ -75,6 +100,9 @@ Options:
     --cleanup-time <HH:MM>      Daily docker-cleanup time (default: 03:30)
     --maintenance-time <spec>   Weekly maintenance OnCalendar (default: "Sun *-*-* 04:00:00")
     --keep-recent <hrs>         Keep images newer than N hours in daily cleanup (default: 48)
+    --backup-time <HH:MM>       Daily MySQL backup time (default: 02:00)
+    --backup-env <name>         Environment to back up (default: production)
+    --backup-user <name>        User the backup runs as (default: owner of $SCRIPT_DIR)
     -u, --uninstall             Remove installed timers and units
     -s, --status                Show timer status and exit
     -h, --help                  Show this help message
@@ -83,12 +111,17 @@ Examples:
     sudo $SCRIPT_NAME                          # install with defaults
     sudo $SCRIPT_NAME --auto-reboot            # weekly maintenance may reboot
     sudo $SCRIPT_NAME --cleanup-time 02:00     # run daily cleanup at 02:00
+    sudo $SCRIPT_NAME --backup-time 01:15      # run the MySQL backup at 01:15
     sudo $SCRIPT_NAME --status                 # inspect installed timers
     sudo $SCRIPT_NAME --uninstall              # remove everything
 
 Installed units:
     ${PREFIX}-docker-cleanup.service / .timer   (daily)
+    ${PREFIX}-mysql-backup.service   / .timer   (daily)
     ${PREFIX}-maintenance.service    / .timer   (weekly)
+
+Backup settings (BACKUP_REMOTE, BACKUP_RETENTION_DAYS, BACKUP_MIN_KEEP,
+BACKUP_TEXTFILE_DIR) go in $BACKUP_DEFAULTS_FILE.
 EOF
     exit 1
 }
@@ -103,8 +136,64 @@ check_root() {
 require_scripts() {
     validate_files \
         "$SCRIPT_DIR/docker-cleanup.sh" \
-        "$SCRIPT_DIR/maintenance.sh"
-    chmod +x "$SCRIPT_DIR/docker-cleanup.sh" "$SCRIPT_DIR/maintenance.sh"
+        "$SCRIPT_DIR/maintenance.sh" \
+        "$SCRIPT_DIR/backup-mysql.sh"
+    chmod +x "$SCRIPT_DIR/docker-cleanup.sh" "$SCRIPT_DIR/maintenance.sh" "$SCRIPT_DIR/backup-mysql.sh"
+}
+
+# The backup reads the deployed stack from ~/kreditozrouti/versions/<env>/current
+# and writes dumps to ~/kreditozrouti/backups/<env>, both under the DEPLOYING
+# user's home - not root's. scripts/ is synced to that user's ~/scripts by
+# .github/workflows/sync-scripts.yml, so its owner is the right account to run as.
+resolve_backup_user() {
+    if [[ -z "$BACKUP_USER" ]]; then
+        BACKUP_USER="$(stat -c %U "$SCRIPT_DIR")"
+    fi
+
+    if ! id "$BACKUP_USER" >/dev/null 2>&1; then
+        log_error "Backup user '$BACKUP_USER' does not exist. Pass --backup-user <name>."
+        exit 1
+    fi
+
+    BACKUP_HOME="$(getent passwd "$BACKUP_USER" | cut -d: -f6)"
+    if [[ -z "$BACKUP_HOME" ]]; then
+        log_error "Could not determine the home directory of '$BACKUP_USER'."
+        exit 1
+    fi
+
+    if [[ "$BACKUP_USER" == "root" ]]; then
+        log_warning "Backup will run as root, so it looks for deployments under /root."
+        log_warning "Pass --backup-user <deploy user> if the stack was deployed elsewhere."
+    fi
+
+    if ! id -nG "$BACKUP_USER" 2>/dev/null | tr ' ' '\n' | grep -qx docker && [[ "$BACKUP_USER" != "root" ]]; then
+        log_warning "'$BACKUP_USER' is not in the docker group - the backup cannot reach the mysql container."
+    fi
+}
+
+# Prometheus textfile collector directory. backup-mysql.sh creates it too, but
+# creating it here means it exists with the right owner before the first run.
+ensure_backup_paths() {
+    mkdir -p "$TEXTFILE_DIR"
+    chown "$BACKUP_USER" "$TEXTFILE_DIR"
+
+    if [[ ! -f "$BACKUP_DEFAULTS_FILE" ]]; then
+        log "Writing backup defaults template to $BACKUP_DEFAULTS_FILE"
+        cat > "$BACKUP_DEFAULTS_FILE" << 'EOF'
+# Optional settings for kreditozrouti-mysql-backup.service.
+# See scripts/backup-mysql.sh for the full list.
+#
+# rclone remote path for off-site replication. Unset means the dump exists only
+# on this VPS. rclone reads its own credentials from ~/.config/rclone/rclone.conf,
+# so no secret belongs in this file.
+#BACKUP_REMOTE=storagebox:kreditozrouti/production
+#BACKUP_RETENTION_DAYS=14
+#BACKUP_MIN_KEEP=5
+EOF
+        chmod 0644 "$BACKUP_DEFAULTS_FILE"
+    else
+        log "Backup defaults file already present: $BACKUP_DEFAULTS_FILE"
+    fi
 }
 
 ensure_swap() {
@@ -136,6 +225,8 @@ unit_paths() {
     echo \
         "$SYSTEMD_DIR/${PREFIX}-docker-cleanup.service" \
         "$SYSTEMD_DIR/${PREFIX}-docker-cleanup.timer" \
+        "$SYSTEMD_DIR/${PREFIX}-mysql-backup.service" \
+        "$SYSTEMD_DIR/${PREFIX}-mysql-backup.timer" \
         "$SYSTEMD_DIR/${PREFIX}-maintenance.service" \
         "$SYSTEMD_DIR/${PREFIX}-maintenance.timer"
 }
@@ -167,6 +258,36 @@ Description=Run Kreditozrouti Docker cleanup daily
 
 [Timer]
 OnCalendar=*-*-* ${CLEANUP_TIME}:00
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+
+    # --- Daily MySQL backup ---------------------------------------------------
+    cat > "$SYSTEMD_DIR/${PREFIX}-mysql-backup.service" << EOF
+[Unit]
+Description=Kreditozrouti daily MySQL backup ($BACKUP_ENVIRONMENT)
+Documentation=file://$SCRIPT_DIR/backup-mysql.sh
+After=docker.service network-online.target
+Wants=docker.service network-online.target
+
+[Service]
+Type=oneshot
+Nice=10
+User=$BACKUP_USER
+Environment=HOME=$BACKUP_HOME
+EnvironmentFile=-$BACKUP_DEFAULTS_FILE
+ExecStart=$SCRIPT_DIR/backup-mysql.sh $BACKUP_ENVIRONMENT
+EOF
+
+    cat > "$SYSTEMD_DIR/${PREFIX}-mysql-backup.timer" << EOF
+[Unit]
+Description=Run Kreditozrouti MySQL backup daily
+
+[Timer]
+OnCalendar=*-*-* ${BACKUP_TIME}:00
 RandomizedDelaySec=300
 Persistent=true
 
@@ -206,6 +327,7 @@ enable_timers() {
     log "Reloading systemd and enabling timers..."
     systemctl daemon-reload
     systemctl enable --now "${PREFIX}-docker-cleanup.timer"
+    systemctl enable --now "${PREFIX}-mysql-backup.timer"
     systemctl enable --now "${PREFIX}-maintenance.timer"
     log_success "Timers enabled."
 }
@@ -217,7 +339,7 @@ show_status() {
     echo ""
     log "Next runs and last results:"
     local t
-    for t in "${PREFIX}-docker-cleanup" "${PREFIX}-maintenance"; do
+    for t in "${PREFIX}-docker-cleanup" "${PREFIX}-mysql-backup" "${PREFIX}-maintenance"; do
         echo -e "  ${CYAN}${t}${NC}"
         systemctl status "${t}.timer" --no-pager -n 0 2>/dev/null | grep -E "Active:|Trigger:" || true
         systemctl show "${t}.service" -p ExecMainStatus -p Result 2>/dev/null | sed 's/^/    /' || true
@@ -227,7 +349,9 @@ show_status() {
 
 do_install() {
     require_scripts
+    resolve_backup_user
     ensure_swap
+    ensure_backup_paths
     write_units
     enable_timers
     show_status
@@ -237,17 +361,22 @@ do_install() {
     log_success "=========================================="
     log "Swap ensured:         $([[ "$SKIP_SWAP" == true ]] && echo "skipped" || echo "${SWAP_SIZE_GB}G")"
     log "Daily docker cleanup: ${CLEANUP_TIME} (keep images < ${KEEP_RECENT_HOURS}h)"
+    log "Daily MySQL backup:   ${BACKUP_TIME} (env: ${BACKUP_ENVIRONMENT}, user: ${BACKUP_USER})"
     log "Weekly maintenance:   ${MAINTENANCE_TIME} (auto-reboot: ${AUTO_REBOOT})"
+    log "Backup settings:      $BACKUP_DEFAULTS_FILE"
+    log "Backup metrics:       $TEXTFILE_DIR/mysql-backup.prom"
     echo ""
     log "Run one now to verify:"
     log "  sudo systemctl start ${PREFIX}-docker-cleanup.service"
     log "  journalctl -u ${PREFIX}-docker-cleanup.service -f"
+    log "  sudo systemctl start ${PREFIX}-mysql-backup.service"
+    log "  journalctl -u ${PREFIX}-mysql-backup.service -f"
 }
 
 do_uninstall() {
     log "Removing Kreditozrouti automation timers..."
     local unit
-    for unit in "${PREFIX}-docker-cleanup" "${PREFIX}-maintenance"; do
+    for unit in "${PREFIX}-docker-cleanup" "${PREFIX}-mysql-backup" "${PREFIX}-maintenance"; do
         systemctl disable --now "${unit}.timer" 2>/dev/null || true
     done
 
@@ -263,6 +392,7 @@ do_uninstall() {
     systemctl daemon-reload
     systemctl reset-failed 2>/dev/null || true
     log_success "Removed $removed unit file(s). Automation uninstalled."
+    log "Left in place on purpose: existing dumps, $BACKUP_DEFAULTS_FILE and $TEXTFILE_DIR."
 }
 
 log_verbose_rm() { log "  Removed: $1"; }
@@ -280,6 +410,9 @@ main() {
             --cleanup-time)        CLEANUP_TIME="$2"; shift 2 ;;
             --maintenance-time)    MAINTENANCE_TIME="$2"; shift 2 ;;
             --keep-recent)         KEEP_RECENT_HOURS="$2"; shift 2 ;;
+            --backup-time)         BACKUP_TIME="$2"; shift 2 ;;
+            --backup-env)          BACKUP_ENVIRONMENT="$2"; shift 2 ;;
+            --backup-user)         BACKUP_USER="$2"; shift 2 ;;
             -u|--uninstall)        UNINSTALL=true; shift ;;
             -s|--status)           STATUS_ONLY=true; shift ;;
             -h|--help)             usage ;;

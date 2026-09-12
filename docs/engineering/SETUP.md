@@ -60,7 +60,7 @@ NODE_ENV=development
 
 ```bash
 make run-local-docker
-# Starts: MySQL on :43306, Redis on :46379, phpMyAdmin on :48080
+# Starts: MySQL on :43306, Redis on :46379, phpMyAdmin on 127.0.0.1:48080
 ```
 
 Wait ~10 seconds for MySQL to initialize on first run.
@@ -89,11 +89,18 @@ make dev-scraper  # BullMQ worker (no port)
 
 ### 6. Access
 
-| Service    | URL                                            |
-|------------|------------------------------------------------|
-| Client     | http://localhost:45173                         |
-| API        | http://localhost:40080                         |
-| phpMyAdmin | http://localhost:48080 (user: `kreditozrouti`) |
+| Service    | URL                                    |
+|------------|----------------------------------------|
+| Client     | http://localhost:45173                 |
+| API        | http://localhost:40080                 |
+| phpMyAdmin | http://localhost:48080 (loopback only) |
+
+The phpMyAdmin URL is unchanged, but the container now binds `127.0.0.1:48080` instead of `0.0.0.0`, so it is no longer
+published to other machines on your network, and `PMA_ARBITRARY` has been removed (with it enabled the page would
+accept an arbitrary host and act as an open MySQL client against any server a visitor named).
+
+On the VPS, phpMyAdmin is not reachable over the internet at all and does not even start with the stack - see
+[deployment/INFRASTRUCTURE.md](../deployment/INFRASTRUCTURE.md#phpmyadmin-access) for the SSH-tunnel procedure.
 
 ---
 
@@ -150,7 +157,7 @@ make format               # Format all packages
 
 # Build
 make build                # Production build for all packages
-make build-docker-images  # Build Docker images (api, client, scraper)
+make build-docker-images  # Build Docker images (api, client, scraper, mcp)
 
 # Infrastructure
 make run-local-docker     # Start MySQL, Redis, phpMyAdmin
@@ -183,3 +190,8 @@ queues.
 **`VITE_*` env vars not picking up**
 Restart the Vite dev server after changing `.env`. In production, they are baked at build time —
 see [docs/deployment/DOCKER.md](../deployment/DOCKER.md) for the placeholder-swap pattern.
+
+**Adding a new `VITE_*` env var**
+Declare it under the `build` task's `env` array in `turbo.json` as well. turbo 2 runs tasks in strict env mode and
+strips any variable that is not declared there, so an undeclared `VITE_*` var never reaches vite and silently ends up
+empty in the bundle. See [docs/deployment/DOCKER.md](../deployment/DOCKER.md#runtime-environment-injection).

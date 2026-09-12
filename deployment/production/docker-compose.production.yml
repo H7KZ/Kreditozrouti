@@ -20,6 +20,11 @@
 #   - API_*: API configuration
 #   - BULL_BOARD_USER: htpasswd-format credentials for /bullboard BasicAuth (e.g. admin:$$apr1$$...)
 #
+# Image Pinning Policy:
+#   Third-party images are pinned to a major tag, never `latest`. Every deploy runs
+#   `docker compose pull`, so a floating tag can silently carry a stateful service across a
+#   major version, and for a database that is not reversible.
+#
 # Usage: docker compose -f docker-compose.production.yml up -d
 # ==============================================================================
 
@@ -46,7 +51,6 @@ services:
       - API_ALLOWED_ORIGINS=https://${DOMAIN}
       - API_SESSION_SECRET=${API_SESSION_SECRET}
       - API_COMMAND_TOKEN=${API_COMMAND_TOKEN}
-      - API_FILE_DESTINATION=/usr/src/uploads
       - GOOGLE_USER=${GOOGLE_USER}
       - GOOGLE_APP_PASSWORD=${GOOGLE_APP_PASSWORD}
       - CLIENT_URI=https://${DOMAIN}
@@ -131,10 +135,20 @@ services:
       redis:
         condition: service_healthy
 
+    # Global ceiling on outbound requests to InSIS, enforced in Redis by
+    # InSISRateLimitService so it holds across BOTH replicas and across every job's
+    # internal fan-out. This is the only safety knob: do not add a worker-concurrency
+    # env var, because this service's parallelism is multiplicative and such a knob
+    # would sit on top of the product. See docs/adr/0002-global-insis-rate-limit-not-a-concurrency-knob.md.
+    #
+    # Set here rather than in .env so retuning is a compose change, not an image rebuild.
     environment:
       - ENV=production
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - INSIS_RATE_LIMIT_RPS=${INSIS_RATE_LIMIT_RPS:-4}
+      - INSIS_RATE_LIMIT_BURST=${INSIS_RATE_LIMIT_BURST:-8}
+      - INSIS_RATE_LIMIT_MAX_WAIT_MS=${INSIS_RATE_LIMIT_MAX_WAIT_MS:-30000}
     networks:
       - kreditozrouti-redis-network-prod
       - kreditozrouti-monitoring-network
@@ -197,7 +211,12 @@ services:
       - 'traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.replacement=https://$${1}'
 
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:80' ]
+      # busybox wget, not curl. The client image's runner stage is nginx:stable-alpine, which
+      # never installs curl (only api/Dockerfile and mcp/Dockerfile do), so the previous curl
+      # check could not execute at all and the container stayed permanently unhealthy - which
+      # in turn kept the container-health alert firing. busybox wget ships in the nginx alpine
+      # image; `--spider` fetches headers only and exits non-zero on a non-2xx response.
+      test: [ 'CMD', 'wget', '--spider', '-q', 'http://localhost:80' ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -297,7 +316,14 @@ services:
   # Database (MySQL)
   # ============================================================================
   mysql:
-    image: mysql:latest
+    # DO NOT loosen this tag. `mysql:latest` no longer means "the 8.x/9.x server": Oracle moved
+    # MySQL to calendar versioning, so latest now resolves to MySQL 26.x. The pin says major 9
+    # on the operator's statement that the instance actually running on the host is 9.x. MySQL
+    # refuses to start against a data directory initialised by a newer major, so a silent jump
+    # takes the database down with no way back short of a restore. Before the next deploy,
+    # verify on the host with `docker compose exec mysql mysql --version`; if it reports 26.x
+    # or any major above 9, raise this pin rather than deploying.
+    image: mysql:9
     restart: unless-stopped
 
     volumes:
@@ -348,9 +374,28 @@ services:
 
   # ============================================================================
   # Database Interface (phpMyAdmin)
+  #
+  # Loopback only. The container publishes on 127.0.0.1:48080, so nothing outside the host can
+  # reach it. Open it from a workstation over an SSH tunnel instead:
+  #
+  #   ssh -L 48080:127.0.0.1:48080 <user>@<host>     then browse http://localhost:48080
+  #
+  # It sits behind the `admin` profile, so a normal `docker compose up -d` (and therefore every
+  # deploy) leaves it stopped. Start it only for the duration of the work:
+  #
+  #   docker compose --profile admin up -d phpmyadmin
+  #   docker compose --profile admin stop phpmyadmin
+  #
+  # It deliberately carries NO Traefik labels and is NOT attached to public-network, so the
+  # shared Infrastructure Traefik has nothing to route here even if the container is left
+  # running. PMA_ARBITRARY is gone for the same reason: it turned this container into an open
+  # MySQL client that would dial any host a visitor typed into the login form. PMA_ABSOLUTE_URI
+  # is gone too - it only existed to make the stripped /phpmyadmin path prefix work.
   # ============================================================================
   phpmyadmin:
-    image: phpmyadmin:latest
+    image: phpmyadmin:5.2.3-apache
+    # Never started by a plain `up`; see the comment above.
+    profiles: ['admin']
     restart: unless-stopped
 
     depends_on:
@@ -358,31 +403,19 @@ services:
         condition: service_healthy
 
     environment:
-      - PMA_ARBITRARY=1
       - PMA_HOST=mysql
       - PMA_PORT=3306
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - PMA_ABSOLUTE_URI=https://${DOMAIN}/phpmyadmin/
       - UPLOAD_LIMIT=2G
 
-    networks:
-      - public-network
-      - kreditozrouti-mysql-network-prod
+    ports:
+      # Bound to the loopback interface explicitly - a bare '48080:80' would publish on every
+      # interface and undo the whole point of this change.
+      - '127.0.0.1:48080:80'
 
-    labels:
-      # Traefik Configuration
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.priority=80'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.tls=true'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.tls.certresolver=letsencrypt-dns'
-      - 'traefik.http.services.${PROJECT}-phpmyadmin.loadbalancer.server.port=80'
-      # Middlewares
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.middlewares=${PROJECT}-phpmyadmin-stripprefix'
-      - 'traefik.http.middlewares.${PROJECT}-phpmyadmin-stripprefix.stripprefix.prefixes=/phpmyadmin'
+    networks:
+      # Only the MySQL network. No public-network membership.
+      - kreditozrouti-mysql-network-prod
 
     logging:
       driver: 'json-file'
@@ -401,7 +434,9 @@ services:
   # Cache (Redis)
   # ============================================================================
   redis:
-    image: redis:alpine
+    # Pinned to major 8. The AOF file in the named volume survives restarts, so an unnoticed
+    # major bump from a floating tag would be a persistence format change nobody reviewed.
+    image: redis:8-alpine
     restart: unless-stopped
 
     command:

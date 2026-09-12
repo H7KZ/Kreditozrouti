@@ -20,6 +20,19 @@
 #   - API_*: API configuration
 #   - BULL_BOARD_USER: htpasswd-format credentials for /bullboard BasicAuth (e.g. admin:$$apr1$$...)
 #
+# Image Pinning Policy:
+#   Third-party images are pinned to a major tag, never `latest`. Every deploy runs
+#   `docker compose pull`, so a floating tag can silently carry a stateful service across a
+#   major version, and for a database that is not reversible.
+#
+# Router Naming:
+#   Every Traefik router/middleware name below is prefixed with ${PROJECT}, and production uses
+#   the same shape. PROJECT comes from the GitHub Environment variable `vars.PROJECT`, which is
+#   scoped per environment (see .github/workflows/_deploy-service.yml), so it MUST be set to a
+#   different value here than in production. Both stacks register with the one shared
+#   Infrastructure Traefik; identical router names would collide there and one environment
+#   would silently take over the other's routes. Do not drop the ${PROJECT} prefix.
+#
 # Usage: docker compose -f docker-compose.development.yml up -d
 # ==============================================================================
 
@@ -46,7 +59,6 @@ services:
       - API_ALLOWED_ORIGINS=https://${DOMAIN}
       - API_SESSION_SECRET=${API_SESSION_SECRET}
       - API_COMMAND_TOKEN=${API_COMMAND_TOKEN}
-      - API_FILE_DESTINATION=/usr/src/uploads
       - GOOGLE_USER=${GOOGLE_USER}
       - GOOGLE_APP_PASSWORD=${GOOGLE_APP_PASSWORD}
       - CLIENT_URI=https://${DOMAIN}
@@ -66,7 +78,7 @@ services:
       - 'traefik.http.routers.${PROJECT}-api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)'
       - 'traefik.http.routers.${PROJECT}-api.entrypoints=websecure'
       - 'traefik.http.routers.${PROJECT}-api.tls=true'
-      - 'traefik.http.routers.${PROJECT}-api.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.${PROJECT}-api.tls.certresolver=letsencrypt-dns'
       - 'traefik.http.services.${PROJECT}-api.loadbalancer.server.port=80'
       # Middlewares
       - 'traefik.http.routers.${PROJECT}-api.middlewares=${PROJECT}-api-stripprefix,${PROJECT}-api-redirect-www'
@@ -78,7 +90,7 @@ services:
       - 'traefik.http.routers.${PROJECT}-bullboard.rule=Host(`${DOMAIN}`) && PathPrefix(`/bullboard`)'
       - 'traefik.http.routers.${PROJECT}-bullboard.entrypoints=websecure'
       - 'traefik.http.routers.${PROJECT}-bullboard.tls=true'
-      - 'traefik.http.routers.${PROJECT}-bullboard.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.${PROJECT}-bullboard.tls.certresolver=letsencrypt-dns'
       - 'traefik.http.routers.${PROJECT}-bullboard.service=${PROJECT}-api'
       - 'traefik.http.routers.${PROJECT}-bullboard.middlewares=${PROJECT}-bullboard-auth'
       - 'traefik.http.middlewares.${PROJECT}-bullboard-auth.basicauth.users=${BULL_BOARD_USER}'
@@ -127,10 +139,18 @@ services:
       redis:
         condition: service_healthy
 
+    # Global ceiling on outbound requests to InSIS, enforced in Redis by
+    # InSISRateLimitService so it holds across replicas and across every job's internal
+    # fan-out. Deliberately lower than production: development shares the same InSIS,
+    # and a dev scrape running alongside a production one must not double the load a
+    # single university system sees. See docs/adr/0002-global-insis-rate-limit-not-a-concurrency-knob.md.
     environment:
       - ENV=development
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - INSIS_RATE_LIMIT_RPS=${INSIS_RATE_LIMIT_RPS:-2}
+      - INSIS_RATE_LIMIT_BURST=${INSIS_RATE_LIMIT_BURST:-4}
+      - INSIS_RATE_LIMIT_MAX_WAIT_MS=${INSIS_RATE_LIMIT_MAX_WAIT_MS:-30000}
     networks:
       - kreditozrouti-redis-network-dev
       - kreditozrouti-monitoring-network
@@ -181,7 +201,7 @@ services:
       - 'traefik.http.routers.${PROJECT}-client.rule=Host(`${DOMAIN}`)'
       - 'traefik.http.routers.${PROJECT}-client.entrypoints=websecure'
       - 'traefik.http.routers.${PROJECT}-client.tls=true'
-      - 'traefik.http.routers.${PROJECT}-client.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.${PROJECT}-client.tls.certresolver=letsencrypt-dns'
       - 'traefik.http.services.${PROJECT}-client.loadbalancer.server.port=80'
       # Middlewares
       - 'traefik.http.routers.${PROJECT}-client.middlewares=${PROJECT}-client-redirect-www'
@@ -189,7 +209,12 @@ services:
       - 'traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.replacement=https://$${1}'
 
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:80' ]
+      # busybox wget, not curl. The client image's runner stage is nginx:stable-alpine, which
+      # never installs curl (only api/Dockerfile and mcp/Dockerfile do), so the previous curl
+      # check could not execute at all and the container stayed permanently unhealthy - which
+      # in turn kept the container-health alert firing. busybox wget ships in the nginx alpine
+      # image; `--spider` fetches headers only and exits non-zero on a non-2xx response.
+      test: [ 'CMD', 'wget', '--spider', '-q', 'http://localhost:80' ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -242,14 +267,14 @@ services:
       - 'traefik.http.routers.${PROJECT}-mcp.rule=Host(`${DOMAIN}`) && PathPrefix(`/mcp`)'
       - 'traefik.http.routers.${PROJECT}-mcp.entrypoints=websecure'
       - 'traefik.http.routers.${PROJECT}-mcp.tls=true'
-      - 'traefik.http.routers.${PROJECT}-mcp.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.${PROJECT}-mcp.tls.certresolver=letsencrypt-dns'
       - 'traefik.http.services.${PROJECT}-mcp.loadbalancer.server.port=3000'
       # OAuth well-known discovery endpoints (must be served from root domain)
       - 'traefik.http.routers.${PROJECT}-mcp-wellknown.priority=60'
       - 'traefik.http.routers.${PROJECT}-mcp-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/oauth`)'
       - 'traefik.http.routers.${PROJECT}-mcp-wellknown.entrypoints=websecure'
       - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls=true'
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls.certresolver=letsencrypt-dns'
       - 'traefik.http.routers.${PROJECT}-mcp-wellknown.service=${PROJECT}-mcp'
 
     healthcheck:
@@ -280,7 +305,14 @@ services:
   # Database (MySQL)
   # ============================================================================
   mysql:
-    image: mysql:latest
+    # DO NOT loosen this tag. `mysql:latest` no longer means "the 8.x/9.x server": Oracle moved
+    # MySQL to calendar versioning, so latest now resolves to MySQL 26.x. The pin says major 9
+    # on the operator's statement that the instance actually running on the host is 9.x. MySQL
+    # refuses to start against a data directory initialised by a newer major, so a silent jump
+    # takes the database down with no way back short of a restore. Before the next deploy,
+    # verify on the host with `docker compose exec mysql mysql --version`; if it reports 26.x
+    # or any major above 9, raise this pin rather than deploying.
+    image: mysql:9
     restart: unless-stopped
 
     volumes:
@@ -331,9 +363,32 @@ services:
 
   # ============================================================================
   # Database Interface (phpMyAdmin)
+  #
+  # Loopback only. The container publishes on 127.0.0.1:48081, so nothing outside the host can
+  # reach it. Open it from a workstation over an SSH tunnel instead:
+  #
+  #   ssh -L 48081:127.0.0.1:48081 <user>@<host>     then browse http://localhost:48081
+  #
+  # The port differs from production's 48080 on purpose: both stacks run on the same VPS, and
+  # two services asking for the same host port would refuse to start. No other service in this
+  # repo's deployment stacks publishes a host port, so 48080/48081 are the only two in use.
+  #
+  # It sits behind the `admin` profile, so a normal `docker compose up -d` (and therefore every
+  # deploy) leaves it stopped. Start it only for the duration of the work:
+  #
+  #   docker compose --profile admin up -d phpmyadmin
+  #   docker compose --profile admin stop phpmyadmin
+  #
+  # It deliberately carries NO Traefik labels and is NOT attached to public-network, so the
+  # shared Infrastructure Traefik has nothing to route here even if the container is left
+  # running. PMA_ARBITRARY is gone for the same reason: it turned this container into an open
+  # MySQL client that would dial any host a visitor typed into the login form. PMA_ABSOLUTE_URI
+  # is gone too - it only existed to make the stripped /phpmyadmin path prefix work.
   # ============================================================================
   phpmyadmin:
-    image: phpmyadmin:latest
+    image: phpmyadmin:5.2.3-apache
+    # Never started by a plain `up`; see the comment above.
+    profiles: ['admin']
     restart: unless-stopped
 
     depends_on:
@@ -341,31 +396,19 @@ services:
         condition: service_healthy
 
     environment:
-      - PMA_ARBITRARY=1
       - PMA_HOST=mysql
       - PMA_PORT=3306
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - PMA_ABSOLUTE_URI=https://${DOMAIN}/phpmyadmin/
       - UPLOAD_LIMIT=2G
 
-    networks:
-      - public-network
-      - kreditozrouti-mysql-network-dev
+    ports:
+      # Bound to the loopback interface explicitly - a bare '48081:80' would publish on every
+      # interface and undo the whole point of this change.
+      - '127.0.0.1:48081:80'
 
-    labels:
-      # Traefik Configuration
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.priority=80'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.tls=true'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.${PROJECT}-phpmyadmin.loadbalancer.server.port=80'
-      # Middlewares
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.middlewares=${PROJECT}-phpmyadmin-stripprefix'
-      - 'traefik.http.middlewares.${PROJECT}-phpmyadmin-stripprefix.stripprefix.prefixes=/phpmyadmin'
+    networks:
+      # Only the MySQL network. No public-network membership.
+      - kreditozrouti-mysql-network-dev
 
     logging:
       driver: 'json-file'
@@ -384,7 +427,9 @@ services:
   # Cache (Redis)
   # ============================================================================
   redis:
-    image: redis:alpine
+    # Pinned to major 8. The AOF file in the named volume survives restarts, so an unnoticed
+    # major bump from a floating tag would be a persistence format change nobody reviewed.
+    image: redis:8-alpine
     restart: unless-stopped
 
     command:

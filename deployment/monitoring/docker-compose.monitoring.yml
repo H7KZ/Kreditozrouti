@@ -19,6 +19,12 @@
 #   - UMAMI_APP_SECRET     — Umami app secret for session signing (generate once, store in GitHub Secrets)
 #   - FARO_ALLOWED_ORIGIN  — Allowed CORS origin for Faro receiver (e.g. https://kreditozrouti.cz)
 #
+# Image pinning policy: every image here is pinned to a major (or major.minor) tag,
+# never :latest. Every deploy runs `docker compose pull`, so :latest silently rolls a
+# stateful service (Grafana's SQLite, Loki's index, Postgres' data dir) across a major
+# version on a routine deploy - and those migrations are one-way. A pinned tag still
+# receives patch fixes; the upgrade decision stays a commit.
+#
 # Deploy order: Traefik → this stack → app stack
 # Usage: docker compose -f docker-compose.monitoring.yml -f networks.yml -f volumes.yml up -d
 # ==============================================================================
@@ -28,7 +34,7 @@ services:
   # Metrics Collector (Prometheus)
   # ============================================================================
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3
     restart: unless-stopped
     # Grants the 'nobody' process read access to the mounted docker.sock so Docker-SD
     # can list containers. Must equal the host's docker group GID (getent group docker).
@@ -43,6 +49,10 @@ services:
       - '--storage.tsdb.retention.time=7d'
       - '--storage.tsdb.retention.size=2GB'
       - '--web.enable-lifecycle'
+      # Opens /api/v1/write so Alloy can PUSH the MySQL backup health gauges. The
+      # backup is a host systemd timer, not a container, so the Docker-SD pull job
+      # cannot reach it. See docs/adr/0001-backup-health-via-alloy-textfile.md.
+      - '--web.enable-remote-write-receiver'
 
     volumes:
       - kreditozrouti-prometheus-volume:/prometheus
@@ -73,7 +83,7 @@ services:
   # Visualization (Grafana)
   # ============================================================================
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:13.2
     restart: unless-stopped
 
     depends_on:
@@ -128,7 +138,7 @@ services:
   # Internal only — no Traefik labels. Grafana accesses it at http://loki:3100.
   # ============================================================================
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:3.7
     restart: unless-stopped
 
     command: -config.file=/etc/loki/loki.yml
@@ -162,7 +172,7 @@ services:
   # Also receives Grafana Faro browser telemetry on port 12347 (added in Plan 2).
   # ============================================================================
   alloy:
-    image: grafana/alloy:latest
+    image: grafana/alloy:v1.19.2 # no floating v1 tag is published, so the exact version is pinned
     restart: unless-stopped
 
     # Same docker.sock group access as Prometheus - Alloy's discovery.docker reads the
@@ -183,6 +193,11 @@ services:
       - kreditozrouti-alloy-volume:/var/lib/alloy/data
       - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
       - traefik-logs-volume:/var/log/traefik:ro
+      # Host textfile-collector directory. scripts/backup-mysql.sh writes
+      # mysql-backup.prom here after every run; Alloy's prometheus.exporter.unix
+      # reads it and remote-writes the gauges to Prometheus. Read-only: Alloy must
+      # never be able to forge or clear backup evidence.
+      - /var/lib/kreditozrouti/textfile-collector:/var/lib/textfile-collector:ro
 
     networks:
       - kreditozrouti-monitoring-internal-network
@@ -264,7 +279,9 @@ services:
   # Exposed at umami.DOMAIN via Traefik. Connects to PostgreSQL at umami-db:5432.
   # ============================================================================
   umami:
-    image: ghcr.io/umami-software/umami:latest
+    # The postgresql-* build, not the mysql one: umami-db above is postgres:16-alpine.
+    # :latest was also ambiguous about which database variant it resolved to.
+    image: ghcr.io/umami-software/umami:postgresql-v2.16
     restart: unless-stopped
 
     depends_on:

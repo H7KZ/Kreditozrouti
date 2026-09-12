@@ -240,8 +240,48 @@ slot in `results` for a failed item is `undefined` — callers should guard agai
 
 **Use cases:**
 
-- BFS study plans traversal: 10 concurrent HTTP fetches
+- Faculty schedules: `FACULTY_CONCURRENCY = 4` concurrent HTTP fetches
+- Catalog scrape: `CATALOG_CONCURRENCY = 4` concurrent HTTP fetches
+- BFS study plans traversal: `BFS_CONCURRENCY = 6` concurrent HTTP fetches
 - Study plan request enqueue: 20 concurrent Redis writes
+
+**These numbers are throughput tuning, not safety.** They used to be the only thing bounding load on InSIS, and
+because they multiply with replica count and worker concurrency, none of them individually told you what InSIS
+actually saw. The ceiling now lives in `InSISRateLimitService` (below), so these constants can be changed without
+reasoning about the university's load.
+
+---
+
+## InSIS rate limit (`Services/InSISRateLimitService.ts`)
+
+```typescript
+export async function acquireInSISRequestSlot(): Promise<void>
+```
+
+That single function is the whole interface. Callers say only "let me make a request"; the Redis key, the token
+bucket and the Lua script stay inside the module. There is exactly one call site: the axios request interceptor in
+`InSISHTTPClientService`.
+
+**Why an interceptor and not `get()`/`post()`:** `axios-retry` re-issues failed requests through the same instance.
+A retry is another request arriving at InSIS and must spend a token like any other, and only the interceptor sees it.
+
+**Atomicity.** Refill, check, reserve and persist happen in one Lua script via `redis.defineCommand`, so two replicas
+racing on the key are serialised by Redis. A read-then-write pair from the client would let both observe the same
+token and both spend it. The clock comes from `redis.call('TIME')` rather than the caller, so replicas with skewed
+clocks still share one timeline.
+
+**Reservation, not polling.** A caller granted a delayed slot has already spent its token and is told exactly how
+long to sleep, so each request sleeps once and a herd cannot re-race on every wake-up. A caller whose wait would
+exceed `INSIS_RATE_LIMIT_MAX_WAIT_MS` reserves nothing and is refused, so refused callers never consume capacity from
+callers that will actually wait.
+
+**Fails closed.** An unreachable Redis throws `InSISRateLimitWaitError` rather than sending unpaced. A limiter that
+cannot be consulted is protecting nothing, and failing open would silently restore the exact behaviour this module
+was added to remove. In practice the cost is near zero: BullMQ uses the same Redis, so a Redis outage already means
+no jobs are running.
+
+See [QUEUE.md](QUEUE.md) for the env vars and
+[ADR 0002](../adr/0002-global-insis-rate-limit-not-a-concurrency-knob.md) for why this is not a concurrency knob.
 
 ---
 

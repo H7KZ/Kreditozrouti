@@ -1,6 +1,7 @@
 import Axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import axiosRetry from 'axios-retry'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
+import { acquireInSISRequestSlot } from '@scraper/Services/InSISRateLimitService'
 import { createRequestHeaders } from '@scraper/Utils/HTTPUtils'
 
 export interface HttpClientOptions {
@@ -44,6 +45,17 @@ export default class InSISHTTPClientService {
 			retries: 3,
 			retryDelay: (retryCount, error) => axiosRetry.exponentialDelay(retryCount, error),
 			retryCondition: error => axiosRetry.isNetworkOrIdempotentRequestError(error)
+		})
+
+		// The single choke point for the global InSIS rate limit. It sits in a request
+		// interceptor rather than in get()/post() so that axios-retry's re-issued attempts pass
+		// through it too - a retry is another request at InSIS and has to spend a token like any
+		// other. Every outbound InSIS call in the scraper goes through this class, so this is the
+		// one place the ceiling has to hold.
+		this.client.interceptors.request.use(async config => {
+			await acquireInSISRequestSlot()
+
+			return config
 		})
 	}
 

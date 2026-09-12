@@ -24,8 +24,14 @@ topology, job lifecycle, deduplication, retry policy, and how the API scheduler 
 │  │ ScraperRequestQueue  │   │ ScraperResponseQueue    │    │
 │  │   (consumer — Worker)│   │   (producer)            │    │
 │  │   concurrency: 1     │   │                         │    │
-│  │   rate: 10/sec       │   │                         │    │
+│  │   (x2 replicas)      │   │                         │    │
 │  └──────────────────────┘   └─────────────────────────┘    │
+│            │                                               │
+│            ↓  every InSIS request passes through           │
+│  ┌──────────────────────────────────────────────────┐      │
+│  │ InSISRateLimitService (Redis token bucket)       │      │
+│  │   global ceiling, holds across replicas          │      │
+│  └──────────────────────────────────────────────────┘      │
 └────────────────────────────────────────────────────────────┘
 ```
 
@@ -46,14 +52,43 @@ which side creates a `Queue` (producer) vs a `Worker` (consumer).
 ```typescript
 new Worker(ScraperRequestQueue, handler, {
 	concurrency: 1,
-	limiter: { max: 10, duration: 1000 }
+	lockDuration: 900_000,
+	maxStalledCount: 3
 })
 ```
 
-- **Concurrency 1:** up to 1 job runs at a time per worker process. Combined with the cluster (default 1 process), this
-  means 1 concurrent scrape per node.
-- **Limiter 10/sec:** hard cap of 10 job starts per second, regardless of concurrency. This is the primary InSIS
-  rate-limit guard.
+- **Concurrency 1:** up to 1 job runs at a time per worker process. Production runs `replicas: 2`, so two jobs can be
+  in flight across the deployment.
+- **No BullMQ limiter.** There is deliberately none. A queue limiter caps *job starts*, but a single catalog or study
+  plan job fans out internally via `runWithConcurrency`, so one job start can mean four or six simultaneous requests
+  at InSIS. Capping job starts therefore does not cap the thing that reaches the university.
+
+> **Correction:** earlier revisions of this document described a `limiter: { max: 10, duration: 1000 }` on this worker
+> and called it "the primary InSIS rate-limit guard". No such limiter has ever existed in `bullmq.ts`, and as
+> explained above it would not have bounded outbound requests even if it had. The real ceiling now lives in
+> `InSISRateLimitService` - see below.
+
+### InSIS rate limiting
+
+The ceiling on outbound requests to InSIS is enforced in `Services/InSISRateLimitService.ts`, not in the queue. It is
+a Redis-backed token bucket consulted by an axios request interceptor in `InSISHTTPClientService`, which is the single
+choke point every InSIS call passes through, retries included.
+
+Because the bucket lives in Redis it holds across both replicas, across worker concurrency, and across every job type,
+and it cannot be defeated by scaling the service or by a future job adding another fan-out layer.
+
+| Env var                        | Prod default | Dev default | Meaning                                       |
+|--------------------------------|--------------|-------------|-----------------------------------------------|
+| `INSIS_RATE_LIMIT_RPS`         | 4            | 2           | Sustained requests per second, whole deployment |
+| `INSIS_RATE_LIMIT_BURST`       | 8            | 4           | Token bucket capacity, i.e. burst size        |
+| `INSIS_RATE_LIMIT_MAX_WAIT_MS` | 30000        | 30000       | How long one request waits before giving up   |
+
+It **fails closed**: if Redis cannot be consulted, requests are refused rather than sent unpaced. That costs little in
+practice, since BullMQ uses the same Redis and a Redis outage already means no jobs are running.
+
+Do not add a `SCRAPER_CONCURRENCY` env var for parity with sibling projects. This service's parallelism is
+multiplicative and such a knob would sit on top of the product of every fan-out layer. See
+[ADR 0002](../adr/0002-global-insis-rate-limit-not-a-concurrency-knob.md).
 
 ### Default Job Options
 

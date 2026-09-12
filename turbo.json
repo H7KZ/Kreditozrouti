@@ -3,6 +3,28 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      /*
+       * turbo runs tasks in strict env mode: a variable not declared here is REMOVED from the
+       * task's environment, not merely left out of the hash. client/Dockerfile sets these six as
+       * ENV in its builder stage so vite bakes placeholder tokens into the bundle, which
+       * client/docker-entrypoint.sh then rewrites with the real values at container start.
+       *
+       * Without this declaration none of them reached vite. VITE_API_URL fell back to '/api' and
+       * worked by accident, but Faro and Umami were silently disabled in production, the app
+       * version reported 'unknown', and the entrypoint's sed found no placeholders to replace.
+       *
+       * Declaring them also puts them in the cache key, which matters independently: a build
+       * carrying real values and one carrying placeholders produce different bundles and must not
+       * share a cache entry.
+       */
+      "env": [
+        "VITE_API_URL",
+        "VITE_FARO_COLLECTOR_URL",
+        "VITE_APP_VERSION",
+        "VITE_APP_ENV",
+        "VITE_UMAMI_WEBSITE_ID",
+        "VITE_UMAMI_SRC"
+      ],
       "outputs": ["dist/**"],
       "inputs": ["$TURBO_DEFAULT$"]
     },

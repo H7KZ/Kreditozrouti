@@ -222,6 +222,23 @@ Alloy mounts `traefik-logs-volume` (read-only) to tail `/var/log/traefik/access.
 Query in Grafana: `{job="traefik"}` → parse with `| json` to filter by `RequestPath`, `DownstreamStatus`,
 `ClientAddr`, `RouterName`, `Duration`, etc.
 
+### Backup health metrics (the one push path)
+
+This is the only place in the stack where metrics are **pushed** rather than pulled, and it is worth understanding
+why. The MySQL backup runs as a host systemd timer, not a container, so the Docker Socket SD job cannot discover it:
+there is no container to carry `prometheus.io/scrape=true`. Full reasoning, including why Pushgateway was rejected,
+is in [ADR 0001](../adr/0001-backup-health-via-alloy-textfile.md).
+
+1. `scripts/backup-mysql.sh` writes `mysql-backup.prom` atomically into
+   `/var/lib/kreditozrouti/textfile-collector` on the host, on every exit path
+2. Alloy mounts that directory read-only at `/var/lib/textfile-collector`
+3. `prometheus.exporter.unix "textfile"` with `set_collectors = ["textfile"]` reads the `*.prom` files
+4. `prometheus.scrape "backup_textfile"` scrapes it every 60s (the value changes at most once a day)
+5. `prometheus.remote_write "default"` pushes to `http://prometheus:9090/api/v1/write`
+
+This requires `--web.enable-remote-write-receiver` on the Prometheus command args. Without it Prometheus answers 404
+on `/api/v1/write`, the gauges never land, and the result is indistinguishable from a dead backup.
+
 ---
 
 ## Loki Stream Labels
@@ -330,9 +347,16 @@ Provisioned from `../../deployment/monitoring/grafana/provisioning/alerting`.
 
 | Group            | Folder         | Rules                                                                                                              |
 |------------------|----------------|-------------------------------------------------------------------------------------------------------------------|
-| `infrastructure` | Infrastructure | `container-down` (title **API Down**) — prod API only, `for: 5m`                                                   |
+| `infrastructure` | Infrastructure | `container-down` (title **API Down**) — prod API only, `for: 5m`; **MySQL Backup Stale** (no success in 36h, critical); **MySQL Backup Not Replicated Offsite** (warning) |
 | `scraper`        | Infrastructure | `scraper-jobs-failed`, `scraper-stale`, `scraper-silent-failures-rising` (`for: 15m`), `scraper-failure-rate-high` |
 | `application`    | Application    | `api-error-rate-high` (5xx > 5%, `for: 10m`), `api-p99-latency-high` (p99 > 2 s, `for: 10m`)                       |
+
+**MySQL Backup Stale** fires when `time() - kreditozrouti_backup_last_success_timestamp_seconds > 129600` (36h,
+which tolerates one missed daily run plus drift) **or** when that series is absent entirely. The `absent()` half is
+load-bearing: a bare staleness comparison returns an empty vector when the series does not exist, so on its own it
+would read as healthy in exactly the cases that matter most - the timer never installed, the timer disabled, Alloy
+not shipping, or the host down. Note the success timestamp advances only on a fully successful run; a failed run
+updates the *attempt* gauge and carries the success gauge forward, so a failing backup cannot mask itself.
 
 **Symptom-based, not target-based.** `container-down` alerts on the user-facing production API only
 (`up{job="kreditozrouti-api", env="production"} == 0 or absent(...)`). It deliberately does **not** page when an

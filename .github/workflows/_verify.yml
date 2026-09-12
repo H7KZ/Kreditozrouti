@@ -1,0 +1,70 @@
+# ==============================================================================
+# Workflow: Verify Code (reusable)
+# Description: Single source of truth for repository verification. Installs
+#              dependencies, lints, checks em dashes, builds core, runs the test
+#              suite, type-checks and builds every package.
+#              Called by verify.yml (pull requests) and by deploy-all.yml, which
+#              gates every build and deploy job on it so nothing unverified
+#              reaches the VPS.
+# Trigger: workflow_call only (no direct trigger)
+#
+# Required Secrets: none - checkout uses the caller's GITHUB_TOKEN
+#
+# Prerequisites:
+#   - Node.js 24
+#   - Makefile with install, lint, test, type-check and build targets
+# ==============================================================================
+
+name: Verify Code (reusable)
+
+on:
+  workflow_call:
+
+jobs:
+  verify:
+    name: Verify Code
+    runs-on: self-hosted
+    timeout-minutes: 15
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install Dependencies
+        run: make install
+
+      - name: Lint
+        run: make lint
+
+      - name: Check em dashes
+        run: bash scripts/check-em-dashes.sh
+
+      - name: Build Core
+        run: pnpm --filter=@kreditozrouti/core run build
+
+      - name: Test
+        run: make test
+
+      - name: Type Check
+        run: make type-check
+
+      - name: Build
+        run: make build
+
+      - name: Verification Complete
+        run: echo "::notice::All checks passed successfully"

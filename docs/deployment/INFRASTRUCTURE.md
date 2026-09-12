@@ -143,14 +143,9 @@ labels:
 	- 'traefik.http.routers.api.middlewares=api-stripprefix'
 ```
 
-**phpMyAdmin** (`/phpmyadmin` prefix, priority 80):
-
-```yaml
-labels:
-	- 'traefik.http.routers.phpmyadmin.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)'
-	- 'traefik.http.routers.phpmyadmin.priority=80'
-	- 'traefik.http.middlewares.phpmyadmin-stripprefix.stripprefix.prefixes=/phpmyadmin'
-```
+**phpMyAdmin** - no longer routed. It used to sit on `${DOMAIN}/phpmyadmin` at priority 80. All of its Traefik labels
+were removed, it is off `public-network`, and it no longer starts with the stack, so the shared Traefik has nothing to
+route here even if the container is running. See [phpMyAdmin access](#phpmyadmin-access) below.
 
 **Bull Board** (`/bullboard` prefix, priority 90, internal only):
 
@@ -171,7 +166,7 @@ labels:
 	- 'traefik.http.routers.grafana.priority=85'
 ```
 
-Priority rule: API (100) > Bull Board (90) > phpMyAdmin (80+) > Grafana (85) > Client (10).
+Priority rule: API (100) > Bull Board (90) > Grafana (85) > Client (10). phpMyAdmin is no longer in this list.
 
 ### Deploy Traefik
 
@@ -212,6 +207,20 @@ auto-provisioned with Prometheus as the default datasource via `grafana/provisio
 | `postgres` | `postgres:16-alpine`     | Database               |
 | `valkey`   | `valkey/valkey:8-alpine` | Redis-compatible cache |
 
+### Image pinning
+
+Every third-party image across `deployment/production`, `deployment/development`, `docker-compose.local.yml`,
+`deployment/monitoring` and `deployment/github-runner` is pinned to a major (or major/minor) tag, never `:latest`,
+because every deploy runs `docker compose pull` and a silent major upgrade of a stateful service is not reversible.
+Digests were deliberately not used: there is no Renovate or Dependabot in this repo, so digests would have to be bumped
+by hand and would rot.
+
+Note in particular that `mysql:latest` now resolves to MySQL 26.x (Oracle moved MySQL to calendar versioning). The pin
+is `mysql:9`, and MySQL refuses to start against a volume initialised by a newer major, so confirm the running version
+with `docker compose exec mysql mysql --version` before any deploy that changes this pin.
+
+The full pin table and the reasoning live in [DOCKER.md](DOCKER.md#third-party-image-pinning).
+
 ---
 
 ## Networking
@@ -222,7 +231,7 @@ Names shown are the `-prod` forms; `-dev` equivalents exist for development. See
 
 ```
 public-network (external)    — Infra Traefik + web-facing services
-  api, client, phpmyadmin
+  api, client, mcp
 
 kreditozrouti-mysql-network-prod (internal)   — database access only
   api, mcp, mysql, phpmyadmin
@@ -245,6 +254,43 @@ manually:
 docker network create public-network
 docker network create kreditozrouti-mysql-network-prod
 docker network create kreditozrouti-redis-network-prod
+```
+
+---
+
+## phpMyAdmin Access
+
+phpMyAdmin is **not reachable from the internet**. It used to be published by the shared Traefik at
+`https://${DOMAIN}/phpmyadmin` with `PMA_ARBITRARY=1`. That put a database admin UI holding the MySQL root credentials
+on the public internet, and `PMA_ARBITRARY` additionally let any visitor point the login form at an arbitrary host,
+turning the container into an open MySQL client. Both are gone.
+
+What changed in `docker-compose.production.yml` and `docker-compose.development.yml`:
+
+| Aspect            | Now                                                                             |
+|-------------------|---------------------------------------------------------------------------------|
+| Start-up          | `profiles: ['admin']` - a plain `docker compose up -d` (and every deploy) leaves it stopped |
+| Published port    | Production `127.0.0.1:48080:80`, development `127.0.0.1:48081:80` - loopback only |
+| Networks          | MySQL network only; removed from `public-network`                               |
+| Traefik labels    | All removed - nothing to route even when the container runs                     |
+| Environment       | `PMA_HOST`, `PMA_PORT`, `MYSQL_ROOT_PASSWORD`, `UPLOAD_LIMIT` kept; `PMA_ARBITRARY`, `MYSQL_USER`, `MYSQL_PASSWORD` and `PMA_ABSOLUTE_URI` deleted |
+
+The port is bound to `127.0.0.1` explicitly: a bare `48080:80` would publish on every interface and undo the change.
+
+**How to use it:**
+
+```bash
+# On the VPS - start it only for the duration of the work
+docker compose --profile admin up -d phpmyadmin
+
+# From your workstation - production (48080), development (48081)
+ssh -L 48080:127.0.0.1:48080 <user>@<host>
+ssh -L 48081:127.0.0.1:48081 <user>@<host>
+
+# Then browse to http://localhost:48080 (or :48081)
+
+# On the VPS - stop it again when done
+docker compose --profile admin stop phpmyadmin
 ```
 
 ---

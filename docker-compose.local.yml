@@ -1,6 +1,11 @@
 services:
   mysql:
-    image: mysql:latest
+    # Pinned to major 9, matching the deployed stacks. `mysql:latest` now resolves to MySQL 26.x
+    # (Oracle switched the server to calendar versioning), and MySQL refuses to start against a
+    # data directory initialised by a newer major. If ./data/mysql was created by a `latest`
+    # that was already 26.x, delete that directory (local data is throwaway) rather than
+    # loosening the pin, so local keeps matching production.
+    image: mysql:9
     container_name: kreditozrouti-mysql
 
     volumes:
@@ -56,19 +61,25 @@ services:
   # ================================================================ #
 
   phpmyadmin:
-    image: phpmyadmin:latest
+    # Pinned so a local session cannot differ from the deployed stacks over an image bump.
+    image: phpmyadmin:5.2.3-apache
     container_name: kreditozrouti-phpmyadmin
 
+    # PMA_ARBITRARY is deliberately absent. With it enabled this page accepts an arbitrary
+    # host, which turns the container into an open MySQL client against any server a visitor
+    # names. That is unacceptable even locally, because the publish below would otherwise
+    # expose it to every machine on whatever network the laptop is joined to.
     environment:
-      - PMA_ARBITRARY=1
       - PMA_HOST=kreditozrouti-mysql
       - PMA_PORT=3306
       - PMA_USER=root
       - PMA_PASSWORD=root
       - UPLOAD_LIMIT=2G
 
+    # Loopback only. A bare '48080:80' binds 0.0.0.0, publishing a root-credentialled database
+    # UI to the local network. Mirrors the deployed stacks, which are also loopback-only.
     ports:
-      - '48080:80'
+      - '127.0.0.1:48080:80'
 
     deploy:
       mode: global
@@ -105,7 +116,8 @@ services:
   # ================================================================ #
 
   redis:
-    image: redis:alpine
+    # Pinned to major 8, matching the deployed stacks.
+    image: redis:8-alpine
     container_name: kreditozrouti-redis
 
     command: [ '--save', '20', '1', '--loglevel', 'warning' ]
@@ -148,7 +160,7 @@ services:
   # ================================================================ #
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3
     container_name: kreditozrouti-prometheus
 
     command:
@@ -180,7 +192,7 @@ services:
   # ================================================================ #
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:13.2
     container_name: kreditozrouti-grafana
 
     environment:
@@ -213,7 +225,7 @@ services:
   # ================================================================ #
 
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:3.7
     container_name: kreditozrouti-loki
 
     command: -config.file=/etc/loki/loki.yml
@@ -241,7 +253,7 @@ services:
   # ================================================================ #
 
   alloy:
-    image: grafana/alloy:latest
+    image: grafana/alloy:v1.19.2
     container_name: kreditozrouti-alloy
 
     environment:

@@ -10,16 +10,11 @@
 deployment/
 ├── deploy.sh                              # App stack deployment (run from CI)
 ├── production/
-│   ├── docker-compose.production.yml      # api×1, scraper×2, client×1, mysql, redis, phpmyadmin (sized for a 4GB host)
+│   ├── docker-compose.production.yml      # api×1, scraper×2, client×1, mcp×1, mysql, redis (+ phpmyadmin, `admin` profile; sized for a 4GB host)
 │   ├── networks.yml
 │   └── volumes.yml
 ├── development/
 │   ├── docker-compose.development.yml     # Same services, lower replicas, dev image tags
-│   ├── networks.yml
-│   └── volumes.yml
-├── traefik/
-│   ├── docker-compose.traefik.yml
-│   ├── traefik.yml                        # Static config — entrypoints, ACME, ping
 │   ├── networks.yml
 │   └── volumes.yml
 ├── monitoring/
@@ -91,7 +86,30 @@ version dirs are cleaned up the same way as app deploys (7 days, minimum 3 kept)
 and diverged from every other prod deploy, which caused ownership/permission drift on the host.
 
 **`VITE_*` env vars** are baked into the client image at build time by Vite. Setting them at container runtime has no
-effect — the `docker-entrypoint.sh` placeholder-swap handles this at startup instead.
+effect — the `docker-entrypoint.sh` placeholder-swap handles this at startup instead. **The swap only works while every
+`VITE_*` var is declared under the `build` task's `env` array in root `turbo.json`.** turbo 2 runs tasks in strict env
+mode and strips any undeclared variable from the task environment, so the six `ENV` lines in `client/Dockerfile` never
+reached vite: no placeholder tokens were baked in, Faro and Umami were silently disabled in production, the app version
+reported `unknown`, and the entrypoint's `sed` had nothing to replace (`VITE_API_URL` hid the breakage by falling back
+to `/api`). Anyone adding a new `VITE_*` var must add it to `turbo.json` too.
+
+**phpMyAdmin is not internet-reachable.** In both production and development it sits behind `profiles: ['admin']` (so a
+plain `up` and every deploy leave it stopped), is published on loopback only (`127.0.0.1:48080` prod,
+`127.0.0.1:48081` dev), is attached to the mysql network only, and carries no Traefik labels. `PMA_ARBITRARY`,
+`MYSQL_USER`, `MYSQL_PASSWORD` and `PMA_ABSOLUTE_URI` were removed; `PMA_HOST`, `PMA_PORT`, `MYSQL_ROOT_PASSWORD` and
+`UPLOAD_LIMIT` remain. Start it with `docker compose --profile admin up -d phpmyadmin` and reach it over
+`ssh -L 48080:127.0.0.1:48080 <user>@<host>`. The exposure being removed was a database admin UI carrying the MySQL
+root credentials on the public internet; `PMA_ARBITRARY` additionally let a visitor point it at any host.
+
+**Every third-party image is pinned** across `production/`, `development/`, `docker-compose.local.yml`, `monitoring/`
+and `github-runner/`: `mysql:9`, `redis:8-alpine`, `phpmyadmin:5.2.3-apache`, `myoung34/github-runner:2.337.0`,
+`prom/prometheus:v3`, `grafana/grafana:13.2`, `grafana/loki:3.7`, `grafana/alloy:v1.19.2`,
+`ghcr.io/umami-software/umami:postgresql-v2.16`, `postgres:16-alpine`. Pin the major/minor, never `:latest` - every
+deploy runs `docker compose pull` and a silent major upgrade of a stateful service is not reversible. Digests were
+deliberately not used: there is no Renovate or Dependabot here, so they would have to be bumped by hand and would rot.
+**MySQL caveat:** `mysql:latest` now resolves to MySQL 26.x (Oracle moved MySQL to calendar versioning), and MySQL
+refuses to start against a volume initialised by a newer major - confirm the running version with
+`docker compose exec mysql mysql --version` before any deploy that changes the `mysql:9` pin.
 
 **Redis data is persisted** via a named Docker volume (`kreditozrouti-redis-volume-prod` in production,
 `kreditozrouti-redis-volume-dev` in development). Redis runs with AOF persistence (`--appendonly yes`) and `noeviction`

@@ -11,12 +11,13 @@ scraper/src/
 ├── index.ts / bullmq.ts
 ├── Config/Config.ts          # Env vars, InSIS URLs
 ├── Context/LoggerJobContext.ts
-├── Errors/InSISErrors.ts     # InSISNetworkError, InSISParseError
+├── Errors/InSISErrors.ts     # InSISNetworkError, InSISParseError, InSISRateLimitError, InSISRateLimitWaitError
 ├── Handlers/ScraperRequestHandler.ts  # Routes jobs by type
 ├── Jobs/                     # One file per job type
 ├── Services/
 │   ├── QueueService.ts
 │   ├── InSISHTTPClientService.ts
+│   ├── InSISRateLimitService.ts   # Global Redis token bucket for outbound InSIS requests
 │   ├── ExtractInSISCatalogService.ts
 │   ├── ExtractInSISCourseService.ts
 │   └── ExtractInSISStudyPlanService.ts
@@ -52,6 +53,16 @@ try {
 Failed scrapes stay stale until the next scheduled run re-enqueues them.
 
 **Worker concurrency: 1** (serial per worker process). InSIS rate limits are the real constraint, not CPU.
+
+**Global InSIS rate limit:** every outbound InSIS request passes through the axios request interceptor in
+`InSISHTTPClientService`, which awaits `acquireInSISRequestSlot()` from `Services/InSISRateLimitService.ts`. That is a
+Redis token bucket driven by a single atomic Lua script, so the ceiling holds across replicas, across worker
+concurrency and across every job type - axios-retry attempts included. Tuned by `INSIS_RATE_LIMIT_RPS` (default 4),
+`INSIS_RATE_LIMIT_BURST` (default 8) and `INSIS_RATE_LIMIT_MAX_WAIT_MS` (default 30000). It fails closed: if Redis
+cannot be consulted, the request is refused with `InSISRateLimitWaitError` rather than sent unpaced. Never add a
+`SCRAPER_CONCURRENCY` env var - see
+[ADR 0002](../docs/adr/0002-global-insis-rate-limit-not-a-concurrency-knob.md). The `FACULTY_CONCURRENCY` /
+`CATALOG_CONCURRENCY` / `BFS_CONCURRENCY` constants in `Jobs/` are throughput tuning only, not safety limits.
 
 **Schedulers are in the API**, not the scraper. The scraper is a pure consumer — it never schedules its own jobs.
 

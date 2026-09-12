@@ -1,5 +1,5 @@
 FROM node:22-alpine AS base
-RUN npm install -g pnpm@11.8.0 turbo
+RUN npm install -g pnpm@11.8.0 turbo@2.10.11
 
 FROM base AS pruner
 WORKDIR /app

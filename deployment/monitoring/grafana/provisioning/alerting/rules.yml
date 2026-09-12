@@ -48,6 +48,66 @@ groups:
               instant: true
               refId: A
 
+      - uid: mysql-backup-stale
+        title: MySQL Backup Stale
+        condition: A
+        noDataState: KeepLast
+        execErrState: KeepLast
+        for: 5m
+        annotations:
+          summary: 'No successful MySQL backup in 36 hours'
+          description: 'The production MySQL dump has not succeeded in over 36 hours, or the backup metric is missing entirely. Check `systemctl status kreditozrouti-mysql-backup.timer` and `journalctl -u kreditozrouti-mysql-backup.service` on the host, then confirm recent dumps exist in ~/kreditozrouti/backups/production.'
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: Prometheus
+            model:
+              # The absent() half is the whole point. A bare `time() - metric > X` returns
+              # an empty vector when the series does not exist, so it is silently Normal in
+              # exactly the failures this alert exists to catch: timer never installed,
+              # timer disabled, Alloy not shipping, host down. The first half catches a
+              # backup that stopped succeeding; the second catches one that stopped
+              # reporting. Metric is pushed by Alloy from the host textfile collector -
+              # see docs/adr/0001-backup-health-via-alloy-textfile.md.
+              # 129600s = 36h: the timer is daily, so this tolerates one missed run plus
+              # clock drift without flapping on a merely late backup.
+              expr: (kreditozrouti_backup_last_success_timestamp_seconds{environment="production"} > 0 and time() - kreditozrouti_backup_last_success_timestamp_seconds{environment="production"} > 129600) or absent(kreditozrouti_backup_last_success_timestamp_seconds{environment="production"})
+              instant: true
+              refId: A
+
+      - uid: mysql-backup-not-offsite
+        title: MySQL Backup Not Replicated Offsite
+        condition: A
+        noDataState: KeepLast
+        execErrState: KeepLast
+        # 5m matches the other infrastructure rules. The gauge is a steady 0 between
+        # daily runs rather than a flapping rate, so `for` only guards scrape gaps here.
+        for: 5m
+        annotations:
+          summary: 'Latest MySQL backup exists only on the VPS'
+          description: 'The most recent production dump succeeded but was not replicated offsite, so the only copy lives on the same host as the database it protects. Backups are not yet stale - this is a redundancy gap, not data loss. Check the offsite upload step in scripts/backup-mysql.sh and the dumps in ~/kreditozrouti/backups/production.'
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: Prometheus
+            model:
+              # No absent() guard here on purpose: a missing series means no backup metric
+              # at all, which MySQL Backup Stale already pages on as critical. Duplicating
+              # the absence check would send two Discord messages for one failure.
+              expr: kreditozrouti_backup_offsite_replicated{environment="production"} == 0
+              instant: true
+              refId: A
+
 
   - orgId: 1
     name: scraper

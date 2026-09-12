@@ -10,6 +10,8 @@ import { QueueService } from '@scraper/Services/QueueService'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 
 const MaxDrillDepth = 8
+// Throughput tuning only, not a safety limit. The ceiling on requests reaching InSIS is enforced
+// globally in InSISRateLimitService; see docs/adr/0002-global-insis-rate-limit-not-a-concurrency-knob.md.
 const BFS_CONCURRENCY = 6
 
 /**

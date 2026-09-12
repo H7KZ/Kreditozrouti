@@ -7,6 +7,8 @@ import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
 import { runWithConcurrency } from '@scraper/Utils/ConcurrencyUtils'
 
+// Throughput tuning only, not a safety limit. The ceiling on requests reaching InSIS is enforced
+// globally in InSISRateLimitService; see docs/adr/0002-global-insis-rate-limit-not-a-concurrency-knob.md.
 const FACULTY_CONCURRENCY = 4
 
 export default async function ScraperRequestInSISAcademicSchedulesJob(

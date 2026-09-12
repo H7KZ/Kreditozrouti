@@ -116,21 +116,33 @@ the next scheduled run re-enqueues them. No automatic retry.
 
 These run as Docker containers but are not part of the application codebase.
 
-| Service       | Image                    | Purpose                                   |
-|---------------|--------------------------|-------------------------------------------|
-| MySQL 8       | `mysql:8`                | Primary data store (courses, study plans) |
-| Redis         | `redis:alpine`           | BullMQ queues + session store (ephemeral) |
-| phpMyAdmin    | `phpmyadmin`             | DB admin UI (dev/prod, port 48080 dev)    |
-| Traefik       | `traefik:v3`             | Reverse proxy, TLS termination, routing   |
-| GitHub Runner | `myoung34/github-runner` | Self-hosted CI runner (optional)          |
+All third-party images are pinned - never `:latest`. See
+[deployment/DOCKER.md](../deployment/DOCKER.md#third-party-image-pinning) for the policy and the full pin table.
+
+| Service       | Image                            | Purpose                                                                     |
+|---------------|----------------------------------|-----------------------------------------------------------------------------|
+| MySQL         | `mysql:9`                        | Primary data store (courses, study plans)                                   |
+| Redis         | `redis:8-alpine`                 | BullMQ queues + session store (AOF-persisted in the deployed stacks)        |
+| phpMyAdmin    | `phpmyadmin:5.2.3-apache`        | DB admin UI. Not internet-reachable - see below                             |
+| Traefik       | `traefik:v3`                     | Reverse proxy, TLS termination, routing (owned by the Infrastructure repo)  |
+| GitHub Runner | `myoung34/github-runner:2.337.0` | Self-hosted CI runner (optional)                                            |
+
+**phpMyAdmin access.** It does not start with the stack (Compose profile `admin`), carries no Traefik labels, and is not
+on `public-network`. It is published on loopback only: `127.0.0.1:48080` in production, `127.0.0.1:48081` in
+development, `127.0.0.1:48080` locally. Reach the deployed ones over an SSH tunnel
+(`ssh -L 48080:127.0.0.1:48080 <user>@<host>`, then http://localhost:48080). It used to be routed publicly at
+`${DOMAIN}/phpmyadmin` with `PMA_ARBITRARY=1`: a database admin UI holding the MySQL root credentials on the open
+internet, which `PMA_ARBITRARY` further let a visitor aim at any host of their choosing.
 
 ### Observability Services (monitoring stack)
 
-| Service    | Image             | Purpose                                                                                                                                                  |
-|------------|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Prometheus | `prom/prometheus` | Metrics collection. Scrapes `/metrics` on API. 15-day retention.                                                                                         |
-| Grafana    | `grafana/grafana` | Dashboards and alerting. Queries Prometheus and Loki.                                                                                                    |
-| Loki       | `grafana/loki`    | Log aggregation. Receives structured JSON from Alloy. 30-day retention. Internal: `http://loki:3100`.                                                    |
-| Alloy      | `grafana/alloy`   | Log shipping agent. Reads Docker stdout via Docker socket, parses pino JSON, ships to Loki. Also receives Grafana Faro telemetry on port 12347 (Plan 2). |
+| Service    | Image                    | Purpose                                                                                                                                                  |
+|------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Prometheus | `prom/prometheus:v3`     | Metrics collection. Scrapes `/metrics` on API. 15-day retention.                                                                                         |
+| Grafana    | `grafana/grafana:13.2`   | Dashboards and alerting. Queries Prometheus and Loki.                                                                                                    |
+| Loki       | `grafana/loki:3.7`       | Log aggregation. Receives structured JSON from Alloy. 30-day retention. Internal: `http://loki:3100`.                                                    |
+| Alloy      | `grafana/alloy:v1.19.2`  | Log shipping agent. Reads Docker stdout via Docker socket, parses pino JSON, ships to Loki. Also receives Grafana Faro telemetry on port 12347 (Plan 2). |
+
+Alloy publishes no floating `v1` tag, so it is pinned to the exact version.
 
 Full container details: [CONTAINERS.md](CONTAINERS.md)
