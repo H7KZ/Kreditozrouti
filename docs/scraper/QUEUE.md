@@ -273,7 +273,8 @@ this class.
 restart the API in production) to re-register it.
 
 **Inspecting queues:** Redis Commander (not exposed by default) or `redis-cli` can be used to inspect waiting/active
-jobs. BullMQ board packages like `bull-board` can be added for a UI.
+jobs. Queue depth, throughput, and failures are visible on the Kreditožrouti — Scraper Grafana dashboard
+(`bullmq_queue_depth` metric).
 
 **Worker scaling:** The scraper accepts a worker count as a CLI argument (`node dist/index.js 4` → 4 processes). Each
 process independently consumes from `ScraperRequestQueue`. Increase only if InSIS rate limits allow — the

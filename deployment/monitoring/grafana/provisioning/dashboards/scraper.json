@@ -163,14 +163,50 @@
       }
     },
     {
-      "id": 4,
-      "title": "Silent Failures (total)",
+      "id": 13,
+      "title": "Completed Jobs",
       "type": "stat",
       "gridPos": {
         "h": 6,
         "w": 6,
         "x": 18,
         "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "targets": [
+        {
+          "expr": "bullmq_queue_depth{status=\"completed\", env=\"$env\"}",
+          "legendFormat": "{{queue}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Silent Failures (total)",
+      "type": "stat",
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 6
       },
       "datasource": {
         "type": "prometheus",
@@ -226,7 +262,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 12
       },
       "datasource": {
         "type": "prometheus",
@@ -253,7 +289,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 20
       },
       "datasource": {
         "type": "prometheus",
@@ -283,7 +319,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 14
+        "y": 20
       },
       "datasource": {
         "type": "loki",
@@ -310,7 +346,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 28
       },
       "datasource": {
         "type": "loki",
@@ -339,7 +375,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 38
       },
       "datasource": {
         "type": "loki",
@@ -368,7 +404,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 42
+        "y": 48
       },
       "datasource": {
         "type": "prometheus",
@@ -405,7 +441,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 42
+        "y": 48
       },
       "datasource": {
         "type": "prometheus",
@@ -461,7 +497,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 50
+        "y": 56
       },
       "datasource": {
         "type": "prometheus",

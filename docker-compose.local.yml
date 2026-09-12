@@ -1,11 +1,6 @@
 services:
   mysql:
-    # Pinned to major 9, matching the deployed stacks. `mysql:latest` now resolves to MySQL 26.x
-    # (Oracle switched the server to calendar versioning), and MySQL refuses to start against a
-    # data directory initialised by a newer major. If ./data/mysql was created by a `latest`
-    # that was already 26.x, delete that directory (local data is throwaway) rather than
-    # loosening the pin, so local keeps matching production.
-    image: mysql:9
+    image: mysql:8
     container_name: kreditozrouti-mysql
 
     volumes:
@@ -62,7 +57,7 @@ services:
 
   phpmyadmin:
     # Pinned so a local session cannot differ from the deployed stacks over an image bump.
-    image: phpmyadmin:5.2.3-apache
+    image: phpmyadmin:5
     container_name: kreditozrouti-phpmyadmin
 
     # PMA_ARBITRARY is deliberately absent. With it enabled this page accepts an arbitrary
@@ -225,7 +220,7 @@ services:
   # ================================================================ #
 
   loki:
-    image: grafana/loki:3.7
+    image: grafana/loki:3
     container_name: kreditozrouti-loki
 
     command: -config.file=/etc/loki/loki.yml

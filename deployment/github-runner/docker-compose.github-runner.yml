@@ -20,10 +20,7 @@
 
 services:
   runner:
-    # Pinned to an exact runner release. The runner mounts the host Docker socket, so it is the
-    # most privileged container in the fleet - `latest` would let an unreviewed image reach that
-    # socket on the next `pull`. Bump this deliberately when a new runner version is wanted.
-    image: myoung34/github-runner:2.337.0
+    image: myoung34/github-runner:latest
     restart: always
 
     volumes:

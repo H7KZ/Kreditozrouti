@@ -271,17 +271,6 @@ is the `GET /metrics` route handler.
 
 ---
 
-### Bull Board (`/bullboard`)
-
-BullMQ queue inspection UI. Routes to the Bull Board Express adapter mounted at `/bullboard`.
-
-**Internal only** — not routed through Traefik in production. Access via SSH tunnel or internal network.
-
-Path was previously `/admin/queues`; moved to `/bullboard` to align with the Traefik label and avoid collision with the
-`/admin` prefix.
-
----
-
 ## Scrape Trigger Routes (`ScraperPublicRoutes`)
 
 Rate limited: 3 requests/10 minutes per IP, 1 request/10 minutes per course.

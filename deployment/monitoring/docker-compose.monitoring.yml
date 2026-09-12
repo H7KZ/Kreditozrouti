@@ -138,7 +138,7 @@ services:
   # Internal only — no Traefik labels. Grafana accesses it at http://loki:3100.
   # ============================================================================
   loki:
-    image: grafana/loki:3.7
+    image: grafana/loki:3
     restart: unless-stopped
 
     command: -config.file=/etc/loki/loki.yml
@@ -233,11 +233,11 @@ services:
 
 
   # ============================================================================
-  # Umami Analytics Database (PostgreSQL 16-alpine)
+  # Umami Analytics Database (PostgreSQL 18-alpine)
   # Internal only — no Traefik labels. Umami connects at umami-db:5432.
   # ============================================================================
   umami-db:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     restart: unless-stopped
 
     environment:
@@ -279,9 +279,9 @@ services:
   # Exposed at umami.DOMAIN via Traefik. Connects to PostgreSQL at umami-db:5432.
   # ============================================================================
   umami:
-    # The postgresql-* build, not the mysql one: umami-db above is postgres:16-alpine.
+    # The postgresql-* build, not the mysql one: umami-db above is postgres:18-alpine.
     # :latest was also ambiguous about which database variant it resolved to.
-    image: ghcr.io/umami-software/umami:postgresql-v2.16
+    image: ghcr.io/umami-software/umami:3
     restart: unless-stopped
 
     depends_on:

@@ -147,17 +147,6 @@ labels:
 were removed, it is off `public-network`, and it no longer starts with the stack, so the shared Traefik has nothing to
 route here even if the container is running. See [phpMyAdmin access](#phpmyadmin-access) below.
 
-**Bull Board** (`/bullboard` prefix, priority 90, internal only):
-
-```yaml
-labels:
-	- 'traefik.http.routers.bullboard.rule=Host(`${DOMAIN}`) && PathPrefix(`/bullboard`)'
-	- 'traefik.http.routers.bullboard.priority=90'
-```
-
-Note: `/bullboard` is **not** exposed publicly in production. The Traefik label exists so the route is consistently
-addressable on the internal network. Access via SSH port-forwarding or a bastion host.
-
 **Grafana** (`/grafana` prefix, priority 85, internal only — monitoring stack):
 
 ```yaml
@@ -166,7 +155,7 @@ labels:
 	- 'traefik.http.routers.grafana.priority=85'
 ```
 
-Priority rule: API (100) > Bull Board (90) > Grafana (85) > Client (10). phpMyAdmin is no longer in this list.
+Priority rule: API (100) > Grafana (85) > Client (10). phpMyAdmin is no longer in this list.
 
 ### Deploy Traefik
 

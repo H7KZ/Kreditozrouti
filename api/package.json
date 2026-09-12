@@ -17,8 +17,6 @@
 		"@kreditozrouti/core": "workspace:*",
 		"@kreditozrouti/logger": "workspace:*",
 		"@kreditozrouti/types": "workspace:*",
-		"@bull-board/api": "^9.4.0",
-		"@bull-board/express": "^9.4.0",
 		"@opentelemetry/auto-instrumentations-node": "^0.79.0",
 		"@opentelemetry/exporter-trace-otlp-proto": "^0.221.0",
 		"@opentelemetry/sdk-node": "^0.221.0",

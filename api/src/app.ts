@@ -7,7 +7,6 @@ import express from 'express'
 import session from 'express-session'
 import helmet from 'helmet'
 import responseTime from 'response-time'
-import { bullboardRouter } from '@api/bullboard'
 import { redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Handlers/ErrorHandler'
@@ -35,17 +34,7 @@ app.use('/assets', express.static(Paths.assets))
 app.options('/{*any}', cors(corsOptions))
 app.use(cors(corsOptions))
 
-// Pre-instantiated helmet configs — avoid creating new instances per request.
-// /bullboard disables CSP only; Bull Board's UI uses inline styles/scripts.
-const standardHelmet = helmet()
-const noCspHelmet = helmet({ contentSecurityPolicy: false })
-
-app.use((req, res, next) => {
-	if (req.originalUrl.startsWith('/bullboard')) {
-		return noCspHelmet(req, res, next)
-	}
-	return standardHelmet(req, res, next)
-})
+app.use(helmet())
 app.disable('x-powered-by')
 
 /**
@@ -97,7 +86,6 @@ app.use('/share', ShareRoutes)
 app.use('/ical', ICalRoutes)
 app.use('/commands', CommandsRoutes)
 app.use('/admin', AdminRoutes)
-app.use('/bullboard', bullboardRouter)
 
 // Error Handling
 app.use(ErrorHandler)

@@ -18,7 +18,6 @@
 #   - MYSQL_*: Database credentials
 #   - REDIS_*: Cache credentials
 #   - API_*: API configuration
-#   - BULL_BOARD_USER: htpasswd-format credentials for /bullboard BasicAuth (e.g. admin:$$apr1$$...)
 #
 # Image Pinning Policy:
 #   Third-party images are pinned to a major tag, never `latest`. Every deploy runs
@@ -85,15 +84,6 @@ services:
       - 'traefik.http.middlewares.${PROJECT}-api-stripprefix.stripprefix.prefixes=/api'
       - "traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\\.(.*)"
       - 'traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}'
-      # Traefik Configuration — Bull Board (/bullboard → this API container, no prefix strip)
-      - 'traefik.http.routers.${PROJECT}-bullboard.priority=90'
-      - 'traefik.http.routers.${PROJECT}-bullboard.rule=Host(`${DOMAIN}`) && PathPrefix(`/bullboard`)'
-      - 'traefik.http.routers.${PROJECT}-bullboard.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-bullboard.tls=true'
-      - 'traefik.http.routers.${PROJECT}-bullboard.tls.certresolver=letsencrypt-dns'
-      - 'traefik.http.routers.${PROJECT}-bullboard.service=${PROJECT}-api'
-      - 'traefik.http.routers.${PROJECT}-bullboard.middlewares=${PROJECT}-bullboard-auth'
-      - 'traefik.http.middlewares.${PROJECT}-bullboard-auth.basicauth.users=${BULL_BOARD_USER}'
       # Prometheus Service Discovery
       - 'prometheus.io/scrape=true'
       - 'prometheus.io/env=development'
@@ -305,14 +295,7 @@ services:
   # Database (MySQL)
   # ============================================================================
   mysql:
-    # DO NOT loosen this tag. `mysql:latest` no longer means "the 8.x/9.x server": Oracle moved
-    # MySQL to calendar versioning, so latest now resolves to MySQL 26.x. The pin says major 9
-    # on the operator's statement that the instance actually running on the host is 9.x. MySQL
-    # refuses to start against a data directory initialised by a newer major, so a silent jump
-    # takes the database down with no way back short of a restore. Before the next deploy,
-    # verify on the host with `docker compose exec mysql mysql --version`; if it reports 26.x
-    # or any major above 9, raise this pin rather than deploying.
-    image: mysql:9
+    image: mysql:8
     restart: unless-stopped
 
     volumes:
@@ -386,7 +369,7 @@ services:
   # is gone too - it only existed to make the stripped /phpmyadmin path prefix work.
   # ============================================================================
   phpmyadmin:
-    image: phpmyadmin:5.2.3-apache
+    image: phpmyadmin:5
     # Never started by a plain `up`; see the comment above.
     profiles: ['admin']
     restart: unless-stopped

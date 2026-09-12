@@ -128,18 +128,6 @@ real password then differs from the stored secret forever.
 Twelve credential-bearing secrets are checked for `$` and backtick and the deploy fails with a message pointing at
 `openssl rand -base64 32`, whose alphabet contains neither character.
 
-`BULL_BOARD_USER` is the deliberate exception, because an htpasswd line **must** contain dollars. It gets its own
-validator that strips every `$$` pair and then fails if any lone `$` survives - the same transform Compose performs,
-so it distinguishes a correctly doubled `user:$$apr1$$salt$$hash` from a raw `user:$apr1$salt$hash` paste that would
-be interpolated away. Both apr1 and bcrypt (`$$2y$$`, `$$2a$$`, `$$2b$$`) hashes are accepted. Generate one with:
-
-```bash
-docker run --rm httpd:alpine htpasswd -nb admin '<password>' | sed 's/[$]/$$/g'
-```
-
-The `[$]` character class matters: a bare `$` on sed's left-hand side means end-of-line and would append rather than
-double.
-
 **Dependency inclusion:** `api`, `scraper`, and `mcp` are deployed together with their infrastructure dependencies -
 deploying `api` also brings up (or updates, if their config changed) `mysql` and `redis`, honouring `depends_on` health
 ordering. Already-healthy, unchanged dependencies are left untouched. `client` keeps `--no-deps` because its only

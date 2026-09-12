@@ -24,7 +24,13 @@ new Gauge({
 		const queues = [scraper.queue.request, scraper.queue.response]
 		for (const queue of queues) {
 			try {
-				const counts: Record<string, number> = await queue.getJobCounts('waiting', 'active', 'failed', 'delayed')
+				const counts: Record<string, number> = await queue.getJobCounts(
+					'waiting',
+					'active',
+					'failed',
+					'delayed',
+					'completed'
+				)
 				for (const [status, count] of Object.entries(counts)) {
 					this.labels(queue.name, status).set(count)
 				}
