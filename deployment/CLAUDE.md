@@ -119,11 +119,15 @@ and `github-runner/`: `mysql:9`, `redis:8-alpine`, `phpmyadmin:5.2.3-apache`, `m
 deploy runs `docker compose pull` and a silent major upgrade of a stateful service is not reversible. Digests were
 deliberately not used: there is no Renovate or Dependabot here, so they would have to be bumped by hand and would rot.
 
-**Umami's `umami-db` pins `PGDATA=/var/lib/postgresql/data` explicitly.** Official postgres images 18+ default
-`PGDATA` to `/var/lib/postgresql/<major>/docker` (docker-library/postgres#1259), but `kreditozrouti-umami-postgres-volume`
-was initialized under an older image and already holds data at the flat pre-18 path. Pinning `PGDATA` keeps that
-volume working as-is with no migration. A genuine `pg_upgrade` (e.g. to reorganize onto the new layout) needs
-`tianon/postgres-upgrade` — see docker-library/postgres#37 — and is not needed here.
+**`umami-db`'s volume mounts at `/var/lib/postgresql`, not `/var/lib/postgresql/data`.** Postgres 18+ images default
+`PGDATA` to `/var/lib/postgresql/<major>/docker` (docker-library/postgres#1259) and refuse to start if they find a
+`PG_VERSION` file at any legacy location instead - by design, so they never silently reinitialize over data they
+don't recognize. `kreditozrouti-umami-postgres-volume` was initialized under an older image at the flat pre-18
+layout; pinning `PGDATA` back to the old path only papers over the mismatch (the legacy-location scan checks the
+mount root, not `PGDATA`) and re-breaks on the next incident. The volume must actually hold data at the new layout
+before this mount works - see `deployment/monitoring/migrate-umami-pg18.sh`, which dumps the old cluster with
+`pg_dumpall` and restores it into a freshly initialized pg18 cluster (Alpine images ship only one major version's
+binaries, so `pg_upgrade` isn't available directly).
 
 **MySQL caveat:** `mysql:latest` now resolves to MySQL 26.x (Oracle moved MySQL to calendar versioning), and MySQL
 refuses to start against a volume initialised by a newer major - confirm the running version with
