@@ -3,7 +3,7 @@
 # Description: Runs code verification on pull requests. The steps themselves
 #              live in _verify.yml so that deploy-all.yml can gate its build
 #              and deploy jobs on exactly the same checks.
-# Trigger: Pull request events (opened, synchronize, reopened)
+# Trigger: Pull request events targeting main (opened, synchronize, reopened)
 #
 # Required Secrets: none - see _verify.yml
 #
@@ -16,6 +16,7 @@ name: CI Pipeline
 
 on:
   pull_request:
+    branches: [ main ]
     types: [ opened, synchronize, reopened ]
 
 permissions:
