@@ -275,6 +275,14 @@ Provisioned from `../../deployment/monitoring/grafana/provisioning/dashboards`.
 | Scraper          | `kreditozrouti-scraper` | Prometheus | Queue depth, silent failures, items processed, last-run timestamp          |
 | Log Explorer     | `kreditozrouti-logs`    | Loki       | Searchable log view for api + scraper, filterable by level / context / job |
 | Client (Browser) | `kreditozrouti-client`  | Loki       | JS exceptions, Web Vitals, navigation events from Faro                     |
+| Crowdsec         | `crowdsec-merged`       | Prometheus | One dashboard for CrowdSec: summary, per-instance system (mem/cpu/up-since), parsing, buckets, alerts/decisions, cumulative totals |
+
+One dashboard per service is the target shape. `crowdsec.json` replaced four overlapping dashboards
+(`crowdsec-overview.json`, `crowdsec-details.json`, `crowdsec-insight.json`, `crowdsec-lapi.json`) that had
+duplicated panels (e.g. "Buckets overflow" appeared in three of them) and inconsistent `gridPos`. LAPI metrics were
+confirmed not working in this deployment, so `crowdsec-lapi.json` was dropped entirely rather than merged. The file
+dashboard provisioner (`dashboards.yml`, no `disableDeletion: true`) deletes dashboards removed from disk on its own,
+so no manual Grafana action was needed to retire the three merged-away files.
 
 ### Common LogQL queries
 
@@ -314,7 +322,7 @@ Traefik), so it is only reachable from within the Docker network.
 
 | Metric                          | Type      | Labels                                  | Notes                                              |
 |---------------------------------|-----------|-----------------------------------------|----------------------------------------------------|
-| `http_request_duration_seconds` | Histogram | `method`, `route`, `status_code`, `env` | HTTP latency + rate                                |
+| `http_request_duration_seconds` | Histogram | `method`, `route`, `status_code`, `env` | HTTP latency + rate; `route` is `req.baseUrl + req.route.path` (the mounted pattern), or `"unknown"` for unmatched requests (404s, probes) which have no `req.route` |
 | `bullmq_queue_depth`            | Gauge     | `queue`, `status`, `env`                | Collected at scrape time                           |
 | `scraper_silent_failures_total` | Gauge     | `job_type`, `env`                       | From Redis counters                                |
 | `scraper_items_processed_total` | Gauge     | `job_type`, `status`, `env`             | From Redis counters                                |
@@ -365,6 +373,24 @@ so the old blanket `up == 0` produced a permanent, self-repeating page. Notifica
 severity` so a flap in one service never re-notifies unrelated alerts.
 
 All alert rules use raw PromQL (`histogram_quantile`, `rate`) — there are no recording rules.
+
+### Keeping Grafana in sync with rules.yml
+
+Grafana's file-based alert provisioning only adds/updates rules found in `rules.yml` - it never deletes a rule that
+was removed from the file. Redeploying monitoring after trimming or renaming a rule therefore leaves the old rule
+armed in Grafana, still able to fire and notify Discord, even though it no longer exists in the repo. Run
+`scripts/sync-grafana-alerts.sh` after every monitoring redeploy to delete those orphans and reload provisioning:
+
+```bash
+GRAFANA_URL=https://grafana.example.com \
+GRAFANA_ADMIN_USER=admin \
+GRAFANA_ADMIN_PASSWORD=... \
+./scripts/sync-grafana-alerts.sh
+```
+
+It lists currently provisioned rules via the Grafana provisioning API, diffs their UIDs against `rules.yml`, deletes
+anything not in the file, then reloads both alerting and dashboard provisioning. Idempotent - safe to run when
+nothing changed.
 
 ### No-data / error handling
 

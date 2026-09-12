@@ -27,7 +27,12 @@ deployment/
 │   └── grafana/
 │       └── provisioning/
 │           ├── datasources/
-│           │   └── prometheus.yml        # Auto-provisions Prometheus datasource in Grafana
+│           │   ├── prometheus.yml        # Auto-provisions Prometheus datasource in Grafana
+│           │   └── loki.yml              # Auto-provisions Loki datasource in Grafana
+│           ├── dashboards/
+│           │   ├── dashboards.yml        # File provisioner — points at this directory, deletion enabled
+│           │   ├── api.json / client.json / logs.json / scraper.json  # one dashboard per service
+│           │   └── crowdsec.json         # single merged CrowdSec dashboard (LAPI dashboard dropped, metrics unavailable)
 │           └── alerting/
 │               ├── rules.yml             # Alert rules (infrastructure, scraper, application)
 │               ├── notification-policies.yml
@@ -77,6 +82,12 @@ the external `public-network` (owned by Infrastructure) is. See NAMING.md in the
 **`.env` is written by CI, never committed.** `_deploy-service.yml` and `deploy-all.yml` construct it from GitHub
 Environment secrets/variables and write it into the version directory (`~/kreditozrouti/versions/<env>/<sha>/.env`) before calling
 `deploy.sh`.
+
+**Alert rules removed from `rules.yml` are not deleted from Grafana by provisioning** — the file provisioner only
+adds/updates. Run `scripts/sync-grafana-alerts.sh` (see [MONITORING.md](../docs/deployment/MONITORING.md#keeping-grafana-in-sync-with-rulesyml))
+after every monitoring redeploy that touched `rules.yml` to delete orphaned rules and reload provisioning; the
+dashboards file provisioner does delete removed dashboards on its own (no `disableDeletion: true` set), so dashboard
+files need no equivalent step.
 
 **Monitoring deploys the same versioned way as the app stack.** `deploy-monitoring.yml` uploads
 `deployment/monitoring/` + `deployment/lib.sh` into `~/kreditozrouti/versions/monitoring/<sha>/`, runs

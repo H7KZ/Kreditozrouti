@@ -16,6 +16,7 @@
 | `backup-mysql.sh`     | Dump MySQL, replicate off-site via rclone, emit Prometheus metrics | No       |
 | `setup-swap.sh`       | Create/resize a swapfile (mitigates OOM on low-RAM hosts)     | Yes           |
 | `clone-db.sh`         | Clone MySQL DB between dev and prod stacks on the same VPS    | Yes           |
+| `sync-grafana-alerts.sh` | Delete Grafana alert rules orphaned from `rules.yml`, reload provisioning | No |
 
 ---
 

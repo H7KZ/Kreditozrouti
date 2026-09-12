@@ -97,9 +97,15 @@ export function metricsMiddleware(req: Request, res: Response, next: NextFunctio
 	}
 	const end = httpDuration.startTimer()
 	res.on('finish', () => {
+		// req.route only exists after Express matches a route, and req.route.path is
+		// just the leaf pattern registered on that router - without the mount prefix
+		// it collides across routers (e.g. every router's "/:id"). Prefix with
+		// req.baseUrl so the label is the full mounted pattern. Unmatched requests
+		// (404s, probes) have no req.route at all and fall back to "unknown" - low
+		// cardinality is more important here than per-path 404 breakdowns.
 		end({
 			method: req.method,
-			route: req.route?.path ?? 'unknown',
+			route: req.route?.path ? `${req.baseUrl}${req.route.path}` : 'unknown',
 			status_code: String(res.statusCode)
 		})
 	})

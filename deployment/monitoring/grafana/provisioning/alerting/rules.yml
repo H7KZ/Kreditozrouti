@@ -255,6 +255,6 @@ groups:
               to: 0
             datasourceUid: Prometheus
             model:
-              expr: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{env="production"}[5m])) by (le)) > 2
+              expr: histogram_quantile(0.99, sum by(le) (rate(http_request_duration_seconds_bucket{env="production"}[5m]))) > bool 2
               instant: true
               refId: A
