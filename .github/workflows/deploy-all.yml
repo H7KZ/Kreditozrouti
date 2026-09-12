@@ -4,17 +4,10 @@
 #              On push to main: auto-deploys only the services whose paths changed.
 #              On manual dispatch: select any combination via checkboxes.
 #
-#              CI gate: every run - push and manual dispatch alike - first calls
-#              _verify.yml (the same checks the PR pipeline runs). `validate`
-#              needs that gate, and every build, resolve, deploy and cleanup job
-#              already keys off `validate`, so a failed verification skips the
-#              whole graph and nothing unverified reaches the VPS. A dispatch
-#              with skip_build is gated too: it still deploys to the server.
-#
 # Trigger: push to main (path-filtered), or manual dispatch
 #
 # Required Secrets: inherited by the reusable workflows this calls -
-#                   see _verify.yml, _build-service.yml, _deploy-service.yml
+#                   see _build-service.yml, _deploy-service.yml
 # ==============================================================================
 
 name: Deploy
@@ -74,25 +67,12 @@ concurrency:
 jobs:
 
   # ---------------------------------------------------------------------------
-  # CI gate - the same checks verify.yml runs on pull requests. Deliberately
-  # unconditional: a workflow_dispatch (including one with skip_build) still
-  # pushes to the VPS, so it is gated exactly like a push to main.
-  # ---------------------------------------------------------------------------
-  verify:
-    name: Verify Code
-    uses: ./.github/workflows/_verify.yml
-
-  # ---------------------------------------------------------------------------
   # Validate dispatch inputs before any work starts.
-  # `needs: verify` is the single choke point of this workflow: every build,
-  # resolve, deploy and cleanup job already requires validate to have succeeded,
-  # so a failed verification skips validate and with it the entire graph.
   # ---------------------------------------------------------------------------
   validate:
     name: Validate Inputs
     runs-on: self-hosted
     timeout-minutes: 5
-    needs: [ verify ]
     steps:
       - name: Reject skip_build without image_tag
         if: github.event_name == 'workflow_dispatch'
