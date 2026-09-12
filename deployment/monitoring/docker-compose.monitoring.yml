@@ -246,7 +246,10 @@ services:
       - POSTGRES_PASSWORD=${UMAMI_DB_PASSWORD}
 
     volumes:
-      - kreditozrouti-umami-postgres-volume:/var/lib/postgresql/data
+      # pg18+ layout: data lives in a major-version subdir under /var/lib/postgresql
+      # (not /var/lib/postgresql/data — that was the pre-18 layout). An in-place
+      # upgrade from an older volume needs pg_upgrade first, see MONITORING.md.
+      - kreditozrouti-umami-postgres-volume:/var/lib/postgresql
 
     networks:
       - kreditozrouti-monitoring-internal-network
