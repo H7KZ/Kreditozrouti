@@ -29,7 +29,7 @@ on:
       target_folder:
         description: 'Target folder on VPS (relative to home, no .. allowed)'
         required: true
-        default: 'repository'
+        default: 'kreditozrouti'
         type: string
       clean_target:
         description: 'Remove existing files before upload'
@@ -65,14 +65,16 @@ jobs:
 
       - name: Display Configuration
         env:
+          BRANCH: ${{ inputs.branch }}
           TARGET_FOLDER: ${{ steps.validated.outputs.folder }}
+          CLEAN: ${{ inputs.clean_target }}
         run: |
           echo "=========================================="
           echo "Upload Configuration"
           echo "=========================================="
-          echo "Branch: ${{ inputs.branch }}"
+          echo "Branch: $BRANCH"
           echo "Target: ~/$TARGET_FOLDER"
-          echo "Clean:  ${{ inputs.clean_target }}"
+          echo "Clean:  $CLEAN"
           echo "=========================================="
 
       - name: Prepare Target Directory
