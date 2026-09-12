@@ -20,7 +20,7 @@
 
 services:
   runner:
-    image: myoung34/github-runner:latest
+    image: myoung34/github-runner:2.337.0
     restart: always
 
     volumes:

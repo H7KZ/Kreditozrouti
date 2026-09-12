@@ -306,7 +306,7 @@ services:
   # Database (MySQL)
   # ============================================================================
   mysql:
-    image: mysql:8
+    image: mysql:26.7.0
     restart: unless-stopped
 
     volumes:
@@ -376,7 +376,7 @@ services:
   # is gone too - it only existed to make the stripped /phpmyadmin path prefix work.
   # ============================================================================
   phpmyadmin:
-    image: phpmyadmin:5
+    image: phpmyadmin:5.2.3
     # Never started by a plain `up`; see the comment above.
     profiles: ['admin']
     restart: unless-stopped
@@ -419,7 +419,7 @@ services:
   redis:
     # Pinned to major 8. The AOF file in the named volume survives restarts, so an unnoticed
     # major bump from a floating tag would be a persistence format change nobody reviewed.
-    image: redis:8-alpine
+    image: redis:8.10.1-alpine
     restart: unless-stopped
 
     command:
