@@ -115,9 +115,16 @@ root credentials on the public internet; `PMA_ARBITRARY` additionally let a visi
 **Every third-party image is pinned** across `production/`, `development/`, `docker-compose.local.yml`, `monitoring/`
 and `github-runner/`: `mysql:9`, `redis:8-alpine`, `phpmyadmin:5.2.3-apache`, `myoung34/github-runner:2.337.0`,
 `prom/prometheus:v3`, `grafana/grafana:13.2`, `grafana/loki:3.7`, `grafana/alloy:v1.19.2`,
-`ghcr.io/umami-software/umami:postgresql-v2.16`, `postgres:16-alpine`. Pin the major/minor, never `:latest` - every
+`ghcr.io/umami-software/umami:3`, `postgres:18-alpine`. Pin the major/minor, never `:latest` - every
 deploy runs `docker compose pull` and a silent major upgrade of a stateful service is not reversible. Digests were
 deliberately not used: there is no Renovate or Dependabot here, so they would have to be bumped by hand and would rot.
+
+**Umami's `umami-db` pins `PGDATA=/var/lib/postgresql/data` explicitly.** Official postgres images 18+ default
+`PGDATA` to `/var/lib/postgresql/<major>/docker` (docker-library/postgres#1259), but `kreditozrouti-umami-postgres-volume`
+was initialized under an older image and already holds data at the flat pre-18 path. Pinning `PGDATA` keeps that
+volume working as-is with no migration. A genuine `pg_upgrade` (e.g. to reorganize onto the new layout) needs
+`tianon/postgres-upgrade` — see docker-library/postgres#37 — and is not needed here.
+
 **MySQL caveat:** `mysql:latest` now resolves to MySQL 26.x (Oracle moved MySQL to calendar versioning), and MySQL
 refuses to start against a volume initialised by a newer major - confirm the running version with
 `docker compose exec mysql mysql --version` before any deploy that changes the `mysql:9` pin.

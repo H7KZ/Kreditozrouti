@@ -244,6 +244,10 @@ services:
       - POSTGRES_DB=${UMAMI_DB_NAME}
       - POSTGRES_USER=${UMAMI_DB_USER}
       - POSTGRES_PASSWORD=${UMAMI_DB_PASSWORD}
+      # postgres 18+ images default PGDATA to /var/lib/postgresql/<major>/docker
+      # (docker-library/postgres#1259). This volume already holds pg16 data at the
+      # pre-18 flat layout, so pin PGDATA explicitly instead of migrating it.
+      - PGDATA=/var/lib/postgresql/data
 
     volumes:
       - kreditozrouti-umami-postgres-volume:/var/lib/postgresql/data
