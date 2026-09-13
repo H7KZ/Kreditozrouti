@@ -4,139 +4,54 @@ Scripts for ongoing system and Docker housekeeping.
 
 ---
 
-## `maintenance.sh`
+## VPS-wide scripts moved to Infrastructure
 
-Ubuntu/Debian system maintenance. Logs to `/var/log/system-maintenance.log`. Requires root.
+`maintenance.sh`, `docker-cleanup.sh`, `install-docker.sh` and `setup-swap.sh` moved to the
+**Infrastructure** repo's `scripts/` — they're generic host upkeep, not Kreditozrouti-specific, and this
+VPS shares one Docker daemon and one disk across every repo deployed to it. Full docs:
+`Infrastructure/scripts/CLAUDE.md`.
+
+Once synced, they're reachable at the stable path `~/scripts/` on the VPS (a symlink to
+`~/infrastructure/scripts/`, kept current by Infrastructure's `sync-scripts.yml`) regardless of which
+repo owns them:
 
 ```bash
-sudo ./maintenance.sh [OPTIONS]
-```
-
-**Options:**
-
-| Flag                   | Description                                 |
-|------------------------|---------------------------------------------|
-| `-r, --auto-reboot`    | Reboot if required (60 s warning countdown) |
-| `-s, --skip-security`  | Skip Lynis security audit                   |
-| `-d, --docker-cleanup` | Also prune Docker resources                 |
-| `-q, --quiet`          | Suppress stdout (still logs to file)        |
-
-**Steps:**
-
-1. `apt-get update && upgrade && dist-upgrade && autoremove`
-2. Vacuum systemd journal (7-day retention)
-3. Delete `/tmp` files older than 7 days
-4. Docker prune (if `--docker-cleanup`)
-5. `unattended-upgrades --dry-run` + Lynis security audit (unless `--skip-security`)
-6. Health check — reports on:
-    - Failed systemd services
-    - Disk usage > 80 %
-    - Memory usage > 90 %
-    - Load average > CPU count
-    - Zombie processes
-7. Reboot handling (warns, then reboots with `--auto-reboot`)
-
-### Scheduling
-
-Prefer `setup-automation.sh` (systemd timers) over hand-written cron - see below.
-If you must use cron, weekly, Sunday at 3 AM:
-
-```
-0 3 * * 0 sudo /opt/scripts/maintenance.sh --auto-reboot --docker-cleanup >> /var/log/cron-maintenance.log 2>&1
+sudo ~/scripts/maintenance.sh --docker-cleanup
+~/scripts/docker-cleanup.sh --dry-run
+sudo ~/scripts/setup-automation.sh --status   # VPS-wide docker-cleanup + maintenance timers
 ```
 
 ---
 
-## `setup-automation.sh`
+## `setup-automation.sh` (this repo)
 
-Installs systemd services + timers so cleanup and maintenance run unattended. Requires root.
-This is the recommended way to keep the host from filling up on disk/logs (the usual trigger for the
-Prometheus `DatasourceNoData` and container-down alert cascade). Idempotent - re-run to change schedules.
+Installs a systemd timer for the daily MySQL backup only. VPS-wide docker-cleanup/maintenance timers are
+Infrastructure's `scripts/setup-automation.sh` — run that once per VPS, not once per repo. Idempotent -
+re-run this to change the backup schedule.
 
 ```bash
 sudo ./setup-automation.sh [OPTIONS]
 ```
 
-**Installs three timers:**
+**Installs:**
 
 | Timer                            | Schedule (default) | Runs                                                  |
-|----------------------------------|--------------------|-------------------------------------------------------|
+|----------------------------------|--------------------|--------------------------------------------------------|
 | `kreditozrouti-mysql-backup`     | daily 02:00        | `backup-mysql.sh production`                          |
-| `kreditozrouti-docker-cleanup`   | daily 03:30        | `docker-cleanup.sh --all --force --keep-recent 48`    |
-| `kreditozrouti-maintenance`      | weekly Sun 04:00   | `maintenance.sh --docker-cleanup [--auto-reboot]`     |
 
 **Options:**
 
 | Flag                        | Description                                               |
 |-----------------------------|-----------------------------------------------------------|
-| `-r, --auto-reboot`         | Weekly maintenance may reboot when packages require it     |
-| `--swap-size <GB>`          | Swap file size to ensure exists (default: 4)               |
-| `--skip-swap`               | Do not ensure a swap file exists                          |
-| `--cleanup-time <HH:MM>`    | Daily cleanup time (default: 03:30)                        |
-| `--maintenance-time <spec>` | Weekly `OnCalendar` spec (default: `Sun *-*-* 04:00:00`)   |
-| `--keep-recent <hrs>`       | Keep images newer than N hours in daily cleanup (def: 48)  |
 | `--backup-time <HH:MM>`     | Daily MySQL backup time (default: 02:00)                   |
 | `--backup-env <name>`       | Environment to back up (default: production)               |
 | `--backup-user <name>`      | User the backup runs as (default: owner of `$SCRIPT_DIR`)  |
 | `-s, --status`              | Show installed timer status and exit                      |
-| `-u, --uninstall`           | Remove installed timers and unit files                    |
+| `-u, --uninstall`           | Remove installed timer and unit files                      |
 
-On install it also ensures a swap file exists (runs `setup-swap.sh` if no swap is active) - the memory cushion that
-prevents the OOM cascade on a low-RAM host. Units are written to `/etc/systemd/system/` and point at the scripts'
-absolute paths, so the repo must stay checked out where it was when you ran the installer. Inspect with `sudo ./setup-automation.sh --status` or
-`journalctl -u kreditozrouti-docker-cleanup.service`.
-
----
-
-## `docker-cleanup.sh`
-
-Selective Docker resource cleanup. Always run `--dry-run` first.
-
-```bash
-./docker-cleanup.sh --dry-run              # preview — no changes made
-./docker-cleanup.sh                        # dangling resources, interactive
-./docker-cleanup.sh --all --force          # aggressive, no prompt
-./docker-cleanup.sh --skip-volumes -f      # everything except volumes
-./docker-cleanup.sh -a -k 48              # unused images older than 48 h
-```
-
-**Key flags:**
-
-| Flag                      | Purpose                                                           |
-|---------------------------|-------------------------------------------------------------------|
-| `-a, --all`               | Remove ALL unused images (not just dangling)                      |
-| `-n, --dry-run`           | Preview without removing                                          |
-| `-f, --force`             | Skip confirmation prompt                                          |
-| `-k, --keep-recent <hrs>` | With `--all`: only remove images older than N hours (default: 24) |
-| `--skip-containers`       | Skip container cleanup                                            |
-| `--skip-images`           | Skip image cleanup                                                |
-| `--skip-volumes`          | Skip volume cleanup                                               |
-| `--skip-networks`         | Skip network cleanup                                              |
-| `--skip-cache`            | Skip build cache cleanup                                          |
-| `--skip-logs`             | Skip container log truncation                                     |
-| `-v, --verbose`           | Show individual item names                                        |
-
-Container json-file logs (`/var/lib/docker/containers/*/*-json.log`) live outside `docker system df` accounting, so
-`docker system prune` never reclaims them. The log-truncation step zeroes them in place - running containers keep
-logging. Requires root to reach the Docker root dir.
-
-`--keep-recent` uses `docker image prune --filter "until=<N>h"` — useful for preserving recently deployed images during
-CI cleanup cycles.
-
-Logs to `/tmp/docker-cleanup-<timestamp>.log`.
-
-### Common usage patterns
-
-```bash
-# Weekly CI runner cleanup: remove images unused for more than 48 h
-./docker-cleanup.sh --all --keep-recent 48 --force
-
-# Safe pre-deployment cleanup: only dangling resources, skip volumes
-./docker-cleanup.sh --skip-volumes --force
-
-# Full system prune (⚠️ removes all stopped containers and unused volumes)
-./docker-cleanup.sh --all --force
-```
+Units are written to `/etc/systemd/system/` and point at the script's absolute path, so the repo must stay
+checked out where it was when you ran the installer. Inspect with `sudo ./setup-automation.sh --status` or
+`journalctl -u kreditozrouti-mysql-backup.service`.
 
 ---
 
@@ -203,7 +118,7 @@ sudo ./scripts/clone-db.sh <dev-to-prod|prod-to-dev>
 ```
 
 | Argument      | Description                                  |
-|---------------|----------------------------------------------|
+|---------------|-----------------------------------------------|
 | `dev-to-prod` | Copy the dev database into the prod database |
 | `prod-to-dev` | Copy the prod database into the dev database |
 

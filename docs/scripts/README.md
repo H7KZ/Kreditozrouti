@@ -3,20 +3,23 @@
 Manual server management scripts. All scripts in `../../scripts` source `lib.sh` for shared logging and Docker
 utilities. Automated deployment scripts live in `../../deployment` instead.
 
+VPS-wide scripts (`install-docker.sh`, `maintenance.sh`, `docker-cleanup.sh`, `setup-swap.sh`) live in the
+**Infrastructure** repo instead — this VPS shares one Docker daemon and one disk across every repo deployed to
+it, so generic host upkeep is that repo's job, not this one's. Reachable at `~/scripts/` on the VPS regardless
+of which repo owns them (a symlink Infrastructure's `sync-scripts.yml` keeps current).
+
 ---
 
 ## Scripts
 
-| Script              | Purpose                                                                           | Requires Root |
-|---------------------|-----------------------------------------------------------------------------------|---------------|
-| `lib.sh`            | Shared utilities (logging, `validate_files`, `create_networks`, `create_volumes`) | No            |
-| `install-docker.sh` | Install Docker Engine on Ubuntu/Debian — run once on a fresh server               | Yes (`sudo`)  |
-| `backup.sh`         | MySQL dump via docker exec — run manually or via cron                             | No            |
-| `maintenance.sh`    | System maintenance (apt, cleanup, security, health)                               | Yes (`sudo`)  |
-| `docker-cleanup.sh` | Clean unused Docker resources                                                     | No            |
-| `setup-automation.sh`| Install systemd timers for daily cleanup + weekly maintenance                    | Yes (`sudo`)  |
-| `setup-swap.sh`     | Create/resize a swapfile — mitigates OOM on low-RAM hosts                         | Yes (`sudo`)  |
-| `clone-db.sh`       | Clone MySQL DB between dev and prod stacks on the same VPS                        | Yes (`sudo`)  |
+| Script                   | Purpose                                                                           | Requires Root |
+|--------------------------|-------------------------------------------------------------------------------------|---------------|
+| `lib.sh`                 | Shared utilities (logging, `validate_files`, `create_networks`, `create_volumes`) | No            |
+| `backup-mysql.sh`        | MySQL dump via docker exec, off-site replication, Prometheus metrics              | No            |
+| `setup-automation.sh`    | Install systemd timer for the daily MySQL backup                                  | Yes (`sudo`)  |
+| `clone-db.sh`            | Clone MySQL DB between dev and prod stacks on the same VPS                        | Yes (`sudo`)  |
+| `sync-grafana-alerts.sh` | Delete Grafana alert rules orphaned from `rules.yml`, reload provisioning         | No            |
+| `check-em-dashes.sh`     | CI lint check (used by `_verify.yml`)                                             | No            |
 
 ---
 
@@ -47,5 +50,5 @@ source "$SCRIPT_DIR/lib.sh"
 
 ## Further Reading
 
-- [Infrastructure scripts](INFRASTRUCTURE.md) — install-docker, github-runner (deployment/github-runner/deploy.sh)
-- [Maintenance scripts](MAINTENANCE.md) — maintenance, docker-cleanup, clone-db
+- [Infrastructure scripts](../../../Infrastructure/scripts/CLAUDE.md) — install-docker, maintenance, docker-cleanup, setup-swap, setup-automation
+- [Maintenance scripts](MAINTENANCE.md) — backup-mysql, clone-db

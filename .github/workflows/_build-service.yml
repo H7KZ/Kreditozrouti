@@ -1,9 +1,11 @@
-# Reusable Workflow: Build Service Image
+# ==============================================================================
+# Workflow: Build Service Image (reusable)
 # Description: Builds and pushes a single service Docker image to GHCR.
-#              Called by per-service deploy workflows (deploy-api.yml, etc.)
+#              Called by deploy-all.yml/rollback.yml for each selected service.
 #
 # Inputs:  service (api | client | scraper | mcp), float_tag, cache_scope
 # Outputs: image_tag (short SHA), image_prefix
+# ==============================================================================
 
 name: Build Service Image (reusable)
 

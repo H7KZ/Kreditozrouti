@@ -1,3 +1,15 @@
+# ==============================================================================
+# docker-boot-recovery.service
+#
+# Restarts any container left in "exited" state after Docker (re)starts —
+# covers a host reboot, since `restart: unless-stopped` only recovers a
+# container that was RUNNING when Docker stopped, not one that had already
+# exited (crashed, OOM-killed, etc.) before the reboot.
+#
+# This file is a TEMPLATE if you need per-host customization; as shipped it
+# needs no rendering — install.sh copies it as-is.
+# ==============================================================================
+
 [Unit]
 Description=Docker boot recovery — start all stopped containers after reboot
 Requires=docker.service

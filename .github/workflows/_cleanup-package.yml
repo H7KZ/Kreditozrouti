@@ -1,4 +1,5 @@
-# Reusable Workflow: Cleanup Package Versions
+# ==============================================================================
+# Workflow: Cleanup Package Versions (reusable)
 # Description: Deletes old GHCR container versions, keeping N most recent
 #              SHA-tagged versions. Floating tags (latest, dev-latest) are
 #              always preserved via ignore-versions.
@@ -6,6 +7,7 @@
 # Inputs:
 #   package-name         Full GHCR package name, e.g. kreditozrouti/api
 #   min-versions-to-keep Number of recent versions to keep (default: 10)
+# ==============================================================================
 
 name: Cleanup Package Versions (reusable)
 

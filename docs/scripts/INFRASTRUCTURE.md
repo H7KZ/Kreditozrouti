@@ -8,7 +8,7 @@ Scripts for provisioning server infrastructure: Docker, Traefik, and GitHub Acti
 
 Fresh server setup is done manually in order:
 
-1. **Install Docker** — `sudo bash scripts/install-docker.sh` then log out and back in
+1. **Install Docker** — `sudo bash scripts/install-docker.sh` in the **Infrastructure** repo, then log out and back in
 2. **Set up GitHub runner** — `GITHUB_REPO_URL=... GITHUB_ACCESS_TOKEN=... bash deployment/github-runner/deploy.sh`
 3. **Deploy shared Traefik** — from the **Infrastructure** repo (it owns Traefik + `public-network`; this repo no longer ships a Traefik stack)
 4. **Deploy Monitoring** — push to `deployment/monitoring/**` or trigger `deploy-monitoring.yml` via `workflow_dispatch`
@@ -30,23 +30,12 @@ running container — find it with `docker ps --format '{{.Names}}'`.
 
 ## `install-docker.sh`
 
-Installs Docker Engine on Ubuntu 20.04+ / Debian 11+. Run once on a fresh server.
+Moved to the **Infrastructure** repo's `scripts/` — generic Docker Engine setup, not
+Kreditozrouti-specific. See `Infrastructure/scripts/CLAUDE.md`.
 
 ```bash
 sudo ./install-docker.sh [--user <username>] [--skip-test]
 ```
-
-**Steps:**
-
-1. Removes conflicting old Docker packages
-2. Installs prerequisites (`curl`, `gnupg`, etc.)
-3. Adds Docker's official apt repository with GPG key
-4. Installs `docker-ce`, `docker-ce-cli`, `containerd.io`, `docker-compose-plugin`
-5. Runs `docker run hello-world` to verify (skip with `--skip-test`)
-6. Adds `$SUDO_USER` (or `--user`) to the `docker` group
-7. Enables and starts the Docker systemd service
-
-After install, log out and back in for group membership to take effect.
 
 ---
 
