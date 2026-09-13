@@ -206,7 +206,15 @@ services:
       # check could not execute at all and the container stayed permanently unhealthy - which
       # in turn kept the container-health alert firing. busybox wget ships in the nginx alpine
       # image; `--spider` fetches headers only and exits non-zero on a non-2xx response.
-      test: [ 'CMD', 'wget', '--spider', '-q', 'http://localhost:80' ]
+      #
+      # 127.0.0.1, not localhost: the entrypoint's 10-listen-on-ipv6-by-default.sh patches
+      # default.conf to listen on both stacks, but 20-envsubst-on-templates.sh runs after it and
+      # regenerates default.conf from the template from scratch, silently dropping that IPv6
+      # listen directive - nginx ends up bound to 0.0.0.0:80 only. musl's getaddrinfo (this is
+      # Alpine) resolves "localhost" to ::1 first, so wget tried the IPv6 loopback, got refused,
+      # and never fell back to IPv4 - the container was permanently unhealthy despite serving
+      # requests over IPv4 the whole time. 127.0.0.1 skips resolution entirely.
+      test: [ 'CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:80' ]
       interval: 30s
       timeout: 10s
       retries: 3
