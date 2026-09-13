@@ -1,6 +1,6 @@
 # Deployment — Operations
 
-Monitoring, security, backup, maintenance, and troubleshooting for running environments.
+Monitoring, security, maintenance, and troubleshooting for running environments.
 
 ---
 
@@ -162,78 +162,10 @@ security_opt:
 
 ---
 
-### Database backup
-
-`scripts/backup-mysql.sh` runs daily at 02:00 via the `kreditozrouti-mysql-backup` systemd timer, installed by
-`setup-automation.sh`. It dumps MySQL from inside the container, gzips it to
-`~/kreditozrouti/backups/<environment>/`, replicates off-site if configured, and prunes old dumps (14 days, never
-below 5 files). Full reference: [scripts/MAINTENANCE.md](../scripts/MAINTENANCE.md).
-
-```bash
-sudo ./scripts/setup-automation.sh          # install the timer (idempotent)
-./scripts/backup-mysql.sh production        # run one by hand
-systemctl status kreditozrouti-mysql-backup.timer
-```
-
-**Off-site replication is opt-in and is the part that actually matters.** A local dump protects against an
-accidental `DROP` or a corrupt table. It does **not** protect against losing the VPS, which is the failure this
-database cannot survive: one server, one volume. Set `BACKUP_REMOTE` to an rclone remote path in
-`/etc/default/kreditozrouti-backup`:
-
-```bash
-BACKUP_REMOTE=storagebox:kreditozrouti/production
-```
-
-rclone reads its own credentials from `~/.config/rclone/rclone.conf`, so no secret passes through the script or its
-environment, and `BACKUP_REMOTE` itself is just a path. With it unset, the script reports on every run that the dump
-exists only on this VPS. With it set but broken, the script fails rather than skipping quietly.
-
-### Restore drill
-
-Run this against development at least once, before you need it against production. A backup you have never restored
-is a hypothesis, not a backup.
-
-```bash
-# 1. Pick a dump
-ls -lh ~/kreditozrouti/backups/production/
-
-# 2. Restore it into the running mysql container
-gunzip -c ~/kreditozrouti/backups/production/kreditozrouti-production-<stamp>.sql.gz \
-  | docker compose -p kreditozrouti --env-file ~/kreditozrouti/versions/production/current/.env \
-      -f ~/kreditozrouti/versions/production/current/production/networks.yml \
-      -f ~/kreditozrouti/versions/production/current/production/volumes.yml \
-      -f ~/kreditozrouti/versions/production/current/production/docker-compose.production.yml \
-      exec -T mysql sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"'
-
-# 3. Confirm
-docker compose -p kreditozrouti ... exec -T mysql sh -c \
-  'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SELECT COUNT(*) FROM insis_courses" "$MYSQL_DATABASE"'
-```
-
-Redis is deliberately **not** backed up. It holds BullMQ queue state and sessions, both of which regenerate; the
-authoritative data is all in MySQL.
-
-### Backup monitoring
-
-The script writes Prometheus textfile metrics on every exit path, shipped by Alloy. Grafana alerts to Discord if
-there has been no **successful** backup in 36 hours, and the alert also fires when the metric is absent entirely, so
-a timer that was never installed or a host that is down pages the same way a failing dump does. See
-[ADR 0001](../adr/0001-backup-health-via-alloy-textfile.md) for why this path is push while everything else is pull.
-
-### Volume backup
-
-Volume-level snapshots are a coarser complement to the MySQL dumps above, useful before a risky upgrade:
-
-```bash
-for volume in kreditozrouti-mysql-volume-prod kreditozrouti-redis-volume-prod; do
-  docker run --rm \
-    -v $volume:/data \
-    -v /backups/volumes:/backup \
-    alpine tar czf /backup/$volume-$(date +%Y%m%d).tar.gz /data
-done
-```
-
 ### Disaster recovery checklist
+
+There is currently no MySQL backup mechanism (removed for disk-space reasons - see git history if reinstating it).
+Recovery after losing the database means re-scraping from InSIS rather than restoring a dump.
 
 1. Provision new VPS
 2. Install Docker: `sudo bash scripts/install-docker.sh` (log out and back in after)
@@ -241,16 +173,12 @@ done
 4. Restore `~/variables/.env.prod`
 5. Deploy the shared Traefik from the **Infrastructure** repo (it owns Traefik + `public-network`)
 6. Push to `deployment/monitoring/**` or trigger `deploy-monitoring.yml` (`workflow_dispatch`) — Monitoring up
-7. Restore the database: bring the stack up empty, then replay the newest dump from
-   `~/kreditozrouti/backups/production/` (or pull it from `BACKUP_REMOTE` with `rclone copy` if the old VPS is gone)
-   using the restore drill above. Redis is not restored; its queue state regenerates.
-8. Run `deploy-all.yml` (`workflow_dispatch`) for the first app deployment — or push to `main`/`develop` and let the
-   path-triggered workflows deploy each service
-9. `curl https://example.com/api/health`
+7. Run `deploy-all.yml` (`workflow_dispatch`) for the first app deployment — or push to `main`/`develop` and let the
+   path-triggered workflows deploy each service. The database starts empty; let the scraper repopulate it from InSIS.
+   Redis is not restored; its queue state regenerates.
+8. `curl https://example.com/api/health`
 
-Estimated RTO: 2-4 hours. RPO: 24 hours, delivered by the daily `kreditozrouti-mysql-backup` timer. That figure is
-only true while `BACKUP_REMOTE` is set: without off-site replication the dumps share the disk they are protecting,
-so a VPS loss is a total loss regardless of how recent they are.
+Estimated RTO: however long a full InSIS re-scrape takes, since there is no dump to replay.
 
 ---
 
@@ -258,11 +186,10 @@ so a VPS loss is a total loss regardless of how recent they are.
 
 ### Routine schedule
 
-| Cadence   | Task                                                                           |
-|-----------|--------------------------------------------------------------------------------|
-| Monthly   | Run `maintenance.sh`; check `kreditozrouti-mysql-backup.timer`; Docker cleanup |
-| Quarterly | Restore drill: replay the newest dump into development and check the row count |
-| Quarterly | Rotate secrets; review Traefik access logs; update dependencies                |
+| Cadence   | Task                                                             |
+|-----------|-------------------------------------------------------------------|
+| Monthly   | Run `maintenance.sh`; Docker cleanup                              |
+| Quarterly | Rotate secrets; review Traefik access logs; update dependencies   |
 
 ### System updates
 

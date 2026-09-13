@@ -162,6 +162,6 @@ working directory doesn't matter; only the script's own location does.
 | Docker multi-stage builds, GHCR registry       | [DOCKER.md](../docs/deployment/DOCKER.md)                     |
 | GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                         |
 | Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md)     |
-| Monitoring, backups, security, troubleshooting | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)             |
+| Monitoring, security, troubleshooting          | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)             |
 | Observability stack — full pipeline reference  | [MONITORING.md](../docs/deployment/MONITORING.md)             |
 | Moving monitoring to its own host (draft)      | [MONITORING_SPLIT.md](../docs/deployment/MONITORING_SPLIT.md) |

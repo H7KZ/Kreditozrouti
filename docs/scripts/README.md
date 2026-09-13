@@ -15,8 +15,6 @@ of which repo owns them (a symlink Infrastructure's `sync-scripts.yml` keeps cur
 | Script                   | Purpose                                                                           | Requires Root |
 |--------------------------|-----------------------------------------------------------------------------------|---------------|
 | `lib.sh`                 | Shared utilities (logging, `validate_files`, `create_networks`, `create_volumes`) | No            |
-| `backup-mysql.sh`        | MySQL dump via docker exec, off-site replication, Prometheus metrics              | No            |
-| `setup-automation.sh`    | Install systemd timer for the daily MySQL backup                                  | Yes (`sudo`)  |
 | `clone-db.sh`            | Clone MySQL DB between dev and prod stacks on the same VPS                        | Yes (`sudo`)  |
 | `sync-grafana-alerts.sh` | Delete Grafana alert rules orphaned from `rules.yml`, reload provisioning         | No            |
 | `check-em-dashes.sh`     | CI lint check (used by `_verify.yml`)                                             | No            |
@@ -52,4 +50,4 @@ source "$SCRIPT_DIR/lib.sh"
 
 - [Infrastructure scripts](../../../Infrastructure/scripts/CLAUDE.md) — install-docker, maintenance, docker-cleanup,
   setup-swap, setup-automation
-- [Maintenance scripts](MAINTENANCE.md) — backup-mysql, clone-db
+- [Maintenance scripts](MAINTENANCE.md) — clone-db

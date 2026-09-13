@@ -101,6 +101,6 @@ MySQL and Redis are never directly reachable from outside the host.
 - [Docker images](DOCKER.md) — multi-stage builds, runtime env injection, GHCR registry
 - [CI/CD pipeline](CICD.md) — GitHub Actions workflows, secrets, version directories, rollback
 - [Infrastructure](INFRASTRUCTURE.md) — Traefik, networking, volumes, env vars
-- [Operations](OPERATIONS.md) — monitoring, logging, security, backup, maintenance, troubleshooting
+- [Operations](OPERATIONS.md) — monitoring, logging, security, maintenance, troubleshooting
 - [Monitoring](MONITORING.md) — full observability stack: pipeline diagram, Loki labels, Prometheus metrics, Grafana
   dashboards, trace correlation, troubleshooting

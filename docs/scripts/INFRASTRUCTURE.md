@@ -24,9 +24,6 @@ All required GitHub Secrets must be set before steps 3–5 (see [ci/cd docs](../
 All scripts read configuration from environment variables only — no config file. This allows them to be driven by GitHub
 Actions secrets/variables without any file on disk.
 
-**Backups (`backup.sh`):** `MYSQL_CONTAINER`, `BACKUP_DIR`, `BACKUP_RETENTION_DAYS`. The container name must match a
-running container — find it with `docker ps --format '{{.Names}}'`.
-
 ---
 
 ## `install-docker.sh`

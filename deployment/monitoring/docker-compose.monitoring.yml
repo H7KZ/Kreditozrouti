@@ -49,10 +49,6 @@ services:
       - '--storage.tsdb.retention.time=7d'
       - '--storage.tsdb.retention.size=2GB'
       - '--web.enable-lifecycle'
-      # Opens /api/v1/write so Alloy can PUSH the MySQL backup health gauges. The
-      # backup is a host systemd timer, not a container, so the Docker-SD pull job
-      # cannot reach it. See docs/adr/0001-backup-health-via-alloy-textfile.md.
-      - '--web.enable-remote-write-receiver'
 
     volumes:
       - kreditozrouti-prometheus-volume:/prometheus
@@ -193,11 +189,6 @@ services:
       - kreditozrouti-alloy-volume:/var/lib/alloy/data
       - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
       - traefik-logs-volume:/var/log/traefik:ro
-      # Host textfile-collector directory. scripts/backup-mysql.sh writes
-      # mysql-backup.prom here after every run; Alloy's prometheus.exporter.unix
-      # reads it and remote-writes the gauges to Prometheus. Read-only: Alloy must
-      # never be able to forge or clear backup evidence.
-      - /var/lib/kreditozrouti/textfile-collector:/var/lib/textfile-collector:ro
 
     networks:
       - kreditozrouti-monitoring-internal-network

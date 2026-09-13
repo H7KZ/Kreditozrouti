@@ -296,22 +296,6 @@ are owned by the Infrastructure repo and are no longer defined here.
 | `kreditozrouti-mysql-volume-prod` | MySQL   | Database files |
 | `kreditozrouti-redis-volume-prod` | Redis   | AOF + queues   |
 
-### Volume management
-
-```bash
-# Backup a volume
-docker run --rm \
-  -v kreditozrouti-mysql-volume-prod:/data \
-  -v $(pwd):/backup \
-  alpine tar czf /backup/mysql-backup.tar.gz /data
-
-# Restore a volume
-docker run --rm \
-  -v kreditozrouti-mysql-volume-prod:/data \
-  -v $(pwd):/backup \
-  alpine tar xzf /backup/mysql-backup.tar.gz -C /
-```
-
 ---
 
 ## Environment Variables

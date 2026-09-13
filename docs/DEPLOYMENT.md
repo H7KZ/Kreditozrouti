@@ -8,4 +8,4 @@
 | [**deployment/DOCKER.md**](deployment/DOCKER.md)                 | Multi-stage builds, runtime env injection, GHCR registry         |
 | [**deployment/CICD.md**](deployment/CICD.md)                     | GitHub Actions workflows, secrets, version directories, rollback |
 | [**deployment/INFRASTRUCTURE.md**](deployment/INFRASTRUCTURE.md) | Traefik, networking, volumes, env vars                           |
-| [**deployment/OPERATIONS.md**](deployment/OPERATIONS.md)         | Monitoring, security, backup, maintenance, troubleshooting       |
+| [**deployment/OPERATIONS.md**](deployment/OPERATIONS.md)         | Monitoring, security, maintenance, troubleshooting                |
