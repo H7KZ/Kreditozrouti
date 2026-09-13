@@ -199,9 +199,9 @@ column assignments. Each overlapping block gets a fractional width (e.g. 50% of 
 2. `mousemove` → `dragStore.updateDrag(day, time)` (snaps to 15-min intervals)
 3. `mouseup` → `dragStore.endDrag(x, y)` → shows `TimetableDragPopover`
 4. User confirms → `handleDragFilter()`:
-    - Adds time selection to `filtersStore.include_times`
-    - Calls `uiStore.switchToListView()`
-    - Calls `coursesStore.fetchCourses()`
+	- Adds time selection to `filtersStore.include_times`
+	- Calls `uiStore.switchToListView()`
+	- Calls `coursesStore.fetchCourses()`
 5. User cancels → `handleDragCancel()` → `dragStore.cancelDrag()`
 
 `DRAG_THRESHOLD = 20px` prevents accidental drags on click.

@@ -65,17 +65,17 @@ services:
     labels:
       # Traefik Configuration
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-api.priority=100'
-      - 'traefik.http.routers.${PROJECT}-api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)'
-      - 'traefik.http.routers.${PROJECT}-api.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-api.tls=true'
-      - 'traefik.http.routers.${PROJECT}-api.tls.certresolver=letsencrypt-dns'
-      - 'traefik.http.services.${PROJECT}-api.loadbalancer.server.port=80'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.priority=100'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.tls=true'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.tls.certresolver=letsencrypt-dns'
+      - 'traefik.http.services.kreditozrouti-api-${PROJECT}.loadbalancer.server.port=80'
       # Middlewares
-      - 'traefik.http.routers.${PROJECT}-api.middlewares=${PROJECT}-api-stripprefix,${PROJECT}-api-redirect-www'
-      - 'traefik.http.middlewares.${PROJECT}-api-stripprefix.stripprefix.prefixes=/api'
-      - "traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\\.(.*)"
-      - 'traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.middlewares=kreditozrouti-api-${PROJECT}-stripprefix,kreditozrouti-api-${PROJECT}-redirect-www'
+      - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-stripprefix.stripprefix.prefixes=/api'
+      - "traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+      - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
       # Prometheus Service Discovery
       - 'prometheus.io/scrape=true'
       - 'prometheus.io/env=production'
@@ -189,16 +189,16 @@ services:
     labels:
       # Traefik Configuration
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-client.priority=10'
-      - 'traefik.http.routers.${PROJECT}-client.rule=Host(`${DOMAIN}`)'
-      - 'traefik.http.routers.${PROJECT}-client.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-client.tls=true'
-      - 'traefik.http.routers.${PROJECT}-client.tls.certresolver=letsencrypt-dns'
-      - 'traefik.http.services.${PROJECT}-client.loadbalancer.server.port=80'
+      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.priority=10'
+      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.rule=Host(`${DOMAIN}`)'
+      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.tls=true'
+      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.tls.certresolver=letsencrypt-dns'
+      - 'traefik.http.services.kreditozrouti-client-${PROJECT}.loadbalancer.server.port=80'
       # Middlewares
-      - 'traefik.http.routers.${PROJECT}-client.middlewares=${PROJECT}-client-redirect-www'
-      - "traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.regex=^https://www\\.(.*)"
-      - 'traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.replacement=https://$${1}'
+      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.middlewares=kreditozrouti-client-${PROJECT}-redirect-www'
+      - "traefik.http.middlewares.kreditozrouti-client-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+      - 'traefik.http.middlewares.kreditozrouti-client-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
 
     healthcheck:
       # busybox wget, not curl. The client image's runner stage is nginx:stable-alpine, which
@@ -259,19 +259,19 @@ services:
     labels:
       # Traefik Configuration
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-mcp.priority=50'
-      - 'traefik.http.routers.${PROJECT}-mcp.rule=Host(`${DOMAIN}`) && PathPrefix(`/mcp`)'
-      - 'traefik.http.routers.${PROJECT}-mcp.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-mcp.tls=true'
-      - 'traefik.http.routers.${PROJECT}-mcp.tls.certresolver=letsencrypt-dns'
-      - 'traefik.http.services.${PROJECT}-mcp.loadbalancer.server.port=3000'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.priority=50'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/mcp`)'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.tls=true'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.tls.certresolver=letsencrypt-dns'
+      - 'traefik.http.services.kreditozrouti-mcp-${PROJECT}.loadbalancer.server.port=3000'
       # OAuth well-known discovery endpoints (must be served from root domain)
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.priority=60'
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/oauth`)'
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls=true'
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls.certresolver=letsencrypt-dns'
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.service=${PROJECT}-mcp'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.priority=60'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/oauth`)'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.tls=true'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.tls.certresolver=letsencrypt-dns'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.service=kreditozrouti-mcp-${PROJECT}'
 
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:3000/health' ]
@@ -378,7 +378,7 @@ services:
   phpmyadmin:
     image: phpmyadmin:5.2.3
     # Never started by a plain `up`; see the comment above.
-    profiles: ['admin']
+    profiles: [ 'admin' ]
     restart: unless-stopped
 
     depends_on:

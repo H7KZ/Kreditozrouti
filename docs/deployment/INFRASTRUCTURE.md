@@ -256,13 +256,13 @@ turning the container into an open MySQL client. Both are gone.
 
 What changed in `docker-compose.production.yml` and `docker-compose.development.yml`:
 
-| Aspect            | Now                                                                             |
-|-------------------|---------------------------------------------------------------------------------|
-| Start-up          | `profiles: ['admin']` - a plain `docker compose up -d` (and every deploy) leaves it stopped |
-| Published port    | Production `127.0.0.1:48080:80`, development `127.0.0.1:48081:80` - loopback only |
-| Networks          | MySQL network only; removed from `public-network`                               |
-| Traefik labels    | All removed - nothing to route even when the container runs                     |
-| Environment       | `PMA_HOST`, `PMA_PORT`, `MYSQL_ROOT_PASSWORD`, `UPLOAD_LIMIT` kept; `PMA_ARBITRARY`, `MYSQL_USER`, `MYSQL_PASSWORD` and `PMA_ABSOLUTE_URI` deleted |
+| Aspect         | Now                                                                                                                                                |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| Start-up       | `profiles: ['admin']` - a plain `docker compose up -d` (and every deploy) leaves it stopped                                                        |
+| Published port | Production `127.0.0.1:48080:80`, development `127.0.0.1:48081:80` - loopback only                                                                  |
+| Networks       | MySQL network only; removed from `public-network`                                                                                                  |
+| Traefik labels | All removed - nothing to route even when the container runs                                                                                        |
+| Environment    | `PMA_HOST`, `PMA_PORT`, `MYSQL_ROOT_PASSWORD`, `UPLOAD_LIMIT` kept; `PMA_ARBITRARY`, `MYSQL_USER`, `MYSQL_PASSWORD` and `PMA_ABSOLUTE_URI` deleted |
 
 The port is bound to `127.0.0.1` explicitly: a bare `48080:80` would publish on every interface and undo the change.
 

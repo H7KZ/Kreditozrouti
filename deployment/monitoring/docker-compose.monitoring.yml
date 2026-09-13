@@ -109,12 +109,12 @@ services:
 
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-grafana.priority=70'
-      - 'traefik.http.routers.${PROJECT}-grafana.rule=Host(`${DOMAIN}`) && PathPrefix(`/grafana`)'
-      - 'traefik.http.routers.${PROJECT}-grafana.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-grafana.tls=true'
-      - 'traefik.http.routers.${PROJECT}-grafana.tls.certresolver=letsencrypt-dns'
-      - 'traefik.http.services.${PROJECT}-grafana.loadbalancer.server.port=3000'
+      - 'traefik.http.routers.kreditozrouti-grafana.priority=70'
+      - 'traefik.http.routers.kreditozrouti-grafana.rule=Host(`${DOMAIN}`) && PathPrefix(`/grafana`)'
+      - 'traefik.http.routers.kreditozrouti-grafana.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-grafana.tls=true'
+      - 'traefik.http.routers.kreditozrouti-grafana.tls.certresolver=letsencrypt-dns'
+      - 'traefik.http.services.kreditozrouti-grafana.loadbalancer.server.port=3000'
 
     logging:
       driver: 'json-file'
@@ -206,14 +206,14 @@ services:
 
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-faro.priority=80'
-      - 'traefik.http.routers.${PROJECT}-faro.rule=PathPrefix(`/faro`)'
-      - 'traefik.http.routers.${PROJECT}-faro.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-faro.tls=true'
-      - 'traefik.http.routers.${PROJECT}-faro.tls.certresolver=letsencrypt-dns'
-      - 'traefik.http.middlewares.${PROJECT}-faro-strip.stripprefix.prefixes=/faro'
-      - 'traefik.http.routers.${PROJECT}-faro.middlewares=${PROJECT}-faro-strip'
-      - 'traefik.http.services.${PROJECT}-faro.loadbalancer.server.port=12347'
+      - 'traefik.http.routers.kreditozrouti-faro.priority=80'
+      - 'traefik.http.routers.kreditozrouti-faro.rule=PathPrefix(`/faro`)'
+      - 'traefik.http.routers.kreditozrouti-faro.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-faro.tls=true'
+      - 'traefik.http.routers.kreditozrouti-faro.tls.certresolver=letsencrypt-dns'
+      - 'traefik.http.middlewares.kreditozrouti-faro-strip.stripprefix.prefixes=/faro'
+      - 'traefik.http.routers.kreditozrouti-faro.middlewares=kreditozrouti-faro-strip'
+      - 'traefik.http.services.kreditozrouti-faro.loadbalancer.server.port=12347'
 
     logging:
       driver: 'json-file'
@@ -303,11 +303,11 @@ services:
 
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-umami.rule=Host(`umami.${DOMAIN}`)'
-      - 'traefik.http.routers.${PROJECT}-umami.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-umami.tls=true'
-      - 'traefik.http.routers.${PROJECT}-umami.tls.certresolver=letsencrypt-dns'
-      - 'traefik.http.services.${PROJECT}-umami.loadbalancer.server.port=3000'
+      - 'traefik.http.routers.kreditozrouti-umami.rule=Host(`umami.${DOMAIN}`)'
+      - 'traefik.http.routers.kreditozrouti-umami.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-umami.tls=true'
+      - 'traefik.http.routers.kreditozrouti-umami.tls.certresolver=letsencrypt-dns'
+      - 'traefik.http.services.kreditozrouti-umami.loadbalancer.server.port=3000'
 
     logging:
       driver: 'json-file'

@@ -36,15 +36,15 @@ docker compose -p kreditozrouti-monitoring -f deployment/monitoring/docker-compo
 Grafana alerting is provisioned from `../../deployment/monitoring/grafana/provisioning/alerting/rules.yml`. All rules
 route to the Discord contact point via the default notification policy.
 
-| Rule                             | Group          | Condition                                                          | Severity |
-|----------------------------------|----------------|-------------------------------------------------------------------|----------|
+| Rule                             | Group          | Condition                                                                   | Severity |
+|----------------------------------|----------------|-----------------------------------------------------------------------------|----------|
 | `container-down` (**API Down**)  | infrastructure | Prod API `up==0` or absent for 5 min (scoped to the API, not other targets) | critical |
-| `scraper-jobs-failed`            | scraper        | `bullmq_queue_depth{queue=~"Scraper.*", status="failed"} > 0` for 5 min | critical |
-| `scraper-stale`                  | scraper        | No scraper run in > 24 h                                          | warning  |
-| `scraper-silent-failures-rising` | scraper        | `> 5` silent failures in 30 min (dampened `for: 15m`)             | warning  |
-| `scraper-failure-rate-high`      | scraper        | Item failure rate > 10% over 5 min                                | warning  |
-| `api-error-rate-high`            | application    | 5xx > 5% of all requests over 5 min (`for: 10m`)                  | warning  |
-| `api-p99-latency-high`           | application    | API p99 latency > 2 s over 5 min (`for: 10m`)                     | warning  |
+| `scraper-jobs-failed`            | scraper        | `bullmq_queue_depth{queue=~"Scraper.*", status="failed"} > 0` for 5 min     | critical |
+| `scraper-stale`                  | scraper        | No scraper run in > 24 h                                                    | warning  |
+| `scraper-silent-failures-rising` | scraper        | `> 5` silent failures in 30 min (dampened `for: 15m`)                       | warning  |
+| `scraper-failure-rate-high`      | scraper        | Item failure rate > 10% over 5 min                                          | warning  |
+| `api-error-rate-high`            | application    | 5xx > 5% of all requests over 5 min (`for: 10m`)                            | warning  |
+| `api-p99-latency-high`           | application    | API p99 latency > 2 s over 5 min (`for: 10m`)                               | warning  |
 
 ### Faro Browser Telemetry
 
@@ -258,11 +258,11 @@ so a VPS loss is a total loss regardless of how recent they are.
 
 ### Routine schedule
 
-| Cadence   | Task                                                            |
-|-----------|-----------------------------------------------------------------|
+| Cadence   | Task                                                                           |
+|-----------|--------------------------------------------------------------------------------|
 | Monthly   | Run `maintenance.sh`; check `kreditozrouti-mysql-backup.timer`; Docker cleanup |
 | Quarterly | Restore drill: replay the newest dump into development and check the row count |
-| Quarterly | Rotate secrets; review Traefik access logs; update dependencies |
+| Quarterly | Rotate secrets; review Traefik access logs; update dependencies                |
 
 ### System updates
 

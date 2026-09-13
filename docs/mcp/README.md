@@ -303,8 +303,9 @@ When you pass blackout windows to the optimizer or interpret conflict entries, c
    sequence. Invoke them at the start of a session rather than rediscovering the order from tool descriptions.
 
 3. **Search with filters, paginate large result sets.** `vse_search_courses` defaults to 20 results. Use `limit` (up to
-   100) and `offset` to page through. Combine `query`, `faculty_id`, `semester`, and `language` to narrow results before
-   fetching full course objects.
+	100) and `offset` to page through. Combine `query`, `faculty_id`, `semester`, and `language` to narrow results
+	     before
+		 fetching full course objects.
 
 4. **Fetch a full course when you need slots.** `vse_search_courses` returns summary data. Call `vse_get_course` (or
    read `vse://course/{id}`) to get the complete unit/slot breakdown needed for conflict checks.
@@ -313,11 +314,11 @@ When you pass blackout windows to the optimizer or interpret conflict entries, c
    `vse_check_timetable_conflicts`. The response lists every overlapping pair with the day and time range of the clash.
 
 6. **Use the optimizer for scheduling assistance.** Two modes:
-    - `mode: "build"` — given a fixed set of `course_ids`, find the best non-conflicting combination of units. Use when
-      the user has decided which courses they want.
-    - `mode: "explore"` — start from `course_ids` and try adding each course in `explore_course_ids` one by one. Use
-      when the user wants to know which additional courses can still fit. Lock specific units with `locked_unit_ids` to
-      keep the user's existing choices fixed while the solver adjusts the rest.
+	- `mode: "build"` — given a fixed set of `course_ids`, find the best non-conflicting combination of units. Use when
+	  the user has decided which courses they want.
+	- `mode: "explore"` — start from `course_ids` and try adding each course in `explore_course_ids` one by one. Use
+	  when the user wants to know which additional courses can still fit. Lock specific units with `locked_unit_ids` to
+	  keep the user's existing choices fixed while the solver adjusts the rest.
 
 7. **Respect the optimizer rate limit.** `vse_optimize_timetable` is CPU-intensive and rate-limited to 10 req/min in
    production. Avoid calling it in a loop; cache results where possible.

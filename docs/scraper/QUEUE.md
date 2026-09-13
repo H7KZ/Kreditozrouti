@@ -77,11 +77,11 @@ choke point every InSIS call passes through, retries included.
 Because the bucket lives in Redis it holds across both replicas, across worker concurrency, and across every job type,
 and it cannot be defeated by scaling the service or by a future job adding another fan-out layer.
 
-| Env var                        | Prod default | Dev default | Meaning                                       |
-|--------------------------------|--------------|-------------|-----------------------------------------------|
+| Env var                        | Prod default | Dev default | Meaning                                         |
+|--------------------------------|--------------|-------------|-------------------------------------------------|
 | `INSIS_RATE_LIMIT_RPS`         | 4            | 2           | Sustained requests per second, whole deployment |
-| `INSIS_RATE_LIMIT_BURST`       | 8            | 4           | Token bucket capacity, i.e. burst size        |
-| `INSIS_RATE_LIMIT_MAX_WAIT_MS` | 30000        | 30000       | How long one request waits before giving up   |
+| `INSIS_RATE_LIMIT_BURST`       | 8            | 4           | Token bucket capacity, i.e. burst size          |
+| `INSIS_RATE_LIMIT_MAX_WAIT_MS` | 30000        | 30000       | How long one request waits before giving up     |
 
 It **fails closed**: if Redis cannot be consulted, requests are refused rather than sent unpaced. That costs little in
 practice, since BullMQ uses the same Redis and a Redis outage already means no jobs are running.

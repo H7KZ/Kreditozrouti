@@ -10,7 +10,8 @@ Fresh server setup is done manually in order:
 
 1. **Install Docker** — `sudo bash scripts/install-docker.sh` in the **Infrastructure** repo, then log out and back in
 2. **Set up GitHub runner** — `GITHUB_REPO_URL=... GITHUB_ACCESS_TOKEN=... bash deployment/github-runner/deploy.sh`
-3. **Deploy shared Traefik** — from the **Infrastructure** repo (it owns Traefik + `public-network`; this repo no longer ships a Traefik stack)
+3. **Deploy shared Traefik** — from the **Infrastructure** repo (it owns Traefik + `public-network`; this repo no longer
+   ships a Traefik stack)
 4. **Deploy Monitoring** — push to `deployment/monitoring/**` or trigger `deploy-monitoring.yml` via `workflow_dispatch`
 5. **Deploy app** — push to `main`/`develop` or trigger `deploy-all.yml` via `workflow_dispatch`
 
@@ -90,5 +91,6 @@ Deploys self-hosted GitHub Actions runners. Runners auto-register to the reposit
 
 **Optional:** `RUNNER_REPLICAS` (default: `2`), `RUNNER_LABELS` (appended to `docker,self-hosted`)
 
-Deployed under Docker Compose project `kreditozrouti-runner`. Runners share the Docker socket — required for container image builds in
+Deployed under Docker Compose project `kreditozrouti-runner`. Runners share the Docker socket — required for container
+image builds in
 CI workflows.

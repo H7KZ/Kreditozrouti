@@ -70,18 +70,20 @@ End-to-end reference for the logging, metrics, tracing, and browser telemetry pi
 
 ## Components
 
-| Component     | Image                       | Role                                                    |
-|---------------|-----------------------------|---------------------------------------------------------|
-| Alloy         | `grafana/alloy:latest`      | Log shipping (Docker socket) + Faro browser receiver    |
-| Loki          | `grafana/loki:latest`       | Log storage (7-day retention, filesystem backend)       |
-| Prometheus    | `prom/prometheus:latest`    | Metrics scraping and storage (7-day retention, 2GB cap) |
-| Grafana       | `grafana/grafana:latest`    | Dashboards and alerting (served at `/grafana`)          |
+| Component  | Image                    | Role                                                    |
+|------------|--------------------------|---------------------------------------------------------|
+| Alloy      | `grafana/alloy:latest`   | Log shipping (Docker socket) + Faro browser receiver    |
+| Loki       | `grafana/loki:latest`    | Log storage (7-day retention, filesystem backend)       |
+| Prometheus | `prom/prometheus:latest` | Metrics scraping and storage (7-day retention, 2GB cap) |
+| Grafana    | `grafana/grafana:latest` | Dashboards and alerting (served at `/grafana`)          |
 
 (Umami + its Postgres also run in this stack for product analytics; they are not part of the
 Grafana observability pipeline. Tempo and node-exporter are **not** deployed.)
 
-All components run in the `kreditozrouti-monitoring-internal-network` Docker network. Grafana and Alloy also join `public-network`
-(for public routing). Prometheus and Alloy also join `kreditozrouti-monitoring-network` — Prometheus to reach container IPs discovered via
+All components run in the `kreditozrouti-monitoring-internal-network` Docker network. Grafana and Alloy also join
+`public-network`
+(for public routing). Prometheus and Alloy also join `kreditozrouti-monitoring-network` — Prometheus to reach container
+IPs discovered via
 Docker SD and to scrape Traefik (`traefik:8080`) + CrowdSec (`crowdsec:6060`) metrics; Alloy tails app container stdout
 on the same host via the Docker socket.
 
@@ -183,22 +185,22 @@ Config: `../../deployment/monitoring/alloy/config.alloy`
 2. `discovery.relabel` drops monitoring infra containers (grafana, prometheus, loki, alloy, umami, postgres)
 3. `loki.source.docker` reads stdout from surviving containers
 4. `loki.process.parse_json`:
-    - `stage.json` extracts `level`, `service`, `env`, `context`, `request_id`, `path`, `trace_id`, `span_id`
-    - `stage.drop` discards `/health` and `/metrics` path logs (high-frequency, zero signal)
-    - `stage.labels` promotes `level`, `service`, `env`, `context` to Loki stream labels
-    - `stage.structured_metadata` stores `request_id`, `trace_id`, `span_id` as per-log metadata (not stream labels —
-      avoids cardinality explosion)
-    - A relabel rule copies `__meta_docker_container_label_com_docker_compose_project` → `compose_project` for
-      guaranteed env separation in log queries
+	- `stage.json` extracts `level`, `service`, `env`, `context`, `request_id`, `path`, `trace_id`, `span_id`
+	- `stage.drop` discards `/health` and `/metrics` path logs (high-frequency, zero signal)
+	- `stage.labels` promotes `level`, `service`, `env`, `context` to Loki stream labels
+	- `stage.structured_metadata` stores `request_id`, `trace_id`, `span_id` as per-log metadata (not stream labels —
+	  avoids cardinality explosion)
+	- A relabel rule copies `__meta_docker_container_label_com_docker_compose_project` → `compose_project` for
+	  guaranteed env separation in log queries
 5. `loki.write` pushes to `http://loki:3100/loki/api/v1/push`
 
 ### Faro browser telemetry
 
 1. `faro.receiver` listens on `:12347` (Traefik routes `/faro/*` here), forwarding to `loki.process.faro_labels`
 2. `loki.process.faro_labels`:
-    - `stage.static_labels` sets `app="kreditozrouti"`
-    - `stage.logfmt` maps `kind` ← `kind` and `env` ← `app_environment`
-    - `stage.labels` promotes `kind` and `env` as stream labels
+	- `stage.static_labels` sets `app="kreditozrouti"`
+	- `stage.logfmt` maps `kind` ← `kind` and `env` ← `app_environment`
+	- `stage.labels` promotes `kind` and `env` as stream labels
 
 > The Client dashboard filters every panel by `env="$env"`. That label only exists if the incoming Faro
 > line actually carries an `app_environment` key. If the field name differs (Faro/Alloy version drift),
@@ -269,12 +271,12 @@ Structured metadata (not indexed, use `| json` or `| logfmt` to filter):
 
 Provisioned from `../../deployment/monitoring/grafana/provisioning/dashboards`.
 
-| Dashboard        | UID                     | Datasource | Covers                                                                     |
-|------------------|-------------------------|------------|----------------------------------------------------------------------------|
-| API              | `kreditozrouti-api`     | Prometheus | Request rate, error rate, latency histograms, BullMQ queue depth           |
-| Scraper          | `kreditozrouti-scraper` | Prometheus | Queue depth, silent failures, items processed, last-run timestamp          |
-| Log Explorer     | `kreditozrouti-logs`    | Loki       | Searchable log view for api + scraper, filterable by level / context / job |
-| Client (Browser) | `kreditozrouti-client`  | Loki       | JS exceptions, Web Vitals, navigation events from Faro                     |
+| Dashboard        | UID                     | Datasource | Covers                                                                                                                             |
+|------------------|-------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------|
+| API              | `kreditozrouti-api`     | Prometheus | Request rate, error rate, latency histograms, BullMQ queue depth                                                                   |
+| Scraper          | `kreditozrouti-scraper` | Prometheus | Queue depth, silent failures, items processed, last-run timestamp                                                                  |
+| Log Explorer     | `kreditozrouti-logs`    | Loki       | Searchable log view for api + scraper, filterable by level / context / job                                                         |
+| Client (Browser) | `kreditozrouti-client`  | Loki       | JS exceptions, Web Vitals, navigation events from Faro                                                                             |
 | Crowdsec         | `crowdsec-merged`       | Prometheus | One dashboard for CrowdSec: summary, per-instance system (mem/cpu/up-since), parsing, buckets, alerts/decisions, cumulative totals |
 
 One dashboard per service is the target shape. `crowdsec.json` replaced four overlapping dashboards
@@ -314,20 +316,22 @@ derivedField (`matcherRegex: '"trace_id":"(\w+)"'`) linking to Tempo. Deploy Tem
 ## Prometheus Metrics
 
 The API container is discovered and scraped via Docker Socket SD (`docker_sd_configs` in `prometheus.yml`). Containers
-must carry the `prometheus.io/scrape=true` Docker label to be included; Prometheus keeps only the `kreditozrouti-monitoring-network`
+must carry the `prometheus.io/scrape=true` Docker label to be included; Prometheus keeps only the
+`kreditozrouti-monitoring-network`
 interface (one target per container, not one per network) and builds the scrape address from the container's
-kreditozrouti-monitoring-network IP **plus its `prometheus.io/port` label** (each service's metrics port comes from its own label - no
+kreditozrouti-monitoring-network IP **plus its `prometheus.io/port` label** (each service's metrics port comes from its
+own label - no
 hardcoded port). The `/metrics` endpoint returns 404 for requests carrying an `x-forwarded-for` header (i.e. via
 Traefik), so it is only reachable from within the Docker network.
 
-| Metric                          | Type      | Labels                                  | Notes                                              |
-|---------------------------------|-----------|-----------------------------------------|----------------------------------------------------|
+| Metric                          | Type      | Labels                                  | Notes                                                                                                                                                                |
+|---------------------------------|-----------|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `http_request_duration_seconds` | Histogram | `method`, `route`, `status_code`, `env` | HTTP latency + rate; `route` is `req.baseUrl + req.route.path` (the mounted pattern), or `"unknown"` for unmatched requests (404s, probes) which have no `req.route` |
-| `bullmq_queue_depth`            | Gauge     | `queue`, `status`, `env`                | Collected at scrape time                           |
-| `scraper_silent_failures_total` | Gauge     | `job_type`, `env`                       | From Redis counters                                |
-| `scraper_items_processed_total` | Gauge     | `job_type`, `status`, `env`             | From Redis counters                                |
-| `scraper_last_run_timestamp`    | Gauge     | `job_type`, `env`                       | Unix seconds; 0 = never                            |
-| Node.js defaults                | various   | —                                       | GC, event loop, memory via `collectDefaultMetrics` |
+| `bullmq_queue_depth`            | Gauge     | `queue`, `status`, `env`                | Collected at scrape time                                                                                                                                             |
+| `scraper_silent_failures_total` | Gauge     | `job_type`, `env`                       | From Redis counters                                                                                                                                                  |
+| `scraper_items_processed_total` | Gauge     | `job_type`, `status`, `env`             | From Redis counters                                                                                                                                                  |
+| `scraper_last_run_timestamp`    | Gauge     | `job_type`, `env`                       | Unix seconds; 0 = never                                                                                                                                              |
+| Node.js defaults                | various   | —                                       | GC, event loop, memory via `collectDefaultMetrics`                                                                                                                   |
 
 The `env` label on API metrics comes from the `prometheus.io/env` Docker container label (`production` or
 `development`), copied via `relabel_configs`. Both prod and dev API containers are scraped automatically with correct
@@ -353,11 +357,11 @@ Provisioned from `../../deployment/monitoring/grafana/provisioning/alerting`.
 
 ### Alert rule groups
 
-| Group            | Folder         | Rules                                                                                                              |
-|------------------|----------------|-------------------------------------------------------------------------------------------------------------------|
+| Group            | Folder         | Rules                                                                                                                                                                     |
+|------------------|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `infrastructure` | Infrastructure | `container-down` (title **API Down**) — prod API only, `for: 5m`; **MySQL Backup Stale** (no success in 36h, critical); **MySQL Backup Not Replicated Offsite** (warning) |
-| `scraper`        | Infrastructure | `scraper-jobs-failed`, `scraper-stale`, `scraper-silent-failures-rising` (`for: 15m`), `scraper-failure-rate-high` |
-| `application`    | Application    | `api-error-rate-high` (5xx > 5%, `for: 10m`), `api-p99-latency-high` (p99 > 2 s, `for: 10m`)                       |
+| `scraper`        | Infrastructure | `scraper-jobs-failed`, `scraper-stale`, `scraper-silent-failures-rising` (`for: 15m`), `scraper-failure-rate-high`                                                        |
+| `application`    | Application    | `api-error-rate-high` (5xx > 5%, `for: 10m`), `api-p99-latency-high` (p99 > 2 s, `for: 10m`)                                                                              |
 
 **MySQL Backup Stale** fires when `time() - kreditozrouti_backup_last_success_timestamp_seconds > 129600` (36h,
 which tolerates one missed daily run plus drift) **or** when that series is absent entirely. The `absent()` half is

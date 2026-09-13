@@ -11,14 +11,14 @@ owns them.
 
 ## Scripts
 
-| Script                   | Purpose                                                       | Requires Root |
-|--------------------------|-----------------------------------------------------------------|---------------|
-| `lib.sh`                 | Shared utilities — sourced by all scripts, not run directly   | No            |
-| `setup-automation.sh`    | Install systemd timer for the daily MySQL backup               | Yes           |
-| `backup-mysql.sh`        | Dump MySQL, replicate off-site via rclone, emit Prometheus metrics | No       |
-| `clone-db.sh`            | Clone MySQL DB between dev and prod stacks on the same VPS    | Yes           |
-| `sync-grafana-alerts.sh` | Delete Grafana alert rules orphaned from `rules.yml`, reload provisioning | No |
-| `check-em-dashes.sh`     | CI lint check (used by `_verify.yml`)                          | No            |
+| Script                   | Purpose                                                                   | Requires Root |
+|--------------------------|---------------------------------------------------------------------------|---------------|
+| `lib.sh`                 | Shared utilities — sourced by all scripts, not run directly               | No            |
+| `setup-automation.sh`    | Install systemd timer for the daily MySQL backup                          | Yes           |
+| `backup-mysql.sh`        | Dump MySQL, replicate off-site via rclone, emit Prometheus metrics        | No            |
+| `clone-db.sh`            | Clone MySQL DB between dev and prod stacks on the same VPS                | Yes           |
+| `sync-grafana-alerts.sh` | Delete Grafana alert rules orphaned from `rules.yml`, reload provisioning | No            |
+| `check-em-dashes.sh`     | CI lint check (used by `_verify.yml`)                                     | No            |
 
 ---
 
@@ -53,7 +53,7 @@ failing run must never look like a successful one, because the Grafana alert is 
 
 ## Key Docs
 
-| Topic                                                              | Doc                                                    |
-|---------------------------------------------------------------------|--------------------------------------------------------|
+| Topic                                                                      | Doc                                              |
+|----------------------------------------------------------------------------|--------------------------------------------------|
 | VPS-wide scripts (install-docker, maintenance, docker-cleanup, setup-swap) | `Infrastructure/scripts/CLAUDE.md`               |
-| backup-mysql, clone-db — all flags + examples                     | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md)       |
+| backup-mysql, clone-db — all flags + examples                              | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md) |

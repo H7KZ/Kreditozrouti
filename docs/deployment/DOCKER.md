@@ -64,14 +64,14 @@ environment-agnostic. The builder stage sets each `VITE_*` var to a placeholder 
 `client/docker-entrypoint.sh` rewrites the tokens in the built JS with the container's real env values before nginx
 starts:
 
-| Build-time placeholder                  | Runtime env var            |
-|-----------------------------------------|----------------------------|
-| `__VITE_API_URL_PLACEHOLDER__`          | `VITE_API_URL`             |
-| `__VITE_FARO_COLLECTOR_URL_PLACEHOLDER__` | `VITE_FARO_COLLECTOR_URL`  |
-| `__VITE_APP_VERSION_PLACEHOLDER__`      | `VITE_APP_VERSION`         |
-| `__VITE_APP_ENV_PLACEHOLDER__`          | `VITE_APP_ENV`             |
-| `__VITE_UMAMI_WEBSITE_ID_PLACEHOLDER__` | `VITE_UMAMI_WEBSITE_ID`    |
-| `__VITE_UMAMI_SRC_PLACEHOLDER__`        | `VITE_UMAMI_SRC`           |
+| Build-time placeholder                    | Runtime env var           |
+|-------------------------------------------|---------------------------|
+| `__VITE_API_URL_PLACEHOLDER__`            | `VITE_API_URL`            |
+| `__VITE_FARO_COLLECTOR_URL_PLACEHOLDER__` | `VITE_FARO_COLLECTOR_URL` |
+| `__VITE_APP_VERSION_PLACEHOLDER__`        | `VITE_APP_VERSION`        |
+| `__VITE_APP_ENV_PLACEHOLDER__`            | `VITE_APP_ENV`            |
+| `__VITE_UMAMI_WEBSITE_ID_PLACEHOLDER__`   | `VITE_UMAMI_WEBSITE_ID`   |
+| `__VITE_UMAMI_SRC_PLACEHOLDER__`          | `VITE_UMAMI_SRC`          |
 
 > **The trick only works while `turbo.json` declares these vars under the `build` task's `env` allowlist.** turbo 2 runs
 > tasks in strict env mode: any variable not declared there is **removed** from the task environment, not merely left
@@ -169,18 +169,18 @@ echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
 
 Every third-party image in every Compose file is pinned. Nothing runs on `:latest`.
 
-| Image                                         | Used by                                        |
-|-----------------------------------------------|------------------------------------------------|
-| `mysql:9`                                     | production, development, local                 |
-| `redis:8-alpine`                              | production, development, local                 |
-| `phpmyadmin:5.2.3-apache`                     | production, development, local                 |
-| `myoung34/github-runner:2.337.0`              | `deployment/github-runner`                     |
-| `prom/prometheus:v3`                          | `deployment/monitoring`, local                 |
-| `grafana/grafana:13.2`                        | `deployment/monitoring`, local                 |
-| `grafana/loki:3.7`                            | `deployment/monitoring`, local                 |
-| `grafana/alloy:v1.19.2`                       | `deployment/monitoring`, local (no floating `v1` tag is published, so the exact version is pinned) |
-| `ghcr.io/umami-software/umami:postgresql-v2.16` | `deployment/monitoring`                      |
-| `postgres:16-alpine`                          | `deployment/monitoring` (Umami DB, already pinned) |
+| Image                                           | Used by                                                                                            |
+|-------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| `mysql:9`                                       | production, development, local                                                                     |
+| `redis:8-alpine`                                | production, development, local                                                                     |
+| `phpmyadmin:5.2.3-apache`                       | production, development, local                                                                     |
+| `myoung34/github-runner:2.337.0`                | `deployment/github-runner`                                                                         |
+| `prom/prometheus:v3`                            | `deployment/monitoring`, local                                                                     |
+| `grafana/grafana:13.2`                          | `deployment/monitoring`, local                                                                     |
+| `grafana/loki:3.7`                              | `deployment/monitoring`, local                                                                     |
+| `grafana/alloy:v1.19.2`                         | `deployment/monitoring`, local (no floating `v1` tag is published, so the exact version is pinned) |
+| `ghcr.io/umami-software/umami:postgresql-v2.16` | `deployment/monitoring`                                                                            |
+| `postgres:16-alpine`                            | `deployment/monitoring` (Umami DB, already pinned)                                                 |
 
 **Policy:** pin the major (or major/minor) tag, never `:latest`. Every deploy runs `docker compose pull`, so a floating
 tag can silently carry a stateful service across a major version, and for a database that is not reversible.

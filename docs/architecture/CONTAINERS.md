@@ -80,12 +80,12 @@ Self-hosted GitHub Actions runners registered to the repo.
 
 Names shown are the `-prod` forms; `-dev` equivalents exist for development.
 
-| Network                              | Purpose                         | Who joins                             |
-|--------------------------------------|---------------------------------|---------------------------------------|
-| `public-network`                     | Public ingress, Traefik routing | api, client, mcp (+ Infra Traefik)    |
-| `kreditozrouti-mysql-network-prod`   | DB access                       | api, mcp, mysql, phpmyadmin           |
-| `kreditozrouti-redis-network-prod`   | Queue + sessions                | api, scraper, redis                   |
-| `kreditozrouti-monitoring-network`   | Prometheus scrape (per-repo)    | api, scraper, prometheus, alloy       |
+| Network                            | Purpose                         | Who joins                          |
+|------------------------------------|---------------------------------|------------------------------------|
+| `public-network`                   | Public ingress, Traefik routing | api, client, mcp (+ Infra Traefik) |
+| `kreditozrouti-mysql-network-prod` | DB access                       | api, mcp, mysql, phpmyadmin        |
+| `kreditozrouti-redis-network-prod` | Queue + sessions                | api, scraper, redis                |
+| `kreditozrouti-monitoring-network` | Prometheus scrape (per-repo)    | api, scraper, prometheus, alloy    |
 
 Networks are **isolated** — the scraper cannot reach MySQL directly; it can only talk to Redis. The client container
 (Nginx) cannot reach MySQL or Redis.
@@ -96,10 +96,10 @@ Networks are **isolated** — the scraper cannot reach MySQL directly; it can on
 
 Names shown are the `-prod` forms; `-dev` equivalents exist for development.
 
-| Volume                              | Mounted by | Data                       | Ephemeral?     |
-|-------------------------------------|------------|----------------------------|----------------|
-| `kreditozrouti-mysql-volume-prod`   | mysql      | All course/study-plan data | No — persisted |
-| `kreditozrouti-redis-volume-prod`   | redis      | BullMQ queues, sessions (AOF) | No — persisted |
+| Volume                            | Mounted by | Data                          | Ephemeral?     |
+|-----------------------------------|------------|-------------------------------|----------------|
+| `kreditozrouti-mysql-volume-prod` | mysql      | All course/study-plan data    | No — persisted |
+| `kreditozrouti-redis-volume-prod` | redis      | BullMQ queues, sessions (AOF) | No — persisted |
 
 TLS certificates live in the Infrastructure Traefik stack's `traefik-certificates-volume`, not here.
 

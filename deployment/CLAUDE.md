@@ -57,7 +57,8 @@ Requires `.env` (written by CI from GitHub Secrets — never placed manually) an
 For single-service deploys, only the relevant tag env var is required (e.g. `API_IMAGE_TAG` for `service=api`).
 `api`/`scraper`/`mcp` single-service deploys also bring up their infrastructure dependencies (`mysql`/`redis`) so the
 service never starts without them; `client` uses `--no-deps` (its dependency is the app-level `api`). Old version
-directories under `$HOME/kreditozrouti/versions/<environment>/` older than 7 days are cleaned up after each deploy (minimum 3 kept).
+directories under `$HOME/kreditozrouti/versions/<environment>/` older than 7 days are cleaned up after each deploy
+(minimum 3 kept).
 
 ---
 
@@ -80,11 +81,13 @@ each `deploy.sh`): monitoring → `kreditozrouti-monitoring`, runner → `kredit
 the external `public-network` (owned by Infrastructure) is. See NAMING.md in the Infrastructure repo.
 
 **`.env` is written by CI, never committed.** `_deploy-service.yml` and `deploy-all.yml` construct it from GitHub
-Environment secrets/variables and write it into the version directory (`~/kreditozrouti/versions/<env>/<sha>/.env`) before calling
+Environment secrets/variables and write it into the version directory (`~/kreditozrouti/versions/<env>/<sha>/.env`)
+before calling
 `deploy.sh`.
 
 **Alert rules removed from `rules.yml` are not deleted from Grafana by provisioning** — the file provisioner only
-adds/updates. Run `scripts/sync-grafana-alerts.sh` (see [MONITORING.md](../docs/deployment/MONITORING.md#keeping-grafana-in-sync-with-rulesyml))
+adds/updates. Run `scripts/sync-grafana-alerts.sh`
+(see [MONITORING.md](../docs/deployment/MONITORING.md#keeping-grafana-in-sync-with-rulesyml))
 after every monitoring redeploy that touched `rules.yml` to delete orphaned rules and reload provisioning; the
 dashboards file provisioner does delete removed dashboards on its own (no `disableDeletion: true` set), so dashboard
 files need no equivalent step.
@@ -139,7 +142,8 @@ policy so sessions and queue jobs are never silently dropped.
 
 **Both MySQL and Redis require named volumes to be created on the host before first `docker compose up`.** Production:
 `docker volume create kreditozrouti-mysql-volume-prod && docker volume create kreditozrouti-redis-volume-prod`.
-Development: `docker volume create kreditozrouti-mysql-volume-dev && docker volume create kreditozrouti-redis-volume-dev`.
+Development:
+`docker volume create kreditozrouti-mysql-volume-dev && docker volume create kreditozrouti-redis-volume-dev`.
 
 **`deploy.sh` uses `$SCRIPT_DIR`** — must be called by path (`./deployment/deploy.sh`) or from within `deployment/`. The
 working directory doesn't matter; only the script's own location does.

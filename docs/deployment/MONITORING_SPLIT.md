@@ -2,7 +2,8 @@
 
 The monitoring stack (Prometheus + Grafana + Loki + Alloy + Postgres + Umami) is the single heaviest
 tenant on the production VPS - roughly 2.5 GB of memory limits and a growing
-`kreditozrouti-prometheus-volume` / `kreditozrouti-loki-volume` footprint on the same 38 GB disk as the app. On the 4 GB production host it competes for
+`kreditozrouti-prometheus-volume` / `kreditozrouti-loki-volume` footprint on the same 38 GB disk as the app. On the 4 GB
+production host it competes for
 RAM/disk with the very app it monitors, and when the host is starved it OOM-kills Prometheus + API
 together, producing the `DatasourceNoData` alert storms.
 
@@ -44,14 +45,14 @@ anything else:
 3. **Repoint Prometheus scraping.** `prometheus.yml` currently uses Docker service discovery over the
    local `/var/run/docker.sock`. Off-box it can no longer read the prod Docker socket, so switch the
    prod app targets to either:
-   - static targets pointing at the prod host's private IP + the app metrics ports, or
-   - Docker SD against the prod host's Docker API exposed over the private network (TLS-protected).
-   Keep scrape of node/cadvisor exporters if present.
+	- static targets pointing at the prod host's private IP + the app metrics ports, or
+	- Docker SD against the prod host's Docker API exposed over the private network (TLS-protected).
+	  Keep scrape of node/cadvisor exporters if present.
 
 4. **Keep Alloy on the prod host.** Alloy reads the local Docker socket and the Traefik log volume,
    so it must run where the containers are. Change only its Loki write endpoint to the monitoring
-   host: `http://<monitoring-private-ip>:3100/loki/api/v1/push` in `alloy/config.alloy`. Remove Loki
-   (and Prometheus/Grafana/Umami) from the prod-side compose - leave prod running just the app +
+   host: `http://<monitoring-private-ip>:3100/loki/api/v1/push` in `alloy/config.alloy`. Remove Loki (and
+   Prometheus/Grafana/Umami) from the prod-side compose - leave prod running just the app +
    Traefik + Alloy.
 
 5. **Faro / browser telemetry.** The Faro receiver lives inside Alloy on the prod host (routed at
@@ -63,10 +64,10 @@ anything else:
 
 ## What each host runs afterwards
 
-| Host            | Runs                                                        |
-|-----------------|-------------------------------------------------------------|
-| prod VPS        | traefik, api, scraper, client, mcp, mysql, redis, phpmyadmin, **alloy** |
-| monitoring VPS  | traefik, prometheus, grafana, loki, umami, umami-db          |
+| Host           | Runs                                                                    |
+|----------------|-------------------------------------------------------------------------|
+| prod VPS       | traefik, api, scraper, client, mcp, mysql, redis, phpmyadmin, **alloy** |
+| monitoring VPS | traefik, prometheus, grafana, loki, umami, umami-db                     |
 
 ## If you must keep it co-located (no second host yet)
 

@@ -69,7 +69,7 @@ Filters are combined — all active filters apply at once. Use **Clear all** in 
    content is available for that course, the English version is shown.
 3. Below the syllabus: all available **unit types** (lecture, exercise, seminar) and their time slots
 4. Click a slot to add it to your timetable
-    - If you already have a unit of the same type selected for this course, it is swapped out automatically
+	- If you already have a unit of the same type selected for this course, it is swapped out automatically
 5. Repeat for each unit type the course requires (some courses have only lectures; others require both a lecture and an
    exercise)
 
@@ -96,11 +96,11 @@ building your schedule course-by-course.
 1. **Add courses to your basket** — type a course code or name in the search box and click to add. Remove courses with
    the × button. The basket holds the courses you want the solver to schedule.
 2. **Set constraints** (all optional):
-    - **Min / max ECTS** — total credit range for the generated schedule
-    - **Preferred days** — toggle the days you'd like classes on; the solver deprioritises other days but doesn't block
-      them if no alternative exists
-    - **Blackout windows** — mark time ranges when you're unavailable (e.g. a part-time job)
-    - **Max consecutive hours** — cap how many hours can be scheduled back-to-back
+	- **Min / max ECTS** — total credit range for the generated schedule
+	- **Preferred days** — toggle the days you'd like classes on; the solver deprioritises other days but doesn't block
+	  them if no alternative exists
+	- **Blackout windows** — mark time ranges when you're unavailable (e.g. a part-time job)
+	- **Max consecutive hours** — cap how many hours can be scheduled back-to-back
 3. Click **Generate timetables**. Constraints are saved automatically and reused next time you open the tab.
 
 ### Results
