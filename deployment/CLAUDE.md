@@ -31,8 +31,7 @@ deployment/
 │           │   └── loki.yml              # Auto-provisions Loki datasource in Grafana
 │           ├── dashboards/
 │           │   ├── dashboards.yml        # File provisioner — points at this directory, deletion enabled
-│           │   ├── api.json / client.json / logs.json / scraper.json  # one dashboard per service
-│           │   └── crowdsec.json         # single merged CrowdSec dashboard (LAPI dashboard dropped, metrics unavailable)
+│           │   └── api.json / client.json / logs.json / scraper.json  # one dashboard per service (no CrowdSec dashboard — CrowdSec/WAF moved to Cloudflare, Traefik to Infrastructure)
 │           └── alerting/
 │               ├── rules.yml             # Alert rules (infrastructure, scraper, application)
 │               ├── notification-policies.yml

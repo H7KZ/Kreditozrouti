@@ -84,8 +84,9 @@ All components run in the `kreditozrouti-monitoring-internal-network` Docker net
 `public-network`
 (for public routing). Prometheus and Alloy also join `kreditozrouti-monitoring-network` — Prometheus to reach container
 IPs discovered via
-Docker SD and to scrape Traefik (`traefik:8080`) + CrowdSec (`crowdsec:6060`) metrics; Alloy tails app container stdout
-on the same host via the Docker socket.
+Docker SD; Alloy tails app container stdout on the same host via the Docker socket. Traefik and CrowdSec are no
+longer part of this stack - Traefik now runs in the shared Infrastructure stack and CrowdSec/WAF coverage moved to
+Cloudflare, so no Prometheus target and no Grafana dashboard covers either anymore.
 
 > **Docker socket access:** Prometheus and Alloy both read `/var/run/docker.sock`. They must run with the
 > host's `docker` group GID via `group_add` in `docker-compose.monitoring.yml` (defaults to `988`; override
@@ -277,14 +278,12 @@ Provisioned from `../../deployment/monitoring/grafana/provisioning/dashboards`.
 | Scraper          | `kreditozrouti-scraper` | Prometheus | Queue depth, silent failures, items processed, last-run timestamp                                                                  |
 | Log Explorer     | `kreditozrouti-logs`    | Loki       | Searchable log view for api + scraper, filterable by level / context / job                                                         |
 | Client (Browser) | `kreditozrouti-client`  | Loki       | JS exceptions, Web Vitals, navigation events from Faro                                                                             |
-| Crowdsec         | `crowdsec-merged`       | Prometheus | One dashboard for CrowdSec: summary, per-instance system (mem/cpu/up-since), parsing, buckets, alerts/decisions, cumulative totals |
 
-One dashboard per service is the target shape. `crowdsec.json` replaced four overlapping dashboards
-(`crowdsec-overview.json`, `crowdsec-details.json`, `crowdsec-insight.json`, `crowdsec-lapi.json`) that had
-duplicated panels (e.g. "Buckets overflow" appeared in three of them) and inconsistent `gridPos`. LAPI metrics were
-confirmed not working in this deployment, so `crowdsec-lapi.json` was dropped entirely rather than merged. The file
-dashboard provisioner (`dashboards.yml`, no `disableDeletion: true`) deletes dashboards removed from disk on its own,
-so no manual Grafana action was needed to retire the three merged-away files.
+One dashboard per service is the target shape. CrowdSec is not part of this stack - CrowdSec/WAF coverage moved to
+Cloudflare and Traefik moved to the shared Infrastructure repo, so the merged `crowdsec.json` dashboard (itself the
+result of consolidating four earlier overlapping CrowdSec dashboards) was removed outright rather than kept as a
+dead, no-data panel set. The file dashboard provisioner (`dashboards.yml`, no `disableDeletion: true`) deletes
+dashboards removed from disk on its own, so no manual Grafana action was needed to retire it.
 
 ### Common LogQL queries
 
@@ -339,8 +338,8 @@ per-container env metadata — no static target list required.
 
 > **Coverage:** only the `api` container is scraped today. The scraper process is **not** scraped - its
 > queue depth and `scraper_*` counters are exposed through the API's Redis-backed gauges above (the Scraper
-> dashboard is fed by the API scrape), and the `mcp` service exposes no `/metrics` endpoint. Static jobs
-> also scrape Traefik (`traefik:8080`) and CrowdSec (`crowdsec:6060`).
+> dashboard is fed by the API scrape), and the `mcp` service exposes no `/metrics` endpoint. There are no static
+> scrape targets - Traefik and CrowdSec were removed from this stack (see above) and never had one re-added.
 
 ---
 
@@ -426,7 +425,7 @@ docker compose -p kreditozrouti-monitoring exec prometheus wget -qO- http://loca
   | jq '.data.activeTargets[] | {job:.labels.job, health:.health, err:.lastError}'
 ```
 
-If jobs are `down` with a permission or connection error, fix the GID (or the CrowdSec bind address) and redeploy.
+If jobs are `down` with a permission or connection error, fix the GID and redeploy.
 
 1. Check Alloy is running and healthy:
 
@@ -476,7 +475,7 @@ If jobs are `down` with a permission or connection error, fix the GID (or the Cr
 
 6. Verify the monitoring networks are wired correctly:
     ```bash
-    docker network inspect kreditozrouti-monitoring-network   # api, scraper, alloy, prometheus, traefik, crowdsec should appear
+    docker network inspect kreditozrouti-monitoring-network   # api, scraper, alloy, prometheus should appear
     docker network inspect kreditozrouti-monitoring-internal-network  # alloy, loki, prometheus, grafana
     ```
 
