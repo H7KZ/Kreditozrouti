@@ -1,0 +1,22 @@
+groups:
+  - name: kreditozrouti-logs
+    interval: 1m
+    rules:
+      - alert: LogErrorBurst
+        expr: sum by (project, service, env) (count_over_time({project="kreditozrouti", source="docker", env="production", level=~"ERROR|FATAL"}[10m])) > 20
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Kreditozrouti {{ $labels.service }} is logging errors
+          description: More than 20 ERROR/FATAL lines in 10 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/a/grafana-lokiexplore-app/explore
+      - alert: FrontendErrorSpike
+        expr: sum by (project, service, env) (count_over_time({project="kreditozrouti", source="faro", kind="exception", env="production"}[10m])) > 20
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Kreditozrouti browser errors spiking
+          description: More than 20 JavaScript exceptions reported by browsers in 10 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-frontend

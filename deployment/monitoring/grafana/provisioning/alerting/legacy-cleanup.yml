@@ -1,0 +1,36 @@
+apiVersion: 1
+deleteRules:
+  - orgId: 1
+    uid: container-down
+  - orgId: 1
+    uid: scraper-container-down
+  - orgId: 1
+    uid: web-container-down
+  - orgId: 1
+    uid: mysql-down
+  - orgId: 1
+    uid: redis-down
+  - orgId: 1
+    uid: scraper-jobs-failed
+  - orgId: 1
+    uid: scraper-stale
+  - orgId: 1
+    uid: scraper-silent-failures-rising
+  - orgId: 1
+    uid: scraper-failure-rate-high
+  - orgId: 1
+    uid: api-error-rate-high
+  - orgId: 1
+    uid: api-p99-latency-high
+  - orgId: 1
+    uid: mysql-backup-stale
+  - orgId: 1
+    uid: mysql-backup-not-offsite
+deleteContactPoints:
+  - orgId: 1
+    uid: discord-webhook
+deleteTemplates:
+  - orgId: 1
+    name: discord_alert_message
+resetPolicies:
+  - 1

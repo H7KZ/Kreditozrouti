@@ -1,0 +1,315 @@
+groups:
+  - name: kreditozrouti-alerts
+    interval: 30s
+    rules:
+      - alert: ServiceDown
+        expr: (max by (project, service, env) (up{project="kreditozrouti", service="api", env="production"}) == 0) or absent(up{project="kreditozrouti", service="api", env="production"})
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Kreditozrouti api is down
+          description: No production api container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+      - alert: ServiceDown
+        expr: (max by (project, service, env) (up{project="kreditozrouti", service="scraper", env="production"}) == 0) or absent(up{project="kreditozrouti", service="scraper", env="production"})
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Kreditozrouti scraper is down
+          description: No production scraper container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+      - alert: ServiceDown
+        expr: (max by (project, service, env) (up{project="kreditozrouti", service="mysqld-exporter", env="production"}) == 0) or absent(up{project="kreditozrouti", service="mysqld-exporter", env="production"})
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Kreditozrouti mysqld-exporter is down
+          description: No production mysqld-exporter container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+      - alert: ServiceDown
+        expr: (max by (project, service, env) (up{project="kreditozrouti", service="redis-exporter", env="production"}) == 0) or absent(up{project="kreditozrouti", service="redis-exporter", env="production"})
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Kreditozrouti redis-exporter is down
+          description: No production redis-exporter container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+      - alert: OriginProbeFailing
+        expr: max by (project, service, env) (probe_success{project="kreditozrouti", service="api", env="production"}) == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: Kreditozrouti api is not serving through Traefik
+          description: The internal probe of https://kreditozrouti.cz/api/health via Traefik has failed for 3 minutes. Cloudflare edge outages are not visible here.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+      - alert: OriginProbeFailing
+        expr: max by (project, service, env) (probe_success{project="kreditozrouti", service="client", env="production"}) == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: Kreditozrouti client is not serving through Traefik
+          description: The internal probe of https://kreditozrouti.cz/ via Traefik has failed for 3 minutes. Cloudflare edge outages are not visible here.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+      - alert: EdgeErrorBudgetBurnFast
+        expr: project_service:edge_errors:ratio_rate1h{project="kreditozrouti", env="production"} > 0.144 and project_service:edge_errors:ratio_rate5m{project="kreditozrouti", env="production"} > 0.144 and project_service:edge_requests:rate1h{project="kreditozrouti", env="production"} * 3600 > 30
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Kreditozrouti {{ $labels.service }} is burning its error budget fast
+          description: More than 14.4% of requests through Traefik failed with 5xx over both the last hour and the last 5 minutes. At this rate the monthly 99% budget is gone in about two days.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+      - alert: EdgeErrorBudgetBurnSlow
+        expr: project_service:edge_errors:ratio_rate6h{project="kreditozrouti", env="production"} > 0.06 and project_service:edge_errors:ratio_rate30m{project="kreditozrouti", env="production"} > 0.06 and project_service:edge_requests:rate6h{project="kreditozrouti", env="production"} * 21600 > 180
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: Kreditozrouti {{ $labels.service }} is steadily burning its error budget
+          description: More than 6% of requests through Traefik failed with 5xx over the last 6 hours and 30 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+      - alert: ApiSlowRequests
+        expr: project_service:http_slow_requests:rate5m{project="kreditozrouti", service="api", env="production"} / project_service:http_slo_requests:rate5m{project="kreditozrouti", service="api", env="production"} > 0.05 and project_service:http_slo_requests:rate5m{project="kreditozrouti", service="api", env="production"} * 300 > 20
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: Kreditozrouti api is slow
+          description: More than 5% of api requests took longer than 1 s over 10 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-api
+      - alert: WorkerJobsFailing
+        expr: project_queue:worker_failures:increase15m{project="kreditozrouti", env="production", queue="ScraperResponseQueue"} > 3
+        for: 1m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: Kreditozrouti ScraperResponseQueue jobs are failing
+          description: More than 3 ScraperResponseQueue jobs failed in the last 15 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-api
+      - alert: QueueBacklog
+        expr: max by (project, env, queue) (bullmq_job_count{project="kreditozrouti", env="production", queue="ScraperResponseQueue", state="waiting"}) > 50
+        for: 15m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: Kreditozrouti ScraperResponseQueue queue is backing up
+          description: More than 50 jobs have been waiting in ScraperResponseQueue for 15 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-api
+      - alert: ScheduledJobStale
+        expr: (time() - max by (project, env, job_name) (worker_last_success_timestamp_seconds{project="kreditozrouti", env="production", job_name="InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00)"}) > 28800) or (absent_over_time(worker_last_success_timestamp_seconds{project="kreditozrouti", env="production", job_name="InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00)"}[28800s]))
+        for: 10m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: Kreditozrouti scheduled job InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00) has not succeeded
+          description: InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00) runs every 4 h but has not completed successfully in 8 h.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-api
+      - alert: WorkerJobsFailing
+        expr: project_queue:worker_failures:increase15m{project="kreditozrouti", env="production", queue="ScraperRequestQueue"} > 3
+        for: 1m
+        labels:
+          severity: warning
+          service: scraper
+        annotations:
+          summary: Kreditozrouti ScraperRequestQueue jobs are failing
+          description: More than 3 ScraperRequestQueue jobs failed in the last 15 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-scraper
+      - alert: QueueBacklog
+        expr: max by (project, env, queue) (bullmq_job_count{project="kreditozrouti", env="production", queue="ScraperRequestQueue", state="waiting"}) > 50
+        for: 15m
+        labels:
+          severity: warning
+          service: scraper
+        annotations:
+          summary: Kreditozrouti ScraperRequestQueue queue is backing up
+          description: More than 50 jobs have been waiting in ScraperRequestQueue for 15 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-scraper
+      - alert: ScheduledJobStale
+        expr: (time() - max by (project, env, job_name) (worker_last_success_timestamp_seconds{project="kreditozrouti", env="production", job_name="InSIS Academic Schedules Request (daily at 1 AM)"}) > 172800) or (absent_over_time(worker_last_success_timestamp_seconds{project="kreditozrouti", env="production", job_name="InSIS Academic Schedules Request (daily at 1 AM)"}[172800s]))
+        for: 10m
+        labels:
+          severity: warning
+          service: scraper
+        annotations:
+          summary: Kreditozrouti scheduled job InSIS Academic Schedules Request (daily at 1 AM) has not succeeded
+          description: InSIS Academic Schedules Request (daily at 1 AM) runs every 1 d but has not completed successfully in 2 d.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-scraper
+      - alert: MySQLDown
+        expr: max by (project, service, env) (mysql_up{project="kreditozrouti", service="mysqld-exporter", env="production"}) == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Kreditozrouti MySQL is unreachable
+          description: The mysqld-exporter exporter is running but cannot reach MySQL for 5 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-data
+      - alert: MySQLConnectionsHigh
+        expr: mysql_global_status_threads_connected{project="kreditozrouti", service="mysqld-exporter", env="production"} / mysql_global_variables_max_connections{project="kreditozrouti", service="mysqld-exporter", env="production"} > 0.8
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: Kreditozrouti MySQL connections near the limit
+          description: More than 80% of max_connections have been in use for 15 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-data
+      - alert: RedisDown
+        expr: max by (project, service, env) (redis_up{project="kreditozrouti", service="redis-exporter", env="production"}) == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Kreditozrouti Redis is unreachable
+          description: The redis-exporter exporter is running but cannot reach Redis for 5 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-data
+      - alert: RedisMemoryHigh
+        expr: redis_memory_used_bytes{project="kreditozrouti", service="redis-exporter", env="production"} / (redis_memory_max_bytes{project="kreditozrouti", service="redis-exporter", env="production"} > 0) > 0.9
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: Kreditozrouti Redis is close to maxmemory
+          description: Redis has used more than 90% of maxmemory for 15 minutes; BullMQ jobs start failing or evicting when it is reached.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-data
+      - alert: HostDiskWillFill
+        expr: predict_linear(node_filesystem_avail_bytes{project="kreditozrouti", service="host", mountpoint="/"}[6h], 86400) < 0 and node_filesystem_avail_bytes{project="kreditozrouti", service="host", mountpoint="/"} / node_filesystem_size_bytes{project="kreditozrouti", service="host", mountpoint="/"} < 0.3
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: VPS root disk will fill within 24 hours
+          description: At the growth rate of the last 6 hours the root filesystem runs out of space within a day.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+      - alert: HostDiskLow
+        expr: node_filesystem_avail_bytes{project="kreditozrouti", service="host", mountpoint="/"} / node_filesystem_size_bytes{project="kreditozrouti", service="host", mountpoint="/"} < 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: VPS root disk below 10% free
+          description: Less than 10% of the root filesystem is free.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+      - alert: HostMemoryLow
+        expr: node_memory_MemAvailable_bytes{project="kreditozrouti", service="host"} / node_memory_MemTotal_bytes{project="kreditozrouti", service="host"} < 0.1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: VPS memory below 10% available
+          description: Less than 10% of RAM has been available for 10 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+      - alert: HostSwapExhausted
+        expr: 1 - node_memory_SwapFree_bytes{project="kreditozrouti", service="host"} / (node_memory_SwapTotal_bytes{project="kreditozrouti", service="host"} > 0) > 0.9
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: VPS swap more than 90% used
+          description: "Swap has been more than 90% used for 30 minutes: the host is overcommitted and everything on it is slower. Add RAM or reduce memory limits."
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+      - alert: ContainerOOMKilled
+        expr: increase(container_oom_events_total{project="kreditozrouti"}[10m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Kreditozrouti {{ $labels.service }} ({{ $labels.env }}) was OOM-killed
+          description: The container hit its memory limit and was killed by the kernel in the last 10 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+      - alert: ContainerRestartLoop
+        expr: changes(container_start_time_seconds{project="kreditozrouti"}[15m]) >= 3
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Kreditozrouti {{ $labels.service }} ({{ $labels.env }}) keeps restarting
+          description: The container restarted at least 3 times in 15 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+      - alert: MonitoringComponentDown
+        expr: (max by (project, service, env) (up{project="kreditozrouti", service="prometheus", env="ops"}) == 0) or absent(up{project="kreditozrouti", service="prometheus", env="ops"})
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kreditozrouti monitoring: prometheus is down"
+          description: prometheus in the kreditozrouti-monitoring stack has not been scrapeable for 5 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+      - alert: MonitoringComponentDown
+        expr: (max by (project, service, env) (up{project="kreditozrouti", service="alertmanager", env="ops"}) == 0) or absent(up{project="kreditozrouti", service="alertmanager", env="ops"})
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kreditozrouti monitoring: alertmanager is down"
+          description: alertmanager in the kreditozrouti-monitoring stack has not been scrapeable for 5 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+      - alert: MonitoringComponentDown
+        expr: (max by (project, service, env) (up{project="kreditozrouti", service="loki", env="ops"}) == 0) or absent(up{project="kreditozrouti", service="loki", env="ops"})
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Kreditozrouti monitoring: loki is down"
+          description: loki in the kreditozrouti-monitoring stack has not been scrapeable for 5 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+      - alert: MonitoringComponentDown
+        expr: (max by (project, service, env) (up{project="kreditozrouti", service="alloy", env="ops"}) == 0) or absent(up{project="kreditozrouti", service="alloy", env="ops"})
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Kreditozrouti monitoring: alloy is down"
+          description: alloy in the kreditozrouti-monitoring stack has not been scrapeable for 5 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+      - alert: MonitoringComponentDown
+        expr: (max by (project, service, env) (up{project="kreditozrouti", service="grafana", env="ops"}) == 0) or absent(up{project="kreditozrouti", service="grafana", env="ops"})
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Kreditozrouti monitoring: grafana is down"
+          description: grafana in the kreditozrouti-monitoring stack has not been scrapeable for 5 minutes.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+      - alert: RuleEvaluationFailing
+        expr: increase(prometheus_rule_evaluation_failures_total{project="kreditozrouti", service="prometheus"}[10m]) > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Kreditozrouti monitoring: alert rules are failing to evaluate"
+          description: Some recording or alerting rules errored in the last 10 minutes; affected alerts cannot fire.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+      - alert: AlertDeliveryFailing
+        expr: increase(alertmanager_notifications_failed_total{project="kreditozrouti", service="alertmanager", integration="discord"}[15m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kreditozrouti monitoring: Discord notifications are failing"
+          description: Alertmanager cannot deliver to Discord. This alert silences the Watchdog heartbeat, so healthchecks.io reports the stack as down by e-mail.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+      - alert: MetricsDeliveryFailing
+        expr: increase(prometheus_remote_storage_samples_failed_total{project="kreditozrouti", service="alloy"}[10m]) > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Kreditozrouti monitoring: Alloy cannot write metrics to Prometheus"
+          description: Samples are being dropped between Alloy and Prometheus; dashboards and alerts are running on partial data.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+      - alert: Watchdog
+        expr: vector(1)
+        for: 0m
+        labels:
+          severity: none
+        annotations:
+          summary: Kreditozrouti monitoring heartbeat
+          description: Always firing. Routed only to healthchecks.io; if the pings stop, the alerting pipeline itself is broken.

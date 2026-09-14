@@ -1,160 +1,566 @@
-// Docker container log discovery → Loki
-// Reads container stdout/stderr via Docker socket.
-// Parses JSON lines (pino output) and extracts log level,
-// service, and env as Loki stream labels.
 
-discovery.docker "containers" {
-  host = "unix:///var/run/docker.sock"
+logging {
+  level  = "warn"
+  format = "logfmt"
 }
 
-discovery.relabel "container_labels" {
+// ---------------------------------------------------------------------------
+// Discovery: this project's containers only. Every other container on the VPS is dropped here,
+// before any log or metric pipeline sees it.
+// ---------------------------------------------------------------------------
+discovery.docker "containers" {
+  host             = "unix:///var/run/docker.sock"
+  refresh_interval = "30s"
+}
+
+discovery.relabel "project" {
   targets = discovery.docker.containers.targets
 
-  // Drop monitoring infrastructure containers — their logs are noise, not application data.
-  // Placed first so dropped containers never enter any downstream pipeline stage.
   rule {
-    source_labels = ["__meta_docker_container_name"]
-    regex         = "/(grafana|prometheus|loki|alloy|umami|postgres).*"
-    action        = "drop"
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    regex         = "kreditozrouti(-dev|-monitoring)?"
+    action        = "keep"
   }
-
-  // Use container name as the "app" label (strip leading /)
+  rule {
+    target_label = "project"
+    replacement  = "kreditozrouti"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    regex         = "kreditozrouti-dev"
+    target_label  = "env"
+    replacement   = "development"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    regex         = "kreditozrouti-monitoring"
+    target_label  = "env"
+    replacement   = "ops"
+  }
+  rule {
+    source_labels = ["env"]
+    regex         = ""
+    target_label  = "env"
+    replacement   = "production"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
   rule {
     source_labels = ["__meta_docker_container_name"]
     regex         = "/(.*)"
-    target_label  = "app"
-  }
-
-  // Expose container image for filtering
-  rule {
-    source_labels = ["__meta_docker_container_image"]
-    target_label  = "image"
-  }
-
-  // Tag with Compose project for guaranteed env separation in log queries
-  rule {
-    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
-    target_label  = "compose_project"
+    target_label  = "instance"
   }
 }
 
-loki.source.docker "docker_logs" {
-  host       = "unix:///var/run/docker.sock"
-  targets    = discovery.relabel.container_labels.output
-  forward_to = [loki.process.parse_json.receiver]
+// ---------------------------------------------------------------------------
+// Application metrics: containers labelled prometheus.io/scrape=true + prometheus.io/port=<n>
+// (optional prometheus.io/path). Addressed by container name: Docker SD reports only the first
+// network of a multi-network container, but Docker DNS resolves the name on the shared network.
+// ---------------------------------------------------------------------------
+discovery.relabel "scrape" {
+  targets = discovery.relabel.project.output
+
+  rule {
+    source_labels = ["__meta_docker_container_label_prometheus_io_scrape"]
+    regex         = "true"
+    action        = "keep"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_name", "__meta_docker_container_label_prometheus_io_port"]
+    regex         = "/(.+);(.+)"
+    target_label  = "__address__"
+    replacement   = "$1:$2"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_label_prometheus_io_path"]
+    regex         = "(.+)"
+    target_label  = "__metrics_path__"
+  }
+  rule {
+    source_labels = ["project", "service"]
+    separator     = "/"
+    target_label  = "job"
+  }
 }
 
-loki.process "parse_json" {
-  // Attempt to parse JSON; non-JSON lines pass through as plain text.
-  // Extract request_id and path in addition to standard label fields.
+prometheus.scrape "apps" {
+  targets         = discovery.relabel.scrape.output
+  scrape_interval = "30s"
+  scrape_timeout  = "10s"
+  forward_to      = [prometheus.remote_write.local.receiver]
+}
+
+// Traefik (shared, owned by Infrastructure): keep only this project's declared routers, derive
+// service/env from the router name "<project>-<router>-<suffix>@docker".
+prometheus.scrape "traefik" {
+  targets         = [{"__address__" = "traefik:8082", "job" = "kreditozrouti/traefik"}]
+  scrape_interval = "30s"
+  forward_to      = [prometheus.relabel.traefik.receiver]
+}
+
+prometheus.relabel "traefik" {
+  rule {
+    source_labels = ["__name__"]
+    regex         = "traefik_router_requests_total|traefik_router_request_duration_seconds_(bucket|count|sum)"
+    action        = "keep"
+  }
+  rule {
+    source_labels = ["router"]
+    regex         = "kreditozrouti-(api|client|mcp)-(.+)@docker"
+    action        = "keep"
+  }
+  rule {
+    source_labels = ["router"]
+    regex         = "kreditozrouti-(api|client|mcp)-(.+)@docker"
+    target_label  = "service"
+    replacement   = "$1"
+  }
+
+  rule {
+    source_labels = ["router"]
+    regex         = "kreditozrouti-(api|client|mcp)-(.*-)?dev(-.*)?@docker"
+    target_label  = "env"
+    replacement   = "development"
+  }
+  rule {
+    source_labels = ["env"]
+    regex         = ""
+    target_label  = "env"
+    replacement   = "production"
+  }
+  rule {
+    target_label = "project"
+    replacement  = "kreditozrouti"
+  }
+  rule {
+    regex  = "instance|protocol"
+    action = "labeldrop"
+  }
+  forward_to = [prometheus.remote_write.local.receiver]
+}
+
+// ---------------------------------------------------------------------------
+// Host (VPS) metrics. The host's /proc and / are mounted read-only under /host, /sys as itself.
+// ---------------------------------------------------------------------------
+prometheus.exporter.unix "host" {
+  procfs_path    = "/host/proc"
+  sysfs_path     = "/sys"
+  rootfs_path    = "/host/root"
+  set_collectors = ["cpu", "diskstats", "filesystem", "loadavg", "meminfo", "netdev", "pressure", "time", "uname", "vmstat"]
+
+  filesystem {
+    fs_types_exclude     = "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tmpfs|tracefs)$"
+    mount_points_exclude = "^/(dev|proc|run|sys|var/lib/docker/.+|var/lib/containerd/.+)($|/)"
+  }
+  netdev {
+    device_exclude = "^(veth.*|br-.*|docker.*|lo)$"
+  }
+}
+
+prometheus.scrape "host" {
+  targets         = prometheus.exporter.unix.host.targets
+  scrape_interval = "30s"
+  forward_to      = [prometheus.relabel.host.receiver]
+}
+
+prometheus.relabel "host" {
+  rule {
+    target_label = "project"
+    replacement  = "kreditozrouti"
+  }
+  rule {
+    target_label = "service"
+    replacement  = "host"
+  }
+  rule {
+    target_label = "env"
+    replacement  = "ops"
+  }
+  rule {
+    target_label = "instance"
+    replacement  = "vps"
+  }
+  rule {
+    target_label = "job"
+    replacement  = "kreditozrouti/host"
+  }
+  forward_to = [prometheus.remote_write.local.receiver]
+}
+
+// ---------------------------------------------------------------------------
+// Container metrics (cAdvisor): CPU, memory, OOM events for this project's containers only.
+// Needs the Docker socket and /run/containerd/containerd.sock.
+// ---------------------------------------------------------------------------
+prometheus.exporter.cadvisor "containers" {
+  docker_host                  = "unix:///var/run/docker.sock"
+  containerd_host              = "/run/containerd/containerd.sock"
+  docker_only                  = true
+  store_container_labels       = false
+  allowlisted_container_labels = ["com.docker.compose.project", "com.docker.compose.service"]
+  enabled_metrics              = ["cpu", "memory", "oom_event"]
+  storage_duration             = "1m"
+}
+
+prometheus.scrape "containers" {
+  targets         = prometheus.exporter.cadvisor.containers.targets
+  scrape_interval = "30s"
+  forward_to      = [prometheus.relabel.containers.receiver]
+}
+
+prometheus.relabel "containers" {
+  rule {
+    source_labels = ["container_label_com_docker_compose_project"]
+    regex         = "kreditozrouti(-dev|-monitoring)?"
+    action        = "keep"
+  }
+  rule {
+    target_label = "project"
+    replacement  = "kreditozrouti"
+  }
+  rule {
+    source_labels = ["container_label_com_docker_compose_project"]
+    regex         = "kreditozrouti-dev"
+    target_label  = "env"
+    replacement   = "development"
+  }
+  rule {
+    source_labels = ["container_label_com_docker_compose_project"]
+    regex         = "kreditozrouti-monitoring"
+    target_label  = "env"
+    replacement   = "ops"
+  }
+  rule {
+    source_labels = ["env"]
+    regex         = ""
+    target_label  = "env"
+    replacement   = "production"
+  }
+  rule {
+    source_labels = ["container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+  rule {
+    target_label = "job"
+    replacement  = "kreditozrouti/containers"
+  }
+  rule {
+    regex  = "container_label_.*|id|image|instance"
+    action = "labeldrop"
+  }
+  forward_to = [prometheus.remote_write.local.receiver]
+}
+
+// ---------------------------------------------------------------------------
+// Origin probes: each routed service through Traefik (Host + SNI of its public domain).
+// ---------------------------------------------------------------------------
+prometheus.exporter.blackbox "origin" {
+  config = "{\"modules\":{\"api_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"api_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}},\"client_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"client_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}}}}"
+  target {
+    name    = "api_production"
+    address = "https://traefik/api/health"
+    module  = "api_production"
+    labels  = {"service" = "api", "env" = "production", "domain" = "kreditozrouti.cz"}
+  }
+  target {
+    name    = "api_development"
+    address = "https://traefik/api/health"
+    module  = "api_development"
+    labels  = {"service" = "api", "env" = "development", "domain" = "dev.kreditozrouti.cz"}
+  }
+  target {
+    name    = "client_production"
+    address = "https://traefik/"
+    module  = "client_production"
+    labels  = {"service" = "client", "env" = "production", "domain" = "kreditozrouti.cz"}
+  }
+  target {
+    name    = "client_development"
+    address = "https://traefik/"
+    module  = "client_development"
+    labels  = {"service" = "client", "env" = "development", "domain" = "dev.kreditozrouti.cz"}
+  }
+}
+
+prometheus.scrape "probes" {
+  targets         = prometheus.exporter.blackbox.origin.targets
+  scrape_interval = "30s"
+  scrape_timeout  = "15s"
+  forward_to      = [prometheus.relabel.probes.receiver]
+}
+
+prometheus.relabel "probes" {
+  rule {
+    target_label = "project"
+    replacement  = "kreditozrouti"
+  }
+  rule {
+    target_label = "job"
+    replacement  = "kreditozrouti/probe"
+  }
+  forward_to = [prometheus.remote_write.local.receiver]
+}
+
+// ---------------------------------------------------------------------------
+// Traefik access log (shared file, every site on the VPS): keep this project's routers, drop client
+// IPs, query strings and private path segments before anything is stored.
+// ---------------------------------------------------------------------------
+local.file_match "traefik" {
+  path_targets = [{"__path__" = "/var/log/traefik/access.log"}]
+}
+
+loki.source.file "traefik" {
+  targets       = local.file_match.traefik.targets
+  tail_from_end = true
+  forward_to    = [loki.process.traefik.receiver]
+}
+
+loki.process "traefik" {
   stage.json {
-    expressions = {
-      level      = "level",
-      service    = "service",
-      env        = "env",
-      context    = "context",
-      request_id = "request_id",
-      path       = "path",
-      trace_id   = "trace_id",
-      span_id    = "span_id",
-    }
+    expressions = {router = "RouterName", status = "DownstreamStatus", method = "RequestMethod", start = "StartUTC"}
   }
+  stage.regex {
+    source     = "router"
+    expression = "^kreditozrouti-(?P<router_name>api|client|mcp)-(?P<suffix>.+)@docker$"
+  }
+  stage.template {
+    source   = "keep"
+    template = "{{ if .router_name }}yes{{ else }}no{{ end }}"
+  }
+  stage.drop {
+    source              = "keep"
+    value               = "no"
+    drop_counter_reason = "other_project"
+  }
+  stage.template {
+    source   = "service"
+    template = "{{ if eq .router_name \"api\" }}api{{ end }}{{ if eq .router_name \"client\" }}client{{ end }}{{ if eq .router_name \"mcp\" }}mcp{{ end }}"
+  }
+  stage.regex {
+    source     = "suffix"
+    expression = "(?P<dev>(^|-)dev(-|$))"
+  }
+  stage.template {
+    source   = "env"
+    template = "{{ if .dev }}development{{ else }}production{{ end }}"
+  }
+  stage.regex {
+    source     = "status"
+    expression = "^(?P<status_class>[1-5])"
+  }
+  stage.template {
+    source   = "level"
+    template = "{{ if eq .status_class \"5\" }}ERROR{{ else if eq .status_class \"4\" }}WARN{{ else }}INFO{{ end }}"
+  }
+  stage.replace {
+    expression = "\"(?:ClientAddr|ClientHost|ClientPort|request_X-Forwarded-For|request_Cf-Connecting-Ip|request_X-Real-Ip)\":\"([^\"]*)\""
+    replace    = "redacted"
+  }
+  stage.replace {
+    expression = "\"RequestPath\":\"[^\"?]*(\\?[^\"]*)\""
+    replace    = ""
+  }
+  stage.replace {
+    expression = "\"RequestPath\":\"[^\"]*?/s/([^/?#\"]+)"
+    replace    = "[id]"
+  }
+  stage.replace {
+    expression = "\"RequestPath\":\"[^\"]*?/share/([^/?#\"]+)"
+    replace    = "[id]"
+  }
+  stage.replace {
+    expression = "\"RequestPath\":\"[^\"]*?/ical/([^/?#\"]+)"
+    replace    = "[id]"
+  }
+  stage.timestamp {
+    source = "start"
+    format = "RFC3339Nano"
+  }
+  stage.static_labels {
+    values = {project = "kreditozrouti", source = "traefik"}
+  }
+  stage.labels {
+    values = {service = "", env = "", level = ""}
+  }
+  stage.structured_metadata {
+    values = {router = "", status = "", method = ""}
+  }
+  stage.label_drop {
+    values = ["filename"]
+  }
+  forward_to = [loki.write.local.receiver]
+}
 
-  // Drop health-check and metrics-scrape log lines — high-frequency, zero signal.
+// ---------------------------------------------------------------------------
+// Container logs (stdout/stderr) of this project's containers.
+// ---------------------------------------------------------------------------
+discovery.relabel "logs" {
+  targets = discovery.relabel.project.output
+
+  rule {
+    target_label = "source"
+    replacement  = "docker"
+  }
+}
+
+loki.source.docker "containers" {
+  host             = "unix:///var/run/docker.sock"
+  targets          = discovery.relabel.logs.output
+  refresh_interval = "30s"
+  forward_to       = [loki.process.containers.receiver]
+}
+
+loki.process "containers" {
+  stage.json {
+    expressions = {level = "level", path = "path", request_id = "request_id", trace_id = "trace_id", job_name = "job_name"}
+  }
   stage.drop {
     source              = "path"
-    expression          = "^/(health|metrics)$"
-    drop_counter_reason = "healthcheck_or_metrics_endpoint"
+    expression          = "^/(api/)?(health|metrics)$"
+    drop_counter_reason = "probe_request"
   }
-
-  // Promote pino fields to Loki stream labels for indexed queries
+  stage.replace {
+    expression = "/s/([^/?#\"\\s]+)"
+    replace    = "[id]"
+  }
+  stage.replace {
+    expression = "/share/([^/?#\"\\s]+)"
+    replace    = "[id]"
+  }
+  stage.replace {
+    expression = "/ical/([^/?#\"\\s]+)"
+    replace    = "[id]"
+  }
   stage.labels {
-    values = {
-      level   = "",
-      service = "",
-      env     = "",
-      context = "",
-    }
+    values = {level = ""}
   }
-
-  // Store request_id as structured metadata (not a stream label) for per-request
-  // trace correlation without blowing up label cardinality.
   stage.structured_metadata {
-    values = {
-      request_id = "",
-      trace_id   = "",
-      span_id    = "",
-    }
+    values = {request_id = "", trace_id = "", job_name = ""}
   }
-
-
-  forward_to = [loki.write.default.receiver]
+  forward_to = [loki.write.local.receiver]
 }
 
-loki.write "default" {
+// ---------------------------------------------------------------------------
+// Faro browser telemetry (errors + web vitals), same-origin via Traefik /faro on each app domain.
+// Source-map download is off: stack frames are client-supplied URLs.
+// ---------------------------------------------------------------------------
+faro.receiver "browser" {
+  server {
+    listen_address           = "0.0.0.0"
+    listen_port              = 12347
+    cors_allowed_origins     = ["https://kreditozrouti.cz", "https://dev.kreditozrouti.cz"]
+    max_allowed_payload_size = "1MiB"
+
+    rate_limiting {
+      rate       = 50
+      burst_size = 100
+    }
+  }
+
+  sourcemaps {
+    download = false
+  }
+
+  output {
+    logs = [loki.process.faro.receiver]
+  }
+}
+
+loki.process "faro" {
+  stage.logfmt {
+    mapping = {kind = "", app_environment = "", value_lcp = "", value_inp = "", value_cls = "", value_fcp = "", value_ttfb = ""}
+  }
+  stage.replace {
+    expression = "(?:page_url|url)=\"?[^\\s\"?]*(\\?[^\\s\"]*)"
+    replace    = ""
+  }
+  stage.replace {
+    expression = "/s/([^/?#\"\\s]+)"
+    replace    = "[id]"
+  }
+  stage.replace {
+    expression = "/share/([^/?#\"\\s]+)"
+    replace    = "[id]"
+  }
+  stage.replace {
+    expression = "/ical/([^/?#\"\\s]+)"
+    replace    = "[id]"
+  }
+  stage.template {
+    source   = "env"
+    template = "{{ .app_environment }}"
+  }
+  stage.static_labels {
+    values = {project = "kreditozrouti", source = "faro", service = "client"}
+  }
+  stage.labels {
+    values = {kind = "", env = ""}
+  }
+  stage.metrics {
+    metric.histogram {
+      name              = "web_vitals_lcp_milliseconds"
+      prefix            = "faro_"
+      description       = "Browser-reported LCP"
+      source            = "value_lcp"
+      buckets           = [500, 1000, 1500, 2500, 4000, 6000, 10000]
+      max_idle_duration = "24h"
+    }
+  }
+  stage.metrics {
+    metric.histogram {
+      name              = "web_vitals_inp_milliseconds"
+      prefix            = "faro_"
+      description       = "Browser-reported INP"
+      source            = "value_inp"
+      buckets           = [50, 100, 200, 350, 500, 1000, 2000]
+      max_idle_duration = "24h"
+    }
+  }
+  stage.metrics {
+    metric.histogram {
+      name              = "web_vitals_fcp_milliseconds"
+      prefix            = "faro_"
+      description       = "Browser-reported FCP"
+      source            = "value_fcp"
+      buckets           = [500, 1000, 1800, 2500, 3000, 5000]
+      max_idle_duration = "24h"
+    }
+  }
+  stage.metrics {
+    metric.histogram {
+      name              = "web_vitals_ttfb_milliseconds"
+      prefix            = "faro_"
+      description       = "Browser-reported TTFB"
+      source            = "value_ttfb"
+      buckets           = [100, 200, 400, 800, 1800, 3000]
+      max_idle_duration = "24h"
+    }
+  }
+  stage.metrics {
+    metric.histogram {
+      name              = "web_vitals_cls"
+      prefix            = "faro_"
+      description       = "Browser-reported CLS"
+      source            = "value_cls"
+      buckets           = [0.01, 0.05, 0.1, 0.15, 0.25, 0.5, 1]
+      max_idle_duration = "24h"
+    }
+  }
+  forward_to = [loki.write.local.receiver]
+}
+
+// ---------------------------------------------------------------------------
+// Sinks
+// ---------------------------------------------------------------------------
+loki.write "local" {
   endpoint {
     url = "http://loki:3100/loki/api/v1/push"
   }
 }
 
-// Grafana Faro receiver
-// Accepts browser telemetry pushed by @grafana/faro-web-sdk.
-// Forwards errors, logs, and web vitals to Loki.
-// Browser SDK points to: https://domain/faro/collect (production)
-//                        http://localhost:41247/collect (local dev)
-
-faro.receiver "browser" {
-  server {
-    listen_address       = "0.0.0.0"
-    listen_port          = 12347
-    cors_allowed_origins = [sys.env("FARO_ALLOWED_ORIGIN")]
+prometheus.remote_write "local" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
   }
-
-  output {
-    logs   = [loki.process.faro_labels.receiver]
-  }
-}
-
-// Enrich Faro log lines before writing to Loki.
-// Faro lines are logfmt (key=value). We add a static app label and
-// promote the `kind` field (exception/event/log/measurement) to a
-// stream label so dashboards can filter by {app="kreditozrouti", kind="exception"}.
-loki.process "faro_labels" {
-  stage.static_labels {
-    values = {
-      app = "kreditozrouti",
-    }
-  }
-
-  stage.logfmt {
-    mapping = {
-      "kind" = "kind",
-      "env"  = "app_environment",
-    }
-  }
-
-  stage.labels {
-    values = {
-      kind = "",
-      env  = "",
-    }
-  }
-
-  forward_to = [loki.write.default.receiver]
-}
-
-// ---------------------------------------------------------------------------
-// Traefik access log pipeline
-// ---------------------------------------------------------------------------
-local.file_match "traefik_access" {
-  path_targets = [{
-    __path__ = "/var/log/traefik/access.log",
-    job      = "traefik",
-    service  = "traefik",
-  }]
-}
-
-loki.source.file "traefik_access" {
-  targets    = local.file_match.traefik_access.targets
-  forward_to = [loki.write.default.receiver]
 }

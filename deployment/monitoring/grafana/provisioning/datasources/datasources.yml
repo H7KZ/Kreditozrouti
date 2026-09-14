@@ -1,0 +1,57 @@
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    uid: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      timeInterval: 30s
+      httpMethod: POST
+      manageAlerts: false
+      alertmanagerUid: Alertmanager
+      prometheusType: Prometheus
+  - name: Loki
+    uid: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    editable: false
+    jsonData:
+      maxLines: 5000
+      manageAlerts: false
+      alertmanagerUid: Alertmanager
+      derivedFields:
+        - name: request_id
+          matcherType: label
+          matcherRegex: request_id
+          url: '{project="kreditozrouti"} | request_id="${__value.raw}"'
+          datasourceUid: Loki
+          urlDisplayLabel: All logs of this request
+  - name: Alertmanager
+    uid: Alertmanager
+    type: alertmanager
+    access: proxy
+    url: http://alertmanager:9093
+    editable: false
+    jsonData:
+      implementation: prometheus
+      handleGrafanaManagedAlerts: false
+  - name: Umami
+    uid: Umami
+    type: grafana-postgresql-datasource
+    access: proxy
+    url: umami-db:5432
+    user: grafana_ro
+    editable: false
+    jsonData:
+      database: $UMAMI_DB_NAME
+      sslmode: disable
+      postgresVersion: 1800
+      maxOpenConns: 2
+      maxIdleConns: 1
+      connMaxLifetime: 14400
+    secureJsonData:
+      password: $UMAMI_GRAFANA_PASSWORD

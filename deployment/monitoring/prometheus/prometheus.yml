@@ -1,48 +1,59 @@
-# ==============================================================================
-# Prometheus Scrape Configuration
-# Description: Discovers API containers via Docker Socket SD.
-#              Prometheus reaches containers via kreditozrouti-monitoring-network.
-#              Per-container env label comes from the prometheus.io/env Docker label,
-#              so both prod and dev APIs are scraped with correct env metadata.
-# ==============================================================================
-
 global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
-
+  scrape_interval: 30s
+  scrape_timeout: 10s
+  evaluation_interval: 30s
+rule_files:
+  - /etc/prometheus/rules/*.yml
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
 scrape_configs:
-  # Discovers kreditozrouti-api containers (prod + dev) via Docker socket.
-  # Containers must have label prometheus.io/scrape=true to be included.
-  # Filters to kreditozrouti-monitoring-network only — avoids duplicate targets from multi-network containers.
-  - job_name: kreditozrouti-api
-    docker_sd_configs:
-      - host: unix:///var/run/docker.sock
-    metrics_path: /metrics
-    relabel_configs:
-      # Keep only containers that opt in for scraping
-      - source_labels: [ __meta_docker_container_label_prometheus_io_scrape ]
-        regex: "true"
-        action: keep
-      # Keep only the scrape-network interface — one target per container, not 4
-      - source_labels: [ __meta_docker_network_name ]
-        regex: kreditozrouti-monitoring-network
-        action: keep
-      # Build scrape address from the container's scrape-network IP + its prometheus.io/port label.
-      # Port comes from each container's own label (production.yml sets prometheus.io/port), so
-      # adding a new scrapable service needs no change here - just set the three prometheus.io labels.
-      - source_labels: [ __meta_docker_network_ip, __meta_docker_container_label_prometheus_io_port ]
-        regex: (.+);(.+)
-        target_label: __address__
-        replacement: '$1:$2'
-      # Pull env from the container's prometheus.io/env label (production / development)
-      - source_labels: [ __meta_docker_container_label_prometheus_io_env ]
-        target_label: env
-      # Use container name as instance label (strip leading /)
-      - source_labels: [ __meta_docker_container_name ]
-        regex: /(.*)
-        target_label: instance
-
-  # Traefik and CrowdSec are no longer part of this stack - Traefik now runs in the
-  # shared Infrastructure stack and CrowdSec/WAF coverage moved to Cloudflare. Their
-  # former static targets (traefik:8080, crowdsec:6060) were removed so they do not
-  # sit permanently DOWN and fire target-down alerts.
+  - job_name: kreditozrouti/prometheus
+    static_configs:
+      - targets:
+          - localhost:9090
+        labels:
+          project: kreditozrouti
+          service: prometheus
+          env: ops
+          instance: prometheus
+  - job_name: kreditozrouti/alertmanager
+    static_configs:
+      - targets:
+          - alertmanager:9093
+        labels:
+          project: kreditozrouti
+          service: alertmanager
+          env: ops
+          instance: alertmanager
+  - job_name: kreditozrouti/loki
+    static_configs:
+      - targets:
+          - loki:3100
+        labels:
+          project: kreditozrouti
+          service: loki
+          env: ops
+          instance: loki
+  - job_name: kreditozrouti/alloy
+    honor_labels: true
+    static_configs:
+      - targets:
+          - alloy:12345
+        labels:
+          project: kreditozrouti
+          service: alloy
+          env: ops
+          instance: alloy
+  - job_name: kreditozrouti/grafana
+    metrics_path: /grafana/metrics
+    static_configs:
+      - targets:
+          - grafana:3000
+        labels:
+          project: kreditozrouti
+          service: grafana
+          env: ops
+          instance: grafana

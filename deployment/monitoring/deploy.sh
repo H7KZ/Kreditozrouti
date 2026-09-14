@@ -2,114 +2,105 @@
 set -euo pipefail
 
 # ==============================================================================
-# Script Name: deploy.sh
-# Description: Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy).
-#              Traefik must already be running before this script is called.
-#              Configuration via environment variables or an env file.
+# Deploys the kreditozrouti-monitoring stack. Traefik (Infrastructure) must already run.
 #
-# Usage:       bash ./deploy.sh [--env-file <path>]
-#
-# Options:
-#   --env-file <path>     Path to a file of KEY=VALUE pairs to source before
-#                         validation (useful for local/manual runs)
-#
-# Required variables (set as environment variables or in the env file):
-#   MONITORING_DOMAIN       Public domain for Grafana + Faro routing
-#   GRAFANA_ADMIN_PASSWORD  Grafana admin password
-#   FARO_ALLOWED_ORIGIN     Allowed origin for Faro (e.g. https://example.com)
-#   UMAMI_DB_NAME           PostgreSQL database name for Umami
-#   UMAMI_DB_USER           PostgreSQL user for Umami
-#   UMAMI_DB_PASSWORD       PostgreSQL password for Umami
-#   UMAMI_APP_SECRET        Umami app secret for session signing
-#
-# Optional:
-#   GRAFANA_ADMIN_USER    Grafana admin username (default: admin)
-#   DISCORD_WEBHOOK_URL   Discord webhook for Grafana alerts
+# Required env:
+#   GRAFANA_ADMIN_PASSWORD, DISCORD_WEBHOOK_URL, HEALTHCHECKS_PING_URL
+#   UMAMI_DB_NAME, UMAMI_DB_USER, UMAMI_DB_PASSWORD, UMAMI_APP_SECRET
+# Optional env:
+#   GRAFANA_ADMIN_USER (default admin), DOCKER_GID (default: group id of /var/run/docker.sock)
 # ==============================================================================
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly SCRIPT_NAME="$(basename "$0")"
 readonly STACK_NAME="kreditozrouti-monitoring"
 
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
+source "$SCRIPT_DIR/../lib.sh"
 
-ENV_FILE=""
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        --env-file) ENV_FILE="$2"; shift 2 ;;
-        *) log_error "Unknown argument: $1"; exit 1 ;;
-    esac
-done
+require() {
+    local missing=()
+    for name in "$@"; do [[ -n "${!name:-}" ]] || missing+=("$name"); done
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        log_error "Missing required env: ${missing[*]}"
+        exit 1
+    fi
+}
 
-if [[ -n "$ENV_FILE" ]]; then
-    [[ -f "$ENV_FILE" ]] || { log_error "Env file not found: $ENV_FILE"; exit 1; }
-    # shellcheck source=/dev/null
-    set -a; source "$ENV_FILE"; set +a
-fi
+wait_for() {
+    local description="$1" attempts="$2"; shift 2
+    for ((i = 1; i <= attempts; i++)); do
+        if "$@" >/dev/null 2>&1; then log_success "$description"; return 0; fi
+        sleep 5
+    done
+    log_error "Timed out waiting for: $description"
+    return 1
+}
 
 main() {
-    [[ -z "${MONITORING_DOMAIN:-}" ]]      && { log_error "MONITORING_DOMAIN not set";      exit 1; }
-    [[ -z "${GRAFANA_ADMIN_PASSWORD:-}" ]] && { log_error "GRAFANA_ADMIN_PASSWORD not set"; exit 1; }
-    [[ -z "${FARO_ALLOWED_ORIGIN:-}" ]]    && { log_error "FARO_ALLOWED_ORIGIN not set";    exit 1; }
-    [[ -z "${UMAMI_DB_NAME:-}" ]]          && { log_error "UMAMI_DB_NAME not set";          exit 1; }
-    [[ -z "${UMAMI_DB_USER:-}" ]]          && { log_error "UMAMI_DB_USER not set";          exit 1; }
-    [[ -z "${UMAMI_DB_PASSWORD:-}" ]]      && { log_error "UMAMI_DB_PASSWORD not set";      exit 1; }
-    [[ -z "${UMAMI_APP_SECRET:-}" ]]       && { log_error "UMAMI_APP_SECRET not set";       exit 1; }
+    require GRAFANA_ADMIN_PASSWORD DISCORD_WEBHOOK_URL HEALTHCHECKS_PING_URL UMAMI_DB_NAME UMAMI_DB_USER UMAMI_DB_PASSWORD UMAMI_APP_SECRET
 
-    export DOMAIN="$MONITORING_DOMAIN"
-    export PROJECT="$STACK_NAME"
     export GRAFANA_ADMIN_USER="${GRAFANA_ADMIN_USER:-admin}"
     export GRAFANA_ADMIN_PASSWORD
-    export DISCORD_WEBHOOK_URL="${DISCORD_WEBHOOK_URL:-}"
-    export FARO_ALLOWED_ORIGIN
-    export UMAMI_DB_NAME
-    export UMAMI_DB_USER
-    export UMAMI_DB_PASSWORD
-    export UMAMI_APP_SECRET
+    export DOCKER_GID="${DOCKER_GID:-$(stat -c '%g' /var/run/docker.sock)}"
+    export UMAMI_DB_NAME UMAMI_DB_USER UMAMI_DB_PASSWORD UMAMI_APP_SECRET
+    # Read-only Grafana role on the Umami database, derived so no extra secret is needed.
+    export UMAMI_GRAFANA_PASSWORD="$(printf '%s' "grafana_ro:$UMAMI_APP_SECRET" | sha256sum | cut -c1-40)"
+
+    # Alertmanager reads webhook URLs from files, never from env or its config.
+    install -d -m 0755 "$SCRIPT_DIR/.secrets"
+    printf '%s' "$DISCORD_WEBHOOK_URL" > "$SCRIPT_DIR/.secrets/discord_webhook_url"
+    printf '%s' "$HEALTHCHECKS_PING_URL" > "$SCRIPT_DIR/.secrets/healthchecks_ping_url"
+    chmod 0644 "$SCRIPT_DIR/.secrets/"*
 
     log "=========================================="
-    log "Monitoring Stack Deployment"
-    log "=========================================="
-    log "Monitoring domain:    $MONITORING_DOMAIN"
-    log "Grafana user:         $GRAFANA_ADMIN_USER"
-    log "Grafana password:     ${GRAFANA_ADMIN_PASSWORD:0:3}..."
-    log "Faro allowed origin:  $FARO_ALLOWED_ORIGIN"
-    log "Umami DB:          $UMAMI_DB_NAME (user: $UMAMI_DB_USER)"
+    log "Deploying $STACK_NAME (docker gid $DOCKER_GID)"
     log "=========================================="
 
-    local compose_file="$SCRIPT_DIR/docker-compose.monitoring.yml"
-    local networks_config="$SCRIPT_DIR/networks.yml"
-    local volumes_config="$SCRIPT_DIR/volumes.yml"
+    local compose=(docker compose -p "$STACK_NAME" -f "$SCRIPT_DIR/networks.yml" -f "$SCRIPT_DIR/volumes.yml" -f "$SCRIPT_DIR/docker-compose.monitoring.yml")
 
-    validate_files "$compose_file" "$networks_config" "$volumes_config"
-    create_networks "$networks_config"
-    create_volumes "$volumes_config"
+    validate_files "$SCRIPT_DIR/docker-compose.monitoring.yml" "$SCRIPT_DIR/networks.yml" "$SCRIPT_DIR/volumes.yml"
+    create_networks "$SCRIPT_DIR/networks.yml"
+    create_volumes "$SCRIPT_DIR/volumes.yml"
 
-    # Shared reverse-proxy network owned by Infrastructure's Traefik; create it
-    # only if this stack deploys first.
-    if ! docker network inspect "public-network" &>/dev/null; then
-        log "Creating network: public-network"
-        docker network create "public-network"
+    "${compose[@]}" pull --quiet
+    "${compose[@]}" up -d --remove-orphans
+
+    wait_for "prometheus ready" 36 docker exec "$STACK_NAME-prometheus-1" wget -qO- http://localhost:9090/-/ready
+    wait_for "alertmanager ready" 24 docker exec "$STACK_NAME-alertmanager-1" wget -qO- http://localhost:9093/-/ready
+    wait_for "loki ready" 36 docker exec "$STACK_NAME-prometheus-1" wget -qO- http://loki:3100/ready
+    wait_for "alloy ready" 24 docker exec "$STACK_NAME-prometheus-1" wget -qO- http://alloy:12345/-/ready
+    wait_for "grafana ready" 36 docker exec "$STACK_NAME-grafana-1" wget -qO- http://localhost:3000/api/health
+
+    # Umami creates its tables on first start; grant the Grafana role once they exist.
+    wait_for "umami schema" 60 docker exec "$STACK_NAME-umami-db-1" psql -U "$UMAMI_DB_USER" -d "$UMAMI_DB_NAME" -tAc "select 1 from website_event limit 1"
+    docker exec -i "$STACK_NAME-umami-db-1" psql -v ON_ERROR_STOP=1 -U "$UMAMI_DB_USER" -d "$UMAMI_DB_NAME" \
+        -v pw="$UMAMI_GRAFANA_PASSWORD" -v db="$UMAMI_DB_NAME" < "$SCRIPT_DIR/umami/grafana-role.sql" >/dev/null
+    log_success "grafana_ro role on umami"
+
+    # Metrics the dashboards and alerts depend on. Some appear only after the first request or job,
+    # so a missing one is reported, not fatal.
+    sleep 60
+    local missing=()
+    for service in api scraper mysqld-exporter redis-exporter; do
+        if ! docker exec "$STACK_NAME-prometheus-1" wget -qO- "http://localhost:9090/api/v1/query?query=up%7Bproject%3D%22kreditozrouti%22%2Cservice%3D%22$service%22%7D" | grep -q '"value"'; then
+            missing+=("$service")
+        fi
+    done
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        log_warning "Not scraped yet (deploy the app stack or check prometheus.io labels): ${missing[*]}"
+    else
+        log_success "All expected services are scraped"
     fi
-
-    log "Deploying monitoring stack..."
-    docker compose \
-        -p "$STACK_NAME" \
-        -f "$networks_config" \
-        -f "$volumes_config" \
-        -f "$compose_file" \
-        up -d
 
     cleanup_old_versions "monitoring" || true
 
     log_success "=========================================="
-    log_success "Monitoring Stack Deployed"
+    log_success "$STACK_NAME deployed"
     log_success "=========================================="
-    log "Grafana:  https://$MONITORING_DOMAIN/grafana"
-    log "Faro:     https://$MONITORING_DOMAIN/faro/collect"
-    log ""
-    log "Logs:   docker compose -p $STACK_NAME logs -f"
-    log "Status: docker compose -p $STACK_NAME ps"
+    log "Grafana: https://kreditozrouti.cz/grafana"
+    log "Status:  docker compose -p $STACK_NAME ps"
 }
 
 main
+# Networks: kreditozrouti-monitoring-internal-network, kreditozrouti-monitoring-network, public-network
+# Volumes:  kreditozrouti-prometheus-volume, kreditozrouti-alertmanager-volume, kreditozrouti-grafana-volume, kreditozrouti-loki-volume, kreditozrouti-alloy-volume, kreditozrouti-umami-postgres-volume, traefik-logs-volume
+# Contract: app_build_info

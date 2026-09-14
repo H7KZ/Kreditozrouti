@@ -54,6 +54,9 @@ jobs:
       - name: Check em dashes
         run: bash scripts/check-em-dashes.sh
 
+      - name: Validate monitoring config
+        run: bash deployment/monitoring/validate.sh
+
       - name: Build Core
         run: pnpm --filter=@kreditozrouti/core run build
 

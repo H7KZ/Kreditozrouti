@@ -1,22 +1,10 @@
-# ==============================================================================
-# Networks Configuration: Monitoring Stack
-# Description: External networks for this repo's monitoring stack.
-#   - kreditozrouti-monitoring-network          per-repo SCRAPE net; app
-#     containers + Prometheus/Alloy join it (was alloy-network).
-#   - kreditozrouti-monitoring-internal-network intra-stack net for
-#     Grafana/Prometheus/Loki/Umami (was monitoring-network).
-# See NAMING.md (Infrastructure) for the cross-repo convention.
-# ==============================================================================
-
 networks:
-  public-network:
-    name: public-network
-    external: true
-
   kreditozrouti-monitoring-internal-network:
     name: kreditozrouti-monitoring-internal-network
     external: true
-
   kreditozrouti-monitoring-network:
     name: kreditozrouti-monitoring-network
+    external: true
+  public-network:
+    name: public-network
     external: true

@@ -1,19 +1,18 @@
 auth_enabled: false
-
 server:
   http_listen_port: 3100
-
+  log_level: warn
+common:
+  path_prefix: /loki
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
 ingester:
-  lifecycler:
-    ring:
-      kvstore:
-        store: inmemory
-      replication_factor: 1
   chunk_idle_period: 5m
   chunk_retain_period: 30s
   wal:
     dir: /loki/wal
-
 schema_config:
   configs:
     - from: 2024-01-01
@@ -23,29 +22,70 @@ schema_config:
       index:
         prefix: index_
         period: 24h
-
 storage_config:
   tsdb_shipper:
     active_index_directory: /loki/tsdb-index
     cache_location: /loki/tsdb-cache
   filesystem:
     directory: /loki/chunks
-
+pattern_ingester:
+  enabled: true
+runtime_config:
+  file: /etc/loki/runtime.yml
+  period: 1m
+querier:
+  max_concurrent: 2
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 16
+chunk_store_config:
+  chunk_cache_config:
+    embedded_cache:
+      enabled: true
+      max_size_mb: 16
+frontend:
+  max_outstanding_per_tenant: 256
 limits_config:
+  max_query_parallelism: 2
+  tsdb_max_query_parallelism: 8
+  split_queries_by_interval: 6h
   retention_period: 168h
+  retention_stream:
+    - selector: '{source="traefik"}'
+      priority: 1
+      period: 72h
   allow_structured_metadata: true
-  # Bound ingestion so a chatty service cannot fill the disk.
-  ingestion_rate_mb: 8
-  ingestion_burst_size_mb: 16
-  per_stream_rate_limit: 4MB
-  per_stream_rate_limit_burst: 8MB
-  max_streams_per_user: 10000
+  volume_enabled: true
+  discover_log_levels: true
+  discover_service_name:
+    - service
+  ingestion_rate_mb: 4
+  ingestion_burst_size_mb: 8
+  per_stream_rate_limit: 2MB
+  per_stream_rate_limit_burst: 4MB
+  max_streams_per_user: 2000
   reject_old_samples: true
   reject_old_samples_max_age: 168h
-
+  max_query_series: 1000
 compactor:
   working_directory: /loki/compactor
   compaction_interval: 10m
   retention_enabled: true
   retention_delete_delay: 2h
   delete_request_store: filesystem
+ruler:
+  storage:
+    type: local
+    local:
+      directory: /etc/loki/rules
+  rule_path: /loki/rules-temp
+  alertmanager_url: http://alertmanager:9093
+  enable_api: true
+  ring:
+    kvstore:
+      store: inmemory
+analytics:
+  reporting_enabled: false

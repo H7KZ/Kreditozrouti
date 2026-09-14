@@ -1,0 +1,15 @@
+{{ define "discord.title" -}}
+[{{ .Status | toUpper }}{{ if eq .Status "firing" }} x{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}{{ with .CommonLabels.service }} - {{ . }}{{ end }}{{ with .CommonLabels.env }} ({{ . }}){{ end }}
+{{- end }}
+
+{{ define "discord.message" -}}
+{{ range .Alerts -}}
+{{ if eq .Status "firing" }}**{{ .Annotations.summary }}**{{ else }}Resolved: {{ .Annotations.summary }}{{ end }}
+{{ .Annotations.description }}
+{{ with .Annotations.dashboard }}[Dashboard]({{ . }}){{ end }}
+{{ end -}}
+{{- end }}
+
+{{ define "discord.content" -}}
+{{ if and (eq .Status "firing") (eq .CommonLabels.severity "critical") }}@here{{ end }}
+{{- end }}

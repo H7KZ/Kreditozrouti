@@ -1,0 +1,76 @@
+# Stack: kreditozrouti-monitoring
+route:
+  receiver: discord
+  group_by:
+    - alertname
+    - project
+    - service
+    - env
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 24h
+  routes:
+    - matchers:
+        - alertname="Watchdog"
+      receiver: healthchecks
+      group_wait: 0s
+      group_interval: 1m
+      repeat_interval: 1m
+    - matchers:
+        - severity="none"
+      receiver: blackhole
+    - matchers:
+        - severity="info"
+      receiver: blackhole
+    - matchers:
+        - severity="critical"
+      receiver: discord
+      repeat_interval: 4h
+inhibit_rules:
+  - source_matchers:
+      - alertname="ServiceDown"
+    target_matchers:
+      - alertname=~"OriginProbeFailing|EdgeErrorBudgetBurn.*|ApiSlowRequests"
+    equal:
+      - project
+      - service
+      - env
+  - source_matchers:
+      - alertname=~"MySQLDown|RedisDown"
+    target_matchers:
+      - alertname=~"EdgeErrorBudgetBurn.*|WorkerJobsFailing|QueueBacklog"
+    equal:
+      - project
+      - env
+  - source_matchers:
+      - alertname="EdgeErrorBudgetBurnFast"
+    target_matchers:
+      - alertname="EdgeErrorBudgetBurnSlow"
+    equal:
+      - project
+      - service
+      - env
+  - source_matchers:
+      - alertname="AlertDeliveryFailing"
+    target_matchers:
+      - alertname="Watchdog"
+    equal:
+      - project
+receivers:
+  - name: discord
+    discord_configs:
+      - webhook_url_file: /etc/alertmanager/secrets/discord_webhook_url
+        send_resolved: true
+        username: Kreditozrouti alerts
+        title: '{{ template "discord.title" . }}'
+        message: '{{ template "discord.message" . }}'
+        content: '{{ template "discord.content" . }}'
+  - name: healthchecks
+    webhook_configs:
+      - url_file: /etc/alertmanager/secrets/healthchecks_ping_url
+        send_resolved: false
+        max_alerts: 1
+        timeout: 10s
+  - name: blackhole
+templates:
+  - /etc/alertmanager/templates/*.tmpl

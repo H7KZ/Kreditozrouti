@@ -1,21 +1,18 @@
 # ==============================================================================
 # Workflow: Deploy Monitoring
-# Description: Uploads monitoring config and redeploys the monitoring stack.
-#              Runs automatically when monitoring config or script changes on main.
+# Description: Versioned deploy of the kreditozrouti-monitoring stack (Alloy, Prometheus,
+#              Alertmanager, Loki, Grafana, Umami): ~/kreditozrouti/versions/monitoring/<sha>/,
+#              then `current` is repointed. Manual dispatch only.
 #
 # Required Secrets (repository-level):
 #   SSH_HOST, SSH_USER, SSH_PORT, SSH_PRIVATE_KEY
-#   MONITORING_DOMAIN, GRAFANA_ADMIN_USER, GRAFANA_ADMIN_PASSWORD,
-#   DISCORD_WEBHOOK_URL, FARO_ALLOWED_ORIGIN
+#   GRAFANA_ADMIN_USER, GRAFANA_ADMIN_PASSWORD, DISCORD_WEBHOOK_URL, HEALTHCHECKS_PING_URL,
+#   UMAMI_DB_NAME, UMAMI_DB_USER, UMAMI_DB_PASSWORD, UMAMI_APP_SECRET
 # ==============================================================================
 
 name: Deploy Monitoring
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'deployment/monitoring/**'
   workflow_dispatch:
 
 concurrency:
@@ -26,69 +23,62 @@ jobs:
   deploy:
     name: Deploy Monitoring
     runs-on: self-hosted
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     permissions:
       contents: read
-      packages: read
 
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Set Version Tag
+      - name: Resolve version tag
         id: version
         run: echo "tag=${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
 
-      - name: Create Version Directory
+      - name: Create version directory
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script: |
-            mkdir -p "$HOME/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}"
+          script: mkdir -p "$HOME/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}"
 
-      - name: Upload Monitoring Config
+      - name: Upload deployment files
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: 'deployment/monitoring/,deployment/lib.sh'
-          target: '~/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}'
+          source: "deployment/"
+          target: "~/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}"
           strip_components: 1
           overwrite: true
 
-      - name: Deploy Monitoring Stack
+      - name: Deploy
         uses: appleboy/ssh-action@v1
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_ACTOR: ${{ github.actor }}
-          MONITORING_DOMAIN: ${{ secrets.MONITORING_DOMAIN }}
+          VERSION_TAG: ${{ steps.version.outputs.tag }}
           GRAFANA_ADMIN_USER: ${{ secrets.GRAFANA_ADMIN_USER }}
           GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          HEALTHCHECKS_PING_URL: ${{ secrets.HEALTHCHECKS_PING_URL }}
           UMAMI_DB_NAME: ${{ secrets.UMAMI_DB_NAME }}
           UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
           UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
           UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
-          FARO_ALLOWED_ORIGIN: ${{ secrets.FARO_ALLOWED_ORIGIN }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: GH_TOKEN,GH_ACTOR,MONITORING_DOMAIN,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL,UMAMI_DB_NAME,UMAMI_DB_USER,UMAMI_DB_PASSWORD,UMAMI_APP_SECRET,FARO_ALLOWED_ORIGIN
+          envs: VERSION_TAG,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL,HEALTHCHECKS_PING_URL,UMAMI_DB_NAME,UMAMI_DB_USER,UMAMI_DB_PASSWORD,UMAMI_APP_SECRET
+          command_timeout: 15m
           script: |
             set -euo pipefail
-
-            VERSION_DIR="$HOME/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}"
-            CURRENT_LINK="$HOME/kreditozrouti/versions/monitoring/current"
-
-            echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
+            VERSION_DIR="$HOME/kreditozrouti/versions/monitoring/$VERSION_TAG"
             bash "$VERSION_DIR/monitoring/deploy.sh"
-
-            ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
+            ln -sfn "$VERSION_DIR" "$HOME/kreditozrouti/versions/monitoring/current"
+            echo "Monitoring deploy complete: $VERSION_TAG"
