@@ -11,5 +11,5 @@
 {{- end }}
 
 {{ define "discord.content" -}}
-{{ if and (eq .Status "firing") (eq .CommonLabels.severity "critical") }}@here{{ end }}
+{{ if and (eq .Status "firing") (eq .CommonLabels.severity "critical") }}{{ end }}
 {{- end }}

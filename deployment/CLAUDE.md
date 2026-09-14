@@ -67,7 +67,7 @@ to Infrastructure's `public-network` by name, so they work out of the box.
 `kreditozrouti-monitoring` only and derives `project`, `env`, `service`, `instance`, `job` from compose metadata, so a
 scrapable container carries exactly `prometheus.io/scrape=true` + `prometheus.io/port=<n>` and joins
 `kreditozrouti-monitoring-network`. Each stack deploys under its own Compose project name (`STACK_NAME` in each
-`deploy.sh`): monitoring -> `kreditozrouti-monitoring`, runner -> `kreditozrouti-runner`; the app stack uses
+`deploy.sh`): monitoring -> `kreditozrouti-monitoring`, runner -> `kreditozrouti-ci`; the app stack uses
 `kreditozrouti` (production) / `kreditozrouti-dev` (development). Router names must keep the
 `kreditozrouti-(api|client|mcp)-<suffix>` shape: Alloy filters Traefik metrics and access logs on it.
 

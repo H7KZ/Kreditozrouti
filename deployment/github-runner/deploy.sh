@@ -23,7 +23,7 @@ set -euo pipefail
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
-readonly STACK_NAME="kreditozrouti-runner"
+readonly STACK_NAME="kreditozrouti-ci"
 
 source "$(cd "$SCRIPT_DIR/.." && pwd)/lib.sh"
 

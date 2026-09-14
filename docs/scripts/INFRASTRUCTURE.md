@@ -88,6 +88,6 @@ Deploys self-hosted GitHub Actions runners. Runners auto-register to the reposit
 
 **Optional:** `RUNNER_REPLICAS` (default: `2`), `RUNNER_LABELS` (appended to `docker,self-hosted`)
 
-Deployed under Docker Compose project `kreditozrouti-runner`. Runners share the Docker socket — required for container
+Deployed under Docker Compose project `kreditozrouti-ci`. Runners share the Docker socket — required for container
 image builds in
 CI workflows.
