@@ -6,7 +6,7 @@ order: 1
 
 # Zásady ochrany soukromí
 
-_Poslední aktualizace: 31. ledna 2026_
+_Poslední aktualizace: 14. září 2026_
 
 ## Jaká data Kreditožrouti shromažďuje
 
@@ -36,13 +36,16 @@ procházet libovolný student bez přihlášení. Tato data tvoří:
 Kreditožrouti používá **Umami Analytics** - vlastní open-source analytický nástroj. Je navržen tak, aby respektoval
 soukromí:
 
-| Vlastnost                  | Detail                                                                           |
-| -------------------------- | -------------------------------------------------------------------------------- |
-| Cookies                    | Nepoužívají se                                                                   |
-| IP adresy                  | Umami je sbírá, ale před uložením hashuje - nikdy se neukládají v čitelné podobě |
-| Osobní identifikátory      | Neshromažďovány                                                                  |
-| Sdílení s třetími stranami | Žádné - data zůstávají na vlastním serveru                                       |
-| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) - anonymizovaná měření návštěvnosti      |
+| Vlastnost                  | Detail                                                                                                                                  |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Cookies                    | Nepoužívají se                                                                                                                          |
+| Kde běží                   | Na našem vlastním serveru, načítá se z adresy tohoto webu (`/stats`) - žádný analytický server třetí strany se nekontaktuje             |
+| IP adresy                  | Slouží k odvození přibližné země a regionu a otisku návštěvníka, který se každý měsíc mění; samotná IP adresa se neukládá               |
+| Sdílené odkazy             | Odkaz na sdílený rozvrh se zaznamená jako `/s/[id]` - identifikátor odkazu, název stránky i parametry adresy se před odesláním odstraní |
+| Osobní identifikátory      | Neshromažďovány                                                                                                                         |
+| Sdílení s třetími stranami | Žádné - data zůstávají na vlastním serveru                                                                                              |
+| Doba uchování              | 13 měsíců, poté se automaticky mažou                                                                                                    |
+| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) - anonymizovaná měření návštěvnosti                                                             |
 
 Data sbíraná Umami: zobrazení stránek, délka sezení, odkaz příchodu a souhrnné interakce s funkcemi (např. „předmět byl
 přidán do rozvrhu"). Tato data nemohou identifikovat žádného konkrétního uživatele.
@@ -62,18 +65,30 @@ zpětné vazby. Pole komentáře je nepovinné a volné - prosím neuváděj do 
 Kreditožrouti používá **Grafana Faro** k hlášení pádů aplikace, abychom je mohli opravit. Je nastaven tak, aby
 zachytával pouze:
 
-| Vlastnost                  | Detail                                                                                     |
-| -------------------------- | ------------------------------------------------------------------------------------------ |
-| Co se zachytává            | Chyby JavaScriptu (zpráva + stack trace) a metriky výkonu Web Vitals                       |
-| Sledování sezení           | Vypnuto - v prohlížeči se neukládá žádný trvalý ani pseudonymní identifikátor              |
-| Zachytávání konzole        | Vypnuto - výstup tvé konzole se nikdy neodesílá                                            |
-| Sledování chování          | Žádné - Faro nesleduje zobrazení stránek, kliknutí ani navigaci (to je doména Umami)       |
-| Cookies                    | Nepoužívají se                                                                             |
-| Sdílení s třetími stranami | Žádné - hlášení se odesílají na náš vlastní self-hosted collector, nikoli do Grafana Cloud |
-| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) - stabilita a bezpečnost aplikace                  |
+| Vlastnost                  | Detail                                                                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Co se zachytává            | Chyby JavaScriptu (zpráva + stack trace), metriky výkonu Web Vitals a adresa stránky bez identifikátorů sdílených odkazů a parametrů adresy |
+| Sledování sezení           | Vypnuto - v prohlížeči se neukládá žádný trvalý ani pseudonymní identifikátor                                                               |
+| Zachytávání konzole        | Vypnuto - výstup tvé konzole se nikdy neodesílá                                                                                             |
+| Sledování chování          | Žádné - Faro nesleduje zobrazení stránek, kliknutí ani navigaci (to je doména Umami)                                                        |
+| Cookies                    | Nepoužívají se                                                                                                                              |
+| Sdílení s třetími stranami | Žádné - hlášení se odesílají na náš vlastní self-hosted collector, nikoli do Grafana Cloud                                                  |
+| Doba uchování              | 7 dní, poté se automaticky mažou                                                                                                            |
+| Právní základ (GDPR)       | Oprávněný zájem (čl. 6 odst. 1 písm. f) - stabilita a bezpečnost aplikace                                                                   |
 
 Protože Faro neukládá žádný identifikátor ani nesleduje chování, nevyžaduje souhlas. Pokud na žádnou chybu nenarazíš,
 neodešlou se žádná data.
+
+## Provozní záznamy a infrastruktura
+
+Naše servery uchovávají technické záznamy o požadavcích a chybách nejvýše 7 dní (záznamy přístupů 3 dny) kvůli řešení
+problémů a bezpečnostních incidentů. IP adresy, parametry adres a identifikátory sdílených odkazů se před uložením
+odstraňují.
+
+Aplikace běží na serverech společnosti Hetzner Online GmbH v Německu (Evropská unie). Požadavky na web procházejí přes
+**Cloudflare, Inc.**, který web chrání před útoky a doručuje ho; Cloudflare jako náš zpracovatel zpracovává každý
+požadavek včetně tvé IP adresy a může tak činit i mimo Evropský hospodářský prostor. Předání se opírá o rámec EU-US Data
+Privacy Framework, v němž je Cloudflare certifikován, a o standardní smluvní doložky v jeho smlouvě o zpracování údajů.
 
 ## Data uložená ve tvém prohlížeči
 

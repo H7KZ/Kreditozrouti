@@ -459,7 +459,7 @@ useSeoMeta({
 All Vite env vars must be prefixed with `VITE_`:
 
 | Variable                  | Default | Purpose                             |
-|---------------------------|---------|-------------------------------------|
+| ------------------------- | ------- | ----------------------------------- |
 | `VITE_API_URL`            | `/api`  | Axios baseURL                       |
 | `VITE_FARO_COLLECTOR_URL` | —       | Grafana Faro collector URL (opt-in) |
 
@@ -487,7 +487,7 @@ app.mount('#app')
 ### What is captured
 
 | Signal                       | Mechanism                                        |
-|------------------------------|--------------------------------------------------|
+| ---------------------------- | ------------------------------------------------ |
 | JS errors                    | `app.config.errorHandler`                        |
 | Unhandled promise rejections | `window.unhandledrejection` listener             |
 | Vue component errors         | forwarded through `app.config.errorHandler`      |
@@ -503,6 +503,19 @@ before being sent to the collector.
 
 `TracingInstrumentation` (distributed tracing) is **not** enabled — it requires a Tempo backend. If Tempo is added in
 future, re-enable it in `faro.ts`.
+
+### Redaction
+
+A shared timetable link (`/s/<id>`) is a capability, so `beforeSend` rewrites the page URL through `redactUrl`
+(`src/analytics.ts`): `/s/<id>` becomes `/s/[id]` and query strings and hashes are dropped. The monitoring stack's Alloy
+redacts the same pattern again.
+
+## Analytics (`src/analytics.ts`)
+
+Umami is loaded first-party from `/stats/stats.js` and posts to `/stats/api/send`; Traefik routes `/stats` on the app
+domain to the monitoring stack's Umami. It initialises only when `VITE_UMAMI_WEBSITE_ID` is set. A `data-before-send`
+hook passes every URL and referrer through `redactUrl` and blanks the title of a share page. Umami data is deleted after
+13 months (event data, which carries feedback comments, after 12). `VITE_UMAMI_SRC` is no longer read.
 
 ### Local dev
 

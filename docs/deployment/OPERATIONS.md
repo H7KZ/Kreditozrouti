@@ -8,66 +8,42 @@ Monitoring, security, maintenance, and troubleshooting for running environments.
 
 > Full observability stack reference: [MONITORING.md](MONITORING.md)
 
-### Prometheus + Grafana
+### Monitoring stack
 
-The monitoring stack (`../../deployment/monitoring`) provides metrics collection, log aggregation, and dashboards.
-
-- **Prometheus** scrapes `GET /metrics` from each API container every 15 s. Metrics include HTTP request counts, latency
-  histograms, and default Node.js runtime metrics (event loop lag, GC, memory) via `prom-client`.
-- **Loki** receives structured logs from all app containers via Alloy (reads Docker stdout over the Docker socket).
-- **Alloy** collects container logs (Docker stdout) and receives browser Faro telemetry. Trace export to Tempo is
-  not deployed (see [MONITORING.md](MONITORING.md)).
-- **Grafana** is available at `/grafana` (internal) and is pre-provisioned with Loki as the default datasource.
-
-> Prometheus and Alloy read the Docker socket for service discovery and log tailing. Their `group_add` GID in
-> `docker-compose.monitoring.yml` must match the host's `docker` group (default `988`, override with `DOCKER_GID`).
-> A wrong GID = zero targets + no logs = empty dashboards.
+The monitoring stack (`../../deployment/monitoring`, project `kreditozrouti-monitoring`) is deployed by
+`deploy-monitoring.yml` (manual dispatch). Alloy is the only collector: it scrapes every container labelled
+`prometheus.io/scrape=true` (api, each scraper replica, mysqld-exporter, redis-exporter), Traefik, the host and cAdvisor,
+probes the public routes through Traefik, tails container logs and the Traefik access log, and receives Faro.
+Prometheus stores metrics and evaluates the rules, Alertmanager sends to Discord, Loki stores logs, Grafana
+(`/grafana`) shows the dashboards. Full reference: [MONITORING.md](MONITORING.md).
 
 ```bash
-# Check monitoring stack status (deploys under project name `kreditozrouti-monitoring`)
 docker compose -p kreditozrouti-monitoring ps
-
-# Restart after config changes (e.g. prometheus.yml edits)
-docker compose -p kreditozrouti-monitoring -f deployment/monitoring/docker-compose.monitoring.yml up -d --force-recreate
+# Validate config changes before deploying (promtool rule tests, amtool, loki, alloy)
+bash deployment/monitoring/validate.sh
 ```
 
-### Alert Rules
+### Alert rules
 
-Grafana alerting is provisioned from `../../deployment/monitoring/grafana/provisioning/alerting/rules.yml`. All rules
-route to the Discord contact point via the default notification policy.
+Prometheus and Loki rule files with promtool unit tests (`deployment/monitoring/prometheus/tests/alerts.test.yml`),
+delivered by Alertmanager to Discord. An always-firing `Watchdog` pings healthchecks.io; if the pings stop,
+healthchecks.io e-mails. The catalogue is listed in [MONITORING.md](MONITORING.md#alerting). Grafana-managed alerts no
+longer exist, so `scripts/sync-grafana-alerts.sh` is not needed.
 
-| Rule                             | Group          | Condition                                                                   | Severity |
-|----------------------------------|----------------|-----------------------------------------------------------------------------|----------|
-| `container-down` (**API Down**)  | infrastructure | Prod API `up==0` or absent for 5 min (scoped to the API, not other targets) | critical |
-| `scraper-jobs-failed`            | scraper        | `bullmq_queue_depth{queue=~"Scraper.*", status="failed"} > 0` for 5 min     | critical |
-| `scraper-stale`                  | scraper        | No scraper run in > 24 h                                                    | warning  |
-| `scraper-silent-failures-rising` | scraper        | `> 5` silent failures in 30 min (dampened `for: 15m`)                       | warning  |
-| `scraper-failure-rate-high`      | scraper        | Item failure rate > 10% over 5 min                                          | warning  |
-| `api-error-rate-high`            | application    | 5xx > 5% of all requests over 5 min (`for: 10m`)                            | warning  |
-| `api-p99-latency-high`           | application    | API p99 latency > 2 s over 5 min (`for: 10m`)                               | warning  |
+### Faro browser telemetry
 
-### Faro Browser Telemetry
-
-Browser telemetry from `@grafana/faro-web-sdk` is collected at `https://<domain>/faro/collect`.
-
-**Routing:** Browser → Traefik (`/faro` stripprefix rule) → Alloy port 12347 → Loki
-
-**Query in Grafana:** use the Loki datasource. Alloy labels Faro logs with `app="kreditozrouti"` and a `kind` label
-derived from the Faro signal type. Example selectors:
+Collected at `https://<domain>/faro/collect` (Traefik `/faro` router, prefix stripped, to Alloy :12347, then Loki).
+Page URLs arrive with share link ids and query strings removed.
 
 ```logql
 # All browser telemetry
-{app="kreditozrouti"}
+{project="kreditozrouti", source="faro"}
 
 # JS exceptions only
-{app="kreditozrouti", kind="exception"}
-
-# Web Vitals
-{app="kreditozrouti", kind="measurement"}
+{project="kreditozrouti", source="faro", kind="exception"}
 ```
 
-**Local dev:** set `VITE_FARO_COLLECTOR_URL=http://localhost:41247/collect` in your local env to enable Faro in
-development. Requires the monitoring stack to be running locally.
+Web Vitals are also exported as Prometheus histograms (`faro_web_vitals_*`) and shown on the Frontend dashboard.
 
 ---
 
@@ -186,10 +162,10 @@ Estimated RTO: however long a full InSIS re-scrape takes, since there is no dump
 
 ### Routine schedule
 
-| Cadence   | Task                                                             |
-|-----------|-------------------------------------------------------------------|
-| Monthly   | Run `maintenance.sh`; Docker cleanup                              |
-| Quarterly | Rotate secrets; review Traefik access logs; update dependencies   |
+| Cadence   | Task                                                            |
+| --------- | --------------------------------------------------------------- |
+| Monthly   | Run `maintenance.sh`; Docker cleanup                            |
+| Quarterly | Rotate secrets; review Traefik access logs; update dependencies |
 
 ### System updates
 

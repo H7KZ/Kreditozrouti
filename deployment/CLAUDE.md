@@ -17,26 +17,17 @@ deployment/
 │   ├── docker-compose.development.yml     # Same services, lower replicas, dev image tags
 │   ├── networks.yml
 │   └── volumes.yml
-├── monitoring/
-│   ├── docker-compose.monitoring.yml     # Prometheus + Grafana stack
-│   ├── networks.yml
-│   ├── volumes.yml
-│   ├── prometheus/
-│   │   ├── prometheus.yml                # Docker SD scrape config — discovers prod + dev API containers
-│   │   └── prometheus.local.yml          # Local scrape config
-│   └── grafana/
-│       └── provisioning/
-│           ├── datasources/
-│           │   ├── prometheus.yml        # Auto-provisions Prometheus datasource in Grafana
-│           │   └── loki.yml              # Auto-provisions Loki datasource in Grafana
-│           ├── dashboards/
-│           │   ├── dashboards.yml        # File provisioner — points at this directory, deletion enabled
-│           │   └── api.json / client.json / logs.json / scraper.json  # one dashboard per service (no CrowdSec dashboard — CrowdSec/WAF moved to Cloudflare, Traefik to Infrastructure)
-│           └── alerting/
-│               ├── rules.yml             # Alert rules (infrastructure, scraper, application)
-│               ├── notification-policies.yml
-│               ├── contact-points.yml    # Discord webhook
-│               └── message-templates.yml # discord_alert_title + discord_alert_message templates
+├── monitoring/                            # This repo's own stack (docs/deployment/MONITORING.md)
+│   ├── docker-compose.monitoring.yml     # alloy, prometheus, alertmanager, loki, grafana, umami, umami-db (lean limits)
+│   ├── deploy.sh                         # writes .secrets/, pulls, ups, waits for readiness, grants grafana_ro on umami
+│   ├── validate.sh                       # promtool check + rule unit tests, amtool, loki, alloy validate (CI: _verify.yml)
+│   ├── migrate-umami-pg18.sh             # one-off pg_dumpall migration of the umami volume to the pg18 layout
+│   ├── alloy/config.alloy                # the only collector: docker SD scrape, cAdvisor, node, blackbox, Traefik, logs, Faro
+│   ├── prometheus/                       # prometheus.yml, rules/{alerts,recording}.yml, tests/alerts.test.yml
+│   ├── alertmanager/                     # Discord + healthchecks.io (Watchdog), templates/discord.tmpl
+│   ├── loki/                             # loki.yml, runtime.yml, rules/fake/alerts.yml
+│   ├── grafana/                          # provisioning (datasources, dashboards, legacy alert cleanup), dashboards/Kreditozrouti/
+│   └── umami/                            # grafana-role.sql, retention.sql (umami-retention.yml runs it daily)
 └── github-runner/
     ├── deploy.sh                         # Manual runner setup (run directly on VPS)
     └── docker-compose.github-runner.yml
@@ -71,27 +62,22 @@ shared VPS and creates it; each `deploy.sh` also creates it if this stack deploy
 Traefik stack (the former `deployment/traefik/` was removed — Infrastructure owns the single Traefik); services connect
 to Infrastructure's `public-network` by name, so they work out of the box.
 
-**Monitoring stack reads the Docker socket.** Prometheus and Alloy in `docker-compose.monitoring.yml` mount
-`/var/run/docker.sock` and must run with the host's `docker` group GID via `group_add` (default `988`; override with
-`DOCKER_GID` in `.env` if `getent group docker` differs). A wrong GID silently yields zero scrape targets and no logs
-(blank Grafana + a permanently firing alert). Each stack deploys under its own Compose project name (`STACK_NAME` in
-each `deploy.sh`): monitoring → `kreditozrouti-monitoring`, runner → `kreditozrouti-runner`; the app stack uses
-`kreditozrouti` (production) / `kreditozrouti-dev` (development). No project name is shared with another repo — only
-the external `public-network` (owned by Infrastructure) is. See NAMING.md in the Infrastructure repo.
+**Monitoring stack: Alloy is the only collector and reads the Docker socket.** `deploy.sh` sets `DOCKER_GID` from
+`/var/run/docker.sock`'s group. Alloy keeps compose projects `kreditozrouti`, `kreditozrouti-dev` and
+`kreditozrouti-monitoring` only and derives `project`, `env`, `service`, `instance`, `job` from compose metadata, so a
+scrapable container carries exactly `prometheus.io/scrape=true` + `prometheus.io/port=<n>` and joins
+`kreditozrouti-monitoring-network`. Each stack deploys under its own Compose project name (`STACK_NAME` in each
+`deploy.sh`): monitoring -> `kreditozrouti-monitoring`, runner -> `kreditozrouti-runner`; the app stack uses
+`kreditozrouti` (production) / `kreditozrouti-dev` (development). Router names must keep the
+`kreditozrouti-(api|client|mcp)-<suffix>` shape: Alloy filters Traefik metrics and access logs on it.
 
-**`.env` is written by CI, never committed.** `_deploy-service.yml` and `deploy-all.yml` construct it from GitHub
-Environment secrets/variables and write it into the version directory (`~/kreditozrouti/versions/<env>/<sha>/.env`)
-before calling
-`deploy.sh`.
+**Alerts are Prometheus/Loki rule files with promtool unit tests, never Grafana-managed.** Run
+`bash deployment/monitoring/validate.sh` after any rule, Alloy or Loki change (CI runs it too). Annotations may only
+template `{{ $labels.x }}` because promtool compares them exactly. `legacy-cleanup.yml` deletes the old Grafana-managed
+rules on the first deploy, so `scripts/sync-grafana-alerts.sh` is obsolete. `Watchdog` pings healthchecks.io
+(`HEALTHCHECKS_PING_URL`); Alertmanager reads webhook URLs from `.secrets/` files written by `deploy.sh`.
 
-**Alert rules removed from `rules.yml` are not deleted from Grafana by provisioning** — the file provisioner only
-adds/updates. Run `scripts/sync-grafana-alerts.sh`
-(see [MONITORING.md](../docs/deployment/MONITORING.md#keeping-grafana-in-sync-with-rulesyml))
-after every monitoring redeploy that touched `rules.yml` to delete orphaned rules and reload provisioning; the
-dashboards file provisioner does delete removed dashboards on its own (no `disableDeletion: true` set), so dashboard
-files need no equivalent step.
-
-**Monitoring deploys the same versioned way as the app stack.** `deploy-monitoring.yml` uploads
+**Monitoring deploys the same versioned way as the app stack, on manual dispatch only.** `deploy-monitoring.yml` uploads
 `deployment/monitoring/` + `deployment/lib.sh` into `~/kreditozrouti/versions/monitoring/<sha>/`, runs
 `monitoring/deploy.sh` from there, then updates the `~/kreditozrouti/versions/monitoring/current` symlink. Old
 version dirs are cleaned up the same way as app deploys (7 days, minimum 3 kept) via the shared

@@ -9,6 +9,7 @@
 ```
 api/src/
 ├── index.ts / app.ts / bullmq.ts
+├── metrics.ts      # prom-client: request histogram, bullmq_job_count, worker metrics, proxy-guarded /metrics
 ├── clients/        # mysql, redis, i18n, mailer
 ├── Config/         # Config.ts — env vars
 ├── Controllers/    # thin: validate (Zod) → service → respond
@@ -64,6 +65,11 @@ delete+recreate units+slots → link study plans → `redis.publish('course:upda
 
 **Error handling:** throw `Errors.unauthorized()` / `Errors.validation(issues)` / `Errors.notFound(msg)` /
 `Errors.internal(msg)` anywhere — `ErrorHandler` catches all `ApiError` instances.
+
+**Metrics are a contract with deployment/monitoring.** `http_server_request_duration_seconds`, `bullmq_job_count`,
+`worker_*` and `app_build_info` are queried by promtool-tested rules and dashboards, and the Ohlidame stack uses the same
+names. Everything is in-process (nothing mirrored through Redis); `bullmq_job_count` is reported by the api only, so
+scraper replicas never double it. Labels stay bounded: never a course, plan or share id.
 
 ---
 

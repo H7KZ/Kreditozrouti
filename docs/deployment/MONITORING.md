@@ -1,100 +1,83 @@
-# Deployment — Observability Stack
+# Deployment - Observability Stack
 
-End-to-end reference for the logging, metrics, tracing, and browser telemetry pipeline.
+End-to-end reference for metrics, logs, alerting and browser telemetry. The stack lives in
+`../../deployment/monitoring/` and is deployed by `deploy-monitoring.yml` (manual dispatch only). It has the same
+shape as the Ohlidame repository's stack (same components, label contract, dashboards, alert catalogue and Discord
+template), written for this repository: there is no shared package or generator.
 
 ---
 
 ## Pipeline Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│  App containers (api × 1, scraper × 2)                              │
-│  pino → JSON to stdout                                              │
-└────────────────────┬────────────────────────────────────────────────┘
-                     │ Docker stdout (json-file driver)
-                     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│  Alloy (log shipping + Faro receiver)                               │
-│  - discovery.docker  reads container stdout via /var/run/docker.sock│
-│  - loki.process      parses JSON, extracts stream labels            │
-│  - faro.receiver     accepts browser telemetry on :12347            │
-└──────────┬──────────────────────────────────────────────────────────┘
-           │ Loki push API
-           ▼
-┌────────────────────┐
-│  Loki              │
-│  log storage :3100 │
-└────────┬───────────┘
-         ▼
-┌────────────────────┐
-│  Grafana           │
-│  dashboards + query│
-│  :3000 → /grafana  │
-└────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────────┐
-│  api container: prom-client → /metrics (also exposes bullmq_queue_* │
-│  and scraper_* gauges read from Redis, so the Scraper dashboard is  │
-│  fed by the API scrape - the scraper process itself is not scraped) │
-└────────────────────┬────────────────────────────────────────────────┘
-                     │ HTTP scrape every 15 s (Docker SD via kreditozrouti-monitoring-network)
-                     ▼
-         ┌────────────────────┐
-         │  Prometheus        │
-         │  metrics storage   │
-         └────────┬───────────┘
-                  ▼
-         ┌────────────────────┐
-         │  Grafana           │
-         └────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────────┐
-│  Browser (Vue client)                                               │
-│  @grafana/faro-web-sdk → POST /faro/collect                         │
-└────────────────────┬────────────────────────────────────────────────┘
-                     │ Traefik strips /faro prefix
-                     ▼
-         ┌────────────────────┐
-         │  Alloy :12347      │
-         │  faro.receiver → Loki
-         └────────────────────┘
+ app containers (api, scraper x2, mysqld-exporter, redis-exporter)      browser (Vue client)
+ prometheus.io/scrape=true + prometheus.io/port=<n>                     Faro -> /faro/collect
+ pino JSON on stdout                                                    Umami -> /stats
+            |                                                                  |
+            v                                                                  v
+ +--------------------------------------------------------------+     Traefik (Infrastructure)
+ | Alloy (the only collector)                                   | <-- /faro -> :12347 faro.receiver
+ |  docker SD scrape, cAdvisor, node (host), blackbox probes,   |     /stats -> umami:3000
+ |  Traefik metrics :8082 + access log, container logs          |
+ +---------------------------+----------------------------------+
+             remote_write    |    loki push
+                  v          v
+            Prometheus      Loki  ---- log rules ----+
+                  |                                  v
+            rule files ---------------------> Alertmanager --> Discord (one webhook)
+                  |                                  +-------> healthchecks.io (Watchdog)
+                  v
+               Grafana (/grafana): dashboards over Prometheus, Loki, Alertmanager, Umami (read-only role)
 ```
 
-> **Traces are not deployed.** The api and scraper embed an OpenTelemetry SDK, but
-> it is **opt-in and off by default** (`api/src/telemetry.ts` only starts the SDK when
-> `OTEL_EXPORTER_OTLP_ENDPOINT` is set). There is no `otelcol.receiver.otlp` in the Alloy
-> config and no Tempo service, so nothing receives spans. To enable tracing later: add an
-> OTLP receiver to `config.alloy`, add a Tempo service + datasource, then set the env var.
+No tracing: the api and scraper embed an OpenTelemetry SDK that is opt-in and off (`OTEL_EXPORTER_OTLP_ENDPOINT`
+unset), and there is no OTLP receiver or Tempo.
 
 ---
 
 ## Components
 
-| Component  | Image                    | Role                                                    |
-|------------|--------------------------|---------------------------------------------------------|
-| Alloy      | `grafana/alloy:latest`   | Log shipping (Docker socket) + Faro browser receiver    |
-| Loki       | `grafana/loki:latest`    | Log storage (7-day retention, filesystem backend)       |
-| Prometheus | `prom/prometheus:latest` | Metrics scraping and storage (7-day retention, 2GB cap) |
-| Grafana    | `grafana/grafana:latest` | Dashboards and alerting (served at `/grafana`)          |
+| Component    | Image                                | Role                                                                            |
+| ------------ | ------------------------------------ | ------------------------------------------------------------------------------- |
+| Alloy        | `grafana/alloy:v1.19.2`              | All collection: scrapes, host/container metrics, probes, logs, Faro receiver    |
+| Prometheus   | `prom/prometheus:v3.14.0`            | Metrics storage (15 days, 2 GB cap), recording + alert rules, remote-write sink |
+| Alertmanager | `prom/alertmanager:v0.34.0`          | Routing, grouping, inhibition; Discord + healthchecks.io                        |
+| Loki         | `grafana/loki:3.7.7`                 | Logs (7 days; Traefik access log 3 days), log alert rules                       |
+| Grafana      | `grafana/grafana:13.2.1`             | Dashboards only (no Grafana-managed alerts), served at `/grafana`               |
+| Umami        | `ghcr.io/umami-software/umami:3.3.1` | Product analytics, first-party at `/stats` on the app domains                   |
+| umami-db     | `postgres:18.6-alpine`               | Umami storage (13-month retention, `umami-retention.yml`)                       |
 
-(Umami + its Postgres also run in this stack for product analytics; they are not part of the
-Grafana observability pipeline. Tempo and node-exporter are **not** deployed.)
+The VPS (2 vCPU, 3.8 GB) also runs the Ohlidame stack, so every container has a lean memory limit and the collectors
+are embedded in Alloy instead of separate exporter containers. Adding a component or raising a limit needs a reason.
 
-All components run in the `kreditozrouti-monitoring-internal-network` Docker network. Grafana and Alloy also join
-`public-network`
-(for public routing). Prometheus and Alloy also join `kreditozrouti-monitoring-network` — Prometheus to reach container
-IPs discovered via
-Docker SD; Alloy tails app container stdout on the same host via the Docker socket. Traefik and CrowdSec are no
-longer part of this stack - Traefik now runs in the shared Infrastructure stack and CrowdSec/WAF coverage moved to
-Cloudflare, so no Prometheus target and no Grafana dashboard covers either anymore.
+Only Alloy reads `/var/run/docker.sock` (plus `/proc`, `/sys`, `/var/lib/docker` and the containerd socket for
+cAdvisor). `deploy.sh` sets `DOCKER_GID` from the socket's group, so a wrong GID no longer silently empties everything.
 
-> **Docker socket access:** Prometheus and Alloy both read `/var/run/docker.sock`. They must run with the
-> host's `docker` group GID via `group_add` in `docker-compose.monitoring.yml` (defaults to `988`; override
-> with `DOCKER_GID` in `.env` if the host differs - check with `getent group docker`). A wrong GID silently
-> yields zero discovered targets and no container logs, which reads as empty dashboards.
+### Label contract
 
-Alloy mounts `traefik-logs-volume` (read-only) to tail `/var/log/traefik/access.log` — see the Traefik access log
-pipeline below.
+Alloy keeps compose projects `kreditozrouti`, `kreditozrouti-dev` and `kreditozrouti-monitoring` only and drops every
+other container on the VPS before any pipeline. Target labels come from compose metadata, never from the app:
+
+| Label      | Value                                                                          |
+| ---------- | ------------------------------------------------------------------------------ |
+| `project`  | `kreditozrouti`                                                                |
+| `env`      | `production`, `development` (the `-dev` compose project) or `ops` (monitoring) |
+| `service`  | compose service name (`api`, `scraper`, `mysqld-exporter`, ...)                |
+| `instance` | container name (`kreditozrouti-scraper-2`)                                     |
+| `job`      | `kreditozrouti/<service>`                                                      |
+
+A container only declares `prometheus.io/scrape=true` and `prometheus.io/port=<n>` and joins
+`kreditozrouti-monitoring-network`. It is addressed by container name, because Docker SD reports only a container's
+first network alphabetically.
+
+Traefik series and access-log lines are kept only for routers named `kreditozrouti-(api|client|mcp)-<suffix>@docker`;
+`env=development` is derived from a `dev` suffix. A new routed service needs adding to that regex in `config.alloy`.
+
+### Redaction before storage
+
+Client IPs, query strings and private path segments (`/s/<id>`, `/share/<id>`, `/ical/<id>`) are removed in Alloy
+from Traefik access logs, container logs and Faro payloads. The client also redacts `/s/<id>` and query strings before
+Faro or Umami send anything (`client/src/analytics.ts`). The privacy policy describes exactly this.
 
 ---
 
@@ -105,7 +88,7 @@ pipeline below.
 Every log line carries these base fields (set in `../../api/src/logger.ts` and `../../scraper/src/logger.ts`):
 
 | Field     | Type   | Example                      | Notes                                        |
-|-----------|--------|------------------------------|----------------------------------------------|
+| --------- | ------ | ---------------------------- | -------------------------------------------- |
 | `level`   | string | `"INFO"`                     | Uppercase via `formatters.level`             |
 | `service` | string | `"api"` / `"scraper"`        | Set as pino `base`                           |
 | `env`     | string | `"production"`               | Set as pino `base` from `Config.env`         |
@@ -115,8 +98,8 @@ Every log line carries these base fields (set in `../../api/src/logger.ts` and `
 HTTP request logs also carry (via `LoggerAPIContext`):
 
 | Field         | Type   | Notes                                             |
-|---------------|--------|---------------------------------------------------|
-| `context`     | string | `"http"` (stream label in Loki)                   |
+| ------------- | ------ | ------------------------------------------------- |
+| `context`     | string | `"http"` (JSON body field, not a Loki label)      |
 | `request_id`  | string | UUID per request (structured metadata in Loki)    |
 | `method`      | string | HTTP method                                       |
 | `path`        | string | Request path (used by Alloy drop rule)            |
@@ -128,8 +111,8 @@ HTTP request logs also carry (via `LoggerAPIContext`):
 Job logs carry (via `LoggerJobContext`):
 
 | Field         | Type   | Notes                                                           |
-|---------------|--------|-----------------------------------------------------------------|
-| `context`     | string | `"job"` (stream label in Loki)                                  |
+| ------------- | ------ | --------------------------------------------------------------- |
+| `context`     | string | `"job"` (JSON body field, not a Loki label)                     |
 | `queue_name`  | string | BullMQ queue name (scraper); API `withJobLogger` emits `queue`) |
 | `job_id`      | string |                                                                 |
 | `job_name`    | string |                                                                 |
@@ -139,7 +122,7 @@ Job logs carry (via `LoggerJobContext`):
 ### Log levels
 
 | Level   | When to use                                           |
-|---------|-------------------------------------------------------|
+| ------- | ----------------------------------------------------- |
 | `debug` | Routine details (dropped in production, level=`info`) |
 | `info`  | Normal lifecycle events                               |
 | `warn`  | 4xx responses, unexpected-but-recoverable situations  |
@@ -151,15 +134,15 @@ Job logs carry (via `LoggerJobContext`):
 ```typescript
 import { logger } from '@api/logger' // or @scraper/logger
 
-// Root logger — for startup / module-level events
+// Root logger - for startup / module-level events
 logger.info({ port: Config.port }, 'server.started')
 
-// HTTP child logger (adds context: 'http' stream label)
+// HTTP child logger (adds context: 'http' to the JSON body)
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 
 LoggerAPIContext.log.warn({ user_id }, 'auth.forbidden')
 
-// Job child logger (adds context: 'job' stream label)
+// Job child logger (adds context: 'job' to the JSON body)
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 
 LoggerJobContext.log.error({ err, duration_ms }, 'job.failed')
@@ -171,309 +154,126 @@ LoggerAPIContext.add({ user_id: session.userId })
 
 **What not to do:**
 
-- `console.log` — bypasses structured logging, no labels extracted by Alloy
-- Raw `logger.info(message)` string only — always pass a data object as the first argument
+- `console.log` - bypasses structured logging, not parsed as JSON by Alloy
+- Raw `logger.info(message)` string only - always pass a data object as the first argument
 
 ---
 
-## Alloy Pipeline
+## Logs in Loki
 
-Config: `../../deployment/monitoring/alloy/config.alloy`
+Config: `../../deployment/monitoring/alloy/config.alloy`, `../../deployment/monitoring/loki/loki.yml`.
 
-### Container log collection
+| Label     | Values                                           | Source                                    |
+| --------- | ------------------------------------------------ | ----------------------------------------- |
+| `project` | `kreditozrouti`                                  | Alloy                                     |
+| `env`     | `production`, `development`, `ops`               | compose project (Faro: `app_environment`) |
+| `service` | compose service; `client` for Faro               | compose metadata                          |
+| `source`  | `docker`, `traefik`, `faro`                      | pipeline                                  |
+| `level`   | pino `level`; Traefik derives it from the status | log line                                  |
+| `kind`    | `exception`, `measurement`, ... (Faro only)      | Faro                                      |
 
-1. `discovery.docker` discovers all containers via Docker socket
-2. `discovery.relabel` drops monitoring infra containers (grafana, prometheus, loki, alloy, umami, postgres)
-3. `loki.source.docker` reads stdout from surviving containers
-4. `loki.process.parse_json`:
-	- `stage.json` extracts `level`, `service`, `env`, `context`, `request_id`, `path`, `trace_id`, `span_id`
-	- `stage.drop` discards `/health` and `/metrics` path logs (high-frequency, zero signal)
-	- `stage.labels` promotes `level`, `service`, `env`, `context` to Loki stream labels
-	- `stage.structured_metadata` stores `request_id`, `trace_id`, `span_id` as per-log metadata (not stream labels —
-	  avoids cardinality explosion)
-	- A relabel rule copies `__meta_docker_container_label_com_docker_compose_project` → `compose_project` for
-	  guaranteed env separation in log queries
-5. `loki.write` pushes to `http://loki:3100/loki/api/v1/push`
+Structured metadata (not indexed): `request_id`, `trace_id`, `job_name` for container logs; `router`, `status`,
+`method` for Traefik lines. Everything else (including `context`, `path`, `status_code`) stays in the JSON body.
 
-### Faro browser telemetry
-
-1. `faro.receiver` listens on `:12347` (Traefik routes `/faro/*` here), forwarding to `loki.process.faro_labels`
-2. `loki.process.faro_labels`:
-	- `stage.static_labels` sets `app="kreditozrouti"`
-	- `stage.logfmt` maps `kind` ← `kind` and `env` ← `app_environment`
-	- `stage.labels` promotes `kind` and `env` as stream labels
-
-> The Client dashboard filters every panel by `env="$env"`. That label only exists if the incoming Faro
-> line actually carries an `app_environment` key. If the field name differs (Faro/Alloy version drift),
-> `env` is empty and the whole Client dashboard reads blank even though Faro data is arriving. Verify with
-> `{app="kreditozrouti"}` (no env filter) in Explore and inspect the raw line's keys.
-
-### OTLP traces
-
-Not configured. Alloy has no `otelcol.receiver.otlp` and there is no Tempo, so app spans go nowhere. Trace export
-is disabled at the source (`OTEL_EXPORTER_OTLP_ENDPOINT` unset). See the traces note under Pipeline Overview.
-
-### Traefik access log
-
-Alloy mounts `traefik-logs-volume` (read-only) to tail `/var/log/traefik/access.log`.
-
-1. `local.file_match "traefik_access"` targets `/var/log/traefik/access.log` with labels `job=traefik`,
-   `service=traefik`
-2. `loki.source.file "traefik_access"` tails the file and forwards raw JSON lines directly to
-   `loki.write.default.receiver` (no processing stage — Traefik's JSON access log is already structured)
-
-Query in Grafana: `{job="traefik"}` → parse with `| json` to filter by `RequestPath`, `DownstreamStatus`,
-`ClientAddr`, `RouterName`, `Duration`, etc.
-
----
-
-## Loki Stream Labels
-
-These labels are indexed and should be used in LogQL `{}` selectors:
-
-| Label             | Values                                         | Source                                           |
-|-------------------|------------------------------------------------|--------------------------------------------------|
-| `level`           | `INFO`, `WARN`, `ERROR`, `DEBUG`               | pino `level` field                               |
-| `service`         | `api`, `scraper`                               | pino `base.service`                              |
-| `env`             | `production`, `development`                    | pino `base.env`                                  |
-| `context`         | `http`, `job`, _(none for startup)_            | pino child logger                                |
-| `app`             | `kreditozrouti`                                | Faro logs only                                   |
-| `kind`            | `exception`, `log`, `measurement`, `web-vital` | Faro logs only                                   |
-| `compose_project` | Compose project name (e.g. `production`)       | Docker container label — guaranteed env fallback |
-
-Structured metadata (not indexed, use `| json` or `| logfmt` to filter):
-
-| Key          | Source                              |
-|--------------|-------------------------------------|
-| `request_id` | per-HTTP-request UUID               |
-| `trace_id`   | OTel span trace ID (if active span) |
-| `span_id`    | OTel span ID (if active span)       |
-
----
-
-## Grafana Dashboards
-
-Provisioned from `../../deployment/monitoring/grafana/provisioning/dashboards`.
-
-| Dashboard        | UID                     | Datasource | Covers                                                                                                                             |
-|------------------|-------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------|
-| API              | `kreditozrouti-api`     | Prometheus | Request rate, error rate, latency histograms, BullMQ queue depth                                                                   |
-| Scraper          | `kreditozrouti-scraper` | Prometheus | Queue depth, silent failures, items processed, last-run timestamp                                                                  |
-| Log Explorer     | `kreditozrouti-logs`    | Loki       | Searchable log view for api + scraper, filterable by level / context / job                                                         |
-| Client (Browser) | `kreditozrouti-client`  | Loki       | JS exceptions, Web Vitals, navigation events from Faro                                                                             |
-
-One dashboard per service is the target shape. CrowdSec is not part of this stack - CrowdSec/WAF coverage moved to
-Cloudflare and Traefik moved to the shared Infrastructure repo, so the merged `crowdsec.json` dashboard (itself the
-result of consolidating four earlier overlapping CrowdSec dashboards) was removed outright rather than kept as a
-dead, no-data panel set. The file dashboard provisioner (`dashboards.yml`, no `disableDeletion: true`) deletes
-dashboards removed from disk on its own, so no manual Grafana action was needed to retire it.
-
-### Common LogQL queries
+Container log lines whose `path` is `/health` or `/metrics` are dropped. Web Vitals from Faro are also turned into
+Prometheus histograms (`faro_web_vitals_*`) by Alloy.
 
 ```logql
-# All errors from the API in the last hour
-{service="api", level="ERROR", env="production"}
+# Errors from the production api
+{project="kreditozrouti", service="api", env="production", level="ERROR"}
 
-# HTTP 5xx with request ID
-{service="api", context="http", level="ERROR"} | json | status_code >= 500
+# HTTP 5xx with request id
+{project="kreditozrouti", service="api", source="docker"} | json | context="http" | status_code >= 500
 
 # Scraper job failures
-{service="scraper", context="job", level="ERROR"}
+{project="kreditozrouti", service="scraper", level="ERROR"} | json | context="job"
 
-# Specific request by ID (structured metadata filter)
-{service="api"} | json | request_id = "550e8400-e29b-41d4-a716-446655440000"
+# One request by id (structured metadata)
+{project="kreditozrouti", service="api"} | request_id="550e8400-e29b-41d4-a716-446655440000"
 
-# Browser JS exceptions
-{app="kreditozrouti", kind="exception", env="production"}
+# Browser exceptions
+{project="kreditozrouti", source="faro", kind="exception", env="production"}
 ```
-
-### Trace correlation
-
-Not active - this requires a Tempo datasource, which is not deployed. If a log line ever carries a `trace_id`
-(only when the opt-in OTel SDK is enabled and a receiver exists), the intended setup is a Loki datasource
-derivedField (`matcherRegex: '"trace_id":"(\w+)"'`) linking to Tempo. Deploy Tempo first.
 
 ---
 
-## Prometheus Metrics
+## Metrics
 
-The API container is discovered and scraped via Docker Socket SD (`docker_sd_configs` in `prometheus.yml`). Containers
-must carry the `prometheus.io/scrape=true` Docker label to be included; Prometheus keeps only the
-`kreditozrouti-monitoring-network`
-interface (one target per container, not one per network) and builds the scrape address from the container's
-kreditozrouti-monitoring-network IP **plus its `prometheus.io/port` label** (each service's metrics port comes from its
-own label - no
-hardcoded port). The `/metrics` endpoint returns 404 for requests carrying an `x-forwarded-for` header (i.e. via
-Traefik), so it is only reachable from within the Docker network.
+| Metric                                                 | Type      | Labels                           | Where                                                      |
+| ------------------------------------------------------ | --------- | -------------------------------- | ---------------------------------------------------------- |
+| `app_build_info`                                       | Gauge     | `app`, `version`, `commit`       | api, scraper (build args `APP_VERSION`, `GIT_SHA`)         |
+| `http_server_request_duration_seconds`                 | Histogram | `method`, `route`, `status_code` | api; `route` is the mounted pattern or `unmatched`         |
+| `bullmq_job_count`                                     | Gauge     | `queue`, `state`                 | api only (both queues, read at scrape time)                |
+| `worker_jobs_total`                                    | Counter   | `queue`, `job_name`, `outcome`   | api (response worker), each scraper replica (request)      |
+| `worker_job_duration_seconds`                          | Histogram | `queue`, `job_name`              | same                                                       |
+| `worker_last_success_timestamp_seconds`                | Gauge     | `queue`, `job_name`              | same; feeds `ScheduledJobStale`                            |
+| `scraper_silent_failures_total`                        | Counter   | `job_type`                       | scraper; jobs that caught an InSIS error and returned null |
+| Node.js defaults                                       | various   |                                  | `collectDefaultMetrics`                                    |
+| `traefik_router_*`, `node_*`, `container_*`, `probe_*` | various   |                                  | Alloy (Traefik, host, cAdvisor, blackbox)                  |
+| `mysql_*`, `redis_*`                                   | various   |                                  | `mysqld-exporter`, `redis-exporter` containers             |
 
-| Metric                          | Type      | Labels                                  | Notes                                                                                                                                                                |
-|---------------------------------|-----------|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `http_request_duration_seconds` | Histogram | `method`, `route`, `status_code`, `env` | HTTP latency + rate; `route` is `req.baseUrl + req.route.path` (the mounted pattern), or `"unknown"` for unmatched requests (404s, probes) which have no `req.route` |
-| `bullmq_queue_depth`            | Gauge     | `queue`, `status`, `env`                | Collected at scrape time                                                                                                                                             |
-| `scraper_silent_failures_total` | Gauge     | `job_type`, `env`                       | From Redis counters                                                                                                                                                  |
-| `scraper_items_processed_total` | Gauge     | `job_type`, `status`, `env`             | From Redis counters                                                                                                                                                  |
-| `scraper_last_run_timestamp`    | Gauge     | `job_type`, `env`                       | Unix seconds; 0 = never                                                                                                                                              |
-| Node.js defaults                | various   | —                                       | GC, event loop, memory via `collectDefaultMetrics`                                                                                                                   |
+Nothing is mirrored through Redis any more: counters live in the process that does the work, so a restart resets
+them and the rules use `increase()`. `/metrics` answers 404 to any request carrying a proxy header (`x-forwarded-for`,
+`x-real-ip`, `cf-connecting-ip`, `cf-ray`), so `https://<domain>/api/metrics` is never public. Each scraper replica
+serves its own endpoint on port 9101; keep one worker process per container (cluster mode would make forks share it).
 
-The `env` label on API metrics comes from the `prometheus.io/env` Docker container label (`production` or
-`development`), copied via `relabel_configs`. Both prod and dev API containers are scraped automatically with correct
-per-container env metadata — no static target list required.
-
-> **Coverage:** only the `api` container is scraped today. The scraper process is **not** scraped - its
-> queue depth and `scraper_*` counters are exposed through the API's Redis-backed gauges above (the Scraper
-> dashboard is fed by the API scrape), and the `mcp` service exposes no `/metrics` endpoint. There are no static
-> scrape targets - Traefik and CrowdSec were removed from this stack (see above) and never had one re-added.
+The client (nginx) and mcp expose no `/metrics`; their traffic, errors and latency come from Traefik router metrics.
 
 ---
 
-## Grafana Alerting
+## Alerting
 
-Provisioned from `../../deployment/monitoring/grafana/provisioning/alerting`.
+Rules: `../../deployment/monitoring/prometheus/rules/{alerts,recording}.yml` and
+`../../deployment/monitoring/loki/rules/fake/alerts.yml`. Routing: `../../deployment/monitoring/alertmanager/`.
 
-| File                        | Purpose                                                                                                                |
-|-----------------------------|------------------------------------------------------------------------------------------------------------------------|
-| `rules.yml`                 | Alert rules — 3 groups: `infrastructure`, `scraper`, `application`                                                     |
-| `notification-policies.yml` | Routes alerts to `discord`; `group_by: [alertname, job, env, severity]`, `group_interval: 15m`, `repeat_interval: 24h` |
-| `contact-points.yml`        | Discord webhook receiver; `disableResolveMessage: true`                                                                |
-| `message-templates.yml`     | Go templates: `discord_alert_title` and `discord_alert_message`                                                        |
+- **Every alert has promtool unit tests** in `prometheus/tests/alerts.test.yml`, run by
+  `deployment/monitoring/validate.sh` (promtool, amtool, `loki -verify-config`, `alloy validate`, with the deployed
+  images). CI runs it in `_verify.yml`. Annotations may template only `{{ $labels.x }}`, because promtool compares them
+  exactly.
+- **Catalogue:** `ServiceDown` (uses `absent()`, a stopped container's series vanish), `OriginProbeFailing`,
+  `EdgeErrorBudgetBurnFast/Slow`, `ApiSlowRequests` (over 1 s), `WorkerJobsFailing`, `QueueBacklog`,
+  `ScheduledJobStale` (Gap Sweep every 4 h, Academic Schedules daily), `MySQLDown`, `MySQLConnectionsHigh`,
+  `RedisDown`, `RedisMemoryHigh`, host disk/memory/swap, `ContainerOOMKilled`, `ContainerRestartLoop`, monitoring
+  self-checks, `LogErrorBurst`, `FrontendErrorSpike`, `Watchdog`.
+- **Dead-man's switch:** `Watchdog` always fires; Alertmanager pings healthchecks.io with it every minute, and
+  healthchecks.io e-mails if the pings stop. `AlertDeliveryFailing` inhibits Watchdog, so a broken Discord webhook
+  also ends up as an e-mail.
+- **Probes go to Traefik internally** (`https://traefik` with Host + SNI): Cloudflare 403s the VPS's own IP.
+- **Discord:** grouped by `alertname, project, service, env`; critical alerts repeat every 4 h and mention `@here`.
+- Grafana-managed alerting is gone. `grafana/provisioning/alerting/legacy-cleanup.yml` deletes the old rules, contact
+  point and templates on the first deploy, so `scripts/sync-grafana-alerts.sh` is no longer needed.
 
-### Alert rule groups
+Secrets (repository-level): `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD`, `DISCORD_WEBHOOK_URL`,
+`HEALTHCHECKS_PING_URL`, `UMAMI_DB_NAME`, `UMAMI_DB_USER`, `UMAMI_DB_PASSWORD`, `UMAMI_APP_SECRET` (+ SSH). Alertmanager
+reads webhook URLs from files that `deploy.sh` writes to `.secrets/`.
 
-| Group            | Folder         | Rules                                                                                                                                                                     |
-|------------------|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `infrastructure` | Infrastructure | `container-down` (title **API Down**) — prod API only, `for: 5m`                                                                                                          |
-| `scraper`        | Infrastructure | `scraper-jobs-failed`, `scraper-stale`, `scraper-silent-failures-rising` (`for: 15m`), `scraper-failure-rate-high`                                                        |
-| `application`    | Application    | `api-error-rate-high` (5xx > 5%, `for: 10m`), `api-p99-latency-high` (p99 > 2 s, `for: 10m`)                                                                              |
+---
 
-**Symptom-based, not target-based.** `container-down` alerts on the user-facing production API only
-(`up{job="kreditozrouti-api", env="production"} == 0 or absent(...)`). It deliberately does **not** page when an
-individual infra scrape target (CrowdSec, Traefik) is down - CrowdSec in particular binds `127.0.0.1:6060` by default,
-so the old blanket `up == 0` produced a permanent, self-repeating page. Notifications group by `alertname, job, env,
-severity` so a flap in one service never re-notifies unrelated alerts.
+## Dashboards
 
-All alert rules use raw PromQL (`histogram_quantile`, `rate`) — there are no recording rules.
-
-### Keeping Grafana in sync with rules.yml
-
-Grafana's file-based alert provisioning only adds/updates rules found in `rules.yml` - it never deletes a rule that
-was removed from the file. Redeploying monitoring after trimming or renaming a rule therefore leaves the old rule
-armed in Grafana, still able to fire and notify Discord, even though it no longer exists in the repo. Run
-`scripts/sync-grafana-alerts.sh` after every monitoring redeploy to delete those orphans and reload provisioning:
-
-```bash
-GRAFANA_URL=https://grafana.example.com \
-GRAFANA_ADMIN_USER=admin \
-GRAFANA_ADMIN_PASSWORD=... \
-./scripts/sync-grafana-alerts.sh
-```
-
-It lists currently provisioned rules via the Grafana provisioning API, diffs their UIDs against `rules.yml`, deletes
-anything not in the file, then reloads both alerting and dashboard provisioning. Idempotent - safe to run when
-nothing changed.
-
-### No-data / error handling
-
-Every rule sets `noDataState: KeepLast` and `execErrState: KeepLast`. Grafana's default is `NoData` / `Alerting`, which
-turned a single Prometheus scrape gap (host OOM or container restart) into a storm of phantom `DatasourceNoData` alerts
-across every rule at once. `KeepLast` keeps a genuinely firing alert alive across the gap but reports Normal when the
-prior state was Normal, so a transient scrape gap no longer pages. Valid values: `NoData`, `Alerting`, `OK`, `KeepLast`
-(`noDataState`); `Error`, `Alerting`, `OK`, `KeepLast` (`execErrState`).
-
-### Discord notification format
-
-Title template: `🔴 Alert Name` / `✅ Alert Name` on resolve. Message template: status line with env + severity, followed
-by the alert `summary` and `description`
-annotations. `disableResolveMessage: true` suppresses the automatic "resolved" message.
+Provisioned from `../../deployment/monitoring/grafana/dashboards/Kreditozrouti/` (one folder):
+`overview`, `service-api`, `service-scraper`, `service-client`, `service-mcp`, `data` (MySQL/Redis/queues), `host`,
+`frontend` (Faro + Umami), `monitoring` (the stack itself). Every panel filters on `project` and `$env`.
 
 ---
 
 ## Troubleshooting
 
-### Grafana dashboards show no data
-
-**Check the Docker socket GID first - a mismatch makes *everything* empty at once.** Prometheus and Alloy read
-`/var/run/docker.sock`; if their `group_add` GID does not match the host's `docker` group, Docker SD returns zero
-targets and no logs are tailed:
+### Dashboards show no data
 
 ```bash
-getent group docker   # note the GID (e.g. 988); it must match DOCKER_GID / group_add in docker-compose.monitoring.yml
-docker compose -p kreditozrouti-monitoring exec prometheus wget -qO- http://localhost:9090/api/v1/targets \
-  | jq '.data.activeTargets[] | {job:.labels.job, health:.health, err:.lastError}'
+docker compose -p kreditozrouti-monitoring ps
+docker exec kreditozrouti-monitoring-prometheus-1 wget -qO- \
+  'http://localhost:9090/api/v1/query?query=up{project="kreditozrouti"}'
+docker exec kreditozrouti-monitoring-prometheus-1 wget -qO- http://alloy:12345/-/ready
 ```
 
-If jobs are `down` with a permission or connection error, fix the GID and redeploy.
+- A service missing from `up`: its container lacks `prometheus.io/scrape|port`, is not on
+  `kreditozrouti-monitoring-network`, or its compose project is not one of the three kept.
+- Nothing at all: check `docker logs kreditozrouti-monitoring-alloy-1` for docker socket permission errors.
 
-1. Check Alloy is running and healthy:
+### Faro or Umami data missing
 
-    ```bash
-    docker compose -p kreditozrouti-monitoring logs alloy
-    docker compose -p kreditozrouti-monitoring ps alloy
-    ```
-
-2. Check Loki received any logs:
-
-    ```bash
-    # Query Loki API directly
-    curl -s 'http://localhost:3100/loki/api/v1/labels' | jq
-    ```
-
-   If `data` is empty, no logs have been ingested.
-
-3. Check Alloy can reach Loki:
-
-    ```bash
-    docker compose -p kreditozrouti-monitoring exec alloy wget -O- http://loki:3100/ready
-    ```
-
-4. Check app containers are discoverable:
-
-    ```bash
-    docker compose -p kreditozrouti-monitoring exec alloy \
-      wget -O- 'http://localhost:12345/api/v0/component/discovery.docker.containers/info'
-    ```
-
-   Alloy's HTTP UI is also available at `alloy:12345` from within `kreditozrouti-monitoring-internal-network`.
-
-5. Check Prometheus Docker SD targets:
-
-    ```bash
-    # List discovered targets (check api containers appear with correct env label)
-    curl -s http://localhost:9090/api/v1/targets | jq '.data.activeTargets[] | {job: .labels.job, env: .labels.env, health: .health}'
-    # Or check the Prometheus UI → Status → Targets
-    ```
-
-   To test reachability from inside Prometheus, exec into the container and curl a discovered IP:
-
-    ```bash
-    docker compose -p kreditozrouti-monitoring exec prometheus \
-      wget -O- http://<container-kreditozrouti-monitoring-network-ip>:80/metrics | head
-    ```
-
-6. Verify the monitoring networks are wired correctly:
-    ```bash
-    docker network inspect kreditozrouti-monitoring-network   # api, scraper, alloy, prometheus should appear
-    docker network inspect kreditozrouti-monitoring-internal-network  # alloy, loki, prometheus, grafana
-    ```
-
-### Alloy sees containers but Loki has no data
-
-The most common cause is that all log lines are being dropped. Alloy drops:
-
-- Containers whose name matches `/(grafana|prometheus|loki|alloy|umami|postgres).*`
-- Log lines where `path` matches `^/(health|metrics)$`
-
-If all your test requests hit `/health`, no logs will appear in Loki.
-
-### Trace links don't appear in Grafana
-
-Expected - tracing is disabled by default. The OpenTelemetry SDK only starts when `OTEL_EXPORTER_OTLP_ENDPOINT` is set
-(see `api/src/telemetry.ts`), and even then there is no OTLP receiver or Tempo to receive spans. To enable end-to-end
-tracing, add an `otelcol.receiver.otlp` to `config.alloy`, a Tempo service + datasource, and only then set the env var.
-Until that exists, `trace_id` / `span_id` do not appear in logs and there are no trace links.
-
-### Faro data missing in Client dashboard
-
-- Confirm `VITE_FARO_COLLECTOR_URL` is set on the client container
-- Check browser console for Faro errors
-- Query Loki for `{app="kreditozrouti"}` — data should appear within 30 s of a browser event
-- Check Alloy logs: `docker compose -p kreditozrouti-monitoring logs alloy | grep faro`
+- Faro and Umami are off on any host other than the deployed domains, and Umami needs `VITE_UMAMI_WEBSITE_ID`.
+- `https://<domain>/faro/collect` and `https://<domain>/stats/stats.js` must be routed (Alloy and Umami Traefik labels).
+- Query `{project="kreditozrouti", source="faro"}` in Explore.

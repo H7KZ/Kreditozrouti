@@ -9,6 +9,7 @@
 ```
 scraper/src/
 ├── index.ts / bullmq.ts
+├── metrics.ts                # prom-client + /metrics on :9101 per replica: worker metrics, scraper_silent_failures_total
 ├── Config/Config.ts          # Env vars, InSIS URLs
 ├── Context/LoggerJobContext.ts
 ├── Errors/InSISErrors.ts     # InSISNetworkError, InSISParseError, InSISRateLimitError, InSISRateLimitWaitError
@@ -82,6 +83,11 @@ After any change to extraction logic:
 4. **New extraction with no test?** Use `pnpm run test:regen` to bootstrap from real HTML
 
 Fixtures live at repo root `fixtures/` — named `*.scraper.json` (scraper output) and `*.db.json` (API parsing output).
+
+**Every silent failure is counted.** A job that catches an InSIS error and returns null calls
+`recordSilentFailure(jobType)` (`src/metrics.ts`), because BullMQ records it as a success. Each replica serves its own
+`/metrics` on `SCRAPER_METRICS_PORT` (9101, matching the compose `prometheus.io/port` label); keep one worker process per
+container, since cluster forks would share the port.
 
 ---
 

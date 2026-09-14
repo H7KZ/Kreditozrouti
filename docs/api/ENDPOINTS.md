@@ -254,20 +254,21 @@ Returns `200 OK` immediately — no logic, used by load balancers.
 
 Returns Prometheus-format metrics for the API process.
 
-**Internal only** — not routed through Traefik. Prometheus scrapes this directly from the container on its internal
-Docker network port.
+**Internal only.** Alloy scrapes it over `kreditozrouti-monitoring-network`. Any request carrying a proxy header
+(`x-forwarded-for`, `x-real-ip`, `cf-connecting-ip`, `cf-ray`) gets 404, so `https://<domain>/api/metrics` is not public.
 
-Metrics exposed:
+| Metric                                  | Type      | Labels                           |
+| --------------------------------------- | --------- | -------------------------------- |
+| `app_build_info`                        | Gauge     | `app`, `version`, `commit`       |
+| `http_server_request_duration_seconds`  | Histogram | `method`, `route`, `status_code` |
+| `bullmq_job_count`                      | Gauge     | `queue`, `state`                 |
+| `worker_jobs_total`                     | Counter   | `queue`, `job_name`, `outcome`   |
+| `worker_job_duration_seconds`           | Histogram | `queue`, `job_name`              |
+| `worker_last_success_timestamp_seconds` | Gauge     | `queue`, `job_name`              |
+| Default Node.js metrics                 | Various   | from `prom-client`               |
 
-| Metric                          | Type      | Description                                           |
-|---------------------------------|-----------|-------------------------------------------------------|
-| `http_requests_total`           | Counter   | Total HTTP requests, labelled by method/route/status  |
-| `http_request_duration_seconds` | Histogram | Request latency in seconds                            |
-| Default Node.js metrics         | Various   | Event loop lag, GC, memory, etc. (from `prom-client`) |
-
-**Implementation:** `../../api/src/metrics.ts` — uses `prom-client`. `metricsMiddleware` is applied globally;
-`metricsHandler`
-is the `GET /metrics` route handler.
+**Implementation:** `../../api/src/metrics.ts`. `metricsMiddleware` is applied globally, `metricsHandler` is the route
+handler, and `api/src/bullmq.ts` registers the queue collector and the response worker's listeners.
 
 ---
 
@@ -300,7 +301,7 @@ Opens an SSE stream that emits events as the scrape progresses.
 **SSE events:**
 
 | Event      | Payload                                   | When                      |
-|------------|-------------------------------------------|---------------------------|
+| ---------- | ----------------------------------------- | ------------------------- |
 | `progress` | `{ status: 'waiting' }`                   | Immediately on connection |
 | `complete` | `{ status: 'done', courseId, updatedAt }` | After DB sync completes   |
 | `error`    | `{ status: 'error', message }`            | On scrape failure         |
