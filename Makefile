@@ -1,6 +1,6 @@
 SHELL := bash
 .SHELLFLAGS := -eu -o pipefail -c
-.PHONY: install dev format lint type-check build preview test test-regen \
+.PHONY: install dev format lint type-check build preview test test-regen verify \
         run-local-docker stop-local-docker clear-redis build-docker-images
 
 # Infrastructure
@@ -53,6 +53,16 @@ test-regen:
 	pnpm turbo run build
 	pnpm --filter=@kreditozrouti/scraper run test:regen
 	pnpm --filter=@kreditozrouti/api run test:regen
+
+# One local command mirroring what _verify.yml runs in CI, so it can be checked before pushing
+verify:
+	$(MAKE) lint
+	bash scripts/check-em-dashes.sh
+	bash deployment/monitoring/validate.sh
+	pnpm --filter=@kreditozrouti/core run build
+	$(MAKE) test
+	$(MAKE) type-check
+	$(MAKE) build
 
 # Build
 

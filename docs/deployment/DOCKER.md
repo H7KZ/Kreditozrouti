@@ -3,27 +3,27 @@
 Four services ship as images: **api**, **client**, **scraper** and **mcp**. All four use multi-stage Docker builds
 (`turbo prune` + pnpm) for lean production images. Images are stored in GitHub Container Registry (GHCR).
 
-Every build stage starts from `node:22-alpine` and installs the build toolchain with
-`npm install -g pnpm@11.8.0 turbo@2.10.11`. Both versions are pinned rather than floating, and the root `package.json`
-pins `"turbo": "^2.10.11"` instead of `"latest"`, so a local build and an image build run the same turbo.
+Every build stage starts from `node:24-alpine` and installs the build toolchain with
+`npm install -g pnpm@12.4.1 turbo@2.10.13`. Both versions are pinned rather than floating, and the root `package.json`
+pins `"turbo": "^2.10.13"` instead of `"latest"`, so a local build and an image build run the same turbo.
 
 ---
 
 ## API Image
 
-**Location:** `../../api/Dockerfile` - Base: `node:22-alpine`
+**Location:** `../../api/Dockerfile` - Base: `node:24-alpine`
 
 **Build stages:**
 
 ```
-Stage 1 (base)       node:22-alpine + curl + pnpm@11.8.0 + turbo@2.10.11
+Stage 1 (base)       node:24-alpine + curl + pnpm@12.4.1 + turbo@2.10.13
 Stage 2 (pruner)     turbo prune @kreditozrouti/api --docker
 Stage 3 (installer)  pnpm install --frozen-lockfile (pruned lockfile only)
 Stage 4 (builder)
   ├── pnpm turbo run build --filter=@kreditozrouti/api
   └── pnpm --filter=@kreditozrouti/api --prod deploy /app/deploy
 Stage 5 (runner)
-  ├── node:22-alpine + curl, non-root user `api`
+  ├── node:24-alpine + curl, non-root user `api`
   └── CMD ["node", "--require", "./dist/api/src/telemetry.js", "dist/api/src/index.js"]
 ```
 
@@ -35,12 +35,12 @@ Stage 5 (runner)
 
 ## Client Image
 
-**Location:** `../../client/Dockerfile` - Base: `node:22-alpine` → `nginx:stable-alpine`
+**Location:** `../../client/Dockerfile` - Base: `node:24-alpine` → `nginx:stable-alpine`
 
 **Build stages:**
 
 ```
-Stage 1 (base)       node:22-alpine + pnpm@11.8.0 + turbo@2.10.11
+Stage 1 (base)       node:24-alpine + pnpm@12.4.1 + turbo@2.10.13
 Stage 2 (pruner)     turbo prune @kreditozrouti/client --docker
 Stage 3 (installer)  pnpm install --frozen-lockfile
 Stage 4 (builder)
@@ -88,19 +88,19 @@ starts:
 
 ## Scraper Image
 
-**Location:** `../../scraper/Dockerfile` - Base: `node:22-alpine`
+**Location:** `../../scraper/Dockerfile` - Base: `node:24-alpine`
 
 **Build stages:**
 
 ```
-Stage 1 (base)       node:22-alpine + curl + pnpm@11.8.0 + turbo
+Stage 1 (base)       node:24-alpine + curl + pnpm@12.4.1 + turbo
 Stage 2 (pruner)     turbo prune @kreditozrouti/scraper --docker
 Stage 3 (installer)  pnpm install --frozen-lockfile
 Stage 4 (builder)
   ├── pnpm turbo run build --filter=@kreditozrouti/scraper
   └── pnpm --filter=@kreditozrouti/scraper --prod deploy /app/deploy
 Stage 5 (runner)
-  ├── node:22-alpine + Alpine system Chromium, non-root user `scraper`
+  ├── node:24-alpine + Alpine system Chromium, non-root user `scraper`
   └── CMD ["node", "--require", "./dist/scraper/src/telemetry.js", "dist/scraper/src/index.js"]
 ```
 
@@ -110,19 +110,19 @@ No port is exposed - the scraper is a queue worker.
 
 ## MCP Image
 
-**Location:** `../../mcp/Dockerfile` - Base: `node:22-alpine`
+**Location:** `../../mcp/Dockerfile` - Base: `node:24-alpine`
 
 **Build stages:**
 
 ```
-Stage 1 (base)       node:22-alpine + curl + pnpm@11.8.0 + turbo@2.10.11
+Stage 1 (base)       node:24-alpine + curl + pnpm@12.4.1 + turbo@2.10.13
 Stage 2 (pruner)     turbo prune @kreditozrouti/mcp --docker
 Stage 3 (installer)  pnpm install --frozen-lockfile
 Stage 4 (builder)
   ├── pnpm turbo run build --filter=@kreditozrouti/mcp
   └── pnpm --filter=@kreditozrouti/mcp --prod deploy /app/deploy
 Stage 5 (runner)
-  ├── node:22-alpine + curl, non-root user `mcp`
+  ├── node:24-alpine + curl, non-root user `mcp`
   └── CMD ["node", "dist/index.js"]
 ```
 

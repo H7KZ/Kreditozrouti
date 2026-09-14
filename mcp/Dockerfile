@@ -1,6 +1,6 @@
-FROM node:22-alpine AS base
+FROM node:24-alpine AS base
 RUN apk add --no-cache curl
-RUN npm install -g pnpm@11.8.0 turbo@2.10.11
+RUN npm install -g pnpm@12.4.1 turbo@2.10.13
 
 FROM base AS pruner
 WORKDIR /app
@@ -26,7 +26,7 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm turbo run build --filter=@kreditozrouti/mcp
 RUN pnpm --filter=@kreditozrouti/mcp --prod deploy --legacy /app/deploy
 
-FROM node:22-alpine AS runner
+FROM node:24-alpine AS runner
 RUN apk add --no-cache curl && \
     addgroup -S mcp && \
     adduser -S mcp -G mcp

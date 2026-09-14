@@ -5,6 +5,12 @@
 #
 # Inputs:  service (api | client | scraper | mcp), float_tag, cache_scope
 # Outputs: image_tag (short SHA), image_prefix
+#
+# Runs on a GitHub-hosted runner (ubuntu-latest), NOT the self-hosted runner - the
+# VPS is 2vCPU/4GB and a Docker build there crashes the host. GHCR push uses
+# GITHUB_TOKEN, so this needs no extra secrets on a GitHub-hosted runner.
+# _deploy-service.yml stays self-hosted: it only SSHs into the VPS and is not
+# build-heavy.
 # ==============================================================================
 
 name: Build Service Image (reusable)
@@ -35,7 +41,7 @@ on:
 jobs:
   build:
     name: Build and Push ${{ inputs.service }}
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 30
 
     permissions:
