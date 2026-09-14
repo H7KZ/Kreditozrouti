@@ -12,6 +12,7 @@ services:
       - --storage.tsdb.retention.size=2GB
       - --web.enable-remote-write-receiver
       - --web.enable-lifecycle
+    dns_search: []
     volumes:
       - kreditozrouti-prometheus-volume:/prometheus
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
