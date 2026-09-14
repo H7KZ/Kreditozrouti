@@ -66,7 +66,7 @@ main() {
 
     wait_for "prometheus ready" 36 docker exec "$STACK_NAME-prometheus-1" wget -qO- http://localhost:9090/-/ready
     wait_for "alertmanager ready" 24 docker exec "$STACK_NAME-alertmanager-1" wget -qO- http://localhost:9093/-/ready
-    wait_for "loki ready" 36 docker exec "$STACK_NAME-prometheus-1" wget -qO- http://loki:3100/ready
+    wait_for "loki ready" 60 docker exec "$STACK_NAME-prometheus-1" wget -qO- http://loki:3100/ready
     wait_for "alloy ready" 24 docker exec "$STACK_NAME-prometheus-1" wget -qO- http://alloy:12345/-/ready
     wait_for "grafana ready" 36 docker exec "$STACK_NAME-grafana-1" wget -qO- http://localhost:3000/api/health
 
