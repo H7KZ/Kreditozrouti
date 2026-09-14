@@ -1,5 +1,5 @@
 overrides:
-  typescript: "~5.8.3"
+  typescript: "~6.0.3"
 
 packages:
   - "api"
@@ -26,6 +26,13 @@ minimumReleaseAgeExclude:
   - '@intlify/message-compiler@11.4.9'
   - '@intlify/shared@11.4.9'
   - vue-i18n@11.4.9
+  - '@turbo/darwin-64@2.10.13'
+  - '@turbo/darwin-arm64@2.10.13'
+  - '@turbo/linux-64@2.10.13'
+  - '@turbo/linux-arm64@2.10.13'
+  - '@turbo/windows-64@2.10.13'
+  - '@turbo/windows-arm64@2.10.13'
+  - turbo@2.10.13
 
 onlyBuiltDependencies:
   - esbuild
