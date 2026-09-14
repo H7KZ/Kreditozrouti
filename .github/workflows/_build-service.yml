@@ -85,3 +85,7 @@ jobs:
           cache-from: type=gha,scope=${{ inputs.cache_scope }}
           cache-to: type=gha,mode=max,scope=${{ inputs.cache_scope }}
           platforms: linux/amd64
+
+      - name: Log out of GitHub Container Registry
+        if: always()
+        run: docker logout ghcr.io

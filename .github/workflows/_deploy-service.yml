@@ -167,6 +167,7 @@ jobs:
 
             # Login to GHCR
             echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
+            trap 'docker logout ghcr.io' EXIT
 
             # Write .env - printf with a quoted value keeps the SHELL from
             # expanding a secret. That is only the first of the two readers
