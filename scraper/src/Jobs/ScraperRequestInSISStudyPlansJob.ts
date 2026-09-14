@@ -1,9 +1,9 @@
 import type { ScraperInSISStudyPlans, ScraperInSISStudyPlansRequestJob } from '@kreditozrouti/types'
 import { extractSemester, extractYear } from '@kreditozrouti/core/utils'
-import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'
+import { recordSilentFailure } from '@scraper/metrics'
 import ExtractInSISStudyPlanService from '@scraper/Services/ExtractInSISStudyPlanService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
 import { QueueService } from '@scraper/Services/QueueService'
@@ -28,12 +28,7 @@ export default async function ScraperRequestInSISStudyPlansJob(data: ScraperInSI
 
 	if (!initialResult.success) {
 		if (initialResult.status === 429) throw new InSISRateLimitError(initialResult.retryAfter ?? 60)
-		redis.incr('metrics:scraper:silent_failures:study_plans').catch(() => {
-			/* empty */
-		})
-		redis.expire('metrics:scraper:silent_failures:study_plans', 604800).catch(() => {
-			/* empty */
-		})
+		recordSilentFailure('study_plans')
 		return null
 	}
 

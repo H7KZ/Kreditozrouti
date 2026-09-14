@@ -1,6 +1,5 @@
 import type { ScraperResponseJob } from '@kreditozrouti/types'
 import { Job } from 'bullmq'
-import { redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import { withDeadlockRetry } from '@api/Jobs/helpers'
 import ScraperResponseInSISAcademicScheduleJob from '@api/Jobs/ScraperResponseInSISAcademicScheduleJob'
@@ -8,8 +7,6 @@ import ScraperResponseInSISCourseJob from '@api/Jobs/ScraperResponseInSISCourseJ
 import ScraperResponseInSISFacultyTimetableJob from '@api/Jobs/ScraperResponseInSISFacultyTimetableJob'
 import ScraperResponseInSISGapSweepJob from '@api/Jobs/ScraperResponseInSISGapSweepJob'
 import ScraperResponseInSISStudyPlanJob from '@api/Jobs/ScraperResponseInSISStudyPlanJob'
-
-const REAL_WORK_TYPES = ['InSIS:Course', 'InSIS:StudyPlan', 'InSIS:AcademicSchedule', 'InSIS:FacultyTimetable', 'InSIS:GapSweep'] as const
 
 export default async function ScraperResponseHandler(job: Job<ScraperResponseJob>): Promise<void> {
 	const { type } = job.data
@@ -53,15 +50,6 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
 				}
 			})
 
-			if ((REAL_WORK_TYPES as readonly string[]).includes(type)) {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const noop = (_e: unknown) => {
-					/* empty */
-				}
-				redis.incr(`metrics:scraper:items_processed:${type}:success`).catch(noop)
-				redis.set(`metrics:scraper:last_run:${type}`, Math.floor(Date.now() / 1000)).catch(noop)
-			}
-
 			const diff = process.hrtime(start)
 			const durationMs = (diff[0] * 1e9 + diff[1]) / 1e6
 
@@ -72,14 +60,6 @@ export default async function ScraperResponseHandler(job: Job<ScraperResponseJob
 
 			LoggerJobContext.log.info(LoggerJobContext.get())
 		} catch (error) {
-			if ((REAL_WORK_TYPES as readonly string[]).includes(type)) {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const noop = (_e: unknown) => {
-					/* empty */
-				}
-				redis.incr(`metrics:scraper:items_processed:${type}:failure`).catch(noop)
-			}
-
 			const diff = process.hrtime(start)
 			const durationMs = (diff[0] * 1e9 + diff[1]) / 1e6
 

@@ -2,7 +2,9 @@ import '@scraper/telemetry'
 import cluster from 'cluster'
 import scraper from '@scraper/bullmq'
 import { redis } from '@scraper/clients'
+import Config from '@scraper/Config/Config'
 import { logger } from '@scraper/logger'
+import { startMetricsServer } from '@scraper/metrics'
 
 const args = process.argv.slice(2)
 const specifiedInstances = args.find(arg => !isNaN(Number(arg)))
@@ -37,6 +39,10 @@ async function startWorker(): Promise<void> {
 
 		scraper.init()
 		await scraper.waitForQueues()
+
+		// One endpoint per process. In cluster mode (numWorkers > 1) the forks would share this port
+		// and a scrape would reach a random fork, so keep one worker per container and scale with replicas.
+		startMetricsServer(Config.metricsPort)
 		logger.info('scraper.ready')
 	} catch (error) {
 		logger.fatal({ err: error }, 'scraper.startup_failed')

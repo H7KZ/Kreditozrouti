@@ -6,6 +6,7 @@ import { BullMQOtel } from 'bullmq-otel'
 import { redis } from '@scraper/clients'
 import ScraperRequestHandler from '@scraper/Handlers/ScraperRequestHandler'
 import { logger } from '@scraper/logger'
+import { instrumentWorker } from '@scraper/metrics'
 
 const bullmqTelemetry = new BullMQOtel({ tracerName: 'kreditozrouti-scraper' })
 
@@ -49,6 +50,8 @@ const requestWorker = new Worker<ScraperRequestJob>(ScraperRequestQueue, Scraper
 	lockDuration: 900_000, // 15 min; covers the longest expected job; auto-renewed while worker is alive
 	maxStalledCount: 3 // allow 3 stall recoveries before permanent failure
 })
+
+instrumentWorker(requestWorker)
 
 // Scraper object
 

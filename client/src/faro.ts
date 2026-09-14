@@ -1,6 +1,7 @@
 import type { Faro } from '@grafana/faro-web-sdk'
 import type { App } from 'vue'
 import { ErrorsInstrumentation, initializeFaro, WebVitalsInstrumentation } from '@grafana/faro-web-sdk'
+import { redactUrl } from '@client/analytics'
 
 let _faro: Faro | null = null
 
@@ -15,7 +16,7 @@ const faroModule = {
 		_faro = initializeFaro({
 			url: import.meta.env.VITE_FARO_COLLECTOR_URL as string,
 			app: {
-				name: 'kreditozrouti',
+				name: 'client',
 				version: (import.meta.env.VITE_APP_VERSION as string | undefined) ?? 'unknown',
 				environment: (import.meta.env.VITE_APP_ENV as string | undefined) ?? import.meta.env.MODE
 			},
@@ -33,7 +34,13 @@ const faroModule = {
 			// which would also add Session/View/Navigation/UserAction/Performance
 			// instrumentations (behavioural RUM that duplicates Umami and would need
 			// consent). captureConsole is off, so no console output is shipped.
-			instrumentations: [new ErrorsInstrumentation(), new WebVitalsInstrumentation()]
+			instrumentations: [new ErrorsInstrumentation(), new WebVitalsInstrumentation()],
+			// A share link (/s/<id>) is a capability; the page URL leaves the browser redacted.
+			beforeSend: item => {
+				const page = item.meta.page
+				if (page?.url) page.url = redactUrl(page.url)
+				return item
+			}
 		})
 
 		// Vue component error handler — captures errors thrown inside Vue components

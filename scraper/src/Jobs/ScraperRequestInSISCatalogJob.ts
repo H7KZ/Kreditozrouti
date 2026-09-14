@@ -1,8 +1,8 @@
 import type { ScraperInSISCatalogRequestJob } from '@kreditozrouti/types'
-import { redis } from '@scraper/clients'
 import Config from '@scraper/Config/Config'
 import LoggerJobContext from '@scraper/Context/LoggerJobContext'
 import { InSISRateLimitError } from '@scraper/Errors/InSISErrors'
+import { recordSilentFailure } from '@scraper/metrics'
 import ExtractInSISCatalogService from '@scraper/Services/ExtractInSISCatalogService'
 import ExtractInSISCourseService from '@scraper/Services/ExtractInSISCourseService'
 import { createInSISClient } from '@scraper/Services/InSISHTTPClientService'
@@ -25,12 +25,7 @@ export default async function ScraperRequestInSISCatalogJob(data: ScraperInSISCa
 	// Phase 1: Discovery
 	const options = await discoverSearchOptions(client)
 	if (!options) {
-		redis.incr('metrics:scraper:silent_failures:catalog').catch(() => {
-			/* empty */
-		})
-		redis.expire('metrics:scraper:silent_failures:catalog', 604800).catch(() => {
-			/* empty */
-		})
+		recordSilentFailure('catalog')
 		return null
 	}
 
@@ -106,12 +101,7 @@ async function scrapeCatalogPage(
 		LoggerJobContext.add({
 			error: 'Catalog page fetch failed'
 		})
-		redis.incr('metrics:scraper:silent_failures:catalog').catch(() => {
-			/* empty */
-		})
-		redis.expire('metrics:scraper:silent_failures:catalog', 604800).catch(() => {
-			/* empty */
-		})
+		recordSilentFailure('catalog')
 		return
 	}
 

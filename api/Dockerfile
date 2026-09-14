@@ -33,6 +33,10 @@ RUN apk add --no-cache curl && \
 WORKDIR /app
 COPY --from=builder --chown=api:api /app/deploy .
 RUN mkdir -p /app/uploads && chown api:api /app/uploads
+# The running build, reported as app_build_info{version,commit}. Last, so it never busts a cached layer.
+ARG APP_VERSION=unknown
+ARG GIT_SHA=unknown
+ENV APP_VERSION=$APP_VERSION GIT_SHA=$GIT_SHA
 USER api
 EXPOSE 80
 CMD ["node", "--require", "./dist/api/src/telemetry.js", "dist/api/src/index.js"]

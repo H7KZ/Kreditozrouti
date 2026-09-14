@@ -71,12 +71,7 @@ app.use(responseTime())
 app.use(metricsMiddleware)
 
 app.use('/health', (req, res) => res.status(200).send('OK'))
-app.get('/metrics', (req, res) => {
-	if (req.get('x-forwarded-for')) {
-		return res.status(404).end()
-	}
-	return metricsHandler(req, res)
-})
+app.get('/metrics', metricsHandler)
 
 // Routes
 app.use('/courses', CoursesRoutes)

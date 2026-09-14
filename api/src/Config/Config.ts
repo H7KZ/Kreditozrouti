@@ -45,6 +45,12 @@ interface Config {
 
 	cacheDisabled: boolean
 
+	/** The running build, stamped into the image at build time; reported as app_build_info. */
+	build: {
+		version: string
+		commit: string
+	}
+
 	isEmailEnabled: () => boolean
 	isEnvProduction: () => boolean
 	isEnvDevelopment: () => boolean
@@ -100,6 +106,11 @@ const config: Config = {
 	},
 
 	cacheDisabled: process.env.API_CACHE_DISABLED === 'true',
+
+	build: {
+		version: process.env.APP_VERSION ?? 'unknown',
+		commit: process.env.GIT_SHA ?? 'unknown'
+	},
 
 	isEmailEnabled: () => config.google.user.length > 0 && config.google.appPassword.length > 0,
 	isEnvProduction: () => config.env === 'production' || config.env === 'prod',

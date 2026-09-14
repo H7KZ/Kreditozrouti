@@ -79,6 +79,9 @@ jobs:
           tags: |
             ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
             ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.float_tag }}
+          build-args: |
+            APP_VERSION=${{ steps.meta.outputs.image_tag }}
+            GIT_SHA=${{ github.sha }}
           cache-from: type=gha,scope=${{ inputs.cache_scope }}
           cache-to: type=gha,mode=max,scope=${{ inputs.cache_scope }}
           platforms: linux/amd64

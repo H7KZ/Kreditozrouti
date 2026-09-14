@@ -16,6 +16,7 @@ import Config from '@api/Config/Config'
 import { StudyPlanCourseIdentTable } from '@api/Database/types'
 import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
 import { logger } from '@api/logger'
+import { collectQueueCounts, instrumentWorker } from '@api/metrics'
 import InSISService from '@api/Services/InSISService'
 
 // Queue & Worker Setup
@@ -47,6 +48,10 @@ const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueu
 	concurrency: 2,
 	maxStalledCount: 2 // allow 2 stall recoveries before permanent failure
 })
+
+// bullmq_job_count for both queues is reported here only, so the scraper replicas never double it.
+collectQueueCounts([scraperRequestQueue, scraperResponseQueue])
+instrumentWorker(scraperResponseWorker)
 
 // Scheduler Job Data
 

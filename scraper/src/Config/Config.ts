@@ -36,6 +36,15 @@ interface Config {
 		password: string | undefined
 	}
 
+	/** Port of this replica's Prometheus /metrics endpoint; the compose `prometheus.io/port` label must match. */
+	metricsPort: number
+
+	/** The running build, stamped into the image at build time; reported as app_build_info. */
+	build: {
+		version: string
+		commit: string
+	}
+
 	/** InSIS system URLs and settings. */
 	insis: {
 		baseDomain: string
@@ -72,6 +81,13 @@ const config: Config = {
 	redis: {
 		uri: process.env.REDIS_URI ?? '',
 		password: process.env.REDIS_PASSWORD
+	},
+
+	metricsPort: numberFromEnv(process.env.SCRAPER_METRICS_PORT, 9101),
+
+	build: {
+		version: process.env.APP_VERSION ?? 'unknown',
+		commit: process.env.GIT_SHA ?? 'unknown'
 	},
 
 	insis: {

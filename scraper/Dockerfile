@@ -40,5 +40,9 @@ RUN apk add --no-cache \
     adduser -S scraper -G scraper
 WORKDIR /app
 COPY --from=builder --chown=scraper:scraper /app/deploy .
+# The running build, reported as app_build_info{version,commit}. Last, so it never busts a cached layer.
+ARG APP_VERSION=unknown
+ARG GIT_SHA=unknown
+ENV APP_VERSION=$APP_VERSION GIT_SHA=$GIT_SHA
 USER scraper
 CMD ["node", "--require", "./dist/scraper/src/telemetry.js", "dist/scraper/src/index.js"]
