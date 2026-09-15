@@ -22,7 +22,7 @@ on:
         type: choice
         options:
           - api
-          - client
+          - web
           - scraper
           - mcp
           - all
@@ -115,16 +115,16 @@ jobs:
       image_prefix: ${{ needs.resolve.outputs.image_prefix }}
     secrets: inherit
 
-  deploy-client:
-    name: Rollback Client to ${{ inputs.sha }}
+  deploy-web:
+    name: Rollback Web to ${{ inputs.sha }}
     needs: [ resolve ]
     if: >-
       always() &&
       needs.resolve.result == 'success' &&
-      (inputs.service == 'client' || inputs.service == 'all')
+      (inputs.service == 'web' || inputs.service == 'all')
     uses: ./.github/workflows/_deploy-service.yml
     with:
-      service: client
+      service: web
       environment: ${{ inputs.environment }}
       project_name: ${{ needs.resolve.outputs.project_name }}
       image_tag: ${{ inputs.sha }}

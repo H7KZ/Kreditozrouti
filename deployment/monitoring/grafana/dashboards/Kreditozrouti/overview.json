@@ -260,16 +260,16 @@
         "percentChangeColorMode": "standard",
         "orientation": "auto"
       },
-      "title": "client",
-      "description": "Origin probe (GET / through Traefik) for client in $env.",
+      "title": "web",
+      "description": "Origin probe (GET / through Traefik) for web in $env.",
       "targets": [
         {
-          "expr": "min(probe_success{project=\"kreditozrouti\", service=\"client\", env=\"$env\"}) or vector(0)",
+          "expr": "min(probe_success{project=\"kreditozrouti\", service=\"web\", env=\"$env\"}) or vector(0)",
           "datasource": {
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "legendFormat": "client",
+          "legendFormat": "web",
           "instant": true,
           "range": false
         }

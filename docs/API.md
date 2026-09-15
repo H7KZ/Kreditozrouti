@@ -24,7 +24,7 @@ The API documentation is split into focused files for easier navigation.
 **"How does the 3 AM cron trigger the scraper?"**
 → [api/JOBS.md — Scheduler](api/JOBS.md#scheduler-production-only)
 
-**"How does SSE notify the client when a scrape finishes?"**
+**"How does SSE notify the web app when a scrape finishes?"**
 → [api/ENDPOINTS.md — GET /courses/:id/scrape/status](api/ENDPOINTS.md#get-coursesidscrape-status)
 
 **"How does the Redis response cache work?"**

@@ -1,6 +1,6 @@
 # Deployment — Docker Images
 
-Four services ship as images: **api**, **client**, **scraper** and **mcp**. All four use multi-stage Docker builds
+Four services ship as images: **api**, **web**, **scraper** and **mcp**. All four use multi-stage Docker builds
 (`turbo prune` + pnpm) for lean production images. Images are stored in GitHub Container Registry (GHCR).
 
 Every build stage starts from `node:24-alpine` and installs the build toolchain with
@@ -33,19 +33,19 @@ Stage 5 (runner)
 
 ---
 
-## Client Image
+## Web Image
 
-**Location:** `../../client/Dockerfile` - Base: `node:24-alpine` → `nginx:stable-alpine`
+**Location:** `../../web` - Base: `node:24-alpine` → `nginx:stable-alpine`
 
 **Build stages:**
 
 ```
 Stage 1 (base)       node:24-alpine + pnpm@12.4.1 + turbo@2.10.13
-Stage 2 (pruner)     turbo prune @kreditozrouti/client --docker
+Stage 2 (pruner)     turbo prune @kreditozrouti/web --docker
 Stage 3 (installer)  pnpm install --frozen-lockfile
 Stage 4 (builder)
   ├── Set placeholder env vars (six VITE_* vars, see below)
-  └── pnpm turbo run build --filter=@kreditozrouti/client
+  └── pnpm turbo run build --filter=@kreditozrouti/web
 Stage 5 (runner)
   ├── nginx:stable-alpine
   ├── Copy dist/ to /usr/share/nginx/html
@@ -59,9 +59,9 @@ unhealthy. busybox `wget` is present in the nginx alpine image, so the check use
 
 ### Runtime environment injection
 
-Because Vite bakes env vars into the bundle at build time, the client image uses a placeholder-replacement trick to stay
+Because Vite bakes env vars into the bundle at build time, the web image uses a placeholder-replacement trick to stay
 environment-agnostic. The builder stage sets each `VITE_*` var to a placeholder token, and
-`client/docker-entrypoint.sh` rewrites the tokens in the built JS with the container's real env values before nginx
+`../../web` rewrites the tokens in the built JS with the container's real env values before nginx
 starts:
 
 | Build-time placeholder                    | Runtime env var           |
@@ -75,7 +75,7 @@ starts:
 
 > **The trick only works while `turbo.json` declares these vars under the `build` task's `env` allowlist.** turbo 2 runs
 > tasks in strict env mode: any variable not declared there is **removed** from the task environment, not merely left
-> out of the cache key. With no allowlist, the six `VITE_*` vars set as `ENV` in `client/Dockerfile` never reached
+> out of the cache key. With no allowlist, the six `VITE_*` vars set as `ENV` in `../../web` never reached
 > vite, so no placeholder tokens were baked into the bundle at all - Faro and Umami were silently disabled in
 > production, the app version reported `unknown`, and the entrypoint's `sed` found nothing to replace. `VITE_API_URL`
 > masked the breakage by falling back to `/api`. **Anyone adding a new `VITE_*` var must add it to `turbo.json` as
@@ -139,7 +139,7 @@ Stage 5 (runner)
 
 ```
 ghcr.io/<owner>/<repo>/api:<tag>
-ghcr.io/<owner>/<repo>/client:<tag>
+ghcr.io/<owner>/<repo>/web:<tag>
 ghcr.io/<owner>/<repo>/scraper:<tag>
 ghcr.io/<owner>/<repo>/mcp:<tag>
 ```
@@ -153,7 +153,7 @@ Each build produces a **short-SHA versioned tag** plus a **floating tag**:
 | Production  | `${GITHUB_SHA::8}` | `latest`     | `a1b2c3d4`        |
 | Development | `${GITHUB_SHA::8}` | `dev-latest` | `a1b2c3d4`        |
 
-The versioned tag (`API_IMAGE_TAG`, `CLIENT_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`, `MCP_IMAGE_TAG`) is what `deploy.sh` uses.
+The versioned tag (`API_IMAGE_TAG`, `WEB_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`, `MCP_IMAGE_TAG`) is what `deploy.sh` uses.
 Each service gets its own tag variable so services can be deployed independently at different SHAs. For full-stack
 deploys via `deploy-all.yml`, all four variables are set to the same SHA.
 
@@ -210,7 +210,7 @@ make build-docker-images
 
 # Test an image
 docker run -p 40080:80 --env-file .env kreditozrouti-api
-docker run -p 45173:80 -e VITE_API_URL=http://localhost:40080 kreditozrouti-client
+docker run -p 45173:80 -e VITE_API_URL=http://localhost:40080 kreditozrouti-web
 docker run --env-file .env kreditozrouti-scraper
 docker run -p 3000:3000 --env-file .env kreditozrouti-mcp
 ```

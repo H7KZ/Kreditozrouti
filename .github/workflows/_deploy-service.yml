@@ -2,7 +2,7 @@
 # Workflow: Deploy Service (reusable)
 # Description: Deploys a single service to the VPS via deploy.sh. api/scraper/mcp
 #              are deployed together with their infrastructure dependencies
-#              (mysql/redis); client keeps --no-deps. See deploy.sh for details.
+#              (mysql/redis); web keeps --no-deps. See deploy.sh for details.
 #              Called by deploy-all.yml/rollback.yml for each selected service.
 #
 # Inputs:  service, environment, project_name, image_tag, image_prefix
@@ -15,7 +15,7 @@ on:
   workflow_call:
     inputs:
       service:
-        description: 'Service to deploy: api | client | scraper'
+        description: 'Service to deploy: api | web | scraper'
         required: true
         type: string
       environment:
@@ -199,10 +199,10 @@ jobs:
             # derive the correct SERVICE_IMAGE_TAG var name from $APP_SERVICE
             case "$APP_SERVICE" in
               api)     SERVICE_TAG_VAR="API_IMAGE_TAG" ;;
-              client)  SERVICE_TAG_VAR="CLIENT_IMAGE_TAG" ;;
+              web)  SERVICE_TAG_VAR="WEB_IMAGE_TAG" ;;
               scraper) SERVICE_TAG_VAR="SCRAPER_IMAGE_TAG" ;;
               mcp)     SERVICE_TAG_VAR="MCP_IMAGE_TAG" ;;
-              *)       echo "Unknown service: '$APP_SERVICE'. Valid: api, client, scraper, mcp"; exit 1 ;;
+              *)       echo "Unknown service: '$APP_SERVICE'. Valid: api, web, scraper, mcp"; exit 1 ;;
             esac
 
             cd "$VERSION_DIR"

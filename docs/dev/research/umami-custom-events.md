@@ -3,7 +3,7 @@
 > Custom-event API, payload limits, direct `/api/send` calls, and privacy notes for a self-hosted Umami tracker,
 > gathered against Umami's official docs and source. Researched 2026-08-22.
 
-Scope: this repo self-hosts Umami and already loads the tracker via `client/src/analytics.ts`
+Scope: this repo self-hosts Umami and already loads the tracker via `../../../web`
 (`window.umami.track(event, data)`). This document verifies the tracker API, the data-value limits,
 the tracker-less `POST /api/send` path, dashboard storage, and privacy posture — each claim cites a
 primary source.
@@ -201,7 +201,7 @@ Sources:
   and the `POST /api/send` endpoint are all v2 semantics.
 - Umami **v1** used `POST /api/collect` and an older event model; if the self-hosted instance were v1
   these paths/limits would differ. This repo loads the v2-era tracker (`data-website-id` script injection
-  in `client/src/analytics.ts`), so v2 applies.
+  in `../../../web`), so v2 applies.
 - The exact tracker script version is whatever the self-hosted server serves at `VITE_UMAMI_SRC`
   (`/script.js` on the Umami host); it is pinned to that server's Umami release, not hard-coded in this
   repo.

@@ -5,14 +5,14 @@
 ```
 Kreditozrouti/
 ├── api/          # Express API server (Node.js process)
-├── client/       # Vue 3 SPA (static build, served by Nginx in prod)
+├── web/          # Vue 3 SPA (static build, served by Nginx in prod)
 ├── scraper/      # BullMQ worker (Node.js process)
-├── shared/       # Shared types — imported by api, client, scraper
+├── shared/       # Shared types — imported by api, web, scraper
 ├── scripts/      # Bash helper scripts for server setup & maintenance
 └── deployment/   # Docker Compose files + deploy.sh
 ```
 
-Each of `../../api`, `../../client`, `../../scraper`, and `shared/` is an independent npm package with its own
+Each of `../../api`, `../../web`, `../../scraper`, and `shared/` is an independent npm package with its own
 `../../package.json` and
 `tsconfig.json`. There is no npm workspace hoisting of runtime code — each package installs its own dependencies.
 
@@ -23,7 +23,7 @@ Each of `../../api`, `../../client`, `../../scraper`, and `shared/` is an indepe
 | Package      | Language         | Runtime          | Purpose                                   |
 |--------------|------------------|------------------|-------------------------------------------|
 | `api`        | TypeScript       | Node.js          | HTTP server, DB writes, job orchestration |
-| `client`     | TypeScript + Vue | Browser / Nginx  | User interface                            |
+| `web`        | TypeScript + Vue | Browser / Nginx  | User interface                            |
 | `scraper`    | TypeScript       | Node.js          | BullMQ worker, InSIS HTTP scraping        |
 | `shared`     | TypeScript       | N/A (types only) | Shared DTOs, domain logic, queue types    |
 | `scripts`    | Bash             | Server (Ubuntu)  | Docker install, Traefik, maintenance      |
@@ -35,14 +35,14 @@ Each of `../../api`, `../../client`, `../../scraper`, and `shared/` is an indepe
 
 ```
          ┌──────────┐                     ┌──────────┐
-         │  client  │                     │   api    │
+         │   web    │                     │   api    │
          └──────────┘                     └──────────┘
                │                               │
                │ @shared/*                     │ @shared/*
                ▼                               ▼
          ┌──────────────────────────────────────────┐
          │                 shared                   │
-         │   (no imports from api/client/scraper)   │
+         │   (no imports from api/web/scraper)       │
          └──────────────────────────────────────────┘
                                                ▲
                                     @shared/*  │
@@ -53,8 +53,8 @@ Each of `../../api`, `../../client`, `../../scraper`, and `shared/` is an indepe
 
 **Rules:**
 
-- `shared` must **never** import from `api`, `client`, or `scraper` — it is a pure types/utilities package
-- `client` must **never** import from `api` — all shared types come from `@shared/`
+- `shared` must **never** import from `api`, `web`, or `scraper` — it is a pure types/utilities package
+- `web` must **never** import from `api` — all shared types come from `@shared/`
 - `scraper` and `api` share job payload types via `@shared/queue/insis.ts`
 
 ---
@@ -70,11 +70,11 @@ Each package configures `tsconfig.json` `paths` so imports are clean:
 | `@api/*`    | `./src/*`     |
 | `@shared/*` | `../shared/*` |
 
-### client/
+### web/
 
 | Alias       | Resolves to    | Note                                   |
 |-------------|----------------|----------------------------------------|
-| `@client/*` | `./src/*`      | —                                      |
+| `@web/*`    | `./src/*`      | —                                      |
 | `@api/*`    | `../api/src/*` | Types only — never import runtime code |
 | `@shared/*` | `../shared/*`  | —                                      |
 
@@ -113,7 +113,7 @@ Full reference: [docs/shared/](../shared/README.md)
 
 ```bash
 make install        # Install all packages
-make dev            # Run api + client + scraper in parallel
+make dev            # Run api + web + scraper in parallel
 make lint           # Lint all packages
 make format         # Format all packages
 make build          # Production build for all packages

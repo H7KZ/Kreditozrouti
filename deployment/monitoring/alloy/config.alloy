@@ -108,19 +108,19 @@ prometheus.relabel "traefik" {
   }
   rule {
     source_labels = ["router"]
-    regex         = "kreditozrouti-(api|client|mcp)-(.+)@docker"
+    regex         = "kreditozrouti-(api|web|mcp)-(.+)@docker"
     action        = "keep"
   }
   rule {
     source_labels = ["router"]
-    regex         = "kreditozrouti-(api|client|mcp)-(.+)@docker"
+    regex         = "kreditozrouti-(api|web|mcp)-(.+)@docker"
     target_label  = "service"
     replacement   = "$1"
   }
 
   rule {
     source_labels = ["router"]
-    regex         = "kreditozrouti-(api|client|mcp)-(.*-)?dev(-.*)?@docker"
+    regex         = "kreditozrouti-(api|web|mcp)-(.*-)?dev(-.*)?@docker"
     target_label  = "env"
     replacement   = "development"
   }
@@ -258,7 +258,7 @@ prometheus.relabel "containers" {
 // Umami (publicly routed at umami.kreditozrouti.cz).
 // ---------------------------------------------------------------------------
 prometheus.exporter.blackbox "probes" {
-  config = "{\"modules\":{\"api_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"api_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}},\"client_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"client_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}},\"mcp_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"mcp_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}},\"umami\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"umami.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"umami.kreditozrouti.cz\"}}}}}"
+  config = "{\"modules\":{\"api_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"api_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}},\"web_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"web_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}},\"mcp_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"mcp_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}},\"umami\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"umami.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"umami.kreditozrouti.cz\"}}}}}"
   target {
     name    = "api_production"
     address = "https://traefik/api/health"
@@ -272,16 +272,16 @@ prometheus.exporter.blackbox "probes" {
     labels  = {"service" = "api", "env" = "development", "domain" = "dev.kreditozrouti.cz"}
   }
   target {
-    name    = "client_production"
+    name    = "web_production"
     address = "https://traefik/"
-    module  = "client_production"
-    labels  = {"service" = "client", "env" = "production", "domain" = "kreditozrouti.cz"}
+    module  = "web_production"
+    labels  = {"service" = "web", "env" = "production", "domain" = "kreditozrouti.cz"}
   }
   target {
-    name    = "client_development"
+    name    = "web_development"
     address = "https://traefik/"
-    module  = "client_development"
-    labels  = {"service" = "client", "env" = "development", "domain" = "dev.kreditozrouti.cz"}
+    module  = "web_development"
+    labels  = {"service" = "web", "env" = "development", "domain" = "dev.kreditozrouti.cz"}
   }
   target {
     name    = "mcp_production"
@@ -323,7 +323,7 @@ prometheus.relabel "probes" {
 }
 
 // ---------------------------------------------------------------------------
-// Traefik access log (shared file, every site on the VPS): keep this project's routers, drop client
+// Traefik access log (shared file, every site on the VPS): keep this project's routers, drop web
 // IPs, query strings and private path segments before anything is stored.
 // ---------------------------------------------------------------------------
 local.file_match "traefik" {
@@ -342,7 +342,7 @@ loki.process "traefik" {
   }
   stage.regex {
     source     = "router"
-    expression = "^kreditozrouti-(?P<router_name>api|client|mcp)-(?P<suffix>.+)@docker$"
+    expression = "^kreditozrouti-(?P<router_name>api|web|mcp)-(?P<suffix>.+)@docker$"
   }
   stage.template {
     source   = "keep"
@@ -355,7 +355,7 @@ loki.process "traefik" {
   }
   stage.template {
     source   = "service"
-    template = "{{ if eq .router_name \"api\" }}api{{ end }}{{ if eq .router_name \"client\" }}client{{ end }}{{ if eq .router_name \"mcp\" }}mcp{{ end }}"
+    template = "{{ if eq .router_name \"api\" }}api{{ end }}{{ if eq .router_name \"web\" }}web{{ end }}{{ if eq .router_name \"mcp\" }}mcp{{ end }}"
   }
   stage.regex {
     source     = "suffix"
@@ -512,7 +512,7 @@ loki.process "faro" {
     template = "{{ .app_environment }}"
   }
   stage.static_labels {
-    values = {project = "kreditozrouti", source = "faro", service = "client"}
+    values = {project = "kreditozrouti", source = "faro", service = "web"}
   }
   stage.labels {
     values = {kind = "", env = ""}

@@ -30,12 +30,12 @@ groups:
           description: The internal probe of https://kreditozrouti.cz/api/health via Traefik has failed for 3 minutes. Cloudflare edge outages are not visible here.
           dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
       - alert: OriginProbeFailing
-        expr: max by (project, service, env) (probe_success{project="kreditozrouti", service="client", env="production"}) == 0
+        expr: max by (project, service, env) (probe_success{project="kreditozrouti", service="web", env="production"}) == 0
         for: 3m
         labels:
           severity: critical
         annotations:
-          summary: Kreditozrouti client is not serving through Traefik
+          summary: Kreditozrouti web is not serving through Traefik
           description: The internal probe of https://kreditozrouti.cz/ via Traefik has failed for 3 minutes. Cloudflare edge outages are not visible here.
           dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
       - alert: OriginProbeFailing

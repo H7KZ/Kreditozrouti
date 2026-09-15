@@ -29,7 +29,7 @@ interface Config {
 		appPassword: string
 	}
 
-	client: {
+	web: {
 		uri: string
 		createURL: (path: string) => string
 	}
@@ -91,9 +91,9 @@ const config: Config = {
 		appPassword: process.env.GOOGLE_APP_PASSWORD ?? ''
 	},
 
-	client: {
-		uri: process.env.CLIENT_URI ?? 'http://localhost:45173',
-		createURL: (path: string) => `${config.client.uri}${path}`
+	web: {
+		uri: process.env.WEB_URI ?? 'http://localhost:45173',
+		createURL: (path: string) => `${config.web.uri}${path}`
 	},
 
 	redis: {

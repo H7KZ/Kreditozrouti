@@ -46,7 +46,7 @@ that directory.
 
 | Service    | URL                    |
 |------------|------------------------|
-| Client     | http://localhost:45173 |
+| Web        | http://localhost:45173 |
 | API        | http://localhost:40080 |
 | MCP        | http://localhost:3000  |
 | phpMyAdmin | http://localhost:48080 |
@@ -57,7 +57,7 @@ that directory.
 
 ```bash
 make install           # Install all dependencies
-make dev               # Run api + client + scraper in parallel
+make dev               # Run api + web + scraper in parallel
 make run-local-docker  # Start MySQL, Redis, phpMyAdmin
 make test              # Run scraper then API tests sequentially
 make test-regen        # Regenerate scraper + API fixture snapshots
@@ -69,7 +69,7 @@ make test-regen        # Regenerate scraper + API fixture snapshots
 
 ```
 api/           Express API — HTTP, DB writes, job orchestration
-client/        Vue 3 SPA — user interface
+web/           Vue 3 SPA — user interface
 fixtures/      Shared test fixtures — HTML, *.scraper.json (scraper output), *.db.json (API parsing output)
 mcp/           MCP server — LLM tool access to VŠE data
 packages/core/ @kreditozrouti/core — domain types, DB schema, pure services
@@ -86,16 +86,16 @@ docs/          VitePress docs site — user docs (en/cs) + dev docs at docs/dev/
 **Cross-package imports:**
 
 - `packages/core/` must never import `express`, `bullmq`, `ioredis`, or any HTTP/queue runtime
-- `client/` never imports from `api/` — all shared types come from `@kreditozrouti/core`
-- `client/` never imports `@kreditozrouti/core/db` or `@kreditozrouti/core/services` (browser bundle)
-- `client/` never imports API runtime code
-- `mcp/` imports only from `@kreditozrouti/core` — no imports from `api/`, `scraper/`, or `client/`
-- `client/` never imports `@kreditozrouti/logger` (node-only package)
+- `../web` never imports from `api/` — all shared types come from `@kreditozrouti/core`
+- `../web` never imports `@kreditozrouti/core/db` or `@kreditozrouti/core/services` (browser bundle)
+- `../web` never imports API runtime code
+- `mcp/` imports only from `@kreditozrouti/core` — no imports from `api/`, `scraper/`, or `../web`
+- `../web` never imports `@kreditozrouti/logger` (node-only package)
 - `packages/core/` never imports `@kreditozrouti/logger` (keeps core pure - no pino dep)
 
 **Time encoding:** all times are **minutes from midnight** (0–1439). `08:00` = 480.
 
-**Env var prefixes:** API: `API_*` | Client: `VITE_*` (baked at build) | Scraper: no prefix | Infra: `MYSQL_*`,
+**Env var prefixes:** API: `API_*` | Web: `VITE_*` (baked at build) | Scraper: no prefix | Infra: `MYSQL_*`,
 `REDIS_*`
 
 **Code conventions:**
@@ -109,7 +109,7 @@ docs/          VitePress docs site — user docs (en/cs) + dev docs at docs/dev/
 
 ## Key Docs
 
-Package-specific docs (API, client, scraper, deployment, scripts) are listed in each package's `CLAUDE.md` Key Docs
+Package-specific docs (API, web, scraper, deployment, scripts) are listed in each package's `CLAUDE.md` Key Docs
 table. Cross-cutting docs:
 
 | Area         | Doc                                                                                                                                                                                                                                                   |

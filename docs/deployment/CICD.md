@@ -55,11 +55,11 @@ A thin caller: `uses: ./.github/workflows/_verify.yml`. A PR cannot be merged un
 
 ---
 
-### `deploy-client.yml` — Deploy client service
+### `deploy-web.yml` — Deploy web service
 
-**Trigger:** Push to `main` or `develop` touching `client/**` or `shared/**`, or `workflow_dispatch`.
+**Trigger:** Push to `main` or `develop` touching `../../web` or `shared/**`, or `workflow_dispatch`.
 
-Same structure as `deploy-api.yml` for the client service.
+Same structure as `deploy-api.yml` for the web service.
 
 ---
 
@@ -73,7 +73,7 @@ Same structure as `deploy-api.yml` for the scraper service.
 
 ### `deploy-all.yml` — Full-stack deploy
 
-**Trigger:** push to `main` under `api/**`, `client/**`, `scraper/**`, `mcp/**` or `packages/**`, which auto-deploys
+**Trigger:** push to `main` under `api/**`, `../../web`, `scraper/**`, `mcp/**` or `packages/**`, which auto-deploys
 only the services whose paths changed; or `workflow_dispatch` for manual control over any combination.
 
 Builds the four services in parallel and deploys them. Use the manual form for:
@@ -85,7 +85,7 @@ Builds the four services in parallel and deploys them. Use the manual form for:
 **Inputs:** `environment` (production/development, required), per-service `deploy_*` checkboxes, `image_tag`
 (optional SHA, skips build if set), `skip_build` (bool).
 
-When several are built at once, `API_IMAGE_TAG`, `CLIENT_IMAGE_TAG`, `SCRAPER_IMAGE_TAG` and `MCP_IMAGE_TAG` are all
+When several are built at once, `API_IMAGE_TAG`, `WEB_IMAGE_TAG`, `SCRAPER_IMAGE_TAG` and `MCP_IMAGE_TAG` are all
 set to the same short SHA.
 
 **CI gate.** A `verify` job calls `_verify.yml` and `validate` declares `needs: [verify]`. Every build job already
@@ -130,8 +130,8 @@ Twelve credential-bearing secrets are checked for `$` and backtick and the deplo
 
 **Dependency inclusion:** `api`, `scraper`, and `mcp` are deployed together with their infrastructure dependencies -
 deploying `api` also brings up (or updates, if their config changed) `mysql` and `redis`, honouring `depends_on` health
-ordering. Already-healthy, unchanged dependencies are left untouched. `client` keeps `--no-deps` because its only
-dependency is `api` (an app service whose image tag is not set in a client-only deploy, so including it could bounce the
+ordering. Already-healthy, unchanged dependencies are left untouched. `web` keeps `--no-deps` because its only
+dependency is `api` (an app service whose image tag is not set in a web-only deploy, so including it could bounce the
 running api to the `:latest` float).
 
 ---
@@ -208,7 +208,7 @@ On the VPS, each deployment gets its own directory keyed by the short SHA:
 
 ```bash
 # Full-stack deploy (all services)
-API_IMAGE_TAG=a1b2c3d4 CLIENT_IMAGE_TAG=a1b2c3d4 SCRAPER_IMAGE_TAG=a1b2c3d4 \
+API_IMAGE_TAG=a1b2c3d4 WEB_IMAGE_TAG=a1b2c3d4 SCRAPER_IMAGE_TAG=a1b2c3d4 \
   bash ./deploy.sh kreditozrouti production
 
 # Single-service deploy (e.g. api only)
@@ -227,7 +227,7 @@ Push to `main` or `develop` — the path filters determine which workflow (s) ru
 | Changed path               | Workflow triggered      |
 |----------------------------|-------------------------|
 | `api/**`                   | `deploy-api.yml`        |
-| `client/**`                | `deploy-client.yml`     |
+| `../../web`                | `deploy-web.yml`        |
 | `scraper/**`               | `deploy-scraper.yml`    |
 | `shared/**`                | all three               |
 | `deployment/monitoring/**` | `deploy-monitoring.yml` |
@@ -240,7 +240,7 @@ Only changed services are rebuilt and redeployed — unchanged services keep the
 
 Re-trigger the relevant per-service workflow via `workflow_dispatch` with a previous SHA:
 
-1. GitHub → Actions → `Deploy API` (or Client / Scraper)
+1. GitHub → Actions → `Deploy API` (or Web / Scraper)
 2. **Run workflow** → set `image_tag` to the old short SHA (e.g. `a1b2c3d4`)
 3. Set `skip_build: true` (the image already exists in GHCR)
 4. Select the target environment and run
@@ -259,7 +259,7 @@ services:
 		deploy:
 			replicas: 4 # default: 2
 
-	client:
+	web:
 		deploy:
 			replicas: 5 # default: 3
 

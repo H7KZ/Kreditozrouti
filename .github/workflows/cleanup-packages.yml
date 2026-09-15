@@ -1,7 +1,7 @@
 # ==============================================================================
 # Workflow: Cleanup GHCR Package Versions
 # Description: Manually triggered workflow to delete old container image
-#              versions for all three services (api, client, scraper).
+#              versions for all three services (api, web, scraper).
 #              Floating tags (latest, dev-latest) are always preserved.
 #
 # Trigger: workflow_dispatch only
@@ -36,12 +36,12 @@ jobs:
       min-versions-to-keep: ${{ inputs.min_versions_to_keep }}
     secrets: inherit
 
-  cleanup-client:
-    name: Cleanup Client
+  cleanup-web:
+    name: Cleanup Web
     if: ${{ !inputs.dry_run }}
     uses: ./.github/workflows/_cleanup-package.yml
     with:
-      package-name: kreditozrouti/client
+      package-name: kreditozrouti/web
       min-versions-to-keep: ${{ inputs.min_versions_to_keep }}
     secrets: inherit
 
@@ -78,7 +78,7 @@ jobs:
             OWNER_TYPE="users"
           fi
 
-          for SERVICE in api client scraper mcp; do
+          for SERVICE in api web scraper mcp; do
             PACKAGE="${REPO}/${SERVICE}"
             echo "========================================"
             echo "Package: ghcr.io/${OWNER}/${PACKAGE}"

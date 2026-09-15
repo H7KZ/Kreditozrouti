@@ -43,7 +43,7 @@ Page URLs arrive with share link ids and query strings removed.
 {project="kreditozrouti", source="faro", kind="exception"}
 ```
 
-Web Vitals are also exported as Prometheus histograms (`faro_web_vitals_*`) and shown on the Service: client dashboard.
+Web Vitals are also exported as Prometheus histograms (`faro_web_vitals_*`) and shown on the Service: web dashboard.
 
 ---
 
@@ -254,7 +254,7 @@ docker compose -p kreditozrouti up -d
 
 Rollback is done by re-triggering the relevant per-service workflow with a previous image SHA:
 
-1. GitHub → Actions → `Deploy API` (or `Deploy Client` / `Deploy Scraper`)
+1. GitHub → Actions → `Deploy API` (or `Deploy Web` / `Deploy Scraper`)
 2. **Run workflow** → set `image_tag` to the old short SHA (e.g. `a1b2c3d4`)
 3. Set `skip_build: true` (the image already exists in GHCR)
 4. Select the target environment and run

@@ -22,7 +22,7 @@ proxy, GitHub Actions for CI/CD, and GitHub Container Registry (GHCR) for image 
              │             │             │
              ▼             ▼             ▼
          ┌───────┐    ┌────────┐   ┌──────────┐
-         │Client │    │  API   │   │   MCP    │
+         │  Web  │    │  API   │   │   MCP    │
          │ (×1)  │    │  (×1)  │   │   (×1)   │
          │ Nginx │    │Express │   │  :3000   │
          └───────┘    └───┬────┘   └────┬─────┘
@@ -55,7 +55,7 @@ Names shown are the `-prod` forms; `-dev` equivalents exist for development.
 
 ```
 public-network (external — Infra Traefik + this repo's web-facing services)
-  ├── api, client, mcp
+  ├── api, web, mcp
 
 kreditozrouti-mysql-network-prod (internal)
   ├── api, mcp, mysql, phpmyadmin (loopback-published, `admin` profile)

@@ -11,16 +11,16 @@ set -euo pipefail
 # Example:     ./deploy.sh kreditozrouti production
 #              ./deploy.sh dev development
 #              ./deploy.sh kreditozrouti production api
-#              ./deploy.sh kreditozrouti production client
+#              ./deploy.sh kreditozrouti production web
 #
 # Arguments:
 #   project_name    Docker Compose project name (e.g., kreditozrouti, dev)
 #   environment     Environment name matching directory (production, development)
-#   service         (optional) Single service to deploy (api, client, scraper, mcp).
+#   service         (optional) Single service to deploy (api, web, scraper, mcp).
 #                   api/scraper/mcp are deployed together with their infrastructure
 #                   dependencies (mysql/redis) - deploying api also ensures redis +
-#                   mysql are up/updated. client keeps --no-deps (its dep is api, an
-#                   app service whose tag is not set in a client-only deploy).
+#                   mysql are up/updated. web keeps --no-deps (its dep is api, an
+#                   app service whose tag is not set in a web-only deploy).
 #
 # Required Environment Variables:
 #   IMAGE_REGISTRY      Container registry (e.g., ghcr.io)
@@ -28,12 +28,12 @@ set -euo pipefail
 #
 # For full-stack deploy (no service arg):
 #   API_IMAGE_TAG       Image tag for the api service (e.g., v1.0.0)
-#   CLIENT_IMAGE_TAG    Image tag for the client service (e.g., v1.0.0)
+#   WEB_IMAGE_TAG    Image tag for the web service (e.g., v1.0.0)
 #   SCRAPER_IMAGE_TAG   Image tag for the scraper service (e.g., v1.0.0)
 #
 # For single-service deploy:
 #   API_IMAGE_TAG       Required when service=api
-#   CLIENT_IMAGE_TAG    Required when service=client
+#   WEB_IMAGE_TAG    Required when service=web
 #   SCRAPER_IMAGE_TAG   Required when service=scraper
 #
 # Version Cleanup:
@@ -72,13 +72,13 @@ Usage: $SCRIPT_NAME <project_name> <environment> [service]
 Arguments:
     project_name    Docker Compose project name (e.g., prod, dev)
     environment     Environment name (production, development)
-    service         (optional) Single service to deploy (api, client, scraper)
+    service         (optional) Single service to deploy (api, web, scraper)
 
 Examples:
     $SCRIPT_NAME prod production
     $SCRIPT_NAME dev development
     $SCRIPT_NAME prod production api
-    $SCRIPT_NAME prod production client
+    $SCRIPT_NAME prod production web
 
 Required Environment Variables:
     IMAGE_REGISTRY      Container registry (e.g., ghcr.io)
@@ -86,12 +86,12 @@ Required Environment Variables:
 
 Full-stack deploy:
     API_IMAGE_TAG       Image tag for api
-    CLIENT_IMAGE_TAG    Image tag for client
+    WEB_IMAGE_TAG    Image tag for web
     SCRAPER_IMAGE_TAG   Image tag for scraper
 
 Single-service deploy (only the relevant tag is required):
     API_IMAGE_TAG       Required when service=api
-    CLIENT_IMAGE_TAG    Required when service=client
+    WEB_IMAGE_TAG    Required when service=web
     SCRAPER_IMAGE_TAG   Required when service=scraper
 EOF
     exit 1
@@ -107,17 +107,17 @@ validate_environment_vars() {
     if [[ -z "$service" ]]; then
         # Full-stack: all three tags required
         [[ -z "${API_IMAGE_TAG:-}" ]] && missing+=("API_IMAGE_TAG")
-        [[ -z "${CLIENT_IMAGE_TAG:-}" ]] && missing+=("CLIENT_IMAGE_TAG")
+        [[ -z "${WEB_IMAGE_TAG:-}" ]] && missing+=("WEB_IMAGE_TAG")
         [[ -z "${SCRAPER_IMAGE_TAG:-}" ]] && missing+=("SCRAPER_IMAGE_TAG")
         [[ -z "${MCP_IMAGE_TAG:-}" ]] && missing+=("MCP_IMAGE_TAG")
     else
         # Single-service: only the relevant tag required
         case "$service" in
             api)     [[ -z "${API_IMAGE_TAG:-}" ]]     && missing+=("API_IMAGE_TAG") ;;
-            client)  [[ -z "${CLIENT_IMAGE_TAG:-}" ]]  && missing+=("CLIENT_IMAGE_TAG") ;;
+            web)  [[ -z "${WEB_IMAGE_TAG:-}" ]]  && missing+=("WEB_IMAGE_TAG") ;;
             scraper) [[ -z "${SCRAPER_IMAGE_TAG:-}" ]] && missing+=("SCRAPER_IMAGE_TAG") ;;
             mcp)     [[ -z "${MCP_IMAGE_TAG:-}" ]]     && missing+=("MCP_IMAGE_TAG") ;;
-            *) log_error "Unknown service: '$service'. Valid values: api, client, scraper, mcp"; exit 1 ;;
+            *) log_error "Unknown service: '$service'. Valid values: api, web, scraper, mcp"; exit 1 ;;
         esac
     fi
 
@@ -193,12 +193,12 @@ main() {
     if [[ -n "$service" ]]; then
         case "$service" in
             api)     log "Tag:         ${API_IMAGE_TAG}" ;;
-            client)  log "Tag:         ${CLIENT_IMAGE_TAG}" ;;
+            web)  log "Tag:         ${WEB_IMAGE_TAG}" ;;
             scraper) log "Tag:         ${SCRAPER_IMAGE_TAG}" ;;
             mcp)     log "Tag:         ${MCP_IMAGE_TAG}" ;;
         esac
     else
-        log "Tags:        api=${API_IMAGE_TAG:-} client=${CLIENT_IMAGE_TAG:-} scraper=${SCRAPER_IMAGE_TAG:-}"
+        log "Tags:        api=${API_IMAGE_TAG:-} web=${WEB_IMAGE_TAG:-} scraper=${SCRAPER_IMAGE_TAG:-}"
     fi
     log "=========================================="
 
@@ -225,9 +225,9 @@ main() {
         # ensures redis + mysql are running. Compose is declarative: an already
         # healthy, unchanged dependency is left untouched (no needless restart).
         #
-        # client depends_on `api` - an APP service whose image tag is NOT set in
-        # a client-only deploy (it would resolve to the :latest float and could
-        # bounce/recreate the running api). So client keeps --no-deps.
+        # web depends_on `api` - an APP service whose image tag is NOT set in
+        # a web-only deploy (it would resolve to the :latest float and could
+        # bounce/recreate the running api). So web keeps --no-deps.
         local deps_flag="--no-deps"
         case "$service" in
             api|scraper|mcp) deps_flag="" ;;

@@ -21,7 +21,7 @@ App processes run directly on the host:
 
 ```
 make dev-api      → node on :40080
-make dev-client   → Vite on :45173
+make dev-web      → Vite on :45173
 make dev-scraper  → node worker (no port)
 ```
 
@@ -46,7 +46,7 @@ forms. See NAMING.md in the Infrastructure repo.
 docker-compose.production.yml
 ├── api         ×1 replica     public-network + kreditozrouti-mysql-network-prod + kreditozrouti-redis-network-prod + kreditozrouti-monitoring-network
 ├── scraper     ×2 replicas    kreditozrouti-redis-network-prod + kreditozrouti-monitoring-network
-├── client      ×1 replica     public-network only
+├── web         ×1 replica     public-network only
 ├── mcp          ×1            public-network + kreditozrouti-mysql-network-prod  (MCP_PORT default 3000; GET /health)
 ├── mysql        ×1            kreditozrouti-mysql-network-prod, volume: kreditozrouti-mysql-volume-prod
 ├── redis        ×1            kreditozrouti-redis-network-prod, volume: kreditozrouti-redis-volume-prod
@@ -82,12 +82,12 @@ Names shown are the `-prod` forms; `-dev` equivalents exist for development.
 
 | Network                            | Purpose                         | Who joins                          |
 |------------------------------------|---------------------------------|------------------------------------|
-| `public-network`                   | Public ingress, Traefik routing | api, client, mcp (+ Infra Traefik) |
+| `public-network`                   | Public ingress, Traefik routing | api, web, mcp (+ Infra Traefik)    |
 | `kreditozrouti-mysql-network-prod` | DB access                       | api, mcp, mysql, phpmyadmin        |
 | `kreditozrouti-redis-network-prod` | Queue + sessions                | api, scraper, redis                |
 | `kreditozrouti-monitoring-network` | Prometheus scrape (per-repo)    | api, scraper, prometheus, alloy    |
 
-Networks are **isolated** — the scraper cannot reach MySQL directly; it can only talk to Redis. The client container
+Networks are **isolated** — the scraper cannot reach MySQL directly; it can only talk to Redis. The web container
 (Nginx) cannot reach MySQL or Redis.
 
 ---
@@ -113,7 +113,7 @@ All production traffic enters through Traefik on port 443 (TLS via Let's Encrypt
 |---------|--------------------|----------|----------------------------------------|
 | API     | `PathPrefix(/api)` | 100      | Strips `/api` prefix before forwarding |
 | MCP     | `PathPrefix(/mcp)` | 50       | Streamable HTTP transport              |
-| Client  | `PathPrefix(/)`    | 10       | Catch-all, lowest priority             |
+| Web     | `PathPrefix(/)`    | 10       | Catch-all, lowest priority             |
 
 phpMyAdmin used to be routed here (`PathPrefix(/phpmyadmin)`, priority 80). Its Traefik labels were removed - it is now
 loopback-only behind an SSH tunnel, as described above.
@@ -127,7 +127,7 @@ Port 80 redirects to 443. The `traefik.yml` static config handles ACME, entrypoi
 ```
 1. Traefik stack      ← creates public-network, TLS
 2. GitHub Runner      ← (optional) CI runners
-3. App stack          ← api, scraper, client, mysql, redis
+3. App stack          ← api, scraper, web, mysql, redis
 ```
 
 App stack must come last because it depends on `public-network` already existing.

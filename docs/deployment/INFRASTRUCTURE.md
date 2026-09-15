@@ -122,15 +122,15 @@ See [scripts/INFRASTRUCTURE.md](../scripts/INFRASTRUCTURE.md) for the deploy scr
 
 ### Routing labels
 
-**Client** (root path, lowest priority):
+**Web** (root path, lowest priority):
 
 ```yaml
 labels:
 	- 'traefik.enable=true'
-	- 'traefik.http.routers.client.rule=Host(`${DOMAIN}`)'
-	- 'traefik.http.routers.client.entrypoints=websecure'
-	- 'traefik.http.routers.client.tls.certresolver=cloudflare'
-	- 'traefik.http.routers.client.priority=10'
+	- 'traefik.http.routers.web.rule=Host(`${DOMAIN}`)'
+	- 'traefik.http.routers.web.entrypoints=websecure'
+	- 'traefik.http.routers.web.tls.certresolver=cloudflare'
+	- 'traefik.http.routers.web.priority=10'
 ```
 
 **API** (`/api` prefix, strips prefix before forwarding):
@@ -155,7 +155,7 @@ labels:
 	- 'traefik.http.routers.grafana.priority=85'
 ```
 
-Priority rule: API (100) > Grafana (85) > Client (10). phpMyAdmin is no longer in this list.
+Priority rule: API (100) > Grafana (85) > Web (10). phpMyAdmin is no longer in this list.
 
 ### Deploy Traefik
 
@@ -220,7 +220,7 @@ Names shown are the `-prod` forms; `-dev` equivalents exist for development. See
 
 ```
 public-network (external)    — Infra Traefik + web-facing services
-  api, client, mcp
+  api, web, mcp
 
 kreditozrouti-mysql-network-prod (internal)   — database access only
   api, mcp, mysql, phpmyadmin
@@ -318,7 +318,7 @@ API_SESSION_SECRET=<openssl rand -hex 32>
 API_COMMAND_TOKEN=<openssl rand -hex 24>
 API_ALLOWED_ORIGINS=https://example.com
 
-# Client
+# Web
 VITE_API_URL=https://example.com/api
 
 # MySQL

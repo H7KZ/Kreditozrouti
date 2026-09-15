@@ -10,7 +10,7 @@
 deployment/
 ├── deploy.sh                              # App stack deployment (run from CI)
 ├── production/
-│   ├── docker-compose.production.yml      # api×1, scraper×2, client×1, mcp×1, mysql, redis (+ phpmyadmin, `admin` profile; sized for a 4GB host)
+│   ├── docker-compose.production.yml      # api×1, scraper×2, web×1, mcp×1, mysql, redis (+ phpmyadmin, `admin` profile; sized for a 4GB host)
 │   ├── networks.yml
 │   └── volumes.yml
 ├── development/
@@ -39,14 +39,14 @@ deployment/
 ./deploy.sh kreditozrouti production            # full-stack production deploy
 ./deploy.sh dev development                     # full-stack development deploy
 ./deploy.sh kreditozrouti production api        # deploy api service only
-./deploy.sh kreditozrouti production client     # deploy client service only
+./deploy.sh kreditozrouti production web        # deploy web service only
 ```
 
 Requires `.env` (written by CI from GitHub Secrets — never placed manually) and image tag env vars passed inline.
 
 For single-service deploys, only the relevant tag env var is required (e.g. `API_IMAGE_TAG` for `service=api`).
 `api`/`scraper`/`mcp` single-service deploys also bring up their infrastructure dependencies (`mysql`/`redis`) so the
-service never starts without them; `client` uses `--no-deps` (its dependency is the app-level `api`). Old version
+service never starts without them; `web` uses `--no-deps` (its dependency is the app-level `api`). Old version
 directories under `$HOME/kreditozrouti/versions/<environment>/` older than 7 days are cleaned up after each deploy
 (minimum 3 kept).
 
@@ -69,7 +69,7 @@ scrapable container carries exactly `prometheus.io/scrape=true` + `prometheus.io
 `kreditozrouti-monitoring-network`. Each stack deploys under its own Compose project name (`STACK_NAME` in each
 `deploy.sh`): monitoring -> `kreditozrouti-monitoring`, runner -> `kreditozrouti-ci`; the app stack uses
 `kreditozrouti` (production) / `kreditozrouti-dev` (development). Router names must keep the
-`kreditozrouti-(api|client|mcp)-<suffix>` shape: Alloy filters Traefik metrics and access logs on it.
+`kreditozrouti-(api|web|mcp)-<suffix>` shape: Alloy filters Traefik metrics and access logs on it.
 
 **Alerts are Prometheus/Loki rule files with promtool unit tests, never Grafana-managed.** Run
 `bash deployment/monitoring/validate.sh` after any rule, Alloy or Loki change (CI runs it too). Annotations may only
@@ -84,10 +84,10 @@ version dirs are cleaned up the same way as app deploys (7 days, minimum 3 kept)
 `cleanup_old_versions` in `lib.sh`. No more writing directly into a flat `~/deployment/` — that was the old layout
 and diverged from every other prod deploy, which caused ownership/permission drift on the host.
 
-**`VITE_*` env vars** are baked into the client image at build time by Vite. Setting them at container runtime has no
+**`VITE_*` env vars** are baked into the web image at build time by Vite. Setting them at container runtime has no
 effect — the `docker-entrypoint.sh` placeholder-swap handles this at startup instead. **The swap only works while every
 `VITE_*` var is declared under the `build` task's `env` array in root `turbo.json`.** turbo 2 runs tasks in strict env
-mode and strips any undeclared variable from the task environment, so the six `ENV` lines in `client/Dockerfile` never
+mode and strips any undeclared variable from the task environment, so the six `ENV` lines in `../web` never
 reached vite: no placeholder tokens were baked in, Faro and Umami were silently disabled in production, the app version
 reported `unknown`, and the entrypoint's `sed` had nothing to replace (`VITE_API_URL` hid the breakage by falling back
 to `/api`). Anyone adding a new `VITE_*` var must add it to `turbo.json` too.

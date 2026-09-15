@@ -8,7 +8,7 @@ Kreditožrouti — course scheduling system for VŠE students. Scrapes InSIS, pr
 
 | Service    | URL                    |
 |------------|------------------------|
-| Client     | http://localhost:45173 |
+| Web        | http://localhost:45173 |
 | API        | http://localhost:40080 |
 | phpMyAdmin | http://localhost:48080 |
 
@@ -18,7 +18,7 @@ Kreditožrouti — course scheduling system for VŠE students. Scrapes InSIS, pr
 
 ```bash
 make install              # Install all dependencies
-make dev                  # Run api + client + scraper in parallel
+make dev                  # Run api + web + scraper in parallel
 make run-local-docker     # Start MySQL, Redis, phpMyAdmin
 make lint && make format  # Code quality
 make build                # Production build
@@ -30,7 +30,7 @@ make build                # Production build
 
 ```
 api/          Express API — HTTP, DB writes, job orchestration
-client/       Vue 3 SPA — user interface
+web/          Vue 3 SPA — user interface
 scraper/      BullMQ worker — InSIS HTTP scraping
 shared/       Types only — imported by all packages, imports nothing
 scripts/      Bash — server setup & maintenance
@@ -43,15 +43,15 @@ deployment/   Docker Compose stacks + deploy.sh
 
 **Cross-package imports:**
 
-- `shared/` must never import from `api/`, `client/`, or `scraper/`
-- `client/` never imports from `api/` — all shared types come from `@shared/`
-- `client/` never imports API runtime code
+- `shared/` must never import from `api/`, `../web`, or `scraper/`
+- `../web` never imports from `api/` — all shared types come from `@shared/`
+- `../web` never imports API runtime code
 
 **Time encoding:** all times are **minutes from midnight** (0–1439). `08:00` = 480.
 
 **Env var prefixes:**
 
-- API: `API_*` | Client: `VITE_*` (baked at build) | Scraper: no prefix | Infra: `MYSQL_*`, `REDIS_*`
+- API: `API_*` | Web: `VITE_*` (baked at build) | Scraper: no prefix | Infra: `MYSQL_*`, `REDIS_*`
 
 **Scraper is a pure consumer:** never writes DB, never schedules its own jobs — schedulers live in the API (
 `NODE_ENV=production` only).
@@ -86,7 +86,7 @@ After completing any task that changes code, configuration, or behavior:
 | Architecture | [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)     | [monorepo](../docs/architecture/MONOREPO.md) · [services](../docs/architecture/SERVICES.md) · [data flow](../docs/architecture/DATA_FLOW.md) · [containers](../docs/architecture/CONTAINERS.md)   |
 | Engineering  | [docs/ENGINEERING.md](../docs/ENGINEERING.md)       | [setup](../docs/engineering/SETUP.md) · [contributing](../docs/engineering/CONTRIBUTING.md)                                                                                                       |
 | API          | [docs/api/README.md](../docs/api/README.md)         | [endpoints](../docs/api/ENDPOINTS.md) · [services](../docs/api/SERVICES.md) · [jobs](../docs/api/JOBS.md) · [database](../docs/api/DATABASE.md) · [internals](../docs/api/INTERNALS.md)           |
-| Client       | [docs/client/README.md](../docs/client/README.md)   | [stores](../docs/client/STORES.md) · [composables](../docs/client/COMPOSABLES.md) · [timetable](../docs/client/TIMETABLE.md) · [internals](../docs/client/INTERNALS.md)                           |
+| Web          | [docs/web/README.md](../docs/web/README.md)   | [stores](../docs/web/STORES.md) · [composables](../docs/web/COMPOSABLES.md) · [timetable](../docs/web/TIMETABLE.md) · [internals](../docs/web/INTERNALS.md)                           |
 | Scraper      | [docs/scraper/README.md](../docs/scraper/README.md) | [jobs](../docs/scraper/JOBS.md) · [extraction](../docs/scraper/EXTRACTION.md) · [queue](../docs/scraper/QUEUE.md) · [types](../docs/scraper/TYPES.md) · [internals](../docs/scraper/INTERNALS.md) |
 | Shared       | [docs/shared/README.md](../docs/shared/README.md)   | [domain](../docs/shared/DOMAIN.md) · [http](../docs/shared/HTTP.md) · [queue](../docs/shared/QUEUE.md)                                                                                            |
 | Deployment   | [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md)         | [docker](../docs/deployment/DOCKER.md) · [ci/cd](../docs/deployment/CICD.md) · [infrastructure](../docs/deployment/INFRASTRUCTURE.md) · [operations](../docs/deployment/OPERATIONS.md)            |

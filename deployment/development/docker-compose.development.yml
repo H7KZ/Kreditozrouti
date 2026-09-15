@@ -4,7 +4,7 @@
 #
 # Services:
 #   - api: Backend API service (NestJS/Express)
-#   - client: Frontend client (React/Next.js)
+#   - web: Frontend web app (Vue 3 SPA)
 #   - scraper: Background scraper workers
 #   - mysql: Database server
 #   - redis: Cache and queue server
@@ -12,7 +12,7 @@
 #
 # Required Environment Variables:
 #   - IMAGE_REGISTRY, IMAGE_PREFIX: Container image registry config
-#   - API_IMAGE_TAG, CLIENT_IMAGE_TAG, SCRAPER_IMAGE_TAG: Per-service image tags
+#   - API_IMAGE_TAG, WEB_IMAGE_TAG, SCRAPER_IMAGE_TAG: Per-service image tags
 #   - DOMAIN: Primary domain for routing
 #   - PROJECT: Project name for Traefik labels
 #   - MYSQL_*: Database credentials
@@ -60,7 +60,7 @@ services:
       - API_COMMAND_TOKEN=${API_COMMAND_TOKEN}
       - GOOGLE_USER=${GOOGLE_USER}
       - GOOGLE_APP_PASSWORD=${GOOGLE_APP_PASSWORD}
-      - CLIENT_URI=https://${DOMAIN}
+      - WEB_URI=https://${DOMAIN}
       - MYSQL_URI=${MYSQL_URI}
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
@@ -175,10 +175,10 @@ services:
           memory: 128M
 
   # ============================================================================
-  # Client Service
+  # Web Service
   # ============================================================================
-  client:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/client:${CLIENT_IMAGE_TAG:-dev-latest}
+  web:
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/web:${WEB_IMAGE_TAG:-dev-latest}
     restart: unless-stopped
 
     depends_on:
@@ -188,7 +188,7 @@ services:
       - ENV=development
       - VITE_API_URL=https://${DOMAIN}/api
       - VITE_FARO_COLLECTOR_URL=https://${DOMAIN}/faro/collect
-      - VITE_APP_VERSION=${CLIENT_IMAGE_TAG:-dev-latest}
+      - VITE_APP_VERSION=${WEB_IMAGE_TAG:-dev-latest}
       - VITE_APP_ENV=development
       - VITE_UMAMI_WEBSITE_ID=${VITE_UMAMI_WEBSITE_ID}
       - VITE_UMAMI_SRC=${VITE_UMAMI_SRC}
@@ -199,19 +199,19 @@ services:
     labels:
       # Traefik Configuration
       - 'traefik.enable=true'
-      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.priority=10'
-      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.rule=Host(`${DOMAIN}`)'
-      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.entrypoints=websecure'
-      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.tls=true'
-      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.kreditozrouti-client-${PROJECT}.loadbalancer.server.port=80'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.priority=10'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.rule=Host(`${DOMAIN}`)'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.tls=true'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.kreditozrouti-web-${PROJECT}.loadbalancer.server.port=80'
       # Middlewares
-      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.middlewares=kreditozrouti-client-${PROJECT}-redirect-www'
-      - "traefik.http.middlewares.kreditozrouti-client-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
-      - 'traefik.http.middlewares.kreditozrouti-client-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.middlewares=kreditozrouti-web-${PROJECT}-redirect-www'
+      - "traefik.http.middlewares.kreditozrouti-web-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+      - 'traefik.http.middlewares.kreditozrouti-web-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
 
     healthcheck:
-      # busybox wget, not curl. The client image's runner stage is nginx:stable-alpine, which
+      # busybox wget, not curl. The web image's runner stage is nginx:stable-alpine, which
       # never installs curl (only api/Dockerfile and mcp/Dockerfile do), so the previous curl
       # check could not execute at all and the container stayed permanently unhealthy - which
       # in turn kept the container-health alert firing. busybox wget ships in the nginx alpine

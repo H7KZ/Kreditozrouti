@@ -1,11 +1,11 @@
 <div align="center">
-  <img src="client/public/logo/kreditozrouti-transparent-cropped.png" alt="Kreditožrouti Logo" width="200">
+  <img src="web/public/logo/kreditozrouti-transparent-cropped.png" alt="Kreditožrouti Logo" width="200">
 
 # Kreditožrouti
 
 **The course scheduling tool that InSIS should have been**
 
-[![License](https://img.shields.io/badge/license-See%20Compliance-green.svg)](client/src/legal)
+[![License](https://img.shields.io/badge/license-See%20Compliance-green.svg)](web/src/legal)
 [![VŠE](https://img.shields.io/badge/university-VŠE%20Prague-0066b3.svg)](https://www.vse.cz)
 
 Give VŠE students instant, filterable access to every course, timetable slot, and study plan in one modern interface.
@@ -66,7 +66,7 @@ Full engineering docs are also available at **https://kreditozrouti.cz/docs/dev/
 
 ### For engineers
 
-**https://kreditozrouti.cz/docs/dev/** — architecture, API, client, scraper, deployment, contributing
+**https://kreditozrouti.cz/docs/dev/** — architecture, API, web, scraper, deployment, contributing
 
 Source files are in `docs/dev/`:
 
@@ -75,7 +75,7 @@ Source files are in `docs/dev/`:
 | Engineering  | [docs/dev/ENGINEERING.md](docs/ENGINEERING.md)       | [setup](docs/engineering/SETUP.md) · [contributing](docs/engineering/CONTRIBUTING.md)                                                                                               |
 | Architecture | [docs/dev/ARCHITECTURE.md](docs/ARCHITECTURE.md)     | [monorepo](docs/architecture/MONOREPO.md) · [services](docs/architecture/SERVICES.md) · [data flow](docs/architecture/DATA_FLOW.md) · [containers](docs/architecture/CONTAINERS.md) |
 | API          | [docs/dev/api/README.md](docs/api/README.md)         | [endpoints](docs/api/ENDPOINTS.md) · [services](docs/api/SERVICES.md) · [jobs](docs/api/JOBS.md) · [database](docs/api/DATABASE.md)                                                 |
-| Client       | [docs/dev/client/README.md](docs/client/README.md)   | [stores](docs/client/STORES.md) · [composables](docs/client/COMPOSABLES.md) · [timetable](docs/client/TIMETABLE.md)                                                                 |
+| Web          | [docs/dev/web/README.md](docs/web/README.md)   | [stores](docs/web/STORES.md) · [composables](docs/web/COMPOSABLES.md) · [timetable](docs/web/TIMETABLE.md)                                                                 |
 | Scraper      | [docs/dev/scraper/README.md](docs/scraper/README.md) | [jobs](docs/scraper/JOBS.md) · [extraction](docs/scraper/EXTRACTION.md) · [queue](docs/scraper/QUEUE.md)                                                                            |
 | Shared       | [docs/dev/shared/README.md](docs/shared/README.md)   | [domain](docs/shared/DOMAIN.md) · [http](docs/shared/HTTP.md) · [queue](docs/shared/QUEUE.md)                                                                                       |
 | Deployment   | [docs/dev/DEPLOYMENT.md](docs/DEPLOYMENT.md)         | [docker](docs/deployment/DOCKER.md) · [ci/cd](docs/deployment/CICD.md) · [infrastructure](docs/deployment/INFRASTRUCTURE.md) · [operations](docs/deployment/OPERATIONS.md)          |

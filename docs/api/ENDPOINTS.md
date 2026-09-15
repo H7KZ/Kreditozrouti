@@ -232,7 +232,7 @@ timetable candidates.
 
 **Pool truncation:** `course_ids` longer than `MAX_POOL_SIZE` (30, defined in `shared/http/optimize.ts`) are capped
 before solving — `required_course_ids` are always kept, the remainder is truncated — and `pool_truncated: true` is
-returned so the client can show a narrowing notice.
+returned so the web app can show a narrowing notice.
 
 **Partial-result-on-timeout behavior:** the solver runs under a `SOLVER_BUDGET_MS` (4500 ms) deadline
 (`solveWithDeadline`). If the deadline fires before exhausting the search space, the best candidates found so far are

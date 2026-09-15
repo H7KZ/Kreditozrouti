@@ -7,7 +7,7 @@
 
 ### Responsibilities
 
-- Serves all HTTP endpoints consumed by the client
+- Serves all HTTP endpoints consumed by the web app
 - Validates requests with Zod schemas
 - Reads course/study-plan data from MySQL (Kysely query builder)
 - Enqueues scraping jobs to `ScraperRequestQueue` (BullMQ → Redis)
@@ -19,7 +19,7 @@
 ### What it does NOT do
 
 - Does not scrape InSIS directly — that is Scraper's job
-- Does not serve static files in production — Nginx (Client container) does that
+- Does not serve static files in production — Nginx (web container) does that
 
 ### Key internals
 
@@ -31,7 +31,7 @@
 
 ---
 
-## Client (`../../client`)
+## Web (`../../web`)
 
 **Runtime:** Browser (Vue 3 SPA)  
 **Dev port:** 45173 (Vite)  

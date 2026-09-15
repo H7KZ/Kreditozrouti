@@ -6,7 +6,7 @@
 User types search term in browser
         │
         ▼
-[Client] courses.vue deep-watches filtersStore.filters
+[Web] courses.vue deep-watches filtersStore.filters
   → calls coursesStore.fetchCourses()
   → POST /courses  { title, faculty_ids, days, times, … }
         │
@@ -20,7 +20,7 @@ User types search term in browser
   → res.json({ courses, facets, pagination })
         │
         ▼
-[Client] coursesStore receives response
+[Web] coursesStore receives response
   → courses list rendered
   → timetableStore.courseStatuses computed
   → conflict badges applied
@@ -73,10 +73,10 @@ User types search term in browser
 
 ## End-to-End: SSE Live Update
 
-When the client triggers a course scrape (e.g., course page first load):
+When the web app triggers a course scrape (e.g., course page first load):
 
 ```
-[Client] GET /courses/{ident}/scrape  (EventSource / SSE)
+[Web] GET /courses/{ident}/scrape  (EventSource / SSE)
         │
         ▼
 [API] CourseScraperController opens SSE connection
@@ -89,7 +89,7 @@ When the client triggers a course scrape (e.g., course page first load):
 [API] redis.publish fires → SSE sends { event: 'done' }
         │
         ▼
-[Client] EventSource receives done → re-fetches course data
+[Web] EventSource receives done → re-fetches course data
 ```
 
 ---
@@ -102,6 +102,6 @@ When the client triggers a course scrape (e.g., course page first load):
 | Languages          | Pipe-delimited string in DB      | `"CS\|EN"` → parsed in service layer |
 | Lecturers          | Pipe-delimited string in DB      | `"Novák J.\|Malá K."`                |
 | Env vars — API     | `API_*` prefix                   | `API_PORT`, `API_JWT_SECRET`         |
-| Env vars — Client  | `VITE_*` prefix (baked at build) | `VITE_API_URL`                       |
+| Env vars — Web     | `VITE_*` prefix (baked at build) | `VITE_API_URL`                       |
 | Env vars — Scraper | No prefix                        | `INSIS_BASE_URL`                     |
 | Env vars — Infra   | `MYSQL_*`, `REDIS_*`             | `MYSQL_ROOT_PASSWORD`                |

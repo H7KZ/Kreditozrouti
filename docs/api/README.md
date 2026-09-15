@@ -1,6 +1,6 @@
 # API — Overview
 
-The API is an Express 5 server that serves course and study plan data to the client, orchestrates scraping jobs via
+The API is an Express 5 server that serves course and study plan data to the web app, orchestrates scraping jobs via
 BullMQ, and persists scraped results to MySQL.
 
 ## Startup Sequence
@@ -25,7 +25,7 @@ Each worker runs `startWorker()`:
 ## Architecture
 
 ```
-Client (HTTP)
+Web (HTTP)
      │
      ▼
 Express App (app.ts)

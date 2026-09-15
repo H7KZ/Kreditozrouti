@@ -150,7 +150,7 @@ function timeToMinutes(time: string): number {
 	return h * 60 + m
 }
 
-// Display (in client/src/composables/useTimeUtils.ts)
+// Display (in web/src/composables/useTimeUtils.ts)
 function minutesToTime(minutes: number): string {
 	const h = Math.floor(minutes / 60)
 	const m = minutes % 60
@@ -260,4 +260,4 @@ export type Course = Selectable<CourseTable>
 export type NewCourse = Insertable<CourseTable>
 ```
 
-**Do not import `Database/types.ts` from the client.** All shared types the client needs are in `@shared/`.
+**Do not import `Database/types.ts` from the web app.** All shared types the web app needs are in `@shared/`.

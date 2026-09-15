@@ -1,6 +1,6 @@
 # Shared — Domain Logic
 
-Pure TypeScript domain utilities. No runtime service dependencies — safe to import from `../../api`, `../../client`, and
+Pure TypeScript domain utilities. No runtime service dependencies — safe to import from `../../api`, `../../web`, and
 `../../scraper`.
 
 ---
@@ -48,12 +48,12 @@ getSlotType({ type: null }) // → 'lecture'
 
 ## `shared/domain/timetable.ts`
 
-Conflict detection and course completeness logic. Used by `timetable.store.ts` (client) and
+Conflict detection and course completeness logic. Used by `timetable.store.ts` (web) and
 `api/src/utils/timeConflict.ts` (API).
 
 ### `ScheduledUnit` interface
 
-Minimal shape required by conflict functions — both `SelectedCourseUnit` (client) and `CourseUnitSlotDTO` satisfy it:
+Minimal shape required by conflict functions — both `SelectedCourseUnit` (web) and `CourseUnitSlotDTO` satisfy it:
 
 ```typescript
 interface ScheduledUnit {
@@ -187,7 +187,7 @@ string
 
 ## `shared/domain/day.ts`
 
-Shared implementation of `getDayFromDate` used by both the client (`utils/day.ts` re-exports it) and
+Shared implementation of `getDayFromDate` used by both the web app (`utils/day.ts` re-exports it) and
 `@shared/domain/timetable.ts` internally.
 
 ```typescript

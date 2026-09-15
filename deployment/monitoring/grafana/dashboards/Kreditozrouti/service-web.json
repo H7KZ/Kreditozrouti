@@ -1,0 +1,1665 @@
+{
+  "timezone": "browser",
+  "editable": false,
+  "graphTooltip": 1,
+  "fiscalYearStartMonth": 0,
+  "schemaVersion": 42,
+  "templating": {
+    "list": [
+      {
+        "type": "custom",
+        "name": "env",
+        "skipUrlSync": false,
+        "multi": false,
+        "allowCustomValue": true,
+        "includeAll": false,
+        "auto": false,
+        "auto_min": "10s",
+        "auto_count": 30,
+        "label": "Environment",
+        "query": "production,development",
+        "current": {
+          "text": "production",
+          "value": "production"
+        }
+      }
+    ]
+  },
+  "annotations": {
+    "list": [
+      {
+        "name": "Deploys",
+        "enable": true,
+        "hide": false,
+        "iconColor": "rgba(255, 176, 0, 0.8)",
+        "builtIn": 0,
+        "placement": "inControlsMenu",
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [
+            "deploy",
+            "kreditozrouti"
+          ],
+          "type": "tags"
+        }
+      }
+    ]
+  },
+  "title": "Kreditozrouti / Service: web",
+  "uid": "kreditozrouti-service-web",
+  "description": "spa service web: status, requests, saturation, web vitals, browser errors, product analytics and logs.",
+  "tags": [
+    "kreditozrouti",
+    "service",
+    "web"
+  ],
+  "refresh": "1m",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "links": [
+    {
+      "title": "Kreditozrouti",
+      "type": "dashboards",
+      "icon": "",
+      "tooltip": "",
+      "tags": [
+        "kreditozrouti"
+      ],
+      "asDropdown": true,
+      "placement": "inControlsMenu",
+      "targetBlank": false,
+      "includeVars": true,
+      "keepTime": true
+    }
+  ],
+  "panels": [
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Status",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Origin probe",
+      "description": "GET / through Traefik with the public Host header.",
+      "targets": [
+        {
+          "expr": "min(probe_success{project=\"kreditozrouti\", service=\"web\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "probe",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "red"
+              },
+              {
+                "value": 1,
+                "color": "green"
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Replicas",
+      "description": "Containers currently running (cAdvisor; web has no /metrics of its own).",
+      "targets": [
+        {
+          "expr": "count(container_start_time_seconds{project=\"kreditozrouti\", service=\"web\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "replicas",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Uptime",
+      "description": "Time since the oldest running web container started (cAdvisor).",
+      "targets": [
+        {
+          "expr": "time() - max(container_start_time_seconds{project=\"kreditozrouti\", service=\"web\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "uptime",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Requests (Traefik)",
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Edge requests",
+      "description": "Requests per second through Traefik over the selected range.",
+      "targets": [
+        {
+          "expr": "sum(rate(traefik_router_requests_total{project=\"kreditozrouti\", service=\"web\", env=\"$env\"}[$__range]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "req/s",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 6
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Edge 5xx ratio",
+      "description": "Share of 5xx responses served by Traefik (includes 502/504 when the container is unreachable).",
+      "targets": [
+        {
+          "expr": "(sum(increase(traefik_router_requests_total{project=\"kreditozrouti\", service=\"web\", env=\"$env\", code=~\"5..\"}[$__range])) or vector(0)) / (sum(increase(traefik_router_requests_total{project=\"kreditozrouti\", service=\"web\", env=\"$env\"}[$__range])) > 0)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "errors",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 6
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "decimals": 2,
+          "noValue": "no traffic",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 0.01,
+                "color": "orange"
+              },
+              {
+                "value": 0.05,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 60,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "unit": "reqps",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Edge requests by status",
+      "description": "Per HTTP status code, as seen by Traefik.",
+      "targets": [
+        {
+          "expr": "sum by (code) (rate(traefik_router_requests_total{project=\"kreditozrouti\", service=\"web\", env=\"$env\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{code}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 6
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Edge latency",
+      "description": "p50/p95 from Traefik router histograms. Precision is limited by the Traefik bucket configuration.",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.5, sum by (le) (rate(traefik_router_request_duration_seconds_bucket{project=\"kreditozrouti\", service=\"web\", env=\"$env\"}[$__rate_interval])))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "p50",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traefik_router_request_duration_seconds_bucket{project=\"kreditozrouti\", service=\"web\", env=\"$env\"}[$__rate_interval])))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "p95",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 6
+      }
+    },
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Saturation",
+      "gridPos": {
+        "x": 0,
+        "y": 14,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "bytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Container memory",
+      "description": "Working set per container (cAdvisor), what the OOM killer compares against the limit.",
+      "targets": [
+        {
+          "expr": "sum by (name) (container_memory_working_set_bytes{project=\"kreditozrouti\", service=\"web\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{name}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 15
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "short",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Container CPU",
+      "description": "CPU cores used per container (cAdvisor).",
+      "targets": [
+        {
+          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{project=\"kreditozrouti\", service=\"web\", env=\"$env\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{name}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 15
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false,
+            "drawStyle": "bars"
+          },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Restarts and OOM kills",
+      "description": "Container starts and OOM events per container.",
+      "targets": [
+        {
+          "expr": "sum by (name) (changes(container_start_time_seconds{project=\"kreditozrouti\", service=\"web\", env=\"$env\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "restart {{name}}",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "sum by (name) (increase(container_oom_events_total{project=\"kreditozrouti\", service=\"web\", env=\"$env\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "OOM {{name}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 15
+      }
+    },
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Web vitals",
+      "gridPos": {
+        "x": 0,
+        "y": 23,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "LCP p75",
+      "description": "75th percentile of browser-reported LCP over the selected range (Faro web vitals histogram). Good <= 2500, poor > 4000.",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.75, sum by (le) (increase(faro_web_vitals_lcp_milliseconds_bucket{project=\"kreditozrouti\", env=\"$env\"}[$__range])))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "LCP",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 24
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "decimals": 0,
+          "noValue": "no samples",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 2500,
+                "color": "orange"
+              },
+              {
+                "value": 4000,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "INP p75",
+      "description": "75th percentile of browser-reported INP over the selected range (Faro web vitals histogram). Good <= 200, poor > 500.",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.75, sum by (le) (increase(faro_web_vitals_inp_milliseconds_bucket{project=\"kreditozrouti\", env=\"$env\"}[$__range])))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "INP",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 24
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "decimals": 0,
+          "noValue": "no samples",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 200,
+                "color": "orange"
+              },
+              {
+                "value": 500,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "CLS p75",
+      "description": "75th percentile of browser-reported CLS over the selected range (Faro web vitals histogram). Good <= 0.1, poor > 0.25.",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.75, sum by (le) (increase(faro_web_vitals_cls_bucket{project=\"kreditozrouti\", env=\"$env\"}[$__range])))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "CLS",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 24
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "decimals": 3,
+          "noValue": "no samples",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 0.1,
+                "color": "orange"
+              },
+              {
+                "value": 0.25,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "FCP p75",
+      "description": "75th percentile of browser-reported FCP over the selected range (Faro web vitals histogram). Good <= 1800, poor > 3000.",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.75, sum by (le) (increase(faro_web_vitals_fcp_milliseconds_bucket{project=\"kreditozrouti\", env=\"$env\"}[$__range])))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "FCP",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 24
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "decimals": 0,
+          "noValue": "no samples",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 1800,
+                "color": "orange"
+              },
+              {
+                "value": 3000,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "TTFB p75",
+      "description": "75th percentile of browser-reported TTFB over the selected range (Faro web vitals histogram). Good <= 800, poor > 1800.",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.75, sum by (le) (increase(faro_web_vitals_ttfb_milliseconds_bucket{project=\"kreditozrouti\", env=\"$env\"}[$__range])))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "TTFB",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 24
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "decimals": 0,
+          "noValue": "no samples",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 800,
+                "color": "orange"
+              },
+              {
+                "value": 1800,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "ms",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "LCP p75 over time",
+      "description": "Largest Contentful Paint, 75th percentile.",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.75, sum by (le) (rate(faro_web_vitals_lcp_milliseconds_bucket{project=\"kreditozrouti\", env=\"$env\"}[$__rate_interval])))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "LCP p75",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      }
+    },
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Browser errors",
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false,
+            "drawStyle": "bars"
+          },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Exceptions",
+      "description": "JavaScript exceptions reported by browsers.",
+      "targets": [
+        {
+          "expr": "sum(count_over_time({project=\"kreditozrouti\", source=\"faro\", env=\"$env\", kind=\"exception\"} [$__auto]))",
+          "datasource": {
+            "type": "loki",
+            "uid": "Loki"
+          },
+          "legendFormat": "exceptions",
+          "queryType": "range",
+          "range": true
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 37
+      }
+    },
+    {
+      "type": "table",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "showTypeIcons": false,
+        "footer": {
+          "show": false,
+          "reducer": [],
+          "countRows": false
+        },
+        "cellHeight": "sm"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "title": "Top exceptions",
+      "description": "Most frequent exception messages in the selected range.",
+      "targets": [
+        {
+          "expr": "topk(15, sum by (value) (count_over_time({project=\"kreditozrouti\", source=\"faro\", env=\"$env\", kind=\"exception\"} | logfmt | __error__=\"\" [$__range])))",
+          "datasource": {
+            "type": "loki",
+            "uid": "Loki"
+          },
+          "legendFormat": "",
+          "queryType": "instant",
+          "instant": true
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "value": "message",
+              "Value #A": "count"
+            }
+          }
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 37
+      }
+    },
+    {
+      "type": "logs",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "showLabels": false,
+        "showCommonLabels": false,
+        "showTime": true,
+        "showLogContextToggle": false,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "enableLogDetails": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      },
+      "title": "Exception details",
+      "description": "Individual reports (page URLs are redacted at the collector).",
+      "targets": [
+        {
+          "expr": "{project=\"kreditozrouti\", source=\"faro\", env=\"$env\", kind=\"exception\"}",
+          "datasource": {
+            "type": "loki",
+            "uid": "Loki"
+          },
+          "legendFormat": "",
+          "queryType": "range",
+          "range": true,
+          "maxLines": 200
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 45
+      }
+    },
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Product analytics (Umami, kreditozrouti.cz)",
+      "gridPos": {
+        "x": 0,
+        "y": 55,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Umami",
+      "description": "GET https://umami.kreditozrouti.cz/ through Traefik with the public Host header.",
+      "targets": [
+        {
+          "expr": "min(probe_success{project=\"kreditozrouti\", service=\"umami\", env=\"ops\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "probe",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 56
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "red"
+              },
+              {
+                "value": 1,
+                "color": "green"
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false,
+            "drawStyle": "bars"
+          },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Visitors and page views per day",
+      "description": "Unique sessions and page views per day.",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "Umami"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "SELECT $__timeGroupAlias(created_at, '1d'), count(DISTINCT session_id) AS visitors, count(*) FILTER (WHERE event_type = 1) AS views FROM website_event WHERE $__timeFilter(created_at) AND website_id IN (SELECT website_id FROM website WHERE domain = 'kreditozrouti.cz' AND deleted_at IS NULL) GROUP BY 1 ORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 60
+      }
+    },
+    {
+      "type": "table",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "showTypeIcons": false,
+        "footer": {
+          "show": false,
+          "reducer": [],
+          "countRows": false
+        },
+        "cellHeight": "sm"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "title": "Top pages",
+      "description": "Page views and visitors per path.",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "Umami"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT url_path AS page, count(*) AS views, count(DISTINCT session_id) AS visitors FROM website_event WHERE event_type = 1 AND $__timeFilter(created_at) AND website_id IN (SELECT website_id FROM website WHERE domain = 'kreditozrouti.cz' AND deleted_at IS NULL) GROUP BY 1 ORDER BY 2 DESC LIMIT 20"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 68
+      }
+    },
+    {
+      "type": "table",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "showTypeIcons": false,
+        "footer": {
+          "show": false,
+          "reducer": [],
+          "countRows": false
+        },
+        "cellHeight": "sm"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "title": "Events",
+      "description": "Custom events (typed in the app via createUmami<Events>()).",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "Umami"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT event_name AS event, count(*) AS count, count(DISTINCT session_id) AS visitors FROM website_event WHERE event_type = 2 AND $__timeFilter(created_at) AND website_id IN (SELECT website_id FROM website WHERE domain = 'kreditozrouti.cz' AND deleted_at IS NULL) GROUP BY 1 ORDER BY 2 DESC"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 68
+      }
+    },
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Logs",
+      "gridPos": {
+        "x": 0,
+        "y": 76,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 60,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "normal"
+            },
+            "drawStyle": "bars"
+          },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Log volume by level",
+      "description": "Lines per interval. Lines without a JSON level are shown as \"unknown\".",
+      "targets": [
+        {
+          "expr": "sum by (level) (count_over_time({project=\"kreditozrouti\", service=\"web\", env=\"$env\", source=\"docker\"} [$__auto]))",
+          "datasource": {
+            "type": "loki",
+            "uid": "Loki"
+          },
+          "legendFormat": "{{level}}",
+          "queryType": "range",
+          "range": true
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 77
+      }
+    },
+    {
+      "type": "logs",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "showLabels": false,
+        "showCommonLabels": false,
+        "showTime": true,
+        "showLogContextToggle": false,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "enableLogDetails": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      },
+      "title": "Errors",
+      "description": "ERROR and FATAL lines. Open a line for request_id links; use Explore > Logs Drilldown for patterns.",
+      "targets": [
+        {
+          "expr": "{project=\"kreditozrouti\", service=\"web\", env=\"$env\", source=\"docker\", level=~\"ERROR|FATAL\"}",
+          "datasource": {
+            "type": "loki",
+            "uid": "Loki"
+          },
+          "legendFormat": "",
+          "queryType": "range",
+          "range": true,
+          "maxLines": 500
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 83
+      }
+    }
+  ]
+}

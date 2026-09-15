@@ -1,6 +1,6 @@
 # Shared — HTTP Contracts
 
-Wire-format interfaces shared between the API (serialises) and the client (deserialises). Stored in `shared/http/`.
+Wire-format interfaces shared between the API (serialises) and the web app (deserialises). Stored in `shared/http/`.
 
 **Rule:** All `Date` fields from Kysely become `string` in DTOs (ISO-8601 after `JSON.stringify`).
 
@@ -8,7 +8,7 @@ Wire-format interfaces shared between the API (serialises) and the client (deser
 
 ## `shared/http/responses.ts`
 
-All DTO interfaces the API sends as JSON and the client receives.
+All DTO interfaces the API sends as JSON and the web app receives.
 
 ```typescript
 FacultyDTO
@@ -95,7 +95,7 @@ interface CoursesFilter {
 }
 ```
 
-The `filters.store` in the client owns an instance of this. `coursesStore.fetchCourses()` sends it as the POST body.
+The `filters.store` in the web app owns an instance of this. `coursesStore.fetchCourses()` sends it as the POST body.
 
 ---
 
@@ -154,7 +154,7 @@ shapes consumed by the admin panel.
 
 ## `shared/http/optimize.ts`
 
-Wire-format contract for `POST /optimize` (timetable optimizer). Shared by the client's constraint-config/results
+Wire-format contract for `POST /optimize` (timetable optimizer). Shared by the web app's constraint-config/results
 drawers and the API's `OptimizeService`/`OptimizeController`.
 
 ```typescript
@@ -176,7 +176,7 @@ interface OptimizeRequest {
 }
 
 interface SelectedCourseUnitDTO {
-	// mirrors client/src/types/course.ts SelectedCourseUnit field-for-field so
+	// mirrors web/src/types/course.ts SelectedCourseUnit field-for-field so
 	// OptimizerCandidateDTO.units is directly loadable via timetable.store.loadUnits()
 	courseId: number
 	courseIdent: string
@@ -226,6 +226,6 @@ interface OptimizeResponseDTO {
 	pool_truncated: boolean // true when course_ids exceeded MAX_POOL_SIZE and was truncated
 }
 
-const MAX_POOL_SIZE = 30 // server-side course-pool cap; shared so API enforcement and client
+const MAX_POOL_SIZE = 30 // server-side course-pool cap; shared so API enforcement and web
 // truncation-notice copy read the same number instead of duplicating it
 ```

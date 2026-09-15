@@ -66,7 +66,7 @@ anything else:
 
 | Host           | Runs                                                                    |
 |----------------|-------------------------------------------------------------------------|
-| prod VPS       | traefik, api, scraper, client, mcp, mysql, redis, phpmyadmin, **alloy** |
+| prod VPS       | traefik, api, scraper, web, mcp, mysql, redis, phpmyadmin, **alloy**    |
 | monitoring VPS | traefik, prometheus, grafana, loki, umami, umami-db                     |
 
 ## If you must keep it co-located (no second host yet)

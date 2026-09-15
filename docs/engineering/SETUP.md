@@ -46,14 +46,14 @@ MYSQL_ROOT_PASSWORD=root
 REDIS_HOST=localhost
 REDIS_PORT=46379
 
-# Client (Vite)
+# Web (Vite)
 VITE_API_URL=http://localhost:40080
-VITE_CLIENT_PORT=45173
+VITE_WEB_PORT=45173
 
 NODE_ENV=development
 ```
 
-> `VITE_*` vars are baked into the client bundle at build time by Vite. Changing them after `npm run build` has no
+> `VITE_*` vars are baked into the web bundle at build time by Vite. Changing them after `npm run build` has no
 > effect — you must rebuild.
 
 ### 3. Start infrastructure
@@ -76,14 +76,14 @@ make install
 
 ```bash
 make dev
-# Runs api + client + scraper in parallel via concurrently
+# Runs api + web + scraper in parallel via concurrently
 ```
 
 Or individually:
 
 ```bash
 make dev-api      # Express on :40080
-make dev-client   # Vite on :45173
+make dev-web      # Vite on :45173
 make dev-scraper  # BullMQ worker (no port)
 ```
 
@@ -91,7 +91,7 @@ make dev-scraper  # BullMQ worker (no port)
 
 | Service    | URL                                    |
 |------------|----------------------------------------|
-| Client     | http://localhost:45173                 |
+| Web        | http://localhost:45173                 |
 | API        | http://localhost:40080                 |
 | phpMyAdmin | http://localhost:48080 (loopback only) |
 
@@ -146,9 +146,9 @@ See [docs/api/ENDPOINTS.md](../api/ENDPOINTS.md) for all command endpoints.
 make install              # Install all workspace packages
 
 # Development
-make dev                  # Run api + client + scraper in parallel
+make dev                  # Run api + web + scraper in parallel
 make dev-api              # Run API only
-make dev-client           # Run Client only
+make dev-web              # Run Web only
 make dev-scraper          # Run Scraper only
 
 # Code quality
@@ -157,7 +157,7 @@ make format               # Format all packages
 
 # Build
 make build                # Production build for all packages
-make build-docker-images  # Build Docker images (api, client, scraper, mcp)
+make build-docker-images  # Build Docker images (api, web, scraper, mcp)
 
 # Infrastructure
 make run-local-docker     # Start MySQL, Redis, phpMyAdmin
@@ -180,7 +180,7 @@ Non-standard ports are used deliberately to avoid clashing with typical dev setu
 
 - MySQL: 43306 (not 3306)
 - Redis: 46379 (not 6379)
-- Client: 45173 (not 5173)
+- Web: 45173 (not 5173)
 - API: 40080 (not 3000/8080)
 
 **Scraper not processing jobs**

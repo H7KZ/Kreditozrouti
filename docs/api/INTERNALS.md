@@ -20,8 +20,8 @@ config.sessionSecret // API_SESSION_SECRET (required in production; ephemeral ra
 config.commandToken // API_COMMAND_TOKEN (Bearer token for /commands)
 config.redis.uri // REDIS_URI
 config.mysql.uri // MYSQL_URI
-config.client.uri // CLIENT_URI
-config.client.createURL // (path: string) => full client URL
+config.web.uri // WEB_URI
+config.web.createURL // (path: string) => full web app URL
 
 config.isEnvProduction() // env === 'production' || 'prod'
 config.isEnvDevelopment()
@@ -304,7 +304,7 @@ Returns an array of Kysely expressions — combine with `.or()` in the parent qu
 
 ### `compareTimeSelections`
 
-Re-exported from `@shared/domain/timetable`. Used by the client to sort or compare time selection objects.
+Re-exported from `@shared/domain/timetable`. Used by the web app to sort or compare time selection objects.
 
 ---
 

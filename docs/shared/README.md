@@ -1,9 +1,9 @@
 # Shared — Overview
 
 The `shared/` package contains pure TypeScript modules with no runtime dependencies on any specific service. It is
-imported by `../../api`, `../../client`, and `../../scraper` for common types, domain logic, and HTTP contracts.
+imported by `../../api`, `../../web`, and `../../scraper` for common types, domain logic, and HTTP contracts.
 
-**Rule:** `shared/` must never import from `../../api`, `../../client`, or `../../scraper`. Its only external dependency
+**Rule:** `shared/` must never import from `../../api`, `../../web`, or `../../scraper`. Its only external dependency
 is itself.
 
 ---

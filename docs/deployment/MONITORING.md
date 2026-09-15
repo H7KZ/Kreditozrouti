@@ -10,7 +10,7 @@ template), written for this repository: there is no shared package or generator.
 ## Pipeline Overview
 
 ```
- app containers (api, scraper x2)                                       browser (Vue client)
+ app containers (api, scraper x2)                                       browser (Vue web app)
  prometheus.io/scrape=true + prometheus.io/port=<n>                     Faro -> /faro/collect
  pino JSON on stdout                                                    Umami -> /stats
             |                                                                  |
@@ -70,14 +70,14 @@ A container only declares `prometheus.io/scrape=true` and `prometheus.io/port=<n
 `kreditozrouti-monitoring-network`. It is addressed by container name, because Docker SD reports only a container's
 first network alphabetically.
 
-Traefik series and access-log lines are kept only for routers named `kreditozrouti-(api|client|mcp)-<suffix>@docker`;
+Traefik series and access-log lines are kept only for routers named `kreditozrouti-(api|web|mcp)-<suffix>@docker`;
 `env=development` is derived from a `dev` suffix. A new routed service needs adding to that regex in `config.alloy`.
 
 ### Redaction before storage
 
 Client IPs, query strings and private path segments (`/s/<id>`, `/share/<id>`, `/ical/<id>`) are removed in Alloy
-from Traefik access logs, container logs and Faro payloads. The client also redacts `/s/<id>` and query strings before
-Faro or Umami send anything (`client/src/analytics.ts`). The privacy policy describes exactly this.
+from Traefik access logs, container logs and Faro payloads. The web app also redacts `/s/<id>` and query strings before
+Faro or Umami send anything (`../../web`). The privacy policy describes exactly this.
 
 ---
 
@@ -167,7 +167,7 @@ Config: `../../deployment/monitoring/alloy/config.alloy`, `../../deployment/moni
 | --------- | ------------------------------------------------ | ----------------------------------------- |
 | `project` | `kreditozrouti`                                  | Alloy                                     |
 | `env`     | `production`, `development`, `ops`               | compose project (Faro: `app_environment`) |
-| `service` | compose service; `client` for Faro               | compose metadata                          |
+| `service` | compose service; `web` for Faro                   | compose metadata                          |
 | `source`  | `docker`, `traefik`, `faro`                      | pipeline                                  |
 | `level`   | pino `level`; Traefik derives it from the status | log line                                  |
 | `kind`    | `exception`, `measurement`, ... (Faro only)      | Faro                                      |
@@ -216,9 +216,9 @@ them and the rules use `increase()`. `/metrics` answers 404 to any request carry
 `x-real-ip`, `cf-connecting-ip`, `cf-ray`), so `https://<domain>/api/metrics` is never public. Each scraper replica
 serves its own endpoint on port 9101; keep one worker process per container (cluster mode would make forks share it).
 
-The client (nginx) and mcp expose no `/metrics`; their traffic, errors and latency come from Traefik router metrics.
+The web app (nginx) and mcp expose no `/metrics`; their traffic, errors and latency come from Traefik router metrics.
 mcp additionally gets a direct reachability check: `GET /mcp/health` (added purely for the blackbox probe, since
-Traefik only routes `PathPrefix(/mcp)` to it) is probed the same way as api's `/api/health` and client's `/`.
+Traefik only routes `PathPrefix(/mcp)` to it) is probed the same way as api's `/api/health` and web's `/`.
 
 ---
 
@@ -232,7 +232,7 @@ Rules: `../../deployment/monitoring/prometheus/rules/{alerts,recording}.yml` and
   images). CI runs it in `_verify.yml`. Annotations may template only `{{ $labels.x }}`, because promtool compares them
   exactly.
 - **Catalogue:** `ServiceDown` (uses `absent()`, a stopped container's series vanish; api and scraper only - mcp,
-  client and umami have no `/metrics` to scrape), `OriginProbeFailing` (api, client, mcp, umami - blackbox probe
+  web and umami have no `/metrics` to scrape), `OriginProbeFailing` (api, web, mcp, umami - blackbox probe
   through Traefik; umami is `severity: warning` since it's analytics-only, not user-facing),
   `EdgeErrorBudgetBurnFast/Slow`, `ApiSlowRequests` (over 1 s), `WorkerJobsFailing`, `QueueBacklog`,
   `ScheduledJobStale` (Gap Sweep every 4 h, Academic Schedules daily), host disk/memory/swap,
@@ -255,7 +255,7 @@ reads webhook URLs from files that `deploy.sh` writes to `.secrets/`.
 ## Dashboards
 
 Provisioned from `../../deployment/monitoring/grafana/dashboards/Kreditozrouti/` (one folder):
-`overview`, `service-api`, `service-scraper`, `service-client` (includes Faro web vitals, browser errors and Umami
+`overview`, `service-api`, `service-scraper`, `service-web` (includes Faro web vitals, browser errors and Umami
 product analytics — the former standalone `frontend` dashboard was merged into it), `service-mcp`, `host`,
 `monitoring` (the stack itself). Every panel filters on `project` and `$env`. Each `service-*` queue view (BullMQ job
 counts, throughput, failure ratio) lives on its owning service's own dashboard rather than a separate cross-service

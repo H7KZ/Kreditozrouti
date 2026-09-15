@@ -1,7 +1,7 @@
 # MCP — CLAUDE.md
 
 Standalone MCP server for Kreditožrouti. Imports only from `@kreditozrouti/core` — no imports from `api/`, `scraper/`,
-or `client/`.
+or `../web`.
 
 ## Directory Structure
 
@@ -26,7 +26,7 @@ mcp/src/
 
 ## Critical Invariants
 
-- **Core-only imports**: imports only from `@kreditozrouti/core` — no `@api/*`, `@scraper/*`, `../client`, etc.
+- **Core-only imports**: imports only from `@kreditozrouti/core` — no `@api/*`, `@scraper/*`, `../web`, etc.
 - **Stateless HA**: `createServer()` factory called fresh per HTTP request; `sessionIdGenerator: undefined`
 - **Dual transport**: `--stdio` flag → StdioServerTransport; else → Streamable HTTP on `POST /mcp`
 - **Times as minutes-from-midnight** (0–1439) stored in DB; `minutesToTime()` from `@kreditozrouti/core/domain` converts

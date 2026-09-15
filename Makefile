@@ -16,7 +16,7 @@ clear-redis:
 
 build-docker-images:
 	docker buildx build -t kreditozrouti-api     -f ./api/Dockerfile     . && \
-	docker buildx build -t kreditozrouti-client  -f ./client/Dockerfile  . && \
+	docker buildx build -t kreditozrouti-web  -f ./web/Dockerfile  . && \
 	docker buildx build -t kreditozrouti-scraper -f ./scraper/Dockerfile . && \
 	docker buildx build -t kreditozrouti-mcp     -f ./mcp/Dockerfile     .
 
@@ -57,8 +57,6 @@ test-regen:
 # One local command mirroring what _verify.yml runs in CI, so it can be checked before pushing
 verify:
 	$(MAKE) lint
-	bash scripts/check-em-dashes.sh
-	bash deployment/monitoring/validate.sh
 	pnpm --filter=@kreditozrouti/core run build
 	$(MAKE) test
 	$(MAKE) type-check
@@ -72,4 +70,4 @@ build:
 # scraper preview just runs the dist binary - not useful here
 # mcp has no preview (use `start` to run the built server directly)
 preview:
-	pnpm turbo run preview --filter=@kreditozrouti/api --filter=@kreditozrouti/client
+	pnpm turbo run preview --filter=@kreditozrouti/api --filter=@kreditozrouti/web

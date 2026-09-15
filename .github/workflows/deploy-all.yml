@@ -17,7 +17,7 @@ on:
     branches: [ main ]
     paths:
       - 'api/**'
-      - 'client/**'
+      - 'web/**'
       - 'scraper/**'
       - 'mcp/**'
       - 'packages/**'
@@ -33,8 +33,8 @@ on:
         description: Deploy API
         type: boolean
         default: true
-      deploy_client:
-        description: Deploy Client
+      deploy_web:
+        description: Deploy Web
         type: boolean
         default: true
       deploy_scraper:
@@ -92,7 +92,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       api: ${{ steps.filter.outputs.api }}
-      client: ${{ steps.filter.outputs.client }}
+      web: ${{ steps.filter.outputs.web }}
       scraper: ${{ steps.filter.outputs.scraper }}
       mcp: ${{ steps.filter.outputs.mcp }}
     steps:
@@ -103,8 +103,8 @@ jobs:
             api:
               - 'api/**'
               - 'packages/**'
-            client:
-              - 'client/**'
+            web:
+              - 'web/**'
               - 'packages/**'
             scraper:
               - 'scraper/**'
@@ -134,22 +134,22 @@ jobs:
       cache_scope: api-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
     secrets: inherit
 
-  build-client:
-    name: Build Client
+  build-web:
+    name: Build Web
     needs: [ detect, validate ]
     if: >-
       always() &&
       needs.validate.result == 'success' &&
       needs.detect.result != 'failure' &&
       (
-        (github.event_name == 'push' && needs.detect.outputs.client == 'true') ||
-        (github.event_name == 'workflow_dispatch' && inputs.deploy_client && !inputs.skip_build && inputs.image_tag == '')
+        (github.event_name == 'push' && needs.detect.outputs.web == 'true') ||
+        (github.event_name == 'workflow_dispatch' && inputs.deploy_web && !inputs.skip_build && inputs.image_tag == '')
       )
     uses: ./.github/workflows/_build-service.yml
     with:
-      service: client
+      service: web
       float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
-      cache_scope: client-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+      cache_scope: web-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
     secrets: inherit
 
   build-scraper:
@@ -196,7 +196,7 @@ jobs:
     name: Resolve Image Prefix
     runs-on: self-hosted
     timeout-minutes: 5
-    needs: [ validate, detect, build-api, build-client, build-scraper, build-mcp ]
+    needs: [ validate, detect, build-api, build-web, build-scraper, build-mcp ]
     if: always() && needs.validate.result == 'success' && needs.detect.result != 'failure'
     outputs:
       image_prefix: ${{ steps.prefix.outputs.value }}
@@ -204,7 +204,7 @@ jobs:
       - name: Compute lowercase prefix
         id: prefix
         run: |
-          RAW="${{ needs.build-api.outputs.image_prefix || needs.build-client.outputs.image_prefix || needs.build-scraper.outputs.image_prefix || needs.build-mcp.outputs.image_prefix || github.repository }}"
+          RAW="${{ needs.build-api.outputs.image_prefix || needs.build-web.outputs.image_prefix || needs.build-scraper.outputs.image_prefix || needs.build-mcp.outputs.image_prefix || github.repository }}"
           echo "value=${RAW,,}" >> "$GITHUB_OUTPUT"
 
   # ---------------------------------------------------------------------------
@@ -230,23 +230,23 @@ jobs:
       image_prefix: ${{ needs.resolve.outputs.image_prefix }}
     secrets: inherit
 
-  deploy-client:
-    name: Deploy Client
-    needs: [ detect, build-client, resolve ]
+  deploy-web:
+    name: Deploy Web
+    needs: [ detect, build-web, resolve ]
     if: >-
       always() &&
       needs.resolve.result == 'success' &&
-      (needs.build-client.result == 'success' || needs.build-client.result == 'skipped') &&
+      (needs.build-web.result == 'success' || needs.build-web.result == 'skipped') &&
       (
-        (github.event_name == 'push' && needs.detect.outputs.client == 'true') ||
-        (github.event_name == 'workflow_dispatch' && inputs.deploy_client)
+        (github.event_name == 'push' && needs.detect.outputs.web == 'true') ||
+        (github.event_name == 'workflow_dispatch' && inputs.deploy_web)
       )
     uses: ./.github/workflows/_deploy-service.yml
     with:
-      service: client
+      service: web
       environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
       project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
-      image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-client.outputs.image_tag }}
+      image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-web.outputs.image_tag }}
       image_prefix: ${{ needs.resolve.outputs.image_prefix }}
     secrets: inherit
 
@@ -302,13 +302,13 @@ jobs:
       package-name: kreditozrouti/api
     secrets: inherit
 
-  cleanup-client:
-    name: Cleanup Client packages
-    needs: [ deploy-client ]
-    if: needs.deploy-client.result == 'success'
+  cleanup-web:
+    name: Cleanup Web packages
+    needs: [ deploy-web ]
+    if: needs.deploy-web.result == 'success'
     uses: ./.github/workflows/_cleanup-package.yml
     with:
-      package-name: kreditozrouti/client
+      package-name: kreditozrouti/web
     secrets: inherit
 
   cleanup-scraper:
