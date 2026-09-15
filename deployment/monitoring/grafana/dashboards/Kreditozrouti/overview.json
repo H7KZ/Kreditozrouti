@@ -128,7 +128,7 @@
       ],
       "gridPos": {
         "h": 3,
-        "w": 12,
+        "w": 6,
         "x": 0,
         "y": 1
       },
@@ -202,8 +202,156 @@
       ],
       "gridPos": {
         "h": 3,
-        "w": 12,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "red"
+              },
+              {
+                "value": 1,
+                "color": "green"
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "client",
+      "description": "Origin probe (GET / through Traefik) for client in $env.",
+      "targets": [
+        {
+          "expr": "min(probe_success{project=\"kreditozrouti\", service=\"client\", env=\"$env\"}) or vector(0)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "client",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 3,
+        "w": 6,
         "x": 12,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "red"
+              },
+              {
+                "value": 1,
+                "color": "green"
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "mcp",
+      "description": "Origin probe (GET /mcp/health through Traefik) for mcp in $env.",
+      "targets": [
+        {
+          "expr": "min(probe_success{project=\"kreditozrouti\", service=\"mcp\", env=\"$env\"}) or vector(0)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "mcp",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 18,
         "y": 1
       },
       "fieldConfig": {

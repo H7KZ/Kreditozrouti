@@ -255,7 +255,8 @@ reads webhook URLs from files that `deploy.sh` writes to `.secrets/`.
 ## Dashboards
 
 Provisioned from `../../deployment/monitoring/grafana/dashboards/Kreditozrouti/` (one folder):
-`overview`, `service-api`, `service-scraper`, `service-client`, `service-mcp`, `host`, `frontend` (Faro + Umami),
+`overview`, `service-api`, `service-scraper`, `service-client` (includes Faro web vitals, browser errors and Umami
+product analytics — the former standalone `frontend` dashboard was merged into it), `service-mcp`, `host`,
 `monitoring` (the stack itself). Every panel filters on `project` and `$env`. Each `service-*` queue view (BullMQ job
 counts, throughput, failure ratio) lives on its owning service's own dashboard rather than a separate cross-service
 one.

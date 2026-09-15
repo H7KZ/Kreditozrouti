@@ -43,7 +43,7 @@ Page URLs arrive with share link ids and query strings removed.
 {project="kreditozrouti", source="faro", kind="exception"}
 ```
 
-Web Vitals are also exported as Prometheus histograms (`faro_web_vitals_*`) and shown on the Frontend dashboard.
+Web Vitals are also exported as Prometheus histograms (`faro_web_vitals_*`) and shown on the Service: client dashboard.
 
 ---
 
