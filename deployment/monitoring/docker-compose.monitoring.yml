@@ -25,15 +25,18 @@ services:
         - wget
         - -qO-
         - http://localhost:9090/-/ready
-      interval: 30s
+      interval: 60s
       timeout: 5s
       retries: 5
       start_period: 60s
+      start_interval: 3s
     logging:
       driver: json-file
       options:
         max-size: 10m
         max-file: "3"
+    cpu_shares: 256
+    oom_score_adj: 500
     deploy:
       resources:
         limits:
@@ -60,14 +63,17 @@ services:
         - wget
         - -qO-
         - http://localhost:9093/-/ready
-      interval: 30s
+      interval: 60s
       timeout: 5s
       retries: 5
+      start_interval: 3s
     logging:
       driver: json-file
       options:
         max-size: 10m
         max-file: "3"
+    cpu_shares: 256
+    oom_score_adj: 500
     deploy:
       resources:
         limits:
@@ -91,6 +97,8 @@ services:
       options:
         max-size: 10m
         max-file: "3"
+    cpu_shares: 256
+    oom_score_adj: 500
     deploy:
       resources:
         limits:
@@ -101,6 +109,8 @@ services:
     restart: unless-stopped
     group_add:
       - ${DOCKER_GID:-988}
+    environment:
+      - GOMEMLIMIT=270MiB
     command:
       - run
       - --server.http.listen-addr=0.0.0.0:12345
@@ -147,6 +157,8 @@ services:
       options:
         max-size: 10m
         max-file: "3"
+    cpu_shares: 256
+    oom_score_adj: 500
     deploy:
       resources:
         limits:
@@ -195,15 +207,18 @@ services:
         - wget
         - -qO-
         - http://localhost:3000/api/health
-      interval: 30s
+      interval: 60s
       timeout: 5s
       retries: 5
       start_period: 60s
+      start_interval: 3s
     logging:
       driver: json-file
       options:
         max-size: 10m
         max-file: "3"
+    cpu_shares: 256
+    oom_score_adj: 500
     deploy:
       resources:
         limits:
@@ -224,15 +239,18 @@ services:
       test:
         - CMD-SHELL
         - pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
-      interval: 10s
+      interval: 60s
       timeout: 5s
       retries: 10
       start_period: 30s
+      start_interval: 3s
     logging:
       driver: json-file
       options:
         max-size: 10m
         max-file: "3"
+    cpu_shares: 256
+    oom_score_adj: 500
     deploy:
       resources:
         limits:
@@ -286,6 +304,8 @@ services:
       options:
         max-size: 10m
         max-file: "3"
+    cpu_shares: 256
+    oom_score_adj: 500
     deploy:
       resources:
         limits:

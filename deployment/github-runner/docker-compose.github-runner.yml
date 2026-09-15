@@ -13,7 +13,7 @@
 #   - GITHUB_ACCESS_TOKEN: Personal Access Token with repo scope
 #   - PROJECT: Project name prefix for runner naming
 #   - RUNNER_LABELS: Comma-separated list of runner labels
-#   - RUNNER_REPLICAS: Number of runner instances (default: 2)
+#   - RUNNER_REPLICAS: Number of runner instances (default: 1)
 #
 # Usage: docker compose -f docker-compose.github-runner.yml up -d
 # ==============================================================================
@@ -51,7 +51,7 @@ services:
 
     deploy:
       mode: replicated
-      replicas: ${RUNNER_REPLICAS:-2}
+      replicas: ${RUNNER_REPLICAS:-1}
 
       resources:
         limits:

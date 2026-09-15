@@ -9,7 +9,7 @@ common:
     kvstore:
       store: inmemory
 ingester:
-  chunk_idle_period: 5m
+  chunk_idle_period: 30m
   chunk_retain_period: 30s
   wal:
     dir: /loki/wal
@@ -29,7 +29,7 @@ storage_config:
   filesystem:
     directory: /loki/chunks
 pattern_ingester:
-  enabled: true
+  enabled: false
 runtime_config:
   file: /etc/loki/runtime.yml
   period: 1m
@@ -72,7 +72,7 @@ limits_config:
   max_query_series: 1000
 compactor:
   working_directory: /loki/compactor
-  compaction_interval: 10m
+  compaction_interval: 1h
   retention_enabled: true
   retention_delete_delay: 2h
   delete_request_store: filesystem

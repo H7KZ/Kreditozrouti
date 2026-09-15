@@ -87,7 +87,7 @@ discovery.relabel "scrape" {
 
 prometheus.scrape "apps" {
   targets         = discovery.relabel.scrape.output
-  scrape_interval = "30s"
+  scrape_interval = "60s"
   scrape_timeout  = "10s"
   forward_to      = [prometheus.remote_write.local.receiver]
 }
@@ -96,7 +96,7 @@ prometheus.scrape "apps" {
 // service/env from the router name "<project>-<router>-<suffix>@docker".
 prometheus.scrape "traefik" {
   targets         = [{"__address__" = "traefik:8082", "job" = "kreditozrouti/traefik"}]
-  scrape_interval = "30s"
+  scrape_interval = "60s"
   forward_to      = [prometheus.relabel.traefik.receiver]
 }
 
@@ -161,7 +161,7 @@ prometheus.exporter.unix "host" {
 
 prometheus.scrape "host" {
   targets         = prometheus.exporter.unix.host.targets
-  scrape_interval = "30s"
+  scrape_interval = "60s"
   forward_to      = [prometheus.relabel.host.receiver]
 }
 
@@ -201,11 +201,12 @@ prometheus.exporter.cadvisor "containers" {
   allowlisted_container_labels = ["com.docker.compose.project", "com.docker.compose.service"]
   enabled_metrics              = ["cpu", "memory", "oom_event"]
   storage_duration             = "1m"
+  disable_root_cgroup_stats    = true
 }
 
 prometheus.scrape "containers" {
   targets         = prometheus.exporter.cadvisor.containers.targets
-  scrape_interval = "30s"
+  scrape_interval = "60s"
   forward_to      = [prometheus.relabel.containers.receiver]
 }
 
@@ -304,7 +305,7 @@ prometheus.exporter.blackbox "probes" {
 
 prometheus.scrape "probes" {
   targets         = prometheus.exporter.blackbox.probes.targets
-  scrape_interval = "30s"
+  scrape_interval = "60s"
   scrape_timeout  = "15s"
   forward_to      = [prometheus.relabel.probes.receiver]
 }

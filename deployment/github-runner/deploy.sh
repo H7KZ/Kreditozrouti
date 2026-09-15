@@ -17,7 +17,7 @@ set -euo pipefail
 #   GITHUB_ACCESS_TOKEN   Personal Access Token (repo scope)
 #
 # Optional:
-#   RUNNER_REPLICAS       Number of runner instances (default: 2)
+#   RUNNER_REPLICAS       Number of runner instances (default: 1)
 #   RUNNER_LABELS         Additional labels, comma-separated
 # ==============================================================================
 
@@ -65,7 +65,7 @@ main() {
 
     validate_url "$GITHUB_REPO_URL"
 
-    local replicas="${RUNNER_REPLICAS:-2}"
+    local replicas="${RUNNER_REPLICAS:-1}"
     validate_number "$replicas" "RUNNER_REPLICAS"
 
     local labels="docker,self-hosted"

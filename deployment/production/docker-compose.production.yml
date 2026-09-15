@@ -83,10 +83,11 @@ services:
 
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:80/health' ]
-      interval: 30s
+      interval: 60s
       timeout: 10s
       retries: 3
       start_period: 40s
+      start_interval: 3s
 
     logging:
       driver: 'json-file'
@@ -220,10 +221,11 @@ services:
       # and never fell back to IPv4 - the container was permanently unhealthy despite serving
       # requests over IPv4 the whole time. 127.0.0.1 skips resolution entirely.
       test: [ 'CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:80' ]
-      interval: 30s
+      interval: 60s
       timeout: 10s
       retries: 3
       start_period: 20s
+      start_interval: 3s
 
     logging:
       driver: 'json-file'
@@ -288,10 +290,11 @@ services:
 
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:3000/health' ]
-      interval: 30s
+      interval: 60s
       timeout: 10s
       retries: 3
       start_period: 20s
+      start_interval: 3s
 
     logging:
       driver: 'json-file'
@@ -340,17 +343,25 @@ services:
       - --innodb_sort_buffer_size=64M
       - --tmp_table_size=64M
       - --max_heap_table_size=64M
-      - --innodb_buffer_pool_size=512M
+      - --innodb_buffer_pool_size=192M
+      - --performance_schema=OFF
+      - --skip-name-resolve
+      - --max_connections=50
+      - --temptable_max_ram=64M
 
     networks:
       - kreditozrouti-mysql-network-prod
 
+    # Negative = less likely to be OOM-killed than everything else on the box.
+    oom_score_adj: -500
+
     healthcheck:
-      test: [ 'CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p${MYSQL_ROOT_PASSWORD}' ]
-      interval: 30s
+      test: [ 'CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '--silent' ]
+      interval: 60s
       timeout: 10s
       retries: 5
       start_period: 60s
+      start_interval: 3s
 
     logging:
       driver: 'json-file'
@@ -363,10 +374,10 @@ services:
       resources:
         limits:
           cpus: '1.5'
-          memory: 1536M
+          memory: 768M
         reservations:
           cpus: '0.5'
-          memory: 512M
+          memory: 256M
 
   # ============================================================================
   # Database Interface (phpMyAdmin)
@@ -459,10 +470,11 @@ services:
 
     healthcheck:
       test: [ 'CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping' ]
-      interval: 30s
+      interval: 60s
       timeout: 10s
       retries: 5
       start_period: 20s
+      start_interval: 3s
 
     logging:
       driver: 'json-file'
