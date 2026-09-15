@@ -8,10 +8,6 @@ tests:
     input_series:
       - series: up{project="kreditozrouti", service="scraper", env="production", job="kreditozrouti/scraper", instance="kreditozrouti-scraper-1"}
         values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="production", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="production", job="kreditozrouti/redis-exporter", instance="kreditozrouti-redis-exporter-1"}
-        values: 1x500
       - series: up{project="kreditozrouti", service="api", env="production", job="kreditozrouti/api", instance="kreditozrouti-api-1"}
         values: 1x20
     alert_rule_test:
@@ -22,10 +18,6 @@ tests:
     interval: 1m
     input_series:
       - series: up{project="kreditozrouti", service="scraper", env="production", job="kreditozrouti/scraper", instance="kreditozrouti-scraper-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="production", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="production", job="kreditozrouti/redis-exporter", instance="kreditozrouti-redis-exporter-1"}
         values: 1x500
       - series: up{project="kreditozrouti", service="api", env="production", job="kreditozrouti/api", instance="kreditozrouti-api-1"}
         values: "0x20"
@@ -47,10 +39,6 @@ tests:
     input_series:
       - series: up{project="kreditozrouti", service="scraper", env="production", job="kreditozrouti/scraper", instance="kreditozrouti-scraper-1"}
         values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="production", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="production", job="kreditozrouti/redis-exporter", instance="kreditozrouti-redis-exporter-1"}
-        values: 1x500
       - series: up{project="kreditozrouti", service="api", env="development", job="kreditozrouti/api", instance="kreditozrouti-dev-api-1"}
         values: 1x20
     alert_rule_test:
@@ -71,10 +59,6 @@ tests:
     input_series:
       - series: up{project="kreditozrouti", service="api", env="production", job="kreditozrouti/api", instance="kreditozrouti-api-1"}
         values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="production", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="production", job="kreditozrouti/redis-exporter", instance="kreditozrouti-redis-exporter-1"}
-        values: 1x500
       - series: up{project="kreditozrouti", service="scraper", env="production", job="kreditozrouti/scraper", instance="kreditozrouti-scraper-1"}
         values: 1x20
     alert_rule_test:
@@ -85,10 +69,6 @@ tests:
     interval: 1m
     input_series:
       - series: up{project="kreditozrouti", service="api", env="production", job="kreditozrouti/api", instance="kreditozrouti-api-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="production", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="production", job="kreditozrouti/redis-exporter", instance="kreditozrouti-redis-exporter-1"}
         values: 1x500
       - series: up{project="kreditozrouti", service="scraper", env="production", job="kreditozrouti/scraper", instance="kreditozrouti-scraper-1"}
         values: "0x20"
@@ -110,10 +90,6 @@ tests:
     input_series:
       - series: up{project="kreditozrouti", service="api", env="production", job="kreditozrouti/api", instance="kreditozrouti-api-1"}
         values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="production", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="production", job="kreditozrouti/redis-exporter", instance="kreditozrouti-redis-exporter-1"}
-        values: 1x500
       - series: up{project="kreditozrouti", service="scraper", env="development", job="kreditozrouti/scraper", instance="kreditozrouti-dev-scraper-1"}
         values: 1x20
     alert_rule_test:
@@ -128,132 +104,6 @@ tests:
             exp_annotations:
               summary: Kreditozrouti scraper is down
               description: No production scraper container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
-              dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
-  - name: "ServiceDown: mysqld-exporter healthy"
-    interval: 1m
-    input_series:
-      - series: up{project="kreditozrouti", service="api", env="production", job="kreditozrouti/api", instance="kreditozrouti-api-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="scraper", env="production", job="kreditozrouti/scraper", instance="kreditozrouti-scraper-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="production", job="kreditozrouti/redis-exporter", instance="kreditozrouti-redis-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="production", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 1x20
-    alert_rule_test:
-      - eval_time: 15m
-        alertname: ServiceDown
-        exp_alerts: []
-  - name: "ServiceDown: mysqld-exporter failing scrape"
-    interval: 1m
-    input_series:
-      - series: up{project="kreditozrouti", service="api", env="production", job="kreditozrouti/api", instance="kreditozrouti-api-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="scraper", env="production", job="kreditozrouti/scraper", instance="kreditozrouti-scraper-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="production", job="kreditozrouti/redis-exporter", instance="kreditozrouti-redis-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="production", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-mysqld-exporter-1"}
-        values: "0x20"
-    alert_rule_test:
-      - eval_time: 15m
-        alertname: ServiceDown
-        exp_alerts:
-          - exp_labels:
-              project: kreditozrouti
-              service: mysqld-exporter
-              env: production
-              severity: critical
-            exp_annotations:
-              summary: Kreditozrouti mysqld-exporter is down
-              description: No production mysqld-exporter container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
-              dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
-  - name: "ServiceDown: mysqld-exporter container gone"
-    interval: 1m
-    input_series:
-      - series: up{project="kreditozrouti", service="api", env="production", job="kreditozrouti/api", instance="kreditozrouti-api-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="scraper", env="production", job="kreditozrouti/scraper", instance="kreditozrouti-scraper-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="production", job="kreditozrouti/redis-exporter", instance="kreditozrouti-redis-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="development", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-dev-mysqld-exporter-1"}
-        values: 1x20
-    alert_rule_test:
-      - eval_time: 15m
-        alertname: ServiceDown
-        exp_alerts:
-          - exp_labels:
-              project: kreditozrouti
-              service: mysqld-exporter
-              env: production
-              severity: critical
-            exp_annotations:
-              summary: Kreditozrouti mysqld-exporter is down
-              description: No production mysqld-exporter container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
-              dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
-  - name: "ServiceDown: redis-exporter healthy"
-    interval: 1m
-    input_series:
-      - series: up{project="kreditozrouti", service="api", env="production", job="kreditozrouti/api", instance="kreditozrouti-api-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="scraper", env="production", job="kreditozrouti/scraper", instance="kreditozrouti-scraper-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="production", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="production", job="kreditozrouti/redis-exporter", instance="kreditozrouti-redis-exporter-1"}
-        values: 1x20
-    alert_rule_test:
-      - eval_time: 15m
-        alertname: ServiceDown
-        exp_alerts: []
-  - name: "ServiceDown: redis-exporter failing scrape"
-    interval: 1m
-    input_series:
-      - series: up{project="kreditozrouti", service="api", env="production", job="kreditozrouti/api", instance="kreditozrouti-api-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="scraper", env="production", job="kreditozrouti/scraper", instance="kreditozrouti-scraper-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="production", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="production", job="kreditozrouti/redis-exporter", instance="kreditozrouti-redis-exporter-1"}
-        values: "0x20"
-    alert_rule_test:
-      - eval_time: 15m
-        alertname: ServiceDown
-        exp_alerts:
-          - exp_labels:
-              project: kreditozrouti
-              service: redis-exporter
-              env: production
-              severity: critical
-            exp_annotations:
-              summary: Kreditozrouti redis-exporter is down
-              description: No production redis-exporter container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
-              dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
-  - name: "ServiceDown: redis-exporter container gone"
-    interval: 1m
-    input_series:
-      - series: up{project="kreditozrouti", service="api", env="production", job="kreditozrouti/api", instance="kreditozrouti-api-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="scraper", env="production", job="kreditozrouti/scraper", instance="kreditozrouti-scraper-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="mysqld-exporter", env="production", job="kreditozrouti/mysqld-exporter", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 1x500
-      - series: up{project="kreditozrouti", service="redis-exporter", env="development", job="kreditozrouti/redis-exporter", instance="kreditozrouti-dev-redis-exporter-1"}
-        values: 1x20
-    alert_rule_test:
-      - eval_time: 15m
-        alertname: ServiceDown
-        exp_alerts:
-          - exp_labels:
-              project: kreditozrouti
-              service: redis-exporter
-              env: production
-              severity: critical
-            exp_annotations:
-              summary: Kreditozrouti redis-exporter is down
-              description: No production redis-exporter container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
               dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
   - name: "OriginProbeFailing: api probe ok"
     interval: 1m
@@ -317,6 +167,64 @@ tests:
               summary: Kreditozrouti client is not serving through Traefik
               description: The internal probe of https://kreditozrouti.cz/ via Traefik has failed for 3 minutes. Cloudflare edge outages are not visible here.
               dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+  - name: "OriginProbeFailing: mcp probe ok"
+    interval: 1m
+    input_series:
+      - series: probe_success{project="kreditozrouti", service="api", env="production", job="kreditozrouti/probe"}
+        values: 1x500
+      - series: probe_success{project="kreditozrouti", service="mcp", env="production", job="kreditozrouti/probe"}
+        values: 1x10
+    alert_rule_test:
+      - eval_time: 8m
+        alertname: OriginProbeFailing
+        exp_alerts: []
+  - name: "OriginProbeFailing: mcp probe failing"
+    interval: 1m
+    input_series:
+      - series: probe_success{project="kreditozrouti", service="api", env="production", job="kreditozrouti/probe"}
+        values: 1x500
+      - series: probe_success{project="kreditozrouti", service="mcp", env="production", job="kreditozrouti/probe"}
+        values: "0x10"
+    alert_rule_test:
+      - eval_time: 8m
+        alertname: OriginProbeFailing
+        exp_alerts:
+          - exp_labels:
+              project: kreditozrouti
+              service: mcp
+              env: production
+              severity: critical
+            exp_annotations:
+              summary: Kreditozrouti mcp is not serving through Traefik
+              description: The internal probe of https://kreditozrouti.cz/mcp/health via Traefik has failed for 3 minutes. Cloudflare edge outages are not visible here.
+              dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-mcp
+  - name: "OriginProbeFailing: umami probe ok"
+    interval: 1m
+    input_series:
+      - series: probe_success{project="kreditozrouti", service="umami", env="ops", job="kreditozrouti/probe"}
+        values: 1x10
+    alert_rule_test:
+      - eval_time: 8m
+        alertname: OriginProbeFailing
+        exp_alerts: []
+  - name: "OriginProbeFailing: umami probe failing"
+    interval: 1m
+    input_series:
+      - series: probe_success{project="kreditozrouti", service="umami", env="ops", job="kreditozrouti/probe"}
+        values: "0x10"
+    alert_rule_test:
+      - eval_time: 8m
+        alertname: OriginProbeFailing
+        exp_alerts:
+          - exp_labels:
+              project: kreditozrouti
+              service: umami
+              env: ops
+              severity: warning
+            exp_annotations:
+              summary: Kreditozrouti umami is not serving through Traefik
+              description: The internal probe of https://umami.kreditozrouti.cz/ via Traefik has failed for 3 minutes. Cloudflare edge outages are not visible here.
+              dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-frontend
   - name: "EdgeErrorBudgetBurnFast: healthy traffic"
     interval: 1m
     input_series:
@@ -595,124 +503,6 @@ tests:
               summary: Kreditozrouti scheduled job InSIS Academic Schedules Request (daily at 1 AM) has not succeeded
               description: InSIS Academic Schedules Request (daily at 1 AM) runs every 1 d but has not completed successfully in 2 d.
               dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-scraper
-  - name: "MySQLDown: MySQL up"
-    interval: 1m
-    input_series:
-      - series: mysql_up{project="kreditozrouti", service="mysqld-exporter", env="production", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 1x20
-    alert_rule_test:
-      - eval_time: 15m
-        alertname: MySQLDown
-        exp_alerts: []
-  - name: "MySQLDown: MySQL down"
-    interval: 1m
-    input_series:
-      - series: mysql_up{project="kreditozrouti", service="mysqld-exporter", env="production", instance="kreditozrouti-mysqld-exporter-1"}
-        values: "0x20"
-    alert_rule_test:
-      - eval_time: 15m
-        alertname: MySQLDown
-        exp_alerts:
-          - exp_labels:
-              project: kreditozrouti
-              service: mysqld-exporter
-              env: production
-              severity: critical
-            exp_annotations:
-              summary: Kreditozrouti MySQL is unreachable
-              description: The mysqld-exporter exporter is running but cannot reach MySQL for 5 minutes.
-              dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-data
-  - name: "MySQLConnectionsHigh: normal"
-    interval: 1m
-    input_series:
-      - series: mysql_global_status_threads_connected{project="kreditozrouti", service="mysqld-exporter", env="production", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 10x30
-      - series: mysql_global_variables_max_connections{project="kreditozrouti", service="mysqld-exporter", env="production", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 151x30
-    alert_rule_test:
-      - eval_time: 25m
-        alertname: MySQLConnectionsHigh
-        exp_alerts: []
-  - name: "MySQLConnectionsHigh: saturated"
-    interval: 1m
-    input_series:
-      - series: mysql_global_status_threads_connected{project="kreditozrouti", service="mysqld-exporter", env="production", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 140x30
-      - series: mysql_global_variables_max_connections{project="kreditozrouti", service="mysqld-exporter", env="production", instance="kreditozrouti-mysqld-exporter-1"}
-        values: 151x30
-    alert_rule_test:
-      - eval_time: 25m
-        alertname: MySQLConnectionsHigh
-        exp_alerts:
-          - exp_labels:
-              project: kreditozrouti
-              service: mysqld-exporter
-              env: production
-              instance: kreditozrouti-mysqld-exporter-1
-              severity: warning
-            exp_annotations:
-              summary: Kreditozrouti MySQL connections near the limit
-              description: More than 80% of max_connections have been in use for 15 minutes.
-              dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-data
-  - name: "RedisDown: Redis up"
-    interval: 1m
-    input_series:
-      - series: redis_up{project="kreditozrouti", service="redis-exporter", env="production", instance="kreditozrouti-redis-exporter-1"}
-        values: 1x20
-    alert_rule_test:
-      - eval_time: 15m
-        alertname: RedisDown
-        exp_alerts: []
-  - name: "RedisDown: Redis down"
-    interval: 1m
-    input_series:
-      - series: redis_up{project="kreditozrouti", service="redis-exporter", env="production", instance="kreditozrouti-redis-exporter-1"}
-        values: "0x20"
-    alert_rule_test:
-      - eval_time: 15m
-        alertname: RedisDown
-        exp_alerts:
-          - exp_labels:
-              project: kreditozrouti
-              service: redis-exporter
-              env: production
-              severity: critical
-            exp_annotations:
-              summary: Kreditozrouti Redis is unreachable
-              description: The redis-exporter exporter is running but cannot reach Redis for 5 minutes.
-              dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-data
-  - name: "RedisMemoryHigh: no maxmemory configured"
-    interval: 1m
-    input_series:
-      - series: redis_memory_used_bytes{project="kreditozrouti", service="redis-exporter", env="production", instance="kreditozrouti-redis-exporter-1"}
-        values: 100x30
-      - series: redis_memory_max_bytes{project="kreditozrouti", service="redis-exporter", env="production", instance="kreditozrouti-redis-exporter-1"}
-        values: "0x30"
-    alert_rule_test:
-      - eval_time: 25m
-        alertname: RedisMemoryHigh
-        exp_alerts: []
-  - name: "RedisMemoryHigh: near maxmemory"
-    interval: 1m
-    input_series:
-      - series: redis_memory_used_bytes{project="kreditozrouti", service="redis-exporter", env="production", instance="kreditozrouti-redis-exporter-1"}
-        values: 95x30
-      - series: redis_memory_max_bytes{project="kreditozrouti", service="redis-exporter", env="production", instance="kreditozrouti-redis-exporter-1"}
-        values: 100x30
-    alert_rule_test:
-      - eval_time: 25m
-        alertname: RedisMemoryHigh
-        exp_alerts:
-          - exp_labels:
-              project: kreditozrouti
-              service: redis-exporter
-              env: production
-              instance: kreditozrouti-redis-exporter-1
-              severity: warning
-            exp_annotations:
-              summary: Kreditozrouti Redis is close to maxmemory
-              description: Redis has used more than 90% of maxmemory for 15 minutes; BullMQ jobs start failing or evicting when it is reached.
-              dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-data
   - name: "HostDiskWillFill: stable disk"
     interval: 1m
     input_series:

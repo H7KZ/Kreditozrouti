@@ -36,13 +36,6 @@ inhibit_rules:
       - service
       - env
   - source_matchers:
-      - alertname=~"MySQLDown|RedisDown"
-    target_matchers:
-      - alertname=~"EdgeErrorBudgetBurn.*|WorkerJobsFailing|QueueBacklog"
-    equal:
-      - project
-      - env
-  - source_matchers:
       - alertname="EdgeErrorBudgetBurnFast"
     target_matchers:
       - alertname="EdgeErrorBudgetBurnSlow"

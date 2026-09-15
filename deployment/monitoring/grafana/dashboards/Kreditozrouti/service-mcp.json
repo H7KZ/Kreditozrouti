@@ -94,6 +94,80 @@
       }
     },
     {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Origin probe",
+      "description": "GET /mcp/health through Traefik with the public Host header.",
+      "targets": [
+        {
+          "expr": "min(probe_success{project=\"kreditozrouti\", service=\"mcp\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "probe",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "red"
+              },
+              {
+                "value": 1,
+                "color": "green"
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
       "type": "row",
       "collapsed": false,
       "id": 0,
@@ -101,7 +175,7 @@
       "title": "Requests (Traefik)",
       "gridPos": {
         "x": 0,
-        "y": 1,
+        "y": 5,
         "h": 1,
         "w": 24
       }
@@ -144,7 +218,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 2
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -201,7 +275,7 @@
         "h": 4,
         "w": 4,
         "x": 4,
-        "y": 2
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -285,9 +359,9 @@
       ],
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 8,
         "x": 8,
-        "y": 2
+        "y": 6
       }
     },
     {
@@ -353,9 +427,9 @@
       ],
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 20,
-        "y": 2
+        "w": 8,
+        "x": 16,
+        "y": 6
       }
     },
     {
@@ -366,7 +440,7 @@
       "title": "Saturation",
       "gridPos": {
         "x": 0,
-        "y": 10,
+        "y": 14,
         "h": 1,
         "w": 24
       }
@@ -426,7 +500,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 11
+        "y": 15
       }
     },
     {
@@ -485,7 +559,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 11
+        "y": 15
       }
     },
     {
@@ -554,7 +628,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 11
+        "y": 15
       }
     },
     {
@@ -565,7 +639,7 @@
       "title": "Logs",
       "gridPos": {
         "x": 0,
-        "y": 19,
+        "y": 23,
         "h": 1,
         "w": 24
       }
@@ -629,7 +703,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 24
       }
     },
     {
@@ -666,7 +740,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 30
       }
     }
   ]

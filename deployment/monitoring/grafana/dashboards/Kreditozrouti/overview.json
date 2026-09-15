@@ -128,7 +128,7 @@
       ],
       "gridPos": {
         "h": 3,
-        "w": 3,
+        "w": 12,
         "x": 0,
         "y": 1
       },
@@ -202,156 +202,8 @@
       ],
       "gridPos": {
         "h": 3,
-        "w": 3,
-        "x": 3,
-        "y": 1
-      },
-      "fieldConfig": {
-        "defaults": {
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "value": null,
-                "color": "red"
-              },
-              {
-                "value": 1,
-                "color": "green"
-              }
-            ]
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "DOWN",
-                  "color": "red"
-                },
-                "1": {
-                  "text": "UP",
-                  "color": "green"
-                }
-              }
-            }
-          ]
-        },
-        "overrides": []
-      }
-    },
-    {
-      "type": "stat",
-      "transparent": false,
-      "repeatDirection": "h",
-      "options": {
-        "graphMode": "none",
-        "colorMode": "background",
-        "justifyMode": "auto",
-        "textMode": "auto",
-        "wideLayout": true,
-        "showPercentChange": false,
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "values": false
-        },
-        "percentChangeColorMode": "standard",
-        "orientation": "auto"
-      },
-      "title": "mysqld-exporter",
-      "description": "min(up) of mysqld-exporter in $env.",
-      "targets": [
-        {
-          "expr": "min(up{project=\"kreditozrouti\", service=\"mysqld-exporter\", env=\"$env\"}) or vector(0)",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
-          "legendFormat": "mysqld-exporter",
-          "instant": true,
-          "range": false
-        }
-      ],
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 6,
-        "y": 1
-      },
-      "fieldConfig": {
-        "defaults": {
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "value": null,
-                "color": "red"
-              },
-              {
-                "value": 1,
-                "color": "green"
-              }
-            ]
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "DOWN",
-                  "color": "red"
-                },
-                "1": {
-                  "text": "UP",
-                  "color": "green"
-                }
-              }
-            }
-          ]
-        },
-        "overrides": []
-      }
-    },
-    {
-      "type": "stat",
-      "transparent": false,
-      "repeatDirection": "h",
-      "options": {
-        "graphMode": "none",
-        "colorMode": "background",
-        "justifyMode": "auto",
-        "textMode": "auto",
-        "wideLayout": true,
-        "showPercentChange": false,
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "values": false
-        },
-        "percentChangeColorMode": "standard",
-        "orientation": "auto"
-      },
-      "title": "redis-exporter",
-      "description": "min(up) of redis-exporter in $env.",
-      "targets": [
-        {
-          "expr": "min(up{project=\"kreditozrouti\", service=\"redis-exporter\", env=\"$env\"}) or vector(0)",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
-          "legendFormat": "redis-exporter",
-          "instant": true,
-          "range": false
-        }
-      ],
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 9,
+        "w": 12,
+        "x": 12,
         "y": 1
       },
       "fieldConfig": {

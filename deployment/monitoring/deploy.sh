@@ -83,7 +83,7 @@ main() {
     # so a missing one is reported, not fatal.
     sleep 60
     local missing=()
-    for service in api scraper mysqld-exporter redis-exporter; do
+    for service in api scraper; do
         if ! docker exec "$STACK_NAME-prometheus-1" wget -qO- "http://localhost:9090/api/v1/query?query=up%7Bproject%3D%22kreditozrouti%22%2Cservice%3D%22$service%22%7D" | grep -q '"value"'; then
             missing+=("$service")
         fi

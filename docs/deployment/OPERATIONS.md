@@ -12,7 +12,7 @@ Monitoring, security, maintenance, and troubleshooting for running environments.
 
 The monitoring stack (`../../deployment/monitoring`, project `kreditozrouti-monitoring`) is deployed by
 `deploy-monitoring.yml` (manual dispatch). Alloy is the only collector: it scrapes every container labelled
-`prometheus.io/scrape=true` (api, each scraper replica, mysqld-exporter, redis-exporter), Traefik, the host and cAdvisor,
+`prometheus.io/scrape=true` (api, each scraper replica), Traefik, the host and cAdvisor,
 probes the public routes through Traefik, tails container logs and the Traefik access log, and receives Faro.
 Prometheus stores metrics and evaluates the rules, Alertmanager sends to Discord, Loki stores logs, Grafana
 (`/grafana`) shows the dashboards. Full reference: [MONITORING.md](MONITORING.md).

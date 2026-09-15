@@ -253,10 +253,11 @@ prometheus.relabel "containers" {
 }
 
 // ---------------------------------------------------------------------------
-// Origin probes: each routed service through Traefik (Host + SNI of its public domain).
+// Probes: each routed service through Traefik (Host + SNI of its public domain), including
+// Umami (publicly routed at umami.kreditozrouti.cz).
 // ---------------------------------------------------------------------------
-prometheus.exporter.blackbox "origin" {
-  config = "{\"modules\":{\"api_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"api_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}},\"client_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"client_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}}}}"
+prometheus.exporter.blackbox "probes" {
+  config = "{\"modules\":{\"api_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"api_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}},\"client_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"client_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}},\"mcp_production\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"kreditozrouti.cz\"}}},\"mcp_development\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"dev.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"dev.kreditozrouti.cz\"}}},\"umami\":{\"prober\":\"http\",\"timeout\":\"10s\",\"http\":{\"method\":\"GET\",\"valid_status_codes\":[200],\"follow_redirects\":false,\"preferred_ip_protocol\":\"ip4\",\"headers\":{\"Host\":\"umami.kreditozrouti.cz\",\"User-Agent\":\"kreditozrouti-monitoring-probe\"},\"tls_config\":{\"server_name\":\"umami.kreditozrouti.cz\"}}}}}"
   target {
     name    = "api_production"
     address = "https://traefik/api/health"
@@ -281,10 +282,28 @@ prometheus.exporter.blackbox "origin" {
     module  = "client_development"
     labels  = {"service" = "client", "env" = "development", "domain" = "dev.kreditozrouti.cz"}
   }
+  target {
+    name    = "mcp_production"
+    address = "https://traefik/mcp/health"
+    module  = "mcp_production"
+    labels  = {"service" = "mcp", "env" = "production", "domain" = "kreditozrouti.cz"}
+  }
+  target {
+    name    = "mcp_development"
+    address = "https://traefik/mcp/health"
+    module  = "mcp_development"
+    labels  = {"service" = "mcp", "env" = "development", "domain" = "dev.kreditozrouti.cz"}
+  }
+  target {
+    name    = "umami"
+    address = "https://traefik/"
+    module  = "umami"
+    labels  = {"service" = "umami", "env" = "ops", "domain" = "umami.kreditozrouti.cz"}
+  }
 }
 
 prometheus.scrape "probes" {
-  targets         = prometheus.exporter.blackbox.origin.targets
+  targets         = prometheus.exporter.blackbox.probes.targets
   scrape_interval = "30s"
   scrape_timeout  = "15s"
   forward_to      = [prometheus.relabel.probes.receiver]

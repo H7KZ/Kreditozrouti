@@ -49,6 +49,9 @@ mcp/src/
   `127.0.0.1` (any port) outside production. Enforced at both `/register` and `/authorize`; anything else (e.g.
   `https://evil.example`) is rejected. Prevents the flow being used as an open-redirect/phishing primitive.
 - **stdio transport bypasses OAuth**: `--stdio` mode never touches OAuth routes
+- **`GET /mcp/health`** is a second, unauthenticated health check alongside `/health` - it exists only because Traefik
+  routes `PathPrefix(/mcp)` to this service but not `/health`, so the monitoring stack's blackbox probe (which goes
+  through Traefik, not the container directly) needs a path under that prefix
 
 ## MCP Primitives
 

@@ -10,7 +10,7 @@ template), written for this repository: there is no shared package or generator.
 ## Pipeline Overview
 
 ```
- app containers (api, scraper x2, mysqld-exporter, redis-exporter)      browser (Vue client)
+ app containers (api, scraper x2)                                       browser (Vue client)
  prometheus.io/scrape=true + prometheus.io/port=<n>                     Faro -> /faro/collect
  pino JSON on stdout                                                    Umami -> /stats
             |                                                                  |
@@ -62,7 +62,7 @@ other container on the VPS before any pipeline. Target labels come from compose 
 | ---------- | ------------------------------------------------------------------------------ |
 | `project`  | `kreditozrouti`                                                                |
 | `env`      | `production`, `development` (the `-dev` compose project) or `ops` (monitoring) |
-| `service`  | compose service name (`api`, `scraper`, `mysqld-exporter`, ...)                |
+| `service`  | compose service name (`api`, `scraper`, ...)                                   |
 | `instance` | container name (`kreditozrouti-scraper-2`)                                     |
 | `job`      | `kreditozrouti/<service>`                                                      |
 
@@ -210,7 +210,6 @@ Prometheus histograms (`faro_web_vitals_*`) by Alloy.
 | `scraper_silent_failures_total`                        | Counter   | `job_type`                       | scraper; jobs that caught an InSIS error and returned null |
 | Node.js defaults                                       | various   |                                  | `collectDefaultMetrics`                                    |
 | `traefik_router_*`, `node_*`, `container_*`, `probe_*` | various   |                                  | Alloy (Traefik, host, cAdvisor, blackbox)                  |
-| `mysql_*`, `redis_*`                                   | various   |                                  | `mysqld-exporter`, `redis-exporter` containers             |
 
 Nothing is mirrored through Redis any more: counters live in the process that does the work, so a restart resets
 them and the rules use `increase()`. `/metrics` answers 404 to any request carrying a proxy header (`x-forwarded-for`,
@@ -218,6 +217,8 @@ them and the rules use `increase()`. `/metrics` answers 404 to any request carry
 serves its own endpoint on port 9101; keep one worker process per container (cluster mode would make forks share it).
 
 The client (nginx) and mcp expose no `/metrics`; their traffic, errors and latency come from Traefik router metrics.
+mcp additionally gets a direct reachability check: `GET /mcp/health` (added purely for the blackbox probe, since
+Traefik only routes `PathPrefix(/mcp)` to it) is probed the same way as api's `/api/health` and client's `/`.
 
 ---
 
@@ -230,11 +231,13 @@ Rules: `../../deployment/monitoring/prometheus/rules/{alerts,recording}.yml` and
   `deployment/monitoring/validate.sh` (promtool, amtool, `loki -verify-config`, `alloy validate`, with the deployed
   images). CI runs it in `_verify.yml`. Annotations may template only `{{ $labels.x }}`, because promtool compares them
   exactly.
-- **Catalogue:** `ServiceDown` (uses `absent()`, a stopped container's series vanish), `OriginProbeFailing`,
+- **Catalogue:** `ServiceDown` (uses `absent()`, a stopped container's series vanish; api and scraper only - mcp,
+  client and umami have no `/metrics` to scrape), `OriginProbeFailing` (api, client, mcp, umami - blackbox probe
+  through Traefik; umami is `severity: warning` since it's analytics-only, not user-facing),
   `EdgeErrorBudgetBurnFast/Slow`, `ApiSlowRequests` (over 1 s), `WorkerJobsFailing`, `QueueBacklog`,
-  `ScheduledJobStale` (Gap Sweep every 4 h, Academic Schedules daily), `MySQLDown`, `MySQLConnectionsHigh`,
-  `RedisDown`, `RedisMemoryHigh`, host disk/memory/swap, `ContainerOOMKilled`, `ContainerRestartLoop`, monitoring
-  self-checks, `LogErrorBurst`, `FrontendErrorSpike`, `Watchdog`.
+  `ScheduledJobStale` (Gap Sweep every 4 h, Academic Schedules daily), host disk/memory/swap,
+  `ContainerOOMKilled`, `ContainerRestartLoop`, monitoring self-checks, `LogErrorBurst`, `FrontendErrorSpike`,
+  `Watchdog`.
 - **Dead-man's switch:** `Watchdog` always fires; Alertmanager pings healthchecks.io with it every minute, and
   healthchecks.io e-mails if the pings stop. `AlertDeliveryFailing` inhibits Watchdog, so a broken Discord webhook
   also ends up as an e-mail.
@@ -252,8 +255,10 @@ reads webhook URLs from files that `deploy.sh` writes to `.secrets/`.
 ## Dashboards
 
 Provisioned from `../../deployment/monitoring/grafana/dashboards/Kreditozrouti/` (one folder):
-`overview`, `service-api`, `service-scraper`, `service-client`, `service-mcp`, `data` (MySQL/Redis/queues), `host`,
-`frontend` (Faro + Umami), `monitoring` (the stack itself). Every panel filters on `project` and `$env`.
+`overview`, `service-api`, `service-scraper`, `service-client`, `service-mcp`, `host`, `frontend` (Faro + Umami),
+`monitoring` (the stack itself). Every panel filters on `project` and `$env`. Each `service-*` queue view (BullMQ job
+counts, throughput, failure ratio) lives on its owning service's own dashboard rather than a separate cross-service
+one.
 
 ---
 

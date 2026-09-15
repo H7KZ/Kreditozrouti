@@ -9,7 +9,6 @@
 #   - mysql: Database server
 #   - redis: Cache and queue server
 #   - phpmyadmin: Database management UI
-#   - mysqld-exporter, redis-exporter: MySQL and Redis metrics for the monitoring stack
 #
 # Required Environment Variables:
 #   - IMAGE_REGISTRY, IMAGE_PREFIX: Container image registry config
@@ -480,77 +479,3 @@ services:
         reservations:
           cpus: '0.1'
           memory: 128M
-
-  # ============================================================================
-  # MySQL Exporter
-  # The only source of MySQL-level metrics (MySQLDown, connections). mysqld_exporter
-  # 0.15+ ignores DATA_SOURCE_NAME: address and user are flags, the password comes
-  # from MYSQLD_EXPORTER_PASSWORD. Reads with the root credential the healthcheck uses.
-  # ============================================================================
-  mysqld-exporter:
-    image: prom/mysqld-exporter:v0.17.2
-    restart: unless-stopped
-
-    command: [ '--mysqld.address=mysql:3306', '--mysqld.username=root' ]
-    environment:
-      - MYSQLD_EXPORTER_PASSWORD=${MYSQL_ROOT_PASSWORD}
-
-    depends_on:
-      mysql:
-        condition: service_healthy
-
-    networks:
-      - kreditozrouti-mysql-network-prod
-      - kreditozrouti-monitoring-network
-
-    labels:
-      - 'prometheus.io/scrape=true'
-      - 'prometheus.io/port=9104'
-
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '5m'
-        max-file: '2'
-
-    deploy:
-      resources:
-        limits:
-          cpus: '0.1'
-          memory: 48M
-
-  # ============================================================================
-  # Redis Exporter
-  # The only source of Redis-level metrics (RedisDown, memory against maxmemory).
-  # ============================================================================
-  redis-exporter:
-    image: oliver006/redis_exporter:v1.68.0
-    restart: unless-stopped
-
-    environment:
-      - REDIS_ADDR=redis://redis:6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-
-    depends_on:
-      redis:
-        condition: service_healthy
-
-    networks:
-      - kreditozrouti-redis-network-prod
-      - kreditozrouti-monitoring-network
-
-    labels:
-      - 'prometheus.io/scrape=true'
-      - 'prometheus.io/port=9121'
-
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '5m'
-        max-file: '2'
-
-    deploy:
-      resources:
-        limits:
-          cpus: '0.1'
-          memory: 48M

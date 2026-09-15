@@ -88,4 +88,10 @@ app.get('/health', (_req, res) => {
 	res.json({ status: 'ok' })
 })
 
+// Traefik only routes PathPrefix(/mcp) to this service, so the monitoring blackbox probe
+// needs a health check under that prefix rather than the container-internal /health above.
+app.get('/mcp/health', (_req, res) => {
+	res.json({ status: 'ok' })
+})
+
 export { app }

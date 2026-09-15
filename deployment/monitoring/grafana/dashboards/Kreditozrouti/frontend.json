@@ -476,8 +476,8 @@
       "gridPos": {
         "h": 8,
         "w": 24,
-        "x": 20,
-        "y": 1
+        "x": 0,
+        "y": 5
       }
     },
     {
@@ -488,7 +488,7 @@
       "title": "Browser errors",
       "gridPos": {
         "x": 0,
-        "y": 9,
+        "y": 13,
         "h": 1,
         "w": 24
       }
@@ -549,7 +549,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 10
+        "y": 14
       }
     },
     {
@@ -608,7 +608,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 10
+        "y": 14
       }
     },
     {
@@ -645,7 +645,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 22
       }
     },
     {
@@ -656,9 +656,83 @@
       "title": "Product analytics (Umami, kreditozrouti.cz)",
       "gridPos": {
         "x": 0,
-        "y": 28,
+        "y": 32,
         "h": 1,
         "w": 24
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Umami",
+      "description": "GET https://umami.kreditozrouti.cz/ through Traefik with the public Host header.",
+      "targets": [
+        {
+          "expr": "min(probe_success{project=\"kreditozrouti\", service=\"umami\", env=\"ops\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "probe",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 33
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "red"
+              },
+              {
+                "value": 1,
+                "color": "green"
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
       }
     },
     {
@@ -717,7 +791,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 29
+        "y": 37
       }
     },
     {
@@ -762,7 +836,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 37
+        "y": 45
       }
     },
     {
@@ -807,7 +881,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 37
+        "y": 45
       }
     }
   ]
