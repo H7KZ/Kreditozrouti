@@ -139,7 +139,7 @@ services:
       - traefik.http.routers.kreditozrouti-faro-production.priority=210
       - traefik.http.routers.kreditozrouti-faro-production.entrypoints=websecure
       - traefik.http.routers.kreditozrouti-faro-production.tls=true
-      - traefik.http.routers.kreditozrouti-faro-production.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.kreditozrouti-faro-production.tls.certresolver=letsencrypt
       - traefik.http.routers.kreditozrouti-faro-production.service=kreditozrouti-faro-production
       - traefik.http.services.kreditozrouti-faro-production.loadbalancer.server.port=12347
       - traefik.http.middlewares.kreditozrouti-faro-production-strip.stripprefix.prefixes=/faro
@@ -148,7 +148,7 @@ services:
       - traefik.http.routers.kreditozrouti-faro-development.priority=210
       - traefik.http.routers.kreditozrouti-faro-development.entrypoints=websecure
       - traefik.http.routers.kreditozrouti-faro-development.tls=true
-      - traefik.http.routers.kreditozrouti-faro-development.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.kreditozrouti-faro-development.tls.certresolver=letsencrypt
       - traefik.http.routers.kreditozrouti-faro-development.service=kreditozrouti-faro-development
       - traefik.http.services.kreditozrouti-faro-development.loadbalancer.server.port=12347
       - traefik.http.middlewares.kreditozrouti-faro-development-strip.stripprefix.prefixes=/faro
@@ -199,7 +199,7 @@ services:
       - traefik.http.routers.kreditozrouti-grafana.priority=200
       - traefik.http.routers.kreditozrouti-grafana.entrypoints=websecure
       - traefik.http.routers.kreditozrouti-grafana.tls=true
-      - traefik.http.routers.kreditozrouti-grafana.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.kreditozrouti-grafana.tls.certresolver=letsencrypt
       - traefik.http.routers.kreditozrouti-grafana.service=kreditozrouti-grafana
       - traefik.http.services.kreditozrouti-grafana.loadbalancer.server.port=3000
     healthcheck:
@@ -279,14 +279,14 @@ services:
       - traefik.http.routers.kreditozrouti-umami.priority=200
       - traefik.http.routers.kreditozrouti-umami.entrypoints=websecure
       - traefik.http.routers.kreditozrouti-umami.tls=true
-      - traefik.http.routers.kreditozrouti-umami.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.kreditozrouti-umami.tls.certresolver=letsencrypt
       - traefik.http.routers.kreditozrouti-umami.service=kreditozrouti-umami
       - traefik.http.services.kreditozrouti-umami.loadbalancer.server.port=3000
       - traefik.http.routers.kreditozrouti-stats-production.rule=Host(`kreditozrouti.cz`) && PathPrefix(`/stats`)
       - traefik.http.routers.kreditozrouti-stats-production.priority=210
       - traefik.http.routers.kreditozrouti-stats-production.entrypoints=websecure
       - traefik.http.routers.kreditozrouti-stats-production.tls=true
-      - traefik.http.routers.kreditozrouti-stats-production.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.kreditozrouti-stats-production.tls.certresolver=letsencrypt
       - traefik.http.routers.kreditozrouti-stats-production.service=kreditozrouti-stats-production
       - traefik.http.services.kreditozrouti-stats-production.loadbalancer.server.port=3000
       - traefik.http.middlewares.kreditozrouti-stats-production-strip.stripprefix.prefixes=/stats
@@ -295,7 +295,7 @@ services:
       - traefik.http.routers.kreditozrouti-stats-development.priority=210
       - traefik.http.routers.kreditozrouti-stats-development.entrypoints=websecure
       - traefik.http.routers.kreditozrouti-stats-development.tls=true
-      - traefik.http.routers.kreditozrouti-stats-development.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.kreditozrouti-stats-development.tls.certresolver=letsencrypt
       - traefik.http.routers.kreditozrouti-stats-development.service=kreditozrouti-stats-development
       - traefik.http.services.kreditozrouti-stats-development.loadbalancer.server.port=3000
       - traefik.http.middlewares.kreditozrouti-stats-development-strip.stripprefix.prefixes=/stats

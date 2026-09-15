@@ -56,7 +56,7 @@ directories under `$HOME/kreditozrouti/versions/<environment>/` older than 7 day
 
 **Deploy order on a fresh server:** shared Infrastructure Traefik → monitoring stack (optional) → GitHub Runner
 (optional) → app stack. Every environment's services attach to the external `public-network` that Traefik publishes
-on, and request certs via the `letsencrypt-dns` (DNS-01) resolver - HTTP-01 fails because the domain is
+on, and request certs via the `letsencrypt` (DNS-01) resolver - HTTP-01 fails because the domain is
 Cloudflare-proxied. Traefik is not deployed by Kreditožrouti: Infrastructure's Traefik owns `public-network` on the
 shared VPS and creates it; each `deploy.sh` also creates it if this stack deploys first. This repo no longer ships a
 Traefik stack (the former `deployment/traefik/` was removed — Infrastructure owns the single Traefik); services connect

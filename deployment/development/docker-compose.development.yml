@@ -77,7 +77,7 @@ services:
       - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)'
       - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.entrypoints=websecure'
       - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.tls=true'
-      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.tls.certresolver=letsencrypt-dns'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.tls.certresolver=letsencrypt'
       - 'traefik.http.services.kreditozrouti-api-${PROJECT}.loadbalancer.server.port=80'
       # Middlewares
       - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.middlewares=kreditozrouti-api-${PROJECT}-stripprefix,kreditozrouti-api-${PROJECT}-redirect-www'
@@ -203,7 +203,7 @@ services:
       - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.rule=Host(`${DOMAIN}`)'
       - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.entrypoints=websecure'
       - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.tls=true'
-      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.tls.certresolver=letsencrypt-dns'
+      - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.tls.certresolver=letsencrypt'
       - 'traefik.http.services.kreditozrouti-client-${PROJECT}.loadbalancer.server.port=80'
       # Middlewares
       - 'traefik.http.routers.kreditozrouti-client-${PROJECT}.middlewares=kreditozrouti-client-${PROJECT}-redirect-www'
@@ -281,14 +281,14 @@ services:
       - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/mcp`)'
       - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.entrypoints=websecure'
       - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.tls=true'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.tls.certresolver=letsencrypt-dns'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.tls.certresolver=letsencrypt'
       - 'traefik.http.services.kreditozrouti-mcp-${PROJECT}.loadbalancer.server.port=3000'
       # OAuth well-known discovery endpoints (must be served from root domain)
       - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.priority=60'
       - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/oauth`)'
       - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.entrypoints=websecure'
       - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.tls=true'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.tls.certresolver=letsencrypt-dns'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.tls.certresolver=letsencrypt'
       - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.service=kreditozrouti-mcp-${PROJECT}'
 
     healthcheck:
