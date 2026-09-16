@@ -447,18 +447,18 @@ tests:
     interval: 1m
     input_series:
       - series: bullmq_job_count{project="kreditozrouti", service="scraper", env="production", queue="ScraperRequestQueue", state="waiting", instance="kreditozrouti-scraper-1"}
-        values: 100x5 0x30
+        values: 100x40 0x30
     alert_rule_test:
-      - eval_time: 30m
+      - eval_time: 45m
         alertname: QueueBacklog
         exp_alerts: []
   - name: "QueueBacklog: sustained backlog"
     interval: 1m
     input_series:
       - series: bullmq_job_count{project="kreditozrouti", service="scraper", env="production", queue="ScraperRequestQueue", state="waiting", instance="kreditozrouti-scraper-1"}
-        values: 100x40
+        values: 100x75
     alert_rule_test:
-      - eval_time: 30m
+      - eval_time: 65m
         alertname: QueueBacklog
         exp_alerts:
           - exp_labels:
@@ -469,7 +469,7 @@ tests:
               severity: warning
             exp_annotations:
               summary: Kreditozrouti ScraperRequestQueue queue is backing up
-              description: More than 50 jobs have been waiting in ScraperRequestQueue for 15 minutes.
+              description: More than 50 jobs have been waiting in ScraperRequestQueue for 50 minutes.
               dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-scraper
   - name: "ScheduledJobStale: InSIS Academic Schedules Request (daily at 1 AM) running on time"
     interval: 1m

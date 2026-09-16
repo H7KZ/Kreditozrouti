@@ -125,13 +125,13 @@ groups:
           dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-scraper
       - alert: QueueBacklog
         expr: max by (project, env, queue) (bullmq_job_count{project="kreditozrouti", env="production", queue="ScraperRequestQueue", state="waiting"}) > 50
-        for: 15m
+        for: 50m
         labels:
           severity: warning
           service: scraper
         annotations:
           summary: Kreditozrouti ScraperRequestQueue queue is backing up
-          description: More than 50 jobs have been waiting in ScraperRequestQueue for 15 minutes.
+          description: More than 50 jobs have been waiting in ScraperRequestQueue for 50 minutes.
           dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-scraper
       - alert: ScheduledJobStale
         expr: (time() - max by (project, env, job_name) (worker_last_success_timestamp_seconds{project="kreditozrouti", env="production", job_name="InSIS Academic Schedules Request (daily at 1 AM)"}) > 172800) or (absent_over_time(worker_last_success_timestamp_seconds{project="kreditozrouti", env="production", job_name="InSIS Academic Schedules Request (daily at 1 AM)"}[172800s]))
