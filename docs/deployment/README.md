@@ -1,4 +1,4 @@
-# Deployment — Overview
+# Deployment - Overview
 
 Kreditožrouti uses a containerised deployment architecture: Docker Compose for orchestration, Traefik as the reverse
 proxy, GitHub Actions for CI/CD, and GitHub Container Registry (GHCR) for image storage.
@@ -54,7 +54,7 @@ old `PMA_ARBITRARY=1` additionally let any visitor point it at any host. See
 Names shown are the `-prod` forms; `-dev` equivalents exist for development.
 
 ```
-public-network (external — Infra Traefik + this repo's web-facing services)
+public-network (external - Infra Traefik + this repo's web-facing services)
   ├── api, web, mcp
 
 kreditozrouti-mysql-network-prod (internal)
@@ -75,7 +75,7 @@ MySQL and Redis are never directly reachable from outside the host.
 
 | Environment | Purpose           | Branch    | Domain            |
 |-------------|-------------------|-----------|-------------------|
-| Local       | Developer machine | —         | `localhost`       |
+| Local       | Developer machine | -         | `localhost`       |
 | Development | VPS staging       | `develop` | `dev.example.com` |
 | Production  | VPS live          | `main`    | `example.com`     |
 
@@ -85,7 +85,7 @@ MySQL and Redis are never directly reachable from outside the host.
 
 ```
 1. Provision VPS (Ubuntu 22.04+)
-2. Install Docker               → scripts/install-docker.sh (or Docker-ready image)
+2. Install Docker               → Infrastructure repo's install-docker.sh (or Docker-ready image)
 3. Set GitHub Secrets           → SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, SSH_PORT + env secrets
 4. Set up GitHub runner         → bash deployment/github-runner/deploy.sh (manual)
 5. Deploy shared Traefik        → from the Infrastructure repo (owns Traefik + public-network)
@@ -98,9 +98,10 @@ MySQL and Redis are never directly reachable from outside the host.
 
 ## Further Reading
 
-- [Docker images](DOCKER.md) — multi-stage builds, runtime env injection, GHCR registry
-- [CI/CD pipeline](CICD.md) — GitHub Actions workflows, secrets, version directories, rollback
-- [Infrastructure](INFRASTRUCTURE.md) — Traefik, networking, volumes, env vars
-- [Operations](OPERATIONS.md) — monitoring, logging, security, maintenance, troubleshooting
-- [Monitoring](MONITORING.md) — full observability stack: pipeline diagram, Loki labels, Prometheus metrics, Grafana
+- [Docker images](DOCKER.md) - multi-stage builds, runtime env injection, GHCR registry
+- [CI/CD pipeline](CICD.md) - GitHub Actions workflows, secrets, version directories, rollback
+- [Infrastructure](INFRASTRUCTURE.md) - Traefik, networking, volumes, env vars
+- [Operations](OPERATIONS.md) - monitoring, logging, security, maintenance, troubleshooting
+- [Monitoring](MONITORING.md) - full observability stack: pipeline diagram, Loki labels, Prometheus metrics, Grafana
   dashboards, trace correlation, troubleshooting
+- [DNS and HTTPS setup](../setup/DNS.md) - public hostnames, shared Traefik ownership, verification
