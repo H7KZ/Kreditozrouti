@@ -46,8 +46,9 @@ mcp/src/
   well-known discovery). The well-known routes (`/.well-known/oauth-*`) are served by this process but routed via a
   separate Traefik rule (`kreditozrouti-mcp-${PROJECT}-wellknown`).
 - **redirect_uri allowlist**: `OAuth/RedirectUri.ts` gates which `redirect_uri` values may receive an auth code - https
-  to hosts in `MCP_ALLOWED_REDIRECT_HOSTS` (default `claude.ai,claude.com`, subdomains included), plus http `localhost`/
-  `127.0.0.1` (any port) outside production. Enforced at both `/register` and `/authorize`; anything else (e.g.
+  to hosts in `MCP_ALLOWED_REDIRECT_HOSTS` (default `claude.ai,claude.com`, subdomains included), plus HTTP loopback
+  callbacks (`localhost`, `127.0.0.1`, `[::1]`, any port) in all environments for installed clients such as Codex.
+  Enforced at both `/register` and `/authorize`; anything else (e.g.
   `https://evil.example`) is rejected. Prevents the flow being used as an open-redirect/phishing primitive.
 - **stdio transport bypasses OAuth**: `--stdio` mode never touches OAuth routes
 - **`GET /mcp/health`** is a second, unauthenticated health check alongside `/health` - it exists only because Traefik

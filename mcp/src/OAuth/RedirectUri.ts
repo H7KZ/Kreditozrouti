@@ -4,7 +4,7 @@
 export interface RedirectUriPolicy {
 	// Hosts permitted over https. A host matches exactly or as a subdomain (e.g. app.claude.ai).
 	allowedHosts: string[]
-	// When true, http://localhost and http://127.0.0.1 (any port) are permitted for local dev clients.
+	// When true, HTTP loopback callbacks (any port) are permitted for installed OAuth clients.
 	allowLocalhost: boolean
 }
 

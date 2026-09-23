@@ -8,11 +8,11 @@ import { isAllowedRedirectUri } from '@mcp/OAuth/RedirectUri'
 
 const router: RouterType = Router()
 
-// Only https callbacks to allowlisted hosts (plus http localhost outside production) may
+// Only https callbacks to allowlisted hosts or http loopback callbacks may
 // receive an authorization code - stops the flow being used as an open-redirect primitive.
 const redirectUriPolicy: RedirectUriPolicy = {
 	allowedHosts: Config.allowedRedirectHosts,
-	allowLocalhost: Config.nodeEnv !== 'production'
+	allowLocalhost: true
 }
 
 // RFC 9728 — protected resource metadata
