@@ -1,80 +1,11 @@
 # Contributing
 
-## Workflow
+1. Create a branch from `develop` and follow [local setup](SETUP.md).
+2. Make the change within the package boundaries in [monorepo architecture](../architecture/MONOREPO.md).
+3. Run the relevant lint, type, and build checks. Apply `make format` where needed.
+4. Update the affected docs and package `AGENTS.md` when their descriptions change.
+5. Commit with a conventional prefix such as `feat:`, `fix:`, `docs:`, `refactor:`, or `chore:`. Open a PR against `develop`.
 
-1. **Fork** the repository on GitHub
-2. **Create a feature branch** from `develop`:
-    ```bash
-    git checkout -b feat/your-feature-name
-    ```
-3. **Set up** your dev environment: [SETUP.md](SETUP.md)
-4. **Make your changes** — follow the conventions below
-5. **Lint and format:**
-    ```bash
-    make lint
-    make format
-    ```
-6. **Commit** using conventional commits (see below)
-7. **Open a PR** against `develop` — not `main`
+Use TypeScript strict types, Vue 3 Composition API with `<script setup>`, and plain namespace objects for API controllers. Browser code imports shared DTOs from `@kreditozrouti/types` and browser-safe logic from `@kreditozrouti/core`. Package `AGENTS.md` files give local invariants and source layout.
 
----
-
-## Commit Conventions
-
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-| Prefix      | When to use                              |
-|-------------|------------------------------------------|
-| `feat:`     | New feature                              |
-| `fix:`      | Bug fix                                  |
-| `docs:`     | Documentation only                       |
-| `refactor:` | Code restructuring, no behavior change   |
-| `chore:`    | Maintenance (deps, config, tooling)      |
-| `style:`    | Formatting, whitespace (no logic change) |
-
-Example: `feat: add campus conflict detection to timetable store`
-
----
-
-## Code Style
-
-- **TypeScript strict mode** — no `any`. If you need to escape the type system, use `unknown` + a type guard.
-- **Vue 3 Composition API** with `<script setup>` — no Options API.
-- **API controllers** are plain namespace objects, not classes:
-  `export const FooController = { async handleRequest(...) {} }`
-- **Zod schemas** co-located with their controller file, not in a central `Validations/` folder.
-- **Imports** in the web app: use `@shared/` for all shared types — never import from `../../api`.
-- **Store deps**: `timetable.store` must never import `courses.store` —
-  see [docs/architecture/MONOREPO.md](../architecture/MONOREPO.md) and `../../web` for the reason.
-
----
-
-## Documentation
-
-When your change affects documented behavior:
-
-- Find the relevant doc in `..` (see the table in `CLAUDE.md` or `GEMINI.md`)
-- Update it in the same PR as your code change
-- If it's new behavior with no existing doc entry, add a section or create a new file
-
----
-
-## Branch Strategy
-
-| Branch    | Purpose                                          |
-|-----------|--------------------------------------------------|
-| `main`    | Production — tagged releases only                |
-| `develop` | Integration branch — all feature PRs target this |
-| `feat/*`  | Feature development                              |
-| `fix/*`   | Bug fixes                                        |
-| `chore/*` | Maintenance                                      |
-
----
-
-## PR Checklist
-
-- [ ] `make lint` passes
-- [ ] `make format` applied
-- [ ] Docs updated for any changed behavior
-- [ ] PR targets `develop`, not `main`
-- [ ] PR description explains what changed and why
+The published student guide lives in `web/src/pages/docs/en/` and `web/src/pages/docs/cs/`. Keep both languages aligned when changing a user-facing flow. The developer [docs index](../README.md) points to technical guides.

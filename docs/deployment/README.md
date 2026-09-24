@@ -1,107 +1,22 @@
-# Deployment - Overview
+# Deployment
 
-Kreditožrouti uses a containerised deployment architecture: Docker Compose for orchestration, Traefik as the reverse
-proxy, GitHub Actions for CI/CD, and GitHub Container Registry (GHCR) for image storage.
+GitHub Actions builds four app images (API, web, scraper, MCP), pushes them to GHCR, and deploys them with Docker Compose. A separate Infrastructure repo runs shared Traefik. This repo also deploys an optional monitoring stack.
 
----
+| Environment | Compose project | Trigger |
+| --- | --- | --- |
+| Local | Local Docker and `make dev` | Developer command |
+| Development | `kreditozrouti-dev` | Manual `Deploy` dispatch |
+| Production | `kreditozrouti` | Push to `main` for changed service paths, or manual dispatch |
+| Monitoring | `kreditozrouti-monitoring` | Manual `Deploy Monitoring` dispatch |
 
-## Architecture
+On a fresh host, install Docker, deploy shared Traefik, configure the GitHub environment secrets, optionally deploy monitoring, then run the `Deploy` workflow for the app. The GitHub runner is optional if another self-hosted runner is available. Check `https://kreditozrouti.cz/api/health` after production deployment. [DNS setup](../setup/DNS.md) lists the actual public routes.
 
-```
-                        Internet (HTTPS)
-                               │
-                               ▼
-                  ┌────────────────────────┐
-                  │      Traefik v3        │
-                  │  - Automatic TLS       │
-                  │  - Let's Encrypt       │
-                  │  - Service Discovery   │
-                  └────────┬───────────────┘
-                           │
-             ┌─────────────┼─────────────┐
-             │             │             │
-             ▼             ▼             ▼
-         ┌───────┐    ┌────────┐   ┌──────────┐
-         │  Web  │    │  API   │   │   MCP    │
-         │ (×1)  │    │  (×1)  │   │   (×1)   │
-         │ Nginx │    │Express │   │  :3000   │
-         └───────┘    └───┬────┘   └────┬─────┘
-                          │             │
-              ┌───────────┤             │
-              │           │             │
-              ▼           ▼             ▼
-          ┌────────┐  ┌────────────────────┐
-          │ Redis  │  │       MySQL        │
-          │   8    │  │         9          │
-          └───┬────┘  └──────────┬─────────┘
-              │                  │
-              ▼                  ▼
-        ┌──────────┐       ┌──────────┐
-        │ Scraper  │       │phpMyAdmin│
-        │   (×2)   │       │ (`admin` │
-        └──────────┘       │ profile) │
-                           └──────────┘
-```
+Start here:
 
-phpMyAdmin does **not** sit behind Traefik. It is stopped by default (Compose profile `admin`) and published on
-`127.0.0.1:48080` in production / `127.0.0.1:48081` in development, so the only way in is an SSH tunnel. An
-internet-reachable database admin UI carrying the MySQL root credentials was the exposure being removed - and the
-old `PMA_ARBITRARY=1` additionally let any visitor point it at any host. See
-[Infrastructure → phpMyAdmin access](INFRASTRUCTURE.md#phpmyadmin-access).
+- [CI/CD](CICD.md) - triggers, secrets, deploys, rollback
+- [Infrastructure](INFRASTRUCTURE.md) - networks, volumes, configuration, phpMyAdmin
+- [Docker images](DOCKER.md) - image builds, tags, runtime web settings
+- [Operations](OPERATIONS.md) - health, maintenance, recovery
+- [Monitoring](MONITORING.md) - metrics, logs, alerts, dashboards
 
-### Network isolation
-
-Names shown are the `-prod` forms; `-dev` equivalents exist for development.
-
-```
-public-network (external - Infra Traefik + this repo's web-facing services)
-  ├── api, web, mcp
-
-kreditozrouti-mysql-network-prod (internal)
-  ├── api, mcp, mysql, phpmyadmin (loopback-published, `admin` profile)
-
-kreditozrouti-redis-network-prod (internal)
-  ├── api, scraper, redis
-
-kreditozrouti-monitoring-network (per-repo scrape)
-  ├── api, scraper, prometheus, alloy
-```
-
-MySQL and Redis are never directly reachable from outside the host.
-
----
-
-## Environments
-
-| Environment | Purpose           | Branch    | Domain            |
-|-------------|-------------------|-----------|-------------------|
-| Local       | Developer machine | -         | `localhost`       |
-| Development | VPS staging       | `develop` | `dev.example.com` |
-| Production  | VPS live          | `main`    | `example.com`     |
-
----
-
-## Quick-start (production)
-
-```
-1. Provision VPS (Ubuntu 22.04+)
-2. Install Docker               → Infrastructure repo's install-docker.sh (or Docker-ready image)
-3. Set GitHub Secrets           → SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, SSH_PORT + env secrets
-4. Set up GitHub runner         → bash deployment/github-runner/deploy.sh (manual)
-5. Deploy shared Traefik        → from the Infrastructure repo (owns Traefik + public-network)
-5b. Deploy Monitoring            → push to deployment/monitoring/** (or deploy-monitoring.yml)
-6. Push to main branch          → path-triggered CI builds + deploys each changed service
-7. Verify                       → curl https://example.com/api/health
-```
-
----
-
-## Further Reading
-
-- [Docker images](DOCKER.md) - multi-stage builds, runtime env injection, GHCR registry
-- [CI/CD pipeline](CICD.md) - GitHub Actions workflows, secrets, version directories, rollback
-- [Infrastructure](INFRASTRUCTURE.md) - Traefik, networking, volumes, env vars
-- [Operations](OPERATIONS.md) - monitoring, logging, security, maintenance, troubleshooting
-- [Monitoring](MONITORING.md) - full observability stack: pipeline diagram, Loki labels, Prometheus metrics, Grafana
-  dashboards, trace correlation, troubleshooting
-- [DNS and HTTPS setup](../setup/DNS.md) - public hostnames, shared Traefik ownership, verification
+The [PostgreSQL 18 migration](HANDOFF-umami-pg18-migration.md) is a one-time runbook. The [monitoring split proposal](MONITORING_SPLIT.md) is a draft, not an implemented topology.

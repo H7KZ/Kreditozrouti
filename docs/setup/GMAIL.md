@@ -1,26 +1,13 @@
 # Gmail SMTP setup
 
-The API uses `smtp.gmail.com:587` with required TLS. Email is enabled only when both `GOOGLE_USER` and `GOOGLE_APP_PASSWORD` are present. At startup, the API verifies the SMTP connection and logs `mailer.configured` on success. See [`Config.ts`](../../api/src/Config/Config.ts), [`mailer.ts`](../../api/src/clients/mailer.ts), and [`index.ts`](../../api/src/index.ts).
+The API uses `smtp.gmail.com:587` with TLS. Email is enabled when both `GOOGLE_USER` and `GOOGLE_APP_PASSWORD` are set. On startup, it verifies SMTP authentication and logs `mailer.configured` after success. See the [mailer](../../api/src/clients/mailer.ts) and [API startup](../../api/src/index.ts).
 
-## Prepare the Google account
+## Configure
 
-1. Choose the Google account that will send application mail and enable 2-Step Verification.
-2. Create an app password for this application. Save the generated value as `GOOGLE_APP_PASSWORD`; use the account's full email address as `GOOGLE_USER`. Do not use the normal account password.
-3. If app passwords are unavailable, check the account's organization and protection settings. Google lists work or school account policies, security-key-only 2-Step Verification, and Advanced Protection as possible reasons. Changing the Google account password revokes existing app passwords, so replace the saved value after a password change. [Google Account Help](https://support.google.com/accounts/answer/185833?hl=en)
+1. Enable 2-Step Verification for the sending Google account, then create an app password. Set `GOOGLE_USER` to the full email address and `GOOGLE_APP_PASSWORD` to that password. Do not use the normal account password. Google may disallow app passwords for managed accounts or some protection settings. Changing the account password revokes existing app passwords. [Google Account Help](https://support.google.com/accounts/answer/185833?hl=en)
+2. For local development, copy [`.env.example`](../../.env.example) to an untracked `.env` and fill both values. For deployed environments, set both as GitHub `production` or `development` environment secrets. The [deploy workflow](../../.github/workflows/_deploy-service.yml) passes them to the API.
+3. Deploy or restart the API. Check for `mailer.configured`; an authentication or connection failure prevents successful startup. Leave both values empty where email should stay disabled.
 
-## Supply credentials
+SMTP verification checks authentication and connectivity, not delivery. This repo has an email helper but no current caller, so an end-to-end delivery check needs an actual sending flow or an operator-run SMTP check. Keep credentials out of commits and logs.
 
-| Environment | Where to put the values |
-|-------------|-------------------------|
-| Local | Copy [`.env.example`](../../.env.example) to an untracked `.env` and set `GOOGLE_USER` and `GOOGLE_APP_PASSWORD`. |
-| Development and production | Set `GOOGLE_USER` and `GOOGLE_APP_PASSWORD` as secrets for each matching GitHub deployment environment. The [deploy workflow](../../.github/workflows/_deploy-service.yml) passes them into that environment's API container. |
-
-Keep the app password out of commits, screenshots, and logs. Leave both values empty where email should stay disabled.
-
-## Verify the outcome
-
-1. Start or deploy the API with both values set. Confirm it starts and logs `mailer.configured`. An SMTP authentication or connection failure prevents startup before that log entry.
-2. When an application flow sends mail, send a message to an address you control and confirm receipt, including spam filtering. SMTP verification at startup checks connectivity and authentication; it does not prove message delivery. The current API has an `EmailService.sendEmail` helper, but no in-repo caller, so a live delivery check needs an actual sending flow or an operator-run SMTP check.
-3. If setup fails, confirm the account address, app password, 2-Step Verification state, and whether the password was revoked. Replace the secret without printing its value.
-
-This setup sends through Google's SMTP service. This repo does not configure domain mail hosting or Gmail DNS records.
+This setup sends mail through Google's SMTP server. It does not configure domain mail hosting or Gmail DNS records.

@@ -6,7 +6,7 @@ order: 2
 
 # Terms of Use
 
-_Last updated: January 31, 2026_
+_Last updated: September 24, 2026_
 
 ## About this service
 
@@ -41,20 +41,13 @@ presented.
 - You are responsible for meeting all VŠE enrollment deadlines and academic requirements
 - Do not use this service for any purpose other than personal academic planning
 
-## VŠE compliance
+## University rules
 
-Kreditožrouti operates in compliance with applicable VŠE regulations:
-
-- **SR 05/2018 (Data Protection):** No student personal data is processed
-- **PR 02/2023 (IS Usage Rules):** Read-only access to publicly available InSIS data, with load-limiting mitigations. No
-  formal InSIS Řídicí výbor (Steering Committee) approval has been documented for this project - see the Compliance
-  document, section 4.3
-- **PR 04/2019 (Webhosting):** Not applicable - Kreditožrouti is independently hosted
+The app reads public InSIS pages and limits automated request load. This repository does not document approval for automated InSIS access.
 
 ## Intellectual property
 
-Course data, study plans, and related content are the property of Prague University of Economics and Business.
-Kreditožrouti displays this data for non-commercial student planning purposes only.
+Course descriptions and related content come from VŠE's public InSIS catalog. Rights in that content remain with their respective holders. Kreditožrouti displays it for non-commercial student planning.
 
 The Kreditožrouti application code is an independent student project. Unauthorised copying or redistribution of the
 application itself is not permitted without explicit permission from the authors.

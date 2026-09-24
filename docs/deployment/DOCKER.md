@@ -1,216 +1,26 @@
-# Deployment — Docker Images
+# Docker images
 
-Four services ship as images: **api**, **web**, **scraper** and **mcp**. All four use multi-stage Docker builds
-(`turbo prune` + pnpm) for lean production images. Images are stored in GitHub Container Registry (GHCR).
+The [API](../../api/Dockerfile), [web](../../web/Dockerfile), [scraper](../../scraper/Dockerfile), and [MCP](../../mcp/Dockerfile) use multi-stage builds. Each prunes its Turbo workspace, installs with the frozen pnpm lockfile, builds its package, and copies the production output into a runner image. Node stages use `node:24-alpine`, `pnpm@12.4.1`, and `turbo@2.10.13`; web serves through nginx.
 
-Every build stage starts from `node:24-alpine` and installs the build toolchain with
-`npm install -g pnpm@12.4.1 turbo@2.10.13`. Both versions are pinned rather than floating, and the root `package.json`
-pins `"turbo": "^2.10.13"` instead of `"latest"`, so a local build and an image build run the same turbo.
+| Service | Runtime | Internal port | Health |
+| --- | --- | --- | --- |
+| API | Node, non-root | 80 | `GET /health` |
+| Web | nginx | 80 | BusyBox `wget` on `127.0.0.1:80` |
+| Scraper | Node worker with Chromium | 9101 metrics | Container and scrape checks |
+| MCP | Node, non-root | 3000 | `GET /health` |
 
----
+The API runs database migrations on startup. The scraper serves `/metrics` inside the monitoring network; it has no public route.
 
-## API Image
+## Web runtime configuration
 
-**Location:** `../../api/Dockerfile` - Base: `node:24-alpine`
+Vite bundles environment values at build time. To reuse one web image across environments, [the Dockerfile](../../web/Dockerfile) embeds placeholders for `VITE_API_URL`, `VITE_FARO_COLLECTOR_URL`, `VITE_APP_VERSION`, `VITE_APP_ENV`, `VITE_UMAMI_WEBSITE_ID`, and `VITE_UMAMI_SRC`. [`docker-entrypoint.sh`](../../web/docker-entrypoint.sh) replaces them from container environment values before nginx starts.
 
-**Build stages:**
+Every placeholder variable must also appear in the root [`turbo.json`](../../turbo.json) `build.env` list. Turbo's strict environment mode otherwise removes it from the build and leaves no token to replace.
 
-```
-Stage 1 (base)       node:24-alpine + curl + pnpm@12.4.1 + turbo@2.10.13
-Stage 2 (pruner)     turbo prune @kreditozrouti/api --docker
-Stage 3 (installer)  pnpm install --frozen-lockfile (pruned lockfile only)
-Stage 4 (builder)
-  ├── pnpm turbo run build --filter=@kreditozrouti/api
-  └── pnpm --filter=@kreditozrouti/api --prod deploy /app/deploy
-Stage 5 (runner)
-  ├── node:24-alpine + curl, non-root user `api`
-  └── CMD ["node", "--require", "./dist/api/src/telemetry.js", "dist/api/src/index.js"]
-```
+## Registry and tags
 
-**Exposes:** port 80  
-**Healthcheck (compose):** `curl -f http://localhost:80/health` - `curl` is installed in the runner stage for this.  
-**Migrations** run automatically on startup via `SQLService.migrateToLatest()`.
+The build workflow pushes each service to `ghcr.io/<owner>/<repo>/<service>` with an eight-character commit SHA tag and a floating environment tag: `latest` for production or `dev-latest` for development. Deploy and rollback use explicit SHA tags through `API_IMAGE_TAG`, `WEB_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`, and `MCP_IMAGE_TAG`.
 
----
+Third-party images in Compose use versioned tags. Check the actual [production](../../deployment/production/docker-compose.production.yml), [development](../../deployment/development/docker-compose.development.yml), [monitoring](../../deployment/monitoring/docker-compose.monitoring.yml), and [runner](../../deployment/github-runner/docker-compose.github-runner.yml) files before changing a pin. In particular, MySQL and PostgreSQL image major changes require data migration; the [Umami PostgreSQL 18 runbook](HANDOFF-umami-pg18-migration.md) covers the existing monitoring volume.
 
-## Web Image
-
-**Location:** `../../web` - Base: `node:24-alpine` → `nginx:stable-alpine`
-
-**Build stages:**
-
-```
-Stage 1 (base)       node:24-alpine + pnpm@12.4.1 + turbo@2.10.13
-Stage 2 (pruner)     turbo prune @kreditozrouti/web --docker
-Stage 3 (installer)  pnpm install --frozen-lockfile
-Stage 4 (builder)
-  ├── Set placeholder env vars (six VITE_* vars, see below)
-  └── pnpm turbo run build --filter=@kreditozrouti/web
-Stage 5 (runner)
-  ├── nginx:stable-alpine
-  ├── Copy dist/ to /usr/share/nginx/html
-  ├── Copy nginx.conf → /etc/nginx/templates/default.conf.template
-  └── Copy docker-entrypoint.sh → /docker-entrypoint.d/40-inject-env.sh (replaces placeholders at startup)
-```
-
-**Healthcheck (compose):** `wget --spider -q http://localhost:80`. The runner stage is `nginx:stable-alpine`, which
-ships **no** `curl`; a `curl -f` healthcheck therefore always failed and the container was permanently reported
-unhealthy. busybox `wget` is present in the nginx alpine image, so the check uses that instead.
-
-### Runtime environment injection
-
-Because Vite bakes env vars into the bundle at build time, the web image uses a placeholder-replacement trick to stay
-environment-agnostic. The builder stage sets each `VITE_*` var to a placeholder token, and
-`../../web` rewrites the tokens in the built JS with the container's real env values before nginx
-starts:
-
-| Build-time placeholder                    | Runtime env var           |
-|-------------------------------------------|---------------------------|
-| `__VITE_API_URL_PLACEHOLDER__`            | `VITE_API_URL`            |
-| `__VITE_FARO_COLLECTOR_URL_PLACEHOLDER__` | `VITE_FARO_COLLECTOR_URL` |
-| `__VITE_APP_VERSION_PLACEHOLDER__`        | `VITE_APP_VERSION`        |
-| `__VITE_APP_ENV_PLACEHOLDER__`            | `VITE_APP_ENV`            |
-| `__VITE_UMAMI_WEBSITE_ID_PLACEHOLDER__`   | `VITE_UMAMI_WEBSITE_ID`   |
-| `__VITE_UMAMI_SRC_PLACEHOLDER__`          | `VITE_UMAMI_SRC`          |
-
-> **The trick only works while `turbo.json` declares these vars under the `build` task's `env` allowlist.** turbo 2 runs
-> tasks in strict env mode: any variable not declared there is **removed** from the task environment, not merely left
-> out of the cache key. With no allowlist, the six `VITE_*` vars set as `ENV` in `../../web` never reached
-> vite, so no placeholder tokens were baked into the bundle at all - Faro and Umami were silently disabled in
-> production, the app version reported `unknown`, and the entrypoint's `sed` found nothing to replace. `VITE_API_URL`
-> masked the breakage by falling back to `/api`. **Anyone adding a new `VITE_*` var must add it to `turbo.json` as
-> well**, or it will be stripped the same way. Declaring them also puts them in the cache key, which matters
-> independently: a bundle built with real values and one built with placeholders must not share a cache entry.
-
-**Benefit:** A single image works in both development and production without rebuilding.
-
----
-
-## Scraper Image
-
-**Location:** `../../scraper/Dockerfile` - Base: `node:24-alpine`
-
-**Build stages:**
-
-```
-Stage 1 (base)       node:24-alpine + curl + pnpm@12.4.1 + turbo
-Stage 2 (pruner)     turbo prune @kreditozrouti/scraper --docker
-Stage 3 (installer)  pnpm install --frozen-lockfile
-Stage 4 (builder)
-  ├── pnpm turbo run build --filter=@kreditozrouti/scraper
-  └── pnpm --filter=@kreditozrouti/scraper --prod deploy /app/deploy
-Stage 5 (runner)
-  ├── node:24-alpine + Alpine system Chromium, non-root user `scraper`
-  └── CMD ["node", "--require", "./dist/scraper/src/telemetry.js", "dist/scraper/src/index.js"]
-```
-
-No port is exposed - the scraper is a queue worker.
-
----
-
-## MCP Image
-
-**Location:** `../../mcp/Dockerfile` - Base: `node:24-alpine`
-
-**Build stages:**
-
-```
-Stage 1 (base)       node:24-alpine + curl + pnpm@12.4.1 + turbo@2.10.13
-Stage 2 (pruner)     turbo prune @kreditozrouti/mcp --docker
-Stage 3 (installer)  pnpm install --frozen-lockfile
-Stage 4 (builder)
-  ├── pnpm turbo run build --filter=@kreditozrouti/mcp
-  └── pnpm --filter=@kreditozrouti/mcp --prod deploy /app/deploy
-Stage 5 (runner)
-  ├── node:24-alpine + curl, non-root user `mcp`
-  └── CMD ["node", "dist/index.js"]
-```
-
-**Exposes:** port 3000 (`MCP_PORT`)  
-**Healthcheck (compose):** `curl -f http://localhost:3000/health`
-
----
-
-## Image Registry (GHCR)
-
-**Registry:** `ghcr.io`
-
-**Naming convention:**
-
-```
-ghcr.io/<owner>/<repo>/api:<tag>
-ghcr.io/<owner>/<repo>/web:<tag>
-ghcr.io/<owner>/<repo>/scraper:<tag>
-ghcr.io/<owner>/<repo>/mcp:<tag>
-```
-
-**Tag conventions:**
-
-Each build produces a **short-SHA versioned tag** plus a **floating tag**:
-
-| Environment | Versioned tag      | Floating tag | Example versioned |
-|-------------|--------------------|--------------|-------------------|
-| Production  | `${GITHUB_SHA::8}` | `latest`     | `a1b2c3d4`        |
-| Development | `${GITHUB_SHA::8}` | `dev-latest` | `a1b2c3d4`        |
-
-The versioned tag (`API_IMAGE_TAG`, `WEB_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`, `MCP_IMAGE_TAG`) is what `deploy.sh` uses.
-Each service gets its own tag variable so services can be deployed independently at different SHAs. For full-stack
-deploys via `deploy-all.yml`, all four variables are set to the same SHA.
-
-**Login:**
-
-```bash
-echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
-```
-
----
-
-## Third-Party Image Pinning
-
-Every third-party image in every Compose file is pinned. Nothing runs on `:latest`.
-
-| Image                                           | Used by                                                                                            |
-|-------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| `mysql:9`                                       | production, development, local                                                                     |
-| `redis:8-alpine`                                | production, development, local                                                                     |
-| `phpmyadmin:5.2.3-apache`                       | production, development, local                                                                     |
-| `myoung34/github-runner:2.337.0`                | `deployment/github-runner`                                                                         |
-| `prom/prometheus:v3`                            | `deployment/monitoring`, local                                                                     |
-| `grafana/grafana:13.2`                          | `deployment/monitoring`, local                                                                     |
-| `grafana/loki:3.7`                              | `deployment/monitoring`, local                                                                     |
-| `grafana/alloy:v1.19.2`                         | `deployment/monitoring`, local (no floating `v1` tag is published, so the exact version is pinned) |
-| `ghcr.io/umami-software/umami:postgresql-v2.16` | `deployment/monitoring`                                                                            |
-| `postgres:16-alpine`                            | `deployment/monitoring` (Umami DB, already pinned)                                                 |
-
-**Policy:** pin the major (or major/minor) tag, never `:latest`. Every deploy runs `docker compose pull`, so a floating
-tag can silently carry a stateful service across a major version, and for a database that is not reversible.
-
-**Why not digests:** this repo has no Renovate or Dependabot. A digest pin would have to be bumped by hand on every
-upstream patch release, so it would rot and quietly freeze images on old, unpatched builds. A major/minor tag still
-picks up patch fixes on `pull` while blocking the breaking jump.
-
-**MySQL caveat.** Oracle moved MySQL to calendar versioning, so `mysql:latest` now resolves to MySQL **26.x**. The pin
-is `mysql:9`. MySQL refuses to start against a data directory initialised by a newer major, so a silent jump takes the
-database down with no way back short of a restore. Before any deploy that changes this pin, confirm what is actually
-running on the host:
-
-```bash
-docker compose exec mysql mysql --version
-```
-
-If it reports a major above 9, raise the pin to match rather than deploying.
-
----
-
-## Building Images Locally
-
-```bash
-# Build all four images
-make build-docker-images
-
-# Test an image
-docker run -p 40080:80 --env-file .env kreditozrouti-api
-docker run -p 45173:80 -e VITE_API_URL=http://localhost:40080 kreditozrouti-web
-docker run --env-file .env kreditozrouti-scraper
-docker run -p 3000:3000 --env-file .env kreditozrouti-mcp
-```
+Build all four app images locally with `make build-docker-images` from the repository root. Use the project's local Compose stack for integrated checks; standalone `docker run` of API or scraper needs matching MySQL and Redis services.

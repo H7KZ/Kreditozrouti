@@ -6,7 +6,7 @@ order: 2
 
 # Podmínky použití
 
-_Poslední aktualizace: 31. ledna 2026_
+_Poslední aktualizace: 24. září 2026_
 
 ## O této službě
 
@@ -41,19 +41,13 @@ výslovnou ani implicitní - ohledně úplnosti, přesnosti nebo vhodnosti preze
 - Jsi zodpovědný/á za dodržování všech zápisových termínů VŠE a akademických požadavků
 - Tuto službu nepoužívej k jinému účelu než k osobnímu akademickému plánování
 
-## Soulad s předpisy VŠE
+## Předpisy univerzity
 
-Kreditožrouti funguje v souladu s platnými předpisy VŠE:
-
-- **SR 05/2018 (Ochrana údajů):** Žádné osobní údaje studentů se nezpracovávají
-- **PR 02/2023 (Pravidla IS):** Přístup pouze pro čtení k veřejně dostupným datům InSIS s opatřeními pro omezení zátěže.
-  Pro tento projekt není doloženo žádné formální schválení řídicího výboru InSIS - viz dokument Compliance, oddíl 4.3
-- **PR 04/2019 (Webhosting):** Nevztahuje se - Kreditožrouti je hostován nezávisle
+Aplikace čte veřejné stránky InSIS a omezuje zátěž automatizovaných požadavků. Repozitář nedokládá schválení automatizovaného přístupu k InSIS.
 
 ## Duševní vlastnictví
 
-Data předmětů, studijní plány a související obsah jsou majetkem Vysoké školy ekonomické v Praze. Kreditožrouti zobrazuje
-tato data výhradně pro nekomerční účely plánování studia studentů.
+Popisy předmětů a související obsah pocházejí z veřejného katalogu InSIS VŠE. Práva k obsahu zůstávají jejich příslušným držitelům. Kreditožrouti jej zobrazuje pro nekomerční plánování studia.
 
 Kód aplikace Kreditožrouti je nezávislý studentský projekt. Neoprávněné kopírování nebo šíření samotné aplikace není bez
 výslovného souhlasu autorů povoleno.

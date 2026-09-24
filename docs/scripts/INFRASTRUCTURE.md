@@ -1,93 +1,13 @@
-# Scripts — Infrastructure
+# Deployment entry points
 
-Scripts for provisioning server infrastructure: Docker, Traefik, and GitHub Actions runners.
+This repository owns the [application deploy script](../../deployment/deploy.sh), [monitoring stack](../../deployment/monitoring/), and [GitHub runner stack](../../deployment/github-runner/). The separate Infrastructure repository owns host setup and the shared Traefik proxy.
 
----
+Use the [deployment guide](../deployment/README.md) for the current workflow, required configuration, and operations. Use [DNS setup](../setup/DNS.md) for records this app needs.
 
-## Bootstrap
+| Entry point | Role |
+| --- | --- |
+| `deployment/deploy.sh` | Start the selected application services from a version directory |
+| `deployment/monitoring/deploy.sh` | Start Prometheus, Grafana, Loki, and Alloy |
+| `deployment/github-runner/deploy.sh` | Register self-hosted GitHub Actions runners |
 
-Fresh server setup is done manually in order:
-
-1. **Install Docker** — `sudo bash scripts/install-docker.sh` in the **Infrastructure** repo, then log out and back in
-2. **Set up GitHub runner** — `GITHUB_REPO_URL=... GITHUB_ACCESS_TOKEN=... bash deployment/github-runner/deploy.sh`
-3. **Deploy shared Traefik** — from the **Infrastructure** repo (it owns Traefik + `public-network`; this repo no longer
-   ships a Traefik stack)
-4. **Deploy Monitoring** — push to `deployment/monitoring/**` or trigger `deploy-monitoring.yml` via `workflow_dispatch`
-5. **Deploy app** — push to `main`/`develop` or trigger `deploy-all.yml` via `workflow_dispatch`
-
-All required GitHub Secrets must be set before steps 3–5 (see [ci/cd docs](../deployment/CICD.md)).
-
----
-
-## Configuration
-
-All scripts read configuration from environment variables only — no config file. This allows them to be driven by GitHub
-Actions secrets/variables without any file on disk.
-
----
-
-## `install-docker.sh`
-
-Moved to the **Infrastructure** repo's `scripts/` — generic Docker Engine setup, not
-Kreditozrouti-specific. See `Infrastructure/scripts/CLAUDE.md`.
-
-```bash
-sudo ./install-docker.sh [--user <username>] [--skip-test]
-```
-
----
-
-## Traefik
-
-Traefik is owned by the **Infrastructure** repo (single shared reverse proxy on the VPS). This repo
-no longer ships `deployment/traefik/deploy.sh`. See `docs/handoff-shared-vps-traefik.md`.
-
----
-
-## `../../deployment/monitoring/deploy.sh`
-
-Deploys the monitoring stack (Prometheus, Grafana, Loki, Alloy). Traefik must already be running.
-
-**Required environment variables:**
-
-| Variable                 | Description                                     |
-|--------------------------|-------------------------------------------------|
-| `DEPLOYMENT_PATH`        | Path to the deployment directory                |
-| `DOMAIN`                 | Public domain (used for Grafana + Faro routing) |
-| `GRAFANA_ADMIN_PASSWORD` | Grafana admin password                          |
-
-**Optional:** `GRAFANA_ADMIN_USER` (default: `admin`), `DISCORD_WEBHOOK_URL`
-
-Deployed under Docker Compose project `kreditozrouti-monitoring` (its own project).
-
-After deploy, services are exposed via Traefik at:
-
-- `https://domain/grafana` — Grafana dashboard
-- `https://domain/faro/collect` — Alloy Faro receiver (browser telemetry)
-
-**Operational commands:**
-
-```bash
-docker compose -p kreditozrouti-monitoring ps
-docker compose -p kreditozrouti-monitoring logs -f
-docker compose -p kreditozrouti-monitoring logs grafana -f
-```
-
----
-
-## `../../deployment/github-runner/deploy.sh`
-
-Deploys self-hosted GitHub Actions runners. Runners auto-register to the repository on container startup.
-
-**Required environment variables:**
-
-| Variable              | Description                               |
-|-----------------------|-------------------------------------------|
-| `GITHUB_REPO_URL`     | Full GitHub repository URL                |
-| `GITHUB_ACCESS_TOKEN` | GitHub personal access token (repo scope) |
-
-**Optional:** `RUNNER_REPLICAS` (default: `2`), `RUNNER_LABELS` (appended to `docker,self-hosted`)
-
-Deployed under Docker Compose project `kreditozrouti-ci`. Runners share the Docker socket — required for container
-image builds in
-CI workflows.
+The workflows in [`.github/workflows`](../../.github/workflows/) invoke these scripts. Follow their required environment variables rather than copying old VPS bootstrap commands.

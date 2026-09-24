@@ -1,127 +1,31 @@
-# API — Overview
+# API
 
-The API is an Express 5 server that serves course and study plan data to the web app, orchestrates scraping jobs via
-BullMQ, and persists scraped results to MySQL.
+The Express API serves course and study plan data, creates share and calendar links, runs timetable optimization, and coordinates scraping. The scraper sends results through BullMQ; the API writes them to MySQL.
 
-## Startup Sequence
+## How it runs
 
-The entry point (`src/index.ts`) uses Node.js cluster to manage multiple worker processes. The master process forks N
-workers (CLI arg, default 1) and automatically restarts any that die.
+`api/src/index.ts` starts the worker process. Startup connects MySQL and Redis, runs migrations and seeds, starts the BullMQ response worker, registers production schedules, then listens on `API_PORT` (default `40080`). See [jobs](JOBS.md) for the queue flow.
 
-Each worker runs `startWorker()`:
+`api/src/app.ts` mounts these route groups: `/courses`, `/study_plans`, `/optimize`, `/share`, `/ical`, `/commands`, and `/admin`. It also serves `/health` and `/metrics`. See [endpoints](ENDPOINTS.md).
 
-```
-1. Connect MySQL      → Kysely pool via MYSQL_URI
-2. Run migrations     → SQLService.migrateToLatest()
-3. Run seeds          → SQLService.seedInitialData()
-4. Connect Redis      → ioredis via REDIS_URI
-5. Verify email       → Nodemailer SMTP check (if credentials present)
-6. Init BullMQ        → bullmq.waitForQueues()
-7. Register cron jobs → bullmq.schedulers()  (production only)
-8. Start HTTP server  → Express on Config.port (default 40080)
-9. SIGTERM/SIGINT     → graceful shutdown
-```
+## Where to work
 
-## Architecture
+| Area | Location |
+| --- | --- |
+| Request validation and handlers | `api/src/Controllers/` |
+| Route wiring | `api/src/Routes/` |
+| Queries and business logic | `api/src/Services/` |
+| Scraper result processing | `api/src/Jobs/` |
+| Database schema and migrations | `api/src/Database/` |
+| Middleware and clients | `api/src/Middlewares/`, `api/src/clients/` |
+| Configuration | `api/src/Config/Config.ts` |
 
-```
-Web (HTTP)
-     │
-     ▼
-Express App (app.ts)
-     │
-     ├─ KreditozroutiRoutes  → CoursesController, StudyPlansController, StudyPlanCoursesController
-     ├─ ScraperPublicRoutes  → CourseScraperController (trigger + SSE status)
-     ├─ CommandsRoutes       → RunInSIS*Controllers (admin Bearer token)
-     └─ AdminRoutes
-          │
-          ▼
-     Services (CourseService, StudyPlanService, ScraperService, ...)
-          │
-          ├─ MySQL (Kysely)
-          └─ Redis (ioredis)
-               │
-               ▼
-          BullMQ (ScraperRequestQueue → Scraper process)
-          BullMQ (ScraperResponseQueue ← Scraper process)
-               │
-               ▼
-          ScraperResponseHandler → ScraperResponseInSISCourseJob / StudyPlanJob
-```
+Shared HTTP, database, and queue types live in `@kreditozrouti/types`. Pure domain logic and reusable services live in `@kreditozrouti/core`. Local imports use `@api/*`.
 
-## Directory Structure
+## References
 
-```
-api/src/
-├── index.ts                    # Entry point: cluster management, startWorker()
-├── app.ts                      # Express app: middleware, routing, error handling
-├── bullmq.ts                   # BullMQ queues, workers, schedulers
-├── paths.ts                    # Static path helpers
-├── logger.ts                   # Root pino logger + withJobLogger wrapper
-├── types.ts                    # Express.Locals augmentation (wideEvent)
-│
-├── clients/                    # Infrastructure clients
-│   ├── mysql.ts                # Kysely instance + slow query logging
-│   ├── redis.ts                # ioredis instance + createRedisSubscriber()
-│   ├── i18n.ts                 # i18n setup
-│   ├── mailer.ts               # Nodemailer transporter
-│   └── index.ts                # Re-exports
-│
-├── Config/Config.ts            # Env loading, config object, validation
-│
-├── Controllers/                # HTTP handlers (thin: validate → service → respond)
-│   ├── Kreditozrouti/          # Public data-read controllers
-│   ├── Scraper/                # Scrape-trigger + SSE status
-│   └── Commands/               # Admin scrape-trigger controllers
-│
-├── Services/                   # Business logic
-│   ├── CourseService.ts        # Paginated course queries + facets
-│   ├── StudyPlanService.ts     # Paginated study plan queries + facets
-│   ├── ScraperService.ts       # BullMQ enqueue helpers
-│   ├── EmailService.ts         # Email sending
-│   ├── InSISService.ts         # Re-exports period helpers from @shared
-│   ├── SQLService.ts           # migrateToLatest(), seedInitialData()
-│   └── DateService.ts          # getDayFromDate() → InSIS day-of-week enum
-│
-├── Database/
-│   ├── types.ts                # All DB table interfaces + Database interface
-│   └── migrations/             # Kysely migration files
-│
-├── Jobs/                       # BullMQ response job handlers
-│   ├── ScraperResponseInSISCourseJob.ts
-│   └── ScraperResponseInSISStudyPlanJob.ts
-│
-├── Handlers/
-│   ├── ScraperResponseHandler.ts   # Routes response jobs by type
-│   └── ErrorHandler.ts             # Global Express error handler
-│
-├── Schedulers/                 # Cron scheduler name constants
-│   ├── ScraperInSISCatalogRequestScheduler.ts
-│   └── ScraperInSISStudyPlansRequestScheduler.ts
-│
-├── Routes/
-│   ├── KreditozroutiRoutes.ts  # Public data-read routes
-│   ├── ScraperPublicRoutes.ts  # Scrape-trigger + SSE
-│   └── CommandsRoutes.ts       # Protected admin commands
-│
-├── Middlewares/                # Request/response middleware
-├── Errors/index.ts             # ApiError class + Errors factory
-├── Validations/index.ts        # Shared Zod primitives
-├── Context/                    # Logger contexts
-└── utils/
-    ├── sse.ts                  # SSE helpers
-    └── timeConflict.ts         # Time conflict Kysely conditions
-```
-
-## Path Aliases
-
-| Alias       | Resolves to   |
-|-------------|---------------|
-| `@api/*`    | `./src/*`     |
-| `@shared/*` | `../shared/*` |
-
-## Key Conventions
-
-- **Controllers** use named function namespace objects, not classes (see [ENDPOINTS.md](ENDPOINTS.md))
-- **Zod schemas** are co-located with their controller
-- **Times** are stored as minutes-from-midnight (0–1439) (see [DATABASE.md](DATABASE.md))
+- [Endpoints](ENDPOINTS.md) - routes, payloads, and errors
+- [Services](SERVICES.md) - queries, facets, scraping, and optimization
+- [Response jobs](JOBS.md) - persistence and schedules
+- [Database](DATABASE.md) - tables, time encoding, and migrations
+- [Internals](INTERNALS.md) - configuration, caching, limits, and logging

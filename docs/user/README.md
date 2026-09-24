@@ -1,29 +1,8 @@
-# Kreditožrouti — User Guide
+# User guide
 
-Kreditožrouti is a course scheduling tool for students at Prague University of Economics and Business (VŠE). It gives
-you instant, filterable access to every course, timetable slot, and study plan from InSIS — in one modern interface.
+Kreditožrouti helps VŠE students browse courses and plan timetables. Enrollment happens in InSIS. No account is required.
 
-The app is available at **[kreditozrouti.cz](https://kreditozrouti.cz)**. No account or sign-up required.
+- [Getting started](GETTING_STARTED.md) - set up a study plan and begin scheduling.
+- [Features](FEATURES.md) - short overview for contributors reviewing product changes.
 
----
-
-## What's covered
-
-- All VŠE faculties (FIS, NF, FPH, FMV, FFÚ, FMJH, and more)
-- Both semesters: ZS (winter) and LS (summer)
-- Czech and English interface — switch any time from the top bar
-
-## Data freshness
-
-Course data is scraped from InSIS automatically every night during registration periods (January–February,
-June–September, November–December). Outside those windows no automatic update runs. For the most current slot
-availability — room changes, lecturer updates, capacity — use the per-course **Refresh** button inside any expanded
-course row.
-
----
-
-## In this guide
-
-- [Getting Started](GETTING_STARTED.md) — first-time setup: the wizard, study plan selection, marking completed courses
-- [Features Reference](FEATURES.md) — every feature explained: filters, timetable, conflict detection, saved schedules,
-  and more
+The published, bilingual guide is maintained in [`web/src/pages/docs/`](../../web/src/pages/docs/). For current student instructions, start with [English](../../web/src/pages/docs/en/getting-started.md) or [Czech](../../web/src/pages/docs/cs/getting-started.md). Check InSIS for current course details and enrollment rules.

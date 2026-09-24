@@ -5,34 +5,22 @@ order: 2
 
 # Časté dotazy
 
-## Jak sestavit bezkonfliktní rozvrh na VŠE?
+## Zapíše mi aplikace předměty?
 
-Kreditožrouti zobrazí všechny předměty z tvého studijního plánu na jednom místě. Vybereš si rozvrhové akce kliknutím -
-aplikace okamžitě ukáže, které se překrývají. Stačí zvolit jiné cvičení nebo přednášku a konflikt zmizí.
+Ne. Kreditožrouti slouží k plánování. Registraci a zápis proveď v [InSISu](https://insis.vse.cz) a ověř si aktuální termíny a podmínky.
 
-## Jak fungují zápisy na VŠE?
+## Jak vyřeším kolizi v rozvrhu?
 
-Zápisy probíhají v několika vlnách podle počtu získaných kreditů. Studenti s více kredity mají přístup dříve a mohou
-obsadit místa v oblíbených rozvrhových akcích. V Kreditožroutech si lze rozvrh sestavit předem a v moment otevření
-zápisů zadat vše rychle do InSISu.
+Otevři dotčený předmět a vyber jinou přednášku, cvičení nebo seminář. Aplikace upozorní na překryv časů i krátký přejezd mezi známými areály.
 
-## Co jsou kreditožrouti a proč jsou problém?
+## Mohou aplikaci použít zahraniční studenti?
 
-Kreditožrouti jsou předměty, které studentům spotřebují rezervní kredity - buď kvůli neúspěchu u zkoušky, nebo kvůli
-náročnosti celého semestru. Kreditožrouti (aplikace) ti pomůže sestavit rozvrh tak, abys věděl/a, do čeho jdeš.
+Ano. Rozhraní je dostupné anglicky a předměty lze filtrovat podle jazyka výuky. Podmínky studia a zápisu ověř na VŠE.
 
-## Čím se Kreditožrouti liší od InSISu?
+## Potřebuji účet?
 
-InSIS je oficiální systém VŠE - nutný pro finální zápis. Kreditožrouti je pomocný nástroj, který ti umožňuje prohlédnout
-si všechny dostupné předměty najednou, filtrovat je a sestavit si rozvrh ještě před tím, než InSIS otevřeš. Šetří hodiny
-přepínání mezi záložkami.
+Ne. Aplikace je zdarma a nevyžaduje účet. Návrh rozvrhu a nastavení se ukládají v prohlížeči.
 
-## Je aplikace zdarma?
+## Odkud pocházejí informace o předmětech?
 
-Ano, Kreditožrouti je zcela zdarma a nevyžaduje registraci ani přihlášení. Stačí přejít na kreditozrouti.cz a vybrat
-svůj studijní plán.
-
-## Pro které fakulty aplikace funguje?
-
-Kreditožrouti funguje pro všechny fakulty VŠE Praha: FIS, NF, FPH, FMV, FFÚ, FMJH i pro ostatní programy včetně
-zahraničních studentů. Data jsou pravidelně aktualizována z InSISu.
+Aplikace používá veřejný katalog InSISu. Změny se mohou projevit se zpožděním, proto údaje před zápisem ověř v InSISu.

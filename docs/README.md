@@ -1,19 +1,19 @@
-# Developer Documentation
+# Developer documentation
 
-Internal reference for Kreditožrouti engineers. Not linked from the user-facing docs.
+This folder is the source for internal engineering references. Published student help lives in [`web/src/pages/docs/`](../web/src/pages/docs/); [`user/`](user/) provides a short contributor-facing overview.
 
-## Sections
+## Work on the system
 
-- [Architecture](architecture/) - system design, data flow, containers
-- [API](api/) - HTTP endpoints, controllers, middleware
-- [Web](web/) - Vue 3 SPA, stores, composables
-- [Scraper](scraper/) - BullMQ worker, InSIS scraping
-- [MCP server](mcp/) - LLM tool access to VŠE data
-- [Deployment](deployment/) - Docker, CI/CD, operations
-- [Engineering](engineering/) - local setup and contributing
-- [Manual setup](setup/) - Gmail delivery and DNS/HTTPS requirements
-- [Agent instruction research](dev/research/agent-instructions.md) - why `AGENTS.md` is the shared source
+- [Engineering](engineering/) - local setup and contribution workflow
+- [Architecture](architecture/) - package boundaries and data flow
+- [Domain glossary](DOMAIN.md) - shared terminology
+- [Shared packages](shared/) - types, domain logic, HTTP and queue contracts
+- [API](api/), [web](web/), [scraper](scraper/), [MCP](mcp/) - service references
+- [Deployment](deployment/) and [scripts](scripts/) - operations
+- [Manual setup](setup/) - Gmail and DNS/HTTPS outcomes
 
-The [shared reference](shared/) and parts of the [monorepo reference](architecture/MONOREPO.md) still describe the
-older `shared/` layout. Current shared types live in `packages/types/`; reusable services and domain logic live in
-`packages/core/`. Use their source until those detail pages are refreshed.
+## Records
+
+- [ADR](adr/0002-global-insis-rate-limit-not-a-concurrency-knob.md) - InSIS rate-limit decision
+- [Agent-instruction research](dev/research/agent-instructions.md) - why `AGENTS.md` is the shared source
+- [Umami research](dev/research/umami-custom-events.md), [handoff](handoff/), and [marketing plan](MARKETING.md) - dated background material; check current code and vendor docs before acting on it

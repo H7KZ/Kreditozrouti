@@ -6,176 +6,50 @@ order: 2
 
 # Timetable
 
-## Views
+The main page has **Course List**, **My Timetable**, and **Optimizer** views. The timetable grid shows Monday to Friday from 07:30 to 20:00. Your selections are saved in this browser.
 
-Switch between three ways to see your courses using the tabs in the header bar:
+## Build a schedule
 
-| View             | What you see                                                                           |
-| ---------------- | -------------------------------------------------------------------------------------- |
-| **Course List**  | Sortable table - course code, title, faculty, ECTS, completion mode, schedule summary  |
-| **My Timetable** | Weekly grid Monday–Friday, 07:30–20:00 - selected courses shown as coloured blocks     |
-| **Optimizer**    | Basket-based timetable generator - pick courses, set constraints, get ranked schedules |
+1. In **Course List**, expand a course to see details, prerequisites, and available teaching slots.
+2. Select a lecture, exercise, or seminar slot. If the course needs more than one unit type, select one of each.
+3. To change a time, select another slot of the same type. The app replaces your previous selection.
+4. Open **My Timetable** to review the week. The selected-course panel shows your units and total ECTS.
 
-Course List and My Timetable preferences are saved between sessions. Optimizer constraints are also saved and reused the
-next time you open the tab.
+Click a timetable block to inspect its time, room, lecturer, and course details. From that panel you can search for courses in the same time window or remove the course.
 
----
+## Conflicts and incomplete courses
 
-## Building Your Timetable
+| Status | Meaning |
+| --- | --- |
+| **Conflict** | Selected slots overlap in time. |
+| **Campus conflict** | Less than 40 minutes separate classes at different known VŠE campuses. |
+| **Incomplete** | A required unit type, such as an exercise, has not been selected. |
+| **Selected** | No detected issue. |
 
-1. Click any course row to expand it.
-2. The expanded row shows course metadata (faculty, ECTS, language, category), prerequisite chips, and a collapsible *
-   _Syllabus_* section with aims, learning outcomes, course contents, and literature. When the UI language is set to
-   English and English content is available, the English version is shown.
-3. Below the syllabus: all available **unit types** (lecture, exercise, seminar) and their time slots.
-4. Click a slot to add it to your timetable. If you already have a unit of the same type selected for this course, it is
-   swapped out automatically.
-5. Repeat for each unit type the course requires. Some courses have only lectures; others require both a lecture and an
-   exercise.
+The app recognizes Žižkov rooms starting `RB`, `NB`, `IB`, or `SB`, and Jižní Město rooms starting `JM`. It cannot warn about a campus transfer when a room's campus is unknown. Check the final timetable in InSIS before enrolling.
 
-Your timetable is saved in your browser's local storage - it survives page reloads, closing the tab, and restarting your
-browser. The right-side panel shows all selected units grouped by course, with your total ECTS count.
+## Drag-to-filter
 
-### Clicking a Block on the Timetable Grid
+In **My Timetable**, drag across an empty part of the grid and confirm **Search courses**. The app switches to **Course List** and shows courses with a slot in that day and time range. Remove the window under **Time restriction** in the sidebar or use **Clear all**.
 
-Clicking a coloured block in the timetable grid opens a course detail panel from the right edge. The panel shows the
-day, time, room, and lecturer for that slot, then loads the full course detail below. From the panel you can:
+## Saved schedules
 
-- **Search in timeslot** - switches to the Course List view pre-filtered to courses available in that exact time window
-- **Remove from timetable** - removes all slots of that course at once
-- **Open in InSIS** - external link in the course title
+Save up to five named schedules from **My Timetable**. You can switch between them, duplicate one to try a variation, or delete one. Schedules are stored in this browser.
 
----
+## Share and export
 
-## Conflict Detection
+- **Share** creates a short link to a read-only snapshot. Anyone with the link can view it and save a copy to their own browser. Treat the link as access to the snapshot.
+- **Calendar export** opens a dialog to review events and semester dates, then downloads an `.ics` file or creates a calendar subscription link.
+- **Image export** saves a picture of the timetable.
 
-Every course you add to the timetable gets a status. The status bar at the top of the page counts each category - click
-a category to filter the course list to just those courses.
+## Refresh course data
 
-| Status              | Colour | Meaning                                                                                                                                            |
-| ------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Selected**        | Blue   | All required unit types chosen, no time or campus conflicts                                                                                        |
-| **Incomplete**      | Amber  | You've selected at least one unit type but not all required ones - e.g. added the lecture but not the exercise yet                                 |
-| **Campus conflict** | Orange | No time overlap, but the gap between classes on different VŠE campuses is under 40 minutes - not enough travel time between Žižkov and Jižní Město |
-| **Conflict**        | Red    | Two selected courses overlap in time on the same day                                                                                               |
+Expand a course and use its refresh icon to request current information from InSIS. The course updates in place when the request finishes. A per-course cooldown limits repeated refreshes; the UI shows the remaining time.
 
-### Campus Conflict Detail
+## Prerequisites
 
-VŠE has two main campuses:
+When InSIS provides prerequisite data, the expanded course row groups it as required, incompatible after completion, incompatible in the same semester, or recommended. Click a linked course code to search for it. Filtering based on completed courses also uses applicable prerequisite information.
 
-- **Žižkov** - rooms starting with RB, NB, IB, or SB
-- **Jižní Město** - rooms starting with JM
+## Mark as completed
 
-If you select a course on one campus and another course on the other campus with less than 40 minutes between them, the
-app flags a campus conflict. If a room's campus cannot be determined, no campus conflict is raised.
-
----
-
-## Drag-to-Filter
-
-Available in **My Timetable** view.
-
-1. Click and drag across any empty area of the grid to select a time range.
-2. A popover appears showing the day and time you selected.
-3. Click **Search courses** to confirm.
-4. The app switches to Course List view and filters to courses that have a slot in that time window.
-
-This is the fastest way to answer "what's available Tuesday morning between 9 and 11?"
-
-To remove the time filter: open the **Time restriction** section in the filter sidebar and remove the entry, or click *
-_Clear all_*.
-
----
-
-## Saved Schedules
-
-Compare up to 5 different timetable alternatives without losing your work. Access the schedule picker from the **My
-Timetable** view.
-
-| Action           | What it does                                                      |
-| ---------------- | ----------------------------------------------------------------- |
-| **Save current** | Saves a snapshot of your current timetable with a name you choose |
-| **Duplicate**    | Copies an existing snapshot so you can experiment from it         |
-| **Switch**       | Loads a saved snapshot as your working timetable                  |
-| **Delete**       | Removes a saved snapshot                                          |
-
-Use this to build "Plan A: all mornings" and "Plan B: Tuesday/Thursday only" side by side, then compare.
-
----
-
-## Share Timetable
-
-Share your current timetable with anyone via a short link.
-
-1. Build your timetable as usual.
-2. Click the **Share** button (share icon) in the timetable toolbar.
-3. A link is automatically copied to your clipboard (e.g. `https://kreditozrouti.cz/s/abc123`).
-
-**What the recipient sees:**
-
-- A read-only timetable grid showing all your selected courses
-- Course count and total ECTS credit load
-- A **Copy link** button to share the URL further
-- A **Save to my timetable** button to fork the snapshot into one of their own schedule slots for editing
-
-Links expire after **180 days of inactivity** (the expiry resets on each view). The snapshot is self-contained, so links
-survive database resets.
-
----
-
-## Export to Calendar (iCal)
-
-Use the calendar export button in the timetable toolbar to download an `.ics` file of your selected schedule. Import it
-into Google Calendar, Apple Calendar, or Outlook - each course slot becomes a recurring weekly event for the semester.
-
----
-
-## Refresh from InSIS
-
-Course data is scraped from InSIS on a schedule. For the most current information on a specific course:
-
-1. Expand the course row.
-2. Click the **refresh icon** (circular arrow) next to the course name.
-3. The app fetches live data from InSIS and updates the course in place - slots, lecturers, room assignments, capacity,
-   and all other details.
-
-**Rate limit:** once per 10 minutes per course. A countdown is shown if you try to refresh again too soon.
-
----
-
-## Prerequisite Information
-
-When a course's InSIS syllabus lists prerequisites, the expanded course row shows them as clickable chips grouped by
-type:
-
-| Label                      | Meaning                                                        | Clickable? |
-| -------------------------- | -------------------------------------------------------------- | ---------- |
-| **Required prerequisites** | Courses you must have passed before enrolling                  | Yes        |
-| **Cannot study after**     | Courses after which you may no longer enrol in this course     | Yes        |
-| **Cannot study alongside** | Courses that cannot be taken in the same semester as this one  | No         |
-| **Recommended before**     | Courses suggested as prior study (from recommended programmes) | Yes        |
-
-Clicking a chip sets the course code as the active **Search** filter - useful for quickly checking whether a
-prerequisite is offered this semester.
-
-**Filter effect:** when you activate **Completed courses** filtering (wizard Step 4 or the filter sidebar toggle):
-
-- Courses where you haven't yet completed all **Required prerequisites** are hidden automatically.
-- Courses that fall under **Cannot study after** for any of your completed courses are also hidden.
-
----
-
-## Mark as Completed
-
-Courses you've already passed can be hidden from the list to reduce noise.
-
-**From inside the app (any time):**
-
-1. Expand the course row.
-2. Click **Mark as completed** at the bottom of the expanded row.
-3. The course is hidden from the list (unless you toggle "Show completed courses" in the filter sidebar).
-
-**From the wizard:** Step 4 of the wizard lets you bulk-mark completed courses before you start browsing.
-
-To unmark: expand the course (visible when "Show completed courses" is on) and click **Mark as completed** again to
-toggle it off.
+Use **Mark as completed** in an expanded course row, or mark several courses in step 4 of the setup wizard. Completed courses can be hidden from the list. Turn on **Show completed courses** to find and unmark one.

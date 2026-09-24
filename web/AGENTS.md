@@ -103,7 +103,7 @@ schedule-slots → feedback edge is one-directional, the same shape as stores th
 
 | Topic                                             | Doc                                          |
 | ------------------------------------------------- | -------------------------------------------- |
-| All 9 stores in full detail                       | [STORES.md](../docs/web/STORES.md)           |
-| All composables                                   | [COMPOSABLES.md](../docs/web/COMPOSABLES.md) |
-| Conflict detection, status system, timetable grid | [TIMETABLE.md](../docs/web/TIMETABLE.md)     |
-| API client, i18n, utils, types, constants         | [INTERNALS.md](../docs/web/INTERNALS.md)     |
+| Store ownership and dependencies                  | [STORES.md](../docs/web/STORES.md)           |
+| Main UI composables                               | [COMPOSABLES.md](../docs/web/COMPOSABLES.md) |
+| Conflicts and timetable behavior                  | [TIMETABLE.md](../docs/web/TIMETABLE.md)     |
+| API client, i18n, and supporting modules          | [INTERNALS.md](../docs/web/INTERNALS.md)     |

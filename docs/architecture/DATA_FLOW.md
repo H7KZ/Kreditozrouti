@@ -1,107 +1,21 @@
-# Data Flow
+# Data flow
 
-## End-to-End: Course Search
+## Course search
 
-```
-User types search term in browser
-        │
-        ▼
-[Web] courses.vue deep-watches filtersStore.filters
-  → calls coursesStore.fetchCourses()
-  → POST /courses  { title, faculty_ids, days, times, … }
-        │
-        ▼
-[API] CoursesController.handleRequest()
-  → Zod validation
-  → CourseService.getCourses(filters)
-     → Kysely SELECT with WHERE/JOIN/ORDER
-     → Returns CourseWithRelationsDTO[]
-  → CacheMiddleware stores response (SHA-256 key, 300s TTL)
-  → res.json({ courses, facets, pagination })
-        │
-        ▼
-[Web] coursesStore receives response
-  → courses list rendered
-  → timetableStore.courseStatuses computed
-  → conflict badges applied
-```
+1. Web filters trigger an API course request.
+2. The API validates filters and queries MySQL through shared core services.
+3. The API returns course DTOs and facets from `@kreditozrouti/types`; the web renders results and timetable statuses.
 
----
+See [API endpoints](../api/ENDPOINTS.md) and [web stores](../web/STORES.md).
 
-## End-to-End: Scraping a New Course
+## Course refresh
 
-```
-[API Scheduler] ScraperInSISCatalogRequestScheduler (prod, nightly 1 AM)
-  OR
-[Admin] POST /commands/insis/catalog  (dev, manual)
-        │
-        ▼
-[API] ScraperService.enqueueCatalogScrape()
-  → scraperRequestQueue.add('InSIS:Catalog', { year, semester })
-        │
-        ▼  (Redis BullMQ)
-        │
-        ▼
-[Scraper] ScraperRequestHandler routes job → ScraperRequestInSISCatalogJob
-  → InSISHTTPClientService.get(catalogUrl)   ← Axios
-  → ExtractInSISCatalogService.extract($)    ← Cheerio parse
-  → for each course ident found:
-      scraperRequestQueue.add('InSIS:Course', { ident, year, semester })
-        │
-        ▼  (Redis BullMQ — one job per course)
-        │
-        ▼
-[Scraper] ScraperRequestInSISCourseJob
-  → InSISHTTPClientService.get(courseUrl)
-  → ExtractInSISCourseService.extract($)
-  → scraperResponseQueue.add('InSIS:Course', { course: ScraperInSISCourse })
-        │
-        ▼  (Redis BullMQ)
-        │
-        ▼
-[API] ScraperResponseHandler → ScraperResponseInSISCourseJob.process()
-  → DB transaction:
-      1. upsert insis_faculties
-      2. upsert insis_courses
-      3. reconcile insis_course_assessments
-      4. DELETE + recreate insis_course_units + insis_course_unit_slots
-      5. link insis_study_plan_courses
-      6. redis.publish('course:updated:{id}')   ← SSE fan-out to waiting clients
-```
+1. The API schedules a BullMQ scrape request. Production schedulers and user-triggered refreshes use the same request queue.
+2. The scraper fetches and parses InSIS, then places a typed result on the response queue.
+3. The API consumes the result, updates MySQL, invalidates affected cache entries, and publishes a course update for live clients.
 
----
+The scraper never writes MySQL directly. See [scraper jobs](../scraper/JOBS.md) and [API jobs](../api/JOBS.md).
 
-## End-to-End: SSE Live Update
+## Shared encoding
 
-When the web app triggers a course scrape (e.g., course page first load):
-
-```
-[Web] GET /courses/{ident}/scrape  (EventSource / SSE)
-        │
-        ▼
-[API] CourseScraperController opens SSE connection
-  → subscribes to redis 'course:updated:{id}'
-  → enqueues InSIS:Course job
-        │
-        ▼  (scraping happens — see above)
-        │
-        ▼
-[API] redis.publish fires → SSE sends { event: 'done' }
-        │
-        ▼
-[Web] EventSource receives done → re-fetches course data
-```
-
----
-
-## Data Encoding Rules
-
-| Concept            | Encoding                         | Example                              |
-|--------------------|----------------------------------|--------------------------------------|
-| Times              | Minutes from midnight (0–1439)   | `08:00` → `480`                      |
-| Languages          | Pipe-delimited string in DB      | `"CS\|EN"` → parsed in service layer |
-| Lecturers          | Pipe-delimited string in DB      | `"Novák J.\|Malá K."`                |
-| Env vars — API     | `API_*` prefix                   | `API_PORT`, `API_JWT_SECRET`         |
-| Env vars — Web     | `VITE_*` prefix (baked at build) | `VITE_API_URL`                       |
-| Env vars — Scraper | No prefix                        | `INSIS_BASE_URL`                     |
-| Env vars — Infra   | `MYSQL_*`, `REDIS_*`             | `MYSQL_ROOT_PASSWORD`                |
+Times are minutes from midnight (`08:00` is `480`). Domain functions and DTOs live in [`packages/core/`](../../packages/core/src/domain/index.ts) and [`packages/types/`](../../packages/types/src/index.ts).
