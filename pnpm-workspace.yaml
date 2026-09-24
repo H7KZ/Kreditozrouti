@@ -1,38 +1,84 @@
+# Source of truth for versions shared across workspace packages. Keep these aligned
+# instead of letting each app drift independently.
+catalog:
+    '@eslint/js': '^10.0.1'
+    '@ianvs/prettier-plugin-sort-imports': '^4.7.1'
+    '@types/node': '^26.6.2'
+    '@types/express': '^5.0.6'
+    '@opentelemetry/auto-instrumentations-node': '^0.80.0'
+    '@opentelemetry/exporter-trace-otlp-proto': '^0.222.0'
+    '@opentelemetry/sdk-node': '^0.222.0'
+    '@typescript-eslint/parser': '^8.70.1'
+    axios: '^1.20.0'
+    bullmq: '^6.3.8'
+    bullmq-otel: '^2.0.1'
+    connect-redis: '^10.0.0'
+    dotenv: '^18.0.3'
+    dotenv-cli: '^11.0.0'
+    eslint: '^10.11.0'
+    eslint-config-prettier: '^10.1.8'
+    eslint-plugin-promise: '^7.3.0'
+    eslint-plugin-regexp: '^3.3.1'
+    eslint-plugin-unicorn: '^76.0.0'
+    express: '^5.2.1'
+    globals: '^17.12.0'
+    ioredis: '^6.0.0'
+    kysely: '^0.29.6'
+    mysql2: '^3.24.4'
+    pino: '^10.3.1'
+    prettier: '^3.9.9'
+    prettier-plugin-tailwindcss: '^0.8.1'
+    prom-client: '^15.1.3'
+    ts-node: '^10.9.2'
+    tsc-alias: '^1.9.5'
+    tsconfig-paths: '^4.2.0'
+    tsup: '^8.5.1'
+    tsx: '^4.23.15'
+    typescript: '~6.0.3'
+    typescript-eslint: '^8.70.1'
+    vitest: '^5.0.1'
+    zod: '^4.6.5'
+
+# Reaches transitive dependencies too, which catalogs cannot.
 overrides:
-  typescript: "~6.0.3"
+    typescript: '~6.0.3'
 
 packages:
-  - "apps/*"
-  - "packages/*"
+    - 'apps/*'
+    - 'packages/*'
 
 allowBuilds:
-  esbuild: true
-  msgpackr-extract: true
-  protobufjs: true
-  vue-demi: true
+    esbuild: true
+    msgpackr-extract: true
+    protobufjs: true
+    vue-demi: true
 
 minimumReleaseAgeExclude:
-  - bullmq@5.80.2 || 5.80.9
-  - eslint@10.7.0
-  - '@unhead/bundler@3.2.1'
-  - '@unhead/vue@3.2.1'
-  - mysql2@3.23.1
-  - unhead@3.2.1
-  - '@intlify/core-base@11.4.9'
-  - '@intlify/devtools-types@11.4.9'
-  - '@intlify/message-compiler@11.4.9'
-  - '@intlify/shared@11.4.9'
-  - vue-i18n@11.4.9
-  - '@turbo/darwin-64@2.10.13'
-  - '@turbo/darwin-arm64@2.10.13'
-  - '@turbo/linux-64@2.10.13'
-  - '@turbo/linux-arm64@2.10.13'
-  - '@turbo/windows-64@2.10.13'
-  - '@turbo/windows-arm64@2.10.13'
-  - turbo@2.10.13
+    - bullmq@5.80.2 || 5.80.9
+    - eslint@10.7.0
+    - '@unhead/bundler@3.2.1'
+    - '@unhead/vue@3.2.1'
+    - mysql2@3.23.1
+    - unhead@3.2.1
+    - '@intlify/core-base@11.4.9'
+    - '@intlify/devtools-types@11.4.9'
+    - '@intlify/message-compiler@11.4.9'
+    - '@intlify/shared@11.4.9'
+    - vue-i18n@11.4.9
+    - '@turbo/darwin-64@2.10.13'
+    - '@turbo/darwin-arm64@2.10.13'
+    - '@turbo/linux-64@2.10.13'
+    - '@turbo/linux-arm64@2.10.13'
+    - '@turbo/windows-64@2.10.13'
+    - '@turbo/windows-arm64@2.10.13'
+    - turbo@2.10.13
+    - '@modelcontextprotocol/sdk@1.30.1'
+    - dompurify@3.4.16
+    - eslint-plugin-vue@10.11.1
+    - vite@8.3.1
 
 onlyBuiltDependencies:
-  - esbuild
-  - msgpackr-extract
-  - protobufjs
-  - vue-demi
+    - esbuild
+    - msgpackr-extract
+    - protobufjs
+    - vue-demi

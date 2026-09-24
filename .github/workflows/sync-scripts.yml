@@ -11,49 +11,49 @@
 name: Sync Scripts
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'scripts/**'
-  workflow_dispatch:
+    push:
+        branches: [main]
+        paths:
+            - 'scripts/**'
+    workflow_dispatch:
 
 permissions:
-  contents: read
+    contents: read
 
 concurrency:
-  group: sync-scripts
-  cancel-in-progress: false
+    group: sync-scripts
+    cancel-in-progress: false
 
 jobs:
-  sync:
-    name: Sync Scripts to VPS
-    runs-on: self-hosted
-    timeout-minutes: 10
+    sync:
+        name: Sync Scripts to VPS
+        runs-on: self-hosted
+        timeout-minutes: 10
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v7
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v7
 
-      - name: Upload Scripts
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          source: 'scripts/*'
-          target: '~/kreditozrouti/scripts'
-          strip_components: 1
-          overwrite: true
+            - name: Upload Scripts
+              uses: appleboy/scp-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  source: 'scripts/*'
+                  target: '~/kreditozrouti/scripts'
+                  strip_components: 1
+                  overwrite: true
 
-      - name: Set Permissions
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            set -euo pipefail
-            chmod +x ~/kreditozrouti/scripts/*.sh 2>/dev/null || true
-            echo "Scripts synced: $(ls -1 ~/kreditozrouti/scripts/*.sh 2>/dev/null | wc -l) files"
+            - name: Set Permissions
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  script: |
+                      set -euo pipefail
+                      chmod +x ~/kreditozrouti/scripts/*.sh 2>/dev/null || true
+                      echo "Scripts synced: $(ls -1 ~/kreditozrouti/scripts/*.sh 2>/dev/null | wc -l) files"

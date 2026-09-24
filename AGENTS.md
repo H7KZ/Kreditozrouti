@@ -45,24 +45,24 @@ load nested `AGENTS.md` files. Each sibling `CLAUDE.md` imports its `AGENTS.md`;
 
 ## Access Points (dev)
 
-| Service    | URL                    |
-|------------|------------------------|
-| Web        | http://localhost:45173 |
-| API        | http://localhost:40080 |
-| MCP        | http://localhost:3000  |
-| phpMyAdmin | http://localhost:48080 |
+| Service    | URL                                                                         |
+| ---------- | --------------------------------------------------------------------------- |
+| Web        | http://localhost:45173 (host dev) or http://localhost (full Compose)        |
+| API        | http://localhost:40080 (host dev) or http://localhost/api (full Compose)    |
+| MCP        | http://localhost:3000/mcp (host dev) or http://localhost/mcp (full Compose) |
+| Traefik    | http://localhost:8080/dashboard/ (full Compose only)                        |
+| phpMyAdmin | http://localhost:48080 (after `make admin`)                                 |
 
 ---
 
 ## Essential Commands
 
 ```bash
-make install           # Install all dependencies
-make dev               # Run API, web, scraper, MCP, and shared-package watchers
-make run-local-docker  # Start MySQL, Redis, phpMyAdmin
-  make test              # Run scraper then API tests sequentially
-  make test-regen        # Regenerate scraper + API fixture snapshots
-  pnpm boundaries       # Verify core, web, and MCP import boundaries
+  make install           # Install all dependencies
+  make dev               # Start MySQL + Redis, then run app and shared-package watchers on the host
+  make up                # Start the full local Compose stack behind Traefik
+  pnpm verify            # Run lint, boundaries, tests, type-check, and builds
+  pnpm format:check      # Check formatting without writing files
 ```
 
 ---

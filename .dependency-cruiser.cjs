@@ -24,12 +24,7 @@ module.exports = {
 			severity: 'error',
 			from: { path: '^apps/web/src' },
 			to: {
-				path: [
-					'^(apps/api|apps/scraper)/',
-					'^@(?:api|scraper)(/|$)',
-					'^@kreditozrouti/core/(?:db|services)(/|$)',
-					'^@kreditozrouti/logger(/|$)'
-				]
+				path: ['^(apps/api|apps/scraper)/', '^@(?:api|scraper)(/|$)', '^@kreditozrouti/core/(?:db|services)(/|$)', '^@kreditozrouti/logger(/|$)']
 			}
 		},
 		{
@@ -38,12 +33,9 @@ module.exports = {
 			severity: 'error',
 			from: { path: '^apps/mcp/src' },
 			to: {
-				path: [
-					'^(apps/(api|scraper|web))/',
-					'^@(api|scraper|web)(/|$)'
-				]
+				path: ['^(apps/(api|scraper|web))/', '^@(api|scraper|web)(/|$)']
 			}
-		},
+		}
 	],
 	options: {
 		tsPreCompilationDeps: true,

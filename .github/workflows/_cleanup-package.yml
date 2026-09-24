@@ -12,33 +12,33 @@
 name: Cleanup Package Versions (reusable)
 
 on:
-  workflow_call:
-    inputs:
-      package-name:
-        description: 'Full GHCR package name, e.g. kreditozrouti/api'
-        required: true
-        type: string
-      min-versions-to-keep:
-        description: 'Number of most-recent versions to keep (floating tags excluded from count)'
-        required: false
-        type: number
-        default: 10
+    workflow_call:
+        inputs:
+            package-name:
+                description: 'Full GHCR package name, e.g. kreditozrouti/api'
+                required: true
+                type: string
+            min-versions-to-keep:
+                description: 'Number of most-recent versions to keep (floating tags excluded from count)'
+                required: false
+                type: number
+                default: 10
 
 jobs:
-  cleanup:
-    name: Cleanup ${{ inputs.package-name }} versions
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    cleanup:
+        name: Cleanup ${{ inputs.package-name }} versions
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
 
-    permissions:
-      packages: write
+        permissions:
+            packages: write
 
-    steps:
-      - name: Delete old package versions
-        uses: actions/delete-package-versions@v5
-        with:
-          package-name: ${{ inputs.package-name }}
-          package-type: container
-          min-versions-to-keep: ${{ inputs.min-versions-to-keep }}
-          ignore-versions: '^(latest|dev-latest)$'
-          token: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - name: Delete old package versions
+              uses: actions/delete-package-versions@v5
+              with:
+                  package-name: ${{ inputs.package-name }}
+                  package-type: container
+                  min-versions-to-keep: ${{ inputs.min-versions-to-keep }}
+                  ignore-versions: '^(latest|dev-latest)$'
+                  token: ${{ secrets.GITHUB_TOKEN }}

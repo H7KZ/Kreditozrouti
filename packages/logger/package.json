@@ -1,27 +1,27 @@
 {
-  "name": "@kreditozrouti/logger",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
-    }
-  },
-  "scripts": {
-    "build": "tsup && tsc --emitDeclarationOnly",
-    "dev": "tsup --watch --no-clean",
-    "type-check": "tsc --noEmit"
-  },
-  "peerDependencies": {
-    "pino": ">=10"
-  },
-  "devDependencies": {
-    "@types/node": "^26.5.1",
-    "pino": "^10.3.1",
-    "tsup": "^8.5.1",
-    "typescript": "~6.0.3"
-  }
+	"name": "@kreditozrouti/logger",
+	"private": true,
+	"version": "1.0.0",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"default": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "tsup && tsc --emitDeclarationOnly",
+		"dev": "tsup --watch --no-clean",
+		"type-check": "tsc --noEmit"
+	},
+	"peerDependencies": {
+		"pino": "catalog:"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"pino": "catalog:",
+		"tsup": "catalog:",
+		"typescript": "catalog:"
+	}
 }

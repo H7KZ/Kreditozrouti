@@ -13,72 +13,72 @@
 name: Deploy Monitoring
 
 on:
-  workflow_dispatch:
+    workflow_dispatch:
 
 concurrency:
-  group: deploy-monitoring
-  cancel-in-progress: false
+    group: deploy-monitoring
+    cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: Deploy Monitoring
-    runs-on: self-hosted
-    timeout-minutes: 20
+    deploy:
+        name: Deploy Monitoring
+        runs-on: self-hosted
+        timeout-minutes: 20
 
-    permissions:
-      contents: read
+        permissions:
+            contents: read
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
 
-      - name: Resolve version tag
-        id: version
-        run: echo "tag=${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
+            - name: Resolve version tag
+              id: version
+              run: echo "tag=${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
 
-      - name: Create version directory
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: mkdir -p "$HOME/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}"
+            - name: Create version directory
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  script: mkdir -p "$HOME/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}"
 
-      - name: Upload deployment files
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          source: "deployment/"
-          target: "~/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}"
-          strip_components: 1
-          overwrite: true
+            - name: Upload deployment files
+              uses: appleboy/scp-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  source: 'deployment/'
+                  target: '~/kreditozrouti/versions/monitoring/${{ steps.version.outputs.tag }}'
+                  strip_components: 1
+                  overwrite: true
 
-      - name: Deploy
-        uses: appleboy/ssh-action@v1
-        env:
-          VERSION_TAG: ${{ steps.version.outputs.tag }}
-          GRAFANA_ADMIN_USER: ${{ secrets.GRAFANA_ADMIN_USER }}
-          GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          HEALTHCHECKS_PING_URL: ${{ secrets.HEALTHCHECKS_PING_URL }}
-          UMAMI_DB_NAME: ${{ secrets.UMAMI_DB_NAME }}
-          UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
-          UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
-          UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          envs: VERSION_TAG,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL,HEALTHCHECKS_PING_URL,UMAMI_DB_NAME,UMAMI_DB_USER,UMAMI_DB_PASSWORD,UMAMI_APP_SECRET
-          command_timeout: 15m
-          script: |
-            set -euo pipefail
-            VERSION_DIR="$HOME/kreditozrouti/versions/monitoring/$VERSION_TAG"
-            bash "$VERSION_DIR/monitoring/deploy.sh"
-            ln -sfn "$VERSION_DIR" "$HOME/kreditozrouti/versions/monitoring/current"
-            echo "Monitoring deploy complete: $VERSION_TAG"
+            - name: Deploy
+              uses: appleboy/ssh-action@v1
+              env:
+                  VERSION_TAG: ${{ steps.version.outputs.tag }}
+                  GRAFANA_ADMIN_USER: ${{ secrets.GRAFANA_ADMIN_USER }}
+                  GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+                  DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+                  HEALTHCHECKS_PING_URL: ${{ secrets.HEALTHCHECKS_PING_URL }}
+                  UMAMI_DB_NAME: ${{ secrets.UMAMI_DB_NAME }}
+                  UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
+                  UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
+                  UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  envs: VERSION_TAG,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL,HEALTHCHECKS_PING_URL,UMAMI_DB_NAME,UMAMI_DB_USER,UMAMI_DB_PASSWORD,UMAMI_APP_SECRET
+                  command_timeout: 15m
+                  script: |
+                      set -euo pipefail
+                      VERSION_DIR="$HOME/kreditozrouti/versions/monitoring/$VERSION_TAG"
+                      bash "$VERSION_DIR/monitoring/deploy.sh"
+                      ln -sfn "$VERSION_DIR" "$HOME/kreditozrouti/versions/monitoring/current"
+                      echo "Monitoring deploy complete: $VERSION_TAG"

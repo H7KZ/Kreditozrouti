@@ -9,32 +9,32 @@
 name: Umami Retention
 
 on:
-  schedule:
-    - cron: "17 3 * * *"
-  workflow_dispatch:
+    schedule:
+        - cron: '17 3 * * *'
+    workflow_dispatch:
 
 concurrency:
-  group: umami-retention
-  cancel-in-progress: false
+    group: umami-retention
+    cancel-in-progress: false
 
 jobs:
-  retention:
-    name: Delete old analytics
-    runs-on: self-hosted
-    timeout-minutes: 10
+    retention:
+        name: Delete old analytics
+        runs-on: self-hosted
+        timeout-minutes: 10
 
-    permissions:
-      contents: read
+        permissions:
+            contents: read
 
-    steps:
-      - name: Run retention SQL
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            set -euo pipefail
-            SQL="$HOME/kreditozrouti/versions/monitoring/current/monitoring/umami/retention.sql"
-            docker exec -i kreditozrouti-monitoring-umami-db-1 sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < "$SQL"
+        steps:
+            - name: Run retention SQL
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  script: |
+                      set -euo pipefail
+                      SQL="$HOME/kreditozrouti/versions/monitoring/current/monitoring/umami/retention.sql"
+                      docker exec -i kreditozrouti-monitoring-umami-db-1 sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < "$SQL"

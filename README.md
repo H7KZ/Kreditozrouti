@@ -62,7 +62,7 @@ Short version:
 
 1. Fork → branch off `develop` → PR back to `develop`
 2. Use [conventional commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`
-3. Run `make lint && make format` before committing
+3. Run `make format && make verify` before committing
 
 ---
 

@@ -18,59 +18,44 @@
 name: Verify Code (reusable)
 
 on:
-  workflow_call:
+    workflow_call:
 
 jobs:
-  verify:
-    name: Verify Code
-    runs-on: self-hosted
-    timeout-minutes: 15
+    verify:
+        name: Verify Code
+        runs-on: self-hosted
+        timeout-minutes: 15
 
-    permissions:
-      contents: read
+        permissions:
+            contents: read
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v7
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v7
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 12.4.1
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v6
+              with:
+                  version: 12.4.1
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          cache: 'pnpm'
-          cache-dependency-path: pnpm-lock.yaml
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version: '24'
+                  cache: 'pnpm'
+                  cache-dependency-path: pnpm-lock.yaml
 
-      - name: Install Dependencies
-        run: make install
+            - name: Install Dependencies
+              run: make install
 
-      - name: Lint
-        run: make lint
+            - name: Check em dashes
+              run: bash scripts/check-em-dashes.sh
 
-      - name: Check package boundaries
-        run: pnpm boundaries
+            - name: Validate monitoring config
+              run: bash deployment/monitoring/validate.sh
 
-      - name: Check em dashes
-        run: bash scripts/check-em-dashes.sh
+            - name: Type Check
+              run: make verify
 
-      - name: Validate monitoring config
-        run: bash deployment/monitoring/validate.sh
-
-      - name: Build Core
-        run: pnpm --filter=@kreditozrouti/core run build
-
-      - name: Test
-        run: make test
-
-      - name: Type Check
-        run: make type-check
-
-      - name: Build
-        run: make build
-
-      - name: Verification Complete
-        run: echo "::notice::All checks passed successfully"
+            - name: Verification Complete
+              run: echo "::notice::All checks passed successfully"

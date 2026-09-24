@@ -57,10 +57,10 @@ directories under `$HOME/kreditozrouti/versions/<environment>/` older than 7 day
 **Deploy order on a fresh server:** shared Infrastructure Traefik → monitoring stack (optional) → GitHub Runner
 (optional) → app stack. Every environment's services attach to the external `public-network` that Traefik publishes
 on, and request certs via the `letsencrypt` (DNS-01) resolver - HTTP-01 fails because the domain is
-Cloudflare-proxied. Traefik is not deployed by Kreditožrouti: Infrastructure's Traefik owns `public-network` on the
-shared VPS and creates it; each `deploy.sh` also creates it if this stack deploys first. This repo no longer ships a
-Traefik stack (the former `deployment/traefik/` was removed - Infrastructure owns the single Traefik); services connect
-to Infrastructure's `public-network` by name, so they work out of the box.
+Cloudflare-proxied. Traefik is not deployed by Kreditožrouti to the shared VPS: Infrastructure's Traefik owns
+`public-network` there and creates it; each `deploy.sh` also creates it if this stack deploys first. Root
+`docker-compose.local.yml` has a separate Traefik container strictly for local development; it uses its own bridge
+network and never joins `public-network`.
 
 **Monitoring stack: Alloy is the only collector and reads the Docker socket.** `deploy.sh` sets `DOCKER_GID` from
 `/var/run/docker.sock`'s group. Alloy keeps compose projects `kreditozrouti`, `kreditozrouti-dev` and
@@ -141,12 +141,12 @@ working directory doesn't matter; only the script's own location does.
 
 ## Key Docs
 
-| Topic                                          | Doc                                                           |
-|------------------------------------------------|---------------------------------------------------------------|
-| Docker multi-stage builds, GHCR registry       | [DOCKER.md](../docs/deployment/DOCKER.md)                     |
-| GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                         |
-| Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md)     |
-| Monitoring, security, troubleshooting          | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)             |
-| Observability overview and source links        | [MONITORING.md](../docs/deployment/MONITORING.md)             |
-| Moving monitoring to its own host (draft)      | [MONITORING_SPLIT.md](../docs/deployment/MONITORING_SPLIT.md) |
-| DNS and HTTPS manual setup                      | [DNS.md](../docs/setup/DNS.md)                                 |
+| Topic                                       | Doc                                                           |
+| ------------------------------------------- | ------------------------------------------------------------- |
+| Docker multi-stage builds, GHCR registry    | [DOCKER.md](../docs/deployment/DOCKER.md)                     |
+| GitHub Actions workflows, secrets, rollback | [CICD.md](../docs/deployment/CICD.md)                         |
+| Traefik, networking, env vars               | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md)     |
+| Monitoring, security, troubleshooting       | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)             |
+| Observability overview and source links     | [MONITORING.md](../docs/deployment/MONITORING.md)             |
+| Moving monitoring to its own host (draft)   | [MONITORING_SPLIT.md](../docs/deployment/MONITORING_SPLIT.md) |
+| DNS and HTTPS manual setup                  | [DNS.md](../docs/setup/DNS.md)                                |

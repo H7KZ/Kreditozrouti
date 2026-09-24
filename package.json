@@ -2,15 +2,32 @@
 	"name": "kreditozrouti",
 	"private": true,
 	"version": "1.0.0",
-	"packageManager": "pnpm@12.4.1+sha512.2e81e399d73fe8390dab25e06aa788ab7a5908248d2f5a370f82b481147a6a7a367bf8048f9a6fdb6460f21a66f0542dedb8b94ca2c8723596741920b1656d4c",
+	"packageManager": "pnpm@12.6.0",
+	"engines": {
+		"node": ">=24"
+	},
 	"scripts": {
-		"boundaries": "depcruise packages/core apps/web apps/mcp --config .dependency-cruiser.cjs"
+		"build": "turbo run build",
+		"type-check": "turbo run type-check",
+		"lint": "turbo run lint",
+		"test": "turbo run build && pnpm --filter=@kreditozrouti/web run test && pnpm --filter=@kreditozrouti/scraper run test && pnpm --filter=@kreditozrouti/api run test",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"boundaries": "depcruise packages/core apps/web apps/mcp --config .dependency-cruiser.cjs",
+		"verify": "pnpm lint && pnpm boundaries && pnpm test && pnpm type-check && pnpm build"
 	},
 	"devDependencies": {
-		"concurrently": "^10.0.5",
-		"dependency-cruiser": "18.3.0",
-		"dotenv-cli": "^11.0.0",
-		"jiti": "^2.7.0",
-		"turbo": "^2.10.13"
+		"@eslint/js": "catalog:",
+		"@ianvs/prettier-plugin-sort-imports": "catalog:",
+		"dependency-cruiser": "^18.4.0",
+		"dotenv-cli": "catalog:",
+		"eslint": "catalog:",
+		"eslint-config-prettier": "catalog:",
+		"globals": "catalog:",
+		"prettier": "catalog:",
+		"prettier-plugin-tailwindcss": "catalog:",
+		"turbo": "^2.11.3",
+		"typescript": "catalog:",
+		"typescript-eslint": "catalog:"
 	}
 }

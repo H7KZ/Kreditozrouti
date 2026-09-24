@@ -15,18 +15,18 @@
 name: CI Pipeline
 
 on:
-  pull_request:
-    branches: [ main ]
-    types: [ opened, synchronize, reopened ]
+    pull_request:
+        branches: [main]
+        types: [opened, synchronize, reopened]
 
 permissions:
-  contents: read
+    contents: read
 
 concurrency:
-  group: ci-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+    group: ci-${{ github.head_ref || github.ref }}
+    cancel-in-progress: true
 
 jobs:
-  verify:
-    name: Verify Code
-    uses: ./.github/workflows/_verify.yml
+    verify:
+        name: Verify Code
+        uses: ./.github/workflows/_verify.yml

@@ -2,14 +2,18 @@
 
 The [API](../../apps/api/Dockerfile), [web](../../apps/web/Dockerfile), [scraper](../../apps/scraper/Dockerfile), and [MCP](../../apps/mcp/Dockerfile) use multi-stage builds. Each prunes its Turbo workspace, installs with the frozen pnpm lockfile, builds its package, and copies the production output into a runner image. Node stages use `node:24-alpine`, `pnpm@12.4.1`, and `turbo@2.10.13`; web serves through nginx.
 
-| Service | Runtime | Internal port | Health |
-| --- | --- | --- | --- |
-| API | Node, non-root | 80 | `GET /health` |
-| Web | nginx | 80 | BusyBox `wget` on `127.0.0.1:80` |
-| Scraper | Node worker with Chromium | 9101 metrics | Container and scrape checks |
-| MCP | Node, non-root | 3000 | `GET /health` |
+| Service | Runtime                   | Internal port | Health                           |
+| ------- | ------------------------- | ------------- | -------------------------------- |
+| API     | Node, non-root            | 80            | `GET /health`                    |
+| Web     | nginx                     | 80            | BusyBox `wget` on `127.0.0.1:80` |
+| Scraper | Node worker with Chromium | 9101 metrics  | Container and scrape checks      |
+| MCP     | Node, non-root            | 3000          | `GET /health`                    |
 
 The API runs database migrations on startup. The scraper serves `/metrics` inside the monitoring network; it has no public route.
+
+## Local Compose
+
+The root [`docker-compose.local.yml`](../../docker-compose.local.yml) follows the Ohlídáme developer stack split: `make dev` starts only MySQL and Redis, then runs workspace watchers on the host. `make up` builds and starts the four deployables behind a pinned local Traefik container, which routes `/` to web, `/api` to API, and `/mcp` plus OAuth discovery routes to MCP. The dashboard binds to loopback at `http://localhost:8080/dashboard/`. phpMyAdmin is optional via `make admin`; the local Compose file has no monitoring services.
 
 ## Web runtime configuration
 
@@ -23,4 +27,4 @@ The build workflow pushes each service to `ghcr.io/<owner>/<repo>/<service>` wit
 
 Third-party images in Compose use versioned tags. Check the actual [production](../../deployment/production/docker-compose.production.yml), [development](../../deployment/development/docker-compose.development.yml), [monitoring](../../deployment/monitoring/docker-compose.monitoring.yml), and [runner](../../deployment/github-runner/docker-compose.github-runner.yml) files before changing a pin. In particular, MySQL and PostgreSQL image major changes require data migration; the [Umami PostgreSQL 18 runbook](HANDOFF-umami-pg18-migration.md) covers the existing monitoring volume.
 
-Build all four app images locally with `make build-docker-images` from the repository root. Use the project's local Compose stack for integrated checks; standalone `docker run` of API or scraper needs matching MySQL and Redis services.
+`make up` builds and starts all four app images with local Traefik, MySQL, and Redis. Standalone `docker run` of API or scraper needs matching MySQL and Redis services.

@@ -13,318 +13,317 @@
 name: Deploy
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'apps/api/**'
-      - 'apps/web/**'
-      - 'apps/scraper/**'
-      - 'apps/mcp/**'
-      - 'packages/**'
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: Target environment
-        required: true
-        type: choice
-        options: [ production, development ]
-        default: production
-      deploy_api:
-        description: Deploy API
-        type: boolean
-        default: true
-      deploy_web:
-        description: Deploy Web
-        type: boolean
-        default: true
-      deploy_scraper:
-        description: Deploy Scraper
-        type: boolean
-        default: true
-      deploy_mcp:
-        description: Deploy MCP
-        type: boolean
-        default: true
-      image_tag:
-        description: Specific image tag to deploy (skips build if set)
-        required: false
-        type: string
-        default: ''
-      skip_build:
-        description: Skip build (images must already exist in registry)
-        required: false
-        type: boolean
-        default: false
+    push:
+        branches: [main]
+        paths:
+            - 'apps/api/**'
+            - 'apps/web/**'
+            - 'apps/scraper/**'
+            - 'apps/mcp/**'
+            - 'packages/**'
+    workflow_dispatch:
+        inputs:
+            environment:
+                description: Target environment
+                required: true
+                type: choice
+                options: [production, development]
+                default: production
+            deploy_api:
+                description: Deploy API
+                type: boolean
+                default: true
+            deploy_web:
+                description: Deploy Web
+                type: boolean
+                default: true
+            deploy_scraper:
+                description: Deploy Scraper
+                type: boolean
+                default: true
+            deploy_mcp:
+                description: Deploy MCP
+                type: boolean
+                default: true
+            image_tag:
+                description: Specific image tag to deploy (skips build if set)
+                required: false
+                type: string
+                default: ''
+            skip_build:
+                description: Skip build (images must already exist in registry)
+                required: false
+                type: boolean
+                default: false
 
 permissions:
-  contents: read
-  packages: write
+    contents: read
+    packages: write
 
 concurrency:
-  group: deploy-${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-  cancel-in-progress: false
+    group: deploy-${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+    cancel-in-progress: false
 
 jobs:
+    # ---------------------------------------------------------------------------
+    # Validate dispatch inputs before any work starts.
+    # ---------------------------------------------------------------------------
+    validate:
+        name: Validate Inputs
+        runs-on: self-hosted
+        timeout-minutes: 5
+        steps:
+            - name: Reject skip_build without image_tag
+              if: github.event_name == 'workflow_dispatch'
+              run: |
+                  if [[ "${{ inputs.skip_build }}" == "true" && -z "${{ inputs.image_tag }}" ]]; then
+                    echo "ERROR: image_tag must be set when skip_build is true"
+                    exit 1
+                  fi
 
-  # ---------------------------------------------------------------------------
-  # Validate dispatch inputs before any work starts.
-  # ---------------------------------------------------------------------------
-  validate:
-    name: Validate Inputs
-    runs-on: self-hosted
-    timeout-minutes: 5
-    steps:
-      - name: Reject skip_build without image_tag
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          if [[ "${{ inputs.skip_build }}" == "true" && -z "${{ inputs.image_tag }}" ]]; then
-            echo "ERROR: image_tag must be set when skip_build is true"
-            exit 1
-          fi
+    # ---------------------------------------------------------------------------
+    # Detect which services changed (push only - dispatch uses checkbox inputs)
+    # ---------------------------------------------------------------------------
+    detect:
+        name: Detect Changed Services
+        runs-on: self-hosted
+        if: github.event_name == 'push'
+        timeout-minutes: 5
+        outputs:
+            api: ${{ steps.filter.outputs.api }}
+            web: ${{ steps.filter.outputs.web }}
+            scraper: ${{ steps.filter.outputs.scraper }}
+            mcp: ${{ steps.filter.outputs.mcp }}
+        steps:
+            - uses: dorny/paths-filter@v4
+              id: filter
+              with:
+                  filters: |
+                      api:
+                        - 'apps/api/**'
+                        - 'packages/**'
+                      web:
+                        - 'apps/web/**'
+                        - 'packages/**'
+                      scraper:
+                        - 'apps/scraper/**'
+                        - 'packages/**'
+                      mcp:
+                        - 'apps/mcp/**'
+                        - 'packages/**'
 
-  # ---------------------------------------------------------------------------
-  # Detect which services changed (push only - dispatch uses checkbox inputs)
-  # ---------------------------------------------------------------------------
-  detect:
-    name: Detect Changed Services
-    runs-on: self-hosted
-    if: github.event_name == 'push'
-    timeout-minutes: 5
-    outputs:
-      api: ${{ steps.filter.outputs.api }}
-      web: ${{ steps.filter.outputs.web }}
-      scraper: ${{ steps.filter.outputs.scraper }}
-      mcp: ${{ steps.filter.outputs.mcp }}
-    steps:
-      - uses: dorny/paths-filter@v4
-        id: filter
+    # ---------------------------------------------------------------------------
+    # Build (parallel, each conditional on service selection)
+    # ---------------------------------------------------------------------------
+    build-api:
+        name: Build API
+        needs: [detect, validate]
+        if: >-
+            always() &&
+            needs.validate.result == 'success' &&
+            needs.detect.result != 'failure' &&
+            (
+              (github.event_name == 'push' && needs.detect.outputs.api == 'true') ||
+              (github.event_name == 'workflow_dispatch' && inputs.deploy_api && !inputs.skip_build && inputs.image_tag == '')
+            )
+        uses: ./.github/workflows/_build-service.yml
         with:
-          filters: |
-            api:
-              - 'apps/api/**'
-              - 'packages/**'
-            web:
-              - 'apps/web/**'
-              - 'packages/**'
-            scraper:
-              - 'apps/scraper/**'
-              - 'packages/**'
-            mcp:
-              - 'apps/mcp/**'
-              - 'packages/**'
+            service: api
+            float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
+            cache_scope: api-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+        secrets: inherit
 
-  # ---------------------------------------------------------------------------
-  # Build (parallel, each conditional on service selection)
-  # ---------------------------------------------------------------------------
-  build-api:
-    name: Build API
-    needs: [ detect, validate ]
-    if: >-
-      always() &&
-      needs.validate.result == 'success' &&
-      needs.detect.result != 'failure' &&
-      (
-        (github.event_name == 'push' && needs.detect.outputs.api == 'true') ||
-        (github.event_name == 'workflow_dispatch' && inputs.deploy_api && !inputs.skip_build && inputs.image_tag == '')
-      )
-    uses: ./.github/workflows/_build-service.yml
-    with:
-      service: api
-      float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
-      cache_scope: api-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
-    secrets: inherit
+    build-web:
+        name: Build Web
+        needs: [detect, validate]
+        if: >-
+            always() &&
+            needs.validate.result == 'success' &&
+            needs.detect.result != 'failure' &&
+            (
+              (github.event_name == 'push' && needs.detect.outputs.web == 'true') ||
+              (github.event_name == 'workflow_dispatch' && inputs.deploy_web && !inputs.skip_build && inputs.image_tag == '')
+            )
+        uses: ./.github/workflows/_build-service.yml
+        with:
+            service: web
+            float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
+            cache_scope: web-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+        secrets: inherit
 
-  build-web:
-    name: Build Web
-    needs: [ detect, validate ]
-    if: >-
-      always() &&
-      needs.validate.result == 'success' &&
-      needs.detect.result != 'failure' &&
-      (
-        (github.event_name == 'push' && needs.detect.outputs.web == 'true') ||
-        (github.event_name == 'workflow_dispatch' && inputs.deploy_web && !inputs.skip_build && inputs.image_tag == '')
-      )
-    uses: ./.github/workflows/_build-service.yml
-    with:
-      service: web
-      float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
-      cache_scope: web-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
-    secrets: inherit
+    build-scraper:
+        name: Build Scraper
+        needs: [detect, validate]
+        if: >-
+            always() &&
+            needs.validate.result == 'success' &&
+            needs.detect.result != 'failure' &&
+            (
+              (github.event_name == 'push' && needs.detect.outputs.scraper == 'true') ||
+              (github.event_name == 'workflow_dispatch' && inputs.deploy_scraper && !inputs.skip_build && inputs.image_tag == '')
+            )
+        uses: ./.github/workflows/_build-service.yml
+        with:
+            service: scraper
+            float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
+            cache_scope: scraper-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+        secrets: inherit
 
-  build-scraper:
-    name: Build Scraper
-    needs: [ detect, validate ]
-    if: >-
-      always() &&
-      needs.validate.result == 'success' &&
-      needs.detect.result != 'failure' &&
-      (
-        (github.event_name == 'push' && needs.detect.outputs.scraper == 'true') ||
-        (github.event_name == 'workflow_dispatch' && inputs.deploy_scraper && !inputs.skip_build && inputs.image_tag == '')
-      )
-    uses: ./.github/workflows/_build-service.yml
-    with:
-      service: scraper
-      float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
-      cache_scope: scraper-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
-    secrets: inherit
+    build-mcp:
+        name: Build MCP
+        needs: [detect, validate]
+        if: >-
+            always() &&
+            needs.validate.result == 'success' &&
+            needs.detect.result != 'failure' &&
+            (
+              (github.event_name == 'push' && needs.detect.outputs.mcp == 'true') ||
+              (github.event_name == 'workflow_dispatch' && inputs.deploy_mcp && !inputs.skip_build && inputs.image_tag == '')
+            )
+        uses: ./.github/workflows/_build-service.yml
+        with:
+            service: mcp
+            float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
+            cache_scope: mcp-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+        secrets: inherit
 
-  build-mcp:
-    name: Build MCP
-    needs: [ detect, validate ]
-    if: >-
-      always() &&
-      needs.validate.result == 'success' &&
-      needs.detect.result != 'failure' &&
-      (
-        (github.event_name == 'push' && needs.detect.outputs.mcp == 'true') ||
-        (github.event_name == 'workflow_dispatch' && inputs.deploy_mcp && !inputs.skip_build && inputs.image_tag == '')
-      )
-    uses: ./.github/workflows/_build-service.yml
-    with:
-      service: mcp
-      float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
-      cache_scope: mcp-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
-    secrets: inherit
+    # ---------------------------------------------------------------------------
+    # Resolve image prefix - always github.repository lowercased; derived from
+    # a build output to stay consistent with _build-service.yml
+    # ---------------------------------------------------------------------------
+    resolve:
+        name: Resolve Image Prefix
+        runs-on: self-hosted
+        timeout-minutes: 5
+        needs: [validate, detect, build-api, build-web, build-scraper, build-mcp]
+        if: always() && needs.validate.result == 'success' && needs.detect.result != 'failure'
+        outputs:
+            image_prefix: ${{ steps.prefix.outputs.value }}
+        steps:
+            - name: Compute lowercase prefix
+              id: prefix
+              run: |
+                  RAW="${{ needs.build-api.outputs.image_prefix || needs.build-web.outputs.image_prefix || needs.build-scraper.outputs.image_prefix || needs.build-mcp.outputs.image_prefix || github.repository }}"
+                  echo "value=${RAW,,}" >> "$GITHUB_OUTPUT"
 
-  # ---------------------------------------------------------------------------
-  # Resolve image prefix - always github.repository lowercased; derived from
-  # a build output to stay consistent with _build-service.yml
-  # ---------------------------------------------------------------------------
-  resolve:
-    name: Resolve Image Prefix
-    runs-on: self-hosted
-    timeout-minutes: 5
-    needs: [ validate, detect, build-api, build-web, build-scraper, build-mcp ]
-    if: always() && needs.validate.result == 'success' && needs.detect.result != 'failure'
-    outputs:
-      image_prefix: ${{ steps.prefix.outputs.value }}
-    steps:
-      - name: Compute lowercase prefix
-        id: prefix
-        run: |
-          RAW="${{ needs.build-api.outputs.image_prefix || needs.build-web.outputs.image_prefix || needs.build-scraper.outputs.image_prefix || needs.build-mcp.outputs.image_prefix || github.repository }}"
-          echo "value=${RAW,,}" >> "$GITHUB_OUTPUT"
+    # ---------------------------------------------------------------------------
+    # Deploy (parallel per service, each conditional on service selection)
+    # ---------------------------------------------------------------------------
+    deploy-api:
+        name: Deploy API
+        needs: [detect, build-api, resolve]
+        if: >-
+            always() &&
+            needs.resolve.result == 'success' &&
+            (needs.build-api.result == 'success' || needs.build-api.result == 'skipped') &&
+            (
+              (github.event_name == 'push' && needs.detect.outputs.api == 'true') ||
+              (github.event_name == 'workflow_dispatch' && inputs.deploy_api)
+            )
+        uses: ./.github/workflows/_deploy-service.yml
+        with:
+            service: api
+            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+            project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
+            image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-api.outputs.image_tag }}
+            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+        secrets: inherit
 
-  # ---------------------------------------------------------------------------
-  # Deploy (parallel per service, each conditional on service selection)
-  # ---------------------------------------------------------------------------
-  deploy-api:
-    name: Deploy API
-    needs: [ detect, build-api, resolve ]
-    if: >-
-      always() &&
-      needs.resolve.result == 'success' &&
-      (needs.build-api.result == 'success' || needs.build-api.result == 'skipped') &&
-      (
-        (github.event_name == 'push' && needs.detect.outputs.api == 'true') ||
-        (github.event_name == 'workflow_dispatch' && inputs.deploy_api)
-      )
-    uses: ./.github/workflows/_deploy-service.yml
-    with:
-      service: api
-      environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
-      image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-api.outputs.image_tag }}
-      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-    secrets: inherit
+    deploy-web:
+        name: Deploy Web
+        needs: [detect, build-web, resolve]
+        if: >-
+            always() &&
+            needs.resolve.result == 'success' &&
+            (needs.build-web.result == 'success' || needs.build-web.result == 'skipped') &&
+            (
+              (github.event_name == 'push' && needs.detect.outputs.web == 'true') ||
+              (github.event_name == 'workflow_dispatch' && inputs.deploy_web)
+            )
+        uses: ./.github/workflows/_deploy-service.yml
+        with:
+            service: web
+            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+            project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
+            image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-web.outputs.image_tag }}
+            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+        secrets: inherit
 
-  deploy-web:
-    name: Deploy Web
-    needs: [ detect, build-web, resolve ]
-    if: >-
-      always() &&
-      needs.resolve.result == 'success' &&
-      (needs.build-web.result == 'success' || needs.build-web.result == 'skipped') &&
-      (
-        (github.event_name == 'push' && needs.detect.outputs.web == 'true') ||
-        (github.event_name == 'workflow_dispatch' && inputs.deploy_web)
-      )
-    uses: ./.github/workflows/_deploy-service.yml
-    with:
-      service: web
-      environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
-      image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-web.outputs.image_tag }}
-      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-    secrets: inherit
+    deploy-scraper:
+        name: Deploy Scraper
+        needs: [detect, build-scraper, resolve]
+        if: >-
+            always() &&
+            needs.resolve.result == 'success' &&
+            (needs.build-scraper.result == 'success' || needs.build-scraper.result == 'skipped') &&
+            (
+              (github.event_name == 'push' && needs.detect.outputs.scraper == 'true') ||
+              (github.event_name == 'workflow_dispatch' && inputs.deploy_scraper)
+            )
+        uses: ./.github/workflows/_deploy-service.yml
+        with:
+            service: scraper
+            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+            project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
+            image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-scraper.outputs.image_tag }}
+            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+        secrets: inherit
 
-  deploy-scraper:
-    name: Deploy Scraper
-    needs: [ detect, build-scraper, resolve ]
-    if: >-
-      always() &&
-      needs.resolve.result == 'success' &&
-      (needs.build-scraper.result == 'success' || needs.build-scraper.result == 'skipped') &&
-      (
-        (github.event_name == 'push' && needs.detect.outputs.scraper == 'true') ||
-        (github.event_name == 'workflow_dispatch' && inputs.deploy_scraper)
-      )
-    uses: ./.github/workflows/_deploy-service.yml
-    with:
-      service: scraper
-      environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
-      image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-scraper.outputs.image_tag }}
-      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-    secrets: inherit
+    deploy-mcp:
+        name: Deploy MCP
+        needs: [detect, build-mcp, resolve]
+        if: >-
+            always() &&
+            needs.resolve.result == 'success' &&
+            (needs.build-mcp.result == 'success' || needs.build-mcp.result == 'skipped') &&
+            (
+              (github.event_name == 'push' && needs.detect.outputs.mcp == 'true') ||
+              (github.event_name == 'workflow_dispatch' && inputs.deploy_mcp)
+            )
+        uses: ./.github/workflows/_deploy-service.yml
+        with:
+            service: mcp
+            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+            project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
+            image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-mcp.outputs.image_tag }}
+            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+        secrets: inherit
 
-  deploy-mcp:
-    name: Deploy MCP
-    needs: [ detect, build-mcp, resolve ]
-    if: >-
-      always() &&
-      needs.resolve.result == 'success' &&
-      (needs.build-mcp.result == 'success' || needs.build-mcp.result == 'skipped') &&
-      (
-        (github.event_name == 'push' && needs.detect.outputs.mcp == 'true') ||
-        (github.event_name == 'workflow_dispatch' && inputs.deploy_mcp)
-      )
-    uses: ./.github/workflows/_deploy-service.yml
-    with:
-      service: mcp
-      environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-      project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
-      image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-mcp.outputs.image_tag }}
-      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-    secrets: inherit
+    # ---------------------------------------------------------------------------
+    # Cleanup old package versions after successful deploy
+    # ---------------------------------------------------------------------------
+    cleanup-api:
+        name: Cleanup API packages
+        needs: [deploy-api]
+        if: needs.deploy-api.result == 'success'
+        uses: ./.github/workflows/_cleanup-package.yml
+        with:
+            package-name: kreditozrouti/api
+        secrets: inherit
 
-  # ---------------------------------------------------------------------------
-  # Cleanup old package versions after successful deploy
-  # ---------------------------------------------------------------------------
-  cleanup-api:
-    name: Cleanup API packages
-    needs: [ deploy-api ]
-    if: needs.deploy-api.result == 'success'
-    uses: ./.github/workflows/_cleanup-package.yml
-    with:
-      package-name: kreditozrouti/api
-    secrets: inherit
+    cleanup-web:
+        name: Cleanup Web packages
+        needs: [deploy-web]
+        if: needs.deploy-web.result == 'success'
+        uses: ./.github/workflows/_cleanup-package.yml
+        with:
+            package-name: kreditozrouti/web
+        secrets: inherit
 
-  cleanup-web:
-    name: Cleanup Web packages
-    needs: [ deploy-web ]
-    if: needs.deploy-web.result == 'success'
-    uses: ./.github/workflows/_cleanup-package.yml
-    with:
-      package-name: kreditozrouti/web
-    secrets: inherit
+    cleanup-scraper:
+        name: Cleanup Scraper packages
+        needs: [deploy-scraper]
+        if: needs.deploy-scraper.result == 'success'
+        uses: ./.github/workflows/_cleanup-package.yml
+        with:
+            package-name: kreditozrouti/scraper
+        secrets: inherit
 
-  cleanup-scraper:
-    name: Cleanup Scraper packages
-    needs: [ deploy-scraper ]
-    if: needs.deploy-scraper.result == 'success'
-    uses: ./.github/workflows/_cleanup-package.yml
-    with:
-      package-name: kreditozrouti/scraper
-    secrets: inherit
-
-  cleanup-mcp:
-    name: Cleanup MCP packages
-    needs: [ deploy-mcp ]
-    if: needs.deploy-mcp.result == 'success'
-    uses: ./.github/workflows/_cleanup-package.yml
-    with:
-      package-name: kreditozrouti/mcp
-    secrets: inherit
+    cleanup-mcp:
+        name: Cleanup MCP packages
+        needs: [deploy-mcp]
+        if: needs.deploy-mcp.result == 'success'
+        uses: ./.github/workflows/_cleanup-package.yml
+        with:
+            package-name: kreditozrouti/mcp
+        secrets: inherit
