@@ -15,10 +15,10 @@ clear-redis:
 	docker exec kreditozrouti-redis redis-cli FLUSHDB
 
 build-docker-images:
-	docker buildx build -t kreditozrouti-api     -f ./api/Dockerfile     . && \
-	docker buildx build -t kreditozrouti-web  -f ./web/Dockerfile  . && \
-	docker buildx build -t kreditozrouti-scraper -f ./scraper/Dockerfile . && \
-	docker buildx build -t kreditozrouti-mcp     -f ./mcp/Dockerfile     .
+	docker buildx build -t kreditozrouti-api     -f ./apps/api/Dockerfile     . && \
+	docker buildx build -t kreditozrouti-web  -f ./apps/web/Dockerfile  . && \
+	docker buildx build -t kreditozrouti-scraper -f ./apps/scraper/Dockerfile . && \
+	docker buildx build -t kreditozrouti-mcp     -f ./apps/mcp/Dockerfile     .
 
 # Dependencies
 
@@ -57,6 +57,7 @@ test-regen:
 # One local command mirroring what _verify.yml runs in CI, so it can be checked before pushing
 verify:
 	$(MAKE) lint
+	pnpm boundaries
 	pnpm --filter=@kreditozrouti/core run build
 	$(MAKE) test
 	$(MAKE) type-check

@@ -1,6 +1,6 @@
 # Web composables
 
-Composable source lives in `web/src/composables/`. Import from the barrel at `@web/composables` when it exports the helper; use a direct path for helpers such as the shared course-status filter. Exact arguments and return values live beside each implementation.
+Composable source lives in `apps/web/src/composables/`. Import from the barrel at `@web/composables` when it exports the helper; use a direct path for helpers such as the shared course-status filter. Exact arguments and return values live beside each implementation.
 
 | Area | Helpers | Use |
 | --- | --- | --- |

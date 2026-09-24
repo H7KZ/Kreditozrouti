@@ -16,10 +16,10 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'api/**'
-      - 'web/**'
-      - 'scraper/**'
-      - 'mcp/**'
+      - 'apps/api/**'
+      - 'apps/web/**'
+      - 'apps/scraper/**'
+      - 'apps/mcp/**'
       - 'packages/**'
   workflow_dispatch:
     inputs:
@@ -101,16 +101,16 @@ jobs:
         with:
           filters: |
             api:
-              - 'api/**'
+              - 'apps/api/**'
               - 'packages/**'
             web:
-              - 'web/**'
+              - 'apps/web/**'
               - 'packages/**'
             scraper:
-              - 'scraper/**'
+              - 'apps/scraper/**'
               - 'packages/**'
             mcp:
-              - 'mcp/**'
+              - 'apps/mcp/**'
               - 'packages/**'
 
   # ---------------------------------------------------------------------------

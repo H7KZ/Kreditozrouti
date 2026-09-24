@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="web/public/logo/kreditozrouti-transparent-cropped.png" alt="Kreditožrouti Logo" width="200">
+  <img src="apps/web/public/logo/kreditozrouti-transparent-cropped.png" alt="Kreditožrouti Logo" width="200">
 
 # Kreditožrouti
 
@@ -68,7 +68,7 @@ Short version:
 
 ## Legal and affiliation
 
-No repository-wide license file is present; `mcp/package.json` declares MIT for that package. This project is not officially affiliated with VŠE.
+No repository-wide license file is present; `apps/mcp/package.json` declares MIT for that package. This project is not officially affiliated with VŠE.
 
 - [Privacy Policy](https://kreditozrouti.cz/docs/en/legal/privacy)
 - [Terms of Use](https://kreditozrouti.cz/docs/en/legal/terms)

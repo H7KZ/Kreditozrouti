@@ -1,6 +1,6 @@
 # Developer documentation
 
-This folder holds developer references and setup guides. Published student help lives in [`web/src/pages/docs/`](../web/src/pages/docs/); [`user/`](user/) points to it.
+This folder holds developer references and setup guides. Published student help lives in [`apps/web/src/pages/docs/`](../apps/web/src/pages/docs/); [`user/`](user/) points to it.
 
 ## Work on the system
 

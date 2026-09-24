@@ -1,6 +1,6 @@
 # API services
 
-Controllers validate requests and call services in `api/src/Services/`. Shared request and response types live in `@kreditozrouti/types`.
+Controllers validate requests and call services in `apps/api/src/Services/`. Shared request and response types live in `@kreditozrouti/types`.
 
 ## Course search
 

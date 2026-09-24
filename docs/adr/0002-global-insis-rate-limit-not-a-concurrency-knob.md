@@ -9,7 +9,7 @@ The sibling project Ohlídáme exposes a single `SCRAPER_CONCURRENCY` env var th
 concurrency, and it is tempting to copy it here. We deliberately did not. Ohlídáme's parallelism is flat, so one
 knob has one meaning. Kreditožrouti's is nested and multiplicative: prod runs `replicas: 2`
 (`deployment/production/docker-compose.production.yml`), each worker takes `concurrency: 1`
-(`scraper/src/bullmq.ts`), and each job then fans out internally via `runWithConcurrency` at 4 faculties
+(`apps/scraper/src/bullmq.ts`), and each job then fans out internally via `runWithConcurrency` at 4 faculties
 (`ScraperRequestInSISAcademicSchedulesJob.ts`), 4 catalog combinations (`ScraperRequestInSISCatalogJob.ts`),
 6 BFS levels (`ScraperRequestInSISStudyPlansJob.ts`) and 20 on enqueue (`QueueService.ts`). Peak concurrent
 requests at InSIS is the product of those layers, not any one of them. A `SCRAPER_CONCURRENCY` knob would sit

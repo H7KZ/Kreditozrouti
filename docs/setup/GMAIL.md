@@ -1,6 +1,6 @@
 # Gmail SMTP setup
 
-The API uses `smtp.gmail.com:587` with TLS. Email is enabled when both `GOOGLE_USER` and `GOOGLE_APP_PASSWORD` are set. On startup, it verifies SMTP authentication and logs `mailer.configured` after success. See the [mailer](../../api/src/clients/mailer.ts) and [API startup](../../api/src/index.ts).
+The API uses `smtp.gmail.com:587` with TLS. Email is enabled when both `GOOGLE_USER` and `GOOGLE_APP_PASSWORD` are set. On startup, it verifies SMTP authentication and logs `mailer.configured` after success. See the [mailer](../../apps/api/src/clients/mailer.ts) and [API startup](../../apps/api/src/index.ts).
 
 ## Configure
 

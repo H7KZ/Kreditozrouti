@@ -80,7 +80,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: ./${{ inputs.service }}/Dockerfile
+          file: ./apps/${{ inputs.service }}/Dockerfile
           push: true
           tags: |
             ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}

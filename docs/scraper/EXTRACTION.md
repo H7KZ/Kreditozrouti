@@ -1,6 +1,6 @@
 # InSIS extraction
 
-Extraction services in `scraper/src/Services/` turn server-rendered InSIS HTML into the types in [`packages/types/src/queue.ts`](../../packages/types/src/queue.ts). Keep selectors and normalization close to each source page.
+Extraction services in `apps/scraper/src/Services/` turn server-rendered InSIS HTML into the types in [`packages/types/src/queue.ts`](../../packages/types/src/queue.ts). Keep selectors and normalization close to each source page.
 
 | Service | Reads | Produces |
 | --- | --- | --- |
@@ -12,6 +12,6 @@ Extraction services in `scraper/src/Services/` turn server-rendered InSIS HTML i
 
 `ExtractInSISCourseService.extractIdFromUrl` and `extractIdFromHtml` identify course records. `isNotFound` detects removed pages. Czech and English syllabus content is parsed separately; `MarkdownService` converts rich sections to Markdown. Timetable extraction keeps source clock strings and nullable values. The API performs minute conversion when it persists slots.
 
-`ExtractInSISStudyPlanService` parses group codes using helpers from `@kreditozrouti/core/utils`. Shared HTML cleanup is in `scraper/src/Utils/HTMLUtils.ts`; request headers are in `HTTPUtils.ts`.
+`ExtractInSISStudyPlanService` parses group codes using helpers from `@kreditozrouti/core/utils`. Shared HTML cleanup is in `apps/scraper/src/Utils/HTMLUtils.ts`; request headers are in `HTTPUtils.ts`.
 
 Fixture HTML and expected scraper output live in `fixtures/`. The extraction source and those fixtures are the best place to confirm an InSIS markup assumption.

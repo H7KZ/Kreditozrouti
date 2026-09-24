@@ -4,7 +4,7 @@ The timetable stores selected teaching slots as `SelectedCourseUnit` snapshots. 
 
 ## Time and layout
 
-All times are minutes after midnight: `07:30` is `450`; `20:00` is `1200`. `web/src/constants/timetable.ts` defines the grid span, 15-minute drag snapping, and display geometry. The grid shows Monday through Friday. `useTimetableGrid` positions overlapping blocks; `useSlotMerging` combines suitable one-time slots for display.
+All times are minutes after midnight: `07:30` is `450`; `20:00` is `1200`. `apps/web/src/constants/timetable.ts` defines the grid span, 15-minute drag snapping, and display geometry. The grid shows Monday through Friday. `useTimetableGrid` positions overlapping blocks; `useSlotMerging` combines suitable one-time slots for display.
 
 The timetable store groups units by course and day, counts each course's ECTS once, and persists selected units under `kreditozrouti:timetable`. The saved-schedule store keeps up to five named schedules under `kreditozrouti:schedule-slots`.
 
@@ -17,7 +17,7 @@ The timetable store groups units by course and day, counts each course's ECTS on
 3. `incomplete`: a required unit type has not been selected.
 4. `selected`: no detected issue.
 
-Conflict and campus checks come from `@kreditozrouti/core/domain/timetable`, re-exported by `web/src/utils/timetable.ts`. Unknown room locations do not produce a campus conflict. The status map drives the list, grid, and summary.
+Conflict and campus checks come from `@kreditozrouti/core/domain/timetable`, re-exported by `apps/web/src/utils/timetable.ts`. Unknown room locations do not produce a campus conflict. The status map drives the list, grid, and summary.
 
 ## Adding and filtering
 

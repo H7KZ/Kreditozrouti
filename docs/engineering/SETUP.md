@@ -36,6 +36,7 @@ To run one service, use `pnpm --filter=@kreditozrouti/api run dev`, replacing `a
 | `make format` | Format workspaces |
 | `make type-check` | Check TypeScript |
 | `make build` | Build workspaces |
+| `pnpm boundaries` | Check core, web, and MCP import boundaries |
 | `make verify` | Run the local CI checks, including existing tests |
 | `make build-docker-images` | Build service images locally |
 | `make clear-redis` | Flush the local Redis database, including queues and sessions |

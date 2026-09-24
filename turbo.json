@@ -5,9 +5,9 @@
       "dependsOn": ["^build"],
       /*
        * turbo runs tasks in strict env mode: a variable not declared here is REMOVED from the
-       * task's environment, not merely left out of the hash. web/Dockerfile sets these six as
+       * task's environment, not merely left out of the hash. apps/web/Dockerfile sets these six as
        * ENV in its builder stage so vite bakes placeholder tokens into the bundle, which
-       * web/docker-entrypoint.sh then rewrites with the real values at container start.
+       * apps/web/docker-entrypoint.sh then rewrites with the real values at container start.
        *
        * Without this declaration none of them reached vite. VITE_API_URL fell back to '/api' and
        * worked by accident, but Faro and Umami were silently disabled in production, the app

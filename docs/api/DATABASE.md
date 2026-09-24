@@ -1,6 +1,6 @@
 # API database
 
-The API uses Kysely with MySQL. Table interfaces and the `Database` type are defined in [`packages/types/src/db.ts`](../../packages/types/src/db.ts) and re-exported by `api/src/Database/types.ts`. Migrations live in `api/src/Database/migrations/`; `SQLService` applies them at startup.
+The API uses Kysely with MySQL. Table interfaces and the `Database` type are defined in [`packages/types/src/db.ts`](../../packages/types/src/db.ts) and re-exported by `apps/api/src/Database/types.ts`. Migrations live in `apps/api/src/Database/migrations/`; `SQLService` applies them at startup.
 
 ## Tables
 
@@ -25,4 +25,4 @@ Slot `time_from` and `time_to` are integer minutes from midnight: `08:00` is `48
 
 ## Schema changes
 
-Add a Kysely migration in `api/src/Database/migrations/` and update the matching table interface in `packages/types/src/db.ts`. Keep the API query and response projections in sync. See [engineering setup](../engineering/SETUP.md) for local MySQL.
+Add a Kysely migration in `apps/api/src/Database/migrations/` and update the matching table interface in `packages/types/src/db.ts`. Keep the API query and response projections in sync. See [engineering setup](../engineering/SETUP.md) for local MySQL.

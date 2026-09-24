@@ -8,4 +8,4 @@
 
 Use TypeScript strict types, Vue 3 Composition API with `<script setup>`, and plain namespace objects for API controllers. Browser code imports shared DTOs from `@kreditozrouti/types` and browser-safe logic from `@kreditozrouti/core`. Package `AGENTS.md` files give local invariants and source layout.
 
-The published student guide lives in `web/src/pages/docs/en/` and `web/src/pages/docs/cs/`. Keep both languages aligned when changing a user-facing flow. The developer [docs index](../README.md) points to technical guides.
+The published student guide lives in `apps/web/src/pages/docs/en/` and `apps/web/src/pages/docs/cs/`. Keep both languages aligned when changing a user-facing flow. The developer [docs index](../README.md) points to technical guides.

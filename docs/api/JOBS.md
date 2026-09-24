@@ -1,6 +1,6 @@
 # API response jobs and schedules
 
-The API owns `ScraperRequestQueue` and consumes `ScraperResponseQueue`. Both names come from `@kreditozrouti/core/queue`; payloads come from `@kreditozrouti/types`. `api/src/Handlers/ScraperResponseHandler.ts` dispatches results and retries database deadlocks.
+The API owns `ScraperRequestQueue` and consumes `ScraperResponseQueue`. Both names come from `@kreditozrouti/core/queue`; payloads come from `@kreditozrouti/types`. `apps/api/src/Handlers/ScraperResponseHandler.ts` dispatches results and retries database deadlocks.
 
 ## Result handling
 
@@ -19,7 +19,7 @@ The response worker runs with concurrency 2 and permits two stall recoveries. Fa
 
 ## Production schedules
 
-`api/src/bullmq.ts` registers these BullMQ schedulers only when `ENV` is `production` or `prod`:
+`apps/api/src/bullmq.ts` registers these BullMQ schedulers only when `ENV` is `production` or `prod`:
 
 | Time | Job |
 | --- | --- |

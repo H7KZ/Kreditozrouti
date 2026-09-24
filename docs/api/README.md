@@ -4,21 +4,21 @@ The Express API serves course and study plan data, creates share and calendar li
 
 ## How it runs
 
-`api/src/index.ts` starts the worker process. Startup connects MySQL and Redis, runs migrations and seeds, starts the BullMQ response worker, registers production schedules, then listens on `API_PORT` (default `40080`). See [jobs](JOBS.md) for the queue flow.
+`apps/api/src/index.ts` starts the worker process. Startup connects MySQL and Redis, runs migrations and seeds, starts the BullMQ response worker, registers production schedules, then listens on `API_PORT` (default `40080`). See [jobs](JOBS.md) for the queue flow.
 
-`api/src/app.ts` mounts these route groups: `/courses`, `/study_plans`, `/optimize`, `/share`, `/ical`, `/commands`, and `/admin`. It also serves `/health` and `/metrics`. See [endpoints](ENDPOINTS.md).
+`apps/api/src/app.ts` mounts these route groups: `/courses`, `/study_plans`, `/optimize`, `/share`, `/ical`, `/commands`, and `/admin`. It also serves `/health` and `/metrics`. See [endpoints](ENDPOINTS.md).
 
 ## Where to work
 
 | Area | Location |
 | --- | --- |
-| Request validation and handlers | `api/src/Controllers/` |
-| Route wiring | `api/src/Routes/` |
-| Queries and business logic | `api/src/Services/` |
-| Scraper result processing | `api/src/Jobs/` |
-| Database schema and migrations | `api/src/Database/` |
-| Middleware and clients | `api/src/Middlewares/`, `api/src/clients/` |
-| Configuration | `api/src/Config/Config.ts` |
+| Request validation and handlers | `apps/api/src/Controllers/` |
+| Route wiring | `apps/api/src/Routes/` |
+| Queries and business logic | `apps/api/src/Services/` |
+| Scraper result processing | `apps/api/src/Jobs/` |
+| Database schema and migrations | `apps/api/src/Database/` |
+| Middleware and clients | `apps/api/src/Middlewares/`, `apps/api/src/clients/` |
+| Configuration | `apps/api/src/Config/Config.ts` |
 
 Shared HTTP, database, and queue types live in `@kreditozrouti/types`. Pure domain logic and reusable services live in `@kreditozrouti/core`. Local imports use `@api/*`.
 

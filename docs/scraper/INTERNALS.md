@@ -2,7 +2,7 @@
 
 ## Startup and configuration
 
-`scraper/src/index.ts` starts worker processes. `scraper/src/bullmq.ts` connects the request worker and response producer. `scraper/src/Config/Config.ts` reads the root or package `.env`; InSIS URLs are code defaults. Key settings are `REDIS_URI`, optional `REDIS_PASSWORD`, `ENV`, and the `INSIS_RATE_LIMIT_*` values described in [queue behavior](QUEUE.md#insis-rate-limit).
+`apps/scraper/src/index.ts` starts worker processes. `apps/scraper/src/bullmq.ts` connects the request worker and response producer. `apps/scraper/src/Config/Config.ts` reads the root or package `.env`; InSIS URLs are code defaults. Key settings are `REDIS_URI`, optional `REDIS_PASSWORD`, `ENV`, and the `INSIS_RATE_LIMIT_*` values described in [queue behavior](QUEUE.md#insis-rate-limit).
 
 ## HTTP and extraction helpers
 

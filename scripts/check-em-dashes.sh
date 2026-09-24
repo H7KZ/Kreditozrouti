@@ -11,11 +11,11 @@ set -euo pipefail
 
 # Priority user-facing text paths (see issue #174).
 paths=(
-	"web/src/locales/en.json"
-	"web/src/locales/cs.json"
-	"web/src/legal"
-	"web/src/pages/docs"
-	"web/src/pages/about"
+	"apps/web/src/locales/en.json"
+	"apps/web/src/locales/cs.json"
+	"apps/web/src/legal"
+	"apps/web/src/pages/docs"
+	"apps/web/src/pages/about"
 )
 
 # grep -r returns 1 when no match found; that is the success case here.

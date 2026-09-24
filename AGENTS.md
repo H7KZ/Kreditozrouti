@@ -37,7 +37,7 @@ warranted, ask first and I will decide whether and what to add. I write tests ma
 
 Kreditožrouti is a course scheduling system for VŠE students. It scrapes InSIS and presents a filterable timetable UI.
 
-Area-specific instructions live in `api/`, `web/`, `scraper/`, `mcp/`, `deployment/`, and `scripts/` as `AGENTS.md`.
+Area-specific instructions live in `apps/api/`, `apps/web/`, `apps/scraper/`, `apps/mcp/`, `deployment/`, and `scripts/` as `AGENTS.md`.
 Read the relevant file before changing that area. Codex sessions started at the repository root do not automatically
 load nested `AGENTS.md` files. Each sibling `CLAUDE.md` imports its `AGENTS.md`; `.claude/CLAUDE.md` imports this file.
 
@@ -60,8 +60,9 @@ load nested `AGENTS.md` files. Each sibling `CLAUDE.md` imports its `AGENTS.md`;
 make install           # Install all dependencies
 make dev               # Run API, web, scraper, MCP, and shared-package watchers
 make run-local-docker  # Start MySQL, Redis, phpMyAdmin
-make test              # Run scraper then API tests sequentially
-make test-regen        # Regenerate scraper + API fixture snapshots
+  make test              # Run scraper then API tests sequentially
+  make test-regen        # Regenerate scraper + API fixture snapshots
+  pnpm boundaries       # Verify core, web, and MCP import boundaries
 ```
 
 ---
@@ -69,16 +70,12 @@ make test-regen        # Regenerate scraper + API fixture snapshots
 ## Monorepo Structure
 
 ```
-api/           Express API - HTTP, DB writes, job orchestration
-web/           Vue 3 SPA - user interface
-fixtures/      Shared test fixtures - HTML, *.scraper.json, *.db.json
-mcp/           MCP server - LLM tool access to VŠE data
-packages/core/ Reusable domain logic and services
-packages/types/ Shared DTO, queue, and database types
-scraper/       BullMQ worker - InSIS HTTP scraping
-scripts/       Bash - repository-specific server maintenance
-deployment/    Docker Compose stacks + deploy.sh
-docs/          Developer reference and setup guides
+apps/                 Deployable services: api, web, scraper, mcp
+packages/             Shared libraries: core, types, logger, style
+fixtures/             Shared test fixtures: HTML, *.scraper.json, *.db.json
+scripts/              Bash - repository-specific server maintenance
+deployment/           Docker Compose stacks + deploy.sh
+docs/                 Developer reference and setup guides
 ```
 
 ---
@@ -87,12 +84,14 @@ docs/          Developer reference and setup guides
 
 **Cross-package imports:**
 
+These boundaries are checked by `pnpm boundaries` and CI.
+
 - `packages/core/` must never import `express`, `bullmq`, `ioredis`, or any HTTP/queue runtime
-- `web/` never imports API runtime code, `@kreditozrouti/core/db`, or `@kreditozrouti/core/services`
+- `apps/web/` never imports API runtime code, `@kreditozrouti/core/db`, or `@kreditozrouti/core/services`
 - Shared DTO and queue types come from `@kreditozrouti/types`
-- `mcp/` uses `@kreditozrouti/core` for shared services and `@kreditozrouti/types` for types; it never imports
-  from `api/`, `scraper/`, or `web/`
-- `web/` and `packages/core/` never import the node-only `@kreditozrouti/logger`
+- `apps/mcp/` uses `@kreditozrouti/core` for shared services and `@kreditozrouti/types` for types; it never imports
+  from `apps/api/`, `apps/scraper/`, or `apps/web/`
+- `apps/web/` and `packages/core/` never import the node-only `@kreditozrouti/logger`
 
 **Time encoding:** all times are **minutes from midnight** (0-1439). `08:00` = 480.
 
@@ -113,7 +112,7 @@ docs/          Developer reference and setup guides
 Package-specific references are linked from each area-specific `AGENTS.md`. Start cross-cutting work at:
 
 - [Developer docs index](docs/README.md)
-- [Published student guide, English](web/src/pages/docs/en/getting-started.md) and [Czech](web/src/pages/docs/cs/getting-started.md)
+- [Published student guide, English](apps/web/src/pages/docs/en/getting-started.md) and [Czech](apps/web/src/pages/docs/cs/getting-started.md)
 - [Domain glossary](docs/DOMAIN.md) and [architecture](docs/architecture/README.md)
 - [Engineering setup](docs/engineering/SETUP.md) and [contributing](docs/engineering/CONTRIBUTING.md)
 - [MCP server](docs/mcp/README.md)
@@ -126,7 +125,7 @@ Package-specific references are linked from each area-specific `AGENTS.md`. Star
 After completing any task that changes code, configuration, or behavior:
 
 1. **Identify** which developer docs describe the changed area and update those that need it.
-2. **For user-visible changes**, update the relevant pages in both `web/src/pages/docs/en/` and `web/src/pages/docs/cs/`.
+2. **For user-visible changes**, update the relevant pages in both `apps/web/src/pages/docs/en/` and `apps/web/src/pages/docs/cs/`.
 3. **Check links and routes** touched by the change, including the public sitemap when pages move.
 4. **New behavior with no doc entry?** Ask: _"This change isn't mentioned in the docs - should I document it?"_
 

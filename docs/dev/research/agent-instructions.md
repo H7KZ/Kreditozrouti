@@ -11,7 +11,7 @@ Researched 2026-09-24 against official Claude Code and Codex documentation. The 
 
 ## Recommended mapping here
 
-Before this cleanup, root `AGENTS.md` was untracked and package-specific guidance lived only in `api/CLAUDE.md`, `web/CLAUDE.md`, `scraper/CLAUDE.md`, `mcp/CLAUDE.md`, `scripts/CLAUDE.md`, and `deployment/CLAUDE.md`. The root claim that each package had an `AGENTS.md` was inaccurate at that point.
+Before this cleanup, root `AGENTS.md` was untracked and package-specific guidance lived only in `CLAUDE.md` files under the then-root-level service directories (`api/`, `web/`, `scraper/`, and `mcp/`), `scripts/`, and `deployment/`. The root claim that each package had an `AGENTS.md` was inaccurate at that point.
 
 Keep `AGENTS.md` as the single editable source at each level. Place `@../AGENTS.md` in root `.claude/CLAUDE.md` and `@AGENTS.md` in each package `CLAUDE.md` after moving its shared instructions to a sibling `AGENTS.md`. This is a supported import pattern, keeps Claude's root and package loading intact, and avoids maintaining two copies. Anthropic recommends the import over a symlink for Windows clones. [Claude Code sharing guidance](https://code.claude.com/docs/en/memory#share-one-file-with-other-coding-tools), [monorepo layering](https://code.claude.com/docs/en/large-codebases#layer-claudemd-files)
 

@@ -1,6 +1,6 @@
 # Web stores
 
-Pinia stores in `web/src/stores/` own application state. UI components read stores and call their actions; services make API requests. Use the source for exact action signatures.
+Pinia stores in `apps/web/src/stores/` own application state. UI components read stores and call their actions; services make API requests. Use the source for exact action signatures.
 
 | Store | Owns |
 | --- | --- |
@@ -27,6 +27,6 @@ Pinia stores in `web/src/stores/` own application state. UI components read stor
 
 ## Persistence
 
-`web/src/constants/storage.ts` defines the browser storage keys. The timetable, named schedules, wizard, UI preferences, optimizer constraints, and feedback prompt state are local. `locale` is a separate plain key. Wizard data and fetched course results are loaded from the API when needed.
+`apps/web/src/constants/storage.ts` defines the browser storage keys. The timetable, named schedules, wizard, UI preferences, optimizer constraints, and feedback prompt state are local. `locale` is a separate plain key. Wizard data and fetched course results are loaded from the API when needed.
 
-The app hydrates persistent stores in `web/src/index.ts`. See [Timetable](TIMETABLE.md) for conflict and status rules.
+The app hydrates persistent stores in `apps/web/src/index.ts`. See [Timetable](TIMETABLE.md) for conflict and status rules.

@@ -4,10 +4,10 @@ Kreditožrouti is a [pnpm workspace](../../pnpm-workspace.yaml). `make install` 
 
 | Path | Role |
 |------|------|
-| [`api/`](../../api/package.json) | Express HTTP API, MySQL writes, BullMQ orchestration |
-| [`web/`](../../web/package.json) | Vue 3 SPA served by Nginx in deployment |
-| [`scraper/`](../../scraper/package.json) | BullMQ worker that fetches and parses InSIS |
-| [`mcp/`](../../mcp/package.json) | MCP tools and resources backed by shared services and MySQL |
+| [`apps/api/`](../../apps/api/package.json) | Express HTTP API, MySQL writes, BullMQ orchestration |
+| [`apps/web/`](../../apps/web/package.json) | Vue 3 SPA served by Nginx in deployment |
+| [`apps/scraper/`](../../apps/scraper/package.json) | BullMQ worker that fetches and parses InSIS |
+| [`apps/mcp/`](../../apps/mcp/package.json) | MCP tools and resources backed by shared services and MySQL |
 | [`packages/types/`](../../packages/types/package.json) | Domain, HTTP, queue, and database types |
 | [`packages/core/`](../../packages/core/package.json) | Reusable domain logic, queue names, and query services |
 | [`packages/logger/`](../../packages/logger/package.json) | Node-only logging used by API and scraper |

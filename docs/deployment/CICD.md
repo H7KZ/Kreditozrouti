@@ -7,7 +7,7 @@ The active workflows live in [`.github/workflows`](../../.github/workflows/). Th
 | Workflow | Trigger | Action |
 | --- | --- | --- |
 | [`verify.yml`](../../.github/workflows/verify.yml) | Pull request | Calls `_verify.yml` for lint, type check, build, monitoring validation, and existing project checks |
-| [`deploy-all.yml`](../../.github/workflows/deploy-all.yml) | Push to `main` affecting `api/`, `web/`, `scraper/`, `mcp/`, or `packages/`; manual dispatch | Builds and deploys only affected or selected services |
+| [`deploy-all.yml`](../../.github/workflows/deploy-all.yml) | Push to `main` affecting `apps/api/`, `apps/web/`, `apps/scraper/`, `apps/mcp/`, or `packages/`; manual dispatch | Builds and deploys only affected or selected services |
 | [`rollback.yml`](../../.github/workflows/rollback.yml) | Manual dispatch | Checks an eight-character SHA version directory exists, then redeploys the selected service or all four |
 | [`deploy-monitoring.yml`](../../.github/workflows/deploy-monitoring.yml) | Manual dispatch | Uploads and deploys the monitoring stack |
 

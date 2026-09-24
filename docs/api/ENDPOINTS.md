@@ -1,6 +1,6 @@
 # API endpoints
 
-The route declarations in `api/src/Routes/` and schemas beside their controllers are authoritative. JSON validation errors use HTTP 403 with `type: "VALIDATION"`. Most data responses use `{ data, facets, meta }`, where `meta` contains `limit`, `offset`, `count`, and `total`.
+The route declarations in `apps/api/src/Routes/` and schemas beside their controllers are authoritative. JSON validation errors use HTTP 403 with `type: "VALIDATION"`. Most data responses use `{ data, facets, meta }`, where `meta` contains `limit`, `offset`, `count`, and `total`.
 
 ## Public routes
 

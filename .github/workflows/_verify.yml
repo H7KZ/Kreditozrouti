@@ -51,6 +51,9 @@ jobs:
       - name: Lint
         run: make lint
 
+      - name: Check package boundaries
+        run: pnpm boundaries
+
       - name: Check em dashes
         run: bash scripts/check-em-dashes.sh
 

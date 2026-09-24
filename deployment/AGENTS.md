@@ -87,7 +87,7 @@ and diverged from every other prod deploy, which caused ownership/permission dri
 **`VITE_*` env vars** are baked into the web image at build time by Vite. Setting them at container runtime has no
 effect - the `docker-entrypoint.sh` placeholder-swap handles this at startup instead. **The swap only works while every
 `VITE_*` var is declared under the `build` task's `env` array in root `turbo.json`.** turbo 2 runs tasks in strict env
-mode and strips any undeclared variable from the task environment, so the six `ENV` lines in `../web` never
+mode and strips any undeclared variable from the task environment, so the six `ENV` lines in `../apps/web` never
 reached vite: no placeholder tokens were baked in, Faro and Umami were silently disabled in production, the app version
 reported `unknown`, and the entrypoint's `sed` had nothing to replace (`VITE_API_URL` hid the breakage by falling back
 to `/api`). Anyone adding a new `VITE_*` var must add it to `turbo.json` too.

@@ -1,6 +1,6 @@
 # Docker images
 
-The [API](../../api/Dockerfile), [web](../../web/Dockerfile), [scraper](../../scraper/Dockerfile), and [MCP](../../mcp/Dockerfile) use multi-stage builds. Each prunes its Turbo workspace, installs with the frozen pnpm lockfile, builds its package, and copies the production output into a runner image. Node stages use `node:24-alpine`, `pnpm@12.4.1`, and `turbo@2.10.13`; web serves through nginx.
+The [API](../../apps/api/Dockerfile), [web](../../apps/web/Dockerfile), [scraper](../../apps/scraper/Dockerfile), and [MCP](../../apps/mcp/Dockerfile) use multi-stage builds. Each prunes its Turbo workspace, installs with the frozen pnpm lockfile, builds its package, and copies the production output into a runner image. Node stages use `node:24-alpine`, `pnpm@12.4.1`, and `turbo@2.10.13`; web serves through nginx.
 
 | Service | Runtime | Internal port | Health |
 | --- | --- | --- | --- |
@@ -13,7 +13,7 @@ The API runs database migrations on startup. The scraper serves `/metrics` insid
 
 ## Web runtime configuration
 
-Vite bundles environment values at build time. To reuse one web image across environments, [the Dockerfile](../../web/Dockerfile) embeds placeholders for `VITE_API_URL`, `VITE_FARO_COLLECTOR_URL`, `VITE_APP_VERSION`, `VITE_APP_ENV`, `VITE_UMAMI_WEBSITE_ID`, and `VITE_UMAMI_SRC`. [`docker-entrypoint.sh`](../../web/docker-entrypoint.sh) replaces them from container environment values before nginx starts.
+Vite bundles environment values at build time. To reuse one web image across environments, [the Dockerfile](../../apps/web/Dockerfile) embeds placeholders for `VITE_API_URL`, `VITE_FARO_COLLECTOR_URL`, `VITE_APP_VERSION`, `VITE_APP_ENV`, `VITE_UMAMI_WEBSITE_ID`, and `VITE_UMAMI_SRC`. [`docker-entrypoint.sh`](../../apps/web/docker-entrypoint.sh) replaces them from container environment values before nginx starts.
 
 Every placeholder variable must also appear in the root [`turbo.json`](../../turbo.json) `build.env` list. Turbo's strict environment mode otherwise removes it from the build and leaves no token to replace.
 

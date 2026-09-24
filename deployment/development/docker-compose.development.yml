@@ -149,7 +149,7 @@ services:
       - kreditozrouti-redis-network-dev
       - kreditozrouti-monitoring-network
 
-    # Each replica serves its own /metrics (scraper/src/metrics.ts) and is scraped per container.
+    # Each replica serves its own /metrics (apps/scraper/src/metrics.ts) and is scraped per container.
     labels:
       - 'prometheus.io/scrape=true'
       - 'prometheus.io/port=9101'
@@ -212,7 +212,7 @@ services:
 
     healthcheck:
       # busybox wget, not curl. The web image's runner stage is nginx:stable-alpine, which
-      # never installs curl (only api/Dockerfile and mcp/Dockerfile do), so the previous curl
+      # never installs curl (only apps/api/Dockerfile and apps/mcp/Dockerfile do), so the previous curl
       # check could not execute at all and the container stayed permanently unhealthy - which
       # in turn kept the container-health alert firing. busybox wget ships in the nginx alpine
       # image; `--spider` fetches headers only and exits non-zero on a non-2xx response.

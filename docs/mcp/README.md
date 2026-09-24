@@ -6,10 +6,10 @@ The standalone MCP server exposes VŠE course data through the [Model Context Pr
 
 | Mode | Start | Endpoint |
 | --- | --- | --- |
-| Local stdio | `node mcp/dist/index.js --stdio` | Process stdin/stdout |
-| Streamable HTTP | `node mcp/dist/index.js` | `POST /mcp` on `MCP_PORT` (default 3000) |
+| Local stdio | `node apps/mcp/dist/index.js --stdio` | Process stdin/stdout |
+| Streamable HTTP | `node apps/mcp/dist/index.js` | `POST /mcp` on `MCP_PORT` (default 3000) |
 
-For stdio, configure an MCP client with the absolute path to `mcp/dist/index.js`, argument `--stdio`, and `MYSQL_URI`. For HTTP, connect an OAuth-capable MCP client to `https://kreditozrouti.cz/mcp` or local `http://localhost:3000/mcp`.
+For stdio, configure an MCP client with the absolute path to `apps/mcp/dist/index.js`, argument `--stdio`, and `MYSQL_URI`. For HTTP, connect an OAuth-capable MCP client to `https://kreditozrouti.cz/mcp` or local `http://localhost:3000/mcp`.
 
 HTTP mode requires a Bearer token from this server's OAuth flow. Discovery is at `/.well-known/oauth-authorization-server` and `/.well-known/oauth-protected-resource`; registration, authorization, and token endpoints are under `/mcp/oauth/`. Registration is automatic for allowed redirect URIs. HTTPS redirects must use a host in `MCP_ALLOWED_REDIRECT_HOSTS` (default `claude.ai,claude.com`, including subdomains); HTTP loopback callbacks are also allowed. The OAuth store is in memory with size and TTL bounds. Stdio mode does not use OAuth.
 
@@ -35,7 +35,7 @@ Optimizer `mode` is `build` or `explore`. It accepts up to 30 base courses; expl
 | `vse://study-plans/{faculty_id}` | Plans for one faculty |
 | `vse://course/{id}` | Full course detail |
 
-`build_schedule` takes a required `semester` (ZS or LS) and optional `faculty_id`. `explore_plan` takes a required `faculty_id`. Source schemas are in `mcp/src/Tools/`, `Resources/`, and `Prompts/`; `mcp/src/server.ts` registers them.
+`build_schedule` takes a required `semester` (ZS or LS) and optional `faculty_id`. `explore_plan` takes a required `faculty_id`. Source schemas are in `apps/mcp/src/Tools/`, `Resources/`, and `Prompts/`; `apps/mcp/src/server.ts` registers them.
 
 ## Time values
 
@@ -52,4 +52,4 @@ Course times and blackout windows use integer minutes from midnight: `08:00` is 
 | `MCP_ALLOWED_REDIRECT_HOSTS` | Comma-separated HTTPS redirect hosts |
 | `NODE_ENV`, `LOG_LEVEL` | Runtime mode and Pino log level |
 
-HTTP mode creates a fresh MCP server per request with no session ID. `mcp/src/Database/client.ts` owns its MySQL connection.
+HTTP mode creates a fresh MCP server per request with no session ID. `apps/mcp/src/Database/client.ts` owns its MySQL connection.

@@ -1,6 +1,6 @@
 # Kreditožrouti - Campaign Playbook ZS 2026/27
 
-> Historical campaign plan. Its dates, routes, budgets, and claims were written for the 2026 launch and are not current instructions. Use the [published student guide](../web/src/pages/docs/en/getting-started.md) and [current sitemap](../web/public/sitemap.xml) for live URLs.
+> Historical campaign plan. Its dates, routes, budgets, and claims were written for the 2026 launch and are not current instructions. Use the [published student guide](../apps/web/src/pages/docs/en/getting-started.md) and [current sitemap](../apps/web/public/sitemap.xml) for live URLs.
 
 **Goal:** 250 wizard completions by 16 September 2026  
 **Budget:** 2 000 CZK - all reserved for Sklik (Sep 4–7), spend nothing before then
