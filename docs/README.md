@@ -1,6 +1,6 @@
 # Developer documentation
 
-This folder is the source for internal engineering references. Published student help lives in [`web/src/pages/docs/`](../web/src/pages/docs/); [`user/`](user/) provides a short contributor-facing overview.
+This folder holds developer references and setup guides. Published student help lives in [`web/src/pages/docs/`](../web/src/pages/docs/); [`user/`](user/) points to it.
 
 ## Work on the system
 

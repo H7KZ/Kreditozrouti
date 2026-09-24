@@ -21,7 +21,7 @@ For dashboards, alerts, and log queries, see [monitoring](MONITORING.md). Valida
 
 Use **Actions > Rollback Deployment** with an existing eight-character SHA, service, and environment. The workflow requires that SHA's version directory on the host. See [rollback details](CICD.md#rollback). Image rollback does not undo schema migrations.
 
-MySQL has no automated backup in this repo. After a lost volume, course data must be scraped from InSIS again; schedule or account data may be irrecoverable. Retain database volumes during Docker cleanup. Redis uses a persistent AOF volume; losing it drops queued jobs and session state.
+MySQL has no automated backup in this repo. A lost MySQL volume removes the scraped course and study-plan catalog until it is rebuilt from InSIS. Student schedules are stored in their browsers. Redis uses a persistent AOF volume; losing it drops queued jobs, sessions, and active share/calendar links. Retain both volumes during Docker cleanup.
 
 For a new host: restore Docker access and a self-hosted GitHub runner, deploy shared Traefik from the Infrastructure repo, set the GitHub environment secrets, deploy monitoring if needed, then dispatch `Deploy` for the app. Check public health routes and the scraper after deployment. The [Umami PostgreSQL 18 migration](HANDOFF-umami-pg18-migration.md) applies only to an older monitoring database volume; do not run it on a fresh volume.
 

@@ -15,17 +15,18 @@ make install
 make dev
 ```
 
-Set local values in `.env` before starting the services. The template lists all available variables. The API runs database migrations and seeds on startup. `make dev` starts the API, web app, and scraper through Turbo.
+Set local values in `.env` before starting the services. The template lists all available variables. The API runs database migrations and seeds on startup. `make dev` starts the API, web app, scraper, MCP server, and shared-package watchers through Turbo.
 
 | Service | Local address |
 | --- | --- |
 | Web | http://localhost:45173 |
 | API | http://localhost:40080 |
+| MCP | http://localhost:3000 |
 | phpMyAdmin | http://localhost:48080 |
 | MySQL | `localhost:43306` |
 | Redis | `localhost:46379` |
 
-To run one package, use `pnpm --filter=@kreditozrouti/api run dev`, replacing `api` with `web` or `scraper` as needed. `make stop-local-docker` stops the local containers.
+To run one service, use `pnpm --filter=@kreditozrouti/api run dev`, replacing `api` with `web`, `scraper`, or `mcp` as needed. `make stop-local-docker` stops the local containers.
 
 ## Common commands
 

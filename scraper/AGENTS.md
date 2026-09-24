@@ -29,29 +29,13 @@ scraper/src/
 
 ## Job Routing
 
-| Job name           | Handler                            |
-| ------------------ | ---------------------------------- |
-| `InSIS:Course`     | `ScraperRequestInSISCourseJob`     |
-| `InSIS:Catalog`    | `ScraperRequestInSISCatalogJob`    |
-| `InSIS:StudyPlan`  | `ScraperRequestInSISStudyPlanJob`  |
-| `InSIS:StudyPlans` | `ScraperRequestInSISStudyPlansJob` |
+`Handlers/ScraperRequestHandler.ts` maps all eight request job names to their `Jobs/` handlers. See [job flows](../docs/scraper/JOBS.md) for input and output behavior.
 
 ---
 
 ## Critical Invariants
 
-**Error pattern - jobs never throw:**
-
-```typescript
-try {
-	// scrape + enqueue response
-} catch (e) {
-	logger.add({ error: e, context: '...' })
-	return null // BullMQ sees success; no automatic retry
-}
-```
-
-Failed scrapes stay stale until the next scheduled run re-enqueues them.
+**Failure behavior:** `ScraperRequestHandler` rethrows job errors. The request queue retries failed jobs up to three attempts with exponential backoff; rate-limit errors may delay a job. Some discovery and plan handlers catch an InSIS error and return `null` after calling `recordSilentFailure(jobType)`. Check the specific handler before changing retry behavior.
 
 **Worker concurrency: 1** (serial per worker process). InSIS rate limits are the real constraint, not CPU.
 
@@ -96,5 +80,5 @@ container, since cluster forks would share the port.
 | Every job type: input, output, flow  | [JOBS.md](../docs/scraper/JOBS.md)             |
 | How each service parses InSIS HTML   | [EXTRACTION.md](../docs/scraper/EXTRACTION.md) |
 | Queue topology, dedup, retry policy  | [QUEUE.md](../docs/scraper/QUEUE.md)           |
-| All scraped data + job payload types | [TYPES.md](../docs/scraper/TYPES.md)           |
+| Type overview; exact payloads in `packages/types/src/queue.ts` | [TYPES.md](../docs/scraper/TYPES.md) |
 | Utils, logger context, concurrency   | [INTERNALS.md](../docs/scraper/INTERNALS.md)   |

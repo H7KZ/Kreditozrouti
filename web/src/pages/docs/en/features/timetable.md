@@ -36,6 +36,10 @@ In **My Timetable**, drag across an empty part of the grid and confirm **Search 
 
 Save up to five named schedules from **My Timetable**. You can switch between them, duplicate one to try a variation, or delete one. Schedules are stored in this browser.
 
+## Start over
+
+Use **Clear timetable** in the page header to remove every selected course. Use **Change plan** to return to setup; this also clears your timetable, study plan choices, and completed-course marks. Both actions ask for confirmation. If a saved schedule is active, clearing the timetable also empties that saved schedule. Save a separate copy first if you want to keep it.
+
 ## Share and export
 
 - **Share** creates a short link to a read-only snapshot. Anyone with the link can view it and save a copy to their own browser. Treat the link as access to the snapshot.

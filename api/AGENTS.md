@@ -12,20 +12,15 @@ api/src/
 ├── metrics.ts      # prom-client: request histogram, bullmq_job_count, worker metrics, proxy-guarded /metrics
 ├── clients/        # mysql, redis, i18n, mailer
 ├── Config/         # Config.ts - env vars
-├── Controllers/    # thin: validate (Zod) → service → respond
-│   ├── Kreditozrouti/   # CoursesController, StudyPlansController, StudyPlanCoursesController
-│   ├── Scraper/         # CourseScraperController (trigger + SSE)
-│   ├── Commands/        # Admin scrape triggers (Bearer token)
-│   └── Optimize/        # OptimizeController - timetable solver endpoint (Controllers/Optimize/OptimizeController.ts)
-├── Services/       # CourseService, StudyPlanService, ScraperService, SQLService, OptimizeService (Services/OptimizeService.ts), ...
+├── Controllers/    # Courses, StudyPlans, Scraper, Commands, Optimize, Share, ICal, Admin
+├── Services/       # Course, study-plan, scraper, optimization, and calendar logic
 ├── Database/       # types.ts + migrations/
-├── Jobs/           # ScraperResponseInSISCourseJob, ScraperResponseInSISStudyPlanJob
+├── Jobs/           # Scraper response jobs and gap sweep
 ├── Handlers/       # ScraperResponseHandler, ErrorHandler
-├── Schedulers/     # Cron jobs (production only)
-├── Routes/         # KreditozroutiRoutes, ScraperPublicRoutes, CommandsRoutes, OptimizeRoutes (Routes/OptimizeRoutes.ts)
+├── Routes/         # Courses, StudyPlans, Share, Optimize, ICal, Commands, Admin
 ├── Middlewares/    # CacheMiddleware, RateLimitMiddleware, CommandMiddleware, LoggerMiddleware
 ├── Errors/         # ApiError + Errors factory
-└── Utils/          # sse.ts, timeConflict.ts
+└── Utils/          # Sse.ts, TimeConflict.ts
 ```
 
 ## Path Aliases
@@ -51,8 +46,7 @@ export const CoursesController = {
 }
 ```
 
-**Zod schemas** are co-located with their controller, not in `Validations/`. `Validations/index.ts` only exports shared
-primitives (`TimeSelectionSchema`, `SemesterSchema`, `DaySchema`).
+**Zod schemas** are co-located with their controller or route. Check the owning handler before changing validation.
 
 **Times** are stored as **minutes from midnight** (0–1439). `08:00` → `480`.
 
@@ -61,7 +55,7 @@ service layer.
 
 **Cache invalidation:** `CacheMiddleware` uses SHA-256 of `METHOD:path:sorted-body-JSON`, prefix `cache:`, TTL 300 s.
 
-**Schedulers** only run in `NODE_ENV=production`. In development, use `POST /commands/insis/*` with Bearer token.
+**Schedulers** are registered in `src/bullmq.ts` only in production. In development, use `POST /commands/insis/*` with a Bearer token.
 
 **ScraperResponseInSISCourseJob** runs in a DB transaction: upsert faculty → upsert course → reconcile assessments →
 delete+recreate units+slots → link study plans → `redis.publish('course:updated:{id}')`.
@@ -80,9 +74,9 @@ scraper replicas never double it. Labels stay bounded: never a course, plan or s
 
 | Topic                                                      | Doc                                      |
 | ---------------------------------------------------------- | ---------------------------------------- |
-| All routes + request/response shapes                       | [ENDPOINTS.md](../docs/api/ENDPOINTS.md) |
+| Route overview; exact shapes in shared types and handlers  | [ENDPOINTS.md](../docs/api/ENDPOINTS.md) |
 | CourseService N+1 pattern, facets, time-conflict filtering | [SERVICES.md](../docs/api/SERVICES.md)   |
 | BullMQ jobs, schedulers, dedup windows                     | [JOBS.md](../docs/api/JOBS.md)           |
-| DB schema, Kysely patterns, migration template             | [DATABASE.md](../docs/api/DATABASE.md)   |
+| DB schema and migration workflow                           | [DATABASE.md](../docs/api/DATABASE.md)   |
 | Config, cache, rate-limit, SSE, wide-event logging         | [INTERNALS.md](../docs/api/INTERNALS.md) |
 | Gmail SMTP account and credentials                         | [GMAIL.md](../docs/setup/GMAIL.md)       |

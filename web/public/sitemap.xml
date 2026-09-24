@@ -1,50 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-		xmlns:xhtml="http://www.w3.org/1999/xhtml">
-	<url>
-		<loc>https://kreditozrouti.cz/</loc>
-		<xhtml:link rel="alternate" hreflang="cs" href="https://kreditozrouti.cz/"/>
-		<xhtml:link rel="alternate" hreflang="en" href="https://kreditozrouti.cz/"/>
-		<changefreq>weekly</changefreq>
-		<priority>1.0</priority>
-	</url>
-	<url>
-		<loc>https://kreditozrouti.cz/courses</loc>
-		<xhtml:link rel="alternate" hreflang="cs" href="https://kreditozrouti.cz/courses"/>
-		<xhtml:link rel="alternate" hreflang="en" href="https://kreditozrouti.cz/courses"/>
-		<changefreq>daily</changefreq>
-		<priority>0.9</priority>
-	</url>
-	<url>
-		<loc>https://kreditozrouti.cz/about/cs</loc>
-		<xhtml:link rel="alternate" hreflang="cs" href="https://kreditozrouti.cz/about/cs"/>
-		<xhtml:link rel="alternate" hreflang="en" href="https://kreditozrouti.cz/about/en"/>
-		<xhtml:link rel="alternate" hreflang="x-default" href="https://kreditozrouti.cz/about/cs"/>
-		<changefreq>monthly</changefreq>
-		<priority>0.8</priority>
-	</url>
-	<url>
-		<loc>https://kreditozrouti.cz/about/en</loc>
-		<xhtml:link rel="alternate" hreflang="en" href="https://kreditozrouti.cz/about/en"/>
-		<xhtml:link rel="alternate" hreflang="cs" href="https://kreditozrouti.cz/about/cs"/>
-		<xhtml:link rel="alternate" hreflang="x-default" href="https://kreditozrouti.cz/about/cs"/>
-		<changefreq>monthly</changefreq>
-		<priority>0.8</priority>
-	</url>
-	<url>
-		<loc>https://kreditozrouti.cz/guide/cs</loc>
-		<xhtml:link rel="alternate" hreflang="cs" href="https://kreditozrouti.cz/guide/cs"/>
-		<xhtml:link rel="alternate" hreflang="en" href="https://kreditozrouti.cz/guide/en"/>
-		<xhtml:link rel="alternate" hreflang="x-default" href="https://kreditozrouti.cz/guide/cs"/>
-		<changefreq>monthly</changefreq>
-		<priority>0.7</priority>
-	</url>
-	<url>
-		<loc>https://kreditozrouti.cz/guide/en</loc>
-		<xhtml:link rel="alternate" hreflang="en" href="https://kreditozrouti.cz/guide/en"/>
-		<xhtml:link rel="alternate" hreflang="cs" href="https://kreditozrouti.cz/guide/cs"/>
-		<xhtml:link rel="alternate" hreflang="x-default" href="https://kreditozrouti.cz/guide/cs"/>
-		<changefreq>monthly</changefreq>
-		<priority>0.7</priority>
-	</url>
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://kreditozrouti.cz/</loc>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/courses</loc>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/about/cs</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/about/cs'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/about/en'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/about/cs'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/about/en</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/about/cs'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/about/en'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/about/cs'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/cs/getting-started</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/getting-started'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/getting-started'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/getting-started'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/en/getting-started</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/getting-started'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/getting-started'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/getting-started'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/cs/faq</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/faq'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/faq'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/faq'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/en/faq</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/faq'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/faq'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/faq'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/cs/features/filters</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/features/filters'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/features/filters'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/features/filters'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/en/features/filters</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/features/filters'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/features/filters'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/features/filters'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/cs/features/timetable</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/features/timetable'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/features/timetable'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/features/timetable'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/en/features/timetable</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/features/timetable'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/features/timetable'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/features/timetable'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/cs/features/optimizer</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/features/optimizer'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/features/optimizer'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/features/optimizer'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/en/features/optimizer</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/features/optimizer'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/features/optimizer'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/features/optimizer'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/cs/features/tips-and-tricks</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/features/tips-and-tricks'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/features/tips-and-tricks'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/features/tips-and-tricks'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/en/features/tips-and-tricks</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/features/tips-and-tricks'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/features/tips-and-tricks'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/features/tips-and-tricks'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/cs/legal/privacy</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/legal/privacy'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/legal/privacy'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/legal/privacy'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/en/legal/privacy</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/legal/privacy'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/legal/privacy'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/legal/privacy'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/cs/legal/terms</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/legal/terms'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/legal/terms'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/legal/terms'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/en/legal/terms</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/legal/terms'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/legal/terms'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/legal/terms'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/cs/mcp</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/mcp'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/mcp'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/mcp'/>
+  </url>
+  <url>
+    <loc>https://kreditozrouti.cz/docs/en/mcp</loc>
+    <xhtml:link rel='alternate' hreflang='cs' href='https://kreditozrouti.cz/docs/cs/mcp'/>
+    <xhtml:link rel='alternate' hreflang='en' href='https://kreditozrouti.cz/docs/en/mcp'/>
+    <xhtml:link rel='alternate' hreflang='x-default' href='https://kreditozrouti.cz/docs/cs/mcp'/>
+  </url>
 </urlset>

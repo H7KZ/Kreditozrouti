@@ -36,6 +36,10 @@ V **Mém rozvrhu** táhni přes prázdnou část mřížky a potvrď **Hledat p�
 
 Z **Mého rozvrhu** můžeš uložit až pět pojmenovaných rozvrhů. Mezi nimi lze přepínat, duplikovat je pro zkoušení variant a mazat je. Ukládají se v tomto prohlížeči.
 
+## Začít znovu
+
+Tlačítkem **Vymazat rozvrh** v záhlaví odstraníš všechny vybrané předměty. Tlačítko **Změnit plán** tě vrátí do průvodce a zároveň smaže aktuální rozvrh, volbu studijního plánu a označení splněných předmětů. Obě akce vyžadují potvrzení. Pokud je aktivní uložený rozvrh, vymazání odstraní předměty i z něj. Chceš-li si ho ponechat, nejprve ulož samostatnou kopii.
+
 ## Sdílení a export
 
 - **Sdílet** vytvoří krátký odkaz na rozvrh jen pro čtení. Kdo má odkaz, může rozvrh zobrazit a uložit si kopii do svého prohlížeče. Odkaz proto sdílej vědomě.

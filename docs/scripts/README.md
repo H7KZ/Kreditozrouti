@@ -6,7 +6,7 @@ The [`scripts/`](../../scripts/) directory holds repository-specific Bash utilit
 | --- | --- |
 | `lib.sh` | Shared logging and Docker helpers sourced by scripts |
 | `clone-db.sh` | Copy the MySQL database between VPS environments |
-| `sync-grafana-alerts.sh` | Reconcile provisioned Grafana alert rules |
+| `sync-grafana-alerts.sh` | Retired legacy Grafana alert cleanup script; current alerts use Prometheus and Loki rules |
 | `check-em-dashes.sh` | Check repository text for prohibited em dashes |
 
-See [maintenance](MAINTENANCE.md) for database cloning and [infrastructure](INFRASTRUCTURE.md) for deploy entry points. Host-wide Docker and Traefik maintenance belongs to the separate Infrastructure repository.
+See [maintenance](MAINTENANCE.md) for database cloning and the [deployment guide](../deployment/README.md) for app, monitoring, and runner deployment. Host-wide Docker and Traefik maintenance belongs to the separate Infrastructure repository.

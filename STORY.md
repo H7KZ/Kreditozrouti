@@ -77,5 +77,5 @@ It all began with Kreditožrouti.
 
 - **Jan Komínek** - creator, and the one who carried it from prototype to live product
 - **Amélie Engelmaierová** - co-founder at the hackathon, where the repo (and the name) began
-- **Ondra** - the feedbacker; not in the commit history, but all over the product
+- **Ondřej Žemlička** - co-founder at the hackathon; the feedbacker
 - **Milan Nguyen, Adam Hlína, Patrik Šimonek** - teammates from the 4FIS calendar course project

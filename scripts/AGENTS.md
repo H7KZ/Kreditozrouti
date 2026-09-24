@@ -15,7 +15,7 @@ owns them.
 |--------------------------|---------------------------------------------------------------------------|---------------|
 | `lib.sh`                 | Shared utilities - sourced by all scripts, not run directly               | No            |
 | `clone-db.sh`            | Clone MySQL DB between dev and prod stacks on the same VPS                | Yes           |
-| `sync-grafana-alerts.sh` | Delete Grafana alert rules orphaned from `rules.yml`, reload provisioning | No            |
+| `sync-grafana-alerts.sh` | Retired legacy Grafana cleanup script; current rules live in Prometheus/Loki | No |
 | `check-em-dashes.sh`     | CI lint check (used by `_verify.yml`)                                     | No            |
 
 ---
@@ -36,4 +36,4 @@ source "$SCRIPT_DIR/lib.sh"
 | Topic                                                                      | Doc                                              |
 |----------------------------------------------------------------------------|--------------------------------------------------|
 | VPS-wide scripts (install-docker, maintenance, docker-cleanup, setup-swap) | `Infrastructure/scripts/CLAUDE.md`               |
-| clone-db - all flags + examples                                           | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md) |
+| Database cloning and recovery                                            | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md) |

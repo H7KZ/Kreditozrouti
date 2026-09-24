@@ -100,12 +100,10 @@ plain `up` and every deploy leave it stopped), is published on loopback only (`1
 `ssh -L 48080:127.0.0.1:48080 <user>@<host>`. The exposure being removed was a database admin UI carrying the MySQL
 root credentials on the public internet; `PMA_ARBITRARY` additionally let a visitor point it at any host.
 
-**Every third-party image is pinned** across `production/`, `development/`, `docker-compose.local.yml`, `monitoring/`
-and `github-runner/`: `mysql:9`, `redis:8-alpine`, `phpmyadmin:5.2.3-apache`, `myoung34/github-runner:2.337.0`,
-`prom/prometheus:v3`, `grafana/grafana:13.2`, `grafana/loki:3.7`, `grafana/alloy:v1.19.2`,
-`ghcr.io/umami-software/umami:3`, `postgres:18-alpine`. Pin the major/minor, never `:latest` - every
-deploy runs `docker compose pull` and a silent major upgrade of a stateful service is not reversible. Digests were
-deliberately not used: there is no Renovate or Dependabot here, so they would have to be bumped by hand and would rot.
+**Third-party images must stay pinned** in the Compose files under `production/`, `development/`, `monitoring/`,
+`github-runner/`, and at the root for local development. Check those files for current versions before changing an
+image. Do not use `:latest`: every deploy pulls images, and a silent major upgrade of a stateful service may be
+irreversible. Digests are not managed automatically in this repo.
 
 **`umami-db`'s volume mounts at `/var/lib/postgresql`, not `/var/lib/postgresql/data`.** Postgres 18+ images default
 `PGDATA` to `/var/lib/postgresql/<major>/docker` (docker-library/postgres#1259) and refuse to start if they find a
@@ -117,9 +115,9 @@ before this mount works - see `deployment/monitoring/migrate-umami-pg18.sh`, whi
 `pg_dumpall` and restores it into a freshly initialized pg18 cluster (Alpine images ship only one major version's
 binaries, so `pg_upgrade` isn't available directly).
 
-**MySQL caveat:** `mysql:latest` now resolves to MySQL 26.x (Oracle moved MySQL to calendar versioning), and MySQL
-refuses to start against a volume initialised by a newer major - confirm the running version with
-`docker compose exec mysql mysql --version` before any deploy that changes the `mysql:9` pin.
+**MySQL version changes require volume compatibility checks.** MySQL may refuse to start against a volume initialized
+by a newer major version. Confirm the running version with `docker compose exec mysql mysql --version` before changing
+the image pin in a Compose file.
 
 **Redis data is persisted** via a named Docker volume (`kreditozrouti-redis-volume-prod` in production,
 `kreditozrouti-redis-volume-dev` in development). Redis runs with AOF persistence (`--appendonly yes`) and `noeviction`
@@ -149,6 +147,6 @@ working directory doesn't matter; only the script's own location does.
 | GitHub Actions workflows, secrets, rollback    | [CICD.md](../docs/deployment/CICD.md)                         |
 | Traefik, networking, env vars                  | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md)     |
 | Monitoring, security, troubleshooting          | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)             |
-| Observability stack - full pipeline reference  | [MONITORING.md](../docs/deployment/MONITORING.md)             |
+| Observability overview and source links        | [MONITORING.md](../docs/deployment/MONITORING.md)             |
 | Moving monitoring to its own host (draft)      | [MONITORING_SPLIT.md](../docs/deployment/MONITORING_SPLIT.md) |
 | DNS and HTTPS manual setup                      | [DNS.md](../docs/setup/DNS.md)                                 |

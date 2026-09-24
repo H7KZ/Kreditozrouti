@@ -58,7 +58,7 @@ load nested `AGENTS.md` files. Each sibling `CLAUDE.md` imports its `AGENTS.md`;
 
 ```bash
 make install           # Install all dependencies
-make dev               # Run api + web + scraper in parallel
+make dev               # Run API, web, scraper, MCP, and shared-package watchers
 make run-local-docker  # Start MySQL, Redis, phpMyAdmin
 make test              # Run scraper then API tests sequentially
 make test-regen        # Regenerate scraper + API fixture snapshots
@@ -78,7 +78,7 @@ packages/types/ Shared DTO, queue, and database types
 scraper/       BullMQ worker - InSIS HTTP scraping
 scripts/       Bash - repository-specific server maintenance
 deployment/    Docker Compose stacks + deploy.sh
-docs/          Developer reference, user guide source, setup guides
+docs/          Developer reference and setup guides
 ```
 
 ---
@@ -113,8 +113,8 @@ docs/          Developer reference, user guide source, setup guides
 Package-specific references are linked from each area-specific `AGENTS.md`. Start cross-cutting work at:
 
 - [Developer docs index](docs/README.md)
-- [User guide](docs/user/README.md) and [features](docs/user/FEATURES.md)
-- [Domain glossary](docs/DOMAIN.md) and [architecture](docs/ARCHITECTURE.md)
+- [Published student guide, English](web/src/pages/docs/en/getting-started.md) and [Czech](web/src/pages/docs/cs/getting-started.md)
+- [Domain glossary](docs/DOMAIN.md) and [architecture](docs/architecture/README.md)
 - [Engineering setup](docs/engineering/SETUP.md) and [contributing](docs/engineering/CONTRIBUTING.md)
 - [MCP server](docs/mcp/README.md)
 - [Manual setup guides](docs/setup/README.md)
@@ -125,10 +125,9 @@ Package-specific references are linked from each area-specific `AGENTS.md`. Star
 
 After completing any task that changes code, configuration, or behavior:
 
-1. **Identify** which `docs/` files describe the changed area
-2. **Also check `docs/user/FEATURES.md`** - if the change affects a user-visible feature (filters, timetable,
-   conflict detection, wizard, course refresh, saved schedules, language, theme, etc.), update the relevant section
-3. **Update** any doc that describes what changed - keep it accurate
+1. **Identify** which developer docs describe the changed area and update those that need it.
+2. **For user-visible changes**, update the relevant pages in both `web/src/pages/docs/en/` and `web/src/pages/docs/cs/`.
+3. **Check links and routes** touched by the change, including the public sitemap when pages move.
 4. **New behavior with no doc entry?** Ask: _"This change isn't mentioned in the docs - should I document it?"_
 
 ---
