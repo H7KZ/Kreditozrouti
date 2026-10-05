@@ -19,6 +19,23 @@
     "year_of_study": null,
     "lecturers": "prof. Ing. Petr Doucek, CSc.|Mgr. Ing. Tomáš Sigmund, Ph.D.|doc. Ing. Vlasta Svatá, CSc.",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 567,
+            "name": "prof. Ing. Petr Doucek, CSc.",
+            "role": "lecturer"
+        },
+        {
+            "id": 18145,
+            "name": "Mgr. Ing. Tomáš Sigmund, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 218,
+            "name": "doc. Ing. Vlasta Svatá, CSc.",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "nelze studovat po absolvování IM2_2 nebo nelze studovat po absolvování 4ODP",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

@@ -19,6 +19,18 @@
     "year_of_study": "bakalářský (první cyklus): 3",
     "lecturers": "Tanweer Ali, M.A., PhD.|Ing. Patrik Sieber, Ph.D.",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 167549,
+            "name": "Tanweer Ali, M.A., PhD.",
+            "role": "lecturer"
+        },
+        {
+            "id": 30589,
+            "name": "Ing. Patrik Sieber, Ph.D.",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

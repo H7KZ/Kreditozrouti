@@ -1,0 +1,5 @@
+# Grafana dashboards keep the JSON shape Grafana exports so UI exports diff cleanly.
+deployment/monitoring/grafana/dashboards/
+
+# Raw scraped HTML and generated result snapshots are fixtures, not source to reformat.
+fixtures/

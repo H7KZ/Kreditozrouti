@@ -1,13 +1,14 @@
 # ==============================================================================
 # Volumes Configuration: Development
 # Description: Persistent volume definitions for development environment.
+#              Naming: <project>-<engine>-volume-<env>. See NAMING.md (Infrastructure).
 # ==============================================================================
 
 volumes:
-  mysql-data-dev-volume:
-    name: mysql-data-dev-volume
+  kreditozrouti-mysql-volume-dev:
+    name: kreditozrouti-mysql-volume-dev
     external: true
 
-  redis-data-dev-volume:
-    name: redis-data-dev-volume
+  kreditozrouti-redis-volume-dev:
+    name: kreditozrouti-redis-volume-dev
     external: true

@@ -1,69 +1,34 @@
 # ==============================================================================
 # Workflow: CI Pipeline
-# Description: Runs code verification on pull requests.
-#              Includes dependency installation, linting, and build checks.
-# Trigger: Pull request events (opened, synchronize, reopened)
+# Description: Runs code verification on pull requests. The steps themselves
+#              live in _verify.yml so that deploy-all.yml can gate its build
+#              and deploy jobs on exactly the same checks.
+# Trigger: Pull request events targeting main (opened, synchronize, reopened)
+#
+# Required Secrets: none - see _verify.yml
 #
 # Prerequisites:
 #   - Node.js 24
-#   - Makefile with install, lint, and build targets
+#   - Makefile with install, lint, test, type-check and build targets
 # ==============================================================================
 
 name: CI Pipeline
 
 on:
-  pull_request:
-    types: [ opened, synchronize, reopened ]
+    pull_request:
+        branches: [main]
+        types: [opened, synchronize, reopened]
 
 permissions:
-  contents: read
+    contents: read
 
 concurrency:
-  group: ci-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+    group: ci-${{ github.head_ref || github.ref }}
+    cancel-in-progress: true
 
 jobs:
-  verify:
-    name: Verify Code
-    runs-on: self-hosted
-    timeout-minutes: 15
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v6
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+    verify:
+        name: Verify Code
+        uses: ./.github/workflows/_verify.yml
         with:
-          version: 11.8.0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          cache: 'pnpm'
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Install Dependencies
-        run: make install
-
-      - name: Lint
-        run: make lint
-
-      - name: Check em dashes
-        run: bash scripts/check-em-dashes.sh
-
-      - name: Build Core
-        run: pnpm --filter=@kreditozrouti/core run build
-
-      - name: Test
-        run: make test
-
-      - name: Type Check
-        run: make type-check
-
-      - name: Build
-        run: make build
-
-      - name: Verification Complete
-        run: echo "::notice::All checks passed successfully"
+            affected: true

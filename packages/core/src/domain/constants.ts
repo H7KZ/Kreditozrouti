@@ -35,7 +35,7 @@ export const MODE_OF_DELIVERY_NORM: Record<string, string> = {
 	žádná: 'none'
 }
 
-// Moved from api/src/Services/Course/buckets/normalizers.ts
+// Moved from apps/api/src/Services/Course/buckets/normalizers.ts
 export const LEVEL_NORM: Record<string, string> = {
 	bakalářský: 'bachelor',
 	'magisterský navazující': 'master',

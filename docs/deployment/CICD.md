@@ -1,249 +1,36 @@
-# Deployment — CI/CD Pipeline
+# CI/CD
 
-GitHub Actions automates building, pushing, and deploying all three services.
+The active workflows live in [`.github/workflows`](../../.github/workflows/). The `Deploy` workflow builds and deploys API, web, scraper, and MCP. The `Rollback Deployment` workflow redeploys a previously deployed image tag.
 
----
+## Workflow map
 
-## Overview
+| Workflow | Trigger | Action |
+| --- | --- | --- |
+| [`verify.yml`](../../.github/workflows/verify.yml) | Pull request | Calls `_verify.yml` with `affected: true`: lint, tests, type check, and build run only for packages changed against the base branch and their dependents (`pnpm verify:affected`, turbo `--affected`). Changes to `turbo.json`, root `package.json`, `pnpm-workspace.yaml`, `.dependency-cruiser.cjs`, `.npmrc`, `.pnpmfile.cjs`, or `_verify.yml` force the full `make verify`. Monitoring validation runs only when `deployment/monitoring/` changes. Runs on `ubuntu-latest` |
+| [`deploy-all.yml`](../../.github/workflows/deploy-all.yml) | Push to `main` affecting `apps/api/`, `apps/web/`, `apps/scraper/`, `apps/mcp/`, or `packages/`; manual dispatch | Builds and deploys only affected or selected services |
+| [`rollback.yml`](../../.github/workflows/rollback.yml) | Manual dispatch | Checks an eight-character SHA version directory exists, then redeploys the selected service or all four |
+| [`deploy-monitoring.yml`](../../.github/workflows/deploy-monitoring.yml) | Manual dispatch | Uploads and deploys the monitoring stack |
 
-Deployments are **path-triggered and per-service**. When code changes are pushed to `main` or `develop`, only the
-service (s) whose source files changed are rebuilt and redeployed.
+`_build-service.yml` and `_deploy-service.yml` are reusable jobs. There are no separate `deploy-api.yml`, `deploy-web.yml`, or `deploy-scraper.yml` workflows. The app deploy workflow does not call `_verify.yml`; protect `main` with the pull request check if verification must gate production changes.
 
-| Branch    | Environment |
-|-----------|-------------|
-| `main`    | production  |
-| `develop` | development |
+## App deploys
 
-**Image tag strategy:** Each build produces a `${GITHUB_SHA::8}` short-SHA tag (e.g. `a1b2c3d4`) plus a floating tag
-(`latest` for production, `dev-latest` for development).
+Pushes to `main` select changed services. A change under `packages/` selects all four. For a first deploy or selected redeploy, run **Actions > Deploy > Run workflow**, choose `production` or `development`, and select services. Automated pushes target production; development is a manual dispatch target.
 
----
+Builds push `ghcr.io/<owner>/<repo>/<service>:<sha8>` and a floating tag (`latest` or `dev-latest`). Deploys use the short SHA. Set `image_tag` to an existing tag to skip the build; `skip_build` requires `image_tag`.
 
-## Workflows
+The reusable deploy job uploads `deployment/` to `~/kreditozrouti/versions/<environment>/<sha>/`, writes `.env` from GitHub environment values with permission `600`, runs `deploy.sh`, and moves `current` to that directory. The script removes old version directories after seven days while retaining at least three. A service-only deploy brings up API, scraper, or MCP infrastructure dependencies; web deploys with `--no-deps` so it does not replace the running API image.
 
-All workflow files live in `../../.github/workflows`.
+`image_tag` dispatches check out the selected workflow ref, which may differ from the commit that built the existing image. Confirm the chosen tag and configuration before redeploying.
 
-### `verify.yml` — Pull Request checks
+## Required configuration
 
-**Trigger:** PR opened, synchronised, or reopened
+Configure `SSH_HOST`, `SSH_USER`, `SSH_PORT`, and `SSH_PRIVATE_KEY` for the target GitHub environment. The automatic `GITHUB_TOKEN` authenticates to GHCR. App values such as `PROJECT` and `DOMAIN` are GitHub environment variables; database, Redis, and application credentials are environment secrets. The complete names are in [Infrastructure](INFRASTRUCTURE.md#configuration-and-secrets) and [`_deploy-service.yml`](../../.github/workflows/_deploy-service.yml).
 
-**Steps:**
+The deploy job rejects credential values containing `$` or backticks before writing `.env`, since Compose interpolation can change them. Keep secrets out of commits and terminal output. The monitoring workflow has a separate secret set; see [monitoring](MONITORING.md#deployment-and-secrets).
 
-1. Checkout code
-2. Setup Node.js 24
-3. `make install`
-4. `make lint`
-5. `make build`
+## Rollback
 
-Runs on a self-hosted runner. A PR cannot be merged until this passes.
+Run **Actions > Rollback Deployment > Run workflow**. Enter an existing lowercase eight-character SHA, select `api`, `web`, `scraper`, `mcp`, or `all`, and choose the environment. The workflow requires that SHA's version directory on the VPS and deploys the corresponding image tag. If cleanup already removed the directory, this workflow refuses the rollback; a manual `Deploy` dispatch with a retained GHCR `image_tag` is a separate path.
 
----
-
-### `deploy-api.yml` — Deploy API service
-
-**Trigger:** Push to `main` or `develop` touching `api/**` or `shared/**`, or `workflow_dispatch`.
-
-**Jobs:** `build` (via `_build-service.yml`) → `deploy` (via `_deploy-service.yml`).
-
-**Manual dispatch inputs:** `image_tag` (SHA to deploy), `skip_build` (bool), `environment` (production/development).
-
----
-
-### `deploy-client.yml` — Deploy client service
-
-**Trigger:** Push to `main` or `develop` touching `client/**` or `shared/**`, or `workflow_dispatch`.
-
-Same structure as `deploy-api.yml` for the client service.
-
----
-
-### `deploy-scraper.yml` — Deploy scraper service
-
-**Trigger:** Push to `main` or `develop` touching `scraper/**` or `shared/**`, or `workflow_dispatch`.
-
-Same structure as `deploy-api.yml` for the scraper service.
-
----
-
-### `deploy-all.yml` — Full-stack deploy
-
-**Trigger:** `workflow_dispatch` only (manual).
-
-Builds all three services in parallel and then deploys the full stack in one operation. Use for:
-
-- Initial deployment on a fresh environment
-- Emergency redeployments
-- Cases where all services must move together
-
-**Inputs:** `environment` (production/development, required), `image_tag` (optional SHA, skips build if set),
-`skip_build` (bool).
-
-When all three are built at once, `API_IMAGE_TAG`, `CLIENT_IMAGE_TAG`, and `SCRAPER_IMAGE_TAG` are all set to the same
-short SHA.
-
----
-
-### `_build-service.yml` — Reusable: build image
-
-**Trigger:** `workflow_call` (called by per-service workflows).
-
-Builds and pushes a single service image to GHCR with two tags: `${GITHUB_SHA::8}` and the floating tag. Uses GHA layer
-cache scoped per service and environment.
-
-**Outputs:** `image_tag` (short SHA), `image_prefix` (GHCR path prefix).
-
----
-
-### `_deploy-service.yml` — Reusable: deploy service
-
-**Trigger:** `workflow_call` (called by per-service workflows).
-
-Uploads deployment files to the VPS, writes `.env`, and calls `deploy.sh <project> <environment> <service>` for a
-single-service update.
-
-**Dependency inclusion:** `api`, `scraper`, and `mcp` are deployed together with their infrastructure dependencies -
-deploying `api` also brings up (or updates, if their config changed) `mysql` and `redis`, honouring `depends_on` health
-ordering. Already-healthy, unchanged dependencies are left untouched. `client` keeps `--no-deps` because its only
-dependency is `api` (an app service whose image tag is not set in a client-only deploy, so including it could bounce the
-running api to the `:latest` float).
-
----
-
-### `deploy-traefik.yml` — Traefik reverse proxy
-
-**Trigger:** Push to `main` touching `deployment/traefik/**`, or `workflow_dispatch`.
-
-1. Upload `../../deployment/traefik` to `~/deployment/traefik/` on the VPS
-2. Write `TRAEFIK_HTPASSWD` secret to `~/.htpasswd` (600 perms)
-3. SSH → run `~/deployment/traefik/deploy.sh` with secrets passed as env vars
-
-**Required repository secrets:** `TRAEFIK_DOMAIN`, `TRAEFIK_HTPASSWD`, `CF_API_EMAIL`, `CF_DNS_API_TOKEN`, `ACME_EMAIL`
-
-Generate `TRAEFIK_HTPASSWD` with: `htpasswd -nb admin yourpassword`
-
----
-
-### `deploy-monitoring.yml` — Monitoring stack
-
-**Trigger:** Push to `main` touching `deployment/monitoring/**`, or `workflow_dispatch`.
-
-1. Upload `../../deployment/monitoring` to `~/deployment/monitoring/` on the VPS
-2. SSH → run `~/deployment/monitoring/deploy.sh` with secrets passed as env vars
-
-**Required repository secrets:** `MONITORING_DOMAIN`, `GRAFANA_ADMIN_PASSWORD`, `DISCORD_WEBHOOK_URL`
-
----
-
-### Environment variables: GitHub Variables & Secrets
-
-Per-service deploy workflows pass all required env vars from **GitHub Environments** (`production` / `development`)
-directly into the remote shell — no `.env` file is manually placed on the server.
-
-**To update an env var:** GitHub → Settings → Environments → `development` (or `production`) → edit the variable or
-secret → next deploy picks it up.
-
----
-
-## Required GitHub Secrets
-
-Configure in **Settings → Secrets and variables → Actions**:
-
-| Secret            | Example                 | Purpose                         |
-|-------------------|-------------------------|---------------------------------|
-| `SSH_HOST`        | `vps.example.com`       | VPS hostname or IP              |
-| `SSH_USER`        | `deploy`                | SSH username                    |
-| `SSH_PORT`        | `22`                    | SSH port                        |
-| `SSH_PRIVATE_KEY` | `-----BEGIN OPENSSH...` | Private key for the deploy user |
-| `GITHUB_TOKEN`    | (auto-provided)         | GHCR authentication             |
-
-**Generate SSH key pair:**
-
-```bash
-ssh-keygen -t ed25519 -C "github-actions" -f ~/.ssh/github_actions
-ssh-copy-id -i ~/.ssh/github_actions.pub deploy@your-vps
-# then add ~/.ssh/github_actions contents to the SSH_PRIVATE_KEY secret
-```
-
----
-
-## Version Directory Layout
-
-On the VPS, each deployment gets its own directory keyed by the short SHA:
-
-```
-~/versions/
-├── production/
-│   ├── a1b2c3d4/        ← deployment files + .env
-│   ├── e5f6a7b8/
-│   ├── current -> e5f6a7b8   ← active deployment
-│   └── ...
-└── development/
-    └── ...
-```
-
-`deploy.sh` is called inside the version directory and runs:
-
-```bash
-# Full-stack deploy (all services)
-API_IMAGE_TAG=a1b2c3d4 CLIENT_IMAGE_TAG=a1b2c3d4 SCRAPER_IMAGE_TAG=a1b2c3d4 \
-  bash ./deploy.sh prod production
-
-# Single-service deploy (e.g. api only)
-API_IMAGE_TAG=a1b2c3d4 bash ./deploy.sh prod production api
-```
-
-After a successful deploy, `deploy.sh` automatically removes version directories older than 7 days from
-`~/versions/<environment>/` (minimum 3 kept, active symlink target always preserved).
-
----
-
-## Routine Deploys
-
-Push to `main` or `develop` — the path filters determine which workflow (s) run:
-
-| Changed path               | Workflow triggered      |
-|----------------------------|-------------------------|
-| `api/**`                   | `deploy-api.yml`        |
-| `client/**`                | `deploy-client.yml`     |
-| `scraper/**`               | `deploy-scraper.yml`    |
-| `shared/**`                | all three               |
-| `deployment/traefik/**`    | `deploy-traefik.yml`    |
-| `deployment/monitoring/**` | `deploy-monitoring.yml` |
-
-Only changed services are rebuilt and redeployed — unchanged services keep their current image tag.
-
----
-
-## Rollback Procedure
-
-Re-trigger the relevant per-service workflow via `workflow_dispatch` with a previous SHA:
-
-1. GitHub → Actions → `Deploy API` (or Client / Scraper)
-2. **Run workflow** → set `image_tag` to the old short SHA (e.g. `a1b2c3d4`)
-3. Set `skip_build: true` (the image already exists in GHCR)
-4. Select the target environment and run
-
-The workflow will skip the build step and deploy the specified image directly.
-
----
-
-## Scaling Replicas
-
-Edit `../../deployment/production/docker-compose.production.yml`:
-
-```yaml
-services:
-	api:
-		deploy:
-			replicas: 4 # default: 2
-
-	client:
-		deploy:
-			replicas: 5 # default: 3
-
-	scraper:
-		deploy:
-			replicas: 10 # default: 5
-```
-
-Then redeploy: `docker compose -p prod up -d`
+Rolling back an image does not reverse database migrations or data changes. Check those before choosing a tag.

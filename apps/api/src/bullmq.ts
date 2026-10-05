@@ -1,0 +1,218 @@
+import type { ScraperRequestJob, ScraperResponseJob } from '@kreditozrouti/types'
+import type { ConnectionOptions } from 'bullmq'
+import { flushCompletedHours } from '@kreditozrouti/core/partner-api'
+import {
+	ScraperInSISAcademicSchedulesRequestScheduler,
+	ScraperInSISCatalogRequestScheduler,
+	ScraperInSISFacultyTimetablesRequestScheduler,
+	ScraperInSISGapSweeperScheduler,
+	ScraperInSISStudyPlansRequestScheduler,
+	ScraperRequestQueue,
+	ScraperResponseQueue
+} from '@kreditozrouti/core/queue'
+import { Queue, Worker } from 'bullmq'
+import { BullMQOtel } from 'bullmq-otel'
+import { mysql, redis } from '@api/clients'
+import Config from '@api/Config/Config'
+import { StudyPlanCourseIdentTable } from '@api/Database/types'
+import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
+import { logger } from '@api/logger'
+import { collectQueueCounts, instrumentWorker } from '@api/metrics'
+import InSISService from '@api/Services/InSISService'
+import { MysqlUsageSink, pruneUsage } from '@api/Services/Partner/MysqlUsageSink'
+import { RedisUsageCounterStore } from '@api/Services/Partner/RedisUsageCounterStore'
+
+// Queue & Worker Setup
+
+const bullmqTelemetry = new BullMQOtel({ tracerName: 'kreditozrouti-api' })
+
+// bullmq@6's Queue leaks its defaulted DefaultNameType generic across the module
+// boundary, which makes Queue.add(name, ...) reject a plain string name at every
+// call site. Pin the generics via a cast so the exported queue type is fully
+// resolved. The connection cast bridges ioredis's RedisOptions and bullmq's own
+// vendored RedisOptions, which are structurally incompatible in v6.
+const scraperRequestQueue = new Queue<ScraperRequestJob>(ScraperRequestQueue, {
+	connection: redis.options as ConnectionOptions,
+	telemetry: bullmqTelemetry,
+	defaultJobOptions: {
+		removeOnComplete: { count: 100 },
+		removeOnFail: { age: 86_400 }
+	}
+}) as Queue<ScraperRequestJob, unknown, string, ScraperRequestJob, unknown, string>
+
+const scraperResponseQueue = new Queue<ScraperResponseJob>(ScraperResponseQueue, {
+	connection: redis.options as ConnectionOptions,
+	telemetry: bullmqTelemetry
+}) as Queue<ScraperResponseJob, unknown, string, ScraperResponseJob, unknown, string>
+
+const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueue, ScraperResponseHandler, {
+	connection: redis.options as ConnectionOptions,
+	telemetry: bullmqTelemetry,
+	concurrency: 2,
+	maxStalledCount: 2 // allow 2 stall recoveries before permanent failure
+})
+
+// Partner API usage: counters live in Redis per hour and are moved to MySQL by this hourly job. A queue of
+// its own (not the scraper response queue) so it never competes with scrape results, and a single worker
+// at concurrency 1 so two replicas can never flush the same hour twice.
+const PartnerUsageFlushQueue = 'partner-usage-flush'
+const PartnerUsageFlushScheduler = 'partner-usage-flush-hourly'
+
+const partnerUsageQueue = new Queue(PartnerUsageFlushQueue, {
+	connection: redis.options as ConnectionOptions,
+	telemetry: bullmqTelemetry
+})
+
+const partnerUsageWorker = new Worker(
+	PartnerUsageFlushQueue,
+	async () => {
+		const rows = await flushCompletedHours(RedisUsageCounterStore, MysqlUsageSink)
+		const pruned = await pruneUsage()
+		logger.info({ rows, pruned }, 'partner.usage_flushed')
+	},
+	{ connection: redis.options as ConnectionOptions, telemetry: bullmqTelemetry, concurrency: 1 }
+)
+
+// bullmq_job_count for both queues is reported here only, so the scraper replicas never double it.
+collectQueueCounts([scraperRequestQueue, scraperResponseQueue, partnerUsageQueue])
+instrumentWorker(scraperResponseWorker)
+instrumentWorker(partnerUsageWorker)
+
+// Scheduler Job Data
+
+/**
+ * Registration window months (with one-week early-start buffer):
+ *   ZS window: June 9 to September 25 - months 6,7,8,9
+ *   LS window: January 1 to February 27 - months 1,2
+ *
+ * Study Plans runs at 2 AM during registration months.
+ * It queues individual plan jobs which in turn queue course scrapes directly
+ * no separate catalog scheduler needed.
+ */
+const REGISTRATION_MONTHS_CRON = '1,2,6,7,8,9'
+
+function buildStudyPlansSchedulerJob() {
+	const periodsForLastFourYears = InSISService.getPeriodsForLastYears(4)
+
+	return {
+		name: `InSIS Study Plans Request (at 2 AM during registration months)`,
+		data: {
+			type: 'InSIS:StudyPlans' as const,
+			faculties: undefined,
+			periods: periodsForLastFourYears,
+			auto_queue_study_plans: true
+		},
+		opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+	}
+}
+
+async function buildCatalogSchedulerJob() {
+	const upcomingPeriod = InSISService.getUpcomingPeriod()
+	const rows = await mysql.selectFrom(StudyPlanCourseIdentTable._table).select('course_ident').distinct().execute()
+	const allowedIdents = rows.map(r => r.course_ident)
+
+	return {
+		name: 'InSIS Catalog Request (at 3 AM during registration months)',
+		data: {
+			type: 'InSIS:Catalog' as const,
+			faculties: undefined,
+			periods: [upcomingPeriod],
+			allowed_idents: allowedIdents,
+			auto_queue_courses: true
+		},
+		opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+	}
+}
+
+// Exported BullMQ Object
+
+const scraper = {
+	queue: {
+		request: scraperRequestQueue,
+		response: scraperResponseQueue
+	},
+
+	worker: {
+		response: scraperResponseWorker
+	},
+
+	async waitForQueues() {
+		await scraper.queue.request.waitUntilReady()
+		logger.info('bullmq.request_queue_ready')
+
+		await scraper.queue.response.waitUntilReady()
+		logger.info('bullmq.response_queue_ready')
+
+		await scraper.worker.response.waitUntilReady()
+		logger.info('bullmq.response_worker_ready')
+	},
+
+	async schedulers() {
+		if (!Config.isEnvProduction()) return
+
+		// Academic Schedules: daily at 1 AM year-round
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISAcademicSchedulesRequestScheduler,
+			{ pattern: '0 1 * * *' },
+			{
+				name: 'InSIS Academic Schedules Request (daily at 1 AM)',
+				data: {
+					type: 'InSIS:AcademicSchedules' as const
+				},
+				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+			}
+		)
+
+		// Study Plans: daily at 2 AM during registration months.
+		// Queues individual plan jobs which queue course scrapes directly.
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISStudyPlansRequestScheduler,
+			{ pattern: `0 2 * ${REGISTRATION_MONTHS_CRON} *` },
+			buildStudyPlansSchedulerJob()
+		)
+
+		// Catalog: daily at 3 AM during registration months (after study plans at 2 AM).
+		// Scrapes upcoming semester only; always queues discovered courses.
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISCatalogRequestScheduler,
+			{ pattern: `0 3 * ${REGISTRATION_MONTHS_CRON} *` },
+			await buildCatalogSchedulerJob()
+		)
+
+		// Faculty Timetables: weekly on Sunday at midnight, year-round
+		await scraper.queue.request.upsertJobScheduler(
+			ScraperInSISFacultyTimetablesRequestScheduler,
+			{ pattern: '0 0 * * 0' },
+			{
+				name: 'InSIS Faculty Timetables Request (weekly Sunday midnight)',
+				data: {
+					type: 'InSIS:FacultyTimetables' as const
+				},
+				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+			}
+		)
+
+		// Gap Sweep: every 4 hours year-round (0:00, 4:00, 8:00, 12:00, 16:00, 20:00).
+		// Queries for course idents missing from insis_courses and triggers a targeted catalog scrape.
+		await scraper.queue.response.upsertJobScheduler(
+			ScraperInSISGapSweeperScheduler,
+			{ pattern: '0 */4 * * *' },
+			{
+				name: 'InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00)',
+				data: { type: 'InSIS:GapSweep' as const },
+				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
+			}
+		)
+
+		// Partner usage flush: hourly at :05, so the hour that just ended is complete.
+		await partnerUsageQueue.upsertJobScheduler(
+			PartnerUsageFlushScheduler,
+			{ pattern: '5 * * * *' },
+			{ name: 'Partner usage flush (hourly at :05)', data: {}, opts: { removeOnComplete: true, removeOnFail: { age: 86400 } } }
+		)
+
+		logger.info('bullmq.schedulers_configured')
+	}
+}
+
+export { scraper }

@@ -1,17 +1,10 @@
-# ==============================================================================
-# Networks Configuration: Monitoring Stack
-# Description: Defines the external network for the monitoring stack.
-# ==============================================================================
-
 networks:
-  traefik-network:
-    name: traefik-network
+  kreditozrouti-monitoring-internal-network:
+    name: kreditozrouti-monitoring-internal-network
     external: true
-
-  monitoring-network:
-    name: monitoring-network
+  kreditozrouti-monitoring-network:
+    name: kreditozrouti-monitoring-network
     external: true
-
-  alloy-network:
-    name: alloy-network
+  public-network:
+    name: public-network
     external: true

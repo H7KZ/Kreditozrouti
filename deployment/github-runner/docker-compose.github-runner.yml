@@ -13,14 +13,14 @@
 #   - GITHUB_ACCESS_TOKEN: Personal Access Token with repo scope
 #   - PROJECT: Project name prefix for runner naming
 #   - RUNNER_LABELS: Comma-separated list of runner labels
-#   - RUNNER_REPLICAS: Number of runner instances (default: 2)
+#   - RUNNER_REPLICAS: Number of runner instances (default: 1)
 #
 # Usage: docker compose -f docker-compose.github-runner.yml up -d
 # ==============================================================================
 
 services:
   runner:
-    image: myoung34/github-runner:latest
+    image: myoung34/github-runner:2.337.0
     restart: always
 
     volumes:
@@ -32,7 +32,7 @@ services:
       - ACCESS_TOKEN=${GITHUB_ACCESS_TOKEN}
 
       # Naming and Labels
-      - RUNNER_NAME_PREFIX=${PROJECT:-github}-runner
+      - RUNNER_NAME_PREFIX=kreditozrouti-runner
       - RUNNER_SCOPE=repo
       - LABELS=${RUNNER_LABELS:-docker,self-hosted}
 
@@ -41,7 +41,7 @@ services:
       - DISABLE_AUTO_UPDATE=true
 
     networks:
-      - traefik-network
+      - public-network
 
     logging:
       driver: 'json-file'
@@ -51,7 +51,7 @@ services:
 
     deploy:
       mode: replicated
-      replicas: ${RUNNER_REPLICAS:-2}
+      replicas: ${RUNNER_REPLICAS:-1}
 
       resources:
         limits:

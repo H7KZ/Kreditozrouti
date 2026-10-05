@@ -17,13 +17,13 @@ set -euo pipefail
 #   GITHUB_ACCESS_TOKEN   Personal Access Token (repo scope)
 #
 # Optional:
-#   RUNNER_REPLICAS       Number of runner instances (default: 2)
+#   RUNNER_REPLICAS       Number of runner instances (default: 1)
 #   RUNNER_LABELS         Additional labels, comma-separated
 # ==============================================================================
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
-readonly STACK_NAME="global"
+readonly STACK_NAME="kreditozrouti-ci"
 
 source "$(cd "$SCRIPT_DIR/.." && pwd)/lib.sh"
 
@@ -65,7 +65,7 @@ main() {
 
     validate_url "$GITHUB_REPO_URL"
 
-    local replicas="${RUNNER_REPLICAS:-2}"
+    local replicas="${RUNNER_REPLICAS:-1}"
     validate_number "$replicas" "RUNNER_REPLICAS"
 
     local labels="docker,self-hosted"
@@ -78,7 +78,7 @@ main() {
     export RUNNER_LABELS="$labels"
 
     local compose_file="$SCRIPT_DIR/docker-compose.github-runner.yml"
-    local networks_config="$(cd "$SCRIPT_DIR/.." && pwd)/traefik/networks.yml"
+    local networks_config="$SCRIPT_DIR/networks.yml"
 
     log "=========================================="
     log "GitHub Actions Runner Deployment"
@@ -91,9 +91,9 @@ main() {
 
     validate_files "$compose_file" "$networks_config"
 
-    if ! docker network inspect "traefik-network" &>/dev/null; then
-        log "Creating network: traefik-network"
-        docker network create "traefik-network"
+    if ! docker network inspect "public-network" &>/dev/null; then
+        log "Creating network: public-network"
+        docker network create "public-network"
     fi
 
     log "Deploying GitHub runners..."

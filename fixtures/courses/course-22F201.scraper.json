@@ -19,6 +19,13 @@
     "year_of_study": "bakalářský (první cyklus): 2",
     "lecturers": null,
     "guarantors": "Ing. Ondřej Sankot, Ph.D.",
+    "lecturer_refs": [
+        {
+            "id": 56307,
+            "name": "Ing. Ondřej Sankot, Ph.D.",
+            "role": "guarantor"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "Stáž v délce 6-8 týdnu z nabídky Global Citizen program AIESEC.",

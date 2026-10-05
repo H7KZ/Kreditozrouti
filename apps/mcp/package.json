@@ -1,0 +1,49 @@
+{
+	"name": "@kreditozrouti/mcp",
+	"version": "0.1.0",
+	"description": "MCP server for Kreditožrouti — VŠE course scheduling data",
+	"license": "MIT",
+	"type": "module",
+	"bin": {
+		"kreditozrouti-mcp": "./dist/index.js"
+	},
+	"main": "./dist/index.js",
+	"scripts": {
+		"dev": "dotenv -e ../../.env -- tsx --watch src/index.ts",
+		"build": "tsup",
+		"lint": "eslint src",
+		"lint:fix": "eslint src --fix",
+		"format": "prettier --write src",
+		"type-check": "tsc --noEmit",
+		"start": "node dist/index.js"
+	},
+	"dependencies": {
+		"@kreditozrouti/core": "workspace:*",
+		"@kreditozrouti/types": "workspace:*",
+		"@modelcontextprotocol/sdk": "^1.30.1",
+		"express": "catalog:",
+		"express-rate-limit": "^8.7.0",
+		"kysely": "catalog:",
+		"mysql2": "catalog:",
+		"pino": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@eslint/js": "catalog:",
+		"@ianvs/prettier-plugin-sort-imports": "catalog:",
+		"@types/express": "catalog:",
+		"@types/node": "catalog:",
+		"dotenv-cli": "catalog:",
+		"eslint": "catalog:",
+		"eslint-config-prettier": "catalog:",
+		"eslint-plugin-promise": "catalog:",
+		"eslint-plugin-regexp": "catalog:",
+		"eslint-plugin-unicorn": "catalog:",
+		"globals": "catalog:",
+		"prettier": "catalog:",
+		"tsup": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:",
+		"typescript-eslint": "catalog:"
+	}
+}

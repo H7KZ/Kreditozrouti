@@ -19,6 +19,23 @@
     "year_of_study": "bakalářský (první cyklus): 1",
     "lecturers": "Mgr. Jana Bartoňová|Mgr. Lenka Bumba|Mgr. Anna Hájková",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 1579,
+            "name": "Mgr. Jana Bartoňová",
+            "role": "lecturer"
+        },
+        {
+            "id": 78259,
+            "name": "Mgr. Lenka Bumba",
+            "role": "lecturer"
+        },
+        {
+            "id": 174617,
+            "name": "Mgr. Anna Hájková",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

@@ -19,6 +19,33 @@
     "year_of_study": "bakalářský (první cyklus): 3",
     "lecturers": "doc. Ing. Tomáš Kincl, Ph.D.|Ing. Petra Kozáková, Ph.D.|Mgr. Irena Míková, Ph.D.|doc. Ing. Bc. Mojmír Sabolovič, Ph.D.|Ing. Veronika Vašíčková, Ph.D.",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 57037,
+            "name": "doc. Ing. Tomáš Kincl, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 104016,
+            "name": "Ing. Petra Kozáková, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 1013,
+            "name": "Mgr. Irena Míková, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 104317,
+            "name": "doc. Ing. Bc. Mojmír Sabolovič, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 58547,
+            "name": "Ing. Veronika Vašíčková, Ph.D.",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

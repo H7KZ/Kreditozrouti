@@ -19,6 +19,13 @@
     "year_of_study": "magisterský navazující (druhý cyklus): 1",
     "lecturers": "Ing. PhDr. Antonín Pavlíček, Ph.D.",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 30614,
+            "name": "Ing. PhDr. Antonín Pavlíček, Ph.D.",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

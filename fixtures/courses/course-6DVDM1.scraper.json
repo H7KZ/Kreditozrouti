@@ -19,6 +19,18 @@
     "year_of_study": "doktorský (třetí cyklus): 1",
     "lecturers": "doc. Ing. Vladislav Bína, Ph.D.|doc. Ing. Tomáš Kincl, Ph.D.",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 56995,
+            "name": "doc. Ing. Vladislav Bína, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 57037,
+            "name": "doc. Ing. Tomáš Kincl, Ph.D.",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

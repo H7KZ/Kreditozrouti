@@ -1,122 +1,26 @@
 # Monorepo
 
-## Package Layout
+Kreditožrouti is a [pnpm workspace](../../pnpm-workspace.yaml). `make install` runs a frozen pnpm install; [Turborepo](../../turbo.json) coordinates development, builds, linting, and type checks.
 
-```
-Kreditozrouti/
-├── api/          # Express API server (Node.js process)
-├── client/       # Vue 3 SPA (static build, served by Nginx in prod)
-├── scraper/      # BullMQ worker (Node.js process)
-├── shared/       # Shared types — imported by api, client, scraper
-├── scripts/      # Bash helper scripts for server setup & maintenance
-└── deployment/   # Docker Compose files + deploy.sh
-```
+The workspace catalog in `pnpm-workspace.yaml` is the source of truth for versions shared by multiple packages. Their manifests use `catalog:`; the TypeScript override also constrains transitive dependencies.
 
-Each of `../../api`, `../../client`, `../../scraper`, and `shared/` is an independent npm package with its own
-`../../package.json` and
-`tsconfig.json`. There is no npm workspace hoisting of runtime code — each package installs its own dependencies.
+| Path                                                     | Role                                                        |
+| -------------------------------------------------------- | ----------------------------------------------------------- |
+| [`apps/api/`](../../apps/api/package.json)               | Express HTTP API, MySQL writes, BullMQ orchestration        |
+| [`apps/web/`](../../apps/web/package.json)               | Vue 3 SPA served by Nginx in deployment                     |
+| [`apps/scraper/`](../../apps/scraper/package.json)       | BullMQ worker that fetches and parses InSIS                 |
+| [`apps/mcp/`](../../apps/mcp/package.json)               | MCP tools and resources backed by shared services and MySQL |
+| [`packages/types/`](../../packages/types/package.json)   | Domain, HTTP, queue, and database types                     |
+| [`packages/core/`](../../packages/core/package.json)     | Reusable domain logic, queue names, and query services      |
+| [`packages/logger/`](../../packages/logger/package.json) | Node-only logging used by API and scraper                   |
+| [`packages/style/`](../../packages/style/vars.css)       | Shared CSS variables                                        |
+| [`deployment/`](../../deployment)                        | Compose stacks and deployment scripts                       |
+| [`scripts/`](../../scripts)                              | Repository-specific maintenance scripts                     |
 
----
+## Boundaries
 
-## Package Roles
+- Web imports shared DTOs from `@kreditozrouti/types` and browser-safe functions from `@kreditozrouti/core/domain`. It does not import API runtime code, core DB services, or the Node-only logger.
+- API, scraper, and MCP use shared types and core services. The scraper has no MySQL connection; it returns scrape results through BullMQ for the API to persist.
+- Core stays independent of Express, BullMQ, Redis clients, and the logger. Package-specific aliases are defined in each package's `tsconfig.json`.
 
-| Package      | Language         | Runtime          | Purpose                                   |
-|--------------|------------------|------------------|-------------------------------------------|
-| `api`        | TypeScript       | Node.js          | HTTP server, DB writes, job orchestration |
-| `client`     | TypeScript + Vue | Browser / Nginx  | User interface                            |
-| `scraper`    | TypeScript       | Node.js          | BullMQ worker, InSIS HTTP scraping        |
-| `shared`     | TypeScript       | N/A (types only) | Shared DTOs, domain logic, queue types    |
-| `scripts`    | Bash             | Server (Ubuntu)  | Docker install, Traefik, maintenance      |
-| `deployment` | YAML + Bash      | CI / Server      | Docker Compose stacks, deploy script      |
-
----
-
-## Cross-Package Import Rules
-
-```
-         ┌──────────┐                     ┌──────────┐
-         │  client  │                     │   api    │
-         └──────────┘                     └──────────┘
-               │                               │
-               │ @shared/*                     │ @shared/*
-               ▼                               ▼
-         ┌──────────────────────────────────────────┐
-         │                 shared                   │
-         │   (no imports from api/client/scraper)   │
-         └──────────────────────────────────────────┘
-                                               ▲
-                                    @shared/*  │
-                                         ┌──────────┐
-                                         │ scraper  │
-                                         └──────────┘
-```
-
-**Rules:**
-
-- `shared` must **never** import from `api`, `client`, or `scraper` — it is a pure types/utilities package
-- `client` must **never** import from `api` — all shared types come from `@shared/`
-- `scraper` and `api` share job payload types via `@shared/queue/insis.ts`
-
----
-
-## TypeScript Path Aliases
-
-Each package configures `tsconfig.json` `paths` so imports are clean:
-
-### api/
-
-| Alias       | Resolves to   |
-|-------------|---------------|
-| `@api/*`    | `./src/*`     |
-| `@shared/*` | `../shared/*` |
-
-### client/
-
-| Alias       | Resolves to    | Note                                   |
-|-------------|----------------|----------------------------------------|
-| `@client/*` | `./src/*`      | —                                      |
-| `@api/*`    | `../api/src/*` | Types only — never import runtime code |
-| `@shared/*` | `../shared/*`  | —                                      |
-
-### scraper/
-
-| Alias        | Resolves to   |
-|--------------|---------------|
-| `@scraper/*` | `./src/*`     |
-| `@shared/*`  | `../shared/*` |
-
----
-
-## Shared Package Structure
-
-```
-shared/
-├── domain/
-│   ├── insis.ts        # InSIS enums (Faculty, Semester, UnitType, …), getSlotType()
-│   ├── timetable.ts    # Conflict detection, campus logic, checkCourseCompleteness
-│   ├── period.ts       # getUpcomingPeriod(), getPeriodsForLastYears()
-│   ├── time.ts         # TimeSelection type, timeToMinutes(), minutesToTime()
-│   └── day.ts          # getDayFromDate()
-├── http/
-│   ├── index.ts        # All DTO interfaces (FacultyDTO, CourseDTO, …)
-│   └── filters.ts      # CoursesFilter, StudyPlansFilter, FacetItem
-└── queue/
-    ├── index.ts        # Queue name constants
-    └── insis.ts        # Job payload types (ScraperInSISCourse, ScraperInSISStudyPlan)
-```
-
-Full reference: [docs/shared/](../shared/README.md)
-
----
-
-## Development Commands
-
-```bash
-make install        # Install all packages
-make dev            # Run api + client + scraper in parallel
-make lint           # Lint all packages
-make format         # Format all packages
-make build          # Production build for all packages
-```
-
-Individual packages: `cd api && npm run dev` etc.
+See [shared contracts](../shared/README.md), [service responsibilities](SERVICES.md), and [local setup](../engineering/SETUP.md).

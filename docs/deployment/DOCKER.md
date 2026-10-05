@@ -1,131 +1,30 @@
-# Deployment — Docker Images
+# Docker images
 
-All three services use multi-stage Docker builds for lean production images. Images are stored in GitHub Container
-Registry (GHCR).
+The [API](../../apps/api/Dockerfile), [web](../../apps/web/Dockerfile), [scraper](../../apps/scraper/Dockerfile), and [MCP](../../apps/mcp/Dockerfile) use multi-stage builds. Each prunes its Turbo workspace, installs with the frozen pnpm lockfile, builds its package, and copies the production output into a runner image. Node stages use `node:24-alpine`, `pnpm@12.6.0`, and `turbo@2.10.13`; web serves through nginx.
 
----
+| Service | Runtime                   | Internal port | Health                           |
+| ------- | ------------------------- | ------------- | -------------------------------- |
+| API     | Node, non-root            | 80            | `GET /health`                    |
+| Web     | nginx                     | 80            | BusyBox `wget` on `127.0.0.1:80` |
+| Scraper | Node worker with Chromium | 9101 metrics  | Container and scrape checks      |
+| MCP     | Node, non-root            | 3000          | `GET /health`                    |
 
-## API Image
+The API runs database migrations on startup. The scraper serves `/metrics` inside the monitoring network; it has no public route.
 
-**Location:** `../../api/Dockerfile` — Base: `node:26-alpine`
+## Local Compose
 
-**Build stages:**
+The root [`docker-compose.local.yml`](../../docker-compose.local.yml) follows the Ohlídáme developer stack split: `make dev` starts only MySQL and Redis, then runs workspace watchers on the host. `make up` builds and starts the four deployables behind a pinned local Traefik container, which routes `/` to web, `/api` to API, and `/mcp` plus OAuth discovery routes to MCP. The dashboard binds to loopback at `http://localhost:8080/dashboard/`. phpMyAdmin is optional via `make admin`; the local Compose file has no monitoring services.
 
-```
-Stage 1 (builder)
-  ├── Install npm + dependencies (--frozen-lockfile)
-  ├── Copy source
-  └── tsc → dist/
+## Web runtime configuration
 
-Stage 2 (production)
-  ├── Copy dist/ + node_modules from builder
-  └── CMD ["node", "dist/api/src/index.js"]
-```
+Vite bundles environment values at build time. To reuse one web image across environments, [the Dockerfile](../../apps/web/Dockerfile) embeds placeholders for `VITE_API_URL`, `VITE_FARO_COLLECTOR_URL`, `VITE_APP_VERSION`, `VITE_APP_ENV`, `VITE_UMAMI_WEBSITE_ID`, and `VITE_UMAMI_SRC`. [`docker-entrypoint.sh`](../../apps/web/docker-entrypoint.sh) replaces them from container environment values before nginx starts.
 
-**Exposes:** port 80  
-**Migrations** run automatically on startup via `SQLService.migrateToLatest()`.
+Every placeholder variable must also appear in the root [`turbo.json`](../../turbo.json) `build.env` list. Turbo's strict environment mode otherwise removes it from the build and leaves no token to replace.
 
----
+## Registry and tags
 
-## Client Image
+The build workflow pushes each service to `ghcr.io/<owner>/<repo>/<service>` with an eight-character commit SHA tag and a floating environment tag: `latest` for production or `dev-latest` for development. Deploy and rollback use explicit SHA tags through `API_IMAGE_TAG`, `WEB_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`, and `MCP_IMAGE_TAG`.
 
-**Location:** `../../client/Dockerfile` — Base: `node:26-alpine` → `nginx:stable-alpine`
+Third-party images in Compose use versioned tags. Check the actual [production](../../deployment/production/docker-compose.production.yml), [development](../../deployment/development/docker-compose.development.yml), [monitoring](../../deployment/monitoring/docker-compose.monitoring.yml), and [runner](../../deployment/github-runner/docker-compose.github-runner.yml) files before changing a pin. In particular, MySQL and PostgreSQL image major changes require data migration; the [Umami PostgreSQL 18 runbook](HANDOFF-umami-pg18-migration.md) covers the existing monitoring volume.
 
-**Build stages:**
-
-```
-Stage 1 (builder)
-  ├── Install npm + dependencies
-  ├── Set placeholder env vars:
-  │     VITE_API_URL=__VITE_API_URL_PLACEHOLDER__
-  │     VITE_FARO_COLLECTOR_URL=__VITE_FARO_COLLECTOR_URL_PLACEHOLDER__
-  └── vite build → dist/
-
-Stage 2 (production)
-  ├── nginx:stable-alpine
-  ├── Copy dist/ to /usr/share/nginx/html
-  ├── Copy nginx.conf
-  └── ENTRYPOINT docker-entrypoint.sh (replaces placeholders at startup)
-```
-
-### Runtime environment injection
-
-Because Vite bakes env vars into the bundle at build time, the client image uses a placeholder-replacement trick to stay
-environment-agnostic:
-
-```bash
-# docker-entrypoint.sh
-find /usr/share/nginx/html -type f -name "*.js" -exec \
-  sed -i \
-    -e "s|__VITE_API_URL_PLACEHOLDER__|${VITE_API_URL}|g" \
-    -e "s|__VITE_FARO_COLLECTOR_URL_PLACEHOLDER__|${VITE_FARO_COLLECTOR_URL}|g" \
-    {} \;
-exec "$@"
-```
-
-**Benefit:** A single image works in both development and production without rebuilding.
-
----
-
-## Scraper Image
-
-**Location:** `../../scraper/Dockerfile` — Base: `node:26-alpine`
-
-**Build stages:**
-
-```
-Stage 1 (builder)
-  ├── Install npm + dependencies
-  ├── tsc → dist/
-
-Stage 2 (production)
-  ├── Copy dist/ + node_modules
-  └── CMD ["node", "dist/index.js"]
-```
-
----
-
-## Image Registry (GHCR)
-
-**Registry:** `ghcr.io`
-
-**Naming convention:**
-
-```
-ghcr.io/<owner>/<repo>/api:<tag>
-ghcr.io/<owner>/<repo>/client:<tag>
-ghcr.io/<owner>/<repo>/scraper:<tag>
-```
-
-**Tag conventions:**
-
-Each build produces a **short-SHA versioned tag** plus a **floating tag**:
-
-| Environment | Versioned tag      | Floating tag | Example versioned |
-|-------------|--------------------|--------------|-------------------|
-| Production  | `${GITHUB_SHA::8}` | `latest`     | `a1b2c3d4`        |
-| Development | `${GITHUB_SHA::8}` | `dev-latest` | `a1b2c3d4`        |
-
-The versioned tag (`API_IMAGE_TAG`, `CLIENT_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`) is what `deploy.sh` uses. Each service gets
-its own tag variable so services can be deployed independently at different SHAs. For full-stack deploys via
-`deploy-all.yml`, all three variables are set to the same SHA.
-
-**Login:**
-
-```bash
-echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
-```
-
----
-
-## Building Images Locally
-
-```bash
-# Build all images
-make build-docker-images
-
-# Test an image
-docker run -p 40080:80 --env-file .env kreditozrouti-api
-docker run -p 45173:80 -e VITE_API_URL=http://localhost:40080 kreditozrouti-client
-docker run --env-file .env kreditozrouti-scraper
-```
+`make up` builds and starts all four app images with local Traefik, MySQL, and Redis. Standalone `docker run` of API or scraper needs matching MySQL and Redis services.

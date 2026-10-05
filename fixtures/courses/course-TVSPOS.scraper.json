@@ -19,6 +19,23 @@
     "year_of_study": "bakalářský (první cyklus): 1",
     "lecturers": "Bc. Michal Fabián|Mgr. Gabriela Fliedrová|Mgr. Šárka Kopřivová",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 111172,
+            "name": "Bc. Michal Fabián",
+            "role": "lecturer"
+        },
+        {
+            "id": 110245,
+            "name": "Mgr. Gabriela Fliedrová",
+            "role": "lecturer"
+        },
+        {
+            "id": 67414,
+            "name": "Mgr. Šárka Kopřivová",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

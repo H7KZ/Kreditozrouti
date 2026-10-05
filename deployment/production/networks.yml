@@ -1,21 +1,27 @@
 # ==============================================================================
 # Networks Configuration: Production
 # Description: External network definitions for production environment.
+#              public-network is the shared reverse-proxy network Infrastructure's
+#              Traefik owns on the VPS. Private per-datastore nets and the per-repo
+#              monitoring net follow the cross-repo convention (see NAMING.md in
+#              the Infrastructure repo).
 # ==============================================================================
 
 networks:
-  traefik-network:
-    name: traefik-network
+  public-network:
+    name: public-network
     external: true
 
-  mysql-network:
-    name: mysql-network
+  kreditozrouti-mysql-network-prod:
+    name: kreditozrouti-mysql-network-prod
     external: true
 
-  redis-network:
-    name: redis-network
+  kreditozrouti-redis-network-prod:
+    name: kreditozrouti-redis-network-prod
     external: true
 
-  alloy-network:
-    name: alloy-network
+  # Per-repo scrape network (spans prod + dev app containers and this repo's
+  # own monitoring stack). Not shared with other repos.
+  kreditozrouti-monitoring-network:
+    name: kreditozrouti-monitoring-network
     external: true

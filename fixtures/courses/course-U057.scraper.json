@@ -19,6 +19,13 @@
     "year_of_study": null,
     "lecturers": "Ing. Hana Krohová",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 84460,
+            "name": "Ing. Hana Krohová",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

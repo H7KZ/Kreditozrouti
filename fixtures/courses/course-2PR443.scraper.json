@@ -19,6 +19,28 @@
     "year_of_study": "magisterský navazující (druhý cyklus): 1",
     "lecturers": "Ing. Lucie Andreisová, Ph.D.|Mgr. Ing. Jan Levý, Ph.D.|doc. JUDr. Ing. Tomáš Moravec, Ph.D.|Mgr. Ing. Tereza Vaňkátová, Ph.D.",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 44770,
+            "name": "Ing. Lucie Andreisová, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 36556,
+            "name": "Mgr. Ing. Jan Levý, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 48976,
+            "name": "doc. JUDr. Ing. Tomáš Moravec, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 82754,
+            "name": "Mgr. Ing. Tereza Vaňkátová, Ph.D.",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

@@ -56,3 +56,19 @@ export function extractYear(value: string | null): number | null {
 	if (!yearMatch?.[1]) return null
 	return parseInt(yearMatch[1].split('/')[0] ?? '0', 10)
 }
+
+/**
+ * Parse a slot date string. InSIS/DB stores block-action dates as DD.MM.YYYY
+ * (e.g. "10.09.2025"), which `new Date()` cannot parse (Invalid Date) - that is
+ * why block actions silently vanished from exports. Tolerate ISO YYYY-MM-DD too.
+ * Returns null if unparseable.
+ */
+export function parseSlotDate(s: string): Date | null {
+	const dmy = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec(s.trim())
+	if (dmy) {
+		const [, d, m, y] = dmy
+		return new Date(Number(y), Number(m) - 1, Number(d))
+	}
+	const iso = new Date(s)
+	return isNaN(iso.getTime()) ? null : iso
+}

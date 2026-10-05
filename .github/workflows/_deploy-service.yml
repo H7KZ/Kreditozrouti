@@ -1,169 +1,231 @@
-# Reusable Workflow: Deploy Service
+# ==============================================================================
+# Workflow: Deploy Service (reusable)
 # Description: Deploys a single service to the VPS via deploy.sh. api/scraper/mcp
 #              are deployed together with their infrastructure dependencies
-#              (mysql/redis); client keeps --no-deps. See deploy.sh for details.
-#              Called by per-service deploy workflows (deploy-api.yml, etc.)
+#              (mysql/redis); web keeps --no-deps. See deploy.sh for details.
+#              Called by deploy-all.yml/rollback.yml for each selected service.
 #
 # Inputs:  service, environment, project_name, image_tag, image_prefix
 # Scopes:  GitHub Environment secrets via `environment: ${{ inputs.environment }}`
+# ==============================================================================
 
 name: Deploy Service (reusable)
 
 on:
-  workflow_call:
-    inputs:
-      service:
-        description: 'Service to deploy: api | client | scraper'
-        required: true
-        type: string
-      environment:
-        description: 'Target environment: production | development'
-        required: true
-        type: string
-      project_name:
-        description: 'Docker Compose project name: prod | dev'
-        required: true
-        type: string
-      image_tag:
-        description: 'Image tag (short SHA from build step)'
-        required: true
-        type: string
-      image_prefix:
-        description: 'Registry path prefix (e.g. ghcr.io/h7kz/kreditozrouti)'
-        required: true
-        type: string
+    workflow_call:
+        inputs:
+            service:
+                description: 'Service to deploy: api | web | scraper'
+                required: true
+                type: string
+            environment:
+                description: 'Target environment: production | development'
+                required: true
+                type: string
+            project_name:
+                description: 'Docker Compose project name: prod | dev'
+                required: true
+                type: string
+            image_tag:
+                description: 'Image tag (short SHA from build step)'
+                required: true
+                type: string
+            image_prefix:
+                description: 'Registry path prefix (e.g. ghcr.io/h7kz/kreditozrouti)'
+                required: true
+                type: string
 
 jobs:
-  deploy:
-    name: Deploy ${{ inputs.service }} to ${{ inputs.environment }}
-    runs-on: self-hosted
-    timeout-minutes: 15
+    deploy:
+        name: Deploy ${{ inputs.service }} to ${{ inputs.environment }}
+        runs-on: self-hosted
+        timeout-minutes: 15
 
-    environment: ${{ inputs.environment }}
+        environment: ${{ inputs.environment }}
 
-    permissions:
-      contents: read
-      packages: read
+        permissions:
+            contents: read
+            packages: read
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
 
-      - name: Create Version Directory
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            mkdir -p "$HOME/versions/${{ inputs.environment }}/${{ inputs.image_tag }}"
+            - name: Create Version Directory
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  script: |
+                      mkdir -p "$HOME/kreditozrouti/versions/${{ inputs.environment }}/${{ inputs.image_tag }}"
 
-      - name: Upload Deployment Files
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          source: 'deployment/'
-          target: '~/versions/${{ inputs.environment }}/${{ inputs.image_tag }}'
-          strip_components: 1
-          overwrite: true
+            - name: Upload Deployment Files
+              uses: appleboy/scp-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  source: 'deployment/'
+                  target: '~/kreditozrouti/versions/${{ inputs.environment }}/${{ inputs.image_tag }}'
+                  strip_components: 1
+                  overwrite: true
 
-      - name: Deploy Service
-        uses: appleboy/ssh-action@v1
-        env:
-          # Auth
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_ACTOR: ${{ github.actor }}
-          # Image
-          IMG_REGISTRY: ghcr.io
-          IMG_PREFIX: ${{ inputs.image_prefix }}
-          IMG_TAG: ${{ inputs.image_tag }}
-          # Service
-          APP_SERVICE: ${{ inputs.service }}
-          APP_ENV: ${{ inputs.environment }}
-          # Non-sensitive (GitHub Variables)
-          APP_PROJECT: ${{ vars.PROJECT }}
-          APP_DOMAIN: ${{ vars.DOMAIN }}
-          APP_MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          APP_MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-          # Sensitive (GitHub Secrets)
-          APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
-          APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
-          APP_MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          APP_MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          APP_MYSQL_URI: ${{ secrets.MYSQL_URI }}
-          APP_REDIS_URI: ${{ secrets.REDIS_URI }}
-          APP_REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          APP_BULL_BOARD_USER: ${{ secrets.BULL_BOARD_USER }}
-          APP_GOOGLE_USER: ${{ secrets.GOOGLE_USER }}
-          APP_GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
-          APP_UMAMI_WEBSITE_ID: ${{ secrets.UMAMI_WEBSITE_ID }}
-          APP_UMAMI_SRC: ${{ vars.UMAMI_SRC }}
-          APP_MCP_JWT_SECRET: ${{ secrets.MCP_JWT_SECRET }}
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_ENV,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_BULL_BOARD_USER,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET
-          script: |
-            set -euo pipefail
+            - name: Deploy Service
+              uses: appleboy/ssh-action@v1
+              env:
+                  # Auth
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GH_ACTOR: ${{ github.actor }}
+                  # Image
+                  IMG_REGISTRY: ghcr.io
+                  IMG_PREFIX: ${{ inputs.image_prefix }}
+                  IMG_TAG: ${{ inputs.image_tag }}
+                  # Service
+                  APP_SERVICE: ${{ inputs.service }}
+                  APP_ENV: ${{ inputs.environment }}
+                  # Non-sensitive (GitHub Variables)
+                  APP_PROJECT: ${{ vars.PROJECT }}
+                  APP_DOMAIN: ${{ vars.DOMAIN }}
+                  APP_MYSQL_USER: ${{ secrets.MYSQL_USER }}
+                  APP_MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+                  # Sensitive (GitHub Secrets)
+                  APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
+                  APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
+                  APP_MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+                  APP_MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+                  APP_MYSQL_URI: ${{ secrets.MYSQL_URI }}
+                  APP_REDIS_URI: ${{ secrets.REDIS_URI }}
+                  APP_REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+                  APP_GOOGLE_USER: ${{ secrets.GOOGLE_USER }}
+                  APP_GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
+                  APP_UMAMI_WEBSITE_ID: ${{ secrets.UMAMI_WEBSITE_ID }}
+                  APP_UMAMI_SRC: ${{ vars.UMAMI_SRC }}
+                  APP_MCP_JWT_SECRET: ${{ secrets.MCP_JWT_SECRET }}
+                  APP_PHPMYADMIN_BASIC_AUTH: ${{ secrets.PHPMYADMIN_BASIC_AUTH }}
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_ENV,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET,APP_PHPMYADMIN_BASIC_AUTH
+                  script: |
+                      set -euo pipefail
 
-            VERSION_DIR="$HOME/versions/${{ inputs.environment }}/$IMG_TAG"
-            CURRENT_LINK="$HOME/versions/${{ inputs.environment }}/current"
+                      VERSION_DIR="$HOME/kreditozrouti/versions/${{ inputs.environment }}/$IMG_TAG"
+                      CURRENT_LINK="$HOME/kreditozrouti/versions/${{ inputs.environment }}/current"
 
-            echo "=========================================="
-            echo "Service Deploy: $APP_SERVICE @ $IMG_TAG → ${{ inputs.environment }}"
-            echo "=========================================="
+                      echo "=========================================="
+                      echo "Service Deploy: $APP_SERVICE @ $IMG_TAG → ${{ inputs.environment }}"
+                      echo "=========================================="
 
-            # Login to GHCR
-            echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
+                      # -----------------------------------------------------------------
+                      # Secret shape validation. Runs BEFORE the .env is written and
+                      # before docker login, so a bad secret fails fast without touching
+                      # any server state.
+                      #
+                      # TWO READERS can eat a dollar sign on the way to the container:
+                      #   1. this shell - defeated by the printf-with-quoted-value writer
+                      #      below, which never lets the shell expand a secret;
+                      #   2. Compose - it interpolates the .env file it is handed, so
+                      #      MYSQL_PASSWORD=abc$def reaches the container as abc.
+                      # Nothing defeats the second reader, so a value that cannot survive
+                      # it is rejected here rather than deployed as a quietly different
+                      # value. For MYSQL_ROOT_PASSWORD the damage is unrecoverable: the
+                      # database initialises with the truncated value on first boot, and
+                      # the real password then differs from the stored secret forever.
+                      # -----------------------------------------------------------------
+                      reject_uncarryable() {
+                        case "$2" in
+                          *'$'*|*'`'*)
+                            echo "ERROR: secret $1 contains a '\$' or a backtick, which this deploy cannot carry."
+                            echo "       The remote .env is interpolated by Compose, so the container would"
+                            echo "       receive a TRUNCATED value - silently, with no error anywhere."
+                            echo "       Fix: regenerate it with  openssl rand -base64 32"
+                            echo "       (base64's alphabet contains neither '\$' nor a backtick, so a"
+                            echo "        generated value always passes this check.)"
+                            exit 1
+                            ;;
+                        esac
+                      }
 
-            # Write .env — printf prevents $ or $() in secret values from being shell-expanded
-            {
-              printf 'ENV=%s\n' "$APP_ENV"
-              printf 'PROJECT=%s\n' "$APP_PROJECT"
-              printf 'DOMAIN=%s\n' "$APP_DOMAIN"
-              printf 'API_SESSION_SECRET=%s\n' "$APP_API_SESSION_SECRET"
-              printf 'API_COMMAND_TOKEN=%s\n' "$APP_API_COMMAND_TOKEN"
-              printf 'VITE_APP_VERSION=%s\n' "$IMG_TAG"
-              printf 'MYSQL_USER=%s\n' "$APP_MYSQL_USER"
-              printf 'MYSQL_DATABASE=%s\n' "$APP_MYSQL_DATABASE"
-              printf 'MYSQL_PASSWORD=%s\n' "$APP_MYSQL_PASSWORD"
-              printf 'MYSQL_ROOT_PASSWORD=%s\n' "$APP_MYSQL_ROOT_PASSWORD"
-              printf 'MYSQL_URI=%s\n' "$APP_MYSQL_URI"
-              printf 'REDIS_URI=%s\n' "$APP_REDIS_URI"
-              printf 'REDIS_PASSWORD=%s\n' "$APP_REDIS_PASSWORD"
-              printf 'GOOGLE_USER=%s\n' "$APP_GOOGLE_USER"
-              printf 'GOOGLE_APP_PASSWORD=%s\n' "$APP_GOOGLE_APP_PASSWORD"
-              printf 'BULL_BOARD_USER=%s\n' "$APP_BULL_BOARD_USER"
-              printf 'VITE_UMAMI_WEBSITE_ID=%s\n' "$APP_UMAMI_WEBSITE_ID"
-              printf 'VITE_UMAMI_SRC=%s\n' "$APP_UMAMI_SRC"
-              printf 'MCP_JWT_SECRET=%s\n' "$APP_MCP_JWT_SECRET"
-            } > "$VERSION_DIR/.env"
-            chmod 600 "$VERSION_DIR/.env"
+                      reject_uncarryable MYSQL_USER "$APP_MYSQL_USER"
+                      reject_uncarryable MYSQL_DATABASE "$APP_MYSQL_DATABASE"
+                      reject_uncarryable MYSQL_PASSWORD "$APP_MYSQL_PASSWORD"
+                      reject_uncarryable MYSQL_ROOT_PASSWORD "$APP_MYSQL_ROOT_PASSWORD"
+                      reject_uncarryable MYSQL_URI "$APP_MYSQL_URI"
+                      reject_uncarryable REDIS_URI "$APP_REDIS_URI"
+                      reject_uncarryable REDIS_PASSWORD "$APP_REDIS_PASSWORD"
+                      reject_uncarryable API_SESSION_SECRET "$APP_API_SESSION_SECRET"
+                      reject_uncarryable API_COMMAND_TOKEN "$APP_API_COMMAND_TOKEN"
+                      reject_uncarryable MCP_JWT_SECRET "${APP_MCP_JWT_SECRET:-}"
+                      reject_uncarryable GOOGLE_APP_PASSWORD "${APP_GOOGLE_APP_PASSWORD:-}"
+                      reject_uncarryable UMAMI_WEBSITE_ID "${APP_UMAMI_WEBSITE_ID:-}"
 
-            # Pass tag as env var (not via .images — avoids write race when all 3 services deploy simultaneously)
-            # derive the correct SERVICE_IMAGE_TAG var name from $APP_SERVICE
-            case "$APP_SERVICE" in
-              api)     SERVICE_TAG_VAR="API_IMAGE_TAG" ;;
-              client)  SERVICE_TAG_VAR="CLIENT_IMAGE_TAG" ;;
-              scraper) SERVICE_TAG_VAR="SCRAPER_IMAGE_TAG" ;;
-              mcp)     SERVICE_TAG_VAR="MCP_IMAGE_TAG" ;;
-              *)       echo "Unknown service: '$APP_SERVICE'. Valid: api, client, scraper, mcp"; exit 1 ;;
-            esac
+                      # PHPMYADMIN_BASIC_AUTH is written single-quoted (it legitimately holds '$'),
+                      # so the only thing that breaks it is a quote or a newline.
+                      case "${APP_PHPMYADMIN_BASIC_AUTH:-}" in
+                        *"'"*|*$'\n'*)
+                          echo "ERROR: secret PHPMYADMIN_BASIC_AUTH must be a single line with no single quote."
+                          exit 1
+                          ;;
+                      esac
 
-            cd "$VERSION_DIR"
-            export "${SERVICE_TAG_VAR}=${IMG_TAG}"
-            IMAGE_REGISTRY="ghcr.io" \
-              IMAGE_PREFIX="$IMG_PREFIX" \
-              bash ./deploy.sh "${{ inputs.project_name }}" "${{ inputs.environment }}" "$APP_SERVICE"
+                      echo "Secret shape validation passed."
 
-            ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
+                      # Login to GHCR
+                      echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
+                      trap 'docker logout ghcr.io' EXIT
 
-            echo "=========================================="
-            echo "Service deploy complete: $APP_SERVICE"
-            echo "=========================================="
+                      # Write .env - printf with a quoted value keeps the SHELL from
+                      # expanding a secret. That is only the first of the two readers
+                      # described above; Compose is the second, and the validation block
+                      # is what protects against it.
+                      {
+                        printf 'ENV=%s\n' "$APP_ENV"
+                        printf 'PROJECT=%s\n' "$APP_PROJECT"
+                        printf 'DOMAIN=%s\n' "$APP_DOMAIN"
+                        printf 'API_SESSION_SECRET=%s\n' "$APP_API_SESSION_SECRET"
+                        printf 'API_COMMAND_TOKEN=%s\n' "$APP_API_COMMAND_TOKEN"
+                        printf 'VITE_APP_VERSION=%s\n' "$IMG_TAG"
+                        printf 'MYSQL_USER=%s\n' "$APP_MYSQL_USER"
+                        printf 'MYSQL_DATABASE=%s\n' "$APP_MYSQL_DATABASE"
+                        printf 'MYSQL_PASSWORD=%s\n' "$APP_MYSQL_PASSWORD"
+                        printf 'MYSQL_ROOT_PASSWORD=%s\n' "$APP_MYSQL_ROOT_PASSWORD"
+                        printf 'MYSQL_URI=%s\n' "$APP_MYSQL_URI"
+                        printf 'REDIS_URI=%s\n' "$APP_REDIS_URI"
+                        printf 'REDIS_PASSWORD=%s\n' "$APP_REDIS_PASSWORD"
+                        printf 'GOOGLE_USER=%s\n' "$APP_GOOGLE_USER"
+                        printf 'GOOGLE_APP_PASSWORD=%s\n' "${APP_GOOGLE_APP_PASSWORD:-}"
+                        printf 'VITE_UMAMI_WEBSITE_ID=%s\n' "${APP_UMAMI_WEBSITE_ID:-}"
+                        printf 'VITE_UMAMI_SRC=%s\n' "$APP_UMAMI_SRC"
+                        printf 'MCP_JWT_SECRET=%s\n' "${APP_MCP_JWT_SECRET:-}"
+                        # htpasswd lines contain '$' (bcrypt/apr1). Single quotes make Compose's
+                        # .env parser take the value literally, so it is not interpolated.
+                        printf "PHPMYADMIN_BASIC_AUTH='%s'\n" "${APP_PHPMYADMIN_BASIC_AUTH:-}"
+                      } > "$VERSION_DIR/.env"
+                      chmod 600 "$VERSION_DIR/.env"
+
+                      # Pass tag as env var (not via .images - avoids write race when all 3 services deploy simultaneously)
+                      # derive the correct SERVICE_IMAGE_TAG var name from $APP_SERVICE
+                      case "$APP_SERVICE" in
+                        api)     SERVICE_TAG_VAR="API_IMAGE_TAG" ;;
+                        web)  SERVICE_TAG_VAR="WEB_IMAGE_TAG" ;;
+                        scraper) SERVICE_TAG_VAR="SCRAPER_IMAGE_TAG" ;;
+                        mcp)     SERVICE_TAG_VAR="MCP_IMAGE_TAG" ;;
+                        *)       echo "Unknown service: '$APP_SERVICE'. Valid: api, web, scraper, mcp"; exit 1 ;;
+                      esac
+
+                      cd "$VERSION_DIR"
+                      export "${SERVICE_TAG_VAR}=${IMG_TAG}"
+                      IMAGE_REGISTRY="ghcr.io" \
+                        IMAGE_PREFIX="$IMG_PREFIX" \
+                        bash ./deploy.sh "${{ inputs.project_name }}" "${{ inputs.environment }}" "$APP_SERVICE"
+
+                      ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
+
+                      echo "=========================================="
+                      echo "Service deploy complete: $APP_SERVICE"
+                      echo "=========================================="

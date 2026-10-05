@@ -18,6 +18,8 @@ export class FacultyTable {
 
 	title!: string | null
 	is_schedule_publicly_visible!: ColumnType<boolean, boolean | undefined, boolean>
+	/** Set when a scrape last confirmed the visibility flag. NULL means "never confirmed" and hides the faculty from the partner API. */
+	schedule_visibility_checked_at!: ColumnType<Date, string | undefined, string | undefined> | null
 }
 
 export type Faculty<C = void, SP = void> = Selectable<FacultyTable> &
@@ -306,6 +308,121 @@ export type AcademicScheduleEvent = Selectable<AcademicScheduleEventTable>
 export type NewAcademicScheduleEvent = Insertable<Omit<ExcludeMethods<AcademicScheduleEventTable>, 'id' | 'created_at' | 'updated_at'>>
 
 // ---------------------------------------------------------------------------
+// Lecturer
+// ---------------------------------------------------------------------------
+
+/** A person who teaches or guarantees courses. The primary key is the InSIS person id (`/lide/clovek.pl?id=`), not generated. */
+export class LecturerTable {
+	static readonly _table = 'insis_lecturers' as const
+
+	id!: number
+
+	created_at!: ColumnType<Date, string | undefined, never>
+	updated_at!: ColumnType<Date, string | undefined, string | undefined>
+
+	name!: string
+}
+
+export type Lecturer = Selectable<LecturerTable>
+export type NewLecturer = Insertable<Omit<ExcludeMethods<LecturerTable>, 'created_at' | 'updated_at'>>
+
+export class CourseLecturerTable {
+	static readonly _table = 'insis_courses_lecturers' as const
+
+	course_id!: number
+	lecturer_id!: number
+
+	created_at!: ColumnType<Date, string | undefined, never>
+
+	role!: 'lecturer' | 'guarantor'
+}
+
+export type CourseLecturer = Selectable<CourseLecturerTable>
+export type NewCourseLecturer = Insertable<Omit<ExcludeMethods<CourseLecturerTable>, 'created_at'>>
+
+// ---------------------------------------------------------------------------
+// Partner API: plans, consumers, keys, usage
+// ---------------------------------------------------------------------------
+
+export class ApiPlanTable {
+	static readonly _table = 'api_plans' as const
+
+	id!: Generated<number>
+
+	created_at!: ColumnType<Date, string | undefined, never>
+	updated_at!: ColumnType<Date, string | undefined, string | undefined>
+
+	name!: string
+	requests_per_minute!: number
+	requests_per_day!: number
+}
+
+export type ApiPlan = Selectable<ApiPlanTable>
+export type NewApiPlan = Insertable<Omit<ExcludeMethods<ApiPlanTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export class ApiConsumerTable {
+	static readonly _table = 'api_consumers' as const
+
+	id!: Generated<number>
+	plan_id!: number
+
+	created_at!: ColumnType<Date, string | undefined, never>
+	updated_at!: ColumnType<Date, string | undefined, string | undefined>
+
+	slug!: string
+	name!: string
+	contact_email!: string | null
+	disabled_at!: ColumnType<Date, string | null | undefined, string | null> | null
+}
+
+export type ApiConsumer = Selectable<ApiConsumerTable>
+export type NewApiConsumer = Insertable<Omit<ExcludeMethods<ApiConsumerTable>, 'id' | 'created_at' | 'updated_at'>>
+
+export class ApiKeyTable {
+	static readonly _table = 'api_keys' as const
+
+	id!: Generated<number>
+	consumer_id!: number
+
+	created_at!: ColumnType<Date, string | undefined, never>
+	updated_at!: ColumnType<Date, string | undefined, string | undefined>
+
+	/** Lookup id: the first characters of the secret part, safe to show. */
+	prefix!: string
+	/** Hex SHA-256 of the full key. The key itself is never stored. */
+	key_hash!: string
+	label!: string | null
+	scopes!: ColumnType<string[], string, string>
+	/** Browser origins this key may be used from, as canonical origins. NULL or empty means server-to-server only. */
+	allowed_origins!: ColumnType<string[] | null, string | null | undefined, string | null>
+	last_used_at!: ColumnType<Date, string | null | undefined, string | null> | null
+	expires_at!: ColumnType<Date, string | null | undefined, string | null> | null
+	revoked_at!: ColumnType<Date, string | null | undefined, string | null> | null
+}
+
+export type ApiKey = Selectable<ApiKeyTable>
+export type NewApiKey = Insertable<Omit<ExcludeMethods<ApiKeyTable>, 'id' | 'created_at' | 'updated_at'>>
+
+/** Hourly request aggregate per (consumer, key, route template, status class). */
+export class ApiUsageHourlyTable {
+	static readonly _table = 'api_usage_hourly' as const
+
+	id!: Generated<number>
+	consumer_id!: number
+	key_id!: number
+
+	hour!: ColumnType<Date, string, string>
+	route!: string
+	/** 2 for 2xx, 3 for 3xx, 4 for 4xx, 5 for 5xx. */
+	status_class!: number
+	request_count!: number
+	total_duration_ms!: number
+}
+
+export type ApiUsageHourly = Selectable<ApiUsageHourlyTable>
+export type NewApiUsageHourly = Insertable<Omit<ExcludeMethods<ApiUsageHourlyTable>, 'id'>>
+
+// ---------------------------------------------------------------------------
 // Database mapping
 // ---------------------------------------------------------------------------
 
@@ -320,6 +437,12 @@ type AllTableClasses =
 	| typeof FacultyTable
 	| typeof AcademicPeriodTable
 	| typeof AcademicScheduleEventTable
+	| typeof LecturerTable
+	| typeof CourseLecturerTable
+	| typeof ApiPlanTable
+	| typeof ApiConsumerTable
+	| typeof ApiKeyTable
+	| typeof ApiUsageHourlyTable
 
 export type Database = {
 	[T in AllTableClasses as T['_table']]: InstanceType<T>

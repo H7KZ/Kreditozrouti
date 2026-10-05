@@ -1,29 +1,22 @@
-# ==============================================================================
-# Volumes Configuration: Monitoring Stack
-# Description: Persistent volume definitions for monitoring stack services (Prometheus, Grafana, Loki, Alloy).
-# ==============================================================================
-
 volumes:
-  prometheus-data:
-    name: prometheus-data
+  kreditozrouti-prometheus-volume:
+    name: kreditozrouti-prometheus-volume
     external: true
-
-  grafana-data:
-    name: grafana-data
+  kreditozrouti-alertmanager-volume:
+    name: kreditozrouti-alertmanager-volume
     external: true
-
-  loki-data:
-    name: loki-data
+  kreditozrouti-grafana-volume:
+    name: kreditozrouti-grafana-volume
     external: true
-
-  alloy-data:
-    name: alloy-data
+  kreditozrouti-loki-volume:
+    name: kreditozrouti-loki-volume
     external: true
-
-  umami-postgres-data:
-    name: umami-postgres-data
+  kreditozrouti-alloy-volume:
+    name: kreditozrouti-alloy-volume
     external: true
-
+  kreditozrouti-umami-postgres-volume:
+    name: kreditozrouti-umami-postgres-volume
+    external: true
   traefik-logs-volume:
     name: traefik-logs-volume
     external: true

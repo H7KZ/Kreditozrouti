@@ -19,6 +19,23 @@
     "year_of_study": "magisterský navazující (druhý cyklus): 2",
     "lecturers": "doc. PhDr. Lubomír Cingl, Ph.D.|Ing. Tomáš Miklánek, M.A., Ph.D.",
     "guarantors": "doc. Ing. Marek Hudík, Ph.D.",
+    "lecturer_refs": [
+        {
+            "id": 111248,
+            "name": "doc. PhDr. Lubomír Cingl, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 2620,
+            "name": "doc. Ing. Marek Hudík, Ph.D.",
+            "role": "guarantor"
+        },
+        {
+            "id": 103867,
+            "name": "Ing. Tomáš Miklánek, M.A., Ph.D.",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "nelze (studovat po absolvování 3MI407 nebo studovat současně s 3MI407 nebo studovat po absolvování 3MI707 nebo studovat současně s 3MI707)",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

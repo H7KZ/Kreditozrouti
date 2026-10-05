@@ -4,7 +4,7 @@
 #
 # Services:
 #   - api: Backend API service (NestJS/Express)
-#   - client: Frontend client (React/Next.js)
+#   - web: Frontend web app (Vue 3 SPA)
 #   - scraper: Background scraper workers
 #   - mysql: Database server
 #   - redis: Cache and queue server
@@ -12,13 +12,25 @@
 #
 # Required Environment Variables:
 #   - IMAGE_REGISTRY, IMAGE_PREFIX: Container image registry config
-#   - API_IMAGE_TAG, CLIENT_IMAGE_TAG, SCRAPER_IMAGE_TAG: Per-service image tags
+#   - API_IMAGE_TAG, WEB_IMAGE_TAG, SCRAPER_IMAGE_TAG: Per-service image tags
 #   - DOMAIN: Primary domain for routing
 #   - PROJECT: Project name for Traefik labels
 #   - MYSQL_*: Database credentials
 #   - REDIS_*: Cache credentials
 #   - API_*: API configuration
-#   - BULL_BOARD_USER: htpasswd-format credentials for /bullboard BasicAuth (e.g. admin:$$apr1$$...)
+#
+# Image Pinning Policy:
+#   Third-party images are pinned to a major tag, never `latest`. Every deploy runs
+#   `docker compose pull`, so a floating tag can silently carry a stateful service across a
+#   major version, and for a database that is not reversible.
+#
+# Router Naming:
+#   Every Traefik router/middleware name below is prefixed with ${PROJECT}, and production uses
+#   the same shape. PROJECT comes from the GitHub Environment variable `vars.PROJECT`, which is
+#   scoped per environment (see .github/workflows/_deploy-service.yml), so it MUST be set to a
+#   different value here than in production. Both stacks register with the one shared
+#   Infrastructure Traefik; identical router names would collide there and one environment
+#   would silently take over the other's routes. Do not drop the ${PROJECT} prefix.
 #
 # Usage: docker compose -f docker-compose.development.yml up -d
 # ==============================================================================
@@ -46,61 +58,53 @@ services:
       - API_ALLOWED_ORIGINS=https://${DOMAIN}
       - API_SESSION_SECRET=${API_SESSION_SECRET}
       - API_COMMAND_TOKEN=${API_COMMAND_TOKEN}
-      - API_FILE_DESTINATION=/usr/src/uploads
       - GOOGLE_USER=${GOOGLE_USER}
       - GOOGLE_APP_PASSWORD=${GOOGLE_APP_PASSWORD}
-      - CLIENT_URI=https://${DOMAIN}
+      - WEB_URI=https://${DOMAIN}
       - MYSQL_URI=${MYSQL_URI}
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4318
-
     networks:
-      - traefik-network
-      - mysql-dev-network
-      - redis-dev-network
-      - alloy-network
+      - public-network
+      - kreditozrouti-mysql-network-dev
+      - kreditozrouti-redis-network-dev
+      - kreditozrouti-monitoring-network
 
     labels:
       # Traefik Configuration
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-api.priority=100'
-      - 'traefik.http.routers.${PROJECT}-api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)'
-      - 'traefik.http.routers.${PROJECT}-api.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-api.tls=true'
-      - 'traefik.http.routers.${PROJECT}-api.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.${PROJECT}-api.loadbalancer.server.port=80'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.priority=100'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.tls=true'
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.kreditozrouti-api-${PROJECT}.loadbalancer.server.port=80'
       # Middlewares
-      - 'traefik.http.routers.${PROJECT}-api.middlewares=${PROJECT}-api-stripprefix,${PROJECT}-api-redirect-www'
-      - 'traefik.http.middlewares.${PROJECT}-api-stripprefix.stripprefix.prefixes=/api'
-      - "traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.regex=^https://www\\.(.*)"
-      - 'traefik.http.middlewares.${PROJECT}-api-redirect-www.redirectregex.replacement=https://$${1}'
-      # Traefik Configuration — Bull Board (/bullboard → this API container, no prefix strip)
-      - 'traefik.http.routers.${PROJECT}-bullboard.priority=90'
-      - 'traefik.http.routers.${PROJECT}-bullboard.rule=Host(`${DOMAIN}`) && PathPrefix(`/bullboard`)'
-      - 'traefik.http.routers.${PROJECT}-bullboard.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-bullboard.tls=true'
-      - 'traefik.http.routers.${PROJECT}-bullboard.tls.certresolver=letsencrypt'
-      - 'traefik.http.routers.${PROJECT}-bullboard.service=${PROJECT}-api'
-      - 'traefik.http.routers.${PROJECT}-bullboard.middlewares=${PROJECT}-bullboard-auth'
-      - 'traefik.http.middlewares.${PROJECT}-bullboard-auth.basicauth.users=${BULL_BOARD_USER}'
-      # Prometheus Service Discovery
+      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.middlewares=kreditozrouti-api-${PROJECT}-stripprefix,kreditozrouti-api-${PROJECT}-redirect-www'
+      - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-stripprefix.stripprefix.prefixes=/api'
+      - "traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+      - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
+      # Scraped by this repo's Alloy over kreditozrouti-monitoring-network. Only scrape + port:
+      # project/env/service/instance labels come from compose metadata.
       - 'prometheus.io/scrape=true'
-      - 'prometheus.io/env=development'
       - 'prometheus.io/port=80'
 
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:80/health' ]
-      interval: 30s
+      interval: 60s
       timeout: 10s
       retries: 3
       start_period: 40s
+      start_interval: 3s
 
     logging:
       driver: 'json-file'
       options:
         max-size: '10m'
         max-file: '3'
+
+    cpu_shares: 256
+    oom_score_adj: 500
 
     deploy:
       mode: replicated
@@ -129,21 +133,35 @@ services:
       redis:
         condition: service_healthy
 
+    # Global ceiling on outbound requests to InSIS, enforced in Redis by
+    # InSISRateLimitService so it holds across replicas and across every job's internal
+    # fan-out. Deliberately lower than production: development shares the same InSIS,
+    # and a dev scrape running alongside a production one must not double the load a
+    # single university system sees. See docs/adr/0002-global-insis-rate-limit-not-a-concurrency-knob.md.
     environment:
       - ENV=development
       - REDIS_URI=${REDIS_URI}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4318
-
+      - INSIS_RATE_LIMIT_RPS=${INSIS_RATE_LIMIT_RPS:-2}
+      - INSIS_RATE_LIMIT_BURST=${INSIS_RATE_LIMIT_BURST:-4}
+      - INSIS_RATE_LIMIT_MAX_WAIT_MS=${INSIS_RATE_LIMIT_MAX_WAIT_MS:-30000}
     networks:
-      - redis-dev-network
-      - alloy-network
+      - kreditozrouti-redis-network-dev
+      - kreditozrouti-monitoring-network
+
+    # Each replica serves its own /metrics (apps/scraper/src/metrics.ts) and is scraped per container.
+    labels:
+      - 'prometheus.io/scrape=true'
+      - 'prometheus.io/port=9101'
 
     logging:
       driver: 'json-file'
       options:
         max-size: '10m'
         max-file: '3'
+
+    cpu_shares: 256
+    oom_score_adj: 500
 
     deploy:
       mode: replicated
@@ -157,10 +175,10 @@ services:
           memory: 128M
 
   # ============================================================================
-  # Client Service
+  # Web Service
   # ============================================================================
-  client:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/client:${CLIENT_IMAGE_TAG:-dev-latest}
+  web:
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/web:${WEB_IMAGE_TAG:-dev-latest}
     restart: unless-stopped
 
     depends_on:
@@ -170,40 +188,57 @@ services:
       - ENV=development
       - VITE_API_URL=https://${DOMAIN}/api
       - VITE_FARO_COLLECTOR_URL=https://${DOMAIN}/faro/collect
-      - VITE_APP_VERSION=${CLIENT_IMAGE_TAG:-dev-latest}
+      - VITE_APP_VERSION=${WEB_IMAGE_TAG:-dev-latest}
       - VITE_APP_ENV=development
       - VITE_UMAMI_WEBSITE_ID=${VITE_UMAMI_WEBSITE_ID}
       - VITE_UMAMI_SRC=${VITE_UMAMI_SRC}
 
     networks:
-      - traefik-network
+      - public-network
 
     labels:
       # Traefik Configuration
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-client.priority=10'
-      - 'traefik.http.routers.${PROJECT}-client.rule=Host(`${DOMAIN}`)'
-      - 'traefik.http.routers.${PROJECT}-client.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-client.tls=true'
-      - 'traefik.http.routers.${PROJECT}-client.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.${PROJECT}-client.loadbalancer.server.port=80'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.priority=10'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.rule=Host(`${DOMAIN}`)'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.tls=true'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.kreditozrouti-web-${PROJECT}.loadbalancer.server.port=80'
       # Middlewares
-      - 'traefik.http.routers.${PROJECT}-client.middlewares=${PROJECT}-client-redirect-www'
-      - "traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.regex=^https://www\\.(.*)"
-      - 'traefik.http.middlewares.${PROJECT}-client-redirect-www.redirectregex.replacement=https://$${1}'
+      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.middlewares=kreditozrouti-web-${PROJECT}-redirect-www'
+      - "traefik.http.middlewares.kreditozrouti-web-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+      - 'traefik.http.middlewares.kreditozrouti-web-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
 
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:80' ]
-      interval: 30s
+      # busybox wget, not curl. The web image's runner stage is nginx:stable-alpine, which
+      # never installs curl (only apps/api/Dockerfile and apps/mcp/Dockerfile do), so the previous curl
+      # check could not execute at all and the container stayed permanently unhealthy - which
+      # in turn kept the container-health alert firing. busybox wget ships in the nginx alpine
+      # image; `--spider` fetches headers only and exits non-zero on a non-2xx response.
+      #
+      # 127.0.0.1, not localhost: the entrypoint's 10-listen-on-ipv6-by-default.sh patches
+      # default.conf to listen on both stacks, but 20-envsubst-on-templates.sh runs after it and
+      # regenerates default.conf from the template from scratch, silently dropping that IPv6
+      # listen directive - nginx ends up bound to 0.0.0.0:80 only. musl's getaddrinfo (this is
+      # Alpine) resolves "localhost" to ::1 first, so wget tried the IPv6 loopback, got refused,
+      # and never fell back to IPv4 - the container was permanently unhealthy despite serving
+      # requests over IPv4 the whole time. 127.0.0.1 skips resolution entirely.
+      test: [ 'CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:80' ]
+      interval: 60s
       timeout: 10s
       retries: 3
       start_period: 20s
+      start_interval: 3s
 
     logging:
       driver: 'json-file'
       options:
         max-size: '10m'
         max-file: '3'
+
+    cpu_shares: 256
+    oom_score_adj: 500
 
     deploy:
       mode: replicated
@@ -236,38 +271,42 @@ services:
       - MCP_JWT_SECRET=${MCP_JWT_SECRET}
 
     networks:
-      - traefik-network
-      - mysql-dev-network
+      - public-network
+      - kreditozrouti-mysql-network-dev
 
     labels:
       # Traefik Configuration
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-mcp.priority=50'
-      - 'traefik.http.routers.${PROJECT}-mcp.rule=Host(`${DOMAIN}`) && PathPrefix(`/mcp`)'
-      - 'traefik.http.routers.${PROJECT}-mcp.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-mcp.tls=true'
-      - 'traefik.http.routers.${PROJECT}-mcp.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.${PROJECT}-mcp.loadbalancer.server.port=3000'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.priority=50'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/mcp`)'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.tls=true'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.kreditozrouti-mcp-${PROJECT}.loadbalancer.server.port=3000'
       # OAuth well-known discovery endpoints (must be served from root domain)
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.priority=60'
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/oauth`)'
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls=true'
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.tls.certresolver=letsencrypt'
-      - 'traefik.http.routers.${PROJECT}-mcp-wellknown.service=${PROJECT}-mcp'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.priority=60'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/oauth`)'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.tls=true'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.service=kreditozrouti-mcp-${PROJECT}'
 
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:3000/health' ]
-      interval: 30s
+      interval: 60s
       timeout: 10s
       retries: 3
       start_period: 20s
+      start_interval: 3s
 
     logging:
       driver: 'json-file'
       options:
         max-size: '10m'
         max-file: '3'
+
+    cpu_shares: 256
+    oom_score_adj: 500
 
     deploy:
       mode: replicated
@@ -284,11 +323,11 @@ services:
   # Database (MySQL)
   # ============================================================================
   mysql:
-    image: mysql:latest
+    image: mysql:26.7.0
     restart: unless-stopped
 
     volumes:
-      - mysql-data-dev-volume:/var/lib/mysql
+      - kreditozrouti-mysql-volume-dev:/var/lib/mysql
 
     environment:
       - MYSQL_USER=${MYSQL_USER}
@@ -305,17 +344,31 @@ services:
       - --innodb_sort_buffer_size=32M
       - --tmp_table_size=32M
       - --max_heap_table_size=32M
-      - --innodb_buffer_pool_size=256M
+      # 64M is a starting point sized for a small dev dataset, not measured on this
+      # VPS - re-check actual data size (information_schema.tables) after deploy and
+      # raise if the working set doesn't fit.
+      - --innodb_buffer_pool_size=64M
+      - --performance_schema=OFF
+      - --skip-name-resolve
+      - --max_connections=30
+      - --temptable_max_ram=32M
+      # Dev only: no replication, no PITR (backups are mysqldump), so the binlog is
+      # pure overhead here.
+      - --disable-log-bin
 
     networks:
-      - mysql-dev-network
+      - kreditozrouti-mysql-network-dev
+
+    cpu_shares: 256
+    oom_score_adj: 500
 
     healthcheck:
-      test: [ 'CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p${MYSQL_ROOT_PASSWORD}' ]
-      interval: 30s
+      test: [ 'CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '--silent' ]
+      interval: 60s
       timeout: 10s
       retries: 5
       start_period: 60s
+      start_interval: 3s
 
     logging:
       driver: 'json-file'
@@ -328,16 +381,38 @@ services:
       resources:
         limits:
           cpus: '1.5'
-          memory: 1024M
+          memory: 512M
         reservations:
           cpus: '0.5'
-          memory: 384M
+          memory: 192M
 
   # ============================================================================
   # Database Interface (phpMyAdmin)
+  #
+  # DEVELOPMENT ONLY: served at https://${DOMAIN}/phpmyadmin through the shared Traefik, behind
+  # Traefik basic auth. Production never does this: there it stays loopback-only behind the
+  # `admin` profile.
+  #
+  # It has NO profile: every development deploy starts it automatically, alongside mysql.
+  #
+  # The container ships MySQL root credentials (MYSQL_ROOT_PASSWORD) and has no login of its own,
+  # so the basic-auth middleware is the only gate. PHPMYADMIN_BASIC_AUTH is an htpasswd line
+  # (`htpasswd -nbB user pass`, comma-separate several). When it is empty Traefik's basicauth
+  # has no users and rejects every request, so a missing secret fails closed.
+  #
+  # The loopback port stays as an SSH-tunnel fallback that bypasses Traefik:
+  #
+  #   ssh -L 48081:127.0.0.1:48081 <user>@<host>     then browse http://localhost:48081
+  #
+  # The port differs from production's 48080 on purpose: both stacks run on the same VPS, and
+  # two services asking for the same host port would refuse to start.
+  #
+  # PMA_ARBITRARY stays off: it would turn this container into an open MySQL client that dials
+  # any host a visitor typed into the login form. PMA_ABSOLUTE_URI is required again because the
+  # /phpmyadmin prefix is stripped by Traefik.
   # ============================================================================
   phpmyadmin:
-    image: phpmyadmin:latest
+    image: phpmyadmin:5.2.3
     restart: unless-stopped
 
     depends_on:
@@ -345,37 +420,45 @@ services:
         condition: service_healthy
 
     environment:
-      - PMA_ARBITRARY=1
       - PMA_HOST=mysql
       - PMA_PORT=3306
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - PMA_ABSOLUTE_URI=https://${DOMAIN}/phpmyadmin/
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - UPLOAD_LIMIT=2G
 
+    ports:
+      # Bound to the loopback interface explicitly - a bare '48081:80' would publish on every
+      # interface and bypass the Traefik basic-auth gate.
+      - '127.0.0.1:48081:80'
+
     networks:
-      - traefik-network
-      - mysql-dev-network
+      - public-network
+      - kreditozrouti-mysql-network-dev
 
     labels:
       # Traefik Configuration
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.priority=80'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.entrypoints=websecure'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.tls=true'
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.${PROJECT}-phpmyadmin.loadbalancer.server.port=80'
-      # Middlewares
-      - 'traefik.http.routers.${PROJECT}-phpmyadmin.middlewares=${PROJECT}-phpmyadmin-stripprefix'
-      - 'traefik.http.middlewares.${PROJECT}-phpmyadmin-stripprefix.stripprefix.prefixes=/phpmyadmin'
+      - 'traefik.docker.network=public-network'
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.priority=100'
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)'
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.tls=true'
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.kreditozrouti-phpmyadmin-${PROJECT}.loadbalancer.server.port=80'
+      # Middlewares: auth first, then strip the prefix
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.middlewares=kreditozrouti-phpmyadmin-${PROJECT}-auth,kreditozrouti-phpmyadmin-${PROJECT}-stripprefix'
+      - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-auth.basicauth.users=${PHPMYADMIN_BASIC_AUTH:-}'
+      - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-auth.basicauth.removeheader=true'
+      - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-stripprefix.stripprefix.prefixes=/phpmyadmin'
 
     logging:
       driver: 'json-file'
       options:
         max-size: '5m'
         max-file: '2'
+
+    cpu_shares: 256
+    oom_score_adj: 500
 
     deploy:
       mode: global
@@ -388,7 +471,9 @@ services:
   # Cache (Redis)
   # ============================================================================
   redis:
-    image: redis:alpine
+    # Pinned to major 8. The AOF file in the named volume survives restarts, so an unnoticed
+    # major bump from a floating tag would be a persistence format change nobody reviewed.
+    image: redis:8.10.1-alpine
     restart: unless-stopped
 
     command:
@@ -408,23 +493,27 @@ services:
       - noeviction
 
     volumes:
-      - redis-data-dev-volume:/data
+      - kreditozrouti-redis-volume-dev:/data
 
     networks:
-      - redis-dev-network
+      - kreditozrouti-redis-network-dev
 
     healthcheck:
       test: [ 'CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping' ]
-      interval: 30s
+      interval: 60s
       timeout: 10s
       retries: 5
       start_period: 20s
+      start_interval: 3s
 
     logging:
       driver: 'json-file'
       options:
         max-size: '5m'
         max-file: '2'
+
+    cpu_shares: 256
+    oom_score_adj: 500
 
     deploy:
       mode: global

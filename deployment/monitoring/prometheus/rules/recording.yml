@@ -1,0 +1,30 @@
+groups:
+  - name: kreditozrouti-recording
+    interval: 30s
+    rules:
+      - record: project_service:http_requests:rate5m
+        expr: sum by (project, service, env) (rate(http_server_request_duration_seconds_count{project="kreditozrouti"}[5m]))
+      - record: project_service:http_errors:rate5m
+        expr: sum by (project, service, env) (rate(http_server_request_duration_seconds_count{project="kreditozrouti", status_code=~"5.."}[5m]))
+      - record: project_service:http_slo_requests:rate5m
+        expr: sum by (project, service, env) (rate(http_server_request_duration_seconds_count{project="kreditozrouti", service="api"}[5m]))
+      - record: project_service:http_slow_requests:rate5m
+        expr: sum by (project, service, env) (rate(http_server_request_duration_seconds_count{project="kreditozrouti", service="api"}[5m])) - sum by (project, service, env) (rate(http_server_request_duration_seconds_bucket{project="kreditozrouti", service="api", le="1"}[5m]))
+      - record: project_service:edge_requests:rate5m
+        expr: sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti"}[5m]))
+      - record: project_service:edge_errors:ratio_rate5m
+        expr: sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti", code=~"5.."}[5m])) / sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti"}[5m]))
+      - record: project_service:edge_requests:rate30m
+        expr: sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti"}[30m]))
+      - record: project_service:edge_errors:ratio_rate30m
+        expr: sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti", code=~"5.."}[30m])) / sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti"}[30m]))
+      - record: project_service:edge_requests:rate1h
+        expr: sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti"}[1h]))
+      - record: project_service:edge_errors:ratio_rate1h
+        expr: sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti", code=~"5.."}[1h])) / sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti"}[1h]))
+      - record: project_service:edge_requests:rate6h
+        expr: sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti"}[6h]))
+      - record: project_service:edge_errors:ratio_rate6h
+        expr: sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti", code=~"5.."}[6h])) / sum by (project, service, env) (rate(traefik_router_requests_total{project="kreditozrouti"}[6h]))
+      - record: project_queue:worker_failures:increase15m
+        expr: sum by (project, env, queue) (increase(worker_jobs_total{project="kreditozrouti", outcome="failure"}[15m]))

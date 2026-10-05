@@ -8,19 +8,19 @@ set -euo pipefail
 #              Supports full-stack and per-service deployments.
 #
 # Usage:       ./deploy.sh <project_name> <environment> [service]
-# Example:     ./deploy.sh prod production
+# Example:     ./deploy.sh kreditozrouti production
 #              ./deploy.sh dev development
-#              ./deploy.sh prod production api
-#              ./deploy.sh prod production client
+#              ./deploy.sh kreditozrouti production api
+#              ./deploy.sh kreditozrouti production web
 #
 # Arguments:
-#   project_name    Docker Compose project name (e.g., prod, dev)
+#   project_name    Docker Compose project name (e.g., kreditozrouti, dev)
 #   environment     Environment name matching directory (production, development)
-#   service         (optional) Single service to deploy (api, client, scraper, mcp).
+#   service         (optional) Single service to deploy (api, web, scraper, mcp).
 #                   api/scraper/mcp are deployed together with their infrastructure
 #                   dependencies (mysql/redis) - deploying api also ensures redis +
-#                   mysql are up/updated. client keeps --no-deps (its dep is api, an
-#                   app service whose tag is not set in a client-only deploy).
+#                   mysql are up/updated. web keeps --no-deps (its dep is api, an
+#                   app service whose tag is not set in a web-only deploy).
 #
 # Required Environment Variables:
 #   IMAGE_REGISTRY      Container registry (e.g., ghcr.io)
@@ -28,17 +28,17 @@ set -euo pipefail
 #
 # For full-stack deploy (no service arg):
 #   API_IMAGE_TAG       Image tag for the api service (e.g., v1.0.0)
-#   CLIENT_IMAGE_TAG    Image tag for the client service (e.g., v1.0.0)
+#   WEB_IMAGE_TAG    Image tag for the web service (e.g., v1.0.0)
 #   SCRAPER_IMAGE_TAG   Image tag for the scraper service (e.g., v1.0.0)
 #
 # For single-service deploy:
 #   API_IMAGE_TAG       Required when service=api
-#   CLIENT_IMAGE_TAG    Required when service=client
+#   WEB_IMAGE_TAG    Required when service=web
 #   SCRAPER_IMAGE_TAG   Required when service=scraper
 #
 # Version Cleanup:
 #   After a successful deploy, old version directories under
-#   $HOME/versions/<environment>/ that are older than 7 days and not the
+#   $HOME/kreditozrouti/versions/<environment>/ that are older than 7 days and not the
 #   current symlink target are removed. A minimum of 3 versions is always kept.
 #
 # Directory Structure:
@@ -72,13 +72,13 @@ Usage: $SCRIPT_NAME <project_name> <environment> [service]
 Arguments:
     project_name    Docker Compose project name (e.g., prod, dev)
     environment     Environment name (production, development)
-    service         (optional) Single service to deploy (api, client, scraper)
+    service         (optional) Single service to deploy (api, web, scraper)
 
 Examples:
     $SCRIPT_NAME prod production
     $SCRIPT_NAME dev development
     $SCRIPT_NAME prod production api
-    $SCRIPT_NAME prod production client
+    $SCRIPT_NAME prod production web
 
 Required Environment Variables:
     IMAGE_REGISTRY      Container registry (e.g., ghcr.io)
@@ -86,12 +86,12 @@ Required Environment Variables:
 
 Full-stack deploy:
     API_IMAGE_TAG       Image tag for api
-    CLIENT_IMAGE_TAG    Image tag for client
+    WEB_IMAGE_TAG    Image tag for web
     SCRAPER_IMAGE_TAG   Image tag for scraper
 
 Single-service deploy (only the relevant tag is required):
     API_IMAGE_TAG       Required when service=api
-    CLIENT_IMAGE_TAG    Required when service=client
+    WEB_IMAGE_TAG    Required when service=web
     SCRAPER_IMAGE_TAG   Required when service=scraper
 EOF
     exit 1
@@ -107,17 +107,17 @@ validate_environment_vars() {
     if [[ -z "$service" ]]; then
         # Full-stack: all three tags required
         [[ -z "${API_IMAGE_TAG:-}" ]] && missing+=("API_IMAGE_TAG")
-        [[ -z "${CLIENT_IMAGE_TAG:-}" ]] && missing+=("CLIENT_IMAGE_TAG")
+        [[ -z "${WEB_IMAGE_TAG:-}" ]] && missing+=("WEB_IMAGE_TAG")
         [[ -z "${SCRAPER_IMAGE_TAG:-}" ]] && missing+=("SCRAPER_IMAGE_TAG")
         [[ -z "${MCP_IMAGE_TAG:-}" ]] && missing+=("MCP_IMAGE_TAG")
     else
         # Single-service: only the relevant tag required
         case "$service" in
             api)     [[ -z "${API_IMAGE_TAG:-}" ]]     && missing+=("API_IMAGE_TAG") ;;
-            client)  [[ -z "${CLIENT_IMAGE_TAG:-}" ]]  && missing+=("CLIENT_IMAGE_TAG") ;;
+            web)  [[ -z "${WEB_IMAGE_TAG:-}" ]]  && missing+=("WEB_IMAGE_TAG") ;;
             scraper) [[ -z "${SCRAPER_IMAGE_TAG:-}" ]] && missing+=("SCRAPER_IMAGE_TAG") ;;
             mcp)     [[ -z "${MCP_IMAGE_TAG:-}" ]]     && missing+=("MCP_IMAGE_TAG") ;;
-            *) log_error "Unknown service: '$service'. Valid values: api, client, scraper, mcp"; exit 1 ;;
+            *) log_error "Unknown service: '$service'. Valid values: api, web, scraper, mcp"; exit 1 ;;
         esac
     fi
 
@@ -130,47 +130,6 @@ validate_environment_vars() {
 cleanup_on_error() {
     log_error "Deployment failed. Rolling back..."
     exit 1
-}
-
-cleanup_old_versions() {
-    local environment="$1"
-    local versions_dir="$HOME/versions/$environment"
-    local current_link="$HOME/versions/$environment/current"
-
-    # Only proceed if the versions directory exists
-    [[ -d "$versions_dir" ]] || return 0
-
-    # Get the real path of the current symlink target
-    local current_target
-    current_target=$(readlink -f "$current_link" 2>/dev/null || echo "")
-
-    # List all version dirs sorted by modification time (oldest first)
-    local all_versions=()
-    while IFS= read -r -d '' dir; do
-        all_versions+=("$dir")
-    done < <(find "$versions_dir" -maxdepth 1 -mindepth 1 -type d -printf '%T@\t%p\0' | sort -z | cut -z -f2-)
-
-    local total=${#all_versions[@]}
-    local kept=0
-    local deleted=0
-
-    for dir in "${all_versions[@]}"; do
-        [[ "$dir" == "$current_target" ]] && { ((kept++)); continue; }
-
-        local age_days
-        age_days=$(( ($(date +%s) - $(stat -c %Y "$dir")) / 86400 ))
-
-        if [[ $age_days -gt 7 ]] && [[ $((total - deleted)) -gt 3 ]]; then
-            log "Removing old version: $(basename "$dir") (${age_days}d old)"
-            rm -rf "$dir"
-            ((deleted++))
-        else
-            ((kept++))
-        fi
-    done
-
-    [[ $deleted -gt 0 ]] && log_success "Cleaned up $deleted old version(s), kept $kept"
-    [[ $deleted -eq 0 ]] && log "Version cleanup: $kept version(s) kept, nothing removed"
 }
 
 # ------------------------------------------------------------------------------
@@ -196,8 +155,15 @@ main() {
     local app_compose_file="$SCRIPT_DIR/$environment/docker-compose.$environment.yml"
     local networks_config="$SCRIPT_DIR/$environment/networks.yml"
     local volumes_config="$SCRIPT_DIR/$environment/volumes.yml"
-    local traefik_networks="$SCRIPT_DIR/traefik/networks.yml"
     local env_file="$SCRIPT_DIR/.env"
+
+    # Public reverse-proxy network. Traefik publishes services on public-network -
+    # whether that is Infrastructure's shared Traefik on the consolidated VPS or a
+    # standalone Traefik in the future. Whoever owns Traefik creates it; each
+    # environment's networks.yml also declares it external, and deploy.sh creates it
+    # below if this stack deploys first. Same name in every environment, so services
+    # attach out of the box.
+    local shared_network="public-network"
 
     # Load persisted image configuration if available
     if [[ -f "$images_config" ]]; then
@@ -212,7 +178,7 @@ main() {
     validate_environment_vars "$service"
 
     # Validate required files
-    validate_files "$app_compose_file" "$networks_config" "$volumes_config" "$traefik_networks" "$env_file"
+    validate_files "$app_compose_file" "$networks_config" "$volumes_config" "$env_file"
 
     # Display deployment info
     log "=========================================="
@@ -227,12 +193,12 @@ main() {
     if [[ -n "$service" ]]; then
         case "$service" in
             api)     log "Tag:         ${API_IMAGE_TAG}" ;;
-            client)  log "Tag:         ${CLIENT_IMAGE_TAG}" ;;
+            web)  log "Tag:         ${WEB_IMAGE_TAG}" ;;
             scraper) log "Tag:         ${SCRAPER_IMAGE_TAG}" ;;
             mcp)     log "Tag:         ${MCP_IMAGE_TAG}" ;;
         esac
     else
-        log "Tags:        api=${API_IMAGE_TAG:-} client=${CLIENT_IMAGE_TAG:-} scraper=${SCRAPER_IMAGE_TAG:-}"
+        log "Tags:        api=${API_IMAGE_TAG:-} web=${WEB_IMAGE_TAG:-} scraper=${SCRAPER_IMAGE_TAG:-}"
     fi
     log "=========================================="
 
@@ -240,10 +206,12 @@ main() {
         # ---- Per-service deploy ----
         create_networks "$networks_config"
 
-        # Ensure traefik network exists (external dependency)
-        if ! docker network inspect "traefik-network" &>/dev/null; then
-            log "Creating network: traefik-network"
-            docker network create "traefik-network"
+        # Ensure the shared reverse-proxy network exists (external dependency).
+        # In production Infrastructure's Traefik normally creates it; create it
+        # here too so a service-only deploy never fails on a missing network.
+        if ! docker network inspect "$shared_network" &>/dev/null; then
+            log "Creating network: $shared_network"
+            docker network create "$shared_network"
         fi
 
         create_volumes "$volumes_config"
@@ -257,23 +225,29 @@ main() {
         # ensures redis + mysql are running. Compose is declarative: an already
         # healthy, unchanged dependency is left untouched (no needless restart).
         #
-        # client depends_on `api` - an APP service whose image tag is NOT set in
-        # a client-only deploy (it would resolve to the :latest float and could
-        # bounce/recreate the running api). So client keeps --no-deps.
+        # web depends_on `api` - an APP service whose image tag is NOT set in
+        # a web-only deploy (it would resolve to the :latest float and could
+        # bounce/recreate the running api). So web keeps --no-deps.
         local deps_flag="--no-deps"
         case "$service" in
             api|scraper|mcp) deps_flag="" ;;
         esac
 
-        log "Pulling image for $service..."
+        # Development ships phpMyAdmin with the api deploy. CI deploys one service at a time, so a
+        # plain `up -d api` would never start it. Production never does (admin profile, loopback).
+        local -a up_services=("$service")
+        if [[ "$environment" == "development" && "$service" == "api" ]]; then
+            up_services+=("phpmyadmin")
+        fi
+
+        log "Pulling image for ${up_services[*]}..."
         docker compose \
             -p "$project_name" \
             --env-file "$env_file" \
-            -f "$traefik_networks" \
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \
-            pull "$service"
+            pull "${up_services[@]}"
 
         if [[ -n "$deps_flag" ]]; then
             log "Deploying $service (with --no-deps: dependencies not included)..."
@@ -283,19 +257,20 @@ main() {
         docker compose \
             -p "$project_name" \
             --env-file "$env_file" \
-            -f "$traefik_networks" \
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \
-            up $deps_flag -d "$service"
+            up $deps_flag -d "${up_services[@]}"
     else
         # ---- Full-stack deploy ----
         create_networks "$networks_config"
 
-        # Ensure traefik network exists (external dependency)
-        if ! docker network inspect "traefik-network" &>/dev/null; then
-            log "Creating network: traefik-network"
-            docker network create "traefik-network"
+        # Ensure the shared reverse-proxy network exists (external dependency).
+        # In production Infrastructure's Traefik normally creates it; create it
+        # here too so the stack never fails on a missing network.
+        if ! docker network inspect "$shared_network" &>/dev/null; then
+            log "Creating network: $shared_network"
+            docker network create "$shared_network"
         fi
 
         create_volumes "$volumes_config"
@@ -304,7 +279,6 @@ main() {
         docker compose \
             -p "$project_name" \
             --env-file "$env_file" \
-            -f "$traefik_networks" \
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \
@@ -314,7 +288,6 @@ main() {
         docker compose \
             -p "$project_name" \
             --env-file "$env_file" \
-            -f "$traefik_networks" \
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \

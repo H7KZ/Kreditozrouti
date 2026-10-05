@@ -19,6 +19,13 @@
     "year_of_study": "bakalářský (první cyklus): 1",
     "lecturers": "Ing. Jaroslav Halík, MBA, Ph.D.",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 56796,
+            "name": "Ing. Jaroslav Halík, MBA, Ph.D.",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

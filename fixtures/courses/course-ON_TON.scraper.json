@@ -19,6 +19,13 @@
     "year_of_study": null,
     "lecturers": "JUDr. Mgr. Karel Mošna",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 105146,
+            "name": "JUDr. Mgr. Karel Mošna",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

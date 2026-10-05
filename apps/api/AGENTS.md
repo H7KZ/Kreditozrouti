@@ -1,0 +1,86 @@
+# API - AGENTS.md
+
+> Full reference: [docs/api/](../../docs/api/README.md)
+
+---
+
+## Directory Structure
+
+```
+apps/api/src/
+├── index.ts / app.ts / bullmq.ts
+├── metrics.ts      # prom-client: request histogram, bullmq_job_count, worker metrics, proxy-guarded /metrics
+├── clients/        # mysql, redis, i18n, mailer
+├── Config/         # Config.ts - env vars
+├── Controllers/    # Courses, StudyPlans, Scraper, Commands, Optimize, Share, ICal, Admin, V1 (partner API)
+├── Services/       # Course, study-plan, scraper, optimization, and calendar logic; Partner/ (key auth, Redis/MySQL adapters), V1/ (public catalogue)
+├── Database/       # types.ts + migrations/
+├── Jobs/           # Scraper response jobs and gap sweep
+├── Handlers/       # ScraperResponseHandler, ErrorHandler, ProblemHandler (/v1 problem+json)
+├── Routes/         # Courses, StudyPlans, Share, Optimize, ICal, Commands, Admin, V1
+├── Middlewares/    # CacheMiddleware, RateLimitMiddleware, CommandMiddleware, LoggerMiddleware, PartnerAuthMiddleware
+├── Errors/         # ApiError + Errors factory
+├── Scripts/        # partnerKeys.ts - operator CLI for partner consumers and API keys
+└── Utils/          # Sse.ts
+```
+
+## Path Aliases
+
+| Alias                    | Resolves to                 |
+| ------------------------ | --------------------------- |
+| `@api/*`                 | `./src/*`                   |
+| `@scraper/*`             | `../scraper/src/*`          |
+| `@kreditozrouti/core/*` | `../../packages/core/src/*`    |
+
+Shared DTO and queue types come from `@kreditozrouti/types`.
+
+---
+
+## Critical Invariants
+
+**Controllers** use named function namespace objects, not classes:
+
+```typescript
+export const CoursesController = {
+	async handleRequest(req: Request, res: Response) { ...
+	}
+}
+```
+
+**Zod schemas** are co-located with their controller or route. Check the owning handler before changing validation.
+
+**Times** are stored as **minutes from midnight** (0–1439). `08:00` → `480`.
+
+**Pipe-delimited fields:** `languages` and `lecturers` on `insis_courses` are pipe-delimited strings, parsed in the
+service layer.
+
+**Cache invalidation:** `CacheMiddleware` uses SHA-256 of `METHOD:path:sorted-body-JSON`, prefix `cache:`, TTL 300 s.
+
+**Schedulers** are registered in `src/bullmq.ts` only in production. In development, use `POST /commands/insis/*` with a Bearer token.
+
+**ScraperResponseInSISCourseJob** runs in a DB transaction: upsert faculty → upsert course → reconcile assessments →
+delete+recreate units+slots → link study plans → `redis.publish('course:updated:{id}')`.
+
+**Error handling:** throw `Errors.unauthorized()` / `Errors.validation(issues)` / `Errors.notFound(msg)` /
+`Errors.internal(msg)` anywhere - `ErrorHandler` catches all `ApiError` instances.
+
+**Partner API (`/v1`)** is partner-only (ADR 0003, 0004). A key works from a server (no `Origin`) or from a browser on an origin listed on that key (ADR 0005): `partnerCors` answers CORS for origins registered on any usable key, `partnerApi` enforces the per-key origin, and the web app's CORS allowlist skips `/v1`. Every `/v1` data route is wrapped in `partnerApi(scope)`: key check, scope check, then quota per Consumer, never per key. Quota fails **open** (opposite of the internal per-IP limiters). Everything it serves goes through `VisibilityService` - a faculty is visible only when InSIS publishes it and a scrape confirmed it (`schedule_visibility_checked_at`) - and an empty visible set must return an empty result, because an empty `faculty_ids` filter means "no filter". Lecturer data needs the `lecturers:read` scope. Public shapes live in `packages/types/src/publicApi.ts` and are mapped in `Services/V1/PublicMapper.ts`; never return DB rows. Keys are issued only through `Scripts/partnerKeys.ts`, stored as SHA-256 plus lookup prefix.
+
+**Metrics are a contract with deployment/monitoring.** `http_server_request_duration_seconds`, `bullmq_job_count`,
+`worker_*` and `app_build_info` are queried by promtool-tested rules and dashboards, and the Ohlidame stack uses the same
+names. Per-consumer partner traffic uses the separate `api_consumer_requests_total` counter, never extra labels on the contract metrics. Everything is in-process (nothing mirrored through Redis); `bullmq_job_count` is reported by the api only, so
+scraper replicas never double it. Labels stay bounded: never a course, plan or share id.
+
+---
+
+## Key Docs
+
+| Topic                                                      | Doc                                      |
+| ---------------------------------------------------------- | ---------------------------------------- |
+| Route overview; exact shapes in shared types and handlers  | [ENDPOINTS.md](../../docs/api/ENDPOINTS.md) |
+| CourseService N+1 pattern, facets, time-conflict filtering | [SERVICES.md](../../docs/api/SERVICES.md)   |
+| BullMQ jobs, schedulers, dedup windows                     | [JOBS.md](../../docs/api/JOBS.md)           |
+| DB schema and migration workflow                           | [DATABASE.md](../../docs/api/DATABASE.md)   |
+| Config, cache, rate-limit, SSE, wide-event logging         | [INTERNALS.md](../../docs/api/INTERNALS.md) |
+| Partner API: keys, scopes, quota, usage, operating it      | [PUBLIC_API.md](../../docs/api/PUBLIC_API.md) |
+| Gmail SMTP account and credentials                         | [GMAIL.md](../../docs/setup/GMAIL.md)       |

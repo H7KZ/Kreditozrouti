@@ -19,6 +19,13 @@
     "year_of_study": "bakalářský (první cyklus): 3",
     "lecturers": "Mgr. Karolina Anna Kania, Ph.D.",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 167671,
+            "name": "Mgr. Karolina Anna Kania, Ph.D.",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "Antropologie designu v podnikové praxi",
     "required_work_experience": "žádná",
