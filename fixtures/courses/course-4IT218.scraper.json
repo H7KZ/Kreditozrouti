@@ -19,6 +19,33 @@
     "year_of_study": "bakalářský (první cyklus): 2",
     "lecturers": "Ing. David Hemala|Ing. Dušan Chlapek, Ph.D.|Ing. Jan Kučera, Ph.D.|RNDr. Helena Palovská, Ph.D.|Ing. Pavel Vedral",
     "guarantors": null,
+    "lecturer_refs": [
+        {
+            "id": 44926,
+            "name": "Ing. David Hemala",
+            "role": "lecturer"
+        },
+        {
+            "id": 51221,
+            "name": "Ing. Dušan Chlapek, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 40576,
+            "name": "Ing. Jan Kučera, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 57035,
+            "name": "RNDr. Helena Palovská, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 62832,
+            "name": "Ing. Pavel Vedral",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

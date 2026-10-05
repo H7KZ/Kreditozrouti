@@ -1,6 +1,7 @@
 import type {
 	ScraperInSISCourse,
 	ScraperInSISCourseAssessmentMethod,
+	ScraperInSISCourseLecturer,
 	ScraperInSISCourseStudyLoad,
 	ScraperInSISCourseStudyPlan,
 	ScraperInSISCourseTimetableSlot,
@@ -88,6 +89,7 @@ export default class ExtractInSISCourseService {
 			...levelInfo,
 			lecturers: people.lecturers,
 			guarantors: people.guarantors,
+			lecturer_refs: people.refs,
 			...syllabus,
 			assessment_methods: assessmentMethods.length > 0 ? assessmentMethods : null,
 			timetable,
@@ -156,9 +158,10 @@ export default class ExtractInSISCourseService {
 		}
 	}
 
-	private static extractPeople($: CheerioAPI): { lecturers: string | null; guarantors: string | null } {
+	private static extractPeople($: CheerioAPI): { lecturers: string | null; guarantors: string | null; refs: ScraperInSISCourseLecturer[] } {
 		const lecturers: string[] = []
 		const guarantors: string[] = []
+		const refs = new Map<number, ScraperInSISCourseLecturer>()
 		const lecturersCell = $('td')
 			.filter((_, el) => cleanText($(el).text()).includes('Vyučující:'))
 			.next('td')
@@ -169,10 +172,18 @@ export default class ExtractInSISCourseService {
 				if (!name) return
 				const sibling = (el as { nextSibling: { nodeValue?: string | null } | null }).nextSibling
 				const nextText = sibling?.nodeValue ?? ''
-				if (nextText.includes('(garant)')) {
+				const role = nextText.includes('(garant)') ? 'guarantor' : 'lecturer'
+				if (role === 'guarantor') {
 					guarantors.push(name)
 				} else {
 					lecturers.push(name)
+				}
+
+				const personId = /clovek\.pl\?id=(\d+)/.exec($(el).attr('href') ?? '')?.[1]
+				if (personId) {
+					const id = parseInt(personId, 10)
+					// A person listed twice keeps the guarantor role
+					if (!refs.has(id) || role === 'guarantor') refs.set(id, { id, name, role })
 				}
 			})
 
@@ -184,7 +195,8 @@ export default class ExtractInSISCourseService {
 
 		return {
 			lecturers: lecturers.length > 0 ? lecturers.join('|') : null,
-			guarantors: guarantors.length > 0 ? guarantors.join('|') : null
+			guarantors: guarantors.length > 0 ? guarantors.join('|') : null,
+			refs: [...refs.values()]
 		}
 	}
 

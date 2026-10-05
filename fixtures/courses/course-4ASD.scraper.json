@@ -19,6 +19,13 @@
     "year_of_study": "magisterský navazující (druhý cyklus): 2",
     "lecturers": null,
     "guarantors": "prof. Ing. Josef Arlt, CSc.",
+    "lecturer_refs": [
+        {
+            "id": 428,
+            "name": "prof. Ing. Josef Arlt, CSc.",
+            "role": "guarantor"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

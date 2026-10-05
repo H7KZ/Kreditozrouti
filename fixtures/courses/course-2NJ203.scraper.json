@@ -19,6 +19,23 @@
     "year_of_study": "bakalářský (první cyklus): 2",
     "lecturers": "Mgr. Petra Jeřábková, Ph.D.|Mgr. Iva Michňová, Ph.D.",
     "guarantors": "PhDr. Jaroslav Březina, Ph.D.",
+    "lecturer_refs": [
+        {
+            "id": 490,
+            "name": "PhDr. Jaroslav Březina, Ph.D.",
+            "role": "guarantor"
+        },
+        {
+            "id": 1559,
+            "name": "Mgr. Petra Jeřábková, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 1005,
+            "name": "Mgr. Iva Michňová, Ph.D.",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "studovat po absolvování 2NJ202 nebo studovat současně s 2NJ202 nebo studovat po absolvování 2NJ212 nebo studovat současně s 2NJ212 nebo nelze studovat na fakultě FMV",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

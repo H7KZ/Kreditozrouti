@@ -19,6 +19,28 @@
     "year_of_study": "bakalářský (první cyklus): 3",
     "lecturers": "doc. Mgr. Vladimír Holý, Ph.D.|Ing. Ondřej Sokol, Ph.D.|Ing. Petra Tomanová, Ph.D., MSc",
     "guarantors": "prof. RNDr. Ing. Michal Černý, Ph.D.",
+    "lecturer_refs": [
+        {
+            "id": 6702,
+            "name": "prof. RNDr. Ing. Michal Černý, Ph.D.",
+            "role": "guarantor"
+        },
+        {
+            "id": 116093,
+            "name": "doc. Mgr. Vladimír Holý, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 85564,
+            "name": "Ing. Ondřej Sokol, Ph.D.",
+            "role": "lecturer"
+        },
+        {
+            "id": 85567,
+            "name": "Ing. Petra Tomanová, Ph.D., MSc",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "Znalost na úrovni kurzů 4ST110, 4ST220, 4EK310",

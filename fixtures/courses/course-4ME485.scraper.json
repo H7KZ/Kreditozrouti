@@ -19,6 +19,18 @@
     "year_of_study": "magisterský navazující (druhý cyklus): 2",
     "lecturers": "Bc. Petr Ševcovic",
     "guarantors": "Ing. Zdeněk Vondra, Ph.D.",
+    "lecturer_refs": [
+        {
+            "id": 181457,
+            "name": "Bc. Petr Ševcovic",
+            "role": "lecturer"
+        },
+        {
+            "id": 41192,
+            "name": "Ing. Zdeněk Vondra, Ph.D.",
+            "role": "guarantor"
+        }
+    ],
     "prerequisites": "nelze studovat po absolvování 4ME486 a studovat po absolvování 4ME483",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

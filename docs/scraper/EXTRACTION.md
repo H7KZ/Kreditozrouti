@@ -10,7 +10,7 @@ Extraction services in `apps/scraper/src/Services/` turn server-rendered InSIS H
 | `ExtractInSISAcademicScheduleService` | Harmonogram index and period pages | Faculties, periods, dated events |
 | `ExtractInSISFacultyTimetableService` | Timetable navigation and faculty page | Faculty ident and public visibility |
 
-`ExtractInSISCourseService.extractIdFromUrl` and `extractIdFromHtml` identify course records. `isNotFound` detects removed pages. Czech and English syllabus content is parsed separately; `MarkdownService` converts rich sections to Markdown. Timetable extraction keeps source clock strings and nullable values. The API performs minute conversion when it persists slots.
+`ExtractInSISCourseService.extractIdFromUrl` and `extractIdFromHtml` identify course records. `isNotFound` detects removed pages. Czech and English syllabus content is parsed separately; `MarkdownService` converts rich sections to Markdown. Course lecturers and guarantors are read from the "Vyučující" links; besides the display strings, `lecturer_refs` carries the InSIS person id from each `/lide/clovek.pl?id=` link with its role. Timetable unit lecturers are plain text with no link, so they have no id. Timetable extraction keeps source clock strings and nullable values. The API performs minute conversion when it persists slots.
 
 `ExtractInSISStudyPlanService` parses group codes using helpers from `@kreditozrouti/core/utils`. Shared HTML cleanup is in `apps/scraper/src/Utils/HTMLUtils.ts`; request headers are in `HTTPUtils.ts`.
 

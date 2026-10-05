@@ -19,6 +19,23 @@
     "year_of_study": "magisterský navazující (druhý cyklus): 1",
     "lecturers": "doc. Ing. Helena Chytilová, Ph.D., M.A.|Ing. Ondřej Šíma, Ph.D.",
     "guarantors": "doc. Ing. Karel Brůna, Ph.D.",
+    "lecturer_refs": [
+        {
+            "id": 23219,
+            "name": "doc. Ing. Karel Brůna, Ph.D.",
+            "role": "guarantor"
+        },
+        {
+            "id": 10686,
+            "name": "doc. Ing. Helena Chytilová, Ph.D., M.A.",
+            "role": "lecturer"
+        },
+        {
+            "id": 41743,
+            "name": "Ing. Ondřej Šíma, Ph.D.",
+            "role": "lecturer"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

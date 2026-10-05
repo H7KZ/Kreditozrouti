@@ -19,6 +19,13 @@
     "year_of_study": "doktorský (třetí cyklus): 2",
     "lecturers": null,
     "guarantors": "prof. JUDr. Jan Dědič",
+    "lecturer_refs": [
+        {
+            "id": 546,
+            "name": "prof. JUDr. Jan Dědič",
+            "role": "guarantor"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",

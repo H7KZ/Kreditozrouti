@@ -19,6 +19,13 @@
     "year_of_study": null,
     "lecturers": null,
     "guarantors": "prof. Ing. Miloš Mařík, CSc.",
+    "lecturer_refs": [
+        {
+            "id": 987,
+            "name": "prof. Ing. Miloš Mařík, CSc.",
+            "role": "guarantor"
+        }
+    ],
     "prerequisites": "žádné",
     "recommended_programmes": "žádné",
     "required_work_experience": "žádná",
