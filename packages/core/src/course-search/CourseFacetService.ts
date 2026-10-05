@@ -1,6 +1,8 @@
-import type { FacetItem } from '@kreditozrouti/types'
+import type { Course, CoursesFilter, Database, ExcludeMethods, FacetItem } from '@kreditozrouti/types'
+import { CourseTable } from '@kreditozrouti/types'
+import type { Kysely } from 'kysely'
+import { ASSESSMENT_BUCKETS } from '../domain/assessment.js'
 import {
-	ASSESSMENT_BUCKETS,
 	INSIS_DAY_NORM,
 	LANGUAGE_DENORM,
 	LANGUAGE_NORM,
@@ -8,13 +10,9 @@ import {
 	LEVEL_NORM,
 	MODE_OF_COMPLETION_DENORM,
 	MODE_OF_COMPLETION_NORM
-} from '@kreditozrouti/core/domain'
+} from '../domain/constants.js'
 import { sql } from 'kysely'
-import { mysql } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
-import { Course, CourseTable, ExcludeMethods } from '@api/Database/types'
-import { CourseCacheService } from './CourseCacheService'
-import { CourseFilterBuilder } from './CourseFilterBuilder'
+import { CourseFilterBuilder } from './CourseFilterBuilder.js'
 
 export class CourseFacetService {
 	/**
@@ -35,32 +33,12 @@ export class CourseFacetService {
 	}
 
 	/**
-	 * Returns the facet object for the given filters, reading from Redis cache on hit
-	 * and writing on miss. Results are cached in Redis for 5 minutes.
-	 *
-	 * @param {CoursesFilter} filters - The full filter object for the current request.
-	 * @returns All facet dimensions. Results are cached in Redis for 5 minutes.
-	 */
-	static async getCourseFacets(filters: CoursesFilter) {
-		const cacheKey = CourseCacheService.buildFacetCacheKey(filters)
-
-		const cached = await CourseCacheService.readFacetsFromCache(cacheKey)
-		if (cached) return cached
-
-		const facets = await this.computeAllFacets(filters)
-
-		await CourseCacheService.writeFacetsToCache(cacheKey, facets)
-
-		return facets
-	}
-
-	/**
 	 * Fires all facet dimension queries concurrently and returns the combined result.
 	 *
 	 * @param {CoursesFilter} filters - The full filter object for the current request.
 	 * @returns Object with all facet dimensions computed in parallel.
 	 */
-	static async computeAllFacets(filters: CoursesFilter) {
+	static async computeAllFacets(db: Kysely<Database>, filters: CoursesFilter) {
 		const [
 			faculties,
 			days,
@@ -76,19 +54,19 @@ export class CourseFacetService {
 			assessmentMethodsRaw,
 			timeRange
 		] = await Promise.all([
-			this.getSimpleFacet(filters, 'faculty_id'),
-			this.getDayFacet(filters),
-			this.getLecturerFacet(filters),
-			this.getLanguageFacet(filters),
-			this.getSimpleFacet(filters, 'level'),
-			this.getSimpleFacet(filters, 'semester'),
-			this.getSimpleFacet(filters, 'year'),
-			this.getGroupFacet(filters),
-			this.getCategoryFacet(filters),
-			this.getSimpleFacet(filters, 'ects'),
-			this.getSimpleFacet(filters, 'mode_of_completion'),
-			this.getAssessmentMethodFacet(filters),
-			this.getTimeRangeFacet(filters)
+			this.getSimpleFacet(db, filters, 'faculty_id'),
+			this.getDayFacet(db, filters),
+			this.getLecturerFacet(db, filters),
+			this.getLanguageFacet(db, filters),
+			this.getSimpleFacet(db, filters, 'level'),
+			this.getSimpleFacet(db, filters, 'semester'),
+			this.getSimpleFacet(db, filters, 'year'),
+			this.getGroupFacet(db, filters),
+			this.getCategoryFacet(db, filters),
+			this.getSimpleFacet(db, filters, 'ects'),
+			this.getSimpleFacet(db, filters, 'mode_of_completion'),
+			this.getAssessmentMethodFacet(db, filters),
+			this.getTimeRangeFacet(db, filters)
 		])
 
 		const lecturers = this.splitPipeDelimitedFacet(lecturersRaw, 50)
@@ -124,13 +102,13 @@ export class CourseFacetService {
 	 * @returns {Promise<FacetItem[]>} `{ value, count }[]` sorted by count desc. Uses direct-table
 	 *   fast path when no joins are required.
 	 */
-	static async getSimpleFacet(filters: CoursesFilter, column: keyof ExcludeMethods<Course>): Promise<FacetItem[]> {
+	static async getSimpleFacet(db: Kysely<Database>, filters: CoursesFilter, column: keyof ExcludeMethods<Course>): Promise<FacetItem[]> {
 		const needsComplexQuery = CourseFilterBuilder.filtersRequireJoins(filters)
 
 		if (!needsComplexQuery) {
 			// FAST PATH: Direct query on courses table only
 			// Apply all filters EXCEPT the one we're computing (cross-filtering)
-			return mysql
+			return db
 				.selectFrom(`${CourseTable._table} as c1`)
 				.select(`c1.${column} as value`)
 				.select(eb => eb.fn.count<number>('c1.id').as('count'))
@@ -175,7 +153,7 @@ export class CourseFacetService {
 		}
 
 		// SLOW PATH: Filters require joins — use the full filter query
-		return CourseFilterBuilder.buildFilterQuery(filters, column as string)
+		return CourseFilterBuilder.buildFilterQuery(db, filters, column as string)
 			.select(`c1.${column} as value`)
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
 			.where(`c1.${column}`, 'is not', null)
@@ -191,8 +169,8 @@ export class CourseFacetService {
 	 * @returns {Promise<FacetItem[]>} Day values from course_unit_slots; always forces slots join.
 	 */
 	// Always requires the slots join
-	static async getDayFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		return CourseFilterBuilder.buildFilterQuery(filters, 'include_times', { slots: true })
+	static async getDayFacet(db: Kysely<Database>, filters: CoursesFilter): Promise<FacetItem[]> {
+		return CourseFilterBuilder.buildFilterQuery(db, filters, 'include_times', { slots: true })
 			.select('cus1.day as value')
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
 			.where('cus1.day', 'is not', null)
@@ -210,8 +188,8 @@ export class CourseFacetService {
 	 *   Always forces units join.
 	 */
 	// Uses COALESCE to prefer unit-level lecturer when available
-	static async getLecturerFacet(filters: CoursesFilter) {
-		return CourseFilterBuilder.buildFilterQuery(filters, 'lecturers', { units: true })
+	static async getLecturerFacet(db: Kysely<Database>, filters: CoursesFilter) {
+		return CourseFilterBuilder.buildFilterQuery(db, filters, 'lecturers', { units: true })
 			.select(sql<string>`COALESCE(cu1.lecturer, c1.lecturers)`.as('value'))
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
 			.where(sql`COALESCE(cu1.lecturer, c1.lecturers)`, 'is not', null)
@@ -230,8 +208,8 @@ export class CourseFacetService {
 	 *   splitPipeDelimitedFacet.
 	 */
 	// Pipe-delimited values handled in post-processing via splitPipeDelimitedFacet
-	static async getLanguageFacet(filters: CoursesFilter) {
-		return CourseFilterBuilder.buildFilterQuery(filters, 'languages')
+	static async getLanguageFacet(db: Kysely<Database>, filters: CoursesFilter) {
+		return CourseFilterBuilder.buildFilterQuery(db, filters, 'languages')
 			.select('c1.languages as value')
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
 			.where('c1.languages', 'is not', null)
@@ -248,9 +226,9 @@ export class CourseFacetService {
 	 * @returns {Promise<FacetItem[]>} Empty array when no study_plan_ids filter is active.
 	 */
 	// Only available when filtering by study_plan_ids
-	static async getGroupFacet(filters: CoursesFilter): Promise<FacetItem[]> {
+	static async getGroupFacet(db: Kysely<Database>, filters: CoursesFilter): Promise<FacetItem[]> {
 		if (!filters.study_plan_ids?.length) return []
-		return CourseFilterBuilder.buildFilterQuery(filters, 'groups', { studyPlan: true })
+		return CourseFilterBuilder.buildFilterQuery(db, filters, 'groups', { studyPlan: true })
 			.select('spc1.group as value')
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
 			.where('spc1.group', 'is not', null)
@@ -267,9 +245,9 @@ export class CourseFacetService {
 	 * @returns {Promise<FacetItem[]>} Empty array when no study_plan_ids filter is active.
 	 */
 	// Only available when filtering by study_plan_ids
-	static async getCategoryFacet(filters: CoursesFilter): Promise<FacetItem[]> {
+	static async getCategoryFacet(db: Kysely<Database>, filters: CoursesFilter): Promise<FacetItem[]> {
 		if (!filters.study_plan_ids?.length) return []
-		return CourseFilterBuilder.buildFilterQuery(filters, 'categories', { studyPlan: true })
+		return CourseFilterBuilder.buildFilterQuery(db, filters, 'categories', { studyPlan: true })
 			.select('spc1.category as value')
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
 			.where('spc1.category', 'is not', null)
@@ -285,8 +263,8 @@ export class CourseFacetService {
 	 * @param {CoursesFilter} filters - The full filter object for the current request.
 	 * @returns {Promise<FacetItem[]>} Assessment method values; always forces assessments join.
 	 */
-	static async getAssessmentMethodFacet(filters: CoursesFilter): Promise<FacetItem[]> {
-		const raw = await CourseFilterBuilder.buildFilterQuery(filters, 'assessment_methods', { assessments: true })
+	static async getAssessmentMethodFacet(db: Kysely<Database>, filters: CoursesFilter): Promise<FacetItem[]> {
+		const raw = await CourseFilterBuilder.buildFilterQuery(db, filters, 'assessment_methods', { assessments: true })
 			.select('ca1.method as value')
 			.select(eb => eb.fn.count<number>('c1.id').distinct().as('count'))
 			.where('ca1.method', 'is not', null)
@@ -312,8 +290,8 @@ export class CourseFacetService {
 	 * @returns `{ min_time, max_time }` in minutes from midnight; defaults to `{ 0, 1440 }` when
 	 *   no slots exist.
 	 */
-	static async getTimeRangeFacet(filters: CoursesFilter) {
-		const result = await CourseFilterBuilder.buildFilterQuery(filters, 'include_times', { slots: true })
+	static async getTimeRangeFacet(db: Kysely<Database>, filters: CoursesFilter) {
+		const result = await CourseFilterBuilder.buildFilterQuery(db, filters, 'include_times', { slots: true })
 			.select(eb => [eb.fn.min<number>('cus1.time_from').as('min_time'), eb.fn.max<number>('cus1.time_to').as('max_time')])
 			.where('cus1.time_from', 'is not', null)
 			.executeTakeFirst()

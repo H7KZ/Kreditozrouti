@@ -1,10 +1,10 @@
-import type { InSISDay } from '@kreditozrouti/types'
-import { ASSESSMENT_BUCKETS, INSIS_DAY_DENORM, LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from '@kreditozrouti/core/domain'
+import type { CoursesFilter, Database, InSISDay } from '@kreditozrouti/types'
+import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, StudyPlanCourseTable } from '@kreditozrouti/types'
+import type { Kysely } from 'kysely'
+import { ASSESSMENT_BUCKETS } from '../domain/assessment.js'
+import { INSIS_DAY_DENORM, LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from '../domain/constants.js'
 import { AliasedExpression, Nullable, SelectQueryBuilder, sql } from 'kysely'
-import { mysql } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
-import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, Database, StudyPlanCourseTable } from '@api/Database/types'
-import { buildSlotConflictConditions } from '@api/Utils/TimeConflict'
+import { buildSlotConflictConditions } from './slotConflict.js'
 
 type QueryBuilder = SelectQueryBuilder<
 	Database & { c1: CourseTable } & { cu1: Nullable<CourseUnitTable> } & { cus1: Nullable<CourseUnitSlotTable> } & {
@@ -31,6 +31,7 @@ export class CourseFilterBuilder {
 	 * @returns {QueryBuilder} Kysely query builder with joins and predicates applied.
 	 */
 	public static buildFilterQuery(
+		db: Kysely<Database>,
 		filters: Partial<CoursesFilter>,
 		ignore?: string,
 		forceJoin: { units?: boolean; slots?: boolean; studyPlan?: boolean; assessments?: boolean } = {}
@@ -40,7 +41,7 @@ export class CourseFilterBuilder {
 		const needsStudyPlanJoin = this.requiresStudyPlanJoin(filters, ignore) || forceJoin.studyPlan
 		const needsAssessmentsJoin = (!!filters.assessment_methods?.length && ignore !== 'assessment_methods') || forceJoin.assessments
 
-		let query: QueryBuilder = mysql.selectFrom(`${CourseTable._table} as c1`)
+		let query: QueryBuilder = db.selectFrom(`${CourseTable._table} as c1`)
 
 		if (needsUnitsJoin || needsSlotsJoin) {
 			query = query.leftJoin(`${CourseUnitTable._table} as cu1`, 'c1.id', 'cu1.course_id')
@@ -68,7 +69,7 @@ export class CourseFilterBuilder {
 			query = query.leftJoin(`${CourseAssessmentTable._table} as ca1`, 'ca1.course_id', 'c1.id')
 		}
 
-		return this.applyAllFilters(query, filters, ignore)
+		return this.applyAllFilters(db, query, filters, ignore)
 	}
 
 	/**
@@ -125,7 +126,7 @@ export class CourseFilterBuilder {
 	 * @param {string} [ignore] - Filter key to skip (used for cross-filtering).
 	 * @returns {QueryBuilder} Query builder with all active filter predicates applied.
 	 */
-	public static applyAllFilters(query: QueryBuilder, filters: Partial<CoursesFilter>, ignore?: string) {
+	public static applyAllFilters(db: Kysely<Database>, query: QueryBuilder, filters: Partial<CoursesFilter>, ignore?: string) {
 		// Identity filters
 		if (filters.ids?.length && !['id', 'ids'].includes(ignore!)) {
 			query = query.where('c1.id', 'in', filters.ids)
@@ -282,7 +283,7 @@ export class CourseFilterBuilder {
 			const sanitized = this.sanitizeFulltextQuery(term)
 
 			if (sanitized) {
-				const ftsQuery = mysql
+				const ftsQuery = db
 					.selectFrom(`${CourseTable._table} as fts_c`)
 					.select([
 						'fts_c.id as fts_id',

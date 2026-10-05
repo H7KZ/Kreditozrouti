@@ -18,4 +18,4 @@ The partner API (`/v1`) does not use those limiters. `Middlewares/PartnerAuthMid
 
 `apps/api/src/logger.ts` and request/job contexts emit structured Pino events. `apps/api/src/metrics.ts` exposes request duration, queue counts, worker activity, build information, and Node metrics at `GET /metrics`. Requests with proxy headers receive 404 on that endpoint. Partner traffic adds `api_consumer_requests_total{consumer,route,status_class}` and `api_quota_store_errors_total`; `consumer` is a handful of hand-issued values and `route` is always a template.
 
-`apps/api/src/Utils/Sse.ts` implements the course-refresh event stream. `apps/api/src/Utils/TimeConflict.ts` builds Kysely time-overlap predicates. Pure time comparison and conversion helpers live in `@kreditozrouti/core/domain`.
+`apps/api/src/Utils/Sse.ts` implements the course-refresh event stream. Kysely time-overlap predicates (`slotConflict`) live with the course search in `@kreditozrouti/core/course-search`. Pure time comparison and conversion helpers live in `@kreditozrouti/core/domain`.

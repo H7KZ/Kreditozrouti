@@ -1,20 +1,12 @@
-import { getSlotType, INSIS_DAY_NORM, LANGUAGE_NORM, LEVEL_NORM, MODE_OF_COMPLETION_NORM, MODE_OF_DELIVERY_NORM, priorityOf } from '@kreditozrouti/core/domain'
+import type { Course, CoursesFilter, CourseWithRelations, Database } from '@kreditozrouti/types'
+import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, FacultyTable, StudyPlanCourseTable, StudyPlanTable } from '@kreditozrouti/types'
+import type { Kysely } from 'kysely'
+import { INSIS_DAY_NORM, LANGUAGE_NORM, LEVEL_NORM, MODE_OF_COMPLETION_NORM, MODE_OF_DELIVERY_NORM } from '../domain/constants.js'
+import { getSlotType } from '../domain/insis.js'
+import { priorityOf } from '../domain/studyPlan.js'
 import { sql } from 'kysely'
 import { jsonArrayFrom } from 'kysely/helpers/mysql'
-import { mysql } from '@api/clients'
-import { CoursesFilter } from '@api/Controllers/Courses/CoursesController'
-import {
-	Course,
-	CourseAssessmentTable,
-	CourseTable,
-	CourseUnitSlotTable,
-	CourseUnitTable,
-	CourseWithRelations,
-	FacultyTable,
-	StudyPlanCourseTable,
-	StudyPlanTable
-} from '@api/Database/types'
-import { CourseFilterBuilder } from './CourseFilterBuilder'
+import { CourseFilterBuilder } from './CourseFilterBuilder.js'
 
 export class CourseQueryService {
 	/**
@@ -27,7 +19,7 @@ export class CourseQueryService {
 	 * @returns {Promise<{ courses: CourseWithRelations[]; total: number }>} Courses enriched with
 	 *   faculty, units (with slots), assessments, and study plan membership, plus total match count.
 	 */
-	static async getCoursesWithRelations(
+	static async getCoursesWithRelations(db: Kysely<Database>, 
 		filters: Partial<CoursesFilter>,
 		limit = 20,
 		offset = 0
@@ -38,20 +30,20 @@ export class CourseQueryService {
 		if (limit <= 0) return { courses: [], total: 0 }
 
 		// 1. Count total matching courses
-		const total = await this.countFilteredCourses(filters)
+		const total = await this.countFilteredCourses(db, filters)
 		if (total === 0) return { courses: [], total: 0 }
 
 		// 2. Fetch paginated course IDs only
-		const courseIds = await this.fetchPaginatedCourseIds(filters, limit, offset)
+		const courseIds = await this.fetchPaginatedCourseIds(db, filters, limit, offset)
 		if (courseIds.length === 0) return { courses: [], total }
 
 		// 3. Load all relations in parallel
 		const [courses, faculties, units, assessments, studyPlans] = await Promise.all([
-			this.fetchCoursesByIds(courseIds),
-			this.fetchFacultiesByCourseIds(courseIds),
-			this.fetchUnitsWithSlotsByCourseIds(courseIds),
-			this.fetchAssessmentsByCourseIds(courseIds),
-			filters.study_plan_ids?.length ? this.fetchStudyPlanCoursesByCourseIds(courseIds, filters.study_plan_ids) : Promise.resolve([])
+			this.fetchCoursesByIds(db, courseIds),
+			this.fetchFacultiesByCourseIds(db, courseIds),
+			this.fetchUnitsWithSlotsByCourseIds(db, courseIds),
+			this.fetchAssessmentsByCourseIds(db, courseIds),
+			filters.study_plan_ids?.length ? this.fetchStudyPlanCoursesByCourseIds(db, courseIds, filters.study_plan_ids) : Promise.resolve([])
 		])
 
 		// 4. Merge relations in-memory
@@ -81,8 +73,8 @@ export class CourseQueryService {
 	 * @param {number[]} studyPlanIds - Study plan IDs to filter by.
 	 * @returns {Promise<Course[]>} Latest version of each course linked to any of the given study plans.
 	 */
-	static getCoursesByStudyPlan(studyPlanIds: number[]): Promise<Course[]> {
-		return mysql
+	static getCoursesByStudyPlan(db: Kysely<Database>, studyPlanIds: number[]): Promise<Course[]> {
+		return db
 			.selectFrom(`${CourseTable._table} as c1`)
 			.innerJoin(`${StudyPlanCourseTable._table} as spc1`, 'c1.id', 'spc1.course_id')
 			.selectAll('c1')
@@ -103,8 +95,8 @@ export class CourseQueryService {
 	 * @param {Partial<CoursesFilter>} filters - Active filter criteria.
 	 * @returns {Promise<number>} COUNT DISTINCT on c1.id matching the filter.
 	 */
-	static async countFilteredCourses(filters: Partial<CoursesFilter>): Promise<number> {
-		const query = CourseFilterBuilder.buildFilterQuery(filters).select(eb => eb.fn.count<number>('c1.id').distinct().as('total'))
+	static async countFilteredCourses(db: Kysely<Database>, filters: Partial<CoursesFilter>): Promise<number> {
+		const query = CourseFilterBuilder.buildFilterQuery(db, filters).select(eb => eb.fn.count<number>('c1.id').distinct().as('total'))
 
 		const result = await query.executeTakeFirst()
 		return result?.total ?? 0
@@ -116,13 +108,13 @@ export class CourseQueryService {
 	 * @param {number} offset - Number of IDs to skip.
 	 * @returns {Promise<number[]>} Ordered page of course IDs.
 	 */
-	static async fetchPaginatedCourseIds(filters: Partial<CoursesFilter>, limit: number, offset: number): Promise<number[]> {
+	static async fetchPaginatedCourseIds(db: Kysely<Database>, filters: Partial<CoursesFilter>, limit: number, offset: number): Promise<number[]> {
 		const isDefaultSort = !filters.sort_by
 
 		let priorityFacultyId: string | null = null
 		if (isDefaultSort && filters.study_plan_ids?.length) {
 			// one extra query to derive faculty from study plans; avoids any API contract change
-			const row = await mysql
+			const row = await db
 				.selectFrom(`${StudyPlanTable._table} as sp`)
 				.select('sp.faculty_id')
 				.where('sp.id', 'in', filters.study_plan_ids)
@@ -132,7 +124,7 @@ export class CourseQueryService {
 			priorityFacultyId = row?.faculty_id ?? null
 		}
 
-		let query = CourseFilterBuilder.buildFilterQuery(filters).select('c1.id').groupBy('c1.id')
+		let query = CourseFilterBuilder.buildFilterQuery(db, filters).select('c1.id').groupBy('c1.id')
 
 		if (priorityFacultyId) {
 			query = query.orderBy(sql`CASE WHEN c1.faculty_id = ${priorityFacultyId} THEN 0 ELSE 1 END`).orderBy(sql.ref('c1.ident'), 'asc')
@@ -151,8 +143,8 @@ export class CourseQueryService {
 	 * @param {number[]} ids - Array of course IDs to fetch.
 	 * @returns Courses in the same order as ids (FIELD() sort).
 	 */
-	static fetchCoursesByIds(ids: number[]) {
-		return mysql
+	static fetchCoursesByIds(db: Kysely<Database>, ids: number[]) {
+		return db
 			.selectFrom(`${CourseTable._table} as c1`)
 			.selectAll('c1')
 			.where('c1.id', 'in', ids)
@@ -164,14 +156,14 @@ export class CourseQueryService {
 	 * @param {number[]} courseIds - Array of course IDs.
 	 * @returns Faculty rows for all faculties referenced by the given courses.
 	 */
-	static fetchFacultiesByCourseIds(courseIds: number[]) {
-		return mysql
+	static fetchFacultiesByCourseIds(db: Kysely<Database>, courseIds: number[]) {
+		return db
 			.selectFrom(`${FacultyTable._table} as f1`)
 			.selectAll('f1')
 			.where(
 				'f1.id',
 				'in',
-				mysql.selectFrom(`${CourseTable._table} as c1`).select('c1.faculty_id').where('c1.id', 'in', courseIds).where('c1.faculty_id', 'is not', null)
+				db.selectFrom(`${CourseTable._table} as c1`).select('c1.faculty_id').where('c1.id', 'in', courseIds).where('c1.faculty_id', 'is not', null)
 			)
 			.execute()
 	}
@@ -180,8 +172,8 @@ export class CourseQueryService {
 	 * @param {number[]} courseIds - Array of course IDs.
 	 * @returns Course units with embedded slots array (jsonArrayFrom).
 	 */
-	static async fetchUnitsWithSlotsByCourseIds(courseIds: number[]) {
-		const units = await mysql
+	static async fetchUnitsWithSlotsByCourseIds(db: Kysely<Database>, courseIds: number[]) {
+		const units = await db
 			.selectFrom(`${CourseUnitTable._table} as cu1`)
 			.selectAll('cu1')
 			.select(eb => [
@@ -221,8 +213,8 @@ export class CourseQueryService {
 	 * @param {number[]} courseIds - Array of course IDs.
 	 * @returns Assessment rows for the given course IDs.
 	 */
-	static fetchAssessmentsByCourseIds(courseIds: number[]) {
-		return mysql.selectFrom(`${CourseAssessmentTable._table} as ca1`).selectAll('ca1').where('ca1.course_id', 'in', courseIds).execute()
+	static fetchAssessmentsByCourseIds(db: Kysely<Database>, courseIds: number[]) {
+		return db.selectFrom(`${CourseAssessmentTable._table} as ca1`).selectAll('ca1').where('ca1.course_id', 'in', courseIds).execute()
 	}
 
 	/**
@@ -230,8 +222,8 @@ export class CourseQueryService {
 	 * @param {number[]} studyPlanIds - Array of study plan IDs to restrict the join.
 	 * @returns study_plan_course rows linking the given courses to the given study plans, deduplicated to best row per course_id.
 	 */
-	static async fetchStudyPlanCoursesByCourseIds(courseIds: number[], studyPlanIds: number[]) {
-		const rows = await mysql
+	static async fetchStudyPlanCoursesByCourseIds(db: Kysely<Database>, courseIds: number[], studyPlanIds: number[]) {
+		const rows = await db
 			.selectFrom(`${StudyPlanCourseTable._table} as spc1`)
 			.selectAll('spc1')
 			.where('spc1.course_id', 'in', courseIds)

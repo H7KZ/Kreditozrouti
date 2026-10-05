@@ -21,7 +21,7 @@ apps/api/src/
 ├── Middlewares/    # CacheMiddleware, RateLimitMiddleware, CommandMiddleware, LoggerMiddleware, PartnerAuthMiddleware
 ├── Errors/         # ApiError + Errors factory
 ├── Scripts/        # partnerKeys.ts - operator CLI for partner consumers and API keys
-└── Utils/          # Sse.ts, TimeConflict.ts
+└── Utils/          # Sse.ts
 ```
 
 ## Path Aliases

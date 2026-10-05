@@ -8,6 +8,7 @@ export default defineConfig({
 		'services/FacultyService': 'src/services/FacultyService.ts',
 		'services/StudyPlanService': 'src/services/StudyPlanService.ts',
 		'services/OptimizerService': 'src/services/OptimizerService.ts',
+		'course-search/index': 'src/course-search/index.ts',
 		'partner-api/index': 'src/partner-api/index.ts',
 		'http/index': 'src/http/index.ts',
 		'queue/index': 'src/queue/index.ts',

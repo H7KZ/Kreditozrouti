@@ -24,6 +24,10 @@
 			"import": "./dist/services/OptimizerService.js",
 			"types": "./dist/services/OptimizerService.d.ts"
 		},
+		"./course-search": {
+			"import": "./dist/course-search/index.js",
+			"types": "./dist/course-search/index.d.ts"
+		},
 		"./partner-api": {
 			"import": "./dist/partner-api/index.js",
 			"types": "./dist/partner-api/index.d.ts"

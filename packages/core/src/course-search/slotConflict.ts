@@ -1,10 +1,15 @@
-import type { InSISDay } from '@kreditozrouti/types'
-import { INSIS_DAY_DENORM } from '@kreditozrouti/core/domain'
-import { ExpressionBuilder } from 'kysely'
-import DateService from '@api/Services/DateService'
-import { TimeSelection } from '@api/Validations'
+import type { InSISDay, TimeSelection } from '@kreditozrouti/types'
+import { InSISDayValues } from '@kreditozrouti/types'
+import type { ExpressionBuilder } from 'kysely'
+import { INSIS_DAY_DENORM } from '../domain/constants.js'
 
-export { compareTimeSelections } from '@kreditozrouti/core/domain'
+/** Weekday of a date as the InSIS day name, or null for an invalid date. Sunday is the last day. */
+function getDayFromDate(date: Date): InSISDay | null {
+	if (Number.isNaN(date.getTime())) return null
+
+	const jsDay = date.getDay()
+	return InSISDayValues[jsDay === 0 ? 6 : jsDay - 1] ?? null
+}
 
 /**
  * Builds Kysely filter conditions that determine whether a slot conflicts with
@@ -24,6 +29,8 @@ export { compareTimeSelections } from '@kreditozrouti/core/domain'
  * @param slotAlias  - SQL alias for the slot table (e.g. `'cus3'`)
  * @returns Array of Kysely expressions; combine with `.and()` or `.or()`
  */
+// The expression builder is scoped to whatever aliased query the caller builds, so its table type cannot be named here.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function buildSlotConflictConditions(eb: ExpressionBuilder<any, any>, exc: TimeSelection, slotAlias: string) {
 	const conditions = []
 
@@ -56,7 +63,7 @@ export function buildSlotConflictConditions(eb: ExpressionBuilder<any, any>, exc
 
 		// Also match recurring weekly slots that fall on the same weekday as the excluded date
 		// e.g. if the exclusion is for 2025-03-17 (Monday), also catch every-Monday slots
-		const dateDay = DateService.getDayFromDate(exc.date)
+		const dateDay = getDayFromDate(exc.date)
 		if (dateDay) {
 			const dateDayConditions = [
 				eb(`${slotAlias}.day`, '=', dateDay),
