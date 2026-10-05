@@ -5,6 +5,8 @@ date: 2026-10-05
 
 # The public API is partner-only and launches behind hard gates
 
+> Browser access was added afterwards: see [ADR 0005](0005-browser-origins-are-bound-per-api-key.md).
+
 The public API has Consumers (named partner organisations, first Studolog) holding API Keys issued by hand. There
 is no self-serve signup, and the API stays that way until the gates below pass. Self-serve would be a signup form
 on the same Consumer, API Key and Plan model, not a redesign, so the door stays open.

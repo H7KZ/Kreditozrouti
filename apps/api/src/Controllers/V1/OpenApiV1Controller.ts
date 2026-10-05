@@ -70,7 +70,9 @@ function buildSpec(): JsonSchema {
 			version: '1.0.0',
 			description:
 				'Read-only course catalogue for approved partners. Authenticate with `Authorization: Bearer kz_live_...`. ' +
-				'Keys are server-side secrets and must never be sent from a browser. Errors are RFC 9457 `application/problem+json`. ' +
+				'A key works from a server (no Origin header) and, if it has browser origins configured, from a browser on exactly those origins ' +
+				'(CORS is answered per key; a key without origins is refused when called from a browser, and a key with origins should be treated as public). ' +
+				'Errors are RFC 9457 `application/problem+json`. ' +
 				'Quota is per consumer: a per-minute burst limit and a daily cap (UTC). Only faculties whose schedule InSIS publishes publicly are served.'
 		},
 		servers: [{ url: `${Config.uri}/v1` }],

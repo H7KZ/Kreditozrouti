@@ -1,6 +1,6 @@
 # Partner API (`/v1`)
 
-A read-only course catalogue for approved partners, first Studolog. It is server-to-server: keys are secrets and the API sends no CORS headers for browsers. Why it is partner-only and gated is in [ADR 0004](../adr/0004-public-api-is-partner-only-behind-hard-gates.md); why its limiter fails open is in [ADR 0003](../adr/0003-partner-api-rate-limit-fails-open.md). Terms (Consumer, API Key, Plan, Lecturer) are in the [glossary](../DOMAIN.md).
+A read-only course catalogue for approved partners, first Studolog. It can be called from a partner's backend or straight from its frontend with the same keys (see [browser use](#browser-use)). Why it is partner-only and gated is in [ADR 0004](../adr/0004-public-api-is-partner-only-behind-hard-gates.md); why browsers are bound to per-key origins is in [ADR 0005](../adr/0005-browser-origins-are-bound-per-api-key.md); why its limiter fails open is in [ADR 0003](../adr/0003-partner-api-rate-limit-fails-open.md). Terms (Consumer, API Key, Plan, Lecturer) are in the [glossary](../DOMAIN.md).
 
 The machine-readable contract is `GET /v1/openapi.json` (OpenAPI 3.1, no key needed). Query parameters in it are generated from the same Zod schemas the handlers validate with ([`schemas.ts`](../../apps/api/src/Controllers/V1/schemas.ts)). Public response shapes are in [`packages/types/src/publicApi.ts`](../../packages/types/src/publicApi.ts).
 
@@ -17,6 +17,21 @@ Send `Authorization: Bearer kz_live_...`. A missing, malformed, unknown, revoked
 Quota belongs to the Consumer, not the key, so extra keys never add quota. A Plan sets a per-minute burst limit and a daily cap (UTC buckets). Responses carry `RateLimit-Limit`, `RateLimit-Remaining` and `RateLimit-Reset` for the window that will run out first. These follow an IETF Internet-Draft, so treat them as optional. A 429 always carries `Retry-After` and a problem document with `window` (`minute` or `day`). If Redis is unavailable the request is let through unmetered (immediately when the connection is not ready, and after 300 ms when it is slow; the shared client retries forever, so every partner Redis call goes through `guardedRedis`), `api_quota_store_errors_total` increases and the wide event gets `quota_degraded: true`.
 
 The seeded `partner` Plan is 300 requests per minute and 50,000 per day. It is a starting guess: tune it from `api_usage_hourly`.
+
+## Browser use
+
+A key may carry **allowed origins**, set by the operator (`partnerKeys create-key --origins ...` or `set-origins`). Exact origins only (`https://studolog.cz`, `http://localhost:5173` for development), no wildcards, no path.
+
+| Caller | Result |
+| --- | --- |
+| No `Origin` header (server, curl) | Works with any key |
+| Browser, origin listed on the key | Works; the response carries `Access-Control-Allow-Origin` and exposes `RateLimit-*`, `Retry-After`, `X-Request-Id` |
+| Browser, origin not listed on this key | 403 problem document |
+| Browser, key has no origins | 403 "not enabled for browser use" |
+
+The CORS preflight carries no key, so it is answered for every origin registered on some usable key (cached 15 seconds) and for no other origin. CORS headers are sent on errors too (401, 403, 429), so a frontend can read them. Only `GET` and `OPTIONS` are allowed, and credentials are never allowed: send the key in `Authorization: Bearer`, not in a cookie.
+
+A key with origins is **public by nature**: anyone can read it from the page, and an origin check does not stop a non-browser client from sending any `Origin`. Its protection is the origin binding against other websites, the per-consumer quota, its scopes, and revocation. Recommended: one key for the backend (no origins) and a separate key for the frontend with origins and only the scopes the frontend needs, for example without `lecturers:read`. Browser and backend traffic spend the same per-consumer quota.
 
 ## Endpoints
 
@@ -50,11 +65,12 @@ Keys are managed with a CLI that talks to MySQL directly, so there is no HTTP su
 # development
 pnpm --filter @kreditozrouti/api partner-keys create-consumer studolog "Studolog" --email team@studolog.com
 pnpm --filter @kreditozrouti/api partner-keys create-key studolog --label "production"
+pnpm --filter @kreditozrouti/api partner-keys create-key studolog --label "frontend" --scopes catalogue:read --origins https://studolog.cz,https://www.studolog.cz
 # production
 docker compose exec api node dist/apps/api/src/Scripts/partnerKeys.js list
 ```
 
-Commands: `create-consumer`, `create-key`, `list`, `revoke <prefix>`, `disable-consumer`, `enable-consumer`, `set-plan`, `create-plan`. A new key is printed once and only its SHA-256 is stored. Revocation, disabling and plan changes reach every replica within 15 seconds (in-process key cache). Keys have a literal `kz_live_` prefix so secret scanners can find a leaked one. Details are in [`partnerKeys.ts`](../../apps/api/src/Scripts/partnerKeys.ts).
+Commands: `create-consumer`, `create-key`, `list`, `set-origins <prefix> <origins|none>`, `revoke <prefix>`, `disable-consumer`, `enable-consumer`, `set-plan`, `create-plan`. A new key is printed once and only its SHA-256 is stored. Revocation, disabling and plan changes reach every replica within 15 seconds (in-process key cache). Keys have a literal `kz_live_` prefix so secret scanners can find a leaked one. Details are in [`partnerKeys.ts`](../../apps/api/src/Scripts/partnerKeys.ts).
 
 ## Usage analytics
 
@@ -68,7 +84,8 @@ Commands: `create-consumer`, `create-key`, `list`, `revoke <prefix>`, `disable-c
 | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | Key generation, hashing, bearer parsing; quota check; usage counters and flush | [`packages/core/src/partner-api/`](../../packages/core/src/partner-api/index.ts) behind `QuotaStore`, `UsageCounterStore` and `UsageSink` ports |
 | Redis and MySQL adapters, key lookup and cache                                 | `apps/api/src/Services/Partner/`                                                                                                                |
-| Auth, scope and quota middleware                                               | `apps/api/src/Middlewares/PartnerAuthMiddleware.ts`                                                                                             |
+| Auth, origin, scope and quota middleware | `apps/api/src/Middlewares/PartnerAuthMiddleware.ts` |
+| CORS and the origin registry | `apps/api/src/Middlewares/PartnerCorsMiddleware.ts`, `apps/api/src/Services/Partner/OriginRegistry.ts`; origin parsing in `@kreditozrouti/core/partner-api` |
 | Routes, controllers, OpenAPI                                                   | `apps/api/src/Routes/V1Routes.ts`, `apps/api/src/Controllers/V1/`                                                                               |
 | Queries, visibility, DTO mapping                                               | `apps/api/src/Services/V1/`                                                                                                                     |
 | Problem+json errors                                                            | `apps/api/src/Handlers/ProblemHandler.ts`                                                                                                       |

@@ -14,6 +14,7 @@ interface KeyRecord {
 	keyHash: string
 	prefix: string
 	scopes: ApiScope[]
+	allowedOrigins: string[]
 	revokedAt: Date | null
 	expiresAt: Date | null
 	consumerId: number
@@ -45,6 +46,7 @@ async function loadKey(prefix: string): Promise<KeyRecord | null> {
 			'k.key_hash',
 			'k.prefix',
 			'k.scopes',
+			'k.allowed_origins',
 			'k.revoked_at',
 			'k.expires_at',
 			'c.id as consumer_id',
@@ -63,6 +65,7 @@ async function loadKey(prefix: string): Promise<KeyRecord | null> {
 				keyHash: row.key_hash,
 				prefix: row.prefix,
 				scopes: row.scopes.filter((s): s is ApiScope => (ApiScopeValues as readonly string[]).includes(s)),
+				allowedOrigins: row.allowed_origins ?? [],
 				revokedAt: row.revoked_at,
 				expiresAt: row.expires_at,
 				consumerId: row.consumer_id,
@@ -121,6 +124,7 @@ export const PartnerAuthService = {
 				keyId: record.keyId,
 				keyPrefix: record.prefix,
 				scopes: record.scopes,
+				allowedOrigins: record.allowedOrigins,
 				plan: record.plan
 			}
 		}

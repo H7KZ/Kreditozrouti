@@ -1,5 +1,5 @@
 /**
- * Operator CLI for partner API consumers and keys (ADR 0004). Run on the server, never exposed over HTTP.
+ * Operator CLI for partner API consumers and keys (ADR 0004, 0005). Run on the server, never exposed over HTTP.
  *
  *   production:  docker compose exec api node dist/apps/api/src/Scripts/partnerKeys.js <command> ...
  *   development: pnpm --filter @kreditozrouti/api partner-keys <command> ...
@@ -7,18 +7,24 @@
  * Commands:
  *   create-consumer <slug> <name> [--plan partner] [--email a@b.cz]
  *   create-key <consumer-slug> [--label text] [--scopes catalogue:read,lecturers:read,usage:read] [--expires-days N]
+ *                              [--origins https://app.example.cz,https://www.example.cz]
  *   list
+ *   set-origins <prefix> <origin[,origin...]|none>
  *   revoke <prefix>
  *   disable-consumer <slug>
  *   enable-consumer <slug>
  *   set-plan <slug> <plan>
  *   create-plan <name> <requests-per-minute> <requests-per-day>
  *
- * A new key is printed once and cannot be recovered. A revoked key stops working on every replica within 15 seconds.
+ * A new key is printed once and cannot be recovered. Revocation, plan and origin changes reach every replica within 15 seconds.
+ *
+ * Origins make a key usable from a browser on exactly those sites (exact origins, no wildcards; http only for localhost).
+ * Without origins a key is server-to-server only and a browser request with it is refused. Such a key is public by
+ * nature, so give browser keys only the scopes the frontend needs.
  */
 import { parseArgs } from 'node:util'
 import type { ApiScope } from '@kreditozrouti/types'
-import { generateApiKey } from '@kreditozrouti/core/partner-api'
+import { generateApiKey, parseOrigin } from '@kreditozrouti/core/partner-api'
 import { ApiScopeValues } from '@kreditozrouti/types'
 import { mysql } from '@api/clients/mysql'
 import { ApiConsumerTable, ApiKeyTable, ApiPlanTable } from '@api/Database/types'
@@ -47,6 +53,17 @@ function parseScopes(raw: string | undefined): ApiScope[] {
 	return scopes as ApiScope[]
 }
 
+/** Parses a comma-separated origin list. "none" (or an empty value) means no origins, i.e. server-to-server only. */
+function parseOrigins(raw: string | undefined): string[] {
+	if (!raw || raw.trim().toLowerCase() === 'none') return []
+
+	const origins = raw.split(',').map(value => {
+		const origin = parseOrigin(value)
+		return origin ?? fail(`invalid origin "${value.trim()}": use scheme://host[:port] with no path or wildcard (https, or http for localhost)`)
+	})
+	return [...new Set(origins)]
+}
+
 async function main(): Promise<void> {
 	const { positionals, values } = parseArgs({
 		allowPositionals: true,
@@ -55,7 +72,8 @@ async function main(): Promise<void> {
 			email: { type: 'string' },
 			label: { type: 'string' },
 			scopes: { type: 'string' },
-			'expires-days': { type: 'string' }
+			'expires-days': { type: 'string' },
+			origins: { type: 'string' }
 		}
 	})
 
@@ -78,10 +96,11 @@ async function main(): Promise<void> {
 
 		case 'create-key': {
 			const [slug] = args
-			if (!slug) fail('usage: create-key <consumer-slug> [--label text] [--scopes a,b] [--expires-days N]')
+			if (!slug) fail('usage: create-key <consumer-slug> [--label text] [--scopes a,b] [--expires-days N] [--origins a,b]')
 
 			const consumer = await consumerBySlug(slug)
 			const scopes = parseScopes(values.scopes)
+			const origins = parseOrigins(values.origins)
 			const expiresDays = values['expires-days'] ? Number(values['expires-days']) : null
 			if (expiresDays !== null && (!Number.isInteger(expiresDays) || expiresDays < 1)) fail('--expires-days must be a positive integer')
 			const expiresAt = expiresDays ? new Date(Date.now() + expiresDays * 86_400_000).toISOString().slice(0, 19).replace('T', ' ') : null
@@ -98,12 +117,13 @@ async function main(): Promise<void> {
 							key_hash: generated.hash,
 							label: values.label ?? null,
 							scopes: JSON.stringify(scopes),
+							allowed_origins: origins.length ? JSON.stringify(origins) : null,
 							expires_at: expiresAt
 						})
 						.execute()
 
 					console.log(
-						`created key ${generated.prefix} for "${slug}" with scopes ${scopes.join(', ')}${expiresAt ? `, expires ${expiresAt} UTC` : ''}`
+						`created key ${generated.prefix} for "${slug}" with scopes ${scopes.join(', ')}${expiresAt ? `, expires ${expiresAt} UTC` : ''}${origins.length ? `, browser origins ${origins.join(', ')}` : ', server-to-server only'}`
 					)
 					console.log('')
 					console.log(generated.key)
@@ -132,6 +152,7 @@ async function main(): Promise<void> {
 					'k.prefix',
 					'k.label',
 					'k.scopes',
+					'k.allowed_origins',
 					'k.last_used_at',
 					'k.expires_at',
 					'k.revoked_at'
@@ -143,11 +164,31 @@ async function main(): Promise<void> {
 			for (const row of rows) {
 				const state = row.disabled_at ? 'DISABLED' : 'active'
 				const key = row.prefix
-					? `${row.prefix} [${(row.scopes ?? []).join(',')}] ${row.revoked_at ? 'REVOKED' : 'ok'} last_used=${row.last_used_at?.toISOString() ?? 'never'}${row.label ? ` (${row.label})` : ''}`
+					? `${row.prefix} [${(row.scopes ?? []).join(',')}] ${row.revoked_at ? 'REVOKED' : 'ok'} ${row.allowed_origins?.length ? `origins=${row.allowed_origins.join(',')}` : 'server-only'} last_used=${row.last_used_at?.toISOString() ?? 'never'}${row.label ? ` (${row.label})` : ''}`
 					: '(no keys)'
 				console.log(`${row.slug} ${state} plan=${row.plan} ${row.rpm}/min ${row.rpd}/day  ${key}`)
 			}
 			if (rows.length === 0) console.log('no consumers')
+			break
+		}
+
+		case 'set-origins': {
+			const [prefix, rawOrigins] = args
+			if (!prefix || rawOrigins === undefined) fail('usage: set-origins <prefix> <origin[,origin...]|none>')
+
+			const origins = parseOrigins(rawOrigins)
+			const result = await mysql
+				.updateTable(ApiKeyTable._table)
+				.set({ allowed_origins: origins.length ? JSON.stringify(origins) : null })
+				.where('prefix', '=', prefix)
+				.where('revoked_at', 'is', null)
+				.executeTakeFirst()
+			if (Number(result.numUpdatedRows) === 0) fail(`no active key with prefix "${prefix}"`)
+			console.log(
+				origins.length
+					? `key ${prefix} may now be used from ${origins.join(', ')} (takes effect within 15 seconds)`
+					: `key ${prefix} is now server-to-server only`
+			)
 			break
 		}
 

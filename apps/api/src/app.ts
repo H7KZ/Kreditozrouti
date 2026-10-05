@@ -32,8 +32,15 @@ const corsOptions: CorsOptions = {
 }
 
 app.use('/assets', express.static(Paths.assets))
-app.options('/{*any}', cors(corsOptions))
-app.use(cors(corsOptions))
+// The partner API (/v1) sets its own CORS headers per API key (PartnerCorsMiddleware); the web app's
+// allowlist, which also allows credentials, must neither answer its preflights nor decorate its responses.
+const exceptPartnerApi =
+	(handler: express.RequestHandler): express.RequestHandler =>
+	(req, res, next) =>
+		req.path === '/v1' || req.path.startsWith('/v1/') ? next() : handler(req, res, next)
+
+app.options('/{*any}', exceptPartnerApi(cors(corsOptions)))
+app.use(exceptPartnerApi(cors(corsOptions)))
 
 app.use(helmet())
 app.disable('x-powered-by')

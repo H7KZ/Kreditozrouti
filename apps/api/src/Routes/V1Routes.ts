@@ -5,14 +5,18 @@ import { UsageV1Controller } from '@api/Controllers/V1/UsageV1Controller'
 import { Errors } from '@api/Errors'
 import ProblemHandler from '@api/Handlers/ProblemHandler'
 import { partnerApi } from '@api/Middlewares/PartnerAuthMiddleware'
+import { partnerCors } from '@api/Middlewares/PartnerCorsMiddleware'
 
 /**
  * Partner API. Authenticated with an API key, quota per consumer, errors as problem+json.
- * Server-to-server only: there is no CORS policy for browsers on purpose (ADR 0004).
+ * Callable from a server (no Origin) or from a browser on an origin registered on the key (ADR 0005).
  *
  * @route /v1
  */
 const V1Routes = Router()
+
+// First, so preflights are answered before anything needs a key and every response carries the CORS headers.
+V1Routes.use(partnerCors)
 
 // The spec describes the API and carries no data, so it needs no key.
 V1Routes.get('/openapi.json', OpenApiV1Controller.get)

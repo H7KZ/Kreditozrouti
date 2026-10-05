@@ -393,6 +393,8 @@ export class ApiKeyTable {
 	key_hash!: string
 	label!: string | null
 	scopes!: ColumnType<string[], string, string>
+	/** Browser origins this key may be used from, as canonical origins. NULL or empty means server-to-server only. */
+	allowed_origins!: ColumnType<string[] | null, string | null | undefined, string | null>
 	last_used_at!: ColumnType<Date, string | null | undefined, string | null> | null
 	expires_at!: ColumnType<Date, string | null | undefined, string | null> | null
 	revoked_at!: ColumnType<Date, string | null | undefined, string | null> | null

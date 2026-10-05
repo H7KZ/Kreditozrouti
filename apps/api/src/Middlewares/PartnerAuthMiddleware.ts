@@ -1,5 +1,5 @@
 import type { ApiScope } from '@kreditozrouti/types'
-import { checkQuota, recordUsage } from '@kreditozrouti/core/partner-api'
+import { checkQuota, isOriginAllowed, recordUsage } from '@kreditozrouti/core/partner-api'
 import { NextFunction, Request, Response } from 'express'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import { Errors } from '@api/Errors'
@@ -47,6 +47,18 @@ export function partnerApi(scope: ApiScope) {
 					durationMs
 				}).catch(err => logger.warn({ err }, 'partner.usage_record_failed'))
 			})
+
+			// Requests without an Origin header are not from a browser and need no origin on the key. A browser
+			// request must come from one of the key's origins; a key with none is server-only and is refused
+			// here, so a secret key shipped in frontend code fails visibly instead of being quietly usable.
+			const origin = req.headers.origin
+			if (origin !== undefined && !isOriginAllowed(origin, principal.allowedOrigins)) {
+				throw Errors.forbidden(
+					principal.allowedOrigins.length === 0
+						? 'This API key is not enabled for browser use. Ask the maintainers to add your origin to it.'
+						: `The origin ${origin} is not allowed for this API key`
+				)
+			}
 
 			if (!hasScope(principal, scope)) throw Errors.forbidden(`This API key does not have the ${scope} scope`)
 

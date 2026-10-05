@@ -9,6 +9,8 @@ export interface PartnerPrincipal {
 	keyId: number
 	keyPrefix: string
 	scopes: ApiScope[]
+	/** Canonical browser origins the key may be used from. Empty means the key is server-to-server only. */
+	allowedOrigins: string[]
 	plan: {
 		name: string
 		requestsPerMinute: number
