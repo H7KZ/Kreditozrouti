@@ -19,7 +19,7 @@ HTTP mode requires a Bearer token from this server's OAuth flow. Discovery is at
 
 | Name | Use |
 | --- | --- |
-| `vse_search_courses` | Search by query, faculty, semester, and language; page with `limit` and `offset` |
+| `vse_search_courses` | Search by query (ranked full-text, or a course code), faculty, semester, and language; page with `limit` and `offset`. Uses the same search as the web app through `@kreditozrouti/core/course-search`, so `languages`, `level` and `mode_of_*` in results are normalised values (`czech`, `bachelor`, `exam`) |
 | `vse_get_course` | Get course detail by numeric ID |
 | `vse_check_timetable_conflicts` | Check 1-30 course IDs for overlaps |
 | `vse_optimize_timetable` | Build ranked schedules or explore additions to a base selection |
