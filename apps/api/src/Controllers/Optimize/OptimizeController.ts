@@ -1,10 +1,11 @@
 import type { OptimizeRequest } from '@kreditozrouti/types'
 import { MAX_EXPLORE_POOL_SIZE, MAX_POOL_SIZE } from '@kreditozrouti/core/domain'
+import OptimizerService from '@kreditozrouti/core/services/OptimizerService'
 import { Request, Response } from 'express'
 import * as z from 'zod'
+import { mysql } from '@api/clients'
 import LoggerAPIContext from '@api/Context/LoggerAPIContext'
 import { Errors } from '@api/Errors'
-import OptimizeService from '@api/Services/OptimizeService'
 import { DaySchema, TimeSelectionSchema } from '@api/Validations'
 
 const SolverConstraintsSchema = z.object({
@@ -40,7 +41,10 @@ export default async function OptimizeController(req: Request, res: Response) {
 
 	if (!result.success) throw Errors.validation(result.error.issues)
 
-	const response = await OptimizeService.optimize(result.data)
+	// The solver lives in core (shared with MCP) and throws plain errors; keep the API's 500 shape.
+	const response = await OptimizerService.optimize(mysql, result.data).catch((error: unknown) => {
+		throw Errors.internal(error instanceof Error ? error.message : 'Failed to optimize timetable')
+	})
 
 	LoggerAPIContext.add({
 		candidate_count: response.full_candidates.length,

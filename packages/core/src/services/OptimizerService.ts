@@ -14,7 +14,7 @@ import type {
 import type { Kysely } from 'kysely'
 import { getSlotType } from '../domain/insis.js'
 import { DEFAULT_WEIGHTS, diversityFilter, MAX_EXPLORE_POOL_SIZE, MAX_POOL_SIZE, scoreCandidate, solveWithDeadline } from '../domain/optimizer.js'
-import CourseService from './CourseService'
+import CourseService from './CourseService.js'
 
 const SOLVER_BUDGET_MS = 4500
 const MAX_CANDIDATES = 5

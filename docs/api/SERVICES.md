@@ -24,6 +24,6 @@ The batched relation queries avoid a query per course. `exclude_times` retains a
 
 `ScraperService.ts` enqueues catalog, course, plan, academic schedule, and faculty timetable work. It also retries failed jobs. `ScraperGapSweeperService.ts` identifies study-plan course idents absent from the course table and triggers targeted discovery.
 
-`OptimizeService.ts` loads candidate courses and calls the pure solver in `@kreditozrouti/core/domain`. Build mode ranks conflict-free schedules and possible one-course removals. Explore mode tries each additional course against the base selection. Request and result fields are defined in [`packages/types/src/optimizer.ts`](../../packages/types/src/optimizer.ts).
+The optimizer lives in `@kreditozrouti/core/services/OptimizerService` and is shared with the MCP server; `OptimizeController` calls it with the API's MySQL client. It loads candidate courses through the shared course search and calls the pure solver in `@kreditozrouti/core/domain`. Build mode ranks conflict-free schedules and possible one-course removals. Explore mode tries each additional course against the base selection. Request and result fields are defined in [`packages/types/src/optimizer.ts`](../../packages/types/src/optimizer.ts).
 
 `SQLService.ts` runs migrations and seeds at startup. `EmailService.ts` uses Gmail SMTP only when both `GOOGLE_USER` and `GOOGLE_APP_PASSWORD` are set; see [Gmail setup](../setup/GMAIL.md).
