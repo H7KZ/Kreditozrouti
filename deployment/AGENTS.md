@@ -95,7 +95,8 @@ to `/api`). Anyone adding a new `VITE_*` var must add it to `turbo.json` too.
 **phpMyAdmin is public on development only, behind basic auth.** In production it is NOT internet-reachable: it sits
 behind `profiles: ['admin']` (a plain `up` and every deploy leave it stopped; never auto-start it there), publishes on
 loopback only (`127.0.0.1:48080`), joins the mysql network only, and carries no Traefik labels. In development it has no
-profile, starts with every deploy, is routed at `https://${DOMAIN}/phpmyadmin` (Traefik `basicauth` then `stripprefix`,
+profile and starts with every deploy: full-stack `up -d`, and `deploy.sh dev development api` (what CI runs) also
+passes `phpmyadmin` to `up`, since a per-service `up -d api` would never start it. It is routed at `https://${DOMAIN}/phpmyadmin` (Traefik `basicauth` then `stripprefix`,
 `PMA_ABSOLUTE_URI` set) and also publishes `127.0.0.1:48081` as a tunnel fallback. The gate is the
 `PHPMYADMIN_BASIC_AUTH` GitHub secret (htpasswd line, `htpasswd -nbB user pass`); `_deploy-service.yml` writes it
 single-quoted into `.env` because it holds `$`. Empty secret = Traefik rejects every request (fails closed). `PMA_ARBITRARY`,

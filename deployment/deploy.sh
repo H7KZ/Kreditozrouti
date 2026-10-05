@@ -233,14 +233,21 @@ main() {
             api|scraper|mcp) deps_flag="" ;;
         esac
 
-        log "Pulling image for $service..."
+        # Development ships phpMyAdmin with the api deploy. CI deploys one service at a time, so a
+        # plain `up -d api` would never start it. Production never does (admin profile, loopback).
+        local -a up_services=("$service")
+        if [[ "$environment" == "development" && "$service" == "api" ]]; then
+            up_services+=("phpmyadmin")
+        fi
+
+        log "Pulling image for ${up_services[*]}..."
         docker compose \
             -p "$project_name" \
             --env-file "$env_file" \
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \
-            pull "$service"
+            pull "${up_services[@]}"
 
         if [[ -n "$deps_flag" ]]; then
             log "Deploying $service (with --no-deps: dependencies not included)..."
@@ -253,7 +260,7 @@ main() {
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \
-            up $deps_flag -d "$service"
+            up $deps_flag -d "${up_services[@]}"
     else
         # ---- Full-stack deploy ----
         create_networks "$networks_config"
