@@ -1,5 +1,6 @@
 import type { UsageCounterStore, UsageCounts } from '@kreditozrouti/core/partner-api'
 import { redis } from '@api/clients'
+import { guardedRedis } from './redisGuard'
 
 const HOURS_KEY = 'usage:hours'
 const countsKey = (hour: string) => `usage:count:${hour}`
@@ -10,14 +11,17 @@ const SAFETY_TTL_SECONDS = 3 * 86_400
 
 export const RedisUsageCounterStore: UsageCounterStore = {
 	async record(hour, field, durationMs) {
-		await redis
-			.multi()
-			.hincrby(countsKey(hour), field, 1)
-			.hincrby(durationKey(hour), field, Math.round(durationMs))
-			.expire(countsKey(hour), SAFETY_TTL_SECONDS)
-			.expire(durationKey(hour), SAFETY_TTL_SECONDS)
-			.sadd(HOURS_KEY, hour)
-			.exec()
+		// Guarded so a Redis outage drops the usage count instead of queueing it (and the request) behind the outage.
+		await guardedRedis(() =>
+			redis
+				.multi()
+				.hincrby(countsKey(hour), field, 1)
+				.hincrby(durationKey(hour), field, Math.round(durationMs))
+				.expire(countsKey(hour), SAFETY_TTL_SECONDS)
+				.expire(durationKey(hour), SAFETY_TTL_SECONDS)
+				.sadd(HOURS_KEY, hour)
+				.exec()
+		)
 	},
 
 	listHours() {

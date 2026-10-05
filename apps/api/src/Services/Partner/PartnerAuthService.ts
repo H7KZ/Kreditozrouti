@@ -3,6 +3,7 @@ import { apiKeyMatchesHash, extractBearerToken, parseApiKey } from '@kreditozrou
 import { ApiScopeValues } from '@kreditozrouti/types'
 import { mysql, redis } from '@api/clients'
 import { ApiConsumerTable, ApiKeyTable, ApiPlanTable } from '@api/Database/types'
+import { guardedRedis } from './redisGuard'
 
 export type PartnerAuthFailure = 'missing' | 'malformed' | 'unknown_key' | 'revoked' | 'expired' | 'consumer_disabled'
 
@@ -79,8 +80,7 @@ async function loadKey(prefix: string): Promise<KeyRecord | null> {
 
 /** Records `last_used_at` at most once per minute per key, so a busy key costs one write a minute. */
 function touchLastUsed(keyId: number): void {
-	redis
-		.set(`apikey:last_used:${keyId}`, '1', 'EX', LAST_USED_INTERVAL_SECONDS, 'NX')
+	guardedRedis(() => redis.set(`apikey:last_used:${keyId}`, '1', 'EX', LAST_USED_INTERVAL_SECONDS, 'NX'))
 		.then(async acquired => {
 			if (acquired !== 'OK') return
 			await mysql

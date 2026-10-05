@@ -1,5 +1,6 @@
 import type { QuotaStore } from '@kreditozrouti/core/partner-api'
 import { redis } from '@api/clients'
+import { guardedRedis } from './redisGuard'
 
 /**
  * INCR and the first-use EXPIRE run in one Lua script, so a crash between them can never leave a counter
@@ -17,11 +18,11 @@ return {count, ttl}
 
 export const RedisQuotaStore: QuotaStore = {
 	async hit(key, ttlSeconds) {
-		const [count, ttl] = (await redis.eval(HIT_SCRIPT, 1, key, ttlSeconds)) as [number, number]
+		const [count, ttl] = (await guardedRedis(() => redis.eval(HIT_SCRIPT, 1, key, ttlSeconds))) as [number, number]
 		return { count, ttlSeconds: ttl }
 	},
 
 	async peek(key) {
-		return Number((await redis.get(key)) ?? 0)
+		return Number((await guardedRedis(() => redis.get(key))) ?? 0)
 	}
 }

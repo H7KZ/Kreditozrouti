@@ -28,3 +28,5 @@ aggregates catch afterwards.
 The rate-limit module takes an injected store port and treats a store error as "allow, and record the error". A
 Redis outage must be visible in logs and metrics, because nothing else will show that quotas were not enforced.
 Do not copy this behaviour to any limiter that guards a system we do not own.
+
+Failing open has to be implemented, not assumed. The API's shared Redis client uses `maxRetriesPerRequest: null` (BullMQ requires it), so during an outage it queues commands and retries forever, and a plain `await` in the quota check hangs the request. A drill against a stopped Redis caught this. Every Redis call on the partner request path therefore goes through `guardedRedis` (`apps/api/src/Services/Partner/redisGuard.ts`): it rejects at once when the connection is not ready and after 300 ms when it is slow, and usage counts are dropped rather than queued during the outage.
