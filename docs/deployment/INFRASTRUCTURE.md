@@ -33,6 +33,7 @@ GitHub Actions reads `production` or `development` environment variables and sec
 | `API_SESSION_SECRET`, `API_COMMAND_TOKEN`, `MCP_JWT_SECRET` | GitHub environment secrets | App authentication |
 | `GOOGLE_USER`, `GOOGLE_APP_PASSWORD` | GitHub environment secrets | Optional Gmail SMTP; [setup](../setup/GMAIL.md) |
 | `UMAMI_SRC`, `UMAMI_WEBSITE_ID` | GitHub variable and secret | Optional web analytics |
+| `PHPMYADMIN_BASIC_AUTH` | GitHub environment secret (development) | htpasswd line gating `/phpmyadmin`; see [phpMyAdmin](#phpmyadmin) |
 
 The [deploy workflow](../../.github/workflows/_deploy-service.yml) rejects credential values containing `$` or backticks because Compose can reinterpret them in `.env`. Generate suitable secrets, for example with `openssl rand -base64 32`. Monitoring has [separate repository secrets](MONITORING.md#deployment-and-secrets) and writes its own webhook files.
 
@@ -40,7 +41,9 @@ Web `VITE_*` settings are compiled as placeholders and replaced when the contain
 
 ## phpMyAdmin
 
-phpMyAdmin is stopped by default under Compose profile `admin`. It binds only to VPS loopback: production `127.0.0.1:48080`, development `127.0.0.1:48081`. It has no Traefik route. Start it from the appropriate version directory, using the same Compose files as the [deploy script](../../deployment/deploy.sh):
+**Development** deploys start phpMyAdmin automatically and serve it at `https://<DOMAIN>/phpmyadmin` behind Traefik basic auth. Set the `PHPMYADMIN_BASIC_AUTH` secret in the development GitHub environment to an htpasswd line, for example the output of `htpasswd -nbB <user> <password>` (comma-separate several users). If the secret is empty, Traefik rejects every request. The container also binds `127.0.0.1:48081` on the VPS as an SSH-tunnel fallback.
+
+**Production** never exposes it: no Traefik route, loopback `127.0.0.1:48080` only, and stopped under Compose profile `admin`. Start it from the version directory, using the same Compose files as the [deploy script](../../deployment/deploy.sh):
 
 ```bash
 cd ~/kreditozrouti/versions/production/current
@@ -49,4 +52,4 @@ docker compose -p kreditozrouti --env-file .env \
   -f production/docker-compose.production.yml --profile admin up -d phpmyadmin
 ```
 
-From your workstation, run `ssh -L 48080:127.0.0.1:48080 <user>@<host>` and open `http://localhost:48080`. For development, use its current directory, Compose files, project `kreditozrouti-dev`, and port `48081`. Stop phpMyAdmin with the same Compose arguments followed by `--profile admin stop phpmyadmin` when finished.
+From your workstation, run `ssh -L 48080:127.0.0.1:48080 <user>@<host>` and open `http://localhost:48080`. Stop production phpMyAdmin with the same Compose arguments followed by `--profile admin stop phpmyadmin` when finished.

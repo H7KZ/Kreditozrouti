@@ -389,31 +389,30 @@ services:
   # ============================================================================
   # Database Interface (phpMyAdmin)
   #
-  # Loopback only. The container publishes on 127.0.0.1:48081, so nothing outside the host can
-  # reach it. Open it from a workstation over an SSH tunnel instead:
+  # DEVELOPMENT ONLY: served at https://${DOMAIN}/phpmyadmin through the shared Traefik, behind
+  # Traefik basic auth. Production never does this: there it stays loopback-only behind the
+  # `admin` profile.
+  #
+  # It has NO profile: every development deploy starts it automatically, alongside mysql.
+  #
+  # The container ships MySQL root credentials (MYSQL_ROOT_PASSWORD) and has no login of its own,
+  # so the basic-auth middleware is the only gate. PHPMYADMIN_BASIC_AUTH is an htpasswd line
+  # (`htpasswd -nbB user pass`, comma-separate several). When it is empty Traefik's basicauth
+  # has no users and rejects every request, so a missing secret fails closed.
+  #
+  # The loopback port stays as an SSH-tunnel fallback that bypasses Traefik:
   #
   #   ssh -L 48081:127.0.0.1:48081 <user>@<host>     then browse http://localhost:48081
   #
   # The port differs from production's 48080 on purpose: both stacks run on the same VPS, and
-  # two services asking for the same host port would refuse to start. No other service in this
-  # repo's deployment stacks publishes a host port, so 48080/48081 are the only two in use.
+  # two services asking for the same host port would refuse to start.
   #
-  # It sits behind the `admin` profile, so a normal `docker compose up -d` (and therefore every
-  # deploy) leaves it stopped. Start it only for the duration of the work:
-  #
-  #   docker compose --profile admin up -d phpmyadmin
-  #   docker compose --profile admin stop phpmyadmin
-  #
-  # It deliberately carries NO Traefik labels and is NOT attached to public-network, so the
-  # shared Infrastructure Traefik has nothing to route here even if the container is left
-  # running. PMA_ARBITRARY is gone for the same reason: it turned this container into an open
-  # MySQL client that would dial any host a visitor typed into the login form. PMA_ABSOLUTE_URI
-  # is gone too - it only existed to make the stripped /phpmyadmin path prefix work.
+  # PMA_ARBITRARY stays off: it would turn this container into an open MySQL client that dials
+  # any host a visitor typed into the login form. PMA_ABSOLUTE_URI is required again because the
+  # /phpmyadmin prefix is stripped by Traefik.
   # ============================================================================
   phpmyadmin:
     image: phpmyadmin:5.2.3
-    # Never started by a plain `up`; see the comment above.
-    profiles: [ 'admin' ]
     restart: unless-stopped
 
     depends_on:
@@ -423,17 +422,34 @@ services:
     environment:
       - PMA_HOST=mysql
       - PMA_PORT=3306
+      - PMA_ABSOLUTE_URI=https://${DOMAIN}/phpmyadmin/
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - UPLOAD_LIMIT=2G
 
     ports:
       # Bound to the loopback interface explicitly - a bare '48081:80' would publish on every
-      # interface and undo the whole point of this change.
+      # interface and bypass the Traefik basic-auth gate.
       - '127.0.0.1:48081:80'
 
     networks:
-      # Only the MySQL network. No public-network membership.
+      - public-network
       - kreditozrouti-mysql-network-dev
+
+    labels:
+      # Traefik Configuration
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=public-network'
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.priority=100'
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)'
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.entrypoints=websecure'
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.tls=true'
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.kreditozrouti-phpmyadmin-${PROJECT}.loadbalancer.server.port=80'
+      # Middlewares: auth first, then strip the prefix
+      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.middlewares=kreditozrouti-phpmyadmin-${PROJECT}-auth,kreditozrouti-phpmyadmin-${PROJECT}-stripprefix'
+      - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-auth.basicauth.users=${PHPMYADMIN_BASIC_AUTH:-}'
+      - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-auth.basicauth.removeheader=true'
+      - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-stripprefix.stripprefix.prefixes=/phpmyadmin'
 
     logging:
       driver: 'json-file'

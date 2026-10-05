@@ -104,12 +104,13 @@ jobs:
                   APP_UMAMI_WEBSITE_ID: ${{ secrets.UMAMI_WEBSITE_ID }}
                   APP_UMAMI_SRC: ${{ vars.UMAMI_SRC }}
                   APP_MCP_JWT_SECRET: ${{ secrets.MCP_JWT_SECRET }}
+                  APP_PHPMYADMIN_BASIC_AUTH: ${{ secrets.PHPMYADMIN_BASIC_AUTH }}
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
-                  envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_ENV,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET
+                  envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_ENV,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET,APP_PHPMYADMIN_BASIC_AUTH
                   script: |
                       set -euo pipefail
 
@@ -163,6 +164,15 @@ jobs:
                       reject_uncarryable GOOGLE_APP_PASSWORD "${APP_GOOGLE_APP_PASSWORD:-}"
                       reject_uncarryable UMAMI_WEBSITE_ID "${APP_UMAMI_WEBSITE_ID:-}"
 
+                      # PHPMYADMIN_BASIC_AUTH is written single-quoted (it legitimately holds '$'),
+                      # so the only thing that breaks it is a quote or a newline.
+                      case "${APP_PHPMYADMIN_BASIC_AUTH:-}" in
+                        *"'"*|*$'\n'*)
+                          echo "ERROR: secret PHPMYADMIN_BASIC_AUTH must be a single line with no single quote."
+                          exit 1
+                          ;;
+                      esac
+
                       echo "Secret shape validation passed."
 
                       # Login to GHCR
@@ -192,6 +202,9 @@ jobs:
                         printf 'VITE_UMAMI_WEBSITE_ID=%s\n' "${APP_UMAMI_WEBSITE_ID:-}"
                         printf 'VITE_UMAMI_SRC=%s\n' "$APP_UMAMI_SRC"
                         printf 'MCP_JWT_SECRET=%s\n' "${APP_MCP_JWT_SECRET:-}"
+                        # htpasswd lines contain '$' (bcrypt/apr1). Single quotes make Compose's
+                        # .env parser take the value literally, so it is not interpolated.
+                        printf "PHPMYADMIN_BASIC_AUTH='%s'\n" "${APP_PHPMYADMIN_BASIC_AUTH:-}"
                       } > "$VERSION_DIR/.env"
                       chmod 600 "$VERSION_DIR/.env"
 

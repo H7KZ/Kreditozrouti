@@ -29,6 +29,6 @@ For a new host: restore Docker access and a self-hosted GitHub runner, deploy sh
 
 - The shared Infrastructure repo owns Traefik certificates, Cloudflare credentials, and edge firewall policy. Check its runbook for TLS failures; do not remove its certificate volume as a routine repair.
 - GitHub environment secrets are the source for app credentials. The deploy workflow writes `.env` with mode `600` inside the version directory. Keep local `.env` files untracked.
-- phpMyAdmin is available only through an SSH tunnel and the `admin` Compose profile. See [access instructions](INFRASTRUCTURE.md#phpmyadmin).
+- Production phpMyAdmin is available only through an SSH tunnel and the `admin` Compose profile. Development serves it at `/phpmyadmin` behind basic auth. See [access instructions](INFRASTRUCTURE.md#phpmyadmin).
 - Check disk and memory use before pruning images or changing replica counts. Never delete named MySQL, Redis, or monitoring volumes during routine cleanup.
 - Deploy monitoring manually with `deploy-monitoring.yml`. Its Discord and healthchecks.io endpoints are held in files written by the monitoring deploy script; see [monitoring](MONITORING.md#deployment-and-secrets).

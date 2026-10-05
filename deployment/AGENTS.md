@@ -92,13 +92,17 @@ reached vite: no placeholder tokens were baked in, Faro and Umami were silently 
 reported `unknown`, and the entrypoint's `sed` had nothing to replace (`VITE_API_URL` hid the breakage by falling back
 to `/api`). Anyone adding a new `VITE_*` var must add it to `turbo.json` too.
 
-**phpMyAdmin is not internet-reachable.** In both production and development it sits behind `profiles: ['admin']` (so a
-plain `up` and every deploy leave it stopped), is published on loopback only (`127.0.0.1:48080` prod,
-`127.0.0.1:48081` dev), is attached to the mysql network only, and carries no Traefik labels. `PMA_ARBITRARY`,
-`MYSQL_USER`, `MYSQL_PASSWORD` and `PMA_ABSOLUTE_URI` were removed; `PMA_HOST`, `PMA_PORT`, `MYSQL_ROOT_PASSWORD` and
-`UPLOAD_LIMIT` remain. Start it with `docker compose --profile admin up -d phpmyadmin` and reach it over
-`ssh -L 48080:127.0.0.1:48080 <user>@<host>`. The exposure being removed was a database admin UI carrying the MySQL
-root credentials on the public internet; `PMA_ARBITRARY` additionally let a visitor point it at any host.
+**phpMyAdmin is public on development only, behind basic auth.** In production it is NOT internet-reachable: it sits
+behind `profiles: ['admin']` (a plain `up` and every deploy leave it stopped; never auto-start it there), publishes on
+loopback only (`127.0.0.1:48080`), joins the mysql network only, and carries no Traefik labels. In development it has no
+profile, starts with every deploy, is routed at `https://${DOMAIN}/phpmyadmin` (Traefik `basicauth` then `stripprefix`,
+`PMA_ABSOLUTE_URI` set) and also publishes `127.0.0.1:48081` as a tunnel fallback. The gate is the
+`PHPMYADMIN_BASIC_AUTH` GitHub secret (htpasswd line, `htpasswd -nbB user pass`); `_deploy-service.yml` writes it
+single-quoted into `.env` because it holds `$`. Empty secret = Traefik rejects every request (fails closed). `PMA_ARBITRARY`,
+`MYSQL_USER` and `MYSQL_PASSWORD` stay removed everywhere (`PMA_ARBITRARY` let a visitor point it at any host);
+`PMA_ABSOLUTE_URI` exists in development only. Production start: `docker compose --profile admin up -d phpmyadmin`, then
+`ssh -L 48080:127.0.0.1:48080 <user>@<host>`. Never add Traefik labels to the production service: it carries MySQL root
+credentials.
 
 **Third-party images must stay pinned** in the Compose files under `production/`, `development/`, `monitoring/`,
 `github-runner/`, and at the root for local development. Check those files for current versions before changing an
