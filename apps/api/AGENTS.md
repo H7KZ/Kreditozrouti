@@ -12,14 +12,15 @@ apps/api/src/
 ├── metrics.ts      # prom-client: request histogram, bullmq_job_count, worker metrics, proxy-guarded /metrics
 ├── clients/        # mysql, redis, i18n, mailer
 ├── Config/         # Config.ts - env vars
-├── Controllers/    # Courses, StudyPlans, Scraper, Commands, Optimize, Share, ICal, Admin
-├── Services/       # Course, study-plan, scraper, optimization, and calendar logic
+├── Controllers/    # Courses, StudyPlans, Scraper, Commands, Optimize, Share, ICal, Admin, V1 (partner API)
+├── Services/       # Course, study-plan, scraper, optimization, and calendar logic; Partner/ (key auth, Redis/MySQL adapters), V1/ (public catalogue)
 ├── Database/       # types.ts + migrations/
 ├── Jobs/           # Scraper response jobs and gap sweep
-├── Handlers/       # ScraperResponseHandler, ErrorHandler
-├── Routes/         # Courses, StudyPlans, Share, Optimize, ICal, Commands, Admin
-├── Middlewares/    # CacheMiddleware, RateLimitMiddleware, CommandMiddleware, LoggerMiddleware
+├── Handlers/       # ScraperResponseHandler, ErrorHandler, ProblemHandler (/v1 problem+json)
+├── Routes/         # Courses, StudyPlans, Share, Optimize, ICal, Commands, Admin, V1
+├── Middlewares/    # CacheMiddleware, RateLimitMiddleware, CommandMiddleware, LoggerMiddleware, PartnerAuthMiddleware
 ├── Errors/         # ApiError + Errors factory
+├── Scripts/        # partnerKeys.ts - operator CLI for partner consumers and API keys
 └── Utils/          # Sse.ts, TimeConflict.ts
 ```
 
@@ -63,9 +64,11 @@ delete+recreate units+slots → link study plans → `redis.publish('course:upda
 **Error handling:** throw `Errors.unauthorized()` / `Errors.validation(issues)` / `Errors.notFound(msg)` /
 `Errors.internal(msg)` anywhere - `ErrorHandler` catches all `ApiError` instances.
 
+**Partner API (`/v1`)** is partner-only and server-to-server (ADR 0003, 0004). Every `/v1` data route is wrapped in `partnerApi(scope)`: key check, scope check, then quota per Consumer, never per key. Quota fails **open** (opposite of the internal per-IP limiters). Everything it serves goes through `VisibilityService` - a faculty is visible only when InSIS publishes it and a scrape confirmed it (`schedule_visibility_checked_at`) - and an empty visible set must return an empty result, because an empty `faculty_ids` filter means "no filter". Lecturer data needs the `lecturers:read` scope. Public shapes live in `packages/types/src/publicApi.ts` and are mapped in `Services/V1/PublicMapper.ts`; never return DB rows. Keys are issued only through `Scripts/partnerKeys.ts`, stored as SHA-256 plus lookup prefix.
+
 **Metrics are a contract with deployment/monitoring.** `http_server_request_duration_seconds`, `bullmq_job_count`,
 `worker_*` and `app_build_info` are queried by promtool-tested rules and dashboards, and the Ohlidame stack uses the same
-names. Everything is in-process (nothing mirrored through Redis); `bullmq_job_count` is reported by the api only, so
+names. Per-consumer partner traffic uses the separate `api_consumer_requests_total` counter, never extra labels on the contract metrics. Everything is in-process (nothing mirrored through Redis); `bullmq_job_count` is reported by the api only, so
 scraper replicas never double it. Labels stay bounded: never a course, plan or share id.
 
 ---
@@ -79,4 +82,5 @@ scraper replicas never double it. Labels stay bounded: never a course, plan or s
 | BullMQ jobs, schedulers, dedup windows                     | [JOBS.md](../../docs/api/JOBS.md)           |
 | DB schema and migration workflow                           | [DATABASE.md](../../docs/api/DATABASE.md)   |
 | Config, cache, rate-limit, SSE, wide-event logging         | [INTERNALS.md](../../docs/api/INTERNALS.md) |
+| Partner API: keys, scopes, quota, usage, operating it      | [PUBLIC_API.md](../../docs/api/PUBLIC_API.md) |
 | Gmail SMTP account and credentials                         | [GMAIL.md](../../docs/setup/GMAIL.md)       |

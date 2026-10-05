@@ -8,10 +8,28 @@ export {
 	StudyPlanCourseTable,
 	StudyPlanCourseIdentTable,
 	AcademicPeriodTable,
-	AcademicScheduleEventTable
+	AcademicScheduleEventTable,
+	LecturerTable,
+	CourseLecturerTable,
+	ApiPlanTable,
+	ApiConsumerTable,
+	ApiKeyTable,
+	ApiUsageHourlyTable
 } from '@kreditozrouti/types'
 
 export type {
+	Lecturer,
+	NewLecturer,
+	CourseLecturer,
+	NewCourseLecturer,
+	ApiPlan,
+	NewApiPlan,
+	ApiConsumer,
+	NewApiConsumer,
+	ApiKey,
+	NewApiKey,
+	ApiUsageHourly,
+	NewApiUsageHourly,
 	Database,
 	ExcludeMethods,
 	Faculty,

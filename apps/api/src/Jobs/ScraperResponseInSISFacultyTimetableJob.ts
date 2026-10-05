@@ -12,7 +12,10 @@ export default async function ScraperResponseInSISFacultyTimetableJob(data: Scra
 
 	await mysql
 		.updateTable(FacultyTable._table)
-		.set({ is_schedule_publicly_visible: timetable.is_schedule_publicly_visible })
+		.set({
+			is_schedule_publicly_visible: timetable.is_schedule_publicly_visible,
+			schedule_visibility_checked_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+		})
 		.where('id', '=', timetable.ident)
 		.execute()
 

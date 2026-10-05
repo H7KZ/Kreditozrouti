@@ -1,5 +1,6 @@
 import type { ScraperRequestJob, ScraperResponseJob } from '@kreditozrouti/types'
 import type { ConnectionOptions } from 'bullmq'
+import { flushCompletedHours } from '@kreditozrouti/core/partner-api'
 import {
 	ScraperInSISAcademicSchedulesRequestScheduler,
 	ScraperInSISCatalogRequestScheduler,
@@ -18,6 +19,8 @@ import ScraperResponseHandler from '@api/Handlers/ScraperResponseHandler'
 import { logger } from '@api/logger'
 import { collectQueueCounts, instrumentWorker } from '@api/metrics'
 import InSISService from '@api/Services/InSISService'
+import { MysqlUsageSink, pruneUsage } from '@api/Services/Partner/MysqlUsageSink'
+import { RedisUsageCounterStore } from '@api/Services/Partner/RedisUsageCounterStore'
 
 // Queue & Worker Setup
 
@@ -49,9 +52,31 @@ const scraperResponseWorker = new Worker<ScraperResponseJob>(ScraperResponseQueu
 	maxStalledCount: 2 // allow 2 stall recoveries before permanent failure
 })
 
+// Partner API usage: counters live in Redis per hour and are moved to MySQL by this hourly job. A queue of
+// its own (not the scraper response queue) so it never competes with scrape results, and a single worker
+// at concurrency 1 so two replicas can never flush the same hour twice.
+const PartnerUsageFlushQueue = 'partner-usage-flush'
+const PartnerUsageFlushScheduler = 'partner-usage-flush-hourly'
+
+const partnerUsageQueue = new Queue(PartnerUsageFlushQueue, {
+	connection: redis.options as ConnectionOptions,
+	telemetry: bullmqTelemetry
+})
+
+const partnerUsageWorker = new Worker(
+	PartnerUsageFlushQueue,
+	async () => {
+		const rows = await flushCompletedHours(RedisUsageCounterStore, MysqlUsageSink)
+		const pruned = await pruneUsage()
+		logger.info({ rows, pruned }, 'partner.usage_flushed')
+	},
+	{ connection: redis.options as ConnectionOptions, telemetry: bullmqTelemetry, concurrency: 1 }
+)
+
 // bullmq_job_count for both queues is reported here only, so the scraper replicas never double it.
-collectQueueCounts([scraperRequestQueue, scraperResponseQueue])
+collectQueueCounts([scraperRequestQueue, scraperResponseQueue, partnerUsageQueue])
 instrumentWorker(scraperResponseWorker)
+instrumentWorker(partnerUsageWorker)
 
 // Scheduler Job Data
 
@@ -177,6 +202,13 @@ const scraper = {
 				data: { type: 'InSIS:GapSweep' as const },
 				opts: { removeOnComplete: true, removeOnFail: { age: 86400 } }
 			}
+		)
+
+		// Partner usage flush: hourly at :05, so the hour that just ended is complete.
+		await partnerUsageQueue.upsertJobScheduler(
+			PartnerUsageFlushScheduler,
+			{ pattern: '5 * * * *' },
+			{ name: 'Partner usage flush (hourly at :05)', data: {}, opts: { removeOnComplete: true, removeOnFail: { age: 86400 } } }
 		)
 
 		logger.info('bullmq.schedulers_configured')

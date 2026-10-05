@@ -17,6 +17,13 @@ export const Errors = {
 
 	validation: (issues: ZodIssue[], msg = 'Validation failed') => new ApiError(403, 'VALIDATION', msg, { issues }),
 
+	forbidden: (msg = 'Forbidden') => new ApiError(403, 'FORBIDDEN', msg),
+
+	/** 422, used by the partner API. Internal routes keep `validation` (403) for compatibility with the web app. */
+	unprocessable: (issues: ZodIssue[], msg = 'Validation failed') => new ApiError(422, 'VALIDATION', msg, { issues }),
+
+	rateLimited: (msg = 'Too many requests', details?: Record<string, unknown>) => new ApiError(429, 'RATE_LIMITED', msg, details),
+
 	notFound: (msg = 'Not found') => new ApiError(404, 'NOT_FOUND', msg),
 
 	internal: (msg = 'Internal server error') => new ApiError(500, 'INTERNAL', msg)

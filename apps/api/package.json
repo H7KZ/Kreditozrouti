@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "dotenv -e ../../.env -- tsx --watch src --exec ts-node -r tsconfig-paths/register src/index.ts",
 		"build": "tsc && tsc-alias",
+		"partner-keys": "dotenv -e ../../.env -- tsx src/Scripts/partnerKeys.ts",
 		"lint": "eslint ./src --ext .ts,.js",
 		"format": "prettier --write .",
 		"preview": "node --require ./dist/apps/api/src/telemetry.js dist/apps/api/src/index.js",

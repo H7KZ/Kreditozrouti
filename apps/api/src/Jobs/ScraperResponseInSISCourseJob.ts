@@ -2,6 +2,7 @@ import type {
 	InSISDay,
 	ScraperInSISCourse,
 	ScraperInSISCourseAssessmentMethod,
+	ScraperInSISCourseLecturer,
 	ScraperInSISCourseResponseJob,
 	ScraperInSISCourseTimetableSlot,
 	ScraperInSISCourseTimetableUnit
@@ -9,15 +10,17 @@ import type {
 import { timeToMinutes } from '@kreditozrouti/core/domain'
 import { extractSemester, extractYear } from '@kreditozrouti/core/utils'
 import { InSISDayValues } from '@kreditozrouti/types'
-import { Transaction } from 'kysely'
+import { sql, Transaction } from 'kysely'
 import { mysql, redis } from '@api/clients'
 import LoggerJobContext from '@api/Context/LoggerJobContext'
 import {
 	CourseAssessmentTable,
+	CourseLecturerTable,
 	CourseTable,
 	CourseUnitSlotTable,
 	CourseUnitTable,
 	Database,
+	LecturerTable,
 	NewCourse,
 	NewCourseUnit,
 	NewCourseUnitSlot,
@@ -181,6 +184,9 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		if (csUnchanged && enUnchanged) {
 			LoggerJobContext.add({ skipped_unchanged: true })
 
+			// Lecturer links are not part of the content hash, so they still need to be backfilled for unchanged courses.
+			await syncLecturers(course.id, course.lecturer_refs)
+
 			await mysql
 				.updateTable(CourseTable._table)
 				.set({ last_scraped_at: new Date().toISOString().slice(0, 19).replace('T', ' ') })
@@ -208,6 +214,8 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		await syncTimetable(trx, course.id, course.timetable ?? [])
 	})
 
+	await syncLecturers(course.id, course.lecturer_refs)
+
 	// Study-plan linking runs outside the transaction to avoid deadlocks: concurrent jobs
 	// holding course-write locks contend on InnoDB range locks when UPDATing study_plan_courses.
 	// The unique index (idx_plan_courses_unique_lookup) reduces this to a single-row lock,
@@ -231,6 +239,35 @@ export default async function ScraperResponseInSISCourseJob(data: ScraperInSISCo
 		timetable_unit_count: course.timetable?.length ?? 0,
 		study_plan_link_count: planEntryCount
 	})
+}
+
+/**
+ * Upserts lecturers by InSIS person id and replaces this course's lecturer links.
+ *
+ * Skipped when the payload carries no refs (older scraper builds, or a course page without lecturer links),
+ * so existing links are never wiped by a payload that simply lacks the field.
+ */
+async function syncLecturers(courseId: number, refs: ScraperInSISCourseLecturer[] | undefined): Promise<void> {
+	if (!refs || refs.length === 0) return
+
+	// Ascending id order keeps lock order consistent between concurrent course jobs that share lecturers.
+	refs = [...refs].sort((a, b) => a.id - b.id)
+
+	await mysql.transaction().execute(async trx => {
+		await trx
+			.insertInto(LecturerTable._table)
+			.values(refs.map(r => ({ id: r.id, name: r.name })))
+			.onDuplicateKeyUpdate({ name: sql`VALUES(name)` })
+			.execute()
+
+		await trx.deleteFrom(CourseLecturerTable._table).where('course_id', '=', courseId).execute()
+		await trx
+			.insertInto(CourseLecturerTable._table)
+			.values(refs.map(r => ({ course_id: courseId, lecturer_id: r.id, role: r.role })))
+			.execute()
+	})
+
+	LoggerJobContext.add({ lecturer_ref_count: refs.length })
 }
 
 /**

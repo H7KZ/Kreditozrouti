@@ -38,6 +38,32 @@ const httpDuration = new Histogram({
 	registers: [register]
 })
 
+/**
+ * Partner API traffic. Separate from the contract histogram above on purpose: consumers are issued by hand
+ * so `consumer` stays a handful of values, and `route` is always a route template, never an id.
+ */
+const partnerRequests = new Counter({
+	name: 'api_consumer_requests_total',
+	help: 'Partner API requests by consumer, route template and status class',
+	labelNames: ['consumer', 'route', 'status_class'] as const,
+	registers: [register]
+})
+
+/** Requests let through unmetered because the quota store failed (fail open, ADR 0003). Alert on a sustained rate. */
+const quotaStoreErrors = new Counter({
+	name: 'api_quota_store_errors_total',
+	help: 'Partner API quota checks skipped because the quota store was unavailable',
+	registers: [register]
+})
+
+export function recordQuotaStoreError(): void {
+	quotaStoreErrors.inc()
+}
+
+export function recordPartnerRequest(consumer: string, route: string, status: number): void {
+	partnerRequests.inc({ consumer, route, status_class: `${Math.floor(status / 100)}xx` })
+}
+
 export function metricsMiddleware(req: Request, res: Response, next: NextFunction): void {
 	if (req.path === '/metrics' || req.path === '/health') {
 		return next()

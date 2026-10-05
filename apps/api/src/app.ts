@@ -20,6 +20,7 @@ import ICalRoutes from '@api/Routes/ICalRoutes'
 import OptimizeRoutes from '@api/Routes/OptimizeRoutes'
 import ShareRoutes from '@api/Routes/ShareRoutes'
 import StudyPlansRoutes from '@api/Routes/StudyPlansRoutes'
+import V1Routes from '@api/Routes/V1Routes'
 
 const app = express()
 
@@ -81,6 +82,7 @@ app.use('/share', ShareRoutes)
 app.use('/ical', ICalRoutes)
 app.use('/commands', CommandsRoutes)
 app.use('/admin', AdminRoutes)
+app.use('/v1', V1Routes)
 
 // Error Handling
 app.use(ErrorHandler)
