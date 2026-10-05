@@ -115,6 +115,7 @@ Package-specific references are linked from each area-specific `AGENTS.md`. Star
 - [Published student guide, English](apps/web/src/pages/docs/en/getting-started.md) and [Czech](apps/web/src/pages/docs/cs/getting-started.md)
 - [Domain glossary](docs/DOMAIN.md) and [architecture](docs/architecture/README.md)
 - [Engineering setup](docs/engineering/SETUP.md) and [contributing](docs/engineering/CONTRIBUTING.md)
+- [Partner API](docs/api/PUBLIC_API.md) and its ADRs: [0003](docs/adr/0003-partner-api-rate-limit-fails-open.md), [0004](docs/adr/0004-public-api-is-partner-only-behind-hard-gates.md)
 - [MCP server](docs/mcp/README.md)
 - [Manual setup guides](docs/setup/README.md)
 

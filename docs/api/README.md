@@ -6,7 +6,7 @@ The Express API serves course and study plan data, creates share and calendar li
 
 `apps/api/src/index.ts` starts the worker process. Startup connects MySQL and Redis, runs migrations and seeds, starts the BullMQ response worker, registers production schedules, then listens on `API_PORT` (default `40080`). See [jobs](JOBS.md) for the queue flow.
 
-`apps/api/src/app.ts` mounts these route groups: `/courses`, `/study_plans`, `/optimize`, `/share`, `/ical`, `/commands`, and `/admin`. It also serves `/health` and `/metrics`. See [endpoints](ENDPOINTS.md).
+`apps/api/src/app.ts` mounts these route groups: `/courses`, `/study_plans`, `/optimize`, `/share`, `/ical`, `/commands`, and `/admin`. It also serves `/health` and `/metrics`. The partner API is mounted at `/v1`; see [partner API](PUBLIC_API.md). See [endpoints](ENDPOINTS.md).
 
 ## Where to work
 
@@ -25,6 +25,7 @@ Shared HTTP, database, and queue types live in `@kreditozrouti/types`. Pure doma
 ## References
 
 - [Endpoints](ENDPOINTS.md) - routes, payloads, and errors
+- [Partner API](PUBLIC_API.md) - `/v1`, API keys, quotas, usage analytics, operating it
 - [Services](SERVICES.md) - queries, facets, scraping, and optimization
 - [Response jobs](JOBS.md) - persistence and schedules
 - [Database](DATABASE.md) - tables, time encoding, and migrations

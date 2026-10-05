@@ -113,6 +113,26 @@ groups:
           summary: Kreditozrouti scheduled job InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00) has not succeeded
           description: InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00) runs every 4 h but has not completed successfully in 8 h.
           dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-api
+      - alert: PartnerQuotaStoreUnavailable
+        expr: sum by (project, env) (increase(api_quota_store_errors_total{project="kreditozrouti", env="production"}[5m])) > 0
+        for: 5m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: Kreditozrouti partner API quota is not being enforced
+          description: Partner API requests were let through unmetered for 5 minutes because the quota store (Redis) failed. The limiter fails open on purpose, see ADR 0003.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-api
+      - alert: ScheduledJobStale
+        expr: (time() - max by (project, env, job_name) (worker_last_success_timestamp_seconds{project="kreditozrouti", env="production", job_name="Partner usage flush (hourly at :05)"}) > 10800) or (absent_over_time(worker_last_success_timestamp_seconds{project="kreditozrouti", env="production", job_name="Partner usage flush (hourly at :05)"}[10800s]))
+        for: 10m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: Kreditozrouti partner usage flush is stale
+          description: The hourly partner usage flush has not succeeded for 3 hours; per-consumer usage is not reaching api_usage_hourly.
+          dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-api
       - alert: WorkerJobsFailing
         expr: project_queue:worker_failures:increase15m{project="kreditozrouti", env="production", queue="ScraperRequestQueue"} > 3
         for: 1m

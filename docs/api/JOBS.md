@@ -6,10 +6,10 @@ The API owns `ScraperRequestQueue` and consumes `ScraperResponseQueue`. Both nam
 
 | Result type | API action |
 | --- | --- |
-| `InSIS:Course` | Upsert faculty and course, reconcile assessments, units, slots, and plan links; delete a known course when InSIS reports it missing |
+| `InSIS:Course` | Upsert faculty and course, reconcile assessments, units, slots, and plan links; replace the course's lecturer links (also for unchanged courses, since links are not in the content hash); delete a known course when InSIS reports it missing |
 | `InSIS:StudyPlan` | Upsert the plan and its course links; preserve course idents until course records exist |
 | `InSIS:AcademicSchedule` | Upsert academic period and reconcile its events |
-| `InSIS:FacultyTimetable` | Update the faculty's public timetable flag |
+| `InSIS:FacultyTimetable` | Update the faculty's public timetable flag and stamp `schedule_visibility_checked_at` |
 | `InSIS:GapSweep` | Find missing course idents and enqueue targeted discovery |
 | Catalog, plan-list, academic-schedule-list | Discovery results; no direct database sync |
 
@@ -28,5 +28,6 @@ The response worker runs with concurrency 2 and permits two stall recoveries. Fa
 | Daily 03:00 in Jan-Feb and Jun-Sep | Catalog for the upcoming period |
 | Sunday 00:00 | Faculty timetable visibility |
 | Every four hours | Missing-course gap sweep |
+| Hourly at :05 | Partner usage flush (own `partner-usage-flush` queue, concurrency 1): moves completed hours of Redis usage counters into `api_usage_hourly` and deletes rows older than 13 months |
 
 Development scrapes use [operator commands](ENDPOINTS.md#operator-routes).

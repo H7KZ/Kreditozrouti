@@ -42,6 +42,10 @@ All `/commands/*` routes and `GET /admin/stats` require `Authorization: Bearer <
 
 `GET /metrics` exposes Prometheus metrics to internal monitoring. Proxy-header requests receive 404.
 
+## Partner routes
+
+`/v1/*` is a separate, versioned contract for approved partners: API-key auth, per-consumer quota, REST `GET`s, and RFC 9457 errors with 422 for validation. It is not the web app's API. See [partner API](PUBLIC_API.md).
+
 ## Errors
 
-The shared `ApiError` shape is `{ type, message, details? }`. Its factories return 401 (unauthorized), 403 (validation), 404 (not found), or 500 (internal). Rate limiters return 429 with `type: "RATE_LIMITED"`.
+The shared `ApiError` shape is `{ type, message, details? }`. Its factories return 401 (unauthorized), 403 (forbidden, and validation on internal routes), 404 (not found), 422 (validation, `/v1` only), 429 (rate limited), or 500 (internal). Internal rate limiters return 429 with `type: "RATE_LIMITED"`. `/v1` renders the same `ApiError` as `application/problem+json` through `ProblemHandler`.
