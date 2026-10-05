@@ -1,8 +1,11 @@
 import type { CourseFilter, Database, Day, InSISSemester, MCPCourse, MCPCourseAssessment, MCPCourseUnit, MCPCourseUnitSlot } from '@kreditozrouti/types'
 import type { Kysely } from 'kysely'
 import { sql } from 'kysely'
+import { INSIS_DAY_NORM as INSIS_DAY_NAMES } from '../domain/constants'
 import { getSlotType } from '../domain/insis'
 
+// InSIS stores full Czech day names ("Středa"), which the shared domain map covers. The short and English
+// aliases are kept for any older rows; the shared map wins on overlap.
 const INSIS_DAY_NORM: Record<string, Day> = {
 	Po: 'monday',
 	Ut: 'tuesday',
@@ -13,7 +16,8 @@ const INSIS_DAY_NORM: Record<string, Day> = {
 	Tuesday: 'tuesday',
 	Wednesday: 'wednesday',
 	Thursday: 'thursday',
-	Friday: 'friday'
+	Friday: 'friday',
+	...INSIS_DAY_NAMES
 }
 
 export default class CourseService {
