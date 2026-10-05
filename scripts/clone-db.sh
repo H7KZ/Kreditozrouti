@@ -16,9 +16,10 @@ set -euo pipefail
 #     to confirm before proceeding
 #
 # Requirements:
-#   - Must be run on the VPS where both `dev` and `prod` Compose stacks run
+#   - Must be run on the VPS where both Compose projects run: `kreditozrouti-dev`
+#     (development) and `kreditozrouti` (production)
 #   - Both stacks' `.env` files must exist at
-#     $HOME/versions/<environment>/current/.env  (same convention as deploy.sh)
+#     $HOME/kreditozrouti/versions/<environment>/current/.env  (same convention as CI deploys)
 #
 # Log File: none (stdout only; redirect to a file yourself if needed)
 # ==============================================================================
@@ -58,7 +59,7 @@ EOF
 
 load_credentials() {
     local env_name="$1"
-    local env_file="$HOME/versions/$env_name/current/.env"
+    local env_file="$HOME/kreditozrouti/versions/$env_name/current/.env"
 
     [[ -f "$env_file" ]] || {
         log_error "Missing .env for '$env_name' at: $env_file"
@@ -199,15 +200,15 @@ verify_clone() {
 resolve_projects() {
     case "$DIRECTION" in
         dev-to-prod)
-            SOURCE_PROJECT="dev"
+            SOURCE_PROJECT="kreditozrouti-dev"
             SOURCE_ENV="development"
-            TARGET_PROJECT="prod"
+            TARGET_PROJECT="kreditozrouti"
             TARGET_ENV="production"
             ;;
         prod-to-dev)
-            SOURCE_PROJECT="prod"
+            SOURCE_PROJECT="kreditozrouti"
             SOURCE_ENV="production"
-            TARGET_PROJECT="dev"
+            TARGET_PROJECT="kreditozrouti-dev"
             TARGET_ENV="development"
             ;;
         *)
@@ -217,6 +218,7 @@ resolve_projects() {
     esac
 
     # Docker Compose auto-names containers as <project>-<service>-<replica>
+    # (project = deploy.sh's Compose project: kreditozrouti / kreditozrouti-dev)
     SOURCE_CONTAINER="${SOURCE_PROJECT}-mysql-1"
     TARGET_CONTAINER="${TARGET_PROJECT}-mysql-1"
 }

@@ -1,6 +1,6 @@
 # Database maintenance
 
-`scripts/clone-db.sh` copies the MySQL database between the `dev` and `prod` stacks on the same VPS. It replaces the target database, so run it interactively only after checking the direction.
+`scripts/clone-db.sh` copies the MySQL database between the `kreditozrouti-dev` (development) and `kreditozrouti` (production) Compose projects on the same VPS. It replaces the target database, so run it interactively only after checking the direction.
 
 ```bash
 sudo ./scripts/clone-db.sh dev-to-prod
