@@ -3,6 +3,9 @@
 # Description: Single source of truth for repository verification. Installs
 #              dependencies, lints, checks em dashes, builds core, runs the test
 #              suite, type-checks and builds every package.
+#              With `affected: true` (pull requests) lint, tests, type-check and build
+#              only run for packages changed against the base branch and their
+#              dependents (turbo --affected). Deploys keep the full run.
 #              Called by verify.yml (pull requests) and by deploy-all.yml, which
 #              gates every build and deploy job on it so nothing unverified
 #              reaches the VPS.
@@ -19,6 +22,11 @@ name: Verify Code (reusable)
 
 on:
     workflow_call:
+        inputs:
+            affected:
+                description: Only verify packages changed against the PR base branch
+                type: boolean
+                default: false
 
 jobs:
     verify:
@@ -32,27 +40,64 @@ jobs:
         steps:
             - name: Checkout Code
               uses: actions/checkout@v7
+              with:
+                  # turbo --affected and the scope check diff against the base branch.
+                  fetch-depth: ${{ inputs.affected && 0 || 1 }}
 
-            # Node first: pnpm/action-setup's self-installer runs the `node` on PATH.
+            # pnpm first: setup-node's `cache: pnpm` needs the pnpm binary.
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v6
+
             - name: Setup Node.js
               uses: actions/setup-node@v6
               with:
                   node-version: '24'
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v6
+                  cache: pnpm
 
             - name: Install Dependencies
               run: make install
+
+            # Root config that every package depends on forces the full run; monitoring
+            # validation pulls four Docker images, so it only runs when its files change.
+            - name: Detect Scope
+              id: scope
+              env:
+                  AFFECTED: ${{ inputs.affected }}
+                  BASE_REF: ${{ github.base_ref }}
+              run: |
+                  full=true
+                  monitoring=true
+                  if [[ "$AFFECTED" == "true" ]]; then
+                    changed="$(git diff --name-only "origin/$BASE_REF"...HEAD)"
+                    full=false
+                    monitoring=false
+                    if grep -qE '^(turbo\.json|package\.json|pnpm-workspace\.yaml|\.dependency-cruiser\.cjs|\.npmrc|\.pnpmfile\.cjs|\.github/workflows/_verify\.yml)$' <<<"$changed"; then
+                      full=true
+                    fi
+                    if grep -q '^deployment/monitoring/' <<<"$changed"; then
+                      monitoring=true
+                    fi
+                  fi
+                  echo "full=$full" >> "$GITHUB_OUTPUT"
+                  echo "monitoring=$monitoring" >> "$GITHUB_OUTPUT"
 
             - name: Check em dashes
               run: bash scripts/check-em-dashes.sh
 
             - name: Validate monitoring config
+              if: steps.scope.outputs.monitoring == 'true' || steps.scope.outputs.full == 'true'
               run: bash deployment/monitoring/validate.sh
 
-            - name: Type Check
+            - name: Verify All Packages
+              if: steps.scope.outputs.full == 'true'
               run: make verify
+
+            - name: Verify Affected Packages
+              if: steps.scope.outputs.full != 'true'
+              env:
+                  TURBO_SCM_BASE: origin/${{ github.base_ref }}
+                  TURBO_SCM_HEAD: HEAD
+              run: pnpm verify:affected
 
             - name: Verification Complete
               run: echo "::notice::All checks passed successfully"

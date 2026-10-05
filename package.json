@@ -14,7 +14,8 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"boundaries": "depcruise packages/core apps/web apps/mcp --config .dependency-cruiser.cjs",
-		"verify": "pnpm lint && pnpm boundaries && pnpm test && pnpm type-check && pnpm build"
+		"verify": "pnpm lint && pnpm boundaries && pnpm test && pnpm type-check && pnpm build",
+		"verify:affected": "turbo run lint --affected && pnpm boundaries && turbo run test --affected --concurrency=1 && turbo run type-check --affected && turbo run build --affected"
 	},
 	"devDependencies": {
 		"@eslint/js": "catalog:",

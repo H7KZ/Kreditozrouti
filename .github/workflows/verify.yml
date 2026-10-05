@@ -30,3 +30,5 @@ jobs:
     verify:
         name: Verify Code
         uses: ./.github/workflows/_verify.yml
+        with:
+            affected: true

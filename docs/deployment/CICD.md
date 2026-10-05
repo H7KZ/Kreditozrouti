@@ -6,7 +6,7 @@ The active workflows live in [`.github/workflows`](../../.github/workflows/). Th
 
 | Workflow | Trigger | Action |
 | --- | --- | --- |
-| [`verify.yml`](../../.github/workflows/verify.yml) | Pull request | Calls `_verify.yml` for lint, type check, build, monitoring validation, and existing project checks |
+| [`verify.yml`](../../.github/workflows/verify.yml) | Pull request | Calls `_verify.yml` with `affected: true`: lint, tests, type check, and build run only for packages changed against the base branch and their dependents (`pnpm verify:affected`, turbo `--affected`). Changes to `turbo.json`, root `package.json`, `pnpm-workspace.yaml`, `.dependency-cruiser.cjs`, `.npmrc`, `.pnpmfile.cjs`, or `_verify.yml` force the full `make verify`. Monitoring validation runs only when `deployment/monitoring/` changes. Runs on `ubuntu-latest` |
 | [`deploy-all.yml`](../../.github/workflows/deploy-all.yml) | Push to `main` affecting `apps/api/`, `apps/web/`, `apps/scraper/`, `apps/mcp/`, or `packages/`; manual dispatch | Builds and deploys only affected or selected services |
 | [`rollback.yml`](../../.github/workflows/rollback.yml) | Manual dispatch | Checks an eight-character SHA version directory exists, then redeploys the selected service or all four |
 | [`deploy-monitoring.yml`](../../.github/workflows/deploy-monitoring.yml) | Manual dispatch | Uploads and deploys the monitoring stack |

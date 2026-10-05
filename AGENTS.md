@@ -62,6 +62,7 @@ load nested `AGENTS.md` files. Each sibling `CLAUDE.md` imports its `AGENTS.md`;
   make dev               # Start MySQL + Redis, then run app and shared-package watchers on the host
   make up                # Start the full local Compose stack behind Traefik
   pnpm verify            # Run lint, boundaries, tests, type-check, and builds
+  pnpm verify:affected   # Same, but only packages changed vs the base branch (PR CI; set TURBO_SCM_BASE)
   pnpm format:check      # Check formatting without writing files
 ```
 
