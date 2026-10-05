@@ -1,6 +1,6 @@
 # Docker images
 
-The [API](../../apps/api/Dockerfile), [web](../../apps/web/Dockerfile), [scraper](../../apps/scraper/Dockerfile), and [MCP](../../apps/mcp/Dockerfile) use multi-stage builds. Each prunes its Turbo workspace, installs with the frozen pnpm lockfile, builds its package, and copies the production output into a runner image. Node stages use `node:24-alpine`, `pnpm@12.4.1`, and `turbo@2.10.13`; web serves through nginx.
+The [API](../../apps/api/Dockerfile), [web](../../apps/web/Dockerfile), [scraper](../../apps/scraper/Dockerfile), and [MCP](../../apps/mcp/Dockerfile) use multi-stage builds. Each prunes its Turbo workspace, installs with the frozen pnpm lockfile, builds its package, and copies the production output into a runner image. Node stages use `node:24-alpine`, `pnpm@12.6.0`, and `turbo@2.10.13`; web serves through nginx.
 
 | Service | Runtime                   | Internal port | Health                           |
 | ------- | ------------------------- | ------------- | -------------------------------- |

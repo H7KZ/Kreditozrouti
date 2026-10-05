@@ -1,6 +1,6 @@
 FROM node:24-alpine AS base
 RUN apk add --no-cache curl
-RUN npm install -g pnpm@12.4.1 turbo@2.10.13
+RUN npm install -g pnpm@12.6.0 turbo@2.10.13
 
 FROM base AS pruner
 WORKDIR /app
