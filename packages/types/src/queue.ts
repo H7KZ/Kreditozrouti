@@ -39,6 +39,13 @@ export interface ScraperInSISCourseTimetableUnit {
 	slots: ScraperInSISCourseTimetableSlot[] | null
 }
 
+/** A course-level lecturer or guarantor with the InSIS person id from the `/lide/clovek.pl?id=` link. */
+export interface ScraperInSISCourseLecturer {
+	id: number
+	name: string
+	role: 'lecturer' | 'guarantor'
+}
+
 export interface ScraperInSISCourseStudyPlan {
 	ident: string | null
 	facultyIdent: string | null
@@ -65,6 +72,8 @@ export interface ScraperInSISCourse {
 	period: string | null
 	lecturers: string | null
 	guarantors: string | null
+	/** Lecturers and guarantors that carry an InSIS person id. Absent in payloads from older scrapers. */
+	lecturer_refs?: ScraperInSISCourseLecturer[]
 	prerequisites: string | null
 	recommended_programmes: string | null
 	required_work_experience: string | null
