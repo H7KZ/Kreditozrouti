@@ -1,10 +1,9 @@
 # ==============================================================================
 # Workflow: Deploy
 # Description: Unified deploy for all services.
-#              On push to main: auto-deploys only the services whose paths changed.
-#              On manual dispatch: select any combination via checkboxes.
+#              Manual dispatch only: select any combination via checkboxes.
 #
-# Trigger: push to main (path-filtered), or manual dispatch
+# Trigger: manual dispatch only. Production deployment is never push-triggered.
 #
 # Required Secrets: inherited by the reusable workflows this calls -
 #                   see _build-service.yml, _deploy-service.yml
@@ -13,14 +12,6 @@
 name: Deploy
 
 on:
-    push:
-        branches: [main]
-        paths:
-            - 'apps/api/**'
-            - 'apps/web/**'
-            - 'apps/scraper/**'
-            - 'apps/mcp/**'
-            - 'packages/**'
     workflow_dispatch:
         inputs:
             environment:
@@ -61,7 +52,7 @@ permissions:
     packages: write
 
 concurrency:
-    group: deploy-${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+    group: deploy-${{ inputs.environment }}
     cancel-in-progress: false
 
 jobs:
