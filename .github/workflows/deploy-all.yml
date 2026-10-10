@@ -1,9 +1,10 @@
 # ==============================================================================
 # Workflow: Deploy
 # Description: Unified deploy for all services.
-#              Manual dispatch only: select any combination via checkboxes.
+#              Pushes to main deploy changed services to development after full
+#              verification. Manual dispatch selects environment/services.
 #
-# Trigger: manual dispatch only. Production deployment is never push-triggered.
+# Trigger: push to main (development only), or manual dispatch.
 #
 # Required Secrets: inherited by the reusable workflows this calls -
 #                   see _build-service.yml, _deploy-service.yml
@@ -12,6 +13,8 @@
 name: Deploy
 
 on:
+    push:
+        branches: [main]
     workflow_dispatch:
         inputs:
             environment:
@@ -52,16 +55,23 @@ permissions:
     packages: write
 
 concurrency:
-    group: deploy-${{ inputs.environment }}
+    group: deploy-${{ inputs.environment || 'development' }}
     cancel-in-progress: false
 
 jobs:
+    verify:
+        name: Verify Code
+        uses: ./.github/workflows/_verify.yml
+        with:
+            affected: false
+
     # ---------------------------------------------------------------------------
     # Validate dispatch inputs before any work starts.
     # ---------------------------------------------------------------------------
     validate:
         name: Validate Inputs
-        runs-on: self-hosted
+        needs: [verify]
+        runs-on: ubuntu-latest
         timeout-minutes: 5
         steps:
             - name: Reject skip_build without image_tag
@@ -77,7 +87,7 @@ jobs:
     # ---------------------------------------------------------------------------
     detect:
         name: Detect Changed Services
-        runs-on: self-hosted
+        runs-on: ubuntu-latest
         if: github.event_name == 'push'
         timeout-minutes: 5
         outputs:
@@ -86,9 +96,13 @@ jobs:
             scraper: ${{ steps.filter.outputs.scraper }}
             mcp: ${{ steps.filter.outputs.mcp }}
         steps:
+            - uses: actions/checkout@v7
+              with:
+                  fetch-depth: 0
             - uses: dorny/paths-filter@v4
               id: filter
               with:
+                  base: main
                   filters: |
                       api:
                         - 'apps/api/**'
@@ -120,8 +134,8 @@ jobs:
         uses: ./.github/workflows/_build-service.yml
         with:
             service: api
-            float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
-            cache_scope: api-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+            float_tag: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'latest' || 'dev-latest' }}
+            cache_scope: api-${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'prod' || 'dev' }}
         secrets: inherit
 
     build-web:
@@ -138,8 +152,8 @@ jobs:
         uses: ./.github/workflows/_build-service.yml
         with:
             service: web
-            float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
-            cache_scope: web-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+            float_tag: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'latest' || 'dev-latest' }}
+            cache_scope: web-${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'prod' || 'dev' }}
         secrets: inherit
 
     build-scraper:
@@ -156,8 +170,8 @@ jobs:
         uses: ./.github/workflows/_build-service.yml
         with:
             service: scraper
-            float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
-            cache_scope: scraper-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+            float_tag: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'latest' || 'dev-latest' }}
+            cache_scope: scraper-${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'prod' || 'dev' }}
         secrets: inherit
 
     build-mcp:
@@ -174,8 +188,8 @@ jobs:
         uses: ./.github/workflows/_build-service.yml
         with:
             service: mcp
-            float_tag: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'latest' || 'dev-latest' }}
-            cache_scope: mcp-${{ (github.event_name == 'push' || inputs.environment == 'production') && 'prod' || 'dev' }}
+            float_tag: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'latest' || 'dev-latest' }}
+            cache_scope: mcp-${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'prod' || 'dev' }}
         secrets: inherit
 
     # ---------------------------------------------------------------------------
@@ -184,7 +198,7 @@ jobs:
     # ---------------------------------------------------------------------------
     resolve:
         name: Resolve Image Prefix
-        runs-on: self-hosted
+        runs-on: ubuntu-latest
         timeout-minutes: 5
         needs: [validate, detect, build-api, build-web, build-scraper, build-mcp]
         if: always() && needs.validate.result == 'success' && needs.detect.result != 'failure'
@@ -214,8 +228,8 @@ jobs:
         uses: ./.github/workflows/_deploy-service.yml
         with:
             service: api
-            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-            project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
+            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'development' }}
+            project_name: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'kreditozrouti' || 'kreditozrouti-dev' }}
             image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-api.outputs.image_tag }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
         secrets: inherit
@@ -234,8 +248,8 @@ jobs:
         uses: ./.github/workflows/_deploy-service.yml
         with:
             service: web
-            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-            project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
+            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'development' }}
+            project_name: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'kreditozrouti' || 'kreditozrouti-dev' }}
             image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-web.outputs.image_tag }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
         secrets: inherit
@@ -254,8 +268,8 @@ jobs:
         uses: ./.github/workflows/_deploy-service.yml
         with:
             service: scraper
-            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-            project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
+            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'development' }}
+            project_name: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'kreditozrouti' || 'kreditozrouti-dev' }}
             image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-scraper.outputs.image_tag }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
         secrets: inherit
@@ -274,8 +288,8 @@ jobs:
         uses: ./.github/workflows/_deploy-service.yml
         with:
             service: mcp
-            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-            project_name: ${{ (github.event_name == 'push' || inputs.environment == 'production') && 'kreditozrouti' || 'kreditozrouti-dev' }}
+            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'development' }}
+            project_name: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'kreditozrouti' || 'kreditozrouti-dev' }}
             image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-mcp.outputs.image_tag }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
         secrets: inherit

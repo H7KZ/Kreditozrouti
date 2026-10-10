@@ -43,7 +43,7 @@ on:
 jobs:
     deploy:
         name: Deploy ${{ inputs.service }} to ${{ inputs.environment }}
-        runs-on: self-hosted
+        runs-on: ubuntu-latest
         timeout-minutes: 15
 
         environment: ${{ inputs.environment }}

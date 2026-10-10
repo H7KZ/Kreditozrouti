@@ -48,7 +48,7 @@ concurrency:
 jobs:
     validate:
         name: Validate — version ${{ inputs.sha }} exists on server
-        runs-on: self-hosted
+        runs-on: ubuntu-latest
         timeout-minutes: 5
         environment: ${{ inputs.environment }}
         steps:
@@ -80,7 +80,7 @@ jobs:
 
     resolve:
         name: Resolve Deploy Variables
-        runs-on: self-hosted
+        runs-on: ubuntu-latest
         timeout-minutes: 5
         needs: [validate]
         outputs:

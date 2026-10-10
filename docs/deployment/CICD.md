@@ -7,15 +7,15 @@ The active workflows live in [`.github/workflows`](../../.github/workflows/). Th
 | Workflow | Trigger | Action |
 | --- | --- | --- |
 | [`verify.yml`](../../.github/workflows/verify.yml) | Pull request | Calls `_verify.yml` with `affected: true`: lint, tests, type check, and build run only for packages changed against the base branch and their dependents (`pnpm verify:affected`, turbo `--affected`). Changes to `turbo.json`, root `package.json`, `pnpm-workspace.yaml`, `.dependency-cruiser.cjs`, `.npmrc`, `.pnpmfile.cjs`, or `_verify.yml` force the full `make verify`. Monitoring validation runs only when `deployment/monitoring/` changes. Runs on `ubuntu-latest` |
-| [`deploy-all.yml`](../../.github/workflows/deploy-all.yml) | Manual dispatch | Builds and deploys selected services to the chosen environment |
+| [`deploy-all.yml`](../../.github/workflows/deploy-all.yml) | Push to `main`; manual dispatch | Runs full verification, then deploys changed services to development. Manual dispatch builds/deploys selected services to the chosen environment |
 | [`rollback.yml`](../../.github/workflows/rollback.yml) | Manual dispatch | Checks an eight-character SHA version directory exists, then redeploys the selected service or all four |
 | [`deploy-monitoring.yml`](../../.github/workflows/deploy-monitoring.yml) | Manual dispatch | Uploads and deploys the monitoring stack |
 
-`_build-service.yml` and `_deploy-service.yml` are reusable jobs. There are no separate `deploy-api.yml`, `deploy-web.yml`, or `deploy-scraper.yml` workflows. The manual deploy workflow does not call `_verify.yml`; protect `main` with the pull request check if verification must gate production changes.
+`_build-service.yml`, `_deploy-service.yml`, and `_verify.yml` are reusable jobs. There are no separate `deploy-api.yml`, `deploy-web.yml`, or `deploy-scraper.yml` workflows. App deploy and rollback jobs use GitHub-hosted runners and SSH; the separate monitoring workflow is still on the VPS runner pending migration.
 
 ## App deploys
 
-Run **Actions > Deploy > Run workflow**, choose `production` or `development`, and select services. Production deploys are manual-only. Automatic deployment to development after required checks is not implemented yet; the deployment-unification plan tracks it as remaining work.
+Pushes to `main` run full verification, then deploy changed services to the development environment using the commit SHA image tags. Production remains manual-only. For a manual deploy, run **Actions > Deploy > Run workflow**, choose `production` or `development`, and select services. The deployment-unification plan still tracks blue-green releases and promotion of the exact qualified development digests as remaining work.
 
 Builds push `ghcr.io/<owner>/<repo>/<service>:<sha8>` and a floating tag (`latest` or `dev-latest`). Deploys use the short SHA. Set `image_tag` to an existing tag to skip the build; `skip_build` requires `image_tag`.
 
