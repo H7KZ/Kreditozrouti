@@ -17,11 +17,15 @@ For service startup failures, inspect its container logs, then check MySQL/Redis
 
 For dashboards, alerts, and log queries, see [monitoring](MONITORING.md). Validate monitoring configuration with `bash deployment/monitoring/validate.sh` from a repository checkout before manually deploying it.
 
+## Boot recovery
+
+After a reboot Docker restores running containers; `kreditozrouti-reconcile.service` then starts any stopped container in the production, development and monitoring projects that has a restart policy, data services first. It validates each `versions/<target>/current` pointer, runs under the toolkit lock, and never pulls, builds, recreates or removes. Install with `sudo bash deployment/boot-recovery/install.sh --user <deploy-user>`, check with `systemctl status kreditozrouti-reconcile.service` and preview with `sudo -u <deploy-user> bash /usr/local/libexec/kreditozrouti-reconcile/reconcile.sh --dry-run`. A container that was removed needs the Deploy workflow. Services stopped on purpose start again at boot.
+
 ## Recovery and rollback
 
-Use **Actions > Rollback Deployment** with an existing eight-character legacy tag, full 40-character SHA, or `<source-commit>-<development-run-id>-<run-attempt>` release ID, service, and environment. The workflow requires that release directory and, for new release IDs, saved digests and successful-deploy markers. See [rollback details](CICD.md#rollback). Image rollback does not undo schema migrations.
+Use **Actions > Rollback Deployment** with an existing full 40-character SHA or `<source-commit>-<development-run-id>-<run-attempt>` release ID, service, and environment. The workflow requires that release directory and, for new release IDs, saved digests and successful-deploy markers. See [rollback details](CICD.md#rollback). Image rollback does not undo schema migrations.
 
-The production backup scaffold is in [backups](../../deployment/backups/README.md). It captures MySQL, the Umami PostgreSQL database, and only Redis `share:*` / `ical:*` records with original expiry times. It excludes Redis queues, cache, sessions, counters, and full-volume dumps. Deploy and rollback use toolkit locks when installed; `TOOLKIT_LOCKS_REQUIRED=true` makes a missing toolkit fail closed. No timer is enabled. Do not rely on backups until the host toolkit is installed, B2 Object Lock and hosted retention are proven, a full isolated restore is rehearsed, and the application owner approves rollout. Losing the MySQL volume removes the scraped course and study-plan catalog until it is rebuilt from InSIS. Retain all named volumes during Docker cleanup.
+The production backup scaffold is in [backups](../../deployment/backups/README.md). It captures MySQL, the Umami PostgreSQL database, and only Redis `share:*` / `ical:*` records with original expiry times. It excludes Redis queues, cache, sessions, counters, and full-volume dumps. Deploy and rollback always run under toolkit locks and fail without the pinned toolkit. No timer is enabled. Do not rely on backups until the host toolkit is installed, B2 Object Lock and hosted retention are proven, a full isolated restore is rehearsed, and the application owner approves rollout. Losing the MySQL volume removes the scraped course and study-plan catalog until it is rebuilt from InSIS. Retain all named volumes during Docker cleanup.
 
 ## Manual data changes
 

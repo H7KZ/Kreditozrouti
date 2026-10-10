@@ -1,17 +1,23 @@
 # ==============================================================================
-# docker-boot-recovery.service
+# kreditozrouti-reconcile.service
 #
-# Restarts any container left in "exited" state after Docker (re)starts —
-# covers a host reboot, since `restart: unless-stopped` only recovers a
-# container that was RUNNING when Docker stopped, not one that had already
-# exited (crashed, OOM-killed, etc.) before the reboot.
+# Boot recovery for the immutable-release deploy. After Docker is up on every
+# boot it starts this repository's stopped containers that declare a restart
+# policy, data services first (see reconcile.sh), under the shared host and
+# kreditozrouti/production toolkit locks so it cannot overlap a deploy or a
+# backup capture.
 #
-# This file is a TEMPLATE if you need per-host customization; as shipped it
-# needs no rendering — install.sh copies it as-is.
+# It never pulls, builds, recreates, removes or redeploys anything. A container
+# that no longer exists needs the Deploy workflow. Containers stopped on purpose
+# are started again; remove a service from its Compose file and redeploy to keep
+# it down.
+#
+# This file is a TEMPLATE. install.sh renders __USER__ and __HOME__ and installs
+# the result to /etc/systemd/system/kreditozrouti-reconcile.service.
 # ==============================================================================
 
 [Unit]
-Description=Docker boot recovery — start all stopped containers after reboot
+Description=Kreditozrouti release reconcile (start declared containers after boot)
 Requires=docker.service
 After=docker.service network-online.target
 Wants=network-online.target
@@ -19,7 +25,9 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/bin/bash -c 'docker ps -aq --filter status=exited | xargs --no-run-if-empty docker start'
+User=root
+ExecStart=/usr/local/bin/toolkit with-lock --repository kreditozrouti --environment production --action maintenance --timeout 900 -- /usr/sbin/runuser -u __USER__ -- env HOME=__HOME__ bash /usr/local/libexec/kreditozrouti-reconcile/reconcile.sh
+TimeoutStartSec=900
 
 [Install]
 WantedBy=multi-user.target

@@ -23,7 +23,6 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 10
         environment: production
-        if: vars.TOOLKIT_LOCKS_REQUIRED == 'true'
 
         permissions:
             contents: read

@@ -241,7 +241,6 @@ jobs:
                   APP_SERVICE: ${{ inputs.service }}
                   APP_ENV: ${{ inputs.environment }}
                   OPERATION_ACTION: ${{ inputs.operation_action || 'deploy' }}
-                  TOOLKIT_LOCKS_REQUIRED: ${{ vars.TOOLKIT_LOCKS_REQUIRED || 'false' }}
                   # Non-sensitive (GitHub Variables)
                   APP_PROJECT: ${{ vars.PROJECT }}
                   APP_DOMAIN: ${{ vars.DOMAIN }}
@@ -267,7 +266,7 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,IMG_DIGEST,SOURCE_RELEASE_MANIFEST_SHA256,APP_SERVICE,APP_ENV,OPERATION_ACTION,TOOLKIT_LOCKS_REQUIRED,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET,APP_PHPMYADMIN_BASIC_AUTH
+                  envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,IMG_DIGEST,SOURCE_RELEASE_MANIFEST_SHA256,APP_SERVICE,APP_ENV,OPERATION_ACTION,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET,APP_PHPMYADMIN_BASIC_AUTH
                   script: |
                       set -euo pipefail
                       umask 077
@@ -433,10 +432,6 @@ jobs:
                       chmod 600 "$ENV_FILE_TMP"
                       mv -f "$ENV_FILE_TMP" "$VERSION_DIR/.env"
 
-                      [[ "$TOOLKIT_LOCKS_REQUIRED" == true || "$TOOLKIT_LOCKS_REQUIRED" == false ]] || {
-                        echo "ERROR: TOOLKIT_LOCKS_REQUIRED must be true or false."
-                        exit 1
-                      }
                       [[ "$OPERATION_ACTION" == deploy || "$OPERATION_ACTION" == rollback ]] || {
                         echo "ERROR: unsupported operation action: $OPERATION_ACTION"
                         exit 1
@@ -491,43 +486,33 @@ jobs:
                       fi
 
                       TOOLKIT_BIN=/usr/local/bin/toolkit
-                      if [[ "$TOOLKIT_LOCKS_REQUIRED" == true || -x "$TOOLKIT_BIN" ]]; then
-                        [[ -x "$TOOLKIT_BIN" ]] || {
-                          echo "ERROR: host toolkit is required but missing: $TOOLKIT_BIN"
-                          exit 1
-                        }
-                        EXPECTED_TOOLKIT_VERSION="$(awk -F= '$1 == "TOOLKIT_VERSION" { if (seen++) exit 2; print substr($0, index($0, "=") + 1) } END { if (!seen) exit 1 }' "$VERSION_DIR/toolkit.lock")" || {
-                          echo "ERROR: deployment toolkit pin is missing or invalid"
-                          exit 1
-                        }
-                        ACTUAL_TOOLKIT_VERSION="$("$TOOLKIT_BIN" version | sed -n 's/^toolkit_version=\([^ ]*\).*/\1/p')"
-                        [[ "$ACTUAL_TOOLKIT_VERSION" == "$EXPECTED_TOOLKIT_VERSION" ]] || {
-                          echo "ERROR: host toolkit $ACTUAL_TOOLKIT_VERSION does not match pinned version $EXPECTED_TOOLKIT_VERSION"
-                          exit 1
-                        }
-                        command -v sudo >/dev/null 2>&1 || { echo "ERROR: sudo is required for toolkit locks."; exit 1; }
-                        command -v runuser >/dev/null 2>&1 || { echo "ERROR: runuser is required for toolkit locks."; exit 1; }
-                        DEPLOY_USER="$(id -un)"
-                        DEPLOY_HOME="$HOME"
-                        declare -a DEPLOY_ENV=("HOME=$DEPLOY_HOME" 'IMAGE_REGISTRY=ghcr.io' "IMAGE_PREFIX=$IMG_PREFIX" "$SERVICE_TAG_VAR=$IMG_TAG" "$SERVICE_REFERENCE_VAR=$IMAGE_REFERENCE")
-                        sudo -n "$TOOLKIT_BIN" with-lock \
-                          --repository kreditozrouti --environment "$APP_ENV" --action "$OPERATION_ACTION" \
-                          --release-id "$IMG_TAG" --timeout 3600 -- \
-                          runuser -u "$DEPLOY_USER" -- env "${DEPLOY_ENV[@]}" bash -c '
-                            set -euo pipefail
-                            cd "$1"
-                            bash ./deploy.sh "$2" "$3" "$4"
-                            ln -sfn "$1" "$5"
-                          ' _ "$VERSION_DIR" "${{ inputs.project_name }}" "$APP_ENV" "$APP_SERVICE" "$CURRENT_LINK"
-                      else
-                        echo "WARNING: host toolkit is not installed; deployment is unlocked. Keep backup scheduling disabled."
-                        cd "$VERSION_DIR"
-                        export "${SERVICE_TAG_VAR}=${IMG_TAG}" "${SERVICE_REFERENCE_VAR}=${IMAGE_REFERENCE}"
-                        IMAGE_REGISTRY="ghcr.io" \
-                          IMAGE_PREFIX="$IMG_PREFIX" \
-                          bash ./deploy.sh "${{ inputs.project_name }}" "$APP_ENV" "$APP_SERVICE"
-                        ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
-                      fi
+                      [[ -x "$TOOLKIT_BIN" ]] || {
+                        echo "ERROR: host toolkit is required but missing: $TOOLKIT_BIN"
+                        exit 1
+                      }
+                      EXPECTED_TOOLKIT_VERSION="$(awk -F= '$1 == "TOOLKIT_VERSION" { if (seen++) exit 2; print substr($0, index($0, "=") + 1) } END { if (!seen) exit 1 }' "$VERSION_DIR/toolkit.lock")" || {
+                        echo "ERROR: deployment toolkit pin is missing or invalid"
+                        exit 1
+                      }
+                      ACTUAL_TOOLKIT_VERSION="$("$TOOLKIT_BIN" version | sed -n 's/^toolkit_version=\([^ ]*\).*/\1/p')"
+                      [[ "$ACTUAL_TOOLKIT_VERSION" == "$EXPECTED_TOOLKIT_VERSION" ]] || {
+                        echo "ERROR: host toolkit $ACTUAL_TOOLKIT_VERSION does not match pinned version $EXPECTED_TOOLKIT_VERSION"
+                        exit 1
+                      }
+                      command -v sudo >/dev/null 2>&1 || { echo "ERROR: sudo is required for toolkit locks."; exit 1; }
+                      command -v runuser >/dev/null 2>&1 || { echo "ERROR: runuser is required for toolkit locks."; exit 1; }
+                      DEPLOY_USER="$(id -un)"
+                      DEPLOY_HOME="$HOME"
+                      declare -a DEPLOY_ENV=("HOME=$DEPLOY_HOME" 'IMAGE_REGISTRY=ghcr.io' "IMAGE_PREFIX=$IMG_PREFIX" "$SERVICE_TAG_VAR=$IMG_TAG" "$SERVICE_REFERENCE_VAR=$IMAGE_REFERENCE")
+                      sudo -n "$TOOLKIT_BIN" with-lock \
+                        --repository kreditozrouti --environment "$APP_ENV" --action "$OPERATION_ACTION" \
+                        --release-id "$IMG_TAG" --timeout 3600 -- \
+                        runuser -u "$DEPLOY_USER" -- env "${DEPLOY_ENV[@]}" bash -c '
+                          set -euo pipefail
+                          cd "$1"
+                          bash ./deploy.sh "$2" "$3" "$4"
+                          ln -sfn "$1" "$5"
+                        ' _ "$VERSION_DIR" "${{ inputs.project_name }}" "$APP_ENV" "$APP_SERVICE" "$CURRENT_LINK"
 
                       printf 'success\n' > "$VERSION_DIR/.deployment-success-$APP_SERVICE.tmp"
                       mv -f "$VERSION_DIR/.deployment-success-$APP_SERVICE.tmp" "$VERSION_DIR/.deployment-success-$APP_SERVICE"

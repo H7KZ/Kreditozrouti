@@ -29,6 +29,7 @@ deployment/
 │   ├── grafana/                          # provisioning (datasources, dashboards, legacy alert cleanup), dashboards/Kreditozrouti/
 │   └── umami/                            # grafana-role.sql, retention.sql (umami-retention.yml runs it daily)
 ├── backups/                               # production-only capture and isolated restore scaffold
+├── boot-recovery/                         # reconcile.sh + systemd unit: start stopped containers after a reboot (install.sh)
 └── github-runner/
     ├── deploy.sh                         # Manual runner setup (run directly on VPS)
     └── docker-compose.github-runner.yml
@@ -55,7 +56,8 @@ directories under `$HOME/kreditozrouti/versions/<environment>/` older than 14 da
 
 ## Critical Invariants
 
-**Deploy order on a fresh server:** shared Infrastructure Traefik → monitoring stack (optional) → GitHub Runner
+**Deploy order on a fresh server:** pinned toolkit (`sudo bash deployment/install-toolkit.sh`, then activate it) → boot reconcile
+(`sudo bash deployment/boot-recovery/install.sh --user <deploy-user>`) → shared Infrastructure Traefik → monitoring stack (optional) → GitHub Runner
 (optional) → app stack. Every environment's services attach to the external `public-network` that Traefik publishes
 on, and request certs via the `letsencrypt` (DNS-01) resolver - HTTP-01 fails because the domain is
 Cloudflare-proxied. Traefik is not deployed by Kreditožrouti to the shared VPS: Infrastructure's Traefik owns
@@ -114,6 +116,13 @@ single-quoted into `.env` because it holds `$`. Empty secret = Traefik rejects e
 `ssh -L 48080:127.0.0.1:48080 <user>@<host>`. Never add Traefik labels to the production service: it carries MySQL root
 credentials.
 
+**Boot recovery is `boot-recovery/reconcile.sh`, not a redeploy.** After Docker starts, the `kreditozrouti-reconcile` unit runs it
+as the deploy user under `toolkit with-lock`. For each of `versions/{production,development,monitoring}/current` that exists
+it validates the pointer, then starts that Compose project's stopped containers that have a restart policy (mysql, redis,
+umami-db first, waiting on their healthchecks). It never pulls, builds, recreates or removes; a removed container needs the Deploy
+workflow, and `restart: no` one-shots are skipped. The installer validates the deploy user and installs the script root-owned
+under `/usr/local/libexec/kreditozrouti-reconcile/`; re-run it after changing `reconcile.sh`.
+
 **Third-party images must stay pinned** in the Compose files under `production/`, `development/`, `monitoring/`,
 `github-runner/`, and at the root for local development. Check those files for current versions before changing an
 image. Do not use `:latest`: every deploy pulls images, and a silent major upgrade of a stateful service may be
@@ -122,7 +131,6 @@ the digest saved in the target release directory.
 
 Production release directories use `<source-commit>-<development-run-id>-<run-attempt>`. Rollback accepts that release ID, checks
 the saved digest and successful-deploy marker for each selected service, and preserves the original deployment bundle.
-Legacy SHA/tag directories remain available through their historical tag reference.
 
 **`umami-db`'s volume mounts at `/var/lib/postgresql`, not `/var/lib/postgresql/data`.** Postgres 18+ images default
 `PGDATA` to `/var/lib/postgresql/<major>/docker` (docker-library/postgres#1259) and refuse to start if they find a
@@ -146,7 +154,7 @@ policy so sessions and queue jobs are never silently dropped.
 and only Redis `share:*` / `ical:*` keys with their original absolute expiry. Never back up or restore the whole Redis
 volume. Do not enable a backup timer until the host toolkit is installed, deploy/rollback require its locks, manual
 migrations use the same locks, credentials/Object Lock and hosted retention are configured, and isolated restore is
-rehearsed. Set the GitHub Environment variable `TOOLKIT_LOCKS_REQUIRED=true` after installing the toolkit.
+rehearsed. Deploy and rollback always require the pinned toolkit; there is no unlocked path.
 
 **Both MySQL and Redis require named volumes to be created on the host before first `docker compose up`.** Production:
 `docker volume create kreditozrouti-mysql-volume-prod && docker volume create kreditozrouti-redis-volume-prod`.
