@@ -172,7 +172,7 @@ working directory doesn't matter; only the script's own location does.
 | GitHub Actions workflows, secrets, rollback | [CICD.md](../docs/deployment/CICD.md)                         |
 | Traefik, networking, env vars               | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md)     |
 | Monitoring, security, troubleshooting       | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)             |
-| Backup capture and restore                  | [backups/README.md](backups/README.md)                          |
+| Backup capture and restore                  | [backups/README.md](backups/README.md)                        |
 | Observability overview and source links     | [MONITORING.md](../docs/deployment/MONITORING.md)             |
 | Moving monitoring to its own host (draft)   | [MONITORING_SPLIT.md](../docs/deployment/MONITORING_SPLIT.md) |
 | DNS and HTTPS manual setup                  | [DNS.md](../docs/setup/DNS.md)                                |

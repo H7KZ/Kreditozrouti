@@ -2,12 +2,12 @@
 
 GitHub Actions builds four app images (API, web, scraper, MCP), pushes them to GHCR, and deploys them with Docker Compose. A separate Infrastructure repo runs shared Traefik. This repo also deploys an optional monitoring stack.
 
-| Environment | Compose project                                                                                                                     | Trigger                                                      |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| Local       | Root [local Compose](../../docker-compose.local.yml): `make dev` for host app processes or `make up` for a full containerized stack | Developer command                                            |
-| Development | `kreditozrouti-dev`                                                                                                                 | Push to `main` after full verification, or manual dispatch    |
-| Production  | `kreditozrouti`                                                                                                                     | Manual `Deploy` dispatch                                     |
-| Monitoring  | `kreditozrouti-monitoring`                                                                                                          | Manual `Deploy Monitoring` dispatch                          |
+| Environment | Compose project                                                                                                                     | Trigger                                                    |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Local       | Root [local Compose](../../docker-compose.local.yml): `make dev` for host app processes or `make up` for a full containerized stack | Developer command                                          |
+| Development | `kreditozrouti-dev`                                                                                                                 | Push to `main` after full verification, or manual dispatch |
+| Production  | `kreditozrouti`                                                                                                                     | Manual `Deploy` dispatch                                   |
+| Monitoring  | `kreditozrouti-monitoring`                                                                                                          | Manual `Deploy Monitoring` dispatch                        |
 
 The isolated Traefik service in root local Compose is for local development only. On a fresh deployment host, install Docker, deploy shared Traefik from the Infrastructure repository, configure the GitHub environment secrets, optionally deploy monitoring, then run the `Deploy` workflow for the app. App deploy and rollback jobs run on GitHub-hosted runners and connect by SSH. Check `https://kreditozrouti.cz/api/health` after production deployment. [DNS setup](../setup/DNS.md) lists the actual public routes.
 

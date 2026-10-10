@@ -264,7 +264,7 @@ if manifest["files"]["recovery-release-manifest.json"]["sha256"] != release_mani
     raise SystemExit("backup recovery release manifest file record does not match its dependency")
 PY
 	if [[ $# == 3 ]]; then
-		local target_api="$3" target_project target_service recovery_redis recovery_redis_count allowed_ips
+		local target_api="$3" target_project target_service recovery_redis allowed_ips
 		[[ "$target_api" =~ ^[a-f0-9]{12,64}$ ]] || fail 'recovery API target must be a Docker container id'
 		target_project="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project"}}' "$target_api")"
 		target_service="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.service"}}' "$target_api")"

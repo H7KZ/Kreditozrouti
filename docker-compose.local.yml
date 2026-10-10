@@ -105,6 +105,8 @@ services:
             - traefik.http.routers.kreditozrouti-api.rule=Host(`localhost`) && PathPrefix(`/api`)
             - traefik.http.routers.kreditozrouti-api.priority=100
             - traefik.http.routers.kreditozrouti-api.entrypoints=web
+            - traefik.http.routers.kreditozrouti-api.middlewares=kreditozrouti-api-strip
+            - traefik.http.middlewares.kreditozrouti-api-strip.stripprefix.prefixes=/api
             - traefik.http.services.kreditozrouti-api.loadbalancer.server.port=80
         restart: unless-stopped
         networks:

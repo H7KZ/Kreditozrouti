@@ -36,491 +36,491 @@
 # ==============================================================================
 
 services:
-  # ============================================================================
-  # API Service
-  # ============================================================================
-  api:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/api${API_IMAGE_REFERENCE:-:${API_IMAGE_TAG:-dev-latest}}
-    restart: unless-stopped
+    # ============================================================================
+    # API Service
+    # ============================================================================
+    api:
+        image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/api${API_IMAGE_REFERENCE:-:${API_IMAGE_TAG:-dev-latest}}
+        restart: unless-stopped
 
-    depends_on:
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+        depends_on:
+            mysql:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
 
-    environment:
-      - ENV=development
-      - NODE_ENV=development
-      - API_PORT=80
-      - API_URI=https://${DOMAIN}/api
-      - API_DOMAIN=${DOMAIN}
-      - API_ALLOWED_ORIGINS=https://${DOMAIN}
-      - API_SESSION_SECRET=${API_SESSION_SECRET}
-      - API_COMMAND_TOKEN=${API_COMMAND_TOKEN}
-      - GOOGLE_USER=${GOOGLE_USER}
-      - GOOGLE_APP_PASSWORD=${GOOGLE_APP_PASSWORD}
-      - WEB_URI=https://${DOMAIN}
-      - MYSQL_URI=${MYSQL_URI}
-      - REDIS_URI=${REDIS_URI}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-    networks:
-      - public-network
-      - kreditozrouti-mysql-network-dev
-      - kreditozrouti-redis-network-dev
-      - kreditozrouti-monitoring-network
+        environment:
+            - ENV=development
+            - NODE_ENV=development
+            - API_PORT=80
+            - API_URI=https://${DOMAIN}/api
+            - API_DOMAIN=${DOMAIN}
+            - API_ALLOWED_ORIGINS=https://${DOMAIN}
+            - API_SESSION_SECRET=${API_SESSION_SECRET}
+            - API_COMMAND_TOKEN=${API_COMMAND_TOKEN}
+            - GOOGLE_USER=${GOOGLE_USER}
+            - GOOGLE_APP_PASSWORD=${GOOGLE_APP_PASSWORD}
+            - WEB_URI=https://${DOMAIN}
+            - MYSQL_URI=${MYSQL_URI}
+            - REDIS_URI=${REDIS_URI}
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+        networks:
+            - public-network
+            - kreditozrouti-mysql-network-dev
+            - kreditozrouti-redis-network-dev
+            - kreditozrouti-monitoring-network
 
-    labels:
-      # Traefik Configuration
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.priority=100'
-      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)'
-      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.entrypoints=websecure'
-      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.tls=true'
-      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.kreditozrouti-api-${PROJECT}.loadbalancer.server.port=80'
-      # Middlewares
-      - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.middlewares=kreditozrouti-api-${PROJECT}-stripprefix,kreditozrouti-api-${PROJECT}-redirect-www'
-      - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-stripprefix.stripprefix.prefixes=/api'
-      - "traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
-      - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
-      # Scraped by this repo's Alloy over kreditozrouti-monitoring-network. Only scrape + port:
-      # project/env/service/instance labels come from compose metadata.
-      - 'prometheus.io/scrape=true'
-      - 'prometheus.io/port=80'
+        labels:
+            # Traefik Configuration
+            - 'traefik.enable=true'
+            - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.priority=100'
+            - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)'
+            - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.entrypoints=websecure'
+            - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.tls=true'
+            - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.tls.certresolver=letsencrypt'
+            - 'traefik.http.services.kreditozrouti-api-${PROJECT}.loadbalancer.server.port=80'
+            # Middlewares
+            - 'traefik.http.routers.kreditozrouti-api-${PROJECT}.middlewares=kreditozrouti-api-${PROJECT}-stripprefix,kreditozrouti-api-${PROJECT}-redirect-www'
+            - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-stripprefix.stripprefix.prefixes=/api'
+            - "traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+            - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
+            # Scraped by this repo's Alloy over kreditozrouti-monitoring-network. Only scrape + port:
+            # project/env/service/instance labels come from compose metadata.
+            - 'prometheus.io/scrape=true'
+            - 'prometheus.io/port=80'
 
-    healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:80/health' ]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-      start_interval: 3s
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:80/health']
+            interval: 60s
+            timeout: 10s
+            retries: 3
+            start_period: 40s
+            start_interval: 3s
 
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '10m'
+                max-file: '3'
 
-    cpu_shares: 256
-    oom_score_adj: 500
+        cpu_shares: 256
+        oom_score_adj: 500
 
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        limits:
-          cpus: '1'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 128M
-      update_config:
-        parallelism: 1
-        delay: 10s
-        order: start-first
-        failure_action: rollback
+        deploy:
+            mode: replicated
+            replicas: 1
+            resources:
+                limits:
+                    cpus: '1'
+                    memory: 512M
+                reservations:
+                    cpus: '0.25'
+                    memory: 128M
+            update_config:
+                parallelism: 1
+                delay: 10s
+                order: start-first
+                failure_action: rollback
 
-  # ============================================================================
-  # Scraper Service
-  # ============================================================================
-  scraper:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/scraper${SCRAPER_IMAGE_REFERENCE:-:${SCRAPER_IMAGE_TAG:-dev-latest}}
-    restart: unless-stopped
+    # ============================================================================
+    # Scraper Service
+    # ============================================================================
+    scraper:
+        image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/scraper${SCRAPER_IMAGE_REFERENCE:-:${SCRAPER_IMAGE_TAG:-dev-latest}}
+        restart: unless-stopped
 
-    depends_on:
-      redis:
-        condition: service_healthy
+        depends_on:
+            redis:
+                condition: service_healthy
 
-    # Global ceiling on outbound requests to InSIS, enforced in Redis by
-    # InSISRateLimitService so it holds across replicas and across every job's internal
-    # fan-out. Deliberately lower than production: development shares the same InSIS,
-    # and a dev scrape running alongside a production one must not double the load a
-    # single university system sees. See docs/adr/0002-global-insis-rate-limit-not-a-concurrency-knob.md.
-    environment:
-      - ENV=development
-      - REDIS_URI=${REDIS_URI}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - INSIS_RATE_LIMIT_RPS=${INSIS_RATE_LIMIT_RPS:-2}
-      - INSIS_RATE_LIMIT_BURST=${INSIS_RATE_LIMIT_BURST:-4}
-      - INSIS_RATE_LIMIT_MAX_WAIT_MS=${INSIS_RATE_LIMIT_MAX_WAIT_MS:-30000}
-    networks:
-      - kreditozrouti-redis-network-dev
-      - kreditozrouti-monitoring-network
+        # Global ceiling on outbound requests to InSIS, enforced in Redis by
+        # InSISRateLimitService so it holds across replicas and across every job's internal
+        # fan-out. Deliberately lower than production: development shares the same InSIS,
+        # and a dev scrape running alongside a production one must not double the load a
+        # single university system sees. See docs/adr/0002-global-insis-rate-limit-not-a-concurrency-knob.md.
+        environment:
+            - ENV=development
+            - REDIS_URI=${REDIS_URI}
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+            - INSIS_RATE_LIMIT_RPS=${INSIS_RATE_LIMIT_RPS:-2}
+            - INSIS_RATE_LIMIT_BURST=${INSIS_RATE_LIMIT_BURST:-4}
+            - INSIS_RATE_LIMIT_MAX_WAIT_MS=${INSIS_RATE_LIMIT_MAX_WAIT_MS:-30000}
+        networks:
+            - kreditozrouti-redis-network-dev
+            - kreditozrouti-monitoring-network
 
-    # Each replica serves its own /metrics (apps/scraper/src/metrics.ts) and is scraped per container.
-    labels:
-      - 'prometheus.io/scrape=true'
-      - 'prometheus.io/port=9101'
+        # Each replica serves its own /metrics (apps/scraper/src/metrics.ts) and is scraped per container.
+        labels:
+            - 'prometheus.io/scrape=true'
+            - 'prometheus.io/port=9101'
 
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '10m'
+                max-file: '3'
 
-    cpu_shares: 256
-    oom_score_adj: 500
+        cpu_shares: 256
+        oom_score_adj: 500
 
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 384M
-        reservations:
-          cpus: '0.1'
-          memory: 128M
+        deploy:
+            mode: replicated
+            replicas: 1
+            resources:
+                limits:
+                    cpus: '0.5'
+                    memory: 384M
+                reservations:
+                    cpus: '0.1'
+                    memory: 128M
 
-  # ============================================================================
-  # Web Service
-  # ============================================================================
-  web:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/web${WEB_IMAGE_REFERENCE:-:${WEB_IMAGE_TAG:-dev-latest}}
-    restart: unless-stopped
+    # ============================================================================
+    # Web Service
+    # ============================================================================
+    web:
+        image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/web${WEB_IMAGE_REFERENCE:-:${WEB_IMAGE_TAG:-dev-latest}}
+        restart: unless-stopped
 
-    depends_on:
-      - api
+        depends_on:
+            - api
 
-    environment:
-      - ENV=development
-      - VITE_API_URL=https://${DOMAIN}/api
-      - VITE_FARO_COLLECTOR_URL=https://${DOMAIN}/faro/collect
-      - VITE_APP_VERSION=${WEB_IMAGE_TAG:-dev-latest}
-      - VITE_APP_ENV=development
-      - VITE_UMAMI_WEBSITE_ID=${VITE_UMAMI_WEBSITE_ID}
-      - VITE_UMAMI_SRC=${VITE_UMAMI_SRC}
+        environment:
+            - ENV=development
+            - VITE_API_URL=https://${DOMAIN}/api
+            - VITE_FARO_COLLECTOR_URL=https://${DOMAIN}/faro/collect
+            - VITE_APP_VERSION=${WEB_IMAGE_TAG:-dev-latest}
+            - VITE_APP_ENV=development
+            - VITE_UMAMI_WEBSITE_ID=${VITE_UMAMI_WEBSITE_ID}
+            - VITE_UMAMI_SRC=${VITE_UMAMI_SRC}
 
-    networks:
-      - public-network
+        networks:
+            - public-network
 
-    labels:
-      # Traefik Configuration
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.priority=10'
-      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.rule=Host(`${DOMAIN}`)'
-      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.entrypoints=websecure'
-      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.tls=true'
-      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.kreditozrouti-web-${PROJECT}.loadbalancer.server.port=80'
-      # Middlewares
-      - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.middlewares=kreditozrouti-web-${PROJECT}-redirect-www'
-      - "traefik.http.middlewares.kreditozrouti-web-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
-      - 'traefik.http.middlewares.kreditozrouti-web-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
+        labels:
+            # Traefik Configuration
+            - 'traefik.enable=true'
+            - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.priority=10'
+            - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.rule=Host(`${DOMAIN}`)'
+            - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.entrypoints=websecure'
+            - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.tls=true'
+            - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.tls.certresolver=letsencrypt'
+            - 'traefik.http.services.kreditozrouti-web-${PROJECT}.loadbalancer.server.port=80'
+            # Middlewares
+            - 'traefik.http.routers.kreditozrouti-web-${PROJECT}.middlewares=kreditozrouti-web-${PROJECT}-redirect-www'
+            - "traefik.http.middlewares.kreditozrouti-web-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
+            - 'traefik.http.middlewares.kreditozrouti-web-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
 
-    healthcheck:
-      # busybox wget, not curl. The web image's runner stage is nginx:stable-alpine, which
-      # never installs curl (only apps/api/Dockerfile and apps/mcp/Dockerfile do), so the previous curl
-      # check could not execute at all and the container stayed permanently unhealthy - which
-      # in turn kept the container-health alert firing. busybox wget ships in the nginx alpine
-      # image; `--spider` fetches headers only and exits non-zero on a non-2xx response.
-      #
-      # 127.0.0.1, not localhost: the entrypoint's 10-listen-on-ipv6-by-default.sh patches
-      # default.conf to listen on both stacks, but 20-envsubst-on-templates.sh runs after it and
-      # regenerates default.conf from the template from scratch, silently dropping that IPv6
-      # listen directive - nginx ends up bound to 0.0.0.0:80 only. musl's getaddrinfo (this is
-      # Alpine) resolves "localhost" to ::1 first, so wget tried the IPv6 loopback, got refused,
-      # and never fell back to IPv4 - the container was permanently unhealthy despite serving
-      # requests over IPv4 the whole time. 127.0.0.1 skips resolution entirely.
-      test: [ 'CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:80' ]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-      start_interval: 3s
+        healthcheck:
+            # busybox wget, not curl. The web image's runner stage is nginx:stable-alpine, which
+            # never installs curl (only apps/api/Dockerfile and apps/mcp/Dockerfile do), so the previous curl
+            # check could not execute at all and the container stayed permanently unhealthy - which
+            # in turn kept the container-health alert firing. busybox wget ships in the nginx alpine
+            # image; `--spider` fetches headers only and exits non-zero on a non-2xx response.
+            #
+            # 127.0.0.1, not localhost: the entrypoint's 10-listen-on-ipv6-by-default.sh patches
+            # default.conf to listen on both stacks, but 20-envsubst-on-templates.sh runs after it and
+            # regenerates default.conf from the template from scratch, silently dropping that IPv6
+            # listen directive - nginx ends up bound to 0.0.0.0:80 only. musl's getaddrinfo (this is
+            # Alpine) resolves "localhost" to ::1 first, so wget tried the IPv6 loopback, got refused,
+            # and never fell back to IPv4 - the container was permanently unhealthy despite serving
+            # requests over IPv4 the whole time. 127.0.0.1 skips resolution entirely.
+            test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:80']
+            interval: 60s
+            timeout: 10s
+            retries: 3
+            start_period: 20s
+            start_interval: 3s
 
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '10m'
+                max-file: '3'
 
-    cpu_shares: 256
-    oom_score_adj: 500
+        cpu_shares: 256
+        oom_score_adj: 500
 
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-        reservations:
-          cpus: '0.1'
-          memory: 64M
+        deploy:
+            mode: replicated
+            replicas: 1
+            resources:
+                limits:
+                    cpus: '1'
+                    memory: 256M
+                reservations:
+                    cpus: '0.1'
+                    memory: 64M
 
-  # ============================================================================
-  # MCP Service
-  # ============================================================================
-  mcp:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/mcp${MCP_IMAGE_REFERENCE:-:${MCP_IMAGE_TAG:-dev-latest}}
-    restart: unless-stopped
+    # ============================================================================
+    # MCP Service
+    # ============================================================================
+    mcp:
+        image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/mcp${MCP_IMAGE_REFERENCE:-:${MCP_IMAGE_TAG:-dev-latest}}
+        restart: unless-stopped
 
-    depends_on:
-      mysql:
-        condition: service_healthy
+        depends_on:
+            mysql:
+                condition: service_healthy
 
-    environment:
-      - NODE_ENV=development
-      - MYSQL_URI=${MYSQL_URI}
-      - MCP_PORT=3000
-      - LOG_LEVEL=${LOG_LEVEL:-info}
-      - MCP_BASE_URL=https://${DOMAIN}
-      - MCP_JWT_SECRET=${MCP_JWT_SECRET}
+        environment:
+            - NODE_ENV=development
+            - MYSQL_URI=${MYSQL_URI}
+            - MCP_PORT=3000
+            - LOG_LEVEL=${LOG_LEVEL:-info}
+            - MCP_BASE_URL=https://${DOMAIN}
+            - MCP_JWT_SECRET=${MCP_JWT_SECRET}
 
-    networks:
-      - public-network
-      - kreditozrouti-mysql-network-dev
+        networks:
+            - public-network
+            - kreditozrouti-mysql-network-dev
 
-    labels:
-      # Traefik Configuration
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.priority=50'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/mcp`)'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.entrypoints=websecure'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.tls=true'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.kreditozrouti-mcp-${PROJECT}.loadbalancer.server.port=3000'
-      # OAuth well-known discovery endpoints (must be served from root domain)
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.priority=60'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/oauth`)'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.entrypoints=websecure'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.tls=true'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.tls.certresolver=letsencrypt'
-      - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.service=kreditozrouti-mcp-${PROJECT}'
+        labels:
+            # Traefik Configuration
+            - 'traefik.enable=true'
+            - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.priority=50'
+            - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/mcp`)'
+            - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.entrypoints=websecure'
+            - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.tls=true'
+            - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}.tls.certresolver=letsencrypt'
+            - 'traefik.http.services.kreditozrouti-mcp-${PROJECT}.loadbalancer.server.port=3000'
+            # OAuth well-known discovery endpoints (must be served from root domain)
+            - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.priority=60'
+            - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/oauth`)'
+            - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.entrypoints=websecure'
+            - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.tls=true'
+            - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.tls.certresolver=letsencrypt'
+            - 'traefik.http.routers.kreditozrouti-mcp-${PROJECT}-wellknown.service=kreditozrouti-mcp-${PROJECT}'
 
-    healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:3000/health' ]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-      start_interval: 3s
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+            interval: 60s
+            timeout: 10s
+            retries: 3
+            start_period: 20s
+            start_interval: 3s
 
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '10m'
+                max-file: '3'
 
-    cpu_shares: 256
-    oom_score_adj: 500
+        cpu_shares: 256
+        oom_score_adj: 500
 
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 256M
-        reservations:
-          cpus: '0.1'
-          memory: 64M
+        deploy:
+            mode: replicated
+            replicas: 1
+            resources:
+                limits:
+                    cpus: '0.5'
+                    memory: 256M
+                reservations:
+                    cpus: '0.1'
+                    memory: 64M
 
-  # ============================================================================
-  # Database (MySQL)
-  # ============================================================================
-  mysql:
-    image: mysql:26.7.0
-    restart: unless-stopped
+    # ============================================================================
+    # Database (MySQL)
+    # ============================================================================
+    mysql:
+        image: mysql:26.7.0
+        restart: unless-stopped
 
-    volumes:
-      - kreditozrouti-mysql-volume-dev:/var/lib/mysql
+        volumes:
+            - kreditozrouti-mysql-volume-dev:/var/lib/mysql
 
-    environment:
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+        environment:
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
 
-    command:
-      - --sort_buffer_size=32M
-      - --read_buffer_size=16M
-      - --read_rnd_buffer_size=16M
-      - --join_buffer_size=16M
-      - --max_sort_length=8192
-      - --innodb_sort_buffer_size=32M
-      - --tmp_table_size=32M
-      - --max_heap_table_size=32M
-      # 64M is a starting point sized for a small dev dataset, not measured on this
-      # VPS - re-check actual data size (information_schema.tables) after deploy and
-      # raise if the working set doesn't fit.
-      - --innodb_buffer_pool_size=64M
-      - --performance_schema=OFF
-      - --skip-name-resolve
-      - --max_connections=30
-      - --temptable_max_ram=32M
-      # Dev only: no replication, no PITR (backups are mysqldump), so the binlog is
-      # pure overhead here.
-      - --disable-log-bin
+        command:
+            - --sort_buffer_size=32M
+            - --read_buffer_size=16M
+            - --read_rnd_buffer_size=16M
+            - --join_buffer_size=16M
+            - --max_sort_length=8192
+            - --innodb_sort_buffer_size=32M
+            - --tmp_table_size=32M
+            - --max_heap_table_size=32M
+            # 64M is a starting point sized for a small dev dataset, not measured on this
+            # VPS - re-check actual data size (information_schema.tables) after deploy and
+            # raise if the working set doesn't fit.
+            - --innodb_buffer_pool_size=64M
+            - --performance_schema=OFF
+            - --skip-name-resolve
+            - --max_connections=30
+            - --temptable_max_ram=32M
+            # Dev only: no replication, no PITR (backups are mysqldump), so the binlog is
+            # pure overhead here.
+            - --disable-log-bin
 
-    networks:
-      - kreditozrouti-mysql-network-dev
+        networks:
+            - kreditozrouti-mysql-network-dev
 
-    cpu_shares: 256
-    oom_score_adj: 500
+        cpu_shares: 256
+        oom_score_adj: 500
 
-    healthcheck:
-      test: [ 'CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '--silent' ]
-      interval: 60s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
-      start_interval: 3s
+        healthcheck:
+            test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '--silent']
+            interval: 60s
+            timeout: 10s
+            retries: 5
+            start_period: 60s
+            start_interval: 3s
 
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '20m'
-        max-file: '5'
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '20m'
+                max-file: '5'
 
-    deploy:
-      mode: global
-      resources:
-        limits:
-          cpus: '1.5'
-          memory: 512M
-        reservations:
-          cpus: '0.5'
-          memory: 192M
+        deploy:
+            mode: global
+            resources:
+                limits:
+                    cpus: '1.5'
+                    memory: 512M
+                reservations:
+                    cpus: '0.5'
+                    memory: 192M
 
-  # ============================================================================
-  # Database Interface (phpMyAdmin)
-  #
-  # DEVELOPMENT ONLY: served at https://${DOMAIN}/phpmyadmin through the shared Traefik, behind
-  # Traefik basic auth. Production never does this: there it stays loopback-only behind the
-  # `admin` profile.
-  #
-  # It has NO profile: every development deploy starts it automatically, alongside mysql.
-  #
-  # The container ships MySQL root credentials (MYSQL_ROOT_PASSWORD) and has no login of its own,
-  # so the basic-auth middleware is the only gate. PHPMYADMIN_BASIC_AUTH is an htpasswd line
-  # (`htpasswd -nbB user pass`, comma-separate several). When it is empty Traefik's basicauth
-  # has no users and rejects every request, so a missing secret fails closed.
-  #
-  # The loopback port stays as an SSH-tunnel fallback that bypasses Traefik:
-  #
-  #   ssh -L 48081:127.0.0.1:48081 <user>@<host>     then browse http://localhost:48081
-  #
-  # The port differs from production's 48080 on purpose: both stacks run on the same VPS, and
-  # two services asking for the same host port would refuse to start.
-  #
-  # PMA_ARBITRARY stays off: it would turn this container into an open MySQL client that dials
-  # any host a visitor typed into the login form. PMA_ABSOLUTE_URI is required again because the
-  # /phpmyadmin prefix is stripped by Traefik.
-  # ============================================================================
-  phpmyadmin:
-    image: phpmyadmin:5.2.3
-    restart: unless-stopped
+    # ============================================================================
+    # Database Interface (phpMyAdmin)
+    #
+    # DEVELOPMENT ONLY: served at https://${DOMAIN}/phpmyadmin through the shared Traefik, behind
+    # Traefik basic auth. Production never does this: there it stays loopback-only behind the
+    # `admin` profile.
+    #
+    # It has NO profile: every development deploy starts it automatically, alongside mysql.
+    #
+    # The container ships MySQL root credentials (MYSQL_ROOT_PASSWORD) and has no login of its own,
+    # so the basic-auth middleware is the only gate. PHPMYADMIN_BASIC_AUTH is an htpasswd line
+    # (`htpasswd -nbB user pass`, comma-separate several). When it is empty Traefik's basicauth
+    # has no users and rejects every request, so a missing secret fails closed.
+    #
+    # The loopback port stays as an SSH-tunnel fallback that bypasses Traefik:
+    #
+    #   ssh -L 48081:127.0.0.1:48081 <user>@<host>     then browse http://localhost:48081
+    #
+    # The port differs from production's 48080 on purpose: both stacks run on the same VPS, and
+    # two services asking for the same host port would refuse to start.
+    #
+    # PMA_ARBITRARY stays off: it would turn this container into an open MySQL client that dials
+    # any host a visitor typed into the login form. PMA_ABSOLUTE_URI is required again because the
+    # /phpmyadmin prefix is stripped by Traefik.
+    # ============================================================================
+    phpmyadmin:
+        image: phpmyadmin:5.2.3
+        restart: unless-stopped
 
-    depends_on:
-      mysql:
-        condition: service_healthy
+        depends_on:
+            mysql:
+                condition: service_healthy
 
-    environment:
-      - PMA_HOST=mysql
-      - PMA_PORT=3306
-      - PMA_ABSOLUTE_URI=https://${DOMAIN}/phpmyadmin/
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - UPLOAD_LIMIT=2G
+        environment:
+            - PMA_HOST=mysql
+            - PMA_PORT=3306
+            - PMA_ABSOLUTE_URI=https://${DOMAIN}/phpmyadmin/
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - UPLOAD_LIMIT=2G
 
-    ports:
-      # Bound to the loopback interface explicitly - a bare '48081:80' would publish on every
-      # interface and bypass the Traefik basic-auth gate.
-      - '127.0.0.1:48081:80'
+        ports:
+            # Bound to the loopback interface explicitly - a bare '48081:80' would publish on every
+            # interface and bypass the Traefik basic-auth gate.
+            - '127.0.0.1:48081:80'
 
-    networks:
-      - public-network
-      - kreditozrouti-mysql-network-dev
+        networks:
+            - public-network
+            - kreditozrouti-mysql-network-dev
 
-    labels:
-      # Traefik Configuration
-      - 'traefik.enable=true'
-      - 'traefik.docker.network=public-network'
-      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.priority=100'
-      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)'
-      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.entrypoints=websecure'
-      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.tls=true'
-      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.kreditozrouti-phpmyadmin-${PROJECT}.loadbalancer.server.port=80'
-      # Middlewares: auth first, then strip the prefix
-      - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.middlewares=kreditozrouti-phpmyadmin-${PROJECT}-auth,kreditozrouti-phpmyadmin-${PROJECT}-stripprefix'
-      - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-auth.basicauth.users=${PHPMYADMIN_BASIC_AUTH:-}'
-      - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-auth.basicauth.removeheader=true'
-      - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-stripprefix.stripprefix.prefixes=/phpmyadmin'
+        labels:
+            # Traefik Configuration
+            - 'traefik.enable=true'
+            - 'traefik.docker.network=public-network'
+            - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.priority=100'
+            - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.rule=Host(`${DOMAIN}`) && PathPrefix(`/phpmyadmin`)'
+            - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.entrypoints=websecure'
+            - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.tls=true'
+            - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.tls.certresolver=letsencrypt'
+            - 'traefik.http.services.kreditozrouti-phpmyadmin-${PROJECT}.loadbalancer.server.port=80'
+            # Middlewares: auth first, then strip the prefix
+            - 'traefik.http.routers.kreditozrouti-phpmyadmin-${PROJECT}.middlewares=kreditozrouti-phpmyadmin-${PROJECT}-auth,kreditozrouti-phpmyadmin-${PROJECT}-stripprefix'
+            - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-auth.basicauth.users=${PHPMYADMIN_BASIC_AUTH:-}'
+            - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-auth.basicauth.removeheader=true'
+            - 'traefik.http.middlewares.kreditozrouti-phpmyadmin-${PROJECT}-stripprefix.stripprefix.prefixes=/phpmyadmin'
 
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '5m'
-        max-file: '2'
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '5m'
+                max-file: '2'
 
-    cpu_shares: 256
-    oom_score_adj: 500
+        cpu_shares: 256
+        oom_score_adj: 500
 
-    deploy:
-      mode: global
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 256M
+        deploy:
+            mode: global
+            resources:
+                limits:
+                    cpus: '0.5'
+                    memory: 256M
 
-  # ============================================================================
-  # Cache (Redis)
-  # ============================================================================
-  redis:
-    # Pinned to major 8. The AOF file in the named volume survives restarts, so an unnoticed
-    # major bump from a floating tag would be a persistence format change nobody reviewed.
-    image: redis:8.10.1-alpine
-    restart: unless-stopped
+    # ============================================================================
+    # Cache (Redis)
+    # ============================================================================
+    redis:
+        # Pinned to major 8. The AOF file in the named volume survives restarts, so an unnoticed
+        # major bump from a floating tag would be a persistence format change nobody reviewed.
+        image: redis:8.10.1-alpine
+        restart: unless-stopped
 
-    command:
-      - redis-server
-      - --save
-      - '20'
-      - '1'
-      - --appendonly
-      - 'yes'
-      - --loglevel
-      - warning
-      - --requirepass
-      - ${REDIS_PASSWORD}
-      - --maxmemory
-      - 256mb
-      - --maxmemory-policy
-      - noeviction
+        command:
+            - redis-server
+            - --save
+            - '20'
+            - '1'
+            - --appendonly
+            - 'yes'
+            - --loglevel
+            - warning
+            - --requirepass
+            - ${REDIS_PASSWORD}
+            - --maxmemory
+            - 256mb
+            - --maxmemory-policy
+            - noeviction
 
-    volumes:
-      - kreditozrouti-redis-volume-dev:/data
+        volumes:
+            - kreditozrouti-redis-volume-dev:/data
 
-    networks:
-      - kreditozrouti-redis-network-dev
+        networks:
+            - kreditozrouti-redis-network-dev
 
-    healthcheck:
-      test: [ 'CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping' ]
-      interval: 60s
-      timeout: 10s
-      retries: 5
-      start_period: 20s
-      start_interval: 3s
+        healthcheck:
+            test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping']
+            interval: 60s
+            timeout: 10s
+            retries: 5
+            start_period: 20s
+            start_interval: 3s
 
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '5m'
-        max-file: '2'
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '5m'
+                max-file: '2'
 
-    cpu_shares: 256
-    oom_score_adj: 500
+        cpu_shares: 256
+        oom_score_adj: 500
 
-    deploy:
-      mode: global
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 384M
-        reservations:
-          cpus: '0.1'
-          memory: 128M
+        deploy:
+            mode: global
+            resources:
+                limits:
+                    cpus: '0.5'
+                    memory: 384M
+                reservations:
+                    cpus: '0.1'
+                    memory: 128M
