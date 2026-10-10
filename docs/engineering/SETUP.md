@@ -25,8 +25,10 @@ For a full containerized stack behind local Traefik, use `make up` instead of `m
 | MCP               | http://localhost:3000/mcp                 | http://localhost/mcp                      |
 | Traefik dashboard | -                                         | http://localhost:8080/dashboard/          |
 | phpMyAdmin        | http://localhost:48080 after `make admin` | http://localhost:48080 after `make admin` |
-| MySQL             | `localhost:43306`                         | `localhost:43306`                         |
-| Redis             | `localhost:46379`                         | `localhost:46379`                         |
+| MySQL             | `localhost:43306` (`MYSQL_HOST_PORT`)     | `localhost:43306` (`MYSQL_HOST_PORT`)     |
+| Redis             | `localhost:46379` (`REDIS_HOST_PORT`)     | `localhost:46379` (`REDIS_HOST_PORT`)     |
+
+If another local project already uses 43306 or 46379, set `MYSQL_HOST_PORT` / `REDIS_HOST_PORT` in `.env` and point `MYSQL_URI` / `REDIS_URI` at the new ports. The URIs take no query parameters; mysql2 warns on unknown ones such as `sslmode` or `schema`.
 
 To run one service, use `pnpm --filter=@kreditozrouti/api run dev`, replacing `api` with `web`, `scraper`, or `mcp` as needed. `make down` stops the local containers.
 

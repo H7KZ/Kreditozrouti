@@ -1,4 +1,4 @@
-.PHONY: install dev up down logs clear migrate test-regen format verify build
+.PHONY: install dev up down logs clear test-regen format verify build
 
 COMPOSE = docker compose -f docker-compose.local.yml
 
@@ -20,9 +20,6 @@ logs:
 
 clear:
 	docker exec kreditozrouti-redis redis-cli FLUSHDB
-
-migrate:
-	pnpm --filter @kreditozrouti/api migrate
 
 test-regen:
 	pnpm turbo run build

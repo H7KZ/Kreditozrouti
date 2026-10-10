@@ -30,7 +30,7 @@ services:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
             MYSQL_DATABASE: ${MYSQL_DATABASE:-kreditozrouti}
         ports:
-            - '43306:3306'
+            - '${MYSQL_HOST_PORT:-43306}:3306'
         volumes:
             - ./data/mysql:/var/lib/mysql
         healthcheck:
@@ -65,7 +65,7 @@ services:
         container_name: kreditozrouti-redis
         command: ['redis-server', '--save', '20', '1', '--appendonly', 'yes', '--loglevel', 'warning']
         ports:
-            - '46379:6379'
+            - '${REDIS_HOST_PORT:-46379}:6379'
         healthcheck:
             test: ['CMD', 'redis-cli', 'ping']
             interval: 5s
@@ -90,7 +90,7 @@ services:
             API_SESSION_SECRET: ${API_SESSION_SECRET:-local}
             API_COMMAND_TOKEN: ${API_COMMAND_TOKEN:-local}
             WEB_URI: http://localhost
-            MYSQL_URI: mysql://root:${MYSQL_ROOT_PASSWORD:-root}@mysql:3306/${MYSQL_DATABASE:-kreditozrouti}?sslmode=disable&schema=${MYSQL_DATABASE:-kreditozrouti}
+            MYSQL_URI: mysql://root:${MYSQL_ROOT_PASSWORD:-root}@mysql:3306/${MYSQL_DATABASE:-kreditozrouti}
             REDIS_URI: redis://redis:6379
             GOOGLE_USER: ${GOOGLE_USER:-}
             GOOGLE_APP_PASSWORD: ${GOOGLE_APP_PASSWORD:-}
@@ -162,7 +162,7 @@ services:
         container_name: kreditozrouti-mcp
         environment:
             NODE_ENV: production
-            MYSQL_URI: mysql://root:${MYSQL_ROOT_PASSWORD:-root}@mysql:3306/${MYSQL_DATABASE:-kreditozrouti}?sslmode=disable&schema=${MYSQL_DATABASE:-kreditozrouti}
+            MYSQL_URI: mysql://root:${MYSQL_ROOT_PASSWORD:-root}@mysql:3306/${MYSQL_DATABASE:-kreditozrouti}
             MCP_PORT: 3000
             MCP_BASE_URL: http://localhost
             MCP_JWT_SECRET: ${MCP_JWT_SECRET:-local}
