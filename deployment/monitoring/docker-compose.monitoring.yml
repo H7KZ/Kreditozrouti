@@ -1,4 +1,4 @@
-# Deploy with deploy.sh (it writes .secrets/ and passes the env vars below).
+# Toolkit prepares runtime secret files and freezes the complete resolved model.
 # Env: GRAFANA_ADMIN_USER GRAFANA_ADMIN_PASSWORD UMAMI_DB_NAME UMAMI_DB_USER UMAMI_DB_PASSWORD UMAMI_APP_SECRET UMAMI_GRAFANA_PASSWORD DOCKER_GID
 name: kreditozrouti-monitoring
 services:

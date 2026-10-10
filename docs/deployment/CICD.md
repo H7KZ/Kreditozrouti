@@ -1,42 +1,20 @@
 # CI/CD
 
-The active workflows live in [`.github/workflows`](../../.github/workflows/). The `Deploy` workflow builds and deploys API, web, scraper, and MCP. The `Rollback Deployment` workflow redeploys a previously deployed image tag.
+Canonical workflow, source/digest qualification, private transport and snapshot operations:
+[snapshot operations](../../deployment/README.md). `deploy-all.yml` verifies/builds complete development releases on `main`;
+production dispatch promotes every digest from a successful qualified development run.
+`_deploy-service.yml` is one reusable full environment job. Rollback uses complete saved snapshots.
 
-## Workflow map
-
-| Workflow                                                                 | Trigger                         | Action                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ------------------------------------------------------------------------ | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`verify.yml`](../../.github/workflows/verify.yml)                       | Pull request                    | Calls `_verify.yml` with `affected: true`: the em-dash and shellcheck scripts run, Prettier `format:check` runs, and lint, tests, type check, and build run only for packages changed against the base branch and their dependents (`pnpm verify:affected`, turbo `--affected`). Changes to `turbo.json`, root `package.json`, `pnpm-workspace.yaml`, `.dependency-cruiser.cjs`, `.npmrc`, `.pnpmfile.cjs`, or `_verify.yml` force the full `make verify`. Monitoring validation runs only when `deployment/monitoring/` changes. Runs on `ubuntu-latest` |
-| [`deploy-all.yml`](../../.github/workflows/deploy-all.yml)               | Push to `main`; manual dispatch | Runs full verification, then builds/deploys every service to development. Manual dispatch builds/deploys selected services to the chosen environment                                                                                                                                                                                                                                                                                                                                                                                                      |
-| [`rollback.yml`](../../.github/workflows/rollback.yml)                   | Manual dispatch                 | Checks a full SHA or `<source-sha>-<development-run-id>-<run-attempt>` version directory, then redeploys the selected service or all four                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| [`deploy-monitoring.yml`](../../.github/workflows/deploy-monitoring.yml) | Manual dispatch                 | Uploads and deploys the monitoring stack                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-
-`_build-service.yml`, `_deploy-service.yml`, and `_verify.yml` are reusable jobs. There are no separate `deploy-api.yml`, `deploy-web.yml`, or `deploy-scraper.yml` workflows. All workflow jobs use GitHub-hosted runners. Remote SSH and SCP actions require the pinned `SSH_HOST_FINGERPRINT` secret.
-
-## App deploys
-
-Pushes to `main` run full verification, then build and deploy all four services to development. Before publishing the promotion manifest, the workflow requires three consecutive public HTTPS observations returning 2xx from `/`, `/api/health`, and `/mcp/health` (up to six rounds, 10 seconds apart). These are read-only reachability checks, not business-smoke or zero-downtime evidence. A partial manual development deployment does not qualify. Production remains manual-only. A production dispatch must run from `main`, set `skip_build=true`, and provide the run ID of a successful development deployment. It downloads that run's `qualified-development-release` artifact, verifies the workflow identity and source commit ancestry, requires every service digest, then promotes selected images without rebuilding. The development artifact is retained for 90 days; run a fresh development qualification after expiry.
-
-Builds push `ghcr.io/<owner>/<repo>/<service>:<sha8>`, the full `github.sha`, and a floating tag (`latest` or `dev-latest`), and expose the immutable OCI digest. Normal development deploys use the digest from that same build. Manual development dispatches may use `image_tag` to skip the build; those runs do not produce a promotion artifact. Production uses the recorded source commit for deployment files and the exact per-service digests from the successful development run. Each production release directory is keyed by `<source-commit>-<development-run-id>-<run-attempt>` and stores digests plus a success marker for rollback.
-
-Builds stamp the full source commit as `org.opencontainers.image.revision`. Every deployment validates the vendored toolkit archive against `deployment/toolkit.lock`; updating the host toolkit remains a separate reviewed operator action.
-
-The reusable deploy job uploads the selected source commit's `deployment/` files to `~/kreditozrouti/versions/<environment>/<release-id>/`, atomically writes `.env` from GitHub environment values with permission `600`, runs `deploy.sh`, and moves `current` to that directory after Compose reports services running/healthy (maximum five minutes). Rollback checks saved digest/success records and does not overwrite the target bundle. The script removes old version directories after 14 days while retaining at least five. A service-only deploy brings up API, scraper, or MCP infrastructure dependencies; web deploys with `--no-deps` so it does not replace the running API image.
-
-Development `image_tag` dispatches check out the selected workflow ref, which may differ from the commit that built the existing image. They remain tag-based and do not qualify images for production promotion.
-
-Production backups are not triggered by app deployment workflows. Deploy and rollback always run under the Infrastructure toolkit host/repository locks and write its status records; they fail if `/usr/local/bin/toolkit` is missing or does not match `deployment/toolkit.lock`. There is no unlocked path and no feature flag. The [backup guide](../../deployment/backups/README.md) covers host setup; `backup-verify.yml` runs the off-VPS freshness check (daily) and restore drill (weekly) with a read-only B2 key.
-
-The cleanup workflow is dry-run only. Backups no longer pin image digests, so GHCR deletion is gated only by deployment rollback references.
-
-## Required configuration
-
-Configure `SSH_HOST`, `SSH_USER`, `SSH_PORT`, `SSH_PRIVATE_KEY`, and the out-of-band trusted `SHA256:` value in `SSH_HOST_FINGERPRINT` as repository secrets; environment secrets may override them for a distinct host. The automatic `GITHUB_TOKEN` authenticates to GHCR. App values such as `PROJECT` and `DOMAIN` are GitHub environment variables; database, Redis, and application credentials are environment secrets. The complete names are in [Infrastructure](INFRASTRUCTURE.md#configuration-and-secrets) and [`_deploy-service.yml`](../../.github/workflows/_deploy-service.yml).
-
-The deploy job rejects credential values containing `$` or backticks before writing `.env`, since Compose interpolation can change them. Keep secrets out of commits and terminal output. The monitoring workflow has a separate secret set; see [monitoring](MONITORING.md#deployment-and-secrets).
+GitHub-hosted build/verify jobs remain. SSH/SCP actions require SHA pins and trusted fingerprint.
+Application configuration is scoped to production/development; monitoring uses its own Environment.
+The exact variable/secret mapping lives in `_deploy-service.yml` and `deployment/render-env.sh`.
+Literal dotenv quoting preserves dollar signs; unsafe quotes/control characters/trailing backslashes fail.
 
 ## Rollback
 
-Run **Actions > Rollback Deployment > Run workflow**. Enter an existing full 40-character SHA or production `<source-commit>-<development-run-id>-<run-attempt>` release ID. Select `api`, `web`, `scraper`, `mcp`, or `all`, and choose the environment. The workflow requires the release directory on the VPS; new release IDs also require saved digests and successful-deploy markers for each selected service. Rollback reuses that bundle and digest. Directories without a digest record (tag-based development deploys) use their tag. If cleanup removed the directory, the workflow refuses the rollback.
+Dispatch `rollback.yml` from `main` with environment and `release_id=previous|<fullSHA-run-attempt>`.
+Toolkit verifies saved model/runtime/inventory and restores all images/config together. Current
+application secrets are not rendered. Database changes are not reversed.
 
-Rolling back an image does not reverse database migrations or data changes. Check those before choosing a tag.
+Registry cleanup is deferred until live, rollback and retained-backup digest references are protected.
+The scheduled Umami workflow is removed; retention uses the disabled host timer and repository lock.

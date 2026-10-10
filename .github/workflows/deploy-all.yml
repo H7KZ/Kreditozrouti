@@ -1,82 +1,40 @@
-# ==============================================================================
-# Workflow: Deploy
-# Description: Unified deploy for all services.
-#              Pushes to main build and deploy every service to development after full
-#              verification. Manual dispatch selects environment/services.
-#
-# Trigger: push to main (development only), or manual dispatch.
-#
-# Required Secrets: inherited by the reusable workflows this calls -
-#                   see _build-service.yml, _deploy-service.yml
-# ==============================================================================
-
 name: Deploy
-
-on:
+'on':
     push:
-        branches: [main]
+        branches:
+            - main
     workflow_dispatch:
         inputs:
             environment:
                 description: Target environment
                 required: true
                 type: choice
-                options: [production, development]
+                options:
+                    - production
+                    - development
                 default: production
-            deploy_api:
-                description: Deploy API
-                type: boolean
-                default: true
-            deploy_web:
-                description: Deploy Web
-                type: boolean
-                default: true
-            deploy_scraper:
-                description: Deploy Scraper
-                type: boolean
-                default: true
-            deploy_mcp:
-                description: Deploy MCP
-                type: boolean
-                default: true
-            image_tag:
-                description: Existing tag for development-only deploys; production derives the commit from a qualified run
-                required: false
-                type: string
-                default: ''
             development_run_id:
                 description: Successful development deploy run to promote (production only)
                 required: false
                 type: string
                 default: ''
-            skip_build:
-                description: Production requires true; promotion uses the selected development run's immutable digests
-                required: false
-                type: boolean
-                default: false
-
 permissions:
     actions: read
     contents: read
     packages: write
-
 concurrency:
     group: deploy-${{ inputs.environment || 'development' }}
     cancel-in-progress: false
-
 jobs:
     verify:
         name: Verify Code
         uses: ./.github/workflows/_verify.yml
         with:
             affected: false
-
-    # ---------------------------------------------------------------------------
-    # Validate dispatch inputs before any work starts.
-    # ---------------------------------------------------------------------------
     validate:
         name: Validate Inputs
-        needs: [verify]
+        needs:
+            - verify
         runs-on: ubuntu-latest
         timeout-minutes: 5
         outputs:
@@ -88,37 +46,26 @@ jobs:
             web_digest: ${{ steps.release.outputs.web_digest }}
             scraper_digest: ${{ steps.release.outputs.scraper_digest }}
             mcp_digest: ${{ steps.release.outputs.mcp_digest }}
+            qualified_release_manifest_b64: ${{ steps.release.outputs.manifest_b64 }}
         steps:
             - name: Validate dispatch requirements
               if: github.event_name == 'workflow_dispatch'
               env:
                   TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  INPUT_IMAGE_TAG: ${{ inputs.image_tag }}
                   DEVELOPMENT_RUN_ID: ${{ inputs.development_run_id }}
-                  INPUT_SKIP_BUILD: ${{ inputs.skip_build }}
               run: |
                   set -euo pipefail
                   if [[ "$TARGET_ENVIRONMENT" == production ]]; then
-                    [[ "$INPUT_SKIP_BUILD" == true ]] || {
-                      echo "ERROR: production promotion cannot build; set skip_build=true"
-                      exit 1
-                    }
-                    [[ "$DEVELOPMENT_RUN_ID" =~ ^[1-9][0-9]*$ ]] || {
-                      echo "ERROR: provide the successful development_run_id to promote"
-                      exit 1
-                    }
-                  elif [[ "$INPUT_SKIP_BUILD" == true && -z "$INPUT_IMAGE_TAG" ]]; then
-                    echo "ERROR: development image_tag must be set when skip_build is true"
-                    exit 1
+                    [[ "$DEVELOPMENT_RUN_ID" =~ ^[1-9][0-9]*$ ]] || { echo 'ERROR: provide a successful development_run_id'; exit 1; }
+                  elif [[ "$TARGET_ENVIRONMENT" != development ]]; then
+                    echo 'ERROR: unsupported environment'; exit 1
                   fi
-
             - name: Checkout main history for production release validation
               if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
-              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
               with:
                   ref: main
                   fetch-depth: 0
-
             - name: Require a successful development workflow run
               id: source_run
               if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
@@ -147,17 +94,15 @@ jobs:
                     exit 1
                   }
                   echo "run_attempt=$source_run_attempt" >> "$GITHUB_OUTPUT"
-
             - name: Download development release manifest
               if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
-              uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+              uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53
               with:
                   name: qualified-development-release-${{ steps.source_run.outputs.run_attempt }}
                   path: ${{ runner.temp }}/qualified-development-release
                   repository: ${{ github.repository }}
                   run-id: ${{ inputs.development_run_id }}
                   github-token: ${{ secrets.GITHUB_TOKEN }}
-
             - name: Validate qualified digests
               id: release
               if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
@@ -167,7 +112,7 @@ jobs:
               run: |
                   set -euo pipefail
                   manifest="$RUNNER_TEMP/qualified-development-release/release-manifest.json"
-                  [[ -f "$manifest" ]] || { echo "ERROR: release manifest is missing"; exit 1; }
+                  [[ -f "$manifest" && ! -L "$manifest" ]] || { echo "ERROR: release manifest is missing"; exit 1; }
                   development_run_commit="$(jq -r '.head_sha' "$RUNNER_TEMP/development-run.json")"
                   jq -e --arg repo "$GITHUB_REPOSITORY" --arg run "$DEVELOPMENT_RUN_ID" \
                     --arg path '.github/workflows/deploy-all.yml' --arg attempt "$DEVELOPMENT_RUN_ATTEMPT" \
@@ -199,251 +144,90 @@ jobs:
                     echo "${service}_digest=$digest" >> "$GITHUB_OUTPUT"
                   done
 
-    # ---------------------------------------------------------------------------
-    # Build the complete application set on main so every successful
-    # development release can be promoted as a complete immutable digest set.
-    # ---------------------------------------------------------------------------
+                  printf 'manifest_b64=%s\n' "$(base64 -w0 "$manifest")" >> "$GITHUB_OUTPUT"
     build-api:
         name: Build API
-        needs: [validate]
-        if: >-
-            needs.validate.result == 'success' &&
-            (
-              github.event_name == 'push' ||
-              (github.event_name == 'workflow_dispatch' && inputs.deploy_api && !inputs.skip_build && inputs.image_tag == '')
-            )
+        needs:
+            - validate
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development')
         uses: ./.github/workflows/_build-service.yml
         with:
             service: api
-            float_tag: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'latest' || 'dev-latest' }}
-            cache_scope: api-${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'prod' || 'dev' }}
+            float_tag: dev-latest
+            cache_scope: api-dev
         secrets: inherit
-
     build-web:
         name: Build Web
-        needs: [validate]
-        if: >-
-            needs.validate.result == 'success' &&
-            (
-              github.event_name == 'push' ||
-              (github.event_name == 'workflow_dispatch' && inputs.deploy_web && !inputs.skip_build && inputs.image_tag == '')
-            )
+        needs:
+            - validate
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development')
         uses: ./.github/workflows/_build-service.yml
         with:
             service: web
-            float_tag: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'latest' || 'dev-latest' }}
-            cache_scope: web-${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'prod' || 'dev' }}
+            float_tag: dev-latest
+            cache_scope: web-dev
         secrets: inherit
-
     build-scraper:
         name: Build Scraper
-        needs: [validate]
-        if: >-
-            needs.validate.result == 'success' &&
-            (
-              github.event_name == 'push' ||
-              (github.event_name == 'workflow_dispatch' && inputs.deploy_scraper && !inputs.skip_build && inputs.image_tag == '')
-            )
+        needs:
+            - validate
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development')
         uses: ./.github/workflows/_build-service.yml
         with:
             service: scraper
-            float_tag: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'latest' || 'dev-latest' }}
-            cache_scope: scraper-${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'prod' || 'dev' }}
+            float_tag: dev-latest
+            cache_scope: scraper-dev
         secrets: inherit
-
     build-mcp:
         name: Build MCP
-        needs: [validate]
-        if: >-
-            needs.validate.result == 'success' &&
-            (
-              github.event_name == 'push' ||
-              (github.event_name == 'workflow_dispatch' && inputs.deploy_mcp && !inputs.skip_build && inputs.image_tag == '')
-            )
+        needs:
+            - validate
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development')
         uses: ./.github/workflows/_build-service.yml
         with:
             service: mcp
-            float_tag: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'latest' || 'dev-latest' }}
-            cache_scope: mcp-${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'prod' || 'dev' }}
+            float_tag: dev-latest
+            cache_scope: mcp-dev
         secrets: inherit
-
-    # ---------------------------------------------------------------------------
-    # Resolve image prefix - always github.repository lowercased; derived from
-    # a build output to stay consistent with _build-service.yml
-    # ---------------------------------------------------------------------------
-    resolve:
-        name: Resolve Image Prefix
-        runs-on: ubuntu-latest
-        timeout-minutes: 5
-        needs: [validate, build-api, build-web, build-scraper, build-mcp]
-        if: always() && needs.validate.result == 'success'
-        outputs:
-            image_prefix: ${{ steps.prefix.outputs.value }}
-        steps:
-            - name: Compute lowercase prefix
-              id: prefix
-              run: |
-                  RAW="${{ needs.build-api.outputs.image_prefix || needs.build-web.outputs.image_prefix || needs.build-scraper.outputs.image_prefix || needs.build-mcp.outputs.image_prefix || github.repository }}"
-                  echo "value=${RAW,,}" >> "$GITHUB_OUTPUT"
-
-    # ---------------------------------------------------------------------------
-    # Deploy (parallel per service, each conditional on service selection)
-    # ---------------------------------------------------------------------------
-    deploy-api:
-        name: Deploy API
-        needs: [validate, build-api, resolve]
-        if: >-
-            always() &&
-            needs.resolve.result == 'success' &&
-            (needs.build-api.result == 'success' || needs.build-api.result == 'skipped') &&
-            (
-              github.event_name == 'push' ||
-              (github.event_name == 'workflow_dispatch' && inputs.deploy_api)
-            )
+    deploy:
+        name: Deploy complete environment snapshot
+        needs:
+            - validate
+            - build-api
+            - build-web
+            - build-scraper
+            - build-mcp
+        if:
+            always() && needs.validate.result == 'success' && ((inputs.environment == 'production') || (needs.build-api.result == 'success' && needs.build-web.result
+            == 'success' && needs.build-scraper.result == 'success' && needs.build-mcp.result == 'success'))
         uses: ./.github/workflows/_deploy-service.yml
         with:
-            service: api
-            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'development' }}
-            project_name: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'kreditozrouti' || 'kreditozrouti-dev' }}
-            image_tag: ${{ (inputs.environment == 'production' && needs.validate.outputs.qualified_release_id) || (inputs.image_tag != '' && inputs.image_tag) || needs.build-api.outputs.image_tag }}
-            image_digest: ${{ (inputs.environment == 'production' && needs.validate.outputs.api_digest) || needs.build-api.outputs.image_digest }}
-            deployment_ref: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_commit || '' }}
-            source_release_run_id: ${{ inputs.environment == 'production' && inputs.development_run_id || '' }}
-            source_release_run_attempt: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_run_attempt || '' }}
-            source_release_manifest_sha256: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_manifest_sha256 || '' }}
-            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+            environment: ${{ github.event_name == 'push' && 'development' || inputs.environment }}
+            source_commit: ${{ needs.validate.outputs.qualified_commit || github.sha }}
+            qualified_release_manifest_b64: ${{ needs.validate.outputs.qualified_release_manifest_b64 || '' }}
+            qualified_manifest_sha256: ${{ needs.validate.outputs.qualified_manifest_sha256 || '' }}
+            api_digest: ${{ needs.validate.outputs.api_digest || needs.build-api.outputs.image_digest }}
+            web_digest: ${{ needs.validate.outputs.web_digest || needs.build-web.outputs.image_digest }}
+            scraper_digest: ${{ needs.validate.outputs.scraper_digest || needs.build-scraper.outputs.image_digest }}
+            mcp_digest: ${{ needs.validate.outputs.mcp_digest || needs.build-mcp.outputs.image_digest }}
         secrets: inherit
-
-    deploy-web:
-        name: Deploy Web
-        needs: [validate, build-web, resolve]
-        if: >-
-            always() &&
-            needs.resolve.result == 'success' &&
-            (needs.build-web.result == 'success' || needs.build-web.result == 'skipped') &&
-            (
-              github.event_name == 'push' ||
-              (github.event_name == 'workflow_dispatch' && inputs.deploy_web)
-            )
-        uses: ./.github/workflows/_deploy-service.yml
-        with:
-            service: web
-            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'development' }}
-            project_name: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'kreditozrouti' || 'kreditozrouti-dev' }}
-            image_tag: ${{ (inputs.environment == 'production' && needs.validate.outputs.qualified_release_id) || (inputs.image_tag != '' && inputs.image_tag) || needs.build-web.outputs.image_tag }}
-            image_digest: ${{ (inputs.environment == 'production' && needs.validate.outputs.web_digest) || needs.build-web.outputs.image_digest }}
-            deployment_ref: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_commit || '' }}
-            source_release_run_id: ${{ inputs.environment == 'production' && inputs.development_run_id || '' }}
-            source_release_run_attempt: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_run_attempt || '' }}
-            source_release_manifest_sha256: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_manifest_sha256 || '' }}
-            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-        secrets: inherit
-
-    deploy-scraper:
-        name: Deploy Scraper
-        needs: [validate, build-scraper, resolve]
-        if: >-
-            always() &&
-            needs.resolve.result == 'success' &&
-            (needs.build-scraper.result == 'success' || needs.build-scraper.result == 'skipped') &&
-            (
-              github.event_name == 'push' ||
-              (github.event_name == 'workflow_dispatch' && inputs.deploy_scraper)
-            )
-        uses: ./.github/workflows/_deploy-service.yml
-        with:
-            service: scraper
-            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'development' }}
-            project_name: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'kreditozrouti' || 'kreditozrouti-dev' }}
-            image_tag: ${{ (inputs.environment == 'production' && needs.validate.outputs.qualified_release_id) || (inputs.image_tag != '' && inputs.image_tag) || needs.build-scraper.outputs.image_tag }}
-            image_digest: ${{ (inputs.environment == 'production' && needs.validate.outputs.scraper_digest) || needs.build-scraper.outputs.image_digest }}
-            deployment_ref: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_commit || '' }}
-            source_release_run_id: ${{ inputs.environment == 'production' && inputs.development_run_id || '' }}
-            source_release_run_attempt: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_run_attempt || '' }}
-            source_release_manifest_sha256: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_manifest_sha256 || '' }}
-            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-        secrets: inherit
-
-    deploy-mcp:
-        name: Deploy MCP
-        needs: [validate, build-mcp, resolve]
-        if: >-
-            always() &&
-            needs.resolve.result == 'success' &&
-            (needs.build-mcp.result == 'success' || needs.build-mcp.result == 'skipped') &&
-            (
-              github.event_name == 'push' ||
-              (github.event_name == 'workflow_dispatch' && inputs.deploy_mcp)
-            )
-        uses: ./.github/workflows/_deploy-service.yml
-        with:
-            service: mcp
-            environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'development' }}
-            project_name: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && 'kreditozrouti' || 'kreditozrouti-dev' }}
-            image_tag: ${{ (inputs.environment == 'production' && needs.validate.outputs.qualified_release_id) || (inputs.image_tag != '' && inputs.image_tag) || needs.build-mcp.outputs.image_tag }}
-            image_digest: ${{ (inputs.environment == 'production' && needs.validate.outputs.mcp_digest) || needs.build-mcp.outputs.image_digest }}
-            deployment_ref: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_commit || '' }}
-            source_release_run_id: ${{ inputs.environment == 'production' && inputs.development_run_id || '' }}
-            source_release_run_attempt: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_run_attempt || '' }}
-            source_release_manifest_sha256: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_manifest_sha256 || '' }}
-            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-        secrets: inherit
-
-    # ---------------------------------------------------------------------------
-    # Cleanup old package versions after successful deploy
-    # ---------------------------------------------------------------------------
-    cleanup-api:
-        name: Cleanup API packages
-        needs: [deploy-api]
-        if: needs.deploy-api.result == 'success'
-        uses: ./.github/workflows/_cleanup-package.yml
-        with:
-            package-name: kreditozrouti/api
-        secrets: inherit
-
-    cleanup-web:
-        name: Cleanup Web packages
-        needs: [deploy-web]
-        if: needs.deploy-web.result == 'success'
-        uses: ./.github/workflows/_cleanup-package.yml
-        with:
-            package-name: kreditozrouti/web
-        secrets: inherit
-
-    cleanup-scraper:
-        name: Cleanup Scraper packages
-        needs: [deploy-scraper]
-        if: needs.deploy-scraper.result == 'success'
-        uses: ./.github/workflows/_cleanup-package.yml
-        with:
-            package-name: kreditozrouti/scraper
-        secrets: inherit
-
-    cleanup-mcp:
-        name: Cleanup MCP packages
-        needs: [deploy-mcp]
-        if: needs.deploy-mcp.result == 'success'
-        uses: ./.github/workflows/_cleanup-package.yml
-        with:
-            package-name: kreditozrouti/mcp
-        secrets: inherit
-
     publish-qualified-development-release:
         name: Publish qualified development release
         runs-on: ubuntu-latest
         timeout-minutes: 10
         environment: development
-        needs: [validate, build-api, build-web, build-scraper, build-mcp, deploy-api, deploy-web, deploy-scraper, deploy-mcp]
-        if: >-
-            always() && needs.validate.result == 'success' &&
-            (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.environment == 'development' && inputs.image_tag == '' && !inputs.skip_build)) &&
-            needs.build-api.result == 'success' && needs.build-web.result == 'success' &&
-            needs.build-scraper.result == 'success' && needs.build-mcp.result == 'success' &&
-            needs.deploy-api.result == 'success' && needs.deploy-web.result == 'success' &&
-            needs.deploy-scraper.result == 'success' && needs.deploy-mcp.result == 'success'
+        needs:
+            - validate
+            - deploy
+            - build-api
+            - build-web
+            - build-scraper
+            - build-mcp
+        if:
+            always() && needs.validate.result == 'success' && needs.deploy.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development')
+            && needs.build-api.result == 'success' && needs.build-web.result == 'success' && needs.build-scraper.result == 'success' && needs.build-mcp.result ==
+            'success'
         steps:
-            # Public read-only observation; does not establish business correctness,
-            # release identity, dependency readiness or uninterrupted deployment.
             - name: Observe development public HTTP endpoints
               env:
                   DEVELOPMENT_DOMAIN: ${{ vars.DOMAIN }}
@@ -482,17 +266,16 @@ jobs:
                   done
                   echo "::error::Development public HTTP observation failed; release manifest will not be published"
                   exit 1
-
             - name: Write development release manifest
               env:
                   API_DIGEST: ${{ needs.build-api.outputs.image_digest }}
-                  API_DEPLOY_RESULT: ${{ needs.deploy-api.result }}
+                  API_DEPLOY_RESULT: ${{ needs.deploy.result }}
                   WEB_DIGEST: ${{ needs.build-web.outputs.image_digest }}
-                  WEB_DEPLOY_RESULT: ${{ needs.deploy-web.result }}
+                  WEB_DEPLOY_RESULT: ${{ needs.deploy.result }}
                   SCRAPER_DIGEST: ${{ needs.build-scraper.outputs.image_digest }}
-                  SCRAPER_DEPLOY_RESULT: ${{ needs.deploy-scraper.result }}
+                  SCRAPER_DEPLOY_RESULT: ${{ needs.deploy.result }}
                   MCP_DIGEST: ${{ needs.build-mcp.outputs.image_digest }}
-                  MCP_DEPLOY_RESULT: ${{ needs.deploy-mcp.result }}
+                  MCP_DEPLOY_RESULT: ${{ needs.deploy.result }}
               run: |
                   set -euo pipefail
                   mkdir -p "$RUNNER_TEMP/qualified-development-release"
@@ -525,9 +308,8 @@ jobs:
                   Path(sys.argv[1]).write_text(json.dumps(document, sort_keys=True, indent=2) + "\n", encoding="utf-8")
                   print(f"qualified development release: {document['source_commit']} attempt={document['workflow_run_id']}.{document['workflow_run_attempt']} services={','.join(services)}")
                   PY
-
             - name: Upload development release manifest
-              uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+              uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
               with:
                   name: qualified-development-release-${{ github.run_attempt }}
                   path: ${{ runner.temp }}/qualified-development-release/release-manifest.json

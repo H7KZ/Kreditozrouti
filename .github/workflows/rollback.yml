@@ -1,223 +1,142 @@
-# ==============================================================================
-# Workflow: Rollback Deployment
-# Description: Redeploys a previously deployed SHA for one or all services.
-#              Guard check ensures the target version directory exists on the
-#              server before any deploy job runs.
-#
-# Trigger: manual (workflow_dispatch) only
-# ==============================================================================
-
 name: Rollback Deployment
-
-on:
+'on':
     workflow_dispatch:
         inputs:
-            sha:
-                description: 'Release ID (full SHA-run ID-attempt) or full 40-character commit SHA'
+            release_id:
+                description: 'Saved complete snapshot: previous or fullSHA-run-attempt'
                 required: true
                 type: string
-            service:
-                description: 'Service to roll back'
-                required: true
-                type: choice
-                options:
-                    - api
-                    - web
-                    - scraper
-                    - mcp
-                    - all
+                default: previous
             environment:
-                description: 'Target environment'
+                description: Target environment
                 required: true
                 type: choice
                 options:
                     - production
                     - development
+                    - monitoring
                 default: production
-
 permissions:
-    actions: read
     contents: read
     packages: read
-
-# Same concurrency group as Deploy so a rollback and a push-triggered deploy
-# cannot run at the same time and stomp on each other.
 concurrency:
-    group: deploy-${{ inputs.environment }}
+    group: ${{ format('deploy-{0}', inputs.environment) }}
     cancel-in-progress: false
-
 jobs:
-    validate:
-        name: Validate — version ${{ inputs.sha }} exists on server
+    rollback:
         runs-on: ubuntu-latest
-        timeout-minutes: 5
+        timeout-minutes: 120
         environment: ${{ inputs.environment }}
         steps:
-            - name: Require main for production
-              if: inputs.environment == 'production'
+            - name: Require main and trusted fingerprint
               env:
                   WORKFLOW_REF: ${{ github.ref }}
-              run: |
-                  [[ "$WORKFLOW_REF" == refs/heads/main ]] || { echo "ERROR: production rollback must be dispatched from main"; exit 1; }
-
-            - name: Require a pinned SSH host fingerprint
-              env:
                   SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
+                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
+                  RELEASE_ID: ${{ inputs.release_id }}
               run: |
                   set -euo pipefail
-                  [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || {
-                    echo "ERROR: SSH_HOST_FINGERPRINT must contain the trusted SHA256 host fingerprint"
-                    exit 1
-                  }
-
-            - name: Check version directory exists
-              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
+                  [[ "$WORKFLOW_REF" == refs/heads/main && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
+                  [[ "$RELEASE_ID" == previous || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || { echo 'ERROR: choose previous or a full snapshot release ID'; exit 1; }
+                  [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || exit 1
+            - name: Checkout control pin
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+            - name: Validate toolkit pin
+              run: bash deployment/verify-toolkit-pin.sh
+            - name: Prepare isolated registry credentials
+              id: auth
               env:
-                  INPUT_SHA: ${{ inputs.sha }}
-                  INPUT_ENV: ${{ inputs.environment }}
-                  INPUT_SERVICE: ${{ inputs.service }}
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GH_ACTOR: ${{ github.actor }}
+              run: |
+                  set -euo pipefail
+                  set +x
+                  umask 077
+                  mkdir -m 700 incoming
+                  mkdir -m 700 incoming/registry
+                  printf '%s' "$GH_TOKEN" | docker --config "$PWD/incoming/registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
+                  expected="$(awk -F= '$1 == "TOOLKIT_VERSION" { if (seen++) exit 2; print $2 } END { if (!seen) exit 1 }' deployment/toolkit.lock)"
+                  [[ "$(printf '%s\n' 0.8.1 "$expected" | sort -V | head -1)" == 0.8.1 ]] || exit 1
+                  echo "toolkit_version=$expected" >> "$GITHUB_OUTPUT"
+            - name: Reserve isolated incoming directory
+              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
+              env:
+                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
+                  INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+                  EXPECTED_TOOLKIT_VERSION: ${{ steps.auth.outputs.toolkit_version }}
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: INPUT_SHA,INPUT_ENV,INPUT_SERVICE
+                  envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION
+                  command_timeout: 5m
                   script: |
                       set -euo pipefail
-                      if [[ ! "$INPUT_SHA" =~ ^([0-9a-f]{40}|[0-9a-f]{40}-[1-9][0-9]*(-[1-9][0-9]*)?)$ ]]; then
-                        echo "ERROR: sha must be a 40-character commit or a full-SHA-run-attempt release ID"
-                        exit 1
-                      fi
-                      VERSION_DIR="$HOME/kreditozrouti/versions/$INPUT_ENV/$INPUT_SHA"
-                      if [[ ! -d "$VERSION_DIR" ]]; then
-                        echo "ERROR: Version $INPUT_SHA not found on server."
-                        echo "Available versions:"
-                        ls "$HOME/kreditozrouti/versions/$INPUT_ENV/" 2>/dev/null | grep -v '^current$' || echo "  (none)"
-                        exit 1
-                      fi
-                      if [[ "$INPUT_SHA" =~ ^[0-9a-f]{40}-[1-9][0-9]*(-[1-9][0-9]*)?$ ]]; then
-                        python3 - "$VERSION_DIR/image-digests.json" "$VERSION_DIR" "$INPUT_SERVICE" <<'PY'
-                      import json
-                      import re
-                      import sys
-                      from pathlib import Path
-
-                      digest_path, version_dir, requested = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
-                      try:
-                          document = json.loads(digest_path.read_text(encoding="utf-8"))
-                      except (OSError, json.JSONDecodeError) as error:
-                          raise SystemExit(f"release digest record is unavailable or malformed: {error}")
-                      if not isinstance(document, dict) or document.get("schema_version") != 1 or not isinstance(document.get("services"), dict):
-                          raise SystemExit("release digest record has an unsupported schema")
-                      services = ["api", "web", "scraper", "mcp"] if requested == "all" else [requested]
-                      for service in services:
-                          digest = document["services"].get(service)
-                          if not isinstance(digest, str) or not re.fullmatch(r"sha256:[a-f0-9]{64}", digest):
-                              raise SystemExit(f"release has no valid saved digest for {service}")
-                          if not (version_dir / f".deployment-success-{service}").is_file():
-                              raise SystemExit(f"release has no successful deployment record for {service}")
-                      PY
-                      fi
-                      echo "OK: $VERSION_DIR exists — proceeding with rollback."
-
-    resolve:
-        name: Resolve Deploy Variables
-        runs-on: ubuntu-latest
-        timeout-minutes: 5
-        needs: [validate]
-        outputs:
-            image_prefix: ${{ steps.vars.outputs.image_prefix }}
-            project_name: ${{ steps.vars.outputs.project_name }}
-            deployment_ref: ${{ steps.vars.outputs.deployment_ref }}
-        steps:
-            - name: Compute variables
-              id: vars
+                      umask 077
+                      [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+                      actual="$(/usr/local/bin/toolkit version | awk -F'[= ]' '/^toolkit_version=/ {print $2}')"
+                      [[ "$actual" == "$EXPECTED_TOOLKIT_VERSION" ]] || { echo 'ERROR: toolkit pin mismatch'; exit 1; }
+                      mkdir -p -m 700 "$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT"
+                      mkdir -m 700 "$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
+              id: reserve
+            - name: Upload isolated registry config
+              uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+                  source: incoming/
+                  target: ~/kreditozrouti/incoming/${{ inputs.environment }}/${{ github.run_id }}-${{ github.run_attempt }}
+                  strip_components: 1
+            - name: Restore complete saved snapshot
+              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
               env:
-                  INPUT_SHA: ${{ inputs.sha }}
-              run: |
-                  REPO="${{ github.repository }}"
-                  echo "image_prefix=${REPO,,}" >> "$GITHUB_OUTPUT"
-                  if [[ "$INPUT_SHA" =~ ^([0-9a-f]{40})-[1-9][0-9]*(-[1-9][0-9]*)?$ ]]; then
-                    echo "deployment_ref=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
-                  elif [[ "$INPUT_SHA" =~ ^[0-9a-f]{40}$ ]]; then
-                    echo "deployment_ref=$INPUT_SHA" >> "$GITHUB_OUTPUT"
-                  fi
-                  if [[ "${{ inputs.environment }}" == "production" ]]; then
-                    echo "project_name=kreditozrouti" >> "$GITHUB_OUTPUT"
-                  else
-                    echo "project_name=kreditozrouti-dev" >> "$GITHUB_OUTPUT"
-                  fi
-
-    # Deploy jobs run in parallel — each only fires for the selected service.
-    deploy-api:
-        name: Rollback API to ${{ inputs.sha }}
-        needs: [resolve]
-        if: >-
-            always() &&
-            needs.resolve.result == 'success' &&
-            (inputs.service == 'api' || inputs.service == 'all')
-        uses: ./.github/workflows/_deploy-service.yml
-        with:
-            service: api
-            environment: ${{ inputs.environment }}
-            project_name: ${{ needs.resolve.outputs.project_name }}
-            image_tag: ${{ inputs.sha }}
-            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-            deployment_ref: ${{ needs.resolve.outputs.deployment_ref }}
-            operation_action: rollback
-        secrets: inherit
-
-    deploy-web:
-        name: Rollback Web to ${{ inputs.sha }}
-        needs: [resolve]
-        if: >-
-            always() &&
-            needs.resolve.result == 'success' &&
-            (inputs.service == 'web' || inputs.service == 'all')
-        uses: ./.github/workflows/_deploy-service.yml
-        with:
-            service: web
-            environment: ${{ inputs.environment }}
-            project_name: ${{ needs.resolve.outputs.project_name }}
-            image_tag: ${{ inputs.sha }}
-            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-            deployment_ref: ${{ needs.resolve.outputs.deployment_ref }}
-            operation_action: rollback
-        secrets: inherit
-
-    deploy-scraper:
-        name: Rollback Scraper to ${{ inputs.sha }}
-        needs: [resolve]
-        if: >-
-            always() &&
-            needs.resolve.result == 'success' &&
-            (inputs.service == 'scraper' || inputs.service == 'all')
-        uses: ./.github/workflows/_deploy-service.yml
-        with:
-            service: scraper
-            environment: ${{ inputs.environment }}
-            project_name: ${{ needs.resolve.outputs.project_name }}
-            image_tag: ${{ inputs.sha }}
-            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-            deployment_ref: ${{ needs.resolve.outputs.deployment_ref }}
-            operation_action: rollback
-        secrets: inherit
-
-    deploy-mcp:
-        name: Rollback MCP to ${{ inputs.sha }}
-        needs: [resolve]
-        if: >-
-            always() &&
-            needs.resolve.result == 'success' &&
-            (inputs.service == 'mcp' || inputs.service == 'all')
-        uses: ./.github/workflows/_deploy-service.yml
-        with:
-            service: mcp
-            environment: ${{ inputs.environment }}
-            project_name: ${{ needs.resolve.outputs.project_name }}
-            image_tag: ${{ inputs.sha }}
-            image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-            deployment_ref: ${{ needs.resolve.outputs.deployment_ref }}
-            operation_action: rollback
-        secrets: inherit
+                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
+                  INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+                  EXPECTED_TOOLKIT_VERSION: ${{ steps.auth.outputs.toolkit_version }}
+                  RELEASE_ID: ${{ inputs.release_id }}
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+                  envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION,RELEASE_ID
+                  command_timeout: 110m
+                  script: |
+                      set -euo pipefail
+                      [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+                      [[ "$RELEASE_ID" == previous || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+                      actual="$(/usr/local/bin/toolkit version | awk -F'[= ]' '/^toolkit_version=/ {print $2}')"
+                      [[ "$actual" == "$EXPECTED_TOOLKIT_VERSION" ]] || exit 1
+                      incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
+                      chmod 600 "$incoming/registry/config.json"
+                      sudo -n /usr/local/bin/toolkit release rollback --repository kreditozrouti --environment "$TARGET_ENVIRONMENT" \
+                        --root "$HOME/kreditozrouti/versions/$TARGET_ENVIRONMENT" --user "$(id -un)" --release-id "$RELEASE_ID" --registry-config "$incoming/registry"
+            - name: Remove own registry credentials
+              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
+              env:
+                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
+                  INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+                  envs: TARGET_ENVIRONMENT,INCOMING_ID
+                  command_timeout: 5m
+                  script: |
+                      set -euo pipefail
+                      [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+                      incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
+                      [[ ! -L "$incoming" ]] || exit 1
+                      rm -rf -- "$incoming"
+              if: always() && steps.reserve.outcome == 'success'
+            - name: Remove runner credentials
+              if: always()
+              run: rm -rf -- "$GITHUB_WORKSPACE/incoming"

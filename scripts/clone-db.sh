@@ -28,7 +28,7 @@ SCRIPT_NAME="$(basename "$0")"
 readonly SCRIPT_NAME
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_DIR
-readonly BACKUP_DIR="$HOME/backups/db-clones"
+readonly BACKUP_DIR="${DEPLOY_HOME:-$HOME}/backups/db-clones"
 
 # shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
@@ -62,7 +62,10 @@ EOF
 
 load_credentials() {
     local env_name="$1"
-    local env_file="$HOME/kreditozrouti/versions/$env_name/current/.env"
+    local env_file="$DEPLOY_HOME/kreditozrouti/versions/$env_name/current/.env"
+    local release
+    release="$(realpath -e "$DEPLOY_HOME/kreditozrouti/versions/$env_name/current")"
+    [[ "$(dirname -- "$release")" == "$DEPLOY_HOME/kreditozrouti/versions/$env_name" && -f "$release/.toolkit-release.json" && ! -L "$release/.toolkit-release.json" && -f "$release/.toolkit-inventory.json" ]] || { log_error "Legacy/incomplete snapshot: stage a complete release first"; exit 1; }
 
     [[ -f "$env_file" ]] || {
         log_error "Missing .env for '$env_name' at: $env_file"
@@ -226,6 +229,7 @@ resolve_projects() {
     TARGET_CONTAINER="${TARGET_PROJECT}-mysql-1"
 }
 
+main() {
 check_root
 
 [[ -z "$DIRECTION" ]] && usage
@@ -262,3 +266,19 @@ log_success "Done. '$TARGET_PROJECT' now mirrors '$SOURCE_PROJECT'."
 log "Pre-clone backup kept at: $BACKUP_DIR"
 log "Note: Redis/BullMQ queue data was NOT cloned (by design - see script header)."
 log "=========================================="
+
+}
+
+# Construct the locked worker from already-loaded functions; no public bypass flag.
+check_root
+[[ $# == 1 && "$DIRECTION" =~ ^(dev-to-prod|prod-to-dev)$ ]] || usage
+[[ -n "${SUDO_USER:-}" && "$SUDO_USER" != root ]] || { log_error 'Run with sudo from the deployment user'; exit 1; }
+deploy_home="$(getent passwd "$SUDO_USER" | cut -d: -f6)"
+[[ "$deploy_home" == /* && -d "$deploy_home" && ! -L "$deploy_home" ]] || exit 1
+expected="$(awk -F= '$1 == "TOOLKIT_VERSION" { if (seen++) exit 2; print $2 } END { if (!seen) exit 1 }' "$SCRIPT_DIR/../deployment/toolkit.lock")"
+actual="$(/usr/local/bin/toolkit version | awk -F'[= ]' '/^toolkit_version=/ {print $2}')"
+[[ "$actual" == "$expected" && "$(printf '%s\n' 0.8.1 "$expected" | sort -V | head -1)" == 0.8.1 ]] || { log_error 'Toolkit snapshot pin mismatch'; exit 1; }
+# shellcheck disable=SC2016 # positional arguments expand only inside the locked child
+locked_program="$(declare -f)"$'\n''set -euo pipefail; SCRIPT_DIR="$1"; SCRIPT_NAME=clone-db.sh; DEPLOY_HOME="$2"; BACKUP_DIR="$DEPLOY_HOME/backups/db-clones"; DIRECTION="$3"; source "$SCRIPT_DIR/lib.sh"; main'
+exec /usr/local/bin/toolkit with-lock --repository kreditozrouti --environment production --action maintenance --timeout 1800 --host-window -- \
+  bash -c "$locked_program" _ "$SCRIPT_DIR" "$deploy_home" "$DIRECTION"

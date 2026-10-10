@@ -1,0 +1,12 @@
+# Install disabled; enable only after an operator validates a manual service run.
+[Unit]
+Description=Kreditozrouti daily Umami retention
+
+[Timer]
+OnCalendar=*-*-* 03:17:00
+Persistent=true
+RandomizedDelaySec=15min
+Unit=kreditozrouti-umami-retention.service
+
+[Install]
+WantedBy=timers.target

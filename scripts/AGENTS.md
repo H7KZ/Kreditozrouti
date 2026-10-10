@@ -42,3 +42,5 @@ source "$SCRIPT_DIR/lib.sh"
 | -------------------------------------------------------------------------- | ------------------------------------------------ |
 | VPS-wide scripts (install-docker, maintenance, docker-cleanup, setup-swap) | `Infrastructure/scripts/CLAUDE.md`               |
 | Database cloning and recovery                                              | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md) |
+
+Database cloning always acquires the toolkit repository-wide lock and host window before reading either saved snapshot or changing data. Historical deployment migration scripts fail closed; use a reviewed owner procedure.

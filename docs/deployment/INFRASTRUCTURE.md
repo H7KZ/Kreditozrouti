@@ -13,7 +13,7 @@ The app's [production](../../deployment/production/networks.yml) and [developmen
 | `kreditozrouti-redis-network-prod` or `-dev` | Redis, API, scraper                                         |
 | `kreditozrouti-monitoring-network`           | API, scraper, Alloy                                         |
 
-`deployment/deploy.sh` creates missing app networks and named volumes. It also creates `public-network` if the app deploys first, but that does not start Traefik. Monitoring uses its own [deploy script](../../deployment/monitoring/deploy.sh).
+Toolkit creates missing owned app networks/volumes from the resolved snapshot. Shared `public-network` must already exist; Infrastructure owns it. Monitoring uses the same snapshot controller; see [operations](../../deployment/README.md).
 
 ## Persistent data
 

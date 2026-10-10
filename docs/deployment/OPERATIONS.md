@@ -19,11 +19,11 @@ For dashboards, alerts, and log queries, see [monitoring](MONITORING.md). Valida
 
 ## Boot recovery
 
-After a reboot Docker restores running containers; `kreditozrouti-reconcile.service` then starts any stopped container in the production, development and monitoring projects that has a restart policy, data services first. It validates each `versions/<target>/current` pointer, runs under the toolkit lock, and never pulls, builds, recreates or removes. Install with `sudo bash deployment/boot-recovery/install.sh --user <deploy-user>`, check with `systemctl status kreditozrouti-reconcile.service` and preview with `sudo -u <deploy-user> bash /usr/local/libexec/kreditozrouti-reconcile/reconcile.sh --dry-run`. A container that was removed needs the Deploy workflow. Services stopped on purpose start again at boot.
+Boot recovery calls toolkit reconcile per environment, validating saved inventory and using `up --no-recreate --pull never --no-build`. Missing pointers skip; legacy/corrupt snapshots fail. Install units disabled, manually validate, then activate separately. See [snapshot operations](../../deployment/README.md).
 
 ## Recovery and rollback
 
-Use **Actions > Rollback Deployment** with an existing full 40-character SHA or `<source-commit>-<development-run-id>-<run-attempt>` release ID, service, and environment. The workflow requires that release directory and, for new release IDs, saved digests and successful-deploy markers. See [rollback details](CICD.md#rollback). Image rollback does not undo schema migrations.
+Use **Actions > Rollback Deployment** from main with environment and `release_id=previous|<fullSHA-run-attempt>`. Toolkit restores the whole saved snapshot/env/runtime. Image rollback does not undo schema migrations.
 
 Production backups are plain encrypted dumps to an Object-Locked B2 bucket, written by `toolkit backup` (see [backups](../../deployment/backups/README.md) and [RESTORE.md](../../deployment/backups/RESTORE.md)). They capture MySQL, the Umami PostgreSQL database and a whole Redis RDB every four hours; restore copies only `share:*` / `ical:*` records, with original expiry times, into a fresh Redis, never queues, cache, sessions or counters. Deploy and rollback always run under toolkit locks and fail without the pinned toolkit. No timer is enabled until the application owner approves it. GitHub-hosted `backup-verify.yml` checks freshness daily and restores everything weekly. Losing the MySQL volume removes the scraped course and study-plan catalog until it is rebuilt from InSIS. Retain all named volumes during Docker cleanup.
 
@@ -40,7 +40,7 @@ sudo /usr/local/bin/toolkit with-lock \
 
 Repeat under the same lock for its reviewed `migrate` or `clean` action. The naming-volume migration and `--prune-old` also require the lock. Do not run Docker/DDL migration commands directly while the backup capture timer is enabled.
 
-For a new host: restore Docker access, deploy shared Traefik from the Infrastructure repo, configure GitHub environment secrets including the trusted SSH host fingerprint, deploy monitoring if needed, then dispatch `Deploy` for the app. Current workflows use GitHub-hosted runners over verified SSH; the existing VPS runner stack remains until its separate retirement gate. Check public health routes and the scraper after deployment. The [Umami PostgreSQL 18 migration](HANDOFF-umami-pg18-migration.md) applies only to an older monitoring database volume; do not run it on a fresh volume.
+For a new host: restore Docker access, deploy shared Traefik from the Infrastructure repo, configure GitHub environment secrets including the trusted SSH host fingerprint, deploy monitoring if needed, then dispatch `Deploy` for the app. Current workflows use GitHub-hosted runners over verified SSH; the legacy github-runner sources are removed. Check public health routes and the scraper after deployment. The [Umami PostgreSQL 18 migration](HANDOFF-umami-pg18-migration.md) applies only to an older monitoring database volume; do not run it on a fresh volume.
 
 ## Security and maintenance
 
@@ -49,3 +49,5 @@ For a new host: restore Docker access, deploy shared Traefik from the Infrastruc
 - Production phpMyAdmin is available only through an SSH tunnel and the `admin` Compose profile. Development serves it at `/phpmyadmin` behind basic auth. See [access instructions](INFRASTRUCTURE.md#phpmyadmin).
 - Check disk and memory use before pruning images or changing replica counts. Never delete named MySQL, Redis, or monitoring volumes during routine cleanup.
 - Deploy monitoring manually with `deploy-monitoring.yml`. Its Discord and healthchecks.io endpoints are held in files written by the monitoring deploy script; see [monitoring](MONITORING.md#deployment-and-secrets).
+
+Canonical complete deployment/retention and manual commands: [snapshot operations](../../deployment/README.md).

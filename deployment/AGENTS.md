@@ -1,186 +1,20 @@
-# Deployment - AGENTS.md
+# Deployment instructions
 
-> Full reference: [docs/deployment/](../docs/deployment/README.md)
+For workflow, snapshot, rollback, monitoring, recovery or retention changes, read
+[snapshot operations](README.md). Toolkit owns deployment mutations and repository-wide locks;
+`deploy.sh` and recovery are thin adapters. Keep full environment releases and exact development
+qualification checks. Secrets live in private runtime outside immutable source; hooks consume
+exported values. Registry and release cleanup remain deferred until recovery references are protected.
 
----
-
-## Directory Structure
-
-```
-deployment/
-├── deploy.sh                              # App stack deployment (run from CI)
-├── production/
-│   ├── docker-compose.production.yml      # api×1, scraper×2, web×1, mcp×1, mysql, redis (+ phpmyadmin, `admin` profile; sized for a 4GB host)
-│   ├── networks.yml
-│   └── volumes.yml
-├── development/
-│   ├── docker-compose.development.yml     # Same services, lower replicas, dev image tags
-│   ├── networks.yml
-│   └── volumes.yml
-├── monitoring/                            # This repo's own stack (docs/deployment/MONITORING.md)
-│   ├── docker-compose.monitoring.yml     # alloy, prometheus, alertmanager, loki, grafana, umami, umami-db (lean limits)
-│   ├── deploy.sh                         # writes .secrets/, pulls, ups, waits for readiness, grants grafana_ro on umami
-│   ├── validate.sh                       # promtool check + rule unit tests, amtool, loki, alloy validate (CI: _verify.yml)
-│   ├── migrate-umami-pg18.sh             # one-off pg_dumpall migration of the umami volume to the pg18 layout
-│   ├── alloy/config.alloy                # the only collector: docker SD scrape, cAdvisor, node, blackbox, Traefik, logs, Faro
-│   ├── prometheus/                       # prometheus.yml, rules/{alerts,recording}.yml, tests/alerts.test.yml
-│   ├── alertmanager/                     # Discord + healthchecks.io (Watchdog), templates/discord.tmpl
-│   ├── loki/                             # loki.yml, runtime.yml, rules/fake/alerts.yml
-│   ├── grafana/                          # provisioning (datasources, dashboards, legacy alert cleanup), dashboards/Kreditozrouti/
-│   └── umami/                            # grafana-role.sql, retention.sql (umami-retention.yml runs it daily)
-├── backups/                               # toolkit backup component list, units and restore drill (plain encrypted dumps to locked B2)
-├── boot-recovery/                         # reconcile.sh + systemd unit: start stopped containers after a reboot (install.sh)
-└── github-runner/
-    ├── deploy.sh                         # Manual runner setup (run directly on VPS)
-    └── docker-compose.github-runner.yml
-```
-
-## deploy.sh
-
-```bash
-./deploy.sh kreditozrouti production            # full-stack production deploy
-./deploy.sh dev development                     # full-stack development deploy
-./deploy.sh kreditozrouti production api        # deploy api service only
-./deploy.sh kreditozrouti production web        # deploy web service only
-```
-
-Requires `.env` (written by CI from GitHub Secrets - never placed manually) and image tag env vars passed inline.
-
-For single-service deploys, only the relevant tag env var is required (e.g. `API_IMAGE_TAG` for `service=api`).
-`api`/`scraper`/`mcp` single-service deploys also bring up their infrastructure dependencies (`mysql`/`redis`) so the
-service never starts without them; `web` uses `--no-deps` (its dependency is the app-level `api`). Old version
-directories under `$HOME/kreditozrouti/versions/<environment>/` older than 14 days are cleaned up after each deploy
-(minimum 5 kept).
-
----
-
-## Critical Invariants
-
-**Deploy order on a fresh server:** pinned toolkit (`sudo bash deployment/install-toolkit.sh`, then activate it) → boot reconcile
-(`sudo bash deployment/boot-recovery/install.sh --user <deploy-user>`) → shared Infrastructure Traefik → monitoring stack (optional) → GitHub Runner
-(optional) → app stack. Every environment's services attach to the external `public-network` that Traefik publishes
-on, and request certs via the `letsencrypt` (DNS-01) resolver - HTTP-01 fails because the domain is
-Cloudflare-proxied. Traefik is not deployed by Kreditožrouti to the shared VPS: Infrastructure's Traefik owns
-`public-network` there and creates it; each `deploy.sh` also creates it if this stack deploys first. Root
-`docker-compose.local.yml` has a separate Traefik container strictly for local development; it uses its own bridge
-network and never joins `public-network`.
-
-**Monitoring stack: Alloy is the only collector and reads the Docker socket.** `deploy.sh` sets `DOCKER_GID` from
-`/var/run/docker.sock`'s group. Alloy keeps compose projects `kreditozrouti`, `kreditozrouti-dev` and
-`kreditozrouti-monitoring` only and derives `project`, `env`, `service`, `instance`, `job` from compose metadata, so a
-scrapable container carries exactly `prometheus.io/scrape=true` + `prometheus.io/port=<n>` and joins
-`kreditozrouti-monitoring-network`. Each stack deploys under its own Compose project name (`STACK_NAME` in each
-`deploy.sh`): monitoring -> `kreditozrouti-monitoring`, runner -> `kreditozrouti-ci`; the app stack uses
-`kreditozrouti` (production) / `kreditozrouti-dev` (development). Router names must keep the
-`kreditozrouti-(api|web|mcp)-<suffix>` shape: Alloy filters Traefik metrics and access logs on it.
-
-**Alerts are Prometheus/Loki rule files with promtool unit tests, never Grafana-managed.** Run
-`bash deployment/monitoring/validate.sh` after any rule, Alloy or Loki change (CI runs it too). Annotations may only
-template `{{ $labels.x }}` because promtool compares them exactly. `legacy-cleanup.yml` deletes the old Grafana-managed
-rules on the first deploy, so `scripts/sync-grafana-alerts.sh` is obsolete. `Watchdog` pings healthchecks.io
-(`HEALTHCHECKS_PING_URL`); Alertmanager reads webhook URLs from `.secrets/` files written by `deploy.sh`.
-
-**Monitoring deploys the same versioned way as the app stack, on manual dispatch only.** `deploy-monitoring.yml` uploads
-`deployment/monitoring/` + `deployment/lib.sh` into `~/kreditozrouti/versions/monitoring/<sha>/`, runs
-`monitoring/deploy.sh` from there, then updates the `~/kreditozrouti/versions/monitoring/current` symlink. Old
-version dirs are cleaned up by the shared `cleanup_old_versions` in `lib.sh` (14 days, minimum 5 kept). No more writing directly into a flat `~/deployment/` - that was the old layout
-and diverged from every other prod deploy, which caused ownership/permission drift on the host.
-
-**Workflow jobs use GitHub-hosted runners over SSH with the pinned host fingerprint.** Keep the existing VPS runner
-stack until its owner-approved retirement gate confirms no external runner registration or consumer remains. A push
-to `main` builds and deploys every app service to development only after the full verification workflow succeeds;
-production remains manual-only. A complete development manifest is published only after API, web, scraper and MCP
-deployments succeed, Compose reports them running/healthy, and three consecutive public HTTPS observations return
-2xx from `/`, `/api/health`, and `/mcp/health`. Partial manual development deploys do not qualify for promotion. These
-read-only checks establish public reachability only; they do not prove business behavior, release identity,
-dependency compatibility, or uninterrupted service.
-
-**`VITE_*` env vars** are baked into the web image at build time by Vite. Setting them at container runtime has no
-effect - the `docker-entrypoint.sh` placeholder-swap handles this at startup instead. **The swap only works while every
-`VITE_*` var is declared under the `build` task's `env` array in root `turbo.json`.** turbo 2 runs tasks in strict env
-mode and strips any undeclared variable from the task environment, so the six `ENV` lines in `../apps/web` never
-reached vite: no placeholder tokens were baked in, Faro and Umami were silently disabled in production, the app version
-reported `unknown`, and the entrypoint's `sed` had nothing to replace (`VITE_API_URL` hid the breakage by falling back
-to `/api`). Anyone adding a new `VITE_*` var must add it to `turbo.json` too. A feature gated on a `VITE_*` value must read it through a variable (`const env = import.meta.env`), not `if (import.meta.env.X)`: Vite folds the direct check against the build-time placeholder, which is truthy, so the gate never closes. That shipped Umami and Faro with empty IDs in the local stack.
-
-**phpMyAdmin is public on development only, behind basic auth.** In production it is NOT internet-reachable: it sits
-behind `profiles: ['admin']` (a plain `up` and every deploy leave it stopped; never auto-start it there), publishes on
-loopback only (`127.0.0.1:48080`), joins the mysql network only, and carries no Traefik labels. In development it has no
-profile and starts with every deploy: full-stack `up -d`, and `deploy.sh dev development api` (what CI runs) also
-passes `phpmyadmin` to `up`, since a per-service `up -d api` would never start it. It is routed at `https://${DOMAIN}/phpmyadmin` (Traefik `basicauth` then `stripprefix`,
-`PMA_ABSOLUTE_URI` set) and also publishes `127.0.0.1:48081` as a tunnel fallback. The gate is the
-`PHPMYADMIN_BASIC_AUTH` GitHub secret (htpasswd line, `htpasswd -nbB user pass`); `_deploy-service.yml` writes it
-single-quoted into `.env` because it holds `$`. Empty secret = Traefik rejects every request (fails closed). `PMA_ARBITRARY`,
-`MYSQL_USER` and `MYSQL_PASSWORD` stay removed everywhere (`PMA_ARBITRARY` let a visitor point it at any host);
-`PMA_ABSOLUTE_URI` exists in development only. Production start: `docker compose --profile admin up -d phpmyadmin`, then
-`ssh -L 48080:127.0.0.1:48080 <user>@<host>`. Never add Traefik labels to the production service: it carries MySQL root
-credentials.
-
-**Boot recovery is `boot-recovery/reconcile.sh`, not a redeploy.** After Docker starts, the `kreditozrouti-reconcile` unit runs it
-as the deploy user under `toolkit with-lock`. For each of `versions/{production,development,monitoring}/current` that exists
-it validates the pointer, then starts that Compose project's stopped containers that have a restart policy (mysql, redis,
-umami-db first, waiting on their healthchecks). It never pulls, builds, recreates or removes; a removed container needs the Deploy
-workflow, and `restart: no` one-shots are skipped. The installer validates the deploy user and installs the script root-owned
-under `/usr/local/libexec/kreditozrouti-reconcile/`; re-run it after changing `reconcile.sh`.
-
-**Third-party images must stay pinned** in the Compose files under `production/`, `development/`, `monitoring/`,
-`github-runner/`, and at the root for local development. Check those files for current versions before changing an
-image. Do not use `:latest`: every deploy pulls images, and a silent major upgrade of a stateful service may be
-irreversible. App images are promoted by the digest recorded after successful development deployment; rollback reads
-the digest saved in the target release directory.
-
-Production release directories use `<source-commit>-<development-run-id>-<run-attempt>`. Rollback accepts that release ID, checks
-the saved digest and successful-deploy marker for each selected service, and preserves the original deployment bundle.
-
-**`umami-db`'s volume mounts at `/var/lib/postgresql`, not `/var/lib/postgresql/data`.** Postgres 18+ images default
-`PGDATA` to `/var/lib/postgresql/<major>/docker` (docker-library/postgres#1259) and refuse to start if they find a
-`PG_VERSION` file at any legacy location instead - by design, so they never silently reinitialize over data they
-don't recognize. `kreditozrouti-umami-postgres-volume` was initialized under an older image at the flat pre-18
-layout; pinning `PGDATA` back to the old path only papers over the mismatch (the legacy-location scan checks the
-mount root, not `PGDATA`) and re-breaks on the next incident. The volume must actually hold data at the new layout
-before this mount works - see `deployment/monitoring/migrate-umami-pg18.sh`, which dumps the old cluster with
-`pg_dumpall` and restores it into a freshly initialized pg18 cluster (Alpine images ship only one major version's
-binaries, so `pg_upgrade` isn't available directly).
-
-**MySQL version changes require volume compatibility checks.** MySQL may refuse to start against a volume initialized
-by a newer major version. Confirm the running version with `docker compose exec mysql mysql --version` before changing
-the image pin in a Compose file.
-
-**Redis data is persisted** via a named Docker volume (`kreditozrouti-redis-volume-prod` in production,
-`kreditozrouti-redis-volume-dev` in development). Redis runs with AOF persistence (`--appendonly yes`) and `noeviction`
-policy so sessions and queue jobs are never silently dropped.
-
-**Backup scope is allowlisted and production-only.** See [backups](backups/README.md): `toolkit backup` captures MySQL, Umami PostgreSQL
-and a whole Redis RDB every four hours; restore copies only `share:*` / `ical:*` keys with their original absolute expiry
-into a fresh Redis. Never restore the whole Redis volume or RDB into production. Capture holds only the repository toolkit
-lock, so deploy, rollback and manual migrations must keep using `toolkit with-lock`. Timers are never enabled by a deploy;
-the owner enables them after a manual run. Deploy and rollback always require the pinned toolkit; there is no unlocked path.
-
-**Both MySQL and Redis require named volumes to be created on the host before first `docker compose up`.** Production:
-`docker volume create kreditozrouti-mysql-volume-prod && docker volume create kreditozrouti-redis-volume-prod`.
-Development:
-`docker volume create kreditozrouti-mysql-volume-dev && docker volume create kreditozrouti-redis-volume-dev`.
-
-**`deploy.sh` uses `$SCRIPT_DIR`** - must be called by path (`./deployment/deploy.sh`) or from within `deployment/`. The
-working directory doesn't matter; only the script's own location does.
-
-**MySQL healthcheck** uses `MYSQL_ROOT_PASSWORD` - it must be present in `.env`.
-
-**Production vs development** differ in: float tag (`latest` vs `dev-latest`), replica counts, network names
-(`kreditozrouti-mysql-network-prod` vs `-dev`), volume names, and compose project (`kreditozrouti` vs
-`kreditozrouti-dev`). Both use `${GITHUB_SHA::8}` as the versioned tag.
-
----
-
-## Key Docs
-
-| Topic                                       | Doc                                                                      |
-| ------------------------------------------- | ------------------------------------------------------------------------ |
-| Docker multi-stage builds, GHCR registry    | [DOCKER.md](../docs/deployment/DOCKER.md)                                |
-| GitHub Actions workflows, secrets, rollback | [CICD.md](../docs/deployment/CICD.md)                                    |
-| Traefik, networking, env vars               | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md)                |
-| Monitoring, security, troubleshooting       | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)                        |
-| Backup capture and restore                  | [backups/README.md](backups/README.md), [RESTORE.md](backups/RESTORE.md) |
-| Observability overview and source links     | [MONITORING.md](../docs/deployment/MONITORING.md)                        |
-| Moving monitoring to its own host (draft)   | [MONITORING_SPLIT.md](../docs/deployment/MONITORING_SPLIT.md)            |
-| DNS and HTTPS manual setup                  | [DNS.md](../docs/setup/DNS.md)                                           |
+- Keep application Compose projects distinct: `kreditozrouti`, `kreditozrouti-dev`, `kreditozrouti-monitoring`.
+- Infrastructure owns shared Traefik/public-network. State stays in named external volumes.
+- Production phpMyAdmin remains behind `admin`, loopback-only. Never publish its root credentials.
+- Prebuilt application images require complete digest mappings; all dependency/profile images
+  are pinned by toolkit at staging. Data image changes require explicit migration.
+- Monitoring redacts before storage; Prometheus/Loki files own alerts. Keep per-repo Alloy
+  project allowlists and `prometheus.io/scrape` / `prometheus.io/port` labels.
+- Keep database image/volume layout compatible: PostgreSQL18 mounts `/var/lib/postgresql`.
+- `lib.sh` contains logging/file validation only; retained for monitoring validation.
+- Installers leave units/timers disabled. New source is not evidence of a live deployment.
+- Redis uses AOF/noeviction; backup restore allowlists `share:*` / `ical:*`, never whole production Redis. See [backups](backups/README.md).
+- Historical naming/PG18 entrypoints are retired; data migration needs a reviewed owner procedure.

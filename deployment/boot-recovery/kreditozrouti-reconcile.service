@@ -1,23 +1,5 @@
-# ==============================================================================
-# kreditozrouti-reconcile.service
-#
-# Boot recovery for the immutable-release deploy. After Docker is up on every
-# boot it starts this repository's stopped containers that declare a restart
-# policy, data services first (see reconcile.sh), under the shared host and
-# kreditozrouti/production toolkit locks so it cannot overlap a deploy or a
-# backup capture.
-#
-# It never pulls, builds, recreates, removes or redeploys anything. A container
-# that no longer exists needs the Deploy workflow. Containers stopped on purpose
-# are started again; remove a service from its Compose file and redeploy to keep
-# it down.
-#
-# This file is a TEMPLATE. install.sh renders __USER__ and __HOME__ and installs
-# the result to /etc/systemd/system/kreditozrouti-reconcile.service.
-# ==============================================================================
-
 [Unit]
-Description=Kreditozrouti release reconcile (start declared containers after boot)
+Description=Kreditozrouti saved snapshot recovery
 Requires=docker.service
 After=docker.service network-online.target
 Wants=network-online.target
@@ -26,8 +8,8 @@ Wants=network-online.target
 Type=oneshot
 RemainAfterExit=yes
 User=root
-ExecStart=/usr/local/bin/toolkit with-lock --repository kreditozrouti --environment production --action maintenance --timeout 900 -- /usr/sbin/runuser -u __USER__ -- env HOME=__HOME__ bash /usr/local/libexec/kreditozrouti-reconcile/reconcile.sh
-TimeoutStartSec=900
+ExecStart=/usr/sbin/runuser -u __USER__ -- env HOME=__HOME__ bash /usr/local/libexec/kreditozrouti-reconcile/reconcile.sh
+TimeoutStartSec=90min
 
 [Install]
 WantedBy=multi-user.target

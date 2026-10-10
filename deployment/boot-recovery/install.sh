@@ -9,7 +9,7 @@ set -euo pipefail
 #   sudo bash deployment/boot-recovery/install.sh --user <deploy-user> [--home <home-dir>] [--print]
 #
 # Installs reconcile.sh root-owned under /usr/local/libexec/kreditozrouti-reconcile/,
-# renders the unit for the deploy user, and enables it. Re-run after changing
+# renders the unit for the deploy user. Activation is a separate operator step. Re-run after changing
 # reconcile.sh or the deploy user. --print validates everything and writes the
 # rendered unit to stdout without installing anything (no root needed).
 # ==============================================================================
@@ -72,12 +72,12 @@ echo "  home: ${DEPLOY_HOME}"
 
 install -d -o root -g root -m 0755 "$LIBEXEC_DIR"
 install -o root -g root -m 0755 "$SCRIPT_SRC" "${LIBEXEC_DIR}/reconcile.sh"
+install -o root -g root -m 0644 "$SCRIPT_DIR/../toolkit.lock" "${LIBEXEC_DIR}/toolkit.lock"
 render > "$DEST"
 chmod 644 "$DEST"
 
 systemctl daemon-reload
-systemctl enable "$UNIT_NAME"
 
-echo "Installed and enabled. Test now with:  sudo systemctl start ${UNIT_NAME}"
-echo "Dry run as the deploy user:            sudo -u ${DEPLOY_USER} bash ${LIBEXEC_DIR}/reconcile.sh --dry-run"
+
+echo "Installed disabled. Run manually with:  sudo systemctl start ${UNIT_NAME}"
 echo "Check result with:                     systemctl status ${UNIT_NAME}"
