@@ -96,7 +96,9 @@ PY
 		sha256sum --check SHA256SUMS
 	)
 	python3 - "$destination/manifest.json" <<'PY'
+import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -105,29 +107,70 @@ if manifest.get("schemaVersion") != 1:
     raise SystemExit("unsupported backup manifest schema")
 if manifest.get("repository") != "kreditozrouti" or manifest.get("environment") != "production":
     raise SystemExit("backup manifest identity mismatch")
+toolkit_version = manifest.get("toolkitVersion")
+if not isinstance(toolkit_version, str) or not re.fullmatch(r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?", toolkit_version):
+    raise SystemExit("backup manifest toolkit version is not semantic versioning")
+toolkit_bundle = manifest.get("toolkitBundle")
+if not isinstance(toolkit_bundle, dict) or toolkit_bundle.get("version") != toolkit_version:
+    raise SystemExit("backup manifest toolkit bundle version does not match")
+if not isinstance(toolkit_bundle.get("sourceCommit"), str) or not re.fullmatch(r"[0-9a-f]{40,64}", toolkit_bundle["sourceCommit"]):
+    raise SystemExit("backup manifest toolkit source commit is invalid")
+if not isinstance(toolkit_bundle.get("archiveSha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", toolkit_bundle["archiveSha256"]):
+    raise SystemExit("backup manifest toolkit archive checksum is invalid")
+dependencies = manifest.get("recoveryDependencies")
+if not isinstance(dependencies, dict):
+    raise SystemExit("backup manifest recovery dependencies are missing")
+for field in ("applicationReleaseId", "proxyReleaseId"):
+    if not isinstance(dependencies.get(field), str) or not dependencies[field].strip():
+        raise SystemExit(f"backup manifest recovery dependency is missing: {field}")
+if dependencies.get("proxyContractVersion") != "handoff-v1":
+    raise SystemExit("backup manifest proxy contract version is unsupported")
+if not isinstance(dependencies.get("configurationRevision"), str) or not re.fullmatch(r"[0-9a-f]{64}", dependencies["configurationRevision"]):
+    raise SystemExit("backup manifest configuration revision is invalid")
+release_manifest_hash = dependencies.get("releaseManifestSha256")
+if "releaseManifestSha256" not in dependencies:
+    raise SystemExit("backup manifest release manifest checksum field is missing")
+if release_manifest_hash is not None and (not isinstance(release_manifest_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", release_manifest_hash)):
+    raise SystemExit("backup manifest release manifest checksum is invalid")
 required = {"mysql.sql", "umami.dump", "redis.json"}
 if set(manifest.get("files", {})) != required:
     raise SystemExit("backup manifest file set mismatch")
 sources = manifest.get("sources", {})
 for name in ("mysql", "umamiPostgresql", "redis"):
     image = sources.get(name, {}).get("image")
-    if not isinstance(image, dict) or not any(isinstance(value, str) and "@sha256:" in value for value in image.get("registryDigests", [])):
+    digests = image.get("registryDigests") if isinstance(image, dict) else None
+    if not isinstance(digests, list) or not any(isinstance(value, str) and re.search(r"@sha256:[0-9a-f]{64}$", value) for value in digests):
         raise SystemExit(f"{name} recovery image is missing its immutable registry digest")
+    if not isinstance(image.get("composeConfigHash"), str) or not re.fullmatch(r"[0-9a-f]{64}", image["composeConfigHash"]):
+        raise SystemExit(f"{name} recovery image Compose configuration hash is invalid")
 applications = sources.get("applicationImages")
 if not isinstance(applications, list) or not applications:
     raise SystemExit("backup manifest has no application image references")
 services = set()
 for image in applications:
-    if not isinstance(image, dict) or not any(isinstance(value, str) and "@sha256:" in value for value in image.get("registryDigests", [])):
+    digests = image.get("registryDigests") if isinstance(image, dict) else None
+    if not isinstance(digests, list) or not any(isinstance(value, str) and re.search(r"@sha256:[0-9a-f]{64}$", value) for value in digests):
         raise SystemExit("application recovery image is missing its immutable registry digest")
+    if not isinstance(image.get("composeConfigHash"), str) or not re.fullmatch(r"[0-9a-f]{64}", image["composeConfigHash"]):
+        raise SystemExit("application recovery image Compose configuration hash is invalid")
     revision = image.get("revision")
     service = image.get("service")
-    if not isinstance(revision, str) or not __import__("re").fullmatch(r"[0-9a-f]{7,64}", revision) or not isinstance(service, str):
+    if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-f]{7,64}", revision) or not isinstance(service, str):
         raise SystemExit("application image source revision or service is missing")
     services.add(service)
 if not {"api", "web", "scraper", "mcp"}.issubset(services):
     raise SystemExit("backup manifest is missing a required application service image")
-import hashlib
+configuration_material = {
+    "applicationReleaseId": dependencies["applicationReleaseId"],
+    "proxyReleaseId": dependencies["proxyReleaseId"],
+    "composeConfigHashes": sorted(
+        image["composeConfigHash"]
+        for image in [sources[name]["image"] for name in ("mysql", "umamiPostgresql", "redis")] + applications
+    ),
+}
+configuration_revision = hashlib.sha256(json.dumps(configuration_material, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+if dependencies["configurationRevision"] != configuration_revision:
+    raise SystemExit("backup manifest configuration revision does not match captured images")
 for name in required:
     record = manifest["files"][name]
     if not isinstance(record, dict) or not isinstance(record.get("sha256"), str) or not isinstance(record.get("bytes"), int):
