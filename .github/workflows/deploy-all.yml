@@ -40,12 +40,12 @@ on:
                 type: boolean
                 default: true
             image_tag:
-                description: Specific image tag to deploy (skips build if set)
+                description: Existing tag; production requires the full 40-character main commit SHA
                 required: false
                 type: string
                 default: ''
             skip_build:
-                description: Skip build (images must already exist in registry)
+                description: Production requires true; the selected image must already exist in GHCR
                 required: false
                 type: boolean
                 default: false
