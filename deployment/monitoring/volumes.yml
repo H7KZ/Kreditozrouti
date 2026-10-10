@@ -1,22 +1,22 @@
 volumes:
-  kreditozrouti-prometheus-volume:
-    name: kreditozrouti-prometheus-volume
-    external: true
-  kreditozrouti-alertmanager-volume:
-    name: kreditozrouti-alertmanager-volume
-    external: true
-  kreditozrouti-grafana-volume:
-    name: kreditozrouti-grafana-volume
-    external: true
-  kreditozrouti-loki-volume:
-    name: kreditozrouti-loki-volume
-    external: true
-  kreditozrouti-alloy-volume:
-    name: kreditozrouti-alloy-volume
-    external: true
-  kreditozrouti-umami-postgres-volume:
-    name: kreditozrouti-umami-postgres-volume
-    external: true
-  traefik-logs-volume:
-    name: traefik-logs-volume
-    external: true
+    kreditozrouti-prometheus-volume:
+        name: kreditozrouti-prometheus-volume
+        external: true
+    kreditozrouti-alertmanager-volume:
+        name: kreditozrouti-alertmanager-volume
+        external: true
+    kreditozrouti-grafana-volume:
+        name: kreditozrouti-grafana-volume
+        external: true
+    kreditozrouti-loki-volume:
+        name: kreditozrouti-loki-volume
+        external: true
+    kreditozrouti-alloy-volume:
+        name: kreditozrouti-alloy-volume
+        external: true
+    kreditozrouti-umami-postgres-volume:
+        name: kreditozrouti-umami-postgres-volume
+        external: true
+    traefik-logs-volume:
+        name: traefik-logs-volume
+        external: true

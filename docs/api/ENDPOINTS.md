@@ -4,19 +4,19 @@ The route declarations in `apps/api/src/Routes/` and schemas beside their contro
 
 ## Public routes
 
-| Method and path | Purpose | Request or response |
-| --- | --- | --- |
-| `POST /courses` | Search courses and return facets | `CoursesFilter` to `CoursesResponseDTO` |
-| `POST /study_plans` | Search plans and return facets | `StudyPlansFilter` to `StudyPlansResponseDTO` |
-| `POST /study_plans/courses` | Courses in selected plans | `StudyPlanCoursesFilter` to `StudyPlanCoursesResponseDTO` |
-| `POST /optimize` | Solve a timetable | `OptimizeRequest` to `OptimizeResponseDTO` |
-| `POST /courses/:id/scrape` | Queue a course refresh | `202 { jobId }` |
-| `GET /courses/:id/scrape/status` | Watch refresh status | Server-sent events |
-| `POST /share` | Save 1-50 selected units | `201 { id }` |
-| `GET /share/:id` | Load selected units | `{ units }` |
-| `POST /ical` | Save units, slot settings, and semester dates | `201 { id }` |
-| `GET /ical/:id` | Download calendar | `text/calendar` |
-| `GET /health` | Health check | `200 OK` |
+| Method and path                  | Purpose                                       | Request or response                                       |
+| -------------------------------- | --------------------------------------------- | --------------------------------------------------------- |
+| `POST /courses`                  | Search courses and return facets              | `CoursesFilter` to `CoursesResponseDTO`                   |
+| `POST /study_plans`              | Search plans and return facets                | `StudyPlansFilter` to `StudyPlansResponseDTO`             |
+| `POST /study_plans/courses`      | Courses in selected plans                     | `StudyPlanCoursesFilter` to `StudyPlanCoursesResponseDTO` |
+| `POST /optimize`                 | Solve a timetable                             | `OptimizeRequest` to `OptimizeResponseDTO`                |
+| `POST /courses/:id/scrape`       | Queue a course refresh                        | `202 { jobId }`                                           |
+| `GET /courses/:id/scrape/status` | Watch refresh status                          | Server-sent events                                        |
+| `POST /share`                    | Save 1-50 selected units                      | `201 { id }`                                              |
+| `GET /share/:id`                 | Load selected units                           | `{ units }`                                               |
+| `POST /ical`                     | Save units, slot settings, and semester dates | `201 { id }`                                              |
+| `GET /ical/:id`                  | Download calendar                             | `text/calendar`                                           |
+| `GET /health`                    | Health check                                  | `200 OK`                                                  |
 
 The three search routes use a 300-second Redis cache. Search filters use `limit` and `offset`, not page numbers. The course filter supports text, faculty, period, language, lecturer, study plan, ECTS, delivery/completion mode, assessment, and included/excluded times. See [`packages/types/src/http.ts`](../../packages/types/src/http.ts) for exact fields. Times are minutes from midnight.
 
@@ -28,17 +28,17 @@ The scrape trigger allows 3 requests per 10 minutes per IP and 1 per course. Its
 
 All `/commands/*` routes and `GET /admin/stats` require `Authorization: Bearer <API_COMMAND_TOKEN>`.
 
-| Method and path | Action |
-| --- | --- |
-| `POST /commands/insis/catalog` | Discover and optionally queue course pages |
-| `POST /commands/insis/course` | Scrape one course URL |
-| `POST /commands/insis/studyplans` | Discover and queue study plans |
-| `POST /commands/insis/studyplan` | Scrape one plan URL |
-| `POST /commands/insis/academic-schedules` | Refresh academic schedules |
-| `POST /commands/insis/faculty-timetables` | Refresh public timetable flags |
-| `POST /commands/insis/sweep` | Find missing courses and trigger targeted scraping |
-| `POST /commands/insis/retry-failed` | Retry failed course or plan jobs |
-| `GET /admin/stats` | Queue and database statistics |
+| Method and path                           | Action                                             |
+| ----------------------------------------- | -------------------------------------------------- |
+| `POST /commands/insis/catalog`            | Discover and optionally queue course pages         |
+| `POST /commands/insis/course`             | Scrape one course URL                              |
+| `POST /commands/insis/studyplans`         | Discover and queue study plans                     |
+| `POST /commands/insis/studyplan`          | Scrape one plan URL                                |
+| `POST /commands/insis/academic-schedules` | Refresh academic schedules                         |
+| `POST /commands/insis/faculty-timetables` | Refresh public timetable flags                     |
+| `POST /commands/insis/sweep`              | Find missing courses and trigger targeted scraping |
+| `POST /commands/insis/retry-failed`       | Retry failed course or plan jobs                   |
+| `GET /admin/stats`                        | Queue and database statistics                      |
 
 `GET /metrics` exposes Prometheus metrics to internal monitoring. Proxy-header requests receive 404.
 

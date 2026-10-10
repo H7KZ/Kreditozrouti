@@ -19,65 +19,65 @@
 # ==============================================================================
 
 services:
-  runner:
-    image: myoung34/github-runner:2.337.0
-    restart: always
+    runner:
+        image: myoung34/github-runner:2.337.0
+        restart: always
 
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
 
-    environment:
-      # Registration
-      - REPO_URL=${GITHUB_REPO_URL}
-      - ACCESS_TOKEN=${GITHUB_ACCESS_TOKEN}
+        environment:
+            # Registration
+            - REPO_URL=${GITHUB_REPO_URL}
+            - ACCESS_TOKEN=${GITHUB_ACCESS_TOKEN}
 
-      # Naming and Labels
-      - RUNNER_NAME_PREFIX=kreditozrouti-runner
-      - RUNNER_SCOPE=repo
-      - LABELS=${RUNNER_LABELS:-docker,self-hosted}
+            # Naming and Labels
+            - RUNNER_NAME_PREFIX=kreditozrouti-runner
+            - RUNNER_SCOPE=repo
+            - LABELS=${RUNNER_LABELS:-docker,self-hosted}
 
-      # Configuration
-      - RUNNER_WORKDIR=/tmp/runner-work
-      - DISABLE_AUTO_UPDATE=true
+            # Configuration
+            - RUNNER_WORKDIR=/tmp/runner-work
+            - DISABLE_AUTO_UPDATE=true
 
-    networks:
-      - public-network
+        networks:
+            - public-network
 
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '10m'
+                max-file: '3'
 
-    deploy:
-      mode: replicated
-      replicas: ${RUNNER_REPLICAS:-1}
+        deploy:
+            mode: replicated
+            replicas: ${RUNNER_REPLICAS:-1}
 
-      resources:
-        limits:
-          cpus: '2'
-          memory: 2048M
-        reservations:
-          cpus: '0.5'
-          memory: 512M
+            resources:
+                limits:
+                    cpus: '2'
+                    memory: 2048M
+                reservations:
+                    cpus: '0.5'
+                    memory: 512M
 
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 3
+                window: 120s
 
-      update_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        monitor: 30s
-        max_failure_ratio: 0.3
-        order: start-first
+            update_config:
+                parallelism: 1
+                delay: 10s
+                failure_action: rollback
+                monitor: 30s
+                max_failure_ratio: 0.3
+                order: start-first
 
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: pause
-        monitor: 30s
-        order: stop-first
+            rollback_config:
+                parallelism: 1
+                delay: 10s
+                failure_action: pause
+                monitor: 30s
+                order: stop-first

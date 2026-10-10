@@ -1,6 +1,6 @@
 import type { InSISDay, TimeSelection } from '@kreditozrouti/types'
-import { InSISDayValues } from '@kreditozrouti/types'
 import type { ExpressionBuilder } from 'kysely'
+import { InSISDayValues } from '@kreditozrouti/types'
 import { INSIS_DAY_DENORM } from '../domain/constants.js'
 
 /** Weekday of a date as the InSIS day name, or null for an invalid date. Sunday is the last day. */

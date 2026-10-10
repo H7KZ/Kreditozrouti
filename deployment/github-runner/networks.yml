@@ -5,6 +5,6 @@
 # ==============================================================================
 
 networks:
-  public-network:
-    name: public-network
-    external: true
+    public-network:
+        name: public-network
+        external: true

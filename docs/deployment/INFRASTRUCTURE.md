@@ -6,12 +6,12 @@ This repo deploys the app and monitoring stacks. A separate Infrastructure repo 
 
 The app's [production](../../deployment/production/networks.yml) and [development](../../deployment/development/networks.yml) Compose files declare separate MySQL and Redis networks. Web, API, and MCP also join `public-network`; API and scraper join `kreditozrouti-monitoring-network` for Alloy. MySQL and Redis have no public ports.
 
-| Network | Connected services |
-| --- | --- |
-| `public-network` | Shared Traefik, web, API, MCP, and public monitoring routes |
-| `kreditozrouti-mysql-network-prod` or `-dev` | MySQL, API, MCP, and optional phpMyAdmin |
-| `kreditozrouti-redis-network-prod` or `-dev` | Redis, API, scraper |
-| `kreditozrouti-monitoring-network` | API, scraper, Alloy |
+| Network                                      | Connected services                                          |
+| -------------------------------------------- | ----------------------------------------------------------- |
+| `public-network`                             | Shared Traefik, web, API, MCP, and public monitoring routes |
+| `kreditozrouti-mysql-network-prod` or `-dev` | MySQL, API, MCP, and optional phpMyAdmin                    |
+| `kreditozrouti-redis-network-prod` or `-dev` | Redis, API, scraper                                         |
+| `kreditozrouti-monitoring-network`           | API, scraper, Alloy                                         |
 
 `deployment/deploy.sh` creates missing app networks and named volumes. It also creates `public-network` if the app deploys first, but that does not start Traefik. Monitoring uses its own [deploy script](../../deployment/monitoring/deploy.sh).
 
@@ -25,15 +25,15 @@ Changing a database image major version requires a data migration. In particular
 
 GitHub Actions reads `production` or `development` environment variables and secrets, writes a mode `600` `.env` inside `~/kreditozrouti/versions/<environment>/<sha>/`, and runs the app deploy script. Do not maintain a separate VPS copy of the app `.env`. For local development, copy the root [`.env.example`](../../.env.example) to an untracked `.env`.
 
-| Setting | Source | Purpose |
-| --- | --- | --- |
-| `PROJECT`, `DOMAIN` | GitHub environment variables | Compose project labels and public host |
-| `MYSQL_USER`, `MYSQL_DATABASE`, `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD`, `MYSQL_URI` | GitHub environment secrets | MySQL setup and app connection |
-| `REDIS_URI`, `REDIS_PASSWORD` | GitHub environment secrets | Redis connection |
-| `API_SESSION_SECRET`, `API_COMMAND_TOKEN`, `MCP_JWT_SECRET` | GitHub environment secrets | App authentication |
-| `GOOGLE_USER`, `GOOGLE_APP_PASSWORD` | GitHub environment secrets | Optional Gmail SMTP; [setup](../setup/GMAIL.md) |
-| `UMAMI_SRC`, `UMAMI_WEBSITE_ID` | GitHub variable and secret | Optional web analytics |
-| `PHPMYADMIN_BASIC_AUTH` | GitHub environment secret (development) | htpasswd line gating `/phpmyadmin`; see [phpMyAdmin](#phpmyadmin) |
+| Setting                                                                              | Source                                  | Purpose                                                           |
+| ------------------------------------------------------------------------------------ | --------------------------------------- | ----------------------------------------------------------------- |
+| `PROJECT`, `DOMAIN`                                                                  | GitHub environment variables            | Compose project labels and public host                            |
+| `MYSQL_USER`, `MYSQL_DATABASE`, `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD`, `MYSQL_URI` | GitHub environment secrets              | MySQL setup and app connection                                    |
+| `REDIS_URI`, `REDIS_PASSWORD`                                                        | GitHub environment secrets              | Redis connection                                                  |
+| `API_SESSION_SECRET`, `API_COMMAND_TOKEN`, `MCP_JWT_SECRET`                          | GitHub environment secrets              | App authentication                                                |
+| `GOOGLE_USER`, `GOOGLE_APP_PASSWORD`                                                 | GitHub environment secrets              | Optional Gmail SMTP; [setup](../setup/GMAIL.md)                   |
+| `UMAMI_SRC`, `UMAMI_WEBSITE_ID`                                                      | GitHub variable and secret              | Optional web analytics                                            |
+| `PHPMYADMIN_BASIC_AUTH`                                                              | GitHub environment secret (development) | htpasswd line gating `/phpmyadmin`; see [phpMyAdmin](#phpmyadmin) |
 
 The [deploy workflow](../../.github/workflows/_deploy-service.yml) rejects credential values containing `$` or backticks because Compose can reinterpret them in `.env`. Generate suitable secrets, for example with `openssl rand -base64 32`. Monitoring has [separate repository secrets](MONITORING.md#deployment-and-secrets) and writes its own webhook files.
 

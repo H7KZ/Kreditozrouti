@@ -4,12 +4,12 @@ The Vue app lets students browse VŠE courses, build and compare timetables, and
 
 ## Where to start
 
-| Topic | Reference |
-| --- | --- |
-| State and persistence | [Stores](STORES.md) |
-| Reusable UI logic | [Composables](COMPOSABLES.md) |
-| Timetable and conflicts | [Timetable](TIMETABLE.md) |
-| API, localization, utilities, telemetry | [Internals](INTERNALS.md) |
+| Topic                                   | Reference                     |
+| --------------------------------------- | ----------------------------- |
+| State and persistence                   | [Stores](STORES.md)           |
+| Reusable UI logic                       | [Composables](COMPOSABLES.md) |
+| Timetable and conflicts                 | [Timetable](TIMETABLE.md)     |
+| API, localization, utilities, telemetry | [Internals](INTERNALS.md)     |
 
 ## Structure
 

@@ -22,12 +22,12 @@ The seeded `partner` Plan is 300 requests per minute and 50,000 per day. It is a
 
 A key may carry **allowed origins**, set by the operator (`partnerKeys create-key --origins ...` or `set-origins`). Exact origins only (`https://studolog.cz`, `http://localhost:5173` for development), no wildcards, no path.
 
-| Caller | Result |
-| --- | --- |
-| No `Origin` header (server, curl) | Works with any key |
-| Browser, origin listed on the key | Works; the response carries `Access-Control-Allow-Origin` and exposes `RateLimit-*`, `Retry-After`, `X-Request-Id` |
-| Browser, origin not listed on this key | 403 problem document |
-| Browser, key has no origins | 403 "not enabled for browser use" |
+| Caller                                 | Result                                                                                                             |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| No `Origin` header (server, curl)      | Works with any key                                                                                                 |
+| Browser, origin listed on the key      | Works; the response carries `Access-Control-Allow-Origin` and exposes `RateLimit-*`, `Retry-After`, `X-Request-Id` |
+| Browser, origin not listed on this key | 403 problem document                                                                                               |
+| Browser, key has no origins            | 403 "not enabled for browser use"                                                                                  |
 
 The CORS preflight carries no key, so it is answered for every origin registered on some usable key (cached 15 seconds) and for no other origin. CORS headers are sent on errors too (401, 403, 429), so a frontend can read them. Only `GET` and `OPTIONS` are allowed, and credentials are never allowed: send the key in `Authorization: Bearer`, not in a cookie.
 
@@ -80,15 +80,15 @@ Commands: `create-consumer`, `create-key`, `list`, `set-origins <prefix> <origin
 
 ## Code map
 
-| Concern                                                                        | Where                                                                                                                                           |
-| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Key generation, hashing, bearer parsing; quota check; usage counters and flush | [`packages/core/src/partner-api/`](../../packages/core/src/partner-api/index.ts) behind `QuotaStore`, `UsageCounterStore` and `UsageSink` ports |
-| Redis and MySQL adapters, key lookup and cache                                 | `apps/api/src/Services/Partner/`                                                                                                                |
-| Auth, origin, scope and quota middleware | `apps/api/src/Middlewares/PartnerAuthMiddleware.ts` |
-| CORS and the origin registry | `apps/api/src/Middlewares/PartnerCorsMiddleware.ts`, `apps/api/src/Services/Partner/OriginRegistry.ts`; origin parsing in `@kreditozrouti/core/partner-api` |
-| Routes, controllers, OpenAPI                                                   | `apps/api/src/Routes/V1Routes.ts`, `apps/api/src/Controllers/V1/`                                                                               |
-| Queries, visibility, DTO mapping                                               | `apps/api/src/Services/V1/`                                                                                                                     |
-| Problem+json errors                                                            | `apps/api/src/Handlers/ProblemHandler.ts`                                                                                                       |
+| Concern                                                                        | Where                                                                                                                                                       |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Key generation, hashing, bearer parsing; quota check; usage counters and flush | [`packages/core/src/partner-api/`](../../packages/core/src/partner-api/index.ts) behind `QuotaStore`, `UsageCounterStore` and `UsageSink` ports             |
+| Redis and MySQL adapters, key lookup and cache                                 | `apps/api/src/Services/Partner/`                                                                                                                            |
+| Auth, origin, scope and quota middleware                                       | `apps/api/src/Middlewares/PartnerAuthMiddleware.ts`                                                                                                         |
+| CORS and the origin registry                                                   | `apps/api/src/Middlewares/PartnerCorsMiddleware.ts`, `apps/api/src/Services/Partner/OriginRegistry.ts`; origin parsing in `@kreditozrouti/core/partner-api` |
+| Routes, controllers, OpenAPI                                                   | `apps/api/src/Routes/V1Routes.ts`, `apps/api/src/Controllers/V1/`                                                                                           |
+| Queries, visibility, DTO mapping                                               | `apps/api/src/Services/V1/`                                                                                                                                 |
+| Problem+json errors                                                            | `apps/api/src/Handlers/ProblemHandler.ts`                                                                                                                   |
 
 ## Before the first key
 

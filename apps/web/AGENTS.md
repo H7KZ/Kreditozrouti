@@ -17,11 +17,11 @@ Pages (src/pages/ - file-based routing via unplugin-vue-router)
 
 ## Path Aliases
 
-| Alias                    | Resolves to                      | Rule                                                      |
-| ------------------------ | -------------------------------- | --------------------------------------------------------- |
-| `@web/*`                 | `./src/*`                        | Local web files                                           |
-| `@kreditozrouti/core/*` | `../../packages/core/src/*`         | Browser-safe runtime values only                          |
-| `@kreditozrouti/types`  | `../../packages/types/src/index.ts` | Shared DTO and domain types                               |
+| Alias                   | Resolves to                         | Rule                             |
+| ----------------------- | ----------------------------------- | -------------------------------- |
+| `@web/*`                | `./src/*`                           | Local web files                  |
+| `@kreditozrouti/core/*` | `../../packages/core/src/*`         | Browser-safe runtime values only |
+| `@kreditozrouti/types`  | `../../packages/types/src/index.ts` | Shared DTO and domain types      |
 
 ---
 
@@ -101,9 +101,9 @@ schedule-slots → feedback edge is one-directional, the same shape as stores th
 
 ## Key Docs
 
-| Topic                                             | Doc                                          |
-| ------------------------------------------------- | -------------------------------------------- |
-| Store ownership and dependencies                  | [STORES.md](../../docs/web/STORES.md)           |
-| Main UI composables                               | [COMPOSABLES.md](../../docs/web/COMPOSABLES.md) |
-| Conflicts and timetable behavior                  | [TIMETABLE.md](../../docs/web/TIMETABLE.md)     |
-| API client, i18n, and supporting modules          | [INTERNALS.md](../../docs/web/INTERNALS.md)     |
+| Topic                                    | Doc                                             |
+| ---------------------------------------- | ----------------------------------------------- |
+| Store ownership and dependencies         | [STORES.md](../../docs/web/STORES.md)           |
+| Main UI composables                      | [COMPOSABLES.md](../../docs/web/COMPOSABLES.md) |
+| Conflicts and timetable behavior         | [TIMETABLE.md](../../docs/web/TIMETABLE.md)     |
+| API client, i18n, and supporting modules | [INTERNALS.md](../../docs/web/INTERNALS.md)     |

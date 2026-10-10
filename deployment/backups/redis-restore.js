@@ -45,7 +45,7 @@ async function main() {
 	} catch {
 		throw new Error('isolated recovery Redis addresses are invalid')
 	}
-	if (allowedAddresses.size === 0 || [...allowedAddresses].some((address) => typeof address !== 'string')) {
+	if (allowedAddresses.size === 0 || [...allowedAddresses].some(address => typeof address !== 'string')) {
 		throw new Error('isolated recovery Redis addresses are missing')
 	}
 	const resolvedAddresses = await dns.lookup(redisUrl.hostname, { all: true, verbatim: true })
@@ -87,7 +87,7 @@ async function main() {
 
 		const [seconds, microseconds] = await redis.time()
 		const nowUnixMs = Number(seconds) * 1000 + Math.floor(Number(microseconds) / 1000)
-		const unexpired = document.entries.filter((entry) => entry.expiresAtUnixMs > nowUnixMs)
+		const unexpired = document.entries.filter(entry => entry.expiresAtUnixMs > nowUnixMs)
 		for (let offset = 0; offset < unexpired.length; offset += 100) {
 			const transaction = redis.multi()
 			for (const entry of unexpired.slice(offset, offset + 100)) {

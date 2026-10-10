@@ -21,7 +21,7 @@ async function main() {
 		do {
 			const [nextCursor, keys] = await redis.scan(cursor, 'MATCH', '*:*', 'COUNT', 500)
 			cursor = nextCursor
-			const eligibleKeys = keys.filter((key) => KEY_PATTERN.test(key))
+			const eligibleKeys = keys.filter(key => KEY_PATTERN.test(key))
 
 			for (let offset = 0; offset < eligibleKeys.length; offset += 100) {
 				const batch = eligibleKeys.slice(offset, offset + 100)
@@ -60,14 +60,16 @@ async function main() {
 		const redisVersion = info.match(/^redis_version:([^\r\n]+)/m)?.[1]
 		if (!redisVersion) throw new Error('Redis server version is unavailable')
 
-		process.stdout.write(`${JSON.stringify({
-			schemaVersion: 1,
-			capturedAtUnixMs,
-			redisVersion,
-			includedPrefixes: ['share:', 'ical:'],
-			entryCount: orderedEntries.length,
-			entries: orderedEntries
-		})}\n`)
+		process.stdout.write(
+			`${JSON.stringify({
+				schemaVersion: 1,
+				capturedAtUnixMs,
+				redisVersion,
+				includedPrefixes: ['share:', 'ical:'],
+				entryCount: orderedEntries.length,
+				entries: orderedEntries
+			})}\n`
+		)
 	} finally {
 		await redis.quit()
 	}

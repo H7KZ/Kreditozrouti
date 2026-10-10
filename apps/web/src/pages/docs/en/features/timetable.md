@@ -19,12 +19,12 @@ Click a timetable block to inspect its time, room, lecturer, and course details.
 
 ## Conflicts and incomplete courses
 
-| Status | Meaning |
-| --- | --- |
-| **Conflict** | Selected slots overlap in time. |
+| Status              | Meaning                                                                |
+| ------------------- | ---------------------------------------------------------------------- |
+| **Conflict**        | Selected slots overlap in time.                                        |
 | **Campus conflict** | Less than 40 minutes separate classes at different known VŠE campuses. |
-| **Incomplete** | A required unit type, such as an exercise, has not been selected. |
-| **Selected** | No detected issue. |
+| **Incomplete**      | A required unit type, such as an exercise, has not been selected.      |
+| **Selected**        | No detected issue.                                                     |
 
 The app recognizes Žižkov rooms starting `RB`, `NB`, `IB`, or `SB`, and Jižní Město rooms starting `JM`. It cannot warn about a campus transfer when a room's campus is unknown. Check the final timetable in InSIS before enrolling.
 

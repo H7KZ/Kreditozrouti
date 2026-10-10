@@ -40,7 +40,7 @@ Source: https://docs.umami.is/docs/tracker-functions - "Tracker functions" lists
 Value types and their caps when using the JavaScript `track()` method:
 
 | Type     | Limit                                                                            |
-|----------|----------------------------------------------------------------------------------|
+| -------- | -------------------------------------------------------------------------------- |
 | Numbers  | max precision 4 decimal places (stored as `parseFloat(value).toFixed(4)`)        |
 | Strings  | **max length 500 characters**                                                    |
 | Booleans | supported                                                                        |
@@ -94,18 +94,18 @@ JSON body shape:
 
 ```json
 {
-  "type": "event",
-  "payload": {
-    "website": "your-website-id",
-    "name": "event-name",
-    "hostname": "your-hostname",
-    "url": "/",
-    "referrer": "",
-    "title": "page-title",
-    "language": "en-US",
-    "screen": "1920x1080",
-    "data": { }
-  }
+	"type": "event",
+	"payload": {
+		"website": "your-website-id",
+		"name": "event-name",
+		"hostname": "your-hostname",
+		"url": "/",
+		"referrer": "",
+		"title": "page-title",
+		"language": "en-US",
+		"screen": "1920x1080",
+		"data": {}
+	}
 }
 ```
 
@@ -216,9 +216,9 @@ so `analytics.track()` is enough (no direct `/api/send` needed):
 
 ```ts
 analytics.track('feedback', {
-  rating: 4,            // number - kept numeric (max 4 decimal places; we only need integers 1–5)
-  thumbs: 'up',         // string 'up'/'down' - or a boolean; both are supported and stored typed
-  message: '<free text>' // string - truncated at 500 chars
+	rating: 4, // number - kept numeric (max 4 decimal places; we only need integers 1–5)
+	thumbs: 'up', // string 'up'/'down' - or a boolean; both are supported and stored typed
+	message: '<free text>' // string - truncated at 500 chars
 })
 ```
 

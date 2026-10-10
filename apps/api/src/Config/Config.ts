@@ -4,11 +4,7 @@ import dotenv from 'dotenv'
 
 try {
 	dotenv.config({
-		path: [
-			path.resolve(process.cwd(), '../../../../.env'),
-			path.resolve(process.cwd(), '../../.env'),
-			path.resolve(process.cwd(), '.env')
-		]
+		path: [path.resolve(process.cwd(), '../../../../.env'), path.resolve(process.cwd(), '../../.env'), path.resolve(process.cwd(), '.env')]
 	})
 } catch {
 	console.warn('No .env file found')

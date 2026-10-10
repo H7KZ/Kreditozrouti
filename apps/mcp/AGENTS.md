@@ -22,7 +22,7 @@ apps/mcp/src/
 ## Path Aliases
 
 | Alias    | Resolves to |
-|----------|-------------|
+| -------- | ----------- |
 | `@mcp/*` | `./src/*`   |
 
 ## Critical Invariants

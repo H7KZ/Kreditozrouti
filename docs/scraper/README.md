@@ -13,14 +13,14 @@ Queue names come from `@kreditozrouti/core/queue`; payload types come from `@kre
 
 ## Where to work
 
-| Area | Location |
-| --- | --- |
-| Job routing and execution | `apps/scraper/src/Handlers/`, `apps/scraper/src/Jobs/` |
-| HTML extraction | `apps/scraper/src/Services/ExtractInSIS*Service.ts` |
-| HTTP client and rate limit | `apps/scraper/src/Services/InSISHTTPClientService.ts`, `InSISRateLimitService.ts` |
-| Queue writes | `apps/scraper/src/Services/QueueService.ts` |
-| HTML, HTTP, and concurrency helpers | `apps/scraper/src/Utils/` |
-| Worker setup and config | `apps/scraper/src/bullmq.ts`, `apps/scraper/src/Config/Config.ts` |
+| Area                                | Location                                                                          |
+| ----------------------------------- | --------------------------------------------------------------------------------- |
+| Job routing and execution           | `apps/scraper/src/Handlers/`, `apps/scraper/src/Jobs/`                            |
+| HTML extraction                     | `apps/scraper/src/Services/ExtractInSIS*Service.ts`                               |
+| HTTP client and rate limit          | `apps/scraper/src/Services/InSISHTTPClientService.ts`, `InSISRateLimitService.ts` |
+| Queue writes                        | `apps/scraper/src/Services/QueueService.ts`                                       |
+| HTML, HTTP, and concurrency helpers | `apps/scraper/src/Utils/`                                                         |
+| Worker setup and config             | `apps/scraper/src/bullmq.ts`, `apps/scraper/src/Config/Config.ts`                 |
 
 ## References
 

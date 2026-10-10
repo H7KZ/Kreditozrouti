@@ -6,15 +6,15 @@ Tracing is off unless `OTEL_EXPORTER_OTLP_ENDPOINT` is set. The current monitori
 
 ## Components and retention
 
-| Component | Current image | Role |
-| --- | --- | --- |
-| Alloy | `grafana/alloy:v1.19.2` | Collection, probes, Faro receiver |
-| Prometheus | `prom/prometheus:v3.14.0` | Metrics, 15-day and 2 GB retention cap, alert rules |
-| Alertmanager | `prom/alertmanager:v0.34.0` | Notification routing |
-| Loki | `grafana/loki:3.7.7` | Logs, seven-day retention; Traefik logs three days |
-| Grafana | `grafana/grafana:13.2.1` | Dashboards |
-| Umami | `ghcr.io/umami-software/umami:3.3.1` | Analytics |
-| Umami DB | `postgres:18.6-alpine` | Analytics storage |
+| Component    | Current image                        | Role                                                |
+| ------------ | ------------------------------------ | --------------------------------------------------- |
+| Alloy        | `grafana/alloy:v1.19.2`              | Collection, probes, Faro receiver                   |
+| Prometheus   | `prom/prometheus:v3.14.0`            | Metrics, 15-day and 2 GB retention cap, alert rules |
+| Alertmanager | `prom/alertmanager:v0.34.0`          | Notification routing                                |
+| Loki         | `grafana/loki:3.7.7`                 | Logs, seven-day retention; Traefik logs three days  |
+| Grafana      | `grafana/grafana:13.2.1`             | Dashboards                                          |
+| Umami        | `ghcr.io/umami-software/umami:3.3.1` | Analytics                                           |
+| Umami DB     | `postgres:18.6-alpine`               | Analytics storage                                   |
 
 Umami event retention runs through [`.github/workflows/umami-retention.yml`](../../.github/workflows/umami-retention.yml), using the [retention SQL](../../deployment/monitoring/umami/retention.sql). Check the workflow schedule before relying on it for data expiry.
 

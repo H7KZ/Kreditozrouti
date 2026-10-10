@@ -12,14 +12,14 @@ Kreditožrouti is a student project. You can use it without an account. It reads
 
 ## Information used by the service
 
-| Purpose | Information | Storage and retention |
-| --- | --- | --- |
-| Course browsing | Public course, timetable, study plan, faculty, and lecturer data | Application database; refreshed from InSIS |
-| Draft planning | Wizard choices, completed-course marks, schedules, and preferences | Your browser's local storage; clear browser data to remove them |
-| Shared timetable and calendar links | Selected units and calendar settings when you create a link | Redis; links expire after 180 days without a view, and viewing renews that period |
-| Usage analytics | Page views, referrers, and feature events | Self-hosted Umami; scheduled deletion after 13 months |
-| Optional feedback | Your rating and any comment you submit | Umami event data; scheduled deletion after 12 months |
-| Error diagnosis | JavaScript errors, page address, and Web Vitals | Self-hosted Grafana Faro and Loki; logs retained for up to 7 days |
+| Purpose                             | Information                                                        | Storage and retention                                                             |
+| ----------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| Course browsing                     | Public course, timetable, study plan, faculty, and lecturer data   | Application database; refreshed from InSIS                                        |
+| Draft planning                      | Wizard choices, completed-course marks, schedules, and preferences | Your browser's local storage; clear browser data to remove them                   |
+| Shared timetable and calendar links | Selected units and calendar settings when you create a link        | Redis; links expire after 180 days without a view, and viewing renews that period |
+| Usage analytics                     | Page views, referrers, and feature events                          | Self-hosted Umami; scheduled deletion after 13 months                             |
+| Optional feedback                   | Your rating and any comment you submit                             | Umami event data; scheduled deletion after 12 months                              |
+| Error diagnosis                     | JavaScript errors, page address, and Web Vitals                    | Self-hosted Grafana Faro and Loki; logs retained for up to 7 days                 |
 
 Feedback comments are free text. Please do not include personal details. A comment may itself contain personal data even though the form asks you to avoid it. We send feedback only when you submit it. A share link lets anyone holding it view the selected timetable; share it accordingly.
 
