@@ -81,8 +81,7 @@ rules on the first deploy, so `scripts/sync-grafana-alerts.sh` is obsolete. `Wat
 **Monitoring deploys the same versioned way as the app stack, on manual dispatch only.** `deploy-monitoring.yml` uploads
 `deployment/monitoring/` + `deployment/lib.sh` into `~/kreditozrouti/versions/monitoring/<sha>/`, runs
 `monitoring/deploy.sh` from there, then updates the `~/kreditozrouti/versions/monitoring/current` symlink. Old
-version dirs are cleaned up the same way as app deploys (7 days, minimum 3 kept) via the shared
-`cleanup_old_versions` in `lib.sh` (14 days, minimum 5 kept). No more writing directly into a flat `~/deployment/` - that was the old layout
+version dirs are cleaned up by the shared `cleanup_old_versions` in `lib.sh` (14 days, minimum 5 kept). No more writing directly into a flat `~/deployment/` - that was the old layout
 and diverged from every other prod deploy, which caused ownership/permission drift on the host.
 
 **Workflow jobs use GitHub-hosted runners over SSH with the pinned host fingerprint.** Keep the existing VPS runner

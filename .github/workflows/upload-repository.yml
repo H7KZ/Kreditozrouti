@@ -50,17 +50,18 @@ jobs:
         steps:
             - name: Validate Inputs
               id: validated
-        env:
-          INPUT_FOLDER: ${{ inputs.target_folder }}
-        run: |
-          if [[ ! "$INPUT_FOLDER" =~ ^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$ ]]; then
-            echo "ERROR: target_folder must be one safe relative directory name"
+              env:
+                  INPUT_FOLDER: ${{ inputs.target_folder }}
+              run: |
+                  set -euo pipefail
+                  if [[ ! "$INPUT_FOLDER" =~ ^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$ ]]; then
+                    echo "ERROR: target_folder must be one safe relative directory name"
                     exit 1
                   fi
                   echo "folder=$INPUT_FOLDER" >> "$GITHUB_OUTPUT"
 
             - name: Checkout Code
-              uses: actions/checkout@v7
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
               with:
                   ref: ${{ inputs.branch }}
 
@@ -96,10 +97,10 @@ jobs:
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-          envs: TARGET_FOLDER
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+                  envs: TARGET_FOLDER
                   script: |
                       set -euo pipefail
                       TARGET_DIR="$HOME/$TARGET_FOLDER"
@@ -110,28 +111,28 @@ jobs:
                       mkdir -p "$TARGET_DIR"
 
             - name: Upload Repository
-          uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1
+              uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-          source: '.'
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+                  source: '.'
                   target: '~/${{ steps.validated.outputs.folder }}'
                   rm: false
 
             - name: Verify Upload
-          uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
+              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
               env:
                   TARGET_FOLDER: ${{ steps.validated.outputs.folder }}
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-          envs: TARGET_FOLDER
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+                  envs: TARGET_FOLDER
                   script: |
                       set -euo pipefail
                       echo "=========================================="
