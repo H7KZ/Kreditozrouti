@@ -85,6 +85,13 @@ jobs:
             - name: Check em dashes
               run: bash scripts/check-em-dashes.sh
 
+            # ubuntu-latest ships shellcheck; -x follows sourced libs, -P SCRIPTDIR resolves them from the sourcing script.
+            - name: Lint Shell Scripts
+              run: git ls-files -z '*.sh' | xargs -0 shellcheck -x -P SCRIPTDIR
+
+            - name: Check Formatting
+              run: pnpm format:check
+
             - name: Validate monitoring config
               if: steps.scope.outputs.monitoring == 'true' || steps.scope.outputs.full == 'true'
               run: bash deployment/monitoring/validate.sh

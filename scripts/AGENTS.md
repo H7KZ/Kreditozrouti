@@ -11,12 +11,12 @@ owns them.
 
 ## Scripts
 
-| Script                   | Purpose                                                                   | Requires Root |
-|--------------------------|---------------------------------------------------------------------------|---------------|
-| `lib.sh`                 | Shared utilities - sourced by all scripts, not run directly               | No            |
-| `clone-db.sh`            | Clone MySQL DB between dev and prod stacks on the same VPS                | Yes           |
-| `sync-grafana-alerts.sh` | Retired legacy Grafana cleanup script; current rules live in Prometheus/Loki | No |
-| `check-em-dashes.sh`     | CI lint check (used by `_verify.yml`)                                     | No            |
+| Script                   | Purpose                                                                      | Requires Root |
+| ------------------------ | ---------------------------------------------------------------------------- | ------------- |
+| `lib.sh`                 | Shared utilities - sourced by all scripts, not run directly                  | No            |
+| `clone-db.sh`            | Clone MySQL DB between dev and prod stacks on the same VPS                   | Yes           |
+| `sync-grafana-alerts.sh` | Retired legacy Grafana cleanup script; current rules live in Prometheus/Loki | No            |
+| `check-em-dashes.sh`     | CI lint check (used by `_verify.yml`)                                        | No            |
 
 ---
 
@@ -25,15 +25,20 @@ owns them.
 **Always source `lib.sh` first** in any new script:
 
 ```bash
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
+# shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 ```
+
+**Every shell script must pass `shellcheck -x -P SCRIPTDIR`** (CI, `_verify.yml`). Declare and assign separately so
+`set -e` sees command failures (SC2155).
 
 ---
 
 ## Key Docs
 
 | Topic                                                                      | Doc                                              |
-|----------------------------------------------------------------------------|--------------------------------------------------|
+| -------------------------------------------------------------------------- | ------------------------------------------------ |
 | VPS-wide scripts (install-docker, maintenance, docker-cleanup, setup-swap) | `Infrastructure/scripts/CLAUDE.md`               |
-| Database cloning and recovery                                            | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md) |
+| Database cloning and recovery                                              | [MAINTENANCE.md](../docs/scripts/MAINTENANCE.md) |
