@@ -7,7 +7,8 @@ readonly RESTORE_ROOT="$STATE_ROOT/restores"
 readonly KOPIA_BIN="${KOPIA_BIN:-/usr/local/bin/kopia}"
 readonly KOPIA_CONFIG_FILE="${KOPIA_CONFIG_FILE:-/etc/kreditozrouti-backup/repository.config}"
 readonly TOOLKIT_BIN="${TOOLKIT_BIN:-/usr/local/bin/toolkit}"
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
 OPERATION_ID=''
 
 fail() { printf '[restore] ERROR: %s\n' "$*" >&2; exit 1; }

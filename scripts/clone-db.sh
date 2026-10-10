@@ -24,10 +24,13 @@ set -euo pipefail
 # Log File: none (stdout only; redirect to a file yourself if needed)
 # ==============================================================================
 
-readonly SCRIPT_NAME="$(basename "$0")"
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_NAME
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
 readonly BACKUP_DIR="$HOME/backups/db-clones"
 
+# shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 check_root() {

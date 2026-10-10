@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+readonly SCRIPT_DIR
 [[ "$(id -u)" == 0 ]] || { printf 'Run with sudo as root.\n' >&2; exit 1; }
 
 bash "$SCRIPT_DIR/verify-toolkit-pin.sh"

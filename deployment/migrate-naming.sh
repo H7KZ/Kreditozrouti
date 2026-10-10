@@ -82,16 +82,22 @@ prune_old() {
         read -r old _ <<<"$pair"
         vol_exists "$old" || continue
         if [[ $DRY_RUN -eq 1 ]]; then log "  would rm volume: $old"; continue; fi
-        docker volume rm "$old" >/dev/null && log "  removed volume: $old" || \
-            log_warning"  could not remove volume (in use?): $old"
+        if docker volume rm "$old" >/dev/null; then
+            log "  removed volume: $old"
+        else
+            log_warning "  could not remove volume (in use?): $old"
+        fi
     done
     log "Pruning OLD networks…"
     for pair in "${NETWORK_RENAMES[@]}"; do
         read -r old _ <<<"$pair"
         docker network inspect "$old" >/dev/null 2>&1 || continue
         if [[ $DRY_RUN -eq 1 ]]; then log "  would rm network: $old"; continue; fi
-        docker network rm "$old" >/dev/null && log "  removed network: $old" || \
-            log_warning"  could not remove network (in use?): $old"
+        if docker network rm "$old" >/dev/null; then
+            log "  removed network: $old"
+        else
+            log_warning "  could not remove network (in use?): $old"
+        fi
     done
 }
 

@@ -11,9 +11,11 @@ set -euo pipefail
 #   GRAFANA_ADMIN_USER (default admin), DOCKER_GID (default: group id of /var/run/docker.sock)
 # ==============================================================================
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
 readonly STACK_NAME="kreditozrouti-monitoring"
 
+# shellcheck source=../lib.sh
 source "$SCRIPT_DIR/../lib.sh"
 
 require() {
@@ -40,10 +42,12 @@ main() {
 
     export GRAFANA_ADMIN_USER="${GRAFANA_ADMIN_USER:-admin}"
     export GRAFANA_ADMIN_PASSWORD
-    export DOCKER_GID="${DOCKER_GID:-$(stat -c '%g' /var/run/docker.sock)}"
+    DOCKER_GID="${DOCKER_GID:-$(stat -c '%g' /var/run/docker.sock)}"
+    export DOCKER_GID
     export UMAMI_DB_NAME UMAMI_DB_USER UMAMI_DB_PASSWORD UMAMI_APP_SECRET
     # Read-only Grafana role on the Umami database, derived so no extra secret is needed.
-    export UMAMI_GRAFANA_PASSWORD="$(printf '%s' "grafana_ro:$UMAMI_APP_SECRET" | sha256sum | cut -c1-40)"
+    UMAMI_GRAFANA_PASSWORD="$(printf '%s' "grafana_ro:$UMAMI_APP_SECRET" | sha256sum | cut -c1-40)"
+    export UMAMI_GRAFANA_PASSWORD
 
     # Alertmanager reads webhook URLs from files, never from env or its config.
     install -d -m 0755 "$SCRIPT_DIR/.secrets"

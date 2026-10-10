@@ -2,7 +2,8 @@
 set -Eeuo pipefail
 umask 077
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
 readonly STATE_ROOT='/var/lib/kreditozrouti-backup'
 readonly STAGING_ROOT="$STATE_ROOT/staging"
 readonly RESULT_ROOT="$STATE_ROOT/results"

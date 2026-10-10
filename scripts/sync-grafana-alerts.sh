@@ -39,11 +39,14 @@ set -euo pipefail
 #     to read rules.yml
 # ==============================================================================
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+readonly REPO_ROOT
 readonly RULES_FILE="${1:-$REPO_ROOT/deployment/monitoring/grafana/provisioning/alerting/rules.yml}"
 readonly DRY_RUN="${DRY_RUN:-false}"
 
+# shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 if [[ -z "${GRAFANA_URL:-}" ]]; then
@@ -107,17 +110,15 @@ log "Found ${#COMMITTED_UIDS[@]} committed rule UID(s)."
 log "Fetching currently provisioned alert rules from $GRAFANA_URL ..."
 GRAFANA_RULES_JSON="$(curl_json "$GRAFANA_URL/api/v1/provisioning/alert-rules")"
 
-mapfile -t GRAFANA_UIDS < <(printf '%s' "$GRAFANA_RULES_JSON" | python3 - <<'PYEOF'
+mapfile -t GRAFANA_UIDS < <(printf '%s' "$GRAFANA_RULES_JSON" | python3 -c '
 import json
 import sys
 
-data = json.load(sys.stdin)
-for rule in data:
+for rule in json.load(sys.stdin):
     uid = rule.get("uid")
     if uid:
         print(uid)
-PYEOF
-)
+')
 
 log "Grafana currently has ${#GRAFANA_UIDS[@]} provisioned rule(s)."
 

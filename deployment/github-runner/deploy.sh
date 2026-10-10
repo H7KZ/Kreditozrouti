@@ -21,10 +21,11 @@ set -euo pipefail
 #   RUNNER_LABELS         Additional labels, comma-separated
 # ==============================================================================
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly SCRIPT_NAME="$(basename "$0")"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
 readonly STACK_NAME="kreditozrouti-ci"
 
+# shellcheck source=../lib.sh
 source "$(cd "$SCRIPT_DIR/.." && pwd)/lib.sh"
 
 ENV_FILE=""
@@ -37,8 +38,10 @@ done
 
 if [[ -n "$ENV_FILE" ]]; then
     [[ -f "$ENV_FILE" ]] || { log_error "Env file not found: $ENV_FILE"; exit 1; }
+    set -a
     # shellcheck source=/dev/null
-    set -a; source "$ENV_FILE"; set +a
+    source "$ENV_FILE"
+    set +a
 fi
 
 validate_url() {
