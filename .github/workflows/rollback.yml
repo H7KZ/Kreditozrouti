@@ -53,6 +53,13 @@ jobs:
         timeout-minutes: 5
         environment: ${{ inputs.environment }}
         steps:
+            - name: Require main for production
+              if: inputs.environment == 'production'
+              env:
+                  WORKFLOW_REF: ${{ github.ref }}
+              run: |
+                  [[ "$WORKFLOW_REF" == refs/heads/main ]] || { echo "ERROR: production rollback must be dispatched from main"; exit 1; }
+
             - name: Require a pinned SSH host fingerprint
               env:
                   SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
