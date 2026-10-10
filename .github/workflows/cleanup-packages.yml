@@ -1,8 +1,7 @@
 # ==============================================================================
 # Workflow: Cleanup GHCR Package Versions
-# Description: Manually triggered workflow to delete old container image
-#              versions for all three services (api, web, scraper).
-#              Floating tags (latest, dev-latest) are always preserved.
+# Description: Dry-run inventory only. GHCR deletion stays disabled until cleanup
+#              consumes trusted backup recovery references and deployment rollback refs.
 #
 # Trigger: workflow_dispatch only
 # ==============================================================================
@@ -24,35 +23,17 @@ on:
                 default: false
 
 permissions:
-    packages: write
+    packages: read
 
 jobs:
-    cleanup-api:
-        name: Cleanup API
+    deletion-blocked:
+        name: Refuse unprotected registry deletion
         if: ${{ !inputs.dry_run }}
-        uses: ./.github/workflows/_cleanup-package.yml
-        with:
-            package-name: kreditozrouti/api
-            min-versions-to-keep: ${{ inputs.min_versions_to_keep }}
-        secrets: inherit
-
-    cleanup-web:
-        name: Cleanup Web
-        if: ${{ !inputs.dry_run }}
-        uses: ./.github/workflows/_cleanup-package.yml
-        with:
-            package-name: kreditozrouti/web
-            min-versions-to-keep: ${{ inputs.min_versions_to_keep }}
-        secrets: inherit
-
-    cleanup-scraper:
-        name: Cleanup Scraper
-        if: ${{ !inputs.dry_run }}
-        uses: ./.github/workflows/_cleanup-package.yml
-        with:
-            package-name: kreditozrouti/scraper
-            min-versions-to-keep: ${{ inputs.min_versions_to_keep }}
-        secrets: inherit
+        runs-on: ubuntu-latest
+        steps:
+            - run: |
+                  echo "::error::GHCR deletion is disabled until trusted backup recovery references are consumed."
+                  exit 1
 
     dry-run:
         name: Dry Run — List versions that would be deleted

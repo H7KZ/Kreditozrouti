@@ -19,9 +19,15 @@ Pushes to `main` select changed services. A change under `packages/` selects all
 
 Builds push `ghcr.io/<owner>/<repo>/<service>:<sha8>` and a floating tag (`latest` or `dev-latest`). Deploys use the short SHA. Set `image_tag` to an existing tag to skip the build; `skip_build` requires `image_tag`.
 
+Builds stamp the full source commit as `org.opencontainers.image.revision`. Every deployment validates the vendored toolkit archive against `deployment/toolkit.lock`; updating the host toolkit remains a separate reviewed operator action.
+
 The reusable deploy job uploads `deployment/` to `~/kreditozrouti/versions/<environment>/<sha>/`, writes `.env` from GitHub environment values with permission `600`, runs `deploy.sh`, and moves `current` to that directory. The script removes old version directories after seven days while retaining at least three. A service-only deploy brings up API, scraper, or MCP infrastructure dependencies; web deploys with `--no-deps` so it does not replace the running API image.
 
 `image_tag` dispatches check out the selected workflow ref, which may differ from the commit that built the existing image. Confirm the chosen tag and configuration before redeploying.
+
+Production backups are not triggered by app deployment workflows. Deploy and rollback use the Infrastructure toolkit host/repository locks and status records whenever `/usr/local/bin/toolkit` is installed. Set the GitHub Environment variable `TOOLKIT_LOCKS_REQUIRED=true` to fail closed if the host toolkit is missing. Until the toolkit is installed, deploy retains the legacy unlocked path and logs a warning; keep backup scheduling disabled. The [backup runbook](../../deployment/backups/README.md) also requires B2 Object Lock, trusted hosted retention maintenance, and an isolated restore rehearsal.
+
+The cleanup workflow is dry-run only. GHCR deletion is disabled until it consumes the union of retained backup recovery references and deployment rollback references.
 
 ## Required configuration
 

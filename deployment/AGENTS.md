@@ -28,6 +28,7 @@ deployment/
 │   ├── loki/                             # loki.yml, runtime.yml, rules/fake/alerts.yml
 │   ├── grafana/                          # provisioning (datasources, dashboards, legacy alert cleanup), dashboards/Kreditozrouti/
 │   └── umami/                            # grafana-role.sql, retention.sql (umami-retention.yml runs it daily)
+├── backups/                               # production-only capture and isolated restore scaffold
 └── github-runner/
     ├── deploy.sh                         # Manual runner setup (run directly on VPS)
     └── docker-compose.github-runner.yml
@@ -128,6 +129,12 @@ the image pin in a Compose file.
 `kreditozrouti-redis-volume-dev` in development). Redis runs with AOF persistence (`--appendonly yes`) and `noeviction`
 policy so sessions and queue jobs are never silently dropped.
 
+**Backup scope is allowlisted and production-only.** See [backups](backups/README.md): capture MySQL, Umami PostgreSQL,
+and only Redis `share:*` / `ical:*` keys with their original absolute expiry. Never back up or restore the whole Redis
+volume. Do not enable a backup timer until the host toolkit is installed, deploy/rollback require its locks, manual
+migrations use the same locks, credentials/Object Lock and hosted retention are configured, and isolated restore is
+rehearsed. Set the GitHub Environment variable `TOOLKIT_LOCKS_REQUIRED=true` after installing the toolkit.
+
 **Both MySQL and Redis require named volumes to be created on the host before first `docker compose up`.** Production:
 `docker volume create kreditozrouti-mysql-volume-prod && docker volume create kreditozrouti-redis-volume-prod`.
 Development:
@@ -152,6 +159,7 @@ working directory doesn't matter; only the script's own location does.
 | GitHub Actions workflows, secrets, rollback | [CICD.md](../docs/deployment/CICD.md)                         |
 | Traefik, networking, env vars               | [INFRASTRUCTURE.md](../docs/deployment/INFRASTRUCTURE.md)     |
 | Monitoring, security, troubleshooting       | [OPERATIONS.md](../docs/deployment/OPERATIONS.md)             |
+| Backup capture and restore                  | [backups/README.md](backups/README.md)                          |
 | Observability overview and source links     | [MONITORING.md](../docs/deployment/MONITORING.md)             |
 | Moving monitoring to its own host (draft)   | [MONITORING_SPLIT.md](../docs/deployment/MONITORING_SPLIT.md) |
 | DNS and HTTPS manual setup                  | [DNS.md](../docs/setup/DNS.md)                                |

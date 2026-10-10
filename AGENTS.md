@@ -119,6 +119,7 @@ Package-specific references are linked from each area-specific `AGENTS.md`. Star
 - [Partner API](docs/api/PUBLIC_API.md) and its ADRs: [0003](docs/adr/0003-partner-api-rate-limit-fails-open.md), [0004](docs/adr/0004-public-api-is-partner-only-behind-hard-gates.md)
 - [MCP server](docs/mcp/README.md)
 - [Manual setup guides](docs/setup/README.md)
+- [Deployment operations and backup recovery](docs/deployment/OPERATIONS.md)
 
 ---
 

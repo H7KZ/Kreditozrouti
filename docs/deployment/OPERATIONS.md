@@ -21,7 +21,20 @@ For dashboards, alerts, and log queries, see [monitoring](MONITORING.md). Valida
 
 Use **Actions > Rollback Deployment** with an existing eight-character SHA, service, and environment. The workflow requires that SHA's version directory on the host. See [rollback details](CICD.md#rollback). Image rollback does not undo schema migrations.
 
-MySQL has no automated backup in this repo. A lost MySQL volume removes the scraped course and study-plan catalog until it is rebuilt from InSIS. Student schedules are stored in their browsers. Redis uses a persistent AOF volume; losing it drops queued jobs, sessions, and active share/calendar links. Retain both volumes during Docker cleanup.
+The production backup scaffold is in [backups](../../deployment/backups/README.md). It captures MySQL, the Umami PostgreSQL database, and only Redis `share:*` / `ical:*` records with original expiry times. It excludes Redis queues, cache, sessions, counters, and full-volume dumps. Deploy and rollback use toolkit locks when installed; `TOOLKIT_LOCKS_REQUIRED=true` makes a missing toolkit fail closed. No timer is enabled. Do not rely on backups until the host toolkit is installed, B2 Object Lock and hosted retention are proven, a full isolated restore is rehearsed, and the application owner approves rollout. Losing the MySQL volume removes the scraped course and study-plan catalog until it is rebuilt from InSIS. Retain all named volumes during Docker cleanup.
+
+## Manual data changes
+
+Use the shared host lock for every manual migration or volume mutation. Example for the one-time Umami PostgreSQL migration:
+
+```bash
+cd "$HOME/kreditozrouti/versions/production/current"
+sudo /usr/local/bin/toolkit with-lock \
+  --repository kreditozrouti --environment production --action maintenance --timeout 3600 -- \
+  bash deployment/monitoring/migrate-umami-pg18.sh diagnose
+```
+
+Repeat under the same lock for its reviewed `migrate` or `clean` action. The naming-volume migration and `--prune-old` also require the lock. Do not run Docker/DDL migration commands directly while the backup capture timer is enabled.
 
 For a new host: restore Docker access and a self-hosted GitHub runner, deploy shared Traefik from the Infrastructure repo, set the GitHub environment secrets, deploy monitoring if needed, then dispatch `Deploy` for the app. Check public health routes and the scraper after deployment. The [Umami PostgreSQL 18 migration](HANDOFF-umami-pg18-migration.md) applies only to an older monitoring database volume; do not run it on a fresh volume.
 

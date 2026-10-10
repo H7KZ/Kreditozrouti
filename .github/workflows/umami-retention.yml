@@ -22,6 +22,8 @@ jobs:
         name: Delete old analytics
         runs-on: self-hosted
         timeout-minutes: 10
+        environment: production
+        if: vars.TOOLKIT_LOCKS_REQUIRED == 'true'
 
         permissions:
             contents: read
@@ -36,5 +38,13 @@ jobs:
                   port: ${{ secrets.SSH_PORT }}
                   script: |
                       set -euo pipefail
-                      SQL="$HOME/kreditozrouti/versions/monitoring/current/monitoring/umami/retention.sql"
-                      docker exec -i kreditozrouti-monitoring-umami-db-1 sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < "$SQL"
+                      VERSION_DIR="$HOME/kreditozrouti/versions/monitoring/current"
+                      EXPECTED_TOOLKIT_VERSION="$(awk -F= '$1 == "TOOLKIT_VERSION" { if (seen++) exit 2; print substr($0, index($0, "=") + 1) } END { if (!seen) exit 1 }' "$VERSION_DIR/toolkit.lock")"
+                      ACTUAL_TOOLKIT_VERSION="$(sudo -n /usr/local/bin/toolkit version | sed -n 's/^toolkit_version=\([^ ]*\).*/\1/p')"
+                      [[ "$ACTUAL_TOOLKIT_VERSION" == "$EXPECTED_TOOLKIT_VERSION" ]] || { echo "ERROR: host toolkit does not match deployed pin"; exit 1; }
+                      DEPLOY_USER="$(id -un)"
+                      SQL="$VERSION_DIR/monitoring/umami/retention.sql"
+                      sudo -n /usr/local/bin/toolkit with-lock --repository kreditozrouti --environment production --action maintenance --timeout 3600 -- runuser -u "$DEPLOY_USER" -- bash -c '
+                          set -euo pipefail
+                          docker exec -i kreditozrouti-monitoring-umami-db-1 sh -c "psql -v ON_ERROR_STOP=1 -U \"\$POSTGRES_USER\" -d \"\$POSTGRES_DB\"" < "$1"
+                        ' _ "$SQL"

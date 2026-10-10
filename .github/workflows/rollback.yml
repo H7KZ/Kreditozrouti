@@ -113,6 +113,7 @@ jobs:
             project_name: ${{ needs.resolve.outputs.project_name }}
             image_tag: ${{ inputs.sha }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+            operation_action: rollback
         secrets: inherit
 
     deploy-web:
@@ -129,6 +130,7 @@ jobs:
             project_name: ${{ needs.resolve.outputs.project_name }}
             image_tag: ${{ inputs.sha }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+            operation_action: rollback
         secrets: inherit
 
     deploy-scraper:
@@ -145,6 +147,7 @@ jobs:
             project_name: ${{ needs.resolve.outputs.project_name }}
             image_tag: ${{ inputs.sha }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+            operation_action: rollback
         secrets: inherit
 
     deploy-mcp:
@@ -161,4 +164,5 @@ jobs:
             project_name: ${{ needs.resolve.outputs.project_name }}
             image_tag: ${{ inputs.sha }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+            operation_action: rollback
         secrets: inherit

@@ -24,6 +24,7 @@ jobs:
         name: Deploy Monitoring
         runs-on: self-hosted
         timeout-minutes: 20
+        environment: production
 
         permissions:
             contents: read
@@ -31,6 +32,9 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v7
+
+            - name: Validate pinned toolkit bundle
+              run: bash deployment/verify-toolkit-pin.sh
 
             - name: Resolve version tag
               id: version
@@ -69,16 +73,34 @@ jobs:
                   UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
                   UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
                   UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
+                  TOOLKIT_LOCKS_REQUIRED: ${{ vars.TOOLKIT_LOCKS_REQUIRED || 'false' }}
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
-                  envs: VERSION_TAG,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL,HEALTHCHECKS_PING_URL,UMAMI_DB_NAME,UMAMI_DB_USER,UMAMI_DB_PASSWORD,UMAMI_APP_SECRET
+                  envs: VERSION_TAG,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL,HEALTHCHECKS_PING_URL,UMAMI_DB_NAME,UMAMI_DB_USER,UMAMI_DB_PASSWORD,UMAMI_APP_SECRET,TOOLKIT_LOCKS_REQUIRED
                   command_timeout: 15m
                   script: |
                       set -euo pipefail
                       VERSION_DIR="$HOME/kreditozrouti/versions/monitoring/$VERSION_TAG"
-                      bash "$VERSION_DIR/monitoring/deploy.sh"
-                      ln -sfn "$VERSION_DIR" "$HOME/kreditozrouti/versions/monitoring/current"
+                      CURRENT_LINK="$HOME/kreditozrouti/versions/monitoring/current"
+                      TOOLKIT_BIN=/usr/local/bin/toolkit
+                      if [[ -x "$TOOLKIT_BIN" ]]; then
+                        EXPECTED_TOOLKIT_VERSION="$(awk -F= '$1 == "TOOLKIT_VERSION" { if (seen++) exit 2; print substr($0, index($0, "=") + 1) } END { if (!seen) exit 1 }' "$VERSION_DIR/toolkit.lock")"
+                        ACTUAL_TOOLKIT_VERSION="$("$TOOLKIT_BIN" version | sed -n 's/^toolkit_version=\([^ ]*\).*/\1/p')"
+                        [[ "$ACTUAL_TOOLKIT_VERSION" == "$EXPECTED_TOOLKIT_VERSION" ]] || { echo "ERROR: host toolkit does not match deployed pin"; exit 1; }
+                        DEPLOY_USER="$(id -un)"
+                        DEPLOY_HOME="$HOME"
+                        sudo -n --preserve-env=DEPLOY_HOME,VERSION_TAG,GRAFANA_ADMIN_USER,GRAFANA_ADMIN_PASSWORD,DISCORD_WEBHOOK_URL,HEALTHCHECKS_PING_URL,UMAMI_DB_NAME,UMAMI_DB_USER,UMAMI_DB_PASSWORD,UMAMI_APP_SECRET \
+                          "$TOOLKIT_BIN" with-lock --repository kreditozrouti --environment production --action deploy \
+                          --release-id "$VERSION_TAG" --timeout 3600 -- \
+                          runuser --preserve-environment -u "$DEPLOY_USER" -- env HOME="$DEPLOY_HOME" bash -c 'set -euo pipefail; cd "$1"; bash monitoring/deploy.sh; ln -sfn "$1" "$2"' _ "$VERSION_DIR" "$CURRENT_LINK"
+                      elif [[ "${TOOLKIT_LOCKS_REQUIRED,,}" == true ]]; then
+                        echo "ERROR: host toolkit is required but missing: $TOOLKIT_BIN"; exit 1
+                      else
+                        echo "WARNING: host toolkit is absent; monitoring deployment is unlocked. Keep backup scheduling disabled."
+                        bash "$VERSION_DIR/monitoring/deploy.sh"
+                        ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
+                      fi
                       echo "Monitoring deploy complete: $VERSION_TAG"

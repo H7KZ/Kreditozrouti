@@ -1,8 +1,7 @@
 # ==============================================================================
 # Workflow: Cleanup Package Versions (reusable)
-# Description: Deletes old GHCR container versions, keeping N most recent
-#              SHA-tagged versions. Floating tags (latest, dev-latest) are
-#              always preserved via ignore-versions.
+# Description: Disabled until cleanup consumes trusted backup and deployment
+#              recovery references.
 #
 # Inputs:
 #   package-name         Full GHCR package name, e.g. kreditozrouti/api
@@ -31,14 +30,10 @@ jobs:
         timeout-minutes: 10
 
         permissions:
-            packages: write
+            packages: read
 
         steps:
-            - name: Delete old package versions
-              uses: actions/delete-package-versions@v5
-              with:
-                  package-name: ${{ inputs.package-name }}
-                  package-type: container
-                  min-versions-to-keep: ${{ inputs.min-versions-to-keep }}
-                  ignore-versions: '^(latest|dev-latest)$'
-                  token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Refuse unsafe cleanup
+              run: |
+                  echo "::error::GHCR deletion is disabled until trusted recovery references are consumed."
+                  exit 1
