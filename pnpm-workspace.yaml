@@ -42,6 +42,12 @@ catalog:
 # Reaches transitive dependencies too, which catalogs cannot.
 overrides:
     typescript: '~6.0.3'
+    # Patched transitive dev-tool advisories (pnpm audit). Drop each once its parent package ships the fix.
+    shell-quote: '>=1.11.0'
+    source-map-js: '>=1.2.2'
+    postcss-selector-parser: '>=7.1.6'
+    esbuild: '>=0.28.1'
+    sharp: '>=0.35.5'
 
 packages:
     - 'apps/*'
