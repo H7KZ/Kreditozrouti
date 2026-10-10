@@ -88,8 +88,10 @@ and diverged from every other prod deploy, which caused ownership/permission dri
 stack until its owner-approved retirement gate confirms no external runner registration or consumer remains. A push
 to `main` builds and deploys every app service to development only after the full verification workflow succeeds;
 production remains manual-only. A complete development manifest is published only after API, web, scraper and MCP
-deployments succeed and Compose reports them running/healthy; configured health checks are honored, while services
-without health checks are checked as running. Partial manual development deploys do not qualify for promotion.
+deployments succeed, Compose reports them running/healthy, and three consecutive public HTTPS observations return
+2xx from `/`, `/api/health`, and `/mcp/health`. Partial manual development deploys do not qualify for promotion. These
+read-only checks establish public reachability only; they do not prove business behavior, release identity,
+dependency compatibility, or uninterrupted service.
 
 **`VITE_*` env vars** are baked into the web image at build time by Vite. Setting them at container runtime has no
 effect - the `docker-entrypoint.sh` placeholder-swap handles this at startup instead. **The swap only works while every
