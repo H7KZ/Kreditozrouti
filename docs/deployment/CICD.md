@@ -11,7 +11,7 @@ The active workflows live in [`.github/workflows`](../../.github/workflows/). Th
 | [`rollback.yml`](../../.github/workflows/rollback.yml) | Manual dispatch | Checks an eight-character SHA version directory exists, then redeploys the selected service or all four |
 | [`deploy-monitoring.yml`](../../.github/workflows/deploy-monitoring.yml) | Manual dispatch | Uploads and deploys the monitoring stack |
 
-`_build-service.yml`, `_deploy-service.yml`, and `_verify.yml` are reusable jobs. There are no separate `deploy-api.yml`, `deploy-web.yml`, or `deploy-scraper.yml` workflows. App deploy and rollback jobs use GitHub-hosted runners and SSH; the separate monitoring workflow is still on the VPS runner pending migration.
+`_build-service.yml`, `_deploy-service.yml`, and `_verify.yml` are reusable jobs. There are no separate `deploy-api.yml`, `deploy-web.yml`, or `deploy-scraper.yml` workflows. All workflow jobs use GitHub-hosted runners. Remote SSH and SCP actions require the pinned `SSH_HOST_FINGERPRINT` secret.
 
 ## App deploys
 
@@ -31,7 +31,7 @@ The cleanup workflow is dry-run only. GHCR deletion is disabled until it consume
 
 ## Required configuration
 
-Configure `SSH_HOST`, `SSH_USER`, `SSH_PORT`, and `SSH_PRIVATE_KEY` for the target GitHub environment. The automatic `GITHUB_TOKEN` authenticates to GHCR. App values such as `PROJECT` and `DOMAIN` are GitHub environment variables; database, Redis, and application credentials are environment secrets. The complete names are in [Infrastructure](INFRASTRUCTURE.md#configuration-and-secrets) and [`_deploy-service.yml`](../../.github/workflows/_deploy-service.yml).
+Configure `SSH_HOST`, `SSH_USER`, `SSH_PORT`, `SSH_PRIVATE_KEY`, and the out-of-band trusted `SHA256:` value in `SSH_HOST_FINGERPRINT` as repository secrets; environment secrets may override them for a distinct host. The automatic `GITHUB_TOKEN` authenticates to GHCR. App values such as `PROJECT` and `DOMAIN` are GitHub environment variables; database, Redis, and application credentials are environment secrets. The complete names are in [Infrastructure](INFRASTRUCTURE.md#configuration-and-secrets) and [`_deploy-service.yml`](../../.github/workflows/_deploy-service.yml).
 
 The deploy job rejects credential values containing `$` or backticks before writing `.env`, since Compose interpolation can change them. Keep secrets out of commits and terminal output. The monitoring workflow has a separate secret set; see [monitoring](MONITORING.md#deployment-and-secrets).
 

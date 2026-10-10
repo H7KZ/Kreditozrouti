@@ -85,9 +85,10 @@ version dirs are cleaned up the same way as app deploys (7 days, minimum 3 kept)
 `cleanup_old_versions` in `lib.sh`. No more writing directly into a flat `~/deployment/` - that was the old layout
 and diverged from every other prod deploy, which caused ownership/permission drift on the host.
 
-**App deploy and rollback jobs use GitHub-hosted runners over SSH.** Keep the self-hosted runner until the remaining
-monitoring and host maintenance workflows no longer depend on it. A push to `main` deploys changed app services to
-development only after the full verification workflow succeeds; production remains manual-only.
+**Workflow jobs use GitHub-hosted runners over SSH with the pinned host fingerprint.** Keep the existing VPS runner
+stack until its owner-approved retirement gate confirms no external runner registration or consumer remains. A push
+to `main` deploys changed app services to development only after the full verification workflow succeeds;
+production remains manual-only.
 
 **`VITE_*` env vars** are baked into the web image at build time by Vite. Setting them at container runtime has no
 effect - the `docker-entrypoint.sh` placeholder-swap handles this at startup instead. **The swap only works while every

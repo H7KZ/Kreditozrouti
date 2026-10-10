@@ -20,7 +20,7 @@ concurrency:
 jobs:
     retention:
         name: Delete old analytics
-        runs-on: self-hosted
+        runs-on: ubuntu-latest
         timeout-minutes: 10
         environment: production
         if: vars.TOOLKIT_LOCKS_REQUIRED == 'true'
@@ -29,13 +29,24 @@ jobs:
             contents: read
 
         steps:
+            - name: Require a pinned SSH host fingerprint
+              env:
+                  SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
+              run: |
+                  set -euo pipefail
+                  [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || {
+                    echo "ERROR: SSH_HOST_FINGERPRINT must contain the trusted SHA256 host fingerprint"
+                    exit 1
+                  }
+
             - name: Run retention SQL
-              uses: appleboy/ssh-action@v1
+              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
+                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
                   script: |
                       set -euo pipefail
                       VERSION_DIR="$HOME/kreditozrouti/versions/monitoring/current"

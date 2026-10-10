@@ -52,8 +52,18 @@ jobs:
         timeout-minutes: 5
         environment: ${{ inputs.environment }}
         steps:
+            - name: Require a pinned SSH host fingerprint
+              env:
+                  SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
+              run: |
+                  set -euo pipefail
+                  [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || {
+                    echo "ERROR: SSH_HOST_FINGERPRINT must contain the trusted SHA256 host fingerprint"
+                    exit 1
+                  }
+
             - name: Check version directory exists
-              uses: appleboy/ssh-action@v1
+              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
               env:
                   INPUT_SHA: ${{ inputs.sha }}
                   INPUT_ENV: ${{ inputs.environment }}
@@ -62,6 +72,7 @@ jobs:
                   username: ${{ secrets.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
+                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
                   envs: INPUT_SHA,INPUT_ENV
                   script: |
                       set -euo pipefail

@@ -53,6 +53,16 @@ jobs:
             packages: read
 
         steps:
+            - name: Require a pinned SSH host fingerprint
+              env:
+                  SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
+              run: |
+                  set -euo pipefail
+                  [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || {
+                    echo "ERROR: SSH_HOST_FINGERPRINT must contain the trusted SHA256 host fingerprint"
+                    exit 1
+                  }
+
             - name: Checkout
               uses: actions/checkout@v7
 
@@ -60,29 +70,31 @@ jobs:
               run: bash deployment/verify-toolkit-pin.sh
 
             - name: Create Version Directory
-              uses: appleboy/ssh-action@v1
+              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
+                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
                   script: |
                       mkdir -p "$HOME/kreditozrouti/versions/${{ inputs.environment }}/${{ inputs.image_tag }}"
 
             - name: Upload Deployment Files
-              uses: appleboy/scp-action@v1
+              uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
+                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
                   source: 'deployment/'
                   target: '~/kreditozrouti/versions/${{ inputs.environment }}/${{ inputs.image_tag }}'
                   strip_components: 1
                   overwrite: true
 
             - name: Deploy Service
-              uses: appleboy/ssh-action@v1
+              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
               env:
                   # Auth
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -120,6 +132,7 @@ jobs:
                   username: ${{ secrets.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
+                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
                   envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_ENV,OPERATION_ACTION,TOOLKIT_LOCKS_REQUIRED,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET,APP_PHPMYADMIN_BASIC_AUTH
                   script: |
                       set -euo pipefail

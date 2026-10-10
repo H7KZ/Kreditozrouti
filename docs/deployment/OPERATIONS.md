@@ -36,7 +36,7 @@ sudo /usr/local/bin/toolkit with-lock \
 
 Repeat under the same lock for its reviewed `migrate` or `clean` action. The naming-volume migration and `--prune-old` also require the lock. Do not run Docker/DDL migration commands directly while the backup capture timer is enabled.
 
-For a new host: restore Docker access and a self-hosted GitHub runner, deploy shared Traefik from the Infrastructure repo, set the GitHub environment secrets, deploy monitoring if needed, then dispatch `Deploy` for the app. Check public health routes and the scraper after deployment. The [Umami PostgreSQL 18 migration](HANDOFF-umami-pg18-migration.md) applies only to an older monitoring database volume; do not run it on a fresh volume.
+For a new host: restore Docker access, deploy shared Traefik from the Infrastructure repo, configure GitHub environment secrets including the trusted SSH host fingerprint, deploy monitoring if needed, then dispatch `Deploy` for the app. Current workflows use GitHub-hosted runners over verified SSH; the existing VPS runner stack remains until its separate retirement gate. Check public health routes and the scraper after deployment. The [Umami PostgreSQL 18 migration](HANDOFF-umami-pg18-migration.md) applies only to an older monitoring database volume; do not run it on a fresh volume.
 
 ## Security and maintenance
 

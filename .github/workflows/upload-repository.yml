@@ -7,13 +7,14 @@
 # Inputs:
 #   - branch: Branch to upload (default: main)
 #   - target_folder: Destination folder on VPS (default: repository)
-#   - clean_target: Remove existing files before upload (default: true)
+#   - clean_target: Remove existing files before upload (default: false)
 #
 # Required Secrets:
 #   - SSH_HOST: VPS hostname or IP
 #   - SSH_USER: SSH username
 #   - SSH_PORT: SSH port
 #   - SSH_PRIVATE_KEY: SSH private key for authentication
+#   - SSH_HOST_FINGERPRINT: trusted SHA256 host fingerprint
 # ==============================================================================
 
 name: Upload Repository
@@ -34,7 +35,7 @@ on:
             clean_target:
                 description: 'Remove existing files before upload'
                 required: true
-                default: true
+                default: false
                 type: boolean
 
 permissions:
@@ -43,17 +44,17 @@ permissions:
 jobs:
     upload:
         name: Upload to VPS
-        runs-on: self-hosted
+        runs-on: ubuntu-latest
         timeout-minutes: 30
 
         steps:
             - name: Validate Inputs
               id: validated
-              env:
-                  INPUT_FOLDER: ${{ inputs.target_folder }}
-              run: |
-                  if [[ "$INPUT_FOLDER" =~ \.\. ]] || [[ "$INPUT_FOLDER" =~ ^/ ]] || [[ -z "$INPUT_FOLDER" ]]; then
-                    echo "ERROR: target_folder must be a non-empty relative path without '..'"
+        env:
+          INPUT_FOLDER: ${{ inputs.target_folder }}
+        run: |
+          if [[ ! "$INPUT_FOLDER" =~ ^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$ ]]; then
+            echo "ERROR: target_folder must be one safe relative directory name"
                     exit 1
                   fi
                   echo "folder=$INPUT_FOLDER" >> "$GITHUB_OUTPUT"
@@ -62,6 +63,16 @@ jobs:
               uses: actions/checkout@v7
               with:
                   ref: ${{ inputs.branch }}
+
+            - name: Require a pinned SSH host fingerprint
+              env:
+                  SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
+              run: |
+                  set -euo pipefail
+                  [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || {
+                    echo "ERROR: SSH_HOST_FINGERPRINT must contain the trusted SHA256 host fingerprint"
+                    exit 1
+                  }
 
             - name: Display Configuration
               env:
@@ -79,15 +90,16 @@ jobs:
 
             - name: Prepare Target Directory
               if: ${{ inputs.clean_target }}
-              uses: appleboy/ssh-action@v1
+              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
               env:
                   TARGET_FOLDER: ${{ steps.validated.outputs.folder }}
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  envs: TARGET_FOLDER
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: TARGET_FOLDER
                   script: |
                       set -euo pipefail
                       TARGET_DIR="$HOME/$TARGET_FOLDER"
@@ -98,26 +110,28 @@ jobs:
                       mkdir -p "$TARGET_DIR"
 
             - name: Upload Repository
-              uses: appleboy/scp-action@v1
+          uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  source: '.'
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          source: '.'
                   target: '~/${{ steps.validated.outputs.folder }}'
                   rm: false
 
             - name: Verify Upload
-              uses: appleboy/ssh-action@v1
+          uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
               env:
                   TARGET_FOLDER: ${{ steps.validated.outputs.folder }}
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  envs: TARGET_FOLDER
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: TARGET_FOLDER
                   script: |
                       set -euo pipefail
                       echo "=========================================="
