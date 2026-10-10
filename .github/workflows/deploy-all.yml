@@ -112,7 +112,7 @@ jobs:
 
             - name: Checkout main history for production release validation
               if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
-              uses: actions/checkout@v7
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
               with:
                   ref: main
                   fetch-depth: 0
