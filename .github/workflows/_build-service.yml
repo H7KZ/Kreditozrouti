@@ -4,13 +4,13 @@
 #              Called by deploy-all.yml/rollback.yml for each selected service.
 #
 # Inputs:  service (api | web | scraper | mcp), float_tag, cache_scope
-# Outputs: image_tag (short SHA), image_prefix
+# Outputs: image_tag (short SHA for development deploy), image_prefix
+# Also publishes the full source SHA tag for guarded manual production promotion.
 #
 # Runs on a GitHub-hosted runner (ubuntu-latest), NOT the self-hosted runner - the
 # VPS is 2vCPU/4GB and a Docker build there crashes the host. GHCR push uses
 # GITHUB_TOKEN, so this needs no extra secrets on a GitHub-hosted runner.
-# _deploy-service.yml stays self-hosted: it only SSHs into the VPS and is not
-# build-heavy.
+# Deploy jobs also use GitHub-hosted runners and verify the pinned host fingerprint.
 # ==============================================================================
 
 name: Build Service Image (reusable)
@@ -84,6 +84,7 @@ jobs:
                   push: true
                   tags: |
                       ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
+                      ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ github.sha }}
                       ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.float_tag }}
                   build-args: |
                       APP_VERSION=${{ steps.meta.outputs.image_tag }}

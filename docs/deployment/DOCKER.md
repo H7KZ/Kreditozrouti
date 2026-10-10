@@ -23,7 +23,7 @@ Every placeholder variable must also appear in the root [`turbo.json`](../../tur
 
 ## Registry and tags
 
-The build workflow pushes each service to `ghcr.io/<owner>/<repo>/<service>` with an eight-character commit SHA tag and a floating environment tag: `latest` for production or `dev-latest` for development. Deploy and rollback use explicit SHA tags through `API_IMAGE_TAG`, `WEB_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`, and `MCP_IMAGE_TAG`.
+The build workflow pushes each service to `ghcr.io/<owner>/<repo>/<service>` with an eight-character development tag, a full 40-character commit SHA tag for production promotion, and a floating environment tag: `latest` for production or `dev-latest` for development. Deploy and rollback use explicit SHA tags through `API_IMAGE_TAG`, `WEB_IMAGE_TAG`, `SCRAPER_IMAGE_TAG`, and `MCP_IMAGE_TAG`.
 
 Third-party images in Compose use versioned tags. Check the actual [production](../../deployment/production/docker-compose.production.yml), [development](../../deployment/development/docker-compose.development.yml), [monitoring](../../deployment/monitoring/docker-compose.monitoring.yml), and [runner](../../deployment/github-runner/docker-compose.github-runner.yml) files before changing a pin. In particular, MySQL and PostgreSQL image major changes require data migration; the [Umami PostgreSQL 18 runbook](HANDOFF-umami-pg18-migration.md) covers the existing monitoring volume.
 

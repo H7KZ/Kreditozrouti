@@ -66,6 +66,16 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v7
 
+            - name: Validate image tag before using it in remote paths
+              env:
+                  INPUT_IMAGE_TAG: ${{ inputs.image_tag }}
+              run: |
+                  set -euo pipefail
+                  [[ "$INPUT_IMAGE_TAG" =~ ^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$ ]] || {
+                    echo "ERROR: image_tag must be one valid Docker tag"
+                    exit 1
+                  }
+
             - name: Validate pinned toolkit bundle
               run: bash deployment/verify-toolkit-pin.sh
 

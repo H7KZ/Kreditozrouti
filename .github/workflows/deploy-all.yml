@@ -82,6 +82,42 @@ jobs:
                     exit 1
                   fi
 
+            - name: Checkout main history for production release validation
+              if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
+              uses: actions/checkout@v7
+              with:
+                  ref: main
+                  fetch-depth: 0
+
+            - name: Require a previously built main commit for production
+              if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
+              env:
+                  WORKFLOW_REF: ${{ github.ref }}
+                  INPUT_IMAGE_TAG: ${{ inputs.image_tag }}
+                  INPUT_SKIP_BUILD: ${{ inputs.skip_build }}
+              run: |
+                  set -euo pipefail
+                  [[ "$WORKFLOW_REF" == refs/heads/main ]] || {
+                    echo "ERROR: production promotion must be dispatched from main"
+                    exit 1
+                  }
+                  [[ "$INPUT_SKIP_BUILD" == true ]] || {
+                    echo "ERROR: production cannot build a new image; set skip_build and select an existing main image"
+                    exit 1
+                  }
+                  [[ "$INPUT_IMAGE_TAG" =~ ^[a-f0-9]{40}$ ]] || {
+                    echo "ERROR: production image_tag must be the full 40-character main commit SHA"
+                    exit 1
+                  }
+                  git cat-file -e "$INPUT_IMAGE_TAG^{commit}" || {
+                    echo "ERROR: image_tag is not a commit in the fetched main history"
+                    exit 1
+                  }
+                  git merge-base --is-ancestor "$INPUT_IMAGE_TAG" origin/main || {
+                    echo "ERROR: image_tag is not reachable from main"
+                    exit 1
+                  }
+
     # ---------------------------------------------------------------------------
     # Detect which services changed (push only - dispatch uses checkbox inputs)
     # ---------------------------------------------------------------------------

@@ -8,16 +8,16 @@ The active workflows live in [`.github/workflows`](../../.github/workflows/). Th
 | --- | --- | --- |
 | [`verify.yml`](../../.github/workflows/verify.yml) | Pull request | Calls `_verify.yml` with `affected: true`: lint, tests, type check, and build run only for packages changed against the base branch and their dependents (`pnpm verify:affected`, turbo `--affected`). Changes to `turbo.json`, root `package.json`, `pnpm-workspace.yaml`, `.dependency-cruiser.cjs`, `.npmrc`, `.pnpmfile.cjs`, or `_verify.yml` force the full `make verify`. Monitoring validation runs only when `deployment/monitoring/` changes. Runs on `ubuntu-latest` |
 | [`deploy-all.yml`](../../.github/workflows/deploy-all.yml) | Push to `main`; manual dispatch | Runs full verification, then deploys changed services to development. Manual dispatch builds/deploys selected services to the chosen environment |
-| [`rollback.yml`](../../.github/workflows/rollback.yml) | Manual dispatch | Checks an eight-character SHA version directory exists, then redeploys the selected service or all four |
+| [`rollback.yml`](../../.github/workflows/rollback.yml) | Manual dispatch | Checks an eight-character legacy or full-SHA version directory exists, then redeploys the selected service or all four |
 | [`deploy-monitoring.yml`](../../.github/workflows/deploy-monitoring.yml) | Manual dispatch | Uploads and deploys the monitoring stack |
 
 `_build-service.yml`, `_deploy-service.yml`, and `_verify.yml` are reusable jobs. There are no separate `deploy-api.yml`, `deploy-web.yml`, or `deploy-scraper.yml` workflows. All workflow jobs use GitHub-hosted runners. Remote SSH and SCP actions require the pinned `SSH_HOST_FINGERPRINT` secret.
 
 ## App deploys
 
-Pushes to `main` run full verification, then deploy changed services to the development environment using the commit SHA image tags. Production remains manual-only. For a manual deploy, run **Actions > Deploy > Run workflow**, choose `production` or `development`, and select services. The deployment-unification plan still tracks blue-green releases and promotion of the exact qualified development digests as remaining work.
+Pushes to `main` run full verification, then deploy changed services to the development environment using the commit SHA image tags. Production remains manual-only. A production dispatch must run from `main`, set `skip_build=true`, and provide a full 40-character main commit SHA as `image_tag`; it cannot build a new production image. The reusable build workflow publishes both short and full commit SHA tags. Each reusable deploy validates that its image tag is a safe Docker tag before using it in remote paths. Exact digest-level proof that the selected image was the successfully qualified development image remains open.
 
-Builds push `ghcr.io/<owner>/<repo>/<service>:<sha8>` and a floating tag (`latest` or `dev-latest`). Deploys use the short SHA. Set `image_tag` to an existing tag to skip the build; `skip_build` requires `image_tag`.
+Builds push `ghcr.io/<owner>/<repo>/<service>:<sha8>`, the full `github.sha`, and a floating tag (`latest` or `dev-latest`). Development deploys use the short SHA. Production deploys use the supplied full SHA tag and require it to be a commit reachable from `main`. For manual development dispatches, set `image_tag` to an existing tag to skip the build; `skip_build` requires `image_tag`.
 
 Builds stamp the full source commit as `org.opencontainers.image.revision`. Every deployment validates the vendored toolkit archive against `deployment/toolkit.lock`; updating the host toolkit remains a separate reviewed operator action.
 
@@ -37,6 +37,6 @@ The deploy job rejects credential values containing `$` or backticks before writ
 
 ## Rollback
 
-Run **Actions > Rollback Deployment > Run workflow**. Enter an existing lowercase eight-character SHA, select `api`, `web`, `scraper`, `mcp`, or `all`, and choose the environment. The workflow requires that SHA's version directory on the VPS and deploys the corresponding image tag. If cleanup already removed the directory, this workflow refuses the rollback; a manual `Deploy` dispatch with a retained GHCR `image_tag` is a separate path.
+Run **Actions > Rollback Deployment > Run workflow**. Enter an existing lowercase eight-character legacy tag or full 40-character SHA, select `api`, `web`, `scraper`, `mcp`, or `all`, and choose the environment. The workflow requires that SHA's version directory on the VPS and deploys the corresponding image tag. If cleanup already removed the directory, this workflow refuses the rollback; a manual `Deploy` dispatch with a retained GHCR `image_tag` is a separate path.
 
 Rolling back an image does not reverse database migrations or data changes. Check those before choosing a tag.

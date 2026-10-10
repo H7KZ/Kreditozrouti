@@ -13,7 +13,7 @@ on:
     workflow_dispatch:
         inputs:
             sha:
-                description: 'Short SHA to roll back to (8 hex chars, e.g. a1b2c3d4)'
+                description: 'Image SHA tag (8-character legacy or full 40-character commit SHA)'
                 required: true
                 type: string
             service:
@@ -76,8 +76,8 @@ jobs:
                   envs: INPUT_SHA,INPUT_ENV
                   script: |
                       set -euo pipefail
-                      if [[ ! "$INPUT_SHA" =~ ^[0-9a-f]{8}$ ]]; then
-                        echo "ERROR: sha must be exactly 8 lowercase hex characters, got: '$INPUT_SHA'"
+                      if [[ ! "$INPUT_SHA" =~ ^([0-9a-f]{8}|[0-9a-f]{40})$ ]]; then
+                        echo "ERROR: sha must be 8 or 40 lowercase hex characters, got: '$INPUT_SHA'"
                         exit 1
                       fi
                       VERSION_DIR="$HOME/kreditozrouti/versions/$INPUT_ENV/$INPUT_SHA"

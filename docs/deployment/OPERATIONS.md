@@ -19,7 +19,7 @@ For dashboards, alerts, and log queries, see [monitoring](MONITORING.md). Valida
 
 ## Recovery and rollback
 
-Use **Actions > Rollback Deployment** with an existing eight-character SHA, service, and environment. The workflow requires that SHA's version directory on the host. See [rollback details](CICD.md#rollback). Image rollback does not undo schema migrations.
+Use **Actions > Rollback Deployment** with an existing eight-character legacy tag or full 40-character SHA, service, and environment. The workflow requires that SHA's version directory on the host. See [rollback details](CICD.md#rollback). Image rollback does not undo schema migrations.
 
 The production backup scaffold is in [backups](../../deployment/backups/README.md). It captures MySQL, the Umami PostgreSQL database, and only Redis `share:*` / `ical:*` records with original expiry times. It excludes Redis queues, cache, sessions, counters, and full-volume dumps. Deploy and rollback use toolkit locks when installed; `TOOLKIT_LOCKS_REQUIRED=true` makes a missing toolkit fail closed. No timer is enabled. Do not rely on backups until the host toolkit is installed, B2 Object Lock and hosted retention are proven, a full isolated restore is rehearsed, and the application owner approves rollout. Losing the MySQL volume removes the scraped course and study-plan catalog until it is rebuilt from InSIS. Retain all named volumes during Docker cleanup.
 
