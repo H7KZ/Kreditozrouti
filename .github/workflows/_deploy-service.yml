@@ -40,6 +40,21 @@ on:
                 required: false
                 type: string
                 default: ''
+            source_release_run_id:
+                description: 'Qualified development workflow run being promoted to production'
+                required: false
+                type: string
+                default: ''
+            source_release_run_attempt:
+                description: 'Attempt number for the qualified development workflow run'
+                required: false
+                type: string
+                default: ''
+            source_release_manifest_sha256:
+                description: 'SHA-256 of the validated qualified development release manifest'
+                required: false
+                type: string
+                default: ''
             image_prefix:
                 description: 'Registry path prefix (e.g. ghcr.io/h7kz/kreditozrouti)'
                 required: true
@@ -59,6 +74,7 @@ jobs:
         environment: ${{ inputs.environment }}
 
         permissions:
+            actions: read
             contents: read
             packages: read
 
@@ -101,6 +117,88 @@ jobs:
             - name: Validate pinned toolkit bundle
               run: bash deployment/verify-toolkit-pin.sh
 
+            - name: Download qualified development release manifest
+              if: inputs.environment == 'production' && inputs.operation_action != 'rollback'
+              uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+              with:
+                  name: qualified-development-release-${{ inputs.source_release_run_attempt }}
+                  path: ${{ runner.temp }}/qualified-development-release
+                  repository: ${{ github.repository }}
+                  run-id: ${{ inputs.source_release_run_id }}
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Stage exact validated release manifest
+              if: inputs.environment == 'production' && inputs.operation_action != 'rollback'
+              env:
+                  EXPECTED_RUN_ID: ${{ inputs.source_release_run_id }}
+                  EXPECTED_RUN_ATTEMPT: ${{ inputs.source_release_run_attempt }}
+                  EXPECTED_MANIFEST_SHA256: ${{ inputs.source_release_manifest_sha256 }}
+                  EXPECTED_IMAGE_TAG: ${{ inputs.image_tag }}
+                  EXPECTED_IMAGE_DIGEST: ${{ inputs.image_digest }}
+                  EXPECTED_DEPLOYMENT_REF: ${{ inputs.deployment_ref }}
+                  STAGED_MANIFEST_SERVICE: ${{ inputs.service }}
+              run: |
+                  set -euo pipefail
+                  [[ "$EXPECTED_RUN_ID" =~ ^[1-9][0-9]*$ && "$EXPECTED_RUN_ATTEMPT" =~ ^[1-9][0-9]*$ ]] || {
+                    echo "ERROR: production promotion is missing the qualified development run identity"
+                    exit 1
+                  }
+                  [[ "$EXPECTED_MANIFEST_SHA256" =~ ^[a-f0-9]{64}$ ]] || {
+                    echo "ERROR: production promotion is missing the validated release manifest checksum"
+                    exit 1
+                  }
+                  [[ "$EXPECTED_IMAGE_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]] || {
+                    echo "ERROR: production promotion is missing the selected service's immutable image digest"
+                    exit 1
+                  }
+                  [[ "$EXPECTED_DEPLOYMENT_REF" =~ ^[a-f0-9]{40}$ ]] || {
+                    echo "ERROR: production promotion is missing the qualified source commit"
+                    exit 1
+                  }
+                  [[ "$STAGED_MANIFEST_SERVICE" == api || "$STAGED_MANIFEST_SERVICE" == web || "$STAGED_MANIFEST_SERVICE" == scraper || "$STAGED_MANIFEST_SERVICE" == mcp ]] || {
+                    echo "ERROR: unknown service for release manifest staging"
+                    exit 1
+                  }
+                  manifest="$RUNNER_TEMP/qualified-development-release/release-manifest.json"
+                  [[ -f "$manifest" && ! -L "$manifest" ]] || {
+                    echo "ERROR: qualified development release manifest is missing or unsafe"
+                    exit 1
+                  }
+                  actual_sha256="$(sha256sum "$manifest" | awk '{print $1}')"
+                  [[ "$actual_sha256" == "$EXPECTED_MANIFEST_SHA256" ]] || {
+                    echo "ERROR: downloaded release manifest differs from the validated artifact"
+                    exit 1
+                  }
+                  jq -e --arg repository "$GITHUB_REPOSITORY" --arg run "$EXPECTED_RUN_ID" \
+                    --arg attempt "$EXPECTED_RUN_ATTEMPT" --arg tag "$EXPECTED_IMAGE_TAG" \
+                    --arg source_commit "$EXPECTED_DEPLOYMENT_REF" \
+                    --arg service "$STAGED_MANIFEST_SERVICE" --arg digest "$EXPECTED_IMAGE_DIGEST" '
+                    .schema_version == 1 and .repository == $repository and
+                    .workflow_path == ".github/workflows/deploy-all.yml" and
+                    .workflow_run_id == $run and .workflow_run_attempt == $attempt and
+                    .environment == "development" and
+                    .source_commit == $source_commit and
+                    (.source_commit | test("^[a-f0-9]{40}$")) and
+                    ($tag == (.source_commit + "-" + $run + "-" + $attempt)) and
+                    (.services | type) == "object" and
+                    (.services | keys) == (["api", "web", "scraper", "mcp"] | sort) and
+                    .services[$service] == $digest and
+                    ([.services[] | select(test("^sha256:[a-f0-9]{64}$"))] | length) == 4
+                  ' "$manifest" >/dev/null || {
+                    echo "ERROR: qualified development release manifest failed identity validation"
+                    exit 1
+                  }
+                  staged_manifest="deployment/release-manifest-${STAGED_MANIFEST_SERVICE}.json"
+                  [[ ! -e "$staged_manifest" && ! -L "$staged_manifest" ]] || {
+                    echo "ERROR: deployment bundle already contains the staged release manifest"
+                    exit 1
+                  }
+                  install -m 0644 "$manifest" "$staged_manifest"
+                  [[ "$(sha256sum "$staged_manifest" | awk '{print $1}')" == "$EXPECTED_MANIFEST_SHA256" ]] || {
+                    echo "ERROR: staged release manifest changed during copy"
+                    exit 1
+                  }
+
             - name: Create Version Directory
               if: inputs.operation_action != 'rollback'
               uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
@@ -138,6 +236,7 @@ jobs:
                   IMG_PREFIX: ${{ inputs.image_prefix }}
                   IMG_TAG: ${{ inputs.image_tag }}
                   IMG_DIGEST: ${{ inputs.image_digest }}
+                  SOURCE_RELEASE_MANIFEST_SHA256: ${{ inputs.source_release_manifest_sha256 }}
                   # Service
                   APP_SERVICE: ${{ inputs.service }}
                   APP_ENV: ${{ inputs.environment }}
@@ -168,13 +267,52 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,IMG_DIGEST,APP_SERVICE,APP_ENV,OPERATION_ACTION,TOOLKIT_LOCKS_REQUIRED,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET,APP_PHPMYADMIN_BASIC_AUTH
+                  envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,IMG_DIGEST,SOURCE_RELEASE_MANIFEST_SHA256,APP_SERVICE,APP_ENV,OPERATION_ACTION,TOOLKIT_LOCKS_REQUIRED,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET,APP_PHPMYADMIN_BASIC_AUTH
                   script: |
                       set -euo pipefail
                       umask 077
 
                       VERSION_DIR="$HOME/kreditozrouti/versions/${{ inputs.environment }}/$IMG_TAG"
                       CURRENT_LINK="$HOME/kreditozrouti/versions/${{ inputs.environment }}/current"
+                      SOURCE_RELEASE_MANIFEST_TMP=''
+                      trap 'if [[ -n "${SOURCE_RELEASE_MANIFEST_TMP:-}" ]]; then rm -f -- "$SOURCE_RELEASE_MANIFEST_TMP"; fi' EXIT
+
+                      if [[ "$APP_ENV" == production && "$OPERATION_ACTION" != rollback ]]; then
+                        [[ "$SOURCE_RELEASE_MANIFEST_SHA256" =~ ^[a-f0-9]{64}$ ]] || {
+                          echo "ERROR: production promotion has no validated source release manifest checksum"
+                          exit 1
+                        }
+                        SOURCE_RELEASE_MANIFEST="$VERSION_DIR/release-manifest-$APP_SERVICE.json"
+                        RELEASE_MANIFEST="$VERSION_DIR/release-manifest.json"
+                        [[ -f "$SOURCE_RELEASE_MANIFEST" && ! -L "$SOURCE_RELEASE_MANIFEST" ]] || {
+                          echo "ERROR: production upload is missing its staged source release manifest"
+                          exit 1
+                        }
+                        [[ "$(sha256sum "$SOURCE_RELEASE_MANIFEST" | awk '{print $1}')" == "$SOURCE_RELEASE_MANIFEST_SHA256" ]] || {
+                          echo "ERROR: uploaded source release manifest differs from the validated artifact"
+                          exit 1
+                        }
+                        if [[ -e "$RELEASE_MANIFEST" || -L "$RELEASE_MANIFEST" ]]; then
+                          [[ -f "$RELEASE_MANIFEST" && ! -L "$RELEASE_MANIFEST" && "$(sha256sum "$RELEASE_MANIFEST" | awk '{print $1}')" == "$SOURCE_RELEASE_MANIFEST_SHA256" ]] && cmp -s "$SOURCE_RELEASE_MANIFEST" "$RELEASE_MANIFEST" || {
+                            echo "ERROR: production version directory already contains a different source release manifest"
+                            exit 1
+                          }
+                        else
+                          SOURCE_RELEASE_MANIFEST_TMP="$(mktemp "$VERSION_DIR/.release-manifest.XXXXXX")"
+                          install -m 0644 "$SOURCE_RELEASE_MANIFEST" "$SOURCE_RELEASE_MANIFEST_TMP"
+                          [[ "$(sha256sum "$SOURCE_RELEASE_MANIFEST_TMP" | awk '{print $1}')" == "$SOURCE_RELEASE_MANIFEST_SHA256" ]] || {
+                            echo "ERROR: temporary release manifest differs from the validated artifact"
+                            exit 1
+                          }
+                          mv -f "$SOURCE_RELEASE_MANIFEST_TMP" "$RELEASE_MANIFEST"
+                          SOURCE_RELEASE_MANIFEST_TMP=''
+                        fi
+                        rm -f -- "$SOURCE_RELEASE_MANIFEST"
+                        [[ "$(sha256sum "$RELEASE_MANIFEST" | awk '{print $1}')" == "$SOURCE_RELEASE_MANIFEST_SHA256" ]] || {
+                          echo "ERROR: persisted production release manifest differs from the validated artifact"
+                          exit 1
+                        }
+                      fi
 
                       if [[ -z "$IMG_DIGEST" && -f "$VERSION_DIR/image-digests.json" ]]; then
                         IMG_DIGEST="$(python3 - "$VERSION_DIR/image-digests.json" "$APP_SERVICE" <<'PY'
@@ -263,7 +401,7 @@ jobs:
 
                       # Login to GHCR
                       echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
-                      trap 'if [[ -n "${ENV_FILE_TMP:-}" ]]; then rm -f -- "$ENV_FILE_TMP"; fi; docker logout ghcr.io' EXIT
+                      trap 'if [[ -n "${ENV_FILE_TMP:-}" ]]; then rm -f -- "$ENV_FILE_TMP"; fi; if [[ -n "${SOURCE_RELEASE_MANIFEST_TMP:-}" ]]; then rm -f -- "$SOURCE_RELEASE_MANIFEST_TMP"; fi; docker logout ghcr.io' EXIT
 
                       # Atomically publish the private shared .env. Parallel service
                       # jobs use the same environment values; Compose must not read a

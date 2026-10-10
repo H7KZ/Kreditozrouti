@@ -108,7 +108,7 @@ import os
 import sys
 
 root = sys.argv[1]
-expected = {".complete", "SHA256SUMS", "manifest.json", "mysql.sql", "redis.json", "umami.dump"}
+expected = {".complete", "SHA256SUMS", "manifest.json", "recovery-release-manifest.json", "mysql.sql", "redis.json", "umami.dump"}
 items = list(os.scandir(root))
 if {item.name for item in items} != expected or any(not item.is_file(follow_symlinks=False) for item in items):
     raise SystemExit("staging file set mismatch")
@@ -152,7 +152,7 @@ if manifest.get("incomplete") not in (None, ""):
     raise SystemExit("Kopia returned an incomplete snapshot")
 root = manifest.get("rootEntry")
 summary = root.get("summ") if isinstance(root, dict) else None
-expected_files = 6
+expected_files = 7
 if not isinstance(summary, dict) or root.get("type") != "d":
     raise SystemExit("Kopia returned no directory summary")
 if type(summary.get("files")) is not int or summary["files"] != expected_files:
@@ -306,7 +306,7 @@ def latest_release(path, repository, environment, actions, label):
         raise SystemExit(f"latest toolkit {label} operation is not a successful release")
     return latest["release_id"]
 
-def image(container_id, application=False):
+def image(container_id):
     inspected = json.loads(subprocess.check_output(["docker", "inspect", container_id], text=True))[0]
     config = inspected.get("Config", {})
     labels = config.get("Labels") or {}
@@ -318,14 +318,93 @@ def image(container_id, application=False):
     if not isinstance(digests, list) or not any(isinstance(value, str) and "@sha256:" in value for value in digests):
         raise SystemExit(f"image is missing an immutable registry digest: {config.get('Image', 'unknown')}")
     result = {"reference": config.get("Image", "unknown"), "imageId": image_id, "registryDigests": digests, "composeConfigHash": config_hash}
-    if application:
-        reference = config.get("Image", "")
-        revision = labels.get("org.opencontainers.image.revision", "") or reference.rsplit(":", 1)[-1]
-        if not re.fullmatch(r"[0-9a-f]{7,64}", revision):
-            raise SystemExit(f"application image has no source revision: {config.get('Image', 'unknown')}")
+    revision = labels.get("org.opencontainers.image.revision", "")
+    if re.fullmatch(r"[a-f0-9]{7,64}", revision):
         result["revision"] = revision
-        result["service"] = (labels.get("com.docker.compose.service") or "unknown")
-    return result
+    return {"inspection": inspected, "labels": labels, "record": result}
+
+def validate_source_release(document, expected_release_id):
+    if not isinstance(document, dict):
+        raise SystemExit("application source release manifest must be a JSON object")
+    services = document.get("services")
+    if document.get("schema_version") != 1 or document.get("environment") != "development":
+        raise SystemExit("application source release manifest has an unsupported schema or environment")
+    repository = document.get("repository")
+    if not isinstance(repository, str) or not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository) or repository.rsplit("/", 1)[-1].lower() != "kreditozrouti":
+        raise SystemExit("application source release manifest repository is invalid")
+    source_commit = document.get("source_commit")
+    run_id = document.get("workflow_run_id")
+    run_attempt = document.get("workflow_run_attempt")
+    if not isinstance(source_commit, str) or not re.fullmatch(r"[a-f0-9]{40}", source_commit):
+        raise SystemExit("application source release manifest commit is invalid")
+    if not isinstance(run_id, str) or not re.fullmatch(r"[1-9][0-9]*", run_id) or not isinstance(run_attempt, str) or not re.fullmatch(r"[1-9][0-9]*", run_attempt):
+        raise SystemExit("application source release manifest workflow identity is invalid")
+    release_id = f"{source_commit}-{run_id}-{run_attempt}"
+    if release_id != expected_release_id:
+        raise SystemExit("application source release manifest does not match the Compose working directory")
+    if document.get("workflow_path") != ".github/workflows/deploy-all.yml":
+        raise SystemExit("application source release manifest workflow is invalid")
+    if not isinstance(services, dict) or set(services) != {"api", "web", "scraper", "mcp"}:
+        raise SystemExit("application source release manifest does not bind the complete service set")
+    for service, digest in services.items():
+        if not isinstance(digest, str) or not re.fullmatch(r"sha256:[a-f0-9]{64}", digest):
+            raise SystemExit(f"application source release manifest has an invalid {service} digest")
+    return release_id, source_commit, services
+
+def application_binding(container_id):
+    image_state = image(container_id)
+    inspected = image_state["inspection"]
+    labels = image_state["labels"]
+    image_record = image_state["record"]
+    config = inspected.get("Config", {})
+    state = inspected.get("State", {})
+    service = labels.get("com.docker.compose.service")
+    project = labels.get("com.docker.compose.project")
+    working_directory = labels.get("com.docker.compose.project.working_dir")
+    if state.get("Status") != "running" or project != "kreditozrouti" or service not in {"api", "web", "scraper", "mcp"}:
+        raise SystemExit("running application container has invalid Compose project or service binding")
+    if not isinstance(working_directory, str) or not working_directory.startswith("/"):
+        raise SystemExit(f"application container has no absolute Compose working directory: {container_id}")
+    directory = Path(working_directory)
+    if directory.parts[-4:-1] != ("kreditozrouti", "versions", "production") or directory.is_symlink() or not directory.is_dir():
+        raise SystemExit(f"application Compose working directory is not a production release directory: {working_directory}")
+    manifest_path = directory / "release-manifest.json"
+    if manifest_path.is_symlink() or not manifest_path.is_file():
+        raise SystemExit(f"running {service} container's release directory has no regular source manifest")
+    raw_manifest = manifest_path.read_bytes()
+    source_hash = hashlib.sha256(raw_manifest).hexdigest()
+    try:
+        source_text = raw_manifest.decode("utf-8")
+        source_document = json.loads(source_text)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise SystemExit(f"running {service} container's source manifest is not valid UTF-8 JSON") from error
+    if raw_manifest != (json.dumps(source_document, sort_keys=True, indent=2) + "\n").encode("utf-8"):
+        raise SystemExit(f"running {service} container's source manifest is not in the qualified canonical encoding")
+    release_id, source_commit, source_services = validate_source_release(source_document, directory.name)
+    expected_digest = source_services[service]
+    repository_image = f"ghcr.io/{source_document['repository'].lower()}/{service}@{expected_digest}"
+    if repository_image not in image_record["registryDigests"]:
+        raise SystemExit(f"running {service} image digest does not match its source release manifest")
+    reference = image_record["reference"]
+    if reference.lower() != repository_image:
+        raise SystemExit(f"running {service} image reference is not bound to its source release digest")
+    revision = labels.get("org.opencontainers.image.revision", "")
+    if revision != source_commit:
+        raise SystemExit(f"running {service} image source revision does not match its release manifest")
+    binding = {
+        "containerId": inspected.get("Id", container_id),
+        "service": service,
+        "workingDirectory": working_directory,
+        "sourceReleaseId": release_id,
+        "sourceReleaseManifestSha256": source_hash,
+        "sourceRepository": source_document["repository"],
+        "sourceCommit": source_commit,
+        "expectedImageDigest": expected_digest,
+        "revision": revision,
+        "composeConfigHash": image_record["composeConfigHash"],
+        "registryDigests": image_record["registryDigests"],
+    }
+    return binding, source_hash, source_document
 
 toolkit_pin = read_lock(lock_path)
 application_release_id = latest_release(
@@ -336,21 +415,86 @@ proxy_release_id = latest_release(
     Path("/var/lib/toolkit/operations/infrastructure/production"),
     "infrastructure", "production", {"proxy"}, "shared proxy",
 )
-mysql_image = image(mysql_id)
-umami_image = image(umami_id)
-redis_image = image(redis_id)
-application_images = [image(container_id, application=True) for container_id in application_ids]
+mysql_image = image(mysql_id)["record"]
+umami_image = image(umami_id)["record"]
+redis_image = image(redis_id)["record"]
+source_manifests = {}
+application_images = []
+canonical_images = {
+    "mysql": [{
+        "registry_digests": mysql_image["registryDigests"],
+        "compose_config_hash": mysql_image["composeConfigHash"],
+    }],
+    "umami_postgresql": [{
+        "registry_digests": umami_image["registryDigests"],
+        "compose_config_hash": umami_image["composeConfigHash"],
+    }],
+    "redis": [{
+        "registry_digests": redis_image["registryDigests"],
+        "compose_config_hash": redis_image["composeConfigHash"],
+    }],
+}
+for service, image_record in (("mysql", mysql_image), ("umami_postgresql", umami_image), ("redis", redis_image)):
+    if "revision" in image_record:
+        canonical_images[service][0]["source_revision"] = image_record["revision"]
+for container_id in application_ids:
+    binding, source_hash, source_document = application_binding(container_id)
+    existing = source_manifests.get(source_hash)
+    if existing is not None and existing["manifest"] != source_document:
+        raise SystemExit("source release manifest hash collision")
+    source_manifests[source_hash] = {
+        "sha256": source_hash,
+        "manifest": source_document,
+    }
+    application_images.append({
+        "service": binding["service"],
+        "sourceReleaseId": binding["sourceReleaseId"],
+        "sourceManifestSha256": source_hash,
+        "sourceRepository": binding["sourceRepository"],
+        "sourceCommit": binding["sourceCommit"],
+        "expectedImageDigest": binding["expectedImageDigest"],
+        "revision": binding["revision"],
+        "registryDigests": binding["registryDigests"],
+        "composeConfigHash": binding["composeConfigHash"],
+    })
+    canonical_images.setdefault(binding["service"], []).append({
+        "registry_digests": binding["registryDigests"],
+        "compose_config_hash": binding["composeConfigHash"],
+        "source_revision": binding["revision"],
+        "source_manifest_sha256": source_hash,
+    })
+if {image["service"] for image in application_images} != {"api", "web", "scraper", "mcp"}:
+    raise SystemExit("running production app containers do not include every required service")
+application_images.sort(key=lambda item: (item["service"], item["sourceManifestSha256"], item["expectedImageDigest"], item["composeConfigHash"]))
+for service_records in canonical_images.values():
+    service_records.sort(key=lambda item: json.dumps(item, sort_keys=True, separators=(",", ":")))
+source_manifest_records = [source_manifests[key] for key in sorted(source_manifests)]
+release_ids = {"application": application_release_id, "proxy": proxy_release_id}
+image_bindings = {service: canonical_images[service] for service in sorted(canonical_images)}
+source_manifest_hashes = sorted(source_manifests)
 configuration_material = {
-    "applicationReleaseId": application_release_id,
-    "proxyReleaseId": proxy_release_id,
-    "composeConfigHashes": sorted(
-        record["composeConfigHash"]
-        for record in [mysql_image, umami_image, redis_image] + application_images
-    ),
+    "release_ids": release_ids,
+    "toolkit_bundle": toolkit_pin,
+    "source_manifest_hashes": source_manifest_hashes,
+    "images": image_bindings,
 }
 configuration_revision = hashlib.sha256(
     json.dumps(configuration_material, sort_keys=True, separators=(",", ":")).encode("utf-8")
 ).hexdigest()
+recovery_release = {
+    "schema_version": 1,
+    "repository": "kreditozrouti",
+    "environment": "production",
+    "release_ids": release_ids,
+    "toolkit_bundle": toolkit_pin,
+    "source_manifests": source_manifest_records,
+    "images": image_bindings,
+    "configuration_revision": configuration_revision,
+}
+recovery_release_path = root / "recovery-release-manifest.json"
+recovery_release_path.write_text(json.dumps(recovery_release, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+with recovery_release_path.open("rb") as source:
+    release_manifest_sha256 = hashlib.sha256(source.read()).hexdigest()
 
 manifest = {
     "schemaVersion": 1,
@@ -374,11 +518,11 @@ manifest = {
         "proxyReleaseId": proxy_release_id,
         "proxyContractVersion": "handoff-v1",
         "configurationRevision": configuration_revision,
-        "releaseManifestSha256": None,
+        "releaseManifestSha256": release_manifest_sha256,
     },
     "files": {},
 }
-for name in ("mysql.sql", "umami.dump", "redis.json"):
+for name in ("mysql.sql", "umami.dump", "redis.json", "recovery-release-manifest.json"):
     digest = hashlib.sha256()
     with (root / name).open("rb") as source:
         for chunk in iter(lambda: source.read(1024 * 1024), b""):
@@ -388,7 +532,7 @@ for name in ("mysql.sql", "umami.dump", "redis.json"):
 PY
 	(
 		cd "$stage"
-		sha256sum mysql.sql umami.dump redis.json manifest.json > SHA256SUMS
+		sha256sum mysql.sql umami.dump redis.json recovery-release-manifest.json manifest.json > SHA256SUMS
 		printf 'complete\n' > .complete
 	)
 	chmod 0600 "$stage"/*

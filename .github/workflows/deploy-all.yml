@@ -82,6 +82,8 @@ jobs:
         outputs:
             qualified_commit: ${{ steps.release.outputs.source_commit }}
             qualified_release_id: ${{ steps.release.outputs.release_id }}
+            qualified_run_attempt: ${{ steps.release.outputs.run_attempt }}
+            qualified_manifest_sha256: ${{ steps.release.outputs.manifest_sha256 }}
             api_digest: ${{ steps.release.outputs.api_digest }}
             web_digest: ${{ steps.release.outputs.web_digest }}
             scraper_digest: ${{ steps.release.outputs.scraper_digest }}
@@ -182,6 +184,10 @@ jobs:
                   git merge-base --is-ancestor "$source_commit" origin/main || { echo "ERROR: release source commit is not reachable from main"; exit 1; }
                   echo "source_commit=$source_commit" >> "$GITHUB_OUTPUT"
                   echo "release_id=${source_commit}-${DEVELOPMENT_RUN_ID}-${DEVELOPMENT_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+                  echo "run_attempt=$DEVELOPMENT_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
+                  manifest_sha256="$(sha256sum "$manifest" | awk '{print $1}')"
+                  [[ "$manifest_sha256" =~ ^[a-f0-9]{64}$ ]] || { echo "ERROR: release manifest checksum is invalid"; exit 1; }
+                  echo "manifest_sha256=$manifest_sha256" >> "$GITHUB_OUTPUT"
                   for service in api web scraper mcp; do
                     digest="$(jq -r --arg service "$service" '.services[$service] // empty' "$manifest")"
                     [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]] || {
@@ -300,6 +306,9 @@ jobs:
             image_tag: ${{ (inputs.environment == 'production' && needs.validate.outputs.qualified_release_id) || (inputs.image_tag != '' && inputs.image_tag) || needs.build-api.outputs.image_tag }}
             image_digest: ${{ (inputs.environment == 'production' && needs.validate.outputs.api_digest) || needs.build-api.outputs.image_digest }}
             deployment_ref: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_commit || '' }}
+            source_release_run_id: ${{ inputs.environment == 'production' && inputs.development_run_id || '' }}
+            source_release_run_attempt: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_run_attempt || '' }}
+            source_release_manifest_sha256: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_manifest_sha256 || '' }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
         secrets: inherit
 
@@ -322,6 +331,9 @@ jobs:
             image_tag: ${{ (inputs.environment == 'production' && needs.validate.outputs.qualified_release_id) || (inputs.image_tag != '' && inputs.image_tag) || needs.build-web.outputs.image_tag }}
             image_digest: ${{ (inputs.environment == 'production' && needs.validate.outputs.web_digest) || needs.build-web.outputs.image_digest }}
             deployment_ref: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_commit || '' }}
+            source_release_run_id: ${{ inputs.environment == 'production' && inputs.development_run_id || '' }}
+            source_release_run_attempt: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_run_attempt || '' }}
+            source_release_manifest_sha256: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_manifest_sha256 || '' }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
         secrets: inherit
 
@@ -344,6 +356,9 @@ jobs:
             image_tag: ${{ (inputs.environment == 'production' && needs.validate.outputs.qualified_release_id) || (inputs.image_tag != '' && inputs.image_tag) || needs.build-scraper.outputs.image_tag }}
             image_digest: ${{ (inputs.environment == 'production' && needs.validate.outputs.scraper_digest) || needs.build-scraper.outputs.image_digest }}
             deployment_ref: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_commit || '' }}
+            source_release_run_id: ${{ inputs.environment == 'production' && inputs.development_run_id || '' }}
+            source_release_run_attempt: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_run_attempt || '' }}
+            source_release_manifest_sha256: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_manifest_sha256 || '' }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
         secrets: inherit
 
@@ -366,6 +381,9 @@ jobs:
             image_tag: ${{ (inputs.environment == 'production' && needs.validate.outputs.qualified_release_id) || (inputs.image_tag != '' && inputs.image_tag) || needs.build-mcp.outputs.image_tag }}
             image_digest: ${{ (inputs.environment == 'production' && needs.validate.outputs.mcp_digest) || needs.build-mcp.outputs.image_digest }}
             deployment_ref: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_commit || '' }}
+            source_release_run_id: ${{ inputs.environment == 'production' && inputs.development_run_id || '' }}
+            source_release_run_attempt: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_run_attempt || '' }}
+            source_release_manifest_sha256: ${{ inputs.environment == 'production' && needs.validate.outputs.qualified_manifest_sha256 || '' }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
         secrets: inherit
 

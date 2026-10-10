@@ -31,10 +31,20 @@ SHA-256 checksums. Redis export is a bounded scan; each batch reads values and e
 the scan can be captured by this run or the next one.
 
 The complete local set is written under `/var/lib/kreditozrouti-backup/staging/` while the Infrastructure toolkit holds
-the host and `kreditozrouti/production` locks. Kopia upload starts after those locks have been released. The manifest
-records the exact toolkit bundle pin, application/proxy operation IDs, Compose configuration revision, and image
-digests. A complete immutable deployment release manifest and trusted off-host recovery catalog are not published yet;
-`releaseManifestSha256` remains null. If upload fails, the checksummed local set stays available for
+the host and `kreditozrouti/production` locks. Kopia upload starts after those locks have been released. Production
+promotion copies the exact validated qualified development `release-manifest.json` into each promoted version
+directory. Capture reads each running app container's Compose working directory, so rollback directories and partial
+service promotions resolve to the manifest that directory deployed. It fails closed if a running app has no valid
+source manifest, or if its service, source revision, or registry image digest does not match that manifest.
+
+Each set contains a canonical `recovery-release-manifest.json` with deduplicated source manifests and hashes plus
+service-keyed image bindings for every running app container, including its actual registry digests, Compose
+configuration hash, source revision, and source manifest hash. Its configuration revision covers the release IDs,
+toolkit bundle, source manifest hashes, and image bindings. The backup `manifest.json` records the canonical file's
+SHA-256 in `recoveryDependencies.releaseManifestSha256` and in its file records. Restore checks both hashes, source
+manifests, configuration revision, and live service bindings before staging the set. The backup manifest also records
+the exact toolkit bundle pin, application/proxy operation IDs, and database image digests. If upload fails, the
+checksummed local set stays available for
 `capture.sh --upload-staged <backup-set-id>`. The uploader requires fail-fast snapshot creation and 100% Kopia file
 verification before removing that local set.
 
@@ -72,8 +82,9 @@ options are documented at [snapshot create](https://kopia.io/docs/reference/comm
 ## Restore
 
 `/usr/local/libexec/kreditozrouti-backup/restore.sh <snapshot-id>` downloads to a new root-only directory under
-`/var/lib/kreditozrouti-backup/restores/`, checks the manifest identity and every SHA-256 entry, and leaves the restored
-files staged. It never imports into a database or changes a running service.
+`/var/lib/kreditozrouti-backup/restores/`, checks the manifest identity, canonical release-manifest binding, source
+release digests, live service records, and every SHA-256 entry, then leaves the restored files staged. It never imports
+into a database or changes a running service.
 
 To rehearse Redis recovery, start an isolated Compose recovery project named `kreditozrouti-recovery` with an API
 container pointed at its empty Redis service and a Compose-managed recovery Redis volume, then run:
