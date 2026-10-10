@@ -25,9 +25,9 @@ The reusable deploy job uploads the selected source commit's `deployment/` files
 
 Development `image_tag` dispatches check out the selected workflow ref, which may differ from the commit that built the existing image. They remain tag-based and do not qualify images for production promotion.
 
-Production backups are not triggered by app deployment workflows. Deploy and rollback always run under the Infrastructure toolkit host/repository locks and write its status records; they fail if `/usr/local/bin/toolkit` is missing or does not match `deployment/toolkit.lock`. There is no unlocked path and no feature flag. The [backup runbook](../../deployment/backups/README.md) also requires B2 Object Lock, trusted hosted retention maintenance, and an isolated restore rehearsal.
+Production backups are not triggered by app deployment workflows. Deploy and rollback always run under the Infrastructure toolkit host/repository locks and write its status records; they fail if `/usr/local/bin/toolkit` is missing or does not match `deployment/toolkit.lock`. There is no unlocked path and no feature flag. The [backup guide](../../deployment/backups/README.md) covers host setup; `backup-verify.yml` runs the off-VPS freshness check (daily) and restore drill (weekly) with a read-only B2 key.
 
-The cleanup workflow is dry-run only. GHCR deletion is disabled until it consumes the union of retained backup recovery references and deployment rollback references.
+The cleanup workflow is dry-run only. Backups no longer pin image digests, so GHCR deletion is gated only by deployment rollback references.
 
 ## Required configuration
 

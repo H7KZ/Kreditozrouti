@@ -115,14 +115,14 @@ Unlike Infrastructure, this repo's deploy workflow does not check that the unit 
 
 ## Backups
 
-- The backup scaffold is in `deployment/backups/`. It captures MySQL, the Umami PostgreSQL database, and only Redis `share:*` and `ical:*` records, with their original absolute expiry.
-- Production only, as decided in the cross-repository backup research (`Infrastructure/docs/research/2026-10-cross-repository-backups.md`).
-- **Not enabled.** `deployment/backups/README.md` states that no systemd timer or scheduled workflow is installed by the change. Do not enable it until the host toolkit is installed, Object Lock and off-site credentials are configured, Discord and Healthchecks alerts are set up, and an isolated restore has been rehearsed.
-- Recovery images come from the registry by digest. Docker images are not archived.
+- Backups are plain encrypted dumps to an Object-Locked B2 bucket via `toolkit backup` (`deployment/backups/`): MySQL, Umami PostgreSQL and a whole Redis RDB every four hours; only `share:*` and `ical:*` are ever restored.
+- Production only. Design: `Infrastructure/docs/plans/2026-10-backup-redesign.md`.
+- **Not enabled.** Timers are installed disabled by `install-backup.sh`; the owner enables them after a manual `toolkit backup run kreditozrouti daily`, the B2 bucket, keys and Healthchecks exist, and `backup-verify.yml` is green.
+- Docker images are not archived and backups carry no image digests; restore uses current Git and registry images.
 
 ## Checklist before the first production deploy
 
-- [ ] Toolkit `0.6.3` installed and activated on the VPS; `toolkit version` matches `deployment/toolkit.lock`.
+- [ ] Toolkit `0.7.0` installed and activated on the VPS; `toolkit version` matches `deployment/toolkit.lock`.
 - [ ] `kreditozrouti-reconcile.service` installed and enabled.
 - [ ] Infrastructure deployed first: `traefik` running and `public-network` exists.
 - [ ] `production` GitHub Environment has its secrets and variables, and required reviewers are set (see the gap above).
