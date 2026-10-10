@@ -13,7 +13,7 @@ on:
     workflow_dispatch:
         inputs:
             sha:
-                description: 'Image SHA tag (8-character legacy or full 40-character commit SHA)'
+                description: 'Release ID (full SHA-run ID-attempt), full commit SHA, or 8-character legacy tag'
                 required: true
                 type: string
             service:
@@ -67,17 +67,18 @@ jobs:
               env:
                   INPUT_SHA: ${{ inputs.sha }}
                   INPUT_ENV: ${{ inputs.environment }}
+                  INPUT_SERVICE: ${{ inputs.service }}
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: INPUT_SHA,INPUT_ENV
+                  envs: INPUT_SHA,INPUT_ENV,INPUT_SERVICE
                   script: |
                       set -euo pipefail
-                      if [[ ! "$INPUT_SHA" =~ ^([0-9a-f]{8}|[0-9a-f]{40})$ ]]; then
-                        echo "ERROR: sha must be 8 or 40 lowercase hex characters, got: '$INPUT_SHA'"
+                      if [[ ! "$INPUT_SHA" =~ ^([0-9a-f]{8}|[0-9a-f]{40}|[0-9a-f]{40}-[1-9][0-9]*(-[1-9][0-9]*)?)$ ]]; then
+                        echo "ERROR: sha must be an 8/40-character commit or a full-SHA-run-attempt release ID"
                         exit 1
                       fi
                       VERSION_DIR="$HOME/kreditozrouti/versions/$INPUT_ENV/$INPUT_SHA"
@@ -86,6 +87,29 @@ jobs:
                         echo "Available versions:"
                         ls "$HOME/kreditozrouti/versions/$INPUT_ENV/" 2>/dev/null | grep -v '^current$' || echo "  (none)"
                         exit 1
+                      fi
+                      if [[ "$INPUT_SHA" =~ ^[0-9a-f]{40}-[1-9][0-9]*(-[1-9][0-9]*)?$ ]]; then
+                        python3 - "$VERSION_DIR/image-digests.json" "$VERSION_DIR" "$INPUT_SERVICE" <<'PY'
+                      import json
+                      import re
+                      import sys
+                      from pathlib import Path
+
+                      digest_path, version_dir, requested = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
+                      try:
+                          document = json.loads(digest_path.read_text(encoding="utf-8"))
+                      except (OSError, json.JSONDecodeError) as error:
+                          raise SystemExit(f"release digest record is unavailable or malformed: {error}")
+                      if not isinstance(document, dict) or document.get("schema_version") != 1 or not isinstance(document.get("services"), dict):
+                          raise SystemExit("release digest record has an unsupported schema")
+                      services = ["api", "web", "scraper", "mcp"] if requested == "all" else [requested]
+                      for service in services:
+                          digest = document["services"].get(service)
+                          if not isinstance(digest, str) or not re.fullmatch(r"sha256:[a-f0-9]{64}", digest):
+                              raise SystemExit(f"release has no valid saved digest for {service}")
+                          if not (version_dir / f".deployment-success-{service}").is_file():
+                              raise SystemExit(f"release has no successful deployment record for {service}")
+                      PY
                       fi
                       echo "OK: $VERSION_DIR exists — proceeding with rollback."
 
@@ -97,12 +121,20 @@ jobs:
         outputs:
             image_prefix: ${{ steps.vars.outputs.image_prefix }}
             project_name: ${{ steps.vars.outputs.project_name }}
+            deployment_ref: ${{ steps.vars.outputs.deployment_ref }}
         steps:
             - name: Compute variables
               id: vars
+              env:
+                  INPUT_SHA: ${{ inputs.sha }}
               run: |
                   REPO="${{ github.repository }}"
-                  echo "image_prefix=ghcr.io/${REPO,,}" >> "$GITHUB_OUTPUT"
+                  echo "image_prefix=${REPO,,}" >> "$GITHUB_OUTPUT"
+                  if [[ "$INPUT_SHA" =~ ^([0-9a-f]{40})-[1-9][0-9]*(-[1-9][0-9]*)?$ ]]; then
+                    echo "deployment_ref=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+                  elif [[ "$INPUT_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+                    echo "deployment_ref=$INPUT_SHA" >> "$GITHUB_OUTPUT"
+                  fi
                   if [[ "${{ inputs.environment }}" == "production" ]]; then
                     echo "project_name=kreditozrouti" >> "$GITHUB_OUTPUT"
                   else
@@ -124,6 +156,7 @@ jobs:
             project_name: ${{ needs.resolve.outputs.project_name }}
             image_tag: ${{ inputs.sha }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+            deployment_ref: ${{ needs.resolve.outputs.deployment_ref }}
             operation_action: rollback
         secrets: inherit
 
@@ -141,6 +174,7 @@ jobs:
             project_name: ${{ needs.resolve.outputs.project_name }}
             image_tag: ${{ inputs.sha }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+            deployment_ref: ${{ needs.resolve.outputs.deployment_ref }}
             operation_action: rollback
         secrets: inherit
 
@@ -158,6 +192,7 @@ jobs:
             project_name: ${{ needs.resolve.outputs.project_name }}
             image_tag: ${{ inputs.sha }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+            deployment_ref: ${{ needs.resolve.outputs.deployment_ref }}
             operation_action: rollback
         secrets: inherit
 
@@ -175,5 +210,6 @@ jobs:
             project_name: ${{ needs.resolve.outputs.project_name }}
             image_tag: ${{ inputs.sha }}
             image_prefix: ${{ needs.resolve.outputs.image_prefix }}
+            deployment_ref: ${{ needs.resolve.outputs.deployment_ref }}
             operation_action: rollback
         secrets: inherit

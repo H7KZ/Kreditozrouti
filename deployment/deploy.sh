@@ -38,8 +38,8 @@ set -euo pipefail
 #
 # Version Cleanup:
 #   After a successful deploy, old version directories under
-#   $HOME/kreditozrouti/versions/<environment>/ that are older than 7 days and not the
-#   current symlink target are removed. A minimum of 3 versions is always kept.
+#   $HOME/kreditozrouti/versions/<environment>/ that are older than 14 days and not the
+#   current symlink target are removed. A minimum of 5 versions is always kept.
 #
 # Directory Structure:
 #   ./
@@ -120,6 +120,20 @@ validate_environment_vars() {
             *) log_error "Unknown service: '$service'. Valid values: api, web, scraper, mcp"; exit 1 ;;
         esac
     fi
+
+    validate_image_reference() {
+        local name="$1"
+        local value="${!name:-}"
+        [[ -z "$value" ]] && return 0
+        [[ "$value" =~ ^(:[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}|@sha256:[a-f0-9]{64})$ ]] || {
+            log_error "$name must be a Docker tag suffix or an immutable sha256 digest suffix"
+            exit 1
+        }
+    }
+    validate_image_reference API_IMAGE_REFERENCE
+    validate_image_reference WEB_IMAGE_REFERENCE
+    validate_image_reference SCRAPER_IMAGE_REFERENCE
+    validate_image_reference MCP_IMAGE_REFERENCE
 
     if [[ ${#missing[@]} -gt 0 ]]; then
         log_error "Missing required environment variables: ${missing[*]}"
@@ -260,7 +274,7 @@ main() {
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \
-            up $deps_flag -d "${up_services[@]}"
+            up $deps_flag -d --wait --wait-timeout 300 "${up_services[@]}"
     else
         # ---- Full-stack deploy ----
         create_networks "$networks_config"
@@ -291,7 +305,7 @@ main() {
             -f "$networks_config" \
             -f "$volumes_config" \
             -f "$app_compose_file" \
-            up --remove-orphans -d
+            up --remove-orphans -d --wait --wait-timeout 300
     fi
 
     # Remove error trap on success

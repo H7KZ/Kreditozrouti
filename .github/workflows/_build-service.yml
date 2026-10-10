@@ -5,6 +5,7 @@
 #
 # Inputs:  service (api | web | scraper | mcp), float_tag, cache_scope
 # Outputs: image_tag (short SHA for development deploy), image_prefix
+#          image_digest (immutable registry manifest digest)
 # Also publishes the full source SHA tag for guarded manual production promotion.
 #
 # Runs on a GitHub-hosted runner (ubuntu-latest), NOT the self-hosted runner - the
@@ -37,6 +38,9 @@ on:
             image_prefix:
                 description: 'Registry path prefix without registry host (e.g. h7kz/kreditozrouti)'
                 value: ${{ jobs.build.outputs.image_prefix }}
+            image_digest:
+                description: 'Immutable registry image digest'
+                value: ${{ jobs.build.outputs.image_digest }}
 
 jobs:
     build:
@@ -51,6 +55,7 @@ jobs:
         outputs:
             image_tag: ${{ steps.meta.outputs.image_tag }}
             image_prefix: ${{ steps.meta.outputs.image_prefix }}
+            image_digest: ${{ steps.build-image.outputs.digest }}
 
         steps:
             - name: Checkout Code
@@ -77,6 +82,7 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Build and Push
+              id: build-image
               uses: docker/build-push-action@v7
               with:
                   context: .

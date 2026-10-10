@@ -30,6 +30,16 @@ on:
                 description: 'Image tag (short SHA from build step)'
                 required: true
                 type: string
+            image_digest:
+                description: 'Optional immutable image digest (sha256:...)'
+                required: false
+                type: string
+                default: ''
+            deployment_ref:
+                description: 'Source commit for the deployment bundle; defaults to this workflow run'
+                required: false
+                type: string
+                default: ''
             image_prefix:
                 description: 'Registry path prefix (e.g. ghcr.io/h7kz/kreditozrouti)'
                 required: true
@@ -65,14 +75,26 @@ jobs:
 
             - name: Checkout
               uses: actions/checkout@v7
+              with:
+                  ref: ${{ inputs.deployment_ref || github.sha }}
 
-            - name: Validate image tag before using it in remote paths
+            - name: Validate image tag, digest, and deployment ref
               env:
                   INPUT_IMAGE_TAG: ${{ inputs.image_tag }}
+                  INPUT_IMAGE_DIGEST: ${{ inputs.image_digest }}
+                  INPUT_DEPLOYMENT_REF: ${{ inputs.deployment_ref }}
               run: |
                   set -euo pipefail
                   [[ "$INPUT_IMAGE_TAG" =~ ^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$ ]] || {
                     echo "ERROR: image_tag must be one valid Docker tag"
+                    exit 1
+                  }
+                  [[ -z "$INPUT_IMAGE_DIGEST" || "$INPUT_IMAGE_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]] || {
+                    echo "ERROR: image_digest must be sha256 followed by 64 lowercase hex characters"
+                    exit 1
+                  }
+                  [[ -z "$INPUT_DEPLOYMENT_REF" || "$INPUT_DEPLOYMENT_REF" =~ ^[a-f0-9]{40}$ ]] || {
+                    echo "ERROR: deployment_ref must be a full lowercase commit SHA"
                     exit 1
                   }
 
@@ -80,6 +102,7 @@ jobs:
               run: bash deployment/verify-toolkit-pin.sh
 
             - name: Create Version Directory
+              if: inputs.operation_action != 'rollback'
               uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
               with:
                   host: ${{ secrets.SSH_HOST }}
@@ -91,6 +114,7 @@ jobs:
                       mkdir -p "$HOME/kreditozrouti/versions/${{ inputs.environment }}/${{ inputs.image_tag }}"
 
             - name: Upload Deployment Files
+              if: inputs.operation_action != 'rollback'
               uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1
               with:
                   host: ${{ secrets.SSH_HOST }}
@@ -113,6 +137,7 @@ jobs:
                   IMG_REGISTRY: ghcr.io
                   IMG_PREFIX: ${{ inputs.image_prefix }}
                   IMG_TAG: ${{ inputs.image_tag }}
+                  IMG_DIGEST: ${{ inputs.image_digest }}
                   # Service
                   APP_SERVICE: ${{ inputs.service }}
                   APP_ENV: ${{ inputs.environment }}
@@ -143,12 +168,40 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,APP_SERVICE,APP_ENV,OPERATION_ACTION,TOOLKIT_LOCKS_REQUIRED,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET,APP_PHPMYADMIN_BASIC_AUTH
+                  envs: GH_TOKEN,GH_ACTOR,IMG_REGISTRY,IMG_PREFIX,IMG_TAG,IMG_DIGEST,APP_SERVICE,APP_ENV,OPERATION_ACTION,TOOLKIT_LOCKS_REQUIRED,APP_PROJECT,APP_DOMAIN,APP_MYSQL_USER,APP_MYSQL_DATABASE,APP_API_SESSION_SECRET,APP_API_COMMAND_TOKEN,APP_MYSQL_PASSWORD,APP_MYSQL_ROOT_PASSWORD,APP_MYSQL_URI,APP_REDIS_URI,APP_REDIS_PASSWORD,APP_GOOGLE_USER,APP_GOOGLE_APP_PASSWORD,APP_UMAMI_WEBSITE_ID,APP_UMAMI_SRC,APP_MCP_JWT_SECRET,APP_PHPMYADMIN_BASIC_AUTH
                   script: |
                       set -euo pipefail
+                      umask 077
 
                       VERSION_DIR="$HOME/kreditozrouti/versions/${{ inputs.environment }}/$IMG_TAG"
                       CURRENT_LINK="$HOME/kreditozrouti/versions/${{ inputs.environment }}/current"
+
+                      if [[ -z "$IMG_DIGEST" && -f "$VERSION_DIR/image-digests.json" ]]; then
+                        IMG_DIGEST="$(python3 - "$VERSION_DIR/image-digests.json" "$APP_SERVICE" <<'PY'
+                      import json
+                      import re
+                      import sys
+                      with open(sys.argv[1], encoding="utf-8") as source:
+                          document = json.load(source)
+                      if not isinstance(document, dict) or document.get("schema_version") != 1 or not isinstance(document.get("services"), dict):
+                          raise SystemExit("saved image digest record is malformed")
+                      value = document["services"].get(sys.argv[2], "")
+                      if value and not re.fullmatch(r"sha256:[a-f0-9]{64}", value):
+                          raise SystemExit("saved image digest is malformed")
+                      print(value)
+                      PY
+                        )"
+                      fi
+                      if [[ -z "$IMG_DIGEST" && "$IMG_TAG" =~ ^[0-9a-f]{40}-[1-9][0-9]*(-[1-9][0-9]*)?$ ]]; then
+                        echo "ERROR: release $IMG_TAG has no saved digest for $APP_SERVICE"
+                        exit 1
+                      fi
+                      [[ -z "$IMG_DIGEST" || "$IMG_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]] || {
+                        echo "ERROR: saved or supplied image digest is malformed"
+                        exit 1
+                      }
+                      IMAGE_REFERENCE=":$IMG_TAG"
+                      [[ -z "$IMG_DIGEST" ]] || IMAGE_REFERENCE="@$IMG_DIGEST"
 
                       echo "=========================================="
                       echo "Service Deploy: $APP_SERVICE @ $IMG_TAG → ${{ inputs.environment }}"
@@ -210,12 +263,12 @@ jobs:
 
                       # Login to GHCR
                       echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
-                      trap 'docker logout ghcr.io' EXIT
+                      trap 'if [[ -n "${ENV_FILE_TMP:-}" ]]; then rm -f -- "$ENV_FILE_TMP"; fi; docker logout ghcr.io' EXIT
 
-                      # Write .env - printf with a quoted value keeps the SHELL from
-                      # expanding a secret. That is only the first of the two readers
-                      # described above; Compose is the second, and the validation block
-                      # is what protects against it.
+                      # Atomically publish the private shared .env. Parallel service
+                      # jobs use the same environment values; Compose must not read a
+                      # partial file while another job is writing it.
+                      ENV_FILE_TMP="$(mktemp "$VERSION_DIR/.env.XXXXXX")"
                       {
                         printf 'ENV=%s\n' "$APP_ENV"
                         printf 'PROJECT=%s\n' "$APP_PROJECT"
@@ -238,8 +291,9 @@ jobs:
                         # htpasswd lines contain '$' (bcrypt/apr1). Single quotes make Compose's
                         # .env parser take the value literally, so it is not interpolated.
                         printf "PHPMYADMIN_BASIC_AUTH='%s'\n" "${APP_PHPMYADMIN_BASIC_AUTH:-}"
-                      } > "$VERSION_DIR/.env"
-                      chmod 600 "$VERSION_DIR/.env"
+                      } > "$ENV_FILE_TMP"
+                      chmod 600 "$ENV_FILE_TMP"
+                      mv -f "$ENV_FILE_TMP" "$VERSION_DIR/.env"
 
                       [[ "$TOOLKIT_LOCKS_REQUIRED" == true || "$TOOLKIT_LOCKS_REQUIRED" == false ]] || {
                         echo "ERROR: TOOLKIT_LOCKS_REQUIRED must be true or false."
@@ -253,12 +307,50 @@ jobs:
                       # Pass tag as env var (not via .images - avoids write race when all 3 services deploy simultaneously)
                       # derive the correct SERVICE_IMAGE_TAG var name from $APP_SERVICE
                       case "$APP_SERVICE" in
-                        api)     SERVICE_TAG_VAR="API_IMAGE_TAG" ;;
-                        web)  SERVICE_TAG_VAR="WEB_IMAGE_TAG" ;;
-                        scraper) SERVICE_TAG_VAR="SCRAPER_IMAGE_TAG" ;;
-                        mcp)     SERVICE_TAG_VAR="MCP_IMAGE_TAG" ;;
+                        api)     SERVICE_TAG_VAR="API_IMAGE_TAG"; SERVICE_REFERENCE_VAR="API_IMAGE_REFERENCE" ;;
+                        web)     SERVICE_TAG_VAR="WEB_IMAGE_TAG"; SERVICE_REFERENCE_VAR="WEB_IMAGE_REFERENCE" ;;
+                        scraper) SERVICE_TAG_VAR="SCRAPER_IMAGE_TAG"; SERVICE_REFERENCE_VAR="SCRAPER_IMAGE_REFERENCE" ;;
+                        mcp)     SERVICE_TAG_VAR="MCP_IMAGE_TAG"; SERVICE_REFERENCE_VAR="MCP_IMAGE_REFERENCE" ;;
                         *)       echo "Unknown service: '$APP_SERVICE'. Valid: api, web, scraper, mcp"; exit 1 ;;
                       esac
+
+                      if [[ -n "$IMG_DIGEST" ]]; then
+                        python3 - "$VERSION_DIR/image-digests.json" "$APP_SERVICE" "$IMG_DIGEST" <<'PY'
+                      import fcntl
+                      import json
+                      import os
+                      import re
+                      import tempfile
+                      import sys
+                      from pathlib import Path
+
+                      target = Path(sys.argv[1])
+                      service, digest = sys.argv[2], sys.argv[3]
+                      if not re.fullmatch(r"sha256:[a-f0-9]{64}", digest):
+                          raise SystemExit("invalid image digest")
+                      lock_path = target.with_suffix(target.suffix + ".lock")
+                      with lock_path.open("a", encoding="utf-8") as lock:
+                          fcntl.flock(lock, fcntl.LOCK_EX)
+                          try:
+                              document = json.loads(target.read_text(encoding="utf-8"))
+                          except FileNotFoundError:
+                              document = {"schema_version": 1, "services": {}}
+                          if not isinstance(document, dict) or document.get("schema_version") != 1 or not isinstance(document.get("services"), dict):
+                              raise SystemExit("existing image digest record is malformed")
+                          document["services"][service] = digest
+                          descriptor, temporary = tempfile.mkstemp(prefix=".image-digests.", dir=target.parent)
+                          try:
+                              with os.fdopen(descriptor, "w", encoding="utf-8") as output:
+                                  json.dump(document, output, sort_keys=True)
+                                  output.write("\n")
+                                  output.flush()
+                                  os.fsync(output.fileno())
+                              os.replace(temporary, target)
+                          finally:
+                              if os.path.exists(temporary):
+                                  os.unlink(temporary)
+                      PY
+                      fi
 
                       TOOLKIT_BIN=/usr/local/bin/toolkit
                       if [[ "$TOOLKIT_LOCKS_REQUIRED" == true || -x "$TOOLKIT_BIN" ]]; then
@@ -279,7 +371,7 @@ jobs:
                         command -v runuser >/dev/null 2>&1 || { echo "ERROR: runuser is required for toolkit locks."; exit 1; }
                         DEPLOY_USER="$(id -un)"
                         DEPLOY_HOME="$HOME"
-                        declare -a DEPLOY_ENV=("HOME=$DEPLOY_HOME" 'IMAGE_REGISTRY=ghcr.io' "IMAGE_PREFIX=$IMG_PREFIX" "$SERVICE_TAG_VAR=$IMG_TAG")
+                        declare -a DEPLOY_ENV=("HOME=$DEPLOY_HOME" 'IMAGE_REGISTRY=ghcr.io' "IMAGE_PREFIX=$IMG_PREFIX" "$SERVICE_TAG_VAR=$IMG_TAG" "$SERVICE_REFERENCE_VAR=$IMAGE_REFERENCE")
                         sudo -n "$TOOLKIT_BIN" with-lock \
                           --repository kreditozrouti --environment "$APP_ENV" --action "$OPERATION_ACTION" \
                           --release-id "$IMG_TAG" --timeout 3600 -- \
@@ -292,12 +384,16 @@ jobs:
                       else
                         echo "WARNING: host toolkit is not installed; deployment is unlocked. Keep backup scheduling disabled."
                         cd "$VERSION_DIR"
-                        export "${SERVICE_TAG_VAR}=${IMG_TAG}"
+                        export "${SERVICE_TAG_VAR}=${IMG_TAG}" "${SERVICE_REFERENCE_VAR}=${IMAGE_REFERENCE}"
                         IMAGE_REGISTRY="ghcr.io" \
                           IMAGE_PREFIX="$IMG_PREFIX" \
                           bash ./deploy.sh "${{ inputs.project_name }}" "$APP_ENV" "$APP_SERVICE"
                         ln -sfn "$VERSION_DIR" "$CURRENT_LINK"
                       fi
+
+                      printf 'success\n' > "$VERSION_DIR/.deployment-success-$APP_SERVICE.tmp"
+                      mv -f "$VERSION_DIR/.deployment-success-$APP_SERVICE.tmp" "$VERSION_DIR/.deployment-success-$APP_SERVICE"
+
 
                       echo "=========================================="
                       echo "Service deploy complete: $APP_SERVICE"

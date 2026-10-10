@@ -103,7 +103,7 @@ create_volumes() {
 # ------------------------------------------------------------------------------
 # Version directory cleanup
 # Removes version dirs under $HOME/kreditozrouti/versions/<stream>/ older than
-# 7 days that aren't the "current" symlink target. A minimum of 3 is kept.
+# 14 days that aren't the "current" symlink target. A minimum of 5 is kept.
 # ------------------------------------------------------------------------------
 
 cleanup_old_versions() {
@@ -131,7 +131,7 @@ cleanup_old_versions() {
         local age_days
         age_days=$(( ($(date +%s) - $(stat -c %Y "$dir")) / 86400 ))
 
-        if [[ $age_days -gt 7 ]] && [[ $((total - deleted)) -gt 3 ]]; then
+        if [[ $age_days -gt 14 ]] && [[ $((total - deleted)) -gt 5 ]]; then
             log "Removing old version: $(basename "$dir") (${age_days}d old)"
             rm -rf "$dir"
             ((deleted++))

@@ -40,7 +40,7 @@ services:
   # API Service
   # ============================================================================
   api:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/api:${API_IMAGE_TAG:-dev-latest}
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/api${API_IMAGE_REFERENCE:-:${API_IMAGE_TAG:-dev-latest}}
     restart: unless-stopped
 
     depends_on:
@@ -126,7 +126,7 @@ services:
   # Scraper Service
   # ============================================================================
   scraper:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/scraper:${SCRAPER_IMAGE_TAG:-dev-latest}
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/scraper${SCRAPER_IMAGE_REFERENCE:-:${SCRAPER_IMAGE_TAG:-dev-latest}}
     restart: unless-stopped
 
     depends_on:
@@ -178,7 +178,7 @@ services:
   # Web Service
   # ============================================================================
   web:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/web:${WEB_IMAGE_TAG:-dev-latest}
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/web${WEB_IMAGE_REFERENCE:-:${WEB_IMAGE_TAG:-dev-latest}}
     restart: unless-stopped
 
     depends_on:
@@ -255,7 +255,7 @@ services:
   # MCP Service
   # ============================================================================
   mcp:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/mcp:${MCP_IMAGE_TAG:-dev-latest}
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/mcp${MCP_IMAGE_REFERENCE:-:${MCP_IMAGE_TAG:-dev-latest}}
     restart: unless-stopped
 
     depends_on:

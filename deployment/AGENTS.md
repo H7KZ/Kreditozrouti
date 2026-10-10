@@ -48,8 +48,8 @@ Requires `.env` (written by CI from GitHub Secrets - never placed manually) and 
 For single-service deploys, only the relevant tag env var is required (e.g. `API_IMAGE_TAG` for `service=api`).
 `api`/`scraper`/`mcp` single-service deploys also bring up their infrastructure dependencies (`mysql`/`redis`) so the
 service never starts without them; `web` uses `--no-deps` (its dependency is the app-level `api`). Old version
-directories under `$HOME/kreditozrouti/versions/<environment>/` older than 7 days are cleaned up after each deploy
-(minimum 3 kept).
+directories under `$HOME/kreditozrouti/versions/<environment>/` older than 14 days are cleaned up after each deploy
+(minimum 5 kept).
 
 ---
 
@@ -82,13 +82,15 @@ rules on the first deploy, so `scripts/sync-grafana-alerts.sh` is obsolete. `Wat
 `deployment/monitoring/` + `deployment/lib.sh` into `~/kreditozrouti/versions/monitoring/<sha>/`, runs
 `monitoring/deploy.sh` from there, then updates the `~/kreditozrouti/versions/monitoring/current` symlink. Old
 version dirs are cleaned up the same way as app deploys (7 days, minimum 3 kept) via the shared
-`cleanup_old_versions` in `lib.sh`. No more writing directly into a flat `~/deployment/` - that was the old layout
+`cleanup_old_versions` in `lib.sh` (14 days, minimum 5 kept). No more writing directly into a flat `~/deployment/` - that was the old layout
 and diverged from every other prod deploy, which caused ownership/permission drift on the host.
 
 **Workflow jobs use GitHub-hosted runners over SSH with the pinned host fingerprint.** Keep the existing VPS runner
 stack until its owner-approved retirement gate confirms no external runner registration or consumer remains. A push
-to `main` deploys changed app services to development only after the full verification workflow succeeds;
-production remains manual-only.
+to `main` builds and deploys every app service to development only after the full verification workflow succeeds;
+production remains manual-only. A complete development manifest is published only after API, web, scraper and MCP
+deployments succeed and Compose reports them running/healthy; configured health checks are honored, while services
+without health checks are checked as running. Partial manual development deploys do not qualify for promotion.
 
 **`VITE_*` env vars** are baked into the web image at build time by Vite. Setting them at container runtime has no
 effect - the `docker-entrypoint.sh` placeholder-swap handles this at startup instead. **The swap only works while every
@@ -114,7 +116,12 @@ credentials.
 **Third-party images must stay pinned** in the Compose files under `production/`, `development/`, `monitoring/`,
 `github-runner/`, and at the root for local development. Check those files for current versions before changing an
 image. Do not use `:latest`: every deploy pulls images, and a silent major upgrade of a stateful service may be
-irreversible. Digests are not managed automatically in this repo.
+irreversible. App images are promoted by the digest recorded after successful development deployment; rollback reads
+the digest saved in the target release directory.
+
+Production release directories use `<source-commit>-<development-run-id>-<run-attempt>`. Rollback accepts that release ID, checks
+the saved digest and successful-deploy marker for each selected service, and preserves the original deployment bundle.
+Legacy SHA/tag directories remain available through their historical tag reference.
 
 **`umami-db`'s volume mounts at `/var/lib/postgresql`, not `/var/lib/postgresql/data`.** Postgres 18+ images default
 `PGDATA` to `/var/lib/postgresql/<major>/docker` (docker-library/postgres#1259) and refuse to start if they find a
