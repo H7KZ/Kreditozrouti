@@ -101,7 +101,7 @@ effect - the `docker-entrypoint.sh` placeholder-swap handles this at startup ins
 mode and strips any undeclared variable from the task environment, so the six `ENV` lines in `../apps/web` never
 reached vite: no placeholder tokens were baked in, Faro and Umami were silently disabled in production, the app version
 reported `unknown`, and the entrypoint's `sed` had nothing to replace (`VITE_API_URL` hid the breakage by falling back
-to `/api`). Anyone adding a new `VITE_*` var must add it to `turbo.json` too.
+to `/api`). Anyone adding a new `VITE_*` var must add it to `turbo.json` too. A feature gated on a `VITE_*` value must read it through a variable (`const env = import.meta.env`), not `if (import.meta.env.X)`: Vite folds the direct check against the build-time placeholder, which is truthy, so the gate never closes. That shipped Umami and Faro with empty IDs in the local stack.
 
 **phpMyAdmin is public on development only, behind basic auth.** In production it is NOT internet-reachable: it sits
 behind `profiles: ['admin']` (a plain `up` and every deploy leave it stopped; never auto-start it there), publishes on
