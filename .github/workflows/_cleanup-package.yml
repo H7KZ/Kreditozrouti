@@ -33,7 +33,6 @@ jobs:
             packages: read
 
         steps:
-            - name: Refuse unsafe cleanup
+            - name: Keep cleanup disabled
               run: |
-                  echo "::error::GHCR deletion is disabled until trusted recovery references are consumed."
-                  exit 1
+                  echo "::notice::GHCR deletion remains disabled until trusted recovery references are consumed."
