@@ -7,22 +7,27 @@ import { logger } from '@api/logger'
 /**
  * Kysely instance for type-safe MySQL interactions.
  */
-const dialect = new MysqlDialect({
-	pool: createPool({
-		uri: Config.mysql.uri,
-		// mysql2 supports sessionVariables at runtime but the TS types omit it — cast is intentional
-		sessionVariables: { transaction_isolation: 'READ-COMMITTED' },
-		timezone: 'Z',
-		connectionLimit: 100, // Max 100 connections in pool
-		connectTimeout: 10_000, // 10 seconds to establish connection
-		waitForConnections: true, // Wait instead of immediate error
-		queueLimit: 0, // Unlimited queue (or set to ~100)
-		enableKeepAlive: true,
-		keepAliveInitialDelay: 30_000, // 30 seconds
-		idleTimeout: 60_000, // Close idle connections after 60s
-		maxIdle: 10 // Keep max 10 idle connections
-	} as any)
+const pool = createPool({
+	uri: Config.mysql.uri,
+	timezone: 'Z',
+	connectionLimit: 100, // Max 100 connections in pool
+	connectTimeout: 10_000, // 10 seconds to establish connection
+	waitForConnections: true, // Wait instead of immediate error
+	queueLimit: 0, // Unlimited queue (or set to ~100)
+	enableKeepAlive: true,
+	keepAliveInitialDelay: 30_000, // 30 seconds
+	idleTimeout: 60_000, // Close idle connections after 60s
+	maxIdle: 10 // Keep max 10 idle connections
+} as any)
+
+// mysql2 has no pool option for session variables (passing one only logs a warning), so set the isolation level on every new connection.
+pool.on('connection', connection => {
+	connection.query("SET SESSION transaction_isolation = 'READ-COMMITTED'", err => {
+		if (err) logger.error({ err }, 'db.session_init_failed')
+	})
 })
+
+const dialect = new MysqlDialect({ pool })
 
 /**
  * Kysely database client instance.
