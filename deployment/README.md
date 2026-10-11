@@ -91,6 +91,9 @@ it never rewrites the frozen source/runtime inventory. Monitoring health is chec
 Docker network; development qualification still requires three public HTTPS observations.
 Public health requests identify as `toolkit-public-health/1`; edge rules must allow this agent
 for the configured health URLs. Toolkit 0.9.3 avoids the default Python agent blocked at the edge.
+The final workflow observations run over the pinned SSH connection from the deployment host,
+against the public HTTPS URLs. GitHub-hosted runner traffic is rejected by the edge; these
+observations verify the public route from the host, not reachability from every client network.
 
 The root-owned boot unit runs `boot-recovery/reconcile.sh` as root with the installed deployment
 account and home passed explicitly; no deployment-account sudo rule is needed for boot recovery.
