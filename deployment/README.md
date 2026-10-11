@@ -89,6 +89,8 @@ and writes derived Docker socket GID/Grafana password to `TOOLKIT_RUNTIME_DIR/ex
 `monitoring/post-deploy.sh` uses exported saved values for internal readiness and Grafana grants;
 it never rewrites the frozen source/runtime inventory. Monitoring health is checked inside the
 Docker network; development qualification still requires three public HTTPS observations.
+Public health requests identify as `toolkit-public-health/1`; edge rules must allow this agent
+for the configured health URLs. Toolkit 0.9.3 avoids the default Python agent blocked at the edge.
 
 The root-owned boot unit runs `boot-recovery/reconcile.sh` as root with the installed deployment
 account and home passed explicitly; no deployment-account sudo rule is needed for boot recovery.
