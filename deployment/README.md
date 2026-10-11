@@ -1,17 +1,31 @@
 # Snapshot deployment operations
 
-`deploy.yml` verifies/builds on GitHub-hosted runners. Pushes to `main` deploy the complete
-application set (api, web, scraper, mcp) to development through one reusable environment job.
-Production dispatch from `main` takes `environment=production` and an optional `commit` (default: last successful development deploy).
-It requires a successful main development run, matching workflow/run attempt/source commit,
-main ancestry, the exact artifact checksum and every application digest. No production rebuild
-or subset promotion is supported. The qualified artifact expires after 90 days.
+**Deploy App** (`deploy.yml`) releases the complete application set (api, web, scraper, mcp).
+Pushes to `main` always verify and build development. Manual runs accept any source branch, tag
+or SHA for either target; `ref` defaults to the selected workflow ref and resolves once to a full SHA.
+Verification and builds use that selected source. The controller comes from the dispatch ref.
 
-Development always builds the complete set.
+| Input         | Behavior                                                                                                                                      |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `environment` | `development` (default) or `production`                                                                                                       |
+| `mode`        | `build` rebuilds all; `reuse` (default) builds missing images; `existing` requires every image; `promote` restores every qualified app digest |
+| `image_tag`   | `reuse`/`existing` lookup tag; default `<environment>-<sourceSHA>`                                                                            |
+| `digests`     | `existing` only: complete JSON map of all four service names to `sha256:` digests, instead of `image_tag`                                     |
+| `run_id`      | `promote` only: exact successful development run; empty discovers the latest matching published release across all branches/pages             |
+| `verify`      | Manual verification switch, default true; automatic pushes always verify                                                                      |
+| `no_cache`    | Disable cache for build/reuse builds, default false                                                                                           |
+| `operation`   | `deploy` (default) activates after health; `stage` saves the immutable snapshot without applying it                                           |
+
+Promotion with a nonempty `ref` selects only a qualification for that resolved source. Empty `ref`
+selects the latest qualified source, independently of the dispatch branch. Promotion validates the
+artifact archive checksum, canonical manifest, repository/workflow/run/attempt, source and complete
+app digest set; it does not require main ancestry. Production build/reuse/existing runs need no development
+qualification. Only successful development deployments publish qualifications; staging never does.
+Artifacts expire after 90 days. Use `image_tag` for legacy SHA tags; new default lookup tags separate targets.
 
 ## Transport and snapshots
 
-`_deploy-service.yml` is a full environment job despite its retained filename. It checks out
+`_deploy.yml` is a reusable full environment job; `_build.yml` builds one image. Deployment checks out
 the selected source bundle, renders app values using `render-env.sh`, packages deployment
 contents at archive root with `package-release.py`, and uploads archive/checksum/manifest,
 private dotenv and isolated registry auth to `~/kreditozrouti/incoming/<environment>/<run>-<attempt>/`.
@@ -75,15 +89,24 @@ bash deployment/deploy.sh reconcile development
 ```
 
 Create isolated registry config with `umask 077`; use `docker --config <dir> login` before sudo,
-then remove that operation's directory after the synchronous command. Rollback workflow takes
-`release_id=previous|<saved-id>` and `environment`, including monitoring. It transfers fresh auth
+then remove that operation's directory after the synchronous command. **Restore Release** (`rollback.yml`) accepts any controller `ref`, `environment` (including monitoring),
+`operation=rollback|activate|reconcile`, and `release_id=previous|current|<saved-id>` (ignored for reconcile).
+It transfers fresh auth
 only and restores the complete saved model/env/runtime; it never renders current application
 secrets. Legacy directories without snapshot metadata fail closed: stage/deploy a new complete
 snapshot, then select it explicitly. Image rollback does not undo schema/data changes.
 
 ## Monitoring and recovery
 
-Manual `deploy-monitoring.yml` uses the identical reusable transport/controller.
+**Deploy Monitoring** (`deploy-monitoring.yml`) accepts any `ref` and `operation=deploy|stage` through
+the identical reusable transport/controller. **Verify** accepts a manual `ref` for full verification.
+**Verify Backups** accepts `ref` and `check=freshness|drill|both`; its inventory remains production
+MySQL/Redis plus monitoring Umami, rather than an application environment selector.
+**Cleanup Registry** accepts `dry_run`, complete `protected_digests`, `keep_newest` (6), `min_age_days` (7)
+and optional comma/space separated service names in `packages`. It preserves untagged versions,
+protected tags/digests and young images; scheduled runs always simulate deletion. Supply every live,
+previous and retained recovery digest before enabling deletion. Deploy/restore/stage requests share
+one queued concurrency group per target.
 `monitoring/prepare.sh` writes webhook files through `monitoring/.secrets` into private runtime,
 and writes derived Docker socket GID/Grafana password to `TOOLKIT_RUNTIME_DIR/extra.env`.
 `monitoring/post-deploy.sh` uses exported saved values for internal readiness and Grafana grants;

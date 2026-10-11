@@ -1,9 +1,9 @@
 # ==============================================================================
 # Workflow: Build Service (reusable)
 # Description: Builds and pushes a single service Docker image to GHCR.
-#              Called by deploy.yml/rollback.yml for each selected service.
+#              Called by deploy.yml for each selected service.
 #
-# Inputs:  service (api | web | scraper | mcp), float_tag, cache_scope
+# Inputs: service, source_commit, environment, image_tag, no_cache
 # Outputs: image_tag (short SHA for development deploy), image_prefix
 #          image_digest (immutable registry manifest digest)
 # Also publishes the full source SHA tag for guarded manual production promotion.
@@ -23,14 +23,18 @@ on:
                 description: 'Service to build: api | web | scraper | mcp'
                 required: true
                 type: string
-            float_tag:
-                description: 'Floating tag to push alongside the versioned tag (latest | dev-latest)'
+            source_commit:
                 required: true
                 type: string
-            cache_scope:
-                description: 'GHA cache scope (e.g. api-prod, web-dev)'
+            environment:
                 required: true
                 type: string
+            image_tag:
+                required: true
+                type: string
+            no_cache:
+                type: boolean
+                default: false
         outputs:
             image_tag:
                 description: 'Short SHA used as the versioned image tag'
@@ -60,11 +64,15 @@ jobs:
         steps:
             - name: Checkout Code
               uses: actions/checkout@v7
+              with:
+                  ref: ${{ inputs.source_commit }}
 
             - name: Extract Metadata
               id: meta
+              env:
+                  SOURCE_COMMIT: ${{ inputs.source_commit }}
               run: |
-                  TAG="${GITHUB_SHA::8}"
+                  TAG="${SOURCE_COMMIT::8}"
                   PREFIX="$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
                   echo "image_tag=${TAG}" >> "$GITHUB_OUTPUT"
                   echo "image_prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
@@ -88,17 +96,19 @@ jobs:
                   context: .
                   file: ./apps/${{ inputs.service }}/Dockerfile
                   push: true
+                  no-cache: ${{ inputs.no_cache }}
                   tags: |
                       ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
-                      ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ github.sha }}
-                      ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.float_tag }}
+                      ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.source_commit }}
+                      ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.environment }}-${{ inputs.source_commit }}
+                      ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.environment == 'production' && 'latest' || 'dev-latest' }}
                   build-args: |
                       APP_VERSION=${{ steps.meta.outputs.image_tag }}
-                      GIT_SHA=${{ github.sha }}
+                      GIT_SHA=${{ inputs.source_commit }}
                   labels: |
-                      org.opencontainers.image.revision=${{ github.sha }}
-                  cache-from: type=gha,scope=${{ inputs.cache_scope }}
-                  cache-to: type=gha,mode=max,scope=${{ inputs.cache_scope }}
+                      org.opencontainers.image.revision=${{ inputs.source_commit }}
+                  cache-from: ${{ !inputs.no_cache && format('type=gha,scope={0}-{1}', inputs.service, inputs.environment) || '' }}
+                  cache-to: type=gha,mode=max,scope=${{ inputs.service }}-${{ inputs.environment }}
                   platforms: linux/amd64
 
             - name: Summarize image digest

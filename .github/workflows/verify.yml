@@ -12,9 +12,16 @@
 #   - Makefile with install, lint, test, type-check and build targets
 # ==============================================================================
 
-name: Verify
+name: Verify Code
+run-name: Verify Code | ${{ inputs.ref || github.head_ref || github.ref_name }}
 
 on:
+    workflow_dispatch:
+        inputs:
+            ref:
+                description: Source branch, tag or SHA (empty = selected workflow ref)
+                type: string
+                default: ''
     pull_request:
         branches: [main]
         types: [opened, synchronize, reopened]
@@ -31,4 +38,5 @@ jobs:
         name: Verify Code
         uses: ./.github/workflows/_verify.yml
         with:
-            affected: true
+            affected: ${{ github.event_name == 'pull_request' }}
+            source_commit: ${{ inputs.ref || github.sha }}

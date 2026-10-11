@@ -72,8 +72,8 @@ def main():
         "environment_variables": variables,
     }
     encoded = os.environ.get("QUALIFICATION_B64", "")
-    if target == "production":
-        require(encoded, "production requires the validated development qualification")
+    if encoded:
+        require(target != "monitoring", "monitoring cannot consume application qualification")
         raw = base64.b64decode(encoded, validate=True)
         require(base64.b64encode(raw).decode("ascii") == encoded, "noncanonical qualification encoding")
         checksum = os.environ.get("QUALIFICATION_SHA256", "")
@@ -81,14 +81,14 @@ def main():
         document = json.loads(raw)
         require(set(document) == {"schema_version", "repository", "workflow_path", "workflow_run_id", "workflow_run_attempt", "environment", "source_commit", "services"}, "unexpected qualification fields")
         require(raw == (json.dumps(document, sort_keys=True, indent=2) + "\n").encode("utf-8"), "noncanonical qualification JSON")
-        expected_workflow = ".github/workflows/deploy.yml" if slug == "ohlidame" else ".github/workflows/deploy.yml"
+        expected_workflow = ".github/workflows/deploy.yml"
         require(document.get("schema_version") == 1 and document.get("repository") == repository and document.get("environment") == "development" and document.get("workflow_path") == expected_workflow, "qualification identity mismatch")
         require(document.get("source_commit") == commit, "qualification source mismatch")
         require(all(isinstance(document.get(key), str) and re.fullmatch(r"[1-9][0-9]*", document[key]) for key in ("workflow_run_id", "workflow_run_attempt")), "invalid qualification run identity")
-        require(document.get("services") == {key: digests[key] for key in app_services}, "production must promote every qualified application digest together")
+        require(document.get("services") == {key: digests[key] for key in app_services}, "promotion must use every qualified application digest together")
         manifest["qualification"] = document
     else:
-        require(not encoded and not os.environ.get("QUALIFICATION_SHA256"), "qualification is production-only")
+        require(not encoded and not os.environ.get("QUALIFICATION_SHA256"), "qualification checksum requires a manifest")
     if target == "monitoring":
         manifest.update(runtime_directories=["monitoring/.secrets"], prepare_script="monitoring/prepare.sh", post_deploy_script="monitoring/post-deploy.sh")
     # Only the selected Compose model and its support files enter the archive.

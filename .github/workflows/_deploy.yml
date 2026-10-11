@@ -1,10 +1,13 @@
-name: Deploy Service (reusable)
+name: Deploy Environment (reusable)
 'on':
     workflow_call:
         inputs:
             environment:
                 required: true
                 type: string
+            operation:
+                type: string
+                default: deploy
             source_commit:
                 required: true
                 type: string
@@ -41,14 +44,14 @@ jobs:
         timeout-minutes: 120
         environment: ${{ inputs.environment }}
         steps:
-            - name: Require main and trusted SSH fingerprint
+            - name: Validate target, operation and trusted SSH fingerprint
               env:
                   TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  WORKFLOW_REF: ${{ github.ref }}
+                  OPERATION: ${{ inputs.operation }}
                   SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
               run: |
                   set -euo pipefail
-                  [[ "$TARGET_ENVIRONMENT" == development || "$WORKFLOW_REF" == refs/heads/main ]] || { echo 'ERROR: production and monitoring deployments require main'; exit 1; }
+                  [[ "$OPERATION" =~ ^(deploy|stage)$ ]] || exit 1
                   [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
                   [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || { echo 'ERROR: trusted SSH fingerprint required'; exit 1; }
             - name: Checkout controller
@@ -61,7 +64,7 @@ jobs:
                   ref: ${{ inputs.source_commit }}
                   path: bundle
             - name: Validate toolkit bundle pin
-              run: bash bundle/deployment/verify-toolkit-pin.sh
+              run: bash controller/deployment/verify-toolkit-pin.sh "$GITHUB_WORKSPACE/bundle/deployment"
             - name: Build private incoming packet
               id: packet
               env:
@@ -115,6 +118,13 @@ jobs:
                   bash controller/deployment/render-env.sh "$TARGET_ENVIRONMENT" "$PWD/incoming/release.env"
                   mkdir -m 700 incoming/registry
                   printf '%s' "$GH_TOKEN" | docker --config "$PWD/incoming/registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
+            - name: Report snapshot selection
+              env:
+                  SOURCE_COMMIT: ${{ inputs.source_commit }}
+                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
+                  OPERATION: ${{ inputs.operation }}
+              run: |
+                  printf 'Snapshot: %s-%s-%s\n\nTarget: %s; operation: %s\n' "$SOURCE_COMMIT" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$TARGET_ENVIRONMENT" "$OPERATION" >> "$GITHUB_STEP_SUMMARY"
             - name: Reserve isolated incoming directory
               uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
               with:
@@ -137,6 +147,7 @@ jobs:
                   TARGET_ENVIRONMENT: ${{ inputs.environment }}
                   INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
                   EXPECTED_TOOLKIT_VERSION: ${{ steps.packet.outputs.toolkit_version }}
+                  OPERATION: ${{ inputs.operation }}
               id: reserve
             - name: Upload packet
               uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
@@ -157,7 +168,7 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION
+                  envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION,OPERATION
                   command_timeout: 110m
                   script: |
                       set -euo pipefail
@@ -165,7 +176,7 @@ jobs:
                       incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
                       [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install CI bundle runner with deployment/install-toolkit.sh --ci-only --deploy-user <account>' >&2; exit 1; }
                       chmod 600 "$incoming/release.env" "$incoming/registry/config.json"
-                      sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release deploy --repository kreditozrouti --environment "$TARGET_ENVIRONMENT" \
+                      sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release "$OPERATION" --repository kreditozrouti --environment "$TARGET_ENVIRONMENT" \
                         --root "$HOME/kreditozrouti/versions/$TARGET_ENVIRONMENT" --archive "$incoming/release.tar.gz" \
                         --checksum "$incoming/release.sha256" --manifest "$incoming/manifest.json" \
                         --env-file "$incoming/release.env" --user "$(id -un)" --registry-config "$incoming/registry"
@@ -173,6 +184,7 @@ jobs:
                   TARGET_ENVIRONMENT: ${{ inputs.environment }}
                   INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
                   EXPECTED_TOOLKIT_VERSION: ${{ steps.packet.outputs.toolkit_version }}
+                  OPERATION: ${{ inputs.operation }}
             - name: Remove own incoming packet
               uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
               with:

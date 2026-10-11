@@ -23,7 +23,9 @@ Boot recovery calls toolkit reconcile per environment, validating saved inventor
 
 ## Recovery and rollback
 
-Use **Actions > Rollback Deployment** from main with environment and `release_id=previous|<fullSHA-run-attempt>`. Toolkit restores the whole saved snapshot/env/runtime. Image rollback does not undo schema migrations.
+Use **Actions > Restore Release** from any branch with controller `ref`, environment,
+`operation=rollback|activate|reconcile` and `release_id=previous|current|<fullSHA-run-attempt>`.
+Reconcile ignores the release ID and repairs current. Toolkit restores the whole saved snapshot/env/runtime. Image rollback does not undo schema migrations.
 
 Production backups are plain encrypted dumps to an Object-Locked B2 bucket, written by `toolkit backup` (see [backups](../../deployment/backups/README.md) and [RESTORE.md](../../deployment/backups/RESTORE.md)). They capture MySQL, the Umami PostgreSQL database and a whole Redis RDB every four hours; restore copies only `share:*` / `ical:*` records, with original expiry times, into a fresh Redis, never queues, cache, sessions or counters. Deploy and rollback always run under toolkit locks and fail without the pinned toolkit. No timer is enabled until the application owner approves it. GitHub-hosted `backup-verify.yml` checks freshness daily and restores everything weekly. Losing the MySQL volume removes the scraped course and study-plan catalog until it is rebuilt from InSIS. Retain all named volumes during Docker cleanup.
 
@@ -40,7 +42,7 @@ sudo /usr/local/bin/toolkit with-lock \
 
 Repeat under the same lock for its reviewed `migrate` or `clean` action. The naming-volume migration and `--prune-old` also require the lock. Do not run Docker/DDL migration commands directly while the backup capture timer is enabled.
 
-For a new host: restore Docker access, deploy shared Traefik from the Infrastructure repo, configure GitHub environment secrets including the trusted SSH host fingerprint, deploy monitoring if needed, then dispatch `Deploy` for the app. Current workflows use GitHub-hosted runners over verified SSH; the legacy github-runner sources are removed. Check public health routes and the scraper after deployment. The [Umami PostgreSQL 18 migration](HANDOFF-umami-pg18-migration.md) applies only to an older monitoring database volume; do not run it on a fresh volume.
+For a new host: restore Docker access, deploy shared Traefik from the Infrastructure repo, configure GitHub environment secrets including the trusted SSH host fingerprint, deploy monitoring if needed, then dispatch `Deploy App` for the app. Current workflows use GitHub-hosted runners over verified SSH; the legacy github-runner sources are removed. Check public health routes and the scraper after deployment. The [Umami PostgreSQL 18 migration](HANDOFF-umami-pg18-migration.md) applies only to an older monitoring database volume; do not run it on a fresh volume.
 
 ## Security and maintenance
 
