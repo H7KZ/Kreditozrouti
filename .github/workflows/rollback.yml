@@ -71,7 +71,7 @@ jobs:
                   EXPECTED_TOOLKIT_VERSION: ${{ steps.auth.outputs.toolkit_version }}
               with:
                   host: ${{ secrets.SSH_HOST }}
-                  username: ${{ secrets.SSH_USER }}
+                  username: ${{ vars.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
@@ -89,7 +89,7 @@ jobs:
               uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
               with:
                   host: ${{ secrets.SSH_HOST }}
-                  username: ${{ secrets.SSH_USER }}
+                  username: ${{ vars.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
@@ -105,7 +105,7 @@ jobs:
                   RELEASE_ID: ${{ inputs.release_id }}
               with:
                   host: ${{ secrets.SSH_HOST }}
-                  username: ${{ secrets.SSH_USER }}
+                  username: ${{ vars.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
@@ -127,7 +127,7 @@ jobs:
                   INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
               with:
                   host: ${{ secrets.SSH_HOST }}
-                  username: ${{ secrets.SSH_USER }}
+                  username: ${{ vars.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
