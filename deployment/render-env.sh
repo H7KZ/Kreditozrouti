@@ -49,8 +49,15 @@ else
     put MYSQL_URI "$APP_MYSQL_URI"
     put REDIS_URI "$APP_REDIS_URI"
     put REDIS_PASSWORD "$APP_REDIS_PASSWORD"
-    put GOOGLE_USER "$APP_GOOGLE_USER"
-    put GOOGLE_APP_PASSWORD "${APP_GOOGLE_APP_PASSWORD:-}"
+    # Development must not authenticate to Gmail or send real mail, even when
+    # repository-level production credentials are inherited by the workflow.
+    if [[ "$target" == production ]]; then
+      put GOOGLE_USER "${APP_GOOGLE_USER:-}"
+      put GOOGLE_APP_PASSWORD "${APP_GOOGLE_APP_PASSWORD:-}"
+    else
+      put GOOGLE_USER ''
+      put GOOGLE_APP_PASSWORD ''
+    fi
     put VITE_UMAMI_WEBSITE_ID "${APP_UMAMI_WEBSITE_ID:-}"
     put VITE_UMAMI_SRC "$APP_UMAMI_SRC"
     put MCP_JWT_SECRET "${APP_MCP_JWT_SECRET:-}"
