@@ -3,13 +3,13 @@
 Read [snapshot operations](../../deployment/README.md) for the complete workflow, manifest, transport, rollback, recovery and retention contract.
 
 Push `main` to verify/build/deploy a complete development release. For production, dispatch
-`deploy-all.yml` from `main` with `environment=production`. It promotes the latest qualified development
+`deploy.yml` from `main` with `environment=production`. It promotes the latest qualified development
 release on main; pass `development_run_id` only to promote a specific older run.
 Production reuses every qualified application digest and its source bundle. Subsets/tag-only
 deploys are removed. Dispatch `rollback.yml` with `release_id` and environment
 to restore a complete immutable snapshot and its saved configuration.
 
-Manual development deploys work from any branch: dispatch `deploy-all.yml` with `environment=development`
+Manual development deploys work from any branch: dispatch `deploy.yml` with `environment=development`
 from the branch you want to test. The dispatched commit is built and deployed. To redeploy without
 rebuilding, tick `reuse_images`. Digests are resolved from the ghcr images tagged with the dispatched
 commit SHA; any service without such an image is built. The option is development-only; production

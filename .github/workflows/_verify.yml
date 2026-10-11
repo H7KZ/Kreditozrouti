@@ -6,7 +6,7 @@
 #              With `affected: true` (pull requests) lint, tests, type-check and build
 #              only run for packages changed against the base branch and their
 #              dependents (turbo --affected). Deploys keep the full run.
-#              Called by verify.yml (pull requests) and by deploy-all.yml, which
+#              Called by verify.yml (pull requests) and by deploy.yml, which
 #              gates every build and deploy job on it so nothing unverified
 #              reaches the VPS.
 # Trigger: workflow_call only (no direct trigger)

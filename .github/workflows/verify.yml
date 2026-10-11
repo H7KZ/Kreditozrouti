@@ -1,7 +1,7 @@
 # ==============================================================================
 # Workflow: CI Pipeline
 # Description: Runs code verification on pull requests. The steps themselves
-#              live in _verify.yml so that deploy-all.yml can gate its build
+#              live in _verify.yml so that deploy.yml can gate its build
 #              and deploy jobs on exactly the same checks.
 # Trigger: Pull request events targeting main (opened, synchronize, reopened)
 #

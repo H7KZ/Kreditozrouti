@@ -111,7 +111,7 @@ jobs:
                         DEVELOPMENT_RUN_ID="$candidate_id"
                         break
                       fi
-                    done < <(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/deploy-all.yml/runs?branch=main&status=success&per_page=50" \
+                    done < <(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/deploy.yml/runs?branch=main&status=success&per_page=50" \
                       --jq '.workflow_runs[] | select(.event == "push" or .event == "workflow_dispatch") | "\(.id) \(.run_attempt)"')
                     [[ -n "$DEVELOPMENT_RUN_ID" ]] || { echo "ERROR: no qualified development release found on main; run a development deploy first"; exit 1; }
                     echo "Auto-selected latest qualified development run $DEVELOPMENT_RUN_ID"
@@ -119,12 +119,12 @@ jobs:
                   echo "run_id=$DEVELOPMENT_RUN_ID" >> "$GITHUB_OUTPUT"
                   gh api "repos/$GITHUB_REPOSITORY/actions/runs/$DEVELOPMENT_RUN_ID" > "$RUNNER_TEMP/development-run.json"
                   echo "Promoting development run [$DEVELOPMENT_RUN_ID]($(jq -r '.html_url' "$RUNNER_TEMP/development-run.json")) at commit \`$(jq -r '.head_sha' "$RUNNER_TEMP/development-run.json")\`" >> "$GITHUB_STEP_SUMMARY"
-                  jq -e --arg expected_path '.github/workflows/deploy-all.yml' '
+                  jq -e --arg expected_path '.github/workflows/deploy.yml' '
                     .status == "completed" and .conclusion == "success" and
                     .head_branch == "main" and (.path | split("@")[0]) == $expected_path and
                     (.event == "push" or .event == "workflow_dispatch")
                   ' "$RUNNER_TEMP/development-run.json" >/dev/null || {
-                    echo "ERROR: run is not a successful main development deploy from deploy-all.yml"
+                    echo "ERROR: run is not a successful main development deploy from deploy.yml"
                     exit 1
                   }
                   source_run_attempt="$(jq -r '.run_attempt // empty' "$RUNNER_TEMP/development-run.json")"
@@ -154,7 +154,7 @@ jobs:
                   [[ -f "$manifest" && ! -L "$manifest" ]] || { echo "ERROR: release manifest is missing"; exit 1; }
                   development_run_commit="$(jq -r '.head_sha' "$RUNNER_TEMP/development-run.json")"
                   jq -e --arg repo "$GITHUB_REPOSITORY" --arg run "$DEVELOPMENT_RUN_ID" \
-                    --arg path '.github/workflows/deploy-all.yml' --arg attempt "$DEVELOPMENT_RUN_ATTEMPT" \
+                    --arg path '.github/workflows/deploy.yml' --arg attempt "$DEVELOPMENT_RUN_ATTEMPT" \
                     --argjson service_names '["api", "web", "scraper", "mcp"]' '
                     .schema_version == 1 and .repository == $repo and
                     .workflow_path == $path and .workflow_run_id == $run and .workflow_run_attempt == $attempt and
@@ -339,7 +339,7 @@ jobs:
                   document = {
                       "schema_version": 1,
                       "repository": os.environ["GITHUB_REPOSITORY"],
-                      "workflow_path": ".github/workflows/deploy-all.yml",
+                      "workflow_path": ".github/workflows/deploy.yml",
                       "workflow_run_id": os.environ["GITHUB_RUN_ID"],
                       "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
                       "environment": "development",
