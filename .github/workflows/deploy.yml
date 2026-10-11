@@ -283,7 +283,8 @@ jobs:
                       if status=$(curl --silent --show-error --location --max-redirs 3 \
                         --proto '=https' --proto-redir '=https' --connect-timeout 5 --max-time 10 \
                         --retry 1 --retry-delay 2 --retry-max-time 22 \
-                        --header 'Cache-Control: no-cache' --output /dev/null --write-out '%{http_code}' \
+                      --user-agent 'toolkit-public-health/1' \
+                      --header 'Cache-Control: no-cache' --output /dev/null --write-out '%{http_code}' \
                         "https://$DEVELOPMENT_DOMAIN$path") && [[ "$status" =~ ^2[0-9]{2}$ ]]; then
                         echo "Observation $round: $path HTTP $status"
                       else
