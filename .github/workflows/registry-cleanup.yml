@@ -1,0 +1,99 @@
+# ==============================================================================
+# Workflow: GHCR Registry Cleanup
+# Description: Retention-based deletion of old container image versions in GHCR.
+#              Keeps the newest KEEP_NEWEST tagged versions per package, any
+#              version tagged latest/prod/current/*-latest, and any digest listed
+#              in the protected_digests input. Untagged versions (attestations,
+#              child manifests) are never deleted.
+#
+#              Scheduled runs are ALWAYS dry-run. Deletion needs a manual
+#              dispatch with dry_run=false.
+#
+#              DEPLOYED DIGESTS ARE NOT READABLE FROM CI: current/previous
+#              releases live on the VPS (~/<project>/releases). Before a live run,
+#              pass every current/previous/retained-rollback digest in
+#              protected_digests.
+# ==============================================================================
+
+name: Registry Cleanup
+
+on:
+    schedule:
+        - cron: '17 4 * * 1'
+    workflow_dispatch:
+        inputs:
+            dry_run:
+                description: 'Only log what would be deleted'
+                required: true
+                type: boolean
+                default: true
+            protected_digests:
+                description: 'Digests to keep (sha256:..., space/comma/newline separated): deployed, previous, rollback'
+                required: false
+                type: string
+                default: ''
+
+concurrency:
+    group: registry-cleanup
+    cancel-in-progress: false
+
+permissions:
+    contents: read
+    packages: write
+
+env:
+    KEEP_NEWEST: '6'
+
+jobs:
+    cleanup:
+        name: Cleanup ${{ matrix.package }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        strategy:
+            fail-fast: false
+            matrix:
+                package:
+                    - kreditozrouti/api
+                    - kreditozrouti/web
+                    - kreditozrouti/scraper
+                    - kreditozrouti/mcp
+        steps:
+            - name: Prune old versions
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  PACKAGE: ${{ matrix.package }}
+                  OWNER: ${{ github.repository_owner }}
+                  DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == false && 'false' || 'true' }}
+                  PROTECTED: ${{ inputs.protected_digests }}
+              run: |
+                  set -euo pipefail
+                  enc="${PACKAGE//\//%2F}"
+                  base="users/${OWNER}/packages/container/${enc}/versions"
+                  gh api --paginate "${base}?per_page=100" --jq '.[]' | jq -s 'sort_by(.created_at) | reverse' > versions.json
+                  total="$(jq 'length' versions.json)"
+                  untagged="$(jq '[.[] | select((.metadata.container.tags // []) | length == 0)] | length' versions.json)"
+                  echo "::notice::${PACKAGE}: ${total} versions (${untagged} untagged, never deleted); keep newest ${KEEP_NEWEST}; dry_run=${DRY_RUN}"
+                  jq -r --argjson keep "$KEEP_NEWEST" --arg prot "$PROTECTED" '
+                      ([$prot | scan("sha256:[0-9a-f]+")]) as $p
+                      | [.[] | select((.metadata.container.tags // []) | length > 0)]
+                      | to_entries[]
+                      | .key as $i | .value as $v | ($v.metadata.container.tags) as $t
+                      | (if $i < $keep then "keep-newest"
+                            elif ($t | any(test("^(latest|prod|current)$") or test("-latest$"))) then "keep-tag"
+                            elif ($p | index($v.name)) then "keep-protected"
+                            else "delete" end) as $a
+                      | [$a, ($v.id | tostring), $v.name, ($t | join(",")), $v.created_at] | @tsv
+                  ' versions.json > plan.tsv
+                  cat plan.tsv
+                  del=0
+                  while IFS=$'\t' read -r action id digest tags created; do
+                      [ "$action" = delete ] || continue
+                      del=$((del + 1))
+                      if [ "$DRY_RUN" = true ]; then
+                          echo "DRY-RUN would delete id=${id} ${digest} tags=${tags} created=${created}"
+                      else
+                          echo "Deleting id=${id} ${digest} tags=${tags} created=${created}"
+                          gh api -X DELETE "${base}/${id}"
+                      fi
+                  done < plan.tsv
+                  echo "### ${PACKAGE}: ${del} to delete (dry_run=${DRY_RUN})" >> "$GITHUB_STEP_SUMMARY"
