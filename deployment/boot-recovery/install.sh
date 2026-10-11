@@ -9,7 +9,7 @@ set -euo pipefail
 #   sudo bash deployment/boot-recovery/install.sh --user <deploy-user> [--home <home-dir>] [--print]
 #
 # Installs reconcile.sh root-owned under /usr/local/libexec/kreditozrouti-reconcile/,
-# renders the unit for the deploy user. Activation is a separate operator step. Re-run after changing
+# renders the root unit with the deploy user's identity. Activation is a separate operator step. Re-run after changing
 # reconcile.sh or the deploy user. --print validates everything and writes the
 # rendered unit to stdout without installing anything (no root needed).
 # ==============================================================================
@@ -50,6 +50,8 @@ passwd_entry="$(getent passwd "$DEPLOY_USER")" || die "Deploy user does not exis
 [[ -n "$DEPLOY_HOME" ]] || DEPLOY_HOME="$(cut -d: -f6 <<<"$passwd_entry")"
 [[ "$DEPLOY_HOME" =~ ^/[A-Za-z0-9_./-]+$ && -d "$DEPLOY_HOME" && ! -L "$DEPLOY_HOME" ]] || die "Deploy home is unavailable or unsafe: $DEPLOY_HOME"
 DEPLOY_HOME="$(realpath -e -- "$DEPLOY_HOME")"
+account_home="$(cut -d: -f6 <<<"$passwd_entry")"
+[[ "$DEPLOY_HOME" == "$account_home" || "$DEPLOY_HOME" == "$account_home/"* ]] || die 'Deploy home must be within the account home'
 [[ "$(stat -c '%U' "$DEPLOY_HOME")" == "$DEPLOY_USER" ]] || die "$DEPLOY_HOME must be owned by $DEPLOY_USER"
 
 render() {

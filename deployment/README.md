@@ -58,7 +58,10 @@ protected. Keep snapshot runtime and registry digests for recovery; age alone is
 
 ## Manual commands and rollback
 
-`deployment/deploy.sh` is a thin toolkit wrapper. From an approved checkout, as deployment user:
+`deployment/deploy.sh` is a thin toolkit wrapper. It requires separately authorized passwordless
+sudo for `/usr/local/bin/toolkit release` and `reconcile` (Infrastructure bootstrap provides this
+for its deployment account). The CI-only installer authorizes the bundle runner only. From an
+approved checkout, as deployment user:
 
 ```bash
 bash deployment/deploy.sh deploy development \
@@ -87,8 +90,10 @@ and writes derived Docker socket GID/Grafana password to `TOOLKIT_RUNTIME_DIR/ex
 it never rewrites the frozen source/runtime inventory. Monitoring health is checked inside the
 Docker network; development qualification still requires three public HTTPS observations.
 
-`boot-recovery/reconcile.sh` synchronously calls `toolkit reconcile` for production, development
-and monitoring separately. Toolkit validates snapshots and uses
+The root-owned boot unit runs `boot-recovery/reconcile.sh` as root with the installed deployment
+account and home passed explicitly; no deployment-account sudo rule is needed for boot recovery.
+It synchronously calls `toolkit reconcile` for production, development and monitoring separately.
+Toolkit validates snapshots and uses
 `up -d --no-recreate --pull never --no-build`. Missing pointer is a no-op; legacy/corrupt pointer
 fails visibly. Removed containers can be restored from cached images; intentionally stopped
 declared services restart. Install the root-owned script/pin/unit with
