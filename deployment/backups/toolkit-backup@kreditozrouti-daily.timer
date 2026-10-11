@@ -1,0 +1,10 @@
+[Unit]
+Description=Kreditozrouti daily backup (about 03:00 Prague; the Sunday run also fills the weekly tier)
+
+[Timer]
+OnCalendar=*-*-* 01:35:00 UTC
+Persistent=true
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

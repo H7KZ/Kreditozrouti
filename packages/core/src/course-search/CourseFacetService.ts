@@ -1,6 +1,7 @@
 import type { Course, CoursesFilter, Database, ExcludeMethods, FacetItem } from '@kreditozrouti/types'
-import { CourseTable } from '@kreditozrouti/types'
 import type { Kysely } from 'kysely'
+import { sql } from 'kysely'
+import { CourseTable } from '@kreditozrouti/types'
 import { ASSESSMENT_BUCKETS } from '../domain/assessment.js'
 import {
 	INSIS_DAY_NORM,
@@ -11,7 +12,6 @@ import {
 	MODE_OF_COMPLETION_DENORM,
 	MODE_OF_COMPLETION_NORM
 } from '../domain/constants.js'
-import { sql } from 'kysely'
 import { CourseFilterBuilder } from './CourseFilterBuilder.js'
 
 export class CourseFacetService {

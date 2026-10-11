@@ -4,13 +4,13 @@ The canonical scraped-data and queue payload types are in [`packages/types/src/q
 
 ## Scraped results
 
-| Type | Main content |
-| --- | --- |
-| `ScraperInSISCourse` | Course identity, bilingual syllabus, faculty, assessments, timetable, plan links, content hashes |
-| `ScraperInSISStudyPlan` | Plan identity, faculty, period, study mode, linked course codes and categories |
-| `ScraperInSISAcademicSchedule` | Faculty period, date range, dated events |
-| `ScraperInSISFacultyTimetable` | Faculty ident and public visibility flag |
-| Catalog and list results | Discovered URLs or counts |
+| Type                           | Main content                                                                                     |
+| ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `ScraperInSISCourse`           | Course identity, bilingual syllabus, faculty, assessments, timetable, plan links, content hashes |
+| `ScraperInSISStudyPlan`        | Plan identity, faculty, period, study mode, linked course codes and categories                   |
+| `ScraperInSISAcademicSchedule` | Faculty period, date range, dated events                                                         |
+| `ScraperInSISFacultyTimetable` | Faculty ident and public visibility flag                                                         |
+| Catalog and list results       | Discovered URLs or counts                                                                        |
 
 `ScraperRequestJob` and `ScraperResponseJob` are discriminated by `type`. An `InSIS:Course` response carries `course_id` and a nullable `course`; `null` marks a missing course. `InSIS:GapSweep` is an API-owned response-queue job, not an InSIS page scrape.
 

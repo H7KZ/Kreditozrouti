@@ -75,10 +75,10 @@ container, since cluster forks would share the port.
 
 ## Key Docs
 
-| Topic                                | Doc                                            |
-| ------------------------------------ | ---------------------------------------------- |
-| Every job type: input, output, flow  | [JOBS.md](../../docs/scraper/JOBS.md)             |
-| How each service parses InSIS HTML   | [EXTRACTION.md](../../docs/scraper/EXTRACTION.md) |
-| Queue topology, dedup, retry policy  | [QUEUE.md](../../docs/scraper/QUEUE.md)           |
-| Type overview; exact payloads in `../../packages/types/src/queue.ts` | [TYPES.md](../../docs/scraper/TYPES.md) |
-| Utils, logger context, concurrency   | [INTERNALS.md](../../docs/scraper/INTERNALS.md)   |
+| Topic                                                                | Doc                                               |
+| -------------------------------------------------------------------- | ------------------------------------------------- |
+| Every job type: input, output, flow                                  | [JOBS.md](../../docs/scraper/JOBS.md)             |
+| How each service parses InSIS HTML                                   | [EXTRACTION.md](../../docs/scraper/EXTRACTION.md) |
+| Queue topology, dedup, retry policy                                  | [QUEUE.md](../../docs/scraper/QUEUE.md)           |
+| Type overview; exact payloads in `../../packages/types/src/queue.ts` | [TYPES.md](../../docs/scraper/TYPES.md)           |
+| Utils, logger context, concurrency                                   | [INTERNALS.md](../../docs/scraper/INTERNALS.md)   |

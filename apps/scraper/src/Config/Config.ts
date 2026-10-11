@@ -4,11 +4,7 @@ import dotenv from 'dotenv'
 // Attempt to load .env files from distribution, root, or package levels
 try {
 	dotenv.config({
-		path: [
-			path.resolve(process.cwd(), '../../../../.env'),
-			path.resolve(process.cwd(), '../../.env'),
-			path.resolve(process.cwd(), '.env')
-		]
+		path: [path.resolve(process.cwd(), '../../../../.env'), path.resolve(process.cwd(), '../../.env'), path.resolve(process.cwd(), '.env')]
 	})
 } catch {
 	console.warn('No .env file found, relying on environment variables.')

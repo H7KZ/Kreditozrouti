@@ -4,15 +4,15 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"scripts": {
-		"dev": "dotenv -e ../../.env -- tsx --watch src --exec ts-node -r tsconfig-paths/register src/index.ts",
+		"dev": "dotenv run -f ../../.env -- tsx --watch src --exec ts-node -r tsconfig-paths/register src/index.ts",
 		"build": "tsc && tsc-alias",
-		"partner-keys": "dotenv -e ../../.env -- tsx src/Scripts/partnerKeys.ts",
+		"partner-keys": "dotenv run -f ../../.env -- tsx src/Scripts/partnerKeys.ts",
 		"lint": "eslint ./src --ext .ts,.js",
 		"format": "prettier --write .",
 		"preview": "node --require ./dist/apps/api/src/telemetry.js dist/apps/api/src/index.js",
 		"type-check": "tsc --noEmit",
 		"test": "vitest run",
-		"test:regen": "dotenv -v FORCE_FIXTURES=1 -- vitest run"
+		"test:regen": "cross-env FORCE_FIXTURES=1 vitest run"
 	},
 	"dependencies": {
 		"@kreditozrouti/core": "workspace:*",
@@ -58,6 +58,7 @@
 		"@types/node": "catalog:",
 		"@types/response-time": "^2.3.9",
 		"@typescript-eslint/parser": "catalog:",
+		"cross-env": "^10.1.0",
 		"eslint": "catalog:",
 		"eslint-config-prettier": "catalog:",
 		"eslint-plugin-promise": "catalog:",

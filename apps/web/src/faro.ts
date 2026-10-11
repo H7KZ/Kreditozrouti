@@ -7,7 +7,9 @@ let _faro: Faro | null = null
 
 const faroModule = {
 	isEnabled(): boolean {
-		return !!import.meta.env.VITE_FARO_COLLECTOR_URL
+		// Read through a variable: a direct import.meta.env check is folded at build time, and the image's placeholder is truthy.
+		const env: Record<string, string | undefined> = import.meta.env
+		return !!env['VITE_FARO_COLLECTOR_URL']
 	},
 
 	init(app: App): void {

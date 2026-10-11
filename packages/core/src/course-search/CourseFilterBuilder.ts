@@ -1,9 +1,9 @@
 import type { CoursesFilter, Database, InSISDay } from '@kreditozrouti/types'
-import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, StudyPlanCourseTable } from '@kreditozrouti/types'
 import type { Kysely } from 'kysely'
+import { AliasedExpression, Nullable, SelectQueryBuilder, sql } from 'kysely'
+import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, StudyPlanCourseTable } from '@kreditozrouti/types'
 import { ASSESSMENT_BUCKETS } from '../domain/assessment.js'
 import { INSIS_DAY_DENORM, LANGUAGE_DENORM, LEVEL_DENORM, MODE_OF_COMPLETION_DENORM } from '../domain/constants.js'
-import { AliasedExpression, Nullable, SelectQueryBuilder, sql } from 'kysely'
 import { buildSlotConflictConditions } from './slotConflict.js'
 
 type QueryBuilder = SelectQueryBuilder<

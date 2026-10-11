@@ -4,10 +4,10 @@ The API produces on `ScraperRequestQueue` and consumes `ScraperResponseQueue`; t
 
 ## Workers and retries
 
-| Worker | Concurrency | Stall recoveries |
-| --- | ---: | ---: |
-| Scraper request worker | 1 per process | 3 |
-| API response worker | 2 per process | 2 |
+| Worker                 |   Concurrency | Stall recoveries |
+| ---------------------- | ------------: | ---------------: |
+| Scraper request worker | 1 per process |                3 |
+| API response worker    | 2 per process |                2 |
 
 Scraper request jobs use three attempts, exponential backoff starting at 10 seconds, and retain the last 200 completed jobs. Response jobs use three attempts with backoff starting at 5 seconds. Failed jobs are retained for 24 hours. A returned `null` counts as completed; thrown errors trigger retry or failure. HTTP 429 handling can move a scraper job to BullMQ's delayed set.
 

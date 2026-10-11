@@ -1,0 +1,20 @@
+[Unit]
+Description=Toolkit backup %i
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+UMask=0077
+ExecStart=/usr/local/bin/toolkit backup run %i
+TimeoutStartSec=3h
+TimeoutStopSec=2min
+KillMode=control-group
+Nice=10
+IOSchedulingClass=idle
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=toolkit-backup

@@ -1,4 +1,14 @@
-import type { CourseFilter, CoursesFilter, CourseWithRelations, Database, InSISSemester, MCPCourse, MCPCourseUnit, MCPCourseUnitSlot, Day } from '@kreditozrouti/types'
+import type {
+	CourseFilter,
+	CoursesFilter,
+	CourseWithRelations,
+	Database,
+	Day,
+	InSISSemester,
+	MCPCourse,
+	MCPCourseUnit,
+	MCPCourseUnitSlot
+} from '@kreditozrouti/types'
 import type { Kysely } from 'kysely'
 import { CourseQueryService } from '../course-search/CourseQueryService.js'
 
@@ -132,20 +142,18 @@ export default class CourseService {
 			lecturer: unit.lecturer ?? null,
 			capacity: unit.capacity ?? null,
 			note: unit.note ?? null,
-			slots: unit.slots.map(
-				(slot): MCPCourseUnitSlot => ({
-					id: slot.id,
-					unit_id: slot.unit_id,
-					// The shared query already normalised the slot type and day; only the row typing is wider.
-					type: slot.type as MCPCourseUnitSlot['type'],
-					frequency: slot.frequency ?? null,
-					date: slot.date ?? null,
-					day: slot.day as Day | null,
-					time_from: slot.time_from,
-					time_to: slot.time_to,
-					location: slot.location ?? null
-				})
-			)
+			slots: unit.slots.map((slot): MCPCourseUnitSlot => ({
+				id: slot.id,
+				unit_id: slot.unit_id,
+				// The shared query already normalised the slot type and day; only the row typing is wider.
+				type: slot.type as MCPCourseUnitSlot['type'],
+				frequency: slot.frequency ?? null,
+				date: slot.date ?? null,
+				day: slot.day as Day | null,
+				time_from: slot.time_from,
+				time_to: slot.time_to,
+				location: slot.location ?? null
+			}))
 		}
 	}
 

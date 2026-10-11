@@ -1,0 +1,10 @@
+[Unit]
+Description=Kreditozrouti Umami retention (repository lock)
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/local/bin/toolkit with-lock --repository kreditozrouti --environment monitoring --action maintenance --timeout 1800 -- /usr/local/libexec/kreditozrouti-umami-retention/retain-worker.sh --home __HOME__
+TimeoutStartSec=90min

@@ -119,6 +119,7 @@ Package-specific references are linked from each area-specific `AGENTS.md`. Star
 - [Partner API](docs/api/PUBLIC_API.md) and its ADRs: [0003](docs/adr/0003-partner-api-rate-limit-fails-open.md), [0004](docs/adr/0004-public-api-is-partner-only-behind-hard-gates.md)
 - [MCP server](docs/mcp/README.md)
 - [Manual setup guides](docs/setup/README.md)
+- [Deployment operations and backup recovery](docs/deployment/OPERATIONS.md)
 
 ---
 
@@ -158,3 +159,7 @@ Unicode literals directly - no HTML entities or escape sequences.
 - Use `TaskCreate` to track progress on any task with 3+ steps when available
 - After every change, run the Doc-Review Rule and AGENTS.md Update Rule before closing the task
 - Specs, plans, and brainstorming docs go in `.superpowers/` (gitignored) - never commit them
+
+## Deployment snapshots
+
+For deployment or recovery changes, read [deployment/README.md](deployment/README.md). Release complete environments through toolkit; preserve qualified digests and retained recovery images. Toolkit owns repository-wide locks.

@@ -1,7 +1,7 @@
 # The Story of Kreditožrouti
 
-*Credit-gobblers. A course scheduler for VŠE students, built from a hackathon joke into something people actually use
-every day.*
+_Credit-gobblers. A course scheduler for VŠE students, built from a hackathon joke into something people actually use
+every day._
 
 ---
 
@@ -15,7 +15,7 @@ software for building your semester schedule other than InSIS itself, and InSIS 
 the idea was simple and a little cheeky - take the public InSIS data, scrape it, and put better search and better
 algorithms on top of it than the system gives you.
 
-Somewhere in that weekend, half-joking, someone said we should call it *Kreditožrouti*. It stuck for two reasons. It
+Somewhere in that weekend, half-joking, someone said we should call it _Kreditožrouti_. It stuck for two reasons. It
 sounded the coolest. And it meant something true: when your schedule is set wrong, courses eat up your ECTS credits far
 beyond what they should. Credit-gobblers. A name that is really a jab at a badly-set timetable.
 

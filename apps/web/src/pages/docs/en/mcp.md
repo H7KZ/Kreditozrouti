@@ -19,13 +19,13 @@ Follow the authorization prompt if your client shows one. Client setup screens a
 
 ## Available tools
 
-| Tool | Use |
-| --- | --- |
-| `vse_search_courses` | Search course summaries by text, faculty, semester, or language. |
-| `vse_get_course` | Get one course with units and time slots. |
-| `vse_get_study_plan` | Get a study plan and its course list. |
-| `vse_check_timetable_conflicts` | Check overlaps for up to 30 course IDs. |
-| `vse_optimize_timetable` | Build a schedule or explore courses that fit a base selection. |
+| Tool                            | Use                                                              |
+| ------------------------------- | ---------------------------------------------------------------- |
+| `vse_search_courses`            | Search course summaries by text, faculty, semester, or language. |
+| `vse_get_course`                | Get one course with units and time slots.                        |
+| `vse_get_study_plan`            | Get a study plan and its course list.                            |
+| `vse_check_timetable_conflicts` | Check overlaps for up to 30 course IDs.                          |
+| `vse_optimize_timetable`        | Build a schedule or explore courses that fit a base selection.   |
 
 Search results are summaries. Fetch a course before asking about its exact slots. The optimizer accepts preferred days, blackout windows, ECTS limits, and a maximum consecutive class duration. Times in tool arguments are minutes after midnight: `08:00` is `480`.
 

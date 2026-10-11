@@ -26,11 +26,11 @@ apps/api/src/
 
 ## Path Aliases
 
-| Alias                    | Resolves to                 |
-| ------------------------ | --------------------------- |
-| `@api/*`                 | `./src/*`                   |
-| `@scraper/*`             | `../scraper/src/*`          |
-| `@kreditozrouti/core/*` | `../../packages/core/src/*`    |
+| Alias                   | Resolves to                 |
+| ----------------------- | --------------------------- |
+| `@api/*`                | `./src/*`                   |
+| `@scraper/*`            | `../scraper/src/*`          |
+| `@kreditozrouti/core/*` | `../../packages/core/src/*` |
 
 Shared DTO and queue types come from `@kreditozrouti/types`.
 
@@ -75,12 +75,12 @@ scraper replicas never double it. Labels stay bounded: never a course, plan or s
 
 ## Key Docs
 
-| Topic                                                      | Doc                                      |
-| ---------------------------------------------------------- | ---------------------------------------- |
-| Route overview; exact shapes in shared types and handlers  | [ENDPOINTS.md](../../docs/api/ENDPOINTS.md) |
-| CourseService N+1 pattern, facets, time-conflict filtering | [SERVICES.md](../../docs/api/SERVICES.md)   |
-| BullMQ jobs, schedulers, dedup windows                     | [JOBS.md](../../docs/api/JOBS.md)           |
-| DB schema and migration workflow                           | [DATABASE.md](../../docs/api/DATABASE.md)   |
-| Config, cache, rate-limit, SSE, wide-event logging         | [INTERNALS.md](../../docs/api/INTERNALS.md) |
+| Topic                                                      | Doc                                           |
+| ---------------------------------------------------------- | --------------------------------------------- |
+| Route overview; exact shapes in shared types and handlers  | [ENDPOINTS.md](../../docs/api/ENDPOINTS.md)   |
+| CourseService N+1 pattern, facets, time-conflict filtering | [SERVICES.md](../../docs/api/SERVICES.md)     |
+| BullMQ jobs, schedulers, dedup windows                     | [JOBS.md](../../docs/api/JOBS.md)             |
+| DB schema and migration workflow                           | [DATABASE.md](../../docs/api/DATABASE.md)     |
+| Config, cache, rate-limit, SSE, wide-event logging         | [INTERNALS.md](../../docs/api/INTERNALS.md)   |
 | Partner API: keys, scopes, quota, usage, operating it      | [PUBLIC_API.md](../../docs/api/PUBLIC_API.md) |
-| Gmail SMTP account and credentials                         | [GMAIL.md](../../docs/setup/GMAIL.md)       |
+| Gmail SMTP account and credentials                         | [GMAIL.md](../../docs/setup/GMAIL.md)         |

@@ -6,13 +6,13 @@ Controllers validate requests and call services in `apps/api/src/Services/`. Sha
 
 The search logic lives in [`packages/core/src/course-search/`](../../packages/core/src/course-search/index.ts) (`@kreditozrouti/core/course-search`), so the web app, the partner API and the MCP server share one implementation. Every method takes the Kysely `db` as its first argument. `apps/api/src/Services/CourseService.ts` binds it to the API's MySQL client and wraps facets with the Redis cache:
 
-| Module | Responsibility |
-| --- | --- |
-| `CourseFilterBuilder` | Builds SQL predicates and only joins tables needed by active filters |
-| `CourseQueryService` | Counts matches, pages course IDs, then loads relations in batches |
-| `CourseFacetService` | Counts values against the other active filters |
-| `slotConflict` | Time-conflict predicates used by `exclude_times` |
-| `CourseCacheService` (API only) | Caches facet results in Redis; core cannot import Redis |
+| Module                          | Responsibility                                                       |
+| ------------------------------- | -------------------------------------------------------------------- |
+| `CourseFilterBuilder`           | Builds SQL predicates and only joins tables needed by active filters |
+| `CourseQueryService`            | Counts matches, pages course IDs, then loads relations in batches    |
+| `CourseFacetService`            | Counts values against the other active filters                       |
+| `slotConflict`                  | Time-conflict predicates used by `exclude_times`                     |
+| `CourseCacheService` (API only) | Caches facet results in Redis; core cannot import Redis              |
 
 The batched relation queries avoid a query per course. `exclude_times` retains a course when at least one available slot avoids the excluded time; courses without slots also remain. `completed_course_idents` applies prerequisite and exclusion rules parsed by `PrerequisiteParser.ts`. When plan IDs are selected, the plan linkage determines membership, so course year and semester filters are skipped.
 

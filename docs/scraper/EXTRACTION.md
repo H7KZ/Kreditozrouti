@@ -2,13 +2,13 @@
 
 Extraction services in `apps/scraper/src/Services/` turn server-rendered InSIS HTML into the types in [`packages/types/src/queue.ts`](../../packages/types/src/queue.ts). Keep selectors and normalization close to each source page.
 
-| Service | Reads | Produces |
-| --- | --- | --- |
-| `ExtractInSISCatalogService` | Extended course search form and results | Faculties, periods, course URLs and IDs |
-| `ExtractInSISCourseService` | Czech and English syllabus pages | Course metadata, bilingual content, assessments, units, slots, plan links, hashes |
-| `ExtractInSISStudyPlanService` | Plan navigation and detail pages | Plan URLs and plan/course records |
-| `ExtractInSISAcademicScheduleService` | Harmonogram index and period pages | Faculties, periods, dated events |
-| `ExtractInSISFacultyTimetableService` | Timetable navigation and faculty page | Faculty ident and public visibility |
+| Service                               | Reads                                   | Produces                                                                          |
+| ------------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------- |
+| `ExtractInSISCatalogService`          | Extended course search form and results | Faculties, periods, course URLs and IDs                                           |
+| `ExtractInSISCourseService`           | Czech and English syllabus pages        | Course metadata, bilingual content, assessments, units, slots, plan links, hashes |
+| `ExtractInSISStudyPlanService`        | Plan navigation and detail pages        | Plan URLs and plan/course records                                                 |
+| `ExtractInSISAcademicScheduleService` | Harmonogram index and period pages      | Faculties, periods, dated events                                                  |
+| `ExtractInSISFacultyTimetableService` | Timetable navigation and faculty page   | Faculty ident and public visibility                                               |
 
 `ExtractInSISCourseService.extractIdFromUrl` and `extractIdFromHtml` identify course records. `isNotFound` detects removed pages. Czech and English syllabus content is parsed separately; `MarkdownService` converts rich sections to Markdown. Course lecturers and guarantors are read from the "Vyučující" links; besides the display strings, `lecturer_refs` carries the InSIS person id from each `/lide/clovek.pl?id=` link with its role. Timetable unit lecturers are plain text with no link, so they have no id. Timetable extraction keeps source clock strings and nullable values. The API performs minute conversion when it persists slots.
 

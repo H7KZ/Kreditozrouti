@@ -10,15 +10,15 @@ The Express API serves course and study plan data, creates share and calendar li
 
 ## Where to work
 
-| Area | Location |
-| --- | --- |
-| Request validation and handlers | `apps/api/src/Controllers/` |
-| Route wiring | `apps/api/src/Routes/` |
-| Queries and business logic | `apps/api/src/Services/` |
-| Scraper result processing | `apps/api/src/Jobs/` |
-| Database schema and migrations | `apps/api/src/Database/` |
-| Middleware and clients | `apps/api/src/Middlewares/`, `apps/api/src/clients/` |
-| Configuration | `apps/api/src/Config/Config.ts` |
+| Area                            | Location                                             |
+| ------------------------------- | ---------------------------------------------------- |
+| Request validation and handlers | `apps/api/src/Controllers/`                          |
+| Route wiring                    | `apps/api/src/Routes/`                               |
+| Queries and business logic      | `apps/api/src/Services/`                             |
+| Scraper result processing       | `apps/api/src/Jobs/`                                 |
+| Database schema and migrations  | `apps/api/src/Database/`                             |
+| Middleware and clients          | `apps/api/src/Middlewares/`, `apps/api/src/clients/` |
+| Configuration                   | `apps/api/src/Config/Config.ts`                      |
 
 Shared HTTP, database, and queue types live in `@kreditozrouti/types`. Pure domain logic and reusable services live in `@kreditozrouti/core`. Local imports use `@api/*`.
 

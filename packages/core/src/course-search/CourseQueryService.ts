@@ -1,11 +1,19 @@
 import type { Course, CoursesFilter, CourseWithRelations, Database } from '@kreditozrouti/types'
-import { CourseAssessmentTable, CourseTable, CourseUnitSlotTable, CourseUnitTable, FacultyTable, StudyPlanCourseTable, StudyPlanTable } from '@kreditozrouti/types'
 import type { Kysely } from 'kysely'
+import { sql } from 'kysely'
+import { jsonArrayFrom } from 'kysely/helpers/mysql'
+import {
+	CourseAssessmentTable,
+	CourseTable,
+	CourseUnitSlotTable,
+	CourseUnitTable,
+	FacultyTable,
+	StudyPlanCourseTable,
+	StudyPlanTable
+} from '@kreditozrouti/types'
 import { INSIS_DAY_NORM, LANGUAGE_NORM, LEVEL_NORM, MODE_OF_COMPLETION_NORM, MODE_OF_DELIVERY_NORM } from '../domain/constants.js'
 import { getSlotType } from '../domain/insis.js'
 import { priorityOf } from '../domain/studyPlan.js'
-import { sql } from 'kysely'
-import { jsonArrayFrom } from 'kysely/helpers/mysql'
 import { CourseFilterBuilder } from './CourseFilterBuilder.js'
 
 export class CourseQueryService {
@@ -19,7 +27,8 @@ export class CourseQueryService {
 	 * @returns {Promise<{ courses: CourseWithRelations[]; total: number }>} Courses enriched with
 	 *   faculty, units (with slots), assessments, and study plan membership, plus total match count.
 	 */
-	static async getCoursesWithRelations(db: Kysely<Database>, 
+	static async getCoursesWithRelations(
+		db: Kysely<Database>,
 		filters: Partial<CoursesFilter>,
 		limit = 20,
 		offset = 0

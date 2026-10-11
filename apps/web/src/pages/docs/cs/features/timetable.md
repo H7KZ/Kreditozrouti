@@ -19,12 +19,12 @@ Kliknutím na blok v rozvrhu zobrazíš čas, místnost, vyučujícího a detail
 
 ## Kolize a neúplné předměty
 
-| Stav | Význam |
-| --- | --- |
-| **Konflikt** | Vybrané akce se časově překrývají. |
+| Stav                  | Význam                                                         |
+| --------------------- | -------------------------------------------------------------- |
+| **Konflikt**          | Vybrané akce se časově překrývají.                             |
 | **Areálový konflikt** | Mezi výukou ve dvou známých areálech VŠE je méně než 40 minut. |
-| **Neúplný** | Chybí požadovaný typ výuky, například cvičení. |
-| **Vybrán** | Aplikace nezjistila problém. |
+| **Neúplný**           | Chybí požadovaný typ výuky, například cvičení.                 |
+| **Vybrán**            | Aplikace nezjistila problém.                                   |
 
 Aplikace rozpoznává žižkovské místnosti začínající `RB`, `NB`, `IB` nebo `SB` a místnosti na Jižním Městě začínající `JM`. Když areál místnosti nepozná, na přejezd neupozorní. Před zápisem zkontroluj konečný rozvrh v InSISu.
 

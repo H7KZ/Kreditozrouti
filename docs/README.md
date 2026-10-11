@@ -10,6 +10,7 @@ This folder holds developer references and setup guides. Published student help 
 - [Shared packages](shared/) - types, domain logic, HTTP and queue contracts
 - [API](api/), [web](web/), [scraper](scraper/), [MCP](mcp/) - service references
 - [Deployment](deployment/) and [scripts](scripts/) - operations
+- [Runbooks](runbooks/) - step-by-step operating procedures
 - [Manual setup](setup/) - Gmail and DNS/HTTPS outcomes
 
 ## Records

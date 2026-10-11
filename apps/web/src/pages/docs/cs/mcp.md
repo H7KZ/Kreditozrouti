@@ -19,13 +19,13 @@ Pokud klient zobrazí výzvu k autorizaci, dokonči ji. Obrazovky a formáty kon
 
 ## Dostupné nástroje
 
-| Nástroj | Použití |
-| --- | --- |
-| `vse_search_courses` | Vyhledá souhrny předmětů podle textu, fakulty, semestru nebo jazyka. |
-| `vse_get_course` | Načte předmět včetně jednotek a rozvrhových akcí. |
-| `vse_get_study_plan` | Načte studijní plán a seznam předmětů. |
-| `vse_check_timetable_conflicts` | Zkontroluje časové kolize až 30 ID předmětů. |
-| `vse_optimize_timetable` | Sestaví rozvrh nebo prozkoumá předměty, které se vejdou k základnímu výběru. |
+| Nástroj                         | Použití                                                                      |
+| ------------------------------- | ---------------------------------------------------------------------------- |
+| `vse_search_courses`            | Vyhledá souhrny předmětů podle textu, fakulty, semestru nebo jazyka.         |
+| `vse_get_course`                | Načte předmět včetně jednotek a rozvrhových akcí.                            |
+| `vse_get_study_plan`            | Načte studijní plán a seznam předmětů.                                       |
+| `vse_check_timetable_conflicts` | Zkontroluje časové kolize až 30 ID předmětů.                                 |
+| `vse_optimize_timetable`        | Sestaví rozvrh nebo prozkoumá předměty, které se vejdou k základnímu výběru. |
 
 Vyhledávání vrací souhrny. Před dotazem na konkrétní časy načti detail předmětu. Optimalizátor přijímá preferované dny, blokované časové úseky, meze ECTS a nejdelší souvislý blok výuky. Časy v argumentech jsou minuty od půlnoci: `08:00` je `480`.
 

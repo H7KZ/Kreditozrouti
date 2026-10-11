@@ -1,0 +1,15 @@
+[Unit]
+Description=Kreditozrouti saved snapshot recovery
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=root
+ExecStart=/bin/bash /usr/local/libexec/kreditozrouti-reconcile/reconcile.sh --user __USER__ --home __HOME__
+TimeoutStartSec=90min
+
+[Install]
+WantedBy=multi-user.target

@@ -13,18 +13,24 @@ set -euo pipefail
 #              (Git Bash on Windows: MSYS_NO_PATHCONV=1 bash deployment/monitoring/validate.sh)
 # ==============================================================================
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
 
+# shellcheck source=../lib.sh
 source "$SCRIPT_DIR/../lib.sh"
 
 image_of() {
     grep -Eo "image: *$1:[^ ]+" "$SCRIPT_DIR/docker-compose.monitoring.yml" | head -1 | sed -E 's/image: *//'
 }
 
-readonly PROMETHEUS_IMAGE="$(image_of prom/prometheus)"
-readonly ALERTMANAGER_IMAGE="$(image_of prom/alertmanager)"
-readonly LOKI_IMAGE="$(image_of grafana/loki)"
-readonly ALLOY_IMAGE="$(image_of grafana/alloy)"
+PROMETHEUS_IMAGE="$(image_of prom/prometheus)"
+readonly PROMETHEUS_IMAGE
+ALERTMANAGER_IMAGE="$(image_of prom/alertmanager)"
+readonly ALERTMANAGER_IMAGE
+LOKI_IMAGE="$(image_of grafana/loki)"
+readonly LOKI_IMAGE
+ALLOY_IMAGE="$(image_of grafana/alloy)"
+readonly ALLOY_IMAGE
 
 FAILED=()
 

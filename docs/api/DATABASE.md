@@ -4,22 +4,22 @@ The API uses Kysely with MySQL. Table interfaces and the `Database` type are def
 
 ## Tables
 
-| Table | Purpose |
-| --- | --- |
-| `insis_faculties` | Faculty identity and public timetable visibility |
-| `insis_courses` | Course metadata, bilingual syllabus, prerequisites, content hash, scrape time |
-| `insis_courses_assessments` | Assessment methods and weights |
-| `insis_courses_units` | Lecture, exercise, and seminar groups |
-| `insis_courses_units_slots` | Scheduled time and place for a unit |
-| `insis_study_plans` | Plan metadata |
-| `insis_study_plans_courses` | Linked course records and plan categories |
-| `insis_study_plans_course_idents` | Course codes discovered before a course record exists |
-| `insis_academic_periods` | Faculty, year, semester, and level |
-| `insis_academic_schedule_events` | Dated academic events in a period |
-| `insis_lecturers` | Lecturers keyed by InSIS person id (not generated) |
-| `insis_courses_lecturers` | Course-to-lecturer links with role `lecturer` or `guarantor` |
+| Table                                    | Purpose                                                                                                                      |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `insis_faculties`                        | Faculty identity and public timetable visibility                                                                             |
+| `insis_courses`                          | Course metadata, bilingual syllabus, prerequisites, content hash, scrape time                                                |
+| `insis_courses_assessments`              | Assessment methods and weights                                                                                               |
+| `insis_courses_units`                    | Lecture, exercise, and seminar groups                                                                                        |
+| `insis_courses_units_slots`              | Scheduled time and place for a unit                                                                                          |
+| `insis_study_plans`                      | Plan metadata                                                                                                                |
+| `insis_study_plans_courses`              | Linked course records and plan categories                                                                                    |
+| `insis_study_plans_course_idents`        | Course codes discovered before a course record exists                                                                        |
+| `insis_academic_periods`                 | Faculty, year, semester, and level                                                                                           |
+| `insis_academic_schedule_events`         | Dated academic events in a period                                                                                            |
+| `insis_lecturers`                        | Lecturers keyed by InSIS person id (not generated)                                                                           |
+| `insis_courses_lecturers`                | Course-to-lecturer links with role `lecturer` or `guarantor`                                                                 |
 | `api_plans`, `api_consumers`, `api_keys` | Partner API quota tiers, partner organisations, and hashed API keys (a key may list the browser origins it can be used from) |
-| `api_usage_hourly` | Hourly partner request counts per consumer, key, route template and status class |
+| `api_usage_hourly`                       | Hourly partner request counts per consumer, key, route template and status class                                             |
 
 The canonical table names and columns are in the type file and migrations. Course `languages` and `lecturers` are pipe-delimited strings; service code splits them for output and facets. `lecturers` and `guarantors` on a course stay as display strings; `insis_lecturers` and `insis_courses_lecturers` add the InSIS person id for course-level people and are filled by the course job. Unit-level `lecturer` has no person id.
 

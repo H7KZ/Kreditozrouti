@@ -17,13 +17,30 @@ For service startup failures, inspect its container logs, then check MySQL/Redis
 
 For dashboards, alerts, and log queries, see [monitoring](MONITORING.md). Validate monitoring configuration with `bash deployment/monitoring/validate.sh` from a repository checkout before manually deploying it.
 
+## Boot recovery
+
+Boot recovery calls toolkit reconcile per environment, validating saved inventory and using `up --no-recreate --pull never --no-build`. Missing pointers skip; legacy/corrupt snapshots fail. Install units disabled, manually validate, then activate separately. See [snapshot operations](../../deployment/README.md).
+
 ## Recovery and rollback
 
-Use **Actions > Rollback Deployment** with an existing eight-character SHA, service, and environment. The workflow requires that SHA's version directory on the host. See [rollback details](CICD.md#rollback). Image rollback does not undo schema migrations.
+Use **Actions > Rollback Deployment** from main with environment and `release_id=previous|<fullSHA-run-attempt>`. Toolkit restores the whole saved snapshot/env/runtime. Image rollback does not undo schema migrations.
 
-MySQL has no automated backup in this repo. A lost MySQL volume removes the scraped course and study-plan catalog until it is rebuilt from InSIS. Student schedules are stored in their browsers. Redis uses a persistent AOF volume; losing it drops queued jobs, sessions, and active share/calendar links. Retain both volumes during Docker cleanup.
+Production backups are plain encrypted dumps to an Object-Locked B2 bucket, written by `toolkit backup` (see [backups](../../deployment/backups/README.md) and [RESTORE.md](../../deployment/backups/RESTORE.md)). They capture MySQL, the Umami PostgreSQL database and a whole Redis RDB every four hours; restore copies only `share:*` / `ical:*` records, with original expiry times, into a fresh Redis, never queues, cache, sessions or counters. Deploy and rollback always run under toolkit locks and fail without the pinned toolkit. No timer is enabled until the application owner approves it. GitHub-hosted `backup-verify.yml` checks freshness daily and restores everything weekly. Losing the MySQL volume removes the scraped course and study-plan catalog until it is rebuilt from InSIS. Retain all named volumes during Docker cleanup.
 
-For a new host: restore Docker access and a self-hosted GitHub runner, deploy shared Traefik from the Infrastructure repo, set the GitHub environment secrets, deploy monitoring if needed, then dispatch `Deploy` for the app. Check public health routes and the scraper after deployment. The [Umami PostgreSQL 18 migration](HANDOFF-umami-pg18-migration.md) applies only to an older monitoring database volume; do not run it on a fresh volume.
+## Manual data changes
+
+Use the shared host lock for every manual migration or volume mutation. Example for the one-time Umami PostgreSQL migration:
+
+```bash
+cd "$HOME/kreditozrouti/versions/production/current"
+sudo /usr/local/bin/toolkit with-lock \
+  --repository kreditozrouti --environment production --action maintenance --timeout 3600 -- \
+  bash deployment/monitoring/migrate-umami-pg18.sh diagnose
+```
+
+Repeat under the same lock for its reviewed `migrate` or `clean` action. The naming-volume migration and `--prune-old` also require the lock. Do not run Docker/DDL migration commands directly while the backup capture timer is enabled.
+
+For a new host: restore Docker access, deploy shared Traefik from the Infrastructure repo, configure GitHub environment secrets including the trusted SSH host fingerprint, deploy monitoring if needed, then dispatch `Deploy` for the app. Current workflows use GitHub-hosted runners over verified SSH; the legacy github-runner sources are removed. Check public health routes and the scraper after deployment. The [Umami PostgreSQL 18 migration](HANDOFF-umami-pg18-migration.md) applies only to an older monitoring database volume; do not run it on a fresh volume.
 
 ## Security and maintenance
 
@@ -32,3 +49,5 @@ For a new host: restore Docker access and a self-hosted GitHub runner, deploy sh
 - Production phpMyAdmin is available only through an SSH tunnel and the `admin` Compose profile. Development serves it at `/phpmyadmin` behind basic auth. See [access instructions](INFRASTRUCTURE.md#phpmyadmin).
 - Check disk and memory use before pruning images or changing replica counts. Never delete named MySQL, Redis, or monitoring volumes during routine cleanup.
 - Deploy monitoring manually with `deploy-monitoring.yml`. Its Discord and healthchecks.io endpoints are held in files written by the monitoring deploy script; see [monitoring](MONITORING.md#deployment-and-secrets).
+
+Canonical complete deployment/retention and manual commands: [snapshot operations](../../deployment/README.md).

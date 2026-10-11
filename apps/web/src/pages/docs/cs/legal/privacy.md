@@ -12,14 +12,14 @@ Kreditožrouti je studentský projekt. Používání nevyžaduje účet. Aplikac
 
 ## Údaje používané službou
 
-| Účel | Údaje | Uložení a doba uchování |
-| --- | --- | --- |
-| Prohlížení předmětů | Veřejné údaje o předmětech, rozvrzích, studijních plánech, fakultách a vyučujících | Databáze aplikace; aktualizace z InSIS |
-| Plánování | Nastavení průvodce, dokončené předměty, rozvrhy a preference | Místní úložiště prohlížeče; smažeš je odstraněním dat prohlížeče |
-| Sdílené rozvrhy a kalendáře | Vybrané jednotky a nastavení kalendáře při vytvoření odkazu | Redis; odkaz vyprší po 180 dnech bez zobrazení, zobrazení lhůtu obnoví |
-| Analytika | Zobrazení stránek, zdroje návštěv a události funkcí | Vlastní instance Umami; plánované smazání po 13 měsících |
-| Dobrovolná zpětná vazba | Hodnocení a případný komentář, který odešleš | Události Umami; plánované smazání po 12 měsících |
-| Diagnostika chyb | Chyby JavaScriptu, adresa stránky a metriky Web Vitals | Vlastní Grafana Faro a Loki; logy nejdéle 7 dní |
+| Účel                        | Údaje                                                                              | Uložení a doba uchování                                                |
+| --------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Prohlížení předmětů         | Veřejné údaje o předmětech, rozvrzích, studijních plánech, fakultách a vyučujících | Databáze aplikace; aktualizace z InSIS                                 |
+| Plánování                   | Nastavení průvodce, dokončené předměty, rozvrhy a preference                       | Místní úložiště prohlížeče; smažeš je odstraněním dat prohlížeče       |
+| Sdílené rozvrhy a kalendáře | Vybrané jednotky a nastavení kalendáře při vytvoření odkazu                        | Redis; odkaz vyprší po 180 dnech bez zobrazení, zobrazení lhůtu obnoví |
+| Analytika                   | Zobrazení stránek, zdroje návštěv a události funkcí                                | Vlastní instance Umami; plánované smazání po 13 měsících               |
+| Dobrovolná zpětná vazba     | Hodnocení a případný komentář, který odešleš                                       | Události Umami; plánované smazání po 12 měsících                       |
+| Diagnostika chyb            | Chyby JavaScriptu, adresa stránky a metriky Web Vitals                             | Vlastní Grafana Faro a Loki; logy nejdéle 7 dní                        |
 
 Komentář je volný text. Nevkládej do něj osobní údaje. I přes toto upozornění může komentář osobní údaje obsahovat. Zpětnou vazbu posíláme jen po odeslání. Sdílený rozvrh může zobrazit každý, kdo má odkaz.
 

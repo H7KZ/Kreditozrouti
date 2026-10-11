@@ -6,17 +6,17 @@ Tracing is off unless `OTEL_EXPORTER_OTLP_ENDPOINT` is set. The current monitori
 
 ## Components and retention
 
-| Component | Current image | Role |
-| --- | --- | --- |
-| Alloy | `grafana/alloy:v1.19.2` | Collection, probes, Faro receiver |
-| Prometheus | `prom/prometheus:v3.14.0` | Metrics, 15-day and 2 GB retention cap, alert rules |
-| Alertmanager | `prom/alertmanager:v0.34.0` | Notification routing |
-| Loki | `grafana/loki:3.7.7` | Logs, seven-day retention; Traefik logs three days |
-| Grafana | `grafana/grafana:13.2.1` | Dashboards |
-| Umami | `ghcr.io/umami-software/umami:3.3.1` | Analytics |
-| Umami DB | `postgres:18.6-alpine` | Analytics storage |
+| Component    | Current image                        | Role                                                |
+| ------------ | ------------------------------------ | --------------------------------------------------- |
+| Alloy        | `grafana/alloy:v1.19.2`              | Collection, probes, Faro receiver                   |
+| Prometheus   | `prom/prometheus:v3.14.0`            | Metrics, 15-day and 2 GB retention cap, alert rules |
+| Alertmanager | `prom/alertmanager:v0.34.0`          | Notification routing                                |
+| Loki         | `grafana/loki:3.7.7`                 | Logs, seven-day retention; Traefik logs three days  |
+| Grafana      | `grafana/grafana:13.2.1`             | Dashboards                                          |
+| Umami        | `ghcr.io/umami-software/umami:3.3.1` | Analytics                                           |
+| Umami DB     | `postgres:18.6-alpine`               | Analytics storage                                   |
 
-Umami event retention runs through [`.github/workflows/umami-retention.yml`](../../.github/workflows/umami-retention.yml), using the [retention SQL](../../deployment/monitoring/umami/retention.sql). Check the workflow schedule before relying on it for data expiry.
+Umami retention uses the disabled host timer/service under `deployment/monitoring/umami/`. Install and manually validate before separate owner activation; the scheduled GitHub workflow is removed.
 
 ## Collection contract
 
@@ -50,7 +50,7 @@ Run `bash deployment/monitoring/validate.sh` from a checkout after changing Allo
 
 ## Deployment and secrets
 
-Run **Actions > Deploy Monitoring** manually. The workflow uploads the deployment files to `~/kreditozrouti/versions/monitoring/<sha>/`, runs `monitoring/deploy.sh`, and updates the `current` link. It does not deploy on push. The script computes the Docker socket group ID, writes Alertmanager webhook files, pulls images, starts containers, waits for readiness, and grants Grafana read-only access to Umami's database.
+Run **Actions > Deploy Monitoring** from main. The monitoring GitHub Environment supplies its secrets; the common reusable job uploads an isolated snapshot packet. Toolkit prepares private runtime files, freezes the model, starts Compose, then runs readiness/Grafana grants before advancing current. See [snapshot operations](../../deployment/README.md).
 
 Repository secrets used by this workflow are `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD`, `DISCORD_WEBHOOK_URL`, `HEALTHCHECKS_PING_URL`, `UMAMI_DB_NAME`, `UMAMI_DB_USER`, `UMAMI_DB_PASSWORD`, and `UMAMI_APP_SECRET`, plus SSH credentials. Do not print these values or commit generated `.secrets/` files.
 

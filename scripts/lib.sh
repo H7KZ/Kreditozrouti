@@ -11,8 +11,6 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-DIM='\033[2m'
 NC='\033[0m'
 
 # ------------------------------------------------------------------------------
@@ -23,7 +21,8 @@ NC='\033[0m'
 
 _log_line() {
     local color="$1" text="$2"
-    local line="${color}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} ${text}"
+    local line
+    line="${color}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} ${text}"
     if [[ -n "${LOG_FILE:-}" ]]; then
         echo -e "$line" | tee -a "$LOG_FILE"
     else
@@ -36,7 +35,8 @@ log_success() { _log_line "$GREEN"  "$1"; }
 log_warning() { _log_line "$YELLOW" "$1"; }
 
 log_error() {
-    local line="${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
+    local line
+    line="${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]${NC} $1"
     if [[ -n "${LOG_FILE:-}" ]]; then
         echo -e "$line" | tee -a "$LOG_FILE" >&2
     else

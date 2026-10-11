@@ -5,10 +5,10 @@
 # ==============================================================================
 
 volumes:
-  kreditozrouti-mysql-volume-dev:
-    name: kreditozrouti-mysql-volume-dev
-    external: true
+    kreditozrouti-mysql-volume-dev:
+        name: kreditozrouti-mysql-volume-dev
+        external: true
 
-  kreditozrouti-redis-volume-dev:
-    name: kreditozrouti-redis-volume-dev
-    external: true
+    kreditozrouti-redis-volume-dev:
+        name: kreditozrouti-redis-volume-dev
+        external: true

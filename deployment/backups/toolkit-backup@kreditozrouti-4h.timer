@@ -1,0 +1,10 @@
+[Unit]
+Description=Kreditozrouti database backups every four hours
+
+[Timer]
+OnCalendar=*-*-* 00,04,08,12,16,20:35:00 UTC
+Persistent=true
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

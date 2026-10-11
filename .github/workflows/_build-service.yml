@@ -4,13 +4,14 @@
 #              Called by deploy-all.yml/rollback.yml for each selected service.
 #
 # Inputs:  service (api | web | scraper | mcp), float_tag, cache_scope
-# Outputs: image_tag (short SHA), image_prefix
+# Outputs: image_tag (short SHA for development deploy), image_prefix
+#          image_digest (immutable registry manifest digest)
+# Also publishes the full source SHA tag for guarded manual production promotion.
 #
 # Runs on a GitHub-hosted runner (ubuntu-latest), NOT the self-hosted runner - the
 # VPS is 2vCPU/4GB and a Docker build there crashes the host. GHCR push uses
 # GITHUB_TOKEN, so this needs no extra secrets on a GitHub-hosted runner.
-# _deploy-service.yml stays self-hosted: it only SSHs into the VPS and is not
-# build-heavy.
+# Deploy jobs also use GitHub-hosted runners and verify the pinned host fingerprint.
 # ==============================================================================
 
 name: Build Service Image (reusable)
@@ -37,6 +38,9 @@ on:
             image_prefix:
                 description: 'Registry path prefix without registry host (e.g. h7kz/kreditozrouti)'
                 value: ${{ jobs.build.outputs.image_prefix }}
+            image_digest:
+                description: 'Immutable registry image digest'
+                value: ${{ jobs.build.outputs.image_digest }}
 
 jobs:
     build:
@@ -51,6 +55,7 @@ jobs:
         outputs:
             image_tag: ${{ steps.meta.outputs.image_tag }}
             image_prefix: ${{ steps.meta.outputs.image_prefix }}
+            image_digest: ${{ steps.build-image.outputs.digest }}
 
         steps:
             - name: Checkout Code
@@ -77,6 +82,7 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Build and Push
+              id: build-image
               uses: docker/build-push-action@v7
               with:
                   context: .
@@ -84,10 +90,13 @@ jobs:
                   push: true
                   tags: |
                       ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
+                      ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ github.sha }}
                       ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.float_tag }}
                   build-args: |
                       APP_VERSION=${{ steps.meta.outputs.image_tag }}
                       GIT_SHA=${{ github.sha }}
+                  labels: |
+                      org.opencontainers.image.revision=${{ github.sha }}
                   cache-from: type=gha,scope=${{ inputs.cache_scope }}
                   cache-to: type=gha,mode=max,scope=${{ inputs.cache_scope }}
                   platforms: linux/amd64

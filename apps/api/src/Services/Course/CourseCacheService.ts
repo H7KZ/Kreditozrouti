@@ -1,6 +1,6 @@
 import type { CoursesFilter, CoursesResponseDTO } from '@kreditozrouti/types'
-import { redis } from '@api/clients'
 import { compareTimeSelections } from '@kreditozrouti/core/domain'
+import { redis } from '@api/clients'
 
 const FACET_CACHE_TTL = 300
 const FACET_CACHE_PREFIX = 'course:facets:'

@@ -39,7 +39,9 @@ function isPrivate(url: string): boolean {
  * not break analytics. Off when no website id is configured.
  */
 function init(): void {
-	const websiteId = import.meta.env.VITE_UMAMI_WEBSITE_ID
+	// Read through a variable so the guard survives the build (see deployment/AGENTS.md on VITE_* placeholders).
+	const env: Record<string, string | undefined> = import.meta.env
+	const websiteId = env['VITE_UMAMI_WEBSITE_ID']
 	if (!websiteId) return
 
 	if (document.querySelector('script[data-website-id]')) return

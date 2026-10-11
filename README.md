@@ -43,11 +43,11 @@ with a live timetable and automatic conflict detection.
 ## Tech Stack
 
 | Layer    | Technology                                   |
-|----------|----------------------------------------------|
+| -------- | -------------------------------------------- |
 | Frontend | Vue 3, Pinia, Tailwind CSS 4, Vite, Vue I18n |
 | Backend  | Express 5, Kysely, BullMQ, Zod, TypeScript   |
 | Scraper  | Axios, Cheerio, BullMQ                       |
-| Data | MySQL, Redis                                  |
+| Data     | MySQL, Redis                                 |
 | DevOps   | Docker, GitHub Actions, Traefik              |
 
 ---
