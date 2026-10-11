@@ -1,9 +1,19 @@
-name: Rollback Deployment
+name: Restore Release
+run-name: Restore Release | ${{ inputs.environment }} | ${{ inputs.operation }} | ${{ inputs.release_id }} | ${{ inputs.ref || github.ref_name }}
 'on':
     workflow_dispatch:
         inputs:
+            ref:
+                description: Controller branch, tag or SHA (empty = selected workflow ref)
+                type: string
+                default: ''
+            operation:
+                description: Restore a snapshot, activate a staged snapshot, or reconcile current
+                type: choice
+                options: [rollback, activate, reconcile]
+                default: rollback
             release_id:
-                description: 'Saved complete snapshot: previous or fullSHA-run-attempt'
+                description: 'Saved snapshot: previous, current or fullSHA-run-attempt (ignored for reconcile)'
                 required: true
                 type: string
                 default: previous
@@ -28,20 +38,22 @@ jobs:
         timeout-minutes: 120
         environment: ${{ inputs.environment }}
         steps:
-            - name: Require main for production and monitoring, and trusted fingerprint
+            - name: Validate restore target, operation and trusted fingerprint
               env:
-                  WORKFLOW_REF: ${{ github.ref }}
                   SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
                   TARGET_ENVIRONMENT: ${{ inputs.environment }}
                   RELEASE_ID: ${{ inputs.release_id }}
+                  OPERATION: ${{ inputs.operation }}
               run: |
                   set -euo pipefail
-                  [[ "$TARGET_ENVIRONMENT" == development || "$WORKFLOW_REF" == refs/heads/main ]] || { echo 'ERROR: production and monitoring rollbacks require main'; exit 1; }
+                  [[ "$OPERATION" =~ ^(rollback|activate|reconcile)$ ]] || exit 1
                   [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
-                  [[ "$RELEASE_ID" == previous || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || { echo 'ERROR: choose previous or a full snapshot release ID'; exit 1; }
+                  [[ "$RELEASE_ID" =~ ^(previous|current)$ || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || { echo 'ERROR: choose previous, current or a full snapshot release ID'; exit 1; }
                   [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || exit 1
             - name: Checkout control pin
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+              with:
+                  ref: ${{ inputs.ref || github.sha }}
             - name: Validate toolkit pin
               run: bash deployment/verify-toolkit-pin.sh
             - name: Prepare isolated registry credentials
@@ -103,23 +115,30 @@ jobs:
                   INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
                   EXPECTED_TOOLKIT_VERSION: ${{ steps.auth.outputs.toolkit_version }}
                   RELEASE_ID: ${{ inputs.release_id }}
+                  OPERATION: ${{ inputs.operation }}
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ vars.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION,RELEASE_ID
+                  envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION,RELEASE_ID,OPERATION
                   command_timeout: 110m
                   script: |
                       set -euo pipefail
                       [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
-                      [[ "$RELEASE_ID" == previous || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+                      [[ "$RELEASE_ID" =~ ^(previous|current)$ || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
                       [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install CI bundle runner with deployment/install-toolkit.sh --ci-only --deploy-user <account>' >&2; exit 1; }
                       incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
                       chmod 600 "$incoming/registry/config.json"
-                      sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release rollback --repository kreditozrouti --environment "$TARGET_ENVIRONMENT" \
-                        --root "$HOME/kreditozrouti/versions/$TARGET_ENVIRONMENT" --user "$(id -un)" --release-id "$RELEASE_ID" --registry-config "$incoming/registry"
+                      [[ "$OPERATION" =~ ^(rollback|activate|reconcile)$ ]] || exit 1
+                      if [[ "$OPERATION" == reconcile ]]; then
+                        sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- reconcile --repository kreditozrouti --environment "$TARGET_ENVIRONMENT" \
+                          --root "$HOME/kreditozrouti/versions/$TARGET_ENVIRONMENT" --user "$(id -un)" --registry-config "$incoming/registry"
+                      else
+                        sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release "$OPERATION" --repository kreditozrouti --environment "$TARGET_ENVIRONMENT" \
+                          --root "$HOME/kreditozrouti/versions/$TARGET_ENVIRONMENT" --user "$(id -un)" --release-id "$RELEASE_ID" --registry-config "$incoming/registry"
+                      fi
             - name: Remove own registry credentials
               uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
               env:

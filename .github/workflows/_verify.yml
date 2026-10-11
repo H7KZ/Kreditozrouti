@@ -23,6 +23,10 @@ name: Verify (reusable)
 on:
     workflow_call:
         inputs:
+            source_commit:
+                description: Resolved source SHA (empty = caller source)
+                type: string
+                default: ''
             affected:
                 description: Only verify packages changed against the PR base branch
                 type: boolean
@@ -41,6 +45,7 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v7
               with:
+                  ref: ${{ inputs.source_commit || github.sha }}
                   # turbo --affected and the scope check diff against the base branch.
                   # Strings, not numbers: `0` is falsy in `a && 0 || 1`, which yields 1.
                   fetch-depth: ${{ inputs.affected && '0' || '1' }}

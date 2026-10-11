@@ -2,8 +2,9 @@
 
 For workflow, snapshot, rollback, monitoring, recovery or retention changes, read
 [snapshot operations](README.md). Toolkit owns deployment mutations and repository-wide locks;
-`deploy.sh` and recovery are thin adapters. Keep full environment releases and exact development
-qualification checks. Secrets live in private runtime outside immutable source; hooks consume
+`deploy.sh` and recovery are thin adapters. Keep full environment releases. Manual dispatch accepts any source ref for either app target;
+only promote mode requires exact development qualification checks. Resolve source once for verify/build/deploy.
+Stage must never publish development qualification. Deploy/restore writes queue per target. Secrets live in private runtime outside immutable source; hooks consume
 exported values. Registry and release cleanup remain deferred until recovery references are protected.
 
 - Keep application Compose projects distinct: `kreditozrouti`, `kreditozrouti-dev`, `kreditozrouti-monitoring`.

@@ -35,7 +35,7 @@ GitHub Actions reads `production` or `development` environment variables and sec
 | `UMAMI_SRC`, `UMAMI_WEBSITE_ID`                                                      | GitHub variable and secret              | Optional web analytics                                            |
 | `PHPMYADMIN_BASIC_AUTH`                                                              | GitHub environment secret (development) | htpasswd line gating `/phpmyadmin`; see [phpMyAdmin](#phpmyadmin) |
 
-The [deploy workflow](../../.github/workflows/_deploy-service.yml) rejects credential values containing `$` or backticks because Compose can reinterpret them in `.env`. Generate suitable secrets, for example with `openssl rand -base64 32`. Monitoring has [separate repository secrets](MONITORING.md#deployment-and-secrets) and writes its own webhook files.
+The [deploy workflow](../../.github/workflows/_deploy.yml) uses literal dotenv quoting; dollar signs and backticks stay literal. Quotes, control characters and trailing backslashes are rejected. Generate suitable secrets, for example with `openssl rand -base64 32`. Monitoring has [separate repository secrets](MONITORING.md#deployment-and-secrets) and writes its own webhook files.
 
 Web `VITE_*` settings are compiled as placeholders and replaced when the container starts. When adding one, declare it in the web Dockerfile, `apps/web/docker-entrypoint.sh`, and root `turbo.json`; otherwise Turbo strips it during build. See [Docker images](DOCKER.md#web-runtime-configuration).
 

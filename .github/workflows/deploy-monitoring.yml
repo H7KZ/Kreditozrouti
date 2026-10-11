@@ -1,6 +1,17 @@
 name: Deploy Monitoring
+run-name: Deploy Monitoring | ${{ inputs.ref || github.ref_name }} | ${{ inputs.operation }}
 'on':
-    workflow_dispatch: null
+    workflow_dispatch:
+        inputs:
+            ref:
+                description: Source branch, tag or SHA (empty = selected workflow ref)
+                type: string
+                default: ''
+            operation:
+                description: Deploy now or stage without activation
+                type: choice
+                options: [deploy, stage]
+                default: deploy
 permissions:
     contents: read
     packages: read
@@ -8,10 +19,21 @@ concurrency:
     group: deploy-monitoring
     cancel-in-progress: false
 jobs:
+    resolve:
+        runs-on: ubuntu-latest
+        outputs:
+            source_commit: ${{ steps.source.outputs.sha }}
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+              with:
+                  ref: ${{ inputs.ref || github.sha }}
+            - id: source
+              run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
     deploy:
-        if: github.ref == 'refs/heads/main'
-        uses: ./.github/workflows/_deploy-service.yml
+        needs: resolve
+        uses: ./.github/workflows/_deploy.yml
         with:
             environment: monitoring
-            source_commit: ${{ github.sha }}
+            operation: ${{ inputs.operation }}
+            source_commit: ${{ needs.resolve.outputs.source_commit }}
         secrets: inherit

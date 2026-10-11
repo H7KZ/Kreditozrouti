@@ -6,7 +6,8 @@
 # Trigger: schedule, manual
 # ==============================================================================
 
-name: Backup Verify
+name: Verify Backups
+run-name: Verify Backups | ${{ inputs.check || 'scheduled' }} | ${{ inputs.ref || github.ref_name }}
 
 on:
     schedule:
@@ -14,6 +15,10 @@ on:
         - cron: '10 7 * * 1'
     workflow_dispatch:
         inputs:
+            ref:
+                description: Source branch, tag or SHA (empty = selected workflow ref)
+                type: string
+                default: ''
             check:
                 description: Which check to run
                 type: choice
@@ -33,12 +38,25 @@ env:
     TOOLKIT_BACKUP_CONFIG_DIR: /nonexistent
 
 jobs:
+    source:
+        runs-on: ubuntu-latest
+        outputs:
+            sha: ${{ steps.source.outputs.sha }}
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  ref: ${{ inputs.ref || github.sha }}
+            - id: source
+              run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
     freshness:
+        needs: source
         if: (github.event_name == 'schedule' && github.event.schedule == '55 6 * * *') || (github.event_name == 'workflow_dispatch' && inputs.check != 'drill')
         runs-on: ubuntu-latest
         timeout-minutes: 15
         steps:
             - uses: actions/checkout@v7
+              with:
+                  ref: ${{ needs.source.outputs.sha }}
             - name: Install tools and the pinned toolkit
               run: |
                   sudo apt-get update && sudo apt-get install --no-install-recommends -y age zstd rclone
@@ -51,11 +69,14 @@ jobs:
               run: bash "$RUNNER_TEMP/toolkit/bin/toolkit" backup check "$BACKUP_REPOSITORY"
 
     drill:
+        needs: source
         if: (github.event_name == 'schedule' && github.event.schedule == '10 7 * * 1') || (github.event_name == 'workflow_dispatch' && inputs.check != 'freshness')
         runs-on: ubuntu-latest
         timeout-minutes: 60
         steps:
             - uses: actions/checkout@v7
+              with:
+                  ref: ${{ needs.source.outputs.sha }}
             - name: Install tools and the pinned toolkit
               run: |
                   sudo apt-get update && sudo apt-get install --no-install-recommends -y age zstd rclone

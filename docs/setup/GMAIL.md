@@ -7,7 +7,7 @@ Deployed development always disables email: `deployment/render-env.sh` freezes b
 ## Configure
 
 1. Enable 2-Step Verification for the sending Google account, then create an app password. Set `GOOGLE_USER` to the full email address and `GOOGLE_APP_PASSWORD` to that password. Do not use the normal account password. Google may disallow app passwords for managed accounts or some protection settings. Changing the account password revokes existing app passwords. [Google Account Help](https://support.google.com/accounts/answer/185833?hl=en)
-2. For production deployments, set both as GitHub `production` environment secrets. The [deploy workflow](../../.github/workflows/_deploy-service.yml) passes them through the renderer to the API. Deployed development ignores Google credentials; leave the values empty in local [`.env`](../../.env.example) unless explicitly testing SMTP.
+2. For production deployments, set both as GitHub `production` environment secrets. The [deploy workflow](../../.github/workflows/_deploy.yml) passes them through the renderer to the API. Deployed development ignores Google credentials; leave the values empty in local [`.env`](../../.env.example) unless explicitly testing SMTP.
 3. Deploy or restart the API. Check for `mailer.configured`; an authentication or connection failure prevents successful startup. Leave both values empty where email should stay disabled.
 
 SMTP verification checks authentication and connectivity, not delivery. This repo has an email helper but no current caller, so an end-to-end delivery check needs an actual sending flow or an operator-run SMTP check. Keep credentials out of commits and logs.

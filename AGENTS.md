@@ -162,4 +162,6 @@ Unicode literals directly - no HTML entities or escape sequences.
 
 ## Deployment snapshots
 
-For deployment or recovery changes, read [deployment/README.md](deployment/README.md). Release complete environments through toolkit; preserve qualified digests and retained recovery images. Toolkit owns repository-wide locks.
+For deployment or recovery changes, read [deployment/README.md](deployment/README.md). Release complete environments through toolkit; manual app targets accept any source ref. Promotion preserves
+qualified digests; direct build/reuse/existing modes are supported. Preserve retained recovery images.
+Toolkit owns repository-wide locks.
