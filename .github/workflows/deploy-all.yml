@@ -18,6 +18,26 @@ name: Deploy
                 required: false
                 type: string
                 default: ''
+            image_digest_api:
+                description: Reuse this api image digest (sha256:...) instead of building. Development only. Set all four digests or none; each must be the image built from the dispatched commit.
+                required: false
+                type: string
+                default: ''
+            image_digest_web:
+                description: Reuse this web image digest (sha256:...). Development only. See image_digest_api.
+                required: false
+                type: string
+                default: ''
+            image_digest_scraper:
+                description: Reuse this scraper image digest (sha256:...). Development only. See image_digest_api.
+                required: false
+                type: string
+                default: ''
+            image_digest_mcp:
+                description: Reuse this mcp image digest (sha256:...). Development only. See image_digest_api.
+                required: false
+                type: string
+                default: ''
 permissions:
     actions: read
     contents: read
@@ -42,10 +62,10 @@ jobs:
             qualified_release_id: ${{ steps.release.outputs.release_id }}
             qualified_run_attempt: ${{ steps.release.outputs.run_attempt }}
             qualified_manifest_sha256: ${{ steps.release.outputs.manifest_sha256 }}
-            api_digest: ${{ steps.release.outputs.api_digest }}
-            web_digest: ${{ steps.release.outputs.web_digest }}
-            scraper_digest: ${{ steps.release.outputs.scraper_digest }}
-            mcp_digest: ${{ steps.release.outputs.mcp_digest }}
+            api_digest: ${{ steps.release.outputs.api_digest || steps.reuse.outputs.api_digest }}
+            web_digest: ${{ steps.release.outputs.web_digest || steps.reuse.outputs.web_digest }}
+            scraper_digest: ${{ steps.release.outputs.scraper_digest || steps.reuse.outputs.scraper_digest }}
+            mcp_digest: ${{ steps.release.outputs.mcp_digest || steps.reuse.outputs.mcp_digest }}
             qualified_release_manifest_b64: ${{ steps.release.outputs.manifest_b64 }}
         steps:
             - name: Validate dispatch requirements
@@ -60,6 +80,41 @@ jobs:
                   elif [[ "$TARGET_ENVIRONMENT" != development ]]; then
                     echo 'ERROR: unsupported environment'; exit 1
                   fi
+            - name: Validate reused image digests
+              id: reuse
+              if: github.event_name == 'workflow_dispatch' && inputs.environment == 'development' && (inputs.image_digest_api != '' || inputs.image_digest_web != '' || inputs.image_digest_scraper != '' || inputs.image_digest_mcp != '')
+              env:
+                  API_DIGEST: ${{ inputs.image_digest_api }}
+                  WEB_DIGEST: ${{ inputs.image_digest_web }}
+                  SCRAPER_DIGEST: ${{ inputs.image_digest_scraper }}
+                  MCP_DIGEST: ${{ inputs.image_digest_mcp }}
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GH_ACTOR: ${{ github.actor }}
+              run: |
+                  set -euo pipefail
+                  [[ -n "$API_DIGEST" && -n "$WEB_DIGEST" && -n "$SCRAPER_DIGEST" && -n "$MCP_DIGEST" ]] || {
+                    echo 'ERROR: set all four image digests or none'; exit 1
+                  }
+                  prefix="$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')"
+                  printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
+                  verify_digest() {
+                    local service="$1" digest="$2" built
+                    [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]] || { echo "ERROR: $service digest must be sha256 plus 64 hex characters"; exit 1; }
+                    built="$(docker buildx imagetools inspect "ghcr.io/$prefix/$service:$GITHUB_SHA" --format '{{json .Manifest}}' | jq -r '.digest')" || {
+                      echo "ERROR: no $service image tagged $GITHUB_SHA; run a normal development deploy to build it"; exit 1
+                    }
+                    [[ "$built" == "$digest" ]] || { echo "ERROR: $service digest is not the image built from $GITHUB_SHA (expected $built)"; exit 1; }
+                  }
+                  verify_digest api "$API_DIGEST"
+                  verify_digest web "$WEB_DIGEST"
+                  verify_digest scraper "$SCRAPER_DIGEST"
+                  verify_digest mcp "$MCP_DIGEST"
+                  {
+                    echo "api_digest=$API_DIGEST"
+                    echo "web_digest=$WEB_DIGEST"
+                    echo "scraper_digest=$SCRAPER_DIGEST"
+                    echo "mcp_digest=$MCP_DIGEST"
+                  } >> "$GITHUB_OUTPUT"
             - name: Checkout main history for production release validation
               if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -149,7 +204,7 @@ jobs:
         name: Build API
         needs:
             - validate
-        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development')
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && inputs.image_digest_api == ''
         uses: ./.github/workflows/_build-service.yml
         with:
             service: api
@@ -160,7 +215,7 @@ jobs:
         name: Build Web
         needs:
             - validate
-        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development')
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && inputs.image_digest_web == ''
         uses: ./.github/workflows/_build-service.yml
         with:
             service: web
@@ -171,7 +226,7 @@ jobs:
         name: Build Scraper
         needs:
             - validate
-        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development')
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && inputs.image_digest_scraper == ''
         uses: ./.github/workflows/_build-service.yml
         with:
             service: scraper
@@ -182,7 +237,7 @@ jobs:
         name: Build MCP
         needs:
             - validate
-        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development')
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && inputs.image_digest_mcp == ''
         uses: ./.github/workflows/_build-service.yml
         with:
             service: mcp
@@ -197,9 +252,11 @@ jobs:
             - build-web
             - build-scraper
             - build-mcp
-        if:
-            always() && needs.validate.result == 'success' && ((inputs.environment == 'production') || (needs.build-api.result == 'success' && needs.build-web.result
-            == 'success' && needs.build-scraper.result == 'success' && needs.build-mcp.result == 'success'))
+        if: always() && needs.validate.result == 'success' && ((inputs.environment == 'production') || (
+            (needs.validate.outputs.api_digest != '' || needs.build-api.result == 'success') &&
+            (needs.validate.outputs.web_digest != '' || needs.build-web.result == 'success') &&
+            (needs.validate.outputs.scraper_digest != '' || needs.build-scraper.result == 'success') &&
+            (needs.validate.outputs.mcp_digest != '' || needs.build-mcp.result == 'success')))
         uses: ./.github/workflows/_deploy-service.yml
         with:
             environment: ${{ github.event_name == 'push' && 'development' || inputs.environment }}
@@ -225,8 +282,8 @@ jobs:
             - build-mcp
         if:
             always() && needs.validate.result == 'success' && needs.deploy.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development')
-            && needs.build-api.result == 'success' && needs.build-web.result == 'success' && needs.build-scraper.result == 'success' && needs.build-mcp.result ==
-            'success'
+            && (needs.validate.outputs.api_digest != '' || needs.build-api.result == 'success') && (needs.validate.outputs.web_digest != '' || needs.build-web.result == 'success')
+            && (needs.validate.outputs.scraper_digest != '' || needs.build-scraper.result == 'success') && (needs.validate.outputs.mcp_digest != '' || needs.build-mcp.result == 'success')
         steps:
             - name: Observe development public HTTP endpoints
               env:
@@ -268,13 +325,13 @@ jobs:
                   exit 1
             - name: Write development release manifest
               env:
-                  API_DIGEST: ${{ needs.build-api.outputs.image_digest }}
+                  API_DIGEST: ${{ needs.validate.outputs.api_digest || needs.build-api.outputs.image_digest }}
                   API_DEPLOY_RESULT: ${{ needs.deploy.result }}
-                  WEB_DIGEST: ${{ needs.build-web.outputs.image_digest }}
+                  WEB_DIGEST: ${{ needs.validate.outputs.web_digest || needs.build-web.outputs.image_digest }}
                   WEB_DEPLOY_RESULT: ${{ needs.deploy.result }}
-                  SCRAPER_DIGEST: ${{ needs.build-scraper.outputs.image_digest }}
+                  SCRAPER_DIGEST: ${{ needs.validate.outputs.scraper_digest || needs.build-scraper.outputs.image_digest }}
                   SCRAPER_DEPLOY_RESULT: ${{ needs.deploy.result }}
-                  MCP_DIGEST: ${{ needs.build-mcp.outputs.image_digest }}
+                  MCP_DIGEST: ${{ needs.validate.outputs.mcp_digest || needs.build-mcp.outputs.image_digest }}
                   MCP_DEPLOY_RESULT: ${{ needs.deploy.result }}
               run: |
                   set -euo pipefail

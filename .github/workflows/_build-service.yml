@@ -101,6 +101,13 @@ jobs:
                   cache-to: type=gha,mode=max,scope=${{ inputs.cache_scope }}
                   platforms: linux/amd64
 
+            - name: Summarize image digest
+              env:
+                  SERVICE: ${{ inputs.service }}
+                  DIGEST: ${{ steps.build-image.outputs.digest }}
+              run: |
+                  echo "${SERVICE} image_digest=${DIGEST}" >> "$GITHUB_STEP_SUMMARY"
+
             - name: Log out of GitHub Container Registry
               if: always()
               run: docker logout ghcr.io
