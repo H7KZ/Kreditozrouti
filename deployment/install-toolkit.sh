@@ -13,6 +13,5 @@ temporary="$(mktemp -d /tmp/toolkit-bootstrap.XXXXXXXX)"
 trap 'rm -rf -- "$temporary"' EXIT
 
 tar -xzf "$archive" --no-same-owner --no-same-permissions -C "$temporary"
-bash "$temporary/toolkit/packaging/bootstrap-install.sh" "$archive" "$checksum"
-printf 'installed toolkit release %s inactive; activate explicitly with:\n' "$version"
-printf '  sudo /opt/toolkit/releases/%s/bin/toolkit activate %s\n' "$version" "$version"
+bash "$temporary/toolkit/packaging/install.sh" --archive "$archive" --checksum "$checksum" "$@"
+printf 'Host toolkit remains inactive unless --activate was supplied.\n'

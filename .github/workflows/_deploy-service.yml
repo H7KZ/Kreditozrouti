@@ -108,6 +108,10 @@ jobs:
                   umask 077
                   mkdir -m 700 incoming
                   python3 controller/deployment/package-release.py bundle/deployment "$PWD/incoming"
+                  version="$(sed -n 's/^TOOLKIT_VERSION=//p' bundle/deployment/toolkit.lock)"
+                  cp "bundle/deployment/vendor/toolkit/toolkit-$version.tar.gz" "$PWD/incoming/toolkit.tar.gz"
+                  cp "bundle/deployment/toolkit.lock" "$PWD/incoming/toolkit.lock"
+                  printf '%s  toolkit.tar.gz\n' "$(sed -n 's/^TOOLKIT_ARCHIVE_SHA256=//p' bundle/deployment/toolkit.lock)" > "$PWD/incoming/toolkit.tar.gz.sha256"
                   bash controller/deployment/render-env.sh "$TARGET_ENVIRONMENT" "$PWD/incoming/release.env"
                   mkdir -m 700 incoming/registry
                   printf '%s' "$GH_TOKEN" | docker --config "$PWD/incoming/registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
@@ -125,8 +129,7 @@ jobs:
                       set -euo pipefail
                       umask 077
                       [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
-                      actual="$(/usr/local/bin/toolkit version | sed -n 's/^toolkit_version=\([^ ]*\).*/\1/p')"
-                      [[ -n "$EXPECTED_TOOLKIT_VERSION" && "$actual" == "$EXPECTED_TOOLKIT_VERSION" ]] || { echo 'ERROR: host toolkit differs from deployment/toolkit.lock'; exit 1; }
+                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install CI bundle runner with deployment/install-toolkit.sh --ci-only --deploy-user <account>' >&2; exit 1; }
                       base="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT"
                       mkdir -p -m 700 "$base"
                       mkdir -m 700 "$base/$INCOMING_ID"
@@ -160,10 +163,9 @@ jobs:
                       set -euo pipefail
                       [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
                       incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
-                      actual="$(/usr/local/bin/toolkit version | sed -n 's/^toolkit_version=\([^ ]*\).*/\1/p')"
-                      [[ "$actual" == "$EXPECTED_TOOLKIT_VERSION" ]] || { echo 'ERROR: host toolkit pin changed'; exit 1; }
+                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install CI bundle runner with deployment/install-toolkit.sh --ci-only --deploy-user <account>' >&2; exit 1; }
                       chmod 600 "$incoming/release.env" "$incoming/registry/config.json"
-                      sudo -n /usr/local/bin/toolkit release deploy --repository kreditozrouti --environment "$TARGET_ENVIRONMENT" \
+                      sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release deploy --repository kreditozrouti --environment "$TARGET_ENVIRONMENT" \
                         --root "$HOME/kreditozrouti/versions/$TARGET_ENVIRONMENT" --archive "$incoming/release.tar.gz" \
                         --checksum "$incoming/release.sha256" --manifest "$incoming/manifest.json" \
                         --env-file "$incoming/release.env" --user "$(id -un)" --registry-config "$incoming/registry"

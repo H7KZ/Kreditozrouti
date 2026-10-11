@@ -21,10 +21,9 @@ libexec=/usr/local/libexec/kreditozrouti-backup
   echo 'Install and activate the pinned toolkit first (deployment/install-toolkit.sh).' >&2
   exit 1
 }
-pinned="$(awk -F= '$1 == "TOOLKIT_VERSION" { print $2 }' "$script_dir/../toolkit.lock")"
 active="$(/usr/local/bin/toolkit version | sed -n 's/^toolkit_version=\([^ ]*\).*/\1/p')"
-[[ -n "$pinned" && "$pinned" == "$active" ]] || {
-  echo "Active toolkit '$active' does not match deployment/toolkit.lock '$pinned'." >&2
+[[ "$active" =~ ^0\.[0-9]+\.[0-9]+$ && "$(printf '%s\n' 0.8.1 "$active" | sort -V | head -1)" == 0.8.1 ]] || {
+  echo 'Host toolkit requires shared repository lock API (>=0.8.1, <1.0.0).' >&2
   exit 1
 }
 /usr/local/bin/toolkit backup install-tools

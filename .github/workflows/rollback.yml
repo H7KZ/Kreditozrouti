@@ -53,6 +53,10 @@ jobs:
                   set +x
                   umask 077
                   mkdir -m 700 incoming
+                  version="$(sed -n 's/^TOOLKIT_VERSION=//p' deployment/toolkit.lock)"
+                  cp "deployment/vendor/toolkit/toolkit-$version.tar.gz" "$PWD/incoming/toolkit.tar.gz"
+                  cp "deployment/toolkit.lock" "$PWD/incoming/toolkit.lock"
+                  printf '%s  toolkit.tar.gz\n' "$(sed -n 's/^TOOLKIT_ARCHIVE_SHA256=//p' deployment/toolkit.lock)" > "$PWD/incoming/toolkit.tar.gz.sha256"
                   mkdir -m 700 incoming/registry
                   printf '%s' "$GH_TOKEN" | docker --config "$PWD/incoming/registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
                   expected="$(awk -F= '$1 == "TOOLKIT_VERSION" { if (seen++) exit 2; print $2 } END { if (!seen) exit 1 }' deployment/toolkit.lock)"
@@ -76,8 +80,7 @@ jobs:
                       set -euo pipefail
                       umask 077
                       [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
-                      actual="$(/usr/local/bin/toolkit version | awk -F'[= ]' '/^toolkit_version=/ {print $2}')"
-                      [[ "$actual" == "$EXPECTED_TOOLKIT_VERSION" ]] || { echo 'ERROR: toolkit pin mismatch'; exit 1; }
+                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install CI bundle runner with deployment/install-toolkit.sh --ci-only --deploy-user <account>' >&2; exit 1; }
                       mkdir -p -m 700 "$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT"
                       mkdir -m 700 "$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
               id: reserve
@@ -111,11 +114,10 @@ jobs:
                       set -euo pipefail
                       [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
                       [[ "$RELEASE_ID" == previous || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
-                      actual="$(/usr/local/bin/toolkit version | awk -F'[= ]' '/^toolkit_version=/ {print $2}')"
-                      [[ "$actual" == "$EXPECTED_TOOLKIT_VERSION" ]] || exit 1
+                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install CI bundle runner with deployment/install-toolkit.sh --ci-only --deploy-user <account>' >&2; exit 1; }
                       incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
                       chmod 600 "$incoming/registry/config.json"
-                      sudo -n /usr/local/bin/toolkit release rollback --repository kreditozrouti --environment "$TARGET_ENVIRONMENT" \
+                      sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release rollback --repository kreditozrouti --environment "$TARGET_ENVIRONMENT" \
                         --root "$HOME/kreditozrouti/versions/$TARGET_ENVIRONMENT" --user "$(id -un)" --release-id "$RELEASE_ID" --registry-config "$incoming/registry"
             - name: Remove own registry credentials
               uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2

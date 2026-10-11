@@ -27,7 +27,20 @@ differ between app environments (`prod`/`dev` recommended); Compose projects are
 Dotenv values use literal single quotes: dollar signs, hashes and backticks stay literal.
 Single quotes, control characters and trailing backslashes fail without printing values.
 
-The host toolkit must exactly match `deployment/toolkit.lock` and support snapshot API >=0.8.1.
+CI sends the exact archive/checksum and `deployment/toolkit.lock` from the selected source bundle
+with every deploy; rollback sends the checked-out control pin. The root-installed stable
+`/usr/local/libexec/toolkit-run-bundle` validates and runs that bundle without using or activating
+the host toolkit. One-time setup from this trusted checkout:
+
+```bash
+sudo bash deployment/install-toolkit.sh --ci-only --deploy-user YOUR_DEPLOY_USER
+```
+
+Manual deploy, boot reconcile, backup and retention use the independently activated host toolkit
+(>=0.8.1, <1.0.0 shared lock/snapshot API). Omit `--ci-only` to install the pinned host CLI inactive;
+add `--activate` only to explicitly change the administrator version. Refresh existing boot and
+retention scripts through their owner installers to remove old pin equality checks. No CI deploy
+changes `/opt/toolkit/current`. See [bundle installation](vendor/toolkit/README.md).
 Install/activate it separately; app workflows never upgrade the host. Toolkit holds one
 repository-wide lock for all environments, monitoring, backups and retention, opening the host
 window only for Compose changes/health. Apps require Infrastructure's existing `public-network`.
@@ -93,6 +106,6 @@ Run the installed service manually and inspect results before an owner separatel
 `kreditozrouti-umami-retention.timer`. Until then automatic retention is inactive.
 
 No host deployment, migration, timer activation or recovery rehearsal is implied by repository
-checks. Verify host toolkit, sudoers, environment secrets, data compatibility and public health
+checks. Verify the CI runner, sudoers, environment secrets, data compatibility and public health
 before the first owner-authorized deployment. Zero downtime/capacity/live rollout gates remain
 open; snapshot health alone does not prove business behavior or uninterrupted availability.

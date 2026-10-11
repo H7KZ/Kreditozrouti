@@ -4,11 +4,8 @@ set -euo pipefail
   echo 'usage: deploy.sh <deploy|stage|activate|rollback|reconcile> <environment> [toolkit snapshot arguments]' >&2; exit 2;
 }
 action="$1"; target="$2"; shift 2
-pin="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/toolkit.lock"
-expected="$(awk -F= '$1 == "TOOLKIT_VERSION" { if (seen++) exit 2; print $2 } END { if (!seen) exit 1 }' "$pin")"
-[[ "$(printf '%s\n' 0.8.1 "$expected" | sort -V | head -1)" == 0.8.1 ]] || { echo 'ERROR: snapshot API requires toolkit >=0.8.1; await reviewed toolkit repin' >&2; exit 1; }
 actual="$(/usr/local/bin/toolkit version | sed -n 's/^toolkit_version=\([^ ]*\).*/\1/p')"
-[[ "$actual" == "$expected" ]] || { echo 'ERROR: host toolkit differs from toolkit.lock' >&2; exit 1; }
+[[ "$actual" =~ ^0\.[0-9]+\.[0-9]+$ && "$(printf '%s\n' 0.8.1 "$actual" | sort -V | head -1)" == 0.8.1 ]] || { echo 'Host toolkit snapshot API requires >=0.8.1, <1.0.0' >&2; exit 1; }
 for arg in "$@"; do
   case "$arg" in --repository|--repository=*|--environment|--environment=*|--root|--root=*|--user|--user=*) echo 'ERROR: wrapper owns repository, environment, root and user' >&2; exit 2;; esac
 done

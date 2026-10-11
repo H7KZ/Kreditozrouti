@@ -5,9 +5,8 @@ root="$2/kreditozrouti/versions/monitoring"
 [[ -L "$root/current" ]] || { echo 'ERROR: monitoring current snapshot missing; stage a snapshot first' >&2; exit 1; }
 release="$(realpath -e "$root/current")"
 [[ "$(dirname -- "$release")" == "$root" && -f "$release/.toolkit-release.json" && ! -L "$release/.toolkit-release.json" && -f "$release/.toolkit-inventory.json" ]] || { echo 'ERROR: legacy or corrupt monitoring snapshot; stage a new snapshot' >&2; exit 1; }
-expected="$(awk -F= '$1 == "TOOLKIT_VERSION" { if (seen++) exit 2; print $2 } END { if (!seen) exit 1 }' "$release/toolkit.lock")"
 actual="$(/usr/local/bin/toolkit version | awk -F'[= ]' '/^toolkit_version=/ {print $2}')"
-[[ "$actual" == "$expected" ]] || { echo 'ERROR: monitoring toolkit pin mismatch' >&2; exit 1; }
+[[ "$actual" =~ ^0\.[0-9]+\.[0-9]+$ && "$(printf '%s\n' 0.8.1 "$actual" | sort -V | head -1)" == 0.8.1 ]] || { echo 'ERROR: monitoring host toolkit API incompatible' >&2; exit 1; }
 python3 - "$release" <<'PY'
 import hashlib, json, sys
 from pathlib import Path
