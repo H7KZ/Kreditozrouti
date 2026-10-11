@@ -1,12 +1,12 @@
 # ==============================================================================
-# Workflow: Backup verification
+# Workflow: Backup Verify
 # Description: Off-VPS proof that backups exist and restore, using a read-only B2 key.
 #              Freshness runs daily, the restore drill weekly; each pings its own
 #              Healthchecks check, so a workflow that never runs also alerts.
 # Trigger: schedule, manual
 # ==============================================================================
 
-name: Backup verification
+name: Backup Verify
 
 on:
     schedule:

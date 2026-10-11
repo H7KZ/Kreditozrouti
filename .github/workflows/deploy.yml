@@ -13,31 +13,16 @@ name: Deploy
                     - production
                     - development
                 default: production
-            development_run_id:
-                description: Successful development deploy run to promote (production only)
+            commit:
+                description: 'Production only: commit SHA to promote. Empty = the last successful development deploy.'
                 required: false
                 type: string
                 default: ''
-            image_digest_api:
-                description: Reuse this api image digest (sha256:...) instead of building. Development only. Set all four digests or none; each must be the image built from the dispatched commit.
+            reuse_images:
+                description: 'Development only: skip rebuilding images that already exist in ghcr for this commit.'
                 required: false
-                type: string
-                default: ''
-            image_digest_web:
-                description: Reuse this web image digest (sha256:...). Development only. See image_digest_api.
-                required: false
-                type: string
-                default: ''
-            image_digest_scraper:
-                description: Reuse this scraper image digest (sha256:...). Development only. See image_digest_api.
-                required: false
-                type: string
-                default: ''
-            image_digest_mcp:
-                description: Reuse this mcp image digest (sha256:...). Development only. See image_digest_api.
-                required: false
-                type: string
-                default: ''
+                type: boolean
+                default: false
 permissions:
     actions: read
     contents: read
@@ -72,49 +57,33 @@ jobs:
               if: github.event_name == 'workflow_dispatch'
               env:
                   TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  DEVELOPMENT_RUN_ID: ${{ inputs.development_run_id }}
+                  PROMOTE_COMMIT: ${{ inputs.commit }}
               run: |
                   set -euo pipefail
                   if [[ "$TARGET_ENVIRONMENT" == production ]]; then
-                    [[ "$DEVELOPMENT_RUN_ID" =~ ^[1-9][0-9]*$ ]] || { echo 'ERROR: provide a successful development_run_id'; exit 1; }
+                    [[ -z "$PROMOTE_COMMIT" || "$PROMOTE_COMMIT" =~ ^[a-fA-F0-9]{7,40}$ ]] || { echo 'ERROR: commit must be empty or a 7-40 character commit SHA'; exit 1; }
                   elif [[ "$TARGET_ENVIRONMENT" != development ]]; then
                     echo 'ERROR: unsupported environment'; exit 1
                   fi
-            - name: Validate reused image digests
+            - name: Resolve reusable image digests from ghcr
               id: reuse
-              if: github.event_name == 'workflow_dispatch' && inputs.environment == 'development' && (inputs.image_digest_api != '' || inputs.image_digest_web != '' || inputs.image_digest_scraper != '' || inputs.image_digest_mcp != '')
+              if: github.event_name == 'workflow_dispatch' && inputs.environment == 'development' && inputs.reuse_images
               env:
-                  API_DIGEST: ${{ inputs.image_digest_api }}
-                  WEB_DIGEST: ${{ inputs.image_digest_web }}
-                  SCRAPER_DIGEST: ${{ inputs.image_digest_scraper }}
-                  MCP_DIGEST: ${{ inputs.image_digest_mcp }}
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   GH_ACTOR: ${{ github.actor }}
               run: |
                   set -euo pipefail
-                  [[ -n "$API_DIGEST" && -n "$WEB_DIGEST" && -n "$SCRAPER_DIGEST" && -n "$MCP_DIGEST" ]] || {
-                    echo 'ERROR: set all four image digests or none'; exit 1
-                  }
                   prefix="$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')"
                   printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
-                  verify_digest() {
-                    local service="$1" digest="$2" built
-                    [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]] || { echo "ERROR: $service digest must be sha256 plus 64 hex characters"; exit 1; }
-                    built="$(docker buildx imagetools inspect "ghcr.io/$prefix/$service:$GITHUB_SHA" --format '{{json .Manifest}}' | jq -r '.digest')" || {
-                      echo "ERROR: no $service image tagged $GITHUB_SHA; run a normal development deploy to build it"; exit 1
-                    }
-                    [[ "$built" == "$digest" ]] || { echo "ERROR: $service digest is not the image built from $GITHUB_SHA (expected $built)"; exit 1; }
-                  }
-                  verify_digest api "$API_DIGEST"
-                  verify_digest web "$WEB_DIGEST"
-                  verify_digest scraper "$SCRAPER_DIGEST"
-                  verify_digest mcp "$MCP_DIGEST"
-                  {
-                    echo "api_digest=$API_DIGEST"
-                    echo "web_digest=$WEB_DIGEST"
-                    echo "scraper_digest=$SCRAPER_DIGEST"
-                    echo "mcp_digest=$MCP_DIGEST"
-                  } >> "$GITHUB_OUTPUT"
+                  for service in api web scraper mcp; do
+                    digest="$(docker buildx imagetools inspect "ghcr.io/$prefix/$service:$GITHUB_SHA" --format '{{json .Manifest}}' 2>/dev/null | jq -r '.digest // empty' || true)"
+                    if [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]]; then
+                      echo "$service: reusing ghcr.io/$prefix/$service:$GITHUB_SHA ($digest)"
+                      echo "${service}_digest=$digest" >> "$GITHUB_OUTPUT"
+                    else
+                      echo "$service: no image tagged $GITHUB_SHA; it will be built"
+                    fi
+                  done
             - name: Checkout main history for production release validation
               if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -126,7 +95,7 @@ jobs:
               if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
               env:
                   WORKFLOW_REF: ${{ github.ref }}
-                  DEVELOPMENT_RUN_ID: ${{ inputs.development_run_id }}
+                  PROMOTE_COMMIT: ${{ inputs.commit }}
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   set -euo pipefail
@@ -134,13 +103,26 @@ jobs:
                     echo "ERROR: production promotion must be dispatched from main"
                     exit 1
                   }
+                  DEVELOPMENT_RUN_ID=""
+                  promote_commit="$(echo "$PROMOTE_COMMIT" | tr '[:upper:]' '[:lower:]')"
+                  while read -r candidate_id candidate_attempt; do
+                    published="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$candidate_id/artifacts?name=qualified-development-release-$candidate_attempt" \n                      --jq '[.artifacts[] | select(.expired | not)] | length')"
+                    if [[ "$published" -gt 0 ]]; then
+                      DEVELOPMENT_RUN_ID="$candidate_id"
+                      break
+                    fi
+                  done < <(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/deploy.yml/runs?branch=main&status=success&per_page=100" |
+                    jq -r --arg c "$promote_commit" '.workflow_runs[] | select(.event == "push" or .event == "workflow_dispatch") | select($c == "" or (.head_sha | startswith($c))) | "\(.id) \(.run_attempt)"')
+                  [[ -n "$DEVELOPMENT_RUN_ID" ]] || { echo "ERROR: no successful development deploy found on main${promote_commit:+ for commit $promote_commit}"; exit 1; }
+                  echo "run_id=$DEVELOPMENT_RUN_ID" >> "$GITHUB_OUTPUT"
                   gh api "repos/$GITHUB_REPOSITORY/actions/runs/$DEVELOPMENT_RUN_ID" > "$RUNNER_TEMP/development-run.json"
-                  jq -e --arg expected_path '.github/workflows/deploy-all.yml' '
+                  echo "Promoting development run [$DEVELOPMENT_RUN_ID]($(jq -r '.html_url' "$RUNNER_TEMP/development-run.json")) at commit \`$(jq -r '.head_sha' "$RUNNER_TEMP/development-run.json")\`" >> "$GITHUB_STEP_SUMMARY"
+                  jq -e --arg expected_path '.github/workflows/deploy.yml' '
                     .status == "completed" and .conclusion == "success" and
                     .head_branch == "main" and (.path | split("@")[0]) == $expected_path and
                     (.event == "push" or .event == "workflow_dispatch")
                   ' "$RUNNER_TEMP/development-run.json" >/dev/null || {
-                    echo "ERROR: run is not a successful main development deploy from deploy-all.yml"
+                    echo "ERROR: run is not a successful main development deploy from deploy.yml"
                     exit 1
                   }
                   source_run_attempt="$(jq -r '.run_attempt // empty' "$RUNNER_TEMP/development-run.json")"
@@ -156,13 +138,13 @@ jobs:
                   name: qualified-development-release-${{ steps.source_run.outputs.run_attempt }}
                   path: ${{ runner.temp }}/qualified-development-release
                   repository: ${{ github.repository }}
-                  run-id: ${{ inputs.development_run_id }}
+                  run-id: ${{ steps.source_run.outputs.run_id }}
                   github-token: ${{ secrets.GITHUB_TOKEN }}
             - name: Validate qualified digests
               id: release
               if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
               env:
-                  DEVELOPMENT_RUN_ID: ${{ inputs.development_run_id }}
+                  DEVELOPMENT_RUN_ID: ${{ steps.source_run.outputs.run_id }}
                   DEVELOPMENT_RUN_ATTEMPT: ${{ steps.source_run.outputs.run_attempt }}
               run: |
                   set -euo pipefail
@@ -170,7 +152,7 @@ jobs:
                   [[ -f "$manifest" && ! -L "$manifest" ]] || { echo "ERROR: release manifest is missing"; exit 1; }
                   development_run_commit="$(jq -r '.head_sha' "$RUNNER_TEMP/development-run.json")"
                   jq -e --arg repo "$GITHUB_REPOSITORY" --arg run "$DEVELOPMENT_RUN_ID" \
-                    --arg path '.github/workflows/deploy-all.yml' --arg attempt "$DEVELOPMENT_RUN_ATTEMPT" \
+                    --arg path '.github/workflows/deploy.yml' --arg attempt "$DEVELOPMENT_RUN_ATTEMPT" \
                     --argjson service_names '["api", "web", "scraper", "mcp"]' '
                     .schema_version == 1 and .repository == $repo and
                     .workflow_path == $path and .workflow_run_id == $run and .workflow_run_attempt == $attempt and
@@ -204,7 +186,7 @@ jobs:
         name: Build API
         needs:
             - validate
-        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && inputs.image_digest_api == ''
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && needs.validate.outputs.api_digest == ''
         uses: ./.github/workflows/_build-service.yml
         with:
             service: api
@@ -215,7 +197,7 @@ jobs:
         name: Build Web
         needs:
             - validate
-        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && inputs.image_digest_web == ''
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && needs.validate.outputs.web_digest == ''
         uses: ./.github/workflows/_build-service.yml
         with:
             service: web
@@ -226,7 +208,7 @@ jobs:
         name: Build Scraper
         needs:
             - validate
-        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && inputs.image_digest_scraper == ''
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && needs.validate.outputs.scraper_digest == ''
         uses: ./.github/workflows/_build-service.yml
         with:
             service: scraper
@@ -237,7 +219,7 @@ jobs:
         name: Build MCP
         needs:
             - validate
-        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && inputs.image_digest_mcp == ''
+        if: needs.validate.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && needs.validate.outputs.mcp_digest == ''
         uses: ./.github/workflows/_build-service.yml
         with:
             service: mcp
@@ -355,7 +337,7 @@ jobs:
                   document = {
                       "schema_version": 1,
                       "repository": os.environ["GITHUB_REPOSITORY"],
-                      "workflow_path": ".github/workflows/deploy-all.yml",
+                      "workflow_path": ".github/workflows/deploy.yml",
                       "workflow_run_id": os.environ["GITHUB_RUN_ID"],
                       "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
                       "environment": "development",

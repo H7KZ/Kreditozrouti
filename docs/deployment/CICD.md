@@ -1,7 +1,7 @@
 # CI/CD
 
 Canonical workflow, source/digest qualification, private transport and snapshot operations:
-[snapshot operations](../../deployment/README.md). `deploy-all.yml` verifies/builds complete development releases on `main`;
+[snapshot operations](../../deployment/README.md). `deploy.yml` verifies/builds complete development releases on `main`;
 production dispatch promotes every digest from a successful qualified development run.
 `_deploy-service.yml` is one reusable full environment job. Rollback uses complete saved snapshots.
 

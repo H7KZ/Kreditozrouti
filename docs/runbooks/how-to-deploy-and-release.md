@@ -3,17 +3,17 @@
 Read [snapshot operations](../../deployment/README.md) for the complete workflow, manifest, transport, rollback, recovery and retention contract.
 
 Push `main` to verify/build/deploy a complete development release. For production, dispatch
-`deploy-all.yml` from `main` with `environment=production` and a successful `development_run_id`.
+`deploy.yml` from `main` with `environment=production`. It promotes the last successful development
+deploy; pass `commit` (SHA) only to promote a specific older one.
 Production reuses every qualified application digest and its source bundle. Subsets/tag-only
 deploys are removed. Dispatch `rollback.yml` with `release_id` and environment
 to restore a complete immutable snapshot and its saved configuration.
 
-Manual development deploys work from any branch: dispatch `deploy-all.yml` with `environment=development`
+Manual development deploys work from any branch: dispatch `deploy.yml` with `environment=development`
 from the branch you want to test. The dispatched commit is built and deployed. To redeploy without
-rebuilding, pass all four `image_digest_*` inputs (`sha256:...`, shown in the build job's step summary).
-Each digest must equal the image tagged with the dispatched commit SHA, or the run stops before any build
-or deploy. Digest inputs are development-only; production always uses the qualified release. Reused
-digests still deploy and publish a qualified development manifest.
+rebuilding, tick `reuse_images`. Digests are resolved from the ghcr images tagged with the dispatched
+commit SHA; any service without such an image is built. The option is development-only; production
+always uses the qualified release. Reused digests still deploy and publish a qualified development manifest.
 
 Infrastructure owns shared Traefik and public-network. CI executes this repository's toolkit bundle,
 pinned by `deployment/toolkit.lock`, through the independent CI runner. Manual admin, boot recovery
