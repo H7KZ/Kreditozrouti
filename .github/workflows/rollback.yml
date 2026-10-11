@@ -28,7 +28,7 @@ jobs:
         timeout-minutes: 120
         environment: ${{ inputs.environment }}
         steps:
-            - name: Require main and trusted fingerprint
+            - name: Require main for production and monitoring, and trusted fingerprint
               env:
                   WORKFLOW_REF: ${{ github.ref }}
                   SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
@@ -36,7 +36,8 @@ jobs:
                   RELEASE_ID: ${{ inputs.release_id }}
               run: |
                   set -euo pipefail
-                  [[ "$WORKFLOW_REF" == refs/heads/main && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
+                  [[ "$TARGET_ENVIRONMENT" == development || "$WORKFLOW_REF" == refs/heads/main ]] || { echo 'ERROR: production and monitoring rollbacks require main'; exit 1; }
+                  [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
                   [[ "$RELEASE_ID" == previous || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || { echo 'ERROR: choose previous or a full snapshot release ID'; exit 1; }
                   [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || exit 1
             - name: Checkout control pin
