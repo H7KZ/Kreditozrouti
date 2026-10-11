@@ -3,8 +3,8 @@
 Read [snapshot operations](../../deployment/README.md) for the complete workflow, manifest, transport, rollback, recovery and retention contract.
 
 Push `main` to verify/build/deploy a complete development release. For production, dispatch
-`deploy.yml` from `main` with `environment=production`. It promotes the latest qualified development
-release on main; pass `development_run_id` only to promote a specific older run.
+`deploy.yml` from `main` with `environment=production`. It promotes the last successful development
+deploy; pass `commit` (SHA) only to promote a specific older one.
 Production reuses every qualified application digest and its source bundle. Subsets/tag-only
 deploys are removed. Dispatch `rollback.yml` with `release_id` and environment
 to restore a complete immutable snapshot and its saved configuration.

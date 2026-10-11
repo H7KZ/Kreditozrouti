@@ -2,7 +2,7 @@
 
 `deploy.yml` verifies/builds on GitHub-hosted runners. Pushes to `main` deploy the complete
 application set (api, web, scraper, mcp) to development through one reusable environment job.
-Production dispatch from `main` takes `environment=production` and an optional `development_run_id` (default: latest qualified development run).
+Production dispatch from `main` takes `environment=production` and an optional `commit` (default: last successful development deploy).
 It requires a successful main development run, matching workflow/run attempt/source commit,
 main ancestry, the exact artifact checksum and every application digest. No production rebuild
 or subset promotion is supported. The qualified artifact expires after 90 days.

@@ -1,5 +1,5 @@
 # ==============================================================================
-# Workflow: Build Service Image (reusable)
+# Workflow: Build Service (reusable)
 # Description: Builds and pushes a single service Docker image to GHCR.
 #              Called by deploy.yml/rollback.yml for each selected service.
 #
@@ -14,7 +14,7 @@
 # Deploy jobs also use GitHub-hosted runners and verify the pinned host fingerprint.
 # ==============================================================================
 
-name: Build Service Image (reusable)
+name: Build Service (reusable)
 
 on:
     workflow_call:

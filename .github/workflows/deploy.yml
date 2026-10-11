@@ -13,13 +13,13 @@ name: Deploy
                     - production
                     - development
                 default: production
-            development_run_id:
-                description: Development deploy run ID to promote (production only). Leave empty to promote the latest qualified development release on main.
+            commit:
+                description: 'Production only: commit SHA to promote. Empty = the last successful development deploy.'
                 required: false
                 type: string
                 default: ''
             reuse_images:
-                description: Reuse images already built for the dispatched commit (ghcr tag = commit SHA) instead of rebuilding; missing ones are built. Development only.
+                description: 'Development only: skip rebuilding images that already exist in ghcr for this commit.'
                 required: false
                 type: boolean
                 default: false
@@ -57,11 +57,11 @@ jobs:
               if: github.event_name == 'workflow_dispatch'
               env:
                   TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  DEVELOPMENT_RUN_ID: ${{ inputs.development_run_id }}
+                  PROMOTE_COMMIT: ${{ inputs.commit }}
               run: |
                   set -euo pipefail
                   if [[ "$TARGET_ENVIRONMENT" == production ]]; then
-                    [[ -z "$DEVELOPMENT_RUN_ID" || "$DEVELOPMENT_RUN_ID" =~ ^[1-9][0-9]*$ ]] || { echo 'ERROR: development_run_id must be empty or a numeric run ID'; exit 1; }
+                    [[ -z "$PROMOTE_COMMIT" || "$PROMOTE_COMMIT" =~ ^[a-fA-F0-9]{7,40}$ ]] || { echo 'ERROR: commit must be empty or a 7-40 character commit SHA'; exit 1; }
                   elif [[ "$TARGET_ENVIRONMENT" != development ]]; then
                     echo 'ERROR: unsupported environment'; exit 1
                   fi
@@ -95,7 +95,7 @@ jobs:
               if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production'
               env:
                   WORKFLOW_REF: ${{ github.ref }}
-                  DEVELOPMENT_RUN_ID: ${{ inputs.development_run_id }}
+                  PROMOTE_COMMIT: ${{ inputs.commit }}
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   set -euo pipefail
@@ -103,19 +103,17 @@ jobs:
                     echo "ERROR: production promotion must be dispatched from main"
                     exit 1
                   }
-                  if [[ -z "$DEVELOPMENT_RUN_ID" ]]; then
-                    while read -r candidate_id candidate_attempt; do
-                      published="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$candidate_id/artifacts?name=qualified-development-release-$candidate_attempt" \
-                        --jq '[.artifacts[] | select(.expired | not)] | length')"
-                      if [[ "$published" -gt 0 ]]; then
-                        DEVELOPMENT_RUN_ID="$candidate_id"
-                        break
-                      fi
-                    done < <(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/deploy.yml/runs?branch=main&status=success&per_page=50" \
-                      --jq '.workflow_runs[] | select(.event == "push" or .event == "workflow_dispatch") | "\(.id) \(.run_attempt)"')
-                    [[ -n "$DEVELOPMENT_RUN_ID" ]] || { echo "ERROR: no qualified development release found on main; run a development deploy first"; exit 1; }
-                    echo "Auto-selected latest qualified development run $DEVELOPMENT_RUN_ID"
-                  fi
+                  DEVELOPMENT_RUN_ID=""
+                  promote_commit="$(echo "$PROMOTE_COMMIT" | tr '[:upper:]' '[:lower:]')"
+                  while read -r candidate_id candidate_attempt; do
+                    published="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$candidate_id/artifacts?name=qualified-development-release-$candidate_attempt" \n                      --jq '[.artifacts[] | select(.expired | not)] | length')"
+                    if [[ "$published" -gt 0 ]]; then
+                      DEVELOPMENT_RUN_ID="$candidate_id"
+                      break
+                    fi
+                  done < <(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/deploy.yml/runs?branch=main&status=success&per_page=100" |
+                    jq -r --arg c "$promote_commit" '.workflow_runs[] | select(.event == "push" or .event == "workflow_dispatch") | select($c == "" or (.head_sha | startswith($c))) | "\(.id) \(.run_attempt)"')
+                  [[ -n "$DEVELOPMENT_RUN_ID" ]] || { echo "ERROR: no successful development deploy found on main${promote_commit:+ for commit $promote_commit}"; exit 1; }
                   echo "run_id=$DEVELOPMENT_RUN_ID" >> "$GITHUB_OUTPUT"
                   gh api "repos/$GITHUB_REPOSITORY/actions/runs/$DEVELOPMENT_RUN_ID" > "$RUNNER_TEMP/development-run.json"
                   echo "Promoting development run [$DEVELOPMENT_RUN_ID]($(jq -r '.html_url' "$RUNNER_TEMP/development-run.json")) at commit \`$(jq -r '.head_sha' "$RUNNER_TEMP/development-run.json")\`" >> "$GITHUB_STEP_SUMMARY"

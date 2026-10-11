@@ -1,5 +1,5 @@
 # ==============================================================================
-# Workflow: CI Pipeline
+# Workflow: Verify
 # Description: Runs code verification on pull requests. The steps themselves
 #              live in _verify.yml so that deploy.yml can gate its build
 #              and deploy jobs on exactly the same checks.
@@ -12,7 +12,7 @@
 #   - Makefile with install, lint, test, type-check and build targets
 # ==============================================================================
 
-name: CI Pipeline
+name: Verify
 
 on:
     pull_request:

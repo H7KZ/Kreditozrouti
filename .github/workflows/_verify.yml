@@ -1,5 +1,5 @@
 # ==============================================================================
-# Workflow: Verify Code (reusable)
+# Workflow: Verify (reusable)
 # Description: Single source of truth for repository verification. Installs
 #              dependencies, lints, checks em dashes, builds core, runs the test
 #              suite, type-checks and builds every package.
@@ -18,7 +18,7 @@
 #   - Makefile with install, lint, test, type-check and build targets
 # ==============================================================================
 
-name: Verify Code (reusable)
+name: Verify (reusable)
 
 on:
     workflow_call:
