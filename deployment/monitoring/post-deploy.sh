@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 set +x
 # Toolkit exports the saved environment. Release/runtime inventories are immutable.
 : "${UMAMI_DB_USER:?}" "${UMAMI_DB_NAME:?}" "${UMAMI_GRAFANA_PASSWORD:?}"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 set +x
 umask 077
 : "${TOOLKIT_RUNTIME_DIR:?}" "${TOOLKIT_ENV_FILE:?}" "${DISCORD_WEBHOOK_URL:?}" "${HEALTHCHECKS_PING_URL:?}" "${UMAMI_APP_SECRET:?}"
