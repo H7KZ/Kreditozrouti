@@ -75,7 +75,7 @@ apps/                 Deployable services: api, web, scraper, mcp
 packages/             Shared libraries: core, types, logger, style
 fixtures/             Shared test fixtures: HTML, *.scraper.json, *.db.json
 scripts/              Bash - repository-specific server maintenance
-deployment/           Docker Compose stacks + deploy.sh
+deployment/           Docker Compose stacks + pinned toolkit (toolkit.conf)
 docs/                 Developer reference and setup guides
 ```
 

@@ -1,6 +1,6 @@
 # Snapshot deployment operations
 
-**Deploy App** (`deploy.yml`) releases the complete application set (api, web, scraper, mcp).
+**Deploy** (`deploy.yml`) releases the complete application set (api, web, scraper, mcp).
 Pushes to `main` always verify and build development. Manual runs accept any source branch, tag
 or SHA for either target; `ref` defaults to the selected workflow ref and resolves once to a full SHA.
 Verification and builds use that selected source. The controller comes from the dispatch ref.
@@ -41,26 +41,35 @@ differ between app environments (`prod`/`dev` recommended); Compose projects are
 Dotenv values use literal single quotes: dollar signs, hashes and backticks stay literal.
 Single quotes, control characters and trailing backslashes fail without printing values.
 
-Toolkit files are managed by Infrastructure: `deployment/toolkit.lock`, `deployment/vendor/toolkit/`,
-`deployment/verify-toolkit-pin.sh` and `deployment/install-toolkit.sh`. Update them only by running
-`npm run toolkit:repin` in an Infrastructure checkout, then commit the result here; `verify-toolkit-pin.sh`
-rejects hand edits. See [consumer integration](https://github.com/H7KZ/Infrastructure/blob/main/docs/toolkit/consumers.md).
+This repository runs only its pinned toolkit; it never calls a toolkit installed on the server. The managed files
+are `deployment/toolkit` (entrypoint), `deployment/toolkit.lock` and `deployment/vendor/toolkit/`; hand edits fail
+`bash deployment/toolkit verify`. Repin with `npm run vendor -- ../Kreditozrouti` in a
+[Toolkit](https://github.com/H7KZ/Toolkit/tree/main/docs/consumers.md) checkout, then commit the result here.
+Everything the toolkit does for this repository is declared in [`toolkit.conf`](toolkit.conf): the release targets
+(`production`, `development`, `monitoring` under `~/kreditozrouti/versions/`), the backup component list and
+schedules, and the `umami-retention` job. `toolkit install` turns that file into the boot-recovery, backup and job
+units; no unit file or installer lives in this repository.
 
-CI sends the exact archive/checksum and `deployment/toolkit.lock` from the selected source bundle
-with every deploy; rollback sends the checked-out control pin. The root-installed stable
-`/usr/local/libexec/toolkit-run-bundle` validates and runs that bundle without using or activating
-the host toolkit. One-time setup from this trusted checkout:
+CI ships the selected source's `deployment/toolkit`, `toolkit.conf`, `toolkit.lock` and `vendor/toolkit/` with every
+deploy (rollback ships the checked-out control pin) and runs them on the VPS as the deploy user:
 
 ```bash
-sudo bash deployment/install-toolkit.sh --ci-only --deploy-user YOUR_DEPLOY_USER
+bash "$incoming/deployment/toolkit" release deploy production --archive ... --checksum ... --manifest ... --env-file ...
 ```
 
-Manual deploy, boot reconcile, backup and retention use the independently activated host toolkit
-(>=0.8.1, <1.0.0 shared lock/snapshot API). Omit `--ci-only` to install the pinned host CLI inactive;
-add `--activate` only to explicitly change the administrator version. Refresh existing boot and
-retention scripts through their owner installers to remove old pin equality checks. No CI deploy
-changes `/opt/toolkit/current`. See [bundle installation](vendor/toolkit/README.md).
-Install/activate it separately; app workflows never upgrade the host. Toolkit holds one
+The entrypoint verifies the pin and, as a non-root user, runs the pinned archive through the root-owned loader
+`/usr/local/libexec/toolkit-run-bundle` (the deploy user's only sudo permission). One-time setup from a trusted
+checkout on the VPS, rerun after each pin change:
+
+```bash
+sudo deployment/toolkit install --deploy-user YOUR_DEPLOY_USER
+```
+
+Guides: [consumers](https://github.com/H7KZ/Toolkit/tree/main/docs/consumers.md),
+[host](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md),
+[commands](https://github.com/H7KZ/Toolkit/tree/main/docs/commands.md). See also [bundle installation](vendor/toolkit/README.md).
+
+App workflows never change the host. Toolkit holds one
 repository-wide lock for all environments, monitoring, backups and retention, opening the host
 window only for Compose changes/health. Apps require Infrastructure's existing `public-network`.
 Toolkit creates missing owned networks/volumes and resolves ALL service images, including
@@ -77,24 +86,22 @@ protected. Keep snapshot runtime and registry digests for recovery; age alone is
 
 ## Manual commands and rollback
 
-`deployment/deploy.sh` is a thin toolkit wrapper. It requires separately authorized passwordless
-sudo for `/usr/local/bin/toolkit release` and `reconcile` (Infrastructure bootstrap provides this
-for its deployment account). The CI-only installer authorizes the bundle runner only. From an
-approved checkout, as deployment user:
+From an approved checkout on the VPS, as the deployment user (the entrypoint fills repository, environment, root and
+user from `toolkit.conf`):
 
 ```bash
-bash deployment/deploy.sh deploy development \
+bash deployment/toolkit release deploy development \
   --archive /absolute/release.tar.gz --checksum /absolute/release.sha256 \
   --manifest /absolute/manifest.json --env-file /absolute/release.env \
   --registry-config /absolute/operation-docker-config
-bash deployment/deploy.sh stage development <same-arguments>
-bash deployment/deploy.sh activate development --release-id <saved-id> --registry-config /absolute/operation-docker-config
-bash deployment/deploy.sh rollback production --release-id previous --registry-config /absolute/operation-docker-config
-bash deployment/deploy.sh reconcile development
+bash deployment/toolkit release stage development <same-arguments>
+bash deployment/toolkit release activate development --release-id <saved-id> --registry-config /absolute/operation-docker-config
+bash deployment/toolkit release rollback production --release-id previous --registry-config /absolute/operation-docker-config
+bash deployment/toolkit release reconcile development
 ```
 
 Create isolated registry config with `umask 077`; use `docker --config <dir> login` before sudo,
-then remove that operation's directory after the synchronous command. **Restore Release** (`rollback.yml`) accepts any controller `ref`, `environment` (including monitoring),
+then remove that operation's directory after the synchronous command. **Rollback** (`rollback.yml`) accepts any controller `ref`, `environment` (including monitoring),
 `operation=rollback|activate|reconcile`, and `release_id=previous|current|<saved-id>` (ignored for reconcile).
 It transfers fresh auth
 only and restores the complete saved model/env/runtime; it never renders current application
@@ -105,7 +112,7 @@ snapshot, then select it explicitly. Image rollback does not undo schema/data ch
 
 **Deploy Monitoring** (`deploy-monitoring.yml`) accepts any `ref` and `operation=deploy|stage` through
 the identical reusable transport/controller. **Verify** accepts a manual `ref` for full verification.
-**Verify Backups** accepts `ref` and `check=freshness|drill|both`; its inventory remains production
+**Backup Verify** (`backup-verify.yml`) accepts `ref` and `check=freshness|drill|both`; its inventory remains production
 MySQL/Redis plus monitoring Umami, rather than an application environment selector.
 **Cleanup Registry** accepts `dry_run`, complete `protected_digests`, `keep_newest` (6), `min_age_days` (7)
 and optional comma/space separated service names in `packages`. It preserves untagged versions,
@@ -123,25 +130,59 @@ The final workflow observations run over the pinned SSH connection from the depl
 against the public HTTPS URLs. GitHub-hosted runner traffic is rejected by the edge; these
 observations verify the public route from the host, not reachability from every client network.
 
-The root-owned boot unit runs `boot-recovery/reconcile.sh` as root with the installed deployment
-account and home passed explicitly; no deployment-account sudo rule is needed for boot recovery.
-It synchronously calls `toolkit reconcile` for production, development and monitoring separately.
-Toolkit validates snapshots and uses
-`up -d --no-recreate --pull never --no-build`. Missing pointer is a no-op; legacy/corrupt pointer
-fails visibly. Removed containers can be restored from cached images; intentionally stopped
-declared services restart. Install the root-owned script/pin/unit with
-`sudo bash deployment/boot-recovery/install.sh --user <deploy-user>`, then manually reconcile
-before separately enabling the unit. Installers do not enable units/timers.
+The generated `toolkit-kreditozrouti-reconcile.service` runs at boot as root and calls `toolkit reconcile` for
+production, development and monitoring separately (no deployment-account sudo rule needed). Toolkit validates
+snapshots and uses `up -d --no-recreate --pull never --no-build`. Missing pointer is a no-op; legacy/corrupt pointer
+fails visibly. Removed containers can be restored from cached images; intentionally stopped declared services
+restart. After `toolkit install`, run `sudo systemctl start toolkit-kreditozrouti-reconcile.service` manually,
+then separately `systemctl enable` it. Install never enables units/timers.
 
 ## Umami retention
 
-The scheduled GitHub workflow is removed. Install the disabled host timer/service with
-`sudo bash deployment/monitoring/umami/install.sh --user <deploy-user>`.
-The service holds the repository lock and runs a root-only worker that checks snapshot identity
-and SQL inventory, reading database credentials inside the existing container.
-Direct `bash deployment/monitoring/umami/retain.sh` always acquires the same repository lock.
-Run the installed service manually and inspect results before an owner separately enables
-`kreditozrouti-umami-retention.timer`. Until then automatic retention is inactive.
+The scheduled GitHub workflow is removed. The `umami-retention` job in `toolkit.conf` runs
+[`monitoring/umami/retain.sh`](monitoring/umami/retain.sh) daily at 03:17 UTC as root under the
+`kreditozrouti`/`monitoring` repository lock. The script checks snapshot identity and SQL inventory, then reads
+database credentials inside the existing container. Run it by hand, as the deploy user, with
+`deployment/toolkit job umami-retention`, and inspect the result before an owner separately enables
+`toolkit-kreditozrouti-umami-retention.timer`. Until then automatic retention is inactive.
+
+## Backups
+
+Component list, schedules, restore steps and drill: [backup/README.md](backup/README.md). The daily and weekly
+off-host verification is **Backup Verify**; it runs the pinned toolkit on a GitHub runner.
+
+## Migrating a VPS to toolkit 0.11
+
+Once, after this repository's 0.11 pin is merged and pulled on the VPS. Run from a checkout of this repository:
+
+```bash
+deployment/toolkit doctor                      # lists what is legacy
+# 1. Disable and remove the legacy units this repository installed before 0.11
+sudo systemctl disable --now kreditozrouti-reconcile.service kreditozrouti-umami-retention.timer \
+  toolkit-backup@kreditozrouti-4h.timer toolkit-backup@kreditozrouti-daily.timer
+sudo rm -f /etc/systemd/system/kreditozrouti-reconcile.service \
+  /etc/systemd/system/kreditozrouti-umami-retention.service /etc/systemd/system/kreditozrouti-umami-retention.timer \
+  /etc/systemd/system/toolkit-backup@kreditozrouti-4h.timer /etc/systemd/system/toolkit-backup@kreditozrouti-daily.timer
+sudo rm -rf /usr/local/libexec/kreditozrouti-reconcile /usr/local/libexec/kreditozrouti-umami-retention \
+  /usr/local/libexec/kreditozrouti-backup
+sudo systemctl daemon-reload
+# 2. Move the backup settings and drop BACKUP_COMPONENTS_FILE from them (now from toolkit.conf)
+sudo mv /etc/toolkit/backup/kreditozrouti.env /etc/toolkit/kreditozrouti.env
+sudoedit /etc/toolkit/kreditozrouti.env
+# 3. Install the pinned toolkit, then enable the generated units
+sudo deployment/toolkit install --deploy-user deploy
+sudo systemctl enable toolkit-kreditozrouti-reconcile.service
+sudo deployment/toolkit backup run daily && sudo deployment/toolkit backup list
+sudo systemctl enable --now toolkit-kreditozrouti-backup@4h.timer toolkit-kreditozrouti-backup@daily.timer
+deployment/toolkit job umami-retention         # once by hand, then:
+sudo systemctl enable --now toolkit-kreditozrouti-umami-retention.timer
+deployment/toolkit doctor
+```
+
+The shared template `toolkit-backup@.service` and the old host CLI (`/usr/local/bin/toolkit`, `/opt/toolkit/current`)
+go away only when every repository on the host is migrated; see the
+[Toolkit host guide](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md#migrating-a-host-from-010-or-older).
+Deploy workflows need only the loader that `toolkit install` places, so run it before the first deploy of this pin.
 
 No host deployment, migration, timer activation or recovery rehearsal is implied by repository
 checks. Verify the CI runner, sudoers, environment secrets, data compatibility and public health

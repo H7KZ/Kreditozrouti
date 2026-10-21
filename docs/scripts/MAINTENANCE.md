@@ -11,4 +11,4 @@ The script requires both deployed `.env` files, makes a timestamped gzip backup 
 
 For deployment recovery and monitoring, use [operations](../deployment/OPERATIONS.md). Host-wide Docker cleanup belongs to the separate Infrastructure repository.
 
-Run sudo from the non-root deployment user. The wrapper validates the toolkit pin and both snapshot metadata files, then holds the repository-wide lock plus `--host-window` across confirmation, target backup, clone and validation. No direct unlocked worker entrypoint exists.
+Run sudo from the non-root deployment user. The wrapper runs the repository's pinned `deployment/toolkit`, validates both snapshot metadata files, then holds the repository-wide lock plus `--host-window` across confirmation, target backup, clone and validation. No direct unlocked worker entrypoint exists.

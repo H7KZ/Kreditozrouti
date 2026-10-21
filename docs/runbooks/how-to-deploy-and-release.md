@@ -15,10 +15,10 @@ rebuilding, tick `reuse_images`. Digests are resolved from the ghcr images tagge
 commit SHA; any service without such an image is built. The option is development-only; production
 always uses the qualified release. Reused digests still deploy and publish a qualified development manifest.
 
-Infrastructure owns shared Traefik and public-network. CI executes this repository's toolkit bundle,
-pinned by `deployment/toolkit.lock`, through the independent CI runner. Manual admin, boot recovery
-and scheduled jobs use the separately activated compatible host toolkit (>=0.8.1, <1.0.0).
-The root-owned boot unit passes the installed deploy account explicitly and needs no account sudo rule.
+Infrastructure owns shared Traefik and public-network. CI ships the deployed revision's pinned toolkit (`deployment/toolkit`, `toolkit.conf`, `toolkit.lock`, `vendor/toolkit/`)
+and runs it on the VPS. Manual admin, boot recovery, backups and scheduled jobs run the same pinned toolkit
+(`deployment/toolkit`, declared in `toolkit.conf`); nothing uses a toolkit installed on the server.
+The generated boot unit passes the installed deploy account explicitly and needs no account sudo rule.
 Toolkit holds one repository-wide lock across environments/backups and opens the host window only
 for Compose/health. Existing legacy current roots need snapshot migration.
 No registry cleanup or timer activation occurs during deploy. Remaining host/settings/live gates

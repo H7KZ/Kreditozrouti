@@ -16,7 +16,7 @@ Tracing is off unless `OTEL_EXPORTER_OTLP_ENDPOINT` is set. The current monitori
 | Umami        | `ghcr.io/umami-software/umami:3.3.1` | Analytics                                           |
 | Umami DB     | `postgres:18.6-alpine`               | Analytics storage                                   |
 
-Umami retention uses the disabled host timer/service under `deployment/monitoring/umami/`. Install and manually validate before separate owner activation; the scheduled GitHub workflow is removed.
+Umami retention is the `umami-retention` toolkit job (`deployment/monitoring/umami/retain.sh`, declared in `deployment/toolkit.conf`). `deployment/toolkit install` generates its disabled timer; run `deployment/toolkit job umami-retention` and validate before separate owner activation. The scheduled GitHub workflow is removed.
 
 ## Collection contract
 

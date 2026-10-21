@@ -12,7 +12,7 @@ an old flat cluster needs an actual dump/restore migration, not a PGDATA workaro
 Run the approved migration procedure with toolkit's repository-wide lock and explicit host window:
 
 ```bash
-sudo -n /usr/local/bin/toolkit with-lock --repository kreditozrouti --environment monitoring \
+sudo bash /path/to/checkout/deployment/toolkit with-lock --repository kreditozrouti --environment monitoring \
   --action maintenance --timeout 1800 --host-window -- /absolute/reviewed-owner-procedure
 ```
 

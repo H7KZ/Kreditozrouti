@@ -43,7 +43,7 @@ Web `VITE_*` settings are compiled as placeholders and replaced when the contain
 
 **Development** deploys start phpMyAdmin automatically and serve it at `https://<DOMAIN>/phpmyadmin` behind Traefik basic auth. Set the `PHPMYADMIN_BASIC_AUTH` secret in the development GitHub environment to an htpasswd line, for example the output of `htpasswd -nbB <user> <password>` (comma-separate several users). If the secret is empty, Traefik rejects every request. The container also binds `127.0.0.1:48081` on the VPS as an SSH-tunnel fallback.
 
-**Production** never exposes it: no Traefik route, loopback `127.0.0.1:48080` only, and stopped under Compose profile `admin`. Start it from the version directory, using the same Compose files as the [deploy script](../../deployment/deploy.sh):
+**Production** never exposes it: no Traefik route, loopback `127.0.0.1:48080` only, and stopped under Compose profile `admin`. Start it from the version directory, using the same Compose files as the snapshot's `.toolkit-release.json` (`compose_files`):
 
 ```bash
 cd ~/kreditozrouti/versions/production/current
