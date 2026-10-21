@@ -140,7 +140,7 @@ then separately `systemctl enable` it. Install never enables units/timers.
 ## Umami retention
 
 The scheduled GitHub workflow is removed. The `umami-retention` job in `toolkit.conf` runs
-[`monitoring/umami/retain.sh`](monitoring/umami/retain.sh) daily at 03:17 UTC as root under the
+[`monitoring/umami/retain.sh`](monitoring/umami/retain.sh) daily at 03:17 Europe/Prague as root under the
 `kreditozrouti`/`monitoring` repository lock. The script checks snapshot identity and SQL inventory, then reads
 database credentials inside the existing container. Run it by hand, as the deploy user, with
 `deployment/toolkit job umami-retention`, and inspect the result before an owner separately enables
