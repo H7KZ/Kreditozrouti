@@ -1,4 +1,4 @@
-name: Deploy Environment
+name: Deploy Environment (reusable)
 'on':
     workflow_call:
         inputs:
