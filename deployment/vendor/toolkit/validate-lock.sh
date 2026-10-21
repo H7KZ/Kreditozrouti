@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Managed by Infrastructure toolkit vendoring (docs/toolkit/consumers.md). Do not edit this copy.
+# Usage: validate-lock.sh <consumer-lock> <release-archive>
 set -euo pipefail
 
 if (($# != 2)); then

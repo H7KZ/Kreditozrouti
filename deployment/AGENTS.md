@@ -7,6 +7,8 @@ only promote mode requires exact development qualification checks. Resolve sourc
 Stage must never publish development qualification. Deploy/restore writes queue per target. Secrets live in private runtime outside immutable source; hooks consume
 exported values. Registry and release cleanup remain deferred until recovery references are protected.
 
+- Never hand-edit `toolkit.lock`, `vendor/toolkit/`, `verify-toolkit-pin.sh` or `install-toolkit.sh`;
+  Infrastructure's `npm run toolkit:repin` regenerates them and CI rejects edited copies.
 - Keep application Compose projects distinct: `kreditozrouti`, `kreditozrouti-dev`, `kreditozrouti-monitoring`.
 - Infrastructure owns shared Traefik/public-network. State stays in named external volumes.
 - Production phpMyAdmin remains behind `admin`, loopback-only. Never publish its root credentials.

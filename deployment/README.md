@@ -41,6 +41,11 @@ differ between app environments (`prod`/`dev` recommended); Compose projects are
 Dotenv values use literal single quotes: dollar signs, hashes and backticks stay literal.
 Single quotes, control characters and trailing backslashes fail without printing values.
 
+Toolkit files are managed by Infrastructure: `deployment/toolkit.lock`, `deployment/vendor/toolkit/`,
+`deployment/verify-toolkit-pin.sh` and `deployment/install-toolkit.sh`. Update them only by running
+`npm run toolkit:repin` in an Infrastructure checkout, then commit the result here; `verify-toolkit-pin.sh`
+rejects hand edits. See [consumer integration](https://github.com/H7KZ/Infrastructure/blob/main/docs/toolkit/consumers.md).
+
 CI sends the exact archive/checksum and `deployment/toolkit.lock` from the selected source bundle
 with every deploy; rollback sends the checked-out control pin. The root-installed stable
 `/usr/local/libexec/toolkit-run-bundle` validates and runs that bundle without using or activating
