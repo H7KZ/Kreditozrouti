@@ -1,5 +1,5 @@
 name: Deploy Monitoring
-run-name: Deploy Monitoring | ${{ inputs.ref || github.ref_name }} | ${{ inputs.operation }}
+run-name: Deploy Monitoring · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}
 'on':
     workflow_dispatch:
         inputs:
@@ -20,6 +20,7 @@ concurrency:
     cancel-in-progress: false
 jobs:
     resolve:
+        name: Resolve source
         runs-on: ubuntu-latest
         outputs:
             source_commit: ${{ steps.source.outputs.sha }}
@@ -30,6 +31,7 @@ jobs:
             - id: source
               run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
     deploy:
+        name: Deploy monitoring snapshot
         needs: resolve
         uses: ./.github/workflows/_deploy.yml
         with:

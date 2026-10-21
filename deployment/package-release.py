@@ -92,7 +92,7 @@ def main():
     if target == "monitoring":
         manifest.update(runtime_directories=["monitoring/.secrets"], prepare_script="monitoring/prepare.sh", post_deploy_script="monitoring/post-deploy.sh")
     # Only the selected Compose model and its support files enter the archive.
-    members = [source / "toolkit.lock", source / "deploy.sh"]
+    members = [source / "toolkit.lock"]
     members += [source / target] + sorted((source / target).rglob("*"))
     for path in members:
         relative = path.relative_to(source)

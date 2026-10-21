@@ -1,4 +1,4 @@
-name: Deploy Environment (reusable)
+name: Deploy Environment
 'on':
     workflow_call:
         inputs:
@@ -40,6 +40,7 @@ permissions:
     packages: read
 jobs:
     deploy:
+        name: Deploy snapshot
         runs-on: ubuntu-latest
         timeout-minutes: 120
         environment: ${{ inputs.environment }}
@@ -54,17 +55,17 @@ jobs:
                   [[ "$OPERATION" =~ ^(deploy|stage)$ ]] || exit 1
                   [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
                   [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || { echo 'ERROR: trusted SSH fingerprint required'; exit 1; }
-            - name: Checkout controller
+            - name: Check out controller
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
               with:
                   path: controller
-            - name: Checkout selected deployment bundle
+            - name: Check out selected deployment bundle
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
               with:
                   ref: ${{ inputs.source_commit }}
                   path: bundle
-            - name: Validate toolkit bundle pin
-              run: bash controller/deployment/verify-toolkit-pin.sh "$GITHUB_WORKSPACE/bundle/deployment"
+            - name: Verify toolkit pin
+              run: bash controller/deployment/toolkit verify "$GITHUB_WORKSPACE/bundle/deployment"
             - name: Build private incoming packet
               id: packet
               env:
@@ -111,10 +112,13 @@ jobs:
                   umask 077
                   mkdir -m 700 incoming
                   python3 controller/deployment/package-release.py bundle/deployment "$PWD/incoming"
-                  version="$(sed -n 's/^TOOLKIT_VERSION=//p' bundle/deployment/toolkit.lock)"
-                  cp "bundle/deployment/vendor/toolkit/toolkit-$version.tar.gz" "$PWD/incoming/toolkit.tar.gz"
-                  cp "bundle/deployment/toolkit.lock" "$PWD/incoming/toolkit.lock"
-                  printf '%s  toolkit.tar.gz\n' "$(sed -n 's/^TOOLKIT_ARCHIVE_SHA256=//p' bundle/deployment/toolkit.lock)" > "$PWD/incoming/toolkit.tar.gz.sha256"
+                  # The deployed revision's own pinned toolkit runs the release on the VPS.
+                  for name in toolkit toolkit.conf toolkit.lock vendor/toolkit; do
+                    [[ -e "bundle/deployment/$name" ]] || { echo "::error::Selected source has no deployment/$name; it predates toolkit 0.11"; exit 1; }
+                  done
+                  mkdir -p incoming/deployment/vendor
+                  cp bundle/deployment/toolkit bundle/deployment/toolkit.conf bundle/deployment/toolkit.lock incoming/deployment/
+                  cp -R bundle/deployment/vendor/toolkit incoming/deployment/vendor/toolkit
                   bash controller/deployment/render-env.sh "$TARGET_ENVIRONMENT" "$PWD/incoming/release.env"
                   mkdir -m 700 incoming/registry
                   printf '%s' "$GH_TOKEN" | docker --config "$PWD/incoming/registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
@@ -139,7 +143,7 @@ jobs:
                       set -euo pipefail
                       umask 077
                       [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
-                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install CI bundle runner with deployment/install-toolkit.sh --ci-only --deploy-user <account>' >&2; exit 1; }
+                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
                       base="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT"
                       mkdir -p -m 700 "$base"
                       mkdir -m 700 "$base/$INCOMING_ID"
@@ -174,12 +178,11 @@ jobs:
                       set -euo pipefail
                       [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
                       incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
-                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install CI bundle runner with deployment/install-toolkit.sh --ci-only --deploy-user <account>' >&2; exit 1; }
+                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
                       chmod 600 "$incoming/release.env" "$incoming/registry/config.json"
-                      sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release "$OPERATION" --repository kreditozrouti --environment "$TARGET_ENVIRONMENT" \
-                        --root "$HOME/kreditozrouti/versions/$TARGET_ENVIRONMENT" --archive "$incoming/release.tar.gz" \
-                        --checksum "$incoming/release.sha256" --manifest "$incoming/manifest.json" \
-                        --env-file "$incoming/release.env" --user "$(id -un)" --registry-config "$incoming/registry"
+                      bash "$incoming/deployment/toolkit" release "$OPERATION" "$TARGET_ENVIRONMENT" \
+                        --archive "$incoming/release.tar.gz" --checksum "$incoming/release.sha256" --manifest "$incoming/manifest.json" \
+                        --env-file "$incoming/release.env" --registry-config "$incoming/registry"
               env:
                   TARGET_ENVIRONMENT: ${{ inputs.environment }}
                   INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}

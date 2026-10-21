@@ -1,5 +1,5 @@
-name: Deploy App
-run-name: Deploy App | ${{ inputs.environment || 'development' }} | ${{ inputs.ref || github.ref_name }} | ${{ inputs.mode || 'build' }} | ${{ inputs.operation || 'deploy' }}
+name: Deploy
+run-name: Deploy · ${{ inputs.environment || 'development' }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.mode || 'build' }} · ${{ inputs.operation || 'deploy' }}
 'on':
     push:
         branches: [main]
@@ -67,7 +67,7 @@ jobs:
             scraper_digest: ${{ steps.release.outputs.scraper_digest }}
             mcp_digest: ${{ steps.release.outputs.mcp_digest }}
         steps:
-            - name: Checkout controller and repository history
+            - name: Check out controller and repository history
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
               with:
                   fetch-depth: 0

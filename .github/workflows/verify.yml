@@ -13,7 +13,7 @@
 # ==============================================================================
 
 name: Verify Code
-run-name: Verify Code | ${{ inputs.ref || github.head_ref || github.ref_name }}
+run-name: Verify Code · ${{ inputs.ref || github.head_ref || github.ref_name }}
 
 on:
     workflow_dispatch:

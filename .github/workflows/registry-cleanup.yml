@@ -16,7 +16,7 @@
 # ==============================================================================
 
 name: Cleanup Registry
-run-name: Cleanup Registry | ${{ inputs.dry_run == false && github.event_name == 'workflow_dispatch' && 'delete' || 'dry-run' }}
+run-name: Cleanup Registry · ${{ inputs.dry_run == false && github.event_name == 'workflow_dispatch' && 'delete' || 'dry-run' }}
 
 on:
     schedule:
