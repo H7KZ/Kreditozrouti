@@ -88,7 +88,7 @@ services:
     # Traefik
     # ============================================================================
     traefik:
-        image: traefik:v3.7.13
+        image: traefik:v3.7.14
         container_name: traefik
         # `always`, not `unless-stopped`: the front door must come back after a
         # daemon or host restart even if Docker recorded it as stopped.
