@@ -119,7 +119,7 @@ Package-specific references are linked from each area-specific `AGENTS.md`. Star
 - [Partner API](docs/api/PUBLIC_API.md) and its ADRs: [0003](docs/adr/0003-partner-api-rate-limit-fails-open.md), [0004](docs/adr/0004-public-api-is-partner-only-behind-hard-gates.md)
 - [MCP server](docs/mcp/README.md)
 - [Manual setup guides](docs/setup/README.md)
-- [Deployment operations and backup recovery](docs/deployment/OPERATIONS.md)
+- [Runbooks](docs/runbooks/README.md): fresh server, deploy and release, rollback and recovery, backups, secrets, troubleshooting
 
 ---
 
@@ -160,8 +160,22 @@ Unicode literals directly - no HTML entities or escape sequences.
 - After every change, run the Doc-Review Rule and AGENTS.md Update Rule before closing the task
 - Specs, plans, and brainstorming docs go in `.superpowers/` (gitignored) - never commit them
 
-## Deployment snapshots
+## Deployment
 
-For deployment or recovery changes, read [deployment/README.md](deployment/README.md). Release complete environments through toolkit; manual app targets accept any source ref. Promotion preserves
-qualified digests; direct build/reuse/existing modes are supported. Preserve retained recovery images.
-Toolkit owns repository-wide locks.
+This repository follows the shared [repository standard](https://github.com/H7KZ/Toolkit/blob/main/docs/standard.md) and
+deploys through its pinned toolkit; read [deployment/AGENTS.md](deployment/AGENTS.md) before touching `deployment/` or
+`.github/workflows/`.
+
+| Task                                             | Reference                                                                                                              |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| Deploy, stage, promote, add or change a workflow | [Deploy and release](docs/runbooks/deploy-and-release.md)                                                              |
+| Roll back, reconcile, restore data               | [Rollback and recovery](docs/runbooks/rollback-and-recovery.md), [Backups](docs/runbooks/backups.md)                   |
+| Bring up a clean VPS, choose the ingress mode    | [Fresh server](docs/runbooks/fresh-server.md)                                                                          |
+| Add a service, a setting or an environment       | [Add a service](docs/runbooks/add-a-service.md), [Secrets and config](docs/runbooks/secrets-and-config.md)             |
+| Dedicated server, host-wide singletons           | [Split to own server](docs/runbooks/split-to-own-server.md)                                                            |
+| Symptom to fix                                   | [Troubleshooting](docs/runbooks/troubleshooting.md)                                                                    |
+| Ingress (Traefik, CrowdSec, origin firewall)     | [deployment/ingress](deployment/ingress/README.md), [ADR 0006](docs/adr/0006-repository-standard-and-ingress-modes.md) |
+
+Invariants: release complete environments through toolkit snapshots; manual targets accept any source ref and promotion
+preserves qualified digests; preserve retained recovery images; toolkit owns repository-wide locks. This repository's own
+ingress (`deployment/ingress`) is for standalone servers only: never deploy it on a host where Infrastructure's Traefik runs.

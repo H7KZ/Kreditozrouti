@@ -1,0 +1,139 @@
+# Deploy and release
+
+Use this to ship code to the VPS, to stage a release without activating it, or to understand what each workflow does.
+Everything runs from the GitHub **Actions** tab (runs on GitHub-hosted runners, connects by SSH). A first deployment on a
+clean server starts at [Fresh server](fresh-server.md). Undoing a release: [Rollback and recovery](rollback-and-recovery.md).
+
+## Workflows
+
+| Workflow          | File                                       | Trigger                    | Does                                                                             |
+| ----------------- | ------------------------------------------ | -------------------------- | -------------------------------------------------------------------------------- |
+| Verify Code       | `verify.yml`                               | pull request, manual, call | Lint, boundaries, tests, type-check and builds (`_verify.yml`), plus toolkit pin |
+| Deploy            | `deploy.yml`                               | push to `main`, manual     | Resolve source and images, verify, build, deploy a complete app environment      |
+| Deploy Monitoring | `deploy-monitoring.yml`                    | manual                     | Deploy the monitoring stack (Prometheus, Loki, Alloy, Grafana, Umami)            |
+| Deploy Ingress    | `deploy-ingress.yml`                       | manual                     | Deploy this repository's own Traefik. **Standalone servers only**                |
+| Rollback          | `rollback.yml`                             | manual                     | Restore, activate or reconcile a saved snapshot of any environment               |
+| Backup Verify     | `backup-verify.yml`                        | daily and weekly, manual   | Off-VPS proof that backups are fresh and restore                                 |
+| Cleanup Registry  | `registry-cleanup.yml`                     | weekly dry run, manual     | Prune old GHCR image versions                                                    |
+| (reusable)        | `_build.yml`, `_deploy.yml`, `_verify.yml` | `workflow_call`            | One image build; one complete environment deploy; the verification steps         |
+
+Each deploying workflow runs `bash deployment/toolkit verify` before it opens an SSH connection, and deploys of one
+environment queue behind each other (`deploy-<environment>` concurrency group, never cancelled).
+
+Environments (GitHub Environments and toolkit release targets): `production`, `development`, `monitoring`, `ingress`.
+Compose projects: `kreditozrouti`, `kreditozrouti-dev`, `kreditozrouti-monitoring`, and `global` for ingress.
+
+## Deploy the app
+
+Pushing to `main` verifies, builds and deploys a complete **development** release automatically, then runs three
+consecutive public HTTPS health observations from the VPS and publishes a development qualification manifest.
+Production is never automatic.
+
+Dispatch **Deploy** (`deploy.yml`) for anything else:
+
+| Input         | Values (default first)                  | Meaning                                                                                                                |
+| ------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `environment` | `development`, `production`             | What to deploy                                                                                                         |
+| `ref`         | empty                                   | Branch, tag or SHA. Empty = the workflow ref (promote mode: the latest qualified release). Resolved once to a full SHA |
+| `operation`   | `deploy`, `stage`                       | `deploy` activates after health; `stage` saves an immutable snapshot without applying it                               |
+| `mode`        | `reuse`, `build`, `existing`, `promote` | Where images come from (below)                                                                                         |
+| `image_tag`   | empty                                   | `reuse` and `existing` only: tag to look up (default `<environment>-<sourceSHA>`)                                      |
+| `run_id`      | empty                                   | `promote` only: exact successful development run (empty = latest qualifying run)                                       |
+| `digests`     | empty                                   | `existing` only: complete JSON map of `api`, `web`, `scraper`, `mcp` to `sha256:` digests, instead of a tag            |
+| `verify`      | `true`                                  | Run the full verification on the selected source first. Pushes always verify                                           |
+| `no_cache`    | `false`                                 | Disable the Docker build cache                                                                                         |
+
+### Modes
+
+- `reuse` - use existing images tagged for that source, build only the missing ones.
+- `build` - rebuild all four images.
+- `existing` - every image must already exist (by tag or by `digests`); nothing is built.
+- `promote` - redeploy the exact digests of a qualified development release. A qualification is the artifact published by
+  a successful development deploy; it names the source commit and all four digests, which must be used together.
+  With an empty `ref` it takes the latest qualified source across all branches; with a `ref` it needs a qualification for
+  that source. Artifacts expire after 90 days; staging never publishes one.
+
+Production build, reuse and existing runs need no qualification: manual dispatch accepts any source ref for either
+environment. `promote` is the way to ship exactly what was tested.
+
+Typical flows:
+
+```text
+Merge to main                       -> development deploys itself
+Production = what development ran  -> Deploy: environment=production, mode=promote
+Production from a hotfix branch    -> Deploy: environment=production, ref=<branch>, mode=reuse
+Test a branch on development       -> Deploy: environment=development, ref=<branch>
+Prepare, switch later              -> Deploy: operation=stage, then Rollback: operation=activate, release_id=<id>
+```
+
+### Stage and activate
+
+`operation=stage` verifies the source, pins every image to a digest and saves the snapshot as
+`<fullSHA>-<run>-<attempt>` without touching running containers. Activate it later with **Rollback**
+(`operation=activate`, that `release_id`). The release ID is printed in the run summary. Staging never counts as a
+qualification.
+
+## Deploy monitoring
+
+Dispatch **Deploy Monitoring** with `ref` (empty = workflow ref) and `operation=deploy` or `stage`. The monitoring
+GitHub Environment supplies the secrets ([Secrets and config](secrets-and-config.md)). Toolkit writes the webhook files
+into private runtime storage, starts the stack, checks readiness inside the Docker network and grants Grafana read access
+to the Umami database before moving `current`. What the stack collects: [Monitoring](../architecture/MONITORING.md).
+
+Validate config changes first: `bash deployment/monitoring/validate.sh` (needs Docker; Verify Code runs it when
+`deployment/monitoring/` changes).
+
+## Deploy ingress (standalone servers only)
+
+Dispatch **Deploy Ingress** with `ref` and `operation`. It deploys [`deployment/ingress/`](../../deployment/ingress/):
+Traefik, a read-only Docker socket proxy and CrowdSec under compose project `global`, owning `public-network` and
+ports 80/443. **Never run it on a host where Infrastructure's Traefik runs.** Choosing the mode: [Fresh server](fresh-server.md#0-choose-the-ingress-mode).
+Dashboard credentials and the CrowdSec bouncer key are rendered at staging into private runtime files, never into the
+source archive.
+
+## Transport and snapshots
+
+`_deploy.yml` checks out the selected source, renders the environment's dotenv from GitHub secrets
+(`deployment/render-env.sh`), packages the deployment directory (`deployment/package-release.py`), uploads it with a
+private registry login to `~/kreditozrouti/incoming/<environment>/<run>-<attempt>/` and runs the **deployed revision's**
+pinned `deployment/toolkit` on the VPS. Each run removes only its own incoming directory; look for leftovers after
+interrupted runs. Toolkit holds one repository lock for all environments, backups and jobs, saves immutable snapshots
+under `~/kreditozrouti/versions/<environment>/`, and moves `current` and `previous` only after health. Mechanics:
+[Toolkit consumer guide](https://github.com/H7KZ/Toolkit/tree/main/docs/consumers.md) and the
+[release contract](https://github.com/H7KZ/Toolkit/tree/main/toolkit/contracts/deployment-release-v1.md).
+
+Facts specific to this repository:
+
+- Compose files per environment are `deployment/<environment>/networks.yml`, `volumes.yml` and
+  `docker-compose.<environment>.yml`. Only that directory and `toolkit.lock` enter the archive.
+- Application images must be complete: all four digests, always together. Third-party images are pinned to digests at
+  staging. A changed MySQL, Redis or PostgreSQL image fails the deploy until a reviewed data upgrade
+  ([Troubleshooting](troubleshooting.md#a-deploy-fails-on-a-data-image-mismatch)).
+- Dotenv values are literal single-quoted: `$`, `#` and backticks stay literal. A single quote, control character or
+  trailing backslash in any secret fails the deploy without printing it.
+- Health: production and development need three consecutive `2xx` from `/`, `/api/health` and `/mcp/health` on the
+  public domain, followed from the VPS. Monitoring and ingress are checked on the host by their post-deploy hooks.
+
+## Images and tags
+
+`_build.yml` pushes each service to `ghcr.io/<owner>/<repo>/<service>` with an eight-character SHA tag, the full SHA, an
+`<environment>-<fullSHA>` tag and a floating `latest` (production) or `dev-latest`. The registry digest is what is
+deployed. Builds run on GitHub-hosted runners (the VPS is too small to build) and use the GitHub token only.
+
+**Cleanup Registry** keeps the newest `keep_newest` (6) tagged versions, anything younger than `min_age_days` (7), floating
+tags and untagged manifests, and every digest in `protected_digests`. Scheduled runs are always dry runs. Before a live
+run, list every current, previous and retained recovery digest in `protected_digests`: they live on the VPS, not in CI.
+
+## Verify
+
+After any deploy:
+
+```bash
+curl -fsS https://kreditozrouti.cz/api/health     # local
+curl -fsS https://kreditozrouti.cz/mcp/health
+docker ps --filter label=com.docker.compose.project=kreditozrouti   # VPS as deploy
+ls -l ~/kreditozrouti/versions/production/current                    # points at the new <SHA>-<run>-<attempt>
+```
+
+The run summary of **Deploy** names the snapshot. For development the publish job must also be green; that is the
+qualification a later `promote` needs.

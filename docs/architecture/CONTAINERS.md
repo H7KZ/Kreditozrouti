@@ -9,4 +9,4 @@
 
 The shared Traefik instance belongs to the separate Infrastructure repository for deployed environments. Root local Compose runs its own isolated Traefik for local routes (`/`, `/api`, and `/mcp`). `make dev` starts only MySQL and Redis; `make up` starts Traefik and all deployables too. MySQL and Redis publish ports for host-based development. phpMyAdmin starts only with the `admin` profile and binds to loopback.
 
-Use the [deployment guide](../deployment/README.md) for operations and the [DNS guide](../setup/DNS.md) for public hostnames and TLS ownership. Compose files are the source for current image tags, replica counts, networks, and volumes.
+Use the [runbooks](../runbooks/README.md) for operations and the [DNS guide](../setup/DNS.md) for public hostnames and TLS ownership. Compose files are the source for current image tags, replica counts, networks, and volumes.

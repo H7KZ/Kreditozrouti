@@ -43,4 +43,4 @@ To run one service, use `pnpm --filter=@kreditozrouti/api run dev`, replacing `a
 
 `VITE_*` values are bundled into the web build. Restart Vite after changing local values; rebuild for a production change. A new build-time variable must also be declared in `turbo.json`.
 
-For API commands and database details, see the [API guide](../api/README.md). For production configuration, see the [deployment guide](../deployment/README.md).
+For API commands and database details, see the [API guide](../api/README.md). For production configuration, see the [runbooks](../runbooks/README.md).

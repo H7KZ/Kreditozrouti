@@ -6,3 +6,4 @@ Kreditožrouti separates public interfaces, scraping, and persistence across fou
 - [Services](SERVICES.md) - responsibilities of API, web, scraper, and MCP
 - [Data flow](DATA_FLOW.md) - course search and refresh paths
 - [Containers](CONTAINERS.md) - local and deployed topology
+- [Monitoring](MONITORING.md) - metrics, logs, alerts and dashboards

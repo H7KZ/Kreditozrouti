@@ -1,6 +1,6 @@
 # Monitoring
 
-The [monitoring stack](../../deployment/monitoring/docker-compose.monitoring.yml) runs alongside the app on the shared VPS. [Alloy](../../deployment/monitoring/alloy/config.alloy) collects container and Traefik logs, API and scraper metrics, host and container metrics, browser Faro events, and route probes. It sends metrics to Prometheus and logs to Loki. Grafana serves dashboards at `https://kreditozrouti.cz/grafana/`; Alertmanager sends alerts to Discord and a Watchdog ping to healthchecks.io. Umami provides product analytics through `/stats` on app domains.
+The [monitoring stack](../../deployment/monitoring/docker-compose.monitoring.yml) runs alongside the app on the same VPS. [Alloy](../../deployment/monitoring/alloy/config.alloy) collects container and Traefik logs, API and scraper metrics, host and container metrics, browser Faro events, and route probes. It sends metrics to Prometheus and logs to Loki. Grafana serves dashboards at `https://kreditozrouti.cz/grafana/`; Alertmanager sends alerts to Discord and a Watchdog ping to healthchecks.io. Umami provides product analytics through `/stats` on app domains.
 
 Tracing is off unless `OTEL_EXPORTER_OTLP_ENDPOINT` is set. The current monitoring stack has no OTLP receiver or Tempo.
 
@@ -48,14 +48,8 @@ Provisioned [dashboards](../../deployment/monitoring/grafana/dashboards/Kreditoz
 
 Run `bash deployment/monitoring/validate.sh` from a checkout after changing Alloy, Loki, Alertmanager, or Prometheus rules. The repository's reusable verification workflow runs it as well.
 
-## Deployment and secrets
+## Deployment, secrets and troubleshooting
 
-Run **Actions > Deploy Monitoring** from main. The monitoring GitHub Environment supplies its secrets; the common reusable job uploads an isolated snapshot packet. Toolkit prepares private runtime files, freezes the model, starts Compose, then runs readiness/Grafana grants before advancing current. See [snapshot operations](../../deployment/README.md).
-
-Repository secrets used by this workflow are `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD`, `DISCORD_WEBHOOK_URL`, `HEALTHCHECKS_PING_URL`, `UMAMI_DB_NAME`, `UMAMI_DB_USER`, `UMAMI_DB_PASSWORD`, and `UMAMI_APP_SECRET`, plus SSH credentials. Do not print these values or commit generated `.secrets/` files.
-
-## Troubleshooting
-
-If dashboards are empty, inspect `docker ps --filter label=com.docker.compose.project=kreditozrouti-monitoring` and Alloy logs. Check the Docker socket group, scrape labels, monitoring network, and Compose project name. If Faro or Umami data is missing, verify the browser's `VITE_*` settings and the `/faro/collect` or `/stats/stats.js` route on the relevant app domain. See [Docker images](DOCKER.md#web-runtime-configuration) for runtime replacement of web settings.
-
-For a crash-looping Umami database after a PostgreSQL image upgrade, diagnose the volume before changing it. See the [PostgreSQL 18 runbook](HANDOFF-umami-pg18-migration.md).
+Deploying the stack, its secrets and recovery are operational procedures: [Deploy and release](../runbooks/deploy-and-release.md#deploy-monitoring),
+[Secrets and config](../runbooks/secrets-and-config.md#monitoring-monitoring) and [Troubleshooting](../runbooks/troubleshooting.md#monitoring).
+Moving monitoring to another host is a [draft](../runbooks/split-to-own-server.md#monitoring-on-a-separate-host-not-implemented).
