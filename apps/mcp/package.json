@@ -22,7 +22,7 @@
 		"@kreditozrouti/types": "workspace:*",
 		"@modelcontextprotocol/sdk": "^1.32.1",
 		"express": "catalog:",
-		"express-rate-limit": "^8.7.0",
+		"express-rate-limit": "^8.7.1",
 		"kysely": "catalog:",
 		"mysql2": "catalog:",
 		"pino": "catalog:",
