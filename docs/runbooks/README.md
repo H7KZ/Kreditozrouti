@@ -13,4 +13,5 @@ repository follows are the [repository standard](https://github.com/H7KZ/Toolkit
 | [Add a service](add-a-service.md)                 | Add a container service, a setting or an environment                                                                         |
 | [Secrets and config](secrets-and-config.md)       | Find, set and rotate every GitHub secret, variable and web setting                                                           |
 | [Split to own server](split-to-own-server.md)     | Move to a dedicated server and take over ingress, or move back                                                               |
+| [Dependency updates](dependency-updates.md)       | Understand Dependabot here, review a bump, handle a major, move the toolkit pin                                              |
 | [Troubleshooting](troubleshooting.md)             | Symptom, cause, fix                                                                                                          |

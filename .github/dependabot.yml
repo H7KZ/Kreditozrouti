@@ -1,9 +1,141 @@
+# Dependabot version updates. Read from the default branch (main) only: edits take effect once merged there.
+# Rationale and review procedure: docs/runbooks/dependency-updates.md.
+#
+# Rules shared by every entry:
+#   - weekly, Monday 06:00 Europe/Prague
+#   - cooldown: a release must be 7 days old (14 for npm majors) before a version-update PR opens;
+#     security updates ignore the cooldown
+#   - minor and patch updates are grouped per ecosystem; a major update is never grouped, so it
+#     gets its own PR and is reviewed on its own
+#   - managed toolkit files (deployment/toolkit, deployment/vendor/**) are not listed here on
+#     purpose: the pin moves only through `npm run repin` in the Toolkit repository
+
 version: 2
+
 updates:
+  # target-branch develop: this repository integrates on develop and releases by PR develop -> main.
+  # Version-update PRs target develop; Verify Code runs on PRs to main and develop. Security-update PRs
+  # always target the default branch (main), whatever target-branch says.
   - package-ecosystem: github-actions
     directory: /
+    target-branch: develop
     schedule:
       interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Prague
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github_actions
+    commit-message:
+      prefix: 'ci(deps)'
     groups:
-      github-actions:
+      actions-minor-patch:
         patterns: ['*']
+        update-types: ['minor', 'patch']
+
+  # pnpm workspace: ecosystem npm with the root pnpm-lock.yaml covers every package under apps/, packages/ and modules/.
+  - package-ecosystem: npm
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Prague
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - javascript
+    commit-message:
+      prefix: 'build(deps)'
+      prefix-development: 'build(deps-dev)'
+    groups:
+      production-minor-patch:
+        dependency-type: production
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+      development-minor-patch:
+        dependency-type: development
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+    ignore:
+      # @types/node follows the Node major in the Dockerfiles and engines; Node LTS moves by hand, together.
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+
+  # Dockerfile base images (one directory per app).
+  - package-ecosystem: docker
+    directories:
+      - '/apps/*'
+    target-branch: develop
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Prague
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: 'build(deps)'
+    groups:
+      images-minor-patch:
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+    ignore:
+      # Node moves by hand to the next LTS (even) major, together with engines, @types/node and CI.
+      - dependency-name: node
+        update-types: ['version-update:semver-major']
+
+  # Third-party images in the compose files. Images whose tag is a ${VAR} (the app images built here) are not
+  # resolvable and are skipped. Traefik, CrowdSec and the socket proxy and the stateful images below are
+  # never batched: each gets its own PR. Grafana, Loki, Alloy, Prometheus and Alertmanager move together.
+  - package-ecosystem: docker-compose
+    directories:
+      - '/'
+      - '/deployment/development'
+      - '/deployment/ingress'
+      - '/deployment/monitoring'
+      - '/deployment/production'
+    target-branch: develop
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Prague
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: 'chore(deps)'
+    groups:
+      monitoring-stack:
+        patterns: ['grafana/*', 'prom/*']
+        update-types: ['minor', 'patch']
+      images-minor-patch:
+        patterns: ['*']
+        exclude-patterns: ['mysql', 'mariadb', 'postgres', 'redis', 'traefik', 'crowdsecurity/*', 'tecnativa/*']
+        update-types: ['minor', 'patch']
+    ignore:
+      # mysql: a new major (release year) changes the on-disk format and needs a dump/restore or upgrade plan.
+      - dependency-name: mysql
+        update-types: ['version-update:semver-major']
+      # redis: a new major can change the persisted format and command behaviour; verify before bumping.
+      - dependency-name: redis
+        update-types: ['version-update:semver-major']
+      # postgres: a new major cannot read the old data directory; it needs pg_dump/restore or pg_upgrade.
+      - dependency-name: postgres
+        update-types: ['version-update:semver-major']

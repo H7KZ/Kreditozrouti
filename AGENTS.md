@@ -166,15 +166,16 @@ This repository follows the shared [repository standard](https://github.com/H7KZ
 deploys through its pinned toolkit; read [deployment/AGENTS.md](deployment/AGENTS.md) before touching `deployment/` or
 `.github/workflows/`.
 
-| Task                                             | Reference                                                                                                              |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| Deploy, stage, promote, add or change a workflow | [Deploy and release](docs/runbooks/deploy-and-release.md)                                                              |
-| Roll back, reconcile, restore data               | [Rollback and recovery](docs/runbooks/rollback-and-recovery.md), [Backups](docs/runbooks/backups.md)                   |
-| Bring up a clean VPS, choose the ingress mode    | [Fresh server](docs/runbooks/fresh-server.md)                                                                          |
-| Add a service, a setting or an environment       | [Add a service](docs/runbooks/add-a-service.md), [Secrets and config](docs/runbooks/secrets-and-config.md)             |
-| Dedicated server, host-wide singletons           | [Split to own server](docs/runbooks/split-to-own-server.md)                                                            |
-| Symptom to fix                                   | [Troubleshooting](docs/runbooks/troubleshooting.md)                                                                    |
-| Ingress (Traefik, CrowdSec, origin firewall)     | [deployment/ingress](deployment/ingress/README.md), [ADR 0006](docs/adr/0006-repository-standard-and-ingress-modes.md) |
+| Task                                                | Reference                                                                                                              |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Deploy, stage, promote, add or change a workflow    | [Deploy and release](docs/runbooks/deploy-and-release.md)                                                              |
+| Roll back, reconcile, restore data                  | [Rollback and recovery](docs/runbooks/rollback-and-recovery.md), [Backups](docs/runbooks/backups.md)                   |
+| Bring up a clean VPS, choose the ingress mode       | [Fresh server](docs/runbooks/fresh-server.md)                                                                          |
+| Add a service, a setting or an environment          | [Add a service](docs/runbooks/add-a-service.md), [Secrets and config](docs/runbooks/secrets-and-config.md)             |
+| Dependabot, reviewing or handling a dependency bump | [Dependency updates](docs/runbooks/dependency-updates.md)                                                              |
+| Dedicated server, host-wide singletons              | [Split to own server](docs/runbooks/split-to-own-server.md)                                                            |
+| Symptom to fix                                      | [Troubleshooting](docs/runbooks/troubleshooting.md)                                                                    |
+| Ingress (Traefik, CrowdSec, origin firewall)        | [deployment/ingress](deployment/ingress/README.md), [ADR 0006](docs/adr/0006-repository-standard-and-ingress-modes.md) |
 
 Invariants: release complete environments through toolkit snapshots; manual targets accept any source ref and promotion
 preserves qualified digests; preserve retained recovery images; toolkit owns repository-wide locks. This repository's own
