@@ -229,7 +229,7 @@ services:
     # other than Traefik and the metrics scraper.
     # ============================================================================
     crowdsec:
-        image: crowdsecurity/crowdsec:v1.8.0
+        image: crowdsecurity/crowdsec:v1.8.1
         container_name: crowdsec
         restart: unless-stopped
 
