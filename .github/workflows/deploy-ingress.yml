@@ -12,10 +12,10 @@ on:
         type: string
         default: ''
       operation:
-        description: Deploy now, or stage an immutable snapshot without activating it
+        description: Deploy now, stage an immutable snapshot without activating it, or roll back to the previous snapshot
         required: true
         type: choice
-        options: [deploy, stage]
+        options: [deploy, stage, rollback]
         default: deploy
 permissions:
   contents: read
