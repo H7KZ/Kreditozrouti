@@ -38,10 +38,10 @@
 		"kysely": "catalog:",
 		"multer": "^2.4.0",
 		"mysql2": "catalog:",
-		"nodemailer": "^10.0.10",
+		"nodemailer": "^10.1.1",
 		"pino-http": "^11.0.0",
 		"prom-client": "catalog:",
-		"rate-limiter-flexible": "^11.2.1",
+		"rate-limiter-flexible": "^11.2.2",
 		"response-time": "^2.3.4",
 		"zod": "catalog:"
 	},
