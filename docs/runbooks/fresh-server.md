@@ -77,7 +77,13 @@ keeping a second session open:
 
 ```bash
 ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub -E sha256
+printf 'PasswordAuthentication no
+PermitRootLogin no
+' | sudo tee /etc/ssh/sshd_config.d/10-hardening.conf >/dev/null
+sudo sshd -t && sudo systemctl reload ssh
 ```
+
+Test a new login as `deploy` (and your admin user) before closing the old session.
 
 Optional host tuning (swap, bounded Docker logs) is a Toolkit feature:
 [host configuration](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md#host-configuration-swap-docker-logs).
@@ -88,7 +94,7 @@ The repository carries the toolkit release it deploys with. The checkout below i
 for later pin changes; deploys never read it.
 
 ```bash
-# VPS as deploy
+# VPS as deploy (a private repository needs a read-only deploy key or token for this clone)
 git clone https://github.com/H7KZ/Kreditozrouti.git ~/kreditozrouti-checkout
 cd ~/kreditozrouti-checkout
 bash deployment/toolkit verify
@@ -187,7 +193,7 @@ sudo systemctl start toolkit-kreditozrouti-reconcile.service     # manual reconc
 sudo systemctl enable toolkit-kreditozrouti-reconcile.service
 sudo deployment/toolkit backup run daily && sudo deployment/toolkit backup list
 sudo systemctl enable --now toolkit-kreditozrouti-backup@4h.timer toolkit-kreditozrouti-backup@daily.timer
-deployment/toolkit job umami-retention
+sudo deployment/toolkit job umami-retention
 sudo systemctl enable --now toolkit-kreditozrouti-umami-retention.timer
 deployment/toolkit doctor
 ```
