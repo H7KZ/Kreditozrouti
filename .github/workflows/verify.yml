@@ -3,7 +3,7 @@
 # Description: Runs code verification on pull requests. The steps themselves
 #              live in _verify.yml so that deploy.yml can gate its build
 #              and deploy jobs on exactly the same checks.
-# Trigger: Pull request events targeting main (opened, synchronize, reopened)
+# Trigger: Pull request events targeting main (opened, synchronize, reopened), manual, workflow_call
 #
 # Required Secrets: none - see _verify.yml
 #
@@ -12,23 +12,39 @@
 #   - Makefile with install, lint, test, type-check and build targets
 # ==============================================================================
 
-name: Verify
+name: Verify Code
+run-name: Verify Code · ${{ inputs.ref || github.head_ref || github.ref_name }}
 
 on:
-    pull_request:
-        branches: [main]
-        types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or SHA to verify (empty = the workflow ref)
+        required: false
+        type: string
+        default: ''
+  workflow_call:
+    inputs:
+      ref:
+        description: Branch, tag or SHA to verify (empty = the caller ref)
+        required: false
+        type: string
+        default: ''
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
 
 permissions:
-    contents: read
+  contents: read
 
 concurrency:
-    group: ci-${{ github.head_ref || github.ref }}
-    cancel-in-progress: true
+  group: ci-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-    verify:
-        name: Verify Code
-        uses: ./.github/workflows/_verify.yml
-        with:
-            affected: true
+  verify:
+    name: Verify Code
+    uses: ./.github/workflows/_verify.yml
+    with:
+      affected: ${{ github.event_name == 'pull_request' }}
+      source_commit: ${{ inputs.ref || github.sha }}

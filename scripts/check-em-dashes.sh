@@ -7,7 +7,7 @@
 # Usage: bash scripts/check-em-dashes.sh
 # ==============================================================================
 
-set -euo pipefail
+set -Eeuo pipefail
 
 # Priority user-facing text paths (see issue #174).
 paths=(

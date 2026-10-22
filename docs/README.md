@@ -9,9 +9,10 @@ This folder holds developer references and setup guides. Published student help 
 - [Domain glossary](DOMAIN.md) - shared terminology
 - [Shared packages](shared/) - types, domain logic, HTTP and queue contracts
 - [API](api/), [web](web/), [scraper](scraper/), [MCP](mcp/) - service references
-- [Deployment](deployment/) and [scripts](scripts/) - operations
-- [Runbooks](runbooks/) - step-by-step operating procedures
+- [Runbooks](runbooks/) - deploy, rollback, backups, fresh server, secrets and troubleshooting ([index](runbooks/README.md))
+- [Scripts](scripts/) - repository maintenance utilities
 - [Manual setup](setup/) - Gmail and DNS/HTTPS outcomes
+- [Monitoring](architecture/MONITORING.md) - metrics, logs, alerts and dashboards
 
 ## Records
 
@@ -19,5 +20,6 @@ This folder holds developer references and setup guides. Published student help 
 - [ADR 0003](adr/0003-partner-api-rate-limit-fails-open.md) - partner API rate limit fails open
 - [ADR 0004](adr/0004-public-api-is-partner-only-behind-hard-gates.md) - partner-only API and launch gates
 - [ADR 0005](adr/0005-browser-origins-are-bound-per-api-key.md) - browser origins bound per API key
+- [ADR 0006](adr/0006-repository-standard-and-ingress-modes.md) - repository standard and the two ingress modes
 - [Agent-instruction research](dev/research/agent-instructions.md) - why `AGENTS.md` is the shared source
-- [Umami research](dev/research/umami-custom-events.md), [handoff](handoff/), and [marketing plan](MARKETING.md) - dated background material; check current code and vendor docs before acting on it
+- [Umami research](dev/research/umami-custom-events.md) and [marketing plan](MARKETING.md) - dated background material; check current code and vendor docs before acting on it

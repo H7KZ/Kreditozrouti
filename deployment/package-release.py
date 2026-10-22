@@ -24,7 +24,7 @@ def main():
     slug = repository.split("/")[-1].lower()
     require(repository.lower() in ("h7kz/ohlidame", "h7kz/kreditozrouti"), "unexpected repository")
     target = os.environ["TARGET_ENVIRONMENT"]
-    require(target in ("production", "development", "monitoring"), "invalid environment")
+    require(target in ("production", "development", "monitoring", "ingress"), "invalid environment")
     commit = os.environ["SOURCE_COMMIT"]
     require(re.fullmatch(r"[a-f0-9]{40}", commit), "source_commit must be a full SHA")
     run, attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
@@ -34,12 +34,12 @@ def main():
     require(len(versions) == 1, "invalid toolkit version pin")
     require(tuple(map(int, versions[0].split("."))) >= (0, 8, 1), "snapshot API requires toolkit >=0.8.1; await reviewed repin")
     app_services = ["api", "web", "scraper"] + (["mcp"] if slug == "kreditozrouti" else [])
-    services = [] if target == "monitoring" else app_services.copy()
+    services = [] if target in ("monitoring", "ingress") else app_services.copy()
     if slug == "ohlidame" and target == "development":
         services.append("test-eshop")
     prefix = repository.lower()
     images, variables, digests = {}, {}, {}
-    if target != "monitoring":
+    if target not in ("monitoring", "ingress"):
         variables.update(IMAGE_REGISTRY="ghcr.io", IMAGE_PREFIX=prefix)
         for service in services:
             key = service.upper().replace("-", "_")
@@ -56,13 +56,13 @@ def main():
         if slug == "kreditozrouti":
             health.append(f"https://{domain}/mcp/health")
     else:
-        # Monitoring readiness is checked inside the network by the post-deploy hook.
+        # Monitoring and ingress readiness is checked on the host by the post-deploy hook.
         health = []
-    project = slug + ("-dev" if target == "development" else "-monitoring" if target == "monitoring" else "")
+    project = "global" if target == "ingress" else slug + ("-dev" if target == "development" else "-monitoring" if target == "monitoring" else "")
     manifest = {
         "schema_version": 1,
         "repository": slug,
-        "environment": target,
+        "environment": "infrastructure" if target == "ingress" else target,
         "release_id": f"{commit}-{run}-{attempt}",
         "source_commit": commit,
         "project": project,
@@ -72,8 +72,8 @@ def main():
         "environment_variables": variables,
     }
     encoded = os.environ.get("QUALIFICATION_B64", "")
-    if target == "production":
-        require(encoded, "production requires the validated development qualification")
+    if encoded:
+        require(target not in ("monitoring", "ingress"), "only application environments consume qualification")
         raw = base64.b64decode(encoded, validate=True)
         require(base64.b64encode(raw).decode("ascii") == encoded, "noncanonical qualification encoding")
         checksum = os.environ.get("QUALIFICATION_SHA256", "")
@@ -81,18 +81,20 @@ def main():
         document = json.loads(raw)
         require(set(document) == {"schema_version", "repository", "workflow_path", "workflow_run_id", "workflow_run_attempt", "environment", "source_commit", "services"}, "unexpected qualification fields")
         require(raw == (json.dumps(document, sort_keys=True, indent=2) + "\n").encode("utf-8"), "noncanonical qualification JSON")
-        expected_workflow = ".github/workflows/deploy.yml" if slug == "ohlidame" else ".github/workflows/deploy.yml"
+        expected_workflow = ".github/workflows/deploy.yml"
         require(document.get("schema_version") == 1 and document.get("repository") == repository and document.get("environment") == "development" and document.get("workflow_path") == expected_workflow, "qualification identity mismatch")
         require(document.get("source_commit") == commit, "qualification source mismatch")
         require(all(isinstance(document.get(key), str) and re.fullmatch(r"[1-9][0-9]*", document[key]) for key in ("workflow_run_id", "workflow_run_attempt")), "invalid qualification run identity")
-        require(document.get("services") == {key: digests[key] for key in app_services}, "production must promote every qualified application digest together")
+        require(document.get("services") == {key: digests[key] for key in app_services}, "promotion must use every qualified application digest together")
         manifest["qualification"] = document
     else:
-        require(not encoded and not os.environ.get("QUALIFICATION_SHA256"), "qualification is production-only")
+        require(not encoded and not os.environ.get("QUALIFICATION_SHA256"), "qualification checksum requires a manifest")
     if target == "monitoring":
         manifest.update(runtime_directories=["monitoring/.secrets"], prepare_script="monitoring/prepare.sh", post_deploy_script="monitoring/post-deploy.sh")
+    if target == "ingress":
+        manifest.update(runtime_directories=["ingress/.rendered"], prepare_script="ingress/prepare.sh", post_deploy_script="ingress/post-deploy.sh")
     # Only the selected Compose model and its support files enter the archive.
-    members = [source / "toolkit.lock", source / "deploy.sh"]
+    members = [source / "toolkit.lock"]
     members += [source / target] + sorted((source / target).rglob("*"))
     for path in members:
         relative = path.relative_to(source)

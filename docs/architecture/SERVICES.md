@@ -9,4 +9,4 @@
 
 MySQL stores course and study-plan data. Redis backs BullMQ queues, sessions, and cache. Production Redis uses a persistent volume with AOF; local Redis uses the [local Compose configuration](../../docker-compose.local.yml).
 
-The deployed web image is served by Nginx. A shared Traefik instance owned by the separate Infrastructure repository handles public routing and TLS. See [container topology](CONTAINERS.md) and [deployment](../deployment/README.md).
+The deployed web image is served by Nginx. Traefik, from the host's ingress (Infrastructure's on a shared host, this repository's [`deployment/ingress`](../../deployment/ingress/README.md) on a dedicated server), handles public routing and TLS. See [container topology](CONTAINERS.md) and [runbooks](../runbooks/deploy-and-release.md).

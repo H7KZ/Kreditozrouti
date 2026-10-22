@@ -1,0 +1,284 @@
+# ==============================================================================
+# Traefik Static Configuration  (TEMPLATE)
+#
+# Traefik does NOT expand env vars in its static config file, so release staging
+# (deployment/releases/prepare.py) renders this template and writes the result to .rendered/traefik.yml,
+# which is what the compose file mounts at /etc/traefik/traefik.yml (read-only).
+#
+# Edit THIS file, never .rendered/. Changes require a container restart.
+# ==============================================================================
+
+global:
+    checkNewVersion: false
+    sendAnonymousUsage: false
+
+# ------------------------------------------------------------------------------
+# Core
+# ------------------------------------------------------------------------------
+core:
+    # Pin the rule parser so a future major version cannot silently reinterpret
+    # your Host(`...`) rules.
+    defaultRuleSyntax: v3
+
+# ------------------------------------------------------------------------------
+# API / Dashboard
+#   insecure: false  -> the dashboard is ONLY reachable through a router that
+#   you protect yourself (see the labels on the traefik service).
+# ------------------------------------------------------------------------------
+api:
+    dashboard: true
+    insecure: false
+    debug: false
+    disableDashboardAd: true
+
+# ------------------------------------------------------------------------------
+# Ping (liveness) - bound to the internal entrypoint only, never published.
+# ------------------------------------------------------------------------------
+ping:
+    entryPoint: internal
+    manualRouting: false
+    terminatingStatusCode: 503
+
+# ------------------------------------------------------------------------------
+# Metrics - on their own entrypoint so Prometheus/Alloy can scrape them without
+# the /metrics endpoint sharing a port with anything else. Inert until a
+# monitoring stack is added; harmless in the meantime.
+# ------------------------------------------------------------------------------
+metrics:
+    prometheus:
+        entryPoint: metrics
+        manualRouting: false
+        addEntryPointsLabels: true
+        addRoutersLabels: true
+        addServicesLabels: true
+
+# ------------------------------------------------------------------------------
+# Plugins
+# ------------------------------------------------------------------------------
+experimental:
+    plugins:
+        crowdsec-bouncer:
+            moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+            version: v1.7.1
+
+# ------------------------------------------------------------------------------
+# Entrypoints
+# ------------------------------------------------------------------------------
+entryPoints:
+    # --- :80 - redirect everything to HTTPS -------------------------------------
+    web:
+        address: ':80'
+        http:
+            redirections:
+                entryPoint:
+                    to: websecure
+                    scheme: https
+                    permanent: true
+        transport:
+            respondingTimeouts:
+                readTimeout: 30s
+                writeTimeout: 30s
+                idleTimeout: 60s
+
+    # --- :443 - the real entrypoint ---------------------------------------------
+    websecure:
+        address: ':443'
+
+        # HTTP/3 over QUIC. The container must publish 443/udp for this to work.
+        http3:
+            advertisedPort: 443
+
+        # Trust X-Forwarded-* ONLY from Cloudflare's edge. Anything else that sends
+        # those headers is ignored, so a direct-to-origin attacker cannot spoof
+        # their client IP and slip past the rate limiter or CrowdSec.
+        # Refresh from https://www.cloudflare.com/ips/ (see cloudflare-firewall.sh).
+        forwardedHeaders:
+            trustedIPs:
+                - '173.245.48.0/20'
+                - '103.21.244.0/22'
+                - '103.22.200.0/22'
+                - '103.31.4.0/22'
+                - '141.101.64.0/18'
+                - '108.162.192.0/18'
+                - '190.93.240.0/20'
+                - '188.114.96.0/20'
+                - '197.234.240.0/22'
+                - '198.41.128.0/17'
+                - '162.158.0.0/15'
+                - '104.16.0.0/13'
+                - '104.24.0.0/14'
+                - '172.64.0.0/13'
+                - '131.0.72.0/22'
+                - '2400:cb00::/32'
+                - '2606:4700::/32'
+                - '2803:f800::/32'
+                - '2405:b500::/32'
+                - '2405:8100::/32'
+                - '2a06:98c0::/29'
+                - '2c0f:f248::/32'
+
+        transport:
+            respondingTimeouts:
+                readTimeout: 60s
+                writeTimeout: 0s # 0 = no limit; required for SSE / long downloads
+                idleTimeout: 180s
+            lifeCycle:
+                requestAcceptGraceTimeout: 5s
+                graceTimeOut: 15s
+
+        http:
+            tls:
+                # Rendered at release staging: 'letsencrypt' or 'letsencrypt-staging'.
+                certResolver: ${CERT_RESOLVER}
+            # Global middleware chain - every router on this entrypoint inherits it,
+            # in this order. WAF first so blocked traffic costs the least work.
+            # www-redirect strips www. before anything else does real work.
+            middlewares:
+                - crowdsec@file
+                - www-redirect@file
+                - rate-limit@file
+                - security-headers@file
+                - compress@file
+
+    # --- internal: ping + healthcheck. Never published to the host. -------------
+    internal:
+        address: '127.0.0.1:8081'
+
+    # --- metrics: scraped over the private monitoring network -------------------
+    metrics:
+        address: ':8082'
+
+# ------------------------------------------------------------------------------
+# Providers
+# ------------------------------------------------------------------------------
+providers:
+    # Docker is reached through the socket proxy - Traefik never has a handle on
+    # /var/run/docker.sock, so an RCE in Traefik is not an instant host takeover.
+    docker:
+        endpoint: 'tcp://socket-proxy:2375'
+        exposedByDefault: false
+        network: public-network
+        watch: true
+        # NO httpClientTimeout here. With watch: true the provider holds a
+        # long-lived GET /events stream open; a client timeout aborts that read
+        # every N seconds, logging
+        #   "Provider error, retrying in ...":
+        #   "context deadline exceeded (... while reading body)"
+        # and forcing a full re-list on a loop. Symptom is a dashboard whose
+        # routers/services drift out of sync with the running containers.
+        # Leave unset (0 = no timeout), which is Traefik's default.
+
+    # Directory rather than a single file, so you can drop in extra dynamic
+    # configuration without touching the base files.
+    file:
+        directory: /etc/traefik/dynamic
+        watch: true
+
+# ------------------------------------------------------------------------------
+# ServersTransport - defaults for Traefik -> backend connections
+# ------------------------------------------------------------------------------
+serversTransport:
+    maxIdleConnsPerHost: 200
+    forwardingTimeouts:
+        dialTimeout: 30s
+        idleConnTimeout: 90s
+
+# ------------------------------------------------------------------------------
+# Certificate resolvers - Let's Encrypt over DNS-01 (Cloudflare)
+#
+# DNS-01 keeps working with the Cloudflare orange cloud on, issues wildcards,
+# and never needs :80 reachable from the internet.
+# ------------------------------------------------------------------------------
+certificatesResolvers:
+    letsencrypt:
+        acme:
+            email: '${ACME_EMAIL}'
+            storage: /certs/acme.json
+            caServer: https://acme-v02.api.letsencrypt.org/directory
+            # EC256 is smaller and faster than RSA2048 and universally supported now.
+            keyType: EC256
+            dnsChallenge:
+                provider: cloudflare
+                # v3.3+ syntax. `delayBeforeCheck` is deprecated and logs a warning.
+                propagation:
+                    delayBeforeChecks: 10s
+                    disableChecks: false
+                    requireAllRNS: false
+                resolvers:
+                    - '1.1.1.1:53'
+                    - '8.8.8.8:53'
+
+    # For domains NOT delegated to Cloudflare (DNS we do not
+    # control) - DNS-01 is impossible there since Cloudflare has no
+    # authority over records it doesn't host. HTTP-01 needs no DNS API access
+    # at all, only that the domain's A/AAAA record already points here and :80
+    # is reachable (both already true for anything actually being served).
+    # Cannot issue wildcards; fine for single hostnames like this one.
+    letsencrypt-http:
+        acme:
+            email: '${ACME_EMAIL}'
+            storage: /certs/acme-http.json
+            caServer: https://acme-v02.api.letsencrypt.org/directory
+            keyType: EC256
+            httpChallenge:
+                entryPoint: web
+
+    # Point a router at this while you are debugging issuance - staging has
+    # effectively no rate limits, production will lock you out for a week.
+    letsencrypt-staging:
+        acme:
+            email: '${ACME_EMAIL}'
+            storage: /certs/acme-staging.json
+            caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+            keyType: EC256
+            dnsChallenge:
+                provider: cloudflare
+                propagation:
+                    delayBeforeChecks: 10s
+                resolvers:
+                    - '1.1.1.1:53'
+                    - '8.8.8.8:53'
+
+# ------------------------------------------------------------------------------
+# Logging
+# ------------------------------------------------------------------------------
+log:
+    level: INFO
+    format: json # structured, so Alloy/Loki can parse it without regex
+    noColor: true
+
+accessLog:
+    # Written to a shared volume that CrowdSec reads read-only.
+    filePath: /var/log/traefik/access.log
+    format: json
+    bufferingSize: 100
+
+    fields:
+        defaultMode: keep
+        names:
+            # Basic-auth usernames should not end up in a log CrowdSec and your
+            # log shipper both read.
+            ClientUsername: drop
+        headers:
+            # Deny-by-default on headers: keep only what detection and debugging
+            # actually need. Authorization / Cookie / Set-Cookie never get logged.
+            defaultMode: drop
+            names:
+                User-Agent: keep # required by several CrowdSec scenarios
+                Referer: keep
+                Content-Type: keep
+                X-Forwarded-For: keep
+                X-Forwarded-Proto: keep
+                Cf-Connecting-Ip: keep
+                Cf-Ipcountry: keep
+                Cf-Ray: keep
+
+# ------------------------------------------------------------------------------
+# Tracing (optional) - uncomment and point at your collector.
+# ------------------------------------------------------------------------------
+# tracing:
+#   serviceName: traefik
+#   sampleRate: 0.05
+#   otlp:
+#     http:
+#       endpoint: http://alloy:4318/v1/traces

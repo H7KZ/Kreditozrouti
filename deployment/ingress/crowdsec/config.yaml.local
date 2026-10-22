@@ -1,0 +1,24 @@
+# ==============================================================================
+# CrowdSec config overlay (merged over /etc/crowdsec/config.yaml at startup)
+#
+# Only the keys below are changed; everything else keeps its packaged default.
+# ==============================================================================
+
+# The default Prometheus listener binds 127.0.0.1, which nothing outside the
+# container can reach. Bind 0.0.0.0 so Alloy/Prometheus can scrape
+# crowdsec:6060/metrics from a sidecar scraper. Never published to the host.
+prometheus:
+  enabled: true
+  level: full
+  listen_addr: 0.0.0.0
+  listen_port: 6060
+
+common:
+  log_media: stdout
+  log_level: info
+
+api:
+  server:
+    # LAPI listens on all interfaces inside the container so the Traefik
+    # bouncer can reach it over traefik-crowdsec-network. Never published to the host.
+    listen_uri: 0.0.0.0:8080

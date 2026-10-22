@@ -2,7 +2,7 @@
 set -euo pipefail
 set +x
 umask 077
-[[ $# == 2 && "$1" =~ ^(production|development|monitoring)$ && "$2" == /* ]] || {
+[[ $# == 2 && "$1" =~ ^(production|development|monitoring|ingress)$ && "$2" == /* ]] || {
   echo 'usage: render-env.sh <environment> <absolute-new-dotenv>' >&2; exit 2;
 }
 target="$1"
@@ -31,6 +31,15 @@ if [[ "$target" == monitoring ]]; then
     for key in GRAFANA_ADMIN_PASSWORD DISCORD_WEBHOOK_URL HEALTHCHECKS_PING_URL UMAMI_DB_NAME UMAMI_DB_USER UMAMI_DB_PASSWORD UMAMI_APP_SECRET; do
       put "$key" "${!key}"
     done
+  } > "$temporary"
+elif [[ "$target" == ingress ]]; then
+  require TRAEFIK_DOMAIN TRAEFIK_HTPASSWD CF_DNS_API_TOKEN ACME_EMAIL TRAEFIK_DASHBOARD_ALLOWED_IPS
+  {
+    for key in TRAEFIK_DOMAIN TRAEFIK_HTPASSWD CF_DNS_API_TOKEN ACME_EMAIL TRAEFIK_DASHBOARD_ALLOWED_IPS; do
+      put "$key" "${!key}"
+    done
+    # Optional CrowdSec console enrolment.
+    put CROWDSEC_ENROLL_KEY "${CROWDSEC_ENROLL_KEY:-}"
   } > "$temporary"
 else
   require APP_PROJECT APP_DOMAIN APP_MYSQL_DATABASE APP_MYSQL_ROOT_PASSWORD APP_MYSQL_URI APP_REDIS_URI APP_REDIS_PASSWORD APP_MYSQL_USER APP_MYSQL_PASSWORD APP_API_SESSION_SECRET APP_API_COMMAND_TOKEN APP_MCP_JWT_SECRET

@@ -21,91 +21,112 @@
 name: Verify (reusable)
 
 on:
-    workflow_call:
-        inputs:
-            affected:
-                description: Only verify packages changed against the PR base branch
-                type: boolean
-                default: false
+  workflow_call:
+    inputs:
+      source_commit:
+        description: Resolved source SHA (empty = caller source)
+        type: string
+        default: ''
+      affected:
+        description: Only verify packages changed against the PR base branch
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
 
 jobs:
-    verify:
-        name: Verify Code
-        runs-on: ubuntu-latest
-        timeout-minutes: 15
+  verify-toolkit:
+    name: Verify toolkit pin
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.source_commit || github.sha }}
+          persist-credentials: false
+      - name: Verify toolkit pin
+        run: bash deployment/toolkit verify
 
-        permissions:
-            contents: read
+  verify:
+    name: Verify Code
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
 
-        steps:
-            - name: Checkout Code
-              uses: actions/checkout@v7
-              with:
-                  # turbo --affected and the scope check diff against the base branch.
-                  # Strings, not numbers: `0` is falsy in `a && 0 || 1`, which yields 1.
-                  fetch-depth: ${{ inputs.affected && '0' || '1' }}
+    permissions:
+      contents: read
 
-            # pnpm first: setup-node's `cache: pnpm` needs the pnpm binary.
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v6
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.source_commit || github.sha }}
+          # turbo --affected and the scope check diff against the base branch.
+          # Strings, not numbers: `0` is falsy in `a && 0 || 1`, which yields 1.
+          fetch-depth: ${{ inputs.affected && '0' || '1' }}
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v6
-              with:
-                  node-version: '24'
-                  cache: pnpm
+      # pnpm first: setup-node's `cache: pnpm` needs the pnpm binary.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
 
-            - name: Install Dependencies
-              run: make install
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: pnpm
 
-            # Root config that every package depends on forces the full run; monitoring
-            # validation pulls four Docker images, so it only runs when its files change.
-            - name: Detect Scope
-              id: scope
-              env:
-                  AFFECTED: ${{ inputs.affected }}
-                  BASE_REF: ${{ github.base_ref }}
-              run: |
-                  full=true
-                  monitoring=true
-                  if [[ "$AFFECTED" == "true" ]]; then
-                    changed="$(git diff --name-only "origin/$BASE_REF"...HEAD)"
-                    full=false
-                    monitoring=false
-                    if grep -qE '^(turbo\.json|package\.json|pnpm-workspace\.yaml|\.dependency-cruiser\.cjs|\.npmrc|\.pnpmfile\.cjs|\.github/workflows/_verify\.yml)$' <<<"$changed"; then
-                      full=true
-                    fi
-                    if grep -q '^deployment/monitoring/' <<<"$changed"; then
-                      monitoring=true
-                    fi
-                  fi
-                  echo "full=$full" >> "$GITHUB_OUTPUT"
-                  echo "monitoring=$monitoring" >> "$GITHUB_OUTPUT"
+      - name: Install Dependencies
+        run: make install
 
-            - name: Check em dashes
-              run: bash scripts/check-em-dashes.sh
+      # Root config that every package depends on forces the full run; monitoring
+      # validation pulls four Docker images, so it only runs when its files change.
+      - name: Detect Scope
+        id: scope
+        env:
+          AFFECTED: ${{ inputs.affected }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          full=true
+          monitoring=true
+          if [[ "$AFFECTED" == "true" ]]; then
+            changed="$(git diff --name-only "origin/$BASE_REF"...HEAD)"
+            full=false
+            monitoring=false
+            if grep -qE '^(turbo\.json|package\.json|pnpm-workspace\.yaml|\.dependency-cruiser\.cjs|\.npmrc|\.pnpmfile\.cjs|\.github/workflows/_verify\.yml)$' <<<"$changed"; then
+              full=true
+            fi
+            if grep -q '^deployment/monitoring/' <<<"$changed"; then
+              monitoring=true
+            fi
+          fi
+          echo "full=$full" >> "$GITHUB_OUTPUT"
+          echo "monitoring=$monitoring" >> "$GITHUB_OUTPUT"
 
-            # ubuntu-latest ships shellcheck; -x follows sourced libs, -P SCRIPTDIR resolves them from the sourcing script.
-            - name: Lint Shell Scripts
-              run: git ls-files -z '*.sh' | xargs -0 shellcheck -x -P SCRIPTDIR
+      - name: Check em dashes
+        run: bash scripts/check-em-dashes.sh
 
-            - name: Check Formatting
-              run: pnpm format:check
+      # ubuntu-latest ships shellcheck; -x follows sourced libs, -P SCRIPTDIR resolves them from the sourcing script.
+      - name: Lint Shell Scripts
+        run: git ls-files -z '*.sh' | xargs -0 shellcheck -x -P SCRIPTDIR
 
-            - name: Validate monitoring config
-              if: steps.scope.outputs.monitoring == 'true' || steps.scope.outputs.full == 'true'
-              run: bash deployment/monitoring/validate.sh
+      - name: Check Formatting
+        run: pnpm format:check
 
-            - name: Verify All Packages
-              if: steps.scope.outputs.full == 'true'
-              run: make verify
+      - name: Validate monitoring config
+        if: steps.scope.outputs.monitoring == 'true' || steps.scope.outputs.full == 'true'
+        run: bash deployment/monitoring/validate.sh
 
-            - name: Verify Affected Packages
-              if: steps.scope.outputs.full != 'true'
-              env:
-                  TURBO_SCM_BASE: origin/${{ github.base_ref }}
-                  TURBO_SCM_HEAD: HEAD
-              run: pnpm verify:affected
+      - name: Verify All Packages
+        if: steps.scope.outputs.full == 'true'
+        run: make verify
 
-            - name: Verification Complete
-              run: echo "::notice::All checks passed successfully"
+      - name: Verify Affected Packages
+        if: steps.scope.outputs.full != 'true'
+        env:
+          TURBO_SCM_BASE: origin/${{ github.base_ref }}
+          TURBO_SCM_HEAD: HEAD
+        run: pnpm verify:affected
+
+      - name: Verification Complete
+        run: echo "::notice::All checks passed successfully"

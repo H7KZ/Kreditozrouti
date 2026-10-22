@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# Managed by toolkit vendoring (Toolkit repository, docs/consumers.md). Do not edit this copy.
+#
+# Runs the toolkit release pinned in this directory, never a toolkit installed on the host:
+#   deployment/toolkit verify [deployment-dir]   check pin, archive and managed files (no root)
+#   deployment/toolkit help                      every command
+#   sudo deployment/toolkit install --deploy-user deploy
+#
+# As root, or where no loader is installed (CI, laptops), it verifies and extracts the pinned
+# archive itself. A non-root caller on a host with the loader goes through
+# `sudo -n /usr/local/libexec/toolkit-run-bundle`, the deploy user's only sudo permission.
+set -Eeuo pipefail
+
+here="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+readonly here runner=/usr/local/libexec/toolkit-run-bundle
+
+read_lock() {
+  awk -F= -v key="$2" '$1 == key { if (seen++) exit 2; print substr($0, index($0, "=") + 1) } END { if (!seen) exit 1 }' "$1"
+}
+
+# Pin, archive and every managed copy present must match. Installed control copies and older
+# revisions may hold only part of the managed set.
+verify() {
+  local dir="$1" lock version archive names managed copy
+  lock="$dir/toolkit.lock"
+  [[ -f "$lock" && ! -L "$lock" ]] || {
+    printf 'toolkit: missing %s; vendor a release from the Toolkit repository\n' "$lock" >&2
+    return 1
+  }
+  version="$(read_lock "$lock" TOOLKIT_VERSION)"
+  [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] || {
+    printf 'toolkit: pin has an invalid version\n' >&2
+    return 1
+  }
+  archive="$dir/vendor/toolkit/toolkit-$version.tar.gz"
+  bash "$here/vendor/toolkit/validate-lock.sh" "$lock" "$archive" >/dev/null
+  if [[ -f "$dir/vendor/toolkit/toolkit.lock" ]] && ! cmp -s -- "$lock" "$dir/vendor/toolkit/toolkit.lock"; then
+    printf 'toolkit: vendor/toolkit/toolkit.lock differs from toolkit.lock; re-vendor instead of editing pins\n' >&2
+    return 1
+  fi
+  names="$(tar -tzf "$archive")"
+  for managed in toolkit:toolkit validate-lock.sh:vendor/toolkit/validate-lock.sh log.sh:vendor/toolkit/log.sh; do
+    [[ $'\n'"$names"$'\n' == *$'\n'"toolkit/consumer/${managed%%:*}"$'\n'* ]] || continue
+    copy="$dir/${managed#*:}"
+    [[ -e "$copy" ]] || continue
+    tar -xOzf "$archive" "toolkit/consumer/${managed%%:*}" | cmp -s -- - "$copy" || {
+      printf 'toolkit: %s differs from toolkit %s; re-vendor instead of editing managed files\n' "${managed#*:}" "$version" >&2
+      return 1
+    }
+  done
+  printf 'toolkit %s pinned and verified in %s\n' "$version" "$dir"
+}
+
+if [[ "${1:-}" == verify ]]; then
+  (($# <= 2)) || {
+    printf 'usage: deployment/toolkit verify [deployment-dir]\n' >&2
+    exit 2
+  }
+  verify "${2:-$here}"
+  exit
+fi
+
+verify "$here" >/dev/null
+version="$(read_lock "$here/toolkit.lock" TOOLKIT_VERSION)"
+archive="$here/vendor/toolkit/toolkit-$version.tar.gz"
+repo_root="$(dirname -- "$here")"
+
+if ((EUID != 0)) && [[ "${TOOLKIT_DIRECT:-0}" != 1 && -x "$runner" ]]; then
+  exec sudo -n "$runner" --archive "$archive" --checksum "$archive.sha256" --lock "$here/toolkit.lock" -- \
+    --repo-root "$repo_root" "$@"
+fi
+
+work="$(mktemp -d "${TMPDIR:-/tmp}/toolkit.XXXXXXXX")"
+trap 'rm -rf -- "$work"' EXIT
+tar -xzf "$archive" --no-same-owner --no-same-permissions -C "$work"
+status=0
+/bin/bash "$work/toolkit/bin/toolkit" --repo-root "$repo_root" "$@" || status=$?
+exit "$status"

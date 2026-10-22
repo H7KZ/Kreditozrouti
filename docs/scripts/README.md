@@ -1,6 +1,6 @@
 # Repository scripts
 
-The [`scripts/`](../../scripts/) directory holds repository-specific Bash utilities. Application and monitoring deploy scripts live in [`deployment/`](../../deployment/).
+The [`scripts/`](../../scripts/) directory holds repository-specific Bash utilities. Deployment code lives in [`deployment/`](../../deployment/).
 
 | Script                   | Purpose                                                                                   |
 | ------------------------ | ----------------------------------------------------------------------------------------- |
@@ -9,4 +9,4 @@ The [`scripts/`](../../scripts/) directory holds repository-specific Bash utilit
 | `sync-grafana-alerts.sh` | Retired legacy Grafana alert cleanup script; current alerts use Prometheus and Loki rules |
 | `check-em-dashes.sh`     | Check repository text for prohibited em dashes                                            |
 
-See [maintenance](MAINTENANCE.md) for database cloning and the [deployment guide](../deployment/README.md) for app, monitoring, and runner deployment. Host-wide Docker and Traefik maintenance belongs to the separate Infrastructure repository.
+See [maintenance](MAINTENANCE.md) for database cloning and the [deployment runbooks](../runbooks/deploy-and-release.md) for app, monitoring and ingress deployment. Host-wide Docker and Traefik maintenance belongs to the separate Infrastructure repository.

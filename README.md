@@ -36,7 +36,7 @@ with a live timetable and automatic conflict detection.
 
 - **Students:** use [Kreditožrouti](https://kreditozrouti.cz) without an account. Start with the [English](https://kreditozrouti.cz/docs/en/getting-started) or [Czech](https://kreditozrouti.cz/docs/cs/getting-started) guide.
 - **Developers:** start with [local setup](docs/engineering/SETUP.md), [contributing](docs/engineering/CONTRIBUTING.md), or the [developer docs index](docs/README.md).
-- **Operators:** use the [deployment guide](docs/deployment/README.md) and [manual setup guides](docs/setup/README.md).
+- **Operators:** start with the [runbooks](docs/runbooks/README.md) - [fresh server](docs/runbooks/fresh-server.md), [deploy and release](docs/runbooks/deploy-and-release.md), [rollback and recovery](docs/runbooks/rollback-and-recovery.md), [backups](docs/runbooks/backups.md), [dependency updates](docs/runbooks/dependency-updates.md) - and the [manual setup guides](docs/setup/README.md).
 
 ---
 

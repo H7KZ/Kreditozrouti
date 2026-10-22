@@ -1,0 +1,33 @@
+# ==============================================================================
+# Volume definitions - ingress (global) stack
+#
+# All external so that `docker compose down -v` on any stack can never take your
+# certificates or CrowdSec's decision database with it. Created by ingress/prepare.sh.
+# Names match Infrastructure's, so data moves between ingress modes unchanged.
+# ==============================================================================
+
+volumes:
+    # ACME account key + issued certificates.
+    traefik-certificates-volume:
+        name: traefik-certificates-volume
+        external: true
+
+    # Access log. Written by Traefik, read by CrowdSec and by the monitoring stack's Alloy.
+    traefik-logs-volume:
+        name: traefik-logs-volume
+        external: true
+
+    # Downloaded plugin sources - avoids a GitHub round-trip on every restart.
+    traefik-plugins-volume:
+        name: traefik-plugins-volume
+        external: true
+
+    # CrowdSec decisions, alerts and the community blocklist cache.
+    crowdsec-db-volume:
+        name: crowdsec-db-volume
+        external: true
+
+    # CrowdSec hub items and generated config.
+    crowdsec-config-volume:
+        name: crowdsec-config-volume
+        external: true

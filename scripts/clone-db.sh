@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 # ==============================================================================
 # Script Name: clone-db.sh
@@ -224,7 +224,7 @@ resolve_projects() {
     esac
 
     # Docker Compose auto-names containers as <project>-<service>-<replica>
-    # (project = deploy.sh's Compose project: kreditozrouti / kreditozrouti-dev)
+    # (project = the toolkit release's Compose project: kreditozrouti / kreditozrouti-dev)
     SOURCE_CONTAINER="${SOURCE_PROJECT}-mysql-1"
     TARGET_CONTAINER="${TARGET_PROJECT}-mysql-1"
 }
@@ -275,10 +275,8 @@ check_root
 [[ -n "${SUDO_USER:-}" && "$SUDO_USER" != root ]] || { log_error 'Run with sudo from the deployment user'; exit 1; }
 deploy_home="$(getent passwd "$SUDO_USER" | cut -d: -f6)"
 [[ "$deploy_home" == /* && -d "$deploy_home" && ! -L "$deploy_home" ]] || exit 1
-expected="$(awk -F= '$1 == "TOOLKIT_VERSION" { if (seen++) exit 2; print $2 } END { if (!seen) exit 1 }' "$SCRIPT_DIR/../deployment/toolkit.lock")"
-actual="$(/usr/local/bin/toolkit version | awk -F'[= ]' '/^toolkit_version=/ {print $2}')"
-[[ "$actual" == "$expected" && "$(printf '%s\n' 0.8.1 "$expected" | sort -V | head -1)" == 0.8.1 ]] || { log_error 'Toolkit snapshot pin mismatch'; exit 1; }
 # shellcheck disable=SC2016 # positional arguments expand only inside the locked child
-locked_program="$(declare -f)"$'\n''set -euo pipefail; SCRIPT_DIR="$1"; SCRIPT_NAME=clone-db.sh; DEPLOY_HOME="$2"; BACKUP_DIR="$DEPLOY_HOME/backups/db-clones"; DIRECTION="$3"; source "$SCRIPT_DIR/lib.sh"; main'
-exec /usr/local/bin/toolkit with-lock --repository kreditozrouti --environment production --action maintenance --timeout 1800 --host-window -- \
+locked_program="$(declare -f)"$'\n''set -euo pipefail; SCRIPT_DIR="$1"; SCRIPT_NAME=clone-db.sh; LOG_TAG=clone-db.sh; DEPLOY_HOME="$2"; BACKUP_DIR="$DEPLOY_HOME/backups/db-clones"; DIRECTION="$3"; source "$SCRIPT_DIR/lib.sh"; main'
+# The pinned toolkit takes the repository lock and the host window around the whole clone.
+exec bash "$SCRIPT_DIR/../deployment/toolkit" with-lock --repository kreditozrouti --environment production --action maintenance --timeout 1800 --host-window -- \
   bash -c "$locked_program" _ "$SCRIPT_DIR" "$deploy_home" "$DIRECTION"

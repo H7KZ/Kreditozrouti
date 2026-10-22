@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 set +x
 umask 077
 : "${TOOLKIT_RUNTIME_DIR:?}" "${TOOLKIT_ENV_FILE:?}" "${DISCORD_WEBHOOK_URL:?}" "${HEALTHCHECKS_PING_URL:?}" "${UMAMI_APP_SECRET:?}"
@@ -15,3 +15,7 @@ docker_gid="$(stat -c '%g' /var/run/docker.sock)"
 grafana_password="$(printf '%s' "grafana_ro:$UMAMI_APP_SECRET" | sha256sum | cut -c1-40)"
 printf "DOCKER_GID='%s'\nUMAMI_GRAFANA_PASSWORD='%s'\n" "$docker_gid" "$grafana_password" > "$TOOLKIT_RUNTIME_DIR/extra.env"
 chmod 600 "$TOOLKIT_RUNTIME_DIR/extra.env"
+# Alloy reads the Traefik access log from this volume. Whichever ingress runs on the host (Infrastructure's
+# or deployment/ingress) fills it; toolkit only creates kreditozrouti-* resources, so create it empty if no
+# ingress has run yet. Idempotent.
+docker volume inspect traefik-logs-volume >/dev/null 2>&1 || docker volume create traefik-logs-volume >/dev/null

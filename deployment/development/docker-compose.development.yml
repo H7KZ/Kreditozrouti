@@ -27,7 +27,7 @@
 # Router Naming:
 #   Every Traefik router/middleware name below is prefixed with ${PROJECT}, and production uses
 #   the same shape. PROJECT comes from the GitHub Environment variable `vars.PROJECT`, which is
-#   scoped per environment (see .github/workflows/_deploy-service.yml), so it MUST be set to a
+#   scoped per environment (see .github/workflows/_deploy.yml), so it MUST be set to a
 #   different value here than in production. Both stacks register with the one shared
 #   Infrastructure Traefik; identical router names would collide there and one environment
 #   would silently take over the other's routes. Do not drop the ${PROJECT} prefix.
