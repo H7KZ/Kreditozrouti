@@ -69,6 +69,9 @@ updates:
       # @types/node follows the Node major in the Dockerfiles and engines; Node LTS moves by hand, together.
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
+      # typescript: 7 breaks typescript-eslint (peer <6.1.0) and vue-tsc 3.x (needs typescript/lib/tsc). Hold until both support it.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
 
   # Dockerfile base images (one directory per app).
   - package-ecosystem: docker
