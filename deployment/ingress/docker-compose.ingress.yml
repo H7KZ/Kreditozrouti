@@ -1,0 +1,296 @@
+# ==============================================================================
+# Ingress - Traefik + socket-proxy + CrowdSec  (compose project: global)
+#
+#   socket-proxy  Read-only, filtered gateway to the Docker API.
+#   traefik       The proxy. Never touches /var/run/docker.sock.
+#   crowdsec      IDS/WAF: reads Traefik's access log, serves decisions + AppSec.
+#
+# STANDALONE MODE ONLY. Deploy with the "Deploy Ingress" workflow on a host where
+# Infrastructure's Traefik does NOT run: both bind ports 80/443 and own public-network.
+# See docs/runbooks/fresh-server.md and docs/adr/0006-repository-standard-and-ingress-modes.md.
+#
+# Do not run `docker compose up` directly - release staging (ingress/prepare.sh)
+# renders .rendered/traefik.yml from the template and provisions the bouncer key.
+# ==============================================================================
+
+services:
+
+  # ============================================================================
+  # Docker socket proxy
+  #
+  # Mounting /var/run/docker.sock into Traefik is the single most common
+  # mistake in Traefik deployments: it is root on the host, one container
+  # escape away. This proxy exposes only the read endpoints Traefik's provider
+  # actually calls, over a network Traefik alone can reach.
+  # ============================================================================
+  socket-proxy:
+    image: tecnativa/docker-socket-proxy:v0.5.0
+    container_name: socket-proxy
+    restart: unless-stopped
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+    environment:
+      # --- Allowed (what the Docker provider needs) ---
+      CONTAINERS: 1
+      NETWORKS: 1
+      SERVICES: 1
+      TASKS: 1
+      INFO: 1
+      VERSION: 1
+      EVENTS: 1
+
+      # --- Explicitly denied ---
+      # POST: 0 is the one that matters. Without it, read access to /containers
+      # can be escalated into creating a privileged container.
+      POST: 0
+      BUILD: 0
+      COMMIT: 0
+      CONFIGS: 0
+      DISTRIBUTION: 0
+      EXEC: 0
+      IMAGES: 0
+      NODES: 0
+      PLUGINS: 0
+      SECRETS: 0
+      SESSION: 0
+      SWARM: 0
+      SYSTEM: 0
+      VOLUMES: 0
+
+    networks:
+      - traefik-socket-proxy-network
+
+    security_opt:
+      - no-new-privileges:true
+
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:2375/_ping']
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+      start_interval: 3s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: '5m'
+        max-file: '3'
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 64M
+
+  # ============================================================================
+  # Traefik
+  # ============================================================================
+  traefik:
+    image: traefik:v3.7.13
+    container_name: traefik
+    # `always`, not `unless-stopped`: the front door must come back after a
+    # daemon or host restart even if Docker recorded it as stopped.
+    restart: always
+
+    depends_on:
+      socket-proxy:
+        condition: service_healthy
+      crowdsec:
+        condition: service_healthy
+
+    command:
+      - '--configFile=/etc/traefik/traefik.yml'
+
+    environment:
+      # Only the scoped DNS token. Do NOT also set CF_API_KEY / CF_API_EMAIL —
+      # lego will prefer the global-key path if it sees them, and a Cloudflare
+      # global key can do anything to your account.
+      CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN:?CF_DNS_API_TOKEN is required}
+
+    volumes:
+      # Static config, rendered from config/traefik.yml at release staging
+      - ./ingress/.rendered/traefik.yml:/etc/traefik/traefik.yml:ro
+      # Dynamic config directory — hot-reloaded
+      - ./ingress/config/dynamic:/etc/traefik/dynamic:ro
+      # ACME account + certificates. Back this up.
+      - traefik-certificates-volume:/certs
+      # Access log, shared read-only with CrowdSec
+      - traefik-logs-volume:/var/log/traefik
+      # Plugin sources. Persisting these means restarts do not re-download the
+      # bouncer from GitHub, so a GitHub outage cannot stop Traefik booting.
+      - traefik-plugins-volume:/plugins-storage
+      # Secrets, injected as files
+      - ${TRAEFIK_CREDENTIALS_PATH:?TRAEFIK_CREDENTIALS_PATH is required}:/run/traefik/htpasswd:ro
+      - ${CROWDSEC_LAPI_KEY_PATH:?CROWDSEC_LAPI_KEY_PATH is required}:/run/crowdsec/lapi-key:ro
+
+    networks:
+      - public-network
+      - traefik-socket-proxy-network
+      - traefik-crowdsec-network
+
+    ports:
+      - '80:80'
+      - '443:443'
+      # HTTP/3 / QUIC. Must be published for http3 in traefik.yml to work.
+      - '443:443/udp'
+
+    # --- Hardening ------------------------------------------------------------
+    # Traefik still runs as root so it can bind :80/:443, but with every
+    # capability except NET_BIND_SERVICE removed, root inside this container
+    # can do very little.
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=public-network'
+
+      # --- Dashboard router ---------------------------------------------------
+      - 'traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_DOMAIN}`)'
+      - 'traefik.http.routers.traefik-dashboard.entrypoints=websecure'
+      - 'traefik.http.routers.traefik-dashboard.tls=true'
+      - 'traefik.http.routers.traefik-dashboard.tls.certresolver=${CERT_RESOLVER:-letsencrypt}'
+      - 'traefik.http.routers.traefik-dashboard.tls.options=modern@file'
+      - 'traefik.http.routers.traefik-dashboard.service=api@internal'
+
+      # Order matters: reject by IP before spending a bcrypt round on auth.
+      - 'traefik.http.routers.traefik-dashboard.middlewares=dashboard-ipallowlist,dashboard-auth,admin-chain@file'
+
+      # --- IP allowlist -------------------------------------------------------
+      # depth=1 reads the real client IP from X-Forwarded-For behind Cloudflare.
+      # Without it you would be matching Cloudflare edge IPs and letting the
+      # whole internet through.
+      - 'traefik.http.middlewares.dashboard-ipallowlist.ipallowlist.sourcerange=${TRAEFIK_DASHBOARD_ALLOWED_IPS}'
+      - 'traefik.http.middlewares.dashboard-ipallowlist.ipallowlist.ipstrategy.depth=1'
+      - 'traefik.http.middlewares.dashboard-ipallowlist.ipallowlist.rejectstatuscode=404'
+
+      # --- Basic auth ---------------------------------------------------------
+      # usersfile, not an inline label: the hash never appears in `docker
+      # inspect`, in your shell history, or in the compose file.
+      - 'traefik.http.middlewares.dashboard-auth.basicauth.usersfile=/run/traefik/htpasswd'
+      - 'traefik.http.middlewares.dashboard-auth.basicauth.removeheader=true'
+      - 'traefik.http.middlewares.dashboard-auth.basicauth.realm=Restricted'
+
+      # --- Optional: unauthenticated /ping for external CI -------------------
+      # CI here gates on `docker inspect` container health instead, so this
+      # stays closed. If you ever need a public probe, set
+      # ping.manualRouting=true in traefik.yml and uncomment:
+      #
+      # - 'traefik.http.routers.traefik-ping.rule=Host(`${TRAEFIK_DOMAIN}`) && Path(`/ping`)'
+      # - 'traefik.http.routers.traefik-ping.entrypoints=websecure'
+      # - 'traefik.http.routers.traefik-ping.tls=true'
+      # - 'traefik.http.routers.traefik-ping.tls.certresolver=letsencrypt'
+      # - 'traefik.http.routers.traefik-ping.service=ping@internal'
+      # - 'traefik.http.routers.traefik-ping.middlewares=dashboard-ipallowlist'
+
+    healthcheck:
+      # The built-in subcommand, which knows to hit the ping entrypoint. It
+      # needs the same config file to find it.
+      test: ['CMD', 'traefik', 'healthcheck', '--configFile=/etc/traefik/traefik.yml']
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+      start_interval: 3s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: '20m'
+        max-file: '5'
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  # ============================================================================
+  # CrowdSec
+  #
+  # Not on public-network: it has no reason to be reachable from any container
+  # other than Traefik and the metrics scraper.
+  # ============================================================================
+  crowdsec:
+    image: crowdsecurity/crowdsec:v1.8.0
+    container_name: crowdsec
+    restart: unless-stopped
+
+    environment:
+      COLLECTIONS: >-
+        crowdsecurity/traefik
+        crowdsecurity/http-cve
+        crowdsecurity/base-http-scenarios
+        crowdsecurity/appsec-virtual-patching
+        crowdsecurity/appsec-generic-rules
+      CUSTOM_HOSTNAME: 'crowdsecurity-traefik'
+      # false = participate in the community blocklist. This is the single
+      # biggest win of running CrowdSec: you get pre-emptive bans for IPs that
+      # attacked someone else an hour ago.
+      DISABLE_ONLINE_API: 'false'
+      # Registers the Traefik bouncer with a key you control, at first boot.
+      # Solves the chicken-and-egg problem of `cscli bouncers add` needing a
+      # running LAPI that Traefik is already waiting on.
+      BOUNCER_KEY_traefik: ${CROWDSEC_BOUNCER_API_KEY:?CROWDSEC_BOUNCER_API_KEY is required}
+      # Optional: enrol in app.crowdsec.net for dashboards and extra blocklists.
+      ENROLL_KEY: ${CROWDSEC_ENROLL_KEY:-}
+      ENROLL_INSTANCE_NAME: 'crowdsecurity-traefik'
+
+    volumes:
+      - crowdsec-db-volume:/var/lib/crowdsec/data
+      - crowdsec-config-volume:/etc/crowdsec
+      # Traefik's access log, read-only — this is CrowdSec's input.
+      - traefik-logs-volume:/var/log/traefik:ro
+      - ./ingress/crowdsec/acquis.yml:/etc/crowdsec/acquis.d/traefik.yml:ro
+      - ./ingress/crowdsec/profiles.yaml:/etc/crowdsec/profiles.yaml:ro
+      - ./ingress/crowdsec/parsers/s02-enrich/zz-mcp-auth.yaml:/etc/crowdsec/parsers/s02-enrich/zz-mcp-auth.yaml:ro
+      # Overlay that binds the Prometheus endpoint to 0.0.0.0 (default is
+      # 127.0.0.1, which a sidecar scraper cannot reach).
+      - ./ingress/crowdsec/config.yaml.local:/etc/crowdsec/config.yaml.local:ro
+
+    networks:
+      - traefik-crowdsec-network
+
+    security_opt:
+      - no-new-privileges:true
+
+    healthcheck:
+      test: ['CMD', 'cscli', 'lapi', 'status']
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+      start_interval: 3s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
+# Network + volume declarations live in networks.yml / volumes.yml, merged in by
+# the toolkit release controller (`-f networks.yml -f volumes.yml -f docker-compose.ingress.yml`).

@@ -10,7 +10,7 @@
 	"arrowParens": "avoid",
 	"overrides": [
 		{
-			"files": "*.{yml,yaml}",
+			"files": ".github/**/*.{yml,yaml}",
 			"options": { "useTabs": false, "tabWidth": 2 }
 		}
 	]

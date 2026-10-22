@@ -1,0 +1,54 @@
+# ==============================================================================
+# CrowdSec remediation profiles
+#
+# Evaluated top to bottom. `on_success: break` stops at the first match, so
+# these are ordered most-specific first.
+# ==============================================================================
+
+# --- AppSec hits: someone sent an actual exploit payload ----------------------
+# Not ambiguous, not a mistyped URL. Ban hard.
+name: appsec_remediation
+filters:
+  - Alert.Remediation == true && Alert.GetScope() == "Ip" && Alert.GetScenario() startsWith "crowdsecurity/appsec"
+decisions:
+  - type: ban
+    duration: 24h
+on_success: break
+
+---
+# --- Community blocklist: known-bad IPs from the CrowdSec network -------------
+name: community_blocklist
+filters:
+  - Alert.Remediation == true && Alert.GetScope() == "Ip" && Alert.GetScenario() contains "community-blocklist"
+decisions:
+  - type: ban
+    duration: 8h
+on_success: break
+
+---
+# --- Everything else: behavioural detections from the access log --------------
+# 4h, not the 5m default. Five minutes is barely an inconvenience to a scanner
+# working through a list; four hours makes your box not worth the time.
+name: default_ip_remediation
+filters:
+  - Alert.Remediation == true && Alert.GetScope() == "Ip"
+decisions:
+  - type: ban
+    duration: 4h
+# Uncomment once a notification plugin is configured in
+# /etc/crowdsec/notifications/ — see `cscli notifications list`.
+# notifications:
+#   - slack_default
+on_success: break
+
+---
+# --- Range-scope decisions (whole subnets) ------------------------------------
+# Rare, but they happen when an entire hosting range is implicated. Shorter
+# duration because the collateral damage is wider.
+name: range_remediation
+filters:
+  - Alert.Remediation == true && Alert.GetScope() == "Range"
+decisions:
+  - type: ban
+    duration: 1h
+on_success: break

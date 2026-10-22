@@ -1,0 +1,264 @@
+# ==============================================================================
+# Dynamic Configuration — Middlewares
+#
+# Hot-reloaded on save. A syntax error here does NOT crash Traefik; it logs the
+# error and keeps serving the last good configuration.
+#
+# Reference these from labels as `<name>@file`, e.g.
+#   traefik.http.routers.myapp.middlewares=secure-chain@file
+# ==============================================================================
+
+http:
+  middlewares:
+
+    # ==========================================================================
+    # Applied globally via the websecure entrypoint
+    # ==========================================================================
+
+    # --- Security headers -----------------------------------------------------
+    # Sent on every response. HSTS preload is a one-way door: once you submit
+    # the domain to hstspreload.org, browsers will refuse plain HTTP for it for
+    # a long time. Leave stsPreload false until you are sure.
+    security-headers:
+      headers:
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: false
+        forceSTSHeader: true
+        frameDeny: true
+        contentTypeNosniff: true
+        browserXssFilter: false
+        referrerPolicy: strict-origin-when-cross-origin
+        customResponseHeaders:
+          # Explicitly off: the legacy XSS auditor introduced its own bugs and
+          # every current browser ignores or mis-handles it.
+          X-XSS-Protection: '0'
+          Permissions-Policy: 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+          # Blank value = strip the header entirely. Stops advertising the
+          # backend stack to scanners.
+          Server: ''
+          X-Powered-By: ''
+        customRequestHeaders:
+          # Traefik terminates TLS; make sure backends never see a stale value.
+          X-Forwarded-Proto: https
+
+    # --- www -> non-www redirect ----------------------------------------------
+    # In the global entrypoint chain. Strips a leading www. from any host so
+    # www.example.com 301s to example.com. (Carried over from the previous
+    # Traefik config; kept in Traefik rather than pushed to a Cloudflare rule.)
+    www-redirect:
+      redirectRegex:
+        regex: '^https://www\.(.*)'
+        replacement: 'https://${1}'
+        permanent: true
+
+    # --- Rate limit (backstop) ------------------------------------------------
+    # This is a blunt instrument for volumetric floods. CrowdSec handles the
+    # behavioural side. depth: 1 reads the right-most X-Forwarded-For entry,
+    # which is the real client IP when Cloudflare is in front.
+    rate-limit:
+      rateLimit:
+        average: 100
+        burst: 200
+        period: 1s
+        sourceCriterion:
+          ipStrategy:
+            depth: 1
+
+    # --- Compression ----------------------------------------------------------
+    compress:
+      compress:
+        encodings:
+          - zstd
+          - br
+          - gzip
+        minResponseBodyBytes: 1024
+        excludedContentTypes:
+          - image/png
+          - image/jpeg
+          - image/webp
+          - image/avif
+          - video/mp4
+          - application/zip
+          - application/gzip
+          - text/event-stream
+
+    # --- CrowdSec WAF ---------------------------------------------------------
+    # Two layers in one plugin:
+    #   1. IP reputation — local decisions + the community blocklist.
+    #   2. AppSec — OWASP CRS / virtual patching, inspects the request itself.
+    #
+    # `stream` mode pulls the decision list every 60s and answers from a local
+    # cache, so the hot path never makes a network call. `live` queries the LAPI
+    # per request; correct but slower.
+    #
+    # The *UnreachableBlock flags are FAIL-OPEN by default. That is the right
+    # call for a single-node box: if CrowdSec dies, your site stays up rather
+    # than 403-ing every visitor. Flip them to true only if you would rather be
+    # down than unprotected.
+    crowdsec:
+      plugin:
+        crowdsec-bouncer:
+          enabled: true
+          logLevel: INFO
+          crowdsecMode: stream
+
+          # --- LAPI (IP reputation) ---
+          crowdsecLapiScheme: http
+          crowdsecLapiHost: crowdsec:8080
+          # Read from a mounted file rather than an env template — no secret in
+          # the config, and no dependency on file-provider templating.
+          crowdsecLapiKeyFile: /run/crowdsec/lapi-key
+          crowdsecLapiUnreachableBlock: false
+
+          # --- AppSec (request inspection) ---
+          crowdsecAppsecEnabled: true
+          crowdsecAppsecHost: crowdsec:7422
+          crowdsecAppsecFailureBlock: false
+          crowdsecAppsecUnreachableBlock: false
+          crowdsecAppsecBodyLimit: 10485760
+
+          # --- Real client IP behind Cloudflare ---
+          # Without this the bouncer bans Cloudflare edge IPs and takes your
+          # whole site offline. Keep in sync with traefik.yml trustedIPs.
+          forwardedHeadersTrustedIPs:
+            - '173.245.48.0/20'
+            - '103.21.244.0/22'
+            - '103.22.200.0/22'
+            - '103.31.4.0/22'
+            - '141.101.64.0/18'
+            - '108.162.192.0/18'
+            - '190.93.240.0/20'
+            - '188.114.96.0/20'
+            - '197.234.240.0/22'
+            - '198.41.128.0/17'
+            - '162.158.0.0/15'
+            - '104.16.0.0/13'
+            - '104.24.0.0/14'
+            - '172.64.0.0/13'
+            - '131.0.72.0/22'
+            - '2400:cb00::/32'
+            - '2606:4700::/32'
+            - '2803:f800::/32'
+            - '2405:b500::/32'
+            - '2405:8100::/32'
+            - '2a06:98c0::/29'
+            - '2c0f:f248::/32'
+
+          # Never bounce traffic originating inside the Docker networks.
+          clientTrustedIPs:
+            - '10.0.0.0/8'
+            - '172.16.0.0/12'
+            - '192.168.0.0/16'
+
+          updateIntervalSeconds: 60
+          # Keep serving cache misses if a decision-stream refresh fails.
+          updateMaxFailure: -1
+          defaultDecisionSeconds: 60
+          httpTimeoutSeconds: 10
+
+    # ==========================================================================
+    # Opt-in — reference these per router
+    # ==========================================================================
+
+    # --- Admin rate limit (compat) --------------------------------------------
+    # Carried over under its original name for the apps that reference
+    # `admin-rate-limit@file`. 20/s avg, burst 10.
+    admin-rate-limit:
+      rateLimit:
+        average: 20
+        burst: 10
+        period: 1s
+        sourceCriterion:
+          ipStrategy:
+            depth: 1
+
+    # --- Strict rate limit for login / API auth endpoints ---------------------
+    auth-rate-limit:
+      rateLimit:
+        average: 20
+        period: 1m
+        burst: 10
+        sourceCriterion:
+          ipStrategy:
+            depth: 1
+
+    # --- Concurrency cap ------------------------------------------------------
+    # Protects a slow backend from being buried by a single client.
+    in-flight-req:
+      inFlightReq:
+        amount: 50
+        sourceCriterion:
+          ipStrategy:
+            depth: 1
+
+    # --- Retry idempotent requests against a flapping backend -----------------
+    retry:
+      retry:
+        attempts: 3
+        initialInterval: 100ms
+
+    # --- Cloudflare-only ------------------------------------------------------
+    # Rejects anything that did not arrive via the Cloudflare edge. Belt to the
+    # firewall's braces — see scripts/cloudflare-firewall.sh, which is the
+    # stronger control because it drops packets before Traefik sees them.
+    cloudflare-only:
+      ipAllowList:
+        rejectStatusCode: 403
+        sourceRange:
+          - '173.245.48.0/20'
+          - '103.21.244.0/22'
+          - '103.22.200.0/22'
+          - '103.31.4.0/22'
+          - '141.101.64.0/18'
+          - '108.162.192.0/18'
+          - '190.93.240.0/20'
+          - '188.114.96.0/20'
+          - '197.234.240.0/22'
+          - '198.41.128.0/17'
+          - '162.158.0.0/15'
+          - '104.16.0.0/13'
+          - '104.24.0.0/14'
+          - '172.64.0.0/13'
+          - '131.0.72.0/22'
+          - '2400:cb00::/32'
+          - '2606:4700::/32'
+          - '2803:f800::/32'
+          - '2405:b500::/32'
+          - '2405:8100::/32'
+          - '2a06:98c0::/29'
+          - '2c0f:f248::/32'
+
+    # --- Deny all -------------------------------------------------------------
+    # Used by the catch-all router in routers.yml. An allowlist of loopback only
+    # means nothing that arrives over the network can match.
+    deny-all:
+      ipAllowList:
+        rejectStatusCode: 403
+        sourceRange:
+          - '127.0.0.1/32'
+
+    # --- Ready-made chains ----------------------------------------------------
+    # The entrypoint already applies crowdsec + rate-limit + security-headers +
+    # compress, so these only add what is on top.
+
+    # For anything holding real data.
+    secure-chain:
+      chain:
+        middlewares:
+          - in-flight-req
+          - retry
+
+    # For login pages, /api/auth, webhooks with shared secrets, etc.
+    auth-endpoint-chain:
+      chain:
+        middlewares:
+          - auth-rate-limit
+          - in-flight-req
+
+    # For admin panels that should never be world-reachable.
+    admin-chain:
+      chain:
+        middlewares:
+          - auth-rate-limit
+          - in-flight-req

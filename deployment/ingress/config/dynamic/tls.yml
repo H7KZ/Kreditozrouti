@@ -1,0 +1,75 @@
+# ==============================================================================
+# Dynamic Configuration — TLS
+#
+# The option named `default` is applied to every router that does not name a
+# different one, so you get hardened TLS without touching a single label.
+# ==============================================================================
+
+tls:
+  options:
+
+    # --- default: TLS 1.2 + 1.3, forward secrecy and AEAD only ---------------
+    # cipherSuites only affects TLS 1.2; Go picks TLS 1.3 suites itself and
+    # they are all safe. Every suite here is ECDHE (forward secret) and either
+    # GCM or ChaCha20-Poly1305 (authenticated). No CBC, no RSA key exchange.
+    default:
+      minVersion: VersionTLS12
+      maxVersion: VersionTLS13
+      cipherSuites:
+        - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
+        - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+      curvePreferences:
+        - X25519
+        - CurveP256
+        - CurveP384
+      # false so that a client with no SNI still gets a response (which the
+      # catch-all router then 403s). Set true if you would rather the
+      # handshake fail outright for unknown hostnames.
+      sniStrict: false
+      alpnProtocols:
+        - h2
+        - http/1.1
+        # Required for HTTP/3.
+        - acme-tls/1
+
+    # --- modern: TLS 1.3 only -------------------------------------------------
+    # Opt in per router with `traefik.http.routers.x.tls.options=modern@file`.
+    # Locks out anything older than roughly 2018. Ideal for APIs and admin UIs.
+    modern:
+      minVersion: VersionTLS13
+      curvePreferences:
+        - X25519
+        - CurveP256
+      sniStrict: true
+      alpnProtocols:
+        - h2
+        - http/1.1
+        - acme-tls/1
+
+    # --- mtls: client-certificate authentication ------------------------------
+    # Uncomment, mount your CA, then set
+    #   traefik.http.routers.x.tls.options=mtls@file
+    # This is the strongest way to lock down an admin surface — far better than
+    # basic auth over an IP allowlist.
+    #
+    # mtls:
+    #   minVersion: VersionTLS12
+    #   clientAuth:
+    #     caFiles:
+    #       - /etc/traefik/certs/client-ca.pem
+    #     clientAuthType: RequireAndVerifyClientCert
+
+  # --- Default certificate ----------------------------------------------------
+  # If you generate a self-signed cert and reference it here, unknown-SNI
+  # scanners get an untrusted cert instead of Traefik's built-in one, and your
+  # real hostnames are never leaked in a certificate. Optional.
+  #
+  # stores:
+  #   default:
+  #     defaultCertificate:
+  #       certFile: /etc/traefik/certs/default.crt
+  #       keyFile: /etc/traefik/certs/default.key

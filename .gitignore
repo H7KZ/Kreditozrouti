@@ -26,3 +26,7 @@ docs/superpowers/
 .claude/files/
 .claude/sessions/
 .gemini/files/
+
+# Toolkit-linked private runtime directories (never commit)
+deployment/monitoring/.secrets/
+deployment/ingress/.rendered/

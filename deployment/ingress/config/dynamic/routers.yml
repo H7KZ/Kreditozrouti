@@ -1,0 +1,37 @@
+# ==============================================================================
+# Dynamic Configuration — Routers
+#
+# Almost all routing comes from Docker labels. This file holds the one router
+# that cannot: the catch-all.
+# ==============================================================================
+
+http:
+  routers:
+
+    # --- Catch-all deny -------------------------------------------------------
+    # Without this, a request for an unknown Host falls through to whatever
+    # router happens to match loosely, or to Traefik's default certificate —
+    # which is how scanners fingerprint a box by its IP.
+    #
+    # priority: 1 is the lowest possible, so any real router always wins.
+    #
+    # The `tls` block here REPLACES the entrypoint's TLS config. That is
+    # deliberate and important: the entrypoint sets certResolver=letsencrypt,
+    # and if this router inherited that, Traefik would try to issue a real
+    # certificate for every junk hostname a scanner sends — straight into a
+    # Let's Encrypt rate-limit ban. Naming only `options` here means unknown
+    # SNI gets the default cert and a 403, and no ACME order is ever placed.
+    catchall-deny:
+      rule: 'PathPrefix(`/`)'
+      priority: 1
+      entryPoints:
+        - websecure
+      middlewares:
+        - deny-all@file
+      service: noop@internal
+      # Empty tls block: still replaces the entrypoint's certResolver (see
+      # above) but, since this router has no domain in its rule, must NOT name
+      # an explicit options set — Traefik cannot resolve a named TLS options
+      # store for a router with no SNI to match against. Leaving it unnamed
+      # falls back to the implicit default@file (tls.yml) automatically.
+      tls: {}

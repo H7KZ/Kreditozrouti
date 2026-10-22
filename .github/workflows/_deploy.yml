@@ -104,6 +104,12 @@ jobs:
           UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
           UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
           UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
+          TRAEFIK_DOMAIN: ${{ vars.TRAEFIK_DOMAIN }}
+          TRAEFIK_HTPASSWD: ${{ secrets.TRAEFIK_HTPASSWD }}
+          CF_DNS_API_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
+          ACME_EMAIL: ${{ vars.ACME_EMAIL }}
+          TRAEFIK_DASHBOARD_ALLOWED_IPS: ${{ vars.TRAEFIK_DASHBOARD_ALLOWED_IPS }}
+          CROWDSEC_ENROLL_KEY: ${{ secrets.CROWDSEC_ENROLL_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_ACTOR: ${{ github.actor }}
         run: |

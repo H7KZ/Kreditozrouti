@@ -1,0 +1,30 @@
+# ==============================================================================
+# Network definitions - ingress (global) stack
+#
+# All external, created by ingress/prepare.sh at release staging (toolkit itself only
+# creates kreditozrouti-* resources). `internal: true` on the private ones means those
+# containers have no route to the internet at all.
+#
+# public-network is the one cross-stack contract: every app stack attaches to it and
+# publishes its Traefik labels there. Same name as Infrastructure's, so apps work in
+# either ingress mode without change.
+# ==============================================================================
+
+networks:
+    # Where app containers publish themselves for Traefik to discover. Deploy ingress
+    # before apps.
+    public-network:
+        name: public-network
+        external: true
+
+    # Traefik <-> socket-proxy only. Internal.
+    traefik-socket-proxy-network:
+        name: traefik-socket-proxy-network
+        external: true
+        x-toolkit-internal: true
+
+    # Traefik <-> CrowdSec LAPI + AppSec only. Internal.
+    traefik-crowdsec-network:
+        name: traefik-crowdsec-network
+        external: true
+        x-toolkit-internal: true

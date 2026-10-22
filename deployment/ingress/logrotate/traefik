@@ -1,0 +1,30 @@
+# ==============================================================================
+# /etc/logrotate.d/traefik
+#
+# Traefik's access log is the input to CrowdSec, so it is written to a volume
+# rather than stdout, which means nothing rotates it for you. Left alone it
+# will fill the disk, and a full disk takes the proxy down with it.
+#
+# Install:
+#   sudo cp logrotate/traefik /etc/logrotate.d/traefik
+#   sudo logrotate -d /etc/logrotate.d/traefik    # dry run
+#
+# Adjust the path if your Docker root is not /var/lib/docker.
+# ==============================================================================
+
+/var/lib/docker/volumes/traefik-logs-volume/_data/*.log {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 root root
+    sharedscripts
+    postrotate
+        # Traefik reopens its log files on SIGUSR1. Without this it keeps
+        # writing to the rotated (now deleted) inode and the live file stays
+        # empty — CrowdSec would silently stop seeing traffic.
+        docker kill --signal=USR1 "$(docker ps -q -f name=^traefik$)" 2>/dev/null || true
+    endscript
+}

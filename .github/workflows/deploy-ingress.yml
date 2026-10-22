@@ -1,0 +1,52 @@
+# Deploys this repository's own Traefik ingress (deployment/ingress/): standalone mode only.
+# NEVER run it on a host where Infrastructure's Traefik already runs (shared mode): both would
+# fight for ports 80/443 and the public-network. See docs/runbooks/fresh-server.md.
+name: Deploy Ingress
+run-name: Deploy Ingress · ingress · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or SHA to deploy (empty = the workflow ref)
+        required: false
+        type: string
+        default: ''
+      operation:
+        description: Deploy now, or stage an immutable snapshot without activating it
+        required: true
+        type: choice
+        options: [deploy, stage]
+        default: deploy
+permissions:
+  contents: read
+  packages: read
+concurrency:
+  group: deploy-ingress
+  cancel-in-progress: false
+jobs:
+  resolve:
+    name: Resolve source
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      source_commit: ${{ steps.source.outputs.sha }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+          persist-credentials: false
+      - name: Resolve commit
+        id: source
+        run: |
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo '::warning::Standalone ingress only. Never deploy it on a host where the Infrastructure repository Traefik runs.'
+  deploy:
+    name: Deploy ingress snapshot
+    needs: resolve
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      environment: ingress
+      operation: ${{ inputs.operation }}
+      source_commit: ${{ needs.resolve.outputs.source_commit }}
+    secrets: inherit
