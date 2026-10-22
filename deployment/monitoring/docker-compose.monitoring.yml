@@ -4,7 +4,7 @@
 name: kreditozrouti-monitoring
 services:
     prometheus:
-        image: prom/prometheus:v3.14.0
+        image: prom/prometheus:v3.15.0
         restart: unless-stopped
         command:
             - --config.file=/etc/prometheus/prometheus.yml
@@ -44,7 +44,7 @@ services:
                     cpus: '0.5'
                     memory: 384M
     alertmanager:
-        image: prom/alertmanager:v0.34.0
+        image: prom/alertmanager:v0.34.1
         restart: unless-stopped
         command:
             - --config.file=/etc/alertmanager/alertmanager.yml
@@ -82,7 +82,7 @@ services:
                     cpus: '0.1'
                     memory: 64M
     loki:
-        image: grafana/loki:3.7.7
+        image: grafana/loki:3.7.8
         restart: unless-stopped
         command: -config.file=/etc/loki/loki.yml
         environment:
@@ -107,7 +107,7 @@ services:
                     cpus: '0.5'
                     memory: 320M
     alloy:
-        image: grafana/alloy:v1.19.2
+        image: grafana/alloy:v1.20.1
         restart: unless-stopped
         group_add:
             - ${DOCKER_GID:-988}
@@ -167,7 +167,7 @@ services:
                     cpus: '0.5'
                     memory: 320M
     grafana:
-        image: grafana/grafana:13.2.1
+        image: grafana/grafana:13.2.4
         restart: unless-stopped
         depends_on:
             - prometheus
