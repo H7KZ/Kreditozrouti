@@ -11,86 +11,89 @@ name: Backup Verify
 run-name: Backup Verify · ${{ inputs.check || 'scheduled' }} · ${{ inputs.ref || github.ref_name }}
 
 on:
-    schedule:
-        - cron: '55 6 * * *'
-        - cron: '10 7 * * 1'
-    workflow_dispatch:
-        inputs:
-            ref:
-                description: Source branch, tag or SHA (empty = selected workflow ref)
-                type: string
-                default: ''
-            check:
-                description: Which check to run
-                type: choice
-                options: [freshness, drill, both]
-                default: both
+  schedule:
+    - cron: '55 6 * * *'
+    - cron: '10 7 * * 1'
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or SHA to check from (empty = the workflow ref)
+        required: false
+        type: string
+        default: ''
+      check:
+        description: Which check to run - bucket freshness, the restore drill, or both
+        required: true
+        type: choice
+        options: [freshness, drill, both]
+        default: both
 
 permissions:
-    contents: read
+  contents: read
 
 env:
-    TOOLKIT_DIRECT: '1'
-    BACKUP_BUCKET: ${{ vars.BACKUP_BUCKET }}
-    BACKUP_B2_KEY_ID: ${{ secrets.BACKUP_B2_READER_KEY_ID }}
-    BACKUP_B2_KEY: ${{ secrets.BACKUP_B2_READER_KEY }}
+  TOOLKIT_DIRECT: '1'
+  BACKUP_BUCKET: ${{ vars.BACKUP_BUCKET }}
+  BACKUP_B2_KEY_ID: ${{ secrets.BACKUP_B2_READER_KEY_ID }}
+  BACKUP_B2_KEY: ${{ secrets.BACKUP_B2_READER_KEY }}
 
 jobs:
-    source:
-        name: Resolve source
-        runs-on: ubuntu-latest
-        outputs:
-            sha: ${{ steps.source.outputs.sha }}
-        steps:
-            - name: Check out source
-              uses: actions/checkout@v7
-              with:
-                  ref: ${{ inputs.ref || github.sha }}
-            - name: Resolve commit
-              id: source
-              run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  source:
+    name: Resolve source
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      sha: ${{ steps.source.outputs.sha }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Resolve commit
+        id: source
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-    freshness:
-        name: Check freshness
-        needs: source
-        if: (github.event_name == 'schedule' && github.event.schedule == '55 6 * * *') || (github.event_name == 'workflow_dispatch' && inputs.check != 'drill')
-        runs-on: ubuntu-latest
-        timeout-minutes: 15
-        steps:
-            - name: Check out source
-              uses: actions/checkout@v7
-              with:
-                  ref: ${{ needs.source.outputs.sha }}
-            - name: Verify toolkit pin
-              run: bash deployment/toolkit verify
-            - name: Install backup tools
-              run: sudo TOOLKIT_DIRECT=1 bash deployment/toolkit backup install-tools
-            - name: Check newest object per component
-              env:
-                  BACKUP_HC_FRESHNESS_URL: ${{ secrets.BACKUP_HC_FRESHNESS_URL }}
-              run: bash deployment/toolkit backup check
+  freshness:
+    name: Check freshness
+    needs: source
+    if: (github.event_name == 'schedule' && github.event.schedule == '55 6 * * *') || (github.event_name == 'workflow_dispatch' && inputs.check != 'drill')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.source.outputs.sha }}
+      - name: Verify toolkit pin
+        run: bash deployment/toolkit verify
+      - name: Install backup tools
+        run: sudo TOOLKIT_DIRECT=1 bash deployment/toolkit backup install-tools
+      - name: Check newest object per component
+        env:
+          BACKUP_HC_FRESHNESS_URL: ${{ secrets.BACKUP_HC_FRESHNESS_URL }}
+        run: bash deployment/toolkit backup check
 
-    drill:
-        name: Restore drill
-        needs: source
-        if: (github.event_name == 'schedule' && github.event.schedule == '10 7 * * 1') || (github.event_name == 'workflow_dispatch' && inputs.check != 'freshness')
-        runs-on: ubuntu-latest
-        timeout-minutes: 60
-        steps:
-            - name: Check out source
-              uses: actions/checkout@v7
-              with:
-                  ref: ${{ needs.source.outputs.sha }}
-            - name: Verify toolkit pin
-              run: bash deployment/toolkit verify
-            - name: Install backup tools
-              run: sudo TOOLKIT_DIRECT=1 bash deployment/toolkit backup install-tools
-            - name: Restore every component into throwaway containers
-              env:
-                  BACKUP_HC_DRILL_URL: ${{ secrets.BACKUP_HC_DRILL_URL }}
-                  AGE_IDENTITY: ${{ secrets.BACKUP_AGE_IDENTITY }}
-              run: |
-                  set -Eeuo pipefail
-                  install -m 0600 /dev/null "$RUNNER_TEMP/age-identity.txt"
-                  printf '%s\n' "$AGE_IDENTITY" >"$RUNNER_TEMP/age-identity.txt"
-                  BACKUP_AGE_IDENTITY="$RUNNER_TEMP/age-identity.txt" bash deployment/toolkit backup drill
+  drill:
+    name: Restore drill
+    needs: source
+    if: (github.event_name == 'schedule' && github.event.schedule == '10 7 * * 1') || (github.event_name == 'workflow_dispatch' && inputs.check != 'freshness')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.source.outputs.sha }}
+      - name: Verify toolkit pin
+        run: bash deployment/toolkit verify
+      - name: Install backup tools
+        run: sudo TOOLKIT_DIRECT=1 bash deployment/toolkit backup install-tools
+      - name: Restore every component into throwaway containers
+        env:
+          BACKUP_HC_DRILL_URL: ${{ secrets.BACKUP_HC_DRILL_URL }}
+          AGE_IDENTITY: ${{ secrets.BACKUP_AGE_IDENTITY }}
+        run: |
+          set -Eeuo pipefail
+          install -m 0600 /dev/null "$RUNNER_TEMP/age-identity.txt"
+          printf '%s\n' "$AGE_IDENTITY" >"$RUNNER_TEMP/age-identity.txt"
+          BACKUP_AGE_IDENTITY="$RUNNER_TEMP/age-identity.txt" bash deployment/toolkit backup drill

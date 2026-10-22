@@ -1,281 +1,308 @@
 name: Deploy
-run-name: Deploy · ${{ inputs.environment || 'development' }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.mode || 'build' }} · ${{ inputs.operation || 'deploy' }}
-'on':
-    push:
-        branches: [main]
-    workflow_dispatch:
-        inputs:
-            environment:
-                description: Target environment
-                type: choice
-                options: [development, production]
-                default: development
-            ref:
-                description: Source branch, tag or SHA (empty = workflow ref; promote = latest qualified)
-                type: string
-                default: ''
-            mode:
-                description: Build all, reuse available images, existing images only, or promote qualified development
-                type: choice
-                options: [build, reuse, existing, promote]
-                default: reuse
-            image_tag:
-                description: Reuse/existing tag (empty = environment-sourceSHA)
-                type: string
-                default: ''
-            digests:
-                description: 'Existing only: complete JSON service-to-sha256 digest map instead of a tag'
-                type: string
-                default: ''
-            run_id:
-                description: 'Promote only: successful development run (empty = latest qualifying run)'
-                type: string
-                default: ''
-            verify:
-                description: Verify selected source before deployment
-                type: boolean
-                default: true
-            no_cache:
-                description: Disable build cache
-                type: boolean
-                default: false
-            operation:
-                description: Deploy now or stage an immutable snapshot without activation
-                type: choice
-                options: [deploy, stage]
-                default: deploy
+run-name: Deploy · ${{ inputs.environment || 'development' }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation || 'deploy' }}
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy
+        required: true
+        type: choice
+        options: [development, production]
+        default: development
+      ref:
+        description: Branch, tag or SHA to deploy (empty = the workflow ref; promote mode = latest qualified release)
+        required: false
+        type: string
+        default: ''
+      operation:
+        description: Deploy now, or stage an immutable snapshot without activating it
+        required: true
+        type: choice
+        options: [deploy, stage]
+        default: deploy
+      mode:
+        description: Where images come from - build all, reuse existing tags, existing digests only, or promote a qualified development release
+        required: true
+        type: choice
+        options: [reuse, build, existing, promote]
+        default: reuse
+      image_tag:
+        description: Reuse and existing modes - image tag to use (empty = environment-sourceSHA)
+        required: false
+        type: string
+        default: ''
+      run_id:
+        description: Promote mode - successful development run to promote (empty = latest qualifying run)
+        required: false
+        type: string
+        default: ''
+      digests:
+        description: Existing mode - complete JSON map of service to sha256 digest, instead of a tag
+        required: false
+        type: string
+        default: ''
+      verify:
+        description: Run the full verification on the selected source before deploying
+        required: false
+        type: boolean
+        default: true
+      no_cache:
+        description: Disable the Docker build cache
+        required: false
+        type: boolean
+        default: false
 permissions:
-    actions: read
-    contents: read
-    packages: write
+  contents: read
 concurrency:
-    group: deploy-${{ inputs.environment || 'development' }}
-    cancel-in-progress: false
+  group: deploy-${{ inputs.environment || 'development' }}
+  cancel-in-progress: false
 jobs:
-    resolve:
-        name: Resolve source and images
-        runs-on: ubuntu-latest
-        timeout-minutes: 15
-        outputs:
-            source_commit: ${{ steps.release.outputs.source_commit }}
-            mode: ${{ steps.release.outputs.mode }}
-            image_tag: ${{ steps.release.outputs.image_tag }}
-            manifest_b64: ${{ steps.release.outputs.manifest_b64 }}
-            manifest_sha256: ${{ steps.release.outputs.manifest_sha256 }}
-            api_digest: ${{ steps.release.outputs.api_digest }}
-            web_digest: ${{ steps.release.outputs.web_digest }}
-            scraper_digest: ${{ steps.release.outputs.scraper_digest }}
-            mcp_digest: ${{ steps.release.outputs.mcp_digest }}
-        steps:
-            - name: Check out controller and repository history
-              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-              with:
-                  fetch-depth: 0
-            - name: Login for image lookup
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  GH_ACTOR: ${{ github.actor }}
-              run: printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
-            - name: Resolve immutable release
-              id: release
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  TARGET_ENVIRONMENT: ${{ inputs.environment || 'development' }}
-                  SOURCE_REF: ${{ inputs.ref }}
-                  RELEASE_MODE: ${{ github.event_name == 'push' && 'build' || inputs.mode }}
-                  IMAGE_TAG: ${{ inputs.image_tag }}
-                  IMAGE_DIGESTS: ${{ inputs.digests }}
-                  PROMOTE_RUN_ID: ${{ inputs.run_id }}
-                  NO_CACHE: ${{ inputs.no_cache }}
-              run: python3 deployment/resolve-release.py
-            - name: Log out of registry
-              if: always()
-              run: docker logout ghcr.io
-    verify:
-        name: Verify selected source
-        needs: resolve
-        if: github.event_name == 'push' || inputs.verify
-        uses: ./.github/workflows/_verify.yml
+  resolve:
+    name: Resolve source and images
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      source_commit: ${{ steps.release.outputs.source_commit }}
+      mode: ${{ steps.release.outputs.mode }}
+      image_tag: ${{ steps.release.outputs.image_tag }}
+      manifest_b64: ${{ steps.release.outputs.manifest_b64 }}
+      manifest_sha256: ${{ steps.release.outputs.manifest_sha256 }}
+      api_digest: ${{ steps.release.outputs.api_digest }}
+      web_digest: ${{ steps.release.outputs.web_digest }}
+      scraper_digest: ${{ steps.release.outputs.scraper_digest }}
+      mcp_digest: ${{ steps.release.outputs.mcp_digest }}
+    steps:
+      - name: Check out controller and repository history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-            affected: false
-            source_commit: ${{ needs.resolve.outputs.source_commit }}
-    build-api:
-        name: Build api
-        needs: [resolve, verify]
-        if: ${{ !cancelled() && needs.resolve.result == 'success' && (needs.verify.result == 'success' || (github.event_name == 'workflow_dispatch' && !inputs.verify)) && (needs.resolve.outputs.mode == 'build' || needs.resolve.outputs.mode == 'reuse') && needs.resolve.outputs.api_digest == '' }}
-        uses: ./.github/workflows/_build.yml
+          fetch-depth: 0
+      - name: Login for image lookup
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
+        run: printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
+      - name: Resolve immutable release
+        id: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_ENVIRONMENT: ${{ inputs.environment || 'development' }}
+          SOURCE_REF: ${{ inputs.ref }}
+          RELEASE_MODE: ${{ github.event_name == 'push' && 'build' || inputs.mode }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          IMAGE_DIGESTS: ${{ inputs.digests }}
+          PROMOTE_RUN_ID: ${{ inputs.run_id }}
+          NO_CACHE: ${{ inputs.no_cache }}
+        run: python3 deployment/resolve-release.py
+      - name: Log out of registry
+        if: always()
+        run: docker logout ghcr.io
+  verify:
+    name: Verify selected source
+    permissions:
+      contents: read
+    needs: resolve
+    if: github.event_name == 'push' || inputs.verify
+    uses: ./.github/workflows/_verify.yml
+    with:
+      affected: false
+      source_commit: ${{ needs.resolve.outputs.source_commit }}
+  build-api:
+    name: Build api
+    permissions:
+      contents: read
+      packages: write
+    needs: [resolve, verify]
+    if: ${{ !cancelled() && needs.resolve.result == 'success' && (needs.verify.result == 'success' || (github.event_name == 'workflow_dispatch' && !inputs.verify)) && (needs.resolve.outputs.mode == 'build' || needs.resolve.outputs.mode == 'reuse') && needs.resolve.outputs.api_digest == '' }}
+    uses: ./.github/workflows/_build.yml
+    with:
+      service: api
+      source_commit: ${{ needs.resolve.outputs.source_commit }}
+      image_tag: ${{ needs.resolve.outputs.image_tag }}
+      environment: ${{ inputs.environment || 'development' }}
+      no_cache: ${{ inputs.no_cache || false }}
+    secrets: inherit
+  build-web:
+    name: Build web
+    permissions:
+      contents: read
+      packages: write
+    needs: [resolve, verify]
+    if: ${{ !cancelled() && needs.resolve.result == 'success' && (needs.verify.result == 'success' || (github.event_name == 'workflow_dispatch' && !inputs.verify)) && (needs.resolve.outputs.mode == 'build' || needs.resolve.outputs.mode == 'reuse') && needs.resolve.outputs.web_digest == '' }}
+    uses: ./.github/workflows/_build.yml
+    with:
+      service: web
+      source_commit: ${{ needs.resolve.outputs.source_commit }}
+      image_tag: ${{ needs.resolve.outputs.image_tag }}
+      environment: ${{ inputs.environment || 'development' }}
+      no_cache: ${{ inputs.no_cache || false }}
+    secrets: inherit
+  build-scraper:
+    name: Build scraper
+    permissions:
+      contents: read
+      packages: write
+    needs: [resolve, verify]
+    if: ${{ !cancelled() && needs.resolve.result == 'success' && (needs.verify.result == 'success' || (github.event_name == 'workflow_dispatch' && !inputs.verify)) && (needs.resolve.outputs.mode == 'build' || needs.resolve.outputs.mode == 'reuse') && needs.resolve.outputs.scraper_digest == '' }}
+    uses: ./.github/workflows/_build.yml
+    with:
+      service: scraper
+      source_commit: ${{ needs.resolve.outputs.source_commit }}
+      image_tag: ${{ needs.resolve.outputs.image_tag }}
+      environment: ${{ inputs.environment || 'development' }}
+      no_cache: ${{ inputs.no_cache || false }}
+    secrets: inherit
+  build-mcp:
+    name: Build mcp
+    permissions:
+      contents: read
+      packages: write
+    needs: [resolve, verify]
+    if: ${{ !cancelled() && needs.resolve.result == 'success' && (needs.verify.result == 'success' || (github.event_name == 'workflow_dispatch' && !inputs.verify)) && (needs.resolve.outputs.mode == 'build' || needs.resolve.outputs.mode == 'reuse') && needs.resolve.outputs.mcp_digest == '' }}
+    uses: ./.github/workflows/_build.yml
+    with:
+      service: mcp
+      source_commit: ${{ needs.resolve.outputs.source_commit }}
+      image_tag: ${{ needs.resolve.outputs.image_tag }}
+      environment: ${{ inputs.environment || 'development' }}
+      no_cache: ${{ inputs.no_cache || false }}
+    secrets: inherit
+  deploy:
+    name: Apply complete snapshot
+    permissions:
+      contents: read
+      packages: read
+    needs: [resolve, verify, build-api, build-web, build-scraper, build-mcp]
+    if: ${{ !cancelled() && needs.resolve.result == 'success' && (needs.verify.result == 'success' || (github.event_name == 'workflow_dispatch' && !inputs.verify)) && (needs.resolve.outputs.api_digest != '' || needs.build-api.result == 'success') && (needs.resolve.outputs.web_digest != '' || needs.build-web.result == 'success') && (needs.resolve.outputs.scraper_digest != '' || needs.build-scraper.result == 'success') && (needs.resolve.outputs.mcp_digest != '' || needs.build-mcp.result == 'success') }}
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      environment: ${{ inputs.environment || 'development' }}
+      operation: ${{ inputs.operation || 'deploy' }}
+      source_commit: ${{ needs.resolve.outputs.source_commit }}
+      qualified_release_manifest_b64: ${{ needs.resolve.outputs.manifest_b64 }}
+      qualified_manifest_sha256: ${{ needs.resolve.outputs.manifest_sha256 }}
+      api_digest: ${{ needs.resolve.outputs.api_digest || needs.build-api.outputs.image_digest }}
+      web_digest: ${{ needs.resolve.outputs.web_digest || needs.build-web.outputs.image_digest }}
+      scraper_digest: ${{ needs.resolve.outputs.scraper_digest || needs.build-scraper.outputs.image_digest }}
+      mcp_digest: ${{ needs.resolve.outputs.mcp_digest || needs.build-mcp.outputs.image_digest }}
+    secrets: inherit
+  publish-qualified-development-release:
+    name: Publish qualified development release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: development
+    permissions:
+      contents: read
+    needs: [resolve, deploy, build-api, build-web, build-scraper, build-mcp]
+    if: ${{ !cancelled() && needs.resolve.result == 'success' && needs.deploy.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && (github.event_name == 'push' || inputs.operation == 'deploy') && (needs.resolve.outputs.api_digest != '' || needs.build-api.result == 'success') && (needs.resolve.outputs.web_digest != '' || needs.build-web.result == 'success') && (needs.resolve.outputs.scraper_digest != '' || needs.build-scraper.result == 'success') && (needs.resolve.outputs.mcp_digest != '' || needs.build-mcp.result == 'success') }}
+    steps:
+      - name: Check out controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-            service: api
-            source_commit: ${{ needs.resolve.outputs.source_commit }}
-            image_tag: ${{ needs.resolve.outputs.image_tag }}
-            environment: ${{ inputs.environment || 'development' }}
-            no_cache: ${{ inputs.no_cache || false }}
-        secrets: inherit
-    build-web:
-        name: Build web
-        needs: [resolve, verify]
-        if: ${{ !cancelled() && needs.resolve.result == 'success' && (needs.verify.result == 'success' || (github.event_name == 'workflow_dispatch' && !inputs.verify)) && (needs.resolve.outputs.mode == 'build' || needs.resolve.outputs.mode == 'reuse') && needs.resolve.outputs.web_digest == '' }}
-        uses: ./.github/workflows/_build.yml
+          persist-credentials: false
+      - name: Verify toolkit pin
+        run: bash deployment/toolkit verify
+      - name: Observe development public HTTP endpoints
+        env:
+          DEVELOPMENT_DOMAIN: ${{ vars.DOMAIN }}
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         with:
-            service: web
-            source_commit: ${{ needs.resolve.outputs.source_commit }}
-            image_tag: ${{ needs.resolve.outputs.image_tag }}
-            environment: ${{ inputs.environment || 'development' }}
-            no_cache: ${{ inputs.no_cache || false }}
-        secrets: inherit
-    build-scraper:
-        name: Build scraper
-        needs: [resolve, verify]
-        if: ${{ !cancelled() && needs.resolve.result == 'success' && (needs.verify.result == 'success' || (github.event_name == 'workflow_dispatch' && !inputs.verify)) && (needs.resolve.outputs.mode == 'build' || needs.resolve.outputs.mode == 'reuse') && needs.resolve.outputs.scraper_digest == '' }}
-        uses: ./.github/workflows/_build.yml
-        with:
-            service: scraper
-            source_commit: ${{ needs.resolve.outputs.source_commit }}
-            image_tag: ${{ needs.resolve.outputs.image_tag }}
-            environment: ${{ inputs.environment || 'development' }}
-            no_cache: ${{ inputs.no_cache || false }}
-        secrets: inherit
-    build-mcp:
-        name: Build mcp
-        needs: [resolve, verify]
-        if: ${{ !cancelled() && needs.resolve.result == 'success' && (needs.verify.result == 'success' || (github.event_name == 'workflow_dispatch' && !inputs.verify)) && (needs.resolve.outputs.mode == 'build' || needs.resolve.outputs.mode == 'reuse') && needs.resolve.outputs.mcp_digest == '' }}
-        uses: ./.github/workflows/_build.yml
-        with:
-            service: mcp
-            source_commit: ${{ needs.resolve.outputs.source_commit }}
-            image_tag: ${{ needs.resolve.outputs.image_tag }}
-            environment: ${{ inputs.environment || 'development' }}
-            no_cache: ${{ inputs.no_cache || false }}
-        secrets: inherit
-    deploy:
-        name: Apply complete snapshot
-        needs: [resolve, verify, build-api, build-web, build-scraper, build-mcp]
-        if: ${{ !cancelled() && needs.resolve.result == 'success' && (needs.verify.result == 'success' || (github.event_name == 'workflow_dispatch' && !inputs.verify)) && (needs.resolve.outputs.api_digest != '' || needs.build-api.result == 'success') && (needs.resolve.outputs.web_digest != '' || needs.build-web.result == 'success') && (needs.resolve.outputs.scraper_digest != '' || needs.build-scraper.result == 'success') && (needs.resolve.outputs.mcp_digest != '' || needs.build-mcp.result == 'success') }}
-        uses: ./.github/workflows/_deploy.yml
-        with:
-            environment: ${{ inputs.environment || 'development' }}
-            operation: ${{ inputs.operation || 'deploy' }}
-            source_commit: ${{ needs.resolve.outputs.source_commit }}
-            qualified_release_manifest_b64: ${{ needs.resolve.outputs.manifest_b64 }}
-            qualified_manifest_sha256: ${{ needs.resolve.outputs.manifest_sha256 }}
-            api_digest: ${{ needs.resolve.outputs.api_digest || needs.build-api.outputs.image_digest }}
-            web_digest: ${{ needs.resolve.outputs.web_digest || needs.build-web.outputs.image_digest }}
-            scraper_digest: ${{ needs.resolve.outputs.scraper_digest || needs.build-scraper.outputs.image_digest }}
-            mcp_digest: ${{ needs.resolve.outputs.mcp_digest || needs.build-mcp.outputs.image_digest }}
-        secrets: inherit
-    publish-qualified-development-release:
-        name: Publish qualified development release
-        runs-on: ubuntu-latest
-        timeout-minutes: 10
-        environment: development
-        needs:
-            - resolve
-            - deploy
-            - build-api
-            - build-web
-            - build-scraper
-            - build-mcp
-        if:
-            ${{ !cancelled() && needs.resolve.result == 'success' && needs.deploy.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && (github.event_name == 'push' || inputs.operation == 'deploy')
-            && (needs.resolve.outputs.api_digest != '' || needs.build-api.result == 'success') && (needs.resolve.outputs.web_digest != '' || needs.build-web.result == 'success')
-            && (needs.resolve.outputs.scraper_digest != '' || needs.build-scraper.result == 'success') && (needs.resolve.outputs.mcp_digest != '' || needs.build-mcp.result == 'success') }}
-        steps:
-            - name: Observe development public HTTP endpoints
-              env:
-                  DEVELOPMENT_DOMAIN: ${{ vars.DOMAIN }}
-              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ vars.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: DEVELOPMENT_DOMAIN
-                  command_timeout: 5m
-                  script: |
-                      set -euo pipefail
-                      [[ "$DEVELOPMENT_DOMAIN" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]] || {
-                        echo "::error::Development DOMAIN must be a non-empty hostname"
-                        exit 1
-                      }
-                      consecutive=0
-                      for round in $(seq 1 6); do
-                        healthy=true
-                        for path in /api/health /mcp/health /; do
-                          if status=$(curl --silent --show-error --location --max-redirs 3 \
-                            --proto '=https' --proto-redir '=https' --connect-timeout 5 --max-time 10 \
-                            --retry 1 --retry-delay 2 --retry-max-time 22 \
-                            --user-agent 'toolkit-public-health/1' \
-                            --header 'Cache-Control: no-cache' --output /dev/null --write-out '%{http_code}' \
-                            "https://$DEVELOPMENT_DOMAIN$path") && [[ "$status" =~ ^2[0-9]{2}$ ]]; then
-                            echo "Observation $round: $path HTTP $status"
-                          else
-                            echo "::warning::Observation $round failed: $path HTTP ${status:-unavailable}"
-                            healthy=false
-                          fi
-                        done
-                        if [[ "$healthy" == true ]]; then
-                          consecutive=$((consecutive + 1))
-                        else
-                          consecutive=0
-                        fi
-                        if [[ "$consecutive" -eq 3 ]]; then
-                          echo "Three consecutive public HTTP observations passed; publishing development manifest."
-                          exit 0
-                        fi
-                        [[ "$round" -eq 6 ]] || sleep 10
-                      done
-                      echo "::error::Development public HTTP observation failed; release manifest will not be published"
-                      exit 1
-            - name: Record public health observation
-              run: echo 'Public HTTPS observations from the deployment host passed; business-smoke and zero-downtime evidence remain outstanding.' >> "$GITHUB_STEP_SUMMARY"
-            - name: Write development release manifest
-              env:
-                  SOURCE_COMMIT: ${{ needs.resolve.outputs.source_commit }}
-                  API_DIGEST: ${{ needs.resolve.outputs.api_digest || needs.build-api.outputs.image_digest }}
-                  API_DEPLOY_RESULT: ${{ needs.deploy.result }}
-                  WEB_DIGEST: ${{ needs.resolve.outputs.web_digest || needs.build-web.outputs.image_digest }}
-                  WEB_DEPLOY_RESULT: ${{ needs.deploy.result }}
-                  SCRAPER_DIGEST: ${{ needs.resolve.outputs.scraper_digest || needs.build-scraper.outputs.image_digest }}
-                  SCRAPER_DEPLOY_RESULT: ${{ needs.deploy.result }}
-                  MCP_DIGEST: ${{ needs.resolve.outputs.mcp_digest || needs.build-mcp.outputs.image_digest }}
-                  MCP_DEPLOY_RESULT: ${{ needs.deploy.result }}
-              run: |
-                  set -euo pipefail
-                  mkdir -p "$RUNNER_TEMP/qualified-development-release"
-                  python3 - "$RUNNER_TEMP/qualified-development-release/release-manifest.json" <<'PY'
-                  import json
-                  import os
-                  import re
-                  import sys
-                  from pathlib import Path
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: DEVELOPMENT_DOMAIN
+          command_timeout: 5m
+          script: |
+            set -euo pipefail
+            [[ "$DEVELOPMENT_DOMAIN" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]] || {
+              echo "::error::Development DOMAIN must be a non-empty hostname"
+              exit 1
+            }
+            consecutive=0
+            for round in $(seq 1 6); do
+              healthy=true
+              for path in /api/health /mcp/health /; do
+                if status=$(curl --silent --show-error --location --max-redirs 3 \
+                  --proto '=https' --proto-redir '=https' --connect-timeout 5 --max-time 10 \
+                  --retry 1 --retry-delay 2 --retry-max-time 22 \
+                  --user-agent 'toolkit-public-health/1' \
+                  --header 'Cache-Control: no-cache' --output /dev/null --write-out '%{http_code}' \
+                  "https://$DEVELOPMENT_DOMAIN$path") && [[ "$status" =~ ^2[0-9]{2}$ ]]; then
+                  echo "Observation $round: $path HTTP $status"
+                else
+                  echo "::warning::Observation $round failed: $path HTTP ${status:-unavailable}"
+                  healthy=false
+                fi
+              done
+              if [[ "$healthy" == true ]]; then
+                consecutive=$((consecutive + 1))
+              else
+                consecutive=0
+              fi
+              if [[ "$consecutive" -eq 3 ]]; then
+                echo "Three consecutive public HTTP observations passed; publishing development manifest."
+                exit 0
+              fi
+              [[ "$round" -eq 6 ]] || sleep 10
+            done
+            echo "::error::Development public HTTP observation failed; release manifest will not be published"
+            exit 1
+      - name: Record public health observation
+        run: echo 'Public HTTPS observations from the deployment host passed; business-smoke and zero-downtime evidence remain outstanding.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Write development release manifest
+        env:
+          SOURCE_COMMIT: ${{ needs.resolve.outputs.source_commit }}
+          API_DIGEST: ${{ needs.resolve.outputs.api_digest || needs.build-api.outputs.image_digest }}
+          API_DEPLOY_RESULT: ${{ needs.deploy.result }}
+          WEB_DIGEST: ${{ needs.resolve.outputs.web_digest || needs.build-web.outputs.image_digest }}
+          WEB_DEPLOY_RESULT: ${{ needs.deploy.result }}
+          SCRAPER_DIGEST: ${{ needs.resolve.outputs.scraper_digest || needs.build-scraper.outputs.image_digest }}
+          SCRAPER_DEPLOY_RESULT: ${{ needs.deploy.result }}
+          MCP_DIGEST: ${{ needs.resolve.outputs.mcp_digest || needs.build-mcp.outputs.image_digest }}
+          MCP_DEPLOY_RESULT: ${{ needs.deploy.result }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/qualified-development-release"
+          python3 - "$RUNNER_TEMP/qualified-development-release/release-manifest.json" <<'PY'
+          import json
+          import os
+          import re
+          import sys
+          from pathlib import Path
 
-                  services = {}
-                  for name in ("api", "web", "scraper", "mcp"):
-                      digest = os.environ[f"{name.upper()}_DIGEST"]
-                      result = os.environ[f"{name.upper()}_DEPLOY_RESULT"]
-                      if result != "success":
-                          raise SystemExit(f"{name} deploy did not succeed; release is incomplete")
-                      if not re.fullmatch(r"sha256:[a-f0-9]{64}", digest):
-                          raise SystemExit(f"successful {name} deploy has no valid immutable digest")
-                      services[name] = digest
-                  document = {
-                      "schema_version": 1,
-                      "repository": os.environ["GITHUB_REPOSITORY"],
-                      "workflow_path": ".github/workflows/deploy.yml",
-                      "workflow_run_id": os.environ["GITHUB_RUN_ID"],
-                      "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
-                      "environment": "development",
-                      "source_commit": os.environ["SOURCE_COMMIT"],
-                      "services": services,
-                  }
-                  Path(sys.argv[1]).write_text(json.dumps(document, sort_keys=True, indent=2) + "\n", encoding="utf-8")
-                  print(f"qualified development release: {document['source_commit']} attempt={document['workflow_run_id']}.{document['workflow_run_attempt']} services={','.join(services)}")
-                  PY
-            - name: Upload development release manifest
-              uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
-              with:
-                  name: qualified-development-release-${{ github.run_attempt }}
-                  path: ${{ runner.temp }}/qualified-development-release/release-manifest.json
-                  if-no-files-found: error
-                  retention-days: 90
+          services = {}
+          for name in ("api", "web", "scraper", "mcp"):
+              digest = os.environ[f"{name.upper()}_DIGEST"]
+              result = os.environ[f"{name.upper()}_DEPLOY_RESULT"]
+              if result != "success":
+                  raise SystemExit(f"{name} deploy did not succeed; release is incomplete")
+              if not re.fullmatch(r"sha256:[a-f0-9]{64}", digest):
+                  raise SystemExit(f"successful {name} deploy has no valid immutable digest")
+              services[name] = digest
+          document = {
+              "schema_version": 1,
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "workflow_path": ".github/workflows/deploy.yml",
+              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+              "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "environment": "development",
+              "source_commit": os.environ["SOURCE_COMMIT"],
+              "services": services,
+          }
+          Path(sys.argv[1]).write_text(json.dumps(document, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+          print(f"qualified development release: {document['source_commit']} attempt={document['workflow_run_id']}.{document['workflow_run_attempt']} services={','.join(services)}")
+          PY
+      - name: Upload development release manifest
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: qualified-development-release-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/qualified-development-release/release-manifest.json
+          if-no-files-found: error
+          retention-days: 90

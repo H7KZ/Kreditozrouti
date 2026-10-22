@@ -19,117 +19,125 @@ name: Cleanup Registry
 run-name: Cleanup Registry · ${{ inputs.dry_run == false && github.event_name == 'workflow_dispatch' && 'delete' || 'dry-run' }}
 
 on:
-    schedule:
-        - cron: '17 4 * * 1'
-    workflow_dispatch:
-        inputs:
-            keep_newest:
-                description: Keep newest tagged versions per package
-                type: number
-                default: 6
-            min_age_days:
-                description: Keep versions younger than this many days
-                type: number
-                default: 7
-            packages:
-                description: Comma or space separated repository service names (empty = all)
-                type: string
-                default: ''
-            dry_run:
-                description: 'Only log what would be deleted'
-                required: true
-                type: boolean
-                default: true
-            protected_digests:
-                description: 'Digests to keep (sha256:..., space/comma/newline separated): deployed, previous, rollback'
-                required: false
-                type: string
-                default: ''
+  schedule:
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      keep_newest:
+        description: Keep this many newest tagged versions per package
+        required: false
+        type: number
+        default: 6
+      min_age_days:
+        description: Keep versions younger than this many days
+        required: false
+        type: number
+        default: 7
+      packages:
+        description: Comma or space separated service names to clean (empty = all)
+        required: false
+        type: string
+        default: ''
+      dry_run:
+        description: Only log what would be deleted; scheduled runs are always dry runs
+        required: true
+        type: boolean
+        default: true
+      protected_digests:
+        description: 'Digests to keep (sha256:..., space, comma or newline separated): deployed, previous and rollback images'
+        required: false
+        type: string
+        default: ''
 
 concurrency:
-    group: registry-cleanup
-    cancel-in-progress: false
+  group: registry-cleanup
+  cancel-in-progress: false
 
 permissions:
-    contents: read
-    packages: write
+  contents: read
 
 jobs:
-    validate:
-        runs-on: ubuntu-latest
-        outputs:
-            packages: ${{ steps.inputs.outputs.packages }}
-        steps:
-            - id: inputs
-              env:
-                  KEEP_NEWEST: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.keep_newest) || '6' }}
-                  MIN_AGE_DAYS: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.min_age_days) || '7' }}
-                  PACKAGES: ${{ inputs.packages }}
-                  PROTECTED: ${{ inputs.protected_digests }}
-              run: |
-                  python3 - <<'PY'
-                  import json, os, re
-                  for key in ('KEEP_NEWEST', 'MIN_AGE_DAYS'):
-                      if not re.fullmatch(r'[0-9]+', os.environ[key]):
-                          raise SystemExit(key + ' must be a nonnegative integer')
-                  protected = re.split(r'[\s,]+', os.environ['PROTECTED'].strip())
-                  if any(value and not re.fullmatch(r'sha256:[a-f0-9]{64}', value) for value in protected):
-                      raise SystemExit('protected_digests must contain only full sha256 digests')
-                  services = re.split(r'[\s,]+', os.environ['PACKAGES'].strip()) if os.environ['PACKAGES'].strip() else ['api', 'web', 'scraper', 'mcp']
-                  if len(services) != len(set(services)) or not set(services) <= {'api', 'web', 'scraper', 'mcp'}:
-                      raise SystemExit('packages must be distinct repository service names')
-                  with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
-                      output.write('packages=' + json.dumps(['kreditozrouti/' + name for name in services]) + '\n')
-                  PY
-    cleanup:
-        needs: validate
-        name: Cleanup ${{ matrix.package }}
-        runs-on: ubuntu-latest
-        timeout-minutes: 15
-        strategy:
-            fail-fast: false
-            matrix:
-                package: ${{ fromJSON(needs.validate.outputs.packages) }}
-        steps:
-            - name: Prune old versions
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  PACKAGE: ${{ matrix.package }}
-                  OWNER: ${{ github.repository_owner }}
-                  DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == false && 'false' || 'true' }}
-                  PROTECTED: ${{ inputs.protected_digests }}
-                  KEEP_NEWEST: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.keep_newest) || '6' }}
-                  MIN_AGE_DAYS: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.min_age_days) || '7' }}
-              run: |
-                  set -euo pipefail
-                  enc="${PACKAGE//\//%2F}"
-                  base="users/${OWNER}/packages/container/${enc}/versions"
-                  gh api --paginate "${base}?per_page=100" --jq '.[]' | jq -s 'sort_by(.created_at) | reverse' > versions.json
-                  total="$(jq 'length' versions.json)"
-                  untagged="$(jq '[.[] | select((.metadata.container.tags // []) | length == 0)] | length' versions.json)"
-                  echo "::notice::${PACKAGE}: ${total} versions (${untagged} untagged, never deleted); keep newest ${KEEP_NEWEST}; dry_run=${DRY_RUN}"
-                  jq -r --argjson keep "$KEEP_NEWEST" --argjson age "$MIN_AGE_DAYS" --arg prot "$PROTECTED" '
-                      ([$prot | scan("sha256:[0-9a-f]+")]) as $p
-                      | [.[] | select((.metadata.container.tags // []) | length > 0)]
-                      | to_entries[]
-                      | .key as $i | .value as $v | ($v.metadata.container.tags) as $t
-                      | (if $i < $keep then "keep-newest"
-                            elif ($v.created_at | fromdateiso8601) > (now - $age * 86400) then "keep-age"
-                            elif ($t | any(test("^(latest|prod|current)$") or test("-latest$"))) then "keep-tag"
-                            elif ($p | index($v.name)) then "keep-protected"
-                            else "delete" end) as $a
-                      | [$a, ($v.id | tostring), $v.name, ($t | join(",")), $v.created_at] | @tsv
-                  ' versions.json > plan.tsv
-                  cat plan.tsv
-                  del=0
-                  while IFS=$'\t' read -r action id digest tags created; do
-                      [ "$action" = delete ] || continue
-                      del=$((del + 1))
-                      if [ "$DRY_RUN" = true ]; then
-                          echo "DRY-RUN would delete id=${id} ${digest} tags=${tags} created=${created}"
-                      else
-                          echo "Deleting id=${id} ${digest} tags=${tags} created=${created}"
-                          gh api -X DELETE "${base}/${id}"
-                      fi
-                  done < plan.tsv
-                  echo "### ${PACKAGE}: ${del} to delete (dry_run=${DRY_RUN})" >> "$GITHUB_STEP_SUMMARY"
+  validate:
+    name: Validate inputs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    outputs:
+      packages: ${{ steps.inputs.outputs.packages }}
+    steps:
+      - id: inputs
+        env:
+          KEEP_NEWEST: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.keep_newest) || '6' }}
+          MIN_AGE_DAYS: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.min_age_days) || '7' }}
+          PACKAGES: ${{ inputs.packages }}
+          PROTECTED: ${{ inputs.protected_digests }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re
+          for key in ('KEEP_NEWEST', 'MIN_AGE_DAYS'):
+              if not re.fullmatch(r'[0-9]+', os.environ[key]):
+                  raise SystemExit(key + ' must be a nonnegative integer')
+          protected = re.split(r'[\s,]+', os.environ['PROTECTED'].strip())
+          if any(value and not re.fullmatch(r'sha256:[a-f0-9]{64}', value) for value in protected):
+              raise SystemExit('protected_digests must contain only full sha256 digests')
+          services = re.split(r'[\s,]+', os.environ['PACKAGES'].strip()) if os.environ['PACKAGES'].strip() else ['api', 'web', 'scraper', 'mcp']
+          if len(services) != len(set(services)) or not set(services) <= {'api', 'web', 'scraper', 'mcp'}:
+              raise SystemExit('packages must be distinct repository service names')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('packages=' + json.dumps(['kreditozrouti/' + name for name in services]) + '\n')
+          PY
+  cleanup:
+    needs: validate
+    name: Cleanup ${{ matrix.package }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.validate.outputs.packages) }}
+    steps:
+      - name: Prune old versions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE: ${{ matrix.package }}
+          OWNER: ${{ github.repository_owner }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == false && 'false' || 'true' }}
+          PROTECTED: ${{ inputs.protected_digests }}
+          KEEP_NEWEST: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.keep_newest) || '6' }}
+          MIN_AGE_DAYS: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.min_age_days) || '7' }}
+        run: |
+          set -euo pipefail
+          enc="${PACKAGE//\//%2F}"
+          base="users/${OWNER}/packages/container/${enc}/versions"
+          gh api --paginate "${base}?per_page=100" --jq '.[]' | jq -s 'sort_by(.created_at) | reverse' > versions.json
+          total="$(jq 'length' versions.json)"
+          untagged="$(jq '[.[] | select((.metadata.container.tags // []) | length == 0)] | length' versions.json)"
+          echo "::notice::${PACKAGE}: ${total} versions (${untagged} untagged, never deleted); keep newest ${KEEP_NEWEST}; dry_run=${DRY_RUN}"
+          jq -r --argjson keep "$KEEP_NEWEST" --argjson age "$MIN_AGE_DAYS" --arg prot "$PROTECTED" '
+              ([$prot | scan("sha256:[0-9a-f]+")]) as $p
+              | [.[] | select((.metadata.container.tags // []) | length > 0)]
+              | to_entries[]
+              | .key as $i | .value as $v | ($v.metadata.container.tags) as $t
+              | (if $i < $keep then "keep-newest"
+                    elif ($v.created_at | fromdateiso8601) > (now - $age * 86400) then "keep-age"
+                    elif ($t | any(test("^(latest|prod|current)$") or test("-latest$"))) then "keep-tag"
+                    elif ($p | index($v.name)) then "keep-protected"
+                    else "delete" end) as $a
+              | [$a, ($v.id | tostring), $v.name, ($t | join(",")), $v.created_at] | @tsv
+          ' versions.json > plan.tsv
+          cat plan.tsv
+          del=0
+          while IFS=$'\t' read -r action id digest tags created; do
+              [ "$action" = delete ] || continue
+              del=$((del + 1))
+              if [ "$DRY_RUN" = true ]; then
+                  echo "DRY-RUN would delete id=${id} ${digest} tags=${tags} created=${created}"
+              else
+                  echo "Deleting id=${id} ${digest} tags=${tags} created=${created}"
+                  gh api -X DELETE "${base}/${id}"
+              fi
+          done < plan.tsv
+          echo "### ${PACKAGE}: ${del} to delete (dry_run=${DRY_RUN})" >> "$GITHUB_STEP_SUMMARY"

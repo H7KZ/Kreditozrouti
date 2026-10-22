@@ -1,161 +1,160 @@
 name: Rollback
-run-name: Rollback · ${{ inputs.environment }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }} · ${{ inputs.release_id }}
-'on':
-    workflow_dispatch:
-        inputs:
-            ref:
-                description: Controller branch, tag or SHA (empty = selected workflow ref)
-                type: string
-                default: ''
-            operation:
-                description: Restore a snapshot, activate a staged snapshot, or reconcile current
-                type: choice
-                options: [rollback, activate, reconcile]
-                default: rollback
-            release_id:
-                description: 'Saved snapshot: previous, current or fullSHA-run-attempt (ignored for reconcile)'
-                required: true
-                type: string
-                default: previous
-            environment:
-                description: Target environment
-                required: true
-                type: choice
-                options:
-                    - production
-                    - development
-                    - monitoring
-                default: production
+run-name: Rollback · ${{ inputs.environment }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to act on
+        required: true
+        type: choice
+        options: [production, development, monitoring, ingress]
+        default: production
+      ref:
+        description: Controller branch, tag or SHA whose pinned toolkit runs the operation (empty = the workflow ref)
+        required: false
+        type: string
+        default: ''
+      operation:
+        description: Restore a saved snapshot, activate a staged snapshot, or reconcile the current one
+        required: true
+        type: choice
+        options: [rollback, activate, reconcile]
+        default: rollback
+      release_id:
+        description: Snapshot to use - previous, current or fullSHA-run-attempt (ignored for reconcile)
+        required: true
+        type: string
+        default: previous
 permissions:
-    contents: read
-    packages: read
+  contents: read
+  packages: read
 concurrency:
-    group: ${{ format('deploy-{0}', inputs.environment) }}
-    cancel-in-progress: false
+  group: ${{ format('deploy-{0}', inputs.environment) }}
+  cancel-in-progress: false
 jobs:
-    rollback:
-        name: Restore saved snapshot
-        runs-on: ubuntu-latest
-        timeout-minutes: 120
-        environment: ${{ inputs.environment }}
-        steps:
-            - name: Validate restore target, operation and trusted fingerprint
-              env:
-                  SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  RELEASE_ID: ${{ inputs.release_id }}
-                  OPERATION: ${{ inputs.operation }}
-              run: |
-                  set -euo pipefail
-                  [[ "$OPERATION" =~ ^(rollback|activate|reconcile)$ ]] || exit 1
-                  [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
-                  [[ "$RELEASE_ID" =~ ^(previous|current)$ || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || { echo 'ERROR: choose previous, current or a full snapshot release ID'; exit 1; }
-                  [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || exit 1
-            - name: Check out control pin
-              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-              with:
-                  ref: ${{ inputs.ref || github.sha }}
-            - name: Verify toolkit pin
-              run: bash deployment/toolkit verify
-            - name: Prepare isolated registry credentials
-              id: auth
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  GH_ACTOR: ${{ github.actor }}
-              run: |
-                  set -euo pipefail
-                  set +x
-                  umask 077
-                  mkdir -m 700 incoming
-                  # The checked-out control pin's own toolkit runs the restore on the VPS.
-                  mkdir -p incoming/deployment/vendor
-                  cp deployment/toolkit deployment/toolkit.conf deployment/toolkit.lock incoming/deployment/
-                  cp -R deployment/vendor/toolkit incoming/deployment/vendor/toolkit
-                  mkdir -m 700 incoming/registry
-                  printf '%s' "$GH_TOKEN" | docker --config "$PWD/incoming/registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
-                  echo "toolkit_version=$(sed -n 's/^TOOLKIT_VERSION=//p' deployment/toolkit.lock)" >> "$GITHUB_OUTPUT"
-            - name: Reserve isolated incoming directory
-              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
-              env:
-                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
-                  EXPECTED_TOOLKIT_VERSION: ${{ steps.auth.outputs.toolkit_version }}
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ vars.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION
-                  command_timeout: 5m
-                  script: |
-                      set -euo pipefail
-                      umask 077
-                      [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
-                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
-                      mkdir -p -m 700 "$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT"
-                      mkdir -m 700 "$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
-              id: reserve
-            - name: Upload isolated registry config
-              uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ vars.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  source: incoming/
-                  target: ~/kreditozrouti/incoming/${{ inputs.environment }}/${{ github.run_id }}-${{ github.run_attempt }}
-                  strip_components: 1
-            - name: Restore complete saved snapshot
-              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
-              env:
-                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
-                  EXPECTED_TOOLKIT_VERSION: ${{ steps.auth.outputs.toolkit_version }}
-                  RELEASE_ID: ${{ inputs.release_id }}
-                  OPERATION: ${{ inputs.operation }}
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ vars.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION,RELEASE_ID,OPERATION
-                  command_timeout: 110m
-                  script: |
-                      set -euo pipefail
-                      [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
-                      [[ "$RELEASE_ID" =~ ^(previous|current)$ || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
-                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
-                      incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
-                      chmod 600 "$incoming/registry/config.json"
-                      [[ "$OPERATION" =~ ^(rollback|activate|reconcile)$ ]] || exit 1
-                      if [[ "$OPERATION" == reconcile ]]; then
-                        bash "$incoming/deployment/toolkit" release reconcile "$TARGET_ENVIRONMENT" --registry-config "$incoming/registry"
-                      else
-                        bash "$incoming/deployment/toolkit" release "$OPERATION" "$TARGET_ENVIRONMENT" --release-id "$RELEASE_ID" --registry-config "$incoming/registry"
-                      fi
-            - name: Remove own registry credentials
-              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
-              env:
-                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ vars.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: TARGET_ENVIRONMENT,INCOMING_ID
-                  command_timeout: 5m
-                  script: |
-                      set -euo pipefail
-                      [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
-                      incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
-                      [[ ! -L "$incoming" ]] || exit 1
-                      rm -rf -- "$incoming"
-              if: always() && steps.reserve.outcome == 'success'
-            - name: Remove runner credentials
-              if: always()
-              run: rm -rf -- "$GITHUB_WORKSPACE/incoming"
+  rollback:
+    name: Restore saved snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Validate restore target, operation and trusted fingerprint
+        env:
+          SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          RELEASE_ID: ${{ inputs.release_id }}
+          OPERATION: ${{ inputs.operation }}
+        run: |
+          set -euo pipefail
+          [[ "$OPERATION" =~ ^(rollback|activate|reconcile)$ ]] || exit 1
+          [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ ]] || exit 1
+          [[ "$RELEASE_ID" =~ ^(previous|current)$ || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || { echo 'ERROR: choose previous, current or a full snapshot release ID'; exit 1; }
+          [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || exit 1
+      - name: Check out control pin
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Verify toolkit pin
+        run: bash deployment/toolkit verify
+      - name: Prepare isolated registry credentials
+        id: auth
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          set +x
+          umask 077
+          mkdir -m 700 incoming
+          # The checked-out control pin's own toolkit runs the restore on the VPS.
+          mkdir -p incoming/deployment/vendor
+          cp deployment/toolkit deployment/toolkit.conf deployment/toolkit.lock incoming/deployment/
+          cp -R deployment/vendor/toolkit incoming/deployment/vendor/toolkit
+          mkdir -m 700 incoming/registry
+          printf '%s' "$GH_TOKEN" | docker --config "$PWD/incoming/registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
+          echo "toolkit_version=$(sed -n 's/^TOOLKIT_VERSION=//p' deployment/toolkit.lock)" >> "$GITHUB_OUTPUT"
+      - name: Reserve isolated incoming directory
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+          EXPECTED_TOOLKIT_VERSION: ${{ steps.auth.outputs.toolkit_version }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION
+          command_timeout: 5m
+          script: |
+            set -euo pipefail
+            umask 077
+            [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+            [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
+            mkdir -p -m 700 "$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT"
+            mkdir -m 700 "$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
+        id: reserve
+      - name: Upload isolated registry config
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          source: incoming/
+          target: ~/kreditozrouti/incoming/${{ inputs.environment }}/${{ github.run_id }}-${{ github.run_attempt }}
+          strip_components: 1
+      - name: Restore complete saved snapshot
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+          EXPECTED_TOOLKIT_VERSION: ${{ steps.auth.outputs.toolkit_version }}
+          RELEASE_ID: ${{ inputs.release_id }}
+          OPERATION: ${{ inputs.operation }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION,RELEASE_ID,OPERATION
+          command_timeout: 110m
+          script: |
+            set -euo pipefail
+            [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+            [[ "$RELEASE_ID" =~ ^(previous|current)$ || "$RELEASE_ID" =~ ^[a-f0-9]{40}-[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+            [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
+            incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
+            chmod 600 "$incoming/registry/config.json"
+            [[ "$OPERATION" =~ ^(rollback|activate|reconcile)$ ]] || exit 1
+            if [[ "$OPERATION" == reconcile ]]; then
+              bash "$incoming/deployment/toolkit" release reconcile "$TARGET_ENVIRONMENT" --registry-config "$incoming/registry"
+            else
+              bash "$incoming/deployment/toolkit" release "$OPERATION" "$TARGET_ENVIRONMENT" --release-id "$RELEASE_ID" --registry-config "$incoming/registry"
+            fi
+      - name: Remove own registry credentials
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: TARGET_ENVIRONMENT,INCOMING_ID
+          command_timeout: 5m
+          script: |
+            set -euo pipefail
+            [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ && "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+            incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
+            [[ ! -L "$incoming" ]] || exit 1
+            rm -rf -- "$incoming"
+        if: always() && steps.reserve.outcome == 'success'
+      - name: Remove runner credentials
+        if: always()
+        run: rm -rf -- "$GITHUB_WORKSPACE/incoming"

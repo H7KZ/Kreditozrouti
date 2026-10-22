@@ -17,107 +17,110 @@
 name: Build Service (reusable)
 
 on:
-    workflow_call:
-        inputs:
-            service:
-                description: 'Service to build: api | web | scraper | mcp'
-                required: true
-                type: string
-            source_commit:
-                required: true
-                type: string
-            environment:
-                required: true
-                type: string
-            image_tag:
-                required: true
-                type: string
-            no_cache:
-                type: boolean
-                default: false
-        outputs:
-            image_tag:
-                description: 'Short SHA used as the versioned image tag'
-                value: ${{ jobs.build.outputs.image_tag }}
-            image_prefix:
-                description: 'Registry path prefix without registry host (e.g. h7kz/kreditozrouti)'
-                value: ${{ jobs.build.outputs.image_prefix }}
-            image_digest:
-                description: 'Immutable registry image digest'
-                value: ${{ jobs.build.outputs.image_digest }}
+  workflow_call:
+    inputs:
+      service:
+        description: 'Service to build: api | web | scraper | mcp'
+        required: true
+        type: string
+      source_commit:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
+      no_cache:
+        type: boolean
+        default: false
+    outputs:
+      image_tag:
+        description: 'Short SHA used as the versioned image tag'
+        value: ${{ jobs.build.outputs.image_tag }}
+      image_prefix:
+        description: 'Registry path prefix without registry host (e.g. h7kz/kreditozrouti)'
+        value: ${{ jobs.build.outputs.image_prefix }}
+      image_digest:
+        description: 'Immutable registry image digest'
+        value: ${{ jobs.build.outputs.image_digest }}
+
+permissions:
+  contents: read
 
 jobs:
-    build:
-        name: Build and Push ${{ inputs.service }}
-        runs-on: ubuntu-latest
-        timeout-minutes: 30
+  build:
+    name: Build and Push ${{ inputs.service }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
 
-        permissions:
-            contents: read
-            packages: write
+    permissions:
+      contents: read
+      packages: write
 
-        outputs:
-            image_tag: ${{ steps.meta.outputs.image_tag }}
-            image_prefix: ${{ steps.meta.outputs.image_prefix }}
-            image_digest: ${{ steps.build-image.outputs.digest }}
+    outputs:
+      image_tag: ${{ steps.meta.outputs.image_tag }}
+      image_prefix: ${{ steps.meta.outputs.image_prefix }}
+      image_digest: ${{ steps.build-image.outputs.digest }}
 
-        steps:
-            - name: Checkout Code
-              uses: actions/checkout@v7
-              with:
-                  ref: ${{ inputs.source_commit }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.source_commit }}
 
-            - name: Extract Metadata
-              id: meta
-              env:
-                  SOURCE_COMMIT: ${{ inputs.source_commit }}
-              run: |
-                  TAG="${SOURCE_COMMIT::8}"
-                  PREFIX="$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
-                  echo "image_tag=${TAG}" >> "$GITHUB_OUTPUT"
-                  echo "image_prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
-                  echo "::notice::Building ${{ inputs.service }} image with tag: ${TAG}"
-                  echo "::notice::Image prefix: ${PREFIX}"
+      - name: Extract Metadata
+        id: meta
+        env:
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+        run: |
+          TAG="${SOURCE_COMMIT::8}"
+          PREFIX="$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
+          echo "image_tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
+          echo "::notice::Building ${{ inputs.service }} image with tag: ${TAG}"
+          echo "::notice::Image prefix: ${PREFIX}"
 
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
-            - name: Log in to GitHub Container Registry
-              uses: docker/login-action@v4
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Build and Push
-              id: build-image
-              uses: docker/build-push-action@v7
-              with:
-                  context: .
-                  file: ./apps/${{ inputs.service }}/Dockerfile
-                  push: true
-                  no-cache: ${{ inputs.no_cache }}
-                  tags: |
-                      ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
-                      ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.source_commit }}
-                      ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.environment }}-${{ inputs.source_commit }}
-                      ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.environment == 'production' && 'latest' || 'dev-latest' }}
-                  build-args: |
-                      APP_VERSION=${{ steps.meta.outputs.image_tag }}
-                      GIT_SHA=${{ inputs.source_commit }}
-                  labels: |
-                      org.opencontainers.image.revision=${{ inputs.source_commit }}
-                  cache-from: ${{ !inputs.no_cache && format('type=gha,scope={0}-{1}', inputs.service, inputs.environment) || '' }}
-                  cache-to: type=gha,mode=max,scope=${{ inputs.service }}-${{ inputs.environment }}
-                  platforms: linux/amd64
+      - name: Build and Push
+        id: build-image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ./apps/${{ inputs.service }}/Dockerfile
+          push: true
+          no-cache: ${{ inputs.no_cache }}
+          tags: |
+            ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
+            ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.source_commit }}
+            ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.environment }}-${{ inputs.source_commit }}
+            ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.environment == 'production' && 'latest' || 'dev-latest' }}
+          build-args: |
+            APP_VERSION=${{ steps.meta.outputs.image_tag }}
+            GIT_SHA=${{ inputs.source_commit }}
+          labels: |
+            org.opencontainers.image.revision=${{ inputs.source_commit }}
+          cache-from: ${{ !inputs.no_cache && format('type=gha,scope={0}-{1}', inputs.service, inputs.environment) || '' }}
+          cache-to: type=gha,mode=max,scope=${{ inputs.service }}-${{ inputs.environment }}
+          platforms: linux/amd64
 
-            - name: Summarize image digest
-              env:
-                  SERVICE: ${{ inputs.service }}
-                  DIGEST: ${{ steps.build-image.outputs.digest }}
-              run: |
-                  echo "${SERVICE} image_digest=${DIGEST}" >> "$GITHUB_STEP_SUMMARY"
+      - name: Summarize image digest
+        env:
+          SERVICE: ${{ inputs.service }}
+          DIGEST: ${{ steps.build-image.outputs.digest }}
+        run: |
+          echo "${SERVICE} image_digest=${DIGEST}" >> "$GITHUB_STEP_SUMMARY"
 
-            - name: Log out of GitHub Container Registry
-              if: always()
-              run: docker logout ghcr.io
+      - name: Log out of GitHub Container Registry
+        if: always()
+        run: docker logout ghcr.io

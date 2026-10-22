@@ -1,41 +1,47 @@
 name: Deploy Monitoring
-run-name: Deploy Monitoring · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}
-'on':
-    workflow_dispatch:
-        inputs:
-            ref:
-                description: Source branch, tag or SHA (empty = selected workflow ref)
-                type: string
-                default: ''
-            operation:
-                description: Deploy now or stage without activation
-                type: choice
-                options: [deploy, stage]
-                default: deploy
+run-name: Deploy Monitoring · monitoring · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or SHA to deploy (empty = the workflow ref)
+        required: false
+        type: string
+        default: ''
+      operation:
+        description: Deploy now, or stage an immutable snapshot without activating it
+        required: true
+        type: choice
+        options: [deploy, stage]
+        default: deploy
 permissions:
-    contents: read
-    packages: read
+  contents: read
+  packages: read
 concurrency:
-    group: deploy-monitoring
-    cancel-in-progress: false
+  group: deploy-monitoring
+  cancel-in-progress: false
 jobs:
-    resolve:
-        name: Resolve source
-        runs-on: ubuntu-latest
-        outputs:
-            source_commit: ${{ steps.source.outputs.sha }}
-        steps:
-            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-              with:
-                  ref: ${{ inputs.ref || github.sha }}
-            - id: source
-              run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-    deploy:
-        name: Deploy monitoring snapshot
-        needs: resolve
-        uses: ./.github/workflows/_deploy.yml
+  resolve:
+    name: Resolve source
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      source_commit: ${{ steps.source.outputs.sha }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-            environment: monitoring
-            operation: ${{ inputs.operation }}
-            source_commit: ${{ needs.resolve.outputs.source_commit }}
-        secrets: inherit
+          ref: ${{ inputs.ref || github.sha }}
+          persist-credentials: false
+      - name: Resolve commit
+        id: source
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  deploy:
+    name: Deploy monitoring snapshot
+    needs: resolve
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      environment: monitoring
+      operation: ${{ inputs.operation }}
+      source_commit: ${{ needs.resolve.outputs.source_commit }}
+    secrets: inherit

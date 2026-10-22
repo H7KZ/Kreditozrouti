@@ -7,5 +7,11 @@
 	"printWidth": 160,
 	"quoteProps": "as-needed",
 	"bracketSpacing": true,
-	"arrowParens": "avoid"
+	"arrowParens": "avoid",
+	"overrides": [
+		{
+			"files": "*.{yml,yaml}",
+			"options": { "useTabs": false, "tabWidth": 2 }
+		}
+	]
 }

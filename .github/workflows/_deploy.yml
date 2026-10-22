@@ -1,213 +1,213 @@
 name: Deploy Environment (reusable)
-'on':
-    workflow_call:
-        inputs:
-            environment:
-                required: true
-                type: string
-            operation:
-                type: string
-                default: deploy
-            source_commit:
-                required: true
-                type: string
-            qualified_release_manifest_b64:
-                required: false
-                type: string
-                default: ''
-            qualified_manifest_sha256:
-                required: false
-                type: string
-                default: ''
-            api_digest:
-                required: false
-                type: string
-                default: ''
-            web_digest:
-                required: false
-                type: string
-                default: ''
-            scraper_digest:
-                required: false
-                type: string
-                default: ''
-            mcp_digest:
-                required: false
-                type: string
-                default: ''
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      operation:
+        type: string
+        default: deploy
+      source_commit:
+        required: true
+        type: string
+      qualified_release_manifest_b64:
+        required: false
+        type: string
+        default: ''
+      qualified_manifest_sha256:
+        required: false
+        type: string
+        default: ''
+      api_digest:
+        required: false
+        type: string
+        default: ''
+      web_digest:
+        required: false
+        type: string
+        default: ''
+      scraper_digest:
+        required: false
+        type: string
+        default: ''
+      mcp_digest:
+        required: false
+        type: string
+        default: ''
 permissions:
-    contents: read
-    packages: read
+  contents: read
+  packages: read
 jobs:
-    deploy:
-        name: Deploy snapshot
-        runs-on: ubuntu-latest
-        timeout-minutes: 120
-        environment: ${{ inputs.environment }}
-        steps:
-            - name: Validate target, operation and trusted SSH fingerprint
-              env:
-                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  OPERATION: ${{ inputs.operation }}
-                  SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
-              run: |
-                  set -euo pipefail
-                  [[ "$OPERATION" =~ ^(deploy|stage)$ ]] || exit 1
-                  [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
-                  [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || { echo 'ERROR: trusted SSH fingerprint required'; exit 1; }
-            - name: Check out controller
-              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-              with:
-                  path: controller
-            - name: Check out selected deployment bundle
-              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-              with:
-                  ref: ${{ inputs.source_commit }}
-                  path: bundle
-            - name: Verify toolkit pin
-              run: bash controller/deployment/toolkit verify "$GITHUB_WORKSPACE/bundle/deployment"
-            - name: Build private incoming packet
-              id: packet
-              env:
-                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  SOURCE_COMMIT: ${{ inputs.source_commit }}
-                  QUALIFICATION_B64: ${{ inputs.qualified_release_manifest_b64 }}
-                  QUALIFICATION_SHA256: ${{ inputs.qualified_manifest_sha256 }}
-                  API_DIGEST: ${{ inputs.api_digest }}
-                  WEB_DIGEST: ${{ inputs.web_digest }}
-                  SCRAPER_DIGEST: ${{ inputs.scraper_digest }}
-                  MCP_DIGEST: ${{ inputs.mcp_digest }}
-                  APP_PROJECT: ${{ vars.PROJECT }}
-                  APP_DOMAIN: ${{ vars.DOMAIN }}
-                  APP_MYSQL_USER: ${{ secrets.MYSQL_USER }}
-                  APP_MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-                  APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
-                  APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
-                  APP_MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-                  APP_MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-                  APP_MYSQL_URI: ${{ secrets.MYSQL_URI }}
-                  APP_REDIS_URI: ${{ secrets.REDIS_URI }}
-                  APP_REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-                  APP_GOOGLE_USER: ${{ secrets.GOOGLE_USER }}
-                  APP_GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
-                  APP_UMAMI_WEBSITE_ID: ${{ secrets.UMAMI_WEBSITE_ID }}
-                  APP_UMAMI_SRC: ${{ vars.UMAMI_SRC }}
-                  APP_MCP_JWT_SECRET: ${{ secrets.MCP_JWT_SECRET }}
-                  APP_PHPMYADMIN_BASIC_AUTH: ${{ secrets.PHPMYADMIN_BASIC_AUTH }}
-                  APP_ENVIRONMENT: ${{ inputs.environment }}
-                  APP_SOURCE_COMMIT: ${{ inputs.source_commit }}
-                  GRAFANA_ADMIN_USER: ${{ secrets.GRAFANA_ADMIN_USER }}
-                  GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
-                  DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-                  HEALTHCHECKS_PING_URL: ${{ secrets.HEALTHCHECKS_PING_URL }}
-                  UMAMI_DB_NAME: ${{ secrets.UMAMI_DB_NAME }}
-                  UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
-                  UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
-                  UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  GH_ACTOR: ${{ github.actor }}
-              run: |
-                  set -euo pipefail
-                  set +x
-                  umask 077
-                  mkdir -m 700 incoming
-                  python3 controller/deployment/package-release.py bundle/deployment "$PWD/incoming"
-                  # The deployed revision's own pinned toolkit runs the release on the VPS.
-                  for name in toolkit toolkit.conf toolkit.lock vendor/toolkit; do
-                    [[ -e "bundle/deployment/$name" ]] || { echo "::error::Selected source has no deployment/$name; it predates toolkit 0.11"; exit 1; }
-                  done
-                  mkdir -p incoming/deployment/vendor
-                  cp bundle/deployment/toolkit bundle/deployment/toolkit.conf bundle/deployment/toolkit.lock incoming/deployment/
-                  cp -R bundle/deployment/vendor/toolkit incoming/deployment/vendor/toolkit
-                  bash controller/deployment/render-env.sh "$TARGET_ENVIRONMENT" "$PWD/incoming/release.env"
-                  mkdir -m 700 incoming/registry
-                  printf '%s' "$GH_TOKEN" | docker --config "$PWD/incoming/registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
-            - name: Report snapshot selection
-              env:
-                  SOURCE_COMMIT: ${{ inputs.source_commit }}
-                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  OPERATION: ${{ inputs.operation }}
-              run: |
-                  printf 'Snapshot: %s-%s-%s\n\nTarget: %s; operation: %s\n' "$SOURCE_COMMIT" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$TARGET_ENVIRONMENT" "$OPERATION" >> "$GITHUB_STEP_SUMMARY"
-            - name: Reserve isolated incoming directory
-              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ vars.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION
-                  command_timeout: 5m
-                  script: |
-                      set -euo pipefail
-                      umask 077
-                      [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
-                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
-                      base="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT"
-                      mkdir -p -m 700 "$base"
-                      mkdir -m 700 "$base/$INCOMING_ID"
-              env:
-                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
-                  EXPECTED_TOOLKIT_VERSION: ${{ steps.packet.outputs.toolkit_version }}
-                  OPERATION: ${{ inputs.operation }}
-              id: reserve
-            - name: Upload packet
-              uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ vars.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  source: incoming/
-                  target: ~/kreditozrouti/incoming/${{ inputs.environment }}/${{ github.run_id }}-${{ github.run_attempt }}
-                  strip_components: 1
-            - name: Deploy snapshot
-              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ vars.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION,OPERATION
-                  command_timeout: 110m
-                  script: |
-                      set -euo pipefail
-                      [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
-                      incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
-                      [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
-                      chmod 600 "$incoming/release.env" "$incoming/registry/config.json"
-                      bash "$incoming/deployment/toolkit" release "$OPERATION" "$TARGET_ENVIRONMENT" \
-                        --archive "$incoming/release.tar.gz" --checksum "$incoming/release.sha256" --manifest "$incoming/manifest.json" \
-                        --env-file "$incoming/release.env" --registry-config "$incoming/registry"
-              env:
-                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
-                  EXPECTED_TOOLKIT_VERSION: ${{ steps.packet.outputs.toolkit_version }}
-                  OPERATION: ${{ inputs.operation }}
-            - name: Remove own incoming packet
-              uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ vars.SSH_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-                  envs: TARGET_ENVIRONMENT,INCOMING_ID
-                  command_timeout: 5m
-                  script: |
-                      set -euo pipefail
-                      [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring)$ ]] || exit 1
-                      incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
-                      [[ ! -L "$incoming" ]] || exit 1
-                      rm -rf -- "$incoming"
-              env:
-                  TARGET_ENVIRONMENT: ${{ inputs.environment }}
-                  INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
-              if: always() && steps.reserve.outcome == 'success'
-            - name: Remove runner registry credentials
-              if: always()
-              run: rm -rf -- "$GITHUB_WORKSPACE/incoming"
+  deploy:
+    name: Deploy snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Validate target, operation and trusted SSH fingerprint
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          OPERATION: ${{ inputs.operation }}
+          SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
+        run: |
+          set -euo pipefail
+          [[ "$OPERATION" =~ ^(deploy|stage)$ ]] || exit 1
+          [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ ]] || exit 1
+          [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || { echo 'ERROR: trusted SSH fingerprint required'; exit 1; }
+      - name: Check out controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: controller
+      - name: Check out selected deployment bundle
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.source_commit }}
+          path: bundle
+      - name: Verify toolkit pin
+        run: bash controller/deployment/toolkit verify "$GITHUB_WORKSPACE/bundle/deployment"
+      - name: Build private incoming packet
+        id: packet
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+          QUALIFICATION_B64: ${{ inputs.qualified_release_manifest_b64 }}
+          QUALIFICATION_SHA256: ${{ inputs.qualified_manifest_sha256 }}
+          API_DIGEST: ${{ inputs.api_digest }}
+          WEB_DIGEST: ${{ inputs.web_digest }}
+          SCRAPER_DIGEST: ${{ inputs.scraper_digest }}
+          MCP_DIGEST: ${{ inputs.mcp_digest }}
+          APP_PROJECT: ${{ vars.PROJECT }}
+          APP_DOMAIN: ${{ vars.DOMAIN }}
+          APP_MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          APP_MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
+          APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
+          APP_MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          APP_MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          APP_MYSQL_URI: ${{ secrets.MYSQL_URI }}
+          APP_REDIS_URI: ${{ secrets.REDIS_URI }}
+          APP_REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          APP_GOOGLE_USER: ${{ secrets.GOOGLE_USER }}
+          APP_GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
+          APP_UMAMI_WEBSITE_ID: ${{ secrets.UMAMI_WEBSITE_ID }}
+          APP_UMAMI_SRC: ${{ vars.UMAMI_SRC }}
+          APP_MCP_JWT_SECRET: ${{ secrets.MCP_JWT_SECRET }}
+          APP_PHPMYADMIN_BASIC_AUTH: ${{ secrets.PHPMYADMIN_BASIC_AUTH }}
+          APP_ENVIRONMENT: ${{ inputs.environment }}
+          APP_SOURCE_COMMIT: ${{ inputs.source_commit }}
+          GRAFANA_ADMIN_USER: ${{ secrets.GRAFANA_ADMIN_USER }}
+          GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          HEALTHCHECKS_PING_URL: ${{ secrets.HEALTHCHECKS_PING_URL }}
+          UMAMI_DB_NAME: ${{ secrets.UMAMI_DB_NAME }}
+          UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
+          UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
+          UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          set +x
+          umask 077
+          mkdir -m 700 incoming
+          python3 controller/deployment/package-release.py bundle/deployment "$PWD/incoming"
+          # The deployed revision's own pinned toolkit runs the release on the VPS.
+          for name in toolkit toolkit.conf toolkit.lock vendor/toolkit; do
+            [[ -e "bundle/deployment/$name" ]] || { echo "::error::Selected source has no deployment/$name; it predates toolkit 0.11"; exit 1; }
+          done
+          mkdir -p incoming/deployment/vendor
+          cp bundle/deployment/toolkit bundle/deployment/toolkit.conf bundle/deployment/toolkit.lock incoming/deployment/
+          cp -R bundle/deployment/vendor/toolkit incoming/deployment/vendor/toolkit
+          bash controller/deployment/render-env.sh "$TARGET_ENVIRONMENT" "$PWD/incoming/release.env"
+          mkdir -m 700 incoming/registry
+          printf '%s' "$GH_TOKEN" | docker --config "$PWD/incoming/registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
+      - name: Report snapshot selection
+        env:
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          OPERATION: ${{ inputs.operation }}
+        run: |
+          printf 'Snapshot: %s-%s-%s\n\nTarget: %s; operation: %s\n' "$SOURCE_COMMIT" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$TARGET_ENVIRONMENT" "$OPERATION" >> "$GITHUB_STEP_SUMMARY"
+      - name: Reserve isolated incoming directory
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION
+          command_timeout: 5m
+          script: |
+            set -euo pipefail
+            umask 077
+            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ ]] || exit 1
+            [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
+            base="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT"
+            mkdir -p -m 700 "$base"
+            mkdir -m 700 "$base/$INCOMING_ID"
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+          EXPECTED_TOOLKIT_VERSION: ${{ steps.packet.outputs.toolkit_version }}
+          OPERATION: ${{ inputs.operation }}
+        id: reserve
+      - name: Upload packet
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          source: incoming/
+          target: ~/kreditozrouti/incoming/${{ inputs.environment }}/${{ github.run_id }}-${{ github.run_attempt }}
+          strip_components: 1
+      - name: Deploy snapshot
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: TARGET_ENVIRONMENT,INCOMING_ID,EXPECTED_TOOLKIT_VERSION,OPERATION
+          command_timeout: 110m
+          script: |
+            set -euo pipefail
+            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ ]] || exit 1
+            incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
+            [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
+            chmod 600 "$incoming/release.env" "$incoming/registry/config.json"
+            bash "$incoming/deployment/toolkit" release "$OPERATION" "$TARGET_ENVIRONMENT" \
+              --archive "$incoming/release.tar.gz" --checksum "$incoming/release.sha256" --manifest "$incoming/manifest.json" \
+              --env-file "$incoming/release.env" --registry-config "$incoming/registry"
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+          EXPECTED_TOOLKIT_VERSION: ${{ steps.packet.outputs.toolkit_version }}
+          OPERATION: ${{ inputs.operation }}
+      - name: Remove own incoming packet
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: TARGET_ENVIRONMENT,INCOMING_ID
+          command_timeout: 5m
+          script: |
+            set -euo pipefail
+            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ ]] || exit 1
+            incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
+            [[ ! -L "$incoming" ]] || exit 1
+            rm -rf -- "$incoming"
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+        if: always() && steps.reserve.outcome == 'success'
+      - name: Remove runner registry credentials
+        if: always()
+        run: rm -rf -- "$GITHUB_WORKSPACE/incoming"
