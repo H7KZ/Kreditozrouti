@@ -7,13 +7,14 @@ to most severe: roll back an image set, reconcile what should be running, restor
 
 Dispatch **Rollback** (`rollback.yml`), from any branch:
 
-| Input         | Values (default first)                               | Meaning                                                                        |
-| ------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `environment` | `production`, `development`, `monitoring`, `ingress` | What to act on                                                                 |
-| `ref`         | empty                                                | Controller branch, tag or SHA whose pinned toolkit runs the operation          |
-| `operation`   | `rollback`, `activate`, `reconcile`                  | Restore a saved snapshot, activate a staged one, or reconcile the current one  |
-| `release_id`  | `previous`                                           | `previous`, `current` or `<fullSHA>-<run>-<attempt>` (ignored for `reconcile`) |
+| Input         | Values (default first)                    | Meaning                                                                        |
+| ------------- | ----------------------------------------- | ------------------------------------------------------------------------------ |
+| `environment` | `production`, `development`, `monitoring` | What to act on                                                                 |
+| `ref`         | empty                                     | Controller branch, tag or SHA whose pinned toolkit runs the operation          |
+| `operation`   | `rollback`, `activate`, `reconcile`       | Restore a saved snapshot, activate a staged one, or reconcile the current one  |
+| `release_id`  | `previous`                                | `previous`, `current` or `<fullSHA>-<run>-<attempt>` (ignored for `reconcile`) |
 
+- The standalone `ingress` target is not offered here: redeploy it with **Deploy Ingress**, or on the VPS run `bash deployment/toolkit release rollback ingress --release-id previous`.
 - `rollback` with `previous` returns to the snapshot that was current before the last successful deploy.
 - `activate` with an explicit ID applies a snapshot saved by `operation=stage` or an older deploy.
 - Rollback restores the **complete** saved model: images by digest, configuration and the private runtime files it was

@@ -33,7 +33,7 @@ Only on a server where no other repository declares them. In `deployment/toolkit
 # RECONCILE_BEFORE=deployment/ingress/cloudflare-firewall.sh
 # JOB_CLOUDFLARE_FIREWALL_RUN=deployment/ingress/cloudflare-firewall.sh
 # JOB_CLOUDFLARE_FIREWALL_AT=Mon *-*-* 04:00:00 UTC
-# JOB_CLOUDFLARE_FIREWALL_ENVIRONMENT=ingress
+# JOB_CLOUDFLARE_FIREWALL_ENVIRONMENT=infrastructure
 # JOB_CLOUDFLARE_FIREWALL_HOST_WINDOW=true
 ```
 

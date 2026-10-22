@@ -62,7 +62,7 @@ def main():
     manifest = {
         "schema_version": 1,
         "repository": slug,
-        "environment": target,
+        "environment": "infrastructure" if target == "ingress" else target,
         "release_id": f"{commit}-{run}-{attempt}",
         "source_commit": commit,
         "project": project,

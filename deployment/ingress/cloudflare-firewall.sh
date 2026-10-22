@@ -18,7 +18,7 @@ set -euo pipefail
 #
 # Usage:
 #   sudo bash ./cloudflare-firewall.sh --dry-run   # print the ruleset only
-#   sudo deployment/toolkit with-lock --repository kreditozrouti --environment ingress --host-window --action maintenance -- bash deployment/ingress/cloudflare-firewall.sh
+#   sudo deployment/toolkit with-lock --repository kreditozrouti --environment infrastructure --host-window --action maintenance -- bash deployment/ingress/cloudflare-firewall.sh
 #
 # Standalone servers only (this repository's own ingress): enable the commented RECONCILE_BEFORE
 # and cloudflare-firewall job lines in deployment/toolkit.conf. Toolkit then runs it without

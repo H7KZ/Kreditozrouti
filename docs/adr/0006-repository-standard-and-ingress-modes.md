@@ -38,3 +38,5 @@ Apps never change between modes, because both name the network `public-network` 
   standalone server ([split to own server](../runbooks/split-to-own-server.md)).
 - The ingress copy can drift from Infrastructure's. Infrastructure's `traefik/` stays the canonical source; port
   changes deliberately in both places.
+- Toolkit 0.11 has no `ingress` lock environment, so the `ingress` target (and its firewall job) uses the lock environment
+  `infrastructure`; the target name, workflow and Compose project stay `ingress`/`global`. Switch when a toolkit release adds one.
