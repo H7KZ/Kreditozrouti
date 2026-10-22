@@ -9,9 +9,9 @@
 # Brute force, path scanning, CVE probing, aggressive crawling. This is the
 # part that learns from what actually hits you.
 filenames:
-  - /var/log/traefik/access.log
+    - /var/log/traefik/access.log
 labels:
-  type: traefik
+    type: traefik
 # Fall back to polling if inotify does not fire (some overlay/volume setups).
 poll_without_inotify: false
 
@@ -19,10 +19,10 @@ poll_without_inotify: false
 # --- Source 2: AppSec engine -> in-line request inspection --------------------
 # Traefik forwards each request here BEFORE it reaches your backend, and the
 # OWASP CRS / virtual-patching rules decide in real time. This blocks the first
-# malicious request, not the tenth — the log-based source above can only react
+# malicious request, not the tenth - the log-based source above can only react
 # after the fact.
 source: appsec
 listen_addr: 0.0.0.0:7422
 appsec_config: crowdsecurity/appsec-default
 labels:
-  type: appsec
+    type: appsec

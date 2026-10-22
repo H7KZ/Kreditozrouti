@@ -7,7 +7,7 @@ set -euo pipefail
 # Restricts :80 and :443 to Cloudflare's edge ranges using nftables.
 #
 # Why this matters more than any Traefik setting: if your origin IP is
-# reachable directly, an attacker skips Cloudflare entirely — no WAF, no DDoS
+# reachable directly, an attacker skips Cloudflare entirely - no WAF, no DDoS
 # absorption, no bot management, and your rate limits key off a spoofable
 # header. Origin IPs leak constantly (old DNS records, mail headers, TLS
 # certificate transparency logs, a misconfigured subdomain).
@@ -28,7 +28,7 @@ set -euo pipefail
 #
 # IMPORTANT: this locks out direct access, including your own. Make sure SSH is
 # on a different port and is not covered by these rules (it is not, by default
-# — only 80 and 443 are touched). Also add any monitoring probes to
+# - only 80 and 443 are touched). Also add any monitoring probes to
 # EXTRA_ALLOWED before running.
 # ==============================================================================
 

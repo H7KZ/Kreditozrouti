@@ -2,6 +2,6 @@ name: kreditozrouti/ignore-mcp-auth-failures
 description: Ignore expected MCP OAuth failures in Traefik access logs
 filter: "evt.Meta.log_type == 'http_access-log'"
 whitelist:
-  reason: MCP clients can retry expired or missing OAuth credentials
-  expression:
-    - "evt.Meta.target_fqdn == 'kreditozrouti.cz' && evt.Meta.http_verb == 'POST' && evt.Meta.http_path == '/mcp' && evt.Meta.http_status in ['401', '403']"
+    reason: MCP clients can retry expired or missing OAuth credentials
+    expression:
+        - "evt.Meta.target_fqdn == 'kreditozrouti.cz' && evt.Meta.http_verb == 'POST' && evt.Meta.http_path == '/mcp' && evt.Meta.http_status in ['401', '403']"

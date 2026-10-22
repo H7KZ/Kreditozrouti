@@ -42,9 +42,13 @@ rendered="$script_dir/.rendered"
 [[ -L "$rendered" && "$(realpath -e "$rendered")" == "$(realpath -e "$TOOLKIT_RUNTIME_DIR")"/* ]] ||
   fail 'ingress/.rendered must link into this release private runtime directory'
 mkdir -p -- "$rendered"
+# The template placeholders are literal ${...} text, not shell expansions (hence SC2016).
 config="$(<"$script_dir/config/traefik.yml")"
+# shellcheck disable=SC2016
 config="${config//'${ACME_EMAIL}'/$ACME_EMAIL}"
+# shellcheck disable=SC2016
 config="${config//'${CERT_RESOLVER}'/letsencrypt}"
+# shellcheck disable=SC2016
 [[ "$config" != *'${'* ]] || fail 'unsubstituted variable left in the Traefik static configuration'
 printf '%s\n' "$config" > "$rendered/traefik.yml"
 printf '%s\n' "$TRAEFIK_HTPASSWD" > "$rendered/traefik.htpasswd"

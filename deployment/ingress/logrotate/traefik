@@ -24,7 +24,7 @@
     postrotate
         # Traefik reopens its log files on SIGUSR1. Without this it keeps
         # writing to the rotated (now deleted) inode and the live file stays
-        # empty — CrowdSec would silently stop seeing traffic.
+        # empty - CrowdSec would silently stop seeing traffic.
         docker kill --signal=USR1 "$(docker ps -q -f name=^traefik$)" 2>/dev/null || true
     endscript
 }
