@@ -34,14 +34,14 @@ catalog:
     tsconfig-paths: '^4.2.0'
     tsup: '^8.5.1'
     tsx: '^4.23.15'
-    typescript: '~6.0.3'
+    typescript: '~7.0.2'
     typescript-eslint: '^8.70.1'
     vitest: '^5.0.1'
     zod: '^4.6.5'
 
 # Reaches transitive dependencies too, which catalogs cannot.
 overrides:
-    typescript: '~6.0.3'
+    typescript: '~7.0.2'
     # Patched transitive dev-tool advisories (pnpm audit). Drop each once its parent package ships the fix.
     shell-quote: '>=1.11.0'
     source-map-js: '>=1.2.2'
