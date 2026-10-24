@@ -43,6 +43,11 @@
 *.bash      text eol=lf
 *.sh        text eol=lf
 *.zsh       text eol=lf
+
+# Toolkit pin and vendored files are parsed by bash/awk on the server; CR breaks them.
+deployment/toolkit text eol=lf
+deployment/toolkit.lock text eol=lf
+deployment/toolkit.conf text eol=lf
 Dockerfile  text eol=lf
 .dockerignore text eol=lf
 

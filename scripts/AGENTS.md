@@ -14,6 +14,7 @@ owns them.
 | Script        | Purpose                                                      | Requires Root |
 | ------------- | ------------------------------------------------------------ | ------------- |
 | `clone-db.sh` | Clone MySQL DB between dev and prod stacks on the same VPS   | Yes           |
+| `migrate-infrastructure.sh` | One-off: dump Infrastructure state on the old VPS, restore on the new one | Yes           |
 
 `clone-db.sh` is standalone and takes no repository lock: do not start a deploy while it runs.
 

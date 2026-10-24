@@ -5,5 +5,6 @@ The [`scripts/`](../../scripts/) directory holds repository-specific Bash utilit
 | Script        | Purpose                                                    |
 | ------------- | ---------------------------------------------------------- |
 | `clone-db.sh` | Copy the MySQL database between the dev and prod stacks on this VPS |
+| `migrate-infrastructure.sh` | One-off: move Infrastructure's databases and volumes from the old VPS to the new one |
 
 For app, monitoring and ingress deployment see the [deployment runbooks](../runbooks/deploy-and-release.md). Host-wide Docker and Traefik maintenance belongs to the separate Infrastructure repository.
